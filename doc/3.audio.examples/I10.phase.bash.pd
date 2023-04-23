@@ -224,8 +224,8 @@
 #X msg 96 300 4096;
 #N canvas 649 60 717 500 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 62079 float 0;
-#X coords 0 1 62078 -1 400 150 1;
+#X array \$0-sample 62079 float 2;
+#X coords 0 1 62079 -1 400 150 1;
 #X restore 264 29 graph;
 #X obj 35 39 r read-sample;
 #X obj 35 94 unpack s f;

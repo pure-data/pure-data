@@ -1,8 +1,8 @@
 #N canvas 375 23 836 666 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array table21 44103 float 0;
-#X coords 0 1.02 44100 -1.02 200 130 1;
+#X array table21 44103 float 2;
+#X coords 0 1.02 44103 -1.02 200 130 1;
 #X restore 559 296 graph;
 #X obj 366 533 loadbang;
 #X floatatom 47 262 6 0 0 0 - - - 0;

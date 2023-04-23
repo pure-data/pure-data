@@ -7,13 +7,13 @@
 #X text 357 266 ---- 0.02 seconds ----;
 #X text 366 595 updated for Pd version 0.39;
 #X obj 179 366 output~;
-#X obj 223 337 tabwrite~ \$0-sum;
+#X obj 233 337 tabwrite~ \$0-sum;
 #X obj 172 137 / 100;
 #X floatatom 172 112 4 0 100 0 - - - 0;
 #X obj 222 137 / 100;
 #X floatatom 222 112 4 0 100 0 - - - 0;
-#X obj 235 276 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
-#X obj 235 302 metro 193;
+#X obj 233 276 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 233 302 metro 193;
 #X obj 95 131 phasor~;
 #X floatatom 95 104 5 0 0 0 - - - 0;
 #X text 66 79 frequency;

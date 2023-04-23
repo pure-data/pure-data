@@ -13,7 +13,7 @@
 #X text 40 471 In general when you start a work session with Pd \, you will want to choose "test audio and MIDI" from the help window \, which opens a more comprehensive test patch than this one., f 60;
 #X text 28 44 Audio computation in Pd is done using "tilde objects" such as the three below. They use continuous audio streams to intercommunicate \, as well as communicating with other ("control") Pd objects using messages.;
 #X text 296 285 <= click these;
-#X text 165 188 <=== send to the audio output device;
+#X text 155 188 <=== send to the audio output device;
 #X text 183 157 <= reduce amplitude to 0.05;
 #X text 183 128 <= 440 Hz. sine wave at full blast;
 #X obj 309 545 ../5.reference/set-dsp-tgl;

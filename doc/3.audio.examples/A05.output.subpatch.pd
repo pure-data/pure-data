@@ -14,8 +14,8 @@
 #X text 227 223 Also select 'help' for more information;
 #X text 200 183 <-- this is a subwindow - right click on it;
 #X text 27 267 In this and subsequent patches \, we'll use the [output~] abstraction to control overall amplitude. Use the slider to control horizontally from 0 (silence) to 1 (full blast). Note \, however \, that a quartic function is applied. In this example \, you can't actually push the output amplitude all the way up without clipping. You'll know you're clipping if \, instead of an A major chord \, you hear a single \, distorted tone two octaves down. The clipping happens at Pd's last stage of audio output. Audio signals internal to Pd have essentially no level limit., f 73;
-#X text 27 388 The output control automatically starts DSP whenever you touch the siderl. You can use the "mute" toggle to turn mute on or off., f 73;
 #X text 327 482 updated for Pd version 0.54;
+#X text 27 388 The output control automatically starts DSP whenever you touch the sider. You can use the "mute" toggle to turn mute on or off., f 73;
 #X connect 1 0 4 0;
 #X connect 2 0 4 1;
 #X connect 3 0 5 1;

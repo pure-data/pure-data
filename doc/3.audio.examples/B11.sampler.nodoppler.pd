@@ -1,8 +1,8 @@
 #N canvas 374 52 893 649 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array table20 44103 float 0;
-#X coords 0 1.02 44100 -1.02 200 130 1;
+#X array table20 44103 float 2;
+#X coords 0 1.02 44103 -1.02 200 130 1;
 #X restore 581 37 graph;
 #X obj 474 355 loadbang;
 #X obj 165 475 hip~ 5;
@@ -15,7 +15,7 @@
 #X obj 420 252 hip~ 5;
 #X text 525 382 v-- re-read the original sample;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array graph20 44100 float 0;
+#X array graph20 44100 float 2;
 #X coords 0 44100 44100 0 200 130 1;
 #X restore 583 206 graph;
 #X obj 165 441 *~;

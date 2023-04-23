@@ -314,7 +314,7 @@
 #X restore 59 289 pd test-sound;
 #X obj 368 287 s revtime;
 #X text 25 170 For each window \, the amplitude in each channel is propagated by a constant phase increment and multiplied downward by a gain that determines the "reverb time"., f 70;
-#N canvas 734 203 602 538 hann-window 0;
+#N canvas 635 123 602 538 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 4096 float 0;
 #X coords 0 1 4095 0 300 100 1;

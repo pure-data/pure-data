@@ -244,8 +244,8 @@
 #X restore 293 404 pd insample2;
 #N canvas 498 195 722 350 insample1 0;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 0;
-#X coords 0 1 155943 -1 400 150 1;
+#X array \$0-sample 155944 float 2;
+#X coords 0 1 155944 -1 400 150 1;
 #X restore 259 42 graph;
 #X obj 19 74 unpack s f;
 #X obj 19 184 soundfiler;

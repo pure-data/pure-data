@@ -21,12 +21,12 @@
 #X floatatom 335 117 4 0 500 0 - - - 0;
 #X obj 285 170 cos~;
 #X obj 335 186 line~;
-#X obj 317 211 *~;
+#X obj 285 221 *~;
 #X obj 335 140 / 100;
 #X obj 335 163 pack 0 50;
 #X obj 151 259 +~;
-#X text 352 208 modulating;
-#X text 352 223 oscillator;
+#X text 320 218 modulating;
+#X text 320 233 oscillator;
 #X text 38 274 both phases-->;
 #X text 24 259 add modulator to;
 #X obj 199 507 output~;

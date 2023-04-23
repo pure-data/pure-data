@@ -2,8 +2,8 @@
 #X declare -stdpath ./;
 #X obj 59 220 hip~ 5;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array sample-table 44104 float 0;
-#X coords 0 1.02 44103 -1.02 200 130 1;
+#X array sample-table 44104 float 2;
+#X coords 0 1.02 44104 -1.02 200 130 1;
 #X restore 503 28 graph;
 #X obj 59 187 tabread4~ sample-table;
 #X obj 59 155 line~;

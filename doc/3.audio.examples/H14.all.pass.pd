@@ -18,13 +18,13 @@
 #X text 609 173 frequency;
 #X text 549 169 0;
 #X text 732 172 44100;
-#N canvas 876 177 375 255 startup 0;
-#X obj 22 24 loadbang;
-#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
-#X obj 22 67 f \$0;
+#N canvas 876 177 288 255 startup 0;
+#X obj 71 28 loadbang;
+#X obj 71 57 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 71 91 f \$0;
 #X text 35 195 This subpatch loads initial;
 #X text 31 219 values in number boxes.;
-#X msg 22 91 \; \$1-pole 80;
+#X msg 71 122 \; \$1-pole 80;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;

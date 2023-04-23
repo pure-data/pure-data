@@ -5,11 +5,11 @@
 #X obj 540 257 loadbang;
 #X text 313 140 start;
 #X text 550 281 reread file;
-#X msg 454 212 rewind;
-#X msg 522 212 next;
+#X msg 456 212 rewind;
+#X msg 524 212 next;
 #X msg 305 164 tempo 1 \, bang;
 #X text 82 20 USING QLIST TO SEQUENCE AN OSCILLATOR BANK;
-#X text 466 191 single step;
+#X text 468 191 single step;
 #X obj 225 323 r #;
 #X obj 83 227 output~;
 #X obj 523 21 declare -stdpath ./;

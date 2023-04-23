@@ -78,7 +78,7 @@
 #X connect 16 0 17 0;
 #X connect 17 0 18 0;
 #X restore 232 27 pd test-input;
-#X obj 165 619 output~;
+#X obj 164 619 output~;
 #X obj 101 326 phasor~;
 #X obj 287 409 max 1.5;
 #X text 290 315 delay;

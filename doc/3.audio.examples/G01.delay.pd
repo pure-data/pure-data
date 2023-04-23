@@ -3,8 +3,8 @@
 #X text 66 30 DELAYS;
 #N canvas 293 125 428 350 sample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array G01-tab 62079 float 0;
-#X coords 0 1 62078 -1 200 140 1;
+#X array G01-tab 62079 float 2;
+#X coords 0 1 62079 -1 200 140 1;
 #X restore 88 42 graph;
 #X obj 68 218 loadbang;
 #X obj 67 283 soundfiler;
