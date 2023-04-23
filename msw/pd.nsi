@@ -174,6 +174,8 @@ Function PreviousInstallationDetected
 ${If} $ShowPreviousInstallationDetected == "yes"
     nsDialogs::Create 1018
     Pop $0
+    !insertmacro MUI_HEADER_TEXT \
+    "Previous Installation" "Select if you are going to uninstall previous installation"
     ${NSD_CreateLabel} 0 0 100% 40% "System tells there is already a Pd installation:$\r$\n$\r$\n\
         '$PreUninstallerDisplayName' on '$PreUninstallerPath' $\r$\n$\r$\n\
         If you are going to upgrade or downgrade it is recommended that you run \
@@ -193,6 +195,17 @@ ${If} $3 == ${BST_CHECKED}
     ; run the uninstaller
     ; https://stackoverflow.com/questions/4676898/how-to-execute-an-nsis-uninstaller-from-within-an-another-nsis-installer-and-wai
     ExecWait '"$PreUninstallerUninstallString" /S _?=$PreUninstallerPath'
+    IfErrors uninstaller_canceled
+    ; if all went good this file is gone
+    IfFileExists \
+    "$PreUninstallerPath\bin\pd.exe" uninstaller_canceled uninstaller_done
+    uninstaller_done:
+    ; the uninstaller does not delete itself when runned via ExecWait
+    Delete "$PreUninstallerUninstallString"
+    RMDir "$PreUninstallerPath"
+    ; don't show the uninstall window if you hit "back"
+    StrCpy $ShowPreviousInstallationDetected "no"
+    uninstaller_canceled:
 ${EndIf}
 FunctionEnd
 
