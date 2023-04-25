@@ -3,13 +3,14 @@
 # Max Neupert <abonnements@revolwear.com>, 2022.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 # umläute <dev@umlaeute.mur.at>, 2023.
+# simmon <simmon@nplob.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"PO-Revision-Date: 2023-04-26 08:48+0000\n"
+"Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/ko/>\n"
 "Language: ko\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "선형"
@@ -1364,7 +1365,8 @@ msgstr "'%s'에 대한 변경 내용을 적용하시겠습니까?"
 msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
-msgstr ""
+msgstr "허용하면 연결된 개체의 내용이 최신화 됩니다. 변경 사항을 영구적으로 "
+"적용하려면 패치를 저장해야 합니다."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
