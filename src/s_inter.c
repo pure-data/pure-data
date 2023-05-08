@@ -43,6 +43,10 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+#ifdef _MSC_VER
+# define snprintf _snprintf
+#endif
+
 /* colorize output, but only on a TTY */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -1193,12 +1197,13 @@ static int sys_do_startgui(const char *libdir)
         struct sockaddr_storage addr;
         int status;
 #ifdef _WIN32
-        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
-        int spawnret;
+        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30];
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 #else
-        char cmdbuf[4*MAXPDSTRING];
         const char *guicmd;
 #endif
+        char cmdbuf[4*MAXPDSTRING];
         /* get addrinfo list using hostname (get random port from OS) */
         status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);
         if (status != 0)
@@ -1368,22 +1373,25 @@ static int sys_do_startgui(const char *libdir)
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
 
-        strcpy(scriptbuf, "\"");
-        strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDGUIDIR "/pd-gui.tcl\"");
-        sys_bashfilename(scriptbuf, scriptbuf);
-
-        sprintf(portbuf, "%d", portno);
-
-        strcpy(wishbuf, libdir);
-        strcat(wishbuf, "/" PDBINDIR WISH);
+        snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, NULL);
-        if (spawnret < 0)
+        snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
+        sys_bashfilename(scriptbuf, scriptbuf);
+
+        snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
+            WISH, scriptbuf, portno);
+
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+            /* CHR: DETACHED_PROCESS makes sure that the GUI process cannot
+            possibly interfere with the core. */
+        if (!CreateProcessA(wishbuf, cmdbuf, NULL, NULL, FALSE,
+            DETACHED_PROCESS, NULL, NULL, &si, &pi))
         {
-            perror("spawnl");
-            fprintf(stderr, "%s: couldn't load TCL\n", wishbuf);
+            char errbuf[MAXPDSTRING];
+            socket_strerror(GetLastError(), errbuf, sizeof(errbuf));
+            fprintf(stderr, "could not start %s: %s\n", wishbuf, errbuf);
             return (1);
         }
 #endif /* NOT _WIN32 */
