@@ -107,6 +107,7 @@ fi
 # autodetect wishname if none is given
 if [ -z "${WISHNAME}" ]; then
 	WISHNAME=$(find "${PDWINDIR}/bin" -iname "wish*.exe" -print -quit)
+
 	if [ -n "${WISHNAME}" ]; then
 		WISHNAME=$(basename "${WISHNAME}")
 	fi
@@ -188,8 +189,13 @@ case $nsis_exit in
      ;;
 esac
 
+# copy installer custom artwork
+cp "${SCRIPTDIR}/installer-art/big.bmp" "${OUTDIR}/big.bmp"
+cp "${SCRIPTDIR}/installer-art/small.bmp" "${OUTDIR}/small.bmp"
+cp "${SCRIPTDIR}/../tcl/pd.ico" "${OUTDIR}/pd.ico"
+
 # run the build
-if makensis -DARCHI=${PDARCH} ${NSIFILE}
+if makensis -DPDVER=${PDVERSION} -DWISHN=${WISHNAME} -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
