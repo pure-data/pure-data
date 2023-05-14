@@ -1,13 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # This file is put in the public domain.
 # AtrashDingDong <drummerqueen666@hotmail.com>, 2022.
+# Reza Almanda <rezaalmanda27@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2022-12-25 10:51+0000\n"
-"Last-Translator: AtrashDingDong <drummerqueen666@hotmail.com>\n"
+"PO-Revision-Date: 2023-05-15 22:50+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
 "Language: id\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "linier"
@@ -37,7 +38,7 @@ msgstr "menyisiki"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "Buang perubahan ke '%s'?"
 
 msgid "Undo clear"
 msgstr "Batal penghapusan"
@@ -105,16 +106,12 @@ msgstr "pengaturan Pd dihapus"
 msgid "no Pd settings to erase"
 msgstr "tidak ada pengaturan Pd yang bisa menghapus"
 
-#, fuzzy
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr ""
-"sedang melewat preferensi pemuatan... dikira Pd dihancurkan pas pembukaan"
+msgstr "melewatkan preferensi pemuatan ... Pd tampaknya macet saat startup"
 
-#, fuzzy
 msgid "(re-save preferences to reinstate them)"
-msgstr "(simpan preferensi lagi untuk diberlaku)"
+msgstr "(simpan ulang preferensi untuk mengembalikannya)"
 
-#, fuzzy
 msgid "File"
 msgstr "File"
 
@@ -130,7 +127,6 @@ msgstr "Mencari"
 msgid "Media"
 msgstr "Media"
 
-#, fuzzy
 msgid "Window"
 msgstr "Jendela"
 
@@ -146,13 +142,11 @@ msgstr "Salin"
 msgid "Paste"
 msgstr "Tempel"
 
-#, fuzzy
 msgid "Array Properties"
-msgstr "Sifat Himpunan"
+msgstr "Properti Array"
 
-#, fuzzy
 msgid "Array"
-msgstr "Himpunan"
+msgstr "Array"
 
 msgid "Name:"
 msgstr "Nama:"
@@ -160,9 +154,8 @@ msgstr "Nama:"
 msgid "Size:"
 msgstr "Ukuran:"
 
-#, fuzzy
 msgid "Save contents"
-msgstr "Simpan muatan"
+msgstr "Simpan konten"
 
 msgid "Draw as:"
 msgstr "Menggambar sebagai:"
@@ -176,9 +169,8 @@ msgstr "Titik"
 msgid "Bezier curve"
 msgstr "Lengkung Bezier"
 
-#, fuzzy
 msgid "Put array into:"
-msgstr "Taruh himpunan di:"
+msgstr "Masukkan array ke dalam:"
 
 msgid "New graph"
 msgstr "Grafik baru"
@@ -192,9 +184,8 @@ msgstr "Pilihan"
 msgid "Open List View..."
 msgstr "Buka Pandangan Daftar..."
 
-#, fuzzy
 msgid "Delete array"
-msgstr "Menghapus Himpunan"
+msgstr "Hapus array"
 
 msgid "Cancel"
 msgstr "Membatalkan"
@@ -227,11 +218,10 @@ msgid "96k"
 msgstr "96k"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Ukuran blok:"
 
-#, fuzzy
 msgid "Use callbacks"
-msgstr "Pakai panggilan balik"
+msgstr "Gunakan callback"
 
 msgid "Input Devices"
 msgstr "Perangkat memasuk"
@@ -253,6 +243,7 @@ msgstr "Menyimpan semua pangaturan"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
+"PERINGATAN: bendera graphme yang tidak dikenal diterima di pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Sifat kanvas"
@@ -261,37 +252,37 @@ msgid "Scale"
 msgstr "Sisik"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "Unit X per piksel:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Unit Y per piksel:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Penampilan di patch induk"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Graph-On-Parent"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "Sembunyikan nama objek dan argumen"
 
 msgid "Range and size"
-msgstr ""
+msgstr "Rentang dan ukuran"
 
 msgid "X range: from"
-msgstr ""
+msgstr "Rentang X: dari"
 
 msgid "to"
 msgstr "sampai"
 
 msgid "Margin:"
-msgstr ""
+msgstr "Batas:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Rentang Y: dari"
 
 msgid "Data Properties"
-msgstr ""
+msgstr "Properti Data"
 
 msgid "Send"
 msgstr "Kirim"
@@ -319,7 +310,6 @@ msgstr "Ini '%1$s' terakhir di %2$s"
 msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr "Ini hal ke-'%1$d' / %2$d hal di %3$s"
 
-#, fuzzy
 msgid "Pd window"
 msgstr "Jendela Pd"
 
@@ -351,9 +341,8 @@ msgstr "X saja"
 msgid "Y only"
 msgstr "Y saja"
 
-#, fuzzy
 msgid "GUI Box Properties"
-msgstr "Sifat kotak GUI"
+msgstr "Properti Kotak GUI"
 
 msgid "Messages"
 msgstr "Pesan"
@@ -404,16 +393,16 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr ""
+msgstr "Waktu Flash (mdtk)"
 
 msgid "Min:"
-msgstr ""
+msgstr "Min:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Maks:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "Beralih"
 
 msgid "Non Zero Value"
 msgstr "Nilai Bukan Nul"
@@ -425,10 +414,10 @@ msgid "Number2"
 msgstr "Angka2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Lebar (digit):"
 
 msgid "Height:"
-msgstr ""
+msgstr "Tinggi:"
 
 msgid "Output Range"
 msgstr ""
