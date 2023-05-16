@@ -450,7 +450,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.tcl -side bottom -fill x
     text .pdwindow.text -relief raised -bd 2 -font [list $::font_family $::pdwindow::font_size] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
-        -yscrollcommand ".pdwindow.scroll set" -width 60 \
+        -yscrollcommand ".pdwindow.scroll set" -width 80 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
     scrollbar .pdwindow.scroll -command ".pdwindow.text.internal yview"
     pack .pdwindow.scroll -side right -fill y
