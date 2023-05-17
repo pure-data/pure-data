@@ -485,7 +485,7 @@ static void m_callbackscheduler(void)
         ts.tv_sec = now.tv_sec + (time_t)timeout;
         ts.tv_nsec = (timeout - (time_t)timeout) * 1000000000;
     #endif
-            /* wait for semaphore (with timeout) */
+            /* sleep on condition variable (with timeout) */
         timewas = pd_this->pd_systime;
         wasinprogress = callback_inprogress;
         if (pthread_cond_timedwait(&sched_cond, &sched_mutex, &ts) == ETIMEDOUT)
