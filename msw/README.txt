@@ -142,3 +142,17 @@ Pd font.
 Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz
 tarball. To build pdfontloader, see https://github.com/pure-data/pdfontloader
 source.
+
+## debug
+
+To avoid stripping symbols out of libtool pre-binaries and debug pd,call configure with --enable-debug and CFLAGS=-g :
+
+./configure --enable-debug CFLAGS=-g
+make
+make app
+
+This will call msw-app.sh with the -n flag (through msw_strip variable)
+
+The call to gdb shall be perform using libtool mode execute :
+libtool --mode=execute gdb --args pd-0.53.1/bin/pd.exe
+
