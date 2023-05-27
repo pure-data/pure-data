@@ -1254,6 +1254,7 @@ typedef struct _undo_canvas_properties
     int gl_screeny1;
     int gl_screenx2;
     int gl_screeny2;
+    t_symbol * gl_wm_state;
     int gl_xmargin;             /* origin for GOP rectangle */
     int gl_ymargin;
 
@@ -1279,6 +1280,7 @@ void *canvas_undo_set_canvas(t_canvas *x)
     buf->gl_screeny1 = x->gl_screeny1;
     buf->gl_screenx2 = x->gl_screenx2;
     buf->gl_screeny2 = x->gl_screeny2;
+    buf->gl_wm_state = x->gl_wm_state;
     buf->gl_xmargin = x->gl_xmargin;
     buf->gl_ymargin = x->gl_ymargin;
     buf->gl_goprect = x->gl_goprect;
@@ -1316,6 +1318,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         tmp.gl_screeny1 = x->gl_screeny1;
         tmp.gl_screenx2 = x->gl_screenx2;
         tmp.gl_screeny2 = x->gl_screeny2;
+        tmp.gl_wm_state = x->gl_wm_state;
         tmp.gl_xmargin = x->gl_xmargin;
         tmp.gl_ymargin = x->gl_ymargin;
         tmp.gl_goprect = x->gl_goprect;
@@ -1333,6 +1336,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         x->gl_screeny1 = buf->gl_screeny1;
         x->gl_screenx2 = buf->gl_screenx2;
         x->gl_screeny2 = buf->gl_screeny2;
+        x->gl_wm_state = buf->gl_wm_state;
         x->gl_xmargin = buf->gl_xmargin;
         x->gl_ymargin = buf->gl_ymargin;
         x->gl_goprect = buf->gl_goprect;
@@ -1350,6 +1354,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         buf->gl_screeny1 = tmp.gl_screeny1;
         buf->gl_screenx2 = tmp.gl_screenx2;
         buf->gl_screeny2 = tmp.gl_screeny2;
+        buf->gl_wm_state = tmp.gl_wm_state;
         buf->gl_xmargin = tmp.gl_xmargin;
         buf->gl_ymargin = tmp.gl_ymargin;
         buf->gl_goprect = tmp.gl_goprect;
@@ -1900,10 +1905,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1), (int)(x->gl_screeny1));
             }
 
-            pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
+            pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                winpos, x->gl_edit);
+                        winpos, x->gl_edit, x->gl_wm_state->s_name);
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {

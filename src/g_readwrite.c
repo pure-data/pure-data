@@ -687,12 +687,13 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
         /* root or abstraction */
     else
     {
-        binbuf_addv(b, "ssiiiii;", gensym("#N"), gensym("canvas"),
+        binbuf_addv(b, "ssiiiiis;", gensym("#N"), gensym("canvas"),
             (int)(x->gl_screenx1),
             (int)(x->gl_screeny1),
             (int)(x->gl_screenx2 - x->gl_screenx1),
             (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)x->gl_font);
+            (int)x->gl_font,
+            x->gl_wm_state);
         canvas_savedeclarationsto(x, b);
     }
     for (y = x->gl_list; y; y = y->g_next)

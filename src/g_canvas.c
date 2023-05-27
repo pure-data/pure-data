@@ -38,6 +38,7 @@ typedef struct _canvas_private
 
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
+#define GLIST_DEFCANVASWMSTATE (gensym("normal"))
 
 /* ---------------------- variables --------------------------- */
 
@@ -48,7 +49,7 @@ t_canvas *canvas_whichfind;         /* last canvas we did a find in */
 static void canvas_start_dsp(void);
 static void canvas_stop_dsp(void);
 static void canvas_drawlines(t_canvas *x);
-static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2);
+static void canvas_dosetbounds(t_canvas *x, t_symbol * wm_state, int x1, int y1, int x2, int y2);
 void canvas_reflecttitle(t_canvas *x);
 static void canvas_addtolist(t_canvas *x);
 static void canvas_takeofflist(t_canvas *x);
@@ -444,6 +445,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     t_canvas *x = (t_canvas *)pd_new(canvas_class);
     t_canvas *owner = canvas_getcurrent();
     t_symbol *s = &s_;
+    t_symbol *wm_state = gensym("normal");
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = GLIST_DEFCANVASXLOC, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
@@ -453,13 +455,21 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         canvas_addtolist(x);
     /* post("canvas %p, owner %p", x, owner); */
 
-    if (argc == 5)  /* toplevel: x, y, w, h, font */
+    if (argc == 5){                                    /* toplevel: x, y, w, h, font */
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
+        font = atom_getfloatarg(4, argc, argv);
+    }
+    else if (argc == 6 && argv[5].a_type == A_SYMBOL)  /* toplevel: x, y, w, h, font, wm_state */
     {
         xloc = atom_getfloatarg(0, argc, argv);
         yloc = atom_getfloatarg(1, argc, argv);
         width = atom_getfloatarg(2, argc, argv);
         height = atom_getfloatarg(3, argc, argv);
         font = atom_getfloatarg(4, argc, argv);
+        wm_state = atom_getsymbolarg(5, argc, argv);
     }
     else if (argc == 6)  /* subwindow: x, y, w, h, name, vis */
     {
@@ -497,7 +507,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_y1 = 0;
     x->gl_x2 = 1;
     x->gl_y2 = 1;
-    canvas_dosetbounds(x, xloc, yloc, xloc + width, yloc + height);
+    canvas_dosetbounds(x, wm_state, xloc, yloc, xloc + width, yloc + height);
     x->gl_owner = owner;
     x->gl_isclone = 0;
     x->gl_name = (*s->s_name ? s :
@@ -607,6 +617,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = GLIST_DEFCANVASWIDTH;
     x->gl_screeny2 = GLIST_DEFCANVASHEIGHT;
+    x->gl_wm_state = GLIST_DEFCANVASWMSTATE;
     x->gl_owner = g;
     canvas_bind(x);
     x->gl_isgraph = 1;
@@ -649,24 +660,32 @@ int glist_isgraph(t_glist *x)
 
     /* This is sent from the GUI to inform a toplevel that its window has been
     moved or resized. */
-static void canvas_setbounds(t_canvas *x, t_float left, t_float top,
-                             t_float right, t_float bottom)
+static void canvas_setbounds(t_canvas *x, t_symbol * wm_state, t_float left, t_float top,
+                             t_float right, t_float bottom )
 {
-    canvas_dosetbounds(x, (int)left, (int)top, (int)right, (int)bottom);
+    canvas_dosetbounds(x, wm_state, (int)left, (int)top, (int)right, (int)bottom);
 }
 
 /* this is the internal version using ints */
-static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
+static void canvas_dosetbounds(t_canvas *x, t_symbol * wm_state, int x1, int y1, int x2, int y2)
 {
     int heightwas = y2 - y1;
     int heightchange = y2 - y1 - (x->gl_screeny2 - x->gl_screeny1);
     if (x->gl_screenx1 == x1 && x->gl_screeny1 == y1 &&
-        x->gl_screenx2 == x2 && x->gl_screeny2 == y2)
+        x->gl_screenx2 == x2 && x->gl_screeny2 == y2 && x->gl_wm_state == wm_state)
             return;
+
     x->gl_screenx1 = x1;
     x->gl_screeny1 = y1;
     x->gl_screenx2 = x2;
     x->gl_screeny2 = y2;
+    x->gl_wm_state = wm_state;
+
+    if (x->gl_wm_state == NULL){
+        pd_error(0, "Error recording wm_state");
+    }
+
+
     if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1))
     {
             /* if it's flipped so that y grows upward,
@@ -1157,8 +1176,8 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
             /* for some reason this is initially called with cw=ch=1 so
             we just suppress that here. */
     if (cw > 5 && ch > 5)
-        canvas_dosetbounds(x, txpix, typix,
-            txpix + cw, typix + ch);
+        canvas_dosetbounds(x, gensym("normal"), txpix, typix,
+                           txpix + cw, typix + ch);
 }
 
 void canvas_popabstraction(t_canvas *x)
@@ -1186,7 +1205,7 @@ void canvas_logerror(t_object *y)
 extern void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 static void *subcanvas_new(t_symbol *s)
 {
-    t_atom a[6];
+    t_atom a[7];
     t_canvas *x, *z = canvas_getcurrent();
 
     if (!*s->s_name) s = gensym("/SUBPATCH/");
@@ -1194,9 +1213,10 @@ static void *subcanvas_new(t_symbol *s)
     SETFLOAT(a+1, GLIST_DEFCANVASYLOC);
     SETFLOAT(a+2, GLIST_DEFCANVASWIDTH);
     SETFLOAT(a+3, GLIST_DEFCANVASHEIGHT);
-    SETSYMBOL(a+4, s);
-    SETFLOAT(a+5, 1);
-    x = canvas_new(0, 0, 6, a);
+    SETSYMBOL(a+4, GLIST_DEFCANVASWMSTATE);
+    SETSYMBOL(a+5, s);
+    SETFLOAT(a+6, 1);
+    x = canvas_new(0, 0, 7, a);
 
         /* check if subpatch is supposed to be connected (on the 1st inlet) */
     if(z && z->gl_editor && z->gl_editor->e_connectbuf)
@@ -2019,9 +2039,9 @@ void g_canvas_setup(void)
         /* we prevent the user from typing "canvas" in an object box
         by sending 0 for a creator function. */
     canvas_class = class_new(gensym("canvas"), 0,
-        (t_method)canvas_free, sizeof(t_canvas),
-            CLASS_NOINLET | CLASS_MULTICHANNEL, 0);
-            /* here is the real creator function, invoked in patch files
+                             (t_method)canvas_free, sizeof(t_canvas),
+                             CLASS_NOINLET | CLASS_MULTICHANNEL, 0);
+        /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
     class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
@@ -2031,7 +2051,7 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_coords,
         gensym("coords"), A_GIMME, 0);
 
-/* -------------------------- objects ----------------------------- */
+        /* -------------------------- objects ----------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_obj,
         gensym("obj"), A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_msg,
@@ -2084,7 +2104,7 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_loadbang,
         gensym("loadbang"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_setbounds,
-        gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+                    gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_relocate,
         gensym("relocate"), A_SYMBOL, A_SYMBOL, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_vis,
@@ -2144,7 +2164,7 @@ void canvas_add_for_class(t_class *c)
     class_addmethod(c, (t_method)canvas_map,
         gensym("map"), A_FLOAT, A_NULL);
     class_addmethod(c, (t_method)canvas_setbounds,
-        gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+                    gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     canvas_editor_for_class(c);
     canvas_readwrite_for_class(c);
     /* g_graph_setup_class(c); */

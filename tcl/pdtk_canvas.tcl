@@ -95,7 +95,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 #------------------------------------------------------------------------------#
 # canvas new/saveas
 
-proc pdtk_canvas_new {mytoplevel width height geometry editable} {
+proc pdtk_canvas_new {mytoplevel width height geometry editable wm_state} {
     if { "" eq $geometry } {
         # no position set: this is a new window (rather than one loaded from file)
         # we set a flag here, so we can query (and report) the actual geometry,
@@ -124,6 +124,10 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     if { "" != ${geometry} } {
         wm geometry $mytoplevel $geometry
     }
+    if { "" != ${wm_state} } {
+        wm state $mytoplevel $wm_state
+    }
+
     wm minsize $mytoplevel $::canvas_minwidth $::canvas_minheight
 
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -340,6 +344,7 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
     if { "" ne [array names ::pdtk_canvas::geometry_needs_init $mytoplevel ] } {
         array unset ::pdtk_canvas::geometry_needs_init $mytoplevel
         scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+        set wm_state [wm state $mytoplevel]
         # on X11, 'wm geometry' won't report a useful position until the window was moved
         # but 'winfo geometry' does (though slightly off, but we ignore this offset
         # for newly created, never moved windows)
@@ -347,7 +352,7 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
         # they report the same for 'wm geometry' and 'winfo geometry'
         if { "+$x+$y" eq "+0+0" } {
             scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
-            pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+            pdsend "$mytoplevel setbounds ${wm_state} $x $y [expr $x + $width] [expr $y + $height]"
         }
     }
 }

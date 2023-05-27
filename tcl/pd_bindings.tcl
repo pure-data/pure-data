@@ -349,18 +349,24 @@ proc ::pd_bindings::patch_unmap {mytoplevel} {
 }
 
 proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
+    set wm_state [wm state $mytoplevel]
+
     if {$width == 1 || $height == 1} {
         # make sure the window is fully created
         update idletasks
     }
+
     # the geometry we receive from the callback is really for the frame
     # however, we need position including the border decoration
     # as this is how we restore the position
     scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
-    # send the size/location of the window and canvas to 'pd' in the form of:
-    #    left top right bottom
-    pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+
+    # send the size/location status of the window and canvas to 'pd' in the form of:
+    #    left top right bottom status
+
+    pdsend "$mytoplevel setbounds $wm_state $x $y [expr $x + $width] [expr $y + $height]"
 }
 
 proc ::pd_bindings::patch_destroy {window} {
