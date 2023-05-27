@@ -59,6 +59,7 @@ PD_LDFLAGS=""
 PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
 PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
 
+
 AS_CASE([$host],
 [*darwin*],[
     AS_IF([test "x${IPHONEOS}" = "xno"],[
@@ -133,7 +134,6 @@ AS_CASE([$host],
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
     EXTERNAL_EXTENSION=dll
 
     # workaround for rpl_malloc/rpl_realloc bug in autoconf when cross-compiling
@@ -274,6 +274,8 @@ AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_CFLAGS])
 AC_SUBST([JACK_LIBS])
 
+AC_SUBST([msw_strip])
+
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
@@ -287,6 +289,14 @@ AS_IF([test x$debug = xyes],[
     PD_CFLAGS="$RELEASE_CFLAGS $PD_CFLAGS"
     PD_CPPFLAGS="-DNDEBUG $PD_CPPFLAGS"
 ])
+
+AS_IF([test "x${debug}" = "xyes" -a "x${WINDOWS}" = "xyes" ],[
+    msw_strip="-n"
+    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -lpd"
+    ],[
+    msw_strip=""
+    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
+    ])
 
 ##### macOS version min #####
 AS_IF([test "x$macos_version_min" != "x"],[
