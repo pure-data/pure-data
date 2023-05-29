@@ -685,7 +685,6 @@ static void canvas_dosetbounds(t_canvas *x, t_symbol * wm_state, int x1, int y1,
         pd_error(0, "Error recording wm_state");
     }
 
-
     if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1))
     {
             /* if it's flipped so that y grows upward,
@@ -1177,7 +1176,7 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
             we just suppress that here. */
     if (cw > 5 && ch > 5)
         canvas_dosetbounds(x, gensym("normal"), txpix, typix,
-                           txpix + cw, typix + ch);
+            txpix + cw, typix + ch);
 }
 
 void canvas_popabstraction(t_canvas *x)
@@ -2039,9 +2038,9 @@ void g_canvas_setup(void)
         /* we prevent the user from typing "canvas" in an object box
         by sending 0 for a creator function. */
     canvas_class = class_new(gensym("canvas"), 0,
-                             (t_method)canvas_free, sizeof(t_canvas),
-                             CLASS_NOINLET | CLASS_MULTICHANNEL, 0);
-        /* here is the real creator function, invoked in patch files
+        (t_method)canvas_free, sizeof(t_canvas),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, 0);
+            /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
     class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
@@ -2051,7 +2050,7 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_coords,
         gensym("coords"), A_GIMME, 0);
 
-        /* -------------------------- objects ----------------------------- */
+/* -------------------------- objects ----------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_obj,
         gensym("obj"), A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_msg,
@@ -2104,7 +2103,7 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_loadbang,
         gensym("loadbang"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_setbounds,
-                    gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+        gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_relocate,
         gensym("relocate"), A_SYMBOL, A_SYMBOL, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_vis,
@@ -2164,7 +2163,7 @@ void canvas_add_for_class(t_class *c)
     class_addmethod(c, (t_method)canvas_map,
         gensym("map"), A_FLOAT, A_NULL);
     class_addmethod(c, (t_method)canvas_setbounds,
-                    gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+        gensym("setbounds"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     canvas_editor_for_class(c);
     canvas_readwrite_for_class(c);
     /* g_graph_setup_class(c); */

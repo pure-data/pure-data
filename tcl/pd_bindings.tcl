@@ -362,10 +362,8 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
 
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
-
     # send the size/location status of the window and canvas to 'pd' in the form of:
-    #    left top right bottom status
-
+    #    status left top right bottom 
     pdsend "$mytoplevel setbounds $wm_state $x $y [expr $x + $width] [expr $y + $height]"
 }
 

@@ -1908,7 +1908,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                        winpos, x->gl_edit, x->gl_wm_state->s_name);
+                winpos, x->gl_edit, x->gl_wm_state->s_name);
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {

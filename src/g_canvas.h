@@ -176,9 +176,7 @@ struct _glist
     int gl_screeny1;
     int gl_screenx2;
     int gl_screeny2;
-
     t_symbol * gl_wm_state;     /* wm state */
-
     int gl_xmargin;                /* origin for GOP rectangle */
     int gl_ymargin;
     t_tick gl_xtick;            /* ticks marking X values */

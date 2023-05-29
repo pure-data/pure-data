@@ -1477,7 +1477,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
         pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
     else
     {
-        /* save bindings of symbols #N, #A (and restore afterward) */
+            /* save bindings of symbols #N, #A (and restore afterward) */
         t_pd *bounda = gensym("#A")->s_thing, *boundn = s__N.s_thing;
         gensym("#A")->s_thing = 0;
         s__N.s_thing = &pd_canvasmaker;
