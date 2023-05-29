@@ -145,14 +145,11 @@ source.
 
 ## debug
 
-To avoid stripping symbols out of libtool pre-binaries and debug pd,call configure with --enable-debug and CFLAGS=-g :
+If you intend to debug Pd, you probably want an unoptimized build with debug symbols. This can be achieved with the following flags:
 
-./configure --enable-debug CFLAGS=-g
+./configure --enable-debug CFLAGS="-g -O0"
 make
 make app
 
-This will call msw-app.sh with the -n flag (through msw_strip variable)
-
-The call to gdb shall be perform using libtool mode execute :
-libtool --mode=execute gdb --args pd-0.53.1/bin/pd.exe
+This will call msw-app.sh with the -n flag, preventing it from stripping the debug symbols
 
