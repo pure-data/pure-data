@@ -15,7 +15,7 @@
  * member in our object which in turn is polled regularly with a clock.
  * Generally, you should avoid references to shared state, as it can easily
  * introduce data races, but here it is the only way to achieve our goal.
- * Note that we have to call task_cancel() with sync=1!
+ * Note that we have to call task_stop() with sync=1!
  */
 
 #include "m_pd.h"
@@ -140,7 +140,7 @@ static void taskobj_read_callback(t_taskobj *x, t_read_data *y)
     {
         post("taskobj: task has been cancelled");
             /* free any file data to avoid a memory leak!
-             * NB: we could use task_sched() to defer resource cleanup
+             * NB: we could use task_start() to defer resource cleanup
              * to the worker thread, but this is omitted for brevity. */
         if (y->data)
             free(y->data);
@@ -176,7 +176,7 @@ static void taskobj_read(t_taskobj *x, t_symbol *file, t_floatarg ms)
         /* store file name */
     snprintf(y->filepath, sizeof(y->filepath), "%s", file->s_name);
         /* schedule task and store task handle */
-    x->x_task = task_sched((t_pd *)x, y, (t_task_workfn)taskobj_read_workfn,
+    x->x_task = task_start((t_pd *)x, y, (t_task_workfn)taskobj_read_workfn,
         (t_task_callback)taskobj_read_callback);
 }
 
@@ -337,12 +337,12 @@ static void taskobj_cancel(t_taskobj *x)
                 /* since t_progress_data contains a reference
                  * to our object ("volatile float *progress"),
                  * we have to synchronize with the worker thread! */
-            task_cancel(x->x_task, 1);
+            task_stop(x->x_task, 1);
             x->x_progress = -1;
             clock_unset(x->x_clock);
         }
         else /* "read" or "download" method: no need to synchronize */
-            task_cancel(x->x_task, 0);
+            task_stop(x->x_task, 0);
             /* don't forget to unset the task handle! */
         x->x_task = 0;
     }

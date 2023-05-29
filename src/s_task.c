@@ -14,7 +14,7 @@
  * For Pd external authors:
  * --------------------------------------------------------------------------------
  *
- * t_task *task_sched(t_pd *owner, void *data, task_workfn workfn, task_callback cb)
+ * t_task *task_start(t_pd *owner, void *data, task_workfn workfn, task_callback cb)
  *
  * description: schedule a new task.
  *
@@ -30,7 +30,7 @@
  *    to shared state. Instead, treat the data object as a message that is exchanged
  *    between your Pd object and the task system.
  *    NOTE: In the rare case where you do need to access shared state, make sure
- *    to call task_cancel() with sync=1! For an example, see the "progress" method
+ *    to call task_stop() with sync=1! For an example, see the "progress" method
  *    in "doc/6.externs/taskobj.c".
  * 3) (task_workfn) workfn: a function to be called in the background.
  *    You would typically read from 'data', perform some operations and store
@@ -46,26 +46,30 @@
  *
  * returns: a handle to the new task.
  *    Store the handle in your object, so that you are able to cancel the task
- *    later if needed, see task_cancel().
+ *    later if needed, see task_stop().
  *    ***IMPORTANT***: do not try to use the task handle after the task has finished;
  *    typically you would unset the task handle in the callback function.
  *
  * NOTE: the order in which tasks are executed is undefined! Implementations might
- * use multiple worker threads which execute task concurrently.
+ * use multiple worker threads which execute tasks concurrently.
  *
  * --------------------------------------------------------------------------------
  *
  * t_task *task_spawn(t_pd *owner, void *data, task_workfn workfn, task_callback cb)
  *
  * description: spawn a new task
- *    This function behaves just like task_sched(), except it runs the worker
+ *    This function behaves just like task_start(), except that it runs the worker
  *    function in its own thread, so that other tasks can run concurrently.
  *    Use this if a task might take a long time - let's say more than 1 second
  *    - and you cannot use asynchronous I/O with task_suspend() + task_resume().
  *
+ *    You may also use this for long-running operations; in this case, task_spawn()
+ *    and task_stop() basically act as replacements for low-level threading functions,
+ *    pthread_create() and pthread_join().
+ *
  * ---------------------------------------------------------------------------------
  *
- * int task_cancel(t_task *task, int sync)
+ * int task_stop(t_task *task, int sync)
  *
  * description: cancel a given task.
  *     You always have to call this in the object destructor to cancel any pending
@@ -193,7 +197,7 @@
  * If PD_WORKERTHREADS is 0, tasks are executed on the audio/scheduler thread.
  * This is intended to support single threaded systems. To maintain the same
  * semantics as the threaded implementation (the callback is guaranteed to run
- * after task_sched() has returned), we can't just execute tasks and its callbacks
+ * after task_start() has returned), we can't just execute tasks and its callbacks
  * synchronously; instead we have to put them on a queue where they are popped and
  * dispatch with the next scheduler tick. */
 
@@ -387,7 +391,7 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
         if (task)
         {
         do_task:
-                /* increment with mutex locked, see task_cancel() */
+                /* increment with mutex locked, see task_stop() */
             atomic_increment(&queue->tq_pending);
             tasklist_unlock(fromsched);
 
@@ -405,7 +409,7 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
                     is already fully resumed at this point, see task_resume() */
                 if (--task->t_suspend == 0) /* fully resumed */
                 {
-                        /* decrement with mutex locked, see task_cancel() */
+                        /* decrement with mutex locked, see task_stop() */
                     if (atomic_decrement(&queue->tq_pending) < 0)
                         fprintf(stderr, "bug: negative pending task count\n");
                     if (task->t_workfn && !task->t_cancel) /* continue */
@@ -423,13 +427,13 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
             {
                 if (task->t_suspend < 0)
                     fprintf(stderr, "bug: negative task suspend count\n");
-                    /* decrement with mutex locked, see task_cancel() */
+                    /* decrement with mutex locked, see task_stop() */
                 if (atomic_decrement(&queue->tq_pending) < 0)
                     fprintf(stderr, "bug: negative pending task count\n");
                     /* move task back to scheduler */
                 tasklist_push(tosched, task);
                     /* notify the scheduler thread because it might
-                    be waiting in task_cancel() */
+                    be waiting in task_stop() */
                 tasklist_notify(tosched);
             }
             tasklist_unlock(tosched);
@@ -620,7 +624,7 @@ void taskqueue_poll(void)
 #endif
 }
 
-t_task *task_sched(t_pd *owner, void *data,
+t_task *task_start(t_pd *owner, void *data,
     t_task_workfn workfn, t_task_callback cb)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
@@ -728,15 +732,15 @@ t_task *task_spawn(t_pd *owner, void *data,
         d->workfn = workfn;
         d->cb = cb;
         d->data = data;
-        return task_sched(owner, d, (t_task_workfn)task_spawn_workfn,
+        return task_start(owner, d, (t_task_workfn)task_spawn_workfn,
             (t_task_callback)task_spawn_callback);
     }
 #endif /* PD_WORKERTHREADS */
         /* just run synchronously */
-    return task_sched(owner, data, workfn, cb);
+    return task_start(owner, data, workfn, cb);
 }
 
-int task_cancel(t_task *task, int sync)
+int task_stop(t_task *task, int sync)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
     task->t_cancel = 1;
@@ -775,7 +779,7 @@ int task_cancel(t_task *task, int sync)
                 tasklist_wait(tosched);
             else
             {
-                pd_error(0, "task_cancel: could not find task");
+                pd_error(0, "task_stop: could not find task");
                 break;
             }
         }
@@ -849,7 +853,7 @@ void task_resume(t_task *task, t_task_workfn workfn)
             instead, it will be handled later in taskqueue_perform(). */
         if (--task->t_suspend == 0) /* fully resumed */
         {
-                /* decrement with mutex locked, see task_cancel() */
+                /* decrement with mutex locked, see task_stop() */
             if (atomic_decrement(&queue->tq_pending) < 0)
                 fprintf(stderr, "bug: negative pending task count\n");
                 /* NB: don't reschedule if the taskqueue has been stopped! */

@@ -591,9 +591,9 @@ typedef void (*t_task_workfn)(t_task *task, void *data);
 typedef void (*t_task_callback)(t_pd *owner, void *data);
 
 /* see s_task.c for documentation */
-EXTERN t_task *task_sched(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
+EXTERN t_task *task_start(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
 EXTERN t_task *task_spawn(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
-EXTERN int task_cancel(t_task *task, int sync);
+EXTERN int task_stop(t_task *task, int sync);
 EXTERN int task_check(t_task *task);
 EXTERN void task_suspend(t_task *task);
 EXTERN void task_resume(t_task *task, t_task_workfn);
