@@ -11,6 +11,9 @@
 #define BIGFLOAT 1.0e+19
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
 
 #if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
     || defined(__OpenBSD__)
@@ -204,15 +207,23 @@ static void cos_dsp(t_cos *x, t_signal **sp)
 static void cos_maketable(void)
 {
     int i;
-    float *fp, phase, phsinc = (2. * 3.14159) / COSTABSIZE;
+    double phase, phsinc = (2.0 * M_PI) / COSTABSIZE;
+    float *fp;
     union tabfudge tf;
 
     if (cos_table) return;
-    cos_table = (float *)getbytes(sizeof(float) * (COSTABSIZE+1));
-    for (i = COSTABSIZE + 1, fp = cos_table, phase = 0; i--;
-        fp++, phase += phsinc)
-            *fp = cos(phase);
-
+     cos_table = (float *)getbytes(sizeof(float) * (COSTABSIZE+1));
+	phase = 0;
+	fp = cos_table;
+	for (i = COSTABSIZE/4; i--; fp++, phase += phsinc)
+		*fp = (float)cos(phase);
+	*fp++ = 0.;
+	for (i = COSTABSIZE/4; i--; fp++)
+		*fp = -cos_table[i];
+	for (i = COSTABSIZE/2; i--; fp++)
+		*fp = cos_table[i];
+	
+		
         /* here we check at startup whether the byte alignment
             is as we declared it.  If not, the code has to be
             recompiled the other way. */
