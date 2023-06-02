@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pd docs</title>
+<style>
+BODY {
+	background:  #ffffff;
+	color: 	     #000000;
+	font-family: Georgia, serif;
+	font-size:   12.7pt;
+	line-height: 1.6;
+}
+
+#corpus {
+	width: 	    6.5in;
+	margin-left: 0.8in;
+}
+
+H1, H2, H3, H4, H5, H6, ol, ul, mark, p, PRE {
+	color: #3E4349;
+}
+
+H1, H2 {
+	text-align:  center;
+	font-weight: normal;
+}
+
+/* standard link */
+
+a:link {
+    text-decoration: none;
+	color: #006699;
+}
+
+a:visited {
+    text-decoration: none;
+	color: #006699;
+}
+
+a:hover {
+
+	background-color:#eeeee4;
+}
+
+a:active {
+    text-decoration: none;
+	color: blue;
+}
+</style>
+</head>
+<body>
+<div id=corpus>
+<h1>Pd docs.</h1>
+<p>Pd has not been built yet or it was built without local HTML docs. </p>
+<p>See files at:</p>
+<ul>
+  <li><a href="javascript:openfolder1()"><span id=markdownfolder>open folder</span></a></li>
+</ul>
+<p>or</p>
+<ul>
+  <li>browse to the latests on-line version
+  <a href="http://msp.ucsd.edu/Pd_documentation/">here</a>
+  </li>
+</ul>
+</div>
+</body>
+<script>
+
+  var foo = window.location.href
+  var foo1 = foo.replace("file:///","");
+  var foo2 = foo1.replace("index.htm","");
+  var foo3 = "markdown"
+  document.getElementById("markdownfolder").innerHTML = foo2+foo3
+
+  var folder = foo.replace("index.htm","");
+  var folder1 = folder+foo3
+
+  function openfolder1()
+  {
+    window.location.href = folder1
+  }
+
+</script>
+</html>

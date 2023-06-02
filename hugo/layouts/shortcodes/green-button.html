@@ -1,0 +1,1 @@
+{{ $foo := .Get 0}}{{ $foo2 := .Get 1 | anchorize}}{{ $foo3 := .Get 2 | anchorize}}{{ $foo4 := printf "%s.html#%s" $foo2 $foo3 }}<a class="green" href="{{$foo4}}">{{$foo}}</a>

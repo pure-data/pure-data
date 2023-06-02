@@ -1,0 +1,11 @@
+baseURL = '/'
+languageCode = 'en-us'
+title = 'Pd Manual'
+
+disableKinds = ["taxonomy", "taxonomyTerm", "sitemap", "RSS"]
+
+relativeURLs = 'true'
+
+uglyurls = 'true'
+
+contentDir="markdown"

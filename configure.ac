@@ -337,6 +337,14 @@ AS_IF([test x$locales = xyes],[
 ])
 AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
+AC_CHECK_PROG([HUGO], [hugo], yes, no)
+HUGO_ROFLAGS=""
+AS_IF([hugo --help 2>&1 | grep -- --noBuildLock >/dev/null],
+  [HUGO_ROFLAGS="${HUGO_ROFLAGS} --noBuildLock"]
+)
+AC_SUBST([HUGO_ROFLAGS])
+AM_CONDITIONAL(HUGO, [test x$HUGO = xyes])
+
 ##### OSS #####
 # Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
 # includes OSS for UNIX
@@ -583,6 +591,7 @@ AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
                 font/Makefile
+                hugo/GNUmakefile
                 linux/Makefile
                 mac/Makefile
                 man/Makefile

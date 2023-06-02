@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ block "title" . }}{{ end }}</title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link rel="stylesheet" type="text/css" href="{{ "x/css/pdmanual.css" | absURL }}" media="screen">
+	<link rel="icon" type="image/png" href="{{ "x/favicon.ico" | absURL }}">
+  </head>
+  <body>
+    <div id=corpus>
+      <main>{{ block "main" . }}{{ .Content }}{{ end}}</main>
+    </div>
+  </body>
+</html>

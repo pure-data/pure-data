@@ -51,62 +51,76 @@ empty=
 # these files go into libpddir defined above
 # to regenerate:
 # cd doc
-# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+# ./fill.sh
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
-     ./1.manual/deken.gif \
-     ./1.manual/favicon.ico \
-     ./1.manual/fig1.1.png \
-     ./1.manual/fig1.2.jpg \
-     ./1.manual/fig1.3.jpg \
-     ./1.manual/fig1.4.png \
-     ./1.manual/fig1.5.jpg \
-     ./1.manual/fig11.1.png \
-     ./1.manual/fig11.2.png \
-     ./1.manual/fig11.3.png \
-     ./1.manual/fig11.4.png \
-     ./1.manual/fig3.1.jpg \
-     ./1.manual/fig3.10.jpg \
-     ./1.manual/fig3.2.jpg \
-     ./1.manual/fig3.3.jpg \
-     ./1.manual/fig3.4.jpg \
-     ./1.manual/fig3.5.jpg \
-     ./1.manual/fig3.6.jpg \
-     ./1.manual/fig3.7.jpg \
-     ./1.manual/fig3.8.jpg \
-     ./1.manual/fig3.9.jpg \
-     ./1.manual/fig4.1.png \
-     ./1.manual/fig4.2.png \
-     ./1.manual/fig4.3.png \
-     ./1.manual/fig4.4.png \
-     ./1.manual/fig4.5.png \
-     ./1.manual/fig4.6.png \
-     ./1.manual/fig4.7.png \
-     ./1.manual/fig7.1.jpg \
-     ./1.manual/fig7.2.jpg \
-     ./1.manual/fig7.3.jpg \
-     ./1.manual/fig7.4.jpg \
-     ./1.manual/fig7.5.jpg \
-     ./1.manual/fig7.6.jpg \
-     ./1.manual/fig8.1.jpg \
-     ./1.manual/fig8.2.jpg \
-     ./1.manual/fig8.3.jpg \
-     ./1.manual/fig8.4.jpg \
-     ./1.manual/fig8.5.jpg \
-     ./1.manual/fig8.6.jpg \
-     ./1.manual/fig9.1.jpg \
-     ./1.manual/fig9.2.jpg \
-     ./1.manual/fig9.3.jpg \
+     ./1.manual/html/current-status.html \
+     ./1.manual/html/expr.html \
+     ./1.manual/html/externals.html \
+     ./1.manual/html/fudi.html \
+     ./1.manual/html/getting-pd-to-run.html \
+     ./1.manual/html/index.html \
+     ./1.manual/html/installing-from-source.html \
+     ./1.manual/html/introduction.html \
+     ./1.manual/html/more-bsd.html \
+     ./1.manual/html/more-macos.html \
+     ./1.manual/html/more-windows.html \
+     ./1.manual/html/slop-tilde.html \
+     ./1.manual/html/theory-of-operation.html \
+     ./1.manual/html/x/css/pdmanual.css \
+     ./1.manual/html/x/favicon.ico \
+     ./1.manual/html/x/img/deken.gif \
+     ./1.manual/html/x/img/fig1.1.png \
+     ./1.manual/html/x/img/fig1.2.jpg \
+     ./1.manual/html/x/img/fig1.3.jpg \
+     ./1.manual/html/x/img/fig1.4.png \
+     ./1.manual/html/x/img/fig1.5.jpg \
+     ./1.manual/html/x/img/fig11.1.png \
+     ./1.manual/html/x/img/fig11.2.png \
+     ./1.manual/html/x/img/fig11.3.png \
+     ./1.manual/html/x/img/fig11.4.png \
+     ./1.manual/html/x/img/fig3.1.jpg \
+     ./1.manual/html/x/img/fig3.10.jpg \
+     ./1.manual/html/x/img/fig3.2.jpg \
+     ./1.manual/html/x/img/fig3.3.jpg \
+     ./1.manual/html/x/img/fig3.4.jpg \
+     ./1.manual/html/x/img/fig3.5.jpg \
+     ./1.manual/html/x/img/fig3.6.jpg \
+     ./1.manual/html/x/img/fig3.7.jpg \
+     ./1.manual/html/x/img/fig3.8.jpg \
+     ./1.manual/html/x/img/fig3.9.jpg \
+     ./1.manual/html/x/img/fig4.1.png \
+     ./1.manual/html/x/img/fig4.2.png \
+     ./1.manual/html/x/img/fig4.3.png \
+     ./1.manual/html/x/img/fig4.4.png \
+     ./1.manual/html/x/img/fig4.5.png \
+     ./1.manual/html/x/img/fig4.6.png \
+     ./1.manual/html/x/img/fig4.7.png \
+     ./1.manual/html/x/img/fig7.1.jpg \
+     ./1.manual/html/x/img/fig7.2.jpg \
+     ./1.manual/html/x/img/fig7.3.jpg \
+     ./1.manual/html/x/img/fig7.4.jpg \
+     ./1.manual/html/x/img/fig7.5.jpg \
+     ./1.manual/html/x/img/fig7.6.jpg \
+     ./1.manual/html/x/img/fig8.1.jpg \
+     ./1.manual/html/x/img/fig8.2.jpg \
+     ./1.manual/html/x/img/fig8.3.jpg \
+     ./1.manual/html/x/img/fig8.4.jpg \
+     ./1.manual/html/x/img/fig8.5.jpg \
+     ./1.manual/html/x/img/fig8.6.jpg \
+     ./1.manual/html/x/img/fig9.1.jpg \
+     ./1.manual/html/x/img/fig9.2.jpg \
+     ./1.manual/html/x/img/fig9.3.jpg \
+     ./1.manual/html/x/slop-tilde/slop-compander-patch.png \
+     ./1.manual/html/x/slop-tilde/slop-peak-meter-graph.png \
+     ./1.manual/html/x/slop-tilde/slop-peak-meter-patch.png \
+     ./1.manual/html/x/slop-tilde/slop-slew-limit.png \
+     ./1.manual/html/x/slop-tilde/slop-slew-limiting-patch.png \
+     ./1.manual/html/x/slop-tilde/slop-tilde-1-curves.png \
+     ./1.manual/html/x/x-index \
+     ./1.manual/html/x/z-index \
      ./1.manual/index.htm \
-     ./1.manual/pdmanual.css \
-     ./1.manual/x1.htm \
-     ./1.manual/x2.htm \
-     ./1.manual/x3.htm \
-     ./1.manual/x4.htm \
-     ./1.manual/x5.htm \
-     ./1.manual/x6.htm \
-     ./1.manual/x6-a.htm \
-     ./1.manual/x6-b.htm \
+     ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
      ./2.control.examples/03.connections.pd \
@@ -292,7 +306,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
-     ./5.reference/pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
@@ -367,6 +380,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/osc-format-parse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/pack-help.pd \
+     ./5.reference/pd-messages.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
@@ -488,7 +502,6 @@ nobase_dist_libpd_DATA = \
      ./8.topics/slop-slew-limiting-patch.png \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
-     ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice.wav \
      ./sound/voice2.wav \

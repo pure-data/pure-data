@@ -1,0 +1,564 @@
+---
+title: installing from source
+---
+
+## Pd Manual: Installing from source.
+
+[back to table of contents](index.html)
+
+
+Pd is built on the commandline using traditional Unix-style tools. The
+source distribution comes with two build systems:
+
+-   autotools: easy to use, many compilation options, recommended for
+    most users
+-   makefile: smaller & simpler, used for Pd binary downloads
+
+### Requirements
+
+Core build requirements:
+
+-   Unix command shell: bash, dash, etc
+-   C compiler chain: gcc/clang & make
+
+Core runtime requirements:
+
+-   Tcl/Tk: Tk wish shell
+
+Optional features:
+
+-   autotools: autoconf, automake, & libtool (if building with the
+    autotools)
+-   gettext: build localizations in the po directory
+-   JACK: audio server support
+-   FFTW: use the optimized FFTW Fast Fourier Transform library
+
+### Autotools Build (recommended)
+
+Building Pd using the GNU autotools involves the following steps for all
+platforms:
+
+  1. configure: detect & set library and platform options
+  1. make: compile Pd, associated tools, and resource files (ie.
+    translations)
+  1. install: install the Pd binaries and resources onto your system
+
+Overview:
+
+    cd path/to/pd
+    ./autogen.sh
+    ./configure
+    make
+
+Note: Additional platform-specific options and build targets are listed
+in following subsections.
+
+Start by opening a commandline shell and navigating to the Pd source
+directory:
+
+    cd path/to/pd
+
+First generate the configure script and various build files by running:
+
+    ./autogen.sh
+
+Next configure Pd with the default options for your platform:
+
+    ./configure
+
+You can verify the configuration options that the configure step script
+prints:
+
+    pd 0.47.1 is now configured
+
+    Platform:             Mac OSX
+    Debug build:          no
+    Universal build:      no
+    Localizations:        no
+    Source directory:     .
+    Installation prefix:  /usr/local
+
+    ...
+
+    audio APIs:           PortAudio
+    midi APIs:            PortMidi
+
+If you want to change these options, you can specify/override the
+configure script settings on the commandline:
+
+    # change install prefix to /usr
+    ./configure --prefix /usr
+
+    # build Pd with the JACK audio server backend
+    ./configure --enable-jack
+
+    # build Pd using a system installed PortAudio
+    ./configure --without-local-portaudio
+
+The default build will do some moderate optimization.
+This can be tuned with the "--enable-optimizations" flag, which will tell the
+compiler to optimize for speed more aggressively (even at the cost of incorrect
+math operations).
+
+    # build with speed optimizations
+    ./configure --enable-optimizations
+
+If things go wrong and you need to run Pd through a debugger (like gdb), you can
+build Pd with debugging symbols using the "--enable-debug" flag.
+It's possible to specify both the "--enable-debug" and "--enable-optimizations"
+flags, which will build a optimized binary with debug symbols. However, the
+optimizer might mangle the source code in a way, that makes the debugging
+information less useful than you would wish for.
+If in doubt, disable optimizations when enabling the debug build.
+
+    # build Pd with debugging information
+    ./configure --enable-debug
+
+An important configure option for some platforms is --enable-universal
+which allows you to specify the desired architecture(s) when building
+Pd. For Intel and AMD processors, 32 bit is called "i386" and 64 bit
+is "x86_64". By default, Pd is built for the architecture of the
+current system, however you may want a 32 bit Pd to work with existing
+32 bit externals on a 64 bit system. You can override the defaults with
+--enable-universal:
+
+    # build 32 bit Pd
+    ./configure --enable-universal=i386
+
+    # build 64 bit Pd
+    ./configure --with-universal=x86_64
+
+The full list of available configuration options can printed by running:
+
+    ./configure --help
+
+Now that Pd is configured, build by running:
+
+    make
+
+Building should take a minute or two. If compilation was successful, you
+can run Pd from the build directory without installing it:
+
+    cd bin
+    ./pd
+
+To install to your system using the configuration prefix (default
+/usr/local):
+
+    sudo make install
+
+You can also to a custom location via:
+
+    make install DESTDIR=~/pd-xxx prefix=/
+
+Once installed, you should now be able to run Pd from the commandline:
+
+    pd
+
+If want to uninstall, make sure Pd is configured and then run:
+
+    sudo make uninstall
+
+If you compiled Pd using the --enable-universal configure option and
+want to double check which architectures Pd was built with, use the
+"file" command:
+
+    # examine binary in the src directory
+    file src/pd
+    ...
+    src/pd: Mach-O 64-bit executable x86_64
+
+    # look at pd inside a macOS .app bundle
+    file Pd.app/Contents/Resources/bin/pd
+    ...
+    Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64
+
+### Linux & BSD
+
+Platform requirements:
+
+-   ALSA: Linux sound library (recommended)
+-   OSS: historical precursor to ALSA, generally not used
+-   JACK: JACK audio server (optional)
+
+Install the core build requirements using your distribution's package
+manager. For Debian, you can install the compiler chain, autotools, &
+gettext with:
+
+    sudo apt-get install build-essential automake autoconf libtool gettext
+
+For libraries, you will need to install the "development" versions
+which include the source code header files. In Debian, the ALSA
+development package is called "libasound2-dev":
+
+    sudo apt-get install libasound2-dev
+
+Similarly, optional development libraries can be also be installed to
+for additional features. Install the JACK development files on Debian:
+
+    sudo apt-get install libjack-jackd2-dev
+
+In case you are using jackd1 instead of jackd2, use:
+
+    sudo apt-get install libjack-dev
+
+Most distributions come with Tcl/Tk installed, so you should be able to
+run Pd after it is built.
+
+Once your build system is set up, you can follow the general autotools
+build steps to build Pd.
+
+For more information and how to build on BSD see:
+
+{{< green-button "Show more on BSD" "more-bsd" "">}}
+
+### macOS
+
+macOS is built on top of a BSD system and the bash commandline can be
+accessed with the Terminal application in the /Applications/Utility
+directory.
+
+The clang compiler and associated tools are provided by Apple. If you
+are running macOS 10.9+, you *do not* need to install the full Xcode
+application and can install the Commandline Tools Package only by
+running the following:
+
+    xcode-select --install
+
+If you are running macOS 10.6 - 10.8, you will need to install Xcode
+from the Mac App Store or downloaded from
+[http://developer.apple.com](http://developer.apple.com)
+
+Tcl/Tk is already included macOS.
+
+To install the autotools, gettext, and libraries for additional
+features, you can use one of the open source package managers for macOS:
+
+-   homebrew: [https://brew.sh](https://brew.sh)
+    (recommended)
+-   macports:
+    [https://www.macports.org](https://www.macports.org)
+
+Follow the package manager set up instructions and then install the
+software you need. For example, to install the autotools & gettext using
+Homebrew:
+
+    brew install automake autoconf libtool pkg-config gettext
+    brew link --force gettext
+
+
+By default, Pd is built for the current system architecture, usually 
+64 bit. If you want to override this you can use the --enable-universal 
+configure option which allows you to specify the desired architecture(s) 
+when building Pd. For Intel/AMD processors, 32 bit is called "i386"
+and 64 bit is "x86_64". For Apple Silicon processors (M1, M2, etc), 
+the 64 bit architecture is called "arm64". By default, Pd is built 
+for the architecture of the current system, however you may want a 32 bit Pd 
+to work with existing 32 bit externals on a 64 bit system. You can override 
+the defaults with --enable-universal: you want to override this you can use 
+the --enable-universal configure option, as mentioned in the main Autotools 
+Build section. On macOS, running this option without arguments will build 
+a "fat" Pd for all architectures supported by the compiler:
+
+
+-   macOS 10.6: i386, x86_64, ppc
+-   macOS 10.7+: i386, x86_64
+-   macOS 10.15: x86_64
+-   macOS 11+: x86_64, arm64
+
+Note: a "fat" Pd may not work on all systems and/or be able to load
+both 32 or 64 bit externals. Additionally, you can specify multiple
+architectures directly:
+
+    # build a "fat" Pd for both 32 and 64 bit Intel
+    # may not work on all systems
+    ./configure --enable-universal=i386,x86_64
+
+    # build a "fat" Pd for all detected architectures (macOS: i386, x86_64, ppc)
+    # may not work on all systems
+    ./configure --enable-universal
+
+
+The JACK audio server is supported by Pd on macOS. By default, Pd can use either
+the offical 64-bit builds for macOS 10.12+ from [https://jackaudio.org](https://jackaudio.org) or the
+older, 32-bit Jack OS X runtime framework if one is installed on the system.
+Optionally, Pd can also be built with Jack installed via Homebrew or Macports,
+however the runtime framework support must be disabled:
+
+    brew install jack
+    ./configure --disable-jack-framework --enable-jack
+
+You should now be ready to build Pd by following the general autotools
+build steps. Once built, there are two options for installation:
+
+-   build a standalone macOS application (recommended)
+-   install to your system as a commandline program
+
+To build the Pd macOS application, simply run:
+
+    make app
+
+This builds Pd-#.##.#.app in the Pd source directory which can be then
+be double-clicked and/or copied to /Applications. For more info &
+options regarding the Pd .app bundle, see [macOS resources]({{< mdlink "more-macos" "">}}).
+
+If you want to have both the Pd application *and* use Pd from the
+commandline, add command aliases to the binaries inside the .app to your
+~/.bash_profile:
+
+#### pd commandline
+```
+WHICHPD="Pd-0.47-1"
+alias pd="/Applications/$WHICHPD.app/Contents/Resources/bin/pd"
+alias pdsend="/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend"
+alias pdreceive="/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive"
+```
+Next, reload the profile by either opening a new Terminal window or
+running:
+
+    source ~/.bash_profile
+
+If you install Pd to your system with "make install", the Tk 8.5.9
+currently included with the system (as of macOS 10.14) is buggy and
+should *not* be used. It is recommended to install a newer version,
+either via Homebrew or from the ActiveState Tcl/Tk downloads.
+
+To see which version the Pd GUI is using: set the log level to 4 & look
+for the Tk version log line in the Pd window.
+
+Another option is to set the Tk Wish command Pd uses to launch the GUI.
+At start, Pd does a quick search in the "usual places" for Wish and
+chooses the first path that exists. Versions of macOS up to 10.12 also
+ship with Tcl/Tk 8.4 which works fine and this wish can be invoked by Pd
+using the full path "/usr/bin/wish8.4". You can configure Pd to use
+this search path first with:
+
+    ./configure --with-wish=/usr/bin/wish8.4
+
+To see Pd's path search info, run Pd with the -verbose flag:
+
+    pd -verbose
+
+Note: Pd installed to your system or run from the build/bin directory
+will not use the default font and will be missing the various macOS GUI
+hints (such as retina rendering) which are specified by the Info.plist
+file inside the .app bundle. Again, it is recommended to build a .app
+and use the aforementioned aliases to provide the pd command.
+
+{{< green-button "Show more on macOS" "more-macos" "">}}
+
+### Windows
+
+Pd on Windows can be built with either MinGW or Cygwin which provide the
+core build requirements: a compiler chain & shell environment.
+
+It is recommended to use the Msys2 distribution which provides both a
+Unix command shell and MinGW. Download the Msys2 "x86_64" 64 bit
+installer (or "i686" if you are using 32 bit Windows) from:
+
+[http://www.msys2.org/](http://www.msys2.org/)
+
+Then install to the default location and follow the
+setup/update info on the Msys2 webpage.
+
+Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50,
+the Pd release is 64 bit for Windows, so it is recommended to set up and
+use the MinGW 64 bit shell. If you want to build a 32 bit Pd, similarly
+use the MinGW 32 bit shell. Due to how MinGW is designed, you cannot
+build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means
+the Pd configure --enable-universal build option has no effect in
+MinGW.
+
+Note: Msys2 development seems to change frequently, so some of the
+package names below may have changed after this document was written.
+
+Open an Msys2 shell and install the compiler chain, autotools, & gettext
+via:
+
+    # 64 bit
+    pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang
+              make autoconf automake libtool
+              mingw-w64-x86_64-gettext
+
+    # 32 bit
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang
+              make autoconf automake libtool
+              mingw-w64-i686-gettext
+
+Install git if you want to clone the Pd sources from Github, etc:
+
+    pacman -S git
+
+and/or the nsis installer tool if you want to build the Pd Windows
+installer:
+
+    # 64 bit
+    pacman -S mingw-w64-x86_64-nsis
+
+    # 32 bit
+    pacman -S mingw-w64-i686-nsis
+
+Note: You can also search for packages in Msys2 with:
+
+    pacman -S -s <searchterm>
+
+Once the packages are installed, you should now be ready to build Pd by
+following the general autotools build steps.
+
+The following audio APIS are available on Windows and can be
+enabled/disabled via their configure flags:
+
+-   MMIO: --enable-mmio or --disable-mmio (default enabled)
+-   ASIO: --enable-asio or --disable-asio (default enabled, if found)
+-   JACK: --enable-jack or --disable-jack
+
+For example, to build Pd without MMIO support:
+
+    ./configure --disable-mmio
+
+Note: Because of license restrictions, Pd cannot distribute the ASIO SDK
+source files. If you want to build Pd with ASIO support, see
+[Windows ASIO support]({{< mdlink "more-windows" "Windows ASIO Support">}})
+for further instructions.
+
+Once built Pd is built, you can either:
+
+-   build a Pd application directory for Windows (recommended)
+-   build a Windows installer
+
+A Pd application directory is essentially a self-contained Pd package
+which should run out of the box. To build, simply use:
+
+    make app
+
+This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can
+then be used by running pd.exe in the bin directory and placed wherever
+on your system. For more info & options regarding the Pd app directory,
+see [Windows resources]({{< mdlink "more-windows" "Windows resources">}})
+
+To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
+
+Note: The standard "make install" requires Tcl/Tk and won't work
+outside your Cygwin/Msys2 environment (if at all).
+
+{{< green-button "Show more on Windows" "more-windows" "">}}
+
+### Double precision
+
+As of Pd 0.51-0 you can compile a "Double precision" Pd. On the
+autotools do:
+
+    ./configure CPPFLAGS="-DPD_FLOATSIZE=64"
+
+### Other flags
+
+More flags to be documented here.
+
+### Cross-compilation for Windows on Linux
+
+You can also build a Windows binary of Pd on a Linux system, using a
+cross-compilation toolchain.
+
+For Debian based systems (e.g. Ubuntu), you can install the toolchain
+with:
+
+    sudo apt-get install build-essential automake autoconf libtool gettext
+    sudo apt-get install mingw-w64 mingw-w64-tools
+    sudo apt-get install nsis
+
+The "mingw-w64" package will install the cross compilation toolchains
+for both 32bit (g++-mingw-w64-i686, binutils-mingw-w64-i686) and 64bit
+(g++-mingw-w64-x86-64, binutils-mingw-w64-x86-64).
+
+The "nsis" package is purely optional, and only needed if you want to
+build the installer.
+
+You must tell configure that you want to cross-compile for a given
+architecture via the "--host" configure flag.
+
+For example, to build a 32 bit Pd:
+
+    ./configure --host=i686-w64-mingw32
+
+Similarly, to build a 64 bit Pd without ASIO support:
+
+    ./configure --disable-asio --host=x86_64-w64-mingw32
+
+If all went well, you should now be ready to build Pd, as explained in
+the instructions above in the "Windows" section:
+
+    make app
+
+### Makefile Build
+
+Alternatively, and often more simply, to the autotools build, you can
+use the fallback makefiles in the src directory:
+
+-   src/makefile.gnu: GNU/Linux
+-   src/makefile.mac: macOS
+-   src/makefile.msvc: Windows with Microsoft Visual C
+-   src/makefile.mingw: Windows with MinGW GCC
+
+On Linux, for example, run the GNU-specific makefile in the src
+directory:
+
+    cd src
+    make -f makefile.gnu
+
+You can then run directly out of the bin directory without installing:
+
+    cd ../bin
+    ./pd
+
+For Microsoft Visual C, first build Pd with the MS VC makefile and then
+build each external in the extra directory:
+
+    cd src
+    make -f makefile.msvc
+    cd ../extra/bob~
+    make pd_nt
+    cd ../bonk~ && make pd_nt
+    cd ../choice && make pd_nt
+    cd ../fiddle~ && make pd_nt
+    ...
+
+To install Pd to your system on Linux, macOS, & MinGW (Windows), use the
+"install" makefile target. For Linux, this is:
+
+    make -f makefile.gnu install
+
+Once installed, you should now be able to run Pd from the commandline:
+
+    pd
+
+If want to uninstall, simply run the "uninstall" makefile target:
+
+    make -f makefile.gnu uninstall
+
+On macOS, you can build a clickable Pd .app bundle using the
+supplemental build scripts in the mac directory. See
+[macOS resources]({{< mdlink "more-macos" "">}}) for more info.
+
+### Reporting Bugs
+
+Let us know if you run into any bugs or issues with building or
+installing Pd:
+
+-   send an email to the Pd-List:
+    [https://lists.puredata.info/listinfo/pd-list](https://lists.puredata.info/listinfo/pd-list)
+-   open an issue:
+    [https://github.com/pure-data/pure-data/issues](https://github.com/pure-data/pure-data/issues)
+-   post to the Pd forum:
+    [https://forum.pdpatchrepo.info](https://forum.pdpatchrepo.info)
+
+Please include information involved with your problem such as:
+
+-   information about your system: OS version, libraries installed, etc
+-   configure or make output including error lines
+-   steps you took: configuration options, etc
+
+
+[next chapter]({{< mdlink "current status" "">}}) \
+[back to table of contents](index.html)
+
+
