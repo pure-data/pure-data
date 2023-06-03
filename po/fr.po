@@ -1572,6 +1572,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Si vous acceptez, le contenu de l'objet correspondant sera mis à jour. Vous "
+"devrez quand même sauver le patch pour que ces changements soient conservés."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1636,17 +1638,17 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-#~ msgid "Path..."
-#~ msgstr "Chemins..."
+msgid "Path..."
+msgstr "Chemins..."
 
-#~ msgid "Startup..."
-#~ msgstr "Options de démarrage..."
+msgid "Startup..."
+msgstr "Options de démarrage..."
 
-#~ msgid "Audio..."
-#~ msgstr "Paramètres audio..."
+msgid "Audio..."
+msgstr "Paramètres audio..."
 
-#~ msgid "MIDI..."
-#~ msgstr "Paramètres MIDI..."
+msgid "MIDI..."
+msgstr "Paramètres MIDI..."
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensions(chiffres)(pix):------"
