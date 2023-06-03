@@ -209,6 +209,7 @@ AC_CHECK_HEADERS([fcntl.h \
                   sys/socket.h \
                   sys/time.h \
                   sys/timeb.h \
+                  sys/utsname.h \
                   unistd.h
                   ])
 

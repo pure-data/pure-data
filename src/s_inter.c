@@ -44,8 +44,11 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
-#if defined(__linux__) && _POSIX_VERSION >= 200112L
+#ifdef HAVE_SYS_UTSNAME_H
 # include <sys/utsname.h>
+# ifndef USE_UNAME
+#  define USE_UNAME 1
+# endif
 #endif
 
 #include "m_private_utils.h"
@@ -1134,7 +1137,7 @@ static void init_deken_arch(void)
             0;
 #  endif
 
-#  if defined(__linux__) && _POSIX_VERSION >= 200112L
+#  if USE_UNAME
         /*
          * Pd might be compiled for ARMv6 (as in Raspbian),
          * but run on an ARMv7 (or higher) (e.g. RPi2 and newer).

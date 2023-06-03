@@ -56,6 +56,7 @@ libpdtcldir = $(libpddir)/tcl
 CPPFLAGS = -DPD -DPD_INTERNAL \
     -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
     -DHAVE_ENDIAN_H=1 \
+    -DHAVE_SYS_UTSNAME_H=1 \
     -DHAVE_QSORT_R_ARG_LAST=1 \
     -DPD_WATCHDOG=1 \
     -DPDGUIDIR=\"tcl/\" \
