@@ -121,7 +121,7 @@ static const char *pd_tilde_dllextent[] = {
     0};
 
 
-static const char*get_dllextent()
+static const char**get_dllextent()
 {
 #if PD
     const char**dllextent = sys_get_dllextensions();
