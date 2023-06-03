@@ -1109,6 +1109,7 @@ static const char*deken_CPU[] = {
 # if defined(__GNUC__)
 #  warning unknown architecture
 # endif
+        0
 #endif
         , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -1185,7 +1186,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
         return 0;
 
     snprintf(buf, bufsize-1,
-        "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (float_agnostic?0:8) * sizeof(t_float));
+        "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (int)((float_agnostic?0:8) * sizeof(t_float)));
 
     buf[bufsize-1] = 0;
     for(i=0; i<bufsize && buf[i]; i++)
