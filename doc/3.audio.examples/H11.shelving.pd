@@ -3,23 +3,21 @@
 #X array \$0-tab1 100 float 0;
 #X coords 0 5 99 0 200 300 1 0 0;
 #X restore 538 44 graph;
-#X obj 59 250 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 59 318 3 0 0 0 - - -;
+#X obj 59 246 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X floatatom 59 318 4 0 0 0 - - - 0;
 #X text 593 350 frequency;
-#N canvas 876 177 328 238 startup 0;
+#N canvas 876 177 293 245 startup 0;
 #X obj 58 24 loadbang;
-#X obj 58 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 58 67 f \$0;
-#X text 53 161 This subpatch loads initial;
-#X text 56 179 values in number boxes.;
-#X msg 58 91 \; \$1-pole 60 \; \$1-zero 20;
+#X obj 58 51 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 58 80 f \$0;
+#X text 53 174 This subpatch loads initial;
+#X text 56 192 values in number boxes.;
+#X msg 58 104 \; \$1-pole 60 \; \$1-zero 20;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
-#X restore 338 374 pd startup;
-#X floatatom 321 280 3 -99 99 0 - #0-pole -;
+#X restore 375 414 pd startup;
+#X floatatom 321 280 3 -99 99 0 - \$0-pole - 0;
 #X text 476 332 gain=0;
 #X text 126 34 SHELVING FILTER;
 #X obj 90 387 filter-graph2 \$0-tab1;
@@ -27,26 +25,21 @@
 #X text 713 346 22050;
 #X obj 234 356 rpole~;
 #X obj 320 304 / 100;
-#X floatatom 273 281 4 -100 100 0 - #0-zero -;
+#X floatatom 273 281 4 -100 100 0 - \$0-zero - 0;
 #X obj 273 304 / 100;
 #X obj 234 329 rzero~;
 #X text 525 37 5;
 #X text 533 343 0;
 #X text 521 274 1;
-#X text 34 58 This patch demonstrates using the raw filters \, rpole~
-and rzero~ (raw \, real-valued one-pole and one-zero filters) \, to
-make a shelving filter.;
-#X text 32 109 If the pole is at p and the zero is at q \, the gain
-at DC is (1-q)/(1-p) and the gain at Nyquist is (1+q)/(1+p). If the
-pole location is close to plus or minus one \, this can give large
-gains unless q is in the same vicinity. (try \, for example \, p=90%
-\, q=70%).;
-#X text 29 191 The crossover region varies from DC to Nyquist as p
-and q decrease from 100% to -100%.;
+#X text 34 58 This patch demonstrates using the raw filters \, rpole~ and rzero~ (raw \, real-valued one-pole and one-zero filters) \, to make a shelving filter.;
+#X text 32 109 If the pole is at p and the zero is at q \, the gain at DC is (1-q)/(1-p) and the gain at Nyquist is (1+q)/(1+p). If the pole location is close to plus or minus one \, this can give large gains unless q is in the same vicinity. (try \, for example \, p=90% \, q=70%).;
+#X text 29 191 The crossover region varies from DC to Nyquist as p and q decrease from 100% to -100%.;
 #X text 318 256 pole;
 #X text 272 258 zero;
 #X text 352 279 (in hundredths);
 #X text 531 427 updated for Pd version 0.46;
+#X msg 385 359 \; pd dsp \$1;
+#X obj 385 335 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X connect 1 0 9 0;
 #X connect 2 0 8 0;
 #X connect 5 0 12 0;
@@ -59,3 +52,4 @@ and q decrease from 100% to -100%.;
 #X connect 13 0 14 0;
 #X connect 14 0 15 1;
 #X connect 15 0 11 0;
+#X connect 27 0 26 0;

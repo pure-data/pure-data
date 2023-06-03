@@ -79,32 +79,22 @@
 #X obj 68 121 makenote 1;
 #X obj 379 233 + 20;
 #X obj 379 182 metro 300;
-#X obj 379 160 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 379 158 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 379 291 s \$0-note;
 #X obj 379 205 random 70;
 #X obj 108 256 vcf~ 3;
-#X floatatom 265 176 3 0 0 0 - - - 0;
+#X floatatom 265 173 6 0 0 0 - - - 0;
 #X floatatom 265 221 7 0 0 0 - - - 0;
 #X obj 265 197 mtof;
 #X obj 175 260 adsr 2 30 200 50 500;
 #X obj 188 141 adsr 1 10 200 50 500;
-#X obj 379 265 pack 0 200;
 #X obj 82 151 poly 1 1;
-#X floatatom 439 158 3 0 0 0 - - - 0;
-#X floatatom 446 241 3 0 0 0 - - - 0;
-#X text 54 404 Now that we can make reasonably high-quality classic
-waveforms using upsampling \, we combine an upsampled oscillator with
-a "vcf" filter and ADSR generators to control the filter resonant frequency
-and the amplitude to make the classic subtractive synthesis sound.
-Send an "s \$0-note" object a (pitch \, duration) pair to play a note.
-(Classic VC synths did not have velocity sensitive keyboards!) You
-can add controls to change the parameters of the ADSR envelopes and/or
-the vcf~ "Q" parameter. The oscillators' waveforms and tuning relationship
-is controlled by other parameters set within the "pd 16x" window.,
-f 64;
+#X floatatom 439 158 6 0 0 0 - - - 0;
+#X floatatom 446 241 5 0 0 0 - - - 0;
+#X text 54 404 Now that we can make reasonably high-quality classic waveforms using upsampling \, we combine an upsampled oscillator with a "vcf" filter and ADSR generators to control the filter resonant frequency and the amplitude to make the classic subtractive synthesis sound. Send an "s \$0-note" object a (pitch \, duration) pair to play a note. (Classic VC synths did not have velocity sensitive keyboards!) You can add controls to change the parameters of the ADSR envelopes and/or the vcf~ "Q" parameter. The oscillators' waveforms and tuning relationship is controlled by other parameters set within the "pd 16x" window., f 64;
 #X obj 68 92 unpack f f;
 #X obj 386 27 declare -stdpath ./;
+#X obj 379 265 pack f 200;
 #X connect 0 0 17 0;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;
@@ -114,10 +104,10 @@ f 64;
 #X connect 8 0 1 0;
 #X connect 8 0 1 1;
 #X connect 9 0 0 0;
-#X connect 10 0 28 0;
-#X connect 11 0 24 0;
-#X connect 11 1 24 1;
-#X connect 12 0 23 0;
+#X connect 10 0 27 0;
+#X connect 11 0 23 0;
+#X connect 11 1 23 1;
+#X connect 12 0 29 0;
 #X connect 13 0 16 0;
 #X connect 14 0 13 0;
 #X connect 16 0 12 0;
@@ -128,11 +118,11 @@ f 64;
 #X connect 21 0 7 0;
 #X connect 21 0 7 1;
 #X connect 22 0 5 0;
-#X connect 23 0 15 0;
-#X connect 24 1 9 0;
-#X connect 24 2 22 0;
-#X connect 24 2 21 0;
-#X connect 25 0 13 1;
-#X connect 26 0 23 1;
-#X connect 28 0 11 0;
-#X connect 28 1 11 2;
+#X connect 23 1 9 0;
+#X connect 23 2 22 0;
+#X connect 23 2 21 0;
+#X connect 24 0 13 1;
+#X connect 25 0 29 1;
+#X connect 27 0 11 0;
+#X connect 27 1 11 2;
+#X connect 29 0 15 0;

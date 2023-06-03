@@ -223,7 +223,6 @@ static void array_define_done_popup(t_glist*x, t_float which, t_float xpos, t_fl
         garray_properties((t_garray *)obj);
     break;
     case 1: /* open */
-        obj->g_pd;
         typedmess(&(obj->g_pd), gensym("arrayviewlistnew"), 0, 0);
         break;
     case 2: /* help */

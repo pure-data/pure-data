@@ -1196,15 +1196,17 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
     return (ret);
 }
 
-static void numbertocolor(int n, char *s)
+static int numbertocolor(int n)
 {
-    int red, blue, green;
+    int red, green, blue, color = 0;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
     green = n % 10;
-    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(blue),
-        rangecolor(green));
+    blue = ((n / 10) % 10);
+    color |= rangecolor(red)   << 16;
+    color |= rangecolor(blue)  <<  8;
+    color |= rangecolor(green) <<  0;
+    return color;
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
@@ -1214,18 +1216,20 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-    char tag[80];
+    char tag0[80], tag[80];
+    const char*tags[] = {tag, tag0, "curve"};
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag, "curve%lx", data);
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            char outline[20], fill[20];
+            int outline;
             t_word pix[200];
 
             if (n > 100)
@@ -1244,17 +1248,16 @@ static void curve_vis(t_gobj *z, t_glist *glist,
             if (width < 1) width = 1;
             if (glist->gl_isgraph)
                 width *= glist_getzoom(glist);
-            numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
-                outline);
+            outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
 
-            pdgui_vmess(0, "crr iiii rf ri rs",
+            pdgui_vmess(0, "crr iiii rf ri rS",
                 glist_getcanvas(glist), "create",
                 (flags & CLOSED)?"polygon":"line",
                 0, 0, 0, 0,
                 "-width", width,
                 "-smooth", !!(flags & BEZ),
-                "-tags", tag);
+                "-tags", 3, tags);
 
             pdgui_vmess(0, "crs w",
                 glist_getcanvas(glist), "coords", tag,
@@ -1262,15 +1265,14 @@ static void curve_vis(t_gobj *z, t_glist *glist,
 
             if (flags & CLOSED)
             {
-                numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1),
-                    fill);
-                pdgui_vmess(0, "crs rs rs",
+                int fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+                pdgui_vmess(0, "crs rk rk",
                     glist_getcanvas(glist), "itemconfigure", tag,
                     "-fill", fill,
                     "-outline", outline);
             } else
-                pdgui_vmess(0, "crs rs",
+                pdgui_vmess(0, "crs rk",
                     glist_getcanvas(glist), "itemconfigure", tag,
                     "-fill", outline);
         }
@@ -1496,6 +1498,11 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
         }
         else if (*firstarg->s_name == '-')
         {
@@ -1801,9 +1808,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
-    sprintf(tag , "plot%lx", data);
+    sprintf(tag , "plot%p", data);
         /* a tag that uniquely identifies the sub-plot */
-    sprintf(tag0, "plot%lx_array%lx_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
 
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
@@ -1819,9 +1826,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
-            char color[20];
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), color);
+            int color = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
 
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
@@ -1857,7 +1863,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if (i == nelem-1 || inextx != ixpix)
                 {
 
-                    pdgui_vmess(0, "crr iiii rs rf rS",
+                    pdgui_vmess(0, "crr iiii rk rf rS",
                         glist_getcanvas(glist), "create", "rectangle",
                         ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
                         inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
@@ -1873,13 +1879,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         }
         else
         {
-            char outline[20];
+            int outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
             int lastpixel = -1, ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), outline);
+
 
             if (wonset >= 0)
             {
@@ -1973,7 +1979,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                pdgui_vmess(0, "crr ri rs rs ri rS",
+                pdgui_vmess(0, "crr ri rk rk ri rS",
                     glist_getcanvas(glist), "create", "polygon",
                     "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
                     "-fill", outline,
@@ -2030,7 +2036,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
                 if(ndrawn)
                 {
-                    pdgui_vmess(0, "crr iiii rf rs ri rS",
+                    pdgui_vmess(0, "crr iiii rf rk ri rS",
                         glist_getcanvas(glist), "create", "line",
                         0, 0, 0, 0,
                         "-width", linewidth,
@@ -2466,7 +2472,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
             }
         }
     }
-    return (0);
+        /* JMZ: change the cursor to "clickme" if the array can be edited */
+    return (!edit)?CURSOR_RUNMODE_NOTHING:CURSOR_RUNMODE_CLICKME;
 }
 
 static int plot_click(t_gobj *z, t_glist *glist,
@@ -2549,6 +2556,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
+        }
         else break;
     }
         /* next argument is name of field to draw - we don't know its type yet
@@ -2561,7 +2579,7 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
-    else fielddesc_setfloat_const(&x->x_color, 1);
+    else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
     else x->x_label = &s_;
@@ -2719,7 +2737,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag, "drawnumber%lx", data);
+    sprintf(tag, "drawnumber%p", data);
     if (vis)
     {
         t_atom fontatoms[3];
@@ -2728,19 +2746,19 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-        char colorstring[20], buf[DRAWNUMBER_BUFSIZE];
-        numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
-            colorstring);
+        char buf[DRAWNUMBER_BUFSIZE];
+        int color = numbertocolor(
+            fielddesc_getfloat(&x->x_color, template, data, 1));
         drawnumber_getbuf(x, data, template, buf);
 
         SETSYMBOL(fontatoms+0, gensym(sys_font));
         SETFLOAT (fontatoms+1,-sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-        pdgui_vmess(0, "crr ii rs rs rs rA rS",
+        pdgui_vmess(0, "crr ii rs rk rs rA rS",
             glist_getcanvas(glist), "create", "text",
             xloc, yloc,
             "-anchor", "nw",
-            "-fill", colorstring,
+            "-fill", color,
             "-text", buf,
             "-font", 3, fontatoms,
             "-tags", 2, tags);

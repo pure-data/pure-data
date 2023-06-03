@@ -1,5 +1,5 @@
 #N canvas 418 159 299 317 12;
-#X floatatom 99 238 0 0 0 0 - - -;
+#X floatatom 99 238 5 0 0 0 - - - 0;
 #X obj 99 150 cputime;
 #X obj 99 30 loadbang;
 #X obj 99 94 metro 1000;
@@ -7,14 +7,13 @@
 #X obj 99 210 * 0.1;
 #X obj 99 179 int;
 #X text 76 279 CPU load in percent;
-#X text 122 60 <= on/off;
-#X obj 99 61 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
-;
+#X obj 99 61 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 123 61 <-- on/off;
 #X connect 1 0 6 0;
-#X connect 2 0 9 0;
+#X connect 2 0 8 0;
 #X connect 3 0 4 0;
 #X connect 4 0 1 0;
 #X connect 4 1 1 1;
 #X connect 5 0 0 0;
 #X connect 6 0 5 0;
-#X connect 9 0 3 0;
+#X connect 8 0 3 0;

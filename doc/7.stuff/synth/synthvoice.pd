@@ -1,4 +1,4 @@
-#N canvas 854 108 685 630 12;
+#N canvas 582 93 646 630 12;
 #X obj 146 571 outlet~;
 #X obj 146 534 *~;
 #X obj 166 318 *~;
@@ -7,9 +7,9 @@
 #X obj 180 52 inlet;
 #X obj 418 265 gadsr;
 #X obj 166 265 gadsr;
-#X obj 204 187 dbtorms;
-#X obj 204 213 sqrt;
-#X obj 204 238 sqrt;
+#X obj 166 185 dbtorms;
+#X obj 166 211 sqrt;
+#X obj 166 236 sqrt;
 #X obj 400 373 +~;
 #X obj 22 493 vcf~, f 11;
 #X obj 22 386 phasor~;
@@ -24,8 +24,8 @@
 #X obj 345 392 * 0.01;
 #X obj 104 251 * 0.01;
 #X obj 180 75 unpack f f f f f f f f f f f f f f f f;
-#X obj 22 446 *~ 2;
-#X obj 22 469 -~ 1;
+#X obj 22 441 *~ 2;
+#X obj 22 464 -~ 1;
 #X obj 400 404 mtof~;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
@@ -38,7 +38,7 @@
 #X connect 7 0 2 1;
 #X connect 8 0 9 0;
 #X connect 9 0 10 0;
-#X connect 10 0 7 1;
+#X connect 10 0 7 0;
 #X connect 11 0 26 0;
 #X connect 12 0 1 0;
 #X connect 13 0 16 0;
@@ -52,7 +52,7 @@
 #X connect 22 0 18 1;
 #X connect 23 0 18 0;
 #X connect 23 0 4 0;
-#X connect 23 1 7 0;
+#X connect 23 1 7 1;
 #X connect 23 1 6 0;
 #X connect 23 2 8 0;
 #X connect 23 3 7 2;

@@ -449,7 +449,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
         canvas_addtolist(x);
-    /* post("canvas %lx, owner %lx", x, owner); */
+    /* post("canvas %p, owner %p", x, owner); */
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
@@ -942,7 +942,7 @@ static void canvas_drawlines(t_canvas *x)
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
@@ -962,7 +962,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
             char tag[128];
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(x), "coords", tag,
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2);
@@ -975,7 +975,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     char tag[128];
     if (!glist_isvisible(x))
         return;
-    sprintf(tag, "l%lx", oc);
+    sprintf(tag, "l%p", oc);
     pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
 }
 
@@ -1345,10 +1345,20 @@ void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
     t_object *ob;
     t_symbol *dspsym = gensym("dsp");
     t_dspcontext *dc;
-
+#if 0
+    {
+        int i, n = obj_nsiginlets(&x->gl_obj) + obj_nsigoutlets(&x->gl_obj);
+        post("signals for %x (toplevel %d):", x, toplevel);
+        for (i = 0; i < n; i++)
+        {
+            if (sp[i])
+                post("nchans %d, length %d", sp[i]->s_nchans,  sp[i]->s_length);
+            else post("(null)");
+        }
+    }
+#endif
         /* create a new "DSP graph" object to use in sorting this canvas.
         If we aren't toplevel, there are already other dspcontexts around. */
-
     dc = ugen_start_graph(toplevel, sp,
         obj_nsiginlets(&x->gl_obj),
         obj_nsigoutlets(&x->gl_obj));
@@ -1455,20 +1465,6 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
         }
     }
     else post("dsp state %d", THISGUI->i_dspstate);
-}
-
-void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
-{
-    t_canvas *canvas = *canvasp;
-    t_gobj *g;
-    void *ret = 0;
-    for (g = canvas->gl_list; g; g = g->g_next)
-    {
-        if (g->g_pd == blockclass)
-            ret = g;
-    }
-    *canvasp = canvas->gl_owner;
-    return(ret);
 }
 
 /******************* redrawing  data *********************/
@@ -2021,7 +2017,8 @@ void g_canvas_setup(void)
         /* we prevent the user from typing "canvas" in an object box
         by sending 0 for a creator function. */
     canvas_class = class_new(gensym("canvas"), 0,
-        (t_method)canvas_free, sizeof(t_canvas), CLASS_NOINLET, 0);
+        (t_method)canvas_free, sizeof(t_canvas),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, 0);
             /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */

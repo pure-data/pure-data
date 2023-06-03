@@ -1,36 +1,21 @@
-#N canvas 396 23 731 710 12;
+#N canvas 257 23 731 710 12;
 #X declare -stdpath ./;
-#X obj 368 236 loadbang;
-#X obj 94 337 hip~ 5;
-#X obj 481 112 adc~ 1;
-#X obj 368 291 soundfiler;
-#X obj 72 381 output~;
-#X text 500 667 updated for Pd version 0.37;
-#X obj 481 161 tabwrite~ E03-table;
-#X msg 368 263 read ../sound/voice.wav E03-table;
-#X obj 133 109 fiddle~ 2048;
-#X obj 136 140 unpack;
-#X obj 161 243 osc~;
-#X obj 136 164 moses 1;
-#X obj 93 244 *~;
-#X obj 161 192 mtof;
-#X obj 161 220 *;
-#X msg 210 168 0.5;
-#X floatatom 210 197 3 0 0 0 - - - 0;
-#X msg 248 168 15;
-#N canvas 403 128 429 212 (subpatch) 0;
-#X obj 273 42 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 170 24 inlet~;
-#X obj 170 87 *~;
-#X obj 170 159 outlet~;
-#X connect 0 0 2 1;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X coords 0 0 100 100 40 18 1 250 40;
-#X restore 48 293 pd;
-#X obj 94 267 *~ 2;
-#X obj 210 143 loadbang;
+#X obj 364 224 loadbang;
+#X obj 90 365 hip~ 5;
+#X obj 488 136 adc~ 1;
+#X obj 364 279 soundfiler;
+#X obj 68 409 output~;
+#X obj 488 193 tabwrite~ E03-table;
+#X msg 364 251 read ../sound/voice.wav E03-table;
+#X obj 157 231 osc~;
+#X obj 89 232 *~;
+#X obj 157 180 mtof;
+#X obj 157 208 *;
+#X msg 206 156 0.5;
+#X floatatom 206 185 3 0 0 0 - - - 0;
+#X msg 244 156 15;
+#X obj 90 255 *~ 2;
+#X obj 206 131 loadbang;
 #N canvas 414 195 543 299 looper 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E03-table 44103 float 0;
@@ -42,16 +27,14 @@
 #X obj 66 88 *~ 44100;
 #X obj 66 144 tabread4~ E03-table;
 #X obj 66 170 outlet~;
-#X text 112 235 one-second sample reader loop. You can replace this
-with an adc~ if you want to go live., f 46;
+#X text 112 235 one-second sample reader loop. You can replace this with an adc~ if you want to go live., f 46;
 #X connect 2 0 5 0;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
 #X connect 5 0 6 0;
-#X restore 133 61 pd looper;
-#X text 452 242 re-read original sample;
-#X obj 492 138 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X restore 129 49 pd looper;
+#X text 448 230 re-read original sample;
+#X obj 499 165 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #N canvas 300 203 576 337 delay 0;
 #X obj 43 250 outlet~;
 #X obj 42 38 inlet~;
@@ -60,11 +43,9 @@ with an adc~ if you want to go live., f 46;
 #X obj 43 223 delread~ E03-del;
 #X obj 43 180 expr 1000*1024/$f1;
 #X obj 43 145 samplerate~;
-#X text 194 59 write to delay line which has enough memory to hold
-40 msec, f 30;
+#X text 194 59 write to delay line which has enough memory to hold 40 msec, f 30;
 #X text 153 145 get sample rate at load time;
-#X text 186 174 divide 1024 by sample rate to give time in seconds
-\; multiply by 1000 to convert to milliseconds.;
+#X text 186 174 divide 1024 by sample rate to give time in seconds \; multiply by 1000 to convert to milliseconds.;
 #X text 196 225 read from the delay line at the calculated delay;
 #X text 272 274 1024-sample delay;
 #X connect 1 0 3 0;
@@ -72,67 +53,47 @@ with an adc~ if you want to go live., f 46;
 #X connect 4 0 0 0;
 #X connect 5 0 4 0;
 #X connect 6 0 5 0;
-#X restore 47 136 pd delay;
-#X text 89 16 OCTAVE DIVIDING VIA RING MODULATION;
-#X text 173 276 on/off for original;
-#X text 189 346 This patch demonstrates using ring modulation to alias
-a sound down one octave. The ring modulation itself ("osc~" and multiplier)
-is easy. (We step it up by a factor of 2 to balance the original better.)
-, f 70;
-#X text 190 398 Harder is getting the fundamental frequency of the
-original sound. We do this with the complicated "fiddle~" object \,
-which puts out a stream of analysis data for an incoming signal. The
-"2048" argument specifies the analysis window size. The analysis is
-most closely aligned with what the sound was doing at the middle of
-the window \, i.e. \, 1024 samples ago. The "pd delay" window delays
-the signal itself 1024 samples so it will be as tightly synchronized
-with the analysis data as possible. (If you're doing this on a real-time
-input \, you might drop the delay and settle for less perfect synchronization.)
-, f 70;
-#X text 190 535 About fiddle~ \, suffice it to say that the third outlet
-contains (pitch \, amplitude) pairs. We unpack the pitch and strip
-out any zeros (when fiddle~ fails to find a pitch it outputs zero but
-we'd rather stick with the most recent good one). This is converted
-from MIDI to Hertz \, and multiplied by 1/2 to control the modulation
-oscillator. (You can also try large-ish integers which leave the pitch
-intact but introduce funny formants.), f 70;
-#X obj 51 61 adc~ 1;
-#X text 511 136 <= record a sample;
-#X text 144 292 <= and processed sounds;
-#X text 281 168 <= choose an effect;
-#N canvas 403 128 429 212 (subpatch) 0;
-#X obj 273 42 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 170 24 inlet~;
-#X obj 170 87 *~;
-#X obj 170 159 outlet~;
-#X connect 0 0 2 1;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X coords 0 0 100 100 40 18 1 250 40;
-#X restore 94 293 pd;
+#X restore 43 124 pd delay;
+#X text 161 272 on/off for original;
+#X text 185 334 This patch demonstrates using ring modulation to alias a sound down one octave. The ring modulation itself ("osc~" and multiplier) is easy. (We step it up by a factor of 2 to balance the original better.), f 70;
+#X text 187 538 About fiddle~ \, suffice it to say that the third outlet contains (pitch \, amplitude) pairs. We unpack the pitch and strip out any zeros (when fiddle~ fails to find a pitch it outputs zero but we'd rather stick with the most recent good one). This is converted from MIDI to Hertz \, and multiplied by 1/2 to control the modulation oscillator. (You can also try large-ish integers which leave the pitch intact but introduce funny formants.), f 70;
+#X text 277 156 <= choose an effect;
 #X obj 502 25 declare -stdpath ./;
-#X connect 0 0 7 0;
+#X text 496 655 updated for Pd version 0.51;
+#X obj 130 107 moses 1;
+#X obj 129 79 sigmund~ -npts 2048;
+#X text 273 79 track pitch;
+#X text 192 105 reject low numbers indicating no pitch found;
+#X text 186 386 Harder is getting the fundamental frequency of the original sound. We do this with the complicated "sigmund~" object \, which puts out a stream of analysis data for an incoming signal. The "-npts 2048" argument specifies the analysis window size. The analysis is most closely aligned with what the sound was doing at the middle of the window \, i.e. \, 1024 samples ago. The "pd delay" window delays the signal itself 1024 samples so it will be as tightly synchronized with the analysis data as possible. (If you're doing this on a real-time input \, you might drop the delay and settle for less perfect synchronization.), f 70;
+#X text 89 16 OCTAVE DIVIDING BY RING MODULATION;
+#X text 523 165 <- record a sample;
+#X obj 108 288 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 90 317 *~;
+#X obj 61 288 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 43 317 *~;
+#X text 133 288 <- and processed sounds;
+#X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 1 0 4 1;
-#X connect 2 0 6 0;
-#X connect 7 0 3 0;
-#X connect 8 2 9 0;
-#X connect 9 0 11 0;
-#X connect 10 0 12 1;
-#X connect 11 1 13 0;
-#X connect 12 0 19 0;
-#X connect 13 0 14 0;
-#X connect 14 0 10 0;
-#X connect 15 0 16 0;
-#X connect 16 0 14 1;
-#X connect 17 0 16 0;
-#X connect 18 0 1 0;
-#X connect 19 0 34 0;
-#X connect 20 0 15 0;
-#X connect 21 0 24 0;
-#X connect 21 0 8 0;
-#X connect 23 0 6 0;
-#X connect 24 0 18 0;
-#X connect 24 0 12 0;
+#X connect 2 0 5 0;
+#X connect 6 0 3 0;
+#X connect 7 0 8 1;
+#X connect 8 0 14 0;
+#X connect 9 0 10 0;
+#X connect 10 0 7 0;
+#X connect 11 0 12 0;
+#X connect 12 0 10 1;
+#X connect 13 0 12 0;
+#X connect 14 0 34 0;
+#X connect 15 0 11 0;
+#X connect 16 0 19 0;
+#X connect 16 0 27 0;
+#X connect 18 0 5 0;
+#X connect 19 0 8 0;
+#X connect 19 0 36 0;
+#X connect 26 1 9 0;
+#X connect 27 0 26 0;
+#X connect 33 0 34 1;
 #X connect 34 0 1 0;
+#X connect 35 0 36 1;
+#X connect 36 0 1 0;

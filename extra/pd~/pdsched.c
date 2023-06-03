@@ -92,7 +92,7 @@ int pd_extern_sched(char *flags)
     t_audiosettings as;
 
     sys_get_audio_settings(&as);
-    as.a_api = API_DUMMY;
+    as.a_api = API_NONE;
     sys_set_audio_settings(&as);
 
     chin = (as.a_nindev < 1 ? 0 : as.a_chindevvec[0]);
