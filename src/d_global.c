@@ -307,7 +307,7 @@ static void *sigthrow_new(t_symbol *s)
     t_sigthrow *x = (t_sigthrow *)pd_new(sigthrow_class);
     x->x_sym = s;
     x->x_whereto  = 0;
-    x->x_length = 1;
+    x->x_length = 0;
     x->x_f = 0;
     return (x);
 }
@@ -335,7 +335,7 @@ static void sigthrow_set(t_sigthrow *x, t_symbol *s)
     {
         int length = canvas_getsignallength(catcher->x_canvas);
         sigcatch_fixbuf(catcher, length);
-        if (length != x->x_length)
+        if (x->x_length && length != x->x_length)
         {
             pd_error(x, "throw~ %s: my vector size %d doesn't match catch (%d)",
                 x->x_sym->s_name, x->x_length, length);
@@ -379,4 +379,3 @@ void d_global_setup(void)
     sigcatch_setup();
     sigthrow_setup();
 }
-

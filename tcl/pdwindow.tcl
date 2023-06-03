@@ -13,6 +13,7 @@ namespace eval ::pdwindow:: {
     variable linecolor 0 ;# is toggled to alternate text line colors
     variable logmenuitems
     variable maxloglevel 4
+    variable font_size 12
 
     # private variables
     variable _lastlevel 0       ;# loglevel of last post (for automatic endpost level)
@@ -447,10 +448,9 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.logmenu -side left
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
-    # TODO this should use the pd_font_$size created in pd-gui.tcl
-    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family 10] \
+    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family $::pdwindow::font_size] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
-        -yscrollcommand ".pdwindow.scroll set" -width 60 \
+        -yscrollcommand ".pdwindow.scroll set" -width 80 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
     scrollbar .pdwindow.scroll -command ".pdwindow.text.internal yview"
     pack .pdwindow.scroll -side right -fill y

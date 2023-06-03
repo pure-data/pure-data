@@ -2,7 +2,8 @@
 package provide dialog_font 0.1
 
 namespace eval ::dialog_font:: {
-    variable fontsize 10
+    # fontsize is for detecting whether the user actually requested a change
+    variable fontsize 0
     variable stretchval 100
     variable whichstretch 1
     variable canvaswindow
@@ -33,6 +34,33 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
                 set font $::font_family
             }
             ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
+
+            # try to adjust the width of the Pd-console to 80 chars
+            catch {
+                set str80 "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                set fnt [${mytoplevel}.text.internal cget -font]
+                # how much space do we need for 80 chars (need an extra char for whatever reasons...)?
+                set w [expr [winfo width ${mytoplevel}] - \
+                           [winfo width ${mytoplevel}.text] + \
+                           [font measure $fnt -displayof ${mytoplevel} "${str80} "] \
+                          ]
+                # make sure it's within reasonable bounds
+                foreach {maxw maxh} [wm maxsize .] {break}
+                if { $w < 400 } {set w 400}
+                if { $w > $maxw } {set w $maxw}
+                # get the current geometry of the .pdwindow
+                scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                if { "+$x+$y" eq "+0+0" } {
+                    scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                }
+                # and fix it
+                if { $w > $width } {
+                    wm geometry $mytoplevel "${w}x${height}+$x+$y"
+                }
+                # scroll down
+                ${mytoplevel}.text.internal yview moveto 1.0
+            }
+            #::pdwindow::post "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
         }
         catch {
             ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
@@ -44,6 +72,7 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         }
 
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
+        set ::pdwindow::font:size $myfontsize
 
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
