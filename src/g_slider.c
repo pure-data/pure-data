@@ -529,6 +529,7 @@ static void slider_set(t_slider *x, t_floatarg f)
     else
         g = (f - x->x_min) / x->x_k;
     x->x_val = (int)(100.0*g + 0.49999);
+    if (x->x_val < 0) x->x_val = 0;
     x->x_pos = x->x_val;
     if(x->x_val != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
