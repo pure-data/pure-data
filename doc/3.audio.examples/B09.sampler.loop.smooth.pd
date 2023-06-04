@@ -1,11 +1,11 @@
 #N canvas 401 67 842 605 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array cos-output 44100 float 0;
+#X array cos-output 44100 float 2;
 #X coords 0 1.02 44100 -1.02 200 130 1;
 #X restore 510 201 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array table18 44103 float 0;
+#X array table18 44103 float 2;
 #X coords 0 1.02 44103 -1.02 200 130 1;
 #X restore 507 26 graph;
 #X obj 509 473 loadbang;
@@ -36,7 +36,7 @@
 #X text 550 403 <-- click here to record to table;
 #X text 600 481 v-- re-read the original sound;
 #X text 613 562 updated for Pd version 0.37;
-#X obj 206 300 declare -stdpath ./;
+#X obj 221 313 declare -stdpath ./;
 #X text 225 220 <-- click to graph envelope;
 #X text 131 49 <-- frequency (Hz.);
 #X text 213 86 <-- chunk size (100ths of a second);
@@ -44,7 +44,6 @@
 #X obj 527 402 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 2 0 26 0;
 #X connect 3 0 18 0;
-#X connect 3 0 18 1;
 #X connect 4 0 16 0;
 #X connect 5 0 6 0;
 #X connect 6 0 19 1;

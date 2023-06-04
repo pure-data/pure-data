@@ -5,15 +5,15 @@
 #X coords 0 0.5 881 -0.5 200 130 1;
 #X restore 336 128 graph;
 #X text 357 266 ---- 0.02 seconds ----;
-#X text 356 575 updated for Pd version 0.39;
-#X obj 121 331 output~;
-#X obj 223 337 tabwrite~ \$0-sum;
+#X text 366 595 updated for Pd version 0.39;
+#X obj 179 366 output~;
+#X obj 233 337 tabwrite~ \$0-sum;
 #X obj 172 137 / 100;
 #X floatatom 172 112 4 0 100 0 - - - 0;
 #X obj 222 137 / 100;
 #X floatatom 222 112 4 0 100 0 - - - 0;
-#X obj 235 276 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
-#X obj 235 302 metro 193;
+#X obj 233 276 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 233 302 metro 193;
 #X obj 95 131 phasor~;
 #X floatatom 95 104 5 0 0 0 - - - 0;
 #X text 66 79 frequency;
@@ -27,7 +27,7 @@
 #X text 296 246 -0.5;
 #X text 175 92 up;
 #X text 222 92 down;
-#X text 51 411 Occasionally a second method for making corners is more convenient. Here we specify the slopes of the rising and falling segments (as always \, in units per cycle). We then make a triangle wave with a corner at (0 \, 0) and another one \, placed somewhere within the cycle. The slopes of the two lines determine the second point \, which will have an x value of t/(s+t) (if we let s denote the rising slope and t the falling one \, both as positive numbers). The y value is st/(s+t). If we wish instead to specify the corner location (x \, y) (with x in cycles \, 0<x<1) we set s = y/x and t = y/(1-x). The DC value is y/2., f 68;
+#X text 51 441 Occasionally a second method for making corners is more convenient. Here we specify the slopes of the rising and falling segments (as always \, in units per cycle). We then make a triangle wave with a corner at (0 \, 0) and another one \, placed somewhere within the cycle. The slopes of the two lines determine the second point \, which will have an x value of t/(s+t) (if we let s denote the rising slope and t the falling one \, both as positive numbers). The y value is st/(s+t). If we wish instead to specify the corner location (x \, y) (with x in cycles \, 0<x<1) we set s = y/x and t = y/(1-x). The DC value is y/2., f 68;
 #X text 37 24 MAKING WAVEFORMS WITH CORNERS BY SPECIFYING LINE SEGMENT SLOPES, f 63;
 #X obj 430 69 declare -stdpath ./;
 #X connect 5 0 15 1;
@@ -45,4 +45,3 @@
 #X connect 18 0 19 1;
 #X connect 19 0 3 0;
 #X connect 19 0 4 0;
-#X connect 19 0 3 1;

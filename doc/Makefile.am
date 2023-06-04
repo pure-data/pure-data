@@ -315,7 +315,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/change-help.pd \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \
-     ./5.reference/clone-abstraction.pd \
+     ./5.reference/clone-abs-a.pd \
+     ./5.reference/clone-abs-b.pd \
      ./5.reference/clone-help.pd \
      ./5.reference/cnv-help.pd \
      ./5.reference/cos~-help.pd \
@@ -350,7 +351,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/line~-help.pd \
      ./5.reference/list-help.pd \
      ./5.reference/loadbang-help.pd \
-     ./5.reference/log~-help.pd \
      ./5.reference/lop~-help.pd \
      ./5.reference/makefilename-help.pd \
      ./5.reference/makenote-help.pd \
@@ -374,7 +374,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/plot-help.pd \
      ./5.reference/pointer-help.pd \
      ./5.reference/poly-help.pd \
-     ./5.reference/pow~-help.pd \
      ./5.reference/print-help.pd \
      ./5.reference/print~-help.pd \
      ./5.reference/qlist-help.pd \
@@ -391,13 +390,15 @@ nobase_dist_libpd_DATA = \
      ./5.reference/samphold~-help.pd \
      ./5.reference/samplerate~-help.pd \
      ./5.reference/savepanel-help.pd \
-     ./5.reference/savestate-example.pd \
+     ./5.reference/savestate-ex1.pd \
+     ./5.reference/savestate-ex2.pd \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
      ./5.reference/send-receive-help.pd \
      ./5.reference/send-receive-tilde-help.pd \
      ./5.reference/set-help.pd \
+     ./5.reference/set-dsp-tgl.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sig~-help.pd \
@@ -477,7 +478,6 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/miditester.pd \
      ./7.stuff/tools/sizingtest.pd \
      ./7.stuff/tools/testtone.pd \
-     ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
      ./8.topics/expr.htm \
      ./8.topics/fudi.htm \

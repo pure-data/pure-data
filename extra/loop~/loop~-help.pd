@@ -1,4 +1,4 @@
-#N canvas 643 40 620 640 12;
+#N canvas 457 34 620 640 12;
 #X declare -stdpath ./;
 #X floatatom 21 186 6 0 0 0 - - - 0;
 #X obj 265 435 print~;
@@ -38,11 +38,11 @@
 #X obj 8 191 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 8 166 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 33 16 loop~;
-#X text 77 15 - phase generator for looping samplers;
 #X text 109 85 float/signal - transposition value., f 53;
 #X text 109 113 float/signal - window size in samples., f 53;
 #X text 138 199 signal - sampled window size.;
 #X text 138 169 signal - phase output from 0 to 1, f 53;
+#X text 77 15 - phase generator for looping samplers.;
 #X restore 428 15 pd reference;
 #X obj 5 47 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 5 590 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -74,7 +74,6 @@
 #X connect 30 0 5 0;
 #X connect 31 0 5 0;
 #X connect 32 0 20 0;
-#X connect 32 0 20 1;
 #X connect 35 0 36 1;
 #X connect 36 0 3 0;
 #X connect 36 0 6 0;

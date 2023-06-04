@@ -1,4 +1,4 @@
-#N canvas 556 76 568 532 12;
+#N canvas 452 47 568 532 12;
 #X declare -stdpath ./;
 #X text 231 24 CONTROLLING OUTPUT AMPLITUDE;
 #X obj 84 28 osc~ 440;
@@ -6,30 +6,18 @@
 #X obj 102 117 osc~ 660;
 #X obj 84 89 +~;
 #X obj 84 143 +~;
-#X text 178 203 and select "open" to see inside.;
-#X text 27 373 The output control automatically starts DSP whenever
-you touch the level control. Hitting "mute" toggles between the current
-level and zero., f 73;
-#X obj 61 179 output~;
-#X text 171 116 <= Here we make an A major triad as a test signal.
-;
-#X text 137 183 <= this is a subwindow - right click on it;
-#X obj 60 467 declare -stdpath ./;
-#X text 327 467 updated for Pd version 0.52;
-#X text 27 264 In this and subsequent patches \, we'll use the [output~]
-abstraction to control overall amplitude. The amplitudes are in decibels
-\, with 100 being full blast. In this example \, you can't actually
-push the output amplitude past 90 or so without clipping. You'll know
-you're clipping if \, instead of an A major chord \, you hear a single
-\, distorted tone two octaves down. The clipping happens at Pd's last
-stage of audio output. Audio signals internal to Pd have essentially
-no level limit., f 73;
-#X text 27 408 The [output~] abstraction is in the 'extra' folder (aka
-'standard path') \, so we use [declare -stdpath ./] to make sure Pd
-finds it., f 73;
+#X text 247 203 and select "open" to see inside.;
+#X obj 84 179 output~;
+#X text 171 116 <= Here we make an A major triad as a test signal.;
+#X obj 60 482 declare -stdpath ./;
+#X text 27 423 The [output~] abstraction is in the 'extra' folder (aka 'standard path') \, so we use [declare -stdpath ./] to make sure Pd finds it., f 73;
+#X text 227 223 Also select 'help' for more information;
+#X text 200 183 <-- this is a subwindow - right click on it;
+#X text 27 267 In this and subsequent patches \, we'll use the [output~] abstraction to control overall amplitude. Use the slider to control horizontally from 0 (silence) to 1 (full blast). Note \, however \, that a quartic function is applied. In this example \, you can't actually push the output amplitude all the way up without clipping. You'll know you're clipping if \, instead of an A major chord \, you hear a single \, distorted tone two octaves down. The clipping happens at Pd's last stage of audio output. Audio signals internal to Pd have essentially no level limit., f 73;
+#X text 327 482 updated for Pd version 0.54;
+#X text 27 388 The output control automatically starts DSP whenever you touch the sider. You can use the "mute" toggle to turn mute on or off., f 73;
 #X connect 1 0 4 0;
 #X connect 2 0 4 1;
 #X connect 3 0 5 1;
 #X connect 4 0 5 0;
-#X connect 5 0 8 0;
-#X connect 5 0 8 1;
+#X connect 5 0 7 0;

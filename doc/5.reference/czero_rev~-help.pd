@@ -34,7 +34,7 @@
 #X obj 255 103 cos~;
 #X obj 254 134 *~ 0.02;
 #X obj 304 100 sig~ 1.1;
-#X obj 388 424 output~;
+#X obj 368 420 output~;
 #X obj 58 38 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 2 0 10 0;

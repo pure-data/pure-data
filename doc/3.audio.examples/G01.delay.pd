@@ -1,18 +1,18 @@
-#N canvas 492 93 734 458 12;
+#N canvas 492 93 691 458 12;
 #X declare -stdpath ./;
 #X text 66 30 DELAYS;
-#N canvas 166 45 428 350 sample 0;
+#N canvas 293 125 428 350 sample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array G01-tab 62079 float 0;
-#X coords 0 1 62078 -1 200 140 1;
+#X array G01-tab 62079 float 2;
+#X coords 0 1 62079 -1 200 140 1;
 #X restore 88 42 graph;
-#X obj 53 220 loadbang;
-#X obj 52 265 soundfiler;
-#X msg 53 243 read -resize ../sound/voice.wav G01-tab;
+#X obj 68 218 loadbang;
+#X obj 67 283 soundfiler;
+#X msg 68 251 read -resize ../sound/voice.wav G01-tab;
 #X connect 1 0 3 0;
 #X connect 3 0 2 0;
-#X restore 173 378 pd sample;
-#X floatatom 63 233 4 0 999 0 - - - 0;
+#X restore 216 385 pd sample;
+#X floatatom 63 233 6 0 999 0 - - - 0;
 #X text 71 277 read from delay line;
 #X obj 63 306 delread~ delay1;
 #X obj 44 121 tabplay~ G01-tab;
@@ -22,24 +22,14 @@
 #X obj 45 369 output~;
 #X obj 45 336 +~;
 #X obj 59 191 delwrite~ delay1 1000;
-#X text 443 373 updated for Pd version 0.37-1;
+#X text 426 369 updated for Pd version 0.37-1;
 #X text 61 147 test signal to delay;
-#X text 139 246 (msec);
-#X text 106 232 <= delay time;
-#X obj 461 26 declare -stdpath ./;
-#X text 274 67 You can delay a signal using the [delwrite~] and [delread~]
-objects. In this example \, a sample loops continuously and is added
-to a delayed copy of itself., f 55;
-#X text 274 122 The [delwrite~] object creates the delay line. You
-give it a name and a size in milliseconds. Each [delwrite~] should
-have a different name., f 55;
-#X text 274 173 The arguments of [delread~] are the name of a delwrite
-(of which there should be exactly one) and an optional delay time in
-milliseconds between 0 and the length of the delay line. Each [delwrite~]
-may have as many [delread~] objects as you wish \, which can then function
-as multiple delay taps., f 55;
-#X text 274 270 The [delread~] object always delays the signal an integer
-number of samples and does no interpolation.;
+#X obj 440 62 declare -stdpath ./;
+#X text 269 106 You can delay a signal using the [delwrite~] and [delread~] objects. In this example \, a sample loops continuously and is added to a delayed copy of itself., f 55;
+#X text 269 161 The [delwrite~] object creates the delay line. You give it a name and a size in milliseconds. Each [delwrite~] should have a different name., f 55;
+#X text 269 212 The arguments of [delread~] are the name of a delwrite (of which there should be exactly one) and an optional delay time in milliseconds between 0 and the length of the delay line. The [delread~] object delays the signal at integer number of samples and does no interpolation., f 55;
+#X text 269 291 Each [delwrite~] may have as many [delread~] objects as you wish \, which can then function as multiple delay taps., f 55;
+#X text 116 232 <-- delay time (msec), f 11;
 #X connect 2 0 4 0;
 #X connect 4 0 10 1;
 #X connect 5 0 10 0;
@@ -47,4 +37,3 @@ number of samples and does no interpolation.;
 #X connect 6 0 5 0;
 #X connect 7 0 6 0;
 #X connect 10 0 9 0;
-#X connect 10 0 9 1;

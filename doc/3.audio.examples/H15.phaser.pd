@@ -61,21 +61,9 @@
 #X obj 66 528 +~;
 #X obj 238 444 phasor~ 0.3;
 #X obj 238 476 expr~ 1 - 0.03 - 0.6*abs($v1-0.5)*abs($v1-0.5);
-#X text 31 171 Many variations of this have been used. A more pronounced
-effect can be got by using 12 all-pass filters and adding the outputs
-of the 4th \, 8th \, and 12th one to the original. Various stereo configurations
-are possible. Some designers have used 6 instead of the 4 stages used
-here. Controls are often added to set the frequency of sweeping and
-the range of the all-pass coefficients., f 66;
+#X text 31 171 Many variations of this have been used. A more pronounced effect can be got by using 12 all-pass filters and adding the outputs of the 4th \, 8th \, and 12th one to the original. Various stereo configurations are possible. Some designers have used 6 instead of the 4 stages used here. Controls are often added to set the frequency of sweeping and the range of the all-pass coefficients., f 66;
 #X text 330 584 updated for Pd version 0.47;
-#X text 31 47 The phaser ranks \, along with fuzz and wah-wah \, as
-one of the great guitar pedals. A phaser adds an all-pass filtered
-copy of a signal to the original \, causing phase reinforcement and
-cancellation at frequencies that depend on the all-pass coefficients.
-In this example the coefficients range from 0.88 to 0.98 \, controlled
-by a phasor~ object (no relation). The phasor~ is converted to a triangle
-wave (abs($v1-0.5)) and then nonlinearly mapped into a suitable range.
-, f 66;
+#X text 31 47 The phaser ranks \, along with fuzz and wah-wah \, as one of the great guitar pedals. A phaser adds an all-pass filtered copy of a signal to the original \, causing phase reinforcement and cancellation at frequencies that depend on the all-pass coefficients. In this example the coefficients range from 0.88 to 0.98 \, controlled by a phasor~ object (no relation). The phasor~ is converted to a triangle wave (abs($v1-0.5)) and then nonlinearly mapped into a suitable range., f 66;
 #X obj 424 13 declare -stdpath ./;
 #X connect 1 0 4 0;
 #X connect 1 0 11 0;
@@ -88,7 +76,6 @@ wave (abs($v1-0.5)) and then nonlinearly mapped into a suitable range.
 #X connect 9 0 11 1;
 #X connect 10 0 9 0;
 #X connect 11 0 2 0;
-#X connect 11 0 2 1;
 #X connect 12 0 13 0;
 #X connect 13 0 4 1;
 #X connect 13 0 3 1;
