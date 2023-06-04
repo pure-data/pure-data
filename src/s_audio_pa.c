@@ -30,20 +30,10 @@
 #include <fcntl.h>
 #include <portaudio.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #ifndef _WIN32          /* for the "dup2" workaround -- do we still need it? */
 #include <unistd.h>
-#endif
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
 #endif
 
 #if 1

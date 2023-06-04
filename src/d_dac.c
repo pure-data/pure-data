@@ -43,16 +43,23 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
 
 static void dac_dsp(t_dac *x, t_signal **sp)
 {
-    t_int i, *ip;
-    t_signal **sp2;
-    for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
+    t_int i, j;
+    for (i = 0; i < x->x_n; i++)
     {
-        int ch = (int)(*ip - 1);
-        if ((*sp2)->s_n != DEFDACBLKSIZE)
-            pd_error(0, "dac~: bad vector size");
-        else if (ch >= 0 && ch < sys_get_outchannels())
-            dsp_add(plus_perform, 4, STUFF->st_soundout + DEFDACBLKSIZE*ch,
-                (*sp2)->s_vec, STUFF->st_soundout + DEFDACBLKSIZE*ch, (t_int)DEFDACBLKSIZE);
+        int ch = (int)(x->x_vec[i] - 1);
+        if (sp[i]->s_length != DEFDACBLKSIZE)
+            pd_error(x,
+              "dac~: input vector size (%d) doesn't match Pd vector size (%d)",
+                    sp[i]->s_length, DEFDACBLKSIZE);
+        else for (j = 0; j < sp[i]->s_nchans; j++)
+        {
+            if (ch + j >= 0 && ch + j < sys_get_outchannels())
+                dsp_add(plus_perform, 4,
+                    STUFF->st_soundout + DEFDACBLKSIZE * (ch + j),
+                sp[i]->s_vec + j * sp[i]->s_length,
+                    STUFF->st_soundout + DEFDACBLKSIZE * (ch + j),
+                        (t_int)DEFDACBLKSIZE);
+        }
     }
 }
 
@@ -72,7 +79,7 @@ static void dac_free(t_dac *x)
 static void dac_setup(void)
 {
     dac_class = class_new(gensym("dac~"), (t_newmethod)dac_new,
-        (t_method)dac_free, sizeof(t_dac), 0, A_GIMME, 0);
+        (t_method)dac_free, sizeof(t_dac), CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(dac_class, t_dac, x_f);
     class_addmethod(dac_class, (t_method)dac_dsp, gensym("dsp"), A_CANT, 0);
     class_addmethod(dac_class, (t_method)dac_set, gensym("set"), A_GIMME, 0);

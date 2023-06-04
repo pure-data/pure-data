@@ -1,23 +1,23 @@
 # Translation of Pure Data to Russian.
 # This file is put in the public domain.
-# Alex Nadzharov <anadjarov@gmail.com>, 2022.
-#
+# Alex Nadzharov <anadjarov@gmail.com>, 2022, 2023.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "линейный"
@@ -1368,6 +1368,17 @@ msgstr "Вы хотите сохранить изменения в '%s'?"
 
 msgid "Properties"
 msgstr "Свойства"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Принять изменения в '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Принятие изменений обновит содержимое в связанном объекте. Вам необоходимо "
+"сохранить патч, чтобы сделать эти изменения постоянными."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

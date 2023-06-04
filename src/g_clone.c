@@ -5,19 +5,8 @@
 
 /* ---------- clone - maintain copies of a patch ----------------- */
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 #define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
 
 t_class *clone_class;
 static t_class *clone_in_class, *clone_out_class;
@@ -155,13 +144,13 @@ static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
     int first =
         1 + (s != &s_list && s != &s_float && s != &s_symbol && s != &s_bang),
             outc = argc + first;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     SETFLOAT(outv, x->o_n);
     if (first == 2)
         SETSYMBOL(outv + 1, s);
     memcpy(outv+first, argv, sizeof(t_atom) * argc);
     outlet_list(x->o_outlet, 0, outc, outv);
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static PERTHREAD int clone_voicetovis = -1;
@@ -309,9 +298,6 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     for (i = nout = 0; i < x->x_nout; i++)
         if (x->x_outvec[0][i].o_signal)
             nout++;
-        /* create output signals */
-    for (i = 0; i < nout; i++)
-        signal_setchansout(&sp[nin+i], (x->x_packout ? x->x_n : 1));
     for (j = 0; j < x->x_n; j++)
     {
         if (obj_ninlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nin ||
@@ -323,7 +309,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             for (i = 0; i < nout; i++)
             {
                     /* create dummy output signals */
-                signal_setchansout(&sp[nin+i], x->x_packout ? x->x_n : 1);
+                signal_setmultiout(&sp[nin+i], x->x_packout ? x->x_n : 1);
                 dsp_add_zero(sp[nin+i]->s_vec,
                     sp[nin+i]->s_length * sp[nin+i]->s_nchans);
             }
@@ -343,7 +329,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 if (x->x_distributein)
                 {
                         /* distribute multi-channel signal over instances;
-                        wrap around if channel count is lower than instance count */
+                        wrap around if channel count is lower than instance
+                        count */
                     int offset = j % sp[i]->s_nchans;
                     tempio[i] = signal_new(0, 1, sp[i]->s_sr, 0);
                     signal_setborrowed(tempio[i], sp[i]);
@@ -352,8 +339,10 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                     tempio[i]->s_refcount = 1;
                 }
                 else
+                {
                     tempio[i] = sp[i];
-                sp[i]->s_refcount++;
+                    sp[i]->s_refcount++;
+                }
             }
             for (i = 0; i < nout; i++)
                 tempio[nin + i] = signal_newfromcontext(1, 1);
@@ -372,7 +361,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 t_sample *to, *from = tempio[nin + i]->s_vec;
                 if (j == 0) /* now we can the create the output signal */
                 {
-                    signal_setchansout(&sp[nin + i], nchans * x->x_n);
+                    signal_setmultiout(&sp[nin + i], nchans * x->x_n);
                     noutchans[i] = nchans;
                 }
                     /* NB: it is possible for instances to have different
@@ -419,8 +408,10 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                     tempio[i]->s_refcount = 1;
                 }
                 else
+                {
                     tempio[i] = sp[i];
-                sp[i]->s_refcount++;
+                    sp[i]->s_refcount++;
+                }
             }
             for (i = 0; i < nout; i++)
                 tempio[nin + i] = signal_newfromcontext(1, 1);
@@ -432,7 +423,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 if (j == 0)
                 {
                         /* first instance: create output signal and copy content */
-                    signal_setchansout(&sp[nin + i], nchans);
+                    signal_setmultiout(&sp[nin + i], nchans);
                     dsp_add_copy(tempio[nin + i]->s_vec,
                         sp[nin + i]->s_vec, length * nchans);
                     noutchans[i] = nchans;

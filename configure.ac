@@ -107,6 +107,7 @@ AS_CASE([$host],
         LINUX=yes
         platform=Linux
         portaudio=yes
+        watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
         EXTERNAL_EXTENSION=pd_linux
@@ -116,6 +117,7 @@ AS_CASE([$host],
 ],[*-*-gnu*],[
     HURD=yes
     platform=Hurd
+    watchdog=yes
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
     EXTERNAL_EXTENSION=pd_linux
@@ -155,15 +157,12 @@ AS_CASE([$host],
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
-],[*openbsd*],[
-    OPENBSD=yes
-    platform=OpenBSD
-    portaudio=yes
-    EXTERNAL_CFLAGS="-D__OPENBSD__"
-    EXTERNAL_LDFLAGS="-liberty"
-    EXTERNAL_EXTENSION=pd_openbsd
+],[*bsd*],[
+    BSD=yes
+    EXTERNAL_EXTENSION=so
 ],[
     platform=Unknown
+    EXTERNAL_EXTENSION=so
 ])
 
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
@@ -174,7 +173,7 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-AM_CONDITIONAL(OPENBSD, test x$OPENBSD = xyes)
+AM_CONDITIONAL(BSD, test x$BSD = xyes)
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -208,11 +207,14 @@ AC_CHECK_HEADERS([fcntl.h \
                   sys/ioctl.h \
                   sys/param.h \
                   sys/socket.h \
-                  sys/soundcard.h \
                   sys/time.h \
                   sys/timeb.h \
+                  sys/utsname.h \
                   unistd.h
                   ])
+
+AC_CHECK_HEADERS([endian.h machine/endian.h])
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_INT16_T
@@ -247,29 +249,66 @@ AC_CHECK_FUNCS([dup2 \
                 strtol
                 ])
 
+dnl qsort_r: do we have it, and if so, which variant?
+AC_CHECK_FUNCS_ONCE([qsort_r], [], [AC_DEFINE([STUPID_SORT], 1)])
+if test $ac_cv_func_qsort_r = yes; then
+  AC_CACHE_CHECK([for qsort_r signature], [ac_cv_libctf_qsort_r_signature],
+    [AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM([[#undef qsort_r
+                          #include <stdlib.h>
+                          void qsort_r (void *, size_t, size_t,
+                                        int (*) (void const *, void const *,
+                                                 void *),
+                                        void *);
+                          void (*p) (void *, size_t, size_t,
+                                     int (*) (void const *, void const *,
+                                              void *),
+                                     void *) = qsort_r;
+                        ]])],
+       [ac_cv_libctf_qsort_r_signature=GNU],
+       [AC_LINK_IFELSE(
+          [AC_LANG_PROGRAM([[#undef qsort_r
+	                     #include <stdlib.h>
+                             void qsort_r (void *, size_t, size_t, void *,
+                                           int (*) (void *,
+                                                    void const *,
+                                                    void const *));
+                             void (*p) (void *, size_t, size_t, void *,
+                                        int (*) (void *, void const *,
+                                                 void const *)) = qsort_r;
+                           ]])],
+          [ac_cv_libctf_qsort_r_signature=BSD],
+          [ac_cv_libctf_qsort_r_signature=unknown])])])
+fi
+
+case x$ac_cv_libctf_qsort_r_signature in
+  xGNU)     AC_DEFINE([HAVE_QSORT_R_ARG_LAST], 1,
+	     [Whether a qsort_r exists with a void *arg as its last arg.]);;
+  xBSD)     AC_DEFINE([HAVE_QSORT_R_COMPAR_LAST], 1,
+	     [Whether a qsort_r exists with the compar function as its last arg.]);;
+  *)        AC_DEFINE([STUPID_SORT], 1);;
+esac
+
 # Checks for libraries.
-AC_CHECK_LIB([dl], [dlopen])
+have_dl=yes
+AC_SEARCH_LIBS([dlopen], [dl dld], [], [have_dl=no])
+AS_IF([test "x${have_dl}" = "xyes"], AC_DEFINE([HAVE_DLOPEN], 1))
+
 AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
 # src/Makefile.am under pd_LDFLAGS as well
 
-# Apple's CoreAudio
-# not used directly, implicitly needed when using PortAudio on OSX
-AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
-
-# Checking for `pthread_create' function in -pthread (MinGW uses unusual names)
+# Checking for `pthread_create' function in libpthread (MinGW uses unusual names)
 ## CHECK whether this can be replaced by AX_PTHREAD
-AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
-    AC_CHECK_LIB([pthreadGC2], [pthread_create], LIBS="-lpthreadGC2 $LIBS",
-        AC_CHECK_LIB([pthreadGC1], [pthread_create], LIBS="-lpthreadGC1 $LIBS",
-            AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
-         AC_MSG_WARN([pthreads required])))))
+AC_SEARCH_LIBS([pthread_create], [pthread pthreadGC2 pthreadGC1 pthreadGC], [],
+               AC_MSG_WARN([pthreads required]))
 
 # Define variables for use in Makefiles
 AC_SUBST(EXTERNTARGET)
 AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
+AC_SUBST([OSS_LIBS])
 AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_CFLAGS])
 AC_SUBST([JACK_LIBS])
@@ -295,6 +334,14 @@ AS_IF([test "x$macos_version_min" != "x"],[
 
 #########################################
 ##### Configure Options #####
+
+
+##### realtime watchdog #####
+AC_ARG_ENABLE([watchdog],
+    [AS_HELP_STRING([--enable-watchdog], [additionally build watchdog])],,enable_watchdog="$watchdog")
+AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
+AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
+
 
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
@@ -344,7 +391,9 @@ AC_ARG_ENABLE([oss],
     [AS_HELP_STRING([--disable-oss], [do not use OSS driver])],
     [oss=$enableval], [oss=yes])
 AS_IF([test x$oss = xyes],[
-    AC_CHECK_HEADER([sys/soundcard.h], [oss=yes], [oss=no])
+    oss=no
+    AC_CHECK_HEADERS([sys/soundcard.h soundcard.h], [oss=yes; break])
+    AC_CHECK_LIB([ossaudio], [_oss_ioctl], [OSS_LIBS="-lossaudio"])
 ])
 
 ##### ALSA #####
@@ -404,6 +453,10 @@ AS_IF([test x$asio = xyes],
     AS_IF([test x$asio = xno],
         AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
+
+##### Apple's CoreAudio #####
+# not used directly, implicitly needed when using PortAudio on OSX
+AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
 
 ##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
@@ -478,6 +531,39 @@ AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
     [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
     WISH=""])
 AC_SUBST([WISH])
+
+##### Deken OS and CPU #####
+deken_id=""
+AC_ARG_WITH([deken-os],
+    [AS_HELP_STRING([--with-deken-os=<OS>],
+        [Operating System string to use for externals (e.g. Linux, Windows, Darwin,...)])],
+    [DEKEN_OS=$withval])
+AS_IF([test "x${DEKEN_OS}" = "xyes" -o "x${DEKEN_OS}" = "xno"],
+    [AC_MSG_NOTICE([--with-deken-os requires an Operating System, ignoring '${DEKEN_OS}'])
+    DEKEN_OS=""])
+AC_SUBST([DEKEN_OS])
+AS_IF([test "x${DEKEN_OS}" = "x"], [deken_id="???"], [deken_id="${DEKEN_OS}"])
+
+AC_ARG_WITH([deken-cpu],
+    [AS_HELP_STRING([--with-deken-cpu=<CPU>],
+        [CPU architecture string to use for externals (e.g. amd64, i386, arm64,...)])],
+    [DEKEN_CPU=$withval])
+AS_IF([test "x${DEKEN_CPU}" = "xyes" -o "x${DEKEN_CPU}" = "xno"],
+    [AC_MSG_NOTICE([--with-deken-cpu requires a CPU, ignoring '${DEKEN_CPU}'])
+    DEKEN_CPU=""])
+AC_SUBST([DEKEN_CPU])
+AS_IF([test "x${DEKEN_CPU}" = "x"], [deken_id="${deken_id}-???"], [deken_id="${deken_id}-${DEKEN_CPU}"])
+
+AC_ARG_WITH([external-extension],
+    [AS_HELP_STRING([--with-external-extension=<EXT>],
+        [Extension to use for externals in extra/ (e.g. pd_linux, dll, d_fat,...)])],
+    [ext="${withval#.}"])
+AS_IF([test "x${ext}" = "xyes" -o "x${ext}" = "xno"],
+    [AC_MSG_NOTICE([--with-external-extension requires an extension, ignoring '${ext}'])
+    ext=""])
+AS_IF([test "x${ext}" != "x"], [EXTERNAL_EXTENSION="${ext}"])
+
+
 
 ##### Configure Build From Options #####
 ## configure the build based on what we have found above
@@ -632,9 +718,11 @@ AC_MSG_NOTICE([
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
+    Deken identifier:     ${deken_id}
 
     fftw:                 $fftw
     wish(tcl/tk):         $wish
+    watchdog:             $enable_watchdog
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
     libpd:                $libpd

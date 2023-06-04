@@ -1,24 +1,24 @@
-# Vietnamese translation for Pure Data-0.43.
+# SOME DESCRIPTIVE TITLE.
 # This file is put in the public domain.
-# Clytie Siddall <clytie@riverland.net.au>, 2005.
+# Alex Nadzharov <anadjarov@gmail.com>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.43\n"
+"Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2005-07-28 17:29+0930\n"
-"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
-"Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/vi/>\n"
-"Language: vi\n"
+"PO-Revision-Date: 2023-02-19 20:36+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/hy/>\n"
+"Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: LocFactoryEditor 1.2.2\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "գծային"
 
 msgid "logarithmic"
 msgstr ""
@@ -29,13 +29,11 @@ msgstr ""
 msgid "new&old"
 msgstr ""
 
-#, fuzzy
 msgid "no scale"
-msgstr "Lưu"
+msgstr ""
 
-#, fuzzy
 msgid "scale"
-msgstr "Lưu"
+msgstr ""
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -47,16 +45,14 @@ msgstr ""
 msgid "Undo connect"
 msgstr ""
 
-#, fuzzy
 msgid "Undo cut"
-msgstr "U-gan-đa"
+msgstr ""
 
 msgid "Undo disconnect"
 msgstr ""
 
-#, fuzzy
 msgid "Undo duplicate"
-msgstr "Ngày"
+msgstr ""
 
 msgid "Undo motion"
 msgstr ""
@@ -73,16 +69,14 @@ msgstr ""
 msgid "Redo connect"
 msgstr ""
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "U-gan-đa"
+msgstr ""
 
 msgid "Redo disconnect"
 msgstr ""
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "Ngày"
+msgstr ""
 
 msgid "Redo motion"
 msgstr ""
@@ -118,67 +112,58 @@ msgid "(re-save preferences to reinstate them)"
 msgstr ""
 
 msgid "File"
-msgstr "Tập tin"
+msgstr ""
 
-#, fuzzy
 msgid "Edit"
-msgstr "_Hiệu chỉnh"
+msgstr ""
 
 msgid "Put"
 msgstr ""
 
 msgid "Find"
-msgstr "Tìm"
+msgstr ""
 
-#, fuzzy
 msgid "Media"
-msgstr "Maxêđôni"
+msgstr ""
 
-#, fuzzy
 msgid "Window"
-msgstr "_Cửa sổ"
+msgstr ""
 
 msgid "Help"
-msgstr "Trợ giúp"
+msgstr ""
 
 msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
-msgstr "Chép"
+msgstr ""
 
-#, fuzzy
 msgid "Paste"
-msgstr "Ngày"
+msgstr ""
 
 msgid "Array Properties"
 msgstr ""
 
-#, fuzzy
 msgid "Array"
-msgstr "Ăn-đoa-râ"
+msgstr ""
 
-#, fuzzy
 msgid "Name:"
-msgstr "Tên"
+msgstr ""
 
 msgid "Size:"
-msgstr "Cỡ:"
+msgstr ""
 
-#, fuzzy
 msgid "Save contents"
-msgstr "_Nội dụng"
+msgstr ""
 
 msgid "Draw as:"
 msgstr ""
 
-#, fuzzy
 msgid "Polygon"
-msgstr "Ba-lan"
+msgstr ""
 
-#, fuzzy
 msgid "Points"
-msgstr "Cổng"
+msgstr ""
 
 msgid "Bezier curve"
 msgstr ""
@@ -189,29 +174,26 @@ msgstr ""
 msgid "New graph"
 msgstr ""
 
-#, fuzzy
 msgid "Last graph"
-msgstr "Tin nhẳn trước:"
+msgstr ""
 
 msgid "Options"
 msgstr ""
 
-#, fuzzy
 msgid "Open List View..."
-msgstr "Danh sách đuổi ra..."
+msgstr ""
 
-#, fuzzy
 msgid "Delete array"
-msgstr "Xóa bỏ"
+msgstr ""
 
 msgid "Cancel"
-msgstr "Thôi"
+msgstr ""
 
 msgid "Apply"
-msgstr "Áp dụng"
+msgstr ""
 
 msgid "OK"
-msgstr ""
+msgstr "լավ"
 
 msgid "Audio Settings"
 msgstr ""
@@ -243,9 +225,8 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-#, fuzzy
 msgid "Channels:"
-msgstr "Thôi"
+msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -265,9 +246,8 @@ msgstr ""
 msgid "Canvas Properties"
 msgstr ""
 
-#, fuzzy
 msgid "Scale"
-msgstr "Lưu"
+msgstr ""
 
 msgid "X units per pixel:"
 msgstr ""
@@ -293,9 +273,8 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#, fuzzy
 msgid "Margin:"
-msgstr "Dòng đánh dấu:"
+msgstr ""
 
 msgid "Y range: from"
 msgstr ""
@@ -317,9 +296,9 @@ msgstr ""
 msgid "Couldn't find '%1$s' in %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -329,31 +308,27 @@ msgstr ""
 msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
-#, fuzzy
 msgid "Pd window"
-msgstr "Cửa sô Gởi"
+msgstr ""
 
 msgid "Match whole word only"
 msgstr ""
 
 msgid "Close"
-msgstr "Đóng"
+msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
-msgstr "Phông chữ:"
+msgstr ""
 
-#, fuzzy
 msgid "Font"
-msgstr "Phông chữ:"
+msgstr ""
 
-#, fuzzy
 msgid "Font Size"
-msgstr "Cỡ:"
+msgstr ""
 
-#, fuzzy
 msgid "Stretch"
-msgstr "Bắt đầu:"
+msgstr ""
 
 msgid "X and Y"
 msgstr ""
@@ -367,62 +342,53 @@ msgstr ""
 msgid "GUI Box Properties"
 msgstr ""
 
-#, fuzzy
 msgid "Messages"
-msgstr "Tin nhẳn"
+msgstr ""
 
 msgid "Send symbol:"
 msgstr ""
 
-#, fuzzy
 msgid "Receive symbol:"
-msgstr "Cửa sổ Nhận"
+msgstr ""
 
 msgid "Width:"
 msgstr ""
 
-#, fuzzy
 msgid "Limits"
-msgstr "Giới hạn người dùng"
+msgstr ""
 
 msgid "Lower:"
 msgstr ""
 
-#, fuzzy
 msgid "Upper:"
-msgstr "Người dùng:"
+msgstr ""
 
 msgid "Label"
 msgstr ""
 
-#, fuzzy
 msgid "Left"
-msgstr "Bên trái"
+msgstr ""
 
 msgid "Right"
-msgstr "Bên phải"
+msgstr ""
 
 msgid "Top"
-msgstr "Đầu"
+msgstr ""
 
 msgid "Bottom"
-msgstr "Đáy"
+msgstr ""
 
-#, fuzzy
 msgid "Background color"
-msgstr "Nền:"
+msgstr ""
 
-#, fuzzy
 msgid "Foreground color"
-msgstr "Tiền cảnh:"
+msgstr ""
 
-#, fuzzy
 msgid "Label color"
-msgstr "Chọn màu"
+msgstr ""
 
-#, fuzzy
 msgid "Bang"
-msgstr "Đuổi"
+msgstr ""
 
 msgid "Flash Time (msec)"
 msgstr ""
@@ -433,9 +399,8 @@ msgstr ""
 msgid "Max:"
 msgstr ""
 
-#, fuzzy
 msgid "Toggle"
-msgstr "Tô-gô"
+msgstr ""
 
 msgid "Non Zero Value"
 msgstr ""
@@ -443,16 +408,14 @@ msgstr ""
 msgid "Value:"
 msgstr ""
 
-#, fuzzy
 msgid "Number2"
-msgstr "$ Số"
+msgstr ""
 
 msgid "Width (digits):"
 msgstr ""
 
-#, fuzzy
 msgid "Height:"
-msgstr "Bên phải"
+msgstr ""
 
 msgid "Output Range"
 msgstr ""
@@ -463,13 +426,11 @@ msgstr ""
 msgid "Vslider"
 msgstr ""
 
-#, fuzzy
 msgid "Hslider"
-msgstr "Bị ẩn"
+msgstr ""
 
-#, fuzzy
 msgid "Vradio"
-msgstr "Phiên bản"
+msgstr ""
 
 msgid "Num cells:"
 msgstr ""
@@ -480,9 +441,8 @@ msgstr ""
 msgid "VU Meter"
 msgstr ""
 
-#, fuzzy
 msgid "Canvas"
-msgstr "Ca-na-đa"
+msgstr ""
 
 msgid "Visible Rectangle (pix)"
 msgstr ""
@@ -494,9 +454,8 @@ msgstr ""
 msgid "Parameters"
 msgstr ""
 
-#, fuzzy
 msgid "Init"
-msgstr "Mời"
+msgstr ""
 
 msgid "No init"
 msgstr ""
@@ -514,26 +473,22 @@ msgid "Y offset:"
 msgstr ""
 
 msgid "Colors"
-msgstr "Màu"
+msgstr ""
 
-#, fuzzy
 msgid "Background"
-msgstr "Nền:"
+msgstr ""
 
-#, fuzzy
 msgid "Front"
-msgstr "Phông chữ:"
+msgstr ""
 
 msgid "Compose color"
 msgstr ""
 
-#, fuzzy
 msgid "Test label"
-msgstr "Kiểm tra tất cả"
+msgstr ""
 
-#, fuzzy
 msgid "Send a Pd message"
-msgstr "Tin nhẳn"
+msgstr ""
 
 msgid "(use arrow keys for history)"
 msgstr ""
@@ -574,9 +529,8 @@ msgstr ""
 msgid "Externals Install Directory"
 msgstr ""
 
-#, fuzzy
 msgid "Clear"
-msgstr "Xóa danh sách"
+msgstr ""
 
 msgid "Choose Pd documents directory:"
 msgstr ""
@@ -606,23 +560,20 @@ msgstr ""
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-#, fuzzy
 msgid "Help Browser"
-msgstr "Duyệt..."
+msgstr ""
 
 msgid "Associated Files"
 msgstr ""
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "Tập tin"
+msgstr ""
 
 msgid "Max Patch Files"
 msgstr ""
 
-#, fuzzy
 msgid "Max Text Files"
-msgstr "Tập tin"
+msgstr ""
 
 msgid "Max Patch Files (.pat)"
 msgstr ""
@@ -699,9 +650,9 @@ msgstr ""
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Installing '%s'"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -813,9 +764,9 @@ msgid ""
 "(treats other versions like foreign architectures)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Sở thích..."
+msgstr ""
 
 #, tcl-format
 msgid "Platform re-detected: %s"
@@ -824,17 +775,14 @@ msgstr ""
 msgid "Deken Packages"
 msgstr ""
 
-#, fuzzy
 msgid "ZIP Files"
-msgstr "Tệp ZIP"
+msgstr ""
 
-#, fuzzy
 msgid "TAR Files"
-msgstr "Tệp TAR"
+msgstr ""
 
-#, fuzzy
 msgid "All Files"
-msgstr "Tất cả các tệp"
+msgstr ""
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
@@ -904,9 +852,8 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-#, fuzzy
 msgid "Search"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 #, tcl-format
 msgid "Install (%d)"
@@ -950,11 +897,10 @@ msgid "Install DEK file..."
 msgstr ""
 
 msgid "Preferences..."
-msgstr "Sở thích..."
+msgstr ""
 
-#, fuzzy
 msgid "Search for: "
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 msgid "libraries"
 msgstr ""
@@ -989,16 +935,15 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#, fuzzy
 msgid "Search Results"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 msgid "Log"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 #, tcl-format
 msgid "online? %s"
@@ -1079,9 +1024,9 @@ msgstr ""
 msgid "[deken] Platform detected: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching on %s..."
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
@@ -1094,13 +1039,12 @@ msgstr ""
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for '%s' failed!"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
-#, fuzzy
 msgid "Search failed"
-msgstr "Tìm kiếm trong văn bản..."
+msgstr ""
 
 msgid "Unable to perform search."
 msgstr ""
@@ -1175,39 +1119,33 @@ msgstr ""
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
-#, fuzzy
 msgid "About Pd"
-msgstr "_Giới thiệu"
+msgstr ""
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
 msgid "Save"
-msgstr "Lưu"
+msgstr ""
 
-#, fuzzy
 msgid "Save As..."
-msgstr "Lưu là"
+msgstr ""
 
-#, fuzzy
 msgid "Print..."
-msgstr "_Hiệu chỉnh..."
+msgstr ""
 
 msgid "Paste Replace"
 msgstr ""
 
-#, fuzzy
 msgid "Duplicate"
-msgstr "Ngày"
+msgstr ""
 
-#, fuzzy
 msgid "Zoom In"
-msgstr "Đáy"
+msgstr ""
 
-#, fuzzy
 msgid "Zoom Out"
-msgstr "Đáy"
+msgstr ""
 
 msgid "Tidy Up"
 msgstr ""
@@ -1218,48 +1156,41 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-#, fuzzy
 msgid "Edit Mode"
-msgstr "Chế độ"
+msgstr ""
 
-#, fuzzy
 msgid "Undo"
-msgstr "U-gan-đa"
+msgstr ""
 
-#, fuzzy
 msgid "Redo"
-msgstr "Màu đỏ:"
+msgstr ""
 
 msgid "New"
-msgstr "Mới"
+msgstr ""
 
 msgid "Open"
-msgstr "Mở"
+msgstr ""
 
-#, fuzzy
 msgid "Message..."
-msgstr "Tin nhẳn"
+msgstr ""
 
 msgid "Cut"
 msgstr ""
 
-#, fuzzy
 msgid "Select All"
-msgstr "Chọn màu"
+msgstr ""
 
-#, fuzzy
 msgid "Clear Console"
-msgstr "Xóa danh sách"
+msgstr ""
 
 msgid "Object"
 msgstr ""
 
 msgid "Message"
-msgstr "Tin nhẳn"
+msgstr ""
 
-#, fuzzy
 msgid "Number"
-msgstr "$ Số"
+msgstr ""
 
 msgid "List"
 msgstr ""
@@ -1267,16 +1198,14 @@ msgstr ""
 msgid "Symbol"
 msgstr ""
 
-#, fuzzy
 msgid "Comment"
-msgstr "Lệnh"
+msgstr ""
 
 msgid "Graph"
-msgstr "Đồ thị"
+msgstr ""
 
-#, fuzzy
 msgid "Find..."
-msgstr "Gởi tâp tin..."
+msgstr ""
 
 msgid "Find Again"
 msgstr ""
@@ -1287,16 +1216,14 @@ msgstr ""
 msgid "DSP On"
 msgstr ""
 
-#, fuzzy
 msgid "DSP Off"
-msgstr "Tất"
+msgstr ""
 
 msgid "Test Audio and MIDI..."
 msgstr ""
 
-#, fuzzy
 msgid "Load Meter"
-msgstr "Bộ đo trễ:"
+msgstr ""
 
 msgid "Audio Settings..."
 msgstr ""
@@ -1307,31 +1234,26 @@ msgstr ""
 msgid "Minimize"
 msgstr ""
 
-#, fuzzy
 msgid "Zoom"
-msgstr "Đáy"
+msgstr ""
 
 msgid "Bring All to Front"
 msgstr ""
 
-#, fuzzy
 msgid "Next Window"
-msgstr "Cửa sô Gởi"
+msgstr ""
 
-#, fuzzy
 msgid "Previous Window"
-msgstr "Cửa sô Gởi"
+msgstr ""
 
-#, fuzzy
 msgid "Parent Window"
-msgstr "Cửa sô Gởi"
+msgstr ""
 
 msgid "HTML Manual..."
 msgstr ""
 
-#, fuzzy
 msgid "Browser..."
-msgstr "Duyệt..."
+msgstr ""
 
 msgid "List of objects..."
 msgstr ""
@@ -1345,9 +1267,8 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-#, fuzzy
 msgid "Clear Menu"
-msgstr "Xóa danh sách"
+msgstr ""
 
 msgid ""
 "Delete all preferences?\n"
@@ -1372,17 +1293,14 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-#, fuzzy
 msgid "Zoom New Windows"
-msgstr "Cửa sô Gởi"
+msgstr ""
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "Sở thích..."
+msgstr ""
 
-#, fuzzy
 msgid "Save to..."
-msgstr "Lưu là"
+msgstr ""
 
 msgid "Load from..."
 msgstr ""
@@ -1390,15 +1308,14 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-#, fuzzy
 msgid "Preferences"
-msgstr "Sở thích..."
+msgstr ""
 
 msgid "Open Recent"
 msgstr ""
 
 msgid "Quit"
-msgstr "Thoát"
+msgstr ""
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -1436,12 +1353,12 @@ msgstr ""
 msgid "Tcl:"
 msgstr ""
 
-msgid "Pd"
-msgstr ""
-
 #, fuzzy
+msgid "Pd"
+msgstr "պդ"
+
 msgid "DSP"
-msgstr "Tất"
+msgstr ""
 
 msgid "Audio I/O error"
 msgstr ""
@@ -1462,55 +1379,17 @@ msgid "debug"
 msgstr ""
 
 msgid "all"
-msgstr ""
+msgstr "բոլորը"
 
 msgid "New..."
-msgstr ""
+msgstr "Նոր..."
 
-#, fuzzy
 msgid "Edit..."
-msgstr "_Hiệu chỉnh"
+msgstr "Խմբագրել..."
 
-#, fuzzy
 msgid "Delete"
-msgstr "Xóa bỏ"
+msgstr "Ջնջել"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
-
-#, fuzzy
-#~ msgid "bottom:"
-#~ msgstr "Đáy"
-
-#, fuzzy
-#~ msgid "height:"
-#~ msgstr "Bên phải"
-
-#, fuzzy
-#~ msgid "right:"
-#~ msgstr "Bên phải"
-
-#, fuzzy
-#~ msgid "size:"
-#~ msgstr "Cỡ:"
-
-#, fuzzy
-#~ msgid "start searching for externals..."
-#~ msgstr "Tìm kiếm trong văn bản..."
-
-#, fuzzy
-#~ msgid "for:"
-#~ msgstr "Cổng:"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "Đóng thanh/cửa sổ này"
-
-#, fuzzy
-#~ msgid "Filters"
-#~ msgstr "Tập tin"
-
-#, fuzzy
-#~ msgid "Text Editor"
-#~ msgstr "Màu chữ"

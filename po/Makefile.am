@@ -77,8 +77,8 @@ ALL_LINGUAS = \
 	el en_ca es eu \
 	fr \
 	gu \
-	hi hu \
-	it \
+	he hi hu \
+	id it \
 	ja \
 	ko \
 	nl \

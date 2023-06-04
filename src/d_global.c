@@ -190,7 +190,7 @@ static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
 {
     x->x_length = sp[0]->s_length;
     sigreceive_set(x, x->x_sym);
-    signal_setchansout(&sp[0], x->x_nchans);
+    signal_setmultiout(&sp[0], x->x_nchans);
     if ((x->x_length * x->x_nchans) & 7)
         dsp_add(sigreceive_perform, 3,
             x, sp[0]->s_vec, (t_int)(x->x_length * x->x_nchans));
@@ -268,7 +268,7 @@ static t_int *sigcatch_perform(t_int *w)
 static void sigcatch_dsp(t_sigcatch *x, t_signal **sp)
 {
     sigcatch_fixbuf(x, sp[0]->s_length);
-    signal_setchansout(&sp[0], x->x_nchans);
+    signal_setmultiout(&sp[0], x->x_nchans);
     dsp_add(sigcatch_perform, 3, x->x_vec, sp[0]->s_vec,
         x->x_length * x->x_nchans);
 }
@@ -307,7 +307,7 @@ static void *sigthrow_new(t_symbol *s)
     t_sigthrow *x = (t_sigthrow *)pd_new(sigthrow_class);
     x->x_sym = s;
     x->x_whereto  = 0;
-    x->x_length = 1;
+    x->x_length = 0;
     x->x_f = 0;
     return (x);
 }
@@ -335,7 +335,7 @@ static void sigthrow_set(t_sigthrow *x, t_symbol *s)
     {
         int length = canvas_getsignallength(catcher->x_canvas);
         sigcatch_fixbuf(catcher, length);
-        if (length != x->x_length)
+        if (x->x_length && length != x->x_length)
         {
             pd_error(x, "throw~ %s: my vector size %d doesn't match catch (%d)",
                 x->x_sym->s_name, x->x_length, length);
@@ -379,4 +379,3 @@ void d_global_setup(void)
     sigcatch_setup();
     sigthrow_setup();
 }
-
