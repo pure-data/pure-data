@@ -29,9 +29,7 @@
 #include <tchar.h>
 #include <io.h>
 #endif
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 #ifdef __APPLE__ /* needed for plist handling */
 #include <CoreFoundation/CoreFoundation.h>
 #endif

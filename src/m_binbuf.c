@@ -18,9 +18,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 struct _binbuf
 {
@@ -587,29 +585,6 @@ done:
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
-
-#ifdef HAVE_ALLOCA
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < HUGEMSG || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
-
 void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 {
     t_atom smallstack[SMALLMSG], *mstack, *msp;
@@ -647,14 +622,14 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         }
         if (maxnargs <= SMALLMSG)
             mstack = smallstack;
-        else ATOMS_ALLOCA(mstack, maxnargs);
+        else ALLOCA(t_atom, mstack, maxnargs, HUGEMSG);
 #else
             /* just pessimistically allocate enough to hold everything
             at once.  This turned out to run slower in a simple benchmark
             I tried, perhaps because the extra memory allocation
             hurt the cache hit rate. */
         maxnargs = ac;
-        ATOMS_ALLOCA(mstack, maxnargs);
+        ALLOCA(t_atom, mstack, maxnargs, HUGEMSG);
 #endif
 
     }
@@ -809,7 +784,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     }
 broken:
     if (maxnargs > SMALLMSG)
-         ATOMS_FREEA(mstack, maxnargs);
+         FREEA(t_atom, mstack, maxnargs, HUGEMSG);
 }
 
 int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)

@@ -102,27 +102,35 @@ static t_class *pd_tilde_class;
 
 
 static const char *pd_tilde_dllextent[] = {
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || \
-    defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
     ".pd_linux",
-    ".so",
 #elif defined(__APPLE__)
-    ".d_fat",
     ARCHDLLEXT(".d_")
+    ".d_fat",
     ".pd_darwin",
-    ".so",
-#elif defined(__OPENBSD__)
-    ARCHDLLEXT(".o_")
-    ".pd_openbsd",
-    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+#endif
+        /* and some generic extensions */
+#if defined(_WIN32) || defined(__CYGWIN__)
     ".dll",
 #else
     ".so",
 #endif
     0};
+
+
+static const char*get_dllextent()
+{
+#if PD
+    const char**dllextent = sys_get_dllextensions();
+    if(dllextent && *dllextent)
+        return dllextent;
+#endif
+    return pd_tilde_dllextent;
+}
+
 
 #include "binarymsg.c"
 
@@ -562,7 +570,7 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
         }
     }
         /* check that the scheduler dynamic linkable exists w either suffix */
-    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
+    for(dllextent=get_dllextent(); *dllextent; dllextent++)
     {
       snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
       sys_bashfilename(tmpbuf, schedbuf);

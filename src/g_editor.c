@@ -10,9 +10,7 @@
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 struct _instanceeditor
 {

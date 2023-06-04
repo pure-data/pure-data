@@ -9,10 +9,7 @@
 #include <string.h>
 #include <errno.h>
 #include "s_stuff.h"
-
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 t_printhook sys_printhook = NULL;
 int sys_printtostderr;

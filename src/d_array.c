@@ -904,4 +904,3 @@ void d_array_setup(void)
     tabread4_setup();
     tabwrite_setup();
 }
-
