@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"PO-Revision-Date: 2023-06-04 19:45+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -148,7 +148,7 @@ msgid "Paste"
 msgstr "Einfügen"
 
 msgid "Array Properties"
-msgstr "Array Eigenschaften"
+msgstr "Array-Eigenschaften"
 
 msgid "Array"
 msgstr "Array"
@@ -203,9 +203,8 @@ msgstr "Anwenden"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "no device"
-msgstr "Eingabegerät 2:"
+msgstr "kein Gerät"
 
 msgid "(same as input device)..."
 msgstr "(wie Eingabegerät)"
@@ -223,7 +222,7 @@ msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
 
 msgid "audio system"
-msgstr ""
+msgstr "Audio-System"
 
 msgid "Settings"
 msgstr "Einstellungen"
@@ -510,13 +509,11 @@ msgstr "Pd Message senden"
 msgid "(use arrow keys for history)"
 msgstr "(benutzen Sie die Pfeiltasten zum Blättern)"
 
-#, fuzzy
 msgid "(no device)"
-msgstr "Eingabegerät 2:"
+msgstr "(kein Gerät)"
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Eingabegeräte"
+msgstr "keine Eingabegeräte"
 
 msgid "In Ports:"
 msgstr "Eingänge:"
@@ -525,7 +522,7 @@ msgid "Out Ports:"
 msgstr "Ausgänge:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "MIDI-System"
 
 msgid "MIDI Settings"
 msgstr "MIDI Einstellungen"
@@ -561,9 +558,8 @@ msgstr "Installationsverzeichnis für Bibliotheken"
 msgid "Clear"
 msgstr "Löschen"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Einstellungen"
+msgstr "Pfad-Einstellungen"
 
 msgid "Choose Pd documents directory:"
 msgstr "Wählen Sie ein Verzeichnis für Pd-Dokumente:"
@@ -578,48 +574,43 @@ msgstr "Neuen Pfad hinzufügen"
 msgid "Edit existing path [%s]"
 msgstr "Vorhandenen Pfad editieren (%s)"
 
-#, fuzzy
 msgid "Patch windows"
-msgstr "Pd Fenster"
+msgstr "Patch-Fenster"
 
 msgid "Zoom New Windows"
 msgstr "Neue Fenster vergrößern"
 
-#, fuzzy
 msgid "GUI settings"
-msgstr "GUI-Einstellungen entfernt"
+msgstr "GUI-Einstellungen"
 
 msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
+"Layout des Eigenschaftendialogs (Schließen und Öffnen Sie die Eigenschaften, "
+"um die Änderungen zu sehen)"
 
 msgid "use tabs"
-msgstr ""
+msgstr "Tabs verwenden"
 
 msgid "single page"
-msgstr ""
+msgstr "Alles auf einer Seite"
 
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Einstellungen"
+msgstr "Start"
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Einstellungen"
+msgstr "Audio"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Einstellungen"
+msgstr "MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Deken %s Einstellungen"
+msgstr "deken-Einstellungen"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Einstellungen"
+msgstr "anderes"
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
@@ -628,23 +619,22 @@ msgid "Edit library"
 msgstr "Bibliothek bearbeiten"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "Diese Änderungen werden erst nach einem Neustart von Pd wirksam!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Pd-Bibliotheken die automatisch geladen werden"
 
-#, fuzzy
 msgid "Startup options"
-msgstr "Kommandozeilenoptionen:"
+msgstr "Startoptionen"
 
 msgid "Defeat real-time scheduling"
 msgstr "Echtzeit-Modus unterdrücken"
 
 msgid "language"
-msgstr ""
+msgstr "Sprache"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menüsprache"
 
 msgid "Startup flags:"
 msgstr "Kommandozeilenoptionen:"
@@ -1238,126 +1228,125 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Konnte Einstellungen '%1$s' nicht in %2$s erstellen"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arabisch"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Aserbaidschanisch"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belarussisch"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgarisch"
 
 msgid "German"
-msgstr ""
+msgstr "Deutsch"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Deutsch (Österreich)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Griechisch"
 
 msgid "English"
-msgstr ""
+msgstr "Englisch"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Englisch (Kanada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Englisch (UK)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Englisch (USA)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Spanisch"
 
 msgid "Basque"
-msgstr ""
+msgstr "Baskisch"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finnisch"
 
 msgid "French"
-msgstr ""
+msgstr "Französisch"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarati"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebräisch"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Ungarisch"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenisch"
 
 msgid "Italian"
-msgstr ""
+msgstr "Italienisch"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesisch"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japanisch"
 
 msgid "Korean"
-msgstr ""
+msgstr "Koreanisch"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Holländisch"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panjabi"
 
 msgid "Polish"
-msgstr ""
+msgstr "Polnisch"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugiesisch"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugiesisch (Brasilien)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugiesisch (Portugal)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Russisch"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albanisch"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Schwedisch"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Türkisch"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainisch"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamesisch"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chinesisch (traditionell)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "Standardarchitektur: %s"
+msgstr "(Standardsprache: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "Übersetzungen"
+msgstr "(keine Übersetzung)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1527,7 +1516,6 @@ msgstr "GUI-Einstellungen entfernt"
 msgid "no Pd-GUI settings to clear"
 msgstr "Keine Pd-GUI Einstellungen zum Zurücksetzen"
 
-#, fuzzy
 msgid "Edit Preferences..."
 msgstr "Einstellungen..."
 
@@ -1615,7 +1603,7 @@ msgid "all"
 msgstr "Alle"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "Neu..."
