@@ -18,8 +18,8 @@
 #X obj 60 366 phasor~ 0.02;
 #X msg 245 367 150001;
 #X text 34 240 At left below an onset (1 or 150000 samples) is added to the index of a table lookup. If you select the onset of 150001 \, you should hear the truncation error. (The table contains a Nyquist signal and the "correct" output should be a 100 Hz. tone.) At right \, the onset is presented in the separate onset inlet. The worst-case truncation error drops by about 30 dB., f 85;
-#X text 76 572 BAD;
-#X text 208 569 GOOD;
+#X text 93 576 BAD;
+#X text 225 576 GOOD;
 #X text 246 346 ONSET INTO TABLE;
 #X obj 423 12 declare -stdpath ./;
 #X text 422 341 First \, generate the table:;
@@ -30,10 +30,8 @@
 #X connect 4 0 5 0;
 #X connect 5 0 8 0;
 #X connect 7 0 3 0;
-#X connect 7 0 3 1;
 #X connect 8 0 6 0;
 #X connect 9 0 10 0;
-#X connect 9 0 10 1;
 #X connect 11 0 12 0;
 #X connect 11 0 9 0;
 #X connect 12 0 7 0;

@@ -67,9 +67,9 @@ typedef struct _audiosettings
     int a_nchindev;
     int a_chindevvec[MAXAUDIOINDEV];
     int a_noutdev;
-    int a_outdevvec[MAXAUDIOINDEV];
+    int a_outdevvec[MAXAUDIOOUTDEV];
     int a_nchoutdev;
-    int a_choutdevvec[MAXAUDIOINDEV];
+    int a_choutdevvec[MAXAUDIOOUTDEV];
     int a_srate;
     int a_advance;
     int a_callback;

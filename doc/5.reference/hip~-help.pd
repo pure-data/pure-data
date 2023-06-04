@@ -7,60 +7,43 @@
 #X text 352 502 updated for Pd version 0.44;
 #X msg 297 442 \; pd compatibility 0.43;
 #X text 231 206 Creation argument initializes cutoff frequency.;
-#X text 40 344 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
-high-frequency output gain was incorrectly greater than one (usually
-only slightly so \, but noticeably if the cutoff frequency was more
-than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY
-in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
-To get the old (0.43 and earlier) behavior \, set "compatibility" to
-0.43 in Pd's command line or by a message:, f 67;
+#X text 40 344 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the high-frequency output gain was incorrectly greater than one (usually only slightly so \, but noticeably if the cutoff frequency was more than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3. To get the old (0.43 and earlier) behavior \, set "compatibility" to 0.43 in Pd's command line or by a message:, f 67;
 #X text 24 503 see also:;
 #X obj 97 502 lop~;
 #X obj 136 502 bp~;
 #X obj 210 502 bob~;
 #X obj 170 502 vcf~;
 #X obj 156 156 noise~;
-#X obj 156 262 output~;
+#X obj 156 252 output~;
 #X obj 156 204 hip~ 2000;
-#X obj 295 266 declare -stdpath ./;
+#X obj 323 268 declare -stdpath ./;
 #X obj 96 531 biquad~;
 #X obj 155 530 slop~, f 7;
 #X obj 214 530 cpole~, f 7;
 #X obj 275 530 fexpr~;
 #X text 330 530 - unfriendly filters;
-#X obj 8 43 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 43 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 786 97 475 260 reference 0;
-#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 193 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 233 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 193 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 8 233 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 106 76 signal - audio signal to be filtered.;
 #X text 113 95 clear - clear filter's memory., f 36;
 #X text 106 163 signal - filtered signal.;
-#X obj 9 71 cnv 1 450 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 9 119 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 9 71 cnv 1 450 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 9 119 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 113 126 float - rolloff frequency., f 36;
 #X text 104 203 1) float - rolloff frequency in Hz (default 0).;
 #X obj 36 12 hip~;
 #X text 78 11 - one-pole high pass filter.;
 #X restore 395 15 pd reference;
 #X text 493 16 <= click;
-#X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 39 56 [hip~] is a one-pole high pass filter with a specified
-cutoff frequency. Left (audio) inlet is the incoming audio signal.
-Right (control) inlet sets cutoff frequency., f 72;
+#X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 39 56 [hip~] is a one-pole high pass filter with a specified cutoff frequency. Left (audio) inlet is the incoming audio signal. Right (control) inlet sets cutoff frequency., f 72;
 #X text 162 124 <-- reinitialize internal state;
 #X text 259 176 <-- set cutoff frequency;
 #X connect 0 0 15 1;
 #X connect 1 0 15 0;
 #X connect 13 0 15 0;
 #X connect 15 0 14 0;
-#X connect 15 0 14 1;

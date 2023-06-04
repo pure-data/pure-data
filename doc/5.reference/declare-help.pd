@@ -1,8 +1,7 @@
-#N canvas 199 25 1063 590 12;
+#N canvas 236 111 1063 590 12;
 #X declare;
 #X declare;
 #X obj 23 10 declare;
-#X text 90 9 - set environment for loading patch;
 #X text 20 271 -lib;
 #X text 20 288 -stdlib;
 #X text 20 235 -path;
@@ -42,12 +41,12 @@
 #X obj 8 80 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 7 105 cnv 1 600 1 empty empty flags: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 24 14 declare;
-#X text 91 14 - set environment for loading patch.;
 #X text 156 53 NONE;
 #X text 75 113 -path <symbol> - add to search path \, relative to the patch or user paths., f 73;
 #X text 54 132 -stdpath <symbol> - add to search path \, relative to Pd (the 'extra' folder)., f 76;
 #X text 82 150 -lib <symbol> - load a library \, relative to the patch or user paths., f 72;
 #X text 61 168 -stdlib <symbol> - load a library \, relative to Pd (the 'extra' folder)., f 75;
+#X text 91 14 - set search path and/or libraries for the patch., f 68;
 #X restore 881 9 pd reference;
 #X text 974 9 <= click;
 #X obj 4 551 cnv 1 1055 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -57,6 +56,7 @@
 #X text 524 190 However \, note that when you load a library (with [declare -lib <symbol>] or via startup) \, all of its objects get pre loaded and prevail \, so using [declare -path <symbol>] cannot enforce loading priority. Hence \, you may need to adopt slash declarations as in [library/objectname]. Also Note that while '-path' will only add search paths for the patch that owns the [declare] object \, once a library is loaded \, it stays with Pd and will be able to be loaded in other patches without [declare]. For more details on this and how external loading works in Pd \, please refer to the chapter 4 of Pd's manual., f 74;
 #X text 531 399 WARNING: as of version 0.47 \, "-path" and "-stdpath" inside abstractions take effect only within those abstractions. If Pd's compatibility version is set to 0.46 or earlier the old (buggy) behavior takes effect., f 42;
 #X text 692 321 <-- click to open Pd's manual \, chapter 4;
-#X connect 13 0 16 0;
-#X connect 18 0 17 0;
-#X connect 20 0 17 0;
+#X text 90 9 - set search path and/or libraries for the patch;
+#X connect 12 0 15 0;
+#X connect 17 0 16 0;
+#X connect 19 0 16 0;

@@ -593,7 +593,7 @@ efficiency.  Also, the fft~ and related objects operate on blocks so that
 setting the block size also sets the number of FFT channels.  You may wish
 to use block sizes smaller than 64 to gain finer resolutions of message/audio
 interaction, or to reduce "block delay" in feedback algorithms.  At the
-(untested) extreme, setting the block size to one allows you to write your
+extreme, setting the block size to one allows you to write your
 own recursive filters.
 
 <P> You can use switch~ to budget your DSP computations; for instance you might
@@ -635,6 +635,33 @@ simple flanger for example, you might wish to ensure that your delread~ is
 sorted after your delwrite~.  The only way to ensure this is to create the
 delread~ after you created the delwrite~; if things get out of whack, just
 delete and re-create the delread~.
+
+<H3> <A id=s4.5> 2.4.6. multichannel signals </A> </H3>
+
+As of Pd version 0.54, signals may be multichannel.  Every signal has a
+<i>length</i> equal to the window's block size (64 by default), and also has a
+<i>channel count</i> which is 1 by default.  The snake~ object can combine any
+number of single-channel signals into a multichannel one, or alternatively can
+split a multichannel signal into its component single-channel ones.  Non-local
+connections (send~, receive~, throw~, catch~, inlet~, outlet~) can be used to
+pass multichannel signals from window to window, and dac~ and adc~ can input and
+output several inputs or outputs into, or out of, one multichannel signal.
+
+The receive~, catch~, and adc~ objects take arguments to specify the desired
+number of channels.
+
+Stateless objects, which have no memory from one DSP tick to the next, have
+all been adapted to handle multichannel inputs and outputs.  The arithmetic and
+math objects (+~, -~, *~ ,/~, wrap~, sqrt~, and so on) use their inputs to determine
+their channel counts.  Binary operations like "+" can combine single- and
+multiple-channel inputs.
+
+Other objects such as filters or oscillators have not been adapted for
+multichannel signals because there might be many ways to design multichannel
+versions of them.  Instead, you can use the clone object to perform general
+operations on multichannel signals.  Signal inputs and outputs of cloned patches
+can be used to  distribute multichannel signals among the individual cloned
+patches.
 
 <H3> <A id=s5> 2.5. scheduling </A> </H3>
 
@@ -891,6 +918,10 @@ however, there is the disadvantage that it's confusing  to have "$" expanded at
 a different time in an object box than in a message box.  In an object box, the
 "$" argument is expanded at creation time, and in a message box, at message
 time.
+
+A "clone" object is provided to automatically create and manage multiple copies
+of an abstraction.  You can use it to make voice banks for polyphonic synthesis,
+for example.
 
 <H3> <A id="s7.2"> 2.7.2. Graph-on-parent subpatches </A> </H3>
 

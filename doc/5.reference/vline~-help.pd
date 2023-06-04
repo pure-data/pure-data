@@ -23,10 +23,7 @@
 #X floatatom 103 454 5 0 0 0 - - - 0;
 #X text 146 446 middle inlet sets next ramp time (cleared when ramp starts!), f 32;
 #X text 149 484 right inlet sets next delay time (cleared when ramp starts!), f 32;
-#X msg 272 311 \; pd dsp \$1;
-#X obj 272 285 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 83 552 loadbang;
-#X text 296 286 DSP on/off;
 #X obj 11 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 522 15 <= click;
 #N canvas 708 145 583 306 reference 0;
@@ -52,6 +49,9 @@
 #X text 29 214 Any number of future ramps may be scheduled and [vline~] will remember them and execute them in order. They must be specified in increasing order of initial delay however \, since a segment cancels all planned segments at any future time., f 80;
 #X text 140 421 "stop" message freezes [vline~] at its current value;
 #X text 259 584 !!! BUG: [vline~] objects inside reblocked subpatches can have slightly incorrect timing !!!, f 42;
+#X msg 379 319 \; pd dsp \$1;
+#X obj 379 284 set-dsp-tgl;
+#X text 410 288 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 3 0 11 0;
@@ -62,5 +62,5 @@
 #X connect 17 0 11 0;
 #X connect 20 0 11 2;
 #X connect 21 0 11 1;
-#X connect 25 0 24 0;
-#X connect 26 0 2 0;
+#X connect 24 0 2 0;
+#X connect 35 0 34 0;

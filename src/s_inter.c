@@ -156,10 +156,6 @@ struct _instanceinter
 
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
-void sys_set_searchpath(void);
-void sys_set_temppath(void);
-void sys_set_extrapath(void);
-void sys_set_startup(void);
 void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
@@ -884,6 +880,36 @@ void sys_gui(const char *s)
     sys_vgui("%s", s);
 }
 
+void sys_gui_namelist(const char*varname, t_namelist *nl)
+{
+    char obuf[MAXPDSTRING];
+
+    sys_vgui("set_escaped %s ", varname);
+    for (; nl; nl = nl->nl_next)
+        sys_vgui("{%s} ", pdgui_strnescape(obuf, MAXPDSTRING, nl->nl_string, 0));
+    sys_gui("\n");
+}
+void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size)
+{
+    char obuf[MAXPDSTRING];
+    unsigned int i;
+
+    sys_vgui("set_escaped %s ", varname);
+    for (i=0; i<size; i++)
+        sys_vgui("{%s} ", pdgui_strnescape(obuf, MAXPDSTRING, strarray[i], 0));
+    sys_gui("\n");
+}
+void sys_gui_intarray(const char*varname, const int*intarray, unsigned int size)
+{
+    char obuf[MAXPDSTRING];
+    unsigned int i;
+
+    sys_vgui("set_escaped %s", varname);
+    for (i=0; i<size; i++)
+        sys_vgui(" %d", intarray[i]);
+    sys_gui("\n");
+}
+
 static int sys_flushtogui(void)
 {
     int writesize = INTER->i_guihead - INTER->i_guitail,
@@ -1055,6 +1081,29 @@ void sys_init_fdpoll(void)
     INTER->i_nfdpoll = 0;
     INTER->i_inbinbuf = binbuf_new();
 }
+
+void sys_gui_preferences(void)
+{
+    char obuf[MAXPDSTRING];
+        /* send the user-specified search path to pd-gui */
+    sys_gui_namelist("::sys_searchpath", STUFF->st_searchpath);
+        /* send the temp paths from the commandline to pd-gui */
+    sys_gui_namelist("::sys_temppath", STUFF->st_temppath);
+        /* send the hard-coded search path to pd-gui */
+    sys_gui_namelist("::sys_staticpath", STUFF->st_staticpath);
+        /* send the list of loaded libraries ... */
+    sys_gui_namelist("::startup_libraries", STUFF->st_externlist);
+
+    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
+    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
+    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
+    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+    sys_vgui("set_escaped ::sys_flags {%s}\n",
+             (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
+}
+
+
+
 
 /* --------------------- starting up the GUI connection ------------- */
 
@@ -1521,18 +1570,16 @@ static int sys_do_startgui(const char *libdir)
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
-    sys_set_searchpath();     /* tell GUI about path and startup flags */
-    sys_set_temppath();
-    sys_set_extrapath();
-    sys_set_startup();
-                       /* ... and about font, medio APIS, etc */
+
+    sys_gui_preferences();     /* tell GUI about path and startup flags */
+
+                       /* ... and about font, media APIS, etc */
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
              apibuf, apibuf2,
              pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
              sys_fontweight);
-    sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
 

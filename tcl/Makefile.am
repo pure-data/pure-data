@@ -18,38 +18,43 @@ CLEANFILES += pd-gui
 
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
 dist_libpdtcl_DATA = \
-    apple_events.tcl \
-    dialog_canvas.tcl \
-    dialog_gatom.tcl \
-    dialog_path.tcl \
-    pd_bindings.tcl \
-    pd_menus.tcl \
-    pdwindow.tcl \
-    scrollboxwindow.tcl \
     AppMain.tcl \
-    dialog_data.tcl \
-    dialog_iemgui.tcl \
-    dialog_startup.tcl \
-    pd_connect.tcl \
-    pkgIndex.tcl \
-    wheredoesthisgo.tcl \
+    apple_events.tcl \
     dialog_array.tcl \
-    dialog_find.tcl \
-    dialog_message.tcl \
-    helpbrowser.tcl \
-    pdtk_canvas.tcl \
-    pkg_mkIndex.tcl \
     dialog_audio.tcl \
+    dialog_canvas.tcl \
+    dialog_data.tcl \
+    dialog_find.tcl \
     dialog_font.tcl \
+    dialog_gatom.tcl \
+    dialog_preferences.tcl \
+    dialog_iemgui.tcl \
+    dialog_message.tcl \
     dialog_midi.tcl \
+    dialog_path.tcl \
+    dialog_startup.tcl \
+    helpbrowser.tcl \
     opt_parser.tcl \
+    pd_bindings.tcl \
+    pd_connect.tcl \
+    pd_deken.tcl \
+    pd_docsdir.tcl \
+    pd_guiprefs.tcl \
+    pd_i18n.tcl \
     pd_menucommands.tcl \
+    pd_menus.tcl \
+    pdtcl_compat.tcl \
+    pdtk_canvas.tcl \
     pdtk_text.tcl \
     pdtk_textwindow.tcl \
+    pdwindow.tcl \
+    pkgIndex.tcl \
+    pkg_mkIndex.tcl \
+    preferencewindow.tcl \
     scrollbox.tcl \
-    pd_guiprefs.tcl \
-    pd_deken.tcl \
-    pd_docsdir.tcl
+    scrollboxwindow.tcl \
+    wheredoesthisgo.tcl \
+    $(empty)
 
 # we want these in the dist tarball
 EXTRA_DIST = pd.gif pd.ico pd.xpm

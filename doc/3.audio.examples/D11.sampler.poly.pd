@@ -33,13 +33,12 @@
 #X text 366 228 drop note off again;
 #X obj 684 455 qlist;
 #X obj 558 436 r comment;
-#X text 707 386 sailors to untie him..., f 39;
-#X text 707 345 Lashed to the mast of his boat \, Ulysses;
-#X text 707 366 hears beautiful singing. He begs his, f 39;
-#X obj 559 348 output~;
+#X text 738 382 sailors to untie him..., f 39;
+#X text 738 341 Lashed to the mast of his boat \, Ulysses;
+#X text 738 362 hears beautiful singing. He begs his, f 39;
+#X obj 617 341 output~;
 #X text 263 175 supply delayed note-off message;
-#X text 301 111 increment mod 1e+06 to make tag (acts like a MIDI pitch
-to identify the note to "poly"), f 31;
+#X text 301 111 increment mod 1e+06 to make tag (acts like a MIDI pitch to identify the note to "poly"), f 31;
 #N canvas 282 191 671 441 recorder 0;
 #X obj 218 34 inlet;
 #X obj 128 258 adc~ 1;
@@ -60,8 +59,7 @@ to identify the note to "poly"), f 31;
 #X text 422 265 v-- re-read original samples;
 #X obj 218 63 route record stop reload browse;
 #X obj 382 347 soundfiler;
-#X msg 382 289 read ../sound/bell.aiff sample3 \, read ../sound/voice2.wav
-sample4, f 33;
+#X msg 382 289 read ../sound/bell.aiff sample3 \, read ../sound/voice2.wav sample4, f 33;
 #X msg 378 155 read \$1 sample3;
 #X obj 378 182 soundfiler;
 #X text 416 100 <= browse for samples;
@@ -98,78 +96,20 @@ sample4, f 33;
 #X obj 856 302 declare -stdpath ./;
 #X obj 617 262 pack f f f f f f f f;
 #X obj 631 44 unpack f f f f f f f;
-#X text 48 271 Here we take the previous patch and make it polyphonic
-\, with 8 voices. The single voice which we had before has been made
-into an abstraction \, "sampvoice.pd" \, which we instantiate in 8
-copies with the [clone] object. Earlier we used sends and receives
-to pass messages to "cutoff" \, etc \, but here if we did that the
-copies of sampvoice would be sending messages to each other \, so we
-combine the control and the audio computation in the sampvoice abstraction
-without using send and receive. Click on [clone] one to see how.;
+#X text 48 271 Here we take the previous patch and make it polyphonic \, with 8 voices. The single voice which we had before has been made into an abstraction \, "sampvoice.pd" \, which we instantiate in 8 copies with the [clone] object. Earlier we used sends and receives to pass messages to "cutoff" \, etc \, but here if we did that the copies of sampvoice would be sending messages to each other \, so we combine the control and the audio computation in the sampvoice abstraction without using send and receive. Click on [clone] one to see how.;
 #X obj 617 296 clone -s 1 sampvoice 8;
-#X text 48 408 The [poly] object essentially repeats pitch and velocity
-pairs to its output \, but also sending a voice number from its left
-outlet. To use it \, we unpack the 7 parameters \, calculate the voice
-number \, repack the message as 8 parameters with voice number first
-\, and [clone] routes to internal instances of the abstraction.;
-#X text 48 503 There's some bother because [poly] expects to track
-note on and note off messages separately as they would come from a
-MIDI keyboard. So we assign each note a unique fake "pitch" \, use
-makenote to generate the note-off messages \, and run [poly] on the
-resulting stream. We then discard both pitch and velocity (using the
-velocity only to strip note-offs) and rebuild the original message
-adding the voice number we just scored.;
+#X text 48 408 The [poly] object essentially repeats pitch and velocity pairs to its output \, but also sending a voice number from its left outlet. To use it \, we unpack the 7 parameters \, calculate the voice number \, repack the message as 8 parameters with voice number first \, and [clone] routes to internal instances of the abstraction.;
+#X text 48 503 There's some bother because [poly] expects to track note on and note off messages separately as they would come from a MIDI keyboard. So we assign each note a unique fake "pitch" \, use makenote to generate the note-off messages \, and run [poly] on the resulting stream. We then discard both pitch and velocity (using the velocity only to strip note-offs) and rebuild the original message adding the voice number we just scored.;
 #X text 832 612 updated for Pd version 0.52;
-#X msg 684 425 read qlist-sampler.txt \, rewind \, tempo 1 \, bang
-;
+#X msg 684 425 read qlist-sampler.txt \, rewind \, tempo 1 \, bang;
 #X obj 558 460 print comment;
 #X msg 565 556 line 0 \, auto;
 #X text 687 552 rewind and start automatically, f 16;
 #X obj 881 567 text define -k seq;
-#A set note 60 90 50 4 50 30 30 \; 15 note 60 \; 15 note 60 \; 15 note
-60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note
-60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note
-60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 100 note
-59 90 100 \; comment measure 1 \; 100 note 60 90 150 4 0 \; note 36
-90 200 4 50 \; 200 note 48 90 250 4 0 \; note 40 90 200 4 50 \; note
-43 90 200 4 50 \; 200 note 48 90 250 4 0 \; note 31 90 200 4 50 \;
-200 note 55 90 100 \; note 41 90 200 \; note 43 90 200 \; 100 note
-53 90 100 \; 100 note 52 90 100 \; note 36 90 200 \; 100 note 55 90
-100 \; 100 note 60 90 100 \; note 40 90 200 \; note 43 90 200 \; 100
-note 59 90 100 \; 100 note 60 90 100 \; note 25 90 200 \; 100 note
-64 90 100 \; 100 note 62 90 100 \; note 39 90 200 \; note 43 90 200
-\; 100 note 61 90 100 \; comment measure 2 \; 100 note 62 90 150 4
-0 \; note 26 90 200 \; 200 note 50 90 250 4 50 \; note 41 90 200 \;
-note 42 90 200 \; 200 note 50 90 250 \; note 29 90 200 \; 200 note
-50 90 100 \; note 30 90 200 \; note 44 90 200 \; note 48 90 200 \;
-100 note 48 90 100 \; 100 note 47 90 100 \; note 31 90 200 \; note
-43 90 200 \; note 47 90 200 \; 100 note 50 90 100 \; 100 note 55 90
-100 \; note 34 90 200 \; note 42 90 200 \; note 46 90 200 \; 100 note
-54 90 100 \; 100 note 55 90 200 \; note 35 90 200 \; note 42 90 200
-\; note 45 90 200 \; 200 note 57 90 100 \; note 41 90 200 \; note 47
-90 200 \; 100 note 59 90 100 \; comment measure 3 \; 100 note 60 90
-100 \; note 24 90 200 \; note 40 90 200 \; note 48 90 200 4 0 \; 100
-note 59 90 100 4 50 \; 100 note 57 90 100 \; 100 note 55 90 100 \;
-100 note 57 90 100 \; note 28 90 200 \; note 38 90 200 \; note 46 90
-200 \; 100 note 55 90 100 \; 100 note 53 90 100 \; 100 note 52 90 100
-\; 100 note 53 90 100 \; note 29 90 100 \; note 36 90 100 \; note 45
-90 100 \; 100 note 52 90 100 \; 100 note 50 90 100 \; note 29 90 300
-\; note 36 90 300 \; note 45 90 300 \; 100 note 48 90 100 \; 100 note
-50 90 100 \; 100 note 48 90 100 \; 100 note 47 90 100 \; note 29 90
-300 \; note 38 90 300 \; note 44 90 300 4 0 \; 100 note 45 90 100 4
-50 \; comment measure 4 \; 100 note 43 90 100 \; note 31 90 200 \;
-note 38 90 200 \; 100 note 48 90 100 \; 100 note 47 90 100 \; note
-31 90 300 \; note 40 90 300 \; note 43 90 300 4 0 \; 100 note 50 90
-100 4 50 \; 100 note 48 90 100 \; 100 note 52 90 100 \; 100 note 50
-90 100 \; note 31 90 300 4 0 \; note 41 90 300 \; note 43 90 300 \;
-100 note 53 90 100 4 50 \; 100 note 52 90 200 \; note 31 90 300 4 50
-\; 200 note 48 90 200 \; note 19 90 200 4 50 \; note 29 90 200 4 50
-\; note 36 90 200 4 50 \; 200 note 48 90 100 4 50 0 4000 \; note 12
-90 300 \; note 28 90 300 \; note 36 90 300 \;;
+#A set note 60 90 50 4 50 30 30 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 15 note 60 \; 100 note 59 90 100 \; comment measure 1 \; 100 note 60 90 150 4 0 \; note 36 90 200 4 50 \; 200 note 48 90 250 4 0 \; note 40 90 200 4 50 \; note 43 90 200 4 50 \; 200 note 48 90 250 4 0 \; note 31 90 200 4 50 \; 200 note 55 90 100 \; note 41 90 200 \; note 43 90 200 \; 100 note 53 90 100 \; 100 note 52 90 100 \; note 36 90 200 \; 100 note 55 90 100 \; 100 note 60 90 100 \; note 40 90 200 \; note 43 90 200 \; 100 note 59 90 100 \; 100 note 60 90 100 \; note 25 90 200 \; 100 note 64 90 100 \; 100 note 62 90 100 \; note 39 90 200 \; note 43 90 200 \; 100 note 61 90 100 \; comment measure 2 \; 100 note 62 90 150 4 0 \; note 26 90 200 \; 200 note 50 90 250 4 50 \; note 41 90 200 \; note 42 90 200 \; 200 note 50 90 250 \; note 29 90 200 \; 200 note 50 90 100 \; note 30 90 200 \; note 44 90 200 \; note 48 90 200 \; 100 note 48 90 100 \; 100 note 47 90 100 \; note 31 90 200 \; note 43 90 200 \; note 47 90 200 \; 100 note 50 90 100 \; 100 note 55 90 100 \; note 34 90 200 \; note 42 90 200 \; note 46 90 200 \; 100 note 54 90 100 \; 100 note 55 90 200 \; note 35 90 200 \; note 42 90 200 \; note 45 90 200 \; 200 note 57 90 100 \; note 41 90 200 \; note 47 90 200 \; 100 note 59 90 100 \; comment measure 3 \; 100 note 60 90 100 \; note 24 90 200 \; note 40 90 200 \; note 48 90 200 4 0 \; 100 note 59 90 100 4 50 \; 100 note 57 90 100 \; 100 note 55 90 100 \; 100 note 57 90 100 \; note 28 90 200 \; note 38 90 200 \; note 46 90 200 \; 100 note 55 90 100 \; 100 note 53 90 100 \; 100 note 52 90 100 \; 100 note 53 90 100 \; note 29 90 100 \; note 36 90 100 \; note 45 90 100 \; 100 note 52 90 100 \; 100 note 50 90 100 \; note 29 90 300 \; note 36 90 300 \; note 45 90 300 \; 100 note 48 90 100 \; 100 note 50 90 100 \; 100 note 48 90 100 \; 100 note 47 90 100 \; note 29 90 300 \; note 38 90 300 \; note 44 90 300 4 0 \; 100 note 45 90 100 4 50 \; comment measure 4 \; 100 note 43 90 100 \; note 31 90 200 \; note 38 90 200 \; 100 note 48 90 100 \; 100 note 47 90 100 \; note 31 90 300 \; note 40 90 300 \; note 43 90 300 4 0 \; 100 note 50 90 100 4 50 \; 100 note 48 90 100 \; 100 note 52 90 100 \; 100 note 50 90 100 \; note 31 90 300 4 0 \; note 41 90 300 \; note 43 90 300 \; 100 note 53 90 100 4 50 \; 100 note 52 90 200 \; note 31 90 300 4 50 \; 200 note 48 90 200 \; note 19 90 200 4 50 \; note 29 90 200 4 50 \; note 36 90 200 4 50 \; 200 note 48 90 100 4 50 0 4000 \; note 12 90 300 \; note 28 90 300 \; note 36 90 300 \;;
 #X obj 565 600 text sequence seq -g;
 #X text 658 556 <--;
-#X text 546 500 You can use [qlist] or the more modern [text sequence]
-object \, which can save its contents with the patch., f 64;
+#X text 546 500 You can use [qlist] or the more modern [text sequence] object \, which can save its contents with the patch., f 64;
 #X text 893 541 click to open:;
 #X connect 10 0 37 0;
 #X connect 11 0 12 0;
@@ -198,7 +138,6 @@ object \, which can save its contents with the patch., f 64;
 #X connect 37 4 36 5;
 #X connect 37 5 36 6;
 #X connect 37 6 36 7;
-#X connect 39 0 26 1;
 #X connect 39 0 26 0;
 #X connect 43 0 21 0;
 #X connect 45 0 48 0;

@@ -38,7 +38,7 @@
 #X obj 258 178 *~;
 #X obj 233 304 env~ 16384;
 #X floatatom 233 328 5 0 0 0 - - - 0;
-#X obj 49 291 output~;
+#X obj 23 303 output~;
 #X obj 258 238 declare -stdpath ./;
 #X obj 121 114 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X connect 0 0 4 0;
@@ -48,9 +48,8 @@
 #X connect 5 0 9 0;
 #X connect 6 0 20 0;
 #X connect 8 0 21 0;
-#X connect 9 0 2 0;
 #X connect 9 0 25 0;
-#X connect 9 0 25 1;
+#X connect 9 0 2 0;
 #X connect 9 1 23 0;
 #X connect 10 0 18 0;
 #X connect 10 0 8 0;

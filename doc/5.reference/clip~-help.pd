@@ -11,9 +11,8 @@
 #X obj 129 363 max~;
 #X obj 89 363 min~;
 #X obj 207 363 expr~;
-#X msg 163 243 \; pd dsp \$1;
+#X msg 153 244 \; pd dsp \$1;
 #X obj 58 227 loadbang;
-#X obj 163 214 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #N canvas 629 138 568 290 reference 0;
 #X obj 8 48 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
@@ -46,10 +45,12 @@
 #X coords 0 1 199 -1 200 100 1 0 0;
 #X restore 289 224 graph;
 #X obj 36 72 osc~ 500;
-#X connect 0 0 19 0;
-#X connect 1 0 19 0;
+#X obj 153 208 set-dsp-tgl;
+#X text 184 212 DSP on/off;
+#X connect 0 0 18 0;
+#X connect 1 0 18 0;
 #X connect 4 0 0 1;
 #X connect 13 0 1 0;
-#X connect 14 0 12 0;
-#X connect 20 0 0 2;
-#X connect 27 0 0 0;
+#X connect 19 0 0 2;
+#X connect 26 0 0 0;
+#X connect 27 0 12 0;

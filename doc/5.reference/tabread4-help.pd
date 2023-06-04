@@ -6,12 +6,12 @@
 #X text 221 279 gives array name;
 #X text 195 231 change array name;
 #X text 479 445 updated for Pd version 0.43;
-#X obj 93 431 tabwrite~;
-#X obj 291 432 tabwrite;
+#X obj 289 432 tabwrite~;
+#X obj 151 432 tabwrite;
 #X obj 94 460 tabsend~;
 #X obj 159 460 tabreceive~;
-#X obj 164 431 tabplay~;
-#X obj 232 431 tabread;
+#X obj 360 432 tabplay~;
+#X obj 92 431 tabread;
 #X msg 80 231 set tabread4-ex;
 #X obj 70 271 tabread4 tabread4-ex;
 #X text 121 306 output = tabread4-ex[index];
@@ -94,8 +94,10 @@
 #X text 47 22 See also and the "array" examples from the section 2 of Pd's tutorial:, f 39;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X restore 250 460 pd array-examples;
+#X restore 298 460 pd array-examples;
 #X text 45 58 The [tabread4] object reads values from an array ("table") according to an index \, applying four-point polynomial interpolation. Indices should range from 1 to (size-2) so that the 4-point interpolation is meaningful. You can shift-drag the number box to see the effect of interpolation. Indices outside of the range are replaced by the nearest index in range (from 1 to 8 in this example)., f 90;
+#X obj 217 431 tabread4~;
+#X obj 248 460 array;
 #X connect 1 0 14 0;
 #X connect 13 0 14 0;
 #X connect 14 0 2 0;

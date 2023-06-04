@@ -17,7 +17,7 @@
 #X text 29 459 see also:;
 #X text 238 311 This object is part of the "iemguis" library \, natively included in Pd version 0.34., f 28;
 #X text 249 483 updated for Pd version 0.51;
-#N canvas 689 103 613 643 position 0;
+#N canvas 647 77 613 643 position 0;
 #X floatatom 142 132 4 0 1000 0 - - - 0;
 #X obj 191 159 t b f;
 #X floatatom 191 132 5 0 500 0 - - - 0;
@@ -476,7 +476,6 @@
 #X connect 7 0 1 1;
 #X connect 8 0 1 0;
 #X connect 8 0 10 0;
-#X connect 8 0 10 1;
 #X restore 341 209 pd example;
 #X obj 83 491 env~;
 #X obj 124 491 slop~, f 7;

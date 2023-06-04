@@ -99,7 +99,7 @@
 #X text 32 21 Example of TCP connection in binary mode. In this mode \, messages consist only of numbers from 0 to 255 and lists are broken into separate numbers., f 39;
 #X obj 406 417 print UDP-binary;
 #X obj 417 316 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
-#X obj 571 417 print Addres/Port;
+#X obj 571 417 print Address/Port;
 #X obj 660 135 loadbang;
 #X msg 660 162 \; list set 0 1 0 1;
 #X listbox 453 227 17 0 255 0 - list - 0;
@@ -182,7 +182,7 @@
 #X msg 73 235 disconnect;
 #X text 26 82 [netsend] supports sending IPv6 and multicast messages and will try to detect the IP version based on the given address or hostname. Hostname resolution favors IPv4 results for backwards compatibility in both [netsend] and [netreceive]., f 71;
 #X obj 593 381 netreceive -u -f 3005;
-#X obj 737 410 print Addres/Port, f 11;
+#X obj 737 410 print Address/Port, f 11;
 #X obj 593 418 print UDP-hostname;
 #X obj 843 405 print TCP-hostname;
 #X text 342 401 send value;
@@ -215,7 +215,7 @@
 #X obj 649 308 netreceive -f 3000, f 22;
 #X text 120 11 - send messages over a network connection;
 #X text 740 183 <-- set or change port (can also be set via argument), f 27;
-#X obj 829 310 print Addres/Port;
+#X obj 829 310 print Address/Port;
 #X text 469 223 lists send messages;
 #X text 22 464 As of 0.51 \, Pd supports IPv6 addresses. Open subpatch for more details:, f 40;
 #X text 859 416 An old (pre-0.45) calling convention is provided for compatibility: a "0" or "1" for TCP or UDP respectively (as a single argument for [netsend] or as a second argument for [netreceive]:, f 27;
@@ -244,7 +244,7 @@
 #X msg 312 167 disconnect;
 #X text 390 200 send back to sender, f 9;
 #X text 368 207 <--;
-#X text 285 24 An additional port argument is possible in the 'connect' message for UDP connections so you can have messages sent back from the receiver patch \, but we do this witn another [netsend] object., f 47;
+#X text 285 24 An additional port argument is possible in the 'connect' message for UDP connections so you can have messages sent back from the receiver patch \, but we do this with another [netsend] object., f 47;
 #X text 462 115 connect to port to talk back to sender, f 19;
 #X text 34 19 connect to receiver and port to listen back., f 23;
 #X connect 0 1 4 0;
