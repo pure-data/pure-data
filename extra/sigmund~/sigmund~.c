@@ -1507,6 +1507,8 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 
 static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
 {
+    if (x->x_mode != MODE_TABLE)
+        return;
     t_symbol *syminput = atom_getsymbolarg(0, argc, argv);
     int npts = atom_getfloatarg(1, argc, argv);
     int onset = atom_getfloatarg(2, argc, argv);
@@ -1516,10 +1518,10 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     t_garray *a;
     t_float *arraypoints, pit;
     t_word *wordarray = 0;
-    if (argc < 5)
+    if (argc < 4)
     {
         post(
-         "sigmund~: array-name, npts, array-onset, samplerate, loud");
+         "sigmund~ list input needs 'array-name', 'npts', 'array-onset' & samplerate");
         return;
     }
     if (npts < 64 || npts != (1 << ilog2(npts))) 
