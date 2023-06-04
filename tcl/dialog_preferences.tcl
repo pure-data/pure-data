@@ -7,7 +7,8 @@ package require preferencewindow
 namespace eval ::dialog_preferences:: {
 }
 
-set ::dialog_preferences::use_ttknotebook ""
+set ::dialog_preferences::use_ttknotebook {}
+after idle ::dialog_preferences::read_usettknotebook
 # allow updating the audio resp MIDI frame if the backend changes
 set ::dialog_preferences::audio_frame {}
 set ::dialog_preferences::midi_frame {}
@@ -30,6 +31,13 @@ proc ::dialog_preferences::ok {mytoplevel} {
     ::preferencewindow::ok $mytoplevel
 }
 
+proc ::dialog_preferences::read_usettknotebook {} {
+    set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
+}
+proc ::dialog_preferences::write_usettknotebook {} {
+    ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
+}
+
 proc ::dialog_preferences::tab_changed {mytoplevel} {
     set tab [::preferencewindow::selected $mytoplevel]
     ::pd_guiprefs::write preferences_tab $tab
@@ -43,7 +51,6 @@ proc ::dialog_preferences::fill_frame {prefs} {
     pack $prefs.extraframe.zoom -side left -expand 1
     pack $prefs.extraframe -side top -anchor n -fill x
 
-    set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
     labelframe $prefs.guiframe -text [_ "GUI settings" ] -padx 5 -pady 5 -borderwidth 1
     pack $prefs.guiframe -side top -anchor n -fill x
 

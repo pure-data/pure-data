@@ -584,6 +584,10 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction ::pd_menus::loadpreferences}
     $mymenu add command -label [_ "Forget All..."] \
         -command {::pd_menucommands::scheduleAction ::pd_menus::forgetpreferences}
+    $mymenu add  separator
+    $mymenu add check -label [_ "Tabbed preferences"] \
+        -variable ::dialog_preferences::use_ttknotebook \
+        -command {::pd_menucommands::scheduleAction ::dialog_preferences::write_usettknotebook}
 }
 
 # ------------------------------------------------------------------------------
