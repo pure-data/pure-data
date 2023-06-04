@@ -1,4 +1,4 @@
-#N canvas 471 48 530 562 12;
+#N canvas 337 41 536 635 12;
 #X obj 98 209 adc~ 5;
 #X text 148 209 (input from channel 5 only);
 #X obj 96 237 dac~ 1 2 5 23;
@@ -8,70 +8,43 @@
 #X obj 35 409 adc~ 1;
 #X obj 24 6 adc~;
 #X obj 25 29 dac~;
-#X text 307 527 updated for Pd version 0.47;
 #X text 452 18 <= click;
-#N canvas 714 81 579 507 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 98 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 156 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 193 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 123 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 12 301 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 12 445 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 11 482 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 12 370 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 11 405 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X text 168 415 NONE;
+#N canvas 714 81 582 568 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 98 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 156 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 257 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 123 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
+#X obj 12 331 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 12 475 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 11 512 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 12 400 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
+#X obj 11 435 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X text 168 445 NONE;
 #X obj 31 18 adc~;
-#X obj 33 264 dac~;
-#X obj 11 334 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X text 154 377 signal - signal output to sound card.;
-#X text 126 343 set <list> - resets the channel(s).;
+#X obj 33 294 dac~;
+#X obj 11 364 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X text 154 407 signal - signal output to sound card.;
+#X text 126 373 set <list> - resets the channel(s).;
 #X text 150 131 signal - signal input from sound card.;
 #X text 122 67 set <list> - resets the channel(s).;
-#X text 123 455 1) list - set output channels (default: 1 2).;
+#X text 123 485 1) list - set output channels (default: 1 2).;
 #X text 91 102 ('n' outlets depends on creation arguments);
 #X text 76 18 - Audio Input from sound card.;
-#X text 75 263 - Audio Output to sound card.;
+#X text 75 293 - Audio Output to sound card.;
 #X text 119 166 1) list - set input channels (default: 1 2).;
-#X text 91 310 ('n' inlets depending on creation arguments);
+#X text 91 340 ('n' inlets depending on creation arguments);
+#X text 118 189 OR "-m <x> <y>" to make a single multichannel output \, x channels \, starting with channel y+1 (default starting channel is 1).;
 #X restore 358 19 pd reference;
-#X obj 4 60 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 4 60 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 63 5 - Audio Input from sound card;
 #X text 66 30 - Audio Output to sound card;
-#X text 158 366 The "set" message to either [dac~] or [adc~] resets
-the channel(s). This requires Pd to restart DSP and so should only
-be done at setup time \, not while audio is being computed., f 45
-;
-#X text 50 456 If more than one [dac~] outputs to the same channel
-\, the signals are added. More than one [adc~] can output the same
-input channel.;
-#X obj 4 514 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 20 75 Real-time audio input and output for Pd is provided by
-[adc~] and [dac~] \, respectively. "adc" stands for "Analog to Digital
-Converter" and "dac" stands for "Digital to Analog Converter". This
-gives the idea that inputs and outputs are only analog signals \, but
-that's misleading as you can also have digital inputs and outputs (it
-all depends on your soundcard configuration). By default these objects
-are stereo (with channel numbers 1 \, 2) but you can specify different
-channel numbers via arguments as in:, f 68;
-#X text 40 273 The number of channels Pd inputs and outputs also depends
-on your soundcard. The soundcard and number of ins/outs are set on
-Pd's command line or in the "audio settings" dialog. You can open patches
-that want more channels out of range \, these will be dropped in [dac~]
-or output zero in [adc~]., f 64;
+#X text 158 366 The "set" message to either [dac~] or [adc~] resets the channel(s). This requires Pd to restart DSP and so should only be done at setup time \, not while audio is being computed., f 45;
+#X obj 4 595 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 20 75 Real-time audio input and output for Pd is provided by [adc~] and [dac~] \, respectively. "adc" stands for "Analog to Digital Converter" and "dac" stands for "Digital to Analog Converter". This gives the idea that inputs and outputs are only analog signals \, but that's misleading as you can also have digital inputs and outputs (it all depends on your soundcard configuration). By default these objects are stereo (with channel numbers 1 \, 2) but you can specify different channel numbers via arguments as in:, f 68;
+#X text 40 273 The number of channels Pd inputs and outputs also depends on your soundcard. The soundcard and number of ins/outs are set on Pd's command line or in the "audio settings" dialog. You can open patches that want more channels out of range \, these will be dropped in [dac~] or output zero in [adc~]., f 64;
+#X text 51 453 If more than one [dac~] outputs to the same channel \, the signals are added. Duplicate [adc~] objects output duplicate signals.;
+#X text 51 506 MULTICHANNEL BEHAVIOR: [dac~] distributes multichannel signals over multiple outputs starting at the number given by its argument[s]. [adc~ -m 3 4] \, for example \, outputs a three-channel signal with an offset of 4 channels (so channels 5 \, 6 \, and 7).;
+#X text 306 606 updated for Pd version 0.54;
 #X connect 5 0 4 0;
 #X connect 5 0 6 0;
