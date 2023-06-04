@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
-"PO-Revision-Date: 2023-06-04 22:00+0000\n"
+"PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/de/>\n"
@@ -101,13 +101,13 @@ msgid "couldn't delete .pdsettings file"
 msgstr "die Datei \".pdsettings\" konnte nicht gelöscht werden"
 
 msgid "failed to erase Pd settings"
-msgstr "Löschen der Pd Einstellungen schlug fehl"
+msgstr "Löschen der Pd-Einstellungen schlug fehl"
 
 msgid "erased Pd settings"
-msgstr "gelöschte Einstellungen"
+msgstr "Pd-Einstellungen gelöscht"
 
 msgid "no Pd settings to erase"
-msgstr "keine Pd Einstellungen zum Löschen"
+msgstr "keine Pd-Einstellungen zum Löschen"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
@@ -574,48 +574,43 @@ msgstr "Neuen Pfad hinzufügen"
 msgid "Edit existing path [%s]"
 msgstr "Vorhandenen Pfad editieren (%s)"
 
-#, fuzzy
 msgid "Patch windows"
-msgstr "Pd Fenster"
+msgstr "Patch-Fenster"
 
 msgid "Zoom New Windows"
 msgstr "Neue Fenster vergrößern"
 
-#, fuzzy
 msgid "GUI settings"
 msgstr "GUI-Einstellungen entfernt"
 
 msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
+"Einstellungslayout (öffnen Sie die Einstellungen erneut, um die Auswirkungen "
+"zu sehen)"
 
 msgid "use tabs"
-msgstr ""
+msgstr "Verwende Tab"
 
 msgid "single page"
-msgstr ""
+msgstr "alles auf einer Seite"
 
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Einstellungen"
+msgstr "Start"
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Einstellungen"
+msgstr "Audio"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Einstellungen"
+msgstr "MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Deken %s Einstellungen"
+msgstr "Deken Einstellungen"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Einstellungen"
+msgstr "sonstiges"
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
@@ -624,7 +619,7 @@ msgid "Edit library"
 msgstr "Bibliothek bearbeiten"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "Die folgenden Einstellungen erfordern einen Neustart von Pd!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Pd-Bibliotheken die automatisch geladen werden"
@@ -636,10 +631,10 @@ msgid "Defeat real-time scheduling"
 msgstr "Echtzeit-Modus unterdrücken"
 
 msgid "language"
-msgstr ""
+msgstr "Sprache"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Sprache des Menüs"
 
 msgid "Startup flags:"
 msgstr "Kommandozeilenoptionen:"
@@ -1233,126 +1228,125 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Konnte Einstellungen '%1$s' nicht in %2$s erstellen"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arabisch"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Aserbaidschanisch"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belarussisch"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgarisch"
 
 msgid "German"
-msgstr ""
+msgstr "Deutsch"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Deutsch (Österreich)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Griechisch"
 
 msgid "English"
-msgstr ""
+msgstr "Englisch"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Englisch (Kanada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Englisch (UK)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Englisch (USA)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Spanisch"
 
 msgid "Basque"
-msgstr ""
+msgstr "Baskisch"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finnisch"
 
 msgid "French"
-msgstr ""
+msgstr "Französisch"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarati"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebräisch"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Ungarisch"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenisch"
 
 msgid "Italian"
-msgstr ""
+msgstr "Italienisch"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesisch"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japanisch"
 
 msgid "Korean"
-msgstr ""
+msgstr "Koreanisch"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Niederländisch"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panjabi"
 
 msgid "Polish"
-msgstr ""
+msgstr "Polnisch"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugiesisch"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugiesisch (Brasilien)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugiesisch (Portugal)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Russisch"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albanisch"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Schwedisch"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Türkisch"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainisch"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamesisch"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chinesisch (traditionell)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "Standardarchitektur: %s"
+msgstr "(Standardsprache: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "Übersetzungen"
+msgstr "(keine Übersetzung)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1522,9 +1516,8 @@ msgstr "GUI-Einstellungen entfernt"
 msgid "no Pd-GUI settings to clear"
 msgstr "Keine Pd-GUI Einstellungen zum Zurücksetzen"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Einstellungen..."
+msgstr "Einstellungen bearbeiten..."
 
 msgid "Save All Preferences"
 msgstr "Alle Einstellungen speichern"
@@ -1610,7 +1603,7 @@ msgid "all"
 msgstr "Alle"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "Neu..."
