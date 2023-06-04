@@ -4,13 +4,13 @@
 # Dan Wilcox <danomatika@gmail.com>, 2017, 2018, 2019.
 # IOhannes m zmölnig <zmoelnig@iem.at>, 2017, 2018, 2019, 2020, 2021, 2022.
 # Winfried Ritsch <ritsch@iem.at>, 2018.
-#
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -1369,6 +1369,17 @@ msgstr "Änderungen in '%s' speichern?"
 
 msgid "Properties"
 msgstr "Eigenschaften"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Änderungen an '%s' akzeptieren?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Durch das Akzeptieren wird der Inhalt des zugehörigen Objekts aktualisiert. "
+"Sie müssen den Patch noch speichern, damit die Änderungen dauerhaft sind."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
