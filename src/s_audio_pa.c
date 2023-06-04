@@ -701,6 +701,7 @@ void pa_getdevs(char *indevlist, int *nindevs,
         char utf8device[MAXPDSTRING];
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);
         char*devname = pdi2devname(pdi, utf8device, MAXPDSTRING);
+        if(!devname)continue;
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */
