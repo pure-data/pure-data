@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/ja/>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -198,8 +198,27 @@ msgstr "適用する"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "オーディオ設定"
+#, fuzzy
+msgid "no device"
+msgstr "入力デバイス"
+
+msgid "(same as input device)..."
+msgstr "(入力デバイスと同じ)..."
+
+msgid "Channels:"
+msgstr "チャンネル:"
+
+msgid "Input Devices"
+msgstr "入力デバイス"
+
+msgid "Output Devices"
+msgstr "出力デバイス"
+
+msgid "Use Multiple Devices"
+msgstr "複数のデバイスを使用する"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "設定"
@@ -225,20 +244,8 @@ msgstr "ブロックサイズ:"
 msgid "Use callbacks"
 msgstr "コールバックを使用する"
 
-msgid "Input Devices"
-msgstr "入力デバイス"
-
-msgid "Channels:"
-msgstr "チャンネル:"
-
-msgid "Output Devices"
-msgstr "出力デバイス"
-
-msgid "(same as input device)..."
-msgstr "(入力デバイスと同じ)..."
-
-msgid "Use Multiple Devices"
-msgstr "複数のデバイスを使用する"
+msgid "Audio Settings"
+msgstr "オーディオ設定"
 
 msgid "Save All Settings"
 msgstr "すべての設定を保存"
@@ -496,17 +503,27 @@ msgstr "Pdメッセージの送信"
 msgid "(use arrow keys for history)"
 msgstr "(矢印キーで履歴を使用できます)"
 
-msgid "MIDI Settings"
-msgstr "MIDI設定"
+msgid "(no device)"
+msgstr ""
 
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI設定"
+#, fuzzy
+msgid "no input devices"
+msgstr "入力デバイス"
 
 msgid "In Ports:"
 msgstr "入力ポート:"
 
 msgid "Out Ports:"
 msgstr "出力ポート:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI設定"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI設定"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -536,6 +553,10 @@ msgstr "Externals インストールディレクトリ"
 msgid "Clear"
 msgstr "クリア"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "環境設定"
+
 msgid "Choose Pd documents directory:"
 msgstr "Pd documentsディレクトリを選択:"
 
@@ -549,20 +570,76 @@ msgstr "新しいパスの追加"
 msgid "Edit existing path [%s]"
 msgstr "既存のパス [%s] の編集"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd ウィンドウ"
+
+msgid "Zoom New Windows"
+msgstr "新しいウィンドウを拡大する"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "GUI設定の削除"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Deken %s 設定"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "環境設定"
+
 msgid "Add new library"
 msgstr "新規ライブラリの追加"
 
 msgid "Edit library"
 msgstr "ライブラリの編集"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "起動時に読み込むPdライブラリ"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "Startup options"
 msgstr "起動時のフラグ:"
 
 msgid "Defeat real-time scheduling"
 msgstr "リアルタイムスケジューリングより優先"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr "起動時のフラグ:"
 
 msgid "Help Browser"
 msgstr "ヘルプブラウザ"
@@ -1153,6 +1230,128 @@ msgstr "空のドメインの削除を拒否されました"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "環境設定 \"%1$s\" を %2$s に作成できませんでした"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "デフォルトのプラットフォーム: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "翻訳"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "無視 '%s': 存在しません"
@@ -1321,20 +1520,9 @@ msgstr "GUI設定の削除"
 msgid "no Pd-GUI settings to clear"
 msgstr "Pd-GUIの設定が存在しないのでクリアできません"
 
-msgid "Path..."
-msgstr "パス..."
-
-msgid "Startup..."
-msgstr "スタートアップ..."
-
-msgid "Audio..."
-msgstr "オーディオ..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "新しいウィンドウを拡大する"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "環境設定..."
 
 msgid "Save All Preferences"
 msgstr "すべての設定を保存"
@@ -1347,9 +1535,6 @@ msgstr "読込..."
 
 msgid "Forget All..."
 msgstr "全てを忘れる..."
-
-msgid "Preferences"
-msgstr "環境設定"
 
 msgid "Open Recent"
 msgstr "最近使った項目を開く"
@@ -1420,6 +1605,9 @@ msgstr "デバッグ"
 msgid "all"
 msgstr "全て"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "新規..."
 
@@ -1432,3 +1620,15 @@ msgstr "削除"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s'を無視: Pd ファイルではないようです"
+
+#~ msgid "Path..."
+#~ msgstr "パス..."
+
+#~ msgid "Startup..."
+#~ msgstr "スタートアップ..."
+
+#~ msgid "Audio..."
+#~ msgstr "オーディオ..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

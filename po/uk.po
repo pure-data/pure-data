@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -199,8 +199,27 @@ msgstr "Застосувати"
 msgid "OK"
 msgstr "ОК"
 
-msgid "Audio Settings"
-msgstr "Аудіо налаштування"
+#, fuzzy
+msgid "no device"
+msgstr "Пристрої вводу"
+
+msgid "(same as input device)..."
+msgstr "(такий же, як вхід) ..."
+
+msgid "Channels:"
+msgstr "Канали:"
+
+msgid "Input Devices"
+msgstr "Пристрої вводу"
+
+msgid "Output Devices"
+msgstr "Вихідні пристрої"
+
+msgid "Use Multiple Devices"
+msgstr "Використовувати декілька пристроїв"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Налаштування"
@@ -226,20 +245,8 @@ msgstr "Розмір блоку:"
 msgid "Use callbacks"
 msgstr "Використовувати зворотній виклик функції (callback)"
 
-msgid "Input Devices"
-msgstr "Пристрої вводу"
-
-msgid "Channels:"
-msgstr "Канали:"
-
-msgid "Output Devices"
-msgstr "Вихідні пристрої"
-
-msgid "(same as input device)..."
-msgstr "(такий же, як вхід) ..."
-
-msgid "Use Multiple Devices"
-msgstr "Використовувати декілька пристроїв"
+msgid "Audio Settings"
+msgstr "Аудіо налаштування"
 
 msgid "Save All Settings"
 msgstr "Зберегти всі налаштування"
@@ -508,17 +515,27 @@ msgstr "Надіслати повідомлення Pd"
 msgid "(use arrow keys for history)"
 msgstr "(використовуйте клавіші зі стрілками вгору-вниз для перегляду історії)"
 
-msgid "MIDI Settings"
-msgstr "Налаштування MIDI"
+msgid "(no device)"
+msgstr ""
 
-msgid "ALSA MIDI Settings"
-msgstr "Налаштування MIDI в ALSA"
+#, fuzzy
+msgid "no input devices"
+msgstr "Пристрої вводу"
 
 msgid "In Ports:"
 msgstr "Входи:"
 
 msgid "Out Ports:"
 msgstr "Виходи:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Налаштування MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Налаштування MIDI в ALSA"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Шлях пошуку Pd для об'єктів, довідки, аудіо, текстових та інших файлів"
@@ -549,6 +566,10 @@ msgid "Clear"
 msgstr "Скинути"
 
 #, fuzzy
+msgid "path preferences"
+msgstr "Налаштування"
+
+#, fuzzy
 msgid "Choose Pd documents directory:"
 msgstr "Вибрати папку документів Pd:"
 
@@ -562,21 +583,77 @@ msgstr "Додати новий шлях"
 msgid "Edit existing path [%s]"
 msgstr "Редагувати існуючий шлях [%s]"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Вікно Pd"
+
+msgid "Zoom New Windows"
+msgstr "Розгорнути нові вікна"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "віддалені налаштування GUI"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Налаштування %s Deken"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Налаштування"
+
 msgid "Add new library"
 msgstr "Додати нову бібліотеку"
 
 msgid "Edit library"
 msgstr "Редагувати бібліотеку"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "Бібліотеки Pd, що завантажуються під час запуску"
 
 #, fuzzy
-msgid "Startup flags:"
+msgid "Startup options"
 msgstr "Прапори при завантаженні:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Не використовувати режим реального часу планувальника подій"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+#, fuzzy
+msgid "Startup flags:"
+msgstr "Прапори при завантаженні:"
 
 msgid "Help Browser"
 msgstr "Перегляд довідки"
@@ -1171,6 +1248,128 @@ msgstr "неможливо видалити порожній об'єкт"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Неможливо створити властивості %1$s у %2$s"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "Платформа за замовчуванням: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "переклади"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ігнорується '%s': немає"
@@ -1341,20 +1540,9 @@ msgstr "віддалені налаштування GUI"
 msgid "no Pd-GUI settings to clear"
 msgstr "немає налаштувань Pd-GUI для видалення"
 
-msgid "Path..."
-msgstr "Шлях..."
-
-msgid "Startup..."
-msgstr "Налаштування під час запуску..."
-
-msgid "Audio..."
-msgstr "Аудио..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Розгорнути нові вікна"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Властивості..."
 
 msgid "Save All Preferences"
 msgstr "Зберегти всі налаштування"
@@ -1367,9 +1555,6 @@ msgstr "Завантажити із..."
 
 msgid "Forget All..."
 msgstr "Забути все..."
-
-msgid "Preferences"
-msgstr "Налаштування"
 
 msgid "Open Recent"
 msgstr "Відкрити недавні"
@@ -1442,6 +1627,9 @@ msgstr "налагоджувальні"
 msgid "all"
 msgstr "всі"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Новий..."
 
@@ -1454,3 +1642,15 @@ msgstr "Видалити"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ігнорується '%s': неможливо розпізнати файл Pd"
+
+#~ msgid "Path..."
+#~ msgstr "Шлях..."
+
+#~ msgid "Startup..."
+#~ msgstr "Налаштування під час запуску..."
+
+#~ msgid "Audio..."
+#~ msgstr "Аудио..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

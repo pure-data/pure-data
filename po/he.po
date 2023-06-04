@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2023-03-09 09:40+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -196,8 +196,27 @@ msgstr "החלה"
 msgid "OK"
 msgstr "אישור"
 
-msgid "Audio Settings"
-msgstr "הגדרות שמע"
+#, fuzzy
+msgid "no device"
+msgstr "התקני קלט"
+
+msgid "(same as input device)..."
+msgstr "(כמו התקן הקלט)…"
+
+msgid "Channels:"
+msgstr "ערוצים:"
+
+msgid "Input Devices"
+msgstr "התקני קלט"
+
+msgid "Output Devices"
+msgstr "התקני פלט"
+
+msgid "Use Multiple Devices"
+msgstr "להשתמש במגוון התקנים"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "הגדרות"
@@ -223,20 +242,8 @@ msgstr "גודל מקטע:"
 msgid "Use callbacks"
 msgstr "להשתמש בקריאות חוזרות"
 
-msgid "Input Devices"
-msgstr "התקני קלט"
-
-msgid "Channels:"
-msgstr "ערוצים:"
-
-msgid "Output Devices"
-msgstr "התקני פלט"
-
-msgid "(same as input device)..."
-msgstr "(כמו התקן הקלט)…"
-
-msgid "Use Multiple Devices"
-msgstr "להשתמש במגוון התקנים"
+msgid "Audio Settings"
+msgstr "הגדרות שמע"
 
 msgid "Save All Settings"
 msgstr "לשמור את כל ההגדרות"
@@ -494,17 +501,27 @@ msgstr "שליחת הודעת Pd"
 msgid "(use arrow keys for history)"
 msgstr "(ניתן להשתמש במקשי החצים להיסטוריה)"
 
-msgid "MIDI Settings"
-msgstr "הגדרות MIDI"
+msgid "(no device)"
+msgstr ""
 
-msgid "ALSA MIDI Settings"
-msgstr "הגדרות ALSA MIDI"
+#, fuzzy
+msgid "no input devices"
+msgstr "התקני קלט"
 
 msgid "In Ports:"
 msgstr "פתחות כניסה:"
 
 msgid "Out Ports:"
 msgstr "פתחות יציאה:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "הגדרות MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "הגדרות ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "נתיב חיפוש ב־Pd אחר עצמים, עזרה, שמע, טקסט וקבצים אחרים"
@@ -533,6 +550,10 @@ msgstr "תיקיית התקנה חיצונית"
 msgid "Clear"
 msgstr "פינוי"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "העדפות"
+
 msgid "Choose Pd documents directory:"
 msgstr "בחירת תיקיית מסמכי Pd:"
 
@@ -546,20 +567,76 @@ msgstr "הוספת נתיב חדש"
 msgid "Edit existing path [%s]"
 msgstr "עריכת נתיב קיים [%s]"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "חלון Pd"
+
+msgid "Zoom New Windows"
+msgstr "התקרבות על חלונות חדשים"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "הגדרות מנשק המשתמש הוסרו"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "העדפות"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "העדפות"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "העדפות"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "העדפות"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "העדפות Deken %s"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "העדפות"
+
 msgid "Add new library"
 msgstr "הוספת ספרייה חדשה"
 
 msgid "Edit library"
 msgstr "עריכת ספרייה"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "ספריות Pd לטעינה בהפעלה"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "Startup options"
 msgstr "דגלוני הפעלה:"
 
 msgid "Defeat real-time scheduling"
 msgstr "הבסת תזמון זמן־אמת"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr "דגלוני הפעלה:"
 
 msgid "Help Browser"
 msgstr "דפדפן עזרה"
@@ -1135,6 +1212,128 @@ msgstr "עלה סירוב למחיקת שם תחום ריק"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "פלטפורמת ברירת המחדל: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "תרגומים"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "התעלמות מ־‚%s’: לא קיים"
@@ -1303,20 +1502,9 @@ msgstr "הגדרות מנשק המשתמש הוסרו"
 msgid "no Pd-GUI settings to clear"
 msgstr "אין הגדרות מנשק משתמש של Pd למחיקה"
 
-msgid "Path..."
-msgstr "נתיב…"
-
-msgid "Startup..."
-msgstr "עלייה…"
-
-msgid "Audio..."
-msgstr "שמע…"
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "התקרבות על חלונות חדשים"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "העדפות…"
 
 msgid "Save All Preferences"
 msgstr "שמירת כל ההעדפות"
@@ -1329,9 +1517,6 @@ msgstr "טעינה מתוך…"
 
 msgid "Forget All..."
 msgstr "שיכחה של הכול…"
-
-msgid "Preferences"
-msgstr "העדפות"
 
 msgid "Open Recent"
 msgstr "לפתוח אחרונים"
@@ -1404,6 +1589,9 @@ msgstr "ניפוי שגיאות"
 msgid "all"
 msgstr "הכול"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "חדש…"
 
@@ -1416,3 +1604,15 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "Path..."
+#~ msgstr "נתיב…"
+
+#~ msgid "Startup..."
+#~ msgstr "עלייה…"
+
+#~ msgid "Audio..."
+#~ msgstr "שמע…"
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

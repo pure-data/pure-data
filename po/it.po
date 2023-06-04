@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/it/>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -201,8 +201,27 @@ msgstr "Applica"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Settaggi Audio"
+#, fuzzy
+msgid "no device"
+msgstr "Dispositivo di ingresso 3:"
+
+msgid "(same as input device)..."
+msgstr "(identico al dispositivo di ingresso)..."
+
+msgid "Channels:"
+msgstr "Canali:"
+
+msgid "Input Devices"
+msgstr "Dispositivo di ingresso"
+
+msgid "Output Devices"
+msgstr "Dispositivo di uscita"
+
+msgid "Use Multiple Devices"
+msgstr "Usa Dispositivi Multipli"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Impostazioni"
@@ -228,20 +247,8 @@ msgstr "Dimensione del blocco:"
 msgid "Use callbacks"
 msgstr "Usa callback"
 
-msgid "Input Devices"
-msgstr "Dispositivo di ingresso"
-
-msgid "Channels:"
-msgstr "Canali:"
-
-msgid "Output Devices"
-msgstr "Dispositivo di uscita"
-
-msgid "(same as input device)..."
-msgstr "(identico al dispositivo di ingresso)..."
-
-msgid "Use Multiple Devices"
-msgstr "Usa Dispositivi Multipli"
+msgid "Audio Settings"
+msgstr "Settaggi Audio"
 
 msgid "Save All Settings"
 msgstr "Salva tutti i settaggi"
@@ -499,17 +506,28 @@ msgstr "Invia un Messaggio Pd"
 msgid "(use arrow keys for history)"
 msgstr "(usa i tasti freccia per la cronologia)"
 
-msgid "MIDI Settings"
-msgstr "Settaggi MIDI"
+#, fuzzy
+msgid "(no device)"
+msgstr "Dispositivo di ingresso 3:"
 
-msgid "ALSA MIDI Settings"
-msgstr "Settaggi ALSA MIDI"
+#, fuzzy
+msgid "no input devices"
+msgstr "Dispositivo di ingresso"
 
 msgid "In Ports:"
 msgstr "Porte Ingresso:"
 
 msgid "Out Ports:"
 msgstr "Porte Uscita:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Settaggi MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Settaggi ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Percorsi di ricerca di Pd per oggetti, help, audio, testi e altri file"
@@ -538,6 +556,10 @@ msgstr "Cartella Installazione Externals"
 msgid "Clear"
 msgstr "Pulisci"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Preferenze"
+
 msgid "Choose Pd documents directory:"
 msgstr "Scegli la cartella per i documenti Pd:"
 
@@ -551,20 +573,76 @@ msgstr "Aggiungi nuovo percorso"
 msgid "Edit existing path [%s]"
 msgstr "Modifica percorso esistente [%s]"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Finestra Pd"
+
+msgid "Zoom New Windows"
+msgstr "Zoom delle Nuove Finestre"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "impostazioni GUI rimosse"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Preferenze"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Preferenze"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Preferenze"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Preferenze"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Preferenze di Deken %s"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Preferenze"
+
 msgid "Add new library"
 msgstr "Aggiungi una nuova libreria"
 
 msgid "Edit library"
 msgstr "Modifica libreria"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "Librerie Pd da caricare all'avvio"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "Startup options"
 msgstr "Opzioni di avvio:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Non attivare lo scheduling in tempo reale"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr "Opzioni di avvio:"
 
 msgid "Help Browser"
 msgstr "Browser della Guida"
@@ -1156,6 +1234,128 @@ msgstr "non cancello il dominio vuoto"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Impossibile creare le preferenze \"%1$s\" in %2$s"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "Piattaforma di default: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "traduzioni"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ignoro '%s': non esiste"
@@ -1324,20 +1524,9 @@ msgstr "impostazioni GUI rimosse"
 msgid "no Pd-GUI settings to clear"
 msgstr "nessuna impostazione Pd-GUI da rimuovere"
 
-msgid "Path..."
-msgstr "Percorso..."
-
-msgid "Startup..."
-msgstr "Avvio..."
-
-msgid "Audio..."
-msgstr "Audio..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Zoom delle Nuove Finestre"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Preferenze..."
 
 msgid "Save All Preferences"
 msgstr "Salva Tutte le Preferenze"
@@ -1350,9 +1539,6 @@ msgstr "Carica da..."
 
 msgid "Forget All..."
 msgstr "Rimuovi Tutte..."
-
-msgid "Preferences"
-msgstr "Preferenze"
 
 msgid "Open Recent"
 msgstr "Apri recenti"
@@ -1423,6 +1609,9 @@ msgstr "debug"
 msgid "all"
 msgstr "tutto"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Nuovo..."
 
@@ -1435,6 +1624,18 @@ msgstr "Rimuovi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoro '%s': non sembra un file Pd"
+
+#~ msgid "Path..."
+#~ msgstr "Percorso..."
+
+#~ msgid "Startup..."
+#~ msgstr "Avvio..."
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."
 
 #, fuzzy
 #~ msgid "bottom:"
@@ -1468,9 +1669,6 @@ msgstr "ignoro '%s': non sembra un file Pd"
 
 #~ msgid "Close this window??"
 #~ msgstr "Chiudere questa finestra??"
-
-#~ msgid "Input device 3:"
-#~ msgstr "Dispositivo di ingresso 3:"
 
 #~ msgid "Output device 4:"
 #~ msgstr "Dispositivo di uscita 4:"

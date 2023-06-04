@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -207,8 +207,31 @@ msgstr "Alkalmaz"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Hang beállítások"
+#, fuzzy
+msgid "no device"
+msgstr "3. bemeneti eszköz:"
+
+#, fuzzy
+msgid "(same as input device)..."
+msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
+
+msgid "Channels:"
+msgstr "Csatornák:"
+
+#, fuzzy
+msgid "Input Devices"
+msgstr "Bemeneti eszköz:"
+
+#, fuzzy
+msgid "Output Devices"
+msgstr "Kimeneti eszköz:"
+
+#, fuzzy
+msgid "Use Multiple Devices"
+msgstr "Több eszköz használata"
+
+msgid "audio system"
+msgstr ""
 
 #, fuzzy
 msgid "Settings"
@@ -235,24 +258,8 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Callback-ek használata"
 
-#, fuzzy
-msgid "Input Devices"
-msgstr "Bemeneti eszköz:"
-
-msgid "Channels:"
-msgstr "Csatornák:"
-
-#, fuzzy
-msgid "Output Devices"
-msgstr "Kimeneti eszköz:"
-
-#, fuzzy
-msgid "(same as input device)..."
-msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
-
-#, fuzzy
-msgid "Use Multiple Devices"
-msgstr "Több eszköz használata"
+msgid "Audio Settings"
+msgstr "Hang beállítások"
 
 msgid "Save All Settings"
 msgstr "Minden bellítást ment"
@@ -520,17 +527,28 @@ msgstr "Üzenet küldése..."
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "MIDI beállítások"
+#, fuzzy
+msgid "(no device)"
+msgstr "3. bemeneti eszköz:"
 
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI beállítások"
+#, fuzzy
+msgid "no input devices"
+msgstr "Bemeneti eszköz:"
 
 msgid "In Ports:"
 msgstr "Bejövő portok:"
 
 msgid "Out Ports:"
 msgstr "Kimenő portok:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI beállítások"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI beállítások"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -560,6 +578,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Menüt ürít"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Beállítások"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -573,19 +595,75 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd ablak"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Szülő ablak"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "Minden bellítást ment"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Beállítások"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
 msgstr ""
 
 #, fuzzy
@@ -1156,6 +1234,127 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1328,23 +1527,9 @@ msgstr "Minden bellítást ment"
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
 #, fuzzy
-msgid "Audio..."
-msgstr "Hang beállítások..."
-
-#, fuzzy
-msgid "MIDI..."
-msgstr "MIDI beállítások..."
-
-#, fuzzy
-msgid "Zoom New Windows"
-msgstr "Szülő ablak"
+msgid "Edit Preferences..."
+msgstr "Beállítások..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1359,9 +1544,6 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
-
-msgid "Preferences"
-msgstr "Beállítások"
 
 msgid "Open Recent"
 msgstr "Legutóbbi fájlok"
@@ -1433,6 +1615,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr ""
 
@@ -1447,6 +1632,14 @@ msgstr "Array-t töröl"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Audio..."
+#~ msgstr "Hang beállítások..."
+
+#, fuzzy
+#~ msgid "MIDI..."
+#~ msgstr "MIDI beállítások..."
 
 #, fuzzy
 #~ msgid "bottom:"
@@ -1477,9 +1670,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Szűrők"
-
-#~ msgid "Input device 3:"
-#~ msgstr "3. bemeneti eszköz:"
 
 #~ msgid "Sampling"
 #~ msgstr "Mintavételezés"
