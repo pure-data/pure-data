@@ -12,9 +12,7 @@ away before the panel does... */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef _MSC_VER
-#define snprintf _snprintf  /* for pdcontrol object */
-#endif
+#include "m_private_utils.h"
 
 /* --------------------- graphics responder  ---------------- */
 

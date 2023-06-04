@@ -2,14 +2,14 @@
 # This file is put in the public domain.
 # Timothy Schoen <timschoen123@gmail.com>, 2022.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
-#
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
-"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/nl/>\n"
 "Language: nl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "lineair"
@@ -244,7 +244,8 @@ msgid "Save All Settings"
 msgstr "Alle instellingen opslaan"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
+msgstr ""
+"WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Canvas-eigenschappen"
@@ -740,8 +741,8 @@ msgstr "Installatie opties:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
-"Probeer de checksum van de bibliotheken te controleren voordat u ze (opnieuw)"
-" installeert"
+"Probeer de checksum van de bibliotheken te controleren voordat u ze "
+"(opnieuw) installeert"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Probeer bibliotheken te verwijderen voordat u ze (opnieuw) installeert"
@@ -1360,6 +1361,15 @@ msgstr "Wilt u de wijzigingen die u in '%s' heeft aangebracht opslaan?"
 
 msgid "Properties"
 msgstr "Eigenschappen"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Wijzigingen aan '%s' accepteren?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

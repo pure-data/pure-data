@@ -10,11 +10,7 @@
 
 #include <string.h>
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#endif
+#include "m_private_utils.h"
 
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */

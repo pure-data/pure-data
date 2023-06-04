@@ -1,13 +1,15 @@
 /* Copyright (c) 2021 IOhannes m zmölnig.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
-
 /* The "file" object. */
 #define _XOPEN_SOURCE 600
+#define _DEFAULT_SOURCE
 
 #include "m_pd.h"
 #include "g_canvas.h"
 #include "s_utf8.h"
+
+#include "m_private_utils.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -35,15 +37,6 @@
 typedef unsigned int mode_t;
 typedef SSIZE_T ssize_t;
 # define wstat _wstat
-# define snprintf _snprintf
-#endif
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
 #endif
 
 #ifndef S_ISREG
@@ -101,26 +94,6 @@ static int sys_mkdir(const char *pathname, mode_t mode) {
 static int sys_remove(const char *pathname) {
     return remove(pathname);
 }
-#endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-# define HAVE_ALLOCA 1
-#endif
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#if HAVE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
 #endif
 
     /* expand env vars and ~ at the beginning of a path and make a copy to return */

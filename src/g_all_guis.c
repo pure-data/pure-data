@@ -15,9 +15,7 @@
 
 #include "g_all_guis.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #ifdef _WIN32
 #include <io.h>

@@ -1633,6 +1633,8 @@ void sigmund_tilde_setup(void)
         gensym("amppowerlaw"), A_FLOAT, 0);
     class_addmethod(sigmund_class, (t_method)sigmund_quality,
         gensym("quality"), A_FLOAT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_clear,
+        gensym("clear"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_print,
         gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,

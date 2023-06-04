@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/hu/>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1375,6 +1375,15 @@ msgstr "El akarja menteni '%s' változásait?"
 
 msgid "Properties"
 msgstr "Tulajdonságok"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Elveti '%s' változtatásait?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

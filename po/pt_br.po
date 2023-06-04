@@ -2,13 +2,14 @@
 # This file is put in the public domain.
 # Alexandre Torres Porres <porres@gmail.com>, 2017, 2018, 2022.
 # Charles K. Neimog <charlesneimog@outlook.com>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-24 08:22+0000\n"
-"Last-Translator: Charles K. Neimog <charlesneimog@outlook.com>\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -1355,6 +1356,15 @@ msgstr "Você deseja salvar as alterações feitas em '%s'?"
 
 msgid "Properties"
 msgstr "Propriedades"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Aceitar as mudanças feitas em '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

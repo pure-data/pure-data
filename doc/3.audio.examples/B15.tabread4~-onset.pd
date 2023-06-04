@@ -15,7 +15,6 @@
 #X obj 60 448 +~;
 #X floatatom 300 397 6 0 0 0 - - - 0;
 #X msg 300 367 1;
-#X obj 394 545 table \$0-tab 200000;
 #X obj 60 366 phasor~ 0.02;
 #X msg 245 367 150001;
 #X text 34 240 At left below an onset (1 or 150000 samples) is added to the index of a table lookup. If you select the onset of 150001 \, you should hear the truncation error. (The table contains a Nyquist signal and the "correct" output should be a 100 Hz. tone.) At right \, the onset is presented in the separate onset inlet. The worst-case truncation error drops by about 30 dB., f 85;
@@ -27,6 +26,7 @@
 #X msg 418 379 \; pd dsp 1 \, fast-forward 4500;
 #X text 404 597 updated for Pd version 0.52;
 #X obj 394 341 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 394 545 array define \$0-tab 200000;
 #X connect 4 0 5 0;
 #X connect 5 0 8 0;
 #X connect 7 0 3 0;
@@ -38,8 +38,8 @@
 #X connect 13 0 9 1;
 #X connect 13 0 12 1;
 #X connect 14 0 13 0;
-#X connect 16 0 11 0;
-#X connect 17 0 13 0;
-#X connect 26 0 4 0;
-#X connect 26 0 6 0;
-#X connect 26 0 24 0;
+#X connect 15 0 11 0;
+#X connect 16 0 13 0;
+#X connect 25 0 4 0;
+#X connect 25 0 6 0;
+#X connect 25 0 23 0;

@@ -10,18 +10,7 @@ behavior for "gobjs" appears at the end of this file.  */
 #include "m_imp.h"
 #include <string.h>
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#endif
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
-
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 union inletunion
 {
