@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/en_CA/>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -197,9 +197,8 @@ msgstr "Apply"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "no device"
-msgstr "Input Devices"
+msgstr "no device"
 
 msgid "(same as input device)..."
 msgstr "(same as input device)..."
@@ -217,7 +216,7 @@ msgid "Use Multiple Devices"
 msgstr "Use Multiple Devices"
 
 msgid "audio system"
-msgstr ""
+msgstr "audio system"
 
 msgid "Settings"
 msgstr "Settings"
@@ -503,11 +502,10 @@ msgid "(use arrow keys for history)"
 msgstr "(use arrow keys for history)"
 
 msgid "(no device)"
-msgstr ""
+msgstr "(no device)"
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Input Devices"
+msgstr "no input devices"
 
 msgid "In Ports:"
 msgstr "In Ports:"
@@ -516,7 +514,7 @@ msgid "Out Ports:"
 msgstr "Out Ports:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "MIDI system"
 
 msgid "MIDI Settings"
 msgstr "MIDI Settings"
@@ -551,9 +549,8 @@ msgstr "Externals Install Directory"
 msgid "Clear"
 msgstr "Clear"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Preferences"
+msgstr "Path"
 
 msgid "Choose Pd documents directory:"
 msgstr "Choose Pd documents directory:"
@@ -568,48 +565,41 @@ msgstr "Add a new path"
 msgid "Edit existing path [%s]"
 msgstr "Edit existing path [%s]"
 
-#, fuzzy
 msgid "Patch windows"
-msgstr "Pd window"
+msgstr "Patch windows"
 
 msgid "Zoom New Windows"
 msgstr "Zoom New Windows"
 
-#, fuzzy
 msgid "GUI settings"
-msgstr "removed GUI settings"
+msgstr "GUI settings"
 
 msgid "preference layout (reopen the preferences to see the effect)"
-msgstr ""
+msgstr "preference layout (reopen the preferences to see the effect)"
 
 msgid "use tabs"
-msgstr ""
+msgstr "use tabs"
 
 msgid "single page"
-msgstr ""
+msgstr "single page"
 
 msgid "Preferences"
 msgstr "Preferences"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Preferences"
+msgstr "startup"
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Preferences"
+msgstr "audio"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Preferences"
+msgstr "MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Deken %s Preferences"
+msgstr "deken"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Preferences"
+msgstr "misc"
 
 msgid "Add new library"
 msgstr "Add new library"
@@ -618,23 +608,22 @@ msgid "Edit library"
 msgstr "Edit library"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "Settings below require a restart of Pd!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Pd libraries to load on startup"
 
-#, fuzzy
 msgid "Startup options"
-msgstr "Startup flags:"
+msgstr "Startup options"
 
 msgid "Defeat real-time scheduling"
 msgstr "Defeat real-time scheduling"
 
 msgid "language"
-msgstr ""
+msgstr "language"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menu language"
 
 msgid "Startup flags:"
 msgstr "Startup flags:"
@@ -1216,126 +1205,125 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Couldn't create preferences \"%1$s\" in %2$s"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arabic"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbaijani"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belarusian"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgarian"
 
 msgid "German"
-msgstr ""
+msgstr "German"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "German (Austria)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Greek"
 
 msgid "English"
-msgstr ""
+msgstr "English"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "English (Canada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "English (UK)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "English (USA)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Spanish"
 
 msgid "Basque"
-msgstr ""
+msgstr "Basque"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finnish"
 
 msgid "French"
-msgstr ""
+msgstr "French"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarati"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebrew"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Hungarian"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenian"
 
 msgid "Italian"
-msgstr ""
+msgstr "Italian"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesian"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japanese"
 
 msgid "Korean"
-msgstr ""
+msgstr "Korean"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Dutch"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panjabi"
 
 msgid "Polish"
-msgstr ""
+msgstr "Polish"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portuguese"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portuguese (Brazil)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portuguese (Portugal)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Russian"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albanian"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Swedish"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turkish"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainian"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamese"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chinese (Traditional)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "Default platform: %s"
+msgstr "(default language: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "translations"
+msgstr "(no translation)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1505,9 +1493,8 @@ msgstr "removed GUI settings"
 msgid "no Pd-GUI settings to clear"
 msgstr "no Pd-GUI settings to clear"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Preferences..."
+msgstr "Edit Preferences..."
 
 msgid "Save All Preferences"
 msgstr "Save All Preferences"
@@ -1593,7 +1580,7 @@ msgid "all"
 msgstr "all"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "New..."
