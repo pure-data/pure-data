@@ -636,9 +636,9 @@ sorted after your delwrite~.  The only way to ensure this is to create the
 delread~ after you created the delwrite~; if things get out of whack, just
 delete and re-create the delread~.
 
-<H3> <A id=s4.5> 2.4.6. multichannel signals </A> </H3>
+<H3> <A id=s4.6> 2.4.6. multichannel signals </A> </H3>
 
-As of Pd version 0.54, signals may be multichannel.  Every signal has a
+<P> As of Pd version 0.54, signals may be multichannel.  Every signal has a
 <i>length</i> equal to the window's block size (64 by default), and also has a
 <i>channel count</i> which is 1 by default.  The snake~ object can combine any
 number of single-channel signals into a multichannel one, or alternatively can
@@ -647,16 +647,16 @@ connections (send~, receive~, throw~, catch~, inlet~, outlet~) can be used to
 pass multichannel signals from window to window, and dac~ and adc~ can input and
 output several inputs or outputs into, or out of, one multichannel signal.
 
-The receive~, catch~, and adc~ objects take arguments to specify the desired
+<P> The receive~, catch~, and adc~ objects take arguments to specify the desired
 number of channels.
 
-Stateless objects, which have no memory from one DSP tick to the next, have
+<P> Stateless objects, which have no memory from one DSP tick to the next, have
 all been adapted to handle multichannel inputs and outputs.  The arithmetic and
 math objects (+~, -~, *~ ,/~, wrap~, sqrt~, and so on) use their inputs to determine
 their channel counts.  Binary operations like "+" can combine single- and
 multiple-channel inputs.
 
-Other objects such as filters or oscillators have not been adapted for
+<P> Other objects such as filters or oscillators have not been adapted for
 multichannel signals because there might be many ways to design multichannel
 versions of them.  Instead, you can use the clone object to perform general
 operations on multichannel signals.  Signal inputs and outputs of cloned patches
@@ -919,7 +919,7 @@ a different time in an object box than in a message box.  In an object box, the
 "$" argument is expanded at creation time, and in a message box, at message
 time.
 
-A "clone" object is provided to automatically create and manage multiple copies
+<P> A "clone" object is provided to automatically create and manage multiple copies
 of an abstraction.  You can use it to make voice banks for polyphonic synthesis,
 for example.
 
