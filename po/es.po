@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
-"Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -1224,118 +1224,118 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "No se pudo crear el archivo de preferencias '%1$s' en %2$s"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Árabe"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbaiyano"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Bielorruso"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Búlgaro"
 
 msgid "German"
-msgstr ""
+msgstr "Alemán"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Alemán (Austria)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Griego"
 
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Inglés (Canadá)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Inglés (UK)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Inglés (USA)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
 
 msgid "Basque"
-msgstr ""
+msgstr "Vasco"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandés"
 
 msgid "French"
-msgstr ""
+msgstr "Francés"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarati"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebreo"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Húngaro"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenio"
 
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesio"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japonés"
 
 msgid "Korean"
-msgstr ""
+msgstr "Coreano"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Dutch"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panyabí"
 
 msgid "Polish"
-msgstr ""
+msgstr "Polaco"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugués"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugués (Brasil)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugués (Portugal)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Ruso"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albanés"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Sueco"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turco"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamita"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chino (tradicional)"
 
 #, tcl-format
 msgid "(default language: %s)"
@@ -1599,7 +1599,7 @@ msgid "all"
 msgstr "todo"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "Nuevo..."
