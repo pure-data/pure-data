@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/nl/>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "lineair"
@@ -198,9 +198,8 @@ msgstr "Toepassen"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "no device"
-msgstr "Invoerapparaten"
+msgstr "geen apparaat"
 
 msgid "(same as input device)..."
 msgstr "(zelfde als invoerapparaat)..."
@@ -507,9 +506,8 @@ msgstr "(gebruik de pijltjestoetsen voor geschiedenis)"
 msgid "(no device)"
 msgstr ""
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Invoerapparaten"
+msgstr "geen invoerapparaten"
 
 msgid "In Ports:"
 msgstr "Ingangen:"
@@ -553,9 +551,8 @@ msgstr "Installatiemap externals"
 msgid "Clear"
 msgstr "Wissen"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Voorkeuren"
+msgstr "pad"
 
 msgid "Choose Pd documents directory:"
 msgstr "Kies Pd-documentenmap:"
@@ -570,16 +567,14 @@ msgstr "Een nieuw pad toevoegen"
 msgid "Edit existing path [%s]"
 msgstr "Bestaand pad bewerken [%s]"
 
-#, fuzzy
 msgid "Patch windows"
-msgstr "Pd venster"
+msgstr "Patch vensters"
 
 msgid "Zoom New Windows"
 msgstr "Nieuwe vensters inzoomen"
 
-#, fuzzy
 msgid "GUI settings"
-msgstr "verwijderde GUI-instellingen"
+msgstr "GUI-instellingen"
 
 msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
@@ -593,25 +588,20 @@ msgstr ""
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Voorkeuren"
+msgstr "opstart"
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Voorkeuren"
+msgstr "audio"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Voorkeuren"
+msgstr "MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Deken %s Voorkeuren"
+msgstr "deken"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Voorkeuren"
+msgstr "diverse"
 
 msgid "Add new library"
 msgstr "Nieuwe bibliotheek toevoegen"
@@ -625,9 +615,8 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
-#, fuzzy
 msgid "Startup options"
-msgstr "Opstartvlaggen:"
+msgstr "Opstart opties"
 
 msgid "Defeat real-time scheduling"
 msgstr "Versla real-time planning"
@@ -1342,13 +1331,12 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "Standaardplatform: %s"
+msgstr "(standaardtaal: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "vertalingen"
+msgstr "(geen vertaling)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1518,9 +1506,8 @@ msgstr "verwijderde GUI-instellingen"
 msgid "no Pd-GUI settings to clear"
 msgstr "geen Pd-GUI instellingen te wissen"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Voorkeuren..."
+msgstr "Voorkeuren bewerken..."
 
 msgid "Save All Preferences"
 msgstr "Alle voorkeuren opslaan"
