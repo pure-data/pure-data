@@ -152,4 +152,3 @@ make
 make app
 
 This will call msw-app.sh with the -n flag, preventing it from stripping the debug symbols
-
