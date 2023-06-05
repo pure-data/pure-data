@@ -13,16 +13,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-04 16:50+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/es/>\n"
+"PO-Revision-Date: 2023-06-06 09:30+0000\n"
+"Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -204,9 +204,8 @@ msgstr "Aplicar"
 msgid "OK"
 msgstr "Aceptar"
 
-#, fuzzy
 msgid "no device"
-msgstr "Dispositivos de entrada"
+msgstr "sin dispositivo"
 
 msgid "(same as input device)..."
 msgstr "(igual que dispositivos de entrada)..."
@@ -224,7 +223,7 @@ msgid "Use Multiple Devices"
 msgstr "Usar múltiples dispositivos"
 
 msgid "audio system"
-msgstr ""
+msgstr "Sistema de audio"
 
 msgid "Settings"
 msgstr "Configuraciones"
@@ -513,11 +512,10 @@ msgid "(use arrow keys for history)"
 msgstr "(usar flechas del teclado para navegar el historial)"
 
 msgid "(no device)"
-msgstr ""
+msgstr "(sin dispositivo)"
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Dispositivos de entrada"
+msgstr "Ningún dispositivos de entrada"
 
 msgid "In Ports:"
 msgstr "Puertos de entrada:"
@@ -526,7 +524,7 @@ msgid "Out Ports:"
 msgstr "Puertos de salida:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "Sistema MIDI"
 
 msgid "MIDI Settings"
 msgstr "Configuración MIDI"
@@ -561,9 +559,8 @@ msgstr "Directorio de instalación de externos"
 msgid "Clear"
 msgstr "Borrar"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Preferencias"
+msgstr "Preferencias de rutas"
 
 msgid "Choose Pd documents directory:"
 msgstr "Elegir directorio de documentos de Pd:"
@@ -578,48 +575,41 @@ msgstr "Agregar una nueva ruta"
 msgid "Edit existing path [%s]"
 msgstr "Editar ruta existente [%s]"
 
-#, fuzzy
 msgid "Patch windows"
-msgstr "Ventana de Pd"
+msgstr "Ventana de patch"
 
 msgid "Zoom New Windows"
 msgstr "Agrandar nuevas ventanas"
 
-#, fuzzy
 msgid "GUI settings"
-msgstr "preferencias GUI eliminadas"
+msgstr "preferencias GUI"
 
 msgid "preference layout (reopen the preferences to see the effect)"
-msgstr ""
+msgstr "diseño de preferencias (reabra las preferencias para ver el efecto)"
 
 msgid "use tabs"
-msgstr ""
+msgstr "usar pestañas"
 
 msgid "single page"
-msgstr ""
+msgstr "pagina única"
 
 msgid "Preferences"
 msgstr "Preferencias"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Preferencias"
+msgstr "Preferencias de inicio"
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Preferencias"
+msgstr "Preferencias de audio"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Preferencias"
+msgstr "Preferencias de MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Preferencias de deken %s"
+msgstr "Preferencias de deken"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Preferencias"
+msgstr "Otras preferencias"
 
 msgid "Add new library"
 msgstr "Agregar nueva librería"
@@ -628,23 +618,22 @@ msgid "Edit library"
 msgstr "Editar librería"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "¡La configuración a continuación requiere un reinicio de Pd!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Librerías de Pd para cargar al inicio"
 
-#, fuzzy
 msgid "Startup options"
-msgstr "Banderas de inicio:"
+msgstr "Opciones de inicio"
 
 msgid "Defeat real-time scheduling"
 msgstr "Rechazar prioridad en tiempo-real"
 
 msgid "language"
-msgstr ""
+msgstr "Idioma"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menú de idioma"
 
 msgid "Startup flags:"
 msgstr "Banderas de inicio:"
@@ -1348,13 +1337,12 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "Plataforma predeterminada: %s"
+msgstr "(Idioma predeterminado: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "traducciones"
+msgstr "(sin traducciones)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1524,9 +1512,8 @@ msgstr "preferencias GUI eliminadas"
 msgid "no Pd-GUI settings to clear"
 msgstr "no hay preferencias Pd-GUI para borrar"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Preferencias..."
+msgstr "Editar preferencias..."
 
 msgid "Save All Preferences"
 msgstr "Guardar preferencias"
