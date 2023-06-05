@@ -68,7 +68,7 @@ proc ::pd_i18n::load_locale {{lang ""}} {
         set lang ""
     }
     if { $lang == "" } {
-        set lang [ ::pd_i18n::get_system_language ]
+        set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
     }
 
     if { $::pd_i18n::language == "" || $lang == $::pd_i18n::language } {
@@ -148,7 +148,7 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     }
     set havelanguages [lsort -index 0 $havelanguages]
 
-    set lang [ ::pd_i18n::get_system_language ]
+    set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
     if [ dict exists $polanguages $lang ] {
         set lang [ dict get $polanguages $lang ]
     }
