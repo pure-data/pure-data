@@ -3,6 +3,7 @@ package provide apple_events 0.1
 
 package require pdwindow
 package require wheredoesthisgo
+package require pd_connect
 
 # references:
 # https://www.tcl.tk/man/tcl/TkCmd/tk_mac.htm
@@ -45,12 +46,13 @@ proc tkAboutDialog {} {
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {args} {
     #::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
-    pdsend "pd audio-properties"
+    #pdsend "pd audio-properties"
+    ::pd_menucommands::menu_preference_dialog
 }
 
 # kAEQuitApplication
 proc ::tk::mac::Quit {args} {
-    pdsend "pd verifyquit"
+    ::pd_connect::menu_quit
 }
 
 # on Tk/Cocoa, respond to the "Pd Help" option in the Help menu which

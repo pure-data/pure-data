@@ -2,7 +2,6 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -213,10 +212,10 @@ t_float template_getfloat(t_template *x, t_symbol *fieldname, t_word *wp,
     {
         if (type == DT_FLOAT)
             val = *(t_float *)(((char *)wp) + onset);
-        else if (loud) error("%s.%s: not a number",
+        else if (loud) pd_error(0, "%s.%s: not a number",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
     return (val);
 }
@@ -230,10 +229,10 @@ void template_setfloat(t_template *x, t_symbol *fieldname, t_word *wp,
      {
         if (type == DT_FLOAT)
             *(t_float *)(((char *)wp) + onset) = f;
-        else if (loud) error("%s.%s: not a number",
+        else if (loud) pd_error(0, "%s.%s: not a number",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
 }
 
@@ -247,10 +246,10 @@ t_symbol *template_getsymbol(t_template *x, t_symbol *fieldname, t_word *wp,
     {
         if (type == DT_SYMBOL)
             val = *(t_symbol **)(((char *)wp) + onset);
-        else if (loud) error("%s.%s: not a symbol",
+        else if (loud) pd_error(0, "%s.%s: not a symbol",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
     return (val);
 }
@@ -264,10 +263,10 @@ void template_setsymbol(t_template *x, t_symbol *fieldname, t_word *wp,
      {
         if (type == DT_SYMBOL)
             *(t_symbol **)(((char *)wp) + onset) = s;
-        else if (loud) error("%s.%s: not a symbol",
+        else if (loud) pd_error(0, "%s.%s: not a symbol",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
 }
 
@@ -515,7 +514,10 @@ t_canvas *template_findcanvas(t_template *template)
 {
     t_gtemplate *gt;
     if (!template)
+    {
         bug("template_findcanvas");
+        return (0);
+    }
     if (!(gt = template->t_list))
         return (0);
     return (gt->x_owner);
@@ -569,7 +571,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
             if (x->t_list)
             {
                     /* don't know what to do here! */
-                error("%s: template mismatch",
+                pd_error(0, "%s: template mismatch",
                     templatesym->s_name);
             }
             else
@@ -903,7 +905,7 @@ static t_float fielddesc_getfloat(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("symbolic data field used as number");
+            pd_error(0, "symbolic data field used as number");
         return (0);
     }
 }
@@ -944,7 +946,7 @@ t_float fielddesc_getcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("symbolic data field used as number");
+            pd_error(0, "symbolic data field used as number");
         return (0);
     }
 }
@@ -961,7 +963,7 @@ static t_symbol *fielddesc_getsymbol(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("numeric data field used as symbol");
+            pd_error(0, "numeric data field used as symbol");
         return (&s_);
     }
 }
@@ -1001,7 +1003,7 @@ void fielddesc_setcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("attempt to set constant or symbolic data field to a number");
+            pd_error(0, "attempt to set constant or symbolic data field to a number");
     }
 }
 
@@ -1194,15 +1196,17 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
     return (ret);
 }
 
-static void numbertocolor(int n, char *s)
+static int numbertocolor(int n)
 {
-    int red, blue, green;
+    int red, green, blue, color = 0;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
     green = n % 10;
-    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(blue),
-        rangecolor(green));
+    blue = ((n / 10) % 10);
+    color |= rangecolor(red)   << 16;
+    color |= rangecolor(blue)  <<  8;
+    color |= rangecolor(green) <<  0;
+    return color;
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
@@ -1212,18 +1216,22 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-
+    char tag0[80], tag[80];
+    const char*tags[] = {tag, tag0, "curve"};
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            char outline[20], fill[20];
-            int pix[200];
+            int outline;
+            t_word pix[200];
+
             if (n > 100)
                 n = 100;
                 /* calculate the pixel values before we start printing
@@ -1232,52 +1240,61 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 have to allocate memory here. */
             for (i = 0, f = x->x_vec; i < n; i++, f += 2)
             {
-                pix[2*i] = glist_xtopixels(glist,
+                pix[2*i].w_float = glist_xtopixels(glist,
                     basex + fielddesc_getcoord(f, template, data, 1));
-                pix[2*i+1] = glist_ytopixels(glist,
+                pix[2*i+1].w_float = glist_ytopixels(glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
             if (glist->gl_isgraph)
                 width *= glist_getzoom(glist);
-            numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
-                outline);
+            outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+
+            pdgui_vmess(0, "crr iiii rf ri rS",
+                glist_getcanvas(glist), "create",
+                (flags & CLOSED)?"polygon":"line",
+                0, 0, 0, 0,
+                "-width", width,
+                "-smooth", !!(flags & BEZ),
+                "-tags", 3, tags);
+
+            pdgui_vmess(0, "crs w",
+                glist_getcanvas(glist), "coords", tag,
+                2*n, pix);
+
             if (flags & CLOSED)
             {
-                numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1),
-                    fill);
-                sys_vgui(".x%lx.c create polygon\\\n",
-                    glist_getcanvas(glist));
-            }
-            else sys_vgui(".x%lx.c create line\\\n", glist_getcanvas(glist));
-            for (i = 0; i < n; i++)
-                sys_vgui("%d %d\\\n", pix[2*i], pix[2*i+1]);
-            sys_vgui("-width %f\\\n", width);
-            if (flags & CLOSED) sys_vgui("-fill %s -outline %s\\\n",
-                fill, outline);
-            else sys_vgui("-fill %s\\\n", outline);
-            if (flags & BEZ) sys_vgui("-smooth 1\\\n");
-            sys_vgui("-tags curve%lx\n", data);
+                int fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+                pdgui_vmess(0, "crs rk rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", fill,
+                    "-outline", outline);
+            } else
+                pdgui_vmess(0, "crs rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", outline);
         }
-        else post("warning: curves need at least two points to be graphed");
+        else post("warning: drawing shapes need at least two points to be graphed");
     }
     else
     {
-        if (n > 1) sys_vgui(".x%lx.c delete curve%lx\n",
-            glist_getcanvas(glist), data);
+        if (n > 1)
+            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
     t_curve *x = (t_curve *)z;
     t_fielddesc *f = x->x_vec + TEMPLATE->curve_motion_field;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->curve_motion_gpointer, 0))
     {
         post("curve_motion: scalar disappeared");
@@ -1371,7 +1388,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
                 TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar);
         else gpointer_setarray(&TEMPLATE->curve_motion_gpointer,
                 TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_wp);
-        glist_grab(glist, z, curve_motion, 0, xpix, ypix);
+        glist_grab(glist, z, curve_motionfn, 0, xpix, ypix);
     }
     return (1);
 }
@@ -1402,6 +1419,7 @@ static void curve_setup(void)
         A_GIMME, 0);
     class_addcreator((t_newmethod)curve_new, gensym("filledcurve"),
         A_GIMME, 0);
+    class_sethelpsymbol(curve_class, gensym("draw-shapes"));
     class_setparentwidget(curve_class, &curve_widgetbehavior);
     class_addfloat(curve_class, curve_float);
 }
@@ -1426,6 +1444,7 @@ typedef struct _plot
     t_fielddesc x_wpoints;
     t_fielddesc x_vis;          /* visible */
     t_fielddesc x_scalarvis;    /* true if drawing the scalar at each point */
+    t_fielddesc x_edit;         /* enable/disable mouse editing */
 } t_plot;
 
 static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
@@ -1440,6 +1459,7 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     fielddesc_setfloat_const(&x->x_scalarvis, 1);
+    fielddesc_setfloat_const(&x->x_edit, 1);
     while (1)
     {
         t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
@@ -1473,6 +1493,22 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_wpoints, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-e") && argc > 1)
+        {
+            fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
         }
         else break;
     }
@@ -1519,7 +1555,7 @@ static int plot_readownertemplate(t_plot *x,
     t_word *data, t_template *ownertemplate,
     t_symbol **elemtemplatesymp, t_array **arrayp,
     t_float *linewidthp, t_float *xlocp, t_float *xincp, t_float *ylocp,
-    t_float *stylep, t_float *visp, t_float *scalarvisp,
+    t_float *stylep, t_float *visp, t_float *scalarvisp, t_float *editp,
     t_fielddesc **xfield, t_fielddesc **yfield, t_fielddesc **wfield)
 {
     int arrayonset, type;
@@ -1529,18 +1565,18 @@ static int plot_readownertemplate(t_plot *x,
         /* find the data and verify it's an array */
     if (x->x_data.fd_type != A_ARRAY || !x->x_data.fd_var)
     {
-        error("plot: needs an array field");
+        pd_error(0, "plot: needs an array field");
         return (-1);
     }
     if (!template_find_field(ownertemplate, x->x_data.fd_un.fd_varsym,
         &arrayonset, &type, &elemtemplatesym))
     {
-        error("plot: %s: no such field", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: no such field", x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     if (type != DT_ARRAY)
     {
-        error("plot: %s: not an array", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: not an array", x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     array = *(t_array **)(((char *)data) + arrayonset);
@@ -1551,6 +1587,7 @@ static int plot_readownertemplate(t_plot *x,
     *stylep = fielddesc_getfloat(&x->x_style, ownertemplate, data, 1);
     *visp = fielddesc_getfloat(&x->x_vis, ownertemplate, data, 1);
     *scalarvisp = fielddesc_getfloat(&x->x_scalarvis, ownertemplate, data, 1);
+    *editp = fielddesc_getfloat(&x->x_edit, ownertemplate, data, 1);
     *elemtemplatesymp = elemtemplatesym;
     *arrayp = array;
     *xfield = &x->x_xpoints;
@@ -1578,13 +1615,13 @@ int array_getfields(t_symbol *elemtemplatesym,
 
     if (!(elemtemplate =  template_findbyname(elemtemplatesym)))
     {
-        error("plot: %s: no such template", elemtemplatesym->s_name);
+        pd_error(0, "plot: %s: no such template", elemtemplatesym->s_name);
         return (-1);
     }
     if (!((elemtemplatesym == &s_float) ||
         (elemtemplatecanvas = template_findcanvas(elemtemplate))))
     {
-        error("plot: %s: no canvas for this template", elemtemplatesym->s_name);
+        pd_error(0, "plot: %s: no canvas for this template", elemtemplatesym->s_name);
         return (-1);
     }
     elemsize = elemtemplate->t_n * sizeof(t_word);
@@ -1626,7 +1663,8 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, xsum, yval, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, yval, vis, scalarvis, edit;
+    double xsum;
     t_array *array;
     int x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
     int i;
@@ -1641,7 +1679,7 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     }
     if (!plot_readownertemplate(x, data, template,
         &elemtemplatesym, &array, &linewidth, &xloc, &xinc, &yloc, &style,
-            &vis, &scalarvis, &xfielddesc, &yfielddesc, &wfielddesc) &&
+            &vis, &scalarvis, &edit, &xfielddesc, &yfielddesc, &wfielddesc) &&
                 (vis != 0) &&
             !array_getfields(elemtemplatesym, &elemtemplatecanvas,
                 &elemtemplate, &elemsize,
@@ -1741,12 +1779,15 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, usexloc, xsum, yval, vis,
-        scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, yval,
+        vis, scalarvis, edit;
+    double xsum;
     t_array *array;
     int nelem;
     char *elem;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
+    char tag[80], tag0[80];
+    const char*tags[] = {tag, tag0, "array"};
         /* even if the array is "invisible", if its visibility is
         set by an instance variable you have to explicitly erase it,
         because the flag could earlier have been on when we were getting
@@ -1758,7 +1799,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
     if (plot_readownertemplate(x, data, template,
         &elemtemplatesym, &array, &linewidth, &xloc, &xinc, &yloc, &style,
-        &vis, &scalarvis, &xfielddesc, &yfielddesc, &wfielddesc) ||
+        &vis, &scalarvis, &edit, &xfielddesc, &yfielddesc, &wfielddesc) ||
             ((vis == 0) && tovis) /* see above for 'tovis' */
             || array_getfields(elemtemplatesym, &elemtemplatecanvas,
                 &elemtemplate, &elemsize, xfielddesc, yfielddesc, wfielddesc,
@@ -1767,18 +1808,30 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
+    sprintf(tag , "plot%p", data);
+        /* a tag that uniquely identifies the sub-plot */
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
+
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
+         /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS type
+          * FLOATARRAY is impractical (as it sends a list, and the GUI expects arguments)
+          */
+        t_word coordinates[1024*2];
+
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
+            int color = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
-                t_float yval, xpix, ypix, nextxloc;
+                t_float yval, xpix, ypix, nextxloc, usexloc;
                 int ixpix, inextx;
 
                 if (xonset >= 0)
@@ -1809,39 +1862,38 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                        "-fill black -width 0 -tags [list plot%lx array]\n",
-                        glist_getcanvas(glist),
-                        ixpix, (int)glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth), data);
+
+                    pdgui_vmess(0, "crr iiii rk rf rS",
+                        glist_getcanvas(glist), "create", "rectangle",
+                        ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
+                        inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
+                        "-fill", color,
+                        "-width", 0.,
+                        "-tags", 3, tags);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
                 }
-                if (ndrawn > 2000 || ixpix >= 3000) break;
+                if (ndrawn > 2000) break;
             }
         }
         else
         {
-            char outline[20];
+            int outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
             int lastpixel = -1, ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), outline);
+
+
             if (wonset >= 0)
             {
                     /* found "w" field which controls linewidth.  The trace is
                     a filled polygon with 2n points. */
-                sys_vgui(".x%lx.c create polygon \\\n",
-                    glist_getcanvas(glist));
-
                 for (i = 0, xsum = xloc; i < nelem; i++)
                 {
+                    t_float usexloc;
                     if (xonset >= 0)
                         usexloc = xloc + *(t_float *)((elem + elemsize * i)
                             + xonset);
@@ -1857,15 +1909,18 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + fielddesc_cvttocoord(yfielddesc,
-                                    yloc + yval) -
-                                        fielddesc_cvttocoord(wfielddesc,wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            - fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
                 lastpixel = -1;
                 for (i = nelem-1; i >= 0; i--)
@@ -1886,79 +1941,112 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix, glist_ytopixels(glist,
-                            basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                yval) +
-                                    fielddesc_cvttocoord(wfielddesc, wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            + fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
+
                     /* TK will complain if there aren't at least 3 points.
                     There should be at least two already. */
                 if (ndrawn < 4)
                 {
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) +
-                                fielddesc_cvttocoord(wfielddesc, wval)));
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) -
-                                fielddesc_cvttocoord(wfielddesc, wval)));
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        - fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
+
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        + fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
                 }
             ouch:
-                sys_vgui(" -width %d -fill %s -outline %s\\\n",
-                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    outline, outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                pdgui_vmess(0, "crr ri rk rk ri rS",
+                    glist_getcanvas(glist), "create", "polygon",
+                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    "-fill", outline,
+                    "-outline", outline,
+                    "-smooth", (style == PLOTSTYLE_BEZ),
+                    "-tags", 3, tags);
+
+                pdgui_vmess(0, "crs w",
+                    glist_getcanvas(glist), "coords", tag0,
+                    ndrawn*2, coordinates);
             }
             else if (linewidth > 0)
             {
                     /* no "w" field.  If the linewidth is positive, draw a
                     segmented line with the requested width; otherwise don't
                     draw the trace at all. */
-                sys_vgui(".x%lx.c create line \\\n", glist_getcanvas(glist));
-
-                for (xsum = xloc, i = 0; i < nelem; i++)
+                for (i = 0, xsum = xloc; i < nelem; i++)
                 {
                     t_float usexloc;
                     if (xonset >= 0)
-                        usexloc = xloc + *(t_float *)((elem + elemsize * i) +
-                            xonset);
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i)
+                            + xonset);
                     else usexloc = xsum, xsum += xinc;
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
                     yval = CLIP(yval);
+
+
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                    yval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) break;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates)) break;
                 }
+
                     /* TK will complain if there aren't at least 2 points... */
-                if (ndrawn == 0) sys_vgui("0 0 0 0 \\\n");
-                else if (ndrawn == 1) sys_vgui("%d %f \\\n", ixpix + 10,
-                    glist_ytopixels(glist, basey + yloc +
-                        fielddesc_cvttocoord(yfielddesc, yval)));
+                if (ndrawn == 1)
+                {
+                    coordinates[2].w_float = ixpix + 10;
+                    coordinates[3].w_float = glist_ytopixels(glist, basey + yloc + fielddesc_cvttocoord(yfielddesc, yval));
+                    ndrawn = 2;
+                }
 
-                sys_vgui("-width %f\\\n", linewidth);
-                sys_vgui("-fill %s\\\n", outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
-
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                if(ndrawn)
+                {
+                    pdgui_vmess(0, "crr iiii rf rk ri rS",
+                        glist_getcanvas(glist), "create", "line",
+                        0, 0, 0, 0,
+                        "-width", linewidth,
+                        "-fill", outline,
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags);
+                    pdgui_vmess(0, "crs w",
+                        glist_getcanvas(glist), "coords", tag0,
+                        ndrawn*2, coordinates);
+                }
             }
         }
             /* We're done with the outline; now draw all the points.
@@ -2012,16 +2100,17 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        sys_vgui(".x%lx.c delete plot%lx\n",
-            glist_getcanvas(glist), data);
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
+    if (up != 0)
+        return;
     TEMPLATE->array_motion_xcumulative += dx * TEMPLATE->array_motion_xperpix;
     TEMPLATE->array_motion_ycumulative += dy * TEMPLATE->array_motion_yperpix;
     if (TEMPLATE->array_motion_xfield)
@@ -2110,16 +2199,15 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     /* try clicking on an element of the array as a scalar (if clicking
     on the trace of the array failed) */
 static int array_doclick_element(t_array *array, t_glist *glist,
-    t_scalar *sc, t_array *ap,
     t_symbol *elemtemplatesym,
-    t_float linewidth, t_float xloc, t_float xinc, t_float yloc,
+    t_float xloc, t_float xinc, t_float yloc,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i, incr, hit;
-    t_float xsum;
+    double xsum;
 
     if (elemtemplatesym == &s_float)
         return (0);
@@ -2154,14 +2242,14 @@ static int array_doclick_element(t_array *array, t_glist *glist,
 
 static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
     t_array *ap, t_symbol *elemtemplatesym,
-    t_float linewidth, t_float xloc, t_float xinc, t_float yloc,
-    t_float scalarvis,
+    t_float xloc, t_float xinc, t_float yloc,
+    t_float scalarvis, t_float edit,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
-    int elemsize, yonset, wonset, xonset, i, callmotion = 0;
+    int elemsize, yonset, wonset, xonset, i;
 
     if (!array_getfields(elemtemplatesym, &elemtemplatecanvas,
         &elemtemplate, &elemsize, xfield, yfield, wfield,
@@ -2202,7 +2290,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
-                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                 if (TEMPLATE->array_motion_scalar)
                     scalar_redraw(TEMPLATE->array_motion_scalar,
                         TEMPLATE->array_motion_glist);
@@ -2213,6 +2301,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         }
         else
         {
+                /* First we get the closest distance to any element */
             for (i = 0; i < array->a_n; i += incr)
             {
                 t_float pxpix, pypix, pwpix, dx, dy;
@@ -2242,16 +2331,27 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         best = dx + dy;
                 }
             }
+                /* If we're not too close, we first try to click a scalar
+                (if visible). This would not affect the array */
             if (best > 8)
             {
                 if (scalarvis != 0)
-                    return (array_doclick_element(array, glist, sc, ap,
-                        elemtemplatesym, linewidth, xloc, xinc, yloc,
+                {
+                    return (array_doclick_element(array, glist,
+                        elemtemplatesym, xloc, xinc, yloc,
                             xfield, yfield, wfield,
                             xpix, ypix, shift, alt, dbl, doit));
+
+                }
                 else return (0);
             }
+                /* Now we walk over the array again and decide whether we
+                a) grab an element, b) change the line width,
+                c) delete an element or d) add a new element */
             best += 0.001;  /* add truncation error margin */
+             /* otherwise we try to grab a vertex */
+            if (!edit)
+                return (0);
             for (i = 0; i < array->a_n; i += incr)
             {
                 t_float pxpix, pypix, pwpix, dx, dy, dy2, dy3;
@@ -2358,7 +2458,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             TEMPLATE->array_motion_yfield = 0;
                             TEMPLATE->array_motion_ycumulative = 0;
                         }
-                        glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                        glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                     }
                     if (alt)
                     {
@@ -2366,12 +2466,14 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
+                    else return (TEMPLATE->array_motion_fatten ?
+                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
                 }
             }
         }
     }
-    return (0);
+        /* JMZ: change the cursor to "clickme" if the array can be edited */
+    return (!edit)?CURSOR_RUNMODE_NOTHING:CURSOR_RUNMODE_CLICKME;
 }
 
 static int plot_click(t_gobj *z, t_glist *glist,
@@ -2381,18 +2483,17 @@ static int plot_click(t_gobj *z, t_glist *glist,
 {
     t_plot *x = (t_plot *)z;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, vis, scalarvis, edit;
     t_array *array;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
 
     if (!plot_readownertemplate(x, data, template,
         &elemtemplatesym, &array, &linewidth, &xloc, &xinc, &yloc, &style,
-        &vis, &scalarvis,
+        &vis, &scalarvis, &edit,
         &xfielddesc, &yfielddesc, &wfielddesc) && (vis != 0))
     {
-        return (array_doclick(array, glist, sc, ap,
-            elemtemplatesym,
-            linewidth, basex + xloc, xinc, basey + yloc, scalarvis,
+        return (array_doclick(array, glist, sc, ap, elemtemplatesym,
+            basex + xloc, xinc, basey + yloc, scalarvis, edit,
             xfielddesc, yfielddesc, wfielddesc,
             xpix, ypix, shift, alt, dbl, doit));
     }
@@ -2455,6 +2556,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
+        }
         else break;
     }
         /* next argument is name of field to draw - we don't know its type yet
@@ -2467,7 +2579,7 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
-    else fielddesc_setfloat_const(&x->x_color, 1);
+    else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
     else x->x_label = &s_;
@@ -2534,10 +2646,21 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
         else
         {
             t_atom at;
-            if (type == DT_FLOAT)
+            switch(type)
+            {
+            default:
+                SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_FLOAT:
                 SETFLOAT(&at, ((t_word *)((char *)data + onset))->w_float);
-            else SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
-            atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_SYMBOL:
+                strncpy(buf + nchars,
+                    ((t_word *)((char *)data + onset))->w_symbol->s_name,
+                    DRAWNUMBER_BUFSIZE - nchars);
+            }
         }
     }
 }
@@ -2608,36 +2731,49 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
     int vis)
 {
     t_drawnumber *x = (t_drawnumber *)z;
+    char tag[80];
+    const char*tags[] = {tag, "label"};
 
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag, "drawnumber%p", data);
     if (vis)
     {
+        t_atom fontatoms[3];
         t_atom at;
         int xloc = glist_xtopixels(glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-        char colorstring[20], buf[DRAWNUMBER_BUFSIZE];
-        numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
-            colorstring);
+        char buf[DRAWNUMBER_BUFSIZE];
+        int color = numbertocolor(
+            fielddesc_getfloat(&x->x_color, template, data, 1));
         drawnumber_getbuf(x, data, template, buf);
-        sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
-                glist_getcanvas(glist), xloc, yloc, colorstring, buf);
-        sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                sys_fontweight);
-        sys_vgui(" -tags [list drawnumber%lx label]\n", data);
+
+        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        SETFLOAT (fontatoms+1,-sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            glist_getcanvas(glist), "create", "text",
+            xloc, yloc,
+            "-anchor", "nw",
+            "-fill", color,
+            "-text", buf,
+            "-font", 3, fontatoms,
+            "-tags", 2, tags);
     }
-    else sys_vgui(".x%lx.c delete drawnumber%lx\n",
-        glist_getcanvas(glist), data);
+    else
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
 }
 
-static void drawnumber_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->drawnumber_motion_gpointer, 0))
     {
         post("drawnumber_motion: scalar disappeared");
@@ -2665,7 +2801,7 @@ static void drawnumber_motion(void *z, t_floatarg dx, t_floatarg dy)
             TEMPLATE->drawnumber_motion_glist);
 }
 
-static void drawnumber_key(void *z, t_floatarg fkey)
+static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     int key = fkey;
@@ -2770,7 +2906,7 @@ static int drawnumber_click(t_gobj *z, t_glist *glist,
             else gpointer_setarray(&TEMPLATE->drawnumber_motion_gpointer,
                     TEMPLATE->drawnumber_motion_array,
                         TEMPLATE->drawnumber_motion_wp);
-            glist_grab(glist, z, drawnumber_motion, drawnumber_key,
+            glist_grab(glist, z, drawnumber_motionfn, drawnumber_key,
                 xpix, ypix);
         }
         return (1);

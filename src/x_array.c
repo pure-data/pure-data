@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include <string.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
@@ -15,33 +16,15 @@
 #include <io.h>
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
 #define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-#if HAVE_ALLOCA
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < TEXT_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < TEXT_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
 
 /* -- "table" - classic "array define" object by Guenter Geiger --*/
 
 static int tabcount = 0;
 
-static void *table_donew(t_symbol *s, int size, int flags,
+static void *table_donew(t_symbol *s, int size, int save, int savesize,
     int xpix, int ypix)
 {
     t_atom a[9];
@@ -56,8 +39,8 @@ static void *table_donew(t_symbol *s, int size, int flags,
     }
     if (size < 1)
         size = 100;
-    SETFLOAT(a, 0);
-    SETFLOAT(a+1, 50);
+    SETFLOAT(a, GLIST_DEFCANVASXLOC);
+    SETFLOAT(a+1, GLIST_DEFCANVASYLOC);
     SETFLOAT(a+2, xpix + 100);
     SETFLOAT(a+3, ypix + 100);
     SETSYMBOL(a+4, s);
@@ -70,7 +53,8 @@ static void *table_donew(t_symbol *s, int size, int flags,
     gl = glist_addglist((t_glist*)x, &s_, 0, -1, (size > 1 ? size-1 : 1), 1,
         50, ypix+50, xpix+50, 50);
 
-    graph_array(gl, s, &s_float, size, flags);
+    graph_array(gl, s, &s_float, size,
+        save*GRAPH_ARRAY_SAVE + savesize*GRAPH_ARRAY_SAVESIZE);
 
     pd_this->pd_newest = &x->gl_pd;     /* mimic action of canvas_pop() */
     pd_popsym(&x->gl_pd);
@@ -81,7 +65,7 @@ static void *table_donew(t_symbol *s, int size, int flags,
 
 static void *table_new(t_symbol *s, t_floatarg f)
 {
-    return (table_donew(s, f, 0, 500, 300));
+    return (table_donew(s, f, 0, 0, 500, 300));
 }
 
     /* return true if the "canvas" object is a "table". */
@@ -106,7 +90,7 @@ static void array_define_yrange(t_glist *x, t_floatarg ylo, t_floatarg yhi)
             "ffff", 0., yhi, (double)(n == 1 ? n : n-1), ylo);
         vmess(&x->gl_list->g_pd, gensym("xlabel"),
             "fff", ylo + glist_pixelstoy(gl, 2) - glist_pixelstoy(gl, 0),
-                0., (float)(n-1));
+                0., (t_float)(n-1));
         vmess(&x->gl_list->g_pd, gensym("ylabel"),
             "fff", glist_pixelstox(gl, 0) - glist_pixelstox(gl, 5), ylo, yhi);
     }
@@ -116,11 +100,11 @@ static void array_define_yrange(t_glist *x, t_floatarg ylo, t_floatarg yhi)
 static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *arrayname = &s_;
-    float arraysize = 100;
+    t_float arraysize = 100;
     t_glist *x;
-    int keep = 0;
-    float ylo = -1, yhi = 1;
-    float xpix = 500, ypix = 300;
+    int keep = 0, gavesize = 0;
+    t_float ylo = -1, yhi = 1;
+    t_float xpix = 500, ypix = 300;
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -148,7 +132,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            error("array define: unknown flag ...");
+            pd_error(0, "array define: unknown flag ...");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -161,6 +145,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     if (argc && argv->a_type == A_FLOAT)
     {
         arraysize = argv->a_w.w_float;
+        gavesize = 1;
         argc--; argv++;
     }
     if (argc)
@@ -168,7 +153,8 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         post("warning: array define ignoring extra argument: ");
         postatom(argc, argv); endpost();
     }
-    x = (t_glist *)table_donew(arrayname, arraysize, keep, xpix, ypix);
+    x = (t_glist *)table_donew(arrayname, arraysize, keep, keep && !gavesize,
+        xpix, ypix);
 
         /* bash the class to "array define".  We don't do this earlier in
         part so that canvas_getcurrent() will work while the glist and
@@ -186,7 +172,7 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     t_glist *x = (t_glist *)z;
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
-        (float)x->gl_obj.te_xpix, (float)x->gl_obj.te_ypix);
+        (t_float)x->gl_obj.te_xpix, (t_float)x->gl_obj.te_ypix);
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
 
@@ -218,6 +204,31 @@ static void array_define_send(t_glist *x, t_symbol *s)
         gpointer_unset(&gp);
     }
     else bug("array_define_send");
+}
+
+void garray_properties(t_garray *x);
+
+static void array_define_done_popup(t_glist*x, t_float which, t_float xpos, t_float ypos)
+{
+    int iwhich = (int)which;
+    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
+    t_gobj *obj = 0;
+    if (!gl || !gl->gl_list || pd_class(&gl->gl_list->g_pd) != garray_class)
+        return;
+
+    obj = gl->gl_list;
+
+    switch(iwhich) {
+    case 0: /* properties */
+        garray_properties((t_garray *)obj);
+    break;
+    case 1: /* open */
+        typedmess(&(obj->g_pd), gensym("arrayviewlistnew"), 0, 0);
+        break;
+    case 2: /* help */
+        open_via_helppath(class_gethelpname(array_define_class), "");
+        break;
+    }
 }
 
 static void array_define_bang(t_glist *x)
@@ -630,11 +641,11 @@ static void array_get_bang(t_array_rangeop *x)
     t_atom *outv;
     if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
-    ATOMS_ALLOCA(outv, nitem);
+    ALLOCA(t_atom, outv, nitem, TEXT_NGETBYTE);
     for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         SETFLOAT(&outv[i],  *(t_float *)itemp);
     outlet_list(x->x_outlet, 0, nitem, outv);
-    ATOMS_FREEA(outv, nitem);
+    FREEA(t_atom, outv, nitem, TEXT_NGETBYTE);
 }
 
 static void array_get_float(t_array_rangeop *x, t_floatarg f)
@@ -854,7 +865,7 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = array_min_new(s, argc-1, argv+1);
         else
         {
-            error("array %s: unknown function", str);
+            pd_error(0, "array %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }
@@ -876,6 +887,9 @@ void x_array_setup(void)
     class_addanything(array_define_class, array_define_anything);
     class_sethelpsymbol(array_define_class, gensym("array-object"));
     class_setsavefn(array_define_class, array_define_save);
+
+    class_addmethod(array_define_class, (t_method)array_define_done_popup,
+        gensym("done-popup"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 
     class_addmethod(array_define_class, (t_method)array_define_ignore,
         gensym("editmode"), A_GIMME, 0);

@@ -71,5 +71,8 @@ copysrc pm_win
 copysrc porttime
 cp -v $SRC/license.txt $DEST/
 
+# make sure the source-code is not executable
+find "${DEST}" -type f -perm -u+x "(" -name "*.h" -or -name "*-c" ")" -exec chmod -x {} +
+
 # cleanup
 rm -rf $SRC

@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include <string.h>
 
 /* ----------------------------- dac~ --------------------------- */
 static t_class *dac_class;
@@ -43,16 +44,23 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
 
 static void dac_dsp(t_dac *x, t_signal **sp)
 {
-    t_int i, *ip;
-    t_signal **sp2;
-    for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
+    t_int i, j;
+    for (i = 0; i < x->x_n; i++)
     {
-        int ch = (int)(*ip - 1);
-        if ((*sp2)->s_n != DEFDACBLKSIZE)
-            error("dac~: bad vector size");
-        else if (ch >= 0 && ch < sys_get_outchannels())
-            dsp_add(plus_perform, 4, STUFF->st_soundout + DEFDACBLKSIZE*ch,
-                (*sp2)->s_vec, STUFF->st_soundout + DEFDACBLKSIZE*ch, DEFDACBLKSIZE);
+        int ch = (int)(x->x_vec[i] - 1);
+        if (sp[i]->s_length != DEFDACBLKSIZE)
+            pd_error(x,
+              "dac~: input vector size (%d) doesn't match Pd vector size (%d)",
+                    sp[i]->s_length, DEFDACBLKSIZE);
+        else for (j = 0; j < sp[i]->s_nchans; j++)
+        {
+            if (ch + j >= 0 && ch + j < sys_get_outchannels())
+                dsp_add(plus_perform, 4,
+                    STUFF->st_soundout + DEFDACBLKSIZE * (ch + j),
+                sp[i]->s_vec + j * sp[i]->s_length,
+                    STUFF->st_soundout + DEFDACBLKSIZE * (ch + j),
+                        (t_int)DEFDACBLKSIZE);
+        }
     }
 }
 
@@ -72,7 +80,7 @@ static void dac_free(t_dac *x)
 static void dac_setup(void)
 {
     dac_class = class_new(gensym("dac~"), (t_newmethod)dac_new,
-        (t_method)dac_free, sizeof(t_dac), 0, A_GIMME, 0);
+        (t_method)dac_free, sizeof(t_dac), CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(dac_class, t_dac, x_f);
     class_addmethod(dac_class, (t_method)dac_dsp, gensym("dsp"), A_CANT, 0);
     class_addmethod(dac_class, (t_method)dac_set, gensym("set"), A_GIMME, 0);
@@ -85,15 +93,16 @@ static t_class *adc_class;
 typedef struct _adc
 {
     t_object x_obj;
-    t_int x_n;
-    t_int *x_vec;
+    int x_n;
+    int *x_vec;
+    int x_multi;
 } t_adc;
 
 static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_adc *x = (t_adc *)pd_new(adc_class);
     t_atom defarg[2];
-    int i;
+    int i, offset;
     if (!argc)
     {
         argv = defarg;
@@ -101,74 +110,54 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
         SETFLOAT(&defarg[0], 1);
         SETFLOAT(&defarg[1], 2);
     }
-    x->x_n = argc;
-    x->x_vec = (t_int *)getbytes(argc * sizeof(*x->x_vec));
-    for (i = 0; i < argc; i++)
-        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
-    for (i = 0; i < argc; i++)
+    if (argc >= 2 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+    {       /* multichannel version: -m [nchans] [start channel] */
+        x->x_multi = 1;
+        if ((x->x_n = atom_getfloatarg(1, argc, argv)) < 1)
+            x->x_n = 2;
+        if ((offset = atom_getfloatarg(2, argc, argv)) < 0)
+            offset = 0;
+        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < x->x_n; i++)
+            x->x_vec[i] = offset+i+1;
         outlet_new(&x->x_obj, &s_signal);
-    return (x);
-}
-
-t_int *copy_perform(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    while (n--) *out++ = *in1++;
-    return (w+4);
-}
-
-static t_int *copy_perf8(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-
-    for (; n; n -= 8, in1 += 8, out += 8)
-    {
-        t_sample f0 = in1[0];
-        t_sample f1 = in1[1];
-        t_sample f2 = in1[2];
-        t_sample f3 = in1[3];
-        t_sample f4 = in1[4];
-        t_sample f5 = in1[5];
-        t_sample f6 = in1[6];
-        t_sample f7 = in1[7];
-
-        out[0] = f0;
-        out[1] = f1;
-        out[2] = f2;
-        out[3] = f3;
-        out[4] = f4;
-        out[5] = f5;
-        out[6] = f6;
-        out[7] = f7;
     }
-    return (w+4);
-}
-
-void dsp_add_copy(t_sample *in, t_sample *out, int n)
-{
-    if (n&7)
-        dsp_add(copy_perform, 3, in, out, n);
     else
-        dsp_add(copy_perf8, 3, in, out, n);
+    {
+        x->x_multi = 0;
+        x->x_n = argc;
+        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < argc; i++)
+            x->x_vec[i] = atom_getfloatarg(i, argc, argv);
+        for (i = 0; i < x->x_n; i++)
+            outlet_new(&x->x_obj, &s_signal);
+    }
+    return (x);
 }
 
 static void adc_dsp(t_adc *x, t_signal **sp)
 {
-    t_int i, *ip;
-    t_signal **sp2;
-    for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
+    int i;
+    if (x->x_multi)
+        signal_setmultiout(sp, x->x_n);
+    else for (i = 0; i < x->x_n; i++)
+        signal_setmultiout(&sp[i], 1);
+    if (sp[0]->s_length != DEFDACBLKSIZE)
     {
-        int ch = (int)(*ip - 1);
-        if ((*sp2)->s_n != DEFDACBLKSIZE)
-            error("adc~: bad vector size");
-        else if (ch >= 0 && ch < sys_get_inchannels())
+        pd_error(0, "adc~: local vector size %d doesn't match system (%d)",
+            sp[0]->s_length, DEFDACBLKSIZE);
+        return;
+    }
+    for (i = 0; i < x->x_n; i++)
+    {
+        int ch = x->x_vec[i] - 1;
+        t_sample *out = (x->x_multi? sp[0]->s_vec + sp[0]->s_length * i:
+            sp[i]->s_vec);
+        if (ch >= 0 && ch < sys_get_inchannels())
             dsp_add_copy(STUFF->st_soundin + DEFDACBLKSIZE*ch,
-                (*sp2)->s_vec, DEFDACBLKSIZE);
-        else dsp_add_zero((*sp2)->s_vec, DEFDACBLKSIZE);
+                out, DEFDACBLKSIZE);
+        else dsp_add_zero(out, DEFDACBLKSIZE);
     }
 }
 

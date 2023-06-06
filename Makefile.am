@@ -37,22 +37,26 @@ EXTRA_SUBDIRS += po
 BUILT_SOURCES += locales
 endif
 
+# include libpd `here since the libpd subdirs contain their own custom Makefiles
+LIBPD_DIST = libpd/Makefile libpd/README.txt libpd/test_libpd/Makefile \
+             libpd/test_libpd/test_libpd.c libpd/test_libpd/test_libpd.pd
+
 # files that are included but not built
-EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
+EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt $(LIBPD_DIST)
 
 # subdirs that are built,
-# mac before src due to uninstall target order kludge (see mac/Makfile.am)
-SUBDIRS = $(EXTRA_SUBDIRS) mac msw src man doc tcl extra font
+# mac before src due to uninstall target order kludge (see mac/Makefile.am)
+SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc tcl extra font
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio doc extra font mac man msw po portmidi portaudio src tcl
+DIST_SUBDIRS = asio doc extra font linux mac man msw po portmidi portaudio src tcl
 
 #########################################
 ##### Targets #####
 
 .PHONY: app
 
-# optionaly build localizations
+# optionally build localizations
 if MSGFMT
 locales:
 	${MAKE} -C po all

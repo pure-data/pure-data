@@ -18,17 +18,10 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
-#include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <sched.h>
 #include "s_audio_alsa.h"
 
 /* needed for alsa 0.9 compatibility: */
@@ -96,7 +89,7 @@ static unsigned int alsamm_buffertime = 0;
 static unsigned int alsamm_buffersize = 0;
 static int alsamm_transfersize = DEFDACBLKSIZE;
 
-/* bad style: we asume all cards give the same answer at init so we make this vars global
+/* bad style: we assume all cards give the same answer at init so we make this vars global
    to have a faster access in writing reading during send_dacs */
 static snd_pcm_sframes_t alsamm_period_size;
 static unsigned int alsamm_periods;
@@ -179,7 +172,7 @@ snd_output_t* alsa_stdout;
 static void check_error(int err, const char *why)
 {
     if (err < 0)
-        error("%s: %s\n", why, snd_strerror(err));
+        pd_error(0, "%s: %s\n", why, snd_strerror(err));
 }
 
 int alsamm_open_audio(int rate, int blocksize)
@@ -244,9 +237,9 @@ int alsamm_open_audio(int rate, int blocksize)
     alsamm_buffersize = blocksize;
 
   if(sys_verbose)
-    post("syschedadvance=%d us(%d samples) so buffertime max should be this=%d"
+    post("syschedadvance=%d microseconds so buffertime max should be this=%d"
          "or sys_blocksize=%d (samples) to use buffersize=%d",
-         sys_schedadvance,sys_advance_samples,alsamm_buffertime,
+         sys_schedadvance, alsamm_buffertime,
          blocksize,alsamm_buffersize);
 
   alsamm_periods = 0; /* no one wants periods setting from command line ;-) */
@@ -884,7 +877,7 @@ static int alsamm_start()
 
     if(avail > 0){
 
-      int comitted = 0;
+      int committed = 0;
 
       if ((err = alsamm_get_channels(dev->a_handle, &avail, &offset,
                                      dev->a_channels,dev->a_addr)) < 0) {
@@ -895,14 +888,14 @@ static int alsamm_start()
       for (chn = 0; chn < dev->a_channels; chn++)
         memset(dev->a_addr[chn],0,avail*ALSAMM_SAMPLEWIDTH_32);
 
-      comitted = snd_pcm_mmap_commit (dev->a_handle, offset, avail);
+      committed = snd_pcm_mmap_commit (dev->a_handle, offset, avail);
 
       avail = snd_pcm_avail_update(dev->a_handle);
 
 #ifdef ALSAMM_DEBUG
       if(sys_verbose)
-        post("start: now channels cleared, out with avail=%d, offset=%d, comitted=%d",
-             avail,offset,comitted);
+        post("start: now channels cleared, out with avail=%d, offset=%d, committed=%d",
+             avail,offset,committed);
 #endif
     }
     /* now start, should be autostarted */
@@ -1074,7 +1067,7 @@ int alsamm_send_dacs(void)
     post("dac send called in %d, out %d, xrun %d",inchannels,outchannels, alsamm_xruns);
 
   if(alsamm_xruns && (alsamm_xruns % 1000) == 0)
-    post("1000 xruns occured");
+    post("1000 xruns occurred");
 
   if(dac_send < WATCH_PERIODS){
     out_cm[dac_send] = -1;
@@ -1093,7 +1086,7 @@ int alsamm_send_dacs(void)
   /* here we should check if in and out samples are here.
      but, the point is if out samples available also in sample should,
      so we don't make a precheck of insamples here and let outsample check be the
-     the first of the forst card.
+     the first of the first card.
   */
 
 
@@ -1129,7 +1122,7 @@ int alsamm_send_dacs(void)
     }
 
     /* check if we are late and have to (able to) catch up */
-    /* xruns will be ignored since you cant do anything since already happened */
+    /* xruns will be ignored since you can't do anything since already happened */
     state = snd_pcm_state(out);
     if (state == SND_PCM_STATE_XRUN) {
       err = xrun_recovery(out, -EPIPE);
@@ -1166,7 +1159,7 @@ int alsamm_send_dacs(void)
     fp1 = fpo;
     ooffset = 0;
 
-    /* since this can go over a buffer boundery we maybe need two steps to
+    /* since this can go over a buffer boundary we maybe need two steps to
        transfer (normally when buffersize is a multiple of transfersize
        this should never happen) */
 
@@ -1205,7 +1198,7 @@ int alsamm_send_dacs(void)
 
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < oframes; i++,fp2++)
           {
-            float s1 = *fp2 * F32MAX;
+            t_sample s1 = *fp2 * F32MAX;
             /* better but slower, better never clip ;-)
                buf[i]= CLIP32(s1); */
             buf[i]= ((int) s1 & 0xFFFFFF00);
@@ -1280,7 +1273,7 @@ int alsamm_send_dacs(void)
     fp1 = fpi;
     ioffset = 0;
 
-    /* since sysdata can go over a driver buffer boundery we maybe need two steps to
+    /* since sysdata can go over a driver buffer boundary we maybe need two steps to
        transfer (normally when buffersize is a multiple of transfersize
        this should never happen) */
 
@@ -1313,8 +1306,8 @@ int alsamm_send_dacs(void)
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < iframes; i++,fp2++)
           {
             /* mask the lowest bits, since subchannels info can make zero samples nonzero */
-            *fp2 = (float) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
-              * (1.0 / (float) INT32_MAX);
+            *fp2 = (t_sample) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
+              * (1.0 / (t_sample) INT32_MAX);
           }
       }
 

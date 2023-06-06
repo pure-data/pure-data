@@ -12,20 +12,13 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
-#include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/mman.h>
 #include "s_audio_alsa.h"
-#include <endian.h>
+
+#include "m_private_utils.h"
 
 /* Defines */
 #define DEBUG(x) x
@@ -57,7 +50,7 @@ t_alsa_dev alsa_outdev[ALSA_MAXDEV];
 int alsa_nindev;
 int alsa_noutdev;
 
-/* #define DEBUG_ALSA_XFER */
+/* #define DEBUG_ALSA_XFER  */
 #ifdef DEBUG_ALSA_XFER
 static int xferno = 0;
 static int callno = 0;
@@ -75,7 +68,7 @@ static void check_error(int err, int fn, const char *why)
 }
 
 /* figure out, when opening ALSA device, whether we should use the code in
-this file or defer to Winfried Ritch's code to do mmaped transfers (handled
+this file or defer to Winfried Ritch's code to do mapped transfers (handled
 in s_audio_alsamm.c). */
 static int alsaio_canmmap(t_alsa_dev *dev)
 {
@@ -117,8 +110,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     snd_pcm_hw_params_alloca(&hw_params);
     snd_pcm_sw_params_alloca(&sw_params);
 
-    if (sys_verbose)
-        post((out ? "configuring sound output..." :
+    logpost(NULL, PD_VERBOSE, (out ? "configuring sound output..." :
             "configuring sound input..."));
 
         /* set hardware parameters... */
@@ -159,8 +151,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     }
     else dev->a_sampwidth = 4;
 
-    if (sys_verbose)
-        post("Sample width set to %d bytes", dev->a_sampwidth);
+    logpost(NULL, PD_VERBOSE, "Sample width set to %d bytes", dev->a_sampwidth);
 
         /* set the subformat */
     err = snd_pcm_hw_params_set_subformat(dev->a_handle,
@@ -201,7 +192,8 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
     check_error(err, out, "snd_pcm_hw_params");
-
+    if (err < 0)
+        return (-1);
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
     if (alsa_snd_buf)
@@ -277,7 +269,6 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     snd_output_t* out;
     int frag_size = (blocksize ? blocksize : ALSA_DEFFRAGSIZE);
     int nfrags, i, iodev, dev2;
-    int wantinchans, wantoutchans, device;
 
     nfrags = sys_schedadvance * (float)rate / (1e6 * frag_size);
         /* save our belief as to ALSA's buffer size for later */
@@ -285,8 +276,8 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     alsa_nindev = alsa_noutdev = 0;
     alsa_jittermax = ALSA_DEFJITTERMAX;
 
-    if (sys_verbose)
-        post("audio buffer set to %d", (int)(0.001 * sys_schedadvance));
+    logpost(NULL, PD_VERBOSE, "alsa: %d blocks of %d samples, total advance %d",
+        nfrags, frag_size, (int)(0.001 * sys_schedadvance));
 
     for (iodev = 0; iodev < naudioindev; iodev++)
     {
@@ -298,8 +289,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
             continue;
         alsa_indev[alsa_nindev].a_devno = audioindev[iodev];
         snd_pcm_nonblock(alsa_indev[alsa_nindev].a_handle, 1);
-        if (sys_verbose)
-            post("opened input device name %s", devname);
+        logpost(NULL, PD_VERBOSE, "opened input device name %s", devname);
         alsa_nindev++;
     }
     for (iodev = 0; iodev < naudiooutdev; iodev++)
@@ -433,10 +423,9 @@ int alsa_send_dacs(void)
     static double timenow;
     double timelast;
     t_sample *fp, *fp1, *fp2;
-    int i, j, k, err, iodev, result, ch, goterror = 0;
+    int i, j, k, err, iodev, result, ch, goterror = 0, busy = 0;
     int chansintogo, chansouttogo;
     unsigned int transfersize;
-
     if (alsa_usemmap)
         return (alsamm_send_dacs());
 
@@ -454,7 +443,7 @@ int alsa_send_dacs(void)
     if (timenow - timelast > 0.050)
         post("long wait between calls: %d",
             (int)(1000 * (timenow - timelast))), fflush(stderr);
-    callno++;
+    callno = (callno + 1)% 1000;
 #endif
 
 
@@ -469,8 +458,14 @@ int alsa_send_dacs(void)
                 fprintf(stderr, "alsa xrun recovery apparently failed\n");
         }
         snd_pcm_status(alsa_indev[iodev].a_handle, alsa_status);
+#ifdef DEBUG_ALSA_XFER
+        if (!callno)
+            post("in avail %d, fill %d",
+                snd_pcm_status_get_avail(alsa_status),
+                snd_pcm_status_get_delay(alsa_status));
+#endif
         if (snd_pcm_status_get_avail(alsa_status) < transfersize)
-            return (SENDDACS_NO);
+            busy = 1;
     }
     for (iodev = 0; iodev < alsa_noutdev; iodev++)
     {
@@ -483,12 +478,22 @@ int alsa_send_dacs(void)
                 fprintf(stderr, "alsa xrun recovery apparently failed\n");
         }
         snd_pcm_status(alsa_outdev[iodev].a_handle, alsa_status);
+#ifdef DEBUG_ALSA_XFER
+        if (!callno)
+            post("out avail %d, fill %d sum %d",
+                snd_pcm_status_get_avail(alsa_status),
+                snd_pcm_status_get_delay(alsa_status),
+                    snd_pcm_status_get_avail(alsa_status) +
+                    snd_pcm_status_get_delay(alsa_status));
+#endif
         if (snd_pcm_status_get_avail(alsa_status) < transfersize)
             return (SENDDACS_NO);
     }
-
+    if (busy)
+        return (SENDDACS_NO);
 #ifdef DEBUG_ALSA_XFER
-    post("xfer %d", transfersize);
+    if (!callno)
+        post("xfer %d", transfersize);
 #endif
     /* do output */
     for (iodev = 0, fp1 = STUFF->st_soundout, ch = 0;
@@ -504,7 +509,7 @@ int alsa_send_dacs(void)
                 for (j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
             {
-                float s1 = *fp2 * INT32_MAX;
+                t_sample s1 = *fp2 * INT32_MAX;
                 ((t_alsa_sample32 *)alsa_snd_buf)[j] = CLIP32(s1);
             }
             for (; i < thisdevchans; i++, ch++)
@@ -568,13 +573,13 @@ int alsa_send_dacs(void)
             sys_log_error(ERR_DATALATE);
             if (result == -EPIPE)
             {
-                result = snd_pcm_prepare(alsa_indev[iodev].a_handle);
+                result = snd_pcm_prepare(alsa_outdev[iodev].a_handle);
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
             else
             {
-                fprintf(stderr, "read error: %s (%d)\n",
+                fprintf(stderr, "write error: %s (%d)\n",
                     strerror(-result), result);
                 goterror = 1;
             }
@@ -631,7 +636,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = (float) ((t_alsa_sample32 *)alsa_snd_buf)[j]
+                    *fp2 = (t_sample) ((t_alsa_sample32 *)alsa_snd_buf)[j]
                         * (1./ INT32_MAX);
             }
         }
@@ -642,7 +647,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = ((float) (
+                    *fp2 = ((t_sample) (
                         (((unsigned char *)alsa_snd_buf)[3*j] << 8)
                         | (((unsigned char *)alsa_snd_buf)[3*j+1] << 16)
                         | (((unsigned char *)alsa_snd_buf)[3*j+2] << 24)))
@@ -658,7 +663,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
-                        *fp2 = (float) ((t_alsa_sample16 *)alsa_snd_buf)[j]
+                        *fp2 = (t_sample) ((t_alsa_sample16 *)alsa_snd_buf)[j]
                             * 3.051850e-05;
             }
         }
@@ -683,12 +688,10 @@ int alsa_send_dacs(void)
                 alsa_checkiosync();   /*  check I/O are in sync */
         }
     }
-        /* if there were errors we can't use this as a timing source.
-        LATER get it together to close A/D/A when this happens and
-        switch to software clock.  Choosing 5000 msec here so it will be
-        clear to user that we're not timing right. */
+        /* if there were errors we can't use this as a timing source, so
+        warn the scheduler to switch to the system clock */
     if (goterror)
-        sys_microsleep(5000);
+        sched_set_using_audio(SCHED_AUDIO_NONE);
     return (SENDDACS_YES);
 }
 
@@ -696,9 +699,9 @@ void alsa_printstate(void)
 {
     int i, result, iodev = 0;
     snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
-    if (sys_audioapi != API_ALSA)
+    if (!alsa_nindev && !alsa_noutdev)
     {
-        error("restart-audio: implemented for ALSA only.");
+        post("alsa_printstate: alsa not open");
         return;
     }
     if (STUFF->st_inchannels)
@@ -788,9 +791,8 @@ static void alsa_checkiosync(void)
             }
             else if (result != SND_PCM_STATE_RUNNING)
             {
-                if (sys_verbose)
-                    post("restarting output device from state %d",
-                        snd_pcm_state(alsa_outdev[iodev].a_handle));
+                logpost(NULL, PD_VERBOSE, "restarting output device from state %d",
+                    snd_pcm_state(alsa_outdev[iodev].a_handle));
                 if ((err = snd_pcm_start(alsa_outdev[iodev].a_handle)) < 0)
                     check_error(err, 0, "restart failed");
             }
@@ -828,9 +830,8 @@ static void alsa_checkiosync(void)
             }
             else if (result != SND_PCM_STATE_RUNNING)
             {
-                if (sys_verbose)
-                    post("restarting input device from state %d",
-                        snd_pcm_state(alsa_indev[iodev].a_handle));
+                logpost(NULL, PD_VERBOSE, "restarting input device from state %d",
+                    snd_pcm_state(alsa_indev[iodev].a_handle));
                 if ((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
                     check_error(err, 1, "restart failed");
             }
@@ -897,7 +898,7 @@ static void alsa_checkiosync(void)
 static int alsa_nnames = 0;
 static const char **alsa_names = 0;
 
-void alsa_adddev(char *name)
+void alsa_adddev(const char *name)
 {
     if (alsa_nnames)
         alsa_names = (const char **)t_resizebytes(alsa_names,

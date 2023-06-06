@@ -8,7 +8,6 @@ Pd, but not shared with Pd objects. */
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
-/* LATER consider whether to use 'char' for method arg types to save space */
 #ifndef __m_imp_h_
 
 /* the structure for a method handler ala Max */
@@ -16,7 +15,7 @@ typedef struct _methodentry
 {
     t_symbol *me_name;
     t_gotfn me_fun;
-    t_atomtype me_arg[MAXPDARG+1];
+    unsigned char me_arg[MAXPDARG+1];
 } t_methodentry;
 
 EXTERN_STRUCT _widgetbehavior;
@@ -53,10 +52,13 @@ struct _class
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */
     struct _class *c_next;
     int c_floatsignalin;                /* onset to float for signal input */
-    char c_gobj;                        /* true if is a gobj */
-    char c_patchable;                   /* true if we have a t_object header */
-    char c_firstin;                 /* if patchable, true if draw first inlet */
-    char c_drawcommand;             /* a drawing command for a template */
+    unsigned int c_gobj:1;              /* true if is a gobj */
+    unsigned int c_patchable:1;         /* true if we have a t_object header */
+    unsigned int c_firstin:1;           /* if so, true if drawing first inlet */
+    unsigned int c_drawcommand:1;       /* drawing command for a template */
+    unsigned int c_multichannel:1;      /* can deal with multichannel sigs */
+    unsigned int c_nopromotesig:1;      /* don't promote scalars to signals */
+    unsigned int c_nopromoteleft:1;     /* not even the main (left) inlet */
     t_classfreefn c_classfreefn;    /* function to call before freeing class */
 };
 
@@ -92,13 +94,15 @@ void pd_globallock(void);
 void pd_globalunlock(void);
 
 /* misc */
-#define SYMTABHASHSIZE 1024
+#ifndef SYMTABHASHSIZE  /* set this to, say, 1024 for small memory footprint */
+#define SYMTABHASHSIZE 16384
+#endif /* SYMTABHASHSIZE */
 
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
-EXTERN void glob_quit(void *dummy);
+EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
+EXTERN void glob_exit(void *dummy, t_float status);
 EXTERN void open_via_helppath(const char *name, const char *dir);
-
 
 #define __m_imp_h_
 #endif /* __m_imp_h_ */

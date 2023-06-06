@@ -12,10 +12,8 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
+    set untitled_name $::pdtk_canvas::untitled_name
     if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
-    # to localize "Untitled" there will need to be changes in g_canvas.c and
-    # g_readwrite.c, where it tests for the string "Untitled"
-    set untitled_name "Untitled"
     pdsend "pd menunew $untitled_name-$untitled_number [enquote_path $::filenewdir]"
     incr untitled_number
 }
@@ -43,11 +41,23 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
                       -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
+        # set $fontfind & $fontsub if font name needs to be fixed
         if {$::font_family eq "DejaVu Sans Mono"} {
+            # capitalize V
+            set fontfind "DejavuSansMono"
+            set fontsub "DejaVuSansMono"
+        } elseif {$::font_family eq "Menlo"} {
+            # add -Regular suffix, -Bold is added automatically
+            if {$::font_weight eq "normal"} {
+                set fontfind "Menlo"
+                set fontsub "Menlo-Regular"
+            }
+        }
+        if {[info exists fontfind]} {
             # FIXME hack to fix incorrect PS font naming,
             # this could be removed in the future
             set ps [$tkcanvas postscript]
-            regsub -all "DejavuSansMono" $ps "DejaVuSansMono" ps
+            regsub -all $fontfind $ps $fontsub ps
             set f [open $filename w]
             puts $f $ps
             close $f
@@ -89,7 +99,10 @@ proc ::pd_menucommands::menu_toggle_editmode {} {
 
 # send a message to a pd canvas receiver
 proc ::pd_menucommands::menu_send {window message} {
-    set mytoplevel [winfo toplevel $window]
+    if { [catch {set mytoplevel [winfo toplevel $window]} ] } {
+        ::pdwindow::logpost {} 4 "menu_send: skipping unknown window '$window'\n"
+        return
+    }
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel $message"
     } elseif {$mytoplevel eq ".pdwindow"} {
@@ -149,6 +162,10 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     } else {
         pdsend "pd start-startup-dialog"
     }
+}
+
+proc ::pd_menucommands::menu_preference_dialog {} {
+    pdsend "pd start-preference-dialog"
 }
 
 proc ::pd_menucommands::menu_manual {} {
@@ -219,6 +236,11 @@ proc ::pd_menucommands::set_filenewdir {mytoplevel} {
 proc ::pd_menucommands::menu_aboutpd {} {
     set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
     set filename "$::sys_libdir/doc/1.manual/1.introduction.txt"
+    if {![file exists $filename]} {
+        ::pdwindow::error [format [_ "ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::error "\n"
+        #return
+    }
     if {[winfo exists .aboutpd]} {
         wm deiconify .aboutpd
         raise .aboutpd
@@ -235,14 +257,20 @@ proc ::pd_menucommands::menu_aboutpd {} {
         pack .aboutpd.text -side left -fill both -expand 1
         bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
 
-        set textfile [open $filename]
-        while {![eof $textfile]} {
-            set bigstring [read $textfile 1000]
-            regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
-            regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
-            .aboutpd.text insert end $bigstring3
+        if { [catch {
+            set textfile [open $filename]
+            while {![eof $textfile]} {
+                set bigstring [read $textfile 1000]
+                regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
+                regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
+                .aboutpd.text insert end $bigstring3
+            }
+            close $textfile
+        } stderr ] } {
+            ::pdwindow::error [format [_ "couldn't read \"%s\" document" ] [_ "About Pd" ] ]
+            ::pdwindow::error "\n\t$stderr\n"
+            destroy .aboutpd
         }
-        close $textfile
     }
 }
 
@@ -303,3 +331,17 @@ proc ::pd_menucommands::menu_bringalltofront {} {
     }
     wm deiconify .
 }
+
+# this is needed because on macOS the Menu-Accelerators are actually used
+# (rather than just displayed)
+# so this proc simply gobbles the commands to suppress duplicates:
+# only the first $script until the next idle-period is run (the rest is discarded)
+# see https://stackoverflow.com/a/69900053/1169096
+proc ::pd_menucommands::scheduleAction {args} {
+    if {$::pd_menucommands::currentAction eq ""} {
+        # Prepend a command to clear the variable
+        set act "set ::pd_menucommands::currentAction {};$args"
+        set ::pd_menucommands::currentAction [after idle $act]
+    }
+}
+set ::pd_menucommands::currentAction {}

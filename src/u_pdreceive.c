@@ -11,10 +11,8 @@ standard output. */
     Moonix::Antoine Rousseau
 */
 
-#include <sys/types.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>
@@ -36,6 +34,7 @@ static t_fdpoll *fdpoll;
 static int maxfd;
 static int sockfd;
 static int protocol;
+char recvbuf[NET_MAXPACKETSIZE];
 
 static void sockerror(char *s);
 static void dopoll(void);
@@ -43,8 +42,6 @@ static void sockerror(char *s);
 
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
-
-#define BUFSIZE 4096
 
 int main(int argc, char **argv)
 {
@@ -238,7 +235,7 @@ static void addport(int fd)
     nfdpoll++;
     if (fd >= maxfd) maxfd = fd + 1;
     fp->fdp_outlen = fp->fdp_discard = fp->fdp_gotsemi = 0;
-    if (!(fp->fdp_outbuf = (char*) malloc(BUFSIZE)))
+    if (!(fp->fdp_outbuf = (char*) malloc(NET_MAXPACKETSIZE)))
     {
         fprintf(stderr, "out of memory");
         exit(EXIT_FAILURE);
@@ -297,8 +294,7 @@ static void makeoutput(char *buf, int len)
 
 static void udpread(void)
 {
-    char buf[BUFSIZE];
-    int ret = recv(sockfd, buf, BUFSIZE, 0);
+    int ret = recv(sockfd, recvbuf, NET_MAXPACKETSIZE, 0);
     if (ret < 0)
     {
         sockerror("recv (udp)");
@@ -306,7 +302,7 @@ static void udpread(void)
         exit(EXIT_FAILURE);
     }
     else if (ret > 0)
-        makeoutput(buf, ret);
+        makeoutput(recvbuf, ret);
 }
 
 static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
@@ -322,7 +318,7 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
         if((c != '\n') || (!x->fdp_gotsemi))
             outbuf[outlen++] = c;
         x->fdp_gotsemi = 0;
-        if (outlen >= (BUFSIZE-1)) /*output buffer overflow; reserve 1 for '\n' */
+        if (outlen >= (NET_MAXPACKETSIZE-1)) /*output buffer overflow; reserve 1 for '\n' */
         {
             fprintf(stderr, "pdreceive: message too long; discarding\n");
             outlen = 0;
@@ -348,9 +344,9 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
 static void tcpread(t_fdpoll *x)
 {
     int  ret;
-    char inbuf[BUFSIZE];
+    char inbuf[NET_MAXPACKETSIZE];
 
-    ret = recv(x->fdp_fd, inbuf, BUFSIZE, 0);
+    ret = recv(x->fdp_fd, inbuf, NET_MAXPACKETSIZE, 0);
     if (ret < 0)
     {
         sockerror("recv (tcp)");

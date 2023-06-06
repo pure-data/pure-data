@@ -209,6 +209,9 @@ static t_int *bob_perform(t_int *w)
     t_float *cutoffin = (t_float *)(w[3]);
     t_float *resonancein = (t_float *)(w[4]);
     t_float *out = (t_float *)(w[5]);
+        /* bug fix: output is last state variable, not first */
+    FLOAT *outstate =
+        (pd_compatibilitylevel > 51? &x->x_state[3] : &x->x_state[0]);
     int n = (int)(w[6]), i, j;
     FLOAT stepsize = 1./(x->x_oversample * x->x_sr);
     FLOAT errorestimate;
@@ -221,7 +224,7 @@ static t_int *bob_perform(t_int *w)
         for (j = 0; j < x->x_oversample; j++)
             solver_rungekutte(x->x_state, &errorestimate,
                 stepsize, &x->x_params);
-        *out++ = x->x_state[0];
+        *out++ = *outstate;
 #if CALCERROR
         x->x_cumerror += errorestimate;
         x->x_errorcount++;
@@ -234,7 +237,7 @@ static void bob_dsp(t_bob *x, t_signal **sp)
 {
     x->x_sr = sp[0]->s_sr;
     dsp_add(bob_perform, 6, x, sp[0]->s_vec, sp[1]->s_vec,
-        sp[2]->s_vec, sp[3]->s_vec, sp[0]->s_n);
+        sp[2]->s_vec, sp[3]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void bob_tilde_setup(void)
