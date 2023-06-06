@@ -36,7 +36,7 @@
 #X symbolatom 42 474 80 0 0 0 - - - 0;
 #X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 610 19 <= click;
-#N canvas 603 156 718 338 reference 1;
+#N canvas 603 156 718 338 reference 0;
 #X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
 #X obj 8 236 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
 #X obj 7 312 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000 0;

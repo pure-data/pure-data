@@ -540,7 +540,8 @@ static void pdcontrol_sendparent(t_pdcontrol *x, t_symbol *s,
     if (!argc || argv[0].a_type != A_SYMBOL)
         pd_error(x, "pdcontrol_sendparent: first argument not a symbol");
     else if (x->x_canvas->gl_owner)
-        typedmess((t_pd *)(x->x_canvas), argv[0].a_w.w_symbol, argc-1, argv+1);
+        typedmess((t_pd *)(x->x_canvas->gl_owner),
+            argv[0].a_w.w_symbol, argc-1, argv+1);
             /* silently do nothing if there's no parent */
 }
 
@@ -559,7 +560,7 @@ static void pdcontrol_setup(void)
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_send,
         gensym("send"), A_GIMME, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_sendparent,
-        gensym("sendparents"), A_GIMME, 0);
+        gensym("sendparent"), A_GIMME, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
