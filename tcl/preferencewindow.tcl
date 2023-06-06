@@ -103,13 +103,23 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
     frame ${winid}.content
     pack $winid.content -side top -fill both -expand 1
 
-        # put the preference-widgets on the .content.frames frame
+    # put the preference-widgets on the .content.frames frame
     if { [catch {
-        set cantabs [::pd_guiprefs::read use_ttknotebook]
-        if { ${cantabs} == 0 } { fail "prefs request to not use ttk::notebook" }
-        ::pd_guiprefs::write use_ttknotebook 0
+        # should/can we do tabs?
+        # LATER: put these checks in some common place, where all potential users
+        #        of ttk::notebook (preferencewindow, deken,...) can use it
+        set wanttabs [::pd_guiprefs::read use_ttknotebook]
+        if { ${wanttabs} == 0 } { fail "prefs request to not use ttk::notebook" }
+        ::deken::versioncompare 8.6 [info patchlevel]
+        if { $::windowingsystem eq "aqua" &&
+            [::deken::versioncompare 8.6 [info patchlevel]] < 0 &&
+            [::deken::versioncompare 8.6.12 [info patchlevel]] > 0
+         } {
+            # some versions of Tcl/Tk on macOS just crash with ttk::notebook
+            ::pdwindow::error [_ "Disabling tabbed view: incompatible Tcl/Tk detected"]
+            fail "Tcl/Tk request to not use ttk::notebook"
+        }
         ttk::notebook ${winid}.content.frames
-        ::pd_guiprefs::write use_ttknotebook $cantabs
 
         catch {ttk::notebook::enableTraversal ${winid}.content.frames}
         pack $winid.content.frames -side top -fill both -pady 2m
