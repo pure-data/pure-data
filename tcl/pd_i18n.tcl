@@ -68,7 +68,7 @@ proc ::pd_i18n::load_locale {{lang ""}} {
         set lang ""
     }
     if { $lang == "" } {
-        set lang [ ::pd_i18n::get_system_language ]
+        set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
     }
 
     if { $::pd_i18n::language == "" || $lang == $::pd_i18n::language } {
@@ -88,48 +88,53 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     set ::pd_i18n::podir $podir
     # translate language-codes
     set polanguagelist [list \
-        af [_ "Afrikaans" ] \
-        ar [_ "Arabic" ] \
-        az [_ "Azerbaijani" ] \
-        be [_ "Belarusian" ] \
-        bg [_ "Bulgarian" ] \
-        de [_ "German" ] \
-        de_at [_ "German (Austria)" ] \
-        el [_ "Greek" ] \
-        en [_ "English" ] \
-        en_ca [_ "English (Canada)" ] \
-        en_gb [_ "English (UK)" ] \
-        en_us [_ "English (USA)" ] \
-        es [_ "Spanish" ] \
-        eu [_ "Basque" ] \
-        fi [_ "Finnish" ] \
-        fr [_ "French" ] \
-        gu [_ "Gujarati" ] \
-        he [_ "Hebrew" ] \
-        hi [_ "Hindi" ] \
-        hu [_ "Hungarian" ] \
-        hy [_ "Armenian" ] \
-        it [_ "Italian" ] \
-        id [_ "Indonesian" ] \
-        ja [_ "Japanese" ] \
-        ko [_ "Korean" ] \
-        nl [_ "Dutch" ] \
-        pa [_ "Panjabi" ] \
-        pl [_ "Polish" ] \
-        pt [_ "Portuguese" ] \
-        pt_br [_ "Portuguese (Brazil)" ] \
-        pt_pt [_ "Portuguese (Portugal)" ] \
-        ru [_ "Russian" ] \
-        sq [_ "Albanian" ] \
-        sv [_ "Swedish" ] \
-        tr [_ "Turkish" ] \
-        uk [_ "Ukrainian" ] \
-        vi [_ "Vietnamese" ] \
-        zh_tw [_ "Chinese (Traditional)" ] \
+        af "Afrikaans" [_ "Afrikaans" ] \
+        ar "Arabic" [_ "Arabic" ] \
+        az "Azerbaijani" [_ "Azerbaijani" ] \
+        be "Belarusian" [_ "Belarusian" ] \
+        bg "Bulgarian" [_ "Bulgarian" ] \
+        de "German" [_ "German" ] \
+        de_at "German (Austria)" [_ "German (Austria)" ] \
+        el "Greek" [_ "Greek" ] \
+        en "English" [_ "English" ] \
+        en_ca "English (Canada)" [_ "English (Canada)" ] \
+        en_gb "English (UK)" [_ "English (UK)" ] \
+        en_us "English (USA)" [_ "English (USA)" ] \
+        es "Spanish" [_ "Spanish" ] \
+        eu "Basque" [_ "Basque" ] \
+        fi "Finnish" [_ "Finnish" ] \
+        fr "French" [_ "French" ] \
+        gu "Gujarati" [_ "Gujarati" ] \
+        he "Hebrew" [_ "Hebrew" ] \
+        hi "Hindi" [_ "Hindi" ] \
+        hu "Hungarian" [_ "Hungarian" ] \
+        hy "Armenian" [_ "Armenian" ] \
+        it "Italian" [_ "Italian" ] \
+        id "Indonesian" [_ "Indonesian" ] \
+        ja "Japanese" [_ "Japanese" ] \
+        ko "Korean" [_ "Korean" ] \
+        nl "Dutch" [_ "Dutch" ] \
+        pa "Panjabi" [_ "Panjabi" ] \
+        pl "Polish" [_ "Polish" ] \
+        pt "Portuguese" [_ "Portuguese" ] \
+        pt_br "Portuguese (Brazil)" [_ "Portuguese (Brazil)" ] \
+        pt_pt "Portuguese (Portugal)" [_ "Portuguese (Portugal)" ] \
+        ru "Russian" [_ "Russian" ] \
+        sq "Albanian" [_ "Albanian" ] \
+        sv "Swedish" [_ "Swedish" ] \
+        tr "Turkish" [_ "Turkish" ] \
+        uk "Ukrainian" [_ "Ukrainian" ] \
+        vi "Vietnamese" [_ "Vietnamese" ] \
+        zh_tw "Chinese (Traditional)" [_ "Chinese (Traditional)" ] \
     ]
 
     set polanguages [dict create]
-    foreach {k v} $polanguagelist {
+    foreach {k v1 v2} $polanguagelist {
+        if { $v1 == $v2 } {
+            set v $v1
+        } else {
+            set v "$v1 - $v2"
+        }
         dict set polanguages $k $v
     }
     set havelanguages {}
@@ -143,7 +148,7 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     }
     set havelanguages [lsort -index 0 $havelanguages]
 
-    set lang [ ::pd_i18n::get_system_language ]
+    set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
     if [ dict exists $polanguages $lang ] {
         set lang [ dict get $polanguages $lang ]
     }

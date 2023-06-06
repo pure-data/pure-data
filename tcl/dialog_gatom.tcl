@@ -140,7 +140,7 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     pack $mytoplevel.fontsize -side right -padx 5
     foreach size $::dialog_gatom::sizes {
         if {$size eq 0} {
-            set sizetext "auto"
+            set sizetext [_ "auto"]
         } else {
             set sizetext $size
         }

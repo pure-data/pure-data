@@ -38,6 +38,13 @@ typedef int socklen_t;
 #define stat _stat
 #endif
 
+#ifdef _WIN32
+# define PIPE(p) _pipe(p, 65536, O_BINARY | O_NOINHERIT)
+#else
+# define PIPE(p) pipe(p)
+#endif
+
+
 #ifdef MSP
 #include "ext.h"
 #include "z_dsp.h"
@@ -121,7 +128,7 @@ static const char *pd_tilde_dllextent[] = {
     0};
 
 
-static const char*get_dllextent()
+static const char**get_dllextent()
 {
 #if PD
     const char**dllextent = sys_get_dllextensions();
@@ -662,20 +669,12 @@ gotone:
     for (i = 0; i < argc+FIXEDARG; i++)
         post("arg %d = %s", i, execargv[i]);
 #endif
-#ifdef _WIN32
-    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe1) < 0)   
-#endif
+    if (PIPE(pipe1) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail1;
     }
-#ifdef _WIN32
-    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe2) < 0)   
-#endif
+    if (PIPE(pipe2) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail2;
@@ -1338,7 +1337,7 @@ static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s, long ac, t_atom *av)
 }
 
 void ext_main( void *r)
-{       
+{
     t_class *c;
 
     c = class_new("pd~", (method)pd_tilde_new, (method)pd_tilde_free,
