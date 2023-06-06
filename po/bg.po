@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -380,6 +380,9 @@ msgstr ""
 
 msgid "Receive symbol:"
 msgstr "Прозореца за получване на файлове:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr ""
@@ -1555,6 +1558,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Настройки"
 
 msgid "Open Recent"
 msgstr ""

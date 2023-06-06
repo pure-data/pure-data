@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -362,6 +362,9 @@ msgstr "심볼 보내기:"
 
 msgid "Receive symbol:"
 msgstr "심볼 받기:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "넓이:"
@@ -1529,6 +1532,10 @@ msgstr "경로에서 로드..."
 
 msgid "Forget All..."
 msgstr "모두 잊기..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "환경설정"
 
 msgid "Open Recent"
 msgstr "최근 패치를 열기"

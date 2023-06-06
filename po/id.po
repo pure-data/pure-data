@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-05-15 22:50+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -359,6 +359,9 @@ msgstr "Kirim simbol:"
 
 msgid "Receive symbol:"
 msgstr "Terima simbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Lebar:"
@@ -1496,6 +1499,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr "Melupakan semua..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Preferensi"
 
 msgid "Open Recent"
 msgstr ""

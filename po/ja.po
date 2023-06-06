@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -360,6 +360,9 @@ msgstr "シンボルを送る:"
 
 msgid "Receive symbol:"
 msgstr "シンボルを受けとる:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "幅:"
@@ -1535,6 +1538,10 @@ msgstr "読込..."
 
 msgid "Forget All..."
 msgstr "全てを忘れる..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "環境設定"
 
 msgid "Open Recent"
 msgstr "最近使った項目を開く"

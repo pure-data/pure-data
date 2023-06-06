@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -383,6 +383,9 @@ msgstr "Sändsymbol:"
 
 msgid "Receive symbol:"
 msgstr "Mottagarsymbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Bredd:"
@@ -1549,6 +1552,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Inställningar"
 
 msgid "Open Recent"
 msgstr "Öppna senaste"

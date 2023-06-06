@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data-0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2005-09-14 12:49+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -385,6 +385,9 @@ msgstr ""
 #, fuzzy
 msgid "Receive symbol:"
 msgstr "મેળવો વિન્ડો"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr ""
@@ -1575,6 +1578,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "પસંદગીઓ..."
 
 msgid "Open Recent"
 msgstr ""

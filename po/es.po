@@ -12,11 +12,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -368,6 +368,9 @@ msgstr "Símbolo de envío :"
 
 msgid "Receive symbol:"
 msgstr "Símbolo de recepción:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Ancho:"
@@ -1526,6 +1529,10 @@ msgstr "Cargar..."
 
 msgid "Forget All..."
 msgstr "Olvidar..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Preferencias de audio"
 
 msgid "Open Recent"
 msgstr "Abrir recientes"

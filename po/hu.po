@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -378,6 +378,9 @@ msgstr "Küldött symbol:"
 
 msgid "Receive symbol:"
 msgstr "Fogadott symbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Szélesség:"
@@ -1544,6 +1547,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Beállítások"
 
 msgid "Open Recent"
 msgstr "Legutóbbi fájlok"

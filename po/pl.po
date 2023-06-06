@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2022-10-20 12:48+0000\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -362,6 +362,9 @@ msgid "Send symbol:"
 msgstr ""
 
 msgid "Receive symbol:"
+msgstr ""
+
+msgid "auto"
 msgstr ""
 
 msgid "Width:"
@@ -1491,6 +1494,9 @@ msgid "Load from..."
 msgstr ""
 
 msgid "Forget All..."
+msgstr ""
+
+msgid "Tabbed preferences"
 msgstr ""
 
 msgid "Open Recent"

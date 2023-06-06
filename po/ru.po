@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -361,6 +361,9 @@ msgstr "Отправить символ:"
 
 msgid "Receive symbol:"
 msgstr "Получить символ:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Ширина:"
@@ -1540,6 +1543,10 @@ msgstr "Загрузить из..."
 
 msgid "Forget All..."
 msgstr "Забыть все..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Настройки"
 
 msgid "Open Recent"
 msgstr "Открыть недавние"

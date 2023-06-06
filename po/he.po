@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-03-09 09:40+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -358,6 +358,9 @@ msgstr "שליחת סמל:"
 
 msgid "Receive symbol:"
 msgstr "קבלת סמל:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "רוחב:"
@@ -1517,6 +1520,10 @@ msgstr "טעינה מתוך…"
 
 msgid "Forget All..."
 msgstr "שיכחה של הכול…"
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "העדפות"
 
 msgid "Open Recent"
 msgstr "לפתוח אחרונים"

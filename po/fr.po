@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -363,6 +363,9 @@ msgstr "Envoyer au symbole :"
 
 msgid "Receive symbol:"
 msgstr "Recevoir du symbole :"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Largeur :"
@@ -1545,6 +1548,10 @@ msgstr "Charger à partir de..."
 msgid "Forget All..."
 msgstr "Tout oublier..."
 
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "audio"
+
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"
 
@@ -1632,17 +1639,17 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-msgid "Path..."
-msgstr "Chemins..."
+#~ msgid "Path..."
+#~ msgstr "Chemins..."
 
-msgid "Startup..."
-msgstr "Options de démarrage..."
+#~ msgid "Startup..."
+#~ msgstr "Options de démarrage..."
 
-msgid "Audio..."
-msgstr "Paramètres audio..."
+#~ msgid "Audio..."
+#~ msgstr "Paramètres audio..."
 
-msgid "MIDI..."
-msgstr "Paramètres MIDI..."
+#~ msgid "MIDI..."
+#~ msgstr "Paramètres MIDI..."
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensions(chiffres)(pix):------"

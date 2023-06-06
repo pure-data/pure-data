@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-04 16:50+0200\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -357,6 +357,9 @@ msgstr "傳送 symbol:"
 
 msgid "Receive symbol:"
 msgstr "接收 symbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "寬度:"
@@ -1494,6 +1497,10 @@ msgstr ""
 
 msgid "Forget All..."
 msgstr ""
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "偏好設定"
 
 msgid "Open Recent"
 msgstr "打開最近使用的檔案"
