@@ -34,6 +34,29 @@ void rb_free(ring_buffer *buffer) {
   free(buffer);
 }
 
+int rb_resize(ring_buffer* rb, int newsize) {
+  // create new rb of requested size
+  ring_buffer* tmprb = rb_create(newsize);
+  if(!tmprb)
+    return -1;
+  // copy all possible data from rb to tmprb
+  int src = rb_available_to_read(rb);
+  int dst = rb_available_to_write(tmprb);
+  int siz = src < dst ? src : dst;
+  char* buf = malloc(siz);
+  if(!buf)
+    return -1;
+  rb_read_from_buffer(rb, buf, siz);
+  rb_write_to_buffer(tmprb, 1, buf, siz);
+  free(buf);
+  // free internal buffer of the old rb
+  free(rb->buf_ptr);
+  // overwrite old rb with tmprb
+  // (includes the newly allocated internal buffer)
+  memcpy(rb, tmprb, sizeof(*rb));
+  return 0;
+}
+
 int rb_available_to_write(ring_buffer *buffer) {
   if (buffer) {
     // note: the largest possible result is buffer->size - 1 because
