@@ -464,6 +464,16 @@ AC_ARG_ENABLE([watchdog],
 AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
 AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
 
+##### threaded I/O #####
+AC_ARG_ENABLE([threadedio],
+    [AS_HELP_STRING([--enable-threadedio], [Move I/O out of the audio thread])],,enable_threadedio="$threadedio")
+AS_IF([test "x$enable_threadedio" != "xyes"],[
+	enable_threadedio=no
+], [
+	PD_CPPFLAGS="-DTHREADED_IO $PD_CPPFLAGS"
+])
+AM_CONDITIONAL(THREADED_IO, test x$enable_threadedio = xyes)
+
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
     [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
@@ -957,6 +967,7 @@ AC_MSG_NOTICE([
     wish(tcl/tk):         ${wish}
     gtk:                  ${gtk}
     watchdog:             ${enable_watchdog}
+    threaded I/O:         ${enable_threadedio}
     audio APIs:           ${audio_backends}
     midi APIs:            ${midi_backends}
     libpd:                ${libpd}
