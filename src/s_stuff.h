@@ -384,8 +384,8 @@ EXTERN int sys_unregistersocket(t_socket *x);
 
 // drop-in replacements for recv{from} (internally fall back to recv/recvfrom if threaded is disabled)
 // if threaded is enabled, the flags argument is ignored
-EXTERN ssize_t sys_recv(t_socket *x, void* buf, size_t length, int flags);
-EXTERN ssize_t sys_recvfrom(t_socket *x, void* buf, size_t buflen, int flags, void *address, size_t* address_len);
+EXTERN int sys_recv(t_socket *x, void* buf, size_t length, int flags);
+EXTERN int sys_recvfrom(t_socket *x, void* buf, size_t buflen, int flags, void *address, size_t* address_len);
 
 // drop-in replacement for `socket_bytes_available()`, falls back to it if
 // threaded is disabled
@@ -395,8 +395,8 @@ EXTERN int sys_bytes_available(t_socket *x);
 // it will always return success and errors will be handled via the
 // rmfn registered above. If threaded I/O is disabled for this socket AND no
 // rmfn is provided, it will return the return value of send{to}()
-ssize_t sys_sendto(t_socket *x, const void *buf, size_t len, int flags, const void *dest_addr, size_t dest_len);
-ssize_t sys_send(t_socket *x, const void *buf, size_t len, int flags);
+int sys_sendto(t_socket *x, const void *buf, size_t len, int flags, const void *dest_addr, size_t dest_len);
+int sys_send(t_socket *x, const void *buf, size_t len, int flags);
 
 /* return true if it did read any data from any socket. */
 EXTERN int sys_doio(t_pdinstance* pd_that);

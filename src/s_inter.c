@@ -414,7 +414,7 @@ int sys_unregistersocket(t_socket *x)
     return fd;
 }
 
-ssize_t sys_recvfrom(t_socket *x, void* buf, size_t buflen, int flags, void *address, size_t* address_len)
+int sys_recvfrom(t_socket *x, void* buf, size_t buflen, int flags, void *address, size_t* address_len)
 {
     socklen_t len = 0;
     if(address_len)
@@ -445,7 +445,7 @@ ssize_t sys_recvfrom(t_socket *x, void* buf, size_t buflen, int flags, void *add
     return ret;
 }
 
-ssize_t sys_recv(t_socket* x, void* buf, size_t buflen, int flags)
+int sys_recv(t_socket* x, void* buf, size_t buflen, int flags)
 {
     return sys_recvfrom(x, buf, buflen, flags, NULL, 0);
 }
@@ -495,7 +495,7 @@ struct rb_sendto_msg {
 };
 
 // A sendto() that writes to a ring_buffer and is real-time safe
-static ssize_t rb_sendto(ring_buffer* rb, int socket, const void *buffer, size_t length, int flags, const struct sockaddr *addr, socklen_t addrlen)
+static int rb_sendto(ring_buffer* rb, int socket, const void *buffer, size_t length, int flags, const struct sockaddr *addr, socklen_t addrlen)
 {
     if(!rb)
     {
@@ -528,13 +528,13 @@ static ssize_t rb_sendto(ring_buffer* rb, int socket, const void *buffer, size_t
 }
 
 // A send() that writes to a ring_buffer and is real-time safe
-ssize_t rb_send(ring_buffer* rb, int socket, const void *buffer, size_t length, int flags)
+int rb_send(ring_buffer* rb, int socket, const void *buffer, size_t length, int flags)
 {
     return rb_sendto(rb, socket, buffer, length, flags, NULL, 0);
 }
 #endif //THREADED_IO
 
-ssize_t sys_sendto(t_socket *x, const void *buf, size_t len, int flags, const void *dest_addr, size_t dest_len)
+int sys_sendto(t_socket *x, const void *buf, size_t len, int flags, const void *dest_addr, size_t dest_len)
 {
 #ifdef THREADED_IO
     if(rbsend_init())
@@ -586,7 +586,7 @@ ssize_t sys_sendto(t_socket *x, const void *buf, size_t len, int flags, const vo
     }
 }
 
-ssize_t sys_send(t_socket *x, const void *buf, size_t len, int flags)
+int sys_send(t_socket *x, const void *buf, size_t len, int flags)
 {
     return sys_sendto(x, buf, len, flags, NULL, 0);
 }
@@ -788,11 +788,11 @@ static t_rbskt* sys_getpollrb(int fd)
 static int rbskt_recvfrom(t_rbskt* rbskt, void* buf, size_t buflen, int nothing, struct sockaddr *address, socklen_t* address_len)
 {
     ring_buffer* rb = rbskt->rs_rb;
-    ssize_t msglen;
+    int msglen;
     int available = rb_available_to_read(rb);
     if(rbskt->rs_preserve_boundaries) {
         // UDP: the buffer contains return value, addresslen, address, payload
-        if(available < sizeof(ssize_t) + sizeof(socklen_t))
+        if(available < sizeof(int) + sizeof(socklen_t))
             return 0;
         if((rb_read_from_buffer(rb, (char*)&msglen, sizeof(msglen))))
         {
@@ -825,7 +825,7 @@ static int rbskt_recvfrom(t_rbskt* rbskt, void* buf, size_t buflen, int nothing,
         // msglen contains the return value of recvfrom(), or -errno if an
         // error occurred and no payload is in the buffer
         if(msglen <= 0) {
-            printf("%p Msglen: %ld\n", rb, msglen);
+            printf("%p Msglen: %d\n", rb, msglen);
             // to comply with recvfrom(),
             // set errno and return -1
             errno = -msglen;
@@ -846,7 +846,7 @@ static int rbskt_recvfrom(t_rbskt* rbskt, void* buf, size_t buflen, int nothing,
             msglen = available;
     }
     if(available < msglen) {
-        printf("%p msglen: %ld available: %d\n", rb, msglen, available);
+        printf("%p msglen: %d available: %d\n", rb, msglen, available);
         errno = EPERM;
         pd_error(0, "Error while reading from ring_buffer in rbskt_recv: not enough data in rb");
         return -1;
@@ -862,7 +862,7 @@ static int rbskt_recvfrom(t_rbskt* rbskt, void* buf, size_t buflen, int nothing,
     }
     if(msglen > buflen) {
         if(rbskt->rs_preserve_boundaries) {
-            printf("buflen: %zu, msglen: %zd, actualLength: %d\n", buflen, msglen, actualLength);
+            printf("buflen: %zu, msglen: %d, actualLength: %d\n", buflen, msglen, actualLength);
             printf("warning: incoming packet truncated from %d to %d bytes.", ret, INBUFSIZE);
             // drain buffer
             char dest;
@@ -923,7 +923,7 @@ static int poll_fds()
     int didsomething = 0;
     char* buf = INTER->i_iothreadbuf;
     const unsigned int bufsize = INTER->i_iothreadbufsize;
-    ssize_t ret;
+    int ret;
     struct timeval timeout = {0}; // making this timeout longer would be more efficient (by avoiding spurious wakeups), but it would needlessly postpone writes
     int i;
     fd_set readset;
