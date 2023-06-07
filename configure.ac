@@ -463,7 +463,7 @@ AS_IF([test "x${WINDOWS}" = "xyes" ],[
 
 ##### threaded I/O #####
 AC_ARG_ENABLE([threadedio],
-    [AS_HELP_STRING([--enable-threadedio], [Move I/O out of the audio thread])],,enable_threadedio="$threadedio")
+    [AS_HELP_STRING([--enable-threadedio], [Move I/O out of the audio thread])],,enable_threadedio="yes")
 AS_IF([test "x$enable_threadedio" != "xyes"],[
 	enable_threadedio=no
 ], [
