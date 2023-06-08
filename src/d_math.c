@@ -708,9 +708,6 @@ static void abs_tilde_setup(void)
 
 void d_math_setup(void)
 {
-    t_symbol *s1 = gensym("acoustics-tilde.pd");
-    t_symbol *s2 = gensym("unops-tilde.pd");
-    
     dbtorms_tilde_setup();
     rmstodb_tilde_setup();
     dbtopow_tilde_setup();
@@ -723,14 +720,14 @@ void d_math_setup(void)
     exp_tilde_setup();
     abs_tilde_setup();
     clip_setup();
-
+    t_symbol *s1 = gensym("acoustics-tilde.pd");
     class_sethelpsymbol(mtof_tilde_class, s1);
     class_sethelpsymbol(ftom_tilde_class, s1);
     class_sethelpsymbol(dbtorms_tilde_class, s1);
     class_sethelpsymbol(rmstodb_tilde_class, s1);
     class_sethelpsymbol(dbtopow_tilde_class, s1);
     class_sethelpsymbol(powtodb_tilde_class, s1);
-
+    t_symbol *s2 = gensym("unops-tilde.pd");
     class_sethelpsymbol(sigrsqrt_class, s2);
     class_sethelpsymbol(sigsqrt_class, s2);
     class_sethelpsymbol(sigwrap_class, s2);
