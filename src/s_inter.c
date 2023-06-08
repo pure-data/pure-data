@@ -251,8 +251,8 @@ struct _instanceinter
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
 void sys_stopgui(void);
-void sys_lockio();
-void sys_unlockio();
+void sys_lockio(void);
+void sys_unlockio(void);
 static int fdp_select(fd_set *readset, struct timeval timeout, const t_fdp_manager manager);
 static void sys_addsockrecvfn(t_socket* sock, t_sockrecvfn recvfn, void* arg);
 static void sys_rmsockrecvfn(t_socket* fd);
@@ -287,7 +287,7 @@ ASSERT_POW2(RBRMFDSEND_SIZE);
 #endif // C11
 
 static void rb_dosend(ring_buffer*, int ignoreSigFd);
-static int rbsend_init();
+static int rbsend_init(void);
 
 static t_rbskt* rbskt_new(int preserve_boundaries) {
     t_rbskt* x = (t_rbskt*)getbytes(sizeof(*x));

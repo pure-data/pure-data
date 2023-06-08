@@ -357,7 +357,7 @@ void sys_setalarm(int microsec);
 #endif
 
 /* tells whether Pd has capabilities for threaded I/O */
-int sys_hasthreadedio();
+int sys_hasthreadedio(void);
 
 /* Functions related to threaded I/O. */
 // register a socket for I/O
@@ -404,7 +404,7 @@ EXTERN void sys_dontmanageio(int status);
 /* Start Pd's IO thread if it hasn't started already */
 EXTERN void sys_startiothread(t_pdinstance* pd_that);
 /* Stop and join Pd's IO thread (if any). Returns when the thread has exited */
-EXTERN void sys_stopiothread();
+EXTERN void sys_stopiothread(void);
 /* end of threaded I/O functions */
 
 void sys_set_priority(int higher);
