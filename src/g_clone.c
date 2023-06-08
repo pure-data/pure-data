@@ -340,21 +340,21 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                     tempio[i]->s_refcount = 1;
                 }
                 else
-                {
                     tempio[i] = sp[i];
-                    sp[i]->s_refcount++;
-                }
             }
             for (i = 0; i < nout; i++)
                 tempio[nin + i] = signal_newfromcontext(1, 1);
             canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
-            /* for (i = 0; i < nin; i++)
-                if (x->x_distributein)
+            if (x->x_distributein)
             {
-                if (--tempio[i]->s_refcount)
-                    bug("clone 3: %d", tempio[i]->s_refcount);
-                signal_makereusable(tempio[i]);
-            }   */
+                for (i = 0; i < nin; i++)
+                {
+                    if (!--tempio[i]->s_refcount)
+                        signal_makereusable(tempio[i]);
+                    else
+                        bug("clone 1: %d", tempio[i]->s_refcount);
+                }
+            }
             for (i = 0; i < nout; i++)
             {
                 int nchans = tempio[nin + i]->s_nchans;
@@ -409,14 +409,21 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                     tempio[i]->s_refcount = 1;
                 }
                 else
-                {
                     tempio[i] = sp[i];
-                    sp[i]->s_refcount++;
-                }
             }
             for (i = 0; i < nout; i++)
                 tempio[nin + i] = signal_newfromcontext(1, 1);
             canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
+            if (x->x_distributein)
+            {
+                for (i = 0; i < nin; i++)
+                {
+                    if (!--tempio[i]->s_refcount)
+                        signal_makereusable(tempio[i]);
+                    else
+                        bug("clone 2: %d", tempio[i]->s_refcount);
+                }
+            }
             for (i = 0; i < nout; i++)
             {
                 int nchans = tempio[nin + i]->s_nchans;
@@ -444,17 +451,12 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 }
                 signal_makereusable(tempio[nin + i]);
             }
-            for (i = 0; i < nin; i++)
-                if (x->x_distributein && tempio[i]->s_refcount)
-                    bug("clone 3: %d", tempio[i]->s_refcount);
         }
     }
     for (i = 0; i < nin; i++)
     {
         if (sp[i]->s_refcount <= 0)
-            bug("clone 2 %d", sp[i]->s_refcount);
-        if (!--sp[i]->s_refcount)
-            signal_makereusable(sp[i]);
+            bug("clone 3 %d", sp[i]->s_refcount);
     }
 }
 
