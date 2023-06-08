@@ -293,9 +293,8 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
      ./5.reference/pd-messages.pd \
-     ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
-     ./5.reference/acoustics~-help.pd \
+     ./5.reference/acoustics-tilde-help.pd \
      ./5.reference/adc~_dac~-help.pd \
      ./5.reference/all_guis.pd \
      ./5.reference/append-help.pd \
@@ -333,7 +332,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
      ./5.reference/expr-help.pd \
-     ./5.reference/exp~-help.pd \
      ./5.reference/fft~-help.pd \
      ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
@@ -354,7 +352,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/lop~-help.pd \
      ./5.reference/makefilename-help.pd \
      ./5.reference/makenote-help.pd \
-     ./5.reference/math-help.pd \
      ./5.reference/message-help.pd \
      ./5.reference/metro-help.pd \
      ./5.reference/midi-help.pd \
@@ -384,7 +381,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/realtime-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
-     ./5.reference/rsqrt~-help.pd \
      ./5.reference/rzero_rev~-help.pd \
      ./5.reference/rzero~-help.pd \
      ./5.reference/samphold~-help.pd \
@@ -407,7 +403,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
      ./5.reference/spigot-help.pd \
-     ./5.reference/sqrt~-help.pd \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
@@ -433,6 +428,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/toggle-help.pd \
      ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
+     ./5.reference/trigonometric-help.pd \
+     ./5.reference/unops-tilde-help.pd \
+     ./5.reference/unops-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
@@ -440,7 +438,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/vline~-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \
-     ./5.reference/wrap~-help.pd \
      ./5.reference/writesf~-help.pd \
      ./6.externs/0.README.txt \
      ./6.externs/dspobj~.c \

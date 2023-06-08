@@ -313,7 +313,7 @@ void sigwrap_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ------------------------------ mtof_tilde~ -------------------------- */
+/* ------------------------------ mtof~ -------------------------- */
 
 typedef struct mtof_tilde
 {
@@ -363,7 +363,7 @@ void mtof_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ------------------------------ ftom_tilde~ -------------------------- */
+/* ------------------------------ ftom~ -------------------------- */
 
 typedef struct ftom_tilde
 {
@@ -617,7 +617,7 @@ void powtodb_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ----------------------------- exp ----------------------------- */
+/* ----------------------------- exp~ ----------------------------- */
 static t_class *exp_tilde_class;
 
 typedef struct _exp_tilde
@@ -659,7 +659,7 @@ static void exp_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ----------------------------- abs ----------------------------- */
+/* ----------------------------- abs~ ----------------------------- */
 static t_class *abs_tilde_class;
 
 typedef struct _abs_tilde
@@ -708,25 +708,33 @@ static void abs_tilde_setup(void)
 
 void d_math_setup(void)
 {
-    t_symbol *s = gensym("acoustics~.pd");
-    clip_setup();
-    sigrsqrt_setup();
-    sigsqrt_setup();
-    sigwrap_setup();
-    mtof_tilde_setup();
-    ftom_tilde_setup();
+    t_symbol *s1 = gensym("acoustics-tilde.pd");
+    t_symbol *s2 = gensym("unops-tilde.pd");
+    
     dbtorms_tilde_setup();
     rmstodb_tilde_setup();
     dbtopow_tilde_setup();
     powtodb_tilde_setup();
+    mtof_tilde_setup();
+    ftom_tilde_setup();
+    sigrsqrt_setup();
+    sigsqrt_setup();
+    sigwrap_setup();
     exp_tilde_setup();
     abs_tilde_setup();
+    clip_setup();
 
-    class_sethelpsymbol(mtof_tilde_class, s);
-    class_sethelpsymbol(ftom_tilde_class, s);
-    class_sethelpsymbol(dbtorms_tilde_class, s);
-    class_sethelpsymbol(rmstodb_tilde_class, s);
-    class_sethelpsymbol(dbtopow_tilde_class, s);
-    class_sethelpsymbol(powtodb_tilde_class, s);
+    class_sethelpsymbol(mtof_tilde_class, s1);
+    class_sethelpsymbol(ftom_tilde_class, s1);
+    class_sethelpsymbol(dbtorms_tilde_class, s1);
+    class_sethelpsymbol(rmstodb_tilde_class, s1);
+    class_sethelpsymbol(dbtopow_tilde_class, s1);
+    class_sethelpsymbol(powtodb_tilde_class, s1);
+
+    class_sethelpsymbol(sigrsqrt_class, s2);
+    class_sethelpsymbol(sigsqrt_class, s2);
+    class_sethelpsymbol(sigwrap_class, s2);
+    class_sethelpsymbol(exp_tilde_class, s2);
+    class_sethelpsymbol(abs_tilde_class, s2);
 }
 
