@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"PO-Revision-Date: 2023-06-07 05:32+0000\n"
+"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -201,8 +201,26 @@ msgstr "Appliquer"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Paramètres audio"
+msgid "no device"
+msgstr "aucun périphérique"
+
+msgid "(same as input device)..."
+msgstr "(même que le périphérique d'entrée)..."
+
+msgid "Channels:"
+msgstr "Nombre de canaux :"
+
+msgid "Input Devices"
+msgstr "Périphériques d'entrée"
+
+msgid "Output Devices"
+msgstr "Périphériques de sortie"
+
+msgid "Use Multiple Devices"
+msgstr "Utiliser plusieurs périphériques"
+
+msgid "audio system"
+msgstr "système audio"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -211,7 +229,7 @@ msgid "Sample rate:"
 msgstr "Fréquence d'échantillonnage :"
 
 msgid "Delay (msec):"
-msgstr "Délai(ms) :"
+msgstr "Délai (ms) :"
 
 msgid "48k"
 msgstr "48k"
@@ -228,20 +246,8 @@ msgstr "Échantillons par bloc :"
 msgid "Use callbacks"
 msgstr "Utiliser des callbacks"
 
-msgid "Input Devices"
-msgstr "Périphériques d'entrée"
-
-msgid "Channels:"
-msgstr "Nombre de canaux :"
-
-msgid "Output Devices"
-msgstr "Périphériques de sortie"
-
-msgid "(same as input device)..."
-msgstr "(même que le périphérique d'entrée)..."
-
-msgid "Use Multiple Devices"
-msgstr "Utiliser plusieurs périphériques"
+msgid "Audio Settings"
+msgstr "Paramètres audio"
 
 msgid "Save All Settings"
 msgstr "Enregistrer tous les réglages"
@@ -250,7 +256,7 @@ msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "ATTENTION : pdtk_canvas_dialog a reçu des paramètres inconnus"
 
 msgid "Canvas Properties"
-msgstr "Propriétés du Canvas"
+msgstr "Propriétés du Canevas"
 
 msgid "Scale"
 msgstr "Échelle"
@@ -357,6 +363,9 @@ msgstr "Envoyer au symbole :"
 msgid "Receive symbol:"
 msgstr "Recevoir du symbole :"
 
+msgid "auto"
+msgstr "auto"
+
 msgid "Width:"
 msgstr "Largeur :"
 
@@ -448,7 +457,7 @@ msgid "VU Meter"
 msgstr "VU-mètre"
 
 msgid "Canvas"
-msgstr "Canvas"
+msgstr "Canevas"
 
 msgid "Visible Rectangle (pix)"
 msgstr "Rectangle visible (pix)"
@@ -499,17 +508,26 @@ msgstr "Envoyer un message à Pd"
 msgid "(use arrow keys for history)"
 msgstr "(Utiliser les flèches pour accéder à l'historique)"
 
-msgid "MIDI Settings"
-msgstr "Paramètres MIDI"
+msgid "(no device)"
+msgstr "(aucun périphérique)"
 
-msgid "ALSA MIDI Settings"
-msgstr "Paramètres MIDI (ALSA)"
+msgid "no input devices"
+msgstr "pas de périphériques d'entrée"
 
 msgid "In Ports:"
 msgstr "Ports d'entrée :"
 
 msgid "Out Ports:"
 msgstr "Ports de sortie :"
+
+msgid "MIDI system"
+msgstr "système MIDI"
+
+msgid "MIDI Settings"
+msgstr "Paramètres MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Paramètres MIDI (ALSA)"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -539,6 +557,9 @@ msgstr "Dossier d'installation des Externals"
 msgid "Clear"
 msgstr "Effacer"
 
+msgid "path preferences"
+msgstr "chemins"
+
 msgid "Choose Pd documents directory:"
 msgstr "Choisir le dossier des documents Pd :"
 
@@ -552,20 +573,68 @@ msgstr "Ajouter un chemin"
 msgid "Edit existing path [%s]"
 msgstr "Modifier le chemin d'accès existant [%s]"
 
+msgid "Patch windows"
+msgstr "Fenêtres de patch"
+
+msgid "Zoom New Windows"
+msgstr "Zoomer les nouvelles fenêtres"
+
+msgid "GUI settings"
+msgstr "Paramètres de l'interface graphique"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr "Disposition des préférences (réouvrir les préférences pour appliquer)"
+
+msgid "use tabs"
+msgstr "en onglets"
+
+msgid "single page"
+msgstr "sur une page"
+
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "startup preferences"
+msgstr "démarrage"
+
+msgid "audio preferences"
+msgstr "audio"
+
+msgid "MIDI preferences"
+msgstr "MIDI"
+
+msgid "deken preferences"
+msgstr "deken"
+
+msgid "misc preferences"
+msgstr "diverses"
+
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
 
 msgid "Edit library"
 msgstr "Éditer la bibliothèque"
 
+msgid "Settings below require a restart of Pd!"
+msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
+
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "Startup flags:"
-msgstr "Options au démarrage :"
+msgid "Startup options"
+msgstr "Options au démarrage"
 
 msgid "Defeat real-time scheduling"
 msgstr "Refuser la priorité temps-réel"
+
+msgid "language"
+msgstr "langue"
+
+msgid "Menu language"
+msgstr "Langue des menus"
+
+msgid "Startup flags:"
+msgstr "Options au démarrage :"
 
 msgid "Help Browser"
 msgstr "Navigateur d'aide"
@@ -580,7 +649,7 @@ msgid "Max Patch Files"
 msgstr "Fichiers de patchs Max"
 
 msgid "Max Text Files"
-msgstr "Fichiers texte Max/MSP"
+msgstr "Fichiers texte Max"
 
 msgid "Max Patch Files (.pat)"
 msgstr "Fichiers de patchs Max (.pat)"
@@ -633,13 +702,13 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossible de trouver des plugins dans %s... passer !"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) CARACTÈRE MANQUANT '}' : "
+msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) COMMANDE INVALIDE : "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr "(Tcl) ERREUR : "
+msgstr "(Tcl) ERREUR NON GÉRÉE : "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -655,7 +724,7 @@ msgstr "[deken] version installée [%1$s] == %2$s... ignorer !"
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr "désinstallation du paquet deken '%s'"
+msgstr "installation du paquet deken '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
@@ -708,7 +777,7 @@ msgstr "Vérification SHA256 de '%s'"
 
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
-msgstr "Impossible de récupérer la référence SHA256 pour '%s'."
+msgstr "Impossible de récupérer le SHA256 de référence pour '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -877,10 +946,10 @@ msgstr "Rechercher"
 
 #, tcl-format
 msgid "Install (%d)"
-msgstr "Installation (%d)"
+msgstr "Installer (%d)"
 
 msgid "Install"
-msgstr "Installation"
+msgstr "Installer"
 
 #, tcl-format
 msgid "%s%% of download completed"
@@ -1147,7 +1216,7 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
-"Le dossier Documents n'existe pas :\n"
+"Le dossier Documents de Pd n'existe pas :\n"
 "\n"
 "%s\n"
 "\n"
@@ -1166,7 +1235,128 @@ msgstr "refus de supprimer un domaine vide"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr "Impossible de créer des préférences \"%1$s\" en %2$s"
+msgstr "Impossible de créer des préférences \"%1$s\" dans %2$s"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Arabic"
+msgstr "Arabe"
+
+msgid "Azerbaijani"
+msgstr "Azéri"
+
+msgid "Belarusian"
+msgstr "Biélorusse"
+
+msgid "Bulgarian"
+msgstr "Bulgare"
+
+msgid "German"
+msgstr "Allemand"
+
+msgid "German (Austria)"
+msgstr "Allemand (Autriche)"
+
+msgid "Greek"
+msgstr "Grec"
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "English (Canada)"
+msgstr "Anglais (Canada)"
+
+msgid "English (UK)"
+msgstr "Anglais (Royaume-Uni)"
+
+msgid "English (USA)"
+msgstr "Anglais (États-Unis)"
+
+msgid "Spanish"
+msgstr "Espagnol"
+
+msgid "Basque"
+msgstr "Basque"
+
+msgid "Finnish"
+msgstr "Finnois"
+
+msgid "French"
+msgstr "Français"
+
+msgid "Gujarati"
+msgstr "Gujarati"
+
+msgid "Hebrew"
+msgstr "Hébreu"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hungarian"
+msgstr "Hongrois"
+
+msgid "Armenian"
+msgstr "Arménien"
+
+msgid "Italian"
+msgstr "Italien"
+
+msgid "Indonesian"
+msgstr "Indonésien"
+
+msgid "Japanese"
+msgstr "Japonais"
+
+msgid "Korean"
+msgstr "Coréen"
+
+msgid "Dutch"
+msgstr "Néerlandais"
+
+msgid "Panjabi"
+msgstr "Pendjabi"
+
+msgid "Polish"
+msgstr "Polonais"
+
+msgid "Portuguese"
+msgstr "Portugais"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugais (Brésil)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portugais (Portugal)"
+
+msgid "Russian"
+msgstr "Russe"
+
+msgid "Albanian"
+msgstr "Albanais"
+
+msgid "Swedish"
+msgstr "Suédois"
+
+msgid "Turkish"
+msgstr "Turc"
+
+msgid "Ukrainian"
+msgstr "Ukrainien"
+
+msgid "Vietnamese"
+msgstr "Vietnamien"
+
+msgid "Chinese (Traditional)"
+msgstr "Chinois (traditionnel)"
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(langue par défaut : %s)"
+
+msgid "(no translation)"
+msgstr "(pas de traduction)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1336,20 +1526,9 @@ msgstr "les paramètres de l'interface graphique ont été supprimés"
 msgid "no Pd-GUI settings to clear"
 msgstr "aucun paramètre d'interface graphique à supprimer"
 
-msgid "Path..."
-msgstr "Chemins..."
-
-msgid "Startup..."
-msgstr "Options de démarrage..."
-
-msgid "Audio..."
-msgstr "Paramètres audio..."
-
-msgid "MIDI..."
-msgstr "Paramètres MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Zoomer les nouvelles fenêtres"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Préférences..."
 
 msgid "Save All Preferences"
 msgstr "Enregistrer toutes les préférences"
@@ -1363,8 +1542,8 @@ msgstr "Charger à partir de..."
 msgid "Forget All..."
 msgstr "Tout oublier..."
 
-msgid "Preferences"
-msgstr "Préférences"
+msgid "Tabbed preferences"
+msgstr "Préférences en onglet"
 
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"
@@ -1387,6 +1566,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Si vous acceptez, le contenu de l'objet correspondant sera mis à jour. Vous "
+"devrez quand même sauver le patch pour que ces changements soient conservés."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1403,7 +1584,7 @@ msgid "Audio off"
 msgstr "Audio Off"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) CARACTÈRE MANQUANT ']' : "
+msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
 
 msgid "Tcl:"
 msgstr "Tcl :"
@@ -1435,6 +1616,9 @@ msgstr "debug"
 msgid "all"
 msgstr "tout"
 
+msgid "y1"
+msgstr "y1"
+
 msgid "New..."
 msgstr "Nouveau..."
 
@@ -1447,6 +1631,18 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "Path..."
+#~ msgstr "Chemins..."
+
+#~ msgid "Startup..."
+#~ msgstr "Options de démarrage..."
+
+#~ msgid "Audio..."
+#~ msgstr "Paramètres audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "Paramètres MIDI..."
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensions(chiffres)(pix):------"

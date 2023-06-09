@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: 2023-05-15 22:50+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -196,8 +196,27 @@ msgstr "Menggunakan"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Pengaturan audio"
+#, fuzzy
+msgid "no device"
+msgstr "Perangkat memasuk"
+
+msgid "(same as input device)..."
+msgstr "(sama dengan perangkat memasuk)..."
+
+msgid "Channels:"
+msgstr "Kanal:"
+
+msgid "Input Devices"
+msgstr "Perangkat memasuk"
+
+msgid "Output Devices"
+msgstr "Perangkat keluar"
+
+msgid "Use Multiple Devices"
+msgstr "Pakai Banyak Perangkat"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Pengaturan"
@@ -223,20 +242,8 @@ msgstr "Ukuran blok:"
 msgid "Use callbacks"
 msgstr "Gunakan callback"
 
-msgid "Input Devices"
-msgstr "Perangkat memasuk"
-
-msgid "Channels:"
-msgstr "Kanal:"
-
-msgid "Output Devices"
-msgstr "Perangkat keluar"
-
-msgid "(same as input device)..."
-msgstr "(sama dengan perangkat memasuk)..."
-
-msgid "Use Multiple Devices"
-msgstr "Pakai Banyak Perangkat"
+msgid "Audio Settings"
+msgstr "Pengaturan audio"
 
 msgid "Save All Settings"
 msgstr "Menyimpan semua pangaturan"
@@ -352,6 +359,9 @@ msgstr "Kirim simbol:"
 
 msgid "Receive symbol:"
 msgstr "Terima simbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Lebar:"
@@ -495,17 +505,27 @@ msgstr "Mengirim sebuah pesan Pd"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "Pengaturan MIDI"
+msgid "(no device)"
+msgstr ""
 
-msgid "ALSA MIDI Settings"
-msgstr "Pengaturan ALSA MIDI"
+#, fuzzy
+msgid "no input devices"
+msgstr "Perangkat memasuk"
 
 msgid "In Ports:"
 msgstr ""
 
 msgid "Out Ports:"
 msgstr ""
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Pengaturan MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Pengaturan ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -534,6 +554,10 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Preferensi"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -547,19 +571,74 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Jendela Pd"
+
+msgid "Zoom New Windows"
+msgstr ""
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "pengaturan GUI dihapuskan"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Preferensi"
+
 msgid "Add new library"
 msgstr "Tambah perpustakaan baru"
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -1117,6 +1196,127 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1284,20 +1484,9 @@ msgstr "pengaturan GUI dihapuskan"
 msgid "no Pd-GUI settings to clear"
 msgstr "tidak ada pengaturan Pd-GUI yang bisa menghapus"
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr "Audio..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr ""
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Preferensi"
 
 msgid "Save All Preferences"
 msgstr ""
@@ -1311,7 +1500,8 @@ msgstr ""
 msgid "Forget All..."
 msgstr "Melupakan semua..."
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Preferensi"
 
 msgid "Open Recent"
@@ -1383,6 +1573,9 @@ msgstr ""
 msgid "all"
 msgstr "semua"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Baru..."
 
@@ -1395,3 +1588,9 @@ msgstr "Menghapus"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."
