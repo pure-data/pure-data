@@ -64,6 +64,7 @@
 #X text 258 551 <-- click;
 #X text 604 449 <-- click;
 #X text 105 12 - attach a name to a pd window;
+#X obj 219 676 pdcontrol;
 #X connect 11 0 9 0;
 #X connect 14 0 29 0;
 #X connect 19 0 5 0;
