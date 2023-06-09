@@ -104,9 +104,11 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
-     ./1.manual/x6.htm \
      ./1.manual/x6-a.htm \
      ./1.manual/x6-b.htm \
+     ./1.manual/x6-c.htm \
+     ./1.manual/x6.htm \
+     ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
      ./2.control.examples/03.connections.pd \
@@ -292,7 +294,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
-     ./5.reference/pd-messages.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics-tilde-help.pd \
      ./5.reference/adc~_dac~-help.pd \
@@ -364,6 +365,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/osc-format-parse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/pack-help.pd \
+     ./5.reference/pd-messages.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
@@ -393,13 +395,14 @@ nobase_dist_libpd_DATA = \
      ./5.reference/select-help.pd \
      ./5.reference/send-receive-help.pd \
      ./5.reference/send-receive-tilde-help.pd \
-     ./5.reference/set-help.pd \
      ./5.reference/set-dsp-tgl.pd \
+     ./5.reference/set-help.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sig~-help.pd \
      ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
+     ./5.reference/snake-tilde-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
      ./5.reference/spigot-help.pd \
@@ -429,8 +432,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
      ./5.reference/trigonometric-help.pd \
-     ./5.reference/unops-tilde-help.pd \
      ./5.reference/unops-help.pd \
+     ./5.reference/unops-tilde-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
@@ -485,7 +488,6 @@ nobase_dist_libpd_DATA = \
      ./8.topics/slop-slew-limiting-patch.png \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
-     ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice.wav \
      ./sound/voice2.wav \
