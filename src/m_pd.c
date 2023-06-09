@@ -25,10 +25,12 @@ t_pd *pd_new(t_class *c)
     return (x);
 }
 
+typedef void (*t_freemethod)(t_pd *);
+
 void pd_free(t_pd *x)
 {
     t_class *c = *x;
-    if (c->c_freemethod) (*(t_gotfn)(c->c_freemethod))(x);
+    if (c->c_freemethod) (*(t_freemethod)(c->c_freemethod))(x);
     if (c->c_patchable)
     {
         while (((t_object *)x)->ob_outlet)
