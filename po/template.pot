@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-02-11 22:56+0100\n"
+"POT-Creation-Date: 2023-06-06 11:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -212,6 +212,9 @@ msgstr ""
 msgid "Use Multiple Devices"
 msgstr ""
 
+msgid "audio system"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -351,6 +354,9 @@ msgid "Send symbol:"
 msgstr ""
 
 msgid "Receive symbol:"
+msgstr ""
+
+msgid "auto"
 msgstr ""
 
 msgid "Width:"
@@ -495,6 +501,9 @@ msgstr ""
 msgid "(use arrow keys for history)"
 msgstr ""
 
+msgid "(no device)"
+msgstr ""
+
 msgid "no input devices"
 msgstr ""
 
@@ -502,6 +511,9 @@ msgid "In Ports:"
 msgstr ""
 
 msgid "Out Ports:"
+msgstr ""
+
+msgid "MIDI system"
 msgstr ""
 
 msgid "MIDI Settings"
@@ -549,10 +561,29 @@ msgstr ""
 msgid "Add a new path"
 msgstr ""
 
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
 msgid "Patch windows"
 msgstr ""
 
 msgid "Zoom New Windows"
+msgstr ""
+
+msgid "GUI settings"
+msgstr ""
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
 msgstr ""
 
 msgid "startup preferences"
@@ -568,10 +599,6 @@ msgid "deken preferences"
 msgstr ""
 
 msgid "misc preferences"
-msgstr ""
-
-#, tcl-format
-msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"
@@ -1159,6 +1186,9 @@ msgstr ""
 msgid "Afrikaans"
 msgstr ""
 
+msgid "Arabic"
+msgstr ""
+
 msgid "Azerbaijani"
 msgstr ""
 
@@ -1195,6 +1225,9 @@ msgstr ""
 msgid "Basque"
 msgstr ""
 
+msgid "Finnish"
+msgstr ""
+
 msgid "French"
 msgstr ""
 
@@ -1210,10 +1243,28 @@ msgstr ""
 msgid "Hungarian"
 msgstr ""
 
+msgid "Armenian"
+msgstr ""
+
 msgid "Italian"
 msgstr ""
 
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
 msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
 msgstr ""
 
 msgid "Portuguese"
@@ -1225,16 +1276,29 @@ msgstr ""
 msgid "Portuguese (Portugal)"
 msgstr ""
 
+msgid "Russian"
+msgstr ""
+
 msgid "Albanian"
 msgstr ""
 
 msgid "Swedish"
 msgstr ""
 
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
 msgid "Vietnamese"
 msgstr ""
 
-msgid "(default language)"
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
 msgstr ""
 
 msgid "(no translation)"
@@ -1421,7 +1485,7 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-msgid "Preferences"
+msgid "Tabbed preferences"
 msgstr ""
 
 msgid "Open Recent"
@@ -1491,6 +1555,9 @@ msgid "debug"
 msgstr ""
 
 msgid "all"
+msgstr ""
+
+msgid "y1"
 msgstr ""
 
 msgid "New..."
