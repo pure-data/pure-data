@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-06 11:36+0200\n"
-"PO-Revision-Date: 2023-06-07 05:32+0000\n"
+"PO-Revision-Date: 2023-06-10 08:51+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/he/>\n"
@@ -577,7 +577,7 @@ msgid "GUI settings"
 msgstr "הגדרות מנשק משתמש"
 
 msgid "preference layout (reopen the preferences to see the effect)"
-msgstr ""
+msgstr "פריסת העדפות (יש לפתוח את ההעדפות מחדש כדי לראות את ההשפעה)"
 
 msgid "use tabs"
 msgstr "להשתמש בלשוניות"
@@ -588,9 +588,8 @@ msgstr "עמוד בודד"
 msgid "Preferences"
 msgstr "העדפות"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "העדפות"
+msgstr "העדפות הפעלה"
 
 msgid "audio preferences"
 msgstr "העדפות שמע"
@@ -598,13 +597,11 @@ msgstr "העדפות שמע"
 msgid "MIDI preferences"
 msgstr "העדפות MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "העדפות Deken %s"
+msgstr "העדפות Deken"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "העדפות"
+msgstr "העדפות שונות"
 
 msgid "Add new library"
 msgstr "הוספת ספרייה חדשה"
@@ -613,23 +610,22 @@ msgid "Edit library"
 msgstr "עריכת ספרייה"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "ההגדרות שלהלן דורשות את הפעלת Pd מחדש!"
 
 msgid "Pd libraries to load on startup"
 msgstr "ספריות Pd לטעינה בהפעלה"
 
-#, fuzzy
 msgid "Startup options"
-msgstr "דגלוני הפעלה:"
+msgstr "אפשרויות הפעלה"
 
 msgid "Defeat real-time scheduling"
 msgstr "הבסת תזמון זמן־אמת"
 
 msgid "language"
-msgstr ""
+msgstr "שפה"
 
 msgid "Menu language"
-msgstr ""
+msgstr "שפת התפריטים"
 
 msgid "Startup flags:"
 msgstr "דגלוני הפעלה:"
@@ -1209,126 +1205,125 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "אפריקאנס"
 
 msgid "Arabic"
-msgstr ""
+msgstr "ערבית"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "אזרית"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "בלרוסית"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "בולגרית"
 
 msgid "German"
-msgstr ""
+msgstr "גרמנית"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "גרמנית אוסטרית"
 
 msgid "Greek"
-msgstr ""
+msgstr "יוונית"
 
 msgid "English"
-msgstr ""
+msgstr "אנגלית"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "אנגלית קנדית"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "אנגלית בריטית"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "אנגלית אמריקאית"
 
 msgid "Spanish"
-msgstr ""
+msgstr "ספרדית"
 
 msgid "Basque"
-msgstr ""
+msgstr "בסקית"
 
 msgid "Finnish"
-msgstr ""
+msgstr "פינית"
 
 msgid "French"
-msgstr ""
+msgstr "צרפתית"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "גוג׳ראטית"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "עברית"
 
 msgid "Hindi"
-msgstr ""
+msgstr "הינדי"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "הונגרית"
 
 msgid "Armenian"
-msgstr ""
+msgstr "ארמנית"
 
 msgid "Italian"
-msgstr ""
+msgstr "איטלקית"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "אינדונזית"
 
 msgid "Japanese"
-msgstr ""
+msgstr "יפנית"
 
 msgid "Korean"
-msgstr ""
+msgstr "קוריאנית"
 
 msgid "Dutch"
-msgstr ""
+msgstr "הולנדית"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "פנג׳אבי"
 
 msgid "Polish"
-msgstr ""
+msgstr "פולנית"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "פורטוגלית"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "פורטוגלית ברזילאית"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "פורטוגלית (פורטוגל)"
 
 msgid "Russian"
-msgstr ""
+msgstr "רוסית"
 
 msgid "Albanian"
-msgstr ""
+msgstr "אלבנית"
 
 msgid "Swedish"
-msgstr ""
+msgstr "שוודית"
 
 msgid "Turkish"
-msgstr ""
+msgstr "טורקית"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "אוקראינית"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "וייטנאמית"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "סינית מסורתית"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "(default language: %s)"
-msgstr "פלטפורמת ברירת המחדל: %s"
+msgstr "(שפת ברירת המחדל: %s)"
 
-#, fuzzy
 msgid "(no translation)"
-msgstr "תרגומים"
+msgstr "(אין תרגום)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1498,9 +1493,8 @@ msgstr "הגדרות מנשק המשתמש הוסרו"
 msgid "no Pd-GUI settings to clear"
 msgstr "אין הגדרות מנשק משתמש של Pd למחיקה"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "העדפות…"
+msgstr "עריכת העדפות…"
 
 msgid "Save All Preferences"
 msgstr "שמירת כל ההעדפות"
@@ -1514,9 +1508,8 @@ msgstr "טעינה מתוך…"
 msgid "Forget All..."
 msgstr "שיכחה של הכול…"
 
-#, fuzzy
 msgid "Tabbed preferences"
-msgstr "העדפות"
+msgstr "העדפות בלשוניות"
 
 msgid "Open Recent"
 msgstr "לפתוח אחרונים"
@@ -1590,7 +1583,7 @@ msgid "all"
 msgstr "הכול"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "חדש…"
