@@ -44,7 +44,6 @@
 #ifndef PA_UNIX_UTIL_H
 #define PA_UNIX_UTIL_H
 
-#include "pa_util.h"
 #include "pa_cpuload.h"
 #include <assert.h>
 #include <pthread.h>
@@ -65,11 +64,14 @@ extern "C"
 #define UNLIKELY(expr) (expr)
 #endif
 
+#define STRINGIZE_HELPER(expr) #expr
+#define STRINGIZE(expr) STRINGIZE_HELPER(expr)
+
 #define PA_UNLESS(expr, code) \
     do { \
         if( UNLIKELY( (expr) == 0 ) ) \
         { \
-            PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " PA_STRINGIZE( __LINE__ ) "\n" )); \
+            PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " STRINGIZE( __LINE__ ) "\n" )); \
             result = (code); \
             goto error; \
         } \
@@ -82,7 +84,7 @@ static PaError paUtilErr_;          /* Used with PA_ENSURE */
     do { \
         if( UNLIKELY( (paUtilErr_ = (expr)) < paNoError ) ) \
         { \
-            PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " PA_STRINGIZE( __LINE__ ) "\n" )); \
+            PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " STRINGIZE( __LINE__ ) "\n" )); \
             result = paUtilErr_; \
             goto error; \
         } \
@@ -101,7 +103,7 @@ static PaError paUtilErr_;          /* Used with PA_ENSURE */
             { \
                 PaUtil_SetLastHostErrorInfo( paALSA, paUtilErr_, strerror( paUtilErr_ ) ); \
             } \
-            PaUtil_DebugPrint( "Expression '" #expr "' failed in '" __FILE__ "', line: " PA_STRINGIZE( __LINE__ ) "\n" ); \
+            PaUtil_DebugPrint( "Expression '" #expr "' failed in '" __FILE__ "', line: " STRINGIZE( __LINE__ ) "\n" ); \
             result = paUnanticipatedHostError; \
             goto error; \
         } \

@@ -102,7 +102,6 @@
 #include "pa_ringbuffer.h"
 
 #include "pa_win_coinitialize.h"
-#include "pa_win_util.h"
 
 /* This version of pa_asio.cpp is currently only targeted at Win32,
    It would require a few tweaks to work with pre-OS X Macintosh.
@@ -215,7 +214,18 @@ static ASIOCallbacks asioCallbacks_ =
 
 static void PaAsio_SetLastSystemError( DWORD errorCode )
 {
-    PaWinUtil_SetLastSystemErrorInfo( paASIO, errorCode );
+    LPVOID lpMsgBuf;
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        errorCode,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0,
+        NULL
+    );
+    PaUtil_SetLastHostErrorInfo( paASIO, errorCode, (const char*)lpMsgBuf );
+    LocalFree( lpMsgBuf );
 }
 
 #define PA_ASIO_SET_LAST_SYSTEM_ERROR( errorCode ) \
@@ -312,12 +322,12 @@ static char **GetAsioDriverNames( PaAsioHostApiRepresentation *asioHostApi, PaUt
     char **result = 0;
     int i;
 
-    result =(char**)PaUtil_GroupAllocateZeroInitializedMemory(
+    result =(char**)PaUtil_GroupAllocateMemory(
             group, sizeof(char*) * driverCount );
     if( !result )
         goto error;
 
-    result[0] = (char*)PaUtil_GroupAllocateZeroInitializedMemory(
+    result[0] = (char*)PaUtil_GroupAllocateMemory(
             group, 32 * driverCount );
     if( !result[0] )
         goto error;
@@ -1097,7 +1107,7 @@ static PaError InitPaDeviceInfoFromAsioDriver( PaAsioHostApiRepresentation *asio
         asioDeviceInfo->bufferGranularity = paAsioDriver.info.bufferGranularity;
 
 
-        asioDeviceInfo->asioChannelInfos = (ASIOChannelInfo*)PaUtil_GroupAllocateZeroInitializedMemory(
+        asioDeviceInfo->asioChannelInfos = (ASIOChannelInfo*)PaUtil_GroupAllocateMemory(
                 asioHostApi->allocations,
                 sizeof(ASIOChannelInfo) * (deviceInfo->maxInputChannels
                         + deviceInfo->maxOutputChannels) );
@@ -1164,15 +1174,14 @@ PaError PaAsio_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex
     PaAsioHostApiRepresentation *asioHostApi;
     PaAsioDeviceInfo *deviceInfoArray;
     char **names;
-    asioHostApi = (PaAsioHostApiRepresentation*)PaUtil_AllocateZeroInitializedMemory( sizeof(PaAsioHostApiRepresentation) );
+    asioHostApi = (PaAsioHostApiRepresentation*)PaUtil_AllocateMemory( sizeof(PaAsioHostApiRepresentation) );
     if( !asioHostApi )
     {
         result = paInsufficientMemory;
         goto error;
     }
 
-    /* NOTE: we depend on PaUtil_AllocateZeroInitializedMemory() ensuring that all
-       fields are set to zero. especially asioHostApi->allocations */
+    memset( asioHostApi, 0, sizeof(PaAsioHostApiRepresentation) ); /* ensure all fields are zeroed. especially asioHostApi->allocations */
 
     /*
         We initialize COM ourselves here and uninitialize it in Terminate().
@@ -1255,7 +1264,7 @@ PaError PaAsio_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex
 
         /* allocate enough space for all drivers, even if some aren't installed */
 
-        (*hostApi)->deviceInfos = (PaDeviceInfo**)PaUtil_GroupAllocateZeroInitializedMemory(
+        (*hostApi)->deviceInfos = (PaDeviceInfo**)PaUtil_GroupAllocateMemory(
                 asioHostApi->allocations, sizeof(PaDeviceInfo*) * driverCount );
         if( !(*hostApi)->deviceInfos )
         {
@@ -1264,7 +1273,7 @@ PaError PaAsio_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex
         }
 
         /* allocate all device info structs in a contiguous block */
-        deviceInfoArray = (PaAsioDeviceInfo*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceInfoArray = (PaAsioDeviceInfo*)PaUtil_GroupAllocateMemory(
                 asioHostApi->allocations, sizeof(PaAsioDeviceInfo) * driverCount );
         if( !deviceInfoArray )
         {
@@ -2165,7 +2174,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     }
 
 
-    stream = (PaAsioStream*)PaUtil_AllocateZeroInitializedMemory( sizeof(PaAsioStream) );
+    stream = (PaAsioStream*)PaUtil_AllocateMemory( sizeof(PaAsioStream) );
     if( !stream )
     {
         result = paInsufficientMemory;
@@ -2209,7 +2218,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     PaUtil_InitializeCpuLoadMeasurer( &stream->cpuLoadMeasurer, sampleRate );
 
 
-    stream->asioBufferInfos = (ASIOBufferInfo*)PaUtil_AllocateZeroInitializedMemory(
+    stream->asioBufferInfos = (ASIOBufferInfo*)PaUtil_AllocateMemory(
             sizeof(ASIOBufferInfo) * (inputChannelCount + outputChannelCount) );
     if( !stream->asioBufferInfos )
     {
@@ -2327,7 +2336,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
 
     asioBuffersCreated = 1;
 
-    stream->asioChannelInfos = (ASIOChannelInfo*)PaUtil_AllocateZeroInitializedMemory(
+    stream->asioChannelInfos = (ASIOChannelInfo*)PaUtil_AllocateMemory(
             sizeof(ASIOChannelInfo) * (inputChannelCount + outputChannelCount) );
     if( !stream->asioChannelInfos )
     {
@@ -2350,7 +2359,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
         }
     }
 
-    stream->bufferPtrs = (void**)PaUtil_AllocateZeroInitializedMemory(
+    stream->bufferPtrs = (void**)PaUtil_AllocateMemory(
             2 * sizeof(void*) * (inputChannelCount + outputChannelCount) );
     if( !stream->bufferPtrs )
     {
@@ -2444,7 +2453,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     if( usingBlockingIo )
     {
         /* Allocate the blocking i/o input ring buffer memory. */
-        stream->blockingState = (PaAsioStreamBlockingState*)PaUtil_AllocateZeroInitializedMemory( sizeof(PaAsioStreamBlockingState) );
+        stream->blockingState = (PaAsioStreamBlockingState*)PaUtil_AllocateMemory( sizeof(PaAsioStreamBlockingState) );
         if( !stream->blockingState )
         {
             result = paInsufficientMemory;
@@ -2527,7 +2536,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
 
 
             /* Create pointer buffer to access non-interleaved data in ReadStream() */
-            stream->blockingState->readStreamBuffer = (void**)PaUtil_AllocateZeroInitializedMemory( sizeof(void*) * inputChannelCount );
+            stream->blockingState->readStreamBuffer = (void**)PaUtil_AllocateMemory( sizeof(void*) * inputChannelCount );
             if( !stream->blockingState->readStreamBuffer )
             {
                 result = paInsufficientMemory;
@@ -2584,7 +2593,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
             lBytesPerFrame = inputChannelCount * Pa_GetSampleSize(inputSampleFormat );
 
             /* Allocate the blocking i/o input ring buffer memory. */
-            stream->blockingState->readRingBufferData = (void*)PaUtil_AllocateZeroInitializedMemory( lBlockingBufferSize * lBytesPerFrame );
+            stream->blockingState->readRingBufferData = (void*)PaUtil_AllocateMemory( lBlockingBufferSize * lBytesPerFrame );
             if( !stream->blockingState->readRingBufferData )
             {
                 result = paInsufficientMemory;
@@ -2613,7 +2622,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
             blockingWriteBuffersReadyEventInitialized = 1;
 
             /* Create pointer buffer to access non-interleaved data in WriteStream() */
-            stream->blockingState->writeStreamBuffer = (const void**)PaUtil_AllocateZeroInitializedMemory( sizeof(const void*) * outputChannelCount );
+            stream->blockingState->writeStreamBuffer = (const void**)PaUtil_AllocateMemory( sizeof(const void*) * outputChannelCount );
             if( !stream->blockingState->writeStreamBuffer )
             {
                 result = paInsufficientMemory;
@@ -2675,7 +2684,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
             lBytesPerFrame = outputChannelCount * Pa_GetSampleSize(outputSampleFormat);
 
             /* Allocate the blocking i/o output ring buffer memory. */
-            stream->blockingState->writeRingBufferData = (void*)PaUtil_AllocateZeroInitializedMemory( lBlockingBufferSize * lBytesPerFrame );
+            stream->blockingState->writeRingBufferData = (void*)PaUtil_AllocateMemory( lBlockingBufferSize * lBytesPerFrame );
             if( !stream->blockingState->writeRingBufferData )
             {
                 result = paInsufficientMemory;

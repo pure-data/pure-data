@@ -123,6 +123,7 @@ copysrc src/common
 copysrc src/hostapi/alsa
 copysrc src/hostapi/asio
 copysrc src/hostapi/wasapi
+copysrc src/hostapi/wasapi/mingw-include
 copysrc src/hostapi/coreaudio
 copysrc src/hostapi/wmme
 copysrc src/os/unix
@@ -130,4 +131,4 @@ copysrc src/os/win
 cp -v "${SRC}"/LICENSE.txt "${DEST}"/
 
 # cleanup
-rm -rf "${SRC}"
+# rm -rf "${SRC}"

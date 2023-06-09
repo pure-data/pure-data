@@ -112,7 +112,6 @@
 
 #include "pa_win_wmme.h"
 #include "pa_win_waveformat.h"
-#include "pa_win_util.h"
 
 #ifdef PAWIN_USE_WDMKS_DEVICE_INFO
 #include "pa_win_wdmks_utils.h"
@@ -314,7 +313,18 @@ static signed long GetStreamWriteAvailable( PaStream* stream );
 
 static void PaMme_SetLastSystemError( DWORD errorCode )
 {
-    PaWinUtil_SetLastSystemErrorInfo( paMME, errorCode );
+    char *lpMsgBuf;
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        errorCode,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0,
+        NULL
+    );
+    PaUtil_SetLastHostErrorInfo( paMME, errorCode, lpMsgBuf );
+    LocalFree( lpMsgBuf );
 }
 
 #define PA_MME_SET_LAST_SYSTEM_ERROR( errorCode ) \
@@ -329,13 +339,13 @@ static PaError CreateEventWithPaError( HANDLE *handle,
         LPSECURITY_ATTRIBUTES lpEventAttributes,
         BOOL bManualReset,
         BOOL bInitialState,
-        LPCWSTR lpName )
+        LPCTSTR lpName )
 {
     PaError result = paNoError;
 
     *handle = NULL;
 
-    *handle = CreateEventW( lpEventAttributes, bManualReset, bInitialState, lpName );
+    *handle = CreateEvent( lpEventAttributes, bManualReset, bInitialState, lpName );
     if( *handle == NULL )
     {
         result = paUnanticipatedHostError;
@@ -642,7 +652,7 @@ static int QueryWaveInKSFilterMaxChannels( UINT waveInDeviceId, int *maxChannels
             (DWORD_PTR)&devicePathSize, 0 ) != MMSYSERR_NOERROR )
         return 0;
 
-    devicePath = PaUtil_AllocateZeroInitializedMemory( devicePathSize );
+    devicePath = PaUtil_AllocateMemory( devicePathSize );
     if( !devicePath )
         return 0;
 
@@ -699,7 +709,7 @@ static PaError InitializeInputDeviceInfo( PaWinMmeHostApiRepresentation *winMmeH
     {
         len = WCharStringLen( wic.szPname ) + 1 + sizeof(constInputMapperSuffix_);
         /* Append I/O suffix to WAVE_MAPPER device. */
-        deviceName = (char*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceName = (char*)PaUtil_GroupAllocateMemory(
                     winMmeHostApi->allocations,
                     (long)len );
         if( !deviceName )
@@ -713,7 +723,7 @@ static PaError InitializeInputDeviceInfo( PaWinMmeHostApiRepresentation *winMmeH
     else
     {
         len = WCharStringLen( wic.szPname ) + 1;
-        deviceName = (char*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceName = (char*)PaUtil_GroupAllocateMemory(
                     winMmeHostApi->allocations,
                     (long)len );
         if( !deviceName )
@@ -775,7 +785,7 @@ static int QueryWaveOutKSFilterMaxChannels( UINT waveOutDeviceId, int *maxChanne
             (DWORD_PTR)&devicePathSize, 0 ) != MMSYSERR_NOERROR )
         return 0;
 
-    devicePath = PaUtil_AllocateZeroInitializedMemory( devicePathSize );
+    devicePath = PaUtil_AllocateMemory( devicePathSize );
     if( !devicePath )
         return 0;
 
@@ -835,7 +845,7 @@ static PaError InitializeOutputDeviceInfo( PaWinMmeHostApiRepresentation *winMme
     {
         /* Append I/O suffix to WAVE_MAPPER device. */
         len = WCharStringLen( woc.szPname ) + 1 + sizeof(constOutputMapperSuffix_);
-        deviceName = (char*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceName = (char*)PaUtil_GroupAllocateMemory(
                     winMmeHostApi->allocations,
                     (long)len );
         if( !deviceName )
@@ -849,7 +859,7 @@ static PaError InitializeOutputDeviceInfo( PaWinMmeHostApiRepresentation *winMme
     else
     {
         len = WCharStringLen( woc.szPname ) + 1;
-        deviceName = (char*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceName = (char*)PaUtil_GroupAllocateMemory(
                     winMmeHostApi->allocations,
                     (long)len );
         if( !deviceName )
@@ -947,7 +957,7 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
     DWORD waveInPreferredDevice, waveOutPreferredDevice;
     DWORD preferredDeviceStatusFlags;
 
-    winMmeHostApi = (PaWinMmeHostApiRepresentation*)PaUtil_AllocateZeroInitializedMemory( sizeof(PaWinMmeHostApiRepresentation) );
+    winMmeHostApi = (PaWinMmeHostApiRepresentation*)PaUtil_AllocateMemory( sizeof(PaWinMmeHostApiRepresentation) );
     if( !winMmeHostApi )
     {
         result = paInsufficientMemory;
@@ -1004,7 +1014,7 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
 
     if( maximumPossibleDeviceCount > 0 ){
 
-        (*hostApi)->deviceInfos = (PaDeviceInfo**)PaUtil_GroupAllocateZeroInitializedMemory(
+        (*hostApi)->deviceInfos = (PaDeviceInfo**)PaUtil_GroupAllocateMemory(
                 winMmeHostApi->allocations, sizeof(PaDeviceInfo*) * maximumPossibleDeviceCount );
         if( !(*hostApi)->deviceInfos )
         {
@@ -1013,7 +1023,7 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
         }
 
         /* allocate all device info structs in a contiguous block */
-        deviceInfoArray = (PaWinMmeDeviceInfo*)PaUtil_GroupAllocateZeroInitializedMemory(
+        deviceInfoArray = (PaWinMmeDeviceInfo*)PaUtil_GroupAllocateMemory(
                 winMmeHostApi->allocations, sizeof(PaWinMmeDeviceInfo) * maximumPossibleDeviceCount );
         if( !deviceInfoArray )
         {
@@ -1021,7 +1031,7 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
             goto error;
         }
 
-        winMmeHostApi->winMmeDeviceIds = (UINT*)PaUtil_GroupAllocateZeroInitializedMemory(
+        winMmeHostApi->winMmeDeviceIds = (UINT*)PaUtil_GroupAllocateMemory(
                 winMmeHostApi->allocations, sizeof(int) * maximumPossibleDeviceCount );
         if( !winMmeHostApi->winMmeDeviceIds )
         {
@@ -1719,7 +1729,7 @@ static PaError CalculateBufferSettings(
 
                 if( *hostFramesPerOutputBuffer != *hostFramesPerInputBuffer )
                 {
-                    if( *hostFramesPerInputBuffer < *hostFramesPerOutputBuffer )
+                    if( hostFramesPerInputBuffer < hostFramesPerOutputBuffer )
                     {
                         *hostFramesPerOutputBuffer = *hostFramesPerInputBuffer;
 
@@ -1813,9 +1823,9 @@ static PaError InitializeWaveHandles( PaWinMmeHostApiRepresentation *winMmeHostA
     if( result != paNoError ) goto error;
 
     if( isInput )
-        handlesAndBuffers->waveHandles = (void*)PaUtil_AllocateZeroInitializedMemory( sizeof(HWAVEIN) * deviceCount );
+        handlesAndBuffers->waveHandles = (void*)PaUtil_AllocateMemory( sizeof(HWAVEIN) * deviceCount );
     else
-        handlesAndBuffers->waveHandles = (void*)PaUtil_AllocateZeroInitializedMemory( sizeof(HWAVEOUT) * deviceCount );
+        handlesAndBuffers->waveHandles = (void*)PaUtil_AllocateMemory( sizeof(HWAVEOUT) * deviceCount );
     if( !handlesAndBuffers->waveHandles )
     {
         result = paInsufficientMemory;
@@ -2009,7 +2019,7 @@ static PaError InitializeWaveHeaders( PaWinMmeSingleDirectionHandlesAndBuffers *
 
     /* allocate an array of pointers to arrays of wave headers, one array of
         wave headers per device */
-    handlesAndBuffers->waveHeaders = (WAVEHDR**)PaUtil_AllocateZeroInitializedMemory( sizeof(WAVEHDR*) * handlesAndBuffers->deviceCount );
+    handlesAndBuffers->waveHeaders = (WAVEHDR**)PaUtil_AllocateMemory( sizeof(WAVEHDR*) * handlesAndBuffers->deviceCount );
     if( !handlesAndBuffers->waveHeaders )
     {
         result = paInsufficientMemory;
@@ -2032,7 +2042,7 @@ static PaError InitializeWaveHeaders( PaWinMmeSingleDirectionHandlesAndBuffers *
         }
 
         /* Allocate an array of wave headers for device i */
-        deviceWaveHeaders = (WAVEHDR *) PaUtil_AllocateZeroInitializedMemory( sizeof(WAVEHDR)*hostBufferCount );
+        deviceWaveHeaders = (WAVEHDR *) PaUtil_AllocateMemory( sizeof(WAVEHDR)*hostBufferCount );
         if( !deviceWaveHeaders )
         {
             result = paInsufficientMemory;
@@ -2047,7 +2057,7 @@ static PaError InitializeWaveHeaders( PaWinMmeSingleDirectionHandlesAndBuffers *
         /* Allocate a buffer for each wave header */
         for( j=0; j < (signed int)hostBufferCount; ++j )
         {
-            deviceWaveHeaders[j].lpData = (char *)PaUtil_AllocateZeroInitializedMemory( bufferBytes );
+            deviceWaveHeaders[j].lpData = (char *)PaUtil_AllocateMemory( bufferBytes );
             if( !deviceWaveHeaders[j].lpData )
             {
                 result = paInsufficientMemory;
@@ -2457,7 +2467,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     if( result != paNoError ) goto error;
 
 
-    stream = (PaWinMmeStream*)PaUtil_AllocateZeroInitializedMemory( sizeof(PaWinMmeStream) );
+    stream = (PaWinMmeStream*)PaUtil_AllocateMemory( sizeof(PaWinMmeStream) );
     if( !stream )
     {
         result = paInsufficientMemory;
