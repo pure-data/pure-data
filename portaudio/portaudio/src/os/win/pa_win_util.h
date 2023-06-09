@@ -1,9 +1,13 @@
+#ifndef PA_WIN_UTIL_H
+#define PA_WIN_UTIL_H
+
 /*
  * $Id$
- * Portable Audio I/O Library Windows initialization table
+ * Portable Audio I/O Library
+ * Win32 platform-specific support functions
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 1999-2008 Ross Bencina, Phil Burk
+ * Copyright (c) 1999-2008 Ross Bencina
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -36,70 +40,25 @@
  * license above.
  */
 
-/** @file
- @ingroup win_src
-
-    @brief Win32 host API initialization function table.
-*/
-
-/* This is needed to make this source file depend on CMake option changes
-   and at the same time make it transparent for clients not using CMake.
-*/
-#ifdef PORTAUDIO_CMAKE_GENERATED
-#include "options_cmake.h"
-#endif
-
-#include "pa_hostapi.h"
-
+#include "portaudio.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
-PaError PaSkeleton_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaWinDs_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaAsio_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaWinWdm_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaWasapi_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
-PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex index );
+/**
+ Convert a Windows error code into a PaError. Sets the host-api specific error
+ information if needed.
+
+ @param hostApiType The calling host api type. Used when reporting paUnanticipatedHostError
+
+ @param winError A Windows error code.
+*/
+void PaWinUtil_SetLastSystemErrorInfo( PaHostApiTypeId hostApiType, long winError );
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-
-PaUtilHostApiInitializer *paHostApiInitializers[] =
-    {
-
-#if PA_USE_WMME
-        PaWinMme_Initialize,
-#endif
-
-#if PA_USE_DS
-        PaWinDs_Initialize,
-#endif
-
-#if PA_USE_ASIO
-        PaAsio_Initialize,
-#endif
-
-#if PA_USE_WASAPI
-        PaWasapi_Initialize,
-#endif
-
-#if PA_USE_WDMKS
-        PaWinWdm_Initialize,
-#endif
-
-#if PA_USE_JACK
-        PaJack_Initialize,
-#endif
-
-#if PA_USE_SKELETON
-        PaSkeleton_Initialize, /* just for testing. last in list so it isn't marked as default. */
-#endif
-
-        0   /* NULL terminated array */
-    };
+#endif /* PA_WIN_UTIL_H */
