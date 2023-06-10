@@ -15,31 +15,57 @@ static t_class *sig_tilde_class;
 typedef struct _sig
 {
     t_object x_obj;
-    t_float x_f;
+    t_atom *x_vec;
+    int x_n;
 } t_sig;
 
-static void sig_tilde_float(t_sig *x, t_float f)
+static void sig_tilde_float(t_sig *x, t_floatarg f)
 {
-    x->x_f = f;
+    x->x_vec[0].a_w.w_float = f;
 }
 
 static void sig_tilde_dsp(t_sig *x, t_signal **sp)
 {
-    dsp_add_scalarcopy(&x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    int i;
+    signal_setmultiout(sp, x->x_n);
+    for (i = 0; i < x->x_n; i++)
+        dsp_add_scalarcopy(&x->x_vec[i].a_w.w_float,
+            sp[0]->s_vec + i * sp[0]->s_n, (t_int)sp[0]->s_n);
 }
 
-static void *sig_tilde_new(t_floatarg f)
+static void *sig_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
+    int i;
     t_sig *x = (t_sig *)pd_new(sig_tilde_class);
-    x->x_f = f;
+    if (argc > 0)
+    {
+        x->x_vec = (t_atom *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < argc; i++)
+            SETFLOAT(x->x_vec + i, atom_getfloat(argv + i));
+        x->x_n = argc;
+    }
+    else
+    {
+        x->x_vec = (t_atom *)getbytes(sizeof(*x->x_vec));
+        SETFLOAT(x->x_vec, 0);
+        x->x_n = 1;
+    }
+    for (i = 1; i < x->x_n; i++)
+        floatinlet_new(&x->x_obj, &x->x_vec[i].a_w.w_float);
     outlet_new(&x->x_obj, gensym("signal"));
     return (x);
 }
 
+static void sig_tilde_free(t_sig *x)
+{
+    freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+}
+
 static void sig_tilde_setup(void)
 {
-    sig_tilde_class = class_new(gensym("sig~"), (t_newmethod)sig_tilde_new, 0,
-        sizeof(t_sig), 0, A_DEFFLOAT, 0);
+    sig_tilde_class = class_new(gensym("sig~"),
+        (t_newmethod)sig_tilde_new, (t_method)sig_tilde_free,
+            sizeof(t_sig), CLASS_MULTICHANNEL, A_GIMME, 0);
     class_addfloat(sig_tilde_class, (t_method)sig_tilde_float);
     class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
