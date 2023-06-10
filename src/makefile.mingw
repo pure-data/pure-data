@@ -94,7 +94,7 @@ PASRC = s_audio_pa.c s_audio_paring.c \
     $(PADIR)/src/os/win/pa_win_hostapis.c \
     $(PADIR)/src/os/win/pa_win_util.c \
     $(PADIR)/src/os/win/pa_win_waveformat.c \
-    $(PADIR)/src/hostapi/wmme/pa_win_wmme.c
+    $(PADIR)/src/hostapi/wasapi/pa_win_wasapi.c
 
 ASIOSRC = $(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
           $(PADIR)/src/hostapi/asio/pa_asio.cpp \
