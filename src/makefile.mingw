@@ -68,7 +68,7 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
 # XP SP1.  WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.
 ARCH_CFLAGS = -DPD -DPD_INTERNAL -DWINVER=0x0502 \
-     -DPA_USE_ASIO -DPA_USE_WMME \
+     -DPA_USE_ASIO -DPA_USE_WASAPI \
      -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO \
      -mms-bitfields \
      -DWISH='"wish85.exe"'
