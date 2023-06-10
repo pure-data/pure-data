@@ -67,10 +67,13 @@ a fat binary or an indication of the instruction set. */
 #endif
 
 
-static const char*sys_dllextent_base[] = {
-#if defined EXTERNAL_EXTENSION
-    STRINGIFY(EXTERNAL_EXTENSION),
+#if defined(_WIN32) || defined(__CYGWIN__)
+# define SYSTEMEXT ".dll"
+#else
+# define SYSTEMEXT ".so"
 #endif
+
+static const char*sys_dllextent_base[] = {
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 # if defined(__x86_64__) || defined(_M_X64)
@@ -83,13 +86,9 @@ static const char*sys_dllextent_base[] = {
     ".pd_darwin",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+    SYSTEMEXT,
 #endif
-        /* and some generic extensions */
-#if defined(_WIN32) || defined(__CYGWIN__)
-    ".dll",
-#else
-    ".so",
-#endif
+    0
     };
 
 static const char**sys_dllextent = 0;
@@ -144,29 +143,42 @@ static char*add_deken_extension(const char*systemext, int float_agnostic, int cp
 const char**sys_get_dllextensions(void)
 {
     if(!sys_dllextent) {
-            /* systemext: '.dll' on windows, '.so' on the others */
-        const char *systemext = sys_dllextent_base[sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base)-1];
-        const int num_float_extensions = 2; /* floatsize, float-agnostic */
+        const char *extraext = 0;
+#if defined EXTERNAL_EXTENSION
+        extraext = STRINGIFY(EXTERNAL_EXTENSION);
+#endif
 
-        int i, cpu, floatsize;
+        int i, cpu;
 
             /* create deken-based extensions */
         for(cpu=0; ; cpu++)
         {
             /* iterate over compatible CPUs  */
-            for(floatsize=0; floatsize<num_float_extensions; floatsize++)
-            {
-                if (!add_deken_extension(systemext, floatsize, cpu))
-                    goto no_more_cpus;
+            if (!add_deken_extension(SYSTEMEXT, 0, cpu))
+                break;
+            if (!add_deken_extension(SYSTEMEXT, 1, cpu))
+                break;
+        }
+#if FAT_BINARIES
+        add_deken_extension(SYSTEMEXT, 0, -1);
+        add_deken_extension(SYSTEMEXT, 1, -1);
+#endif
+
+        if(extraext) {
+            /* check if the extra-extension is part of sys_dllextent_base
+             * and if so drop it as redundant.
+             */
+            for(i=0; i<sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base); i++) {
+                if(!sys_dllextent_base[i])
+                    continue;
+                if(!strcmp(sys_dllextent_base[i], extraext)) {
+                    extraext=0;
+                    break;
+                }
             }
         }
-    no_more_cpus:
-#if FAT_BINARIES
-        for(floatsize=0; floatsize<num_float_extensions; floatsize++)
-        {
-            add_deken_extension(systemext, floatsize, -1);
-        }
-#endif
+        if(extraext)
+            add_dllextension(extraext);
 
             /* and add the legacy extensions */
         for(i=0; i<sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base); i++)
