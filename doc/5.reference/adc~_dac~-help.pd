@@ -70,9 +70,9 @@
 #X floatatom 185 368 5 0 0 0 - - - 0;
 #X floatatom 252 368 5 0 0 0 - - - 0;
 #X obj 185 255 adc~ -m 2;
-#X obj 195 141 adc~ -m 3 4;
-#X text 44 35 [adc~] if invoked with the '-m' flag creates a multichannel output. It needs number of arguments and optional offset. So [adc~ -m 3 4] \, as in the example below \, outputs a three-channel signal with an offset of 4 channels (so you get channels 5 \, 6 \, and 7)., f 50;
 #X text 53 195 And below we have a stereo signal with no offset \, so we get channels 1 and 2 in the multichannel output., f 49;
+#X obj 195 141 adc~ -m 3 5;
+#X text 44 35 [adc~] if invoked with the '-m' flag creates a multichannel output. Arguments are number of channels (default 2) \, and starting channel (1). So [adc~ -m 3 5] \, as in the example below \, outputs a three-channel signal consisting of input channels 5 \, 6 \, and 7)., f 50;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;
