@@ -388,52 +388,80 @@ static t_class *snapshot_tilde_class;
 typedef struct _snapshot
 {
     t_object x_obj;
-    t_sample x_value;
     t_float x_f;
+    int x_n;
+    t_atom *x_vec;
 } t_snapshot;
 
 static void *snapshot_tilde_new(void)
 {
     t_snapshot *x = (t_snapshot *)pd_new(snapshot_tilde_class);
-    x->x_value = 0;
-    outlet_new(&x->x_obj, &s_float);
+    x->x_vec = getbytes(sizeof(t_atom));
+    SETFLOAT(x->x_vec, 0);
+    x->x_n = 1;
     x->x_f = 0;
+    outlet_new(&x->x_obj, &s_float);
     return (x);
+}
+
+static void snapshot_tilde_free(t_snapshot *x)
+{
+    freebytes(x->x_vec, x->x_n * sizeof(t_atom));
 }
 
 static t_int *snapshot_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    *out = *in;
-    return (w+3);
+    t_atom *out = (t_atom *)(w[2]);
+    int nchans = (int)(w[3]);
+    int n = (int)(w[4]), i;
+    for (i = 0; i < nchans; i++)
+        SETFLOAT(out + i, in[i * n]);
+    return (w+5);
 }
 
 static void snapshot_tilde_dsp(t_snapshot *x, t_signal **sp)
 {
-    dsp_add(snapshot_tilde_perform, 2, sp[0]->s_vec + (sp[0]->s_n-1),
-        &x->x_value);
+    int i, nchans = sp[0]->s_nchans;
+    if (nchans != x->x_n)
+    {
+        x->x_vec = (t_atom *)resizebytes(x->x_vec,
+            x->x_n * sizeof(t_atom), nchans * sizeof(t_atom));
+        for (i = x->x_n; i < nchans; i++)
+            SETFLOAT(x->x_vec + i, 0);
+        x->x_n = nchans;
+    }
+    dsp_add(snapshot_tilde_perform, 4, sp[0]->s_vec + (sp[0]->s_n-1),
+        x->x_vec, (t_int)nchans, (t_int)sp[0]->s_n);
 }
 
 static void snapshot_tilde_bang(t_snapshot *x)
 {
-    outlet_float(x->x_obj.ob_outlet, x->x_value);
+    outlet_list(x->x_obj.ob_outlet, &s_list, x->x_n, x->x_vec);
 }
 
-static void snapshot_tilde_set(t_snapshot *x, t_floatarg f)
+static void snapshot_tilde_set(t_snapshot *x, t_symbol *s, int argc, t_atom *argv)
 {
-    x->x_value = f;
+    int i;
+    if (argc > 0)
+    {
+        for (i = 0; i < argc && i < x->x_n; i++)
+            SETFLOAT(x->x_vec + i, atom_getfloat(argv + i));
+    }
+    else /* emulate previous A_DEFFLOAT behavior */
+        SETFLOAT(x->x_vec, 0);
 }
 
 static void snapshot_tilde_setup(void)
 {
-    snapshot_tilde_class = class_new(gensym("snapshot~"), snapshot_tilde_new, 0,
-        sizeof(t_snapshot), 0, 0);
+    snapshot_tilde_class = class_new(gensym("snapshot~"),
+        snapshot_tilde_new, (t_method)snapshot_tilde_free,
+            sizeof(t_snapshot), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(snapshot_tilde_class, t_snapshot, x_f);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_set,
-        gensym("set"), A_DEFFLOAT, 0);
+        gensym("set"), A_GIMME, 0);
     class_addbang(snapshot_tilde_class, snapshot_tilde_bang);
 }
 
