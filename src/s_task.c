@@ -232,6 +232,9 @@
 struct _task
 {
     struct _task *t_next;
+#ifdef PDINSTANCE
+    t_pdinstance *t_instance;
+#endif
     t_pd *t_owner;
     void *t_data;
     t_task_workfn t_workfn;
@@ -638,6 +641,9 @@ t_task *task_start(t_pd *owner, void *data,
 
     t_task *task = getbytes(sizeof(t_task));
     task->t_next = 0;
+#ifdef PDINSTANCE
+    task->t_instance = pd_this;
+#endif
     task->t_owner = owner;
     task->t_data = data;
     task->t_workfn = workfn;
@@ -685,6 +691,9 @@ typedef struct _spawn_data
 static void *task_spawn_threadfn(void *x)
 {
     t_spawn_data *y = (t_spawn_data *)x;
+#ifdef PDINSTANCE
+    pd_setinstance(y->task->t_instance);
+#endif
         /* in case pthread_attr_setinheritsched() did not work (seems to be the case on Windows...) */
     lower_thread_priority();
     y->workfn(y->task, y->data);
@@ -839,7 +848,11 @@ void task_suspend(t_task *task)
 void task_resume(t_task *task, t_task_workfn workfn)
 {
 #if PD_WORKERTHREADS
+#ifdef PDINSTANCE
+    t_taskqueue *queue = task->t_instance->pd_stuff->st_taskqueue;
+#else
     t_taskqueue *queue = STUFF->st_taskqueue;
+#endif
         /* NB: tq_running might have been unset in sys_taskqueue_stop()! */
     if (taskqueue_havethreads())
     {
