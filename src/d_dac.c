@@ -102,7 +102,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_adc *x = (t_adc *)pd_new(adc_class);
     t_atom defarg[2];
-    int i, offset;
+    int i, firstchan;
     if (!argc)
     {
         argv = defarg;
@@ -116,11 +116,11 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
         x->x_multi = 1;
         if ((x->x_n = atom_getfloatarg(1, argc, argv)) < 1)
             x->x_n = 2;
-        if ((offset = atom_getfloatarg(2, argc, argv)) < 0)
-            offset = 0;
+        if ((firstchan = atom_getfloatarg(2, argc, argv)) < 1)
+            firstchan = 1;
         x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
         for (i = 0; i < x->x_n; i++)
-            x->x_vec[i] = offset+i+1;
+            x->x_vec[i] = firstchan+i;
         outlet_new(&x->x_obj, &s_signal);
     }
     else

@@ -824,15 +824,12 @@ static t_apientry audio_apilist[] = {
 #ifdef USEAPI_OSS
     {"OSS", API_OSS},
 #endif
-#ifdef USEAPI_MMIO
-    {"\"standard (MMIO)\"", API_MMIO},
-#endif
 #ifdef USEAPI_ALSA
     {"ALSA", API_ALSA},
 #endif
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-    {"\"ASIO (portaudio)\"", API_PORTAUDIO},
+    {"\"standard (portaudio)\"", API_PORTAUDIO},
 #else
 #ifdef __APPLE__
     {"\"standard (portaudio)\"", API_PORTAUDIO},
@@ -841,6 +838,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #endif
 #endif  /* USEAPI_PORTAUDIO */
+#ifdef USEAPI_MMIO
+    {"\"old MMIO system\"", API_MMIO},
+#endif
 #ifdef USEAPI_JACK
     {"jack", API_JACK},
 #endif

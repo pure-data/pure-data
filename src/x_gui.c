@@ -526,23 +526,12 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
     outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
 }
 
-static void pdcontrol_send(t_pdcontrol *x, t_symbol *s,
+static void pdcontrol_sendcanvas(t_pdcontrol *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     if (argc && argv[0].a_type == A_SYMBOL)
         typedmess((t_pd *)(x->x_canvas), argv[0].a_w.w_symbol, argc-1, argv+1);
-    else pd_error(x, "pdcontrol_send: first argument not a symbol");
-}
-
-static void pdcontrol_sendparent(t_pdcontrol *x, t_symbol *s,
-    int argc, t_atom *argv)
-{
-    if (!argc || argv[0].a_type != A_SYMBOL)
-        pd_error(x, "pdcontrol_sendparent: first argument not a symbol");
-    else if (x->x_canvas->gl_owner)
-        typedmess((t_pd *)(x->x_canvas->gl_owner),
-            argv[0].a_w.w_symbol, argc-1, argv+1);
-            /* silently do nothing if there's no parent */
+    else pd_error(x, "pdcontrol_sendcanvas: first argument not a symbol");
 }
 
 static void pdcontrol_setup(void)
@@ -557,10 +546,8 @@ static void pdcontrol_setup(void)
         gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
-    class_addmethod(pdcontrol_class, (t_method)pdcontrol_send,
-        gensym("send"), A_GIMME, 0);
-    class_addmethod(pdcontrol_class, (t_method)pdcontrol_sendparent,
-        gensym("sendparent"), A_GIMME, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_sendcanvas,
+        gensym("sendcanvas"), A_GIMME, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */

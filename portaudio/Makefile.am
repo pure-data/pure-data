@@ -62,9 +62,10 @@ AM_CFLAGS += -Wno-error -Wno-deprecated
 endif
 
 if WINDOWS
-AM_CFLAGS += -DPA_USE_WMME
+AM_CFLAGS += -DPA_USE_WASAPI
 libportaudio_a_SOURCES += \
-    portaudio/src/hostapi/wmme/pa_win_wmme.c
+    portaudio/src/hostapi/wmme/pa_win_wmme.c \
+    portaudio/src/hostapi/wasapi/pa_win_wasapi.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
 if MINGW
