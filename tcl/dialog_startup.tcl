@@ -8,6 +8,8 @@ namespace eval dialog_startup {
 }
 
 set ::dialog_startup::language ""
+set ::dialog_startup::precision_binary ""
+
 
 ########## pdtk_startup_dialog -- dialog window for startup options #########
 # Create a simple modal window with an entry widget
@@ -64,6 +66,9 @@ proc ::dialog_startup::commit { new_startup } {
     }
     set ::pd_i18n::language $::dialog_startup::language
     ::pd_guiprefs::write "gui_language" $::dialog_startup::language
+    if { $::dialog_startup::precision_binary != "" } {
+        ::pd_guiprefs::write "pdcore_precision_binary" $::dialog_startup::precision_binary
+    }
     set ::startup_libraries $new_startup
     pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
@@ -126,6 +131,92 @@ proc ::dialog_startup::fill_frame {frame} {
     label $w -text [_ "Menu language" ]
     pack $w -side left
     pack $f.langframe -side top -anchor w -expand 1
+
+
+    # precision selection
+    set basedir [file normalize [file join [file dirname ${::pdgui::scriptname}] ..]]
+    set pdexecs {}
+    foreach {bindir exe} {
+        bin32 pd32
+        bin32 pd
+        bin   pd32
+        bin   pd} {
+        foreach ext {{} .exe .com} {
+            set x [file join $basedir $bindir ${exe}${ext}]
+            if {[file executable $x]} {
+                lappend pdexecs [list [_ "float (32bit)"] 32]
+                break
+            }
+        }
+    }
+    foreach {bindir exe} {
+             bin64 pd64
+             bin64 pd
+             bin pd64} {
+        foreach ext {{} .exe .com} {
+            set x [file join $basedir $bindir ${exe}${ext}]
+            if {[file executable $x]} {
+                lappend pdexecs [list [_ "double (64bit) EXPERIMENTAL"] 64]
+                # the next line is just for the translations
+                set x [_ "double (64bit)" ]
+                break
+            }
+        }
+    }
+    set precbin [::pd_guiprefs::read "pdcore_precision_binary" ]
+    if {[info exists ::deken::platform(floatsize)]} {
+        switch -- ${::deken::platform(floatsize)} {
+            64 {
+                set precbin 64
+            }
+            32 {
+                set precbin 32
+            }
+        }
+    }
+
+    if { [llength $pdexecs] > 1 } {
+        if { $precbin == "" } {
+            set precbin [lindex [lindex $pdexecs 0] 1]
+        }
+
+        frame $f.floatsize
+
+        set w $f.floatsize.floatsize
+        menubutton $w -indicatoron 1 -menu $w.menu \
+            -text [_ "float size" ] \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush
+
+        set var ::dialog_startup::precision_binary
+        if { $::host ne "" } {
+            $w configure -state disabled
+            set var ::dialog_startup::precision_binary_dummy
+            set ::dialog_startup::precision_binary_dummy ${::dialog_startup::precision_binary}
+        }
+        set $var $precbin
+
+        menu $w.menu -tearoff 0
+        foreach pdx $pdexecs {
+            foreach {precision bin} ${pdx} {break}
+            $w.menu add radiobutton \
+                -label ${precision} -command "$w configure -text \"${precision}\"" \
+                -value ${bin} -variable ${var}
+            if { ${bin} == $precbin } {
+                $w configure -text "${precision}"
+            }
+        }
+        pack $w -side right
+        if { $::host ne "" } {
+            $w configure -state disabled
+        }
+
+
+        set w $f.floatsize.label
+        label $w -text [_ "Numeric precision of Pd-core" ]
+        pack $w -side left
+        pack $f.floatsize -side top -anchor w -expand 1
+    }
 
     # Startup options and flags
     labelframe $frame.optionframe -text [_ "Startup options" ]
