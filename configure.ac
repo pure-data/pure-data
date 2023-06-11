@@ -44,6 +44,12 @@ wish="wish"
 audio_backends=""
 midi_backends=""
 
+# deken information
+deken_os=""
+deken_cpu=""
+deken_ext="so"
+floatsize=""
+
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
 RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
@@ -69,6 +75,7 @@ AS_CASE([$host],
     AS_IF([test "x${IPHONEOS}" = "xno"],[
         MACOSX=yes
         platform="Mac OSX"
+        deken_os=darwin
         coreaudio=yes
         portaudio=yes
         portmidi=yes
@@ -112,6 +119,7 @@ AS_CASE([$host],
     AS_IF([test "x${ANDROID}" = "xno"],[
         LINUX=yes
         platform=Linux
+        deken_os=linux
         portaudio=yes
         watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
@@ -119,10 +127,12 @@ AS_CASE([$host],
         EXTERNAL_EXTENSION=pd_linux
     ],[
         platform=Android
+        EXTERNAL_EXTENSION=so
     ])
 ],[*-*-gnu*],[
     HURD=yes
     platform=Hurd
+    deken_os=linux
     watchdog=yes
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
@@ -131,6 +141,7 @@ AS_CASE([$host],
     WINDOWS=yes
     MINGW=yes
     platform=MinGW
+    deken_os=windows
     mmio=yes
     asio=yes
     wasapi=yes
@@ -152,6 +163,7 @@ AS_CASE([$host],
     WINDOWS=yes
     CYGWIN=yes
     platform=Cygwin
+    deken_os=windows
     mmio=yes
     asio=yes
     wasapi=yes
@@ -172,6 +184,20 @@ AS_CASE([$host],
     platform=Unknown
     EXTERNAL_EXTENSION=so
 ])
+
+AS_IF([test "x${deken_os}" = "xwindows"],[deken_ext=dll])
+
+
+AS_CASE([$host_cpu],
+    [x86_64|amd64],[deken_cpu=amd64],
+    [i386|i486|i586|i686],[deken_cpu=i386],
+    [aarch64],[deken_cpu=arm64],
+    [armv*l],[deken_cpu=${host_cpu%l}],
+    [armv*b],[deken_cpu=${host_cpu}],
+    [powerpc64],[deken_cpu=ppc64],
+    [powerpc],[deken_cpu=ppc],
+    [])
+
 
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
 AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
@@ -359,6 +385,35 @@ AC_ARG_ENABLE([watchdog],
 AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
 AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
 
+
+AC_ARG_WITH([floatsize],
+    [AS_HELP_STRING([--with-floatsize=<SIZE>],
+    [build binaries for the given floatsize;
+    SIZE can be 32 (single precision) or 64 (double precision)
+    ]
+    )],
+    [floatsize=${withval}]
+    )
+AC_MSG_CHECKING([float size])
+AS_CASE([${floatsize}],
+    [32],[],
+    [64],[],
+    [""],[],
+    [
+        AC_MSG_WARN([${floatsize}bit floats not supported..fallback to default])
+        floatsize=""
+    ])
+AS_IF([test "x${floatsize}" != "x" ],
+   [
+    PD_CPPFLAGS="-DPD_FLOATSIZE=${floatsize} $PD_CPPFLAGS"
+    AC_MSG_RESULT([${floatsize}])
+   ],[AC_MSG_RESULT([default])
+   ])
+
+AS_IF([test "x${floatsize}" = "x64" && test "x${deken_cpu}" != "x" && test "x${deken_os}" != "x" && test "x${deken_ext}" != "x"],[
+      EXTERNAL_EXTENSION="${deken_os}-${deken_cpu}-${floatsize}.${deken_ext}"
+      AC_MSG_NOTICE([default external extension...${EXTERNAL_EXTENSION}])
+      ])
 
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
@@ -556,7 +611,6 @@ AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
 AC_SUBST([WISH])
 
 ##### Deken OS and CPU #####
-deken_id=""
 AC_ARG_WITH([deken-os],
     [AS_HELP_STRING([--with-deken-os=<OS>],
         [Operating System string to use for externals (e.g. Linux, Windows, Darwin,...)])],
@@ -565,7 +619,7 @@ AS_IF([test "x${DEKEN_OS}" = "xyes" -o "x${DEKEN_OS}" = "xno"],
     [AC_MSG_NOTICE([--with-deken-os requires an Operating System, ignoring '${DEKEN_OS}'])
     DEKEN_OS=""])
 AC_SUBST([DEKEN_OS])
-AS_IF([test "x${DEKEN_OS}" = "x"], [deken_id="???"], [deken_id="${DEKEN_OS}"])
+AS_IF([test "x${DEKEN_OS}" != "x"], [deken_os="${DEKEN_OS}"])
 
 AC_ARG_WITH([deken-cpu],
     [AS_HELP_STRING([--with-deken-cpu=<CPU>],
@@ -575,7 +629,7 @@ AS_IF([test "x${DEKEN_CPU}" = "xyes" -o "x${DEKEN_CPU}" = "xno"],
     [AC_MSG_NOTICE([--with-deken-cpu requires a CPU, ignoring '${DEKEN_CPU}'])
     DEKEN_CPU=""])
 AC_SUBST([DEKEN_CPU])
-AS_IF([test "x${DEKEN_CPU}" = "x"], [deken_id="${deken_id}-???"], [deken_id="${deken_id}-${DEKEN_CPU}"])
+AS_IF([test "x${DEKEN_CPU}" != "x"], [deken_cpu="${DEKEN_CPU}"])
 
 AC_ARG_WITH([external-extension],
     [AS_HELP_STRING([--with-external-extension=<EXT>],
@@ -729,6 +783,7 @@ AC_MSG_NOTICE([
     $PACKAGE $VERSION is now configured
 
     Platform:             $platform
+    Float size:           ${floatsize:-default}
     Debug build:          $debug
     Universal build:      $universal
     Localizations:        $locales
@@ -745,7 +800,7 @@ AC_MSG_NOTICE([
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
-    Deken identifier:     ${deken_id}
+    Deken identifier:     ${deken_os:-???}-${deken_cpu:-???}
 
     fftw:                 $fftw
     wish(tcl/tk):         $wish
