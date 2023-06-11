@@ -38,6 +38,9 @@
  *    ***IMPORTANT***: do not call any Pd API functions, except for task_check(),
  *    task_suspend() and task_resume(). In particular, do not call sys_lock()
  *    or sys_unlock(), as this can cause deadlocks!
+ *    If 'workfn' is NULL, task_start() will create a dummy task that may serve as
+ *    a context for sending notifications from some thread back to the Pd scheduler
+ *    via task_notify().
  * 4) (task_callback) cb: a function to be called after the task has completed.
  *    This is where the result can be safely moved from 'data' to the owning object.
  *    If the task has been cancelled, 'owner' is NULL; in this case, do not forget
@@ -754,6 +757,16 @@ t_task *task_start(t_pd *owner, void *data,
     task->t_cancel = 0;
     task->t_suspend = 0;
 
+    if (!workfn) /* dummy task - do not put on queue! */
+    {
+        if (task->t_cb)
+        {
+            fprintf(stderr, "task_start: ignore callback for dummy task\n");
+            task->t_cb = 0;
+        }
+        return task;
+    }
+
 #if PD_WORKERTHREADS
     if (queue->tq_running)
     {
@@ -858,6 +871,20 @@ int task_stop(t_task *task, int sync)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
     task->t_cancel = 1;
+    if (!task->t_workfn) /* dummy task */
+    {
+            /* keep around until the next scheduler tick for pending messages.
+             * NB: dummy tasks are never put on the 'fromsched' queue! */
+    #if PD_WORKERTHREADS
+        tasklist_lock(&queue->tq_tosched);
+        tasklist_push(&queue->tq_tosched, task);
+        tasklist_unlock(&queue->tq_tosched);
+    #else
+        tasklist_push(&queue->tq_list, task);
+    #endif
+    }
+
+    }
 #if PD_WORKERTHREADS
     if (sync && queue->tq_running)
     {
