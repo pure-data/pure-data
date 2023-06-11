@@ -1,4 +1,4 @@
-#N canvas 612 23 684 723 12;
+#N canvas 486 23 684 723 12;
 #X declare -stdpath ./;
 #X obj 136 177 wrap~;
 #X obj 136 204 -~ 0.5;
@@ -7,9 +7,9 @@
 #X coords 0 0.25 881 -0.25 200 130 1;
 #X restore 447 121 graph;
 #X text 446 259 ---- 0.02 seconds ----;
-#X text 438 752 updated for Pd version 0.39;
-#X obj 235 485 output~;
-#X obj 339 490 tabwrite~ \$0-sum;
+#X text 457 696 updated for Pd version 0.39;
+#X obj 293 500 output~;
+#X obj 339 470 tabwrite~ \$0-sum;
 #X obj 136 151 -~;
 #X obj 154 107 / 100;
 #X floatatom 154 86 4 -100 100 0 - - - 0;
@@ -35,9 +35,9 @@
 #X text 149 64 -- PHASES (percent) --;
 #X text 364 310 AMPLITUDES (percent);
 #X obj 136 396 +~;
-#X obj 293 444 +~;
-#X obj 339 432 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
-#X obj 339 458 metro 193;
+#X obj 293 434 +~;
+#X obj 339 422 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 339 438 metro 193;
 #X obj 81 109 phasor~;
 #X floatatom 81 88 5 0 0 0 - - - 0;
 #X text 61 65 frequency;
@@ -50,13 +50,12 @@
 #X obj 311 254 *~ 0.5;
 #X obj 223 279 -~ 0.0833;
 #X obj 311 279 -~ 0.0833;
-#X text 96 558 Here we combine three parabolic waves (in the same way as \, two patches ago \, we combined sawtooth waves). The parabolic wave is obtained from the sawtooth wave (assuming it runs from -0.5 to 0.5) by the formula: y=x*x/2 - 1/12. This is normalized so that the corner has a slope change of minus one unit per cycle \, and adjusted to remove any DC component., f 65;
-#X text 96 653 In general \, the segments of the result will be curved \, but if the three magnitudes sum algebraically to zero \, the segments will be linear., f 65;
+#X text 46 569 Here we combine three parabolic waves (in the same way as \, two patches ago \, we combined sawtooth waves). The parabolic wave is obtained from the sawtooth wave (assuming it runs from -0.5 to 0.5) by the formula: y=x*x/2 - 1/12. This is normalized so that the corner has a slope change of minus one unit per cycle \, and adjusted to remove any DC component., f 87;
 #X text 407 118 0.25;
 #X text 398 235 -0.25;
-#X text 96 703 Note the reduced scale of the graph (from -0.25 to 0.25) compared to the previous examples., f 65;
 #X text 50 22 MAKING WAVEFORMS WITH CORNERS USING PARABOLIC WAVES;
 #X obj 491 25 declare -stdpath ./;
+#X text 46 645 In general \, the segments of the result will be curved \, but if the three magnitudes sum algebraically to zero \, the segments will be linear. Note the reduced scale of the graph (from -0.25 to 0.25) compared to the previous examples., f 87;
 #X connect 0 0 1 0;
 #X connect 1 0 38 0;
 #X connect 1 0 38 1;
@@ -87,7 +86,6 @@
 #X connect 31 0 32 0;
 #X connect 32 0 6 0;
 #X connect 32 0 5 0;
-#X connect 32 0 5 1;
 #X connect 33 0 34 0;
 #X connect 34 0 6 0;
 #X connect 35 0 7 0;

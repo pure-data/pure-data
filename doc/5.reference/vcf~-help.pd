@@ -8,10 +8,10 @@
 #X obj 130 484 bp~;
 #X obj 192 309 vcf~ 1, f 10;
 #X text 384 484 updated for Pd version 0.46;
-#X text 126 430 (band-pass);
-#X text 258 431 (low-pass);
-#X text 126 413 real output;
-#X text 245 413 imaginary output;
+#X text 137 430 (band-pass);
+#X text 267 431 (low-pass);
+#X text 137 413 real output;
+#X text 254 413 imaginary output;
 #X obj 164 484 bob~;
 #X obj 131 243 noise~;
 #X text 114 218 test input;
@@ -57,8 +57,6 @@
 #X connect 0 0 6 1;
 #X connect 1 0 0 0;
 #X connect 2 0 6 2;
-#X connect 6 0 17 1;
 #X connect 6 0 17 0;
 #X connect 6 1 18 0;
-#X connect 6 1 18 1;
 #X connect 13 0 6 0;

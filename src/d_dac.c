@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include <string.h>
 
 /* ----------------------------- dac~ --------------------------- */
 static t_class *dac_class;
@@ -92,15 +93,16 @@ static t_class *adc_class;
 typedef struct _adc
 {
     t_object x_obj;
-    t_int x_n;
-    t_int *x_vec;
+    int x_n;
+    int *x_vec;
+    int x_multi;
 } t_adc;
 
 static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_adc *x = (t_adc *)pd_new(adc_class);
     t_atom defarg[2];
-    int i;
+    int i, firstchan;
     if (!argc)
     {
         argv = defarg;
@@ -108,28 +110,54 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
         SETFLOAT(&defarg[0], 1);
         SETFLOAT(&defarg[1], 2);
     }
-    x->x_n = argc;
-    x->x_vec = (t_int *)getbytes(argc * sizeof(*x->x_vec));
-    for (i = 0; i < argc; i++)
-        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
-    for (i = 0; i < argc; i++)
+    if (argc >= 2 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+    {       /* multichannel version: -m [nchans] [start channel] */
+        x->x_multi = 1;
+        if ((x->x_n = atom_getfloatarg(1, argc, argv)) < 1)
+            x->x_n = 2;
+        if ((firstchan = atom_getfloatarg(2, argc, argv)) < 1)
+            firstchan = 1;
+        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < x->x_n; i++)
+            x->x_vec[i] = firstchan+i;
         outlet_new(&x->x_obj, &s_signal);
+    }
+    else
+    {
+        x->x_multi = 0;
+        x->x_n = argc;
+        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < argc; i++)
+            x->x_vec[i] = atom_getfloatarg(i, argc, argv);
+        for (i = 0; i < x->x_n; i++)
+            outlet_new(&x->x_obj, &s_signal);
+    }
     return (x);
 }
 
 static void adc_dsp(t_adc *x, t_signal **sp)
 {
-    t_int i, *ip;
-    t_signal **sp2;
-    for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
+    int i;
+    if (x->x_multi)
+        signal_setmultiout(sp, x->x_n);
+    else for (i = 0; i < x->x_n; i++)
+        signal_setmultiout(&sp[i], 1);
+    if (sp[0]->s_length != DEFDACBLKSIZE)
     {
-        int ch = (int)(*ip - 1);
-        if ((*sp2)->s_n != DEFDACBLKSIZE)
-            pd_error(0, "adc~: bad vector size");
-        else if (ch >= 0 && ch < sys_get_inchannels())
+        pd_error(0, "adc~: local vector size %d doesn't match system (%d)",
+            sp[0]->s_length, DEFDACBLKSIZE);
+        return;
+    }
+    for (i = 0; i < x->x_n; i++)
+    {
+        int ch = x->x_vec[i] - 1;
+        t_sample *out = (x->x_multi? sp[0]->s_vec + sp[0]->s_length * i:
+            sp[i]->s_vec);
+        if (ch >= 0 && ch < sys_get_inchannels())
             dsp_add_copy(STUFF->st_soundin + DEFDACBLKSIZE*ch,
-                (*sp2)->s_vec, DEFDACBLKSIZE);
-        else dsp_add_zero((*sp2)->s_vec, DEFDACBLKSIZE);
+                out, DEFDACBLKSIZE);
+        else dsp_add_zero(out, DEFDACBLKSIZE);
     }
 }
 

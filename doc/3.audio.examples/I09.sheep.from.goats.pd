@@ -1,4 +1,4 @@
-#N canvas 614 71 618 619 12;
+#N canvas 495 50 618 619 12;
 #X declare -stdpath ./;
 #N canvas 447 23 682 723 fft-analysis 0;
 #X obj 71 702 *~;
@@ -72,15 +72,10 @@
 #X text 394 450 1 \, otherwise (if clean) \, zero.;
 #X text 141 604 add to let in channels;
 #X text 141 617 for either criterion;
-#X text 390 528 multiply by left and right neighbors \, so 0 if any
-of the 3 is "clean"., f 37;
-#X text 387 567 0 if all neighbors clean 1 if a neighbor dirty, f
-24;
-#X text 465 378 adjust threshold to quadratic units and scale, f 25
-;
-#X text 368 227 add neighboring amplitude to this one and take squared
-magnitude of result - do this for both the left neighbor and the right
-one, f 34;
+#X text 390 528 multiply by left and right neighbors \, so 0 if any of the 3 is "clean"., f 37;
+#X text 387 567 0 if all neighbors clean 1 if a neighbor dirty, f 24;
+#X text 465 378 adjust threshold to quadratic units and scale, f 25;
+#X text 368 227 add neighboring amplitude to this one and take squared magnitude of result - do this for both the left neighbor and the right one, f 34;
 #X msg 498 65 \; window-size 1024;
 #X connect 0 0 6 1;
 #X connect 1 0 7 0;
@@ -189,14 +184,12 @@ one, f 34;
 #X obj 72 100 loadbang;
 #X obj 72 146 metro 1000;
 #X obj 242 311 bp~ 10000 3;
-#X obj 72 125 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
+#X obj 72 125 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
 #X text 215 211 sample duration \, msec;
 #X text 87 69 looped sample playback;
 #X obj 72 323 tabread4~ \$0-sample;
 #X text 239 259 filtered noise;
-#X text 67 16 TEST SIGNAL: looped sample plus noise. The inlets control
-amplitude of each in dB., f 42;
+#X text 67 16 TEST SIGNAL: looped sample plus noise. The inlets control amplitude of each in dB., f 42;
 #X obj 181 113 r \$0-samplength;
 #X obj 196 137 r \$0-insamprate;
 #X obj 353 433 *~;
@@ -243,8 +236,8 @@ amplitude of each in dB., f 42;
 #X text 64 306 amplitudes (dB);
 #N canvas 388 86 722 350 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 0;
-#X coords 0 1 155943 -1 400 150 1;
+#X array \$0-sample 155944 float 2;
+#X coords 0 1 155944 -1 400 150 1;
 #X restore 259 38 graph;
 #X obj 19 23 r read-sample;
 #X obj 19 74 unpack s f;
@@ -304,19 +297,8 @@ amplitude of each in dB., f 42;
 #X text 334 323 100=silent;
 #X text 336 340 0=all;
 #X text 351 566 updated for Pd version 0.39;
-#X text 43 198 Two separate thresholds may be adjusted to listen to
-the "clean" or "dirty" part of the signal. You'll hear anything less
-incoherent than the clean threshold \, OR more incoherent than the
-dirty one., f 67;
-#X text 43 48 This patch applies a very simple coherence test to distinguish
-between sinusoids and noise in an input signal. It works very imperfectly
-(since noise is random \, no matter what test we place on it it will
-sometimes spoof its way in.) Here we just test that neighboring channels
-are 180 degrees (pi radians) out of phase \, as they should be in the
-main lobe in response to a sinusoid. If any three channels are so arranged
-\, all three are considered as contributing to a sinusoid. To do this
-we make an "incoherence" measure which is zero if the phase relationship
-is perfect and progressively larger otherwise., f 67;
+#X text 43 198 Two separate thresholds may be adjusted to listen to the "clean" or "dirty" part of the signal. You'll hear anything less incoherent than the clean threshold \, OR more incoherent than the dirty one., f 67;
+#X text 43 48 This patch applies a very simple coherence test to distinguish between sinusoids and noise in an input signal. It works very imperfectly (since noise is random \, no matter what test we place on it it will sometimes spoof its way in.) Here we just test that neighboring channels are 180 degrees (pi radians) out of phase \, as they should be in the main lobe in response to a sinusoid. If any three channels are so arranged \, all three are considered as contributing to a sinusoid. To do this we make an "incoherence" measure which is zero if the phase relationship is perfect and progressively larger otherwise., f 67;
 #N canvas 577 259 559 559 tables 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array \$0-inc-imag 2048 float 2;
@@ -367,10 +349,7 @@ is perfect and progressively larger otherwise., f 67;
 #X obj 317 123 r window-hz;
 #X msg 390 155 0;
 #X obj 317 151 t f b;
-#X text 94 21 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 94 21 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -396,7 +375,6 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X restore 435 440 pd hann-window;
 #X obj 449 13 declare -stdpath ./;
 #X connect 0 0 3 0;
-#X connect 0 0 3 1;
 #X connect 1 0 29 0;
 #X connect 4 0 7 0;
 #X connect 6 0 7 1;
