@@ -93,24 +93,14 @@ proc ::dialog_startup::fill_frame {frame} {
         {} {} \
         [_ "Pd libraries to load on startup"]
 
-    labelframe $frame.optionframe -text [_ "Startup options" ]
-    pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
-
-    checkbutton $frame.optionframe.verbose  -anchor w \
-        -text [_ "Verbose"] \
-        -variable ::sys_verbose
-    pack $frame.optionframe.verbose -side top -anchor w -expand 1
-
-    if {$::windowingsystem ne "win32"} {
-        checkbutton $frame.optionframe.defeatrt -anchor w \
-            -text [_ "Defeat real-time scheduling"] \
-            -variable ::sys_defeatrt
-        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
-    }
+    ## GUI options
+    labelframe $frame.guiframe -text [_ "GUI options" ]
+    set f $frame.guiframe
+    pack $f -side top -anchor s -fill x -padx 2m -pady 5
 
     # language selection
-    frame $frame.optionframe.langframe
-    set w $frame.optionframe.langframe.language
+    frame $f.langframe
+    set w $f.langframe.language
     menubutton $w -indicatoron 1 -menu $w.menu \
         -text [_ "language" ] \
             -relief raised -highlightthickness 1 -anchor c \
@@ -130,14 +120,28 @@ proc ::dialog_startup::fill_frame {frame} {
             }
         }
     }
-    pack $w -side left
-
-    set w $frame.optionframe.langframe.langlabel
-    label $w -text [_ "Menu language" ]
     pack $w -side right
-    pack $frame.optionframe.langframe -side top -anchor w -expand 1
 
+    set w $f.langframe.langlabel
+    label $w -text [_ "Menu language" ]
+    pack $w -side left
+    pack $f.langframe -side top -anchor w -expand 1
 
+    # Startup options and flags
+    labelframe $frame.optionframe -text [_ "Startup options" ]
+    pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
+
+    checkbutton $frame.optionframe.verbose  -anchor w \
+        -text [_ "Verbose"] \
+        -variable ::sys_verbose
+    pack $frame.optionframe.verbose -side top -anchor w -expand 1
+
+    if {$::windowingsystem ne "win32"} {
+        checkbutton $frame.optionframe.defeatrt -anchor w \
+            -text [_ "Defeat real-time scheduling"] \
+            -variable ::sys_defeatrt
+        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
+    }
 
     labelframe $frame.flags -text [_ "Startup flags:" ]
     pack $frame.flags -side top -anchor s -fill x -padx 2m
