@@ -1,7 +1,6 @@
-#N canvas 356 102 533 684 12;
+#N canvas 695 43 533 684 12;
 #X obj 28 49 openpanel;
-#X obj 28 27 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 28 27 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X floatatom 28 312 8 0 0 0 - - - 0;
 #X floatatom 74 287 5 0 0 0 - - - 0;
 #X text 117 286 byte;
@@ -21,29 +20,22 @@
 #X msg 119 225 cancel;
 #X text 178 225 cancel a running task;
 #X obj 30 477 taskobj;
-#X obj 30 505 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X msg 30 432 download http://msp.ucsd.edu/Software/pd-0.52-2.src.tar.gz
-\$1/Pd.tar.gz;
+#X obj 30 505 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000 0 1;
+#X msg 30 432 download http://msp.ucsd.edu/Software/pd-0.52-2.src.tar.gz \$1/Pd.tar.gz;
 #X obj 30 402 pdcontrol;
 #X msg 30 373 dir;
-#X obj 30 351 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 30 351 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X text 106 403 download <url> <outputfile>;
-#X text 57 349 download Pd's source code from Miller's site (with 'curl')
-;
-#X text 69 374 notice how you can use the other taskobj concurrently!
-;
+#X text 57 349 download Pd's source code from Miller's site (with 'curl');
+#X text 69 374 notice how you can use the other taskobj concurrently!;
 #X text 152 131 extra sleep (ms) to fake work;
 #X obj 30 623 taskobj;
 #X msg 30 566 progress \$1;
 #X floatatom 30 539 8 0 0 0 - - - 0;
 #X msg 99 540 10000;
 #X text 150 541 fake some work for 10 seconds and show progress;
-#X obj 79 649 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #fcfcfc
-#000000 #000000 0 1;
-#X obj 30 648 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 79 649 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #fcfcfc #000000 #000000 0 1;
+#X obj 30 648 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X msg 42 593 cancel;
 #X connect 0 0 11 0;
 #X connect 1 0 0 0;

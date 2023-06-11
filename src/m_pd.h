@@ -597,6 +597,7 @@ EXTERN int task_stop(t_task *task, int sync);
 EXTERN int task_check(t_task *task);
 EXTERN void task_suspend(t_task *task);
 EXTERN void task_resume(t_task *task, t_task_workfn);
+EXTERN void task_notify(t_task *task, void *data, t_task_callback fn);
 
 /* --------------- signals ----------------------------------- */
 

@@ -131,6 +131,21 @@
  *     Generally, you should spend as little time as necessary in the external thread
  *     and continue processing the result in a new worker function.
  *
+ * ----------------------------------------------------------------------------------
+ *
+ * void task_notify(t_task *task, void *data, t_task_callback fn)
+ *
+ * description: notify the Pd scheduler
+ *    This sends a message from the current thread back to the Pd scheduler.
+ *    It may be called from a worker function or from any other thread.
+ *
+ * arguments:
+ * 1) (t_task *) task: the task that is associated with the worker function or thread
+ * 1) (void *) data: dynamically allocated data that will be passed to the function.
+ * 2) (t_task_callback) fn: the function that shall be called with 'data' by the Pd
+ *    scheduler. At the end of the function you have to free the 'data' object.
+ *    If the task has been cancelled, 'owner' will be NULL.
+ *
  * ==================================================================================
  * For libpd clients:
  * ----------------------------------------------------------------------------------
@@ -188,7 +203,8 @@
 #include <windows.h>
 #else
 #include <unistd.h>
-#endif
+#endif /* _WIN32 */
+#include <pthread.h>
 
 /* If PD_WORKERTHREADS is 1, tasks are pushed to a queue. A worker thread pops
  * tasks from the queue and executes the 'task_workfn' function. On completion,
@@ -207,8 +223,6 @@
 #endif
 
 #if PD_WORKERTHREADS
-
-#include <pthread.h>
 
 /* NB: atomic_increment() and atomic_decrement() return the NEW value */
 #if defined(_MSC_VER) /* MSVC */
@@ -336,6 +350,75 @@ static void tasklist_wait(t_tasklist *list)
 
 #endif
 
+typedef struct _message
+{
+    struct _message *m_next;
+    t_task *m_task;
+    void *m_data;
+    t_task_callback m_fn;
+} t_message;
+
+typedef struct _messagelist
+{
+    t_message *ml_head;
+    t_message *ml_tail;
+        /* NB: always lock because messages can be sent from *any* thread! */
+    pthread_mutex_t ml_mutex;
+} t_messagelist;
+
+static void messagelist_init(t_messagelist *list)
+{
+    list->ml_head = list->ml_tail = 0;
+    pthread_mutex_init(&list->ml_mutex, 0);
+}
+
+static void messagelist_flush(t_messagelist *list)
+{
+    t_message *msg = list->ml_head;
+    pthread_mutex_lock(&list->ml_mutex);
+    while (msg)
+    {
+        t_message *next = msg->m_next;
+        /* the callback will free the data */
+        msg->m_fn(0, msg->m_data);
+        freebytes(msg, sizeof(t_message));
+        msg = next;
+    }
+    list->ml_head = list->ml_tail = 0;
+    pthread_mutex_unlock(&list->ml_mutex);
+}
+
+static void messagelist_push(t_messagelist *list, t_message *msg)
+{
+    pthread_mutex_lock(&list->ml_mutex);
+    if (list->ml_tail)
+        list->ml_tail = (list->ml_tail->m_next = msg);
+    else
+        list->ml_head = list->ml_tail = msg;
+    pthread_mutex_unlock(&list->ml_mutex);
+}
+
+static t_message * messagelist_pop(t_messagelist *list)
+{
+    t_message *msg = 0;
+    pthread_mutex_lock(&list->ml_mutex);
+    if (list->ml_head)
+    {
+        msg = list->ml_head;
+        list->ml_head = msg->m_next;
+        if (!list->ml_head) /* list is now empty */
+            list->ml_tail = 0;
+    }
+    pthread_mutex_unlock(&list->ml_mutex);
+    return msg;
+}
+
+static void messagelist_free(t_messagelist *list)
+{
+    messagelist_flush(list);
+    pthread_mutex_destroy(&list->ml_mutex);
+}
+
 struct _taskqueue
 {
 #if PD_WORKERTHREADS
@@ -349,6 +432,7 @@ struct _taskqueue
 #else
     t_tasklist tq_list;
 #endif
+    t_messagelist tq_messages;
     t_clock *tq_clock;
 };
 
@@ -527,6 +611,7 @@ void sys_taskqueue_stop(void)
         /* finally flush task lists */
     tasklist_flush(fromsched);
     tasklist_flush(tosched);
+    messagelist_flush(&queue->tq_messages);
 }
 
 #else
@@ -546,6 +631,7 @@ void sys_taskqueue_start(int threads)
 void sys_taskqueue_stop(void)
 {
     tasklist_flush(&STUFF->st_taskqueue->tq_list);
+    messagelist_flush(&STUFF->st_taskqueue->tq_messages);
 }
 
 #endif /* PD_WORKERTHREADS */
@@ -568,6 +654,7 @@ void s_task_newpdinstance(void)
 #else
     tasklist_init(&queue->tq_list);
 #endif
+    messagelist_init(&queue->tq_messages);
         /* the clock is used to defer the callback to the next
         clock timeout in case there is no worker thread. */
     queue->tq_clock = clock_new(queue, (t_method)taskqueue_dopoll);
@@ -583,6 +670,7 @@ void s_task_freepdinstance(void)
 #else
     tasklist_free(&queue->tq_list);
 #endif
+    messagelist_free(&queue->tq_messages);
     clock_free(queue->tq_clock);
 
     freebytes(queue, sizeof(t_taskqueue));
@@ -595,9 +683,26 @@ static void taskqueue_dopoll(t_taskqueue *queue)
 #else
     t_tasklist *list = &queue->tq_list;
 #endif
-    t_task *task;
+    t_messagelist *messages = &queue->tq_messages;
+        /* first dispatch messages, since they refer to tasks. Once a task is on
+         * the tosched queue, we know that it won't receive any more messages. */
     while (1)
     {
+        t_message *msg;
+        if ((msg = messagelist_pop(messages)))
+        {
+                /* dispatch message (without lock!) If the associated
+                 * task has been cancelled, set 'owner' to NULL! */
+            msg->m_fn(msg->m_task->t_cancel ? 0 : msg->m_task->t_owner, msg->m_data);
+            freebytes(msg, sizeof(t_message));
+        }
+        else
+            break;
+    }
+        /* now dispatch tasks */
+    while (1)
+    {
+        t_task *task;
             /* try to pop task from list */
     #if PD_WORKERTHREADS
         tasklist_lock(list);
@@ -622,11 +727,9 @@ static void taskqueue_dopoll(t_taskqueue *queue)
     /* called in sched_tick() */
 void taskqueue_poll(void)
 {
-#if PD_WORKERTHREADS
     t_taskqueue *queue = STUFF->st_taskqueue;
-    if (queue->tq_running)
-        taskqueue_dopoll(queue);
-#endif
+        /* always poll because we might have messages! */
+    taskqueue_dopoll(queue);
 }
 
 t_task *task_start(t_pd *owner, void *data,
@@ -894,6 +997,21 @@ void task_resume(t_task *task, t_task_workfn workfn)
     }
 #endif /* PD_WORKERTHREADS */
     task->t_suspend = 1;
+}
+
+void task_notify(t_task *task, void *data, t_task_callback fn)
+{
+#ifdef PDINSTANCE
+    t_taskqueue *queue = task->t_instance->pd_stuff->st_taskqueue;
+#else
+    t_taskqueue *queue = STUFF->st_taskqueue;
+#endif
+    t_message *msg = (t_message *)getbytes(sizeof(t_message));
+    msg->m_next = 0;
+    msg->m_task = task;
+    msg->m_data = data;
+    msg->m_fn = fn;
+    messagelist_push(&queue->tq_messages, msg);
 }
 
 int sys_taskqueue_running(void)

@@ -59,6 +59,12 @@ typedef struct _read_data
     float ms;
 } t_read_data;
 
+static void taskobj_message(t_taskobj *x, char *msg)
+{
+    logpost(x, PD_NORMAL, "%s", msg);
+    free(msg);
+}
+
     /* this function is executed on a worker thread;
      * do not call any Pd API functions! */
 static void taskobj_read_workfn(t_task *task, t_read_data *x)
@@ -72,13 +78,23 @@ static void taskobj_read_workfn(t_task *task, t_read_data *x)
     FILE *fp = fopen(x->filepath, "rb");
     if (fp)
     {
+        char msgbuf[MAXPDSTRING], *msg;
         char *data;
         size_t size;
-        // get file size
+            /* For demonstration purposes, we will send messages to the main thread.
+             * Here the data is just a string, but it can really be anything.
+             * Use this whenever you need/want to send data or notify the main
+             * thread while the worker function is still in progress. */
+        snprintf(msgbuf, sizeof(msgbuf), "successfully opened '%s'", x->filepath);
+        msg = malloc(strlen(msgbuf) + 1);
+        strcpy(msg, msgbuf);
+        task_notify(task, msg, (t_task_callback)taskobj_message);
+
+            /* get file size */
         fseek(fp, 0, SEEK_END);
         size = ftell(fp);
         fseek(fp, 0, SEEK_SET);
-        // allocate buffer
+            /* allocate buffer */
         data = malloc(size);
         if (data)
         {
@@ -90,6 +106,11 @@ static void taskobj_read_workfn(t_task *task, t_read_data *x)
                 float remaining = x->ms;
                 x->data = data;
                 x->size = size;
+                    /* send another message */
+                snprintf(msgbuf, sizeof(msgbuf), "read %d bytes", (int)size);
+                msg = malloc(strlen(msgbuf) + 1);
+                strcpy(msg, msgbuf);
+                task_notify(task, msg, (t_task_callback)taskobj_message);
                     /* sleep to simulate work; return early if the
                      * task has been cancelled in the meantime */
                 while (remaining > 0 && task_check(task))
@@ -108,6 +129,8 @@ static void taskobj_read_workfn(t_task *task, t_read_data *x)
                 free(data);
             }
         }
+            /* close file */
+        fclose(fp);
     }
     else /* catch error */
         x->err = errno;
