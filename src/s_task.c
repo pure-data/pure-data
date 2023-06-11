@@ -232,10 +232,12 @@
 #define atomic_int volatile LONG
 #define atomic_increment(x) _InterlockedIncrement(x)
 #define atomic_decrement(x) _InterlockedDecrement(x)
+#define atomic_add(x, i) _InterlockedAdd((x), i)
 #elif defined(__GNUC__) /* GCC, clang, ICC */
 #define atomic_int volatile int
 #define atomic_increment(x) __atomic_add_fetch((x), 1, __ATOMIC_SEQ_CST)
 #define atomic_decrement(x) __atomic_sub_fetch((x), 1, __ATOMIC_SEQ_CST)
+#define atomic_add(x, i) __atomic_add_fetch((x), i, __ATOMIC_SEQ_CST)
 #else
 #error "compiler not supported, please build with -DPD_WORKERTHREADS=0"
 #endif
@@ -498,7 +500,7 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
             {
                     /* NB: it is unlikely, but entirely possible, that the task
                     is already fully resumed at this point, see task_resume() */
-                if (--task->t_suspend == 0) /* fully resumed */
+                if (atomic_decrement(&task->t_suspend) == 0) /* fully resumed */
                 {
                         /* decrement with mutex locked, see task_stop() */
                     if (atomic_decrement(&queue->tq_pending) < 0)
@@ -516,8 +518,6 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
             }
             else /* not suspended */
             {
-                if (task->t_suspend < 0)
-                    fprintf(stderr, "bug: negative task suspend count\n");
                     /* decrement with mutex locked, see task_stop() */
                 if (atomic_decrement(&queue->tq_pending) < 0)
                     fprintf(stderr, "bug: negative pending task count\n");
@@ -716,6 +716,8 @@ static void taskqueue_dopoll(t_taskqueue *queue)
     #endif
         if (task)
         {
+            if (task->t_suspend < 0)
+                bug("taskqueue_dopoll: negative task suspend count");
                 /* run callback (without lock!), if provided.
                  * If the task has been cancelled, set 'owner' to NULL! */
             if (task->t_cb)
@@ -955,11 +957,8 @@ void task_suspend(t_task *task)
         /* NB: tq_running might have been unset in sys_taskqueue_stop()! */
     if (taskqueue_havethreads())
     {
-        t_tasklist *tosched = &queue->tq_tosched;
-        tasklist_lock(tosched);
             /* must be decremented both in taskqueue_perform() and task_resume() */
-        task->t_suspend += 2;
-        tasklist_unlock(tosched);
+        atomic_add(&task->t_suspend, 2);
         return;
     }
 #endif /* PD_WORKERTHREADS */
@@ -996,7 +995,7 @@ void task_resume(t_task *task, t_task_workfn workfn)
             before the task is handled in taskqueue_perform().
             In this case we do not want to handle the task yet;
             instead, it will be handled later in taskqueue_perform(). */
-        if (--task->t_suspend == 0) /* fully resumed */
+        if (atomic_decrement(&task->t_suspend) == 0) /* fully resumed */
         {
                 /* decrement with mutex locked, see task_stop() */
             if (atomic_decrement(&queue->tq_pending) < 0)
