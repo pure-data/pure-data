@@ -43,6 +43,7 @@
  *    If the task has been cancelled, 'owner' is NULL; in this case, do not forget
  *    to clean up any resources in 'data'.
  *    Finally, here you can also safely free the 'data' object itself!
+ *    You may pass NULL if you do not need a callback.
  *
  * returns: a handle to the new task.
  *    Store the handle in your object, so that you are able to cancel the task
@@ -604,9 +605,10 @@ static void taskqueue_dopoll(t_taskqueue *queue)
     #endif
         if (task)
         {
-                /* run callback (without lock!)
-                if the task has been cancelled, 'owner' is set to 0! */
-            task->t_cb(task->t_cancel ? 0 : task->t_owner, task->t_data);
+                /* run callback (without lock!), if provided.
+                 * If the task has been cancelled, set 'owner' to NULL! */
+            if (task->t_cb)
+                task->t_cb(task->t_cancel ? 0 : task->t_owner, task->t_data);
             freebytes(task, sizeof(t_task));
         }
         else
