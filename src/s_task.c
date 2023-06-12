@@ -94,8 +94,7 @@
  *               references to shared state - which you should avoid in the first place!
  *     false (0): return immediately without blocking.
  *
- * returns: always 0.
- *     In the future, this may return additional information.
+ * returns: 1 if the task could be stopped, 0 on failure.
  *
  * ----------------------------------------------------------------------------------
  *
@@ -219,7 +218,7 @@
  * semantics as the threaded implementation (the callback is guaranteed to run
  * after task_start() has returned), we can't just execute tasks and its callbacks
  * synchronously; instead we have to put them on a queue where they are popped and
- * dispatch with the next scheduler tick. */
+ * dispatched with the next scheduler tick. */
 
 #ifndef PD_WORKERTHREADS
 #define PD_WORKERTHREADS 1
@@ -251,6 +250,7 @@
 struct _task
 {
     struct _task *t_next;
+    struct _task *t_nextpending;
 #ifdef PDINSTANCE
     t_pdinstance *t_instance;
 #endif
@@ -324,6 +324,11 @@ static t_task *tasklist_pop(t_tasklist *list)
     }
     else
         return 0;
+}
+
+static int tasklist_empty(t_tasklist *list)
+{
+    return list->tl_head == 0;
 }
 
 #if PD_WORKERTHREADS
@@ -433,10 +438,10 @@ struct _taskqueue
     int tq_numthreads; /* number of internal worker threads */
     int tq_running; /* thread(s) are running? */
     int tq_external; /* use external worker threads */
-    atomic_int tq_pending; /* number of pending tasks */
 #else
     t_tasklist tq_list;
 #endif
+    t_task *tq_pending; /* list of pending tasks */
     t_messagelist tq_messages;
     t_clock *tq_clock;
 };
@@ -483,11 +488,9 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
         t_task *task = tasklist_pop(fromsched);
         if (task)
         {
-        do_task:
-                /* increment with mutex locked, see task_stop() */
-            atomic_increment(&queue->tq_pending);
             tasklist_unlock(fromsched);
 
+        do_task:
                 /* execute task (without lock!) */
             if (!task->t_cancel)
             {
@@ -495,39 +498,31 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
                 didsomething = 1;
             }
 
-            tasklist_lock(tosched);
             if (task->t_suspend > 0) /* suspended */
             {
                     /* NB: it is unlikely, but entirely possible, that the task
                     is already fully resumed at this point, see task_resume() */
                 if (atomic_decrement(&task->t_suspend) == 0) /* fully resumed */
                 {
-                        /* decrement with mutex locked, see task_stop() */
-                    if (atomic_decrement(&queue->tq_pending) < 0)
-                        fprintf(stderr, "bug: negative pending task count\n");
                     if (task->t_workfn && !task->t_cancel) /* continue */
-                    {
-                        tasklist_unlock(tosched);
-                        tasklist_lock(fromsched);
                         goto do_task;
-                    }
-                        /* move task back to scheduler */
+                        /* move task back to scheduler and notify the main thread
+                         * since it might be waiting in task_stop() */
+                    tasklist_lock(tosched);
                     tasklist_push(tosched, task);
+                    tasklist_unlock(tosched);
                     tasklist_notify(tosched);
                 }
             }
             else /* not suspended */
             {
-                    /* decrement with mutex locked, see task_stop() */
-                if (atomic_decrement(&queue->tq_pending) < 0)
-                    fprintf(stderr, "bug: negative pending task count\n");
-                    /* move task back to scheduler */
+                    /* move task back to scheduler and notify the main thread
+                     * since it might be waiting in task_stop() */
+                tasklist_lock(tosched);
                 tasklist_push(tosched, task);
-                    /* notify the scheduler thread because it might
-                    be waiting in task_stop() */
+                tasklist_unlock(tosched);
                 tasklist_notify(tosched);
             }
-            tasklist_unlock(tosched);
 
             tasklist_lock(fromsched);
         }
@@ -579,6 +574,8 @@ void sys_taskqueue_start(int threads)
     }
 }
 
+static void taskqueue_dopoll(t_taskqueue *queue);
+
 void sys_taskqueue_stop(void)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
@@ -586,6 +583,26 @@ void sys_taskqueue_stop(void)
     t_tasklist *tosched = &queue->tq_tosched;
     if (!queue->tq_running)
         return;
+        /* wait until all pending tasks have finished */
+    while (1)
+    {
+        taskqueue_dopoll(queue);
+        if (queue->tq_pending)
+        {
+                /* if there are still pending tasks after taskqueue_dopoll()
+                 * and 'tosched' is empty, we need to wait for the worker thread(s)
+                 * (or resuming threads) to push the remaining tasks. */
+            fprintf(stderr, "waiting for pending tasks...\n");
+            tasklist_lock(tosched);
+            while (tasklist_empty(tosched))
+                tasklist_wait(tosched);
+            tasklist_unlock(tosched);
+        }
+        else
+            break;
+    }
+    if (queue->tq_pending)
+        bug("sys_taskqueue_stop: pending tasks");
         /* quit and notify worker thread(s) */
     tasklist_lock(fromsched);
     queue->tq_running = 0;
@@ -602,19 +619,6 @@ void sys_taskqueue_stop(void)
         queue->tq_numthreads = 0;
     }
     queue->tq_external = 0;
-        /* wait for any pending tasks */
-    tasklist_lock(tosched);
-    while (queue->tq_pending > 0)
-    {
-        fprintf(stderr, "waiting for %d pending tasks...", queue->tq_pending);
-        fflush(stderr);
-        tasklist_wait(tosched);
-    }
-    tasklist_unlock(tosched);
-        /* finally flush task lists */
-    tasklist_flush(fromsched);
-    tasklist_flush(tosched);
-    messagelist_flush(&queue->tq_messages);
 }
 
 #else
@@ -635,6 +639,7 @@ void sys_taskqueue_stop(void)
 {
     tasklist_flush(&STUFF->st_taskqueue->tq_list);
     messagelist_flush(&STUFF->st_taskqueue->tq_messages);
+    STUFF->st_taskqueue->tq_pending = 0;
 }
 
 #endif /* PD_WORKERTHREADS */
@@ -653,10 +658,10 @@ void s_task_newpdinstance(void)
     queue->tq_numthreads = 0;
     queue->tq_external = 0;
     queue->tq_running = 0;
-    queue->tq_pending = 0;
 #else
     tasklist_init(&queue->tq_list);
 #endif
+    queue->tq_pending = 0;
     messagelist_init(&queue->tq_messages);
         /* the clock is used to defer the callback to the next
         clock timeout in case there is no worker thread. */
@@ -705,7 +710,7 @@ static void taskqueue_dopoll(t_taskqueue *queue)
         /* now dispatch tasks */
     while (1)
     {
-        t_task *task;
+        t_task *task, *t;
             /* try to pop task from list */
     #if PD_WORKERTHREADS
         tasklist_lock(list);
@@ -722,6 +727,24 @@ static void taskqueue_dopoll(t_taskqueue *queue)
                  * If the task has been cancelled, set 'owner' to NULL! */
             if (task->t_cb)
                 task->t_cb(task->t_cancel ? 0 : task->t_owner, task->t_data);
+                /* remove from pending list */
+            if (task == queue->tq_pending)
+                queue->tq_pending = task->t_nextpending;
+            else
+            {
+                int found = 0;
+                for (t = queue->tq_pending; t; t = t->t_nextpending)
+                {
+                    if (t->t_nextpending == task)
+                    {
+                        t->t_nextpending = task->t_nextpending;
+                        found = 1;
+                        break;
+                    }
+                }
+                if (!found)
+                    bug("taskqueue_dopoll: task not in pending list");
+            }
             freebytes(task, sizeof(t_task));
         }
         else
@@ -747,7 +770,7 @@ t_task *task_start(t_pd *owner, void *data,
     t_tasklist *list = &STUFF->st_taskqueue->tq_list;
 #endif
 
-    t_task *task = getbytes(sizeof(t_task));
+    t_task *task = getbytes(sizeof(t_task)), *t;
     task->t_next = 0;
 #ifdef PDINSTANCE
     task->t_instance = pd_this;
@@ -758,8 +781,11 @@ t_task *task_start(t_pd *owner, void *data,
     task->t_cb = cb;
     task->t_cancel = 0;
     task->t_suspend = 0;
+        /* put on pending list */
+    task->t_nextpending = queue->tq_pending;
+    queue->tq_pending = task;
 
-    if (!workfn) /* dummy task - do not put on queue! */
+    if (!task->t_workfn) /* dummy task - do not put on 'fromsched' queue! */
     {
         if (task->t_cb)
         {
@@ -872,28 +898,46 @@ t_task *task_spawn(t_pd *owner, void *data,
 int task_stop(t_task *task, int sync)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
+    t_task *t;
+#if 1
+        /* check if the task is really pending */
+    int foundit = 0;
+    for (t = queue->tq_pending; t; t = t->t_nextpending)
+    {
+        if (t == task)
+            foundit = 1;
+    }
+    if (!foundit)
+    {
+        pd_error(task->t_owner, "task_stop: task not found!");
+        return 0;
+    }
+#endif
+        /* now we can safely cancel it */
     task->t_cancel = 1;
+
     if (!task->t_workfn) /* dummy task */
     {
-            /* keep around until the next scheduler tick for pending messages.
-             * NB: dummy tasks are never put on the 'fromsched' queue! */
-    #if PD_WORKERTHREADS
+        /* keep around until the next scheduler tick for pending messages.
+         * NB: dummy tasks are never put on the 'fromsched' queue! */
+#if PD_WORKERTHREADS
         tasklist_lock(&queue->tq_tosched);
         tasklist_push(&queue->tq_tosched, task);
         tasklist_unlock(&queue->tq_tosched);
-    #else
+#else
         tasklist_push(&queue->tq_list, task);
-    #endif
+#endif
+        return 1; /* ignore sync */
     }
 
-    }
 #if PD_WORKERTHREADS
     if (sync && queue->tq_running)
     {
         t_tasklist *fromsched = &queue->tq_fromsched;
         t_tasklist *tosched = &queue->tq_tosched;
-        t_task *t;
-            /* check if the task is still in the 'fromsched' queue */
+            /* check if the task is still in the 'fromsched' queue;
+             * if yes, we don't need to do anything since the worker
+             * function will never be called. */
         tasklist_lock(fromsched);
         for (t = fromsched->tl_head; t; t = t->t_next)
         {
@@ -903,9 +947,8 @@ int task_stop(t_task *task, int sync)
                 return 0;
             }
         }
-            /* check if the task is already in the 'tosched' queue;
-            continue until the pending count has reached 0. Keep the
-            'fromsched' list locked so that the count can only go down. */
+        tasklist_unlock(fromsched);
+            /* wait until the task is in the 'tosched' queue */
         tasklist_lock(tosched);
         while (1)
         {
@@ -914,23 +957,14 @@ int task_stop(t_task *task, int sync)
                 if (t == task)
                 {
                     tasklist_unlock(tosched);
-                    tasklist_unlock(fromsched);
-                    return 0;
+                    return 1;
                 }
             }
-            if (queue->tq_pending > 0)
-                tasklist_wait(tosched);
-            else
-            {
-                pd_error(0, "task_stop: could not find task");
-                break;
-            }
+            tasklist_wait(tosched);
         }
-        tasklist_unlock(tosched);
-        tasklist_unlock(fromsched);
     }
 #endif
-    return 0;
+    return 1;
 }
 
 int task_check(t_task *task)
@@ -985,25 +1019,17 @@ void task_resume(t_task *task, t_task_workfn workfn)
         /* NB: tq_running might have been unset in sys_taskqueue_stop()! */
     if (taskqueue_havethreads())
     {
-        t_tasklist *fromsched = &queue->tq_fromsched;
-        t_tasklist *tosched = &queue->tq_tosched;
-
-        tasklist_lock(tosched);
-        task->t_workfn = workfn;
             /* NB: it is unlikely, but entirely possible, that
-            task_resume() is called before task_suspend() or
-            before the task is handled in taskqueue_perform().
-            In this case we do not want to handle the task yet;
-            instead, it will be handled later in taskqueue_perform(). */
+             * task_resume() is called before task_suspend() or
+             * before the task is handled in taskqueue_perform().
+             * In this case we do not want to handle the task yet;
+             * instead, it will be handled later in taskqueue_perform(). */
         if (atomic_decrement(&task->t_suspend) == 0) /* fully resumed */
         {
-                /* decrement with mutex locked, see task_stop() */
-            if (atomic_decrement(&queue->tq_pending) < 0)
-                fprintf(stderr, "bug: negative pending task count\n");
-                /* NB: don't reschedule if the taskqueue has been stopped! */
-            if (workfn && queue->tq_running && !task->t_cancel) /* continue */
+            if (workfn && !task->t_cancel) /* continue */
             {
-                tasklist_unlock(tosched);
+                t_tasklist *fromsched = &queue->tq_fromsched;
+                task->t_workfn = workfn;
                     /* reschedule task */
                 tasklist_lock(fromsched);
                 tasklist_push(fromsched, task);
@@ -1012,13 +1038,15 @@ void task_resume(t_task *task, t_task_workfn workfn)
             }
             else /* completed/cancelled */
             {
+                t_tasklist *tosched = &queue->tq_tosched;
+                    /* move task back to scheduler and notify the main thread
+                     * since it might be waiting in task_stop() */
+                tasklist_lock(tosched);
                 tasklist_push(tosched, task);
                 tasklist_unlock(tosched);
                 tasklist_notify(tosched);
             }
         }
-        else
-            tasklist_unlock(tosched); /* ! */
         return;
     }
 #endif /* PD_WORKERTHREADS */
