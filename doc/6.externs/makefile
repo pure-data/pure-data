@@ -1,39 +1,27 @@
 current:
-	@echo make pd_linux, pd_nt, or pd_darwin
+	@echo make pd_linux, pd_mingw, or pd_darwin
 
 clean:
 	rm -f *.o
+	rm -f *.dll
 	rm -f *.pd_linux
 	rm -f *.pd_darwin
 
-# ----------------------- Windows-----------------------
-# note: you will certainly have to edit the definition of VC to agree with
-# whatever you've got installed on your machine
+# ----------------------- Windows (MinGW) -----------------------
 
-VC="D:\Program Files\Microsoft Visual Studio\Vc98"
+pd_mingw: obj1.dll obj2.dll obj3.dll obj4.dll obj5.dll taskobj.dll dspobj~.dll
 
-pd_nt: obj1.dll obj2.dll obj3.dll obj4.dll obj5.dll taskobj.dll dspobj~.dll
+.SUFFIXES: .o .dll
 
-.SUFFIXES: .obj .dll
+MINGWFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -mms-bitfields \
+    -Wall -W -Wshadow -Wstrict-prototypes -Wno-unused -Wno-parentheses -Wno-switch
 
-PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
-
-PDNTINCLUDE = /I. /I\tcl\include /I..\..\src /I$(VC)\include
-
-PDNTLDIR = $(VC)\lib
-PDNTLIB = $(PDNTLDIR)\libc.lib \
-	$(PDNTLDIR)\oldnames.lib \
-	$(PDNTLDIR)\kernel32.lib \
-	..\..\bin\pd.lib 
+MINGWINCLUDE =  -I../../src
 
 .c.dll:
-	cl $(PDNTCFLAGS) $(PDNTINCLUDE) $(CFLAGS) /c $*.c
-	link /dll /export:$*_setup $*.obj $(PDNTLIB)
-
-# override explicitly for tilde objects like this:
-dspobj~.dll: dspobj~.c; 
-	cl $(PDNTCFLAGS) $(PDNTINCLUDE) $(CFLAGS) /c $*.c
-	link /dll /export:dspobj_tilde_setup $*.obj $(PDNTLIB)
+	$(CC) $(MINGWFLAGS) $(MINGWINCLUDE) $(CFLAGS) -o $*.o -c $*.c
+	$(CC) -shared -Wl,--enable-auto-import -o $*.dll $*.o -L../../src -lpd
+	rm $*.o
 
 # ----------------------- LINUX i386 -----------------------
 
