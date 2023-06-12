@@ -1434,7 +1434,11 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (THISGUI->i_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate)
+    {
+        canvas_stop_dsp();
+        canvas_start_dsp();
+    }
 }
 
 /* the "dsp" message to pd starts and stops DSP computation, and, if
