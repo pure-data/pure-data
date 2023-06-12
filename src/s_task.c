@@ -582,8 +582,16 @@ void sys_taskqueue_stop(void)
     t_tasklist *fromsched = &queue->tq_fromsched;
     t_tasklist *tosched = &queue->tq_tosched;
     if (!queue->tq_running)
+    {
+            /* just flush queues and return */
+        tasklist_flush(&STUFF->st_taskqueue->tq_fromsched);
+        tasklist_flush(&STUFF->st_taskqueue->tq_tosched);
+        messagelist_flush(&STUFF->st_taskqueue->tq_messages);
+        STUFF->st_taskqueue->tq_pending = 0;
         return;
-        /* wait until all pending tasks have finished */
+    }
+        /* wait until all pending tasks have finished.
+         * (This will also flush all queues.) */
     while (1)
     {
         taskqueue_dopoll(queue);
@@ -671,8 +679,8 @@ void s_task_newpdinstance(void)
 void s_task_freepdinstance(void)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
-#if PD_WORKERTHREADS
     sys_taskqueue_stop();
+#if PD_WORKERTHREADS
     tasklist_free(&queue->tq_fromsched);
     tasklist_free(&queue->tq_tosched);
 #else
