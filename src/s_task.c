@@ -19,11 +19,13 @@
  * description: schedule a new task.
  *
  * arguments:
+ *
  * 1) (t_pd *) owner: the Pd object that owns the given task.
  *    NB: this argument can be NULL in case there is no valid owner;
  *    for example, this can be used for scheduling a task from within the
  *    callback of a cancelled task (where 'owner' will be NULL) to avoid
  *    cleaning up resources on the audio thread.
+ *
  * 2) (void *) data: a user-specific dynamically allocated struct.
  *    This struct contains the input data for the worker function, e.g. a filename,
  *    and also the output data, e.g. a memory buffer. Try to avoid any references
@@ -32,16 +34,21 @@
  *    NOTE: In the rare case where you do need to access shared state, make sure
  *    to call task_stop() with sync=1! For an example, see the "progress" method
  *    in "doc/6.externs/taskobj.c".
+ *
  * 3) (task_workfn) workfn: a function to be called in the background.
  *    You would typically read from 'data', perform some operations and store
  *    the result back to 'data'.
  *    ***IMPORTANT***: do not call any Pd API functions, except for task_check(),
  *    task_suspend() and task_resume(). In particular, do not call sys_lock()
  *    or sys_unlock(), as this can cause deadlocks!
- *    If 'workfn' is NULL, task_start() will create a dummy task that may serve as
- *    a context for sending notifications from some thread back to the Pd scheduler
- *    via task_notify().
- * 4) (task_callback) cb: a function to be called after the task has completed.
+ *    ---
+ *    If 'workfn' is NULL, task_start() will create a dummy task that may use for
+ *    task_notify() outside the context of a worker function. For example, you might
+ *    have a network thread and want to handle incoming data on the main thread.
+ *    You must free this task with task_stop() after the thread has been joined.
+ *    See also task_notify().
+ *
+ * 4) (task_callback) cb: (optional) a function to be called after the task has completed.
  *    This is where the result can be safely moved from 'data' to the owning object.
  *    If the task has been cancelled, 'owner' is NULL; in this case, do not forget
  *    to clean up any resources in 'data'.
@@ -64,30 +71,27 @@
  * description: spawn a new task
  *    This function behaves just like task_start(), except that it runs the worker
  *    function in its own thread, so that other tasks can run concurrently.
- *    Use this if a task might take a long time - let's say more than 1 second
- *    - and you cannot use asynchronous I/O with task_suspend() + task_resume().
- *
- *    You may also use this for long-running operations; in this case, task_spawn()
- *    and task_stop() basically act as replacements for low-level threading functions,
- *    pthread_create() and pthread_join().
+ *    Use this if a task might take a long time - let's say more than 1 second.
  *
  * ---------------------------------------------------------------------------------
  *
  * int task_stop(t_task *task, int sync)
  *
  * description: cancel a given task.
- *     You always have to call this in the object destructor to cancel any pending
- *     tasks; this makes sure that the task callback function won't try to access
- *     an object that has already been deleted!
+ *     You always have to call this in the object destructor for any pending tasks(s);
+ *     this makes sure that the task callback function won't try to access an object
+ *     that has already been deleted!
  *     It might also be useful in cases where the user is calling an asynchronous
- *     method while a task is still running (another option would be to simply forbid
- *     the call until the pending task has finished).
+ *     method while it is still running. (Another option would be to reject such
+ *     method calls until the pending task has finished.)
  *     Note that the task might be currently executing or it might have completed
  *     already. Either way, the task handle will be invalidated and the callback
  *     will eventually be called with 'owner' set to NULL.
  *
  * arguments:
+ *
  * 1) (t_task *) task: the task that shall be cancelled.
+ *
  * 2) (int) sync: synchronize with worker thread(s).
  *     true (1): check if the task is currently being executed and if yes, wait for its
  *               completion. Typically, this is only necessary if the task data contains
@@ -111,7 +115,7 @@
  * void task_suspend(t_task *task)
  *
  * description: suspend current execution
- *     Call this function AFTER deferring to another thread, typically as the last
+ *     Call this function after deferring to another thread, typically as the last
  *     statement before returning from the worker function. The task will be suspended
  *     until the other thread finally calls task_resume(), allowing other tasks to run
  *     concurrently. This is useful for interfacing with event loops or other asynchronous
@@ -126,7 +130,9 @@
  *     It is always called from another thread.
  *
  * arguments:
+ *
  * 1) (t_task *) task: the task handle
+ *
  * 2) (t_task_workfn) workfn: (optional) worker function
  *     The task will continue with the provided worker function;
  *     if 'workfn' is NULL, the task is considered completed.
@@ -142,11 +148,15 @@
  *    It may be called from a worker function or from any other thread.
  *
  * arguments:
- * 1) (t_task *) task: the task that is associated with the worker function or thread
- * 1) (void *) data: dynamically allocated data that will be passed to the function.
- * 2) (t_task_callback) fn: the function that shall be called with 'data' by the Pd
+ *
+ * 1) (t_task *) task: the task that is associated with the worker function or a
+ *    "dummy task" (see task_start).
+ *
+ * 2) (void *) data: dynamically allocated data that will be passed to the function.
+ *
+ * 3) (t_task_callback) fn: the function that shall be called with 'data' by the Pd
  *    scheduler. At the end of the function you have to free the 'data' object.
- *    If the task has been cancelled, 'owner' will be NULL.
+ *    If the associated task has been cancelled, 'owner' will be NULL.
  *
  * ==================================================================================
  * For libpd clients:
@@ -157,6 +167,7 @@
  * description: start the task queue system
  *
  * arguments:
+ *
  * 1) (int) threads: the number of (internal) worker threads, or one of the following
  *     constants:
  *     TASKQUEUE_DEFAULT: use default number of threads;
@@ -181,7 +192,9 @@
  *     It can be safely called from multiple threads at the same time!
  *
  * arguments:
+ *
  * 1) (t_pdinstance *) pd: the Pd instance
+ *
  * 2) (int) nonblocking: call in non-blocking mode (true/false)
  *     true (1): execute a *single* task, if available, otherwise return immediately.
  *     false (0): block until the task queue is stopped with sys_taskqueue_stop().
