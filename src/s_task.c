@@ -312,6 +312,19 @@ static void tasklist_push(t_tasklist *list, t_task *task)
         list->tl_head = list->tl_tail = task;
 }
 
+static void tasklist_push_sync(t_tasklist *list, t_task *task, int notify)
+{
+#if PD_WORKERTHREADS
+    pthread_mutex_lock(&list->tl_mutex);
+#endif
+    tasklist_push(list, task);
+#if PD_WORKERTHREADS
+    pthread_mutex_unlock(&list->tl_mutex);
+    if (notify)
+        pthread_cond_signal(&list->tl_condition);
+#endif
+}
+
 static t_task *tasklist_pop(t_tasklist *list)
 {
     if (list->tl_head)
@@ -324,6 +337,19 @@ static t_task *tasklist_pop(t_tasklist *list)
     }
     else
         return 0;
+}
+
+static t_task *tasklist_pop_sync(t_tasklist *list)
+{
+    t_task *task;
+#if PD_WORKERTHREADS
+    pthread_mutex_lock(&list->tl_mutex);
+#endif
+    task = tasklist_pop(list);
+#if PD_WORKERTHREADS
+    pthread_mutex_unlock(&list->tl_mutex);
+#endif
+    return task;
 }
 
 static int tasklist_empty(t_tasklist *list)
@@ -487,7 +513,6 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
         if (task)
         {
             tasklist_unlock(fromsched);
-
         do_task:
                 /* execute task (without lock!) */
             if (!task->t_cancel)
@@ -504,22 +529,17 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
                 {
                     if (task->t_workfn && !task->t_cancel) /* continue */
                         goto do_task;
+                    else
                         /* move task back to scheduler and notify the main thread
                          * since it might be waiting in task_stop() */
-                    tasklist_lock(tosched);
-                    tasklist_push(tosched, task);
-                    tasklist_unlock(tosched);
-                    tasklist_notify(tosched);
+                        tasklist_push_sync(tosched, task, 1);
                 }
             }
             else /* not suspended */
             {
                     /* move task back to scheduler and notify the main thread
                      * since it might be waiting in task_stop() */
-                tasklist_lock(tosched);
-                tasklist_push(tosched, task);
-                tasklist_unlock(tosched);
-                tasklist_notify(tosched);
+                tasklist_push_sync(tosched, task, 1);
             }
 
             tasklist_lock(fromsched);
@@ -690,63 +710,44 @@ static void taskqueue_dopoll(t_taskqueue *queue)
 {
     t_tasklist *tosched = &queue->tq_tosched;
     t_messagelist *messages = &queue->tq_messages;
-        /* first dispatch messages since they refer to tasks. Once a task is on
-         * the tosched queue, we know that it won't receive any more messages. */
-    while (1)
+    t_task *task;
+    t_message *msg;
+        /* FIRST dispatch messages because they are associated with tasks. Once a task
+         * is in the 'tosched' queue, we know that it can't receive any more messages. */
+    while ((msg = messagelist_pop(messages)))
     {
-        t_message *msg;
-        if ((msg = messagelist_pop(messages)))
-        {
-                /* dispatch message (without lock!) If the associated
-                 * task has been cancelled, set 'owner' to NULL! */
-            msg->m_fn(msg->m_task->t_cancel ? 0 : msg->m_task->t_owner, msg->m_data);
-            freebytes(msg, sizeof(t_message));
-        }
-        else
-            break;
+            /* If the associated task has been cancelled, set 'owner' to NULL! */
+        msg->m_fn(msg->m_task->t_cancel ? 0 : msg->m_task->t_owner, msg->m_data);
+        freebytes(msg, sizeof(t_message));
     }
         /* now dispatch tasks */
-    while (1)
+    while ((task = tasklist_pop_sync(tosched)))
     {
-        t_task *task, *t;
-            /* try to pop task */
-    #if PD_WORKERTHREADS
-        tasklist_lock(tosched);
-    #endif
-        task = tasklist_pop(tosched);
-    #if PD_WORKERTHREADS
-        tasklist_unlock(tosched);
-    #endif
-        if (task)
-        {
-            if (task->t_suspend < 0)
-                bug("taskqueue_dopoll: negative task suspend count");
-                /* run callback (without lock!), if provided.
-                 * If the task has been cancelled, set 'owner' to NULL! */
-            if (task->t_cb)
-                task->t_cb(task->t_cancel ? 0 : task->t_owner, task->t_data);
-                /* remove from pending list */
-            if (task == queue->tq_pending)
-                queue->tq_pending = task->t_nextpending;
-            else
-            {
-                int found = 0;
-                for (t = queue->tq_pending; t; t = t->t_nextpending)
-                {
-                    if (t->t_nextpending == task)
-                    {
-                        t->t_nextpending = task->t_nextpending;
-                        found = 1;
-                        break;
-                    }
-                }
-                if (!found)
-                    bug("taskqueue_dopoll: task not in pending list");
-            }
-            freebytes(task, sizeof(t_task));
-        }
+        if (task->t_suspend < 0)
+            bug("taskqueue_dopoll: negative task suspend count");
+            /* Run callback. If the task has been cancelled, set 'owner' to NULL! */
+        if (task->t_cb)
+            task->t_cb(task->t_cancel ? 0 : task->t_owner, task->t_data);
+            /* remove from pending list */
+        if (task == queue->tq_pending)
+            queue->tq_pending = task->t_nextpending;
         else
-            break;
+        {
+            t_task *t;
+            int found = 0;
+            for (t = queue->tq_pending; t; t = t->t_nextpending)
+            {
+                if (t->t_nextpending == task)
+                {
+                    t->t_nextpending = task->t_nextpending;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found)
+                bug("taskqueue_dopoll: task not in pending list");
+        }
+        freebytes(task, sizeof(t_task));
     }
 }
 
@@ -791,11 +792,7 @@ t_task *task_start(t_pd *owner, void *data,
     if (queue->tq_running)
     {
             /* push task to 'fromsched' list and notify one worker thread */
-        t_tasklist *fromsched = &queue->tq_fromsched;
-        tasklist_lock(fromsched);
-        tasklist_push(fromsched, task);
-        tasklist_unlock(fromsched);
-        tasklist_notify(fromsched);
+        tasklist_push_sync(&queue->tq_fromsched, task, 1);
         return task;
     }
 #endif
@@ -903,15 +900,10 @@ int task_stop(t_task *task, int sync)
 
     if (!task->t_workfn) /* dummy task */
     {
-        /* keep around until the next scheduler tick for pending messages.
-         * NB: dummy tasks are never put on the 'fromsched' queue! */
-    #if PD_WORKERTHREADS
-        tasklist_lock(&queue->tq_tosched);
-    #endif
-        tasklist_push(&queue->tq_tosched, task);
-    #if PD_WORKERTHREADS
-        tasklist_unlock(&queue->tq_tosched);
-    #endif
+            /* keep the task alive until the next scheduler tick because
+             * it may be referenced by pending messages!
+             * NB: dummy tasks are never put on the 'fromsched' queue! */
+        tasklist_push_sync(&queue->tq_tosched, task, 0);
         return 1; /* ignore sync */
     }
 
@@ -1015,21 +1007,15 @@ void task_resume(t_task *task, t_task_workfn workfn)
             {
                 t_tasklist *fromsched = &queue->tq_fromsched;
                 task->t_workfn = workfn;
-                    /* reschedule task */
-                tasklist_lock(fromsched);
-                tasklist_push(fromsched, task);
-                tasklist_unlock(fromsched);
-                tasklist_notify(fromsched);
+                    /* reschedule task and notify worker thread */
+                tasklist_push_sync(fromsched, task, 1);
             }
             else /* completed/cancelled */
             {
                 t_tasklist *tosched = &queue->tq_tosched;
                     /* move task back to scheduler and notify the main thread
                      * since it might be waiting in task_stop() */
-                tasklist_lock(tosched);
-                tasklist_push(tosched, task);
-                tasklist_unlock(tosched);
-                tasklist_notify(tosched);
+                tasklist_push_sync(tosched, task, 1);
             }
         }
         return;
