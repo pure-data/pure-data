@@ -431,18 +431,16 @@ static void messagelist_free(t_messagelist *list)
 
 struct _taskqueue
 {
+    t_task *tq_pending; /* list of pending tasks */
+    t_tasklist tq_tosched; /* finished tasks */
 #if PD_WORKERTHREADS
-    t_tasklist tq_fromsched;
-    t_tasklist tq_tosched;
+    t_tasklist tq_fromsched; /* scheduled tasks */
     pthread_t *tq_threads; /* internal worker threads */
     int tq_numthreads; /* number of internal worker threads */
     int tq_running; /* thread(s) are running? */
     int tq_external; /* use external worker threads */
-#else
-    t_tasklist tq_list;
 #endif
-    t_task *tq_pending; /* list of pending tasks */
-    t_messagelist tq_messages;
+    t_messagelist tq_messages; /* messages sent to the main thread */
     t_clock *tq_clock;
 };
 
@@ -645,7 +643,7 @@ void sys_taskqueue_start(int threads)
 
 void sys_taskqueue_stop(void)
 {
-    tasklist_flush(&STUFF->st_taskqueue->tq_list);
+    tasklist_flush(&STUFF->st_taskqueue->tq_tosched);
     messagelist_flush(&STUFF->st_taskqueue->tq_messages);
     STUFF->st_taskqueue->tq_pending = 0;
 }
@@ -659,17 +657,15 @@ void s_task_newpdinstance(void)
     t_taskqueue *queue =
         STUFF->st_taskqueue = getbytes(sizeof(t_taskqueue));
 
-#if PD_WORKERTHREADS
+    queue->tq_pending = 0;
     tasklist_init(&queue->tq_tosched);
+#if PD_WORKERTHREADS
     tasklist_init(&queue->tq_fromsched);
     queue->tq_threads = 0;
     queue->tq_numthreads = 0;
     queue->tq_external = 0;
     queue->tq_running = 0;
-#else
-    tasklist_init(&queue->tq_list);
 #endif
-    queue->tq_pending = 0;
     messagelist_init(&queue->tq_messages);
         /* the clock is used to defer the callback to the next
         clock timeout in case there is no worker thread. */
@@ -680,11 +676,9 @@ void s_task_freepdinstance(void)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
     sys_taskqueue_stop();
+    tasklist_free(&queue->tq_tosched);
 #if PD_WORKERTHREADS
     tasklist_free(&queue->tq_fromsched);
-    tasklist_free(&queue->tq_tosched);
-#else
-    tasklist_free(&queue->tq_list);
 #endif
     messagelist_free(&queue->tq_messages);
     clock_free(queue->tq_clock);
@@ -694,13 +688,9 @@ void s_task_freepdinstance(void)
 
 static void taskqueue_dopoll(t_taskqueue *queue)
 {
-#if PD_WORKERTHREADS
-    t_tasklist *list = &queue->tq_tosched;
-#else
-    t_tasklist *list = &queue->tq_list;
-#endif
+    t_tasklist *tosched = &queue->tq_tosched;
     t_messagelist *messages = &queue->tq_messages;
-        /* first dispatch messages, since they refer to tasks. Once a task is on
+        /* first dispatch messages since they refer to tasks. Once a task is on
          * the tosched queue, we know that it won't receive any more messages. */
     while (1)
     {
@@ -719,13 +709,13 @@ static void taskqueue_dopoll(t_taskqueue *queue)
     while (1)
     {
         t_task *task, *t;
-            /* try to pop task from list */
+            /* try to pop task */
     #if PD_WORKERTHREADS
-        tasklist_lock(list);
+        tasklist_lock(tosched);
     #endif
-        task = tasklist_pop(list);
+        task = tasklist_pop(tosched);
     #if PD_WORKERTHREADS
-        tasklist_unlock(list);
+        tasklist_unlock(tosched);
     #endif
         if (task)
         {
@@ -772,12 +762,6 @@ t_task *task_start(t_pd *owner, void *data,
     t_task_workfn workfn, t_task_callback cb)
 {
     t_taskqueue *queue = STUFF->st_taskqueue;
-#if PD_WORKERTHREADS
-    t_tasklist *fromsched = &queue->tq_fromsched;
-#else
-    t_tasklist *list = &STUFF->st_taskqueue->tq_list;
-#endif
-
     t_task *task = getbytes(sizeof(t_task)), *t;
     task->t_next = 0;
 #ifdef PDINSTANCE
@@ -793,7 +777,7 @@ t_task *task_start(t_pd *owner, void *data,
     task->t_nextpending = queue->tq_pending;
     queue->tq_pending = task;
 
-    if (!task->t_workfn) /* dummy task - do not put on 'fromsched' queue! */
+    if (!task->t_workfn) /* dummy task - do not put on queue! */
     {
         if (task->t_cb)
         {
@@ -806,27 +790,20 @@ t_task *task_start(t_pd *owner, void *data,
 #if PD_WORKERTHREADS
     if (queue->tq_running)
     {
-            /* push task to list and notify one worker thread */
+            /* push task to 'fromsched' list and notify one worker thread */
+        t_tasklist *fromsched = &queue->tq_fromsched;
         tasklist_lock(fromsched);
         tasklist_push(fromsched, task);
         tasklist_unlock(fromsched);
         tasklist_notify(fromsched);
+        return task;
     }
-    else
-    {
-            /* execute work function synchronously */
-        task->t_workfn(task, task->t_data);
-            /* push to list and defer to next clock timeout */
-        tasklist_push(&queue->tq_tosched, task);
-        clock_delay(queue->tq_clock, 0);
-    }
-#else
+#endif
         /* execute work function synchronously */
     task->t_workfn(task, task->t_data);
-        /* push to list and defer to next clock timeout */
-    tasklist_push(list, task);
+        /* push to 'tosched' list and defer to next clock timeout */
+    tasklist_push(&queue->tq_tosched, task);
     clock_delay(queue->tq_clock, 0);
-#endif
     return task;
 }
 
@@ -928,13 +905,13 @@ int task_stop(t_task *task, int sync)
     {
         /* keep around until the next scheduler tick for pending messages.
          * NB: dummy tasks are never put on the 'fromsched' queue! */
-#if PD_WORKERTHREADS
+    #if PD_WORKERTHREADS
         tasklist_lock(&queue->tq_tosched);
+    #endif
         tasklist_push(&queue->tq_tosched, task);
+    #if PD_WORKERTHREADS
         tasklist_unlock(&queue->tq_tosched);
-#else
-        tasklist_push(&queue->tq_list, task);
-#endif
+    #endif
         return 1; /* ignore sync */
     }
 
