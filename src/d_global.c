@@ -49,6 +49,13 @@ static t_int *sigsend_perform(t_int *w)
     return (w+4);
 }
 
+static void sigsend_channels(t_sigsend *x, t_float fnchans)
+{
+    x->x_nchans = fnchans >= 1 ? fnchans : 1;
+    x->x_length = 1; /* trigger update via sigsend_fixbuf */
+    canvas_update_dsp();
+}
+
 static void sigsend_fixbuf(t_sigsend *x, int length)
 {
     if (x->x_length != length)
@@ -87,6 +94,8 @@ static void sigsend_setup(void)
         A_DEFSYM, A_DEFFLOAT, 0);
     class_setdspflags(sigsend_class, CLASS_MULTICHANNEL);
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);
+    class_addmethod(sigsend_class, (t_method)sigsend_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addmethod(sigsend_class, (t_method)sigsend_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigsend_class, gensym("send-receive-tilde"));
@@ -104,12 +113,11 @@ typedef struct _sigreceive
     int x_nchans;
 } t_sigreceive;
 
-static void *sigreceive_new(t_symbol *s, t_floatarg fnchans)
+static void *sigreceive_new(t_symbol *s)
 {
     t_sigreceive *x = (t_sigreceive *)pd_new(sigreceive_class);
     x->x_length = 0;             /* this is changed in dsp routine */
-    if ((x->x_nchans = fnchans) < 1)
-        x->x_nchans = 1;
+    x->x_nchans = 1;
     x->x_sym = s;
     x->x_wherefrom = 0;
     outlet_new(&x->x_obj, &s_signal);
@@ -170,14 +178,21 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
     x->x_wherefrom = 0;
     if (sender)
     {
-        int length = canvas_getsignallength(sender->x_canvas);
+        int length = canvas_getsignallength(sender->x_canvas),
+            dspstate = pd_getdspstate();
         sigsend_fixbuf(sender, length);
+        if (!dspstate)
+            x->x_nchans = sender->x_nchans;
         if (sender->x_nchans == x->x_nchans &&
             length == x->x_length)
                 x->x_wherefrom = sender->x_vec;
         else if (x->x_length)
         {
-            pd_error(x,
+            if (dspstate && length == x->x_length)
+                pd_error(x,
+     "receive~ (set %s) changed number of channels; restart DSP to fix",
+                    s->s_name);
+            else pd_error(x,
                 "receive~ %s: dimensions %dx%d don't match the send~ (%dx%d)",
                 x->x_sym->s_name, x->x_nchans, x->x_length,
                     sender->x_nchans, sender->x_length);
@@ -202,7 +217,7 @@ static void sigreceive_setup(void)
 {
     sigreceive_class = class_new(gensym("receive~"),
         (t_newmethod)sigreceive_new, 0,
-        sizeof(t_sigreceive), 0, A_DEFSYM, A_DEFFLOAT, 0);
+        sizeof(t_sigreceive), 0, A_DEFSYM, 0);
     class_addcreator((t_newmethod)sigreceive_new, gensym("r~"),
         A_DEFSYM, A_DEFFLOAT, 0);
     class_setdspflags(sigreceive_class, CLASS_MULTICHANNEL);
@@ -238,6 +253,13 @@ static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
     x->x_vec = (t_sample *)getbytes(x->x_length * sizeof(t_sample));
     outlet_new(&x->x_obj, &s_signal);
     return (x);
+}
+
+static void sigcatch_channels(t_sigcatch *x, t_float fnchans)
+{
+    x->x_nchans = fnchans >= 1 ? fnchans : 1;
+    x->x_length = 1; /* trigger update via sigcatch_fixbuf */
+    canvas_update_dsp();
 }
 
 static void sigcatch_fixbuf(t_sigcatch *x, int length)
@@ -283,7 +305,9 @@ static void sigcatch_setup(void)
 {
     sigcatch_class = class_new(gensym("catch~"), (t_newmethod)sigcatch_new,
         (t_method)sigcatch_free, sizeof(t_sigcatch),
-            CLASS_NOINLET | CLASS_MULTICHANNEL, A_DEFSYM, A_DEFFLOAT, 0);
+            CLASS_MULTICHANNEL, A_DEFSYM, A_DEFFLOAT, 0);
+    class_addmethod(sigcatch_class, (t_method)sigcatch_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addmethod(sigcatch_class, (t_method)sigcatch_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigcatch_class, gensym("throw~-catch~"));
@@ -337,7 +361,7 @@ static void sigthrow_set(t_sigthrow *x, t_symbol *s)
         sigcatch_fixbuf(catcher, length);
         if (x->x_length && length != x->x_length)
         {
-            pd_error(x, "throw~ %s: my vector size %d doesn't match catch (%d)",
+            pd_error(x, "throw~ %s: my vector size %d doesn't match catch~ (%d)",
                 x->x_sym->s_name, x->x_length, length);
             x->x_whereto = 0;
         }
