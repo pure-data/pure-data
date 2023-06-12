@@ -104,12 +104,11 @@ typedef struct _sigreceive
     int x_nchans;
 } t_sigreceive;
 
-static void *sigreceive_new(t_symbol *s, t_floatarg fnchans)
+static void *sigreceive_new(t_symbol *s)
 {
     t_sigreceive *x = (t_sigreceive *)pd_new(sigreceive_class);
     x->x_length = 0;             /* this is changed in dsp routine */
-    if ((x->x_nchans = fnchans) < 1)
-        x->x_nchans = 1;
+    x->x_nchans = 1;
     x->x_sym = s;
     x->x_wherefrom = 0;
     outlet_new(&x->x_obj, &s_signal);
@@ -170,14 +169,21 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
     x->x_wherefrom = 0;
     if (sender)
     {
-        int length = canvas_getsignallength(sender->x_canvas);
+        int length = canvas_getsignallength(sender->x_canvas),
+            dspstate = pd_getdspstate();
         sigsend_fixbuf(sender, length);
+        if (!dspstate)
+            x->x_nchans = sender->x_nchans;
         if (sender->x_nchans == x->x_nchans &&
             length == x->x_length)
                 x->x_wherefrom = sender->x_vec;
         else if (x->x_length)
         {
-            pd_error(x,
+            if (dspstate && length == x->x_length)
+                pd_error(x,
+     "receive~ (set %s) changed number of channels; restart DSP to fix",
+                    s->s_name);
+            else pd_error(x,
                 "receive~ %s: dimensions %dx%d don't match the send~ (%dx%d)",
                 x->x_sym->s_name, x->x_nchans, x->x_length,
                     sender->x_nchans, sender->x_length);
