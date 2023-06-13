@@ -53,6 +53,10 @@ PD_CPPFLAGS=""
 PD_CFLAGS=""
 PD_LDFLAGS=""
 
+
+pd_transform_name=$(echo ${program_transform_name} | sed -e 's|\$\$|$|')
+pd_transformed=$(echo pd | sed -e "${pd_transform_name}")
+
 #########################################
 ##### OS Detection #####
 
@@ -138,7 +142,7 @@ AS_CASE([$host],
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -lpd"
+    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -l${pd_transformed}"
     EXTERNAL_EXTENSION=dll
 
     # workaround for rpl_malloc/rpl_realloc bug in autoconf when cross-compiling

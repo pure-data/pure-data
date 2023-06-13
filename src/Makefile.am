@@ -45,6 +45,9 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 pd_LDADD_core += $(LIBM)
 libpd_la_LIBADD += $(LIBM)
 
+# in case somebody passes '--program-transform-name' to configure
+pd_transformed=$(shell echo pd | sed -e '$(transform)')
+
 #########################################
 ##### Files, Binaries, & Libs #####
 
@@ -390,16 +393,16 @@ if WINDOWS
 # win32 sockets 2, multimedia, and all that
 LIBS += -lws2_32 -lwinmm -lole32 -static-libgcc -static-libstdc++
 
-bin_SCRIPTS += pd.dll pd.lib pd.def pd.com
-CLEANFILES += pd.dll pd.lib pd.def pd.com
-noinst_SCRIPTS += libpd.a
-CLEANFILES += libpd.a
+bin_SCRIPTS += $(pd_transformed).dll $(pd_transformed).lib $(pd_transformed).def $(pd_transformed).com
+CLEANFILES += $(pd_transformed).dll $(pd_transformed).lib $(pd_transformed).def $(pd_transformed).com
+noinst_SCRIPTS += lib$(pd_transformed).a
+CLEANFILES += lib$(pd_transformed).a
 CLEANFILES += pd.res
 
 # hide the console
 pd_LDFLAGS += -mwindows
 # link with resources and pd.dll import library
-pd_LDADD += pd.res pd.lib
+pd_LDADD += pd.res $(pd_transformed).lib
 
 libpd_la_LDFLAGS += -Wl,--export-all-symbols -static-libgcc
 libpd_la_LIBADD += -lws2_32 -lkernel32
@@ -416,28 +419,28 @@ pd.res: pd.rc
 	$(WINDRES) $< -O coff -o $@
 
 # import library for pd.dll. also works with MSVC!
-pd.lib: pd.dll
+$(pd_transformed).lib: $(pd_transformed).dll
+$(pd_transformed).def: $(pd_transformed).dll
 
 # another import library (when linking with -lpd), the same as pd.lib.
-libpd.a: pd.lib
+lib$(pd_transformed).a: $(pd_transformed).lib
 	cp $< $@
 
-pd.def: pd.dll
-
-pd.dll: $(pd_OBJECTS_core) $(pd_OBJECTS_standalone)
+$(pd_transformed).dll: $(pd_OBJECTS_core) $(pd_OBJECTS_standalone)
 	$(CXX) -shared \
 	$(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone) \
-	-o pd.dll \
+	-o $@ \
 	$(pd_OBJECTS_core) $(pd_OBJECTS_standalone) \
 	$(pd_LDADD_core) $(pd_LDADD_standalone) \
 	$(LIBS) \
-	-Wl,--export-all-symbols -Wl,--out-implib=pd.lib -Wl,--output-def=pd.def
+	-Wl,--export-all-symbols \
+    -Wl,--out-implib=$(patsubst %.dll,%.lib,$@) -Wl,--output-def=$(patsubst %.dll,%.def,$@)
 
 # same as pd.exe but without -mwindows and resources
 # NOTE: this is a bit ugly. I couldn't figure out how to get automake to build
 # two programs with the same basename but different suffix.
-pd.com: pd-s_entry.o pd.lib
-	$(CXX) $(LDFLAGS) -o pd.com pd-s_entry.o $(LIBS) pd.lib
+$(pd_transformed).com: pd-s_entry.o $(pd_transformed).lib
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 else
 # for other OS, join pd_* with pd_*_core
@@ -486,8 +489,7 @@ clean-local:
 # we remove any existing symlink if doing a repeated install.
 install-exec-hook:
 	$(MKDIR_P) $(DESTDIR)$(libpdbindir)
-	rm -f $(DESTDIR)$(libpdbindir)/pd
-	$(LN_S) $(DESTDIR)$(bindir)/pd $(DESTDIR)$(libpdbindir)/pd
+	test "$(bindir)" = "$(libpdbindir)" || $(LN_S) -f $(DESTDIR)$(bindir)/$(pd_transformed)$(EXEEXT) $(DESTDIR)$(libpdbindir)/$(pd_transformed)$(EXEEXT)
 
 # remove the $(libdir)/pd/bin link
 # &
