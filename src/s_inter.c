@@ -657,7 +657,7 @@ static int rb_dosendone(ring_buffer* rb, const int ignoreSigFd)
         length -= toread;
         if(failed)
         {
-            iot_warning("Error on outgoing socket. Discarding %zu bytes of an"
+            iot_warning("Error on outgoing socket. Discarding %zu bytes of an "
                     "outgoing packet of size %zu\n", length, m.length);
             // read and discard the rest of the message from the ring buffer to
             // leave it in a consistent state
@@ -1160,7 +1160,7 @@ static int sys_domicrosleep(int microsec)
             {
                 rb_read_from_buffer(rbrmfdsend, (char*)&m, sizeof(m));
                 int fd = m.m_fd;
-                printf("Notifying the owner of sendfd %d of an erro\n", fd);
+                printf("Notifying the owner of sendfd %d of an error\n", fd);
                 // find what object owns it
                 for(i = 0; i < INTER->i_nfdsend; ++i)
                 {
