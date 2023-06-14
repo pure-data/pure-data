@@ -145,7 +145,28 @@ const char**sys_get_dllextensions(void)
     if(!sys_dllextent) {
         const char *extraext = 0;
 #if defined EXTERNAL_EXTENSION
-        extraext = STRINGIFY(EXTERNAL_EXTENSION);
+        do {
+            /* the EXTERNAL_EXTENSION might be surrounded by single-quotes
+             * to prevent macro-expansion within the macro
+             * if so, get rid of them
+             */
+            unsigned int i,j;
+            static char extern_extension[MAXPDSTRING];
+            strcpy(extern_extension, STRINGIFY(EXTERNAL_EXTENSION));
+            extern_extension[MAXPDSTRING-1] = 0;
+            for(i=0,j=0; i<MAXPDSTRING; i++) {
+                if(!extern_extension[i]) {
+                    extern_extension[j] = 0;
+                    break;
+                }
+                switch(extern_extension[i]) {
+                case '\'': break;
+                default:
+                    extern_extension[j++] = extern_extension[i];
+                }
+            }
+            extraext = extern_extension;
+        } while (0);
 #endif
 
         int i, cpu;
