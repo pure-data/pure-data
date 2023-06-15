@@ -68,6 +68,7 @@ AS_CASE([$host],
         portaudio=yes
         portmidi=yes
         jack_framework=yes
+        watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
