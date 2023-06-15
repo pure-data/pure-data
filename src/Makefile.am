@@ -490,6 +490,8 @@ clean-local:
 install-exec-hook:
 	$(MKDIR_P) $(DESTDIR)$(libpdbindir)
 	test "$(bindir)" = "$(libpdbindir)" || $(LN_S) -f $(DESTDIR)$(bindir)/$(pd_transformed)$(EXEEXT) $(DESTDIR)$(libpdbindir)/$(pd_transformed)$(EXEEXT)
+#  try to create relative symlinks (doesn't work on macOS)
+	-test "$(bindir)" = "$(libpdbindir)" || $(LN_S) -f --relative $(DESTDIR)$(bindir)/$(pd_transformed)$(EXEEXT) $(DESTDIR)$(libpdbindir)/$(pd_transformed)$(EXEEXT)
 
 # remove the $(libdir)/pd/bin link
 # &
