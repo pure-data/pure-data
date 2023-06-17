@@ -298,7 +298,11 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
 
         if (err == paInvalidSampleRate)
         {
-            sampleRate=outRate;
+            double oldrate = sampleRate;
+            sampleRate = outRate > 0 ? outRate : inRate;
+            logpost(0, PD_NORMAL,
+                "warning: requested samplerate %d not supported, using %d.",
+                    (int)oldrate, (int)sampleRate);
         }
 
         err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams,
