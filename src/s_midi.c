@@ -696,7 +696,7 @@ void sys_gui_midipreferences(void) {
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
-    float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
+    t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
         /* query the current MIDI settings */
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
