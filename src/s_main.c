@@ -496,15 +496,15 @@ static char *(usagemessage[]) = {
 
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-"-asio            -- use ASIO audio driver (via Portaudio)\n",
-"-pa              -- synonym for -asio\n",
+"-pa              -- use Portaudio API (for ASIO or WASAPI)\n",
+"-asio            -- synonym for -pa\n",
 #else
 "-pa              -- use Portaudio API\n",
 #endif
 #endif
 
 #ifdef USEAPI_MMIO
-"-mmio            -- use MMIO audio API (default for Windows)\n",
+"-mmio            -- use legacy MMIO audio API\n",
 #endif
 
 #ifdef USEAPI_AUDIOUNIT
