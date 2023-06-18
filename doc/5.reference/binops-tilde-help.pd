@@ -164,13 +164,13 @@
 #X restore 670 465 pd multichannel;
 #X text 519 450 mutichannel signal support ----------->, f 20;
 #X text 35 307 These objects perform the 4 arithmetic functions ([+~] \, etc) \, output the minimum or maximum of two numbers ([min~] \, [max~]) \, or perform logarithms and exponentiation ([log~] \, [pow~])., f 62;
-#X text 35 358 [log~] computes the logarithm of the left inlet to the base 'e' (about 2.718) or to another base specified by the right inlet or a creation argument., f 62;
-#X text 35 409 [pow~] raises a signal to a numeric power given by the right inlet or a creation argument. The inputs may be positive \, zero \, or negative. WARNING: it's easy to generate "infinity" \, but there' a protection against NaNs (they become 0)., f 62;
+#X text 35 422 [pow~] raises a signal to a numeric power given by the right inlet or a creation argument. The inputs may be positive \, zero \, or negative. WARNING: it's easy to generate "infinity" \, but there' a protection against NaNs (they become 0)., f 62;
 #X text 615 553 updated for Pd version 0.54;
 #X obj 10 510 cnv 1 830 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 141 523 (etc.) - control rate versions;
 #X text 298 17 - signal binary operators;
 #X text 422 525 (etc.) - signal unary operators;
+#X text 35 358 [log~] computes the logarithm of the left inlet to the base 'e' (about 2.718) or to another base specified by the right inlet or a creation argument. A 0 or negative left input gives -1000 as the result., f 62;
 #X connect 0 0 30 0;
 #X connect 1 0 26 0;
 #X connect 11 0 8 1;

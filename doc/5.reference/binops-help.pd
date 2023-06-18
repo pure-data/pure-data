@@ -1,4 +1,4 @@
-#N canvas 324 52 819 415 12;
+#N canvas 324 52 827 415 12;
 #X obj 23 17 +;
 #X text 16 338 see also:;
 #X obj 94 341 +~;
@@ -24,7 +24,7 @@
 #X obj 291 253 min;
 #X floatatom 47 166 5 0 0 0 - - - 0;
 #X obj 603 344 expr;
-#X obj 253 375 sin;
+#X obj 263 375 sin;
 #X obj 502 253 + 3;
 #X obj 622 253 * 3;
 #X floatatom 89 286 5 0 0 0 - - - 0;
@@ -82,15 +82,15 @@
 #X floatatom 677 221 5 0 0 0 - - - 0;
 #X floatatom 747 221 5 0 0 0 - - - 0;
 #X text 18 58 These binary operators perform the 4 arithmetic functions ([+] \, etc) \, output the minimum or maximum of two numbers ([min] \, [max]) and perform logarithms ([log]) and power function ([pow]). All of these objects take a bang message to evaluate the operation with the previously set values and an argument to set the right input value., f 58;
-#X text 453 58 As in the signal version \, [log] takes a base value via an argument or the right inlet \, but it defaults to "e". Like the signal version \, [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 49;
 #X text 486 185 Initializing right input with an argument:;
 #X obj 25 375 abs;
 #X text 598 377 updated for Pd version 0.54;
 #X text 277 17 - control binary operators;
 #X text 130 341 (etc.) - signal versions;
-#X text 63 374 (etc.) - unary operators;
+#X text 54 376 (etc.) - unary operators;
 #X text 359 343 (etc.) - other binary operators;
-#X text 291 374 (etc.) - trigonometric functions;
+#X text 293 376 (etc.) - trigonometric functions;
+#X text 457 59 As in the signal versions \; - [log] takes a base value via an argument or the right inlet but defaults to "e". A 0 or negative left input gives -1000 as the result. - [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 48;
 #X connect 3 0 30 0;
 #X connect 13 0 14 0;
 #X connect 14 0 17 0;
