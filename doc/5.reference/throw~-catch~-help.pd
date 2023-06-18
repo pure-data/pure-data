@@ -59,7 +59,7 @@
 #X obj 146 494 tabsend~;
 #X text 210 251 You can redirect [throw~] via a "set" message., f 16;
 #X text 140 194 <- \$0 needs to be expanded from objects., f 23;
-#N canvas 680 88 505 390 multichannel 1;
+#N canvas 680 88 505 390 multichannel 0;
 #X obj 304 247 metro 200;
 #X obj 193 284 snapshot~;
 #X floatatom 193 314 5 0 0 0 - - - 0;
