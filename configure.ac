@@ -32,6 +32,7 @@ local_portaudio=yes
 local_portmidi=yes
 mmio=no
 asio=no
+wasapi=no
 jack_framework=no
 locales=yes
 
@@ -128,6 +129,7 @@ AS_CASE([$host],
     platform=MinGW
     mmio=yes
     asio=yes
+    wasapi=yes
     portaudio=yes
     portmidi=yes
 
@@ -148,6 +150,7 @@ AS_CASE([$host],
     platform=Cygwin
     mmio=yes
     asio=yes
+    wasapi=yes
     portaudio=yes
     portmidi=yes
 
@@ -464,6 +467,12 @@ AS_IF([test x$asio = xyes],
         AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
 
+#### WASAPI ####
+AC_ARG_ENABLE([wasapi],
+    [AS_HELP_STRING([--disable-wasapi], [do not use WASAPI backend])],
+    [wasapi=$enableval])
+test x$WINDOWS = xyes || wasapi=no
+
 ##### Apple's CoreAudio #####
 # not used directly, implicitly needed when using PortAudio on OSX
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
@@ -605,6 +614,10 @@ dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
+
+##### WASAPI #####
+AM_CONDITIONAL(WASAPI, test x$wasapi = xyes)
+AS_IF([test x$wasapi = xyes], [audio_backends="WASAPI ${audio_backends}"])
 
 ##### CoreAudio #####
 # portaudio doesn't work with iOS, so don't bother with CoreAudio
