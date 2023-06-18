@@ -985,7 +985,8 @@ t_int *log_tilde_perform_scalar(t_int *w)
         t_sample f = *in1++;
         if (f <= 0)
             *out = -1000;   /* rather than blow up, output a number << 0 */
-        else *out++ = log(f) * multiplier;
+        else *out = log(f) * multiplier;
+        out++;
     }
     return (w+5);
 }
@@ -1004,7 +1005,8 @@ t_int *log_tilde_perform_reversescalar(t_int *w)
             *out = -1000;   /* rather than blow up, output a number << 0 */
         else if (scalarin <- 0)
             *out = -1000;
-        else *out++ = log(scalarin) / log(base);
+        else *out = log(scalarin) / log(base);
+        out++;
     }
     return (w+5);
 }
@@ -1168,4 +1170,3 @@ void d_arithmetic_setup(void)
     log_tilde_setup();
     pow_tilde_setup();
 }
-
