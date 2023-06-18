@@ -164,7 +164,21 @@ static void adc_dsp(t_adc *x, t_signal **sp)
 static void adc_set(t_adc *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    for (i = 0; i < argc && i < x->x_n; i++)
+    if (x->x_multi)
+    {
+        int nchannels = atom_getfloatarg(0, argc, argv),
+            startchannel = atom_getfloatarg(1, argc, argv);
+        if (nchannels < 1)
+            nchannels = 2;
+        if (startchannel < 1)
+            startchannel = 1;
+        x->x_vec = (int *)t_resizebytes(x->x_vec,
+            x->x_n * sizeof(*x->x_vec), nchannels * sizeof(*x->x_vec));
+        for (i = 0; i < nchannels; i++)
+            x->x_vec[i] = startchannel + i;
+        x->x_n = nchannels;
+    }
+    else for (i = 0; i < argc && i < x->x_n; i++)
         x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     canvas_update_dsp();
 }
