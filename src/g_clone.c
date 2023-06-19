@@ -148,6 +148,37 @@ static void clone_in_fwd(t_in *x, t_symbol *s, int argc, t_atom *argv)
 
 static void clone_setn(t_clone *, t_floatarg);
 
+static void clone_in_do(t_in *x, t_floatarg f)
+{
+    int state = f != 0;
+    if(state != x->i_owner->x_packout)
+    {
+        x->i_owner->x_packout = state;
+        canvas_update_dsp();
+    }
+}
+
+static void clone_in_di(t_in *x, t_floatarg f)
+{
+    int state = f != 0;
+    if(state != x->i_owner->x_distributein)
+    {
+        x->i_owner->x_distributein = state;
+        canvas_update_dsp();
+    }
+}
+
+
+static void clone_in_d(t_in *x, t_floatarg f)
+{
+    int state = f != 0;
+    if(state != x->i_owner->x_distributein || state != x->i_owner->x_packout)
+    {
+        x->i_owner->x_distributein = x->i_owner->x_packout = state;
+        canvas_update_dsp();
+    }
+}
+
 static void clone_in_resize(t_in *x, t_floatarg f)
 {
     canvas_setcurrent(x->i_owner->x_canvas);
@@ -625,6 +656,13 @@ void clone_setup(void)
         A_GIMME, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_resize, gensym("resize"),
         A_FLOAT, 0);
+    class_addlist(clone_in_class, (t_method)clone_in_list);
+    class_addmethod(clone_in_class, (t_method)clone_in_do, gensym("do"),
+        A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_di, gensym("di"),
+            A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_d, gensym("d"),
+            A_FLOAT, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
