@@ -718,12 +718,6 @@ void sys_findprogdir(const char *progname)
 #endif
 }
 
-#ifdef _WIN32
-static int sys_mmio = 1;
-#else
-static int sys_mmio = 0;
-#endif
-
 int sys_argparse(int argc, const char **argv)
 {
     t_audiosettings as;
@@ -910,7 +904,6 @@ int sys_argparse(int argc, const char **argv)
             || !strcmp(*argv, "-asio"))
         {
             as.a_api = API_PORTAUDIO;
-            sys_mmio = 0;
             argc--; argv++;
         }
 #else
@@ -929,7 +922,6 @@ int sys_argparse(int argc, const char **argv)
         else if (!strcmp(*argv, "-mmio"))
         {
             as.a_api = API_MMIO;
-            sys_mmio = 1;
             argc--; argv++;
         }
 #else

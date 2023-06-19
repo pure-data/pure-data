@@ -733,7 +733,6 @@ void sys_listdevs(void)
 #if 0
         /* To agree with command line flags, normally start at 1 */
         /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
-        /* (see also sys_mmio variable in s_main.c)  */
 
        /* JMZ: otoh, it seems that the '-audiodev' flags 0-based
         * indices on ALSA and PORTAUDIO as well,
