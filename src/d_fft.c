@@ -289,7 +289,7 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
 static void sigrifft_setup(void)
 {
     sigrifft_class = class_new(gensym("rifft~"), sigrifft_new, 0,
-        sizeof(t_sigrifft), 0, 0);
+        sizeof(t_sigrifft), CLASS_MULTICHANNEL, 0);
     class_setfreefn(sigrifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrifft_class, t_sigrifft, x_f);
     class_addmethod(sigrifft_class, (t_method)sigrifft_dsp,
