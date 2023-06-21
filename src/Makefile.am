@@ -19,7 +19,7 @@ libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY @PD_CPPFLAGS@
 libpd_la_CFLAGS = @PD_CFLAGS@
 libpd_la_LIBADD =
 libpd_la_LDFLAGS = @PD_LDFLAGS@
-libpdincludedir = $(includedir)/libpd
+libpdincludedir = $(pkgincludedir)
 libpdinclude_HEADERS =
 
 libpdbin_PROGRAMS =
