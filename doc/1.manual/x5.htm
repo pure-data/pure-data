@@ -30,6 +30,35 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.54-0 ------------------------------
+
+<P> Multichannel audio signals are supported.  They may be created or split into
+component channels using the snake~ objects.  Stateless tilde objects (+~, etc.,
+and send~/receive~, throw~/catch~, tabread~, etc., inlet~/outlet~ (actually
+those are not always stateless but it was judged necessary to support them
+anyhow) and dac~/adc~. The clone~ object received special attention since it
+might be desirable to distribute multichannel signals among the cloned patches
+or to pass them directly into all copies as multichannel inputs and outputs.
+
+<P> The clone~ object takes a message to change the number of copies.  So now Pd
+is useful as a non-real-time software synthesizer.  Changing the number of
+copies will cause massive reinitialization and memory allocation and should not
+be used during preformance, only during setup.
+
+<P> Sigmund~ got some new optimizations and has more parameters that can be
+tuned for a particular instrument.  A longstanding octave-jumping problem has been
+partially addressed, and anyway, a new output type offeres even/odd balance so
+that a synth can play in unison with an instrument with very few octave jumps
+by coherently mixing both possible octaves.
+
+<P> The 64-bit windows build uses the lower-latency WASAPI audio system in place
+of the older MMIO.  This therefore only runs on Windows 7 and newer.  The 32-bit version
+can still run all the way back to Windows XP.
+
+<P> improved settings dialog window.
+
+<P> As usual, countless bug fixes and miscellaneous improvements.
+
 <P> ------------------ 0.53-1 ------------------------------
 
 <P> Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of

@@ -22,6 +22,8 @@ libpd_la_LDFLAGS = @PD_LDFLAGS@
 libpdincludedir = $(includedir)/libpd
 libpdinclude_HEADERS =
 
+libpdbin_PROGRAMS =
+
 # there are pd_* and pd_*_core variables as we need different flags on Windows
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
 # also, the "_core" suffix is used as this keeps automake from thinking these
@@ -39,6 +41,10 @@ LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 
+
+pd_LDADD_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
+
 #########################################
 ##### Files, Binaries, & Libs #####
 
@@ -47,6 +53,12 @@ bin_PROGRAMS = pd pdsend pdreceive
 
 if LIBPD
 lib_LTLIBRARIES = libpd.la
+endif
+
+if PD_WATCHDOG
+# install watchdog to $(libdir)/pd/bin as it's not a user facing program
+libpdbin_PROGRAMS += pd-watchdog
+pd_CFLAGS += -DPD_WATCHDOG=1
 endif
 
 pdsend_SOURCES = u_pdsend.c s_net.c
@@ -190,7 +202,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h
 noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
 
 if LIBPD
@@ -209,6 +221,17 @@ EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
 WISH=@WISH@
 WISHDEFINE=$(if $(WISH),-DWISH='"$(WISH)"')
 pd_CFLAGS += $(WISHDEFINE)
+
+# deken specifiers (if set)
+DEKEN_OS=@DEKEN_OS@
+DEKEN_CPU=@DEKEN_CPU@
+DEKEN_DEFINE=
+DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="$(DEKEN_OS)")
+DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="$(DEKEN_CPU)")
+pd_CFLAGS += $(DEKEN_DEFINE)
+
+
+DEKEN_DEFINE+=$(if $(EXTERNAL_EXTENSION),-DEXTERNAL_EXTENSION="'.$(EXTERNAL_EXTENSION)'")
 
 #########################################
 ##### Configurations Per Library #####
@@ -247,6 +270,7 @@ endif
 if OSS
 pd_CFLAGS += -DUSEAPI_OSS
 pd_SOURCES_standalone += s_audio_oss.c s_midi_oss.c
+pd_LDADD_standalone += @OSS_LIBS@
 endif
 
 ##### Windows MultiMedia (File) I/O #####
@@ -336,59 +360,21 @@ endif
 #########################################
 ##### Configurations Per Platform #####
 
-##### GNU/Hurd #####
-if HURD
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
-
+if !WINDOWS
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
 pd_LDFLAGS_core += -export-dynamic
-
-# on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
-pd_LDFLAGS_core += $(LIBM)
-libpd_la_LIBADD += $(LIBM)
-
-# force linking to pthread, which should really be done with some autotools way
-pd_LDFLAGS_core += -lpthread
-libpd_la_LIBADD += -lpthread
-
-# force linking to dl, which should really be done with some autotools way
-pd_LDFLAGS_core += -ldl
-libpd_la_LIBADD += -ldl
-
-endif
-
-##### GNU/Linux #####
-if LINUX
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
-
-# this flag has to have a single leading "-" for libtool, even though ld uses
-# --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
-pd_LDFLAGS_core += -export-dynamic
-
-# on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
-pd_LDFLAGS_core += $(LIBM)
-libpd_la_LIBADD += $(LIBM)
-
 endif
 
 ##### Apple Mac OSX #####
 if MACOSX
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
 
 # kludge, should use auto macro __APPLE__
 # but who knows what externals rely on this
 pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
-LIBS += -ldl -lm -lpthread -framework CoreFoundation
-libpd_la_LIBADD += -ldl -lm -lpthread
+LIBS += -framework CoreFoundation
 libpd_la_LDFLAGS += -framework CoreFoundation
 
 # PERTHREAD requires macOS 10.9+ SDK

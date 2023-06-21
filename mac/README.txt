@@ -103,7 +103,7 @@ embedded Wish.apps you need with tcltk-wish.sh can save you some time as they
 can be reused when (re)making the Pd .app bundle.
 
 Usually, it's best to use stable releases of Tcl/Tk. However, there are times
-when building from the current development version is useful. For instance, 
+when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
 your system, you can then see if there is a fix for this in the Tcl/Tk
 development version on GitHub. If so, then you can test by using the
@@ -222,7 +222,7 @@ Pd .app bundle id:
 
 macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
 result that Pd's default font, DejaVu Sans Mono, renders thin and closer
-together than system fonts. This results in objects on the patch canvas that are 
+together than system fonts. This results in objects on the patch canvas that are
 longer their inner text and text selection positioning is off.
 
 To remedy this for now, Pd 0.51-3 changed Pd's default font for macOS to Menlo
@@ -234,5 +234,39 @@ positioning.
 
 Pd currently disables Dark Mode support by setting the
 NSRequiresAquaSystemAppearance key to true in both the app bundle's Info.plist
-and the GUI defaults preference file. This restruction may be removed in the
+and the GUI defaults preference file. This restriction may be removed in the
 future once Dark Mode is handled in the GUI.
+
+## Debugging Releases
+
+On macOS 10.15+, apps must be signed with an entitlement to allow debugging.
+This is good for security, but bad if you want to run Pd in lldb to figure out
+why your custom external is crashing.
+
+To make this work, the entitlement can be added to an existing Pd release .app
+bundle using the codesign command in Terminal (steps by Pierre Alexandre
+Tremblay):
+
+1. Extract the current Pd entitlements from the internal pd binary:
+
+    codesign -d /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd \
+        --entitlements :~/Desktop/pd-entitlements.xml
+
+2. Edit pd-entitlements.xml on your Desktop, add the following key, and save:
+
+    <key>com.apple.security.get-task-allow</key>
+    <true/>
+
+3. Re-sign the pd binary with the updated entitlements:
+
+    codesign -s - --deep --force --options=runtime \
+        --entitlements ~/Desktop/pd-entitlements.xml \
+        /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+
+Now Pd can be run with lldb using:
+
+    lldb /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+
+Note: Re-signing using an ad-hoc identifier will work on the development system,
+      but running the Pd .app bundle on another system will result in security
+      warnings as the original signature and notarization are invalid.

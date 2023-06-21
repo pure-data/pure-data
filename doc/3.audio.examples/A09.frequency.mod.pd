@@ -1,4 +1,4 @@
-#N canvas 564 23 655 688 12;
+#N canvas 495 23 652 664 12;
 #X declare -stdpath ./;
 #X obj 218 172 *~;
 #X floatatom 218 87 5 0 0 0 - - - 0;
@@ -8,7 +8,7 @@
 #X array fm-output 441 float 0;
 #X coords 0 1.02 440 -1.02 200 130 1;
 #X restore 401 97 graph;
-#X obj 204 288 tabwrite~ fm-output;
+#X obj 196 286 tabwrite~ fm-output;
 #X floatatom 236 142 4 0 0 0 - - - 0;
 #X text 123 89 carrier;
 #X text 122 107 frequency;
@@ -23,16 +23,16 @@
 #X text 277 135 modulation;
 #X obj 218 112 osc~;
 #X text 405 229 --- 0.01 seconds ----;
-#X text 61 484 To get the FM sound \, set all three of carrier frequency \, modulation frequency \, and modulation index in the hundreds. Note that you get a timbral change as you sweep modulation index \, because this changes the amplitudes of the components of the output sound but not their frequencies., f 71;
-#X obj 90 297 output~;
-#X text 369 632 updated for Pd version 0.37;
-#X text 61 388 This patch shows the classical FM synthesis technique developed by John Chowning. It's nothing but an oscillator with vibrato controlled by another "modulation" oscillator. First \, to understand the patch \, set carrier frequency to 400 or so \, modulation frequency between 5 and 10 \, and try modulation index values between 0 and 400 \, say. You'll hear a sine wave with vibrato., f 71;
-#X text 61 563 The component frequencies are equal to the carrier frequency \, plus or minus multiples of the modulator frequency. A more complete discussion of FM occurs in part 5 of this series., f 71;
+#X text 61 489 To get the FM sound \, set all three of carrier frequency \, modulation frequency \, and modulation index in the hundreds. Note that you get a timbral change as you sweep modulation index \, because this changes the amplitudes of the components of the output sound but not their frequencies., f 71;
+#X obj 148 319 output~;
+#X text 386 619 updated for Pd version 0.37;
+#X text 61 393 This patch shows the classical FM synthesis technique developed by John Chowning. It's nothing but an oscillator with vibrato controlled by another "modulation" oscillator. First \, to understand the patch \, set carrier frequency to 400 or so \, modulation frequency between 5 and 10 \, and try modulation index values between 0 and 400 \, say. You'll hear a sine wave with vibrato., f 71;
+#X text 61 568 The component frequencies are equal to the carrier frequency \, plus or minus multiples of the modulator frequency. A more complete discussion of FM occurs in part 5 of this series., f 71;
 #X text 43 247 oscillator =>;
 #X text 53 201 frequency =>;
 #X obj 461 26 declare -stdpath ./;
-#X obj 204 254 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 228 253 <-- click to graph;
+#X obj 196 252 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 220 251 <-- click to graph;
 #X connect 0 0 3 1;
 #X connect 1 0 18 0;
 #X connect 2 0 3 0;
@@ -40,6 +40,5 @@
 #X connect 6 0 0 1;
 #X connect 12 0 5 0;
 #X connect 12 0 21 0;
-#X connect 12 0 21 1;
 #X connect 18 0 0 0;
 #X connect 28 0 5 0;

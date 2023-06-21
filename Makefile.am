@@ -78,8 +78,8 @@ endif
 # startup location for GUI plugins and/or patches,
 # leftover from Pd-extended & not currently used
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(libdir)/pd/startup
-	$(INSTALL) -d $(DESTDIR)$(libdir)/pd/startup/disabled
+	$(INSTALL) -d $(DESTDIR)$(pkglibdir)/startup
+	$(INSTALL) -d $(DESTDIR)$(pkglibdir)/startup/disabled
 
 # remove the leftover $(libdir)/pd dir, fail silently on any non-empty dirs
 # The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw

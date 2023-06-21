@@ -24,7 +24,7 @@ endif
 
 PD_DIR = ../..
 LIBPD_DIR = ..
-LIBPD = $(SOLIB_PREFIX)pd.$(SOLIB_EXT)
+LIBPD = $(LIBPD_DIR)/$(SOLIB_PREFIX)pd.$(SOLIB_EXT)
 LIBPD_STATIC = $(LIBPD_DIR)/libpd.$(STATICLIB_EXT)
 
 SRC_FILES = test_libpd.c

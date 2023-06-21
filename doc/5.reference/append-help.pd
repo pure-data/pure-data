@@ -1,4 +1,4 @@
-#N canvas 613 30 617 637 12;
+#N canvas 397 23 617 637 12;
 #X obj 254 319 pointer;
 #X floatatom 93 324 5 0 150 0 - - - 0;
 #X obj 197 533 pointer;
@@ -12,47 +12,32 @@
 #X obj 157 583 getsize;
 #X obj 218 583 setsize;
 #X obj 210 609 element;
-#X obj 158 609 scalar;
 #X obj 24 11 append;
 #X obj 93 583 pointer;
 #X text 403 596 updated for Pd version 0.47;
 #X text 526 10 <= click;
-#N canvas 722 149 575 343 reference 0;
-#X obj 8 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 211 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 247 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 317 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 144 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
-0;
+#N canvas 744 111 575 343 reference 1;
+#X obj 8 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 7 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 211 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 247 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 317 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 144 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000 0;
 #X obj 34 16 append;
-#X text 89 15 - add an item to a Data Structure list.;
 #X text 56 86 set <symbol \, symbol> -;
-#X obj 7 175 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 7 175 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000 0;
 #X text 121 276 2) list -;
-#X text 81 55 (arguments set 'n' fields and creates an inlet for each)
-;
+#X text 81 55 (arguments set 'n' fields and creates an inlet for each);
 #X text 108 256 1) symbol - set template name., f 58;
-#X text 192 276 set field names and create an inlet for each (one inlet
-is created by default)., f 45;
+#X text 192 276 set field names and create an inlet for each (one inlet is created by default)., f 45;
 #X text 161 120 float - set field value and append a new item.;
 #X text 161 150 float - set field value.;
-#X text 117 183 pointer - a pointer to a scalar or head of list to
-append to., f 61;
-#X text 117 219 pointer - a pointer to added item in the Data Structure
-list., f 61;
-#X text 217 86 if none or just one field is given \, you can use 'set'
-to set a template name and field., f 43;
+#X text 117 183 pointer - a pointer to a scalar or head of list to append to., f 61;
+#X text 117 219 pointer - a pointer to added item in the Data Structure list., f 61;
+#X text 217 86 if none or just one field is given \, you can use 'set' to set a template name and field., f 43;
+#X text 89 15 - add a scalar to a Data Structure list.;
 #X restore 432 10 pd reference;
-#X obj 7 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 78 10 - add an item to a Data Structure list;
+#X obj 7 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X msg 396 358 \; pd-append-data clear;
 #X msg 197 509 traverse pd-append-data \, bang;
 #X obj 61 384 append append-template x y z;
@@ -63,52 +48,34 @@ to set a template name and field., f 43;
 #X text 52 368 x;
 #X text 115 366 y;
 #X text 189 365 z;
-#X text 50 418 If there are no field arguments or just one specified
-field \, you can use a "set" message to set both the template and field.
-, f 59;
-#X obj 10 571 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 50 418 If there are no field arguments or just one specified field \, you can use a "set" message to set both the template and field., f 59;
+#X obj 10 571 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 265 164 338 297 append-data 1;
 #X coords 0 297 1 296 0 0 0;
 #X restore 483 526 pd append-data;
 #N canvas 836 175 475 285 append-template 0;
 #X obj 87 134 filledpolygon z z 0 0 0 20 0 20 30 0 30;
 #X obj 73 94 struct append-template float x float y float z;
-#X text 66 165 A filled polygon whose border and interior color is
-specified by the numeric 'z' field., f 48;
-#X text 82 220 A scalar with this template is added with the [append]
-object in the parent patch., f 42;
-#X text 68 29 A template with 3 fields: x/y coordinates and a z field
-used to set the border and fill color of a filled polygon., f 45;
+#X text 66 165 A filled polygon whose border and interior color is specified by the numeric 'z' field., f 48;
+#X text 82 220 A scalar with this template is added with the [append] object in the parent patch., f 42;
+#X text 68 29 A template with 3 fields: x/y coordinates and a z field used to set the border and fill color of a filled polygon., f 45;
 #X restore 455 503 pd append-template;
-#X text 15 52 The [append] object adds an item to a Data Structure
-list. It needs a pointer in its the rightmost inlet to a scalar so
-it can append an item next to it. The pointer can also be to the "head"
-(beggining) of a list (which can be an empty list)., f 82;
-#X text 15 117 The creation arguments specify the template of a new
-scalar to append and its field name(s) you wish to initialize. There
-should be at least one field name and each field name creates a corresponding
-inlet. The inlets can only take floats \, so you have to specify field
-variables that can only take numeric values. If you need to set other
-values (such as symbols) you need other objects to set these fields.
-, f 82;
-#X text 15 202 To append objects \, send numbers to set the field values.
-The leftmost inlet is the "hot" that adds the item. The [append]'s
-pointer is updated to point to the newly added scalar and the new pointer
-is output via the outlet. To insert to the beginning of a list \, you
-can point to the "head" of the list with [pointer] as below., f 82
-;
+#X text 15 117 The creation arguments specify the template of a new scalar to append and its field name(s) you wish to initialize. There should be at least one field name and each field name creates a corresponding inlet. The inlets can only take floats \, so you have to specify field variables that can only take numeric values. If you need to set other values (such as symbols) you need other objects to set these fields., f 82;
+#X text 15 202 To append objects \, send numbers to set the field values. The leftmost inlet is the "hot" that adds the item. The [append]'s pointer is updated to point to the newly added scalar and the new pointer is output via the outlet. To insert to the beginning of a list \, you can point to the "head" of the list with [pointer] as below., f 82;
 #X text 139 325 <-- add;
 #X text 262 273 go to (and output) "head" of empty list;
 #X text 299 359 click to clear list ->, f 13;
-#X connect 0 0 23 3;
-#X connect 1 0 26 0;
+#X text 78 10 - add a scalar to a Data Structure list;
+#X text 15 52 The [append] object adds a scalar to a Data Structure list. It needs a pointer in its the rightmost inlet to a scalar so it can append an item next to it. The pointer can also be to the "head" (beginning) of a list (which can be an empty list)., f 82;
+#X obj 158 609 struct;
+#X connect 0 0 21 3;
+#X connect 1 0 24 0;
 #X connect 2 0 4 1;
 #X connect 3 0 4 0;
-#X connect 6 0 21 0;
-#X connect 22 0 2 0;
-#X connect 24 0 0 0;
-#X connect 26 0 23 0;
-#X connect 26 1 23 1;
-#X connect 26 1 23 2;
-#X connect 27 0 4 0;
+#X connect 6 0 19 0;
+#X connect 20 0 2 0;
+#X connect 22 0 0 0;
+#X connect 24 0 21 0;
+#X connect 24 1 21 1;
+#X connect 24 1 21 2;
+#X connect 25 0 4 0;

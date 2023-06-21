@@ -1,0 +1,11 @@
+#N canvas 890 284 261 316 12;
+#X obj 80 264 outlet~;
+#X obj 80 193 *~;
+#X obj 80 89 inlet~;
+#X obj 98 152 osc~ 20;
+#X obj 80 230 *~ 0.5;
+#X text 16 15 This is an abstraction for the [clone] help patch. It performs amplitude modulation., f 31;
+#X connect 1 0 4 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 1;
+#X connect 4 0 0 0;

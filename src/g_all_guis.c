@@ -15,9 +15,7 @@
 
 #include "g_all_guis.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -29,6 +27,7 @@
 typedef struct _iemgui_private {
     int p_prevX, p_prevY;
     t_iemgui_drawfunctions p_widget;
+    int p_binbuf_valid;
 } t_iemgui_private;
 
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
@@ -228,8 +227,13 @@ void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
         } else {
             iemgui->x_lab = iemgui_new_dogetname(iemgui, indx+2, argv);
         }
+        iemgui->x_private->p_binbuf_valid = 1;
     }
-    else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = 0;
+    else
+    {
+        iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = 0;
+        iemgui->x_private->p_binbuf_valid = 0;
+    }
     /* in the object's constructor, we can't access the raw values yet: */
     iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded = iemgui->x_lab_unexpanded = 0;
     iemgui->x_binbufindex = indx;
@@ -243,7 +247,8 @@ static void iemgui_init_sym2dollararg(t_iemgui *iemgui, t_symbol **symp,
     int indx, t_symbol *fallback)
 {
     t_binbuf *b = iemgui->x_obj.ob_binbuf;
-    if ((!*symp) && (binbuf_getnatom(b) > indx))
+
+    if ((!*symp) && iemgui->x_private->p_binbuf_valid && (binbuf_getnatom(b) > indx))
     {
         t_atom *a = binbuf_getvec(b) + indx;
         char astring[80];

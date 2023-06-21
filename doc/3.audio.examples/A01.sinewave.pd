@@ -1,33 +1,27 @@
-#N canvas 619 34 522 571 12;
+#N canvas 619 34 526 667 12;
 #X obj 113 129 osc~ 440;
 #X obj 113 188 dac~;
 #X obj 113 158 *~ 0.05;
 #X text 152 13 MAKING A SINE WAVE;
-#X text 42 226 Audio computation can be turned on and off by sending
-messages to the global "pd" object as follows:, f 56;
+#X text 42 226 Audio computation can be turned on and off by sending messages to the global "pd" object as follows:, f 56;
 #X msg 108 277 \; pd dsp 1;
 #X msg 212 277 \; pd dsp 0;
 #X text 123 314 ON;
 #X text 232 314 OFF;
-#X text 39 344 You should see the Pd window change to reflect whether
-audio is on or off. You can also turn audio on and off using the "audio"
-menu \, but the buttons are provided as a shortcut.;
-#X text 40 396 When DSP is on \, you should hear a tone whose pitch
-is A 440 and whose amplitude is 0.05. If instead you are greeted with
-silence \, you might want to read the HTML documentation on setting
-up audio.;
-#X text 40 462 In general when you start a work session with Pd \,
-you will want to choose "test audio and MIDI" from the help window
-\, which opens a more comprehensive test patch than this one., f 60
-;
-#X text 28 44 Audio computation in Pd is done using "tilde objects"
-such as the three below. They use continuous audio streams to intercommunicate
-\, as well as communicating with other ("control") Pd objects using
-messages.;
-#X text 291 536 updated for Pd version 0.36;
+#X text 39 353 You should see the Pd window change to reflect whether audio is on or off. You can also turn audio on and off using the "audio" menu \, but the buttons are provided as a shortcut.;
+#X text 40 405 When DSP is on \, you should hear a tone whose pitch is A 440 and whose amplitude is 0.05. If instead you are greeted with silence \, you might want to read the HTML documentation on setting up audio.;
+#X text 40 471 In general when you start a work session with Pd \, you will want to choose "test audio and MIDI" from the help window \, which opens a more comprehensive test patch than this one., f 60;
+#X text 28 44 Audio computation in Pd is done using "tilde objects" such as the three below. They use continuous audio streams to intercommunicate \, as well as communicating with other ("control") Pd objects using messages.;
 #X text 296 285 <= click these;
-#X text 165 188 <=== send to the audio output device;
+#X text 155 188 <=== send to the audio output device;
 #X text 183 157 <= reduce amplitude to 0.05;
 #X text 183 128 <= 440 Hz. sine wave at full blast;
+#X obj 309 545 ../5.reference/set-dsp-tgl;
+#X text 310 524 DSP on/off;
+#X msg 309 582 \; pd dsp \$1;
+#X text 291 635 updated for Pd version 0.54;
+#X text 345 549 <-- open abstraction;
+#X text 24 541 These examples also use a helper abstraction from the documentation help files of Pd. Check it to the right and see how the toggle shows the DSP state., f 35;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
+#X connect 17 0 19 0;

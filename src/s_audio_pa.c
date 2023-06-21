@@ -30,20 +30,10 @@
 #include <fcntl.h>
 #include <portaudio.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #ifndef _WIN32          /* for the "dup2" workaround -- do we still need it? */
 #include <unistd.h>
-#endif
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
 #endif
 
 #if 1
@@ -308,7 +298,11 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
 
         if (err == paInvalidSampleRate)
         {
-            sampleRate=outRate;
+            double oldrate = sampleRate;
+            sampleRate = outRate > 0 ? outRate : inRate;
+            logpost(0, PD_NORMAL,
+                "warning: requested samplerate %d not supported, using %d.",
+                    (int)oldrate, (int)sampleRate);
         }
 
         err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams,
@@ -711,6 +705,7 @@ void pa_getdevs(char *indevlist, int *nindevs,
         char utf8device[MAXPDSTRING];
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);
         char*devname = pdi2devname(pdi, utf8device, MAXPDSTRING);
+        if(!devname)continue;
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */

@@ -7,10 +7,11 @@
 #X obj 126 201 metro 100;
 #X obj 126 168 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 31 51 The [snapshot~] object allows you to convert from signals to control streams (float messages) -- an opposite of [sig~]. The value output is always the end of the most recently computed audio block \, so that even if you bang it metronomically (as here) it need not give you samples that are exactly evenly spaced., f 62;
-#X msg 282 199 \; pd dsp \$1;
-#X obj 282 169 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 280 165 ../5.reference/set-dsp-tgl;
+#X text 311 168 DSP on/off;
+#X msg 280 202 \; pd dsp \$1;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 5 0 0 0;
 #X connect 6 0 5 0;
-#X connect 9 0 8 0;
+#X connect 8 0 10 0;

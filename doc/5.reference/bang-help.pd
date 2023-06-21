@@ -7,7 +7,6 @@
 #X text 67 75 The [bang] object outputs a "bang" message for whatever message it receives., f 46;
 #X obj 25 10 bang;
 #X text 236 311 updated for Pd version 0.27;
-#X text 62 9 - send "bang" message;
 #X obj 25 34 b;
 #X text 62 35 - abbreviation;
 #X obj 2 296 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -22,7 +21,7 @@
 #X text 147 143 NONE, f 44;
 #X text 117 63 anything - any message outputs a bang., f 48;
 #X text 146 105 bang - a bang message for any input message.;
-#X text 99 16 - send "bang" message.;
+#X text 99 16 - converto to a "bang" message.;
 #X restore 287 35 pd reference;
 #X text 11 310 see also:;
 #X obj 86 310 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
@@ -31,6 +30,7 @@
 #X text 162 136 This is quite similar to a bang message or bang GUI. The difference is that you can't click on it., f 40;
 #X obj 2 63 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 162 186 It's about the same as using [trigger bang] as well \, but it's a tiny bit more efficient than all previous options (not that it makes a big difference in real life)., f 40;
+#X text 62 9 - convert to a "bang" message;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;

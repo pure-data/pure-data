@@ -1,19 +1,15 @@
-#N struct getsize-template float x float y array array5 array5-template
-;
+#N struct getsize-template float x float y array array5 array5-template;
 #N struct array5-template float y;
 #N canvas 589 23 617 534 12;
 #X text 13 497 see also:;
 #N canvas 565 285 501 184 getsize-template 0;
-#X obj 85 64 struct getsize-template float x float y array array5 array5-template
-, f 39;
+#X obj 85 64 struct getsize-template float x float y array array5 array5-template, f 39;
 #X obj 84 112 plot array5 500 1 10 15 20;
 #X text 281 112 plot array5;
-#X text 63 25 struct with x/y fields and an array field named "array5"
-whose template is specified in "array5-template".;
+#X text 63 25 struct with x/y fields and an array field named "array5" whose template is specified in "array5-template".;
 #X restore 360 159 pd getsize-template;
 #N canvas 318 152 260 201 getsize-data 1;
-#X scalar getsize-template 31 23 \; 21 \; 62 \; -6 \; 102 \; 38 \;
-88 \; 40 \; 77 \; -1 \; \;;
+#X scalar getsize-template 31 23 \; 21 \; 62 \; -6 \; 102 \; 38 \; 88 \; 40 \; 77 \; -1 \; \;;
 #X coords 0 201 1 200 0 0 0;
 #X restore 360 137 pd getsize-data;
 #X obj 218 497 pointer;
@@ -25,28 +21,20 @@ whose template is specified in "array5-template".;
 #X obj 27 13 getsize;
 #X obj 275 497 element;
 #X text 403 497 updated for Pd version 0.47;
-#X text 25 358 If you don't know the template name you may specify
-"-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiency and clarity., f 41;
-#X obj 7 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 25 358 If you don't know the template name you may specify "-" \, in which case the object will figure out the template name itself \, at some possible cost in efficiency and clarity., f 41;
+#X obj 7 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 768 182 526 227 reference 0;
-#X obj 9 43 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 109 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 146 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 198 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 9 43 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 9 109 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 146 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 198 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 152 173 2) symbol - field name., f 26;
-#X text 29 76 set <symbol \, symbol> - set template and field name.
-, f 63;
+#X text 29 76 set <symbol \, symbol> - set template and field name., f 63;
 #X obj 24 15 getsize;
 #X text 120 57 pointer - pointer to a scalar with an array field.;
 #X text 152 154 1) symbol - template name.;
 #X text 134 119 float - array's size when receiving a pointer.;
-#X text 84 16 - get size of a Data Structures array.;
+#X text 84 16 - get the size of a Data Structure's array.;
 #X restore 425 14 pd reference;
 #X text 523 15 <= click;
 #X obj 83 497 array size;
@@ -56,10 +44,8 @@ whose template is specified in "array5-template".;
 #X obj 402 352 getsize;
 #X floatatom 402 387 5 0 0 0 - - - 0;
 #X text 408 262 click here first:;
-#X obj 7 480 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 25 314 A "set" message can set or reset a new template and
-array field., f 41;
+#X obj 7 480 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 25 314 A "set" message can set or reset a new template and array field., f 41;
 #X obj 332 417 getsize - array5;
 #X msg 421 322 set - array5;
 #X msg 402 288 set getsize-template array5;
@@ -71,11 +57,8 @@ array field., f 41;
 #X obj 50 50 struct array5-template float y;
 #X restore 360 181 pd array5-template;
 #X text 83 262 the size of field "array5".;
-#X text 86 14 - get size of a Data Structures array;
-#X text 30 56 When sent a pointer to a scalar \, [getsize] looks up
-a given array field and outputs its number of elements. The template
-and field name are specified as creation arguments. The smallest possible
-size is one. Note you can also use [array size] for this., f 77;
+#X text 30 56 When sent a pointer to a scalar \, [getsize] looks up a given array field and outputs its number of elements. The template and field name are specified as creation arguments. The smallest possible size is one. Note you can also use [array size] for this., f 77;
+#X text 86 14 - get the size of a Data Structure's array;
 #X connect 5 0 28 0;
 #X connect 6 0 5 0;
 #X connect 17 0 20 0;

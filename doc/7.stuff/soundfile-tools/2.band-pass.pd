@@ -88,10 +88,7 @@
 #X floatatom 244 395 5 0 10000 0 - - - 0;
 #X obj 176 365 mtof;
 #X floatatom 176 339 7 0 128 0 - - - 0;
-#X text 47 21 Bandpass filter. Read in a sample first \, then you can
-either set a frequency and hit the "run" button or else hit the "start..."
-button and start the transformation by dragging on the frequency or
-q control., f 71;
+#X text 47 21 Bandpass filter. Read in a sample first \, then you can either set a frequency and hit the "run" button or else hit the "start..." button and start the transformation by dragging on the frequency or q control., f 71;
 #X text 445 456 input sample;
 #X text 446 479 output sample;
 #X obj 331 480 table \$0-output;
@@ -99,38 +96,26 @@ q control., f 71;
 #X text 71 102 Click below to:;
 #X obj 198 475 output~;
 #X obj 374 92 declare -stdpath ./;
-#X obj 179 313 hsl 128 15 24 90 0 0 empty empty empty -2 -8 0 10 #dfdfdf
-#000000 #000000 0 1;
+#X obj 179 313 hsl 128 15 24 90 0 0 empty empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 184 311 center frequency;
-#X obj 247 367 hsl 128 15 1 100 1 0 empty empty empty -2 -8 0 10 #dfdfdf
-#000000 #000000 0 1;
+#X obj 247 367 hsl 128 15 1 100 1 0 empty empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 121 380 set in Hz -->, f 6;
 #X text 86 324 set in MIDI units ---->, f 11;
-#X text 72 557 Note -- you can shift-click on the number boxes to change
-them in hundredths. You can also click and type numbers in \, followed
-by the "enter" key., f 67;
-#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 186 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 210 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 234 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 259 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X text 72 557 Note -- you can shift-click on the number boxes to change them in hundredths. You can also click and type numbers in \, followed by the "enter" key., f 67;
+#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 186 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 210 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 234 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 259 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 190 136 (read an input file);
 #X text 190 160 (run the transformation);
 #X text 190 209 (hear the output sample);
 #X text 190 233 (save the output sample);
 #X text 190 258 (save the output sample normalized to 1);
-#X text 190 185 (start transformation when I change frequency or Q)
-;
+#X text 190 185 (start transformation when I change frequency or Q);
 #X text 286 394 <-- set "Q";
 #X connect 0 0 11 0;
-#X connect 0 0 11 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;
 #X connect 3 0 1 0;

@@ -679,7 +679,7 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 410 657 pd open;
-#X text 478 625 open first examle of the 4.Data.Structure section., f 20;
+#X text 478 625 open first example of the 4.Data.Structure section., f 20;
 #X obj 117 465 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 410 627 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 41 14 [array] can also reference arrays within structures via pointers. The "-s" flag takes two arguments \, specifying the data structure's template and the field within it that contains the array. By default the array should be a simple floating point array (using the template "float" for the array elements) but you can override that using "-f" as shown further down., f 82;

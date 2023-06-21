@@ -1,13 +1,12 @@
-#N canvas 397 23 901 711 12;
+#N canvas 398 23 901 711 12;
 #X obj 23 12 namecanvas;
 #X obj 262 131 namecanvas bonzo;
 #N canvas 140 127 541 242 subpatch 0;
 #X obj 70 57 namecanvas banzai;
-#X text 229 46 This subpatch has its own name. It can receive messages
-sent to it from anywhere., f 34;
+#X text 229 46 This subpatch has its own name. It can receive messages sent to it from anywhere., f 34;
+#X msg 100 150 how are 'ya?;
 #X restore 134 506 pd subpatch;
-#X text 144 386 <= but you need to know the name of the canvas (file)
-in advance., f 32;
+#X text 144 386 <= but you need to know the name of the canvas (file) in advance., f 32;
 #X text 40 438 Note this doesn't make it possible to use "\$0".;
 #X obj 712 166 s pd-subpatch;
 #X obj 466 393 namecanvas \$0-local-name;
@@ -23,82 +22,53 @@ in advance., f 32;
 #X msg 726 569 vis \$1;
 #X text 748 541 show/hide window;
 #X text 28 469 You can use namecanvas to name subpatches s well.;
-#X text 16 596 But this is not necessary as you can also send messages
-to the subpatch using the subpatch's name (preceded by 'pd-'). Check
-example above to the right., f 54;
-#X text 435 56 Instead of using [namecanvas] \, we're sending messages
-directly to the subpatch. The 'vis' message can be used to show/hide
-it., f 63;
+#X text 16 596 But this is not necessary as you can also send messages to the subpatch using the subpatch's name (preceded by 'pd-'). Check example above to the right., f 54;
+#X text 435 56 Instead of using [namecanvas] \, we're sending messages directly to the subpatch. The 'vis' message can be used to show/hide it., f 63;
 #X msg 712 105 vis 1;
 #X msg 723 135 vis 0;
 #X text 763 103 show window;
 #X text 768 135 hide window;
 #X msg 705 402 vis \$1;
-#X obj 705 377 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X obj 705 377 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 727 376 show/hide window;
-#X text 422 539 Note that when you have a patch loaded as an abstraction
-\, besides the 'pd-' prefix \, you also need to end with ".pd"! This
-is used to the right to open the "pd-messages" example \, loaded below
-\, which includes more information on 'dynamic patching'., f 40;
+#X text 422 539 Note that when you have a patch loaded as an abstraction \, besides the 'pd-' prefix \, you also need to end with ".pd"! This is used to the right to open the "pd-messages" example \, loaded below \, which includes more information on 'dynamic patching'., f 40;
 #X text 682 676 updated for Pd version 0.52;
 #X obj 89 676 pd-messages;
 #X obj 726 595 s pd-pd-messages.pd;
-#X obj 6 41 cnv 1 888 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 664 cnv 1 888 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 6 41 cnv 1 888 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 6 664 cnv 1 888 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 805 12 <= click;
 #N canvas 838 107 489 204 reference 0;
-#X obj 8 135 cnv 2 460 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 54 cnv 5 460 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 177 cnv 5 460 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 8 135 cnv 2 460 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 54 cnv 5 460 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 7 177 cnv 5 460 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 138 146 1) symbol -;
 #X obj 40 16 namecanvas;
-#X obj 7 92 cnv 2 460 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
+#X obj 7 92 cnv 2 460 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X text 153 66 NONE;
 #X text 153 106 NONE;
 #X text 224 146 sets the canvas name., f 22;
-#X text 122 16 - attach the canvas window to a name;
+#X text 122 16 - attach a name to a pd window.;
 #X restore 711 13 pd reference;
-#X text 105 12 - attach the canvas window to a name;
 #X msg 37 157 \; bonzo msg 285 175 hey there;
 #X msg 33 328 \; pd-namecanvas-help.pd msg 40 385 this is safer;
 #X msg 431 128 \; pd-subpatch msg 100 150 how are 'ya?;
-#X text 18 51 You can use [namecanvas] to attach a receive name to
-a canvas (patch window) so you can send it messages (useful for 'dynamic
-patching'). Below \, we use it to name this canvas 'bonzo' and send
-it a message that makes it create a message box., f 55;
-#X text 19 208 This is needed to send messages to an abstraction's
-main canvas locally (using "\$0" to give it a local name). But its
-use in making self-editing patches is dangerous since if you use it
-to edit the [namecanvas] itself away you can cause Pd to crash. Instead
-\, you can use the file name (preceded by "pd-") to access its main
-window \, see:, f 54;
-#X text 435 206 You can give different windows the same name to communicate
-with them all via a single message. Similarly \, any patches or subpatches
-with the same name receive the same messages.;
-#X text 435 269 You can also give multiple names to a single canvas
-with more than one [namecanvas] \, below we now give this window a
-second local name with "\$0". You can also use "\$0" in the name of
-subpatches by the way and we also have this example below. Note that
-in this case you need to use [send] as "\$0" doesn't work in messages.
-Again \, this is useful for abstractions., f 63;
-#X obj 726 543 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X text 18 51 You can use [namecanvas] to attach a receive name to a canvas (patch window) so you can send it messages (useful for 'dynamic patching'). Below \, we use it to name this canvas 'bonzo' and send it a message that makes it create a message box., f 55;
+#X text 19 208 This is needed to send messages to an abstraction's main canvas locally (using "\$0" to give it a local name). But its use in making self-editing patches is dangerous since if you use it to edit the [namecanvas] itself away you can cause Pd to crash. Instead \, you can use the file name (preceded by "pd-") to access its main window \, see:, f 54;
+#X text 435 206 You can give different windows the same name to communicate with them all via a single message. Similarly \, any patches or subpatches with the same name receive the same messages.;
+#X text 435 269 You can also give multiple names to a single canvas with more than one [namecanvas] \, below we now give this window a second local name with "\$0". You can also use "\$0" in the name of subpatches by the way and we also have this example below. Note that in this case you need to use [send] as "\$0" doesn't work in messages. Again \, this is useful for abstractions., f 63;
+#X obj 726 543 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #N canvas 68 97 450 300 (subpatch) 0;
 #X restore 180 676 pd;
 #X text 71 506 open -->;
 #X text 258 551 <-- click;
 #X text 604 449 <-- click;
+#X text 105 12 - attach a name to a pd window;
+#X obj 219 676 pdcontrol;
 #X connect 11 0 9 0;
 #X connect 14 0 29 0;
 #X connect 19 0 5 0;
 #X connect 20 0 5 0;
 #X connect 23 0 8 0;
 #X connect 24 0 23 0;
-#X connect 42 0 14 0;
+#X connect 41 0 14 0;

@@ -1,77 +1,100 @@
-#N canvas 471 48 530 562 12;
-#X obj 98 209 adc~ 5;
-#X text 148 209 (input from channel 5 only);
+#N canvas 144 63 526 618 12;
+#X obj 96 207 adc~ 5;
+#X text 146 207 (input from channel 5 only);
 #X obj 96 237 dac~ 1 2 5 23;
 #X text 196 237 (output to channels 1 \, 2 \, 5 \, and 23);
-#X obj 89 410 dac~ 1;
-#X msg 89 373 set 5;
-#X obj 35 409 adc~ 1;
+#X obj 163 405 dac~ 1;
+#X msg 163 368 set 5;
+#X obj 109 404 adc~ 1;
 #X obj 24 6 adc~;
 #X obj 25 29 dac~;
-#X text 307 527 updated for Pd version 0.47;
 #X text 452 18 <= click;
-#N canvas 714 81 579 507 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 98 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 156 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 193 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 123 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 12 301 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 12 445 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 11 482 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 12 370 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 11 405 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X text 168 415 NONE;
+#N canvas 658 84 584 606 reference 0;
+#X obj 8 156 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 261 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 145 239 1) list - set input channels (default: 1 2).;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 98 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 123 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
 #X obj 31 18 adc~;
-#X obj 33 264 dac~;
-#X obj 11 334 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X text 154 377 signal - signal output to sound card.;
-#X text 126 343 set <list> - resets the channel(s).;
-#X text 150 131 signal - signal input from sound card.;
-#X text 122 67 set <list> - resets the channel(s).;
-#X text 123 455 1) list - set output channels (default: 1 2).;
 #X text 91 102 ('n' outlets depends on creation arguments);
-#X text 76 18 - Audio Input from sound card.;
-#X text 75 263 - Audio Output to sound card.;
-#X text 119 166 1) list - set input channels (default: 1 2).;
-#X text 91 310 ('n' inlets depending on creation arguments);
+#X text 76 18 - audio input from sound card.;
+#X text 117 131 signal - given channel input from the set device.;
+#X text 98 67 set <list> - resets the given channel(s) to new value(s).;
+#X obj 12 371 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 12 542 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 11 579 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 12 467 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
+#X obj 11 502 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X text 168 512 NONE;
+#X obj 33 334 dac~;
+#X obj 11 404 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X text 123 552 1) list - set output channels (default: 1 2).;
+#X text 91 380 ('n' inlets depending on creation arguments);
+#X text 75 333 - audio output to sound card.;
+#X text 66 413 set <list> - resets the given channel(s) to new value(s).;
+#X text 88 435 signals - multichannel signals get distributed to output channels., f 66;
+#X text 95 475 signal - mono signal to given output channel of the set device., f 63;
+#X obj 7 183 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 7 230 cnv 1 550 1 empty empty arguments: 8 12 0 13 #9f9f9f #000000 0;
+#X text 82 191 -m <list>:;
+#X text 163 190 creates a multichannel output with number of channels and optional offset (default offset is 0)., f 53;
 #X restore 358 19 pd reference;
-#X obj 4 60 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 4 60 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 63 5 - Audio Input from sound card;
 #X text 66 30 - Audio Output to sound card;
-#X text 158 366 The "set" message to either [dac~] or [adc~] resets
-the channel(s). This requires Pd to restart DSP and so should only
-be done at setup time \, not while audio is being computed., f 45
-;
-#X text 50 456 If more than one [dac~] outputs to the same channel
-\, the signals are added. More than one [adc~] can output the same
-input channel.;
-#X obj 4 514 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 20 75 Real-time audio input and output for Pd is provided by
-[adc~] and [dac~] \, respectively. "adc" stands for "Analog to Digital
-Converter" and "dac" stands for "Digital to Analog Converter". This
-gives the idea that inputs and outputs are only analog signals \, but
-that's misleading as you can also have digital inputs and outputs (it
-all depends on your soundcard configuration). By default these objects
-are stereo (with channel numbers 1 \, 2) but you can specify different
-channel numbers via arguments as in:, f 68;
-#X text 40 273 The number of channels Pd inputs and outputs also depends
-on your soundcard. The soundcard and number of ins/outs are set on
-Pd's command line or in the "audio settings" dialog. You can open patches
-that want more channels out of range \, these will be dropped in [dac~]
-or output zero in [adc~]., f 64;
+#X obj 4 577 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 20 75 Real-time audio input and output for Pd is provided by [adc~] and [dac~] \, respectively. "adc" stands for "Analog to Digital Converter" and "dac" stands for "Digital to Analog Converter". This gives the idea that inputs and outputs are only analog signals \, but that's misleading as you can also have digital inputs and outputs (it all depends on your soundcard configuration). By default these objects are stereo (with channel numbers 1 \, 2) but you can specify different channel numbers via arguments as in:, f 68;
+#X text 40 273 The number of channels Pd inputs and outputs also depends on your soundcard. The soundcard and number of ins/outs are set on Pd's command line or in the "audio settings" dialog. You can open patches that want more channels out of range \, these will be dropped in [dac~] or output zero in [adc~]., f 64;
+#X text 51 453 If more than one [dac~] outputs to the same channel \, the signals are added. Duplicate [adc~] objects output duplicate signals.;
+#X text 309 588 updated for Pd version 0.54;
+#N canvas 379 110 820 445 multichannel 0;
+#X obj 475 217 snake~ in;
+#X obj 475 136 osc~ 440;
+#X obj 535 175 osc~ 660;
+#X obj 475 285 *~;
+#X obj 582 238 hsl 162 19 0 1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 579 271 pow 4;
+#X msg 579 295 \$1 10;
+#X obj 579 319 line~;
+#X msg 678 322 \; pd dsp \$1;
+#X obj 678 285 set-dsp-tgl;
+#X text 709 289 DSP on/off;
+#X text 646 126 The [*~] object also supports multichannel signals. Use the slider to control the output volume., f 23;
+#X text 638 238 volume;
+#X obj 474 324 dac~ 1;
+#X obj 185 310 snake~ out;
+#X obj 185 342 env~;
+#X obj 252 342 env~;
+#X floatatom 185 368 5 0 0 0 - - - 0;
+#X floatatom 252 368 5 0 0 0 - - - 0;
+#X obj 185 278 adc~ -m 2;
+#X text 54 223 And below we have a stereo signal with no offset \, so we get channels 1 and 2 in the multichannel output., f 49;
+#X obj 115 186 adc~ -m 3 5;
+#X text 46 30 [adc~] if invoked with the '-m' flag creates a multichannel output. Arguments are number of channels (default 2) \, and starting channel (1). So [adc~ -m 3 5] \, as in the example below \, outputs a three-channel signal consisting of input channels 5 \, 6 \, and 7)., f 50;
+#X msg 165 135 set 2 1;
+#X msg 163 160 set 3 5;
+#X text 239 132 In this case the "set" message sets the number of channels and starting channel number \, as in the creation arguments., f 30;
+#X text 447 33 The [dac~] object distributes the channels to the existing outputs starting at the number given by its argument. In the example below we have a stereo signal that gets distributed from output 1!, f 52;
+#X text 423 367 There is no corresponding "-m" flag since dac~ infers its channel counts from the signals connected to it. The "set" message can reset the starting channel independently for all the inlets., f 53;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 1;
+#X connect 3 0 13 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 1;
+#X connect 9 0 8 0;
+#X connect 14 0 15 0;
+#X connect 14 1 16 0;
+#X connect 15 0 17 0;
+#X connect 16 0 18 0;
+#X connect 19 0 14 0;
+#X connect 23 0 21 0;
+#X connect 24 0 21 0;
+#X restore 321 538 pd multichannel;
+#X text 98 516 The [adc~] and [dac~] objects support multichannel signals \, see --->, f 37;
+#X text 229 373 The "set" message to either [dac~] or [adc~] resets the channel(s)., f 25;
 #X connect 5 0 4 0;
 #X connect 5 0 6 0;
