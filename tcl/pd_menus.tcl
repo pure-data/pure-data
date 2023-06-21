@@ -573,11 +573,6 @@ proc ::pd_menus::forgetpreferences {} {
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
-    # LATER: allow other default_zoom values than 0(100%) or 100(200%)
-#    $mymenu add check -label [_ "Zoom New Windows"] \
-#        -variable ::zoom_open \
-#        -command {::pd_menucommands::scheduleAction \
-#        ::pd_canvaszoom::set_default_zoom [expr $zoom_open * 100]}
     $mymenu add command -label [_ "Edit Preferences..."] \
         -command {menu_preference_dialog}
     $mymenu add  separator
