@@ -287,7 +287,7 @@ proc ::pd_canvaszoom::scale_consecutive_numbers {instring from zdepth {int 0} {m
     }
     set startstring [string range $instring 0 [lindex $positions $from]]
     set endstring [string range $instring [lindex $positions $i] end]
-    return [string cat $startstring $numbers $endstring]
+    return $startstring$numbers$endstring
 }
 
 # like "lset", but without changing the other parts of the string
@@ -295,7 +295,7 @@ proc ::pd_canvaszoom::string_lset {instring index newvalue} {
     set positions [elements_position $instring [expr $index + 1]]
     set startstring [string range $instring 0 [lindex $positions $index]]
     set endstring [string range $instring [lindex $positions [expr $index + 1]] end]
-    return [string cat $startstring $newvalue $endstring]
+    return $startstring$newvalue$endstring
 }
 
 proc ::pd_canvaszoom::unescape {text} {
