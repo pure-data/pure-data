@@ -54,6 +54,7 @@ proc ::dialog_preferences::tab_changed {mytoplevel} {
 proc ::dialog_preferences::fill_frame {prefs} {
     # patch-window settings
     labelframe $prefs.extraframe -text [_ "Patch Windows" ] -padx 5 -pady 5 -borderwidth 1
+    # LATER: allow other default_zoom values than 0(100%) or 100(200%)
     checkbutton $prefs.extraframe.zoom -text [_ "Zoom New Windows"] \
         -variable ::sys_zoom_open -anchor w
     pack $prefs.extraframe.zoom -side left -expand 1
