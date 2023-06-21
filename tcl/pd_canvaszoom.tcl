@@ -54,9 +54,12 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
             {event generate [focus -displayof %W] <Control-MouseWheel> -delta  1}
         bind all <Control-Button-5> \
             {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
+        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W %D}
+    } elseif {$::windowingsystem eq "aqua"} {
+        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {-%D}]}
+    } elseif {$::windowingsystem eq "win32"} {
+        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {%D/120}]}
     }
-    bind $c <Control-MouseWheel> [list ::pd_canvaszoom::delayed_stepzoom $c %D]
-
     # add button-2 bindings to scroll the canvas
     bind $c <ButtonPress-2> {%W scan mark %x %y}
     bind $c <B2-Motion> {%W scan dragto %x %y 1}
