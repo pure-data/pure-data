@@ -48,21 +48,30 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
         set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
     }
 
-    # add mousewheel bindings to canvas
-    if {$::windowingsystem eq "x11"} {
-        bind all <Control-Button-4> \
-            {event generate [focus -displayof %W] <Control-MouseWheel> -delta  1}
-        bind all <Control-Button-5> \
-            {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
-        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W %D}
-    } elseif {$::windowingsystem eq "aqua"} {
-        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {-%D}]}
-    } elseif {$::windowingsystem eq "win32"} {
-        bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {%D/120}]}
+    # canvas bindings for mousewheel and mousewheel-button are OS dependent
+    # LATER: probably move this to pd_bindings.tcl
+    switch -- $::windowingsystem {
+        "x11" {
+            bind all <Control-Button-4> \
+                {event generate [focus -displayof %W] <Control-MouseWheel> -delta  1}
+            bind all <Control-Button-5> \
+                {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
+            bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W %D}
+            bind $c <ButtonPress-2> {%W scan mark %x %y}
+            bind $c <B2-Motion> {%W scan dragto %x %y 1}
+        }
+        "aqua" {
+            bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {-%D}]}
+            # on MacOS mousewheel-button is button-3
+            bind $c <ButtonPress-3> {%W scan mark %x %y}
+            bind $c <B3-Motion> {%W scan dragto %x %y 1}
+        }
+        "win32" {
+            bind $c <Control-MouseWheel> {::pd_canvaszoom::delayed_stepzoom %W [expr {%D/120}]}
+            bind $c <ButtonPress-2> {%W scan mark %x %y}
+            bind $c <B2-Motion> {%W scan dragto %x %y 1}
+        }
     }
-    # add button-2 bindings to scroll the canvas
-    bind $c <ButtonPress-2> {%W scan mark %x %y}
-    bind $c <B2-Motion> {%W scan dragto %x %y 1}
 }
 
 # scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
