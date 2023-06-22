@@ -201,12 +201,14 @@ const char**sys_get_dllextensions(void)
         if(extraext)
             add_dllextension(extraext);
 
+#if PD_FLOATSIZE == 32
             /* and add the legacy extensions */
         for(i=0; i<sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base); i++)
         {
             if(sys_dllextent_base[i])
                 add_dllextension(sys_dllextent_base[i]);
         }
+#endif
             /* 0-terminate the extension list */
         add_dllextension(0);
     }

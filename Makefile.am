@@ -44,6 +44,12 @@ LIBPD_DIST = libpd/Makefile libpd/README.txt libpd/test_libpd/Makefile \
 # files that are included but not built
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt $(LIBPD_DIST)
 
+pkgdata_DATA = \
+    LICENSE.txt \
+    README.txt \
+    $(empty)
+
+
 # subdirs that are built,
 # mac before src due to uninstall target order kludge (see mac/Makefile.am)
 SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc tcl extra font
