@@ -6,19 +6,13 @@
     the main way in for Mac OS and, with Michael Casey's help, also into
     ASIO in Windows.
 
-    Both blocking and non-blocking call styles are supported.  If non-blocking
-    is requested, either we call portaudio in non-blocking mode, or else we
-    call portaudio in callback mode and manage our own FIFO se we can offer
-    Pd "blocking" I/O calls.  To do the latter we define FAKEBLOCKING; this
-    works better in MACOSX (gets 40 msec lower latency!) and might also in
-    Windows.  If FAKEBLOCKING is defined we can choose between two methods
-    for waiting on the (presumably other-thread) I/O to complete, either
-    correct thread synchronization (by defining THREADSIGNAL) or just sleeping
-    and polling.
-*/
+    For the polling scheduler, we call portaudio in callback mode and manage
+    our own FIFO, so we can offer Pd "blocking" I/O calls. We can choose
+    between two methods for waiting on the I/O to complete, either correct
+    thread synchronization (by defining THREADSIGNAL) or just sleeping and polling.
 
-/* dolist...
-    switch to usleep in s_inter.c
+    For the callback scheduler, we call portaudio in callback mode and simply
+    provide a callback function that ticks the scheduler, polls the GUI, etc.
 */
 
 #include "m_pd.h"
@@ -34,16 +28,13 @@
 #endif
 
 #include "m_private_utils.h"
+#include "s_audio_paring.h"
 
 #ifndef _WIN32          /* for the "dup2" workaround -- do we still need it? */
 #include <unistd.h>
 #endif
 
-#if 1
-#define FAKEBLOCKING
-#endif
-
-/* enable thread signaling instead of polling */
+/* enable proper thread synchronization instead of polling */
 #if 1
 #define THREADSIGNAL
 #endif
@@ -60,11 +51,8 @@ static t_sample *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
 
 static int pa_started;
-static int pa_nbuffers;
 static volatile int pa_dio_error;
 
-#ifdef FAKEBLOCKING
-#include "s_audio_paring.h"
 static PA_VOLATILE char *pa_outbuf;
 static PA_VOLATILE sys_ringbuf pa_outring;
 static PA_VOLATILE char *pa_inbuf;
@@ -78,7 +66,6 @@ t_semaphore *pa_sem;
 #define POLL_TIMEOUT 2.0
 #endif
 static double pa_lastdactime;
-#endif  /* FAKEBLOCKING */
 
 static void pa_init(void)        /* Initialize PortAudio  */
 {
@@ -159,7 +146,6 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     return 0;
 }
 
-#ifdef FAKEBLOCKING
     /* callback for "non-callback" case in which we actually open portaudio
     in callback mode but fake "blocking mode". We communicate with the main
     thread via two FIFOs: the audio input buffer is copied to our input FIFO
@@ -223,10 +209,9 @@ static int pa_fifo_callback(const void *inputBuffer,
 #endif
     return 0;
 }
-#endif /* FAKEBLOCKING */
 
 PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
-    int framesperbuf, int nbuffers, int indeviceno, int outdeviceno, PaStreamCallback *callbackfn)
+    int framesperbuf, int indeviceno, int outdeviceno, PaStreamCallback *callbackfn)
 {
     long bytesPerSample;
     PaError err;
@@ -243,21 +228,15 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
     instreamparams.channelCount = inchannels;
     instreamparams.sampleFormat = paFloat32;
     instreamparams.hostApiSpecificStreamInfo = 0;
+    instreamparams.suggestedLatency = 0;
+    if (inchannels > 0 && indeviceno >= 0)
+        p_instreamparams = &instreamparams;
 
     outstreamparams.device = outdeviceno;
     outstreamparams.channelCount = outchannels;
     outstreamparams.sampleFormat = paFloat32;
     outstreamparams.hostApiSpecificStreamInfo = 0;
-
-#ifdef FAKEBLOCKING
-    instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 0;
-#else
-    instreamparams.suggestedLatency = outstreamparams.suggestedLatency =
-        nbuffers * framesperbuf / samplerate;
-#endif /* FAKEBLOCKING */
-
-    if (inchannels > 0 && indeviceno >= 0)
-        p_instreamparams = &instreamparams;
+    outstreamparams.suggestedLatency = 0;
     if (outchannels > 0 && outdeviceno >= 0)
         p_outstreamparams = &outstreamparams;
 
@@ -414,7 +393,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_soundin = soundin;
     pa_soundout = soundout;
 
-#ifdef FAKEBLOCKING
     if (pa_inbuf)
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
@@ -423,7 +401,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_sem = sys_semaphore_create();
 #endif
     pa_lastdactime = 0;
-#endif
 
     if (!inchans && !outchans)
         return (0);
@@ -432,11 +409,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     {
         pa_callback = callbackfn;
         err = pa_open_callback(rate, inchans, outchans,
-            framesperbuf, 0, pa_indev, pa_outdev, pa_lowlevel_callback);
+            framesperbuf, pa_indev, pa_outdev, pa_lowlevel_callback);
     }
     else
     {
-#ifdef FAKEBLOCKING
         if (pa_inchans)
         {
             pa_inbuf = malloc(nbuffers*framesperbuf*pa_inchans*sizeof(float));
@@ -451,15 +427,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 nbuffers*framesperbuf*pa_outchans*sizeof(float), pa_outbuf, 0);
         }
         err = pa_open_callback(rate, inchans, outchans,
-            framesperbuf, 0, pa_indev, pa_outdev, pa_fifo_callback);
-#else
-        err = pa_open_callback(rate, inchans, outchans,
-            framesperbuf, nbuffers, pa_indev, pa_outdev, 0);
-#endif
+            framesperbuf, pa_indev, pa_outdev, pa_fifo_callback);
     }
     pa_started = 0;
     pa_dio_error = 0;
-    pa_nbuffers = nbuffers;
     if (err != paNoError)
     {
         pd_error(0, "error opening audio: %s", Pa_GetErrorText(err));
@@ -478,7 +449,6 @@ void pa_close_audio(void)
         Pa_CloseStream(pa_stream);
     }
     pa_stream = 0;
-#ifdef FAKEBLOCKING
     if (pa_inbuf)
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
@@ -489,7 +459,6 @@ void pa_close_audio(void)
         sys_semaphore_destroy(pa_sem);
         pa_sem = 0;
     }
-#endif
 #endif
 }
 
@@ -541,7 +510,6 @@ int pa_send_dacs(void)
     conversionbuf = (float *)alloca((STUFF->st_inchannels > STUFF->st_outchannels?
         STUFF->st_inchannels:STUFF->st_outchannels) * DEFDACBLKSIZE * sizeof(float));
 
-#ifdef FAKEBLOCKING
     while (
         (sys_ringbuf_getreadavailable(&pa_inring) <
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
@@ -587,45 +555,7 @@ int pa_send_dacs(void)
                     k++, fp++, fp3 += STUFF->st_inchannels)
                         *fp = *fp3;
     }
-#else /* FAKEBLOCKING */
-        /* write output */
-    if (STUFF->st_outchannels)
-    {
-        if (!pa_started)
-        {
-            memset(conversionbuf, 0,
-                STUFF->st_outchannels * DEFDACBLKSIZE * sizeof(float));
-            for (j = 0; j < pa_nbuffers-1; j++)
-                Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE);
-        }
-        for (j = 0, fp = STUFF->st_soundout, fp2 = conversionbuf;
-            j < STUFF->st_outchannels; j++, fp2++)
-                for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
-                    k++, fp++, fp3 += STUFF->st_outchannels)
-                        *fp3 = *fp;
-        if (Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
-        {
-            pa_reopen_audio();
-            return SENDDACS_NO;
-        }
-    }
-        /* read input */
-    if (STUFF->st_inchannels)
-    {
-        if (Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
-        {
-            pa_reopen_audio();
-            return SENDDACS_NO;
-        }
-        for (j = 0, fp = STUFF->st_soundin, fp2 = conversionbuf;
-            j < STUFF->st_inchannels; j++, fp2++)
-                for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
-                    k++, fp++, fp3 += STUFF->st_inchannels)
-                        *fp = *fp3;
-    }
-    if ((sys_getrealtime() - timeref) > 0.002)
-        retval = SENDDACS_SLEPT;
-#endif /* FAKEBLOCKING */
+
     if (pa_dio_error)
     {
         sys_log_error(ERR_RESYNC);
