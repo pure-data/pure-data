@@ -98,7 +98,7 @@ proc ::dialog_startup::fill_frame {frame} {
 
     checkbutton $frame.optionframe.verbose  -anchor w \
         -text [_ "Verbose"] \
-        -variable verbose_button
+        -variable ::sys_verbose
     pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
     if {$::windowingsystem ne "win32"} {
