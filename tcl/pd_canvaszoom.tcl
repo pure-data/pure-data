@@ -34,8 +34,10 @@ proc ::pd_canvaszoom::init_default_zoom {} {
     # update "File/Preferences/Zoom New Windows" menu entry
     # for now, "Zoom New Windows" is a checkbox;
     # LATER: allow other default_zoom values than 0(100%) or 100(200%)
-    set ::sys_zoom_open [expr $default_zoom >= 100]
+    set ::dialog_preferences::zoom_open [expr $default_zoom >= 100]
 }
+
+after idle ::pd_canvaszoom::init_default_zoom
 
 proc ::pd_canvaszoom::zoominit {mytoplevel} {
     # read or define default_zoom if not already done

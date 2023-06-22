@@ -7,6 +7,7 @@ package require preferencewindow
 namespace eval ::dialog_preferences:: {
 }
 
+set ::dialog_preferences::zoom_open 0
 set ::dialog_preferences::use_ttknotebook {}
 after idle ::dialog_preferences::read_usettknotebook
 # allow updating the audio resp MIDI frame if the backend changes
@@ -47,9 +48,9 @@ proc ::dialog_preferences::fill_frame {prefs} {
     labelframe $prefs.extraframe -text [_ "Patch windows" ] -padx 5 -pady 5 -borderwidth 1
     # LATER: allow other default_zoom values than 0(100%) or 100(200%)
     checkbutton $prefs.extraframe.zoom -text [_ "Zoom New Windows"] \
-        -variable ::sys_zoom_open -anchor w \
+        -variable ::dialog_preferences::zoom_open -anchor w \
         -command {::pd_menucommands::scheduleAction \
-        ::pd_canvaszoom::set_default_zoom [expr $sys_zoom_open * 100]}
+        ::pd_canvaszoom::set_default_zoom [expr $::dialog_preferences::zoom_open * 100]}
     pack $prefs.extraframe.zoom -side left -expand 1
     pack $prefs.extraframe -side top -anchor n -fill x
 
