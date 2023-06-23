@@ -226,10 +226,15 @@ static void tabwrite_tilde_stop(t_tabwrite_tilde *x)
     }
 }
 
+static void tabwrite_tilde_free(t_tabwrite_tilde *x)
+{
+    arrayvec_free(&x->x_v);
+}
+
 static void tabwrite_tilde_setup(void)
 {
     tabwrite_tilde_class = class_new(gensym("tabwrite~"),
-        (t_newmethod)tabwrite_tilde_new, 0,
+        (t_newmethod)tabwrite_tilde_new, (t_method)tabwrite_tilde_free,
         sizeof(t_tabwrite_tilde), CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(tabwrite_tilde_class, t_tabwrite_tilde, x_f);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_dsp,
@@ -633,10 +638,16 @@ static void tabsend_dsp(t_tabsend *x, t_signal **sp)
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
 }
 
+static void tabsend_free(t_tabsend *x)
+{
+    arrayvec_free(&x->x_v);
+}
+
 static void tabsend_setup(void)
 {
-    tabsend_class = class_new(gensym("tabsend~"), (t_newmethod)tabsend_new,
-        0, sizeof(t_tabsend), CLASS_MULTICHANNEL, A_GIMME, 0);
+    tabsend_class = class_new(gensym("tabsend~"),
+        (t_newmethod)tabsend_new, (t_method)tabsend_free,
+        sizeof(t_tabsend), CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(tabsend_class, t_tabsend, x_f);
     class_addmethod(tabsend_class, (t_method)tabsend_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -703,10 +714,15 @@ static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
 }
 
+static void tabreceive_free(t_tabreceive *x)
+{
+    arrayvec_free(&x->x_v);
+}
+
 static void tabreceive_setup(void)
 {
     tabreceive_class = class_new(gensym("tabreceive~"),
-        (t_newmethod)tabreceive_new, 0,
+        (t_newmethod)tabreceive_new, (t_method)tabreceive_free,
         sizeof(t_tabreceive), CLASS_MULTICHANNEL, A_GIMME, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_dsp,
         gensym("dsp"), A_CANT, 0);
