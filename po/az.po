@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2004-03-12 22:22+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
@@ -668,16 +668,34 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup options"
-msgstr ""
-
-msgid "Defeat real-time scheduling"
+msgid "GUI options"
 msgstr ""
 
 msgid "language"
 msgstr ""
 
 msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr ""
+
+msgid "Defeat real-time scheduling"
 msgstr ""
 
 msgid "Startup flags:"

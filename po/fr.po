@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2023-06-07 05:32+0000\n"
 "Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -621,17 +621,37 @@ msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "Startup options"
-msgstr "Options au démarrage"
-
-msgid "Defeat real-time scheduling"
-msgstr "Refuser la priorité temps-réel"
+#, fuzzy
+msgid "GUI options"
+msgstr "Paramètres de l'interface graphique"
 
 msgid "language"
 msgstr "langue"
 
 msgid "Menu language"
 msgstr "Langue des menus"
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Échantillons par bloc :"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr "Options au démarrage"
+
+msgid "Defeat real-time scheduling"
+msgstr "Refuser la priorité temps-réel"
 
 msgid "Startup flags:"
 msgstr "Options au démarrage :"

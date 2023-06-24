@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -630,17 +630,37 @@ msgid "Pd libraries to load on startup"
 msgstr "기동과 함께 Pd 라이브러리를 로드하기"
 
 #, fuzzy
-msgid "Startup options"
-msgstr "스타트업 플래그:"
-
-msgid "Defeat real-time scheduling"
-msgstr "실시간 스케쥴링 무시하기"
+msgid "GUI options"
+msgstr "GUI 설정을 제거하였습니다"
 
 msgid "language"
 msgstr ""
 
 msgid "Menu language"
 msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "블록 크기:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
+msgstr "스타트업 플래그:"
+
+msgid "Defeat real-time scheduling"
+msgstr "실시간 스케쥴링 무시하기"
 
 msgid "Startup flags:"
 msgstr "스타트업 플래그:"

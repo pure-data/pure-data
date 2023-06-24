@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2023-06-07 05:32+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -627,17 +627,37 @@ msgstr "Die folgenden Einstellungen erfordern einen Neustart von Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Pd-Bibliotheken die automatisch geladen werden"
 
-msgid "Startup options"
-msgstr "Kommandozeilenoptionen"
-
-msgid "Defeat real-time scheduling"
-msgstr "Echtzeit-Modus unterdrücken"
+#, fuzzy
+msgid "GUI options"
+msgstr "GUI-Einstellungen entfernt"
 
 msgid "language"
 msgstr "Sprache"
 
 msgid "Menu language"
 msgstr "Sprache des Menüs"
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Blocklänge:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr "Kommandozeilenoptionen"
+
+msgid "Defeat real-time scheduling"
+msgstr "Echtzeit-Modus unterdrücken"
 
 msgid "Startup flags:"
 msgstr "Kommandozeilenoptionen:"
