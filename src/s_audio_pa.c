@@ -29,6 +29,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <portaudio.h>
+#ifdef _WIN32
+#include <pa_win_wasapi.h>
+#endif
 
 #include "m_private_utils.h"
 
@@ -240,6 +243,9 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     PaError err;
     PaStreamParameters instreamparams, outstreamparams;
     PaStreamParameters*p_instreamparams=0, *p_outstreamparams=0;
+#ifdef _WIN32
+    PaWasapiStreamInfo wasapiinfo;
+#endif
 
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
             nchannels, flags, nbuffers, framesperbuf); */
@@ -265,6 +271,29 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
         p_instreamparams=&instreamparams;
     if( outchannels>0 && outdeviceno >= 0)
         p_outstreamparams=&outstreamparams;
+
+#ifdef _WIN32
+        /* set WASAPI options */
+    memset(&wasapiinfo, 0, sizeof(wasapiinfo));
+    wasapiinfo.size = sizeof(PaWasapiStreamInfo);
+    wasapiinfo.hostApiType = paWASAPI;
+    wasapiinfo.version = 1;
+    wasapiinfo.flags = paWinWasapiAutoConvert;
+    if (p_instreamparams)
+    {
+        const PaDeviceInfo *dev = Pa_GetDeviceInfo(p_instreamparams->device);
+        const PaHostApiInfo *api = Pa_GetHostApiInfo(dev->hostApi);
+        if (api->type == paWASAPI)
+            p_instreamparams->hostApiSpecificStreamInfo = &wasapiinfo;
+    }
+    if (p_outstreamparams)
+    {
+        const PaDeviceInfo *dev = Pa_GetDeviceInfo(p_outstreamparams->device);
+        const PaHostApiInfo *api = Pa_GetHostApiInfo(dev->hostApi);
+        if (api->type == paWASAPI)
+            p_outstreamparams->hostApiSpecificStreamInfo = &wasapiinfo;
+    }
+#endif
 
     err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, sampleRate);
 
@@ -298,7 +327,11 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
 
         if (err == paInvalidSampleRate)
         {
-            sampleRate=outRate;
+            double oldrate = sampleRate;
+            sampleRate = outRate > 0 ? outRate : inRate;
+            logpost(0, PD_NORMAL,
+                "warning: requested samplerate %d not supported, using %d.",
+                    (int)oldrate, (int)sampleRate);
         }
 
         err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams,

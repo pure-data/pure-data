@@ -143,7 +143,7 @@ static void sigifft_dsp(t_sigfft *x, t_signal **sp)
 static void sigfft_setup(void)
 {
     sigfft_class = class_new(gensym("fft~"), sigfft_new, 0,
-        sizeof(t_sigfft), 0, 0);
+        sizeof(t_sigfft), CLASS_MULTICHANNEL, 0);
     class_setfreefn(sigfft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigfft_class, t_sigfft, x_f);
     class_addmethod(sigfft_class, (t_method)sigfft_dsp,
@@ -151,7 +151,7 @@ static void sigfft_setup(void)
     mayer_init();
 
     sigifft_class = class_new(gensym("ifft~"), sigifft_new, 0,
-        sizeof(t_sigfft), 0, 0);
+        sizeof(t_sigfft), CLASS_MULTICHANNEL, 0);
     class_setfreefn(sigifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigifft_class, t_sigfft, x_f);
     class_addmethod(sigifft_class, (t_method)sigifft_dsp,
@@ -289,7 +289,7 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
 static void sigrifft_setup(void)
 {
     sigrifft_class = class_new(gensym("rifft~"), sigrifft_new, 0,
-        sizeof(t_sigrifft), 0, 0);
+        sizeof(t_sigrifft), CLASS_MULTICHANNEL, 0);
     class_setfreefn(sigrifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrifft_class, t_sigrifft, x_f);
     class_addmethod(sigrifft_class, (t_method)sigrifft_dsp,

@@ -602,8 +602,8 @@ void sys_gui_audiopreferences(void) {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char srate[80], callback[80], blocksize[80];
     const char *devicesI[MAXNDEV], *devicesO[MAXNDEV];
-    float usedevsI[MAXAUDIOINDEV], devchansI[MAXAUDIOINDEV];
-    float usedevsO[MAXAUDIOOUTDEV], devchansO[MAXAUDIOOUTDEV];
+    t_float usedevsI[MAXAUDIOINDEV], devchansI[MAXAUDIOINDEV];
+    t_float usedevsO[MAXAUDIOOUTDEV], devchansO[MAXAUDIOOUTDEV];
     int num_usedevsI, num_devchansI, num_usedevsO, num_devchansO;
     int num_devicesI = 0, num_devicesO = 0, canmulti = 0, cancallback = 0;
     int i;
@@ -733,7 +733,6 @@ void sys_listdevs(void)
 #if 0
         /* To agree with command line flags, normally start at 1 */
         /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
-        /* (see also sys_mmio variable in s_main.c)  */
 
        /* JMZ: otoh, it seems that the '-audiodev' flags 0-based
         * indices on ALSA and PORTAUDIO as well,

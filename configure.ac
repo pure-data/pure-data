@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.53.1])
+AC_INIT([pd], [0.54.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -32,6 +32,7 @@ local_portaudio=yes
 local_portmidi=yes
 mmio=no
 asio=no
+wasapi=no
 jack_framework=no
 locales=yes
 
@@ -43,6 +44,12 @@ wish="wish"
 audio_backends=""
 midi_backends=""
 
+# deken information
+deken_os=""
+deken_cpu=""
+deken_ext="so"
+floatsize=""
+
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
 RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
@@ -51,6 +58,10 @@ RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-po
 PD_CPPFLAGS=""
 PD_CFLAGS=""
 PD_LDFLAGS=""
+
+
+pd_transform_name=$(echo ${program_transform_name} | sed -e 's|\$\$|$|')
+pd_transformed=$(echo pd | sed -e "${pd_transform_name}")
 
 #########################################
 ##### OS Detection #####
@@ -64,10 +75,12 @@ AS_CASE([$host],
     AS_IF([test "x${IPHONEOS}" = "xno"],[
         MACOSX=yes
         platform="Mac OSX"
+        deken_os=darwin
         coreaudio=yes
         portaudio=yes
         portmidi=yes
         jack_framework=yes
+        watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
@@ -106,6 +119,7 @@ AS_CASE([$host],
     AS_IF([test "x${ANDROID}" = "xno"],[
         LINUX=yes
         platform=Linux
+        deken_os=linux
         portaudio=yes
         watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
@@ -113,10 +127,12 @@ AS_CASE([$host],
         EXTERNAL_EXTENSION=pd_linux
     ],[
         platform=Android
+        EXTERNAL_EXTENSION=so
     ])
 ],[*-*-gnu*],[
     HURD=yes
     platform=Hurd
+    deken_os=linux
     watchdog=yes
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
@@ -125,8 +141,10 @@ AS_CASE([$host],
     WINDOWS=yes
     MINGW=yes
     platform=MinGW
+    deken_os=windows
     mmio=yes
     asio=yes
+    wasapi=yes
     portaudio=yes
     portmidi=yes
 
@@ -135,7 +153,7 @@ AS_CASE([$host],
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -lpd"
+    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -l${pd_transformed}"
     EXTERNAL_EXTENSION=dll
 
     # workaround for rpl_malloc/rpl_realloc bug in autoconf when cross-compiling
@@ -145,8 +163,10 @@ AS_CASE([$host],
     WINDOWS=yes
     CYGWIN=yes
     platform=Cygwin
+    deken_os=windows
     mmio=yes
     asio=yes
+    wasapi=yes
     portaudio=yes
     portmidi=yes
 
@@ -164,6 +184,20 @@ AS_CASE([$host],
     platform=Unknown
     EXTERNAL_EXTENSION=so
 ])
+
+AS_IF([test "x${deken_os}" = "xwindows"],[deken_ext=dll])
+
+
+AS_CASE([$host_cpu],
+    [x86_64|amd64],[deken_cpu=amd64],
+    [i386|i486|i586|i686],[deken_cpu=i386],
+    [aarch64],[deken_cpu=arm64],
+    [armv*l],[deken_cpu=${host_cpu%l}],
+    [armv*b],[deken_cpu=${host_cpu}],
+    [powerpc64],[deken_cpu=ppc64],
+    [powerpc],[deken_cpu=ppc],
+    [])
+
 
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
 AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
@@ -352,6 +386,35 @@ AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
 AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
 
 
+AC_ARG_WITH([floatsize],
+    [AS_HELP_STRING([--with-floatsize=<SIZE>],
+    [build binaries for the given floatsize;
+    SIZE can be 32 (single precision) or 64 (double precision)
+    ]
+    )],
+    [floatsize=${withval}]
+    )
+AC_MSG_CHECKING([float size])
+AS_CASE([${floatsize}],
+    [32],[],
+    [64],[],
+    [""],[],
+    [
+        AC_MSG_WARN([${floatsize}bit floats not supported..fallback to default])
+        floatsize=""
+    ])
+AS_IF([test "x${floatsize}" != "x" ],
+   [
+    PD_CPPFLAGS="-DPD_FLOATSIZE=${floatsize} $PD_CPPFLAGS"
+    AC_MSG_RESULT([${floatsize}])
+   ],[AC_MSG_RESULT([default])
+   ])
+
+AS_IF([test "x${floatsize}" = "x64" && test "x${deken_cpu}" != "x" && test "x${deken_os}" != "x" && test "x${deken_ext}" != "x"],[
+      EXTERNAL_EXTENSION="${deken_os}-${deken_cpu}-${floatsize}.${deken_ext}"
+      AC_MSG_NOTICE([default external extension...${EXTERNAL_EXTENSION}])
+      ])
+
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
     [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
@@ -463,6 +526,12 @@ AS_IF([test x$asio = xyes],
         AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
 
+#### WASAPI ####
+AC_ARG_ENABLE([wasapi],
+    [AS_HELP_STRING([--disable-wasapi], [do not use WASAPI backend])],
+    [wasapi=$enableval])
+test x$WINDOWS = xyes || wasapi=no
+
 ##### Apple's CoreAudio #####
 # not used directly, implicitly needed when using PortAudio on OSX
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
@@ -542,7 +611,6 @@ AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
 AC_SUBST([WISH])
 
 ##### Deken OS and CPU #####
-deken_id=""
 AC_ARG_WITH([deken-os],
     [AS_HELP_STRING([--with-deken-os=<OS>],
         [Operating System string to use for externals (e.g. Linux, Windows, Darwin,...)])],
@@ -551,7 +619,7 @@ AS_IF([test "x${DEKEN_OS}" = "xyes" -o "x${DEKEN_OS}" = "xno"],
     [AC_MSG_NOTICE([--with-deken-os requires an Operating System, ignoring '${DEKEN_OS}'])
     DEKEN_OS=""])
 AC_SUBST([DEKEN_OS])
-AS_IF([test "x${DEKEN_OS}" = "x"], [deken_id="???"], [deken_id="${DEKEN_OS}"])
+AS_IF([test "x${DEKEN_OS}" != "x"], [deken_os="${DEKEN_OS}"])
 
 AC_ARG_WITH([deken-cpu],
     [AS_HELP_STRING([--with-deken-cpu=<CPU>],
@@ -561,7 +629,7 @@ AS_IF([test "x${DEKEN_CPU}" = "xyes" -o "x${DEKEN_CPU}" = "xno"],
     [AC_MSG_NOTICE([--with-deken-cpu requires a CPU, ignoring '${DEKEN_CPU}'])
     DEKEN_CPU=""])
 AC_SUBST([DEKEN_CPU])
-AS_IF([test "x${DEKEN_CPU}" = "x"], [deken_id="${deken_id}-???"], [deken_id="${deken_id}-${DEKEN_CPU}"])
+AS_IF([test "x${DEKEN_CPU}" != "x"], [deken_cpu="${DEKEN_CPU}"])
 
 AC_ARG_WITH([external-extension],
     [AS_HELP_STRING([--with-external-extension=<EXT>],
@@ -604,6 +672,10 @@ dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
+
+##### WASAPI #####
+AM_CONDITIONAL(WASAPI, test x$wasapi = xyes)
+AS_IF([test x$wasapi = xyes], [audio_backends="WASAPI ${audio_backends}"])
 
 ##### CoreAudio #####
 # portaudio doesn't work with iOS, so don't bother with CoreAudio
@@ -711,6 +783,7 @@ AC_MSG_NOTICE([
     $PACKAGE $VERSION is now configured
 
     Platform:             $platform
+    Float size:           ${floatsize:-default}
     Debug build:          $debug
     Universal build:      $universal
     Localizations:        $locales
@@ -727,7 +800,7 @@ AC_MSG_NOTICE([
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
-    Deken identifier:     ${deken_id}
+    Deken identifier:     ${deken_os:-???}-${deken_cpu:-???}
 
     fftw:                 $fftw
     wish(tcl/tk):         $wish

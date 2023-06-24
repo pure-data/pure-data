@@ -830,11 +830,30 @@ proc main {argc argv} {
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
         set ::port [::pd_connect::create_socket 0]
-        set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
-        [string map {\{ "" \} ""} $::pd_startup_args]
-        ::pd_connect::set_pid \
-            [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
+            [string map {\{ "" \} ""} $::pd_startup_args]
+
+        set basedir [file normalize [file join [file dirname [info script]] ..] ]
+        set exe_floatsize [::pd_guiprefs::read "pdcore_precision_binary" ]
+        set pid ""
+        foreach {bindir              exe} [list \
+                 bin${exe_floatsize} pd${exe_floatsize} \
+                 bin${exe_floatsize} pd \
+                 bin                 pd${exe_floatsize} \
+                 bin                 pd ] {
+            set pd_exec [file join $basedir $bindir $exe]
+            catch {
+                set pid ""
+                set pid [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
+                break
+            }
+            if { $pid != "" } {
+                break
+            }
+        }
+        if { $pid != "" } {
+            ::pd_connect::set_pid $pid
+        }
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)

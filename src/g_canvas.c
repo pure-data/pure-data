@@ -1434,7 +1434,11 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (THISGUI->i_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate)
+    {
+        canvas_stop_dsp();
+        canvas_start_dsp();
+    }
 }
 
 /* the "dsp" message to pd starts and stops DSP computation, and, if
@@ -1522,28 +1526,12 @@ void canvas_redrawallfortemplate(t_template *template, int action)
         glist_doredrawfortemplate(x, template, action);
 }
 
-    /* find the template defined by a canvas, and redraw all elements
-    for that */
+    /* find the template defined by a canvas, and redraw all affected scalars */
 void canvas_redrawallfortemplatecanvas(t_canvas *x, int action)
 {
-    t_gobj *g;
-    t_template *tmpl;
-    t_symbol *s1 = gensym("struct");
-    for (g = x->gl_list; g; g = g->g_next)
-    {
-        t_object *ob = pd_checkobject(&g->g_pd);
-        t_atom *argv;
-        if (!ob || ob->te_type != T_OBJECT ||
-            binbuf_getnatom(ob->te_binbuf) < 2)
-            continue;
-        argv = binbuf_getvec(ob->te_binbuf);
-        if (argv[0].a_type != A_SYMBOL || argv[1].a_type != A_SYMBOL
-            || argv[0].a_w.w_symbol != s1)
-                continue;
-        tmpl = template_findbyname(argv[1].a_w.w_symbol);
-        canvas_redrawallfortemplate(tmpl, action);
-    }
-    canvas_redrawallfortemplate(0, action);
+    t_template *template = template_findbyname(canvas_makebindsym(x->gl_name));
+    if (template)
+        canvas_redrawallfortemplate(template, action);
 }
 
 /* ------------------------------- declare ------------------------ */
