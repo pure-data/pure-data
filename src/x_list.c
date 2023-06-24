@@ -528,7 +528,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     x->x_alist.l_n -= n;
 }
 
-static void list_store_get(t_list_store *x, float f1, float f2)
+static void list_store_get(t_list_store *x, t_floatarg f1, t_floatarg f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
