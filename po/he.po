@@ -6,17 +6,17 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-24 09:59+0200\n"
-"PO-Revision-Date: 2023-06-10 08:51+0000\n"
+"PO-Revision-Date: 2023-06-26 04:41+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "קווי"
@@ -89,7 +89,7 @@ msgid "Redo typing"
 msgstr "חזרה על הקלדה"
 
 msgid "no Pd settings to clear"
-msgstr "אין הגדרות Pd למחיקה"
+msgstr "אין הגדרות Pd לפינוי"
 
 msgid "removed .pdsettings file"
 msgstr "קובץ ‎.pdsettings הוסר"
@@ -615,9 +615,8 @@ msgstr "ההגדרות שלהלן דורשות את הפעלת Pd מחדש!"
 msgid "Pd libraries to load on startup"
 msgstr "ספריות Pd לטעינה בהפעלה"
 
-#, fuzzy
 msgid "GUI options"
-msgstr "הגדרות מנשק משתמש"
+msgstr "אפשרויות מנשק משתמש"
 
 msgid "language"
 msgstr "שפה"
@@ -626,20 +625,19 @@ msgid "Menu language"
 msgstr "שפת התפריטים"
 
 msgid "float (32bit)"
-msgstr ""
+msgstr "נקודה צפה (32 סיביות)"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "כפול (64 סיביות) ניסיוני"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "כפול (64 סיביות)"
 
-#, fuzzy
 msgid "float size"
-msgstr "גודל מקטע:"
+msgstr "גודל נקודה צפה"
 
 msgid "Numeric precision of Pd-core"
-msgstr ""
+msgstr "דיוק עשרוני של Pd-core"
 
 msgid "Startup options"
 msgstr "אפשרויות הפעלה"
@@ -1390,7 +1388,7 @@ msgid "Edit Mode"
 msgstr "מצב עריכה"
 
 msgid "Undo"
-msgstr "ביטול"
+msgstr "החזרה"
 
 msgid "Redo"
 msgstr "ביצוע חוזר"
