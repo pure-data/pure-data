@@ -1185,6 +1185,9 @@ proc ::deken::set_platform {os machine bits floatsize} {
         set msg [format [_ "Platform re-detected: %s" ] [::deken::platform2string 1] ]
         ::pdwindow::verbose 0 "\[deken\] ${msg}\n"
     }
+    if { [info procs ::pdwindow::update_title] ne ""} {
+        after idle {::pdwindow::update_title .pdwindow}
+    }
 }
 
 proc ::deken::versioncompare {a b} {

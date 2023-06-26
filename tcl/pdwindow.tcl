@@ -371,6 +371,28 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
 }
 
 #--create the window-----------------------------------------------------------#
+proc ::pdwindow::update_title {w} {
+    set title [_ "Pd" ]
+    set version "${::PD_MAJOR_VERSION}.${::PD_MINOR_VERSION}.${::PD_BUGFIX_VERSION}${::PD_TEST_VERSION}"
+    set fulltitle "${title} ${version}"
+    if { [info exists ::deken::platform(floatsize)] } {
+        switch -- ${::deken::platform(floatsize)} {
+            32 { set floatsize "" }
+            64 { set floatsize [_ "EXPERIMENTAL double (64bit) precision"] }
+            default  { set floatsize [format [_ "%dbit-floats EXPERIMENTAL" ]  ${::deken::platform(floatsize)}]}
+        }
+        if { ${floatsize} ne "" } {
+            set fulltitle "${fulltitle} - ${floatsize}"
+        }
+    }
+
+    if { [winfo exists ${w} ] } {
+        wm title ${w} "${fulltitle}"
+    }
+    set ::windowname($w) $title
+
+    return ${fulltitle}
+}
 
 proc ::pdwindow::create_window {} {
     variable logmenuitems
@@ -386,8 +408,8 @@ proc ::pdwindow::create_window {} {
     option add *PdWindow*Entry.background "white" startupFile
 
     toplevel .pdwindow -class PdWindow
-    wm title .pdwindow [_ "Pd"]
-    set ::windowname(.pdwindow) [_ "Pd"]
+    ::pdwindow::update_title .pdwindow
+
     if {$::windowingsystem eq "x11"} {
         wm minsize .pdwindow 400 75
     } else {
