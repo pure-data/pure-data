@@ -172,7 +172,7 @@ set current_plugin_loadpath {}
 # a list of plugins that were loaded
 set loaded_plugins {}
 # list of command line flags set at startup
-set startup_flags {}
+set sys_flags {}
 # list of libraries loaded on startup
 set startup_libraries {}
 # start dirs for new files and open panels

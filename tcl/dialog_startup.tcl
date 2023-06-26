@@ -65,13 +65,13 @@ proc ::dialog_startup::commit { new_startup } {
     set ::pd_i18n::language $::dialog_startup::language
     ::pd_guiprefs::write "gui_language" $::dialog_startup::language
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     set ::sys_defeatrt $defeatrt
-    if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
+    if {$flags ne ""} {variable ::sys_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
@@ -141,7 +141,7 @@ proc ::dialog_startup::fill_frame {frame} {
 
     labelframe $frame.flags -text [_ "Startup flags:" ]
     pack $frame.flags -side top -anchor s -fill x -padx 2m
-    entry $frame.flags.entry -textvariable ::startup_flags
+    entry $frame.flags.entry -textvariable ::sys_flags
     pack $frame.flags.entry -side right -expand 1 -fill x
 
     ::preferencewindow::entryfocus $frame.flags.entry
