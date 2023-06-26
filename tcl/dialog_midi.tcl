@@ -71,58 +71,74 @@ proc ::dialog_midi::ok {mytoplevel} {
     ::dialog_midi::cancel $mytoplevel
 }
 
-proc ::dialog_midi::fill_frame_device {frame direction index} {
-    upvar ::dialog_midi::${direction}dev${index} selected
+proc ::dialog_midi::fill_frame_device {frame direction port} {
+    ## create a single device-pulldown
+    # - <frame>: where to create the pull-down
+    # - <direction>: 'in' or 'out'
+    # - <port>: port
+    upvar ::dialog_midi::${direction}dev${port} selected
     upvar ::midi_${direction}devlist devlist
 
-    set x [expr $selected - 1]
+    set x $selected
     set device [lindex $devlist $x]
-    if { "$x" < 0 || $x >= [llength $devlist ] || "${device}" eq "" } {
-        set device [format "(%s)" [_ "no device" ]]
+    set nodevice_name [format "(%s)" [_ "no device" ]]
+
+    # the 1st device is typically 'none', which really means "no device"
+    if { $x == 0 && ( $device eq "" || $device eq "none" ) } {
+        set device ${nodevice_name}
     }
 
-    label $frame.l1 -text "${index}:"
+    # invalid device selected
+    if { "$x" < 0 || $x >= [llength $devlist ]} {
+        set device ${nodevice_name}
+    }
+
+    # create the pull-down button (using the currently selected device name as text)
+    label $frame.l1 -text "${port}:"
     menubutton $frame.x1 -indicatoron 1 -menu $frame.x1.menu \
         -relief raised -highlightthickness 1 -anchor c \
         -direction flush \
         -text ${device}
     menu $frame.x1.menu
-    set idx 1
+
+    # create the pull-down options
+    set idx 0
     foreach dev $devlist {
+        if { $idx == 0 && ( $dev eq "" || $dev eq "none") } {
+            set dev ${nodevice_name}
+        }
         $frame.x1.menu add radiobutton \
             -label "${dev}" \
-            -value ${idx} -variable ::dialog_midi::${direction}dev${index} \
-            -command "$frame.x1 configure -text \"${dev}\""
+            -value ${idx} -variable ::dialog_midi::${direction}dev${port} \
+            -command [list $frame.x1 configure -text ${dev}]
         incr idx
     }
-    set dev [_ "(no device)" ]
-    $frame.x1.menu add radiobutton \
-        -label "$dev" \
-        -value 0 -variable ::dialog_midi::${direction}dev${index} \
-        -command "$frame.x1 configure -text \"${dev}\""
     pack $frame.l1 -side left
     pack $frame.x1 -side left -fill x -expand 1
 }
-proc ::dialog_midi::fill_frame_devices {frame direction maxdevs} {
+proc ::dialog_midi::fill_frame_devices {frame direction maxports} {
+    ## create a list of device pull-downs (one for each port)
+
     # side effects:
     ## ro: devlist_midi_${direction}devlist
 
     upvar ::midi_${direction}devlist devlist
     set numdevs [llength $devlist]
-    if { $maxdevs > $numdevs } { set maxdevs $numdevs }
-    for {set i 1} {$i <= $maxdevs} {incr i} {
-        set w ${frame}.${i}f
+    if { $maxports > $numdevs } { set maxports $numdevs }
+    for {set p 1} {$p <= $maxports} {incr p} {
+        set w ${frame}.${p}f
         frame $w
         pack $w -side top -fill x
-        fill_frame_device $w ${direction} ${i}
+        fill_frame_device $w ${direction} ${p}
     }
-    if {$maxdevs < 1} {
+    if {$maxports < 1} {
         label $frame.label -text [_ "no input devices" ]
         pack $frame.label -side top -fill x
     }
 }
 
 proc ::dialog_midi::make_frame_iodevices {frame maxdevs longform} {
+    # device-selection dialog (OSS, PortMidi)
     # side effects: none
 
     if {[winfo exists $frame]} {
@@ -158,6 +174,9 @@ proc ::dialog_midi::make_frame_iodevices {frame maxdevs longform} {
 }
 
 proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
+    # ALSA-like MIDI dialog
+    # - just declare how many input/output ports are used
+    # - (no need for a device-list to pick from)
     if {[winfo exists $frame]} {
         destroy $frame
     }
@@ -214,14 +233,21 @@ proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
 
 
 proc ::dialog_midi::init_devicevars {} {
+    # initializes
+    # - the number of ports (::dialog_midi::portsin, ::dialog_midi::portsout)
+    # - the selected device for each port (::dialog_midi::{in,out}dev[0-9])
     foreach direction {in out} {
         # input vars
+        ## list of selected devices for each port in the current direction
         upvar ::midi_${direction}devices devices
         # output vars
+        ## the number of used ports
         upvar ::dialog_midi::ports${direction} ports
 
+        # 'i' is the 1-based port-index
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             # output vars
+            ## the device selected for this port
             upvar ::dialog_midi::${direction}dev${i} dev
             set d ""
             if { [llength $devices] > 0 } {
@@ -230,15 +256,17 @@ proc ::dialog_midi::init_devicevars {} {
             if { "${d}" eq "" } {
                 set dev 0
             } else {
-                set dev [expr $d + 1]
+                set dev $d
             }
 
         }
 
+        # how many ports are actually used?
+        # with ALSA, this is the value to be displayed
         set ports 0
         set i 0
         foreach x $devices {
-            if { $x >= 0 } {
+            if { $x > 0 } {
                 set ports [incr i]
             }
         }
@@ -251,11 +279,11 @@ proc ::dialog_midi::set_configuration {API inputdevices indevs outputdevices  ou
     set ::pd_whichmidiapi $API
 
     set ::midi_indevlist ${inputdevices}
-    # decrement indices by 1 (and filter out invalid(=negative) values)
-    set ::midi_indevices [lmap _ $indevs {set _ [expr int($_) - 1]; if {$_ < 0} continue; set _}]
+    # use integer indices (and filter out invalid(=negative) values)
+    set ::midi_indevices [lmap _ $indevs {set _ [expr int($_) ]; if {$_ < 0} continue; set _}]
 
     set ::midi_outdevlist ${outputdevices}
-    set ::midi_outdevices [lmap _ $outdevs {set _ [expr int($_) - 1]; if {$_ < 0} continue; set _}]
+    set ::midi_outdevices [lmap _ $outdevs {set _ [expr int($_) ]; if {$_ < 0} continue; set _}]
 }
 
 # start a dialog window to select midi devices.  "longform" asks us to make

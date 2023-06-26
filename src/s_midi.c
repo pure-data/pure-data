@@ -711,9 +711,9 @@ void sys_gui_midipreferences(void) {
 
         /* notify GUI of used input/output devices */
     for (i=0; i<nindev; i++)
-        midiindevf[i] = (t_float)midiindev[i];
+        midiindevf[i] = (t_float)midiindev[i] + 1;
     for (i=0; i<noutdev; i++)
-        midioutdevf[i] = (t_float)midioutdev[i];
+        midioutdevf[i] = (t_float)midioutdev[i] + 1;
 
     pdgui_vmess("::dialog_midi::set_configuration", "i SF SF",
                 sys_midiapi,
