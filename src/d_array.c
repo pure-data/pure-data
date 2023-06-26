@@ -152,10 +152,9 @@ static void tabwrite_tilde_redraw(t_symbol *arraysym)
 
 static t_int *tabwrite_tilde_perform(t_int *w)
 {
-    t_tabwrite_tilde *x = (t_tabwrite_tilde *)(w[1]);
-    t_dsparray *d = (t_dsparray *)(w[2]);
-    t_sample *in = (t_sample *)(w[3]);
-    int n = (int)(w[4]), phase = d->d_phase, endphase;
+    t_dsparray *d = (t_dsparray *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    int n = (int)(w[3]), phase = d->d_phase, endphase;
     t_word *buf;
 
     if (!dsparray_get_array(d, &endphase, &buf, 0))
@@ -184,7 +183,7 @@ static t_int *tabwrite_tilde_perform(t_int *w)
     }
     else d->d_phase = 0x7fffffff;
 noop:
-    return (w+5);
+    return (w+4);
 }
 
 static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s,
@@ -199,7 +198,7 @@ static void tabwrite_tilde_dsp(t_tabwrite_tilde *x, t_signal **sp)
         sp[0]->s_nchans : x->x_v.v_n);
     arrayvec_testvec(&x->x_v, x);
     for (i = 0; i < nchans; i++)
-        dsp_add(tabwrite_tilde_perform, 4, x, x->x_v.v_vec+i,
+        dsp_add(tabwrite_tilde_perform, 3, x->x_v.v_vec+i,
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
 }
 
