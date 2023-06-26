@@ -829,3 +829,13 @@ AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
 
 AS_IF([test x$enable_fftw = xyes -a x$fftw = xno ],
  AC_MSG_WARN([FFTW requested but no development files found... disabled]))
+
+AS_CASE([${floatsize}],
+    [""],[],
+    [32],[],
+    [
+      AS_IF([test "${pd_transformed}" = "pd"],[
+        AC_MSG_WARN([Using a non-standard floatsize without name-mangling.
+        Did you forget to specify "--program-transform-name='s/pd$/pd${floatsize}/'"?
+        ])
+      ])])
