@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -536,9 +536,6 @@ msgstr "Sänd meddelande"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "(no device)"
-msgstr ""
-
 msgid "no input devices"
 msgstr ""
 
@@ -753,6 +750,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1619,6 +1622,13 @@ msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 #, fuzzy

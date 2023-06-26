@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-06-26 09:35+0000\n"
 "Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -508,9 +508,6 @@ msgstr "Envoyer un message Pd"
 msgid "(use arrow keys for history)"
 msgstr "(utiliser les flèches pour accéder à l'historique)"
 
-msgid "(no device)"
-msgstr "(aucun périphérique)"
-
 msgid "no input devices"
 msgstr "pas de périphériques d'entrée"
 
@@ -718,6 +715,13 @@ msgstr "Échec de la lecture du plugin %s ... passer !"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossible de trouver des plugins dans %s... passer !"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Échec de l'installation de '%s' !"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
@@ -1609,6 +1613,13 @@ msgstr "Tcl :"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "double (64bit) EXPÉRIMENTAL"
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1648,6 +1659,9 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "(no device)"
+#~ msgstr "(aucun périphérique)"
 
 #~ msgid "Path..."
 #~ msgstr "Chemins..."

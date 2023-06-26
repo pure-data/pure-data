@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -508,9 +508,6 @@ msgstr "Pd 메시지를 보내기"
 msgid "(use arrow keys for history)"
 msgstr "(이력을 보려면 화살표 키를 사용하십시오)"
 
-msgid "(no device)"
-msgstr ""
-
 #, fuzzy
 msgid "no input devices"
 msgstr "입력 장치"
@@ -728,6 +725,13 @@ msgstr "플러그인 %s을(를) 읽지 못했습니다 ...스킵합니다!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "%s에서 플러그인을 찾는 데 실패했습니다 ...스킵합니다!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "'%s'을(를) 설치하는 데 실패했습니다!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1603,6 +1607,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"
