@@ -270,9 +270,9 @@ if {[tk windowingsystem] eq "aqua"} {
         }
 
         # call apply on Return in entry boxes that are in focus & rebind Return to ok button
-        bind $id <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel $okbutton \"$okaction\" \"cancelaction\""
+        bind $id <KeyPress-Return> "::preferencewindow::rebind_return $mytoplevel $okbutton \"$okaction\" \"cancelaction\""
         # unbind Return from ok button when an entry takes focus
-        $id config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
+        $id config -validate focusin -vcmd "::preferencewindow::unbind_return $mytoplevel"
     }
 
     # for focus handling on OSX
