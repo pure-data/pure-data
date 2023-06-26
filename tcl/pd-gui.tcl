@@ -836,6 +836,7 @@ proc main {argc argv} {
         set basedir [file normalize [file join [file dirname [info script]] ..] ]
         set exe_floatsize [::pd_guiprefs::read "pdcore_precision_binary" ]
         set pid ""
+        set stderr ""
         foreach {bindir              exe} [list \
                  bin${exe_floatsize} pd${exe_floatsize} \
                  bin${exe_floatsize} pd \
@@ -846,14 +847,31 @@ proc main {argc argv} {
                 set pid ""
                 set pid [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
                 break
-            }
+            } stderr
             if { $pid != "" } {
                 break
             }
         }
-        if { $pid != "" } {
-            ::pd_connect::set_pid $pid
+        if { $pid eq "" } {
+            # Pd failed to start
+            # give a nice error dialog and quit
+            if {$::tcl_version >= 8.5} {
+                tk_messageBox \
+                    -title [_ "Pd startup failure" ] \
+                    -message [_ "Failed to start Pd-core" ] \
+                    -detail "$stderr" \
+                    -icon error \
+                    -type ok
+            } else {
+                tk_messageBox \
+                    -title [_ "Pd startup failure" ] \
+                    -message [_ "Failed to start Pd-core" ] \
+                    -icon error \
+                    -type ok
+            }
+            exit 1
         }
+        ::pd_connect::set_pid $pid
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)
