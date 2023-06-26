@@ -483,12 +483,13 @@ static void *tabread4_tilde_new(t_symbol *s, int argc, t_atom *argv)
 static t_int *tabread4_tilde_perform(t_int *w)
 {
     t_dsparray *d = (t_dsparray *)(w[1]);
-    t_sample onset = *(t_sample *)(w[2]);
+    double onset = *(t_float *)(w[2]);
     t_sample *in = (t_sample *)(w[3]);
     t_sample *out = (t_sample *)(w[4]);
     int n = (int)(w[5]);
     int maxindex, i;
     t_word *buf, *wp;
+    const t_sample one_over_six = 1./6.;
 
     if (!dsparray_get_array(d, &maxindex, &buf, 0))
         goto zero;
@@ -515,8 +516,9 @@ static t_int *tabread4_tilde_perform(t_int *w)
         d = wp[2].w_float;
         cminusb = c-b;
         *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
+            cminusb - one_over_six * ((t_sample)1.-frac) * (
+                (d - a - (t_sample)3.0 * cminusb) * frac +
+                (d + a*(t_sample)2.0 - b*(t_sample)3.0)
             )
         );
     }
