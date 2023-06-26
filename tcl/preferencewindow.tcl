@@ -116,7 +116,8 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
             [::deken::versioncompare 8.6.12 [info patchlevel]] > 0
          } {
             # some versions of Tcl/Tk on macOS just crash with ttk::notebook
-            ::pdwindow::error [_ "Disabling tabbed view: incompatible Tcl/Tk detected"]
+            set msg [_ "Disabling tabbed view: incompatible Tcl/Tk detected"]
+            ::pdwindow::error "${msg}\n"
             fail "Tcl/Tk request to not use ttk::notebook"
         }
         ttk::notebook ${winid}.content.frames
