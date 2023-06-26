@@ -989,7 +989,7 @@ msgstr ""
 "caractères."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "par exemple '*-plugin' correspondra notamment à  'deken-plugin'."
+msgstr "par exemple '*-plugin' pourra correspondre à 'deken-plugin'."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
@@ -1293,7 +1293,7 @@ msgid "English (UK)"
 msgstr "Anglais (Royaume-Uni)"
 
 msgid "English (USA)"
-msgstr "Anglais (États-Unis)"
+msgstr "Anglais (USA)"
 
 msgid "Spanish"
 msgstr "Espagnol"
@@ -1422,7 +1422,7 @@ msgid "Triggerize"
 msgstr "Triggeriser"
 
 msgid "Edit Mode"
-msgstr "Mode d'édition"
+msgstr "Mode édition"
 
 msgid "Undo"
 msgstr "Défaire"
@@ -1479,10 +1479,10 @@ msgid "Find Last Error"
 msgstr "Rechercher la dernière erreur"
 
 msgid "DSP On"
-msgstr "DSP On"
+msgstr "DSP activé"
 
 msgid "DSP Off"
-msgstr "DSP Off"
+msgstr "DSP désactivé"
 
 msgid "Test Audio and MIDI..."
 msgstr "Tester l'audio et le MIDI..."
@@ -1540,7 +1540,7 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 "Effacer toutes les préférences ?\n"
-"(prendra effet au prochain redémarrage)"
+"(prendra effet au prochain redémarrage de Pd)"
 
 msgid "removed GUI settings"
 msgstr "les paramètres de l'interface graphique ont été supprimés"
