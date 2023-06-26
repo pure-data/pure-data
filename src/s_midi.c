@@ -527,6 +527,9 @@ static char midi_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
 
 void sys_get_midi_apis(char *buf)
 {
+        /* FIXXME: this returns a raw Tcl-list!
+         *  instead it should return something we can use with pdgui_vmess()
+         */
     int n = 0;
     strcpy(buf, "{ ");
 #ifdef USEAPI_OSS

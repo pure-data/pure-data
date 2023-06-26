@@ -856,6 +856,9 @@ static t_apientry audio_apilist[] = {
 
 void sys_get_audio_apis(char *buf)
 {
+        /* FIXXME: this returns a raw Tcl-list!
+         *  instead it should return something we can use with pdgui_vmess()
+         */
     unsigned int n;
     if (sizeof(audio_apilist)/sizeof(t_apientry) < 2)
         strcpy(buf, "{}");
