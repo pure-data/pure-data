@@ -259,3 +259,11 @@ proc ::dialog_path::commit {new_path} {
         ::pd_docsdir::update_path $::dialog_path::docspath
     }
 }
+
+
+# procs for setting variables from the Pd-core
+proc ::dialog_path::set_paths {searchpath temppath staticpath} {
+    set ::sys_searchpath $searchpath
+    set ::sys_temppath $temppath
+    set ::sys_staticpath $staticpath
+}

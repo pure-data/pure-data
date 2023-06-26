@@ -880,14 +880,20 @@ void sys_gui(const char *s)
     sys_vgui("%s", s);
 }
 
-static void sys_gui_namelist(const char*varname, t_namelist *nl)
-{
-    char obuf[MAXPDSTRING];
-
-    sys_vgui("set_escaped %s ", varname);
-    for (; nl; nl = nl->nl_next)
-        sys_vgui("{%s} ", pdgui_strnescape(obuf, MAXPDSTRING, nl->nl_string, 0));
-    sys_gui("\n");
+static const char**namelist2strings(t_namelist *nl, unsigned int *N) {
+    const char**result = 0;
+    unsigned int n=0;
+    *N = 0;
+    for(; nl; nl = nl->nl_next) {
+        const char**newresult = resizebytes(result, n*sizeof(*result), (n+1)*sizeof(*result));
+        if(!newresult)
+            break;
+        result = newresult;
+        result[n] = nl->nl_string;
+        n++;
+        *N = n;
+    }
+    return result;
 }
 
 static int sys_flushtogui(void)
@@ -1064,22 +1070,33 @@ void sys_init_fdpoll(void)
 
 void sys_gui_preferences(void)
 {
-    char obuf[MAXPDSTRING];
-        /* send the user-specified search path to pd-gui */
-    sys_gui_namelist("::sys_searchpath", STUFF->st_searchpath);
-        /* send the temp paths from the commandline to pd-gui */
-    sys_gui_namelist("::sys_temppath", STUFF->st_temppath);
-        /* send the hard-coded search path to pd-gui */
-    sys_gui_namelist("::sys_staticpath", STUFF->st_staticpath);
+    unsigned int nsearch, ntemp, nstatic, nlibs;
+    const char**searchpath = namelist2strings(STUFF->st_searchpath, &nsearch);
+    const char**temppath = namelist2strings(STUFF->st_temppath, &ntemp);
+    const char**staticpath = namelist2strings(STUFF->st_staticpath, &nstatic);
+    const char**startuplibs = namelist2strings(STUFF->st_externlist, &nlibs);
+    pdgui_vmess("::dialog_path::set_paths", "SSS"
+                , nsearch, searchpath
+                , ntemp, temppath
+                , nstatic, staticpath
+                );
+
         /* send the list of loaded libraries ... */
-    sys_gui_namelist("::startup_libraries", STUFF->st_externlist);
+    pdgui_vmess("::dialog_startup::set_libraries", "S"
+                , nlibs, startuplibs
+                );
 
     sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
     sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
     sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
     sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
-    sys_vgui("set_escaped ::sys_flags {%s}\n",
-             (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
+    pdgui_vmess("::dialog_startup::set_flags", "s",
+                (sys_flags? sys_flags->s_name : ""));
+
+    freebytes(searchpath, nsearch * sizeof(*searchpath));
+    freebytes(temppath, ntemp * sizeof(*temppath));
+    freebytes(staticpath, nstatic * sizeof(*staticpath));
+    freebytes(startuplibs, nlibs * sizeof(*startuplibs));
 }
 
 
@@ -1228,10 +1245,10 @@ static void sys_init_deken(void)
     init_deken_arch();
         /* only send the arch info, if we are sure about it... */
     if (deken_OS && deken_CPU && deken_CPU[0])
-        sys_vgui("::deken::set_platform %s %s %d %d\n",
+        pdgui_vmess("::deken::set_platform", "ssff",
                  deken_OS, deken_CPU[0],
-                 8 * sizeof(char*),
-                 8 * sizeof(t_float));
+                 8. * sizeof(char*),
+                 8. * sizeof(t_float));
 }
 
 static int sys_do_startgui(const char *libdir)
@@ -1553,7 +1570,7 @@ static int sys_do_startgui(const char *libdir)
 
     sys_gui_preferences();     /* tell GUI about path and startup flags */
 
-                       /* ... and about font, media APIS, etc */
+        /* ... and about font, media APIS, etc */
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,

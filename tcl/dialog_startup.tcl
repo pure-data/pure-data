@@ -285,3 +285,11 @@ proc ::dialog_startup::unbind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Return> break
     return 1
 }
+
+# procs for setting variables from the Pd-core
+proc ::dialog_startup::set_flags {flags} {
+    set ::sys_flags [subst -nocommands -novariables ${flags}]
+}
+proc ::dialog_startup::set_libraries {libraries} {
+    set ::startup_libraries $libraries
+}
