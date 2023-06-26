@@ -35,10 +35,10 @@ msgid "new&old"
 msgstr "nouveau et ancien"
 
 msgid "no scale"
-msgstr "pas d'échelle"
+msgstr "non gradué"
 
 msgid "scale"
-msgstr "échelle"
+msgstr "gradué"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -163,7 +163,7 @@ msgid "Save contents"
 msgstr "Enregistrer le contenu"
 
 msgid "Draw as:"
-msgstr "Dessiner en :"
+msgstr "Style :"
 
 msgid "Polygon"
 msgstr "Polygone"
@@ -205,7 +205,7 @@ msgid "no device"
 msgstr "aucun périphérique"
 
 msgid "(same as input device)..."
-msgstr "(même que le périphérique d'entrée)..."
+msgstr "(identique au périphérique d'entrée)..."
 
 msgid "Channels:"
 msgstr "Nombre de canaux :"
@@ -271,7 +271,7 @@ msgid "Appearance on parent patch"
 msgstr "Aspect dans le patch parent"
 
 msgid "Graph-On-Parent"
-msgstr "Graph-On-Parent (dessiner dans le patch parent)"
+msgstr "Dessiner dans le patch parent"
 
 msgid "Hide object name and arguments"
 msgstr "Cacher le nom et les arguments de l'objet"
@@ -1195,7 +1195,7 @@ msgstr "Copier l'URL de la signature OpenGPG"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr "Désinstallation de '%s'"
+msgstr "Désinstaller '%s'"
 
 #, tcl-format
 msgid ""
@@ -1660,8 +1660,8 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-#~ msgid "(no device)"
-#~ msgstr "(aucun périphérique)"
+msgid "(no device)"
+msgstr "(aucun périphérique)"
 
 #~ msgid "Path..."
 #~ msgstr "Chemins..."
