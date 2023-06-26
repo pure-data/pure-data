@@ -285,7 +285,7 @@ static t_int *tabplay_tilde_perform(t_int *w)
 
     if (!dsparray_get_array(d, &endphase, &buf, 0) || phase >= endphase)
         goto zero;
-    if (endphase < x->x_limit)
+    if (endphase > x->x_limit)
         endphase = x->x_limit;
     nxfer = endphase - phase;
     wp = buf + phase;
