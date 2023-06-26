@@ -62,7 +62,7 @@ static int dsparray_get_array(t_dsparray *d, int *npoints, t_word **vec,
     return 0;
 }
 
-static void arrayvec_testvec(t_arrayvec *v, void *x)
+static void arrayvec_testvec(t_arrayvec *v)
 {
     int i, vecsize;
     t_word *vec;
@@ -73,24 +73,24 @@ static void arrayvec_testvec(t_arrayvec *v, void *x)
     }
 }
 
-static void arrayvec_set(t_arrayvec *v, void *x, int argc, t_atom *argv)
+static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
 {
     int i;
     for (i = 0; i < v->v_n; i++)
     {
         gpointer_unset(&v->v_vec[i].d_gp); /* reset the pointer */
         if (argv[i].a_type != A_SYMBOL)
-            pd_error(x, "expected symbolic array name, got number instead"),
+            pd_error(v->v_vec[i].d_owner,
+                "expected symbolic array name, got number instead"),
                 v->v_vec[i].d_symbol = &s_;
         else
         {
             v->v_vec[i].d_phase = 0x7fffffff;
             v->v_vec[i].d_symbol = argv[i].a_w.w_symbol;
         }
-        v->v_vec[i].d_owner = x;
     }
     if (pd_getdspstate())
-        arrayvec_testvec(v, x);
+        arrayvec_testvec(v);
 }
 
 static void arrayvec_init(t_arrayvec *v, void *x, int rawargc, t_atom *rawargv)
@@ -109,10 +109,11 @@ static void arrayvec_init(t_arrayvec *v, void *x, int rawargc, t_atom *rawargv)
     v->v_n = argc;
     for (i = 0; i < v->v_n; i++)
     {
+        v->v_vec[i].d_owner = x;
         v->v_vec[i].d_phase = 0x7fffffff;
         gpointer_init(&v->v_vec[i].d_gp);
     }
-    arrayvec_set(v, x, argc, argv);
+    arrayvec_set(v, argc, argv);
 }
 
 static void arrayvec_free(t_arrayvec *v)
@@ -189,14 +190,14 @@ noop:
 static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabwrite_tilde_dsp(t_tabwrite_tilde *x, t_signal **sp)
 {
     int i, nchans = (sp[0]->s_nchans < x->x_v.v_n ?
         sp[0]->s_nchans : x->x_v.v_n);
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < nchans; i++)
         dsp_add(tabwrite_tilde_perform, 3, x->x_v.v_vec+i,
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
@@ -314,14 +315,14 @@ zero:
 static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabplay_tilde_dsp(t_tabplay_tilde *x, t_signal **sp)
 {
     int i;
     signal_setmultiout(&sp[0], x->x_v.v_n);
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < x->x_v.v_n; i++)
         dsp_add(tabplay_tilde_perform, 4, x, &x->x_v.v_vec[i],
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
@@ -425,14 +426,14 @@ static t_int *tabread_tilde_perform(t_int *w)
 static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabread_tilde_dsp(t_tabread_tilde *x, t_signal **sp)
 {
     int i;
     signal_setmultiout(&sp[1], x->x_v.v_n);
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < x->x_v.v_n; i++)
         dsp_add(tabread_tilde_perform, 4, &x->x_v.v_vec[i],
             sp[0]->s_vec + (i%(sp[0]->s_nchans)) * sp[0]->s_length,
@@ -532,14 +533,14 @@ static t_int *tabread4_tilde_perform(t_int *w)
 static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabread4_tilde_dsp(t_tabread4_tilde *x, t_signal **sp)
 {
     int i;
     signal_setmultiout(&sp[1], x->x_v.v_n);
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < x->x_v.v_n; i++)
         dsp_add(tabread4_tilde_perform, 5, &x->x_v.v_vec[i], &x->x_onset,
             sp[0]->s_vec + (i%(sp[0]->s_nchans)) * sp[0]->s_length,
@@ -621,7 +622,7 @@ bad:
 
 static void tabsend_set(t_tabsend *x, t_symbol *s, int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
@@ -633,7 +634,7 @@ static void tabsend_dsp(t_tabsend *x, t_signal **sp)
     if (tickspersec < 1)
         tickspersec = 1;
     x->x_graphperiod = tickspersec;
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < nchans; i++)
         dsp_add(tabsend_perform, 4, x, x->x_v.v_vec+i,
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
@@ -702,14 +703,14 @@ static t_int *tabreceive_perform(t_int *w)
 static void tabreceive_set(t_tabreceive *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    arrayvec_set(&x->x_v, x, argc, argv);
+    arrayvec_set(&x->x_v, argc, argv);
 }
 
 static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
 {
     int i;
     signal_setmultiout(&sp[0], x->x_v.v_n);
-    arrayvec_testvec(&x->x_v, x);
+    arrayvec_testvec(&x->x_v);
     for (i = 0; i < x->x_v.v_n; i++)
         dsp_add(tabreceive_perform, 3, &x->x_v.v_vec[i],
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
