@@ -36,18 +36,18 @@
 component channels using the snake~ objects.  Stateless tilde objects (+~, etc.,
 and send~/receive~, throw~/catch~, tabread~, etc., inlet~/outlet~ (actually
 those are not always stateless but it was judged necessary to support them
-anyhow) and dac~/adc~. The clone~ object received special attention since it
+anyhow) and dac~/adc~. The clone object received special attention since it
 might be desirable to distribute multichannel signals among the cloned patches
 or to pass them directly into all copies as multichannel inputs and outputs.
 
-<P> The clone~ object takes a message to change the number of copies.  So now Pd
+<P> The clone object takes a message to change the number of copies.  So now Pd
 is useful as a non-real-time software synthesizer.  Changing the number of
 copies will cause massive reinitialization and memory allocation and should not
 be used during preformance, only during setup.
 
-<P> Sigmund~ got some new optimizations and has more parameters that can be
+<P> The sigmund~ object got some new optimizations and has more parameters that can be
 tuned for a particular instrument.  A longstanding octave-jumping problem has been
-partially addressed, and anyway, a new output type offeres even/odd balance so
+partially addressed, and anyway, a new output type offers even/odd balance so
 that a synth can play in unison with an instrument with very few octave jumps
 by coherently mixing both possible octaves.
 
@@ -55,9 +55,18 @@ by coherently mixing both possible octaves.
 of the older MMIO.  This therefore only runs on Windows 7 and newer.  The 32-bit version
 can still run all the way back to Windows XP.
 
-<P> improved settings dialog window.
+<P> There's a new design for the stereo output~ abstraction in the 'extra' library
+by Alexandre Porres. This is widely used in the documentation and now has a slider
+to set the volume and you can also use a number box. It can also distribute a mono
+input to both channels.
+
+<P> Improved settings dialog window.
 
 <P> As usual, countless bug fixes and miscellaneous improvements.
+
+<P> ------------------ 0.53-2 ------------------------------
+
+<P> Update portaudio to version v19.7.0 to fix macintosh hanging problem
 
 <P> ------------------ 0.53-1 ------------------------------
 
