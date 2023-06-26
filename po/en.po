@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-26 04:41+0000\n"
+"PO-Revision-Date: 2023-06-27 06:05+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/en/>\n"
+"Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/en/>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -707,11 +707,10 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Failed to find plugins in %s ...skipping!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Pd startup failure"
 
-#, fuzzy
 msgid "Failed to start Pd-core"
-msgstr "Failed to install '%s'!"
+msgstr "Failed to start Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1583,11 +1582,11 @@ msgid "Pd"
 msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "EXPERIMENTAL double (64bit) precision"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr "double (64bit) EXPERIMENTAL"
+msgstr "%dbit-floats EXPERIMENTAL"
 
 msgid "DSP"
 msgstr "DSP"
