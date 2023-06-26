@@ -38,7 +38,6 @@ int sys_argparse(int argc, const char **argv);
 void sys_findprogdir(const char *progname);
 void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
-void sys_gui_namelist(const char*varname, t_namelist *nl);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
 int m_batchmain(void);
