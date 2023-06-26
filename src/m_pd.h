@@ -906,6 +906,9 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
+    /* get floatsize at run time */
+EXTERN unsigned int sys_getfloatsize(void);
+
 EXTERN_STRUCT _instancemidi;
 #define t_instancemidi struct _instancemidi
 
