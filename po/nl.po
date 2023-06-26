@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -618,17 +618,37 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
-msgid "Startup options"
-msgstr "Opstart opties"
-
-msgid "Defeat real-time scheduling"
-msgstr "Versla real-time planning"
+#, fuzzy
+msgid "GUI options"
+msgstr "GUI-instellingen"
 
 msgid "language"
 msgstr ""
 
 msgid "Menu language"
 msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Blokgrootte:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr "Opstart opties"
+
+msgid "Defeat real-time scheduling"
+msgstr "Versla real-time planning"
 
 msgid "Startup flags:"
 msgstr "Opstartvlaggen:"

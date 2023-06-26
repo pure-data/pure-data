@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
-"PO-Revision-Date: 2023-06-08 05:51+0000\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"PO-Revision-Date: 2023-06-26 04:41+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -626,17 +626,36 @@ msgstr "¡La configuración a continuación requiere un reinicio de Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Librerías de Pd para cargar al inicio"
 
-msgid "Startup options"
-msgstr "Opciones de inicio"
-
-msgid "Defeat real-time scheduling"
-msgstr "Rechazar prioridad en tiempo-real"
+#, fuzzy
+msgid "GUI options"
+msgstr "preferencias GUI"
 
 msgid "language"
 msgstr "Idioma"
 
 msgid "Menu language"
 msgstr "Menú de idioma"
+
+msgid "float (32bit)"
+msgstr "flotante simple (32-bits)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "flotante doble (64-bits) EXPERIMENTAL"
+
+msgid "double (64bit)"
+msgstr "flotante doble (64-bits)"
+
+msgid "float size"
+msgstr "Tamaño del flotante"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Precisión numérica del núcleo de Pd"
+
+msgid "Startup options"
+msgstr "Opciones de inicio"
+
+msgid "Defeat real-time scheduling"
+msgstr "Rechazar prioridad en tiempo-real"
 
 msgid "Startup flags:"
 msgstr "Banderas de inicio:"

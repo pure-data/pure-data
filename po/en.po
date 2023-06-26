@@ -6,17 +6,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
-"PO-Revision-Date: 2023-06-06 09:30+0000\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"PO-Revision-Date: 2023-06-26 04:41+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/en/>\n"
+"Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/en/>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "linear"
@@ -359,7 +359,7 @@ msgid "Receive symbol:"
 msgstr "Receive symbol:"
 
 msgid "auto"
-msgstr ""
+msgstr "auto"
 
 msgid "Width:"
 msgstr "Width:"
@@ -615,17 +615,35 @@ msgstr "Settings below require a restart of Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Pd libraries to load on startup"
 
-msgid "Startup options"
-msgstr "Startup options"
-
-msgid "Defeat real-time scheduling"
-msgstr "Defeat real-time scheduling"
+msgid "GUI options"
+msgstr "GUI options"
 
 msgid "language"
 msgstr "language"
 
 msgid "Menu language"
 msgstr "Menu language"
+
+msgid "float (32bit)"
+msgstr "float (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "double (64bit) EXPERIMENTAL"
+
+msgid "double (64bit)"
+msgstr "double (64bit)"
+
+msgid "float size"
+msgstr "float size"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Numeric precision of Pd-core"
+
+msgid "Startup options"
+msgstr "Startup options"
+
+msgid "Defeat real-time scheduling"
+msgstr "Defeat real-time scheduling"
 
 msgid "Startup flags:"
 msgstr "Startup flags:"
@@ -1510,9 +1528,8 @@ msgstr "Load from..."
 msgid "Forget All..."
 msgstr "Forget All..."
 
-#, fuzzy
 msgid "Tabbed preferences"
-msgstr "Audio"
+msgstr "Tabbed preferences"
 
 msgid "Open Recent"
 msgstr "Open Recent"

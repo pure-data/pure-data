@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
-"PO-Revision-Date: 2023-06-07 05:32+0000\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"PO-Revision-Date: 2023-06-26 04:41+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "linear"
@@ -584,7 +584,7 @@ msgid "Zoom New Windows"
 msgstr "Neue Fenster vergrößern"
 
 msgid "GUI settings"
-msgstr "GUI-Einstellungen entfernt"
+msgstr "GUI-Einstellungen"
 
 msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
@@ -627,17 +627,35 @@ msgstr "Die folgenden Einstellungen erfordern einen Neustart von Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Pd-Bibliotheken die automatisch geladen werden"
 
-msgid "Startup options"
-msgstr "Kommandozeilenoptionen"
-
-msgid "Defeat real-time scheduling"
-msgstr "Echtzeit-Modus unterdrücken"
+msgid "GUI options"
+msgstr "GUI-Einstellungen"
 
 msgid "language"
 msgstr "Sprache"
 
 msgid "Menu language"
 msgstr "Sprache des Menüs"
+
+msgid "float (32bit)"
+msgstr "Einfache Genauigkeit (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "Doppelte Genauigkeit (64bit) EXPERIMENTELL"
+
+msgid "double (64bit)"
+msgstr "Doppelte Genauigkeit (64bit)"
+
+msgid "float size"
+msgstr "Zahlengenauigkeit"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Numerische Genauigkeit des Pd-Kerns"
+
+msgid "Startup options"
+msgstr "Kommandozeilenoptionen"
+
+msgid "Defeat real-time scheduling"
+msgstr "Echtzeit-Modus unterdrücken"
 
 msgid "Startup flags:"
 msgstr "Kommandozeilenoptionen:"

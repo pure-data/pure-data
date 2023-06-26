@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -629,17 +629,37 @@ msgid "Pd libraries to load on startup"
 msgstr "起動時に読み込むPdライブラリ"
 
 #, fuzzy
-msgid "Startup options"
-msgstr "起動時のフラグ:"
-
-msgid "Defeat real-time scheduling"
-msgstr "リアルタイムスケジューリングより優先"
+msgid "GUI options"
+msgstr "GUI設定の削除"
 
 msgid "language"
 msgstr ""
 
 msgid "Menu language"
 msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "ブロックサイズ:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
+msgstr "起動時のフラグ:"
+
+msgid "Defeat real-time scheduling"
+msgstr "リアルタイムスケジューリングより優先"
 
 msgid "Startup flags:"
 msgstr "起動時のフラグ:"

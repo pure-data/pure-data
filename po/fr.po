@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-06 11:36+0200\n"
-"PO-Revision-Date: 2023-06-07 05:32+0000\n"
+"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"PO-Revision-Date: 2023-06-26 09:35+0000\n"
 "Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -35,10 +35,10 @@ msgid "new&old"
 msgstr "nouveau et ancien"
 
 msgid "no scale"
-msgstr "Pas d'échelle"
+msgstr "pas d'échelle"
 
 msgid "scale"
-msgstr "Échelle"
+msgstr "échelle"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -298,7 +298,7 @@ msgid "Send"
 msgstr "Envoyer"
 
 msgid "Done"
-msgstr "D'accord"
+msgstr "Terminé"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -373,13 +373,13 @@ msgid "Limits"
 msgstr "Limites"
 
 msgid "Lower:"
-msgstr "Inférieur :"
+msgstr "Basse :"
 
 msgid "Upper:"
-msgstr "Supérieur :"
+msgstr "Haute :"
 
 msgid "Label"
-msgstr "Label"
+msgstr "Étiquette"
 
 msgid "Left"
 msgstr "Gauche"
@@ -400,7 +400,7 @@ msgid "Foreground color"
 msgstr "Couleur du premier plan"
 
 msgid "Label color"
-msgstr "Couleur du label"
+msgstr "Couleur de l'étiquette"
 
 msgid "Bang"
 msgstr "Bang"
@@ -473,7 +473,7 @@ msgid "Init"
 msgstr "Initialisation"
 
 msgid "No init"
-msgstr "Pas d'init"
+msgstr "Pas d'initialisation"
 
 msgid "Jump on click"
 msgstr "Instantané"
@@ -482,10 +482,10 @@ msgid "Steady on click"
 msgstr "Glissant"
 
 msgid "X offset:"
-msgstr "Offset en X :"
+msgstr "Décalage en X :"
 
 msgid "Y offset:"
-msgstr "Offset en Y :"
+msgstr "Décalage en Y :"
 
 msgid "Colors"
 msgstr "Couleurs"
@@ -500,13 +500,13 @@ msgid "Compose color"
 msgstr "Créer la couleur"
 
 msgid "Test label"
-msgstr "Label de test"
+msgstr "Étiquette de test"
 
 msgid "Send a Pd message"
-msgstr "Envoyer un message à Pd"
+msgstr "Envoyer un message Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "(Utiliser les flèches pour accéder à l'historique)"
+msgstr "(utiliser les flèches pour accéder à l'historique)"
 
 msgid "(no device)"
 msgstr "(aucun périphérique)"
@@ -527,7 +527,7 @@ msgid "MIDI Settings"
 msgstr "Paramètres MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr "Paramètres MIDI (ALSA)"
+msgstr "Paramètres MIDI ALSA"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -540,7 +540,7 @@ msgid "Verbose"
 msgstr "Verbeux"
 
 msgid "Pd Documents Directory"
-msgstr "Dossier des Documents"
+msgstr "Dossier des documents Pd"
 
 msgid "Browse"
 msgstr "Choisir"
@@ -552,7 +552,7 @@ msgid "Disable"
 msgstr "Désactiver"
 
 msgid "Externals Install Directory"
-msgstr "Dossier d'installation des Externals"
+msgstr "Dossier d'installation des externals"
 
 msgid "Clear"
 msgstr "Effacer"
@@ -589,7 +589,7 @@ msgid "use tabs"
 msgstr "en onglets"
 
 msgid "single page"
-msgstr "sur une page"
+msgstr "sur une seule page"
 
 msgid "Preferences"
 msgstr "Préférences"
@@ -607,7 +607,7 @@ msgid "deken preferences"
 msgstr "deken"
 
 msgid "misc preferences"
-msgstr "diverses"
+msgstr "divers"
 
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
@@ -621,17 +621,35 @@ msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "Startup options"
-msgstr "Options au démarrage"
-
-msgid "Defeat real-time scheduling"
-msgstr "Refuser la priorité temps-réel"
+msgid "GUI options"
+msgstr "Options de l'interface graphique"
 
 msgid "language"
 msgstr "langue"
 
 msgid "Menu language"
 msgstr "Langue des menus"
+
+msgid "float (32bit)"
+msgstr "flottant (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "double (64bit) EXPÉRIMENTAL"
+
+msgid "double (64bit)"
+msgstr "double (64bit)"
+
+msgid "float size"
+msgstr "taille des flottants"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Précision numérique de Pd-core"
+
+msgid "Startup options"
+msgstr "Options au démarrage"
+
+msgid "Defeat real-time scheduling"
+msgstr "Rejeter la priorité temps-réel"
 
 msgid "Startup flags:"
 msgstr "Options au démarrage :"
@@ -640,7 +658,7 @@ msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "Associated Files"
-msgstr "Fichiers Associés"
+msgstr "Fichiers associés"
 
 msgid "Pd Files"
 msgstr "Fichiers Pd"
@@ -665,13 +683,13 @@ msgstr "police détectée : %s"
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
 "ATTENTION : la famille de police '%1$s' n'a pas pu être trouvée, utilisation "
-"de la fonte par défaut (%2$s)"
+"de la famille par défaut (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
-"ATTENTION : l’épaisseur de police '%1$s' n'a pas pu être trouvée, "
-"utilisation de la valeur par défaut (%2$s)"
+"ATTENTION : la graisse de police '%1$s' n'a pas pu être trouvée, utilisation "
+"de la valeur par défaut (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -824,7 +842,7 @@ msgstr ""
 "Afficher le README (si présent) des bibliothèques nouvellement installées"
 
 msgid "Keep package files after installation"
-msgstr "Garder les fichiers paquets après l'installation"
+msgstr "Garder les paquets après l'installation"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
@@ -967,7 +985,7 @@ msgstr ""
 "caractères."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "par exemple '*-plugin' trouvera 'deken-plugin' (entre autres)."
+msgstr "par exemple '*-plugin' correspondra notamment à  'deken-plugin'."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
@@ -1526,9 +1544,8 @@ msgstr "les paramètres de l'interface graphique ont été supprimés"
 msgid "no Pd-GUI settings to clear"
 msgstr "aucun paramètre d'interface graphique à supprimer"
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Préférences..."
+msgstr "Éditer les préférences..."
 
 msgid "Save All Preferences"
 msgstr "Enregistrer toutes les préférences"
