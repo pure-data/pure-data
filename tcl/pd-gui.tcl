@@ -837,11 +837,20 @@ proc main {argc argv} {
         set exe_floatsize [::pd_guiprefs::read "pdcore_precision_binary" ]
         set pid ""
         set stderr ""
+
+        # the second-from-last and next-to-last entries are just fallbacks
+        # in case there's no 'pd'
+        # the very last entry is repeating a previous one,
+        # in order to have 'catch' emit a less confusing error message into $stderr
         foreach {bindir              exe} [list \
                  bin${exe_floatsize} pd${exe_floatsize} \
                  bin${exe_floatsize} pd \
                  bin                 pd${exe_floatsize} \
-                 bin                 pd ] {
+                 bin                 pd \
+                 bin                 pd32 \
+                 bin                 pd64 \
+                 bin                 pd \
+                ] {
             set pd_exec [file join $basedir $bindir $exe]
             catch {
                 set pid ""
