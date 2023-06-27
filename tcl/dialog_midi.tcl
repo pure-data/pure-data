@@ -116,6 +116,7 @@ proc ::dialog_midi::fill_frame_device {frame direction port} {
     pack $frame.l1 -side left
     pack $frame.x1 -side left -fill x -expand 1
 }
+
 proc ::dialog_midi::fill_frame_devices {frame direction maxports} {
     ## create a list of device pull-downs (one for each port)
 
@@ -123,7 +124,8 @@ proc ::dialog_midi::fill_frame_devices {frame direction maxports} {
     ## ro: devlist_midi_${direction}devlist
 
     upvar ::midi_${direction}devlist devlist
-    set numdevs [llength $devlist]
+    # NB: don't create entry for 'none' device
+    set numdevs [expr [llength $devlist] - 1]
     if { $maxports > $numdevs } { set maxports $numdevs }
     for {set p 1} {$p <= $maxports} {incr p} {
         set w ${frame}.${p}f
