@@ -112,6 +112,7 @@
 #X text 246 15 - signal unary operators;
 #X text 404 559 (etc.) - binary signal operators;
 #X text 137 559 (etc.) - control rate versions;
+#X obj 187 589 clip~;
 #X connect 9 0 11 0;
 #X connect 10 0 13 0;
 #X connect 12 0 9 0;

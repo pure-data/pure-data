@@ -172,6 +172,7 @@
 #X text 298 17 - signal binary operators;
 #X text 422 525 (etc.) - signal unary operators;
 #X text 35 358 [log~] computes the logarithm of the left inlet to the base 'e' (about 2.718) or to another base specified by the right inlet or a creation argument. A 0 or negative left input gives -1000 as the result., f 62;
+#X obj 204 551 clip~;
 #X connect 0 0 30 0;
 #X connect 1 0 26 0;
 #X connect 11 0 8 1;
