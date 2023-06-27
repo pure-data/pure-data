@@ -780,54 +780,54 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([
 
-    $PACKAGE $VERSION is now configured
+    ${PACKAGE} ${VERSION} is now configured
 
-    Platform:             $platform
+    Platform:             ${platform}
     Float size:           ${floatsize:-default}
-    Debug build:          $debug
-    Universal build:      $universal
-    Localizations:        $locales
-    Source directory:     $srcdir
-    Installation prefix:  $prefix
+    Debug build:          ${debug}
+    Universal build:      ${universal}
+    Localizations:        ${locales}
+    Source directory:     ${srcdir}
+    Installation prefix:  ${prefix}
 
-    Compiler:             $CC
-    CPPFLAGS:             $PD_CPPFLAGS $CPPFLAGS
-    CFLAGS:               $PD_CFLAGS $CFLAGS
-    LDFLAGS:              $PD_LDFLAGS $LDFLAGS
-    INCLUDES:             $AM_CPPFLAGS
-    LIBS:                 $LIBS
+    Compiler:             ${CC}
+    CPPFLAGS:             ${PD_CPPFLAGS} ${CPPFLAGS}
+    CFLAGS:               ${PD_CFLAGS} ${CFLAGS}
+    LDFLAGS:              ${PD_LDFLAGS} ${LDFLAGS}
+    INCLUDES:             ${AM_CPPFLAGS}
+    LIBS:                 ${LIBS}
 
-    External extension:   $EXTERNAL_EXTENSION
-    External CFLAGS:      $EXTERNAL_CFLAGS
-    External LDFLAGS:     $EXTERNAL_LDFLAGS
+    External extension:   ${EXTERNAL_EXTENSION}
+    External CFLAGS:      ${EXTERNAL_CFLAGS}
+    External LDFLAGS:     ${EXTERNAL_LDFLAGS}
     Deken identifier:     ${deken_os:-???}-${deken_cpu:-???}
 
-    fftw:                 $fftw
-    wish(tcl/tk):         $wish
-    watchdog:             $enable_watchdog
-    audio APIs:           $audio_backends
-    midi APIs:            $midi_backends
-    libpd:                $libpd
+    fftw:                 ${fftw}
+    wish(tcl/tk):         ${wish}
+    watchdog:             ${enable_watchdog}
+    audio APIs:           ${audio_backends}
+    midi APIs:            ${midi_backends}
+    libpd:                ${libpd}
 ])
 
-AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
+AS_IF([test "x${enable_locales}" = xyes -a "x${locales}" = xno ],
  AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))
-AS_IF([test x$enable_oss = xyes -a x$oss = xno ],
+AS_IF([test "x${enable_oss}" = xyes -a "x${oss}" = xno ],
  AC_MSG_WARN([OSS requested but no development files found... disabled]))
-AS_IF([test x$enable_alsa = xyes -a x$alsa = xno ],
+AS_IF([test "x${enable_alsa}" = xyes -a "x${alsa}" = xno ],
  AC_MSG_WARN([ALSA requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_jack = xyes -a x$jack = xno ],
+AS_IF([test "x${enable_jack}" = xyes -a "x${jack}" = xno ],
  AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
+AS_IF([test "x${enable_jack_framework}" = xyes -a "x${jack_jack}" != xyes ],
  AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
+AS_IF([test "x${enable_mmio}" = xyes -a "x${mmio}" = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
-AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
+AS_IF([test "x${enable_asio}" = xyes -a "x${asio}" = xno ],
  AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
 
 # TODO portaudio
 
-AS_IF([test x$enable_fftw = xyes -a x$fftw = xno ],
+AS_IF([test "x${enable_fftw}" = xyes -a "x${fftw}" = xno ],
  AC_MSG_WARN([FFTW requested but no development files found... disabled]))
 
 AS_CASE([${floatsize}],
