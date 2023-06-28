@@ -1,12 +1,10 @@
 #N canvas 558 23 531 684 12;
 #X text 15 597 see also:;
 #X obj 135 649 fft~;
-#X text 318 649 updated for Pd version 0.43;
-#N canvas 603 316 571 253 block-interactions 0;
+#N canvas 603 316 560 207 block-interactions 0;
 #X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS IN PD;
-#X text 32 156 If using [send~] or [delwrite~] from a switched-off patch \, the output of corresponding [receive~] and [delread~] objects in other running patches will cycle old input (and sound like garbage). [throw~] may be switched with impunity \, but not [catch~]., f 69;
+#X text 32 106 If using [send~] or [delwrite~] from a switched-off patch \, the output of corresponding [receive~] and [delread~] objects in other running patches will cycle old input (and sound like garbage). [throw~] may be switched with impunity \, but not [catch~]., f 69;
 #X text 32 39 The [dac~] and [adc~] don't work correctly if reblocked to a size other than 64! They also don't work if a parent window is reblocked and the window containing the [dac~] or [adc~] is reblocked back to the default block size and sample rate!, f 69;
-#X text 32 104 Patches using [send~]/[receive~] or [throw~]/[catch~] must also have the default 64 block size -- and if their parents are blocked bigger than they are \, there might be weirdness., f 69;
 #X restore 155 541 pd block-interactions;
 #N canvas 741 59 537 534 switch-example 0;
 #X obj 109 380 bang~;
@@ -104,4 +102,5 @@
 #X text 341 558 to other objects, f 22;
 #X obj 24 492 set-dsp-tgl;
 #X text 55 496 DSP on/off;
-#X connect 29 0 10 0;
+#X text 318 649 updated for Pd version 0.54;
+#X connect 28 0 9 0;
