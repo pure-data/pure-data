@@ -36,10 +36,20 @@ Unicode True
 !include "nsDialogs.nsh"
 
 ; App name
-!if ${ARCHI} == "64"
-    !define PRODUCT_NAME "Pure Data"
+!if ${PDEXE} == "pd.exe"
+    !if ${ARCHI} == "64"
+        !define PRODUCT_NAME "Pure Data"
+    !else
+        !define PRODUCT_NAME "Pure Data (${ARCHI}-bit)"
+    !endif
+    !define PD_FOLDER "Pd"
 !else
-    !define PRODUCT_NAME "Pure Data (${ARCHI}-bit)"
+    !if ${ARCHI} == "64"
+        !define PRODUCT_NAME "Pd64"
+    !else
+        !define PRODUCT_NAME "Pd64 (${ARCHI}-bit)"
+    !endif
+    !define PD_FOLDER "Pd64"
 !endif
 !define PRODUCT_VERSION "${PDVER}"
 !define WISH_NAME "${WISHN}"
@@ -65,7 +75,7 @@ Var PreUninstallerUninstallString
 var ShowPreviousInstallationDetected
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
+OutFile "/tmp/${PD_FOLDER}-${PRODUCT_VERSION}.windows-installer.exe"
 InstallDir ""
 
 ; Take the highest execution level available
@@ -112,9 +122,9 @@ RequestExecutionLevel highest
             ${If} ${ARCHI} != "64"
                 ${AndIf} $INSTDIR_BASE == "$LOCALAPPDATA"
                     ; use special folder if we are 32bit and on $LOCALAPPDATA
-                    StrCpy $INSTDIR "$INSTDIR_BASE\Pd${ARCHI}"
+                    StrCpy $INSTDIR "$INSTDIR_BASE\${PD_FOLDER}${ARCHI}"
             ${Else}
-                StrCpy $INSTDIR "$INSTDIR_BASE\Pd"
+                StrCpy $INSTDIR "$INSTDIR_BASE\${PD_FOLDER}"
             ${Endif}
         ${Endif}
     FunctionEnd
@@ -198,7 +208,7 @@ ${If} $3 == ${BST_CHECKED}
     IfErrors uninstaller_canceled
     ; if all went good this file is gone
     IfFileExists \
-    "$PreUninstallerPath\bin\pd.exe" uninstaller_canceled uninstaller_done
+    "$PreUninstallerPath\bin\${PDEXE}" uninstaller_canceled uninstaller_done
     uninstaller_done:
     ; the uninstaller does not delete itself when runned via ExecWait
     Delete "$PreUninstallerUninstallString"
@@ -227,24 +237,24 @@ SectionGroup /e "${PRODUCT_NAME}"
         WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
         CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}\"
         CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url" "" "%SYSTEMROOT%\system32\shell32.dll" 14
-        CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISH_NAME}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
+        CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISH_NAME}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\${PDEXE}" 0
     SectionEnd
 
     Section "Create Desktop Shortcut" DesktopShortcut
-        CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISH_NAME}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
+        CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISH_NAME}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\${PDEXE}" 0
     SectionEnd
 
     Section "Open .pd-files with Pd" SetFileAssociations
         ; Set file ext associations
         WriteRegStr SHCTX "Software\Classes\.pd" "" "PureData"
         WriteRegStr SHCTX "Software\Classes\PureData" "" ""
-        WriteRegStr SHCTX "Software\Classes\PureData\DefaultIcon" "" "$INSTDIR\bin\pd.exe"
+        WriteRegStr SHCTX "Software\Classes\PureData\DefaultIcon" "" "$INSTDIR\bin\${PDEXE}"
         WriteRegStr SHCTX "Software\Classes\PureData\shell" "" ""
         WriteRegStr SHCTX "Software\Classes\PureData\shell\open" "" ""
         WriteRegStr SHCTX "Software\Classes\PureData\shell\open\command" "" '$INSTDIR\bin\${WISH_NAME} "$INSTDIR\tcl\pd-gui.tcl" "%1"'
         ; Set file ext icon
         WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd" "" ""
-        WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithList" "a" "pd.exe"
+        WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithList" "a" "${PDEXE}"
         WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithList" "MRUList" ""
         WriteRegBin SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithProgids" "PureData" "0"
         WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\UserChoice" "Progid" "PureData"
@@ -267,7 +277,7 @@ Section -Post
     ; These registry entries are necessary for the program to show up in the Add/Remove programs dialog
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName" "$(^Name)"
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString" "$INSTDIR\uninst.exe"
-    WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$INSTDIR\bin\pd.exe"
+    WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayIcon" "$INSTDIR\bin\${PDEXE}"
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayVersion" "${PRODUCT_VERSION}"
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "Publisher" "${PRODUCT_PUBLISHER}"
