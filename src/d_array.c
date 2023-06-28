@@ -76,6 +76,15 @@ static void arrayvec_testvec(t_arrayvec *v)
 static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
 {
     int i;
+    if (!argc)  /* unset */
+    {
+        for (i = 0; i < v->v_n; i++)
+        {
+            gpointer_unset(&v->v_vec[i].d_gp);
+            v->v_vec[i].d_symbol = &s_;
+        }
+        return;
+    }
     for (i = 0; i < v->v_n && i < argc; i++)
     {
         gpointer_unset(&v->v_vec[i].d_gp); /* reset the pointer */
