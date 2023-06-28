@@ -297,10 +297,14 @@ static t_int *tabplay_tilde_perform(t_int *w)
         *out++ = (wp++)->w_float;
     if (phase >= endphase)
     {
-            /* set the clock when the first channel runs out */
-        if (d == x->x_v.v_vec)
-            clock_delay(x->x_clock, 0);
+        int i, playing = 0;
         d->d_phase = 0x7fffffff;
+            /* set the clock when all channels have run out */
+        for (i = 0; i < x->x_v.v_n; i++)
+            if (x->x_v.v_vec[i].d_phase < 0x7fffffff)
+                playing = 1;
+        if (!playing)
+            clock_delay(x->x_clock, 0);
         while (n3--)
             *out++ = 0;
     }
