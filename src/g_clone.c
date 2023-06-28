@@ -150,9 +150,16 @@ static void clone_setn(t_clone *, t_floatarg);
 
 static void clone_in_resize(t_in *x, t_floatarg f)
 {
+    int i, oldn = x->i_owner->x_n;
+        /* We need to send closebangs to old instances. Currently,
+        this is done in clone_freeinstance(), but later we would
+        rather do it here, see comment in clone_loadbang() */
     canvas_setcurrent(x->i_owner->x_canvas);
     clone_setn(x->i_owner, f);
     canvas_unsetcurrent(x->i_owner->x_canvas);
+        /* send loadbangs to new instances */
+    for (i = oldn; i < x->i_owner->x_n; i++)
+        canvas_loadbang(x->i_owner->x_vec[i].c_gl);
 }
 
 static void clone_out_anything(t_outproxy *x, t_symbol *s, int argc, t_atom *argv)
@@ -217,6 +224,7 @@ static void clone_initinstance(t_clone *x, int which, t_canvas *c)
 static void clone_freeinstance(t_clone *x, int which)
 {
     t_copy *c = &x->x_vec[which];
+        /* see comment in clone_loadbang() */
     canvas_closebang(c->c_gl);
     pd_free(&c->c_gl->gl_pd);
     t_freebytes(c->c_vec, x->x_nout * sizeof(*c->c_vec));
@@ -278,9 +286,14 @@ static void clone_loadbang(t_clone *x, t_floatarg f)
     if (f == LB_LOAD)
         for (i = 0; i < x->x_n; i++)
             canvas_loadbang(x->x_vec[i].c_gl);
+#if 0
+        /* Pd currently does not send closebangs to objects on a root canvas
+        or when an object is retexted. There is a pending PR to fix this, but
+        in the meantime we just send the closebang in clone_freeinstance(). */
     else if (f == LB_CLOSE)
         for (i = 0; i < x->x_n; i++)
             canvas_closebang(x->x_vec[i].c_gl);
+#endif
 }
 
 void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp);
