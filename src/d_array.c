@@ -73,11 +73,22 @@ static void arrayvec_testvec(t_arrayvec *v)
     }
 }
 
+    /* This will set the vector to a new list of array names and possibly resize it.
+    Note that we do not pass t_dsparray pointers directly to the perform routines;
+    instead we pass a pointer to the t_arrayvec member together with the channel index,
+    so that the actual vector can be reallocated without requiring a DSP graph update.
+    Also, the "set" message does not affect the number of input/output channels!
+    tabwrite~ and tabsend~ simply take the number of channels from their signal inlets.
+    With tabplay~, tabread~, tabread4~ and tabreceive~, the user can dynamically change
+    the number of output channels with the "channels" message. */
 static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
 {
-    int i;
-    if (!argc)  /* unset */
+    int i, oldsize = v->v_n;
+    void *owner = v->v_vec[0].d_owner;
+    if (!argc)  /* "unset" the arrayvec */
     {
+            /* unset the gpointers and array symbols, but do not actually
+            resize the array. */
         for (i = 0; i < v->v_n; i++)
         {
             gpointer_unset(&v->v_vec[i].d_gp);
@@ -85,11 +96,27 @@ static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
         }
         return;
     }
-    for (i = 0; i < v->v_n && i < argc; i++)
+        /* first unset all gpointers */
+    for (i = 0; i < v->v_n; i++)
+        gpointer_unset(&v->v_vec[i].d_gp);
+    if (argc != oldsize)
     {
-        gpointer_unset(&v->v_vec[i].d_gp); /* reset the pointer */
+        v->v_vec = (t_dsparray *)resizebytes(v->v_vec,
+            oldsize * sizeof(*v->v_vec), argc * sizeof(*v->v_vec));
+        v->v_n = argc;
+            /* init new elements */
+        for (i = oldsize; i < v->v_n; i++)
+        {
+            gpointer_init(&v->v_vec[i].d_gp);
+            v->v_vec[i].d_owner = owner;
+            v->v_vec[i].d_phase = 0x7fffffff;
+        }
+    }
+        /* set array names */
+    for (i = 0; i < v->v_n; i++)
+    {
         if (argv[i].a_type != A_SYMBOL)
-            pd_error(v->v_vec[i].d_owner,
+            pd_error(owner,
                 "expected symbolic array name, got number instead"),
                 v->v_vec[i].d_symbol = &s_;
         else
@@ -162,14 +189,18 @@ static void tabwrite_tilde_redraw(t_symbol *arraysym)
 
 static t_int *tabwrite_tilde_perform(t_int *w)
 {
-    t_dsparray *d = (t_dsparray *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    int n = (int)(w[3]), phase = d->d_phase, endphase;
+    t_arrayvec *v = (t_arrayvec *)(w[1]);
+    int chan = (int)(w[2]);
+    t_sample *in = (t_sample *)(w[3]);
+    int n = (int)(w[4]), phase, endphase;
+    t_dsparray *d;
     t_word *buf;
 
-    if (!dsparray_get_array(d, &endphase, &buf, 0))
+    if (chan >= v->v_n ||
+        !dsparray_get_array((d = &v->v_vec[chan]), &endphase, &buf, 0))
         goto noop;
 
+    phase = d->d_phase;
     if (phase < endphase)
     {
         int nxfer = endphase - phase;
@@ -193,7 +224,7 @@ static t_int *tabwrite_tilde_perform(t_int *w)
     }
     else d->d_phase = 0x7fffffff;
 noop:
-    return (w+4);
+    return (w+5);
 }
 
 static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s,
@@ -204,12 +235,11 @@ static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s,
 
 static void tabwrite_tilde_dsp(t_tabwrite_tilde *x, t_signal **sp)
 {
-    int i, nchans = (sp[0]->s_nchans < x->x_v.v_n ?
-        sp[0]->s_nchans : x->x_v.v_n);
+    int i, length = sp[0]->s_length, nchans = sp[0]->s_nchans;
     arrayvec_testvec(&x->x_v);
     for (i = 0; i < nchans; i++)
-        dsp_add(tabwrite_tilde_perform, 3, x->x_v.v_vec+i,
-            sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
+        dsp_add(tabwrite_tilde_perform, 4, &x->x_v, (t_int)i,
+            sp[0]->s_vec + i * length, (t_int)length);
 }
 
 static void tabwrite_tilde_start(t_tabwrite_tilde *x, t_floatarg f)
@@ -266,6 +296,7 @@ typedef struct _tabplay_tilde
     t_object x_obj;
     t_outlet *x_bangout;
     int x_limit;
+    int x_nchannels;
     t_clock *x_clock;
     t_arrayvec x_v;
 } t_tabplay_tilde;
@@ -280,20 +311,24 @@ static void *tabplay_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
     arrayvec_init(&x->x_v, x, argc, argv);
     x->x_limit = 0;
+    x->x_nchannels = x->x_v.v_n;
     return (x);
 }
 
 static t_int *tabplay_tilde_perform(t_int *w)
 {
     t_tabplay_tilde *x = (t_tabplay_tilde *)(w[1]);
-    t_dsparray *d = (t_dsparray *)(w[2]);
+    int chan = (int)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
-    t_word *wp;
-    int n = (int)(w[4]), phase = d->d_phase, endphase, nxfer, n3;
-    t_word *buf;
+    int n = (int)(w[4]), phase, endphase, nxfer, n3;
+    t_dsparray *d;
+    t_word *buf, *wp;
 
-    if (!dsparray_get_array(d, &endphase, &buf, 0) || phase >= endphase)
+    if (chan >= x->x_v.v_n ||
+        !dsparray_get_array((d = &x->x_v.v_vec[chan]), &endphase, &buf, 0) ||
+        (phase = d->d_phase) >= endphase)
         goto zero;
+
     if (endphase > x->x_limit)
         endphase = x->x_limit;
     nxfer = endphase - phase;
@@ -309,9 +344,11 @@ static t_int *tabplay_tilde_perform(t_int *w)
         int i, playing = 0;
         d->d_phase = 0x7fffffff;
             /* set the clock when all channels have run out */
-        for (i = 0; i < x->x_v.v_n; i++)
+        for (i = 0; i < x->x_nchannels && i < x->x_v.v_n; i++)
+        {
             if (x->x_v.v_vec[i].d_phase < 0x7fffffff)
                 playing = 1;
+        }
         if (!playing)
             clock_delay(x->x_clock, 0);
         while (n3--)
@@ -331,14 +368,21 @@ static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabplay_tilde_channels(t_tabplay_tilde *x, t_floatarg f)
+{
+    int nchans = f;
+    x->x_nchannels = nchans > 0 ? nchans : 1;
+    canvas_update_dsp();
+}
+
 static void tabplay_tilde_dsp(t_tabplay_tilde *x, t_signal **sp)
 {
-    int i;
-    signal_setmultiout(&sp[0], x->x_v.v_n);
+    int i, length = sp[0]->s_length;
+    signal_setmultiout(&sp[0], x->x_nchannels);
     arrayvec_testvec(&x->x_v);
-    for (i = 0; i < x->x_v.v_n; i++)
-        dsp_add(tabplay_tilde_perform, 4, x, &x->x_v.v_vec[i],
-            sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
+    for (i = 0; i < x->x_nchannels; i++)
+        dsp_add(tabplay_tilde_perform, 4, x, (t_int)i,
+            sp[0]->s_vec + i * length, (t_int)length);
 }
 
 static void tabplay_tilde_list(t_tabplay_tilde *x, t_symbol *s,
@@ -352,7 +396,7 @@ static void tabplay_tilde_list(t_tabplay_tilde *x, t_symbol *s,
         x->x_limit = 0x7fffffff;
     else
         x->x_limit = (int)(start + length);
-    for (i = 0; i < x->x_v.v_n; i++)
+    for (i = 0; i < x->x_v.v_n && i < x->x_nchannels; i++)
         x->x_v.v_vec[i].d_phase = (int)start;
 }
 
@@ -385,6 +429,8 @@ static void tabplay_tilde_setup(void)
         gensym("stop"), 0);
     class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addlist(tabplay_tilde_class, tabplay_tilde_list);
 }
 
@@ -395,8 +441,9 @@ static t_class *tabread_tilde_class;
 typedef struct _tabread_tilde
 {
     t_object x_obj;
-    t_arrayvec x_v;
     t_float x_f;
+    int x_nchannels;
+    t_arrayvec x_v;
 } t_tabread_tilde;
 
 static void *tabread_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -405,19 +452,26 @@ static void *tabread_tilde_new(t_symbol *s, int argc, t_atom *argv)
     arrayvec_init(&x->x_v, x, argc, argv);
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
+    x->x_nchannels = x->x_v.v_n;
     return (x);
 }
 
 static t_int *tabread_tilde_perform(t_int *w)
 {
-    t_dsparray *d = (t_dsparray *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]), i, maxindex;
+    t_arrayvec *v = (t_arrayvec *)(w[1]);
+    int chan = (int)(w[2]);
+    t_sample *in = (t_sample *)(w[3]);
+    t_sample *out = (t_sample *)(w[4]);
+    int n = (int)(w[5]), i, maxindex;
     t_word *buf;
 
-    if (!dsparray_get_array(d, &maxindex, &buf, 0))
-        goto zero;
+    if (chan >= v->v_n ||
+        !dsparray_get_array(&v->v_vec[chan], &maxindex, &buf, 0))
+    {
+        while (n--) *out++ = 0;
+        return (w+6);
+    }
+
     maxindex -= 1;
 
     for (i = 0; i < n; i++)
@@ -429,11 +483,7 @@ static t_int *tabread_tilde_perform(t_int *w)
             index = maxindex;
         *out++ = buf[index].w_float;
     }
-    return (w+5);
- zero:
-    while (n--) *out++ = 0;
-
-    return (w+5);
+    return (w+6);
 }
 
 static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s,
@@ -442,13 +492,20 @@ static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabread_tilde_channels(t_tabread_tilde *x, t_floatarg f)
+{
+    int nchans = f;
+    x->x_nchannels = nchans > 0 ? nchans : 1;
+    canvas_update_dsp();
+}
+
 static void tabread_tilde_dsp(t_tabread_tilde *x, t_signal **sp)
 {
     int i;
-    signal_setmultiout(&sp[1], x->x_v.v_n);
+    signal_setmultiout(&sp[1], x->x_nchannels);
     arrayvec_testvec(&x->x_v);
-    for (i = 0; i < x->x_v.v_n; i++)
-        dsp_add(tabread_tilde_perform, 4, &x->x_v.v_vec[i],
+    for (i = 0; i < x->x_nchannels; i++)
+        dsp_add(tabread_tilde_perform, 5, &x->x_v, (t_int)i,
             sp[0]->s_vec + (i%(sp[0]->s_nchans)) * sp[0]->s_length,
                 sp[1]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
 
@@ -469,6 +526,8 @@ static void tabread_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
 }
 
 /******************** tabread4~ ***********************/
@@ -478,8 +537,9 @@ static t_class *tabread4_tilde_class;
 typedef struct _tabread4_tilde
 {
     t_object x_obj;
-    t_arrayvec x_v;
     t_float x_f;
+    int x_nchannels;
+    t_arrayvec x_v;
 } t_tabread4_tilde;
 
 static void *tabread4_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -489,21 +549,24 @@ static void *tabread4_tilde_new(t_symbol *s, int argc, t_atom *argv)
     signalinlet_new(&x->x_obj, 0);
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
+    x->x_nchannels = x->x_v.v_n;
     return (x);
 }
 
 static t_int *tabread4_tilde_perform(t_int *w)
 {
-    t_dsparray *d = (t_dsparray *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *onset = (t_sample *)(w[3]);
-    t_sample *out = (t_sample *)(w[4]);
-    int n = (int)(w[5]);
+    t_arrayvec *v = (t_arrayvec *)(w[1]);
+    int chan = (int)(w[2]);
+    t_sample *in = (t_sample *)(w[3]);
+    t_sample *onset = (t_sample *)(w[4]);
+    t_sample *out = (t_sample *)(w[5]);
+    int n = (int)(w[6]);
     int maxindex, i;
     t_word *buf, *wp;
     const t_sample one_over_six = 1./6.;
 
-    if (!dsparray_get_array(d, &maxindex, &buf, 0))
+    if (chan >= v->v_n ||
+        !dsparray_get_array(&v->v_vec[chan], &maxindex, &buf, 0))
         goto zero;
 
     maxindex -= 3;
@@ -533,12 +596,12 @@ static t_int *tabread4_tilde_perform(t_int *w)
             )
         );
     }
-    return (w+6);
+    return (w+7);
  zero:
     while (n--)
         *out++ = 0;
 
-    return (w+6);
+    return (w+7);
 }
 
 static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s,
@@ -547,17 +610,23 @@ static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabread4_tilde_channels(t_tabread4_tilde *x, t_floatarg f)
+{
+    int nchans = f;
+    x->x_nchannels = nchans > 0 ? nchans : 1;
+    canvas_update_dsp();
+}
+
 static void tabread4_tilde_dsp(t_tabread4_tilde *x, t_signal **sp)
 {
     int i, length = sp[0]->s_length;
-    signal_setmultiout(&sp[2], x->x_v.v_n);
+    signal_setmultiout(&sp[1], x->x_nchannels);
     arrayvec_testvec(&x->x_v);
-    for (i = 0; i < x->x_v.v_n; i++)
-        dsp_add(tabread4_tilde_perform, 5, &x->x_v.v_vec[i],
-            sp[0]->s_vec + (i % sp[0]->s_nchans) * length,
+    for (i = 0; i < x->x_nchannels; i++)
+        dsp_add(tabread4_tilde_perform, 6, &x->x_v, (t_int)i,
+            sp[0]->s_vec + (i % (sp[0]->s_nchans)) * length,
                 sp[1]->s_vec + (i % sp[1]->s_nchans) * length,
                     sp[2]->s_vec + i * length, (t_int)length);
-
 }
 
 static void tabread4_tilde_free(t_tabread4_tilde *x)
@@ -575,6 +644,8 @@ static void tabread4_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
 }
 
 
@@ -585,9 +656,9 @@ static t_class *tabsend_class;
 typedef struct _tabsend
 {
     t_object x_obj;
-    t_arrayvec x_v;
-    int x_graphperiod;
     t_float x_f;
+    int x_graphperiod;
+    t_arrayvec x_v;
 } t_tabsend;
 
 static void tabsend_tick(t_tabsend *x);
@@ -596,23 +667,25 @@ static void *tabsend_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_tabsend *x = (t_tabsend *)pd_new(tabsend_class);
     arrayvec_init(&x->x_v, x, argc, argv);
-    x->x_graphperiod = 1;
     x->x_f = 0;
+    x->x_graphperiod = 1;
     return (x);
 }
 
 static t_int *tabsend_perform(t_int *w)
 {
     t_tabsend *x = (t_tabsend *)(w[1]);
-    t_dsparray *d = (t_dsparray *)(w[2]);
+    int chan = (int)(w[2]);
     t_sample *in = (t_sample *)(w[3]);
-    int n = (int)w[4], maxindex;
+    int n = (int)w[4], maxindex, phase;
+    t_dsparray *d;
     t_word *dest;
-    int phase = d->d_phase;
 
-    if (!dsparray_get_array(d, &maxindex, &dest, 0))
+    if (chan >= x->x_v.v_n ||
+        !dsparray_get_array((d = &x->x_v.v_vec[chan]), &maxindex, &dest, 0))
         goto bad;
 
+    phase = d->d_phase;
     if (n > maxindex)
         n = maxindex;
     while (n--)
@@ -639,17 +712,15 @@ static void tabsend_set(t_tabsend *x, t_symbol *s, int argc, t_atom *argv)
 
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
-    int i, nchans = (sp[0]->s_nchans < x->x_v.v_n ?
-        sp[0]->s_nchans : x->x_v.v_n);
-    int length = sp[0]->s_length;
+    int i, length = sp[0]->s_length, nchans = sp[0]->s_nchans;
     int tickspersec = sp[0]->s_sr/length;
     if (tickspersec < 1)
         tickspersec = 1;
     x->x_graphperiod = tickspersec;
     arrayvec_testvec(&x->x_v);
     for (i = 0; i < nchans; i++)
-        dsp_add(tabsend_perform, 4, x, x->x_v.v_vec+i,
-            sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
+        dsp_add(tabsend_perform, 4, x, (t_int)i,
+            sp[0]->s_vec + i * length, (t_int)length);
 }
 
 static void tabsend_free(t_tabsend *x)
@@ -678,6 +749,7 @@ typedef struct _tabreceive
 {
     t_object x_obj;
     t_arrayvec x_v;
+    int x_nchannels;
 } t_tabreceive;
 
 static void *tabreceive_new(t_symbol *s, int argc, t_atom *argv)
@@ -685,17 +757,20 @@ static void *tabreceive_new(t_symbol *s, int argc, t_atom *argv)
     t_tabreceive *x = (t_tabreceive *)pd_new(tabreceive_class);
     outlet_new(&x->x_obj, &s_signal);
     arrayvec_init(&x->x_v, x, argc, argv);
+    x->x_nchannels = x->x_v.v_n;
     return (x);
 }
 
 static t_int *tabreceive_perform(t_int *w)
 {
-    t_dsparray *d = (t_dsparray *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)w[3], maxindex;
+    t_arrayvec *v = (t_arrayvec *)(w[1]);
+    int chan = (int)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)w[4], maxindex;
     t_word *from;
 
-    if (dsparray_get_array(d, &maxindex, &from, 0))
+    if (chan < v->v_n &&
+        dsparray_get_array(&v->v_vec[chan], &maxindex, &from, 0))
     {
         t_int vecsize = maxindex;
         if (vecsize > n)
@@ -709,7 +784,7 @@ static t_int *tabreceive_perform(t_int *w)
     }
     else while (n--)
             *out++ = 0;
-    return (w+4);
+    return (w+5);
 }
 
 static void tabreceive_set(t_tabreceive *x, t_symbol *s,
@@ -718,13 +793,20 @@ static void tabreceive_set(t_tabreceive *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabreceive_channels(t_tabreceive *x, t_floatarg f)
+{
+    int nchans = f;
+    x->x_nchannels = nchans > 0 ? nchans : 1;
+    canvas_update_dsp();
+}
+
 static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
 {
     int i;
-    signal_setmultiout(&sp[0], x->x_v.v_n);
+    signal_setmultiout(&sp[0], x->x_nchannels);
     arrayvec_testvec(&x->x_v);
-    for (i = 0; i < x->x_v.v_n; i++)
-        dsp_add(tabreceive_perform, 3, &x->x_v.v_vec[i],
+    for (i = 0; i < x->x_nchannels; i++)
+        dsp_add(tabreceive_perform, 4, &x->x_v, (t_int)i,
             sp[0]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
 }
 
@@ -742,6 +824,8 @@ static void tabreceive_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabreceive_class, (t_method)tabreceive_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_sethelpsymbol(tabreceive_class, gensym("tabsend-receive~"));
 }
 
