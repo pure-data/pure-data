@@ -250,7 +250,8 @@ cp "${SCRIPTDIR}/../tcl/pd.ico" "${WORKDIR}/pd.ico"
 
 # run the build
 mkdir -p "${OUTDIR}"
-if makensis -DPDVER="${PDVERSION}" -DWISHN="${WISHNAME}" -DARCHI="${PDARCH}" "${NSIFILE}" 1>&2
+if makensis -DPDVER="${PDVERSION}" -DWISHN="${WISHNAME}" -DARCHI="${PDARCH}" \
+    -DPDEXE=$(basename "${pd_exe}") "${NSIFILE}" 1>&2
 then
   error "Build successful"
   echo "${OUTDIR}/pd-${PDVERSION}.windows-installer.exe"
