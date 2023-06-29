@@ -93,6 +93,34 @@ static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
         arrayvec_testvec(v);
 }
 
+static void arrayvec_resize(t_arrayvec *v, int newsize)
+{
+    int i, oldsize = v->v_n;
+    void *owner = v->v_vec[0].d_owner;
+    if (newsize < 1)
+        newsize = 1;
+    if (newsize == oldsize)
+        return;
+        /* free old elements */
+    for (i = newsize; i < oldsize; i++)
+        gpointer_unset(&v->v_vec[i].d_gp);
+    v->v_vec = (t_dsparray *)resizebytes(v->v_vec,
+        oldsize * sizeof(*v->v_vec), newsize * sizeof(*v->v_vec));
+    v->v_n = newsize;
+        /* init new elements */
+    for (i = oldsize; i < newsize; i++)
+    {
+        v->v_vec[i].d_symbol = &s_;
+        v->v_vec[i].d_phase = 0x7fffffff;
+        v->v_vec[i].d_owner = owner;
+        gpointer_init(&v->v_vec[i].d_gp);
+    }
+        /* always requires a DSP update because t_dsparray pointers are
+        passed directly to the perform routine. tabplay~, tabread~, etc.
+        also need to update their output signals! */
+    canvas_update_dsp();
+}
+
 static void arrayvec_init(t_arrayvec *v, void *x, int rawargc, t_atom *rawargv)
 {
     int i, argc;
@@ -193,6 +221,11 @@ static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabwrite_tilde_channels(t_tabwrite_tilde *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabwrite_tilde_dsp(t_tabwrite_tilde *x, t_signal **sp)
 {
     int i, nchans = (sp[0]->s_nchans < x->x_v.v_n ?
@@ -241,6 +274,8 @@ static void tabwrite_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_stop,
         gensym("stop"), 0);
     class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_start,
@@ -322,6 +357,11 @@ static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabplay_tilde_channels(t_tabplay_tilde *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabplay_tilde_dsp(t_tabplay_tilde *x, t_signal **sp)
 {
     int i;
@@ -376,6 +416,8 @@ static void tabplay_tilde_setup(void)
         gensym("stop"), 0);
     class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addlist(tabplay_tilde_class, tabplay_tilde_list);
 }
 
@@ -433,6 +475,11 @@ static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabread_tilde_channels(t_tabread_tilde *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabread_tilde_dsp(t_tabread_tilde *x, t_signal **sp)
 {
     int i;
@@ -460,6 +507,8 @@ static void tabread_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
 }
 
 /******************** tabread4~ ***********************/
@@ -540,6 +589,11 @@ static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabread4_tilde_channels(t_tabread4_tilde *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabread4_tilde_dsp(t_tabread4_tilde *x, t_signal **sp)
 {
     int i;
@@ -567,6 +621,8 @@ static void tabread4_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_channels,
+        gensym("channels"), A_FLOAT, 0);
 }
 
 
@@ -629,6 +685,11 @@ static void tabsend_set(t_tabsend *x, t_symbol *s, int argc, t_atom *argv)
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabsend_channels(t_tabsend *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
     int i, nchans = (sp[0]->s_nchans < x->x_v.v_n ?
@@ -659,6 +720,8 @@ static void tabsend_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabsend_class, (t_method)tabsend_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabsend_class, (t_method)tabsend_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_sethelpsymbol(tabsend_class, gensym("tabsend-receive~"));
 }
 
@@ -710,6 +773,11 @@ static void tabreceive_set(t_tabreceive *x, t_symbol *s,
     arrayvec_set(&x->x_v, argc, argv);
 }
 
+static void tabreceive_channels(t_tabreceive *x, t_floatarg f)
+{
+    arrayvec_resize(&x->x_v, f);
+}
+
 static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
 {
     int i;
@@ -734,6 +802,8 @@ static void tabreceive_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_set,
         gensym("set"), A_GIMME, 0);
+    class_addmethod(tabreceive_class, (t_method)tabreceive_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_sethelpsymbol(tabreceive_class, gensym("tabsend-receive~"));
 }
 
