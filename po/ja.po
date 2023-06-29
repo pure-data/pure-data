@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -506,9 +506,6 @@ msgstr "Pdメッセージの送信"
 msgid "(use arrow keys for history)"
 msgstr "(矢印キーで履歴を使用できます)"
 
-msgid "(no device)"
-msgstr ""
-
 #, fuzzy
 msgid "no input devices"
 msgstr "入力デバイス"
@@ -727,6 +724,13 @@ msgstr "プラグイン %s の読み込みに失敗しました...スキップ�
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "プラグイン %s を見つけられませんでした...スキップします!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "'%s' のインストールに失敗しました!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) 閉じ括弧 '}' がありません: "
@@ -1607,6 +1611,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -518,9 +518,6 @@ msgstr "Надіслати повідомлення Pd"
 msgid "(use arrow keys for history)"
 msgstr "(використовуйте клавіші зі стрілками вгору-вниз для перегляду історії)"
 
-msgid "(no device)"
-msgstr ""
-
 #, fuzzy
 msgid "no input devices"
 msgstr "Пристрої вводу"
@@ -743,6 +740,13 @@ msgstr "Неможливо прочитати плагін %s ...пропуще�
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Неможливо знайти плагіни в %s ...пропущено!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Неможливо встановити %s!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
@@ -1628,6 +1632,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"

@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-06-26 09:35+0000\n"
 "Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,10 +35,10 @@ msgid "new&old"
 msgstr "nouveau et ancien"
 
 msgid "no scale"
-msgstr "pas d'échelle"
+msgstr "non gradué"
 
 msgid "scale"
-msgstr "échelle"
+msgstr "gradué"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -163,7 +163,7 @@ msgid "Save contents"
 msgstr "Enregistrer le contenu"
 
 msgid "Draw as:"
-msgstr "Dessiner en :"
+msgstr "Style :"
 
 msgid "Polygon"
 msgstr "Polygone"
@@ -205,7 +205,7 @@ msgid "no device"
 msgstr "aucun périphérique"
 
 msgid "(same as input device)..."
-msgstr "(même que le périphérique d'entrée)..."
+msgstr "(identique au périphérique d'entrée)..."
 
 msgid "Channels:"
 msgstr "Nombre de canaux :"
@@ -271,7 +271,7 @@ msgid "Appearance on parent patch"
 msgstr "Aspect dans le patch parent"
 
 msgid "Graph-On-Parent"
-msgstr "Graph-On-Parent (dessiner dans le patch parent)"
+msgstr "Dessiner dans le patch parent"
 
 msgid "Hide object name and arguments"
 msgstr "Cacher le nom et les arguments de l'objet"
@@ -508,9 +508,6 @@ msgstr "Envoyer un message Pd"
 msgid "(use arrow keys for history)"
 msgstr "(utiliser les flèches pour accéder à l'historique)"
 
-msgid "(no device)"
-msgstr "(aucun périphérique)"
-
 msgid "no input devices"
 msgstr "pas de périphériques d'entrée"
 
@@ -718,6 +715,13 @@ msgstr "Échec de la lecture du plugin %s ... passer !"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossible de trouver des plugins dans %s... passer !"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Échec de l'installation de '%s' !"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
@@ -985,7 +989,7 @@ msgstr ""
 "caractères."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "par exemple '*-plugin' correspondra notamment à  'deken-plugin'."
+msgstr "par exemple '*-plugin' pourra correspondre à 'deken-plugin'."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
@@ -1191,7 +1195,7 @@ msgstr "Copier l'URL de la signature OpenGPG"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr "Désinstallation de '%s'"
+msgstr "Désinstaller '%s'"
 
 #, tcl-format
 msgid ""
@@ -1289,7 +1293,7 @@ msgid "English (UK)"
 msgstr "Anglais (Royaume-Uni)"
 
 msgid "English (USA)"
-msgstr "Anglais (États-Unis)"
+msgstr "Anglais (USA)"
 
 msgid "Spanish"
 msgstr "Espagnol"
@@ -1418,7 +1422,7 @@ msgid "Triggerize"
 msgstr "Triggeriser"
 
 msgid "Edit Mode"
-msgstr "Mode d'édition"
+msgstr "Mode édition"
 
 msgid "Undo"
 msgstr "Défaire"
@@ -1475,10 +1479,10 @@ msgid "Find Last Error"
 msgstr "Rechercher la dernière erreur"
 
 msgid "DSP On"
-msgstr "DSP On"
+msgstr "DSP activé"
 
 msgid "DSP Off"
-msgstr "DSP Off"
+msgstr "DSP désactivé"
 
 msgid "Test Audio and MIDI..."
 msgstr "Tester l'audio et le MIDI..."
@@ -1536,7 +1540,7 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 "Effacer toutes les préférences ?\n"
-"(prendra effet au prochain redémarrage)"
+"(prendra effet au prochain redémarrage de Pd)"
 
 msgid "removed GUI settings"
 msgstr "les paramètres de l'interface graphique ont été supprimés"
@@ -1609,6 +1613,13 @@ msgstr "Tcl :"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "double (64bit) EXPÉRIMENTAL"
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1648,6 +1659,9 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+msgid "(no device)"
+msgstr "(aucun périphérique)"
 
 #~ msgid "Path..."
 #~ msgstr "Chemins..."

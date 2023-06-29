@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-06-26 04:41+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -503,9 +503,6 @@ msgstr "שליחת הודעת Pd"
 msgid "(use arrow keys for history)"
 msgstr "(ניתן להשתמש במקשי החצים להיסטוריה)"
 
-msgid "(no device)"
-msgstr "(אין התקן)"
-
 msgid "no input devices"
 msgstr "אין התקני קלט"
 
@@ -708,6 +705,13 @@ msgstr "קריאת התוסף ‚%s’ נכשלה …מדלגים!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "איתור תוספים ב־ ‚%s’ נכשל …מדלגים!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "התקנת ‚%s’ נכשלה!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים '}': "
@@ -1576,6 +1580,13 @@ msgstr "Tcl:"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "כפול (64 סיביות) ניסיוני"
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1615,6 +1626,9 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "(no device)"
+#~ msgstr "(אין התקן)"
 
 #~ msgid "Path..."
 #~ msgstr "נתיב…"
