@@ -1245,13 +1245,7 @@ t_class *
     return 0;
 }
 
-void class_setdspflags(t_class *c, int flags)
-{
-    c->c_multichannel = (flags & CLASS_MULTICHANNEL) != 0;
-    c->c_nopromotesig = (flags & CLASS_NOPROMOTESIG) != 0;
-    c->c_nopromoteleft = (flags & CLASS_NOPROMOTELEFT) != 0;
-}
-
+/* this is privately shared with d_ugen.c */
 int class_getdspflags(const t_class *c)
 {
     return ((c->c_multichannel ? CLASS_MULTICHANNEL : 0) |
