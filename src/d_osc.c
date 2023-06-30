@@ -602,7 +602,6 @@ static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
         pd_error(x, "%s: number of points (%d) not a power of 2 plus three",
             x->x_arrayname->s_name, pointsinarray);
         x->x_vec = 0;
-        garray_usedindsp(a);
     }
     else
     {

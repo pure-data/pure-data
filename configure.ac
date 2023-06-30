@@ -20,6 +20,14 @@ AS_IF([test "$( (echo 1.16; echo ${am__api_version}) | sort -t. -k 1,1n -k 2,2n 
 	       ])
 ])
 
+# check whether the user has provided --program-transform-name
+# we need this so we can fall back to a default transformation
+# in case the user passed --with-floatsize
+AS_CASE([$ac_configure_args],
+        [*\'--program-transform-name*], [have_program_transform_name=yes],
+        [*\'--program-prefix*], [have_program_transform_name=yes],
+        [*\'--program-suffix*], [have_program_transform_name=yes],
+        [have_program_transform_name=no])
 
 #########################################
 ##### Default values #####
@@ -59,9 +67,6 @@ PD_CPPFLAGS=""
 PD_CFLAGS=""
 PD_LDFLAGS=""
 
-
-pd_transform_name=$(echo ${program_transform_name} | sed -e 's|\$\$|$|')
-pd_transformed=$(echo pd | sed -e "${pd_transform_name}")
 
 #########################################
 ##### OS Detection #####
@@ -151,9 +156,10 @@ AS_CASE([$host],
     # this mirrors the default windows WISH define in s_inter.c
     wish="wish85.exe"
 
-    # externals are dynamically linked to pd.dll in their individual automake files
+    # externals need to be dynamically linked to pd.dll,
+    # but we need to check for --with-floatsize first (see below)
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined -l${pd_transformed}"
+    EXTERNAL_LDFLAGS="-Wl,--enable-auto-import -no-undefined"
     EXTERNAL_EXTENSION=dll
 
     # workaround for rpl_malloc/rpl_realloc bug in autoconf when cross-compiling
@@ -173,7 +179,8 @@ AS_CASE([$host],
     # this mirrors the default windows WISH define in s_inter.c
     wish="wish85.exe"
 
-    # externals are dynamically linked to pd.dll in their individual automake files
+    # externals need to be dynamically linked to pd.dll,
+    # but we need to check for --with-floatsize first (see below)
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
@@ -385,7 +392,7 @@ AC_ARG_ENABLE([watchdog],
 AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
 AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
 
-
+###### floatsize ########
 AC_ARG_WITH([floatsize],
     [AS_HELP_STRING([--with-floatsize=<SIZE>],
     [build binaries for the given floatsize;
@@ -400,7 +407,7 @@ AS_CASE([${floatsize}],
     [64],[],
     [""],[],
     [
-        AC_MSG_WARN([${floatsize}bit floats not supported..fallback to default])
+        AC_MSG_WARN([${floatsize}bit floats not supported...use fallback])
         floatsize=""
     ])
 AS_IF([test "x${floatsize}" != "x" ],
@@ -414,6 +421,26 @@ AS_IF([test "x${floatsize}" = "x64" && test "x${deken_cpu}" != "x" && test "x${d
       EXTERNAL_EXTENSION="${deken_os}-${deken_cpu}-${floatsize}.${deken_ext}"
       AC_MSG_NOTICE([default external extension...${EXTERNAL_EXTENSION}])
       ])
+
+pd_transform_name=$(echo ${program_transform_name} | sed -e 's|\$\$|$|')
+pd_transformed=$(echo pd | sed -e "${pd_transform_name}")
+
+AS_CASE([${floatsize}],
+    [""],[],
+    [32],[],
+    [
+      # if we specify a non-standard floatsize, make sure that the the program is also transformed.
+      # this is especially important on Windows (where we link against a pd.dll variant)
+      AS_IF([test "${pd_transformed}" = "pd" && test "${have_program_transform_name}" = "no"],[
+        program_transform_name="s/pd\$\$/pd${floatsize}/"
+        pd_transform_name=$(echo ${program_transform_name} | sed -e 's|\$\$|$|')
+        pd_transformed=$(echo pd | sed -e "${pd_transform_name}")
+      ])])
+
+# on Windows, we need to link against a (floatsize-decorated) pd.dll
+AS_IF([test "x${WINDOWS}" = "xyes" ],[
+   EXTERNAL_LDFLAGS="${EXTERNAL_LDFLAGS} -l${pd_transformed}"
+])
 
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
@@ -780,54 +807,54 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([
 
-    $PACKAGE $VERSION is now configured
+    ${PACKAGE} ${VERSION} is now configured
 
-    Platform:             $platform
+    Platform:             ${platform}
     Float size:           ${floatsize:-default}
-    Debug build:          $debug
-    Universal build:      $universal
-    Localizations:        $locales
-    Source directory:     $srcdir
-    Installation prefix:  $prefix
+    Debug build:          ${debug}
+    Universal build:      ${universal}
+    Localizations:        ${locales}
+    Source directory:     ${srcdir}
+    Installation prefix:  ${prefix}
 
-    Compiler:             $CC
-    CPPFLAGS:             $PD_CPPFLAGS $CPPFLAGS
-    CFLAGS:               $PD_CFLAGS $CFLAGS
-    LDFLAGS:              $PD_LDFLAGS $LDFLAGS
-    INCLUDES:             $AM_CPPFLAGS
-    LIBS:                 $LIBS
+    Compiler:             ${CC}
+    CPPFLAGS:             ${PD_CPPFLAGS} ${CPPFLAGS}
+    CFLAGS:               ${PD_CFLAGS} ${CFLAGS}
+    LDFLAGS:              ${PD_LDFLAGS} ${LDFLAGS}
+    INCLUDES:             ${AM_CPPFLAGS}
+    LIBS:                 ${LIBS}
 
-    External extension:   $EXTERNAL_EXTENSION
-    External CFLAGS:      $EXTERNAL_CFLAGS
-    External LDFLAGS:     $EXTERNAL_LDFLAGS
+    External extension:   ${EXTERNAL_EXTENSION}
+    External CFLAGS:      ${EXTERNAL_CFLAGS}
+    External LDFLAGS:     ${EXTERNAL_LDFLAGS}
     Deken identifier:     ${deken_os:-???}-${deken_cpu:-???}
 
-    fftw:                 $fftw
-    wish(tcl/tk):         $wish
-    watchdog:             $enable_watchdog
-    audio APIs:           $audio_backends
-    midi APIs:            $midi_backends
-    libpd:                $libpd
+    fftw:                 ${fftw}
+    wish(tcl/tk):         ${wish}
+    watchdog:             ${enable_watchdog}
+    audio APIs:           ${audio_backends}
+    midi APIs:            ${midi_backends}
+    libpd:                ${libpd}
 ])
 
-AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
+AS_IF([test "x${enable_locales}" = xyes -a "x${locales}" = xno ],
  AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))
-AS_IF([test x$enable_oss = xyes -a x$oss = xno ],
+AS_IF([test "x${enable_oss}" = xyes -a "x${oss}" = xno ],
  AC_MSG_WARN([OSS requested but no development files found... disabled]))
-AS_IF([test x$enable_alsa = xyes -a x$alsa = xno ],
+AS_IF([test "x${enable_alsa}" = xyes -a "x${alsa}" = xno ],
  AC_MSG_WARN([ALSA requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_jack = xyes -a x$jack = xno ],
+AS_IF([test "x${enable_jack}" = xyes -a "x${jack}" = xno ],
  AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
+AS_IF([test "x${enable_jack_framework}" = xyes -a "x${jack_jack}" != xyes ],
  AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
+AS_IF([test "x${enable_mmio}" = xyes -a "x${mmio}" = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
-AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
+AS_IF([test "x${enable_asio}" = xyes -a "x${asio}" = xno ],
  AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
 
 # TODO portaudio
 
-AS_IF([test x$enable_fftw = xyes -a x$fftw = xno ],
+AS_IF([test "x${enable_fftw}" = xyes -a "x${fftw}" = xno ],
  AC_MSG_WARN([FFTW requested but no development files found... disabled]))
 
 AS_CASE([${floatsize}],
@@ -836,6 +863,6 @@ AS_CASE([${floatsize}],
     [
       AS_IF([test "${pd_transformed}" = "pd"],[
         AC_MSG_WARN([Using a non-standard floatsize without name-mangling.
-        Did you forget to specify "--program-transform-name='s/pd$/pd${floatsize}/'"?
+        You should use something like "--program-suffix=${floatsize}"?
         ])
       ])])

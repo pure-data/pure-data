@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -531,10 +531,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 #, fuzzy
-msgid "(no device)"
-msgstr "3. bemeneti eszköz:"
-
-#, fuzzy
 msgid "no input devices"
 msgstr "Bemeneti eszköz:"
 
@@ -751,6 +747,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1617,6 +1619,13 @@ msgstr ""
 msgid "Pd"
 msgstr ""
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1658,6 +1667,10 @@ msgstr "Array-t töröl"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "(no device)"
+#~ msgstr "3. bemeneti eszköz:"
 
 #, fuzzy
 #~ msgid "Audio..."

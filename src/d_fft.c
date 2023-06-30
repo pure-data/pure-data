@@ -108,6 +108,16 @@ static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
             "FFT inputs have different channel counts - ignoring extras");
     signal_setmultiout(&sp[2], nchans);
     signal_setmultiout(&sp[3], nchans);
+    if (length < 4 || (length != (1 << ilog2(length))))
+    {
+        if (length < 4)
+            pd_error(x, "fft: minimum 4 points");
+        else
+            pd_error(x, "fft: blocksize (%d) not a power of 2", length);
+        dsp_add_zero(sp[2]->s_vec, length * nchans);
+        dsp_add_zero(sp[3]->s_vec, length * nchans);
+        return;
+    }
     for (ch = 0; ch < nchans; ch++)
     {
         t_sample *in1 = sp[0]->s_vec + ch * length;
@@ -193,16 +203,21 @@ static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
     int nchans = sp[0]->s_nchans;
     signal_setmultiout(&sp[1], nchans);
     signal_setmultiout(&sp[2], nchans);
+    if (length < 4 || (length != (1 << ilog2(length))))
+    {
+        if (length < 4)
+            pd_error(x, "fft: minimum 4 points");
+        else
+            pd_error(x, "fft: blocksize (%d) not a power of 2", length);
+        dsp_add_zero(sp[1]->s_vec, length * nchans);
+        dsp_add_zero(sp[2]->s_vec, length * nchans);
+        return;
+    }
     for (ch = 0; ch < nchans; ch++)
     {
         t_sample *in1 = sp[0]->s_vec + ch * length;
         t_sample *out1 = sp[1]->s_vec + ch * length;
         t_sample *out2 = sp[2]->s_vec + ch * length;
-        if (length < 4)
-        {
-            pd_error(0, "fft: minimum 4 points");
-            return;
-        }
         if (in1 != out1)
             dsp_add(copy_perform, 3, in1, out1, (t_int)length);
         dsp_add(sigrfft_perform, 2, out1, (t_int)length);
@@ -262,16 +277,20 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
         pd_error(x,
             "rifft~ inputs have different channel counts - ignoring extras");
     signal_setmultiout(&sp[2], nchans);
+    if (length < 4 || (length != (1 << ilog2(length))))
+    {
+        if (length < 4)
+            pd_error(x, "fft: minimum 4 points");
+        else
+            pd_error(x, "fft: blocksize (%d) not a power of 2", length);
+        dsp_add_zero(sp[2]->s_vec, length * nchans);
+        return;
+    }
     for (ch = 0; ch < nchans; ch++)
     {
         t_sample *in1 = sp[0]->s_vec + ch * length;
         t_sample *in2 = sp[1]->s_vec + ch * length;
         t_sample *out1 = sp[2]->s_vec + ch * length;
-        if (length < 4)
-        {
-            pd_error(0, "fft: minimum 4 points");
-            return;
-        }
         if (in2 == out1)
         {
             dsp_add(sigrfft_flip, 3, out1+1, out1 + length, (t_int)(n2-1));

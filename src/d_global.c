@@ -24,7 +24,8 @@ typedef struct _sigsend
 static void *sigsend_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigsend *x = (t_sigsend *)pd_new(sigsend_class);
-    pd_bind(&x->x_obj.ob_pd, s);
+    if (*s->s_name)
+        pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
@@ -81,18 +82,18 @@ static void sigsend_dsp(t_sigsend *x, t_signal **sp)
 
 static void sigsend_free(t_sigsend *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, x->x_sym);
+    if (*x->x_sym->s_name)
+        pd_unbind(&x->x_obj.ob_pd, x->x_sym);
     freebytes(x->x_vec, x->x_length * sizeof(t_sample));
 }
 
 static void sigsend_setup(void)
 {
     sigsend_class = class_new(gensym("send~"), (t_newmethod)sigsend_new,
-        (t_method)sigsend_free, sizeof(t_sigsend), 0,
+        (t_method)sigsend_free, sizeof(t_sigsend), CLASS_MULTICHANNEL,
             A_DEFSYM, A_DEFFLOAT, 0);
     class_addcreator((t_newmethod)sigsend_new, gensym("s~"),
         A_DEFSYM, A_DEFFLOAT, 0);
-    class_setdspflags(sigsend_class, CLASS_MULTICHANNEL);
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);
     class_addmethod(sigsend_class, (t_method)sigsend_channels,
         gensym("channels"), A_FLOAT, 0);
@@ -198,7 +199,8 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
                     sender->x_nchans, sender->x_length);
         }
     }
-    else pd_error(x, "receive~ %s: no matching send", x->x_sym->s_name);
+    else if (*x->x_sym->s_name)
+        pd_error(x, "receive~ %s: no matching send", x->x_sym->s_name);
 }
 
 static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
@@ -217,10 +219,9 @@ static void sigreceive_setup(void)
 {
     sigreceive_class = class_new(gensym("receive~"),
         (t_newmethod)sigreceive_new, 0,
-        sizeof(t_sigreceive), 0, A_DEFSYM, 0);
+        sizeof(t_sigreceive), CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addcreator((t_newmethod)sigreceive_new, gensym("r~"),
         A_DEFSYM, A_DEFFLOAT, 0);
-    class_setdspflags(sigreceive_class, CLASS_MULTICHANNEL);
     class_addmethod(sigreceive_class, (t_method)sigreceive_set, gensym("set"),
         A_SYMBOL, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
@@ -244,7 +245,8 @@ typedef struct _sigcatch
 static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigcatch *x = (t_sigcatch *)pd_new(sigcatch_class);
-    pd_bind(&x->x_obj.ob_pd, s);
+    if (*s->s_name)
+        pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
     x->x_canvas = canvas_getcurrent();
     x->x_length = 1;     /* replaced later */
@@ -297,7 +299,8 @@ static void sigcatch_dsp(t_sigcatch *x, t_signal **sp)
 
 static void sigcatch_free(t_sigcatch *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, x->x_sym);
+    if (*x->x_sym->s_name)
+        pd_unbind(&x->x_obj.ob_pd, x->x_sym);
     freebytes(x->x_vec, x->x_length * sizeof(t_sample));
 }
 

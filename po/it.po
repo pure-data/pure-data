@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-06-07 05:32+0000\n"
 "Last-Translator: Lorenzo Sutton <lorenzofsutton@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -508,9 +508,6 @@ msgstr "Invia un Messaggio Pd"
 msgid "(use arrow keys for history)"
 msgstr "(usa i tasti freccia per la cronologia)"
 
-msgid "(no device)"
-msgstr "(nessun dispositivo)"
-
 msgid "no input devices"
 msgstr "nessun dispositivo d'ingresso"
 
@@ -718,6 +715,13 @@ msgstr "Impossibile leggere il plugin %s ...scartato!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossibile trovare plugin in %s ...scartato!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Impossibile installare '%s'!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MANCA LA PARENTESI GRAFFA DI CHIUSURA'}': "
@@ -1599,6 +1603,13 @@ msgstr "Tcl:"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1638,6 +1649,9 @@ msgstr "Rimuovi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoro '%s': non sembra un file Pd"
+
+#~ msgid "(no device)"
+#~ msgstr "(nessun dispositivo)"
 
 #~ msgid "Path..."
 #~ msgstr "Percorso..."

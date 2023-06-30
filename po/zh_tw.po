@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -504,9 +504,6 @@ msgstr "送出 Pd message"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "(no device)"
-msgstr ""
-
 #, fuzzy
 msgid "no input devices"
 msgstr "輸入設備"
@@ -718,6 +715,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1564,6 +1567,13 @@ msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 msgid "DSP"

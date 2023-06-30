@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
-"PO-Revision-Date: 2023-06-26 04:41+0000\n"
-"Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-06-28 06:21+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -514,9 +514,6 @@ msgstr "Enviar un mensaje Pd"
 msgid "(use arrow keys for history)"
 msgstr "(usar flechas del teclado para navegar el historial)"
 
-msgid "(no device)"
-msgstr "(sin dispositivo)"
-
 msgid "no input devices"
 msgstr "Ningún dispositivos de entrada"
 
@@ -626,9 +623,8 @@ msgstr "¡La configuración a continuación requiere un reinicio de Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Librerías de Pd para cargar al inicio"
 
-#, fuzzy
 msgid "GUI options"
-msgstr "preferencias GUI"
+msgstr "Opciones de la GUI"
 
 msgid "language"
 msgstr "Idioma"
@@ -724,6 +720,12 @@ msgstr "No se pudo leer el plugin %s ...salteando!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "No se encontró el plugin en %s ...salteando!"
+
+msgid "Pd startup failure"
+msgstr "Falla al iniciar Pd"
+
+msgid "Failed to start Pd-core"
+msgstr "Falla al iniciar el núcleo-Pd"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) LLAVE DE CIERRE FALTANTE '}': "
@@ -1599,6 +1601,13 @@ msgstr "Tcl:"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "EXPERIMENTAL precisión doble (64bit)"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "flotante %d-bits EXPERIMENTAL"
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1638,6 +1647,9 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "(no device)"
+#~ msgstr "(sin dispositivo)"
 
 #~ msgid "Path..."
 #~ msgstr "Ruta..."

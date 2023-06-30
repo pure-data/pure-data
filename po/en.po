@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-24 09:59+0200\n"
-"PO-Revision-Date: 2023-06-26 04:41+0000\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-06-27 06:05+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/en/>\n"
@@ -503,9 +503,6 @@ msgstr "Send a Pd message"
 msgid "(use arrow keys for history)"
 msgstr "(use arrow keys for history)"
 
-msgid "(no device)"
-msgstr "(no device)"
-
 msgid "no input devices"
 msgstr "no input devices"
 
@@ -708,6 +705,12 @@ msgstr "Failed to read plugin %s ...skipping!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Failed to find plugins in %s ...skipping!"
+
+msgid "Pd startup failure"
+msgstr "Pd startup failure"
+
+msgid "Failed to start Pd-core"
+msgstr "Failed to start Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1578,6 +1581,13 @@ msgstr "Tcl:"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "EXPERIMENTAL double (64bit) precision"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-floats EXPERIMENTAL"
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1617,3 +1627,6 @@ msgstr "Delete"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoring '%s': doesn't look like a Pd file"
+
+#~ msgid "(no device)"
+#~ msgstr "(no device)"

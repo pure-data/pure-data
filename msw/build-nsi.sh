@@ -141,10 +141,15 @@ if ! [ -d "${PDWINDIR}" ]
 then
   error "'${PDWINDIR}' is not a directory"
   cleanup 1
-elif ! [ -f "${PDWINDIR}/bin/pd.exe" ]
-then
-  error "Could not find bin/pd.exe. Is this a Windows build?"
-  cleanup 1
+else
+  for f in pd.exe pd.com pd64.exe pd64.com pd32.exe pd32.com pd.exe; do
+    pd_exe="${PDWINDIR}/bin/${f}"
+    [ -f "${pd_exe}" ] && break
+  done
+  if ! [ -f "${pd_exe}" ]; then
+	  error "Could not find ${f}. Is this a Windows build?"
+	  cleanup 1
+  fi
 fi
 
 if [  -z "${PDVERSION}" ]; then
@@ -167,9 +172,9 @@ fi
 
 # autodetect architecture if not given on the cmdline
 if [  "${PDARCH}" = "" ]; then
-    if file -b "${PDWINDIR}/bin/pd.exe" | grep -E "^PE32 .* 80386 " >/dev/null; then
+    if file -b "${pd_exe}" | grep -E "^PE32 .* 80386 " >/dev/null; then
         PDARCH=32
-    elif file -b "${PDWINDIR}/bin/pd.exe" | grep -E "^PE32\+ .* x86-64 " >/dev/null; then
+    elif file -b "${pd_exe}" | grep -E "^PE32\+ .* x86-64 " >/dev/null; then
         PDARCH=64
     fi
 fi
@@ -245,7 +250,8 @@ cp "${SCRIPTDIR}/../tcl/pd.ico" "${WORKDIR}/pd.ico"
 
 # run the build
 mkdir -p "${OUTDIR}"
-if makensis -DPDVER="${PDVERSION}" -DWISHN="${WISHNAME}" -DARCHI="${PDARCH}" "${NSIFILE}" 1>&2
+if makensis -DPDVER="${PDVERSION}" -DWISHN="${WISHNAME}" -DARCHI="${PDARCH}" \
+    -DPDEXE=$(basename "${pd_exe}") "${NSIFILE}" 1>&2
 then
   error "Build successful"
   echo "${OUTDIR}/pd-${PDVERSION}.windows-installer.exe"
