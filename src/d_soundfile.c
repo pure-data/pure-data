@@ -1626,8 +1626,8 @@ typedef struct _readsf
     t_clock *x_clock;
     char *x_buf;                      /**< soundfile buffer */
     int x_bufsize;                    /**< buffer size in bytes */
-    int x_noutlets;                   /**< number of audio outlets */
-    t_sample *(x_outvec[MAXSFCHANS]); /**< audio vectors */
+    int x_nchannels;                  /**< number of channels */
+    t_sample *(x_vec[MAXSFCHANS]);    /**< audio vectors */
     int x_vecsize;                    /**< vector size for transfers */
     t_outlet *x_bangout;              /**< bang-on-done outlet */
     t_soundfile_state x_state;        /**< opened, running, or idle */
@@ -1990,7 +1990,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 
     for (i = 0; i < nchannels; i++)
         outlet_new(&x->x_obj, gensym("signal"));
-    x->x_noutlets = nchannels;
+    x->x_nchannels = nchannels;
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
     pthread_mutex_init(&x->x_mutex, 0);
     pthread_cond_init(&x->x_requestcondition, 0);
@@ -2021,7 +2021,7 @@ static void readsf_tick(t_readsf *x)
 static t_int *readsf_perform(t_int *w)
 {
     t_readsf *x = (t_readsf *)(w[1]);
-    int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i;
+    int vecsize = x->x_vecsize, nchans = x->x_nchannels, i;
     size_t j;
     t_sample *fp;
     if (x->x_state == STATE_STREAM)
@@ -2060,7 +2060,7 @@ static t_int *readsf_perform(t_int *w)
                        sf.sf_bytesperframe;
             if (xfersize)
             {
-                soundfile_xferin_sample(&sf, noutlets, x->x_outvec, 0,
+                soundfile_xferin_sample(&sf, nchans, x->x_vec, 0,
                     (unsigned char *)(x->x_buf + x->x_fifotail), xfersize);
                 vecsize -= xfersize;
             }
@@ -2068,13 +2068,13 @@ static t_int *readsf_perform(t_int *w)
                 /* send bang and zero out the (rest of the) output */
             clock_delay(x->x_clock, 0);
             x->x_state = STATE_IDLE;
-            for (i = 0; i < noutlets; i++)
-                for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
+            for (i = 0; i < nchans; i++)
+                for (j = vecsize, fp = x->x_vec[i] + xfersize; j--;)
                     *fp++ = 0;
             return w + 2;
         }
 
-        soundfile_xferin_sample(&sf, noutlets, x->x_outvec, 0,
+        soundfile_xferin_sample(&sf, nchans, x->x_vec, 0,
             (unsigned char *)(x->x_buf + x->x_fifotail), vecsize);
 
         x->x_fifotail += wantbytes;
@@ -2089,8 +2089,8 @@ static t_int *readsf_perform(t_int *w)
     }
     else
     {
-        for (i = 0; i < noutlets; i++)
-            for (j = vecsize, fp = x->x_outvec[i]; j--;)
+        for (i = 0; i < nchans; i++)
+            for (j = vecsize, fp = x->x_vec[i]; j--;)
                 *fp++ = 0;
     }
     return w + 2;
@@ -2191,12 +2191,12 @@ usage:
 
 static void readsf_dsp(t_readsf *x, t_signal **sp)
 {
-    int i, noutlets = x->x_noutlets;
+    int i, nchans = x->x_nchannels;
     pthread_mutex_lock(&x->x_mutex);
-    x->x_vecsize = sp[0]->s_n;
+    x->x_vecsize = sp[0]->s_length;
     x->x_sigperiod = x->x_fifosize / (x->x_sf.sf_bytesperframe * x->x_vecsize);
-    for (i = 0; i < noutlets; i++)
-        x->x_outvec[i] = sp[i]->s_vec;
+    for (i = 0; i < nchans; i++)
+        x->x_vec[i] = sp[i]->s_vec;
     pthread_mutex_unlock(&x->x_mutex);
     dsp_add(readsf_perform, 1, x);
 }
@@ -2575,7 +2575,7 @@ static t_int *writesf_perform(t_int *w)
             return w + 2;
         }
 
-        soundfile_xferout_sample(&sf, x->x_outvec,
+        soundfile_xferout_sample(&sf, x->x_vec,
             (unsigned char *)(x->x_buf + x->x_fifohead), vecsize, 0, 1.);
 
         x->x_fifohead += wantbytes;
@@ -2674,13 +2674,13 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 
 static void writesf_dsp(t_writesf *x, t_signal **sp)
 {
-    int i, ninlets = x->x_sf.sf_nchannels;
+    int i, nchans = x->x_sf.sf_nchannels;
     pthread_mutex_lock(&x->x_mutex);
     x->x_vecsize = sp[0]->s_n;
     x->x_sigperiod = (x->x_fifosize /
             (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
-    for (i = 0; i < ninlets; i++)
-        x->x_outvec[i] = sp[i]->s_vec;
+    for (i = 0; i < nchans; i++)
+        x->x_vec[i] = sp[i]->s_vec;
     x->x_insamplerate = sp[0]->s_sr;
     pthread_mutex_unlock(&x->x_mutex);
     dsp_add(writesf_perform, 1, x);
