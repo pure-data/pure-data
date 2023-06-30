@@ -65,7 +65,6 @@
 #X text 415 188 [exp~] raises the Euler number 'e' (about 2.718) to the power of the input signal., f 34;
 #X obj 354 179 sig~ 1;
 #X obj 374 243 r bang;
-#X text 18 63 The [abs~] object passes nonnegative values unchanged \, but replaces negative ones with their (positive) inverses. The [sqrt~] and [rsqrt~] output \, respectively \, the approximate square root and inverse square root (the same as '1/sqrt(input) using a fast algorithm accurate to about 120 dB (20 bits). There are old [q8_sqrt~]/[q8_rsqrt~] versions with only about 8 bit accuracy that should probably not be used:, f 89;
 #X obj 269 235 r bang;
 #X obj 6 545 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 181 166 417 228 compatibility 0;
@@ -113,6 +112,7 @@
 #X text 404 559 (etc.) - binary signal operators;
 #X text 137 559 (etc.) - control rate versions;
 #X obj 187 589 clip~;
+#X text 18 63 The [abs~] object passes nonnegative values unchanged \, but replaces negative ones with their (positive) inverses. The [sqrt~] and [rsqrt~] output \, respectively \, the approximate square root and inverse square root - the same as 1/sqrt(input) - using a fast algorithm accurate to about 120 dB (20 bits). There are old [q8_sqrt~]/[q8_rsqrt~] versions with only about 8 bit accuracy that should probably not be used:, f 89;
 #X connect 9 0 11 0;
 #X connect 10 0 13 0;
 #X connect 12 0 9 0;
@@ -139,5 +139,5 @@
 #X connect 45 0 42 0;
 #X connect 47 0 45 0;
 #X connect 48 0 42 0;
-#X connect 50 0 31 0;
-#X connect 50 0 17 0;
+#X connect 49 0 31 0;
+#X connect 49 0 17 0;
