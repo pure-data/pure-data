@@ -175,7 +175,6 @@ static t_int *cos_perform(t_int *w)
 
 static void cos_dsp(t_cos *x, t_signal **sp)
 {
-    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
         (t_int)(sp[0]->s_length * sp[0]->s_nchans));
