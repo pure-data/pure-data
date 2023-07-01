@@ -1660,8 +1660,8 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-msgid "(no device)"
-msgstr "(aucun périphérique)"
+#~ msgid "(no device)"
+#~ msgstr "(aucun périphérique)"
 
 #~ msgid "Path..."
 #~ msgstr "Chemins..."
