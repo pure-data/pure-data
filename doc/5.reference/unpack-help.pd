@@ -1,4 +1,4 @@
-#N canvas 380 39 598 499 12;
+#N canvas 626 37 598 499 12;
 #X floatatom 281 226 5 0 0 0 - - - 0;
 #X obj 116 463 pack;
 #X obj 57 14 unpack;
@@ -51,9 +51,9 @@
 #X obj 57 14 unpack;
 #X text 110 14 - split a list into atoms.;
 #X text 107 61 list - a list to be split into atoms.;
-#X text 180 223 symbols that define atoms's type: 'float' \, 'symbol' \, and 'pointer' \, all of which can be abreviated (default: f f).;
 #X text 108 147 float - unpacked float (if outlet type is float).;
 #X text 102 167 symbol - unpacked symbol (if outlet type is symbol).;
+#X text 180 223 symbols that define atoms's type: 'float' \, 'symbol' \, and 'pointer' \, all of which can be abbreviated (default: f f).;
 #X restore 398 13 pd reference;
 #X text 496 13 <= click;
 #X obj 16 450 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;

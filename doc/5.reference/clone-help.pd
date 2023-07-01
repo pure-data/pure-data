@@ -129,8 +129,8 @@
 #X text 40 46 [clone] creates any number of copies of an abstraction (a patch loaded as an object in another patch). By default "\$1" is set to the instance number within each copy (counted from 0 unless overridden by the "-s" flag). You can prevent '\$1' from reflecting the instance number with the "-x" flag. Arguments must be filename and number of copies \, additional arguments are passed to the copies and appear as \$2 and onward (or \$1 and onward with the "-x" flag)., f 95;
 #X text 40 197 Signal inlets can get non float control messages with the 'fwd' argument in the same way \, but signals are sent to all the instances. See [pd multichannel] example for more details on how signal distribution works in [clone]., f 95;
 #X listbox 311 546 7 0 0 0 - - - 0;
-#X text 368 546 control data is preceeded by instance number;
 #X text 40 121 [clone]'s inlets/outlets correspond to those of the contained patch \, and may be control and/or signal inlets/outlets (this example has one control inlet plus one signal and another control outlet). You can click on the clone object to see the first of the created instances. At least one control inlet is present even if the abstraction has none so [clone] can receive the 'vis' and 'resize' messages. The way control inlets/outlets forward messages is shown below., f 95;
+#X text 368 546 control data is preceded by instance number;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 12 1;

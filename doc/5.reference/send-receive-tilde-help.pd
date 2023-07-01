@@ -103,7 +103,6 @@
 #X text 117 514 Example for feedback loops -->;
 #N canvas 639 104 520 539 feedback-loop 0;
 #X text 42 20 You can use [send~]/[receive~] for feedback loops. Feedback loops are also useful in delay lines as shown in some of the examples in the 'G' series of the audio examples. Feedback loops with delay lines are useful when you need to change the delay size \, but sometimes you want a fixed delay time.;
-#X text 42 105 The delay time for [send~]/[receive~] is fixed at one block and you can use it as the desired fixed delay time. You can change the block size for a patch window with the [block~] object \, the default block size is 64 but common examlpes are a single sample feedback loop (block size of 1 for things like filter design and more) or FFT processing with block sizes that are much larger (like 1024 or 2048).;
 #X text 54 428 Note that feedback loops usually requites a single connection \, in this case you can also use [throw~]/[catch~]. Hence \, the decision to focus on [send~]/[receive~] instead is a bit arbitrary., f 62;
 #X obj 244 303 *~ 0.1;
 #X obj 244 273 r~ \$0-fb;
@@ -116,11 +115,12 @@
 #X text 298 305 filter coefficient;
 #X text 350 348 see also:;
 #X obj 364 377 rpole~;
-#X connect 3 0 7 1;
-#X connect 4 0 3 0;
-#X connect 6 0 7 0;
-#X connect 7 0 5 0;
-#X connect 7 0 9 0;
+#X text 42 105 The delay time for [send~]/[receive~] is fixed at one block and you can use it as the desired fixed delay time. You can change the block size for a patch window with the [block~] object \, the default block size is 64 but common examples are a single sample feedback loop (block size of 1 for things like filter design and more) or FFT processing with block sizes that are much larger (like 1024 or 2048).;
+#X connect 2 0 6 1;
+#X connect 3 0 2 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 6 0 8 0;
 #X restore 341 514 pd feedback-loop;
 #X obj 230 609 delread~;
 #X obj 295 609 block~;

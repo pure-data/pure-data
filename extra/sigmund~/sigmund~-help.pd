@@ -31,7 +31,7 @@
 #X msg 50 319 clear \, list insignal 512 0 44100;
 #X msg 64 349 list insignal 512 512 44100;
 #X text 106 178 - optional debug flag (print debugging info if nonzero);
-#X text 22 212 Note that in this mode you can't have 'notes' output! Also note that if you're getting tracks output you may want to 'clear' the tracks before starting a new analysis from the beggining of the table., f 73;
+#X text 22 212 Note that in this mode you can't have 'notes' output! Also note that if you're getting tracks output you may want to 'clear' the tracks before starting a new analysis from the beginning of the table., f 73;
 #X connect 1 0 2 0;
 #X connect 3 0 2 0;
 #X connect 9 0 1 0;

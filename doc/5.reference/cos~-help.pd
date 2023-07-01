@@ -1,4 +1,4 @@
-#N canvas 482 54 518 540 12;
+#N canvas 596 44 518 540 12;
 #X declare -stdpath ./;
 #X obj 23 12 cos~;
 #X obj 86 338 snapshot~;
@@ -107,7 +107,7 @@
 #X text 309 505 updated for Pd version 0.54;
 #X obj 260 503 wrap~;
 #X text 30 50 The [cos~] object is a cosine wavetable reader. The input is a linear index from 0 to 1 and you can also consider it a cosine trigonometric function of the input multiplied by two pi. Values outside the 0-1 range get wrapped inside this range like in the [wrap~] object., f 64;
-#X text 42 405 You can use [cos~] in conjunction with [phasor~] to implement an osicllator just like [osc~] \, but you then have acess to the phase signal and this way you can also achieve phase modulation \, see example in the subpatch -->, f 61;
+#X text 42 405 You can use [cos~] in conjunction with [phasor~] to implement an osicllator just like [osc~] \, but you then have access to the phase signal and this way you can also achieve phase modulation \, see example in the subpatch -->, f 61;
 #X connect 1 0 3 0;
 #X connect 2 0 15 0;
 #X connect 4 0 2 0;

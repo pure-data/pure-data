@@ -57,13 +57,13 @@
 #X text 308 514 1 if this patch is visible \, 0 if not., f 39;
 #X text 147 552 get the patch's arguments -->;
 #X text 500 599 updated for Pd version 0.54;
-#X text 33 59 [pdcontrol] provides some patch/window related information. It can get the patch's owning directory \, its arguments (when loaded as an abstraction) and a window's visible/invisible state. In addition \, it allows you to send messgaes to the canvas or the parent canvas. For last \, it also lets you open a URL in a web browser. Other functionalities may be added., f 90;
 #X obj 90 603 namecanvas;
 #X text 17 603 see also:;
 #X text 111 12 - get patch/window information or communicate to canvas.;
 #X obj 178 603 pd-messages;
 #X text 201 273 send a message to this patch window. NOTE: messages to canvases may change from one version of Pd to the next - so backward compatibility can't be guaranteed (although in practice they don't often change). WARNING: don't send a "clear" message - that will crash Pd. Other editing commands might also cause grief. See also "pd-messages" file below., f 69;
 #X msg 54 299 sendcanvas loadbang;
+#X text 33 59 [pdcontrol] provides some patch/window related information. It can get the patch's owning directory \, its arguments (when loaded as an abstraction) and a window's visible/invisible state. In addition \, it allows you to send messages to the canvas or the parent canvas. For last \, it also lets you open a URL in a web browser. Other functionalities may be added., f 90;
 #X connect 1 0 14 0;
 #X connect 3 0 4 0;
 #X connect 4 0 13 0;
@@ -71,4 +71,4 @@
 #X connect 8 0 1 0;
 #X connect 11 0 1 0;
 #X connect 14 0 2 0;
-#X connect 28 0 1 0;
+#X connect 27 0 1 0;
