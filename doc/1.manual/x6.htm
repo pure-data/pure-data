@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
 <link rel="icon" type="image/png" href="favicon.ico">
 </HEAD>
-  
+
 <BODY>
 
 
@@ -26,7 +26,7 @@
 <P>
 <A href="index.htm#s6"> back to table of contents </A>
 <BR><BR>
-</P> 
+</P>
 
 <P>Pd is built on the commandline using traditional Unix-style tools. The source
 distribution comes with two build systems:</P>
@@ -314,7 +314,7 @@ pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
 pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
           make autoconf automake libtool \
           mingw-w64-i686-gettext</pre>
-		  
+
 <p>Install git if you want to clone the Pd sources from Github, etc:</p>
 
 <pre>pacman -S git</pre>
@@ -364,9 +364,9 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <h3 id="s6.6">6.6. Double precision</h3>
 
-<p>As of Pd 0.51-0 you can compile a "Double precision" Pd. On the autotools do:</p>
+<p>As of Pd 0.54-0 you can compile a "Double precision" Pd (AKA: Pd64). On the autotools do:</p>
 
-<pre>./configure CPPFLAGS="-DPD_FLOATSIZE=64"</pre>
+<pre>./configure --with-floatsize=64</pre>
 
 <h3 id="s6.7">6.7. Other flags</h3>
 
@@ -463,7 +463,7 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <P>
 <BR><BR>
-<A href="index.htm#s6"> back to table of contents </A> 
+<A href="index.htm#s6"> back to table of contents </A>
 <BR><BR>
 </P>
 
