@@ -1916,7 +1916,7 @@ int main()
     class_register(CLASS_BOX, c);
     sigmund_class = c;
     
-    post("sigmund~ version 0.07");
+    post("sigmund~ version 0.08");
     return (0);
 }
 
