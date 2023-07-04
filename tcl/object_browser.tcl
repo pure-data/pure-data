@@ -76,13 +76,13 @@ proc category_menu::load_menutree {} {
             {text\ management
                 {qlist textfile text\ define text\ get text\ set text\ insert text\ delete text\ size text\ tolist text\ fromlist text\ search text\ sequence}}
             {file\ management
-                {file\ handle file\ define file\ mkdir file\ which file\ glob file\ stat file\ isdirectory file\ isfile file\ size file\ copy file\ move file\ delete file\ split file\ splitex file\ join file\ splitname}}
+                {file\ handle file\ define file\ mkdir  file\ cwd file\ patchpath file\ which file\ glob file\ stat file\ isfile file\ isdirectory file\ size file\ copy file\ move file\ delete file\ split file\ join file\ splitex file\ splitname file\ normalize file\ isabsolute}}
             {time
                 {delay pipe metro line timer cputime realtime}}
             {logic
                 {select change spigot moses until}}
             {math
-                {expr clip random + - * / max min > >= < <= == != div mod && || & | << >> sin cos tan atan atan2 wrap abs sqrt exp log pow}}
+                {expr clip random + - * / max min > >= < <= == != div mod && || & | << >> wrap abs sqrt exp log pow sin cos tan atan atan2}}
             {acoustic\ conversions
                 {mtof ftom rmstodb dbtorms powtodb dbtopow}}
             {midi/osc
@@ -92,7 +92,7 @@ proc category_menu::load_menutree {} {
             {general\ audio\ tools
                 {snake~\ in snake~\ out adc~ dac~ sig~ line~ vline~ threshold~ env~ snapshot~ vsnapsot~ bang~ samphold~ samplerate~ send~ receive~ throw~ catch~ readsf~ writesf~ print~}}
             {signal\ math
-                {fft~ ifft~ rfft~ irfft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ clip~ sqrt~ rsqrt~ wrap~ pow~ exp~ log~ abs~}}
+                {fft~ ifft~ rfft~ irfft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ log~ pow~ abs~ sqrt~ rsqrt~ wrap~ exp~ clip~}}
             {signal\ acoustic\ conversions
                 {mtof~ ftom~ rmstodb~ dbtorms~ powtodb~ dbtopow~}}
             {audio\ generators/tables
