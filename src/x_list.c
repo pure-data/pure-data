@@ -5,17 +5,7 @@
 #include "m_pd.h"
 #include <string.h>
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
+#include "m_private_utils.h"
 
 #define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
 
@@ -58,16 +48,6 @@ typedef struct _alist
     int l_npointer;     /* number of pointers */
     t_listelem *l_vec;  /* pointer to items */
 } t_alist;
-
-#if HAVE_ALLOCA
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
 
 static void atoms_copy(int argc, t_atom *from, t_atom *to)
 {
@@ -232,7 +212,7 @@ static void list_append_list(t_list_append *x, t_symbol *s,
 {
     t_atom *outv;
     int outc = x->x_alist.l_n + argc;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     atoms_copy(argc, argv, outv);
     if (x->x_alist.l_npointer)
     {
@@ -247,7 +227,7 @@ static void list_append_list(t_list_append *x, t_symbol *s,
         alist_toatoms(&x->x_alist, outv+argc, 0, x->x_alist.l_n);
         outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_append_anything(t_list_append *x, t_symbol *s,
@@ -255,7 +235,7 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
 {
     t_atom *outv;
     int outc = x->x_alist.l_n + argc + 1;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     SETSYMBOL(outv, s);
     atoms_copy(argc, argv, outv + 1);
     if (x->x_alist.l_npointer)
@@ -271,7 +251,7 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
         alist_toatoms(&x->x_alist, outv + 1 + argc, 0, x->x_alist.l_n);
         outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_append_free(t_list_append *x)
@@ -310,7 +290,7 @@ static void list_prepend_list(t_list_prepend *x, t_symbol *s,
 {
     t_atom *outv;
     int n, outc = x->x_alist.l_n + argc;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     atoms_copy(argc, argv, outv + x->x_alist.l_n);
     if (x->x_alist.l_npointer)
     {
@@ -325,7 +305,7 @@ static void list_prepend_list(t_list_prepend *x, t_symbol *s,
         alist_toatoms(&x->x_alist, outv, 0, x->x_alist.l_n);
         outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_prepend_anything(t_list_prepend *x, t_symbol *s,
@@ -333,7 +313,7 @@ static void list_prepend_anything(t_list_prepend *x, t_symbol *s,
 {
     t_atom *outv;
     int n, outc = x->x_alist.l_n + argc + 1;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     SETSYMBOL(outv + x->x_alist.l_n, s);
     atoms_copy(argc, argv, outv + x->x_alist.l_n + 1);
     if (x->x_alist.l_npointer)
@@ -349,7 +329,7 @@ static void list_prepend_anything(t_list_prepend *x, t_symbol *s,
         alist_toatoms(&x->x_alist, outv, 0, x->x_alist.l_n);
         outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_prepend_free(t_list_prepend *x)
@@ -399,7 +379,7 @@ static void list_store_send(t_list_store *x, t_symbol *s)
         pd_error(x, "%s: no such object", s->s_name);
         return;
     }
-    ATOMS_ALLOCA(vec, n);
+    ALLOCA(t_atom, vec, n, LIST_NGETBYTE);
     if (x->x_alist.l_npointer)
     {
         t_alist y;
@@ -413,7 +393,7 @@ static void list_store_send(t_list_store *x, t_symbol *s)
         alist_toatoms(&x->x_alist, vec, 0, n);
         pd_list(s->s_thing, gensym("list"), n, vec);
     }
-    ATOMS_FREEA(vec, n);
+    FREEA(t_atom, vec, n, LIST_NGETBYTE);
 }
 
 static void list_store_list(t_list_store *x, t_symbol *s,
@@ -421,7 +401,7 @@ static void list_store_list(t_list_store *x, t_symbol *s,
 {
     t_atom *outv;
     int n, outc = x->x_alist.l_n + argc;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     atoms_copy(argc, argv, outv);
     if (x->x_alist.l_npointer)
     {
@@ -436,7 +416,7 @@ static void list_store_list(t_list_store *x, t_symbol *s,
         alist_toatoms(&x->x_alist, outv+argc, 0, x->x_alist.l_n);
         outlet_list(x->x_out1, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_store_doinsert(t_list_store *x, t_symbol *s,
@@ -548,7 +528,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     x->x_alist.l_n -= n;
 }
 
-static void list_store_get(t_list_store *x, float f1, float f2)
+static void list_store_get(t_list_store *x, t_floatarg f1, t_floatarg f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
@@ -568,7 +548,7 @@ static void list_store_get(t_list_store *x, float f1, float f2)
         outlet_bang(x->x_out2);
         return;
     }
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     if (x->x_alist.l_npointer)
     {
         t_alist y;
@@ -582,7 +562,7 @@ static void list_store_get(t_list_store *x, float f1, float f2)
         alist_toatoms(&x->x_alist, outv, onset, outc);
         outlet_list(x->x_out1, &s_list, outc, outv);
     }
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_store_set(t_list_store *x, t_symbol *s, int argc, t_atom *argv)
@@ -672,11 +652,11 @@ static void list_split_anything(t_list_split *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    ATOMS_ALLOCA(outv, argc+1);
+    ALLOCA(t_atom, outv, argc+1, LIST_NGETBYTE);
     SETSYMBOL(outv, s);
     atoms_copy(argc, argv, outv + 1);
     list_split_list(x, &s_list, argc+1, outv);
-    ATOMS_FREEA(outv, argc+1);
+    FREEA(t_atom, outv, argc+1, LIST_NGETBYTE);
 }
 
 static void list_split_setup(void)
@@ -788,11 +768,11 @@ static void list_fromsymbol_symbol(t_list_fromsymbol *x, t_symbol *s)
 {
     t_atom *outv;
     int n, outc = (int)strlen(s->s_name);
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     for (n = 0; n < outc; n++)
         SETFLOAT(outv + n, (unsigned char)s->s_name[n]);
     outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static void list_fromsymbol_setup(void)
@@ -823,19 +803,13 @@ static void list_tosymbol_list(t_list_tosymbol *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     int i;
-#if HAVE_ALLOCA
-    char *str = alloca(argc + 1);
-#else
-    char *str = getbytes(argc + 1);
-#endif
+    char *str;
+    ALLOCA(char, str, argc + 1, MAXPDSTRING);
     for (i = 0; i < argc; i++)
         str[i] = (char)atom_getfloatarg(i, argc, argv);
     str[argc] = 0;
     outlet_symbol(x->x_obj.ob_outlet, gensym(str));
-#if HAVE_ALLOCA
-#else
-    freebytes(str, argc+1);
-#endif
+    FREEA(char, str, argc + 1, MAXPDSTRING);
 }
 
 static void list_tosymbol_setup(void)

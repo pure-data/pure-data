@@ -821,6 +821,8 @@ extern t_class *clone_class;
 
 static const t_sample ugen_scalarzero;  /* zero for scalar-to-vector copying */
 
+extern int class_getdspflags(const t_class *c);
+
     /* put a ugenbox on the chain, recursively putting any others on that
     this one might uncover. */
 static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)

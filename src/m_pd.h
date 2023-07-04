@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 54
 #define PD_BUGFIX_VERSION 0
-#define PD_TEST_VERSION "test1"
+#define PD_TEST_VERSION ""
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -524,8 +524,6 @@ EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
-EXTERN void class_setdspflags(t_class *c, int flags);
-EXTERN int class_getdspflags(const t_class *c);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
     class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
@@ -905,6 +903,9 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
+
+    /* get floatsize at run time */
+EXTERN unsigned int sys_getfloatsize(void);
 
 EXTERN_STRUCT _instancemidi;
 #define t_instancemidi struct _instancemidi

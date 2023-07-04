@@ -2,22 +2,22 @@
 # This file is put in the public domain.
 # Timothy Schoen <timschoen123@gmail.com>, 2022.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
-#
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
-"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/nl/>\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-06-06 09:30+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "lineair"
@@ -198,8 +198,26 @@ msgstr "Toepassen"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Audio-instellingen"
+msgid "no device"
+msgstr "geen apparaat"
+
+msgid "(same as input device)..."
+msgstr "(zelfde als invoerapparaat)..."
+
+msgid "Channels:"
+msgstr "Kanalen:"
+
+msgid "Input Devices"
+msgstr "Invoerapparaten"
+
+msgid "Output Devices"
+msgstr "Uitvoerapparaten"
+
+msgid "Use Multiple Devices"
+msgstr "Meerdere apparaten gebruiken"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Instellingen"
@@ -225,26 +243,15 @@ msgstr "Blokgrootte:"
 msgid "Use callbacks"
 msgstr "Gebruik callbacks"
 
-msgid "Input Devices"
-msgstr "Invoerapparaten"
-
-msgid "Channels:"
-msgstr "Kanalen:"
-
-msgid "Output Devices"
-msgstr "Uitvoerapparaten"
-
-msgid "(same as input device)..."
-msgstr "(zelfde als invoerapparaat)..."
-
-msgid "Use Multiple Devices"
-msgstr "Meerdere apparaten gebruiken"
+msgid "Audio Settings"
+msgstr "Audio-instellingen"
 
 msgid "Save All Settings"
 msgstr "Alle instellingen opslaan"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
+msgstr ""
+"WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Canvas-eigenschappen"
@@ -353,6 +360,9 @@ msgstr "Verzendsymbool:"
 
 msgid "Receive symbol:"
 msgstr "Ontvangstsymbool:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Breedte:"
@@ -496,17 +506,23 @@ msgstr "Stuur een Pd-bericht"
 msgid "(use arrow keys for history)"
 msgstr "(gebruik de pijltjestoetsen voor geschiedenis)"
 
-msgid "MIDI Settings"
-msgstr "MIDI-instellingen"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI-instellingen"
+msgid "no input devices"
+msgstr "geen invoerapparaten"
 
 msgid "In Ports:"
 msgstr "Ingangen:"
 
 msgid "Out Ports:"
 msgstr "Uitgangen:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI-instellingen"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI-instellingen"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Pd-zoekpad voor objecten, help, audio, tekst en andere bestanden"
@@ -535,6 +551,9 @@ msgstr "Installatiemap externals"
 msgid "Clear"
 msgstr "Wissen"
 
+msgid "path preferences"
+msgstr "pad"
+
 msgid "Choose Pd documents directory:"
 msgstr "Kies Pd-documentenmap:"
 
@@ -548,20 +567,88 @@ msgstr "Een nieuw pad toevoegen"
 msgid "Edit existing path [%s]"
 msgstr "Bestaand pad bewerken [%s]"
 
+msgid "Patch windows"
+msgstr "Patch vensters"
+
+msgid "Zoom New Windows"
+msgstr "Nieuwe vensters inzoomen"
+
+msgid "GUI settings"
+msgstr "GUI-instellingen"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+msgid "startup preferences"
+msgstr "opstart"
+
+msgid "audio preferences"
+msgstr "audio"
+
+msgid "MIDI preferences"
+msgstr "MIDI"
+
+msgid "deken preferences"
+msgstr "deken"
+
+msgid "misc preferences"
+msgstr "diverse"
+
 msgid "Add new library"
 msgstr "Nieuwe bibliotheek toevoegen"
 
 msgid "Edit library"
 msgstr "Bibliotheek bewerken"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
-msgid "Startup flags:"
-msgstr "Opstartvlaggen:"
+#, fuzzy
+msgid "GUI options"
+msgstr "GUI-instellingen"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Blokgrootte:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr "Opstart opties"
 
 msgid "Defeat real-time scheduling"
 msgstr "Versla real-time planning"
+
+msgid "Startup flags:"
+msgstr "Opstartvlaggen:"
 
 msgid "Help Browser"
 msgstr "Help Browser"
@@ -627,6 +714,13 @@ msgstr "Niet gelukt om plugin %s te lezen ... wordt overgeslagen!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Niet gelukt om plugin %s te vinden ... wordt overgeslagen!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Kan '%s' niet installeren!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ONTBREKENDE CLOSE-BRACE '}': "
@@ -740,8 +834,8 @@ msgstr "Installatie opties:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
-"Probeer de checksum van de bibliotheken te controleren voordat u ze (opnieuw)"
-" installeert"
+"Probeer de checksum van de bibliotheken te controleren voordat u ze "
+"(opnieuw) installeert"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Probeer bibliotheken te verwijderen voordat u ze (opnieuw) installeert"
@@ -1150,6 +1244,127 @@ msgstr "weigeren leeg domein te verwijderen"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Kon voorkeuren \"%1$s\" niet aanmaken in %2$s"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(standaardtaal: %s)"
+
+msgid "(no translation)"
+msgstr "(geen vertaling)"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "'%s' wordt genegeerd: bestaat niet"
@@ -1318,20 +1533,8 @@ msgstr "verwijderde GUI-instellingen"
 msgid "no Pd-GUI settings to clear"
 msgstr "geen Pd-GUI instellingen te wissen"
 
-msgid "Path..."
-msgstr "Pad..."
-
-msgid "Startup..."
-msgstr "Opstarten..."
-
-msgid "Audio..."
-msgstr "Audio..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Nieuwe vensters inzoomen"
+msgid "Edit Preferences..."
+msgstr "Voorkeuren bewerken..."
 
 msgid "Save All Preferences"
 msgstr "Alle voorkeuren opslaan"
@@ -1345,8 +1548,9 @@ msgstr "Laden van..."
 msgid "Forget All..."
 msgstr "Vergeet alles..."
 
-msgid "Preferences"
-msgstr "Voorkeuren"
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "audio"
 
 msgid "Open Recent"
 msgstr "Recentelijk geopend"
@@ -1360,6 +1564,15 @@ msgstr "Wilt u de wijzigingen die u in '%s' heeft aangebracht opslaan?"
 
 msgid "Properties"
 msgstr "Eigenschappen"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Wijzigingen aan '%s' accepteren?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1383,6 +1596,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"
@@ -1408,6 +1628,9 @@ msgstr "debug"
 msgid "all"
 msgstr "alle"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Nieuw..."
 
@@ -1420,3 +1643,15 @@ msgstr "Verwijderen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"
+
+#~ msgid "Path..."
+#~ msgstr "Pad..."
+
+#~ msgid "Startup..."
+#~ msgstr "Opstarten..."
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

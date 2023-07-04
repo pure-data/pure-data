@@ -1,4 +1,4 @@
-#N canvas 483 33 629 664 12;
+#N canvas 562 32 629 664 12;
 #X obj 152 437 env~;
 #X floatatom 152 468 8 0 0 0 - - - 0;
 #X floatatom 53 306 5 0 0 0 - - - 0;
@@ -10,15 +10,12 @@
 #X msg 186 369 clear;
 #X obj 53 352 osc~ 5512.5;
 #X msg 459 268 \; pd dsp \$1;
-#X obj 459 240 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 482 240 DSP on/off;
 #X text 39 227 The filter's coefficients syntax (set via arguments or list input) is: fb1 fb2 ff1 ff2 ff3, f 51;
 #X text 259 330 set internal state (previous input samples), f 24;
 #X msg 171 338 set 0.5 0.4;
 #X text 234 369 or clear memory (same as 'set 0 0').;
 #X text 149 281 list sets filter's parameters;
 #X obj 21 14 biquad~;
-#X text 83 13 - a 2nd order (2-pole / 2-zero) filter;
 #X obj 5 45 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 732 181 586 254 reference 0;
 #X obj 18 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -26,13 +23,13 @@
 #X obj 18 185 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 17 229 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 39 16 biquad~;
-#X text 101 15 - a 2nd order (2-pole / 2-zero) filter;
 #X text 121 60 signal - input signal to be filtered., f 59;
 #X text 135 79 list - input signal to be filtered (fb1 fb2 ff1 ff2 ff3).;
 #X text 129 117 clear - clear filter's memory buffer., f 58;
 #X text 123 158 signal - the filtered signal output.;
 #X text 112 198 1) list - initializes the 5 coefficients (fb1 fb2 ff1 ff2 ff3)., f 63;
 #X text 38 98 set <float \, float> - set the last two input samples., f 71;
+#X text 101 15 - raw biquad 2nd order filter;
 #X restore 387 13 pd reference;
 #X text 485 13 <= click;
 #X text 54 561 see also:;
@@ -59,6 +56,9 @@
 #X text 14 621 raw filters -->;
 #X text 407 631 updated for Pd version 0.3;
 #X text 45 86 y[n] = fb1 * y[n-1] + fb2 * y[n-2] + ff1 * x[n] + ff2 * x[n-1] + ff3 * x[n-2], f 77;
+#X text 83 13 - raw biquad 2nd order filter;
+#X obj 460 230 set-dsp-tgl;
+#X text 491 234 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 2 0 9 0;
 #X connect 3 0 4 0;
@@ -67,5 +67,5 @@
 #X connect 8 0 6 0;
 #X connect 9 0 3 0;
 #X connect 9 0 6 0;
-#X connect 11 0 10 0;
-#X connect 15 0 6 0;
+#X connect 13 0 6 0;
+#X connect 45 0 10 0;

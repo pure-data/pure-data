@@ -1,4 +1,4 @@
-#N canvas 680 23 518 683 12;
+#N canvas 596 23 518 683 12;
 #X declare -stdpath ./;
 #X floatatom 296 312 4 0 100 0 - - - 0;
 #X obj 74 471 +~;
@@ -49,7 +49,7 @@
 #X obj 296 428 delread4~ G05-d1;
 #X text 45 118 To get them to go off in the correct order \, put the [delread~] and [delread4~] objects in subpatches. The audio connections between the subpatches force the "reader" to be sorted after the "writer". DSP sorting in Pd follows the hierarchy of subpatches., f 64;
 #X text 263 629 updated for Pd version 0.52;
-#X text 45 238 You can use the same strategy to avoid picking up unwanted 64-sample delays in [send~]/[receive~] and [throw~]/[catch~] pairs., f 64;
+#X text 45 238 You can use the same strategy to avoid an unwanted delay of one block in pairs of [send~]/[receive~] \, [tabsend~]/[tabreceive~] or [throw~]/[catch~] objects., f 64;
 #X connect 0 0 8 0;
 #X connect 1 0 4 1;
 #X connect 1 0 7 0;
@@ -58,7 +58,6 @@
 #X connect 5 0 6 0;
 #X connect 6 0 4 0;
 #X connect 7 0 9 0;
-#X connect 7 0 9 1;
 #X connect 8 0 11 0;
 #X connect 10 0 3 1;
 #X connect 11 0 14 0;

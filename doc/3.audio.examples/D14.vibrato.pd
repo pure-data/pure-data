@@ -1,4 +1,4 @@
-#N canvas 609 23 709 710 12;
+#N canvas 480 23 709 710 12;
 #X declare -stdpath ./;
 #X obj 55 265 r trigger;
 #X obj 55 483 *~;
@@ -20,22 +20,7 @@
 #X obj 225 419 +~ 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array array62 131 float 1;
-#A 0 0.970031 1 0.970031 0.881921 0.740952 0.555571 0.336891 0.0980184
--0.146729 -0.382682 -0.595698 -0.773009 -0.88 -0.9 -0.92 -0.92 -0.85773
--0.707109 -0.514106 -0.290288 -0.0490716 0.195086 0.427551 0.63439
-0.803205 0.86 0.88 0.88 0.88 0.84 0.82 0.471402 0.242986 6.63397e-06
--0.242974 -0.471391 -0.671554 -0.831465 -0.941541 -0.995184 -0.989178
--0.923883 -0.803213 -0.68 -0.42 -0.24 0.1 0.4 0.6 0.7071 0.857723 0.956937
-0.998795 0.980787 0.903994 0.773018 0.595708 0.382694 0.146742 -0.0980052
--0.336878 -0.55556 -0.7 -0.8 -0.88 -0.88 -0.88 -0.84 -0.82 -0.555582
--0.336903 -0.0980316 0.146716 0.38267 0.595687 0.773001 0.903983 0.980782
-0.998796 0.956945 0.857737 0.707119 0.514117 0.290301 0.0490849 -0.195073
--0.427539 -0.63438 -0.803197 -0.923873 -0.989174 -0.995187 -0.94155
--0.83148 -0.671573 -0.471414 -0.242999 -1.99019e-05 0.242961 0.471379
-0.671544 0.831458 0.88 0.9 0.9 0.88 0.803221 0.63441 0.08 -0.14 -0.28
--0.48 -0.64 -0.72 -0.857717 -0.956933 -0.998794 -0.98079 -0.904 -0.773026
--0.595719 -0.382706 -0.146755 0.097992 0.336866 0.555549 0.740934 0.881909
-0.970025 1 0.970038;
+#A 0 0.970031 1 0.970031 0.881921 0.740952 0.555571 0.336891 0.0980184 -0.146729 -0.382682 -0.595698 -0.773009 -0.88 -0.9 -0.92 -0.92 -0.85773 -0.707109 -0.514106 -0.290288 -0.0490716 0.195086 0.427551 0.63439 0.803205 0.86 0.88 0.88 0.88 0.84 0.82 0.471402 0.242986 6.63397e-06 -0.242974 -0.471391 -0.671554 -0.831465 -0.941541 -0.995184 -0.989178 -0.923883 -0.803213 -0.68 -0.42 -0.24 0.1 0.4 0.6 0.7071 0.857723 0.956937 0.998795 0.980787 0.903994 0.773018 0.595708 0.382694 0.146742 -0.0980052 -0.336878 -0.55556 -0.7 -0.8 -0.88 -0.88 -0.88 -0.84 -0.82 -0.555582 -0.336903 -0.0980316 0.146716 0.38267 0.595687 0.773001 0.903983 0.980782 0.998796 0.956945 0.857737 0.707119 0.514117 0.290301 0.0490849 -0.195073 -0.427539 -0.63438 -0.803197 -0.923873 -0.989174 -0.995187 -0.94155 -0.83148 -0.671573 -0.471414 -0.242999 -1.99019e-05 0.242961 0.471379 0.671544 0.831458 0.88 0.9 0.9 0.88 0.803221 0.63441 0.08 -0.14 -0.28 -0.48 -0.64 -0.72 -0.857717 -0.956933 -0.998794 -0.98079 -0.904 -0.773026 -0.595719 -0.382706 -0.146755 0.097992 0.336866 0.555549 0.740934 0.881909 0.970025 1 0.970038;
 #X coords 0 1 130 -1 200 100 1;
 #X restore 236 532 graph;
 #X obj 225 358 tabosc4~ array62;
@@ -62,19 +47,9 @@
 #X obj 55 406 adsr 0 100 200 100 300;
 #X obj 55 622 output~;
 #X text 75 14 USING ADSRS FOR PORTAMENTO AND ADDING VIBRATO TOO;
-#X text 83 54 Portamento can be treated as a special case of an ADSR
-envelope \, with 100 percent sustain. Vibrato is properly computed
-in units of pitch \, but it's also possible to do the job without having
-to convert from pitch to frequency units at the audio rate. To do this
-we just raise the "pitch" to the fourth power \, so that it acts pseudo-exponentially.
-Rather than add vibrato to the ADSR output \, we multiply a signal
-which controls relative frequency. The relative frequency change is
-one plus an oscillator., f 64;
+#X text 83 54 Portamento can be treated as a special case of an ADSR envelope \, with 100 percent sustain. Vibrato is properly computed in units of pitch \, but it's also possible to do the job without having to convert from pitch to frequency units at the audio rate. To do this we just raise the "pitch" to the fourth power \, so that it acts pseudo-exponentially. Rather than add vibrato to the ADSR output \, we multiply a signal which controls relative frequency. The relative frequency change is one plus an oscillator., f 64;
 #X text 479 662 updated for Pd version 0.39;
-#X text 83 181 The table below holds 6 cycles of vibrato with small
-variations to get a not-exactly-repeating vibrato. We thus have to
-divide vibrato frequency by six. You can just use a sine or triangle
-wave if you prefer., f 64;
+#X text 83 181 The table below holds 6 cycles of vibrato with small variations to get a not-exactly-repeating vibrato. We thus have to divide vibrato frequency by six. You can just use a sine or triangle wave if you prefer., f 64;
 #X text 576 444 <= middle C;
 #X text 576 482 <= octave up;
 #X text 560 523 <= release;
@@ -89,7 +64,6 @@ wave if you prefer., f 64;
 #X connect 6 0 40 0;
 #X connect 7 0 8 0;
 #X connect 8 0 41 0;
-#X connect 8 0 41 1;
 #X connect 9 0 7 0;
 #X connect 10 0 11 0;
 #X connect 11 0 12 0;

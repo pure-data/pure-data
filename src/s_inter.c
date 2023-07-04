@@ -34,6 +34,7 @@ that didn't really belong anywhere. */
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #ifdef __APPLE__
 #include <sys/types.h>
@@ -43,13 +44,23 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+#ifdef HAVE_SYS_UTSNAME_H
+# include <sys/utsname.h>
+# ifndef USE_UNAME
+#  define USE_UNAME 1
+# endif
+#endif
+
+#include "m_private_utils.h"
+
 /* colorize output, but only on a TTY */
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+# include <unistd.h>
 #else /* if isatty exists outside unistd, please add another #ifdef */
 # define isatty(fd) 0
 #endif
 static int stderr_isatty;
+
 
 #define stringify(s) str(s)
 #define str(s) #s
@@ -145,10 +156,6 @@ struct _instanceinter
 
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
-void sys_set_searchpath(void);
-void sys_set_temppath(void);
-void sys_set_extrapath(void);
-void sys_set_startup(void);
 void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
@@ -342,15 +349,14 @@ void sys_setsignalhandlers(void)
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 }
 
+#define MODE_NRT 0
+#define MODE_RT 1
+#define MODE_WATCHDOG 2
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
 #include <sched.h>
 #endif
-
-#define MODE_NRT 0
-#define MODE_RT 1
-#define MODE_WATCHDOG 2
 
 void sys_set_priority(int mode)
 {
@@ -379,7 +385,7 @@ void sys_set_priority(int mode)
             logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
         else logpost(NULL, PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
-#endif
+#endif /* _POSIX_PRIORITY_SCHEDULING */
 
 #if !defined(USEAPI_JACK)
     if (mode != MODE_NRT)
@@ -394,10 +400,17 @@ void sys_set_priority(int mode)
             fprintf(stderr, "memory locking enabled.\n");
     }
     else munlockall();
-#endif
+#endif /* ! USEAPI_JACK */
 }
 
-#endif /* __linux__ */
+#else /* !__linux__ */
+void sys_set_priority(int mode)
+{
+        /* dummy */
+    (void)mode;
+}
+
+#endif /* !__linux__ */
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
@@ -867,6 +880,22 @@ void sys_gui(const char *s)
     sys_vgui("%s", s);
 }
 
+static const char**namelist2strings(t_namelist *nl, unsigned int *N) {
+    const char**result = 0;
+    unsigned int n=0;
+    *N = 0;
+    for(; nl; nl = nl->nl_next) {
+        const char**newresult = resizebytes(result, n*sizeof(*result), (n+1)*sizeof(*result));
+        if(!newresult)
+            break;
+        result = newresult;
+        result[n] = nl->nl_string;
+        n++;
+        *N = n;
+    }
+    return result;
+}
+
 static int sys_flushtogui(void)
 {
     int writesize = INTER->i_guihead - INTER->i_guitail,
@@ -1039,34 +1068,62 @@ void sys_init_fdpoll(void)
     INTER->i_inbinbuf = binbuf_new();
 }
 
+void sys_gui_preferences(void)
+{
+    unsigned int nsearch, ntemp, nstatic, nlibs;
+    const char**searchpath = namelist2strings(STUFF->st_searchpath, &nsearch);
+    const char**temppath = namelist2strings(STUFF->st_temppath, &ntemp);
+    const char**staticpath = namelist2strings(STUFF->st_staticpath, &nstatic);
+    const char**startuplibs = namelist2strings(STUFF->st_externlist, &nlibs);
+    pdgui_vmess("::dialog_path::set_paths", "SSS"
+                , nsearch, searchpath
+                , ntemp, temppath
+                , nstatic, staticpath
+                );
+
+        /* send the list of loaded libraries ... */
+    pdgui_vmess("::dialog_startup::set_libraries", "S"
+                , nlibs, startuplibs
+                );
+
+    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
+    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
+    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
+    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+    pdgui_vmess("::dialog_startup::set_flags", "s",
+                (sys_flags? sys_flags->s_name : ""));
+
+    freebytes(searchpath, nsearch * sizeof(*searchpath));
+    freebytes(temppath, ntemp * sizeof(*temppath));
+    freebytes(staticpath, nstatic * sizeof(*staticpath));
+    freebytes(startuplibs, nlibs * sizeof(*startuplibs));
+}
+
+
+
+
 /* --------------------- starting up the GUI connection ------------- */
 
-static int sys_watchfd;
+static int sys_watchfd = -1;
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 void glob_watchdog(t_pd *dummy)
 {
+    if (sys_watchfd < 0)
+        return;
     if (write(sys_watchfd, "\n", 1) < 1)
     {
         fprintf(stderr, "pd: watchdog process died\n");
         sys_bail(1);
     }
 }
-#endif
 
-static void sys_init_deken(void)
-{
-    const char*os =
-#if defined __linux__
+static const char*deken_OS =
+#if defined DEKEN_OS
+        stringify(DEKEN_OS)
+#elif defined __linux__
         "Linux"
 #elif defined __APPLE__
         "Darwin"
-#elif defined __FreeBSD__
-        "FreeBSD"
-#elif defined __NetBSD__
-        "NetBSD"
-#elif defined __OpenBSD__
-        "OpenBSD"
 #elif defined _WIN32
         "Windows"
 #else
@@ -1076,8 +1133,10 @@ static void sys_init_deken(void)
         0
 #endif
         ;
-    const char*machine =
-#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+static const char*deken_CPU[] = {
+#if defined DEKEN_CPU
+        stringify(DEKEN_CPU)
+#elif defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
         "amd64"
 #elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
         "i386"
@@ -1098,14 +1157,98 @@ static void sys_init_deken(void)
 # endif
         0
 #endif
-        ;
+        , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+static void init_deken_arch(void)
+{
+    static int initialized = 0;
+    if(initialized)
+        return;
+    initialized = 1;
+#define CPUNAME_SIZE 15
+
+#if !defined(DEKEN_CPU)
+# if defined __ARM_ARCH
+        /* ARM-specific:
+         * if we are running ARMv7, we can also load ARMv6 externals
+         */
+    if (deken_CPU && sizeof(deken_CPU)/sizeof(*deken_CPU) > 0)
+    {
+        int arm_cpu = __ARM_ARCH;
+        int cpu_v;
+        int n;
+        const char endianness =
+#  if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            'b';
+#  else
+            0;
+#  endif
+
+#  if USE_UNAME
+        /*
+         * Pd might be compiled for ARMv6 (as in Raspbian),
+         * but run on an ARMv7 (or higher) (e.g. RPi2 and newer).
+         * Therefore we try to detect the actual CPU, and announce that
+         */
+        struct utsname name;
+        if (uname (&name) >= 0) {
+            if(!strncmp(name.machine, "armv", 4)) {
+                cpu_v = name.machine[4] - '0';
+                if((cpu_v >= 6) && (cpu_v <= 9))
+                    arm_cpu = cpu_v;
+            }
+        }
+#  endif /* uname() */
+
+            /* list all compatible ARM CPUs */
+        for(cpu_v = arm_cpu;
+            (cpu_v >= 6 && n < (sizeof(deken_CPU)/sizeof(*deken_CPU)));
+            cpu_v--)
+        {
+            static char cpuname[CPUNAME_SIZE+1];
+            snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
+            deken_CPU[n++] = gensym(cpuname)->s_name;
+        }
+    }
+# endif /* arm */
+#endif /* !DEKEN_CPU */
+}
+
+/* get the (normalized) deken-specifier
+ * if 'float_agnostic' is non-0, the float-size is included.
+ *   otherwise a floatsize-agnostic specifier is generated.
+ * 'cpu' is an index in the list of preferred compatible CPUs
+ *   (higher numbers indicate less preferred CPUs)
+ *   a negative 'cpu' indicates 'fat' binaries
+ * returns 0, if the deken-specifier cannot be determined
+ * (e.g. on new architectures, or because the 'cpu' index is invalid)
+ */
+const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int cpu) {
+    unsigned int i;
+    init_deken_arch();
+    if (!deken_OS)
+        return 0;
+    if ((cpu>=0) && (((!deken_CPU) || (cpu >= (sizeof(deken_CPU)/sizeof(*deken_CPU))) || (!deken_CPU[cpu]))))
+        return 0;
+
+    snprintf(buf, bufsize-1,
+        "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (int)((float_agnostic?0:8) * sizeof(t_float)));
+
+    buf[bufsize-1] = 0;
+    for(i=0; i<bufsize && buf[i]; i++)
+        buf[i] = tolower(buf[i]);
+    return buf;
+}
+
+static void sys_init_deken(void)
+{
+    init_deken_arch();
         /* only send the arch info, if we are sure about it... */
-    if (os && machine)
-        sys_vgui("::deken::set_platform %s %s %d %d\n",
-                 os, machine,
-                 8 * sizeof(char*),
-                 8 * sizeof(t_float));
+    if (deken_OS && deken_CPU && deken_CPU[0])
+        pdgui_vmess("::deken::set_platform", "ssff",
+                 deken_OS, deken_CPU[0],
+                 8. * sizeof(char*),
+                 8. * sizeof(t_float));
 }
 
 static int sys_do_startgui(const char *libdir)
@@ -1193,12 +1336,13 @@ static int sys_do_startgui(const char *libdir)
         struct sockaddr_storage addr;
         int status;
 #ifdef _WIN32
-        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
-        int spawnret;
+        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30];
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 #else
-        char cmdbuf[4*MAXPDSTRING];
         const char *guicmd;
 #endif
+        char cmdbuf[4*MAXPDSTRING];
         /* get addrinfo list using hostname (get random port from OS) */
         status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);
         if (status != 0)
@@ -1339,9 +1483,7 @@ static int sys_do_startgui(const char *libdir)
         else if (!childpid)                     /* we're the child */
         {
             sys_closesocket(sockfd);     /* child doesn't listen */
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             sys_set_priority(MODE_NRT);  /* child runs non-real-time */
-#endif
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
@@ -1368,22 +1510,25 @@ static int sys_do_startgui(const char *libdir)
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
 
-        strcpy(scriptbuf, "\"");
-        strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDGUIDIR "/pd-gui.tcl\"");
-        sys_bashfilename(scriptbuf, scriptbuf);
-
-        sprintf(portbuf, "%d", portno);
-
-        strcpy(wishbuf, libdir);
-        strcat(wishbuf, "/" PDBINDIR WISH);
+        snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, NULL);
-        if (spawnret < 0)
+        snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
+        sys_bashfilename(scriptbuf, scriptbuf);
+
+        snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
+            WISH, scriptbuf, portno);
+
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+            /* CHR: DETACHED_PROCESS makes sure that the GUI process cannot
+            possibly interfere with the core. */
+        if (!CreateProcessA(wishbuf, cmdbuf, NULL, NULL, FALSE,
+            DETACHED_PROCESS, NULL, NULL, &si, &pi))
         {
-            perror("spawnl");
-            fprintf(stderr, "%s: couldn't load TCL\n", wishbuf);
+            char errbuf[MAXPDSTRING];
+            socket_strerror(GetLastError(), errbuf, sizeof(errbuf));
+            fprintf(stderr, "could not start %s: %s\n", wishbuf, errbuf);
             return (1);
         }
 #endif /* NOT _WIN32 */
@@ -1416,24 +1561,22 @@ static int sys_do_startgui(const char *libdir)
             INTER->i_socketreceiver);
 
             /* here is where we start the pinging. */
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
     if (sys_hipriority)
         sys_gui("pdtk_watchdog\n");
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
-    sys_set_searchpath();     /* tell GUI about path and startup flags */
-    sys_set_temppath();
-    sys_set_extrapath();
-    sys_set_startup();
-                       /* ... and about font, medio APIS, etc */
+
+    sys_gui_preferences();     /* tell GUI about path and startup flags */
+
+        /* ... and about font, media APIS, etc */
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
              apibuf, apibuf2,
              pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
              sys_fontweight);
-    sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
 
@@ -1448,7 +1591,7 @@ static int sys_do_startgui(const char *libdir)
 void sys_setrealtime(const char *libdir)
 {
     char cmdbuf[MAXPDSTRING];
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
         /*  promote this process's priority, if we can and want to.
         If sys_hipriority not specified (-1), we assume real-time was wanted.
         Starting in Linux 2.6 one can permit real-time operation of Pd by]

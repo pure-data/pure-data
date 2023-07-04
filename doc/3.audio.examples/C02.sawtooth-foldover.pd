@@ -1,41 +1,34 @@
 #N canvas 516 98 518 561 12;
 #X declare -stdpath ./;
-#X obj 160 385 output~;
-#X text 270 515 updated for Pd version 0.37;
+#X obj 136 385 output~;
+#X text 273 523 updated for Pd version 0.37;
 #X text 77 17 FOLDOVER IN SAWTOOTH WAVES;
-#X obj 176 348 clip~ 0 1;
-#X obj 176 168 mtof;
-#X floatatom 176 146 5 0 0 0 - - - 0;
-#X obj 176 294 *~ 20;
-#X obj 176 320 -~ 19;
-#X obj 176 192 phasor~;
-#X obj 186 224 output~;
-#X text 65 459 We'll explain more about making pulses later on... this
-example is mostly intended as ear training., f 50;
-#X text 47 44 In more ordinary kinds of waveforms \, foldover comes
-across as a "cheap synth" sound. You can hear the foldover clearly
-in the pulse train here \, and less clearly (but still audibly) in
-the straight sawtooth \, especially at high pitches.;
-#X text 233 396 <= pulse train amplitude;
-#X text 259 223 <= sawtooth amplitude;
+#X obj 136 348 clip~ 0 1;
+#X obj 136 168 mtof;
+#X floatatom 136 146 5 0 0 0 - - - 0;
+#X obj 136 294 *~ 20;
+#X obj 136 320 -~ 19;
+#X obj 136 192 phasor~;
+#X obj 146 224 output~;
+#X text 65 467 We'll explain more about making pulses later on... this example is mostly intended as ear training., f 50;
+#X text 37 44 In more ordinary kinds of waveforms \, foldover comes across as a "cheap synth" sound. You can hear the foldover clearly in the pulse train here \, and less clearly (but still audibly) in the straight sawtooth \, especially at high pitches., f 63;
+#X text 259 404 <= pulse train amplitude;
+#X text 267 244 <= sawtooth amplitude;
 #N canvas 698 337 212 167 set 0;
 #X obj 45 74 loadbang;
 #X msg 45 99 61;
 #X obj 45 124 outlet;
-#X text 7 6 This sets the pitch initially to 61 when the patch is first
-opened., f 26;
+#X text 7 6 This sets the pitch initially to 61 when the patch is first opened., f 26;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X restore 176 120 pd set;
-#X text 219 145 <= pitch;
+#X restore 136 120 pd set;
+#X text 179 145 <= pitch;
 #X obj 341 151 declare -stdpath ./;
 #X connect 3 0 0 0;
-#X connect 3 0 0 1;
 #X connect 4 0 8 0;
 #X connect 5 0 4 0;
 #X connect 6 0 7 0;
 #X connect 7 0 3 0;
 #X connect 8 0 6 0;
 #X connect 8 0 9 0;
-#X connect 8 0 9 1;
 #X connect 14 0 5 0;

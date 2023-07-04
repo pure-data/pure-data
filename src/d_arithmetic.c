@@ -9,72 +9,9 @@ to reset the value.
 */
 
 #include "m_pd.h"
+#include <math.h> /* needed for log~ */
 
-/* ----------------------------- plus ----------------------------- */
-static t_class *plus_class, *scalarplus_class;
-
-typedef struct _plus
-{
-    t_object x_obj;
-    t_float x_f;
-} t_plus;
-
-typedef struct _scalarplus
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;            /* inlet value */
-} t_scalarplus;
-
-static void *plus_new(t_symbol *s, int argc, t_atom *argv)
-{
-    if (argc > 1)
-        post("+~: extra arguments ignored");
-    if (argc)   /* argument implies we'll do a scalar add as in "+~ 1" */
-    {
-        t_scalarplus *x = (t_scalarplus *)pd_new(scalarplus_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_plus *x = (t_plus *)pd_new(plus_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-}
-
-t_int *scalarplus_perform(t_int *w)
-{
-    t_sample *in = (t_sample *)(w[1]);
-    t_float f = *(t_float *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
-    while (n--) *out++ = *in++ + f;
-    return (w+5);
-}
-
-t_int *scalarplus_perf8(t_int *w)
-{
-    t_sample *in = (t_sample *)(w[1]);
-    t_float g = *(t_float *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
-    for (; n; n -= 8, in += 8, out += 8)
-    {
-        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
-        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
-
-        out[0] = f0 + g; out[1] = f1 + g; out[2] = f2 + g; out[3] = f3 + g;
-        out[4] = f4 + g; out[5] = f5 + g; out[6] = f6 + g; out[7] = f7 + g;
-    }
-    return (w+5);
-}
+/* -------------- convenience routines for multichannel binops ----- */
 
     /* add a binary operation (such as "+") to the DSP chain, in
     which inputs may be of different sizes (but the output should have
@@ -162,6 +99,73 @@ static void any_binop_scalar_dsp(t_signal **sp, t_sample *g,
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add(((bign & 7) || !perf8 ? perf : perf8),
         4, sp[0]->s_vec, g, sp[1]->s_vec, bign);
+}
+
+
+/* ----------------------------- plus ----------------------------- */
+static t_class *plus_class, *scalarplus_class;
+
+typedef struct _plus
+{
+    t_object x_obj;
+    t_float x_f;
+} t_plus;
+
+typedef struct _scalarplus
+{
+    t_object x_obj;
+    t_float x_f;
+    t_float x_g;            /* inlet value */
+} t_scalarplus;
+
+static void *plus_new(t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 1)
+        post("+~: extra arguments ignored");
+    if (argc)   /* argument implies we'll do a scalar add as in "+~ 1" */
+    {
+        t_scalarplus *x = (t_scalarplus *)pd_new(scalarplus_class);
+        floatinlet_new(&x->x_obj, &x->x_g);
+        x->x_g = atom_getfloatarg(0, argc, argv);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+    else
+    {
+        t_plus *x = (t_plus *)pd_new(plus_class);
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+}
+
+t_int *scalarplus_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ + f;
+    return (w+5);
+}
+
+t_int *scalarplus_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 + g; out[1] = f1 + g; out[2] = f2 + g; out[3] = f3 + g;
+        out[4] = f4 + g; out[5] = f5 + g; out[6] = f6 + g; out[7] = f7 + g;
+    }
+    return (w+5);
 }
 
 static void plus_dsp(t_plus *x, t_signal **sp)
@@ -911,6 +915,249 @@ static void min_setup(void)
     class_sethelpsymbol(scalarmin_class, gensym("binops-tilde"));
 }
 
+/* ----------------------------- log ----------------------------- */
+static t_class *log_tilde_class, *scalarlog_tilde_class;
+
+typedef struct _log_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_log_tilde;
+
+typedef struct _scalarlog_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+    t_float x_g;
+} t_scalarlog_tilde;
+
+static void *log_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 1) post("-~: extra arguments ignored");
+    if (argc)
+    {
+        t_scalarlog_tilde *x =
+            (t_scalarlog_tilde *)pd_new(scalarlog_tilde_class);
+        floatinlet_new(&x->x_obj, &x->x_g);
+        x->x_g = atom_getfloatarg(0, argc, argv);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+    else
+    {
+        t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+}
+
+t_int *log_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample f = *in1++, g = *in2++;
+        if (f <= 0)
+            *out = -1000;   /* rather than blow up, output a number << 0 */
+        else if (g == 1 || g <= 0)
+            *out = log(f);
+        else *out = log(f)/log(g);
+        out++;
+    }
+    return (w+5);
+}
+
+t_int *log_tilde_perform_scalar(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample base = *(t_sample *)(w[2]),
+        multiplier = ((base > 0 && base != 1) ? 1./log(base) : 1);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample f = *in1++;
+        if (f <= 0)
+            *out = -1000;   /* rather than blow up, output a number << 0 */
+        else *out = log(f) * multiplier;
+        out++;
+    }
+    return (w+5);
+}
+
+    /* nobody sane will ever ask for log(scalar) to a signal base but ok... */
+t_int *log_tilde_perform_reversescalar(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample scalarin = *(t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample base = *in1++;
+        if (base <= 1)
+            *out = -1000;   /* rather than blow up, output a number << 0 */
+        else if (scalarin <- 0)
+            *out = -1000;
+        else *out = log(scalarin) / log(base);
+        out++;
+    }
+    return (w+5);
+}
+
+static void log_tilde_dsp(t_log_tilde *x, t_signal **sp)
+{
+    any_binop_dsp(sp, log_tilde_perform, log_tilde_perform,
+        log_tilde_perform_scalar, log_tilde_perform_scalar,
+        log_tilde_perform_reversescalar, log_tilde_perform_reversescalar);
+}
+
+static void scalarlog_tilde_dsp(t_scalarlog_tilde *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g, log_tilde_perform_scalar,
+        log_tilde_perform_scalar);
+}
+
+static void log_tilde_setup(void)
+{
+    log_tilde_class = class_new(gensym("log~"), (t_newmethod)log_tilde_new, 0,
+        sizeof(t_log_tilde),
+            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
+                A_GIMME, 0);
+    CLASS_MAINSIGNALIN(log_tilde_class, t_log_tilde, x_f);
+    class_addmethod(log_tilde_class, (t_method)log_tilde_dsp, gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(log_tilde_class, gensym("binops-tilde"));
+    scalarlog_tilde_class = class_new(gensym("-~"), 0, 0,
+        sizeof(t_scalarlog_tilde), CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(scalarlog_tilde_class, t_scalarlog_tilde, x_f);
+    class_addmethod(scalarlog_tilde_class, (t_method)scalarlog_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(scalarlog_tilde_class, gensym("binops-tilde"));
+}
+
+/* ----------------------------- pow ----------------------------- */
+static t_class *pow_tilde_class, *scalarpow_tilde_class;
+
+typedef struct _pow_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_pow_tilde;
+
+typedef struct _scalarpow_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+    t_float x_g;
+} t_scalarpow_tilde;
+
+static void *pow_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 1) post("-~: extra arguments ignored");
+    if (argc)
+    {
+        t_scalarpow_tilde *x =
+            (t_scalarpow_tilde *)pd_new(scalarpow_tilde_class);
+        floatinlet_new(&x->x_obj, &x->x_g);
+        x->x_g = atom_getfloatarg(0, argc, argv);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+    else
+    {
+        t_pow_tilde *x = (t_pow_tilde *)pd_new(pow_tilde_class);
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+        outlet_new(&x->x_obj, &s_signal);
+        x->x_f = 0;
+        return (x);
+    }
+}
+
+t_int *pow_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample f = *in1++, g = *in2++;
+        *out++ = (f == 0 && g < 0) ||
+            (f < 0 && (g - (int)g) != 0) ?
+                0 : pow(f, g);
+    }
+    return (w+5);
+}
+
+t_int *pow_tilde_perform_scalar(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample g = *(t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample f = *in1++;
+        *out++ = (f == 0 && g < 0) ||
+            (f < 0 && (g - (int)g) != 0) ?
+                0 : pow(f, g);
+    }
+    return (w+5);
+}
+
+t_int *pow_tilde_perform_reversescalar(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample f = *(t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        t_sample g = *in1++;
+        *out++ = (f == 0 && g < 0) ||
+            (f < 0 && (g - (int)g) != 0) ?
+                0 : pow(f, g);
+    }
+    return (w+5);
+}
+
+static void pow_tilde_dsp(t_pow_tilde *x, t_signal **sp)
+{
+    any_binop_dsp(sp, pow_tilde_perform, pow_tilde_perform,
+        pow_tilde_perform_scalar, pow_tilde_perform_scalar,
+        pow_tilde_perform_reversescalar, pow_tilde_perform_reversescalar);
+}
+
+static void scalarpow_tilde_dsp(t_scalarpow_tilde *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g, pow_tilde_perform_scalar,
+        pow_tilde_perform_scalar);
+}
+
+static void pow_tilde_setup(void)
+{
+    pow_tilde_class = class_new(gensym("pow~"), (t_newmethod)pow_tilde_new, 0,
+        sizeof(t_pow_tilde),
+            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
+                A_GIMME, 0);
+    CLASS_MAINSIGNALIN(pow_tilde_class, t_pow_tilde, x_f);
+    class_addmethod(pow_tilde_class, (t_method)pow_tilde_dsp, gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(pow_tilde_class, gensym("binops-tilde"));
+    scalarpow_tilde_class = class_new(gensym("-~"), 0, 0,
+        sizeof(t_scalarpow_tilde), CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(scalarpow_tilde_class, t_scalarpow_tilde, x_f);
+    class_addmethod(scalarpow_tilde_class, (t_method)scalarpow_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(scalarpow_tilde_class, gensym("binops-tilde"));
+}
+
 /* ----------------------- global setup routine ---------------- */
 void d_arithmetic_setup(void)
 {
@@ -920,5 +1167,6 @@ void d_arithmetic_setup(void)
     over_setup();
     max_setup();
     min_setup();
+    log_tilde_setup();
+    pow_tilde_setup();
 }
-
