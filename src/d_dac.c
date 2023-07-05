@@ -118,7 +118,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
             x->x_n = 2;
         if ((firstchan = atom_getfloatarg(2, argc, argv)) < 1)
             firstchan = 1;
-        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        x->x_vec = (int *)getbytes(x->x_n * sizeof(*x->x_vec));
         for (i = 0; i < x->x_n; i++)
             x->x_vec[i] = firstchan+i;
         outlet_new(&x->x_obj, &s_signal);
@@ -202,4 +202,3 @@ void d_dac_setup(void)
     dac_setup();
     adc_setup();
 }
-
