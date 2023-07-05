@@ -110,7 +110,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
         SETFLOAT(&defarg[0], 1);
         SETFLOAT(&defarg[1], 2);
     }
-    if (argc >= 2 && argv[0].a_type == A_SYMBOL &&
+    if (argc > 0 && argv[0].a_type == A_SYMBOL &&
         !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
     {       /* multichannel version: -m [nchans] [start channel] */
         x->x_multi = 1;
