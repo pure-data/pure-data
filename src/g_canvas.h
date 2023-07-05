@@ -276,6 +276,7 @@ struct _instancecanvas
     int i_dspstate;
     int i_dollarzero;
     t_float i_graph_lastxpix, i_graph_lastypix;
+    t_binbuf *i_loadbuf; /* temporary load buffer; for embedded patches */
 };
 
 void g_editor_newpdinstance(void);

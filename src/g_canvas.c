@@ -1987,6 +1987,115 @@ t_glist *pd_checkglist(t_pd *x)
     else return (0);
 }
 
+/* ---------------------------- patch embedding ------------------------- */
+
+/* It is possible to embed a patch as data by enclosing it in "#N embed begin;"
+  and "#N embed end;" messages. The former will bind the #N, #X and #A symbols
+  to responder objects that just forward the messages to a temporary binbuf,
+  without evaluating them.
+  Naturally, embedded patches may be nested. The outmost "embed end" finally
+  restores the symbol bindings and moves the binbuf to "THISGUI->i_loadbuf"
+  where it can be read by the object that embedded the patch. */
+
+static t_class *symresponder_class;
+
+typedef struct _symresponder
+{
+    t_class *r_pd;
+    t_symbol *r_sym;
+} t_symresponder;
+
+typedef struct _patchembedder
+{
+    t_symresponder r_nsym;
+    t_symresponder r_xsym;
+    t_symresponder r_asym;
+    t_pd *r_boundn;
+    t_pd *r_boundx;
+    t_pd *r_bounda;
+    t_binbuf *r_binbuf;
+    int r_level; /* handle nested embeddings */
+} t_patchembedder;
+
+static PERTHREAD t_patchembedder *pd_patchembedder;
+
+static void canvas_embed(void *dummy, t_symbol *s)
+{
+    t_patchembedder *r;
+    if (s != gensym("begin"))
+    {
+        pd_error(0, "canvasmaker: bad argument for 'embed' message");
+        return;
+    }
+    if (pd_patchembedder)
+    {
+        pd_error(0, "canvasmaker: 'embed begin' called recursively");
+        return;
+    }
+    r = (t_patchembedder *)getbytes(sizeof(t_patchembedder));
+    r->r_nsym.r_pd = symresponder_class;
+    r->r_nsym.r_sym = &s__N;
+    r->r_xsym.r_pd = symresponder_class;
+    r->r_xsym.r_sym = &s__X;
+    r->r_asym.r_pd = symresponder_class;
+    r->r_asym.r_sym = gensym("#A");
+        /* safe current bindings to #N, #X and #A */
+    r->r_boundn = s__N.s_thing;
+    r->r_boundx = s__X.s_thing;
+    r->r_bounda = gensym("#A")->s_thing;
+        /* redirect symbols to our responders */
+    s__N.s_thing = &r->r_nsym.r_pd;
+    s__X.s_thing = &r->r_xsym.r_pd;
+    gensym("#A")->s_thing = &r->r_asym.r_pd;
+
+    r->r_binbuf = binbuf_new();
+    r->r_level = 1;
+
+    pd_patchembedder = r;
+}
+
+static void symresponder_anything(t_symresponder *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b;
+    if (!pd_patchembedder)
+        bug("symresponder_anything: out of context");
+    b = pd_patchembedder->r_binbuf;
+        /* handle "embed" messages to #N */
+    if (x->r_sym == &s__N && s == gensym("embed"))
+    {
+        t_symbol *s2 = atom_getsymbolarg(0, argc, argv);
+        if (s2 == gensym("begin"))
+            pd_patchembedder->r_level++;
+        else if (s2 == gensym("end"))
+        {
+                /* the outmost "embed end" message restores the
+                symbol bindings and hands off the binbuf. */
+            if (--pd_patchembedder->r_level == 0)
+            {
+                s__N.s_thing = pd_patchembedder->r_boundn;
+                s__X.s_thing = pd_patchembedder->r_boundx;
+                gensym("#A")->s_thing = pd_patchembedder->r_bounda;
+                if (THISGUI->i_loadbuf)
+                    binbuf_free(THISGUI->i_loadbuf);
+                THISGUI->i_loadbuf = b;
+                freebytes(pd_patchembedder, sizeof(t_patchembedder));
+                pd_patchembedder = 0;
+                return;
+            }
+        }
+        else
+        {
+            pd_error(0, "canvasmaker: bad argument for 'embed' message");
+            return;
+        }
+    }
+        /* add message to binbuf */
+    binbuf_addv(b, "ss", x->r_sym, s);
+    binbuf_add(b, argc, argv);
+    binbuf_addsemi(b);
+}
+
 /* ------------------------------- setup routine ------------------------ */
 
     /* why are some of these "glist" and others "canvas"? */
@@ -2033,6 +2142,14 @@ void g_canvas_setup(void)
         gensym("restore"), A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_coords,
         gensym("coords"), A_GIMME, 0);
+
+/* ----------------------- patch embedding ----------------------- */
+
+    symresponder_class = class_new(gensym("sym-responder"), 0, 0,
+        sizeof(t_symresponder), CLASS_PD, 0);
+    class_addanything(symresponder_class, (t_method)symresponder_anything);
+    class_addmethod(pd_canvasmaker, (t_method)canvas_embed,
+        gensym("embed"), A_SYMBOL, 0);
 
 /* -------------------------- objects ----------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_obj,
@@ -2162,6 +2279,7 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
+    THISGUI->i_loadbuf = 0;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2170,6 +2288,8 @@ void g_canvas_freepdinstance(void)
 {
     g_editor_freepdinstance();
     g_template_freepdinstance();
+    if (THISGUI->i_loadbuf)
+        binbuf_free(THISGUI->i_loadbuf);
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
