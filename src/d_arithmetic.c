@@ -101,30 +101,26 @@ static void any_binop_scalar_dsp(t_signal **sp, t_sample *g,
         4, sp[0]->s_vec, g, sp[1]->s_vec, bign);
 }
 
-
-/* ----------------------------- plus ----------------------------- */
-static t_class *plus_class, *scalarplus_class;
-
-typedef struct _plus
+typedef struct _binop
 {
     t_object x_obj;
     t_float x_f;
-} t_plus;
+} t_binop;
 
-typedef struct _scalarplus
+typedef struct _scalarbinop
 {
     t_object x_obj;
     t_float x_f;
-    t_float x_g;            /* inlet value */
-} t_scalarplus;
+    t_float x_g;
+} t_scalarbinop;
 
-static void *plus_new(t_symbol *s, int argc, t_atom *argv)
+static void *any_binop_new(t_symbol *s, int argc, t_atom *argv,
+    t_class *binop_class, t_class *scalarbinop_class)
 {
-    if (argc > 1)
-        post("+~: extra arguments ignored");
-    if (argc)   /* argument implies we'll do a scalar add as in "+~ 1" */
+    if (argc > 1) post("%s: extra arguments ignored", s->s_name);
+    if (argc)
     {
-        t_scalarplus *x = (t_scalarplus *)pd_new(scalarplus_class);
+        t_scalarbinop *x = (t_scalarbinop *)pd_new(scalarbinop_class);
         floatinlet_new(&x->x_obj, &x->x_g);
         x->x_g = atom_getfloatarg(0, argc, argv);
         outlet_new(&x->x_obj, &s_signal);
@@ -133,12 +129,47 @@ static void *plus_new(t_symbol *s, int argc, t_atom *argv)
     }
     else
     {
-        t_plus *x = (t_plus *)pd_new(plus_class);
+        t_binop *x = (t_binop *)pd_new(binop_class);
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
         outlet_new(&x->x_obj, &s_signal);
         x->x_f = 0;
         return (x);
     }
+}
+
+typedef void *(*t_binop_newmethod)(t_symbol *, int, t_atom *);
+typedef void (*t_binop_dspmethod)(t_binop *, t_signal **);
+typedef void (*t_scalarbinop_dspmethod)(t_scalarbinop *, t_signal **);
+
+static t_class *any_binop_class(t_symbol *name, t_binop_newmethod newmethod,
+    t_binop_dspmethod dspmethod)
+{
+    t_class *class = class_new(name, (t_newmethod)newmethod, 0, sizeof(t_binop),
+        CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
+            A_GIMME, 0);
+    CLASS_MAINSIGNALIN(class, t_binop, x_f);
+    class_addmethod(class, (t_method)dspmethod, gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(class, gensym("binops-tilde"));
+    return class;
+}
+
+static t_class *any_scalarbinop_class(t_symbol *name,
+    t_scalarbinop_dspmethod dspmethod)
+{
+    t_class *class = class_new(name, 0, 0, sizeof(t_scalarbinop),
+        CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(class, t_scalarbinop, x_f);
+    class_addmethod(class, (t_method)dspmethod, gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(class, gensym("binops-tilde"));
+    return class;
+}
+
+/* ----------------------------- plus ----------------------------- */
+static t_class *plus_class, *scalarplus_class;
+
+static void *plus_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, plus_class, scalarplus_class);
 }
 
 t_int *scalarplus_perform(t_int *w)
@@ -168,71 +199,30 @@ t_int *scalarplus_perf8(t_int *w)
     return (w+5);
 }
 
-static void plus_dsp(t_plus *x, t_signal **sp)
+static void plus_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, plus_perform, plus_perf8,
         scalarplus_perform, scalarplus_perf8,
         scalarplus_perform, scalarplus_perf8);
 }
 
-static void scalarplus_dsp(t_scalarplus *x, t_signal **sp)
+static void scalarplus_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalarplus_perform, scalarplus_perf8);
 }
 
 static void plus_setup(void)
 {
-    plus_class = class_new(gensym("+~"), (t_newmethod)plus_new, 0,
-        sizeof(t_plus),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    class_addmethod(plus_class, (t_method)plus_dsp, gensym("dsp"), A_CANT, 0);
-    CLASS_MAINSIGNALIN(plus_class, t_plus, x_f);
-    class_sethelpsymbol(plus_class, gensym("binops-tilde"));
-    scalarplus_class = class_new(gensym("+~"), 0, 0,
-        sizeof(t_scalarplus), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarplus_class, t_scalarplus, x_f);
-    class_addmethod(scalarplus_class, (t_method)scalarplus_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarplus_class, gensym("binops-tilde"));
+    plus_class = any_binop_class(gensym("+~"), plus_new, plus_dsp);
+    scalarplus_class = any_scalarbinop_class(gensym("+~"), scalarplus_dsp);
 }
 
 /* ----------------------------- minus ----------------------------- */
 static t_class *minus_class, *scalarminus_class;
 
-typedef struct _minus
-{
-    t_object x_obj;
-    t_float x_f;
-} t_minus;
-
-typedef struct _scalarminus
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalarminus;
-
 static void *minus_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("-~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarminus *x = (t_scalarminus *)pd_new(scalarminus_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_minus *x = (t_minus *)pd_new(minus_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv, minus_class, scalarminus_class);
 }
 
 t_int *minus_perform(t_int *w)
@@ -319,72 +309,31 @@ t_int *reversescalarminus_perf8(t_int *w)
     return (w+5);
 }
 
-static void minus_dsp(t_minus *x, t_signal **sp)
+static void minus_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, minus_perform, minus_perf8,
         scalarminus_perform, scalarminus_perf8,
         reversescalarminus_perform, reversescalarminus_perf8);
 }
 
-static void scalarminus_dsp(t_scalarminus *x, t_signal **sp)
+static void scalarminus_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalarminus_perform, scalarminus_perf8);
 }
 
 static void minus_setup(void)
 {
-    minus_class = class_new(gensym("-~"), (t_newmethod)minus_new, 0,
-        sizeof(t_minus),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(minus_class, t_minus, x_f);
-    class_addmethod(minus_class, (t_method)minus_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(minus_class, gensym("binops-tilde"));
-    scalarminus_class = class_new(gensym("-~"), 0, 0,
-        sizeof(t_scalarminus), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarminus_class, t_scalarminus, x_f);
-    class_addmethod(scalarminus_class, (t_method)scalarminus_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarminus_class, gensym("binops-tilde"));
+    minus_class = any_binop_class(gensym("-~"), minus_new, minus_dsp);
+    scalarminus_class = any_scalarbinop_class(gensym("-~"), scalarminus_dsp);
 }
 
 /* ----------------------------- times ----------------------------- */
 
 static t_class *times_class, *scalartimes_class;
 
-typedef struct _times
-{
-    t_object x_obj;
-    t_float x_f;
-} t_times;
-
-typedef struct _scalartimes
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalartimes;
-
 static void *times_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("*~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalartimes *x = (t_scalartimes *)pd_new(scalartimes_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_times *x = (t_times *)pd_new(times_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv, times_class, scalartimes_class);
 }
 
 t_int *times_perform(t_int *w)
@@ -444,71 +393,30 @@ t_int *scalartimes_perf8(t_int *w)
     return (w+5);
 }
 
-static void times_dsp(t_times *x, t_signal **sp)
+static void times_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, times_perform, times_perf8,
         scalartimes_perform, scalartimes_perf8,
         scalartimes_perform, scalartimes_perf8);
 }
 
-static void scalartimes_dsp(t_scalartimes *x, t_signal **sp)
+static void scalartimes_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalartimes_perform, scalartimes_perf8);
 }
 
 static void times_setup(void)
 {
-    times_class = class_new(gensym("*~"), (t_newmethod)times_new, 0,
-        sizeof(t_times),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(times_class, t_times, x_f);
-    class_addmethod(times_class, (t_method)times_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(times_class, gensym("binops-tilde"));
-    scalartimes_class = class_new(gensym("*~"), 0, 0,
-        sizeof(t_scalartimes), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalartimes_class, t_scalartimes, x_f);
-    class_addmethod(scalartimes_class, (t_method)scalartimes_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalartimes_class, gensym("binops-tilde"));
+    times_class = any_binop_class(gensym("*~"), times_new, times_dsp);
+    scalartimes_class = any_scalarbinop_class(gensym("*~"), scalartimes_dsp);
 }
 
 /* ----------------------------- over ----------------------------- */
 static t_class *over_class, *scalarover_class;
 
-typedef struct _over
-{
-    t_object x_obj;
-    t_float x_f;
-} t_over;
-
-typedef struct _scalarover
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalarover;
-
 static void *over_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("/~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarover *x = (t_scalarover *)pd_new(scalarover_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_over *x = (t_over *)pd_new(over_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv, over_class, scalarover_class);
 }
 
 t_int *over_perform(t_int *w)
@@ -614,71 +522,30 @@ t_int *reversescalarover_perf8(t_int *w)
 }
 
 
-static void over_dsp(t_over *x, t_signal **sp)
+static void over_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, over_perform, over_perf8,
         scalarover_perform, scalarover_perf8,
         reversescalarover_perform, reversescalarover_perf8);
 }
 
-static void scalarover_dsp(t_scalarover *x, t_signal **sp)
+static void scalarover_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalarover_perform, scalarover_perf8);
 }
 
 static void over_setup(void)
 {
-    over_class = class_new(gensym("/~"), (t_newmethod)over_new, 0,
-        sizeof(t_over),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(over_class, t_over, x_f);
-    class_addmethod(over_class, (t_method)over_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(over_class, gensym("binops-tilde"));
-    scalarover_class = class_new(gensym("/~"), 0, 0,
-        sizeof(t_scalarover), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarover_class, t_scalarover, x_f);
-    class_addmethod(scalarover_class, (t_method)scalarover_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarover_class, gensym("binops-tilde"));
+    over_class = any_binop_class(gensym("/~"), over_new, over_dsp);
+    scalarover_class = any_scalarbinop_class(gensym("/~"), scalarover_dsp);
 }
 
 /* ----------------------------- max ----------------------------- */
 static t_class *max_class, *scalarmax_class;
 
-typedef struct _max
-{
-    t_object x_obj;
-    t_float x_f;
-} t_max;
-
-typedef struct _scalarmax
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalarmax;
-
 static void *max_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("max~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarmax *x = (t_scalarmax *)pd_new(scalarmax_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_max *x = (t_max *)pd_new(max_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv, max_class, scalarmax_class);
 }
 
 t_int *max_perform(t_int *w)
@@ -750,71 +617,30 @@ t_int *scalarmax_perf8(t_int *w)
     return (w+5);
 }
 
-static void max_dsp(t_max *x, t_signal **sp)
+static void max_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, max_perform, max_perf8,
         scalarmax_perform, scalarmax_perf8,
         scalarmax_perform, scalarmax_perf8);
 }
 
-static void scalarmax_dsp(t_scalarmax *x, t_signal **sp)
+static void scalarmax_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalarmax_perform, scalarmax_perf8);
 }
 
 static void max_setup(void)
 {
-    max_class = class_new(gensym("max~"), (t_newmethod)max_new, 0,
-        sizeof(t_max),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(max_class, t_max, x_f);
-    class_addmethod(max_class, (t_method)max_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(max_class, gensym("binops-tilde"));
-    scalarmax_class = class_new(gensym("max~"), 0, 0,
-        sizeof(t_scalarmax), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarmax_class, t_scalarmax, x_f);
-    class_addmethod(scalarmax_class, (t_method)scalarmax_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarmax_class, gensym("binops-tilde"));
+    max_class = any_binop_class(gensym("max~"), max_new, max_dsp);
+    scalarmax_class = any_scalarbinop_class(gensym("max~"), scalarmax_dsp);
 }
 
 /* ----------------------------- min ----------------------------- */
 static t_class *min_class, *scalarmin_class;
 
-typedef struct _min
-{
-    t_object x_obj;
-    t_float x_f;
-} t_min;
-
-typedef struct _scalarmin
-{
-    t_object x_obj;
-    t_float x_g;
-    t_float x_f;
-} t_scalarmin;
-
 static void *min_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("min~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarmin *x = (t_scalarmin *)pd_new(scalarmin_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_min *x = (t_min *)pd_new(min_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv, min_class, scalarmin_class);
 }
 
 t_int *min_perform(t_int *w)
@@ -886,72 +712,31 @@ t_int *scalarmin_perf8(t_int *w)
     return (w+5);
 }
 
-static void min_dsp(t_min *x, t_signal **sp)
+static void min_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, min_perform, min_perf8,
         scalarmin_perform, scalarmin_perf8,
         scalarmin_perform, scalarmin_perf8);
 }
 
-static void scalarmin_dsp(t_scalarmin *x, t_signal **sp)
+static void scalarmin_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, scalarmin_perform, scalarmin_perf8);
 }
 
 static void min_setup(void)
 {
-    min_class = class_new(gensym("min~"), (t_newmethod)min_new, 0,
-        sizeof(t_min),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(min_class, t_min, x_f);
-    class_addmethod(min_class, (t_method)min_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(min_class, gensym("binops-tilde"));
-    scalarmin_class = class_new(gensym("min~"), 0, 0,
-        sizeof(t_scalarmin), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarmin_class, t_scalarmin, x_f);
-    class_addmethod(scalarmin_class, (t_method)scalarmin_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarmin_class, gensym("binops-tilde"));
+    min_class = any_binop_class(gensym("min~"), min_new, min_dsp);
+    scalarmin_class = any_scalarbinop_class(gensym("min~"), scalarmin_dsp);
 }
 
 /* ----------------------------- log ----------------------------- */
 static t_class *log_tilde_class, *scalarlog_tilde_class;
 
-typedef struct _log_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-} t_log_tilde;
-
-typedef struct _scalarlog_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalarlog_tilde;
-
 static void *log_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("log~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarlog_tilde *x =
-            (t_scalarlog_tilde *)pd_new(scalarlog_tilde_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv,
+        log_tilde_class, scalarlog_tilde_class);
 }
 
 t_int *log_tilde_perform(t_int *w)
@@ -1011,14 +796,14 @@ t_int *log_tilde_perform_reversescalar(t_int *w)
     return (w+5);
 }
 
-static void log_tilde_dsp(t_log_tilde *x, t_signal **sp)
+static void log_tilde_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, log_tilde_perform, log_tilde_perform,
         log_tilde_perform_scalar, log_tilde_perform_scalar,
         log_tilde_perform_reversescalar, log_tilde_perform_reversescalar);
 }
 
-static void scalarlog_tilde_dsp(t_scalarlog_tilde *x, t_signal **sp)
+static void scalarlog_tilde_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, log_tilde_perform_scalar,
         log_tilde_perform_scalar);
@@ -1026,58 +811,19 @@ static void scalarlog_tilde_dsp(t_scalarlog_tilde *x, t_signal **sp)
 
 static void log_tilde_setup(void)
 {
-    log_tilde_class = class_new(gensym("log~"), (t_newmethod)log_tilde_new, 0,
-        sizeof(t_log_tilde),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(log_tilde_class, t_log_tilde, x_f);
-    class_addmethod(log_tilde_class, (t_method)log_tilde_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(log_tilde_class, gensym("binops-tilde"));
-    scalarlog_tilde_class = class_new(gensym("log~"), 0, 0,
-        sizeof(t_scalarlog_tilde), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarlog_tilde_class, t_scalarlog_tilde, x_f);
-    class_addmethod(scalarlog_tilde_class, (t_method)scalarlog_tilde_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarlog_tilde_class, gensym("binops-tilde"));
+    log_tilde_class = any_binop_class(gensym("log~"),
+        log_tilde_new, log_tilde_dsp);
+    scalarlog_tilde_class = any_scalarbinop_class(gensym("log~"),
+        scalarlog_tilde_dsp);
 }
 
 /* ----------------------------- pow ----------------------------- */
 static t_class *pow_tilde_class, *scalarpow_tilde_class;
 
-typedef struct _pow_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-} t_pow_tilde;
-
-typedef struct _scalarpow_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-    t_float x_g;
-} t_scalarpow_tilde;
-
 static void *pow_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("pow~: extra arguments ignored");
-    if (argc)
-    {
-        t_scalarpow_tilde *x =
-            (t_scalarpow_tilde *)pd_new(scalarpow_tilde_class);
-        floatinlet_new(&x->x_obj, &x->x_g);
-        x->x_g = atom_getfloatarg(0, argc, argv);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
-    else
-    {
-        t_pow_tilde *x = (t_pow_tilde *)pd_new(pow_tilde_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+    return any_binop_new(s, argc, argv,
+        pow_tilde_class, scalarpow_tilde_class);
 }
 
 t_int *pow_tilde_perform(t_int *w)
@@ -1128,14 +874,14 @@ t_int *pow_tilde_perform_reversescalar(t_int *w)
     return (w+5);
 }
 
-static void pow_tilde_dsp(t_pow_tilde *x, t_signal **sp)
+static void pow_tilde_dsp(t_binop *x, t_signal **sp)
 {
     any_binop_dsp(sp, pow_tilde_perform, pow_tilde_perform,
         pow_tilde_perform_scalar, pow_tilde_perform_scalar,
         pow_tilde_perform_reversescalar, pow_tilde_perform_reversescalar);
 }
 
-static void scalarpow_tilde_dsp(t_scalarpow_tilde *x, t_signal **sp)
+static void scalarpow_tilde_dsp(t_scalarbinop *x, t_signal **sp)
 {
     any_binop_scalar_dsp(sp, &x->x_g, pow_tilde_perform_scalar,
         pow_tilde_perform_scalar);
@@ -1143,19 +889,10 @@ static void scalarpow_tilde_dsp(t_scalarpow_tilde *x, t_signal **sp)
 
 static void pow_tilde_setup(void)
 {
-    pow_tilde_class = class_new(gensym("pow~"), (t_newmethod)pow_tilde_new, 0,
-        sizeof(t_pow_tilde),
-            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
-                A_GIMME, 0);
-    CLASS_MAINSIGNALIN(pow_tilde_class, t_pow_tilde, x_f);
-    class_addmethod(pow_tilde_class, (t_method)pow_tilde_dsp, gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(pow_tilde_class, gensym("binops-tilde"));
-    scalarpow_tilde_class = class_new(gensym("pow~"), 0, 0,
-        sizeof(t_scalarpow_tilde), CLASS_MULTICHANNEL, 0);
-    CLASS_MAINSIGNALIN(scalarpow_tilde_class, t_scalarpow_tilde, x_f);
-    class_addmethod(scalarpow_tilde_class, (t_method)scalarpow_tilde_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(scalarpow_tilde_class, gensym("binops-tilde"));
+    pow_tilde_class = any_binop_class(gensym("pow~"),
+        pow_tilde_new, pow_tilde_dsp);
+    scalarpow_tilde_class = any_scalarbinop_class(gensym("pow~"),
+        scalarpow_tilde_dsp);
 }
 
 /* ----------------------- global setup routine ---------------- */
