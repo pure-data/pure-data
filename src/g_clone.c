@@ -301,6 +301,58 @@ void clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except)
         glist_doreload(x->x_vec[i].c_gl, name, dir, except);
 }
 
+    /* only for state saving */
+static void clone_set(t_clone *x, t_floatarg f)
+{
+        /* no bound checking! See clone_saved() */
+    x->x_phase = (int)f;
+}
+
+void canvas_statesavers_doit(t_glist *x, t_binbuf *b);
+
+static void clone_save(t_clone *x, t_binbuf *b)
+{
+    int i;
+    binbuf_addv(b, "ssii", &s__X, gensym("obj"),
+        (int)x->x_obj.te_xpix, (int)x->x_obj.te_ypix);
+    binbuf_addbinbuf(b, x->x_obj.ob_binbuf);
+    if (x->x_obj.te_width)
+        binbuf_addv(b, ",si", gensym("f"), (int)x->x_obj.te_width);
+    binbuf_addsemi(b);
+    if (x->x_n > 0)
+    {
+            /* allow cloned abstractions to save their state.
+            NB: we use a temporary binbuf for canvas_statesavers_doit(),
+            so that we can omit the "set" message if there is no state. */
+        t_binbuf *b2 = binbuf_new();
+        int savedstate = 0;
+        for (i = 0; i < x->x_n; i++)
+        {
+            canvas_statesavers_doit(x->x_vec[i].c_gl, b2);
+            if (binbuf_getnatom(b2) > 0)
+            {
+                    /* set target for "saved" message(s) and add to binbuf */
+                binbuf_addv(b, "ssi;", gensym("#A"), gensym("set"), i);
+                binbuf_add(b, binbuf_getnatom(b2), binbuf_getvec(b2));
+                binbuf_resize(b2, 0);
+                savedstate = 1;
+            }
+        }
+        if (savedstate) /* reset phase */
+            binbuf_addv(b, "ssi;", gensym("#A"), gensym("set"), x->x_n - 1);
+        binbuf_free(b2);
+    }
+}
+
+    /* restore saved state */
+static void clone_saved(t_clone *x, t_symbol *s, int argc, t_atom *argv)
+{
+        /* ignore excess "set" messages, in case we have been resized
+        before saving and now we are back at the original size. */
+    if (x->x_phase >= 0 && x->x_phase < x->x_n)
+        pd_typedmess(&x->x_vec[x->x_phase].c_gl->gl_pd, s, argc, argv);
+}
+
 static void clone_setn(t_clone *x, t_floatarg f)
 {
     int nwas = x->x_n, wantn = f, i, j;
@@ -643,6 +695,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     canvas_resume_dsp(dspstate);
     if (voicetovis >= 0 && voicetovis < x->x_n)
         canvas_vis(x->x_vec[voicetovis].c_gl, 1);
+        /* bash #A back to our clone object! */
+    gensym("#A")->s_thing = (t_pd *)x;
     return (x);
 usage:
     pd_error(0, "usage: clone [-s starting-number] <number> <name> [arguments]");
@@ -687,8 +741,13 @@ void clone_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_loadbang, gensym("loadbang"),
         A_FLOAT, 0);
-    class_addmethod(clone_class, (t_method)clone_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(clone_class, (t_method)clone_set, gensym("set"),
+        A_FLOAT, 0);
+    class_addmethod(clone_class, (t_method)clone_saved, gensym("saved"),
+        A_GIMME, 0);
+    class_addmethod(clone_class, (t_method)clone_dsp, gensym("dsp"),
+        A_CANT, 0);
+    class_setsavefn(clone_class, (t_savefn)clone_save);
 
     clone_in_class = class_new(gensym("clone-inlet"), 0, 0,
         sizeof(t_in), CLASS_PD, 0);
