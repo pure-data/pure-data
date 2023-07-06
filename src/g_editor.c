@@ -1623,6 +1623,7 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 static void canvas_cut(t_canvas *x);
 int clone_reload(t_pd *z, t_canvas *except);
+int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
@@ -1681,15 +1682,20 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         glist_noselect(gl);
     }
 
-        /* now iterate over all the sub-patches... */
+        /* now iterate over all the sub-patches and also abstractions and clones,
+        but only the ones that don't match! */
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if (g == &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
+        if (g == &except->gl_gobj)
+            continue;
+        if (pd_class(&g->g_pd) == canvas_class &&
             (!canvas_isabstraction((t_canvas *)g) ||
                  ((t_canvas *)g)->gl_name != name ||
-                 canvas_getdir((t_canvas *)g) != dir)
-           )
+                    canvas_getdir((t_canvas *)g) != dir))
                 glist_doreload((t_canvas *)g, name, dir, except);
+        else if (pd_class(&g->g_pd) == clone_class &&
+                !clone_match(&g->g_pd, name, dir))
+            clone_doreload(&g->g_pd, name, dir, except);
     }
     if (!hadwindow && gl->gl_havewindow)
         canvas_vis(glist_getcanvas(gl), 0);

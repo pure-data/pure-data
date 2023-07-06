@@ -290,6 +290,17 @@ int clone_reload(t_pd *z, t_canvas *except)
     return 1;
 }
 
+void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except);
+
+    /* Continue abstraction reloading inside a clone object. See glist_doreload(). */
+void clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except)
+{
+    int i;
+    t_clone *x = (t_clone *)z;
+    for (i = 0; i < x->x_n; i++)
+        glist_doreload(x->x_vec[i].c_gl, name, dir, except);
+}
+
 static void clone_setn(t_clone *x, t_floatarg f)
 {
     int nwas = x->x_n, wantn = f, i, j;
