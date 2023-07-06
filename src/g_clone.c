@@ -232,6 +232,8 @@ static void clone_freeinstance(t_clone *x, int which)
     freebytes(c->c_vec, x->x_nout * sizeof(*c->c_vec));
 }
 
+void canvas_statesavers_doit(t_glist *x, t_binbuf *b);
+
     /* Remake all cloned abstractions except for 'except'.
     This function is used in glist_doreload() in g_editor.c.
     It is always called with DSP switched off. */
@@ -260,6 +262,7 @@ int clone_reload(t_pd *z, t_canvas *except)
         if (x->x_vec[i].c_gl != except)
         {
             t_canvas *c;
+            t_binbuf *b;
             SETFLOAT(x->x_argv, x->x_startvoice + i);
             if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
                 x->x_argv + x->x_suppressvoice)))
@@ -268,9 +271,21 @@ int clone_reload(t_pd *z, t_canvas *except)
                 canvas_unsetcurrent(x->x_canvas);
                 return 0; /* abort reload */
             }
+                /* save state */
+            b = binbuf_new();
+            canvas_statesavers_doit(x->x_vec[i].c_gl, b);
             clone_freeinstance(x, i);
             clone_initinstance(x, i, c);
+            if (binbuf_getnatom(b) > 0) /* restore state */
+            {
+                    /* NB: #A is currently bound to 'c' */
+                t_binbuf *b2 = binbuf_new();
+                binbuf_restore(b2, binbuf_getnatom(b), binbuf_getvec(b));
+                binbuf_eval(b2, 0, 0, 0);
+                binbuf_free(b2);
+            }
             canvas_loadbang(c);
+            binbuf_free(b);
         }
         else
         {
@@ -307,8 +322,6 @@ static void clone_set(t_clone *x, t_floatarg f)
         /* no bound checking! See clone_saved() */
     x->x_phase = (int)f;
 }
-
-void canvas_statesavers_doit(t_glist *x, t_binbuf *b);
 
 static void clone_save(t_clone *x, t_binbuf *b)
 {
