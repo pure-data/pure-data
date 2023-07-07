@@ -895,6 +895,449 @@ static void pow_tilde_setup(void)
         scalarpow_tilde_dsp);
 }
 
+/* ----------------------------- ==~ ----------------------------- */
+static t_class *ee_tilde_class, *scalar_ee_tilde_class;
+
+static void *ee_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, ee_tilde_class, scalar_ee_tilde_class);
+}
+
+t_int *ee_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in1++ == *in2++;
+    return (w+5);
+}
+
+t_int *ee_tilde_perf8(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    {
+        t_sample f0 = in1[0], f1 = in1[1], f2 = in1[2], f3 = in1[3];
+        t_sample f4 = in1[4], f5 = in1[5], f6 = in1[6], f7 = in1[7];
+
+        t_sample g0 = in2[0], g1 = in2[1], g2 = in2[2], g3 = in2[3];
+        t_sample g4 = in2[4], g5 = in2[5], g6 = in2[6], g7 = in2[7];
+
+        out[0] = f0 == g0; out[1] = f1 == g1; out[2] = f2 == g2; out[3] = f3 == g3;
+        out[4] = f4 == g4; out[5] = f5 == g5; out[6] = f6 == g6; out[7] = f7 == g7;
+    }
+    return (w+5);
+}
+
+t_int *scalar_ee_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ == f;
+    return (w+5);
+}
+
+t_int *scalar_ee_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 == g; out[1] = f1 == g; out[2] = f2 == g; out[3] = f3 == g;
+        out[4] = f4 == g; out[5] = f5 == g; out[6] = f6 == g; out[7] = f7 == g;
+    }
+    return (w+5);
+}
+
+static void ee_tilde_dsp(t_binop *x, t_signal **sp)
+{
+    any_binop_dsp(sp, ee_tilde_perform, ee_tilde_perf8,
+        scalar_ee_tilde_perform, scalar_ee_tilde_perf8,
+        scalar_ee_tilde_perform, scalar_ee_tilde_perf8);
+}
+
+static void scalar_ee_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g, scalar_ee_tilde_perform, scalar_ee_tilde_perf8);
+}
+
+static void ee_tilde_setup(void)
+{
+    ee_tilde_class = any_binop_class(gensym("==~"), ee_tilde_new, ee_tilde_dsp);
+    scalar_ee_tilde_class = any_scalarbinop_class(gensym("==~"), scalar_ee_tilde_dsp);
+}
+
+/* ----------------------------- !=~ ----------------------------- */
+static t_class *ne_tilde_class, *scalar_ne_tilde_class;
+
+static void *ne_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, ne_tilde_class, scalar_ne_tilde_class);
+}
+
+t_int *ne_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in1++ != *in2++;
+    return (w+5);
+}
+
+t_int *ne_tilde_perf8(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    {
+        t_sample f0 = in1[0], f1 = in1[1], f2 = in1[2], f3 = in1[3];
+        t_sample f4 = in1[4], f5 = in1[5], f6 = in1[6], f7 = in1[7];
+
+        t_sample g0 = in2[0], g1 = in2[1], g2 = in2[2], g3 = in2[3];
+        t_sample g4 = in2[4], g5 = in2[5], g6 = in2[6], g7 = in2[7];
+
+        out[0] = f0 != g0; out[1] = f1 != g1; out[2] = f2 != g2; out[3] = f3 != g3;
+        out[4] = f4 != g4; out[5] = f5 != g5; out[6] = f6 != g6; out[7] = f7 != g7;
+    }
+    return (w+5);
+}
+
+t_int *scalar_ne_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ != f;
+    return (w+5);
+}
+
+t_int *scalar_ne_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 != g; out[1] = f1 != g; out[2] = f2 != g; out[3] = f3 != g;
+        out[4] = f4 != g; out[5] = f5 != g; out[6] = f6 != g; out[7] = f7 != g;
+    }
+    return (w+5);
+}
+
+static void ne_tilde_dsp(t_binop *x, t_signal **sp)
+{
+    any_binop_dsp(sp, ne_tilde_perform, ne_tilde_perf8,
+        scalar_ne_tilde_perform, scalar_ne_tilde_perf8,
+        scalar_ne_tilde_perform, scalar_ne_tilde_perf8);
+}
+
+static void scalar_ne_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g, scalar_ne_tilde_perform, scalar_ne_tilde_perf8);
+}
+
+static void ne_tilde_setup(void)
+{
+    ne_tilde_class = any_binop_class(gensym("!=~"), ne_tilde_new, ne_tilde_dsp);
+    scalar_ne_tilde_class = any_scalarbinop_class(gensym("!=~"), scalar_ne_tilde_dsp);
+}
+
+/* ------------------------ >~ >=~ <~ <=~ ------------------------ */
+static t_class *gt_tilde_class, *scalar_gt_tilde_class;
+static t_class *ge_tilde_class, *scalar_ge_tilde_class;
+static t_class *lt_tilde_class, *scalar_lt_tilde_class;
+static t_class *le_tilde_class, *scalar_le_tilde_class;
+
+static void *gt_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, gt_tilde_class, scalar_gt_tilde_class);
+}
+
+static void *ge_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, ge_tilde_class, scalar_ge_tilde_class);
+}
+
+static void *lt_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, lt_tilde_class, scalar_lt_tilde_class);
+}
+
+static void *le_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return any_binop_new(s, argc, argv, le_tilde_class, scalar_le_tilde_class);
+}
+
+static t_int *gt_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in1++ > *in2++;
+    return (w+5);
+}
+
+static t_int *gt_tilde_perf8(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    {
+        t_sample f0 = in1[0], f1 = in1[1], f2 = in1[2], f3 = in1[3];
+        t_sample f4 = in1[4], f5 = in1[5], f6 = in1[6], f7 = in1[7];
+
+        t_sample g0 = in2[0], g1 = in2[1], g2 = in2[2], g3 = in2[3];
+        t_sample g4 = in2[4], g5 = in2[5], g6 = in2[6], g7 = in2[7];
+
+        out[0] = f0 > g0; out[1] = f1 > g1; out[2] = f2 > g2; out[3] = f3 > g3;
+        out[4] = f4 > g4; out[5] = f5 > g5; out[6] = f6 > g6; out[7] = f7 > g7;
+    }
+    return (w+5);
+}
+
+static t_int *ge_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in1++ >= *in2++;
+    return (w+5);
+}
+
+static t_int *ge_tilde_perf8(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    {
+        t_sample f0 = in1[0], f1 = in1[1], f2 = in1[2], f3 = in1[3];
+        t_sample f4 = in1[4], f5 = in1[5], f6 = in1[6], f7 = in1[7];
+
+        t_sample g0 = in2[0], g1 = in2[1], g2 = in2[2], g3 = in2[3];
+        t_sample g4 = in2[4], g5 = in2[5], g6 = in2[6], g7 = in2[7];
+
+        out[0] = f0 >= g0; out[1] = f1 >= g1; out[2] = f2 >= g2; out[3] = f3 >= g3;
+        out[4] = f4 >= g4; out[5] = f5 >= g5; out[6] = f6 >= g6; out[7] = f7 >= g7;
+    }
+    return (w+5);
+}
+
+static t_int *scalar_gt_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ > f;
+    return (w+5);
+}
+
+static t_int *scalar_gt_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 > g; out[1] = f1 > g; out[2] = f2 > g; out[3] = f3 > g;
+        out[4] = f4 > g; out[5] = f5 > g; out[6] = f6 > g; out[7] = f7 > g;
+    }
+    return (w+5);
+}
+
+static t_int *scalar_ge_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ >= f;
+    return (w+5);
+}
+
+static t_int *scalar_ge_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 >= g; out[1] = f1 >= g; out[2] = f2 >= g; out[3] = f3 >= g;
+        out[4] = f4 >= g; out[5] = f5 >= g; out[6] = f6 >= g; out[7] = f7 >= g;
+    }
+    return (w+5);
+}
+
+static t_int *scalar_lt_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ < f;
+    return (w+5);
+}
+
+static t_int *scalar_lt_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 < g; out[1] = f1 < g; out[2] = f2 < g; out[3] = f3 < g;
+        out[4] = f4 < g; out[5] = f5 < g; out[6] = f6 < g; out[7] = f7 < g;
+    }
+    return (w+5);
+}
+
+static t_int *scalar_le_tilde_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = *in++ <= f;
+    return (w+5);
+}
+
+static t_int *scalar_le_tilde_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = f0 <= g; out[1] = f1 <= g; out[2] = f2 <= g; out[3] = f3 <= g;
+        out[4] = f4 <= g; out[5] = f5 <= g; out[6] = f6 <= g; out[7] = f7 <= g;
+    }
+    return (w+5);
+}
+
+static void gt_tilde_dsp(t_binop *x, t_signal **sp)
+{
+    any_binop_dsp(sp, gt_tilde_perform, gt_tilde_perf8,
+        scalar_gt_tilde_perform, scalar_gt_tilde_perf8,
+                /* a > b is the same as b < a */
+            scalar_lt_tilde_perform, scalar_lt_tilde_perf8);
+}
+
+static void scalar_gt_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g, scalar_gt_tilde_perform, scalar_gt_tilde_perf8);
+}
+
+static void ge_tilde_dsp(t_binop *x, t_signal **sp)
+{
+    any_binop_dsp(sp, ge_tilde_perform, ge_tilde_perf8,
+        scalar_ge_tilde_perform, scalar_ge_tilde_perf8,
+                /* a >= b is the same as b <= a */
+            scalar_le_tilde_perform, scalar_le_tilde_perf8);
+}
+
+static void scalar_ge_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g,
+        scalar_ge_tilde_perform, scalar_ge_tilde_perf8);
+}
+
+static void lt_tilde_dsp(t_binop *x, t_signal **sp)
+{
+        /* a < b is the same as b > a, so we just swap the inputs */
+    t_signal *tmp[3] = { sp[1], sp[0], sp[2] };
+    any_binop_dsp(tmp, gt_tilde_perform, gt_tilde_perf8,
+        scalar_gt_tilde_perform, scalar_gt_tilde_perf8,
+            scalar_lt_tilde_perform, scalar_lt_tilde_perf8);
+    sp[2] = tmp[2]; /* assign result of signal_setmultiout()! */
+}
+
+static void scalar_lt_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g,
+        scalar_lt_tilde_perform, scalar_lt_tilde_perf8);
+}
+
+static void le_tilde_dsp(t_binop *x, t_signal **sp)
+{
+        /* a <= b is the same as b >= a, so we just swap the inputs */
+    t_signal *tmp[3] = { sp[1], sp[0], sp[2] };
+    any_binop_dsp(tmp, ge_tilde_perform, ge_tilde_perf8,
+        scalar_ge_tilde_perform, scalar_ge_tilde_perf8,
+            scalar_le_tilde_perform, scalar_le_tilde_perf8);
+    sp[2] = tmp[2]; /* assign result of signal_setmultiout()! */
+}
+
+static void scalar_le_tilde_dsp(t_scalarbinop *x, t_signal **sp)
+{
+    any_binop_scalar_dsp(sp, &x->x_g,
+        scalar_le_tilde_perform, scalar_le_tilde_perf8);
+}
+
+static void gt_tilde_setup(void)
+{
+    gt_tilde_class = any_binop_class(gensym(">~"), gt_tilde_new, gt_tilde_dsp);
+    scalar_gt_tilde_class = any_scalarbinop_class(gensym(">~"), scalar_gt_tilde_dsp);
+}
+
+static void ge_tilde_setup(void)
+{
+    ge_tilde_class = any_binop_class(gensym(">=~"), ge_tilde_new, ge_tilde_dsp);
+    scalar_ge_tilde_class = any_scalarbinop_class(gensym(">=~"), scalar_ge_tilde_dsp);
+}
+
+static void lt_tilde_setup(void)
+{
+    lt_tilde_class = any_binop_class(gensym("<~"), lt_tilde_new, lt_tilde_dsp);
+    scalar_lt_tilde_class = any_scalarbinop_class(gensym("<~"), scalar_lt_tilde_dsp);
+}
+
+static void le_tilde_setup(void)
+{
+    le_tilde_class = any_binop_class(gensym("<=~"), le_tilde_new, le_tilde_dsp);
+    scalar_le_tilde_class = any_scalarbinop_class(gensym("<=~"), scalar_le_tilde_dsp);
+}
+
 /* ----------------------- global setup routine ---------------- */
 void d_arithmetic_setup(void)
 {
@@ -906,4 +1349,10 @@ void d_arithmetic_setup(void)
     min_setup();
     log_tilde_setup();
     pow_tilde_setup();
+    ee_tilde_setup();
+    ne_tilde_setup();
+    gt_tilde_setup();
+    lt_tilde_setup();
+    ge_tilde_setup();
+    le_tilde_setup();
 }
