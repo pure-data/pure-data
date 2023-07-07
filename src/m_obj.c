@@ -20,6 +20,8 @@ behavior for "gobjs" appears at the end of this file.  */
 #define INLINE inline
 #endif
 
+#define FWD_NGETBYTE 100 /* bigger than this we allocate on the heap */
+
 union inletunion
 {
     t_symbol *iu_symto;
@@ -152,12 +154,14 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
     /* forward a message to an inlet~ object */
 static void inlet_fwd(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_atom *argvec = (t_atom *)alloca((argc+1) * sizeof(t_atom));
+    t_atom *argvec;
     int i;
+    ALLOCA(t_atom, argvec, argc+1, FWD_NGETBYTE);
     SETSYMBOL(argvec, s);
     for (i = 0; i < argc; i++)
         argvec[i+1] = argv[i];
     typedmess(x->i_dest, gensym("fwd"), argc+1, argvec);
+    FREEA(t_atom, argvec, argc+1, FWD_NGETBYTE);
 }
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
