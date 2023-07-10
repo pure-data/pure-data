@@ -400,21 +400,27 @@ static void sys_initsavepreferences(void)
 {
     if (sys_prefsavefp)
         bug("sys_initsavepreferences");
-    else    /* delete audio and MIDI device keys */
+    else    /* delete previous audio/MIDI device and search path entries */
     {
         int i, j;
-        char dev[MAXPDSTRING], devname[MAXPDSTRING];
+        char buf[MAXPDSTRING], devname[MAXPDSTRING];
         const char *key[4] = { "audioin", "audioout", "midiin", "midiout" };
         int maxnum[4] = { MAXAUDIOINDEV, MAXAUDIOOUTDEV, MAXMIDIINDEV, MAXMIDIOUTDEV };
         for (i = 0; i < 4; i++)
         {
             for (j = 0; j < maxnum[i]; j++)
             {
-                snprintf(dev, sizeof(dev), "%sdev%d", key[i], j + 1);
+                snprintf(buf, sizeof(buf), "%sdev%d", key[i], j + 1);
                 snprintf(devname, sizeof(devname), "%sdevname%d", key[i], j + 1);
-                if (!sys_deletepreference(dev) || !sys_deletepreference(devname))
+                if (!sys_deletepreference(buf) || !sys_deletepreference(devname))
                     break;
             }
+        }
+        for (i = 0; ; i++)
+        {
+            snprintf(buf, sizeof(buf), "path%d", i + 1);
+            if (!sys_deletepreference(buf))
+                break;
         }
     }
 }
