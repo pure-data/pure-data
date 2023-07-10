@@ -2398,7 +2398,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     if (doit)
                     {
                         int nchannels = obj_sigoutletgetchans(hitobj, closest);
-                        int connection_thickness = (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2.0 : 1.0) * x->gl_zoom;
+                        int connection_thickness =
+                            (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2 : 1) * x->gl_zoom;
 
                         int xout = x1 + IOMIDDLE * x->gl_zoom +
                             (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
@@ -2617,7 +2618,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
 
             int nchannels = obj_sigoutletgetchans(src, nout);
             int connection_thickness =
-                (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2.0 : 1.0) * x->gl_zoom;
+                (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2 : 1) * x->gl_zoom;
 
             lx1 = x11 + (noutlets1 > 1 ?
                              ((x12-x11-iow) * nout)/(noutlets1-1) : 0)
