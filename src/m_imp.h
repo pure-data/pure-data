@@ -88,8 +88,6 @@ EXTERN int obj_nsigoutlets(const t_object *x);
 EXTERN int obj_siginletindex(const t_object *x, int m);
 EXTERN int obj_sigoutletindex(const t_object *x, int m);
 EXTERN t_float *obj_findsignalscalar(const t_object *x, int m);
-
-// NEW FOR MULTI-CHANNEL
 void obj_sigoutletsetchans(const t_object *x, int m, int nchans);
 int obj_sigoutletgetchans(const t_object *x, int m);
 

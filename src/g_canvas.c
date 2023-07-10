@@ -942,22 +942,10 @@ static void canvas_drawlines(t_canvas *x)
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
-            int issignal = outlet_getsymbol(t.tr_outlet) == &s_signal;
             int nchannels = obj_sigoutletgetchans(t.tr_ob, t.tr_outno);
-            int connection_thickness;
-            if(issignal)
-            {
-                if(nchannels > 1)
-                {
-                    connection_thickness = 2.5 * x->gl_zoom;
-                } else
-                {
-                    connection_thickness = 2 * x->gl_zoom;
-                }
-            } else
-            {
-                connection_thickness = 1 * x->gl_zoom;
-            }
+            int connection_thickness =
+                (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2.0 : 1.0) * x->gl_zoom;
+
             sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
@@ -972,13 +960,11 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     t_linetraverser t;
     t_outconnect *oc;
 
-
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-
             char tag[128];
             sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crs iiii",

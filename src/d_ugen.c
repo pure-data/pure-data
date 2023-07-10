@@ -938,10 +938,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
-
         obj_sigoutletsetchans(u->u_obj, i, (*sig)->s_nchans);
-        // NEW FOR MULTICHANNEL
-
 
         uout->o_signal = *sig;
         (*sig)->s_refcount = uout->o_nconnect;

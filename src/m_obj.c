@@ -893,29 +893,6 @@ int obj_nsigoutlets(const t_object *x)
     return (n);
 }
 
-// DRAW MULTICHANNEL CONNECTIOSN
-void obj_sigoutletsetchans(const t_object *x, int m, int nchans){
-    int n;
-    t_outlet *o2;
-    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
-    if (o2 && (o2->o_sym == &s_signal))
-    {
-        o2->o_nchans = nchans;
-    }
-}
-
-int obj_sigoutletgetchans(const t_object *x, int m){
-    int n;
-    t_outlet *o2;
-    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
-    if (o2 && (o2->o_sym == &s_signal))
-    {
-        return o2->o_nchans;
-    }
-}
-
-
-
 int obj_sigoutletindex(const t_object *x, int m)
 {
     int n;
@@ -943,6 +920,35 @@ int obj_issignaloutlet(const t_object *x, int m)
     "MAINSIGNALIN" has been provided, in which case the object won't
     promote scalars correctly.  Nonetheless we provide it so that at least
     such a badly written object won't crash Pd. */
+
+void obj_sigoutletsetchans(const t_object *x, int m, int nchans)
+{
+    int n;
+    t_outlet *o2;
+    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
+    if (o2 && (o2->o_sym == &s_signal))
+    {
+        o2->o_nchans = nchans;
+    }
+}
+
+int obj_sigoutletgetchans(const t_object *x, int m)
+{
+    int n;
+    t_outlet *o2;
+    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
+
+    if (o2 && (o2->o_sym == &s_signal)){
+        if (o2->o_nchans == 0){
+            return 1;
+        }
+        return o2->o_nchans;
+    }
+    else{
+        return 0;
+    }
+}
+
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;
