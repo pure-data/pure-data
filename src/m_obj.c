@@ -321,6 +321,7 @@ struct _outlet
     t_object *o_owner;
     struct _outlet *o_next;
     t_outconnect *o_connections;
+    t_int o_nchans;
     t_symbol *o_sym;
 };
 
@@ -891,6 +892,29 @@ int obj_nsigoutlets(const t_object *x)
         if (o->o_sym == &s_signal) n++;
     return (n);
 }
+
+// DRAW MULTICHANNEL CONNECTIOSN
+void obj_sigoutletsetchans(const t_object *x, int m, int nchans){
+    int n;
+    t_outlet *o2;
+    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
+    if (o2 && (o2->o_sym == &s_signal))
+    {
+        o2->o_nchans = nchans;
+    }
+}
+
+int obj_sigoutletgetchans(const t_object *x, int m){
+    int n;
+    t_outlet *o2;
+    for (o2 = x->ob_outlet, n = 0; o2 && m--; o2 = o2->o_next);
+    if (o2 && (o2->o_sym == &s_signal))
+    {
+        return o2->o_nchans;
+    }
+}
+
+
 
 int obj_sigoutletindex(const t_object *x, int m)
 {
