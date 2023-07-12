@@ -498,6 +498,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     canvas_dosetbounds(x, xloc, yloc, xloc + width, yloc + height);
     x->gl_owner = owner;
     x->gl_isclone = 0;
+    x->gl_anonymous = 0;
     x->gl_name = (*s->s_name ? s :
         (THISGUI->i_newfilename ? THISGUI->i_newfilename : gensym("Pd")));
     canvas_bind(x);
@@ -2280,6 +2281,7 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
     THISGUI->i_loadbuf = 0;
+    THISGUI->i_savebuf = 0;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2290,6 +2292,8 @@ void g_canvas_freepdinstance(void)
     g_template_freepdinstance();
     if (THISGUI->i_loadbuf)
         binbuf_free(THISGUI->i_loadbuf);
+    if (THISGUI->i_savebuf)
+        binbuf_free(THISGUI->i_savebuf);
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 

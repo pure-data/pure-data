@@ -1710,6 +1710,8 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     glist_eraseiofor(glist, x, tag);
 }
 
+int clone_retexted(t_pd *z);
+
     /* change text; if T_OBJECT, remake it.  */
 void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
 {
@@ -1744,6 +1746,10 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
             canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
                 (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
                 &x->te_g, pos));
+                /* if it is a clone object, give it a chance to save its
+                anonymous abstraction */
+            if (pd_class(&x->te_g.g_pd) == clone_class)
+                clone_retexted(&x->te_g.g_pd);
             glist_delete(glist, &x->te_g);
             canvas_objtext(glist, xwas, ywas, widthwas, 0, b);
             canvas_restoreconnections(glist_getcanvas(glist));

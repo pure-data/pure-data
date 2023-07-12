@@ -38,11 +38,29 @@ typedef struct _out
     int o_signal;
 } t_out;
 
+typedef struct _symresponder
+{
+    t_class *r_pd;
+    struct _clone *r_owner;
+    t_symbol *r_sym;
+    t_pd *r_bound;
+} t_symresponder;
+
+    /* anonymous abstraction state */
+typedef struct _state
+{
+    t_binbuf *s_binbuf;
+    t_symresponder s_nsym; /* for loading */
+    t_symresponder s_xsym;
+    t_symresponder s_asym;
+} t_state;
+
 
 typedef struct _clone
 {
     t_object x_obj;
     t_canvas *x_canvas; /* owning canvas */
+    t_binbuf *x_savebuf; /* anonymous abstraction savebuf */
     int x_n;            /* number of copies */
     t_copy *x_vec;      /* the copies */
     int x_nin;
@@ -59,12 +77,22 @@ typedef struct _clone
     unsigned int x_packout:1;       /* pack output signals */
 } t_clone;
 
-int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
+int clone_match(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *c)
 {
+    int i;
     t_clone *x = (t_clone *)z;
     if (!x->x_n)
-        return (0);
-    return (x->x_vec[0].c_gl->gl_name == name &&
+        return 0;
+        /* anonymous abstraction: check if it belongs to this clone object */
+    if (c->gl_isclone && c->gl_anonymous)
+    {
+        for (i = 0; i < x->x_n; i++)
+            if (x->x_vec[i].c_gl == c)
+                return 1;
+        return 0;
+    }
+        /* regular abstraction: check if name and directory match */
+    else return (x->x_vec[0].c_gl->gl_name == name &&
         canvas_getdir(x->x_vec[0].c_gl) == dir);
 }
 
@@ -180,30 +208,87 @@ static void clone_out_anything(t_outproxy *x, t_symbol *s, int argc, t_atom *arg
 }
 
 static PERTHREAD int clone_voicetovis = -1;
+static PERTHREAD t_binbuf *clone_lastsavebuf = 0;
 
-static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
+    /* this is called in text_setto() before recreating the clone object; it makes
+    sure that we don't lose our anonymous abstraction just because we change one
+    of the creation arguments, such as the number of instances. See clone_new(). */
+void clone_retexted(t_pd *z)
 {
-    t_canvas *retval;
-    pd_this->pd_newest = 0;
-    typedmess(&pd_objectmaker, s, argc, argv);
-    if (pd_this->pd_newest == 0)
+    t_clone *x = (t_clone *)z;
+    if (x->x_savebuf)
     {
-        pd_error(0, "clone: can't create subpatch '%s'",
-            s->s_name);
-        return (0);
+        if (clone_lastsavebuf)
+            bug("clone_retexted");
+        clone_lastsavebuf = binbuf_duplicate(x->x_savebuf);
     }
-    if (*pd_this->pd_newest != canvas_class)
-    {
-        pd_error(0, "clone: can't clone '%s' because it's not an abstraction",
-            s->s_name);
-        pd_free(pd_this->pd_newest);
-        pd_this->pd_newest = 0;
-        return (0);
-    }
-    retval = (t_canvas *)pd_this->pd_newest;
+}
+
+static t_canvas *clone_makeone(t_clone *x)
+{
+    t_symbol *s = x->x_s;
+    int argc = x->x_argc - x->x_suppressvoice;
+    t_atom *argv = x->x_argv + x->x_suppressvoice;
+    t_canvas *c = 0;
+    t_binbuf *b;
     pd_this->pd_newest = 0;
-    retval->gl_isclone = 1;
-    return (retval);
+    if ((b = x->x_savebuf)) /* create from binbuf */
+    {
+        int n = binbuf_getnatom(b);
+        t_atom *vec = binbuf_getvec(b);
+            /* save binding of symbol #N (and restore afterward) */
+        t_pd *boundn = s__N.s_thing, *boundx = s__X.s_thing;
+        s__N.s_thing = &pd_canvasmaker;
+        canvas_setargs(argc, argv);
+            /* anonymous abstractions still need a directory; the parent canvas
+            directory is the obvious (and only?) choice */
+        glob_setfilename(0, 0, canvas_getdir(x->x_canvas));
+        if (n > 0)
+        {
+            t_binbuf *b2 = binbuf_new();
+            binbuf_restore(b2, n, vec);
+            binbuf_eval(b2, 0, argc, argv);
+            binbuf_free(b2);
+        }
+        else /* empty abstraction */
+            canvas_new(0, 0, 0, 0);
+
+        if (s__X.s_thing && s__X.s_thing != boundx) /* success */
+        {
+            c = (t_canvas *)s__X.s_thing;
+            vmess((t_pd *)c, gensym("pop"), "i", 0);
+            gensym("#A")->s_thing = (t_pd *)c;
+            c->gl_isclone = 1;
+            c->gl_anonymous = 1;
+        }
+        else /* failure */
+            s__X.s_thing = boundx;
+        s__N.s_thing = boundn;
+        glob_setfilename(0, &s_, &s_);
+        canvas_setargs(0, 0);
+    }
+    else /* load abstraction by name */
+    {
+        typedmess(&pd_objectmaker, s, argc, argv);
+        if (pd_this->pd_newest == 0)
+        {
+            pd_error(0, "clone: can't create subpatch '%s'",
+                s->s_name);
+            return (0);
+        }
+        if (*pd_this->pd_newest != canvas_class)
+        {
+            pd_error(0, "clone: can't clone '%s' because it's not an abstraction",
+                s->s_name);
+            pd_free(pd_this->pd_newest);
+            pd_this->pd_newest = 0;
+            return (0);
+        }
+        c = (t_canvas *)pd_this->pd_newest;
+        c->gl_isclone = 1;
+    }
+    pd_this->pd_newest = 0;
+    return (c);
 }
 
 static void clone_initinstance(t_clone *x, int which, t_canvas *c)
@@ -239,12 +324,23 @@ void canvas_statesavers_doit(t_glist *x, t_binbuf *b);
     It is always called with DSP switched off. */
 int clone_reload(t_pd *z, t_canvas *except)
 {
-    int i, j;
+    int i, j, nin, nout;
     t_clone *x = (t_clone *)z;
+        /* check if we should update our save binbuf */
+    if (x->x_savebuf && THISGUI->i_savebuf)
+    {
+        for (i = 0; i < x->x_n; i++)
+            if (x->x_vec[i].c_gl == except)
+        {
+            binbuf_free(x->x_savebuf);
+            x->x_savebuf = binbuf_duplicate(THISGUI->i_savebuf);
+            break;
+        }
+    }
         /* check if inlets/outlets have changed. If so,
-        canvas_doreload() will remake the whole object. */
-    int nin = obj_ninlets(&except->gl_obj);
-    int nout = obj_noutlets(&except->gl_obj);
+        glist_doreload() will remake the whole object. */
+    nin = obj_ninlets(&except->gl_obj);
+    nout = obj_noutlets(&except->gl_obj);
     if (nin != x->x_nin || nout != x->x_nout)
         return 0;
     for (i = 0; i < nin; i++)
@@ -264,8 +360,7 @@ int clone_reload(t_pd *z, t_canvas *except)
             t_canvas *c;
             t_binbuf *b;
             SETFLOAT(x->x_argv, x->x_startvoice + i);
-            if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
-                x->x_argv + x->x_suppressvoice)))
+            if (!(c = clone_makeone(x)))
             {
                 pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
                 canvas_unsetcurrent(x->x_canvas);
@@ -325,16 +420,24 @@ static void clone_set(t_clone *x, t_floatarg f)
 
 static void clone_save(t_clone *x, t_binbuf *b)
 {
-    int i;
+    int i, argc;
     binbuf_addv(b, "ssii", &s__X, gensym("obj"),
         (int)x->x_obj.te_xpix, (int)x->x_obj.te_ypix);
     binbuf_addbinbuf(b, x->x_obj.ob_binbuf);
     if (x->x_obj.te_width)
         binbuf_addv(b, ",si", gensym("f"), (int)x->x_obj.te_width);
     binbuf_addsemi(b);
+        /* first embed anonymous abstraction (if not empty) */
+    if (x->x_savebuf && (argc = binbuf_getnatom(x->x_savebuf)) > 0)
+    {
+        binbuf_addv(b, "sss;", gensym("#N"), gensym("embed"), gensym("begin"));
+        binbuf_add(b, argc, binbuf_getvec(x->x_savebuf));
+        binbuf_addv(b, "sss;", gensym("#N"), gensym("embed"), gensym("end"));
+        binbuf_addv(b, "ss;", gensym("#A"), gensym("restore"));
+    }
     if (x->x_n > 0)
     {
-            /* allow cloned abstractions to save their state.
+            /* finally, allow cloned abstractions to save their state.
             NB: we use a temporary binbuf for canvas_statesavers_doit(),
             so that we can omit the "set" message if there is no state. */
         t_binbuf *b2 = binbuf_new();
@@ -366,6 +469,90 @@ static void clone_saved(t_clone *x, t_symbol *s, int argc, t_atom *argv)
         pd_typedmess(&x->x_vec[x->x_phase].c_gl->gl_pd, s, argc, argv);
 }
 
+    /* restore anonymous abstractions from load binbuf */
+static void clone_restore(t_clone *x)
+{
+    t_canvas *c;
+    int i, nin, nout;
+    if (!x->x_savebuf)
+    {
+        pd_error(x, "clone: 'restore' message out of context");
+        return;
+    }
+    if (!THISGUI->i_loadbuf)
+    {
+        pd_error(x, "clone: could not restore patch");
+        return;
+    }
+    binbuf_free(x->x_savebuf);
+    x->x_savebuf = binbuf_duplicate(THISGUI->i_loadbuf);
+
+        /* make first instance */
+    SETFLOAT(x->x_argv, x->x_startvoice);
+    if (!(c = clone_makeone(x)))
+    {
+        /* shouldn't really happen */
+        pd_error(x, "clone: couldn't restore abstraction");
+        return;
+    }
+        /* resize inlets, if there are any; otherwise keep fake inlet */
+    x->x_nin = obj_ninlets(&c->gl_obj);
+    if (x->x_nin > 0)
+    {
+        x->x_invec = (t_in *)resizebytes(x->x_invec,
+            sizeof(*x->x_invec), x->x_nin * sizeof(*x->x_invec));
+        /* first remove existing dummy inlet! */
+        inlet_free(x->x_obj.te_inlet);
+        for (i = 0; i < x->x_nin; i++)
+        {
+            x->x_invec[i].i_pd = clone_in_class;
+            x->x_invec[i].i_owner = x;
+            x->x_invec[i].i_signal =
+                obj_issignalinlet(&c->gl_obj, i);
+            x->x_invec[i].i_n = i;
+            if (x->x_invec[i].i_signal) /* NB: don't use signalinlet_new()! */
+                inlet_new(&x->x_obj, &x->x_invec[i].i_pd, &s_signal, &s_signal);
+            else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
+        }
+    }
+    /* resize outlets, if there are any */
+    x->x_nout = obj_noutlets(&c->gl_obj);
+    if (x->x_nout > 0)
+    {
+        x->x_outvec = (t_out *)resizebytes(x->x_outvec,
+            0, x->x_nout * sizeof(*x->x_outvec));
+        for (i = 0; i < x->x_nout; i++)
+        {
+            x->x_outvec[i].o_signal = obj_issignaloutlet(&c->gl_obj, i);
+            x->x_outvec[i].o_outlet =
+                outlet_new(&x->x_obj, (x->x_outvec[i].o_signal ? &s_signal : 0));
+        }
+    }
+    /* redraw clone object (for inlets/outlets) */
+    gobj_vis((t_gobj *)x, x->x_canvas, 0);
+    gobj_vis((t_gobj *)x, x->x_canvas, 1);
+
+    canvas_setcurrent(x->x_canvas);
+    /* reset first copy */
+    clone_freeinstance(x, 0);
+    clone_initinstance(x, 0, c);
+    /* reload remaining copies */
+    for (i = 1; i < x->x_n; i++)
+    {
+        SETFLOAT(x->x_argv, x->x_startvoice + i);
+        if (!(c = clone_makeone(x)))
+        {
+                /* this shouldn't really happen */
+            pd_error(x, "clone: couldn't restore abstraction");
+            canvas_unsetcurrent(x->x_canvas);
+            return; /* abort */
+        }
+        clone_freeinstance(x, i);
+        clone_initinstance(x, i, c);
+    }
+    canvas_unsetcurrent(x->x_canvas);
+}
+
 static void clone_setn(t_clone *x, t_floatarg f)
 {
     int nwas = x->x_n, wantn = f, i, j;
@@ -384,8 +571,7 @@ static void clone_setn(t_clone *x, t_floatarg f)
     {
         t_canvas *c;
         SETFLOAT(x->x_argv, x->x_startvoice + i);
-        if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
-            x->x_argv + x->x_suppressvoice)))
+        if (!(c = clone_makeone(x)))
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
             return;
@@ -624,6 +810,9 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     {
         x->x_vec = 0;
         x->x_n = 0;
+        if (clone_lastsavebuf)
+            binbuf_free(clone_lastsavebuf);
+        clone_lastsavebuf = 0;
         return (x);
     }
     dspstate = canvas_suspend_dsp();
@@ -653,15 +842,29 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         && argv[0].a_type == A_SYMBOL)
             x->x_s = argv[0].a_w.w_symbol;
     else goto usage;
-        /* store a copy of the argmuents with an extra space (argc+1) for
+        /* store a copy of the arguments with an extra space (argc+1) for
         supplying an instance number, which we'll bash as we go. */
     x->x_argc = argc - 1;
     x->x_argv = getbytes(x->x_argc * sizeof(*x->x_argv));
     memcpy(x->x_argv, argv+1, x->x_argc * sizeof(*x->x_argv));
     SETFLOAT(x->x_argv, x->x_startvoice);
-    if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
-        x->x_argv + x->x_suppressvoice)))
-            goto fail;
+    if (x->x_s == gensym("pd")) /* anonymous abstraction */
+    {
+            /* HACK: if we have been retexted from a "pd", we can take
+            the previous savebuf, otherwise just make an empty binbuf. */
+        if (!(x->x_savebuf = clone_lastsavebuf))
+            x->x_savebuf = binbuf_new();
+    }
+    else /* real abstraction */
+    {
+        x->x_savebuf = 0;
+            /* clone may have been retexted from "pd" */
+        if (clone_lastsavebuf)
+            binbuf_free(clone_lastsavebuf);
+    }
+    clone_lastsavebuf = 0;
+    if (!(c = clone_makeone(x)))
+        goto fail;
         /* inlets */
     x->x_nin = obj_ninlets(&c->gl_obj);
     if (x->x_nin > 0)
@@ -674,9 +877,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             x->x_invec[i].i_signal =
                 obj_issignalinlet(&c->gl_obj, i);
             x->x_invec[i].i_n = i;
-            if (x->x_invec[i].i_signal)
-                inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
-                    &s_signal, &s_signal);
+            if (x->x_invec[i].i_signal) /* NB: don't use signalinlet_new()! */
+                inlet_new(&x->x_obj, &x->x_invec[i].i_pd, &s_signal, &s_signal);
             else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
         }
     }
@@ -718,6 +920,9 @@ fail:
         freebytes(x->x_argv, sizeof(x->x_argc * sizeof(*x->x_argv)));
     freebytes(x, sizeof(t_clone));
     canvas_resume_dsp(dspstate);
+    if (clone_lastsavebuf)
+        binbuf_free(clone_lastsavebuf);
+    clone_lastsavebuf = 0;
     return (0);
 }
 
@@ -743,6 +948,8 @@ static void clone_free(t_clone *x)
         t_freebytes(x->x_outvec, x->x_nout * sizeof(*x->x_outvec));
         clone_voicetovis = voicetovis;
     }
+    if (x->x_savebuf)
+        binbuf_free(x->x_savebuf);
 }
 
 void clone_setup(void)
@@ -757,6 +964,8 @@ void clone_setup(void)
     class_addmethod(clone_class, (t_method)clone_set, gensym("set"),
         A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_saved, gensym("saved"),
+        A_GIMME, 0);
+    class_addmethod(clone_class, (t_method)clone_restore, gensym("restore"),
         A_GIMME, 0);
     class_addmethod(clone_class, (t_method)clone_dsp, gensym("dsp"),
         A_CANT, 0);
