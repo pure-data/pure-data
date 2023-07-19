@@ -13,6 +13,9 @@ array set ::scrollbox::entrytext {}
 
 proc ::scrollbox::get_curidx { mytoplevel } {
     set box $mytoplevel.listbox.box
+    if { ! [winfo exists $box] } {
+        return
+    }
     set idx [$box index active]
     if {$idx < 0 || \
             $idx == [$box index end]} {
@@ -105,11 +108,17 @@ proc ::scrollbox::add_item { mytoplevel add_method } {
     } else {
         set dir [$add_method]
     }
-    insert_item $mytoplevel [expr {[get_curidx $mytoplevel] + 1}] $dir
+    set idx [get_curidx $mytoplevel]
+    if { $idx ne {} } {
+        insert_item $mytoplevel [expr {[get_curidx $mytoplevel] + 1}] $dir
+    }
 }
 
 proc ::scrollbox::edit_item { mytoplevel edit_method } {
     set idx [get_curidx $mytoplevel]
+    if { $idx eq {} } {
+        return
+    }
     set box $mytoplevel.listbox.box
     set initialValue [$box get $idx]
     if {$initialValue != ""} {
@@ -117,6 +126,9 @@ proc ::scrollbox::edit_item { mytoplevel edit_method } {
             set dir [::scrollbox::my_edit $mytoplevel $initialValue ]
         } else {
             set dir [$edit_method $initialValue]
+        }
+        if { ! [winfo exists $box ] } {
+            return
         }
 
         if {$dir != ""} {
