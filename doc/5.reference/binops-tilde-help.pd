@@ -131,7 +131,7 @@
 #X obj 86 163 sig~ 2;
 #X obj 146 163 sig~ 5;
 #X text 128 255 value summed to all channels, f 16;
-#X text 42 15 All of these objects work with multichannel signals. If both inputs have the same amoun of channels \, then operations are done at each corresponding channels. In case the number mismatch \, the input with less channels wrap around and copy the first channels until reaching the number of channels of the other input. This is specially useful to use a single channel value (or a float) to apply an operation to every channel in a multisignal connection., f 67;
+#X text 37 13 All of these objects work with multichannel signals. If both inputs have the same amount of channels \, then operations are done at each corresponding channels. In case the numbers mismatch \, the input with less channels wraps around and copy the first channels until reaching the number of channels of the other input. This is especially useful when you have a single channel value (or a float) to apply an operation to every channel in a multisignal connection., f 69;
 #X connect 0 0 2 0;
 #X connect 1 0 2 1;
 #X connect 2 0 10 0;
