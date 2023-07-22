@@ -1,61 +1,25 @@
 # Pure Data
 
-This is the README file for Pd, a free real-time computer music system.
+Pure Data (Pd) is a free and open-source real-time computer music system. It provides a graphical programming environment that enables musicians, artists, and researchers to create interactive audio and multimedia applications. Pd is available for Linux, macOS, and Microsoft Windows.
 
 ## Getting Pd
 
-You can get Pd for Linux, macOS, or Microsoft Windows from:
+You can download Pd from the official website at http://msp.ucsd.edu/software.html or from the Pure Data community site at https://puredata.info. Installation instructions are provided in the INSTALL.txt file and the Pd Manual, which can be found at http://msp.ucsd.edu/Pd_documentation/index.htm. If you download and unpack Pd, you will also find the Manual locally in the doc/1.manual/index.htm file.
 
-    http://msp.ucsd.edu/software.html
+On Linux (or FreeBSD), you can download Pd via your package manager, e.g., apt-get install puredata or dnf install puredata. Alternatively, you can download the source and compile it as described in INSTALL.txt.
 
-or from the Pure Data community site:
+On macOS, Pd binaries are distributed as a .tar.gz file. The web browser will probably download this archive into your Downloads folder. Double-click to extract the archived Mac app, which you can then run and/or drag into your Applications folder.
 
-    https://puredata.info
+On Microsoft Windows, Pd binaries are distributed as a self-extracting executable or as a .zip file.
 
-Installation instructions are in INSTALL.txt and the Pd Manual at:
+Once you have installed Pd, you can start using it to create your own audio and multimedia applications. Pd provides a visual programming interface where you can create patches by connecting objects together to form signal processing chains. You can use Pd to generate sounds, control synthesizers, process audio and video streams, create interactive installations, and much more.
 
-    http://msp.ucsd.edu/Pd_documentation/index.htm
-
-If you download and unpack Pd, you will also find the Manual locally
-in the file "doc/1.manual/index.htm".
-
-Linux (or FreeBSD): In some Linux installations you can download Pd via "apt-get
-install puredata" or "dnf install puredata"; otherwise you can download
-the source and compile it as described in INSTALL.txt.
-
-Apple macOS: Pd binaries are distributed as a "tar.gz" file. The web browser
-will probably download this archive into your Downloads folder. Double click
-to extract the archived Mac app which you can then run and/or drag into your
-Applications folder.
-
-Microsoft Windows: Pd binaries are distributed as a self-extracting executable
-or as a "zip" file.
-
-If you have questions about Pd or if you wish to be notified of releases,
-you can browse and/or join the Pd mailing list:
-
-    https://lists.puredata.info/listinfo
-
-Many extensions to Pd are available, for instance to add video and 3D graphics.
-The easiest way to get these is to use the "Find externals" command in Pd's Help
-menu.
+Pd supports many third-party extensions, including libraries for adding video and 3D graphics. You can use the "Find externals" command in Pd's Help menu to browse and install these extensions.
 
 ## Copyright
 
-Except as otherwise noted, all files in the Pd distribution are
-
-    Copyright (c) 1997-2021 Miller Puckette and others.
-
-For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see LICENSE.txt included in the Pd distribution.
-(Note that Tcl/Tk, expr, and some other files are copyrighted separately).
+All files included in the Pd distribution, except as otherwise noted, are protected by copyright and owned by Miller Puckette and others. The files are licensed under the terms of the LICENSE.txt document that is included in the Pd distribution. Please note that some files, such as Tcl/Tk and expr, may be copyrighted separately.
 
 ## Acknowledgements
 
-Thanks to Harry Castle, Krzysztof Czaja, Mark Danks, Christian Feldbauer,
-Guenter Geiger, Kerry Hagan, Trevor Johnson, Fernando Lopez-Lezcano, Adam
-Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
-Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
-Wilcox, David Zicarelli, IOhannes m zmoelnig, and probably many others for
-contributions of code, documentation, ideas, and expertise. This work has
-received support from Intel, Keith McMillen Instruments, ZKM, IEM, and UCSD.
+We would like to extend our gratitude to the following individuals, among many others, for their invaluable contributions of code, documentation, ideas, and expertise: Harry Castle, Krzysztof Czaja, Mark Danks, Christian Feldbauer, Guenter Geiger, Kerry Hagan, Trevor Johnson, Fernando Lopez-Lezcano, Adam Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch, Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan Wilcox, David Zicarelli, and IOhannes m zmoelnig. We would also like to acknowledge the support that this work has received from Intel, Keith McMillen Instruments, ZKM, IEM, and UCSD.

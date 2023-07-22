@@ -1,12 +1,11 @@
 # Installing Pure Data
 
-This README file contains info for installing Pure Data from source.
+This README file provides instructions for installing Pure Data from source.
 
-Pd is built on the commandline using traditional Unix-style tools. The source
-distribution comes with two build systems:
+Pd is built using traditional Unix-style command line tools. The source distribution comes with two build systems:
 
-* autotools: easy to use, many compilation options, recommended for most users
-* makefile: smaller & simpler, used for Pd binary downloads
+* Autotools: This system is user-friendly and offers many compilation options. It is recommended for most users.
+* Makefile: This system is smaller and simpler and is used for Pd binary downloads.
 
 ## Requirements
 
