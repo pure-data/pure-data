@@ -395,7 +395,19 @@ int sys_main(int argc, const char **argv)
     if (getuid() != geteuid())
     {
         fprintf(stderr, "warning: canceling setuid privilege\n");
-        setuid(getuid());
+        if(setuid(getuid()) < 0) {
+                /* sometimes this fails (which, according to 'man 2 setuid' is a
+                 * grave security error), in which case we bail out and quit. */
+            fprintf(stderr, "\n\nFATAL: could not cancel setuid privilege");
+            fprintf(stderr, "\nTo fix this, please remove the setuid flag from the Pd binary");
+            if(argc>0) {
+                fprintf(stderr, "\ne.g. by running the following as root/superuser:");
+                fprintf(stderr, "\n chmod u-s '%s'", argv[0]);
+            }
+            fprintf(stderr, "\n\n");
+            perror("setuid");
+            return (1);
+        }
     }
 #endif  /* _WIN32 */
     if (socket_init())
