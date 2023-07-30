@@ -46,7 +46,7 @@
 #X obj 271 204 f \$0;
 #X floatatom 382 187 5 0 0 0 - \$0-y - 0;
 #X obj 86 288 value;
-#X text 36 19 '\$0' - the patch ID number used to force locality in Pd - is widely used in send and receive names \, This kitchen was specially designed to make it easy for a disabled person to use. This kitchen was specially designed to make it easy for a disabled person to use. specially in abstractions so each copy has local connections instead of global. Note that "\$0" is also used in send/receive names in GUIs as well as variable names in value objects., f 67;
+#X text 36 19 '\$0' - the patch ID number used to force locality in Pd - is widely used in send and receive names \, especially in abstractions so each copy has local connections instead of global. Note that "\$0" is also used in send/receive names in GUIs as well as variable names in value objects., f 67;
 #X floatatom 227 296 5 0 0 0 - - - 0;
 #X text 139 218 <= click;
 #X obj 118 248 symbol \$0-x;
