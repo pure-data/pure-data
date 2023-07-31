@@ -39,7 +39,7 @@
 #X text 322 675 updated for Pd version 0.51.;
 #X text 85 12 - nonlocal shared value (named variable);
 #X text 82 37 - abbreviation;
-#N canvas 720 150 548 342 Dealing_with_"\$0" 1;
+#N canvas 720 150 548 342 Dealing_with_"\$0" 0;
 #X floatatom 54 237 5 0 0 0 - - - 0;
 #X floatatom 389 285 5 0 0 0 - - - 0;
 #X obj 389 254 receive \$0-y;
@@ -56,7 +56,7 @@
 #X obj 271 180 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 227 204 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 118 218 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 36 40 '\$0' - the patch ID number used to force locality in Pd - is widely used in send and receive names. This is specially useful in abstractions so that each copy has local connections instead of global. Note that "\$0" is also used in send/receive names in GUIs as well as variable names in value objects., f 67;
+#X text 36 40 '\$0' - the patch ID number used to force locality in Pd - is widely used in send and receive names. This is especially useful in abstractions so that each copy has local connections instead of global. Note that "\$0" is also used in send/receive names in GUIs as well as variable names in value objects., f 67;
 #X connect 0 0 5 0;
 #X connect 2 0 1 0;
 #X connect 3 0 10 0;
