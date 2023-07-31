@@ -1,6 +1,6 @@
 #N canvas 541 23 578 563 12;
 #X declare -stdpath ./;
-#X floatatom 216 177 5 0 0 0 - - - 0;
+#X floatatom 216 177 8 0 0 0 - - - 0;
 #X msg 113 124 clear;
 #X obj 25 15 hip~;
 #X text 70 14 - one-pole high pass filter;
@@ -42,8 +42,10 @@
 #X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 39 56 [hip~] is a one-pole high pass filter with a specified cutoff frequency. Left (audio) inlet is the incoming audio signal. Right (control) inlet sets cutoff frequency., f 72;
 #X text 162 124 <-- reinitialize internal state;
-#X text 259 176 <-- set cutoff frequency;
+#X text 282 177 <-- set cutoff frequency;
+#X obj 219 150 hsl 169 18 50 5000 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X connect 0 0 15 1;
 #X connect 1 0 15 0;
 #X connect 13 0 15 0;
 #X connect 15 0 14 0;
+#X connect 29 0 0 0;
