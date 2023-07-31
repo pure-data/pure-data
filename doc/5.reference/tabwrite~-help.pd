@@ -21,7 +21,6 @@
 #X obj 182 482 soundfiler;
 #X text 136 262 start at index 500 (middle of this table), f 22;
 #N canvas 703 134 593 356 Dealing_with_"\$0" 0;
-#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
 #X text 431 244 <= array with local name, f 13;
 #X msg 153 216 set \$1;
 #X obj 153 190 symbol \$0-x;
@@ -32,11 +31,12 @@
 #X text 36 86 You can use "\$0" in an array name and if you need to set the array name you can load it in a symbol object \, since "\$0" doesn't work in messages., f 70;
 #X obj 153 165 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 160 251 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X connect 2 0 6 0;
-#X connect 3 0 2 0;
-#X connect 7 0 6 0;
-#X connect 9 0 3 0;
-#X connect 10 0 6 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is especially useful in abstractions so each copy has local names instead of global., f 70;
+#X connect 1 0 5 0;
+#X connect 2 0 1 0;
+#X connect 6 0 5 0;
+#X connect 8 0 2 0;
+#X connect 9 0 5 0;
 #X restore 323 409 pd Dealing_with_"\$0";
 #X text 161 400 open subpatch to see how to deal with '\$0', f 21;
 #N canvas 651 119 583 293 reference 0;

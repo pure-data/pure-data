@@ -1,4 +1,4 @@
-#N canvas 551 23 665 661 12;
+#N canvas 432 23 665 661 12;
 #X declare -stdpath ./;
 #X floatatom 81 298 5 0 0 0 - - - 0;
 #X obj 81 328 sig~ 100;
@@ -22,8 +22,7 @@
 #X msg 101 363 set wave1;
 #X msg 111 389 set wave2;
 #X obj 217 512 declare -stdpath ./;
-#N canvas 792 194 574 404 Dealing_with_"\$0" 0;
-#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
+#N canvas 715 168 574 404 Dealing_with_"\$0" 0;
 #X text 394 262 <= array with local name, f 13;
 #X obj 262 261 array define \$0-x;
 #X obj 178 279 f \$0;
@@ -38,14 +37,15 @@
 #X text 240 185 You can also load '\$0' in a float object and send it to a message that works like a send to send messages to an array., f 40;
 #X text 158 151 click to set name;
 #X text 36 86 You can use "\$0" in an array name and if you need to set the array name you can load it in a symbol object \, since "\$0" doesn't work in messages., f 70;
-#X connect 3 0 4 0;
-#X connect 6 0 11 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is especially useful in abstractions so each copy has local names instead of global., f 70;
+#X connect 2 0 3 0;
+#X connect 5 0 10 0;
+#X connect 6 0 5 0;
 #X connect 7 0 6 0;
-#X connect 8 0 7 0;
-#X connect 9 0 11 0;
-#X connect 10 0 3 0;
-#X connect 11 0 5 0;
-#X connect 11 0 5 1;
+#X connect 8 0 10 0;
+#X connect 9 0 2 0;
+#X connect 10 0 4 0;
+#X connect 10 0 4 1;
 #X restore 435 536 pd Dealing_with_"\$0";
 #X obj 451 360 array define wave1;
 #X obj 451 384 array define wave2;
