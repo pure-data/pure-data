@@ -220,10 +220,15 @@ find "${PDWINDIR}" -type d -printf 'RMDir "$INSTDIR/%P"\n' \
 echo "!insertmacro MUI_PAGE_LICENSE \"${PDWINDIR}/LICENSE.txt\"" \
   > "${LICENSEFILE}"
 
+
+# if we are on mingw/cygwin, we have to unmangle the directories
+WWORKDIR=$(cygpath -m "${WORKDIR}" 2>/dev/null || echo "${WORKDIR}")
+WOUTDIR=$(cygpath -m "${OUTDIR}" 2>/dev/null || echo "${OUTDIR}")
+
 # uninstall/license/... information into pd.nsi script
 cat "${SCRIPTDIR}/pd.nsi" | sed \
-	-e "s|include \"/tmp/|include \"${WORKDIR}/|" \
-	-e "s|OutFile \"/tmp/|OutFile \"${OUTDIR}/|" \
+	-e "s|include \"/tmp/|include \"${WWORKDIR}/|" \
+	-e "s|OutFile \"/tmp/|OutFile \"${WOUTDIR}/|" \
 	> "${NSIFILE}"
 
 # check if we have nsis compiler
