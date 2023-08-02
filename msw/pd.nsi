@@ -1,10 +1,5 @@
 ;
-; to make this work outside of Miller's machines (and on Windows) create a 'C:\tmp' dir and
-; remove all occurrences of '/tmp/' except on :
 ;
-;   "OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
-;
-
 ; https://stackoverflow.com/questions/36185539/can-i-get-nsis-to-make-a-single-installer-that-handles-local-deployment-and-syst
 ; ./build-nsi.sh G:/gitportable/nsis/pd-0.53.1 0.53.1
 
@@ -95,7 +90,7 @@ InstallDir ""
 !define MUI_ABORTWARNING
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!include "/tmp/license_page.nsh"
+!include "license_page.nsh"
 Page Custom JustForMe JustForMeLeave
 Page Custom Troubleshoot TroubleshootLeave
 Page Custom PreviousInstallationDetected PreviousInstallationDetectedLeave
@@ -498,7 +493,7 @@ SectionGroup /e "${PRODUCT_NAME}"
         ${EndIf}
         x_nosilent:
         SectionIn RO
-        !include "/tmp/install_files_list.nsh"
+        !include "install_files_list.nsh"
         ; write ini file
         WriteINIStr "$INSTDIR\uninst.ini" section1 vname "$VProductName"
         WriteINIStr "$INSTDIR\uninst.ini" section1 shellcontext "$VContext"
@@ -589,7 +584,7 @@ Function un.dirty
 FunctionEnd
 
 Function un.deletefiles
-    !include "/tmp/uninstall_files_list.nsh"
+    !include "uninstall_files_list.nsh"
     Delete "$INSTDIR\${PRODUCT_NAME}.url"
     Delete "$INSTDIR\uninst.ini"
     Delete "$INSTDIR\uninst.exe"
