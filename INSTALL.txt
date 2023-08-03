@@ -336,8 +336,7 @@ Install git if you want to clone the Pd sources from Github, etc:
 
 and/or the nsis installer tool if you want to build the Pd Windows installer:
 
-    # 64 bit
-    pacman -S mingw-w64-x86_64-nsis
+    (Currently we only support 32bit installers)
 
     # 32 bit
     pacman -S mingw-w64-i686-nsis

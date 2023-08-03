@@ -1,4 +1,11 @@
+; IMPORTANT NOTICE TO MSYS2 USERS:
 ;
+; currently we only support building with 32bit NSIS.
+; so use the mingw32/mingw-w64-i686-nsis package from pacman and
+; build from a MINGW32 shell.
+; this could change in the future but for now we keep in sync with nsis
+; that comes in package managers for Debian and Fedora (possibly others)
+; which are 32bit nsis.
 ;
 ; https://stackoverflow.com/questions/36185539/can-i-get-nsis-to-make-a-single-installer-that-handles-local-deployment-and-syst
 ; ./build-nsi.sh G:/gitportable/nsis/pd-0.53.1 0.53.1
