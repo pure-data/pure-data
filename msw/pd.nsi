@@ -1,14 +1,7 @@
-; IMPORTANT NOTICE TO MSYS2 USERS:
 ;
-; currently we only support building with 32bit NSIS.
-; so use the mingw32/mingw-w64-i686-nsis package from pacman and
-; build from a MINGW32 shell.
-; this could change in the future but for now we keep in sync with nsis
-; that comes in package managers for Debian and Fedora (possibly others)
-; which are 32bit nsis.
 ;
 ; https://stackoverflow.com/questions/36185539/can-i-get-nsis-to-make-a-single-installer-that-handles-local-deployment-and-syst
-; ./build-nsi.sh G:/gitportable/nsis/pd-0.53.1 0.53.1
+; ./build-nsi.sh -o "c:/tmp" G:/gitportable/nsis/pd-0.53.1 0.53.1
 
 
 ;####################################################
@@ -190,24 +183,14 @@ RequestExecutionLevel highest
 
     Function ${un}DoCheckIfRunning
         ; perhaps all this can be done with an nsis plugin but we just use nsis as it comes from package managers.
-        ; https://stackoverflow.com/questions/2003573/how-to-start-a-64-bit-process-from-a-32-bit-process
-        ; we need this because our installer is a 32bit app and we get access for a 32bit cmd and we can't do 'qprocess' in non native OS arch
-        ; https://www.samlogic.net/articles/sysnative-folder-64-bit-windows.htm
 
         ReadEnvStr $0 COMSPEC
-        nsExec::ExecToStack '"$0" /c cd %programfiles(x86)%'
+        nsExec::ExecToStack '"$0" /c tasklist | find /I "$PdProcess"'
         Pop $1
         Pop $2
         ${If} $2 == ""
-            ; we are on a 64bit OS. This will fail only on an 64-bit XP but its a rare OS and we only care about the 32-bit XP.
-            nsExec::ExecToStack '"$0" /c cd %windir%\sysnative && qprocess $PdProcess'
+            goto good
         ${Else}
-            ; we are on a 32-bit OS.
-            nsExec::ExecToStack '"$0" /c qprocess $PdProcess'
-        ${EndIf}
-        Pop $1
-        Pop $2
-        ${If} $2 != "No Process exists for $PdProcess$\r$\n"
             IfSilent default
             HideWindow
             MessageBox MB_OK "Refusing to continue. Save your work and quit \
@@ -215,6 +198,7 @@ RequestExecutionLevel highest
             default:
             quit
         ${EndIf}
+        good:
     FunctionEnd
 
     Function ${un}CheckIfRunning
