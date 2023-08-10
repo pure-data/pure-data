@@ -683,7 +683,7 @@ static int rb_dosendone(ring_buffer* rb, const int ignoreSigFd)
             }
             else
                 iot_error("rbrmfdsend is not inited. Cannot delete fd %d\n", m.socket);
-            if(m.socket == INTER->i_guisock->sk_fd)
+            if(INTER->i_guisock && m.socket == INTER->i_guisock->sk_fd)
                 gui_failed("pd-to-gui socket");
         }
     }
@@ -2621,7 +2621,7 @@ static int sys_do_startgui(const char *libdir)
 
         sys_closesocket(sockfd);
 
-        if (INTER->i_guisock < 0)
+        if (guisock < 0)
         {
             sys_sockerror("accept");
             return (1);
@@ -2781,7 +2781,7 @@ void sys_bail(int n)
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__)
             /* sys_close_audio() hangs if you're in a signal? */
-        fprintf(stderr ,"gui socket %d - \n", INTER->i_guisock->sk_fd);
+        fprintf(stderr ,"gui socket %d - \n", INTER->i_guisock ? INTER->i_guisock->sk_fd : -1);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");
