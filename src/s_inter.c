@@ -599,8 +599,8 @@ static int rb_dosendone(ring_buffer* rb, const int ignoreSigFd)
     size_t length;
     char* buf = INTER->i_iothreadbuf;
     int bufsize = INTER->i_iothreadbufsize;
-    struct sockaddr rbaddr;
-    struct sockaddr* addr;
+    struct sockaddr_storage rbaddr;
+    struct sockaddr_storage* addr;
     int flags;
     struct rb_sendto_msg m;
     if(rb_read_from_buffer(rb, (char*)&m, sizeof(m)) < 0)
@@ -611,6 +611,11 @@ static int rb_dosendone(ring_buffer* rb, const int ignoreSigFd)
     //printf("dosendone: fd: %d, length: %zu, flags: %d, addrlen: %u\n", m.socket, m.length, m.flags, m.addrlen);
     if(m.addrlen)
     {
+        if(m.addrlen > sizeof(rbaddr))
+        {
+            iot_error("addrlen %d larger than allowed %zu\n", m.addrlen, sizeof(rbaddr));
+            return -1;
+        }
         if(rb_read_from_buffer(rb, (char*)&rbaddr, m.addrlen) < 0)
         {
             iot_error("we should not be here 1");
@@ -648,7 +653,7 @@ static int rb_dosendone(ring_buffer* rb, const int ignoreSigFd)
             // do multiple writes here
             // TCP: addrlen will have been set to 0 and addr to NULL, so this
             // is equivalent to send()
-            ret = sendto(m.socket, buf, toread, flags, addr, m.addrlen);
+            ret = sendto(m.socket, buf, toread, flags, (struct sockaddr*)addr, m.addrlen);
             if(ret < 0)
                 failed = 1;
             else
