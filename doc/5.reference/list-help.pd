@@ -215,7 +215,7 @@
 #X text 394 538 input list if shorter than 'n', f 16;
 #X text 25 53 The [list split] object takes lists and outputs the first 'n' items (left outlet) and the remaining ones (middle outlet). If the incoming list also has 'n' items \, the middle outlet spits a bang (the same as a list with zero elements). The two outputs appear in the usual right-to-left order., f 75;
 #X text 175 204 non-list messages are converted to lists;
-#X text 344 601 the rest of the list (or bang if input list's lenght = n), f 29;
+#X text 344 601 the rest of the list (or bang if input list's length = n), f 29;
 #X text 159 255 a bang is a zero element list (goes out the right outlet if n > 0), f 35;
 #X text 247 295 floats/symbols are one element lists;
 #X text 25 116 In case there are fewer than 'n' items in the list \, it is output (in its entirety) via the third outlet instead. The creation argument or the inlet sets the 'n' split point. Lowest split point 'n' is zero \, in which case a bang (zero element list) comes out the left outlet and the input list comes out via the mid outlet., f 75;

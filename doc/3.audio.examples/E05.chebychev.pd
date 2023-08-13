@@ -4,7 +4,7 @@
 #X obj 52 99 / 100;
 #X floatatom 52 77 5 0 100 0 - - - 0;
 #X obj 34 171 *~;
-#X text 436 564 updated for Pd version 0.37;
+#X text 456 557 updated for Pd version 0.37;
 #X obj 34 50 osc~ 220;
 #X obj 52 122 pack 0 50;
 #X obj 52 146 line~;
@@ -169,10 +169,10 @@
 #X text 589 127 6;
 #X obj 34 224 +~ 129;
 #X obj 34 281 hip~ 5;
-#X text 148 291 This patch demonstrates using Chebychev polynomials (of the first kind) to generate pure harmonics using waveshaping. The pure harmonic only comes out when the index is one (top of the scale). Smaller indices will give various mixes of harmonics. The table initially holds the fifth Chebychev polynomial \, so you can get the fifth harmonic., f 62;
-#X text 148 382 There is an audible "rolling" sound as the index changes for the higher degree polynomials \, because the amplitudes of the lower partials can rise and fall several times apiece as the index rises from zero to one., f 62;
-#X text 148 445 Indices greater than one will try to read values outside the table (which would be clipped appropriately). Anyway \, the polynomials increase rapidly in value outside the interval from -1 to 1 that we are using here., f 62;
-#X text 148 508 When you get tired of Chebychev polynomials you can draw your own functions by hand and/or try other formulas., f 62;
+#X text 168 284 This patch demonstrates using Chebychev polynomials (of the first kind) to generate pure harmonics using waveshaping. The pure harmonic only comes out when the index is one (top of the scale). Smaller indices will give various mixes of harmonics. The table initially holds the fifth Chebychev polynomial \, so you can get the fifth harmonic., f 62;
+#X text 168 375 There is an audible "rolling" sound as the index changes for the higher degree polynomials \, because the amplitudes of the lower partials can rise and fall several times apiece as the index rises from zero to one., f 62;
+#X text 168 438 Indices greater than one will try to read values outside the table (which would be clipped appropriately). Anyway \, the polynomials increase rapidly in value outside the interval from -1 to 1 that we are using here., f 62;
+#X text 168 501 When you get tired of Chebychev polynomials you can draw your own functions by hand and/or try other formulas., f 62;
 #X text 99 77 <= index in;
 #X text 42 5 WAVESHAPING WITH CHEBYCHEV POLYNOMIALS;
 #X text 458 86 subpatch to calculate Chebychev polynomials, f 21;
@@ -192,7 +192,6 @@
 #X connect 13 0 12 0;
 #X connect 19 0 10 0;
 #X connect 20 0 0 0;
-#X connect 20 0 0 1;
 #X connect 29 0 12 1;
 #X connect 30 0 12 2;
 #X connect 31 0 12 3;

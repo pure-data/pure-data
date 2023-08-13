@@ -5,8 +5,8 @@
 #X obj 40 18 tabosc4~;
 #X text 186 370 message to switch tables;
 #X obj 308 270 loadbang;
-#X obj 81 502 output~;
-#X text 17 596 see also:;
+#X obj 81 492 output~;
+#X text 17 608 see also:;
 #X obj 91 597 osc~;
 #X msg 139 423 0;
 #X msg 176 423 0.5;
@@ -21,7 +21,7 @@
 #X obj 81 455 tabosc4~ wave1;
 #X msg 101 363 set wave1;
 #X msg 111 389 set wave2;
-#X obj 189 514 declare -stdpath ./;
+#X obj 217 512 declare -stdpath ./;
 #N canvas 792 194 574 404 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
 #X text 394 262 <= array with local name, f 13;
@@ -49,7 +49,7 @@
 #X restore 435 536 pd Dealing_with_"\$0";
 #X obj 451 360 array define wave1;
 #X obj 451 384 array define wave2;
-#X obj 24 626 array;
+#X obj 171 624 array;
 #X text 427 497 open subpatch to see how to deal with '\$0', f 21;
 #X obj 190 597 tabwrite~;
 #N canvas 731 147 584 276 reference 0;
@@ -73,7 +73,7 @@
 #X text 571 19 <= click;
 #X obj 8 49 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 8 580 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X text 428 607 updated for Pd version 0.33;
+#X text 448 598 updated for Pd version 0.33;
 #N canvas 643 412 384 186 array-examples 0;
 #N canvas 491 316 457 285 open 0;
 #X obj 120 23 inlet;
@@ -96,15 +96,15 @@
 #X text 47 22 See also and the "array" examples from the section 2 of Pd's tutorial:, f 39;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X restore 73 626 pd array-examples;
+#X restore 220 624 pd array-examples;
 #X text 110 19 - 4-point interpolating wavetable oscillator;
 #X text 43 60 [tabosc4~] is a traditional computer music style wavetable lookup oscillator using 4-point polynomial interpolation. The table should have a power of two points plus three "guard points" \, one at the beginning and two at the end \, which should be wraparound copies of the last point and the first two points \, respectively. The "sinesum" and "cosinesum" methods for arrays do this automatically for you if you just want to specify partial strengths., f 77;
+#X obj 91 625 soundfiler;
 #X connect 0 0 1 0;
 #X connect 1 0 18 0;
 #X connect 4 0 17 0;
 #X connect 8 0 18 1;
 #X connect 9 0 18 1;
 #X connect 18 0 5 0;
-#X connect 18 0 5 1;
 #X connect 19 0 18 0;
 #X connect 20 0 18 0;

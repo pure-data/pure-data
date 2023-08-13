@@ -1,17 +1,20 @@
 /* Copyright (c) 2021 IOhannes m zmölnig.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
-
 /* The "file" object. */
 #define _XOPEN_SOURCE 600
+#define _DEFAULT_SOURCE
 
 #include "m_pd.h"
 #include "g_canvas.h"
 #include "s_utf8.h"
 
+#include "m_private_utils.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
@@ -24,6 +27,7 @@
 
 #ifdef _WIN32
 # include <windows.h>
+# include <direct.h>
 # include <io.h>
 #else
 # include <glob.h>
@@ -35,15 +39,6 @@
 typedef unsigned int mode_t;
 typedef SSIZE_T ssize_t;
 # define wstat _wstat
-# define snprintf _snprintf
-#endif
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
 #endif
 
 #ifndef S_ISREG
@@ -51,6 +46,10 @@ typedef SSIZE_T ssize_t;
 #endif
 #ifndef S_ISDIR
 # define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
+#ifndef X_FILE_DEBUG
+# define X_FILE_DEBUG PD_DEBUG
 #endif
 
 #ifdef _WIN32
@@ -66,19 +65,20 @@ static int do_delete_ucs2(wchar_t*pathname) {
 }
 
 static int sys_stat(const char *pathname, struct stat *statbuf) {
-    int16_t ucs2buf[MAX_PATH];
+    uint16_t ucs2buf[MAX_PATH];
     u8_utf8toucs2(ucs2buf, MAX_PATH, pathname, strlen(pathname));
     return wstat(ucs2buf, statbuf);
 }
 
 static int sys_rename(const char *oldpath, const char *newpath) {
-    int16_t src[MAX_PATH], dst[MAX_PATH];
+    uint16_t src[MAX_PATH], dst[MAX_PATH];
     u8_utf8toucs2(src, MAX_PATH, oldpath, MAX_PATH);
     u8_utf8toucs2(dst, MAX_PATH, newpath, MAX_PATH);
     return _wrename(src, dst);
 }
 static int sys_mkdir(const char *pathname, mode_t mode) {
     uint16_t ucs2name[MAX_PATH];
+    (void)mode;
     u8_utf8toucs2(ucs2name, MAX_PATH, pathname, MAX_PATH);
     return !(CreateDirectoryW(ucs2name, 0));
 }
@@ -86,6 +86,22 @@ static int sys_remove(const char *pathname) {
     uint16_t ucs2buf[MAXPDSTRING];
     u8_utf8toucs2(ucs2buf, MAXPDSTRING, pathname, MAXPDSTRING);
     return do_delete_ucs2(ucs2buf);
+}
+static char* sys_getcwd(char *buf) {
+    uint16_t ucs2buf[MAXPDSTRING];
+    memset(ucs2buf, 0, sizeof(ucs2buf));
+    if (!_wgetcwd(ucs2buf, MAXPDSTRING))
+        return 0;
+
+    u8_ucs2toutf8(buf, MAXPDSTRING-1, ucs2buf, -1);
+    buf[MAXPDSTRING-1] = 0;
+    sys_unbashfilename(buf, buf);
+    return buf;
+}
+static int sys_chdir(const char *path) {
+    uint16_t ucs2buf[MAXPDSTRING];
+    u8_utf8toucs2(ucs2buf, MAXPDSTRING, path, MAXPDSTRING);
+    return _wchdir(ucs2buf);
 }
 #else
 static int sys_stat(const char *pathname, struct stat *statbuf) {
@@ -101,26 +117,12 @@ static int sys_mkdir(const char *pathname, mode_t mode) {
 static int sys_remove(const char *pathname) {
     return remove(pathname);
 }
-#endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-# define HAVE_ALLOCA 1
-#endif
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#if HAVE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
+static char* sys_getcwd(char *buf) {
+    return getcwd(buf, MAXPDSTRING);
+}
+static int sys_chdir(const char *path) {
+    return chdir(path);
+}
 #endif
 
     /* expand env vars and ~ at the beginning of a path and make a copy to return */
@@ -188,6 +190,115 @@ static int str_endswith(char* str, char* end){
     return strcmp(str + strsize - endsize, end) == 0;
 }
 
+static t_symbol*do_splitpath(const char*path, int*argc, t_atom**argv) {
+    t_symbol*slashsym = gensym("/");
+    t_atom*outv;
+    int outc=0, outsize=1;
+    char buffer[MAXPDSTRING], *pathname=buffer;
+    sys_unbashfilename(path, buffer);
+    buffer[MAXPDSTRING-1] = 0;
+
+        /* first count the number of path components */
+    while(*pathname)
+        outsize += ('/'==*pathname++);
+    pathname=buffer;
+    outv = (t_atom*)getbytes(outsize * sizeof(*outv));
+
+    if('/' == *pathname)
+        SETSYMBOL(outv+outc, slashsym), outc++;
+
+    while(*pathname) {
+        char*pathsep;
+        while('/' == *pathname)
+            pathname++;
+        pathsep=strchr(pathname, '/');
+        if(!pathsep) {
+            if(*pathname)
+                SETSYMBOL(outv+outc, gensym(pathname)), outc++;
+            break;
+        }
+        *pathsep=0;
+        SETSYMBOL(outv+outc, gensym(pathname)), outc++;
+        pathname=pathsep+1;
+    }
+
+    if(outc != outsize) {
+        t_atom*a=resizebytes(outv, outsize * sizeof(*outv), outc * sizeof(*outv));
+        if(!a) {
+            freebytes(outv, outsize * sizeof(*outv));
+            outsize = outc = 0;
+        }
+        outv = a;
+    }
+    *argc = outc;
+    *argv = outv;
+    return (*pathname)?0:slashsym;
+}
+
+/* joins up all the path-components (using '/' as the path delimiter)
+ * the (optional) prefix is prepended to the string
+   (to be used for Windows volumes)
+ * the (optional) suffix is present in the result (and appended if required to the string)
+   (to be used for trailing slash)
+ * atoms that are A_NULL are skipped
+ */
+static t_symbol*do_joinpath(t_symbol*prefix, int argc, t_atom*argv, t_symbol*suffix) {
+        /* luckily for us, the path-separator in Pd is always '/' */
+    const char pathseparator = '/';
+    size_t alen, bufsize = 0;
+    char buffer[MAXPDSTRING];
+    t_symbol*result = 0;
+    int needseparator = 0;
+    int i;
+
+    memset(buffer, 0, sizeof(buffer));
+
+    if(prefix) {
+        strcpy(buffer+bufsize, prefix->s_name);
+        bufsize += strlen(prefix->s_name);
+    }
+
+    for(i=0; i<argc; i++) {
+        char sbuf[MAXPDSTRING];
+        const char*abuf=sbuf;
+        t_atom*a = argv+i;
+        switch(a->a_type) {
+        case A_NULL:
+            abuf = 0;
+            break;
+        case A_SYMBOL:
+            abuf = atom_getsymbol(a)->s_name;
+            break;
+        default:
+            atom_string(a, sbuf, MAXPDSTRING);
+            abuf = sbuf;
+            break;
+        }
+        if(!abuf || !(alen = strlen(abuf))) continue;
+        if(pathseparator == abuf[alen-1])
+            needseparator = 0;
+        if(bufsize+alen+needseparator >= sizeof(buffer))
+            break;
+        if(needseparator) {
+            buffer[bufsize]=pathseparator;
+            bufsize++;
+        }
+        needseparator=1;
+
+        strcpy(buffer+bufsize, abuf);
+        bufsize+=alen;
+    }
+
+    if(suffix && (alen=strlen(suffix->s_name)) && (bufsize+alen)<sizeof(buffer)) {
+        strcpy(buffer+bufsize, suffix->s_name);
+        bufsize+=alen;
+    }
+
+    result = gensym(do_pathnormalize(buffer, buffer));
+    return result;
+}
+
+
 #ifdef _WIN32
 static const char*do_errmsg(char*buffer, size_t bufsize) {
     char errcode[10];
@@ -233,6 +344,103 @@ typedef struct _file_handle {
     t_outlet*x_infoout;
 
 } t_file_handle;
+
+
+static int do_checkpathname(t_file_handle*x, const char*path) {
+    int err_count = 0, warn_count = 0;
+    char buf[4];
+    const char*s;
+
+        /* check for illegal characters */
+    for(s = path; *s; s++) {
+        const char*ill = "illegal";
+        int oops = 0;
+        switch(*s) {
+        case ':': case '\\':
+            ill = "reserved";
+                /* falls through */
+        case '<': case '>':
+        case '|':
+        case '"':
+                //case '/':
+        case '?': case '*':
+            oops++;
+            break;
+        default:
+            if(*s<32)
+                oops++;
+        }
+
+        if(oops) {
+#ifdef _WIN32
+            if(x->x_verbose)
+                pd_error(x, "the path \"%s\" contains the character '%c', which is %s.", path, *s, ill);
+            err_count++;
+#else
+            if(x->x_verbose)
+                logpost(x, X_FILE_DEBUG, "cross-platform issue: the path \"%s\" contains the character '%c', which is %s on MSW.", path, *s, ill);
+            warn_count++;
+#endif
+            goto fail;
+        }
+    }
+
+        /* check for illegal names */
+    strncpy(buf, path, sizeof(buf));
+    buf[3] = 0;
+    if(buf[2]) {
+        const char* forbidden_names0[] = {"AUX", "CON", "NUL", "PRN", 0};
+        const char* forbidden_names1[] = {"COM", "LPT", 0};
+        const char**ref;
+            /* upper-case the string */
+        int i;
+        for(i=0; i<3; i++) {
+            if (buf[i] >= 'a' && buf[i] <= 'z')
+                buf[i] = buf[i] - ('a' - 'A');
+        }
+            /* AUX, CON, NULL, PRN */
+        for(ref = forbidden_names0; *ref; ref++) {
+            if(!strcmp(*ref, buf)
+                && (!path[3] || '.' == path[3])) {
+#ifdef _WIN32
+                if(x->x_verbose)
+                    pd_error(x, "the path \"%s\" contains the reserved name '%s'.", path, *ref);
+                err_count++;
+#else
+                if(x->x_verbose)
+                    logpost(x, X_FILE_DEBUG, "cross-platform issue: the path \"%s\" contains the name '%s' which is reserved on MSW.", path, *ref);
+                warn_count++;
+#endif
+                goto fail;
+            }
+        }
+            /* COM[1-9], LPT[1-9] */
+        for(ref = forbidden_names1; *ref; ref++) {
+            if(!strcmp(*ref, buf)
+                && path[3] > '0' && path[3] <= '9'
+                && (!path[4] || '.' == path[4])) {
+#ifdef _WIN32
+                if(x->x_verbose)
+                    pd_error(x, "the path \"%s\" contains the reserved name '%s[1-9]'.", path, *ref);
+                err_count++;
+#else
+                if(x->x_verbose)
+                    logpost(x, X_FILE_DEBUG, "cross-platform issue: the path \"%s\" contains the name '%s[1-9]' which is reserved on MSW.", path, *ref);
+                warn_count++;
+#endif
+                goto fail;
+            }
+        }
+    }
+    return 0;
+
+ fail:
+    if(err_count>0)
+        return 2;
+    if(warn_count>0)
+        return 1;
+    return 0;
+}
 
 static int do_parse_creationmode(t_atom*ap) {
     const char*s;
@@ -462,7 +670,7 @@ static void file_handle_set(t_file_handle*x, t_symbol*s) {
             /* trying to set a name, even though we have an fd open... */
         pd_error(x, "file handle: shadowing local file descriptor with '%s'", s->s_name);
     } else if (!s && x->x_fhptr != &x->x_fh && x->x_fh.fh_fd >= 0) {
-        logpost(x, 3, "file handle: unshadowing local file descriptor");
+        logpost(x, X_FILE_DEBUG, "file handle: unshadowing local file descriptor");
     }
     x->x_fcname = s;
     file_handle_getdefine(x);
@@ -965,6 +1173,69 @@ static void file_which_symbol(t_file_handle*x, t_symbol*s) {
     }
 }
 
+    /* ================ [file patchpath] ====================== */
+
+static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
+    t_canvas *c = x->x_canvas;
+    const char*pathname = 0;
+    int i, parentlevel = 0, effectivelevel = 0;
+
+    switch(argc) {
+    default: goto fail;
+    case 0: break;
+    case 1:
+        switch(argv->a_type) {
+        case(A_SYMBOL):
+            pathname = atom_getsymbol(argv)->s_name;
+            break;
+        case (A_FLOAT):
+            parentlevel = (int)atom_getfloat(argv);
+            break;
+        default: goto fail;
+        }
+        break;
+    case 2:
+        if(A_SYMBOL == argv[0].a_type && A_FLOAT == argv[1].a_type) {
+            pathname = atom_getsymbol(argv+0)->s_name;
+            parentlevel = (int)atom_getfloat(argv+1);
+            break;
+        }
+        goto fail;
+    }
+
+    for (i = 0; i < parentlevel; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+        {
+            c = c->gl_owner;
+            effectivelevel++;
+        }
+    }
+    if (pathname)
+    {
+        if(sys_isabsolutepath(pathname))
+        {
+            s = gensym(pathname);
+        } else {
+            char buf[MAXPDSTRING];
+            snprintf(buf, MAXPDSTRING, "%s/%s",
+                     canvas_getdir(c)->s_name, pathname);
+            buf[MAXPDSTRING-1] = 0;
+            s = gensym(buf);
+        }
+    }
+    else
+        s = canvas_getdir(c);
+
+    outlet_float(x->x_infoout, effectivelevel);
+    outlet_symbol(x->x_dataout, s);
+    return;
+
+ fail:
+    pd_error(x, "bad arguments for message to object 'file patchpath'");
+}
 
     /* ================ [file mkdir] ====================== */
 static void file_mkdir_symbol(t_file_handle*x, t_symbol*dir) {
@@ -1224,74 +1495,49 @@ static void file_move_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
     file_do_copymove(x, "move", file_do_move, s, argc, argv);
 }
 
+/* ================ file cwd  ====================== */
+static void file_cwd_bang(t_file_handle*x) {
+    char buf[MAXPDSTRING];
+    if(sys_getcwd(buf)) {
+        outlet_symbol(x->x_dataout, gensym(buf));
+    } else {
+        if(x->x_verbose)
+            pd_error(x, "could not query current working directory: %s", do_errmsg(buf, MAXPDSTRING));
+        outlet_bang(x->x_infoout);
+    }
+}
+static void file_cwd_symbol(t_file_handle*x, t_symbol*path) {
+    if(!sys_chdir(path->s_name)) {
+        file_cwd_bang(x);
+    } else {
+        if(x->x_verbose) {
+            char buf[MAXPDSTRING];
+            pd_error(x, "could not change the working directory to '%s': %s",
+                     path->s_name, do_errmsg(buf, MAXPDSTRING));
+        }
+        outlet_bang(x->x_infoout);
+    }
+}
+
+
 /* ================ file path operations ====================== */
 static void file_split_symbol(t_file_handle*x, t_symbol*path) {
-    t_symbol*slashsym = gensym("/");
-    t_atom*outv;
-    int outc=0, outsize=1;
-    char buffer[MAXPDSTRING], *pathname=buffer;
-    sys_unbashfilename(path->s_name, buffer);
-    buffer[MAXPDSTRING-1] = 0;
+    int outc = 0;
+    t_atom*outv = 0;
+    t_symbol*slashsym = do_splitpath(path->s_name, &outc, &outv);
 
-        /* first count the number of path components */
-    while(*pathname)
-        outsize += ('/'==*pathname++);
-    pathname=buffer;
-    ALLOCA(t_atom, outv, outsize, 100);
-
-    if('/' == *pathname)
-        SETSYMBOL(outv+outc, slashsym), outc++;
-
-    while(*pathname) {
-        char*pathsep;
-        while('/' == *pathname)
-            pathname++;
-        pathsep=strchr(pathname, '/');
-        if(!pathsep) {
-            if(*pathname)
-                SETSYMBOL(outv+outc, gensym(pathname)), outc++;
-            break;
-        }
-        *pathsep=0;
-        SETSYMBOL(outv+outc, gensym(pathname)), outc++;
-        pathname=pathsep+1;
-    }
-    if (*pathname)
-        outlet_bang(x->x_infoout);
-    else
+    if (slashsym)
         outlet_symbol(x->x_infoout, slashsym);
+    else
+        outlet_bang(x->x_infoout);
 
     outlet_list(x->x_dataout, gensym("list"), outc, outv);
-
-    FREEA(t_atom, outv, outsize, 100);
+    freebytes(outv, outc * sizeof(*outv));
 }
 
 static void file_join_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
-        /* luckily for us, the path-separator in Pd is always '/' */
-    size_t bufsize = 1;
-    char*buffer = getbytes(bufsize);
-    (void)s;
-    while(argc--) {
-        size_t newsize;
-        int needsep=(argc>0);
-        char abuf[MAXPDSTRING], *newbuffer;
-        size_t alen;
-        atom_string(argv++, abuf, MAXPDSTRING);
-        alen = strlen(abuf);
-        if(!alen) continue;
-        if('/' == abuf[alen-1])
-            needsep = 0;
-        newsize = bufsize + alen + needsep;
-        if (!(newbuffer = resizebytes(buffer, bufsize, newsize))) break;
-        buffer = newbuffer;
-        strcpy(buffer+bufsize-1, abuf);
-        if(needsep)
-            buffer[newsize-2]='/';
-        bufsize = newsize;
-    }
-    buffer[bufsize-1] = 0;
-    outlet_symbol(x->x_dataout, gensym(do_pathnormalize(buffer, buffer)));
-    freebytes(buffer, bufsize);
+    s = do_joinpath(0, argc, argv, 0);
+    outlet_symbol(x->x_dataout, s);
 }
 
 static void file_splitext_symbol(t_file_handle*x, t_symbol*path) {
@@ -1346,12 +1592,116 @@ static void file_splitname_symbol(t_file_handle*x, t_symbol*path) {
     }
 }
 
+static void file_normalize_symbol(t_file_handle*x, t_symbol*path) {
+    char _path[MAXPDSTRING];
+    char*xpath=do_expandunbash(path->s_name, _path, sizeof(_path));
+    int argc=0;
+    t_atom*argv=0;
+    t_symbol*dot=gensym("."), *dotdot=gensym("..");
+    t_symbol*slash=gensym("/"), *dotslash=gensym("./");
+    const int isabs=sys_isabsolutepath(xpath);
+    t_symbol*suffix=0,*volume=0, *result=0;
+    int check, changed, i;
+
+#ifdef _WIN32
+    if(xpath[0] && ':' == xpath[1]) {
+        char vol[3];
+        vol[0] = xpath[0];
+        vol[1] = xpath[1];
+        vol[2] = 0;
+        volume = gensym(vol);
+        xpath+=2;
+    }
+#endif
+    suffix=do_splitpath(xpath, &argc, &argv);
+
+        /* drop 'empty' elements ('.') */
+    for(i=isabs; i<argc; i++)
+        if(atom_getsymbol(argv+i) == dot) {
+            argv[i].a_type = A_NULL;
+            continue;
+        }
+
+        /* drop any non-'..' followed by a '..' (recursively) */
+    changed=1;
+    while(changed) {
+        t_atom*last=0;
+        t_symbol*s=0;
+        changed = 0;
+        for(i=isabs; i<argc; i++) {
+            if(A_NULL == argv[i].a_type) continue;
+            s = atom_getsymbol(argv+i);
+            if(s == dotdot) {
+                if (last) {
+                        /* we just encountered a 'xxx/..' portion, that cancels itself out */
+                    last->a_type = argv[i].a_type = A_NULL;
+                    changed = 1;
+                }
+                last = 0;
+            } else {
+                last = argv+i;
+            }
+        }
+    }
+
+        /* drop any leading '..' components in absolute mode... */
+    if(isabs) {
+        for(i=isabs; i<argc; i++) {
+            t_atom*a=argv+i;
+            if(A_NULL == a->a_type) continue;
+            if (dotdot == atom_getsymbol(a)) {
+                a->a_type = A_NULL;
+            } else break;
+        }
+    }
+
+        /* an join the leftovers */
+    result = do_joinpath(volume, argc, argv, suffix);
+
+
+        /* find problematic components */
+    check = 0;
+    for(i=0; i<argc; i++) {
+        t_atom*a=argv+i;
+        int chk;
+        if(A_NULL == a->a_type) continue;
+        chk = do_checkpathname(x, atom_getsymbol(a)->s_name);
+        if(chk>check)check=chk;
+    }
+
+        /* free dynamically allocated memory before outputting data */
+    freebytes(argv, argc * sizeof(*argv));
+
+        /* output the error/warning/ok */
+    outlet_float(x->x_infoout, check);
+
+        /* output the normalized path */
+    if(result && *result->s_name) {
+        if(!isabs && slash == result)
+            outlet_symbol(x->x_dataout, dotslash);
+        else
+            outlet_symbol(x->x_dataout, result);
+    } else {
+        if(suffix)
+            outlet_symbol(x->x_dataout, dotslash);
+        else
+            outlet_symbol(x->x_dataout, dot);
+    }
+}
+
+
+static void file_isabsolute_symbol(t_file_handle*x, t_symbol*path) {
+    char xpath[MAXPDSTRING];
+    outlet_float(x->x_dataout, sys_isabsolutepath(do_expandunbash(path->s_name, xpath, MAXPDSTRING)));
+}
+
 
     /* overall creator for "file" objects - dispatch to "file handle" etc */
-t_class *file_handle_class, *file_which_class, *file_glob_class;
+t_class *file_handle_class, *file_which_class, *file_glob_class, *file_patchpath_class;
 t_class *file_stat_class, *file_size_class, *file_isfile_class, *file_isdirectory_class;
 t_class *file_mkdir_class, *file_delete_class, *file_copy_class, *file_move_class;
 t_class *file_split_class,*file_join_class,*file_splitext_class, *file_splitname_class;
+t_class *file_normalize_class, *file_isabsolute_class, *file_cwd_class;
 
 #define FILE_PD_NEW(verb, verbose, creationmode) static t_file_handle* file_##verb##_new(t_symbol*s, int argc, t_atom*argv) \
     {                                                                   \
@@ -1360,6 +1710,7 @@ t_class *file_split_class,*file_join_class,*file_splitext_class, *file_splitname
 
 static void file_define_ignore(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
         /* this is a noop (so the object does not bail out if somebody 'send's something to its label) */
+    (void)x;
     (void)s;
     (void)argc;
     (void)argv;
@@ -1391,7 +1742,9 @@ static t_file_handle*file_handle_new(t_symbol*s, int argc, t_atom*argv) {
     return x;
 }
 
+
 FILE_PD_NEW(which, 0, 0);
+FILE_PD_NEW(patchpath, 0, 0);
 FILE_PD_NEW(glob, 0, 0);
 
 FILE_PD_NEW(stat, 0, 0);
@@ -1404,10 +1757,14 @@ FILE_PD_NEW(delete, 0, 0);
 FILE_PD_NEW(copy, 0, 0);
 FILE_PD_NEW(move, 0, 0);
 
+FILE_PD_NEW(cwd, 1, 0);
+
 FILE_PD_NEW(split, 0, 0);
 FILE_PD_NEW(join, 0, 0);
 FILE_PD_NEW(splitext, 0, 0);
 FILE_PD_NEW(splitname, 0, 0);
+FILE_PD_NEW(isabsolute, 0, 0);
+FILE_PD_NEW(normalize, 1, 0);
 
 static t_pd *fileobj_new(t_symbol *s, int argc, t_atom*argv)
 {
@@ -1437,6 +1794,7 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom*argv)
             x = file_handle_new(gensym("file handle"), argc, argv);
         ELIF_FILE_PD_NEW(handle, 1, 0666);
         ELIF_FILE_PD_NEW(which, 0, 0);
+        ELIF_FILE_PD_NEW(patchpath, 0, 0);
         ELIF_FILE_PD_NEW(glob, 0, 0);
         ELIF_FILE_PD_NEW(stat, 0, 0);
         ELIF_FILE_PD_NEW(size, 0, 0);
@@ -1446,10 +1804,13 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom*argv)
         ELIF_FILE_PD_NEW(delete, 0, 0);
         ELIF_FILE_PD_NEW(copy, 0, 0);
         ELIF_FILE_PD_NEW(move, 0, 0);
+        ELIF_FILE_PD_NEW(cwd, 1, 0);
         ELIF_FILE_PD_NEW(split, 0, 0);
         ELIF_FILE_PD_NEW(join, 0, 0);
         ELIF_FILE_PD_NEW(splitext, 0, 0);
         ELIF_FILE_PD_NEW(splitname, 0, 0);
+        ELIF_FILE_PD_NEW(isabsolute, 0, 0);
+        ELIF_FILE_PD_NEW(normalize, 1, 0);
         else {
             pd_error(0, "file %s: unknown function", verb);
         }
@@ -1509,6 +1870,10 @@ void x_file_setup(void)
         /* [file which] */
     file_which_class = file_class_new("file which", file_which_new, 0, file_which_symbol, VERBOSE);
 
+        /* [file patchpath] */
+    file_patchpath_class = file_class_new("file patchpath", file_patchpath_new, 0, 0, VERBOSE);
+    class_addlist(file_patchpath_class, file_patchpath_list);
+
         /* [file glob] */
     file_glob_class = file_class_new("file glob", file_glob_new, 0, file_glob_symbol, VERBOSE);
 
@@ -1534,10 +1899,16 @@ void x_file_setup(void)
     file_move_class = file_class_new("file move", file_move_new, 0, 0, MODE|VERBOSE);
     class_addlist(file_move_class, (t_method)file_move_list);
 
+        /* [file cwd] */
+    file_cwd_class = file_class_new("file cwd", file_cwd_new, 0, file_cwd_symbol, VERBOSE);
+    class_addbang(file_cwd_class, (t_method)file_cwd_bang);
+
         /* file path objects */
     file_split_class = file_class_new("file split", file_split_new, 0, file_split_symbol, DEFAULT);
     file_join_class = file_class_new("file join", file_join_new, 0, 0, DEFAULT);
     class_addlist(file_join_class, (t_method)file_join_list);
     file_splitext_class = file_class_new("file splitext", file_splitext_new, 0, file_splitext_symbol, DEFAULT);
     file_splitname_class = file_class_new("file splitname", file_splitname_new, 0, file_splitname_symbol, DEFAULT);
+    file_isabsolute_class = file_class_new("file isabsolute", file_isabsolute_new, 0, file_isabsolute_symbol, DEFAULT);
+    file_normalize_class = file_class_new("file normalize", file_normalize_new, 0, file_normalize_symbol, VERBOSE);
 }

@@ -23,8 +23,7 @@
 #X text 747 391 pitch;
 #X text 747 415 amplitude;
 #X text 747 439 duration;
-#X text 41 9 POLY SAMPLER \, VERSION 2 FOR SEPARATE NOTE-ON/OFF MESSAGES
-;
+#X text 41 9 POLY SAMPLER \, VERSION 2 FOR SEPARATE NOTE-ON/OFF MESSAGES;
 #X obj 597 56 r onoff;
 #X text 895 373 ON/OFF TRANSITIONS:;
 #X text 748 372 ENTIRE NOTES:;
@@ -43,28 +42,11 @@
 #X obj 822 259 pack;
 #X msg 313 513 \; onoff 1 0;
 #X msg 314 555 \; onoff 2 0;
-#X text 30 39 Here is a variation on the polyphonic sampler \, which
-can take separate messages to start and stop notes (so that you can
-attach it to a MIDI keyboard \, for example.) "Note" messages act as
-before \, but in an intermediate step they are split onto note-on and
-note-off messages \, sent to "onoff". You can alternatively send messages
-straight to onoff if you don't know the duration in advance., f 67
-;
-#X text 29 146 Messages to "onoff" require a tag \, which is a number
-shared between the note-on and note-off message so that we can track
-down the voice to turn it off. If you're using MIDI input \, you can
-just re-use the pitch as a tag., f 67;
+#X text 30 39 Here is a variation on the polyphonic sampler \, which can take separate messages to start and stop notes (so that you can attach it to a MIDI keyboard \, for example.) "Note" messages act as before \, but in an intermediate step they are split onto note-on and note-off messages \, sent to "onoff". You can alternatively send messages straight to onoff if you don't know the duration in advance., f 67;
+#X text 29 146 Messages to "onoff" require a tag \, which is a number shared between the note-on and note-off message so that we can track down the voice to turn it off. If you're using MIDI input \, you can just re-use the pitch as a tag., f 67;
 #X text 91 593 single messages to do both as before:;
-#X text 29 215 Messages to "onoff" whose amplitude is zero are note-off
-messages (the other parameters of note-off messages are ignored). The
-"sampvoice2" abstraction is a modification of "sampvoice" which looks
-at the amplitude field to decide whether to begin or end a note.,
-f 67;
-#X text 29 295 To convert "note" messages to pairs of "onoff" messages
-\, first a counter generates a tag. The the "pipe" object delays a
-copy of the tag \, which the following "pack" object converts into
-a note-off message (a pair of numbers \, the tag and a zero.), f 67
-;
+#X text 29 215 Messages to "onoff" whose amplitude is zero are note-off messages (the other parameters of note-off messages are ignored). The "sampvoice2" abstraction is a modification of "sampvoice" which looks at the amplitude field to decide whether to begin or end a note., f 67;
+#X text 29 295 To convert "note" messages to pairs of "onoff" messages \, first a counter generates a tag. The the "pipe" object delays a copy of the tag \, which the following "pack" object converts into a note-off message (a pair of numbers \, the tag and a zero.), f 67;
 #X obj 597 81 unpack f f f f f f f;
 #X obj 611 250 pack f f f f f f f;
 #X obj 854 86 unpack f f f f f f f;
@@ -88,8 +70,7 @@ a note-off message (a pair of numbers \, the tag and a zero.), f 67
 #X text 446 370 v-- re-read original samples;
 #X obj 242 168 route record stop reload browse;
 #X obj 406 452 soundfiler;
-#X msg 406 394 read ../sound/bell.aiff sample5 \, read ../sound/voice2.wav
-sample6, f 33;
+#X msg 406 394 read ../sound/bell.aiff sample5 \, read ../sound/voice2.wav sample6, f 33;
 #X msg 402 260 read \$1 sample5;
 #X obj 402 287 soundfiler;
 #X text 440 205 <= browse for samples;
@@ -132,14 +113,7 @@ sample6, f 33;
 #X obj 611 296 clone -s 1 sampvoice2 8;
 #X msg 542 217 \$1 0;
 #X msg 588 218 \$2;
-#X text 29 361 Under "r onoff" \, the poly object allocates a voice
-number \, putting it out paired with velocity. After swapping the two
-and packing them into a single message \, the amplitude is checked
-against zero by the [route 0] object. If zero \, the "\$1 0" confects
-a 2-argument message (voice number and zero). Otherwise \, the "\$2"
-retrieves the nonzero amplitude for a note-on message \, to which we
-add all the other parameters and route to the appropriate voice inside
-[clone]., f 67;
+#X text 29 361 Under "r onoff" \, the poly object allocates a voice number \, putting it out paired with velocity. After swapping the two and packing them into a single message \, the amplitude is checked against zero by the [route 0] object. If zero \, the "\$1 0" confects a 2-argument message (voice number and zero). Otherwise \, the "\$2" retrieves the nonzero amplitude for a note-on message \, to which we add all the other parameters and route to the appropriate voice inside [clone]., f 67;
 #X text 822 606 updated for Pd version 0.52;
 #X msg 93 513 \; onoff 1 90 60 5 0 0 100;
 #X msg 94 555 \; onoff 2 90 48 5 0 0 100;
@@ -181,6 +155,5 @@ add all the other parameters and route to the appropriate voice inside
 #X connect 39 6 40 6;
 #X connect 40 0 27 0;
 #X connect 43 0 3 0;
-#X connect 43 0 3 1;
 #X connect 44 0 43 0;
 #X connect 45 0 38 0;

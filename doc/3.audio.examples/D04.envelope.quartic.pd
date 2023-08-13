@@ -36,28 +36,17 @@
 #X text 56 297 LINEAR;
 #X text 202 268 QUARTIC;
 #X obj 55 446 output~;
-#X obj 234 558 output~;
-#X text 75 141 In the quartic example \, for both the amplitude and
-the frequency \, we have to take the fourth root of the target value
-(which we get by taking square root twice.) Then we raise the line~
-output to the fourth power by squaring twice (the *~ objects \, whose
-left and right inlets are the same.) The cost is mostly that of the
-four additional *~ objects., f 68;
-#X text 402 577 updated for Pd version 0.37;
-#X text 75 61 This patch has two sine wave oscillators \, one with
-linear envelopes \, the other with quartic ones which sound more uniform.
-The message boxes sweep the amplitude and frequency up and down. You
-can compare the two to see that quartic-shaped changes sound more uniform
-than linear ones., f 68;
+#X obj 250 558 output~;
+#X text 75 141 In the quartic example \, for both the amplitude and the frequency \, we have to take the fourth root of the target value (which we get by taking square root twice.) Then we raise the line~ output to the fourth power by squaring twice (the *~ objects \, whose left and right inlets are the same.) The cost is mostly that of the four additional *~ objects., f 68;
+#X text 418 577 updated for Pd version 0.37;
+#X text 75 61 This patch has two sine wave oscillators \, one with linear envelopes \, the other with quartic ones which sound more uniform. The message boxes sweep the amplitude and frequency up and down. You can compare the two to see that quartic-shaped changes sound more uniform than linear ones., f 68;
 #X obj 510 22 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 35 0;
-#X connect 1 0 35 1;
 #X connect 2 0 1 1;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
 #X connect 5 0 36 0;
-#X connect 5 0 36 1;
 #X connect 6 0 14 0;
 #X connect 6 0 14 1;
 #X connect 7 0 12 0;

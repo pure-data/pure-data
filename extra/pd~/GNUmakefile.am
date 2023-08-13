@@ -25,6 +25,10 @@ pd__la_LIBADD = $(LIBM)
 AM_LDFLAGS = -module -avoid-version -shared @EXTERNAL_LDFLAGS@ \
     -shrext .@EXTERNAL_EXTENSION@ -L$(top_builddir)/src @PD_LDFLAGS@
 
+if PD_WATCHDOG
+AM_CPPFLAGS += -DPD_WATCHDOG=1
+endif
+
 externaldir = $(pkglibdir)/extra/$(NAME)
 
 #########################################

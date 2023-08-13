@@ -15,14 +15,13 @@ fi
 pdversion=$1
 installerversion=$1.windows-installer.exe
 tkversion=8.6.10
-
+pddir=`pwd`/..
 
 cd /tmp
 rm -rf pd-$pdversion
-git clone ~/pd pd-$pdversion
+git clone $pddir pd-$pdversion
 cd pd-$pdversion
 
-git checkout 0.53-0
 
 #copy in the ASIO SDK and rename it ASIOSDK
 (cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;

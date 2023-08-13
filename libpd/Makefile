@@ -60,7 +60,7 @@ VPATH = ../src:\
 
 # C preprocessor flags, and flags controlling errors and warnings
 CPPFLAGS = -I../src -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DLIBPD_EXTRA \
-    -DPDINSTANCE
+    -DPDINSTANCE -DPD_INTERNAL
 
 # code generation flags (e.g., optimization).
 CODECFLAGS = -fPIC -ffast-math -funroll-loops -fomit-frame-pointer -O3

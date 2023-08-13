@@ -5,14 +5,14 @@
 #X text 274 540 updated for version 0.52;
 #X obj 164 144 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 24 418 Objects \, like [print] above \, may have all sorts of functions depending on what's typed into them. The [print] object simply prints out every message it receives \, either from message boxes \, GUIs or the outlet of other objects., f 63;
-#X text 176 177 <-- object box;
-#X text 189 145 <-- bang (another GUI box);
+#X text 173 177 <-- object box;
 #X text 195 115 <-- GUI box (number atom box);
 #X text 215 83 <-- message box;
 #X text 24 217 Message boxes respond to mouse clicks by sending their contents to one or more destinations. The usual destination is the "outlet" at the lower left corner of the box. Click on the message box above and watch the terminal window Pd was started in. You should see the "hello world" message appear., f 63;
-#X text 24 296 The number atom box is a GUI (graphical user interface) and responds to "dragging" up and down with the mouse \, by changing their contents and sending the result out their outlets. You can also type a number after clicking on the atom box \, hit "enter" to output the number or click anywhere else to cancel. You can right click on it for properties. A "bang" GUI sends "bang" messages when clicked on \, you can also right click it for properties., f 63;
 #X text 24 484 To get help (for either GUIs \, message box or objects) \, right click it and select "Help". You should see a "help window" for the object., f 63;
 #X text 24 16 There are four types of text (or 'box') objects in Pd: Message \, GUI \, Object \, and Comment. Comments are simple texts (like this one) that do nothing. Check below:, f 63;
+#X text 189 145 <-- bang button (another GUI);
+#X text 24 296 The number atom box is a GUI (graphical user interface) and responds to click and "dragging" up and down with the mouse \, which changes the contents and sends the result out its outlet. You can also type a number after clicking on the atom box \, hit "enter" to output the number or click anywhere else to cancel. You can right click on it for properties. A "bang" GUI sends "bang" messages when clicked on \, you can also right click it for properties., f 63;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 4 0 1 0;

@@ -1,0 +1,1626 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# AtrashDingDong <drummerqueen666@hotmail.com>, 2022.
+# Reza Almanda <rezaalmanda27@gmail.com>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.53.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-05-15 22:50+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
+"Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/id/>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18-dev\n"
+
+msgid "linear"
+msgstr "linier"
+
+msgid "logarithmic"
+msgstr "logaritma"
+
+msgid "new-only"
+msgstr "baru-saja"
+
+msgid "new&old"
+msgstr "baru&lama"
+
+msgid "no scale"
+msgstr "jangan menyisiki"
+
+msgid "scale"
+msgstr "menyisiki"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "Buang perubahan ke '%s'?"
+
+msgid "Undo clear"
+msgstr "Batal penghapusan"
+
+msgid "Undo connect"
+msgstr "Batal menghubungkan"
+
+msgid "Undo cut"
+msgstr "Batal potongan"
+
+msgid "Undo disconnect"
+msgstr "Batal memutuskan hubunkgan"
+
+msgid "Undo duplicate"
+msgstr "Batal duplikasi"
+
+msgid "Undo motion"
+msgstr "Batal kejadian"
+
+msgid "Undo paste"
+msgstr "Batal tempel"
+
+msgid "Undo typing"
+msgstr "Batal ketikan"
+
+msgid "Redo clear"
+msgstr "Ulang penghapusan"
+
+msgid "Redo connect"
+msgstr "Ulang menghubungkan"
+
+msgid "Redo cut"
+msgstr "Ulang potongan"
+
+msgid "Redo disconnect"
+msgstr "Ulang memutuskan hubungan"
+
+msgid "Redo duplicate"
+msgstr "Ulang duplikasi"
+
+msgid "Redo motion"
+msgstr "Ulang kejadian"
+
+msgid "Redo paste"
+msgstr "Ulang tempel"
+
+msgid "Redo typing"
+msgstr "Ulang ketikan"
+
+msgid "no Pd settings to clear"
+msgstr "tidak ada pengaturan Pd yang bisa dihapuskan"
+
+msgid "removed .pdsettings file"
+msgstr "file .pdsettings dilepaskan"
+
+msgid "couldn't delete .pdsettings file"
+msgstr "gagal menghapus file .pdsettings"
+
+msgid "failed to erase Pd settings"
+msgstr "gagal menghapus pengaturan Pd"
+
+msgid "erased Pd settings"
+msgstr "pengaturan Pd dihapus"
+
+msgid "no Pd settings to erase"
+msgstr "tidak ada pengaturan Pd yang bisa menghapus"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr "melewatkan preferensi pemuatan ... Pd tampaknya macet saat startup"
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(simpan ulang preferensi untuk mengembalikannya)"
+
+msgid "File"
+msgstr "File"
+
+msgid "Edit"
+msgstr "Sunting"
+
+msgid "Put"
+msgstr "Tambah"
+
+msgid "Find"
+msgstr "Mencari"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Window"
+msgstr "Jendela"
+
+msgid "Help"
+msgstr "Tolong"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "Melihatkan File dan Direktori yang &Disembunyikan"
+
+msgid "Copy"
+msgstr "Salin"
+
+msgid "Paste"
+msgstr "Tempel"
+
+msgid "Array Properties"
+msgstr "Properti Array"
+
+msgid "Array"
+msgstr "Array"
+
+msgid "Name:"
+msgstr "Nama:"
+
+msgid "Size:"
+msgstr "Ukuran:"
+
+msgid "Save contents"
+msgstr "Simpan konten"
+
+msgid "Draw as:"
+msgstr "Menggambar sebagai:"
+
+msgid "Polygon"
+msgstr "Segibanyak"
+
+msgid "Points"
+msgstr "Titik"
+
+msgid "Bezier curve"
+msgstr "Lengkung Bezier"
+
+msgid "Put array into:"
+msgstr "Masukkan array ke dalam:"
+
+msgid "New graph"
+msgstr "Grafik baru"
+
+msgid "Last graph"
+msgstr "Grafik sebelumnya"
+
+msgid "Options"
+msgstr "Pilihan"
+
+msgid "Open List View..."
+msgstr "Buka Pandangan Daftar..."
+
+msgid "Delete array"
+msgstr "Hapus array"
+
+msgid "Cancel"
+msgstr "Membatalkan"
+
+msgid "Apply"
+msgstr "Menggunakan"
+
+msgid "OK"
+msgstr "OK"
+
+#, fuzzy
+msgid "no device"
+msgstr "Perangkat memasuk"
+
+msgid "(same as input device)..."
+msgstr "(sama dengan perangkat memasuk)..."
+
+msgid "Channels:"
+msgstr "Kanal:"
+
+msgid "Input Devices"
+msgstr "Perangkat memasuk"
+
+msgid "Output Devices"
+msgstr "Perangkat keluar"
+
+msgid "Use Multiple Devices"
+msgstr "Pakai Banyak Perangkat"
+
+msgid "audio system"
+msgstr ""
+
+msgid "Settings"
+msgstr "Pengaturan"
+
+msgid "Sample rate:"
+msgstr "Kecepatan sampel:"
+
+msgid "Delay (msec):"
+msgstr "Kelambatan (msec):"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44.1k"
+
+msgid "96k"
+msgstr "96k"
+
+msgid "Block size:"
+msgstr "Ukuran blok:"
+
+msgid "Use callbacks"
+msgstr "Gunakan callback"
+
+msgid "Audio Settings"
+msgstr "Pengaturan audio"
+
+msgid "Save All Settings"
+msgstr "Menyimpan semua pangaturan"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr ""
+"PERINGATAN: bendera graphme yang tidak dikenal diterima di pdtk_canvas_dialog"
+
+msgid "Canvas Properties"
+msgstr "Sifat kanvas"
+
+msgid "Scale"
+msgstr "Sisik"
+
+msgid "X units per pixel:"
+msgstr "Unit X per piksel:"
+
+msgid "Y units per pixel:"
+msgstr "Unit Y per piksel:"
+
+msgid "Appearance on parent patch"
+msgstr "Penampilan di patch induk"
+
+msgid "Graph-On-Parent"
+msgstr "Graph-On-Parent"
+
+msgid "Hide object name and arguments"
+msgstr "Sembunyikan nama objek dan argumen"
+
+msgid "Range and size"
+msgstr "Rentang dan ukuran"
+
+msgid "X range: from"
+msgstr "Rentang X: dari"
+
+msgid "to"
+msgstr "sampai"
+
+msgid "Margin:"
+msgstr "Batas:"
+
+msgid "Y range: from"
+msgstr "Rentang Y: dari"
+
+msgid "Data Properties"
+msgstr "Properti Data"
+
+msgid "Send"
+msgstr "Kirim"
+
+msgid "Done"
+msgstr "Sudah"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "Ketemu '%1$s' di %2$s"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "Tidak bisa menemukan '%1$s' di %2$s"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "Mencari ini di %s:"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "Ini '%1$s' terakhir di %2$s"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "Ini hal ke-'%1$d' / %2$d hal di %3$s"
+
+msgid "Pd window"
+msgstr "Jendela Pd"
+
+msgid "Match whole word only"
+msgstr "Mencocokkan dengan kata seluruh saja"
+
+msgid "Close"
+msgstr "Matikan"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s Fon"
+
+msgid "Font"
+msgstr "Fon"
+
+msgid "Font Size"
+msgstr "Kebesaran Fon"
+
+msgid "Stretch"
+msgstr "Melebarkan"
+
+msgid "X and Y"
+msgstr "X dan Y"
+
+msgid "X only"
+msgstr "X saja"
+
+msgid "Y only"
+msgstr "Y saja"
+
+msgid "GUI Box Properties"
+msgstr "Properti Kotak GUI"
+
+msgid "Messages"
+msgstr "Pesan"
+
+msgid "Send symbol:"
+msgstr "Kirim simbol:"
+
+msgid "Receive symbol:"
+msgstr "Terima simbol:"
+
+msgid "auto"
+msgstr ""
+
+msgid "Width:"
+msgstr "Lebar:"
+
+msgid "Limits"
+msgstr "Batasan"
+
+msgid "Lower:"
+msgstr "Paling rendah:"
+
+msgid "Upper:"
+msgstr "Paling tinggi:"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Left"
+msgstr "Kiri"
+
+msgid "Right"
+msgstr "Kanan"
+
+msgid "Top"
+msgstr "Atas"
+
+msgid "Bottom"
+msgstr "Bawah"
+
+msgid "Background color"
+msgstr "Warna belakang"
+
+msgid "Foreground color"
+msgstr "Warna depan"
+
+msgid "Label color"
+msgstr "Warna label"
+
+msgid "Bang"
+msgstr "Bang"
+
+msgid "Flash Time (msec)"
+msgstr "Waktu Flash (mdtk)"
+
+msgid "Min:"
+msgstr "Min:"
+
+msgid "Max:"
+msgstr "Maks:"
+
+msgid "Toggle"
+msgstr "Beralih"
+
+msgid "Non Zero Value"
+msgstr "Nilai Bukan Nul"
+
+msgid "Value:"
+msgstr "Nilai:"
+
+msgid "Number2"
+msgstr "Angka2"
+
+msgid "Width (digits):"
+msgstr "Lebar (digit):"
+
+msgid "Height:"
+msgstr "Tinggi:"
+
+msgid "Output Range"
+msgstr ""
+
+msgid "Log height:"
+msgstr ""
+
+msgid "Vslider"
+msgstr "Vtombolgeser"
+
+msgid "Hslider"
+msgstr "Htombolgeser"
+
+msgid "Vradio"
+msgstr "Vradio"
+
+msgid "Num cells:"
+msgstr ""
+
+msgid "Hradio"
+msgstr ""
+
+msgid "VU Meter"
+msgstr ""
+
+msgid "Canvas"
+msgstr "Kanvas"
+
+msgid "Visible Rectangle (pix)"
+msgstr ""
+
+#, tcl-format
+msgid "%s Properties"
+msgstr ""
+
+msgid "Parameters"
+msgstr ""
+
+msgid "Init"
+msgstr ""
+
+msgid "No init"
+msgstr ""
+
+msgid "Jump on click"
+msgstr ""
+
+msgid "Steady on click"
+msgstr ""
+
+msgid "X offset:"
+msgstr ""
+
+msgid "Y offset:"
+msgstr ""
+
+msgid "Colors"
+msgstr "Warna"
+
+msgid "Background"
+msgstr "Belakang"
+
+msgid "Front"
+msgstr "Depan"
+
+msgid "Compose color"
+msgstr "Membuat warna"
+
+msgid "Test label"
+msgstr "Label anju"
+
+msgid "Send a Pd message"
+msgstr "Mengirim sebuah pesan Pd"
+
+msgid "(use arrow keys for history)"
+msgstr ""
+
+#, fuzzy
+msgid "no input devices"
+msgstr "Perangkat memasuk"
+
+msgid "In Ports:"
+msgstr ""
+
+msgid "Out Ports:"
+msgstr ""
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Pengaturan MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Pengaturan ALSA MIDI"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr ""
+
+msgid "Use standard paths"
+msgstr ""
+
+msgid "Verbose"
+msgstr "Bertele-tele"
+
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Externals Install Directory"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+#, fuzzy
+msgid "path preferences"
+msgstr "Preferensi"
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+msgid "Install externals to directory:"
+msgstr ""
+
+msgid "Add a new path"
+msgstr ""
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
+#, fuzzy
+msgid "Patch windows"
+msgstr "Jendela Pd"
+
+msgid "Zoom New Windows"
+msgstr ""
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "pengaturan GUI dihapuskan"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Preferensi"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Preferensi"
+
+msgid "Add new library"
+msgstr "Tambah perpustakaan baru"
+
+msgid "Edit library"
+msgstr ""
+
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
+msgid "Pd libraries to load on startup"
+msgstr ""
+
+#, fuzzy
+msgid "GUI options"
+msgstr "pengaturan GUI dihapuskan"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Ukuran blok:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
+msgstr ""
+
+msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr ""
+
+msgid "Help Browser"
+msgstr ""
+
+msgid "Associated Files"
+msgstr ""
+
+msgid "Pd Files"
+msgstr ""
+
+msgid "Max Patch Files"
+msgstr ""
+
+msgid "Max Text Files"
+msgstr ""
+
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
+msgstr ""
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr ""
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr ""
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr ""
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
+msgstr ""
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr ""
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr ""
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr ""
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Installation options:"
+msgstr ""
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr ""
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr ""
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "Platform settings:"
+msgstr "Pengaturan OS:"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr ""
+
+msgid "User-defined platform:"
+msgstr ""
+
+msgid "Hide foreign architectures"
+msgstr ""
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr ""
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
+msgid "ZIP Files"
+msgstr ""
+
+msgid "TAR Files"
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr ""
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr ""
+
+msgid "Installation completed!"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Install DEK file..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr ""
+
+msgid "Search for: "
+msgstr ""
+
+msgid "libraries"
+msgstr ""
+
+msgid "objects"
+msgstr ""
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Uploader"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Search Results"
+msgstr ""
+
+msgid "Log"
+msgstr ""
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr ""
+
+#, tcl-format
+msgid "online? %s"
+msgstr ""
+
+msgid "Unable to perform search. Are you online?"
+msgstr ""
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr ""
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr ""
+
+msgid "No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr ""
+
+msgid "Please select a (writable) installation directory!"
+msgstr ""
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr ""
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr ""
+
+msgid "Installing to non-existant directory failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr ""
+
+msgid "Directory does not exist!"
+msgstr ""
+
+msgid "Directory is not writable!"
+msgstr ""
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr ""
+
+msgid "aborting."
+msgstr ""
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr ""
+
+msgid "Download failed!"
+msgstr ""
+
+msgid "Download completed! Verifying..."
+msgstr ""
+
+msgid "Ignoring checksum mismatch"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr ""
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr ""
+
+msgid "No usable servers for searching found..."
+msgstr ""
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr ""
+
+msgid "Search failed"
+msgstr ""
+
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Deselect package"
+msgstr ""
+
+msgid "Open package webpage"
+msgstr ""
+
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr ""
+
+msgid "refusing to delete empty domain"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr ""
+
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr ""
+
+msgid "About Pd"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save As..."
+msgstr ""
+
+msgid "Print..."
+msgstr ""
+
+msgid "Paste Replace"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Zoom In"
+msgstr ""
+
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Tidy Up"
+msgstr ""
+
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
+msgstr ""
+
+msgid "Edit Mode"
+msgstr ""
+
+msgid "Undo"
+msgstr ""
+
+msgid "Redo"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Message..."
+msgstr ""
+
+msgid "Cut"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "Clear Console"
+msgstr ""
+
+msgid "Object"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Number"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Symbol"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Graph"
+msgstr ""
+
+msgid "Find..."
+msgstr ""
+
+msgid "Find Again"
+msgstr ""
+
+msgid "Find Last Error"
+msgstr ""
+
+msgid "DSP On"
+msgstr ""
+
+msgid "DSP Off"
+msgstr ""
+
+msgid "Test Audio and MIDI..."
+msgstr ""
+
+msgid "Load Meter"
+msgstr ""
+
+msgid "Audio Settings..."
+msgstr "Pengaturan Audio..."
+
+msgid "MIDI Settings..."
+msgstr "Pengaturan MIDI..."
+
+msgid "Minimize"
+msgstr ""
+
+msgid "Zoom"
+msgstr ""
+
+msgid "Bring All to Front"
+msgstr ""
+
+msgid "Next Window"
+msgstr ""
+
+msgid "Previous Window"
+msgstr ""
+
+msgid "Parent Window"
+msgstr ""
+
+msgid "HTML Manual..."
+msgstr ""
+
+msgid "Browser..."
+msgstr ""
+
+msgid "List of objects..."
+msgstr ""
+
+msgid "puredata.info"
+msgstr ""
+
+msgid "Check for updates"
+msgstr ""
+
+msgid "Report a bug"
+msgstr ""
+
+msgid "Clear Menu"
+msgstr ""
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
+msgid "removed GUI settings"
+msgstr "pengaturan GUI dihapuskan"
+
+#, fuzzy
+msgid "no Pd-GUI settings to clear"
+msgstr "tidak ada pengaturan Pd-GUI yang bisa menghapus"
+
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Preferensi"
+
+msgid "Save All Preferences"
+msgstr ""
+
+msgid "Save to..."
+msgstr "Simpan ke..."
+
+msgid "Load from..."
+msgstr ""
+
+msgid "Forget All..."
+msgstr "Melupakan semua..."
+
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Preferensi"
+
+msgid "Open Recent"
+msgstr ""
+
+msgid "Quit"
+msgstr ""
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr ""
+
+msgid "Properties"
+msgstr ""
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr ""
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr ""
+
+msgid "Audio on"
+msgstr "Audio hidup"
+
+msgid "Audio off"
+msgstr "Audio mati"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr ""
+
+msgid "Tcl:"
+msgstr ""
+
+msgid "Pd"
+msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio I/O error"
+msgstr "Eror audio I/O"
+
+msgid "Log:"
+msgstr ""
+
+msgid "fatal"
+msgstr ""
+
+msgid "error"
+msgstr "eror"
+
+msgid "normal"
+msgstr "biasa"
+
+msgid "debug"
+msgstr ""
+
+msgid "all"
+msgstr "semua"
+
+msgid "y1"
+msgstr ""
+
+msgid "New..."
+msgstr "Baru..."
+
+msgid "Edit..."
+msgstr ""
+
+msgid "Delete"
+msgstr "Menghapus"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr ""
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

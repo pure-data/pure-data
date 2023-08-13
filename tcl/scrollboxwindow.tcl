@@ -10,6 +10,7 @@
 
 package provide scrollboxwindow 0.1
 
+package require preferencewindow
 package require scrollbox
 
 namespace eval scrollboxwindow {
@@ -21,12 +22,14 @@ proc ::scrollboxwindow::get_listdata {mytoplevel} {
 
 proc ::scrollboxwindow::do_apply {mytoplevel commit_method listdata} {
     $commit_method $listdata
-    pdsend "pd save-preferences"
 }
 
 # Cancel button action
 proc ::scrollboxwindow::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    # in case Pd keeps a receiver objects, we need to notify it
+    if { [string first .gfxstub $mytoplevel ] == 0 } {
+        pdsend "$mytoplevel cancel"
+    }
 }
 
 # Apply button action
@@ -54,43 +57,17 @@ proc ::scrollboxwindow::ok {mytoplevel commit_method } {
 # width, height -- initial width and height dimensions for the window, also minimum size
 # resizable -- 0 or 1, set to 1 for dialog to be resizeable
 proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_method title width height resizable } {
-    wm deiconify .pdwindow
-    raise .pdwindow
-    toplevel $mytoplevel -class DialogWindow
-    wm title $mytoplevel $title
-    wm group $mytoplevel .
+    ::preferencewindow::create ${mytoplevel} ${title} [list $width $height]
     if {$resizable == 0} {
-        wm resizable $mytoplevel 0 0
+        wm resizable $winid 0 0
     }
-    wm transient $mytoplevel .pdwindow
-    wm protocol $mytoplevel WM_DELETE_WINDOW "::scrollboxwindow::cancel $mytoplevel"
 
-    # Enforce a minimum size for the window
-    wm minsize $mytoplevel $width $height
+    set my [::preferencewindow::add_frame ${mytoplevel} "${title}" ]
+    ::preferencewindow::add_cancel ${mytoplevel} "::scrollboxwindow::cancel ${mytoplevel}"
+    ::preferencewindow::add_apply ${mytoplevel} "::scrollboxwindow::apply ${my} ${commit_method}"
+    ::preferencewindow::add_apply ${mytoplevel} {pdsend "pd save-preferences"}
 
-    # Set the current dimensions of the window
-    wm geometry $mytoplevel "${width}x${height}"
 
     # Add the scrollbox widget
-    ::scrollbox::make $mytoplevel $listdata $add_method $edit_method
-
-    # Use two frames for the buttons, since we want them both bottom and right
-    frame $mytoplevel.nb
-    pack $mytoplevel.nb -side bottom -fill x -pady 2m
-
-    # buttons
-    frame $mytoplevel.nb.buttonframe
-    pack $mytoplevel.nb.buttonframe -side right -fill x -padx 2m
-
-    button $mytoplevel.nb.buttonframe.cancel -text [_ "Cancel"] \
-        -command "::scrollboxwindow::cancel $mytoplevel"
-    pack $mytoplevel.nb.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
-    if {$::windowingsystem ne "aqua"} {
-        button $mytoplevel.nb.buttonframe.apply -text [_ "Apply"] \
-            -command "::scrollboxwindow::apply $mytoplevel $commit_method"
-        pack $mytoplevel.nb.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
-    }
-    button $mytoplevel.nb.buttonframe.ok -text [_ "OK"] \
-        -command "::scrollboxwindow::ok $mytoplevel $commit_method"
-    pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
+    ::scrollbox::make ${my} ${listdata} ${add_method} ${edit_method}
 }

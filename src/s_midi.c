@@ -527,6 +527,9 @@ static char midi_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
 
 void sys_get_midi_apis(char *buf)
 {
+        /* FIXXME: this returns a raw Tcl-list!
+         *  instead it should return something we can use with pdgui_vmess()
+         */
     int n = 0;
     strcpy(buf, "{ ");
 #ifdef USEAPI_OSS
@@ -687,80 +690,47 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
 
 extern t_class *glob_pdobject;
 
-    /* start an midi settings dialog window */
-void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
-{
-        /* these are the devices you're using: */
-    int nindev, midiindev[MAXMIDIINDEV];
-    int noutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9;
-
+void sys_gui_midipreferences(void) {
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char *indevs[1+MAXNDEV], *outdevs[1+MAXNDEV];
     int nindevs = 0, noutdevs = 0, i;
-    char device[MAXPDSTRING];
 
-    indevs[0] = outdevs[0] = "none";
+        /* these are the devices you're using: */
+    int nindev, midiindev[MAXMIDIINDEV];
+    int noutdev, midioutdev[MAXMIDIOUTDEV];
+    t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
+        /* query the current MIDI settings */
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
+    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+
+    indevs[0] = outdevs[0] = "none";
     for (i = 0; i < nindevs; i++)
         indevs[i+1] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
         outdevs[i+1] = outdevlist + i * DEVDESCSIZE;
 
-    pdgui_vmess("set", "rS", "::midi_indevlist",
-        nindevs+1, indevs); /* +1 for the leading 'none' */
+        /* notify GUI of used input/output devices */
+    for (i=0; i<nindev; i++)
+        midiindevf[i] = (t_float)midiindev[i] + 1;
+    for (i=0; i<noutdev; i++)
+        midioutdevf[i] = (t_float)midioutdev[i] + 1;
 
-    pdgui_vmess("set", "rS", "::midi_outdevlist",
-        noutdevs+1, outdevs); /* +1 for the leading 'none' */
+    pdgui_vmess("::dialog_midi::set_configuration", "i SF SF",
+                sys_midiapi,
+                nindevs+1, indevs, nindev, midiindevf,
+                noutdevs+1, outdevs, noutdev, midioutdevf);
+}
 
-    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
-
-    if (nindev > 1 || noutdev > 1)
-        flongform = 1;
-
-    midiindev1 = (nindev > 0 &&  midiindev[0]>= 0 ? midiindev[0]+1 : 0);
-    midiindev2 = (nindev > 1 &&  midiindev[1]>= 0 ? midiindev[1]+1 : 0);
-    midiindev3 = (nindev > 2 &&  midiindev[2]>= 0 ? midiindev[2]+1 : 0);
-    midiindev4 = (nindev > 3 &&  midiindev[3]>= 0 ? midiindev[3]+1 : 0);
-    midiindev5 = (nindev > 4 &&  midiindev[4]>= 0 ? midiindev[4]+1 : 0);
-    midiindev6 = (nindev > 5 &&  midiindev[5]>= 0 ? midiindev[5]+1 : 0);
-    midiindev7 = (nindev > 6 &&  midiindev[6]>= 0 ? midiindev[6]+1 : 0);
-    midiindev8 = (nindev > 7 &&  midiindev[7]>= 0 ? midiindev[7]+1 : 0);
-    midiindev9 = (nindev > 8 &&  midiindev[8]>= 0 ? midiindev[8]+1 : 0);
-    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0);
-    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0);
-    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0);
-    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0);
-    midioutdev5 = (noutdev > 4 && midioutdev[4]>= 0 ? midioutdev[4]+1 : 0);
-    midioutdev6 = (noutdev > 5 && midioutdev[5]>= 0 ? midioutdev[5]+1 : 0);
-    midioutdev7 = (noutdev > 6 && midioutdev[6]>= 0 ? midioutdev[6]+1 : 0);
-    midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
-    midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
-
+    /* start an midi settings dialog window */
+void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
+{
+    sys_gui_midipreferences();
     pdgui_stub_deleteforkey(0);
-#ifdef USEAPI_ALSA
-    if (sys_midiapi == API_ALSA)
-        pdgui_stub_vnew(&glob_pdobject,
-            "pdtk_alsa_midi_dialog", (void *)glob_midi_properties,
-            "iiii iiii ii",
-            midiindev1 , midiindev2 , midiindev3 , midiindev4 ,
-            midioutdev1, midioutdev2, midioutdev3, midioutdev4,
-            (flongform != 0), 1);
-    else
-#endif
-    pdgui_stub_vnew(
-        &glob_pdobject,
-        "pdtk_midi_dialog", (void *)glob_midi_properties,
-        "iiiiiiiii iiiiiiiii i",
-        midiindev1 , midiindev2 , midiindev3 , midiindev4 , midiindev5 , midiindev6 , midiindev7 , midiindev8 , midiindev9 ,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5, midioutdev6, midioutdev7, midioutdev8, midioutdev9,
-        (flongform != 0));
+    pdgui_stub_vnew(&glob_pdobject, "::dialog_midi::create",
+        (void *)glob_midi_properties, "");
 }
 
     /* new values from dialog window */

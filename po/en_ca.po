@@ -2,13 +2,14 @@
 # This file is put in the public domain.
 # Ben Bogart <ben@ekran.org>, 2009.
 # Serguei Mokhov <mokhov@cse.concordia.ca>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-22 15:42+0000\n"
-"Last-Translator: Serguei Mokhov <mokhov@cse.concordia.ca>\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-06-27 06:05+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 
 msgid "linear"
 msgstr "linear"
@@ -196,8 +197,26 @@ msgstr "Apply"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Audio Settings"
+msgid "no device"
+msgstr "no device"
+
+msgid "(same as input device)..."
+msgstr "(same as input device)..."
+
+msgid "Channels:"
+msgstr "Channels:"
+
+msgid "Input Devices"
+msgstr "Input Devices"
+
+msgid "Output Devices"
+msgstr "Output Devices"
+
+msgid "Use Multiple Devices"
+msgstr "Use Multiple Devices"
+
+msgid "audio system"
+msgstr "audio system"
 
 msgid "Settings"
 msgstr "Settings"
@@ -223,20 +242,8 @@ msgstr "Block size:"
 msgid "Use callbacks"
 msgstr "Use callbacks"
 
-msgid "Input Devices"
-msgstr "Input Devices"
-
-msgid "Channels:"
-msgstr "Channels:"
-
-msgid "Output Devices"
-msgstr "Output Devices"
-
-msgid "(same as input device)..."
-msgstr "(same as input device)..."
-
-msgid "Use Multiple Devices"
-msgstr "Use Multiple Devices"
+msgid "Audio Settings"
+msgstr "Audio Settings"
 
 msgid "Save All Settings"
 msgstr "Save All Settings"
@@ -351,6 +358,9 @@ msgstr "Send symbol:"
 
 msgid "Receive symbol:"
 msgstr "Receive symbol:"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Width:"
 msgstr "Width:"
@@ -494,17 +504,23 @@ msgstr "Send a Pd message"
 msgid "(use arrow keys for history)"
 msgstr "(use arrow keys for history)"
 
-msgid "MIDI Settings"
-msgstr "MIDI Settings"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI Settings"
+msgid "no input devices"
+msgstr "no input devices"
 
 msgid "In Ports:"
 msgstr "In Ports:"
 
 msgid "Out Ports:"
 msgstr "Out Ports:"
+
+msgid "MIDI system"
+msgstr "MIDI system"
+
+msgid "MIDI Settings"
+msgstr "MIDI Settings"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI Settings"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Pd search path for objects, help, audio, text and other files"
@@ -533,6 +549,9 @@ msgstr "Externals Install Directory"
 msgid "Clear"
 msgstr "Clear"
 
+msgid "path preferences"
+msgstr "Path"
+
 msgid "Choose Pd documents directory:"
 msgstr "Choose Pd documents directory:"
 
@@ -546,20 +565,86 @@ msgstr "Add a new path"
 msgid "Edit existing path [%s]"
 msgstr "Edit existing path [%s]"
 
+msgid "Patch windows"
+msgstr "Patch windows"
+
+msgid "Zoom New Windows"
+msgstr "Zoom New Windows"
+
+msgid "GUI settings"
+msgstr "GUI settings"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr "preference layout (reopen the preferences to see the effect)"
+
+msgid "use tabs"
+msgstr "use tabs"
+
+msgid "single page"
+msgstr "single page"
+
+msgid "Preferences"
+msgstr "Preferences"
+
+msgid "startup preferences"
+msgstr "startup"
+
+msgid "audio preferences"
+msgstr "audio"
+
+msgid "MIDI preferences"
+msgstr "MIDI"
+
+msgid "deken preferences"
+msgstr "deken"
+
+msgid "misc preferences"
+msgstr "misc"
+
 msgid "Add new library"
 msgstr "Add new library"
 
 msgid "Edit library"
 msgstr "Edit library"
 
+msgid "Settings below require a restart of Pd!"
+msgstr "Settings below require a restart of Pd!"
+
 msgid "Pd libraries to load on startup"
 msgstr "Pd libraries to load on startup"
 
-msgid "Startup flags:"
-msgstr "Startup flags:"
+msgid "GUI options"
+msgstr "GUI options"
+
+msgid "language"
+msgstr "language"
+
+msgid "Menu language"
+msgstr "Menu language"
+
+msgid "float (32bit)"
+msgstr "float (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "double (64bit) EXPERIMENTAL"
+
+msgid "double (64bit)"
+msgstr "double (64bit)"
+
+msgid "float size"
+msgstr "float size"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Numeric precision of Pd-core"
+
+msgid "Startup options"
+msgstr "Startup options"
 
 msgid "Defeat real-time scheduling"
 msgstr "Defeat real-time scheduling"
+
+msgid "Startup flags:"
+msgstr "Startup flags:"
 
 msgid "Help Browser"
 msgstr "Help Browser"
@@ -621,6 +706,12 @@ msgstr "Failed to read plugin %s ...skipping!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Failed to find plugins in %s ...skipping!"
+
+msgid "Pd startup failure"
+msgstr "Pd startup failure"
+
+msgid "Failed to start Pd-core"
+msgstr "Failed to start Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1137,6 +1228,127 @@ msgstr "refusing to delete empty domain"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Couldn't create preferences \"%1$s\" in %2$s"
 
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Arabic"
+msgstr "Arabic"
+
+msgid "Azerbaijani"
+msgstr "Azerbaijani"
+
+msgid "Belarusian"
+msgstr "Belarusian"
+
+msgid "Bulgarian"
+msgstr "Bulgarian"
+
+msgid "German"
+msgstr "German"
+
+msgid "German (Austria)"
+msgstr "German (Austria)"
+
+msgid "Greek"
+msgstr "Greek"
+
+msgid "English"
+msgstr "English"
+
+msgid "English (Canada)"
+msgstr "English (Canada)"
+
+msgid "English (UK)"
+msgstr "English (UK)"
+
+msgid "English (USA)"
+msgstr "English (USA)"
+
+msgid "Spanish"
+msgstr "Spanish"
+
+msgid "Basque"
+msgstr "Basque"
+
+msgid "Finnish"
+msgstr "Finnish"
+
+msgid "French"
+msgstr "French"
+
+msgid "Gujarati"
+msgstr "Gujarati"
+
+msgid "Hebrew"
+msgstr "Hebrew"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hungarian"
+msgstr "Hungarian"
+
+msgid "Armenian"
+msgstr "Armenian"
+
+msgid "Italian"
+msgstr "Italian"
+
+msgid "Indonesian"
+msgstr "Indonesian"
+
+msgid "Japanese"
+msgstr "Japanese"
+
+msgid "Korean"
+msgstr "Korean"
+
+msgid "Dutch"
+msgstr "Dutch"
+
+msgid "Panjabi"
+msgstr "Panjabi"
+
+msgid "Polish"
+msgstr "Polish"
+
+msgid "Portuguese"
+msgstr "Portuguese"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portuguese (Brazil)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portuguese (Portugal)"
+
+msgid "Russian"
+msgstr "Russian"
+
+msgid "Albanian"
+msgstr "Albanian"
+
+msgid "Swedish"
+msgstr "Swedish"
+
+msgid "Turkish"
+msgstr "Turkish"
+
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+msgid "Vietnamese"
+msgstr "Vietnamese"
+
+msgid "Chinese (Traditional)"
+msgstr "Chinese (Traditional)"
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(default language: %s)"
+
+msgid "(no translation)"
+msgstr "(no translation)"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ignoring '%s': doesn't exist"
@@ -1305,20 +1517,8 @@ msgstr "removed GUI settings"
 msgid "no Pd-GUI settings to clear"
 msgstr "no Pd-GUI settings to clear"
 
-msgid "Path..."
-msgstr "Path..."
-
-msgid "Startup..."
-msgstr "Startup..."
-
-msgid "Audio..."
-msgstr "Audio..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Zoom New Windows"
+msgid "Edit Preferences..."
+msgstr "Edit Preferences..."
 
 msgid "Save All Preferences"
 msgstr "Save All Preferences"
@@ -1332,8 +1532,8 @@ msgstr "Load from..."
 msgid "Forget All..."
 msgstr "Forget All..."
 
-msgid "Preferences"
-msgstr "Preferences"
+msgid "Tabbed preferences"
+msgstr "Tabbed preferences"
 
 msgid "Open Recent"
 msgstr "Open Recent"
@@ -1347,6 +1547,17 @@ msgstr "Do you want to save the changes you made in '%s'?"
 
 msgid "Properties"
 msgstr "Properties"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Accept changes to '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1370,6 +1581,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "EXPERIMENTAL double (64bit) precision"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-floats EXPERIMENTAL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1395,6 +1613,9 @@ msgstr "debug"
 msgid "all"
 msgstr "all"
 
+msgid "y1"
+msgstr "y1"
+
 msgid "New..."
 msgstr "New..."
 
@@ -1407,3 +1628,18 @@ msgstr "Delete"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoring '%s': doesn't look like a Pd file"
+
+#~ msgid "(no device)"
+#~ msgstr "(no device)"
+
+#~ msgid "Path..."
+#~ msgstr "Path..."
+
+#~ msgid "Startup..."
+#~ msgstr "Startup..."
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

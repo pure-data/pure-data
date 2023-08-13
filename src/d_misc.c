@@ -6,6 +6,7 @@
 */
 
 #include "m_pd.h"
+#include <string.h>
 
 /* ------------------------- print~ -------------------------- */
 static t_class *print_class;
@@ -121,10 +122,128 @@ static void bang_tilde_setup(void)
 }
 
 
+/* ------------------------ snake_in~ -------------------------- */
+
+static t_class *snake_in_tilde_class;
+
+typedef struct _snake_in
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_snake_in;
+
+static void snake_in_tilde_dsp(t_snake_in *x, t_signal **sp)
+{
+    int i;
+        /* create an n-channel output signal. sp has n+1 elements. */
+    signal_setmultiout(&sp[x->x_nchans], x->x_nchans);
+        /* add n copy operations to the DSP chain, one from each input */
+    for (i = 0; i < x->x_nchans; i++)
+         dsp_add_copy(sp[i]->s_vec,
+            sp[x->x_nchans]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+}
+
+static void *snake_in_tilde_new(t_floatarg fnchans)
+{
+    t_snake_in *x = (t_snake_in *)pd_new(snake_in_tilde_class);
+    int i;
+    if ((x->x_nchans = fnchans) <= 0)
+        x->x_nchans = 2;
+    for (i = 1; i < x->x_nchans; i++)
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+/* ------------------------ snake_out~ -------------------------- */
+
+static t_class *snake_out_tilde_class;
+
+typedef struct _snake_out
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_snake_out;
+
+static void snake_out_tilde_dsp(t_snake_out *x, t_signal **sp)
+{
+    int i, usenchans = (x->x_nchans < sp[0]->s_nchans ?
+        x->x_nchans : sp[0]->s_nchans);
+        /* create n one-channel output signals and add a copy operation
+        for each one tothe DSP chain */
+    for (i = 0; i < x->x_nchans; i++)
+    {
+        signal_setmultiout(&sp[i+1], 1);
+        if (i < usenchans)
+            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
+                sp[i+1]->s_vec, sp[0]->s_length);
+        else dsp_add_zero(sp[i+1]->s_vec, sp[0]->s_length);
+    }
+}
+
+static void *snake_out_tilde_new(t_floatarg fnchans)
+{
+    t_snake_out *x = (t_snake_out *)pd_new(snake_out_tilde_class);
+    int i;
+    if ((x->x_nchans = fnchans) <= 0)
+        x->x_nchans = 2;
+    for (i = 0; i < x->x_nchans; i++)
+        outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    if (!argc || argv[0].a_type != A_SYMBOL)
+        pd_this->pd_newest =
+            snake_in_tilde_new(atom_getfloatarg(0, argc, argv));
+    else
+    {
+        const char *str = argv[0].a_w.w_symbol->s_name;
+        if (!strcmp(str, "in"))
+            pd_this->pd_newest =
+                snake_in_tilde_new(atom_getfloatarg(1, argc, argv));
+        else if (!strcmp(str, "out"))
+            pd_this->pd_newest =
+                snake_out_tilde_new(atom_getfloatarg(1, argc, argv));
+        else
+        {
+            pd_error(0, "list %s: unknown function", str);
+            pd_this->pd_newest = 0;
+        }
+    }
+    return (pd_this->pd_newest);
+}
+
+static void snake_tilde_setup(void)
+{
+    snake_in_tilde_class = class_new(gensym("snake_in~"),
+        (t_newmethod)snake_in_tilde_new, 0, sizeof(t_snake_in),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(snake_in_tilde_class, t_snake_in, x_f);
+    class_addmethod(snake_in_tilde_class, (t_method)snake_in_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(snake_in_tilde_class, gensym("snake-tilde"));
+
+    snake_out_tilde_class = class_new(gensym("snake_out~"),
+        (t_newmethod)snake_out_tilde_new, 0, sizeof(t_snake_out),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(snake_out_tilde_class, t_snake_out, x_f);
+    class_addmethod(snake_out_tilde_class, (t_method)snake_out_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(snake_out_tilde_class, gensym("snake-tilde"));
+
+    class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
+        A_GIMME, 0);
+}
+
 /* ------------------------ global setup routine ------------------------- */
 
 void d_misc_setup(void)
 {
     print_setup();
     bang_tilde_setup();
+    snake_tilde_setup();
 }

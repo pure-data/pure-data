@@ -41,7 +41,7 @@ value.;
 #X obj 145 262 change;
 #X text 17 263 see also:;
 #X obj 90 262 select;
-#X text 26 66 Th [moses] object takes numbers and outputs them at left
+#X text 26 66 The [moses] object takes numbers and outputs them at left
 if they're less than a control value \, and at right if they're greater
 or equal to it.;
 #X text 172 161 <-- creation argument initializes the value and the

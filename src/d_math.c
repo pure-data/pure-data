@@ -10,6 +10,7 @@
 #include <math.h>
 #include <limits.h>
 #define LOGTEN 2.302585092994046
+#define SIGTOTAL(s) ((t_int)((s)->s_length * (s)->s_nchans))
 
 /* ------------------------- clip~ -------------------------- */
 static t_class *clip_class;
@@ -52,13 +53,14 @@ static t_int *clip_perform(t_int *w)
 
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 static void clip_setup(void)
 {
     clip_class = class_new(gensym("clip~"), (t_newmethod)clip_new, 0,
-        sizeof(t_clip), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_clip), CLASS_MULTICHANNEL, A_DEFFLOAT, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(clip_class, t_clip, x_f);
     class_addmethod(clip_class, (t_method)clip_dsp, gensym("dsp"), A_CANT, 0);
 }
@@ -171,13 +173,14 @@ static t_int *sigrsqrt_perform(t_int *w)
 
 static void sigrsqrt_dsp(t_sigrsqrt *x, t_signal **sp)
 {
-    dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 void sigrsqrt_setup(void)
 {
     sigrsqrt_class = class_new(gensym("rsqrt~"), (t_newmethod)sigrsqrt_new, 0,
-        sizeof(t_sigrsqrt), 0, 0);
+        sizeof(t_sigrsqrt), CLASS_MULTICHANNEL, 0);
             /* an old name for it: */
     class_addcreator(sigrsqrt_new, gensym("q8_rsqrt~"), 0);
     CLASS_MAINSIGNALIN(sigrsqrt_class, t_sigrsqrt, x_f);
@@ -230,13 +233,14 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
 
 static void sigsqrt_dsp(t_sigsqrt *x, t_signal **sp)
 {
-    dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 void sigsqrt_setup(void)
 {
     sigsqrt_class = class_new(gensym("sqrt~"), (t_newmethod)sigsqrt_new, 0,
-        sizeof(t_sigsqrt), 0, 0);
+        sizeof(t_sigsqrt), CLASS_MULTICHANNEL, 0);
     class_addcreator(sigsqrt_new, gensym("q8_sqrt~"), 0);   /* old name */
     CLASS_MAINSIGNALIN(sigsqrt_class, t_sigsqrt, x_f);
     class_addmethod(sigsqrt_class, (t_method)sigsqrt_dsp,
@@ -294,21 +298,22 @@ static t_int *sigwrap_old_perform(t_int *w)
 
 static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add((pd_compatibilitylevel < 48 ?
         sigwrap_old_perform : sigwrap_perform),
-            3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+            3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 void sigwrap_setup(void)
 {
     sigwrap_class = class_new(gensym("wrap~"), (t_newmethod)sigwrap_new, 0,
-        sizeof(t_sigwrap), 0, 0);
+        sizeof(t_sigwrap), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(sigwrap_class, t_sigwrap, x_f);
     class_addmethod(sigwrap_class, (t_method)sigwrap_dsp,
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ------------------------------ mtof_tilde~ -------------------------- */
+/* ------------------------------ mtof~ -------------------------- */
 
 typedef struct mtof_tilde
 {
@@ -345,19 +350,20 @@ static t_int *mtof_tilde_perform(t_int *w)
 
 static void mtof_tilde_dsp(t_mtof_tilde *x, t_signal **sp)
 {
-    dsp_add(mtof_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(mtof_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 void mtof_tilde_setup(void)
 {
     mtof_tilde_class = class_new(gensym("mtof~"), (t_newmethod)mtof_tilde_new, 0,
-        sizeof(t_mtof_tilde), 0, 0);
+        sizeof(t_mtof_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(mtof_tilde_class, t_mtof_tilde, x_f);
     class_addmethod(mtof_tilde_class, (t_method)mtof_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ------------------------------ ftom_tilde~ -------------------------- */
+/* ------------------------------ ftom~ -------------------------- */
 
 typedef struct ftom_tilde
 {
@@ -389,13 +395,14 @@ static t_int *ftom_tilde_perform(t_int *w)
 
 static void ftom_tilde_dsp(t_ftom_tilde *x, t_signal **sp)
 {
-    dsp_add(ftom_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(ftom_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 void ftom_tilde_setup(void)
 {
     ftom_tilde_class = class_new(gensym("ftom~"), (t_newmethod)ftom_tilde_new, 0,
-        sizeof(t_ftom_tilde), 0, 0);
+        sizeof(t_ftom_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(ftom_tilde_class, t_ftom_tilde, x_f);
     class_addmethod(ftom_tilde_class, (t_method)ftom_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -439,13 +446,16 @@ static t_int *dbtorms_tilde_perform(t_int *w)
 
 static void dbtorms_tilde_dsp(t_dbtorms_tilde *x, t_signal **sp)
 {
-    dsp_add(dbtorms_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(dbtorms_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
+        SIGTOTAL(sp[0]));
 }
 
 void dbtorms_tilde_setup(void)
 {
-    dbtorms_tilde_class = class_new(gensym("dbtorms~"), (t_newmethod)dbtorms_tilde_new, 0,
-        sizeof(t_dbtorms_tilde), 0, 0);
+    dbtorms_tilde_class = class_new(gensym("dbtorms~"),
+        (t_newmethod)dbtorms_tilde_new, 0,
+            sizeof(t_dbtorms_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(dbtorms_tilde_class, t_dbtorms_tilde, x_f);
     class_addmethod(dbtorms_tilde_class, (t_method)dbtorms_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -488,13 +498,16 @@ static t_int *rmstodb_tilde_perform(t_int *w)
 
 static void rmstodb_tilde_dsp(t_rmstodb_tilde *x, t_signal **sp)
 {
-    dsp_add(rmstodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(rmstodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
+        SIGTOTAL(sp[0]));
 }
 
 void rmstodb_tilde_setup(void)
 {
     rmstodb_tilde_class = class_new(gensym("rmstodb~"),
-        (t_newmethod)rmstodb_tilde_new, 0, sizeof(t_rmstodb_tilde), 0, 0);
+        (t_newmethod)rmstodb_tilde_new, 0, sizeof(t_rmstodb_tilde),
+            CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(rmstodb_tilde_class, t_rmstodb_tilde, x_f);
     class_addmethod(rmstodb_tilde_class, (t_method)rmstodb_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -538,13 +551,15 @@ static t_int *dbtopow_tilde_perform(t_int *w)
 
 static void dbtopow_tilde_dsp(t_dbtopow_tilde *x, t_signal **sp)
 {
-    dsp_add(dbtopow_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(dbtopow_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
+        SIGTOTAL(sp[0]));
 }
 
 void dbtopow_tilde_setup(void)
 {
     dbtopow_tilde_class = class_new(gensym("dbtopow~"), (t_newmethod)dbtopow_tilde_new, 0,
-        sizeof(t_dbtopow_tilde), 0, 0);
+        sizeof(t_dbtopow_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(dbtopow_tilde_class, t_dbtopow_tilde, x_f);
     class_addmethod(dbtopow_tilde_class, (t_method)dbtopow_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -587,69 +602,22 @@ static t_int *powtodb_tilde_perform(t_int *w)
 
 static void powtodb_tilde_dsp(t_powtodb_tilde *x, t_signal **sp)
 {
-    dsp_add(powtodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    dsp_add(powtodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
+        SIGTOTAL(sp[0]));
 }
 
 void powtodb_tilde_setup(void)
 {
-    powtodb_tilde_class = class_new(gensym("powtodb~"), (t_newmethod)powtodb_tilde_new, 0,
-        sizeof(t_powtodb_tilde), 0, 0);
+    powtodb_tilde_class = class_new(gensym("powtodb~"),
+        (t_newmethod)powtodb_tilde_new, 0,
+            sizeof(t_powtodb_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(powtodb_tilde_class, t_powtodb_tilde, x_f);
     class_addmethod(powtodb_tilde_class, (t_method)powtodb_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ----------------------------- pow ----------------------------- */
-static t_class *pow_tilde_class;
-
-typedef struct _pow_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-} t_pow_tilde;
-
-static void *pow_tilde_new(t_floatarg f)
-{
-    t_pow_tilde *x = (t_pow_tilde *)pd_new(pow_tilde_class);
-    signalinlet_new(&x->x_obj, f);
-    outlet_new(&x->x_obj, &s_signal);
-    x->x_f = 0;
-
-    return (x);
-}
-
-t_int *pow_tilde_perform(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
-    while (n--)
-    {
-        t_sample f1 = *in1++, f2 = *in2++;
-        *out++ = (f1 == 0 && f2 < 0) ||
-            (f1 < 0 && (f2 - (int)f2) != 0) ?
-                0 : pow(f1, f2);
-    }
-    return (w+5);
-}
-
-static void pow_tilde_dsp(t_pow_tilde *x, t_signal **sp)
-{
-    dsp_add(pow_tilde_perform, 4,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
-}
-
-static void pow_tilde_setup(void)
-{
-    pow_tilde_class = class_new(gensym("pow~"), (t_newmethod)pow_tilde_new, 0,
-        sizeof(t_pow_tilde), 0, A_DEFFLOAT, 0);
-    CLASS_MAINSIGNALIN(pow_tilde_class, t_pow_tilde, x_f);
-    class_addmethod(pow_tilde_class, (t_method)pow_tilde_dsp,
-        gensym("dsp"), A_CANT, 0);
-}
-
-/* ----------------------------- exp ----------------------------- */
+/* ----------------------------- exp~ ----------------------------- */
 static t_class *exp_tilde_class;
 
 typedef struct _exp_tilde
@@ -677,73 +645,21 @@ t_int *exp_tilde_perform(t_int *w)
 
 static void exp_tilde_dsp(t_exp_tilde *x, t_signal **sp)
 {
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add(exp_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 static void exp_tilde_setup(void)
 {
     exp_tilde_class = class_new(gensym("exp~"), (t_newmethod)exp_tilde_new, 0,
-        sizeof(t_exp_tilde), 0, 0);
+        sizeof(t_exp_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(exp_tilde_class, t_exp_tilde, x_f);
     class_addmethod(exp_tilde_class, (t_method)exp_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
 }
 
-/* ----------------------------- log ----------------------------- */
-static t_class *log_tilde_class;
-
-typedef struct _log_tilde
-{
-    t_object x_obj;
-    t_float x_f;
-} t_log_tilde;
-
-static void *log_tilde_new(t_floatarg f)
-{
-    t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
-    pd_float(
-        (t_pd *)inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal), f);
-    outlet_new(&x->x_obj, &s_signal);
-    x->x_f = 0;
-    return (x);
-}
-
-t_int *log_tilde_perform(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
-    while (n--)
-    {
-        t_sample f = *in1++, g = *in2++;
-        if (f <= 0)
-            *out = -1000;   /* rather than blow up, output a number << 0 */
-        else if (g <= 0)
-            *out = log(f);
-        else *out = log(f)/log(g);
-        out++;
-    }
-    return (w+5);
-}
-
-static void log_tilde_dsp(t_log_tilde *x, t_signal **sp)
-{
-    dsp_add(log_tilde_perform, 4,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
-}
-
-static void log_tilde_setup(void)
-{
-    log_tilde_class = class_new(gensym("log~"), (t_newmethod)log_tilde_new, 0,
-        sizeof(t_log_tilde), 0, A_DEFFLOAT, 0);
-    CLASS_MAINSIGNALIN(log_tilde_class, t_log_tilde, x_f);
-    class_addmethod(log_tilde_class, (t_method)log_tilde_dsp,
-        gensym("dsp"), A_CANT, 0);
-}
-
-/* ----------------------------- abs ----------------------------- */
+/* ----------------------------- abs~ ----------------------------- */
 static t_class *abs_tilde_class;
 
 typedef struct _abs_tilde
@@ -774,14 +690,15 @@ t_int *abs_tilde_perform(t_int *w)
 
 static void abs_tilde_dsp(t_abs_tilde *x, t_signal **sp)
 {
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add(abs_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 static void abs_tilde_setup(void)
 {
     abs_tilde_class = class_new(gensym("abs~"), (t_newmethod)abs_tilde_new, 0,
-        sizeof(t_abs_tilde), 0, 0);
+        sizeof(t_abs_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(abs_tilde_class, t_abs_tilde, x_f);
     class_addmethod(abs_tilde_class, (t_method)abs_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -791,27 +708,30 @@ static void abs_tilde_setup(void)
 
 void d_math_setup(void)
 {
-    t_symbol *s = gensym("acoustics~.pd");
-    clip_setup();
-    sigrsqrt_setup();
-    sigsqrt_setup();
-    sigwrap_setup();
-    mtof_tilde_setup();
-    ftom_tilde_setup();
     dbtorms_tilde_setup();
     rmstodb_tilde_setup();
     dbtopow_tilde_setup();
     powtodb_tilde_setup();
-    pow_tilde_setup();
+    mtof_tilde_setup();
+    ftom_tilde_setup();
+    sigrsqrt_setup();
+    sigsqrt_setup();
+    sigwrap_setup();
     exp_tilde_setup();
-    log_tilde_setup();
     abs_tilde_setup();
-
-    class_sethelpsymbol(mtof_tilde_class, s);
-    class_sethelpsymbol(ftom_tilde_class, s);
-    class_sethelpsymbol(dbtorms_tilde_class, s);
-    class_sethelpsymbol(rmstodb_tilde_class, s);
-    class_sethelpsymbol(dbtopow_tilde_class, s);
-    class_sethelpsymbol(powtodb_tilde_class, s);
+    clip_setup();
+    t_symbol *s1 = gensym("acoustics-tilde.pd");
+    class_sethelpsymbol(mtof_tilde_class, s1);
+    class_sethelpsymbol(ftom_tilde_class, s1);
+    class_sethelpsymbol(dbtorms_tilde_class, s1);
+    class_sethelpsymbol(rmstodb_tilde_class, s1);
+    class_sethelpsymbol(dbtopow_tilde_class, s1);
+    class_sethelpsymbol(powtodb_tilde_class, s1);
+    t_symbol *s2 = gensym("unops-tilde.pd");
+    class_sethelpsymbol(sigrsqrt_class, s2);
+    class_sethelpsymbol(sigsqrt_class, s2);
+    class_sethelpsymbol(sigwrap_class, s2);
+    class_sethelpsymbol(exp_tilde_class, s2);
+    class_sethelpsymbol(abs_tilde_class, s2);
 }
 

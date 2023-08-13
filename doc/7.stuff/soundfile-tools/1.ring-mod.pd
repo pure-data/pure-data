@@ -46,8 +46,7 @@
 #X obj 41 158 r \$0-read;
 #X obj 271 56 r \$0-run;
 #X obj 378 56 r \$0-start;
-#X obj 210 211 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 210 211 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 0 0 6 0;
 #X connect 1 0 8 0;
 #X connect 1 0 14 1;
@@ -89,24 +88,14 @@
 #X text 392 411 output sample;
 #X obj 277 412 table \$0-output;
 #X obj 284 388 table \$0-input;
-#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 186 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 210 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 234 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 161 259 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
-#X text 90 494 Outputs are saved as "wav" files \, although you can
-edit the patch to choose other (like "aiff") instead., f 54;
-#X text 48 20 Ring modulator. Read in a sample first \, then you can
-either set a frequency and hit the "run" button or else hit the "start"
-button and start the transformation by dragging on the frequency control.
-, f 66;
+#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 186 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 210 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 234 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 161 259 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
+#X text 90 494 Outputs are saved as "wav" files \, although you can edit the patch to choose other (like "aiff") instead., f 54;
+#X text 48 20 Ring modulator. Read in a sample first \, then you can either set a frequency and hit the "run" button or else hit the "start" button and start the transformation by dragging on the frequency control., f 66;
 #X text 174 319 Modulation frequency (Hz.);
 #X text 70 101 Click below to:;
 #X text 190 136 (read an input file);
@@ -116,5 +105,4 @@ button and start the transformation by dragging on the frequency control.
 #X text 190 233 (save the output sample);
 #X text 190 258 (save the output sample normalized to 1);
 #X connect 0 0 2 0;
-#X connect 0 0 2 1;
 #X connect 1 0 0 0;

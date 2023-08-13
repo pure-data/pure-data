@@ -13,7 +13,9 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "g_canvas.h"
 #include <stdarg.h>
+#define DEFDACBLKSIZE 64    /* from s_stuff.h - LATER make this dynamic */
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
 
@@ -21,13 +23,13 @@ EXTERN_STRUCT _vinlet;
 EXTERN_STRUCT _voutlet;
 
 void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample,  int reblock, int switched);
 void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched);
 void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched);
 
 struct _instanceugen
@@ -125,12 +127,11 @@ ONLY run when the block is switched off; in this case the epilog code simply
 copies zeros to all signal outlets.
 */
 
-static t_class *block_class;
+t_class *block_class;
 
 typedef struct _block
 {
     t_object x_obj;
-    int x_vecsize;      /* size of audio signals in this block */
     int x_calcsize;     /* number of samples actually to compute */
     int x_overlap;
     int x_phase;        /* from 0 to period-1; when zero we run the block */
@@ -171,7 +172,6 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     int calcsize = fcalcsize;
     int overlap = foverlap;
     int dspstate = canvas_suspend_dsp();
-    int vecsize;
     if (overlap < 1)
         overlap = 1;
     if (calcsize < 0)
@@ -187,19 +187,6 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     {
         downsample = 1.0 / fupsample;
         upsample   = 1;
-    }
-
-        /* vecsize is smallest power of 2 large enough to hold calcsize */
-    if (calcsize)
-    {
-        if ((vecsize = (1 << ilog2(calcsize))) != calcsize)
-            vecsize *= 2;
-    }
-    else vecsize = 0;
-    if (vecsize && (vecsize != (1 << ilog2(vecsize))))
-    {
-        pd_error(x, "block~: vector size not a power of 2");
-        vecsize = 64;
     }
     if (overlap != (1 << ilog2(overlap)))
     {
@@ -218,11 +205,42 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     }
 
     x->x_calcsize = calcsize;
-    x->x_vecsize = vecsize;
     x->x_overlap = overlap;
     x->x_upsample = upsample;
     x->x_downsample = downsample;
     canvas_resume_dsp(dspstate);
+}
+
+t_float canvas_getsr(t_canvas *x)
+{
+    t_float srate = sys_getsr();
+    t_canvas *canvas;
+    t_gobj *g;
+    for (canvas = x; canvas; canvas = canvas->gl_owner)
+    {
+        for (g = canvas->gl_list; g; g = g->g_next)
+        {
+            if (g->g_pd == block_class)
+            {
+                srate *= ((t_float)(((t_block *)g)->x_upsample)) /
+                    ((t_float)(((t_block *)g)->x_downsample));
+                break;
+            }
+        }
+    }
+    return (srate);
+}
+
+int canvas_getsignallength(t_canvas *x)
+{
+    t_canvas *canvas;
+    t_gobj *g;
+    for (canvas = x; canvas; canvas = canvas->gl_owner)
+        for (g = canvas->gl_list; g; g = g->g_next)
+            if (g->g_pd == block_class &&
+                ((t_block *)g)->x_calcsize)
+                    return (((t_block *)g)->x_calcsize);
+    return (DEFDACBLKSIZE);
 }
 
 static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
@@ -400,8 +418,8 @@ static void signal_cleanup(void)
     while ((sig = THIS->u_signals))
     {
         THIS->u_signals = sig->s_nextused;
-        if (!sig->s_isborrowed)
-            t_freebytes(sig->s_vec, sig->s_vecsize * sizeof (*sig->s_vec));
+        if (!sig->s_isborrowed && !sig->s_isscalar)
+            t_freebytes(sig->s_vec, sig->s_nalloc * sizeof (*sig->s_vec));
         t_freebytes(sig, sizeof *sig);
     }
     for (i = 0; i <= MAXLOGSIG; i++)
@@ -409,11 +427,22 @@ static void signal_cleanup(void)
     THIS->u_freeborrowed = 0;
 }
 
+static void signal_dereference(t_signal *s)
+{
+    if (THIS->u_loud) post("dereference %lx: %d", s, s->s_refcount);
+    if (s->s_refcount <= 0)
+        bug("signal_dereference");
+    s->s_refcount--;
+    if (!s->s_refcount)
+        signal_makereusable(s);
+}
+
+
     /* mark the signal "reusable." */
 void signal_makereusable(t_signal *sig)
 {
-    int logn = ilog2(sig->s_vecsize);
-#if 1
+    int logn = ilog2(sig->s_nalloc);
+#if 0
     t_signal *s5;
     for (s5 = THIS->u_freeborrowed; s5; s5 = s5->s_nextfree)
     {
@@ -433,16 +462,17 @@ void signal_makereusable(t_signal *sig)
     }
 #endif
     if (THIS->u_loud) post("free %lx: %d", sig, sig->s_isborrowed);
-    if (sig->s_isborrowed)
+    if (sig->s_isborrowed || sig->s_isscalar)
     {
+        if (sig->s_isborrowed)
+        {
             /* if the signal is borrowed, decrement the borrowed-from signal's
                 reference count, possibly marking it reusable too */
-        t_signal *s2 = sig->s_borrowedfrom;
-        if ((s2 == sig) || !s2)
-            bug("signal_free");
-        s2->s_refcount--;
-        if (!s2->s_refcount)
-            signal_makereusable(s2);
+            t_signal *s2 = sig->s_borrowedfrom;
+            if ((s2 == sig) || !s2)
+                bug("signal_free");
+            signal_dereference(s2);
+        }
         sig->s_nextfree = THIS->u_freeborrowed;
         THIS->u_freeborrowed = sig;
     }
@@ -456,48 +486,63 @@ void signal_makereusable(t_signal *sig)
     }
 }
 
-    /* reclaim or make an audio signal.  If n is zero, return a "borrowed"
+    /* pop an audio signal from free list or create a new one.
+    if "scalarp" is nonzero, it's a pointer to a scalar owned by the
+    tilde object; in this case we neither allocate nor free it.
+    Otherwise, if "length" is zero, return a "borrowed"
     signal whose buffer and size will be obtained later via
     signal_setborrowed(). */
 
-static t_signal *signal_new(int n, t_float sr)
+t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
 {
-    int logn, vecsize = 0;
+    int allocsize = 0;
     t_signal *ret, **whichlist;
-    logn = ilog2(n);
-    if (n)
+    if (sr < 1)
+        bug("signal_new");
+    if (length && !scalarptr)
     {
-        if ((vecsize = (1<<logn)) != n)
-            vecsize *= 2;
+            /* figure out which free list to use, depending on size of vector */
+        int logn = ilog2(length*nchans);
+            /* round up to a power of two */
+        if ((1<<logn) < length*nchans)
+            logn++;
+        allocsize = 1<<logn;
         if (logn > MAXLOGSIG)
             bug("signal buffer too large");
         whichlist = THIS->u_freelist + logn;
     }
-    else
+    else /* scalar or borrowed signal */
         whichlist = &THIS->u_freeborrowed;
 
-        /* first try to reclaim one from the free list */
+        /* try to reclaim one from the free list */
     if ((ret = *whichlist))
         *whichlist = ret->s_nextfree;
     else
     {
-            /* LATER figure out what to do for out-of-space here! */
+                 /* LATER figure out what to do if we ran out of space */
         ret = (t_signal *)t_getbytes(sizeof *ret);
-        if (n)
-        {
-            ret->s_vec = (t_sample *)getbytes(vecsize * sizeof (*ret->s_vec));
-            ret->s_isborrowed = 0;
-        }
-        else
-        {
-            ret->s_vec = 0;
-            ret->s_isborrowed = 1;
-        }
+        if (allocsize)
+            ret->s_vec = (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec));
         ret->s_nextused = THIS->u_signals;
         THIS->u_signals = ret;
     }
-    ret->s_n = n;
-    ret->s_vecsize = vecsize;
+    if (scalarptr)
+    {
+        ret->s_vec = scalarptr;
+        ret->s_isborrowed = 0;
+        ret->s_isscalar = 1;
+    }
+    else if (length)
+        ret->s_isborrowed = ret->s_isscalar = 0;
+    else
+    {
+        ret->s_vec = 0;
+        ret->s_isborrowed = 1;
+        ret->s_isscalar = 0;
+    }
+    ret->s_length = length;
+    ret->s_nchans = nchans;
+    ret->s_nalloc = allocsize;
     ret->s_sr = sr;
     ret->s_refcount = 0;
     ret->s_borrowedfrom = 0;
@@ -505,9 +550,9 @@ static t_signal *signal_new(int n, t_float sr)
     return (ret);
 }
 
-static t_signal *signal_newlike(const t_signal *sig)
+t_signal *signal_newlike(const t_signal *sig)
 {
-    return (signal_new(sig->s_n, sig->s_sr));
+    return (signal_new(sig->s_length, sig->s_nchans, sig->s_sr, 0));
 }
 
 void signal_setborrowed(t_signal *sig, t_signal *sig2)
@@ -518,14 +563,25 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
         bug("signal_setborrowed 2");
     sig->s_borrowedfrom = sig2;
     sig->s_vec = sig2->s_vec;
-    sig->s_n = sig2->s_n;
-    sig->s_vecsize = sig2->s_vecsize;
-    if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
+    sig->s_length = sig2->s_length;
+    sig->s_nchans = sig2->s_nchans;
+    sig->s_nalloc = sig2->s_nalloc;
+    sig2->s_refcount++;
+    if (THIS->u_loud) post("set borrowed %lx: from %lx vec %lx",
+        sig, sig2, sig->s_vec);
+}
+
+    /* only use this in the context of dsp routines to set number of channels
+    on output signal - we assume it's currently a pointer to the null signal */
+void signal_setmultiout(t_signal **sig, int nchans)
+{
+    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
 }
 
 static int signal_compatible(t_signal *s1, t_signal *s2)
 {
-    return (s1->s_n == s2->s_n && s1->s_sr == s2->s_sr);
+    return (s1->s_length == s2->s_length && s1->s_nchans == s2->s_nchans
+        && s1->s_sr == s2->s_sr);
 }
 
 /* ------------------ ugen ("unit generator") sorting ----------------- */
@@ -572,25 +628,41 @@ struct _dspcontext
     int dc_ninlets;
     int dc_noutlets;
     t_signal **dc_iosigs;
-    t_float dc_srate;
-    int dc_vecsize;         /* vector size, power of two */
-    int dc_calcsize;        /* number of elements to calculate */
-    char dc_toplevel;       /* true if "iosigs" is invalid. */
-    char dc_reblock;        /* true if we have to reblock inlets/outlets */
-    char dc_switched;       /* true if we're switched */
+    t_signal dc_nullsignal;   /* non-signal showing sample rate and length */
+    unsigned int dc_toplevel:1;     /* true if "iosigs" is invalid. */
+    unsigned int dc_reblock:1;      /* true if we have to reblock in/outlets */
+    unsigned int dc_switched:1;     /* true if we're switched */
+    unsigned int dc_warnedmulti:1;  /* already warned about bad multi input */
 };
+#define DC_LENGTH(x) ((x)->dc_nullsignal.s_length)
+#define DC_SR(x) ((x)->dc_nullsignal.s_sr)
 
 #define t_dspcontext struct _dspcontext
 
     /* get a new signal for the current context - used by clone~ object */
-t_signal *signal_newfromcontext(int borrowed)
+t_signal *signal_newfromcontext(int borrowed, int nchans)
 {
-    return (signal_new((borrowed? 0 : THIS->u_context->dc_calcsize),
-        THIS->u_context->dc_srate));
+    return (signal_new((borrowed? 0 : DC_LENGTH(THIS->u_context)), nchans,
+        DC_SR(THIS->u_context), 0));
 }
 
 void ugen_stop(void)
 {
+#if 0   /* test to make sure we aren't leaving signal garbage */
+    {
+        t_signal *sig;
+        int done = 0, count = 0;
+            /* report any signals still in use */
+        for (sig = THIS->u_signals; sig; sig = sig->s_nextused)
+        {
+            if (sig->s_refcount)
+                post("signal %lx refcount %d", sig, sig->s_refcount), done = 1;
+            count++;
+        }
+        if (!done)
+            post("all %d signals freed correctly", count);
+    }
+#endif
     if (THIS->u_dspchain)
     {
         freebytes(THIS->u_dspchain,
@@ -605,6 +677,7 @@ void ugen_start(void)
 {
     ugen_stop();
     THIS->u_sortno++;
+    /*  THIS->u_loud = 1;  -- enable this for volumes of debugging output */
     THIS->u_dspchain = (t_int *)getbytes(sizeof(*THIS->u_dspchain));
     THIS->u_dspchain[0] = (t_int)dsp_done;
     THIS->u_dspchainsize = 1;
@@ -660,6 +733,7 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     dc->dc_iosigs = sp;
     dc->dc_ninlets = ninlets;
     dc->dc_noutlets = noutlets;
+    dc->dc_warnedmulti = 0;
     dc->dc_parentcontext = THIS->u_context;
     THIS->u_context = dc;
     return (dc);
@@ -745,6 +819,10 @@ static int ugen_index(t_dspcontext *dc, t_ugenbox *x)
 }
 extern t_class *clone_class;
 
+static const t_sample ugen_scalarzero;  /* zero for scalar-to-vector copying */
+
+extern int class_getdspflags(const t_class *c);
+
     /* put a ugenbox on the chain, recursively putting any others on that
     this one might uncover. */
 static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
@@ -753,87 +831,120 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     t_siginlet *uin;
     t_sigoutconnect *oc;
     t_class *class = pd_class(&u->u_obj->ob_pd);
+    t_signal *freelater = 0, *stmp;
+    int flags = class_getdspflags(class);
     int i, n;
         /* suppress creating new signals for the outputs of signal
-        inlets and subpatches; except in the case we're an inlet and "blocking"
-        is set.  We don't yet know if a subcanvas will be "blocking" so there
-        we delay new signal creation, which will be handled by calling
-        signal_setborrowed in the ugen_done_graph routine below. */
-    int nonewsigs = (class == canvas_class ||
-        ((class == vinlet_class) && !(dc->dc_reblock)));
-        /* when we encounter a subcanvas or a signal outlet, suppress freeing
+        inlets for non-reblocked canvases -- those will be borrowed. */
+    int nonewsigs = ((class == vinlet_class) && !dc->dc_reblock);
+        /* when we encounter a subcanvas or outlet~ object, suppress freeing
         the input signals as they may be "borrowed" for the super or sub
-        patch; same exception as above, but also if we're "switched" we
-        have to do a copy rather than a borrow.  */
+        patch; except blocked or switched outlet~s. */
     int nofreesigs = (class == canvas_class || class == clone_class ||
         ((class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched)));
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
     t_ugenbox *u2;
 
+        /* if CLASS_MULTICHANNEL isn't set, check that all input signals
+        are one-channel, and if not, just return without doing anything. */
+
+    for (i = 0, uin = u->u_in; i < u->u_nin; i++, uin++)
+        if (uin->i_nconnect && uin->i_signal->s_nchans != 1 &&
+            !(flags & CLASS_MULTICHANNEL))
+    {
+        pd_error(u->u_obj, "object %s can't take multichannel inputs",
+            class_getname(u->u_obj->ob_pd));
+        dc->dc_warnedmulti = 1;
+        return;
+    }
+
     if (THIS->u_loud) post("doit %s %d %d", class_getname(class), nofreesigs,
         nonewsigs);
+
+        /* Fill in unconnected inlets.  Normally we create a signal for it and
+        add a scalar-to-vector copy to the DSP chain to fill it in from the
+        inlet's scalar source.  But if the relevant NOPROMOTE flag is set,
+        create a scalar "signal" that just points to the preexisting location
+        of the scalar to be promoted so that the object can use the scalar
+        input directly. */
+
     for (i = 0, uin = u->u_in; i < u->u_nin; i++, uin++)
     {
         if (!uin->i_nconnect)
         {
-            t_float *scalar;
-            s3 = signal_new(dc->dc_calcsize, dc->dc_srate);
-            /* post("%s: unconnected signal inlet set to zero",
-                class_getname(u->u_obj->ob_pd)); */
-            if ((scalar = obj_findsignalscalar(u->u_obj, i)))
-                dsp_add_scalarcopy(scalar, s3->s_vec, s3->s_n);
+            t_float *scalar = obj_findsignalscalar(u->u_obj, i);
+                /* if the object can deal with it, we generate a signal that
+                consists only of a pointer to a scalar. */
+            if ((i && (flags & CLASS_NOPROMOTESIG)) ||
+                (!i && (flags & CLASS_NOPROMOTELEFT)))
+                    uin->i_signal = signal_new(1, 1, DC_SR(dc), scalar);
             else
-                dsp_add_zero(s3->s_vec, s3->s_n);
-            uin->i_signal = s3;
-            s3->s_refcount = 1;
+            {       /* otherwise we have to add a call to the DSP chain to
+                    promote the scalar input to a vector. */
+                uin->i_signal = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
+                dsp_add_scalarcopy(scalar, uin->i_signal->s_vec,
+                    uin->i_signal->s_n);
+            }
+            uin->i_signal->s_refcount = 1;
         }
     }
+        /* allocate space for signals to send to the object's DSP routine. */
     insig = (t_signal **)getbytes((u->u_nin + u->u_nout) * sizeof(t_signal *));
     outsig = insig + u->u_nin;
     for (sig = insig, uin = u->u_in, i = u->u_nin; i--; sig++, uin++)
     {
-        int newrefcount;
         *sig = uin->i_signal;
-        newrefcount = --(*sig)->s_refcount;
-            /* if the reference count went to zero, we free the signal now,
-            unless it's a subcanvas or outlet; these might keep the
-            signal around to send to objects connected to them.  In this
-            case we increment the reference count; the corresponding decrement
-            is in sig_makereusable(). */
-        if (nofreesigs)
-            (*sig)->s_refcount++;
-        else if (!newrefcount)
-            signal_makereusable(*sig);
+        if (1)
+        {
+                /* if scalar or borrowed, put on free-after-dsp-call list -
+                we can't reuse them yet because the "dsp" call below might
+                then reclaim and bash them while someone else still needs to
+                see the s_vec/s_length/s_nchans fields.  Otherwise, the signal
+                owns its s_vec array and, to maximize in-place reuse of s_vec
+                arrays, we mark it free now so that we can get it back when
+                creating output signals below. */
+
+            if (nofreesigs || (*sig)->s_isscalar || (*sig)->s_isborrowed)
+            {
+                if ((*sig)->s_refcount > 1)
+                    (*sig)->s_refcount--;
+                else (*sig)->s_nextfree = freelater, freelater = *sig;
+            }
+            else signal_dereference(*sig);
+        }
     }
+        /* Create output signals.  These may re-inhabit space that was freed
+        in the previous step (so tilde objects must be able to compute
+        in place.)
+        We delay creating signals for subcanvases and outlet~ objects;
+        instead we create "borrowed" ones so that we can track the refcount.
+        The subcanvas/outlet~ later fixes the borrowed signal to show
+        where the output data actually is, to avoid having to copy it.
+        Otherwise, in case the CLASS_MULTICHANNEL flag is set for the object,
+        we pass "null" signal and expect the DSP routine to replace it..
+        In any other case, we just allocate a new output vector. */
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
-            /* similarly, for outlets of subcanvases we delay creating
-            them; instead we create "borrowed" ones so that the refcount
-            is known.  The subcanvas replaces the fake signal with one showing
-            where the output data actually is, to avoid having to copy it.
-            For any other object, we just allocate a new output vector;
-            since we've already freed the inputs the objects might get called
-            "in place." */
         if (nonewsigs)
-        {
-            *sig = uout->o_signal =
-                signal_new(0, dc->dc_srate);
-        }
-        else
-            *sig = uout->o_signal = signal_new(dc->dc_calcsize, dc->dc_srate);
-        (*sig)->s_refcount = uout->o_nconnect;
+            *sig = signal_new(0, 1, DC_SR(dc), 0);
+        else if (flags & CLASS_MULTICHANNEL)
+            *sig = &dc->dc_nullsignal;
+        else *sig = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
     }
         /* now call the DSP scheduling routine for the ugen.  This
         routine must fill in "borrowed" signal outputs in case it's either
         a subcanvas or a signal inlet. */
     mess1(&u->u_obj->ob_pd, gensym("dsp"), insig);
 
-        /* if any output signals aren't connected to anyone, free them
-        now; otherwise they'll either get freed when the reference count
-        goes back to zero, or even later as explained above. */
-
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
+        uout->o_signal = *sig;
+        (*sig)->s_refcount = uout->o_nconnect;
+
+            /* if any output signals aren't connected to anyone, free them
+            now; otherwise they'll either get freed when the reference count
+            goes back to zero, or even later as explained above. */
+
         if (!(*sig)->s_refcount)
             signal_makereusable(*sig);
     }
@@ -842,16 +953,24 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (u->u_nin + u->u_nout == 0) post("put %s %d",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u));
         else if (u->u_nin + u->u_nout == 1) post("put %s %d (%lx)",
-            class_getname(u->u_obj->ob_pd), ugen_index(dc, u), sig[0]);
+            class_getname(u->u_obj->ob_pd), ugen_index(dc, u), insig[0]);
         else if (u->u_nin + u->u_nout == 2) post("put %s %d (%lx %lx)",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u),
-                sig[0], sig[1]);
+                insig[0], insig[1]);
         else post("put %s %d (%lx %lx %lx ...)",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u),
-                sig[0], sig[1], sig[2]);
+                insig[0], insig[1], insig[2]);
     }
-
-        /* pass it on and trip anyone whose last inlet was filled */
+        /* now we can act on delayed-free */
+    while (freelater)
+    {
+        if (THIS->u_loud)
+            post("delayed deref %lx", freelater);
+        stmp = freelater->s_nextfree;
+        signal_dereference(freelater);
+        freelater = stmp;
+    }
+        /* pass it on and add anyone whose last inlet was filled */
     for (uout = u->u_out, i = u->u_nout; i--; uout++)
     {
         s1 = uout->o_signal;
@@ -864,14 +983,25 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             {
                 s1->s_refcount--;
                 s2->s_refcount--;
-                if (!signal_compatible(s1, s2))
-                {
-                    pd_error(u->u_obj, "%s: incompatible signal inputs",
-                        class_getname(u->u_obj->ob_pd));
-                    return;
-                }
                 s3 = signal_newlike(s1);
-                dsp_add_plus(s1->s_vec, s2->s_vec, s3->s_vec, s1->s_n);
+                if (s1->s_nchans != s2->s_nchans ||
+                    s1->s_length != s2->s_length)
+                {
+                    pd_error(u->u_obj,
+                        "%s: incompatible signal inputs (%dx%d vs. %dx%d)",
+                        class_getname(u->u_obj->ob_pd),
+                            s1->s_nchans, s1->s_length,
+                            s2->s_nchans, s2->s_length);
+                    dsp_add_copy(s1->s_vec, s3->s_vec,
+                        s1->s_length * s1->s_nchans);
+                }
+                else
+                {
+                    if (s1->s_sr != s2->s_sr)
+                        bug("signals sample rate mismatch");
+                    dsp_add_plus(s1->s_vec, s2->s_vec, s3->s_vec,
+                        s1->s_length * s1->s_nchans);
+                }
                 uin->i_signal = s3;
                 s3->s_refcount = 1;
                 if (!s1->s_refcount) signal_makereusable(s1);
@@ -913,7 +1043,7 @@ void ugen_done_graph(t_dspcontext *dc)
     t_dspcontext *parent_context = dc->dc_parentcontext;
     t_float parent_srate;
     int parent_vecsize;
-    int period, frequency, phase, vecsize, calcsize;
+    int period, frequency, phase, calcsize;
     t_float srate;
     int chainblockbegin;    /* DSP chain onset before block prolog code */
     int chainblockend;      /* and after block epilog code */
@@ -953,8 +1083,8 @@ void ugen_done_graph(t_dspcontext *dc)
         /* figure out block size, calling frequency, sample rate */
     if (parent_context)
     {
-        parent_srate = parent_context->dc_srate;
-        parent_vecsize = parent_context->dc_vecsize;
+        parent_srate = DC_SR(parent_context);
+        parent_vecsize = DC_LENGTH(parent_context);
     }
     else
     {
@@ -964,22 +1094,19 @@ void ugen_done_graph(t_dspcontext *dc)
     if (blk)
     {
         int realoverlap;
-        vecsize = blk->x_vecsize;
-        if (vecsize == 0)
-            vecsize = parent_vecsize;
         calcsize = blk->x_calcsize;
         if (calcsize == 0)
-            calcsize = vecsize;
+            calcsize = parent_vecsize;
         realoverlap = blk->x_overlap;
-        if (realoverlap > vecsize) realoverlap = vecsize;
+        if (realoverlap > calcsize) realoverlap = calcsize;
         downsample = blk->x_downsample;
         upsample   = blk->x_upsample;
         if (downsample > parent_vecsize)
             downsample = parent_vecsize;
-        period = (vecsize * downsample)/
+        period = (calcsize * downsample)/
             (parent_vecsize * realoverlap * upsample);
         frequency = (parent_vecsize * realoverlap * upsample)/
-            (vecsize * downsample);
+            (calcsize * downsample);
         phase = blk->x_phase;
         srate = parent_srate * realoverlap * upsample / downsample;
         if (period < 1) period = 1;
@@ -988,7 +1115,7 @@ void ugen_done_graph(t_dspcontext *dc)
         blk->x_period = period;
         blk->x_phase = THIS->u_phase & (period - 1);
         if (! parent_context || (realoverlap != 1) ||
-            (vecsize != parent_vecsize) ||
+            (calcsize != parent_vecsize) ||
                 (downsample != 1) || (upsample != 1))
                     reblock = 1;
         switched = blk->x_switched;
@@ -996,8 +1123,7 @@ void ugen_done_graph(t_dspcontext *dc)
     else
     {
         srate = parent_srate;
-        vecsize = parent_vecsize;
-        calcsize = (parent_context ? parent_context->dc_calcsize : vecsize);
+        calcsize = parent_vecsize;
         downsample = upsample = 1;
         period = frequency = 1;
         phase = 0;
@@ -1006,9 +1132,9 @@ void ugen_done_graph(t_dspcontext *dc)
     }
     dc->dc_reblock = reblock;
     dc->dc_switched = switched;
-    dc->dc_srate = srate;
-    dc->dc_vecsize = vecsize;
-    dc->dc_calcsize = calcsize;
+    dc->dc_nullsignal.s_sr = srate;
+    dc->dc_nullsignal.s_length = calcsize;
+    dc->dc_nullsignal.s_nchans = -1;    /* fake so we can sanity check */
 
         /* if we're reblocking or switched, we now have to create output
         signals to fill in for the "borrowed" ones we have now.  This
@@ -1025,8 +1151,7 @@ void ugen_done_graph(t_dspcontext *dc)
             if ((*sigp)->s_isborrowed && !(*sigp)->s_borrowedfrom)
             {
                 signal_setborrowed(*sigp,
-                    signal_new(parent_vecsize, parent_srate));
-                (*sigp)->s_refcount++;
+                    signal_new(parent_vecsize, 1, parent_srate, 0));
 
                 if (THIS->u_loud) post("set %lx->%lx", *sigp,
                     (*sigp)->s_borrowedfrom);
@@ -1053,11 +1178,11 @@ void ugen_done_graph(t_dspcontext *dc)
 
         if (pd_class(zz) == vinlet_class)
             vinlet_dspprolog((struct _vinlet *)zz,
-                dc->dc_iosigs, vecsize, calcsize, THIS->u_phase, period, frequency,
-                    downsample, upsample, reblock, switched);
+                dc->dc_iosigs, calcsize, THIS->u_phase, period,
+                    frequency, downsample, upsample, reblock, switched);
         else if (pd_class(zz) == voutlet_class)
             voutlet_dspprolog((struct _voutlet *)zz,
-                outsigs, vecsize, calcsize, THIS->u_phase, period, frequency,
+                outsigs, calcsize, THIS->u_phase, period, frequency,
                     downsample, upsample, reblock, switched);
     }
     chainblockbegin = THIS->u_dspchainsize;
@@ -1097,8 +1222,9 @@ void ugen_done_graph(t_dspcontext *dc)
         if (!u->u_done)
     {
         t_signal **sigp;
-        pd_error(u->u_obj,
-            "DSP loop detected (some tilde objects not scheduled)");
+        if (!dc->dc_warnedmulti)
+            pd_error(u->u_obj,
+                "DSP loop detected (some tilde objects weren't scheduled)");
                 /* this might imply that we have unfilled "borrowed" outputs
                 which we'd better fill in now. */
         for (i = 0, sigp = dc->dc_iosigs + dc->dc_ninlets; i < dc->dc_noutlets;
@@ -1106,9 +1232,8 @@ void ugen_done_graph(t_dspcontext *dc)
         {
             if ((*sigp)->s_isborrowed && !(*sigp)->s_borrowedfrom)
             {
-                t_signal *s3 = signal_new(parent_vecsize, parent_srate);
+                t_signal *s3 = signal_new(parent_vecsize, 1, parent_srate, 0);
                 signal_setborrowed(*sigp, s3);
-                (*sigp)->s_refcount++;
                 dsp_add_zero(s3->s_vec, s3->s_n);
                 if (THIS->u_loud)
                     post("oops, belatedly set %lx->%lx", *sigp,
@@ -1132,7 +1257,7 @@ void ugen_done_graph(t_dspcontext *dc)
             t_signal **iosigs = dc->dc_iosigs;
             if (iosigs) iosigs += dc->dc_ninlets;
             voutlet_dspepilog((struct _voutlet *)zz,
-                iosigs, vecsize, calcsize, THIS->u_phase, period, frequency,
+                iosigs, calcsize, THIS->u_phase, period, frequency,
                     downsample, upsample, reblock, switched);
         }
     }
@@ -1180,7 +1305,6 @@ void ugen_done_graph(t_dspcontext *dc)
         THIS->u_context = dc->dc_parentcontext;
     else bug("THIS->u_context");
     freebytes(dc, sizeof(*dc));
-
 }
 
 static t_signal *ugen_getiosig(int index, int inout)
@@ -1240,7 +1364,7 @@ t_int *copy_perform(t_int *w)
     return (w+4);
 }
 
-static t_int *copy_perf8(t_int *w)
+t_int *copy_perf8(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1277,7 +1401,7 @@ void dsp_add_copy(t_sample *in, t_sample *out, int n)
         dsp_add(copy_perf8, 3, in, out, (t_int)n);
 }
 
-static t_int *scalarcopy_perform(t_int *w)
+t_int *scalarcopy_perform(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1287,7 +1411,7 @@ static t_int *scalarcopy_perform(t_int *w)
     return (w+4);
 }
 
-static t_int *scalarcopy_perf8(t_int *w)
+t_int *scalarcopy_perf8(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1326,19 +1450,9 @@ typedef struct _samplerate
     t_canvas *x_canvas;
 } t_samplerate;
 
-void *canvas_getblock(t_class *blockclass, t_canvas **canvasp);
-
 static void samplerate_tilde_bang(t_samplerate *x)
 {
-    t_float srate = sys_getsr();
-    t_canvas *canvas = x->x_canvas;
-    while (canvas)
-    {
-        t_block *b = (t_block *)canvas_getblock(block_class, &canvas);
-        if (b)
-            srate *= (t_float)(b->x_upsample) / (t_float)(b->x_downsample);
-    }
-    outlet_float(x->x_obj.ob_outlet, srate);
+    outlet_float(x->x_obj.ob_outlet, canvas_getsr(x->x_canvas));
 }
 
 static void *samplerate_tilde_new(t_symbol *s)

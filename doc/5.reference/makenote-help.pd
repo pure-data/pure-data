@@ -4,11 +4,9 @@
 #X msg 75 151 60;
 #X floatatom 31 151 5 0 0 0 - - - 0;
 #X obj 19 15 makenote;
-#X text 157 145 numbers at left are "pitches" which may be integers
-or not., f 30;
+#X text 157 145 numbers at left are "pitches" which may be integers or not., f 30;
 #X text 268 298 duration in milliseconds;
-#X text 246 326 creation arguments initialize velocity and duration
-, f 29;
+#X text 246 326 creation arguments initialize velocity and duration, f 29;
 #X obj 147 454 stripnote;
 #X text 294 454 updated for Pd version 0.33;
 #X text 14 454 see also:;
@@ -19,27 +17,16 @@ or not., f 30;
 #X text 210 264 "velocity" (also may be integer or not);
 #X obj 220 454 bag;
 #N canvas 683 85 581 365 reference 0;
-#X obj 11 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 11 202 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 11 286 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 10 338 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 11 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 11 202 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 11 286 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 10 338 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 27 13 makenote;
-#X text 96 13 - send note-on messages and schedule note-off for later.
-, f 58;
-#X obj 10 250 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 10 225 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 10 140 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 10 71 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 10 166 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 10 250 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 10 225 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 10 140 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 10 71 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 10 166 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 159 75 float - MIDI pitch., f 39;
 #X text 159 145 float - MIDI velocity.;
 #X text 159 171 float - MIDI note duratin in ms.;
@@ -49,19 +36,13 @@ or not., f 30;
 #X text 159 255 float - MIDI velocity., f 33;
 #X text 159 94 clear - clear memory., f 39;
 #X text 166 113 stop - flush hanging note on messages.;
+#X text 96 13 - schedule delayed "note off" message for a note-on, f 58;
 #X restore 332 16 pd reference;
 #X text 430 17 <= click;
-#X obj 8 51 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 440 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 51 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 440 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 85 15 -;
-#X text 98 7 send note-on messages and schedule note-off for later
-, f 27;
-#X text 27 67 [makenote] makes MIDI-style note-on/note-off pairs \,
-which you can use for MIDI output or to drive note-like processes within
-Pd. It can deal with any numbers (negative \, floats \, whatever) even
-though MIDI values need to be integers from 0 to 127!, f 63;
+#X text 27 67 [makenote] makes MIDI-style note-on/note-off pairs \, which you can use for MIDI output or to drive note-like processes within Pd. It can deal with any numbers (negative \, floats \, whatever) even though MIDI values need to be integers from 0 to 127!, f 63;
 #X obj 87 454 noteout;
 #X msg 152 218 stop;
 #X msg 134 186 clear;
@@ -69,14 +50,15 @@ though MIDI values need to be integers from 0 to 127!, f 63;
 #X text 191 218 flush hanging note on messages;
 #X msg 111 151 70.5;
 #X obj 111 331 makenote 100 2500;
-#X connect 0 0 30 2;
-#X connect 1 0 30 1;
-#X connect 2 0 30 0;
-#X connect 3 0 30 0;
+#X text 98 6 schedule delayed "note off" message for a note-on, f 27;
+#X connect 0 0 29 2;
+#X connect 1 0 29 1;
+#X connect 2 0 29 0;
+#X connect 3 0 29 0;
 #X connect 11 0 13 0;
 #X connect 12 0 14 0;
-#X connect 25 0 30 0;
-#X connect 26 0 30 0;
-#X connect 29 0 30 0;
-#X connect 30 0 11 0;
-#X connect 30 1 12 0;
+#X connect 24 0 29 0;
+#X connect 25 0 29 0;
+#X connect 28 0 29 0;
+#X connect 29 0 11 0;
+#X connect 29 1 12 0;

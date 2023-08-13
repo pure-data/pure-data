@@ -1,8 +1,8 @@
-#N canvas 564 37 572 616 12;
+#N canvas 535 32 572 616 12;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array phasor 4410 float 0;
 #X coords 0 1 4409 -1 200 100 1 0 0;
-#X restore 169 435 graph;
+#X restore 82 435 graph;
 #X floatatom 96 211 5 -100 100 0 - - - 0;
 #X obj 29 16 phasor~;
 #X text 24 580 see also:;
@@ -14,66 +14,52 @@
 #X msg 163 243 0;
 #X obj 115 339 metro 100;
 #X obj 96 274 phasor~ 10;
-#X text 31 56 The phasor~ object outputs phase ramps whose values are
-from 0 to 1 and it repeats this cycle depending on the frequency input.
-It looks like a sawtooth signal but it's traditionally used for table
-lookup via cos~ or tabread4~. The frequency input can be either a float
-or a signal. Positive frequency values generate upwards ramps and negative
-values generate downwards ramps., f 69;
 #X msg 129 243 0.5;
-#X text 32 149 The right inlet resets the phase with values from 0
-to 1 (where '1' is the same as '0' and '0.5' is half the cycle).,
-f 69;
-#X text 145 525 -1;
-#X text 152 479 0;
-#X text 153 428 1;
+#X text 32 149 The right inlet resets the phase with values from 0 to 1 (where '1' is the same as '0' and '0.5' is half the cycle)., f 69;
+#X text 58 525 -1;
+#X text 65 479 0;
+#X text 66 428 1;
 #X obj 96 373 tabwrite~ phasor;
-#X obj 314 369 phasor~;
-#X obj 314 320 sig~ 440;
-#X text 400 362 the frequency;
+#X obj 325 358 phasor~;
+#X obj 325 309 sig~ 440;
+#X text 411 351 the frequency;
 #X obj 115 311 loadbang;
-#X msg 362 228 \; pd dsp \$1;
-#X obj 362 203 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X text 386 202 DSP on/off;
+#X msg 385 240 \; pd dsp \$1;
 #N canvas 731 147 586 252 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 119 91 signal -;
-#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 126 124 float -;
 #X text 183 124 phase cycle reset (from 0 to 1)., f 46;
 #X obj 54 16 phasor~;
 #X text 122 17 - phase ramp generator.;
 #X text 183 91 frequency value in Hz., f 46;
-#X text 126 163 signal - phase ramp (in the range of 0 to 1)., f 54
-;
-#X text 124 199 1) float - initial frequency value in Hz (default 0).
-;
+#X text 126 163 signal - phase ramp (in the range of 0 to 1)., f 54;
+#X text 124 199 1) float - initial frequency value in Hz (default 0).;
 #X restore 379 17 pd reference;
 #X text 477 18 <= click;
-#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 565 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 565 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 216 374 <-- graph the output, f 10;
 #X text 139 211 <-- specify frequency;
 #X text 195 243 <-- right inlet resets phase, f 15;
-#X text 333 345 <------- signal controlling;
+#X text 344 334 <------- signal controlling;
+#X obj 385 205 set-dsp-tgl;
+#X text 416 209 DSP on/off;
+#X text 31 56 The [phasor~] object outputs phase ramps whose values are from 0 to 1 and it repeats this cycle depending on the frequency input. It looks like a sawtooth signal but it's traditionally used for table lookup via [cos~] or [tabread4~]. The frequency input can be either a float or a signal. Positive frequency values generate upwards ramps and negative values generate downwards ramps., f 69;
+#X obj 325 415 cos~;
+#X text 376 392 If used in conjunction with [cos~] you have an osicllator with access to the phase., f 22;
+#X text 347 463 This way you can implement phase modulation \, check the help file of [cos~] for an example., f 26;
 #X connect 1 0 11 0;
 #X connect 9 0 11 1;
-#X connect 10 0 18 0;
-#X connect 11 0 18 0;
-#X connect 13 0 11 1;
-#X connect 20 0 19 0;
-#X connect 22 0 10 0;
-#X connect 24 0 23 0;
+#X connect 10 0 17 0;
+#X connect 11 0 17 0;
+#X connect 12 0 11 1;
+#X connect 18 0 34 0;
+#X connect 19 0 18 0;
+#X connect 21 0 10 0;
+#X connect 31 0 22 0;

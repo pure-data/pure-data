@@ -1,6 +1,6 @@
-#N canvas 371 86 995 460 12;
+#N canvas 325 80 995 460 12;
 #X declare -stdpath ./;
-#N canvas 296 28 950 579 guts 1;
+#N canvas 296 28 950 579 guts 0;
 #X obj 205 157 spigot;
 #X msg 179 87 0;
 #X msg 212 87 1;
@@ -39,8 +39,7 @@
 #X obj 178 454 *~;
 #X obj 178 402 +~;
 #X obj 449 73 loadbang;
-#X msg 449 103 \; transposition 0 \; looplength 0 \; startpoint 0 \;
-smoothing 0;
+#X msg 449 103 \; transposition 0 \; looplength 0 \; startpoint 0 \; smoothing 0;
 #X obj 133 279 loop~;
 #X obj 165 249 * 441;
 #X obj 135 327 *~;
@@ -187,7 +186,7 @@ smoothing 0;
 #X connect 40 0 3 1;
 #X connect 42 0 41 0;
 #X connect 44 0 45 0;
-#X restore 141 317 pd guts;
+#X restore 121 317 pd guts;
 #X text 148 70 click below to:;
 #X floatatom 557 38 6 0 0 0 - - - 0;
 #X obj 557 66 s transposition;
@@ -216,34 +215,26 @@ smoothing 0;
 #X text 666 359 length in seconds of the output;
 #X text 664 377 buffer... maximum 60;
 #X text 615 359 <- set;
-#X text 609 39 <- transposition up or down \, 10ths of a half step
-;
-#X obj 176 106 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 176 130 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 176 155 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 176 202 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 176 226 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 176 251 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X text 609 39 <- transposition up or down \, 10ths of a half step;
+#X obj 176 106 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 176 130 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 176 155 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf #000000 #000000;
+#X obj 176 202 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 176 226 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 176 251 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 205 105 (read an input file);
 #X text 205 129 (run the transformation);
 #X text 205 201 (hear the output sample);
 #X text 205 225 (save the output sample);
 #X text 205 250 (save the output sample normalized to 1);
-#X obj 176 178 bng 18 250 50 0 \$0-stop dummy Stop -40 9 0 13 #dfdfdf
-#000000 #000000;
+#X obj 176 178 bng 18 250 50 0 \$0-stop dummy Stop -40 9 0 13 #dfdfdf #000000 #000000;
 #X obj 261 339 table \$0-input;
 #X obj 255 367 table \$0-output;
 #X text 371 340 input sample;
 #X text 371 366 output sample;
 #X text 205 154 (start looping when I change something);
 #X text 205 177 (stop looping);
-#X obj 141 363 output~;
+#X obj 121 363 output~;
 #X floatatom 557 112 6 0 0 0 - - - 0;
 #X floatatom 558 181 6 0 0 0 - - - 0;
 #X floatatom 561 249 6 0 0 0 - - - 0;
@@ -252,7 +243,6 @@ smoothing 0;
 #X msg 560 329 10;
 #X obj 348 30 declare -stdpath ./;
 #X connect 0 0 34 0;
-#X connect 0 0 34 1;
 #X connect 2 0 3 0;
 #X connect 35 0 5 0;
 #X connect 36 0 7 0;
