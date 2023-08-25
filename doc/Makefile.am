@@ -391,6 +391,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savepanel-help.pd \
      ./5.reference/savestate-ex1.pd \
      ./5.reference/savestate-ex2.pd \
+     ./5.reference/savestate-ex3.pd \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
