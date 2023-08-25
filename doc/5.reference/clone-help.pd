@@ -1,4 +1,4 @@
-#N canvas 302 23 794 703 12;
+#N canvas 304 60 794 703 12;
 #X declare -stdpath ./;
 #X floatatom 223 250 5 57 83 0 - - - 0;
 #X obj 223 290 t b f, f 9;
@@ -112,8 +112,8 @@
 #X connect 21 0 20 0;
 #X restore 589 591 pd multichannel;
 #X obj 223 352 mod 4;
-#X msg 61 430 vis 2 0;
-#X msg 125 431 vis 2 1;
+#X msg 44 455 vis 2 0;
+#X msg 108 456 vis 2 1;
 #X floatatom 429 457 4 57 83 0 - - - 0;
 #X floatatom 409 361 5 0 3 0 - - - 0;
 #X floatatom 401 312 5 0 3 0 - - - 0;
@@ -131,8 +131,10 @@
 #X text 410 546 control data is preceded by instance number;
 #X obj 193 679 poly;
 #X text 80 623 Note: for backwards compatibility \, you can also invoke this as "clone 16 clone-abstraction" (for instance) \, swapping the abstraction name and the number of voices., f 91;
-#X text 71 387 Open or close copy number 2:, f 14;
-#X text 59 261 Check [poly]'s help for an example implementing a polyphonic synth with [clone] and the list input., f 19;
+#X text 54 412 Open or close copy number 2:, f 14;
+#X floatatom 165 344 5 0 3 0 - - - 0;
+#X text 24 257 Check [poly]'s help for a polyphonic synth example with [clone] and a list input., f 25;
+#X text 25 330 Just a float sends an empty list to the instance \, which becomes a bang!, f 19;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 11 1;
@@ -157,3 +159,4 @@
 #X connect 37 0 38 0;
 #X connect 37 0 29 1;
 #X connect 38 0 36 0;
+#X connect 50 0 36 0;
