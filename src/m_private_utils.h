@@ -82,8 +82,9 @@
 #   include <machine/endian.h>
 #  elif defined(__GNUC__)
 #    include <endian.h>
+#  endif
 #endif
-#if __MINGW32__
+#ifdef __MINGW32__
 #  include <sys/param.h>
 #endif
 
