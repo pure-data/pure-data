@@ -21,6 +21,9 @@
 #include <windows.h>
 #include <winbase.h>
 #endif
+#ifdef __APPLE__
+#include <mach-o/dyld.h> // for _NSGetExecutablePath
+#endif
 #include "m_private_utils.h"
 
 #define stringify(s) str(s)
