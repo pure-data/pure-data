@@ -11,7 +11,7 @@ PLATFORM_ARCH ?= $(shell $(CC) -dumpmachine | sed -e 's,-.*,,')
 
 ifeq ($(UNAME), Darwin)  # Mac
   SOLIB_EXT = dylib
-  PLATFORM_CFLAGS = -DHAVE_LIBDL
+  PLATFORM_CFLAGS = -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H
   PLATFORM_LDFLAGS = -dynamiclib -ldl -Wl,-no_compact_unwind
   ifeq ($(FAT_LIB), true)
     # macOS universal "fat" lib compilation
@@ -35,14 +35,15 @@ else
     SOLIB_PREFIX =
     LIBPD_IMPLIB = libpd.lib
     LIBPD_DEF = libpd.def
-    PLATFORM_CFLAGS = -DWINVER=0x502 -DWIN32 -D_WIN32 -DPD_INTERNAL
+    PLATFORM_CFLAGS = -DWINVER=0x502 -DWIN32 -D_WIN32
     MINGW_LDFLAGS = -shared -Wl,--export-all-symbols -lws2_32 -lkernel32 \
                     -static-libgcc
     PLATFORM_LDFLAGS = $(MINGW_LDFLAGS) -Wl,--output-def=$(LIBPD_DEF) \
                        -Wl,--out-implib=$(LIBPD_IMPLIB)
   else  # Linux or *BSD
     SOLIB_EXT = so
-    PLATFORM_CFLAGS = -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC
+    PLATFORM_CFLAGS = -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC \
+                      -DHAVE_ENDIAN_H
     PLATFORM_LDFLAGS = -shared -Wl,-Bsymbolic
     ifeq ($(UNAME), Linux)
       PLATFORM_CFLAGS += -DHAVE_LIBDL
@@ -59,8 +60,8 @@ VPATH = ../src:\
 # to allow easy overriding of CODECFLAGS and to allow adding MORECFLAGS:
 
 # C preprocessor flags, and flags controlling errors and warnings
-CPPFLAGS = -I../src -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DLIBPD_EXTRA \
-    -DPDINSTANCE -DPD_INTERNAL
+CPPFLAGS = -I../src -DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H \
+           -DHAVE_ALLOCA_H -DLIBPD_EXTRA -DPDINSTANCE
 
 # code generation flags (e.g., optimization).
 CODECFLAGS = -fPIC -ffast-math -funroll-loops -fomit-frame-pointer -O3
