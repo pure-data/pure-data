@@ -69,14 +69,22 @@
 
 
 /* --------------------------- endianness helpers --------------------- */
-#ifdef HAVE_MACHINE_ENDIAN_H
-# include <machine/endian.h>
-#elif defined HAVE_ENDIAN_H
-# include <endian.h>
-#endif
 
-#ifdef __MINGW32__
-# include <sys/param.h>
+// known headers?
+#if defined(HAVE_MACHINE_ENDIAN_H) || defined(HAVE_ENDIAN_H)
+#  if defined(HAVE_MACHINE_ENDIAN_H)
+#    include <machine/endian.h>
+#  elif defined(HAVE_ENDIAN_H)
+#    include <endian.h>
+#  endif
+#else // try to detect from system
+#  if defined(__APPLE__)
+#   include <machine/endian.h>
+#  elif defined(__GNUC__)
+#    include <endian.h>
+#  elif defined(__MINGW32__)
+#    include <sys/param.h>
+#  endif
 #endif
 
 /* BSD has deprecated BYTE_ORDER in favour of _BYTE_ORDER
@@ -108,7 +116,7 @@
 #endif
 
 
-/* -------------------------MSVC compat defines --------------------- */
+/* ------------------------- MSVC compat defines --------------------- */
 #ifdef _MSC_VER
 # define snprintf _snprintf
 #endif
