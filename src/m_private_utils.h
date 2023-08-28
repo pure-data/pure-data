@@ -82,9 +82,9 @@
 #   include <machine/endian.h>
 #  elif defined(__GNUC__)
 #    include <endian.h>
-#  elif defined(__MINGW32__)
-#    include <sys/param.h>
-#  endif
+#endif
+#if __MINGW32__
+#  include <sys/param.h>
 #endif
 
 /* BSD has deprecated BYTE_ORDER in favour of _BYTE_ORDER
