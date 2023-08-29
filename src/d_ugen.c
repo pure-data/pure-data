@@ -1050,8 +1050,8 @@ void ugen_done_graph(t_dspcontext *dc)
     int chainafterall;      /* and after signal outlet epilog */
     int reblock = 0, switched;
     int downsample = 1, upsample = 1;
-    /* debugging printout */
 
+        /* debugging printout */
     if (THIS->u_loud)
     {
         post("ugen_done_graph...");
