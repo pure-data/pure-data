@@ -636,6 +636,7 @@ struct _dspcontext
 };
 #define DC_LENGTH(x) ((x)->dc_nullsignal.s_length)
 #define DC_SR(x) ((x)->dc_nullsignal.s_sr)
+#define DC_OVERLAP(x) ((x)->dc_nullsignal.s_overlap)
 
 #define t_dspcontext struct _dspcontext
 
@@ -1050,6 +1051,7 @@ void ugen_done_graph(t_dspcontext *dc)
     int chainafterall;      /* and after signal outlet epilog */
     int reblock = 0, switched;
     int downsample = 1, upsample = 1;
+    int realoverlap = 1;
 
         /* debugging printout */
     if (THIS->u_loud)
@@ -1093,7 +1095,6 @@ void ugen_done_graph(t_dspcontext *dc)
     }
     if (blk)
     {
-        int realoverlap;
         calcsize = blk->x_calcsize;
         if (calcsize == 0)
             calcsize = parent_vecsize;
@@ -1134,6 +1135,7 @@ void ugen_done_graph(t_dspcontext *dc)
     dc->dc_switched = switched;
     dc->dc_nullsignal.s_sr = srate;
     dc->dc_nullsignal.s_length = calcsize;
+    dc->dc_nullsignal.s_overlap = realoverlap;
     dc->dc_nullsignal.s_nchans = -1;    /* fake so we can sanity check */
 
         /* if we're reblocking or switched, we now have to create output
