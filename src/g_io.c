@@ -528,12 +528,14 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
         x->x_borrowed = 0;
     else    /* OK, borrow it */
     {
+        int overlap = (*(x->x_parentsignal))->s_overlap;
         x->x_borrowed = 1;
         if (!parentsigs)
             bug("voutlet_dspprolog");
                 /* create new borrowed signal to be set in dsp routine below */
         *(x->x_parentsignal) = signal_new(0, 1,
             (*(x->x_parentsignal))->s_sr, 0);
+        (*(x->x_parentsignal))->s_overlap = overlap;
     }
     if (reblock)
     {
