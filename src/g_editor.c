@@ -3,6 +3,7 @@
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
@@ -3718,6 +3719,17 @@ static void canvas_copy(t_canvas *x)
     }
 }
 
+static void canvas_copy_to_clipboard_as_text(t_canvas *x)
+{
+    t_binbuf *bb = canvas_docopy(x);
+    if (!bb)
+        return;
+    t_atom *atoms = binbuf_getvec(bb);
+    int num_atoms = binbuf_getnatom(bb);
+    pdgui_vmess("pdtk_copy_to_clipboard_as_text", "ca", x, num_atoms, atoms);
+    binbuf_free(bb);
+}
+
 static void canvas_clearline(t_canvas *x)
 {
     if (x->gl_editor->e_selectedline)
@@ -4121,6 +4133,39 @@ static void canvas_paste(t_canvas *x)
                     offset, offset);
         }
     }
+}
+
+static void canvas_paste_from_clipboard_text(t_canvas *x)
+{
+    pdgui_vmess("pdtk_get_clipboard_text", "^", x);
+}
+
+void unescape_clipboard_patch(char *str) {
+    char *temp = malloc(strlen(str) + 1);
+    if (!temp) return;
+    int i = 0, j = 0;
+    while (str[i]) {
+        if (str[i] == ';' && str[i+1] == 'n') {
+            temp[j++] = ';';
+            temp[j++] = '\n';
+            i += 2;
+        } else {
+            temp[j++] = str[i++];
+        }
+    }
+    temp[j] = '\0';
+    strcpy(str, temp);
+    free(temp);
+}
+
+void canvas_got_clipboard_contents(t_canvas *x, t_symbol *s) {
+    char* received_data = strdup(s->s_name);
+    unescape_clipboard_patch(received_data);
+    t_binbuf *bb = binbuf_new();
+    binbuf_text(bb, received_data, strlen(received_data));
+    canvas_dopaste(x, bb);
+    binbuf_free(bb);
+    free(received_data);
 }
 
 static void canvas_duplicate(t_canvas *x)
@@ -4916,6 +4961,8 @@ void g_editor_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
+        gensym("got-clipboard-contents"), A_SYMBOL, A_NULL);          
 
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
@@ -4924,8 +4971,12 @@ void g_editor_setup(void)
         gensym("cut"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_copy,
         gensym("copy"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_copy_to_clipboard_as_text,
+        gensym("copy-to-clipboard-as-text"), A_NULL);        
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_paste_from_clipboard_text,
+        gensym("paste-from-clipboard-text"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste_replace,
         gensym("paste-replace"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_duplicate,

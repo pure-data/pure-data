@@ -250,6 +250,32 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
     }
 }
 
+proc pdtk_get_clipboard_text {tkcanvas} {
+    set clipboard_data [clipboard get]
+    # TODO: better validation of PD patch clipboard data
+    if {[string index $clipboard_data 0] != "#"} {
+        ::pdwindow::post "Warning: Clipboard content does not seem to be valid PD patch: \n"
+        ::pdwindow::post $clipboard_data
+        return
+    }
+    set escaped_data [string map {" " "\\ " ";" "\\;" "\n" "\\n"} $clipboard_data]
+    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $escaped_data"
+}
+
+proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
+    clipboard clear
+    set atom_line ""
+    foreach atom $args {
+        if {$atom == ";"} {
+            set trimmed_line [string trim $atom_line]
+            clipboard append "${trimmed_line};\n"
+            set atom_line ""
+        } else {
+            append atom_line $atom " "
+        }
+    }
+}
+
 #------------------------------------------------------------------------------#
 # canvas popup menu
 

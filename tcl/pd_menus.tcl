@@ -64,6 +64,8 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Print..."] -state disabled
 
     # Edit menu
+    $menubar.edit entryconfigure [_ "Copy to clipboard (text)"] -state disabled
+    $menubar.edit entryconfigure [_ "Paste from clipboard (text)"] -state disabled
     $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -96,6 +98,8 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state normal
     # Edit menu
+    $menubar.edit entryconfigure [_ "Copy to clipboard (text)"] -state normal
+    $menubar.edit entryconfigure [_ "Paste from clipboard (text)"] -state normal    
     $menubar.edit entryconfigure [_ "Paste Replace"] -state normal
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -142,6 +146,8 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
+    $menubar.edit entryconfigure [_ "Copy to clipboard (text)"] -state disabled
+    $menubar.edit entryconfigure [_ "Paste from clipboard (text)"] -state disabled    
     $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
@@ -196,8 +202,12 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window cut}
     $mymenu add command -label [_ "Copy"]       -accelerator "$accelerator+C" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
+    $mymenu add command -label [_ "Copy to clipboard (text)"] -accelerator "$accelerator+$::alt+C" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy-to-clipboard-as-text}        
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
+    $mymenu add command -label [_ "Paste from clipboard (text)"] -accelerator "$accelerator+$::alt+V" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste-from-clipboard-text}           
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
     $mymenu add command -label [_ "Paste Replace" ]  \

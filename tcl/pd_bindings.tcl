@@ -57,6 +57,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Key a {menu_send %W selectall}
     bind_capslock all $::modifier-Key b {menu_helpbrowser}
     bind_capslock all $::modifier-Key c {menu_send %W copy}
+    bind_capslock all $::modifier-$::alt-Key c {menu_send %W copy-to-clipboard-as-text}
     bind_capslock all $::modifier-Key d {menu_send %W duplicate}
     bind_capslock all $::modifier-Key e {menu_toggle_editmode}
     bind_capslock all $::modifier-Key f {menu_find_dialog}
@@ -69,6 +70,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Key s {menu_send %W menusave}
     bind_capslock all $::modifier-Key t {menu_send %W triggerize}
     bind_capslock all $::modifier-Key v {menu_send %W paste}
+    bind_capslock all $::modifier-$::alt-Key v {menu_send %W paste-from-clipboard-text}    
     bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
     bind_capslock all $::modifier-Key x {menu_send %W cut}
     bind_capslock all $::modifier-Key z {menu_undo}
