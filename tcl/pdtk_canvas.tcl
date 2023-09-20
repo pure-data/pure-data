@@ -251,30 +251,91 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
 }
 
 proc pdtk_get_clipboard_text {tkcanvas} {
+    set CLIPBOARD_PATCH_TEXT_START 0;
+    set CLIPBOARD_PATCH_TEXT_LINE_END 1;
+    set CLIPBOARD_PATCH_TEXT_END 2;
+    set CLIPBOARD_PATCH_TEXT_LINE_PARTIAL 3;
+    set MAX_CHUNK_SIZE 960;
     set clipboard_data [clipboard get]
+
     # TODO: better validation of PD patch clipboard data
     if {[string index $clipboard_data 0] != "#"} {
         ::pdwindow::post "Warning: Clipboard content does not seem to be valid PD patch: \n"
         ::pdwindow::post $clipboard_data
         return
     }
-    set escaped_data [string map {" " "\\ " ";" "\\;" "\n" "\\n"} $clipboard_data]
-    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $escaped_data"
+    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_START NONE"
+    
+    foreach line [split $clipboard_data \n] {
+        if {[string length $line] > 0} {
+            set escaped_line [string range $line 0 end-1]
+            set escaped_line [string map {" " {\ } ";" {\\;} "," {\\,} "\$" "\\$"} $escaped_line]
+            # split each line into chunks, and make sure atoms don't get split
+            while {[string length $escaped_line] > $MAX_CHUNK_SIZE} {
+                set boundary [string last { } [string range $escaped_line 0 [expr $MAX_CHUNK_SIZE - 1]]]
+                set chunk [string range $escaped_line 0 $boundary]
+                pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_PARTIAL $chunk"
+                set escaped_line [string range $escaped_line [expr $boundary + 1] end]
+            }
+            # FIXME: the atoms can have width property, i.e. , f 12 - this last comma is not escaped
+            # and causing lot of trouble, so discarding it for now
+            # fix by adding new flag and appending comma manually to binbuf
+            set escaped_line [regsub {\,\\\sf\\\s\d+$} $escaped_line ""]
+            pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_END $escaped_line"
+        }
+    }
+    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_END NONE"
 }
+
 
 proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
     clipboard clear
+    set clipboard_content ""
     set atom_line ""
-    foreach atom $args {
-        if {$atom == ";"} {
-            set trimmed_line [string trim $atom_line]
-            clipboard append "${trimmed_line};\n"
-            set atom_line ""
+    set obj_type ""
+    for {set i 0} {$i < [llength $args]} {incr i} {
+        set prev_atom [lindex $args [expr $i - 1]]
+        set atom [lindex $args $i]
+        set next_atom [lindex $args [expr $i + 1]]
+        set next_next_atom [lindex $args [expr $i + 2]]
+        # ::pdwindow::post "|$atom"
+        
+        # Check for beginning of new line (#) but discard hex colors
+        #
+        if {[string first "#" $atom] == 0 && ![regexp {^#[0-9a-fA-F]{6}$} $atom]} {
+            append clipboard_content [string trim $atom_line]
+            append clipboard_content "\n"
+            set atom_line "$atom "
+            set obj_type $next_atom
         } else {
-            append atom_line $atom " "
+            if {$atom == ";" && ([string first "#" $next_atom] == 0 || $next_atom == "")} {
+                set atom_line [string trimright $atom_line]
+                append atom_line ";"
+            } elseif {$atom == ";"} {
+                append atom_line "\\; "
+            } elseif {[string first "\$" $atom] == 0} {
+                append atom_line "\\$" [string range $atom 1 end] " "
+            } elseif {$atom == ","} {
+                # text items can have unescaped comma delimiting the width attribute
+                if {$obj_type == "text"} {
+                    append atom_line [expr {$next_atom != "f" ? "\\, " : ", "}]
+                } else {
+                    append atom_line "\\, "
+                }
+            } else {
+                set delimiter [expr {$obj_type == "text" && $next_next_atom == "f" ? "" : " "}]
+                append atom_line $atom $delimiter
+            }
         }
     }
+    append clipboard_content "$atom_line\n"
+    set processed_content $clipboard_content
+    clipboard append [string trimleft $processed_content]
+
+    pdsend "[winfo toplevel $tkcanvas] my-new-function 0 HelloWorld\\ hello!"
+    pdsend "[winfo toplevel $tkcanvas] my-new-function 1 HelloWorld\\ yes\\ sir!"
 }
+
 
 #------------------------------------------------------------------------------#
 # canvas popup menu

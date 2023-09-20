@@ -38,6 +38,10 @@ struct _instanceeditor
 
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
+#define CLIPBOARD_PATCH_TEXT_START 0
+#define CLIPBOARD_PATCH_TEXT_LINE_END 1
+#define CLIPBOARD_PATCH_TEXT_END 2
+#define CLIPBOARD_PATCH_TEXT_LINE_PARTIAL 3
 
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
@@ -4140,33 +4144,58 @@ static void canvas_paste_from_clipboard_text(t_canvas *x)
     pdgui_vmess("pdtk_get_clipboard_text", "^", x);
 }
 
-void unescape_clipboard_patch(char *str) {
-    char *temp = malloc(strlen(str) + 1);
-    if (!temp) return;
-    int i = 0, j = 0;
-    while (str[i]) {
-        if (str[i] == ';' && str[i+1] == 'n') {
-            temp[j++] = ';';
-            temp[j++] = '\n';
-            i += 2;
-        } else {
-            temp[j++] = str[i++];
-        }
+static t_binbuf *clipboard_patch_bb = NULL;
+
+void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
+    int flag = flagf;
+    
+    switch (flag) {
+        case CLIPBOARD_PATCH_TEXT_START:
+            if (clipboard_patch_bb) {
+                binbuf_free(clipboard_patch_bb);
+            }
+            clipboard_patch_bb = binbuf_new();
+            break;
+
+        case CLIPBOARD_PATCH_TEXT_LINE_END:
+            if (clipboard_patch_bb) {
+                char* received_data = strdup(s->s_name);
+                t_binbuf *temp_bb = binbuf_new();
+                binbuf_text(temp_bb, received_data, strlen(received_data));
+                binbuf_addsemi(temp_bb);
+                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
+                binbuf_clear(temp_bb);
+                binbuf_free(temp_bb);
+                free(received_data);
+            }
+            break;
+
+        case CLIPBOARD_PATCH_TEXT_LINE_PARTIAL:
+            if (clipboard_patch_bb) {
+                char* received_data = strdup(s->s_name);
+                t_binbuf *temp_bb = binbuf_new();
+                binbuf_text(temp_bb, received_data, strlen(received_data));
+                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
+                binbuf_clear(temp_bb);
+                binbuf_free(temp_bb);
+                free(received_data);
+            }
+            break;
+
+        case CLIPBOARD_PATCH_TEXT_END:
+            if (clipboard_patch_bb) {
+                canvas_dopaste(x, clipboard_patch_bb);
+                binbuf_free(clipboard_patch_bb);
+                clipboard_patch_bb = NULL;
+            }
+            break;
+
+        default:
+            post("Invalid flag received in canvas_got_clipboard_contents.");
+            break;
     }
-    temp[j] = '\0';
-    strcpy(str, temp);
-    free(temp);
 }
 
-void canvas_got_clipboard_contents(t_canvas *x, t_symbol *s) {
-    char* received_data = strdup(s->s_name);
-    unescape_clipboard_patch(received_data);
-    t_binbuf *bb = binbuf_new();
-    binbuf_text(bb, received_data, strlen(received_data));
-    canvas_dopaste(x, bb);
-    binbuf_free(bb);
-    free(received_data);
-}
 
 static void canvas_duplicate(t_canvas *x)
 {
@@ -4962,8 +4991,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
-        gensym("got-clipboard-contents"), A_SYMBOL, A_NULL);          
-
+        gensym("got-clipboard-contents"), A_FLOAT, A_SYMBOL, A_NULL);
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
         gensym("menuclose"), A_DEFFLOAT, 0);
