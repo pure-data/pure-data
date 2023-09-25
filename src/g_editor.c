@@ -4139,11 +4139,6 @@ static void canvas_paste(t_canvas *x)
     }
 }
 
-static void canvas_paste_from_clipboard_text(t_canvas *x)
-{
-    pdgui_vmess("pdtk_get_clipboard_text", "^", x);
-}
-
 static t_binbuf *clipboard_patch_bb = NULL;
 
 void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
@@ -5003,8 +4998,6 @@ void g_editor_setup(void)
         gensym("copy-to-clipboard-as-text"), A_NULL);        
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_paste_from_clipboard_text,
-        gensym("paste-from-clipboard-text"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste_replace,
         gensym("paste-replace"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_duplicate,

@@ -207,7 +207,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
     $mymenu add command -label [_ "Paste from clipboard (text)"] -accelerator "$accelerator+$::alt+V" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste-from-clipboard-text}           
+        -command {::pdtk_canvas::pdtk_get_clipboard_text $::focused_window}     
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
     $mymenu add command -label [_ "Paste Replace" ]  \

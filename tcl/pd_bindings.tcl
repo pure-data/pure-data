@@ -141,7 +141,7 @@ proc ::pd_bindings::global_bindings {} {
         bind_capslock all $::modifier-Key m       {menu_minimize %W}
 
         bind_capslock all $::modifier-$::alt-Key c {menu_send %W copy-to-clipboard-as-text}
-        bind_capslock all $::modifier-$::alt-Key v {menu_send %W paste-from-clipboard-text}
+        bind_capslock all $::modifier-$::alt-Key v {::pdtk_canvas::pdtk_get_clipboard_text $::focused_window}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown

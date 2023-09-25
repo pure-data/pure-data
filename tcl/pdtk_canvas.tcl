@@ -250,7 +250,7 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
     }
 }
 
-proc pdtk_get_clipboard_text {tkcanvas} {
+proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
     set CLIPBOARD_PATCH_TEXT_START 0;
     set CLIPBOARD_PATCH_TEXT_LINE_END 1;
     set CLIPBOARD_PATCH_TEXT_END 2;
@@ -298,10 +298,7 @@ proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
         set atom [lindex $args $i]
         set next_atom [lindex $args [expr $i + 1]]
         set next_next_atom [lindex $args [expr $i + 2]]
-        # ::pdwindow::post "|$atom"
-        
         # Check for beginning of new line (#) but discard hex colors
-        #
         if {[string first "#" $atom] == 0 && ![regexp {^#[0-9a-fA-F]{6}$} $atom]} {
             append clipboard_content [string trim $atom_line]
             append clipboard_content "\n"
@@ -331,9 +328,6 @@ proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
     append clipboard_content "$atom_line\n"
     set processed_content $clipboard_content
     clipboard append [string trimleft $processed_content]
-
-    pdsend "[winfo toplevel $tkcanvas] my-new-function 0 HelloWorld\\ hello!"
-    pdsend "[winfo toplevel $tkcanvas] my-new-function 1 HelloWorld\\ yes\\ sir!"
 }
 
 
