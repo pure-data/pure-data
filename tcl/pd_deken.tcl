@@ -103,7 +103,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.9.12] } {
+if { [::deken::versioncheck 0.9.14] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -538,6 +538,7 @@ proc ::deken::utilities::verify_sha256 {url pkgfile} {
 
 foreach impl {sha256sum shasum msw tcllib} {
     if { [::deken::utilities::sha256_${impl} $::argv0] ne "" } {
+    set ::deken::utilities::sha256_implementation ::deken::utilities::sha256_${impl}
     proc ::deken::utilities::verify_sha256 {url pkgfile} {
         ::deken::statuspost [format [_ "SHA256 verification of '%s'" ] $pkgfile ] debug
         ::deken::syncgui
@@ -569,7 +570,7 @@ foreach impl {sha256sum shasum msw tcllib} {
                     catch { file delete $hashfile }
                 }
 
-                set hash [string trim [string tolower [ ::deken::utilities::sha256_${impl} $pkgfile ] ] ]
+                set hash [string trim [string tolower [ ${::deken::utilities::sha256_implementation} $pkgfile ] ] ]
                 if { "${hash}" eq "${reference}" } {
                     set retval 1
                 } else {
