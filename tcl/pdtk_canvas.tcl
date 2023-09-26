@@ -264,7 +264,7 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
         ::pdwindow::post $clipboard_data
         return
     }
-    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_START NONE"
+    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_START"
     
     foreach line [split $clipboard_data \n] {
         if {[string length $line] > 0} {
@@ -284,7 +284,7 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
             pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_END $escaped_line"
         }
     }
-    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_END NONE"
+    pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_END"
 }
 
 

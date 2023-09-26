@@ -4152,31 +4152,20 @@ void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
             clipboard_patch_bb = binbuf_new();
             break;
 
+        case CLIPBOARD_PATCH_TEXT_LINE_PARTIAL:
         case CLIPBOARD_PATCH_TEXT_LINE_END:
             if (clipboard_patch_bb) {
-                char* received_data = strdup(s->s_name);
                 t_binbuf *temp_bb = binbuf_new();
-                binbuf_text(temp_bb, received_data, strlen(received_data));
-                binbuf_addsemi(temp_bb);
+                binbuf_text(temp_bb, s->s_name, strlen(s->s_name));
+                if (flag == CLIPBOARD_PATCH_TEXT_LINE_END) {
+                    binbuf_addsemi(temp_bb);
+                }
                 binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
                 binbuf_clear(temp_bb);
                 binbuf_free(temp_bb);
-                free(received_data);
             }
             break;
-
-        case CLIPBOARD_PATCH_TEXT_LINE_PARTIAL:
-            if (clipboard_patch_bb) {
-                char* received_data = strdup(s->s_name);
-                t_binbuf *temp_bb = binbuf_new();
-                binbuf_text(temp_bb, received_data, strlen(received_data));
-                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
-                binbuf_clear(temp_bb);
-                binbuf_free(temp_bb);
-                free(received_data);
-            }
-            break;
-
+            
         case CLIPBOARD_PATCH_TEXT_END:
             if (clipboard_patch_bb) {
                 canvas_dopaste(x, clipboard_patch_bb);
@@ -4985,8 +4974,7 @@ void g_editor_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
-        gensym("got-clipboard-contents"), A_FLOAT, A_SYMBOL, A_NULL);
+
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
         gensym("menuclose"), A_DEFFLOAT, 0);
@@ -4995,7 +4983,9 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_copy,
         gensym("copy"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_copy_to_clipboard_as_text,
-        gensym("copy-to-clipboard-as-text"), A_NULL);        
+        gensym("copy-to-clipboard-as-text"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
+        gensym("got-clipboard-contents"), A_FLOAT, A_DEFSYMBOL, A_NULL);            
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste_replace,
