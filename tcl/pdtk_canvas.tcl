@@ -251,9 +251,6 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
 }
 
 proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
-    set CLIPBOARD_PATCH_TEXT_START 0
-    set CLIPBOARD_PATCH_TEXT_END 1
-    set CLIPBOARD_PATCH_TEXT_APPENDUTF8 2
     set MAX_CHUNK_SIZE 960
     set toplevel [winfo toplevel $tkcanvas]
     set clipboard_data [clipboard get]
@@ -264,13 +261,13 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
         ::pdwindow::post $clipboard_data
         return
     }
-    pdsend "$toplevel got-clipboard-contents $CLIPBOARD_PATCH_TEXT_START"
+    pdsend "$toplevel got-clipboard-contents begin"
     set output {}
     foreach char [split $clipboard_data ""] {
         lappend output [scan $char %c]
     }
-    pdsend "$toplevel got-clipboard-contents $CLIPBOARD_PATCH_TEXT_APPENDUTF8 $output"
-    pdsend "$toplevel got-clipboard-contents $CLIPBOARD_PATCH_TEXT_END"
+    pdsend "$toplevel got-clipboard-contents addbytes $output"
+    pdsend "$toplevel got-clipboard-contents end"
 }
 
 proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {

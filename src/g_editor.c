@@ -38,9 +38,6 @@ struct _instanceeditor
 
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
-#define CLIPBOARD_PATCH_TEXT_START 0
-#define CLIPBOARD_PATCH_TEXT_END 1
-#define CLIPBOARD_PATCH_TEXT_APPENDUTF8 2
 
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
@@ -4142,14 +4139,21 @@ static char* clipboard_patch_text = NULL;
 static size_t clipboard_patch_len = 0;
 
 void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*argv) {
-    t_float flagf = (argc>0)?atom_getfloat(argv):0;
-    int flag = flagf;
+    t_symbol*sflag = (argc>0)?atom_getsymbol(argv):0;
+    int flag = 0;
     int i;
-    if(argc<1)
-        flag = CLIPBOARD_PATCH_TEXT_END;
+    if(sflag == gensym("begin")) {
+        flag = 0;
+    } else if(sflag == gensym("end")) {
+        flag = 1;
+    } else if(sflag == gensym("addbytes")) {
+        flag = 2;
+    } else {
+        flag = 0;
+    }
     
     switch (flag) {
-        case CLIPBOARD_PATCH_TEXT_START:
+        case 0:
             if (clipboard_patch_text) {
                 freebytes(clipboard_patch_text, clipboard_patch_len);
             }
@@ -4157,7 +4161,7 @@ void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*arg
             clipboard_patch_len = 0;
             break;
 
-        case CLIPBOARD_PATCH_TEXT_END:
+        case 1:
             if (clipboard_patch_text) {
                 t_binbuf *temp_bb = binbuf_new();
                 binbuf_text(temp_bb, clipboard_patch_text, clipboard_patch_len);
@@ -4168,7 +4172,7 @@ void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*arg
             clipboard_patch_len = 0;
             break;
 
-        case CLIPBOARD_PATCH_TEXT_APPENDUTF8:
+        case 2:
             if (clipboard_patch_text) {
                 clipboard_patch_text = resizebytes(clipboard_patch_text, clipboard_patch_len, clipboard_patch_len + argc);
             } else {
