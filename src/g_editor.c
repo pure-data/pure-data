@@ -42,6 +42,7 @@ struct _instanceeditor
 #define CLIPBOARD_PATCH_TEXT_LINE_END 1
 #define CLIPBOARD_PATCH_TEXT_END 2
 #define CLIPBOARD_PATCH_TEXT_LINE_PARTIAL 3
+#define CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX 4
 
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
@@ -4143,7 +4144,6 @@ static t_binbuf *clipboard_patch_bb = NULL;
 
 void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
     int flag = flagf;
-    
     switch (flag) {
         case CLIPBOARD_PATCH_TEXT_START:
             if (clipboard_patch_bb) {
@@ -4151,21 +4151,29 @@ void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
             }
             clipboard_patch_bb = binbuf_new();
             break;
-
         case CLIPBOARD_PATCH_TEXT_LINE_PARTIAL:
         case CLIPBOARD_PATCH_TEXT_LINE_END:
-            if (clipboard_patch_bb) {
+        case CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX:
+            if (clipboard_patch_bb) {                             
+                t_binbuf *line_bb = binbuf_new();
                 t_binbuf *temp_bb = binbuf_new();
-                binbuf_text(temp_bb, s->s_name, strlen(s->s_name));
-                if (flag == CLIPBOARD_PATCH_TEXT_LINE_END) {
+                if (flag == CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX) {
+                    t_atom a;
+                    SETCOMMA(&a);
+                    binbuf_add(line_bb, 1, &a);
+                }
+                binbuf_text(temp_bb, s->s_name, strlen(s->s_name));        
+                if (flag == CLIPBOARD_PATCH_TEXT_LINE_END || flag == CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX) {
                     binbuf_addsemi(temp_bb);
                 }
-                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
+                binbuf_add(line_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
+                binbuf_add(clipboard_patch_bb, binbuf_getnatom(line_bb), binbuf_getvec(line_bb));
+                binbuf_clear(line_bb);
                 binbuf_clear(temp_bb);
+                binbuf_free(line_bb);
                 binbuf_free(temp_bb);
             }
             break;
-            
         case CLIPBOARD_PATCH_TEXT_END:
             if (clipboard_patch_bb) {
                 canvas_dopaste(x, clipboard_patch_bb);
@@ -4173,13 +4181,11 @@ void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
                 clipboard_patch_bb = NULL;
             }
             break;
-
         default:
             post("Invalid flag received in canvas_got_clipboard_contents.");
             break;
     }
 }
-
 
 static void canvas_duplicate(t_canvas *x)
 {

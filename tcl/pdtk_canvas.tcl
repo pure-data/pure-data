@@ -255,9 +255,13 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
     set CLIPBOARD_PATCH_TEXT_LINE_END 1;
     set CLIPBOARD_PATCH_TEXT_END 2;
     set CLIPBOARD_PATCH_TEXT_LINE_PARTIAL 3;
+    set CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX 4;
     set MAX_CHUNK_SIZE 960;
     set clipboard_data [clipboard get]
-
+    if {[string length $clipboard_data] == 0} {
+        ::pdwindow::post "Clipboard is empty.\n"
+        return
+    }
     # TODO: better validation of PD patch clipboard data
     if {[string index $clipboard_data 0] != "#"} {
         ::pdwindow::post "Warning: Clipboard content does not seem to be valid PD patch: \n"
@@ -265,11 +269,10 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
         return
     }
     pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_START"
-    
     foreach line [split $clipboard_data \n] {
         if {[string length $line] > 0} {
             set escaped_line [string range $line 0 end-1]
-            set escaped_line [string map {" " {\ } ";" {\\;} "," {\\,} "\$" "\\$"} $escaped_line]
+            set escaped_line [string map {" " {\ } ";" {\\;} "," {\\,} "\$" {\\$}} $escaped_line]
             # split each line into chunks, and make sure atoms don't get split
             while {[string length $escaped_line] > $MAX_CHUNK_SIZE} {
                 set boundary [string last { } [string range $escaped_line 0 [expr $MAX_CHUNK_SIZE - 1]]]
@@ -277,16 +280,21 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
                 pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_PARTIAL $chunk"
                 set escaped_line [string range $escaped_line [expr $boundary + 1] end]
             }
-            # FIXME: the atoms can have width property, i.e. , f 12 - this last comma is not escaped
-            # and causing lot of trouble, so discarding it for now
-            # fix by adding new flag and appending comma manually to binbuf
-            set escaped_line [regsub {\,\\\sf\\\s\d+$} $escaped_line ""]
-            pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_END $escaped_line"
+            set appendix_part ""
+            # find appendix part, i.e. ", f 12" denoting object width in chars, extract and remove
+            if {[regexp {\,\\\s(f\\\s\d+)$} $escaped_line -> appendix_part]} {
+                set escaped_line [regsub {\,\\\sf\\\s\d+$} $escaped_line ""]
+                # remove trailing slash
+                set escaped_line [string range $escaped_line 0 end-2]
+                pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_PARTIAL $escaped_line"
+                pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_END_APPENDIX $appendix_part"
+            } else {
+                pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_LINE_END $escaped_line"
+            }
         }
     }
     pdsend "[winfo toplevel $tkcanvas] got-clipboard-contents $CLIPBOARD_PATCH_TEXT_END"
 }
-
 
 proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
     clipboard clear
