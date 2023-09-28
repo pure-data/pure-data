@@ -39,9 +39,8 @@ struct _instanceeditor
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
 #define CLIPBOARD_PATCH_TEXT_START 0
-#define CLIPBOARD_PATCH_TEXT_LINE_END 1
-#define CLIPBOARD_PATCH_TEXT_END 2
-#define CLIPBOARD_PATCH_TEXT_LINE_PARTIAL 3
+#define CLIPBOARD_PATCH_TEXT_END 1
+#define CLIPBOARD_PATCH_TEXT_APPENDUTF8 2
 
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
@@ -4139,49 +4138,47 @@ static void canvas_paste(t_canvas *x)
     }
 }
 
-static t_binbuf *clipboard_patch_bb = NULL;
+static char* clipboard_patch_text = NULL;
+static size_t clipboard_patch_len = 0;
 
-void canvas_got_clipboard_contents(t_canvas *x, t_floatarg flagf, t_symbol *s) {
+void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*argv) {
+    t_float flagf = (argc>0)?atom_getfloat(argv):0;
     int flag = flagf;
+    int i;
+    if(argc<1)
+        flag = CLIPBOARD_PATCH_TEXT_END;
     
     switch (flag) {
         case CLIPBOARD_PATCH_TEXT_START:
-            if (clipboard_patch_bb) {
-                binbuf_free(clipboard_patch_bb);
+            if (clipboard_patch_text) {
+                freebytes(clipboard_patch_text, clipboard_patch_len);
             }
-            clipboard_patch_bb = binbuf_new();
-            break;
-
-        case CLIPBOARD_PATCH_TEXT_LINE_END:
-            if (clipboard_patch_bb) {
-                char* received_data = strdup(s->s_name);
-                t_binbuf *temp_bb = binbuf_new();
-                binbuf_text(temp_bb, received_data, strlen(received_data));
-                binbuf_addsemi(temp_bb);
-                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
-                binbuf_clear(temp_bb);
-                binbuf_free(temp_bb);
-                free(received_data);
-            }
-            break;
-
-        case CLIPBOARD_PATCH_TEXT_LINE_PARTIAL:
-            if (clipboard_patch_bb) {
-                char* received_data = strdup(s->s_name);
-                t_binbuf *temp_bb = binbuf_new();
-                binbuf_text(temp_bb, received_data, strlen(received_data));
-                binbuf_add(clipboard_patch_bb, binbuf_getnatom(temp_bb), binbuf_getvec(temp_bb));
-                binbuf_clear(temp_bb);
-                binbuf_free(temp_bb);
-                free(received_data);
-            }
+            clipboard_patch_text = NULL;
+            clipboard_patch_len = 0;
             break;
 
         case CLIPBOARD_PATCH_TEXT_END:
-            if (clipboard_patch_bb) {
-                canvas_dopaste(x, clipboard_patch_bb);
-                binbuf_free(clipboard_patch_bb);
-                clipboard_patch_bb = NULL;
+            if (clipboard_patch_text) {
+                t_binbuf *temp_bb = binbuf_new();
+                binbuf_text(temp_bb, clipboard_patch_text, clipboard_patch_len);
+                canvas_dopaste(x, temp_bb);
+                freebytes(clipboard_patch_text, clipboard_patch_len);
+            }
+            clipboard_patch_text = NULL;
+            clipboard_patch_len = 0;
+            break;
+
+        case CLIPBOARD_PATCH_TEXT_APPENDUTF8:
+            if (clipboard_patch_text) {
+                clipboard_patch_text = resizebytes(clipboard_patch_text, clipboard_patch_len, clipboard_patch_len + argc);
+            } else {
+                clipboard_patch_text = getbytes(argc);
+                clipboard_patch_len = 0;
+            }
+            for(i=1; i<argc; i++) {
+                int v = (int)atom_getfloat(argv+i);
+                clipboard_patch_text[clipboard_patch_len] = (char)v;
+                clipboard_patch_len++;
             }
             break;
 
@@ -4986,7 +4983,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
-        gensym("got-clipboard-contents"), A_FLOAT, A_SYMBOL, A_NULL);
+        gensym("got-clipboard-contents"), A_GIMME, A_NULL);
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
         gensym("menuclose"), A_DEFFLOAT, 0);
