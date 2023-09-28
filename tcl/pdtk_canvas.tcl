@@ -254,7 +254,10 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
     set MAX_CHUNK_SIZE 960
     set toplevel [winfo toplevel $tkcanvas]
     set clipboard_data [clipboard get]
-
+    if {[string length $clipboard_data] == 0} {
+        ::pdwindow::post "Clipboard is empty.\n"
+        return
+    }
     # TODO: better validation of PD patch clipboard data
     if {[string index $clipboard_data 0] != "#"} {
         ::pdwindow::post "Warning: Clipboard content does not seem to be valid PD patch: \n"

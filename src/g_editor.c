@@ -4160,7 +4160,6 @@ void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*arg
             clipboard_patch_text = NULL;
             clipboard_patch_len = 0;
             break;
-
         case 1:
             if (clipboard_patch_text) {
                 t_binbuf *temp_bb = binbuf_new();
@@ -4185,13 +4184,11 @@ void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*arg
                 clipboard_patch_len++;
             }
             break;
-
         default:
             post("Invalid flag received in canvas_got_clipboard_contents.");
             break;
     }
 }
-
 
 static void canvas_duplicate(t_canvas *x)
 {
@@ -4996,7 +4993,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_copy,
         gensym("copy"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_copy_to_clipboard_as_text,
-        gensym("copy-to-clipboard-as-text"), A_NULL);        
+        gensym("copy-to-clipboard-as-text"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste_replace,
