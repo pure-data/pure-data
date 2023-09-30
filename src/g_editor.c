@@ -4139,54 +4139,37 @@ static char* clipboard_patch_text = NULL;
 static size_t clipboard_patch_len = 0;
 
 void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*argv) {
+    t_symbol *reset = gensym("reset");
+    t_symbol *submit = gensym("submit");
+    t_symbol *addbytes = gensym("addbytes");    
     t_symbol*sflag = (argc>0)?atom_getsymbol(argv):0;
     int flag = 0;
     int i;
-    if(sflag == gensym("begin")) {
-        flag = 0;
-    } else if(sflag == gensym("end")) {
-        flag = 1;
-    } else if(sflag == gensym("addbytes")) {
-        flag = 2;
-    } else {
-        flag = 0;
-    }
-    
-    switch (flag) {
-        case 0:
-            if (clipboard_patch_text) {
-                freebytes(clipboard_patch_text, clipboard_patch_len);
-            }
-            clipboard_patch_text = NULL;
-            clipboard_patch_len = 0;
-            break;
-        case 1:
-            if (clipboard_patch_text) {
+    if(sflag == reset || sflag == submit) {
+        if (clipboard_patch_text) {
+            if(sflag == submit) {
                 t_binbuf *temp_bb = binbuf_new();
                 binbuf_text(temp_bb, clipboard_patch_text, clipboard_patch_len);
                 canvas_dopaste(x, temp_bb);
-                freebytes(clipboard_patch_text, clipboard_patch_len);
             }
-            clipboard_patch_text = NULL;
+            freebytes(clipboard_patch_text, clipboard_patch_len);
+        }
+        clipboard_patch_text = NULL;
+        clipboard_patch_len = 0;
+    } else if(sflag == addbytes) {
+        if (clipboard_patch_text) {
+            clipboard_patch_text = resizebytes(clipboard_patch_text, clipboard_patch_len, clipboard_patch_len + argc);
+        } else {
+            clipboard_patch_text = getbytes(argc);
             clipboard_patch_len = 0;
-            break;
-
-        case 2:
-            if (clipboard_patch_text) {
-                clipboard_patch_text = resizebytes(clipboard_patch_text, clipboard_patch_len, clipboard_patch_len + argc);
-            } else {
-                clipboard_patch_text = getbytes(argc);
-                clipboard_patch_len = 0;
-            }
-            for(i=1; i<argc; i++) {
-                int v = (int)atom_getfloat(argv+i);
-                clipboard_patch_text[clipboard_patch_len] = (char)v;
-                clipboard_patch_len++;
-            }
-            break;
-        default:
-            post("Invalid flag received in canvas_got_clipboard_contents.");
-            break;
+        }
+        for(i=1; i<argc; i++) {
+            int v = (int)atom_getfloat(argv+i);
+            clipboard_patch_text[clipboard_patch_len] = (char)v;
+            clipboard_patch_len++;
+        }
+    } else {
+        post("Invalid flag received in canvas_got_clipboard_contents.");
     }
 }
 

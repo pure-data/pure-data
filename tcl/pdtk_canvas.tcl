@@ -251,7 +251,11 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
 }
 
 proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
-    set MAX_CHUNK_SIZE 960
+    # TODO: max size is now limited by binbuf_text MAXPDSTRING (1000)
+    # pdsend max size is 65536 bytes (I think), so could maybe optimize this by 
+    # sending larger chunks and processing smaller chunks in C side
+    set MAX_CHUNK_SIZE 1000
+    set total_bytes 0
     set toplevel [winfo toplevel $tkcanvas]
     set clipboard_data [clipboard get]
     if {[string length $clipboard_data] == 0} {
@@ -264,13 +268,22 @@ proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
         ::pdwindow::post $clipboard_data
         return
     }
-    pdsend "$toplevel got-clipboard-contents begin"
+    pdsend "$toplevel got-clipboard-contents reset"
     set output {}
     foreach char [split $clipboard_data ""] {
+        set char_bytes [string bytelength $char]
+        if { $total_bytes + $char_bytes > $MAX_CHUNK_SIZE } {
+            pdsend "$toplevel got-clipboard-contents addbytes $output"
+            set output {}
+            set total_bytes 0
+        }
         lappend output [scan $char %c]
+        incr total_bytes $char_bytes
     }
-    pdsend "$toplevel got-clipboard-contents addbytes $output"
-    pdsend "$toplevel got-clipboard-contents end"
+    if { [llength $output] > 0 } {
+        pdsend "$toplevel got-clipboard-contents addbytes $output"
+    }
+    pdsend "$toplevel got-clipboard-contents submit"
 }
 
 proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
