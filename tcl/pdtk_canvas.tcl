@@ -305,11 +305,10 @@ proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
         } else {
             if {$atom == ";" && ([string first "#" $next_atom] == 0 || $next_atom == "")} {
                 set atom_line [string trimright $atom_line]
+                set atom_line [regsub -all -- {\$} $atom_line {\\$}]
                 append atom_line ";"
             } elseif {$atom == ";"} {
                 append atom_line "\\; "
-            } elseif {[string first "\$" $atom] == 0} {
-                append atom_line "\\$" [string range $atom 1 end] " "
             } elseif {$atom == ","} {
                 # text items can have unescaped comma delimiting the width attribute
                 if {$obj_type == "text"} {
