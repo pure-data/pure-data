@@ -23,8 +23,8 @@
 #X msg 194 244 set waveshape15c;
 #X text 563 490 updated for Pd version 0.52;
 #X obj 79 497 table;
-#X text 123 498 <-- see also this older and less powerfull object (you can't save contents in this one)., f 46;
 #X text 48 381 There's also an [array] object so that you can have arrays with parameterizable names and sizes. You can also save the state of the array in this case \, and read it in from a file or calculate it at startup.;
+#X text 123 498 <-- see also this older and less powerful object (you can't save contents in this one)., f 46;
 #X connect 3 0 8 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;

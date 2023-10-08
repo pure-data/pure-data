@@ -27,7 +27,6 @@
 #X text 179 446 <-- rewind;
 #X text 175 476 <-- step through;
 #X text 99 325 this is where comments go to:, f 15;
-#X text 402 407 You can also use the more modern [text sequence] object instead which is more powerfull. It can also save contents of the sequence with the patch., f 32;
 #X msg 411 164 tempo 5 \, bang;
 #X msg 160 531 stop;
 #X text 201 531 <-- stop;
@@ -36,6 +35,7 @@
 #X msg 153 503 line 0 \, auto;
 #X text 250 500 <-- rewind and play;
 #X text 278 517 automatically, f 15;
+#X text 402 407 You can also use the more modern [text sequence] object instead which is more powerful. It can also save contents of the sequence with the patch., f 32;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X connect 5 0 0 0;
@@ -43,11 +43,11 @@
 #X connect 7 0 0 0;
 #X connect 10 0 19 0;
 #X connect 13 0 11 0;
-#X connect 20 0 31 0;
+#X connect 20 0 30 0;
 #X connect 21 0 18 0;
 #X connect 22 0 18 0;
-#X connect 27 0 0 0;
-#X connect 28 0 18 0;
-#X connect 30 0 31 0;
+#X connect 26 0 0 0;
+#X connect 27 0 18 0;
+#X connect 29 0 30 0;
+#X connect 30 0 18 0;
 #X connect 31 0 18 0;
-#X connect 32 0 18 0;

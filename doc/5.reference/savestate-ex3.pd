@@ -1,4 +1,4 @@
-#N canvas 372 253 950 466 12;
+#N canvas 309 176 950 466 12;
 #X obj 418 46 savestate;
 #X listbox 129 100 12 0 0 0 - - - 0;
 #X listbox 129 124 12 0 0 0 - - - 0;
@@ -28,10 +28,10 @@
 #X obj 490 230 r \$0-freq;
 #X obj 385 333 route freq;
 #X obj 385 377 s \$0-set-freq;
-#X text 650 101 You can use multiple [savestate] objects instead of sending multiple ists to a single one., f 35;
 #X text 650 155 The thing is that the [savestate] objects aren't differentiated. In this example both will output a collection of lists sent to both objects., f 34;
 #X text 652 241 Hence \, it is a good idea to tag and route the lists differently. Here we prepend "amp" or "freq" to tag the lists., f 34;
 #X obj 490 254 list prepend freq;
+#X text 650 101 You can use multiple [savestate] objects instead of sending multiple lists to a single one., f 35;
 #X connect 0 0 13 0;
 #X connect 0 1 17 0;
 #X connect 1 0 11 0;
@@ -58,7 +58,7 @@
 #X connect 22 1 24 0;
 #X connect 23 0 27 0;
 #X connect 24 0 22 0;
-#X connect 26 0 32 0;
+#X connect 26 0 31 0;
 #X connect 27 0 28 0;
-#X connect 32 0 24 1;
+#X connect 31 0 24 1;
 #X coords 0 -1 1 1 166 75 1 125 75;
