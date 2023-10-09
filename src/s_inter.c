@@ -1159,15 +1159,49 @@ static const char*deken_CPU[] = {
 #endif
         , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+static const char*strip_quotes(const char*s, char*outbuf, size_t outsize) {
+    size_t len = strlen(s);
+    const char q = (len>1)?s[0]:0;
+        /* only strip single or double quotes */
+    switch(q) {
+    case '\'':
+    case '"':
+        break;
+    case 0:
+    default:
+        return s;
+    }
+        /* only strip quotes if they are both at the beginning and the end */
+    if (q != s[len-1])
+        return s;
+
+    if(len>outsize)
+        len = outsize;
+
+    outbuf[0] = 0;
+    strncpy(outbuf, s+1, len-2);
+    outbuf[outsize-1] = 0;
+    return outbuf;
+}
+
 static void init_deken_arch(void)
 {
     static int initialized = 0;
+    static char deken_OS_noquotes[MAXPDSTRING];
+    static char deken_CPU_noquotes[MAXPDSTRING];
+
     if(initialized)
         return;
     initialized = 1;
-#define CPUNAME_SIZE 15
 
-#if !defined(DEKEN_CPU)
+#if defined(DEKEN_OS)
+    deken_OS = strip_quotes(deken_OS, deken_OS_noquotes, MAXPDSTRING);
+#endif /* DEKEN_OS */
+
+#define CPUNAME_SIZE 15
+#if defined(DEKEN_CPU)
+    deken_CPU[0] = strip_quotes(deken_CPU[0], deken_CPU_noquotes, MAXPDSTRING);
+#else /* !DEKEN_CPU */
 # if defined __ARM_ARCH
         /* ARM-specific:
          * if we are running ARMv7, we can also load ARMv6 externals
