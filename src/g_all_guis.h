@@ -268,6 +268,7 @@ typedef struct _my_numbox
     char     x_buf[IEMGUI_MAX_NUM_LEN];
     int      x_numwidth;
     int      x_log_height;
+    int      x_cantchange;
 } t_my_numbox;
 
 extern int iemgui_color_hex[];
