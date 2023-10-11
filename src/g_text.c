@@ -1080,10 +1080,16 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     /* glist_retext(x->a_glist, &x->a_text); */
 }
 
+static void text_select(t_gobj *z, t_glist *glist, int state);
 static void gatom_edit(t_gatom *x, t_floatarg f)
 {
     unsigned int old = x->a_edit;
     x->a_edit = f != 0.;
+    if (old != x->a_edit) {
+        /* FIXME: there must be a better way */
+        int state = glist_isselected(x->a_glist, (t_gobj*)x);
+        text_select((t_gobj*)x, (t_glist*)x->a_glist, state);
+    }
 }
 
 static int gatom_fontsize(t_gatom *x)
@@ -1350,6 +1356,18 @@ static void text_displace(t_gobj *z, t_glist *glist,
     }
 }
 
+/* non-zero if the object does not a gatom with "edit" disabled. */
+static int text_is_interactive(t_gobj *z)
+{
+    t_text *x = (t_text *)z;
+    if (x->te_type == T_ATOM)
+    {
+        t_gatom *a = (t_gatom *)z;
+        return a->a_edit != 0;
+    }
+    return 1;
+}
+
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
@@ -1359,11 +1377,24 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     {
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? "blue" : "black"));
+
+        if (text_is_interactive(z))
+        {
+            pdgui_vmess(0, "crs rr",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? "blue" : "black"));
+        }
+        else
+        {
+            /* FIXME: perhaps the text colour should match the border */
+            pdgui_vmess(0, "crs rr",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? "gray60" : "gray80"));
+        }
     }
 }
 
