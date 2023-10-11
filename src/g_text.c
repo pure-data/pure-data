@@ -23,6 +23,11 @@
 
 #define MESSAGE_CLICK_WIDTH 5
 
+#define COL_SELECTED_DEFAULT "blue"
+#define COL_UNSELECTED_DEFAULT "black"
+#define COL_SELECTED_NOTEDITABLE "gray60"
+#define COL_UNSELECTED_NOTEDITABLE "gray80"
+
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
@@ -1384,7 +1389,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
                 glist,
                 "itemconfigure",
                 buf,
-                "-fill", (state? "blue" : "black"));
+                "-fill", (state? COL_SELECTED_DEFAULT : COL_UNSELECTED_DEFAULT ));
         }
         else
         {
@@ -1393,7 +1398,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
                 glist,
                 "itemconfigure",
                 buf,
-                "-fill", (state? "gray60" : "gray80"));
+                "-fill", (state? COL_SELECTED_NOTEDITABLE : COL_UNSELECTED_NOTEDITABLE ));
         }
     }
 }
