@@ -590,6 +590,7 @@ typedef struct _gatom
     unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
     unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
     unsigned int a_doubleclicked:1; /* 1 if dragging from a double click */
+    unsigned int a_edit:1;          /* 1 if changable by grabbing */
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
@@ -823,6 +824,13 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     t_atom *ap = gatom_getatom(x);
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
+
+    /* Do not respond to keypresses on the grabbed widget, if editing is disabled. */
+    if (!x->a_edit) {
+        /* assert(t != x->a_glist->gl_editor->e_textedfor); */
+        return;
+    }
+
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
@@ -930,6 +938,13 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
 
     if (!doit)
         return (1);
+
+    /* Do not permit grabbing when editing is disabled. Should probably still
+       handle doubleclicks */
+    if (!x->a_edit) {
+        return (1);
+    }
+
     t = glist_findrtext(x->a_glist, &x->a_text);
     if (t == x->a_glist->gl_editor->e_textedfor)
     {
@@ -1065,6 +1080,12 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     /* glist_retext(x->a_glist, &x->a_text); */
 }
 
+static void gatom_edit(t_gatom *x, t_floatarg f)
+{
+    unsigned int old = x->a_edit;
+    x->a_edit = f != 0.;
+}
+
 static int gatom_fontsize(t_gatom *x)
 {
     return (x->a_fontsize ? x->a_fontsize : glist_getfont(x->a_glist));
@@ -1165,6 +1186,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_grabbed = 0;
     x->a_revertbuf = 0;
     x->a_fontsize = 0;
+    x->a_edit = 1; /* editable by default to match legacy behaviour */
     (void)gatom_getatom(x);  /* this forces initialization of binbuf */
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
@@ -1857,6 +1879,8 @@ void g_text_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
+    class_addmethod(gatom_class, (t_method)gatom_edit, gensym("edit"),
+        A_FLOAT, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
     class_sethelpsymbol(gatom_class, gensym("gui-boxes"));
