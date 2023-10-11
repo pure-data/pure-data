@@ -1021,7 +1021,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
     int newfont = atom_getfloatarg(7, argc, argv);
-    t_atom undo[8];
+    int edit = atom_getfloatarg(8, argc, argv) != 0;
+    t_atom undo[9];
     int is_visible = glist_isvisible(x->a_glist);
     int should_visible = gobj_shouldvis((t_gobj*)x, x->a_glist);
 
@@ -1033,8 +1034,9 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     SETSYMBOL(undo+5, gatom_escapit(x->a_symfrom));
     SETSYMBOL(undo+6, gatom_escapit(x->a_symto));
     SETFLOAT (undo+7, x->a_fontsize);
+    SETFLOAT (undo+8, x->a_edit);
     pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
-                            8, undo,
+                            9, undo,
                             argc, argv);
 
     if(is_visible)
@@ -1067,6 +1069,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_wherelabel = ((int)wherelabel & 3);
     x->a_label = label;
     x->a_fontsize = newfont;
+    x->a_edit = edit;
     if (*x->a_symfrom->s_name)
         pd_unbind(&x->a_text.te_pd,
             canvas_realizedollar(x->a_glist, x->a_symfrom));
@@ -1280,14 +1283,15 @@ static void gatom_properties(t_gobj *z, t_glist *owner)
 {
     t_gatom *x = (t_gatom *)z;
     pdgui_stub_vnew(&x->a_text.te_pd, "pdtk_gatom_dialog", x,
-        "i ff i sss i",
+        "i ff i sss ii",
         x->a_text.te_width,
         x->a_draglo, x->a_draghi,
         x->a_wherelabel,
         gatom_escapit(x->a_label)->s_name,
         gatom_escapit(x->a_symfrom)->s_name,
         gatom_escapit(x->a_symto)->s_name,
-        x->a_fontsize);
+        x->a_fontsize,
+        x->a_edit);
 }
 
 
