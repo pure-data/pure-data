@@ -1,4 +1,4 @@
-#N canvas 304 60 794 703 12;
+#N canvas 304 43 794 703 12;
 #X declare -stdpath ./;
 #X floatatom 223 250 5 57 83 0 - - - 0;
 #X obj 223 290 t b f, f 9;
@@ -89,8 +89,8 @@
 #X obj 615 335 output~;
 #X obj 615 293 snake~ out;
 #X obj 615 245 clone -d clone-abs-b 2;
-#X text 46 20 By default \, for signal inlets \, [clone] expects a single mono channel and distributes it to all copies of the abstraction. If you have a multichannel input you need to use a flag to split and disctribute the channels separately to each copy. By default \, an outlet connection gets the sum of all copies \, but you can also get a multichannel output that combines the output of all copies with a flag., f 70;
 #X text 322 118 The '-do' flag combines the audio of all copies into a multichannel signal output., f 27;
+#X text 46 20 By default \, for signal inlets \, [clone] expects a single mono channel and distributes it to all copies of the abstraction. If you have a multichannel input you need to use a flag to split and distribute the channels separately to each copy. By default \, an outlet connection gets the sum of all copies \, but you can also get a multichannel output that combines the output of all copies with a flag., f 70;
 #X connect 1 0 0 0;
 #X connect 1 1 0 1;
 #X connect 2 0 11 0;
