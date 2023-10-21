@@ -14,11 +14,11 @@
 #X floatatom 332 174 5 0 0 0 - - - 0;
 #X obj 374 14 s;
 #X msg 199 306 \; help-send1 34 \; help-send2 67;
-#X obj 155 533 send;
+#X obj 156 540 send;
 #X msg 181 448 symbol help-send1;
 #X msg 194 477 symbol help-send2;
-#X floatatom 120 478 5 0 0 0 - - - 0;
-#X symbolatom 181 506 12 0 0 0 - - - 0;
+#X floatatom 127 478 5 0 0 0 - - - 0;
+#X symbolatom 181 509 12 0 0 0 - - - 0;
 #X obj 599 197 value y;
 #X obj 525 214 send y;
 #X floatatom 525 186 5 0 0 0 - - - 0;
@@ -151,11 +151,11 @@
 #X obj 824 514 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 809 409 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 23 225 [send] sends messages to [receive] objects with the same name (set by the argument). They work across windows too. Also \, you can use message boxes to send messages if they start with a semicolon as shown below:;
-#X text 22 378 If invoked without an argument \, [send] creates an inlet to let you set the target via "symbol" messages:, f 54;
 #X text 499 110 The [value] object receives floats from [send] objects with the same name as its variable name. You can also use [send] to send messages to arrays with the same name., f 55;
 #X text 479 262 The [receive] object can also get messages from [value] and the other objects below via their "send" messages. Note that [value] can also get these values from these objects (except [list store] because [value] can't deal with lists).;
 #X obj 503 517 hsl 162 19 0 127 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X text 7 570 Open subpatch to see how to deal with '\$0' ->;
+#X text 22 378 If invoked without an argument \, [send] is assigned to an empty symbol and creates an inlet to let you set the target via "symbol" messages:, f 54;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;

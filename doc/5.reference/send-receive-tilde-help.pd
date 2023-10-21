@@ -98,7 +98,6 @@
 #X connect 24 0 23 0;
 #X restore 340 480 pd multi-channel;
 #X text 89 481 see multi channel example here -->;
-#X text 37 88 A [send~] object copies its input to a local buffer which all [receive~] objects of the same name read from. They may be in different windows or even different patches. Any number of [receive~] may be associated with one [send~] \, but it is an error to have two [send~] objects of the same name. [receive~] takes "set" messages to switch between different [send~] objects. Multi channel connections is supported., f 72;
 #X text 162 13 - one-to-many nonlocal signal(s) connection;
 #X text 117 514 Example for feedback loops -->;
 #N canvas 639 104 520 539 feedback-loop 0;
@@ -132,6 +131,7 @@
 #X obj 443 215 set-dsp-tgl;
 #X text 474 219 DSP on/off;
 #X text 72 418 [send~]/[receive~] must have matching block sizes., f 62;
+#X text 37 88 A [send~] object copies its input to a local buffer which all [receive~] objects of the same name read from. They may be in different windows or even different patches. Any number of [receive~] may be associated with one [send~] \, but it is an error to have two [send~] objects of the same name. A [receive~] takes "set" messages to switch between different [send~] objects. Multi channel connections is supported., f 72;
 #X connect 1 0 17 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
@@ -147,4 +147,4 @@
 #X connect 23 0 4 0;
 #X connect 25 0 2 0;
 #X connect 30 0 14 0;
-#X connect 44 0 43 0;
+#X connect 43 0 42 0;

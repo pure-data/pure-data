@@ -82,7 +82,6 @@
 #X obj 74 15 v;
 #X text 147 95 float -;
 #X text 203 95 sets variable value., f 36;
-#X text 203 271 sets value name (if no name is given \, a right inlet is created to set the name)., f 44;
 #X text 147 236 float -;
 #X text 46 168 (if created without argument);
 #X text 140 195 symbol - sets the value name.;
@@ -92,13 +91,13 @@
 #X text 203 135 sends the value to a matching receive name.;
 #X text 120 271 1) symbol -;
 #X text 203 236 outputs variable value when receiving a bang.;
+#X text 203 271 send symbol (if given \, 2nd inlet is suppressed \, default: empty symbol)., f 36;
 #X restore 387 34 pd reference;
 #X text 484 35 <= click;
 #X text 41 78 [value] stores a numeric value which is shared between all values with the same name (which need not be in the same Pd window.), f 66;
 #X text 32 257 The value may also be stored or recalled in expressions via the [expr] family of objects., f 34;
 #X text 32 335 The [value] object can also receive float values sent via a [send] object or a message if it has a variable with the same name., f 31;
 #X text 32 424 You can also send the stored value to a named object such as a [receive] or another [value] \, see example to the right., f 31;
-#X text 36 519 if invoked without a creation argument \, [value] adds a right inlet for setting the variable name with a "symbol" message:, f 30;
 #X text 119 126 set the value;
 #X text 110 151 retrieve it;
 #X obj 255 152 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
@@ -108,6 +107,7 @@
 #X obj 363 336 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 474 423 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 276 514 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 36 509 if invoked without a creation argument \, [value] is assigned to an empty symbol adds a right inlet is created for setting the variable name with a "symbol" message:, f 30;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X connect 5 0 7 0;
@@ -126,10 +126,10 @@
 #X connect 33 0 32 0;
 #X connect 34 0 35 0;
 #X connect 36 0 29 0;
-#X connect 53 0 7 0;
-#X connect 54 0 10 0;
-#X connect 55 0 3 0;
-#X connect 56 0 14 0;
-#X connect 57 0 17 0;
-#X connect 58 0 34 0;
-#X connect 59 0 25 0;
+#X connect 52 0 7 0;
+#X connect 53 0 10 0;
+#X connect 54 0 3 0;
+#X connect 55 0 14 0;
+#X connect 56 0 17 0;
+#X connect 57 0 34 0;
+#X connect 58 0 25 0;
