@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-05-15 22:50+0000\n"
+"PO-Revision-Date: 2023-10-23 01:02+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.1\n"
 
 msgid "linear"
 msgstr "linier"
@@ -196,9 +196,8 @@ msgstr "Menggunakan"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "no device"
-msgstr "Perangkat memasuk"
+msgstr "tidak ada perangkat"
 
 msgid "(same as input device)..."
 msgstr "(sama dengan perangkat memasuk)..."
@@ -216,7 +215,7 @@ msgid "Use Multiple Devices"
 msgstr "Pakai Banyak Perangkat"
 
 msgid "audio system"
-msgstr ""
+msgstr "sistem audio"
 
 msgid "Settings"
 msgstr "Pengaturan"
@@ -361,7 +360,7 @@ msgid "Receive symbol:"
 msgstr "Terima simbol:"
 
 msgid "auto"
-msgstr ""
+msgstr "Otomatis"
 
 msgid "Width:"
 msgstr "Lebar:"
@@ -430,10 +429,10 @@ msgid "Height:"
 msgstr "Tinggi:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Rentang output"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Tinggi log:"
 
 msgid "Vslider"
 msgstr "Vtombolgeser"
@@ -445,13 +444,13 @@ msgid "Vradio"
 msgstr "Vradio"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Jumlah sel:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "Hradio"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "VU Meter"
 
 msgid "Canvas"
 msgstr "Kanvas"
@@ -461,28 +460,28 @@ msgstr ""
 
 #, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "%s Properti"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parameter"
 
 msgid "Init"
-msgstr ""
+msgstr "Init"
 
 msgid "No init"
-msgstr ""
+msgstr "Tidak ada init"
 
 msgid "Jump on click"
-msgstr ""
+msgstr "Loncat saat diklik"
 
 msgid "Steady on click"
-msgstr ""
+msgstr "Diam saat diklik"
 
 msgid "X offset:"
-msgstr ""
+msgstr "X offset:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "Y offset:"
 
 msgid "Colors"
 msgstr "Warna"
@@ -503,14 +502,13 @@ msgid "Send a Pd message"
 msgstr "Mengirim sebuah pesan Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(gunakan tombol panah untuk riwayat)"
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Perangkat memasuk"
+msgstr "tidak ada perangkat input"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "Port Masuk:"
 
 msgid "Out Ports:"
 msgstr ""
