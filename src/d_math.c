@@ -28,19 +28,25 @@ static void *clip_new(t_floatarg lo, t_floatarg hi)
     t_clip *x = (t_clip *)pd_new(clip_class);
     x->x_lo = lo;
     x->x_hi = hi;
+    signalinlet_new(&x->x_obj, lo);
+    signalinlet_new(&x->x_obj, hi);
     outlet_new(&x->x_obj, gensym("signal"));
-    floatinlet_new(&x->x_obj, &x->x_lo);
-    floatinlet_new(&x->x_obj, &x->x_hi);
-    x->x_f = 0;
+    x->x_f = x->x_lo = x->x_hi = 0;
     return (x);
 }
 
-static t_int *clip_perform(t_int *w)
+static t_int *clip_perf_scalar(t_int *w)
 {
     t_clip *x = (t_clip *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
+    t_sample newlo = *(t_sample *)(w[3]);
+    t_sample newhi = *(t_sample *)(w[4]);
+    t_sample *out = (t_sample *)(w[5]);
+    int n = (int)(w[6]);
+    if (newlo != x->x_lo)
+        x->x_lo = newlo;
+    if (newhi != x->x_hi)
+        x->x_hi = newhi;
     while (n--)
     {
         t_sample f = *in++;
@@ -48,19 +54,87 @@ static t_int *clip_perform(t_int *w)
         if (f > x->x_hi) f = x->x_hi;
         *out++ = f;
     }
-    return (w+5);
+    return (w+7);
+}
+
+static t_int *clip_perf_vec1(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *in2 = (t_sample *)(w[3]);
+    t_sample newhi = *(t_sample *)(w[4]);
+    t_sample *out = (t_sample *)(w[5]);
+    int n = (int)(w[6]);
+    if (newhi != x->x_hi)
+        x->x_hi = newhi;
+    while (n--)
+    {
+        t_sample f = *in++;
+        t_sample lo = *in2++;
+        if (f < lo) f = lo;
+        if (f > x->x_hi) f = x->x_hi;
+        *out++ = f;
+    }
+    return (w+7);
+}
+
+static t_int *clip_perf_vec2(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample newlo = *(t_sample *)(w[3]);
+    t_sample *in3 = (t_sample *)(w[4]);
+    t_sample *out = (t_sample *)(w[5]);
+    int n = (int)(w[6]);
+    if (newlo != x->x_lo)
+        x->x_lo = newlo;
+    while (n--)
+    {
+        t_sample f = *in++;
+        t_sample hi = *in3++;
+        if (f < x->x_lo) f = x->x_lo;
+        if (f > hi) f = hi;
+        *out++ = f;
+    }
+    return (w+7);
+}
+
+static t_int *clip_perf_vecs(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *in2 = (t_sample *)(w[3]);
+    t_sample *in3 = (t_sample *)(w[4]);
+    t_sample *out = (t_sample *)(w[5]);
+    int n = (int)(w[6]);
+    while (n--)
+    {
+        t_sample f = *in++;
+        t_sample lo = *in2++;
+        t_sample hi = *in3++;
+        if (f < lo) f = lo;
+        if (f > hi) f = hi;
+        *out++ = f;
+    }
+    return (w+7);
 }
 
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
-    signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    signal_setmultiout(&sp[3], sp[0]->s_nchans);
+    x->x_lo = x->x_hi = 0;  /* this will be updated at perf time */
+    t_int vec1 = sp[1]->s_n > 1;
+    t_int vec2 = sp[2]->s_n > 1;
+    t_int vecs = vec1 + 2*vec2;
+    dsp_add((!vecs ? clip_perf_scalar : vecs == 1 ? clip_perf_vec1 :
+        vecs == 2 ? clip_perf_vec2 : clip_perf_vecs), 6, x, sp[0]->s_vec,
+        sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, SIGTOTAL(sp[0]));
 }
 
 static void clip_setup(void)
 {
     clip_class = class_new(gensym("clip~"), (t_newmethod)clip_new, 0,
-        sizeof(t_clip), CLASS_MULTICHANNEL, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_clip), CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG, A_DEFFLOAT, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(clip_class, t_clip, x_f);
     class_addmethod(clip_class, (t_method)clip_dsp, gensym("dsp"), A_CANT, 0);
 }
