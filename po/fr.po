@@ -11,16 +11,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-26 09:35+0000\n"
-"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/fr/>\n"
+"PO-Revision-Date: 2023-10-23 10:04+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.1.1-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -220,7 +220,7 @@ msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
 
 msgid "audio system"
-msgstr "système audio"
+msgstr "Système audio"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -292,7 +292,7 @@ msgid "Y range: from"
 msgstr "Intervalle Y : de"
 
 msgid "Data Properties"
-msgstr "Propriétés de la donnée"
+msgstr "Propriétés des données"
 
 msgid "Send"
 msgstr "Envoyer"
@@ -460,7 +460,7 @@ msgid "Canvas"
 msgstr "Canevas"
 
 msgid "Visible Rectangle (pix)"
-msgstr "Rectangle visible (pix)"
+msgstr "Rectangle visible (px)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -717,11 +717,10 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossible de trouver des plugins dans %s... passer !"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Échec du démarrage de Pd"
 
-#, fuzzy
 msgid "Failed to start Pd-core"
-msgstr "Échec de l'installation de '%s' !"
+msgstr "Échec au démarrage de Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
@@ -1614,11 +1613,11 @@ msgid "Pd"
 msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "EXPÉRIMENTAL : double précision (64 bits)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr "double (64bit) EXPÉRIMENTAL"
+msgstr "%dbit flottants EXPÉRIMENTAL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1660,8 +1659,8 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-msgid "(no device)"
-msgstr "(aucun périphérique)"
+#~ msgid "(no device)"
+#~ msgstr "(aucun périphérique)"
 
 #~ msgid "Path..."
 #~ msgstr "Chemins..."
