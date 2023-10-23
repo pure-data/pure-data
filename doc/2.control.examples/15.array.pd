@@ -55,10 +55,10 @@
 #X floatatom 652 647 5 0 0 0 - - - 0;
 #X text 471 274 check [soundfiler] for reading and writing files. The example to the right reads a soundfile or a text file to an array., f 30;
 #X text 498 366 A simpler way to read a text file (but no resizing available), f 33;
-#X text 31 169 It's also posssible to change most of these settings with messages sent to the array name \, like changing the array size with the "resize" message shown to the right.;
 #X text 31 43 Arrays in Pd provide a unified way to deal with lists of numbers \, treating them as either audio samples or control messages. To make an array \, select "Array" on the "Put" menu. Dialogs appear to help you choose the name \, array size and various flags (for instance \, if the contents of the array are saved with the patch or not.) Right click for properties where you can edit these settings as well and also get 'help' for detailed reference information., f 57;
 #X text 509 15 Some messgages you can send to an array object:, f 28;
 #X text 31 221 Arrays live in graphs. When you make an array you can choose to include it in a new graph or in a 'last' graph \, which allows you to include more than one array in the same graph (as the next example shows.) You can click on arrays and drag to set and change values., f 57;
+#X text 31 169 It's also possible to change most of these settings with messages sent to the array name \, like changing the array size with the "resize" message shown to the right.;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 26 0 27 0;

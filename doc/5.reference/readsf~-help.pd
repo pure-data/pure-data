@@ -1,4 +1,4 @@
-#N canvas 421 44 690 553 12;
+#N canvas 421 44 688 635 12;
 #X declare -stdpath ./;
 #X obj 491 428 print didit;
 #X obj 163 403 env~ 16384;
@@ -9,13 +9,13 @@
 #X obj 323 403 env~ 16384;
 #X obj 404 403 env~ 16384;
 #X msg 41 177 open ../sound/bell.aiff 0 200 4 2 b;
-#X obj 96 514 soundfiler;
-#X text 17 513 see also:;
+#X obj 96 599 soundfiler;
+#X text 17 598 see also:;
 #X obj 38 15 readsf~;
 #X text 300 167 Open takes a filename \, an onset in sample frames \, and \, as an override \, you may also supply a header size to skip \, a number of channels \, bytes per sample \, and endianness., f 44;
 #X text 21 126 The wave \, aiff \, caf \, and next formats are parsed automatically \, although only uncompressed 2- or 3-byte integer ("pcm") and 4-byte floating point samples are accepted., f 91;
 #X obj 34 406 output~;
-#X obj 185 514 writesf~;
+#X obj 185 599 writesf~;
 #X obj 491 402 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 511 352 - number of channels \; - per channel buffer size in bytes, f 22;
 #X msg 75 205 open ../sound/bell.aiff;
@@ -51,7 +51,7 @@
 #X floatatom 323 430 6 0 0 0 - - - 0;
 #X floatatom 404 430 6 0 0 0 - - - 0;
 #X text 506 334 Arguments:;
-#X obj 7 497 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 582 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 207 322 print information on the Pd window;
 #X obj 123 287 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X floatatom 123 314 3 0 0 0 - - - 0;
@@ -61,9 +61,12 @@
 #X text 136 233 start playback;
 #X text 143 259 stop playback;
 #X text 21 60 The [readsf~] object reads a soundfile into its signal outputs. You must open the soundfile in advance (best a little bit before you need it) using the "open" message. The object immediately starts reading from the file \, but output will only appear after you send a "1" or "start" message to start the playback. A "0" or "stop" message stops it., f 91;
-#X text 482 517 Updated for version 0.53-1;
+#X text 482 602 Updated for version 0.53-1;
 #X text 96 15 - soundfile playback from disk;
 #X text 487 451 "bang" when the soundfile is done., f 18;
+#X text 538 546 see:;
+#X obj 581 546 file which;
+#X text 39 505 Note: [readsf~] cannot find files in folders added via a [declare] object and it is recommended to use [file which] to get absolute paths which can be used with open. Folder paths added to the search path via preferences do work., f 82;
 #X connect 1 0 2 0;
 #X connect 3 0 5 0;
 #X connect 4 0 23 0;

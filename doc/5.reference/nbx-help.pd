@@ -328,7 +328,7 @@
 #X connect 3 0 5 0;
 #X connect 7 0 3 0;
 #X restore 173 77 pd size;
-#N canvas 906 195 433 296 init 0;
+#N canvas 906 195 437 454 init 0;
 #X msg 162 163 init \$1;
 #X obj 162 131 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 55 22 The init message takes a float and sets to init (if different than zero) or no init (if equal to zero - the default value)., f 46;
@@ -336,6 +336,10 @@
 #X obj 162 243 print nbx-init;
 #X obj 162 202 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12 #dfdfdf #000000 #000000 0 256;
 #X text 55 69 If in 'init mode' \, when loading the patch \, the objects sends its holding value from when the patch was last saved., f 46;
+#X obj 299 407 savestate;
+#X text 151 407 see also:;
+#X text 41 300 Therefore \, this actually a state saving mechanism and also a "loadbang" feature. But as a savestating mechanism it is limited because it can't work for abstractions. In order to deal with state saving in abstractions you have to rely on the [savestate] object., f 52;
+#X obj 229 406 loadbang;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 5 0 4 0;

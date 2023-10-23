@@ -1,8 +1,8 @@
-#N canvas 596 23 518 683 12;
+#N canvas 509 23 518 683 12;
 #X declare -stdpath ./;
 #X floatatom 296 312 4 0 100 0 - - - 0;
 #X obj 74 471 +~;
-#X text 45 51 If you're writing to and reading from a delay line \, you have to get the write sorted before the read or else you'll never get less than a block's delay. This patch compares a "wrong" flanger with a "right" one:, f 64;
+#X text 45 46 If you're writing to and reading from a delay line \, you have to get the write sorted before the read or else you'll never get less than a block's delay. This patch compares a "wrong" flanger with a "right" one:, f 64;
 #X obj 109 557 *~;
 #X obj 109 523 -~;
 #N canvas 352 175 330 235 delay-writer 0;
@@ -45,11 +45,11 @@
 #X text 336 312 <= delay in samples;
 #X text 171 520 <= off to hear left-hand side \; on to hear right hand side.;
 #X obj 295 584 declare -stdpath ./;
-#X text 54 19 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~;
+#X text 69 16 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~;
 #X obj 296 428 delread4~ G05-d1;
-#X text 45 118 To get them to go off in the correct order \, put the [delread~] and [delread4~] objects in subpatches. The audio connections between the subpatches force the "reader" to be sorted after the "writer". DSP sorting in Pd follows the hierarchy of subpatches., f 64;
 #X text 263 629 updated for Pd version 0.52;
 #X text 45 238 You can use the same strategy to avoid an unwanted delay of one block in pairs of [send~]/[receive~] \, [tabsend~]/[tabreceive~] or [throw~]/[catch~] objects., f 64;
+#X text 45 108 To get them to go off in the correct order \, put the [delwrite~] into a subptach \, then the [delread4~] and/or [delread4~] objects into another subpatch. The audio connections between these subpatches force the "reader" to be sorted after the "writer". DSP sorting in Pd follows the hierarchy of subpatches., f 64;
 #X connect 0 0 8 0;
 #X connect 1 0 4 1;
 #X connect 1 0 7 0;

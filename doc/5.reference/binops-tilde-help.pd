@@ -1,4 +1,4 @@
-#N canvas 319 23 841 594 12;
+#N canvas 319 23 841 580 12;
 #X obj 22 164 +~;
 #X obj 102 164 -~;
 #X obj 22 18 +~;
@@ -130,8 +130,8 @@
 #X floatatom 111 228 5 0 0 0 - - - 0;
 #X obj 86 163 sig~ 2;
 #X obj 146 163 sig~ 5;
-#X text 42 15 All of these objects work with multichannel signals. If both inputs have the same amoun of channels \, then operations are done at each corresponding channels. In case the number mismatch \, the input with less channels wrap around and copy the first channels until reaching the number of channels of the other input. This is specially useful to use a single channel value (or a float) to multily to every channel in a multisignal connection., f 67;
 #X text 128 255 value summed to all channels, f 16;
+#X text 37 13 All of these objects work with multichannel signals. If both inputs have the same amount of channels \, then operations are done at each corresponding channels. In case the numbers mismatch \, the input with less channels wraps around and copy the first channels until reaching the number of channels of the other input. This is especially useful when you have a single channel value (or a float) to apply an operation to every channel in a multisignal connection., f 69;
 #X connect 0 0 2 0;
 #X connect 1 0 2 1;
 #X connect 2 0 10 0;
@@ -166,7 +166,7 @@
 #X text 519 450 mutichannel signal support ----------->, f 20;
 #X text 35 307 These objects perform the 4 arithmetic functions ([+~] \, etc) \, output the minimum or maximum of two numbers ([min~] \, [max~]) \, or perform logarithms and exponentiation ([log~] \, [pow~])., f 62;
 #X text 35 422 [pow~] raises a signal to a numeric power given by the right inlet or a creation argument. The inputs may be positive \, zero \, or negative. WARNING: it's easy to generate "infinity" \, but there' a protection against NaNs (they become 0)., f 62;
-#X text 615 553 updated for Pd version 0.54;
+#X text 627 550 updated for Pd version 0.54;
 #X obj 10 510 cnv 1 830 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 141 523 (etc.) - control rate versions;
 #X text 298 17 - signal binary operators;
