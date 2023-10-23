@@ -4,9 +4,9 @@
 #X array table24 259 float 0;
 #X coords 0 1.02 258 -1.02 258 130 1 0 0;
 #X restore 192 399 graph;
-#X obj 77 311 line~;
-#X msg 77 260 500 \, 1423 4000;
-#X floatatom 85 285 5 0 0 0 - - - 0;
+#X obj 60 311 line~;
+#X msg 60 260 500 \, 1423 4000;
+#X floatatom 68 285 5 0 0 0 - - - 0;
 #X text 50 553 Synthesis techniques vary in their tendency to make foldover. For higher pitched sounds you'll want to try out relatively foldover-resistant ones.;
 #X obj 60 378 output~;
 #X obj 325 248 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
@@ -30,7 +30,7 @@
 #X text 372 271 complex;
 #X text 394 303 rectangle;
 #X text 421 330 clear;
-#X obj 77 338 tabosc4~ table24;
+#X obj 60 338 tabosc4~ table24;
 #X text 101 17 THE NYQUIST THEOREM AND FOLDOVER;
 #X text 47 52 WARNING: PLAY THIS QUIETLY TO AVOID UNPLEASANTNESS AND POSSIBLE EAR DAMAGE., f 39;
 #X text 46 99 Foldover occurs when you synthesize frequencies greater than the Nyquist frequency (half the sample rate). In this example \, the fundamental only reaches 1423 \, but the tables contain high partials. As the partials sweep upward you hear them reflect off the Nyquist frequency. Also \, partials can come into contact with each other causing beating. The value of 1423 was chosen to make the beating effect especially strong if you're running at a sample rate of 44100 (the usual one.);
@@ -45,7 +45,6 @@
 #X connect 3 0 1 0;
 #X connect 6 0 7 0;
 #X connect 12 0 5 0;
-#X connect 12 0 5 1;
 #X connect 18 0 7 1;
 #X connect 19 0 7 2;
 #X connect 20 0 7 3;

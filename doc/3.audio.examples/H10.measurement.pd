@@ -30,7 +30,7 @@
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
-#X restore 329 358 pd startup;
+#X restore 305 358 pd startup;
 #X floatatom 275 276 5 0 10000 0 - \$0-freq - 0;
 #X floatatom 284 299 4 0 999 0 - \$0-q - 0;
 #X text 36 59 You can use the "filter-graph1" and "filter-graph2" abstractions as shown to test filters. Connect them as shown with a filter between them. Try varying the parameters and/or substituting other filters., f 64;
@@ -44,8 +44,9 @@
 #X text 319 298 <= "Q";
 #X text 317 275 <= center frequency;
 #X text 103 248 <= compute;
-#X msg 427 337 \; pd dsp \$1;
-#X obj 427 313 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 404 312 ../5.reference/set-dsp-tgl;
+#X text 435 315 DSP on/off;
+#X msg 404 349 \; pd dsp \$1;
 #X connect 7 0 21 0;
 #X connect 8 0 0 0;
 #X connect 16 0 22 1;
@@ -55,4 +56,4 @@
 #X connect 21 1 22 0;
 #X connect 21 2 0 2;
 #X connect 22 0 0 3;
-#X connect 30 0 29 0;
+#X connect 29 0 31 0;

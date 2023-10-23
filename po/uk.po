@@ -2,22 +2,23 @@
 # This file is put in the public domain.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
 # Nick Acorne, 2022.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-30 07:04+0000\n"
-"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/uk/>\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "лінійний"
@@ -198,8 +199,27 @@ msgstr "Застосувати"
 msgid "OK"
 msgstr "ОК"
 
-msgid "Audio Settings"
-msgstr "Аудіо налаштування"
+#, fuzzy
+msgid "no device"
+msgstr "Пристрої вводу"
+
+msgid "(same as input device)..."
+msgstr "(такий же, як вхід) ..."
+
+msgid "Channels:"
+msgstr "Канали:"
+
+msgid "Input Devices"
+msgstr "Пристрої вводу"
+
+msgid "Output Devices"
+msgstr "Вихідні пристрої"
+
+msgid "Use Multiple Devices"
+msgstr "Використовувати декілька пристроїв"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Налаштування"
@@ -225,20 +245,8 @@ msgstr "Розмір блоку:"
 msgid "Use callbacks"
 msgstr "Використовувати зворотній виклик функції (callback)"
 
-msgid "Input Devices"
-msgstr "Пристрої вводу"
-
-msgid "Channels:"
-msgstr "Канали:"
-
-msgid "Output Devices"
-msgstr "Вихідні пристрої"
-
-msgid "(same as input device)..."
-msgstr "(такий же, як вхід) ..."
-
-msgid "Use Multiple Devices"
-msgstr "Використовувати декілька пристроїв"
+msgid "Audio Settings"
+msgstr "Аудіо налаштування"
 
 msgid "Save All Settings"
 msgstr "Зберегти всі налаштування"
@@ -361,6 +369,9 @@ msgstr "Надіслати символ:"
 #, fuzzy
 msgid "Receive symbol:"
 msgstr "Отримати символ:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Ширина:"
@@ -507,17 +518,24 @@ msgstr "Надіслати повідомлення Pd"
 msgid "(use arrow keys for history)"
 msgstr "(використовуйте клавіші зі стрілками вгору-вниз для перегляду історії)"
 
-msgid "MIDI Settings"
-msgstr "Налаштування MIDI"
-
-msgid "ALSA MIDI Settings"
-msgstr "Налаштування MIDI в ALSA"
+#, fuzzy
+msgid "no input devices"
+msgstr "Пристрої вводу"
 
 msgid "In Ports:"
 msgstr "Входи:"
 
 msgid "Out Ports:"
 msgstr "Виходи:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Налаштування MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Налаштування MIDI в ALSA"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Шлях пошуку Pd для об'єктів, довідки, аудіо, текстових та інших файлів"
@@ -548,6 +566,10 @@ msgid "Clear"
 msgstr "Скинути"
 
 #, fuzzy
+msgid "path preferences"
+msgstr "Налаштування"
+
+#, fuzzy
 msgid "Choose Pd documents directory:"
 msgstr "Вибрати папку документів Pd:"
 
@@ -561,21 +583,97 @@ msgstr "Додати новий шлях"
 msgid "Edit existing path [%s]"
 msgstr "Редагувати існуючий шлях [%s]"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Вікно Pd"
+
+msgid "Zoom New Windows"
+msgstr "Розгорнути нові вікна"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "віддалені налаштування GUI"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Налаштування"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Налаштування %s Deken"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Налаштування"
+
 msgid "Add new library"
 msgstr "Додати нову бібліотеку"
 
 msgid "Edit library"
 msgstr "Редагувати бібліотеку"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "Бібліотеки Pd, що завантажуються під час запуску"
 
 #, fuzzy
-msgid "Startup flags:"
+msgid "GUI options"
+msgstr "віддалені налаштування GUI"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Розмір блоку:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
 msgstr "Прапори при завантаженні:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Не використовувати режим реального часу планувальника подій"
+
+#, fuzzy
+msgid "Startup flags:"
+msgstr "Прапори при завантаженні:"
 
 msgid "Help Browser"
 msgstr "Перегляд довідки"
@@ -643,10 +741,17 @@ msgstr "Неможливо прочитати плагін %s ...пропуще�
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Неможливо знайти плагіни в %s ...пропущено!"
 
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Неможливо встановити %s!"
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
-"(Tcl) MISSING CLOSE-BRACE '}': [Помилка Tcl: Відсутня дужка, що закриває '}']"
-" "
+"(Tcl) MISSING CLOSE-BRACE '}': [Помилка Tcl: Відсутня дужка, що закриває "
+"'}'] "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) INVALID COMMAND NAME: [Помилка Tcl: некоректне ім'я команди:] "
@@ -693,7 +798,8 @@ msgid "1. Unzip %s."
 msgstr "1. Розпакуйте %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr "Можливо, вам необхідно змінити роздільну здатність файлу з .dek на .zip"
+msgstr ""
+"Можливо, вам необхідно змінити роздільну здатність файлу з .dek на .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
@@ -920,8 +1026,8 @@ msgstr "Правий клік за результатами пошуку від�
 
 msgid "You can also search for libraries & objects via your web browser:"
 msgstr ""
-"Ви також можете шукати бібліотеки та об'єкти за допомогою вашого "
-"веб-браузера:"
+"Ви також можете шукати бібліотеки та об'єкти за допомогою вашого веб-"
+"браузера:"
 
 msgid "Find externals"
 msgstr "Знайти зовнішні об'єкти"
@@ -1120,8 +1226,8 @@ msgstr ""
 "\n"
 "Шлях: %s\n"
 "\n"
-"Ви можете пізніше змінити або вимкнути цю установку у властивостях шляхів ("
-"path preferences)."
+"Ви можете пізніше змінити або вимкнути цю установку у властивостях шляхів "
+"(path preferences)."
 
 #, tcl-format
 msgid ""
@@ -1137,8 +1243,8 @@ msgstr ""
 "\n"
 "Шлях: %s\n"
 "\n"
-"Ви можете пізніше змінити або вимкнути цю установку у властивостях шляхів ("
-"path preferences)."
+"Ви можете пізніше змінити або вимкнути цю установку у властивостях шляхів "
+"(path preferences)."
 
 #, tcl-format
 msgid ""
@@ -1168,6 +1274,128 @@ msgstr "неможливо видалити порожній об'єкт"
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Неможливо створити властивості %1$s у %2$s"
+
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "Платформа за замовчуванням: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "переклади"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1339,20 +1567,9 @@ msgstr "віддалені налаштування GUI"
 msgid "no Pd-GUI settings to clear"
 msgstr "немає налаштувань Pd-GUI для видалення"
 
-msgid "Path..."
-msgstr "Шлях..."
-
-msgid "Startup..."
-msgstr "Налаштування під час запуску..."
-
-msgid "Audio..."
-msgstr "Аудио..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Розгорнути нові вікна"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Властивості..."
 
 msgid "Save All Preferences"
 msgstr "Зберегти всі налаштування"
@@ -1366,7 +1583,8 @@ msgstr "Завантажити із..."
 msgid "Forget All..."
 msgstr "Забути все..."
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Налаштування"
 
 msgid "Open Recent"
@@ -1381,6 +1599,15 @@ msgstr "Ви хочете зберегти зміни в %s?"
 
 msgid "Properties"
 msgstr "Властивості"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Прийняти зміни до '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1405,6 +1632,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"
@@ -1431,6 +1665,9 @@ msgstr "налагоджувальні"
 msgid "all"
 msgstr "всі"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Новий..."
 
@@ -1443,3 +1680,15 @@ msgstr "Видалити"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ігнорується '%s': неможливо розпізнати файл Pd"
+
+#~ msgid "Path..."
+#~ msgstr "Шлях..."
+
+#~ msgid "Startup..."
+#~ msgstr "Налаштування під час запуску..."
+
+#~ msgid "Audio..."
+#~ msgstr "Аудио..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

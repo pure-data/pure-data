@@ -78,9 +78,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define __STRICT_BSD__
 #include <math.h>
-#undef __STRICT_BSD__
 
 #include "x_vexp.h"
 

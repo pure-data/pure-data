@@ -58,11 +58,11 @@
 #X text 101 254 3) float* - color (default 0)., f 58;
 #X text 131 294 * position and color can also be field names.;
 #X obj 26 21 drawtext;
-#X text 94 20 - draw numbers \, symbols or texts fields in Scalars.;
+#X text 94 20 - draw numbers \, symbols or texts fields in a scalars.;
 #X restore 397 33 pd reference;
 #X text 495 34 <= click;
 #X text 25 106 All these objects are actually aliases of the same class. There's no difference in them. Use them to draw either numbers \, symbols or texts fields., f 34;
 #X obj 8 199 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X text 125 23 - draw numbers \, symbols or texts fields in Scalars., f 26;
 #X obj 250 216 get;
 #X text 291 125 explanation -->;
+#X text 125 23 - draw numbers \, symbols or texts fields in a scalar., f 26;

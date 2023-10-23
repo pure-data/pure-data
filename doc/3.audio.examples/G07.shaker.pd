@@ -37,7 +37,6 @@
 #X obj 546 84 declare -stdpath ./;
 #X obj 281 209 pack f f 200, f 13;
 #X connect 1 0 0 0;
-#X connect 1 0 0 1;
 #X connect 3 0 4 1;
 #X connect 4 0 1 1;
 #X connect 5 0 6 1;

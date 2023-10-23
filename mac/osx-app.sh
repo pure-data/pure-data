@@ -21,6 +21,7 @@ TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
+RUNDIR="$(pwd)"
 
 # ad hoc by default
 SIGNATURE_ID="-"
@@ -31,6 +32,15 @@ SRC=..
 # build dir, relative to working directory
 custom_builddir=false
 BUILD=..
+
+# which installation method to chose
+# either 'manually' or 'make'
+# per default we use 'make' for custom-builddirs
+# and 'manually' otherwise
+install_type=
+
+
+
 
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
@@ -66,7 +76,13 @@ Options:
                       a combination of ppc, i386, x86_64, and/or arm64
                       depending on detected macOS SDK
 
-  --builddir          set pd build directory path
+  --builddir DIR      set pd build directory path
+
+  --installtype TYP   select how files are collected into the .app bundle
+                      "manually" - use builtin logic to determine files
+                      "make" - use 'make install'
+                      not setting this value, will use 'make' if you set
+                      the '--builddir', and 'manually' otherwise
 
 Arguments:
 
@@ -96,6 +112,99 @@ Examples:
     osx-app.sh --wish Wish-8.6.5 0.47-0
 
 EOF
+}
+
+install_manually() {
+    # pd app bundle destination path
+    local DEST="${APP}/Contents/Resources"
+
+    # install binaries
+    mkdir -p "${DEST}/bin"
+    cp -R $verbose "${BUILD}/src/pd"          "${DEST}/bin/"
+    cp -R $verbose "${BUILD}/src/pdsend"      "${DEST}/bin/"
+    cp -R $verbose "${BUILD}/src/pdreceive"   "${DEST}/bin/"
+    cp -R $verbose "${BUILD}/src/pd-watchdog" "${DEST}/bin/" || true
+
+    # install resources
+    mkdir -p "${DEST}/po"
+    cp -R $verbose "${SRC}/doc"         "${DEST}/"
+    cp -R $verbose "${SRC}/extra"       "${DEST}/"
+    cp -R $verbose "${SRC}/tcl"         "${DEST}/"
+    rm -f "${DEST}/tcl/pd.ico" "${DEST}/tcl/pd-gui.in"
+    if [ ! "${BUILD}" -ef "${SRC}" ] ; then # are src and build dirs not the same?
+        # compiled externals are in the build dir
+        cp -R $verbose "${BUILD}/extra" "${DEST}/"
+    fi
+
+    # install translations if they were built
+    if [ -e "${BUILD}/po/es.msg" ] ; then
+        mkdir -p "${DEST}/po"
+        cp $verbose "${BUILD}/po"/*.msg "${DEST}/po/"
+        # add locale entries to the plist based on available .msg files
+        # commented out for 0.48-1 because it seems to misbehave - open/save dialogs
+        # are opening in a random language (and meanwhile Pd doesn't yet respect
+        # current language setting - I don't know what's going on here.  -msp
+        # LOCALES=$(find ${BUILD}/po -name "*.msg" -exec basename {} .msg \;)
+        # $PLIST_BUDDY \
+            #     -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
+        # for locale in $LOCALES ; do
+        #     $PLIST_BUDDY \
+            #         -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
+        # done
+    else
+        echo "No localizations found. Skipping po dir..."
+    fi
+
+    # install headers
+    mkdir -p "${DEST}/src"
+    cp $verbose "${SRC}/src"/*.h "${DEST}/src/"
+
+    # clean extra folders
+    cd "${DEST}/extra"
+    rm -f makefile.subdir
+    find ./* -prune -type d | while read ext; do
+        ext_lib="${ext}.${EXTERNAL_EXT}"
+        if [ -e "${ext}/.libs/${ext_lib}" ] ; then
+
+            # remove any symlinks to the compiled external
+            rm -f "${ext}"/*."${EXTERNAL_EXT}"
+
+            # mv compiled external into main folder
+            mv "${ext}"/.libs/*."${EXTERNAL_EXT}" "${ext}/"
+
+            # remove libtool build folders & unneeded build files
+            rm -rf "${ext}/.libs"
+            rm -rf "${ext}/.deps"
+            rm -f "${ext}"/*.c "${ext}"/*.o "${ext}"/*.lo "${ext}"/*.la
+            rm -f "${ext}"/GNUmakefile* "${ext}"/makefile*
+        fi
+    done
+    cd - > /dev/null # quiet
+
+    cp stuff/pd.icns "${DEST}/"
+    cp stuff/pd-file.icns "${DEST}/"
+    cp -R "${SRC}/font" "${DEST}/"
+
+    # install licenses
+    cp $verbose "${SRC}/README.txt"  "${DEST}/"
+    cp $verbose "${SRC}/LICENSE.txt" "${DEST}/"
+
+
+    # clean Makefiles
+    find "${DEST}" -name "Makefile*" -type f -delete
+
+    # create any needed symlinks
+    ln -s tcl "${DEST}/Scripts"
+}
+
+install_make() {
+    local DEST="${APP}/Contents/Resources"
+    make install -C "${BUILD}" DESTDIR="${DEST}" prefix=/ libdir=/ pkglibdir=/ datarootdir=/ pkgdatadir=/ includedir=/src pkgincludedir=/src
+
+    find "${DEST}" -type f -name "*.la" -delete
+
+    # create any needed symlinks
+    ln -s tcl "${DEST}/Scripts"
 }
 
 # Parse command line arguments
@@ -147,6 +256,25 @@ while [ "$1" != "" ] ; do
             BUILD=${1%/} # remove trailing slash
             custom_builddir=true
             ;;
+        --installtype)
+            if [ $# = 0 ] ; then
+                echo "--installtype option requires a TYPE argument"
+                exit 1
+            fi
+            shift 1
+            case "$1" in
+                manual|manually)
+                    install_type=manual
+                    ;;
+                make)
+                    install_type=make
+                    ;;
+                *)
+                    echo "invalid installtype (must be 'manually' or 'make')"
+                    exit 1
+                    ;;
+            esac
+            ;;
         -v|--verbose)
             verbose=-v
             ;;
@@ -162,49 +290,55 @@ done
 
 # check for version argument and set app path in the dir the script is run from
 if [ "$1" != "" ] ; then
-    APP=$(pwd)/Pd-$1.app
+    APP="$(pwd)/Pd-${1}.app"
 else
     # version not specified
-    APP=$(pwd)/Pd.app
+    APP="$(pwd)/Pd.app"
 fi
 
 # Go
 #----------------------------------------------------------
 
+# use a default install-type if none was requested
+if [ "x${install_type}" = "x" ] ; then
+   if [ "${custom_builddir}" = true ] ; then
+       install_type=make
+   else
+       install_type=manual
+   fi
+fi
+
 # make sure custom build directory is an absolute path
-if [ $custom_builddir = true ] ; then
+if [ "${custom_builddir}" = true ] ; then
     if [ "${BUILD}" = "${BUILD#/}" ] ; then
-       BUILD=$(pwd)/$BUILD
+       BUILD="$(pwd)/${BUILD}"
     fi
 fi
 
 # change to the dir of this script
-cd $(dirname $0)
+cd $(dirname "$0")
 
 # grab package version from configure --version output: line 1, word 3
 # aka "pd configure 0.47.1" -> "0.47.1"
-PD_VERSION=$(../configure --version | head -n 1 | cut -d " " -f 3)
-
-# pd app bundle destination path
-DEST=$APP/Contents/Resources
+PD_VERSION=$(${SRC}/configure --version | head -n 1 | cut -d " " -f 3)
 
 # remove old app if found
-if [ -d $APP ] ; then
-    rm -rf $APP
+if [ -d "${APP}" ] ; then
+    rm -rf "${APP}"
 fi
 
 # check if pd is already built
-if [ ! -e "$BUILD/src/pd" ] ; then
+if [ ! -e "${BUILD}/src/pd" ] ; then
     echo "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
 
 if [ "$verbose" != "" ] ; then
-    echo "==== Creating $APP"
+    echo "==== Creating ${APP}"
 fi
 
 # extract included Wish app
-if [ $included_wish = true ] ; then
+if [ "${included_wish}" = true ] ; then
     tar xzf stuff/wish-shell.tgz
     if [ -e "Wish Shell.app" ] ; then
         mv "Wish Shell.app" Wish.app
@@ -212,23 +346,23 @@ if [ $included_wish = true ] ; then
     WISH=Wish.app
 
 # build Wish or use the system Wish
-elif [ "$WISH" = "" ] ; then
-    if [ "$TK" != "" ] ; then
-        echo "Using custom $TK Wish.app"
-        ./tcltk-wish.sh $universal $TK
-        WISH=Wish-${TK}.app
-    elif [ "$SYS_TK" != "" ] ; then
-        echo "Using system $SYS_TK Wish.app"
+elif [ "${WISH}" = "" ] ; then
+    if [ "${TK}" != "" ] ; then
+        echo "Using custom ${TK} Wish.app"
+        ./tcltk-wish.sh ${universal} "${TK}"
+        WISH="Wish-${TK}.app"
+    elif [ "${SYS_TK}" != "" ] ; then
+        echo "Using system ${SYS_TK} Wish.app"
         tk_path=/Library/Frameworks/Tk.framework/Versions
         # check /Library first, then fall back to /System/Library
-        if [ ! -e $tk_path/$SYS_TK/Resources/Wish.app ] ; then
-            tk_path=/System${tk_path}
-            if [ ! -e $tk_path/$SYS_TK/Resources/Wish.app ] ; then
+        if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
+            tk_path="/System${tk_path}"
+            if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
                 echo "Wish.app not found"
                 exit 1
             fi
         fi
-        cp -R $verbose $tk_path/$SYS_TK/Resources/Wish.app .
+        cp -R $verbose "${tk_path}/${SYS_TK}/Resources/Wish.app" .
         WISH=Wish.app
     fi
 
@@ -237,143 +371,75 @@ else
 
     # get absolute path in original location
     cd - > /dev/null # quiet
-    WISH=$(cd "$(dirname "$WISH")"; pwd)/$(basename "$WISH")
+    WISH=$(cd "$(dirname "${WISH}")"; pwd)/$(basename "${WISH}")
     cd - > /dev/null # quiet
-    if [ ! -e $WISH ] ; then
+    if [ ! -e "${WISH}" ] ; then
         [ ! -e "${WISH}.app" ] || WISH="${WISH}.app"
     fi
-    if [ ! -e $WISH ] ; then
-        echo "$WISH not found"
+    if [ ! -e "${WISH}" ] ; then
+        echo "${WISH} not found"
         exit 1
     fi
-    echo "Using $(basename $WISH)"
+    echo "Using $(basename ${WISH})"
 
     # copy
-    WISH_TMP=$(basename $WISH)-tmp
-    cp -R $WISH $WISH_TMP
-    WISH=$WISH_TMP
+    WISH_TMP=$(basename "${WISH}")-tmp
+    cp -R "${WISH}" "${WISH_TMP}"
+    WISH="${WISH_TMP}"
 fi
 
 # sanity check
-if [ ! -e $WISH ] ; then
-    echo "$WISH not found"
+if [ ! -e "${WISH}" ] ; then
+    echo "${WISH} not found"
     exit 1
 fi
 
 # change app name and rename resources
 # try to handle both older "Wish Shell.app" & newer "Wish.app"
-mv "$WISH" $APP
-chmod -R u+w $APP
-if [ -e $APP/Contents/version.plist ] ; then
-    rm $APP/Contents/version.plist
+mv "${WISH}" "${APP}"
+chmod -R u+w "${APP}"
+
+if [ -e "${APP}/Contents/version.plist" ] ; then
+    rm "${APP}/Contents/version.plist"
 fi
 # older "Wish Shell.app" does not have a symlink but a real file
-if [ -f $APP/Contents/MacOS/Wish\ Shell ] && \
-   [ ! -L $APP/Contents/MacOS/Wish\ Shell ] ; then
-    mv $APP/Contents/MacOS/Wish\ Shell $APP/Contents/MacOS/Pd
-    mv $APP/Contents/Resources/Wish\ Shell.rsrc $APP/Contents/Resources/Pd.rsrc
+if [ -f "${APP}/Contents/MacOS/Wish Shell" ] && \
+   [ ! -L "${APP}/Contents/MacOS/Wish Shell" ] ; then
+    mv "${APP}/Contents/MacOS/Wish Shell" "${APP}/Contents/MacOS/Pd"
+    mv "${APP}/Contents/Resources/Wish Shell.rsrc" "${APP}/Contents/Resources/Pd.rsrc"
 else
-    mv $APP/Contents/MacOS/Wish $APP/Contents/MacOS/Pd
-    if [ -e $APP/Contents/Resources/Wish.rsrc ] ; then
-        mv $APP/Contents/Resources/Wish.rsrc $APP/Contents/Resources/Pd.rsrc
+    mv "${APP}/Contents/MacOS/Wish" "${APP}/Contents/MacOS/Pd"
+    if [ -e "${APP}/Contents/Resources/Wish.rsrc" ] ; then
+        mv "${APP}/Contents/Resources/Wish.rsrc" "${APP}/Contents/Resources/Pd.rsrc"
     else
-        mv $APP/Contents/Resources/Wish.sdef $APP/Contents/Resources/Pd.sdef
+        mv "${APP}/Contents/Resources/Wish.sdef" "${APP}/Contents/Resources/Pd.sdef"
     fi
 fi
-rm -f $APP/Contents/MacOS/Wish
-rm -f $APP/Contents/MacOS/Wish\ Shell
+rm -f "${APP}/Contents/MacOS/Wish"
+rm -f "${APP}/Contents/MacOS/Wish Shell"
 
 # prepare bundle resources
-cp stuff/Info.plist $APP/Contents/
-rm $APP/Contents/Resources/Wish.icns
-cp stuff/pd.icns $APP/Contents/Resources/
-cp stuff/pd-file.icns $APP/Contents/Resources/
-cp -R ../font $APP/Contents/Resources/
+cp stuff/Info.plist "${APP}/Contents/"
+rm "${APP}/Contents/Resources/Wish.icns"
 
-INFO_PLIST=$APP/Contents/Info.plist
+INFO_PLIST="${APP}/Contents/Info.plist"
 
 # set version identifiers & contextual strings in Info.plist,
 # version strings can only use 0-9 and periods, so replace "-" & "test" with "."
-PLIST_VERSION=$(echo ${PD_VERSION} | sed -e 's/[^0-9]/./g' -e 's/\.\.*/./g' -e 's/^\.//' -e 's/\.$//')
-$PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $INFO_PLIST
-$PLIST_BUDDY -c "Set:CFBundleShortVersionString \"$PLIST_VERSION\"" $INFO_PLIST
+PLIST_VERSION=$(echo "${PD_VERSION}" | sed -e 's/[^0-9]/./g' -e 's/\.\.*/./g' -e 's/^\.//' -e 's/\.$//')
+"${PLIST_BUDDY}" -c "Set:CFBundleVersion \"$PLIST_VERSION\"" "${INFO_PLIST}"
+"${PLIST_BUDDY}" -c "Set:CFBundleShortVersionString \"$PLIST_VERSION\"" "${INFO_PLIST}"
 # remove deprecated key as this will display in Finder instead of the version
-$PLIST_BUDDY -c "Delete:CFBundleGetInfoString" $INFO_PLIST
+"${PLIST_BUDDY}" -c "Delete:CFBundleGetInfoString" "${INFO_PLIST}"
 
-# install binaries
-mkdir -p $DEST/bin
-cp -R $verbose $BUILD/src/pd          $DEST/bin/
-cp -R $verbose $BUILD/src/pdsend      $DEST/bin/
-cp -R $verbose $BUILD/src/pdreceive   $DEST/bin/
-cp -R $verbose $BUILD/src/pd-watchdog $DEST/bin/
-
-# install resources
-mkdir -p $DEST/po
-cp -R $verbose $SRC/doc         $DEST/
-cp -R $verbose $SRC/extra       $DEST/
-cp -R $verbose $SRC/tcl         $DEST/
-rm -f $DEST/tcl/pd.ico $DEST/tcl/pd-gui.in
-if [ ! $BUILD -ef $SRC ] ; then # are src and build dirs not the same?
-    # compiled externals are in the build dir
-    cp -R $verbose $BUILD/extra $DEST/
-fi
-
-# install licenses
-cp $verbose $SRC/README.txt  $DEST/
-cp $verbose $SRC/LICENSE.txt $DEST/
-
-# install translations if they were built
-if [ -e $BUILD/po/es.msg ] ; then
-    mkdir -p $DEST/po
-    cp $verbose $BUILD/po/*.msg $DEST/po/
-    # add locale entries to the plist based on available .msg files
-    # commented out for 0.48-1 because it seems to misbehave - open/save dialogs
-    # are opening in a random language (and meanwhile Pd doesn't yet respect
-    # current language setting - I don't know what's going on here.  -msp
-    # LOCALES=$(find $BUILD/po -name "*.msg" -exec basename {} .msg \;)
-    # $PLIST_BUDDY \
-    #     -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
-    # for locale in $LOCALES ; do
-    #     $PLIST_BUDDY \
-    #         -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
-    # done
-else
-    echo "No localizations found. Skipping po dir..."
-fi
-
-# install headers
-mkdir -p $DEST/src
-cp $verbose $SRC/src/*.h $DEST/src/
-
-# clean extra folders
-cd $DEST/extra
-rm -f makefile.subdir
-find * -prune -type d | while read ext; do
-    ext_lib=$ext.$EXTERNAL_EXT
-    if [ -e $ext/.libs/$ext_lib ] ; then
-
-        # remove any symlinks to the compiled external
-        rm -f $ext/*.$EXTERNAL_EXT
-
-        # mv compiled external into main folder
-        mv $ext/.libs/*.$EXTERNAL_EXT $ext/
-
-        # remove libtool build folders & unneeded build files
-        rm -rf $ext/.libs
-        rm -rf $ext/.deps
-        rm -f $ext/*.c $ext/*.o $ext/*.lo $ext/*.la
-        rm -f $ext/GNUmakefile* $ext/makefile*
-    fi
-done
-cd - > /dev/null # quiet
-
-# clean Makefiles
-find $DEST -name "Makefile*" -type f -delete
-
-# create any needed symlinks
-cd $DEST
-ln -s tcl Scripts
-cd - > /dev/null # quiet
+case "${install_type}" in
+    make)
+        install_make
+        ;;
+    *)
+        install_manually
+        ;;
+esac
 
 # "code signing" which also sets entitlements
 # note: "-" identity results in "ad-hoc signing" aka no signing is performed
@@ -387,8 +453,8 @@ codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entit
     "${APP}"
 
 # finish up
-touch $APP
+touch "${APP}"
 
 if [ "$verbose" != "" ] ; then
-    echo  "==== Finished $APP"
+    echo  "==== Finished ${APP}"
 fi

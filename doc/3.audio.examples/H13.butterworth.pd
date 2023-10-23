@@ -34,9 +34,10 @@
 #X text 302 334 zeros;
 #X text 52 66 The butterworth filter can be configured for low-pass \, high-pass \, and shelving \, depending on the placement of the poles and zeros. For low-pass \, the poles are placed to set the cutoff frequency and the zeros are at -1 (the Nyquist). Leaving the poles fixed and moving the zeros then gives shelving filters. In this example \, the actual filtering is relegated to an abstraction (butterworth3~) which takes frequencies corresponding to the pole and zero placement., f 60;
 #X text 52 193 The butterworth3~ abstraction computes filter coefficients using control messages \, and so it is not suitable for continuously time-varying Butterworth filters. For that \, it is often appropriate to use time-saving approximations \, but precisely which approximations to use will depend on the way the filter is to be used.;
-#X msg 393 399 \; pd dsp \$1;
-#X obj 393 375 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 65 301 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 371 398 ../5.reference/set-dsp-tgl;
+#X text 402 401 DSP on/off;
+#X msg 371 435 \; pd dsp \$1;
 #X connect 1 0 5 0;
 #X connect 11 0 5 3;
 #X connect 12 0 14 0;
@@ -47,5 +48,5 @@
 #X connect 17 1 5 1;
 #X connect 17 1 11 0;
 #X connect 17 2 5 2;
-#X connect 23 0 22 0;
-#X connect 24 0 17 0;
+#X connect 22 0 17 0;
+#X connect 23 0 25 0;

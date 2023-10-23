@@ -3,8 +3,8 @@
 #X obj 42 125 osc~ 100;
 #X msg 60 152 clear;
 #N canvas 471 254 550 387 test 0;
-#X obj 127 283 env~ 16384;
-#X floatatom 127 307 5 0 0 0 - - - 0;
+#X obj 132 293 env~ 16384;
+#X floatatom 132 317 5 0 0 0 - - - 0;
 #X floatatom 414 112 4 -1000 1000 0 - - - 0;
 #X obj 294 112 cos~;
 #X floatatom 229 57 5 0 0 0 - - - 0;
@@ -18,8 +18,8 @@
 #X obj 414 137 / 1000;
 #X obj 293 178 *~;
 #X obj 338 178 *~;
-#X obj 325 282 env~ 16384;
-#X floatatom 325 306 5 0 0 0 - - - 0;
+#X obj 359 287 env~ 16384;
+#X floatatom 359 311 5 0 0 0 - - - 0;
 #X obj 230 207 czero~, f 14;
 #X floatatom 165 106 4 -1000 1000 0 - - - 0;
 #X obj 56 108 cos~;
@@ -31,7 +31,7 @@
 #X obj 55 161 *~;
 #X obj 99 161 *~;
 #X text 151 14 Stuff to test it:;
-#X obj 229 278 output~;
+#X obj 230 280 output~;
 #X obj 26 223 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 2 0 12 0;
@@ -52,8 +52,8 @@
 #X connect 15 0 16 0;
 #X connect 17 0 0 0;
 #X connect 17 0 28 0;
-#X connect 17 0 28 1;
 #X connect 17 1 15 0;
+#X connect 17 1 28 1;
 #X connect 18 0 24 0;
 #X connect 19 0 25 0;
 #X connect 20 0 22 0;

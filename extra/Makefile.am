@@ -23,8 +23,11 @@ HELPPATCHES = \
     rev3~-help.pd \
     output~-help.pd
 
-EXTRA_DIST = makefile.subdir README.txt
+EXTRA_DIST = makefile.subdir
 
 libpdextradir = $(pkglibdir)/extra
 
 dist_libpdextra_DATA = $(PATCHES) $(HELPPATCHES)
+
+dist_libpdextra_DATA += \
+	README.txt

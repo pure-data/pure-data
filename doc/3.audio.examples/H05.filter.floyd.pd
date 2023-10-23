@@ -42,7 +42,7 @@
 #X obj 139 157 metro 85;
 #X text 206 185 sequencer for;
 #X text 228 203 8 note loop;
-#X obj 124 636 output~;
+#X obj 154 640 output~;
 #X obj 139 130 tgl 19 0 empty \$0-metro empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #N canvas 876 177 379 259 startup 0;
 #X obj 51 23 loadbang;
@@ -91,7 +91,6 @@
 #X connect 26 0 10 1;
 #X connect 28 0 16 0;
 #X connect 29 0 22 0;
-#X connect 29 0 22 1;
 #X connect 30 0 2 0;
 #X connect 32 0 5 2;
 #X connect 32 0 29 2;

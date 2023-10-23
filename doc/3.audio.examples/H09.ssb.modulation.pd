@@ -66,8 +66,8 @@
 #X connect 8 0 7 0;
 #X connect 10 0 1 0;
 #X restore 327 524 pd startup;
-#X obj 144 524 output~;
-#X text 310 573 updated for Pd version 0.39;
+#X obj 172 524 output~;
+#X text 320 559 updated for Pd version 0.39;
 #X obj 247 355 phasor~;
 #X text 271 475 (calculates real part);
 #X text 358 381 to form the real and;
@@ -86,7 +86,6 @@
 #X connect 3 0 5 0;
 #X connect 4 0 5 1;
 #X connect 5 0 18 0;
-#X connect 5 0 18 1;
 #X connect 6 0 20 0;
 #X connect 16 0 27 0;
 #X connect 20 0 1 0;

@@ -1,4 +1,4 @@
-#N canvas 472 36 894 710 12;
+#N canvas 367 23 894 710 12;
 #X declare -stdpath ./;
 #X obj 288 216 f;
 #X obj 322 192 + 1;
@@ -28,7 +28,7 @@
 #X floatatom 340 164 0 1 11 0 - - - 0;
 #X obj 84 308 *~ 0.01;
 #X obj 288 96 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
-#X obj 155 524 output~;
+#X obj 155 529 output~;
 #X text 634 653 updated for Pd version 0.37;
 #X obj 84 275 adsr 70 10 90 50 500, f 24;
 #X obj 288 265 +;
@@ -68,7 +68,6 @@
 #X connect 7 0 10 0;
 #X connect 8 0 9 0;
 #X connect 9 0 25 0;
-#X connect 9 0 25 1;
 #X connect 10 0 8 0;
 #X connect 11 0 27 1;
 #X connect 12 0 27 4;

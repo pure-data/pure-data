@@ -1,4 +1,4 @@
-#N canvas 536 31 509 442 12;
+#N canvas 588 23 509 442 12;
 #X msg 68 237 60 64;
 #X msg 117 237 60 0;
 #X msg 161 237 62 64;
@@ -36,11 +36,11 @@
 #X text 428 15 <= click;
 #X obj 9 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 9 394 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X text 57 15 - Collection of numbers;
 #X text 27 62 The [bag] object adds a value to or removes it from a collection of numbers depending on the flag. The left inlet takes the value and the right inlet takes the flag. If the flag is true (nonzero) \, the value is added to the collection and removed otherwise. The example here takes a list input \, which gets spread at inlets (as is common in Pd)., f 66;
 #X text 247 237 <-- add or delete elements;
 #X text 261 262 <-- output them;
 #X text 269 287 <-- start over;
+#X text 57 16 - collection of numbers;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;
 #X connect 2 0 9 0;

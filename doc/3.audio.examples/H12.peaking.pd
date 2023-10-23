@@ -49,9 +49,10 @@
 #X text 31 45 To get a peaking filter \, start with a shelving filter but rotate the pole and zero to the point on the unit circle you want to amplify or attenuate. The rpole~ and rzero~ filters are replaced with their complex-valued siblings \, cpole~ and czero~. These filters take a (real \, imaginary) pair to filter and another (real-imaginary) pair to specify the pole or zero. As for rpole~ and rzero~ \, the coefficients may change at audio rate., f 74;
 #X text 30 142 The outputs of cpole~ and czero~ are also in the form of a (real-imaginary) pair. Both outlets of cpole~ are connected to czero~ in this example \, but then since we want a real-valued filter \, we only take the real part of the (complex) output of czero~., f 74;
 #X text 30 214 Here the pole and zero radii (p and q) control the center-frequency gain by the formula (1-q)/(1-p). The closer to 1 the radii \, the narrower the band affected. The non-peak gain \, (1+q)/(1+p) \, is close to 1 as long as p and q are at least 50% or so., f 74;
-#X msg 464 473 \; pd dsp \$1;
-#X obj 464 449 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 67 344 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 474 440 ../5.reference/set-dsp-tgl;
+#X text 505 443 DSP on/off;
+#X msg 474 477 \; pd dsp \$1;
 #X connect 1 0 6 0;
 #X connect 4 0 9 0;
 #X connect 7 0 1 0;
@@ -84,5 +85,5 @@
 #X connect 31 0 27 3;
 #X connect 32 0 28 2;
 #X connect 33 0 28 3;
-#X connect 38 0 37 0;
-#X connect 39 0 7 0;
+#X connect 37 0 7 0;
+#X connect 38 0 40 0;

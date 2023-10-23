@@ -220,16 +220,16 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 static void snake_tilde_setup(void)
 {
     snake_in_tilde_class = class_new(gensym("snake_in~"),
-        (t_newmethod)snake_in_tilde_new, 0, sizeof(t_snake_in), 0, A_DEFFLOAT, 0);
+        (t_newmethod)snake_in_tilde_new, 0, sizeof(t_snake_in),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(snake_in_tilde_class, t_snake_in, x_f);
-    class_setdspflags(snake_in_tilde_class, CLASS_MULTICHANNEL);
     class_addmethod(snake_in_tilde_class, (t_method)snake_in_tilde_dsp,
         gensym("dsp"), 0);
     class_sethelpsymbol(snake_in_tilde_class, gensym("snake-tilde"));
 
     snake_out_tilde_class = class_new(gensym("snake_out~"),
-        (t_newmethod)snake_out_tilde_new, 0, sizeof(t_snake_out), 0, A_DEFFLOAT, 0);
-    class_setdspflags(snake_out_tilde_class, CLASS_MULTICHANNEL);
+        (t_newmethod)snake_out_tilde_new, 0, sizeof(t_snake_out),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(snake_out_tilde_class, t_snake_out, x_f);
     class_addmethod(snake_out_tilde_class, (t_method)snake_out_tilde_dsp,
         gensym("dsp"), 0);

@@ -1,8 +1,8 @@
 #N canvas 374 52 893 649 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array table20 44103 float 0;
-#X coords 0 1.02 44100 -1.02 200 130 1;
+#X array table20 44103 float 2;
+#X coords 0 1.02 44103 -1.02 200 130 1;
 #X restore 581 37 graph;
 #X obj 474 355 loadbang;
 #X obj 165 475 hip~ 5;
@@ -15,7 +15,7 @@
 #X obj 420 252 hip~ 5;
 #X text 525 382 v-- re-read the original sample;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array graph20 44100 float 0;
+#X array graph20 44100 float 2;
 #X coords 0 44100 44100 0 200 130 1;
 #X restore 583 206 graph;
 #X obj 165 441 *~;
@@ -32,7 +32,7 @@
 #X obj 486 426 soundfiler;
 #X text 44 18 SLIDING STABLE LOOPS WITHOUT DOPPLER SHIFT;
 #X msg 474 457 \; graph20 ylabel 48000 0 44100;
-#X obj 145 528 output~;
+#X obj 165 528 output~;
 #X obj 49 257 -~ 0.5;
 #X obj 49 281 *~ 0.5;
 #X obj 49 304 cos~;
@@ -40,7 +40,7 @@
 #X obj 183 409 tabread4~ table20;
 #X obj 420 307 tabwrite~ table20;
 #X msg 486 402 read ../sound/voice.wav table20;
-#X text 290 520 This example differs from the previous one in having samphold~ objects which allow the chunk size and especially the read point to change only at points where the phase wraps around. This removes signal discontinuities (when the chunk size changes) and doppler shift when the read point is changing., f 67;
+#X text 310 520 This example differs from the previous one in having samphold~ objects which allow the chunk size and especially the read point to change only at points where the phase wraps around. This removes signal discontinuities (when the chunk size changes) and doppler shift when the read point is changing., f 67;
 #X text 640 606 updated for Pd version 0.37;
 #X text 275 169 <= read point in 100ths of a second;
 #X text 217 127 <= chunk size (100ths of a second);
@@ -53,7 +53,6 @@
 #X connect 1 0 25 0;
 #X connect 1 0 33 0;
 #X connect 2 0 26 0;
-#X connect 2 0 26 1;
 #X connect 3 0 7 0;
 #X connect 4 0 5 0;
 #X connect 5 0 19 0;

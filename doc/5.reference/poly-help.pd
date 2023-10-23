@@ -1,36 +1,28 @@
-#N canvas 549 25 568 446 12;
-#X text 341 415 updated for Pd version 0.25;
-#X text 43 413 see also:;
+#N canvas 476 23 567 514 12;
+#X declare -stdpath ./;
+#X text 16 476 see also:;
 #X obj 29 16 poly;
-#X obj 121 414 route;
-#X obj 175 414 makenote;
-#X obj 158 268 poly 4 1;
-#X msg 227 236 stop;
-#X msg 216 210 clear;
+#X obj 94 476 makenote;
+#X obj 99 276 poly 4 1;
+#X msg 211 242 stop;
+#X msg 203 216 clear;
 #X text 68 16 - MIDI-style polyphonic voice allocator;
-#X listbox 151 329 20 0 0 0 - - - 0;
-#X obj 151 298 pack f f f;
-#X msg 64 184 60 \$1;
-#X msg 111 184 62 \$1;
-#X msg 158 184 65 \$1;
-#X msg 206 184 69 \$1;
-#X text 261 211 clear memory;
-#X text 266 236 flush hanging note on messages;
-#X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X listbox 92 336 13 0 0 0 - - - 0;
+#X obj 92 306 pack f f f;
+#X msg 52 188 60 \$1;
+#X msg 99 188 62 \$1;
+#X msg 146 188 65 \$1;
+#X msg 194 188 69 \$1;
+#X text 248 217 clear memory;
+#X text 249 243 flush hanging note on messages;
+#X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 800 147 484 391 reference 0;
-#X obj 8 52 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 313 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 370 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 155 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 85 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 52 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 313 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 370 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 155 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 85 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 27 18 poly;
 #X text 66 18 - MIDI-style polyphonic voice allocator.;
 #X text 131 93 float - MIDI pitch value., f 40;
@@ -39,51 +31,90 @@
 #X text 138 129 stop -;
 #X text 187 129 flush hanging note on messages., f 32;
 #X text 132 162 float - set velocity value., f 40;
-#X obj 7 246 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 216 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 7 246 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 216 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 132 224 float - the voice number., f 40;
-#X obj 7 276 cnv 1 450 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 7 276 cnv 1 450 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 111 323 1) float - number of voices (default 1)., f 43;
 #X text 111 341 2) float - non-zero sets to voice stealing.;
 #X text 131 284 float - note velocity., f 40;
 #X text 131 254 float - note pitch., f 40;
 #X restore 383 17 pd reference;
 #X text 477 17 <= click;
-#X obj 9 400 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 206 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X text 249 183 <-- emulating note on/off messages;
-#X text 228 268 <-- first argument \, number of voices second argument
-selects voice stealing, f 43;
-#X text 21 58 The [poly] object takes a stream of pitch/velocity pairs
-and outputs triples containing voice number \, pitch and velocity -
-it can be configured to do voice stealing or not (the default). You
-can pack the output and use the [route] object to route messages among
-a bank of voices depending on the first outlet. Another option is to
-connect it [clone] so you can route to different copies., f 74;
-#X obj 64 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X obj 111 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X obj 158 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X obj 151 364 print poly;
-#X connect 5 0 10 0;
-#X connect 5 1 10 1;
-#X connect 5 2 10 2;
-#X connect 6 0 5 0;
-#X connect 7 0 5 0;
-#X connect 9 0 28 0;
-#X connect 10 0 9 0;
-#X connect 11 0 5 0;
-#X connect 12 0 5 0;
-#X connect 13 0 5 0;
-#X connect 14 0 5 0;
-#X connect 21 0 14 0;
-#X connect 25 0 11 0;
-#X connect 26 0 12 0;
-#X connect 27 0 13 0;
+#X obj 9 463 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 194 162 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 64;
+#X text 237 187 <-- emulating note on/off messages;
+#X obj 52 162 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 64;
+#X obj 99 162 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 64;
+#X obj 146 162 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 64;
+#X obj 92 365 route 1 2 3 4, f 39;
+#X listbox 92 393 7 0 0 0 - - - 0;
+#X obj 92 420 print v1;
+#X listbox 159 393 7 0 0 0 - - - 0;
+#X listbox 227 393 7 0 0 0 - - - 0;
+#X listbox 294 393 7 0 0 0 - - - 0;
+#X obj 159 420 print v2;
+#X obj 227 420 print v3;
+#X obj 294 420 print v4;
+#N canvas 662 49 425 614 clone 0;
+#X text 33 19 You'll usually want [poly] to control a single polyhonic synth. The "route" method shown in the parent patch would then imply that you'd have the same subpatch or abstraction taking the note message., f 48;
+#X listbox 182 370 13 0 0 0 - - - 0;
+#X obj 182 338 pack f f f;
+#X obj 182 438 output~;
+#X obj 60 436 declare -stdpath ./, f 11;
+#X obj 182 402 clone -s 1 clone-abs-c 4;
+#X obj 181 304 poly 4 1;
+#X text 65 532 In [clone] \, we use the "-s" flag to set the starting copy number to 1 \, so it matches the voice numbers from [poly] \, which is indexed by 1 as well., f 43;
+#X obj 181 254 makenote 55 1500;
+#X msg 111 188 60;
+#X msg 144 188 62;
+#X msg 181 188 65;
+#X msg 222 188 69;
+#X floatatom 181 226 5 0 0 0 - - - 0;
+#X obj 119 256 notein;
+#X text 33 102 An approach that is more useful in this case is using [clone] to load an abstraction \, see below. Here we use [makenote] now but you can also try your MIDI keyboard input with [notein]., f 48;
+#X connect 1 0 5 0;
+#X connect 2 0 1 0;
+#X connect 5 0 3 0;
+#X connect 6 0 2 0;
+#X connect 6 1 2 1;
+#X connect 6 2 2 2;
+#X connect 8 0 6 0;
+#X connect 8 1 6 1;
+#X connect 9 0 13 0;
+#X connect 10 0 13 0;
+#X connect 11 0 13 0;
+#X connect 12 0 13 0;
+#X connect 13 0 8 0;
+#X connect 14 0 6 0;
+#X connect 14 1 6 1;
+#X restore 464 406 pd clone;
+#X text 166 276 <-- first argument \, number of voices second;
+#X text 195 292 argument selects voice stealing;
+#X text 21 58 The [poly] object takes a stream of pitch/velocity pairs and outputs triples containing voice number \, pitch and velocity - it can be configured to do voice stealing or not (the default). You can pack the output and use the [route] object to route messages to different voices (as below) \, or feeding it [clone] (see example in [pd clone])., f 74;
+#X text 339 478 updated for Pd version 0.54-1;
+#X obj 221 476 clone;
+#X obj 163 475 notein;
+#X connect 3 0 8 0;
+#X connect 3 1 8 1;
+#X connect 3 2 8 2;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 7 0 24 0;
+#X connect 8 0 7 0;
+#X connect 9 0 3 0;
+#X connect 10 0 3 0;
+#X connect 11 0 3 0;
+#X connect 12 0 3 0;
+#X connect 19 0 12 0;
+#X connect 21 0 9 0;
+#X connect 22 0 10 0;
+#X connect 23 0 11 0;
+#X connect 24 0 25 0;
+#X connect 24 1 27 0;
+#X connect 24 2 28 0;
+#X connect 24 3 29 0;
+#X connect 25 0 26 0;
+#X connect 27 0 30 0;
+#X connect 28 0 31 0;
+#X connect 29 0 32 0;

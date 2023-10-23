@@ -1,4 +1,4 @@
-#N canvas 462 23 825 723 12;
+#N canvas 413 23 825 723 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-waveform 882 float 0;
@@ -11,7 +11,7 @@
 #X restore 552 136 graph;
 #X obj 65 89 phasor~;
 #X text 49 16 ENVELOPE GENERATORS FROM LINE SEGMENTS;
-#X obj 51 597 output~;
+#X obj 72 597 output~;
 #X text 49 684 updated for Pd version 0.39;
 #X obj 96 128 *~;
 #X obj 65 207 -~;
@@ -41,7 +41,7 @@
 #X text 147 318 clip the triangle wave to between 0 and 1 \, to make the sustain and silent regions., f 42;
 #X text 213 437 this makes a quick-and-dirty triangle wave;
 #X text 213 453 as described in the previous patch. It's, f 42;
-#X text 283 590 You can make a phasor-generated envelope generator using "min" and "clip" to combine line segments. Here a rise segment starts at phase 0 \, and a decay segment passes through zero at a controllable point (the "duty cycle" \, as a percentage of a cycle.) Each has a controllable slope (in units per cycle). The resulting triangle wave (the minimum of the rise and decay segments) is limited to 1 \, thus making a flat "sustain" segment (unless the rise and decay segments meet at a value less than one \, in which case there is none). Limiting below by 0 prevents us from following the decay segment into negative values. Reasonable values to start with are 6 Hz. frequency \, rise and decay slope 10 \, duty cycle 75%., f 73;
+#X text 285 565 You can make a phasor-generated envelope generator using "min" and "clip" to combine line segments. Here a rise segment starts at phase 0 \, and a decay segment passes through zero at a controllable point (the "duty cycle" \, as a percentage of a cycle.) Each has a controllable slope (in units per cycle). The resulting triangle wave (the minimum of the rise and decay segments) is limited to 1 \, thus making a flat "sustain" segment (unless the rise and decay segments meet at a value less than one \, in which case there is none). Limiting below by 0 prevents us from following the decay segment into negative values. Reasonable values to start with are 6 Hz. frequency \, rise and decay slope 10 \, duty cycle 75%., f 73;
 #X text 104 58 <= frequency (Hz.);
 #X text 169 90 <= slope of rise segment. Just multiply this by the phase to make the segment., f 39;
 #X text 161 144 <= Duty cycle (end of decay segment as % of cycle.);
@@ -68,7 +68,6 @@
 #X connect 18 0 15 0;
 #X connect 18 0 17 0;
 #X connect 19 0 5 0;
-#X connect 19 0 5 1;
 #X connect 21 0 9 1;
 #X connect 22 0 23 0;
 #X connect 24 0 16 1;

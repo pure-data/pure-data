@@ -232,8 +232,7 @@ static void siglop_dsp(t_siglop *x, t_signal **sp)
 void siglop_setup(void)
 {
     siglop_class = class_new(gensym("lop~"), (t_newmethod)siglop_new, 0,
-        sizeof(t_siglop), 0, A_DEFFLOAT, 0);
-    class_setdspflags(siglop_class, CLASS_NOPROMOTESIG);
+        sizeof(t_siglop), CLASS_NOPROMOTESIG, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(siglop_class, t_siglop, x_f);
     class_addmethod(siglop_class, (t_method)siglop_dsp,
         gensym("dsp"), A_CANT, 0);

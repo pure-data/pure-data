@@ -19,31 +19,32 @@ moment it also defines "text" but it may later be better to split this off. */
 #endif
 static t_class *text_define_class;
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
-#ifdef _WIN32
-#define qsort_r qsort_s   /* of course Microsoft decides to be different */
-#endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
 #define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-#if HAVE_ALLOCA
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < TEXT_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < TEXT_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
+
+/* --- unified qsort_r --- */
+
+#if !HAVE_QSORT_R_ARG_LAST && !HAVE_QSORT_R_COMPAR_LAST
+# undef STUPID_SORT
+# define STUPID_SORT 1
 #endif
+
+/* GNU and BSD have incompatible implementations of qsort_r
+ * so we define a few macros to fix that.
+ * STUPID_SORT uses the same calling convention as GNU
+ */
+#if HAVE_QSORT_R_COMPAR_LAST
+        /* BSD variant of qsort_r */
+# define QSORT_R(base, nmemb, size, compar, arg) \
+    qsort_r((base), (nmemb), (size), (arg), (compar))
+# define TEXT_SORTCOMPARE(z1, z2, zkeyinfo) text_sortcompare(zkeyinfo, z1, z2)
+#else
+        /* GNU variant of qsort_r */
+# define QSORT_R(base, nmemb, size, compar, arg) \
+    qsort_r((base), (nmemb), (size), (compar), (arg))
+# define TEXT_SORTCOMPARE(z1, z2, zkeyinfo) text_sortcompare(z1, z2, zkeyinfo)
+#endif /* QSORT_R variants */
 
 /* --- common code for text define, textfile, and qlist for storing text -- */
 
@@ -411,12 +412,7 @@ typedef struct _keyinfo
     int ki_onset;   /* number of fields to skip over */
 } t_keyinfo;
 
-    /* apple products seem to have their own prototypes for qsort_r (?) */
-#ifdef __APPLE__
-static int text_sortcompare(void *zkeyinfo, const void *z1, const void *z2)
-#else
-static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
-#endif
+static int TEXT_SORTCOMPARE(const void *z1, const void *z2, void *zkeyinfo)
 {
     const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
     t_keyinfo *k = (t_keyinfo *)zkeyinfo;
@@ -489,11 +485,8 @@ equal:
  * Both are not available in Emscripten, Android or older MSVC versions.
  * 'stupid_sortcompare' is thread-safe but not reentrant.
  */
-#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
-#define STUPID_SORT
-#endif
 
-#ifdef STUPID_SORT
+#if STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2)
 {
@@ -561,15 +554,11 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
         }
         startline = (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
-#ifdef STUPID_SORT
+#if STUPID_SORT
     stupid_zkeyinfo = &k;
     qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
 #else
-#ifdef __APPLE__
-    qsort_r(sortbuf, nlines, sizeof(*sortbuf), &k, text_sortcompare);
-#else /* __APPLE__ */
-    qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
-#endif /* __APPLE__ */
+    QSORT_R(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
 #endif /* STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
@@ -841,11 +830,11 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         {
                 /* tell us what terminated the line (semi or comma) */
             outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
-            ATOMS_ALLOCA(outv, outc);
+            ALLOCA(t_atom, outv, outc, TEXT_NGETBYTE);
             for (k = 0; k < outc; k++)
                 outv[k] = vec[start+k];
             outlet_list(x->x_out1, 0, outc, outv);
-            ATOMS_FREEA(outv, outc);
+            FREEA(t_atom, outv, outc, TEXT_NGETBYTE);
         }
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
@@ -854,11 +843,11 @@ static void text_get_float(t_text_get *x, t_floatarg f)
             pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
-            ATOMS_ALLOCA(outv, nfield);
+            ALLOCA(t_atom, outv, nfield, TEXT_NGETBYTE);
             for (k = 0; k < nfield; k++)
                 outv[k] = vec[(start+startfield)+k];
             outlet_list(x->x_out1, 0, nfield, outv);
-            ATOMS_FREEA(outv, nfield);
+            FREEA(t_atom, outv, nfield, TEXT_NGETBYTE);
         }
     }
     else if (x->x_f1 < 0)   /* whole line but out of range: empty list and 2 */
@@ -1656,7 +1645,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
     x->x_onset = i;
         /* generate output list, realizing dolar sign atoms.  Allocate one
         extra atom in case we want to prepend a symbol later */
-    ATOMS_ALLOCA(outvec, nfield+1);
+    ALLOCA(t_atom, outvec, nfield+1, TEXT_NGETBYTE);
     for (i = 0, ap = vec+onset; i < nfield; i++, ap++)
     {
         int type = ap->a_type;
@@ -1743,7 +1732,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
             else pd_list(to, 0, nleft, vecleft);
         }
     }
-    ATOMS_FREEA(outvec, nfield+1);
+    FREEA(t_atom, outvec, nfield+1, TEXT_NGETBYTE);
 }
 
 static void text_sequence_list(t_text_sequence *x, t_symbol *s, int argc,

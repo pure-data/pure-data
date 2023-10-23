@@ -1,4 +1,4 @@
-#N canvas 553 23 755 681 12;
+#N canvas 553 23 751 702 12;
 #X declare -stdpath ./;
 #X obj 132 178 wrap~;
 #X obj 132 207 -~ 0.5;
@@ -8,7 +8,7 @@
 #X restore 414 304 graph;
 #X text 429 444 ---- 0.02 seconds ----;
 #X text 508 585 updated for Pd version 0.39;
-#X obj 129 415 output~;
+#X obj 188 454 output~;
 #X obj 238 417 tabwrite~ \$0-sum;
 #X obj 132 150 -~;
 #X obj 150 101 / 100;
@@ -39,8 +39,8 @@
 #X obj 238 354 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 44 96 phasor~ 88.2;
 #X obj 238 381 metro 193;
-#X text 41 567 If the amplitudes sum to zero (with negative ones to balance positive ones) \, the slope of each linear segment becomes zero. Otherwise \, the segments have just enough slope to make up for the three jumps and get to the same starting value after each cycle.;
-#X text 41 499 Here we combine three sawtooth waves with controllable relative phases and amplitudes (in percent \, between -100 and 100.) Each sawtooth wave gives rise to one jump (upward or downward) per cycle.;
+#X text 37 606 If the amplitudes sum to zero (with negative ones to balance positive ones) \, the slope of each linear segment becomes zero. Otherwise \, the segments have just enough slope to make up for the three jumps and get to the same starting value after each cycle.;
+#X text 37 538 Here we combine three sawtooth waves with controllable relative phases and amplitudes (in percent \, between -100 and 100.) Each sawtooth wave gives rise to one jump (upward or downward) per cycle.;
 #X text 38 13 MAKING TRAPEZOIDAL WAVES FROM SAWTOOTH WAVES;
 #X obj 514 31 declare -stdpath ./;
 #X connect 0 0 1 0;
@@ -70,7 +70,6 @@
 #X connect 31 0 32 0;
 #X connect 32 0 6 0;
 #X connect 32 0 5 0;
-#X connect 32 0 5 1;
 #X connect 33 0 35 0;
 #X connect 34 0 7 0;
 #X connect 34 0 15 0;

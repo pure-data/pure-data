@@ -1,73 +1,58 @@
-#N canvas 495 23 567 530 12;
+#N canvas 495 23 565 439 12;
 #X declare -stdpath ./;
-#X floatatom 123 144 5 0 0 0 - - - 0;
-#X text 18 491 see also:;
-#X obj 149 491 cos~;
-#X obj 185 491 tabread4~;
+#X floatatom 133 144 5 0 0 0 - - - 0;
+#X text 18 401 see also:;
+#X obj 215 401 cos~;
+#X obj 255 401 tabread4~;
 #X obj 27 18 osc~;
 #X text 62 18 - cosine wave oscillator;
-#X obj 171 255 metro 500;
-#X obj 89 491 phasor~;
+#X obj 184 239 metro 500;
+#X obj 90 401 phasor~;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-array 200 float 0;
 #X coords 0 -1 199 1 200 100 1;
-#X restore 91 349 graph;
-#X text 343 492 updated for Pd version 0.33;
-#X obj 153 287 tabwrite~ \$0-array;
-#X obj 65 257 output~;
-#X obj 171 227 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X obj 123 176 osc~ 440;
-#X msg 176 144 0;
-#X text 245 143 <= reset phase;
-#X msg 210 144 0.5;
-#X text 21 143 set frequency;
-#X obj 342 251 sig~ 440;
-#X text 402 292 the frequency;
-#X obj 342 300 osc~;
-#X obj 392 410 declare -stdpath ./;
+#X restore 338 224 graph;
+#X text 343 402 updated for Pd version 0.33;
+#X obj 174 276 tabwrite~ \$0-array;
+#X obj 133 309 output~;
+#X obj 184 211 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 133 176 osc~ 440;
+#X msg 186 144 0;
+#X msg 220 144 0.5;
+#X text 31 143 set frequency;
+#X obj 28 270 sig~ 440;
+#X obj 28 309 osc~;
+#X obj 357 344 declare -stdpath ./;
 #N canvas 731 147 586 252 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 47 18 osc~;
 #X text 82 18 - cosine wave oscillator;
-#X text 126 163 signal - cosine waveform (in the range of -1 to 1).
-, f 54;
+#X text 126 163 signal - cosine waveform (in the range of -1 to 1)., f 54;
 #X text 119 91 signal -;
-#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 126 124 float -;
 #X text 183 124 phase cycle reset (from 0 to 1)., f 46;
 #X text 183 91 frequency value in Hz., f 46;
-#X text 134 199 1) float - initial frequency value in Hz (default 0).
-;
+#X text 134 199 1) float - initial frequency value in Hz (default 0).;
 #X restore 379 17 pd reference;
 #X text 477 18 <= click;
-#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 473 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 40 62 The [osc~] object outputs a cosine wave. The frequency
-input can be either a float or a signal. The right inlet resets the
-phase with values from 0 to 1 (where '1' is the same as '0' and '0.5'
-is half the cycle)., f 67;
-#X text 190 176 <-- creation argument sets initial frequency;
-#X text 195 227 <-- graph;
-#X text 353 275 <----- signal controlling;
+#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 383 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 40 62 The [osc~] object outputs a cosine wave. The frequency input can be either a float or a signal. The right inlet resets the phase with values from 0 to 1 (where '1' is the same as '0' and '0.5' is half the cycle)., f 67;
+#X text 200 176 <-- creation argument sets initial frequency;
+#X text 208 211 <-- graph;
+#X obj 149 401 tabosc4~;
+#X text 255 143 <-- reset phase;
+#X text 10 231 (note it also takes signals), f 14;
 #X connect 0 0 13 0;
 #X connect 6 0 10 0;
 #X connect 12 0 6 0;
 #X connect 13 0 10 0;
 #X connect 13 0 11 0;
-#X connect 13 0 11 1;
 #X connect 14 0 13 1;
-#X connect 16 0 13 1;
-#X connect 18 0 20 0;
+#X connect 15 0 13 1;
+#X connect 17 0 18 0;

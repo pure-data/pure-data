@@ -1,7 +1,7 @@
 #N canvas 338 23 919 681 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array tab28 176403 float 0;
+#X array tab28 176403 float 2;
 #X coords 0 1.02 176403 -1.02 200 130 1;
 #X restore 594 296 graph;
 #X obj 542 479 loadbang;
@@ -46,7 +46,6 @@
 #X obj 651 58 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X connect 1 0 26 0;
 #X connect 2 0 23 0;
-#X connect 2 0 23 1;
 #X connect 3 0 4 0;
 #X connect 4 0 15 0;
 #X connect 7 0 2 0;

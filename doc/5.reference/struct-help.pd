@@ -1,63 +1,43 @@
-#N canvas 434 69 606 339 12;
+#N canvas 434 69 606 389 12;
 #N canvas 307 220 491 176 help-template1 0;
-#X obj 94 26 struct struct-1 float x float y text z symbol dog array
-weasel struct-2, f 42;
-#X text 55 77 In this example \, the "struct-1" structure is defined
-in which "x" and "y" are "floats" \, i.e. \, numbers \, but "z" is
-a text \, "dog" is a symbol and "weasel" is an array of objects of
-structure "struct-2"., f 56;
-#X restore 316 189 pd help-template1;
+#X obj 94 26 struct struct-1 float x float y text z symbol dog array weasel struct-2, f 42;
+#X text 55 77 In this example \, the "struct-1" structure is defined in which "x" and "y" are "floats" \, i.e. \, numbers \, but "z" is a text \, "dog" is a symbol and "weasel" is an array of objects of structure "struct-2"., f 56;
+#X restore 326 183 pd help-template1;
 #N canvas 570 245 463 166 help-template2 0;
 #X obj 120 26 struct struct-2 float y;
-#X text 26 74 Here is one which specifies only the floating point "y".
-It's used for the elements of the array shown in the other template.
-;
-#X restore 315 215 pd help-template2;
-#X text 381 276 updated for Pd version 0.35;
+#X text 26 74 Here is one which specifies only the floating point "y". It's used for the elements of the array shown in the other template.;
+#X restore 325 209 pd help-template2;
+#X text 381 322 updated for Pd version 0.35;
 #X obj 24 15 struct;
-#X text 83 16 - declare the fields in a data structure.;
-#X text 21 276 see also:;
-#X obj 95 277 drawpolygon;
-#X obj 186 277 drawtext;
-#X obj 256 277 plot;
-#X obj 6 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 257 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 21 322 see also:;
+#X obj 95 323 drawpolygon;
+#X obj 186 323 drawtext;
+#X obj 256 323 plot;
+#X obj 6 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 6 303 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 549 137 633 263 reference 0;
-#X obj 8 52 cnv 5 600 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 97 cnv 2 600 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 170 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 237 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 98 17 - declare the fields in a data structure.;
+#X obj 8 52 cnv 5 600 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 97 cnv 2 600 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 170 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 237 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 91 194 1) list -;
-#X text 165 194 template name plus types and names of given fields
-(array fields also need the array's template name)., f 59;
+#X text 165 194 template name plus types and names of given fields (array fields also need the array's template name)., f 59;
 #X text 84 110 anything -;
-#X text 167 109 messages notifying when there are interactions with
-objects of the structure ('select' \, 'deselect' \, 'click' \, 'displace'
-and 'change').;
+#X text 167 109 messages notifying when there are interactions with objects of the structure ('select' \, 'deselect' \, 'click' \, 'displace' and 'change').;
 #X obj 29 16 struct x;
 #X text 145 65 NONE;
+#X text 98 17 - define a data structure template.;
 #X restore 491 16 pd reference;
 #X text 426 16 click =>;
-#X text 48 64 A [struct] object is used to define a Data Structure
-template and its fields. There should be one [struct] object in each
-Pd window you are using as a data structure template. The arguments
-specify the types and names of the fields. The data types are: "float"
-\, "symbol" \, "text" and "array". Each type needs a field name and
-array fields need an extra argument that specifies the template that
-the array elements should belong to., f 71;
-#X obj 297 277 text;
-#X text 87 203 open subpatch for examples -->;
-#X obj 209 304 get;
-#X obj 241 304 set;
-#X obj 88 304 getsize;
-#X obj 149 304 setsize;
-#X obj 326 304 element;
-#X obj 274 304 scalar;
-#X obj 24 304 pointer;
+#X text 48 64 A [struct] object is used to define a Data Structure template and its fields. There should be one [struct] object in each Pd window you are using as a data structure template. The arguments specify the types and names of the fields. The data types are: "float" \, "symbol" \, "text" and "array". Each type needs a field name and array fields need an extra argument that specifies the template that the array elements should belong to., f 71;
+#X obj 297 323 text;
+#X text 97 197 open subpatch for examples -->;
+#X obj 209 350 get;
+#X obj 241 350 set;
+#X obj 88 350 getsize;
+#X obj 149 350 setsize;
+#X obj 326 350 element;
+#X obj 274 350 scalar;
+#X obj 24 350 pointer;
+#X text 83 16 - define a data structure template;
+#X text 52 254 NOTE: In early days \, the [template] object was used instead of [struct] \, but it is now deprecated and you should use [struct] instead., f 72;

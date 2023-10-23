@@ -10,6 +10,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
+#include "m_private_utils.h"
 
 /* --------------- bng     gui-bang ------------------------- */
 

@@ -51,8 +51,9 @@
 #X text 163 663 magnitude;
 #X text 208 294 <= test frequency;
 #X text 211 442 <= responsiveness;
-#X msg 378 289 \; pd dsp \$1;
-#X obj 378 263 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 368 257 ../5.reference/set-dsp-tgl;
+#X text 399 260 DSP on/off;
+#X msg 368 294 \; pd dsp \$1;
 #X connect 2 0 10 0;
 #X connect 2 0 11 0;
 #X connect 3 0 5 0;
@@ -75,4 +76,4 @@
 #X connect 19 0 8 0;
 #X connect 19 1 15 0;
 #X connect 20 0 21 0;
-#X connect 38 0 37 0;
+#X connect 37 0 39 0;

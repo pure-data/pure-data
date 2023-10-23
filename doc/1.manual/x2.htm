@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
 <link rel="icon" type="image/png" href="favicon.ico">
 </HEAD>
-  
+
 
 <BODY>
 
@@ -30,7 +30,7 @@
 <P>
 
 <P> The purpose of this chapter is to describe Pd's design and how it is
-supposed to work.  Practical details about how to obtain, install, and run Pd 
+supposed to work.  Practical details about how to obtain, install, and run Pd
 are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive guides (and to
 more theoretical information about computer music) can be found in the
 <A href=x1.htm>previous chapter</A>.
@@ -73,7 +73,7 @@ globally.  Turning audio off stops the computation and relinquishes any audio
 devices Pd is using.  The "Media" menu is also provided, with accelerators
 "Control-." to turn audio computation off and "Control-/" to turn it on.  When
 audio is on, Pd is computing audio samples in real time according to whatever
-patches you have open (whether they are visible or not).  
+patches you have open (whether they are visible or not).
 
 <P> The DIO (Digital I/O) error indicator flashes if there is a synchronization
 error for audio input or output.  (But note that on some platforms Pd doesn't
@@ -140,7 +140,7 @@ or "cat".  The symbols "gore", "Gore", and "GORE" are all distinct.
 
 <P> The text you type into an object box determines how
 many and what kinds of inlets and outlets the object will have.  Some
-classes (like "+" always have a fixed arrangement of inlets and outlets, 
+classes (like "+" always have a fixed arrangement of inlets and outlets,
 and in the case of other classes, the inlets and outlets will depend on the
 creation arguments.
 
@@ -205,7 +205,7 @@ boxes come in many forms including number boxes (as in this example), toggles,
 sliders, and so on. Whereas the appearance of an object or message box is
 static when a patch is running, a number box's contents (the text) changes to
 reflect the current value held by the box.  You can also use a number box as a
-control by clicking and dragging up and down, or by typing values in it. 
+control by clicking and dragging up and down, or by typing values in it.
 (There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
 getting help </A> to find out how to look this up).
 
@@ -287,7 +287,7 @@ everything. Click again and drag to select a portion of the text to retype.
 <P> If you click a box and move the mouse without releasing the button this
 displaces the entire box.  If you wish to displace a box which is already
 selected, first de-select the box by clicking outside it; otherwise you will be
-selecting text instead of moving the box. 
+selecting text instead of moving the box.
 
 <P> <I> The updated text only becomes part of the patch when you de-select the
 object. </I>  Changing the text in an "object" box deletes the old
@@ -296,7 +296,7 @@ object and creates a new one; the internal state of the old one is lost.
 <H3> <A id=s2.6> 2.2.6. connecting and disconnecting boxes </A> </H3>
 
 <P>To make a connection between two boxes, click on any outlet of the first
-one, drag toward an inlet of the second one, and release.  You can 
+one, drag toward an inlet of the second one, and release.  You can
 release the mouse button anywhere within the target object and the connection
 will be made to the nearest inlet.
 
@@ -343,7 +343,7 @@ point, so that they can represent integers exactly between −16777216 and
 16777216.  (In Max, there are separate data types for integers and floating
 point numbers; Pd uses only float.)
 
-<P> When a message is passed to something (which is often an inlet of a box 
+<P> When a message is passed to something (which is often an inlet of a box
 but could be anything that can receive a message), the selector of the message
 is checked against the receiver.  If the receiver recognizes messages of that
 selector, it carries out some corresponding action.  For instance, here is a
@@ -439,7 +439,7 @@ new input (at left) to the previous input (at right).
 <P> The "trigger" object, abbreviated "t", can be used to split out connections
 from a single outlet in a determinate order.  By convention, all objects in Pd,
 when sending messages out more than one outlet, do so from right to left.  If
-you connect these to inlets of a second object without crossing wires, the 
+you connect these to inlets of a second object without crossing wires, the
 second object will get its leftmost inlet last, which is usually what you
 want.  Here is how to use "trigger" to disambiguate the previous example:
 
@@ -551,7 +551,7 @@ the audio network runs every 1.45 milliseconds.
 an error to connect an audio outlet to a non-audio inlet or vice versa; usually
 these errors are detected at "sort time" when audio is started or the network
 changed with audio running.  An object's leftmost inlet may accept both audio
-and messages; any other inlet is either one or the other. 
+and messages; any other inlet is either one or the other.
 
 <P>
 The audio network, that is, the tilde objects and their interconnections,
@@ -593,7 +593,7 @@ efficiency.  Also, the fft~ and related objects operate on blocks so that
 setting the block size also sets the number of FFT channels.  You may wish
 to use block sizes smaller than 64 to gain finer resolutions of message/audio
 interaction, or to reduce "block delay" in feedback algorithms.  At the
-(untested) extreme, setting the block size to one allows you to write your
+extreme, setting the block size to one allows you to write your
 own recursive filters.
 
 <P> You can use switch~ to budget your DSP computations; for instance you might
@@ -619,7 +619,7 @@ many throw~ objects associated with a single catch~, but a throw~ can't talk to
 more than one catch~.  You can reset the destination of a throw~ if you want to.
 
 <P> Send~ just saves a signal which may then be receive~d any number of times; but
-a receive~ can only pick up one send~ at a time (but you can switch between 
+a receive~ can only pick up one send~ at a time (but you can switch between
 send~s if you want.)
 
 <P> Don't try to throw~ and catch~ or send~ and receive~ between windows with
@@ -635,6 +635,33 @@ simple flanger for example, you might wish to ensure that your delread~ is
 sorted after your delwrite~.  The only way to ensure this is to create the
 delread~ after you created the delwrite~; if things get out of whack, just
 delete and re-create the delread~.
+
+<H3> <A id=s4.6> 2.4.6. multichannel signals </A> </H3>
+
+<P> As of Pd version 0.54, signals may be multichannel.  Every signal has a
+<i>length</i> equal to the window's block size (64 by default), and also has a
+<i>channel count</i> which is 1 by default.  The snake~ object can combine any
+number of single-channel signals into a multichannel one, or alternatively can
+split a multichannel signal into its component single-channel ones.  Non-local
+connections (send~, receive~, throw~, catch~, inlet~, outlet~) can be used to
+pass multichannel signals from window to window, and dac~ and adc~ can input and
+output several inputs or outputs into, or out of, one multichannel signal.
+
+<P> The receive~, catch~, and adc~ objects take arguments to specify the desired
+number of channels.
+
+<P> Stateless objects, which have no memory from one DSP tick to the next, have
+all been adapted to handle multichannel inputs and outputs.  The arithmetic and
+math objects (+~, -~, *~ ,/~, wrap~, sqrt~, and so on) use their inputs to determine
+their channel counts.  Binary operations like "+" can combine single- and
+multiple-channel inputs.
+
+<P> Other objects such as filters or oscillators have not been adapted for
+multichannel signals because there might be many ways to design multichannel
+versions of them.  Instead, you can use the clone object to perform general
+operations on multichannel signals.  Signal inputs and outputs of cloned patches
+can be used to  distribute multichannel signals among the individual cloned
+patches.
 
 <H3> <A id=s5> 2.5. scheduling </A> </H3>
 
@@ -733,7 +760,7 @@ initial velocity and duration.
 <H3> <A id=s6.2> 2.6.2. persistence of data </A> </H3>
 
 <p>Among the design principles of Pd is that patches should be printable, in the
-sense that the appearance of a patch should fully determine its functionality. 
+sense that the appearance of a patch should fully determine its functionality.
 For this reason, if messages received by an object change its action, since the
 changes aren't reflected in the object's appearance, they are not saved as part
 of the file which specifies the patch and will be forgotten when the patch is
@@ -742,7 +769,7 @@ original object's state is not retained but is instead reinitialized (possibly
 as specified by creation arguments.)
 
 <P> An exception is made for subpatches whose "state" is the configuration of
-the subpatch; as a special case, this configuration is restored when the 
+the subpatch; as a special case, this configuration is restored when the
 patch is read from a file.  Also, if you rename the subpatch, for instance
 typing "pd jane" instead of "pd spot," the contents of the patch are preserved
 and only the text in the object box and the window title of the subpatch are
@@ -790,7 +817,7 @@ one that the object creates for the occasion.
 <P>  Unless they arrange otherwise by defining a "list" method, objects respond
 to the "list" message by distributing the arguments of the message to their
 inlets, except for the first argument which is passed as a "float" or
-"symbol" message to the object proper. 
+"symbol" message to the object proper.
 
 <H3> <A id=s6.5> 2.6.5. dollar signs </A> </H3>
 
@@ -847,10 +874,10 @@ individually.
 
 <P> The objects, "inlet,", "inlet~," "outlet," and "outlet~,", when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions and only accept control 
-data messages. The inlet~ and outlet~ versions create inlets and outlets for audio 
+This works equally for one-off subpatches and abstractions and only accept control
+data messages. The inlet~ and outlet~ versions create inlets and outlets for audio
 signals. Note you can also mix control messages in an inlet~ with the 'fwd' argument
-but a signal outlet only takes signals. Inlets and outlets appear on the invoking box 
+but a signal outlet only takes signals. Inlets and outlets appear on the invoking box
 in the same left-to-right order as they appear in the subpatch.
 
 <H3> <A id="s7.1"> 2.7.1. abstractions </A> </H3>
@@ -891,6 +918,10 @@ however, there is the disadvantage that it's confusing  to have "$" expanded at
 a different time in an object box than in a message box.  In an object box, the
 "$" argument is expanded at creation time, and in a message box, at message
 time.
+
+<P> A "clone" object is provided to automatically create and manage multiple copies
+of an abstraction.  You can use it to make voice banks for polyphonic synthesis,
+for example.
 
 <H3> <A id="s7.2"> 2.7.2. Graph-on-parent subpatches </A> </H3>
 
@@ -1020,7 +1051,7 @@ in the tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
 <P>  The original idea in developing Pd was to make a real-time computer music
 performance environment like Max, but somehow to include also a facility for
-making computer music scores with user-specifiable graphical representations. 
+making computer music scores with user-specifiable graphical representations.
 This idea has important precedents in Eric Lindemann's Animal and Bill Buxton's
 SSSP. An even earlier class of precedents lies in the rich variety of paper
 scores for electronic music before it became practical to offer a
@@ -1065,7 +1096,7 @@ pairs for the black traces and time/frequency/bandwidth triples for the
 colored ones.)  This is all specified by the user using Pd's "template"
 mechanism.
 
-<P> Here is the template associated with the graphical objects 
+<P> Here is the template associated with the graphical objects
 shown above:
 
 <CENTER><P>  <IMG src="fig9.2.jpg" ALT="template for graphical score">  </P></CENTER>
@@ -1073,7 +1104,7 @@ shown above:
 <p>Templates consist of a data structure definition (the "struct" object) and
 zero or more drawing instructions ("filledpolygon" and "plot"). The "struct"
 object gives the template the name, "template-toplevel."  The data structure
-is defined to contain three floating point numbers named "x", "y", and 
+is defined to contain three floating point numbers named "x", "y", and
 "voiceno," and two arrays, one named "pitch" whose elements belong to another
 template named "template-pitch," and similarly for the array "amp."
 
@@ -1165,7 +1196,7 @@ arbitrarily set up to select among the six primary and secondary colors plus
 black.
 
 <P>  The details of extracting the pitch and dynamic breakpoints from the arrays
-defined in the template are managed in the "voice" abstraction. 
+defined in the template are managed in the "voice" abstraction.
 The "voice"
 abstraction receives a
 pointer to a given object and manages the sequencing of the arrays; so it
@@ -1209,8 +1240,8 @@ are not provided which would imply unpredictable execution times.
 the number of elements in the array.  For lists, an "append" object
 appends a new scalar for a given template to a list, after the element pointed
 to.  (To insert a scalar at the beginning of a list, the pointer can be set to
-the "head" of the list, a formal location before the first list item.) 
-Deletion is less flexible; the only operation is to delete an entire list. 
+the "head" of the list, a formal location before the first list item.)
+Deletion is less flexible; the only operation is to delete an entire list.
 (There's no reason not to provide finer-grain deletion mechanisms except that
 it's not clear how to protect against stale pointers efficiently, except by
 voiding the entire collection of pointers into a list.)
@@ -1219,7 +1250,7 @@ voiding the entire collection of pointers into a list.)
 
 <P>  The graphical score shown above can be edited by dragging breakpoints, or
 by adding and deleting them, using mouse clicks.  Also, entire objects or
-collections of them may be copied, pasted, and dragged around the screen. 
+collections of them may be copied, pasted, and dragged around the screen.
 Alternatively, there is an editable (or computer generate-able or parse-able)
 text representation for the data, which may be seen or changed in a dialog
 window or read and written to external text files.
@@ -1283,7 +1314,7 @@ handling primitives and the graphical presentation and editing functions.
 <P>
 <BR><BR>
 <A href="x3.htm"> next chapter </A><BR>
-<A href="index.htm#s2"> back to table of contents </A> 
+<A href="index.htm#s2"> back to table of contents </A>
 <BR><BR>
 </P>
 </div>
@@ -1291,4 +1322,3 @@ handling primitives and the graphical presentation and editing functions.
 
 </BODY>
 </HTML>
- 

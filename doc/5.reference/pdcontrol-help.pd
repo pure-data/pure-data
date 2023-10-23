@@ -1,9 +1,8 @@
-#N canvas 531 44 727 512 12;
-#X obj 37 19 pdcontrol;
-#X text 483 477 updated for Pd version 0.50.;
-#X obj 42 257 pdcontrol;
-#X obj 42 314 print;
-#X msg 280 324 isvisible;
+#N canvas 426 23 715 635 12;
+#X obj 32 13 pdcontrol;
+#X obj 21 380 pdcontrol;
+#X obj 21 438 print;
+#X msg 259 448 isvisible;
 #N canvas 568 591 287 200 subpatch 0;
 #X obj 99 26 inlet;
 #X obj 99 78 pdcontrol;
@@ -12,83 +11,64 @@
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 0 3 0;
-#X restore 280 349 pd subpatch;
-#X text 130 331 open and shut the subpatch to test "isvisible" message
-, f 19;
-#X msg 58 158 dir;
-#X text 91 157 get directory this patch is in;
-#X msg 69 200 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X restore 259 479 pd subpatch;
+#X text 109 455 open and shut the subpatch to test "isvisible" message, f 19;
+#X msg 37 181 dir;
+#X text 70 180 get directory this patch is in;
+#X msg 50 216 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
 #N canvas 761 91 541 437 args 0;
 #X obj 103 254 print;
 #X text 161 141 <= get arguments;
 #X obj 103 175 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
 #X msg 103 141 args 0;
-#X text 40 23 This is useful for managing a variable number of arguments.
-When it receives the 'args' message \, [pdcontrol] outputs the loaded
-arguments. An optional argument specifies this patch (0) \, owning
-patch (1) \, its own owner (2) \, and so on. (Ownership number is silently
-reduced if owners don't exist \, so here anything greater than zero
-is ignored.), f 65;
-#X text 48 295 Above there's a simple abstraction to show how it works.
-Note how dollar signs (such as "\$0" \, "\$1" or "\$2-x") get expanded
-unless you escape them with a backlash ("\$2-x" may appear as an unexpanded
-symbol \, but it actually gets expanded if this abstraction is called
-inside another that contains arguments).;
+#X text 40 23 This is useful for managing a variable number of arguments. When it receives the 'args' message \, [pdcontrol] outputs the loaded arguments. An optional argument specifies this patch (0) \, owning patch (1) \, its own owner (2) \, and so on. (Ownership number is silently reduced if owners don't exist \, so here anything greater than zero is ignored.), f 65;
+#X text 48 295 Above there's a simple abstraction to show how it works. Note how dollar signs (such as "\$0" \, "\$1" or "\$2-x") get expanded unless you escape them with a backlash ("\$2-x" may appear as an unexpanded symbol \, but it actually gets expanded if this abstraction is called inside another that contains arguments).;
 #X listbox 103 211 40 0 0 0 - - - 0;
 #X connect 2 0 6 0;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
-#X restore 367 422 pd args;
-#X text 237 122 open a URL in a browser;
-#X msg 42 122 browse http://msp.ucsd.edu;
-#X text 312 181 Optional argument to specify this patch (0) \, owning
-patch (1) \, its own owner (2) \, and so on \, and optionally also
-a filename relative to the patch's directory. (Ownership number is
-silently reduced if owners don't exist \, so here anything greater
-than zero is ignored.), f 55;
-#X text 116 19 - communicate with pd and/or this patch;
-#X floatatom 280 383 5 0 0 0 - - - 0;
-#X symbolatom 42 285 80 0 0 0 - - - 0;
-#X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 610 19 <= click;
-#N canvas 648 157 718 300 reference 0;
-#X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 200 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 276 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 237 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X text 165 248 NONE, f 52;
+#X restore 362 552 pd args;
+#X text 216 145 open a URL in a browser;
+#X msg 21 145 browse http://msp.ucsd.edu;
+#X text 299 182 Optional argument to specify this patch (0) \, owning patch (1) \, its own owner (2) \, and so on \, and optionally also a filename relative to the patch's directory. (Ownership number is silently reduced if owners don't exist \, so here anything greater than zero is ignored.), f 55;
+#X floatatom 259 513 5 0 0 0 - - - 0;
+#X symbolatom 21 409 80 0 0 0 - - - 0;
+#X obj 8 44 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 625 14 <= click;
+#N canvas 603 156 718 338 reference 0;
+#X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 236 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 7 312 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 273 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X text 290 286 NONE, f 6;
 #X obj 28 20 pdcontrol;
-#X text 107 20 - communicate with pd and/or this patch;
-#X text 77 65 browse <symbol> - open a URL given by the symbol., f
-53;
+#X text 77 65 browse <symbol> - open a URL given by the symbol., f 53;
 #X text 49 85 dir <float \, symbol> -;
-#X text 120 133 isvisible - outputs float to specify if patch is visible
-(1) or not (0)., f 80;
+#X text 120 133 isvisible - outputs float to specify if patch is visible (1) or not (0)., f 80;
 #X text 99 155 args <float> -;
-#X text 204 84 output owning patch's directory. Optional float sets
-level (0 \, this patch \, 1 \, its owner \, and so on). Optional symbol
-sets a folder relative to the directory., f 68;
-#X text 204 155 outputs patch's argument. Optional float sets level
-(0 \, this patch \, 1 \, its owner \, and so on)., f 68;
-#X text 155 210 list - list of args \, dir symbol of visibility float.
-;
-#X restore 516 19 pd reference;
-#X obj 13 463 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 329 384 1 if this patch is visible \, 0 if not., f 39;
-#X text 60 67 [pdcontrol] lets you open a URL in a web browser or communicate
-with the patch to get its owning directory \, arguments or its visible/invisible
-state., f 76;
-#X text 152 422 get the patch's arguments -->;
-#X connect 2 0 16 0;
-#X connect 4 0 5 0;
-#X connect 5 0 15 0;
-#X connect 7 0 2 0;
-#X connect 9 0 2 0;
-#X connect 12 0 2 0;
-#X connect 16 0 3 0;
+#X text 204 84 output owning patch's directory. Optional float sets level (0 \, this patch \, 1 \, its owner \, and so on). Optional symbol sets a folder relative to the directory., f 68;
+#X text 204 155 outputs patch's argument. Optional float sets level (0 \, this patch \, 1 \, its owner \, and so on)., f 68;
+#X text 155 246 list - list of args \, dir symbol of visibility float.;
+#X text 203 188 send a message to this canvas, f 68;
+#X text 107 20 - get patch/window information or communicate to canvas.;
+#X text 36 189 sendcanvas <anything> -;
+#X restore 531 13 pd reference;
+#X obj 8 588 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 308 514 1 if this patch is visible \, 0 if not., f 39;
+#X text 147 552 get the patch's arguments -->;
+#X text 500 599 updated for Pd version 0.54;
+#X obj 90 603 namecanvas;
+#X text 17 603 see also:;
+#X text 111 12 - get patch/window information or communicate to canvas.;
+#X obj 178 603 pd-messages;
+#X text 201 273 send a message to this patch window. NOTE: messages to canvases may change from one version of Pd to the next - so backward compatibility can't be guaranteed (although in practice they don't often change). WARNING: don't send a "clear" message - that will crash Pd. Other editing commands might also cause grief. See also "pd-messages" file below., f 69;
+#X msg 54 299 sendcanvas loadbang;
+#X text 33 59 [pdcontrol] provides some patch/window related information. It can get the patch's owning directory \, its arguments (when loaded as an abstraction) and a window's visible/invisible state. In addition \, it allows you to send messages to the canvas or the parent canvas. For last \, it also lets you open a URL in a web browser. Other functionalities may be added., f 90;
+#X connect 1 0 14 0;
+#X connect 3 0 4 0;
+#X connect 4 0 13 0;
+#X connect 6 0 1 0;
+#X connect 8 0 1 0;
+#X connect 11 0 1 0;
+#X connect 14 0 2 0;
+#X connect 27 0 1 0;

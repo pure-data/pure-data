@@ -308,7 +308,7 @@
 #X text 215 266 element number - if 0 or positive \, replace text starting at this element \, or if negative (or not supplied) \, replace whole message, f 64;
 #X text 234 363 next optional arg to set inlet 1 (message number), f 54;
 #X text 234 380 next optional arg to set inlet 2 (element number \, defaults to -1: whole line), f 54;
-#X text 22 430 If inlet 2 is unset or set to a negative number \, the entire messge is replaced \, but if it is set to 0 or more to specify a starting field \, the line is not resized - instead \, as many items are replaced as were already in the list. In this case \, an out-of-range element number will not work and a warning is printed on the terminal window., f 92;
+#X text 22 430 If inlet 2 is unset or set to a negative number \, the entire message is replaced \, but if it is set to 0 or more to specify a starting field \, the line is not resized - instead \, as many items are replaced as were already in the list. In this case \, an out-of-range element number will not work and a warning is printed on the terminal window., f 92;
 #X connect 0 0 8 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -866,7 +866,7 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 454 382 pd open;
-#X text 484 331 open first examle of the 4.Data.Structure section., f 20;
+#X text 484 331 open first example of the 4.Data.Structure section., f 20;
 #X obj 82 288 print line;
 #X text 560 30 <= open to see scalat;
 #X connect 0 0 6 0;

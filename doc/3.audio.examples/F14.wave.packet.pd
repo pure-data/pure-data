@@ -1,7 +1,7 @@
 #N canvas 453 23 640 700 12;
 #X declare -stdpath ./;
-#X floatatom 301 195 4 0 127 0 - - - 0;
-#X text 244 191 center;
+#X floatatom 301 186 4 0 127 0 - - - 0;
+#X text 244 182 center;
 #X obj 301 262 line~;
 #X obj 301 239 pack 0 50;
 #X floatatom 164 207 4 0 127 0 - - - 0;
@@ -13,8 +13,8 @@
 #X obj 106 531 cos~;
 #X obj 164 267 mtof;
 #X obj 319 298 expr 1/$f1;
-#X obj 301 215 mtof;
-#X text 243 206 freq.;
+#X obj 301 213 mtof;
+#X text 243 197 freq.;
 #X obj 301 329 *~;
 #X text 441 208 bandwidth;
 #X obj 400 228 mtof;
@@ -47,18 +47,10 @@
 #X obj 307 561 clip~ -0.5 0.5;
 #X obj 400 365 max~ 1;
 #X obj 164 242 - 12;
-#X text 396 618 updated for Pd version 0.40.;
-#X text 47 125 The patch is almost exactly like B13 (the overlapping
-sample) except that \, instead of using tabread~ we just use cos~ \,
-and that we control pulse width (for bandwidth) as well as wavetable
-transposition (for center frequency)., f 71;
-#X text 47 47 The stretched wavetable method is an alternative to the
-PAF generator \, slightly more expensive in processing time but with
-two advantages: first \, it is not patent encumbered (PAF patent runs
-out in 2011) and second \, it can be generalized to use samples instead
-of sinusoids to make complex spectral shapes., f 71;
-#X text 512 398 second phase signal out of phase from first one, f
-13;
+#X text 397 648 updated for Pd version 0.40.;
+#X text 47 125 The patch is almost exactly like B13 (the overlapping sample) except that \, instead of using tabread~ we just use cos~ \, and that we control pulse width (for bandwidth) as well as wavetable transposition (for center frequency)., f 71;
+#X text 47 47 The stretched wavetable method is an alternative to the PAF generator \, slightly more expensive in processing time but with two advantages: first \, it is not patent encumbered (PAF patent runs out in 2011) and second \, it can be generalized to use samples instead of sinusoids to make complex spectral shapes., f 71;
+#X text 512 398 second phase signal out of phase from first one, f 13;
 #X obj 463 11 declare -stdpath ./;
 #X connect 0 0 13 0;
 #X connect 2 0 15 0;
@@ -90,7 +82,6 @@ of sinusoids to make complex spectral shapes., f 71;
 #X connect 27 0 8 0;
 #X connect 27 0 29 0;
 #X connect 28 0 21 0;
-#X connect 28 0 21 1;
 #X connect 29 0 30 0;
 #X connect 30 0 33 0;
 #X connect 31 0 8 1;

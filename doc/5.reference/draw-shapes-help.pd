@@ -4,8 +4,8 @@
 #X obj 164 207 plot;
 #X obj 21 10 drawpolygon;
 #X obj 21 34 drawcurve;
-#X obj 126 11 filledpolygon;
-#X obj 127 34 filledcurve;
+#X obj 116 11 filledpolygon;
+#X obj 117 34 filledcurve;
 #N canvas 376 181 944 504 drawshapes-template 0;
 #X msg 41 299 1;
 #X msg 74 299 0;
@@ -42,7 +42,7 @@
 #X coords 0 365 1 364 0 0 0;
 #X restore 280 157 pd drawshapes-data;
 #X text 370 208 updated for Pd version 0.51.;
-#X text 232 13 - draw shapes for data structures, f 17;
+#X text 222 13 - draw shapes for data structures, f 17;
 #X obj 204 207 set;
 #X obj 96 207 drawtext;
 #X obj 8 67 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -56,7 +56,6 @@
 #X obj 22 33 drawcurve;
 #X obj 111 10 filledpolygon;
 #X obj 111 33 filledcurve;
-#X text 216 20 - draw shapes for data structures;
 #X text 143 116 NONE, f 51;
 #X text 174 77 sets visibility (1: visible \, 0: invisible)., f 46;
 #X obj 6 168 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
@@ -73,6 +72,8 @@
 #X text 129 209 disable dragging vertices when in "run" mode (keeps reporting mouse clicks)., f 56;
 #X text 182 310 line color \, filled shapes have an extra first interior color (default 0 \, 0)., f 48;
 #X text 80 191 "-v": <symbol>: assigns a field to make it visible/invisible., f 63;
+#X text 216 9 - draw polygon shapes in a scalar.;
+#X text 216 32 - draw shapes with bezier curve in a scalar.;
 #X restore 407 22 pd reference;
 #X text 505 23 <= click;
 #X obj 8 193 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000 0;

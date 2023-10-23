@@ -84,7 +84,7 @@
 #X connect 24 0 23 0;
 #X connect 25 0 24 0;
 #X connect 26 0 5 0;
-#X restore 170 285 pd guts;
+#X restore 142 285 pd guts;
 #X floatatom 572 37 6 0 100 0 - - - 0;
 #X obj 572 68 s revtime;
 #X obj 572 136 s revgain;
@@ -97,16 +97,11 @@
 #X text 107 42 Reverberator. Read in a sample first.;
 #X obj 142 330 output~;
 #X text 95 87 Click below to:;
-#X obj 185 122 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 185 146 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 172 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 196 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 221 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 122 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 185 146 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 172 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 196 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 221 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 214 121 (read an input file);
 #X text 214 145 (run the transformation);
 #X text 214 171 (hear the output sample);
@@ -120,7 +115,6 @@
 #X floatatom 573 229 6 0 100 0 - - - 0;
 #X obj 645 360 declare -stdpath ./;
 #X connect 0 0 11 0;
-#X connect 0 0 11 1;
 #X connect 1 0 2 0;
 #X connect 7 0 8 0;
 #X connect 8 0 28 0;

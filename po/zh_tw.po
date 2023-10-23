@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -195,8 +195,27 @@ msgstr "套用"
 msgid "OK"
 msgstr "確定"
 
-msgid "Audio Settings"
-msgstr "音效設定"
+#, fuzzy
+msgid "no device"
+msgstr "輸入設備"
+
+msgid "(same as input device)..."
+msgstr "(如同輸入設備)..."
+
+msgid "Channels:"
+msgstr "頻道:"
+
+msgid "Input Devices"
+msgstr "輸入設備"
+
+msgid "Output Devices"
+msgstr "輸出設備"
+
+msgid "Use Multiple Devices"
+msgstr "使用多個 設備"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr ""
@@ -222,20 +241,8 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "使用 callbacks"
 
-msgid "Input Devices"
-msgstr "輸入設備"
-
-msgid "Channels:"
-msgstr "頻道:"
-
-msgid "Output Devices"
-msgstr "輸出設備"
-
-msgid "(same as input device)..."
-msgstr "(如同輸入設備)..."
-
-msgid "Use Multiple Devices"
-msgstr "使用多個 設備"
+msgid "Audio Settings"
+msgstr "音效設定"
 
 msgid "Save All Settings"
 msgstr ""
@@ -350,6 +357,9 @@ msgstr "傳送 symbol:"
 
 msgid "Receive symbol:"
 msgstr "接收 symbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "寬度:"
@@ -494,17 +504,24 @@ msgstr "送出 Pd message"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "MIDI 設定"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI 設定"
+#, fuzzy
+msgid "no input devices"
+msgstr "輸入設備"
 
 msgid "In Ports:"
 msgstr "輸入埠:"
 
 msgid "Out Ports:"
 msgstr "輸出埠:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI 設定"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI 設定"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -533,6 +550,10 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#, fuzzy
+msgid "path preferences"
+msgstr "偏好設定"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -546,19 +567,93 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd 主視窗"
+
+msgid "Zoom New Windows"
+msgstr ""
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "MIDI 設定"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "偏好設定"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "偏好設定"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "偏好設定"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "偏好設定"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "偏好設定"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "偏好設定"
+
 msgid "Add new library"
 msgstr "新增函式庫"
 
 msgid "Edit library"
 msgstr "編輯函式庫"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "啟動時載入函式庫"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr "MIDI 設定"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -620,6 +715,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1116,6 +1217,127 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1282,20 +1504,9 @@ msgstr ""
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr ""
-
-msgid "MIDI..."
-msgstr ""
-
-msgid "Zoom New Windows"
-msgstr ""
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "偏好設定..."
 
 msgid "Save All Preferences"
 msgstr ""
@@ -1309,7 +1520,8 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "偏好設定"
 
 msgid "Open Recent"
@@ -1324,6 +1536,15 @@ msgstr "要儲存已修改過的 '%s' 嗎？"
 
 msgid "Properties"
 msgstr "內容"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr ""
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1348,6 +1569,13 @@ msgstr ""
 msgid "Pd"
 msgstr ""
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
+
 msgid "DSP"
 msgstr ""
 
@@ -1370,6 +1598,9 @@ msgid "debug"
 msgstr ""
 
 msgid "all"
+msgstr ""
+
+msgid "y1"
 msgstr ""
 
 msgid "New..."

@@ -1,13 +1,13 @@
-#N canvas 418 24 833 693 12;
-#X obj 161 81 osc~ 440;
-#X obj 161 328 dac~;
-#X obj 161 246 *~;
-#X obj 179 193 line~;
+#N canvas 353 24 833 682 12;
+#X obj 131 81 osc~ 440;
+#X obj 131 328 dac~;
+#X obj 131 246 *~;
+#X obj 149 193 line~;
 #X text 140 7 LINES GRAPHED;
-#X obj 243 93 r graphit;
-#X obj 244 192 r graphit;
-#X obj 244 252 r graphit;
-#X obj 179 162 r to-line;
+#X obj 213 93 r graphit;
+#X obj 214 192 r graphit;
+#X obj 214 252 r graphit;
+#X obj 149 162 r to-line;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array product 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
@@ -20,44 +20,35 @@
 #X array line-output 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
 #X restore 566 209 graph;
-#X obj 161 293 *~ 0.1;
-#X msg 32 393 \; pd dsp 1 \; to-line 0 \, 1 500 \; graphit bang;
-#X msg 204 393 \; pd dsp 1 \; to-line 1 \, 0 500 \; graphit bang;
-#X obj 244 222 tabwrite~ line-output;
-#X obj 244 282 tabwrite~ product;
-#X text 64 369 ramp up;
-#X text 229 369 ramp down;
-#X text 400 369 to 1/2;
-#X msg 369 393 \; pd dsp 1 \; to-line 0.5 1000 \; graphit bang;
+#X obj 131 293 *~ 0.1;
+#X obj 214 222 tabwrite~ line-output;
+#X obj 214 282 tabwrite~ product;
+#X text 64 379 ramp up;
+#X text 229 379 ramp down;
+#X text 400 379 to 1/2;
 #X text 590 516 ------ 1 second ------;
 #X text 601 623 updated for Pd version 0.33;
-#X text 24 566 On most machines \, you will hear an interruption in
-the sound one second after you click on the first or third box. This
-is because the graphical updates are likely to eat more CPU time than
-your audio buffer has pre-buffered for. You can avoid this if you keep
-your graphs in sub-windows and open them only when you need them. In
-some future version of Pd this behavior will be improved. Until then
-\, you'll have to avoid having arrays getting re-drawn during music
-performances., f 78;
-#X text 204 329 <= out;
-#X obj 243 123 tabwrite~ oscillator;
-#X text 31 33 Here again is a [line~] controlling the amplitude of
-an [osc~] \, but with the outputs graphed:, f 63;
-#X text 26 473 Click the message boxes above to try it. Note that in
-the first two boxes \, the [line~] objects get two messages. The first
-one \, with no time value \, causes the [line~] to jump immediately
-to the value. The third box takes [line~]'s previous value as a point
-of departure. What you see will depend on which box you last clicked
-and how long you waited between the two., f 68;
+#X text 24 566 On most machines \, you will hear an interruption in the sound one second after you click on the first or third box. This is because the graphical updates are likely to eat more CPU time than your audio buffer has pre-buffered for. You can avoid this if you keep your graphs in sub-windows and open them only when you need them. In some future version of Pd this behavior will be improved. Until then \, you'll have to avoid having arrays getting re-drawn during music performances., f 78;
+#X text 174 329 <= out;
+#X obj 213 123 tabwrite~ oscillator;
+#X text 31 33 Here again is a [line~] controlling the amplitude of an [osc~] \, but with the outputs graphed:, f 63;
+#X text 26 473 Click the message boxes above to try it. Note that in the first two boxes \, the [line~] objects get two messages. The first one \, with no time value \, causes the [line~] to jump immediately to the value. The third box takes [line~]'s previous value as a point of departure. What you see will depend on which box you last clicked and how long you waited between the two., f 68;
+#X obj 392 268 ../5.reference/set-dsp-tgl;
+#X text 423 271 DSP on/off;
+#X msg 392 305 \; pd dsp \$1;
+#X msg 32 403 \; to-line 0 \, 1 500 \; graphit bang;
+#X msg 204 403 \; to-line 1 \, 0 500 \; graphit bang;
+#X msg 369 403 \; to-line 0.5 1000 \; graphit bang;
 #X connect 0 0 2 0;
-#X connect 0 0 25 0;
+#X connect 0 0 22 0;
 #X connect 2 0 12 0;
-#X connect 2 0 16 0;
+#X connect 2 0 14 0;
 #X connect 3 0 2 1;
-#X connect 3 0 15 0;
-#X connect 5 0 25 0;
-#X connect 6 0 15 0;
-#X connect 7 0 16 0;
+#X connect 3 0 13 0;
+#X connect 5 0 22 0;
+#X connect 6 0 13 0;
+#X connect 7 0 14 0;
 #X connect 8 0 3 0;
 #X connect 12 0 1 0;
 #X connect 12 0 1 1;
+#X connect 25 0 27 0;

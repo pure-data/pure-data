@@ -2,10 +2,12 @@ release checklist
 
 test compilation on linux/msw/mac:
 
-VERSION=0.52-1
-MAC=x84
+VERSION=tmp
+... later:  VERSION=0.53-2
+
 
 ------------- remake po: ----------------
+... merge l10n branch from github ...
 VERSION=tmp
 cd ~/pd/linux
 ./make-release $VERSION
@@ -19,6 +21,7 @@ cd /tmp/mkpo/pd-$VERSION
 rsync -avl ~/bis/work/pd-versions/po/ $MAC:work/build/po/
 
 ------------- release build ----------
+
 cd ~/pd/linux
 ./make-release $VERSION
 
@@ -39,11 +42,14 @@ ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
 
 
 ---------- grab CI version -----------
+
 git push origin --tags
 git push origin
-*** check that the tag actually makes it up to github; this seems buggy ***
+*** check that the tag actually makes it up to github ***
 wait 90 min...
 grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
+or try: https://git.iem.at/pd/pure-data/-/pipelines
+
 --> pure-data_$VERSION_macOS.zip
 mv -i ~/pure-data_${VERSION}_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
 

@@ -3,17 +3,7 @@
 #X floatatom 127 60 6 0 0 0 - - - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table10 259 float 1;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0.612 0.612 0.612 0.612 0.612 0.627692 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769
--0.470769 -0.470769 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0.627692 0.627692 0.627692 0.643385 0.643385 0.643385
-0.659077 0 -0.502154 -0.502154 -0.502154 -0.486462 -0.486462 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0.580615 0.596308 0.596308 0.596308 0.596308
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.612 0.612 0.612 0.612 0.612 0.627692 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.627692 0.627692 0.627692 0.643385 0.643385 0.643385 0.659077 0 -0.502154 -0.502154 -0.502154 -0.486462 -0.486462 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.580615 0.596308 0.596308 0.596308 0.596308 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1.02 258 -1.02 258 130 1;
 #X restore 279 92 graph;
 #X text 459 533 updated for Pd version 0.34;
@@ -22,31 +12,18 @@
 #X obj 127 87 mtof;
 #X floatatom 127 114 7 0 0 0 - - - 0;
 #X obj 127 140 tabosc4~ table10;
-#X text 83 319 Note that I selected "save contents" in the properties
-dialog for table10 (right click on the table to see.) If this isn't
-set \, the waveform won't be remembered as part of the patch but will
-be reinitialized to zero when the patch is reopened., f 73;
-#X msg 58 524 \; table10 cosinesum 256 0.2 -0.2 0.2 -0.2 0.2 -0.2 0.2
-;
+#X text 83 319 Note that I selected "save contents" in the properties dialog for table10 (right click on the table to see.) If this isn't set \, the waveform won't be remembered as part of the patch but will be reinitialized to zero when the patch is reopened., f 73;
+#X msg 58 524 \; table10 cosinesum 256 0.2 -0.2 0.2 -0.2 0.2 -0.2 0.2;
 #X msg 559 144 \; table10 const 0;
 #X text 564 121 CLEAR TABLE;
-#X text 83 389 For efficiency's sake tabosc4~ requires that the table
-have a power of two plus three points (64+3=67 \, 128+3=131 \, 256+3=259
-\, etc.) If you want wraparound to work smoothly \, you should make
-the last three points copies of the first three. This is done because
-tabread4~ does 4-point interpolation., f 73;
-#X text 83 263 Here \, in place of the "osc~" cosine wave oscillator
-\, we introduce the tabosc4~ oscillator which produces an arbitrary
-waveform. You can draw in the waveform with the mouse., f 73;
+#X text 83 389 For efficiency's sake tabosc4~ requires that the table have a power of two plus three points (64+3=67 \, 128+3=131 \, 256+3=259 \, etc.) If you want wraparound to work smoothly \, you should make the last three points copies of the first three. This is done because tabread4~ does 4-point interpolation., f 73;
 #X obj 127 174 output~;
 #X obj 509 33 declare -stdpath ./;
-#X text 83 463 If you want a specific sinusoidal composition \, you
-can send table10 a message \, as below (see 15.arrays in the control
-examples):, f 73;
+#X text 83 463 If you want a specific sinusoidal composition \, you can send table10 a message \, as below (see 15.arrays in the control examples):, f 73;
 #X text 54 59 pitch -->;
 #X text 19 140 oscillator -->;
+#X text 83 263 Here \, in place of the [osc~] cosine wave oscillator \, we introduce the [tabosc4~] oscillator which produces an arbitrary waveform. You can draw in the waveform with the mouse., f 73;
 #X connect 0 0 5 0;
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;
-#X connect 7 0 14 0;
-#X connect 7 0 14 1;
+#X connect 7 0 13 0;

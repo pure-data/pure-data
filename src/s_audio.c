@@ -22,9 +22,7 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #define SYS_DEFAULTCH 2
 #define MAXNDEV 128
@@ -597,66 +595,76 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     }
 }
 
-    /* start an audio settings dialog window */
-void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
-{
+
+void sys_gui_audiopreferences(void) {
     t_audiosettings as;
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
-    char device[MAXPDSTRING];
-    char *indevs[MAXNDEV], *outdevs[MAXNDEV];
-    int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
     char srate[80], callback[80], blocksize[80];
+    const char *devicesI[MAXNDEV], *devicesO[MAXNDEV];
+    t_float usedevsI[MAXAUDIOINDEV], devchansI[MAXAUDIOINDEV];
+    t_float usedevsO[MAXAUDIOOUTDEV], devchansO[MAXAUDIOOUTDEV];
+    int num_usedevsI, num_devchansI, num_usedevsO, num_devchansO;
+    int num_devicesI = 0, num_devicesO = 0, canmulti = 0, cancallback = 0;
+    int i;
 
-    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
-         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
-
-    for (i = 0; i < nindevs; i++)
-        indevs[i] = indevlist + i * DEVDESCSIZE;
-    for (i = 0; i < noutdevs; i++)
-        outdevs[i] = outdevlist + i * DEVDESCSIZE;
-
-    if(!nindevs) {
-        nindevs = 1;
-        indevs[0] = "";
-    }
-    if(!noutdevs) {
-        noutdevs = 1;
-        outdevs[0] = "";
-    }
-
-    pdgui_vmess("set", "rS",
-            "::audio_indevlist",
-            nindevs, indevs);
-    pdgui_vmess("set", "rS",
-            "::audio_outdevlist",
-            noutdevs, outdevs);
-
+        /* query the current AUDIO settings */
     sys_get_audio_settings(&as);
+    sys_get_audio_devs(indevlist, &num_devicesI, outdevlist, &num_devicesO, &canmulti,
+        &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
 
-    if (as.a_nindev > 1 || as.a_noutdev > 1)
-        flongform = 1;
+        /* normalize the data a bit */
+    if(!num_devicesI) {
+        num_devicesI = 1;
+        devicesI[0] = "";
+    } else {
+        for(i=0; i<num_devicesI; i++)
+            devicesI[i] = indevlist + i*DEVDESCSIZE;
+    }
+    num_usedevsI = sizeof(as.a_indevvec)/sizeof(*as.a_indevvec);
+    for(i=0; i<num_usedevsI; i++) {
+        usedevsI[i] = (t_float)as.a_indevvec[i];
+    }
+    num_devchansI = sizeof(as.a_indevvec)/sizeof(*as.a_indevvec);
+    for(i=0; i<num_devchansI; i++) {
+        devchansI[i] = (t_float)as.a_chindevvec[i];
+    }
+
+    if(!num_devicesO) {
+        num_devicesO = 1;
+        devicesO[0] = "";
+    } else {
+        for(i=0; i<num_devicesO; i++)
+            devicesO[i] = outdevlist + i*DEVDESCSIZE;
+    }
+    num_usedevsO = sizeof(as.a_outdevvec)/sizeof(*as.a_outdevvec);
+    for(i=0; i<num_usedevsO; i++) {
+        usedevsO[i] = (t_float)as.a_outdevvec[i];
+    }
+    num_devchansO = sizeof(as.a_outdevvec)/sizeof(*as.a_outdevvec);
+    for(i=0; i<num_devchansO; i++) {
+        devchansO[i] = (t_float)as.a_choutdevvec[i];
+    }
 
     sprintf(srate, "%s%d", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
     sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
     sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
 
-        /* values that are fixed and must not be changed by the GUI are
-        prefixed with '!';  * the GUI will then display these values but
-        disable their widgets */
+        /* and send it over to the GUI */
+    pdgui_vmess("::dialog_audio::set_configuration", "SFF SFF ssi si",
+        num_devicesI, devicesI, num_usedevsI, usedevsI, num_devchansI, devchansI,
+        num_devicesO, devicesO, num_usedevsO, usedevsO, num_devchansO, devchansO,
+        srate, blocksize, as.a_advance,
+        callback, canmulti);
+}
+
+    /* start an audio settings dialog window */
+void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
+{
+    sys_gui_audiopreferences();
     pdgui_stub_deleteforkey(0);
-    pdgui_stub_vnew(&glob_pdobject,
-        "pdtk_audio_dialog", (void *)glob_audio_properties,
-        "iiii iiii iiii iiii  s ii s i s",
-        as.a_indevvec   [0], as.a_indevvec   [1], as.a_indevvec   [2], as.a_indevvec   [3],
-        as.a_chindevvec [0], as.a_chindevvec [1], as.a_chindevvec [2], as.a_chindevvec [3],
-        as.a_outdevvec  [0], as.a_outdevvec  [1], as.a_outdevvec  [2], as.a_outdevvec  [3],
-        as.a_choutdevvec[0], as.a_choutdevvec[1], as.a_choutdevvec[2], as.a_choutdevvec[3],
-        srate,
-        as.a_advance, canmulti,
-        callback,
-        (flongform != 0),
-        blocksize);
+    pdgui_stub_vnew(&glob_pdobject, "::dialog_audio::create",
+        (void *)glob_audio_properties, "");
 }
 
     /* new values from dialog window */
@@ -673,12 +681,12 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < 4; i++)
     {
         as.a_indevvec[i] = atom_getfloatarg(i, argc, argv);
-        as.a_chindevvec[i] = atom_getfloatarg(i+4, argc, argv);
+        as.a_chindevvec[i] = (as.a_indevvec[i] >= 0) ? atom_getfloatarg(i+4, argc, argv) : 0;
         as.a_outdevvec[i] = atom_getfloatarg(i+8, argc, argv);
-        as.a_choutdevvec[i] = atom_getfloatarg(i+12, argc, argv);
+        as.a_choutdevvec[i] = (as.a_outdevvec[i] >= 0) ? atom_getfloatarg(i+12, argc, argv) : 0;
     }
         /* compact out any zeros and count nonzero entries */
-    for (i = 0, as.a_nindev = 0; i < 4; i++)
+    for (i = 0, as.a_nindev = 0; i < MAXAUDIOINDEV; i++)
     {
         if (as.a_chindevvec[i])
         {
@@ -687,7 +695,7 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             as.a_nindev++;
         }
     }
-    for (i = 0, as.a_noutdev = 0; i < 4; i++)
+    for (i = 0, as.a_noutdev = 0; i < MAXAUDIOOUTDEV; i++)
     {
         if (as.a_choutdevvec[i])
         {
@@ -725,7 +733,6 @@ void sys_listdevs(void)
 #if 0
         /* To agree with command line flags, normally start at 1 */
         /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
-        /* (see also sys_mmio variable in s_main.c)  */
 
        /* JMZ: otoh, it seems that the '-audiodev' flags 0-based
         * indices on ALSA and PORTAUDIO as well,
@@ -816,15 +823,12 @@ static t_apientry audio_apilist[] = {
 #ifdef USEAPI_OSS
     {"OSS", API_OSS},
 #endif
-#ifdef USEAPI_MMIO
-    {"\"standard (MMIO)\"", API_MMIO},
-#endif
 #ifdef USEAPI_ALSA
     {"ALSA", API_ALSA},
 #endif
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-    {"\"ASIO (portaudio)\"", API_PORTAUDIO},
+    {"\"standard (portaudio)\"", API_PORTAUDIO},
 #else
 #ifdef __APPLE__
     {"\"standard (portaudio)\"", API_PORTAUDIO},
@@ -833,6 +837,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #endif
 #endif  /* USEAPI_PORTAUDIO */
+#ifdef USEAPI_MMIO
+    {"\"old MMIO system\"", API_MMIO},
+#endif
 #ifdef USEAPI_JACK
     {"jack", API_JACK},
 #endif
@@ -849,6 +856,9 @@ static t_apientry audio_apilist[] = {
 
 void sys_get_audio_apis(char *buf)
 {
+        /* FIXXME: this returns a raw Tcl-list!
+         *  instead it should return something we can use with pdgui_vmess()
+         */
     unsigned int n;
     if (sizeof(audio_apilist)/sizeof(t_apientry) < 2)
         strcpy(buf, "{}");

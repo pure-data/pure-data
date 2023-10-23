@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
-"Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/eu/>\n"
+"Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/eu/>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -221,8 +221,28 @@ msgstr "Ezarri"
 msgid "OK"
 msgstr "Ados"
 
-msgid "Audio Settings"
-msgstr "Audioaren ezarpenak"
+#, fuzzy
+msgid "no device"
+msgstr "Sartze tresna 2:"
+
+msgid "(same as input device)..."
+msgstr "(sarrera gailua bera)..."
+
+msgid "Channels:"
+msgstr "Kanalak:"
+
+msgid "Input Devices"
+msgstr "Sarrera gailuak"
+
+msgid "Output Devices"
+msgstr "Irteera gailuak"
+
+#, fuzzy
+msgid "Use Multiple Devices"
+msgstr "Gailu anitz erabili"
+
+msgid "audio system"
+msgstr ""
 
 #, fuzzy
 msgid "Settings"
@@ -249,21 +269,8 @@ msgstr "Bloke tamaina:"
 msgid "Use callbacks"
 msgstr ""
 
-msgid "Input Devices"
-msgstr "Sarrera gailuak"
-
-msgid "Channels:"
-msgstr "Kanalak:"
-
-msgid "Output Devices"
-msgstr "Irteera gailuak"
-
-msgid "(same as input device)..."
-msgstr "(sarrera gailua bera)..."
-
-#, fuzzy
-msgid "Use Multiple Devices"
-msgstr "Gailu anitz erabili"
+msgid "Audio Settings"
+msgstr "Audioaren ezarpenak"
 
 msgid "Save All Settings"
 msgstr "Ezarpen guztiak gorde"
@@ -387,6 +394,9 @@ msgstr "Sinboloa bidali:"
 #, fuzzy
 msgid "Receive symbol:"
 msgstr "Sinboloa jaso:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Zabalera:"
@@ -541,17 +551,24 @@ msgstr "Mezua Pd Bidali"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "MIDI ezarpenak"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI-ren Esarpenak"
+#, fuzzy
+msgid "no input devices"
+msgstr "Sarrera gailuak"
 
 msgid "In Ports:"
 msgstr "Sarrera portuak:"
 
 msgid "Out Ports:"
 msgstr "Irteera portuak:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI ezarpenak"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI-ren Esarpenak"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -581,6 +598,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Garbitu"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Hobespenak"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -594,19 +615,96 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd-en leihoa"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Leihoa"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr ".pdsettings fitxategia ezabatu da"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+#, fuzzy
+msgid "Preferences"
+msgstr "Hobespenak"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Hobespenak"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Hobespenak"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Hobespenak"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Hobespenak"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Hobespenak"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr ".pdsettings fitxategia ezabatu da"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Bloke tamaina:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -669,6 +767,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1173,6 +1277,127 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1357,21 +1582,9 @@ msgstr ".pdsettings fitxategia ezabatu da"
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr "Audioaren Ezarpenak..."
-
-msgid "MIDI..."
-msgstr "MIDI Ezarpenak..."
-
 #, fuzzy
-msgid "Zoom New Windows"
-msgstr "Leihoa"
+msgid "Edit Preferences..."
+msgstr "Hobespenak..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1388,7 +1601,7 @@ msgid "Forget All..."
 msgstr ""
 
 #, fuzzy
-msgid "Preferences"
+msgid "Tabbed preferences"
 msgstr "Hobespenak"
 
 msgid "Open Recent"
@@ -1403,6 +1616,15 @@ msgstr "'%s' fitxategian egin dituzun aldaketak gorde nahi dituzu?"
 
 msgid "Properties"
 msgstr "Propietateak"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "'%s' fitxategiko aldaketak baztertu?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1426,6 +1648,13 @@ msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 msgid "DSP"
@@ -1452,6 +1681,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr ""
 
@@ -1465,6 +1697,16 @@ msgstr "Array ezabatu"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "(no device)"
+#~ msgstr "Sartze tresna 2:"
+
+#~ msgid "Audio..."
+#~ msgstr "Audioaren Ezarpenak..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI Ezarpenak..."
 
 #, fuzzy
 #~ msgid "bottom:"
@@ -1516,9 +1758,6 @@ msgstr ""
 
 #~ msgid "Math"
 #~ msgstr "Matematika"
-
-#~ msgid "Input device 2:"
-#~ msgstr "Sartze tresna 2:"
 
 #~ msgid "Others"
 #~ msgstr "Besteak"

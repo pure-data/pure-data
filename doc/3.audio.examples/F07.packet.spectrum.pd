@@ -53,19 +53,12 @@
 #X text 427 532 0;
 #X text 675 532 5512;
 #X text 69 26 WINDOWED PACKET SPECTRUM;
-#X text 94 75 Here's the spectrum you get. Note that even if you put
-the center frequency right on a partial \, there is significant energy
-in neighboring partials (try fundamental 440 \, "center freq" 30 \,
-bandwidth 0.), f 76;
-#X text 94 129 The center frequency is in units of ten per partial
-\, or in other words a value of "30" means "centered on the third partial".
-, f 76;
+#X text 94 75 Here's the spectrum you get. Note that even if you put the center frequency right on a partial \, there is significant energy in neighboring partials (try fundamental 440 \, "center freq" 30 \, bandwidth 0.), f 76;
+#X text 94 129 The center frequency is in units of ten per partial \, or in other words a value of "30" means "centered on the third partial"., f 76;
 #X text 482 574 updated for Pd version 0.34;
-#X text 94 169 This technique only works if you're doing Hanning-window
-shaped PWM--you can't combine this naturally with FM or with the waveshaping
-technique we'll see later., f 76;
+#X text 94 169 This technique only works if you're doing Hanning-window shaped PWM--you can't combine this naturally with FM or with the waveshaping technique we'll see later., f 76;
 #X text 194 502 <= graph;
-#X obj 32 566 output~;
+#X obj 90 569 output~;
 #X obj 537 27 declare -stdpath ./;
 #X connect 0 0 9 0;
 #X connect 1 0 10 0;
@@ -81,7 +74,6 @@ technique we'll see later., f 76;
 #X connect 11 0 12 1;
 #X connect 12 0 28 0;
 #X connect 12 0 37 0;
-#X connect 12 0 37 1;
 #X connect 13 0 14 0;
 #X connect 14 0 21 0;
 #X connect 15 0 11 0;

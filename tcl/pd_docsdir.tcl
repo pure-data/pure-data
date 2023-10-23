@@ -110,7 +110,7 @@ proc ::pd_docsdir::init {{reset false}} {
                     set newpath [tk_chooseDirectory -title [_ "Choose Pd documents directory:"] \
                                                     -initialdir $::env(HOME)]
                     if {$newpath ne ""} {
-                        if{![::pd_docsdir::update_path $newpath]} {
+                        if {![::pd_docsdir::update_path $newpath]} {
                             # didn't work
                             return
                         }

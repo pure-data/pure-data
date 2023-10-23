@@ -53,7 +53,12 @@ libpdtcldir = $(libpddir)/tcl
 # to allow easy overriding of CODECFLAGS and to allow adding MORECFLAGS:
 
 # C preprocessor flags, and flags controlling errors and warnings
-CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
+CPPFLAGS = -DPD -DPD_INTERNAL \
+    -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
+    -DHAVE_ENDIAN_H=1 \
+    -DHAVE_SYS_UTSNAME_H=1 \
+    -DHAVE_QSORT_R_ARG_LAST=1 \
+    -DPD_WATCHDOG=1 \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
@@ -87,7 +92,7 @@ endif
 ifdef JACK
 CPPFLAGS += -DUSEAPI_JACK
 SYSSRC += s_audio_jack.c
-LIB += -ljack
+LIB += -L/usr/lib64/pipewire-0.3/jack -ljack
 HAVEAUDIOAPI=true
 endif
 ifeq ($(OSS), true)

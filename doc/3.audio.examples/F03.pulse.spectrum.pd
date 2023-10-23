@@ -17,7 +17,6 @@
 #X text 82 469 Here is a measured amplitude spectrum for the pulse train. Notice that \, other than a smallish spillover \, the energy sits in one "lobe" whose changing width justifies our calling the squeeze factor the "bandwidth.", f 68;
 #X text 82 530 The spectrum is in units of amplitude. The sidelobes \, although they look small \, are actually only about 34 dB down. You can design more complicated pulse trains \, little Blackman window functions \, which control the sidelobes much better., f 68;
 #X obj 71 375 output~;
-#X obj 71 336 hip~;
 #N canvas 424 208 569 608 fft 0;
 #X obj 43 105 inlet~;
 #X obj 243 263 inlet;
@@ -95,6 +94,7 @@
 #X obj 469 25 declare -stdpath ./;
 #X text 214 331 <-- repeatedly;
 #X text 175 301 <-- graph once;
+#X obj 71 336 hip~ 5;
 #X connect 0 0 11 0;
 #X connect 1 0 12 0;
 #X connect 2 0 0 0;
@@ -107,12 +107,11 @@
 #X connect 8 0 2 0;
 #X connect 9 0 1 0;
 #X connect 11 0 5 1;
-#X connect 12 0 21 0;
-#X connect 17 0 16 0;
-#X connect 17 0 16 1;
-#X connect 19 0 18 1;
-#X connect 20 0 18 2;
-#X connect 21 0 17 0;
-#X connect 21 0 18 0;
-#X connect 22 0 4 0;
-#X connect 36 0 22 0;
+#X connect 12 0 20 0;
+#X connect 18 0 17 1;
+#X connect 19 0 17 2;
+#X connect 20 0 17 0;
+#X connect 20 0 39 0;
+#X connect 21 0 4 0;
+#X connect 35 0 21 0;
+#X connect 39 0 16 0;

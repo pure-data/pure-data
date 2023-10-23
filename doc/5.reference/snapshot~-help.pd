@@ -8,9 +8,6 @@
 #X text 28 162 A 'set' message is provided for the (rare) situations where you might make a known change to the signal input \, and then read snapshot's value before any ensuing signal computation., f 81;
 #X floatatom 78 371 7 0 0 0 - - - 0;
 #X msg 101 314 set 5 \, bang;
-#X msg 428 259 \; pd dsp \$1;
-#X obj 428 232 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 454 231 DSP on/off;
 #X text 78 235 0.1 Hz cosine wave;
 #N canvas 702 112 582 226 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -37,8 +34,11 @@
 #X obj 89 286 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 135 372 This output updates each time bang is clicked above;
 #X text 190 314 <-- set value (which is reset next DSP block);
+#X msg 411 255 \; pd dsp \$1;
+#X obj 411 220 set-dsp-tgl;
+#X text 442 224 DSP on/off;
 #X connect 0 0 7 0;
 #X connect 3 0 0 0;
 #X connect 8 0 0 0;
-#X connect 10 0 9 0;
-#X connect 22 0 0 0;
+#X connect 19 0 0 0;
+#X connect 23 0 22 0;

@@ -197,6 +197,16 @@ proc ::dialog_iemgui::toggle_mode {mytoplevel} {
         ::dialog_iemgui::sched_rng $mytoplevel
     }
 }
+proc ::dialog_iemgui::toggle_and_activate {mytoplevel activewidget} {
+    ::dialog_iemgui::toggle_mode $mytoplevel
+    set vid [string trimleft $mytoplevel .]
+
+    if {$::dialog_iemgui::var_mode($vid) != 0} {
+        $activewidget configure -state normal
+    } else {
+        $activewidget configure -state disabled
+    }
+}
 
 # open popup over source button
 proc ::dialog_iemgui::font_popup {mytoplevel} {
@@ -445,9 +455,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
 
     if {$::dialog_iemgui::var_mode($vid) >= 0} {
+        if {$mainheader == "|nbx|" } {
+            set togglecmd "::dialog_iemgui::toggle_and_activate $mytoplevel $mytoplevel.para.num.ent"
+        } else {
+            set togglecmd "::dialog_iemgui::toggle_mode $mytoplevel"
+        }
         ::dialog_iemgui::popupmenu $mytoplevel.para.lilo \
             ::dialog_iemgui::var_mode($vid) [list [_ $lilo0_label] [_ $lilo1_label] ] \
-            "::dialog_iemgui::toggle_mode $mytoplevel; $applycmd"
+            "$togglecmd; $applycmd"
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10
     }
     if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
@@ -670,6 +685,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     }
 
     position_over_window $mytoplevel $::focused_window
+
+    if {$mainheader == "|nbx|" } {
+        ::dialog_iemgui::toggle_and_activate $mytoplevel $mytoplevel.para.num.ent
+    }
 }
 
 # for live widget updates on OSX

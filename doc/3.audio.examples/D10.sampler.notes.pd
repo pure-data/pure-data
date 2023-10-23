@@ -23,8 +23,7 @@
 #X text 422 265 v-- re-read original samples;
 #X obj 218 63 route record stop reload browse;
 #X obj 382 347 soundfiler;
-#X msg 382 289 read ../sound/bell.aiff sample1 \, read ../sound/voice2.wav
-sample2, f 33;
+#X msg 382 289 read ../sound/bell.aiff sample1 \, read ../sound/voice2.wav sample2, f 33;
 #X msg 378 155 read \$1 sample1;
 #X obj 378 182 soundfiler;
 #X text 416 100 <= browse for samples;
@@ -80,14 +79,9 @@ sample2, f 33;
 #X text 230 123 compute the name;
 #X text 124 150 and send a "set" message to the tabread4~.;
 #X text 135 251 line~ for de-clicking;
-#X text 167 309 The envelope generator. Rather than sending our message
-straight to the line~ we unpack it in order to fool with the amplitude
-field., f 45;
+#X text 167 309 The envelope generator. Rather than sending our message straight to the line~ we unpack it in order to fool with the amplitude field., f 45;
 #X text 146 378 convert amplitude to linear units.;
-#X text 141 407 take the fourth root. This because we want to raise
-the line~'s output to the 4th power afterwards. This is an inexpensive
-way to give the rise and decay a more natural sounding evolution than
-just a straight line., f 52;
+#X text 141 407 take the fourth root. This because we want to raise the line~'s output to the 4th power afterwards. This is an inexpensive way to give the rise and decay a more natural sounding evolution than just a straight line., f 52;
 #X text 112 505 square the output twice to get the fourth power.;
 #X obj 75 348 unpack f f;
 #X connect 0 0 10 0;
@@ -112,7 +106,7 @@ just a straight line., f 52;
 #X connect 18 0 16 1;
 #X connect 28 0 12 0;
 #X connect 28 1 15 1;
-#X restore 467 656 pd playback;
+#X restore 434 651 pd playback;
 #X msg 631 77 record 2;
 #X text 50 272 ARGUMENTS FOR NOTES:;
 #X text 81 294 pitch in halftones, f 21;
@@ -134,10 +128,7 @@ just a straight line., f 52;
 #X obj 227 244 * 4.41e+08;
 #X obj 263 278 +;
 #X obj 243 91 t b b b;
-#X text 461 353 This starts the note \, sending to "receives" in the
-playback subpatch. The new receive "envelope" is an amplitude control
-in parallel with the cutoff control. The "sample-number" switches the
-tabread4~ between tables., f 43;
+#X text 461 353 This starts the note \, sending to "receives" in the playback subpatch. The new receive "envelope" is an amplitude control in parallel with the cutoff control. The "sample-number" switches the tabread4~ between tables., f 43;
 #X obj 373 217 + 1;
 #X msg 42 485 60 100 10000 1 0 0 0;
 #X obj 57 747 s note;
@@ -154,12 +145,10 @@ tabread4~ between tables., f 43;
 #X msg 74 598 60 100 100 1 0 0 0;
 #X msg 78 621 60 100 100 1 0 0 1000;
 #X msg 69 576 60 100 10000 1 0 1000 0;
-#X msg 309 359 \; envelope 0 \, \$1 \$2 \; phase \$3 \, \$4 1e+07 \;
-sample-number \$5 \; cutoff 1 5 \;;
+#X msg 309 359 \; envelope 0 \, \$1 \$2 \; phase \$3 \, \$4 1e+07 \; sample-number \$5 \; cutoff 1 5 \;;
 #X msg 644 121 reload;
 #X msg 649 143 browse;
-#X text 418 311 combine amplitude \, rise time \, start phase \, end
-phase \, and sample number in one message, f 43;
+#X text 418 311 combine amplitude \, rise time \, start phase \, end phase \, and sample number in one message, f 43;
 #X text 191 485 straight playback;
 #X text 189 507 change amplitude;
 #X text 204 529 change sample number;
@@ -169,27 +158,16 @@ phase \, and sample number in one message, f 43;
 #X text 233 619 ... and decay time;
 #X text 289 693 microtones OK too.;
 #X text 90 643 If you omit values they stay unchanged;
-#X obj 467 693 output~;
-#X text 566 725 updated for Pd version 0.37;
+#X obj 434 688 output~;
+#X text 567 714 updated for Pd version 0.37;
 #X text 688 55 <= record;
 #X obj 372 82 unpack f f f f f f f;
 #X obj 309 322 pack f f f f f;
-#X text 25 157 transposition works by altering the phase target (\$4
-below right.) The mtof and / 261 calculate speed change considering
-60 as unity., f 26;
+#X text 25 157 transposition works by altering the phase target (\$4 below right.) The mtof and / 261 calculate speed change considering 60 as unity., f 26;
 #X text 39 70 as before we mute and wait, f 13;
-#X text 31 442 These demonstrate the effect of varying the parameters
-one by one., f 34;
+#X text 31 442 These demonstrate the effect of varying the parameters one by one., f 34;
 #X obj 478 162 del;
-#X text 409 470 This patch takes the same principle as the earlier
-"one-shot sampler" \, but allows you to parameterize sample playback.
-Since we must wait 5 msec before starting the playback \, we store
-all the parameters in "f" objects \, and recall them to construct the
-new note. Transposition is done by altering the amount to play back
-in the (artificial) ten thousand seconds (1e+07). The playback segment
-can be altered to start in the middle of the sample instead of the
-beginning \, and you can change the duration and rise and decay times.
-, f 50;
+#X text 409 470 This patch takes the same principle as the earlier "one-shot sampler" \, but allows you to parameterize sample playback. Since we must wait 5 msec before starting the playback \, we store all the parameters in "f" objects \, and recall them to construct the new note. Transposition is done by altering the amount to play back in the (artificial) ten thousand seconds (1e+07). The playback segment can be altered to start in the middle of the sample instead of the beginning \, and you can change the duration and rise and decay times., f 50;
 #X msg 62 552 60 100 10000 1 3000 0 0;
 #X msg 56 530 60 100 10000 2 0 0 0;
 #X msg 139 69 \; cutoff 0 5;
@@ -211,7 +189,6 @@ beginning \, and you can change the duration and rise and decay times.
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
 #X connect 6 0 58 0;
-#X connect 6 0 58 1;
 #X connect 7 0 3 0;
 #X connect 17 0 32 0;
 #X connect 18 0 62 1;

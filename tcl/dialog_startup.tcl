@@ -4,10 +4,12 @@ package provide dialog_startup 0.1
 package require scrollboxwindow
 
 namespace eval dialog_startup {
-    variable defeatrt_flag 0
-
     namespace export pdtk_startup_dialog
 }
+
+set ::dialog_startup::language ""
+set ::dialog_startup::precision_binary ""
+
 
 ########## pdtk_startup_dialog -- dialog window for startup options #########
 # Create a simple modal window with an entry widget
@@ -59,15 +61,22 @@ proc ::dialog_startup::edit { current_library } {
 }
 
 proc ::dialog_startup::commit { new_startup } {
-    variable defeatrt_button
+    if {$::dialog_startup::language eq "default" } {
+        set ::dialog_startup::language ""
+    }
+    set ::pd_i18n::language $::dialog_startup::language
+    ::pd_guiprefs::write "gui_language" $::dialog_startup::language
+    if { $::dialog_startup::precision_binary != "" } {
+        ::pd_guiprefs::write "pdcore_precision_binary" $::dialog_startup::precision_binary
+    }
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
-    variable defeatrt_button $defeatrt
-    if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
+    set ::sys_defeatrt $defeatrt
+    if {$flags ne ""} {variable ::sys_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
@@ -78,55 +87,181 @@ proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     }
 }
 
-proc ::dialog_startup::create_dialog {mytoplevel} {
-    ::scrollboxwindow::make $mytoplevel $::startup_libraries \
-        dialog_startup::add dialog_startup::edit dialog_startup::commit \
-        [_ "Pd libraries to load on startup"] \
-        450 300 0
-    wm withdraw $mytoplevel
-    ::pd_bindings::dialog_bindings $mytoplevel "startup"
+proc ::dialog_startup::fill_frame {frame} {
+    # 'frame' is a frame, rather than a toplevel window
 
-    frame $mytoplevel.flags
-    pack $mytoplevel.flags -side top -anchor s -fill x -padx 2m
-    label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags
-    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
-    pack $mytoplevel.flags.entryname -side right
+    label $frame.restart_required -text [_ "Settings below require a restart of Pd!" ]
+    pack $frame.restart_required -side top -fill x
+
+    # scrollbox
+    ::scrollbox::make ${frame} $::startup_libraries \
+        {} {} \
+        [_ "Pd libraries to load on startup"]
+
+    ## GUI options
+    labelframe $frame.guiframe -text [_ "GUI options" ]
+    set f $frame.guiframe
+    pack $f -side top -anchor s -fill x -padx 2m -pady 5
+
+    # language selection
+    frame $f.langframe
+    set w $f.langframe.language
+    menubutton $w -indicatoron 1 -menu $w.menu \
+        -text [_ "language" ] \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush
+    menu $w.menu -tearoff 0
+    set ::dialog_startup::language [::pd_guiprefs::read "gui_language" ]
+    if { $::dialog_startup::language eq "" } {
+        set ::dialog_startup::language default
+    }
+    foreach lang [::pd_i18n::get_available_languages] {
+        foreach {langname langcode} $lang {
+            $w.menu add radiobutton \
+                -label ${langname} -command "$w configure -text \"${langname}\"" \
+                -value ${langcode} -variable ::dialog_startup::language
+            if { ${langcode} == $::dialog_startup::language } {
+                $w configure -text "${langname}"
+            }
+        }
+    }
+    pack $w -side right
+
+    set w $f.langframe.langlabel
+    label $w -text [_ "Menu language" ]
+    pack $w -side left
+    pack $f.langframe -side top -anchor w -expand 1
+
+
+    # precision selection
+    set basedir [file normalize [file join [file dirname ${::pdgui::scriptname}] ..]]
+    set pdexecs {}
+    foreach {bindir exe} {
+        bin32 pd32
+        bin32 pd
+        bin   pd32
+        bin   pd} {
+        foreach ext {{} .exe .com} {
+            set x [file join $basedir $bindir ${exe}${ext}]
+            if {[file executable $x]} {
+                lappend pdexecs [list [_ "float (32bit)"] 32]
+                break
+            }
+        }
+    }
+    foreach {bindir exe} {
+             bin64 pd64
+             bin64 pd
+             bin pd64} {
+        foreach ext {{} .exe .com} {
+            set x [file join $basedir $bindir ${exe}${ext}]
+            if {[file executable $x]} {
+                lappend pdexecs [list [_ "double (64bit) EXPERIMENTAL"] 64]
+                # the next line is just for the translations
+                set x [_ "double (64bit)" ]
+                break
+            }
+        }
+    }
+    set precbin [::pd_guiprefs::read "pdcore_precision_binary" ]
+    if {[info exists ::deken::platform(floatsize)]} {
+        switch -- ${::deken::platform(floatsize)} {
+            64 {
+                set precbin 64
+            }
+            32 {
+                set precbin 32
+            }
+        }
+    }
+
+    if { [llength $pdexecs] > 1 } {
+        if { $precbin == "" } {
+            set precbin [lindex [lindex $pdexecs 0] 1]
+        }
+
+        frame $f.floatsize
+
+        set w $f.floatsize.floatsize
+        menubutton $w -indicatoron 1 -menu $w.menu \
+            -text [_ "float size" ] \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush
+
+        set var ::dialog_startup::precision_binary
+        if { $::host ne "" } {
+            $w configure -state disabled
+            set var ::dialog_startup::precision_binary_dummy
+            set ::dialog_startup::precision_binary_dummy ${::dialog_startup::precision_binary}
+        }
+        set $var $precbin
+
+        menu $w.menu -tearoff 0
+        foreach pdx $pdexecs {
+            foreach {precision bin} ${pdx} {break}
+            $w.menu add radiobutton \
+                -label ${precision} -command "$w configure -text \"${precision}\"" \
+                -value ${bin} -variable ${var}
+            if { ${bin} == $precbin } {
+                $w configure -text "${precision}"
+            }
+        }
+        pack $w -side right
+        if { $::host ne "" } {
+            $w configure -state disabled
+        }
+
+
+        set w $f.floatsize.label
+        label $w -text [_ "Numeric precision of Pd-core" ]
+        pack $w -side left
+        pack $f.floatsize -side top -anchor w -expand 1
+    }
+
+    # Startup options and flags
+    labelframe $frame.optionframe -text [_ "Startup options" ]
+    pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
+
+    checkbutton $frame.optionframe.verbose  -anchor w \
+        -text [_ "Verbose"] \
+        -variable ::sys_verbose
+    pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
     if {$::windowingsystem ne "win32"} {
-        frame $mytoplevel.defeatrtframe
-        pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
-        checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
+        checkbutton $frame.optionframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
-            -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt
+            -variable ::sys_defeatrt
+        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
     }
 
-    # focus handling on OSX
-    if {$::windowingsystem eq "aqua"} {
+    labelframe $frame.flags -text [_ "Startup flags:" ]
+    pack $frame.flags -side top -anchor s -fill x -padx 2m
+    entry $frame.flags.entry -textvariable ::sys_flags
+    pack $frame.flags.entry -side right -expand 1 -fill x
 
-        # unbind ok button when in listbox
-        bind $mytoplevel.listbox.box <FocusIn> "::dialog_startup::unbind_return $mytoplevel"
-        bind $mytoplevel.listbox.box <FocusOut> "::dialog_startup::rebind_return $mytoplevel"
+    ::preferencewindow::entryfocus $frame.flags.entry
+    ::preferencewindow::simplefocus $frame.listbox.box
+}
 
-        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
-        bind $mytoplevel.flags.entry <KeyPress-Return> "::dialog_startup::rebind_return $mytoplevel"
+proc ::dialog_startup::create_dialog {mytoplevel} {
+    ::preferencewindow::create ${mytoplevel} [_ "Pd libraries to load on startup"] {450 300}
+    wm withdraw $mytoplevel
+    wm resizable $mytoplevel 0 0
 
-        # unbind Return from ok button when an entry takes focus
-        $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
+    set my [::preferencewindow::add_frame ${mytoplevel} [_ "startup preferences" ]]
 
-        # remove cancel button from focus list since it's not activated on Return
-        $mytoplevel.nb.buttonframe.cancel config -takefocus 0
+    # add widgets
+    fill_frame $my
+    ::preferencewindow::entryfocus $my.flags.entry $mytoplevel.nb.buttonframe.ok "::dialog_startup::ok $mytoplevel" "::dialog_startup::cancel $mytoplevel"
+    ::preferencewindow::simplefocus $my.listbox.box $mytoplevel.nb.buttonframe.ok "::dialog_path::ok $mytoplevel" "::dialog_path::cancel $mytoplevel"
 
-        # show active focus on the ok button as it *is* activated on Return
-        $mytoplevel.nb.buttonframe.ok config -default normal
-        bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
-        bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
+    pack $my -side top -fill x -expand 1
 
-        # since we show the active focus, disable the highlight outline
-        $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
-        $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
-    }
+    # add actions
+    ::preferencewindow::add_cancel ${mytoplevel} "::scrollboxwindow::cancel ${mytoplevel}"
+    ::preferencewindow::add_apply ${mytoplevel} "::scrollboxwindow::apply ${my} ::dialog_startup::commit"
+
+    ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     # set min size based on widget sizing
     update
@@ -149,4 +284,12 @@ proc ::dialog_startup::unbind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Escape> break
     bind $mytoplevel <KeyPress-Return> break
     return 1
+}
+
+# procs for setting variables from the Pd-core
+proc ::dialog_startup::set_flags {flags} {
+    set ::sys_flags [subst -nocommands -novariables ${flags}]
+}
+proc ::dialog_startup::set_libraries {libraries} {
+    set ::startup_libraries $libraries
 }

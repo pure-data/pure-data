@@ -66,7 +66,7 @@
 #X connect 28 4 24 1;
 #X connect 28 5 25 1;
 #X restore 108 224 pd 16x;
-#X obj 90 331 output~;
+#X obj 108 331 output~;
 #X text 313 585 Updated for Pd version 0.39;
 #X text 45 22 THE CLASSIC SUBTRACTIVE SYNTH SOUND;
 #X obj 189 196 *~;
@@ -102,7 +102,6 @@
 #X connect 6 0 17 1;
 #X connect 7 0 8 1;
 #X connect 8 0 1 0;
-#X connect 8 0 1 1;
 #X connect 9 0 0 0;
 #X connect 10 0 27 0;
 #X connect 11 0 23 0;

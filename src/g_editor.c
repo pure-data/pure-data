@@ -10,9 +10,7 @@
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 struct _instanceeditor
 {
@@ -2359,6 +2357,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         else
         {
             int noutlet;
+            int out_activeminh = (OHEIGHT + 1)  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 4;
+            int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
+            if (out_activeheight > out_activemaxh) out_activeheight = out_activemaxh;
+            if (out_activeheight < out_activeminh) out_activeheight = out_activeminh;
                 /* resize? only for "true" text boxes or canvases */
             if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
@@ -2384,28 +2387,26 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (hitobj && (noutlet = obj_noutlets(hitobj)) &&
-                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
+                ypos >= y2 - out_activeheight)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
                 int closest = ((xpos-x1) * (nout1) + width/2)/width;
-                int hotspot = x1 +
-                    (width - iow) * closest / (nout1);
-                if (closest < noutlet &&
-                    xpos >= (hotspot - x->gl_zoom) &&
-                    xpos <= hotspot + (iow + x->gl_zoom))
+                if (noutlet == 1 || closest < noutlet)
                 {
                     if (doit)
                     {
                         int issignal = obj_issignaloutlet(hitobj, closest);
+                        int xout = x1 + IOMIDDLE * x->gl_zoom +
+                            (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
-                        x->gl_editor->e_xwas = xpos;
-                        x->gl_editor->e_ywas = ypos;
+                        x->gl_editor->e_xwas = xout;
+                        x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
                         pdgui_vmess(0, "crr iiii ri rs",
                             x, "create", "line",
-                            xpos,ypos, xpos,ypos,
+                            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos,
                             "-width", (issignal ? 2 : 1) * x->gl_zoom,
                             "-tags", "x");
                     }

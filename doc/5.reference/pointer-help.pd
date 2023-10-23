@@ -164,7 +164,7 @@ and outputs the value., f 94;
 send a "bang" to the right outlet if we reach the end of the list.
 , f 63;
 #X text 158 331 delete the current object and output the next one (or
-send a "bang" to rigt outlet if it was the last one in the list),
+send a "bang" to right outlet if it was the last one in the list),
 f 67;
 #X text 23 514 Optional arguments to [pointer] allow you to select
 according to the template of the scalar being output:;

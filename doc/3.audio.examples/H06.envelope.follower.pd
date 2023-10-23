@@ -49,8 +49,9 @@
 #X text 129 512 built-in envelope follower for comparison, f 12;
 #X text 308 462 <= responsiveness;
 #X text 83 308 frequency of second oscillator =>;
-#X msg 387 309 \; pd dsp \$1;
-#X obj 387 286 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 402 276 ../5.reference/set-dsp-tgl;
+#X text 433 279 DSP on/off;
+#X msg 402 313 \; pd dsp \$1;
 #X connect 0 0 13 0;
 #X connect 1 0 2 0;
 #X connect 2 0 28 0;
@@ -70,4 +71,4 @@
 #X connect 26 0 25 1;
 #X connect 28 0 7 1;
 #X connect 29 0 28 1;
-#X connect 36 0 35 0;
+#X connect 35 0 37 0;

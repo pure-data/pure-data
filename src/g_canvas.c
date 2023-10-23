@@ -18,9 +18,7 @@ to be different but are now unified except for some fossilized names.) */
 #ifdef _WIN32
 #include <io.h>
 #endif
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
     /* LATER consider adding font size to this struct (see glist_getfont()) */
 struct _canvasenvironment
@@ -1436,7 +1434,11 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (THISGUI->i_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate)
+    {
+        canvas_stop_dsp();
+        canvas_start_dsp();
+    }
 }
 
 /* the "dsp" message to pd starts and stops DSP computation, and, if
@@ -1471,16 +1473,32 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 /******************* redrawing  data *********************/
 
-    /* redraw all "scalars" (do this if a drawing command is changed.)
-    LATER we'll use the "template" information to select which ones we
-    redraw.   Action = 0 for redraw, 1 for draw only, 2 for erase. */
-static void glist_redrawall(t_glist *gl, int action)
+static int template_usestemplate(t_symbol *usersym, t_template *used)
+{
+    int i;
+    t_template *user = template_findbyname(usersym);
+    if (!user)
+        return (0);
+    if (user == used)
+        return (1);
+    for (i = 0; i < user->t_n; i++)
+        if (user->t_vec[i].ds_type == DT_ARRAY &&
+            template_usestemplate(user->t_vec[i].ds_arraytemplate, used))
+                return (1);
+    return (0);
+}
+
+    /* redraw all "scalars" that depend on a template, e.g., if a drawing
+     command is changed. Action = 0 to redraw, 1 to draw only, 2 to erase. */
+static void glist_doredrawfortemplate(t_glist *gl,
+    t_template *template, int action)
 {
     t_gobj *g;
     int vis = glist_isvisible(gl);
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if (vis && g->g_pd == scalar_class)
+        if (vis && g->g_pd == scalar_class &&
+            template_usestemplate(((t_scalar *)g)->sc_template, template))
         {
             if (action == 1)
             {
@@ -1495,7 +1513,7 @@ static void glist_redrawall(t_glist *gl, int action)
             else scalar_redraw((t_scalar *)g, gl);
         }
         else if (g->g_pd == canvas_class)
-            glist_redrawall((t_glist *)g, action);
+            glist_doredrawfortemplate((t_glist *)g, template, action);
     }
 }
 
@@ -1505,31 +1523,15 @@ void canvas_redrawallfortemplate(t_template *template, int action)
     t_canvas *x;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_redrawall(x, action);
+        glist_doredrawfortemplate(x, template, action);
 }
 
-    /* find the template defined by a canvas, and redraw all elements
-    for that */
+    /* find the template defined by a canvas, and redraw all affected scalars */
 void canvas_redrawallfortemplatecanvas(t_canvas *x, int action)
 {
-    t_gobj *g;
-    t_template *tmpl;
-    t_symbol *s1 = gensym("struct");
-    for (g = x->gl_list; g; g = g->g_next)
-    {
-        t_object *ob = pd_checkobject(&g->g_pd);
-        t_atom *argv;
-        if (!ob || ob->te_type != T_OBJECT ||
-            binbuf_getnatom(ob->te_binbuf) < 2)
-            continue;
-        argv = binbuf_getvec(ob->te_binbuf);
-        if (argv[0].a_type != A_SYMBOL || argv[1].a_type != A_SYMBOL
-            || argv[0].a_w.w_symbol != s1)
-                continue;
-        tmpl = template_findbyname(argv[1].a_w.w_symbol);
-        canvas_redrawallfortemplate(tmpl, action);
-    }
-    canvas_redrawallfortemplate(0, action);
+    t_template *template = template_findbyname(canvas_makebindsym(x->gl_name));
+    if (template)
+        canvas_redrawallfortemplate(template, action);
 }
 
 /* ------------------------------- declare ------------------------ */

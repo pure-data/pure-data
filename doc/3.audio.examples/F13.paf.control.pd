@@ -77,7 +77,7 @@
 #X text 200 381 to fundamental;
 #X text 75 241 (MIDI units);
 #X text 217 616 ring mod;
-#X obj 158 658 output~;
+#X obj 181 655 output~;
 #X text 392 687 updated for Pd version 0.37;
 #X text 23 119 Here we take a somewhat lax approach to sampholding the center frequency control. The frequency itself changes instantly \, but the center/fundamental frequency ratio waits for the next period. This gives a slight "chirp" if the fundamental is abruptly raised a couple of octaves. There's no easy way using Pd's built-in primitives to avoid this. Note however that there's a "paf~" extern available which solves this problem better and \, moreover \, runs much faster., f 81;
 #X obj 291 413 *~ 0.5;
@@ -113,7 +113,6 @@
 #X connect 24 0 25 0;
 #X connect 25 0 26 1;
 #X connect 26 0 46 0;
-#X connect 26 0 46 1;
 #X connect 29 0 30 0;
 #X connect 29 0 14 0;
 #X connect 30 0 33 1;

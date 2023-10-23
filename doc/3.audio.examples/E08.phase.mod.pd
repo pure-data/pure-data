@@ -1,136 +1,74 @@
-#N canvas 452 23 698 723 12;
+#N canvas 275 43 920 617 12;
 #X declare -stdpath ./;
-#X obj 224 164 *~;
-#X floatatom 224 107 4 0 0 0 - - - 0;
-#X obj 312 144 line~;
-#X floatatom 128 121 4 0 0 0 - - - 0;
-#X obj 128 235 cos~;
-#X obj 128 191 +~;
-#X obj 224 132 osc~ 0;
-#X obj 312 118 pack 0 50;
-#X floatatom 312 65 4 0 0 0 - - - 0;
-#X obj 312 92 / 100;
-#X text 286 27 modulation index;
-#X text 286 42 in hundredths;
-#X text 125 78 carrier;
-#X text 124 96 frequency;
-#X text 209 83 frequency;
-#X text 210 66 modulation;
-#X text 57 132 carrier;
-#X text 26 177 phase;
-#X text 39 220 output;
-#X text 61 30 PHASE MODULATION;
-#X text 103 389 Most implementations of "FM" actually use phase \,
-not frequency \, modulation \, because it extends in a more natural
-way to "multi-operator FM" with three or more oscillators.;
-#X text 103 445 To do phase modulation \, we split the "carrier oscillator"
-into its phase calculation (phasor~) and its waveform lookup (cos~).
-These together would be equivalent to an osc~ object \, but the "+~"
-between them adds the modulating oscillator's output to the phase.
-;
-#X text 116 665 We also have to use a line~ to smooth changes in the
-modulation index \, which wasn't necessary in the previous patch.;
-#X obj 128 148 phasor~;
-#X obj 204 568 cos~;
-#X obj 204 540 phasor~;
-#X text 147 550 this:;
-#X text 306 543 is the same;
-#X text 307 562 as this:;
-#X obj 422 555 osc~;
+#X obj 231 164 *~;
+#X floatatom 231 107 4 0 0 0 - - - 0;
+#X obj 319 144 line~;
+#X floatatom 135 121 4 0 0 0 - - - 0;
+#X obj 135 245 cos~;
+#X obj 135 191 +~;
+#X obj 231 132 osc~ 0;
+#X obj 319 118 pack 0 50;
+#X floatatom 319 65 4 0 0 0 - - - 0;
+#X obj 319 92 / 100;
+#X text 293 27 modulation index;
+#X text 293 42 in hundredths;
+#X text 132 78 carrier;
+#X text 131 96 frequency;
+#X text 216 83 frequency;
+#X text 217 66 modulation;
+#X text 64 132 carrier;
+#X text 33 177 phase;
+#X text 46 230 output;
+#X text 68 30 PHASE MODULATION;
+#X text 66 395 Most implementations of "FM" actually use phase \, not frequency \, modulation \, because it extends in a more natural way to "multi-operator FM" with three or more oscillators.;
+#X text 66 451 To do phase modulation \, we split the "carrier oscillator" into its phase calculation (phasor~) and its waveform lookup (cos~). These together would be equivalent to an osc~ object \, but the "+~" between them adds the modulating oscillator's output to the phase.;
+#X text 530 476 We also have to use a line~ to smooth changes in the modulation index \, which wasn't necessary in the previous patch., f 45;
+#X obj 135 148 phasor~;
+#X obj 167 574 cos~;
+#X obj 167 546 phasor~;
+#X text 110 556 this:;
+#X text 269 549 is the same;
+#X text 270 568 as this:;
+#X obj 385 561 osc~;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array phase-out 441 float 1;
-#A 0 0.368844 0.369133 0.369422 0.369712 0.370001 0.370295 0.370589
-0.370884 0.371178 0.371473 0.371772 0.372072 0.372372 0.372672 0.372972
-0.373276 0.373581 0.373886 0.374192 0.374497 0.374806 0.375117 0.375428
-0.375739 0.37605 0.376364 0.37668 0.376996 0.377313 0.377629 0.377948
-0.37827 0.378592 0.378913 0.379235 0.37956 0.379887 0.380214 0.380541
-0.380869 0.381198 0.381531 0.381864 0.382196 0.382529 0.382864 0.383202
-0.38354 0.383879 0.384217 0.384557 0.384901 0.385245 0.385588 0.385932
-0.386277 0.386627 0.386976 0.387325 0.387675 0.388025 0.38838 0.388735
-0.38909 0.389445 0.3898 0.390161 0.390521 0.390882 0.391242 0.391603
-0.391969 0.392335 0.392701 0.393067 0.393433 0.393805 0.394176 0.394548
-0.39492 0.395292 0.395668 0.396045 0.396423 0.3968 0.397177 0.397559
-0.397942 0.398325 0.398708 0.399091 0.399478 0.399867 0.400255 0.400644
-0.401032 0.401425 0.401819 0.402213 0.402607 0.403001 0.403399 0.403799
-0.404198 0.404598 0.404998 0.405401 0.405806 0.406212 0.406617 0.407023
-0.407431 0.407842 0.408253 0.408664 0.409075 0.409489 0.409905 0.410322
-0.410739 0.411155 0.411574 0.411996 0.412419 0.412841 0.413264 0.413688
-0.414116 0.414544 0.414972 0.4154 0.415829 0.416262 0.416696 0.41713
-0.417563 0.417998 0.418437 0.418877 0.419316 0.419755 0.420195 0.42064
-0.421085 0.42153 0.421975 0.42242 0.42287 0.423321 0.423772 0.424222
-0.424673 0.425129 0.425585 0.426041 0.426497 0.426954 0.427415 0.427877
-0.428339 0.428801 0.429262 0.429729 0.430196 0.430664 0.431131 0.431599
-0.432071 0.432544 0.433017 0.43349 0.433963 0.43444 0.434919 0.435398
-0.435876 0.436355 0.436837 0.437322 0.437806 0.43829 0.438775 0.439262
-0.439752 0.440242 0.440732 0.441222 0.441715 0.44221 0.442706 0.443201
-0.443697 0.444195 0.444696 0.445197 0.445698 0.4462 0.446703 0.447209
-0.447716 0.448223 0.44873 0.449238 0.44975 0.450262 0.450775 0.451287
-0.4518 0.452318 0.452836 0.453354 0.453872 0.45439 0.454914 0.455437
-0.455961 0.456484 0.457008 0.457537 0.458066 0.458595 0.459124 0.459652
-0.460187 0.460721 0.461256 0.46179 0.462325 0.462864 0.463404 0.463944
-0.464484 0.465024 0.465569 0.466114 0.466659 0.467205 0.46775 0.4683
-0.468851 0.469402 0.469953 0.470504 0.471058 0.471615 0.472171 0.472727
-0.473284 0.473844 0.474405 0.474967 0.475529 0.47609 0.476656 0.477223
-0.47779 0.478357 0.478924 0.479494 0.480067 0.480639 0.481212 0.481784
-0.482359 0.482937 0.483515 0.484093 0.484671 0.485251 0.485834 0.486417
-0.487 0.487584 0.488169 0.488757 0.489346 0.489934 0.490523 0.491113
-0.491707 0.4923 0.492894 0.493488 0.494083 0.494682 0.495281 0.49588
-0.496479 0.497079 0.497684 0.498288 0.498892 0.499497 0.500101 0.500711
-0.50132 0.50193 0.50254 0.503149 0.503764 0.504379 0.504993 0.505608
-0.506223 0.506843 0.507462 0.508082 0.508702 0.509322 0.509947 0.510572
-0.511197 0.511822 0.512447 0.513076 0.513706 0.514336 0.514966 0.515597
-0.51623 0.516866 0.517501 0.518136 0.518771 0.51941 0.52005 0.520691
-0.521331 0.521971 0.522614 0.52326 0.523905 0.52455 0.525196 0.525844
-0.526494 0.527144 0.527794 0.528445 0.529097 0.529752 0.530408 0.531063
-0.531718 0.532375 0.533035 0.533696 0.534356 0.535016 0.535678 0.536343
-0.537008 0.537673 0.538338 0.539004 0.539674 0.540344 0.541014 0.541683
-0.542354 0.543029 0.543704 0.544378 0.545053 0.545728 0.546408 0.547087
-0.547766 0.548446 0.549126 0.54981 0.550494 0.551178 0.551862 0.552547
-0.553235 0.553924 0.554613 0.555302 0.555991 0.556684 0.557378 0.558071
-0.558765 0.559458 0.560156 0.560854 0.561552 0.56225 0.562948 0.56365
-0.564353 0.565055 0.565758 0.566461 0.567167 0.567874 0.568581 0.569289
-0.569996 0.570706 0.571418 0.57213 0.572841 0.573553 0.574268 0.574984
-0.5757 0.576416 0.577132 0.577851 0.578572 0.579292 0.580013 0.580733
-0.581456 0.582181 0.582906 0.583631 0.584356 0.585083 0.585812 0.586541
-0.58727 0.588 0.588731 0.589464 0.590198 0.590931 0.591665 0.5924 0.593137
-0.593875 0.594613 0.595351 0.596089 0.596831 0.597573 0.598315 0.599057
-0.5998;
 #X array cos-out 441 float 0;
 #X coords 0 1 440 -1 200 140 1 0 0;
-#X restore 407 207 graph;
-#X obj 213 246 tabwrite~ phase-out;
-#X obj 203 273 tabwrite~ cos-out;
-#X msg 203 208 bang;
-#X obj 128 302 output~;
-#X obj 128 270 hip~;
-#X text 407 98 ramped to avoid;
-#X text 406 114 clicks.);
-#X text 406 82 (the index is;
-#X text 452 732 updated for Pd version 0.37;
-#X text 117 601 The "modulation" index \, which in true FM is in units
-of Hertz \, is dimensionless for phase modulation. "Good" values tend
-to be between 0 and 1... in this patch the index is in hundredths.
-;
-#X text 59 147 phase =>;
-#X text 25 192 modulation =>;
-#X text 38 236 waveform =>;
-#X text 245 208 <= graph them;
-#X obj 498 25 declare -stdpath ./;
+#X restore 676 204 graph;
+#X obj 250 263 tabwrite~ phase-out;
+#X obj 240 290 tabwrite~ cos-out;
+#X obj 135 322 output~;
+#X text 636 559 updated for Pd version 0.37;
+#X text 531 392 The "modulation" index \, which in true FM is in units of Hertz \, is dimensionless for phase modulation. "Good" values tend to be between 0 and 1... in this patch the index is in hundredths., f 45;
+#X text 66 147 phase =>;
+#X text 32 192 modulation =>;
+#X text 45 246 waveform =>;
+#X text 264 225 <= graph them;
+#X obj 691 55 declare -stdpath ./;
+#X obj 240 225 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array phase-out 441 float 0;
+#X coords 0 1 440 0 200 140 1 0 0;
+#X restore 432 204 graph;
+#X obj 187 233 wrap~;
+#X text 370 143 (the index is ramped to avoid clicks.);
+#X text 413 332 0;
+#X text 416 197 1;
+#X text 661 199 1;
+#X text 652 331 -1;
 #X connect 0 0 5 1;
 #X connect 1 0 6 0;
 #X connect 2 0 0 1;
 #X connect 3 0 23 0;
 #X connect 4 0 32 0;
-#X connect 4 0 35 0;
+#X connect 4 0 33 0;
 #X connect 5 0 4 0;
-#X connect 5 0 31 0;
+#X connect 5 0 43 0;
 #X connect 6 0 0 0;
 #X connect 7 0 2 0;
 #X connect 8 0 9 0;
 #X connect 9 0 7 0;
 #X connect 23 0 5 0;
 #X connect 25 0 24 0;
-#X connect 33 0 31 0;
-#X connect 33 0 32 0;
-#X connect 35 0 34 0;
-#X connect 35 0 34 1;
+#X connect 41 0 31 0;
+#X connect 41 0 32 0;
+#X connect 43 0 31 0;

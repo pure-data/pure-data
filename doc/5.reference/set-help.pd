@@ -20,8 +20,7 @@
 #X restore 407 562 pd set-data;
 #N canvas 637 400 495 262 set-template 0;
 #X obj 69 54 struct set-template float x float y symbol s;
-#X text 45 18 a struct with x/y coordinate fields and a 's' symbol
-field.;
+#X text 45 18 a struct with x/y coordinate fields and a 's' symbol field.;
 #X text 102 103 draw a filled polygon;
 #X text 100 179 drawing instruction for the 's' field;
 #X obj 98 130 filledpolygon 9 0 1 0 30 20 30 20 60 0 60;
@@ -40,10 +39,7 @@ field.;
 #X msg 148 311 symbol monkey;
 #X msg 156 337 symbol fish;
 #X text 346 664 updated for Pd version 0.47;
-#X text 25 423 You can use the template "-" as a wild card (this may
-be slower than if you use a specific template name). Also \, if there
-are zero or one fields specified \, you can send a "set" message to
-set a new template name and field name:, f 73;
+#X text 25 423 You can use the template "-" as a wild card (this may be slower than if you use a specific template name). Also \, if there are zero or one fields specified \, you can send a "set" message to set a new template name and field name:, f 73;
 #X obj 122 570 set - x;
 #X obj 243 588 set;
 #X floatatom 122 543 5 0 0 0 - - - 0;
@@ -57,57 +53,36 @@ set a new template name and field name:, f 73;
 #X obj 157 192 t b f;
 #X text 64 12 - set values in a scalar;
 #X text 486 10 <= click;
-#N canvas 743 102 571 442 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 260 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 297 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 416 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 166 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
-0;
-#X text 54 169 number of arguments set 'n' fields and we create 'n'
-inlets for them., f 70;
-#X obj 7 220 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 111 368 symbol - structure name., f 49;
-#X text 125 388 list - symbols for field names (each creates an inlet).
-;
+#N canvas 743 102 569 494 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 305 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 353 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 472 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 166 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000 0;
+#X text 54 169 number of arguments set 'n' fields and we create 'n' inlets for them., f 70;
+#X obj 7 254 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000 0;
+#X text 111 424 symbol - structure name., f 49;
+#X text 125 444 list - symbols for field names (each creates an inlet).;
 #X obj 28 18 set;
-#X text 59 18 - set values in a scalar;
-#X text 136 195 float/symbol - value in a scalar., f 42;
-#X text 113 230 pointer - a pointer to the scalar.;
-#X text 129 268 none;
-#X obj 7 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X text 113 264 pointer - a pointer to the scalar.;
+#X text 129 313 none;
+#X obj 7 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 26 122 set <symbol \, symbol> -;
-#X text 187 122 if none or just one field is given \, you can use 'set'
-to set struct name and field., f 47;
-#X obj 7 322 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 361 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 111 332 "-symbol" - so you can set symbol values.;
-#X text 138 100 bang - set values with previously given data., f 54
-;
+#X text 187 122 if none or just one field is given \, you can use 'set' to set struct name and field., f 47;
+#X obj 7 378 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 417 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
+#X text 111 388 "-symbol" - so you can set symbol values.;
+#X text 138 100 bang - set values with previously given data., f 54;
+#X text 106 200 float - set float value in field (if type is a float).;
+#X text 99 222 symbol - set symbol value in field (if type is a symbol).;
+#X text 59 18 - set field values (floats or symbols) of a scalar.;
 #X restore 392 10 pd reference;
-#X obj 9 41 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 9 622 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 9 41 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 9 622 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 242 638 text set;
 #X obj 312 638 array set;
-#X text 20 49 [set] takes a pointer to a scalar in its rightmost inlet.
-The remaining inlets set fields values for floats and symbols (no text
-\, in which case you should use [text set]). Arrays are accessed using
-the [element] object \, but you can also use [array set] instead. Only
-the leftmost inlet is "hot" and it also takes "bang" messages., f
-73;
-#X text 27 257 To set fields whose values are symbols \, give the set
-object the "-symbol" argument. (Unfortunately \, you can't mix symbols
-and numbers in the same [set] object.), f 73;
+#X text 20 49 [set] takes a pointer to a scalar in its rightmost inlet. The remaining inlets set fields values for floats and symbols (no text \, in which case you should use [text set]). Arrays are accessed using the [element] object \, but you can also use [array set] instead. Only the leftmost inlet is "hot" and it also takes "bang" messages., f 73;
+#X text 27 257 To set fields whose values are symbols \, give the set object the "-symbol" argument. (Unfortunately \, you can't mix symbols and numbers in the same [set] object.), f 73;
 #X connect 5 0 8 0;
 #X connect 6 0 15 0;
 #X connect 7 0 39 0;

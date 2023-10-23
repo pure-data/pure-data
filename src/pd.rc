@@ -1,7 +1,7 @@
 id ICON "../tcl/pd.ico"
 1 VERSIONINFO
-FILEVERSION     0,53,1,0
-PRODUCTVERSION  0,53,1,0
+FILEVERSION     0,54,0,0
+PRODUCTVERSION  0,54,0,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -9,12 +9,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "puredata.info"
       VALUE "FileDescription", "Pure Data Application"
-      VALUE "FileVersion", "0.53-1"
+      VALUE "FileVersion", "0.54-0"
       VALUE "InternalName", "pd.exe"
       VALUE "LegalCopyright", "Miller Puckette, et al."
       VALUE "OriginalFilename", "pd.exe"
       VALUE "ProductName", "Pure Data"
-      VALUE "ProductVersion", "0.53-1"
+      VALUE "ProductVersion", "0.54-02"
     END
   END
 

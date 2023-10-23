@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
 <link rel="icon" type="image/png" href="favicon.ico">
 </HEAD>
-  
+
 <BODY>
 
 
@@ -40,7 +40,7 @@ right-clicking on it in Finder and choosing &ldquo;Show Package Contents.&rdquo;
 
 <p>The basic layout is:</p>
 
-<pre>Pd-0.47-1.app/Contents
+<pre><code>Pd-0.47-1.app/Contents
   Info.plist  &lt;- contextual info: version string, get info string, etc
   /Frameworks &lt;- embedded Tcl/Tk frameworks (optional)
   /MacOS/Pd   &lt;- renamed Wish bundle launcher
@@ -51,7 +51,8 @@ right-clicking on it in Finder and choosing &ldquo;Show Package Contents.&rdquo;
     /font     &lt;- included fonts
     /po       &lt;- text translation files
     /src      &lt;- Pd source header files
-    /tcl      &lt;- Pd GUI scripts</pre>
+    /tcl      &lt;- Pd GUI scripts
+</code></pre>
 
 <p>The Pure Data GUI utilizes the Tk windowing shell aka &ldquo;Wish&rdquo; at runtime.
 Creating a Pure Data .app involves using a precompiled Wish.app as a wrapper
@@ -70,23 +71,23 @@ are meant to be run after Pd is configured and built. The following usage, for
 example, downloads and builds a 32 bit Tk 8.6.6 Wish.app which is used to create
 a macOS Pd-0.47-1.app:</p>
 
-<pre>mac/tcltk-wish.sh --arch i386 8.6.6
+<pre><code>mac/tcltk-wish.sh --arch i386 8.6.6
 mac/osx-app.sh --wish Wish-8.6.6.app 0.47-1
-</pre>
+</code></pre>
 
 <p>Both osx-app.sh &amp; tcltck-wish.sh have extensive help output using the &ndash;help
 commandline option:</p>
 
-<pre>mac/osx-app.sh --help
+<pre><code>mac/osx-app.sh --help
 mac/tcltk-wish.sh --help
-</pre>
+</code></pre>
 
 <p>The osx-app.sh script automates building the Pd .app bundle and is used in the
 &ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
 Pd is built:</p>
 
-<pre>mac/osx-app.sh 0.47-1
-</pre>
+<pre><code>mac/osx-app.sh 0.47-1
+</code></pre>
 
 <p>This builds a &ldquo;Pd-0.47-1.app&rdquo; using the included Wish. If you omit the version
 argument, a &ldquo;Pd.app&rdquo; is built. The version argument is only used as a suffix to
@@ -99,9 +100,9 @@ versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
 want to use a different Wish.app (a newer version, a custom build, a system
 version), you can specify the donor via commandline options, for example:</p>
 
-<pre># build Pd-0.47-1.app using Tk 8.6 installed to the system
+<pre><code># build Pd-0.47-1.app using Tk 8.6 installed to the system
 mac/osx-app.sh --system-tk 8.6 0.47-1
-</pre>
+</code></pre>
 
 <p>If you want Pd to use a newer version of Tcl/Tk, but do not want to install to
 it to your system, you can build Tcl/Tk as embedded frameworks inside of the Pd
@@ -110,28 +111,28 @@ it to your system, you can build Tcl/Tk as embedded frameworks inside of the Pd
 <p>The tcltk-wish.sh script automates building a Wish.app with embedded Tcl/Tk,
 either from the release distributions or from a git clone:</p>
 
-<pre># build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
+<pre><code># build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
 mac/tcltk-wish.sh 8.6.6
 
 # build Wish-master-git.app from the latest Tcl/Tk master branch from git
 mac/tcltk-wish.sh --git master-git
-</pre>
+</code></pre>
 
 <p>You can also specify which architectures to build (32 bit, 64 bit, or both):</p>
 
-<pre># build 32 bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
+<pre><code># build 32 bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
 mac/tcltk-wish.sh --arch i386 8.6.6
 
 # build universal (32 &amp; 64 bit)
 mac/tcltk-wish.sh --universal 8.6.6
-</pre>
+</code></pre>
 
 <p>Once your custom Wish.app is built, you can use it as the .app source for
 osx-app.sh with the -w/&ndash;wish option:</p>
 
-<pre># build Pd with a custom Tcl/Tk 8.6.6 Wish
+<pre><code># build Pd with a custom Tcl/Tk 8.6.6 Wish
 mac/osx-app.sh -w Wish-8.6.6.app
-</pre>
+</code></pre>
 
 <p>Downloading and building Tcl/Tk takes some time. If you are doing lots of builds
 of Pd and/or are experimenting with different versions of Tcl/Tk, building the
@@ -168,16 +169,16 @@ directory.</p>
 <p>To build a 32 bit Pd, copy this &ldquo;mac&rdquo; directory somewhere like ~/mac. Also copy
 a source tarball there, such as pd-0.47-1.src.tar.gz. Then cd to ~/mac and type:</p>
 
-<pre>./build-macosx 0.47-1
-</pre>
+<pre><code>./build-macosx 0.47-1
+</code></pre>
 
 <p>If all goes well, you&rsquo;ll soon see a new app appear named Pd-0.47-1.app.</p>
 
 <p>If you want to build a 64 bit Pd, perform the same steps and use the build-mac64
 script:</p>
 
-<pre>./build-mac64 0.47-1
-</pre>
+<pre><code>./build-mac64 0.47-1
+</code></pre>
 
 <p>Note: The &ldquo;wish-shell.tgz&rdquo; is an archive of this app I found on my mac:
 /System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish Shell.app</p>
@@ -198,15 +199,15 @@ using the following domains:</p>
 
 <p>The files themselves live in your user home folder and use the .plist extension:</p>
 
-<pre>~/Library/Preferences/org.puredata.pd.plist
+<pre><code>~/Library/Preferences/org.puredata.pd.plist
 ~/Library/Preferences/org.puredata.pd.pd-gui.plist
-</pre>
+</code></pre>
 
 <p>These files use the Apple Property List XML format and shouldn&rsquo;t be edited
 directly. You can look inside, edit, and/or delete these using the &ldquo;defaults&rdquo;
 commandline utility in Terminal:</p>
 
-<pre># print the contents of the core settings
+<pre><code># print the contents of the core settings
 defaults read org.puredata.pd
 
 # delete the current GUI settings
@@ -214,7 +215,7 @@ defaults delete org.puredata.pd.pd-gui
 
 # set the startup flag in the core settings
 defaults write org.puredata.pd -array-add flags '-lib Gem'
-</pre>
+</code></pre>
 
 <p>Some important per-application settings required by the GUI include:</p>
 
@@ -223,10 +224,11 @@ defaults write org.puredata.pd -array-add flags '-lib Gem'
 <li>NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving</li>
 <li>ApplePressAndHoldEnabled: false, disables character compose popup,
                                  enables key repeat for all keys</li>
+<li>NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+</li>
 </ul>
 
 
-<p>These are set in tcl/pd_guiprefs.tcl.</p>
+<p>These are set in <code>tcl/pd_guiprefs.tcl</code>.</p>
 
 <h3 id="Code.Signing">Code Signing</h3>
 
@@ -236,7 +238,105 @@ is required due to the new security settings. Note: ad-hoc signing doesn&rsquo;t
 actually sign the .app bundle with an account certificate, so the unidentified
 developer warning is still shown when the downloaded .app is run for the first
 time.</p>
-</br>
+
+<h3 id="Privacy.Permissions">Privacy Permissions</h3>
+
+<p>macOS 10.14 introduced system privacy permissions for actions applications can
+undertake on a user account, such as accessing files or reading microphone or
+camera input. When an application is started for the first time and tries to
+access something that is covered by the privacy settings, a permissions prompt
+is displayed by the system requesting access. The action is then allowed or
+denied and this setting is saved and applied when the application is run again
+in the future.</p>
+
+<p>As of macOS 10.15, running Pd will request access for the following:</p>
+
+<ul>
+<li>Files and Folders: Documents</li>
+<li>Files and Folders: Desktop</li>
+<li>Microphone</li>
+</ul>
+
+
+<p>Additionally, using an external such as Gem for camera input will request
+access to the Camera.</p>
+
+<p>The current permissions can be changed in Privacy panel in System Preferences.
+They can also be reset on the commandline using the &ldquo;tccutil&rdquo; command and the
+Pd .app bundle id:</p>
+
+<pre><code># reset Pd's Microphone privacy setting
+tccutil reset Microphone org.puredata.pd.pd-gui
+
+# reset all of Pd's privacy settings
+tccutil reset All org.puredata.pd.pd-gui
+</code></pre>
+
+<h3 id="Font.Issues.with.macOS.10.15.">Font Issues with macOS 10.15+</h3>
+
+<p>macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
+result that Pd&rsquo;s default font, DejaVu Sans Mono, renders thin and closer
+together than system fonts. This results in objects on the patch canvas that are
+longer their inner text and text selection positioning is off.</p>
+
+<p>To remedy this for now, Pd 0.51-3 changed Pd&rsquo;s default font for macOS to Menlo
+which is included with the system since 10.6. Menlo is based on Bitstream Vera
+Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or
+positioning.</p>
+
+<h3 id="Dark.Mode">Dark Mode</h3>
+
+<p>Pd currently disables Dark Mode support by setting the
+NSRequiresAquaSystemAppearance key to true in both the app bundle&rsquo;s Info.plist
+and the GUI defaults preference file. This restriction may be removed in the
+future once Dark Mode is handled in the GUI.</p>
+
+<h3 id="Debugging.Releases">Debugging Releases</h3>
+
+<p>On macOS 10.15+, apps must be signed with an entitlement to allow debugging.
+This is good for security, but bad if you want to run Pd in lldb to figure out
+why your custom external is crashing.</p>
+
+<p>To make this work, the entitlement can be added to an existing Pd release .app
+bundle using the codesign command in Terminal (steps by Pierre Alexandre
+Tremblay):</p>
+
+<ul>
+<li>Extract the current Pd entitlements from the internal pd binary:</li>
+</ul>
+
+
+<pre><code>    codesign -d /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd \
+    --entitlements :~/Desktop/pd-entitlements.xml
+</code></pre>
+
+<ul>
+<li>Edit pd-entitlements.xml on your Desktop, add the following key, and save:</li>
+</ul>
+
+
+<pre><code>    &lt;key&gt;com.apple.security.get-task-allow&lt;/key&gt;
+    &lt;true/&gt;
+</code></pre>
+
+<ul>
+<li>Re-sign the pd binary with the updated entitlements:</li>
+</ul>
+
+
+<pre><code>    codesign -s - --deep --force --options=runtime \
+    --entitlements ~/Desktop/pd-entitlements.xml \
+    /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+</code></pre>
+
+<p>Now Pd can be run with lldb using:</p>
+
+<pre><code>lldb /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+</code></pre>
+
+<p>Note: Re-signing using an ad-hoc identifier will work on the development system,
+      but running the Pd .app bundle on another system will result in security
+      warnings as the original signature and notarization are invalid.</p>
 
 <p><a class=green href="x6.htm#more-mac" >back to ch6</a> <a href="index.htm#s6"> back to table of contents </a></p>
 </br>

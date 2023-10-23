@@ -2,21 +2,23 @@
 # This file is put in the public domain.
 # Max Neupert <abonnements@revolwear.com>, 2022.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2023.
+# simmon <simmon@nplob.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-21 17:41+0000\n"
-"Last-Translator: Hyun-Mook Lim <windshy8500@naver.com>\n"
-"Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/ko/>\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-04-26 08:48+0000\n"
+"Last-Translator: simmon <simmon@nplob.com>\n"
+"Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 msgid "linear"
 msgstr "선형"
@@ -107,7 +109,8 @@ msgid "no Pd settings to erase"
 msgstr "제거할 Pd 설정이 없습니다"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "환경설정 로드를 스킵합니다... Pd 기동 중에 충돌이 일어났을 수도 있습니다"
+msgstr ""
+"환경설정 로드를 스킵합니다... Pd 기동 중에 충돌이 일어났을 수도 있습니다"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(복구하기 위해 환경설정을 다시 저장하십시오)"
@@ -196,8 +199,27 @@ msgstr "적용"
 msgid "OK"
 msgstr "확인"
 
-msgid "Audio Settings"
-msgstr "오디오 설정"
+#, fuzzy
+msgid "no device"
+msgstr "입력 장치"
+
+msgid "(same as input device)..."
+msgstr "(입력 장치와 동일)..."
+
+msgid "Channels:"
+msgstr "채널:"
+
+msgid "Input Devices"
+msgstr "입력 장치"
+
+msgid "Output Devices"
+msgstr "출력 장치"
+
+msgid "Use Multiple Devices"
+msgstr "다수의 장치를 사용하기"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "설정"
@@ -223,26 +245,15 @@ msgstr "블록 크기:"
 msgid "Use callbacks"
 msgstr "콜백 사용"
 
-msgid "Input Devices"
-msgstr "입력 장치"
-
-msgid "Channels:"
-msgstr "채널:"
-
-msgid "Output Devices"
-msgstr "출력 장치"
-
-msgid "(same as input device)..."
-msgstr "(입력 장치와 동일)..."
-
-msgid "Use Multiple Devices"
-msgstr "다수의 장치를 사용하기"
+msgid "Audio Settings"
+msgstr "오디오 설정"
 
 msgid "Save All Settings"
 msgstr "모든 설정을 저장"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "경고: pdtk_canvas_dialog에 알 수 없는 문자로 된 플래그가 수신되었습니다"
+msgstr ""
+"경고: pdtk_canvas_dialog에 알 수 없는 문자로 된 플래그가 수신되었습니다"
 
 msgid "Canvas Properties"
 msgstr "캔버스 속성"
@@ -351,6 +362,9 @@ msgstr "심볼 보내기:"
 
 msgid "Receive symbol:"
 msgstr "심볼 받기:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "넓이:"
@@ -494,17 +508,24 @@ msgstr "Pd 메시지를 보내기"
 msgid "(use arrow keys for history)"
 msgstr "(이력을 보려면 화살표 키를 사용하십시오)"
 
-msgid "MIDI Settings"
-msgstr "MIDI 설정"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI 설정"
+#, fuzzy
+msgid "no input devices"
+msgstr "입력 장치"
 
 msgid "In Ports:"
 msgstr "입력 포트:"
 
 msgid "Out Ports:"
 msgstr "출력 포트:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI 설정"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI 설정"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "오브젝트, 도움말, 오디오, 텍스트, 다른 파일들의 Pd 경로 검색"
@@ -533,6 +554,10 @@ msgstr "익스터널 설치 경로"
 msgid "Clear"
 msgstr "제거"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "환경설정"
+
 msgid "Choose Pd documents directory:"
 msgstr "Pd 문서의 저장경로를 선택하십시오:"
 
@@ -546,20 +571,96 @@ msgstr "새 경로를 추가하기"
 msgid "Edit existing path [%s]"
 msgstr "경로 [%s]를 수정하기"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd 창"
+
+msgid "Zoom New Windows"
+msgstr "새 창을 확대"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "GUI 설정을 제거하였습니다"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "환경설정"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "환경설정"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "환경설정"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "환경설정"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Deken %s 환경설정"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "환경설정"
+
 msgid "Add new library"
 msgstr "새 라이브러리를 추가하기"
 
 msgid "Edit library"
 msgstr "라이브러리를 편집하기"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "기동과 함께 Pd 라이브러리를 로드하기"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr "GUI 설정을 제거하였습니다"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "블록 크기:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
 msgstr "스타트업 플래그:"
 
 msgid "Defeat real-time scheduling"
 msgstr "실시간 스케쥴링 무시하기"
+
+msgid "Startup flags:"
+msgstr "스타트업 플래그:"
 
 msgid "Help Browser"
 msgstr "도움말 탐색"
@@ -588,12 +689,14 @@ msgstr "다음 폰트를 감지: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr "경고: 폰트 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 (%2$s)을(를) 사용합니다"
+msgstr ""
+"경고: 폰트 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 (%2$s)을(를) 사용합니다"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "경고: 폰트 굵기 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 굵기 (%2$s)을(를) "
-"사용합니다"
+msgstr ""
+"경고: 폰트 굵기 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 굵기 (%2$s)을(를) 사"
+"용합니다"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -622,6 +725,13 @@ msgstr "플러그인 %s을(를) 읽지 못했습니다 ...스킵합니다!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "%s에서 플러그인을 찾는 데 실패했습니다 ...스킵합니다!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "'%s'을(를) 설치하는 데 실패했습니다!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -885,11 +995,13 @@ msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "예) '*-plugin'은 'deken-plugin'(혹은 그 외) 과 일치합니다."
 
 msgid "You can restrict the search to only-libraries or only-objects."
-msgstr "특정 라이브러리 혹은 특정 오브젝트를 검색하기 위해 설정을 제한할 수 있습니다."
+msgstr ""
+"특정 라이브러리 혹은 특정 오브젝트를 검색하기 위해 설정을 제한할 수 있습니다."
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "모든 사용 가능한 익스터널의 목록을 보려면 검색창을 공란으로 하고 \"모두 "
-"표시\"를 누르십시오."
+msgstr ""
+"모든 사용 가능한 익스터널의 목록을 보려면 검색창을 공란으로 하고 \"모두 표시"
+"\"를 누르십시오."
 
 msgid "Right-clicking a search result will give you more options..."
 msgstr "검색 결과에 오른쪽 마우스 클릭을 하면 더 많은 옵션이 표시됩니다..."
@@ -1087,8 +1199,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"Pd에서 패치와 익스터널 라이브러리를 존재하는 저장 경로에서 사용 하시겠습니까?"
-"\n"
+"Pd에서 패치와 익스터널 라이브러리를 존재하는 저장 경로에서 사용 하시겠습니"
+"까?\n"
 "\n"
 "위치: %s\n"
 "\n"
@@ -1103,8 +1215,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"Pd에서 패치와 익스터널 라이브러리를 저장 경로를 새로 만들어 사용 "
-"하시겠습니까?\n"
+"Pd에서 패치와 익스터널 라이브러리를 저장 경로를 새로 만들어 사용 하시겠습니"
+"까?\n"
 "\n"
 "위치: %s\n"
 "\n"
@@ -1138,6 +1250,128 @@ msgstr "비어있는 도메인 삭제가 거부되었습니다"
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "환경설정 \"%1$s\"에서 %2$s을(를) 만들지 못했습니다"
+
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "기본 플랫폼: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "번역"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1307,20 +1541,9 @@ msgstr "GUI 설정을 제거하였습니다"
 msgid "no Pd-GUI settings to clear"
 msgstr "초기화 할 Pd-GUI 설정이 없습니다"
 
-msgid "Path..."
-msgstr "경로..."
-
-msgid "Startup..."
-msgstr "시작..."
-
-msgid "Audio..."
-msgstr "오디오..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "새 창을 확대"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "환경설정..."
 
 msgid "Save All Preferences"
 msgstr "모든 환경설정을 저장"
@@ -1334,7 +1557,8 @@ msgstr "경로에서 로드..."
 msgid "Forget All..."
 msgstr "모두 잊기..."
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "환경설정"
 
 msgid "Open Recent"
@@ -1349,6 +1573,17 @@ msgstr "'%s'에서 변경된 사항을 저장 하겠습니까?"
 
 msgid "Properties"
 msgstr "속성"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "'%s'에 대한 변경 내용을 적용하시겠습니까?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"허용하면 연결된 개체의 내용이 최신화 됩니다. 변경 사항을 영구적으로 적용하려"
+"면 패치를 저장해야 합니다."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1372,6 +1607,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"
@@ -1397,6 +1639,9 @@ msgstr "디버그"
 msgid "all"
 msgstr "모두 표시"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "새로 만들기..."
 
@@ -1409,3 +1654,15 @@ msgstr "삭제"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' 무시: Pd 파일이 아닌 것 같습니다"
+
+#~ msgid "Path..."
+#~ msgstr "경로..."
+
+#~ msgid "Startup..."
+#~ msgstr "시작..."
+
+#~ msgid "Audio..."
+#~ msgstr "오디오..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

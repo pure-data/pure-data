@@ -29,9 +29,7 @@
 #include <tchar.h>
 #include <io.h>
 #endif
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 #ifdef __APPLE__ /* needed for plist handling */
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -396,10 +394,35 @@ static void sys_doneloadpreferences(void)
         sys_doneloadpreferences_file();
 }
 
+static int sys_deletepreference(const char *key);
+
 static void sys_initsavepreferences(void)
 {
     if (sys_prefsavefp)
         bug("sys_initsavepreferences");
+    else    /* delete previous audio/MIDI device and search path entries */
+    {
+        int i, j;
+        char buf[MAXPDSTRING], devname[MAXPDSTRING];
+        const char *key[4] = { "audioin", "audioout", "midiin", "midiout" };
+        int maxnum[4] = { MAXAUDIOINDEV, MAXAUDIOOUTDEV, MAXMIDIINDEV, MAXMIDIOUTDEV };
+        for (i = 0; i < 4; i++)
+        {
+            for (j = 0; j < maxnum[i]; j++)
+            {
+                snprintf(buf, sizeof(buf), "%sdev%d", key[i], j + 1);
+                snprintf(devname, sizeof(devname), "%sdevname%d", key[i], j + 1);
+                if (!sys_deletepreference(buf) || !sys_deletepreference(devname))
+                    break;
+            }
+        }
+        for (i = 0; ; i++)
+        {
+            snprintf(buf, sizeof(buf), "path%d", i + 1);
+            if (!sys_deletepreference(buf))
+                break;
+        }
+    }
 }
 
 static void sys_donesavepreferences(void)
@@ -420,7 +443,7 @@ static int sys_getpreference(const char *key, char *value, int size)
             "Software\\Pure-Data", 0,  KEY_QUERY_VALUE, &hkey);
         if (err != ERROR_SUCCESS)
             return (0);
-        err = RegQueryValueEx(hkey, key, 0, 0, value, &bigsize);
+        err = RegQueryValueEx(hkey, key, 0, 0, (LPBYTE)value, &bigsize);
         if (err != ERROR_SUCCESS)
         {
             RegCloseKey(hkey);
@@ -446,10 +469,37 @@ static void sys_putpreference(const char *key, const char *value)
             pd_error(0, "unable to create registry entry: %s\n", key);
             return;
         }
-        err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, value, strlen(value)+1);
+        err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, (const LPBYTE)value, strlen(value)+1);
         if (err != ERROR_SUCCESS)
             pd_error(0, "unable to set registry entry: %s\n", key);
         RegCloseKey(hkey);
+    }
+}
+
+static int sys_deletepreference(const char *key)
+{
+    if (sys_prefsavefp)
+    {
+        bug("sys_deletepreference");
+        return 0;
+    }
+    else
+    {
+        HKEY hkey;
+        LONG err;
+        err = RegOpenKeyEx(HKEY_CURRENT_USER,
+            "Software\\Pure-Data", 0, KEY_SET_VALUE, &hkey);
+        if (err != ERROR_SUCCESS)
+            return 0;
+        err = RegDeleteValue(hkey, key);
+        if (err == ERROR_SUCCESS)
+        {
+            RegCloseKey(hkey);
+            return 1;
+        } else if (err != ERROR_FILE_NOT_FOUND)
+            pd_error(0, "unable to delete registry entry: %s\n", key);
+        RegCloseKey(hkey);
+        return 0;
     }
 }
 

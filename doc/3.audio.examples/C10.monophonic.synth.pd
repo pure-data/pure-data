@@ -1,4 +1,4 @@
-#N canvas 817 23 549 723 12;
+#N canvas 413 23 549 723 12;
 #X declare -stdpath ./;
 #X obj 109 552 mtof;
 #X obj 109 501 stripnote;
@@ -17,25 +17,17 @@
 #X obj 190 613 line~;
 #X msg 190 582 \$1 100;
 #X msg 260 583 0 1000;
-#X text 39 100 First \, at top \, incoming MIDI notes are parsed and
-used to set pitch and trigger an ADSR envelope. Second \, the envelope
-generator itself has been extended to offer controls over the time
-and target values via number boxes.;
-#X text 41 46 This patch shows how to make a monophonic synthesizer
-that could be controlled from a MIDI or voltage-control keyboard--in
-this example we assume MIDI.;
+#X text 39 100 First \, at top \, incoming MIDI notes are parsed and used to set pitch and trigger an ADSR envelope. Second \, the envelope generator itself has been extended to offer controls over the time and target values via number boxes.;
+#X text 41 46 This patch shows how to make a monophonic synthesizer that could be controlled from a MIDI or voltage-control keyboard--in this example we assume MIDI.;
 #X msg 232 333 55 64;
 #X msg 325 333 55 0;
 #X msg 184 333 48 64;
 #X msg 282 333 48 0;
-#X text 38 167 The note-off testing is complicated by the fact that
-we have to test both that the velocity is zero \, and further that
-the note-off pitch matches the pitch that is now playing (the most
-recent note-on pitch.);
+#X text 38 167 The note-off testing is complicated by the fact that we have to test both that the velocity is zero \, and further that the note-off pitch matches the pitch that is now playing (the most recent note-on pitch.);
 #X text 311 427 b - bang to recall velocity;
 #X obj 251 480 sel 0;
 #X text 273 501 on;
-#X obj 81 793 output~;
+#X obj 99 793 output~;
 #X obj 99 757 hip~ 5;
 #X obj 99 696 *~;
 #X obj 109 579 phasor~;
@@ -52,9 +44,7 @@ recent note-on pitch.);
 #X text 355 573 note-on pitch;
 #X obj 99 729 *~;
 #X obj 190 555 / 127;
-#X text 38 233 The synthesis technique is the same as in the previous
-patch \, done in a simpler (but less general) way with a cos~ object
-replacing the wavetable lookup.;
+#X text 38 233 The synthesis technique is the same as in the previous patch \, done in a simpler (but less general) way with a cos~ object replacing the wavetable lookup.;
 #X obj 172 693 *~ 2;
 #X obj 190 642 +~ 0.5;
 #X text 218 713 The +~ 0.5 and *~ 2 are fudge factors.;
@@ -62,8 +52,7 @@ replacing the wavetable lookup.;
 #X text 216 694 in the previous patch.;
 #X text 144 308 These buttons simulate MIDI input.;
 #X text 49 476 filter note-on messages, f 8;
-#X text 240 606 envelope generator now controls amplitude as well as
-grain size, f 31;
+#X text 240 606 envelope generator now controls amplitude as well as grain size, f 31;
 #X obj 390 7 declare -stdpath ./;
 #X connect 0 0 30 0;
 #X connect 1 0 2 1;
@@ -91,7 +80,6 @@ grain size, f 31;
 #X connect 25 0 5 0;
 #X connect 25 1 43 0;
 #X connect 28 0 27 0;
-#X connect 28 0 27 1;
 #X connect 29 0 42 0;
 #X connect 30 0 31 0;
 #X connect 31 0 33 0;

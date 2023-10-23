@@ -1,7 +1,7 @@
-#N canvas 633 85 595 573 12;
+#N canvas 486 26 596 595 12;
 #X declare -stdpath ./;
-#X obj 47 480 output~;
-#X text 326 515 updated for Pd version 0.39;
+#X obj 72 512 output~;
+#X text 352 533 updated for Pd version 0.39;
 #X obj 151 454 metro 250;
 #X obj 151 427 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X text 174 426 graphing on/off;
@@ -34,7 +34,6 @@
 #X connect 3 0 2 0;
 #X connect 9 0 10 0;
 #X connect 10 0 0 0;
-#X connect 10 0 0 1;
 #X connect 10 0 25 0;
 #X connect 12 0 10 1;
 #X connect 13 0 12 0;

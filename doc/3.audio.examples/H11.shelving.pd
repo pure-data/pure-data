@@ -1,4 +1,4 @@
-#N canvas 262 137 795 464 12;
+#N canvas 360 101 795 464 12;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-tab1 100 float 0;
 #X coords 0 5 99 0 200 300 1 0 0;
@@ -16,7 +16,7 @@
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
-#X restore 375 414 pd startup;
+#X restore 404 241 pd startup;
 #X floatatom 321 280 3 -99 99 0 - \$0-pole - 0;
 #X text 476 332 gain=0;
 #X text 126 34 SHELVING FILTER;
@@ -38,8 +38,9 @@
 #X text 272 258 zero;
 #X text 352 279 (in hundredths);
 #X text 531 427 updated for Pd version 0.46;
-#X msg 385 359 \; pd dsp \$1;
-#X obj 385 335 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 341 350 ../5.reference/set-dsp-tgl;
+#X text 372 353 DSP on/off;
+#X msg 341 387 \; pd dsp \$1;
 #X connect 1 0 9 0;
 #X connect 2 0 8 0;
 #X connect 5 0 12 0;
@@ -52,4 +53,4 @@
 #X connect 13 0 14 0;
 #X connect 14 0 15 1;
 #X connect 15 0 11 0;
-#X connect 27 0 26 0;
+#X connect 26 0 28 0;

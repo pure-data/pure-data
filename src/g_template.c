@@ -2472,7 +2472,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
             }
         }
     }
-    return (0);
+        /* JMZ: change the cursor to "clickme" if the array can be edited */
+    return (!edit)?CURSOR_RUNMODE_NOTHING:CURSOR_RUNMODE_CLICKME;
 }
 
 static int plot_click(t_gobj *z, t_glist *glist,

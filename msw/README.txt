@@ -142,3 +142,13 @@ Pd font.
 Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz
 tarball. To build pdfontloader, see https://github.com/pure-data/pdfontloader
 source.
+
+## debug
+
+If you intend to debug Pd, you probably want an unoptimized build with debug symbols. This can be achieved with the following flags:
+
+./configure --enable-debug CFLAGS="-g -O0"
+make
+make app
+
+This will call msw-app.sh with the -n flag, preventing it from stripping the debug symbols
