@@ -679,8 +679,8 @@
 #X obj 163 128 dbtorms;
 #X obj 163 156 pack f 50;
 #X obj 163 87 clip 0 120;
-#X obj 246 153 s \$0-input-monitor-gain;
 #X msg 246 122 set \$1;
+#X obj 246 153 s \$0-input-monitor-gain-set;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
@@ -688,8 +688,8 @@
 #X connect 6 0 7 0;
 #X connect 7 0 1 0;
 #X connect 8 0 6 0;
-#X connect 8 0 10 0;
-#X connect 10 0 9 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
 #X restore 68 72 pd monitor-input;
 #N canvas 799 168 518 309 initialization 0;
 #X obj 29 21 loadbang;
