@@ -1,4 +1,4 @@
-#N canvas 644 102 514 352 12;
+#N canvas 498 67 514 352 12;
 #X floatatom 172 139 4 0 0 0 - - - 0;
 #X floatatom 206 166 4 0 0 0 - - - 0;
 #X obj 21 16 clip;
@@ -6,59 +6,44 @@
 #X obj 139 199 clip 20 50;
 #X text 206 138 lower limit;
 #X text 245 166 upper limit;
-#X text 223 193 optional creation arguments initialize lower and upper
-limits, f 34;
+#X text 223 193 optional creation arguments initialize lower and upper limits, f 34;
 #X floatatom 139 113 4 0 0 0 - - - 0;
 #X text 174 112 incoming number to clip;
-#X text 283 310 updated for Pd version 0.47;
-#X text 27 309 see also:;
-#X obj 98 309 min;
-#X obj 131 309 max;
-#X obj 164 309 clip~;
-#X text 48 62 The clip object passes its signal input to its output
-\, clipping it to lie between two limits.;
-#X obj 211 309 expr;
+#X text 293 310 updated for Pd version 0.47;
+#X text 17 309 see also:;
+#X obj 88 309 min;
+#X obj 121 309 max;
+#X obj 154 309 clip~;
+#X obj 201 309 expr;
 #N canvas 655 200 573 318 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 84 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 196 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 233 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 291 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 130 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 84 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 196 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 233 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 291 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 130 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 21 16 clip;
 #X text 58 16 - bound a number between two limits.;
 #X text 113 206 float - the clipped value., f 49;
 #X text 111 135 float - set lower limit., f 49;
 #X text 111 167 float - set upper limit., f 49;
 #X text 111 89 float - number to clip., f 61;
-#X text 118 107 bang - re clip last incoming number between the two
-limits.;
-#X text 113 244 1) float - initial lower limit (default 0)., f 49
-;
-#X text 113 263 2) float - initial upper limit (default 0)., f 49
-;
-#X obj 8 159 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
+#X text 118 107 bang - re clip last incoming number between the two limits.;
+#X text 113 244 1) float - initial lower limit (default 0)., f 49;
+#X text 113 263 2) float - initial upper limit (default 0)., f 49;
+#X obj 8 159 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X restore 337 15 pd reference;
 #X text 428 15 <= click;
-#X obj 11 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 11 290 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 11 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 11 290 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 58 16 - bound a number between two limits.;
-#X obj 108 152 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 108 152 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 139 256 print clip;
-#X text 50 150 re clip;
+#X text 50 151 re clip;
+#X text 48 62 The [clip] object passes its signal input to its output \, clipping it to lie between two limits.;
 #X connect 0 0 4 1;
 #X connect 1 0 4 2;
-#X connect 3 0 23 0;
+#X connect 3 0 22 0;
 #X connect 4 0 3 0;
 #X connect 8 0 4 0;
-#X connect 22 0 4 0;
+#X connect 21 0 4 0;

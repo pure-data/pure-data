@@ -1,47 +1,36 @@
-#N canvas 574 97 408 344 12;
-#X obj 64 263 print;
-#X msg 76 162 walk the cat;
-#X msg 64 130 45;
-#X obj 64 203 bang;
-#X obj 77 234 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X text 53 77 The [bang] object outputs a "bang" message for whatever
-message it receives., f 42;
-#X msg 240 222 bang;
-#X obj 302 223 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 208 145 this is more efficient than using a message box and
-the bang GUI below:, f 22;
+#N canvas 574 97 469 349 12;
+#X obj 50 253 print;
+#X msg 50 124 walk the cat;
+#X msg 72 152 45;
+#X obj 50 190 bang;
+#X obj 63 224 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 67 75 The [bang] object outputs a "bang" message for whatever message it receives., f 46;
 #X obj 25 10 bang;
-#X text 188 310 updated for Pd version 0.27;
-#X text 62 9 - send "bang" message;
+#X text 236 311 updated for Pd version 0.27;
 #X obj 25 34 b;
 #X text 62 35 - abbreviation;
-#X obj 2 63 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 2 296 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 331 35 <= click;
+#X obj 2 296 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 381 35 <= click;
 #N canvas 717 212 571 201 reference 0;
-#X obj 8 47 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 95 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 171 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 8 47 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 95 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 7 171 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 25 16 bang;
-#X text 99 16 - send "bang" message;
 #X obj 65 16 b;
-#X text 146 105 bang - a bang message, f 49;
-#X text 117 63 anything - any message outputs a bang, f 53;
-#X obj 8 132 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X text 147 143 NONE, f 52;
-#X restore 237 35 pd reference;
-#X text 8 309 see also:;
-#X obj 83 311 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X msg 108 309;
+#X obj 8 132 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X text 147 143 NONE, f 44;
+#X text 117 63 anything - any message outputs a bang., f 48;
+#X text 146 105 bang - a bang message for any input message.;
+#X text 99 16 - converto to a "bang" message.;
+#X restore 287 35 pd reference;
+#X text 11 310 see also:;
+#X obj 86 310 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X msg 114 310 bang;
+#X obj 156 310 trigger;
+#X text 162 136 This is quite similar to a bang message or bang GUI. The difference is that you can't click on it., f 40;
+#X obj 2 63 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 162 186 It's about the same as using [trigger bang] as well \, but it's a tiny bit more efficient than all previous options (not that it makes a big difference in real life)., f 40;
+#X text 62 9 - convert to a "bang" message;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;

@@ -3,12 +3,10 @@
 #X floatatom 133 150 5 0 0 0 - - - 0;
 #X symbolatom 236 190 7 0 0 0 - - - 0;
 #N canvas 846 101 364 357 example-once 0;
-#X obj 123 84 bng 50 250 50 0 empty empty Once 58 24 0 13 #dcdcdc #c4fcfc
-#980000;
+#X obj 123 84 bng 50 250 50 0 empty empty Once 58 24 0 26 #dcdcdc #c4fcfc #980000;
 #X obj 123 298 print Once;
 #X text 208 171 reset;
-#X text 35 22 Here's an example on how to make a patch that only sends
-a bang once until it is reset again., f 41;
+#X text 35 22 Here's an example on how to make a patch that only sends a bang once until it is reset again., f 41;
 #X obj 123 203 spigot 1;
 #X msg 176 171 1;
 #X obj 123 227 t b b;
@@ -24,9 +22,7 @@ a bang once until it is reset again., f 41;
 #X text 341 390 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X msg 196 190 foo;
 #X text 225 142 received messages activate the bang, f 17;
-#X text 62 250 Click to bang => Right click for properties., f 16
-;
-#X text 16 455 see also:;
+#X text 12 457 see also:;
 #N canvas 564 216 614 464 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
@@ -46,16 +42,11 @@ a bang once until it is reset again., f 41;
 #X text 376 294 increase both by 1;
 #X text 394 315 decrease both by -1;
 #X msg 308 315 delta -1 -1;
-#X obj 265 350 bng 30 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 265 350 bng 30 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 142 202 pack 265 350;
-#X text 293 66 The 'delta' message changes the position of the object
-by a difference amount. It takes a list of x/y delta in pixels., f
-40;
-#X text 40 66 The 'pos' message takes a list of x/y coordinates in
-pixels and sets the objects's position., f 33;
-#X text 159 19 You can also set and change the position of the object
-in the patch. Check below:, f 41;
+#X text 293 66 The 'delta' message changes the position of the object by a difference amount. It takes a list of x/y delta in pixels., f 40;
+#X text 40 66 The 'pos' message takes a list of x/y coordinates in pixels and sets the objects's position., f 33;
+#X text 159 19 You can also set and change the position of the object in the patch. Check below:, f 41;
 #X connect 0 0 19 0;
 #X connect 1 0 19 0;
 #X connect 1 1 19 1;
@@ -69,8 +60,8 @@ in the patch. Check below:, f 41;
 #X connect 17 0 18 0;
 #X connect 19 0 3 0;
 #X restore 406 221 pd position;
-#N canvas 453 113 357 405 properties 0;
-#N canvas 795 55 631 565 colors 0;
+#N canvas 418 85 357 405 properties 0;
+#N canvas 652 55 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - - 0;
 #X floatatom 107 244 3 0 29 0 - - - 0;
 #X floatatom 176 249 3 0 29 0 - - - 0;
@@ -83,14 +74,11 @@ in the patch. Check below:, f 41;
 #X text 180 343 presets;
 #X symbolatom 506 340 9 0 0 0 - - - 0;
 #N canvas 882 167 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -119,14 +107,11 @@ in the patch. Check below:, f 41;
 #X restore 506 158 pd label;
 #X symbolatom 420 339 9 0 0 0 - - - 0;
 #N canvas 899 211 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
 #X obj 74 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 146 257 makefilename %02x;
 #X obj 112 284 makefilename %02x;
@@ -155,13 +140,10 @@ in the patch. Check below:, f 41;
 #X restore 420 158 pd label;
 #X symbolatom 334 339 9 0 0 0 - - - 0;
 #N canvas 799 177 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 221 257 makefilename %02x;
 #X obj 141 284 makefilename %02x;
@@ -200,28 +182,18 @@ in the patch. Check below:, f 41;
 #X obj 334 408 pack symbol symbol symbol;
 #X msg 334 437 color \$1 \$2 \$3;
 #X msg 256 263 list #ffffff #000000 #000000, f 7;
-#X obj 243 489 bng 50 250 50 0 empty empty Label 55 24 0 20 #ffffff
-#000000 #000000;
+#X obj 243 489 bng 50 250 50 0 empty empty Label 55 24 0 20 #ffffff #000000 #000000;
 #X obj 243 408 metro 500;
-#X obj 243 376 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
+#X obj 243 376 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 20 224 background;
 #X text 443 438 RGB in hexadecimal;
-#X text 47 17 The 'color' message takes a list of three values to set
-background \, front and label colors \, respectively. Integers from
-0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wrapped., f 77;
+#X text 47 17 The 'color' message takes a list of three values to set background \, front and label colors \, respectively. Integers from 0 to 29 represent the 30 preset colors found in the properties window \, values above are wrapped., f 77;
 #X text 345 133 Set RGB values in the sliders;
-#X text 60 157 Open subpatches for the conversion from RGB to hexadecimal
-============>, f 38;
-#N canvas 922 106 554 538 old_way 0;
+#N canvas 812 106 554 538 old_way 0;
 #N canvas 1136 244 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X text 66 56 label;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
@@ -238,19 +210,13 @@ background \, front and label colors \, respectively. Integers from
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 373 148 pd label;
 #X obj 85 266 loadbang;
-#X obj 261 430 bng 50 250 50 0 empty empty Label 55 24 0 20 #ffffff
-#000000 #000000;
+#X obj 261 430 bng 50 250 50 0 empty empty Label 55 24 0 20 #ffffff #000000 #000000;
 #X obj 85 329 metro 500;
-#X obj 85 300 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X text 212 123 Set RGB values in the sliders;
 #N canvas 955 131 392 476 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 313 269 t b f;
 #X obj 171 269 t b f;
@@ -276,12 +242,9 @@ background \, front and label colors \, respectively. Integers from
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 201 148 pd label;
 #N canvas 1096 192 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
 #X obj 169 319 t b f;
@@ -326,26 +289,21 @@ background \, front and label colors \, respectively. Integers from
 #X connect 9 1 10 0;
 #X restore 261 349 pd pack;
 #X f 8;
-#X text 122 33 The RGB color scheme can also be encoded \, for backwards
-compatibility \, as negative inetegers. For "R" (red) \, "G" (green)
-& "B" (blue) values from 0 to 255 \, the conversion formula is \; float
-= -(R * 65536 + G * 256 + B + 1)., f 47;
-#X connect 0 0 10 2;
-#X connect 1 0 4 0;
+#X text 122 33 The RGB color scheme can also be encoded \, for backwards compatibility \, as negative inetegers. For "R" (red) \, "G" (green) & "B" (blue) values from 0 to 255 \, the conversion formula is \; float = -(R * 65536 + G * 256 + B + 1)., f 47;
+#X obj 85 300 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X connect 0 0 9 2;
+#X connect 1 0 11 0;
 #X connect 3 0 2 0;
-#X connect 4 0 3 0;
-#X connect 6 0 10 0;
-#X connect 7 0 10 1;
-#X connect 9 0 2 0;
-#X connect 10 0 9 0;
+#X connect 5 0 9 0;
+#X connect 6 0 9 1;
+#X connect 8 0 2 0;
+#X connect 9 0 8 0;
+#X connect 11 0 3 0;
 #X restore 62 508 pd old_way;
-#X text 34 450 open subpatch below for the old way of encoding RGB
-values., f 20;
-#X text 48 68 Negative integers were used to encode RGB values (and
-that still works for backwards compatibility). But since Pd 0.47-0
-\, you can set colors with hexadecimal RGB symbol values \, which are
-followed by "#" \, check it below., f 77;
+#X text 34 450 open subpatch below for the old way of encoding RGB values., f 20;
+#X text 48 68 Negative integers were used to encode RGB values (and that still works for backwards compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal RGB symbol values \, which are followed by "#" \, check it below., f 77;
 #X text 35 432 See also:;
+#X text 60 157 Open subpatches for the conversion from RGB to hexadecimal ------------->, f 38;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;
 #X connect 2 0 6 0;
@@ -378,26 +336,22 @@ followed by "#" \, check it below., f 77;
 #X floatatom 140 124 3 8 100 0 - - - 0;
 #X text 167 124 size;
 #X msg 140 161 size \$1;
-#X obj 140 209 bng 42 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 65 38 The size message sets the object's size. The value represents
-the width in pixels for each side of the square., f 35;
+#X obj 140 209 bng 42 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 65 38 The size message sets the object's size. The value represents the width in pixels for each side of the square., f 35;
 #X connect 0 0 2 0;
 #X connect 2 0 3 0;
 #X restore 172 100 pd size;
-#N canvas 810 92 598 452 label 0;
+#N canvas 674 103 598 452 label 0;
 #X msg 92 286 label \$1;
-#X floatatom 239 168 4 0 3 0 - - - 0;
+#X floatatom 239 168 4 0 3 0 - - - 12;
 #X obj 281 195 t b f;
 #X floatatom 281 168 5 5 50 0 - - - 0;
 #X msg 239 265 label_font \$1 \$2;
 #X text 201 167 type;
 #X text 325 166 size;
-#X obj 239 105 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
-#000000 #000000 0;
-#X text 260 104 DejaVu Sans Mono;
-#X text 260 120 Helvetica;
-#X text 260 135 Times;
+#X text 261 94 DejaVu Sans Mono;
+#X text 261 115 Helvetica;
+#X text 261 135 Times;
 #X msg 104 254 symbol empty;
 #X floatatom 393 184 4 -200 100 0 - - - 0;
 #X obj 435 211 t b f;
@@ -406,222 +360,159 @@ the width in pixels for each side of the square., f 35;
 #X text 375 183 x;
 #X text 479 182 y;
 #X text 388 160 label offset:;
-#X obj 240 365 bng 30 250 50 0 empty empty empty 37 15 0 15 #fcfcfc
-#000000 #000000;
+#X obj 240 365 bng 30 250 50 0 empty empty label 37 15 0 15 #dfdfdf #000000 #000000;
 #X msg 72 189 symbol label;
 #X msg 92 218 symbol my\ label;
-#X text 99 28 The 'label' message sets the label symbol \, setting
-it to "empty" clears it. The 'label_font' message sets font type and
-font size \, while 'label_pos' sets the x/y coordinates.;
+#X text 99 28 The 'label' message sets the label symbol \, setting it to "empty" clears it. The 'label_font' message sets font type and font size \, while 'label_pos' sets the x/y coordinates.;
 #X obj 393 239 pack 35 15, f 11;
 #X obj 239 224 pack 0 15, f 11;
-#X connect 0 0 19 0;
-#X connect 1 0 24 0;
-#X connect 2 0 24 0;
-#X connect 2 1 24 1;
+#X obj 239 95 vradio 19 1 0 3 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0;
+#X connect 0 0 18 0;
+#X connect 1 0 23 0;
+#X connect 2 0 23 0;
+#X connect 2 1 23 1;
 #X connect 3 0 2 0;
-#X connect 4 0 19 0;
-#X connect 7 0 1 0;
-#X connect 11 0 0 0;
-#X connect 12 0 23 0;
-#X connect 13 0 23 0;
-#X connect 13 1 23 1;
-#X connect 14 0 13 0;
-#X connect 15 0 19 0;
+#X connect 4 0 18 0;
+#X connect 10 0 0 0;
+#X connect 11 0 22 0;
+#X connect 12 0 22 0;
+#X connect 12 1 22 1;
+#X connect 13 0 12 0;
+#X connect 14 0 18 0;
+#X connect 19 0 0 0;
 #X connect 20 0 0 0;
-#X connect 21 0 0 0;
-#X connect 23 0 15 0;
-#X connect 24 0 4 0;
+#X connect 22 0 14 0;
+#X connect 23 0 4 0;
+#X connect 24 0 1 0;
 #X restore 165 212 pd label;
-#N canvas 896 171 425 339 init 0;
+#N canvas 896 171 442 454 init 0;
 #X msg 174 197 init \$1;
-#X obj 174 165 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X obj 174 240 bng 30 250 50 1 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 48 29 The 'init' message takes a float and sets to 'init mode'
-(if different than zero) or 'no init' (if equal to zero - the default
-value)., f 48;
-#X text 48 84 When in 'init mode' \, the bang GUI is activated when
-loading the patch \, in the same way as a loadbang object., f 48;
+#X obj 174 165 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 174 240 bng 30 250 50 1 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 48 29 The 'init' message takes a float and sets to 'init mode' (if different than zero) or 'no init' (if equal to zero - the default value)., f 48;
+#X text 48 84 When in 'init mode' \, the bang GUI is activated when loading the patch \, in the same way as a loadbang object., f 48;
 #X obj 174 288 print bng-init;
+#X text 185 394 see also:;
+#X obj 263 393 loadbang;
+#X text 49 334 The init message is actually a state saving mechanism for most iemguis \, but that is not pertinent in this case., f 44;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 5 0;
 #X restore 172 156 pd init;
-#N canvas 890 34 489 585 flash-time 0;
-#X floatatom 219 307 4 10 100 0 - - - 0;
-#X text 111 306 interrupt-time;
-#X msg 219 418 flashtime \$1 \$2;
-#X obj 219 377 pack 50 250;
-#X obj 261 334 t b f;
-#X floatatom 261 307 5 100 3000 0 - - - 0;
-#X text 308 305 hold-time;
-#X obj 219 495 bng 30 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 107 405 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X obj 107 434 metro 200;
-#X msg 167 373 500;
-#X floatatom 167 408 5 10 1000 0 - - - 0;
-#X obj 219 538 print flash;
-#X msg 134 373 200;
-#X text 27 85 The "interrupt" time is actually the minimum flash time
-\, while "hold" is the maximum time (hence \, interrupt time needs
-to be smaller than or equal to the hold time). The actual flash time
-varies depending on the rate the bang is being activated. If the time
-from the last time it was activated is shorter than twice the hold
-time \, then the flash time is half the period since it was last activated
-- unless this is shorter than the minimum (interrupt) time., f 58
-;
-#X text 124 323 (minimum);
-#X text 308 323 (maximum);
-#X text 43 404 click =>;
-#X text 27 24 The bang button flashes to indicate is has been activated.
-The 'flashtime' message controls the time the button flashes and takes
-a list that sets the "interrupt" and "hold" in ms., f 58;
-#X text 27 210 If a bang is activated in a higher rate than it can
-flash (the interrupt time) \, the button reactivates before finishing
-the flash \, prolonging the flash time. This may look as if the button
-froze \, but the bang messages keep coming out at the correct rate.
-, f 58;
-#X connect 0 0 3 0;
-#X connect 2 0 7 0;
+#N canvas 574 100 489 570 flash-time 0;
+#X floatatom 219 288 4 10 100 0 - - - 0;
+#X msg 219 399 flashtime \$1 \$2;
+#X obj 219 358 pack 50 250;
+#X obj 261 315 t b f;
+#X floatatom 261 288 5 100 3000 0 - - - 0;
+#X obj 219 476 bng 30 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 107 386 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 107 415 metro 200;
+#X msg 167 354 500;
+#X floatatom 167 389 5 10 1000 0 - - - 0;
+#X obj 219 519 print flash;
+#X msg 134 354 200;
+#X text 157 289 minimum;
+#X text 304 287 maximum;
+#X text 27 20 The bang button flashes to indicate is has been activated. The 'flashtime' message controls the time the button flashes and takes a list that sets the "minimum" and "maximum" flash time in ms., f 59;
+#X text 27 85 The minimum time needs to be smaller than or equal to the maximum time. The actual flash time varies depending on the rate the bang is being activated. If the time from the last time it was activated is shorter than twice the maximum time \, then the flash time is half the period since it was last activated - unless this is shorter than the minimum time.;
+#X text 27 191 If a bang is activated in a higher rate than it can flash (the minimum time) \, the button reactivates before finishing the flash \, prolonging the flash time. This may look as if the button froze \, but the bang messages keep coming out at the correct rate.;
+#X text 33 385 click -->;
+#X connect 0 0 2 0;
+#X connect 1 0 5 0;
+#X connect 2 0 1 0;
 #X connect 3 0 2 0;
+#X connect 3 1 2 1;
 #X connect 4 0 3 0;
-#X connect 4 1 3 1;
-#X connect 5 0 4 0;
-#X connect 7 0 12 0;
+#X connect 5 0 10 0;
+#X connect 6 0 7 0;
+#X connect 7 0 5 0;
 #X connect 8 0 9 0;
-#X connect 9 0 7 0;
-#X connect 10 0 11 0;
-#X connect 11 0 9 1;
-#X connect 13 0 11 0;
+#X connect 9 0 7 1;
+#X connect 11 0 9 0;
 #X restore 130 128 pd flash-time;
-#N canvas 784 57 832 442 send-receive 0;
-#X obj 78 202 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#N canvas 422 74 843 419 send-receive 0;
+#X obj 78 202 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 222 191 receive empty;
-#X obj 80 316 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X msg 253 255 send empty;
-#X obj 221 313 bng 50 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 53 96 The 'send' and 'receive' messages take a symbol to set
-\, respectively \, the send and receive symbol. If you set these to
-"empty" \, the symbols are cleared., f 50;
-#X text 53 20 The object can have a send and receive symbol \, in which
-cases the inlet/outlet are visually hidden (but still functional in
-the patch). This way \, the object can communicate to [send] and [receive]
-objects., f 50;
+#X obj 221 313 bng 50 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 53 96 The 'send' and 'receive' messages take a symbol to set \, respectively \, the send and receive symbol. If you set these to "empty" \, the symbols are cleared., f 50;
+#X text 53 20 The object can have a send and receive symbol \, in which cases the inlet/outlet are visually hidden (but still functional in the patch). This way \, the object can communicate to [send] and [receive] objects., f 50;
 #X msg 206 166 receive \\\$0-bng_rcv;
 #X msg 244 230 send \\\$0-bng_snd;
 #X obj 78 232 s \$0-bng_rcv;
 #X obj 80 283 r \$0-bng_snd;
-#X text 446 23 Note how you need to escape dollar signs with backslashes
-to set something like "\$0-x". But the backslash is not needed if you
-set it directly via the properties window., f 50;
-#X obj 553 178 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 557 364 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 553 208 s \$0-bang;
-#X obj 557 331 r \$0-bang;
-#X obj 561 250 bng 50 250 50 0 \$0-bang \$0-bang empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 446 97 Feedback protection: iemguis can have the same name
-for both the send and receive symbols. This works without 'stack overflow'
-errors because they have feedback protection. See example below.;
-#X connect 0 0 9 0;
-#X connect 1 0 4 0;
-#X connect 3 0 4 0;
-#X connect 7 0 4 0;
-#X connect 8 0 4 0;
-#X connect 10 0 2 0;
-#X connect 12 0 14 0;
-#X connect 15 0 13 0;
+#X text 446 23 Note how you need to escape dollar signs with backslashes to set something like "\$0-x". But the backslash is not needed if you set it directly via the properties window., f 50;
+#X obj 492 208 s \$0-bang;
+#X obj 496 331 r \$0-bang;
+#X obj 500 250 bng 50 250 50 0 \$0-bang \$0-bang empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 446 97 Feedback protection: iemguis can have the same name for both the send and receive symbols. This works without 'stack overflow' errors because they have feedback protection. See example below., f 51;
+#X obj 80 316 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 496 364 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 492 178 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 594 175 WARNING:;
+#X text 600 199 Feedback protection comes at a cost. You should NOT use inlets/outlets to either send or get messages \, just rely on the [send] and [receive] objects., f 29;
+#X text 600 290 You probably also just want to send it bangs \, not configuration changes (like colors). If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
+#X connect 0 0 8 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 0;
+#X connect 9 0 15 0;
+#X connect 12 0 16 0;
+#X connect 17 0 11 0;
 #X restore 116 184 pd send-receive;
 #N canvas 874 183 450 298 loading-args 0;
-#X obj 171 220 bng 50 500 50 0 empty empty \$0-label 58 24 0 13 #dcdcdc
-#040070 #980000;
-#X text 59 26 Note that all the parameters that you can set by inserting
-a number or symbol into a field in the properties window can also load
-dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
-parameters are: size \, flash time \, send/receive symbols \, label
-\, label offset and font size., f 49;
-#X text 59 115 For instance \, below \, we have \$0 used in the label
-field \, which gets expanded to the patch ID number. Using something
-like "\$1" is useful if you're using the object in an abstraction \,
-then you can load a value passed as an argument into a parameter.,
-f 49;
+#X obj 171 220 bng 50 500 50 0 empty empty \$0-label 58 24 0 13 #dcdcdc #040070 #980000;
+#X text 59 26 Note that all the parameters that you can set by inserting a number or symbol into a field in the properties window can also load dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these parameters are: size \, flash time \, send/receive symbols \, label \, label offset and font size., f 49;
+#X text 59 115 For instance \, below \, we have \$0 used in the label field \, which gets expanded to the patch ID number. Using something like "\$1" is useful if you're using the object in an abstraction \, then you can load a value passed as an argument into a parameter., f 49;
 #X restore 124 338 pd loading-args;
 #X text 111 294 Loading arguments in properties:, f 17;
-#X text 46 23 All the parameters from the properties window can be
-set via messages as well. See examples and more details on each parameter
-in the subpatches below:, f 39;
+#X text 46 23 All the parameters from the properties window can be set via messages as well. See examples and more details on each parameter in the subpatches below:, f 39;
 #X restore 392 193 pd properties;
-#X obj 181 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
-#fc0400 #0400fc;
-#X text 24 53 The bang button is a GUI (Graphical User Interface) object
-that sends a bang message when activated via clicks or messages sent
-to its inlet. Insert it from the Put menu (named as "Bang") or its
-shortcut. Alternatively \, create it by typing "bng" into an object
-box. Right click for properties (to set size \, colors \, labels \,
-etc)., f 67;
-#X text 65 375 This object is part of the "iemguis" library \, natively
-included in Pd version 0.34., f 28;
-#X text 299 455 updated for Pd version 0.51;
+#X obj 181 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 16 #dcdcdc #fc0400 #ff0400;
+#X text 24 53 The bang button is a GUI (Graphical User Interface) object that sends a bang message when activated via clicks or messages sent to its inlet. Insert it from the Put menu (named as "Bang") or its shortcut. Alternatively \, create it by typing "bng" into an object box. Right click for properties (to set size \, colors \, labels \, etc)., f 67;
+#X text 306 455 updated for Pd version 0.51;
 #X obj 181 337 print Big-Bang;
-#X obj 159 456 bang;
-#X obj 199 456 trigger;
+#X obj 147 456 bang;
+#X obj 225 456 trigger;
 #X msg 208 303 bang;
-#X text 248 303 <= similar to a bang message;
-#X obj 91 456 all_guis;
-#X obj 36 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 81 456 all_guis;
+#X obj 36 12 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X text 62 12 - [bng]: Bang button;
-#X obj 6 42 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 6 42 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 769 165 584 381 reference 0;
-#X obj 17 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 17 285 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 322 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 355 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 51 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 17 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 17 285 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 17 322 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 355 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 51 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X text 77 12 - [bng]: Bang button;
 #X text 119 291 bang -;
-#X text 171 291 when activated via clicks or when receiving messages.
-;
+#X text 171 291 when activated via clicks or when receiving messages.;
 #X text 124 329 NONE;
 #X text 87 55 size <float> - set size in pixels., f 56;
-#X text 59 74 flashtime <f \, f> - set minimum and maximum flash time
-in ms.;
+#X text 59 74 flashtime <f \, f> - set minimum and maximum flash time in ms.;
 #X text 87 93 init <float> - non zero sets to init mode., f 56;
 #X text 72 149 label <symbol> - set label., f 67;
 #X text 59 130 receive <symbol> - set receive symbol name., f 60;
 #X text 80 112 send <symbol> - set send symbol name., f 57;
 #X text 51 168 label_font <f \, f> -;
-#X text 191 168 set label type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> and font size., f 50;
-#X text 58 200 label_pos <f \, f> - set label's x/y position., f 71
-;
+#X text 191 168 set label type <0: DejaVu Sans Mono \, 1: Helvetica \, 2: Times> and font size., f 50;
+#X text 58 200 label_pos <f \, f> - set label's x/y position., f 71;
 #X text 86 220 color <list> -;
-#X text 191 219 set colors of background \, front and label. Symbols
-for hexadecimal values or floats for presets., f 52;
-#X text 72 251 other messages - float \, bang \, anything \, whatever
-\, activates the bang., f 69;
+#X text 191 219 set colors of background \, front and label. Symbols for hexadecimal values or floats for presets., f 52;
+#X text 72 251 other messages - float \, bang \, anything \, whatever \, activates the bang., f 69;
 #X restore 389 11 pd reference;
-#X obj 6 442 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 6 442 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 321 11 click =>;
-#X connect 0 0 12 0;
-#X connect 1 0 12 0;
-#X connect 2 0 12 0;
-#X connect 6 0 12 0;
-#X connect 12 0 16 0;
-#X connect 19 0 16 0;
+#X msg 185 456 bang;
+#X text 248 303 <-- similar to a bang message;
+#X text 47 250 Click to bang --> Right click for properties, f 17;
+#X text 65 375 This object is part of the "iemguis" library \, natively included in Pd version 0.34, f 28;
+#X connect 0 0 11 0;
+#X connect 1 0 11 0;
+#X connect 2 0 11 0;
+#X connect 6 0 11 0;
+#X connect 11 0 14 0;
+#X connect 17 0 14 0;

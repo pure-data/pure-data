@@ -9,10 +9,7 @@
 #include <string.h>
 #include <errno.h>
 #include "s_stuff.h"
-
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 t_printhook sys_printhook = NULL;
 int sys_printtostderr;
@@ -272,7 +269,7 @@ void pd_error(const void *object, const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
-    static int saidit;
+    static int saidit = 0;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
@@ -285,9 +282,10 @@ void pd_error(const void *object, const char *fmt, ...)
     strncpy(error_string, buf, 256);
     error_string[255] = 0;
 
-    if (!saidit)
+    if (object && !saidit)
     {
-        logpost(NULL, 4,
+        if (sys_havegui())
+            logpost(NULL, 4,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }

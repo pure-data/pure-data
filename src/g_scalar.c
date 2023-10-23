@@ -384,7 +384,8 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
     char tag[128];
-    sprintf(tag, "select%lx", x);
+        /* FIXME: get rid of this tag (if it's unused) */
+    sprintf(tag, "select%p", x);
     if (state)
     {
         int x1, y1, x2, y2;
@@ -476,7 +477,8 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     if (!templatecanvas)
     {
         char tag[128];
-        sprintf(tag, "scalar%lx", x);
+            /* FIXME: get rid of this tag (if it's unused) */
+        sprintf(tag, "scalar%p", x);
 
         if (vis)
         {

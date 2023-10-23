@@ -10,9 +10,7 @@
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 struct _instanceeditor
 {
@@ -62,7 +60,7 @@ void glist_deselectline(t_glist *x);
 static void _editor_selectlinecolor(t_glist*x, const char*color)
 {
     char tag[128];
-    sprintf(tag, "l%lx", x->gl_editor->e_selectline_tag);
+    sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
     pdgui_vmess(0, "crs rs",
         x, "itemconfigure", tag,
         "-fill", color);
@@ -464,9 +462,12 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            char tag[128];
-            sprintf(tag, "l%lx", oc);
-            pdgui_vmess(0, "crs", x, "delete", tag);
+            if (glist_isvisible(x) && x->gl_havewindow)
+            {
+                char tag[128];
+                sprintf(tag, "l%p", oc);
+                pdgui_vmess(0, "crs", x, "delete", tag);
+            }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -2356,6 +2357,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         else
         {
             int noutlet;
+            int out_activeminh = (OHEIGHT + 1)  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 4;
+            int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
+            if (out_activeheight > out_activemaxh) out_activeheight = out_activemaxh;
+            if (out_activeheight < out_activeminh) out_activeheight = out_activeminh;
                 /* resize? only for "true" text boxes or canvases */
             if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
@@ -2381,28 +2387,26 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (hitobj && (noutlet = obj_noutlets(hitobj)) &&
-                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
+                ypos >= y2 - out_activeheight)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
                 int closest = ((xpos-x1) * (nout1) + width/2)/width;
-                int hotspot = x1 +
-                    (width - iow) * closest / (nout1);
-                if (closest < noutlet &&
-                    xpos >= (hotspot - x->gl_zoom) &&
-                    xpos <= hotspot + (iow + x->gl_zoom))
+                if (noutlet == 1 || closest < noutlet)
                 {
                     if (doit)
                     {
                         int issignal = obj_issignaloutlet(hitobj, closest);
+                        int xout = x1 + IOMIDDLE * x->gl_zoom +
+                            (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
-                        x->gl_editor->e_xwas = xpos;
-                        x->gl_editor->e_ywas = ypos;
+                        x->gl_editor->e_xwas = xout;
+                        x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
                         pdgui_vmess(0, "crr iiii ri rs",
                             x, "create", "line",
-                            xpos,ypos, xpos,ypos,
+                            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos,
                             "-width", (issignal ? 2 : 1) * x->gl_zoom,
                             "-tags", "x");
                     }
@@ -2602,7 +2606,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
             char*tags[] = {tag, "cord"};
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
@@ -3546,6 +3550,7 @@ static void canvas_find_parent(t_canvas *x)
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
+extern t_class *text_class;
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
@@ -3561,6 +3566,16 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             canvas_vis((t_canvas *)gl, 1);
             canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
+            if (pd_class(&g->g_pd) == text_class) {
+                t_text* x = (t_text*)g;
+                int argc = binbuf_getnatom(x->te_binbuf);
+                t_atom*argv = binbuf_getvec(x->te_binbuf);
+                if(argc>0 && A_SYMBOL == argv[0].a_type) {
+                    t_symbol*s = atom_getsymbol(argv);
+                    if (s && s->s_name && *s->s_name)
+                        pdgui_vmess("::deken::open_search_objects", "s", s->s_name);
+                }
+            }
             return (1);
         }
         else if (g->g_pd == canvas_class)
@@ -4351,8 +4366,6 @@ static void canvas_reselect(t_canvas *x)
         gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
 
-extern t_class *text_class;
-
 void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_floatarg fwhoin, t_floatarg finno)
 {
@@ -4403,7 +4416,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     {
         char tag[128];
         char*tags[] = {tag, "cord"};
-        sprintf(tag, "l%lx", oc);
+        sprintf(tag, "l%p", oc);
         pdgui_vmess(0, "crr iiii ri rS",
             glist_getcanvas(x), "create", "line",
             0, 0, 0, 0,

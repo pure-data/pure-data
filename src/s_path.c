@@ -23,14 +23,6 @@
 #include <windows.h>
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
 #include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
@@ -46,9 +38,7 @@
 # define stat  stat64
 #endif
 
-#ifdef _MSC_VER
-# define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
     /* change '/' characters to the system's native file separator */
 void sys_bashfilename(const char *from, char *to)
@@ -499,7 +489,7 @@ int sys_fclose(FILE *stream)
     search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
-    char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
+    char realname[MAXPDSTRING], newname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
         /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
     int fd;
@@ -509,6 +499,7 @@ void open_via_helppath(const char *name, const char *dir)
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
+    strncpy(newname, realname, MAXPDSTRING-10);
     strcat(realname, "-help.pd");
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
@@ -521,8 +512,7 @@ void open_via_helppath(const char *name, const char *dir)
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
             goto gotone;
-
-    post("sorry, couldn't find help patch for \"%s\"", name);
+    post("sorry, couldn't find help patch for \"%s\"", newname);
     return;
 gotone:
     close (fd);

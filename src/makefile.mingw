@@ -67,8 +67,11 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
 # Also, for SetDllDirectory() s_loader.c, we need a minimum of Windows
 # XP SP1.  WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.
-ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME -DWINVER=0x0502 \
-     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"'
+ARCH_CFLAGS = -DPD -DPD_INTERNAL -DWINVER=0x0502 \
+     -DPA_USE_ASIO -DPA_USE_WASAPI \
+     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO \
+     -mms-bitfields \
+     -DWISH='"wish85.exe"'
 
 CFLAGS += $(ARCH_CFLAGS) $(WARN_CFLAGS) $(OPT_CFLAGS) $(MORECFLAGS)
 
@@ -91,7 +94,7 @@ PASRC = s_audio_pa.c s_audio_paring.c \
     $(PADIR)/src/os/win/pa_win_hostapis.c \
     $(PADIR)/src/os/win/pa_win_util.c \
     $(PADIR)/src/os/win/pa_win_waveformat.c \
-    $(PADIR)/src/hostapi/wmme/pa_win_wmme.c
+    $(PADIR)/src/hostapi/wasapi/pa_win_wasapi.c
 
 ASIOSRC = $(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
           $(PADIR)/src/hostapi/asio/pa_asio.cpp \

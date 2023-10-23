@@ -1,4 +1,4 @@
-#N canvas 805 192 639 560 12;
+#N canvas 496 117 639 560 12;
 #X obj 291 139 inlet;
 #X obj 203 139 inlet;
 #X obj 203 330 line~;
@@ -395,8 +395,7 @@
 #X obj 101 139 inlet~;
 #X obj 291 316 s \$0-fb;
 #X obj 477 365 s \$0-damp;
-#X text 75 498 rev3 - 16-delay reverberator. Like rev2~ but presumably
-higher-quality and takes two audio inputs.;
+#X text 75 498 rev3 - 16-delay reverberator. Like rev2~ but presumably higher-quality and takes two audio inputs.;
 #X obj 291 262 / 400;
 #N canvas 810 240 351 493 early 0;
 #X obj 82 10 inlet~;

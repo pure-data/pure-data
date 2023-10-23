@@ -99,7 +99,7 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     global gatomlabel_radio
 
     toplevel $mytoplevel -class DialogWindow
-    wm title $mytoplevel [_ "Atom Box Properties"]
+    wm title $mytoplevel [_ "GUI Box Properties"]
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
     wm transient $mytoplevel $::focused_window
@@ -140,7 +140,7 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     pack $mytoplevel.fontsize -side right -padx 5
     foreach size $::dialog_gatom::sizes {
         if {$size eq 0} {
-            set sizetext "auto"
+            set sizetext [_ "auto"]
         } else {
             set sizetext $size
         }

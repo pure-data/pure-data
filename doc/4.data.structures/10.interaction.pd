@@ -1,0 +1,105 @@
+#N struct template9 float x float y float w float h float q;
+#N canvas 223 50 638 556 12;
+#X floatatom 279 316 4 0 0 0 - - - 0;
+#N canvas 876 65 388 446 data9 1;
+#X scalar template9 19 186 73 25 9 \;;
+#X scalar template9 293 328 38 32 66 \;;
+#X scalar template9 202 32 46 71 78 \;;
+#X scalar template9 62 320 49 46 220 \;;
+#X scalar template9 140 183 28 72 634 \;;
+#X scalar template9 250 125 46 11 48 \;;
+#X scalar template9 26 62 70 11 903 \;;
+#X scalar template9 275 36 49 23 152 \;;
+#X scalar template9 230 175 25 27 710 \;;
+#X scalar template9 311 254 50 25 612 \;;
+#X scalar template9 19 114 77 26 16 \;;
+#X scalar template9 177 241 39 66 866 \;;
+#X scalar template9 40 240 27 27 125 \;;
+#X scalar template9 117 111 66 32 319 \;;
+#X scalar template9 135 61 50 25 454 \;;
+#X scalar template9 316 143 21 45 583 \;;
+#X scalar template9 270 230 25 38 548 \;;
+#X scalar template9 237 278 24 73 214 \;;
+#X scalar template9 133 335 50 78 647 \;;
+#X scalar template9 288 91 72 19 325 \;;
+#X coords 0 446 1 445 0 0 0;
+#X restore 508 269 pd data9;
+#N canvas 267 109 673 314 template9 0;
+#X obj 343 207 filledpolygon q 0 1 0 0 w 0 w h 0 h;
+#X obj 344 234 drawnumber q 0 0 0;
+#X obj 171 124 struct template9 float x float y float w float h float
+q;
+#X obj 171 268 outlet;
+#X obj 182 159 print struct-template9;
+#X text 347 158 <-- print all messages.;
+#X obj 171 199 route select change;
+#X text 42 17 [struct] outputs messages notifying you when objects
+of this structure are interacted with. In run mode you get: 'click'
+(when you click on them) and 'change' (when you change field values
+by dragging). In edit mode you get: 'select' when you select the object
+\, 'deselect' when you deselect it and 'displace' when you move it
+around. Here we catch 'change' and 'select' interactions and pass the
+pointer through with the [route] object., f 86;
+#X connect 2 0 4 0;
+#X connect 2 0 6 0;
+#X connect 6 0 3 0;
+#X connect 6 1 3 0;
+#X restore 279 219 pd template9;
+#X obj 279 288 get template9 x y w h q;
+#X floatatom 397 316 4 0 0 0 - - - 0;
+#X floatatom 358 316 4 0 0 0 - - - 0;
+#X floatatom 318 316 4 0 0 0 - - - 0;
+#X floatatom 437 316 4 0 0 0 - - - 0;
+#X msg 279 496 \; set-x set \$1;
+#X msg 318 458 \; set-y set \$1;
+#X msg 358 420 \; set-w set \$1;
+#X msg 397 381 \; set-h set \$1;
+#X msg 437 342 \; set-q set \$1;
+#X floatatom 79 251 5 0 0 0 - set-x - 0;
+#X obj 79 275 set template9 x;
+#X obj 79 333 set template9 y;
+#X obj 79 391 set template9 w;
+#X obj 79 448 set template9 h;
+#X obj 79 505 set template9 q;
+#X floatatom 79 309 5 0 0 0 - set-y - 0;
+#X floatatom 79 367 5 0 0 0 - set-w - 0;
+#X floatatom 79 425 5 0 0 0 - set-h - 0;
+#X floatatom 79 482 5 0 0 0 - set-q - 0;
+#X text 46 66 To try it \, unlock the subpatch (data9) and select a
+scalar. The 5 parameters should show up under the [get] object in this
+window and set the number boxes connected to the [set] objects so you're
+able to change them. The blue "selection" rectangle ought to notice
+when the object that got selected gets moved or resized \, but this
+isn't done yet (as of Pd version 0.39)., f 79;
+#X text 420 509 updated for Pd version 0.52;
+#X text 375 219 <-- open for details;
+#X text 46 17 The [struct] object outputs a pointers in different interaction
+situations as in the case of any selected object of template9 or when
+you click and change any parameter. This patch demonstrates catching
+these interactions., f 79;
+#X text 46 142 When in run mode (that is 'locked' and not in edit mode)
+you can click on any corner of the rectangles to drag and change the
+field values or also click on the color number and drag it too. You'll
+then also see the parameters come out of the [get] objects., f 79
+;
+#X connect 0 0 8 0;
+#X connect 2 0 3 0;
+#X connect 2 0 14 1;
+#X connect 2 0 18 1;
+#X connect 2 0 17 1;
+#X connect 2 0 16 1;
+#X connect 2 0 15 1;
+#X connect 3 0 0 0;
+#X connect 3 1 6 0;
+#X connect 3 2 5 0;
+#X connect 3 3 4 0;
+#X connect 3 4 7 0;
+#X connect 4 0 11 0;
+#X connect 5 0 10 0;
+#X connect 6 0 9 0;
+#X connect 7 0 12 0;
+#X connect 13 0 14 0;
+#X connect 19 0 15 0;
+#X connect 20 0 16 0;
+#X connect 21 0 17 0;
+#X connect 22 0 18 0;

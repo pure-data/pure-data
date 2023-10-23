@@ -46,7 +46,8 @@ proc tkAboutDialog {} {
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {args} {
     #::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
-    pdsend "pd audio-properties"
+    #pdsend "pd audio-properties"
+    ::pd_menucommands::menu_preference_dialog
 }
 
 # kAEQuitApplication

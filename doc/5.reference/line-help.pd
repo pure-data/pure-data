@@ -1,92 +1,61 @@
-#N canvas 489 23 615 711 12;
-#X floatatom 35 519 8 0 0 0 - - - 0;
-#X msg 71 357 39;
+#N canvas 489 23 615 703 12;
+#X floatatom 45 508 8 0 0 0 - - - 0;
+#X msg 81 346 39;
 #X obj 31 11 line;
-#X text 71 10 - ramp generator;
-#X text 25 682 see also:;
-#X obj 106 682 line~;
-#X msg 48 290 stop;
-#X text 84 293 "stop" message to stop output;
-#X obj 35 493 line 0 100;
-#X text 139 498 creation arguments:;
-#X text 279 491 1 initial value;
-#X msg 61 324 set 5;
-#X obj 152 682 vline~;
-#X floatatom 102 456 5 1 100 0 - - - 0;
-#X floatatom 91 429 5 0 0 0 - - - 0;
-#X text 278 507 2 time grain in milliseconds (20 by default);
-#X msg 206 622 \; pd compatibility 0.47;
-#X text 34 554 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
-stop message followed by a new ramp message would incorrectly ramp
-from the previous start. It now ramps from wherever in the previous
-segment the object was stopped at. To get the old behavior \, set "compatibility"
-to 0.47 or below in Pd's command line or by a message:, f 74;
-#X text 388 681 updated for Pd version 0.48;
-#X text 135 429 middle inlet sets next ramp time (cleared when ramp
-starts!);
-#X text 144 456 right inlet sets grain (not cleared \, acts as normal
-inlet);
-#X text 108 324 "set" to set initial ramp value (without output);
-#X msg 36 256 \$1 1000;
-#X obj 36 233 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X msg 80 392 0 \, 1 1000 100;
-#X text 99 255 a pair sets target and ramp time;
-#X text 182 392 float jumps to value \, list sets target \, time and
-grain;
-#X text 105 351 A float jumps to the value if no ramp time is set via
-the middle inlet, f 37;
-#X text 39 48 The line object takes values for target/time/grain and
-ramps to the specified target over the time given in milliseconds \,
-updating its output at the "grain rate" (also in milliseconds). A list
-up to 3 floats distributes the values to the inlets \, as usual in
-Pd. Note that the middle inlet (that sets the time) does not set values
-for the next ramp (unlike every other inlet in Pd) - thus \, sending
-a float to the left inlet without priorly setting a value in the middle
-inlet causes a jump in the output regardless of whatever time value
-was specified in some previous message. On the other hand \, setting
-a grain value persists. A grain value of 0 ir less becomes 20 (the
-default value). If the line object receives a message specifying some
-new target before reaching the previous one \, it takes off from its
-current value., f 75;
-#X obj 8 40 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 517 11 <= click;
-#N canvas 724 135 583 338 reference 0;
-#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 220 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 254 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 313 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X text 25 671 see also:;
+#X obj 106 671 line~;
+#X msg 58 279 stop;
+#X text 94 282 "stop" message to stop output;
+#X obj 45 482 line 0 100;
+#X text 123 481 creation arguments:;
+#X text 263 481 1 initial value;
+#X msg 71 313 set 5;
+#X obj 152 671 vline~;
+#X floatatom 112 445 5 1 100 0 - - - 0;
+#X floatatom 101 418 5 0 0 0 - - - 0;
+#X text 262 497 2 time grain in milliseconds (20 by default);
+#X msg 217 611 \; pd compatibility 0.47;
+#X text 52 543 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a stop message followed by a new ramp message would incorrectly ramp from the previous start. It now ramps from wherever in the previous segment the object was stopped at. To get the old behavior \, set "compatibility" to 0.47 or below in Pd's command line or by a message:, f 74;
+#X text 388 670 updated for Pd version 0.48;
+#X text 145 418 middle inlet sets next ramp time (cleared when ramp starts!);
+#X text 154 445 right inlet sets grain (not cleared \, acts as normal inlet);
+#X text 118 313 "set" to set initial ramp value (without output);
+#X msg 46 247 \$1 1000;
+#X obj 46 222 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X msg 90 381 0 \, 1 1000 100;
+#X text 109 246 a pair sets target and ramp time;
+#X text 192 381 float jumps to value \, list sets target \, time and grain;
+#X text 115 340 A float jumps to the value if no ramp time is set via the middle inlet, f 37;
+#X obj 8 40 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 527 11 <= click;
+#N canvas 718 116 583 338 reference 0;
+#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 9 220 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 254 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 313 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 30 12 line;
-#X text 70 11 - ramp generator;
 #X text 150 229 float - ramp values.;
-#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
+#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
 #X text 157 80 float - set target value and start ramp.;
 #X text 165 99 stop - stop the ramp.;
 #X text 116 118 set <float> - set initial ramp value.;
-#X obj 9 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 183 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
-0;
-#X text 157 154 float - set next ramp time (cleared when ramp starts).
-;
+#X obj 9 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 183 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000 0;
+#X text 157 154 float - set next ramp time (cleared when ramp starts).;
 #X text 157 190 float - sets time grain in ms.;
 #X text 130 264 1) float - initial ramp value (default 0).;
 #X text 130 285 2) float - time grain in ms (default 20 ms).;
-#X restore 423 11 pd reference;
-#X obj 8 670 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 1 0 8 0;
-#X connect 6 0 8 0;
-#X connect 8 0 0 0;
-#X connect 11 0 8 0;
-#X connect 13 0 8 2;
-#X connect 14 0 8 1;
-#X connect 22 0 8 0;
-#X connect 23 0 22 0;
-#X connect 24 0 8 0;
+#X text 70 11 - timed ramp generator.;
+#X restore 433 11 pd reference;
+#X obj 8 659 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 39 48 The [line] object takes values for target/time/grain and ramps to the given target over the specified time in milliseconds \, updating its output at the "grain rate" (also in milliseconds). A list up to 3 floats distributes the values to the inlets \, as usual in Pd. Note that the middle inlet (that sets the time) does not set values for the next ramp (unlike every other inlet in Pd) - thus \, sending a float to the left inlet without priorly setting a value in the middle inlet causes a jump in the output regardless of whatever time value was specified in some previous message. On the other hand \, setting a grain value persists. A grain value of 0 or less becomes 20 (the default value). If [line] gest a message specifying some new target before reaching the previous one \, it takes off from its current value., f 75;
+#X text 71 10 - timed ramp generator;
+#X connect 1 0 7 0;
+#X connect 5 0 7 0;
+#X connect 7 0 0 0;
+#X connect 10 0 7 0;
+#X connect 12 0 7 2;
+#X connect 13 0 7 1;
+#X connect 21 0 7 0;
+#X connect 22 0 21 0;
+#X connect 23 0 7 0;

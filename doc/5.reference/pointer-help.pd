@@ -1,73 +1,59 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 587 23 703 712 12;
-#X text 20 666 see also:;
+#N canvas 542 23 703 715 12;
+#X text 20 675 see also:;
 #X obj 53 10 pointer;
-#N canvas 379 131 422 137 help-pointer-template1 0;
+#N canvas 379 131 422 137 pointer-template1 0;
 #X obj 74 76 filledpolygon z 0 1 0 0 20 0 20 30 0 30;
 #X obj 60 23 struct template1 float x float y float z;
-#X restore 446 509 pd help-pointer-template1;
-#N canvas 566 400 413 122 help-pointer-template2 0;
+#X restore 449 526 pd pointer-template1;
+#N canvas 566 400 413 122 pointer-template2 0;
 #X obj 40 67 filledcurve 909 0 0 0 0 30 30 60 0 30 -30 0 0;
 #X obj 60 21 struct template2 float x float y;
-#X restore 446 532 pd help-pointer-template2;
-#X obj 95 652 get;
-#X obj 128 652 set;
-#X obj 161 652 append;
-#X obj 215 652 getsize;
-#X obj 96 676 setsize;
-#X obj 156 676 element;
-#N canvas 229 196 312 185 help-pointer-data 1;
+#X restore 449 549 pd pointer-template2;
+#X obj 95 661 get;
+#X obj 128 661 set;
+#X obj 161 661 append;
+#X obj 215 661 getsize;
+#X obj 96 685 setsize;
+#X obj 156 685 element;
+#N canvas 186 180 312 185 pointer-data 1;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
-#X restore 446 487 pd help-pointer-data;
-#X obj 67 442 pointer;
-#X msg 41 201 traverse pd-help-pointer-data;
-#X msg 61 227 bang;
-#X msg 77 253 next;
-#X obj 67 467 print out1;
-#X obj 158 467 print out2;
-#X text 23 501 Optional arguments to pointer allow you to select according
-to the class of the scalar being output:, f 50;
-#X msg 47 543 next;
-#X msg 94 543 traverse pd-help-pointer-data;
-#X obj 94 600 print template1;
-#X obj 219 600 print template2;
-#X obj 344 600 print other;
-#X obj 469 600 print bangout;
-#X text 255 200 sets to the "head" of the list;
-#X text 27 55 "Pointer" is a storage object like "float" \, except
-that the thing stored is the location of a scalar somewhere. You can
-send a pointer a value (perhaps from another "pointer" object). The
-right inlet takes pointers and simply stores them. A bang in the left
-outputs the pointer \, and a pointer in the left both sets and outputs
-the value., f 91;
-#X obj 216 676 struct;
-#X msg 85 288 vnext 1;
-#X msg 104 359 send pointer-help;
-#X text 101 227 output current value;
-#X obj 481 350 r pointer-help;
-#X obj 481 375 print pointer-help;
-#X text 145 281 output the next object (if arg is 0) or the next selected
+#X restore 449 504 pd pointer-data;
+#X obj 69 459 pointer;
+#X msg 23 184 traverse pd-pointer-data;
+#X msg 69 236 next;
+#X obj 69 484 print out1;
+#X obj 160 484 print out2;
+#X msg 47 556 next;
+#X msg 94 556 traverse pd-pointer-data;
+#X obj 94 613 print template1;
+#X obj 219 613 print template2;
+#X obj 344 613 print other;
+#X obj 469 613 print bangout;
+#X text 213 183 sets to the "head" of the list;
+#X msg 97 305 vnext 1;
+#X msg 116 376 send pointer-help;
+#X text 76 210 output current value;
+#X obj 493 367 r pointer-help;
+#X obj 493 392 print pointer-help;
+#X text 157 298 output the next object (if arg is 0) or the next selected
 object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense)., f 74;
-#X msg 113 408 send-window vis \$1;
-#X obj 113 386 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 123 425 send-window vis \$1;
+#X obj 123 401 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 244 408 send a message to the canvas containing the scalar
+#X text 256 425 send a message to the canvas containing the scalar
 ;
-#X msg 93 320 delete;
-#X text 146 314 delete the current object and output the next one (or
-send a "bang" to bangout if it was the last one in the list), f 67
-;
-#X text 348 442 Pointer equality =>;
-#N canvas 870 193 602 411 equal_message 0;
+#X msg 105 337 delete;
+#N canvas 764 193 602 411 equal_message 0;
 #X obj 304 212 pointer;
-#X msg 304 146 traverse pd-help-pointer-data \, bang;
+#X msg 304 146 traverse pd-pointer-data \, bang;
 #X msg 314 183 next;
 #X obj 33 212 pointer;
-#X msg 33 146 traverse pd-help-pointer-data \, bang;
+#X msg 33 146 traverse pd-pointer-data \, bang;
 #X msg 43 183 next;
 #X msg 33 240 equal \$1;
 #X obj 118 286 pointer template1 template2;
@@ -75,12 +61,12 @@ send a "bang" to bangout if it was the last one in the list), f 67
 #X text 32 105 2) compare different pointers with source, f 20;
 #X obj 180 327 print equal;
 #X obj 304 327 print not-equal;
-#X text 48 21 The "equal" message allows one to compare an incoming
-pointer with the stored pointer. On success \, the pointer is sent
-to its corresponding outlet. On fail \, a bang is sent through the
-right-most outlet., f 69;
 #X text 321 277 you can also use template symbols, f 17;
 #X obj 304 115 loadbang;
+#X text 34 21 The "equal" message allows one to compare an incoming
+pointer with the stored pointer. On success \, the pointer is sent
+to its corresponding outlet. On fail \, a bang is sent through the
+rightmost outlet., f 71;
 #X connect 0 0 7 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -92,99 +78,124 @@ right-most outlet., f 69;
 #X connect 7 1 10 0;
 #X connect 7 2 10 0;
 #X connect 7 3 11 0;
-#X connect 14 0 1 0;
-#X restore 485 441 pd equal_message;
-#X text 482 671 updated for Pd version 0.51;
-#X obj 158 444 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X connect 13 0 1 0;
+#X restore 499 458 pd equal_message;
+#X text 487 678 updated for Pd version 0.51;
+#X obj 160 460 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 180 443 bang at end of list;
-#X obj 293 652 trigger;
-#X obj 293 676 unpack;
-#X obj 360 676 pack;
-#X obj 360 652 pipe;
-#X text 121 246 move forward one item and output pointer if we reach
-the end \, a "bang" goes to out2.;
+#X text 184 459 bang at end of list;
+#X obj 275 661 trigger;
+#X obj 215 685 unpack;
+#X obj 275 685 pack;
+#X obj 337 661 pipe;
 #X text 115 10 - store the location of a scalar in a list;
 #X obj 11 43 cnv 1 685 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 570 8 <= click;
-#N canvas 784 100 575 570 reference 0;
-#X obj 23 20 pointer;
-#X text 85 20 - store the location of a scalar in a list.;
-#X text 44 222 send <symbol> -;
+#X text 610 8 <= click;
+#N canvas 708 63 575 630 reference 0;
+#X obj 29 18 pointer;
+#X text 91 18 - store the location of a scalar in a list.;
+#X text 44 290 send <symbol> -;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 335 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 400 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 464 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 519 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 537 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 596 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 286 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 360 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 107 90 bang - output the current value., f 62;
-#X text 107 125 next -;
-#X text 156 126 move and output next pointer or "bang" to right outlet
+#X text 107 140 next -;
+#X text 156 140 move and output next pointer or "bang" to right outlet
 if we reach the end of the list., f 55;
-#X text 16 108 traverse <symbol> - sets to the "head" of the list.
-, f 75;
-#X text 44 159 vnext <float> -;
-#X text 156 158 outputs the next object (if 0) or the next selected
-object (if 1)., f 55;
-#X text 93 191 delete -;
-#X text 156 190 delete the current object and output the next (or send
+#X text 44 213 vnext <float> -;
+#X text 93 259 delete -;
+#X text 156 258 delete the current object and output the next (or send
 a "bang" to the right outlet if it was the last one)., f 55;
-#X text 156 222 send pointer to a receive named given by the symbol.
+#X text 16 309 send-window <any> -;
+#X text 156 308 send any message to the canvas containing the scalar.
 , f 55;
-#X text 16 241 send-window <any> -;
-#X text 156 240 send any message to the canvas containing the scalar.
+#X text 30 328 equal <pointer> -;
+#X text 156 327 compare an incoming pointer with the stored pointer.
 , f 55;
-#X text 30 260 equal <pointer> -;
-#X text 156 259 compare an incoming pointer with the stored pointer.
-, f 55;
-#X text 83 296 pointer - store the pointer value (no output)., f 49
+#X text 83 370 pointer - store the pointer value (no output)., f 49
 ;
-#X text 94 339 'n' number of outlets depend on creation arguments;
-#X obj 7 362 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
+#X text 85 404 'n' number of outlets depend on creation arguments;
+#X obj 7 427 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
-#X text 104 472 1) list -;
-#X text 172 472 template names. The number of templates creates 'n'
-corresponding outlets \, plus an extra outlet for non matching templates.
-If no argument is given \, only one outlet is created., f 51;
-#X obj 7 392 cnv 1 550 1 empty empty 'n'+1: 8 12 0 13 #7c7c7c #000000
+#X text 17 544 1) list -;
+#X obj 7 457 cnv 1 550 1 empty empty 'n'+1: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 91 368 pointer - pointers of matching templates.;
-#X text 91 398 pointer - pointers for non matching templates.;
-#X obj 7 423 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
+#X text 111 433 pointer - pointers of matching templates.;
+#X text 111 463 pointer - pointers for non matching templates.;
+#X obj 7 488 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 111 429 bang - when reaching the end of a list;
-#X restore 476 9 pd reference;
-#X obj 11 640 cnv 1 685 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 156 212 outputs the next object (if 0) or the next selected
+object (if 1) or "bang" to right outlet if we reach the end of the
+list.., f 55;
+#X text 156 290 send pointer to a receive name given by the symbol.
+, f 55;
+#X text 16 108 traverse <symbol> -;
+#X text 85 544 template names. The number of templates creates 'n'
+corresponding outlets plus an extra outlet for non matching templates.
+If no argument is given \, only one outlet is created besides rightmost.
+, f 65;
+#X text 131 494 bang - when reaching the end of a list.;
+#X text 156 108 sets to the a canvas' "head" of the list \, the symbol
+needs to be in the format 'pd-canvasname'., f 55;
+#X text 93 175 rewind -;
+#X text 156 174 goes back to the head of the list and output its pointer
+(unless the end of list was reached);
+#X restore 516 9 pd reference;
+#X obj 11 649 cnv 1 685 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 233 360 send pointer to a receive named =>;
-#X obj 94 574 pointer template1 template2, f 54;
-#X text 27 118 The value of a pointer can either indicate a real scalar
-\, or else the "head" (before the first element) of the list. This
-allows you to point to an empty list \, and also \, to "append" a scalar
-to the beginning of the list. Pointers are "safe": if you delete a
-scalar pointers to it are marked invalid., f 91;
-#X connect 11 0 15 0;
-#X connect 11 1 41 0;
+#X obj 94 587 pointer template1 template2, f 54;
+#X text 20 52 [pointer] is a storage object like [float] \, except
+that the thing stored is the location of a scalar somewhere. You can
+send a value to [pointer] (perhaps from another [pointer] object).
+The right inlet takes pointers and simply stores them. A bang in the
+left inlet outputs the pointer \, and a pointer in the left both sets
+and outputs the value., f 94;
+#X text 115 229 move forward one item and output its pointer \, or
+send a "bang" to the right outlet if we reach the end of the list.
+, f 63;
+#X text 158 331 delete the current object and output the next one (or
+send a "bang" to right outlet if it was the last one in the list),
+f 67;
+#X text 23 514 Optional arguments to [pointer] allow you to select
+according to the template of the scalar being output:;
+#X obj 53 210 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 245 376 send pointer to a receive name -->;
+#X text 350 459 Pointer equality -->;
+#X text 20 114 The value of a [pointer] can either indicate a real
+scalar \, or else the "head" (before the first element) of the list
+\, which allows you to point to an empty list (and append a scalar
+to the beginning of the list). Pointers are "safe": if you delete a
+scalar \, pointers to it are marked as invalid., f 94;
+#X msg 81 270 rewind;
+#X text 136 262 goes back to the head of the list and output its pointer
+(unless the end of list was reached);
+#X connect 11 0 14 0;
+#X connect 11 1 35 0;
 #X connect 12 0 11 0;
 #X connect 13 0 11 0;
-#X connect 14 0 11 0;
-#X connect 18 0 54 0;
-#X connect 19 0 54 0;
-#X connect 27 0 11 0;
-#X connect 28 0 11 0;
-#X connect 30 0 31 0;
-#X connect 33 0 11 0;
-#X connect 34 0 33 0;
-#X connect 36 0 11 0;
-#X connect 41 0 16 0;
-#X connect 54 0 20 0;
-#X connect 54 1 21 0;
-#X connect 54 2 22 0;
-#X connect 54 3 23 0;
+#X connect 16 0 46 0;
+#X connect 17 0 46 0;
+#X connect 23 0 11 0;
+#X connect 24 0 11 0;
+#X connect 26 0 27 0;
+#X connect 29 0 11 0;
+#X connect 30 0 29 0;
+#X connect 32 0 11 0;
+#X connect 35 0 15 0;
+#X connect 46 0 18 0;
+#X connect 46 1 19 0;
+#X connect 46 2 20 0;
+#X connect 46 3 21 0;
+#X connect 51 0 11 0;
+#X connect 55 0 11 0;

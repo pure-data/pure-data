@@ -133,7 +133,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 
     my_numbox_ftoa(x);
 
-    sprintf(tag, "%lxBASE1", x);
+    sprintf(tag, "%pBASE1", x);
     pdgui_vmess(0, "crs  ii ii ii ii ii ii", canvas, "coords", tag,
         xpos,              ypos,
         xpos + w - corner, ypos,
@@ -147,7 +147,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-fill", x->x_gui.x_bcol);
 
 
-    sprintf(tag, "%lxBASE2", x);
+    sprintf(tag, "%pBASE2", x);
     pdgui_vmess(0, "crs  ii ii ii", canvas, "coords", tag,
         xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
@@ -156,7 +156,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-width", zoom,
         "-fill", x->x_gui.x_fcol);
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom,
         ypos + x->x_gui.x_ldy * zoom);
@@ -165,7 +165,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-fill", lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 
-    sprintf(tag, "%lxNUMBER", x);
+    sprintf(tag, "%pNUMBER", x);
     pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + half + 2*zoom, ypos + half + d);
     pdgui_vmess(0, "crs  rs rA rk", canvas, "itemconfigure", tag,
@@ -179,21 +179,21 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%lxOBJ", x);
+    sprintf(tag_object, "%pOBJ", x);
 
-    sprintf(tag, "%lxBASE1", x);
+    sprintf(tag, "%pBASE1", x);
     pdgui_vmess(0, "crr ii rS", canvas, "create", "polygon",
         0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxBASE2", x);
+    sprintf(tag, "%pBASE2", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
-    sprintf(tag, "%lxNUMBER", x);
+    sprintf(tag, "%pNUMBER", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 2, tags);
 
@@ -218,13 +218,13 @@ static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
         bcol = lcol = fcol = IEM_GUI_COLOR_SELECTED;
     }
 
-    sprintf(tag, "%lxBASE1", x);
+    sprintf(tag, "%pBASE1", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", bcol);
-    sprintf(tag, "%lxBASE2", x);
+    sprintf(tag, "%pBASE2", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
-    sprintf(tag, "%lxNUMBER", x);
+    sprintf(tag, "%pNUMBER", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
 }
 
@@ -235,7 +235,7 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     {
         t_canvas *canvas = glist_getcanvas(glist);
         char tag[128];
-        sprintf(tag, "%lxNUMBER", x);
+        sprintf(tag, "%pNUMBER", x);
         if(x->x_gui.x_fsf.x_change)
         {
             if(x->x_buf[0])

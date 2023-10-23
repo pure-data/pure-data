@@ -18,7 +18,7 @@
 #X msg 180 465 symbol cort;
 #X msg 191 493 symbol zack;
 #X obj 85 553 select cort, f 14;
-#X obj 317 551 select cort zack, f 22;
+#X obj 317 553 select cort zack, f 22;
 #X text 38 635 see also:;
 #X obj 112 636 route;
 #X obj 55 15 select;
@@ -26,80 +26,55 @@
 #X text 354 635 updated for Pd version 0.33;
 #X text 91 40 - abbreviation;
 #X floatatom 173 250 5 0 0 0 - - - 0;
-#X obj 85 250 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 85 250 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X floatatom 474 384 5 0 0 0 - - - 0;
 #X symbolatom 85 525 10 0 0 0 - - - 0;
-#X symbolatom 180 577 10 0 0 0 - - - 0;
-#X symbolatom 468 576 10 0 0 0 - - - 0;
-#X text 27 79 In its simplest form shown below \, select checks its
-input against the constant "6". If they match \, the first outlet gives
-"bang" and otherwise the input is copied to the second outlet. If select
-is used with a single argument \, a second inlet allows you to change
-the test value., f 73;
-#X text 64 315 You can also give several arguments. You get an outlet
-for each test value and finally an outlet for values which match none
-of them. In this case you don't get inlets to change the test values.
-, f 40;
+#X symbolatom 180 580 10 0 0 0 - - - 0;
+#X symbolatom 468 580 10 0 0 0 - - - 0;
+#X text 64 315 You can also give several arguments. You get an outlet for each test value and finally an outlet for values which match none of them. In this case you don't get inlets to change the test values., f 40;
 #X symbolatom 180 525 10 0 0 0 - - - 0;
 #X msg 317 462 symbol cort;
 #X msg 411 462 symbol zack;
 #X msg 422 487 symbol bill;
 #X symbolatom 317 525 10 0 0 0 - - - 0;
-#X obj 17 72 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#N canvas 639 110 571 375 reference 0;
-#X obj 11 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 11 157 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 11 310 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 10 350 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 11 78 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 9 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 17 72 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#N canvas 711 93 577 486 reference 0;
+#X obj 11 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 11 257 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 11 420 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 10 460 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 11 78 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 9 144 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 33 12 select;
 #X text 93 12 - compare numbers or symbols;
-#X text 73 83 float/symbol - input to compare to arguments.;
-#X text 73 117 float/symbol -;
-#X text 181 117 if there's one argument \, an inlet is created to update
-it., f 47;
-#X obj 11 188 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 128 194 bang -;
-#X text 179 195 when the input matches an argument that corresponds
-to the outlet., f 51;
-#X text 84 161 (depends on the number of arguments);
-#X obj 11 238 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c
-#000000 0;
-#X text 73 267 float/symbol -;
-#X text 179 266 when input doesn't match the arguments \, it is passed
-here., f 52;
-#X text 108 320 1) list - of floats or symbols to match to (default
-0).;
+#X obj 11 288 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
+#X text 128 294 bang -;
+#X text 179 295 when the input matches an argument that corresponds to the outlet., f 51;
+#X text 84 261 (depends on the number of arguments);
+#X obj 11 338 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000 0;
+#X text 73 367 float/symbol -;
+#X text 179 366 when input doesn't match the arguments \, it is passed here., f 52;
+#X text 108 430 1) list - of floats or symbols to match to (default 0).;
+#X text 131 86 float - float input to compare to arguments.;
+#X text 124 107 symbol - symbol input to compare to arguments.;
+#X text 108 176 float -;
+#X text 101 199 symbol -;
+#X text 167 199 replaces single symbol argument (if given)., f 47;
+#X text 167 176 replaces single float argument (if given)., f 47;
+#X text 56 147 (only created if a single argument is given);
 #X restore 392 37 pd reference;
 #X text 490 37 <= click;
-#X obj 17 621 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 17 621 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 245 161 <= change argument;
-#X text 74 420 Select can also be used to sort symbols \, but it cannot
-mix floats and symbols:, f 40;
-#X obj 85 577 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 317 576 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 392 576 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 365 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 401 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 437 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 173 277 print unselected;
+#X text 27 79 In its simplest form shown below \, [select] checks its input against the constant "6". If they match \, the first outlet gives "bang" and otherwise the input is copied to the second outlet. If [select] is used with a single argument \, a second inlet allows you to change the test value., f 73;
+#X text 65 420 [select] can also be used to sort symbols \, but it cannot mix floats and symbols:, f 42;
+#X obj 365 384 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 401 384 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 437 384 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 317 580 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 392 580 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 85 580 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 0 0 12 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
@@ -113,23 +88,23 @@ mix floats and symbols:, f 40;
 #X connect 9 1 26 0;
 #X connect 10 0 11 0;
 #X connect 11 0 9 0;
-#X connect 12 0 48 0;
-#X connect 12 1 49 0;
-#X connect 12 2 50 0;
+#X connect 12 0 46 0;
+#X connect 12 1 47 0;
+#X connect 12 2 48 0;
 #X connect 12 3 28 0;
 #X connect 14 0 29 0;
 #X connect 15 0 29 0;
-#X connect 16 0 34 0;
-#X connect 17 0 34 0;
-#X connect 18 0 45 0;
+#X connect 16 0 33 0;
+#X connect 17 0 33 0;
+#X connect 18 0 51 0;
 #X connect 18 1 30 0;
-#X connect 19 0 46 0;
-#X connect 19 1 47 0;
+#X connect 19 0 49 0;
+#X connect 19 1 50 0;
 #X connect 19 2 31 0;
-#X connect 26 0 51 0;
+#X connect 26 0 43 0;
 #X connect 29 0 18 0;
-#X connect 34 0 18 1;
-#X connect 35 0 38 0;
-#X connect 36 0 38 0;
-#X connect 37 0 38 0;
-#X connect 38 0 19 0;
+#X connect 33 0 18 1;
+#X connect 34 0 37 0;
+#X connect 35 0 37 0;
+#X connect 36 0 37 0;
+#X connect 37 0 19 0;

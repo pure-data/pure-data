@@ -218,10 +218,16 @@ fi
 # * Linux cross-compile: $MINGW_PREFIX/lib
 if [ "x${MINGW_PREFIX}" != "x" ] ; then
     if [ -e $MINGW_PREFIX/bin/$PTHREAD_DLL ] ; then
-        cp -v $MINGW_PREFIX/bin/$PTHREAD_DLL $APP/bin
+        pthread_dll="${MINGW_PREFIX}/bin/${PTHREAD_DLL}"
     elif [ -e $MINGW_PREFIX/lib/$PTHREAD_DLL ] ; then
-        cp -v $MINGW_PREFIX/lib/$PTHREAD_DLL $APP/bin
+        pthread_dll="${MINGW_PREFIX}/lib/${PTHREAD_DLL}"
     fi
+fi
+
+if [  -e "${pthread_dll}" ]; then
+    find "${APP}" -type f '(' -name "pd.dll" -o -name "pd64.dll" -o -name "pd32.dll" ')' -exec dirname {} ";" | sort -u | while read dir ; do
+    cp -v "${pthread_dll}" "${dir}/"
+    done
 fi
 
 # copy info and resources not handled via "make install"

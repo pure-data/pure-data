@@ -10,7 +10,7 @@ d_fat: pdsched.d_fat
 d_ppc: pdsched.d_ppc
 
 pdsched.pd_linux: pdsched.c
-	$(CC) $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
+	$(CC) -DPD_WATCHDOG=1 $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
 	$(CC) -shared -o $*.pd_linux $*.o -lc -lm
 	rm -f $*.o
 

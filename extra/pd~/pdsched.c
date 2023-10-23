@@ -21,8 +21,7 @@ outputs audio and messages. */
 
 #include "binarymsg.c"
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__)\
-     || defined(__GNU__)
+#if PD_WATCHDOG
 void glob_watchdog(t_pd *dummy);
 
 static void pollwatchdog( void)
@@ -38,7 +37,12 @@ static void pollwatchdog( void)
             2 * (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
     }
 }
-#endif
+#else /* ! PD_WATCHDOG */
+static void pollwatchdog( void)
+{
+    /* dummy */
+}
+#endif /* PD_WATCHDOG */
 
 static t_class *pd_ambinary_class;
 #define BUFSIZE 65536
@@ -88,7 +92,7 @@ int pd_extern_sched(char *flags)
     t_audiosettings as;
 
     sys_get_audio_settings(&as);
-    as.a_api = API_DUMMY;
+    as.a_api = API_NONE;
     sys_set_audio_settings(&as);
 
     chin = (as.a_nindev < 1 ? 0 : as.a_chindevvec[0]);
@@ -132,10 +136,7 @@ int pd_extern_sched(char *flags)
                     *fp++ = 0;
             sched_tick();
             sys_pollgui();
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__)\
-     || defined(__GNU__)
             pollwatchdog();
-#endif
             if (useascii)
                 printf(";\n");
             else putchar(A_SEMI);

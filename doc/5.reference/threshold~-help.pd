@@ -1,95 +1,70 @@
-#N canvas 409 23 627 489 12;
-#X obj 40 12 threshold~;
+#N canvas 483 26 627 489 12;
+#X obj 27 12 threshold~;
 #X text 213 342 Arguments:;
 #X floatatom 32 193 5 0 0 0 - - - 0;
 #X obj 32 404 print trigger;
 #X obj 197 404 print rest;
 #X text 410 460 updated for Pd version 0.32;
-#X text 131 11 - trigger from audio signal;
-#X msg 428 190 \; pd dsp \$1;
-#X obj 428 159 tgl 16 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 450 158 DSP on/off;
-#X obj 32 373 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 197 373 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 32 373 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #N canvas 620 103 571 416 reference 0;
-#X obj 5 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 5 186 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 5 288 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 4 384 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 5 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 5 186 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 5 288 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 4 384 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 38 16 threshold~;
 #X text 84 93 signal -;
 #X text 56 113 set <list> -;
 #X text 150 113 set different values for the 4 arguments., f 46;
-#X obj 5 139 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 5 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 5 249 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 5 213 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 5 139 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 5 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 5 249 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 5 213 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 92 153 float -;
-#X text 150 153 nonzero sets internal state to "high" \, "low" otherwise.
-;
+#X text 150 153 nonzero sets internal state to "high" \, "low" otherwise.;
 #X text 92 257 float - bang when receding below a rest threshold.;
 #X text 120 296 1) float - trigger threshold value., f 50;
 #X text 120 316 2) float - trigger debounce time in ms., f 50;
 #X text 120 356 4) float - rest debounce time in ms., f 50;
 #X text 120 336 3) float - rest threshold value., f 50;
-#X text 125 16 - trigger from audio signal.;
 #X text 150 93 signal to analyze and trigger from., f 46;
-#X text 92 223 float - bang when reaching or exceeding a trigger threshold.
-, f 63;
-#X restore 447 10 pd reference;
+#X text 92 223 float - bang when reaching or exceeding a trigger threshold., f 63;
+#X text 125 16 - detect signal thresholds (schmitt trigger).;
+#X restore 451 10 pd reference;
 #X text 545 10 <= click;
-#X obj 10 41 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 10 445 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 10 41 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 10 445 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X msg 141 189 set 1 100 0.1 100;
 #X msg 164 257 1;
 #X msg 197 257 0;
-#X obj 197 301 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X obj 32 220 sig~ 1;
-#X obj 32 170 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X msg 150 214 set 1 0 1 0;
 #X obj 32 343 threshold~ 1 100 0.1 100;
 #X msg 133 164 set 10 2000 0 2000;
-#X text 57 54 threshold~ monitors its input signal and outputs bangs
-when the signal reaches or exceeds a specified "trigger" value \, and
-also when the signal recedes below a "rest" value - this is also known
-as a 'schmitt trigger'. You can specify debounce times in milliseconds
-for the threshold~ to wait after the two event types before triggering
-again., f 74;
 #X text 294 342 1 trigger threshold value, f 29;
 #X text 294 359 2 trigger debounce time in ms;
 #X text 294 376 3 rest threshold value, f 29;
 #X text 294 393 4 rest debounce time in ms, f 29;
 #X text 102 142 "set" to change the parameters;
-#X text 231 250 Float sets internal state: nonzero sets to "high" (above
-trigger threshold) and zero to "low" (below rest threshold). This forces
-a bang output depending on the incoming signal immediately (because
-the debounce period is ignored when setting the state)., f 52;
-#X connect 2 0 20 0;
-#X connect 8 0 7 0;
-#X connect 10 0 3 0;
-#X connect 11 0 4 0;
-#X connect 16 0 23 0;
-#X connect 17 0 19 0;
-#X connect 18 0 19 0;
-#X connect 19 0 23 1;
-#X connect 20 0 23 0;
-#X connect 21 0 2 0;
-#X connect 22 0 23 0;
-#X connect 23 0 10 0;
-#X connect 23 1 11 0;
-#X connect 24 0 23 0;
+#X text 231 250 Float sets internal state: nonzero sets to "high" (above trigger threshold) and zero to "low" (below rest threshold). This forces a bang output depending on the incoming signal immediately (because the debounce period is ignored when setting the state)., f 52;
+#X obj 32 164 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 197 301 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 57 54 [threshold~] monitors its input signal and outputs bangs when the signal reaches or exceeds a specified "trigger" value \, and also when the signal recedes below a "rest" value - this is also known as a 'schmitt trigger'. You can specify debounce times in milliseconds for the [threshold~] to wait after the two event types before triggering again., f 73;
+#X obj 197 373 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 109 11 - detect signal thresholds (schmitt trigger);
+#X msg 421 194 \; pd dsp \$1;
+#X obj 421 159 set-dsp-tgl;
+#X text 452 163 DSP on/off;
+#X connect 2 0 14 0;
+#X connect 6 0 3 0;
+#X connect 11 0 16 0;
+#X connect 12 0 25 0;
+#X connect 13 0 25 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 6 0;
+#X connect 16 1 27 0;
+#X connect 17 0 16 0;
+#X connect 24 0 2 0;
+#X connect 25 0 16 1;
+#X connect 27 0 4 0;
+#X connect 30 0 29 0;

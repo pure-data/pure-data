@@ -11,7 +11,7 @@ PLATFORM_ARCH ?= $(shell $(CC) -dumpmachine | sed -e 's,-.*,,')
 
 ifeq ($(UNAME), Darwin)  # Mac
   SOLIB_EXT = dylib
-  PLATFORM_CFLAGS = -DHAVE_LIBDL
+  PLATFORM_CFLAGS = -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H
   PLATFORM_LDFLAGS = -dynamiclib -ldl -Wl,-no_compact_unwind
   ifeq ($(FAT_LIB), true)
     # macOS universal "fat" lib compilation
@@ -35,14 +35,15 @@ else
     SOLIB_PREFIX =
     LIBPD_IMPLIB = libpd.lib
     LIBPD_DEF = libpd.def
-    PLATFORM_CFLAGS = -DWINVER=0x502 -DWIN32 -D_WIN32 -DPD_INTERNAL
+    PLATFORM_CFLAGS = -DWINVER=0x502 -DWIN32 -D_WIN32
     MINGW_LDFLAGS = -shared -Wl,--export-all-symbols -lws2_32 -lkernel32 \
                     -static-libgcc
     PLATFORM_LDFLAGS = $(MINGW_LDFLAGS) -Wl,--output-def=$(LIBPD_DEF) \
                        -Wl,--out-implib=$(LIBPD_IMPLIB)
   else  # Linux or *BSD
     SOLIB_EXT = so
-    PLATFORM_CFLAGS = -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC
+    PLATFORM_CFLAGS = -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -fPIC \
+                      -DHAVE_ENDIAN_H
     PLATFORM_LDFLAGS = -shared -Wl,-Bsymbolic
     ifeq ($(UNAME), Linux)
       PLATFORM_CFLAGS += -DHAVE_LIBDL
@@ -59,8 +60,8 @@ VPATH = ../src:\
 # to allow easy overriding of CODECFLAGS and to allow adding MORECFLAGS:
 
 # C preprocessor flags, and flags controlling errors and warnings
-CPPFLAGS = -I../src -DPD -DHAVE_UNISTD_H -DUSEAPI_DUMMY -DLIBPD_EXTRA \
-    -DPDINSTANCE
+CPPFLAGS = -I../src -DPD -DUSEAPI_DUMMY -DPD_INTERNAL -DHAVE_UNISTD_H \
+           -DHAVE_ALLOCA_H -DLIBPD_EXTRA -DPDINSTANCE
 
 # code generation flags (e.g., optimization).
 CODECFLAGS = -fPIC -ffast-math -funroll-loops -fomit-frame-pointer -O3
@@ -76,12 +77,11 @@ LDFLAGS = $(PLATFORM_LDFLAGS) $(MORELDFLAGS)
 
 PDSRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
-    g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
-    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c \
-    g_editor_extras.c \
+    g_all_guis.c g_bang.c g_mycanvas.c g_numbox.c g_radio.c g_slider.c \
+    g_toggle.c g_undo.c g_vumeter.c g_editor_extras.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
-    s_main.c s_inter.c s_print.c \
+    s_main.c s_inter.c s_inter_gui.c s_print.c \
     s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
     s_audio_paring.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \

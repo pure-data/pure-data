@@ -30,6 +30,83 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.54-0 ------------------------------
+
+<P> Multichannel audio signals are supported for many objects.  They may be created
+or split into component channels using the new [snake~] object.  Supported obects
+include stateless tilde objects such as [abs~], [sqrt~], [rsqrt~], [wrap~], [exp~],
+[cos~], [ftom~], [mtof~], [dbtorms~], [rmstodb~], [dbtopow~], [powtodb~], [clip~],
+[+], [-], [*], [/], [max~], [min~], [log~], [pow~], [fft~], ifft~], [rfft~], [rifft~] and
+[lrshift~]. The [send~]/[receive~], [throw~]/[catch~] also manage multichannel signals and
+[tabwrite~], [tabread~], [tabread4~] and [tabplay~] now deal with more than one array and
+multichannel signals.
+
+<P> The [inlet~]/[outlet~] objects are not always stateless but it was judged necessary to
+support them. The [clone] object received special attention since it might be desirable to
+distribute multichannel signals among the cloned patches or to pass them directly into all
+copies as multichannel inputs and outputs. The [adc~] object can also generate multichannel
+signals from the input card, while [dac~] can directly manage a multichannel signal and
+distribute to different channels.
+
+<P> The [clone] object takes a message to change the number of copies.  So now Pd
+is useful as a non-real-time software synthesizer.  Changing the number of
+copies will cause massive reinitialization and memory allocation and should not
+be used during preformance, only during setup.
+
+<P> The [sigmund~] object got some new optimizations and has more parameters that can be
+tuned for a particular instrument.  A longstanding octave-jumping problem has been
+partially addressed, and anyway, a new output type offers even/odd balance so
+that a synth can play in unison with an instrument with very few octave jumps
+by coherently mixing both possible octaves.
+
+<P> The [lop~] object can now also take a signal to set rolloff frequency, but the same
+slightly faster algorithm is used if you have a scalar input instead.
+
+<P> There are new methods for the [file] object by IOhannes, namely "cwd", "patchpath",
+"normalize" and "isabsolute".
+
+<P> The 64-bit windows build uses the lower-latency WASAPI audio system in place
+of the older MMIO.  This therefore only runs on Windows 7 and newer.  The 32-bit version
+can still run all the way back to Windows XP.
+
+<P> There's a new design for the stereo [output~] abstraction in the 'extra' library
+by Alexandre Porres. This is widely used in the documentation and now has a slider
+to set the volume and you can also use a number box. It can also distribute a mono
+input to both channels.
+
+<P> The Windows installer can be run on non-admin users.
+
+<P> Improved settings dialog window.
+
+<P> As usual, countless bug fixes and miscellaneous improvements.
+
+<P> ------------------ 0.53-2 ------------------------------
+
+<P> Update portaudio to version v19.7.0 to fix macintosh hanging problem.
+
+<P> ------------------ 0.53-1 ------------------------------
+
+<P> Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of
+the cleanup/rewrite for 0.53. Also more documentation updates by Alexandre Porres.
+
+<P> ------------------ 0.53-0 ------------------------------
+
+<P> This is being released quickly to fix a bug in version 0.52, in which
+soundfile reading was disrupted. There are some internal updates serious enough
+to warrant a version number change, such as the unification of horizontal and
+vertical sliders/radio buttons and the fact you can now change their orientation
+via a new 'orientation' message, but no new features other than that.
+
+<P> The IEMGUI default sizes increased, as part of an ongoing cleanup/rewrite.
+
+<P> As usual, there are many minor bug fixes (thanks to several developers)
+and updates to documentation by Alexandre Porres.
+
+<P> The 'deken' plugin (external extension search tool) has been updated to a
+new version.
+
+<P> Many updated string translations.
+
 <P> ------------------ 0.52-2 ------------------------------
 
 <p> Many small bug fixes, and a few larger ones: under jack, Pd's delay adjusted
@@ -39,7 +116,7 @@ upward to the jack blocksize if needed (to prevent a hang).
 
 <p> Reverted behavior when selecting and dragging a single text box, so that
 it now activates the text as traditional until 0.51.  Sometimes one behavior is
-wanted, sometines the other, so there should be an easy-to-understand way for
+wanted, sometimes the other, so there should be an easy-to-understand way for
 users to control this.  At the moment you can rectangle-select an object to
 displace it without selecting the text, which is perhaps adequate, perhaps not.
 
@@ -136,7 +213,7 @@ The pd~ source is also now updated to work (again) in Max/MSP, on Mac or PC.
 rates.  You can still run Pd at 3.14159 Hz if you want to but you'll have to
 type that one in.
 
-<P> On Macintosh tcl/tk is updgraded to 8.6.10 (should work on MacOS from
+<P> On Macintosh tcl/tk is upgraded to 8.6.10 (should work on MacOS from
 10.6 to 11.0 aka "Bug Sur").
 
 <P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full
@@ -2039,7 +2116,7 @@ Also, the array_write routine was fixed.
 notable new objects:
 
 <BR>
-- vcf~, a bandpass filter with a signal input for center frequency.
+- vcf~, a band-pass filter with a signal input for center frequency.
 <BR>
 - delread, delwrite, vd, as in ISPW Max.
 <BR>

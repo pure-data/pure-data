@@ -16,27 +16,9 @@
 #include <io.h>
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
 #define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-#if HAVE_ALLOCA
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < TEXT_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < TEXT_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
 
 /* -- "table" - classic "array define" object by Guenter Geiger --*/
 
@@ -241,7 +223,6 @@ static void array_define_done_popup(t_glist*x, t_float which, t_float xpos, t_fl
         garray_properties((t_garray *)obj);
     break;
     case 1: /* open */
-        obj->g_pd;
         typedmess(&(obj->g_pd), gensym("arrayviewlistnew"), 0, 0);
         break;
     case 2: /* help */
@@ -660,11 +641,11 @@ static void array_get_bang(t_array_rangeop *x)
     t_atom *outv;
     if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
-    ATOMS_ALLOCA(outv, nitem);
+    ALLOCA(t_atom, outv, nitem, TEXT_NGETBYTE);
     for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         SETFLOAT(&outv[i],  *(t_float *)itemp);
     outlet_list(x->x_outlet, 0, nitem, outv);
-    ATOMS_FREEA(outv, nitem);
+    FREEA(t_atom, outv, nitem, TEXT_NGETBYTE);
 }
 
 static void array_get_float(t_array_rangeop *x, t_floatarg f)

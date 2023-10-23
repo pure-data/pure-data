@@ -660,7 +660,7 @@ void glist_redraw(t_glist *x)
             while ((oc = linetraverser_next(&t)))
             {
                 char tagbuf[128];
-                sprintf(tagbuf, "l%lx", oc);
+                sprintf(tagbuf, "l%p", oc);
                 pdgui_vmess(0, "crs iiii",
                           glist_getcanvas(x),
                           "coords",

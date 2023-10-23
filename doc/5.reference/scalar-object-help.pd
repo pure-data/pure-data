@@ -1,84 +1,71 @@
-#N canvas 546 46 606 312 12;
-#X text 26 277 see also:;
+#N canvas 546 74 610 345 12;
+#X text 28 275 see also:;
 #X text 463 130 (click for details:), f 11;
 #N canvas 487 65 716 509 define 0;
-#X text 345 355 creation arguments:;
-#X text 231 173 send a pointer to a named receive object;
-#X floatatom 118 304 5 0 0 0 - - - 0;
-#X text 67 364 click to open or edit array:;
-#X msg 33 132 read scalar-object-help.txt;
-#X obj 118 256 r scalar-help-send;
-#X text 380 413 template;
-#X text 381 434 optional name (TBW);
-#X obj 118 280 get scalar-help-template1 x;
-#N canvas 598 122 560 277 scalar-help-template1 0;
-#X obj 70 32 struct scalar-help-template1 float x float y;
-#X obj 82 72 drawpolygon 3 3 0 0 0 30 30 30 30 0 0 0;
-#X msg 267 136 traverse pd-scalar-help-template1 \, bang;
-#X obj 267 171 pointer;
-#X msg 47 157 40 40;
-#X obj 47 211 append scalar-help-template1 x y;
-#X connect 2 0 3 0;
-#X connect 3 0 5 2;
-#X connect 4 0 5 0;
-#X restore 262 83 pd scalar-help-template1;
-#X floatatom 345 272 5 0 500 0 - - - 0;
-#X obj 545 272 r scalar-help-send;
-#X obj 345 311 set scalar-help-template1 x y;
-#X floatatom 445 272 5 0 500 0 - - - 0;
-#X text 106 84 here's the template:;
-#X obj 118 329 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X msg 69 173 send scalar-help-send;
-#X obj 48 391 scalar define -k scalar-help-template1;
-#A set scalar-help-template1 175 150 \;;
-#X text 381 391 optional -k flag to keep contents;
-#X obj 97 209 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X text 122 208 bang to output a pointer to the scalar;
-#X obj 48 431 get scalar-help-template1 x y;
-#X floatatom 48 465 5 0 0 0 - - - 0;
-#X floatatom 248 465 5 0 0 0 - - - 0;
+#X text 363 364 creation arguments:;
+#X text 253 200 send a pointer to a named receive object;
+#X floatatom 170 311 5 0 0 0 - - - 0;
+#X msg 58 129 read scalar-object-help.txt;
+#X obj 170 252 r scalar-send;
+#N canvas 370 286 442 155 scalar-template 0;
+#X obj 90 32 struct scalar-template float x float y;
+#X obj 91 100 drawpolygon 0 3 0 0 0 30 30 30 30 0 0 0;
+#X text 94 74 draw a black square;
+#X restore 310 80 pd scalar-template;
+#X obj 555 272 r scalar-send;
+#X obj 397 311 set scalar-template x y;
+#X text 154 81 here's the template:;
+#X msg 127 200 send scalar-send;
+#X obj 100 391 scalar define -k scalar-template;
+#A set scalar-template 185 94 \;;
+#X text 125 163 bang to output a pointer to the scalar;
+#X obj 100 428 get scalar-template x y;
+#X floatatom 100 465 5 0 0 0 - - - 0;
+#X floatatom 258 465 5 0 0 0 - - - 0;
 #X obj 27 22 scalar define;
 #X text 129 22 - defines and maintains a scalar.;
-#X obj 7 54 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 7 54 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 614 20 <= click;
 #N canvas 696 118 577 280 reference 0;
-#X obj 9 49 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 110 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 250 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 91 83 send <symbol> - send pointer to a named receive object
-, f 61;
+#X obj 9 49 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 9 110 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 250 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 91 83 send <symbol> - send pointer to a named receive object, f 61;
 #X obj 32 16 scalar define;
 #X text 136 16 - defines and maintains a scalar.;
 #X text 154 62 bang - output a pointer to the scalar., f 52;
 #X text 127 185 -k: saves/keeps the contents with the patch.;
 #X text 134 120 pointer - a pointer to the scalar.;
-#X obj 9 151 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 177 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 9 212 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 9 151 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 9 177 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 9 212 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
 #X text 163 220 1) symbol - template name.;
 #X restore 511 21 pd reference;
-#X text 236 133 read/write a file (TBW);
-#X connect 2 0 15 0;
-#X connect 4 0 17 0;
-#X connect 5 0 8 0;
-#X connect 8 0 2 0;
+#X text 381 388 - optional -k flag to keep contents;
+#X text 381 407 - template name, f 35;
+#X text 381 426 - optional name (TBW), f 35;
+#X text 126 364 click to open or edit scalar:;
+#X obj 100 164 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 444 283 t b f;
+#X floatatom 397 258 5 0 500 0 - - - 0;
+#X floatatom 444 258 5 0 500 0 - - - 0;
+#X obj 170 280 get scalar-template x y;
+#X floatatom 328 311 5 0 0 0 - - - 0;
+#X text 261 130 read/write a file (not yet);
+#X connect 3 0 10 0;
+#X connect 4 0 28 0;
+#X connect 6 0 7 2;
+#X connect 9 0 10 0;
 #X connect 10 0 12 0;
-#X connect 11 0 12 2;
-#X connect 13 0 12 1;
-#X connect 16 0 17 0;
-#X connect 17 0 21 0;
-#X connect 19 0 17 0;
-#X connect 21 0 22 0;
-#X connect 21 1 23 0;
+#X connect 12 0 13 0;
+#X connect 12 1 14 0;
+#X connect 24 0 10 0;
+#X connect 25 0 7 0;
+#X connect 25 1 7 1;
+#X connect 26 0 7 0;
+#X connect 27 0 25 0;
+#X connect 28 0 2 0;
+#X connect 28 1 29 0;
 #X restore 464 171 pd define;
 #X obj 153 276 text;
 #X text 179 169 - create \, store \, and/or edit one;
@@ -89,12 +76,16 @@
 #X text 59 139 The first argument sets the function:;
 #X obj 104 276 array;
 #X obj 194 276 list;
-#X text 372 276 updated for Pd version 0.49;
-#X obj 7 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 386 276 updated for Pd version 0.49;
+#X obj 7 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 84 15 - create a scalar datum (default [scalar define]).;
-#X text 50 64 experimental - doesn't do much yet. This has been included
-in 0.45 to check that its design will work coherently with the array
-and text objects., f 67;
-#X obj 7 259 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 50 64 experimental - doesn't do much yet. This has been included in 0.45 to check that its design will work coherently with the array and text objects., f 67;
+#X obj 7 259 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 36 308 get;
+#X obj 68 308 set;
+#X obj 337 308 getsize;
+#X obj 398 308 setsize;
+#X obj 212 308 element;
+#X obj 101 308 scalar;
+#X obj 273 308 pointer;
+#X obj 158 308 struct;

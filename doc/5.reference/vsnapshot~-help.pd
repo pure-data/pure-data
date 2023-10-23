@@ -1,52 +1,34 @@
 #N canvas 527 109 642 406 12;
-#X text 411 351 updated for Pd version 0.47;
+#X text 411 363 updated for Pd version 0.47;
 #X obj 39 10 vsnapshot~;
-#X text 34 333 see also:;
-#X obj 35 354 snapshot~;
-#X text 37 70 This is an attempt at making a version of snapshot~ that
-trades off delay for time jitter control. The behaviour is the same
-as snapshot~ (it takes a bang and converts a signal to a float. The
-idea is that you can convert from an audio signal and get a specific
-value within an audio block depending on the exact time it receives
-a bang. Unfortunately it isn't fully correct and will be replaced by
-a more correct one in the future. Since this change will probably be
-incompatible with this object \, it is probably best to avoid using
-it until it is working correctly., f 78;
-#X text 106 354 (best to just use this instead);
-#X text 118 11 - mal-designed snapshot~ extension \, best not to use
-this, f 35;
+#X text 34 345 see also:;
+#X obj 35 366 snapshot~;
+#X text 106 366 (best to just use this instead);
+#X text 118 11 - mal-designed snapshot~ extension \, best not to use this, f 35;
 #N canvas 702 112 592 207 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 102 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 139 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 176 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 102 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 139 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 176 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 131 66 bang -;
 #X text 166 150 NONE, f 9;
 #X text 183 66 convert a signal to a float., f 46;
-#X text 126 112 float - the converted signal at every bang., f 54
-;
+#X text 126 112 float - the converted signal at every bang., f 54;
 #X obj 39 20 vsnapshot~;
 #X text 119 20 - deluxe snapshot~;
 #X restore 445 19 pd reference;
 #X text 543 19 <= click;
-#X obj 10 51 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 10 314 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X floatatom 342 276 7 0 0 0 - - - 0;
-#X msg 198 247 \; pd dsp \$1;
-#X obj 198 220 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 220 220 DSP on/off;
-#X obj 342 249 vsnapshot~;
-#X obj 358 214 noise~;
-#X obj 341 186 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X connect 13 0 12 0;
-#X connect 15 0 11 0;
+#X obj 10 51 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 10 326 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X floatatom 342 288 9 0 0 0 - - - 12;
+#X obj 342 261 vsnapshot~;
+#X obj 358 226 noise~;
+#X obj 342 198 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 37 70 [vsnapshot~] is an attempt at making a version of [snapshot~] that trades off delay for time jitter control. The behavior is the same as [snapshot~] (it takes a bang and converts a signal to a float). The idea is that you can convert from an audio signal and get a specific value within an audio block depending on the exact time it receives a bang. Unfortunately it isn't fully correct and will be replaced by a more correct one in the future. Since this change will probably be incompatible with this object \, it is probably best to avoid using it until it is working correctly., f 78;
+#X msg 147 257 \; pd dsp \$1;
+#X obj 147 222 set-dsp-tgl;
+#X text 178 226 DSP on/off;
+#X connect 11 0 10 0;
+#X connect 12 0 11 0;
+#X connect 13 0 11 0;
 #X connect 16 0 15 0;
-#X connect 17 0 15 0;

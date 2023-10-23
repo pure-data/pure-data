@@ -1,8 +1,7 @@
 #N canvas 527 34 472 527 12;
 #X declare -stdpath ./;
 #X obj 26 14 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
-#X obj 154 248 vu 16 120 foo7_rcv VU-Meter 60 0 0 10 #000000 #900000
-1 0;
+#X obj 154 248 vu 16 120 foo7_rcv VU-Meter 60 0 0 10 #000000 #900000 1 0;
 #X floatatom 164 218 5 -100 12 0 - - - 0;
 #X floatatom 119 218 5 0 0 0 - - - 0;
 #X floatatom 164 380 5 0 0 0 - - - 0;
@@ -11,20 +10,14 @@
 #X text 88 217 RMS;
 #X text 204 218 Peak;
 #X text 195 408 RMS;
-#X text 98 58 The VU meter object is a GUI (Graphical User Interface)
-used to display RMS and peak levels in dBFS. The left inlet takes a
-float to set RMS and the right inlet takes a float to set peak level
-- these values are output to corresponding outlets., f 49;
-#X text 98 135 Insert it from the Put menu (named as "VU Meter") or
-its shortcut. Alternatively \, create it by typing "vu" into an object
-box., f 49;
+#X text 98 58 The VU meter object is a GUI (Graphical User Interface) used to display RMS and peak levels in dBFS. The left inlet takes a float to set RMS and the right inlet takes a float to set peak level - these values are output to corresponding outlets., f 49;
+#X text 98 135 Insert it from the Put menu (named as "VU Meter") or its shortcut. Alternatively \, create it by typing "vu" into an object box., f 49;
 #X text 271 386 (c) musil@iem.kug.ac.at;
 #X text 307 402 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 29 459 see also:;
-#X text 238 311 This object is part of the "iemguis" library \, natively
-included in Pd version 0.34., f 28;
+#X text 238 311 This object is part of the "iemguis" library \, natively included in Pd version 0.34., f 28;
 #X text 249 483 updated for Pd version 0.51;
-#N canvas 689 106 613 643 position 0;
+#N canvas 647 77 613 643 position 0;
 #X floatatom 142 132 4 0 1000 0 - - - 0;
 #X obj 191 159 t b f;
 #X floatatom 191 132 5 0 500 0 - - - 0;
@@ -43,16 +36,11 @@ included in Pd version 0.34., f 28;
 #X text 377 280 increase both by 1;
 #X text 395 301 decrease both by -1;
 #X msg 309 301 delta -1 -1;
-#X text 293 63 The 'delta' message changes the position of the object
-by a difference amount. It takes a list of x/y delta in pixels., f
-40;
-#X text 40 63 The 'pos' message takes a list of x/y coordinates in
-pixels and sets the objects's position., f 33;
-#X text 159 17 You can also set and change the position of the object
-in the patch. Check below:, f 41;
+#X text 293 63 The 'delta' message changes the position of the object by a difference amount. It takes a list of x/y delta in pixels., f 40;
+#X text 40 63 The 'pos' message takes a list of x/y coordinates in pixels and sets the objects's position., f 33;
+#X text 159 17 You can also set and change the position of the object in the patch. Check below:, f 41;
 #X obj 142 188 pack 265 350;
-#X obj 265 350 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0
-;
+#X obj 265 350 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X connect 0 0 21 0;
 #X connect 1 0 21 0;
 #X connect 1 1 21 1;
@@ -67,7 +55,7 @@ in the patch. Check below:, f 41;
 #X connect 21 0 3 0;
 #X restore 334 266 pd position;
 #N canvas 431 187 353 319 properties 0;
-#N canvas 790 40 601 669 colors 0;
+#N canvas 765 40 601 669 colors 0;
 #X floatatom 83 261 3 0 29 0 - - - 0;
 #X floatatom 132 261 3 0 29 0 - - - 0;
 #X text 125 241 label;
@@ -83,17 +71,13 @@ in the patch. Check below:, f 41;
 #X text 33 241 background;
 #X text 415 436 RGB in hexadecimal;
 #X text 317 135 Set RGB values in the sliders;
-#X text 32 159 Open subpatches for the conversion from RGB to hexadecimal
-============>, f 38;
+#X text 32 159 Open subpatches for the conversion from RGB to hexadecimal ============>, f 38;
 #N canvas 350 71 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -122,14 +106,11 @@ in the patch. Check below:, f 41;
 #X restore 446 160 pd label;
 #N canvas 964 215 336 472 label 0;
 #X text 52 56 background;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -160,28 +141,16 @@ in the patch. Check below:, f 41;
 #X connect 14 0 8 0;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 306 160 pd label;
-#X text 76 491 open subpatch below for the old way of encoding RGB
-values., f 20;
+#X text 76 491 open subpatch below for the old way of encoding RGB values., f 20;
 #X text 77 473 See also:;
-#X obj 307 477 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1
-0;
-#X text 28 16 The 'color' message takes a list of three values \, but
-only the first and the third are valid and set \, respectively \, background
-and label colors (as there's no "front" color \, the 2nd value is ignored).
-, f 76;
-#X text 28 63 Integers from 0 to 29 represent the 30 preset colors
-found in the properties window \, values above are wrapped. Negative
-integers were used to encode RGB values (and that still works for backwards
-compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal
-RGB symbol values \, which are followed by "#"., f 76;
+#X obj 307 477 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1 0;
+#X text 28 16 The 'color' message takes a list of three values \, but only the first and the third are valid and set \, respectively \, background and label colors (as there's no "front" color \, the 2nd value is ignored)., f 76;
+#X text 28 63 Integers from 0 to 29 represent the 30 preset colors found in the properties window \, values above are wrapped. Negative integers were used to encode RGB values (and that still works for backwards compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal RGB symbol values \, which are followed by "#"., f 76;
 #N canvas 429 89 542 588 old_way 0;
 #N canvas 639 23 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X text 66 56 label;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
@@ -222,19 +191,12 @@ RGB symbol values \, which are followed by "#"., f 76;
 #X connect 8 0 2 0;
 #X restore 242 321 pd pack;
 #X f 8;
-#X text 72 19 The RGB color scheme can also be encoded \, for backwards
-compatibility \, as negative inetegers. FOR R (red) G (green) B (blue)
-values from o to 255 \, the conversion formula is \; float = -(R *
-65536 + G * 256 + B + 1);
-#X obj 243 393 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1
-0;
+#X text 72 19 The RGB color scheme can also be encoded \, for backwards compatibility \, as negative inetegers. FOR R (red) G (green) B (blue) values from o to 255 \, the conversion formula is \; float = -(R * 65536 + G * 256 + B + 1);
+#X obj 243 393 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1 0;
 #N canvas 544 196 419 464 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
-#fcfcfc #000000 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
-#000000 #000000 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
-#000000 #000000 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc #fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00 #000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000 #000000 #000000 0 1;
 #X obj 61 321 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 313 269 t b f;
 #X obj 171 269 t b f;
@@ -266,7 +228,7 @@ values from o to 255 \, the conversion formula is \; float = -(R *
 #X restore 89 551 pd old_way;
 #X msg 229 260 list #404040 #000000 #000000, f 7;
 #X obj 83 318 pack 2 0 22, f 12;
-#N canvas 571 147 780 409 old-behaviour 0;
+#N canvas 571 147 780 409 old-behavior 0;
 #X floatatom 379 36 3 0 29 0 - - - 0;
 #X floatatom 484 41 3 0 29 0 - - - 0;
 #X text 477 16 label;
@@ -283,26 +245,14 @@ values from o to 255 \, the conversion formula is \; float = -(R *
 #X text 224 302 New "correct" behavior;
 #X msg 54 328 \; pd compatibility 0.46;
 #X msg 224 327 \; pd compatibility 0.47;
-#X text 29 104 Since Pd version 0.47 \, you cannot use the color message
-with only 2 values \, as the 2nd value just gets ignored. You need
-to have 3 values where the third sets the label color., f 46;
-#X text 29 162 You can use the "pd compatibility" message to get the
-old behavior back., f 46;
-#X text 29 195 Note that this is valid for all ways of using the color
-message (including the new way of using hexadecimal notation introduced
-in Pd 0.47) \, but in this example we're just using the "presets" option
-for convenience., f 46;
-#X text 29 31 Until Pd version 0.46 \, you could have a color message
-with only two values \, where the second value would set the label
-color. You could also have 3 values \, where the 2nd value was ignored
-and the 3rd value would set the color., f 46;
+#X text 29 104 Since Pd version 0.47 \, you cannot use the color message with only 2 values \, as the 2nd value just gets ignored. You need to have 3 values where the third sets the label color., f 46;
+#X text 29 162 You can use the "pd compatibility" message to get the old behavior back., f 46;
+#X text 29 195 Note that this is valid for all ways of using the color message (including the new way of using hexadecimal notation introduced in Pd 0.47) \, but in this example we're just using the "presets" option for convenience., f 46;
+#X text 29 31 Until Pd version 0.46 \, you could have a color message with only two values \, where the second value would set the label color. You could also have 3 values \, where the 2nd value was ignored and the 3rd value would set the color., f 46;
 #X text 643 145 <= Pd 0.46 way;
 #X obj 392 66 loadbang;
-#X obj 465 222 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1
-0;
-#X text 570 211 When the compatibility is set to 0.47 or higher \,
-the example above to the right doesn't work to set the label color.
-, f 22;
+#X obj 465 222 vu 15 160 empty Label -50 20 0 12 #404040 #000000 1 0;
+#X text 570 211 When the compatibility is set to 0.47 or higher \, the example above to the right doesn't work to set the label color., f 22;
 #X obj 551 107 pack 2 22, f 19;
 #X obj 379 108 pack 2 0 22, f 20;
 #X connect 0 0 25 0;
@@ -318,9 +268,8 @@ the example above to the right doesn't work to set the label color.
 #X connect 21 0 25 0;
 #X connect 24 0 11 0;
 #X connect 25 0 4 0;
-#X restore 420 586 pd old-behaviour;
-#X text 388 519 COMPATIBILITY NOTE: The behavior changed in Pd 0.47!
-Check details and how to get it back:, f 23;
+#X restore 420 586 pd old-behavior;
+#X text 388 519 COMPATIBILITY NOTE: The behavior changed in Pd 0.47! Check details and how to get it back:, f 23;
 #X connect 0 0 25 0;
 #X connect 1 0 3 0;
 #X connect 3 0 25 0;
@@ -345,16 +294,11 @@ Check details and how to get it back:, f 23;
 #X floatatom 171 191 4 80 240 0 - - - 0;
 #X msg 129 288 size \$1 \$2;
 #X text 215 190 height;
-#X obj 130 335 vu 20 120 empty empty -1 -8 0 12 #404040 #000000 1 0
-;
+#X obj 130 335 vu 20 120 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X text 77 190 width;
-#X obj 171 128 hradio 15 1 0 4 empty empty empty 0 -8 0 10 #fcfcfc
-#000000 #000000 0;
+#X obj 171 128 hradio 19 1 0 4 empty empty empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
 #X obj 171 156 expr ($f1+2) * 40;
-#X text 44 40 The size message sets the object's size and takes width
-and height values (in number of pixels). The height value should be
-a multiple of 40 \, otherwise it gets truncated to a smaller value.
-, f 51;
+#X text 44 40 The size message sets the object's size and takes width and height values (in number of pixels). The height value should be a multiple of 40 \, otherwise it gets truncated to a smaller value., f 51;
 #X obj 129 247 pack 20 120;
 #X connect 0 0 10 0;
 #X connect 1 0 10 0;
@@ -365,10 +309,8 @@ a multiple of 40 \, otherwise it gets truncated to a smaller value.
 #X connect 8 0 2 0;
 #X connect 10 0 3 0;
 #X restore 175 77 pd size;
-#X text 39 17 All the parameters from the properties window can be
-set via messages as well. See examples in the subpatches below:, f
-39;
-#N canvas 822 61 568 534 font/label 0;
+#X text 39 17 All the parameters from the properties window can be set via messages as well. See examples in the subpatches below:, f 39;
+#N canvas 764 71 568 534 font/label 0;
 #X msg 94 293 label \$1;
 #X floatatom 241 175 4 0 3 0 - - - 0;
 #X obj 283 202 t b f;
@@ -376,11 +318,10 @@ set via messages as well. See examples in the subpatches below:, f
 #X msg 241 272 label_font \$1 \$2;
 #X text 203 174 type;
 #X text 327 173 size;
-#X obj 241 112 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
-#000000 #000000 0;
-#X text 262 111 DejaVu Sans Mono;
-#X text 262 127 Helvetica;
-#X text 262 142 Times;
+#X obj 241 102 vradio 19 1 0 3 empty empty empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
+#X text 262 101 DejaVu Sans Mono;
+#X text 262 121 Helvetica;
+#X text 262 141 Times;
 #X msg 106 261 symbol empty;
 #X floatatom 395 191 4 -200 100 0 - - - 0;
 #X obj 437 218 t b f;
@@ -391,12 +332,8 @@ set via messages as well. See examples in the subpatches below:, f
 #X text 390 167 label offset:;
 #X msg 74 196 symbol label;
 #X msg 94 224 symbol my\ label;
-#X obj 241 382 vu 15 120 empty label 20 10 0 20 #404040 #000000 0 0
-;
-#X text 87 26 The 'label' message sets the label symbol \, setting
-it to "empty" clears it. The 'label_font' message sets font type and
-size and 'label_pos' sets the x/y coordinates. Note that the font type
-and size also affects the 'scale'., f 56;
+#X obj 241 382 vu 15 120 empty label 20 10 0 20 #404040 #000000 0 0;
+#X text 87 26 The 'label' message sets the label symbol \, setting it to "empty" clears it. The 'label_font' message sets font type and size and 'label_pos' sets the x/y coordinates. Note that the font type and size also affects the 'scale'., f 56;
 #X obj 395 246 pack 20 10, f 11;
 #X obj 241 231 pack 0 20, f 11;
 #X connect 0 0 21 0;
@@ -418,40 +355,23 @@ and size also affects the 'scale'., f 56;
 #X connect 24 0 4 0;
 #X restore 133 158 pd font/label;
 #N canvas 854 79 442 449 loading-args 0;
-#X text 54 118 For instance \, below \, we have \$0 used in the label
-field \, which gets expanded to the patch ID number. Using something
-like "\$1" is useful if you're using the object in an abstraction \,
-then you can load a value passed as an argument into a parameter.,
-f 49;
-#X text 54 20 Note that all the parameters that you can set by inserting
-a number or symbol into a field in the properties window can also load
-dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
-parameters are: width \, height \, receive symbol \, label \, label
-offset and font size., f 49;
-#X obj 171 246 vu 15 160 empty \$0-Label -10 -18 0 12 #404040 #840000
-1 0;
+#X text 54 118 For instance \, below \, we have \$0 used in the label field \, which gets expanded to the patch ID number. Using something like "\$1" is useful if you're using the object in an abstraction \, then you can load a value passed as an argument into a parameter., f 49;
+#X text 54 20 Note that all the parameters that you can set by inserting a number or symbol into a field in the properties window can also load dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these parameters are: width \, height \, receive symbol \, label \, label offset and font size., f 49;
+#X obj 171 246 vu 15 160 empty \$0-Label -10 -18 0 12 #404040 #840000 1 0;
 #X restore 164 266 pd loading-args;
 #X text 59 235 Loading arguments in properties:;
 #N canvas 856 62 459 526 receive 0;
 #X msg 229 188 receive empty;
 #X floatatom 91 220 5 -100 12 0 - - - 0;
-#X text 61 440 Note how you need to escape dollar signs with backslashes
-to set something like "\$0-x". But the backslash is not needed if you
-set it directly via the properties window., f 53;
-#X obj 229 240 vu 15 160 \$0-vu_rcv empty -1 -8 0 12 #202020 #000000
-1 0;
+#X text 61 440 Note how you need to escape dollar signs with backslashes to set something like "\$0-x". But the backslash is not needed if you set it directly via the properties window., f 53;
+#X obj 229 240 vu 15 160 \$0-vu_rcv empty -1 -8 0 12 #202020 #000000 1 0;
 #X msg 213 163 receive \\\$0-vu_rcv;
 #X obj 92 333 s \$0-vu_rcv;
 #X obj 92 291 pack -50 -20;
 #X obj 142 251 t b f;
 #X floatatom 142 220 5 -100 12 0 - - - 0;
-#X text 55 12 The 'receive' message sets a receive symbol \, in which
-case the inlets are visually hidden (but still functional in the patch).
-This way \, the object can communicate with a [send] object. If you
-set it to "empty" \, the symbol is cleared., f 50;
-#X text 55 93 You can send values to both inlets by sending the object
-a list \, as the values get split to separate inlets this way \, as
-usual with other Pd objects., f 50;
+#X text 55 12 The 'receive' message sets a receive symbol \, in which case the inlets are visually hidden (but still functional in the patch). This way \, the object can communicate with a [send] object. If you set it to "empty" \, the symbol is cleared., f 50;
+#X text 55 93 You can send values to both inlets by sending the object a list \, as the values get split to separate inlets this way \, as usual with other Pd objects., f 50;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 4 0 3 0;
@@ -461,28 +381,19 @@ usual with other Pd objects., f 50;
 #X connect 8 0 7 0;
 #X restore 154 132 pd receive;
 #N canvas 847 149 498 291 scale 0;
-#X obj 57 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0
-;
+#X obj 57 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0;
 #X msg 56 55 scale \$1;
-#X obj 56 18 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
-0 1;
-#X obj 147 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0
-;
-#X obj 164 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0
-;
-#X text 156 23 The 'scale' message toggles the dB-scale label on or
-off (on by default)., f 40;
-#X text 230 157 It's convenient hiding the scale of a [vu] for a stereo
-pair., f 32;
+#X obj 56 18 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 147 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0;
+#X obj 164 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
+#X text 156 23 The 'scale' message toggles the dB-scale label on or off (on by default)., f 40;
+#X text 230 157 It's convenient hiding the scale of a [vu] for a stereo pair., f 32;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 167 104 pd scale;
 #X restore 320 238 pd properties;
-#X text 24 273 Right click for properties (to set size \, colors \,
-labels \, etc) ===>, f 17;
 #N canvas 703 35 482 533 example 0;
-#X obj 262 280 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0
-;
+#X obj 252 280 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #N canvas 329 161 625 417 vu 0;
 #X obj 59 129 env~ 1024;
 #X obj 161 111 abs~;
@@ -493,8 +404,7 @@ labels \, etc) ===>, f 17;
 #X obj 59 287 - 100;
 #X obj 59 361 outlet;
 #X obj 161 361 outlet;
-#X text 344 307 Check the help file of env~ and slop~ for more details.
-, f 31;
+#X text 344 307 Check the help file of env~ and slop~ for more details., f 31;
 #X obj 239 89 expr 1000 / $f1;
 #X floatatom 239 117 5 0 0 0 - - - 0;
 #X obj 161 146 slop~ 0 0 0 0 1e+09;
@@ -504,12 +414,8 @@ labels \, etc) ===>, f 17;
 #X text 282 118 hz;
 #X text 284 57 peak decay time in ms;
 #X obj 59 171 t f b;
-#X text 345 132 The env~ object is dedicated to RMS analysis. Its output
-is in dB (0-100 range \, pd style) but needs to be converted to dBFS
-(and we do that by simply subtracting 100)., f 31;
-#X text 345 225 The slop~ object is used here for peak detection. We
-need to convert the output to dB with rmstodb and also subtract by
-100 to convert it to dBFS., f 31;
+#X text 345 132 The env~ object is dedicated to RMS analysis. Its output is in dB (0-100 range \, pd style) but needs to be converted to dBFS (and we do that by simply subtracting 100)., f 31;
+#X text 345 225 The slop~ object is used here for peak detection. We need to convert the output to dB with rmstodb and also subtract by 100 to convert it to dBFS., f 31;
 #X connect 0 0 18 0;
 #X connect 1 0 12 0;
 #X connect 2 0 3 0;
@@ -525,14 +431,13 @@ need to convert the output to dB with rmstodb and also subtract by
 #X connect 14 0 10 0;
 #X connect 18 0 6 0;
 #X connect 18 1 2 0;
-#X restore 239 237 pd vu;
-#X obj 138 162 tgl 18 0 empty empty empty 17 7 0 10 #dcdcdc #000000
-#000000 0 1;
-#X floatatom 271 463 8 0 0 0 - - - 0;
-#X floatatom 261 492 8 0 0 0 - - - 0;
-#X text 333 463 Peak;
-#X text 323 493 RMS;
-#X floatatom 271 183 6 0 1000 0 - decay - 0;
+#X restore 229 237 pd vu;
+#X obj 128 162 tgl 19 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000 0 1;
+#X floatatom 261 463 8 0 0 0 - - - 0;
+#X floatatom 251 492 8 0 0 0 - - - 0;
+#X text 323 463 Peak;
+#X text 313 493 RMS;
+#X floatatom 261 183 6 0 1000 0 - decay - 0;
 #N canvas 525 219 362 314 noise-burst 0;
 #X obj 139 166 *~;
 #X obj 121 263 outlet~;
@@ -554,20 +459,15 @@ need to convert the output to dB with rmstodb and also subtract by
 #X connect 7 0 5 0;
 #X connect 8 0 9 0;
 #X coords 0 314 1 313 150 60 0;
-#X restore 138 192 pd noise-burst;
-#X text 286 236 <== open for analysis;
-#X text 49 161 turn on ==> test sound, f 12;
-#X text 319 183 <=;
-#X text 341 183 peak decay time in ms, f 10;
-#X text 50 14 In order to use vu to display RMS and peak levels \,
-you need to analyze a sound source and send it values. This can be
-done in Pd with the env~ and slop~ objects., f 55;
-#X text 49 69 VU meters usually have a decay time for the peak level.
-You can set this parameter in the number box below. The peak level
-and decay is obtained via the slop~ object. Open the subpatch [pd vu]
-to see how this is done., f 55;
-#X obj 138 302 output~;
-#X obj 68 393 declare -stdpath ./;
+#X restore 128 192 pd noise-burst;
+#X text 335 183 peak decay time in ms, f 10;
+#X obj 128 302 output~;
+#X obj 58 393 declare -stdpath ./;
+#X text 39 17 In order to use vu to display RMS and peak levels \, you need to analyze a sound source and send it values. This can be done in Pd with the [env~] and [slop~] objects., f 56;
+#X text 39 69 VU meters usually have a decay time for the peak level. You can set this parameter in the number box below. The peak level and decay is obtained via the [slop~] object. Open the subpatch [pd vu] to see how this is done., f 56;
+#X text 276 236 <-- open for analysis;
+#X text 309 183 <--;
+#X text 39 161 turn on --> test sound, f 12;
 #X connect 0 0 4 0;
 #X connect 0 1 3 0;
 #X connect 1 0 0 0;
@@ -575,58 +475,42 @@ to see how this is done., f 55;
 #X connect 2 0 8 0;
 #X connect 7 0 1 1;
 #X connect 8 0 1 0;
-#X connect 8 0 15 0;
-#X connect 8 0 15 1;
+#X connect 8 0 10 0;
 #X restore 341 209 pd example;
 #X obj 83 491 env~;
 #X obj 124 491 slop~, f 7;
 #X text 86 14 - [vu]: VU meter;
 #X obj 103 460 all_guis;
 #N canvas 663 82 585 585 reference 0;
-#X obj 17 199 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 17 471 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 557 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 17 199 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 17 471 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 557 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 83 322 label <symbol> - set label., f 67;
 #X text 69 303 receive <symbol> - set receive symbol name., f 69;
 #X text 62 341 label_font <f \, f> -;
-#X text 202 341 set label type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> and font size., f 50;
-#X text 69 373 label_pos <f \, f> - set label's x/y position., f 69
-;
+#X text 202 341 set label type <0: DejaVu Sans Mono \, 1: Helvetica \, 2: Times> and font size., f 50;
+#X text 69 373 label_pos <f \, f> - set label's x/y position., f 69;
 #X text 97 393 color <list> -;
-#X text 202 392 set colors of background \, front and label. Symbols
-for hexadecimal values or floats for presets., f 50;
+#X text 202 392 set colors of background \, front and label. Symbols for hexadecimal values or floats for presets., f 50;
 #X obj 48 17 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X text 109 31 - [vu]: VU meter;
-#X obj 17 233 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 434 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 17 233 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 434 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 145 238 float - set RMS value in dbFS., f 58;
 #X text 147 443 float - set peak value in dbFS., f 49;
-#X text 103 257 size <list> - sets width and height (must be a multiple
-of 40)., f 64;
-#X obj 17 495 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 524 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X text 103 257 size <list> - sets width and height (must be a multiple of 40)., f 64;
+#X obj 17 495 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 524 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 147 499 float - RMS value in dbFS., f 32;
 #X text 147 530 float - RMS value in dbFS., f 32;
-#X text 89 276 scale <float> - nonzero shows scale (default) \, zero
-hides it., f 66;
+#X text 89 276 scale <float> - nonzero shows scale (default) \, zero hides it., f 66;
 #X restore 348 15 pd reference;
-#X text 276 15 click =>;
-#X obj 12 449 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 88 47 cnv 1 370 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 9 196 cnv 1 80 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 88 47 cnv 1 1 148 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 12 449 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 88 47 cnv 1 370 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 9 196 cnv 1 80 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 88 47 cnv 1 1 148 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 24 273 Right click for properties (to set size \, colors \, labels \, etc) --->, f 17;
+#X text 276 15 click ->;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
 #X connect 2 0 1 1;

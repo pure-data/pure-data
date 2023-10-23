@@ -3,7 +3,7 @@ opposed to its audio functions (covered in the next series.)  These tutorials
 are inspired by Chris Dobrian's Max tutorial patches.
 
 It's probably best to look at the first section here before going on to the
-audio portion, but afterward there's no reason not to browse back and forth
+audio portion, but afterwards there's no reason not to browse back and forth
 between the two, and even the third series on "fft" based techniques.
 
 The relationship between "control" and "audio" is described in Pd's HTML
