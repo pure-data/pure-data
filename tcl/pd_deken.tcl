@@ -103,7 +103,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.9.4] } {
+if { [::deken::versioncheck 0.9.14] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -538,6 +538,7 @@ proc ::deken::utilities::verify_sha256 {url pkgfile} {
 
 foreach impl {sha256sum shasum msw tcllib} {
     if { [::deken::utilities::sha256_${impl} $::argv0] ne "" } {
+    set ::deken::utilities::sha256_implementation ::deken::utilities::sha256_${impl}
     proc ::deken::utilities::verify_sha256 {url pkgfile} {
         ::deken::statuspost [format [_ "SHA256 verification of '%s'" ] $pkgfile ] debug
         ::deken::syncgui
@@ -569,7 +570,7 @@ foreach impl {sha256sum shasum msw tcllib} {
                     catch { file delete $hashfile }
                 }
 
-                set hash [string trim [string tolower [ ::deken::utilities::sha256_${impl} $pkgfile ] ] ]
+                set hash [string trim [string tolower [ ${::deken::utilities::sha256_implementation} $pkgfile ] ] ]
                 if { "${hash}" eq "${reference}" } {
                     set retval 1
                 } else {
@@ -1082,13 +1083,23 @@ if { [ catch { set ::deken::installpath [::pd_guiprefs::read dekenpath] } stdout
     # user requested platform (empty = DEFAULT)
     set ::deken::userplatform [::pd_guiprefs::read deken_platform]
     catch {set ::deken::userplatform [lindex ${deken::userplatform} 0 ]}
+    # urgh, on macOS an empty :deken::userplatform ({}, which is promoted to [list {}] on save)
+    # got saved as a literal "{}" (actually "\\\\{\\\\}")
+    # which then gets restored as "\\{\\}"...
+    # the bogus write behaviour was fixed with v0.9.8, but we need to handle old prefs...
+    set ::deken::userplatform [string trim [string trim ${::deken::userplatform} "\\\{\}" ] ]
     set ::deken::hideforeignarch [::deken::utilities::bool [::pd_guiprefs::read deken_hide_foreign_archs] 1]
     set ::deken::hideoldversions [::deken::utilities::bool [::pd_guiprefs::read deken_hide_old_versions] 1]
     proc ::deken::set_platform_options {platform hideforeignarch {hideoldversions 0}} {
         set ::deken::userplatform $platform
+        if { $platform == "" } {
+            set platformlist [list]
+        } else {
+            set platformlist [list $platform]
+        }
         set ::deken::hideforeignarch [::deken::utilities::bool $hideforeignarch ]
         set ::deken::hideoldversions [::deken::utilities::bool $hideoldversions ]
-        ::pd_guiprefs::write deken_platform [list $platform]
+        ::pd_guiprefs::write deken_platform $platformlist
         ::pd_guiprefs::write deken_hide_foreign_archs $::deken::hideforeignarch
         ::pd_guiprefs::write deken_hide_old_versions $::deken::hideoldversions
     }
@@ -1490,6 +1501,7 @@ proc ::deken::menu_installselected {resultsid} {
     # clear the selection
     set ::deken::selected {}
     ::deken::clear_selection $resultsid
+    ::deken::update_installbutton $::deken::winid
 }
 
 proc ::deken::menu_uninstall_package {winid pkgname installpath} {
@@ -1813,7 +1825,8 @@ proc ::deken::initiate_search {winid} {
         }
         if {[llength $results] != 0} {
             ::deken::show_results $resultsid
-            ::deken::post [format [_ "Found %1\$d usable packages (of %2\$d packages in total)." ] $matchcount [llength $results]]
+            set msg [format [_ "Found %1\$d usable packages (of %2\$d packages in total)." ] $matchcount [llength $results]]
+            ::deken::statuspost [format {"%s": %s} ${searchterm} ${msg}]
             if { $matchcount } {
                 ::deken::show_tab $winid results
             } else {
@@ -1926,7 +1939,7 @@ proc ::deken::textresults::clear_selection {resultsid} {
 
 ## deken::treeresults: show versions of libraries in a tree-view
 # TASKs
-# - each library (distinguished by name) is a separate (expandable/collapsable) node
+# - each library (distinguished by name) is a separate (expandable/collapsible) node
 # - expanding a library node shows all versions
 # - the library node shows which version of the library is going to be installed (if any)
 # - the tree can be sorted in both directions by clicking on any of the headings
@@ -1944,7 +1957,7 @@ proc ::deken::textresults::clear_selection {resultsid} {
 # CAVEATs
 # - interaccting with the selection for library 'x' should not interfere with the selection of library 'y'
 # - incompatible archs should be marked somehow
-# - incompatible archs must always be explicitely selected
+# - incompatible archs must always be explicitly selected
 # - TODO: what about multi-selecting incompatible archs of only a single library?
 # - TODO: what about multi-selecting a couple of libraries where some only have incompatible archs?
 
@@ -2158,7 +2171,7 @@ proc ::deken::treeresults::doubleclick {treeid x y} {
     }
 
     if { $installitem eq {} } {
-        # the user doubleclicked on a column heading
+        # the user double-clicked on a column heading
         set column [$treeid identify column $x $y]
         if { $column eq "#0" } {
             # we don't want to sort by column#0
@@ -2203,7 +2216,7 @@ proc ::deken::treeresults::doubleclick {treeid x y} {
         }
         $treeid children {} $pkgs
         if { $item eq {} } {
-            # yikes: if we are not scrolled down, the doubleclick will trigger columnsort twice
+            # yikes: if we are not scrolled down, the double-click will trigger columnsort twice
             # so we do an extra round here...
             ::deken::treeresults::columnsort $treeid $column
         }
@@ -2216,7 +2229,6 @@ proc ::deken::treeresults::doubleclick {treeid x y} {
         ::deken::post ""
         eval $cmd
     }
-
 }
 
 
@@ -2440,18 +2452,22 @@ proc ::deken::ensure_installdir {{installdir ""} {extname ""}} {
 }
 
 # handle a clicked link
-proc ::deken::clicked_link {URL filename} {
+proc ::deken::install_link {URL filename} {
     ## make sure that the destination path exists
     ### if ::deken::installpath is set, use the first writable item
     ### if not, get a writable item from one of the searchpaths
     ### if this still doesn't help, ask the user
     variable winid
+    set installbutton ${winid}.status.install
+    if {[winfo exists $installbutton]} {
+        $installbutton configure -state disabled
+    }
     ::deken::show_tab $winid info
 
     set installdir [::deken::ensure_installdir "" ${filename}]
     if { "${installdir}" == "" } {
         ::deken::utilities::debug [format [_ "Cancelling download of '%s': No installation directory given." ] $filename]
-        ::deken::statuspost [format [_ "Installing to non-existant directory failed" ] $filename] error
+        ::deken::statuspost [format [_ "Installing to non-existent directory failed" ] $filename] error
         return
     }
     if { ! [file exists $installdir] } {
@@ -2501,6 +2517,7 @@ proc ::deken::clicked_link {URL filename} {
         }
     }
     ::deken::install_package ${fullpkgfile} ${filename} ${installdir} ${::deken::keep_package}
+    ::deken::update_installbutton $winid
 }
 
 # print the download progress to the results window
@@ -2643,7 +2660,7 @@ proc ::deken::register {fun} {
 ##        (the user will select the element by this name)
 ##        e.g. "frobscottle-1.10 (Linux/amd64)"
 ## cmd  : a command that will install the selected library
-##        e.g. "[list ::deken::clicked_link http://bfg.org/frobscottle-1.10.zip frobscottle-1.10.zip]"
+##        e.g. "[list ::deken::install_link http://bfg.org/frobscottle-1.10.zip frobscottle-1.10.zip]"
 ## match: an integer indicating whether this entry is actually usable
 ##        on this host (1) or not (0)
 ## comment: secondary line to display
@@ -2746,7 +2763,7 @@ proc ::deken::search::puredata.info::search {term} {
             foreach {name URL creator date} [ split $ele "\t" ] {break}
             set decURL [::deken::utilities::urldecode $URL]
             set filename [ file tail $URL ]
-            set cmd [list ::deken::clicked_link $decURL $filename]
+            set cmd [list ::deken::install_link $decURL $filename]
             set pkgverarch [ ::deken::utilities::parse_filename $filename ]
             set pkgname [lindex $pkgverarch 0]
             set version [lindex $pkgverarch 1]
@@ -2860,7 +2877,7 @@ proc ::deken::search::puredata.info::contextmenu {widget theX theY pkgname URL} 
         set pkgverarch [ ::deken::utilities::parse_filename $filename ]
         set pkgname [lindex $pkgverarch 0]
 
-        set cmd [list ::deken::clicked_link $decURL $filename]
+        set cmd [list ::deken::install_link $decURL $filename]
 
         set selcount 0
         set selected 0
