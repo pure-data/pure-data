@@ -7,7 +7,7 @@
   font-weight: 400;
 }
 
-BODY { 
+BODY {
 	background:  #ffffff;;
 	color: 	     #000000;
 	font-family: Georgia, serif;  /*Georgia, serif; */ /*Helevetica, sans-serif;*/
@@ -15,53 +15,53 @@ BODY {
 	line-height: 1.6;
 
 	}
-	
-#corpus { 
 
-	width: 	    6.5in; 
+#corpus {
+
+	width: 	    8.5in;
 	margin-left: 0.8in;
 	}
-	
+
 H1 {
 	font-size:   32.7pt;
 	text-align:  center;
 	font-weight: normal;
-	
-	
+
+
 }
 H2 {
 	font-size:   22.7pt;
 	text-align:  center;
 	font-weight: normal;
-	
+
 }
 H3 {
 	font-size:   14.7pt;
 	text-align:  left;
-	
+
 }
 H4 {
 	font-size:   12.7pt;
 	text-align:  left;
-	
+
 }
 H5 {
 	font-size:   10.7pt;
 	text-align:  left;
-	
+
 }
 H6 {
 	font-size:   10.7pt;
 	text-align:  left;
-	
+
 }
 
-H1, H2, H3, H4, H5, H6, ol, ul, mark, PRE { 
+H1, H2, H3, H4, H5, H6, ol, ul, mark, PRE {
 color: #3E4349;
- 
+
 }
 
-PRE { 
+PRE {
    font-size: 80%;
    background-color:#f0f0f0;
    text-align:  left;
@@ -83,7 +83,7 @@ table {
 
 tr:nth-child(even) {background-color: #f0f0f0;}
 
-CODE { 
+CODE {
    background-color:#f0f0f0;
    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
@@ -147,12 +147,12 @@ a.green:link {
     text-decoration: none;
     display: inline-block;
     font-size: 80%;
-	
+
 }
 
 a.green:hover {
     text-decoration: none;
-	background-color: #4CAF50;	
+	background-color: #4CAF50;
 }
 
 a.green:visited {
@@ -175,7 +175,7 @@ a.green:visited {
 /* standard images */
 
 IMG {
- 
+
     display: block;
     margin: 0 auto;
 	width: auto;
@@ -197,7 +197,7 @@ div.butt {
   left: 0;
 }
 
-blockquote {  
+blockquote {
   padding: 0;
   margin-right:0px;
 }
@@ -211,8 +211,8 @@ blockquote p {
 
 @media screen and (max-device-width: 700px) {
     #corpus {
-    padding: 10px;    
-	width: 	    auto; 
+    padding: 10px;
+	width: 	    auto;
 	margin-left: 6px;
     }
 	H1 {font-size:   25pt;}
@@ -223,9 +223,9 @@ blockquote p {
 
 @media screen and (max-width: 700px) {
     #corpus {
-    padding: 10px;    
-	width: 	    auto; 
-	margin-left: 6px;	
+    padding: 10px;
+	width: 	    auto;
+	margin-left: 6px;
     }
 	H1 {font-size:   25pt;}
 	IMG {max-width: 100%;}
