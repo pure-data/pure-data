@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2023-10-26 07:01+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
@@ -553,7 +553,7 @@ msgid "Clear"
 msgstr "Limpar"
 
 msgid "path preferences"
-msgstr "preferências de caminho"
+msgstr "caminho de busca"
 
 msgid "Choose Pd documents directory:"
 msgstr "Escolher diretório dos documentos Pd:"
@@ -590,19 +590,19 @@ msgid "Preferences"
 msgstr "Preferências"
 
 msgid "startup preferences"
-msgstr "preferências de inicialização"
+msgstr "inicialização"
 
 msgid "audio preferences"
-msgstr "preferências de áudio"
+msgstr "áudio"
 
 msgid "MIDI preferences"
-msgstr "preferências de MIDI"
+msgstr "MIDI"
 
 msgid "deken preferences"
 msgstr "preferências do deken"
 
 msgid "misc preferences"
-msgstr "preferências diversas"
+msgstr "diversas"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
