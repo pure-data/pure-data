@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-10-24 17:02+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"PO-Revision-Date: 2023-10-26 07:01+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1.1-dev\n"
+"X-Generator: Weblate 5.1.1\n"
 
 msgid "linear"
 msgstr "linear"
@@ -401,7 +401,7 @@ msgid "Label color"
 msgstr "Cor do rótulo"
 
 msgid "Bang"
-msgstr ""
+msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr "Tempo de piscagem (ms)"
@@ -413,7 +413,7 @@ msgid "Max:"
 msgstr "Máximo:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "Toggle"
 
 msgid "Non Zero Value"
 msgstr "Valor Ligado (Não Zero)"
@@ -452,10 +452,10 @@ msgid "Hradio"
 msgstr "Rádio Horizontal"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "VU Meter"
 
 msgid "Canvas"
-msgstr ""
+msgstr "Canvas"
 
 msgid "Visible Rectangle (pix)"
 msgstr "Retângulo Visível (pix)"
@@ -629,10 +629,10 @@ msgid "float (32bit)"
 msgstr "float (32bit)"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "double (64bit) EXPERIMENTAL"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "double (64bit)"
 
 msgid "float size"
 msgstr "Tamanho do float"
@@ -717,7 +717,7 @@ msgid "Failed to start Pd-core"
 msgstr "Falha ao iniciar o núcleo do Pd"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) INVALID COMMAND NAME: "
@@ -1237,88 +1237,88 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Não foi possível criar preferências \"%1$s\" em %2$s"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Africâner"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Árabe"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbaijano"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Bielorrusso"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Búlgaro"
 
 msgid "German"
-msgstr ""
+msgstr "Alemão"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Alemão (Áustria)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Grego"
 
 msgid "English"
-msgstr ""
+msgstr "Inglês"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Inglês (Canadá)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Inglês (Britânico)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Inglês (EUA)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Espanhol"
 
 msgid "Basque"
-msgstr ""
+msgstr "Basco"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finlândia"
 
 msgid "French"
-msgstr ""
+msgstr "Francês"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujardo"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebraico"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Híndi"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Húngaro"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Arménio"
 
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonésio"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japonês"
 
 msgid "Korean"
-msgstr ""
+msgstr "Coreano"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Holandês"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panjábi"
 
 msgid "Polish"
-msgstr ""
+msgstr "Polonês"
 
 msgid "Portuguese"
 msgstr "Português"
@@ -1330,25 +1330,25 @@ msgid "Portuguese (Portugal)"
 msgstr "Português (Portugal)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Russo"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albanês"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Sueco"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turco"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamita"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chinês (Tradicional)"
 
 #, tcl-format
 msgid "(default language: %s)"
@@ -1396,7 +1396,7 @@ msgid "(Dis)Connect Selection"
 msgstr "(Des)Conectar Seleção"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "Triggerize"
 
 msgid "Edit Mode"
 msgstr "Modo de Edição"
@@ -1595,7 +1595,7 @@ msgstr "EXPERIMENTAL precisão double (64bit)"
 
 #, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr ""
+msgstr "%dbit-floats EXPERIMENTAL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1607,7 +1607,7 @@ msgid "Log:"
 msgstr "Log:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatal"
 
 msgid "error"
 msgstr "erro"
@@ -1622,7 +1622,7 @@ msgid "all"
 msgstr "todos"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "Novo..."
