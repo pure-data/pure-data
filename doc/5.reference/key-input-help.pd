@@ -41,8 +41,8 @@
 #X text 436 16 <= click;
 #X obj 8 346 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 35 211 [keyname] gives the symbolic name of the key on the right outlet \, with a 1 or 0 in the left outlet if it's up or down \, and works with non-printing keys like "shift" or "F1"., f 65;
-#X text 35 261 Caveat -- this only works if Pd actually gets the key events which can depend on the stacking order of windows and/or the pointer location \, depending on the system. Also note that typical computer keyboards will only allow you to press a few keys simultaneously., f 65;
 #X text 35 134 [key] and [keyup] report the (system dependent) numbers of "printing" keys of the keyboard. The [key] object outputs when the keyboard key is pressed while [keyup] outputs it when you release the key. Check your system's preferences for 'autorepeat' as it affects the output of these objects., f 65;
+#X text 35 261 Caveat -- this only works if Pd actually gets the key events which can depend on the stacking order of windows and/or the mouse pointer location \, depending on the system. Also note that typical computer keyboards will only allow you to press a few keys simultaneously., f 65;
 #X connect 3 0 4 0;
 #X connect 5 0 10 0;
 #X connect 5 1 6 0;
