@@ -3,7 +3,7 @@ release checklist
 test compilation on linux/msw/mac:
 
 VERSION=tmp
-... later:  VERSION=0.53-2
+... later:  VERSION=0.54-0test1
 
 
 ------------- remake po: ----------------
@@ -30,8 +30,12 @@ cd ~/pd/msw
 rm -rf /tmp/pd-*
 ./build-msw-64.sh $VERSION
 ./build-wxp-32.sh $VERSION
-mv /tmp/pd-$VERSION*.{zip,exe} ~/pd/dist
-rm -rf /tmp/pd-*
+mv /tmp/pd-$VERSION*.zip ~/pd/dist
+mv /tmp/Pd-$VERSION-i386.windows-installer.exe \
+    ~/pd/dist/pd-$VERSION-i386.windows-installer.exe
+mv /tmp/Pd-$VERSION.windows-installer.exe \
+    ~/pd/dist/pd-$VERSION.windows-installer.exe
+rm -rf /tmp/pd-* /tmp/Pd-*
 
 ---- build on macosx 10.7 machine:
 scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
@@ -40,6 +44,14 @@ ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
 ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
     scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
 
+
+---------- test reality check ----------
+
+cd ~/bis/work/reality-check/test-manoury-en-echo/
+SCRIPT=../old-vector/betty-test.txt ./test-me.sh
+cd ../test-hagan-ofpulsesandtimes
+./test-me.sh
+(add more as available)
 
 ---------- grab CI version -----------
 
@@ -51,7 +63,7 @@ grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
 or try: https://git.iem.at/pd/pure-data/-/pipelines
 
 --> pure-data_$VERSION_macOS.zip
-mv -i ~/pure-data_${VERSION}_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
+mv -i ~/pure-data_master_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
