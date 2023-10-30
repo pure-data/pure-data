@@ -85,6 +85,12 @@ script settings on the commandline:
     # build Pd using a system installed PortAudio
     ./configure --without-local-portaudio
 
+If you need to run Pd through a debugger (like gdb), you can
+build Pd with debugging symbols using the "--enable-debug" flag.
+
+    # build Pd with debugging information
+    ./configure --enable-debug
+
 An important configure option for some platforms is --enable-universal which
 allows you to specify the desired architecture(s) when building Pd. For Intel
 and AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". By default,
