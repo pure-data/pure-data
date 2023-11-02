@@ -38,7 +38,7 @@ extern t_symbol *sys_flags;
 /* s_main.c */
 extern int sys_debuglevel;
 extern int sys_verbose;
-extern int sys_noloadbang;
+EXTERN int sys_noloadbang;
 EXTERN int sys_havegui(void);
 extern const char *sys_guicmd;
 
@@ -249,7 +249,7 @@ void dummy_listdevs(void);
                     /* s_midi.c */
 #define MAXMIDIINDEV 16         /* max. number of input ports */
 #define MAXMIDIOUTDEV 16        /* max. number of output ports */
-extern int sys_midiapi;
+EXTERN int sys_midiapi;
 extern int sys_nmidiin;
 extern int sys_nmidiout;
 extern int sys_midiindevlist[];
@@ -346,7 +346,7 @@ void sys_setalarm(int microsec);
 #endif
 
 void sys_set_priority(int higher);
-extern int sys_hipriority;      /* real-time flag, true if priority boosted */
+EXTERN int sys_hipriority;      /* real-time flag, true if priority boosted */
 
 /* s_print.c */
 
