@@ -142,7 +142,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
 }
 
 #ifdef PDINSTANCE
-EXTERN void pd_setinstance(t_pdinstance *x)
+void pd_setinstance(t_pdinstance *x)
 {
     pd_this = x;
 }
@@ -157,7 +157,7 @@ static void pdinstance_renumber(void)
 extern void text_template_init(void);
 extern void garray_init(void);
 
-EXTERN t_pdinstance *pdinstance_new(void)
+t_pdinstance *pdinstance_new(void)
 {
     t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
     t_class *c;
@@ -193,7 +193,7 @@ EXTERN t_pdinstance *pdinstance_new(void)
     return (x);
 }
 
-EXTERN void pdinstance_free(t_pdinstance *x)
+void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;

@@ -2172,7 +2172,7 @@ void g_canvas_freepdinstance(void)
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
-EXTERN int pd_getdspstate(void)
+int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
 }
