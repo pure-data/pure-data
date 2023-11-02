@@ -35,7 +35,7 @@ void glob_start_startup_dialog(t_pd *dummy, t_floatarg flongform);
 void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_ping(t_pd *dummy);
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 void glob_loadpreferences(t_pd *dummy, t_symbol *s);
 void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);

@@ -1106,7 +1106,7 @@ void sys_gui_preferences(void)
 
 static int sys_watchfd = -1;
 
-void glob_watchdog(t_pd *dummy)
+void glob_watchdog(void *dummy)
 {
     if (sys_watchfd < 0)
         return;
