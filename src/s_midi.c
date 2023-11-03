@@ -215,13 +215,14 @@ static void sys_queuemidimess(int portno, int onebyte, int a, int b, int c)
     sys_pollmidioutqueue();
 }
 
-void outmidi_noteon(int portno, int channel, int pitch, int velo)
+void outmidi_noteon(int portno, int channel, int pitch, int velo, int flag)
 {
     if (pitch < 0) pitch = 0;
     else if (pitch > 127) pitch = 127;
     if (velo < 0) velo = 0;
     else if (velo > 127) velo = 127;
-    sys_queuemidimess(portno, 0, MIDI_NOTEON + (channel & 0xf), pitch, velo);
+    int status = flag ? MIDI_NOTEOFF : MIDI_NOTEON;
+    sys_queuemidimess(portno, 0, status + (channel & 0xf), pitch, velo);
 }
 
 void outmidi_controlchange(int portno, int channel, int ctl, int value)
