@@ -293,7 +293,7 @@ typedef struct midiparser
 void inmidi_realtimein(int portno, int cmd);
 void inmidi_byte(int portno, int byte);
 void inmidi_sysex(int portno, int byte);
-void inmidi_noteon(int portno, int channel, int pitch, int velo);
+void inmidi_noteon(int portno, int channel, int pitch, int velo, int flag);
 void inmidi_controlchange(int portno, int channel, int ctlnumber, int value);
 void inmidi_programchange(int portno, int channel, int value);
 void inmidi_pitchbend(int portno, int channel, int value);
@@ -366,13 +366,13 @@ static void sys_dispatchnextmidiin(void)
             {
                 case MIDI_NOTEOFF:
                     if (gotbyte1)
-                        inmidi_noteon(portno, chan, byte1, 0),
+                        inmidi_noteon(portno, chan, byte1, byte, 0),
                             parserp->mp_gotbyte1 = 0;
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
                 case MIDI_NOTEON:
                     if (gotbyte1)
-                        inmidi_noteon(portno, chan, byte1, byte),
+                        inmidi_noteon(portno, chan, byte1, byte, 1),
                             parserp->mp_gotbyte1 = 0;
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
