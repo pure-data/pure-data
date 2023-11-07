@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2023-11-07 16:37+0100\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1098,7 +1098,7 @@ msgstr "%1$s을(를) %2$s에 설치 하겠습니까?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "'%s'의 다운로드 취소됨: 설치 경로가 지정되지 않았습니다."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "존재하지 않는 설치경로이므로 설치에 실패하였습니다"
 
 #, tcl-format

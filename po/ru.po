@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2023-11-07 16:37+0100\n"
 "PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1107,7 +1107,7 @@ msgstr "Установить %1$s в %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Отмена установки '%s': Не указана папка для установки."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Установка в несуществующую папку завершилась неудачно"
 
 #, tcl-format
