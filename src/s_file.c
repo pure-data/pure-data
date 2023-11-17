@@ -742,8 +742,6 @@ void sys_loadpreferences(const char *filename, int startingup)
 #else
         sys_hipriority = 1;
 #endif
-    if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &sys_zoom_open);
 
     sys_doneloadpreferences();
 }

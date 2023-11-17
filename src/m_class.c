@@ -1252,4 +1252,3 @@ int class_getdspflags(const t_class *c)
             (c->c_nopromotesig ? CLASS_NOPROMOTESIG : 0) |
             (c->c_nopromoteleft ? CLASS_NOPROMOTELEFT : 0) );
 }
-

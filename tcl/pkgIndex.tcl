@@ -39,3 +39,4 @@ package ifneeded preferencewindow 0.1 [list source [file join $dir preferencewin
 package ifneeded scrollbox 0.1 [list source [file join $dir scrollbox.tcl]]
 package ifneeded scrollboxwindow 0.1 [list source [file join $dir scrollboxwindow.tcl]]
 package ifneeded wheredoesthisgo 0.1 [list source [file join $dir wheredoesthisgo.tcl]]
+package ifneeded pd_canvaszoom 0.1 [list source [file join $dir pd_canvaszoom.tcl]]
