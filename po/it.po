@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2023-11-17 13:00+0100\n"
 "PO-Revision-Date: 2023-10-26 07:01+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/it/>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1095,7 +1095,8 @@ msgstr ""
 "Cancellazione del download di '%s': Nessuna cartella di installazione "
 "fornita."
 
-msgid "Installing to non-existant directory failed"
+#, fuzzy
+msgid "Installing to non-existent directory failed"
 msgstr "Installazione su una cartella non esistente fallita"
 
 #, tcl-format
@@ -1413,6 +1414,9 @@ msgstr "Triggerizza"
 
 msgid "Edit Mode"
 msgstr "Modalità modifica"
+
+msgid "Snap to Grid"
+msgstr ""
 
 msgid "Undo"
 msgstr "Annulla"

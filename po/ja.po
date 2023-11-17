@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2023-11-17 13:00+0100\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1103,7 +1103,8 @@ msgstr ""
 "'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指定"
 "されていません。"
 
-msgid "Installing to non-existant directory failed"
+#, fuzzy
+msgid "Installing to non-existent directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
 
 #, tcl-format
@@ -1422,6 +1423,9 @@ msgstr "トリガーオブジェクトの自動生成"
 
 msgid "Edit Mode"
 msgstr "編集モード"
+
+msgid "Snap to Grid"
+msgstr ""
 
 msgid "Undo"
 msgstr "取り消し"

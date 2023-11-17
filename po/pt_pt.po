@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2023-11-17 13:00+0100\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
@@ -1128,7 +1128,8 @@ msgstr "Instalar %1$s em %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido."
 
-msgid "Installing to non-existant directory failed"
+#, fuzzy
+msgid "Installing to non-existent directory failed"
 msgstr "Falha ao instalar num diretório não existente"
 
 #, tcl-format
@@ -1450,6 +1451,9 @@ msgstr "Triggerize"
 
 msgid "Edit Mode"
 msgstr "Modo de edição"
+
+msgid "Snap to Grid"
+msgstr ""
 
 msgid "Undo"
 msgstr "Anular"
