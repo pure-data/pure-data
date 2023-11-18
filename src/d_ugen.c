@@ -255,7 +255,14 @@ static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
 static void block_float(t_block *x, t_floatarg f)
 {
     if (x->x_switched)
+    {
+        int wason = x->x_switchon;
         x->x_switchon = (f != 0);
+            /* bash phase if switched on again to make sure
+            we are in sync with inlet prolog and outlet epilog! */
+        if (!wason && x->x_reblock)
+            x->x_phase = THIS->u_phase & (x->x_period - 1);
+    }
 }
 
 static void block_bang(t_block *x)
