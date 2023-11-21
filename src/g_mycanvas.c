@@ -139,12 +139,11 @@ static void my_canvas_properties(t_gobj *z, t_glist *owner)
 
 static void my_canvas_get_pos(t_my_canvas *x)
 {
+    x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
+    x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
+    outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-    {
-        x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
-        x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
         pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, x->x_at);
-    }
 }
 
 static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
@@ -320,6 +319,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     x->x_at[1].a_type = A_FLOAT;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
+    outlet_new(&x->x_gui.x_obj, &s_list);
     return (x);
 }
 
@@ -333,7 +333,7 @@ static void my_canvas_free(t_my_canvas *x)
 void g_mycanvas_setup(void)
 {
     my_canvas_class = class_new(gensym("cnv"), (t_newmethod)my_canvas_new,
-        (t_method)my_canvas_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
+    (t_method)my_canvas_free, sizeof(t_my_canvas), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
         gensym("dialog"), A_GIMME, 0);
