@@ -59,9 +59,16 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define ATTRIBUTE_FORMAT_PRINTF(a, b)
 #endif
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_)
-#include <stddef.h>     /* just for size_t -- how lame! */
+#if __STDC_VERSION__ >= 201112L
+#include <assert.h>
+#define STATIC_ASSERT _Static_assert
+#elif __cplusplus >= 201103L
+#define STATIC_ASSERT static_assert
+#else
+#define STATIC_ASSERT(condition, message) /* no-op */
 #endif
+
+#include <stddef.h> /* for size_t and offsetof */
 
 /* Microsoft Visual Studio is not C99, but since VS2015 has included most C99 headers:
    https://docs.microsoft.com/en-us/previous-versions/hh409293(v=vs.140)#c-runtime-library
@@ -526,7 +533,8 @@ EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
-    class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
+    STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
+    class_domainsignalin(c, offsetof(type, field))
 
          /* prototype for functions to save Pd's to a binbuf */
 typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
