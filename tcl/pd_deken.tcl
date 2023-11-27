@@ -103,7 +103,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.9.14] } {
+if { [::deken::versioncheck 0.9.16] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -515,6 +515,34 @@ proc ::deken::utilities::sha256_shasum {filename} {
     catch { set hash [lindex [exec shasum -a 256 $filename] 0] }
     return $hash
 }
+proc ::deken::utilities::sha256_powershell {filename} {
+    set batscript [::deken::utilities::get_tmpfilename [::deken::utilities::get_tmpdir] ".bat" ]
+    set script {
+@echo off
+powershell -Command " & {Get-FileHash -Algorithm SHA256 -LiteralPath \"%1\"  | Select-Object -ExpandProperty Hash}"
+    }
+    if {![catch {set fileId [open $batscript "w"]}]} {
+        puts $fileId $script
+        close $fileId
+    }
+
+    if {![file exists $batscript]} {
+        ## still no script, give up
+        return ""
+    }
+
+    if { [ catch {
+        set hash [exec "${batscript}" "${filename}"]
+    } stdout ] } {
+        # ouch, couldn't run powershell script
+        ::deken::utilities::verbose 1 "sha256.ps1 error: $stdout"
+        set hash ""
+    }
+
+    catch { file delete "${batscript}" }
+
+    return $hash
+}
 proc ::deken::utilities::sha256_msw {filename} {
     set hash {}
     catch { set hash [join [exec certUtil -hashfile $filename SHA256 | findstr /v "hash"] ""] }
@@ -532,11 +560,11 @@ proc ::deken::utilities::sha256_tcllib {filename} {
 proc ::deken::utilities::verify_sha256 {url pkgfile} {
     set msg [format [_ "Skipping SHA256 verification of '%s'." ] $url ]
     ::deken::statuspost $msg
-    return 1
+    return -100
 }
 
 
-foreach impl {sha256sum shasum msw tcllib} {
+foreach impl {sha256sum shasum powershell msw tcllib} {
     if { [::deken::utilities::sha256_${impl} $::argv0] ne "" } {
     set ::deken::utilities::sha256_implementation ::deken::utilities::sha256_${impl}
     proc ::deken::utilities::verify_sha256 {url pkgfile} {
@@ -545,48 +573,77 @@ foreach impl {sha256sum shasum msw tcllib} {
 
         set retval 1
         set isremote 1
-        if { [ catch {
-            # check if $url really is a local file
-            if { [file normalize $url] eq $url } {
-                # $url is really an absolute filename
-                # use it, if it exists
-                set hashfile "${url}.sha256"
-                set isremote 0
-                if { [file isfile $url ] && [file readable $url] } { } else {
-                    set hashfile ""
-                }
-            } else {
-                # otherwise fetch it from the internet
-                set hashfile [::deken::utilities::download_file ${url}.sha256 [::deken::utilities::get_tmpfilename [::deken::utilities::get_tmpdir] ".sha256" ] ]
+        set hashfile ""
+
+        # check if $url really is a local file
+        if { [file normalize $url] eq $url } {
+            # $url is really an absolute filename
+            # use it, if it exists
+            set hashfile "${url}.sha256"
+            set isremote 0
+            if { [file isfile ${hashfile} ] && [file readable ${hashfile}] } { } else {
+                set msg [format [_ "Unable to fetch reference SHA256 for '%s'." ] $url ]
+                ::deken::utilities::verbose 0 $msg
+                ::deken::statuspost $msg warn 0
+                return -10
             }
-            if { "$hashfile" eq "" } {
-                ::deken::utilities::verbose 0 [format [_ "Unable to fetch reference SHA256 for '%s'." ] $url ]
+        } else {
+            # otherwise fetch it from the internet
+            if { [ catch {
+                set hashfile [::deken::utilities::download_file ${url}.sha256 [::deken::utilities::get_tmpfilename [::deken::utilities::get_tmpdir] ".sha256" ] ]
+            } stdout ] } {
+                ::deken::utilities::verbose 0 "${stdout}"
+                # unable to download
+                set msg [format [_ "Unable to fetch reference SHA256 for '%s'." ] $url ]
+                ::deken::utilities::verbose 0 $msg
+                ::deken::statuspost $msg warn 0
+                return -10
+            }
+        }
+        if { "${hashfile}" eq "" } {
+            set retval -10
+        }
+
+        if { [ catch {
+            set fp [open $hashfile r]
+            set reference [string trim [string tolower [read $fp] ] ]
+            close $fp
+            if { $isremote } {
+                catch { file delete $hashfile }
+            }
+
+            # get hash of file
+            set hash [${::deken::utilities::sha256_implementation} $pkgfile ]
+            set hash [string trim [string tolower $hash ] ]
+            # check if hash is sane
+            if { [string length $hash] != 64 || ! [string is xdigit $hash] } {
+                ::deken::statuspost [format [_ "File checksum looks invalid: '%s'." ] $hash] warn 0
+            }
+            # check if reference is sane
+            if { [string length $reference] != 64 || ! [string is xdigit $reference] } {
+                # this is more grave than the sanity check for the file hash
+                # (since for the file hash we depend on the user's machine being able to
+                # produce a proper SHA256 hash)
+                ::deken::statuspost [format [_ "Reference checksum looks invalid: '%s'." ] $reference] error 0
+            }
+
+            if { [string first ${reference} ${hash}] >= 0 } {
                 set retval 1
             } else {
-                set fp [open $hashfile r]
-                set reference [string trim [string tolower [read $fp] ] ]
-                close $fp
-                if { $isremote } {
-                    catch { file delete $hashfile }
-                }
-
-                set hash [string trim [string tolower [ ${::deken::utilities::sha256_implementation} $pkgfile ] ] ]
-                if { "${hash}" eq "${reference}" } {
-                    set retval 1
-                } else {
-                    # SHA256 verification failed...
-                    set retval 0
-                }
+                # SHA256 verification failed...
+                set retval 0
             }
         } stdout ] } {
             ::deken::utilities::verbose 0 "${stdout}"
             # unable to verify
-            ::deken::utilities::verbose 0 [format [_ "Unable to perform SHA256 verification for '%s'." ] $url ]
-            set retval 1
+            set msg [format [_ "Unable to perform SHA256 verification for '%s'." ] $url ]
+            ::deken::utilities::verbose 0 $msg
+            ::deken::statuspost $msg warn 0
+            set retval -20
         }
         return ${retval}
     }
-# it seems we found a working sha256 implementation, don't try to other ones...
+# it seems we found a working sha256 implementation, don't try the other ones...
 break
 }
 }
@@ -1231,6 +1288,52 @@ proc ::deken::versioncompare {a b} {
     return 0
 }
 
+proc ::deken::verify_sha256_gui {url pkgfile} {
+    ## verify that the SHA256 of the $pkgfile matches that from $url
+    ## in case of failure, this displays a dialog asking the user how to proceed
+    ## (if the preferences indicate we require checking)
+    ## returns
+    ## - 1 on success
+    ## - 0 on failure
+    ## - negative numbers indicate failures to be ignored
+    ## - one digit: user requested ignore
+    ## - -1 user requested ignore via prefs
+    ## - -2 user requested ignore via dialog
+    ## - two digits: unable to verify
+    ## - -10 reference could not be read
+    ## - -20 an exception occured while verifying
+    ## - three digits:
+    ## - -100 no sha256 verifier implemented
+    set err_msg [format [_ "SHA256 verification of '%s' failed!" ] $pkgfile ]
+    set err_title [_ "SHA256 verification failed" ]
+    set err_status [format [_ "Checksum mismatch for '%s'" ] $url]
+
+    while 1 {
+        set hash_ok [::deken::utilities::verify_sha256 ${url} ${pkgfile}]
+        if { ${hash_ok} } {
+            return ${hash_ok}
+        }
+        ::deken::statuspost $err_status warn 0
+        if { ! $::deken::verify_sha256 } {
+            return -1
+        }
+        set result [tk_messageBox \
+                        -title ${err_title} \
+                        -message ${err_msg} \
+                        -icon error -type abortretryignore \
+                        -parent $::deken::winid]
+        switch -- ${result} {
+            abort {
+                return 0
+            }
+            ignore {
+                return -2
+            }
+        }
+    }
+    return 0
+}
+
 proc ::deken::install_package_from_file {{pkgfile ""}} {
     set types {}
     lappend types [list [_ "Deken Packages" ] .dek]
@@ -1248,23 +1351,9 @@ proc ::deken::install_package_from_file {{pkgfile ""}} {
     # perform checks and install it
     set pkgfile [file normalize $pkgfile]
 
-    if { "$::deken::verify_sha256" } {
-        if { ! [::deken::utilities::verify_sha256 ${pkgfile} ${pkgfile}] } {
-            ::deken::statuspost [format [_ "Checksum mismatch for '%s'" ] $pkgfile] warn 0
-            set msg [format [_ "SHA256 verification of '%s' failed!" ] $pkgfile ]
-
-            set result "retry"
-            while { "$result" eq "retry" } {
-                set result [tk_messageBox \
-                                -title [_ "SHA256 verification failed" ] \
-                                -message "${msg}" \
-                                -icon error -type abortretryignore \
-                                -parent $::deken::winid]
-                # we don't have a good strategy if the user selects 'retry'
-                # so we just display the dialog again...
-            }
-            if { "$result" eq "abort" } { return }
-        }
+    set result [::deken::verify_sha256_gui ${pkgfile} ${pkgfile}]
+    if { ! $result } {
+        return
     }
     ::deken::install_package ${pkgfile} "" "" 1
 }
@@ -2499,21 +2588,22 @@ proc ::deken::install_link {URL filename} {
     set msg [_ "Download completed! Verifying..." ]
     ::deken::progressstatus $msg
     ::deken::post "$msg" info
-    if { ! [::deken::utilities::verify_sha256 ${URL} $fullpkgfile] } {
-        ::deken::statuspost [format [_ "Checksum mismatch for '%s'" ] $filename] warn 0
-        if { "$::deken::verify_sha256" } {
-            if { ! "$::deken::keep_package" } {
-                catch { file delete $fullpkgfile }
-            }
-            tk_messageBox \
-                -title [_ "SHA256 verification failed" ] \
-                -message [format [_ "SHA256 verification of '%s' failed!" ] $fullpkgfile ] \
-                -icon error -type ok \
-                -parent $::deken::winid
-            ::deken::progress 0
-            return
-        } else {
+
+    set result [::deken::verify_sha256_gui ${URL} ${fullpkgfile}]
+    if { ! $result } {
+        # verification failed
+        if { ! "$::deken::keep_package" } {
+            catch { file delete $fullpkgfile }
+        }
+        ::deken::progress 0
+        return
+    }
+    if { $result < 0 } {
+        # verification failed, but we ignore it
+        if { $result > -10 } {
             ::deken::statuspost [_ "Ignoring checksum mismatch" ] info 0
+        } elseif  { $result > -100 } {
+            ::deken::statuspost [_ "Ignoring checksum errors" ] info 0
         }
     }
     ::deken::install_package ${fullpkgfile} ${filename} ${installdir} ${::deken::keep_package}
