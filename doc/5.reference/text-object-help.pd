@@ -487,8 +487,8 @@
 #X text 607 558 Here message 2 wins because its element 0 is nearer to 3 \, notwithstanding that its element 1 is farther from 1, f 40;
 #X text 225 359 here we ask to match both element 0 and 3 exactly. In element 3 we're testing symbols for equality., f 50;
 #X text 13 457 Match a message for which the search key is greater than the element zero of that message. The message getting closest to the key wins. You can also use the 'range' message to narrow the search., f 68;
-#X msg 20 567 range 2 4;
-#X text 22 517 narrow to elements 2 and 4, f 9;
+#X msg 20 567 range 2 2;
+#X text 22 517 narrow to messages 2 and 3, f 9;
 #X text 163 545 this matches messages 1 and 3 \, and each is equally good \, so message 1 wins \, unless you narroe the range, f 43;
 #X connect 4 0 0 0;
 #X connect 5 0 4 1;
