@@ -819,17 +819,6 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     }
 }
 
-    /* start or stop the audio hardware */
-void sys_set_audio_state(int onoff)
-{
-        /* NB: only reopen audio if it has been closed, so we don't
-        interfere with audio_shouldkeepopen()! See also glob_dsp(). */
-    if (onoff && !audio_isopen())  /* start */
-        sys_reopen_audio();
-    else if (!onoff && audio_isopen())
-        sys_close_audio();
-}
-
 #define MAXAPIENTRY 10
 typedef struct _apientry
 {
