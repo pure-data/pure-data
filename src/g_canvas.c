@@ -1459,14 +1459,17 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
         int newstate = atom_getfloat(argv);
         if (newstate && !THISGUI->i_dspstate)
         {
-            sys_set_audio_state(1);
+                /* if audio should be kept open, we don't reopen the device,
+                unless it really has been closed (for whatever reason) */
+            if (!audio_shouldkeepopen() || !audio_isopen())
+                sys_reopen_audio();
             canvas_start_dsp();
         }
         else if (!newstate && THISGUI->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
-                sys_set_audio_state(0);
+                sys_close_audio();
         }
     }
     else post("dsp state %d", THISGUI->i_dspstate);

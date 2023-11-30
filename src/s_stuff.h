@@ -148,7 +148,6 @@ typedef void (*t_audiocallback)(void);
 
 extern int sys_schedadvance;
 
-void sys_set_audio_state(int onoff);
 int sys_send_dacs(void);
 void sys_reportidle(void);
 void sys_listdevs(void);
