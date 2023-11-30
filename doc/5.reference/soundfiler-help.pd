@@ -63,7 +63,7 @@
 #X text 29 422 The 'read' message takes a file to load and one or more arrays to load into (in the case the file has more than one channel). The number of channels of the soundfile need not match the number of arrays given to read (extras channels are dropped and unsupplied channels are zeroed out in the extra arrays)., f 72;
 #X text 577 243 Note that if no array name is given to read to \, no samples are read but you get the number of samples in the file on the left outlet and the info on the right outlet anyway., f 62;
 #X text 577 300 Also note that the number of channels is limited to 64 for both reading and writting., f 62;
-#N canvas 101 118 1234 585 read-write-flags 1;
+#N canvas 101 118 1234 585 read-write-flags 0;
 #X text 27 83 -resize (resizes arrays to the size of the sound file), f 62;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 78003 float 2;
