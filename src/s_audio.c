@@ -81,33 +81,53 @@ static int audio_getfixedblocksize(int api)
 
 void sys_setchsr(int chin, int chout, int sr)
 {
+    int oldchin = STUFF->st_inchannels;
+    int oldchout = STUFF->st_outchannels;
+    int oldinbytes = (oldchin ? oldchin : 2) *
+        (DEFDACBLKSIZE*sizeof(t_sample));
+    int oldoutbytes = (oldchout ? oldchout : 2) *
+        (DEFDACBLKSIZE*sizeof(t_sample));
     int inbytes = (chin ? chin : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample));
+        (DEFDACBLKSIZE*sizeof(t_sample));
     int outbytes = (chout ? chout : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample));
+        (DEFDACBLKSIZE*sizeof(t_sample));
+    int changed = 0;
 
-    if (STUFF->st_soundin)
-        freebytes(STUFF->st_soundin,
-            (STUFF->st_inchannels? STUFF->st_inchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample)));
-    if (STUFF->st_soundout)
-        freebytes(STUFF->st_soundout,
-            (STUFF->st_outchannels? STUFF->st_outchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample)));
-    STUFF->st_inchannels = chin;
-    STUFF->st_outchannels = chout;
-    if (!audio_isfixedsr(sys_audioapiopened))
-        STUFF->st_dacsr = sr;
-
-    STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+        /* NB: reallocating the input/output channel arrays requires a DSP
+        graph update, so we only do it if the channel count has changed! */
+    if (chin != oldchin)
+    {
+        if (STUFF->st_soundin)
+            freebytes(STUFF->st_soundin, oldinbytes);
+        STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+        STUFF->st_inchannels = chin;
+        changed = 1;
+    }
     memset(STUFF->st_soundin, 0, inbytes);
 
-    STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+    if (chout != oldchout)
+    {
+        if (STUFF->st_soundout)
+            freebytes(STUFF->st_soundout, oldoutbytes);
+        STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+        STUFF->st_outchannels = chout;
+        changed = 1;
+    }
     memset(STUFF->st_soundout, 0, outbytes);
+
+    if (!audio_isfixedsr(sys_audioapiopened))
+    {
+        if (STUFF->st_dacsr != sr)
+            changed = 1;
+        STUFF->st_dacsr = sr;
+    }
 
     logpost(NULL, PD_VERBOSE, "input channels = %d, output channels = %d",
             STUFF->st_inchannels, STUFF->st_outchannels);
-    canvas_resume_dsp(canvas_suspend_dsp());
+
+        /* prevent redundant DSP updates, particularly when toggling DSP */
+    if (changed)
+        canvas_update_dsp();
 }
 
 static void audio_make_sane(int *ndev, int *devvec,
