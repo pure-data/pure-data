@@ -361,7 +361,10 @@ void sys_do_reopen_audio(void)
         as.a_chindevvec, &totalinchans, MAXAUDIOINDEV);
     audio_compact_and_count_channels(&as.a_noutdev, as.a_outdevvec,
         as.a_choutdevvec, &totaloutchans, MAXAUDIOOUTDEV);
+        /* NB: sys_setchsr() may update the DSP graph, so we need to lock Pd! */
+    sys_lock();
     sys_setchsr(totalinchans, totaloutchans, as.a_srate);
+    sys_unlock();
     if (!as.a_nindev && !as.a_noutdev)
     {
         sched_set_using_audio(SCHED_AUDIO_NONE);
