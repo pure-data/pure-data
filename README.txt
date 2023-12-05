@@ -19,9 +19,11 @@ Installation instructions are in INSTALL.txt and the Pd Manual at:
 If you download and unpack Pd, you will also find the Manual locally
 in the file "doc/1.manual/index.htm".
 
-Linux (or FreeBSD): In some Linux installations you can download Pd via "apt-get
-install puredata" or "dnf install puredata"; otherwise you can download
-the source and compile it as described in INSTALL.txt.
+On certain Linux distributions, you can acquire Pure Data by using package 
+managers such as "apt-get install puredata" or "dnf install puredata." 
+Alternatively, if these methods are not applicable, you have the option 
+to obtain the source code and compile it by following 
+the instructions outlined in the INSTALL.txt file.
 
 Apple macOS: Pd binaries are distributed as a "tar.gz" file. The web browser
 will probably download this archive into your Downloads folder. Double click
