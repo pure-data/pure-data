@@ -7,6 +7,7 @@ away before the panel does... */
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_UNISTD_H
@@ -489,7 +490,7 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
     if (*s->s_name)
     {
         char buf[MAXPDSTRING];
-        snprintf(buf, MAXPDSTRING, "%s/%s",
+        pd_snprintf(buf, MAXPDSTRING, "%s/%s",
             canvas_getdir(c)->s_name, s->s_name);
         buf[MAXPDSTRING-1] = 0;
         outlet_symbol(x->x_outlet, gensym(buf));

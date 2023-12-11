@@ -423,3 +423,7 @@ struct _instancestuff
  * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
  */
 EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
+
+/* safe cross-platform alternatives to snprintf and vsnprintf. */
+EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
+EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt, va_list argptr);

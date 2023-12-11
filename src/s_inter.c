@@ -820,7 +820,7 @@ void sys_vgui(const char *fmt, ...)
             sys_trytogetmoreguibuf(INTER->i_guisize + GUI_ALLOCCHUNK);
     }
     va_start(ap, fmt);
-    msglen = vsnprintf(
+    msglen = pd_vsnprintf(
         INTER->i_guibuf  + INTER->i_guihead,
         INTER->i_guisize - INTER->i_guihead,
         fmt, ap);
@@ -828,19 +828,18 @@ void sys_vgui(const char *fmt, ...)
     if(msglen < 0)
     {
         fprintf(stderr,
-            "Pd: buffer space wasn't sufficient for long GUI string\n");
+            "sys_vgui: pd_snprintf() failed with error code %d\n", errno);
         return;
     }
     if (msglen >= INTER->i_guisize - INTER->i_guihead)
     {
         int msglen2, newsize =
             INTER->i_guisize
-            + 1
-            + (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
+            + (msglen < GUI_ALLOCCHUNK ? GUI_ALLOCCHUNK : msglen + 1);
         sys_trytogetmoreguibuf(newsize);
 
         va_start(ap, fmt);
-        msglen2 = vsnprintf(
+        msglen2 = pd_vsnprintf(
             INTER->i_guibuf  + INTER->i_guihead,
             INTER->i_guisize - INTER->i_guihead,
             fmt, ap);
@@ -1240,7 +1239,7 @@ static void init_deken_arch(void)
             cpu_v--)
         {
             static char cpuname[CPUNAME_SIZE+1];
-            snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
+            pd_snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
             deken_CPU[n++] = gensym(cpuname)->s_name;
         }
     }
@@ -1265,7 +1264,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
     if ((cpu>=0) && (((!deken_CPU) || (cpu >= (sizeof(deken_CPU)/sizeof(*deken_CPU))) || (!deken_CPU[cpu]))))
         return 0;
 
-    snprintf(buf, bufsize-1,
+    pd_snprintf(buf, bufsize-1,
         "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (int)((float_agnostic?0:8) * sizeof(t_float)));
 
     buf[bufsize-1] = 0;
@@ -1544,13 +1543,13 @@ static int sys_do_startgui(const char *libdir)
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
 
-        snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
+        pd_snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
         sys_bashfilename(wishbuf, wishbuf);
 
-        snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
+        pd_snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
         sys_bashfilename(scriptbuf, scriptbuf);
 
-        snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
+        pd_snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
             WISH, scriptbuf, portno);
 
         memset(&si, 0, sizeof(si));
@@ -1637,7 +1636,7 @@ void sys_setrealtime(const char *libdir)
     if (sys_hipriority == -1)
         sys_hipriority = 1;
 
-    snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
+    pd_snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
     cmdbuf[MAXPDSTRING-1] = 0;
     if (sys_hipriority)
     {

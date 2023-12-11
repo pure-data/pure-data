@@ -123,7 +123,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
         if (sel && (*methodlist)[i].me_name == sel)
     {
         char nbuf[80];
-        snprintf(nbuf, 80, "%s_aliased", sel->s_name);
+        pd_snprintf(nbuf, 80, "%s_aliased", sel->s_name);
         nbuf[79] = 0;
         (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
         if (c == pd_objectmaker)
