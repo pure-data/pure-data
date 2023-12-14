@@ -1,6 +1,13 @@
 
 package provide wheredoesthisgo 0.1
 
+namespace eval ::pd::private:: {
+    # these are some private variables for which there is
+    # no more specific namespace yet...
+    variable lastsavedir ""
+    variable lastopendir ""
+}
+
 # a place to temporarily store things until they find a home or go away
 
 proc open_file {filename} {
@@ -30,12 +37,16 @@ proc open_file {filename} {
 # procs for panels (openpanel, savepanel)
 
 proc pdtk_openpanel {target localdir {mode 0}} {
-    if {! [file isdirectory $localdir]} {
+    if { $::pd::private::lastopendir == "" } {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
         }
-        set localdir $::fileopendir
+        set ::pd::private::lastopendir $::fileopendir
     }
+    if {! [file isdirectory $localdir]} {
+        set localdir $::pd::private::lastopendir
+    }
+
     # 0: file, 1: directory, 2: multiple files
     switch $mode {
         0 { set result [tk_getOpenFile -initialdir $localdir] }
@@ -46,28 +57,36 @@ proc pdtk_openpanel {target localdir {mode 0}} {
     if {$result ne ""} {
         if { $mode == 2 } {
             # 'result' is a list
-            set ::fileopendir [file dirname [lindex $result 0]]
+            set ::pd::private::lastopendir [file dirname [lindex $result 0]]
+            set ::fileopendir $::pd::private::lastopendir
             set args {}
             foreach path $result {
                 lappend args [enquote_path $path]
             }
             pdsend "$target callback [join $args]"
         } else {
-            set ::fileopendir [expr {$mode == 0 ? [file dirname $result] : $result}]
+            set ::pd::private::lastopendir [expr {$mode == 0 ? [file dirname $result] : $result}]
+            set ::fileopendir $::pd::private::lastopendir
             pdsend "$target callback [enquote_path $result]"
         }
     }
 }
 
+
 proc pdtk_savepanel {target localdir} {
-    if {! [file isdirectory $localdir]} {
+    if { $::pd::private::lastsavedir == "" } {
         if { ! [file isdirectory $::filenewdir]} {
             set ::filenewdir $::env(HOME)
         }
-        set localdir $::filenewdir
+        set ::pd::private::lastsavedir $::filenewdir
     }
+    if {! [file isdirectory $localdir]} {
+        set localdir $::pd::private::lastsavedir
+    }
+
     set filename [tk_getSaveFile -initialdir $localdir]
     if {$filename ne ""} {
+        set ::pd::private::lastsavedir [file dirname $filename]
         pdsend "$target callback [enquote_path $filename]"
     }
 }
