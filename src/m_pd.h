@@ -969,7 +969,7 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
 #if defined(PDTHREADS) && defined(PDINSTANCE)
-#ifdef _MSC_VER
+#if defined(_WIN32) && (defined(_MSC_VER) || defined(__clang__))
 #define PERTHREAD __declspec(thread)
 #else
 #define PERTHREAD __thread
