@@ -147,6 +147,11 @@ EXTERN void pd_setinstance(t_pdinstance *x)
     pd_this = x;
 }
 
+t_pdinstance *pd_getinstance(void)
+{
+    return pd_this;
+}
+
 static void pdinstance_renumber(void)
 {
     int i;
