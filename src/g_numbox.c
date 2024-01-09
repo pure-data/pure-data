@@ -739,10 +739,8 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 
 static void my_numbox_free(t_my_numbox *x)
 {
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     clock_free(x->x_clock_wait);
-    pdgui_stub_deleteforkey(x);
+    iemgui_free(&x->x_gui);
 }
 
 void g_numbox_setup(void)

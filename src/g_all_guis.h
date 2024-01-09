@@ -333,6 +333,9 @@ EXTERN void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w)
  */
 t_iemgui* iemgui_new(t_class*cls);
 
+/* common destructor */
+void iemgui_free(t_iemgui *x);
+
 /* these are deliberately not exported for now */
 
 /* update the label (both internally and on the GUI)

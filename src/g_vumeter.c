@@ -557,17 +557,10 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void vu_free(t_vu *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_vumeter_setup(void)
 {
     vu_class = class_new(gensym("vu"), (t_newmethod)vu_new,
-        (t_method)vu_free, sizeof(t_vu), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_vu), 0, A_GIMME, 0);
     class_addbang(vu_class,vu_bang);
     class_addfloat(vu_class,vu_float);
     class_addmethod(vu_class, (t_method)vu_ft1,

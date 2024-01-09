@@ -323,17 +323,10 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void my_canvas_free(t_my_canvas *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_mycanvas_setup(void)
 {
     my_canvas_class = class_new(gensym("cnv"), (t_newmethod)my_canvas_new,
-        (t_method)my_canvas_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
         gensym("dialog"), A_GIMME, 0);
