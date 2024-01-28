@@ -3300,7 +3300,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
 
             canvas_vis(g2, 1);
             pdgui_vmess("pdtk_canvas_menuclose", "^m",
-                        canvas_getrootfor(g),
+                        canvas_getrootfor(g2),
                         gensym(buf), 2, backmsg);
             return;
         }
