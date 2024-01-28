@@ -2920,8 +2920,10 @@ void canvas_mouseup(t_canvas *x,
             t_glist *gl2;
                 /* first though, check we aren't an abstraction with a
                    dirty sub-patch that would be discarded if we edit this. */
-            if (canvas_undo_confirmdiscard(g))
+            if (canvas_undo_confirmdiscard(g)) {
+                x->gl_editor->e_onmotion = MA_NONE;
                 return;
+            }
                 /* OK, activate it */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
