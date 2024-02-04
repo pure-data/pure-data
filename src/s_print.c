@@ -11,6 +11,18 @@
 #include "s_stuff.h"
 #include "m_private_utils.h"
 
+#ifdef _WIN32
+#ifndef PD_FWPRINTF_NARROW_FORMATTER
+#if __USE_MINGW_ANSI_STDIO
+    /* This is a workaround for a bug in the old msvcrt.dll used by MinGW */
+    #define PD_FWPRINTF_NARROW_FORMATTER L"%s"
+#else
+    /* Covers modern C runtimes on MSYS2 & MSVC */
+    #define PD_FWPRINTF_NARROW_FORMATTER L"%S"
+#endif
+#endif /* PD_FWPRINTF_NARROW_FORMATTER */
+#endif /* _WIN32 */
+
 t_printhook sys_printhook = NULL;
 int sys_printtostderr;
 
@@ -52,11 +64,7 @@ static void dopost(const char *s)
     else if (sys_printtostderr || !sys_havegui())
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"%S", s);
-    #else
-        fwprintf(stderr, L"%s", s);
-    #endif
+        fwprintf(stderr, PD_FWPRINTF_NARROW_FORMATTER, s);
         fflush(stderr);
 #else
         fprintf(stderr, "%s", s);
@@ -82,11 +90,7 @@ static void doerror(const void *object, const char *s)
     else if (sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"error: %S", s);
-    #else
-        fwprintf(stderr, L"error: %s", s);
-    #endif
+        fwprintf(stderr, L"error: " PD_FWPRINTF_NARROW_FORMATTER, s);
         fflush(stderr);
 #else
         fprintf(stderr, "error: %s", s);
@@ -114,11 +118,7 @@ static void dologpost(const void *object, const int level, const char *s)
     else if (sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"verbose(%d): %S", level, s);
-    #else
-        fwprintf(stderr, L"verbose(%d): %s", level, s);
-    #endif
+        fwprintf(stderr, L"verbose(%d): " PD_FWPRINTF_NARROW_FORMATTER, level, s);
         fflush(stderr);
 #else
         fprintf(stderr, "verbose(%d): %s", level, s);
