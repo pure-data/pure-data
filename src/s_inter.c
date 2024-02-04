@@ -1202,7 +1202,9 @@ static void init_deken_arch(void)
 #if defined(DEKEN_CPU)
     deken_CPU[0] = strip_quotes(deken_CPU[0], deken_CPU_noquotes, MAXPDSTRING);
 #else /* !DEKEN_CPU */
-# if defined __ARM_ARCH
+# if defined(__aarch64__)
+    /* no special-casing for arm64 */
+# elif defined __ARM_ARCH
         /* ARM-specific:
          * if we are running ARMv7, we can also load ARMv6 externals
          */
