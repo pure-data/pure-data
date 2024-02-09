@@ -64,8 +64,8 @@ typedef struct _vinlet
     t_canvas *x_canvas;
     t_inlet *x_inlet;
     int x_buflength;        /* number of samples per channel in buffer */
-    int x_fill;
-    int x_read;
+    int x_write;            /* write position in reblocker */
+    int x_read;             /* read position in reblocker */
     int x_hop;
     int x_updownmethod;
             /* if not reblocking, the next slot communicates the parent's
@@ -147,13 +147,13 @@ t_int *vinlet_perform(t_int *w)
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_reblocker *rb = (t_reblocker *)(w[3]);
-    int hop = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    int advance = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
     t_sample *in = rb->r_buf + read;
     while (n--)
         *out++ = *in++;
-    if (hop)
+    if (advance)    /* only on last channel */
     {
-        if ((read += hop) == x->x_buflength)
+        if ((read += advance) == x->x_buflength)
             read = 0;
         x->x_read = read;
     }
@@ -184,9 +184,12 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
         int i;
         signal_setmultiout(sp, x->x_nchans);
         for (i = 0; i < x->x_nchans; i++)
+        {
+                /* only advance read position on last channel! */
+            int advance = (i == x->x_nchans-1) ? sp[0]->s_length : 0;
             dsp_add(vinlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
-                &x->x_rb[i], (t_int)(i == x->x_nchans-1 ? sp[0]->s_length : 0),
-                    (t_int)(sp[0]->s_length));
+                &x->x_rb[i], (t_int)advance, (t_int)(sp[0]->s_length));
+        }
         x->x_read = 0;
     }
 }
@@ -197,18 +200,18 @@ t_int *vinlet_doprolog(t_int *w)
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_sample *in = (t_sample *)(w[2]), *out;
     t_sample *buf = (t_sample *)(w[3]);
-    int lastone = (int)(w[4]), n = (int)(w[5]), fill = x->x_fill;
+    int lastone = (int)(w[4]), n = (int)(w[5]), write = x->x_write;
 
-    if (fill == x->x_buflength)
+    if (write == x->x_buflength)
     {
         t_sample *f1 = buf, *f2 = buf + x->x_hop;
         int nshift = x->x_buflength - x->x_hop;
         while (nshift--) *f1++ = *f2++;
-        fill -= x->x_hop;
+        write -= x->x_hop;
     }
-    out = buf + fill;
-    if (lastone)
-        x->x_fill = fill + n;
+    out = buf + write;
+    if (lastone)    /* only advance write position on last channel! */
+        x->x_write = write + n;
     while (n--)
         *out++ = *in++;
     return (w+6);
@@ -269,7 +272,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         {
             x->x_hop = period * re_parentvecsize;
 
-            x->x_fill = prologphase ?
+            x->x_write = prologphase ?
                 x->x_buflength - (x->x_hop - prologphase * re_parentvecsize) :
                     x->x_buflength;
             for (i = 0; i < x->x_nchans; i++)
@@ -291,7 +294,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
                             re_parentvecsize, method);
                     dsp_add(vinlet_doprolog, 5, x, x->x_rb[i].r_updown.s_vec,
                         x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
-                                (t_int)re_parentvecsize);
+                            (t_int)re_parentvecsize);
                 }
             }
         }
