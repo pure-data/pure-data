@@ -7,6 +7,7 @@
 #include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "g_checkchange.h"
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
@@ -33,7 +34,12 @@ struct _instanceeditor
     int canvas_last_glist_x, canvas_last_glist_y;
     t_canvas *canvas_cursorcanvaswas;
     unsigned int canvas_cursorwas;
+    t_checkchange checkchange;
 };
+
+t_checkchange *editor_get_checkchange() {
+    return &(EDITOR->checkchange);
+}
 
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
@@ -2907,22 +2913,16 @@ void canvas_mouseup(t_canvas *x,
     else if ((x->gl_editor->e_onmotion == MA_MOVE ||
               x->gl_editor->e_onmotion == MA_RESIZE))
     {
-            /* if there's only one text item selected activate the text.
-            LATER consider under sme conditions not activating it, for instance
-            if it appears to have been desired only to move the object.  Maybe
-            shift-click could allow dragging without activating text?  A
-            different solution (only activating if the object wasn't moved
-            (commit f0df4e586) turned out to flout ctrlD+move+retype. */
+            /* if there's only one text item selected activate the text. */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
             t_gobj *g = x->gl_editor->e_selection->sel_what;
             t_glist *gl2;
-                /* first though, check we aren't an abstraction with a
-                   dirty sub-patch that would be discarded if we edit this. */
-            if (canvas_undo_confirmdiscard(g))
-                return;
-                /* OK, activate it */
+                /* Here we previously prevented the activation of the selected object,
+                   in the case this object is an abstraction and has been modified.
+                   This is now done at the canvas_key() level, which is the place where
+                   the object can really be modified (and its changes be lost). */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
@@ -2958,6 +2958,44 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
     pdgui_vmess("pdtk_canvas_getscroll", "c", x);
     if (x->gl_editor->e_selection)
         canvas_dirty(x, 1);
+}
+
+static void canvas_delete_confirmed(void **args)
+{
+    t_canvas *x = (t_canvas *)args[0];
+    if (x->gl_editor->e_selection)
+        canvas_undo_add(x, UNDO_SEQUENCE_START, "clear", 0);
+    if (x->gl_editor->e_selectedline)
+        canvas_clearline(x);
+    if (x->gl_editor->e_selection)
+    {
+        canvas_undo_add(x, UNDO_CUT, "clear",
+            canvas_undo_set_cut(x, UCUT_CLEAR));
+        canvas_doclear(x);
+        canvas_undo_add(x, UNDO_SEQUENCE_END, "clear", 0);
+    }
+}
+
+static void canvas_sendkey_to_rtext(t_canvas *x, int keynum, t_symbol *gotkeysym)
+{
+    /* send the key to the box's editor */
+    if (!x->gl_editor->e_textdirty)
+    {
+        canvas_setundo(x, canvas_undo_cut,
+            canvas_undo_set_cut(x, UCUT_TEXT), "typing");
+    }
+    rtext_key(x->gl_editor->e_textedfor,
+        (int)keynum, gotkeysym);
+    if (x->gl_editor->e_textdirty)
+        canvas_dirty(x, 1);
+}
+
+static void canvas_sendkey_to_rtext_confirmed(void **args)
+{
+    t_canvas *x = (t_canvas *)args[0];
+    int keynum = (int)args[1];
+    t_symbol *gotkeysym = (t_symbol *)args[2];
+    canvas_sendkey_to_rtext(x, keynum, gotkeysym);
 }
 
     /* this routine is called whenever a key is pressed or released.  "x"
@@ -3087,31 +3125,29 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
-                /* send the key to the box's editor */
-            if (!x->gl_editor->e_textdirty)
+                /* if the typed object (which is also the selected object in the canvas)
+                    is an abstraction, and if its text has not been modified yet, then ask the
+                    permission to the user to discard possible changes inside it. */
+            if (pd_class(&x->gl_editor->e_selection->sel_what->g_pd) == canvas_class
+                && !x->gl_editor->e_textdirty
+                && keynum   /* only ask permission if the keystroke is really changing the text */
+            )
             {
-                canvas_setundo(x, canvas_undo_cut,
-                    canvas_undo_set_cut(x, UCUT_TEXT), "typing");
+                checkchange_init(
+                    canvas_sendkey_to_rtext_confirmed,
+                    x, (void*)keynum, (void*)gotkeysym
+                );
+                checkchange_find_dirty((t_canvas *)(x->gl_editor->e_selection->sel_what));
+                checkchange_start();
             }
-            rtext_key(x->gl_editor->e_textedfor,
-                (int)keynum, gotkeysym);
-            if (x->gl_editor->e_textdirty)
-                canvas_dirty(x, 1);
+            else canvas_sendkey_to_rtext(x, keynum, gotkeysym);
         }
             /* check for backspace or clear */
         else if (keynum == 8 || keynum == 127)
         {
-            if (x->gl_editor->e_selection)
-                canvas_undo_add(x, UNDO_SEQUENCE_START, "clear", 0);
-            if (x->gl_editor->e_selectedline)
-                canvas_clearline(x);
-            if (x->gl_editor->e_selection)
-            {
-                canvas_undo_add(x, UNDO_CUT, "clear",
-                    canvas_undo_set_cut(x, UCUT_CLEAR));
-                canvas_doclear(x);
-                canvas_undo_add(x, UNDO_SEQUENCE_END, "clear", 0);
-            }
+            checkchange_init(canvas_delete_confirmed, x);
+            checkchange_find_dirty_in_selection(x);
+            checkchange_start();
         }
             /* check for arrow keys */
         else if (!strcmp(gotkeysym->s_name, "Up"))
@@ -3780,6 +3816,15 @@ restore:
     canvas_dirty(x, 1);
 }
 
+static void canvas_cut_confirmed(void **args)
+{
+    t_canvas *x = (t_canvas *)args[0];
+    canvas_undo_add(x, UNDO_CUT, "cut", canvas_undo_set_cut(x, UCUT_CUT));
+    canvas_copy(x);
+    canvas_doclear(x);
+    pdgui_vmess("pdtk_canvas_getscroll", "c", x);
+}
+
 static void canvas_cut(t_canvas *x)
 {
     if (!x->gl_editor)  /* ignore if invisible */
@@ -3806,11 +3851,12 @@ static void canvas_cut(t_canvas *x)
     }
     else if (x->gl_editor->e_selection)
     {
-    deleteobj:      /* delete one or more objects */
-        canvas_undo_add(x, UNDO_CUT, "cut", canvas_undo_set_cut(x, UCUT_CUT));
-        canvas_copy(x);
-        canvas_doclear(x);
-        pdgui_vmess("pdtk_canvas_getscroll", "c", x);
+    deleteobj:
+            /* delete one or more objects, if the user accepts
+               to discard inner changes */
+        checkchange_init(canvas_cut_confirmed, x);
+        checkchange_find_dirty_in_selection(x);
+        checkchange_start();
     }
 }
 
@@ -4992,6 +5038,10 @@ void canvas_editor_for_class(t_class *c)
         gensym("menuclose"), A_DEFFLOAT, 0);
     class_addmethod(c, (t_method)canvas_find_parent,
         gensym("findparent"), A_NULL);
+
+/* ------------------------ init checkchange ------------------------ */
+    checkchange_setup();
+
 }
 
 void g_editor_newpdinstance(void)
