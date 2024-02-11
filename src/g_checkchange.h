@@ -1,12 +1,15 @@
+/*
+    The "checkchange" API is privately used by the editor (see g_editor.c).
+    It asks the user to accept to loose all changes in a set of selected
+    canvases, before calling the configured callback (which will probably
+    delete all these canvases).
+
+    Antoine Rousseau @ metalu.net 2024
+*/
 
 #ifndef __g_checkchange_h_
 #define __g_checkchange_h_
 
-/*
-    checkchange is privately used by the editor. It asks the user to accept
-    to discard every changes in a set of selected canvases before calling the
-    the configured callback (which will probably delete all these canvases).
-*/
 
 #include "m_pd.h"
 #include "g_canvas.h"
