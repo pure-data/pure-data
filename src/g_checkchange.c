@@ -8,6 +8,10 @@ extern t_checkchange *editor_get_checkchange(void);
         or if there are no changes */
 void checkchange_accept_discard(t_canvas *x)
 {
+        /* close the canvas window */
+    canvas_vis(x, 0);
+
+        /* restart the check with next canvas */
     checkchange_start();
 }
 
