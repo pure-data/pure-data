@@ -948,12 +948,12 @@
 #X connect 37 0 31 0;
 #X restore 819 633 pd difference-equations(Lorenz);
 #X obj 340 155 fexpr~ $x1[0] + $y1[-1];
-#X text 62 193 'n' index for '$x#' is from 0 to minus "vector size - 1".;
-#X text 62 210 'n' index for '$x#' is from -1 to minus "vector size - 1".;
+#X text 62 192 'n' index for '$x#' is from 0 to minus "vector size - 1"., f 58;
 #X text 23 63 Besides '$f#' \, '$i#' and '$s#' \, [fexpr~] takes '$x#' and '$y#' variables (and no '$v#' variables from [expr~]). Note that the first inlet of [fexpr~] needs to be of type '$x1' (cannot be '$f1' \, '$i1' or '$s1'). You can still send floats to this left inlet as floats sent to audio inlets are promoted to signals. The '$x#' and '$y#' types are input and output samples defined by 'n':, f 71;
 #X text 23 243 The vector (or 'block') size is defined by the [block~] or [switch~] objects. The default is 64 so it's from 0 to -63 for '$x#' and -1 to -63 for $y#. As such \, $x#[0] specifies the current sample input \, and $y#[-1] the last sample output., f 72;
 #X obj 917 234 set-dsp-tgl;
 #X text 948 238 DSP on/off;
+#X text 62 210 'n' index for '$y#' is from -1 to minus "vector size - 1".;
 #X connect 4 0 9 0;
 #X connect 5 0 9 0;
 #X connect 6 0 5 0;
@@ -977,7 +977,7 @@
 #X connect 32 0 22 0;
 #X connect 40 0 29 0;
 #X connect 41 0 27 0;
-#X connect 57 0 47 0;
+#X connect 56 0 47 0;
 #X restore 212 555 pd [fexpr~] Examples;
 #X obj 335 608 >;
 #X text 102 522 (click on the subpatches to open them), f 13;
