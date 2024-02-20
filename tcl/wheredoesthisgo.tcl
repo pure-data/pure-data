@@ -35,7 +35,6 @@ proc open_file {filename} {
 
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
-
 proc pdtk_openpanel {target localdir {mode 0} {parent .pdwindow}} {
     if { $::pd::private::lastopendir == "" } {
         if { ! [file isdirectory $::fileopendir]} {
@@ -46,16 +45,29 @@ proc pdtk_openpanel {target localdir {mode 0} {parent .pdwindow}} {
     if {! [file isdirectory $localdir]} {
         set localdir $::pd::private::lastopendir
     }
+    if { ! [winfo exists parent] } {
+        set parent .pdwindow
+    }
 
-    # 0: file, 1: directory, 2: multiple files
-    switch $mode {
-        0 { set result [tk_getOpenFile -initialdir $localdir \
-            -parent $parent] }
-        1 { set result [tk_chooseDirectory -initialdir $localdir \
-            -parent $parent] }
-        2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir \
-            -parent $parent] }
-        default { ::pdwindow::error "bad value for 'mode' argument" }
+    set result ""
+    if { [winfo exists parent] } {
+        # 0: file, 1: directory, 2: multiple files
+        switch $mode {
+            0 { set result [tk_getOpenFile -initialdir $localdir \
+                                -parent $parent] }
+            1 { set result [tk_chooseDirectory -initialdir $localdir \
+                                -parent $parent] }
+            2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir \
+                                -parent $parent] }
+            default { ::pdwindow::error "bad value for 'mode' argument" }
+        }
+    } else {
+        switch $mode {
+            0 { set result [tk_getOpenFile -initialdir $localdir] }
+            1 { set result [tk_chooseDirectory -initialdir $localdir] }
+            2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
+            default { ::pdwindow::error "bad value for 'mode' argument" }
+        }
     }
     if {$result ne ""} {
         if { $mode == 2 } {
@@ -86,8 +98,14 @@ proc pdtk_savepanel {target localdir {parent .pdwindow}} {
     if {! [file isdirectory $localdir]} {
         set localdir $::pd::private::lastsavedir
     }
-
-    set filename [tk_getSaveFile -initialdir $localdir -parent $parent]
+    if { ! [winfo exists parent] } {
+        set parent .pdwindow
+    }
+    if { [winfo exists parent] } {
+        set filename [tk_getSaveFile -initialdir $localdir -parent $parent]
+    } else {
+        set filename [tk_getSaveFile -initialdir $localdir]
+    }
     if {$filename ne ""} {
         set ::pd::private::lastsavedir [file dirname $filename]
         pdsend "$target callback [enquote_path $filename]"
