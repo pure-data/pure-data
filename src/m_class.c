@@ -203,7 +203,7 @@ void pdinstance_free(t_pdinstance *x)
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-    
+
     instanceno = x->pd_instanceno;
     inter = x->pd_inter;
     canvas_suspend_dsp();
@@ -1252,4 +1252,3 @@ int class_getdspflags(const t_class *c)
             (c->c_nopromotesig ? CLASS_NOPROMOTESIG : 0) |
             (c->c_nopromoteleft ? CLASS_NOPROMOTELEFT : 0) );
 }
-
