@@ -569,28 +569,27 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...)
 {
     va_list ap;
-    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    t_atomtype vec[MAXPDARG+1], *vp = vec, argtype = type1;
     int count = 0;
-    *vp = type1;
+    if(!argtype) argtype = A_NULL;
 
     va_start(ap, type1);
-    while (*vp)
-    {
-        if (count == MAXPDARG)
-        {
-            if(s)
-                pd_error(0, "class %s: sorry: only %d creation args allowed",
-                      s->s_name, MAXPDARG);
-            else
-                pd_error(0, "unnamed class: sorry: only %d creation args allowed",
-                      MAXPDARG);
-            break;
-        }
-        vp++;
-        count++;
-        *vp = va_arg(ap, t_atomtype);
+    while(argtype != A_NULL && count < MAXPDARG) {
+        vec[count++] = argtype;
+        argtype = va_arg(ap, t_atomtype);
+        if(!argtype) argtype = A_NULL;
     }
     va_end(ap);
+        /* the last argument must be A_NULL */
+    if (A_NULL != argtype) {
+        if(s)
+            pd_error(0, "class %s: sorry: only %d creation args allowed",
+                s->s_name, MAXPDARG);
+        else
+            pd_error(0, "unnamed class: sorry: only %d creation args allowed",
+                MAXPDARG);
+    }
+    vec[count] = A_NULL;
     class_addmethod(pd_objectmaker, (t_method)newmethod, s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 }
