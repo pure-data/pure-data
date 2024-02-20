@@ -90,7 +90,7 @@
 #X text 54 376 (etc.) - unary operators;
 #X text 359 343 (etc.) - other binary operators;
 #X text 293 376 (etc.) - trigonometric functions;
-#X text 457 59 As in the signal versions \; - [log] takes a base value via an argument or the right inlet but defaults to "e". A 0 or negative left input gives -1000 as the result. - [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 48;
+#X text 457 59 As in the signal versions \; - [log] takes a base value via an argument or the right inlet but defaults to "e". A 0 or negative left input gives -1000 as the result \; - [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 48;
 #X connect 3 0 30 0;
 #X connect 13 0 14 0;
 #X connect 14 0 17 0;
