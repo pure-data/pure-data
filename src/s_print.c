@@ -312,10 +312,10 @@ void glob_findinstance(t_pd *dummy, t_symbol*s)
     if(!s || !s->s_name)
         return;
     addr = s->s_name;
-    if (('.' == addr[0]) || ('0' == addr[0]))
-        result = sscanf(addr+1, "x%lx", &obj);
     if (!result)
-        result = sscanf(addr, "%p", &obj);
+        result = sscanf(addr, PDGUI_FORMAT__OBJECT, &obj);
+    if (!result && (('.' == addr[0]) || ('0' == addr[0])))
+        result = sscanf(addr+1, "x%lx", &obj);
     if (!result)
         return;
 

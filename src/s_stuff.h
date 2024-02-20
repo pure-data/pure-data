@@ -424,3 +424,10 @@ struct _instancestuff
  * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
  */
 EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
+
+/* format non-trivial data when sending it from core->gui (and vice versa)
+ */
+/* make sure that an object-id is always a string (even on windows, where %p
+ * does not prefix '0x'
+ */
+#define PDGUI_FORMAT__OBJECT "obj:%p"

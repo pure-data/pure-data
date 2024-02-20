@@ -231,8 +231,10 @@ static int addmess(const t_val *v)
         sys_vgui("{%s}", str_escape(v->value.p, v->size));
         break;
     case GUI_VMESS__POINTER:
-    case GUI_VMESS__OBJECT:
         sys_vgui("%p", v->value.p);
+        break;
+    case GUI_VMESS__OBJECT:
+        sys_vgui(PDGUI_FORMAT__OBJECT, v->value.p);
         break;
     case GUI_VMESS__MESSAGE:
         sys_vgui("{");
