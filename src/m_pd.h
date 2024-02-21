@@ -167,7 +167,7 @@ typedef union word
 
 typedef enum
 {
-    A_NULL,
+    A_NULL = 0,
     A_FLOAT,
     A_SYMBOL,
     A_POINTER,

@@ -571,13 +571,11 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     va_list ap;
     t_atomtype vec[MAXPDARG+1], *vp = vec, argtype = type1;
     int count = 0;
-    if(!argtype) argtype = A_NULL;
 
     va_start(ap, type1);
     while(argtype != A_NULL && count < MAXPDARG) {
         vec[count++] = argtype;
         argtype = va_arg(ap, t_atomtype);
-        if(!argtype) argtype = A_NULL;
     }
     va_end(ap);
         /* the last argument must be A_NULL */
