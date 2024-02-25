@@ -443,7 +443,9 @@ static void vu_float(t_vu *x, t_floatarg rms)
 {
     int i;
     int old = x->x_rms;
-    if(rms <= IEM_VU_MINDB)
+    if (PD_BADFLOAT(rms))
+        return;
+    else if(rms <= IEM_VU_MINDB)
         x->x_rms = 0;
     else if(rms >= IEM_VU_MAXDB)
         x->x_rms = IEM_VU_STEPS;
