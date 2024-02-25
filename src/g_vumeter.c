@@ -516,7 +516,6 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         w = (int)atom_getfloatarg(0, argc, argv);
         h = (int)atom_getfloatarg(1, argc, argv);
         iemgui_new_getnames(&x->x_gui, 1, argv);
-        x->x_gui.x_snd_unexpanded = x->x_gui.x_snd = gensym("nosndno"); /*no send*/
         ldx = (int)atom_getfloatarg(4, argc, argv);
         ldy = (int)atom_getfloatarg(5, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(6, argc, argv));
@@ -525,6 +524,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         scale = (int)atom_getfloatarg(10, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 1, 0);
+    x->x_gui.x_snd_unexpanded = x->x_gui.x_snd = gensym("nosndno"); /*no send*/
     if((argc == 12)&&IS_A_FLOAT(argv,11))
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(11, argc, argv));
 
