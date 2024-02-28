@@ -42,7 +42,6 @@
 #X connect 13 0 3 0;
 #X connect 14 0 7 0;
 #X restore 362 474 pd Dealing_with_"\$0";
-#X text 38 80 The int object stores a number initialized by its creation argument \, which may be reset using its inlet and output by sending it the "bang" message. Sending a number sets a new value and outputs it. A non-integer input is truncated to an integer (a la Max) so the object can also be used to truncate values and convert from float to integers., f 72;
 #X obj 69 481 print float;
 #X msg 83 290 3 10 a;
 #X text 136 291 list get truncated to the first item;
@@ -87,7 +86,8 @@
 #X text 175 461 open subpatch to see how to deal with '\$0' ------>, f 25;
 #X text 203 318 send to a named object such as a GUI \, a receive or value objects -->, f 35;
 #X obj 455 306 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X connect 0 0 18 0;
+#X text 38 80 The [int] object stores a number initialized by its creation argument \, which may be reset using its inlet and output by sending it the "bang" message. Sending a number sets a new value and outputs it. A non-integer input is truncated to an integer (a la Max) so the object can also be used to truncate values and convert from float to integers., f 72;
+#X connect 0 0 17 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 1;
 #X connect 7 0 0 0;
@@ -96,6 +96,6 @@
 #X connect 10 0 1 0;
 #X connect 14 0 11 0;
 #X connect 15 0 12 0;
-#X connect 19 0 7 0;
-#X connect 35 0 7 0;
-#X connect 40 0 15 0;
+#X connect 18 0 7 0;
+#X connect 34 0 7 0;
+#X connect 39 0 15 0;

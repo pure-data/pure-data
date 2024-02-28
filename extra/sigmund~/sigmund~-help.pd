@@ -290,6 +290,8 @@
 #X restore 457 505 pd more;
 #X text 31 228 The basic parameters for all output options are:;
 #X text 38 333 These can be set via flags or messages. The 'npts' and 'hop' parameters are in samples and need to be powers of two. The example below specifies a huge hop of 4096 (to slow the output down). There are more parameters see [pd setting-parameters] for more details on them all., f 74;
+#X text 29 592 see also:;
+#X obj 105 592 env~;
 #X connect 1 0 35 0;
 #X connect 4 0 1 0;
 #X connect 26 0 4 0;
