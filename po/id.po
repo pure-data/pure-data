@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-11-07 16:37+0100\n"
-"PO-Revision-Date: 2023-10-23 01:02+0000\n"
+"PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linier"
@@ -456,7 +456,7 @@ msgid "Canvas"
 msgstr "Kanvas"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Persegi Panjang Tampak (pix)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -511,10 +511,10 @@ msgid "In Ports:"
 msgstr "Port Masuk:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "Port Keluaran:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "Sistem MIDI"
 
 msgid "MIDI Settings"
 msgstr "Pengaturan MIDI"
@@ -523,35 +523,34 @@ msgid "ALSA MIDI Settings"
 msgstr "Pengaturan ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Jalur pencarian Pd untuk objek, bantuan, audio, teks, dan file lainnya"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Gunakan lokasi standar"
 
 msgid "Verbose"
 msgstr "Bertele-tele"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Direktori Dokumen Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Jelajah"
 
 msgid "Reset"
-msgstr ""
+msgstr "Setel ulang"
 
 msgid "Disable"
-msgstr ""
+msgstr "Nonaktifkan"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Direktori Instalasi Eksternal"
 
 msgid "Clear"
-msgstr ""
+msgstr "Bersihkan"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Preferensi"
+msgstr "Lokasi preferensi"
 
 msgid "Choose Pd documents directory:"
 msgstr ""
