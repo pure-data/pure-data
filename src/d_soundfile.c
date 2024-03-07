@@ -81,17 +81,25 @@ const char* soundfile_strerror(int errnum)
     }
 }
 
+static int write_soundfileinfo(const t_soundfile *sf, int argc, t_atom *argv)
+{
+    if (argc < 5)
+        return 0;
+    SETFLOAT((t_atom *)argv, (t_float)sf->sf_samplerate);
+    SETFLOAT((t_atom *)argv+1,
+             (t_float)(sf->sf_headersize < 0 ? 0 : sf->sf_headersize));
+    SETFLOAT((t_atom *)argv+2, (t_float)sf->sf_nchannels);
+    SETFLOAT((t_atom *)argv+3, (t_float)sf->sf_bytespersample);
+    SETSYMBOL((t_atom *)argv+4, gensym((sf->sf_bigendian ? "b" : "l")));
+    return 5;
+}
+
     /** output soundfile format info as a list */
-static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
+static void outlet_soundfileinfo(t_outlet *out, const t_soundfile *sf)
 {
     t_atom info_list[5];
-    SETFLOAT((t_atom *)info_list, (t_float)sf->sf_samplerate);
-    SETFLOAT((t_atom *)info_list+1,
-        (t_float)(sf->sf_headersize < 0 ? 0 : sf->sf_headersize));
-    SETFLOAT((t_atom *)info_list+2, (t_float)sf->sf_nchannels);
-    SETFLOAT((t_atom *)info_list+3, (t_float)sf->sf_bytespersample);
-    SETSYMBOL((t_atom *)info_list+4, gensym((sf->sf_bigendian ? "b" : "l")));
-    outlet_list(out, &s_list, 5, (t_atom *)info_list);
+    write_soundfileinfo(sf, 5, info_list);
+    outlet_list(out, &s_list, 5, info_list);
 }
 
     /* post soundfile error, try to print type name */
@@ -1630,6 +1638,7 @@ typedef struct _readsf
     t_sample *(x_outvec[MAXSFCHANS]); /**< audio vectors */
     int x_vecsize;                    /**< vector size for transfers */
     t_outlet *x_bangout;              /**< bang-on-done outlet */
+    t_outlet *x_infoout;              /**< soundfile info outlet */
     t_soundfile_state x_state;        /**< opened, running, or idle */
     t_float x_insamplerate;           /**< input signal sample rate, if known */
         /* parameters to communicate with subthread */
@@ -1641,10 +1650,13 @@ typedef struct _readsf
     int x_fifosize;           /**< buffer size appropriately rounded down */
     int x_fifohead;           /**< index of next byte to get from file */
     int x_fifotail;           /**< index of next byte the ugen will read */
-    int x_eof;                /**< true if fifohead has stopped changing */
+    char x_eof;               /**< true if fifohead has stopped changing */
+    char x_needbang;          /**< readsf~ only: should send bang */
+    char x_needinfo;          /**< readsf~ only: should send info */
+    char x_didsendinfo;       /**< readsf~ only: did we already send the info? */
     int x_sigcountdown;       /**< counter for signaling child for more data */
     int x_sigperiod;          /**< number of ticks per signal */
-    size_t x_frameswritten;   /**< writesf~ only; frames written */
+    size_t x_frameswritten;   /**< writesf~ only: frames written */
     t_float x_f;              /**< writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;
     pthread_cond_t x_requestcondition;
@@ -1992,6 +2004,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
         outlet_new(&x->x_obj, gensym("signal"));
     x->x_noutlets = nchannels;
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
+    x->x_infoout = outlet_new(&x->x_obj, &s_list);
     pthread_mutex_init(&x->x_mutex, 0);
     pthread_cond_init(&x->x_requestcondition, 0);
     pthread_cond_init(&x->x_answercondition, 0);
@@ -2015,7 +2028,31 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 
 static void readsf_tick(t_readsf *x)
 {
-    outlet_bang(x->x_bangout);
+    if (x->x_needinfo)
+    {
+        t_soundfile sf = {0};
+        pthread_mutex_lock(&x->x_mutex);
+        soundfile_copy(&sf, &x->x_sf);
+        pthread_mutex_unlock(&x->x_mutex);
+            /* make sure that the soundfile is still valid.
+            NB: we can't use sf_fd because the worker thread may
+            have already finished reading and closed the file! */
+        if (x->x_sf.sf_bytelimit > 0)
+        {
+            t_atom info[6];
+                /* the soundfile length (minus the sample onset) */
+            ssize_t length = sf.sf_bytelimit / sf.sf_bytesperframe;
+            SETFLOAT(info, length);
+            write_soundfileinfo(&sf, 5, info + 1);
+            outlet_list(x->x_infoout, &s_list, 6, info);
+        }
+        x->x_needinfo = 0;
+    }
+    if (x->x_needbang)
+    {
+        outlet_bang(x->x_bangout);
+        x->x_needbang = 0;
+    }
 }
 
 static t_int *readsf_perform(t_int *w)
@@ -2032,6 +2069,8 @@ static t_int *readsf_perform(t_int *w)
             /* copy with mutex locked! */
         soundfile_copy(&sf, &x->x_sf);
         wantbytes = vecsize * sf.sf_bytesperframe;
+            /* check if there is enough space in the buffer;
+            if not, ask for more and wait for it. */
         while (!x->x_eof && x->x_fifohead >= x->x_fifotail &&
                 x->x_fifohead < x->x_fifotail + wantbytes-1)
         {
@@ -2048,6 +2087,7 @@ static t_int *readsf_perform(t_int *w)
             fprintf(stderr, "readsf~: ... done\n");
 #endif
         }
+            /* check if we reached the end of file */
         if (x->x_eof && x->x_fifohead >= x->x_fifotail &&
             x->x_fifohead < x->x_fifotail + wantbytes-1)
         {
@@ -2066,6 +2106,7 @@ static t_int *readsf_perform(t_int *w)
             }
             pthread_mutex_unlock(&x->x_mutex);
                 /* send bang and zero out the (rest of the) output */
+            x->x_needbang = 1;
             clock_delay(x->x_clock, 0);
             x->x_state = STATE_IDLE;
             for (i = 0; i < noutlets; i++)
@@ -2086,9 +2127,42 @@ static t_int *readsf_perform(t_int *w)
             x->x_sigcountdown = x->x_sigperiod;
         }
         pthread_mutex_unlock(&x->x_mutex);
+
+            /* in case "start" has been sent before
+            we had a chance to send out the info */
+        if (!x->x_didsendinfo)
+        {
+            x->x_needinfo = 1;
+            x->x_didsendinfo = 1;
+            clock_delay(x->x_clock, 0);
+        }
     }
     else
     {
+        if (x->x_state == STATE_STARTUP && !x->x_didsendinfo)
+        {
+                /* See if the soundfile has been opened successfully.
+                We also check if the buffer is ready, so that the user
+                knows it is now "safe" to send the "start" message. */
+            int ready = 0;
+            pthread_mutex_lock(&x->x_mutex);
+                /* NB: we can't use sf_fd, see readsf_tick()! */
+            if (x->x_sf.sf_bytelimit > 0)
+            {
+                int wantbytes = vecsize * x->x_sf.sf_bytesperframe;
+                if (x->x_fifohead < x->x_fifotail ||
+                    x->x_fifohead > x->x_fifotail + wantbytes-1)
+                    ready = 1;
+            }
+            pthread_mutex_unlock(&x->x_mutex);
+            if (ready)
+            {
+                x->x_needinfo = 1;
+                x->x_didsendinfo = 1;
+                clock_delay(x->x_clock, 0);
+            }
+        }
+
         for (i = 0; i < noutlets; i++)
             for (j = vecsize, fp = x->x_outvec[i]; j--;)
                 *fp++ = 0;
@@ -2178,6 +2252,9 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     else
         x->x_sf.sf_type = type;
     x->x_eof = 0;
+    x->x_needbang = 0;
+    x->x_needinfo = 0;
+    x->x_didsendinfo = 0;
     x->x_fileerror = 0;
     x->x_state = STATE_STARTUP;
     sfread_cond_signal(&x->x_requestcondition);
