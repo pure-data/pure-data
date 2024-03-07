@@ -3084,7 +3084,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 && keynum
             )
             {
-                t_canvas *selected_canvas = x->gl_editor->e_selection->sel_what;
+                t_gobj *selected_canvas = x->gl_editor->e_selection->sel_what;
                 if(canvas_undo_confirmdiscard(selected_canvas))
                     return;
             }
