@@ -896,6 +896,9 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
         int size;
         long indx;
         t_word *wvec;
+        t_float *op;    /* output pointer */
+        t_float *ap;    /* arg pointer */
+        int j;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
             !garray_getfloatwords(garray, &size, &wvec))
@@ -905,24 +908,43 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
                 pd_error(expr, "no such table '%s'", ex_symname(s));
                 return (1);
         }
-        optr->ex_type = ET_FLT;
 
         switch (arg->ex_type) {
         case ET_INT:
+                optr->ex_type = ET_FLT;
                 indx = arg->ex_int;
                 break;
         case ET_FLT:
+                optr->ex_type = ET_FLT;
                 /* strange interpolation code deleted here -msp */
                 indx = arg->ex_flt;
                 break;
-
+        case ET_VI:
+                if (optr->ex_type != ET_VEC) {
+                    optr->ex_type = ET_VEC;
+                    optr->ex_vec = (t_float *)
+                        fts_malloc(sizeof (t_float)*expr->exp_vsize);
+                }
+                op = optr->ex_vec;
+                ap = arg->ex_vec;
+                j = expr->exp_vsize;
+                while (j--) {
+                        indx = (int)*ap;
+                        if (indx < 0) indx = 0;
+                        else if (indx >= size) indx = size - 1;
+                        *op = (t_float)wvec[indx].w_float;
+                        ap++; op++;
+                }
+                break;
         default:        /* do something with strings */
                 pd_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
                 indx = 0;
         }
-        if (indx < 0) indx = 0;
-        else if (indx >= size) indx = size - 1;
-        optr->ex_flt = wvec[indx].w_float;
+        if (optr->ex_type == ET_FLT) {
+                if (indx < 0) indx = 0;
+                else if (indx >= size) indx = size - 1;
+                optr->ex_flt = wvec[indx].w_float;
+        }
 #else /* MSP */
         /*
          * table lookup not done for MSP yet

@@ -1468,8 +1468,12 @@ eval_tab(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         if (!(eptr = ex_eval(expr, ++eptr, &arg, idx)))
                 return (eptr);
 
+        /* (nivlekp) comment this for now?
+         * Why are we assuming the type of optr?
+         * This does not work well with table lookup with signal inlet
         optr->ex_type = ET_INT;
         optr->ex_int = 0;
+         */
         if (!notable)
                 (void)max_ex_tab(expr, (t_symbol *)tbl, &arg, optr);
         if (arg.ex_type == ET_VEC)
