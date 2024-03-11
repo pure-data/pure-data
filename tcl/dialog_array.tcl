@@ -145,7 +145,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         # listview
         listbox $lb -height 20 -width 25 \
             -selectmode extended \
-            -relief solid -background white -borderwidth 1 \
+            -relief solid -borderwidth 1 \
             -yscrollcommand "$sb set"
     }
     scrollbar $sb \

@@ -50,7 +50,7 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -padx 15 -ipadx 10
 
     text $mytoplevel.text -relief raised -highlightthickness 0 -bd 2 -height 40 -width 60 \
-        -yscrollcommand "$mytoplevel.scroll set" -background white
+        -yscrollcommand "$mytoplevel.scroll set"
     scrollbar $mytoplevel.scroll -command "$mytoplevel.text yview"
     pack $mytoplevel.scroll -side right -fill y
     pack $mytoplevel.text -side left -fill both -expand 1

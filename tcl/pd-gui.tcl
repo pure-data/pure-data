@@ -59,6 +59,54 @@ package require pd_i18n
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
+namespace eval ::pdgui:: { }
+proc ::pdgui::initialize_style {} {
+    # colorize by class before creating anything
+    set bg "lightgray"
+    option add *Button.background ${bg} startupFile
+    option add *Canvas.background ${bg} startupFile
+    option add *Checkbutton.background ${bg} startupFile
+    option add *DialogWindow.background ${bg} startupFile
+    option add *Entry.highlightBackground ${bg} startupFile
+    option add *Entry.background "white" startupFile
+    option add *Frame.background ${bg} startupFile
+    option add *Labelframe.background ${bg} startupFile
+    option add *Label.foreground "black" startupFile
+    option add *Label.background ${bg} startupFile
+    option add *Listbox.background white startupFile
+    option add *Menu.background ${bg} startupFile
+    option add *Menubutton.background ${bg} startupFile
+    option add *Radiobutton.background ${bg} startupFile
+    option add *Text.background "white" startupFile
+
+    # for ttk, the 'option add' is practically useless,
+    # we just add it for symmetry
+    option add *TNotebook.background ${bg} startupFile
+    option add *TNotebook.Tab.background ${bg} startupFile
+    option add *TProgressbar.background ${bg} startupFile
+
+    option add *Treeview.background white startupFile
+    option add *Treeview.Heading.background ${bg} startupFile
+
+    catch {
+        # none of these adjust the color of the tab header
+        # see https://stackoverflow.com/questions/23038356
+        ttk::style configure TNotebook -background ${bg}
+        ttk::style configure TNotebook -bordercolor ${bg}
+        ttk::style configure TNotebook.Tab -background ${bg}
+        ttk::style configure TNotebook.Tab -bordercolor ${bg}
+        ttk::style configure TNotebook.Tab -foreground black
+
+        ttk::style configure Treeview -background white
+        ttk::style configure Treeview.Heading -background ${bg}
+    }
+
+    # originally this was only set for Linux/W32, but not macOS (???)
+    option add *PatchWindow*Canvas.background "white" startupFile
+}
+::pdgui::initialize_style
+
+
 #------------------------------------------------------------------------------#
 # import functions into the global namespace
 
@@ -294,7 +342,6 @@ proc init_for_platform {} {
     switch -- $::windowingsystem {
         "x11" {
             set ::modifier "Control"
-            option add *PatchWindow*Canvas.background "white" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
             catch {tk_getOpenFile -with-invalid-argument}
@@ -371,7 +418,6 @@ proc init_for_platform {} {
         }
         "win32" {
             set ::modifier "Control"
-            option add *PatchWindow*Canvas.background "white" startupFile
             # fix menu font size on Windows with tk scaling = 1
             font create menufont -family Tahoma -size -11
             option add *Menu.font menufont startupFile
