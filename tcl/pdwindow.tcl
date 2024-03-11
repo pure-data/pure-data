@@ -331,14 +331,14 @@ proc ::pdwindow::create_window {} {
     set ::loaded(.pdwindow) 0
 
     # colorize by class before creating anything
-    option add *PdWindow*Entry.highlightBackground "lightgray" startupFile
-    option add *PdWindow*Frame.background "lightgray" startupFile
-    option add *PdWindow*Label.background "lightgray" startupFile
-    option add *PdWindow*Label.foreground "black" startupFile
-    option add *PdWindow*Checkbutton.background "lightgray" startupFile
-    option add *PdWindow*Menubutton.background "lightgray" startupFile
-    option add *PdWindow*Text.background "white" startupFile
-    option add *PdWindow*Entry.background "white" startupFile
+    option add *Entry.highlightBackground "lightgray" startupFile
+    option add *Frame.background "lightgray" startupFile
+    option add *Label.background "lightgray" startupFile
+    option add *Label.foreground "black" startupFile
+    option add *Checkbutton.background "lightgray" startupFile
+    option add *Menubutton.background "lightgray" startupFile
+    option add *Text.background "white" startupFile
+    option add *Entry.background "white" startupFile
 
     toplevel .pdwindow -class PdWindow
     ::pdwindow::update_title .pdwindow
