@@ -278,7 +278,8 @@ void pd_error(const void *object, const char *fmt, ...)
 
     doerror(object, buf);
 
-    error_object = object;
+    if(object)
+        error_object = object;
     strncpy(error_string, buf, 256);
     error_string[255] = 0;
 
