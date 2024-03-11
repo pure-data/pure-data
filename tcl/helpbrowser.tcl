@@ -86,9 +86,7 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
 
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+                             -height 20 -width 24]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     # first show the directories (for easier navigation)
@@ -219,9 +217,7 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+                             -height 20 -width 24]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
@@ -277,9 +273,7 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
                              -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+                             -height 20 -width 24]
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {

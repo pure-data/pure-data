@@ -103,6 +103,15 @@ proc ::pdgui::initialize_style {} {
 
     # originally this was only set for Linux/W32, but not macOS (???)
     option add *PatchWindow*Canvas.background "white" startupFile
+
+    # helpbrowser
+    option add *HelpBrowser*Listbox.highlightBackground white startupFile
+    option add *HelpBrowser*Listbox.highlightColor white startupFile
+    option add *HelpBrowser*Listbox.highlightThickness 5 startupFile
+    option add *HelpBrowser*Listbox.selectBorderWidth 0 startupFile
+    option add *HelpBrowser*Listbox.borderWidth 0 startupFile
+    option add *HelpBrowser*Listbox.exportSelection 0 startupFile
+
 }
 ::pdgui::initialize_style
 
