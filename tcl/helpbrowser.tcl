@@ -85,34 +85,34 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable helplist
 
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
-                             -height 20 -width 24]
-    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+    set lb .helpbrowser.frame.root0
+    listbox ${lb} -yscrollcommand "${lb}-scroll set" -height 20 -width 24
+    pack ${lb} [scrollbar "${lb}-scroll" -command [list ${lb} yview]] \
         -side left -fill both -expand 1
     # first show the directories (for easier navigation)
     foreach item [lsort  $libdirlist] {
-        $current_listbox insert end $item
+        ${lb} insert end $item
     }
     # then show the (potentially) long list of patches
     foreach item [lsort $helplist] {
-        $current_listbox insert end $item
+        ${lb} insert end $item
     }
 
-    bind $current_listbox <Button-1> \
+    bind ${lb} <Button-1> \
         "::helpbrowser::root_navigate %W %x %y"
-    bind $current_listbox <Double-ButtonRelease-1> \
+    bind ${lb} <Double-ButtonRelease-1> \
         "::helpbrowser::root_doubleclick %W %x %y"
-    bind $current_listbox <Key-Return> \
+    bind ${lb} <Key-Return> \
         "::helpbrowser::root_return %W"
-    bind $current_listbox <Key-Right> \
+    bind ${lb} <Key-Right> \
         "::helpbrowser::root_navigate_key %W true"
-    bind $current_listbox <KeyRelease-Up> \
+    bind ${lb} <KeyRelease-Up> \
         "::helpbrowser::root_navigate_key %W false; break"
-    bind $current_listbox <KeyRelease-Down> \
+    bind ${lb} <KeyRelease-Down> \
         "::helpbrowser::root_navigate_key %W false; break"
-    bind $current_listbox <$::modifier-Key-o> \
+    bind ${lb} <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
-    bind $current_listbox <FocusIn> \
+    bind ${lb} <FocusIn> \
         "::helpbrowser::root_focusin %W 2"
 }
 
@@ -216,53 +216,53 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
 
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
-                             -height 20 -width 24]
-    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+    set lb .helpbrowser.frame.root1
+    listbox ${lb} -yscrollcommand "${lb}-scroll set" -height 20 -width 24
+    pack ${lb} [scrollbar "${lb}-scroll" -command [list ${lb} yview]] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         if {[glob -directory $item -nocomplain -types {f} -- $doctypes] ne "" ||
             [glob -directory $item -nocomplain -types {d} -- *] ne ""} {
-            $current_listbox insert end "[file tail $item]/"
+            ${lb} insert end "[file tail $item]/"
         }
     }
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          *-{help,meta}.pd]]  {
-        $current_listbox insert end [file tail $item]
+        ${lb} insert end [file tail $item]
     }
-    $current_listbox insert end "___________________________"
+    ${lb} insert end "___________________________"
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          *.txt]]  {
-        $current_listbox insert end [file tail $item]
+        ${lb} insert end [file tail $item]
     }
 
-    bind $current_listbox <Button-1> \
+    bind ${lb} <Button-1> \
         "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
-    bind $current_listbox <Double-ButtonRelease-1> \
+    bind ${lb} <Double-ButtonRelease-1> \
         "::helpbrowser::dir_doubleclick {$dir} 2 %W %x %y"
-    bind $current_listbox <Key-Return> \
+    bind ${lb} <Key-Return> \
         "::helpbrowser::dir_return {$dir} 2 %W"
-    bind $current_listbox <Key-Right> \
+    bind ${lb} <Key-Right> \
         "::helpbrowser::dir_navigate_key {$dir} 2 %W"
-    bind $current_listbox <Key-Left> \
+    bind ${lb} <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
-    bind $current_listbox <KeyRelease-Up> \
+    bind ${lb} <KeyRelease-Up> \
         "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
-    bind $current_listbox <KeyRelease-Down> \
+    bind ${lb} <KeyRelease-Down> \
         "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
-    bind $current_listbox <FocusIn> \
+    bind ${lb} <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
     # select first entry & update next col
-    if {$select && [$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-        dir_navigate_key "$dir" 2 $current_listbox false
+    if {$select && [${lb} size] != "0"} {
+        ${lb} selection set 0
+        dir_navigate_key "$dir" 2 ${lb} false
     }
 
     # force display update
     update idletasks
 
-    return $current_listbox
+    return ${lb}
 }
 
 # set select to true to select first item & create child col
@@ -271,47 +271,46 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
 
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
-                             -yscrollcommand "$b-scroll set" \
-                             -height 20 -width 24]
-    pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
+    set lb .helpbrowser.frame.root${count}
+    listbox ${lb} -yscrollcommand "${lb}-scroll set" -height 20 -width 24
+    pack ${lb} [scrollbar "${lb}-scroll" -command "${lb} yview"] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
-        $current_listbox insert end "[file tail $item]/"
+        ${lb} insert end "[file tail $item]/"
     }
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          $doctypes]]  {
-        $current_listbox insert end [file tail $item]
+        ${lb} insert end [file tail $item]
     }
     incr count
 
-    bind $current_listbox <Button-1> \
+    bind ${lb} <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
-    bind $current_listbox <Double-ButtonRelease-1> \
+    bind ${lb} <Double-ButtonRelease-1> \
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
-    bind $current_listbox <Key-Return> \
+    bind ${lb} <Key-Return> \
         "::helpbrowser::dir_return {$dir} $count %W"
-    bind $current_listbox <Key-Right> \
+    bind ${lb} <Key-Right> \
         "::helpbrowser::dir_navigate_key {$dir} $count %W"
-    bind $current_listbox <Key-Left> \
+    bind ${lb} <Key-Left> \
         "::helpbrowser::dir_left [expr $count - 2] %W"
-    bind $current_listbox <KeyRelease-Up> \
+    bind ${lb} <KeyRelease-Up> \
         "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
-    bind $current_listbox <KeyRelease-Down> \
+    bind ${lb} <KeyRelease-Down> \
         "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
-    bind $current_listbox <FocusIn> \
+    bind ${lb} <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
 
     # select first entry & update next col
-    if {$select && [$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-        dir_navigate_key "$dir" $count $current_listbox false
+    if {$select && [${lb} size] != "0"} {
+        ${lb} selection set 0
+        dir_navigate_key "$dir" $count ${lb} false
     }
 
     # force display update
     update idletasks
 
-    return $current_listbox
+    return ${lb}
 }
 
 # clear current selection & navigate one column to the left
