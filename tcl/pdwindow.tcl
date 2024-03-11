@@ -331,11 +331,12 @@ proc ::pdwindow::create_window {} {
     set ::loaded(.pdwindow) 0
 
     # colorize by class before creating anything
-    option add *PdWindow*Entry.highlightBackground "grey" startupFile
-    option add *PdWindow*Frame.background "grey" startupFile
-    option add *PdWindow*Label.background "grey" startupFile
-    option add *PdWindow*Checkbutton.background "grey" startupFile
-    option add *PdWindow*Menubutton.background "grey" startupFile
+    option add *PdWindow*Entry.highlightBackground "lightgray" startupFile
+    option add *PdWindow*Frame.background "lightgray" startupFile
+    option add *PdWindow*Label.background "lightgray" startupFile
+    option add *PdWindow*Label.foreground "black" startupFile
+    option add *PdWindow*Checkbutton.background "lightgray" startupFile
+    option add *PdWindow*Menubutton.background "lightgray" startupFile
     option add *PdWindow*Text.background "white" startupFile
     option add *PdWindow*Entry.background "white" startupFile
 
@@ -349,38 +350,35 @@ proc ::pdwindow::create_window {} {
     }
     wm geometry .pdwindow =500x400
 
-    frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
+    frame .pdwindow.header -borderwidth 1 -relief flat
     pack .pdwindow.header -side top -fill x -ipady 5
 
     frame .pdwindow.header.pad1
     pack .pdwindow.header.pad1 -side left -padx 12
 
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
-        -takefocus 1 -background lightgray \
+        -takefocus 1 \
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 
 # frame for DIO error and audio in/out labels
-    frame .pdwindow.header.ioframe -background lightgray
+    frame .pdwindow.header.ioframe
     pack .pdwindow.header.ioframe -side right -padx 30
 
 # I/O state label (shows I/O on/off/in-only/out-only)
     label .pdwindow.header.ioframe.iostate \
         -text [_ "Audio off"] -borderwidth 1 \
-        -background lightgray -foreground black \
         -takefocus 0
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
         -text [_ "Audio I/O error"] -borderwidth 1 \
-        -background lightgray -foreground lightgray \
         -takefocus 0
 
     pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
         -side top
 
-    label .pdwindow.header.loglabel -text [_ "Log:"] -anchor e \
-        -background lightgray
+    label .pdwindow.header.loglabel -text [_ "Log:"] -anchor e
     pack .pdwindow.header.loglabel -side left
 
     set loglevels {0 1 2 3 4}
@@ -391,7 +389,7 @@ proc ::pdwindow::create_window {} {
     lappend logmenuitems "4 [_ all]"
     set logmenu \
         [eval tk_optionMenu .pdwindow.header.logmenu ::loglevel $loglevels]
-    .pdwindow.header.logmenu configure -background lightgray
+    .pdwindow.header.logmenu configure
     foreach i $loglevels {
         $logmenu entryconfigure $i -label [lindex $logmenuitems $i]
     }
@@ -431,6 +429,7 @@ proc ::pdwindow::create_window {} {
 
     # set some layout variables
     ::pdwindow::set_layout
+    pdtk_pd_dio 0
 }
 
 #--configure the window menu---------------------------------------------------#
