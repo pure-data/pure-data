@@ -10,6 +10,8 @@ namespace eval ::pdtk_canvas:: {
     variable untitled_name "PDUNTITLED"
     variable untitled_len 10
 
+    variable enable_cords_to_foreground 0
+
     namespace export pdtk_canvas_popup
     namespace export pdtk_canvas_editmode
     namespace export pdtk_canvas_getscroll
@@ -489,11 +491,8 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
-set enable_cords_to_foreground false
-
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
-    global enable_cords_to_foreground
-    if {$enable_cords_to_foreground eq "true"} {
+    if {$::pdtk_canvas::enable_cords_to_foreground} {
         set col black
         if { $state == 0 } {
             set col lightgrey
