@@ -116,7 +116,7 @@ static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
     buf = resizebytes(buf, bufsize, bufsize+1);
     buf[bufsize] = 0;
     logpost(x, PD_CRITICAL, "%s", buf);
-    logpost(x, PD_ERROR, "%s", errmsg);
+    pd_error(x, "%s", errmsg);
     freebytes(buf, bufsize);
 }
 
