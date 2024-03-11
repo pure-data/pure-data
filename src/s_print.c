@@ -98,7 +98,7 @@ static void doerror(const void *object, const char *s)
     }
     else
         pdgui_vmess("::pdwindow::logpost", "ois",
-                  object, 1, s);
+                  object, PD_ERROR, s);
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -285,7 +285,7 @@ void pd_error(const void *object, const char *fmt, ...)
     if (object && !saidit)
     {
         if (sys_havegui())
-            logpost(NULL, 4,
+            logpost(NULL, PD_VERBOSE,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }

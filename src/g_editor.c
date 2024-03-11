@@ -4380,26 +4380,26 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
         if (!src->g_next) {
             src = NULL;
-            logpost(sink, 3, "cannot connect non-existing object");
+            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
             goto bad; /* bug fix thanks to Hannes */
         }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
         if (!sink->g_next) {
             sink = NULL;
-            logpost(src, 3, "cannot connect to non-existing object");
+            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
             goto bad;
         }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
         !(objsink = pd_checkobject(&sink->g_pd))) {
-        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        logpost(src?src:sink, PD_DEBUG, "cannot connect unpatchable object");
         goto bad;
     }
 
         /* check if objects are already connected */
     if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
-        logpost(src, 3, "io pair already connected");
+        logpost(src, PD_DEBUG, "io pair already connected");
         goto bad;
     }
 
@@ -4503,7 +4503,7 @@ static void canvas_tidy(t_canvas *x)
             bestdist = i;
         }
     }
-    logpost(NULL, 3, "tidy: best vertical distance %d", bestdist);
+    logpost(NULL, PD_DEBUG, "tidy: best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
         {
