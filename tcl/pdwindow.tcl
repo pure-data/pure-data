@@ -238,10 +238,11 @@ proc ::pdwindow::pdtk_pd_dsp {value} {
 }
 
 proc ::pdwindow::pdtk_pd_dio {red} {
+    set dio .pdwindow.header.ioframe.dio
     if {$red == 1} {
-        .pdwindow.header.ioframe.dio configure -foreground red
+        $dio configure -foreground red
     } else {
-        .pdwindow.header.ioframe.dio configure -foreground lightgray
+        $dio configure -foreground [[winfo parent $dio] cget -background]
     }
 }
 
