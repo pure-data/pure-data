@@ -395,10 +395,12 @@ proc ::pd_canvaszoom::scale_command {cmd} {
                 set c [lindex $cmd 0]
                 set i [lindex $cmd 2]
                 set font [lindex $cmd $fontindex]
-                set font [scalefont $font [lindex $font 1] $zdepth]
-                lset cmd $fontindex $font
+                set newfont [scalefont $font [lindex $font 1] $zdepth]
+                lset cmd $fontindex $newfont
                 # remove font tag
                 set str {foreach {tag} [$c gettags $i] {if {"_f" in [string range $tag 0 1]} {$c dtag $i $tag}}}
+                # add the new font tag
+                append str "\n $c addtag _f[lindex $font 1] withtag $i"
                 set str [string map [list {$c} $c {$i} $i] $str]
                 append cmd \n $str
             }
