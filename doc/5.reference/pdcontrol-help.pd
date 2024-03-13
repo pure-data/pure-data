@@ -1,7 +1,7 @@
 #N canvas 426 23 715 635 12;
 #X obj 32 13 pdcontrol;
-#X obj 21 380 pdcontrol;
-#X obj 21 438 print;
+#X obj 24 380 pdcontrol;
+#X obj 24 438 print;
 #X msg 259 448 isvisible;
 #N canvas 568 591 287 200 subpatch 0;
 #X obj 99 26 inlet;
@@ -13,9 +13,9 @@
 #X connect 1 0 3 0;
 #X restore 259 479 pd subpatch;
 #X text 109 455 open and shut the subpatch to test "isvisible" message, f 19;
-#X msg 37 181 dir;
+#X msg 40 181 dir;
 #X text 70 180 get directory this patch is in;
-#X msg 50 216 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X msg 53 216 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
 #N canvas 761 91 541 437 args 0;
 #X obj 103 254 print;
 #X text 161 141 <= get arguments;
@@ -29,10 +29,10 @@
 #X connect 6 0 0 0;
 #X restore 362 552 pd args;
 #X text 216 145 open a URL in a browser;
-#X msg 21 145 browse http://msp.ucsd.edu;
+#X msg 24 145 browse http://msp.ucsd.edu;
 #X text 299 182 Optional argument to specify this patch (0) \, owning patch (1) \, its own owner (2) \, and so on \, and optionally also a filename relative to the patch's directory. (Ownership number is silently reduced if owners don't exist \, so here anything greater than zero is ignored.), f 55;
 #X floatatom 259 513 5 0 0 0 - - - 0;
-#X symbolatom 21 409 80 0 0 0 - - - 0;
+#X symbolatom 24 409 80 0 0 0 - - - 0;
 #X obj 8 44 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 625 14 <= click;
 #N canvas 603 156 718 338 reference 0;
@@ -62,7 +62,7 @@
 #X text 111 12 - get patch/window information or communicate to canvas.;
 #X obj 178 603 pd-messages;
 #X text 201 273 send a message to this patch window. NOTE: messages to canvases may change from one version of Pd to the next - so backward compatibility can't be guaranteed (although in practice they don't often change). WARNING: don't send a "clear" message - that will crash Pd. Other editing commands might also cause grief. See also "pd-messages" file below., f 69;
-#X msg 54 299 sendcanvas loadbang;
+#X msg 55 299 sendcanvas loadbang;
 #X text 33 59 [pdcontrol] provides some patch/window related information. It can get the patch's owning directory \, its arguments (when loaded as an abstraction) and a window's visible/invisible state. In addition \, it allows you to send messages to the canvas or the parent canvas. For last \, it also lets you open a URL in a web browser. Other functionalities may be added., f 90;
 #X connect 1 0 14 0;
 #X connect 3 0 4 0;

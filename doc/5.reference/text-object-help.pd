@@ -869,7 +869,7 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 454 382 pd open;
-#X text 484 331 open first example of the 4.Data.Structure section., f 20;
+#X text 486 334 open first example of the 4.Data.Structure section., f 25;
 #X obj 82 288 print line;
 #X text 560 30 <= open to see scalat;
 #X connect 0 0 6 0;

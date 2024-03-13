@@ -57,7 +57,7 @@
 #X text 36 129 [vcf~] can take a signal to set the resonant frequency as in an analog voltage controlled filter ("vcf" for short). It is thus more expensive but more powerful than [bp~]. The resonance "Q" or filter sharpness is still only set by control messages., f 83;
 #X text 371 395 Listen to how the white noise input is filtered. The higher the Q \, the more attenuation we have for frequencies besides the center frequency \, so the less wide the frequency band is., f 38;
 #X text 36 59 [vcf~] is a one-pole complex filter with outlets for the real (left) and imaginary (right) parts \, which are \, respectively \, a band-pass and a low-pass filter (that can be combined to allow other possibilities). The maximum gain is constant at 0dB \, what makes the lowpass output more like a bandpass really \, and similar to [bp~]., f 83;
-#X text 245 475 ("low-pass");
+#X text 255 475 (low-pass);
 #X connect 0 0 32 0;
 #X connect 1 0 5 2;
 #X connect 5 0 15 0;
