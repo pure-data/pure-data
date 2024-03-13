@@ -904,6 +904,11 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
+    /* get a Pd API function pointer by name. Returns NULL if the function
+    does not exist. For example, This allows to use recently introduced API
+    functions while providing a fallback for older Pd versions. */
+EXTERN t_method sys_getfunbyname(const char *name);
+
     /* get floatsize at run time */
 EXTERN unsigned int sys_getfloatsize(void);
 
