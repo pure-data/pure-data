@@ -130,7 +130,6 @@
 #X obj 220 137 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 263 137 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X connect 1 0 5 0;
-#X connect 1 0 5 1;
 #X connect 4 0 56 1;
 #X connect 17 0 31 0;
 #X connect 17 0 32 0;

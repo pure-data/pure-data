@@ -21,6 +21,7 @@ void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av);
 void glob_audiostatus(void *dummy);
 void glob_finderror(t_pd *dummy);
 void glob_findinstance(t_pd *dummy, t_symbol*s);
+void glob_start_preference_dialog(t_pd *dummy, t_symbol*s);
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform);
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_audio_setapi(t_pd *dummy, t_floatarg f);
@@ -142,6 +143,8 @@ void glob_init(void)
         gensym("finderror"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_findinstance,
         gensym("findinstance"), A_SYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_start_preference_dialog,
+        gensym("start-preference-dialog"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_properties,
         gensym("audio-properties"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_dialog,
@@ -187,10 +190,8 @@ void glob_init(void)
          gensym("fast-forward"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_settracing,
          gensym("set-tracing"), A_FLOAT, 0);
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
-#endif
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }
@@ -205,4 +206,9 @@ void sys_getversion(int *major, int *minor, int *bugfix)
         *minor = PD_MINOR_VERSION;
     if (bugfix)
         *bugfix = PD_BUGFIX_VERSION;
+}
+
+unsigned int sys_getfloatsize()
+{
+    return sizeof(t_float);
 }

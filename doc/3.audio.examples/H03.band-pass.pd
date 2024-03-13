@@ -1,8 +1,8 @@
-#N canvas 581 101 599 579 12;
+#N canvas 472 56 599 579 12;
 #X declare -stdpath ./;
 #X obj 76 303 mtof;
 #X floatatom 76 280 5 0 150 0 - \$0-pit - 0;
-#X obj 47 458 output~;
+#X obj 67 500 output~;
 #X obj 67 250 noise~;
 #X floatatom 76 328 5 0 0 0 - - - 0;
 #X text 341 503 updated for Pd version 0.39;
@@ -15,15 +15,15 @@
 #X obj 156 464 tabwrite~ H03-graph;
 #X floatatom 85 358 5 0 1000 0 - \$0-q - 0;
 #N canvas 550 179 352 240 loadbang 0;
-#X obj 126 30 loadbang;
-#X obj 126 54 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
+#X obj 126 20 loadbang;
+#X obj 126 44 bng 22 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 126 73 f \$0;
 #X msg 126 97 \; \$1-pit 72 \; \$1-q 1;
 #X text 77 170 This subpatch loads initial values in number boxes., f 27;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X restore 174 507 pd loadbang;
+#X restore 199 512 pd loadbang;
 #X text 154 8 RESONANT (BAND-PASS) FILTER;
 #X text 50 143 The two controls specify \, first \, the center frequency \, and second \, the sharpness of the filter \, commonly called "q". If you increase q to 10 or 20 \, you will see a drop in total signal power \, and moreover \, you'll see and hear the resonant frequency more clearly in the result.;
 #X text 52 44 A simple resonant band-pass filter is provided in the bp~ object. Resonant filters can be tuned to a specific "center frequency" and then will pass that frequency while attenuating other frequencies (the further from the center frequency \, the more attenuation). This patch uses a white noise source to demonstrate bp~.;
@@ -42,7 +42,6 @@
 #X connect 4 0 10 1;
 #X connect 6 0 12 0;
 #X connect 10 0 2 0;
-#X connect 10 0 2 1;
 #X connect 10 0 12 0;
 #X connect 13 0 10 2;
 #X connect 23 0 6 0;

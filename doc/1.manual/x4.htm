@@ -25,7 +25,7 @@
 <P>
 <A href="index.htm#s4"> back to table of contents </A>
 <BR><BR>
-</P> 
+</P>
 
 
 <H3> <A id=> 4. Externals </A> </H2>
@@ -89,79 +89,238 @@ several external objects, as discussed further on).
 <p> These are Pd objects compiled to binaries from programming code (like
 in C or C++). They have to be compiled for your operating system, which
 means the binaries have different extensions according to each platform. For
-instance:	
-	
+instance:
+
 <table>
-<thead valign="bottom">
-<tr><th>Operating System</th>
-<th>CPU-architecture</th>
-<th>filename</th>
+<thead>
+<tr>
+<th style="text-align:center;">OS       </th>
+<th style="text-align:center;">CPU-architecture                   </th>
+<th style="text-align:center;">float size   </th>
+<th style="text-align:center;">filename</th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr><td>Linux</td>
-<td><em>unspecified</em>
-(any architecture)</td>
-<td><code>my_lib.pd_linux</code></td>
+<tbody>
+<tr>
+<td style="text-align:center;">Linux    </td>
+<td style="text-align:center;"><em>unspecified</em> (any architecture)   </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.pd_linux</code> </td>
 </tr>
-<tr><td>Linux</td>
-<td>i386 (Intel/AMD 32bit)</td>
-<td><code>my_lib.l_i386</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">i386 (Intel/AMD 32bit)             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.l_i386</code>   </td>
 </tr>
-<tr><td>Linux</td>
-<td>amd64 (Intel/AMD 64bit)</td>
-<td><code>my_lib.l_amd64</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.linux-i386-32.so</code></td>
 </tr>
-<tr><td>Linux</td>
-<td>arm (e.g. RaspberryPi)</td>
-<td><code>my_lib.l_arm</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.linux-i386-64.so</code></td>
 </tr>
-<tr><td>Linux</td>
-<td>arm64</td>
-<td><code>my_lib.l_arm64</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">amd64 (Intel/AMD 64bit)            </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.l_amd64</code>  </td>
 </tr>
-<tr><td>macOS</td>
-<td><em>unspecified</em>
-(any architecture)</td>
-<td><code>my_lib.pd_darwin</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.linux-amd64-32.so</code></td>
 </tr>
-<tr><td>macOS</td>
-<td>fat (multiple archs)</td>
-<td><code>my_lib.d_fat</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.linux-amd64-64.so</code></td>
 </tr>
-<tr><td>macOS</td>
-<td>PowerPC</td>
-<td><code>my_lib.d_ppc</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;        </td>
+<td style="text-align:center;">arm (e.g. RaspberryPi)             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.l_arm</code>    </td>
 </tr>
-<tr><td>macOS</td>
-<td>i386 (Intel 32bit)</td>
-<td><code>my_lib.d_i386</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.linux-arm-32.so</code></td>
 </tr>
-<tr><td>macOS</td>
-<td>amd64 (Intel 64bit)</td>
-<td><code>my_lib.d_amd64</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.linux-arm-64.so</code></td>
 </tr>
-<tr><td>macOS</td>
-<td>arm64 (Apple Silicon)</td>
-<td><code>my_lib.d_arm64</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">arm64                              </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.l_arm64</code>  </td>
 </tr>
-<tr><td>Windows</td>
-<td><em>unspecified</em>
-(any architecture)</td>
-<td><code>my_lib.dll</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.linux-arm64-32.so</code></td>
 </tr>
-<tr><td>Windows</td>
-<td>i386 (Intel/AMD 32bit)</td>
-<td><code>my_lib.m_i386</code></td>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                         </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.linux-arm64-64.so</code></td>
 </tr>
-<tr><td>Windows</td>
-<td>amd64 (Intel/AMD 64bit)</td>
-<td><code>my_lib.m_amd64</code></td>
+<tr>
+<td style="text-align:center;">macOS    </td>
+<td style="text-align:center;"><em>unspecified</em> (any architecture)   </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.pd_darwin</code>    </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">fat (multiple archs)               </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.d_fat</code>    </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.darwin-fat-32.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.darwin-fat-64.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">PowerPC                            </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.d_ppc</code>    </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.darwin-ppc-32.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.darwin-ppc-64.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">i386 (Intel 32bit)                 </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.d_i386</code>   </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.darwin-i386-32.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.darwin-i386-64.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">amd64 (Intel 64bit)                </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.d_amd64</code>  </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.darwin-amd64-32.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.darwin-amd64-64.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">arm64 (Apple Silicon)              </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.d_arm64</code>  </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.darwin-arm64-32.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.darwin-arm64-64.dylib</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">Windows  </td>
+<td style="text-align:center;"><em>unspecified</em> (any architecture)   </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.dll</code>  </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">i386 (Intel/AMD 32bit)             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.m_i386</code>   </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.windows-i386-32.dll</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.windows-i386-64.dll</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">amd64 (Intel/AMD 64bit)            </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.m_amd64</code>  </td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">32</td>
+<td style="text-align:center;"><code>my_lib.windows-amd64-32.dll</code></td>
+</tr>
+<tr>
+<td style="text-align:center;">&lsquo;&rsquo;       </td>
+<td style="text-align:center;">&lsquo;&rsquo;                             </td>
+<td style="text-align:center;">64</td>
+<td style="text-align:center;"><code>my_lib.windows-amd64-64.dll</code></td>
 </tr>
 </tbody>
 </table>
 
-	
+
 <H3> <A id=s1.2.2> 4.1.2.2. Abstractions:</A> </H3>
 
 <p>You can have a Pd patch behave like an object by loading it into other
@@ -224,8 +383,7 @@ abstractions or any combination of them.
 <H3> <A id=s2>4.2. Installing External Objects and Libraries
 </A> </H3>
 
-		 
-		 
+
 
 
 <p>Installing externals in Pd is quite simple, all you need to do is download
@@ -589,7 +747,7 @@ priority to search this folder!
 <P>
 <BR><BR>
 <A href="x5.htm"> next chapter </A><BR>
-<A href="index.htm#s4"> back to table of contents </A> 
+<A href="index.htm#s4"> back to table of contents </A>
 <BR><BR>
 </P>
 

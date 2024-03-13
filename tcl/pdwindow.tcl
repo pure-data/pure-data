@@ -13,6 +13,7 @@ namespace eval ::pdwindow:: {
     variable linecolor 0 ;# is toggled to alternate text line colors
     variable logmenuitems
     variable maxloglevel 4
+    variable font_size 12
 
     # private variables
     variable _lastlevel 0       ;# loglevel of last post (for automatic endpost level)
@@ -370,6 +371,28 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
 }
 
 #--create the window-----------------------------------------------------------#
+proc ::pdwindow::update_title {w} {
+    set title [_ "Pd" ]
+    set version "${::PD_MAJOR_VERSION}.${::PD_MINOR_VERSION}.${::PD_BUGFIX_VERSION}${::PD_TEST_VERSION}"
+    set fulltitle "${title} ${version}"
+    if { [info exists ::deken::platform(floatsize)] } {
+        switch -- ${::deken::platform(floatsize)} {
+            32 { set floatsize "" }
+            64 { set floatsize [_ "EXPERIMENTAL double (64bit) precision"] }
+            default  { set floatsize [format [_ "%dbit-floats EXPERIMENTAL" ]  ${::deken::platform(floatsize)}]}
+        }
+        if { ${floatsize} ne "" } {
+            set fulltitle "${fulltitle} - ${floatsize}"
+        }
+    }
+
+    if { [winfo exists ${w} ] } {
+        wm title ${w} "${fulltitle}"
+    }
+    set ::windowname($w) $title
+
+    return ${fulltitle}
+}
 
 proc ::pdwindow::create_window {} {
     variable logmenuitems
@@ -385,8 +408,8 @@ proc ::pdwindow::create_window {} {
     option add *PdWindow*Entry.background "white" startupFile
 
     toplevel .pdwindow -class PdWindow
-    wm title .pdwindow [_ "Pd"]
-    set ::windowname(.pdwindow) [_ "Pd"]
+    ::pdwindow::update_title .pdwindow
+
     if {$::windowingsystem eq "x11"} {
         wm minsize .pdwindow 400 75
     } else {
@@ -447,10 +470,9 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.logmenu -side left
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
-    # TODO this should use the pd_font_$size created in pd-gui.tcl
-    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family 10] \
+    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family $::pdwindow::font_size] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
-        -yscrollcommand ".pdwindow.scroll set" -width 60 \
+        -yscrollcommand ".pdwindow.scroll set" -width 80 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
     scrollbar .pdwindow.scroll -command ".pdwindow.text.internal yview"
     pack .pdwindow.scroll -side right -fill y

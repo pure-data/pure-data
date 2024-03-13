@@ -71,4 +71,6 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {}
 int sys_mididevnametonumber(int output, const char *name) { return 0; }
 void sys_mididevnumbertoname(int output, int devno, char *name, int namesize) {}
 void sys_set_midi_api(int api) {}
+void sys_gui_midipreferences(void) {}
+
 int sys_midiapi;

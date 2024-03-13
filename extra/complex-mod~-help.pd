@@ -1,64 +1,44 @@
-#N canvas 709 71 579 441 12;
+#N canvas 448 62 579 441 12;
 #X floatatom 52 137 5 0 0 0 - - - 0;
 #X obj 52 267 complex-mod~;
 #X obj 52 199 cos~;
 #X obj 92 219 cos~;
 #X obj 92 195 -~ 0.25;
-#X text 46 60 The complex modulator takes two signals in which it considers
-to be the real and imaginary part of a complex-valued signal. It then
-does a complex multiplication by a sinusoid to shift all frequencies
-up or down by any frequency shift in Hz., f 68;
+#X text 46 60 The complex modulator takes two signals in which it considers to be the real and imaginary part of a complex-valued signal. It then does a complex multiplication by a sinusoid to shift all frequencies up or down by any frequency shift in Hz., f 68;
 #X obj 109 401 hilbert~;
 #X text 31 401 See also:;
 #X obj 29 15 complex-mod~;
 #X text 126 15 - complex amplitude modulator;
-#X obj 62 311 output~;
+#X obj 44 304 output~;
 #X floatatom 164 181 5 0 0 0 - - - 0;
 #X obj 164 210 sig~;
-#X text 211 234 The left output is the frquency shifted by the amount
-of the frequency shift. The right outlet gives us the other side band
-\, which is shifted by the same amount in reverse., f 44;
-#X text 198 304 (for instance \, if the shift is 100 \, left output
-shifts the frequency up by 100 and the right shifts it down by 100)
-, f 47;
+#X text 211 234 The left output is the frquency shifted by the amount of the frequency shift. The right outlet gives us the other side band \, which is shifted by the same amount in reverse., f 44;
+#X text 198 304 (for instance \, if the shift is 100 \, left output shifts the frequency up by 100 and the right shifts it down by 100), f 47;
 #X obj 52 165 phasor~ 440;
 #X text 482 14 <= click;
 #N canvas 767 120 577 325 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 174 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 257 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 294 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 174 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 257 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 294 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 146 268 NONE, f 52;
-#X obj 8 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 8 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 8 221 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 8 196 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 8 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 8 221 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 8 196 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 29 15 complex-mod~;
-#X text 126 15 - complex amplitude modulator;
 #X text 142 85 signal - real part of signal input., f 53;
 #X text 142 114 signal - imaginary part of signal input., f 53;
-#X obj 8 139 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 100 146 float/signal - frequency shift amount in hz., f 53
-;
+#X obj 8 139 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
+#X text 100 146 float/signal - frequency shift amount in hz., f 53;
 #X text 138 199 signal - frequency shifted side band., f 53;
 #X text 138 229 signal - opposite side band (shifted in reverse).;
+#X text 126 15 - complex amplitude modulator (frequency shifter);
 #X restore 388 15 pd reference;
-#X obj 5 47 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 5 387 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 5 47 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 5 387 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 207 182 Frequency shift in hz;
-#X text 157 127 This is also known as 'single side band modulation'
-and relates to ring modulation (which has two sidebands);
+#X text 157 127 This is also known as 'single side band modulation' and relates to ring modulation (which has two sidebands);
 #X connect 0 0 15 0;
 #X connect 1 0 10 0;
 #X connect 1 1 10 1;

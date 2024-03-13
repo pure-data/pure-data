@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
 <link rel="icon" type="image/png" href="favicon.ico">
 </HEAD>
-  
+
 <BODY>
 
 
@@ -26,7 +26,7 @@
 <P>
 <A href="index.htm#s6"> back to table of contents </A>
 <BR><BR>
-</P> 
+</P>
 
 <P>Pd is built on the commandline using traditional Unix-style tools. The source
 distribution comes with two build systems:</P>
@@ -118,6 +118,12 @@ midi APIs:            PortMidi</pre>
 # build Pd using a system installed PortAudio
 ./configure --without-local-portaudio</pre>
 
+<p>If you need to run Pd through a debugger (like gdb), you can
+build Pd with debugging symbols using the "--enable-debug" flag.
+
+<pre># build Pd with debugging information
+./configure --enable-debug</pre>
+
 <p>An important configure option for some platforms is --enable-universal which allows you to specify the desired architecture(s) when building Pd. For Intel and AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with --enable-universal:</p>
 
 <pre># build 32 bit Pd
@@ -195,6 +201,10 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
 <p>Most distributions come with Tcl/Tk installed, so you should be able to run Pd after it is built.</p>
 <p>Once your build system is set up, you can follow the general autotools build steps to build Pd.</p>
+
+<p>For more information and how to build on BSD see: </p>
+
+<p><a id=BSD class=green href="x6-c.htm" >Show more on BSD</a></p>
 
 <h3 id="s6.4">6.4. macOS</h3>
 
@@ -310,7 +320,7 @@ pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
 pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
           make autoconf automake libtool \
           mingw-w64-i686-gettext</pre>
-		  
+
 <p>Install git if you want to clone the Pd sources from Github, etc:</p>
 
 <pre>pacman -S git</pre>
@@ -360,9 +370,9 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <h3 id="s6.6">6.6. Double precision</h3>
 
-<p>As of Pd 0.51-0 you can compile a "Double precision" Pd. On the autotools do:</p>
+<p>As of Pd 0.54-0 you can compile a "Double precision" Pd (AKA: Pd64). On the autotools do:</p>
 
-<pre>./configure CPPFLAGS="-DPD_FLOATSIZE=64"</pre>
+<pre>./configure --with-floatsize=64</pre>
 
 <h3 id="s6.7">6.7. Other flags</h3>
 
@@ -459,7 +469,7 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <P>
 <BR><BR>
-<A href="index.htm#s6"> back to table of contents </A> 
+<A href="index.htm#s6"> back to table of contents </A>
 <BR><BR>
 </P>
 

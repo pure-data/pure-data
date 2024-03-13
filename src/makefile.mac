@@ -31,8 +31,12 @@ libpdtcldir = $(libpddir)/tcl
 PADIR = ../portaudio/portaudio
 PMDIR = ../portmidi/portmidi
 
-CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
-    -DHAVE_LIBDL -DMACOSX -DHAVE_UNISTD_H -I/usr/X11R6/include \
+CPPFLAGS = -DINSTALL_PREFIX=\"$(prefix)\" \
+    -DPD -DPD_INTERNAL \
+    -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 \
+    -DHAVE_ALLOCA_H=1 \
+    -DHAVE_QSORT_R_COMPAR_LAST=1 \
+    -DHAVE_MACHINE_ENDIAN_H=1 \
     -I$(PADIR)/include -I$(PADIR)/src/common  \
     -I$(PADIR)/src/os/mac_osx/ -I$(PMDIR)/pm_common \
     -I$(PMDIR)/pm_mac -I$(PMDIR)/porttime \
