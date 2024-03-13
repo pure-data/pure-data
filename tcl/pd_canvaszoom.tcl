@@ -249,9 +249,9 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
                     $c addtag _lw$linewidth withtag $i
                 }
                 # scale
-                set newwitdth [expr {$linewidth * $zdepth}]
-                if {$newwitdth < 1} {set newwitdth 1}
-                $c itemconfigure $i -width $newwitdth
+                set newwidth [expr {$linewidth * $zdepth}]
+                if {$newwidth < 1} {set newwidth 1}
+                $c itemconfigure $i -width $newwidth
             }
         }
     }
@@ -360,7 +360,20 @@ proc ::pd_canvaszoom::scale_command {cmd} {
         "create" {
             if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth]
+
             set widthindex [lsearch -start 3 $cmd "-width"]
+            # for non-text, default linewidth to 1.0
+            if {$widthindex == -1 && [lindex $cmd 2] != "text"} {
+                set tagsindex [lsearch -start 3 $cmd "-tags"]
+                incr tagsindex
+                set tags [lindex $cmd $tagsindex]
+                # don't scale rect selection outline width (tagged "x")
+                if {{x} ni $tags} {
+                    set cmd [string_lset $cmd $tagsindex [concat "\{ " $tags " \}" -width 1.0]]
+                    set widthindex [lsearch -start 3 $cmd "-width"]
+                }
+            }
+            # now scale 'width' value, if any
             if {$widthindex != -1} {
                 incr widthindex
                 set cmd [scale_consecutive_numbers $cmd $widthindex $zdepth]
