@@ -413,7 +413,7 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s,
     if (argc > nprint && nchar < 100)
         sprintf(msgbuf + nchar, "...");
     else memcpy(msgbuf+100, "...", 4); /* in case we didn't finish */
-    logpost(who, 2, "%s", msgbuf);
+    logpost(who, PD_NORMAL, "%s", msgbuf);
 }
 
 static void backtracer_anything(t_backtracer *x, t_symbol *s,
@@ -1011,5 +1011,3 @@ void obj_init(void)
     class_addanything(backtracer_class, backtracer_anything);
 
 }
-
-

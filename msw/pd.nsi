@@ -1,7 +1,7 @@
 ;
 ;
 ; https://stackoverflow.com/questions/36185539/can-i-get-nsis-to-make-a-single-installer-that-handles-local-deployment-and-syst
-; ./build-nsi.sh -o "c:/tmp" G:/gitportable/nsis/pd-0.53.1 0.53.1
+; ./build-nsi.sh -o "c:/tmp" "G:/gitportable/nsis2/pd-0.54-1" 0.54-1xx
 
 
 ;####################################################
@@ -185,16 +185,18 @@ RequestExecutionLevel highest
         ; perhaps all this can be done with an nsis plugin but we just use nsis as it comes from package managers.
 
         ReadEnvStr $0 COMSPEC
-        nsExec::ExecToStack '"$0" /c tasklist | find /I "$PdProcess"'
+        nsExec::ExecToStack '"$0" /c tasklist | findstr /R /I /M /C:"\<$PdProcess\>"'
         Pop $1
         Pop $2
         ${If} $2 == ""
             goto good
         ${Else}
             IfSilent default
-            HideWindow
-            MessageBox MB_OK "Refusing to continue. Save your work and quit \
-            any running ${PD_FOLDER} app before doing an (un)installation."
+            MessageBox MB_ICONEXCLAMATION|MB_YESNO "Refusing to continue. Save your work and quit \
+            any running ${PD_FOLDER} app before doing an (un)installation.$\r$\n$\r$\n\
+            We found the following app open:$\r$\n$\r$\n\
+            $2 $\r$\n$\r$\n\
+            Force installation anyway?" IDYES good IDNO default
             default:
             quit
         ${EndIf}

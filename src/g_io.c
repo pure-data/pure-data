@@ -64,8 +64,8 @@ typedef struct _vinlet
     t_canvas *x_canvas;
     t_inlet *x_inlet;
     int x_buflength;        /* number of samples per channel in buffer */
-    int x_fill;
-    int x_read;
+    int x_write;            /* write position in reblocker */
+    int x_read;             /* read position in reblocker */
     int x_hop;
     int x_updownmethod;
             /* if not reblocking, the next slot communicates the parent's
@@ -147,13 +147,13 @@ t_int *vinlet_perform(t_int *w)
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_reblocker *rb = (t_reblocker *)(w[3]);
-    int hop = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    int advance = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
     t_sample *in = rb->r_buf + read;
     while (n--)
         *out++ = *in++;
-    if (hop)
+    if (advance)    /* only on last channel */
     {
-        if ((read += hop) == x->x_buflength)
+        if ((read += advance) == x->x_buflength)
             read = 0;
         x->x_read = read;
     }
@@ -184,9 +184,12 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
         int i;
         signal_setmultiout(sp, x->x_nchans);
         for (i = 0; i < x->x_nchans; i++)
+        {
+                /* only advance read position on last channel! */
+            int advance = (i == x->x_nchans-1) ? sp[0]->s_length : 0;
             dsp_add(vinlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
-                &x->x_rb[i], (t_int)(i == x->x_nchans-1 ? sp[0]->s_length : 0),
-                    (t_int)(sp[0]->s_length));
+                &x->x_rb[i], (t_int)advance, (t_int)(sp[0]->s_length));
+        }
         x->x_read = 0;
     }
 }
@@ -197,18 +200,18 @@ t_int *vinlet_doprolog(t_int *w)
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_sample *in = (t_sample *)(w[2]), *out;
     t_sample *buf = (t_sample *)(w[3]);
-    int lastone = (int)(w[4]), n = (int)(w[5]), fill = x->x_fill;
+    int lastone = (int)(w[4]), n = (int)(w[5]), write = x->x_write;
 
-    if (fill == x->x_buflength)
+    if (write == x->x_buflength)
     {
         t_sample *f1 = buf, *f2 = buf + x->x_hop;
         int nshift = x->x_buflength - x->x_hop;
         while (nshift--) *f1++ = *f2++;
-        fill -= x->x_hop;
+        write -= x->x_hop;
     }
-    out = buf + fill;
-    if (lastone)
-        x->x_fill = fill + n;
+    out = buf + write;
+    if (lastone)    /* only advance write position on last channel! */
+        x->x_write = write + n;
     while (n--)
         *out++ = *in++;
     return (w+6);
@@ -269,7 +272,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         {
             x->x_hop = period * re_parentvecsize;
 
-            x->x_fill = prologphase ?
+            x->x_write = prologphase ?
                 x->x_buflength - (x->x_hop - prologphase * re_parentvecsize) :
                     x->x_buflength;
             for (i = 0; i < x->x_nchans; i++)
@@ -291,7 +294,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
                             re_parentvecsize, method);
                     dsp_add(vinlet_doprolog, 5, x, x->x_rb[i].r_updown.s_vec,
                         x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
-                                (t_int)re_parentvecsize);
+                            (t_int)re_parentvecsize);
                 }
             }
         }
@@ -370,8 +373,8 @@ typedef struct _voutlet
     t_canvas *x_canvas;
     t_outlet *x_parentoutlet;
     int x_buflength;
-    int x_empty;            /* next to read out of buffer in epilog code */
-    int x_write;            /* next to write in to buffer */
+    int x_read;             /* next to read out of buffer in epilog code */
+    int x_write;            /* next to write into buffer */
     int x_hop;              /* hopsize */
     int x_updownmethod;
         /*  parent's outlet signal, valid between the prolog and the dsp setup
@@ -455,10 +458,8 @@ t_int *voutlet_perform(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
     t_sample *in = (t_sample *)(w[2]), *buf= (t_sample *)(w[3]);
-    int xwrite = x->x_write;
-    int hop = (int)(w[4]);
-    int n = (int)(w[5]);
-    t_sample *out = buf + xwrite,
+    int lastone = (int)(w[4]), n = (int)(w[5]), write = x->x_write;
+    t_sample *out = buf + write,
         *endbuf = buf + x->x_buflength;
     while (n--)
     {
@@ -466,10 +467,12 @@ t_int *voutlet_perform(t_int *w)
         if (out == endbuf)
             out = buf;
     }
-    xwrite += x->x_hop;
-    if (xwrite >= x->x_buflength)
-        xwrite = 0;
-    x->x_write = xwrite;
+    if (lastone)    /* only advance write position on last channel! */
+    {
+        if ((write += x->x_hop) >= x->x_buflength)
+            write = 0;
+        x->x_write = write;
+    }
     return (w+6);
 }
 
@@ -478,11 +481,12 @@ static t_int *voutlet_doepilog(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
     t_sample *in, *out = (t_sample *)(w[2]), *buf = (t_sample *)(w[3]);
-    int hop = (int)(w[4]), n = (int)(w[5]), empty = x->x_empty;
-    if (empty == x->x_buflength)
-        empty = 0;
-    x->x_empty = empty + hop;
-    in = buf + empty;
+    int lastone = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    if (read == x->x_buflength)
+        read = 0;
+    if (lastone)    /* only advance read position on last channel! */
+        x->x_read = read + n;
+    in = buf + read;
     for (; n--; in++)
         *out++ = *in, *in = 0;
     return (w+6);
@@ -496,11 +500,12 @@ static t_int *voutlet_doepilog_resample(t_int *w)
     t_voutlet *x = (t_voutlet *)(w[1]);
     t_sample *in, *out = ((t_resample *)(w[2]))->s_vec,
         *buf = (t_sample *)(w[3]);
-    int hop = (int)(w[4]), n = (int)(w[5]), empty = x->x_empty;
-    if (empty == x->x_buflength)
-        empty = 0;
-    x->x_empty = empty + hop;
-    in = buf + empty;
+    int lastone = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    if (read == x->x_buflength)
+        read = 0;
+    if (lastone)    /* only advance read position on last channel! */
+        x->x_read = read + n;
+    in = buf + read;
     for (; n--; in++)
         *out++ = *in, *in = 0;
     return (w+6);
@@ -583,9 +588,9 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
             dsp_add_copy(sp[0]->s_vec, (*x->x_parentsignal)->s_vec,
                 sp[0]->s_length * sp[0]->s_nchans);
         else for (i = 0; i < x->x_nchans; i++)
+                /* NB: x_hop isn't set yet, so we cannot pass it directy! */
             dsp_add(voutlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
-                x->x_rb[i].r_buf, (t_int)(i == x->x_nchans - 1 ? x->x_hop : 0),
-                    (t_int)sp[0]->s_length);
+                x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1), (t_int)sp[0]->s_length);
     }
 }
 
@@ -630,15 +635,15 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         else x->x_hop = period * re_parentvecsize;
         if (x->x_parentsignal)
         {
-                    /* set epilog pointer and schedule it */
-            x->x_empty = re_parentvecsize * epilogphase;
+                /* set epilog pointer and schedule it */
+            x->x_read = re_parentvecsize * epilogphase;
             for (i = 0; i < x->x_nchans; i++)
             {
-                t_int hop = (i == x->x_nchans-1 ? re_parentvecsize : 0);
                 if (upsample * downsample == 1)
                     dsp_add(voutlet_doepilog, 5, x,
                         (*x->x_parentsignal)->s_vec + i * parentvecsize,
-                            x->x_rb[i].r_buf,  hop, (t_int)parentvecsize);
+                            x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
+                                (t_int)parentvecsize);
                 else
                 {
                     int method = (x->x_updownmethod < 0 ?
@@ -647,8 +652,9 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
                     x->x_rb[i].r_updown.downsample=downsample;
                     x->x_rb[i].r_updown.upsample=upsample;
                     dsp_add(voutlet_doepilog_resample, 5, x,
-                        &x->x_rb[i].r_updown,
-                            x->x_rb[i].r_buf, hop, (t_int)re_parentvecsize);
+                        &x->x_rb[i].r_updown, x->x_rb[i].r_buf,
+                            (t_int)(i == x->x_nchans-1),
+                                (t_int)re_parentvecsize);
                     resampleto_dsp(&x->x_rb[i].r_updown,
                         (*x->x_parentsignal)->s_vec + i * parentvecsize,
                             re_parentvecsize, parentvecsize, method);

@@ -11,6 +11,18 @@
 #include "s_stuff.h"
 #include "m_private_utils.h"
 
+#ifdef _WIN32
+#ifndef PD_FWPRINTF_NARROW_FORMATTER
+#if __USE_MINGW_ANSI_STDIO
+    /* This is a workaround for a bug in the old msvcrt.dll used by MinGW */
+    #define PD_FWPRINTF_NARROW_FORMATTER L"%s"
+#else
+    /* Covers modern C runtimes on MSYS2 & MSVC */
+    #define PD_FWPRINTF_NARROW_FORMATTER L"%S"
+#endif
+#endif /* PD_FWPRINTF_NARROW_FORMATTER */
+#endif /* _WIN32 */
+
 t_printhook sys_printhook = NULL;
 int sys_printtostderr;
 
@@ -52,11 +64,7 @@ static void dopost(const char *s)
     else if (sys_printtostderr || !sys_havegui())
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"%S", s);
-    #else
-        fwprintf(stderr, L"%s", s);
-    #endif
+        fwprintf(stderr, PD_FWPRINTF_NARROW_FORMATTER, s);
         fflush(stderr);
 #else
         fprintf(stderr, "%s", s);
@@ -82,11 +90,7 @@ static void doerror(const void *object, const char *s)
     else if (sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"error: %S", s);
-    #else
-        fwprintf(stderr, L"error: %s", s);
-    #endif
+        fwprintf(stderr, L"error: " PD_FWPRINTF_NARROW_FORMATTER, s);
         fflush(stderr);
 #else
         fprintf(stderr, "error: %s", s);
@@ -94,7 +98,7 @@ static void doerror(const void *object, const char *s)
     }
     else
         pdgui_vmess("::pdwindow::logpost", "ois",
-                  object, 1, s);
+                  object, PD_ERROR, s);
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -114,11 +118,7 @@ static void dologpost(const void *object, const int level, const char *s)
     else if (sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        fwprintf(stderr, L"verbose(%d): %S", level, s);
-    #else
-        fwprintf(stderr, L"verbose(%d): %s", level, s);
-    #endif
+        fwprintf(stderr, L"verbose(%d): " PD_FWPRINTF_NARROW_FORMATTER, level, s);
         fflush(stderr);
 #else
         fprintf(stderr, "verbose(%d): %s", level, s);
@@ -278,14 +278,15 @@ void pd_error(const void *object, const char *fmt, ...)
 
     doerror(object, buf);
 
-    error_object = object;
+    if(object)
+        error_object = object;
     strncpy(error_string, buf, 256);
     error_string[255] = 0;
 
     if (object && !saidit)
     {
         if (sys_havegui())
-            logpost(NULL, 4,
+            logpost(NULL, PD_VERBOSE,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }
@@ -308,12 +309,15 @@ void glob_findinstance(t_pd *dummy, t_symbol*s)
     // revert s to (potential) pointer to object
     PD_LONGINTTYPE obj = 0;
     const char*addr;
+    int result = 0;
     if(!s || !s->s_name)
         return;
     addr = s->s_name;
-    if (('.' != addr[0]) && ('0' != addr[0]))
-        return;
-    if (!sscanf(addr+1, "x%lx", &obj))
+    if (!result)
+        result = sscanf(addr, PDGUI_FORMAT__OBJECT, &obj);
+    if (!result && (('.' == addr[0]) || ('0' == addr[0])))
+        result = sscanf(addr+1, "x%lx", &obj);
+    if (!result)
         return;
 
     if(!obj)

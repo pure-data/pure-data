@@ -1024,6 +1024,13 @@ void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w)
     SET_DRAW(iemgui, move);
 }
 
+void iemgui_free(t_iemgui *iemgui) {
+    if(iemgui->x_fsf.x_rcv_able)
+        pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
+    pdgui_stub_deleteforkey(iemgui);
+    sys_unqueuegui(iemgui);
+}
+
 
 
 t_iemgui *iemgui_new(t_class*cls)
