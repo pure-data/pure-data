@@ -796,9 +796,9 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
     char namebuf[MAXPDSTRING];
 
     if (*dirname)
-        snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
     else
-        snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
     namebuf[MAXPDSTRING-1] = 0;
 
     if ((fd = sys_open(namebuf, 0)) < 0)
@@ -893,9 +893,9 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     int indx;
 
     if (*dir)
-        snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
     else
-        snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
     fbuf[MAXPDSTRING-1] = 0;
 
     if (!strcmp(filename + strlen(filename) - 4, ".pat") ||

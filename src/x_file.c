@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 #include "s_utf8.h"
 
 #include "m_private_utils.h"
@@ -312,7 +313,7 @@ static const char*do_errmsg(char*buffer, size_t bufsize) {
     s=buffer + strlen(buffer)-1;
     while(('\r' == *s || '\n' == *s) && s>buffer)
         *s--=0;
-    snprintf(errcode, sizeof(errcode), " [%ld]", err);
+    pd_snprintf(errcode, sizeof(errcode), " [%ld]", err);
     errcode[sizeof(errcode)-1] = 0;
     strcat(buffer, errcode);
     return buffer;
@@ -1271,7 +1272,7 @@ static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*ar
             s = gensym(pathname);
         } else {
             char buf[MAXPDSTRING];
-            snprintf(buf, MAXPDSTRING, "%s/%s",
+            pd_snprintf(buf, MAXPDSTRING, "%s/%s",
                      canvas_getdir(c)->s_name, pathname);
             buf[MAXPDSTRING-1] = 0;
             s = gensym(buf);
@@ -1430,7 +1431,7 @@ static int file_do_copy(const char*source, const char*destination, int mode) {
                 filename=source;
             else
                 filename++;
-            snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
+            pd_snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             dst = sys_open(destfile, O_WRONLY | O_CREAT | O_TRUNC, mode);
         }
     }
@@ -1473,7 +1474,7 @@ static int file_do_move(const char*source, const char*destination, int mode) {
                 filename=source;
             else
                 filename++;
-            snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
+            pd_snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             result = sys_rename(source, destfile);
             olderrno = errno;
         }

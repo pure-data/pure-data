@@ -141,9 +141,9 @@ static int preferences_getloadpath(char *dst, size_t size)
     char user_prefs[MAXPDSTRING];
     char *homedir = getenv("HOME");
     struct stat statbuf;
-    snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
+    pd_snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
         sys_libdir->s_name);
-    snprintf(user_prefs, MAXPDSTRING,
+    pd_snprintf(user_prefs, MAXPDSTRING,
         "%s/Library/Preferences/org.puredata.pd.plist", homedir);
     if (stat(user_prefs, &statbuf) == 0)
     {
@@ -161,7 +161,7 @@ static int preferences_getloadpath(char *dst, size_t size)
 static void preferences_getsavepath(char *dst, size_t size)
 {
     char user_prefs[MAXPDSTRING];
-    snprintf(user_prefs, MAXPDSTRING,
+    pd_snprintf(user_prefs, MAXPDSTRING,
         "%s/Library/Preferences/org.puredata.pd.plist", getenv("HOME"));
     strncpy(dst, user_prefs, size);
 }
@@ -326,10 +326,10 @@ static int sys_getpreference(const char *key, char *value, int size)
         char path[MAXPDSTRING];
         int embedded = preferences_getloadpath(path, MAXPDSTRING);
         if (embedded)
-            snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
+            pd_snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
                 path, key);
         else
-            snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
+            pd_snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
                 key);
         FILE *fp = popen(cmdbuf, "r");
         while (nread < size)
@@ -373,7 +373,7 @@ static void sys_putpreference(const char *key, const char *value)
     else {
         /* fallback to defaults command */
         char cmdbuf[MAXPDSTRING];
-        snprintf(cmdbuf, MAXPDSTRING,
+        pd_snprintf(cmdbuf, MAXPDSTRING,
             "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
         system(cmdbuf);
     }
@@ -410,15 +410,15 @@ static void sys_initsavepreferences(void)
         {
             for (j = 0; j < maxnum[i]; j++)
             {
-                snprintf(buf, sizeof(buf), "%sdev%d", key[i], j + 1);
-                snprintf(devname, sizeof(devname), "%sdevname%d", key[i], j + 1);
+                pd_snprintf(buf, sizeof(buf), "%sdev%d", key[i], j + 1);
+                pd_snprintf(devname, sizeof(devname), "%sdevname%d", key[i], j + 1);
                 if (!sys_deletepreference(buf) || !sys_deletepreference(devname))
                     break;
             }
         }
         for (i = 0; ; i++)
         {
-            snprintf(buf, sizeof(buf), "path%d", i + 1);
+            pd_snprintf(buf, sizeof(buf), "path%d", i + 1);
             if (!sys_deletepreference(buf))
                 break;
         }
@@ -515,9 +515,9 @@ static void sys_initloadpreferences(void)
     char default_prefs_file[MAXPDSTRING];
     struct stat statbuf;
 
-    snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings",
+    pd_snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings",
         sys_libdir->s_name);
-    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
+    pd_snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
         (homedir ? homedir : "."));
     if (stat(user_prefs_file, &statbuf) == 0)
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
@@ -546,7 +546,7 @@ static void sys_initsavepreferences(void)
 
     if (!homedir)
         return;
-    snprintf(filenamebuf, MAXPDSTRING, "%s/.pdsettings", homedir);
+    pd_snprintf(filenamebuf, MAXPDSTRING, "%s/.pdsettings", homedir);
     filenamebuf[MAXPDSTRING-1] = 0;
     sys_initsavepreferences_file(filenamebuf);
 }
@@ -891,7 +891,7 @@ void glob_forgetpreferences(t_pd *dummy)
     char user_prefs_file[MAXPDSTRING]; /* user prefs file */
     const char *homedir = getenv("HOME");
     struct stat statbuf;
-    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
+    pd_snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
         (homedir ? homedir : "."));
     user_prefs_file[MAXPDSTRING-1] = 0;
     if (stat(user_prefs_file, &statbuf) != 0) {
@@ -908,7 +908,7 @@ void glob_forgetpreferences(t_pd *dummy)
     if (!sys_getpreference("audioapi", cmdbuf, MAXPDSTRING))
         post("no Pd settings to clear"), warn = 0;
             /* do it anyhow, why not... */
-    snprintf(cmdbuf, MAXPDSTRING,
+    pd_snprintf(cmdbuf, MAXPDSTRING,
         "defaults delete org.puredata.pd 2> /dev/null\n");
     if (system(cmdbuf) && warn)
         post("failed to erase Pd settings");
