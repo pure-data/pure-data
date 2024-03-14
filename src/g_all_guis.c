@@ -22,6 +22,7 @@
 #else
 #include <unistd.h>
 #endif
+#include "math.h"
 
 
 typedef struct _iemgui_private {
@@ -606,9 +607,9 @@ void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_iemgui *x = (t_iemgui *)z;
-
-    x->x_obj.te_xpix += dx;
-    x->x_obj.te_ypix += dy;
+    int grid_zoomed = GRID_UNIT / x->x_glist->gl_zoom;
+    x->x_obj.te_xpix = !x->x_glist->gl_snaptogrid? x->x_obj.te_xpix+dx : round(x->x_obj.te_xpix/grid_zoomed) * grid_zoomed + dx;
+    x->x_obj.te_ypix = !x->x_glist->gl_snaptogrid? x->x_obj.te_ypix+dy : round(x->x_obj.te_ypix/grid_zoomed) * grid_zoomed + dy;
     iemgui_do_drawmove(x, x);
 }
 
