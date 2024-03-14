@@ -103,7 +103,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.9.16] } {
+if { [::deken::versioncheck 0.9.18] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -1101,7 +1101,7 @@ proc ::deken::preferences::apply {winid} {
         "${::deken::preferences::verify_sha256}"
 }
 proc ::deken::preferences::cancel {winid} {
-    ## FIXXME properly close the window/frame (for re-use in a tabbed pane)
+    ## FIXXME properly close the window/frame (for reuse in a tabbed pane)
     destroy .deken_preferences
 }
 proc ::deken::preferences::ok {winid} {
@@ -1301,7 +1301,7 @@ proc ::deken::verify_sha256_gui {url pkgfile} {
     ## - -2 user requested ignore via dialog
     ## - two digits: unable to verify
     ## - -10 reference could not be read
-    ## - -20 an exception occured while verifying
+    ## - -20 an exception occurred while verifying
     ## - three digits:
     ## - -100 no sha256 verifier implemented
     set err_msg [format [_ "SHA256 verification of '%s' failed!" ] $pkgfile ]
@@ -1339,7 +1339,13 @@ proc ::deken::install_package_from_file {{pkgfile ""}} {
     lappend types [list [_ "Deken Packages" ] .dek]
     lappend types [list [_ "ZIP Files" ] .zip]
     if {$::tcl_platform(platform) ne "windows"} {
-        lappend types [list [_ "TAR Files" ] {.tar.gz .tgz} ]
+        lappend types [list [_ "TAR Files" ] {.tgz} ]
+        if {$::windowingsystem eq "aqua"} {
+            # stupid bug on macOS>=12: an extension with two dots crashes the fileselector
+            lappend types [list [_ "TAR Files" ] {.gz} ]
+        } else {
+            lappend types [list [_ "TAR Files" ] {.tar.gz} ]
+        }
     }
     lappend types [list [_ "All Files" ]  *  ]
     if { "${pkgfile}" eq ""} {
@@ -2701,7 +2707,7 @@ proc ::deken::initialize {} {
     set ::deken::installpath [::deken::find_installpath]
 
 
-    # create an entry for our search in the "help" menu (or re-use an existing one)
+    # create an entry for our search in the "help" menu (or reuse an existing one)
     set mymenu .menubar.help
     if { [catch {
         $mymenu entryconfigure [_ "Find externals"] -command {::deken::open_searchui $::deken::winid}
@@ -2774,31 +2780,32 @@ proc ::deken::register {fun} {
 
 ## ####################################################################
 ## searching puredata.info
-namespace eval ::deken::search::puredata.info { }
+namespace eval ::deken::search::dekenserver { }
 
-proc ::deken::search::puredata.info::search {term} {
-    set dekenserver "${::deken::protocol}://deken.puredata.info/search"
-    catch {set dekenserver $::env(DEKENSERVER)} stdout
-    set servers [list $dekenserver]
+proc ::deken::search::dekenserver::search {term} {
+    set dekenurl "${::deken::protocol}://deken.puredata.info/search"
+    catch {set dekenurl $::env(DEKENSERVER)} stdout
+    catch {set dekenurl $::env(DEKEN_SEARCH_URL)} stdout
+    set urls [list $dekenurl]
 
-    # search all the servers
+    # search all the urls
     array set results {}
-    set servercount 0
-    foreach s $servers {
-        # skip empty servers
+    set urlcount 0
+    foreach s $urls {
+        # skip empty urls
         if { $s eq {} } { continue }
         ::deken::post [format [_ "Searching on %s..."] $s ] debug
         set resultcount 0
-        # get the results from the given server, and add them to our results set
-        foreach r [::deken::search::puredata.info::search_server $term $s] {
+        # get the results from the given url, and add them to our results set
+        foreach r [::deken::search::dekenserver::search_server $term $s] {
             set results($r) {}
             incr resultcount
         }
         ::deken::post [format [_ "Searching on %1\$s returned %2\$d results"] $s $resultcount] debug
-        incr servercount
+        incr urlcount
     }
 
-    if { $servercount == 0 } {
+    if { $urlcount == 0 } {
         ::deken::post [format [_ "No usable servers for searching found..."] $s ] debug
     }
     set splitCont [array names results]
@@ -2882,7 +2889,7 @@ proc ::deken::search::puredata.info::search {term} {
             # the space (or some other character that sorts after "\t") after the ${version} is important,
             #   as it ensures that "0.2~1" sorts before "1.2"
             set sortname "${sortprefix}${vsep}${pkgname}${vsep}${version} ${vsep}${date}"
-            set contextcmd [list ::deken::search::puredata.info::contextmenu %W %x %y $pkgname $URL]
+            set contextcmd [list ::deken::search::dekenserver::contextmenu %W %x %y $pkgname $URL]
             set res [list $sortname $filename $name $cmd $match $comment $status $contextcmd $pkgname $version $creator $date]
             lappend searchresults $res
         }
@@ -2897,7 +2904,7 @@ proc ::deken::search::puredata.info::search {term} {
     return $sortedresult
 }
 
-proc ::deken::search::puredata.info::search_server {term dekenserver} {
+proc ::deken::search::dekenserver::search_server {term dekenurl} {
     set queryterm {}
     if { ${::deken::searchtype} eq "translations" && ${term} eq "" } {
         # special handling of searching for all translations (so we ONLY get translations)
@@ -2916,7 +2923,7 @@ proc ::deken::search::puredata.info::search_server {term dekenserver} {
 
     # fetch search result
     if { [catch {
-        set token [::http::geturl "${dekenserver}?${queryterm}"]
+        set token [::http::geturl "${dekenurl}?${queryterm}"]
     } stdout ] } {
         set msg [format [_ "Searching for '%s' failed!" ] $term ]
         tk_messageBox \
@@ -2944,7 +2951,7 @@ proc ::deken::search::puredata.info::search_server {term dekenserver} {
     return [split $contents "\n"]
 }
 
-proc ::deken::search::puredata.info::contextmenu {widget theX theY pkgname URL} {
+proc ::deken::search::dekenserver::contextmenu {widget theX theY pkgname URL} {
     set winid ${::deken::winid}
     set resultsid ${::deken::resultsid}
     set with_installmenu 1
@@ -3010,5 +3017,5 @@ proc ::deken::search::puredata.info::contextmenu {widget theX theY pkgname URL} 
 
 
 ::deken::initialize
-::deken::register ::deken::search::puredata.info::search
+::deken::register ::deken::search::dekenserver::search
 }
