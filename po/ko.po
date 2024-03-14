@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -591,6 +591,12 @@ msgstr ""
 msgid "single page"
 msgstr ""
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "환경설정"
 
@@ -812,6 +818,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "'%s'의 SHA256 레퍼런스를 가져오지 못했습니다."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "'%s'의 SHA256 확인을 하지 못했습니다."
 
@@ -886,6 +900,17 @@ msgstr "Deken %s 환경설정"
 msgid "Platform re-detected: %s"
 msgstr "플랫폼 재탐지됨: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "'%s'의 SHA256 확인에 실패하였습니다!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 확인 실패"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "'%s'에 대한 검사합 불일치"
+
 msgid "Deken Packages"
 msgstr "Deken 패키지"
 
@@ -897,17 +922,6 @@ msgstr "TAR 파일"
 
 msgid "All Files"
 msgstr "모든 파일"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "'%s'에 대한 검사합 불일치"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "'%s'의 SHA256 확인에 실패하였습니다!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256 확인 실패"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1133,6 +1147,10 @@ msgid "Download completed! Verifying..."
 msgstr "다운로드에 성공했습니다! 확인 중입니다..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "검사합의 불일치를 무시"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "검사합의 불일치를 무시"
 
 #, tcl-format
@@ -1599,12 +1617,6 @@ msgstr "오디오 켜기"
 msgid "Audio off"
 msgstr "오디오 끄기"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1654,6 +1666,12 @@ msgstr "삭제"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' 무시: Pd 파일이 아닌 것 같습니다"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "경로..."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-10-26 07:01+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -586,6 +586,12 @@ msgstr "usar abas"
 msgid "single page"
 msgstr "página única"
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Preferências"
 
@@ -795,6 +801,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Incapaz de fazer verificação SHA256 de '%s'."
 
@@ -869,6 +883,17 @@ msgstr "Preferências do Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plataforma re-detectada: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Verificação SHA256 de '%s' falhou!"
+
+msgid "SHA256 verification failed"
+msgstr "Verificação SHA256 falhou"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum falhou para '%s'"
+
 msgid "Deken Packages"
 msgstr "Pacotes do Deken"
 
@@ -880,17 +905,6 @@ msgstr "Arquivos TAR"
 
 msgid "All Files"
 msgstr "Todos os Arquivos"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksum falhou para '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "Verificação SHA256 de '%s' falhou!"
-
-msgid "SHA256 verification failed"
-msgstr "Verificação SHA256 falhou"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1116,6 +1130,10 @@ msgid "Download completed! Verifying..."
 msgstr "Download completo! Verificando..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Ignorando mismatch de checksum"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Ignorando mismatch de checksum"
 
 #, tcl-format
@@ -1581,12 +1599,6 @@ msgstr "Áudio ligado"
 msgid "Audio off"
 msgstr "Áudio desligado"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1636,6 +1648,12 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um arquivo de Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Caminho..."

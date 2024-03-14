@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-10-23 10:04+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -594,6 +594,12 @@ msgstr "Verwende Tab"
 msgid "single page"
 msgstr "alles auf einer Seite"
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -809,6 +815,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Referenz-SHA256 für '%s' nicht verfügbar."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "SHA256-Überprüfung von '%s' konnte nicht durchgeführt werden."
 
@@ -883,6 +897,17 @@ msgstr "Deken %s Einstellungen"
 msgid "Platform re-detected: %s"
 msgstr "Paketarchitektur korrigiert: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256-Überprüfung von '%s' hat fehlgeschlagen!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256-Überprüfung fehlgeschlagen"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksummen-Fehler für '%s'"
+
 msgid "Deken Packages"
 msgstr "Deken-Pakete"
 
@@ -894,17 +919,6 @@ msgstr "TAR-Archive"
 
 msgid "All Files"
 msgstr "Alle Dateien"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksummen-Fehler für '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256-Überprüfung von '%s' hat fehlgeschlagen!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256-Überprüfung fehlgeschlagen"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1133,6 +1147,10 @@ msgid "Download completed! Verifying..."
 msgstr "Download abgeschlossen! Überprüfung..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Ignoriere Checksummen-Fehler"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Ignoriere Checksummen-Fehler"
 
 #, tcl-format
@@ -1596,12 +1614,6 @@ msgstr "Audio ein"
 msgid "Audio off"
 msgstr "Audio aus"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1651,6 +1663,12 @@ msgstr "Entfernen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "überspringe '%s': kein Pd-File"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(kein Gerät)"
@@ -1862,8 +1880,7 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
 #~ msgstr ""
-#~ "WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet "
-#~ "(%s)"
+#~ "WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet (%s)"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr ""

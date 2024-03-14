@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2005-05-04 12:50+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -629,6 +629,12 @@ msgstr ""
 msgid "single page"
 msgstr ""
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 #, fuzzy
 msgid "Preferences"
 msgstr "प्राथमिकताएं..."
@@ -847,6 +853,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -919,6 +933,17 @@ msgstr "प्राथमिकताएं..."
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -933,17 +958,6 @@ msgstr "टीएआर फाइलें"
 #, fuzzy
 msgid "All Files"
 msgstr "सभी फाइलें"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr ""
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
-msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1167,6 +1181,9 @@ msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
+msgstr ""
+
+msgid "Ignoring checksum errors"
 msgstr ""
 
 #, tcl-format
@@ -1635,12 +1652,6 @@ msgid "Audio on"
 msgstr ""
 
 msgid "Audio off"
-msgstr ""
-
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"

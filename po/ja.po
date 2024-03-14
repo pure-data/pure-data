@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -590,6 +590,12 @@ msgstr ""
 msgid "single page"
 msgstr ""
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "環境設定"
 
@@ -811,6 +817,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "'%s' の参照 SHA256 を取得できません。"
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "'%s' の SHA256 検証を実行できません。"
 
@@ -885,6 +899,17 @@ msgstr "Deken %s 設定"
 msgid "Platform re-detected: %s"
 msgstr "再検出されたプラットフォーム: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "'%s' の SHA256 検証に失敗しました!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 検証に失敗しました"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "'%s' のチェックサムが一致しません"
+
 msgid "Deken Packages"
 msgstr "Deken パッケージ"
 
@@ -896,17 +921,6 @@ msgstr "TAR ファイル"
 
 msgid "All Files"
 msgstr "全てのファイル"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "'%s' のチェックサムが一致しません"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "'%s' の SHA256 検証に失敗しました!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256 検証に失敗しました"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1138,6 +1152,10 @@ msgid "Download completed! Verifying..."
 msgstr "ダウンロードが完了しました! 検証中しています..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "チェックサムの不一致を無視する"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "チェックサムの不一致を無視する"
 
 #, tcl-format
@@ -1603,12 +1621,6 @@ msgstr "オーディオ オン"
 msgid "Audio off"
 msgstr "オーディオ オフ"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) 閉じ括弧 ']' がありません: "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1658,6 +1670,12 @@ msgstr "削除"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s'を無視: Pd ファイルではないようです"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) 閉じ括弧 ']' がありません: "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "パス..."

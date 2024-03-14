@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-10-23 10:04+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -588,6 +588,12 @@ msgstr "en onglets"
 msgid "single page"
 msgstr "sur une seule page"
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -801,6 +807,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Impossible de récupérer le SHA256 de référence pour '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Impossible d'effectuer la vérification SHA256 de '%s'."
 
@@ -880,6 +894,17 @@ msgstr "Préférences de Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plateforme re-détectée : %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Échec de la vérification SHA256 de '%s' !"
+
+msgid "SHA256 verification failed"
+msgstr "Échec de la vérification SHA256"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Erreur de somme de contrôle pour '%s'"
+
 msgid "Deken Packages"
 msgstr "Paquets Deken"
 
@@ -891,17 +916,6 @@ msgstr "Fichiers TAR"
 
 msgid "All Files"
 msgstr "Tous les fichiers"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Erreur de somme de contrôle pour '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "Échec de la vérification SHA256 de '%s' !"
-
-msgid "SHA256 verification failed"
-msgstr "Échec de la vérification SHA256"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1139,6 +1153,10 @@ msgid "Download completed! Verifying..."
 msgstr "Téléchargement terminé ! Vérification..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Ignorer l'erreur de somme de contrôle"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Ignorer l'erreur de somme de contrôle"
 
 #, tcl-format
@@ -1603,12 +1621,6 @@ msgstr "Audio On"
 msgid "Audio off"
 msgstr "Audio Off"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
-
-msgid "Tcl:"
-msgstr "Tcl :"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1658,6 +1670,12 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl :"
 
 #~ msgid "(no device)"
 #~ msgstr "(aucun périphérique)"

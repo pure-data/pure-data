@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-11-07 16:37+0100\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-07-01 07:53+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -582,6 +582,12 @@ msgstr "להשתמש בלשוניות"
 msgid "single page"
 msgstr "עמוד בודד"
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "העדפות"
 
@@ -791,6 +797,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "לא ניתן למשוך SHA256 לסימוכין עבור ‚%s’."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "לא ניתן לבצע אימות SHA256 עבור ‚%s’."
 
@@ -865,6 +879,17 @@ msgstr "העדפות Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "הפלטפורמה זוהתה מחדש: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "אימות ה־SHA256 של ‚%s’ נכשל!"
+
+msgid "SHA256 verification failed"
+msgstr "אימות ה־SHA256 נכשל"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "חוסר התאמה לסכום בדיקה של ‚%s’"
+
 msgid "Deken Packages"
 msgstr "חבילות Deken"
 
@@ -876,17 +901,6 @@ msgstr "קובצי Tar"
 
 msgid "All Files"
 msgstr "כל הקבצים"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "חוסר התאמה לסכום בדיקה של ‚%s’"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "אימות ה־SHA256 של ‚%s’ נכשל!"
-
-msgid "SHA256 verification failed"
-msgstr "אימות ה־SHA256 נכשל"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1110,6 +1124,10 @@ msgid "Download completed! Verifying..."
 msgstr "ההורדה הושלמה! מתבצע אימות…"
 
 msgid "Ignoring checksum mismatch"
+msgstr "התעלמות מחוסר התאמה של סכום בדיקה"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "התעלמות מחוסר התאמה של סכום בדיקה"
 
 #, tcl-format
@@ -1571,12 +1589,6 @@ msgstr "שמע פעיל"
 msgid "Audio off"
 msgstr "שמע כבוי"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1626,6 +1638,12 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(אין התקן)"
