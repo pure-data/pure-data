@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2024-03-14 20:00+0000\n"
-"Last-Translator: cyrille henry <ch@chnry.net>\n"
+"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
 "Language: fr\n"
@@ -298,7 +298,7 @@ msgid "Send"
 msgstr "Envoyer"
 
 msgid "Done"
-msgstr "Terminé"
+msgstr "Fermer"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -364,7 +364,7 @@ msgid "Receive symbol:"
 msgstr "Recevoir du symbole :"
 
 msgid "auto"
-msgstr "auto"
+msgstr "automatique"
 
 msgid "Width:"
 msgstr "Largeur :"
@@ -592,7 +592,7 @@ msgid "patching helpers"
 msgstr "aide au patch"
 
 msgid "Highlight active cord while connecting"
-msgstr ""
+msgstr "Mettre le câble actif en surbrillance lors de la connexion"
 
 msgid "Preferences"
 msgstr "Préférences"
@@ -808,11 +808,11 @@ msgstr "Impossible de récupérer le SHA256 de référence pour '%s'."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "La somme de contrôle semble non valide : '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "La somme de contrôle de référence semble non valide : '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -1155,9 +1155,8 @@ msgstr "Téléchargement terminé ! Vérification..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorer l'erreur de somme de contrôle"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Ignorer l'erreur de somme de contrôle"
+msgstr "Ignorer les erreurs de somme de contrôle"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
