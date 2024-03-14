@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-03-14 18:04+0100\n"
-"PO-Revision-Date: 2023-10-23 10:04+0000\n"
+"PO-Revision-Date: 2024-03-14 20:00+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.1.1-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -595,10 +595,10 @@ msgid "single page"
 msgstr "alles auf einer Seite"
 
 msgid "patching helpers"
-msgstr ""
+msgstr "Patching-Hilfen"
 
 msgid "Highlight active cord while connecting"
-msgstr ""
+msgstr "Aktive Verbindung während des Verbindens hervorheben"
 
 msgid "Preferences"
 msgstr "Einstellungen"
@@ -816,11 +816,11 @@ msgstr "Referenz-SHA256 für '%s' nicht verfügbar."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Die Checksumme der Datei sieht ungültig aus: '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Die Referenzchecksumme sieht ungültig aus: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -1149,9 +1149,8 @@ msgstr "Download abgeschlossen! Überprüfung..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignoriere Checksummen-Fehler"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Ignoriere Checksummen-Fehler"
+msgstr "Checksummen-Fehler werden ignoriert"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
