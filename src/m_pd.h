@@ -911,8 +911,8 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 #endif
 #endif /* _MSC_VER */
 
-    /* get version number at run time */
-EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
+    /* get major/minor/bugifx version numbers and version code at run time */
+EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
 
     /* get floatsize at run time */
 EXTERN unsigned int sys_getfloatsize(void);
