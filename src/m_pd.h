@@ -12,6 +12,16 @@ extern "C" {
 #define PD_MINOR_VERSION 54
 #define PD_BUGFIX_VERSION 1
 #define PD_TEST_VERSION ""
+
+/* compile-time version check:
+   #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
+      // put legacy code for Pd<<0.56 in here
+   #endif
+ */
+#define PD_VERSION(major, minor, bugfix) \
+    (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
+#define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
+
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
