@@ -34,7 +34,6 @@ typedef int socklen_t;
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
-#define snprintf _snprintf
 #define stat _stat
 #endif
 
@@ -87,6 +86,13 @@ void critical_exit(int z);
 #include "s_stuff.h"
 static t_class *pd_tilde_class;
 #define PDERROR pd_error(x,
+#else
+#ifdef _MSC_VER
+/* Sorry, MSP! */
+#define pd_snprintf _snprintf
+#else
+#define pd_snprintf snprintf
+#endif
 #endif
 
 #if defined(__x86_64__) || defined(_M_X64)
@@ -559,15 +565,15 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
     sprintf(ninsigstr, "%d", ninsig);
     sprintf(noutsigstr, "%d", noutsig);
     sprintf(sampleratestr, "%f", (float)samplerate);
-    snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
+    pd_snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
     sys_bashfilename(tmpbuf, pdexecbuf);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
-        snprintf(tmpbuf, MAXPDSTRING, "%s/../../../bin/pd" EXTENT, pddir);
+        pd_snprintf(tmpbuf, MAXPDSTRING, "%s/../../../bin/pd" EXTENT, pddir);
         sys_bashfilename(tmpbuf, pdexecbuf);
         if (stat(pdexecbuf, &statbuf) < 0)
         {
-            snprintf(tmpbuf, MAXPDSTRING, "%s/pd" EXTENT, pddir);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pd" EXTENT, pddir);
             sys_bashfilename(tmpbuf, pdexecbuf);
             if (stat(pdexecbuf, &statbuf) < 0)
             {
@@ -579,7 +585,7 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
         /* check that the scheduler dynamic linkable exists w either suffix */
     for(dllextent=get_dllextent(); *dllextent; dllextent++)
     {
-      snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
+      pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
       sys_bashfilename(tmpbuf, schedbuf);
       if (stat(schedbuf, &statbuf) >= 0)
         goto gotone;
@@ -589,33 +595,33 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
 
 gotone:
         /* but the sub-process wants the scheduler name without the suffix */
-    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
+    pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
     sys_bashfilename(tmpbuf, schedbuf);
-    /* was: snprintf(cmdbuf, MAXPDSTRING,
+    /* was: pd_snprintf(cmdbuf, MAXPDSTRING,
 "'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r \
 %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
-    snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf);
+    pd_snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf);
 #ifdef _WIN32
     /* _spawnv wants the command without quotes as in cmdbuf above;
         but in the argument vector paths must be quoted if they contain
         whitespace */
     if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
     {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
-            snprintf(pdexecbuf, MAXPDSTRING, "%s", tmpbuf);
+        if (pd_snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
+            pd_snprintf(pdexecbuf, MAXPDSTRING, "%s", tmpbuf);
     }
     if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
     {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
-            snprintf(schedbuf, MAXPDSTRING, "%s", tmpbuf);
+        if (pd_snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
+            pd_snprintf(schedbuf, MAXPDSTRING, "%s", tmpbuf);
     }
     if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
-        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
+        pd_snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
     else
 #endif /* _WIN32 */
-        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+        pd_snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
 
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
@@ -636,7 +642,7 @@ gotone:
     {
 #ifdef PD
         if (argv[i].a_type == A_SYMBOL)
-            snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
         else if (argv[i].a_type == A_FLOAT)
             sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
@@ -657,8 +663,8 @@ gotone:
         if (strchr(tmpbuf, ' ') && *tmpbuf != '"' && *tmpbuf != '\'')
         {
             char nutherbuf[MAXPDSTRING];
-            snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
-            snprintf(tmpbuf, MAXPDSTRING, "%s", nutherbuf);
+            pd_snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s", nutherbuf);
         }
 #endif /* _WIN32 */
         execargv[FIXEDARG+i] = malloc(strlen(tmpbuf) + 1);

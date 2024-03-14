@@ -198,7 +198,7 @@ void sys_log_error(int type)
 static int sched_lastinclip, sched_lastoutclip,
     sched_lastindb, sched_lastoutdb;
 
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 
 static float sched_fastforward;
 

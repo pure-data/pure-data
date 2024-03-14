@@ -673,17 +673,10 @@ static void *dial_new(t_symbol *s, int argc, t_atom *argv)
     return (radio_donew(s, argc, argv, 1));
 }
 
-static void radio_free(t_radio *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_radio_setup(void)
 {
     radio_class = class_new(gensym("hradio"), (t_newmethod)radio_new,
-        (t_method)radio_free, sizeof(t_radio), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_radio), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)radio_new, gensym("vradio"), A_GIMME, 0);
 
     class_addcreator((t_newmethod)radio_new, gensym("rdb"), A_GIMME, 0);

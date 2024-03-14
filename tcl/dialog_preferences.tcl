@@ -8,7 +8,7 @@ namespace eval ::dialog_preferences:: {
 }
 
 set ::dialog_preferences::use_ttknotebook {}
-after idle ::dialog_preferences::read_usettknotebook
+after idle ::dialog_preferences::read
 # allow updating the audio resp MIDI frame if the backend changes
 set ::dialog_preferences::audio_frame {}
 set ::dialog_preferences::midi_frame {}
@@ -22,6 +22,7 @@ proc ::dialog_preferences::cancel {mytoplevel} {
 proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
+    ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
     pdsend "pd zoom-open $::sys_zoom_open"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
@@ -30,7 +31,14 @@ proc ::dialog_preferences::apply {mytoplevel} {
 proc ::dialog_preferences::ok {mytoplevel} {
     ::preferencewindow::ok $mytoplevel
 }
-
+proc ::dialog_preferences::read {} {
+    set x [::pd_guiprefs::read cords_to_foreground]
+    if {[catch { if { $x } { set x 1 } else { set x 0 } }]} {
+        set x 0
+    }
+    set ::pdtk_canvas::enable_cords_to_foreground $x
+    ::dialog_preferences::read_usettknotebook
+}
 proc ::dialog_preferences::read_usettknotebook {} {
     set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
 }
@@ -56,7 +64,7 @@ proc ::dialog_preferences::fill_frame {prefs} {
 
     labelframe $prefs.guiframe.prefsnavi -padx 5 -pady 5 -borderwidth 0 \
         -text [_ "preference layout (reopen the preferences to see the effect)" ]
-    pack $prefs.guiframe.prefsnavi -side left -anchor w -expand 1
+    pack $prefs.guiframe.prefsnavi -side top -anchor w -expand 1
     radiobutton $prefs.guiframe.prefsnavi.tab \
         -text [_ "use tabs" ] \
         -value 1 -variable ::dialog_preferences::use_ttknotebook
@@ -65,7 +73,14 @@ proc ::dialog_preferences::fill_frame {prefs} {
         -value 0 -variable ::dialog_preferences::use_ttknotebook
     pack $prefs.guiframe.prefsnavi.tab -side left -anchor w
     pack $prefs.guiframe.prefsnavi.scroll -side left -anchor w
-    }
+
+    labelframe $prefs.guiframe.patching -padx 5 -pady 5 -borderwidth 0 \
+        -text [_ "patching helpers" ]
+    pack $prefs.guiframe.patching -side top -anchor w -expand 1
+    checkbutton $prefs.guiframe.patching.highlight_connections -text [_ "Highlight active cord while connecting"] \
+        -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w
+    pack $prefs.guiframe.patching.highlight_connections -side left -anchor w
+}
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
     destroy $mytoplevel

@@ -88,9 +88,7 @@
 #X obj 49 4673 print~;
 #X text 174 4673 - print out one or more "blocks";
 #X obj 42 5850 rpole~;
-#X text 173 5849 - raw real-valued one-pole filter;
 #X obj 42 5874 rzero~;
-#X text 173 5873 - raw real-valued one-zero filter;
 #X obj 42 5898 rzero_rev~;
 #X obj 42 5923 cpole~;
 #X obj 99 5923 czero~;
@@ -300,7 +298,6 @@
 #X obj 48 4248 snake~ out;
 #X text 174 4220 - combine mono signals into multichannel signals;
 #X text 174 4247 - split multichannel signals into mono signals;
-#X text 240 5922 - complex-valued variants;
 #X text 22 218 ----------------------------------- GUIs -----------------------------------, f 76;
 #X text 15 1087 ------------------------------ ARRAYS/TABLES -------------------------------, f 77;
 #X text 3 4187 --------------------------- GENERAL AUDIO TOOLS ----------------------------, f 77;
@@ -440,12 +437,8 @@
 #X text 173 5520 - non-interpolating table lookup for signals;
 #X text 173 5544 - 4-point-interpolating table lookup for signals;
 #X text 173 5699 - voltage-controlled band/low-pass filter;
-#X text 173 5725 - one-pole high pass filter;
-#X text 173 5749 - one-pole low pass filter;
 #X text 173 5774 - slew-limiting / low pass filter;
 #X text 173 5799 - 2-pole band-pass filter;
-#X text 173 5823 - raw biquad 2nd order filter;
-#X text 173 5897 - real one-zero "reverse" filter;
 #X text 173 6029 - writes a signal in a delay line;
 #X text 173 6053 - read a signal from a delay line (no interpolation);
 #X text 172 6079 - read from a delay line with 4-point interpolation;
@@ -505,3 +498,10 @@
 #X text 185 2074 - get path relative to the patch;
 #X text -3 4771 ------------------------------- SIGNAL MATH ---------------------------------, f 77;
 #X text 175 4849 - C-style expressions / filter expressions;
+#X text 240 5922 - raw complex-valued variants;
+#X text 173 5725 - 1-pole/1-zero high pass filter;
+#X text 173 5749 - 1-pole low pass filter;
+#X text 173 5823 - biquad 2nd order (2-pole/2-zero) filter;
+#X text 173 5849 - raw real-valued 1-pole filter;
+#X text 173 5873 - raw real-valued 1-zero filter;
+#X text 173 5897 - raw real 1-zero "reverse" filter;

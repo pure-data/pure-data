@@ -98,6 +98,7 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
         canvas_startmotion(glist_getcanvas(gl));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 
@@ -115,7 +116,7 @@ static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
     buf = resizebytes(buf, bufsize, bufsize+1);
     buf[bufsize] = 0;
     logpost(x, PD_CRITICAL, "%s", buf);
-    logpost(x, PD_ERROR, "%s", errmsg);
+    pd_error(x, "%s", errmsg);
     freebytes(buf, bufsize);
 }
 
@@ -155,6 +156,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
             /* this is called if we've been created from the menu. */
         glist_select(gl, &x->te_g);
         gobj_activate(&x->te_g, gl, 1);
+        canvas_dirty(gl, 1);
     }
     if (pd_class(&x->ob_pd) == vinlet_class)
         canvas_resortinlets(glist_getcanvas(gl));
@@ -554,6 +556,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 
@@ -1216,6 +1219,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 

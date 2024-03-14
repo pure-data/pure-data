@@ -2907,22 +2907,10 @@ void canvas_mouseup(t_canvas *x,
     else if ((x->gl_editor->e_onmotion == MA_MOVE ||
               x->gl_editor->e_onmotion == MA_RESIZE))
     {
-            /* if there's only one text item selected activate the text.
-            LATER consider under sme conditions not activating it, for instance
-            if it appears to have been desired only to move the object.  Maybe
-            shift-click could allow dragging without activating text?  A
-            different solution (only activating if the object wasn't moved
-            (commit f0df4e586) turned out to flout ctrlD+move+retype. */
+            /* if there's only one text item selected activate the text. */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
-            t_gobj *g = x->gl_editor->e_selection->sel_what;
-            t_glist *gl2;
-                /* first though, check we aren't an abstraction with a
-                   dirty sub-patch that would be discarded if we edit this. */
-            if (canvas_undo_confirmdiscard(g))
-                return;
-                /* OK, activate it */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
@@ -3087,6 +3075,19 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
+                /* if the typed object (which is also the selected object in the canvas)
+                    is an abstraction, and if its text has not been modified yet, then ask the
+                    permission to discard any changes inside it. */
+            if (pd_class(&x->gl_editor->e_selection->sel_what->g_pd) == canvas_class
+                && !x->gl_editor->e_textdirty
+                    /* only ask permission if the keystroke is really modifying the text */
+                && keynum
+            )
+            {
+                t_gobj *selected_canvas = x->gl_editor->e_selection->sel_what;
+                if(canvas_undo_confirmdiscard(selected_canvas))
+                    return;
+            }
                 /* send the key to the box's editor */
             if (!x->gl_editor->e_textdirty)
             {
@@ -3300,7 +3301,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
 
             canvas_vis(g2, 1);
             pdgui_vmess("pdtk_canvas_menuclose", "^m",
-                        canvas_getrootfor(g),
+                        canvas_getrootfor(g2),
                         gensym(buf), 2, backmsg);
             return;
         }
@@ -4379,26 +4380,26 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
         if (!src->g_next) {
             src = NULL;
-            logpost(sink, 3, "cannot connect non-existing object");
+            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
             goto bad; /* bug fix thanks to Hannes */
         }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
         if (!sink->g_next) {
             sink = NULL;
-            logpost(src, 3, "cannot connect to non-existing object");
+            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
             goto bad;
         }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
         !(objsink = pd_checkobject(&sink->g_pd))) {
-        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        logpost(src?src:sink, PD_DEBUG, "cannot connect unpatchable object");
         goto bad;
     }
 
         /* check if objects are already connected */
     if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
-        logpost(src, 3, "io pair already connected");
+        logpost(src, PD_DEBUG, "io pair already connected");
         goto bad;
     }
 
@@ -4502,7 +4503,7 @@ static void canvas_tidy(t_canvas *x)
             bestdist = i;
         }
     }
-    logpost(NULL, 3, "tidy: best vertical distance %d", bestdist);
+    logpost(NULL, PD_DEBUG, "tidy: best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
         {

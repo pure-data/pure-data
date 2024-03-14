@@ -17,8 +17,9 @@ typedef struct _sigsend
     t_canvas *x_canvas;
     int x_length;
     int x_nchans;
-    t_sample *x_vec;
+    int x_prevnchans;
     t_float x_f;
+    t_sample *x_vec;
 } t_sigsend;
 
 static void *sigsend_new(t_symbol *s, t_floatarg fnchans)
@@ -29,6 +30,7 @@ static void *sigsend_new(t_symbol *s, t_floatarg fnchans)
     x->x_sym = s;
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
+    x->x_prevnchans = x->x_nchans;
     x->x_length = 1;
     x->x_vec = (t_sample *)getbytes(x->x_nchans * sizeof(t_sample));
     x->x_f = 0;
@@ -53,18 +55,19 @@ static t_int *sigsend_perform(t_int *w)
 static void sigsend_channels(t_sigsend *x, t_float fnchans)
 {
     x->x_nchans = fnchans >= 1 ? fnchans : 1;
-    x->x_length = 1; /* trigger update via sigsend_fixbuf */
+        /* buffer will be resized in sigsend_fixbuf() */
     canvas_update_dsp();
 }
 
 static void sigsend_fixbuf(t_sigsend *x, int length)
 {
-    if (x->x_length != length)
+    if (x->x_length != length || x->x_nchans != x->x_prevnchans)
     {
         x->x_vec = (t_sample *)resizebytes(x->x_vec,
-            x->x_length * x->x_nchans * sizeof(t_sample),
+            x->x_length * x->x_prevnchans * sizeof(t_sample),
             length * x->x_nchans * sizeof(t_sample));
         x->x_length = length;
+        x->x_prevnchans = x->x_nchans;
     }
 }
 
@@ -239,6 +242,7 @@ typedef struct _sigcatch
     t_canvas *x_canvas;
     int x_length;
     int x_nchans;
+    int x_prevnchans;
     t_sample *x_vec;
 } t_sigcatch;
 
@@ -252,6 +256,7 @@ static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
     x->x_length = 1;     /* replaced later */
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
+    x->x_prevnchans = x->x_nchans;
     x->x_vec = (t_sample *)getbytes(x->x_length * sizeof(t_sample));
     outlet_new(&x->x_obj, &s_signal);
     return (x);
@@ -260,18 +265,19 @@ static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
 static void sigcatch_channels(t_sigcatch *x, t_float fnchans)
 {
     x->x_nchans = fnchans >= 1 ? fnchans : 1;
-    x->x_length = 1; /* trigger update via sigcatch_fixbuf */
+        /* buffer will be resized in sigcatch_fixbuf() */
     canvas_update_dsp();
 }
 
 static void sigcatch_fixbuf(t_sigcatch *x, int length)
 {
-    if (x->x_length != length)
+    if (x->x_length != length || x->x_nchans != x->x_prevnchans)
     {
         x->x_vec = (t_sample *)resizebytes(x->x_vec,
-            x->x_length * x->x_nchans * sizeof(t_sample),
+            x->x_length * x->x_prevnchans * sizeof(t_sample),
             length * x->x_nchans * sizeof(t_sample));
         x->x_length = length;
+        x->x_prevnchans = x->x_nchans;
     }
 }
 

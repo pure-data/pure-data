@@ -1,4 +1,4 @@
-#N canvas 549 23 530 666 12;
+#N canvas 457 23 530 666 12;
 #X declare -stdpath ./;
 #X obj 58 125 osc~ 100;
 #X msg 67 152 clear;
@@ -13,12 +13,12 @@
 #X msg 79 179 set 0.6 0.8;
 #X text 48 338 y[n] = x[n] + a[n] * y[n-1];
 #N canvas 796 231 441 392 test 0;
-#X obj 90 85 osc~;
-#X floatatom 90 52 5 0 0 0 - - - 0;
+#X obj 84 85 osc~;
+#X floatatom 84 52 5 0 0 0 - - - 0;
 #X obj 146 304 env~ 16384;
 #X floatatom 146 328 5 0 0 0 - - - 0;
-#X obj 90 112 *~;
-#X msg 40 113 set 1;
+#X obj 84 112 *~;
+#X msg 34 113 set 1;
 #X floatatom 334 113 4 -1000 1000 0 - - - 0;
 #X text 138 14 Stuff to test it:;
 #X obj 215 123 cos~;
@@ -26,7 +26,7 @@
 #X obj 258 75 phasor~;
 #X floatatom 258 48 5 0 0 0 - - - 0;
 #X floatatom 146 52 5 0 0 0 - - - 0;
-#X obj 177 113 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 177 112 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 146 112 *~;
 #X obj 146 85 phasor~;
 #X floatatom 321 46 5 0 0 0 - - - 0;
@@ -40,7 +40,7 @@
 #X floatatom 233 328 5 0 0 0 - - - 0;
 #X obj 23 303 output~;
 #X obj 258 238 declare -stdpath ./;
-#X obj 121 114 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 115 112 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;

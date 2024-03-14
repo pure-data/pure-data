@@ -107,11 +107,4 @@
 # endif
 #endif
 
-
-/* -------------------------MSVC compat defines --------------------- */
-#ifdef _MSC_VER
-# define snprintf _snprintf
-#endif
-
-
 #endif /* M_PRIVATE_UTILS_H */

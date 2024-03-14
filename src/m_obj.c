@@ -8,6 +8,7 @@ behavior for "gobjs" appears at the end of this file.  */
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "s_stuff.h"
 #include <string.h>
 
 #include "m_private_utils.h"
@@ -400,20 +401,20 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s,
 {
     char msgbuf[104];
     int nprint = (argc > NARGS ? NARGS : argc), nchar, i;
-    snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
+    pd_snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
     nchar = strlen(msgbuf);
     for (i = 0; i < nprint && nchar < 100; i++)
         if (nchar < 100)
     {
         char buf[100];
         atom_string(&argv[i], buf, 100);
-        snprintf(msgbuf + nchar, 100-nchar, " %s", buf);
+        pd_snprintf(msgbuf + nchar, 100-nchar, " %s", buf);
         nchar = strlen(msgbuf);
     }
     if (argc > nprint && nchar < 100)
         sprintf(msgbuf + nchar, "...");
     else memcpy(msgbuf+100, "...", 4); /* in case we didn't finish */
-    logpost(who, 2, "%s", msgbuf);
+    logpost(who, PD_NORMAL, "%s", msgbuf);
 }
 
 static void backtracer_anything(t_backtracer *x, t_symbol *s,
@@ -1011,5 +1012,3 @@ void obj_init(void)
     class_addanything(backtracer_class, backtracer_anything);
 
 }
-
-

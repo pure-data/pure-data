@@ -12,7 +12,6 @@ extern "C" {
 #define PD_MINOR_VERSION 54
 #define PD_BUGFIX_VERSION 1
 #define PD_TEST_VERSION ""
-extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -168,7 +167,7 @@ typedef union word
 
 typedef enum
 {
-    A_NULL,
+    A_NULL = 0,
     A_FLOAT,
     A_SYMBOL,
     A_POINTER,
@@ -903,6 +902,7 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
     /* get floatsize at run time */
 EXTERN unsigned int sys_getfloatsize(void);
@@ -965,6 +965,7 @@ EXTERN t_pdinstance pd_maininstance;
 #ifdef PDINSTANCE
 EXTERN t_pdinstance *pdinstance_new(void);
 EXTERN void pd_setinstance(t_pdinstance *x);
+EXTERN t_pdinstance *pd_getinstance(void);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
@@ -979,7 +980,18 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif
 
 #ifdef PDINSTANCE
-extern PERTHREAD t_pdinstance *pd_this;
+#ifdef _WIN32
+/* Windows does not allow exporting thread-local variables from DLLs,
+so externals need to get 'pd_this' with an (implicit) function call.
+Internally, we may directly access 'pd_this', but we must not export it! */
+#ifdef PD_INTERNAL
+extern PERTHREAD t_pdinstance *pd_this; /* not EXTERN! */
+#else
+#define pd_this pd_getinstance()
+#endif /* PD_INTERNAL */
+#else
+EXTERN PERTHREAD t_pdinstance *pd_this;
+#endif /* _WIN32 */
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else
