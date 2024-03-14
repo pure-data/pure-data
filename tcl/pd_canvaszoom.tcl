@@ -332,7 +332,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
     switch [lindex $cmd 0] {
         "image" {return $cmd}
         "pdtk_text_new" {
-            if {! [set zdepth [getzdepth [lindex $cmd 1]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
             set font [get_font_for_size [lindex $cmd 6]]
             set fontsize [lindex $font 1]
             # scale position
@@ -346,7 +346,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
             return $cmd
         }
         "pdtk_text_set" {
-            if {! [set zdepth [getzdepth [lindex $cmd 1]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
             # remove text tag
             set c [lindex $cmd 1]
             set i [lindex $cmd 2]
@@ -358,7 +358,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
     }
     switch [lindex $cmd 1] {
         "create" {
-            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth]
 
             set widthindex [lsearch -start 3 $cmd "-width"]
@@ -389,15 +389,15 @@ proc ::pd_canvaszoom::scale_command {cmd} {
             return $cmd
         }
         "coords" {
-            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
             return [scale_consecutive_numbers $cmd 3 $zdepth]
         }
         "move" {
-            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
             return [scale_consecutive_numbers $cmd 3 $zdepth]
         }
         "itemconfigure" {
-            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
+            if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
             set widthindex [lsearch -start 3 $cmd "-width"]
             if {$widthindex != -1} {
                 incr widthindex
