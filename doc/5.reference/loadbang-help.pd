@@ -24,7 +24,7 @@
 #X obj 230 283 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X text 40 54 The [loadbang] object outputs a "bang" message when the containing patch is opened as a document or included in another patch as an abstraction., f 66;
 #X text 40 105 [loadbang] objects within abstractions send their "bang" messages before [loadbang] objects in the calling patch. Otherwise \, the order in which the "bangs" are sent from two [loadbang] objects is undefined., f 66;
-#X text 258 183 You can force a [loaddbang] to fire if you send a 'loadbang' message to the patch (see 'pd-messages')., f 35;
 #X text 85 15 - send a "bang" when loading the patch;
+#X text 258 183 You can force a [loaddbang] to fire if you send a 'loadbang' message to the patch (see 'pd-messages' in the 'see also' section below)., f 35;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;

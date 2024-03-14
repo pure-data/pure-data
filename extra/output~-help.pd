@@ -25,12 +25,12 @@
 #X obj 419 318 osc~ 880;
 #X msg 334 318 level \$1;
 #X text 381 442 updated for Pd version 0.54;
-#X obj 82 316 noise~;
-#X obj 82 354 output~;
+#X obj 82 299 noise~;
+#X obj 82 337 output~;
 #X text 484 317 right input;
 #X text 381 253 left input;
 #X text 391 290 volume control;
-#X text 22 277 mono input goes to both outputs, f 12;
+#X text 22 260 mono input goes to both outputs, f 12;
 #X floatatom 334 291 7 0 1 0 - - - 0;
 #X msg 250 294 mute \$1;
 #X obj 250 266 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;

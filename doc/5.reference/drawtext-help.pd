@@ -21,7 +21,7 @@
 #X text 39 42 - Optional flags:, f 54;
 #X text 53 63 - "-n": make invisible initially \; - "-v [const or field name]": assign a variable to make this visible/invisible., f 57;
 #X text 28 114 Arguments:;
-#X text 550 264 This [sruct] object below defines the fields for this template. You can see them by right-clicking on the object in the "drawtext-data" window and selecting "properties.";
+#X text 550 264 This [struct] object below defines the fields for this template. You can see them by right-clicking on the object in the "drawtext-data" window and selecting "properties.";
 #X text 104 238 <-- inlet sets visibility (1: visible \, 0: invisible);
 #X obj 762 221 drawtext -n boom 0 -45 0 boom=;
 #X obj 762 190 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;

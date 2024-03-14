@@ -1,6 +1,6 @@
 #N struct setsize-template float x float y array array4 array4-template;
 #N struct array4-template float y;
-#N canvas 615 26 619 575 12;
+#N canvas 581 26 619 575 12;
 #X text 16 534 see also:;
 #N canvas 393 50 510 198 setsize-template 0;
 #X obj 74 136 plot array4 500 1 10 15 10;

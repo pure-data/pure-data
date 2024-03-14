@@ -1,4 +1,4 @@
-#N canvas 552 38 639 585 12;
+#N canvas 506 40 639 585 12;
 #X msg 147 374 print;
 #X msg 128 320 start;
 #X msg 135 348 stop;
