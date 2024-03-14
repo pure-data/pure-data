@@ -384,6 +384,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
     char tag[128];
+    t_canvas *c = glist_getcanvas(glist);
         /* FIXME: get rid of this tag (if it's unused) */
     sprintf(tag, "select%p", x);
     if (state)
@@ -391,14 +392,15 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
         int x1, y1, x2, y2;
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
-                  glist_getcanvas(glist), "create", "line",
+        pdgui_vmess("pdtk_canvas::set_option_types",
+                  "ci crr iiiiiiiiii ri rs rr",
+                  c, 1, c, "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
                   "-width", 0,
-                  "-fill", "blue",
-                  "-tags", tag);
+                  "-tags", tag,
+                  "-fill", "selected");
     } else {
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess(0, "crs", c, "delete", tag);
     }
 }
 

@@ -1,0 +1,108 @@
+# canvas_fill - the canvas (patch background)
+# canvas_text_cursor - text insertion cursor for all canvas objects
+# gop_box - the GOP rectangle (when editing GOP patches)
+# obj_box_text - text in an object box
+# msg_box_text - text in a message box
+# comment
+# selected - selection
+# obj_box_outline_broken - outline of "broken" object
+#                          (that failed to create)
+# obj_box_outline
+# msg_box_outline
+# msg_box_fill - fill of a message box
+# obj_box_fill - " " object box
+# signal_cord - signal cord and outline of signal inlets
+# msg_cord - message cord and outline of message inlets
+# msg_iolet - message inlet/outlet fill
+# msg_iolet_border - border/outline of message inlet
+# signal_iolet - signal inlet/outlet fill
+# signal_iolet_border - border/outline of signal iolet
+# graph_outline - outline of arrays and GOP patches in the parent patch
+# graph_text - color of the names of GOP patches in the parent patch
+# graph_open - color of the 'missing' graph rectangle on the parent when a GOP is opened
+# selection_rectangle - selection rectangle color in edit mode
+# txt_highlight - color text on the canvas is highlighted (in the "background") # when selected
+# txt_highlight_front - color text on the canvas is highlighted when selected
+# array_name - garray names
+# array_values - array elements
+# atom_box_fill - fill of gatoms (number box, symbol box)
+# atom_box_text - text of gatoms
+# atom_box_label - label of gatoms
+# atom_box_outline - outline of gatoms
+# atom_box_focus_outline - outline of gatoms with keyboard focus
+# text_window_fill - [text] window background
+# text_window_text - [text] window text
+# text_window_highlight - like txt_highlight but for [text] window
+# text_window_hl_text - color of highlighted text in [text] window
+# text_window_cursor - [text] window cursor
+# pdwindow_fill - background of post window
+# pdwindow_fatal_text - text for fatal errors
+# pdwindow_fatal_highlight - highlight (background) for fatal errors
+# pdwindow_error_text - text for errors
+# pdwindow_post_text - text for posting
+# pdwindow_debug_text - text for verbose logs
+# pdwindow_hl_text - color of pdwindow text highlight
+# helpbrowser_fill
+# helpbrowser_text
+# helpbrowser_highlight - like txt_highlight but for help browser
+# helpbrowser_hl_text - text highlight color (defaults to helpbrowser_text)
+
+# this is an example of a color plugin for pure data (saved as a .tcl file)
+array set ::pd_colors {
+    canvas_fill "#FF8800"
+    gop_box "black"
+    obj_box_text "#00FF00"
+    msg_box_text "white"
+    comment "blue"
+    selected "yellow"
+    obj_box_outline_broken "light blue"
+    obj_box_outline "#0B8100"
+    msg_box_outline "purple"
+    msg_box_fill "purple"
+    obj_box_fill "#0B8100"
+    signal_cord "blue"
+    msg_cord "black"
+    msg_iolet "white"
+    signal_iolet "blue"
+    graph_outline "blue"
+    graph_open "white"
+    selection_rectangle "light green"
+    txt_highlight "black"
+    graph_text "purple"
+    array_name "#0B8100"
+    array_values "purple"
+    atom_box_fill "black"
+    atom_box_text "cyan"
+    atom_box_label "black"
+    atom_box_outline "cyan"
+    atom_box_focus_outline "red"
+    text_window_fill "black"
+    text_window_text "white"
+    text_window_highlight "green"
+    text_window_hl_text "white"
+    text_window_cursor "green"
+    pdwindow_fill "#000"
+    pdwindow_fatal_text "#D00"
+    pdwindow_fatal_highlight "#FFE0E8"
+    pdwindow_error_text "#D00"
+    pdwindow_post_text "deep sky blue"
+    pdwindow_debug_text "green"
+    pdwindow_hl_text "blue"
+    helpbrowser_fill "#000"
+    helpbrowser_text "deep sky blue"
+    helpbrowser_highlight "red"
+    canvas_text_cursor "deep sky blue"
+    helpbrowser_hl_text "white"
+}
+set ::pd_colors(txt_highlight_front) "$::pd_colors(selected)"
+set ::pd_colors(msg_iolet_border) "blue"
+set ::pd_colors(signal_iolet_border) $::pd_colors(signal_cord)
+
+# how to set individual colors
+#set ::pd_colors(msg_box_fill) "white"
+#set ::pd_colors(obj_box_fill) "white"
+
+#random colors for everything
+#proc ::pdtk_canvas::get_color {type {window 0}} {
+#	return [format #%06x [expr {int(rand() * 0xFFFFFF)}]]
+#}
