@@ -284,7 +284,7 @@ point numbers; Pd uses only float.)
 but could be anything that can receive a message), the selector of the message
 is checked against the receiver.  If the receiver recognizes messages of that
 selector, it carries out some corresponding action.  For instance, here is a
-"float" object:
+[float] object:
 
 <CENTER><P>
     <IMG src="fig3.1.jpg" ALT="float object">
@@ -327,20 +327,20 @@ sorted right to left).
     <IMG src="fig3.3.jpg" ALT="infinite message passing loop">
 </P></CENTER>
 
-<P> Here the left-hand "+" can't finish processing until the right-hand one has
+<P> Here the left-hand [+ 1] can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing that until the
 left-hand one has been sent "3", and so on.  Pd will print an error message
 reporting a "stack overflow" if this happens.
 
-<P> However, it is legal to make a loop if there is a "delay" object somewhere
-in it.  When the "delay" receives a message it schedules a message for the
+<P> However, it is legal to make a loop if there is a [delay] object somewhere
+in it.  When [delay] receives a message it schedules a message for the
 future (even if the time delay is 0) and is then "finished;" Pd's internal
 scheduler will wake the delay back up later.
 
 <H3> <A id="s3.3">
 2.3.3. hot and cold inlets and right to left outlet order </A> </H3>
 
-<P> With few exceptions (notably "timer"), objects treat their leftmost
+<P> With few exceptions (notably [timer]), objects treat their leftmost
 inlet as "hot" in the sense that messages to left inlets can result in output
 messages.  So the following is a legal (and reasonable) loop construct:
 
@@ -348,21 +348,21 @@ messages.  So the following is a legal (and reasonable) loop construct:
     <IMG src="fig3.4.jpg" ALT="hot and cold inlets">
 </P></CENTER>
 
-<P>Here the "f" is an abbreviation for "float".  Note that the "+ 1" output is
-connected to the right-hand inlet of "f".  This "cold" inlet merely stores the
-value for the next time the "f" is sent the "bang" message.
+<P>Here the [f] object is an abbreviation for [float].  Note that the [+ 1] output is
+connected to the right-hand inlet of [f].  This "cold" inlet merely stores the
+value for the next time the [f] is sent the "bang" message.
 
 <P>It is frequently desirable to send messages to two or more inlets of an object
-to specify its action.  For instance, you can use "+" to add two numbers; but
+to specify its action.  For instance, you can use [+] to add two numbers; but
 to do it correctly you must make sure the right hand inlet gets its value
-first.  Otherwise, when the left hand side value comes in, "+" will carry out
+first.  Otherwise, when the left hand side value comes in, [+] will carry out
 the addition (since the left hand inlet is the "hot" one) and will add this
 value to whatever was previously sitting in the right hand inlet.
 
 <P> Problems can arise when a single outlet is connected (either directly or
 through arbitrarily long chains of message passing) to different inlets of a
 single object. In this case it is indeterminate which order the two inlets will
-receive their messages.  Suppose for example you wish to use "+" to double a
+receive their messages.  Suppose for example you wish to use [+] to double a
 number.  The following is incorrect:
 
 <CENTER><P>
@@ -370,24 +370,21 @@ number.  The following is incorrect:
 </P></CENTER>
 
 <P> Here, I connected the left inlet before connecting the right hand one (although
-this is not evident in the appearance of the patch.)  The "+" thus adds the
+this is not evident in the appearance of the patch.)  The [+] thus adds the
 new input (at left) to the previous input (at right).
 
-<P> The "trigger" object, abbreviated "t", can be used to split out connections
+<P> The [trigger] object, abbreviated [t], can be used to split out connections
 from a single outlet in a determinate order.  By convention, all objects in Pd,
 when sending messages out more than one outlet, do so from right to left.  If
 you connect these to inlets of a second object without crossing wires, the
 second object will get its leftmost inlet last, which is usually what you
-want.  Here is how to use "trigger" to disambiguate the previous example:
+want.  Here is how to use [trigger] to disambiguate the previous example:
 
 <CENTER><P>
     <IMG src="fig3.6.jpg" ALT="trigger to disambiguate">
 </P></CENTER>
 
-<P> "Cold" (non-leftmost) inlets are almost universally used to store single
-values (either numbers or symbols.)  With the exception of "line" and "line~",
-these values are "sticky," i.e., once you set the value it is good until the
-next time you set it.  (The "line" exception is for sanity's sake.)
+<P> "Cold" (non-leftmost) inlets are almost universally used to store single values (either numbers or symbols.)  With the exception of [line], [line~] and [vline~], these values are "sticky," i.e., once you set the value it is good until the next time you set it.  (The "line family" exception is for sanity's sake.)
 
 <P> One more question sometimes comes up in execution order, which is
 the order in which two messages are sent to a single "cold" inlet.  In this
@@ -437,7 +434,7 @@ to "sue."
 
 <P>Certain other objects (Pd windows, for example, and arrays) have Pd names and
 can be sent messages this way.  Also, the special object "pd" is defined to
-which you may send messages to start and stop DSP.
+which you may send messages to start and stop DSP and more.
 
 <P> You can put variables in message boxes as shown below:
 
@@ -471,12 +468,12 @@ in Pd's command line or in the "audio setup" dialog).
 
 <P>
 Pd can read or write samples to files either in 16-bit or 24-bit fixed point
-or in 32-bit floating point, in WAV, AIFF, or AU format, via the soundfiler,
-readsf, and writesf objects.
+or in 32-bit floating point, in 'wave', 'aiff', 'caf', and 'next' formats via
+the [soundfiler], [readsf~], and [writesf~] objects.
 
 <H3> <A id="s4.2"> 2.4.2. tilde objects and audio connections </A> </H3>
 
-<P>Audio computations in Pd are carried out by "tilde objects" such as "osc~"
+<P>Audio computations in Pd are carried out by "tilde objects" such as [osc~]
 whose names conventionally end in a tilde character to warn you what they
 are.  Tilde objects can intercommunicate via audio connections.  When audio
 computation is turned on, or when you change the audio network while audio is
@@ -490,112 +487,77 @@ these errors are detected at "sort time" when audio is started or the network
 changed with audio running.  An object's leftmost inlet may accept both audio
 and messages; any other inlet is either one or the other.
 
-<P>
-The audio network, that is, the tilde objects and their interconnections,
+<P> The audio network, that is, the tilde objects and their interconnections,
 must be acyclic.  If there are loops, you will see the error message at "sort
 time."   When errors are reported at sort time there is no easy way to
 find the source of the error.  You can build algorithms with feedback using
 nonlocal signal connections.
 
-<P>
-Your subpatches can have audio inlets and outlets via the inlet~ and outlet~
+<P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
 objects.
 
 <H3> <A id=s4.3> 2.4.3. converting audio to and from messages </A> </H3>
 
-<P> If you want to use a control value as a signal, you can use the sig~ object
-to convert it.  The +~, -~, *~, /~, osc~, and phasor~ objects can be configured
-to take control or signal inputs.
+<P> If you want to use a control value as a signal, you can use the [sig~] object to convert it.  The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~] and [lop~] objects can be configured to take control or signal inputs in their 2nd inlet. You can also use [line~] and [vline~] to "convert" from control to signal with a smoothen ramp, so to speak.
 
 <P> The other direction, signal to control, requires that you specify at what
-moments you want the signal sampled.  This is handled by the snapshot~ object,
-but you can also sample a signal with tabwrite~ and then get access it via
-tabread or tabread4 (note the missing tildes!).  There are also analysis
-objects, the simplest of which is "env~", the envelope follower.
+moments you want the signal sampled.  This is handled by the [snapshot~] object,
+but you can also sample a signal with [tabwrite~] and then get access it via
+[tabread] or [tabread4] (note the missing tildes!).  There are also analysis
+objects, the simplest of which is [env~], the envelope follower, that outputs
+control data floats.
 
 <H3> <A id=s4.4> 2.4.4. switching and blocking </A> </H3>
 
-<P>You can use the switch~ or block~ objects to turn portions of your audio
-computation on and off and to control the block size of computation.  There
-may be only one switch~ or block~ object in any window; it acts on the entire
-window and all of its subwindows, which may still have their own nested
-switch~/block~ objects.  Switch~ and block~ take a block size and an overlap
-factor as arguments; so for instance, "block~ 1024 4" specifies 1024 sample
-blocks, overlapped by a factor of 4 relative to the parent window.  Switch~
-carries a small computational overhead in addition to whatever overhead is
-associated with changing the block size.
+<P>You can use the [switch~] or [block~] objects to turn portions of your audio computation on and off and to control the block size of computation.  There may be only one [switch~] or [block~] object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested [switch~]/[block~] objects. Both [s]witch~] and [block~] take a block size and an overlap factor as arguments; so for instance, [block~ 1024 4] specifies 1024 sample
+blocks, overlapped by a factor of 4 relative to the parent window. The [switch~] version carries a small computational overhead in addition to whatever overhead is associated with changing the block size.
 
 <P> Larger block sizes than 64 should result in small increases in run-time
-efficiency.  Also, the fft~ and related objects operate on blocks so that
+efficiency.  Also, the [fft~] and related objects operate on blocks so that
 setting the block size also sets the number of FFT channels.  You may wish
 to use block sizes smaller than 64 to gain finer resolutions of message/audio
 interaction, or to reduce "block delay" in feedback algorithms.  At the
-extreme, setting the block size to one allows you to write your
-own recursive filters.
+extreme, setting the block size to 1 allows you to write your own recursive filters.
 
-<P> You can use switch~ to budget your DSP computations; for instance you might
+<P> You can use [switch~] to budget your DSP computations; for instance you might
 want to be able to switch between two synthesis algorithms.  To do this, put
 each algorithm in its own subpatch (which can have sub-sub patches in turn, for
 a voice bank for instance), and switch each one off as you switch the other one
-on.  Beware of clicks; if you have a line~ controlling output level, give it
+on.  Beware of clicks; if you have a [line~] controlling output level, give it
 time to ramp to zero before you switch it off or it will be stuck at a nonzero
 value for the next time it comes back on.
 
 <P> When a subpatch is switched off its audio outputs generate zeros; this
-costs a fairly small overhead; a cheaper way to get outputs is to use throw~
-inside the switched module and catch~ outside it.
+costs a fairly small overhead; a cheaper way to get outputs is to use [throw~]
+inside the switched module and [catch~] outside it.
 
 <H3> <A id=s4.5> 2.4.5. nonlocal signal connections </A> </H3>
 
-<P>You may wish to pass signals non-locally, either to get from one window to another, or
-to feed a signal back to your algorithm's input.  This can be done using
-throw~/catch~, send~/receive~, or delwrite~/delread~ pairs.  Throw~ and catch~
-implement a summing bus; throw~ adds into the bus and catch~ reads out the
-accumulated signal and zeros the bus for the next time around.  There can be
-many throw~ objects associated with a single catch~, but a throw~ can't talk to
-more than one catch~.  You can reset the destination of a throw~ if you want to.
+<P>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm's input.  This can be done using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or [delread4~] pairs. Both [throw~] and [catch~] implement a summing bus; [throw~] adds into the bus and [catch~] reads out the accumulated signal and zeros the bus for the next time around.  There can be many [throw~] objects associated with a single [catch~], but a [throw~] can't talk to more than one [catch~].  You can reset the destination of a [throw~] if you want to.
 
-<P> Send~ just saves a signal which may then be receive~d any number of times; but
-a receive~ can only pick up one send~ at a time (but you can switch between
-send~s if you want.)
+<P> On the other hand, [send~] just saves a signal which may then be received by a [receive~] object any number of times; but a [receive~] can only pick up one [send~] at a time (but you can switch between [send~] objects if you want.)
 
-<P> Don't try to throw~ and catch~ or send~ and receive~ between windows with
+<P> Don't try to [throw~] and [catch~] or [send~] and [receive~] between windows with
 different block sizes.  The only re-blocking mechanisms which are well tested
-are inlet~ and outlet~.
+are [inlet~] and [outlet~].
 
-<P> When you send a signal to a point that is earlier in the sorted list of tilde
-objects, the signal doesn't get there until the next cycle of DSP computation,
-one block later; so your signal will be delayed by one block (1.45 msec by
-default.)  Delread~ and delwrite~ have this same restriction, but here the 1.45
-msec figure gives the minimum attainable delay.  For non-recursive algorithms, a
-simple flanger for example, you might wish to ensure that your delread~ is
-sorted after your delwrite~.  The only way to ensure this is to create the
-delread~ after you created the delwrite~; if things get out of whack, just
-delete and re-create the delread~.
+<P> When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn't get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.), the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay.
 
 <H3> <A id=s4.6> 2.4.6. multichannel signals </A> </H3>
 
-<P> As of Pd version 0.54, signals may be multichannel.  Every signal has a
-<i>length</i> equal to the window's block size (64 by default), and also has a
-<i>channel count</i> which is 1 by default.  The snake~ object can combine any
-number of single-channel signals into a multichannel one, or alternatively can
-split a multichannel signal into its component single-channel ones.  Non-local
-connections (send~, receive~, throw~, catch~, inlet~, outlet~) can be used to
-pass multichannel signals from window to window, and dac~ and adc~ can input and
-output several inputs or outputs into, or out of, one multichannel signal.
+<P> As of Pd version 0.54, signals may be multichannel.  Every signal has a <i>length</i> equal to the window's block size (64 by default), and also has a <i>channel count</i> which is 1 by default.  The [snake~] object can combine any number of single-channel signals into a multichannel one, or alternatively can split a multichannel signal into its component single-channel ones.  Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~]) can be used to pass multichannel signals from window to window, and [dac~] and [adc~] can input and output several inputs or outputs into, or out of, one multichannel signal.
 
-<P> The receive~, catch~, and adc~ objects take arguments to specify the desired
-number of channels.
+<P> The [receive~], [catch~], and [adc~] objects take arguments to specify the desired number of channels.
 
 <P> Stateless objects, which have no memory from one DSP tick to the next, have
 all been adapted to handle multichannel inputs and outputs.  The arithmetic and
-math objects (+~, -~, *~ ,/~, wrap~, sqrt~, and so on) use their inputs to determine
-their channel counts.  Binary operations like "+" can combine single- and
-multiple-channel inputs.
+math objects ([+~], [-~], [*~], [/~], [wrap~], [sqrt~], and so on) use their
+inputs to determine their channel counts.  Binary operations like [+~] can combine
+single- and multiple-channel inputs.
 
 <P> Other objects such as filters or oscillators have not been adapted for
 multichannel signals because there might be many ways to design multichannel
-versions of them.  Instead, you can use the clone object to perform general
+versions of them.  Instead, you can use the [clone] object to perform general
 operations on multichannel signals.  Signal inputs and outputs of cloned patches
 can be used to  distribute multichannel signals among the individual cloned
 patches.
@@ -649,7 +611,7 @@ close them when you aren't using them.
 
 <H3> <A id=s5.3> 2.5.3. determinism </A> </H3>
 
-<P>All message cascades that are scheduled (via "delay" and
+<P>All message cascades that are scheduled (via [delay] and
 its relatives) to happen before a given audio tick will happen as scheduled
 regardless of whether Pd as a whole is running on time; in other words,
 calculation is never reordered for any real-time considerations.  This is done
@@ -661,8 +623,8 @@ timeouts are scheduled and DSP ticks are computed; i.e., time never decreases.
 (However, either Pd or a hardware driver may lie about the physical time an
 input arrives; this depends on the operating system.)  "Timer" objects which
 measure time intervals measure them in terms of the logical time stamps of the
-message cascades, so that timing a "delay" object always gives exactly the
-theoretical value.  (There is, however, a "realtime" object that measures real
+message cascades, so that timing a [delay] object always gives exactly the
+theoretical value.  (There is, however, a [realtime] object that measures real
 time, with nondeterministic results.)
 
 <P> If two message cascades are scheduled for the same logical time, they are
@@ -690,9 +652,9 @@ destroyed and the message is used to create the new one.
 <P> The selector of the message (the first word in the message) is a selector
 which Pd interprets to mean which type of object to create.  Any message
 arguments (called "creation arguments") are used to parameterize the object
-being created.  Thus in "makenote 64 250" the selector "makenote" determines
-the class of object to create and the creation arguments 64 and 250 become the
-initial velocity and duration.
+being created.  Thus in [makenote 64 250] the selector "makenote" determines
+the class of object to create and the creation arguments "64" and "250" become
+the initial velocity and duration.
 
 <H3> <A id=s6.2> 2.6.2. persistence of data </A> </H3>
 
@@ -712,7 +674,7 @@ typing "pd jane" instead of "pd spot," the contents of the patch are preserved
 and only the text in the object box and the window title of the subpatch are
 changed.
 
-<P> It is probably bad style to specify creation arguments ala "makenote 64 250"
+<P> It is probably bad style to specify creation arguments ala [makenote 64 250]
 if you are going to override them later; this is confusing to anyone who tries
 to understand the patch.
 
@@ -731,14 +693,14 @@ determined by the selector of the creation message, i.e., the first atom of the
 creation message which is usually a symbol.
 
 <P> Each class comes with a fixed collection of messages it may be sent.  For
-example, the "float" or "f" object takes "bang" and "float."  These messages
-are sent to "float" objects (objects whose class is float) via the leftmost,
+example, the [float] or [f] object takes "bang" and "float."  These messages
+are sent to [float] objects (objects whose class is float) via the leftmost,
 hot inlet.  (The right inlet is a separate, auxiliary object.)  Objects of
 class "float" respond to the message "bang" by outputting their current value,
 that is, by sending a "float" message to their outlet.  They respond to "float"
 messages by setting their value and then outputting it.
 
-<P>  Each other class (like "float") in Pd has its own protocol for responding
+<P>  Each other class (like [float]) in Pd has its own protocol for responding
 to messages it is sent, and may take "float" and "bang" messages, or others
 in addition or instead of them.
 
@@ -771,8 +733,7 @@ or other) that the message box is responding to.  Thus, if a message box gets
 and initialize the object.  Here, $1, etc., are taken from the context in which
 the patch was loaded.  When the patch is a new document or opened from a file
 the "$" variables are undefined.  But if the patch is an abstraction (see the
-next section) they are
-taken from the abstractions' creation arguments.
+next section) they are taken from the abstractions' creation arguments.
 
 <P>  Constructions such as "$1-x" are expanded by string concatenation.  This
 is the mechanism for making local variables. In particular, $0 is a counter,
@@ -796,7 +757,7 @@ example,   have an abstraction  "a1" that invokes an abstraction "a2" twice, as
 
 <p>Pd offers two mechanisms for making subpatches, called "one-off subpatches"
 and "abstractions."  In either case the subpatch appears as an object box
-in a patch.  If you type "pd" or "pd my-name" into an object box, this creates
+in a patch.  If you type [pd] or [pd my-name] into an object box, this creates
 a one-off subpatch.  For instance, in this fragment:
 
 <CENTER><P>  <IMG src="fig7.1.jpg" ALT="subpatch">  </P></CENTER>
@@ -809,18 +770,18 @@ a one-off subpatch.  For instance, in this fragment:
 one file.  If you make several copies of a subpatch you may change them
 individually.
 
-<P> The objects, "inlet,", "inlet~," "outlet," and "outlet~,", when put in a
+<P> The objects, [inlet], [inlet~], [outlet] and [outlet~], when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
 This works equally for one-off subpatches and abstractions and only accept control
-data messages. The inlet~ and outlet~ versions create inlets and outlets for audio
-signals. Note you can also mix control messages in an inlet~ with the 'fwd' argument
+data messages. The [inlet~] and [outlet~] versions create inlets and outlets for audio
+signals. Note you can also mix control messages in an [inlet~] via its right outlet,
 but a signal outlet only takes signals. Inlets and outlets appear on the invoking box
 in the same left-to-right order as they appear in the subpatch.
 
 <H3> <A id="s7.1"> 2.7.1. abstractions </A> </H3>
 
 <P> To make an abstraction, save a patch with a name such as "abstraction1.pd"
-and then invoke it as "abstraction1" in an object box:
+and then invoke it in an object box as [abstraction1]:
 
 <CENTER><P>  <IMG src="fig7.3.jpg" ALT="abstraction">  </P></CENTER>
 
@@ -829,20 +790,20 @@ patch shown here (the border is the same as for the subpatch above):
 
 <CENTER><P>  <IMG src="fig7.4.jpg" ALT="abstraction example">  </P></CENTER>
 
-<p>You may create many instances of "abstraction1" or invoke it from several
-different patches; and changing the contents of "abstraction1" will affect all
-invocations of it as they are created.  An analogy from the "c" programming
-language is that one-off subpatches are like bracketed blocks of code and
-abstractions are like subroutines.
+<p>You may create many instances of [abstraction1] or invoke it from several
+different patches; and changing and saving the contents of [abstraction1] will
+affect all invocations of it as they are created.  An analogy from the "c"
+programming language is that one-off subpatches are like bracketed blocks of
+code and abstractions are like subroutines.
 
 <P> Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box.  You may also type arguments; for instance if
-you have a file "my-abstraction.pd" you may type "my-abstraction 5" to set the
+you have a file "my-abstraction.pd" you may have [my-abstraction 5] to set the
 variable $1 to 5.  This is defined only for object boxes (not for messages) in
 the abstraction.  (For message boxes, "$1", etc, have a different meaning as
 described above.)  If you want to send a message with a $1 in the sense of a
 creation argument of an abstraction, you must generate it with an object box
-such as "float $1", "symbol $1", or perhaps "pack $1 $2", which may then be
+such as [float $1], [symbol $1], or perhaps [pack $1 $2], which may then be
 sent to a message box.
 
 <P> The corresponding feature in Max (both Opcode and Ircam) was the "#1"
@@ -856,7 +817,7 @@ a different time in an object box than in a message box.  In an object box, the
 "$" argument is expanded at creation time, and in a message box, at message
 time.
 
-<P> A "clone" object is provided to automatically create and manage multiple copies
+<P> A [clone] object is provided to automatically create and manage multiple copies
 of an abstraction.  You can use it to make voice banks for polyphonic synthesis,
 for example.
 
@@ -864,7 +825,7 @@ for example.
 
 <p>If you open the "properties" dialog for a subpatch or an abstraction, you can
 check the "graph on parent" box to have the controls of the subpatch/abstraction
-appear on the parent.  For instance, here is an invocation of "abstraction2":
+appear on the parent.  For instance, here is an invocation of [abstraction2]:
 
 <CENTER><P>  <IMG src="fig7.5.jpg" ALT="graph-on-parent abstraction">  </P></CENTER>
 
@@ -878,10 +839,7 @@ the abstraction.  The "graph on parent" flag is set in the abstraction
 dialog for the "abstraction2" canvas by right-clicking on any white space
 in the patch.
 
-<P> To open the subpatch, right click on the object and select "open".  (On
-Macintoshes without a 2-button mouse, you can double-click in edit mode
-instead.)  It doesn't work just to click on the object in run mode since clicks
-are sent to visible controls and/or arrays.
+<P> To open the subpatch, right click on the object and select "open". It doesn't work just to click on the object in run mode since clicks are sent to visible controls and/or arrays.
 
 <P> When the sub-patch is closed, all controls in it appear on the object
 instead; so the number box in the sub-patch in the example above is the same
@@ -939,11 +897,7 @@ the patch below creates a 440 Hz. tone with "array1" as a waveform:
 
 <CENTER><P>  <IMG src="fig8.4.jpg" ALT="setting an array with a waveform">  </P></CENTER>
 
-<p>Here phasor~'s outputs a sawtooth wave, repeating 440 times per second, whose
-output range is from 0 to 1.  The multiplier and adder adjust the range from
-1 to 11, and then the values are used as indices for tabread4~, which is a
-4-point interpolating table lookup module.  (Much more detail is available in
-the audio example patches in the "pure documentation" series.)
+<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440 times per second.  The multiplier and adder adjust the range from 1 to 11, and then the values are used as indices for tabread4~, which is a 4-point interpolating table lookup module.  (Much more detail is available in the audio example patches in the "pure documentation" series.)
 
 <P> To create a new array, select "array" from the "put" menu.  Up will come
 a dialog window to set initial properties of the array.  By default, a
@@ -1038,8 +992,8 @@ shown above:
 
 <CENTER><P>  <IMG src="fig9.2.jpg" ALT="template for graphical score">  </P></CENTER>
 
-<p>Templates consist of a data structure definition (the "struct" object) and
-zero or more drawing instructions ("filledpolygon" and "plot"). The "struct"
+<p>Templates consist of a data structure definition (the [struct] object) and
+zero or more drawing instructions (such as [filledpolygon] and [plot]). The [struct]
 object gives the template the name, "template-toplevel."  The data structure
 is defined to contain three floating point numbers named "x", "y", and
 "voiceno," and two arrays, one named "pitch" whose elements belong to another
@@ -1057,13 +1011,13 @@ types.  For example, a collection of sinusoidal tracks from an analysis engine
 could be implemented as an array of arrays of (pitch, amplitude)
 pairs; this appears as example 12 in Pd's FFT object online tutorial.
 
-<P> After the "struct" object in the template shown above, the remaining
+<P> After the [struct] object in the template shown above, the remaining
 three objects are <I> drawing instructions </I> , first for a rectangle
-("filledpolygon"), and then for two arrays.  The various graphical
+([filledpolygon]), and then for two arrays.  The various graphical
 attributes that are specified for drawing instructions may be numerical
 constants or data structure field names; in the latter case the value varies
 depending on the data.  For instance, the second creation argument to
-"plot" is the color.  The first "plot" plots the "amp" field and the
+[plot] is the color.  The first [plot] plots the "amp" field and the
 color is given as 0, or black.  The second one plots "pitch" using the color
 "voiceno". In this way the color of the second trace is attached to the
 "voiceno" slot in the data structure, so that color will vary according to its
@@ -1091,20 +1045,20 @@ reactive improvisation, and perhaps much more.
 <P> Traversal of data is made possible by adding a new type of atom, "pointer",
 to the two previously defined types that make up messages (numbers and symbols).
 Unlike numbers and symbols, pointers have no printed form and thus can't be
-uttered in message boxes. Traversal objects such as "pointer" and "get"
+uttered in message boxes. Traversal objects such as [pointer] and [get]
 (among several others) can generate or use pointers. The pointer data
-type is also integrated into pipe-fitting objects such as "pack",
-"unpack", and "route".
+type is also integrated into pipe-fitting objects such as [pack],
+[unpack], and [route].
 
-<P>  In the patch shown above, the topmost "pointer" object holds a pointer to
+<P>  In the patch shown above, the topmost [pointer] object holds a pointer to
 the next object to "play" (by sending it to one of the "voice"
 abstractions at bottom.)  The pointer object takes a "traverse" message to
 set it to the head of the list (named "pd-data"), and "next" messages to
 move to (and output) the next datum in the list (i.e., the next in the list of
-six objects in the score). Another "pointer" object is also used, further
+six objects in the score). Another [pointer] object is also used, further
 down, as a storage cell for pointers just as "float" is for numbers.
 
-<P>  The center of any sequencer is always the "delay" object, which must be
+<P>  The center of any sequencer is always the [delay] object, which must be
 fed the time difference between each event (including the non-event of hitting
 "start") and the next.  As we extract each of the six objects in the score, we
 must wait the delay for playing that object, and then send its pointer to one
@@ -1112,34 +1066,26 @@ of the "voice" abstractions to play it.  However, we have to inspect the
 object itself to know the delay before playing it.  So, in the loop, we peel off
 the first remaining object to play and inspect the time difference between it
 and the previous one, using this value to set the delay, but also storing the
-pointer in the lower "pointer" and "pack" objects.
+pointer in the lower [pointer] and [pack] objects.
 
 <P>  The time difference needed to set the delay object is obtained using the
-"get template-toplevel x" object.  (This is converted to incremental time
-("-"), corrected for tempo, and fed to the delay.)  Pd provides
-the "get" and "set"
-objects for reading and writing values from data structures.
-The two "get" objects shown here obtain the "x" and "voiceno" fields
+[get template-toplevel x] object.  (This is converted to incremental time
+([-]), corrected for tempo, and fed to the delay.)  Pd provides
+the [get] and [set] objects for reading and writing values from data structures.
+The two [get] objects shown here obtain the "x" and "voiceno" fields
 of the current object.  The template name (template-toplevel) is supplied
-to the "get" objects so that they can look up the offset of the necessary
+to the [get] objects so that they can look up the offset of the necessary
 field(s) in advance, for greater run-time efficiency.
 
 <P>  Once the delay has expired, the object's pointer is recalled (the lower
-"pointer" object), and the voice number is recalled.  This is packed with
+[pointer] object), and the voice number is recalled.  This is packed with
 the pointer itself and routed, so that the pointer goes to the appropriate
 voice.  The voice number is shown as the color of the frequency trace in
 "999" units (first digit red, second green, third blue) and the "route" is
 arbitrarily set up to select among the six primary and secondary colors plus
 black.
 
-<P>  The details of extracting the pitch and dynamic breakpoints from the arrays
-defined in the template are managed in the "voice" abstraction.
-The "voice"
-abstraction receives a
-pointer to a given object and manages the sequencing of the arrays; so it
-contains two sequencers itself.  The nesting of the overall structure of
-the sequencer patch mirrors the nesting of the original data structures.
-Finally, the voice abstraction puts its audio output on a summing bus.
+<P>  The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the "voice" abstraction. The "voice" abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself.  The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.
 
 <P>  More general patches can easily be constructed which access heterogeneous lists
 of objects (having different templates).  In this way, an arbitrarily rich
@@ -1149,20 +1095,20 @@ personal "score language" can be developed and sequenced.
 
 <P>  In general, accessing or changing data is done via "pointers" to
 "scalars".  Numbers and symbols within scalars are accessed using the
-"get" object and changed, in the same way, using "set".  Since lists
+[get] object and changed, in the same way, using [set].  Since lists
 and arrays are composed of scalars, every actual number or symbol in a data
 heap will be a number or symbol element of some scalar.  To access them, it
 suffices to have objects to chase down elements of lists and arrays (given
 either a global name or a pointer to the containing scalar).
 
 <P>  Lists are traversed in the way shown above; to get to a sublist of a scalar,
-the "get" object will provide a pointer, in the same way as it provides
+the [get] object will provide a pointer, in the same way as it provides
 "float"  or "symbol" elements of scalars.  For arrays, an
-"element" object is provided which, given a scalar, a field name and
+[element] object is provided which, given a scalar, a field name and
 a number, chases down the numbered, scalar, element of the named array field.
 
 <P>  To alter "float" or "symbol" elements of scalars is straightforward
-using the "set" object, but arrays and lists can't be set by assignment;
+using the [set] object, but arrays and lists can't be set by assignment;
 there is no suitable data type available within messages.  Lists could
 possibly be "settable" by passing pointers to other lists, but permitting this
 would have required either automatically doing deep copies of data structures
@@ -1173,8 +1119,8 @@ scalar is considered as belonging to that scalar, and is left in memory until
 the scalar is deleted; the data may be changed atom by atom, but primitives
 are not provided which would imply unpredictable execution times.
 
-<P>  The "getsize" and "setsize" objects are provided to access or change
-the number of elements in the array.  For lists, an "append" object
+<P>  The [getsize] and [setsize] objects are provided to access or change
+the number of elements in the array.  For lists, an [append] object
 appends a new scalar for a given template to a list, after the element pointed
 to.  (To insert a scalar at the beginning of a list, the pointer can be set to
 the "head" of the list, a formal location before the first list item.)
@@ -1201,21 +1147,21 @@ dimension; if the dimension is constant, it can't be altered by dragging.
 <P>  Tricky situations can arise when the user changes the contents of templates.
 A change in drawing instructions can be accommodated by simply tracking
 down and redrawing all data objects using the template.  However, changing
-the "struct" object itself make for less straightforward situations.  The
+the [struct] object itself make for less straightforward situations.  The
 user might wish to reorder fields, delete them, add new ones, or rename them.
-When a "struct" object changes, Pd automatically conforms the data from the old
+When a [struct] object changes, Pd automatically conforms the data from the old
 structure to the new one.  Fields with the same name as previously are maintained
 (reordering them as necessary); and if a field disappears but another of the
 same type appears, the new one(s) are taken to be renamings of the old one(s)
 in order of appearance.  New fields which cannot be matched in this way with
 previously existing ones are assumed to be new and are initialized.
 
-<P>  It can happen that two "struct" objects compete to define the same data
+<P>  It can happen that two [struct] objects compete to define the same data
 structure, or that the user reads in data from a file which expects a different
-version of the structure, or alternatively, that the "struct" object for
+version of the structure, or alternatively, that the [struct] object for
 existing data objects disappears.  For this reason, Pd maintains a private
-representation of the last active version of a "struct" until all
-similarly named "structs," as well as all data using that "struct", have
+representation of the last active version of a [struct] until all
+similarly named "structs", as well as all data using that "struct", have
 disappeared. If the user introduces a new version of the "struct" and only
 later deletes the "current" one, the data is only conformed to the new version
 once the old one is deleted.  In this way we avoid getting into situations
@@ -1239,8 +1185,8 @@ mouse clicks.
 adequate to support a variety of modes of data collection and use, such as
 analysis and sequencing.  But the patches required to traverse the data
 collections are not always simple.  It would be desirable to find a more
-straightforward mechanism than that provided by the "pointer", "get"
-and "set" objects.
+straightforward mechanism than that provided by the [pointer], [get]
+and [set] objects.
 
 <P>  The "data" facility, although part of the original plan for Pd, has only
 recently been implemented in its current form, and as (hopefully) the user base
