@@ -20,7 +20,7 @@
 
 <div id=corpus>
 
-<H2>Pd Manual chapter 2: theory of operation</H2>
+<H2>Pd Manual chapter 2: Theory of operation</H2>
 
 <P>
 <A href="index.htm#s2"> back to table of contents</A>
@@ -37,13 +37,13 @@ more theoretical information about computer music) can be found in the
 
 <H3> <A id=s1> 2.1. Overview </A> </H3>
 
-<P>Pd is a real-time graphical programming environment for audio and graphical
+<P> Pd is a real-time graphical programming environment for audio and graphical
 processing. It resembles the MAX system but is much simpler and more portable.
 For example, with Peter Brinkmann's libpd you can have Pure Data as an embeddable
 audio synthesis library. Also Pd has an experimental facility not present in MAX
 that is provided for defining and accessing data structures.
 
-<P>Even though it is light and portable, Pd has many external packages that
+<P> Even though it is light and portable, Pd has many external packages that
 expand its features, like Mark Dank's GEM package which expands Pd to be used
 for simultaneous computer animation and computer audio. Similarly, Zack Lee's Ofelia
 package allows you to use openFrameworks and Lua within Pd for creating audiovisual
@@ -58,7 +58,7 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
+<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
 
 <P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
@@ -220,7 +220,7 @@ several items, any connections between them will be duplicated as well.
 
 <P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects conneted that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
 
-<P>The "duplicate" menu item performs a copy and paste with a small offset so you can see the new boxes.  Similarly, you can then click on an item and drag them all together to a new place on the  screen.
+<P> Note that the pasting puts the selection in the same position it was copied, unless the place is already taken. The "duplicate" menu item performs a copy and paste with a small offset, because the original selection is kept and the place is taken. If you manually "copy" and "paste" items on the same window, witout deleting them, the pasted selection is also given with a little offset, so you can see the new boxes.  You can then click on an item in the pasted selection with an offset to drag them all together to a new spot in the patch window.
 
 <P>To unselect you can click on an empty spot of your patch or use the 'esc' key.
 
@@ -321,7 +321,11 @@ having to confirm, use <code>cmd + shift + Q</code>.
 
 <H3> <A id="s3.7"> 2.3.7. Paste replace </A> </H3>
 
-<P> Not yet.
+<P> The "Paste Replace" entry in the <b>Edit menu</b> doesn't have a shortcut and performs a special paste operation where it replaces a selection of boxes for another kind. For example, first copy one box such as a [float] object. Then select a group of boxes of the same type, for instance, a group of object boxes (note that they don't need to be of the same class). Now go to the <b>Edit menu</b> and select "Paste Replace". All the selected boxes of the same type get replaced by the copied box and connections are preserved. (INCLUDE PIC).
+
+<P> Alternatively, you can copy a number box instead of a [float] object and replace for it in the selected group of objects, or in a selected group of another kind, such as message boxes. Note that the object types in Pd are: objects, messages, GUIs and comments, but 'iemguis' are actually treated in this case as regular object boxes. Hence, the GUI boxes are only the number box, the symbol box and the list box. Also note that these three GUIs are not of the same kind for the purpose of "Paste Replace". A subpatch or an abstraction can be used for "Paste Replace" and they count in the same group of objects. (INCLUDE PICTURE THAT REPLACES OBJECTS OF THE SAME KIND WITH AN OBJECT OF ANOTHER KIND).
+
+<P> If you have a selection of objects to replace that include different types of objects, the "Paste Replace" will only replace the boxes of the same type that it was copied.  (INCLUDE PIC).
 
 <H3> <A id="s4"> 2.4. Messages </A> </H3>
 
