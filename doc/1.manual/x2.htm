@@ -35,7 +35,7 @@ are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive g
 more theoretical information about computer music) can be found in the
 <A href=x1.htm>previous chapter</A>.
 
-<H3> <A id=s1> 2.1. overview </A> </H3>
+<H3> <A id=s1> 2.1. Overview </A> </H3>
 
 <P>Pd is a real-time graphical programming environment for audio and graphical
 processing. It resembles the MAX system but is much simpler and more portable.
@@ -49,7 +49,7 @@ for simultaneous computer animation and computer audio. Similarly, Zack Lee's Of
 package allows you to use openFrameworks and Lua within Pd for creating audiovisual
 artwork or multimedia applications such as games.
 
-<H3> <A id=s1.1> 2.1.1. the main window, canvases, and printout </A> </H3>
+<H3> <A id=s1.1> 2.1.1. The main window, canvases, and printout </A> </H3>
 
 <P>When Pd is running, you'll see a main "Pd" window, and possibly one or more
 "canvases" or "patches". The main Pd window looks like this:
@@ -83,7 +83,7 @@ on bottom.
 Pd's printout appears on the main "Pd" window,
 unless you redirect it elsewhere.
 
-<H3> <A id="s1.2"> 2.1.2. object boxes </A> </H3>
+<H3> <A id="s1.2"> 2.1.2. Object boxes </A> </H3>
 <P>  Pd patches can have four types of boxes: <I> object, message, GUI, </I>
 and <I> comment </I>.
 
@@ -96,16 +96,11 @@ arguments </I>, tell Pd how to initialize the object.  If you type for example,
     <IMG src="fig1.3.jpg" ALT="object">
 </P></CENTER>
 
-<P>the "+" specifies the <I> class </I> of the object.
-In this case the object will be the kind that carries out addition,
-and the "13" initializes the amount to add.
+<P>the "+" specifies the <I> class </I> of the object. In this case the object will be the kind that carries out addition, and the "13" initializes the amount to add.
 
-<P> Atoms are either numbers or <I>
-symbols </I> like "+".  Anything that is not a valid number is considered a symbol.   Valid numbers may or may not have a decimal point (for instance, 12, 15.6, -.456), or may be written in exponential notation (such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).  Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).
+<P> Atoms are either numbers or <I> symbols </I> like "+".  Anything that is not a valid number is considered a symbol.   Valid numbers may or may not have a decimal point (for instance, 12, 15.6, -.456), or may be written in exponential notation (such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).  Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).
 
-<P> Non-valid numbers which are read as symbols
-include things like "+5" and "0..6" as well as words and names such as "Zack"
-or "cat".  The symbols "gore", "Gore", and "GORE" are all distinct.
+<P> Non-valid numbers which are read as symbols include things like "+5" and "0..6" as well as words and names such as "Zack" or "cat".  The symbols "gore", "Gore", and "GORE" are all distinct.
 
 <P> The text you type into an object box determines how
 many and what kinds of inlets and outlets the object will have.  Some
@@ -138,7 +133,7 @@ inlet; if numbers are sent over it they are automatically converted to
 signals.  Signal connections may not be made to control inlets; some sort
 of explicit conversion must be specified.
 
-<H3> <A id="s1.3"> 2.1.3. message and GUI boxes </A> </H3>
+<H3> <A id="s1.3"> 2.1.3. Message and GUI boxes </A> </H3>
 
 <P>The border of a box tells you how its text is interpreted and how the box
 functions.  Object boxes (as in the previous example) use the text to create
@@ -171,7 +166,7 @@ actions; see <A href="x2.htm#s2.7"> getting help </A> to find out how to look th
 <P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
 or arbitrary lists of atoms.
 
-<H3> <A id="s1.4"> 2.1.4. patches and files </A> </H3>
+<H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
 <P>You can create or open a Pd file from the <b>File Menu</b>, as well as close and save them. Note the handy ascellerators. You can also edit the font size of of a patch if its window is focused, just use the <b>Font</b> dialog entry again from the <b>Edit Menu</b>. The font size setting of patch gets saved within the patch file.
 
@@ -186,11 +181,11 @@ colons (semicolons if you're using windows.)  Most objects which can read files
 search for them along the search path, but when Pd writes files they go to
 the directory where the patch was found.
 
-<H3> <A id=s2> 2.2. editing Pd patches </A> </H3>
+<H3> <A id=s2> 2.2. Editing Pd patches </A> </H3>
 
 <P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the <code>cmd + e</code> ascelerator to get in and out of Edit mode.
 
-<H3> <A id=s2.1> 2.2.1. edit and run mode </A> </H3>
+<H3> <A id=s2.1> 2.2.1. Edit and Run mode </A> </H3>
 
 <p> In edit mode, you can move boxes around by clicking on them and dragging. You can click on an empty spot and drag to select more than one box and move them with their connections. You can edit their text, create, delete objects and make or cut connections. More details to come.
 
@@ -198,7 +193,7 @@ the directory where the patch was found.
 
 <p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press <code>cmd</code> key and you'll note the shape of an arrow is back until you release the key.
 
-<H3> <A id=s2.2> 2.2.2. creating boxes </A> </H3>
+<H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
 <b>Put Menu</b>.   Note the handy accelerators. If you are in run mode and click on an entry on the <b>Put Menu</b> or use a shortcut, Pd goes automatically into Edit mode. When you create boxes this way, they are automatically selected and follow the mouse cursor position; drag them around as desired and you can click to position them where you want. Alternatively you can hit 'esc' to deselect it, which will also place the object. Object and message boxes are empty at first, you can move them and also position them by just start typing into them.
@@ -207,7 +202,7 @@ the directory where the patch was found.
 (in the Edit menu) than to use the "Put" menu.  If you select and duplicate
 several items, any connections between them will be duplicated as well.
 
-<H3> <A id=s2.3> 2.2.3. selecting items and moving them </A> </H3>
+<H3> <A id=s2.3> 2.2.3. Selecting items and moving them </A> </H3>
 
 <P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use <code>shift + click</code> on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
 
@@ -217,7 +212,7 @@ several items, any connections between them will be duplicated as well.
 
 <P>If you select boxes that are connected, the connections (patch cords) are also selected and moved around. You can't just select patch cords with click and drag and you can only select a single connection by clicking on it.
 
-<H3> <A id=s2.4> 2.2.4. deleting, cutting, and pasting </A> </H3>
+<H3> <A id=s2.4> 2.2.4. Deleting, cutting, copying and pasting </A> </H3>
 
 <P>If you select one connection by clicking on it, you can "delete" it by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
 
@@ -231,7 +226,7 @@ several items, any connections between them will be duplicated as well.
 
 <P>On the other hand, and even though you can cut/copy a patch selection and paste to a different windows within Pd, cut/paste patch elements isn't integrated with the OS for patch seections. This means you can't paste between diferent versions or flavors of Pd. You can't copy and paste to a Pd subprocess either (instantiated via a [pd~] object).
 
-<H3> <A id=s2.5> 2.2.5. changing the text </A> </H3>
+<H3> <A id=s2.5> 2.2.5. Changing the text </A> </H3>
 
 <P> To change a text in an object, message or comment, you can select it and then edit the text.  If you only click once, the entire text is selected and your typing will replace everything. Click again and drag to select a portion of the text to retype. You can also use cut/copy/paste as mentioned.
 
@@ -241,7 +236,7 @@ several items, any connections between them will be duplicated as well.
 object. </I>  Changing the text in an "object" box deletes the old
 object and creates a new one; the internal state of the old one is lost.
 
-<H3> <A id=s2.6> 2.2.6. connecting and disconnecting boxes </A> </H3>
+<H3> <A id=s2.6> 2.2.6. Connecting and disconnecting boxes </A> </H3>
 
 <P>This subsection only describes the simplest way to make and delete connection between two boxes. For more advanced and convenient techniques and shortcuts, refer to the next section.
 
@@ -250,35 +245,74 @@ object and creates a new one; the internal state of the old one is lost.
 <P>Connections are broken by selecting them and using "cut" or the backspace
 or delete key.
 
-<H3> <A id=s2.7> 2.2.7. popup menu for properties, open, and help </A> </H3>
+<H3> <A id=s2.7> 2.2.7. Popup menu for 'properties', 'open' and 'help' </A> </H3>
 
 <P> All the "clicking" mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering "properties," "open," and "help". For Macintosh users who may only have one button on their mouse, double-clicking or <code>alt + </code> click are mapped to right-click. Regarding a trackpad, then you can click with two fingers.
 
 <P> Selecting "help" on an object gets a Pd patch that demonstrates how to use it.  "Help" for the canvas as a whole (right-clicking outside any object) gives a list of all built-in objects.
 
-<P> The "open" menu item is only enabled if you right-click on a subpatch
-(see below) and causes Pd to open it.  Ordinary subpatches may also be opened
-by clicking on them, but for "graph-on-parent" ones, this is the only way to
-do it.
+<P> The "open" menu item is only enabled if you right-click on a subpatch (see <A href="x2.htm#s2.8"> subpatches </A>) and causes Pd to open it.  Ordinary subpatches may also be opened by clicking on them, but for "graph-on-parent" ones, this is the only way to do it.
 
 <P> The "properties" dialog allows you to change certain settings of GUI
 objects, or of the patch itself (by clicking outside any box.)
 
-<H3> <A id=s2.7> 2.2.8. miscellaneous </A> </H3>
+<H3> <A id=s2.7> 2.2.8. Miscellaneous </A> </H3>
 
 <P> <code>cmd + q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
 having to confirm, use <code>cmd + shift + Q</code>.
 
-<H3> <A id="s3"> 2.3. advanced patch editing </A> </H3>
+<H3> <A id="s3"> 2.3. Advanced patch editing </A> </H3>
 
-<P> New section for intelligent pattching and stuff".
+<P> This section describes advanced techniques and shortcuts for editing patches.
 
-<H3> <A id="s4"> 2.4. messages </A> </H3>
+<H3> <A id="s3.1"> 2.3.1 Tab navigation </A> </H3>
+
+<P> If you have a single selected box you can press <code>tab</code> to navigate and change selection to other objects. The selection squence follows the order in which the object were created. When reaching the last box in the window it goes back to the first one. (INCLUDE PIC).
+
+<P> Using <code>tab</code> also works in the same way for patch cords if you have one selected. (INCLUDE PIC).
+
+<P> If you're creating a connection by clickin in an outlet and dragging a patch cord you can also using <code>tab</code>. The navigation order is left to right and it also circles back. (INCLUDE PIC).
+
+<H3> <A id="s3.2"> 2.3.2 Autopatching </A> </H3>
+
+<P> By default, Pd has an 'autopatching' mode set to on. You can disable it via startup flags (see '-autopatch' flag <a href="x3.htm" id=s3>Preferences and startup options </A>). This works with the shortcuts from the <b>Put menu</b> for inserting boxes. If you have a selected box and use an ascellerator to create another box (auch as <code>cmd + 1</code> to create an object box), the created box is placed below the selected object and a connection is made from the first outlet of the selected object into the inlet of the newly created object (granted that both objects have an oultet and an inlet for the connection to happen).  (INCLUDE PIC).
+
+<P> Once the new box is created, it is also selected, so you can continue with autopatching by adding yet more boxes. In the case of object and message boxes you can also start typing text into it before autopatching into another newly created box, since when you autopatch for the next one the object or message box gets desselected and created.  (INCLUDE PIC).
+
+<P> You can also autopatch into a newly created subpatches (see <A href="x2.htm#s2.8"> subpatches </A>). By creating an object box and typing [pd], as soon as you desselect the object a subpatch is created with an inlet - either a control inlet ([inlet]) if the object above is a control object, or a signal inlet ([inlet~]) if it is a tilde object instead.  (INCLUDE PIC).
+
+<H3> <A id="s3.3"> 2.3.3 Duplicate connections </A> </H3>
+
+<P> If you select a connection between two objects that have more outlets/inlets for more connections, you can use <code>cmd + d</code> to duplicate and create more connections. (INCLUDE PIC).
+
+<H3> <A id="s3.4"> 2.3.4 Managing connections with the shift key </A> </H3>
+
+<P> - Swap connections: If you selected a connection and use <code>shift + click</code> to select another, you swap the connections (INCLUDE PIC).
+
+<P> - Fan connections: If you don't have selected boxes and start creating a connection by clickig an outlet and dragging a cord, you use <code>shift</code> to create a connection into an inlet instead of releasing the mouse button so that another cord is created for you to fan out and choose another inlet to conect to (INCLUDE PIC).
+
+<P> - One to many: If you have a group of target boxes that are selected, you can drag a cord from another box and press <code>shift</code> to create a connection into the same inlet number of the selected boxes (which do not need to be of the same type or class) (INCLUDE PIC).
+
+<P> - Many to one: If you have a group of origin boxes that are selected, you can drag a cord from an outlet into another box and press <code>shift</code> to create a connection from the same outlet number of the selected boxes (which do not need to be of the same type or class) (INCLUDE PIC).
+
+<P> - Connect multiple outlets and inlets of 2 boxes: If you have 2 selected boxes and start creating a connection by clickig an outlet and dragging a cord into an inlet, you use <code>shift</code> to create all connections from a matching number outlets and inlets from the connection that was made. If any existing connection already exists between the two boxes, remaining unmade connections are created (INCLUDE PIC).
+
+<P> - Connect outlets of multiple boxes into another: If there's a selected a group of boxes, you can start creating a connection by clickig an outlet and dragging a cord into an inlet of another selected box and when you press <code>shift</code> connections are made from the same outlet of the boxes (which do not need to be of the same type or class) into separate inlets from the first created connection. (INCLUDE PIC).
+
+<H3> <A id="s3.5"> 2.3.5 (Dis)Connect selection </A> </H3>
+
+
+
+
+
+
+
+<H3> <A id="s4"> 2.4. Messages </A> </H3>
 
 <P> In Pd, objects intercommunicate by sending messages and/or audio signals.
 Pd messages are sporadic, like MIDI messages or music N "Note cards."
 
-<H3> <A id="s4.1"> 2.4.1. anatomy of a message </A> </H3>
+<H3> <A id="s4.1"> 2.4.1. Anatomy of a message </A> </H3>
 
 <P>Messages contain a selector followed by
 any number of arguments.  The selector is a symbol, which appears in the patch
@@ -312,7 +346,7 @@ which cannot be used as a selector.  A single number is always given the
 "float" selector automatically, and a message with a number followed by other
 arguments is given the selector "list".
 
-<H3> <A id="s4.2"> 2.4.2. depth first message passing </A> </H3>
+<H3> <A id="s4.2"> 2.4.2. Depth first message passing </A> </H3>
 
 <P> In Pd whenever a message is initiated, the receiver may then send out
 further messages in turn, and the receivers of those messages can send yet
@@ -345,7 +379,7 @@ in it.  When [delay] receives a message it schedules a message for the
 future (even if the time delay is 0) and is then "finished;" Pd's internal
 scheduler will wake the delay back up later.
 
-<H3> <A id="s4.3"> 2.4.3. hot and cold inlets and right to left outlet order </A> </H3>
+<H3> <A id="s4.3"> 2.4.3. Hot and cold inlets and right to left outlet order </A> </H3>
 
 <P> With few exceptions (notably [timer]), objects treat their leftmost
 inlet as "hot" in the sense that messages to left inlets can result in output
@@ -398,7 +432,7 @@ the order in which two messages are sent to a single "cold" inlet.  In this
 situation, since the messages are merged, the last value to be received is
 the value that is used in the computation.
 
-<H3> <A id="s4.4"> 2.4.4. message boxes </A> </H3>
+<H3> <A id="s4.4"> 2.4.4. Message boxes </A> </H3>
 
 <p>Message boxes are text boxes in which you type a message.  When the message
 box is activated, either by clicking on it or sending something to its inlet,
@@ -455,7 +489,7 @@ activate it.)  Dollar sign variables are either numbers or symbols depending
 on the incoming message; if symbols, you may even use them to specify variable
 message selectors or destinations.
 
-<H3> <A id="s5"> 2.5. audio signals </A> </H3>
+<H3> <A id="s5"> 2.5. Audio signals </A> </H3>
 
 <P>
 Using Pd you can build audio patches which can synthesize musical sounds,
@@ -463,7 +497,7 @@ analyze incoming sounds, process incoming sounds to produce transformed
 audio outputs, or integrate audio processing with other media.  This section
 describes how Pd treats audio signals.
 
-<H3> <A id="s5.1"> 2.5.1. sample rate and format </A> </H3>
+<H3> <A id="s5.1"> 2.5.1. Sample rate and format </A> </H3>
 
 <P>
 Pd's audio signals are internally kept as 32-bit floating point numbers, so
@@ -473,12 +507,11 @@ between the values of -1 and 1; and output values will be clipped to that range.
 Pd assumes a sample rate of 44100 unless you override this (
 in Pd's command line or in the "audio setup" dialog).
 
-<P>
-Pd can read or write samples to files either in 16-bit or 24-bit fixed point
+<P> Pd can read or write samples to files either in 16-bit or 24-bit fixed point
 or in 32-bit floating point, in 'wave', 'aiff', 'caf', and 'next' formats via
 the [soundfiler], [readsf~], and [writesf~] objects.
 
-<H3> <A id="s5.2"> 2.5.2. tilde objects and audio connections </A> </H3>
+<H3> <A id="s5.2"> 2.5.2. Tilde objects and audio connections </A> </H3>
 
 <P>Audio computations in Pd are carried out by "tilde objects" such as [osc~]
 whose names conventionally end in a tilde character to warn you what they
@@ -501,9 +534,9 @@ find the source of the error.  You can build algorithms with feedback using
 nonlocal signal connections.
 
 <P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
-objects.
+objects (see <A href="x2.htm#s2.8"> subpatches </A>).
 
-<H3> <A id=s5.3> 2.5.3. converting audio to and from messages </A> </H3>
+<H3> <A id=s5.3> 2.5.3. Converting audio to and from messages </A> </H3>
 
 <P> If you want to use a control value as a signal, you can use the [sig~] object to convert it.  The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~] and [lop~] objects can be configured to take control or signal inputs in their 2nd inlet. You can also use [line~] and [vline~] to "convert" from control to signal with a smoothen ramp, so to speak.
 
@@ -514,7 +547,7 @@ but you can also sample a signal with [tabwrite~] and then get access it via
 objects, the simplest of which is [env~], the envelope follower, that outputs
 control data floats.
 
-<H3> <A id=s5.4> 2.5.4. switching and blocking </A> </H3>
+<H3> <A id=s5.4> 2.5.4. Switching and blocking </A> </H3>
 
 <P>You can use the [switch~] or [block~] objects to turn portions of your audio computation on and off and to control the block size of computation.  There may be only one [switch~] or [block~] object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested [switch~]/[block~] objects. Both [s]witch~] and [block~] take a block size and an overlap factor as arguments; so for instance, [block~ 1024 4] specifies 1024 sample
 blocks, overlapped by a factor of 4 relative to the parent window. The [switch~] version carries a small computational overhead in addition to whatever overhead is associated with changing the block size.
@@ -538,7 +571,7 @@ value for the next time it comes back on.
 costs a fairly small overhead; a cheaper way to get outputs is to use [throw~]
 inside the switched module and [catch~] outside it.
 
-<H3> <A id=s5.5> 2.5.5. nonlocal signal connections </A> </H3>
+<H3> <A id=s5.5> 2.5.5. Nonlocal signal connections </A> </H3>
 
 <P>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm's input.  This can be done using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or [delread4~] pairs. Both [throw~] and [catch~] implement a summing bus; [throw~] adds into the bus and [catch~] reads out the accumulated signal and zeros the bus for the next time around.  There can be many [throw~] objects associated with a single [catch~], but a [throw~] can't talk to more than one [catch~].  You can reset the destination of a [throw~] if you want to.
 
@@ -550,7 +583,7 @@ are [inlet~] and [outlet~].
 
 <P> When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn't get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.), the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay.
 
-<H3> <A id=s5.6> 2.5.6. multichannel signals </A> </H3>
+<H3> <A id=s5.6> 2.5.6. Multichannel signals </A> </H3>
 
 <P> As of Pd version 0.54-0, signals may be multichannel.  Every signal has a <i>length</i> equal to the window's block size (64 by default), and also has a <i>channel count</i> which is 1 by default.  The [snake~] object can combine any number of single-channel signals into a multichannel one, or alternatively can split a multichannel signal into its component single-channel ones.  Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~]) can be used to pass multichannel signals from window to window, and [dac~] and [adc~] can input and output several inputs or outputs into, or out of, one multichannel signal.
 
@@ -569,13 +602,13 @@ operations on multichannel signals.  Signal inputs and outputs of cloned patches
 can be used to  distribute multichannel signals among the individual cloned
 patches.
 
-<H3> <A id=s6> 2.6. scheduling </A> </H3>
+<H3> <A id=s6> 2.6. Scheduling </A> </H3>
 
 <P>Pd uses 64-bit floating point numbers to represent time, providing sample
 accuracy and essentially never overflowing.  Time appears to the user
 in milliseconds.
 
-<H3> <A id=s6.1> 2.6.1. audio and messages </A> </H3>
+<H3> <A id=s6.1> 2.6.1. Audio and messages </A> </H3>
 
 <P>Audio and message processing are interleaved in Pd.  Audio processing is
 scheduled every 64 samples at Pd's sample rate; at 44100 Hz. this gives a
@@ -594,7 +627,7 @@ simultaneously.
 of zero.  This delayed cascade happens after the present cascade has finished,
 but at the same logical time.
 
-<H3> <A id=s6.2> 2.6.2. computation load </A> </H3>
+<H3> <A id=s6.2> 2.6.2. Computation load </A> </H3>
 
 <P> The Pd scheduler maintains a (user-specified) lead on its computations;
 that is, it tries to keep ahead of real time by a small amount in order to be
@@ -616,7 +649,7 @@ sub-window is closed, Pd suspends sending the GUI update messages for it;
 but not so for miniaturized windows as of version 0.32.  You should really
 close them when you aren't using them.
 
-<H3> <A id=s6.3> 2.6.3. determinism </A> </H3>
+<H3> <A id=s6.3> 2.6.3. Determinism </A> </H3>
 
 <P>All message cascades that are scheduled (via [delay] and
 its relatives) to happen before a given audio tick will happen as scheduled
@@ -637,12 +670,12 @@ time, with nondeterministic results.)
 <P> If two message cascades are scheduled for the same logical time, they are
 carried out in the order they were scheduled.
 
-<H3> <A id=s7> 2.7. semantics </A> </H3>
+<H3> <A id=s7> 2.7. Semantics </A> </H3>
 
 <p>This section describes how objects in Pd are created, how they store data and
 how object and other boxes pass messages among themselves.
 
-<H3> <A id=s7.1> 2.7.1. creation of objects </A> </H3>
+<H3> <A id=s7.1> 2.7.1. Creation of objects </A> </H3>
 
 <p>The text in a box has a different function depending on whether it is a message,
 atom (number/symbol), or object box.  In message boxes the text specifies the
@@ -663,7 +696,7 @@ being created.  Thus in [makenote 64 250] the selector "makenote" determines
 the class of object to create and the creation arguments "64" and "250" become
 the initial velocity and duration.
 
-<H3> <A id=s7.2> 2.7.2. persistence of data </A> </H3>
+<H3> <A id=s7.2> 2.7.2. Persistence of data </A> </H3>
 
 <p>Among the design principles of Pd is that patches should be printable, in the
 sense that the appearance of a patch should fully determine its functionality.
@@ -685,7 +718,7 @@ changed.
 if you are going to override them later; this is confusing to anyone who tries
 to understand the patch.
 
-<H3> <A id=s7.3> 2.7.3. message passing </A> </H3>
+<H3> <A id=s7.3> 2.7.3. Message passing </A> </H3>
 
 <p>Messages in Pd consist of a selector (a symbol) and zero or more arguments
 (which may be symbols or numbers).  To pass a message to an object, Pd first
@@ -711,7 +744,7 @@ messages by setting their value and then outputting it.
 to messages it is sent, and may take "float" and "bang" messages, or others
 in addition or instead of them.
 
-<H3> <A id=s7.4> 2.7.4. inlets and lists </A> </H3>
+<H3> <A id=s7.4> 2.7.4. Inlets and lists </A> </H3>
 
 <p>The leftmost connection point at the top of most objects represents the object
 itself.  Any other dark rectangle is a separate object called an "inlet"
@@ -725,7 +758,7 @@ to the "list" message by distributing the arguments of the message to their
 inlets, except for the first argument which is passed as a "float" or
 "symbol" message to the object proper.
 
-<H3> <A id=s7.5> 2.7.5. dollar signs </A> </H3>
+<H3> <A id=s7.5> 2.7.5. Dollar signs </A> </H3>
 
 <p>In message or object boxes, message arguments starting with a dollar sign
 and a number (like "$1" or "$3-bazoo") are variables which are substituted
@@ -760,7 +793,7 @@ example,   have an abstraction  "a1" that invokes an abstraction "a2" twice, as
 "a1 cat" and "a1 dog".  Inside the four "a2" copies,   $1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
 
-<H3> <A id="s8"> 2.8. subpatches </A> </H3>
+<H3> <A id="s8"> 2.8. Subpatches </A> </H3>
 
 <p>Pd offers two mechanisms for making subpatches, called "one-off subpatches"
 and "abstractions."  In either case the subpatch appears as an object box
@@ -785,7 +818,7 @@ signals. Note you can also mix control messages in an [inlet~] via its right out
 but a signal outlet only takes signals. Inlets and outlets appear on the invoking box
 in the same left-to-right order as they appear in the subpatch.
 
-<H3> <A id="s8.1"> 2.8.1. abstractions </A> </H3>
+<H3> <A id="s8.1"> 2.8.1. Abstractions </A> </H3>
 
 <P> To make an abstraction, save a patch with a name such as "abstraction1.pd"
 and then invoke it in an object box as [abstraction1]:
@@ -852,7 +885,7 @@ in the patch.
 instead; so the number box in the sub-patch in the example above is the same
 one as you see in the box.  Only controls are made visible in this way
 
-<H3> <A id=s9> 2.9. numeric arrays </A> </H3>
+<H3> <A id=s9> 2.9. Numeric arrays </A> </H3>
 
 <p>Linear arrays of numbers recur throughout the computer musician's bag of tricks,
 beginning with the wavetable oscillator.  The wavetable oscillator later was
@@ -945,6 +978,7 @@ width and height, in screen pixels.
 in the tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
 <H3> <A id=s10> 2.10. Data structures </A> </H3>
+
 <p>(Note: this section is adapted from an article submitted to ICMC 2002.)
 
 <P>  The original idea in developing Pd was to make a real-time computer music
@@ -968,14 +1002,11 @@ programming language, but with a facility for attaching shapes and colors to
 the data, so that the user can visualize and/or edit it.  The data itself can
 be edited from scratch or can be imported from files, generated
 algorithmically, or derived from analyses of incoming sounds or other data
-streams.
-
-Here is one simple
-example of a very short musical sketch realized using Pd:
+streams. Here is one simple example of a very short musical sketch realized using Pd:
 
 <CENTER><P>  <IMG src="fig9.1.jpg" ALT="graphical score">  </P></CENTER>
 
-<p>The example, which only lasts a few seconds, is a polyphonic collection of
+<p> The example, which only lasts a few seconds, is a polyphonic collection of
 time-varying  noise bands. The graphical "score" consists of six objects, each
 having a small grab point at left, a black shape to show dynamic, and a colored
 shape to show changing frequency and bandwidth.  The horizontal axis represents
