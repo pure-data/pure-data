@@ -35,7 +35,7 @@ are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive g
 more theoretical information about computer music) can be found in the
 <A href=x1.htm>previous chapter</A>.
 
-<H3> <A id=s1> 2.1 overview </A> </H3>
+<H3> <A id=s1> 2.1. overview </A> </H3>
 
 <P>Pd is a real-time graphical programming environment for audio and graphical
 processing. It resembles the MAX system but is much simpler and more portable.
@@ -269,12 +269,16 @@ objects, or of the patch itself (by clicking outside any box.)
 <P> <code>cmd + q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
 having to confirm, use <code>cmd + shift + Q</code>.
 
-<H3> <A id="s3"> 2.3. messages </A> </H3>
+<H3> <A id="s3"> 2.3. advanced patch editing </A> </H3>
+
+<P> New section for intelligent pattching and stuff".
+
+<H3> <A id="s4"> 2.4. messages </A> </H3>
 
 <P> In Pd, objects intercommunicate by sending messages and/or audio signals.
 Pd messages are sporadic, like MIDI messages or music N "Note cards."
 
-<H3> <A id="s3.1"> 2.3.1. anatomy of a message </A> </H3>
+<H3> <A id="s4.1"> 2.4.1. anatomy of a message </A> </H3>
 
 <P>Messages contain a selector followed by
 any number of arguments.  The selector is a symbol, which appears in the patch
@@ -308,7 +312,7 @@ which cannot be used as a selector.  A single number is always given the
 "float" selector automatically, and a message with a number followed by other
 arguments is given the selector "list".
 
-<H3> <A id="s3.2"> 2.3.2. depth first message passing </A> </H3>
+<H3> <A id="s4.2"> 2.4.2. depth first message passing </A> </H3>
 
 <P> In Pd whenever a message is initiated, the receiver may then send out
 further messages in turn, and the receivers of those messages can send yet
@@ -341,8 +345,7 @@ in it.  When [delay] receives a message it schedules a message for the
 future (even if the time delay is 0) and is then "finished;" Pd's internal
 scheduler will wake the delay back up later.
 
-<H3> <A id="s3.3">
-2.3.3. hot and cold inlets and right to left outlet order </A> </H3>
+<H3> <A id="s4.3"> 2.4.3. hot and cold inlets and right to left outlet order </A> </H3>
 
 <P> With few exceptions (notably [timer]), objects treat their leftmost
 inlet as "hot" in the sense that messages to left inlets can result in output
@@ -395,7 +398,7 @@ the order in which two messages are sent to a single "cold" inlet.  In this
 situation, since the messages are merged, the last value to be received is
 the value that is used in the computation.
 
-<H3> <A id="s3.4"> 2.3.4. message boxes </A> </H3>
+<H3> <A id="s4.4"> 2.4.4. message boxes </A> </H3>
 
 <p>Message boxes are text boxes in which you type a message.  When the message
 box is activated, either by clicking on it or sending something to its inlet,
@@ -452,7 +455,7 @@ activate it.)  Dollar sign variables are either numbers or symbols depending
 on the incoming message; if symbols, you may even use them to specify variable
 message selectors or destinations.
 
-<H3> <A id="s4"> 2.4. audio signals </A> </H3>
+<H3> <A id="s5"> 2.5. audio signals </A> </H3>
 
 <P>
 Using Pd you can build audio patches which can synthesize musical sounds,
@@ -460,7 +463,7 @@ analyze incoming sounds, process incoming sounds to produce transformed
 audio outputs, or integrate audio processing with other media.  This section
 describes how Pd treats audio signals.
 
-<H3> <A id="s4.1"> 2.4.1. sample rate and format </A> </H3>
+<H3> <A id="s5.1"> 2.5.1. sample rate and format </A> </H3>
 
 <P>
 Pd's audio signals are internally kept as 32-bit floating point numbers, so
@@ -475,7 +478,7 @@ Pd can read or write samples to files either in 16-bit or 24-bit fixed point
 or in 32-bit floating point, in 'wave', 'aiff', 'caf', and 'next' formats via
 the [soundfiler], [readsf~], and [writesf~] objects.
 
-<H3> <A id="s4.2"> 2.4.2. tilde objects and audio connections </A> </H3>
+<H3> <A id="s5.2"> 2.5.2. tilde objects and audio connections </A> </H3>
 
 <P>Audio computations in Pd are carried out by "tilde objects" such as [osc~]
 whose names conventionally end in a tilde character to warn you what they
@@ -500,7 +503,7 @@ nonlocal signal connections.
 <P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
 objects.
 
-<H3> <A id=s4.3> 2.4.3. converting audio to and from messages </A> </H3>
+<H3> <A id=s5.3> 2.5.3. converting audio to and from messages </A> </H3>
 
 <P> If you want to use a control value as a signal, you can use the [sig~] object to convert it.  The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~] and [lop~] objects can be configured to take control or signal inputs in their 2nd inlet. You can also use [line~] and [vline~] to "convert" from control to signal with a smoothen ramp, so to speak.
 
@@ -511,7 +514,7 @@ but you can also sample a signal with [tabwrite~] and then get access it via
 objects, the simplest of which is [env~], the envelope follower, that outputs
 control data floats.
 
-<H3> <A id=s4.4> 2.4.4. switching and blocking </A> </H3>
+<H3> <A id=s5.4> 2.5.4. switching and blocking </A> </H3>
 
 <P>You can use the [switch~] or [block~] objects to turn portions of your audio computation on and off and to control the block size of computation.  There may be only one [switch~] or [block~] object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested [switch~]/[block~] objects. Both [s]witch~] and [block~] take a block size and an overlap factor as arguments; so for instance, [block~ 1024 4] specifies 1024 sample
 blocks, overlapped by a factor of 4 relative to the parent window. The [switch~] version carries a small computational overhead in addition to whatever overhead is associated with changing the block size.
@@ -535,7 +538,7 @@ value for the next time it comes back on.
 costs a fairly small overhead; a cheaper way to get outputs is to use [throw~]
 inside the switched module and [catch~] outside it.
 
-<H3> <A id=s4.5> 2.4.5. nonlocal signal connections </A> </H3>
+<H3> <A id=s5.5> 2.5.5. nonlocal signal connections </A> </H3>
 
 <P>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm's input.  This can be done using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or [delread4~] pairs. Both [throw~] and [catch~] implement a summing bus; [throw~] adds into the bus and [catch~] reads out the accumulated signal and zeros the bus for the next time around.  There can be many [throw~] objects associated with a single [catch~], but a [throw~] can't talk to more than one [catch~].  You can reset the destination of a [throw~] if you want to.
 
@@ -547,9 +550,9 @@ are [inlet~] and [outlet~].
 
 <P> When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn't get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.), the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay.
 
-<H3> <A id=s4.6> 2.4.6. multichannel signals </A> </H3>
+<H3> <A id=s5.6> 2.5.6. multichannel signals </A> </H3>
 
-<P> As of Pd version 0.54, signals may be multichannel.  Every signal has a <i>length</i> equal to the window's block size (64 by default), and also has a <i>channel count</i> which is 1 by default.  The [snake~] object can combine any number of single-channel signals into a multichannel one, or alternatively can split a multichannel signal into its component single-channel ones.  Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~]) can be used to pass multichannel signals from window to window, and [dac~] and [adc~] can input and output several inputs or outputs into, or out of, one multichannel signal.
+<P> As of Pd version 0.54-0, signals may be multichannel.  Every signal has a <i>length</i> equal to the window's block size (64 by default), and also has a <i>channel count</i> which is 1 by default.  The [snake~] object can combine any number of single-channel signals into a multichannel one, or alternatively can split a multichannel signal into its component single-channel ones.  Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~]) can be used to pass multichannel signals from window to window, and [dac~] and [adc~] can input and output several inputs or outputs into, or out of, one multichannel signal.
 
 <P> The [receive~], [catch~], and [adc~] objects take arguments to specify the desired number of channels.
 
@@ -566,13 +569,13 @@ operations on multichannel signals.  Signal inputs and outputs of cloned patches
 can be used to  distribute multichannel signals among the individual cloned
 patches.
 
-<H3> <A id=s5> 2.5. scheduling </A> </H3>
+<H3> <A id=s6> 2.6. scheduling </A> </H3>
 
 <P>Pd uses 64-bit floating point numbers to represent time, providing sample
 accuracy and essentially never overflowing.  Time appears to the user
 in milliseconds.
 
-<H3> <A id=s5.1> 2.5.1. audio and messages </A> </H3>
+<H3> <A id=s6.1> 2.6.1. audio and messages </A> </H3>
 
 <P>Audio and message processing are interleaved in Pd.  Audio processing is
 scheduled every 64 samples at Pd's sample rate; at 44100 Hz. this gives a
@@ -591,7 +594,7 @@ simultaneously.
 of zero.  This delayed cascade happens after the present cascade has finished,
 but at the same logical time.
 
-<H3> <A id=s5.2> 2.5.2. computation load </A> </H3>
+<H3> <A id=s6.2> 2.6.2. computation load </A> </H3>
 
 <P> The Pd scheduler maintains a (user-specified) lead on its computations;
 that is, it tries to keep ahead of real time by a small amount in order to be
@@ -613,7 +616,7 @@ sub-window is closed, Pd suspends sending the GUI update messages for it;
 but not so for miniaturized windows as of version 0.32.  You should really
 close them when you aren't using them.
 
-<H3> <A id=s5.3> 2.5.3. determinism </A> </H3>
+<H3> <A id=s6.3> 2.6.3. determinism </A> </H3>
 
 <P>All message cascades that are scheduled (via [delay] and
 its relatives) to happen before a given audio tick will happen as scheduled
@@ -634,12 +637,12 @@ time, with nondeterministic results.)
 <P> If two message cascades are scheduled for the same logical time, they are
 carried out in the order they were scheduled.
 
-<H3> <A id=s6> 2.6. semantics </A> </H3>
+<H3> <A id=s7> 2.7. semantics </A> </H3>
 
 <p>This section describes how objects in Pd are created, how they store data and
 how object and other boxes pass messages among themselves.
 
-<H3> <A id=s6.1> 2.6.1. creation of objects </A> </H3>
+<H3> <A id=s7.1> 2.7.1. creation of objects </A> </H3>
 
 <p>The text in a box has a different function depending on whether it is a message,
 atom (number/symbol), or object box.  In message boxes the text specifies the
@@ -660,7 +663,7 @@ being created.  Thus in [makenote 64 250] the selector "makenote" determines
 the class of object to create and the creation arguments "64" and "250" become
 the initial velocity and duration.
 
-<H3> <A id=s6.2> 2.6.2. persistence of data </A> </H3>
+<H3> <A id=s7.2> 2.7.2. persistence of data </A> </H3>
 
 <p>Among the design principles of Pd is that patches should be printable, in the
 sense that the appearance of a patch should fully determine its functionality.
@@ -682,7 +685,7 @@ changed.
 if you are going to override them later; this is confusing to anyone who tries
 to understand the patch.
 
-<H3> <A id=s6.3> 2.6.3. message passing </A> </H3>
+<H3> <A id=s7.3> 2.7.3. message passing </A> </H3>
 
 <p>Messages in Pd consist of a selector (a symbol) and zero or more arguments
 (which may be symbols or numbers).  To pass a message to an object, Pd first
@@ -708,7 +711,7 @@ messages by setting their value and then outputting it.
 to messages it is sent, and may take "float" and "bang" messages, or others
 in addition or instead of them.
 
-<H3> <A id=s6.4> 2.6.4. inlets and lists </A> </H3>
+<H3> <A id=s7.4> 2.7.4. inlets and lists </A> </H3>
 
 <p>The leftmost connection point at the top of most objects represents the object
 itself.  Any other dark rectangle is a separate object called an "inlet"
@@ -722,7 +725,7 @@ to the "list" message by distributing the arguments of the message to their
 inlets, except for the first argument which is passed as a "float" or
 "symbol" message to the object proper.
 
-<H3> <A id=s6.5> 2.6.5. dollar signs </A> </H3>
+<H3> <A id=s7.5> 2.7.5. dollar signs </A> </H3>
 
 <p>In message or object boxes, message arguments starting with a dollar sign
 and a number (like "$1" or "$3-bazoo") are variables which are substituted
@@ -757,7 +760,7 @@ example,   have an abstraction  "a1" that invokes an abstraction "a2" twice, as
 "a1 cat" and "a1 dog".  Inside the four "a2" copies,   $1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
 
-<H3> <A id="s7"> 2.7. subpatches </A> </H3>
+<H3> <A id="s8"> 2.8. subpatches </A> </H3>
 
 <p>Pd offers two mechanisms for making subpatches, called "one-off subpatches"
 and "abstractions."  In either case the subpatch appears as an object box
@@ -782,7 +785,7 @@ signals. Note you can also mix control messages in an [inlet~] via its right out
 but a signal outlet only takes signals. Inlets and outlets appear on the invoking box
 in the same left-to-right order as they appear in the subpatch.
 
-<H3> <A id="s7.1"> 2.7.1. abstractions </A> </H3>
+<H3> <A id="s8.1"> 2.8.1. abstractions </A> </H3>
 
 <P> To make an abstraction, save a patch with a name such as "abstraction1.pd"
 and then invoke it in an object box as [abstraction1]:
@@ -825,7 +828,7 @@ time.
 of an abstraction.  You can use it to make voice banks for polyphonic synthesis,
 for example.
 
-<H3> <A id="s7.2"> 2.7.2. Graph-on-parent subpatches </A> </H3>
+<H3> <A id="s8.2"> 2.8.2. Graph-on-parent subpatches </A> </H3>
 
 <p>If you open the "properties" dialog for a subpatch or an abstraction, you can
 check the "graph on parent" box to have the controls of the subpatch/abstraction
@@ -849,7 +852,7 @@ in the patch.
 instead; so the number box in the sub-patch in the example above is the same
 one as you see in the box.  Only controls are made visible in this way
 
-<H3> <A id=s8> 2.8. numeric arrays </A> </H3>
+<H3> <A id=s9> 2.9. numeric arrays </A> </H3>
 
 <p>Linear arrays of numbers recur throughout the computer musician's bag of tricks,
 beginning with the wavetable oscillator.  The wavetable oscillator later was
@@ -941,7 +944,7 @@ width and height, in screen pixels.
 <P> Many other operations are defined for arrays; see the related patches
 in the tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
-<H3> <A id=s9> 2.9. Data structures </A> </H3>
+<H3> <A id=s10> 2.10. Data structures </A> </H3>
 <p>(Note: this section is adapted from an article submitted to ICMC 2002.)
 
 <P>  The original idea in developing Pd was to make a real-time computer music
@@ -1027,7 +1030,7 @@ color is given as 0, or black.  The second one plots "pitch" using the color
 "voiceno" slot in the data structure, so that color will vary according to its
 "voiceno" slot.
 
-<H3> <A id="s9.1"> 2.9.1. Traversal </A> </H3>
+<H3> <A id="s10.1"> 2.10.1. Traversal </A> </H3>
 
 <P> Pd objects are provided to traverse lists and arrays, and to address
 elements of data structures for getting and setting. Here is a patch showing
@@ -1095,7 +1098,7 @@ black.
 of objects (having different templates).  In this way, an arbitrarily rich
 personal "score language" can be developed and sequenced.
 
-<H3> <A id=s9.2> 2.9.2. Accessing and changing data </A> </H3>
+<H3> <A id=s10.2> 2.10.2. Accessing and changing data </A> </H3>
 
 <P>  In general, accessing or changing data is done via "pointers" to
 "scalars".  Numbers and symbols within scalars are accessed using the
@@ -1133,7 +1136,7 @@ Deletion is less flexible; the only operation is to delete an entire list.
 it's not clear how to protect against stale pointers efficiently, except by
 voiding the entire collection of pointers into a list.)
 
-<H3> <A id=s9.3> 2.9.3. Editing </A> </H3>
+<H3> <A id=s10.3> 2.10.3. Editing </A> </H3>
 
 <P>  The graphical score shown above can be edited by dragging breakpoints, or
 by adding and deleting them, using mouse clicks.  Also, entire objects or
@@ -1174,7 +1177,7 @@ up belonging to two or more structures of the same name.  The worst that can
 happen is that data may lose their drawing instructions, in which case Pd
 supplies a simple default shape.
 
-<H3> <A id=s9.4> 2.9.4. Limitations </A> </H3>
+<H3> <A id=s10.4> 2.10.4. Limitations </A> </H3>
 
 <P>  When examples get more complicated and/or dense than the one shown here, it
 becomes difficult to see and select specific features of a data collection;
