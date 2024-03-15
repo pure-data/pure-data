@@ -34,6 +34,7 @@ dist_libpdtcl_DATA = \
     dialog_path.tcl \
     dialog_startup.tcl \
     helpbrowser.tcl \
+    object_browser.tcl \
     opt_parser.tcl \
     pd_bindings.tcl \
     pd_connect.tcl \
