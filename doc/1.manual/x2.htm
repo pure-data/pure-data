@@ -58,37 +58,11 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<!-- cooment out:
+<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<b>ctrl/cmd + /</b>' ('control' key or 'command' key in apple comuters plus the '/' key) to turn audio on, and '<b>ctrl/cmd + .</b>' to turn it off.
 
-<P> There are peak level and clip indicators for audio input and output; these
-report peak levels over all input and all output channels.  Note that DC
-shows up as an input level; many cards have DC levels which show up in the
-50s.  To see an RMS audio level, select "test audio and MIDI" from the Media
-menu.  The main window display is intended only to help you avoid clipping
-on input and output.  You can turn the peak meters on and off using the
-control at lower left.
+<P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
-<P>  At lower right is a control to turn audio processing on and off
-globally.  Turning audio off stops the computation and relinquishes any audio
-devices Pd is using.  The "Media" menu is also provided, with accelerators
-"Control-." to turn audio computation off and "Control-/" to turn it on.  When
-audio is on, Pd is computing audio samples in real time according to whatever
-patches you have open (whether they are visible or not).
-
-<P> The DIO (Digital I/O) error indicator flashes if there is a synchronization
-error for audio input or output.  (But note that on some platforms Pd doesn't
-find out about them.  If you never see red, you're probably not seeing the
-truth.)
-Click the "DIO errors" button to see a list of recent errors.
-This indicator should turn red whenever the
-computation runs late (so that the DAC FIFOs fill and/or the ADC FIFOs empty)
-or if audio input and output are not running at the same rate.  See
-<a href="x3.htm#s2"> audio and MIDI support </A>.
-
--- end comment out -->
-
-<P> The bottom part of the Pd window is an area for printout from objects in
-patches, and/or for messages from Pd itself. The menus and console font size can be changed using the <b>Edit/Font</b> menu dialog when the Pd window is focused. Make your adjustments if you are having troubles reading on HiDPI screens.
+<P> The bottom part of the Pd window is an area for printout from objects in patches, and/or for messages from Pd itself. If the Pd window is focused, the menus and console font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu</b> (shown in detail below). Make your adjustments if you are having troubles reading on HiDPI screens.
 
 <P> Pd documents are called "patches" or "canvases."
 Each open document has one main window and any number of
@@ -127,12 +101,7 @@ In this case the object will be the kind that carries out addition,
 and the "13" initializes the amount to add.
 
 <P> Atoms are either numbers or <I>
-symbols </I> like "+".  Anything that is not a valid number is considered a
-symbol.   Valid numbers may or may not have a decimal point (for instance, 12,
-15.6, -.456), or may be
-written in exponential notation (such as "4.5e6", which means "4.5 multiplied
-by 10 six times, i.e., 4500000).  Negative exponentials divide by 10 (so
-that 1.23e-5 comes to 0.0000123).
+symbols </I> like "+".  Anything that is not a valid number is considered a symbol.   Valid numbers may or may not have a decimal point (for instance, 12, 15.6, -.456), or may be written in exponential notation (such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).  Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).
 
 <P> Non-valid numbers which are read as symbols
 include things like "+5" and "0..6" as well as words and names such as "Zack"
@@ -140,7 +109,7 @@ or "cat".  The symbols "gore", "Gore", and "GORE" are all distinct.
 
 <P> The text you type into an object box determines how
 many and what kinds of inlets and outlets the object will have.  Some
-classes (like "+" always have a fixed arrangement of inlets and outlets,
+classes (like [+]) always have a fixed arrangement of inlets and outlets,
 and in the case of other classes, the inlets and outlets will depend on the
 creation arguments.
 
@@ -150,24 +119,15 @@ creation arguments.
     <IMG src="fig1.4.png" ALT="simple MIDI synthesizer">
 </P></CENTER>
 
-<P>This patch mixes <I> control </I> objects (notein, stripnote, and ftom) with
-<I> tilde </I> objects osc~, *~, and dac~.  The control objects carry out their
+<P>This patch mixes <I> control </I> objects ([notein], [stripnote], and [ftom]) with
+<I> tilde </I> objects [osc~], [*~], and [dac~].  The control objects carry out their
 function sporadically, as a result of one or more type of <I> event </I>. In
 this case, incoming MIDI note messages set off the control computation.  The
 result of the computation is, when the note happens to be a "note on" (and not
 a "note off"), to compute the frequency in cycles per second and pass it on to
-the oscillator ("osc~").
+the oscillator ([osc~]).
 
-<P> The second half of the patch, the osc~, *~, and dac~ objects, compute audio
-samples, in the same way as an analog synthesizer works.  The osc~ object is
-acting as the interface between the two regimes, in that it takes control
-messages to set its frequency but talks to "*~" using an audio signal.  Audio
-signals aren't sporadic; they are continuous streams of numbers.  As a result
-tilde objects act under very different rules from control objects.  The audio
-portion of the patch is always running, whether MIDI messages arrive or not. On
-the other hand, the function of control computations is to insert calculations
-between the audio computation which may change audio computation parameters
-such as the frequency of an oscillator.
+<P> The second half of the patch (the [osc~], [*~], and [dac~] objects) compute audio samples, in the same way as an analog synthesizer works.  The [osc~] object is acting as the interface between the two regimes, in that it takes control messages to set its frequency but talks to [*~] using an audio signal.  Audio signals aren't sporadic; they are continuous streams of numbers.  As a result tilde objects act under very different rules from control objects.  if the DSP is set to 'On'. the audio portion of the patch is always running, whether MIDI messages arrive or not. On the other hand, the function of control computations is to insert calculations between the audio computation which may change audio computation parameters such as the frequency of an oscillator.
 
 <P> The connections in the patch (the lines between the boxes) are also of two
 types: control and signal.  The type of connection depends on the outlet it
@@ -188,13 +148,12 @@ the new creation arguments.  The contents of an object box describe a message
 which is sent to Pd to create the object.
 
 <P> <I> Message </I> boxes interpret the text as a message to send whenever
-the box is activated (by an incoming message or with the mouse.)  The message
+the box is activated (by an incoming message or via a mouse click.)  The message
 may be sent many times while the patch is running (as opposed to object boxes
 whose message is used once to create the object).  Instead of going straight
 to Pd, the message box's message (or messages) go either to the box's outlet
-or to other specified receiving objects.  In the example
-below, the message box, when clicked, sends the message "21" to an object
-box which adds 13 to it.
+or to other specified receiving objects.  In the example below, the message box,
+when clicked, sends the message "21" to an object box which adds 13 to it.
 
 <CENTER><P>
     <IMG src="fig1.5.jpg" ALT="[message( --> [object] -> [number]">
@@ -205,8 +164,8 @@ boxes come in many forms including number boxes (as in this example), toggles,
 sliders, and so on. Whereas the appearance of an object or message box is
 static when a patch is running, a number box's contents (the text) changes to
 reflect the current value held by the box.  You can also use a number box as a
-control by clicking and dragging up and down, or by typing values in it.
-(There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
+control by clicking and dragging up and down, or by typing values in it and hitting
+enter. (There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
 getting help </A> to find out how to look this up).
 
 <P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
@@ -227,31 +186,20 @@ the directory where the patch was found.
 
 <H3> <A id=s2> 2.2. editing Pd patches </A> </H3>
 
-<P> A patch can be in edit or run mode; this really only affects how mouse
-clicks affect the patch. In run mode, the mouse your cursor is an arrow, and
-when you first open a patch, it is in run mode. Select "edit mode" in the
-Edit menu to check it on and the cursor will change to the image of a hand.
+<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the '<b>ctrl/cmd + e</b>' ascelerator to get in and out of Edit mode.
 
 <H3> <A id=s2.1> 2.2.1. edit and run mode </A> </H3>
 
-<p> In edit mode, clicking and dragging selects and moves boxes or makes
-and cuts connections; in run mode clicking on boxes sends them messages
-which they react to in different ways.  In run mode, number and message
-boxes can be used as controls. Normally, when you are in a performance
-you will stay in run mode.
+<p> In edit mode, you can move boxes around by clicking on them and dragging. You can click on an empty spot and drag to select more than one box and move them with their connections. You can edit their text, create, delete objects and make or cut connections. More details to come.
 
-<p>  If you are predominantly editing a patch but would like to quickly
-go to run mode just to click on something like a message, you can just
-press and hold the control key (command in mac computers) and you'll
-note the shape of an arrow is back until you release the key.
+<p>  Normally, when you are in a performance you will stay in run mode. In this mode the cursos is a slightly tilted arrow that points straight up when you are able to click on an object.  In run mode, you mostly click and interact with GUIS (like the number box) and message boxes, which are used as controls to send messages to other objects.
+
+<p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press 'ctrl/cmd' and you'll note the shape of an arrow is back until you release the key.
 
 <H3> <A id=s2.2> 2.2.2. creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
-"put" menu.   Note the handy accelerators.  Object and message boxes are empty
-at first; drag them where you want them and type in the text.  The GUI
-objects (which come in several flavors) require no typing; just create and
-place them.
+<b>Put Menu</b>.   Note the handy accelerators. If you are in run mode and click on an entry on the <b>Put Menu</b> or use a shortcut, Pd goes automatically into Edit mode. When you create boxes this way, they are automatically selected and follow the mouse cursor position; drag them around as desired and you can click to position them where you want. Alternatively you can hit 'esc' to deselect it, which will also place the object. Object and message boxes are empty at first, you can move them and also position them by just start typing into them.
 
 <P> You will often find it more convenient to select a box and "duplicate" it
 (in the Edit menu) than to use the "Put" menu.  If you select and duplicate
@@ -259,44 +207,31 @@ several items, any connections between them will be duplicated as well.
 
 <H3> <A id=s2.3> 2.2.3. the selection </A> </H3>
 
-<P>Boxes in a Pd window may be selected by clicking on them.  To select more
-than one object you may use shift-click or click on a blank portion of
-the window and drag the cursor to select all objects within a rectangle.
+<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use shift-click on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
 
-<P>Clicking on an unselected object, message, or comment box makes the text
-active, i.e., ready to be text edited.  (If you select using the rectangle
-method, the text isn't activated.)  Once you've activated a text box, you
-may type into it (replacing the selected text) or use the mouse to change the
-selection.
+<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or shift+clicking, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text) or use the mouse to change the text selection and edit it.
 
-<P> You may also select a single connection (patch cord) by clicking on it.
-You can't have connections and boxes selected simultaneously.
+<P> You may also select a single connection (patch cord) by clicking on it. Similarly, you can select more than one connection via shift+click. This way, you can also have connections and boxes selected simultaneously.
 
 <H3> <A id=s2.4> 2.2.4. deleting, cutting, and pasting </A> </H3>
 
-<P>If you select a box, a connection, or several boxes, and if you haven't made
-any text active, you can "delete" the selection by hitting the backspace or
-delete key.  You can also "cut" "copy" and "paste" using menu items.  Notice
-that pasting puts the new object(s) right down on top of the old ones.
+<P>If you select one or more connections, you can "delete" it/them by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
 
-<P>The "duplicate" menu item performs a copy and paste with a small offset so you
-can see the new boxes.  You can drag them together to a new place on the  screen.
+<P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects conneted that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
+ 
+<P>The "duplicate" menu item performs a copy and paste with a small offset so you can see the new boxes.  Similarly, you can then click on an item and drag them all together to a new place on the  screen.
 
-<P>You can cut and paste between windows within Pd but cut/paste isn't
-integrated with the OS in any way.  Cut/copy/paste for activated text in boxes
-isn't implemented yet, although in Linux at least you can "X-paste"
-into and out of "text" dialogs (created with the "edit text" menu item.)
+<P>To unselect you can click on an empty spot of your patch or use the 'esc' key.
+
+<P>For a selected object box, message box or comment, with the text active, you can also use copy, cut and paste for the text selection. Text selections for cut/copy/paste is integrated with the OS, so you can copy/paste text to/from other software.
+
+<P>On the other hand, and even though you can cut/copy a patch selection and paste to a different windows within Pd, cut/paste patch elements isn't integrated with the OS for patch seections. This means you can't paste between diferent versions or flavors of Pd. You can't copy and paste to a Pd subprocess either (instantiated via a [pd~] object).
 
 <H3> <A id=s2.5> 2.2.5. changing the text </A> </H3>
 
-<P> To change a text item, you can select it and then edit the text.  If you
-only click once, the entire text is selected and your typing will replace
-everything. Click again and drag to select a portion of the text to retype.
+<P> To change a text in an object, message or comment, you can select it and then edit the text.  If you only click once, the entire text is selected and your typing will replace everything. Click again and drag to select a portion of the text to retype. You can also use cut/copy/paste as mentioned.
 
-<P> If you click a box and move the mouse without releasing the button this
-displaces the entire box.  If you wish to displace a box which is already
-selected, first de-select the box by clicking outside it; otherwise you will be
-selecting text instead of moving the box.
+<P> If you click a box and move the mouse without releasing the button this displaces the entire box.  If you wish to displace a box whose is already selected, first de-select the box (by clicking outside it or using 'esc'); otherwise you will be selecting text instead of moving the box.
 
 <P> <I> The updated text only becomes part of the patch when you de-select the
 object. </I>  Changing the text in an "object" box deletes the old
@@ -304,25 +239,18 @@ object and creates a new one; the internal state of the old one is lost.
 
 <H3> <A id=s2.6> 2.2.6. connecting and disconnecting boxes </A> </H3>
 
-<P>To make a connection between two boxes, click on any outlet of the first
-one, drag toward an inlet of the second one, and release.  You can
-release the mouse button anywhere within the target object and the connection
-will be made to the nearest inlet.
+<P>This subsection only describes the simplest way to make and delete connection between two boxes. For more advanced and convenient techniques and shortcuts, refer to the next section.
+
+<P>To create a connection, in Edit mode, move your mouse into the the area of an outlet. Note that the cursor becomes a circle, this signals you can click and drag to create a connection. Move the cord into an outletet area, where you'll see again the circle shape in your cursor, signaling you can release the mouse button to make create a connection. You can release the mouse button anywhere within the top are of the target object and the connection will be made to the nearest inlet.
 
 <P>Connections are broken by selecting them and using "cut" or the backspace
 or delete key.
 
 <H3> <A id=s2.7> 2.2.7. popup menu for properties, open, and help </A> </H3>
 
-<P> All the "clicking" mentioned above is done with the left mouse button.
-The right button, instead, gives a popup menu offering "properties," "open,"
-and "help".
-(For Macintosh users who may only have one button on their mouse,
-double-clicking is mapped to right-click.)
+<P> All the "clicking" mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering "properties," "open," and "help". For Macintosh users who may only have one button on their mouse, double-clicking or 'alt+click' are mapped to right-click. Regarding a trackpad, then you can click with two fingers.
 
-<P> Selecting "help" on an object gets
-a Pd patch that demonstrates how to use it.  "Help" for the canvas as a whole
-(right-clicking outside any object) gives a list of all built-in objects.
+<P> Selecting "help" on an object gets a Pd patch that demonstrates how to use it.  "Help" for the canvas as a whole (right-clicking outside any object) gives a list of all built-in objects.
 
 <P> The "open" menu item is only enabled if you right-click on a subpatch
 (see below) and causes Pd to open it.  Ordinary subpatches may also be opened
