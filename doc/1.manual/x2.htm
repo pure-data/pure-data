@@ -58,7 +58,7 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<b>ctrl/cmd + /</b>' ('control' key or 'command' key in apple comuters plus the '/' key) to turn audio on, and '<b>ctrl/cmd + .</b>' to turn it off.
+<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('control' key or 'command' key in apple comuters plus the '/' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
 
 <P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
@@ -165,7 +165,7 @@ sliders, and so on. Whereas the appearance of an object or message box is
 static when a patch is running, a number box's contents (the text) changes to
 reflect the current value held by the box.  You can also use a number box as a
 control by clicking and dragging up and down, or by typing values in it and hitting
-enter. (There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
+enter. (There are also <code>shift</code>- and <code>alt</code>-click actions; see <A href="x2.htm#s2.7">
 getting help </A> to find out how to look this up).
 
 <P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
@@ -186,7 +186,7 @@ the directory where the patch was found.
 
 <H3> <A id=s2> 2.2. editing Pd patches </A> </H3>
 
-<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the '<b>ctrl/cmd + e</b>' ascelerator to get in and out of Edit mode.
+<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the <code>cmd + e</code> ascelerator to get in and out of Edit mode.
 
 <H3> <A id=s2.1> 2.2.1. edit and run mode </A> </H3>
 
@@ -207,18 +207,18 @@ several items, any connections between them will be duplicated as well.
 
 <H3> <A id=s2.3> 2.2.3. the selection </A> </H3>
 
-<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use shift-click on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
+<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use <code>shift</code>-click on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
 
-<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or shift+clicking, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text) or use the mouse to change the text selection and edit it.
+<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or <code>shift +</code> clicking, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text) or use the mouse to change the text selection and edit it.
 
-<P> You may also select a single connection (patch cord) by clicking on it. Similarly, you can select more than one connection via shift+click. This way, you can also have connections and boxes selected simultaneously.
+<P> You may also select a single connection (patch cord) by clicking on it. Similarly, you can select more than one connection via <code>shift +</code> click. This way, you can also have connections and boxes selected simultaneously.
 
 <H3> <A id=s2.4> 2.2.4. deleting, cutting, and pasting </A> </H3>
 
 <P>If you select one or more connections, you can "delete" it/them by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
 
 <P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects conneted that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
- 
+
 <P>The "duplicate" menu item performs a copy and paste with a small offset so you can see the new boxes.  Similarly, you can then click on an item and drag them all together to a new place on the  screen.
 
 <P>To unselect you can click on an empty spot of your patch or use the 'esc' key.
@@ -248,7 +248,7 @@ or delete key.
 
 <H3> <A id=s2.7> 2.2.7. popup menu for properties, open, and help </A> </H3>
 
-<P> All the "clicking" mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering "properties," "open," and "help". For Macintosh users who may only have one button on their mouse, double-clicking or 'alt+click' are mapped to right-click. Regarding a trackpad, then you can click with two fingers.
+<P> All the "clicking" mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering "properties," "open," and "help". For Macintosh users who may only have one button on their mouse, double-clicking or <code>alt + </code> click are mapped to right-click. Regarding a trackpad, then you can click with two fingers.
 
 <P> Selecting "help" on an object gets a Pd patch that demonstrates how to use it.  "Help" for the canvas as a whole (right-clicking outside any object) gives a list of all built-in objects.
 
@@ -262,8 +262,8 @@ objects, or of the patch itself (by clicking outside any box.)
 
 <H3> <A id=s2.7> 2.2.8. miscellaneous </A> </H3>
 
-<P> Control-q "quits" Pd, but asks you to confirm the quit.  To quit without
-having to confirm, use command-shift-Q.
+<P> <code>cmd + q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
+having to confirm, use <code>cmd + shift + Q</code>.
 
 <H3> <A id="s3"> 2.3. messages </A> </H3>
 
