@@ -58,7 +58,7 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('control' key or 'command' key in apple comuters plus the '/' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
+<P>  At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
 
 <P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
@@ -165,13 +165,15 @@ sliders, and so on. Whereas the appearance of an object or message box is
 static when a patch is running, a number box's contents (the text) changes to
 reflect the current value held by the box.  You can also use a number box as a
 control by clicking and dragging up and down, or by typing values in it and hitting
-enter. (There are also <code>shift</code>- and <code>alt</code>-click actions; see <A href="x2.htm#s2.7">
-getting help </A> to find out how to look this up).
+enter. (There are also <code>shift</code>- and <code>alt</code>-<code>click</code>
+actions; see <A href="x2.htm#s2.7"> getting help </A> to find out how to look this up).
 
 <P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
 or arbitrary lists of atoms.
 
 <H3> <A id="s1.4"> 2.1.4. patches and files </A> </H3>
+
+<P>You can create or open a Pd file from the <b>File Menu</b>, as well as close and save them. Note the handy ascellerators. You can also edit the font size of of a patch if its window is focused, just use the <b>Font</b> dialog entry again from the <b>Edit Menu</b>. The font size setting of patch gets saved within the patch file.
 
 <P>When you save a patch to a file, Pd doesn't save the entire state of all the
 objects in the patch, but only what you see: the objects' creation arguments
@@ -205,17 +207,19 @@ the directory where the patch was found.
 (in the Edit menu) than to use the "Put" menu.  If you select and duplicate
 several items, any connections between them will be duplicated as well.
 
-<H3> <A id=s2.3> 2.2.3. the selection </A> </H3>
+<H3> <A id=s2.3> 2.2.3. selecting items and moving them </A> </H3>
 
-<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use <code>shift</code>-click on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
+<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use <code>shift + click</code> on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
 
-<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or <code>shift +</code> clicking, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text) or use the mouse to change the text selection and edit it.
+<P>When you have one or more boxes selected, you can also move them using <code>arrow keys</code>, which moves items one pixel in the direction of the arrows. You can also use <code>shift + arrow keys</code> to move items 10 pixels in the desired direction.
 
-<P> You may also select a single connection (patch cord) by clicking on it. Similarly, you can select more than one connection via <code>shift +</code> click. This way, you can also have connections and boxes selected simultaneously.
+<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or <code>shift + click</code>, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text), use <code>arrow keys</code> to navigate through the text or use the mouse to click and drag to change the text selection and edit it.
+
+<P>If you select boxes that are connected, the connections (patch cords) are also selected and moved around. You can't just select patch cords with click and drag and you can only select a single connection by clicking on it.
 
 <H3> <A id=s2.4> 2.2.4. deleting, cutting, and pasting </A> </H3>
 
-<P>If you select one or more connections, you can "delete" it/them by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
+<P>If you select one connection by clicking on it, you can "delete" it by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
 
 <P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects conneted that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
 
