@@ -709,10 +709,10 @@ static char*pdi2devname(const PaDeviceInfo*pdi, char*buf, size_t bufsize) {
 
     api = Pa_GetHostApiInfo(pdi->hostApi);
     if(api)
-        snprintf(utf8device, MAXPDSTRING, "%s: %s",
+        pd_snprintf(utf8device, MAXPDSTRING, "%s: %s",
             api->name, pdi->name);
     else
-        snprintf(utf8device, MAXPDSTRING, "%s",
+        pd_snprintf(utf8device, MAXPDSTRING, "%s",
             pdi->name);
 
     u8_nativetoutf8(buf, bufsize, utf8device, MAXPDSTRING);
@@ -738,13 +738,13 @@ void pa_getdevs(char *indevlist, int *nindevs,
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */
-            snprintf(indevlist + nin * devdescsize, devdescsize,
+            pd_snprintf(indevlist + nin * devdescsize, devdescsize,
                 "%s", devname);
             nin++;
         }
         if (pdi->maxOutputChannels > 0 && nout < maxndev)
         {
-            snprintf(outdevlist + nout * devdescsize, devdescsize,
+            pd_snprintf(outdevlist + nout * devdescsize, devdescsize,
                 "%s", devname);
             nout++;
         }

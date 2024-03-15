@@ -7,8 +7,6 @@ namespace eval ::pdwindow:: {
     variable maxlogbuffer 21000 ;# if the logbuffer grows beyond this number, cut it
     variable keeplogbuffer 1000 ;# if the logbuffer gets automatically cut, keep this many elements
     variable logbuffer {}
-    variable tclentry {}
-    variable tclentry_history {"console show"}
     variable history_position 0
     variable linecolor 0 ;# is toggled to alternate text line colors
     variable logmenuitems
@@ -208,7 +206,7 @@ proc ::pdwindow::clear_console {} {
 # save the contents of the pdwindow::logbuffer to a file
 proc ::pdwindow::save_logbuffer_to_file {} {
     variable logbuffer
-    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt]
+    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt -parent .pdwindow]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
@@ -240,10 +238,11 @@ proc ::pdwindow::pdtk_pd_dsp {value} {
 }
 
 proc ::pdwindow::pdtk_pd_dio {red} {
+    set dio .pdwindow.header.ioframe.dio
     if {$red == 1} {
-        .pdwindow.header.ioframe.dio configure -foreground red
+        $dio configure -foreground red
     } else {
-        .pdwindow.header.ioframe.dio configure -foreground lightgray
+        $dio configure -foreground [[winfo parent $dio] cget -background]
     }
 }
 
@@ -291,73 +290,6 @@ proc ::pdwindow::pdwindow_bindings {} {
     }
 }
 
-#--Tcl entry procs-------------------------------------------------------------#
-
-proc ::pdwindow::eval_tclentry {} {
-    variable tclentry
-    variable tclentry_history
-    variable history_position 0
-    if {$tclentry eq ""} {return} ;# no need to do anything if empty
-    if {[catch {uplevel #0 $tclentry} errorname]} {
-        global errorInfo
-        switch -regexp -- $errorname {
-            "missing close-brace" {
-                ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]\n
-            } "missing close-bracket" {
-                ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACKET '\]': "] $errorInfo]\n
-            } "^invalid command name" {
-                ::pdwindow::error [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]\n
-            } default {
-                ::pdwindow::error [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]\n
-            }
-        }
-    }
-    lappend tclentry_history $tclentry
-    set tclentry {}
-}
-
-proc ::pdwindow::get_history {direction} {
-    variable tclentry_history
-    variable history_position
-
-    incr history_position $direction
-    if {$history_position < 0} {set history_position 0}
-    if {$history_position > [llength $tclentry_history]} {
-        set history_position [llength $tclentry_history]
-    }
-    .pdwindow.tcl.entry delete 0 end
-    .pdwindow.tcl.entry insert 0 \
-        [lindex $tclentry_history end-[expr $history_position - 1]]
-}
-
-proc ::pdwindow::validate_tcl {} {
-    variable tclentry
-    if {[info complete $tclentry]} {
-        .pdwindow.tcl.entry configure -background "white"
-    } else {
-        .pdwindow.tcl.entry configure -background "#FFF0F0"
-    }
-}
-
-#--create tcl entry-----------------------------------------------------------#
-
-proc ::pdwindow::create_tcl_entry {} {
-# Tcl entry box frame
-    label .pdwindow.tcl.label -text [_ "Tcl:"] -anchor e
-    pack .pdwindow.tcl.label -side left
-    entry .pdwindow.tcl.entry -width 200 \
-       -exportselection 1 -insertwidth 2 -insertbackground blue \
-       -textvariable ::pdwindow::tclentry -font TkTextFont
-    pack .pdwindow.tcl.entry -side left -fill x
-# bindings for the Tcl entry widget
-    bind .pdwindow.tcl.entry <$::modifier-Key-a> "%W selection range 0 end; break"
-    bind .pdwindow.tcl.entry <Return> "::pdwindow::eval_tclentry"
-    bind .pdwindow.tcl.entry <Up>     "::pdwindow::get_history 1"
-    bind .pdwindow.tcl.entry <Down>   "::pdwindow::get_history -1"
-    bind .pdwindow.tcl.entry <KeyRelease> +"::pdwindow::validate_tcl"
-
-    bind .pdwindow.text <Key-Tab> "focus .pdwindow.tcl.entry; break"
-}
 
 proc ::pdwindow::set_findinstance_cursor {widget key state} {
     set triggerkeys [list Control_L Control_R Meta_L Meta_R]
@@ -468,8 +400,6 @@ proc ::pdwindow::create_window {} {
     # TODO figure out how to make the menu traversable with the keyboard
     #.pdwindow.header.logmenu configure -takefocus 1
     pack .pdwindow.header.logmenu -side left
-    frame .pdwindow.tcl -borderwidth 0
-    pack .pdwindow.tcl -side bottom -fill x
     text .pdwindow.text -relief raised -bd 2 -font [list $::font_family $::pdwindow::font_size] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 80 \
@@ -479,7 +409,6 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.text -side right -fill both -expand 1
     raise .pdwindow
     focus .pdwindow.text
-    # run bindings last so that .pdwindow.tcl.entry exists
     pdwindow_bindings
     # set cursor to show when clicking in 'findinstance' mode
     bind .pdwindow <KeyPress> "+::pdwindow::set_findinstance_cursor %W %K %s"
@@ -507,9 +436,6 @@ proc ::pdwindow::create_window {} {
 #--configure the window menu---------------------------------------------------#
 
 proc ::pdwindow::create_window_finalize {} {
-    # wait until .pdwindow.tcl.entry is visible before opening files so that
-    # the loading logic can grab it and put up the busy cursor
-
     # this ought to be called after all elements of the window (including the
     # menubar!) have been created!
     if {![winfo viewable .pdwindow.text]} { tkwait visibility .pdwindow.text }

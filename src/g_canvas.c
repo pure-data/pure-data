@@ -687,7 +687,7 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
 t_symbol *canvas_makebindsym(t_symbol *s)
 {
     char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
+    pd_snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
     buf[MAXPDSTRING-1] = 0;
     return (gensym(buf));
 }
@@ -1669,7 +1669,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1681,7 +1681,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1715,7 +1715,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     /* check whether the given lib is located in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(x, strbuf))
             return;
@@ -1747,7 +1747,7 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
     /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1778,7 +1778,7 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
     /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(0, strbuf))
             return;
@@ -2172,7 +2172,7 @@ void g_canvas_freepdinstance(void)
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
-EXTERN int pd_getdspstate(void)
+int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
 }

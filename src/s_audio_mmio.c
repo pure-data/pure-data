@@ -784,7 +784,7 @@ void mmio_getdevs(char *indevlist, int *nindevs,
         wRtn = waveInGetDevCaps(i, (LPWAVEINCAPS) &wicap, sizeof(wicap));
         if (!wRtn)
             u8_nativetoutf8(utf8device, MAXPDSTRING, wicap.szPname, -1);
-        _snprintf(indevlist + i * devdescsize, devdescsize, "%s",
+        pd_snprintf(indevlist + i * devdescsize, devdescsize, "%s",
             (wRtn ? "???" : utf8device));
         indevlist[(i+1) * devdescsize - 1] = 0;
     }
@@ -799,7 +799,7 @@ void mmio_getdevs(char *indevlist, int *nindevs,
         wRtn = waveOutGetDevCaps(i, (LPWAVEOUTCAPS) &wocap, sizeof(wocap));
         if (!wRtn)
             u8_nativetoutf8(utf8device, MAXPDSTRING, wocap.szPname, -1);
-        _snprintf(outdevlist + i * devdescsize,  devdescsize, "%s",
+        pd_snprintf(outdevlist + i * devdescsize,  devdescsize, "%s",
             (wRtn ? "???" : utf8device));
         outdevlist[(i+1) * devdescsize - 1] = 0;
     }

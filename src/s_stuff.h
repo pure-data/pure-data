@@ -16,10 +16,11 @@ typedef struct _namelist    /* element in a linked list of stored strings */
     char *nl_string;            /* the string */
 } t_namelist;
 
-t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
+EXTERN t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
-void namelist_free(t_namelist *listwas);
-const char *namelist_get(const t_namelist *namelist, int n);
+EXTERN void namelist_free(t_namelist *listwas);
+EXTERN const char *namelist_get(const t_namelist *namelist, int n);
+
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
@@ -38,7 +39,7 @@ extern t_symbol *sys_flags;
 /* s_main.c */
 extern int sys_debuglevel;
 extern int sys_verbose;
-extern int sys_noloadbang;
+EXTERN int sys_noloadbang;
 EXTERN int sys_havegui(void);
 extern const char *sys_guicmd;
 
@@ -249,7 +250,7 @@ void dummy_listdevs(void);
                     /* s_midi.c */
 #define MAXMIDIINDEV 16         /* max. number of input ports */
 #define MAXMIDIOUTDEV 16        /* max. number of output ports */
-extern int sys_midiapi;
+EXTERN int sys_midiapi;
 extern int sys_nmidiin;
 extern int sys_nmidiout;
 extern int sys_midiindevlist[];
@@ -346,7 +347,7 @@ void sys_setalarm(int microsec);
 #endif
 
 void sys_set_priority(int higher);
-extern int sys_hipriority;      /* real-time flag, true if priority boosted */
+EXTERN int sys_hipriority;      /* real-time flag, true if priority boosted */
 
 /* s_print.c */
 
@@ -423,3 +424,16 @@ struct _instancestuff
  * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
  */
 EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
+
+/* format non-trivial data when sending it from core->gui (and vice versa)
+ */
+/* make sure that an object-id is always a string (even on windows, where %p
+ * does not prefix '0x'
+ */
+#define PDGUI_FORMAT__OBJECT "obj:%p"
+
+/* safe cross-platform alternatives to snprintf and vsnprintf. */
+EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
+EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
+    va_list argptr);
+
