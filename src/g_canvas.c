@@ -54,6 +54,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
+void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
 
@@ -305,9 +306,9 @@ t_symbol *canvas_getdir(const t_canvas *x)
 void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
     const char *dir = canvas_getenv(x)->ce_dir->s_name;
-    if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
+    if (sys_isabsolutepath(file) || !*dir)
     {
-        strncpy(result, file, resultsize);
+        sys_expandpath(file, result, resultsize);
         result[resultsize-1] = 0;
     }
     else
