@@ -58,7 +58,7 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use '<code>cmd + /</code>' ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>cmd + .</code>' to turn it off.
+<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use <code>Cmd  + /</code> ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>Cmd  + .</code>' to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the '<code>Cmd  + R</code>' shortcut. This brings the Pd window to thw front or send it back another Pd window.
 
 <P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
@@ -183,7 +183,7 @@ the directory where the patch was found.
 
 <H3> <A id=s2> 2.2. Editing Pd patches </A> </H3>
 
-<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the <code>cmd + e</code> ascelerator to get in and out of Edit mode.
+<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the <code>Cmd  + E</code> ascelerator to get in and out of Edit mode.
 
 <H3> <A id=s2.1> 2.2.1. Edit and Run mode </A> </H3>
 
@@ -191,7 +191,7 @@ the directory where the patch was found.
 
 <p>  Normally, when you are in a performance you will stay in run mode. In this mode the cursos is a slightly tilted arrow that points straight up when you are able to click on an object.  In run mode, you mostly click and interact with GUIS (like the number box) and message boxes, which are used as controls to send messages to other objects.
 
-<p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press <code>cmd</code> key and you'll note the shape of an arrow is back until you release the key.
+<p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press <code>Cmd </code> key and you'll note the shape of an arrow is back until you release the key.
 
 <H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
@@ -212,7 +212,7 @@ several items, any connections between them will be duplicated as well.
 
 <P>If you select boxes that are connected, the connections (patch cords) are also selected and moved around. You can't just select patch cords with click and drag and you can only select a single connection by clicking on it.
 
-<P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align objects that are not perfectly aligned. You can select boxes that are on a horizontal row and use the ascellerator <code>shift + cmd + R</code> to try and align them perfectly horizontally. Alternatively, you can do the same for a vertical column of objects. A rectangular selection for tyding up is also possible but doesn't work as well as doing it horizontal and vertical alignment separately. (INCLUDE PIC)
+<P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align objects that are not perfectly aligned. You can select boxes that are on a horizontal row and use the ascellerator <code>shift + Cmd  + R</code> to try and align them perfectly horizontally. Alternatively, you can do the same for a vertical column of objects. A rectangular selection for tyding up is also possible but doesn't work as well as doing it horizontal and vertical alignment separately. (INCLUDE PIC)
 
 <H3> <A id=s2.4> 2.2.4. Deleting, cutting, copying and pasting </A> </H3>
 
@@ -260,8 +260,8 @@ objects, or of the patch itself (by clicking outside any box.)
 
 <H3> <A id=s2.7> 2.2.8. Miscellaneous </A> </H3>
 
-<P> <code>cmd + q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
-having to confirm, use <code>cmd + shift + Q</code>.
+<P> <code>Cmd  + Q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
+having to confirm, use <code>Cmd  + shift + Q</code>.
 
 <H3> <A id="s3"> 2.3. Advanced patch editing </A> </H3>
 
@@ -269,15 +269,17 @@ having to confirm, use <code>cmd + shift + Q</code>.
 
 <H3> <A id="s3.1"> 2.3.1. Tab navigation </A> </H3>
 
-<P> If you have a single selected box you can press <code>tab</code> to navigate and change selection to other objects. The selection squence follows the order in which the object were created. When reaching the last box in the window it goes back to the first one. (INCLUDE PIC).
+<P> If you have a single selected box you can press <code>tab</code> to navigate and change selection to other objects. The selection sequence follows the order in which the object were created and pressing <code>tab</code> moves from the first created object to the next created object and so on. When reaching the last box in the window it goes back to the first one. Alternatively you can press <code>shift + tab</code> to cycle in the reverse sequence and move from the last created objects towards the first (INCLUDE PIC).
 
-<P> Using <code>tab</code> also works in the same way for patch cords if you have one selected. (INCLUDE PIC).
+<P> Using <code>tab</code> also works in a similar way for patch cords if you have one selected. You can move from first to last with <code>tab</code> and from last to first with <code>shift + tab</code> (INCLUDE PIC).
 
-<P> If you're creating a connection by clickin in an outlet and dragging a patch cord you can also using <code>tab</code>. The navigation order is left to right and it also circles back. (INCLUDE PIC).
+<P> If you're creating a connection by clickin in an outlet and dragging a patch cord you can also using <code>tab</code>. The navigation order is left to right and it also circles back. Pressing <code>shift + tab</code> navigates from right to left (INCLUDE PIC).
+
+<P> In Linux and Windows you can also circle between inlets.
 
 <H3> <A id="s3.2"> 2.3.2. Autopatching </A> </H3>
 
-<P> By default, Pd has an 'autopatching' mode set to on. You can disable it via startup flags (see '-autopatch' flag <a href="x3.htm" id=s3>Preferences and startup options </A>). This works with the shortcuts from the <b>Put menu</b> for inserting boxes. If you have a selected box and use an ascellerator to create another box (auch as <code>cmd + 1</code> to create an object box), the created box is placed below the selected object and a connection is made from the first outlet of the selected object into the inlet of the newly created object (granted that both objects have an oultet and an inlet for the connection to happen).  (INCLUDE PIC).
+<P> By default, Pd has an 'autopatching' mode set to on. You can disable it via startup flags (see '-autopatch' flag <a href="x3.htm" id=s3>Preferences and startup options </A>). This works with the shortcuts from the <b>Put menu</b> for inserting boxes. If you have a selected box and use an ascellerator to create another box (auch as <code>Cmd  + 1</code> to create an object box), the created box is placed below the selected object and a connection is made from the first outlet of the selected object into the inlet of the newly created object (granted that both objects have an oultet and an inlet for the connection to happen).  (INCLUDE PIC).
 
 <P> Once the new box is created, it is also selected, so you can continue with autopatching by adding yet more boxes. In the case of object and message boxes you can also start typing text into it before autopatching into another newly created box, since when you autopatch for the next one the object or message box gets desselected and created.  (INCLUDE PIC).
 
@@ -285,7 +287,7 @@ having to confirm, use <code>cmd + shift + Q</code>.
 
 <H3> <A id="s3.3"> 2.3.3. Duplicate connections </A> </H3>
 
-<P> If you select a connection between two objects that have more outlets/inlets for more connections, you can use <code>cmd + d</code> to duplicate and create more connections. (INCLUDE PIC).
+<P> If you select a connection between two objects that have more outlets/inlets for more connections, you can use <code>Cmd  + D</code> to duplicate and create more connections. (INCLUDE PIC).
 
 <H3> <A id="s3.4"> 2.3.4. Managing connections with the shift key </A> </H3>
 
@@ -303,17 +305,17 @@ having to confirm, use <code>cmd + shift + Q</code>.
 
 <H3> <A id="s3.5"> 2.3.5. (Dis)Connect selection </A> </H3>
 
-<P> This is a menu entry in the <b>Edit menu</b> and note there is the ascellerator <code>cmd + k</code> for it. This allows you do connect and disconnect selected boxes in different ways.
+<P> This is a menu entry in the <b>Edit menu</b> and note there is the ascellerator <code>Cmd  + K</code> for it. This allows you do connect and disconnect selected boxes in different ways.
 
-<P> For 2 selected boxes you can use <code>cmd + k</code> to connect them. Repeat using <code>cmd + k</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
+<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect them. Repeat using <code>Cmd  + K</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
 
-<P> For 2 selected boxes you can use <code>cmd + k</code> to connect them. Repeat using <code>cmd + k</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
+<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect them. Repeat using <code>Cmd  + K</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
 
-<P> For 2 selected audio objects, if the origin object has a single outlet and the target object has many inlets, you can repeatedly use <code>cmd + k</code> to fan out and connect the same outlet to all inlets (INCLUDE PIC).
+<P> For 2 selected audio objects, if the origin object has a single outlet and the target object has many inlets, you can repeatedly use <code>Cmd  + K</code> to fan out and connect the same outlet to all inlets (INCLUDE PIC).
 
-<P> For last, you can include or bypass a box into or from a connection. To include a box, you can select it and the connection between the other 2 boxes by using <code>shift + click</code> and then use <code>cmd + k</code> to include the selected box into the connection. Alternatively, you can select the 3 boxes (either via  <code>shift + clicks</code> or clicking and dragging). With the 3 boxes selected, the connection between the 2 boxes that you want to insert the third one is also selected. (INCLUDE PIC).
+<P> For last, you can include or bypass a box into or from a connection (being it any connection from any outlet into any inlet). To include a box, you can select it and the connection between the other 2 boxes by using <code>shift + click</code> and then use <code>Cmd  + K</code> to include the selected box into the connection. Alternatively, you can select the 3 boxes (either via  <code>shift + clicks</code> or clicking and dragging). With the 3 boxes selected, the connection between the 2 boxes that you want to insert the third one is also selected. (INCLUDE PIC).
 
-<P> To bypass a box, you can select 3 boxes connected in a row and use <code>cmd + k</code> to bypass and remove the middle box from the connection. (INCLUDE PIC).
+<P> To bypass a box, you can select 3 boxes connected in a row and use <code>Cmd  + K</code> to bypass and remove the middle box from the connection. (INCLUDE PIC).
 
 <H3> <A id="s3.6"> 2.3.6. Triggerize </A> </H3>
 
