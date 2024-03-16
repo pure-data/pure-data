@@ -319,7 +319,9 @@ having to confirm, use <code>Cmd  + shift + Q</code>.
 
 <H3> <A id="s3.6"> 2.3.6. Triggerize </A> </H3>
 
-<P> Not yet.
+<P> The 'Triggerize' entry in the <b>Edit menu</b>, with the <code>Cmd  + T</code> ascellerator was designed to insert a [trigger] object (in its abbreviated form [t]) when you select a single box that is connected to many inlets of a single or multiple boxes. This object is briefly described in (see <A href="x2.htm#s4.3"> Hot and cold inlets and right to left outlet order </A>) and is widely used in Pd to control order of execution from right to left. 'Triggerize' creates the [trigger] object taking into account the order in which the connections were made, where the first connection starts at the rightmost outlet of trigger and continues to the leftmost. (INCLUDE PIC)
+
+<P> The 'Triggerize' option can also be used to insert a dummy object. To do so, select a connection and use <code>Cmd  + T</code>. For a control connection, a [t a] object is created with the text selected, so you can type another text to include anothre object instead. For a signal connection, a [pd nop~] subpatch is created, also with the text selected for you to include a new object. (INCLUDE PIC)
 
 <H3> <A id="s3.7"> 2.3.7. Paste replace </A> </H3>
 
@@ -477,7 +479,7 @@ the number 5 and the symbol "toes."
 </P></CENTER>
 
 <P>Here the three messages are the numbers 1, 2, and 3, and they are sent in
-sequence (with no intervening time between them, as with the "trigger" object,
+sequence (with no intervening time between them, as with the [trigger] object,
 and having depth-first consequences so that whatever chain of actions depending
 on "1" takes place before anything depending on "2" and so on.)
 
@@ -556,7 +558,7 @@ find the source of the error.  You can build algorithms with feedback using
 nonlocal signal connections.
 
 <P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
-objects (see <A href="x2.htm#s2.8"> subpatches </A>).
+objects (see <A href="x2.htm#s2.8"> Subpatches </A>).
 
 <H3> <A id=s5.3> 2.5.3. Converting audio to and from messages </A> </H3>
 
@@ -655,7 +657,7 @@ but at the same logical time.
 that is, it tries to keep ahead of real time by a small amount in order to be
 able to absorb unpredictable, momentary increases in computation time.   This
 is specified using the "audiobuffer" or "frags" command line flags (see  <a
-href="x3.htm" id=s3>getting Pd to run </A>).
+href="x3.htm" id=s3>Getting Pd to run </A>).
 
 <P>  If Pd gets late with respect to real time, gaps (either occasional or
 frequent) will appear in both the input and output audio streams.  On the
@@ -1111,7 +1113,7 @@ type is also integrated into pipe-fitting objects such as [pack],
 [unpack], and [route].
 
 <P>  In the patch shown above, the topmost [pointer] object holds a pointer to
-the next object to "play" (by sending it to one of the "voice"
+the next object to "play" (by sending it to one of the [voice]
 abstractions at bottom.)  The pointer object takes a "traverse" message to
 set it to the head of the list (named "pd-data"), and "next" messages to
 move to (and output) the next datum in the list (i.e., the next in the list of
@@ -1122,7 +1124,7 @@ down, as a storage cell for pointers just as "float" is for numbers.
 fed the time difference between each event (including the non-event of hitting
 "start") and the next.  As we extract each of the six objects in the score, we
 must wait the delay for playing that object, and then send its pointer to one
-of the "voice" abstractions to play it.  However, we have to inspect the
+of the [voice] abstractions to play it.  However, we have to inspect the
 object itself to know the delay before playing it.  So, in the loop, we peel off
 the first remaining object to play and inspect the time difference between it
 and the previous one, using this value to set the delay, but also storing the
@@ -1145,7 +1147,7 @@ voice.  The voice number is shown as the color of the frequency trace in
 arbitrarily set up to select among the six primary and secondary colors plus
 black.
 
-<P>  The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the "voice" abstraction. The "voice" abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself.  The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.
+<P>  The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the [voice] abstraction. The [voice] abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself.  The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.
 
 <P>  More general patches can easily be constructed which access heterogeneous lists
 of objects (having different templates).  In this way, an arbitrarily rich
