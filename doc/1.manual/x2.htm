@@ -58,7 +58,7 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use <code>Cmd  + /</code> ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>Cmd  + .</code>' to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the '<code>Cmd  + R</code>' shortcut. This brings the Pd window to thw front or send it back another Pd window.
+<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use <code>Cmd  + /</code> ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>Cmd  + .</code>' to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the '<code>Cmd  + R</code>' shortcut. This brings the Pd window to the front or send it back another Pd window.
 
 <P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
 
@@ -189,7 +189,7 @@ the directory where the patch was found.
 
 <p> In edit mode, you can move boxes around by clicking on them and dragging. You can click on an empty spot and drag to select more than one box and move them with their connections. You can edit their text, create, delete objects and make or cut connections. More details to come.
 
-<p>  Normally, when you are in a performance you will stay in run mode. In this mode the cursos is a slightly tilted arrow that points straight up when you are able to click on an object.  In run mode, you mostly click and interact with GUIS (like the number box) and message boxes, which are used as controls to send messages to other objects.
+<p> Normally, when you are in a performance you will stay in run mode. In this mode the cursor is a slightly tilted arrow that points straight up when you are able to click on an object.  In run mode, you mostly click and interact with GUIS (like the number box) and message boxes, which are used as controls to send messages to other objects.
 
 <p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press <code>Cmd </code> key and you'll note the shape of an arrow is back until you release the key.
 
@@ -216,17 +216,17 @@ several items, any connections between them will be duplicated as well.
 
 <H3> <A id=s2.4> 2.2.4. Deleting, cutting, copying and pasting </A> </H3>
 
-<P>If you select one connection by clicking on it, you can "delete" it by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The conections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
+<P>If you select one connection by clicking on it, you can "delete" it by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The connections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
 
-<P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects conneted that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
+<P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects connected that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
 
-<P> Note that the pasting puts the selection in the same position it was copied, unless the place is already taken. The "duplicate" menu item performs a copy and paste with a small offset, because the original selection is kept and the place is taken. If you manually "copy" and "paste" items on the same window, witout deleting them, the pasted selection is also given with a little offset, so you can see the new boxes.  You can then click on an item in the pasted selection with an offset to drag them all together to a new spot in the patch window.
+<P> Note that the pasting puts the selection in the same position it was copied, unless the place is already taken. The "duplicate" menu item performs a copy and paste with a small offset, because the original selection is kept and the place is taken. If you manually "copy" and "paste" items on the same window, without deleting them, the pasted selection is also given with a little offset, so you can see the new boxes.  You can then click on an item in the pasted selection with an offset to drag them all together to a new spot in the patch window.
 
 <P>To unselect you can click on an empty spot of your patch or use the 'esc' key.
 
 <P>For a selected object box, message box or comment, with the text active, you can also use copy, cut and paste for the text selection. Text selections for cut/copy/paste is integrated with the OS, so you can copy/paste text to/from other software.
 
-<P>On the other hand, and even though you can cut/copy a patch selection and paste to a different windows within Pd, cut/paste patch elements isn't integrated with the OS for patch seections. This means you can't paste between diferent versions or flavors of Pd. You can't copy and paste to a Pd subprocess either (instantiated via a [pd~] object).
+<P>On the other hand, and even though you can cut/copy a patch selection and paste to a different windows within Pd, cut/paste patch elements isn't integrated with the OS for patch seections. This means you can't paste between different versions or flavors of Pd. You can't copy and paste to a Pd subprocess either (instantiated via a [pd~] object).
 
 <H3> <A id=s2.5> 2.2.5. Changing the text </A> </H3>
 
@@ -293,7 +293,7 @@ having to confirm, use <code>Cmd  + shift + Q</code>.
 
 <P> - Swap connections: If you selected a connection and use <code>shift + click</code> to select another, you swap the connections (INCLUDE PIC).
 
-<P> - Fan connections: If you don't have selected boxes and start creating a connection by clickig an outlet and dragging a cord, you use <code>shift</code> to create a connection into an inlet instead of releasing the mouse button so that another cord is created for you to fan out and choose another inlet to conect to (INCLUDE PIC).
+<P> - Fan connections: If you don't have selected boxes and start creating a connection by clickig an outlet and dragging a cord, you use <code>shift</code> to create a connection into an inlet instead of releasing the mouse button so that another cord is created for you to fan out and choose another inlet to connect to (INCLUDE PIC).
 
 <P> - One to many: If you have a group of target boxes that are selected, you can drag a cord from another box and press <code>shift</code> to create a connection into the same inlet number of the selected boxes (which do not need to be of the same type or class) (INCLUDE PIC).
 
