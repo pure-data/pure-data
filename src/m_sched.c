@@ -208,6 +208,7 @@ void glob_fastforward(void *dummy, t_floatarg f)
 }
 
 void dsp_tick(void);
+int pd_stack_check(void);
 
 static int sched_useaudio = SCHED_AUDIO_NONE;
 static double sched_referencerealtime, sched_referencelogicaltime;
@@ -260,6 +261,7 @@ void sched_tick(void)
     pd_this->pd_systime = next_sys_time;
     dsp_tick();
     sched_counter++;
+    pd_stack_check();
 }
 
 int sched_get_sleepgrain( void)

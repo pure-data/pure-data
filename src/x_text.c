@@ -21,7 +21,7 @@ static t_class *text_define_class;
 
 #include "m_private_utils.h"
 
-#define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+#define TEXT_NGETBYTE 100 /* bigger than this we allocate on the heap */
 
 /* --- unified qsort_r --- */
 

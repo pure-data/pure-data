@@ -491,11 +491,7 @@ static void bonk_tick(t_bonk *x)
     t_template *tp;
     int nfit, ninsig = x->x_ninsig, ntemplate = x->x_ntemplate, nfilters = x->x_nfilters;
     t_insig *gp;
-#ifdef _MSC_VER
-    t_float powerout[MAXNFILTERS*MAXCHANNELS];
-#else
     t_float *powerout = alloca(x->x_nfilters * x->x_ninsig * sizeof(*powerout));
-#endif
     
     for (i = ninsig, pp = powerout, gp = x->x_insig; i--; gp++)
     {

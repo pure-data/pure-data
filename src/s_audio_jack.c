@@ -38,6 +38,8 @@
 # undef FREEA
 #endif
 
+    /* NB: don't use the ALLOCA and FREEA macros from "m_private_utils.h"
+    because they are not thread-safe! */
 #if HAVE_ALLOCA
 # define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
             alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
