@@ -36,6 +36,7 @@ proc open_file {filename} {
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 proc pdtk_openpanel {target localdir {mode 0} {parent .pdwindow}} {
+    set localdir [file normalize $localdir]
     if { $::pd::private::lastopendir == "" } {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
@@ -89,6 +90,7 @@ proc pdtk_openpanel {target localdir {mode 0} {parent .pdwindow}} {
 
 
 proc pdtk_savepanel {target localdir {parent .pdwindow}} {
+    set localdir [file normalize $localdir]
     if { $::pd::private::lastsavedir == "" } {
         if { ! [file isdirectory $::filenewdir]} {
             set ::filenewdir $::env(HOME)

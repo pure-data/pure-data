@@ -124,7 +124,7 @@ static off_t wave_firstchunk(const t_soundfile *sf, t_chunk *chunk)
 }
 
     /** read next chunk, chunk should be filled when calling
-        returns fills chunk offset on success or -1 */
+        returns filled chunk offset on success or -1 */
 static off_t wave_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
 {
     uint32_t chunksize = swap4(chunk->c_size, sys_isbigendian());
