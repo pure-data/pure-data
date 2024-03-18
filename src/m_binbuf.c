@@ -525,10 +525,8 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
 context of a message to create a new object; in this case out-of-range '$'
 args become 0 - otherwise zero is returned and the caller has to check the
 result. */
-/* LATER remove the dependence on the current canvas for $0; should be another
-argument. */
-t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
-    int tonew)
+t_symbol *binbuf_dorealizedollsym(t_symbol *s, int ac, const t_atom *av,
+    int tonew, int dollarzero)
 {
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
@@ -536,7 +534,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     char*substr;
     int next=0;
     t_atom dollarnull;
-    SETFLOAT(&dollarnull, canvas_getdollarzero());
+    SETFLOAT(&dollarnull, dollarzero);
     buf2[0] = buf2[MAXPDSTRING-1] = 0;
 
     substr=strchr(str, '$');
@@ -582,10 +580,16 @@ done:
     return (gensym(buf2));
 }
 
+/* for compatibility */
+t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew)
+{
+    return binbuf_dorealizedollsym(s, ac, av, tonew, canvas_getdollarzero());
+}
+
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
-void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
+void binbuf_doeval(t_binbuf *x, t_pd *target, int argc, const t_atom *argv, int dollarzero)
 {
     t_atom smallstack[SMALLMSG], *mstack, *msp;
     const t_atom *at = x->b_vec;
@@ -662,8 +666,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             }
             else if (at->a_type == A_DOLLSYM)
             {
-                if (!(s = binbuf_realizedollsym(at->a_w.w_symbol,
-                    argc, argv, 0)))
+                if (!(s = binbuf_dorealizedollsym(at->a_w.w_symbol,
+                    argc, argv, 0, dollarzero)))
                 {
                     pd_error(initial_target, "$%s: not enough arguments supplied",
                         at->a_w.w_symbol->s_name);
@@ -723,7 +727,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (at->a_w.w_index > 0 && at->a_w.w_index <= argc)
                     *msp = argv[at->a_w.w_index-1];
                 else if (at->a_w.w_index == 0)
-                    SETFLOAT(msp, canvas_getdollarzero());
+                    SETFLOAT(msp, dollarzero);
                 else
                 {
                     if (target == &pd_objectmaker)
@@ -737,8 +741,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 }
                 break;
             case A_DOLLSYM:
-                s9 = binbuf_realizedollsym(at->a_w.w_symbol, argc, argv,
-                    target == &pd_objectmaker);
+                s9 = binbuf_dorealizedollsym(at->a_w.w_symbol, argc, argv,
+                    target == &pd_objectmaker, dollarzero);
                 if (!s9)
                 {
                     pd_error(target, "%s: argument number out of range", at->a_w.w_symbol->s_name);
@@ -785,6 +789,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 broken:
     if (maxnargs > SMALLMSG)
          FREEA(t_atom, mstack, maxnargs, HUGEMSG);
+}
+
+/* for compatibility */
+void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
+{
+    binbuf_doeval(x, target, argc, argv, canvas_getdollarzero());
 }
 
 int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
