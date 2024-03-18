@@ -59,6 +59,18 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define ATTRIBUTE_FORMAT_PRINTF(a, b)
 #endif
 
+/* deprecation warning */
+#ifndef PD_DEPRECATED
+# ifdef __GNUC__
+#  define PD_DEPRECATED __attribute__ ((deprecated))
+# elif defined(_MSC_VER) && _MSC_VER >= 1300
+#  define PD_DEPRECATED __declspec(deprecated)
+# else
+#  define PD_DEPRECATED
+#  pragma message("PD_DEPRECATED not defined for this compiler")
+# endif
+#endif
+
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
