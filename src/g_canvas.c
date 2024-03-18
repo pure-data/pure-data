@@ -1962,6 +1962,7 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (!x->gl_list)
         return;
+        /* apply the format to the most recently created object */
     for (g = x->gl_list; (g2 = g->g_next); g = g2)
         ;
     if ((ob = pd_checkobject(&g->g_pd)))
