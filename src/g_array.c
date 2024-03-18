@@ -1245,6 +1245,11 @@ void garray_resize_long(t_garray *x, long n)
 }
 
     /* float version to use as Pd method */
+static void garray_doresize(t_garray *x, t_floatarg f)
+{
+    garray_resize_long(x, f);
+}
+    /* deprecated function, kept only for ABI compatibility */
 void garray_resize(t_garray *x, t_floatarg f)
 {
     garray_resize_long(x, f);
@@ -1299,7 +1304,7 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
         A_SYMBOL, A_NULL);
-    class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
+    class_addmethod(garray_class, (t_method)garray_doresize, gensym("resize"),
         A_FLOAT, A_NULL);
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
         A_FLOAT, 0);
