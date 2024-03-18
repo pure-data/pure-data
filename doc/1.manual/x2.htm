@@ -58,11 +58,27 @@ artwork or multimedia applications such as games.
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
 
-<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window and Help (on macs this is shown at a top bar on the computer screen).  At upper right there is a toggle box to turn audio processing on and off globally.  Turning audio off stops the computation and relinquishes any audio devices Pd is using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio on and Off. Use <code>Cmd  + /</code> ('Control' key in PCs or 'Command' key in Apple computers plus the '<b>/</b>' key) to turn audio on, and '<code>Cmd  + .</code>' to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the '<code>Cmd  + R</code>' shortcut. This brings the Pd window to the front or send it back another Pd window.
+<P> At the top you can see the Menu entries: File, Edit, Put, Find, Media, Window
+and Help (on macs this is shown at a top bar on the computer screen).  At upper
+right there is a toggle box to turn audio processing on and off globally.
+Turning audio off stops the computation and relinquishes any audio devices Pd is
+using. The <b>Media menu</b> provides accelerators (or shortcuts) to turn Audio
+on and Off. Use <code>Cmd  + /</code> ('Control' key in PCs or 'Command' key in
+Apple computers plus the '<b>/</b>' key) to turn audio on, and <code>Cmd  + .</code>
+to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the
+<code>Cmd  + R</code> shortcut. This brings the Pd window to the front or send it bac
+k another Pd window.
 
-<P> When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not). To see an RMS audio level, select "Test Audio and MIDI" from the <b>Media menu</b>.
+<P> When audio is on, Pd is computing audio samples in real time according to whatever
+patches you have open (whether they are visible or not). To see an RMS audio level,
+select "Test Audio and MIDI" from the <b>Media menu</b>.
 
-<P> The bottom part of the Pd window is an area for printout from objects in patches, and/or for messages from Pd itself. If the Pd window is focused, the menus and console font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu</b> (shown in detail below). Make your adjustments if you are having troubles reading on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all messages printed in the Pd window with the 'Clear Console' entry.
+<P> The bottom part of the Pd window is an area for printout from objects in patches,
+and/or for messages from Pd itself. If the Pd window is focused, the menus and console
+font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu</b>
+(shown in detail below). Make your adjustments if you are having troubles reading
+on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all messages printed
+in the Pd window with the 'Clear Console' entry.
 
 <P> Pd documents are called "patches" or "canvases."
 Each open document has one main window and any number of
@@ -96,11 +112,18 @@ arguments </I>, tell Pd how to initialize the object.  If you type for example,
     <IMG src="fig1.3.jpg" ALT="object">
 </P></CENTER>
 
-<P>the "+" specifies the <I> class </I> of the object. In this case the object will be the kind that carries out addition, and the "13" initializes the amount to add.
+<P>the "+" specifies the <I> class </I> of the object. In this case the object will
+ be the kind that carries out addition, and the "13" initializes the amount to add.
 
-<P> Atoms are either numbers or <I> symbols </I> like "+".  Anything that is not a valid number is considered a symbol.   Valid numbers may or may not have a decimal point (for instance, 12, 15.6, -.456), or may be written in exponential notation (such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).  Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).
+<P> Atoms are either numbers or <I> symbols </I> like "+".  Anything that is not a
+valid number is considered a symbol.   Valid numbers may or may not have a decimal
+point (for instance, 12, 15.6, -.456), or may be written in exponential notation
+(such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).
+Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).
 
-<P> Non-valid numbers which are read as symbols include things like "+5" and "0..6" as well as words and names such as "Zack" or "cat".  The symbols "gore", "Gore", and "GORE" are all distinct.
+<P> Non-valid numbers which are read as symbols include things like "+5" and "0..6"
+as well as words and names such as "Zack" or "cat".  The symbols "gore", "Gore", and
+"GORE" are all distinct.
 
 <P> The text you type into an object box determines how
 many and what kinds of inlets and outlets the object will have.  Some
@@ -122,7 +145,16 @@ result of the computation is, when the note happens to be a "note on" (and not
 a "note off"), to compute the frequency in cycles per second and pass it on to
 the oscillator ([osc~]).
 
-<P> The second half of the patch (the [osc~], [*~], and [dac~] objects) compute audio samples, in the same way as an analog synthesizer works.  The [osc~] object is acting as the interface between the two regimes, in that it takes control messages to set its frequency but talks to [*~] using an audio signal.  Audio signals aren't sporadic; they are continuous streams of numbers.  As a result tilde objects act under very different rules from control objects.  if the DSP is set to 'On'. the audio portion of the patch is always running, whether MIDI messages arrive or not. On the other hand, the function of control computations is to insert calculations between the audio computation which may change audio computation parameters such as the frequency of an oscillator.
+<P> The second half of the patch (the [osc~], [*~], and [dac~] objects) compute
+audio samples, in the same way as an analog synthesizer works.  The [osc~] object
+is acting as the interface between the two regimes, in that it takes control
+messages to set its frequency but talks to [*~] using an audio signal.  Audio
+signals aren't sporadic; they are continuous streams of numbers.  As a result
+tilde objects act under very different rules from control objects.  if the DSP
+is set to 'On'. the audio portion of the patch is always running, whether MIDI
+messages arrive or not. On the other hand, the function of control computations
+is to insert calculations between the audio computation which may change audio
+computation parameters such as the frequency of an oscillator.
 
 <P> The connections in the patch (the lines between the boxes) are also of two
 types: control and signal.  The type of connection depends on the outlet it
@@ -168,7 +200,11 @@ or arbitrary lists of atoms.
 
 <H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
-<P>You can create or open a Pd file from the <b>File Menu</b>, as well as close and save them. Note the handy ascellerators. You can also edit the font size of of a patch if its window is focused, just use the <b>Font</b> dialog entry again from the <b>Edit Menu</b>. The font size setting of patch gets saved within the patch file.
+<P>You can create or open a Pd file from the <b>File Menu</b>, as well as close
+and save them. Note the handy ascellerators. You can also edit the font size of
+of a patch if its window is focused, just use the <b>Font</b> dialog entry again
+from the <b>Edit Menu</b>. The font size setting of patch gets saved within the
+patch file.
 
 <P>When you save a patch to a file, Pd doesn't save the entire state of all the
 objects in the patch, but only what you see: the objects' creation arguments
@@ -183,20 +219,41 @@ the directory where the patch was found.
 
 <H3> <A id=s2> 2.2. Editing Pd patches </A> </H3>
 
-<P> A patch can be in edit or run mode; this really only changes how mouse clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode when you first open it. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. Unchecking it in the menu sets back to run mode. You can also use the <code>Cmd  + E</code> ascelerator to get in and out of Edit mode.
+<P> A patch can be in edit or run mode; this really only changes how mouse clicks
+affect the patch. In run mode, the mouse cursor is an arrow. A patch is in
+run mode when you first open it. Select "edit mode" in the Edit menu to check
+it on and the cursor will change to the image of a hand. Unchecking it in
+the menu sets back to run mode. You can also use the <code>Cmd  + E</code>
+ascelerator to get in and out of Edit mode.
 
 <H3> <A id=s2.1> 2.2.1. Edit and Run mode </A> </H3>
 
-<p> In edit mode, you can move boxes around by clicking on them and dragging. You can click on an empty spot and drag to select more than one box and move them with their connections. You can edit their text, create, delete objects and make or cut connections. More details to come.
+<p> In edit mode, you can move boxes around by clicking on them and dragging.
+You can click on an empty spot and drag to select more than one box and move
+them with their connections. You can edit their text, create, delete objects
+and make or cut connections. More details to come.
 
-<p> Normally, when you are in a performance you will stay in run mode. In this mode the cursor is a slightly tilted arrow that points straight up when you are able to click on an object.  In run mode, you mostly click and interact with GUIS (like the number box) and message boxes, which are used as controls to send messages to other objects.
+<p> Normally, when you are in a performance you will stay in run mode. In this
+mode the cursor is a slightly tilted arrow that points straight up when you are
+able to click on an object.  In run mode, you mostly click and interact with
+GUIS (like the number box) and message boxes, which are used as controls to
+send messages to other objects.
 
-<p>  If you are predominantly editing a patch but would like to quickly go to run mode just to click on something like a message, you can just press <code>Cmd </code> key and you'll note the shape of an arrow is back until you release the key.
+<p>  If you are predominantly editing a patch but would like to quickly go to
+run mode just to click on something like a message, you can just press <code>Cmd</code>
+key and you'll note the shape of an arrow is back until you release the key.
 
 <H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put Menu</b>.   Note the handy accelerators. If you are in run mode and click on an entry on the <b>Put Menu</b> or use a shortcut, Pd goes automatically into Edit mode. When you create boxes this way, they are automatically selected and follow the mouse cursor position; drag them around as desired and you can click to position them where you want. Alternatively you can hit 'esc' to deselect it, which will also place the object. Object and message boxes are empty at first, you can move them and also position them by just start typing into them.
+<b>Put Menu</b>.   Note the handy accelerators. If you are in run mode and
+click on an entry on the <b>Put Menu</b> or use a shortcut, Pd goes automatically
+into Edit mode. When you create boxes this way, they are automatically
+selected and follow the mouse cursor position; drag them around as desired
+and you can click to position them where you want. Alternatively you can hit
+'esc' to deselect it, which will also place the object. Object and message
+boxes are empty at first, you can move them and also position them by just
+start typing into them.
 
 <P> You will often find it more convenient to select a box and "duplicate" it
 (in the Edit menu) than to use the "Put" menu.  If you select and duplicate
@@ -204,35 +261,84 @@ several items, any connections between them will be duplicated as well.
 
 <H3> <A id=s2.3> 2.2.3. Selecting items and moving them or "tidying them up" </A> </H3>
 
-<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd window may be individually selected by clicking on them. If you don't release the mouse button you can drag the selected box around. To select more than one object you may use <code>shift + click</code> on each item. You then can click again on one of the selected boxes to move them around. Alternatively you click on a blank portion of the window and drag the cursor to select all objects within a rectangle (then click again on one of the selected boxes to move them as well).
+<P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd
+window may be individually selected by clicking on them. If you don't release
+the mouse button you can drag the selected box around. To select more than one
+object you may use <code>shift + click</code> on each item. You then can click
+again on one of the selected boxes to move them around. Alternatively you click
+on a blank portion of the window and drag the cursor to select all objects
+within a rectangle (then click again on one of the selected boxes to move them as well).
 
-<P>When you have one or more boxes selected, you can also move them using <code>arrow keys</code>, which moves items one pixel in the direction of the arrows. You can also use <code>shift + arrow keys</code> to move items 10 pixels in the desired direction.
+<P>When you have one or more boxes selected, you can also move them using
+<code>arrow keys</code>, which moves items one pixel in the direction of
+the arrows. You can also use <code>shift + arrow keys</code> to move items
+10 pixels in the desired direction.
 
-<P>Clicking on an unselected object, message, or comment box makes the text active, i.e., ready to be text edited.  (If you select using the rectangle method or <code>shift + click</code>, the text isn't activated.)  Once you've activated a text box, you may type into it (replacing the selected text), use <code>arrow keys</code> to navigate through the text or use the mouse to click and drag to change the text selection and edit it.
+<P>Clicking on an unselected object, message, or comment box makes the text
+active, i.e., ready to be text edited.  (If you select using the rectangle
+method or <code>shift + click</code>, the text isn't activated.)  Once you've
+activated a text box, you may type into it (replacing the selected text), use
+<code>arrow keys</code> to navigate through the text or use the mouse to click
+and drag to change the text selection and edit it.
 
-<P>If you select boxes that are connected, the connections (patch cords) are also selected and moved around. You can't just select patch cords with click and drag and you can only select a single connection by clicking on it.
+<P>If you select boxes that are connected, the connections (patch cords) are
+also selected and moved around. You can't just select patch cords with click
+and drag and you can only select a single connection by clicking on it.
 
-<P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align objects that are not perfectly aligned. You can select boxes that are on a horizontal row and use the ascellerator <code>shift + Cmd  + R</code> to try and align them perfectly horizontally. Alternatively, you can do the same for a vertical column of objects. A rectangular selection for tyding up is also possible but doesn't work as well as doing it horizontal and vertical alignment separately. (INCLUDE PIC)
+<P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align
+objects that are not perfectly aligned. You can select boxes that are on a
+horizontal row and use the ascellerator <code>shift + Cmd  + R</code> to try
+and align them perfectly horizontally. Alternatively, you can do the same
+for a vertical column of objects. A rectangular selection for tyding up is
+also possible but doesn't work as well as doing it horizontal and vertical alignment separately. (INCLUDE PIC)
 
 <H3> <A id=s2.4> 2.2.4. Deleting, cutting, copying and pasting </A> </H3>
 
-<P>If you select one connection by clicking on it, you can "delete" it by hitting the backspace or delete key. If you select one or more boxes and you haven't made any text active, you can also "delete" the selection by hitting the backspace or delete key. The connections of the selected boxes are also deleted. The "Select All" entry on the Edit Menu selects all items in a patch window.
+<P>If you select one connection by clicking on it, you can "delete" it by
+hitting the backspace or delete key. If you select one or more boxes and
+you haven't made any text active, you can also "delete" the selection by
+hitting the backspace or delete key. The connections of the selected boxes
+are also deleted. The "Select All" entry on the Edit Menu selects all items
+in a patch window.
 
-<P>For one or more selected boxes you can also "cut", "copy" and "paste" using menu items. If you have several objects connected that are selected, the connections are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the selection on a different window. When pasted, the items are selected, so you can also click on one of the selected items and move the whole group around.
+<P>For one or more selected boxes you can also "cut", "copy" and "paste" using
+menu items. If you have several objects connected that are selected, the connections
+are also "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then
+"paste" the selection on a different window. When pasted, the items are selected,
+so you can also click on one of the selected items and move the whole group around.
 
-<P> Note that the pasting puts the selection in the same position it was copied, unless the place is already taken. The "duplicate" menu item performs a copy and paste with a small offset, because the original selection is kept and the place is taken. If you manually "copy" and "paste" items on the same window, without deleting them, the pasted selection is also given with a little offset, so you can see the new boxes.  You can then click on an item in the pasted selection with an offset to drag them all together to a new spot in the patch window.
+<P> Note that the pasting puts the selection in the same position it was copied
+, unless the place is already taken. The "duplicate" menu item performs a copy
+and paste with a small offset, because the original selection is kept and the
+place is taken. If you manually "copy" and "paste" items on the same window, without
+deleting them, the pasted selection is also given with a little offset, so you
+can see the new boxes.  You can then click on an item in the pasted selection with
+an offset to drag them all together to a new spot in the patch window.
 
 <P>To unselect you can click on an empty spot of your patch or use the 'esc' key.
 
-<P>For a selected object box, message box or comment, with the text active, you can also use copy, cut and paste for the text selection. Text selections for cut/copy/paste is integrated with the OS, so you can copy/paste text to/from other software.
+<P>For a selected object box, message box or comment, with the text active, you
+can also use copy, cut and paste for the text selection. Text selections for
+cut/copy/paste is integrated with the OS, so you can copy/paste text to/from
+other software.
 
-<P>On the other hand, and even though you can cut/copy a patch selection and paste to a different windows within Pd, cut/paste patch elements isn't integrated with the OS for patch seections. This means you can't paste between different versions or flavors of Pd. You can't copy and paste to a Pd subprocess either (instantiated via a [pd~] object).
+<P>On the other hand, and even though you can cut/copy a patch selection and
+paste to a different windows within Pd, cut/paste patch elements isn't integrated
+with the OS for patch seections. This means you can't paste between different
+versions or flavors of Pd. You can't copy and paste to a Pd subprocess either
+(instantiated via a [pd~] object).
 
 <H3> <A id=s2.5> 2.2.5. Changing the text </A> </H3>
 
-<P> To change a text in an object, message or comment, you can select it and then edit the text.  If you only click once, the entire text is selected and your typing will replace everything. Click again and drag to select a portion of the text to retype. You can also use cut/copy/paste as mentioned.
+<P> To change a text in an object, message or comment, you can select it and then
+edit the text.  If you only click once, the entire text is selected and your
+typing will replace everything. Click again and drag to select a portion of
+the text to retype. You can also use cut/copy/paste as mentioned.
 
-<P> If you click a box and move the mouse without releasing the button this displaces the entire box.  If you wish to displace a box whose is already selected, first de-select the box (by clicking outside it or using 'esc'); otherwise you will be selecting text instead of moving the box.
+<P> If you click a box and move the mouse without releasing the button this
+displaces the entire box.  If you wish to displace a box whose is already selected,
+first de-select the box (by clicking outside it or using 'esc'); otherwise you
+will be selecting text instead of moving the box.
 
 <P> <I> The updated text only becomes part of the patch when you de-select the
 object. </I>  Changing the text in an "object" box deletes the old
@@ -240,25 +346,41 @@ object and creates a new one; the internal state of the old one is lost.
 
 <H3> <A id=s2.6> 2.2.6. Connecting and disconnecting boxes </A> </H3>
 
-<P>This subsection only describes the simplest way to make and delete connection between two boxes. For more advanced and convenient techniques and shortcuts, refer to the next section.
+<P>This subsection only describes the simplest way to make and delete connection
+between two boxes. For more advanced and convenient techniques and shortcuts,
+refer to the next section.
 
-<P>To create a connection, in Edit mode, move your mouse into the the area of an outlet. Note that the cursor becomes a circle, this signals you can click and drag to create a connection. Move the cord into an outletet area, where you'll see again the circle shape in your cursor, signaling you can release the mouse button to make create a connection. You can release the mouse button anywhere within the top are of the target object and the connection will be made to the nearest inlet.
+<P>To create a connection, in Edit mode, move your mouse into the the area of
+an outlet. Note that the cursor becomes a circle, this signals you can click
+and drag to create a connection. Move the cord into an outletet area, where
+you'll see again the circle shape in your cursor, signaling you can release
+the mouse button to make create a connection. You can release the mouse button
+anywhere within the top are of the target object and the connection will be made to the nearest inlet.
 
 <P>Connections are broken by selecting them and using "cut" or the backspace
 or delete key.
 
 <H3> <A id=s2.7> 2.2.7. Popup menu for 'properties', 'open' and 'help' </A> </H3>
 
-<P> All the "clicking" mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering "properties," "open," and "help". For Macintosh users who may only have one button on their mouse, double-clicking or <code>alt + </code> click are mapped to right-click. Regarding a trackpad, then you can click with two fingers.
+<P> All the "clicking" mentioned above is done with the left mouse button.
+The right button, instead, gives a popup menu offering "properties," "open,"
+and "help". For Macintosh users who may only have one button on their mouse,
+double-clicking or <code>alt + </code> click are mapped to right-click.
+Regarding a trackpad, then you can click with two fingers.
 
-<P> Selecting "help" on an object gets a Pd patch that demonstrates how to use it.  "Help" for the canvas as a whole (right-clicking outside any object) gives a list of all built-in objects.
+<P> Selecting "help" on an object gets a Pd patch that demonstrates how to use it.
+"Help" for the canvas as a whole (right-clicking outside any object) gives a
+list of all built-in objects.
 
-<P> The "open" menu item is only enabled if you right-click on a subpatch (see <A href="x2.htm#s2.8"> subpatches </A>) and causes Pd to open it.  Ordinary subpatches may also be opened by clicking on them, but for "graph-on-parent" ones, this is the only way to do it.
+<P> The "open" menu item is only enabled if you right-click on a subpatch
+(see <A href="x2.htm#s8"> subpatches </A>) and causes Pd to open it.
+Ordinary subpatches may also be opened by clicking on them, but for
+"graph-on-parent" ones, this is the only way to do it.
 
 <P> The "properties" dialog allows you to change certain settings of GUI
 objects, or of the patch itself (by clicking outside any box.)
 
-<H3> <A id=s2.7> 2.2.8. Miscellaneous </A> </H3>
+<H3> <A id=s2.8> 2.2.8. Miscellaneous </A> </H3>
 
 <P> <code>Cmd  + Q</code> "quits" Pd, but asks you to confirm the quit.  To quit without
 having to confirm, use <code>Cmd  + shift + Q</code>.
@@ -269,67 +391,167 @@ having to confirm, use <code>Cmd  + shift + Q</code>.
 
 <H3> <A id="s3.1"> 2.3.1. Tab navigation </A> </H3>
 
-<P> If you have a single selected box you can press <code>tab</code> to navigate and change selection to other objects. The selection sequence follows the order in which the object were created and pressing <code>tab</code> moves from the first created object to the next created object and so on. When reaching the last box in the window it goes back to the first one. Alternatively you can press <code>shift + tab</code> to cycle in the reverse sequence and move from the last created objects towards the first (INCLUDE PIC).
+<P> If you have a single selected box you can press <code>tab</code> to navigate
+and change selection to other objects. The selection sequence follows the order
+in which the object were created and pressing <code>tab</code> moves from the
+first created object to the next created object and so on. When reaching the
+last box in the window it goes back to the first one. Alternatively you can
+press <code>shift + tab</code> to cycle in the reverse sequence and move
+from the last created objects towards the first (INCLUDE PIC).
 
-<P> Using <code>tab</code> also works in a similar way for patch cords if you have one selected. You can move from first to last with <code>tab</code> and from last to first with <code>shift + tab</code> (INCLUDE PIC).
+<P> Using <code>tab</code> also works in a similar way for patch cords if
+you have one selected. You can move from first to last with <code>tab</code> and
+from last to first with <code>shift + tab</code> (INCLUDE PIC).
 
-<P> If you're creating a connection by clicking in an outlet and dragging a patch cord you can also using <code>tab</code>. The navigation order is left to right and it also circles back. Pressing <code>shift + tab</code> navigates from right to left (INCLUDE PIC).
+<P> If you're creating a connection by clicking in an outlet and dragging a
+patch cord you can also using <code>tab</code>. The navigation order is left
+to right and it also circles back. Pressing <code>shift + tab</code> navigates
+from right to left (INCLUDE PIC).
 
-<P> In Linux and Windows you can also circle between inlets. This is not possible in macOS. When dragging a connection into an inlet area, without releasing the mouse, you can use <code>tab</code> to navigate to the next inlet, or <code>shift + tab</code> to navigate to the previous one (INCLUDE PIC).
+<P> In Linux and Windows you can also circle between inlets. This is not possible
+in macOS. When dragging a connection into an inlet area, without releasing
+the mouse, you can use <code>tab</code> to navigate to the next inlet, or
+<code>shift + tab</code> to navigate to the previous one (INCLUDE PIC).
 
 <H3> <A id="s3.2"> 2.3.2. Autopatching </A> </H3>
 
-<P> By default, Pd has an 'autopatching' mode set to on. You can disable it via startup flags (see '-autopatch' flag <a href="x3.htm" id=s3>Preferences and startup options </A>). This works with the shortcuts from the <b>Put menu</b> for inserting boxes. If you have a selected box and use an ascellerator to create another box (auch as <code>Cmd  + 1</code> to create an object box), the created box is placed below the selected object and a connection is made from the first outlet of the selected object into the inlet of the newly created object (granted that both objects have an oultet and an inlet for the connection to happen).  (INCLUDE PIC).
+<P> By default, Pd has an 'autopatching' mode set to on. You can disable it
+via startup flags (see '-autopatch' flag <a href="x3.htm#s4">Preferences
+and startup options </A>). This works with the shortcuts from the <b>Put menu</b>
+for inserting boxes. If you have a selected box and use an ascellerator to
+create another box (auch as <code>Cmd  + 1</code> to create an object box),
+the created box is placed below the selected object and a connection is made
+from the first outlet of the selected object into the inlet of the newly
+created object (granted that both objects have an oultet and an inlet for the
+connection to happen).  (INCLUDE PIC).
 
-<P> Once the new box is created, it is also selected, so you can continue with autopatching by adding yet more boxes. In the case of object and message boxes you can also start typing text into it before autopatching into another newly created box, since when you autopatch for the next one the object or message box gets desselected and created.  (INCLUDE PIC).
+<P> Once the new box is created, it is also selected, so you can continue with
+autopatching by adding yet more boxes. In the case of object and message boxes
+you can also start typing text into it before autopatching into another newly
+created box, since when you autopatch for the next one the object or message
+box gets desselected and created.  (INCLUDE PIC).
 
-<P> You can also autopatch into a newly created subpatches (see <A href="x2.htm#s2.8"> subpatches </A>). By creating an object box and typing [pd], as soon as you desselect the object a subpatch is created with an inlet - either a control inlet ([inlet]) if the object above is a control object, or a signal inlet ([inlet~]) if it is a tilde object instead.  (INCLUDE PIC).
+<P> You can also autopatch into a newly created subpatches (see <A href="x2.htm#s8">
+subpatches </A>). By creating an object box and typing [pd], as soon as you
+desselect the object a subpatch is created with an inlet - either a control
+inlet ([inlet]) if the object above is a control object, or a signal inlet
+([inlet~]) if it is a tilde object instead.  (INCLUDE PIC).
 
 <H3> <A id="s3.3"> 2.3.3. Duplicate connections </A> </H3>
 
-<P> If you select a connection between two objects that have more outlets/inlets for more connections, you can use <code>Cmd  + D</code> to duplicate and create more connections. (INCLUDE PIC).
+<P> If you select a connection between two objects that have more outlets/inlets
+for more connections, you can use <code>Cmd  + D</code> to duplicate and create
+more connections. (INCLUDE PIC).
 
 <H3> <A id="s3.4"> 2.3.4. Managing connections with the shift key </A> </H3>
 
-<P> - Swap connections: If you selected a connection and use <code>shift + click</code> to select another, you swap the connections (INCLUDE PIC).
+<P> - Swap connections: If you selected a connection and use <code>shift + click</code>
+to select another, you swap the connections (INCLUDE PIC).
 
-<P> - Fan connections: If you don't have selected boxes and start creating a connection by clickig an outlet and dragging a cord, you use <code>shift</code> to create a connection into an inlet instead of releasing the mouse button so that another cord is created for you to fan out and choose another inlet to connect to (INCLUDE PIC).
+<P> - Fan connections: If you don't have selected boxes and start creating a
+connection by clickig an outlet and dragging a cord, you use <code>shift</code>
+to create a connection into an inlet instead of releasing the mouse button so
+that another cord is created for you to fan out and choose another inlet to
+connect to (INCLUDE PIC).
 
-<P> - One to many: If you have a group of target boxes that are selected, you can drag a cord from another box and press <code>shift</code> to create a connection into the same inlet number of the selected boxes (which do not need to be of the same type or class) (INCLUDE PIC).
+<P> - One to many: If you have a group of target boxes that are selected, you
+can drag a cord from another box and press <code>shift</code> to create a
+connection into the same inlet number of the selected boxes (which do not
+need to be of the same type or class) (INCLUDE PIC).
 
-<P> - Many to one: If you have a group of origin boxes that are selected, you can drag a cord from an outlet into another box and press <code>shift</code> to create a connection from the same outlet number of the selected boxes (which do not need to be of the same type or class) (INCLUDE PIC).
+<P> - Many to one: If you have a group of origin boxes that are selected,
+you can drag a cord from an outlet into another box and press <code>shift</code>
+to create a connection from the same outlet number of the selected boxes
+(which do not need to be of the same type or class) (INCLUDE PIC).
 
-<P> - Connect multiple outlets and inlets of 2 boxes: If you have 2 selected boxes and start creating a connection by clickig an outlet and dragging a cord into an inlet, you use <code>shift</code> to create all connections from a matching number outlets and inlets from the connection that was made. If any existing connection already exists between the two boxes, remaining unmade connections are created (INCLUDE PIC).
+<P> - Connect multiple outlets and inlets of 2 boxes: If you have 2 selected
+boxes and start creating a connection by clickig an outlet and dragging a
+cord into an inlet, you use <code>shift</code> to create all connections
+from a matching number outlets and inlets from the connection that was made.
+If any existing connection already exists between the two boxes, remaining
+unmade connections are created (INCLUDE PIC).
 
-<P> - Connect outlets of multiple boxes into another: If there's a selected a group of boxes, you can start creating a connection by clickig an outlet and dragging a cord into an inlet of another selected box and when you press <code>shift</code> connections are made from the same outlet of the boxes (which do not need to be of the same type or class) into separate inlets from the first created connection. (INCLUDE PIC).
+<P> - Connect outlets of multiple boxes into another: If there's a selected
+a group of boxes, you can start creating a connection by clickig an outlet
+and dragging a cord into an inlet of another selected box and when you press
+<code>shift</code> connections are made from the same outlet of the boxes
+(which do not need to be of the same type or class) into separate inlets
+from the first created connection. (INCLUDE PIC).
 
 <H3> <A id="s3.5"> 2.3.5. (Dis)Connect selection </A> </H3>
 
-<P> This is a menu entry in the <b>Edit menu</b> and note there is the ascellerator <code>Cmd  + K</code> for it. This allows you do connect and disconnect selected boxes in different ways.
+<P> This is a menu entry in the <b>Edit menu</b> and note there is the a
+scellerator <code>Cmd  + K</code> for it. This allows you do connect and
+disconnect selected boxes in different ways.
 
-<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect them. Repeat using <code>Cmd  + K</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
+<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect
+them. Repeat using <code>Cmd  + K</code> to make multiple connections
+from outlets to inlets. (INCLUDE PIC).
 
-<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect them. Repeat using <code>Cmd  + K</code> to make multiple connections from outlets to inlets. (INCLUDE PIC).
+<P> For 2 selected boxes you can use <code>Cmd  + K</code> to connect
+them. Repeat using <code>Cmd  + K</code> to make multiple connections
+from outlets to inlets. (INCLUDE PIC).
 
-<P> For 2 selected audio objects, if the origin object has a single outlet and the target object has many inlets, you can repeatedly use <code>Cmd  + K</code> to fan out and connect the same outlet to all inlets (INCLUDE PIC).
+<P> For 2 selected audio objects, if the origin object has a single outlet
+and the target object has many inlets, you can repeatedly use <code>Cmd  + K</code>
+to fan out and connect the same outlet to all inlets (INCLUDE PIC).
 
-<P> For last, you can include or bypass a box into or from a connection (being it any connection from any outlet into any inlet). To include a box, you can select it and the connection between the other 2 boxes by using <code>shift + click</code> and then use <code>Cmd  + K</code> to include the selected box into the connection. Alternatively, you can select the 3 boxes (either via  <code>shift + clicks</code> or clicking and dragging). With the 3 boxes selected, the connection between the 2 boxes that you want to insert the third one is also selected. (INCLUDE PIC).
+<P> For last, you can include or bypass a box into or from a connection
+(being it any connection from any outlet into any inlet). To include a box,
+you can select it and the connection between the other 2 boxes by using
+<code>shift + click</code> and then use <code>Cmd  + K</code> to include
+the selected box into the connection. Alternatively, you can select the 3
+boxes (either via  <code>shift + clicks</code> or clicking and dragging).
+With the 3 boxes selected, the connection between the 2 boxes that you
+want to insert the third one is also selected. (INCLUDE PIC).
 
-<P> To bypass a box, you can select 3 boxes connected in a row and use <code>Cmd  + K</code> to bypass and remove the middle box from the connection. (INCLUDE PIC).
+<P> To bypass a box, you can select 3 boxes connected in a row and use
+<code>Cmd  + K</code> to bypass and remove the middle box from the connection. (INCLUDE PIC).
 
 <H3> <A id="s3.6"> 2.3.6. Triggerize </A> </H3>
 
-<P> The 'Triggerize' entry in the <b>Edit menu</b>, with the <code>Cmd  + T</code> ascellerator was designed to insert a [trigger] object (in its abbreviated form [t]) when you select a single box that is connected to many inlets of a single or multiple boxes. This object is briefly described in (see <A href="x2.htm#s4.3"> Hot and cold inlets and right to left outlet order </A>) and is widely used in Pd to control order of execution from right to left. 'Triggerize' creates the [trigger] object taking into account the order in which the connections were made, where the first connection starts at the rightmost outlet of trigger and continues to the leftmost. (INCLUDE PIC)
+<P> The 'Triggerize' entry in the <b>Edit menu</b>, with the <code>Cmd  + T</code>
+ascellerator was designed to insert a [trigger] object (in its abbreviated form [t])
+when you select a single box that is connected to many inlets of a single or
+multiple boxes. This object is briefly described in (see <A href="x2.htm#s4.3">
+Hot and cold inlets and right to left outlet order </A>) and is widely used in
+ Pd to control order of execution from right to left. 'Triggerize' creates the
+[trigger] object taking into account the order in which the connections were
+made, where the first connection starts at the rightmost outlet of trigger
+and continues to the leftmost. (INCLUDE PIC)
 
-<P> The 'Triggerize' option can also be used to insert a dummy object. To do so, select a connection and use <code>Cmd  + T</code>. For a control connection, a [t a] object is created with the text selected, so you can type another text to include anothre object instead. For a signal connection, a [pd nop~] subpatch is created, also with the text selected for you to include a new object. (INCLUDE PIC)
+<P> The 'Triggerize' option can also be used to insert a dummy object.
+To do so, select a connection and use <code>Cmd  + T</code>. For a control
+connection, a [t a] object is created with the text selected, so you
+can type another text to include anothre object instead. For a signal
+connection, a [pd nop~] subpatch is created, also with the text selected
+for you to include a new object. (INCLUDE PIC)
 
 <H3> <A id="s3.7"> 2.3.7. Paste replace </A> </H3>
 
-<P> The "Paste Replace" entry in the <b>Edit menu</b> doesn't have a shortcut and performs a special paste operation where it replaces a selection of boxes for another kind. For example, first copy one box such as a [float] object. Then select a group of boxes of the same type, for instance, a group of object boxes (note that they don't need to be of the same class). Now go to the <b>Edit menu</b> and select "Paste Replace". All the selected boxes of the same type get replaced by the copied box and connections are preserved. (INCLUDE PIC).
+<P> The "Paste Replace" entry in the <b>Edit menu</b> doesn't have a
+shortcut and performs a special paste operation where it replaces a selection
+of boxes for another kind. For example, first copy one box such as a
+[float] object. Then select a group of boxes of the same type, for
+instance, a group of object boxes (note that they don't need to be
+of the same class). Now go to the <b>Edit menu</b> and select "Paste Replace".
+All the selected boxes of the same type get replaced by the copied box
+and connections are preserved. (INCLUDE PIC).
 
-<P> Alternatively, you can copy a number box instead of a [float] object and replace for it in the selected group of objects, or in a selected group of another kind, such as message boxes. Note that the object types in Pd are: objects, messages, GUIs and comments, but 'iemguis' are actually treated in this case as regular object boxes. Hence, the GUI boxes are only the number box, the symbol box and the list box. Also note that these three GUIs are not of the same kind for the purpose of "Paste Replace". A subpatch or an abstraction can be used for "Paste Replace" and they count in the same group of objects. (INCLUDE PICTURE THAT REPLACES OBJECTS OF THE SAME KIND WITH AN OBJECT OF ANOTHER KIND).
+<P> Alternatively, you can copy a number box instead of a [float] object
+and replace for it in the selected group of objects, or in a selected group
+of another kind, such as message boxes. Note that the object types in Pd
+are: objects, messages, GUIs and comments, but 'iemguis' are actually
+treated in this case as regular object boxes. Hence, the GUI boxes are
+only the number box, the symbol box and the list box. Also note that
+these three GUIs are not of the same kind for the purpose of "Paste Replace".
+A subpatch or an abstraction can be used for "Paste Replace" and they count
+in the same group of objects. (INCLUDE PICTURE THAT REPLACES OBJECTS OF
+THE SAME KIND WITH AN OBJECT OF ANOTHER KIND).
 
-<P> If you have a selection of objects to replace that include different types of objects, the "Paste Replace" will only replace the boxes of the same type that it was copied.  (INCLUDE PIC).
+<P> If you have a selection of objects to replace that include different
+types of objects, the "Paste Replace" will only replace the boxes of the
+same type that it was copied.  (INCLUDE PIC).
 
 <H3> <A id="s4"> 2.4. Messages </A> </H3>
 
@@ -449,7 +671,11 @@ want.  Here is how to use [trigger] to disambiguate the previous example:
     <IMG src="fig3.6.jpg" ALT="trigger to disambiguate">
 </P></CENTER>
 
-<P> "Cold" (non-leftmost) inlets are almost universally used to store single values (either numbers or symbols.)  With the exception of [line], [line~] and [vline~], these values are "sticky," i.e., once you set the value it is good until the next time you set it.  (The "line family" exception is for sanity's sake.)
+<P> "Cold" (non-leftmost) inlets are almost universally used to store single
+values (either numbers or symbols.)  With the exception of [line], [line~]
+and [vline~], these values are "sticky," i.e., once you set the value it is
+good until the next time you set it.  (The "line family" exception is for
+sanity's sake.)
 
 <P> One more question sometimes comes up in execution order, which is
 the order in which two messages are sent to a single "cold" inlet.  In this
@@ -558,11 +784,15 @@ find the source of the error.  You can build algorithms with feedback using
 nonlocal signal connections.
 
 <P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
-objects (see <A href="x2.htm#s2.8"> Subpatches </A>).
+objects (see <A href="x2.htm#s8"> Subpatches </A>).
 
 <H3> <A id=s5.3> 2.5.3. Converting audio to and from messages </A> </H3>
 
-<P> If you want to use a control value as a signal, you can use the [sig~] object to convert it.  The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~] and [lop~] objects can be configured to take control or signal inputs in their 2nd inlet. You can also use [line~] and [vline~] to "convert" from control to signal with a smoothen ramp, so to speak.
+<P> If you want to use a control value as a signal, you can use the [sig~]
+object to convert it.  The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~]
+and [lop~] objects can be configured to take control or signal inputs in their
+2nd inlet. You can also use [line~] and [vline~] to "convert" from control to
+signal with a smoothen ramp, so to speak.
 
 <P> The other direction, signal to control, requires that you specify at what
 moments you want the signal sampled.  This is handled by the [snapshot~] object,
@@ -573,8 +803,15 @@ control data floats.
 
 <H3> <A id=s5.4> 2.5.4. Switching and blocking </A> </H3>
 
-<P>You can use the [switch~] or [block~] objects to turn portions of your audio computation on and off and to control the block size of computation.  There may be only one [switch~] or [block~] object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested [switch~]/[block~] objects. Both [s]witch~] and [block~] take a block size and an overlap factor as arguments; so for instance, [block~ 1024 4] specifies 1024 sample
-blocks, overlapped by a factor of 4 relative to the parent window. The [switch~] version carries a small computational overhead in addition to whatever overhead is associated with changing the block size.
+<P>You can use the [switch~] or [block~] objects to turn portions of your audio
+computation on and off and to control the block size of computation.  There may
+be only one [switch~] or [block~] object in any window; it acts on the entire
+window and all of its subwindows, which may still have their own nested
+[switch~]/[block~] objects. Both [s]witch~] and [block~] take a block size
+and an overlap factor as arguments; so for instance, [block~ 1024 4] specifies
+1024 sample blocks, overlapped by a factor of 4 relative to the parent window.
+The [switch~] version carries a small computational overhead in addition to
+whatever overhead is associated with changing the block size.
 
 <P> Larger block sizes than 64 should result in small increases in run-time
 efficiency.  Also, the [fft~] and related objects operate on blocks so that
@@ -597,19 +834,39 @@ inside the switched module and [catch~] outside it.
 
 <H3> <A id=s5.5> 2.5.5. Nonlocal signal connections </A> </H3>
 
-<P>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm's input.  This can be done using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or [delread4~] pairs. Both [throw~] and [catch~] implement a summing bus; [throw~] adds into the bus and [catch~] reads out the accumulated signal and zeros the bus for the next time around.  There can be many [throw~] objects associated with a single [catch~], but a [throw~] can't talk to more than one [catch~].  You can reset the destination of a [throw~] if you want to.
+<P>You may wish to pass signals non-locally, either to get from one window to
+another, or to feed a signal back to your algorithm's input.  This can be done
+using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or [delread4~]
+pairs. Both [throw~] and [catch~] implement a summing bus; [throw~] adds into the
+bus and [catch~] reads out the accumulated signal and zeros the bus for the next
+time around.  There can be many [throw~] objects associated with a single [catch~],
+but a [throw~] can't talk to more than one [catch~].  You can reset the destination
+of a [throw~] if you want to.
 
-<P> On the other hand, [send~] just saves a signal which may then be received by a [receive~] object any number of times; but a [receive~] can only pick up one [send~] at a time (but you can switch between [send~] objects if you want.)
+<P> On the other hand, [send~] just saves a signal which may then be received
+by a [receive~] object any number of times; but a [receive~] can only pick up
+one [send~] at a time (but you can switch between [send~] objects if you want.)
 
 <P> Don't try to [throw~] and [catch~] or [send~] and [receive~] between windows with
 different block sizes.  The only re-blocking mechanisms which are well tested
 are [inlet~] and [outlet~].
 
-<P> When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn't get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.), the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay.
+<P> When you send a signal to a point that is earlier in the sorted list of
+tilde objects, the signal doesn't get there until the next cycle of DSP computation,
+one block later; so your signal will be delayed by one block (1.45 msec by default.),
+the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here the
+1.45 msec figure gives the minimum attainable delay.
 
 <H3> <A id=s5.6> 2.5.6. Multichannel signals </A> </H3>
 
-<P> As of Pd version 0.54-0, signals may be multichannel.  Every signal has a <i>length</i> equal to the window's block size (64 by default), and also has a <i>channel count</i> which is 1 by default.  The [snake~] object can combine any number of single-channel signals into a multichannel one, or alternatively can split a multichannel signal into its component single-channel ones.  Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~]) can be used to pass multichannel signals from window to window, and [dac~] and [adc~] can input and output several inputs or outputs into, or out of, one multichannel signal.
+<P> As of Pd version 0.54-0, signals may be multichannel.  Every signal has a
+<i>length</i> equal to the window's block size (64 by default), and also has a
+<i>channel count</i> which is 1 by default.  The [snake~] object can combine
+any number of single-channel signals into a multichannel one, or alternatively
+can split a multichannel signal into its component single-channel ones.
+Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~])
+can be used to pass multichannel signals from window to window, and [dac~] and [adc~]
+can input and output several inputs or outputs into, or out of, one multichannel signal.
 
 <P> The [receive~], [catch~], and [adc~] objects take arguments to specify the desired number of channels.
 
@@ -655,9 +912,9 @@ but at the same logical time.
 
 <P> The Pd scheduler maintains a (user-specified) lead on its computations;
 that is, it tries to keep ahead of real time by a small amount in order to be
-able to absorb unpredictable, momentary increases in computation time.   This
+able to absorb unpredictable, momentary increases in computation time. This
 is specified using the "audiobuffer" or "frags" command line flags (see  <a
-href="x3.htm" id=s3>Getting Pd to run </A>).
+href="x3.htm">Getting Pd to run </A>).
 
 <P>  If Pd gets late with respect to real time, gaps (either occasional or
 frequent) will appear in both the input and output audio streams.  On the
@@ -903,7 +1160,9 @@ the abstraction.  The "graph on parent" flag is set in the abstraction
 dialog for the "abstraction2" canvas by right-clicking on any white space
 in the patch.
 
-<P> To open the subpatch, right click on the object and select "open". It doesn't work just to click on the object in run mode since clicks are sent to visible controls and/or arrays.
+<P> To open the subpatch, right click on the object and select "open". It doesn't
+work just to click on the object in run mode since clicks are sent to visible
+controls and/or arrays.
 
 <P> When the sub-patch is closed, all controls in it appear on the object
 instead; so the number box in the sub-patch in the example above is the same
@@ -961,7 +1220,11 @@ the patch below creates a 440 Hz. tone with "array1" as a waveform:
 
 <CENTER><P>  <IMG src="fig8.4.jpg" ALT="setting an array with a waveform">  </P></CENTER>
 
-<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440 times per second.  The multiplier and adder adjust the range from 1 to 11, and then the values are used as indices for tabread4~, which is a 4-point interpolating table lookup module.  (Much more detail is available in the audio example patches in the "pure documentation" series.)
+<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440
+times per second.  The multiplier and adder adjust the range from 1 to 11, and
+then the values are used as indices for tabread4~, which is a 4-point interpolating
+table lookup module.  (Much more detail is available in the audio example
+patches in the "pure documentation" series.)
 
 <P> To create a new array, select "array" from the "put" menu.  Up will come
 a dialog window to set initial properties of the array.  By default, a
@@ -1147,7 +1410,12 @@ voice.  The voice number is shown as the color of the frequency trace in
 arbitrarily set up to select among the six primary and secondary colors plus
 black.
 
-<P>  The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the [voice] abstraction. The [voice] abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself.  The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.
+<P>  The details of extracting the pitch and dynamic breakpoints from the arrays
+defined in the template are managed in the [voice] abstraction. The [voice]
+abstraction receives a pointer to a given object and manages the sequencing of
+the arrays; so it contains two sequencers itself.  The nesting of the overall
+structure of the sequencer patch mirrors the nesting of the original data
+structures. Finally, the voice abstraction puts its audio output on a summing bus.
 
 <P>  More general patches can easily be constructed which access heterogeneous lists
 of objects (having different templates).  In this way, an arbitrarily rich
