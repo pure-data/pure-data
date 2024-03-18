@@ -606,6 +606,21 @@ EXTERN void sys_lock(void);
 EXTERN void sys_unlock(void);
 EXTERN int sys_trylock(void);
 
+/* ------------- asynchronous tasks ---------- */
+EXTERN_STRUCT _task;
+#define t_task struct _task
+
+typedef void (*t_task_workfn)(t_task *task, void *data);
+typedef void (*t_task_callback)(t_pd *owner, void *data);
+
+/* see s_task.c for documentation */
+EXTERN t_task *task_start(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
+EXTERN t_task *task_spawn(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
+EXTERN int task_stop(t_task *task, int sync);
+EXTERN int task_check(t_task *task);
+EXTERN void task_suspend(t_task *task);
+EXTERN void task_resume(t_task *task, t_task_workfn);
+EXTERN void task_notify(t_task *task, void *data, t_task_callback fn);
 
 /* --------------- signals ----------------------------------- */
 
