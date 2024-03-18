@@ -390,7 +390,7 @@ EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
 EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
-EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
+PD_DEPRECATED EXTERN double clock_getsystime(void); /* use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
 EXTERN double clock_gettimesincewithunits(double prevsystime,
     double units, int sampflag);
@@ -742,12 +742,12 @@ EXTERN_STRUCT _garray;
 #define t_garray struct _garray
 
 EXTERN t_class *garray_class;
-EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
+PD_DEPRECATED EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec); /* use garray_getfloatwords() */
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+PD_DEPRECATED EXTERN void garray_resize(t_garray *x, t_floatarg f); /* use garray_resize_long() */
 EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
