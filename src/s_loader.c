@@ -244,16 +244,15 @@ void sys_putonloadlist(const char *classname)
 }
 
 void class_set_extern_dir(t_symbol *s);
+void class_set_extern_sym(t_symbol *s);
 
 static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     const char *path);
 
 
-static int sys_do_load_lib_from_file(int fd,
-    const char*objectname,
-    const char*dirbuf,
-    const char*nameptr,
-    const char*symname) {
+static int sys_do_load_lib_from_file(int fd, const char *objectname,
+    const char *dirbuf, const char *nameptr, const char *symname)
+{
     char filename[MAXPDSTRING];
     t_xxx makeout = NULL;
 #ifdef _WIN32
@@ -265,8 +264,6 @@ static int sys_do_load_lib_from_file(int fd,
     close(fd);
 
         /* attempt to open the library and call the setup function */
-
-
     class_set_extern_dir(gensym(dirbuf));
 
         /* rebuild the absolute pathname */
@@ -336,7 +333,7 @@ libdl or WIN32 required for loading externals!"
 
     class_set_extern_dir(&s_);
 
-    return (makeout)?1:0;
+    return (makeout != NULL);
 }
 
 static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
@@ -518,8 +515,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         sys_loadlib_iter(0, &data);
 
     if(data.ok)
-      sys_putonloadlist(classname);
-
+        sys_putonloadlist(classname);
 
     canvas_resume_dsp(dspstate);
     return data.ok;
