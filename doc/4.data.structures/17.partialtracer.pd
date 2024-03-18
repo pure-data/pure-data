@@ -1,4 +1,4 @@
-#N canvas 561 24 736 636 12;
+#N canvas 368 23 736 636 12;
 #X declare -stdpath ./;
 #N canvas 86 373 1216 368 trace-list 1;
 #X coords 0 92 1 91.75 0 0 0;
@@ -90,10 +90,6 @@
 #X restore 216 66 pd synthesis;
 #X obj 26 176 s sample-size;
 #X obj 351 69 cnv 19 451 88 empty empty empty 20 12 0 12 #ffffff #404040 0;
-#N canvas 0 50 450 300 (subpatch) 0;
-#X array \$0-sample 62079 float 2;
-#X coords 0 1 62079 -1 453 90 1 0 0;
-#X restore 350 68 graph;
 #N canvas 179 166 287 327 resize-sample 0;
 #X obj 83 41 r resize-sample;
 #X obj 115 101 samplerate~;
@@ -112,6 +108,11 @@
 #X connect 4 1 1 0;
 #X connect 6 0 5 0;
 #X restore 40 108 pd resize-sample;
+#X obj 351 69 cnv 19 451 88 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array \$0-sample 155944 float 2;
+#X coords 0 1 155944 -1 453 90 1 0 0;
+#X restore 350 68 graph;
 #X connect 0 0 7 0;
 #X connect 1 0 2 1;
 #X connect 2 0 9 0;
@@ -119,7 +120,7 @@
 #X connect 5 0 3 0;
 #X connect 6 0 8 0;
 #X connect 7 0 2 0;
-#X connect 12 0 2 0;
+#X connect 11 0 2 0;
 #X coords 0 -1 1 1 453 108 2 350 50;
 #X restore 22 176 pd sample;
 #X msg 186 151 voice2.wav;

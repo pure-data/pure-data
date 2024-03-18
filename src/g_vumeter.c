@@ -443,7 +443,9 @@ static void vu_float(t_vu *x, t_floatarg rms)
 {
     int i;
     int old = x->x_rms;
-    if(rms <= IEM_VU_MINDB)
+    if (PD_BADFLOAT(rms))
+        return;
+    else if(rms <= IEM_VU_MINDB)
         x->x_rms = 0;
     else if(rms >= IEM_VU_MAXDB)
         x->x_rms = IEM_VU_STEPS;
@@ -514,7 +516,6 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         w = (int)atom_getfloatarg(0, argc, argv);
         h = (int)atom_getfloatarg(1, argc, argv);
         iemgui_new_getnames(&x->x_gui, 1, argv);
-        x->x_gui.x_snd_unexpanded = x->x_gui.x_snd = gensym("nosndno"); /*no send*/
         ldx = (int)atom_getfloatarg(4, argc, argv);
         ldy = (int)atom_getfloatarg(5, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(6, argc, argv));
@@ -523,6 +524,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         scale = (int)atom_getfloatarg(10, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 1, 0);
+    x->x_gui.x_snd_unexpanded = x->x_gui.x_snd = gensym("nosndno"); /*no send*/
     if((argc == 12)&&IS_A_FLOAT(argv,11))
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(11, argc, argv));
 
@@ -557,17 +559,10 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void vu_free(t_vu *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_vumeter_setup(void)
 {
     vu_class = class_new(gensym("vu"), (t_newmethod)vu_new,
-        (t_method)vu_free, sizeof(t_vu), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_vu), 0, A_GIMME, 0);
     class_addbang(vu_class,vu_bang);
     class_addfloat(vu_class,vu_float);
     class_addmethod(vu_class, (t_method)vu_ft1,

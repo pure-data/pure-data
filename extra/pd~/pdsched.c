@@ -22,7 +22,7 @@ outputs audio and messages. */
 #include "binarymsg.c"
 
 #if PD_WATCHDOG
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 
 static void pollwatchdog( void)
 {

@@ -305,7 +305,7 @@
 #X text 156 250 - list files in directories;
 #X obj 27 249 file glob;
 #X obj 27 222 file which;
-#N canvas 660 134 623 461 which 0;
+#N canvas 560 152 623 461 which 0;
 #X obj 35 187 file which;
 #X symbolatom 35 301 79 0 0 0 - - - 0;
 #X obj 35 327 print found;
@@ -315,7 +315,7 @@
 #X text 73 364 notes:;
 #X text 126 364 - currently this only works for files \, not for directories!;
 #X text 126 385 - currently only the first match is returned;
-#X text 178 123 a file that ships with Pd;
+#X text 177 121 a file that ships with Pd;
 #X text 139 156 probably does not exist in Pd's search path;
 #N canvas 628 410 738 232 arguments 0;
 #X text 274 145 less verbose (quiet);
@@ -336,7 +336,6 @@
 #X floatatom 127 274 3 0 0 1 - - - 0;
 #X obj 11 47 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 137 14 - locate a file;
-#X text 29 65 [file which] tries to locate the file in using Pd's search-paths and returns the resolved path., f 69;
 #X obj 50 15 file which;
 #N canvas 778 127 581 317 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -356,6 +355,7 @@
 #X text 85 174 symbol - the input symbol if file isn't located.;
 #X restore 518 15 pd reference;
 #X text 157 273 directory flag: 0 if file \, 1 if directory \, see notes below.;
+#X text 53 65 [file which] tries to locate the file in using Pd's search-paths (via preferences and/or the [declare] object) and returns the resolved path., f 72;
 #X connect 0 0 13 0;
 #X connect 0 1 12 0;
 #X connect 1 0 2 0;

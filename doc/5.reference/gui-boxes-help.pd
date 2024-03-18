@@ -102,7 +102,7 @@
 #X text 70 43 By default \, when you create a box \, it'll use the font size that your patch is using. In this case it is "12". You can change the size settings in the properties. The 'auto' setting (the default) also automatically changes the font size of the atom box if you change your patch's font. In other cases \, it uses a specific font and keeps it no matter if you change the patch's font or not. Below \, we have a size of "36". The font setting also affects the label., f 56;
 #X restore 196 267 pd size;
 #X text 116 78 <-- right click for properties;
-#X restore 155 534 pd properties;
+#X restore 135 534 pd properties;
 #N canvas 570 235 459 438 properties 0;
 #N canvas 822 144 510 501 width 0;
 #X symbolatom 162 162 10 0 0 0 - - - 0;
@@ -159,7 +159,7 @@
 #X restore 240 277 pd size;
 #X text 171 77 <-- right click for properties;
 #X restore 800 264 pd properties;
-#X text 51 534 more details:;
+#X text 31 534 more details:;
 #X listbox 490 41 20 0 0 0 - - - 0;
 #X text 687 168 set only - don't output;
 #X msg 559 360 1 2 3 foo 5;

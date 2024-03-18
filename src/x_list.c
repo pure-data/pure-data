@@ -507,7 +507,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     }
         /* shift elements (after the deleted elements) to the left */
     memmove(x->x_alist.l_vec + index, x->x_alist.l_vec + index + n,
-        (x->x_alist.l_n - index) * sizeof(*x->x_alist.l_vec));
+        (x->x_alist.l_n - index - n) * sizeof(*x->x_alist.l_vec));
         /* shrink memory */
     if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
         (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),

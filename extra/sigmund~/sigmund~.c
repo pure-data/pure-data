@@ -1165,20 +1165,23 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
 {
     if (x->x_mode == MODE_STREAM)
     {
-        if (x->x_hop % sp[0]->s_n)
-            post("sigmund~: adjusting hop size to %d",
-                (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
-        if (x->x_infill % sp[0]->s_n) {
-            if (x->x_inbuf) {
-                int i;
-                t_sample*inbuf = x->x_inbuf;
-                for(i=0; i<x->x_npts; i++)
-                    *inbuf++ = 0.;
+        if (x->x_npts % sp[0]->s_n)
+            pd_error(x, "sigmund~: npts %d must be multiple of block size %d",
+                x->x_npts, sp[0]->s_n);
+        else
+        {
+            if (x->x_hop % sp[0]->s_n)
+                post("sigmund~: adjusting hop size to %d",
+                    (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+            if ((x->x_infill % sp[0]->s_n) || (x->x_infill > x->x_npts))
+            {
+                if (x->x_inbuf)
+                    memset(x->x_inbuf, 0, x->x_npts * sizeof(*x->x_inbuf));
+                x->x_infill = 0;
             }
-            x->x_infill = 0;
+            x->x_sr = sp[0]->s_sr;
+            dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
         }
-        x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
 }
 
@@ -1283,10 +1286,13 @@ static t_int *sigmund_perform(t_int *w)
         return (w+4);
     if (x->x_countdown > 0)
         x->x_countdown -= n;
-    else if (x->x_infill != x->x_npts)
+    else
     {
         int j;
-        t_float *fp = x->x_inbuf + x->x_infill;
+        t_float *fp;
+        if (x->x_infill + n > x->x_npts)
+            bug("sigmund_perform"), x->x_infill = 0;
+        fp = x->x_inbuf + x->x_infill;
         for (j = 0; j < n; j++)
             *fp++ = *in++;
         x->x_infill += n;

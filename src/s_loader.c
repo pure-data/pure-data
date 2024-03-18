@@ -129,7 +129,7 @@ static char*add_deken_extension(const char*systemext, int float_agnostic, int cp
         return 0;
     ext[MAXPDSTRING-1] = 0;
 
-    if(snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
+    if(pd_snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
         add_dllextension(ext);
     else
     {
@@ -535,7 +535,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         struct stat statbuf;
-        snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
+        pd_snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
             *dllextent);
         sys_bashfilename(filename, filename);
         if(!stat(filename, &statbuf))
@@ -604,7 +604,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         int fd = -1;
 
         t_pd *was = s__X.s_thing;
-        snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+        pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
         if ((fd = canvas_open(canvas, objectname, ".pd",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, objectname, ".pat",
@@ -640,7 +640,7 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
            but we have already tried all paths */
     if (!path) return (0);
 
-    snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+    pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
     if ((fd = sys_trytoopenone(path, objectname, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
         (fd = sys_trytoopenone(path, objectname, ".pat",

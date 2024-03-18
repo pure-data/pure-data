@@ -123,7 +123,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
         if (sel && (*methodlist)[i].me_name == sel)
     {
         char nbuf[80];
-        snprintf(nbuf, 80, "%s_aliased", sel->s_name);
+        pd_snprintf(nbuf, 80, "%s_aliased", sel->s_name);
         nbuf[79] = 0;
         (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
         if (c == pd_objectmaker)
@@ -142,9 +142,14 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
 }
 
 #ifdef PDINSTANCE
-EXTERN void pd_setinstance(t_pdinstance *x)
+void pd_setinstance(t_pdinstance *x)
 {
     pd_this = x;
+}
+
+t_pdinstance *pd_getinstance(void)
+{
+    return pd_this;
 }
 
 static void pdinstance_renumber(void)
@@ -157,7 +162,7 @@ static void pdinstance_renumber(void)
 extern void text_template_init(void);
 extern void garray_init(void);
 
-EXTERN t_pdinstance *pdinstance_new(void)
+t_pdinstance *pdinstance_new(void)
 {
     t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
     t_class *c;
@@ -193,7 +198,7 @@ EXTERN t_pdinstance *pdinstance_new(void)
     return (x);
 }
 
-EXTERN void pdinstance_free(t_pdinstance *x)
+void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
@@ -203,7 +208,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-    
+
     instanceno = x->pd_instanceno;
     inter = x->pd_inter;
     canvas_suspend_dsp();
@@ -569,28 +574,25 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...)
 {
     va_list ap;
-    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    t_atomtype vec[MAXPDARG+1], *vp = vec, argtype = type1;
     int count = 0;
-    *vp = type1;
 
     va_start(ap, type1);
-    while (*vp)
-    {
-        if (count == MAXPDARG)
-        {
-            if(s)
-                pd_error(0, "class %s: sorry: only %d creation args allowed",
-                      s->s_name, MAXPDARG);
-            else
-                pd_error(0, "unnamed class: sorry: only %d creation args allowed",
-                      MAXPDARG);
-            break;
-        }
-        vp++;
-        count++;
-        *vp = va_arg(ap, t_atomtype);
+    while(argtype != A_NULL && count < MAXPDARG) {
+        vec[count++] = argtype;
+        argtype = va_arg(ap, t_atomtype);
     }
     va_end(ap);
+        /* the last argument must be A_NULL */
+    if (A_NULL != argtype) {
+        if(s)
+            pd_error(0, "class %s: sorry: only %d creation args allowed",
+                s->s_name, MAXPDARG);
+        else
+            pd_error(0, "unnamed class: sorry: only %d creation args allowed",
+                MAXPDARG);
+    }
+    vec[count] = A_NULL;
     class_addmethod(pd_objectmaker, (t_method)newmethod, s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 }
@@ -1240,7 +1242,7 @@ t_class *
         logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
         loglevel=3;
     } else
-        logpost(0, 3, "refusing to load unnamed %dbit-float object into %dbit-float Pd", ext_floatsize, PD_FLOATSIZE);
+        logpost(0, PD_DEBUG, "refusing to load unnamed %dbit-float object into %dbit-float Pd", ext_floatsize, PD_FLOATSIZE);
 
     return 0;
 }
@@ -1252,4 +1254,3 @@ int class_getdspflags(const t_class *c)
             (c->c_nopromotesig ? CLASS_NOPROMOTESIG : 0) |
             (c->c_nopromoteleft ? CLASS_NOPROMOTELEFT : 0) );
 }
-

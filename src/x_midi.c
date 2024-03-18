@@ -583,16 +583,17 @@ static void *midiout_new(t_floatarg portno)
 
 static void midiout_float(t_midiout *x, t_floatarg f)
 {
-    outmidi_byte(x->x_portno - 1, f);
+    int portno = x->x_portno >= 1 ? x->x_portno - 1 : 0;
+    outmidi_byte(portno, f);
 }
 
 static void midiout_list(t_midiout *x, t_symbol *s, int ac, t_atom *av)
 {
-    int i;
+    int i, portno = x->x_portno >= 1 ? x->x_portno - 1 : 0;
     for (i = 0; i < ac; ++i)
     {
         if(av[i].a_type == A_FLOAT)
-            outmidi_byte(x->x_portno - 1, av[i].a_w.w_float);
+            outmidi_byte(portno, av[i].a_w.w_float);
     }
 }
 

@@ -508,6 +508,8 @@ static void slider_set(t_slider *x, t_floatarg f)
 {
     int old = x->x_val;
     double g;
+    if (PD_BADFLOAT(f))
+        return;
 
     x->x_fval = f;
     if (x->x_min > x->x_max)
@@ -752,17 +754,10 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void slider_free(t_slider *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_slider_setup(void)
 {
     slider_class = class_new(gensym("hsl"), (t_newmethod)slider_new,
-        (t_method)slider_free, sizeof(t_slider), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_slider), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("vsl"), A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("hslider"), A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("vslider"), A_GIMME, 0);

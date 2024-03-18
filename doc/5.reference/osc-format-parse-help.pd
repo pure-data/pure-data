@@ -1,4 +1,4 @@
-#N canvas 329 61 893 639 12;
+#N canvas 325 36 893 639 12;
 #X msg 294 174 1 2 3;
 #X msg 315 223 set dog ferret;
 #X msg 301 200 set mouse banana;

@@ -402,11 +402,9 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 
 static void bng_free(t_bng *x)
 {
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     clock_free(x->x_clock_lck);
     clock_free(x->x_clock_hld);
-    pdgui_stub_deleteforkey(x);
+    iemgui_free(&x->x_gui);
 }
 
 void g_bang_setup(void)
