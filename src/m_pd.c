@@ -322,7 +322,19 @@ void pd_init(void)
     pd_init_systems();
 }
 
-void pd_init_systems(void) {
+void pd_term(void)
+{
+    t_glist *c;
+    while ((c = pd_getcanvaslist()))
+    {
+        canvas_closebang(c);
+        pd_free((t_pd *)c);
+    }
+    pd_term_systems();
+}
+
+void pd_init_systems(void)
+{
     mess_init();
     sys_lock();
     obj_init();
@@ -332,9 +344,9 @@ void pd_init_systems(void) {
     sys_unlock();
 }
 
-void pd_term_systems(void) {
-    sys_lock();
-    sys_unlock();
+void pd_term_systems(void)
+{
+        /* TODO free resources */
 }
 
 t_canvas *pd_getcanvaslist(void)

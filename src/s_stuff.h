@@ -148,7 +148,6 @@ typedef void (*t_audiocallback)(void);
 
 extern int sys_schedadvance;
 
-void sys_set_audio_state(int onoff);
 int sys_send_dacs(void);
 void sys_reportidle(void);
 void sys_listdevs(void);
@@ -174,6 +173,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
+int pa_reopen_audio(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -202,6 +202,7 @@ void alsa_getdevs(char *indevlist, int *nindevs,
 int jack_open_audio(int inchans, int outchans, t_audiocallback callback);
 void jack_close_audio(void);
 int jack_send_dacs(void);
+int jack_reopen_audio(void);
 void jack_reportidle(void);
 void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -311,6 +312,7 @@ EXTERN void sys_log_error(int type);
 #define SCHED_AUDIO_POLL 1
 #define SCHED_AUDIO_CALLBACK 2
 void sched_set_using_audio(int flag);
+int sched_get_using_audio(void);
 extern int sys_sleepgrain;      /* override value set in command line */
 EXTERN int sched_get_sleepgrain( void);     /* returns actual value */
 

@@ -98,7 +98,10 @@ static double sys_whenupdate;
 void sys_initmidiqueue(void)
 {
     sys_midiinittime = clock_getlogicaltime();
+        /* force update in sys_setmiditimediff() */
     sys_dactimeminusrealtime = sys_adctimeminusrealtime = 0;
+    sys_newdactimeminusrealtime = sys_newadctimeminusrealtime = -1e20;
+    sys_whenupdate = 0;
 }
 
     /* this is called from the OS dependent code from time to time when we
@@ -165,7 +168,7 @@ static void sys_putnext(void)
 
 /*  #define TEST_DEJITTER */
 
-void sys_pollmidioutqueue(void)
+static void sys_pollmidioutqueue(void)
 {
 #ifdef TEST_DEJITTER
     static int db = 0;
@@ -180,8 +183,8 @@ void sys_pollmidioutqueue(void)
 #ifdef TEST_DEJITTER
         if (!db)
         {
-            post("out: del %f, midiRT %f logicaltime %f, RT %f dacminusRT %f",
-                (midi_outqueue[midi_outtail].q_time - midirealtime),
+            post("out: del %f, midiRT %f, logicaltime %f, RT %f, dacminusRT %f",
+                (midirealtime - midi_outqueue[midi_outtail].q_time),
                     midirealtime, .001 * clock_gettimesince(sys_midiinittime),
                         sys_getrealtime(), sys_dactimeminusrealtime);
             db = 1;
@@ -439,7 +442,7 @@ void sys_pollmidiinqueue(void)
         if (!db)
         {
             post("in del %f, logicaltime %f, RT %f adcminusRT %f",
-                (midi_inqueue[midi_intail].q_time - logicaltime),
+                (logicaltime - midi_inqueue[midi_intail].q_time),
                     logicaltime, sys_getrealtime(), sys_adctimeminusrealtime);
             db = 1;
         }
@@ -491,7 +494,9 @@ void sys_midibytein(int portno, int byte)
 
 void sys_pollmidiqueue(void)
 {
-    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
+    double outbuftime = sched_get_using_audio() == SCHED_AUDIO_POLL ?
+        (sys_schedadvance * 1e-6) : 0;
+    sys_setmiditimediff(0, outbuftime);
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
         sys_alsa_poll_midi();
