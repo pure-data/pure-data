@@ -606,6 +606,11 @@ int libpd_poll_gui(void) {
   return (retval);
 }
 
+EXTERN void libpd_set_eventloop(int b)
+{
+  sys_eventloop = b;
+}
+
 t_pdinstance *libpd_new_instance(void) {
 #ifdef PDINSTANCE
   return pdinstance_new();

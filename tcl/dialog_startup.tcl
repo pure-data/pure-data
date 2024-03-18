@@ -69,15 +69,17 @@ proc ::dialog_startup::commit { new_startup } {
     if { $::dialog_startup::precision_binary != "" } {
         ::pd_guiprefs::write "pdcore_precision_binary" $::dialog_startup::precision_binary
     }
+    variable eventloop_button
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::sys_defeatrt $eventloop_button \
+        [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
-proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
+proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt eventloop flags} {
     set ::sys_defeatrt $defeatrt
+    variable eventloop_button $eventloop
     if {$flags ne ""} {variable ::sys_flags [subst -nocommands $flags]}
-
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -227,11 +229,18 @@ proc ::dialog_startup::fill_frame {frame} {
         -variable ::sys_verbose
     pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
-    if {$::windowingsystem ne "win32"} {
-        checkbutton $frame.optionframe.defeatrt -anchor w \
-            -text [_ "Defeat real-time scheduling"] \
-            -variable ::sys_defeatrt
-        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
+    # defeatrt
+    checkbutton $frame.optionframe.defeatrt -anchor w \
+        -text [_ "Defeat real-time scheduling"] \
+        -variable ::sys_defeatrt
+    pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
+
+    # event loop (only OSX for now)
+    if {$::windowingsystem eq "aqua"} {
+        checkbutton $frame.optionframe.eventloop -anchor w \
+            -text [_ "Enable event loop"] \
+            -variable ::dialog_startup::eventloop_button
+        pack $frame.optionframe.eventloop -side top -anchor w -expand 1
     }
 
     labelframe $frame.flags -text [_ "Startup flags:" ]

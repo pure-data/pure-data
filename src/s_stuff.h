@@ -42,6 +42,7 @@ extern int sys_verbose;
 EXTERN int sys_noloadbang;
 EXTERN int sys_havegui(void);
 extern const char *sys_guicmd;
+extern int sys_eventloop;
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
@@ -437,3 +438,11 @@ EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
 EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
     va_list argptr);
 
+/* For now, the event loop is only implemented for macOS (see s_macos.mm) where it is
+ * badly needed because the GUI event loop *must* run on the main thread.
+ * A Windows and Linux implementation might follow later, together with API methods for
+ * dispatching function calls to the UI thread (similar to "dispatch_async_f" on macOS) */
+EXTERN int sys_eventloop_setup(void);
+EXTERN void sys_eventloop_run(void);
+EXTERN void sys_eventloop_quit(void);
+EXTERN int sys_haveeventloop(void); /* for externals */
