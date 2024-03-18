@@ -63,10 +63,10 @@ and Help (on macs this is shown at a top bar on the computer screen). At upper
 right there is a toggle box to turn audio processing on and off globally.
 Turning off the audio halts the computation and releases any audio devices that Pure
 Data is utilizing. The <b>Media menu</b> offers shortcuts to toggle audio on and off.
-Use <code>Cmd + /</code> ('Control' key on PCs or 'Command' key on Apple 
+Use <code>Cmd + /</code> ('Control' key on PCs or 'Command' key on Apple
 computers plus the '<b>/</b>' key) to turn audio on, and <code>Cmd + .</code>
 to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the
-<code>Cmd + R</code> shortcut. This brings the Pd window to the front or 
+<code>Cmd + R</code> shortcut. This brings the Pd window to the front or
 sends it behind the Pd window in focus.
 
 <P> When audio is on, Pd is computing audio samples in realtime according to whatever
@@ -283,14 +283,15 @@ also selected and moved around. You can't just select patch cords with click
 and drag and you can only select a single connection by clicking on it.
 
 <P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align
-objects that are not perfectly aligned. You can select boxes arranged in a 
+objects that are not perfectly aligned. You can select boxes arranged in a
 horizontal row and use the shortcut<code>shift + Cmd + R</code> to try and
-align them perfectly horizontally. Similarly, this can be applied to vertically 
+align them perfectly horizontally. Similarly, this can be applied to vertically
 align a column of objects. Rectangular selections of object are also possible,
 but aligning horizontally and vertically separately tends to yield better results.
 
 <CENTER><P>
-    <IMG src="fig-ch2-selecting-items-and-moving-them-or-tidying-them-up.png">
+    <IMG src="fig-ch2-selecting-items-and-moving-them-or-tidying-them-up.png"
+    >
 </P></CENTER>
 
 <H3> <A id=s2.4> 2.2.4. Delete, cut, copy and paste </A> </H3>
@@ -302,12 +303,12 @@ active text selection. The connections of the selected boxes are also deleted.
 The "Select All" entry  on the Edit Menu selects all items in a patch window.
 
 <P>For one or more selected boxes you can also "cut", "copy" and "paste" using
-menu items. If the selection includes connected objects, these connections are also 
+menu items. If the selection includes connected objects, these connections are also
 "cut", "copied" and "pasted". Notice you can "cut" or "copy" and then "paste" the
 selection in a different window. When pasted, the items stay selected, so you can
 drag one of them and move the whole group.
 
-<P> Note that pasting inserts the selection at the same position it was copied, 
+<P> Note that pasting inserts the selection at the same position it was copied,
 unless the place is already taken. The "duplicate" menu item performs a copy
 and paste with a small offset, since the original selection remains intact and
 occupies its original position. If you manually "copy" and "paste" items on the
@@ -315,7 +316,7 @@ same window, without deleting them, the pasted selection is also given a
 little offset to distinguish the new boxes. You can then click on an item in the
 pasted selection and drag them all together to a new spot in the patch window.
 
-<P> To deselect, you can either click on an empty area of your patch or press 
+<P> To deselect, you can either click on an empty area of your patch or press
 the <code>Esc</code> key.
 
 <P> For a selected object box, message box, or comment with active text, you can
@@ -326,7 +327,7 @@ and paste text between Pure Data and other software applications.
 <P>  While you can cut or copy a selection within a patch and paste it into a
 different window within Pure Data, the cut/paste functionality for patch elements
 is not integrated with the operating system clipboard. This limitation means you
-cannot paste between different versions or flavors of Pure Data. Additionally, 
+cannot paste between different versions or flavors of Pure Data. Additionally,
 it is not possible to copy from a patch and paste into a Pure Data subprocess
 instantiated via a [pd~] object.
 
@@ -334,10 +335,10 @@ instantiated via a [pd~] object.
 
 <P> To change the text in an object, message or comment, you can select it and then
 edit the text. If you only click once, the entire text is selected and your
-typing will replace everything. Click again to position the cursor or drag to 
+typing will replace everything. Click again to position the cursor or drag to
 select a portion of the text to retype. You can also use cut/copy/paste as mentioned.
 
-<P> If you click a box and move the mouse without releasing the mousebutton (i.e. 
+<P> If you click a box and move the mouse without releasing the mousebutton (i.e.
 if you drag), you move the box. If you wish to displace a box that is already selected,
 first deselect the box (by clicking outside it or using 'esc'); otherwise you
 will be selecting text instead of moving the box.
@@ -371,7 +372,7 @@ and "Help". For Apple users who may only have one button on their mouse,
 double-clicking or <code>alt + click</code> are mapped to right-click.
 On trackpads, you can click with two fingers.
 
-<P> Selecting "Help" on an object opens a patch explaining and demonstrating 
+<P> Selecting "Help" on an object opens a patch explaining and demonstrating
 the object. "Help" for the canvas as a whole (right-clicking outside any object)
 gives a list of all built-in objects.
 
@@ -403,7 +404,8 @@ press <code>Shift + Tab</code> to navigate in reverse order, moving from the
 most recently created objects back towards the first.
 
 <CENTER><P>
-    <IMG src="fig-ch2-fig-ch2-tab-navigation-boxes.png">
+    <IMG src="fig-ch2-fig-ch2-tab-navigation-boxes.png"
+    ALT="tab navigation boxes">
 </P></CENTER>
 
 <P> Using <code>tab</code> also works in a similar way for patch cords if
@@ -411,7 +413,8 @@ you have one selected. You can move from first to last with <code>tab</code> and
 from last to first with <code>shift + tab</code>.
 
 <CENTER><P>
-    <IMG src="fig-ch2-fig-ch2-tab-navigation-cords.png">
+    <IMG src="fig-ch2-fig-ch2-tab-navigation-cords.png"
+    ALT="tab navigation cords">
 </P></CENTER>
 
 <P> If you're creating a connection by clicking on an outlet and dragging a
@@ -420,7 +423,8 @@ to right and it also cycles back. Pressing <code>shift + tab</code> navigates
 from right to left.
 
 <CENTER><P>
-    <IMG src="fig-ch2-fig-ch2-tab-navigation-inlets-outlets.png">
+    <IMG src="fig-ch2-fig-ch2-tab-navigation-inlets-outlets.png"
+    ALT="tab navigation inlets outlets">
 </P></CENTER>
 
 <P> In Linux and Windows you can also cycle between inlets. This is currently
@@ -447,7 +451,8 @@ created box, since when you autopatch for the next one, the object or message
 box gets deselected and therefore created.
 
 <CENTER><P>
-    <IMG src="fig-ch2-autopatching-objects.png">
+    <IMG src="fig-ch2-autopatching-objects.png"
+    ALT="autopatching objects">
 </P></CENTER>
 
 <P> You can also autopatch into a newly created subpatch (see <A href="x2.htm#s8">
@@ -457,7 +462,8 @@ inlet ([inlet]) if the object above is a control object, or a signal inlet
 ([inlet~]) if it is a tilde object instead.
 
 <CENTER><P>
-    <IMG src="fig-ch2-autopatching-subpatches.png">
+    <IMG src="fig-ch2-autopatching-subpatches.png"
+    ALT="autopatching subpatches">
 </P></CENTER>
 
 <H3> <A id="s3.3"> 2.3.3. Duplicate connections </A> </H3>
@@ -467,7 +473,8 @@ for more connections, you can use <code>Cmd + D</code> to duplicate and create
 more connections.
 
 <CENTER><P>
-    <IMG src="fig-ch2-duplicate-connections.png">
+    <IMG src="fig-ch2-duplicate-connections.png"
+    ALT="duplicate connections">
 </P></CENTER>
 
 <H3> <A id="s3.4"> 2.3.4. Managing connections with the shift key </A> </H3>
@@ -476,7 +483,8 @@ more connections.
 to on another one, you swap these connections.
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-shift-click.png">
+    <IMG src="fig-ch2-managing-connections-shift-click.png"
+    ALT="managing connections shift click">
 </P></CENTER>
 
 <P> - Fan connections: While no boxes are selected, you can start creating a
@@ -485,7 +493,8 @@ to "fan out" connections to multiple inlets sequentially before releasing the
 mouse button.
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-drag-fan-out.png">
+    <IMG src="fig-ch2-managing-connections-drag-fan-out.png"
+    ALT="managing connections drag fan out">
 </P></CENTER>
 
 <P> - One to many: If you have a group of target boxes that are selected, you
@@ -494,7 +503,8 @@ connection into the same inlet number of the selected boxes (which do not
 need to be of the same type or class).
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-fan-out.png">
+    <IMG src="fig-ch2-managing-connections-fan-out.png"
+    ALT="managing connections fan out">
 </P></CENTER>
 
 <P> - Many to one: If you have a selection of source boxes, you can drag
@@ -503,7 +513,8 @@ to create a connection from the same outlet number of the selected boxes
 (which do not need to be of the same type or class).
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-fan-in.png">
+    <IMG src="fig-ch2-managing-connections-fan-in.png"
+    ALT="managing connections fan in">
 </P></CENTER>
 
 <P> - Connect multiple outlets and inlets of 2 boxes: If you have 2 selected
@@ -512,18 +523,20 @@ cord into an inlet, you can use <code>shift</code> to create all possible
 connections starting from the chosen outlet and inlet.
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-box-to-box.png">
+    <IMG src="fig-ch2-managing-connections-box-to-box.png"
+    ALT="managing connections box to box">
 </P></CENTER>
 
 <P> - Connect outlets of multiple boxes into multiple inlets of one box:
 If there's a selected group of boxes, you can start creating a connection by
-clicking an outlet of one box and drag a cord into an inlet of box (which 
+clicking an outlet of one box and drag a cord into an inlet of box (which
 is part of the selection) and when you press <code>shift</code>, connections
 are made from the same outlets of all source boxes (which do not need to be
 of the same type or class) into separate inlets, starting from the chosen inlet.
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-many-to-one.png">
+    <IMG src="fig-ch2-managing-connections-many-to-one.png"
+    ALT="managing connections many to one">
 </P></CENTER>
 
 <P> - Spread multiple outlets of one box into same inlets of other boxes:
@@ -533,7 +546,8 @@ In this case, when you press <code>shift</code>, all possible connections are
 made from the outlets of the source box to identical inlets of the target boxes.
 
 <CENTER><P>
-    <IMG src="fig-ch2-managing-connections-one-to-many.png">
+    <IMG src="fig-ch2-managing-connections-one-to-many.png"
+    ALT="managing connections one to many">
 </P></CENTER>
 
 
@@ -544,7 +558,8 @@ made from the outlets of the source box to identical inlets of the target boxes.
 different ways.
 
 <CENTER><P>
-    <IMG src="fig-ch2-dis-connect-menu.png">
+    <IMG src="fig-ch2-dis-connect-menu.png"
+    ALT="dis/connect menu">
 </P></CENTER>
 
 <P> For 2 selected boxes you can use <code>Cmd + K</code> to connect
@@ -552,7 +567,8 @@ them. Repeat using <code>Cmd + K</code> to make multiple connections
 from outlets to inlets.
 
 <CENTER><P>
-    <IMG src="fig-dis-connect-parallel.png">
+    <IMG src="fig-ch2-dis-connect-parallel.png"
+    ALT="dis/connect parallel">
 </P></CENTER>
 
 <P> For 2 selected audio objects, if the origin object has a single outlet
@@ -560,7 +576,8 @@ and the target object has many inlets, you can repeatedly use <code>Cmd + K</cod
 to fan out and connect the same outlet to all inlets.
 
 <CENTER><P>
-    <IMG src="fig-ch2-dis-connect-fan-out-audio.png">
+    <IMG src="fig-ch2-dis-connect-fan-out-audio.png"
+    ALT="dis/connect fan out audio">
 </P></CENTER>
 
 <P> At last, you can include or bypass a box into or from a connection
@@ -573,14 +590,16 @@ With the 3 boxes selected (and a connection between 2 of them), the third one
 gets inserted in the connection.
 
 <CENTER><P>
-    <IMG src="fig-ch2-dis-connect-insert-box-to-connection">
+    <IMG src="fig-ch2-dis-connect-insert-box-to-connection.png"
+    ALT="dis/connect insert box to connection">
 </P></CENTER>
 
 <P> To bypass a box, you can select 3 boxes connected in a row and use
 <code>Cmd + K</code> to bypass and remove the middle box from the connection. (INCLUDE PIC).
 
 <CENTER><P>
-    <IMG src="fig-ch2-dis-connect-exclude-box-from-connection">
+    <IMG src="fig-ch2-dis-connect-exclude-box-from-connection.png"
+    ALT="dis/connect exclude box from connection">
 </P></CENTER>
 
 <H3> <A id="s3.6"> 2.3.6. Triggerize </A> </H3>
@@ -596,7 +615,8 @@ made, where the first connection starts at the rightmost outlet of trigger
 and continues to the leftmost.
 
 <CENTER><P>
-    <IMG src="fig-ch2-triggerize-object">
+    <IMG src="fig-ch2-triggerize-object.png"
+    ALT="triggerize object">
 </P></CENTER>
 
 <P> The 'Triggerize' option can also be used to insert a dummy object.
@@ -607,7 +627,8 @@ connection, a [pd nop~] subpatch is created, also with the text selected
 for you to include a new object. (INCLUDE PIC)
 
 <CENTER><P>
-    <IMG src="fig-ch2-triggerize-insert-box-to-connection">
+    <IMG src="fig-ch2-triggerize-insert-box-to-connection.png"
+    ALT="triggerize insert box to connection">
 </P></CENTER>
 
 <H3> <A id="s3.7"> 2.3.7. Paste replace </A> </H3>
@@ -622,7 +643,8 @@ All the selected boxes of the same type get replaced by the copied box
 and connections are preserved.
 
 <CENTER><P>
-    <IMG src="fig-ch2-paste-replace-menu">
+    <IMG src="fig-ch2-paste-replace-menu.png"
+    ALT="paste replace menu">
 </P></CENTER>
 
 <P> Alternatively, you can copy a number box instead of a [float] object
@@ -636,7 +658,8 @@ A subpatch or an abstraction can be used for "Paste Replace" and they count
 in the same group of objects.
 
 <CENTER><P>
-    <IMG src="fig-ch2-paste-replace-boxes">
+    <IMG src="fig-ch2-paste-replace-boxes.png"
+    ALT="paste replace boxes">
 </P></CENTER>
 
 <P> If you have a selection of objects to replace that include different
@@ -644,7 +667,8 @@ types of objects, the "Paste Replace" will only replace the boxes of the
 same type that it was copied.
 
 <CENTER><P>
-    <IMG src="fig-ch2-paste-replace-similar-type">
+    <IMG src="fig-ch2-paste-replace-similar-type.png"
+    ALT="paste replace similar type">
 </P></CENTER>
 
 <H3> <A id="s4"> 2.4. Messages </A> </H3>
