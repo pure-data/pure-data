@@ -200,7 +200,7 @@ sliders, and so on. Whereas the appearance of an object or message box is
 static when a patch is running, a number box's contents (the text) changes to
 reflect the current value held by the box. You can also use a number box as a
 control by clicking and dragging up and down, or by typing values in it and hitting
-enter. (There are also <code>shift</code>- and <code>alt</code>-<code>click</code>
+enter. (There are also <code>Shift + Click</code> and <code>Alt + Click</code>
 actions; see <A href="x2.htm#s2.7"> getting help </A> to find out how to look this up).
 
 <P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
@@ -284,21 +284,21 @@ several items, any connections between them will be duplicated as well.
 <P>In Edit mode you can select or unselect one or more objects. Boxes in a Pd
 window may be individually selected by clicking on them. If you don't release
 the mouse button you can drag the selected box around. To select more than one
-object you may use <code>shift + click</code> on each item. You then can click
+object you may use <code>Shift + Click</code> on each item. You then can click
 again on one of the selected boxes to move them around. Alternatively you click
 on a blank portion of the window and drag the cursor to select all objects
 within a rectangle (then click again on one of the selected boxes to move them as well).
 
 <P>When you have one or more boxes selected, you can also move them using
-<code>arrow keys</code>, which moves items one pixel in the direction of
-the arrows. You can also use <code>shift + arrow keys</code> to move items
+<code>Arrow keys</code>, which moves items one pixel in the direction of
+the arrows. You can also use <code>Shift + Arrow keys</code> to move items
 10 pixels in the desired direction.
 
 <P>Clicking on an unselected object, message, or comment box makes the text
 active, i.e., ready to be text edited. (If you select using the rectangle
-method or <code>shift + click</code>, the text isn't activated.) Once you've
+method or <code>Shift + Click</code>, the text isn't activated.) Once you've
 activated a text box, you may type into it (replacing the selected text), use
-<code>arrow keys</code> to navigate through the text or use the mouse to click
+<code>Arrow keys</code> to navigate through the text or use the mouse to click
 and drag to change the text selection and edit it.
 
 <P>If you select boxes that are connected, the connections (patch cords) are
@@ -307,7 +307,7 @@ and drag and you can only select a single connection by clicking on it.
 
 <P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align
 objects that are not perfectly aligned. You can select boxes arranged in a
-horizontal row and use the shortcut<code>shift + Cmd + R</code> to try and
+horizontal row and use the shortcut<code>Shift + Cmd + R</code> to try and
 align them perfectly horizontally. Similarly, this can be applied to vertically
 align a column of objects. Rectangular selections of object are also possible,
 but aligning horizontally and vertically separately tends to yield better results.
@@ -320,7 +320,7 @@ but aligning horizontally and vertically separately tends to yield better result
 <H3> <A id=s2.4> 2.2.4. Delete, cut, copy and paste </A> </H3>
 
 <P>If you select one connection by clicking on it, you can delete it by
-hitting the <code>backspace</code> or <code>delete</code> key. Similarly, you can
+hitting the <code>Backspace</code> or <code>Delete</code> key. Similarly, you can
 select one (or in this  case multiple) boxes and delete them if there isn't an
 active text selection. The connections of the selected boxes are also deleted.
 The "Select All" entry  on the Edit Menu selects all items in a patch window.
@@ -384,15 +384,15 @@ the mouse button to create a connection. You can release the mouse button
 anywhere within the top area of the target object and the connection will be made
 to the nearest inlet.
 
-<P> Connections are removed by selecting them and using "cut" (<code>Cmd + x</code>)
-or the <code>backspace</code> or <code>delete</code> key.
+<P> Connections are removed by selecting them and using "cut" (<code>Cmd + X</code>)
+or the <code>Backspace</code> or <code>Delete</code> key.
 
 <H3> <A id=s2.7> 2.2.7. Context menu for 'Properties', 'Open' and 'Help' </A> </H3>
 
 <P> All the "clicking" mentioned above is done with the left mouse button.
 The right button, instead, opens a context menu offering "Properties", "Open"
 and "Help". For Apple users who may only have one button on their mouse,
-double-clicking or <code>alt + click</code> are mapped to right-click.
+double-clicking or <code>Alt + Click</code> are mapped to right-click.
 On trackpads, you can click with two fingers.
 
 <P> Selecting "Help" on an object opens a patch explaining and demonstrating
@@ -410,7 +410,7 @@ objects or of the patch itself (when clicking outside any box).
 <H3> <A id=s2.8> 2.2.8. Miscellaneous </A> </H3>
 
 <P> <code>Cmd + Q</code> quits Pd, but will prompt you to confirm the action.<br/>
-To quit without confirmation, use <code>Cmd + shift + Q</code>.
+To quit without confirmation, use <code>Cmd + Shift + Q</code>.
 
 <H3> <A id="s3"> 2.3. Advanced patch editing </A> </H3>
 
@@ -420,7 +420,7 @@ To quit without confirmation, use <code>Cmd + shift + Q</code>.
 
 <P> When a single box is selected, pressing <code>Tab</code> allows you to
 navigate and change the selection to other objects in the sequence determined
-by the order of their creation. Pressing <code>tab</code> cycles through the
+by the order of their creation. Pressing <code>Tab</code> cycles through the
 objects from  the earliest created to the next, and upon reaching the last box
 in the window, the selection loops back to the first one. Conversely, you can
 press <code>Shift + Tab</code> to navigate in reverse order, moving from the
@@ -431,9 +431,9 @@ most recently created objects back towards the first.
     ALT="tab navigation boxes">
 </P></CENTER>
 
-<P> Using <code>tab</code> also works in a similar way for patch cords if
-you have one selected. You can move from first to last with <code>tab</code> and
-from last to first with <code>shift + tab</code>.
+<P> Using <code>Tab</code> also works in a similar way for patch cords if
+you have one selected. You can move from first to last with <code>Tab</code> and
+from last to first with <code>Shift + Tab</code>.
 
 <CENTER><P>
     <IMG src="fig-ch2-fig-ch2-tab-navigation-cords.png"
@@ -441,8 +441,8 @@ from last to first with <code>shift + tab</code>.
 </P></CENTER>
 
 <P> If you're creating a connection by clicking on an outlet and dragging a
-patch cord, you can also use <code>tab</code>. The navigation order is left
-to right and it also cycles back. Pressing <code>shift + tab</code> navigates
+patch cord, you can also use <code>Tab</code>. The navigation order is left
+to right and it also cycles back. Pressing <code>Shift + Tab</code> navigates
 from right to left.
 
 <CENTER><P>
@@ -452,8 +452,8 @@ from right to left.
 
 <P> In Linux and Windows you can also cycle between inlets. This is currently
 not possible on macOS. When dragging a connection into an inlet area, without
-releasing the mouse, you can use <code>tab</code> to navigate to the next inlet,
-or <code>shift + tab</code> to navigate to the previous one.
+releasing the mouse, you can use <code>Tab</code> to navigate to the next inlet,
+or <code>Shift + Tab</code> to navigate to the previous one.
 
 <H3> <A id="s3.2"> 2.3.2. Autopatching </A> </H3>
 
@@ -500,9 +500,9 @@ more connections.
     ALT="duplicate connections">
 </P></CENTER>
 
-<H3> <A id="s3.4"> 2.3.4. Managing connections with the shift key </A> </H3>
+<H3> <A id="s3.4"> 2.3.4. Managing connections with the Shift key </A> </H3>
 
-<P> - Swap connections: If you selected a connection and use <code>shift + click</code>
+<P> - Swap connections: If you selected a connection and use <code>Shift + Click</code>
 to on another one, you swap these connections.
 
 <CENTER><P>
@@ -511,7 +511,7 @@ to on another one, you swap these connections.
 </P></CENTER>
 
 <P> - Fan connections: While no boxes are selected, you can start creating a
-connection by clicking an outlet and dragging a cord and then use <code>shift</code>
+connection by clicking an outlet and dragging a cord and then use <code>Shift</code>
 to "fan out" connections to multiple inlets sequentially before releasing the
 mouse button.
 
@@ -521,7 +521,7 @@ mouse button.
 </P></CENTER>
 
 <P> - One to many: If you have a group of target boxes that are selected, you
-can drag a cord from another box and press <code>shift</code> to create a
+can drag a cord from another box and press <code>Shift</code> to create a
 connection into the same inlet number of the selected boxes (which do not
 need to be of the same type or class).
 
@@ -531,7 +531,7 @@ need to be of the same type or class).
 </P></CENTER>
 
 <P> - Many to one: If you have a selection of source boxes, you can drag
-a cord from one of their outlets into another box and press <code>shift</code>
+a cord from one of their outlets into another box and press <code>Shift</code>
 to create a connection from the same outlet number of the selected boxes
 (which do not need to be of the same type or class).
 
@@ -542,7 +542,7 @@ to create a connection from the same outlet number of the selected boxes
 
 <P> - Connect multiple outlets and inlets of 2 boxes: If you have 2 selected
 boxes and start creating a connection by clicking an outlet and dragging a
-cord into an inlet, you can use <code>shift</code> to create all possible
+cord into an inlet, you can use <code>Shift</code> to create all possible
 connections starting from the chosen outlet and inlet.
 
 <CENTER><P>
@@ -553,7 +553,7 @@ connections starting from the chosen outlet and inlet.
 <P> - Connect outlets of multiple boxes into multiple inlets of one box:
 If there's a selected group of boxes, you can start creating a connection by
 clicking an outlet of one box and drag a cord into an inlet of box (which
-is part of the selection) and when you press <code>shift</code>, connections
+is part of the selection) and when you press <code>Shift</code>, connections
 are made from the same outlets of all source boxes (which do not need to be
 of the same type or class) into separate inlets, starting from the chosen inlet.
 
@@ -565,7 +565,7 @@ of the same type or class) into separate inlets, starting from the chosen inlet.
 <P> - Spread multiple outlets of one box into same inlets of other boxes:
 Similar to the scenario above, you can start dragging from one outlet of a
 selected box with multiple outlets to an inlet of one of many selected boxes.
-In this case, when you press <code>shift</code>, all possible connections are
+In this case, when you press <code>Shift</code>, all possible connections are
 made from the outlets of the source box to identical inlets of the target boxes.
 
 <CENTER><P>
@@ -606,9 +606,9 @@ to fan out and connect the same outlet to all inlets.
 <P> At last, you can include or bypass a box into or from a connection
 (being it any connection from any outlet into any inlet). To include a box,
 you can select it and the connection between the other 2 boxes by using
-<code>shift + click</code> and then use <code>Cmd + K</code> to include
+<code>Shift + Click</code> and then use <code>Cmd + K</code> to include
 the selected box into the connection. Alternatively, you can select the 3
-boxes (either via <code>shift + clicks</code> or by clicking and dragging).
+boxes (either via <code>Shift + Clicks</code> or by clicking and dragging).
 With the 3 boxes selected (and a connection between 2 of them), the third one
 gets inserted in the connection.
 
