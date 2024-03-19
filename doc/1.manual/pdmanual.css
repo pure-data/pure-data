@@ -85,6 +85,7 @@ tr:nth-child(even) {background-color: #f0f0f0;}
 
 CODE {
    background-color:#f0f0f0;
+   white-space: nowrap;
    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
 
