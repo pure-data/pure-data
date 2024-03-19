@@ -65,9 +65,15 @@ Turning off the audio halts the computation and releases any audio devices that 
 Data is utilizing. The <b>Media menu</b> offers shortcuts to toggle audio on and off.
 Use <code>Cmd + /</code> ('Control' key on PCs or 'Command' key on Apple
 computers plus the '<b>/</b>' key) to turn audio on, and <code>Cmd + .</code>
-to turn it off. The <b>Media menu</b> has the 'Pd Window' entry, with the
+to turn it off. On macOS the <b>Media menu</b> has the 'Pd Window' entry, with the
 <code>Cmd + R</code> shortcut. This brings the Pd window to the front or
-sends it behind the Pd window in focus.
+sends it behind the Pd window in focus. On Linux and Windows this is placed in
+the <b>Window menu</b>.
+
+<CENTER><P>
+    <IMG src="fig-ch2-console-media-menu.png"
+    ALT="media menu">
+</P></CENTER>
 
 <P> When audio is on, Pd is computing audio samples in realtime according to whatever
 patches you have open (whether they are visible or not). To see an RMS audio level,
@@ -79,6 +85,11 @@ font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu<
 (shown in detail below). Make your adjustments if you are having troubles reading
 on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all messages printed
 in the Pd window with the 'Clear Console' entry.
+
+<CENTER><P>
+    <IMG src="fig-ch2-console-edit-menu.png"
+    ALT="edit menu">
+</P></CENTER>
 
 <P> Pd documents are called "patches" or "canvases". Each open document has one
 main window and any number of sub-windows. The sub-windows can be opened and closed
@@ -198,7 +209,13 @@ or arbitrary lists of atoms.
 <H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
 <P>You can create or open a Pd file from the <b>File Menu</b>, as well as close
-and save them. Note the handy shortcuts. You can also edit the font size of
+and save them. Note the handy shortcuts.
+
+<CENTER><P>
+    <IMG src="fig-ch2-file-menu.png" ALT="file menu">
+</P></CENTER>
+
+<P>You can also edit the font size of
 of a patch if its window is focused, just use the <b>Font</b> dialog entry again
 from the <b>Edit Menu</b>. The font size setting of patch gets saved within the
 patch file.
@@ -243,8 +260,14 @@ key and you'll note the shape of an arrow is back until you release the key.
 <H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put Menu</b>. Note the handy accelerators. If you are in run mode and
-click on an entry on the <b>Put Menu</b> or use a shortcut, Pd goes automatically
+<b>Put Menu</b>. Note the handy accelerators.
+
+<CENTER><P>
+    <IMG src="fig-ch2-put-menu.png" ALT="put menu">
+</P></CENTER>
+
+<P> If you are in run mode and click on an entry on the <b>Put Menu</b>
+or use a shortcut, Pd goes automatically
 into Edit mode. When you create boxes this way, they are automatically
 selected and follow the mouse cursor position; drag them around as desired
 and you can click to position them where you want. Alternatively you can hit
