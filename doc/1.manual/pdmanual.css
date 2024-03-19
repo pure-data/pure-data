@@ -95,6 +95,7 @@ KBD {
    padding: 2px 4px;
    margin: 0 2px;
    font-weight: bold;
+   white-space: nowrap;
    font-size: 80%;
    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
