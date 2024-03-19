@@ -85,7 +85,17 @@ tr:nth-child(even) {background-color: #f0f0f0;}
 
 CODE {
    background-color:#f0f0f0;
-   white-space: nowrap;
+   font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
+
+KBD {
+   background-color:#e8e8e8;
+   border: 1px solid #d0d0d0;
+   border-radius: 4px;
+   padding: 2px 4px;
+   margin: 0 2px;
+   font-weight: bold;
+   font-size: 80%;
    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
 
