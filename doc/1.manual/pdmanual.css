@@ -89,12 +89,12 @@ CODE {
 }
 
 KBD {
-   background-color:#e8e8e8;
-   border: 1px solid #d0d0d0;
+   background-color:#222;
+   border: 1px solid #000;
+   color: #eee;
    border-radius: 4px;
    padding: 2px 4px;
    margin: 0 2px;
-   font-weight: bold;
    white-space: nowrap;
    font-size: 80%;
    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
