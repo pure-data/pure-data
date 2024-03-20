@@ -856,22 +856,20 @@ and having depth-first consequences so that whatever chain of actions depending
 on "1" takes place before anything depending on "2" and so on.)
 
 <P> Semicolons may also separate messages. A message following a semicolon must
-specify a symbol giving a destination (in other words, semicolons are like
-commas except that they clear the "current destination"
-so that the next message specifies a new one). The "current destination" is
-at first the message box's own outlet. In the example below, the leading
-semicolon immediately redirects messages from the outlet to an object named
-"fred" (which is here a receive object), and likewise the next message is sent
-to "sue."
-
+specify a symbol giving a destination (in other words, semicolons are like commas
+except that they clear the "current destination" so that the next message specifies
+a new one). The "current destination" is at first the message box's own outlet. In
+the example below, the leading semicolon immediately redirects messages from the
+outlet to an object named "fred" (which is here a receive object), and likewise the
+next message is sent to "sue."
 
 <CENTER><P>
     <IMG src="fig3.9.jpg" ALT="semicolons to send messages">
 </P></CENTER>
 
-<P>Certain other objects (Pd windows, for example, and arrays) have Pd names and
-can be sent messages this way. Also, the special object "pd" is defined to
-which you may send messages to start and stop DSP and more.
+<P>Certain other objects (Pd windows, for example, and arrays) have Pd names as
+destination symbols so you can send them messages this way. Also, the special object
+"pd" is defined to which you may send messages to start and stop DSP and more.
 
 <P> You can put variables in message boxes as shown below:
 
@@ -1039,8 +1037,8 @@ in milliseconds.
 
 <P>Audio and message processing are interleaved in Pd. Audio processing is
 scheduled every 64 samples at Pd's sample rate; at 44100 Hz. this gives a
-period of 1.45 milliseconds. You may turn DSP computation on and off by
-sending the "pd" object the messages "dsp 1" and "dsp 0."
+period of 1.45 milliseconds. You may turn DSP computation the patch level
+on and off by sending the the messages "dsp 1" and "dsp 0" to "pd".
 
 <P> In the intervals between, delays might time out or external conditions
 might arise (incoming MIDI, mouse clicks, or whatnot). These may cause a
