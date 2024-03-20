@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -590,6 +590,12 @@ msgstr ""
 msgid "single page"
 msgstr ""
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 msgid "Preferences"
 msgstr "Настройки"
 
@@ -814,6 +820,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Невозможно получить значение SHA256 для '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Невозможно выполнить верификацию SHA256 для '%s'."
 
@@ -891,6 +905,17 @@ msgstr "Настройки %s Deken"
 msgid "Platform re-detected: %s"
 msgstr "Платформа переобнаружена: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256 для '%s' не подтвержден!"
+
+msgid "SHA256 verification failed"
+msgstr "проверка SHA256 завершилась неудачей"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Контрольная сумма не совпадает для '%s'"
+
 msgid "Deken Packages"
 msgstr "Пакеты Deken"
 
@@ -902,17 +927,6 @@ msgstr "Файлы TAR"
 
 msgid "All Files"
 msgstr "Все файлы"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Контрольная сумма не совпадает для '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256 для '%s' не подтвержден!"
-
-msgid "SHA256 verification failed"
-msgstr "проверка SHA256 завершилась неудачей"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1107,7 +1121,7 @@ msgstr "Установить %1$s в %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Отмена установки '%s': Не указана папка для установки."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Установка в несуществующую папку завершилась неудачно"
 
 #, tcl-format
@@ -1142,6 +1156,10 @@ msgid "Download completed! Verifying..."
 msgstr "Загрузка завершена! Проверка..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Игнорируется несовпадение контрольной суммы"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Игнорируется несовпадение контрольной суммы"
 
 #, tcl-format
@@ -1610,14 +1628,6 @@ msgstr "Аудио включено"
 msgid "Audio off"
 msgstr "Аудио выключено"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-"(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
-"скобка']'] "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1667,6 +1677,14 @@ msgstr "Удалить"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "игнорируется '%s': невозможно распознать файл Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr ""
+#~ "(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
+#~ "скобка']'] "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Путь..."

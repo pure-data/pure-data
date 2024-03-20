@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -636,6 +636,12 @@ msgstr ""
 msgid "single page"
 msgstr ""
 
+msgid "patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
 #, fuzzy
 msgid "Preferences"
 msgstr "Hobespenak"
@@ -854,6 +860,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -926,6 +940,17 @@ msgstr "Hobespenak"
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -940,17 +965,6 @@ msgstr "TAR Fitxategiak"
 #, fuzzy
 msgid "All Files"
 msgstr "Fitxategi guztiak"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr ""
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
-msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1139,7 +1153,7 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 
 #, tcl-format
@@ -1174,6 +1188,9 @@ msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
+msgstr ""
+
+msgid "Ignoring checksum errors"
 msgstr ""
 
 #, tcl-format
@@ -1639,12 +1656,6 @@ msgid "Audio on"
 msgstr "Audioaren ezarpenak"
 
 msgid "Audio off"
-msgstr ""
-
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
