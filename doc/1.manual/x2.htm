@@ -507,7 +507,7 @@ more connections.
 
 <H3> <A id="s3.4"> 2.3.4. Managing connections with the Shift key </A> </H3>
 
-<P> - Swap connections: If you selected a connection and use <kbd>Shift + Click</kbd>
+<P> If you selected a connection and use <kbd>Shift + Click</kbd>
 to on another one, you swap these connections.
 
 <CENTER><P>
@@ -515,7 +515,7 @@ to on another one, you swap these connections.
     ALT="managing connections shift click">
 </P></CENTER>
 
-<P> - Fan connections: While no boxes are selected, you can start creating a
+<P> While no boxes are selected, you can start creating a
 connection by clicking an outlet and dragging a cord and then use <kbd>Shift</kbd>
 to "fan out" connections to multiple inlets sequentially before releasing the
 mouse button.
@@ -525,7 +525,7 @@ mouse button.
     ALT="managing connections drag fan out">
 </P></CENTER>
 
-<P> - One to many: If you have a group of target boxes that are selected, you
+<P> If you have a group of target boxes that are selected, you
 can drag a cord from another box and press <kbd>Shift</kbd> to create a
 connection into the same inlet number of the selected boxes (which do not
 need to be of the same type or class).
@@ -535,7 +535,7 @@ need to be of the same type or class).
     ALT="managing connections fan out">
 </P></CENTER>
 
-<P> - Many to one: If you have a selection of source boxes, you can drag
+<P> If you have a selection of source boxes, you can drag
 a cord from one of their outlets into another box and press <kbd>Shift</kbd>
 to create a connection from the same outlet number of the selected boxes
 (which do not need to be of the same type or class).
@@ -1368,11 +1368,11 @@ the patch below creates a 440 Hz. tone with "array1" as a waveform:
 
 <p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440
 times per second. The multiplier and adder adjust the range from 1 to 11, and
-then the values are used as indices for tabread4~, which is a 4-point interpolating
+then the values are used as indices for [tabread4~], which is a 4-point interpolating
 table lookup module. (Much more detail is available in the audio example
 patches in the "pure documentation" series.)
 
-<P> To create a new array, select "array" from the "put" menu. Up will come
+<P> To create a new array, select "array" from the <b>Put menu</b>. Up will come
 a dialog window to set initial properties of the array. By default, a
 new graph is created to hold the array, but it may also be housed in the
 most recently created graph instead. Other properties may be specified there
@@ -1473,7 +1473,7 @@ template named "template-pitch," and similarly for the array "amp."
 <P> In general, data structures are built from four data types: scalar floats
 and symbols, arrays (whose elements share another, specified template) and
 lists (whose elements may have a variety of templates). The contents of a Pd
-window themselves form a list. Pd's correlate of Max's "table" object is
+window themselves form a list. Pd's correlate of Max's [table] object is
 implemented as a top-level array whose elements are scalars containing a single
 floating-point number.
 
@@ -1552,8 +1552,8 @@ field(s) in advance, for greater run-time efficiency.
 [pointer] object), and the voice number is recalled. This is packed with
 the pointer itself and routed, so that the pointer goes to the appropriate
 voice. The voice number is shown as the color of the frequency trace in
-"999" units (first digit red, second green, third blue) and the "route" is
-arbitrarily set up to select among the six primary and secondary colors plus
+"999" units (first digit red, second green, third blue) and the [route] object
+is arbitrarily set up to select among the six primary and secondary colors plus
 black.
 
 <P> The details of extracting the pitch and dynamic breakpoints from the arrays
