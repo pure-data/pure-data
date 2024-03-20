@@ -47,14 +47,31 @@ static void *print_new(t_symbol *sel, int argc, t_atom *argv)
         }
         else if (!strcmp(c, "-l"))
         {
-            if (argc >= 1 && argv[1].a_type == A_FLOAT)
+            if (argc >= 1)
             {
-                level = atom_getfloat(argv + 1);
+                if (argv[1].a_type == A_FLOAT)
+                    level = atom_getfloat(argv + 1);
+                else
+                {
+                    const char *l = atom_getsymbol(argv + 1)->s_name;
+                    if (!strcmp(l, "critical"))
+                        level = PD_CRITICAL;
+                    else if (!strcmp(l, "error"))
+                        level = PD_ERROR;
+                    else if (!strcmp(l, "normal"))
+                        level = PD_NORMAL;
+                    else if (!strcmp(l, "debug"))
+                        level = PD_DEBUG;
+                    else if (!strcmp(l, "verbose"))
+                        level = PD_VERBOSE;
+                    else
+                        pd_error(x, "print: unknown log level '%s'", l);
+                }
                 argc -= 2; argv += 2;
             }
             else
             {
-                pd_error(x, "missing argument for '-l' flag");
+                pd_error(x, "print: missing argument for '-l' flag");
                 argc--; argv++;
                 break;
             }
