@@ -5,6 +5,7 @@
 /* interface objects */
 
 #include "m_pd.h"
+#include "g_canvas.h"
 #include "s_stuff.h"
 #include <string.h>
 
@@ -22,7 +23,7 @@ extern void startlogpost(const void *object, const int level, const char *fmt, .
 #define print_startpost(object, fmt, ...) do { \
     if (STUFF->st_printhook || sys_printtostderr) \
         startpost(fmt, __VA_ARGS__); \
-    else startlogpost(object, x->x_level, fmt, __VA_ARGS__); \
+    else startlogpost(x->x_target, x->x_level, fmt, __VA_ARGS__); \
 } while(0)
 
 typedef struct _print
@@ -30,22 +31,41 @@ typedef struct _print
     t_object x_obj;
     t_symbol *x_sym;
     int x_level;
+    void *x_target;
 } t_print;
+
+t_canvas *glist_getcanvas(t_glist *x);
 
 static void *print_new(t_symbol *sel, int argc, t_atom *argv)
 {
     t_print *x = (t_print *)pd_new(print_class);
+    t_canvas *c;
     int level = PRINT_LOGLEVEL;
     int suppress = 0;
+    int depth = 0;
     while (argc > 0 && argv->a_type == A_SYMBOL)
     {
-        const char *c = atom_getsymbol(argv)->s_name;
-        if (!strcmp(c, "-n"))
+        const char *opt = atom_getsymbol(argv)->s_name;
+        if (!strcmp(opt, "-n"))
         {
             suppress = 1;
             argc--; argv++;
         }
-        else if (!strcmp(c, "-l"))
+        else if (!strcmp(opt, "-d"))
+        {
+            if (argc >= 1)
+            {
+                depth = atom_getfloat(argv + 1);
+                argc -= 2; argv += 2;
+            }
+            else
+            {
+                pd_error(x, "print: missing argument for '-d' flag");
+                argc--; argv++;
+                break;
+            }
+        }
+        else if (!strcmp(opt, "-l"))
         {
             if (argc >= 1)
             {
@@ -79,6 +99,15 @@ static void *print_new(t_symbol *sel, int argc, t_atom *argv)
         else break;
     }
     x->x_level = level;
+    c = canvas_getcurrent();
+    if (depth > 0 && c->gl_owner)
+    {
+        while (--depth > 0 && c->gl_owner->gl_owner)
+            c = c->gl_owner;
+        x->x_target = c;
+    }
+    else
+        x->x_target = x;
     if (suppress)
         x->x_sym = &s_;
     else if (argc == 0)
