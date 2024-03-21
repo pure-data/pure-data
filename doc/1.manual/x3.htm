@@ -76,7 +76,7 @@ Any DC present in the input (such as you get with cheap audio hardware)
 will show up as level unless you turn on the "input hipass" toggle
 at right; then the DC component is filtered out before metering.
 
-<P>  To test the quality of audio input and output, turn on "monitor" 
+<P>  To test the quality of audio input and output, turn on "monitor"
 (also at right) which causes the inputs to be played to the outputs at
 unit gain.  You should hear a faithful, non-distorted copy of whatever is
 sent through the patch.
@@ -114,10 +114,10 @@ audio latency in the command line or the "audio settings" dialog (but see also
 under your OS below.)  For the second, start up your favorite performance
 monitor program; and for the third, try starting Pd up with ADCs disabled.
 
-<P> In addition to the "test audio and MIDI" patch, the "Media" menu 
+<P> In addition to the "test audio and MIDI" patch, the "Media" menu
 contains items for controlling audio and MIDI settings.  The first two
 items, "Audio on" and "Audio off", open or close the audio devices and
-start or stop Pd's audio computation. 
+start or stop Pd's audio computation.
 
 <P> If there is a choice of
 audio API to make, the Media menu will display them.  (On Linux, they are
@@ -149,7 +149,7 @@ in and 4 out.  Each audio device is 2 channels by default, but you may
 specify more if your hardware supports it.
 
 Other parameters may be tweaked using the command line; see under
-<A href=#s4> preferences and startup options </A>.
+<A href=#s4> Preferences and startup options </A>.
 
 <H6> MIDI </H6>
 
@@ -176,14 +176,14 @@ desktop, for example.)
 
 <P> Pd requires "TCP/IP networking" to be turned on. This doesn't mean you
 have to be on a real network, but simply that Pd actually consists of two
-programs that make a "network link" (locally) to intercommunicate. 
-The first time you run Pd the "Windows Firewall" will ask your permission 
+programs that make a "network link" (locally) to intercommunicate.
+The first time you run Pd the "Windows Firewall" will ask your permission
 to allow this intercommunication.
 
 <H4> Audio in Microsoft Windows </H4>
 
 <P>
-Pd offers both the ASIO and MMIO APIs in Windows.  
+Pd offers both the ASIO and MMIO APIs in Windows.
 
 <!--- comment out
 
@@ -217,11 +217,11 @@ PCI converters (Delta 44).
 
 <P> What to do depends on which flavor of Linux you are running (e.g., Debian
 or Red Hat). The instructions here should work for Pd 0.33 and up regardless of
-your situation.  (If not, you can read the Pd mailing list archives for  
-recent problems; if you have found a new problem you're welcome to post it 
+your situation.  (If not, you can read the Pd mailing list archives for
+recent problems; if you have found a new problem you're welcome to post it
 to the list.)
 
-<P> Pd is available via the package systems for some Linux distributions, 
+<P> Pd is available via the package systems for some Linux distributions,
 but not always in the most recent version possible.  It's relatively easy to
 compile your own copy of Pd and that is the approach described here.
 
@@ -230,7 +230,7 @@ compile your own copy of Pd and that is the approach described here.
 <P> Before you start, you might want to check that you have the resources Pd
 needs.  The main things you need are the C compiler, X windows (including
 the X development package for Pd to link against), TK, and the ALSA "devel"
-headers.  It should be 
+headers.  It should be
 enough to load "tcl-devel", "tk-devel", and "alsa-devel" packages using
 yum or apt-get.
 
@@ -239,7 +239,7 @@ described here; as of 0.43 I still use that but I plan to discontinue this for
 0.44 and start using only the new one.  The following description applies to the
 old one.  Look in the INSTALL.txt file to see how to use the new one.
 
-<P> 
+<P>
 Download Pd, perhaps from
     <a href="http://msp.ucsd.edu/software.html">
     http://msp.ucsd.edu/software.html</A> ,
@@ -280,7 +280,7 @@ and then anyone on your system can just type "pd" to run it.
 <P>
 Next try audio.  We want to know whether audio output works, whether audio
 input works, and whether they work simultaneously.  First run "aumix" (or
-any newer audio mixer app) to 
+any newer audio mixer app) to
 check audio input and output gains and learn which input (mic; line;
 etc.) is "recording".
 Then test audio output by running
@@ -315,7 +315,7 @@ days or weeks.  There appears to be no single place where you can get detailed
 information on Linux audio.
 
 <P>
-There are two widely-used driver sets, called "OSS" and "ALSA".  ALSA is 
+There are two widely-used driver sets, called "OSS" and "ALSA".  ALSA is
 included in the standard Linux kernel since 2.4 or so.  However, for some
 audio cards you can find newer versions than are included in the kernel
 releases.  You can get ALSA from
@@ -349,7 +349,7 @@ I/O ports and one SPDIF.  There is a "baby hammerfall" also, which I think is
 the "9632."  DO NOT CONFUSE THE 9652/9632 WITH OTHER RME BOARDS WHICH  MIGHT
 NOT WORK WITH PD.
 
-<P> The easiest way to use 
+<P> The easiest way to use
 Hammerfall boards in Pd is via ALSA and jack; but you can use ALSA alone:
 <PRE>
     pd -alsa -channels 26
@@ -407,9 +407,9 @@ doing this (in which case you can't run Pd on that machine).
 
 <H4> To install on macOS from source: </H4>
 
-<P> 
-Whether you've downloaded the source or the "package" you can   
-always compile Pd for yourself, whether to make your own improvements, or   
+<P>
+Whether you've downloaded the source or the "package" you can
+always compile Pd for yourself, whether to make your own improvements, or
 possibly so that you can get the newest version before it shows up compiled for
 macOS.
 
@@ -428,7 +428,7 @@ such as ~/pd-0.47-1, cd to ~/pd-0.47-1, run:
 <P> Then type ~/pd-0.47-1/bin/pd to a shell and enjoy!
 
 <P> Detailed build instructions can be found in the INSTALL.txt included with
-the Pd source distribution. 
+the Pd source distribution.
 
 <P> If you wish you can put a line such as,
 
@@ -461,13 +461,13 @@ menus.  Others take effect only when Pd starts up; some of these appear
 on the "startup" dialog and some of them, too cranky to put in a GUI, must
 be typed as <I> command line arguments </I>.
 
-<P> In addition to the Audio and MIDI settings (see 
+<P> In addition to the Audio and MIDI settings (see
 <A href="#s1.0"> Audio and MIDI </A>), you can customize font size (from the
-"edit" menu), directories to search for files (see 
+"edit" menu), directories to search for files (see
 <A href="#s5"> How Pd searches for files </A>), and additional startup
 parameters described below.
 
-<P> All of these settings may be saved automatically between Pd sessions. 
+<P> All of these settings may be saved automatically between Pd sessions.
 It is also possible to specify settings directly via the <I> command
 line </I>.  (A third mechanism, using configuration files, is deprecated and
 isn't described here.)  The Pd command line is described in the next
@@ -528,7 +528,7 @@ Pd.  Possible options include:
 audio configuration flags:
 -r &lt;n&gt;           -- specify sample rate
 -audioindev ...  -- sound in device list; e.g., "2,1" for second and first
--audiooutdev ... -- sound out device list, same as above 
+-audiooutdev ... -- sound out device list, same as above
 -audiodev ...    -- specify both -audioindev and -audiooutdev together
 -audioaddindev   -- add an audio input device by name
 -audioaddoutdev  -- add an audio output device by name
@@ -541,7 +541,7 @@ audio configuration flags:
 -sleepgrain &lt;n&gt;  -- specify number of milliseconds to sleep when idle
 -nodac           -- suppress audio output
 -noadc           -- suppress audio input
--noaudio         -- suppress audio input and output (-nosound is synonym) 
+-noaudio         -- suppress audio input and output (-nosound is synonym)
 -callback        -- use callbacks if possible
 -nocallback      -- use polling-mode (true by default)
 -listdev         -- list audio and MIDI devices
@@ -591,7 +591,7 @@ general flags:
 -font-weight &lt;name&gt; -- specify default font weight (normal or bold)
 -verbose         -- extra printout on startup and when searching for files
 -noverbose       -- no extra printout
--version         -- don't run Pd; just print out which version it is 
+-version         -- don't run Pd; just print out which version it is
 -d &lt;n&gt;           -- specify debug level
 -loadbang        -- do not suppress all loadbangs (true by default)
 -noloadbang      -- suppress all loadbangs
@@ -617,7 +617,7 @@ general flags:
 -noautopatch     -- defeat auto-patching
 -compatibility &lt;f&gt; -- set back-compatibility to version &lt;f&gt;
 
-</PRE> 
+</PRE>
 
 <P>Here are some details on some of the audio, MIDI, and scheduler options (but
 see also the next section on file management.)
@@ -626,7 +626,7 @@ see also the next section on file management.)
 
 <P> You can specify multiple MIDI input and output devices.  For example,
 "pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
-fourth and second MIDI output device.  
+fourth and second MIDI output device.
 
 <P> Audio device selection is similar, except that you can also specify
 channels by device: "-audioindev 1,3 -inchannels 2,8" will try to open device 1
@@ -650,7 +650,7 @@ on the other hand, the more throughput delay you will hear from the audio
 and/or control inputs (MIDI, GUI) and the audio coming out.
 
 <P> You can also specify the audio block size in sample frames.  This is 64 by
-default (except for MMIO for which it's 256), and may be 64, 128, or 256.  
+default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 
 <H4> MIDI and sleepgrain</H4>
 
@@ -665,14 +665,14 @@ numbers as listed by "pd -listdev."
 periods of computation.  This is normally the audio buffer divided by 4, but
 no less than 0.1 and no more than 5.  On most OSes, ingoing and outgoing MIDI
 is quantized to this value, so if you care about MIDI timing, reduce this to 1
-or less. 
+or less.
 
 <H3> <A id="s5"> 3.6. How Pd searches for files </A> </H3>
 
 <P>Pd has a search path feature; you specify the path on the command line
 using the "-path" option.  Paths may contain any number of files.  If you
 specify several files in a single "-path" option they're separated by colons
-in Unix or semicolons in Windows.  
+in Unix or semicolons in Windows.
 
 <P> You can see and edit the path while Pd is running using the "path..."
 item in the "File / Preferences" menu:
@@ -712,9 +712,9 @@ ported more easily between operating systems.  On the other hand, if you
 specify a filename on the command line (as in "pd -path c:\pdlib") the file
 separator should agree with the operating system. <BR>
 
-<P> A filename specified in a patch with any "/" characters in it (such as 
+<P> A filename specified in a patch with any "/" characters in it (such as
 "../sounds/sample1.wav") causes Pd to look both in the path and relative
-to the directory containing the patch. You may also invoke externs that way. ( See 4.<a href="x4.htm">Externals </a>for more on externals and how to load them)
+to the directory containing the patch. You may also invoke externs that way. ( See <a href="x4.htm">Externals</a> for more on externals and how to load them)
 
 <P> As of version 0.35, there may be spaces in the path to Pd itself; also,
 the "openpanel" and "savepanel" objects can handle spaces.  Spaces in the
@@ -723,7 +723,7 @@ path should work as of version 0.38.
 <P>
 <BR><BR>
 <A href="x4.htm"> next chapter </A><BR>
-<A href="index.htm#s3"> back to table of contents </A> 
+<A href="index.htm#s3"> back to table of contents </A>
 <BR><BR>
 </P>
 
