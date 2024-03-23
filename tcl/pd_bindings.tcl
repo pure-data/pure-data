@@ -120,6 +120,12 @@ proc ::pd_bindings::global_bindings {} {
             bind_capslock all $::modifier-Key m       {::pd_menucommands::scheduleAction menu_minimize %W}
             bind all <$::modifier-quoteleft>   {::pd_menucommands::scheduleAction menu_raisenextwindow}
         }
+
+        # On mac, the copy/paste menu command bindings also execute the commands, results in paste executed twice
+        # however, if we don't set this binding, the regular copy and paste gets called even with alt pressed
+        bind_capslock all $::modifier-$::alt-Key c {}
+        bind_capslock all $::modifier-$::alt-Key v {}
+
         # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
         # so we set them to the empty string and let ::pd_bindings::sendkey guess the correct values
         bind all <KeyPress-BackSpace>      {::pd_bindings::sendkey %W 1 %K "" 1 %k}
@@ -133,6 +139,9 @@ proc ::pd_bindings::global_bindings {} {
     } else {
         bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
         bind_capslock all $::modifier-Key m       {menu_minimize %W}
+
+        bind_capslock all $::modifier-$::alt-Key c {menu_send %W copy-to-clipboard-as-text}
+        bind_capslock all $::modifier-$::alt-Key v {::pdtk_canvas::pdtk_get_clipboard_text $::focused_window}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
