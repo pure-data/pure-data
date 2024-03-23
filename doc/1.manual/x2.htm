@@ -96,7 +96,7 @@ main window and any number of sub-windows. The sub-windows can be opened and clo
 but are always running, whether you can see them or not. Here is a simple Pd patch:
 
 <CENTER><P>
-    <IMG src="fig1.2.jpg" ALT="hello world patch">
+    <IMG src="fig1.2.png" ALT="hello world patch">
 </P></CENTER>
 
 <P>There are four <I> text boxes </I> in this patch: a number box (showing zero),
@@ -117,7 +117,7 @@ what type of object Pd will make, and the other atoms, called <I> creation
 arguments </I>, tell Pd how to initialize the object. If you type for example,
 
 <CENTER><P>
-    <IMG src="fig1.3.jpg" ALT="object">
+    <IMG src="fig1.3.png" ALT="object">
 </P></CENTER>
 
 <P>the "+" specifies the <I> class </I> of the object. In this case the object will
@@ -191,7 +191,7 @@ or to other specified receiving objects. In the example below, the message box,
 when clicked, sends the message "21" to an object box which adds 13 to it.
 
 <CENTER><P>
-    <IMG src="fig1.5.jpg" ALT="[message( --> [object] -> [number]">
+    <IMG src="fig1.5.png" ALT="[message( --> [object] -> [number]">
 </P></CENTER>
 
 <P> The third box shown is a <I> GUI </I> ("graphical user interface") box. GUI
@@ -722,7 +722,7 @@ selector, it carries out some corresponding action. For instance, here is a
 [float] object:
 
 <CENTER><P>
-    <IMG src="fig3.1.jpg" ALT="float object">
+    <IMG src="fig3.1.png" ALT="float object">
 </P></CENTER>
 
 <P> The two rectangles at the top are usually both called "inlets" but
@@ -747,7 +747,7 @@ others. So each message sets off a tree of consequent messages. This tree is
 executed in depth first fashion. For instance in the patch below:
 
 <CENTER><P>
-    <IMG src="fig3.2.jpg" ALT="depth first message passing">
+    <IMG src="fig3.2.png" ALT="depth first message passing">
 </P></CENTER>
 
 <P> the order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
@@ -759,7 +759,7 @@ sorted right to left).
 <P> Message-passing can give rise to infinite loops of the sort shown here:
 
 <CENTER><P>
-    <IMG src="fig3.3.jpg" ALT="infinite message passing loop">
+    <IMG src="fig3.3.png" ALT="infinite message passing loop">
 </P></CENTER>
 
 <P> Here the left-hand [+ 1] can't finish processing until the right-hand one has
@@ -779,7 +779,7 @@ inlet as "hot" in the sense that messages to left inlets can result in output
 messages. So the following is a legal (and reasonable) loop construct:
 
 <CENTER><P>
-    <IMG src="fig3.4.jpg" ALT="hot and cold inlets">
+    <IMG src="fig3.4.png" ALT="hot and cold inlets">
 </P></CENTER>
 
 <P>Here the [f] object is an abbreviation for [float]. Note that the [+ 1] output is
@@ -800,7 +800,7 @@ receive their messages. Suppose for example you wish to use [+] to double a
 number. The following is incorrect:
 
 <CENTER><P>
-    <IMG src="fig3.5.jpg" ALT="incorrect inlet connection">
+    <IMG src="fig3.5.png" ALT="incorrect inlet connection">
 </P></CENTER>
 
 <P> Here, I connected the left inlet before connecting the right hand one (although
@@ -815,7 +815,7 @@ second object will get its leftmost inlet last, which is usually what you
 want. Here is how to use [trigger] to disambiguate the previous example:
 
 <CENTER><P>
-    <IMG src="fig3.6.jpg" ALT="trigger to disambiguate">
+    <IMG src="fig3.6.png" ALT="trigger to disambiguate">
 </P></CENTER>
 
 <P> "Cold" (non-leftmost) inlets are almost universally used to store single
@@ -837,7 +837,7 @@ the message or messages are sent, either to the message box's outlet or
 elsewhere as specified.
 
 <CENTER><P>
-    <IMG src="fig3.7.jpg" ALT="message boxes">
+    <IMG src="fig3.7.png" ALT="message boxes">
 </P></CENTER>
 
 <P>The first of the message boxes above contains the single number 1.5; this
@@ -848,7 +848,7 @@ the number 5 and the symbol "toes."
 <P> Multiple messages may be separated by commas as shown:
 
 <CENTER><P>
-    <IMG src="fig3.8.jpg" ALT="multiple messages in one box">
+    <IMG src="fig3.8.png" ALT="multiple messages in one box">
 </P></CENTER>
 
 <P>Here the three messages are the numbers 1, 2, and 3, and they are sent in
@@ -865,7 +865,7 @@ outlet to an object named "fred" (which is here a receive object), and likewise 
 next message is sent to "sue."
 
 <CENTER><P>
-    <IMG src="fig3.9.jpg" ALT="semicolons to send messages">
+    <IMG src="fig3.9.png" ALT="semicolons to send messages">
 </P></CENTER>
 
 <P>Certain other objects (Pd windows, for example, and arrays) have Pd names as
@@ -875,7 +875,7 @@ destination symbols so you can send them messages this way. Also, the special ob
 <P> You can put variables in message boxes as shown below:
 
 <CENTER><P>
-    <IMG src="fig3.10.jpg" ALT="variables in message boxes">
+    <IMG src="fig3.10.png" ALT="variables in message boxes">
 </P></CENTER>
 
 <P>Here, "$1", etc., refer to the arguments of the arriving message (and aren't
@@ -1040,6 +1040,10 @@ in milliseconds.
 scheduled every 64 samples at Pd's sample rate; at 44100 Hz. this gives a
 period of 1.45 milliseconds. You may turn DSP computation the patch level
 on and off by sending the the messages "dsp 1" and "dsp 0" to "pd".
+
+<CENTER><P>
+    <IMG src="fig-ch2-dsp-on-off.png" ALT="dsp on and off on patch level">
+</P></CENTER>
 
 <P> In the intervals between, delays might time out or external conditions
 might arise (incoming MIDI, mouse clicks, or whatnot). These may cause a
@@ -1226,11 +1230,11 @@ and "abstractions." In either case the subpatch appears as an object box
 in a patch. If you type [pd] or [pd my-name] into an object box, this creates
 a one-off subpatch. For instance, in this fragment:
 
-<CENTER><P> <IMG src="fig7.1.jpg" ALT="subpatch"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.1.png" ALT="subpatch"> </P></CENTER>
 
 <p>the box in the middle, if clicked on, opens the sub-patch shown here:
 
-<CENTER><P> <IMG src="fig7.2.jpg" ALT="open subpatch window"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.2.png" ALT="open subpatch window"> </P></CENTER>
 
 <P> The contents of the subpatch are saved as part of the parent patch, in
 one file. If you make several copies of a subpatch you may change them
@@ -1249,12 +1253,12 @@ in the same left-to-right order as they appear in the subpatch.
 <P> To make an abstraction, save a patch with a name such as "abstraction1.pd"
 and then invoke it in an object box as [abstraction1]:
 
-<CENTER><P> <IMG src="fig7.3.jpg" ALT="abstraction"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.3.png" ALT="abstraction"> </P></CENTER>
 
 <P> Here we're invoking a separate file, "abstraction1.pd", which holds the
-patch shown here (the border is the same as for the subpatch above):
+patch shown here:
 
-<CENTER><P> <IMG src="fig7.4.jpg" ALT="abstraction example"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.4.png" ALT="abstraction example"> </P></CENTER>
 
 <p>You may create many instances of [abstraction1] or invoke it from several
 different patches; and changing and saving the contents of [abstraction1] will
@@ -1293,11 +1297,11 @@ for example.
 check the "graph on parent" box to have the controls of the subpatch/abstraction
 appear on the parent. For instance, here is an invocation of [abstraction2]:
 
-<CENTER><P> <IMG src="fig7.5.jpg" ALT="graph-on-parent abstraction"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.5.png" ALT="graph-on-parent abstraction"> </P></CENTER>
 
 <p>where the patch "abstraction2.pd" contains:
 
-<CENTER><P> <IMG src="fig7.6.jpg" ALT="inside graph-on-parent abstraction"> </P></CENTER>
+<CENTER><P> <IMG src="fig7.6.png" ALT="inside graph-on-parent abstraction"> </P></CENTER>
 
 <p>Here, the number box in the abstraction shows up on the box that invoked
 the abstraction. The "graph on parent" flag is set in the abstraction
@@ -1344,17 +1348,17 @@ in "graph on parent" form (so that you see them within a rectangle drawn on
 the containing patch), or as a regular subpatch (which you see as a text box.)
 In the "graph on parent" form, an array appears as shown:
 
-<CENTER><P> <IMG src="fig8.1.jpg" ALT="array"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.1.png" ALT="array"> </P></CENTER>
 
 <P> Arrays are indexed from 0 to N-1 where N is the number of points in the
 array. You can read an array value using the tabread object:
 
-<CENTER><P> <IMG src="fig8.2.jpg" ALT="array indexing"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.2.png" ALT="array indexing"> </P></CENTER>
 
 <p>Here we see that the third point of the array (index 2) has the value 0.4.
 To write into the array you can use the tabwrite object:
 
-<CENTER><P> <IMG src="fig8.3.jpg" ALT="setting an value in an array"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.3.png" ALT="setting an value in an array"> </P></CENTER>
 
 <p>In this example, sending the message sets the third element to 0.5. (You
 may also send the two numbers to the two inlets separately.)
@@ -1363,7 +1367,7 @@ may also send the two numbers to the two inlets separately.)
 and to arrays. These may also be done using audio signals. For example,
 the patch below creates a 440 Hz. tone with "array1" as a waveform:
 
-<CENTER><P> <IMG src="fig8.4.jpg" ALT="setting an array with a waveform"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.4.png" ALT="setting an array with a waveform"> </P></CENTER>
 
 <p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440
 times per second. The multiplier and adder adjust the range from 1 to 11, and
@@ -1380,7 +1384,7 @@ and/or changed later using the "properties" dialog.
 <P> If you select "properties" on an array in a graph, you get two dialogs, one
 for the array and one for the graph. The array dialog looks like this:
 
-<CENTER><P> <IMG src="fig8.5.jpg" ALT="array properties window"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.5.png" ALT="array properties window"> </P></CENTER>
 
 <p>You may use this to change the name and size, in addition to another property,
 "save contents". If "save contents" is selected, the array's values are stored
@@ -1396,7 +1400,7 @@ lacks a mechanism for selecting arrays (so that "cut" could serve).
 
 <P> The graph dialog (which also pops up) is shown here:
 
-<CENTER><P> <IMG src="fig8.6.jpg" ALT="graph properties"> </P></CENTER>
+<CENTER><P> <IMG src="fig8.6.png" ALT="graph properties"> </P></CENTER>
 
 <P> The X bounds initially range from 0 to the number of points in the table
 minus one (this is a good choice for arrays, although graphs holding other
@@ -1436,7 +1440,7 @@ be edited from scratch or can be imported from files, generated
 algorithmically, or derived from analyses of incoming sounds or other data
 streams. Here is one simple example of a very short musical sketch realized using Pd:
 
-<CENTER><P> <IMG src="fig9.1.jpg" ALT="graphical score"> </P></CENTER>
+<CENTER><P> <IMG src="fig9.1.png" ALT="graphical score"> </P></CENTER>
 
 <p> The example, which only lasts a few seconds, is a polyphonic collection of
 time-varying noise bands. The graphical "score" consists of six objects, each
@@ -1460,7 +1464,7 @@ mechanism.
 <P> Here is the template associated with the graphical objects
 shown above:
 
-<CENTER><P> <IMG src="fig9.2.jpg" ALT="template for graphical score"> </P></CENTER>
+<CENTER><P> <IMG src="fig9.2.png" ALT="template for graphical score"> </P></CENTER>
 
 <p>Templates consist of a data structure definition (the [struct] object) and
 zero or more drawing instructions (such as [filledpolygon] and [plot]). The [struct]
@@ -1500,7 +1504,7 @@ elements of data structures for getting and setting. Here is a patch showing
 how these facilities could be used, for example, to sequence the graphical
 score shown above:
 
-<CENTER><P> <IMG src="fig9.3.jpg" ALT="traversal example patch"> </P></CENTER>
+<CENTER><P> <IMG src="fig9.3.png" ALT="traversal example patch"> </P></CENTER>
 
 <P> Pd has no built-in sequencer, nor even any notion that "x" values should be
 used as a time axis. (However, a "sort" function is provided, which reorders
