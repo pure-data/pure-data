@@ -31,9 +31,9 @@
 
 <P> The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and run Pd
-are described in the <A href=x3.htm>next chapter</A>. Links to more extensive guides (and to
-more theoretical information about computer music) can be found in the
-<A href=x1.htm>previous chapter</A>.
+are described in the <A href=x3.htm>next chapter</A>. Links to more extensive
+guides (and to more theoretical information about computer music) can be found
+in the <A href=x1.htm>previous chapter</A>.
 
 <H3> <A id=s1> 2.1. Overview </A> </H3>
 
@@ -101,9 +101,9 @@ but are always running, whether you can see them or not. Here is a simple Pd pat
 
 <P>There are four <I> text boxes </I> in this patch: a number box (showing zero),
 an object box showing "print", and two comments. The number box and the object
-box are connected, the number box's output to the print box's input. Boxes may
-have zero or more inputs and/or outputs, with the inputs on top and the outputs
-on bottom.
+box are connected, the number box's output to the [print] object box's input.
+Boxes may have zero or more inputs and/or outputs, with the inputs on top and the
+outputs on bottom.
 
 <P> Pd's printout appears on the main "Pd" window, unless you redirect it elsewhere.
 
@@ -195,16 +195,18 @@ when clicked, sends the message "21" to an object box which adds 13 to it.
 </P></CENTER>
 
 <P> The third box shown is a <I> GUI </I> ("graphical user interface") box. GUI
-boxes come in many forms including number boxes (as in this example), toggles,
-sliders, and so on. Whereas the appearance of an object or message box is
-static when a patch is running, a number box's contents (the text) changes to
-reflect the current value held by the box. You can also use a number box as a
-control by clicking and dragging up and down, or by typing values in it and hitting
-enter. (There are also <kbd>Shift + Click</kbd> and <kbd>Alt + Click</kbd>
-actions; see <A href="x2.htm#s2.7"> Context menu for 'Properties', 'Open' and 'Help' </A> to find out how to look this up).
+boxes come in many forms including number boxes (as in this example). In addition
+to numbers, Pd defines GUI boxes to display and edit symbols or arbitrary lists of
+atoms. Pd also comes with a set GUIs that include toggles, sliders, radio buttons
+and so on.
 
-<P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
-or arbitrary lists of atoms.
+<P> You can interact with GUIs in many ways. Whereas the appearance of an object
+or message box is static when a patch is running, a number box's contents (the text)
+changes to reflect the current value held by the box. You can also use a number box
+as a control by clicking and dragging up and down, or by typing values in it and
+hitting enter. (more details on how this and any other GUI works is available in the
+help files; see <A href="x2.htm#s2.7"> Context menu for 'Properties', 'Open' and 'Help'
+</A> to find out how to look this up).
 
 <H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
@@ -217,7 +219,7 @@ and save them. Note the handy shortcuts.
 
 <P>You can also edit the font size of
 of a patch if its window is focused, just use the <b>Font</b> dialog entry again
-from the <b>Edit Menu</b>. The font size setting of patch gets saved within the
+from the <b>Edit menu</b>. The font size setting of patch gets saved within the
 patch file.
 
 <P>When you save a patch to a file, Pd doesn't save the entire state of all the
@@ -234,11 +236,11 @@ the directory where the patch was found.
 <H3> <A id=s2> 2.2. Editing Pd patches </A> </H3>
 
 <P> A patch can be in edit or run mode; this really only changes how mouse clicks
-affect the patch. In run mode, the mouse cursor is an arrow. A patch is in
-run mode when you first open it. Select "edit mode" in the Edit menu to check
-it on and the cursor will change to the image of a hand. Unchecking it in
-the menu sets back to run mode. You can also use the <kbd>Cmd + E</kbd>
-shortcut to get in and out of Edit mode.
+affect the patch. In run mode, the mouse cursor is an arrow. A patch is in run mode
+when you first open it. Select "edit mode" in the <b>Edit menu</b> to check it on
+and the cursor will change to the image of a hand. Unchecking it in the menu sets
+back to run mode. You can also use the <kbd>Cmd + E</kbd> shortcut to get in and
+out of Edit mode.
 
 <H3> <A id=s2.1> 2.2.1. Edit and Run mode </A> </H3>
 
@@ -267,16 +269,15 @@ key and you'll note the shape of an arrow is back until you release the key.
 </P></CENTER>
 
 <P> If you are in run mode and click on an entry on the <b>Put Menu</b>
-or use a shortcut, Pd goes automatically
-into Edit mode. When you create boxes this way, they are automatically
-selected and follow the mouse cursor position; drag them around as desired
-and you can click to position them where you want. Alternatively you can hit
-'esc' to deselect it, which will also place the object. Object and message
-boxes are empty at first, you can move them and also position them by just
-start typing into them.
+or use a shortcut, Pd goes automatically into Edit mode. When you create boxes
+this way, they are automatically selected and follow the mouse cursor position;
+drag them around as desired and you can click to position them where you want.
+Alternatively you can hit <kbd>Esc</kbd> to deselect it, which will also place
+the object. Object and message boxes are empty at first, you can move them and
+also position them by just start typing into them.
 
 <P> You will often find it more convenient to select a box and "duplicate" it
-(in the Edit menu) than to use the "Put" menu. If you select and duplicate
+(in the Edit menu) than to use the <b>Put Menu</b>. If you select and duplicate
 several items, any connections between them will be duplicated as well.
 
 <H3> <A id=s2.3> 2.2.3. Selecting items and moving them or "tidying them up" </A> </H3>
@@ -368,7 +369,7 @@ select a portion of the text to retype. You can also use cut/copy/paste as menti
 
 <P> If you click a box and move the mouse without releasing the mousebutton (i.e.
 if you drag), you move the box. If you wish to displace a box that is already selected,
-first deselect the box (by clicking outside it or using 'esc'); otherwise you
+first deselect the box (by clicking outside it or using <kbd>Esc</kbd>); otherwise you
 will be selecting text instead of moving the box.
 
 <P> <I> The updated text only becomes part of the patch when you deselect the
