@@ -55,6 +55,38 @@ empty=
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
      ./1.manual/favicon.ico \
+     ./1.manual/fig-ch2-autopatching-objects.png \
+     ./1.manual/fig-ch2-autopatching-subpatches.png \
+     ./1.manual/fig-ch2-changing-text.png \
+     ./1.manual/fig-ch2-connecting-boxes.png \
+     ./1.manual/fig-ch2-console-edit-menu.png \
+     ./1.manual/fig-ch2-console-media-menu.png \
+     ./1.manual/fig-ch2-dis-connect-exclude-box-from-connection.png \
+     ./1.manual/fig-ch2-dis-connect-fan-out-audio.png \
+     ./1.manual/fig-ch2-dis-connect-insert-box-to-connection.png \
+     ./1.manual/fig-ch2-dis-connect-menu.png \
+     ./1.manual/fig-ch2-dis-connect-parallel.png \
+     ./1.manual/fig-ch2-dsp-on-off.png \
+     ./1.manual/fig-ch2-duplicate-connections.png \
+     ./1.manual/fig-ch2-file-menu.png \
+     ./1.manual/fig-ch2-managing-connections-box-to-box.png \
+     ./1.manual/fig-ch2-managing-connections-drag-fan-out.png \
+     ./1.manual/fig-ch2-managing-connections-fan-in.png \
+     ./1.manual/fig-ch2-managing-connections-fan-out.png \
+     ./1.manual/fig-ch2-managing-connections-many-to-one.png \
+     ./1.manual/fig-ch2-managing-connections-one-to-many.png \
+     ./1.manual/fig-ch2-managing-connections-shift-click.png \
+     ./1.manual/fig-ch2-paste-replace-boxes.png \
+     ./1.manual/fig-ch2-paste-replace-menu.png \
+     ./1.manual/fig-ch2-paste-replace-similar-type.png \
+     ./1.manual/fig-ch2-put-menu.png \
+     ./1.manual/fig-ch2-selecting-items-and-moving-them-or-tidying-them-up.png \
+     ./1.manual/fig-ch2-tab-navigation-boxes.png \
+     ./1.manual/fig-ch2-tab-navigation-cords.png \
+     ./1.manual/fig-ch2-tab-navigation-inlets-outlets.png \
+     ./1.manual/fig-ch2-triggerize-insert-box-to-connection.png \
+     ./1.manual/fig-ch2-triggerize-object.png \
+     ./1.manual/fig-ch4-deken-install.png \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.png \
      ./1.manual/fig1.3.png \
@@ -96,36 +128,6 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig9.1.png \
      ./1.manual/fig9.2.png \
      ./1.manual/fig9.3.png \
-     ./1.manual/fig-ch2-autopatching-objects.png \
-     ./1.manual/fig-ch2-managing-connections-fan-in.png \
-     ./1.manual/fig-ch2-autopatching-subpatches.png \
-     ./1.manual/fig-ch2-managing-connections-fan-out.png \
-     ./1.manual/fig-ch2-changing-text.png \
-     ./1.manual/fig-ch2-managing-connections-many-to-one.png \
-     ./1.manual/fig-ch2-console-edit-menu.png \
-     ./1.manual/fig-ch2-managing-connections-one-to-many.png \
-     ./1.manual/fig-ch2-console-media-menu.png \
-     ./1.manual/fig-ch2-managing-connections-shift-click.png \
-     ./1.manual/fig-ch2-dis-connect-exclude-box-from-connection.png \
-     ./1.manual/fig-ch2-paste-replace-boxes.png \
-     ./1.manual/fig-ch2-dis-connect-fan-out-audio.png \
-     ./1.manual/fig-ch2-paste-replace-menu.png \
-     ./1.manual/fig-ch2-dis-connect-insert-box-to-connection.png \
-     ./1.manual/fig-ch2-paste-replace-similar-type.png \
-     ./1.manual/fig-ch2-dis-connect-menu.png \
-     ./1.manual/fig-ch2-put-menu.png \
-     ./1.manual/fig-ch2-dis-connect-parallel.png \
-     ./1.manual/fig-ch2-selecting-items-and-moving-them-or-tidying-them-up.png \
-     ./1.manual/fig-ch2-dsp-on-off.png \
-     ./1.manual/fig-ch2-tab-navigation-boxes.png \
-     ./1.manual/fig-ch2-duplicate-connections.png \
-     ./1.manual/fig-ch2-tab-navigation-cords.png \
-     ./1.manual/fig-ch2-file-menu.png \
-     ./1.manual/fig-ch2-tab-navigation-inlets-outlets.png \
-     ./1.manual/fig-ch2-managing-connections-box-to-box.png \
-     ./1.manual/fig-ch2-triggerize-insert-box-to-connection.png \
-     ./1.manual/fig-ch2-managing-connections-drag-fan-out.png \
-     ./1.manual/fig-ch2-triggerize-object.png \
      ./1.manual/index.htm \
      ./1.manual/pdmanual.css \
      ./1.manual/x1.htm \
