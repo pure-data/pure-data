@@ -223,15 +223,14 @@ static int sys_domicrosleep(int microsec)
     timeout.tv_usec = 0;
     if (INTER->i_nfdpoll)
     {
-        fd_set readset, writeset, exceptset;
+        fd_set readset, writeset;
         FD_ZERO(&writeset);
         FD_ZERO(&readset);
-        FD_ZERO(&exceptset);
         for (fp = INTER->i_fdpoll,
             i = INTER->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
         if(select(INTER->i_maxfd+1,
-                  &readset, &writeset, &exceptset, &timeout) < 0)
+                  &readset, &writeset, NULL, &timeout) < 0)
           perror("microsleep select");
         INTER->i_fdschanged = 0;
         for (i = 0; i < INTER->i_nfdpoll &&

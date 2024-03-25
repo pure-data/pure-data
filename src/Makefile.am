@@ -207,6 +207,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h
 noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
+noinst_HEADERS += m_class_dispatcher_1.h m_class_dispatcher_2.h
 
 if LIBPD
 libpdinclude_HEADERS += m_pd.h z_libpd.h
@@ -218,7 +219,8 @@ endif
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu makefile.mac makefile.mingw makefile.msvc \
-    d_soundfile.h s_audio_audiounit.c s_audio_esd.c
+    d_soundfile.h s_audio_audiounit.c s_audio_esd.c \
+    m_class_dispatcher.c
 
 # add WISH define if it's set
 WISH=@WISH@

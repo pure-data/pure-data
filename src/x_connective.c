@@ -74,7 +74,7 @@ typedef struct _pdfloat
     they're created by short-circuited messages to the "new"
     object which are handled specially in pd_typedmess(). */
 
-static void *pdfloat_new(t_pd *dummy, t_float f)
+void *pdfloat_new(t_pd *dummy, t_float f)
 {
     t_pdfloat *x = (t_pdfloat *)pd_new(pdfloat_class);
     x->x_f = f;
@@ -138,7 +138,7 @@ typedef struct _pdsymbol
     t_symbol *x_s;
 } t_pdsymbol;
 
-static void *pdsymbol_new(t_pd *dummy, t_symbol *s)
+void *pdsymbol_new(t_pd *dummy, t_symbol *s)
 {
     t_pdsymbol *x = (t_pdsymbol *)pd_new(pdsymbol_class);
     x->x_s = s;
@@ -196,7 +196,7 @@ typedef struct _bang
     t_object x_obj;
 } t_bang;
 
-static void *bang_new(t_pd *dummy)
+void *bang_new(t_pd *dummy)
 {
     t_bang *x = (t_bang *)pd_new(bang_class);
     outlet_new(&x->x_obj, &s_bang);
@@ -204,7 +204,7 @@ static void *bang_new(t_pd *dummy)
     return (x);
 }
 
-static void *bang_new2(t_bang f)
+static void *bang_new2(void)
 {
     return (bang_new(0));
 }
@@ -214,16 +214,31 @@ static void bang_bang(t_bang *x)
     outlet_bang(x->x_obj.ob_outlet);
 }
 
+static void bang_float(t_bang *x, t_float dummy)
+{
+    bang_bang(x);
+}
+
+static void bang_symbol(t_bang *x, t_symbol *dummy)
+{
+    bang_bang(x);
+}
+
+static void bang_gimme(t_bang *x, t_symbol *s, int argc, t_atom *argv)
+{
+    bang_bang(x);
+}
+
 void bang_setup(void)
 {
     bang_class = class_new(gensym("bang"), (t_newmethod)bang_new, 0,
         sizeof(t_bang), 0, 0);
     class_addcreator((t_newmethod)bang_new2, gensym("b"), 0);
     class_addbang(bang_class, bang_bang);
-    class_addfloat(bang_class, bang_bang);
-    class_addsymbol(bang_class, bang_bang);
-    class_addlist(bang_class, bang_bang);
-    class_addanything(bang_class, bang_bang);
+    class_addfloat(bang_class, bang_float);
+    class_addsymbol(bang_class, bang_symbol);
+    class_addlist(bang_class, bang_gimme);
+    class_addanything(bang_class, bang_gimme);
 }
 
 /* -------------------- send ------------------------------ */
