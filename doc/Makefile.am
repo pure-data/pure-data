@@ -66,6 +66,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig-ch2-dis-connect-insert-box-to-connection.png \
      ./1.manual/fig-ch2-dis-connect-menu.png \
      ./1.manual/fig-ch2-dis-connect-parallel.png \
+     ./1.manual/fig-ch2-disconnecting-boxes.png \
      ./1.manual/fig-ch2-dsp-on-off.png \
      ./1.manual/fig-ch2-duplicate-connections.png \
      ./1.manual/fig-ch2-editmode.png \
