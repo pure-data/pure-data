@@ -119,7 +119,7 @@ confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
 an object box showing "print", and two comments. The number box and the object
 box are connected, the number box's output to the [print] object box's input.
 Boxes may have zero or more inputs and/or outputs, with the inputs on top and the
-outputs on bottom.  When clicking and draging on the number box, the valus are
+outputs on bottom.  When clicking and dragging on the number box, the valus are
 printed on the main "Pd" window.
 
 <H3> <A id="s1.2"> 2.1.2. Object boxes </A> </H3>
@@ -177,7 +177,7 @@ audio samples. The [osc~] object is acting as the interface between the two regi
 in that it takes control messages to set its frequency but outputs an audio sine wave
 to [*~]. The connections in the patch (the lines between the boxes) are also of two
 types: control and signal. Note that they are visually distinct, where signal connections
-are thicker than contol connections. The type of connection depends on the outlet it comes
+are thicker than control connections. The type of connection depends on the outlet it comes
 from; in the patch above, the two bottom connections are signal and the others are control.
 In general, a control connection may be made to a signal inlet; if numbers are sent over it
 they are automatically converted to signals. Signal connections may not be made to control
@@ -958,7 +958,7 @@ objects (see <A href="x2.htm#s8"> Subpatches </A>).
 object to convert it. This is usually rare since objects usually promote
 floats to signals as mentioned. At least this is true for all native objects
 in Pd, but there are externals that can behave differently. The [sig~] object
-is also useful for loading a default singal value with its creation argument.
+is also useful for loading a default signal value with its creation argument.
 You can also use [line~] and [vline~] to "convert" from control to signal with
 a smoothen ramp, so to speak, which can be quite useful.
 
