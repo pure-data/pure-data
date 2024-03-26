@@ -724,13 +724,16 @@ Pd messages are sporadic, like MIDI messages or music N "Note cards."
 
 <H3> <A id="s4.1"> 2.4.1. Anatomy of a message </A> </H3>
 
-<P>Messages contain a selector followed by
-any number of arguments. The selector is a symbol, which appears in the patch
-as a non-numeric string with no white space, semicolons, or commas. The
-arguments may be symbols or numbers. Numbers in Pd are kept in 32-bit floating
-point, so that they can represent integers exactly between −16777216 and
-16777216. (In Max, there are separate data types for integers and floating
-point numbers; Pd uses only float.)
+<P>Messages contain a selector followed by any number of arguments. The selector
+is a symbol, which appears in the patch as a non-numeric string with no white
+space, semicolons, or commas. The arguments may be symbols or numbers.
+
+<P> Pd is usually compiled with 32-bit floating point precision, but you can
+compile with double precision (see <A href="x6.htm#s6.6"> Double precision </A>).
+If you have the single precision version, numbers in Pd are kept in 32-bit
+floating point precision so that they can represent integers exactly between
+−16777216 and 16777216. (In Max, there are separate data types for integers
+and floating point numbers; Pd uses only float.)
 
 <P> When a message is passed to something (which is often an inlet of a box
 but could be anything that can receive a message), the selector of the message
