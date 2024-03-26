@@ -1,6 +1,6 @@
 #N canvas 446 48 642 550 12;
 #X obj 158 449 s state;
-#X obj 87 167 bng 35 250 50 0 empty empty Next -53 18 0 20 #dfdfdf #000000 #000000;
+#X obj 87 167 bng 25 250 50 0 empty empty Next -51 13 0 19 #dfdfdf #000000 #000000;
 #X obj 326 449 s state;
 #X obj 498 449 s state;
 #X obj 87 312 random 100;
