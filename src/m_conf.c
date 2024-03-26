@@ -10,6 +10,7 @@ void g_canvas_setup(void);
 void g_guiconnect_setup(void);
 /* iemlib */
 void g_bang_setup(void);
+void g_knb_setup();
 void g_mycanvas_setup(void);
 void g_numbox_setup(void);
 void g_radio_setup(void);
@@ -60,6 +61,7 @@ void conf_init(void)
     g_guiconnect_setup();
 /* iemlib */
     g_bang_setup();
+    g_knb_setup();
     g_mycanvas_setup();
     g_numbox_setup();
     g_radio_setup();
