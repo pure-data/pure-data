@@ -115,7 +115,7 @@ confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
     <IMG src="fig1.2.png" ALT="hello world patch">
 </P>
 
-<P>There are four <I> text boxes </I> in this patch: a number box (showing zero),
+<P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
 an object box showing "print", and two comments. The number box and the object
 box are connected, the number box's output to the [print] object box's input.
 Boxes may have zero or more inputs and/or outputs, with the inputs on top and the
@@ -130,20 +130,20 @@ Creating boxes</A>) offers a list with such boxes. Note that many of these are
 individual GUI (graphical user interface) boxes. There are also entries for array
 and graph that are explained later.
 
-<P> You create a specific <I> object </I> by typing a text into the box. The text
-is divided into <I> atoms </I> separated by white space. The first atom specifies
+<P> You create a specific <I>object</I> by typing a text into the box. The text
+is divided into <I>atoms</I> separated by white space. The first atom specifies
 what type of object Pd will make and needs to be a symbol, and the other atoms,
-called <I> creation arguments </I>, tell Pd how to initialize the object. You can
+called <I>creation arguments</I>, tell Pd how to initialize the object. You can
 type, for example, "+ 13".
 
 <P>
     <IMG src="fig1.3.png" ALT="object">
 </P>
 
-<P>Here, the "+" specifies the <I> class </I> of the object. In this case the
+<P>Here, the "+" specifies the <I>class</I> of the object. In this case the
 object will carry out additions, and the "13" initializes the value to add.
 
-<P> Atoms are either numbers or <I> symbols </I> like "+". Anything that is not a
+<P> Atoms are either numbers or <I>symbols</I> like "+". Anything that is not a
 valid number is considered a symbol. Valid numbers may or may not have a decimal
 point (for instance, 12, 15.6, -.456), or may be written in exponential notation
 (such as "4.5e6", which means "4.5 multiplied by 10 six times, i.e., 4500000).
@@ -165,9 +165,9 @@ provided at creation.
     <IMG src="fig1.4.png" ALT="simple MIDI synthesizer">
 </P>
 
-<P>This patch mixes <I> control </I> objects ([notein], [stripnote], and [ftom]) with
-<I> tilde </I> objects [osc~], [*~], and [dac~]. The control objects carry out their
-function sporadically, as a result of one or more types of <I> event </I>. In
+<P>This patch mixes <I>control</I> objects ([notein], [stripnote], and [ftom]) with
+<I>tilde</I> objects [osc~], [*~], and [dac~]. The control objects carry out their
+function sporadically, as a result of one or more types of <I>event</I>. In
 this case, incoming MIDI note messages set off the control computation. The
 result of the computation is, when the note happens to be a "note on" (and not
 a "note off"), to compute the frequency in cycles per second and pass it on to
@@ -200,7 +200,7 @@ That is, the contents of an object box describe a message which is sent to Pd
 to create the object. If you retype the text in an object box, the old one is
 discarded and a new one is created, using the new creation arguments.
 
-<P> <I> Message </I> boxes have a different shape and interpret the text as a
+<P> <I>Message</I> boxes have a different shape and interpret the text as a
 message to send whenever the box is activated (by an incoming message or via a
 mouse click). The message may be sent many times while the patch is running
 (as opposed to object boxes whose message is used once to create the object).
@@ -213,7 +213,7 @@ adds 13 to it.
     <IMG src="fig1.5.png" ALT="[message( --> [object] -> [number]">
 </P>
 
-<P> The third box shown is a <I> GUI </I> ("graphical user interface") box. Pd has three
+<P> The third box shown is a <I>GUI</I> ("graphical user interface") box. Pd has three
 basic GUI boxes. In addition to number boxes (as in this example), there are boxes to
 display and edit symbols or arbitrary lists of atoms. Pd also comes with a set GUIs that
 include toggles, sliders, radio buttons and so on. These other GUIs are also known as
@@ -244,7 +244,7 @@ to save the state of abstractions (see <A href="x2.htm#s8"> Subpatches </A>). Al
 certain data-storage objects have functions for reading and writing other files to
 save and restore their internal state.
 
-<P>Pd finds files using specified <I> paths </I>. Most objects which can read files
+<P>Pd finds files using specified <I>paths</I>. Most objects which can read files
 search for them along the search paths, but when Pd writes files they go to
 the directory where the patch was found.
 
@@ -280,7 +280,7 @@ key and you'll note the shape of an arrow is back until you release the key.
 <H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put Menu</b>. Note the handy accelerators.
+<b>Put Menu</b>. Note the handy shortcuts.
 
 <P>
     <IMG src="fig-ch2-put-menu.png" ALT="put menu">
@@ -387,8 +387,8 @@ select a portion of the text to retype. You can also use cut/copy/paste as menti
 it (by clicking outside it or using <kbd>Esc</kbd>); otherwise you will be selecting
 text instead of moving the box.
 
-<P> <I> The updated text only becomes part of the patch when you deselect the
-object. </I> As already mentioned, changing the text in an "object" box deletes
+<P> <I>The updated text only becomes part of the patch when you deselect the
+object.</I> As already mentioned, changing the text in an "object" box deletes
 the old object and creates a new one; so the internal state of the old one is
 completely lost.
 
@@ -413,7 +413,12 @@ inlet.
 <P> If move the mouse cursor over a patch cord, you'll see it takes the shape
 of an "X" to denote you can select it and delete it. Click on the connection
 to select it and press <kbd>Backspace</kbd> or <kbd>Delete</kbd> key to delete
-it. (INCLUDE PIC)
+it.
+
+<P>
+    <IMG src="fig-ch2-disconnecting-boxes.png"
+    ALT="disconnecting boxes">
+</P>
 
 <H3> <A id=s2.7> 2.2.7. Context menu for 'Properties', 'Open' and 'Help' </A> </H3>
 
@@ -739,8 +744,8 @@ while if compiled for double precision (AKA: "Pd64") you have values in
 each case is shown on the table below. (In Max, there are separate data
 types for integers and floating point numbers; Pd uses only float.)
 
-</br>
-</br>
+<br>
+<br>
 <table class="center">
 <thead>
 <tr>
@@ -767,7 +772,7 @@ types for integers and floating point numbers; Pd uses only float.)
 </tr>
 </tbody>
 </table>
-</br>
+<br>
 
 
 <P> When a message is passed to something (which is often an inlet of a box
@@ -780,9 +785,9 @@ selector, it carries out some corresponding action. For instance, here is a
     <IMG src="fig3.1.png" ALT="float object">
 </P>
 
-<P> The two rectangles at the top are usually both called "inlets" but
-the one at the left directs incoming messages to the "float" object itself,
-whereas the one at the right directs messages to an auxiliary "inlet"
+<P> The two rectangles at the top are usually both called "inlets"; but
+the one on the left directs incoming messages to the "float" object itself,
+whereas the one on the right directs messages to an auxiliary "inlet"
 object. The float object proper (represented by the left-hand inlet) accepts
 messages with selector "float" and "bang". The right-hand inlet takes only
 the message selector "float". These two selectors, along with "symbol" and
@@ -796,7 +801,7 @@ arguments is given the selector "list".
 
 <H3> <A id="s4.2"> 2.4.2. Depth first message passing </A> </H3>
 
-<P> In Pd whenever a message is initiated, the receiver may then send out
+<P> Whenever a message is initiated in Pd, the receiver may then send out
 further messages in turn, and the receivers of those messages can send yet
 others. So each message sets off a tree of consequent messages. This tree is
 executed in depth first fashion. For instance in the patch below:
@@ -807,8 +812,8 @@ executed in depth first fashion. For instance in the patch below:
 
 <P> the order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
 message is not done until the "D" one is also, and the "A" is not done until
-all four are. It is indeterminate which of "B" or "C" is done first; this
-depends on what order you made the connections in (in Max, it's automatically
+all four are. It is not visible whether "B" or "C" is done first; this
+depends on the order the connections were made in (in Max, it's automatically
 sorted right to left).
 
 <P> Message-passing can give rise to infinite loops of the sort shown here:
@@ -817,14 +822,14 @@ sorted right to left).
     <IMG src="fig3.3.png" ALT="infinite message passing loop">
 </P>
 
-<P> Here the left-hand [+ 1] can't finish processing until the right-hand one has
-been sent the result "2", which can't finish processing that until the
+<P> Here, the left-hand [+ 1] can't finish processing until the right-hand one has
+been sent the result "2", which can't finish processing until the
 left-hand one has been sent "3", and so on. Pd will print an error message
 reporting a "stack overflow" if this happens.
 
 <P> However, it is legal to make a loop if there is a [delay] object somewhere
-in it. When [delay] receives a message it schedules a message for the
-future (even if the time delay is 0) and is then "finished;" Pd's internal
+in it. When [delay] receives a message, it schedules a message for the
+future (even if the time delay is 0) and is then "finished"; Pd's internal
 scheduler will wake the delay back up later.
 
 <H3> <A id="s4.3"> 2.4.3. Hot and cold inlets and right to left outlet order </A> </H3>
@@ -837,7 +842,7 @@ messages. So the following is a legal (and reasonable) loop construct:
     <IMG src="fig3.4.png" ALT="hot and cold inlets">
 </P>
 
-<P>Here the [f] object is an abbreviation for [float]. Note that the [+ 1] output is
+<P>Here, the [f] object is an abbreviation for [float]. Note that the [+ 1] output is
 connected to the right-hand inlet of [f]. This "cold" inlet merely stores the
 value for the next time the [f] is sent the "bang" message.
 
@@ -1487,7 +1492,7 @@ This idea has important precedents in Eric Lindemann's Animal and Bill Buxton's
 SSSP. An even earlier class of precedents lies in the rich variety of paper
 scores for electronic music before it became practical to offer a
 computer-based score editor. In this context, scores by Stockhausen (<I>
-Kontakte</I> and <I> Studie II</I>) and Yuasa (<I>Toward the Midnight Sun</I>)
+Kontakte</I> and <I>Studie II</I>) and Yuasa (<I>Toward the Midnight Sun</I>)
 come most prominently to mind, but also Xenakis's <I>Mycenae-alpha</I>, which,
 although it was realized using a computer, was scored on paper and only
 afterwards laboriously transcribed into the computer.
@@ -1549,7 +1554,7 @@ could be implemented as an array of arrays of (pitch, amplitude)
 pairs; this appears as example 12 in Pd's FFT object online tutorial.
 
 <P> After the [struct] object in the template shown above, the remaining
-three objects are <I> drawing instructions </I> , first for a rectangle
+three objects are <I>drawing instructions</I> , first for a rectangle
 ([filledpolygon]), and then for two arrays. The various graphical
 attributes that are specified for drawing instructions may be numerical
 constants or data structure field names; in the latter case the value varies
