@@ -198,7 +198,7 @@ void glob_init(void)
 
     /* function to return version number at run time.  Any of the
     calling pointers may be zero in case you don't need all of them. */
-void sys_getversion(int *major, int *minor, int *bugfix)
+unsigned int sys_getversion(int *major, int *minor, int *bugfix)
 {
     if (major)
         *major = PD_MAJOR_VERSION;
@@ -206,6 +206,8 @@ void sys_getversion(int *major, int *minor, int *bugfix)
         *minor = PD_MINOR_VERSION;
     if (bugfix)
         *bugfix = PD_BUGFIX_VERSION;
+
+    return PD_VERSION_CODE;
 }
 
 unsigned int sys_getfloatsize()

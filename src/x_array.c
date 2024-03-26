@@ -440,7 +440,7 @@ static void array_size_float(t_array_size *x, t_floatarg f)
                 pd_error(x, "no such array '%s'", x->x_tc.tc_sym->s_name);
                 return;
             }
-            garray_resize(y, f);
+            garray_resize_long(y, f);
         }
         else
         {

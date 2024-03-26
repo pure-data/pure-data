@@ -13,6 +13,17 @@ extern "C" {
 #define PD_BUGFIX_VERSION 1
 #define PD_TEST_VERSION ""
 
+/* compile-time version check:
+   #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
+      // put legacy code for Pd<<0.56 in here
+   #endif
+ */
+#define PD_VERSION(major, minor, bugfix) \
+    (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
+#define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
+
+extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
 #if defined(NT) && !defined(MSW)
@@ -56,6 +67,18 @@ extern "C" {
 #define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
 #else
 #define ATTRIBUTE_FORMAT_PRINTF(a, b)
+#endif
+
+/* deprecation warning */
+#ifndef PD_DEPRECATED
+# ifdef __GNUC__
+#  define PD_DEPRECATED __attribute__ ((deprecated))
+# elif defined(_MSC_VER) && _MSC_VER >= 1300
+#  define PD_DEPRECATED __declspec(deprecated)
+# else
+#  define PD_DEPRECATED
+#  pragma message("PD_DEPRECATED not defined for this compiler")
+# endif
 #endif
 
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
@@ -377,7 +400,7 @@ EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
 EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
-EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
+PD_DEPRECATED EXTERN double clock_getsystime(void); /* use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
 EXTERN double clock_gettimesincewithunits(double prevsystime,
     double units, int sampflag);
@@ -729,12 +752,12 @@ EXTERN_STRUCT _garray;
 #define t_garray struct _garray
 
 EXTERN t_class *garray_class;
-EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
+PD_DEPRECATED EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec); /* use garray_getfloatwords() */
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+PD_DEPRECATED EXTERN void garray_resize(t_garray *x, t_floatarg f); /* use garray_resize_long() */
 EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
@@ -900,9 +923,13 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 #endif
 #endif /* _MSC_VER */
 
-    /* get version number at run time */
-EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
-EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+    /* get major/minor/bugfix version numbers and version code at run time */
+EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
+
+    /* get a Pd API function pointer by name. Returns NULL if the function
+    does not exist. For example, This allows to use recently introduced API
+    functions while providing a fallback for older Pd versions. */
+EXTERN t_method sys_getfunbyname(const char *name);
 
     /* get floatsize at run time */
 EXTERN unsigned int sys_getfloatsize(void);
