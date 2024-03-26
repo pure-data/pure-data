@@ -73,7 +73,8 @@ choose Audio in "preferences" as described in <A href=x3.htm>next chapter</A>.
 <P> The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use <kbd>Ctrl + /</kbd>
 ('Control' key on PCs or 'Command' key on Apple computers plus the '<b>/</b>' key) to turn audio
 on, and <kbd>Ctrl + .</kbd> to turn it off. You can check input RMS audio level if you select
-"Test Audio and MIDI" and make other Audio and MIDI tests.
+"Test Audio and MIDI" and make other Audio and MIDI tests (more about it in <A href=x3.htm>3.1.
+Audio and MIDI</A>).
 
 <CENTER><P>
     <IMG src="fig-ch2-console-media-menu.png"
@@ -85,9 +86,10 @@ and/or for messages from Pd itself. If the Pd window is focused, the menus and c
 font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu</b>
 (shown in detail below). Make your adjustments if you are having troubles reading
 on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all messages printed
-in the Pd window with the 'Clear Console' entry. On the <b>Window menu</b> you find
-the 'Pd Window' entry (with the <kbd>Ctrl + R</kbd> shortcut), which brings the Pd
-window to the front or sends it behind the Pd window in focus.
+in the Pd window with the 'Clear Console' entry (<kbd>Shift + Ctrl + L</kbd> shortcut).
+On the <b>Window menu</b> you find the 'Pd Window' entry (with the <kbd>Ctrl + R</kbd>
+shortcut), which brings the Pd window to the front or sends it behind the Pd window in
+focus.
 
 <CENTER><P>
     <IMG src="fig-ch2-console-edit-menu.png"
@@ -105,7 +107,7 @@ via the <b>File Menu</b> as well as close and save them (note the handy shortcut
 
 In Pcs, this menu shows the <kbd>Ctrl + Q</kbd> entry to quit Pd, which prompts you
 to confirm the action (in macs, this is under the <b>Pd Menu</b>). To quit without
-confirmation, use <kbd>Ctrl + Shift + Q</kbd>.
+confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
 
 <P> Here is a simple Pd patch:
 
@@ -236,8 +238,10 @@ setting of patch gets saved within the patch file.
 
 <P>When you save a patch to a file, Pd doesn't save the entire state of all the
 objects in the patch, but only what you see: the objects' creation arguments
-and their interconnections. Certain data-storage objects have functions for
-reading and writing other files to save and restore their internal state.
+and their interconnections. Nonetheless, the [savestate] object offers a mechanism
+to save the state of abstractions (see <A href="x2.htm#s8"> Subpatches </A>). Also,
+certain data-storage objects have functions for reading and writing other files to
+save and restore their internal state.
 
 <P>Pd finds files using specified <I> paths </I>. Most objects which can read files
 search for them along the search paths, but when Pd writes files they go to
@@ -922,24 +926,28 @@ the [soundfiler], [readsf~], and [writesf~] objects.
 <H3> <A id="s5.2"> 2.5.2. Tilde objects and audio connections </A> </H3>
 
 <P>Audio computations in Pd are carried out by "tilde objects" such as [osc~]
-whose names conventionally end in a tilde character to warn you what they
-are. Tilde objects can intercommunicate via audio connections. When audio
-computation is turned on, or when you change the audio network while audio is
-on, Pd sorts all the tilde objects into a linear order for running; then this
-linear list is run down in blocks of 64 samples each; at 44100 Hz. this means
-the audio network runs every 1.45 milliseconds.
+whose names conventionally end in a tilde character, which resembles a sinusoid
+warnd you what they deal with audio signals. Tilde objects can intercommunicate
+via audio connections. When audio computation is turned on, or when you change
+the audio network while audio is on, Pd sorts all the tilde objects into a linear
+order for running; then this linear list is run down in blocks of 64 samples each;
+at 44100 Hz. this means the audio network runs every 1.45 milliseconds.
 
-<P> Inlets or outlets are configured in Pd either for messages or audio; it's
-an error to connect an audio outlet to a non-audio inlet or vice versa; usually
-these errors are detected at "sort time" when audio is started or the network
-changed with audio running. An object's leftmost inlet may accept both audio
-and messages; any other inlet is either one or the other.
+<P> Inlets or outlets are configured in Pd either for messages or audio; you can't
+connect an audio outlet to a non-audio inlet. An object's leftmost inlet may accept
+both audio and messages; any other inlet is either one or the other, but secondary
+audio inlets take floats at control data and promote them automatically to signals.
+Nonethwless, in some cases, the inlet may take both a float or a sinal and run
+different algorithms in each case. One example is [lop~], which runs a more
+efficient routine if no signals are connected to the right inlet. The [+~], [-~],
+[*~], [/~]. [max~], [min~], [log~] and [pow~] objects can be configured to take
+control or signal inputs in their 2nd inlet depending on the creation argument.
 
 <P> The audio network, that is, the tilde objects and their interconnections,
-must be acyclic. If there are loops, you will see the error message at "sort
-time." When errors are reported at sort time there is no easy way to
-find the source of the error. You can build algorithms with feedback using
-nonlocal signal connections.
+must be acyclic. If there are loops, at "sort time", you will see an error
+message on the main Pd window that says <b>"DSP loop detected (some tilde
+objects weren't scheduled)"</b>. You can build algorithms with feedback using
+nonlocal signal connections as explained in the 2.5.5. subsection.
 
 <P> Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
 objects (see <A href="x2.htm#s8"> Subpatches </A>).
@@ -947,10 +955,12 @@ objects (see <A href="x2.htm#s8"> Subpatches </A>).
 <H3> <A id=s5.3> 2.5.3. Converting audio to and from messages </A> </H3>
 
 <P> If you want to use a control value as a signal, you can use the [sig~]
-object to convert it. The [+~], [-~], [*~], [/~]. [max~], [min~], [log~], [pow~]
-and [lop~] objects can be configured to take control or signal inputs in their
-2nd inlet. You can also use [line~] and [vline~] to "convert" from control to
-signal with a smoothen ramp, so to speak.
+object to convert it. This is usually rare since objects usually promote
+floats to signals as mentioned. At least this is true for all native objects
+in Pd, but there are externals that can behave differently. The [sig~] object
+is also useful for loading a default singal value with its creation argument.
+You can also use [line~] and [vline~] to "convert" from control to signal with
+a smoothen ramp, so to speak, which can be quite useful.
 
 <P> The other direction, signal to control, requires that you specify at what
 moments you want the signal sampled. This is handled by the [snapshot~] object,
@@ -975,8 +985,9 @@ whatever overhead is associated with changing the block size.
 efficiency. Also, the [fft~] and related objects operate on blocks so that
 setting the block size also sets the number of FFT channels. You may wish
 to use block sizes smaller than 64 to gain finer resolutions of message/audio
-interaction, or to reduce "block delay" in feedback algorithms. At the
-extreme, setting the block size to 1 allows you to write your own recursive filters.
+interaction, or to reduce "block delay" in feedback algorithms. At the extreme,
+setting the block size to 1 allows you to write your own recursive filters or
+other DSP algorithms that require a one sample feedcback.
 
 <P> You can use [switch~] to budget your DSP computations; for instance you might
 want to be able to switch between two synthesis algorithms. To do this, put
@@ -1049,10 +1060,11 @@ in milliseconds.
 
 <H3> <A id=s6.1> 2.6.1. Audio and messages </A> </H3>
 
-<P>Audio and message processing are interleaved in Pd. Audio processing is
-scheduled every 64 samples at Pd's sample rate; at 44100 Hz. this gives a
-period of 1.45 milliseconds. You may turn DSP computation the patch level
-on and off by sending the the messages "dsp 1" and "dsp 0" to "pd".
+<P>Audio and message processing are interleaved in Pd. Audio processing
+is scheduled every 64 samples at Pd's sample rate, which is 44100 Hz by
+default and results in a period of approximately 1.45 milliseconds.
+You may turn DSP computation on and off ina a patch by sending the
+messages "dsp 1" and "dsp 0" to "pd".
 
 <CENTER><P>
     <IMG src="fig-ch2-dsp-on-off.png" ALT="dsp on and off on patch level">
