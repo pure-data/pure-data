@@ -730,16 +730,14 @@ Pd messages are sporadic, like MIDI messages or music N "Note cards."
 is a symbol, which appears in the patch as a non-numeric string with no white
 space, semicolons, or commas. The arguments may be symbols or numbers.
 
-<P>Numbers in "Pd" are kept in
-<A href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format" target="_blank" >
-32-bit floating point </A> and on "Pd64" (see <A href="x6.htm#s6.6"> Double precision </A>) in
-<A href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_blank" >
-64-bit floating point</A>, so that they can represent
-integers exactly as shown on the table below. (In Max, there are separate data
-types for integers and floating point numbers; Pd uses only float.)
+<P>Numbers in "Pd" are kept in 32-bit floating point and on "Pd64"
+(see <A href="x6.htm#s6.6"> Double precision </A>) in 64-bit floating
+point, so that they can represent integers exactly as shown on the table
+below. (In Max, there are separate data types for integers and floating
+point numbers; Pd uses only float.)
 
 
-<table>
+<table class="center">
 <thead>
 <tr>
 <th>         </th>
@@ -765,6 +763,7 @@ types for integers and floating point numbers; Pd uses only float.)
 </tr>
 </tbody>
 </table>
+
 
 <P> When a message is passed to something (which is often an inlet of a box
 but could be anything that can receive a message), the selector of the message
