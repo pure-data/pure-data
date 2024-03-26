@@ -669,3 +669,27 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     }
     return (0);
 }
+
+t_method sys_getfunbyname(const char *name)
+{
+#ifdef _WIN32
+    HMODULE module;
+        /* Get a handle to the actual module that contains the Pd API functions.
+        For this we just have to pass *any* Pd API function to GetModuleHandleEx().
+        NB: GetModuleHandle(NULL) wouldn't work because it would return a handle
+        to the main executable and GetProcAddress(), unlike dlsym(), does not
+        reach into its dependencies. */
+    if (GetModuleHandleEx(
+        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (LPCSTR)&pd_typedmess, &module))
+            return (t_method)GetProcAddress(module, name);
+    else
+    {
+        fprintf(stderr, "GetModuleHandleEx() failed with error code %d\n",
+            GetLastError());
+        return NULL;
+    }
+#else
+    return (t_method)dlsym(dlopen(NULL, RTLD_NOW), name);
+#endif
+}
