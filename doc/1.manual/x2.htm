@@ -786,17 +786,16 @@ selector, it carries out some corresponding action. For instance, here is a
 </P>
 
 <P> The two rectangles at the top are usually both called "inlets", but the
-one on the left directs incoming messages to the float object itself, while
-the one on the right directs messages to an auxiliary "inlet" object. The float
-object itself (represented by the left inlet) accepts messages with the
-selectors "float" and "bang". The right inlet only accepts messages with the
-"float" selector. These two selectors, together with "symbol" and "list", are
-usually used to indicate the main action of an object, whatever it may be, so
-that objects can be linked together with maximum flexibility.
+one on the left directs incoming messages to the [float] object itself, while
+the one on the right directs messages to an auxiliary "inlet" object. The
+[float] object itself (represented by the left inlet) accepts messages with
+the selectors "float" and "bang". The right inlet only accepts messages with
+the "float" selector. These two selectors, together with "symbol" and "list",
+are usually used to indicate the main action of an object, whatever it may be,
+so that objects can be linked together with maximum flexibility.
 
-<P> It is possible to type messages which start with a number,
-which cannot be used as a selector. A single number is always given the
-"float" selector automatically, and a message with a number followed by other
+<P> Numbers cannot be used as a selector. A message single number is always given
+the "float" selector automatically, and a message with a number followed by other
 arguments is given the selector "list".
 
 <H3> <A id="s4.2"> 2.4.2. Depth first message passing </A> </H3>
