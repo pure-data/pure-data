@@ -33,69 +33,72 @@ in the <A href=x1.htm>previous chapter</A>.
 
 <H3> <A id=s1> 2.1. Overview </A> </H3>
 
-<P> Pd is a real-time graphical programming environment designed for audio processing,
-but can be expanded to graphical images and more with external packages. It resembles
-the MAX system but is much simpler and more portable. For example, with Peter Brinkmann's
-libpd you can have Pure Data as an embeddable audio synthesis library. Also Pd has an
-experimental facility not present in MAX that is provided for defining and accessing
-data structures.
+<P> Pd is a real-time graphical programming environment designed for audio
+processing, but can be expanded to graphical images and more with external packages.
+It resembles the MAX system but is much simpler and more portable. For example,
+with Peter Brinkmann's libpd you can have Pure Data as an embeddable audio synthesis
+library. Additionally, Pd offers a unique experimental feature not found in MAX,
+allowing users to define and access data structures in innovative ways.
 
-<P> Even though it is light and portable, Pd has many external packages that expand its
-features, most for audio and control processing such as ceammc, cyclone, else, iemlib,
-zexy and countless others. External lbraries that add graphical processing include like
-Mark Dank's GEM package which expands Pd to be used for simultaneous computer animation
-and Zack Lee's Ofelia that allows you to use openFrameworks and Lua within Pd for creating
-audiovisual artwork or multimedia applications such as games. For details on installing and
-managing packages, refer to the <A href=x3.htm>Externals</A> chapter.
+<P> Despite its lightweight and portable nature, Pd offers a wide range of external
+packages that enhance its capabilities, primarily focusing on audio and control
+processing. These include notable extensions like ceammc, cyclone, else, iemlib,
+zexy, and many more. External libraries that add graphical processing include Mark
+Dank's GEM package which expands Pd to be used for simultaneous computer animation
+and Zack Lee's Ofelia that allows you to use openFrameworks and Lua within Pd for
+creating audiovisual artwork or multimedia applications such as games. For details
+on installing and managing packages, refer to the <A href=x3.htm>Externals</A>
+chapter.
 
 <H3> <A id=s1.1> 2.1.1. The main window, canvases, and printout </A> </H3>
 
 <P> When Pd is running, you'll see a main "Pd" window, and possibly one or more
-"canvases" or "patches". The main Pd window looks like this:
+"canvases" (also referred to as "patches"). The main Pd window looks like this:
 
 <P>
     <IMG src="img/fig1.1.png" ALT="pd window">
 </P>
 
-<P> At the top you can see the Menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
-<b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on macs this is shown at a
-top bar on the computer screen and there is a first <b>Pd</b> menu entry). At upper
+<P> At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
+<b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
+at a top bar on the screen and there is a first <b>Pd</b> menu entry). At upper
 right there is a "DSP" toggle box to turn audio processing on and off globally. When
 audio is on, Pd is computing audio samples in realtime according to whatever patches
 you have open (whether they are visible or not). Turning off the audio halts the
 computation and releases any audio devices that Pure Data is utilizing. You can
 choose Audio in "preferences" as described in <A href=x3.htm>next chapter</A>.
 
-<P> The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use <kbd>Ctrl + /</kbd>
-('Control' key on PCs or 'Command' key on Apple computers plus the '<b>/</b>' key) to turn audio
-on, and <kbd>Ctrl + .</kbd> to turn it off. You can check input RMS audio level if you select
-"Test Audio and MIDI" and make other Audio and MIDI tests (more about it in <A href=x3.htm>3.1.
-Audio and MIDI</A>).
+<P> The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use
+<kbd>Ctrl + /</kbd> ('Control' key on PCs or 'Command' key on Apple computers plus
+the '<b>/</b>' key) to turn audio on, and <kbd>Ctrl + .</kbd> to turn it off. You
+can check input RMS audio level if you select "Test Audio and MIDI" and make other
+Audio and MIDI tests (more about it in <A href=x3.htm>3.1. Audio and MIDI</A>).
 
 <P>
     <IMG src="img/fig-ch2-console-media-menu.png"
     ALT="media menu">
 </P>
 
-<P> The bottom part of the Pd window is an area for printout from objects in patches,
-and/or for messages from Pd itself. If the Pd window is focused, the menus and console
-font size can be changed using the <b>Font</b> dialog entry in the <b>Edit Menu</b>
-(shown in detail below). Make your adjustments if you are having troubles reading
-on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all messages printed
-in the Pd window with the 'Clear Console' entry (<kbd>Shift + Ctrl + L</kbd> shortcut).
-On the <b>Window menu</b> you find the 'Pd Window' entry (with the <kbd>Ctrl + R</kbd>
-shortcut), which brings the Pd window to the front or sends it behind the Pd window in
-focus.
+<P> The bottom part of the Pd window is an area for printout from objects in
+patches, and/or for messages from Pd itself. If the Pd window is focused, the menus
+and console font size can be changed using the <b>Font</b> dialog entry in the
+<b>Edit Menu</b> (shown in detail below). Make your adjustments if you are having
+troubles reading on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all
+messages printed in the Pd window with the 'Clear Console' entry (<kbd>Shift + Ctrl
++ L</kbd> shortcut). On the <b>Window menu</b> you find the 'Pd Window' entry (with
+the <kbd>Ctrl + R</kbd> shortcut), which brings the Pd window to the front or sends
+it behind the Pd window in focus.
 
 <P>
     <IMG src="img/fig-ch2-console-edit-menu.png"
     ALT="edit menu">
 </P>
 
-<P> Pd documents (or files) are called "patches" or "canvases". Each open document has
-one main window and any number of sub-windows. The sub-windows can be opened and closed
-but are always running, whether you can see them or not. You can create and open patches
-via the <b>File Menu</b> as well as close and save them (note the handy shortcuts).
+<P> Pd documents (or files) are called "patches" or "canvases". Each open document
+has one main window and any number of sub-windows. The sub-windows can be opened
+and closed but are always running, whether you can see them or not. You can create
+and open patches via the <b>File Menu</b> as well as close and save them (note the
+handy shortcuts).
 
 <P>
     <IMG src="img/fig-ch2-file-menu.png" ALT="file menu">
@@ -161,31 +164,32 @@ provided at creation.
     <IMG src="img/fig1.4.png" ALT="simple MIDI synthesizer">
 </P>
 
-<P>This patch mixes <I>control</I> objects ([notein], [stripnote], and [ftom]) with
-<I>tilde</I> objects [osc~], [*~], and [dac~]. The control objects carry out their
-function sporadically, as a result of one or more types of <I>event</I>. In
-this case, incoming MIDI note messages set off the control computation. The
+<P>This patch mixes <I>control</I> objects ([notein], [stripnote], and [ftom])
+with <I>tilde</I> objects [osc~], [*~], and [dac~]. The control objects carry out
+their function sporadically, as a result of one or more types of <I>event</I>.
+In this case, incoming MIDI note messages set off the control computation. The
 result of the computation is, when the note happens to be a "note on" (and not
 a "note off"), to compute the frequency in cycles per second and pass it on to
 the oscillator ([osc~]).
 
 <P> The second half of the patch (the [osc~], [*~], and [dac~] objects) computes
 audio samples. The [osc~] object is acting as the interface between the two regimes,
-in that it takes control messages to set its frequency but outputs an audio sine wave
-to [*~]. The connections in the patch (the lines between the boxes) are also of two
-types: control and signal. Note that they are visually distinct, where signal connections
-are thicker than control connections. The type of connection depends on the outlet it comes
-from; in the patch above, the two bottom connections are signal and the others are control.
-In general, a control connection may be made to a signal inlet; if numbers are sent over it
-they are automatically converted to signals. Signal connections may not be made to control
-inlets; some sort of explicit conversion must be specified.
+in that it takes control messages to set its frequency but outputs an audio sine
+wave to [*~]. The connections in the patch (the lines between the boxes) are also
+of two types: control and signal. Note that they are visually distinct, where signal
+connections are thicker than control connections. The type of connection depends on
+the outlet it comes from; in the patch above, the two bottom connections are signal
+and the others are control. In general, a control connection may be made to a
+signal inlet; if numbers are sent over it they are automatically converted to
+signals. Signal connections may not be made to control inlets; some sort of explicit
+conversion must be specified.
 
-<P> Audio signals aren't sporadic; they are continuous streams of numbers. As a result,
-tilde objects act under very different rules from control objects. If the DSP is set to 'On',
-the audio portion of the patch is always running, whether MIDI messages arrive or not. On the
-other hand, the function of control computations is to insert calculations between the audio
-computation, which may change audio computation parameters (such as the frequency of an
-oscillator in this case).
+<P> Audio signals aren't sporadic; they are continuous streams of numbers. As a
+result, tilde objects act under very different rules from control objects. If the
+DSP is set to 'On', the audio portion of the patch is always running, whether MIDI
+messages arrive or not. On the other hand, the function of control computations is
+to insert calculations between the audio computation, which may change audio
+computation parameters (such as the frequency of an oscillator in this case).
 
 <H3> <A id="s1.3"> 2.1.3. Message and GUI boxes </A> </H3>
 
@@ -209,20 +213,21 @@ adds 13 to it.
     <IMG src="img/fig1.5.png" ALT="[message( --> [object] -> [number]">
 </P>
 
-<P> The third box shown is a <I>GUI</I> ("graphical user interface") box. Pd has three
-basic GUI boxes. In addition to number boxes (as in this example), there are boxes to
-display and edit symbols or arbitrary lists of atoms. Pd also comes with a set GUIs that
-include toggles, sliders, radio buttons and so on. These other GUIs are also known as
-"iemGUIs" and they used to be an external library package, but were incorporated natively
-into Pd in version 0.34 (they can still be created from object boxes though).
+<P> The third box shown is a <I>GUI</I> ("graphical user interface") box. Pd has
+three basic GUI boxes. In addition to number boxes (as in this example), there are
+boxes to display and edit symbols or arbitrary lists of atoms. Pd also comes with
+a set GUIs that include toggles, sliders, radio buttons and so on. These other GUIs
+are also known as "iemGUIs" and they used to be an external library package, but
+were incorporated natively into Pd in version 0.34 (they can still be created from
+object boxes though).
 
 <P> You can interact with GUIs in many ways. Whereas the appearance of an object
 or message box is static when a patch is running, a number box's contents (the text)
 changes to reflect the current value held by the box. You can also use a number box
 as a control by clicking and dragging up and down, or by typing values in it and
 hitting enter. (more details on how this and any other GUIs work is available in the
-help files; see <A href="x2.htm#s2.7"> Context menu for 'Properties', 'Open' and 'Help'
-</A> to find out how to look this up).
+help files; see <A href="x2.htm#s2.7"> Context menu for 'Properties', 'Open' and
+'Help' </A> to find out how to look this up).
 
 <H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
@@ -837,8 +842,8 @@ messages. So the following is a legal (and reasonable) loop construct:
     <IMG src="img/fig3.4.png" ALT="hot and cold inlets">
 </P>
 
-<P>Here, the [f] object is an abbreviation for [float]. Note that the [+ 1] output is
-connected to the right-hand inlet of [f]. This "cold" inlet merely stores the
+<P>Here, the [f] object is an abbreviation for [float]. Note that the [+ 1] output
+is connected to the right-hand inlet of [f]. This "cold" inlet merely stores the
 value for the next time the [f] is sent the "bang" message.
 
 <P>It is frequently desirable to send messages to two or more inlets of an object
@@ -858,9 +863,9 @@ number. The following is incorrect:
     <IMG src="img/fig3.5.png" ALT="incorrect inlet connection">
 </P>
 
-<P> Here, I connected the left inlet before connecting the right hand one (although
-this is not evident in the appearance of the patch.) The [+] thus adds the
-new input (at left) to the previous input (at right).
+<P> Here, I connected the left inlet before connecting the right hand one
+(although this is not evident in the appearance of the patch.) The [+] thus
+adds the new input (at left) to the previous input (at right).
 
 <P> The [trigger] object, abbreviated [t], can be used to split out connections
 from a single outlet in a determinate order. By convention, all objects in Pd,
@@ -913,19 +918,20 @@ on "1" takes place before anything depending on "2" and so on.)
 
 <P> Semicolons may also separate messages. A message following a semicolon must
 specify a symbol giving a destination (in other words, semicolons are like commas
-except that they clear the "current destination" so that the next message specifies
-a new one). The "current destination" is at first the message box's own outlet. In
-the example below, the leading semicolon immediately redirects messages from the
-outlet to an object named "fred" (which is here a receive object), and likewise the
-next message is sent to "sue."
+except that they clear the "current destination" so that the next message
+specifies a new one). The "current destination" is at first the message box's own
+outlet. In the example below, the leading semicolon immediately redirects messages
+from the outlet to an object named "fred" (which is here a receive object), and
+likewise the next message is sent to "sue."
 
 <P>
     <IMG src="img/fig3.9.png" ALT="semicolons to send messages">
 </P>
 
 <P>Certain other objects (Pd windows, for example, and arrays) have Pd names as
-destination symbols so you can send them messages this way. Also, the special object
-"pd" is defined to which you may send messages to start and stop DSP and more.
+destination symbols so you can send them messages this way. Also, the special
+receiver "pd" is defined to which you may send messages to start and stop DSP and
+more.
 
 <P> You can put variables in message boxes as shown below:
 
@@ -1071,11 +1077,13 @@ the [delwrite~] and [delread~]/[delread4~] have this same restriction, but here 
 <i>channel count</i> which is 1 by default. The [snake~] object can combine
 any number of single-channel signals into a multichannel one, or alternatively
 can split a multichannel signal into its component single-channel ones.
-Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and [outlet~])
-can be used to pass multichannel signals from window to window, and [dac~] and [adc~]
-can input and output several inputs or outputs into, or out of, one multichannel signal.
+Non-local connections ([send~], [receive~], [throw~], [catch~], [inlet~] and
+[outlet~]) can be used to pass multichannel signals from window to window, and
+[dac~] and [adc~] can input and output several inputs or outputs into, or out of,
+one multichannel signal.
 
-<P> The [receive~], [catch~], and [adc~] objects take arguments to specify the desired number of channels.
+<P> The [receive~], [catch~], and [adc~] objects take arguments to specify the
+desired number of channels.
 
 <P> Stateless objects, which have no memory from one DSP tick to the next, have
 all been adapted to handle multichannel inputs and outputs. The arithmetic and
@@ -1306,10 +1314,10 @@ individually.
 <P> The objects, [inlet], [inlet~], [outlet] and [outlet~], when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
 This works equally for one-off subpatches and abstractions and only accept control
-data messages. The [inlet~] and [outlet~] versions create inlets and outlets for audio
-signals. Note you can also mix control messages in an [inlet~] via its right outlet,
-but a signal outlet only takes signals. Inlets and outlets appear on the invoking box
-in the same left-to-right order as they appear in the subpatch.
+data messages. The [inlet~] and [outlet~] versions create inlets and outlets for
+audio signals. Note you can also mix control messages in an [inlet~] via its right
+outlet, but a signal outlet only takes signals. Inlets and outlets appear on the
+invoking box in the same left-to-right order as they appear in the subpatch.
 
 <H3> <A id="s8.1"> 2.8.1. Abstractions </A> </H3>
 
@@ -1432,11 +1440,11 @@ the patch below creates a 440 Hz. tone with "array1" as a waveform:
 
 <P> <IMG src="img/fig8.4.png" ALT="setting an array with a waveform"> </P>
 
-<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating 440
-times per second. The multiplier and adder adjust the range from 1 to 11, and
-then the values are used as indices for [tabread4~], which is a 4-point interpolating
-table lookup module. (Much more detail is available in the "3.audio.examples" series in
-the documentation folder.)
+<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating
+440 times per second. The multiplier and adder adjust the range from 1 to 11, and
+then the values are used as indices for [tabread4~], which is a 4-point
+interpolating table lookup module. (Much more detail is available in the
+"3.audio.examples" series in the documentation folder.)
 
 <P> To create a new array, select "array" from the <b>Put menu</b>. Up will come
 a dialog window to set initial properties of the array. By default, a
