@@ -1050,7 +1050,7 @@ inside the switched module and [catch~] outside it.
 
 <P>You may wish to pass signals non-locally, either to get from one window to
 another, or to feed a signal back to your algorithm's input. This can be done
-using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or 
+using [throw~]/[catch~], [send~]/[receive~], or [delwrite~]/[delread~] or
 [delread4~] pairs. Both, [throw~] and [catch~] implement a summing bus; [throw~]
 adds into the bus and [catch~] reads out the accumulated signal and zeros the
 bus for the next time around. There can be many [throw~] objects associated with
