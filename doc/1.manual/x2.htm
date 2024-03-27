@@ -881,7 +881,7 @@ want. Here is how to use [trigger] to disambiguate the previous example:
 
 <P>"Cold" (non-leftmost) inlets are almost universally used to store single
 values (either numbers or symbols). With the exception of [line], [line~]
-and [vline~], these values are "sticky", i.e. once you set the value it is
+and [vline~], these values are "sticky", i.e., once you set the value it is
 good until the next time you set it. (The "line family" exception is for
 sanity's sake.)
 
@@ -1174,27 +1174,27 @@ carried out in the order they were scheduled.
 
 <H3> <A id=s7> 2.7. Semantics </A> </H3>
 
-<p>This section describes how objects in Pd are created, how they store data and
-how object and other boxes pass messages among themselves.
+<p>This section describes how objects in Pd are created, how they store data
+and how object and other boxes pass messages among themselves.
 
 <H3> <A id=s7.1> 2.7.1. Creation of objects </A> </H3>
 
 <p>The text in a box has a different function depending on whether it is a message,
-atom (number/symbol), or object box. In message boxes the text specifies the
-message or messages it will send as output. In atom boxes the text changes
+atom (number/symbol), or object box. In message boxes, the text specifies the
+message or messages it will send as output. In atom boxes, the text changes
 at run time to show the state of the box, which is either a number or a symbol.
 
 <P>In an object box, as in a message box, the text specifies a message; but
-here the message is to be passed to Pd itself, once, and the
-message's effect is to create the object in question. When you open a file,
-all the objects created are created using their text as "creation messages."
-If you type a new message into an object box (or change it), the old object is
-destroyed and the message is used to create the new one.
+here, the message is to be passed to Pd itself, once, and the message's effect
+is to create the object in question. When you open a file, all the objects
+created are created using their text as "creation messages". If you type a new
+message into an object box (or change it), the old object is destroyed and the
+message is used to create the new one.
 
 <P>The selector of the message (the first word in the message) is a selector
-which Pd interprets to mean which type of object to create. Any message
-arguments (called "creation arguments") are used to parameterize the object
-being created. Thus in [makenote 64 250] the selector "makenote" determines
+which Pd interprets to determine the type of object to create. Any message
+arguments (called "creation arguments") are used to parametrize the object
+being created. Thus, in [makenote 64 250] the selector "makenote" determines
 the class of object to create and the creation arguments "64" and "250" become
 the initial velocity and duration.
 
@@ -1212,7 +1212,7 @@ as specified by creation arguments.)
 <P>An exception is made for subpatches whose "state" is the configuration of
 the subpatch; as a special case, this configuration is restored when the
 patch is read from a file. Also, if you rename the subpatch, for instance
-typing "pd jane" instead of "pd spot," the contents of the patch are preserved
+typing "pd jane" instead of "pd spot", the contents of the patch are preserved
 and only the text in the object box and the window title of the subpatch are
 changed.
 
@@ -1235,9 +1235,9 @@ determined by the selector of the creation message, i.e., the first atom of the
 creation message which is usually a symbol.
 
 <P>Each class comes with a fixed collection of messages it may be sent. For
-example, the [float] or [f] object takes "bang" and "float." These messages
+example, the [float] or [f] object takes "bang" and "float". These messages
 are sent to [float] objects (objects whose class is float) via the leftmost,
-hot inlet. (The right inlet is a separate, auxiliary object.) Objects of
+hot inlet (the right inlet is a separate, auxiliary object). Objects of
 class "float" respond to the message "bang" by outputting their current value,
 that is, by sending a "float" message to their outlet. They respond to "float"
 messages by setting their value and then outputting it.
@@ -1284,7 +1284,7 @@ ID number to that abstraction, so sends and receives with names like "$0-bear"
 can be used as local send/receive pairs. This is also useful for things like
 array names, value names and text names (as defined in the text object).
 
-<P>Occasionally you may want to have double or triple substitutions; this can
+<P>Occasionally, you may want to have double or triple substitutions; this can
 be done one stage at a time by nesting abstractions (with each subpatch
 adding its own $-variable to a symbol and passing that on
 as argument to a further abstraction.)
@@ -1312,13 +1312,14 @@ a one-off subpatch. For instance, in this fragment:
 one file. If you make several copies of a subpatch you may change them
 individually.
 
-<P>The objects, [inlet], [inlet~], [outlet] and [outlet~], when put in a
+<P>The objects [inlet], [inlet~], [outlet] and [outlet~], when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions and only accept control
-data messages. The [inlet~] and [outlet~] versions create inlets and outlets for
-audio signals. Note you can also mix control messages in an [inlet~] via its right
-outlet, but a signal outlet only takes signals. Inlets and outlets appear on the
-invoking box in the same left-to-right order as they appear in the subpatch.
+This works equally for one-off subpatches and abstractions and only accept
+control data messages. The [inlet~] and [outlet~] versions create inlets and
+outlets for audio signals. Note you can also mix control messages in an [inlet~]
+via its right outlet, but a signal outlet only takes signals. Inlets and outlets
+appear on the invoking box in the same left-to-right order as they appear in the
+subpatch.
 
 <H3> <A id="s8.1"> 2.8.1. Abstractions </A> </H3>
 
@@ -1327,13 +1328,13 @@ and then invoke it in an object box as [abstraction1]:
 
 <P><IMG src="img/fig7.3.png" ALT="abstraction"> </P>
 
-<P>Here we're invoking a separate file, "abstraction1.pd", which holds the
+<P>Here, we're invoking a separate file, "abstraction1.pd", which holds the
 patch shown here:
 
 <P><IMG src="img/fig7.4.png" ALT="abstraction example"> </P>
 
 <p>You may create many instances of [abstraction1] or invoke it from several
-different patches; and changing and saving the contents of [abstraction1] will
+different patches; changing and saving the contents of [abstraction1] will
 affect all invocations of it as they are created. An analogy from the "c"
 programming language is that one-off subpatches are like bracketed blocks of
 code and abstractions are like subroutines.
@@ -1381,19 +1382,19 @@ the abstraction. The "graph on parent" flag is set in the abstraction
 dialog for the "abstraction2" canvas by right-clicking on any white space
 in the patch.
 
-<P>To open the subpatch, right click on the object and select "open". It doesn't
+<P>To open the subpatch, right click on the object and select "Open". It doesn't
 work just to click on the object in run mode since clicks are sent to visible
 controls and/or arrays.
 
 <P>When the sub-patch is closed, all controls in it appear on the object
 instead; so the number box in the sub-patch in the example above is the same
-one as you see in the box. Only controls are made visible in this way
+one as you see in the box. Only controls are made visible in this way.
 
 <H3> <A id=s9> 2.9. Numeric arrays </A> </H3>
 
-<p>Linear arrays of numbers recur throughout the computer musician's bag of tricks,
-beginning with the wavetable oscillator. The wavetable oscillator later was
-reinvented as the looping sampler. Also, table lookup is used for nonlinear
+<p>Linear arrays of numbers recur throughout the computer musician's bag of
+tricks, beginning with the wavetable oscillator. The wavetable oscillator later
+was reinvented as the looping sampler. Also, table lookup is used for nonlinear
 distortion of audio signals. In the domain of control, arrays of numbers
 can specify control mappings, probability densities, voicing data, and much
 more.
@@ -1401,23 +1402,23 @@ more.
 <P>Arrays in Pd should be allocated (and possible read in from a file) before
 beginning to make sound, since memory allocation and disk operations may take
 long enough to cause audio buffer overruns or underruns. Pd provides two ways
-to define new arrays, as "graphs" and "tables". In either case the array
+to define new arrays, as "graphs" and "tables". In either case, the array
 has a pre-defined name and size (i.e., number of points). Elements of the
-array are stored as floating-point numbers, 4 bytes apiece
+array are stored as floating-point numbers, 4 bytes apiece.
 
-<P>If you use an array to store a one-second sound at 44.1 kHz you will need
-176 kilobytes, or a one-minute sound, 10.6 megabytes. To store a sound with
+<P>If you use an array to store a one-second sound at 44.1 kHz, you will need
+176 kilobytes, for a one-minute sound 10.6 megabytes. To store a sound with
 two or more channels, use a separate array for each channel.
 
 <P>Arrays are also useful as transfer functions, for example for nonlinear
 distortion of an audio signal, or to map a control onto a synthesis parameter.
-In situations like this one typically uses much shorter arrays, of no more
+In situations like this, one typically uses much shorter arrays of no more
 than a few hundred elements. They are also useful for storing measured
 spectra derived from the fft~ objects, and probably for many other uses.
 
 <P>Arrays usually appear within subpatches created to house them, whether
 in "graph on parent" form (so that you see them within a rectangle drawn on
-the containing patch), or as a regular subpatch (which you see as a text box.)
+the containing patch), or as a regular subpatch (which you see as a text box).
 In the "graph on parent" form, an array appears as shown:
 
 <P><IMG src="img/fig8.1.png" ALT="array"> </P>
@@ -1427,8 +1428,8 @@ array. You can read an array value using the tabread object:
 
 <P><IMG src="img/fig8.2.png" ALT="array indexing"> </P>
 
-<p>Here we see that the third point of the array (index 2) has the value 0.4.
-To write into the array you can use the tabwrite object:
+<p>Here, we see that the third point of the array (index 2) has the value 0.4.
+To write into the array, you can use the tabwrite object:
 
 <P><IMG src="img/fig8.3.png" ALT="setting an value in an array"> </P>
 
@@ -1437,21 +1438,21 @@ may also send the two numbers to the two inlets separately.)
 
 <P>The two previous examples showed control operations to read and write from
 and to arrays. These may also be done using audio signals. For example,
-the patch below creates a 440 Hz. tone with "array1" as a waveform:
+the patch below creates a 440 Hz tone with "array1" as a waveform:
 
 <P><IMG src="img/fig8.4.png" ALT="setting an array with a waveform"> </P>
 
-<p>Here [phasor~] outputs a ramp whose output range is from 0 to 1, repeating
-440 times per second. The multiplier and adder adjust the range from 1 to 11, and
-then the values are used as indices for [tabread4~], which is a 4-point
+<p>Here, [phasor~] outputs a ramp whose output range is from 0 to 1, repeating
+440 times per second. The multiplier and adder adjust the range from 1 to 11
+and then the values are used as indices for [tabread4~], which is a 4-point
 interpolating table lookup module. (Much more detail is available in the
 "3.audio.examples" series in the documentation folder.)
 
-<P>To create a new array, select "array" from the <b>Put menu</b>. Up will come
-a dialog window to set initial properties of the array. By default, a
-new graph is created to hold the array, but it may also be housed in the
-most recently created graph instead. Other properties may be specified there
-and/or changed later using the "properties" dialog.
+<P>To create a new array, select "array" from the <b>Put menu</b>. A dialog
+will appear to set initial properties of the array. By default, a new graph is
+created to hold the array, but it may also be housed in the most recently
+created graph instead. Other properties may be specified there and/or changed
+later using the "properties" dialog.
 
 <P>If you select "properties" on an array in a graph, you get two dialogs, one
 for the array and one for the graph. The array dialog looks like this:
@@ -1463,12 +1464,12 @@ for the array and one for the graph. The array dialog looks like this:
 in the containing patch; otherwise they're initialized to zero each time the
 patch is reloaded. If you intend to use arrays to store sounds, you will
 probably not wish to store them in the patch but as separate soundfiles. This
-will be more efficient, and you may also then use a sound editor to modify them
+will be more efficient and you may also then use a sound editor to modify them
 outside Pd.
 
-<P>If you check "delete me" and then "OK", the array will be deleted. This is
-an odd interface for deleting an object, and is only provided because Pd
-lacks a mechanism for selecting arrays (so that "cut" could serve).
+<P>If you check "Delete array" and then "OK", the array will be deleted. This
+is an odd interface for deleting an object, and is only provided because Pd
+lacks a mechanism for selecting arrays (so that "cut" could serve this purpose).
 
 <P>The graph dialog (which also pops up) is shown here:
 
@@ -1476,7 +1477,7 @@ lacks a mechanism for selecting arrays (so that "cut" could serve).
 
 <P>The X bounds initially range from 0 to the number of points in the table
 minus one (this is a good choice for arrays, although graphs holding other
-kinds of objects might require other X bounds.) The Y bounds should be
+kinds of objects might require other X bounds). The Y bounds should be
 chosen to reflect the natural range of the table, so that stored sounds
 would naturally range from -1 to 1, but a sequence of frequency values might
 range from 0 to 20,000. Finally, you choose the screen size of the graph,
