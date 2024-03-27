@@ -61,12 +61,12 @@ chapter.
 
 <P> At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
 <b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
-at a top bar on the screen and there is a first <b>Pd</b> menu entry). At upper
-right there is a "DSP" toggle box to turn audio processing on and off globally. When
-audio is on, Pd is computing audio samples in realtime according to whatever patches
-you have open (whether they are visible or not). Turning off the audio halts the
-computation and releases any audio devices that Pure Data is utilizing. You can
-choose Audio in "preferences" as described in <A href=x3.htm>next chapter</A>.
+at a top bar on the screen and there is an additional first <b>Pd</b> menu entry).
+On the upper right, there is a "DSP" toggle box to turn audio processing on and off
+globally. When "DSP" is on, Pd is computing audio samples in realtime for all open
+patches (whether they are visible or not). Turning off "DSP" halts the computation
+and releases any audio devices that Pure Data is utilizing. You can configure these
+in the "Audio preferences" as described in <A href=x3.htm>next chapter</A>.
 
 <P> The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use
 <kbd>Ctrl + /</kbd> ('Control' key on PCs or 'Command' key on Apple computers plus
@@ -82,8 +82,8 @@ Audio and MIDI tests (more about it in <A href=x3.htm>3.1. Audio and MIDI</A>).
 <P> The bottom part of the Pd window is an area for printout from objects in
 patches, and/or for messages from Pd itself. If the Pd window is focused, the menus
 and console font size can be changed using the <b>Font</b> dialog entry in the
-<b>Edit Menu</b> (shown in detail below). Make your adjustments if you are having
-troubles reading on HiDPI screens. Also in the <b>Edit Menu</b> you can clear all
+<b>Edit menu</b> (shown in detail below). Make your adjustments if you are having
+troubles reading on HiDPI screens. Also in the <b>Edit menu</b> you can clear all
 messages printed in the Pd window with the 'Clear Console' entry (<kbd>Shift + Ctrl
 + L</kbd> shortcut). On the <b>Window menu</b> you find the 'Pd Window' entry (with
 the <kbd>Ctrl + R</kbd> shortcut), which brings the Pd window to the front or sends
@@ -97,7 +97,7 @@ it behind the Pd window in focus.
 <P> Pd documents (or files) are called "patches" or "canvases". Each open document
 has one main window and any number of sub-windows. The sub-windows can be opened
 and closed but are always running, whether you can see them or not. You can create
-and open patches via the <b>File Menu</b> as well as close and save them (note the
+and open patches via the <b>File menu</b> as well as close and save them (note the
 handy shortcuts).
 
 <P>
@@ -105,7 +105,7 @@ handy shortcuts).
 </P>
 
 In Pcs, this menu shows the <kbd>Ctrl + Q</kbd> entry to quit Pd, which prompts you
-to confirm the action (in macs, this is under the <b>Pd Menu</b>). To quit without
+to confirm the action (in macs, this is under the <b>Pd menu</b>). To quit without
 confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
 
 <P> Here is a simple Pd patch:
@@ -124,7 +124,7 @@ printed on the main "Pd" window.
 <H3> <A id="s1.2"> 2.1.2. Object boxes </A> </H3>
 
 <P> Pd patches can have four types of boxes: <I> object, message, GUI, </I> and
-<I> comment </I>. The <b>Put Menu</b> (shown later in <A href="x2.htm#s2.2">
+<I> comment </I>. The <b>Put menu</b> (shown later in <A href="x2.htm#s2.2">
 Creating boxes</A>) offers a list with such boxes. Note that many of these are
 individual GUI (graphical user interface) boxes. There are also entries for array
 and graph that are explained later.
@@ -232,7 +232,7 @@ help files; see <A href="x2.htm#s2.7"> Context menu for 'Properties', 'Open' and
 <H3> <A id="s1.4"> 2.1.4. Patches and files </A> </H3>
 
 <P> As mentioned before, You can create or open a Pd file from the
-<b>File Menu</b> as well as close and save them.
+<b>File menu</b> as well as close and save them.
 
 <P>You can also edit the font size of of a patch if its window is focused, just
 use the <b>Font</b> dialog entry again from the <b>Edit menu</b>. The font size
@@ -281,13 +281,13 @@ key and you'll note the shape of an arrow is back until you release the key.
 <H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
 
 <P> You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put Menu</b>. Note the handy shortcuts.
+<b>Put menu</b>. Note the handy shortcuts.
 
 <P>
     <IMG src="img/fig-ch2-put-menu.png" ALT="put menu">
 </P>
 
-<P> If you are in run mode and click on an entry on the <b>Put Menu</b>
+<P> If you are in run mode and click on an entry on the <b>Put menu</b>
 or use a shortcut, Pd goes automatically into edit mode. When you create boxes
 this way, they are automatically selected and follow the mouse cursor position;
 drag them around as desired until you click to position them where you want.
@@ -296,7 +296,7 @@ the object. Object and message boxes are empty at first, you can move them and
 also position them by just start typing into them.
 
 <P> You may find it more convenient to select a box and "duplicate" it than to
-use the <b>Put Menu</b>. If you select and duplicate several items, any connections
+use the <b>Put menu</b>. If you select and duplicate several items, any connections
 between them will be duplicated as well.
 
 <H3> <A id=s2.3> 2.2.3. Selecting items and moving them or "tidying them up" </A> </H3>
@@ -342,7 +342,7 @@ but aligning horizontally and vertically separately tends to yield better result
 <P>You can select one box (without activating a text selection) and press
 <kbd>Backspace</kbd> or <kbd>Delete</kbd> key to delete it. Connections of
 a deleted box are also deleted. A multiple selection of boxes can also be
-deleted. The "Select All" entry  on the Edit Menu selects all items in a
+deleted. The "Select All" entry on the Edit menu selects all items in a
 patch window.
 
 <P>For one or more selected boxes and their connections you can also "cut", "copy"
