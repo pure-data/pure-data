@@ -27,11 +27,11 @@
 
 <P>The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and run Pd
-are described in the <A href=x3.htm>next chapter</A>. Links to more extensive
+are described in the <A href="x3.htm">next chapter</A>. Links to more extensive
 guides (and to more theoretical information about computer music) can be found
-in the <A href=x1.htm>previous chapter</A>.
+in the <A href="x1.htm">previous chapter</A>.
 
-<H3> <A id=s1> 2.1. Overview </A> </H3>
+<H3> <A id="s1"> 2.1. Overview </A> </H3>
 
 <P>Pd is a real-time graphical programming environment designed for audio processing,
 but it can be expanded to multimedia processing and more. Pd resembles the MAX system
@@ -47,10 +47,10 @@ iemlib, pmpd, TimbreID, zexy, and many more. External libraries that add graphic
 processing include Mark Dank's GEM package which expands Pd to be used for simultaneous
 computer animation and Zack Lee's Ofelia that allows you to use openFrameworks and Lua
 within Pd for creating audiovisual artwork or multimedia applications such as games.
-For details on installing and managing packages, refer to the <A href=x3.htm>Externals</A>
+For details on installing and managing packages, refer to the <A href="x4.htm">Externals</A>
 chapter.
 
-<H3> <A id=s1.1> 2.1.1. The main window, canvases, and printout </A> </H3>
+<H3> <A id="s1.1"> 2.1.1. The main window, canvases, and printout </A> </H3>
 
 <P>When Pd is running, you'll see a main "Pd" window, and possibly one or more
 "canvases" (also referred to as "patches".) The main Pd window looks like this:
@@ -66,13 +66,13 @@ On the upper right, there is a "DSP" toggle box to turn audio processing on and 
 globally. When "DSP" is on, Pd is computing audio samples in realtime for all open
 patches (whether they are visible or not.) Turning off "DSP" halts the computation
 and releases any audio devices that Pure Data is utilizing. You can configure audio
-devicesin the "Audio preferences" as described in the <A href=x3.htm>next chapter</A>.
+devices in the "Audio preferences" as described in the <A href="x3.htm">next chapter</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use
 <kbd>Ctrl + /</kbd> (<b>Control</b> key on PCs or <b>Command</b> key on Apple
 computers plus the '<b>/</b>' key) to turn audio on, and <kbd>Ctrl + .</kbd> to turn
 it off. You can check input RMS audio level if you select "Test Audio and MIDI" and
-make other Audio and MIDI tests (read more about this in <A href=x3.htm>3.1. Audio
+make other Audio and MIDI tests (read more about this in <A href="x3.htm#s1.0">3.1. Audio
 and MIDI</A>.)
 
 <P>
@@ -81,7 +81,7 @@ and MIDI</A>.)
 </P>
 
 <P>The lower part of the Pd window is an area for printout from the output of boxes
-in patches and for messages from Pd itself (such as erros.) If the Pd window is
+in patches and for messages from Pd itself (such as errors.) If the Pd window is
 focused, the menus and console font size can be changed using the 'Font' dialog
 entry in the <b>Edit menu</b> as shown below. Make your adjustments if you are
 having trouble reading on HiDPI screens. in the <b>Edit menu</b> you can also clear
@@ -252,7 +252,7 @@ save and restore their internal state.
 search for them along the search paths, but when Pd writes files they go to the
 directory where the patch was found.
 
-<H3> <A id=s2> 2.2. Editing Pd patches </A> </H3>
+<H3> <A id="s2"> 2.2. Editing Pd patches </A> </H3>
 
 <P>A patch can be in edit mode or run mode; this really only changes how mouse
 clicks affect the patch. In run mode, the mouse cursor is an arrow. A patch is in
@@ -265,7 +265,7 @@ between these modes.
     <IMG src="img/fig-ch2-editmode.png" ALT="edit mode">
 </P>
 
-<H3> <A id=s2.1> 2.2.1. Edit and Run mode </A> </H3>
+<H3> <A id="s2.1"> 2.2.1. Edit and Run mode </A> </H3>
 
 <P>In edit mode, you can move boxes around by clicking on them and dragging.
 You can also edit text, create or delete boxes and make or cut connections.
@@ -281,7 +281,7 @@ messages.)
 run mode just to click on something like a message, you can press and hold the
 <kbd>Ctrl</kbd> to temporarily switch to edit mode until you release it.
 
-<H3> <A id=s2.2> 2.2.2. Creating boxes </A> </H3>
+<H3> <A id="s2.2"> 2.2.2. Creating boxes </A> </H3>
 
 <P>You can create boxes (objects, messages, GUIs, and comments) using the
 <b>Put menu</b>. Note that most of these are individual GUI (graphical
@@ -302,10 +302,10 @@ the box. Object and message boxes are empty when created, you can move them
 and also position them by just starting to type into them.
 
 <P>You may find it more convenient to select a box and "duplicate" it than to use
-the <b>Put menu</b>. If you duplicate a selectoin of several items, any connections
+the <b>Put menu</b>. If you duplicate a selection of several items, any connections
 between them will be duplicated as well.
 
-<H3> <A id=s2.3> 2.2.3. Selecting items and moving them or "tidying them up" </A> </H3>
+<H3> <A id="s2.3"> 2.2.3. Selecting items and moving them or "tidying them up" </A> </H3>
 
 <P>In Edit mode you can select or deselect one or more boxes. Note that the outline
 of all boxes and containing text turn light blue (instead of the usual black) to
@@ -337,7 +337,7 @@ better results.
     ALT="selecting items and moving them or tidying them up">
 </P>
 
-<H3> <A id=s2.4> 2.2.4. Delete, cut, copy and paste boxes</A> </H3>
+<H3> <A id="s2.4"> 2.2.4. Delete, cut, copy and paste boxes</A> </H3>
 
 <P>If you select any item you can press <kbd>Backspace</kbd> or <kbd>Delete</kbd>
 key to delete it. Connections of a deleted box are also deleted. A multiple selection
@@ -367,7 +367,7 @@ cannot paste between different versions or flavors of Pure Data. Additionally,
 it is not possible to copy from a patch and paste into a Pd subprocess instantiated
 via a [pd~] object.
 
-<H3> <A id=s2.5> 2.2.5. Changing the text </A> </H3>
+<H3> <A id="s2.5"> 2.2.5. Changing the text </A> </H3>
 
 <P>Clicking on an unselected object, message or comment box and releasing the
 click makes the text active, i.e., ready to be text edited (if you select using
@@ -396,7 +396,7 @@ text selection functionality for cut/copy/paste is integrated with the operating
 system, enabling you to copy and paste text between Pd and other software
 applications.
 
-<H3> <A id=s2.6> 2.2.6. Connecting and disconnecting boxes </A> </H3>
+<H3> <A id="s2.6"> 2.2.6. Connecting and disconnecting boxes </A> </H3>
 
 <P>This subsection only describes the simplest way to connect two boxes. For
 more advanced and convenient techniques and shortcuts, refer to the next section.
@@ -425,11 +425,11 @@ area and you can only select a single connection by clicking on it.
     ALT="disconnecting boxes">
 </P>
 
-<H3> <A id=s2.7> 2.2.7. Context menu for 'Properties', 'Open' and 'Help' </A> </H3>
+<H3> <A id="s2.7"> 2.2.7. Context menu for 'Properties', 'Open' and 'Help' </A> </H3>
 
 <P>All the "clicking" mentioned above is done with the left mouse button.
 The right button, instead, opens a context menu offering "Properties",
-"Open" and "Help" (either in edit or run momde). For Apple users who may
+"Open" and "Help" (either in edit or run mode). For Apple users who may
 only have one button on their mouse, double-clicking or <kbd>Alt + Click</kbd>
 are mapped to right-click and on trackpads you can click with two fingers.
 
@@ -1000,7 +1000,7 @@ subsection</A>.
 <P>Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
 objects (see <A href="x2.htm#s8"> Subpatches </A>.)
 
-<H3> <A id=s5.3> 2.5.3. Converting audio to and from messages </A> </H3>
+<H3> <A id="s5.3"> 2.5.3. Converting audio to and from messages </A> </H3>
 
 <P>If you want to use a control value as a signal, you can use the [sig~]
 object to convert it. This is usually rare since objects mostly promote
@@ -1017,7 +1017,7 @@ but you can also sample a signal with [tabwrite~] and then access it via
 objects, the simplest of which is [env~], the envelope follower, that outputs
 control rate floats.
 
-<H3> <A id=s5.4> 2.5.4. Switching and blocking </A> </H3>
+<H3> <A id="s5.4"> 2.5.4. Switching and blocking </A> </H3>
 
 <P>You can use the [switch~] or [block~] objects to turn portions of your audio
 computation on and off and to control the block size of computation. There may
@@ -1050,7 +1050,7 @@ value for the next time it comes back on.
 costs a fairly small overhead. A cheaper way to get outputs is to use [throw~]
 inside the switched module and [catch~] outside it.
 
-<H3> <A id=s5.5> 2.5.5. Nonlocal signal connections </A> </H3>
+<H3> <A id="s5.5"> 2.5.5. Nonlocal signal connections </A> </H3>
 
 <P>You may wish to pass signals non-locally, either to get from one window to
 another, or to feed a signal back to your algorithm's input. This can be done
@@ -1075,7 +1075,7 @@ computation (one block later,) so your signal will be delayed by one block
 (1.45 msec by default.) The [delwrite~] and [delread~]/[delread4~] have this
 same restriction, but here, the 1.45 msec are minimum attainable delay.
 
-<H3> <A id=s5.6> 2.5.6. Multichannel signals </A> </H3>
+<H3> <A id="s5.6"> 2.5.6. Multichannel signals </A> </H3>
 
 <P>As of Pd version 0.54-0, signals may be multichannel. Every signal has a
 <i>length</i> equal to the window's block size (64 by default,) and also has a
@@ -1103,13 +1103,13 @@ operations on multichannel signals. Signal inputs and outputs of cloned patches
 can be used to distribute multichannel signals among the individual cloned
 patches.
 
-<H3> <A id=s6> 2.6. Scheduling </A> </H3>
+<H3> <A id="s6"> 2.6. Scheduling </A> </H3>
 
 <P>Pd uses 64-bit floating point numbers to represent time, providing sample
 accuracy and essentially never overflowing. Time appears to the user
 in milliseconds.
 
-<H3> <A id=s6.1> 2.6.1. Audio and messages </A> </H3>
+<H3> <A id="s6.1"> 2.6.1. Audio and messages </A> </H3>
 
 <P>Audio and message processing are interleaved in Pd. Audio processing
 is scheduled every block (64 samples by default) at Pd's sample rate, which
@@ -1133,7 +1133,7 @@ simultaneously.
 of zero. This delayed cascade happens after the present cascade has finished,
 but at the same logical time.
 
-<H3> <A id=s6.2> 2.6.2. Computation load </A> </H3>
+<H3> <A id="s6.2"> 2.6.2. Computation load </A> </H3>
 
 <P>The Pd scheduler maintains a (user-specified) lead on its computations;
 that is, it tries to keep ahead of real time by a small amount in order to be
@@ -1155,7 +1155,7 @@ sub-window is closed, Pd suspends sending the GUI update messages for it;
 but not so for minimized windows as of version 0.32 - you should really
 close them when you aren't using them.
 
-<H3> <A id=s6.3> 2.6.3. Determinism </A> </H3>
+<H3> <A id="s6.3"> 2.6.3. Determinism </A> </H3>
 
 <P>All message cascades that are scheduled (via [delay] and its relatives) to
 happen before a given audio tick will happen as scheduled, regardless of whether
@@ -1176,12 +1176,12 @@ time, with nondeterministic results.)
 <P>If two message cascades are scheduled for the same logical time, they are
 carried out in the order they were scheduled.
 
-<H3> <A id=s7> 2.7. Semantics </A> </H3>
+<H3> <A id="s7"> 2.7. Semantics </A> </H3>
 
 <p>This section describes how objects in Pd are created, how they store data
 and how object and other boxes pass messages among themselves.
 
-<H3> <A id=s7.1> 2.7.1. Creation of objects </A> </H3>
+<H3> <A id="s7.1"> 2.7.1. Creation of objects </A> </H3>
 
 <p>The text in a box has a different function depending on whether it is a message,
 atom (number/symbol,) or object box. In message boxes, the text specifies the
@@ -1202,7 +1202,7 @@ being created. Thus, in [makenote 64 250] the selector "makenote" determines
 the class of object to create and the creation arguments "64" and "250" become
 the initial velocity and duration.
 
-<H3> <A id=s7.2> 2.7.2. Persistence of data </A> </H3>
+<H3> <A id="s7.2"> 2.7.2. Persistence of data </A> </H3>
 
 <p>Among the design principles of Pd is that patches should be printable, in the
 sense that the appearance of a patch should fully determine its functionality.
@@ -1224,7 +1224,7 @@ changed.
 if you are going to override them later; this is confusing to anyone who tries
 to understand the patch.
 
-<H3> <A id=s7.3> 2.7.3. Message passing </A> </H3>
+<H3> <A id="s7.3"> 2.7.3. Message passing </A> </H3>
 
 <p>Messages in Pd consist of a selector (a symbol) and zero or more arguments
 (which may be symbols or numbers.) To pass a message to an object, Pd first
@@ -1250,7 +1250,7 @@ messages by setting their value and then outputting it.
 to messages it is sent, and may take "float" and "bang" messages, or others
 in addition or instead of them.
 
-<H3> <A id=s7.4> 2.7.4. Inlets and lists </A> </H3>
+<H3> <A id="s7.4"> 2.7.4. Inlets and lists </A> </H3>
 
 <P>The leftmost connection point at the top of most objects represents the
 object itself. Any other dark rectangle is a separate object called an "inlet",
@@ -1264,7 +1264,7 @@ respond to the "list" message by distributing the arguments of the message to
 their inlets, except for the first argument, which is passed to the main object
 as a "float" or "symbol" message.
 
-<H3> <A id=s7.5> 2.7.5. Dollar signs </A> </H3>
+<H3> <A id="s7.5"> 2.7.5. Dollar signs </A> </H3>
 
 <p>In message or object boxes, message arguments starting with a dollar sign
 and a number (like "$1" or "$3-bazoo") are variables which are substituted
@@ -1394,7 +1394,7 @@ controls and/or arrays.
 instead; so the number box in the sub-patch in the example above is the same
 one as you see in the box. Only controls are made visible in this way.
 
-<H3> <A id=s9> 2.9. Numeric arrays </A> </H3>
+<H3> <A id="s9"> 2.9. Numeric arrays </A> </H3>
 
 <p>Linear arrays of numbers recur throughout the computer musician's bag of
 tricks, beginning with the wavetable oscillator. The wavetable oscillator later
@@ -1490,7 +1490,7 @@ width and height, in screen pixels.
 <P>Many other operations are defined for arrays; see the related patches
 in the tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
-<H3> <A id=s10> 2.10. Data structures </A> </H3>
+<H3> <A id="s10"> 2.10. Data structures </A> </H3>
 
 <p>(Note: this section is adapted from an article submitted to ICMC 2002.)
 
@@ -1647,7 +1647,7 @@ structures. Finally, the voice abstraction puts its audio output on a summing bu
 of objects (having different templates.) In this way, an arbitrarily rich
 personal "score language" can be developed and sequenced.
 
-<H3> <A id=s10.2> 2.10.2. Accessing and changing data </A> </H3>
+<H3> <A id="s10.2"> 2.10.2. Accessing and changing data </A> </H3>
 
 <P>In general, accessing or changing data is done via "pointers" to
 "scalars". Numbers and symbols within scalars are accessed using the
@@ -1685,7 +1685,7 @@ Deletion is less flexible; the only operation is to delete an entire list.
 it's not clear how to protect against stale pointers efficiently, except by
 voiding the entire collection of pointers into a list.)
 
-<H3> <A id=s10.3> 2.10.3. Editing </A> </H3>
+<H3> <A id="s10.3"> 2.10.3. Editing </A> </H3>
 
 <P>The graphical score shown above can be edited by dragging breakpoints, or
 by adding and deleting them, using mouse clicks. Also, entire objects or
@@ -1726,7 +1726,7 @@ up belonging to two or more structures of the same name. The worst that can
 happen is that data may lose their drawing instructions, in which case Pd
 supplies a simple default shape.
 
-<H3> <A id=s10.4> 2.10.4. Limitations </A> </H3>
+<H3> <A id="s10.4"> 2.10.4. Limitations </A> </H3>
 
 <P>When examples get more complicated and/or dense than the one shown here, it
 becomes difficult to see and select specific features of a data collection;
