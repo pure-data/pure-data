@@ -62,6 +62,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/fig-ch2-connecting-boxes.png \
      ./1.manual/img/fig-ch2-console-edit-menu.png \
      ./1.manual/img/fig-ch2-console-media-menu.png \
+     ./1.manual/img/fig-ch2-dashed-box.png \
      ./1.manual/img/fig-ch2-dis-connect-exclude-box-from-connection.png \
      ./1.manual/img/fig-ch2-dis-connect-fan-out-audio.png \
      ./1.manual/img/fig-ch2-dis-connect-insert-box-to-connection.png \
