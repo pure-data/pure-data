@@ -1,4 +1,4 @@
-#N canvas 437 23 706 639 12;
+#N canvas 407 23 706 639 12;
 #X obj 24 11 delay;
 #X obj 25 36 del;
 #X floatatom 233 462 5 0 0 0 - - - 0;
@@ -9,7 +9,7 @@
 #X obj 64 270 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 491 602 updated for Pd version 0.45;
 #X obj 117 491 delay 1000 1 msec;
-#X text 251 508 - tempo (float) and time unit (symbol) as in "tempo" message;
+#X text 415 510 - tempo (float) and time unit (symbol) as in "tempo" message, f 30;
 #X msg 162 325 tempo 0.5 msec;
 #X floatatom 117 325 5 0 0 0 - - - 0;
 #X msg 117 298 1000;
@@ -59,9 +59,9 @@
 #X obj 8 587 cnv 1 690 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 117 530 bng 25 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 20 75 The [delay] object outputs a bang after a given delay time (via argument or right inlet). A bang starts the delay. A float specifies the time delay and starts it. If the delay is running and scheduled to output \, sending a bang or a float cancels the previous setting and reschedules the output., f 94;
-#X text 247 491 <-- creation arguments: - delay time (float);
+#X text 247 491 <-- creation arguments: - delay time (float), f 54;
 #X text 59 36 <-- abbreviation;
-#N canvas 514 198 736 437 examples 0;
+#N canvas 570 48 709 670 examples 0;
 #X obj 131 169 delay 1 60 permin;
 #X obj 49 328 delay 1 1 sec;
 #X obj 527 172 delay 1 44100 samp;
@@ -84,6 +84,14 @@
 #X obj 527 275 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 527 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 527 339 delay 44100 1 samp;
+#X obj 110 444 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 195 559 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 195 524 delay 0;
+#X obj 142 594 realtime;
+#X floatatom 142 622 7 0 0 0 - - - 0;
+#X obj 110 478 t b b;
+#X text 292 492 When [delay] receives a message it schedules a message for the future \, even if the time delay is 0! Here we use [realtime] for a nondeterministic result of how long it actually takes., f 49;
+#X text 292 563 Check the 'Scheduling' section in Pd's manual \, Chapter 2 \, for more details on how Pd operates., f 49;
 #X connect 0 0 6 0;
 #X connect 1 0 13 0;
 #X connect 2 0 18 0;
@@ -98,8 +106,14 @@
 #X connect 16 0 2 0;
 #X connect 19 0 21 0;
 #X connect 21 0 20 0;
-#X restore 450 550 pd examples;
-#X text 320 549 open for more -->;
+#X connect 22 0 27 0;
+#X connect 23 0 25 1;
+#X connect 24 0 23 0;
+#X connect 25 0 26 0;
+#X connect 27 0 24 0;
+#X connect 27 1 25 0;
+#X restore 213 551 pd examples;
+#X text 303 550 <- open for more;
 #X connect 2 0 9 1;
 #X connect 3 0 9 0;
 #X connect 7 0 9 0;
