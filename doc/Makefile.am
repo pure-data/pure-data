@@ -132,6 +132,8 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/fig9.2.png \
      ./1.manual/img/fig9.3.png \
      ./1.manual/index.htm \
+     ./1.manual/pdanchors/TEMPLATE.html \
+     ./1.manual/pdanchors/advanced-patch-editing.html \
      ./1.manual/x1.htm \
      ./1.manual/x2.htm \
      ./1.manual/x3.htm \
