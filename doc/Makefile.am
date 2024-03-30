@@ -88,8 +88,11 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/fig-ch2-tab-navigation-boxes.png \
      ./1.manual/img/fig-ch2-tab-navigation-cords.png \
      ./1.manual/img/fig-ch2-tab-navigation-inlets-outlets.png \
+     ./1.manual/img/fig-ch2-triggerize-add-outlet.png \
+     ./1.manual/img/fig-ch2-triggerize-distribute-connections.png \
      ./1.manual/img/fig-ch2-triggerize-insert-box-to-connection.png \
      ./1.manual/img/fig-ch2-triggerize-object.png \
+     ./1.manual/img/fig-ch2-triggerize-reduce-outlets.png \
      ./1.manual/img/fig-ch4-deken-install.png \
      ./1.manual/img/fig1.1.png \
      ./1.manual/img/fig1.2.png \

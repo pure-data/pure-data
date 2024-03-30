@@ -685,7 +685,7 @@ starts at the rightmost outlet of [trigger] and continues to the leftmost.
     ALT="triggerize object">
 </P>
 
-<P>The 'Triggerize' option can also be used to insert a dummy object.
+<P>Additionally, the 'Triggerize' option can be used to insert a dummy object.
 To do so, select a connection and use <kbd>Ctrl + T</kbd>. For a control
 connection, a [t a] object is created with the text selected, so you
 can type another text to include another object instead. For a signal
@@ -697,6 +697,36 @@ for you to replace for a new object.
     ALT="triggerize insert box to connection">
 </P>
 
+<P>While the connections of a [trigger] object can be resorted as
+<A href="x2.htm#s3.4">explained above</A>, <kbd>Ctrl + T</kbd> also allows
+you to easily manage its outlets when using it on the selected object.
+The result will differ depending on the existing connections and outlets.
+If each outlet has a single connection, it will insert an outlet on the left.
+
+<P>
+    <IMG src="img/fig-ch2-triggerize-add-outlet.png"
+    ALT="triggerize add outlet">
+</P>
+
+If the [trigger] object has more outlets than outgoing connections, the
+shortcut will reduce the outlets, removing the unused ones.
+
+<P>
+    <IMG src="img/fig-ch2-triggerize-reduce-outlets.png"
+    ALT="triggerize reduce outlets">
+</P>
+
+In case there are more connections than outlets, it will add outlets to
+distribute all connections to separate ones (following the creation order
+of the connections from right to left). This way, you can add connections
+inbetween other connections without lots of resorting.
+
+<P>
+    <IMG src="img/fig-ch2-triggerize-distribute-connections.png"
+    ALT="triggerize distribute connections">
+</P>
+
+<P>
 <H3> <A id="s3.7">2.3.7. Paste replace</A> </H3>
 
 <P>The 'Paste Replace' entry in the <b>Edit menu</b> doesn't have a
