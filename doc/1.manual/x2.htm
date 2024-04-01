@@ -36,9 +36,12 @@ in the <A href="x1.htm">previous chapter</A>.
 <P>Pd is a real-time graphical programming environment designed for audio processing,
 but it can be expanded to multimedia processing and more. Pd resembles the MAX system
 but is much simpler and more portable. For example, with Peter Brinkmann's libpd you
-can have Pure Data as an embeddable audio synthesis library. Additionally, Pd offers
-a unique experimental feature not found in MAX, allowing users to define and access
-data structures in innovative ways.
+can have Pure Data as an embeddable audio synthesis library. Additionally, in its origin,
+Pd was designed to offer a unique experimental feature not found in MAX, allowing users
+to define and access data structures in innovative ways, with the ability to attach shapes
+and colors to the data in order to visualize it and/or edit it graphically (see section
+<A href="x2.htm#s10">2.10 Data Structures</A> for details.)
+
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
@@ -1497,7 +1500,8 @@ in the tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
 <H3> <A id="s10">2.10. Data structures</A> </H3>
 
-<p>(Note: this section is adapted from an article submitted to ICMC 2002.)
+<p>(Note: this section is an adapted and updated version of an article
+submitted to ICMC 2002.)
 
 <P>The original idea in developing Pd was to make a real-time computer music
 performance environment like Max, but somehow to include also a facility for
@@ -1513,160 +1517,162 @@ afterwards laboriously transcribed into the computer.
 
 <P>Pd is designed to to offer an extremely unstructured environment for
 describing data structures and their graphical appearance. The underlying
-idea is to allow the user to display any kind of data he or she wants to,
-associating it in any way with the display. To accomplish this Pd introduces
-a graphical data structure, somewhat like a data structure out of the C
-programming language, but with a facility for attaching shapes and colors to
-the data, so that the user can visualize and/or edit it. The data itself can
-be edited from scratch or can be imported from files, generated
-algorithmically, or derived from analyses of incoming sounds or other data
-streams. Here is one simple example of a very short musical sketch realized using Pd:
+idea is to allow the user to display any kind of data, associating it in
+any way with the display. To accomplish this Pd introduces a graphical
+data structure, somewhat like a data structure out of the C programming
+language, but with a facility for attaching shapes and colors to the data,
+so that the user can visualize and/or edit it. The data itself can be edited
+from scratch or can be imported from files, generated algorithmically, or
+derived from analyses of incoming sounds or other data streams.
+
+<P>There's a tutorial section dedicated to Data Structures (4.data.structures)
+with many examples. Here is one simple example from this series (09.sequencer.pd)
+with a very short musical sketch realized using Pd:
 
 <P><IMG src="img/2.10.1.png" ALT="graphical score"></P>
 
 <P>The example, which only lasts a few seconds, is a polyphonic collection of
 time-varying noise bands. The graphical "score" consists of six objects, each
-having a small grab point at left, a black shape to show dynamic, and a colored
-shape to show changing frequency and bandwidth. The horizontal axis represents
-time and the vertical axis, frequency (although, as explained later, this
-behavior isn't built into pd). The dynamic and frequency shapes aren't
-constrained to be connected or even to be proximate, but since they pertain to
-the same sound their horizontal positions line up. In this example the last
-(furthest-right) object is percussive (as seen by the black shape) and has a
-fixed frequency and bandwidth, whereas the large, articulated shape in the
-center has a complicated trajectory in both frequency and dynamic. The color
-of the frequency trace determines the voice number used to realize it.
+marked with a small blue rectangle at left and with data shapes: a black shape
+to show dynamic and a colored shape to show changing frequency and bandwidth.
+The horizontal axis represents time and the vertical axis, frequency (although,
+as explained later, this behavior isn't built into Pd). The dynamic and frequency
+shapes aren't constrained to be connected or even to be proximate, but since they
+pertain to the same sound their horizontal positions line up. In this example the
+last (furthest-right) object is percussive (as seen by the black shape) and has a
+fixed frequency and bandwidth, whereas the large, articulated shape in the center
+has a complicated trajectory in both frequency and dynamic. The color of the
+frequency has no purpose, but could be used to determine a voice number to route it.
 
 <P>Each object is thus composed of a combination of scalar values (color;
-aggregate position in X and Y coordinates) and array values (time/value
+aggregate position in X and Y coordinates) and array values (time/envelope
 pairs for the black traces and time/frequency/bandwidth triples for the
 colored ones). This is all specified by the user using Pd's "template"
-mechanism.
-
-<P>Here is the template associated with the graphical objects
-shown above:
+mechanism. Here is the template associated with the graphical objects shown
+above.
 
 <P><IMG src="img/2.10.2.png" ALT="template for graphical score"></P>
 
 <p>Templates consist of a data structure definition (the [struct] object) and
-zero or more drawing instructions (such as [filledpolygon] and [plot]). The [struct]
-object gives the template the name "template-toplevel". The data structure
-is defined to contain three floating point numbers named "x", "y", and
-"voiceno", and two arrays, one named "pitch" whose elements belong to another
-template named "template-pitch", and similarly for the array "amp".
+zero or more drawing instructions (such as [filledpolygon] and [plot]). The
+[struct] object gives the template the name "template-event". The data structure
+is defined to contain three floating point numbers named "x", "y", and "color",
+and two arrays, one named "pitch" whose elements belong to another template
+named "template-pitch", and similarly for the array "amp" (both data structures
+contain three floating point numbers named "x", "y", and "w", for x/y position
+and width.)
 
 <P>In general, data structures are built from four data types: scalar floats
-and symbols, arrays (whose elements share another, specified template) and
-lists (whose elements may have a variety of templates). The contents of a Pd
-window themselves form a list. Pd's correlate of Max's [table] object is
-implemented as a top-level array whose elements are scalars containing a single
-floating-point number.
+and symbols, text and arrays (whose elements share another, specified template).
+The contents of a Pd window themselves form a list. An array (Pd's correlate of
+Max's [table] object) is implemented as a top-level data structure array whose
+elements are scalars containing a single floating-point number.
 
-<P>Data structures in Pd may nest arbitrarily deeply using the array and list
+<P>Data structures in Pd may nest arbitrarily deeply using the array and text
 types. For example, a collection of sinusoidal tracks from an analysis engine
-could be implemented as an array of arrays of (pitch, amplitude)
-pairs; this appears as example 12 in Pd's FFT object online tutorial.
+could be implemented as an array of arrays of (pitch, amplitude) pairs.
 
-<P>After the [struct] object in the template shown above, the remaining
-three objects are <I>drawing instructions</I> , first for a rectangle
-([filledpolygon]), and then for two arrays. The various graphical
-attributes that are specified for drawing instructions may be numerical
-constants or data structure field names; in the latter case the value varies
-depending on the data. For instance, the second creation argument to
-[plot] is the color. The first [plot] plots the "amp" field and the
-color is given as 0, or black. The second one plots "pitch" using the color
-"voiceno". In this way the color of the second trace is attached to the
-"voiceno" slot in the data structure, so that color will vary according to its
-"voiceno" slot.
+<P>After the [struct] object in the template shown above, the remaining three
+objects are <I>drawing instructions</I>, first for a rectangle (with the
+[filledpolygon] object), and then for two arrays (with the [plot] objects).
+The various graphical attributes that are specified for drawing instructions
+may be numerical constants or data structure field names; in the latter case
+the value varies depending on the data. For instance, the second creation
+argument to [plot] is the color. The first one plots "pitch" using the color
+"color". In this way the color is attached to the "color" slot in the data
+structure, so that color will vary according to its "color" slot. The second
+[plot] plots the "amp" field and the color is given as 0, which is black.
 
 <H3> <A id="s10.1">2.10.1. Traversal</A> </H3>
 
-<P>Pd objects are provided to traverse lists and arrays, and to address
-elements of data structures for getting and setting. Here is a patch showing
-how these facilities could be used, for example, to sequence the graphical
-score shown above:
+<P>Pd objects are provided to traverse lists and arrays, and to address elements
+of data structures for getting and setting. Pd has no built-in sequencer, nor
+even any notion that "x" values should be used as a time axis. (However, a
+"sort" function is provided, which reorders a list from left to right, on the
+assumption that users might often want to use Pd data collections as x-ordered
+sequences.) Recording sequences of events into lists, and/or playing the lists
+back as sequences, are functionalities that the user is expected to supply on
+top of Pd's offerings, which, it is hoped, would allow those functionalities
+within a much larger range of possibilities, to include random re-orderings of
+events, score following, self-modifying scores, reactive improvisation, and
+perhaps much more.
+
+<P> Here is a patch showing how to implement the graphical sequence score shown
+above. It uses the [clone] object to instantiate different copies of the [voice]
+abstraction, which is resonsible for playing back each voice from the score.
 
 <P><IMG src="img/2.10.3.png" ALT="traversal example patch"></P>
-
-<P>Pd has no built-in sequencer, nor even any notion that "x" values should be
-used as a time axis. (However, a "sort" function is provided, which reorders
-a list from left to right, on the assumption that users might often want to use Pd
-data collections as x-ordered sequences.) Recording sequences of events into
-lists, and/or playing the lists back as sequences, are functionalities that the
-user is expected to supply on top of Pd's offerings, which, it is hoped, would
-allow those functionalities within a much larger range of possibilities, to
-include random re-orderings of events, score following, self-modifying scores,
-reactive improvisation, and perhaps much more.
 
 <P>Traversal of data is made possible by adding a new type of atom, "pointer",
 to the two previously defined types that make up messages (numbers and symbols).
 Unlike numbers and symbols, pointers have no printed form and thus can't be
-uttered in message boxes. Traversal objects such as [pointer] and [get]
-(among several others) can generate or use pointers. The pointer data
-type is also integrated into pipe-fitting objects such as [pack],
-[unpack], and [route].
+uttered in message boxes. Traversal objects such as [pointer] and [get](among
+several others) can generate or use pointers. The pointer data type is also
+integrated into pipe-fitting objects such as [pack], [unpack], and [route].
+The [trigger] object also deals with pointers.
 
-<P>In the patch shown above, the topmost [pointer] object holds a pointer to
-the next object to "play" (by sending it to one of the [voice]
-abstractions at bottom). The pointer object takes a "traverse" message to
-set it to the head of the list (named "pd-data"), and "next" messages to
-move to (and output) the next datum in the list (i.e., the next in the list of
-six objects in the score). Another [pointer] object is also used, further
-down, as a storage cell for pointers just as "float" is for numbers.
+<P>In the patch shown above, the [pointer] object holds a pointer to the next
+object to "play" (by sending it to a copy of the [voice] abstractions). The
+pointer object takes a "traverse" message to set it to the head of the list
+(named "pd-data"), and "next" messages to move to (and output) the next datum
+in the list (i.e., the next in the list of six objects in the score). Let's
+check the [voice] abstrction below.
 
-<P>The center of any sequencer is always the [delay] object, which must be
-fed the time difference between each event (including the non-event of hitting
-"start") and the next. As we extract each of the six objects in the score, we
-must wait the delay for playing that object, and then send its pointer to one
-of the [voice] abstractions to play it. However, we have to inspect the
-object itself to know the delay before playing it. So, in the loop, we peel off
-the first remaining object to play and inspect the time difference between it
-and the previous one, using this value to set the delay, but also storing the
-pointer in the lower [pointer] and [pack] objects.
+<P><IMG src="img/2.10.4.png" ALT="[voice] abstraction"></P>
+    
+<P>The [pd sequence] subpatch takes care of sequencing the data structure
+events.
+
+<P><IMG src="img/2.10.5.png" ALT="[pd seqquence] subpatch"></P>
+
+<P>A second [pointer] object is used here as a storage cell for pointers just
+as [float] is for numbers. The center of the sequencer is the [delay] object,
+which must be fed the time difference between each event (including the
+non-event of hitting "start") and the next. As we extract each of the six
+objects in the score, we must wait the delay for playing that object, and
+then send its pointer to other abstractions that read data from the 'pitch'
+and 'amp' arrays. However, we have to inspect the object itself to know the
+delay before playing it. So, in the loop, we peel off the first remaining
+object to play and inspect the time difference between it and the previous
+one, using this value to set the [delay] object.
 
 <P>The time difference needed to set the [delay] object is obtained using the
-[get template-toplevel x] object. This is converted to incremental time with
-[-], corrected for tempo, and fed to the delay. Pd provides the [get] and [set]
-objects for reading and writing values from data structures. The two [get]
-objects shown here obtain the "x" and "voiceno" fields of the current object.
-The template name (template-toplevel) is supplied to the [get] objects so that
+[get template-event] object with the 'x' field. This is converted to incremental
+time with [-], corrected for tempo, and fed to the [delay] object. Pd provides
+the [get] and [set] objects for reading and writing values from data structures.
+The [get] object shown here obtains the "x" and "y" fields of the current object.
+The template name (template-event) is supplied to the [get] objects so that
 they can look up the offset of the necessary field(s) in advance, for greater
 run-time efficiency.
 
-<P>Once the delay has expired, the object's pointer is recalled (the lower
-[pointer] object), and the voice number is recalled. This is packed with
-the pointer itself and routed, so that the pointer goes to the appropriate
-voice. The voice number is shown as the color of the frequency trace in
-"999" units (first digit red, second green, third blue) and the [route] object
-is arbitrarily set up to select among the six primary and secondary colors plus
-black.
-
-<P>The details of extracting the pitch and dynamic breakpoints from the arrays
-defined in the template are managed in the [voice] abstraction. The [voice]
-abstraction receives a pointer to a given object and manages the sequencing of
-the arrays; so it contains two sequencers itself. The nesting of the overall
+<P>Once the delay time has expired, the object's pointer is recalled with the
+[pointer] object and sent to the [data-array] abstraction, which extracts the
+pitch and dynamic breakpoints from the arrays (specified as the abstraction's
+argument,) so it contains two sequencers itself. The nesting of the overall
 structure of the sequencer patch mirrors the nesting of the original data
-structures. Finally, the voice abstraction puts its audio output on a summing bus.
+structures.
 
-<P>More general patches can easily be constructed which access heterogeneous lists
-of objects (having different templates). In this way, an arbitrarily rich
-personal "score language" can be developed and sequenced.
+<P><IMG src="img/2.10.6.png" ALT="[data-array] abstraction"></P>
+
+<P>More general patches can easily be constructed which access heterogeneous
+lists of objects (having different templates). In this way, an arbitrarily
+rich personal "score language" can be developed and sequenced.
 
 <H3> <A id="s10.2">2.10.2. Accessing and changing data</A> </H3>
 
-<P>In general, accessing or changing data is done via "pointers" to
-"scalars". Numbers and symbols within scalars are accessed using the
-[get] object and changed, in the same way, using [set]. Since lists
-and arrays are composed of scalars, every actual number or symbol in a data
-heap will be a number or symbol element of some scalar. To access them, it
-suffices to have objects to chase down elements of lists and arrays (given
-either a global name or a pointer to the containing scalar).
+<P>In general, accessing or changing data is done via "pointers" to "scalars".
+Numbers and symbols within scalars are accessed using the [get] object and
+changed, in the same way, using [set]. Since lists and arrays are composed of
+scalars, every actual number or symbol in a data heap will be a number or symbol
+element of some scalar. To access them, it suffices to have objects to chase
+down elements of lists and arrays (given either a global name or a pointer to
+the containing scalar).
 
 <P>Lists are traversed in the way shown above; to get to a sublist of a scalar,
-the [get] object will provide a pointer, in the same way as it provides
-"float" or "symbol" elements of scalars. For arrays, an
-[element] object is provided which, given a scalar, a field name and
-a number, chases down the numbered, scalar, element of the named array field.
+the [get] object will provide a pointer, in the same way as it provides "float"
+or "symbol" elements of scalars. For arrays, an [element] object is provided
+which, given a scalar, a field name and a number, chases down the numbered,
+scalar, element of the named array field.
 
 <P>To alter "float" or "symbol" elements of scalars is straightforward
 using the [set] object, but arrays and lists can't be set by assignment;
@@ -1735,12 +1741,11 @@ supplies a simple default shape.
 
 <P>When examples get more complicated and/or dense than the one shown here, it
 becomes difficult to see and select specific features of a data collection;
-more work is needed to facilitate this.
-There should be some facility for turning drawing instructions on and off, or
-perhaps for switching between versions of a template, depending on the user's
-desired view. There should also be a callback facility in the template for
-when an object is edited with the mouse, so that the user can bind actions to
-mouse clicks.
+more work is needed to facilitate this. There should be some facility for
+turning drawing instructions on and off, or perhaps for switching between versions
+of a template, depending on the user's desired view. There should also be a
+callback facility in the template for when an object is edited with the mouse, so
+that the user can bind actions to mouse clicks.
 
 <P>More generally, the collection of traversal objects that Pd provides is
 adequate to support a variety of modes of data collection and use, such as
