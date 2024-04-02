@@ -866,7 +866,6 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
-#ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
 /* a test for NANs and denormals. Should only be necessary on i386. */
 #if PD_FLOATSIZE == 32
@@ -920,20 +919,6 @@ PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 #define PD_BADFLOAT(f) 0
 #define PD_BIGORSMALL(f) 0
 #endif
-
-#else   /* _MSC_VER */
-#if PD_FLOATSIZE == 32
-#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
-    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
-/* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
-    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
-#else   /* 64 bits... don't know what to do here */
-#define PD_BADFLOAT(f) (!(((f) >= 0) || ((f) <= 0)))
-#define PD_BIGORSMALL(f) ((f) > 1e150 || (f) <  -1e150 \
-    || (f) > -1e-150 && (f) < 1e-150 )
-#endif
-#endif /* _MSC_VER */
 
     /* get major/minor/bugfix version numbers and version code at run time */
 EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
