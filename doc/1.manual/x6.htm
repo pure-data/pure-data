@@ -33,7 +33,7 @@ distribution comes with two build systems:</P>
 <li>makefile: smaller &amp; simpler, used for Pd binary downloads</li>
 </ul>
 
-<h3 id="s6.1">6.1. Requirements</h3>
+<h3 id="requirements">Requirements</h3>
 
 <p>Core build requirements:</p>
 
@@ -57,7 +57,7 @@ distribution comes with two build systems:</P>
 <li>FFTW: use the optimized FFTW Fast Fourier Transform library</li>
 </ul>
 
-<h3 id="s6.2">6.2. Autotools Build (recommended)</h3>
+<h3 id="autotools-build-recommended">Autotools Build (recommended)</h3>
 
 <p>Building Pd using the GNU autotools involves the following steps for all platforms:</p>
 
@@ -170,7 +170,7 @@ file Pd.app/Contents/Resources/bin/pd
 ...
 Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
-<h3 id="s6.3">6.3 Linux &amp; BSD</h3>
+<h3 id="linux-and-bsd">Linux &amp; BSD</h3>
 
 <p>Platform requirements:</p>
 
@@ -203,7 +203,7 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
 <p><a id=BSD class=green href="x6-c.htm" >Show more on BSD</a></p>
 
-<h3 id="s6.4">6.4. macOS</h3>
+<h3 id="macos">macOS</h3>
 
 <p>macOS is built on top of a BSD system and the bash commandline can be accessed with the Terminal application in the /Applications/Utility directory.</p>
 <p>The clang compiler and associated tools are provided by Apple. If you are running macOS 10.9+, you <em>do not</em> need to install the full Xcode application and can install the Commandline Tools Package only by running the following:</p>
@@ -264,7 +264,7 @@ however the runtime framework support must be disabled:
 
 <pre>make app</pre>
 
-<p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle, see <a href="x6-a.htm">6.4.1 macOS resources</a>.</p>
+<p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle, see <a href="x6-a.htm#macos-resources"> macOS resources</a>.</p>
 <p>If you want to have both the Pd application <em>and</em> use Pd from the commandline, add command aliases to the binaries inside the .app to your ~/.bash_profile:</p>
 
 <h4 id="pd-commandline">pd commandline</h4>
@@ -296,7 +296,7 @@ alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceiv
 
 <p><a id=more-mac class=green href="x6-a.htm" >Show more on macOS</a></p>
 
-<h3 id="s6.5">6.5. Windows</h3>
+<h3 id="windows">Windows</h3>
 
 <p>Pd on Windows can be built with either MinGW or Cygwin which provide the core build requirements: a compiler chain &amp; shell environment.</p>
 <p>It is recommended to use the Msys2 distribution which provides both a Unix command shell and MinGW. Download the Msys2 &quot;x86_64&quot; 64 bit installer (or &quot;i686&quot; if you are using 32 bit Windows) from:</p>
@@ -347,7 +347,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>./configure --disable-mmio</pre>
 
-<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="x6-b.htm#s6.5.2">6.5.2 Windows ASIO Support </a> for further instructions.</p>
+<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="x6-b.htm#windows-asio-support">Windows ASIO Support </a> for further instructions.</p>
 <p>Once built Pd is built, you can either:</p>
 
 <ul>
@@ -359,23 +359,23 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>make app</pre>
 
-<p>This will create a &quot;pd-VERSION&quot; directory (ie. pd-0.48.1) which can then be used by running pd.exe in the bin directory and placed wherever on your system. For more info &amp; options regarding the Pd app directory, see <a href="x6-b.htm">6.5.1 Windows resources.</a> </p>
+<p>This will create a &quot;pd-VERSION&quot; directory (ie. pd-0.48.1) which can then be used by running pd.exe in the bin directory and placed wherever on your system. For more info &amp; options regarding the Pd app directory, see <a href="x6-b.htm#windows-resources">Windows resources.</a> </p>
 <p>To build a .msi Windows installer for Pd, see msw/build-nsi.sh.</p>
 <p>Note: The standard &quot;make install&quot; requires Tcl/Tk and won't work outside your Cygwin/Msys2 environment (if at all).</p>
 
 <p><a id=more-windows class=green href="x6-b.htm" >Show more on Windows</a></p>
 
-<h3 id="s6.6">6.6. Double precision</h3>
+<h3 id="double-precision">Double precision</h3>
 
 <p>As of Pd 0.54-0 you can compile a "Double precision" Pd (AKA: Pd64). On the autotools do:</p>
 
 <pre>./configure --with-floatsize=64</pre>
 
-<h3 id="s6.7">6.7. Other flags</h3>
+<h3 id="other-flags">Other flags</h3>
 
 <p>More flags to be documented here.</p>
 
-<h3 id="s6.8">6.8. Cross-compilation for Windows on Linux</h3>
+<h3 id="cross-compilation-for-windows-on-linux">Cross-compilation for Windows on Linux</h3>
 
 <p>You can also build a Windows binary of Pd on a Linux system, using a cross-compilation toolchain.</p>
 <p>For Debian based systems (e.g. Ubuntu), you can install the toolchain with:</p>
@@ -399,7 +399,7 @@ sudo apt-get install nsis</pre>
 
 <pre>make app</pre>
 
-<h3 id="s6.9">6.9. Makefile Build</h3>
+<h3 id="makefile-build">Makefile Build</h3>
 
 <p>Alternatively, and often more simply, to the autotools build, you can use the fallback makefiles in the src directory:</p>
 
@@ -443,9 +443,9 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <pre>make -f makefile.gnu uninstall</pre>
 
-<p>On macOS, you can build a clickable Pd .app bundle using the supplemental build scripts in the mac directory. See <a href="x6-a.htm">6.4.1 macOS resources</a>. for more info.</p>
+<p>On macOS, you can build a clickable Pd .app bundle using the supplemental build scripts in the mac directory. See <a href="x6-a.htm#macos-resources">macOS resources</a>. for more info.</p>
 
-<h3 id="s6.10">6.10. Reporting Bugs</h3>
+<h3 id="reporting-bugs"> Reporting Bugs</h3>
 
 <p>Let us know if you run into any bugs or issues with building or installing Pd:</p>
 
