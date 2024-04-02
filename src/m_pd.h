@@ -937,6 +937,17 @@ PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 
     /* get major/minor/bugfix version numbers and version code at run time */
 EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
+#ifndef PD_INTERNAL
+/* ABI compat hack: do not use _sys_getversioncode() directly! */
+PD_INLINE unsigned int _sys_getversioncode(int*major, int*minor, int*bugfix)
+{
+    int a, b, c;
+    sys_getversion(major, minor, bugfix);
+    sys_getversion(&a, &b, &c);
+    return PD_VERSION(a, b, c);
+}
+#define sys_getversion _sys_getversioncode
+#endif
 
     /* get a Pd API function pointer by name. Returns NULL if the function
     does not exist. For example, This allows to use recently introduced API
