@@ -601,8 +601,7 @@ typedef enum {
 EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-/* deprecated, use logpost() instead. */
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+PD_DEPRECATED EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3); /* avoid this: use logpost() instead */
 
 
 /* ------------  system interface routines ------------------- */
@@ -773,15 +772,15 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
-EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
 
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);
     /* dialog window creation and destruction */
-EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
-EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
+PD_DEPRECATED EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
+PD_DEPRECATED EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
 
 /*
  * send a message to the GUI, with a simplified formatting syntax
