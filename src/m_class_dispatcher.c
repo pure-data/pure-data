@@ -15,6 +15,16 @@ Emscripten, because their return type is different (as pd_objectmaker
 methods) vs regular bang methods, so they need special treatment in the
 dispatcher: the dispatcher checks explicitly for pd_objectmaker and
 calls the method at the correct type.
+
+This file only needs to be compiled and run if the object message
+passing changes in the future. (Unlikely.)
+To regenerate the m_class_dispatcher headers:
+    cd src
+    cc -o m_class_dispatcher m_class_dispatcher.c
+    ./m_class_dispatcher <maxargs>
+
+NB: the <maxargs> argument should be at least MAXPDARGS+1 because the
+receiver itself is passed as an additional t_int argument!
 */
 
 #include <stdio.h>
@@ -41,7 +51,7 @@ int main(int argc, char **argv)
     fprintf(stderr, "error: too many arguments for today\n");
     return 1;
   }
-  o = fopen("m_class_dispatcher_1.h", "w");
+  o = fopen("m_class_dispatcher_1.h", "wb");
   if (! o)
   {
     return 1;
@@ -83,7 +93,7 @@ int main(int argc, char **argv)
     }
   }
   fclose(o);
-  o = fopen("m_class_dispatcher_2.h", "w");
+  o = fopen("m_class_dispatcher_2.h", "wb");
   if (! o)
   {
     return 1;

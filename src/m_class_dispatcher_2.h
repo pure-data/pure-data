@@ -24,6 +24,13 @@ if (x == &pd_objectmaker)
     case 0x32 : bonzo = (*(t_fun32)(m->me_fun))(ai[0], ai[1], ai[2], ad[0], ad[1]); break;
     case 0x41 : bonzo = (*(t_fun41)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ad[0]); break;
     case 0x50 : bonzo = (*(t_fun50)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4]); break;
+    case 0x06 : bonzo = (*(t_fun06)(m->me_fun))(ad[0], ad[1], ad[2], ad[3], ad[4], ad[5]); break;
+    case 0x15 : bonzo = (*(t_fun15)(m->me_fun))(ai[0], ad[0], ad[1], ad[2], ad[3], ad[4]); break;
+    case 0x24 : bonzo = (*(t_fun24)(m->me_fun))(ai[0], ai[1], ad[0], ad[1], ad[2], ad[3]); break;
+    case 0x33 : bonzo = (*(t_fun33)(m->me_fun))(ai[0], ai[1], ai[2], ad[0], ad[1], ad[2]); break;
+    case 0x42 : bonzo = (*(t_fun42)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ad[0], ad[1]); break;
+    case 0x51 : bonzo = (*(t_fun51)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4], ad[0]); break;
+    case 0x60 : bonzo = (*(t_fun60)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4], ai[5]); break;
     default : bonzo = 0;
     }
     pd_this->pd_newest = bonzo;
@@ -53,6 +60,13 @@ else
     case 0x32 : (*(t_vfun32)(m->me_fun))(ai[0], ai[1], ai[2], ad[0], ad[1]); break;
     case 0x41 : (*(t_vfun41)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ad[0]); break;
     case 0x50 : (*(t_vfun50)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4]); break;
+    case 0x06 : (*(t_vfun06)(m->me_fun))(ad[0], ad[1], ad[2], ad[3], ad[4], ad[5]); break;
+    case 0x15 : (*(t_vfun15)(m->me_fun))(ai[0], ad[0], ad[1], ad[2], ad[3], ad[4]); break;
+    case 0x24 : (*(t_vfun24)(m->me_fun))(ai[0], ai[1], ad[0], ad[1], ad[2], ad[3]); break;
+    case 0x33 : (*(t_vfun33)(m->me_fun))(ai[0], ai[1], ai[2], ad[0], ad[1], ad[2]); break;
+    case 0x42 : (*(t_vfun42)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ad[0], ad[1]); break;
+    case 0x51 : (*(t_vfun51)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4], ad[0]); break;
+    case 0x60 : (*(t_vfun60)(m->me_fun))(ai[0], ai[1], ai[2], ai[3], ai[4], ai[5]); break;
     default : ;
     }
 }

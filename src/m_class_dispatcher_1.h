@@ -20,6 +20,13 @@ typedef void (*t_vfun23)(t_int i0, t_int i1, t_floatarg d0, t_floatarg d1, t_flo
 typedef void (*t_vfun32)(t_int i0, t_int i1, t_int i2, t_floatarg d0, t_floatarg d1);
 typedef void (*t_vfun41)(t_int i0, t_int i1, t_int i2, t_int i3, t_floatarg d0);
 typedef void (*t_vfun50)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4);
+typedef void (*t_vfun06)(t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3, t_floatarg d4, t_floatarg d5);
+typedef void (*t_vfun15)(t_int i0, t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3, t_floatarg d4);
+typedef void (*t_vfun24)(t_int i0, t_int i1, t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3);
+typedef void (*t_vfun33)(t_int i0, t_int i1, t_int i2, t_floatarg d0, t_floatarg d1, t_floatarg d2);
+typedef void (*t_vfun42)(t_int i0, t_int i1, t_int i2, t_int i3, t_floatarg d0, t_floatarg d1);
+typedef void (*t_vfun51)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4, t_floatarg d0);
+typedef void (*t_vfun60)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4, t_int i5);
 typedef t_pd *(*t_fun00)(void);
 typedef t_pd *(*t_fun01)(t_floatarg d0);
 typedef t_pd *(*t_fun10)(t_int i0);
@@ -41,3 +48,10 @@ typedef t_pd *(*t_fun23)(t_int i0, t_int i1, t_floatarg d0, t_floatarg d1, t_flo
 typedef t_pd *(*t_fun32)(t_int i0, t_int i1, t_int i2, t_floatarg d0, t_floatarg d1);
 typedef t_pd *(*t_fun41)(t_int i0, t_int i1, t_int i2, t_int i3, t_floatarg d0);
 typedef t_pd *(*t_fun50)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4);
+typedef t_pd *(*t_fun06)(t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3, t_floatarg d4, t_floatarg d5);
+typedef t_pd *(*t_fun15)(t_int i0, t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3, t_floatarg d4);
+typedef t_pd *(*t_fun24)(t_int i0, t_int i1, t_floatarg d0, t_floatarg d1, t_floatarg d2, t_floatarg d3);
+typedef t_pd *(*t_fun33)(t_int i0, t_int i1, t_int i2, t_floatarg d0, t_floatarg d1, t_floatarg d2);
+typedef t_pd *(*t_fun42)(t_int i0, t_int i1, t_int i2, t_int i3, t_floatarg d0, t_floatarg d1);
+typedef t_pd *(*t_fun51)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4, t_floatarg d0);
+typedef t_pd *(*t_fun60)(t_int i0, t_int i1, t_int i2, t_int i3, t_int i4, t_int i5);
