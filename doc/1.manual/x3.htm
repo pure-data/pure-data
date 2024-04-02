@@ -41,7 +41,7 @@ https://lists.puredata.info/listinfo/pd-list</A>, which often has late-breaking
 news about configuration problems and solutions. The rest of this section describes
 how to get audio and MIDI to work.
 
-<H3> <A id="audio-and-midi">Audio and MIDI </A> </H3>
+<H3> <A id="audio-and-midi">3.1. Audio and MIDI </A> </H3>
 
 <P>
 To test audio and MIDI, start Pd and select "test Audio and MIDI" from the
@@ -157,7 +157,7 @@ you want.
 <P> System exclusive MIDI message input and output are theoretically supported
 but does not work uniformly across all operating systems..
 
-<H3> <A id="installing-pd-in-microsoft-windows"> Installing Pd in Microsoft Windows </A> </H3>
+<H3> <A id="installing-pd-in-microsoft-windows">3.2. Installing Pd in Microsoft Windows </A> </H3>
 
 <P> Pd should work under any version of Windows since XP. You can download as
 a self-extracting archive (a ".exe" file). Run this and select a destination
@@ -208,7 +208,7 @@ frames.
 PCI converters (Delta 44).
 /// end comment out -->
 
-<H3> <A id="installing-pd-in-linux"> Installing Pd in Linux </A> </H3>
+<H3> <A id="installing-pd-in-linux">3.3. Installing Pd in Linux </A> </H3>
 
 <P> What to do depends on which flavor of Linux you are running (e.g., Debian
 or Red Hat). The instructions here should work for Pd 0.33 and up regardless of
@@ -373,7 +373,7 @@ which goes up to 6 in and out (analog) with 2 more as SP/DIF. Things work
 OK for input or output separately but "full duplex" (in and out simultaneously)
 has sync problems.
 
-<H3> <A id="installing-pd-in-macos">Installing Pd in macOS</A> </H3>
+<H3> <A id="installing-pd-in-macos">3.4. Installing Pd in macOS</A> </H3>
 
 <P>Pd version 0.35 and up support macOS.
 Recent versions of Pd require 10.6 or up.
@@ -443,7 +443,7 @@ as needed.
 MIDI interface installed. I've seen this done with Midisport devices and
 I think you just download the macOS driver and follow directions.
 
-<H3> <A id="preferences-and-startup-options">Preferences and startup options </A> </H3>
+<H3> <A id="preferences-and-startup-options">3.5. Preferences and startup options </A> </H3>
 
 <P> Pd's behavior may be customized to instruct it where to find files, which
 audio devices to open, what font size to use, and so on. Most of
@@ -658,7 +658,7 @@ no less than 0.1 and no more than 5. On most OSes, ingoing and outgoing MIDI
 is quantized to this value, so if you care about MIDI timing, reduce this to 1
 or less.
 
-<H3> <A id="how-pd-searches-for-files">How Pd searches for files </A> </H3>
+<H3> <A id="how-pd-searches-for-files">3.6. How Pd searches for files </A> </H3>
 
 <P>Pd has a search path feature; you specify the path on the command line
 using the "-path" option. Paths may contain any number of files. If you
