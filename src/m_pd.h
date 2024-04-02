@@ -62,6 +62,19 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define EXTERN_STRUCT struct
 #endif
 
+
+/* util for better inlining of static functions in headers */
+#if defined(__cplusplus)
+# define PD_INLINE inline
+#else
+# if (__STDC_VERSION__ >= 199901L)
+#  define PD_INLINE static inline
+# else
+#  define PD_INLINE static
+# endif
+#endif
+
+
 /* Define some attributes, specific to the compiler */
 #if defined(__GNUC__)
 #define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
