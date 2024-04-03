@@ -9,7 +9,7 @@
 #ifndef M_PRIVATE_UTILS_H
 #define M_PRIVATE_UTILS_H
 
-#ifndef PD_INTERNAL
+#if !defined(PD_INTERNAL) && !defined(__EMSCRIPTEN__)
 # error m_private_utils.h is a PRIVATE header. do *not* use it in your externals
 #endif
 
