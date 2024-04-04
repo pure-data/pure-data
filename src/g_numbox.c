@@ -172,6 +172,8 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-text", x->x_buf,
         "-font", 3, fontatoms,
         "-fill", fcol);
+
+    x->x_buf[0] = 0;
 }
 
 static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
