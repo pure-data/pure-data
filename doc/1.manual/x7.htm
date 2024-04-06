@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<HEAD>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual 7</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="css/favicon.ico">
+</HEAD>
+<BODY>
+
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
+
+<H2>Pd Manual chapter 7: In-depth topics</H2>
+
+<P>
+<A href="index.htm#s7">back to table of contents</A>
+<BR><BR>
+</P>
+
+
+<H3> <A id="advanced-patch-editing">Advanced patch editing</A> </H3>
+
+<P>This section describes advanced techniques and shortcuts for editing patches.
+
+<H3> <A id="tab-navigation">Tab navigation</A> </H3>
+
+<P>When a single box is selected, pressing <kbd>Tab</kbd> allows you to
+navigate and change the selection to other boxes in the sequence determined
+by the order of their creation. Pressing <kbd>Tab</kbd> cycles through the
+boxes from the earliest created to the next, and upon reaching the last box
+in the window the selection loops back to the first one. Conversely, you can
+press <kbd>Shift + Tab</kbd> to navigate in reverse order, moving from the
+most recently created box back towards the first created ones.
+
+<P>
+    <IMG src="img/tab_navigation_boxes.png" ALT="tab navigation boxes">
+</P>
+
+<P>Using <kbd>Tab</kbd> also works in a similar way for patch cords if
+you have one selected. You can move from first to last with <kbd>Tab</kbd>
+and from last to first with <kbd>Shift + Tab</kbd>.
+
+<P>
+    <IMG src="img/tab_navigation_cords.png" ALT="tab navigation cords">
+</P>
+
+<P>If you're creating a connection by clicking on an outlet and dragging a
+patch cord, you can also use <kbd>Tab</kbd> to cycle through outlets.
+The navigation order is left to right and it also cycles back. Pressing
+<kbd>Shift + Tab</kbd> navigates from right to left.
+
+<P>
+    <IMG src="img/tab_navigation_iolets.png" ALT="tab navigation iolets">
+</P>
+
+<P>In Linux and Windows you can also cycle between inlets. This is currently
+not possible on macOS. When dragging a connection into an inlet area, without
+releasing the mouse, you can use <kbd>Tab</kbd> to navigate to the next inlet,
+or <kbd>Shift + Tab</kbd> to navigate to the previous one.
+
+<H3> <A id="autopatching">Autopatching</A> </H3>
+
+<P>By default, Pd has an 'autopatching' mode set to on. You can disable it
+via startup flags (see '-autopatch' flag
+<a href="x3.htm#preferences-and-startup-options">Preferences
+and startup options</A>). This works with the shortcuts from the <b>Put
+menu</b> for inserting boxes. If you have a selected box and use a shortcut
+to create another one (such as <kbd>Ctrl + 1</kbd> to create an object box),
+the created box is placed below the selected box and a connection is made
+from the first outlet of the selected box into the inlet of the newly created
+box (granted that these boxes have an outlet and an inlet for the connection
+to happen).
+
+<P>Once the new box is created, it is also selected, so you can continue with
+autopatching by adding yet more boxes. In the case of object and message boxes
+you can also start typing text into it before autopatching into another newly
+created box, since when you autopatch for the next one, the object or message
+box gets deselected and therefore created.
+
+<P>
+    <IMG src="img/autopatch_objects.png" ALT="autopatch objects">
+</P>
+
+<P>You can also autopatch into a newly created subpatch (see <A href="x2.htm#subpatches">
+Subpatches</A>). By creating an object box and typing [pd], as soon as you
+deselect the object, a subpatch is created with an inlet - either a control
+inlet ([inlet]) if the object above is a control object, or a signal inlet
+([inlet~]) if it is a tilde object instead.
+
+<P>
+    <IMG src="img/autopatching_subpatches.png" ALT="autopatching subpatches">
+</P>
+
+<H3> <A id="duplicate-connections">Duplicate connections</A> </H3>
+
+<P>If you select a connection between two boxes that have more than one
+outlet and inlet for connections, you can use <kbd>Ctrl + D</kbd> to
+duplicate and create more connections.
+
+<P>
+    <IMG src="img/duplicate_connections.png" ALT="duplicate connections">
+</P>
+
+<H3> <A id="managing-connections-with-the-shift-key">Managing connections
+with the Shift key</A> </H3>
+
+<P>You can swap connections if you selected a connection and use
+<kbd>Shift + Click</kbd> on another one.
+
+<P>
+    <IMG src="img/swap_connections.png" ALT="swap connections">
+</P>
+
+<P>You can "fan out" connections when no boxes are selected. You can
+start creating a connection by clicking an outlet and dragging a cord
+and then use <kbd>Shift</kbd> when you reach the inlet destination
+(without releasing the mouse button). This "fans out" out and creates
+another connection from the outlet for you to drag somewhere else and
+connect the same outlet to to multiple inlets sequentially.
+
+<P>
+    <IMG src="img/drag_fan_out.png" ALT="drag fan out">
+</P>
+
+<P>Also for fanning out, if you have a group of target boxes that are selected,
+you can drag a cord from an outlet of an unselected box and press <kbd>Shift</kbd>
+to create a connection into the same inlet number of the selected boxes (which do
+not need to be of the same type or class).
+
+<P>
+    <IMG src="img/select_fan_out.png" ALT="select fan out">
+</P>
+
+<P>You can create a connection from the same outlet number of multiple boxes to
+a single inlet. If you have a selection of source boxes, you can drag a cord from
+one of their outlets into another box and press <kbd>Shift</kbd> to create multiple
+connections from the same outlet number of the selected boxes (which do not need to
+be of the same type or class).
+
+<P>
+    <IMG src="img/select_fan_in.png" ALT="select fan in">
+</P>
+
+<P>You can connect multiple outlets and inlets of 2 boxes if you have 2 selected
+boxes. Start creating a connection and click <kbd>Shift</kbd> at completion.
+This creates all possible connections starting from the chosen outlet and inlet.
+
+<P>
+    <IMG src="img/multiple_connections.png" ALT="multiple connections">
+</P>
+
+<P>You can connect outlets of multiple boxes into multiple inlets of one box.
+If there's a selected group of boxes, you start creating a connection into an
+inlet of a box that is part of the selection. Then you can press <kbd>Shift</kbd>
+so connections are made from the same outlet number of all source boxes (which do
+not need to be of the same type or class) into separate inlets, starting from the
+chosen inlet.
+
+<P>
+    <IMG src="img/many_to_one.png" ALT="many to one">
+</P>
+
+<P>You can spread multiple outlets of one box into same inlets of other boxes.
+Similarly to the scenario above, you can start dragging from one outlet of a
+selected box with multiple outlets to an inlet of one of many selected boxes.
+In this case, when you press <kbd>Shift</kbd>, all possible connections are
+made from the outlets of the source box to the same inlet numbers of the target
+boxes.
+
+<P>
+    <IMG src="img/one_to_many.png" ALT=" one to many">
+</P>
+
+
+<H3> <A id="disconnect-selection">(Dis)Connect selection</A> </H3>
+
+<P>This is a menu entry in the <b>Edit menu</b>, also available via the shortcut
+<kbd>Ctrl + K</kbd>. It allows you to connect and disconnect selected boxes in
+different ways.
+
+<P>
+    <IMG src="img/ctrl_k.png" ALT="ctrl+k">
+</P>
+
+<P>For 2 selected boxes you can use <kbd>Ctrl + K</kbd> to connect
+them. Repeat using <kbd>Ctrl + K</kbd> to make multiple connections
+from possible remaining outlets to inlets.
+
+<P>
+    <IMG src="img/repeat_ctrl_k.png" ALT="repeat ctrl+k">
+</P>
+
+<P>For 2 selected tilde objects, if the origin object has a single outlet and
+the target object has many inlets, you can repeatedly use <kbd>Ctrl + K</kbd>
+to fan out and connect the same outlet to all inlets.
+
+<P>
+    <IMG src="img/fan_out_audio.png" ALT="fan out audio">
+</P>
+
+<P>For last, you can include or bypass a box into or from a connection
+(being it any connection from any outlet into any inlet). To include a box,
+you can select it and the connection between the other 2 boxes by using
+<kbd>Shift + Click</kbd> and then use <kbd>Ctrl + K</kbd> to include
+the selected box into the connection. Alternatively, you can select the 3
+boxes with a connection between 2 of them and then use <kbd>Shift + Click</kbd>
+to include the third one in the connection.
+
+<P>
+    <IMG src="img/insert_box.png" ALT="insert box">
+</P>
+
+<P>To bypass a box, you can select 3 boxes connected in a row and use
+<kbd>Ctrl + K</kbd> to bypass and remove the middle box from the connection.
+
+<P>
+    <IMG src="img/exclude_box.png" ALT="exclude box">
+</P>
+
+<H3> <A id="triggerize">Triggerize</A> </H3>
+
+<P>The 'Triggerize' entry in the <b>Edit menu</b> with the <kbd>Ctrl + T</kbd>
+shortcut was designed to insert a [trigger] object (in its abbreviated form [t]).
+When you select a single box that is connected to many inlets of a single or
+multiple boxes use "Triggerize" to insert this object, which is briefly described
+in <A href="x2.htm#hot-and-cold-inlets-and-right-to-left-outlet-order">
+Hot and cold inlets and right to left outlet order</A>.
+
+<P>The [trigger] object is widely used in Pd to control the order of execution
+from right to left. 'Triggerize' then creates the [trigger] object taking into
+account the order in which the connections were made, where the first connection
+starts at the rightmost outlet of [trigger] and continues to the leftmost.
+
+<P>
+    <IMG src="img/triggerize_object.png" ALT="triggerize object">
+</P>
+
+<P>Additionally, the 'Triggerize' option can be used to insert a dummy object.
+To do so, select a connection and use <kbd>Ctrl + T</kbd>. For a control
+connection, a [t a] object is created with the text selected, so you
+can type another text to include another object instead. For a signal
+connection, a [pd nop~] subpatch is created, also with the text selected
+for you to replace for a new object.
+
+<P>
+    <IMG src="img/insert_dummy.png" ALT="insert dummy">
+</P>
+
+<P>While the connections of a [trigger] object can be resorted as
+<A href="x7.htm#managing-connections-with-the-shift-key">explained
+above</A>, <kbd>Ctrl + T</kbd> also allows you to easily manage its
+outlets when using it on the selected object. The result will differ
+depending on the existing connections and outlets. If each outlet
+has a single connection, it will insert an outlet on the left.
+
+<P>
+    <IMG src="img/add_1st_outlet.png" ALT="add 1st outlet">
+</P>
+
+If the [trigger] object has more outlets than outgoing connections, the
+shortcut will reduce the outlets, removing the unused ones.
+
+<P>
+    <IMG src="img/reduce_outlets.png" ALT="reduce outlets">
+</P>
+
+In case there are more connections than outlets, it will add outlets to
+distribute all connections to separate ones (following the creation order
+of the connections from right to left). This way, you can add connections
+inbetween other connections without lots of resorting.
+
+<P>
+    <IMG src="img/distribute_connections.png" ALT="distribute connections">
+</P>
+
+<P>
+<H3> <A id="paste-replace">Paste replace</A> </H3>
+
+<P>The 'Paste Replace' entry in the <b>Edit menu</b> doesn't have a
+shortcut and performs a special paste operation where it replaces a selection
+of boxes for another kind. For example, first copy one box such as a
+[float] object. Then select a group of boxes of the same type, for
+instance, a group of object boxes (note that they don't need to be
+of the same class). Now go to the <b>Edit menu</b> and select "Paste Replace".
+All the selected boxes of the same type get replaced by the copied box
+and connections are preserved.
+
+<P>
+    <IMG src="img/paste_replace_entry.png" ALT="paste replace entry">
+</P>
+
+<P>Alternatively, you can copy a number box instead of a [float] object
+and replace it in the selected group of objects, or in a selected group
+of another kind, such as message boxes. Note that the box types in Pd
+are: objects, messages, GUIs and comments, whereas 'IEMguis' are actually
+treated in this case as regular object boxes. Hence, the GUI boxes are
+only the number box, the symbol box and the list box. Also note that
+these three GUIs are not of the same kind for the purpose of "Paste Replace".
+A subpatch or an abstraction can also be used for "Paste Replace" and they
+count in the same group of objects.
+
+<P>
+    <IMG src="img/paste_replace_boxes.png" ALT="paste replace boxes">
+</P>
+
+<P>If you have a selection of boxes to replace that includes different
+types of boxes, the "Paste Replace" will only replace the boxes of the
+same type that was copied.
+
+<P>
+    <IMG src="img/paste_replace_similar_type.png" ALT="paste replace similar type">
+</P>
+
+<P>
+<BR><BR>
+<A href="index.htm#s7">back to table of contents</A>
+<BR><BR>
+</P>
+</div>
+</BODY>
+</HTML>
