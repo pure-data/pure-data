@@ -1786,6 +1786,28 @@ static void glist_maybevis(t_glist *gl)
     }
 }
 
+    /* this is called from main when GUI has given us out font metrics,
+    so that we can now draw all "visible" canvases.  These include all
+    root canvases and all subcanvases that already believe they're visible. */
+void sys_doneglobinit( void)
+{
+    t_canvas *x;
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        if (strcmp(x->gl_name->s_name, "_float_template") &&
+            strcmp(x->gl_name->s_name, "_float_array_template") &&
+                strcmp(x->gl_name->s_name, "_text_template"))
+    {
+        glist_maybevis(x);
+        canvas_vis(x, 1);
+    }
+}
+
+    /* start the GUI up.  Before we actually draw our "visible" windows
+    we have to wait for the GUI to give us our font metrics.  LATER
+    it would be cool to figure out what metrics we really need and tell
+    the GUI - that way we can support arbitrary zoom with appropriate font
+    sizes.   And/or: if we ever move definitively to a vector-based GUI
+    lib we might be able to skip this step altogether. */ 
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;
@@ -1796,14 +1818,6 @@ int sys_startgui(const char *libdir)
     INTER->i_guihead = INTER->i_guitail = 0;
     if (sys_do_startgui(libdir))
         return (-1);
-    for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        if (strcmp(x->gl_name->s_name, "_float_template") &&
-            strcmp(x->gl_name->s_name, "_float_array_template") &&
-                strcmp(x->gl_name->s_name, "_text_template"))
-    {
-        glist_maybevis(x);
-        canvas_vis(x, 1);
-    }
     return (0);
 }
 
