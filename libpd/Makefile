@@ -11,7 +11,7 @@ PLATFORM_ARCH ?= $(shell $(CC) -dumpmachine | sed -e 's,-.*,,')
 
 ifeq ($(UNAME), Darwin)  # Mac
   SOLIB_EXT = dylib
-  PLATFORM_CFLAGS = -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H
+  PLATFORM_CFLAGS = -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H -D_DARWIN_UNLIMITED_SELECT
   PLATFORM_LDFLAGS = -dynamiclib -ldl -Wl,-no_compact_unwind
   ifeq ($(FAT_LIB), true)
     # macOS universal "fat" lib compilation

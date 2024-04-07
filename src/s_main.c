@@ -5,6 +5,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "s_net.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>

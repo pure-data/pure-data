@@ -1816,6 +1816,7 @@ int sys_startgui(const char *libdir)
         canvas_vis(x, 0);
     INTER->i_havegui = 1;
     INTER->i_guihead = INTER->i_guitail = 0;
+    INTER->i_waitingforping = 0;
     if (sys_do_startgui(libdir))
         return (-1);
     return (0);
