@@ -51,10 +51,10 @@ then attack (instead of attacking from the current location).;
 #X text 343 20 Arguments: level \, attack time \, decay time \, sustain
 level \, release time. A \, D \, and R are in msec and S is in percent.
 This patch is used as an abstraction in various examples.;
-#X obj 596 356 s line;
-#X obj 485 419 s line;
-#X obj 190 328 s line;
-#X obj 595 419 r line;
+#X obj 596 356 s $0-line;
+#X obj 485 419 s $0-line;
+#X obj 190 328 s $0-line;
+#X obj 595 419 r $0-line;
 #X text 309 374 multiply by peak level and pack with decay time, f
 24;
 #X text 292 281 on attack \, set a delay for sustain, f 17;
