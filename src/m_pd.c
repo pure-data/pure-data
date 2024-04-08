@@ -304,6 +304,7 @@ void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 void mess_init(void);
+void sched_init(void);
 void obj_init(void);
 void conf_init(void);
 void glob_init(void);
@@ -347,6 +348,7 @@ void pd_term(void)
 void pd_init_systems(void)
 {
     mess_init();
+    sched_init();
     sys_lock();
     obj_init();
     conf_init();

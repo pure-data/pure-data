@@ -222,6 +222,18 @@ void glob_fastforward(void *dummy, t_floatarg f)
         sched_fastforward = TIMEUNITPERMSEC * f;
 }
 
+void sched_init(void)
+{
+    pthread_mutex_init(&sched_mutex, 0);
+    pthread_cond_init(&sched_cond, 0);
+}
+
+void sched_term(void)
+{
+    pthread_mutex_destroy(&sched_mutex);
+    pthread_cond_destroy(&sched_cond);
+}
+
 void dsp_tick(void);
 
     /* ask the scheduler to quit; this is thread-safe, so it
@@ -513,9 +525,6 @@ void sys_do_close_audio(void);
 
 int m_mainloop(void)
 {
-    pthread_mutex_init(&sched_mutex, 0);
-    pthread_cond_init(&sched_cond, 0);
-
         /* open audio and MIDI */
     sys_reopen_midi();
     if (audio_shouldkeepopen())
@@ -545,8 +554,6 @@ int m_mainloop(void)
     sys_do_close_audio();
     sys_close_midi();
 
-    pthread_mutex_destroy(&sched_mutex);
-    pthread_cond_destroy(&sched_cond);
     return (sys_exitcode);
 }
 
