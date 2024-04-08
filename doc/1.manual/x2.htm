@@ -117,13 +117,13 @@ without confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
     <IMG src="img/2.1.5.png" ALT="simple patch">
 </P>
 
-<P>There are four <I>text boxes</I> in Pd, all shown in this patch: a number box
-(showing zero), an object box showing "print" and two comments (which counts as
-a "box type" even thought it's not a proper 'box' visually). The number box is
-connected to the object box, with the output of the number box feeding into the
-input of the [print] object box. Boxes may have zero or more inputs and/or outputs,
-with the inputs on top and the outputs on the bottom. When clicking and dragging on
-the number box, the values are printed in the main "Pd" window.
+<P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
+an object box showing "print", plus two "comments" (which are simply commentaries
+that don't really affect the patch and can't be connected to anything). The number
+box is connected to the object box, with the output of the number box feeding into
+the input of the [print] object box. Boxes may have zero or more inputs and/or
+outputs, with the inputs on top and the outputs on the bottom. When clicking and
+dragging on the number box, the values are printed in the main "Pd" window.
 
 <H3> <A id="s1.2">2.1.2. Object boxes</A> </H3>
 
@@ -226,10 +226,7 @@ to it.
 <P>The third box here is a <I>GUI</I> ("graphical user interface") box. Pd has
 three basic GUI boxes. In addition to number boxes (as in this example), there are
 boxes to display and edit symbols or arbitrary lists of atoms. Pd also comes with
-another set GUIs that include toggles, sliders, radio buttons and so on. These other
-GUIs are also known as "IEMguis", which used to be an external library package and
-was incorporated natively into Pd in version 0.34 (they can still be created from
-object boxes though - see their help patches for the corresponding symbols).
+another set GUIs that include toggles, sliders, radio buttons and so on.
 
 <P>You can interact with GUIs in many ways and they are visually dynamic. For instance,
 while the appearance of an object or message box remains unchanged when a patch is running,
@@ -292,14 +289,23 @@ run mode just to click on something like a message, you can press and hold the
 
 <H3> <A id="s2.2">2.2.2. Creating boxes</A> </H3>
 
-<P>You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put menu</b>. Note that most of these are individual GUI (graphical user
-interface) boxes. There are also entries for "array" and "graph" that will be
-explained later. Also note the handy shortcuts to create each item specifically.
+<P>Pd patches can have four types of boxes: <I>object, message, GUI</I> and
+<I>comment</I> (which counts as a "box type" even thought it's not a proper
+'box' visually). You can create these boxes using the <b>Put menu</b>. Also
+note the handy shortcuts to create each item specifically.
 
 <P>
     <IMG src="img/2.2.2.png" ALT="put menu">
 </P>
+
+<P> Note that most of these are individual GUI (graphical user interface) boxes.
+Besides the three basic GUI boxes (number, symbol andlists), there's another group
+of GUIs that more options (toggles, sliders, radio buttons, etc). These other GUIs
+are also known as "IEMguis", which used to be an external library package and was
+incorporated natively into Pd in version 0.34 (they can still be created from
+object boxes though - see their help patches for the corresponding symbols). There
+are also entries for "array" and "graph" that will be explained later.
+
 
 <P>If you are in run mode and click on an entry on the <b>Put menu</b> or use
 a shortcut, Pd automatically switches to edit mode. When you create boxes
