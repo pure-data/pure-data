@@ -1807,7 +1807,7 @@ void sys_doneglobinit( void)
     it would be cool to figure out what metrics we really need and tell
     the GUI - that way we can support arbitrary zoom with appropriate font
     sizes.   And/or: if we ever move definitively to a vector-based GUI
-    lib we might be able to skip this step altogether. */ 
+    lib we might be able to skip this step altogether. */
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;
