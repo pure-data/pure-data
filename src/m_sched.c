@@ -291,7 +291,8 @@ void sched_tick(void)
             countdown = 5000;
             (void)sys_pollgui();
         }
-        if (sys_quit)
+            /* ignore SYS_QUIT_REOPEN and SYS_QUIT_CLOSE! */
+        if (sys_quit == SYS_QUIT_QUIT)
             return;
     }
     pd_this->pd_systime = next_sys_time;
