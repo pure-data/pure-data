@@ -33,25 +33,24 @@ in the <A href="x1.htm">previous chapter</A>.
 
 <H3> <A id="s1">2.1. Overview</A> </H3>
 
-<P>Pd is a real-time graphical programming environment designed for audio processing,
-but it can be expanded to multimedia processing and more. Pd resembles the MAX system
-but is much simpler and more portable. For example, with Peter Brinkmann's libpd you
-can have Pure Data as an embeddable audio synthesis library. Additionally, in its origin,
-Pd was designed to offer a unique experimental feature not found in MAX, allowing users
-to define and access data structures in innovative ways, with the ability to attach shapes
-and colors to the data in order to visualize it and/or edit it graphically (see section
-<A href="x2.htm#s10">2.10 Data Structures</A> for details.)
-
+<P>Pd (Pure Data) is a real-time graphical programming environment designed for audio
+processing that can be expanded to multimedia processing and more. Pd resembles the
+MAX system but is much simpler and more portable. For example, with Peter Brinkmann's
+libpd you can have Pure Data as an embeddable audio synthesis library. Additionally,
+in its origin, Pd was designed to offer a unique experimental feature not found in MAX,
+allowing users to define and access data structures in innovative ways, with the ability
+to attach shapes and colors to the data in order to visualize it and/or edit it graphically
+(see section <A href="x2.htm#s10">2.10 Data Structures</A> for details.)
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
-processing. These include notable extensions like ceammc, cyclone, else, fftease,
-iemlib, pmpd, TimbreID, zexy, and many more. External libraries that add graphical
-processing include Mark Dank's GEM package which expands Pd to be used for simultaneous
-computer animation and Zack Lee's Ofelia that allows you to use openFrameworks and Lua
-within Pd for creating audiovisual artwork or multimedia applications such as games.
-For details on installing and managing packages, refer to the <A href="x4.htm">
-Externals</A> chapter.
+processing. These include notable extensions like "Ceammc", "Cyclone", "ELSE",
+"FFTease", "IEMlib", "Pmpd", "TimbreID", "Zexy" and many more. External libraries that
+add graphical processing include Mark Dank's GEM package which expands Pd to be used
+for simultaneous computer animation and Zack Lee's "Ofelia" that allows you to use
+openFrameworks and the Lua programing language within Pd for creating audiovisual artwork
+or multimedia applications such as games. For details on installing and managing packages,
+refer to the <A href="x4.htm"> Externals</A> chapter.
 
 <H3> <A id="s1.1">2.1.1. The main window, canvases, and printout</A> </H3>
 
@@ -64,34 +63,35 @@ Externals</A> chapter.
 
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
 <b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
-at a top bar on the screen and there is an additional first <b>Pd</b> menu entry).
-On the upper right, there is a "DSP" toggle box to turn audio processing on and off
-globally. When "DSP" is on, Pd is computing audio samples in realtime for all open
-patches (whether they are visible or not). Turning off "DSP" halts the computation
-and releases any audio devices that Pure Data is utilizing. You can configure audio
-devices in the "Audio preferences" as described in the <A href="x3.htm">next
-chapter</A>.
+at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry,
+as it's common for all apps in macOS).
 
-<P>The <b>Media menu</b> offers shortcuts to toggle audio on and off. Use
-<kbd>Ctrl + /</kbd> (<b>Control</b> key on PCs or <b>Command</b> key on Apple
-computers plus the '<b>/</b>' key) to turn audio on, and <kbd>Ctrl + .</kbd> to turn
-it off. You can check input RMS audio level if you select "Test Audio and MIDI" and
-make other Audio and MIDI tests (read more about this in <A href="x3.htm#s1.0">3.1.
-Audio and MIDI</A>).
+<P>On the upper right, there is a "DSP" toggle box, which stands for "Digital Signal
+Processing" and turns audio processing on and off globally. When "DSP" is on, Pd is
+computing audio samples in realtime for all open patches (whether they are visible
+or not). Turning off "DSP" halts the computation and releases any audio devices that
+Pure Data is utilizing. You can configure audio devices in the "Audio preferences"
+as described in the <A href="x3.htm">next chapter</A>.
+
+<P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl + /</kbd>
+(<b>Control</b> key on PCs or <b>Command</b> key on Apple computers plus the '<b>/</b>' key)
+to turn audio processing on, and <kbd>Ctrl + .</kbd> to turn it off. You can check input RMS
+audio level if you select "Test Audio and MIDI" and make other Audio and MIDI tests (read more
+about this in <A href="x3.htm#s1.0">3.1. Audio and MIDI</A>).
 
 <P>
     <IMG src="img/2.1.2.png" ALT="media menu">
 </P>
 
-<P>The lower part of the Pd window is an area for printout from the output of boxes
-in patches and for messages from Pd itself (such as errors). If the Pd window is
-focused, the menus and console font size can be changed using the 'Font' dialog
+<P>The lower part of the Pd window is a console area for printout from the output of
+boxes in patches and for messages from Pd itself (such as errors). If the Pd window is
+focused, the font size for menus and printout can be changed using the 'Font' dialog
 entry in the <b>Edit menu</b> as shown below. Make your adjustments if you are
 having trouble reading on HiDPI screens. in the <b>Edit menu</b> you can also clear
 all messages printed in the Pd window with the 'Clear Console' entry (<kbd>Shift +
 Ctrl + L</kbd> shortcut). On the <b>Window menu</b> you find the 'Pd Window' entry
 (with the <kbd>Ctrl + R</kbd> shortcut), which brings the Pd window to the front or
-sends it behind the window in focus.
+sends it behind and brings back to focus the last focused window.
 
 <P>
     <IMG src="img/2.1.3.png" ALT="edit menu">
@@ -117,26 +117,25 @@ without confirmation, use <kbd>Shift + Ctrl + Q</kbd>.
     <IMG src="img/2.1.5.png" ALT="simple patch">
 </P>
 
-<P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
-an object box showing "print" and two comments (not a proper 'box' visually,
-but counts as a "box type"). The number box is connected to the object box,
-with the output of the number box feeding into the input of the [print] object
-box. Boxes may have zero or more inputs and/or outputs, with the inputs on top
-and the outputs on the bottom. When clicking and dragging on the number box,
-the values are printed in the main "Pd" window.
+<P>There are four <I>text boxes</I> in Pd, all shown in this patch: a number box
+(showing zero), an object box showing "print" and two comments (which counts as
+a "box type" even thought it's not a proper 'box' visually). The number box is
+connected to the object box, with the output of the number box feeding into the
+input of the [print] object box. Boxes may have zero or more inputs and/or outputs,
+with the inputs on top and the outputs on the bottom. When clicking and dragging on
+the number box, the values are printed in the main "Pd" window.
 
 <H3> <A id="s1.2">2.1.2. Object boxes</A> </H3>
 
-<P>Pd patches can have four types of boxes: <I>object, message, GUI</I> and
-<I>comment</I>. The <b>Put menu</b> (shown later in <A href="x2.htm#s2.2">
-Creating boxes</A>) offers a list of all boxes. When you insert a new object box,
-it is empty and presented with a dashed border before creation.
+<P>The object box loads an instance of a class in your patch. You can create an
+object box from the <b>Put menu</b>. When you insert a new object box, it is empty
+and presented with a dashed border before creation.
 
 <P>
     <IMG src="img/2.1.6.png" ALT="dashed box">
 </P>
 
-<P>You only create a particular <I>object</I> by entering text into the box.
+<P>You only create a particular <I>object</I> by entering text into the object box.
 The text consists of <I>atoms</I>, which are separated by spaces. The initial
 atom (which needs to be a symbol) determines the type of object Pd will create,
 while the subsequent atoms, known as <I>creation arguments</I>, instruct Pd how
@@ -149,12 +148,13 @@ to initialize the object. For instance, you can type "+ 13".
 <P>Here, the "+" specifies the <I>class</I> of the object. In this case the
 object will carry out additions, and the "13" initializes the value to add.
 
-<P>Atoms are either numbers or <I>symbols</I> like "+". Anything that is not a
-valid number, is considered a symbol. Valid numbers may or may not have a decimal
-point, such as "12", "15.6", "-0.456". They also may be written in exponential
-notation, such as "4.5e+06", which means "4.5" times "10ˆ6" (10 to power of 6,
-i.e., 1000000) and results in "4500000". Negative exponentials also work, such
-as 1.5e-06, which means "1.5" times "10ˆ-6" and results in "0.0000015".
+<P>Atoms are either <I>numbers</I> or <I>symbols</I>. Anything that is not a
+valid number (like "+") is considered a symbol. Valid numbers may or may not
+have a decimal point, such as "12", "15.6", "-0.456". Numbers may also be written
+in exponential notation, such as "4.5e+06", which means "4.5" times "10ˆ6" (10
+to power of 6, i.e., 1000000) and results in "4500000". Negative exponentials
+also work, such as 1.5e-06, which means "1.5" times "10ˆ-6" and results in
+"0.0000015".
 
 <P>Non-valid numbers, which are read as symbols, include things like "+5" and "0..6"
 as well as words and names such as "Zack" or "cat". The symbols "gore", "Gore", and
@@ -173,13 +173,13 @@ arguments.
 </P>
 
 <P>This patch mixes <I>control</I> objects ([notein], [stripnote], and [ftom])
-with <I>tilde</I> objects [osc~], [*~], and [dac~]. The control objects carry out
-their function sporadically, as a result of one or more types of <I>events</I>.
-In this case, incoming MIDI note messages set off the control computation. When
-a note event happens (more specifically a "note on" event, since "note off" events
-are filtered by [stripnote]), the control computation is triggered and it computes
-the frequency in cycles per second with [mtof] and passes it on to the oscillator
-([osc~]).
+with <I>tilde</I> objects [osc~], [*~], and [dac~] and these are the two types of
+objects in Pd. The control objects carry out their function sporadically, as a
+result of one or more types of <I>events</I>. In this case, incoming MIDI note
+messages set off the control computation. When a note event happens (more
+specifically a "note on" event, since "note off" events are filtered by [stripnote]),
+the control computation is triggered and it computes the frequency in cycles per
+second with [mtof] and passes it on to the oscillator ([osc~]).
 
 <P>The second half of the patch (the [osc~], [*~], and [dac~] objects) computes
 audio samples. The [osc~] object is acting as the interface between the two regimes,
@@ -192,7 +192,7 @@ it comes from; in the patch above, the two bottom connections are signal and the
 others are control. A control connection may be made to a signal inlet and if numbers
 are sent over it they are usually automatically converted to signals. Signal
 connections may not be made to control inlets; some sort of explicit conversion
-must be specified.
+from audio signal to control data must be specified.
 
 <P>Audio signals form continuous streams of numbers, not intermittent bursts.
 Therefore, tilde objects operate under rules distinct from those for control objects.
@@ -226,14 +226,14 @@ to it.
 <P>The third box here is a <I>GUI</I> ("graphical user interface") box. Pd has
 three basic GUI boxes. In addition to number boxes (as in this example), there are
 boxes to display and edit symbols or arbitrary lists of atoms. Pd also comes with
-a set GUIs that include toggles, sliders, radio buttons and so on. These other GUIs
-are also known as "iemGUIs" and used to be an external library package, but were
-incorporated natively into Pd in version 0.34 (they can still be created from
+another set GUIs that include toggles, sliders, radio buttons and so on. These other
+GUIs are also known as "IEMguis", which used to be an external library package and
+was incorporated natively into Pd in version 0.34 (they can still be created from
 object boxes though - see their help patches for the corresponding symbols).
 
-<P>You can interact with GUIs in many ways and they are visually dynamic. While the
-appearance of an object or message box remains unchanged when a patch is running, a
-number box's content (the text) changes to reflect the current value held by the box.
+<P>You can interact with GUIs in many ways and they are visually dynamic. For instance,
+while the appearance of an object or message box remains unchanged when a patch is running,
+a number box's content (the text) changes to reflect the current value held by the box.
 You can also use a number box as a control by clicking and dragging up and down, or
 by typing values in it and hitting enter (more details on how this and any other GUIs
 work is available in the help files; see <A href="x2.htm#s2.7">Context menu for
@@ -241,7 +241,7 @@ work is available in the help files; see <A href="x2.htm#s2.7">Context menu for
 
 <H3> <A id="s1.4">2.1.4. Patches and files</A> </H3>
 
-<P>As mentioned before, You can create or open a Pd file from the <b>File menu</b>
+<P>As mentioned before, You can create or open a Pd file from the <b>File menu</b>,
 as well as close and save them.
 
 <P>You can also edit the font size of a patch if its window is focused. Just
@@ -253,7 +253,9 @@ objects in the patch, but only what you see: the objects' creation arguments
 and their interconnections. Nonetheless, the [savestate] object offers a mechanism
 to save the state of abstractions (see <A href="x2.htm#s8">Subpatches</A>). Also,
 certain data-storage objects have functions for reading and writing other files to
-save and restore their internal state.
+save and restore their internal state (one example is the [text] object). When loading
+a patch, the [loadbang] object can be used to initialize the parameters of your patch,
+so you can load text files and make other preparations.
 
 <P>Pd finds files using specified <I>paths</I>. Most objects which can read files
 search for them along the search paths, but when Pd writes files they go to the
@@ -291,10 +293,9 @@ run mode just to click on something like a message, you can press and hold the
 <H3> <A id="s2.2">2.2.2. Creating boxes</A> </H3>
 
 <P>You can create boxes (objects, messages, GUIs, and comments) using the
-<b>Put menu</b>. Note that most of these are individual GUI (graphical
-user interface) boxes. There are also entries for "array" and "graph" that
-will be explained later. Also note the handy shortcuts to create each item
-specifically.
+<b>Put menu</b>. Note that most of these are individual GUI (graphical user
+interface) boxes. There are also entries for "array" and "graph" that will be
+explained later. Also note the handy shortcuts to create each item specifically.
 
 <P>
     <IMG src="img/2.2.2.png" ALT="put menu">
@@ -304,13 +305,21 @@ specifically.
 a shortcut, Pd automatically switches to edit mode. When you create boxes
 this way, they are automatically selected and follow the mouse cursor position;
 drag them around as desired until you click to position them where you want.
-Alternatively, you can hit <kbd>Esc</kbd> to deselect it, which will also place
-the box. Object and message boxes are empty when created, you can move them
-and also position them by just starting to type into them.
+This keeps the box selected and you can desselect it by clicking on an empty spot
+of the patch or using the <kbd>Esc</kbd> key.
+
+<P>Message and object boxes are empty when created. After being positioned you
+starting to type into them. Also, start to typing into them will force position
+them if they haven't been positioned yet by a click. Deselecting the object box
+after you typed the object name creates it.
+
+<P>When you create a comment box, it shows a "comment" symbol. When you position
+it, this symbol is selected, so you can start typing a new commentary.
 
 <P>You may find it more convenient to select a box and "duplicate" it than to use
 the <b>Put menu</b>. If you duplicate a selection of several items, any connections
-between them will be duplicated as well.
+between them will be duplicated as well. To deselect more than one box, you
+can also either click on an empty area of your patch or press <kbd>Esc</kbd>.
 
 <H3> <A id="s2.3">2.2.3. Selecting items and moving them or "tidying them up"</A> </H3>
 
@@ -329,7 +338,6 @@ boxes to move them as well).
 the arrows. You can also use <kbd>Shift + Arrow keys</kbd> to move items
 10 pixels in the desired direction. By the way, if you select boxes that
 are connected, the connections (patch cords) are also moved around.
-
 
 <P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align
 boxes that are not perfectly aligned. You can select boxes arranged in a
@@ -362,9 +370,6 @@ menu item performs a copy and paste with a small offset (since the original
 selection remains in the original position). You can then click on an item in
 the duplicated selection and drag them all together to a new spot in the patch
 window away from the original selection.
-
-<P>To deselect, you can either click on an empty area of your patch or press
-the <kbd>Esc</kbd> key.
 
 <P>While you can cut or copy a selection within a patch and paste it into a
 different window within Pure Data, the cut/paste functionality for patch elements
