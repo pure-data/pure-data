@@ -427,7 +427,7 @@ int sys_main(int argc, const char **argv)
     }
     namelist_free(sys_messagelist);
     sys_messagelist = 0;
-    if (!sys_dontstartgui && 
+    if (!sys_dontstartgui &&
         sys_startgui(sys_libdir->s_name))  /* start the gui */
             return (1);
     if (sys_hipriority)
