@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../z_hooks.h"
+#include "z_hooks.h"
 
 #define PRINT_LINE_SIZE 2048
 
