@@ -5,6 +5,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "s_net.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
@@ -49,6 +50,7 @@ void sys_addhelppath(char *p);
 void alsa_adddev(const char *name);
 #endif
 int sys_oktoloadfiles(int done);
+void sys_doneglobinit( void);
 
 int sys_debuglevel;
 int sys_verbose;
@@ -123,9 +125,17 @@ static t_fontinfo sys_fontspec[] = {
     {16, 10, 19}, {24, 14, 29}, {36, 22, 44}};
 #define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
 #define NZOOM 2
-static t_fontinfo sys_gotfonts[NZOOM][NFONT];
 
-/* here are the actual font size structs on msp's systems:
+    /* here are actual measured font sizes; they are overwritten from the
+    GUI if/when the GUI starts up. */
+static t_fontinfo sys_gotfonts[NZOOM][NFONT]  = {
+  {{8,  5, 11},  {10,  6, 13},  {12,  7, 16},  {16, 10, 19},  {24, 14, 29},
+    {36, 22, 44}},
+  {{16, 10, 22},  {20, 12, 26},  {24, 14, 32},  {32, 20, 38},  {48, 28, 58},
+    {72, 44, 88}}
+};
+
+/* here are some measured font size structs for example:
 MSW:
 font 8 5 9 8 5 11
 font 10 7 13 10 6 13
@@ -260,7 +270,8 @@ static void openit(const char *dirname, const char *filename, const char *args)
         pd_error(0, "%s: can't open", filename);
 }
 
-/* this is called from the gui process.  The first argument is the cwd, and
+/* this is called from the gui process.  The first argument is ignored,
+the second one flags an old version of TK which for back compatibility, and
 succeeding args give the widths and heights of known fonts.  We wait until
 these are known to open files and send messages specified on the command line.
 We ask the GUI to specify the "cwd" in case we don't have a local OS to get it
@@ -270,9 +281,6 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
-    t_patchlist *pl;
-    t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;
     int j;
@@ -292,7 +300,8 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
             height = (j+1)*sys_fontspec[i].fi_height;
             if (!did_fontwarning)
             {
-                logpost(NULL, PD_VERBOSE, "ignoring invalid font-metrics from GUI");
+                logpost(NULL,
+                    PD_VERBOSE, "ignoring invalid font-metrics from GUI");
                 did_fontwarning = 1;
             }
         }
@@ -305,60 +314,8 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
                     sys_gotfonts[j][i].fi_height);
 #endif
     }
-        /* load dynamic libraries specified with "-lib" args */
-    if (sys_oktoloadfiles(0))
-    {
-        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
-            if (!sys_load_lib(0, nl->nl_string))
-                post("%s: can't load library", nl->nl_string);
-        sys_oktoloadfiles(1);
-    }
-        /* open patches specifies with "-open" args */
-    for (pl = sys_openlist; pl; pl = pl->pl_next)
-        openit(cwd, pl->pl_file, pl->pl_args);
-    patchlist_free(sys_openlist);
-    sys_openlist = 0;
-        /* send messages specified with "-send" args */
-    for  (nl = sys_messagelist; nl; nl = nl->nl_next)
-    {
-        t_binbuf *b = binbuf_new();
-        binbuf_text(b, nl->nl_string, strlen(nl->nl_string));
-        binbuf_eval(b, 0, 0, 0);
-        binbuf_free(b);
-    }
-    namelist_free(sys_messagelist);
-    sys_messagelist = 0;
-}
-
-// font char metric triples: pointsize width(pixels) height(pixels)
-static int defaultfontshit[] = {
-  8,  5, 11,  10,  6, 13,  12,  7, 16,  16, 10, 19,  24, 14, 29,  36, 22, 44,
- 16, 10, 22,  20, 12, 26,  24, 14, 32,  32, 20, 38,  48, 28, 58,  72, 44, 88
-}; // normal & zoomed (2x)
-#define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
-
-static t_clock *sys_fakefromguiclk;
-int socket_init(void);
-static void sys_fakefromgui(void)
-{
-        /* fake the GUI's message giving cwd and font sizes in case
-        we aren't starting the gui. */
-    t_atom zz[NDEFAULTFONT+2];
-    int i;
-    char buf[MAXPDSTRING];
-#ifdef _WIN32
-    if (GetCurrentDirectory(MAXPDSTRING, buf) == 0)
-        strcpy(buf, ".");
-#else
-    if (!getcwd(buf, MAXPDSTRING))
-        strcpy(buf, ".");
-#endif
-    SETSYMBOL(zz, gensym(buf));
-    SETFLOAT(zz+1, 0);
-    for (i = 0; i < (int)NDEFAULTFONT; i++)
-        SETFLOAT(zz+i+2, defaultfontshit[i]);
-    glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
-    clock_free(sys_fakefromguiclk);
+    sys_doneglobinit();  /* tell s_inter.c to vis our canvases now that
+        we think we know the actual font metrics the GUI will use. */
 }
 
 static void sys_afterargparse(void);
@@ -369,6 +326,8 @@ int sys_main(int argc, const char **argv)
 {
     int i, noprefs;
     const char *prefsfile = "";
+    t_namelist *nl;
+    t_patchlist *pl;
     sys_externalschedlib = 0;
     sys_extraflags = 0;
 #ifdef PD_DEBUG
@@ -445,11 +404,32 @@ int sys_main(int argc, const char **argv)
     }
     sys_setsignalhandlers();
     sys_afterargparse();                    /* post-argparse settings */
-    if (sys_dontstartgui)
-        clock_set((sys_fakefromguiclk =
-            clock_new(0, (t_method)sys_fakefromgui)), 0);
-    else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
-        return (1);
+        /* load dynamic libraries specified with "-lib" args */
+    if (sys_oktoloadfiles(0))
+    {
+        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+            if (!sys_load_lib(0, nl->nl_string))
+                post("%s: can't load library", nl->nl_string);
+        sys_oktoloadfiles(1);
+    }
+        /* open patches specifies with "-open" args */
+    for (pl = sys_openlist; pl; pl = pl->pl_next)
+        openit(".", pl->pl_file, pl->pl_args);
+    patchlist_free(sys_openlist);
+    sys_openlist = 0;
+        /* send messages specified with "-send" args */
+    for  (nl = sys_messagelist; nl; nl = nl->nl_next)
+    {
+        t_binbuf *b = binbuf_new();
+        binbuf_text(b, nl->nl_string, strlen(nl->nl_string));
+        binbuf_eval(b, 0, 0, 0);
+        binbuf_free(b);
+    }
+    namelist_free(sys_messagelist);
+    sys_messagelist = 0;
+    if (!sys_dontstartgui && 
+        sys_startgui(sys_libdir->s_name))  /* start the gui */
+            return (1);
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)

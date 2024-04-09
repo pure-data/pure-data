@@ -3075,13 +3075,15 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
-                /* if the typed object (which is also the selected object in the canvas)
-                    is an abstraction, and if its text has not been modified yet, then ask the
-                    permission to discard any changes inside it. */
-            if (pd_class(&x->gl_editor->e_selection->sel_what->g_pd) == canvas_class
-                && !x->gl_editor->e_textdirty
-                    /* only ask permission if the keystroke is really modifying the text */
-                && keynum
+                /* if the typed object is also the selected object in the
+                 canvas and is an abstraction, and if its text has not been
+                 modified yet, then ask whether to discard any changes inside
+                  it. */
+            if (x->gl_editor->e_selection &&
+                pd_class(&x->gl_editor->e_selection->sel_what->g_pd)
+                    == canvas_class && !x->gl_editor->e_textdirty
+                    /* only ask if the keystroke would really modify the text */
+                        && keynum
             )
             {
                 t_gobj *selected_canvas = x->gl_editor->e_selection->sel_what;

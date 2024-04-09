@@ -22,7 +22,7 @@
 #if defined (__APPLE__) || defined (__FreeBSD__)
 #define CLOCKHZ CLK_TCK
 #endif
-#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
+#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID) || defined(__EMSCRIPTEN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
 #if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
