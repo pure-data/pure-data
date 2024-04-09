@@ -42,7 +42,7 @@
 #X obj 67 257 data-array amp;
 #X obj 281 186 data-array pitch;
 #X obj 137 358 pack;
-#N canvas 457 62 630 588 sequence 1;
+#N canvas 457 62 630 588 sequence 0;
 #X obj 144 150 inlet;
 #X obj 263 387 *;
 #X obj 156 244 r reset-stop;
