@@ -25,8 +25,46 @@ for another, more permissive-sounding copyright notice.  -MSP
 #include "m_private_utils.h"
 
 #define FFTFLT double
-void cdft(int, int, FFTFLT *, int *, FFTFLT *);
-void rdft(int, int, FFTFLT *, int *, FFTFLT *);
+static void cdft(int, int, FFTFLT *, int *, FFTFLT *);
+static void rdft(int, int, FFTFLT *, int *, FFTFLT *);
+
+static void *cftrec1_th(void *p);
+static void *cftrec2_th(void *p);
+static void bitrv2(int n, int *ip, FFTFLT *a);
+static void bitrv208(FFTFLT *a);
+static void bitrv208neg(FFTFLT *a);
+static void bitrv216(FFTFLT *a);
+static void bitrv216neg(FFTFLT *a);
+static void bitrv2conj(int n, int *ip, FFTFLT *a);
+static void cftb040(FFTFLT *a);
+static void cftb1st(int n, FFTFLT *a, FFTFLT *w);
+static void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
+static void cftf040(FFTFLT *a);
+static void cftf081(FFTFLT *a, FFTFLT *w);
+static void cftf082(FFTFLT *a, FFTFLT *w);
+static void cftf161(FFTFLT *a, FFTFLT *w);
+static void cftf162(FFTFLT *a, FFTFLT *w);
+static void cftf1st(int n, FFTFLT *a, FFTFLT *w);
+static void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
+static void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
+static void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
+static void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
+static int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
+static void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftx020(FFTFLT *a);
+static void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void ddct(int, int, FFTFLT *, int *, FFTFLT *);
+static void ddst(int, int, FFTFLT *, int *, FFTFLT *);
+static void dfct(int, FFTFLT *, FFTFLT *, int *, FFTFLT *);
+static void dfst(int, FFTFLT *, FFTFLT *, int *, FFTFLT *);
+static void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void makect(int nc, int *ip, FFTFLT *c);
+static void makeipt(int nw, int *ip);
+static void makewt(int nw, int *ip, FFTFLT *w);
+static void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
 
 int ilog2(int n);
 
