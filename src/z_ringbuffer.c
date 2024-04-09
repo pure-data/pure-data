@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
+ * Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
  *
- *  For information on usage and redistribution, and for a DISCLAIMER OF ALL
- *  WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
  * See https://github.com/libpd/libpd/wiki for documentation
  *
@@ -29,7 +29,7 @@
     #include <windows.h>
     #define SYNC_FETCH(ptr) InterlockedOr(ptr, 0)
     #define SYNC_COMPARE_AND_SWAP(ptr, oldval, newval) \
-            InterlockedCompareExchange(ptr, oldval, newval)
+            InterlockedCompareExchange(ptr, newval, oldval)
   #else // gcc atomics
     #define SYNC_FETCH(ptr) __sync_fetch_and_or(ptr, 0)
     #define SYNC_COMPARE_AND_SWAP(ptr, oldval, newval) \
