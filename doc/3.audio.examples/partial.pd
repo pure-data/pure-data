@@ -27,7 +27,7 @@
 #X text 260 465 natural-sounding decay shape;
 #X obj 220 191 trigger bang bang;
 #X text 257 371 decay msg to [line~];
-#X obj 221 73 inlet;
+#X obj 220 73 inlet;
 #X obj 401 110 unpack f f f f;
 #X obj 51 511 outlet~;
 #X obj 496 135 v detune_\$0;
@@ -39,7 +39,7 @@
 #X obj 220 294 v rdur_\$0;
 #X text 462 319 take fourth root (square root twice) because we'll raise [line~] output to fourth power, f 30;
 #X obj 422 267 v amp_\$0;
-#X obj 221 115 route bang;
+#X obj 220 115 route bang;
 #X obj 610 83 inlet;
 #X obj 670 83 inlet;
 #X obj 610 136 mtof;
