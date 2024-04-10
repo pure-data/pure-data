@@ -327,7 +327,7 @@ static void queued_stuff_free(void *p) {
   if (queued->midi_receive_buffer) rb_free(queued->midi_receive_buffer);
 }
 
-int libpd_queued_init() {
+int libpd_queued_init(void) {
   int ret = libpd_init();
 
   libpd_set_printhook(internal_printhook);
@@ -362,7 +362,7 @@ cleanup:
   return -2;
 }
 
-void libpd_queued_release() {
+void libpd_queued_release(void) {
   t_libpdimp *imp = LIBPDSTUFF;
   if (imp->i_queued) {
     queued_stuff_free(imp->i_queued);
@@ -371,7 +371,7 @@ void libpd_queued_release() {
   }
 }
 
-void libpd_queued_receive_pd_messages() {
+void libpd_queued_receive_pd_messages(void) {
   queued_stuff *queued = QUEUEDSTUFF;
   size_t available = rb_available_to_read(queued->pd_receive_buffer);
   if (!available) return;
@@ -412,7 +412,7 @@ void libpd_queued_receive_pd_messages() {
   }
 }
 
-void libpd_queued_receive_midi_messages() {
+void libpd_queued_receive_midi_messages(void) {
   queued_stuff *queued = QUEUEDSTUFF;
   size_t available = rb_available_to_read(queued->midi_receive_buffer);
   if (!available) return;
