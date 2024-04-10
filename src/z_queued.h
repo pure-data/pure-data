@@ -96,20 +96,20 @@ EXTERN void libpd_set_queued_midibytehook(const t_libpd_midibytehook hook);
 ///    libpd_set_queued_printhook(pdprint);
 ///    ...
 ///
-EXTERN int libpd_queued_init();
+EXTERN int libpd_queued_init(void);
 
 /// free the queued ringbuffers
 /// with multiple instances, call before freeing each instance:
 ///     libpd_set_instance(pd1);
 ///     libpd_queued_release();
 ///     libpd_free_instance(pd1);
-EXTERN void libpd_queued_release();
+EXTERN void libpd_queued_release(void);
 
 /// process and dispatch received messages in message ringbuffer
-EXTERN void libpd_queued_receive_pd_messages();
+EXTERN void libpd_queued_receive_pd_messages(void);
 
 /// process and dispatch receive midi messages in MIDI message ringbuffer
-EXTERN void libpd_queued_receive_midi_messages();
+EXTERN void libpd_queued_receive_midi_messages(void);
 
 #ifdef __cplusplus
 }
