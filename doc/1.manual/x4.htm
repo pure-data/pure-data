@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-
 <HTML lang="en">
 <HEAD>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual 4</TITLE>
-<meta http-equiv="Content-Type" content="text/html">
-<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="favicon.ico">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="css/favicon.ico">
 </HEAD>
-
-
 <BODY>
 
 
@@ -20,7 +16,7 @@
 
 <div id=corpus>
 
-<H2>Pd Manual chapter 4: externals</H2>
+<H2>Pd Manual chapter 4: Externals</H2>
 
 <P>
 <A href="index.htm#s4"> back to table of contents </A>
@@ -39,7 +35,7 @@ In the "6.externs" subdirectory of the documentation you can find simple
 examples of externals with their source code and test patches.
 
 <p>There’s also an excellent guide to writing externals project by IOhannes
-zmölnig at  <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>. Check also the
+zmölnig at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>. Check also the
 pd-lib-builder project (a helper makefile for Pure Data external libraries by
 Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
 
@@ -60,9 +56,7 @@ be loaded into Pd patches.
 then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
 patch’s window and select “help” - this loads the help-intro.pd file (see below).
 
-
-<p><img src=fig4.1.png >
-
+<p><IMG src="img/4.1.1.png" ALT="list of objects">
 <br>
 
 <p> The set of externals that come with Pd are available in the ‘extra’ library
@@ -72,8 +66,7 @@ Help Browser menu (Help => Browser). See figure below, which shows how
 the browser looks in a fresh install of Pd and lists the objects in the extra
 folder.
 
-<p><img src=fig4.2.png >
-
+<p><IMG src="img/4.1.2.png" ALT="browser window">
 <br>
 
 
@@ -377,13 +370,8 @@ abstractions or any combination of them.
 <hr>
 
 
-
-
-
 <H3> <A id=s2>4.2. Installing External Objects and Libraries
 </A> </H3>
-
-
 
 
 <p>Installing externals in Pd is quite simple, all you need to do is download
@@ -398,10 +386,8 @@ you want to create a documents directory for patches that includes an
 external libraries and it’s automatically included in the user added search
 paths (under Preferences => Path), see figure below.
 
-<p><img src=fig4.3.png >
-
+<p><IMG src="img/4.2.1.png" ALT="Preferences">
 <br>
-
 
 <p>We see in the screenshot above that the “Pd” folder is created
 under ~/Documents, and inside it we have the externals subfolder.
@@ -476,14 +462,12 @@ or ~/pd-externals (deprecated but still usable).
 
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a
 built in .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
-for reference).  Open it by selecting the <b>Help => Find externals</b> tab. Then you
+for reference). Open it by selecting the <b>Help => Find externals</b> tab. Then you
 can type and search for object name, library name or both. The wildcard '*' can be used
 to broaden the search, or an exact name can be used instead. All available versions of
 the library/external specific for your operating system will be shown to you. See figure below.
 
-
-<p><img src=deken.gif >
-
+<p><IMG src="img/4.2.2.png" ALT="deken install">
 <br>
 
 <p>When you double-click on the version you want, by default Pd downloads it to
@@ -562,7 +546,7 @@ other objects in your patch.
 
 <H3> <A id=s3.2>4.3.2. Load via Path and Startup:</A> </H3>
 
-<p>We'll now see the differeces between using [declare] or using "Path" and "Startup".
+<p>We'll now see the differences between using [declare] or using "Path" and "Startup".
 
 
 <H3> <A id=s3.2.1>4.3.2.1. User added Path:</A> </H3>
@@ -593,9 +577,9 @@ will always have top priority!
 This is where you can manually and permanently load single binary pack libraries. But since
 they're only needed during startup, you need to restart Pd so this takes effect. The startup
 is also used for configuring Pd in many ways,
-see <a href="x3.htm#s4">3.6. Preferences and startup options</a> for reference.
+see <a href="x3.htm#s4">Preferences and startup options</a> for reference.
 
-<p><img src=fig4.5.png >
+<p><IMG src="img/4.3.1.png" ALT="startup preferences">
 <br>
 
 <p>As we’ve seen with ‘zexy’, it’s common that the name of the binary is
@@ -622,7 +606,7 @@ via [declare], clearly).
 objects are loaded in Pd and they have search priority. This may cause issues discussed
 on the next section.
 
-<p><img src=fig4.6.png >
+<p><IMG src="img/4.3.2.png" ALT="lib print">
 <br>
 
 <H3> <A id=s3.3>4.3.3. Slash declarations:</A> </H3>
@@ -634,9 +618,7 @@ before an object name. This will make Pd look for this object in a folder called
 ‘else’ in one of its search paths (which includes ~/Documents/Pd/externals)
 and find it! Here’s an example:
 
-
-<p><img src=fig4.7.png >
-
+<p><IMG src="img/4.3.3.png" ALT="slash declaration">
 
 <p>Now, what’s the need or advantage of this over using [declare] or adding the folder to the
 user added paths? This can be an option that some people may prefer for the simple fact that
