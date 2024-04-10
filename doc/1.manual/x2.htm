@@ -48,7 +48,7 @@ processing. These include notable extensions like "Ceammc", "Cyclone", "ELSE",
 "FFTease", "IEMlib", "Pmpd", "TimbreID", "Zexy" and many more. External libraries that
 add graphical processing include Mark Dank's GEM package which expands Pd to be used
 for simultaneous computer animation and Zack Lee's "Ofelia" that allows you to use
-openFrameworks and the Lua programing language within Pd for creating audiovisual artwork
+openFrameworks and the Lua programming language within Pd for creating audiovisual artwork
 or multimedia applications such as games. For details on installing and managing packages,
 refer to the <A href="x4.htm"> Externals</A> chapter.
 
@@ -311,7 +311,7 @@ are also entries for "array" and "graph" that will be explained later.
 a shortcut, Pd automatically switches to edit mode. When you create boxes
 this way, they are automatically selected and follow the mouse cursor position;
 drag them around as desired until you click to position them where you want.
-This keeps the box selected and you can desselect it by clicking on an empty spot
+This keeps the box selected and you can deselect it by clicking on an empty spot
 of the patch or using the <kbd>Esc</kbd> key.
 
 <P>Message and object boxes are empty when created. After being positioned you
@@ -333,20 +333,25 @@ can also either click on an empty area of your patch or press <kbd>Esc</kbd>.
 of all boxes and containing text turn light blue (instead of the usual black) to
 indicate they are selected. Boxes in a Pd window may be individually selected by
 clicking on them. If you don't release the mouse button you can select a box and drag
-it around right away. To select more than one box, you may use <kbd>Shift + Click</kbd>
-on each item. You can then click again on one of the selected boxes to move the group
-around. Alternatively, you click on a blank portion of the window and drag the cursor
-to select all boxes within a rectangular area (then click again on one of the selected
-boxes to move them as well).
+it around right away.
 
-<P>When you have one or more boxes selected, you can also move them using
-<kbd>Arrow keys</kbd>, which moves items one pixel in the direction of
-the arrows. You can also use <kbd>Shift + Arrow keys</kbd> to move items
-10 pixels in the desired direction. By the way, if you select boxes that
-are connected, the connections (patch cords) are also moved around.
+<P>To select more than one box, you may use <kbd>Shift + Click</kbd> on each item.
+You can then click again on one of the selected boxes to move the group around.
+Alternatively, you click on a blank portion of the window and drag the cursor to
+select all boxes within a rectangular area (then click again on one of the selected
+boxes to move them as well). If you press <kbd>Shift</kbd>, you can repeat the click
+and drag operation to select another group of boxes as well. If you do <kbd>Shift +
+Click</kbd> on a selected box, you deselect it. The "Select All" entry on the <b>Edit
+menu</b> (<kbd>Ctrl + A</kbd>) selects all items in a patch window.
+
+<P>When you have one or more boxes selected, you can also move them by using the
+<kbd>Arrow keys</kbd>, which moves items one pixel in the direction of the arrows.
+You can also use <kbd>Shift + Arrow keys</kbd> to move items 10 pixels in the
+desired direction. By the way, if you select boxes that are connected, the
+connections (patch cords) are also moved around.
 
 <P>The 'Tidy Up' entry in the <b>Edit menu</b> allows you to try and align
-boxes that are not perfectly aligned. You can select boxes arranged in a
+selected boxes that are not perfectly aligned. You can select boxes arranged in a
 horizontal row and use the shortcut <kbd>Shift + Ctrl + R</kbd> to try and
 align them perfectly horizontally. Similarly, this can be applied to vertically
 align a column of boxes. Bidimensional rectangular selections of boxes are also
@@ -361,8 +366,7 @@ better results.
 
 <P>If you select any item you can press <kbd>Backspace</kbd> or <kbd>Delete</kbd>
 key to delete it. Connections of a deleted box are also deleted. A multiple selection
-of items can also be deleted. The "Select All" entry on the Edit menu selects all
-items in a patch window.
+of items (and their connections) can also be deleted.
 
 <P>For one or more selected items and their connections you can also "cut", "copy",
 "paste" and "duplicate" "from the <b>Edit menu</b> or shortcuts. Notice you can
@@ -705,7 +709,7 @@ shortcut will reduce the outlets, removing the unused ones.
 In case there are more connections than outlets, it will add outlets to
 distribute all connections to separate ones (following the creation order
 of the connections from right to left). This way, you can add connections
-inbetween other connections without lots of resorting.
+in between other connections without lots of resorting.
 
 <P>
     <IMG src="img/2.3.23.png" ALT="distribute connections">
@@ -1627,7 +1631,7 @@ object to "play" (by sending it to a copy of the [voice] abstractions). The
 pointer object takes a "traverse" message to set it to the head of the list
 (named "pd-data"), and "next" messages to move to (and output) the next datum
 in the list (i.e., the next in the list of six objects in the score). Let's
-check the [voice] abstrction below.
+check the [voice] abstraction below.
 
 <P><IMG src="img/2.10.4.png" ALT="[voice] abstraction"></P>
 
