@@ -1,4 +1,4 @@
-#N canvas 239 30 1071 662 12;
+#N canvas 239 25 1071 627 12;
 #X declare -stdpath ./;
 #N canvas 642 163 417 426 samples 0;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -113,12 +113,12 @@
 #X obj 611 296 clone -s 1 sampvoice2 8;
 #X msg 542 217 \$1 0;
 #X msg 588 218 \$2;
-#X text 29 361 Under "r onoff" \, the poly object allocates a voice number \, putting it out paired with velocity. After swapping the two and packing them into a single message \, the amplitude is checked against zero by the [route 0] object. If zero \, the "\$1 0" confects a 2-argument message (voice number and zero). Otherwise \, the "\$2" retrieves the nonzero amplitude for a note-on message \, to which we add all the other parameters and route to the appropriate voice inside [clone]., f 67;
 #X text 822 606 updated for Pd version 0.52;
 #X msg 93 513 \; onoff 1 90 60 5 0 0 100;
 #X msg 94 555 \; onoff 2 90 48 5 0 0 100;
 #X msg 94 612 \; note 51 90 1000 5 0 0 100;
 #X text 92 493 separate messages for note on and off:;
+#X text 29 361 Under "r onoff" \, the poly object allocates a voice number \, putting it out paired with velocity. After swapping the two and packing them into a single message \, the amplitude is checked against zero by the [route 0] object. If zero \, the "\$1 0" confects a 2-argument message (voice number and zero). Otherwise \, the "\$2" retrieves the voice number from [poly] in order to route the note data to the appropriate voice inside [clone]., f 67;
 #X connect 2 0 4 0;
 #X connect 2 2 4 1;
 #X connect 4 0 6 0;
