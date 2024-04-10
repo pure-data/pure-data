@@ -1793,6 +1793,75 @@ recently been implemented in its current form, and as (hopefully) the user base
 grows there will surely be occasions for many further extensions of the data
 handling primitives and the graphical presentation and editing functions.
 
+<H3> <A id="s11"> 2.11. Differences from Max </A> </H3>
+
+<P> Pd wasn't intended to be a Max clone, but there were many similarities between
+Pd and Max/MSP in the of its origin and  some effort had been undertaken (but more
+would have been needed) to make the two interoperable. It was possible to import
+and export patches to Max/MSP; you just needed to save as text to a file with
+extension ".pat", and then open in the other program. You'd at least get something.
+By sticking to common or commonizable features youcould actually develop patches
+for both platforms.
+
+<P> To this day, Pd can still open and save MAX patches with the .pat extension as
+well as MAX's text  files  with  the .mxt extension. However, these are legacy and
+unsupported MAX formats as currently MAX uses a JSON-based file  format  with
+the .maxpat extension introducd in MAX 5, released in 2008.
+
+<P> Since MAX 5, MAX and Pd have diverged even more over the years, but Pd is still
+closely related to MAX/MSP. Nonetheless, there are differences in semantics between
+the two; a partial list follows.
+
+<P> In Pd you can edit instantiations of abstractions and save the result back
+to the file of the abstraction.  This isn't possible in Max, because the
+instantiations are different from the abstraction itself in that "#1", etc.,
+are replaced by the instantiation arguments.  In Pd, these arguments appear
+as "$1", etc, and are translated at a slightly later stage of the instantiation
+process so that you still see them as "$" variables in the instantiation.
+see <A href="x2.htm#s8.1">Abstractions </A>.
+
+<P> In Pd, to make current all instantiations of the abstraction, either delete
+and recreate them or close and open the patch; this is done automatically in Max.
+
+<P>  In Pd, if you select "save" while in a subpatch, the parent is saved. In
+Max, if you do this a dialogue box comes up asking if you want to save the
+subpatch as a separate file.  (if you want to save a subpatch to a file in Pd,
+you have to copy and paste the contents to a new document.
+
+<P> In Pd, inlets and outlets are ordinary text objects; in Max they're
+"gui" objects from the palette.
+
+<P> In Max, if an object's outlet is connected to several destinations,
+corresponding messages are always sent in right-to-left screen order.  In
+Pd, the messages are sent in the order you made the connections in.  In either
+case, in situations where you care about the order it's appropriate to use
+a [trigger] object to specify.
+
+<P> In Pd, there's no [gate]; instead there's a [spigot] with the inlets in
+the opposite, more natural order.
+
+<P> Switching subsets of the DSP patch on and off is done in completely
+different ways in Pd and Max, and block sizes are handled differently
+as well.
+
+<P> Max offers many "GUI" objects such as sliders, dials, VU meters, piano
+keyboards, even "bpatchers." Until version 0.34, the only two in Pd were the
+number box and graphical arrays.  Starting in version 0.34, Pd incorporates
+Thomas Musil's GUI objects: sliders, switches, and so on.  (Thanks Thomas!)
+Beyond this essential collection of GUI objects, it's unlikely you'll ever find
+any commonality between the two.
+
+<P> The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches,
+in Pd; however, Pd's version is quite different from Max's.
+
+<P>  In Pd there's no [preset] object (I now think it's basically a bad idea)
+and you have to use explicit sends and receives to restore values to number
+boxes. Then just make a "message" box to re-send the values you want.
+
+<P> In Macintosh land, instead of getting tabosc4~ and arrays, you get cycle~
+and buffer~. The only gotcha is that you probably can't draw in buffer~ with
+the mouse as you can with arrays, but at least it's possible to
+make a patch that copies a "table" into a "buffer~".
 
 <P>
 <BR><BR>
