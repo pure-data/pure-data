@@ -1366,6 +1366,8 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
         #if 1
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 fprintf(stderr, "setsockopt (TCP_NODELAY) failed");
@@ -1420,6 +1422,8 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
         #if 1
             /* ask OS to allow another process to reopen this port after we close it */
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
@@ -1859,7 +1863,10 @@ void sys_stopgui(void)
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-
+    sys_vgui("%s", "exit\n");
+        /* flush twice just in case contents in FIFO wrapped around: */
+    sys_flushtogui();
+    sys_flushtogui();
     if (INTER->i_guisock >= 0)
     {
         sys_closesocket(INTER->i_guisock);
