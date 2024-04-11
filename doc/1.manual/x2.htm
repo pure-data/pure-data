@@ -40,7 +40,7 @@ libpd you can have Pure Data as an embeddable audio synthesis library. Additiona
 in its origin, Pd was designed to offer a unique experimental feature not found in MAX,
 allowing users to define and access data structures in innovative ways, with the ability
 to attach shapes and colors to the data in order to visualize it and/or edit it graphically
-(see section <A href="x2.htm#s10">2.10 Data Structures</A> for details.)
+(see section <A href="x2.htm#s10">2.10 Data Structures</A> for details).
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
@@ -71,14 +71,14 @@ as it's common for all apps in macOS).
 Processing" and turns audio processing on and off globally. When "DSP" is on, Pd is
 computing audio samples in realtime for all open patches (whether they are visible
 or not). Turning off "DSP" halts the computation and releases any audio devices that
-Pure Data is utilizing. You can configure audio devices in the "Audio preferences"
-as described in the <A href="x3.htm">next chapter</A>.
+Pure Data is utilizing. You can configure audio devices as described in
+<A href="x3.htm#s3.1">3.3.1. Audio Settings</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl</kbd>+<kbd>/</kbd>
 (<b>Control</b> key on PCs or <b>Command</b> key on Apple computers plus the '<b>/</b>' key)
 to turn audio processing on, and <kbd>Ctrl</kbd>+<kbd>.</kbd> to turn it off. You can check input RMS
 audio level if you select "Test Audio and MIDI" and make other Audio and MIDI tests (read more
-about this in <A href="x3.htm#s1.0">3.1. Audio and MIDI</A>).
+about this in <A href="x3.htm#s3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <P>
     <IMG src="img/2.1.2.png" ALT="media menu">
@@ -538,14 +538,14 @@ or <kbd>Shift</kbd>+<kbd>Tab</kbd> to navigate to the previous one.
 <H3> <A id="s3.2">2.3.2. Autopatching</A> </H3>
 
 <P>By default, Pd has an 'autopatching' mode set to on. You can disable it
-via startup flags (see '-autopatch' flag <a href="x3.htm#s4">Preferences
-and startup options</A>). This works with the shortcuts from the <b>Put
-menu</b> for inserting boxes. If you have a selected box and use a shortcut
-to create another one (such as <kbd>Ctrl</kbd>+<kbd>1</kbd> to create an object box),
-the created box is placed below the selected box and a connection is made
-from the first outlet of the selected box into the inlet of the newly created
-box (granted that these boxes have an outlet and an inlet for the connection
-to happen).
+via startup flags (see '-autopatch' flag <a href="x3.htm#s4.1">3.4.1.
+Startup flags</A>). This works with the shortcuts from the <b>Put menu</b>
+for inserting boxes. If you have a selected box and use a shortcut to
+create another one (such as <kbd>Ctrl</kbd>+<kbd>1</kbd> to create an
+object box), the created box is placed below the selected box and a
+connection is made from the first outlet of the selected box into the
+inlet of the newly created box (granted that these boxes have an outlet
+and an inlet for the connection to happen).
 
 <P>Once the new box is created, it is also selected, so you can continue with
 autopatching by adding yet more boxes. In the case of object and message boxes
@@ -1193,7 +1193,7 @@ but at the same logical time.
 that is, it tries to keep ahead of real time by a small amount in order to be
 able to absorb unpredictable, momentary increases in computation time. This
 is specified using the "-audiobuf" and "-blocksize" command line flags
-(see <a href="x3.htm">Installing and configuring Pd</A>).
+(see <a href="x3.htm#s4.1">3.4.1. Startup flags</A>).
 
 <P>If Pd gets late with respect to real time, gaps (either occasional or
 frequent) will appear in both the input and output audio streams. On the
