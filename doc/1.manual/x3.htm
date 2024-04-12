@@ -584,7 +584,13 @@ general flags:
 
 </PRE>
 
-<P>Here are some details.
+<P>Here are some details on a few items.
+
+<H4> Font </H4>
+
+<P> The flags offer more font configurations than just "size". Note that macOS has,
+by default, a "normal" font weigth, while in Linux and Windows you have "<b>bold</b>"
+by default. Use "-font-weight" to change that if you don't like your default setting.
 
 <H4> Path </H4>
 
@@ -593,9 +599,9 @@ semicolons in Windows.
 
 <H4> MIDI multiple devices and sleepgrain </H4>
 
-<P> You can specify multiple MIDI input and output devices. For example,
+<P> You can specify multiple MIDI input and output devices via flags. For example,
 "pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
-fourth and second MIDI output device.
+second and fourth MIDI output device.
 
 <P> In Linux, if you ask for "pd -midioutdev 1" for instance, you get /dev/midi0
 or /dev/midi00 (or even /dev/midi). "-midioutdev 45" would be /dev/midi44. In
