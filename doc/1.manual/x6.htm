@@ -22,26 +22,29 @@
 <BR><BR>
 </P>
 
-<P>Pd is built on the commandline using traditional Unix-style tools. The source
-distribution comes with two build systems:</P>
-
-<ul>
-<li>autotools: easy to use, many compilation options, recommended for most users</li>
-<li>makefile: smaller &amp; simpler, used for Pd binary downloads</li>
-</ul>
+<P>This chapter offers in depth details on how to build Pd from its source code
+and install it on different operating systems (macOS, Linux, BSD & Windows).
 
 <hr>
 
 <H3> <A id="s6.1"> 6.1. Requirements </A> </H3>
 
-<p>Core build requirements:</p>
+<P>Pd is built on the commandline using traditional Unix-style tools. The source
+distribution comes with two build systems:</P>
+
+<ul>
+<li><b>autotools:</b> easy to use, many compilation options <b>(recommended for most users)</b></li>
+<li><b>makefile:</b> smaller &amp; simpler, used for Pd binary downloads</li>
+</ul>
+
+<p>The core build requirements are:</p>
 
 <ul>
 <li>Unix command shell: bash, dash, etc</li>
 <li>C compiler chain: gcc/clang &amp; make</li>
 </ul>
 
-<p>Core runtime requirements:</p>
+<p>And a core runtime requirement is:</p>
 
 <ul>
 <li>Tcl/Tk: Tk wish shell</li>
@@ -58,7 +61,7 @@ distribution comes with two build systems:</P>
 
 <hr>
 
-<H3> <A id="s6.2"> 6.2. Autotools Build (recommended) </A> </H3>
+<H3> <A id="s6.2"> 6.2. General Autotools Build steps </A> </H3>
 
 <p>Building Pd using the GNU autotools involves the following steps for all platforms:</p>
 
@@ -91,7 +94,7 @@ make
 
 <p>You can verify the configuration options that the configure step script prints:</p>
 
-<pre>pd 0.47.1 is now configured
+<pre>pd 0.55.0 is now configured
 
 Platform:             Mac OSX
 Debug build:          no
