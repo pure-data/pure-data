@@ -23,10 +23,7 @@
 <BR><BR>
 </P>
 
-
-<H3> <A id=> 4. Externals </A> </H2>
-
-<p> This section explains what are external objects and libraries. It also
+<p> This chapter explains what are external objects and libraries. It also
 describes everything on how to install and load them in Pure Data.
 
 <p>You can write your own external objects that you and others can use in
@@ -40,9 +37,14 @@ pd-lib-builder project (a helper makefile for Pure Data external libraries by
 Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
 
 
-<H3> <A id=s1> 4.1 External Objects & Libraries </A> </H2>
+<hr>
 
-<H3> <A id=s1.1> 4.1.1 What are: Vanilla Objects, Internals & Externals? </A> </H3>
+<H3> <A id=s4.1> 4.1 External Objects & Libraries </A> </H2>
+
+<p> We start this section by defining what are internals and externals. The
+Pd Vanilla distribution actually comes with both.
+    
+<H3> <A id=s4.1.1> &emsp; 4.1.1 Vanilla Objects, Internals & Externals </A> </H3>
 
 <p> Internal objects come as part of the Pd binary, whereas external objects
 are separate from it. The main Pd distribution (a.k.a. “Pd Vanilla”) also comes
@@ -66,18 +68,17 @@ Help Browser menu (Help => Browser). See figure below, which shows how
 the browser looks in a fresh install of Pd and lists the objects in the extra
 folder.
 
-<p><IMG src="img/4.1.2.png" ALT="browser window">
+<p>
+<IMG src="img/4.1.2.png" ALT="browser window">
 <br>
 
-
-<H3> <A id=s1.2> 4.1.2. What are the Types of External Objects? </A> </H3>
+<H3> <A id=s4.1.2> &emsp; 4.1.2. Types of external objects </A> </H3>
 
 <p> An object in Pd can be either a patch - meaning a Pd file (a.k.a
 abstraction) - or a compiled binary (note that a binary can contain only one or
 several external objects, as discussed further on).
 
-
-<H3> <A id=s1.2.1> 4.1.2.1. Compiled objects: </A> </H3>
+<H4> <A id=s4.1.2.1> &emsp; &emsp; 4.1.2.1. Compiled objects: </A> </H4>
 
 <p> These are Pd objects compiled to binaries from programming code (like
 in C or C++). They have to be compiled for your operating system, which
@@ -313,8 +314,7 @@ instance:
 </tbody>
 </table>
 
-
-<H3> <A id=s1.2.2> 4.1.2.2. Abstractions:</A> </H3>
+<H4> <A id=s4.1.2.2> &emsp; &emsp; 4.1.2.2. Abstractions:</A> </H4>
 
 <p>You can have a Pd patch behave like an object by loading it into other
 patches - these are usually called “abstractions”. Note that some of the
@@ -322,10 +322,7 @@ externals in “extra” are abstractions (for instance, rev1~ or hilbert~). Lik
 other Pd patch, an abstraction may contain any kind of objects (internals,
 compiled externals and even other abstractions).
 
-
-
-
-<H3> <A id=s1.3> 4.1.3. What are External Libraries? </A> </H3>
+<H3> <A id=s4.1.3> &emsp; 4.1.3. External libraries </A> </H3>
 
 <p>In practical terms, an external library is a collection of external objects of any kind (abstractions or compiled objects). But when it comes to compiled objects, a library can provide several objects as a <b>single binary pack</b> or as a <b>set of
 separate binaries</b> (where each object has its own binary).
@@ -340,9 +337,7 @@ a library is just a set of objects.
 loaded depending if they’re a single binary pack or a set of separate binaries
 (as explained in the next subsections).
 
-
-
-<H3> <A id=s1.4> 4.1.4. What are the types of External Libraries? </A> </H3>
+<H3> <A id=s4.1.4> &emsp; 4.1.4. Types of external libraries </A> </H3>
 
 <p>Libraries can come in all sorts of ways; as only a collection of
 abstractions (like "list-abs"), only compiled objects, or both. It can even mix
@@ -353,9 +348,11 @@ pack</b>. Basically, any combination is possible for a set of external.
 which provides most of its objects as a <b>set of separate binaries</b>, but also includes
 a small collection of 12 objects as a <b>single binary pack</b> plus a few abstractions.
 
-<H3> <A id=xx1>Wrapping up Part 1)</A> </H3>
-<UL>
+<H3> <A id=s4.1.5> &emsp; 4.1.5. Wrapping up Section 4.1</A> </H3>
 
+<p>In short, we have:
+
+<UL>
 	<LI> <b>Internal objects:</b> Objects that are part of Pd Vanilla's binary.
 	<LI> <b>External objects:</b> Objects that are <u>NOT</u> part of Pd Vanilla's binary.
 	<LI> <b>Vanilla objects:</b> Built-in objects in the Pd Vanilla distribution
@@ -367,18 +364,16 @@ abstractions or any combination of them.
 </UL>
 <br>
 <br>
+
 <hr>
 
-
-<H3> <A id=s2>4.2. Installing External Objects and Libraries
-</A> </H3>
-
+<H3> <A id=s4.2>4.2. Installing External Objects and Libraries </A> </H3>
 
 <p>Installing externals in Pd is quite simple, all you need to do is download
 your externals from somewhere, such as from Pd Vanilla directly, and include
 them in a proper folder.
 
-<H3> <A id=s2.1>4.2.1. Where to include the externals?</A> </H3>
+<H3> <A id=s4.2.1> &emsp; 4.2.1. Where to include externals</A> </H3>
 
 <p>Currently, when launching for the first time with a fresh install, Pd asks if
 you want to create a documents directory for patches that includes an
@@ -458,7 +453,7 @@ or ~/pd-externals (deprecated but still usable).
 	<LI><u>Global</u>: <mark><b> /usr/local/lib/pd-externals</b></mark>.
 </UL>
 
-<H3> <A id=s2.2>4.2.2. How to Download Externals from Pd</A> </H3>
+<H3> <A id=s4.2.2> &emsp; 4.2.2. How to Download Externals from Pd</A> </H3>
 
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a
 built in .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
@@ -474,8 +469,10 @@ the library/external specific for your operating system will be shown to you. Se
 "~/Documents/Pd/externals".
 <br>
 <br>
+
 <hr>
-<H3> <A id=s3>4.3. Loading Externals </A> </H3>
+
+<H3> <A id=s4.3>4.3. Loading Externals </A> </H3>
 
 <p>The current best practice is to use the declare object to search for, load and manage
 externals, but there are alternatives.
@@ -489,7 +486,7 @@ a set of separate binaries, Pd just needs to know its path. Again, this can be
 done with declare or manually via Preferences => Path, but yet another
 option here is to use slash declarations as we'll see later.
 
-<H3> <A id=s3.1>4.3.1. Using the [declare] object:</A> </H3>
+<H3> <A id=s4.3.1>&emsp; 4.3.1. Using the [declare] object:</A> </H3>
 
 <p>The declare object can be used to add search paths or load libraries. When
 adding a path, it behaves quite similarly to adding search paths to the
@@ -501,7 +498,7 @@ which loads permanently for any patch.
 sticks with it. This means that if you use [declare] to load a library, it will
 also be loaded if you create a new patch without any [declare] object.
 
-<H3> <A id=s3.1.1>4.3.1.1. [declare -path]:</A> </H3>
+<H4> <A id=s4.3.1.1>&emsp; &emsp; 4.3.1.1. [declare -path]:</A> </H4>
 
 <p>Let's take for an example the <a href="http://github.com/porres/pd-else"> ELSE</a> library.
 This library contains separate binaries and abstractions, so Pd only needs to know its location
@@ -523,8 +520,7 @@ need to add the external folder to the path, manually or use [declare]. This is 
 when you tell Pd to look for an external, if it finds a folder with the same name as the
 external, it'll know to search inside that folder for the external!
 
-
-<H3> <A id=s3.1.2>4.3.1.2. [declare -lib]:</A> </H3>
+<H4> <A id=s4.3.1.2> &emsp; &emsp; 4.3.1.2. [declare -lib]:</A> </H4>
 
 <p>The '-lib' flag is needed for the classic Pd library format, which
 is a single binary pack with many externals. One such example is the
@@ -544,12 +540,11 @@ other objects in your patch.
 
 <p>For more details on how [declare] works, please check its help file!
 
-<H3> <A id=s3.2>4.3.2. Load via Path and Startup:</A> </H3>
+<H3> <A id=s4.3.2> &emsp; 4.3.2. Load via Path and Startup:</A> </H3>
 
 <p>We'll now see the differences between using [declare] or using "Path" and "Startup".
 
-
-<H3> <A id=s3.2.1>4.3.2.1. User added Path:</A> </H3>
+<H4> <A id=s4.3.2.1> &emsp; &emsp; 4.3.2.1. User added Path:</A> </H4>
 
 <p>One big difference in adding a search path in "Preferences => Path" "is that this
 permanently adds the path and work every time Pd starts and for any patch you open.
@@ -571,12 +566,12 @@ libraries to the user added search paths.
 like it happens when you use [declare]. In this case, the path relative to the patch
 will always have top priority!
 
-<H3> <A id=s3.2.2>4.3.2.2. Startup:</A> </H3>
+<H4> <A id=s4.3.2.2> &emsp; &emsp; 4.3.2.2. Startup:</A> </H4>
 
 <p>"Preferences => Startup" loads a window that says <i>"Pd libraries to load on startup"</i>.
 This is where you can manually and permanently load single binary pack libraries. But since
 they're only needed during startup, you need to restart Pd so this takes effect. The startup
-is also used for configuring Pd in many ways, see <a href="x3.htm#s4">3.4. Preferences and
+is also used for configuring Pd in many ways, see <a href="x3.htm#s3.4">3.4. Preferences and
 startup options</a> for reference.
 
 <p>
@@ -612,7 +607,7 @@ on the next section.
 <p><IMG src="img/4.3.2.png" ALT="lib print">
 <br>
 
-<H3> <A id=s3.3>4.3.3. Slash declarations:</A> </H3>
+<H3> <A id=s4.3.3> &emsp; 4.3.3. Load using slash declarations</A> </H3>
 
 <p>What is this and how does it work? Let’s say you’ve downloaded the ELSE library into
 ~/Documents/Pd/externals. Instead of using [declare -path else] or adding the
@@ -660,7 +655,9 @@ so this way you can make sure you're getting cyclone's instead.
 
 <p>These issues might be clear if you better understand how Pd works when loading externals. See next subsection.
 
-<H3> <A id=s4>4.4. How external binaries are loaded</A> </H3>
+<hr>
+
+<H3> <A id=s4.4>4.4. How external binaries are loaded</A> </H3>
 
 <p>Once you make sure Pd can load an external binary, this is what happens when you
 create it. Whenever you type the name of an object (into an "object" box) that
@@ -687,7 +684,7 @@ Pd to get the change to take.
 get updated any time they’re updated and reloaded!
 
 
-<H3> <A id=s3.3>4.4.1. Overriding objects (externals and native):</A> </H3>
+<H3> <A id=s4.4.1> &emsp; 4.4.1. Overriding objects (externals and native)</A> </H3>
 
 <p>We've seen that Pd loads and sticks to an external. But this can get overridden.
 We've actually seen that already. For instance, you create [xfade~] from ELSE, then
@@ -706,7 +703,9 @@ the old one and renames it by appending "_aliased", so you can still load the ol
 internals, but it makes sense if you provide new versions with more features but fully
 backwards compatible.
 
-<H3> <A id=s4>4.5. Search order for loading objects</A> </H3>
+<hr>
+
+<H3> <A id=s4.5> &emsp; 4.5. Search order for loading objects</A> </H3>
 
 <p>This information has been provided in pieces throughout this section of the Manual. But
 now well wrap it up after all the information has been presented.
@@ -728,6 +727,8 @@ is also respected, from top to bottom.
 <p><b>Fifth</b> and last, it searches the "standard paths", which includes the 'extra' library
 provided by the Pd Vanilla distribution. Note you can use [declare -stdpath ./] to force
 priority to search this folder!
+
+<hr>
 
 <P>
 <BR><BR>
