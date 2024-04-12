@@ -85,10 +85,17 @@ about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI<
 </P>
 
 <P>The lower part of the Pd window is a console area for printout from the output of
-boxes in patches and for messages from Pd itself (such as errors). If the Pd window is
-focused, the font size for menus and printout can be changed using the 'Font' dialog
-entry in the <b>Edit menu</b> as shown below. Make your adjustments if you are having
-trouble reading on HiDPI screens.
+boxes in patches and for messages from Pd itself, which can be several things, mostly
+warnings and errors. Errors are mostly given by objects and printed in the Pd window
+with a red font. If you <kbd>Ctrl</kbd>+<kbd>click</kbd> on the error, Pd selects the
+offending object in the patch. You can also use the "Find Last Error" entry in the
+<b>Find menu</b> for the same effect.
+
+(include pic of find menu with the "Find Last Error" entry selected)
+
+<P> If the Pd window is focused, the font size for menus and printout can be changed
+using the 'Font' dialog entry in the <b>Edit menu</b> as shown below. Make your
+adjustments if you are having trouble reading on HiDPI screens.
 
 <P>
     <IMG src="img/2.1.3.png" ALT="edit menu">
@@ -886,9 +893,12 @@ depends on the order the connections were made in.
 </P>
 
 <P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
-been sent the result "2", which can't finish processing until the
-left-hand one has been sent "3", and so on. Pd will print an error message
-reporting a "stack overflow" if this happens.
+been sent the result "2", which can't finish processing until the left-hand one
+has been sent "3", and so on. This generates a "<b>stack overflow</b>" error (which means
+'infinite loop') in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
+on (as described earlier) to select the offending object.
+
+(include pic of stack overflow error and the selected object)
 
 <P>However, it is legal to make a loop if there is a [delay] object somewhere
 in it. When [delay] receives a message, it schedules a message for the
@@ -1053,9 +1063,12 @@ control or signal inputs in their 2nd inlet depending on the creation argument.
 <P>The audio network, that is, the tilde objects and their interconnections,
 must be non-cyclic. If there are loops at "sort time", you will see an error
 message on the main Pd window, saying <b>"DSP loop detected (some tilde
-objects weren't scheduled)"</b>. You can build algorithms with feedback using
-nonlocal signal connections as explained in the <A href="x2.htm#s2.5.5">2.5.5.
-subsection</A>.
+objects weren't scheduled)"</b>.
+
+(include pic of error and the selected object)
+
+<P> You can build algorithms with feedback using nonlocal signal connections
+as explained in the <A href="x2.htm#s2.5.5">2.5.5. subsection</A>.
 
 <P>Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
 objects (see <A href="x2.htm#s2.8">2.8. Subpatches</A>).
