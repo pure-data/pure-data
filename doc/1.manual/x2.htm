@@ -279,7 +279,7 @@ directory where the patch was found.
 <P>Normally, you'll use Pd in run mode, which is also referred to as "performance
 mode". In order to edit a patch, you need to go into edit mode.
 
-<H4> <A id="s2.2.1"> 2.2.1. Edit and Run mode</A> </H4>
+<H4> <A id="s2.2.1"> 2.2.1. Edit and run mode</A> </H4>
 
 <P>When you open a Pd file, it is in run mode. In run mode, the cursor is an arrow that
 points up and is slightly tilted to the left, but it points straight up when you are
@@ -580,7 +580,7 @@ duplicate and create more connections.
     <IMG src="img/2.3.6.png" ALT="duplicate connections">
 </P>
 
-<H4> <A id="s2.3.4">2.3.4. Managing connections with the Shift key</A> </H4>
+<H4> <A id="s2.3.4">2.3.4. Managing connections with the shift key</A> </H4>
 
 <P>You can swap connections if you selected a connection and use
 <kbd>Shift</kbd>+<kbd>Click</kbd> on another one.
@@ -799,13 +799,15 @@ Pd messages are sporadic, like MIDI messages or Music N "Note cards".
 is a symbol, which appears in the patch as a non-numeric string with no white
 space, semicolons, or commas. The arguments may be symbols or numbers.
 
-<P>Pd is usually compiled for single precision, but you can compile it for
-double precision as well (see <A href="x6.htm#s6.7">6.7. Double precision</A>).
-If compiled for single precision, numbers are kept in 32-bit floating point,
-while if compiled for double precision (AKA: "Pd64") you have values in
-64-bit floating point precision. The integer values you can represent in
-each case is shown on the table below. (In Max, there are separate data
-types for integers and floating point numbers; Pd uses only float.)
+<P>Pd is usually compiled for single precision. Experimental binaries are
+available via the community for double precision (AKA: "Pd64"), but no
+binary is yet provided by the official download site. You can also compile
+Pd for double precision yourself (see details in <A href="x6.htm#s6.2">
+6.2. General Autotools Build steps</A>). If compiled for single precision,
+numbers are kept in 32-bit floating point, while if compiled for double
+precision ou have values in 64-bit floating point precision.Pd doesn't
+have a integer data type. The integer resolution is bothsingle and double
+precision is shown on the table below.
 
 <br>
 <br>
@@ -872,11 +874,10 @@ executed in depth first fashion. For instance in the patch below:
     <IMG src="img/2.4.2.png" ALT="depth first">
 </P>
 
-<P>the order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
+<P>The order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
 message is not done until the "D" one is also, and the "A" is not done until
 all four are. It is not visible whether "B" or "C" is done first; this
-depends on the order the connections were made in (in Max, it's automatically
-sorted right to left).
+depends on the order the connections were made in.
 
 <P>Message-passing can give rise to infinite loops of the sort shown here:
 
@@ -1408,23 +1409,19 @@ code and abstractions are like subroutines.
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
 you have a file "my-abstraction.pd" you may have [my-abstraction 5] to set the
-variable $1 to 5. This is defined only for object boxes (not for messages) in
-the abstraction (for message boxes, "$1", etc, have a different meaning as
-described above). If you want to send a message with a $1 in the sense of a
-creation argument of an abstraction, you must generate it with an object box
-such as [float $1], [symbol $1], or perhaps [pack $1 $2], which may then be
-sent to a message box.
+variable "$1" to 5. This is defined only for object boxes (not for messages) in
+the abstraction. For message boxes, "$1", etc, have a different meaning as
+described above, so note that dollar signs are expanded at a different time in
+an object box than in a message box. In an object box, the "$" argument is
+expanded at creation time, and in a message box, at message time. If you want
+to send a message with a "$1" in the sense of a creation argument of an
+abstraction, you must generate it with an object box such as [float $1],
+[symbol $1], or perhaps [pack $1 $2], which may then be sent to a message box.
 
-<P>The corresponding feature in Max (both Opcode and Ircam) was the "#1"
-construct. In a Max abstraction, "#1", etc., are replaced by the creation
-argument. This has the disadvantage that you can't edit the abstraction as
-instantiated in the patch since the "#" variables are substituted. In Pd the
-"$" variables in object boxes are spelled literally as "$" variables so that
-it's meaningful to edit them from within their calling patch. On the Pd side,
-however, there is the disadvantage that it's confusing to have "$" expanded at
-a different time in an object box than in a message box. In an object box, the
-"$" argument is expanded at creation time, and in a message box, at message
-time.
+<P> The [pdcontrol] object has an alternative strategy for retrieving arguments
+in an abstraction with the 'args' message, which makes the object output a list
+with all argument values. This has the advantage of being able to get a varaible
+number of arguments, as well as varying thei atom type.
 
 <P>A [clone] object is provided to automatically create and manage multiple copies
 of an abstraction. You can use it to make voice banks for polyphonic synthesis,
@@ -1818,10 +1815,34 @@ handling primitives and the graphical presentation and editing functions.
 
 <H3> <A id="s2.11">2.11. Differences from MAX </A> </H3>
 
-<P> Pd wasn't intended to be a Max clone, but there were many similarities between
-Pd and Max/MSP in the of its origin and  some effort had been undertaken (but more
+<!--- comment out
+
+<P>The order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
+message is not done until the "D" one is also, and the "A" is not done until
+all four are. It is not visible whether "B" or "C" is done first; this
+depends on the order the connections were made in (in Max, it's automatically
+sorted right to left).
+
+<P>The corresponding feature for "$1" in abstraction in Max (both Opcode and Ircam)
+was the "#1" construct. In a Max abstraction, "#1", etc., are replaced by the creation
+argument. This has the disadvantage that you can't edit the abstraction as
+instantiated in the patch since the "#" variables are substituted. In Pd the
+"$" variables in object boxes are spelled literally as "$" variables so that
+it's meaningful to edit them from within their calling patch. On the Pd side,
+however, there is the disadvantage that it's confusing to have "$" expanded at
+a different time in an object box than in a message box. In an object box, the
+"$" argument is expanded at creation time, and in a message box, at message
+time.
+
+<P> In MAX, there are separate data types for integers and floating point numbers;
+Pd uses only float.
+
+/// end comment out -->
+
+<P> Pd wasn't intended to be a MAX clone, but there were many similarities between
+Pd and MAX/MSP in the of its origin and  some effort had been undertaken (but more
 would have been needed) to make the two interoperable. It was possible to import
-and export patches to Max/MSP; you just needed to save as text to a file with
+and export patches to MAX/MSP; you just needed to save as text to a file with
 extension ".pat", and then open in the other program. You'd at least get something.
 By sticking to common or commonizable features youcould actually develop patches
 for both platforms.
@@ -1836,7 +1857,7 @@ closely related to MAX/MSP. Nonetheless, there are differences in semantics betw
 the two; a partial list follows.
 
 <P> In Pd you can edit instantiations of abstractions and save the result back
-to the file of the abstraction.  This isn't possible in Max, because the
+to the file of the abstraction. This isn't possible in MAX, because the
 instantiations are different from the abstraction itself in that "#1", etc.,
 are replaced by the instantiation arguments.  In Pd, these arguments appear
 as "$1", etc, and are translated at a slightly later stage of the instantiation
@@ -1844,17 +1865,17 @@ process so that you still see them as "$" variables in the instantiation.
 see <A href="x2.htm#s2.8.1">Abstractions </A>.
 
 <P> In Pd, to make current all instantiations of the abstraction, either delete
-and recreate them or close and open the patch; this is done automatically in Max.
+and recreate them or close and open the patch; this is done automatically in MAX.
 
 <P>  In Pd, if you select "save" while in a subpatch, the parent is saved. In
-Max, if you do this a dialogue box comes up asking if you want to save the
+MAX, if you do this a dialogue box comes up asking if you want to save the
 subpatch as a separate file.  (if you want to save a subpatch to a file in Pd,
 you have to copy and paste the contents to a new document.
 
-<P> In Pd, inlets and outlets are ordinary text objects; in Max they're
+<P> In Pd, inlets and outlets are ordinary text objects; in MAX they're
 "gui" objects from the palette.
 
-<P> In Max, if an object's outlet is connected to several destinations,
+<P> In MAX, if an object's outlet is connected to several destinations,
 corresponding messages are always sent in right-to-left screen order.  In
 Pd, the messages are sent in the order you made the connections in.  In either
 case, in situations where you care about the order it's appropriate to use
@@ -1864,18 +1885,18 @@ a [trigger] object to specify.
 the opposite, more natural order.
 
 <P> Switching subsets of the DSP patch on and off is done in completely
-different ways in Pd and Max, and block sizes are handled differently
+different ways in Pd and MAX, and block sizes are handled differently
 as well.
 
-<P> Max offers many "GUI" objects such as sliders, dials, VU meters, piano
+<P> MAX offers many "GUI" objects such as sliders, dials, VU meters, piano
 keyboards, even "bpatchers." Until version 0.34, the only two in Pd were the
 number box and graphical arrays.  Starting in version 0.34, Pd incorporates
 Thomas Musil's GUI objects: sliders, switches, and so on.  (Thanks Thomas!)
 Beyond this essential collection of GUI objects, it's unlikely you'll ever find
 any commonality between the two.
 
-<P> The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches,
-in Pd; however, Pd's version is quite different from Max's.
+<P> The "bpatcher" feature in MAX has a correlate, "graph on parent" subpatches,
+in Pd; however, Pd's version is quite different from MAX's.
 
 <P>  In Pd there's no [preset] object (I now think it's basically a bad idea)
 and you have to use explicit sends and receives to restore values to number
