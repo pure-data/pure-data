@@ -16,7 +16,7 @@
 
 <div id="corpus">
 
-<H2>Pd Manual chapter 2: Theory of operation</H2>
+<H2>Chapter 2: Theory of operation</H2>
 
 <P>
 <A href="index.htm#s2">back to table of contents</A>
@@ -50,7 +50,7 @@ add graphical processing include Mark Dank's GEM package which expands Pd to be 
 for simultaneous computer animation and Zack Lee's "Ofelia" that allows you to use
 openFrameworks and the Lua programming language within Pd for creating audiovisual artwork
 or multimedia applications such as games. For details on installing and managing packages,
-refer to the <A href="x4.htm"> Externals</A> chapter.
+refer to <A href="x4.htm"> Chapter 4: Externals</A>.
 
 <H4> <A id="s2.1.1"> 2.1.1. The main window, canvases, and printout</A> </H4>
 
@@ -72,7 +72,7 @@ Processing" and turns audio processing on and off globally. When "DSP" is on, Pd
 computing audio samples in realtime for all open patches (whether they are visible
 or not). Turning off "DSP" halts the computation and releases any audio devices that
 Pure Data is utilizing. You can configure audio devices as described in
-<A href="x3.htm#s3.3.1">3.3.1. Audio Settings</A>.
+<A href="x3.htm#s3.3.1">3.3.1. Audio settings</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl</kbd>+<kbd>/</kbd>
 (<b>Control</b> key on PCs or <b>Command</b> key on Apple computers plus the '<b>/</b>' key)
@@ -252,8 +252,8 @@ while the appearance of an object or message box remains unchanged when a patch 
 a number box's content (the text) changes to reflect the current value held by the box.
 You can also use a number box as a control by clicking and dragging up and down, or
 by typing values in it and hitting enter (more details on how this and any other GUIs
-work is available in the help files; see <A href="x2.htm#s2.2.7">Popup menu for 'Properties',
-'Open' and 'Help'</A> to find out how to look this up).
+work is available in the help files; see <A href="x2.htm#s2.2.7">2.2.7. Popup menu for
+'Properties', 'Open' and 'Help'</A> to find out how to look this up).
 
 <H4> <A id="s2.1.4"> 2.1.4. Patches and files</A> </H4>
 
@@ -263,7 +263,7 @@ as well as close and save them.
 <P>When you save a patch to a file, Pd doesn't save the entire state of all the
 objects in the patch, but only what you see: the objects' creation arguments
 and their interconnections. Nonetheless, the [savestate] object offers a mechanism
-to save the state of abstractions (see <A href="x2.htm#s2.8">Subpatches</A>). Also,
+to save the state of abstractions (see <A href="x2.htm#s2.8">2.8. Subpatches</A>). Also,
 certain data-storage objects have functions for reading and writing other files to
 save and restore their internal state (one example is the [text] object). When loading
 a patch, the [loadbang] object can be used to initialize the parameters of your patch,
@@ -490,7 +490,7 @@ what it is and how it works. Asking "Help" for the canvas as a whole
 every object class.
 
 <P>The "Open" menu item is only enabled if you right-click on a subpatch
-(see <A href="x2.htm#s2.8">Subpatches</A>) and prompts Pd to open it.
+(see <A href="x2.htm#s2.8">2.8. Subpatches</A>) and prompts Pd to open it.
 Ordinary subpatches may also be opened by simply clicking on them, but for
 "graph-on-parent" subpatches, this is the only method available.
 
@@ -561,7 +561,7 @@ box gets deselected and therefore created.
 </P>
 
 <P>You can also autopatch into a newly created subpatch (see <A href="x2.htm#s2.8">
-Subpatches</A>). By creating an object box and typing [pd], as soon as you
+2.8. Subpatches</A>). By creating an object box and typing [pd], as soon as you
 deselect the object, a subpatch is created with an inlet - either a control
 inlet ([inlet]) if the object above is a control object, or a signal inlet
 ([inlet~]) if it is a tilde object instead.
@@ -701,7 +701,7 @@ to include the third one in the connection.
 shortcut was designed to insert a [trigger] object (in its abbreviated form [t]).
 When you select a single box that is connected to many inlets of a single or
 multiple boxes use "Triggerize" to insert this object, which is briefly described
-in <A href="x2.htm#s2.4.3">Hot and cold inlets and right to left outlet order</A>.
+in <A href="x2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
 
 <P>The [trigger] object is widely used in Pd to control the order of execution
 from right to left. 'Triggerize' then creates the [trigger] object taking into
@@ -1058,7 +1058,7 @@ nonlocal signal connections as explained in the <A href="x2.htm#s2.5.5">2.5.5.
 subsection</A>.
 
 <P>Your subpatches can have audio inlets and outlets via the [inlet~] and [outlet~]
-objects (see <A href="x2.htm#s2.8">Subpatches</A>).
+objects (see <A href="x2.htm#s2.8">2.8. Subpatches</A>).
 
 <H4> <A id="s2.5.3">2.5.3. Converting audio to and from messages</A> </H4>
 
@@ -1862,7 +1862,7 @@ instantiations are different from the abstraction itself in that "#1", etc.,
 are replaced by the instantiation arguments.  In Pd, these arguments appear
 as "$1", etc, and are translated at a slightly later stage of the instantiation
 process so that you still see them as "$" variables in the instantiation.
-see <A href="x2.htm#s2.8.1">Abstractions </A>.
+see <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>.
 
 <P> In Pd, to make current all instantiations of the abstraction, either delete
 and recreate them or close and open the patch; this is done automatically in MAX.
