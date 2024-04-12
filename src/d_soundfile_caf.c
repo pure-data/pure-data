@@ -248,12 +248,12 @@ static int caf_readheader(t_soundfile *sf)
     bytespersample = swap4(desc->ds_bitsperchannel, swap) / 8;
     switch (bytespersample)
     {
-        case 2: case 3: case 4: break;
+        case 2: case 3: case 4: case 8: break;
         default:
             errno = SOUNDFILE_ERRSAMPLEFMT;
             return 0;
     }
-    if (bytespersample == 4 && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
+    if ((bytespersample == 4 || bytespersample == 8) && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
     {
         errno = SOUNDFILE_ERRSAMPLEFMT;
         return 0;
@@ -337,7 +337,7 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE - CAFCHUNKSIZE, swap);
     caf_setsamplerate(&desc, sf->sf_samplerate, swap);
     strncpy(desc.ds_fmtid, "lpcm", 4);
-    if (sf->sf_bytespersample == 4)
+    if (sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8)
         uinttmp |= kCAFLinearPCMFormatFlagIsFloat;
     if (!sf->sf_bigendian)
         uinttmp |= kCAFLinearPCMFormatFlagIsLittleEndian;

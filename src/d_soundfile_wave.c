@@ -111,7 +111,7 @@ typedef struct _factchunk
     /** returns 1 if format requires extended format and fact chunk */
 static int wave_isextended(const t_soundfile *sf)
 {
-    return sf->sf_bytespersample == 4;
+    return sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8;
 }
 
     /** read first chunk, returns filled chunk and offset on success or -1 */
@@ -285,7 +285,7 @@ static int wave_readheader(t_soundfile *sf)
             switch (bytespersample)
             {
                 case 2: case 3: break;
-                case 4:
+                case 4: case 8:
                     if (formattag == WAVE_FORMAT_FLOAT) /* 32 bit int? */
                         break;
                 default:
@@ -376,7 +376,7 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
     headersize += WAVEHEADSIZE;
 
         /* format chunk */
-    if (sf->sf_bytespersample == 4)
+    if (sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8)
         format.fc_fmttag = swap2(WAVE_FORMAT_FLOAT, swap);
     if (isextended)
     {
