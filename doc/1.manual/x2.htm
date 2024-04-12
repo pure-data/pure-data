@@ -713,16 +713,24 @@ to include the third one in the connection.
 
 <H4> <A id="s2.3.6">2.3.6. Triggerize</A> </H4>
 
-<P>The 'Triggerize' entry in the <b>Edit menu</b> with the <kbd>Ctrl</kbd>+<kbd>T</kbd>
-shortcut was designed to insert a [trigger] object (in its abbreviated form [t]).
-When you select a single box that is connected to many inlets of a single or
-multiple boxes use "Triggerize" to insert this object, which is briefly described
-in <A href="x2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
+<P>The 'Triggerize' entry in the <b>Edit menu</b> (with the <kbd>Ctrl</kbd>+<kbd>T</kbd>
+shortcut) was designed to insert a [trigger] object (in its abbreviated form [t]) into
+your patch. Start by selecting a single box that is connected to many inlets (of one or
+more boxes), then use "Triggerize" to insert a [trigger] object after the selected object.
 
 <P>The [trigger] object is widely used in Pd to control the order of execution
-from right to left. 'Triggerize' then creates the [trigger] object taking into
-account the order in which the connections were made, where the first connection
-starts at the rightmost outlet of [trigger] and continues to the leftmost.
+from right to left and is briefly described in <A href="x2.htm#s2.4.3">2.4.3.
+Hot and cold inlets and right to left outlet order</A>. 'Triggerize' then creates
+the [trigger] object taking into account the order in which the connections were made,
+where the first connection starts at the rightmost outlet of [trigger] and continues to
+the leftmost.
+
+<P>In the example below, a [pack] object is selected and connected to three [s] ([send])
+objects. Triggerize then introduces [t a a a] (short for [trigger anything anything
+anything]) with three outlets and the order that the connections from [pack] were made
+reflect the order from right to left. You can swap connections with the <kbd>Shift</kbd>
+key (as described in subsection <A href="x2.htm#s2.3.4">2.3.4.</A>) if you need to adjust
+the order of connections.
 
 <P>
     <IMG src="img/2.3.19.png" ALT="triggerize object">
@@ -739,27 +747,24 @@ for you to replace for a new object.
     <IMG src="img/2.3.20.png" ALT="insert dummy">
 </P>
 
-<P>While the connections of a [trigger] object can be resorted as
-<A href="x2.htm#s2.3.4">explained above</A>, <kbd>Ctrl</kbd>+<kbd>T</kbd> also
-allows you to easily manage its outlets when using it on the selected object.
-The result will differ depending on the existing connections and outlets.
-If each outlet has a single connection, it will insert an outlet on the left.
+<P>Triggerize also allows you to create or remove outlets of a selected [trigger]
+object. The result depends on the existing connections and outlets. As shown below,
+if each outlet has a single connection, it will insert an outlet on the left.
 
 <P>
     <IMG src="img/2.3.21.png" ALT="add 1st outlet">
 </P>
 
-If the [trigger] object has more outlets than outgoing connections, the
-shortcut will reduce the outlets, removing the unused ones.
+Now, if the [trigger] object has more outlets than outgoing connections,
+"Triggerize" removes the unused outlets.
 
 <P>
     <IMG src="img/2.3.22.png" ALT="reduce outlets">
 </P>
 
-In case there are more connections than outlets, it will add outlets to
-distribute all connections to separate ones (following the creation order
-of the connections from right to left). This way, you can add connections
-in between other connections without lots of resorting.
+In case there are more connections than outlets, "Triggerize" adds outlets
+to distribute all connections to separate ones (following the creation order
+of the connections from right to left).
 
 <P>
     <IMG src="img/2.3.23.png" ALT="distribute connections">
