@@ -13,9 +13,9 @@
 
 </div>
 
-<div id=corpus>
+<div id="corpus">
 
-<H2>Pd Manual chapter 6: Building Pd from source.</H2>
+<H2>Pd Manual chapter 6: Building Pd from source</H2>
 
 <P>
 <A href="index.htm#s6"> back to table of contents </A>
@@ -25,7 +25,6 @@
 <P>This chapter offers in depth details on how to build Pd from its source code
 and install it on different operating systems (macOS, Linux, BSD & Windows).
 
-<hr>
 
 <H3> <A id="s6.1"> 6.1. Requirements </A> </H3>
 
@@ -59,7 +58,6 @@ distribution comes with two build systems:</P>
 <li>FFTW: use the optimized FFTW Fast Fourier Transform library</li>
 </ul>
 
-<hr>
 
 <H3> <A id="s6.2"> 6.2. General Autotools Build steps </A> </H3>
 
@@ -174,7 +172,6 @@ file Pd.app/Contents/Resources/bin/pd
 ...
 Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
-<hr>
 
 <H3> <A id="s6.3"> 6.3. Building Pd for Linux </A> </H3>
 
@@ -205,7 +202,6 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 <p>Most distributions come with Tcl/Tk installed, so you should be able to run Pd after it is built.</p>
 <p>Once your build system is set up, you can follow the general autotools build steps to build Pd.</p>
 
-<hr>
 
 <H3> <A id="s6.4"> 6.4. Building Pd for BSD </A> </H3>
 
@@ -213,7 +209,7 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 The major difference is the used package manager (and the names of the packages),
 you&rsquo;ll want to install.</p>
 
-<H3> <A id="s6.4.1"> &emsp; 6.4.1. FreeBSD </A> </H3>
+<H4> <A id="s6.4.1"> 6.4.1. FreeBSD </A> </H4>
 
 <p>(Tested on FreeBSD-13)</p>
 
@@ -239,7 +235,7 @@ gmake
 sudo gmake install
 </code></pre>
 
-<H3> <A id="s6.4.2"> &emsp; 6.4.2. OpenBSD </A> </H3>
+<H4> <A id="s6.4.2"> 6.4.2. OpenBSD </A> </H4>
 
 <p>(Tested on OpenBSD-7)</p>
 
@@ -285,7 +281,7 @@ gmake
 sudo gmake install
 </code></pre>
 
-<H3> <A id="s6.4.3"> &emsp; 6.4.3. NetBSD </A> </H3>
+<H4> <A id="s6.4.3"> 6.4.3. NetBSD </A> </H4>
 
 <p>(Tested on NetBSD-9)</p>
 
@@ -323,7 +319,6 @@ gmake
 sudo gmake install
 </code></pre>
 
-<hr>
 
 <H3> <A id="s6.5"> 6.5. Building Pd for macOS </A> </H3>
 
@@ -417,7 +412,7 @@ alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceiv
 
 <p>Note: Pd installed to your system or run from the build/bin directory will not use the default font and will be missing the various macOS GUI hints (such as retina rendering) which are specified by the Info.plist file inside the .app bundle. Again, it is recommended to build a .app and use the aforementioned aliases to provide the pd command.</p>
 
-<H3> <A id="s6.5.1"> &emsp; 6.5.1. macOS app bundle </A> </H3>
+<H4> <A id="s6.5.1"> 6.5.1. macOS app bundle </A> </H4>
 
 <p>Directory pure-data/mac contains support files for building a Pure Data macOS application
 bundle and supplementary build scripts for compiling Pd on Macintosh systems, as it is built
@@ -449,7 +444,7 @@ Package Contents.&rdquo;</p>
 Creating a Pure Data .app involves using a precompiled Wish.app as a wrapper
 by copying the Pd binaries and resources inside of it.</p>
 
-<H4> <A id="s6.5.1.1"> &emsp; &emsp; 6.5.1.1. macOS App Bundle Helpers </A> </H4>
+<H4> <A id="s6.5.1.1"> 6.5.1.1. macOS App Bundle Helpers </A> </H4>
 
 <ul>
 <li>osx-app.sh: creates a Pd .app bundle for macOS using a Tk Wish.app wrapper</li>
@@ -545,7 +540,7 @@ custom patches to either the Tcl and/or Tk source trees. To skip applying
 patches, use the tcltk-wish.sh &ndash;no-patches commandline option. See
 mac/patches/README.txt for more info.</p>
 
-<H3> <A id="s6.5.2"> &emsp; 6.5.2. Supplementary macOS Build Scripts </A> </H3>
+<H4> <A id="s6.5.2"> 6.5.2. Supplementary macOS Build Scripts </A> </H4>
 
 <ul>
 <li>build-macosx: builds a 32 bit Pd .app bundle using src/makefile.mac</li>
@@ -576,7 +571,7 @@ script:</p>
 <p>A smarter version of the scripts ought to be able to find that file
 automatically on your system so I wouldn&rsquo;t have to include it here.</p>
 
-<H3> <A id="s6.5.3"> &emsp; 6.5.3. Preferences </A> </H3>
+<H4> <A id="s6.5.3"> 6.5.3. Preferences </A> </H4>
 
 <p>The Pure Data preferences are saved in the macOS &ldquo;defaults&rdquo; preference system
 using the following domains:</p>
@@ -616,9 +611,10 @@ defaults write org.puredata.pd -array-add flags '-lib Gem'
 <li>NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+</li>
 </ul>
 
-<p>These are set in <code>tcl/pd_guiprefs.tcl</code>.</p>
+<p>These are set in:</p>
+<pre><code>tcl/pd_guiprefs.tcl</code></pre>
 
-<H3> <A id="s6.5.4"> &emsp; 6.5.4. Code Signing </A> </H3>
+<H4> <A id="s6.5.4"> 6.5.4. Code Signing </A> </H4>
 
 <p>As of Pd 0.51, the mac/osx-app.sh script performs &ldquo;ad-hoc code signing&rdquo; in order
 to set entitlements to open un-validated dynamic libraries on macOS 10.15+. This
@@ -627,7 +623,7 @@ actually sign the .app bundle with an account certificate, so the unidentified
 developer warning is still shown when the downloaded .app is run for the first
 time.</p>
 
-<H3> <A id="s6.5.5"> &emsp; 6.5.5. Privacy Permission </A> </H3>
+<H4> <A id="s6.5.5"> 6.5.5. Privacy Permission </A> </H4>
 
 <p>macOS 10.14 introduced system privacy permissions for actions applications can
 undertake on a user account, such as accessing files or reading microphone or
@@ -659,7 +655,7 @@ tccutil reset Microphone org.puredata.pd.pd-gui
 tccutil reset All org.puredata.pd.pd-gui
 </code></pre>
 
-<H3> <A id="s6.5.6"> &emsp; 6.5.6. Font Issues with macOS 10.15+ </A> </H3>
+<H4> <A id="s6.5.6"> 6.5.6. Font Issues with macOS 10.15+ </A> </H4>
 
 <p>macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
 result that Pd&rsquo;s default font, DejaVu Sans Mono, renders thin and closer
@@ -671,14 +667,14 @@ which is included with the system since 10.6. Menlo is based on Bitstream Vera
 Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or
 positioning.</p>
 
-<H3> <A id="s6.5.7"> &emsp; 6.5.7. Dark Mode </A> </H3>
+<H4> <A id="s6.5.7"> 6.5.7. Dark Mode </A> </H4>
 
 <p>Pd currently disables Dark Mode support by setting the
 NSRequiresAquaSystemAppearance key to true in both the app bundle&rsquo;s Info.plist
 and the GUI defaults preference file. This restriction may be removed in the
 future once Dark Mode is handled in the GUI.</p>
 
-<H3> <A id="s6.5.8"> &emsp; 6.5.8. Debugging Releases </A> </H3>
+<H4> <A id="s6.5.8"> 6.5.8. Debugging Releases </A> </H4>
 
 <p>On macOS 10.15+, apps must be signed with an entitlement to allow debugging.
 This is good for security, but bad if you want to run Pd in lldb to figure out
@@ -725,7 +721,6 @@ Tremblay):</p>
       but running the Pd .app bundle on another system will result in security
       warnings as the original signature and notarization are invalid.</p>
 
-<hr>
 
 <H3> <A id="s6.6"> 6.6. Building Pd for Microsoft Windows </A> </H3>
 
@@ -797,7 +792,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 <p>Note: The standard &quot;make install&quot; requires Tcl/Tk and won't work
 outside your Cygwin/Msys2 environment (if at all).</p>
 
-<H3> <A id="s6.6.1"> &emsp; 6.6.1. Building a Pd application </A> </H3>
+<H4> <A id="s6.6.1"> 6.6.1. Building a Pd application </A> </H4>
 
 <p>Directory pure-data/msw contains support files for building a Pure Data Windows
 application, as it is built for the &lsquo;vanilla&rsquo; releases on msp.ucsd.edu.</p>
@@ -827,7 +822,7 @@ the box unless your file tree resembles Miller&rsquo;s in some ways (pd source i
 <p>But to first get things working, it&rsquo;s best to use msw-app.sh and tcltk-dir.sh
 directly.</p>
 
-<H3> <A id="s6.6.2"> &emsp; 6.6.2. Pd Application Directory </A> </H3>
+<H4> <A id="s6.6.2"> 6.6.2. Pd Application Directory </A> </H4>
 
 <p>Pd for Windows is essentially a stand-alone application directory which contains
 the compiled binaries, resource files, and contextual information.</p>
@@ -848,7 +843,7 @@ the compiled binaries, resource files, and contextual information.</p>
 which is included with Pd in the /bin directory. A Pure Data app directory
 includes both the Pd binaries and resources as well as a precompiled Tk.</p>
 
-<H3> Windows App Bundle Helpers </H3>
+<H4> Windows App Bundle Helpers </H4>
 
 <ul>
 <li>msw-app.sh: creates a Pd app directory for Windows using precompiled Tcl/Tk</li>
@@ -939,7 +934,7 @@ the &ndash;64bit option:</p>
 tcltk-dir.sh --64bit 8.6.8
 </pre>
 
-<H3> <A id="s6.6.3"> &emsp; 6.6.3. pdfontloader </A> </H3>
+<H4> <A id="s6.6.3"> 6.6.3. pdfontloader </A> </H4>
 
 <p>Tk cannot load local font files by default on Windows. Pd accomplishes this
 through a tiny, custom Tcl extension, pdfontloader.dll. On initialization, the
@@ -950,7 +945,7 @@ Pd font.</p>
 tarball. To build pdfontloader, see <a href="https://github.com/pure-data/pdfontloader" target="_blank">https://github.com/pure-data/pdfontloader</a>
 source.</p>
 
-<H3> <A id="s6.6.4"> &emsp; 6.6.4. ASIO Support </A> </H3>
+<H4> <A id="s6.6.4"> 6.6.4. ASIO Support </A> </H4>
 
 <p>In order to build ASIO support into Pd on Windows, you need to download the
 ASIO sources from Steinberg directly. Their license does not let us
@@ -966,7 +961,6 @@ redistribute their source files.</p>
 
 <p>Now build Pd and it should include ASIO as one of the audio backends.</p>
 
-<hr>
 
 <H3> <A id="s6.7"> 6.7. Building Pd with Double precision </A> </H3>
 
@@ -974,7 +968,6 @@ redistribute their source files.</p>
 
 <pre>./configure --with-floatsize=64</pre>
 
-<hr>
 
 <H3> <A id="s6.8"> 6.8. Cross-compilation for Windows on Linux </A> </H3>
 
@@ -1000,7 +993,6 @@ sudo apt-get install nsis</pre>
 
 <pre>make app</pre>
 
-<hr>
 
 <H3> <A id="s6.9"> 6.9. Makefile Build </A> </H3>
 
@@ -1048,7 +1040,6 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <p>On macOS, you can build a clickable Pd .app bundle using the supplemental build scripts in the mac directory. See <a href="x6.htm#s6.5.1">6.5.1 macOS resources</a>. for more info.</p>
 
-<hr>
 
 <H3> <A id="s6.10"> 6.10. Troubleshooting </A> </H3>
 
@@ -1068,16 +1059,10 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 <li>steps you took: configuration options, etc</li>
 </ul>
 
-<hr>
-
-<P>
-<BR><BR>
-<A href="index.htm#s6"> back to table of contents </A>
-<BR><BR>
-</P>
-
 </div>
-
+<div id="footer">
+<A href="index.htm#s6"> back to table of contents </A>
+</div>
 
 </BODY>
 </HTML>
