@@ -105,7 +105,7 @@ static void bang_tilde_free(t_bang *x)
     clock_free(x->x_clock);
 }
 
-static void *bang_tilde_new(t_symbol *s)
+static void *bang_tilde_new(void)
 {
     t_bang *x = (t_bang *)pd_new(bang_tilde_class);
     x->x_clock = clock_new(x, (t_method)bang_tilde_tick);
