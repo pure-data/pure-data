@@ -58,9 +58,10 @@ refer to <A href="x4.htm"> Chapter 4: Externals</A>.
 you'll see a separate window that corresponds to it, which is known in Pd as a "canvas",
 and also referred to as "patch". The main Pd window which looks like this:
 
-<P>
-    <IMG src="img/2.1.1.png" ALT="pd window">
-</P>
+<figure>
+<IMG src="img/2.1.1.png" ALT="pd window">
+    <figcaption style="text-align:center;">The main Pd window (a.k.a. Console window)</figcaption>
+</figure>
 
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
 <b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
@@ -80,9 +81,11 @@ to turn audio processing on, and <kbd>Ctrl</kbd>+<kbd>.</kbd> to turn it off. Yo
 audio level if you select "Test Audio and MIDI" and make other Audio and MIDI tests (read more
 about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
-<P>
-    <IMG src="img/2.1.2.png" ALT="media menu">
-</P>
+<figure>
+<IMG src="img/2.1.2.png" ALT="media menu">
+    <figcaption style="text-align:center;">The Media menu</figcaption>
+</figure>
+
 
 <P>The lower part of the Pd window is a console area for printout from the output of
 boxes in patches and for messages from Pd itself, which can be several things, mostly
@@ -97,9 +100,10 @@ offending object in the patch. You can also use the "Find Last Error" entry in t
 using the 'Font' dialog entry in the <b>Edit menu</b> as shown below. Make your
 adjustments if you are having trouble reading on HiDPI screens.
 
-<P>
-    <IMG src="img/2.1.3.png" ALT="edit menu">
-</P>
+<figure>
+<IMG src="img/2.1.3.png" ALT="edit menu">
+    <figcaption style="text-align:center;">The Edit menu</figcaption>
+</figure>
 
 
 (include pic of font entry!!!)
@@ -129,9 +133,11 @@ focus the last focused window.
 <P>You can create and open patches via the <b>File menu</b>, where you can also close
 and save them (note the handy shortcuts).
 
-<P>
-    <IMG src="img/2.1.4.png" ALT="file menu">
-</P>
+<figure>
+<IMG src="img/2.1.4.png" ALT="file menu">
+    <figcaption style="text-align:center;">The File menu</figcaption>
+</figure>
+
 
 <P>On PCs, this menu shows the <kbd>Ctrl</kbd>+<kbd>Q</kbd> entry to quit Pd, which prompts
 you to confirm the action (on Macs, this is listed in the <b>Pd menu</b>). To quit
@@ -139,9 +145,10 @@ without confirmation, use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>Q</kbd>.
 
 <P>Here is a simple Pd patch:
 
-<P>
-    <IMG src="img/2.1.5.png" ALT="simple patch">
-</P>
+<figure>
+<IMG src="img/2.1.5.png" ALT="simple patch">
+    <figcaption style="text-align:center;">A simple patch</figcaption>
+</figure>
 
 <P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
 an object box showing "print", plus two "comments" (which are simply commentaries
@@ -157,9 +164,10 @@ dragging on the number box, the values are printed in the main "Pd" window.
 object box from the <b>Put menu</b>. When you insert a new object box, it is empty
 and presented with a dashed border before creation.
 
-<P>
-    <IMG src="img/2.1.6.png" ALT="dashed box">
-</P>
+<figure>
+<IMG src="img/2.1.6.png" ALT="dashed box">
+    <figcaption style="text-align:center;">An uncreated object box</figcaption>
+</figure>
 
 <P>You only create a particular <I>object</I> after you entered text into the
 object box. The text consists of <I>atoms</I>, which are separated by spaces.
@@ -167,9 +175,10 @@ The initial atom (which needs to be a symbol) determines the type of object Pd
 will create, while the subsequent atoms, known as <I>creation arguments</I>,
 instruct Pd how to initialize the object. For instance, you can type "+ 13".
 
-<P>
-    <IMG src="img/2.1.7.png" ALT="object box">
-</P>
+<figure>
+<IMG src="img/2.1.7.png" ALT="object box">
+    <figcaption style="text-align:center;">A created object box</figcaption>
+</figure>
 
 <P>Here, the "+" specifies the <I>class</I> of the object. In this case the
 object will carry out additions, and the "13" initializes the value to add.
@@ -192,11 +201,13 @@ maintain a fixed configuration of inlets and outlets. However, for other classes
 the number and arrangement of inlets and outlets can vary based on the creation
 arguments.
 
-<P>Here is an example of a simple MIDI synthesizer:
+<P>Here is an example of a simple synthesizer that takes a MIDI input and
+synthesizes a pure tone:
 
-<P>
-    <IMG src="img/2.1.8.png" ALT="simple MIDI synthesizer">
-</P>
+<figure>
+<IMG src="img/2.1.8.png" ALT="simple MIDI synthesizer">
+    <figcaption style="text-align:center;">A simple MIDI synthesizer</figcaption>
+</figure>
 
 <P>This patch mixes <I>control</I> objects ([notein], [stripnote], and [ftom])
 with <I>tilde</I> objects [osc~], [*~], and [dac~] and these are the two types of
@@ -245,9 +256,10 @@ to its outlet or to other specified receiving objects. In the example below,
 a click on the message box sends the message "21" to an object box, which adds 13
 to it.
 
-<P>
-    <IMG src="img/2.1.9.png" ALT="[message( --> [object] -> [number]">
-</P>
+<figure>
+<IMG src="img/2.1.9.png" ALT="Different box shapes">
+    <figcaption style="text-align:center;">Different box shapes</figcaption>
+</figure>
 
 <P>The third box here is a <I>GUI</I> ("graphical user interface") box. Pd has
 three basic GUI boxes. In addition to number boxes (as in this example), there are
@@ -298,9 +310,10 @@ number box) and message boxes (which are used as controls to send messages).
 <P> In order to go into edit mode, you need to select the 'Edit Mode' entry from the
 <b>Edit menu</b> to activate and check it on.
 
-<P>
-    <IMG src="img/2.2.1.png" ALT="edit mode">
-</P>
+<figure>
+<IMG src="img/2.2.1.png" ALT="edit mode">
+    <figcaption style="text-align:center;">Selecting edit mode from the Edit menu</figcaption>
+</figure>
 
 <P>When you are in edit mode, the patch actually runs in the same way as in run mode,
 processing control data and sound, but you're able to edit the patch while it runs.
@@ -341,9 +354,10 @@ also "Undo" and "Redo" while in run mode.
 'box' visually). You can create these boxes using the <b>Put menu</b>. Also
 note the handy shortcuts to create each item specifically.
 
-<P>
-    <IMG src="img/2.2.2.png" ALT="put menu">
-</P>
+<figure>
+<IMG src="img/2.2.2.png" ALT="put menu">
+    <figcaption style="text-align:center;">The Put menu</figcaption>
+</figure>
 
 <P> Note that most of these are individual GUI (graphical user interface) boxes.
 Besides the three basic GUI boxes (number, symbol andlists), there's another group
@@ -406,9 +420,10 @@ vertically align a column of boxes. Bidimensional rectangular selections of boxe
 are also possible, but aligning horizontally and vertically separately tends to yield
 better results.
 
-<P>
-    <IMG src="img/2.2.3.png" ALT="tidy up">
-</P>
+<figure>
+<IMG src="img/2.2.3.png" ALT="tidy up">
+    <figcaption style="text-align:center;">Tidying up (alligning) vertically</figcaption>
+</figure>
 
 <H4> <A id="s2.2.4">2.2.4. Delete, cut, copy and paste boxes</A> </H4>
 
@@ -455,9 +470,10 @@ object. As already mentioned, changing the text in an object box deletes
 the old object and creates a new one; so the internal state of the old one
 is completely lost.
 
-<P>
-    <IMG src="img/2.2.4.png" ALT="changing text">
-</P>
+<figure>
+<IMG src="img/2.2.4.png" ALT="changing text">
+    <figcaption style="text-align:center;">Editing text in an object box</figcaption>
+</figure>
 
 <P>You can also use the copy, cut, and paste commands for the selected text. The
 text selection functionality for cut/copy/paste is integrated with the operating
@@ -477,9 +493,10 @@ release the mouse button to create a connection. You can release the mouse butto
 anywhere within the target box and the connection will be made to the nearest
 inlet.
 
-<P>
-    <IMG src="img/2.2.5.png" ALT="connecting boxes">
-</P>
+<figure>
+<IMG src="img/2.2.5.png" ALT="connecting boxes">
+    <figcaption style="text-align:center;">Connecting boxes via click and drag</figcaption>
+</figure>
 
 <P>If you move the mouse cursor over a patch cord, you'll see it takes the shape
 of an "X" to denote you can select it and delete it. Click on the connection
@@ -487,9 +504,10 @@ to select it and press <kbd>Backspace</kbd> or <kbd>Delete</kbd> key to delete
 it. You can't just select patch cords with click and drag for a rectangular
 area and you can only select a single connection by clicking on it.
 
-<P>
-    <IMG src="img/2.2.6.png" ALT="disconnecting boxes">
-</P>
+<figure>
+<IMG src="img/2.2.6.png" ALT="disconnecting boxes">
+    <figcaption style="text-align:center;">Selecting a patch cord connection to delete it</figcaption>
+</figure>
 
 <H4> <A id="s2.2.7">2.2.7. Popup menu for 'Properties', 'Open' and 'Help'</A> </H4>
 
@@ -528,26 +546,29 @@ in the window the selection loops back to the first one. Conversely, you can
 press <kbd>Shift</kbd>+<kbd>Tab</kbd> to navigate in reverse order, moving from the
 most recently created box back towards the first created ones.
 
-<P>
-    <IMG src="img/2.3.1.png" ALT="tab navigation boxes">
-</P>
+<figure>
+<IMG src="img/2.3.1.png" ALT="tab navigation boxes">
+    <figcaption style="text-align:center;">Navigating through objects with Tab</figcaption>
+</figure>
 
 <P>Using <kbd>Tab</kbd> also works in a similar way for patch cords if
 you have one selected. You can move from first to last with <kbd>Tab</kbd>
 and from last to first with <kbd>Shift</kbd>+<kbd>Tab</kbd>.
 
-<P>
-    <IMG src="img/2.3.2.png" ALT="tab navigation cords">
-</P>
+<figure>
+<IMG src="img/2.3.2.png" ALT="tab navigation cords">
+    <figcaption style="text-align:center;">Navigating through patch cords with Tab</figcaption>
+</figure>
 
 <P>If you're creating a connection by clicking on an outlet and dragging a
 patch cord, you can also use <kbd>Tab</kbd> to cycle through outlets.
 The navigation order is left to right and it also cycles back. Pressing
 <kbd>Shift</kbd>+<kbd>Tab</kbd> navigates from right to left.
 
-<P>
-    <IMG src="img/2.3.3.png" ALT="tab navigation iolets">
-</P>
+<figure>
+<IMG src="img/2.3.3.png" ALT="tab navigation outlets">
+    <figcaption style="text-align:center;">Navigating through outlets with Tab</figcaption>
+</figure>
 
 <P>In Linux and Windows you can also cycle between inlets. This is currently
 not possible on macOS. When dragging a connection into an inlet area, without
@@ -572,9 +593,11 @@ you can also start typing text into it before autopatching into another newly
 created box, since when you autopatch for the next one, the object or message
 box gets deselected and therefore created.
 
-<P>
-    <IMG src="img/2.3.4.png" ALT="autopatch objects">
-</P>
+<figure>
+<IMG src="img/2.3.4.png" ALT="autopatch objects">
+    <figcaption style="text-align:center;">Autopatching with shortcuts from the Put menu</figcaption>
+</figure>
+
 
 <P>You can also autopatch into a newly created subpatch (see <A href="x2.htm#s2.8">
 2.8. Subpatches</A>). By creating an object box and typing [pd], as soon as you
@@ -582,9 +605,11 @@ deselect the object, a subpatch is created with an inlet - either a control
 inlet ([inlet]) if the object above is a control object, or a signal inlet
 ([inlet~]) if it is a tilde object instead.
 
-<P>
-    <IMG src="img/2.3.5.png" ALT="autopatching subpatches">
-</P>
+<figure>
+<IMG src="img/2.3.5.png" ALT="autopatching subpatches">
+    <figcaption style="text-align:center;">Creating subpatches with autopatching</figcaption>
+</figure>
+
 
 <H4> <A id="s2.3.3">2.3.3. Duplicate connections</A> </H4>
 
@@ -592,18 +617,20 @@ inlet ([inlet]) if the object above is a control object, or a signal inlet
 outlet and inlet for connections, you can use <kbd>Ctrl</kbd>+<kbd>D</kbd> to
 duplicate and create more connections.
 
-<P>
-    <IMG src="img/2.3.6.png" ALT="duplicate connections">
-</P>
+<figure>
+<IMG src="img/2.3.6.png" ALT="duplicate connections">
+    <figcaption style="text-align:center;">Duplicate connections</figcaption>
+</figure>
 
 <H4> <A id="s2.3.4">2.3.4. Managing connections with the shift key</A> </H4>
 
 <P>You can swap connections if you selected a connection and use
 <kbd>Shift</kbd>+<kbd>Click</kbd> on another one.
 
-<P>
-    <IMG src="img/2.3.7.png" ALT="swap connections">
-</P>
+<figure>
+<IMG src="img/2.3.7.png" ALT="swap connections">
+    <figcaption style="text-align:center;">Swap connections</figcaption>
+</figure>
 
 <P>You can "fan out" connections when no boxes are selected. You can
 start creating a connection by clicking an outlet and dragging a cord
@@ -612,18 +639,20 @@ and then use <kbd>Shift</kbd> when you reach the inlet destination
 another connection from the outlet for you to drag somewhere else and
 connect the same outlet to to multiple inlets sequentially.
 
-<P>
+<figure>
     <IMG src="img/2.3.8.png" ALT="drag fan out">
-</P>
+    <figcaption style="text-align:center;">Faning out with dragging</figcaption>
+</figure>
 
 <P>Also for fanning out, if you have a group of target boxes that are selected,
 you can drag a cord from an outlet of an unselected box and press <kbd>Shift</kbd>
 to create a connection into the same inlet number of the selected boxes (which do
 not need to be of the same type or class).
 
-<P>
+<figure>
     <IMG src="img/2.3.9.png" ALT="select fan out">
-</P>
+    <figcaption style="text-align:center;">Faning out with selection</figcaption>
+</figure>
 
 <P>You can create a connection from the same outlet number of multiple boxes to
 a single inlet. If you have a selection of source boxes, you can drag a cord from
@@ -631,17 +660,19 @@ one of their outlets into another box and press <kbd>Shift</kbd> to create multi
 connections from the same outlet number of the selected boxes (which do not need to
 be of the same type or class).
 
-<P>
+<figure>
     <IMG src="img/2.3.10.png" ALT="select fan in">
-</P>
+    <figcaption style="text-align:center;">Faning in with selection</figcaption>
+</figure>
 
 <P>You can connect multiple outlets and inlets of 2 boxes if you have 2 selected
 boxes. Start creating a connection and click <kbd>Shift</kbd> at completion.
 This creates all possible connections starting from the chosen outlet and inlet.
 
-<P>
-    <IMG src="img/2.3.11.png" ALT="multiple connections">
-</P>
+<figure>
+<IMG src="img/2.3.11.png" ALT="multiple connections">
+    <figcaption style="text-align:center;">Multiple connections between 2 objects</figcaption>
+</figure>
 
 <P>You can connect outlets of multiple boxes into multiple inlets of one box.
 If there's a selected group of boxes, you start creating a connection into an
@@ -650,9 +681,10 @@ so connections are made from the same outlet number of all source boxes (which d
 not need to be of the same type or class) into separate inlets, starting from the
 chosen inlet.
 
-<P>
+<figure>
     <IMG src="img/2.3.12.png" ALT="many to one">
-</P>
+    <figcaption style="text-align:center;">Multiple connections between many to one</figcaption>
+</figure>
 
 <P>You can spread multiple outlets of one box into same inlets of other boxes.
 Similarly to the scenario above, you can start dragging from one outlet of a
@@ -661,10 +693,10 @@ In this case, when you press <kbd>Shift</kbd>, all possible connections are
 made from the outlets of the source box to the same inlet numbers of the target
 boxes.
 
-<P>
-    <IMG src="img/2.3.13.png" ALT=" one to many">
-</P>
-
+<figure>
+<IMG src="img/2.3.13.png" ALT=" one to many">
+    <figcaption style="text-align:center;">Multiple connections between one to many</figcaption>
+</figure>
 
 <H4> <A id="s2.3.5">2.3.5. (Dis)Connect selection</A> </H4>
 
@@ -672,25 +704,30 @@ boxes.
 <kbd>Ctrl</kbd>+<kbd>K</kbd>. It allows you to connect and disconnect selected
 boxes in different ways.
 
-<P>
-    <IMG src="img/2.3.14.png" ALT="ctrl+k">
-</P>
+<figure>
+<IMG src="img/2.3.14.png" ALT="ctrl+k">
+    <figcaption style="text-align:center;">The "(Dis)Connect selection" entry from the Edit menu</figcaption>
+</figure>
 
 <P>For 2 selected boxes you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
 them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
 from possible remaining outlets to inlets.
 
-<P>
+<figure>
     <IMG src="img/2.3.15.png" ALT="repeat ctrl+k">
-</P>
+    <figcaption style="text-align:center;">repeat ctrl+k</figcaption>
+</figure>
+
 
 <P>For 2 selected tilde objects, if the origin object has a single outlet and
 the target object has many inlets, you can repeatedly use <kbd>Ctrl</kbd>+<kbd>K</kbd>
 to fan out and connect the same outlet to all inlets.
 
-<P>
+<figure>
     <IMG src="img/2.3.16.png" ALT="fan out audio">
-</P>
+    <figcaption style="text-align:center;">fan out audio</figcaption>
+</figure>
+
 
 <P>For last, you can include or bypass a box into or from a connection
 (being it any connection from any outlet into any inlet). To include a box,
@@ -700,16 +737,18 @@ the selected box into the connection. Alternatively, you can select the 3
 boxes with a connection between 2 of them and then use <kbd>Shift</kbd>+<kbd>Click</kbd>
 to include the third one in the connection.
 
-<P>
+<figure>
     <IMG src="img/2.3.17.png" ALT="insert box">
-</P>
+    <figcaption style="text-align:center;">insert box</figcaption>
+</figure>
 
 <P>To bypass a box, you can select 3 boxes connected in a row and use
 <kbd>Ctrl</kbd>+<kbd>K</kbd> to bypass and remove the middle box from the connection.
 
-<P>
+<figure>
     <IMG src="img/2.3.18.png" ALT="exclude box">
-</P>
+    <figcaption style="text-align:center;">exclude box</figcaption>
+</figure>
 
 <H4> <A id="s2.3.6">2.3.6. Triggerize</A> </H4>
 
@@ -732,9 +771,10 @@ reflect the order from right to left. You can swap connections with the <kbd>Shi
 key (as described in subsection <A href="x2.htm#s2.3.4">2.3.4.</A>) if you need to adjust
 the order of connections.
 
-<P>
+<figure>
     <IMG src="img/2.3.19.png" ALT="triggerize object">
-</P>
+    <figcaption style="text-align:center;">triggerize object</figcaption>
+</figure>
 
 <P>Additionally, the 'Triggerize' option can be used to insert a dummy object.
 To do so, select a connection and use <kbd>Ctrl</kbd>+<kbd>T</kbd>. For a control
@@ -743,34 +783,37 @@ can type another text to include another object instead. For a signal
 connection, a [pd nop~] subpatch is created, also with the text selected
 for you to replace for a new object.
 
-<P>
+<figure>
     <IMG src="img/2.3.20.png" ALT="insert dummy">
-</P>
+    <figcaption style="text-align:center;">insert dummy</figcaption>
+</figure>
 
 <P>Triggerize also allows you to create or remove outlets of a selected [trigger]
 object. The result depends on the existing connections and outlets. As shown below,
 if each outlet has a single connection, it will insert an outlet on the left.
 
-<P>
+<figure>
     <IMG src="img/2.3.21.png" ALT="add 1st outlet">
-</P>
+    <figcaption style="text-align:center;">add 1st outlet</figcaption>
+</figure>
 
 Now, if the [trigger] object has more outlets than outgoing connections,
 "Triggerize" removes the unused outlets.
 
-<P>
+<figure>
     <IMG src="img/2.3.22.png" ALT="reduce outlets">
-</P>
+    <figcaption style="text-align:center;">reduce outlets</figcaption>
+</figure>
 
 In case there are more connections than outlets, "Triggerize" adds outlets
 to distribute all connections to separate ones (following the creation order
 of the connections from right to left).2
 
-<P>
+<figure>
     <IMG src="img/2.3.23.png" ALT="distribute connections">
-</P>
+    <figcaption style="text-align:center;">distribute connections</figcaption>
+</figure>
 
-<P>
 <H4> <A id="s2.3.7">2.3.7. Paste replace</A> </H4>
 
 <P>The 'Paste Replace' entry in the <b>Edit menu</b> doesn't have a
@@ -782,9 +825,10 @@ of the same class). Now go to the <b>Edit menu</b> and select "Paste Replace".
 All the selected boxes of the same type get replaced by the copied box
 and connections are preserved.
 
-<P>
+<figure>
     <IMG src="img/2.3.24.png" ALT="paste replace entry">
-</P>
+    <figcaption style="text-align:center;">Paste replacing an object</figcaption>
+</figure>
 
 <P>Alternatively, you can copy a number box instead of a [float] object
 and replace it in the selected group of objects, or in a selected group
@@ -796,18 +840,19 @@ these three GUIs are not of the same kind for the purpose of "Paste Replace".
 A subpatch or an abstraction can also be used for "Paste Replace" and they
 count in the same group of objects.
 
-<P>
+<figure>
     <IMG src="img/2.3.25.png" ALT="paste replace boxes">
-</P>
+    <figcaption style="text-align:center;">Paste replacing a number box</figcaption>
+</figure>
 
 <P>If you have a selection of boxes to replace that includes different
 types of boxes, the "Paste Replace" will only replace the boxes of the
 same type that was copied.
 
-<P>
+<figure>
     <IMG src="img/2.3.26.png" ALT="paste replace similar type">
-</P>
-
+    <figcaption style="text-align:center;">>Paste replacing the same box type</figcaption>
+</figure>
 
 <H3> <A id="s2.4">2.4. Messages</A> </H3>
 
@@ -866,19 +911,19 @@ precision is shown on the table below.
 <P>When a message is passed to something (which is often an inlet of a box
 but could be anything that can receive a message), the selector of the message
 is checked against the receiver. If the receiver recognizes messages of that
-selector, it carries out some corresponding action. For instance, here is a
-[float] object:
+selector, it carries out some corresponding action.
 
-<P>
+<figure>
     <IMG src="img/2.4.1.png" ALT="float object">
-</P>
+    <figcaption style="text-align:center;">A [float] object</figcaption>
+</figure>
 
-<P>The two rectangles at the top are usually both called "inlets", but the
-one on the left directs incoming messages to the [float] object itself, while
-the one on the right directs messages to an auxiliary "inlet" object. The
-[float] object itself (represented by the left inlet) accepts messages with
-the selectors "float" and "bang". The right inlet only accepts messages with
-the "float" selector. These two selectors, together with "symbol" and "list",
+<P>For instance, in the [float] object above, we two rectangles at the top that
+are called "inlets", but the one on the left directs incoming messages to the
+[float] object itself, while the one on the right directs messages to an auxiliary
+"inlet" object. The [float] object itself (represented by the left inlet) accepts
+messages with the selectors "float" and "bang". The right inlet only accepts messages
+with the "float" selector. These two selectors, together with "symbol" and "list",
 are usually used to indicate the main action of an object, whatever it may be,
 so that objects can be linked together with maximum flexibility.
 
@@ -893,9 +938,10 @@ further messages in turn, and the receivers of those messages can send yet
 others. So each message sets off a tree of consequent messages. This tree is
 executed in depth first fashion. For instance in the patch below:
 
-<P>
+<figure>
     <IMG src="img/2.4.2.png" ALT="depth first">
-</P>
+    <figcaption style="text-align:center;">A tree with depth first message passing</figcaption>
+</figure>
 
 <P>The order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
 message is not done until the "D" one is also, and the "A" is not done until
@@ -904,9 +950,10 @@ depends on the order the connections were made in.
 
 <P>Message-passing can give rise to infinite loops of the sort shown here:
 
-<P>
+<figure>
     <IMG src="img/2.4.3.png" ALT="infinite loop">
-</P>
+    <figcaption style="text-align:center;">An infinite loop (stack overflow)</figcaption>
+</figure>
 
 <P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
@@ -927,9 +974,10 @@ scheduler will wake the delay back up later.
 inlet as "hot" in the sense that messages to left inlets can result in output
 messages. So the following is a legal (and reasonable) loop construct:
 
-<P>
+<figure>
     <IMG src="img/2.4.4.png" ALT="hot and cold inlets">
-</P>
+    <figcaption style="text-align:center;">Avoiding infinite loop with a cold inlet</figcaption>
+</figure>
 
 <P>Here, the [f] object is an abbreviation for [float]. Note that the [+ 1] output
 is connected to the right-hand inlet of [f]. This "cold" inlet merely stores the
@@ -948,9 +996,10 @@ single object. In this case it is indeterminate which order the two inlets will
 receive their messages. Suppose for example you wish to use [+] to double a
 number. The following is incorrect:
 
-<P>
-    <IMG src="img/2.4.5.png" ALT="incorrect inlet connection">
-</P>
+<figure>
+<IMG src="img/2.4.5.png" ALT="incorrect inlet connection">
+    <figcaption style="text-align:center;">An undefined connection order</figcaption>
+</figure>
 
 <P>Here, the left inlet was connected before connecting the right hand one
 (although this is not evident in the appearance of the patch). The [+] thus
@@ -963,9 +1012,10 @@ you connect these to inlets of a second object without crossing wires, the
 second object will get its leftmost inlet last, which is usually what you
 want. Here is how to use [trigger] to disambiguate the previous example:
 
-<P>
+</P><figure>
     <IMG src="img/2.4.6.png" ALT="trigger to disambiguate">
-</P>
+    <figcaption style="text-align:center;">A defined connection order with [trigger]</figcaption>
+</figure>
 
 <P>"Cold" (non-leftmost) inlets are almost universally used to store single
 values (either numbers or symbols). With the exception of [line], [line~]
@@ -985,20 +1035,22 @@ box is activated, either by clicking on it or by sending something to its inlet,
 the message or messages are sent, either to the message box's outlet or
 elsewhere as specified.
 
-<P>
+</P><figure>
     <IMG src="img/2.4.7.png" ALT="message boxes">
-</P>
+    <figcaption style="text-align:center;">Messages with different selectors</figcaption>
+</figure>
 
 <P>The first of the message boxes above contains the single number 1.5; this
 message has an implicit selector of "float". The second is a list with three
-numbers in it, and in the third, the selector is "my" and the two arguments are
-the number 5 and the symbol "toes".
+numbers in it and has an implicit selector of "listt". The third message has
+the selector "my" and the two arguments are the number 5 and the symbol "toes".
 
 <P>Multiple messages may be separated by commas as shown:
 
-<P>
+<figure>
     <IMG src="img/2.4.8.png" ALT="multiple messages in one box">
-</P>
+    <figcaption style="text-align:center;">Messages separated by commas</figcaption>
+</figure>
 
 <P>Here, the three messages are the numbers 1, 2, and 3, and they are sent in
 sequence (with no intervening time between them, as with the [trigger] object,
@@ -1013,9 +1065,10 @@ outlet. In the example below, the leading semicolon immediately redirects messag
 from the outlet to an object named "fred" (which is a receive object here), and
 likewise the next message is sent to "sue".
 
-<P>
+<figure>
     <IMG src="img/2.4.9.png" ALT="semicolons to send messages">
-</P>
+    <figcaption style="text-align:center;">Messages sent to receive symbols</figcaption>
+</figure>
 
 <P>Certain other objects (Pd windows for example, and arrays) have Pd names as
 destination symbols so you can send them messages this way. Also, the special
@@ -1031,9 +1084,10 @@ this way").
 
 <P>You can put variables in message boxes as shown below:
 
-<P>
+<figure>
     <IMG src="img/2.4.10.png" ALT="variables in message boxes">
-</P>
+    <figcaption style="text-align:center;">A message with a "$1" variable</figcaption>
+</figure>
 
 <P>Here, "$1" etc., refer to the arguments of the arriving message (and aren't
 defined if you send a "bang" message or if you click on the message box to
@@ -1231,9 +1285,10 @@ is 44100 Hz by default and results in a period of approximately 1.45
 milliseconds. You may turn DSP computation on and off in a patch by sending
 the messages "dsp 1" and "dsp 0" to "pd".
 
-<P>
+<figure>
     <IMG src="img/2.6.1.png" ALT="dsp on and off on patch level">
-</P>
+    <figcaption style="text-align:center;">Setting DSP on the patch level</figcaption>
+</figure>
 
 <P>In the intervals between, delays might time out or external conditions
 might arise (incoming MIDI, mouse clicks or whatnot). These may cause a
@@ -1422,11 +1477,17 @@ and "abstractions". In either case the subpatch appears as an object box
 in a patch. If you type [pd] or [pd my-name] into an object box, this creates
 a one-off subpatch. For instance, in this fragment:
 
-<P><IMG src="img/2.8.1.png" ALT="subpatch"></P>
+<figure>
+    <IMG src="img/2.8.1.png" ALT="subpatch">
+    <figcaption style="text-align:center;">A subpatch called "my-subpatch"</figcaption>
+</figure>
 
 <p>The box in the middle, if clicked on, opens the sub-patch shown here:
 
-<P><IMG src="img/2.8.2.png" ALT="open subpatch window"></P>
+<figure>
+    <IMG src="img/2.8.2.png" ALT="open subpatch window">
+    <figcaption style="text-align:center;">The insides of the subpatch</figcaption>
+</figure>
 
 <P>The contents of the subpatch are saved as part of the parent patch, in
 one file. If you make several copies of a subpatch you may change them
@@ -1446,12 +1507,18 @@ subpatch.
 <P>To make an abstraction, save a patch with a name such as "abstraction1.pd"
 and then invoke it in an object box as [abstraction1]:
 
-<P><IMG src="img/2.8.3.png" ALT="abstraction"></P>
+<figure>
+    <IMG src="img/2.8.3.png" ALT="abstraction">
+    <figcaption style="text-align:center;">An abstraction (a patch file loaded as an object)</figcaption>
+</figure>
 
-<P>Here, we're invoking a separate file, "abstraction1.pd", which holds the
+<P>Here, we're invoking a separate file named "abstraction1.pd", which holds the
 patch shown here:
 
-<P><IMG src="img/2.8.4.png" ALT="abstraction example"></P>
+<figure>
+    <IMG src="img/2.8.4.png" ALT="abstraction example">
+    <figcaption style="text-align:center;">The insides of the [abstraction1] abstraction</figcaption>
+</figure>
 
 <p>You may create many instances of [abstraction1] or invoke it from several
 different patches; changing and saving the contents of [abstraction1] will
@@ -1486,11 +1553,17 @@ for example.
 check the "graph on parent" box to have the controls of the subpatch/abstraction
 appear on the parent. For instance, here is an invocation of [abstraction2]:
 
-<P><IMG src="img/2.8.5.png" ALT="graph-on-parent abstraction"></P>
+<figure>
+    <IMG src="img/2.8.5.png" ALT="graph-on-parent abstraction">
+    <figcaption style="text-align:center;">An abstraction with "Graph-on-Parent"</figcaption>
+</figure>
 
 <p>Where the patch "abstraction2.pd" contains:
 
-<P><IMG src="img/2.8.6.png" ALT="inside graph-on-parent abstraction"></P>
+<figure>
+    <IMG src="img/2.8.6.png" ALT="inside graph-on-parent abstraction">
+    <figcaption style="text-align:center;">The insides of the "Graph-on-Parent" abstraction</figcaption>
+</figure>
 
 <p>Here, the number box in the abstraction shows up on the box that invoked
 the abstraction. The "graph on parent" flag is set in the abstraction
@@ -1538,17 +1611,28 @@ in "graph on parent" form (so that you see them within a rectangle drawn on
 the containing patch), or as a regular subpatch (which you see as a text box).
 In the "graph on parent" form, an array appears as shown:
 
-<P><IMG src="img/2.9.1.png" ALT="array"></P>
+<figure>
+    <IMG src="img/2.9.1.png" ALT="array">
+    <figcaption style="text-align:center;">A numeric array</figcaption>
+</figure>
 
-<P>Arrays are indexed from 0 to N-1 where N is the number of points in the
-array. You can read an array value using the tabread object:
+<P>Arrays are indexed from 0 to N-1 where N is the number of points in the array.
+You can use objects to read and write arrays an manipulate them in many ways.
 
-<P><IMG src="img/2.9.2.png" ALT="array indexing"></P>
+<figure>
+    <IMG src="img/2.9.2.png" ALT="array indexing">
+    <figcaption style="text-align:center;">Read an array with [tabread]</figcaption>
+</figure>
 
-<p>Here, we see that the third point of the array (index 2) has the value 0.4.
-To write into the array, you can use the tabwrite object:
 
-<P><IMG src="img/2.9.3.png" ALT="setting an value in an array"></P>
+<p>Here, we see that the third point of the array (index 2) has the value '0.385'.
+To write into the array, you can use the [tabwrite] object:
+
+<figure>
+    <IMG src="img/2.9.3.png" ALT="setting an value in an array">
+    <figcaption style="text-align:center;">Write to an array with [tabwrite]</figcaption>
+</figure>
+
 
 <p>In this example, sending the message sets the third element to 0.5. (You
 may also send the two numbers to the two inlets separately.)
@@ -1557,7 +1641,10 @@ may also send the two numbers to the two inlets separately.)
 and to arrays. These may also be done using audio signals. For example,
 the patch below creates a 440 Hz tone with "array1" as a waveform:
 
-<P><IMG src="img/2.9.4.png" ALT="setting an array with a waveform"></P>
+<figure>
+    <IMG src="img/2.9.4.png" ALT="setting an array with a waveform">
+    <figcaption style="text-align:center;">Using signals to read an with [tabread4~]</figcaption>
+</figure>
 
 <p>Here, [phasor~] outputs a ramp whose output range is from 0 to 1, repeating
 440 times per second. The multiplier and adder adjust the range from 1 to 11
@@ -1574,7 +1661,11 @@ later using the "properties" dialog.
 <P>If you select "properties" on an array in a graph, you get two dialogs, one
 for the array and one for the graph. The array dialog looks like this:
 
-<P><IMG src="img/2.9.5.png" ALT="array properties window"></P>
+<figure>
+    <IMG src="img/2.9.5.png" ALT="array properties window">
+    <figcaption style="text-align:center;">Array propeties dialog</figcaption>
+</figure>
+
 
 <p>You may use this to change the name and size, in addition to another property,
 "save contents". If "save contents" is selected, the array's values are stored
@@ -1590,7 +1681,10 @@ lacks a mechanism for selecting arrays (so that "cut" could serve this purpose).
 
 <P>The graph dialog (which also pops up) is shown here:
 
-<P><IMG src="img/2.9.6.png" ALT="graph properties"></P>
+<figure>
+    <IMG src="img/2.9.6.png" ALT="graph properties">
+    <figcaption style="text-align:center;">Canvas properties dialog</figcaption>
+</figure>
 
 <P>The X bounds initially range from 0 to the number of points in the table
 minus one (this is a good choice for arrays, although graphs holding other
@@ -1635,7 +1729,10 @@ derived from analyses of incoming sounds or other data streams.
 with many examples. Here is one simple example from this series (09.sequencer.pd)
 with a very short musical sketch realized using Pd:
 
-<P><IMG src="img/2.10.1.png" ALT="graphical score"></P>
+<figure>
+    <IMG src="img/2.10.1.png" ALT="graphical score">
+    <figcaption style="text-align:center;">A graphical score with Data Structures</figcaption>
+</figure>
 
 <P>The example, which only lasts a few seconds, is a polyphonic collection of
 time-varying noise bands. The graphical "score" consists of six objects, each
@@ -1657,7 +1754,10 @@ colored ones). This is all specified by the user using Pd's "template"
 mechanism. Here is the template associated with the graphical objects shown
 above.
 
-<P><IMG src="img/2.10.2.png" ALT="template for graphical score"></P>
+<figure>
+    <IMG src="img/2.10.2.png" ALT="template for graphical score">
+    <figcaption style="text-align:center;">The "struct" and drawing instructions for the score's elements</figcaption>
+</figure>
 
 <p>Templates consist of a data structure definition (the [struct] object) and
 zero or more drawing instructions (such as [filledpolygon] and [plot]). The
@@ -1707,7 +1807,10 @@ perhaps much more.
 above. It uses the [clone] object to instantiate different copies of the [voice]
 abstraction, which is responsible for playing back each voice from the score.
 
-<P><IMG src="img/2.10.3.png" ALT="traversal example patch"></P>
+<figure>
+    <IMG src="img/2.10.3.png" ALT="traversal example patch">
+    <figcaption style="text-align:center;">The sequencer patch</figcaption>
+</figure>
 
 <P>Traversal of data is made possible by adding a new type of atom, "pointer",
 to the two previously defined types that make up messages (numbers and symbols).
@@ -1724,12 +1827,18 @@ pointer object takes a "traverse" message to set it to the head of the list
 in the list (i.e., the next in the list of six objects in the score). Let's
 check the [voice] abstraction below.
 
-<P><IMG src="img/2.10.4.png" ALT="[voice] abstraction"></P>
+<figure>
+    <IMG src="img/2.10.4.png" ALT="[voice] abstraction">
+    <figcaption style="text-align:center;">The cloned [voice] abstraction with sound synthesis</figcaption>
+</figure>
 
 <P>The [pd sequence] subpatch takes care of sequencing the data structure
 events.
 
-<P><IMG src="img/2.10.5.png" ALT="[pd sequence] subpatch"></P>
+<figure>
+    <IMG src="img/2.10.5.png" ALT="[pd sequence] subpatch">
+    <figcaption style="text-align:center;">The sequencing subpatch</figcaption>
+</figure>
 
 <P>A second [pointer] object is used here as a storage cell for pointers just
 as [float] is for numbers. The center of the sequencer is the [delay] object,
@@ -1758,7 +1867,10 @@ argument,) so it contains two sequencers itself. The nesting of the overall
 structure of the sequencer patch mirrors the nesting of the original data
 structures.
 
-<P><IMG src="img/2.10.6.png" ALT="[data-array] abstraction"></P>
+<figure>
+    <IMG src="img/2.10.6.png" ALT="[data-array] abstraction">
+    <figcaption style="text-align:center;">The [data-array] abstraction</figcaption>
+</figure>
 
 <P>More general patches can easily be constructed which access heterogeneous
 lists of objects (having different templates). In this way, an arbitrarily

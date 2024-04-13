@@ -77,7 +77,7 @@ distribution comes with two build systems:</P>
 make
 </pre>
 
-<p>Note: Additional platform-specific options and build targets are listed in following subsections.</p>
+<p>Note: Additional platform-specific options and build targets are listed in following sections.</p>
 <p>Start by opening a commandline shell and navigating to the Pd source directory:</p>
 
 <pre>cd path/to/pd</pre>
@@ -143,12 +143,18 @@ build Pd with debugging symbols using the "--enable-debug" flag.
 
 <pre>make</pre>
 
-<p>Building should take a minute or two. If compilation was successful, you can run Pd from the build directory without installing it:</p>
+<p>Building should take a minute or two. If compilation was successful,
+in Linux, you can run Pd from the build directory without installing it:</p>
 
 <pre>cd bin
 ./pd</pre>
 
-<p>To install to your system using the configuration prefix (default /usr/local):</p>
+<p>You need to create an app so you can use your build in macOS and Windows.
+
+<pre>make app</pre>
+
+<p>To install to your Linux system using the configuration prefix
+(default /usr/local), do:</p>
 
 <pre>sudo make install</pre>
 
@@ -164,8 +170,9 @@ build Pd with debugging symbols using the "--enable-debug" flag.
 
 <pre>sudo make uninstall</pre>
 
-<p>If you compiled Pd using the --enable-universal configure option and want to double
-check which architectures Pd was built with, use the &quot;file&quot; command:</p>
+<p>If you compiled Pd using the --enable-universal configure
+option and want to double check which architectures Pd was built
+with, use the &quot;file&quot; command:</p>
 
 <pre># examine binary in the src directory
 file src/pd
@@ -175,8 +182,9 @@ src/pd: Mach-O 64-bit executable x86_64
 # look at pd inside a macOS .app bundle
 file Pd.app/Contents/Resources/bin/pd
 ...
-Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
+Pd-0.55.0.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
+<p>More details specific to each platform follow next.
 
 <H3> <A id="s6.3"> 6.3. Building Pd for Linux </A> </H3>
 
@@ -249,7 +257,8 @@ sudo gmake install
 <pre><code>sudo pkg_add gcc automake autoconf libtool gettext-tools gmake
 </code></pre>
 
-<p>(If there are multiple versions for one or more of the packages, pick your favourite or the newest one).</p>
+<p>(If there are multiple versions for one or more of the packages, pick your
+favourite or the newest one).</p>
 
 <p>You may install one (or more) libraries (depending on your needs).
 It seems that with OpenBSD-7, there are only JACK packages available:</p>
@@ -299,8 +308,7 @@ sudo gmake install
 It seems that with NetBSD-9, there are JACK and ALSA packages available,
 but the ALSA packages seem to be broken. OSS appears to be built-in.</p>
 
-<pre><code>sudo pkgin install jack
-</code></pre>
+<pre><code>sudo pkgin install jack</code></pre>
 
 <p>By default, NetBSD installs all its packages into <code>/usr/pkg/</code>,
 but the compiler does not look for headers resp. libraries in this directory.
@@ -310,8 +318,7 @@ by creating a file &lsquo;/usr/pkg/share/config.site&rsquo;:</p>
 <pre><code>cat | sudo tee /usr/pkg/share/config.site&gt;/dev/null &lt;&lt; EOF
 CPPFLAGS="-I/usr/pkg/include \$CPPFLAGS"
 LDFLAGS="-L/usr/pkg/lib -Wl,-R/usr/pkg/lib \$LDFLAGS"
-EOF
-</code></pre>
+EOF </code></pre>
 
 <p>Now that your build system is set up, you can follow the general autotools build
 steps to build Pd, but make sure to use <code>gmake</code> (aka &ldquo;GNU make&rdquo;).
@@ -327,21 +334,34 @@ sudo gmake install
 
 <H3> <A id="s6.5"> 6.5. Building Pd for macOS </A> </H3>
 
-<p>macOS is built on top of a BSD system and the bash commandline can be accessed with the Terminal application in the /Applications/Utility directory.</p>
-<p>The clang compiler and associated tools are provided by Apple. If you are running macOS 10.9+, you <em>do not</em> need to install the full Xcode application and can install the Commandline Tools Package only by running the following:</p>
+<p>macOS is built on top of a BSD system and the bash commandline
+can be accessed with the Terminal application in the
+/Applications/Utility directory.</p>
+
+<p>The clang compiler and associated tools are provided by Apple.
+If you are running macOS 10.9+, you <em>do not</em> need to install
+the full Xcode application and can install the Commandline Tools
+Package only by running the following:</p>
 
 <pre>xcode-select --install</pre>
 
-<p>For macOS versions earlier than 10.9, you will need to install Xcode from the Mac App Store or downloaded from <a href="http://developer.apple.com" target="_blank">http://developer.apple.com</a></p>
+<p>For macOS versions earlier than 10.9, you will need to install
+Xcode from the Mac App Store or downloaded
+from <a href="http://developer.apple.com" target="_blank">http://developer.apple.com</a></p>
+
 <p>Tcl/Tk is already included macOS.</p>
-<p>To install the autotools, gettext, and libraries for additional features, you can use one of the open source package managers for macOS:</p>
+
+<p>To install the autotools, gettext, and libraries for additional
+features, you can use one of the open source package managers for macOS:</p>
 
 <ul>
 <li>homebrew: <a href="https://brew.sh" target="_blank">https://brew.sh </a>(recommended)</li>
 <li>macports: <a href="https://www.macports.org" target="_blank">https://www.macports.org</a></li>
 </ul>
 
-<p>Follow the package manager set up instructions and then install the software you need. For example, to install the autotools &amp; gettext using Homebrew:</p>
+<p>Follow the package manager set up instructions and then install the
+software you need. For example, to install the autotools &amp; gettext
+using Homebrew:</p>
 
 <pre>brew install automake autoconf libtool pkg-config gettext
 brew link --force gettext</pre>
@@ -355,7 +375,9 @@ brew link --force gettext</pre>
 <li>macOS 11+: x86_64, arm64</li>
 </ul>
 
-<p>Note: a &quot;fat&quot; Pd may not work on all systems and/or be able to load both 32 or 64 bit externals. Additionally, you can specify multiple architectures directly:</p>
+<p>Note: a &quot;fat&quot; Pd may not work on all systems and/or be
+able to load both 32 or 64 bit externals. Additionally, you can specify
+multiple architectures directly:</p>
 
 <pre># build a &quot;fat&quot; Pd for both 32 and 64 bit Intel
 # may not work on all systems
@@ -365,17 +387,18 @@ brew link --force gettext</pre>
 # may not work on all systems
 ./configure --enable-universal</pre>
 
-<p>The JACK audio server is supported by Pd on macOS. By default, Pd can use either
-the official 64-bit builds for macOS 10.12+ from <a href="https://jackaudio.org" target="_blank">https://jackaudio.org</a> or the
-older, 32-bit Jack OS X runtime framework if one is installed on the system.
+<p>The JACK audio server is supported by Pd on macOS. By default,
+Pd can use either the official 64-bit builds for macOS 10.12+
+from <a href="https://jackaudio.org" target="_blank">https://jackaudio.org</a>
+or the older, 32-bit Jack OS X runtime framework if one is installed on the system.
 Optionally, Pd can also be built with Jack installed via Homebrew or Macports,
-however the runtime framework support must be disabled:
-</p>
+however the runtime framework support must be disabled: </p>
 
 <pre>brew install jack
 ./configure --disable-jack-framework --enable-jack</pre>
 
-<p>You should now be ready to build Pd by following the general autotools build steps. Once built, there are two options for installation:</p>
+<p>You should now be ready to build Pd by following the general autotools
+build steps. Once built, there are two options for installation:</p>
 
 <ul>
 <li>build a standalone macOS application (recommended)</li>
@@ -393,7 +416,7 @@ see <a href="x6.htm#s6.5.1"> 6.5.1. macOS app bundle</a>.
 <p>If you want to have both the Pd application <em>and</em> use Pd from the commandline,
 add command aliases to the binaries inside the .app to your ~/.bash_profile:</p>
 
-<pre><code>WHICHPD=&quot;Pd-0.47-1&quot;
+<pre><code>WHICHPD=&quot;Pd-0.55-0&quot;
 alias pd=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pd&quot;
 alias pdsend=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend&quot;
 alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive&quot;
@@ -431,7 +454,7 @@ Package Contents.&rdquo;</p>
 
 <p>The basic layout is:</p>
 
-<pre><code>Pd-0.47-1.app/Contents
+<pre><code>Pd-0.55-0.app/Contents
   Info.plist  &lt;- contextual info: version string, get info string, etc
   /Frameworks &lt;- embedded Tcl/Tk frameworks (optional)
   /MacOS/Pd   &lt;- renamed Wish bundle launcher
@@ -459,10 +482,10 @@ by copying the Pd binaries and resources inside of it.</p>
 <p>These scripts complement the autotools build system described in INSTALL.txt and
 are meant to be run after Pd is configured and built. The following usage, for
 example, downloads and builds a 32 bit Tk 8.6.6 Wish.app which is used to create
-a macOS Pd-0.47-1.app:</p>
+a macOS Pd-0.55-0.app:</p>
 
 <pre><code>mac/tcltk-wish.sh --arch i386 8.6.6
-mac/osx-app.sh --wish Wish-8.6.6.app 0.47-1
+mac/osx-app.sh --wish Wish-8.6.6.app 0.55-0
 </code></pre>
 
 <p>Both osx-app.sh &amp; tcltck-wish.sh have extensive help output using the &ndash;help
@@ -476,10 +499,10 @@ mac/tcltk-wish.sh --help
 &ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
 Pd is built:</p>
 
-<pre><code>mac/osx-app.sh 0.47-1
+<pre><code>mac/osx-app.sh 0.55-0
 </code></pre>
 
-<p>This builds a &ldquo;Pd-0.47-1.app&rdquo; using the included Wish. If you omit the version
+<p>This builds a &ldquo;Pd-0.55-0.app&rdquo; using the included Wish. If you omit the version
 argument, a &ldquo;Pd.app&rdquo; is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.</p>
@@ -490,8 +513,8 @@ versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
 want to use a different Wish.app (a newer version, a custom build, a system
 version), you can specify the donor via commandline options, for example:</p>
 
-<pre><code># build Pd-0.47-1.app using Tk 8.6 installed to the system
-mac/osx-app.sh --system-tk 8.6 0.47-1
+<pre><code># build Pd-0.55-0.app using Tk 8.6 installed to the system
+mac/osx-app.sh --system-tk 8.6 0.55-0
 </code></pre>
 
 <p>If you want Pd to use a newer version of Tcl/Tk, but do not want to install to
@@ -556,18 +579,19 @@ mac/patches/README.txt for more info.</p>
 <p>These scripts automate building Pd with the fallback makefiles in the src
 directory.</p>
 
-<p>To build a 32 bit Pd, copy this &ldquo;mac&rdquo; directory somewhere like ~/mac. Also copy
-a source tarball there, such as pd-0.47-1.src.tar.gz. Then cd to ~/mac and type:</p>
+<p>To build a 32 bit Pd, copy this &ldquo;mac&rdquo; directory
+somewhere like ~/mac. Also copy a source tarball there, such as
+pd-0.55-0.src.tar.gz. Then cd to ~/mac and type:</p>
 
-<pre><code>./build-macosx 0.47-1
+<pre><code>./build-macosx 0.55-0
 </code></pre>
 
-<p>If all goes well, you&rsquo;ll soon see a new app appear named Pd-0.47-1.app.</p>
+<p>If all goes well, you&rsquo;ll soon see a new app appear named Pd-0.55-0.app.</p>
 
 <p>If you want to build a 64 bit Pd, perform the same steps and use the build-mac64
 script:</p>
 
-<pre><code>./build-mac64 0.47-1
+<pre><code>./build-mac64 0.55-0
 </code></pre>
 
 <p>Note: The &ldquo;wish-shell.tgz&rdquo; is an archive of this app I found on my mac:
@@ -875,10 +899,10 @@ msw/tcltk-dir.sh --help
 &ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
 Pd is built:</p>
 
-<pre>msw/msw-app.sh 0.47-1
+<pre>msw/msw-app.sh 0.55-0
 </pre>
 
-<p>This builds a &ldquo;pd-0.47-1&rdquo; directory using the default copy of Tk. If you omit
+<p>This builds a &ldquo;pd-0.55-0&rdquo; directory using the default copy of Tk. If you omit
 the version argument, a &ldquo;pd&rdquo; directory is built. The version argument is only
 used as a suffix to the directory name.</p>
 

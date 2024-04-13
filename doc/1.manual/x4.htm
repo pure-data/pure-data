@@ -57,8 +57,11 @@ be loaded into Pd patches.
 then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
 patch’s window and select “help” - this loads the help-intro.pd file (see below).
 
-<p><IMG src="img/4.1.1.png" ALT="list of objects">
-<br>
+<figure>
+    <IMG src="img/4.1.1.png" ALT="list of objects">
+    <figcaption style="text-align:center;">The "help-intro' patch</figcaption>
+</figure>
+
 
 <p> The set of externals that come with Pd are available in the ‘extra’ library
 and is located in a folder named “extra” inside the Pd application. These
@@ -67,9 +70,10 @@ appear at the very end of the “help-intro.pd” and can also be viewed in the
 the browser looks in a fresh install of Pd and lists the objects in the extra
 folder.
 
-<p>
-<IMG src="img/4.1.2.png" ALT="browser window">
-<br>
+<figure>
+    <IMG src="img/4.1.2.png" ALT="browser window">
+    <figcaption style="text-align:center;">The browser window</figcaption>
+</figure>
 
 <H4> <A id=s4.1.2> 4.1.2. Types of external objects </A> </H4>
 
@@ -379,8 +383,10 @@ you want to create a documents directory for patches that includes an
 external libraries and it’s automatically included in the user added search
 paths (under Preferences => Path), see figure below.
 
-<p><IMG src="img/4.2.1.png" ALT="Preferences">
-<br>
+<figure>
+    <IMG src="img/4.2.1.png" ALT="Preferences">
+    <figcaption style="text-align:center;">Path preferences</figcaption>
+</figure>
 
 <p>We see in the screenshot above that the “Pd” folder is created
 under ~/Documents, and inside it we have the externals subfolder.
@@ -460,8 +466,10 @@ can type and search for object name, library name or both. The wildcard '*' can 
 to broaden the search, or an exact name can be used instead. All available versions of
 the library/external specific for your operating system will be shown to you. See figure below.
 
-<p><IMG src="img/4.2.2.png" ALT="deken install">
-<br>
+<figure>
+    <IMG src="img/4.2.2.png" ALT="deken install">
+    <figcaption style="text-align:center;">Installing from 'deken'</figcaption>
+</figure>
 
 <p>When you double-click on the version you want, by default Pd downloads it to
 "~/Documents/Pd/externals".
@@ -571,11 +579,10 @@ they're only needed during startup, you need to restart Pd so this takes effect.
 is also used for configuring Pd in many ways, see <a href="x3.htm#s3.4">3.4. Preferences and
 startup options</a> for reference.
 
-<p>
-
-<IMG src="img/4.3.1.png" ALT="startup preferences">
-
-<br>
+<figure>
+    <IMG src="img/4.3.1.png" ALT="startup preferences">
+    <figcaption style="text-align:center;">Startup preferences</figcaption>
+</figure>
 
 <p> As we’ve seen with ‘zexy’, it’s common that the name of the binary is
 the same as the library’s, so you don’t need to worry about adding it to the path.
@@ -601,8 +608,10 @@ via [declare], clearly).
 objects are loaded in Pd and they have search priority. This may cause issues discussed
 on the next section.
 
-<p><IMG src="img/4.3.2.png" ALT="lib print">
-<br>
+<figure>
+    <IMG src="img/4.3.2.png" ALT="lib print">
+    <figcaption style="text-align:center;">Library loading printout</figcaption>
+</figure>
 
 <H4> <A id=s4.3.3> 4.3.3. Load using slash declarations</A> </H4>
 
@@ -613,7 +622,10 @@ before an object name. This will make Pd look for this object in a folder called
 ‘else’ in one of its search paths (which includes ~/Documents/Pd/externals)
 and find it! Here’s an example:
 
-<p><IMG src="img/4.3.3.png" ALT="slash declaration">
+<figure>
+    <IMG src="img/4.3.3.png" ALT="slash declaration">
+    <figcaption style="text-align:center;">Creating an external object with a slash declaration</figcaption>
+</figure>
 
 <p>Now, what’s the need or advantage of this over using [declare] or adding the folder to the
 user added paths? This can be an option that some people may prefer for the simple fact that
