@@ -158,8 +158,8 @@ CPU cycles uselessly.
 you may need both to run simultaneously. By default, Pd will try to run
 both, but if you don't need either input or output, you may find that Pd
 runs more reliably, or at least more efficiently, with the unused direction
-turned off. This may be specified using the "Audio Settings" dialog panel or
-startup flags.
+turned off. This may be specified using the <a href="x3.htm#s3.3.1">Audio
+Settings</a> dialog panel or <a href="x3.htm#s3.4.1">Startup flags</a>.
 
 <P> Depending on your application you will have a more or less stringent latency
 requirement. Ideally, when any input (audio, MIDI, keyboard, network) is
@@ -188,6 +188,7 @@ start or stop Pd's audio computation.
 them. On Linux, they are OSS, ALSA, and Portaudio; on Windows, you get MMIO and
 ASIO. On Mac the default one is Portaudio and you can also use JACK if you have
 it installed.
+
 
 <!--- comment out
 <P> In windows, you can Invoke Pd with flags to specify which one to use; either
@@ -342,14 +343,12 @@ there will be a limit to how small you can make this.
 
 <p> Next you get a choice of input and output device. If you don't
 need either the input or output device you can unchcek the toggle box
-to the left (which is on by default).  Number of input and output
+to the left (which is on by default). Number of input and output
 channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
-<!--- comment out
- If you want to open more than one, hit "use multiple devices" and you'll be allowed up to 4
-in and 4 out.
-/// end comment out -->
+<p>In Linux, if you want to open more than one audio device, hit "use
+multiple devices" and you'll be allowed up to 4 input and 4 output devices.
 
 <H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
 
@@ -366,7 +365,6 @@ outlet and [midiout] has a separate inlet to specify which MIDI port you want.
 
 <P> System exclusive MIDI message input and output are theoretically supported
 but does not work uniformly across all operating systems..
-
 
 <H3> <A id=s3.4> 3.4. Preferences and startup options </A> </H3>
 
