@@ -115,8 +115,8 @@ all options.
 
 <H3> <A id=s3.3> 3.3. Testing and configuring Audio and MIDI </A> </H3>
 
-<P> To test audio and MIDI, start Pd and select "Test Audio and MIDI..." from
-the <b>Media menu</b>. You should see a window like this:
+<P> To test audio and MIDI, start Pd and select "Test Audio and MIDI..."
+from the <b>Media menu</b>. You should see a window like this:
 
 <P>
     <IMG src="img/3.3.1.png" ALT="test audio and midi patch">
@@ -128,7 +128,8 @@ a test sound (either noise or a sinusoid). By default, the first eight output
 channels are turned on so that when you should get output on them when you
 turn the test sound on. If you have fewer than eight output channels open,
 the extra channels aren't played; and if you have more, you need to use the
-radio button to test them.
+radio button to test them. Note that the "AUDIO OUTPUT" toggles must be on
+(which they are by default) for you to hear anything.
 
 <P> If there's anything wrong, the most likely outcome is that you will hear
 nothing at all. This could be for any of at least three reasons: Pd might
@@ -137,16 +138,13 @@ be set to zero; or your audio system might not be set to amplify the computer
 output.
 
 <P> The "INPUT MONITOR" provides VU Meters and number boxes to indicated the
-levels of incoming audio, in dB, with 100 being maximum. (Incoming signals may
-clip at RMS levels below 100; for instance, a sinusoid clips at about 97 dB.)
+levels of incoming audio, in dB, with 100 being maximum. Incoming signals may
+clip at RMS levels below 100 (for instance, a sinusoid clips at about 97 dB).
 Any DC present in the input (such as you get with cheap audio hardware)
 will show up as level unless you turn on the "input highpass" toggle
-at right; then the DC component is filtered out before metering.
-
-<P> To test the quality of audio input and output, the "AUDIO OUTPUT" toggles
-must be (which they are by default) and causes the inputs to be played to the
-outputs at unit gain. You should hear a faithful, non-distorted copy of whatever
-is sent through the patch.
+at right; then the DC component is filtered out before metering. In order
+to hear and monitor the input you need to set the dB level in the "Input
+Monitor" number box. Whatch out for feedbacks if you have microphone inputs.
 
 <P> It is easy to get two copies of Pd running by accident; on most machines
 only one at a time may be inputting and outputting sound. (Some copy of Pd
@@ -179,7 +177,7 @@ delay in "Audio Settings" dialog. For the second, start up your favorite
 performance monitor program; and for the third, try starting Pd up with ADCs
 disabled.
 
-<P> In addition to the "test audio and MIDI" patch, the "Media" menu
+<P> In addition to the "Test Audio and MIDI" patch, the <b>Media menu</b>
 contains items for controlling audio and MIDI settings. The first two
 items, "Audio on" and "Audio off", open or close the audio devices and
 start or stop Pd's audio computation.
