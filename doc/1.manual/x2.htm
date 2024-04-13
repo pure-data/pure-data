@@ -436,7 +436,7 @@ cannot paste between different versions or flavors of Pure Data. Additionally,
 it is not possible to copy from a patch and paste into a Pd subprocess instantiated
 via a [pd~] object.
 
-<H4> <A id="s2.2.5">2.2.5. Changing the text</A> </H4>
+<H4> <A id="s2.2.5">2.2.5. Changing the text of objects, messages and comments</A> </H4>
 
 <P>Clicking on an unselected object, message or comment box and releasing the
 click makes the text active, i.e., ready to be text edited (if you select using
@@ -450,10 +450,10 @@ text or use the mouse to click and drag to change the text selection and edit it
 it (by clicking outside it or using <kbd>Esc</kbd>), otherwise you will be selecting
 text instead of moving the box.
 
-<P><I>The updated text only becomes part of the patch when you deselect the
-object.</I> As already mentioned, changing the text in an object box deletes
-the old object and creates a new one; so the internal state of the old one is
-completely lost.
+<P>The updated text only becomes part of the patch when you deselect the
+object. As already mentioned, changing the text in an object box deletes
+the old object and creates a new one; so the internal state of the old one
+is completely lost.
 
 <P>
     <IMG src="img/2.2.4.png" ALT="changing text">
@@ -764,7 +764,7 @@ Now, if the [trigger] object has more outlets than outgoing connections,
 
 In case there are more connections than outlets, "Triggerize" adds outlets
 to distribute all connections to separate ones (following the creation order
-of the connections from right to left).
+of the connections from right to left).2
 
 <P>
     <IMG src="img/2.3.23.png" ALT="distribute connections">
@@ -813,6 +813,8 @@ same type that was copied.
 
 <P>In Pd, boxes intercommunicate by sending messages and/or audio signals.
 Pd messages are sporadic, like MIDI messages or Music N "Note cards".
+The management of messages in Pd corresponds to the "Control" realm, as
+opposed to Audio signals, described in the next section.
 
 <H4> <A id="s2.4.1">2.4.1. Anatomy of a message</A> </H4>
 
@@ -1039,6 +1041,23 @@ activate it). Dollar sign variables are either numbers or symbols depending
 on the incoming message; if they are symbols, you may even use them to specify
 variable message selectors or destinations.
 
+<H4> <A id="s2.4.5">2.4.5. Escaping characters</A> </H4>
+
+<p>The <kbd>\</kbd> (backslash) character is used in Pd to escape special
+characters that are handled differently in Pd. Such characters are:
+<kbd>Space</kbd>, <kbd>,</kbd> (comma), <kbd>;</kbd> (semicolon) and
+<kbd>$</kbd> (dollar signs). Also, the backslash character itself can be
+escaped.
+
+
+<p>This way, the "<b>Hi\, how are you?</b>" message in a message box does
+not interpret the comma as it normally would, splitting the messagw in two.
+Instead, you have a literal comma and a "<b>Hi,</b>". The help file of
+message boxes has examples on escaping characters, as well as information
+of previously discussed topics.
+
+<p>See also the "2.control.examples" from the documentation folder with more
+examples about messags and more.
 
 <H3> <A id="s2.5">2.5. Audio signals</A> </H3>
 
