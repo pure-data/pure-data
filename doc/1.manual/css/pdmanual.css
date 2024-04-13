@@ -25,6 +25,15 @@ ol>li:before {
     counter-increment: item;
 }
 
+figure {
+    padding-bottom: 2em;
+}
+
+figcaption{
+    font-size:   13.7pt;
+    padding-top: 0.5em;
+}
+
 H1 {
     font-size:   32.7pt;
     text-align:  center;
