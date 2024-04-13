@@ -1132,6 +1132,16 @@ t_glist *glist_findgraph(t_glist *x)
 
 extern void canvas_menuarray(t_glist *canvas);
 
+        /* in emscripten, the function signatures must match exactly
+           (including the return type), so we need a (void)-returning wrapper
+           around graph_array() to be used as canvas-method
+        */
+static void _graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
+    t_floatarg fsize, t_floatarg fflags)
+{
+    graph_array(gl, s, templateargsym, fsize, fflags);
+}
+
 void g_graph_setup_class(t_class *c)
 {
     class_setwidget(c, &graph_widgetbehavior);
@@ -1145,7 +1155,7 @@ void g_graph_setup_class(t_class *c)
         A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(c, (t_method)graph_ylabel, gensym("ylabel"),
         A_GIMME, 0);
-    class_addmethod(c, (t_method)graph_array, gensym("array"),
+    class_addmethod(c, (t_method)_graph_array, gensym("array"),
         A_SYMBOL, A_FLOAT, A_SYMBOL, A_DEFFLOAT, A_NULL);
     class_addmethod(c, (t_method)canvas_menuarray,
         gensym("menuarray"), A_NULL);
