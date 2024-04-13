@@ -30,7 +30,9 @@
                     instrument, MIDI, overview, peak, edit comments,
                     information, unique material identifier, user-defined
   * ignores any chunks after finding the data chunk
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+
+  Pd versions < 0.55 did not read 64 bit float.
 
   Pd versions < 0.51 did *not* read or write CAF files.
 

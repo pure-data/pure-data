@@ -36,8 +36,10 @@
                     sample, display, junk, pad, time code, digitization time
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
-  * does not support 64-bit variants or BWF file-splitting
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * does not support 64-bit size variants or BWF file-splitting
+  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+
+  Pd versions < 0.55 did not read 64 bit float.
 
   Pd versions < 0.51 did *not* read or write extended format explicitly, but
   ignored the format chunk format tag and interpreted the sample type based on
