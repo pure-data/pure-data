@@ -26,12 +26,13 @@ ol>li:before {
 }
 
 figure {
-    padding-bottom: 2em;
+    padding: 1em 0;
 }
 
 figcaption{
-    font-size:   13.7pt;
     padding-top: 0.5em;
+    font-size: 90%;
+    text-align: center;
 }
 
 H1 {
@@ -86,6 +87,10 @@ table, td, th {
 
 table {
     border-collapse: collapse;
+}
+
+td {
+    text-align: center;
 }
 
 tr:nth-child(even) {background-color: #f0f0f0;}
