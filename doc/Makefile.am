@@ -68,12 +68,18 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.1.7.png \
      ./1.manual/img/2.1.8.png \
      ./1.manual/img/2.1.9.png \
+     ./1.manual/img/2.1.10.png \
+     ./1.manual/img/2.1.11.png \
+     ./1.manual/img/2.1.12.png \
      ./1.manual/img/2.2.1.png \
      ./1.manual/img/2.2.2.png \
      ./1.manual/img/2.2.3.png \
      ./1.manual/img/2.2.4.png \
      ./1.manual/img/2.2.5.png \
      ./1.manual/img/2.2.6.png \
+     ./1.manual/img/2.2.7.png \
+     ./1.manual/img/2.2.8.png \
+     ./1.manual/img/2.2.9.png \
      ./1.manual/img/2.3.1.png \
      ./1.manual/img/2.3.2.png \
      ./1.manual/img/2.3.3.png \
