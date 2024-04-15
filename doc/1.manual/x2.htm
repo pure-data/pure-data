@@ -105,8 +105,10 @@ adjustments if you are having trouble reading on HiDPI screens.
     <figcaption>The Edit menu</figcaption>
 </figure>
 
-
-(include pic of font entry!!!)
+<figure>
+<IMG src="img/2.1.3.1.png" ALT="font settings">
+    <figcaption>The Font settings window</figcaption>
+</figure>
 
 <P>Pd documents ("patches" or "canvases") have their own main window and any number of
 sub-windows. The sub-windows can be opened and closed, but they are always running,
@@ -116,13 +118,19 @@ When you have a patch window focused, you can use the 'Font' dialog entry in the
 It is useful to increase the font size of patches if you're having trouble reading
 them on HiDPI screens. Note that the patch's font size gets saved with the file.
 
-(include pic of a patch canvas!!!)
+<figure>
+<IMG src="img/2.1.3.2.png" ALT="patch canvas">
+    <figcaption>The patch canvas</figcaption>
+</figure>
 
 <P>Also in the <b>Edit menu</b>, you can "Zoom In" and "Zoom Out" a patch window.
 The Zoom settings is not saved in the patch and a zoomed window can also help with
 HiDPI screens.
 
-(include pic of zoom!!!)
+<figure>
+<IMG src="img/2.1.3.3.png" ALT="zoomed in and out">
+    <figcaption>A patch in standard and zoomed state</figcaption>
+</figure>
 
 <P>In the <b>Edit menu</b> you can also clear all messages printed in the Pd window with
 the 'Clear Console' entry (<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>L</kbd> shortcut). On the
@@ -305,7 +313,10 @@ points up and is slightly tilted to the left, but it points straight up when you
 able to click on a box. In run mode, you mostly click and interact with GUIs (like the
 number box) and message boxes (which are used as controls to send messages).
 
-(include pic of run arrows)
+<figure>
+<IMG src="img/2.1.10.png" ALT="run mode arrow">
+    <figcaption>Pointer arrow in run mode</figcaption>
+</figure>
 
 <P> In order to go into edit mode, you need to select the 'Edit Mode' entry from the
 <b>Edit menu</b> to activate and check it on.
@@ -324,7 +335,10 @@ mode, the mouse cursor becomes a pointing hand instead of an arrow. Unchecking t
 "Edit Mode" entry returns the patch to run mode and changes the cursor back to an
 arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between these modes.
 
-(include pic of edit hand)
+<figure>
+<IMG src="img/2.2.1.1.png" ALT="edit mode hand pointer">
+    <figcaption>The hand pointer visible during edit mode</figcaption>
+</figure>
 
 <P>In edit mode, you can move boxes around by clicking on them and dragging.
 You can also edit text, create or delete boxes and make or cut connections.
@@ -333,11 +347,14 @@ More details follow below.
 
 <P>In edit mode, you can also resize some boxes in your patch, namely object boxes,
 number/symbol/list boxes, comments and messages. You need to move the cursor to the
-right edge of the object and you'll see the cursor become a double sided horozontal
+right edge of the object and you'll see the cursor become a double sided horizontal
 arrow. You can then click and drag horizontally to resize these boxes. IEMguis do not
 offer this feature yet and some externals may offer this or other possibilities.
 
-(include pic of double arrows)
+<figure>
+<IMG src="img/2.2.1.2.png" ALT="resizing boxes">
+    <figcaption>The pointer indicating the resize action</figcaption>
+</figure>
 
 <P>If you are predominantly editing a patch, but would like to quickly switch to
 run mode just to click on something like a message, you can press and hold the
@@ -961,7 +978,10 @@ has been sent "3", and so on. This generates a "<b>stack overflow</b>" error (wh
 'infinite loop') in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
 on (as described earlier) to select the offending object.
 
-(include pic of stack overflow error and the selected object)
+<figure>
+    <IMG src="img/2.4.3.1.png" ALT="find error source">
+    <figcaption>Ctrl+click to find source of error</figcaption>
+</figure>
 
 <P>However, it is legal to make a loop if there is a [delay] object somewhere
 in it. When [delay] receives a message, it schedules a message for the
