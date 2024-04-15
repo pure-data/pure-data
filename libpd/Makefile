@@ -11,9 +11,12 @@ PLATFORM_ARCH ?= $(shell $(CC) -dumpmachine | sed -e 's,-.*,,')
 
 ifeq ($(UNAME), Darwin)  # Mac
   SOLIB_EXT = dylib
-  PLATFORM_CFLAGS = -DHAVE_ALLOCA_H -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H \
-                    -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
+  PLATFORM_CFLAGS = -DHAVE_ALLOCA_H -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H
   PLATFORM_LDFLAGS = -dynamiclib -ldl -Wl,-no_compact_unwind
+  # helps for machine/endian.h to be found
+  PLATFORM_CFLAGS += -D_DARWIN_C_SOURCE
+  # increase max allowed file descriptors
+  PLATFORM_CFLAGS += -D_DARWIN_UNLIMITED_SELECT -DFD_SETSIZE=10240
   ifeq ($(FAT_LIB), true)
     # macOS universal "fat" lib compilation
     MAC_VER = $(shell sw_vers -productVersion | cut -f1 -f2 -d.)
