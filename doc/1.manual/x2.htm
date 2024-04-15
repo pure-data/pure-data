@@ -60,7 +60,7 @@ and also referred to as "patch". The main Pd window which looks like this:
 
 <figure>
 <IMG src="img/2.1.1.png" ALT="pd window">
-    <figcaption>The main Pd window (a.k.a. Console window)</figcaption>
+    <figcaption>The main Pd window (a.k.a. Console window) on Windows</figcaption>
 </figure>
 
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
@@ -73,7 +73,7 @@ and save them (note the handy shortcuts).
 
 <figure>
 <IMG src="img/2.1.2.png" ALT="file menu">
-    <figcaption>The File menu</figcaption>
+    <figcaption>The File menu on macOS</figcaption>
 </figure>
 
 <P>And when you create a new file you get a blank window like this.
@@ -84,9 +84,16 @@ and save them (note the handy shortcuts).
 </figure>
 
 <P>On the upper right of the main Pd window, there is a "DSP" toggle box, which stands
-for "Digital Signal Processing" and turns audio processing on and off globally. When "DSP"
-is on, Pd is computing audio samples in realtime for all open patches (whether they are
-visible or not). Turning off "DSP" halts the computation and releases any audio devices
+for "Digital Signal Processing" and turns audio processing on and off globally. By default,
+when you open Pd, this is set to off.  When you turn "DSP" on, Pd is computing audio samples
+in realtime for all open patches (whether they are visible or not).
+
+<figure>
+<IMG src="img/2.1.5.png" ALT="DSP on">
+    <figcaption>The DSP toggled on in the Pd window on a mac</figcaption>
+</figure>
+
+<P>Turning off "DSP", on the other hand, halts the computation and releases any audio devices
 that Pure Data is utilizing. You can configure audio devices as described in
 <A href="x3.htm#s3.3.1">3.3.1. Audio settings</A>.
 
@@ -97,7 +104,7 @@ audio level if you select "Test Audio and MIDI" and make other Audio and MIDI te
 about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <figure>
-<IMG src="img/2.1.4.png" ALT="media menu">
+<IMG src="img/2.1.5.png" ALT="media menu">
     <figcaption>The Media menu</figcaption>
 </figure>
 
@@ -114,7 +121,7 @@ offending object in the patch. You can also use the "Find Last Error" entry in t
 using the 'Font' dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="img/2.1.5.png" ALT="edit menu">
+<IMG src="img/2.1.6.png" ALT="edit menu">
     <figcaption>The Edit menu</figcaption>
 </figure>
 
@@ -123,7 +130,7 @@ having trouble reading on HiDPI screens. Ignore the "stretch" parameter, that on
 works for Pd documents.
 
 <figure>
-<IMG src="img/2.1.6.png" ALT="font settings">
+<IMG src="img/2.1.7.png" ALT="font settings">
     <figcaption>The Font settings dialog</figcaption>
 </figure>
 
@@ -144,7 +151,7 @@ The Zoom settings is not saved in the patch and a zoomed window can also help wi
 HiDPI screens.
 
 <figure>
-<IMG src="img/2.1.7.png" ALT="zoomed in and out">
+<IMG src="img/2.1.8.png" ALT="zoomed in and out">
     <figcaption>A patch in standard and zoomed state</figcaption>
 </figure>
 
@@ -163,7 +170,7 @@ without confirmation, use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>Q</kbd>.
 <P>Here is a simple Pd patch:
 
 <figure>
-<IMG src="img/2.1.8.png" ALT="simple patch">
+<IMG src="img/2.1.9.png" ALT="simple patch">
     <figcaption>A simple patch</figcaption>
 </figure>
 
@@ -182,7 +189,7 @@ object box from the <b>Put menu</b>. When you insert a new object box, it is emp
 and presented with a dashed border before creation.
 
 <figure>
-<IMG src="img/2.1.9.png" ALT="dashed box">
+<IMG src="img/2.1.10.png" ALT="dashed box">
     <figcaption>An uncreated object box</figcaption>
 </figure>
 
@@ -193,7 +200,7 @@ will create, while the subsequent atoms, known as <I>creation arguments</I>,
 instruct Pd how to initialize the object. For instance, you can type "+ 13".
 
 <figure>
-<IMG src="img/2.1.10.png" ALT="object box">
+<IMG src="img/2.1.11.png" ALT="object box">
     <figcaption>A created object box</figcaption>
 </figure>
 
@@ -222,7 +229,7 @@ arguments.
 synthesizes a pure tone:
 
 <figure>
-<IMG src="img/2.1.11.png" ALT="simple MIDI synthesizer">
+<IMG src="img/2.1.12.png" ALT="simple MIDI synthesizer">
     <figcaption>A simple MIDI synthesizer</figcaption>
 </figure>
 
@@ -274,7 +281,7 @@ a click on the message box sends the message "21" to an object box, which adds 1
 to it.
 
 <figure>
-<IMG src="img/2.1.12.png" ALT="Different box shapes">
+<IMG src="img/2.1.13.png" ALT="Different box shapes">
     <figcaption>Different box shapes</figcaption>
 </figure>
 
