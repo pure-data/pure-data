@@ -66,10 +66,8 @@ and also referred to as "patch". The main Pd window which looks like this:
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
 <b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
 at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry,
-as it's common for all apps in macOS).
-
-<P>You can create and open patches via the <b>File menu</b>, where you can also close
-and save them (note the handy shortcuts).
+as it's common for all apps in macOS and seen below). You can create and open patches
+via the <b>File menu</b>, where you can also close and save them (note the handy shortcuts).
 
 <figure>
 <IMG src="img/2.1.2.png" ALT="file menu">
@@ -82,6 +80,23 @@ and save them (note the handy shortcuts).
 <IMG src="img/2.1.3.png" ALT="patch canvas">
     <figcaption>A new and blank patch canvas</figcaption>
 </figure>
+
+
+<P>The lower part of the Pd window is a console area for printout from the output of
+boxes in patches and for messages from Pd itself. Here is a simple Pd patch:
+
+<figure>
+<IMG src="img/2.1.4.png" ALT="simple patch">
+    <figcaption>A simple patch</figcaption>
+</figure>
+
+<P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
+an object box showing "print", plus two "comments" (which are simply commentaries
+that don't really affect the patch and can't be connected to anything). The number
+box is connected to the object box, with the output of the number box feeding into
+the input of the [print] object box. Boxes may have zero or more inputs and/or
+outputs, with the inputs on top and the outputs on the bottom. When clicking and
+dragging on the number box, the values are printed in the main "Pd" window.
 
 <P>On the upper right of the main Pd window, there is a "DSP" toggle box, which stands
 for "Digital Signal Processing" and turns audio processing on and off globally. By default,
@@ -104,24 +119,29 @@ audio level if you select "Test Audio and MIDI" and make other Audio and MIDI te
 about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <figure>
-<IMG src="img/2.1.5.png" ALT="media menu">
+<IMG src="img/2.1.6.png" ALT="media menu">
     <figcaption>The Media menu</figcaption>
 </figure>
 
-<P>The lower part of the Pd window is a console area for printout from the output of
-boxes in patches and for messages from Pd itself, which can be several things, mostly
-warnings and errors. Errors are mostly given by objects and printed in the Pd window
-with a red font. If you <kbd>Ctrl</kbd>+<kbd>click</kbd> on the error, Pd selects the
-offending object in the patch. You can also use the "Find Last Error" entry in the
-<b>Find menu</b> for the same effect.
 
-(include pic of find menu with the "Find Last Error" entry selected)
+<P> Besides printing the messages from objects, the Pd window prints several messages from Pd.
+You can use the log level for printing information. The default is level "2" (normal), you can
+increase it to get more detailed information or decrease to get only fatal errros.
+
+(Include pic of log levels)
+
+<P> Errors are mostly given by objects and printed in the Pd window with a red font. If you
+<kbd>Ctrl</kbd>+<kbd>click</kbd> on the error, Pd selects the offending object in the patch.
+Examples of this are presented later in this manual. You can also use the "Find Last Error"
+entry in the <b>Find menu</b> for the same effect.
+
+(include a pic of a random error)
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
 using the 'Font' dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="img/2.1.6.png" ALT="edit menu">
+<IMG src="img/2.1.7.png" ALT="edit menu">
     <figcaption>The Edit menu</figcaption>
 </figure>
 
@@ -130,7 +150,7 @@ having trouble reading on HiDPI screens. Ignore the "stretch" parameter, that on
 works for Pd documents.
 
 <figure>
-<IMG src="img/2.1.7.png" ALT="font settings">
+<IMG src="img/2.1.8.png" ALT="font settings">
     <figcaption>The Font settings dialog</figcaption>
 </figure>
 
@@ -151,7 +171,7 @@ The Zoom settings is not saved in the patch and a zoomed window can also help wi
 HiDPI screens.
 
 <figure>
-<IMG src="img/2.1.8.png" ALT="zoomed in and out">
+<IMG src="img/2.1.9.png" ALT="zoomed in and out">
     <figcaption>A patch in standard and zoomed state</figcaption>
 </figure>
 
@@ -161,26 +181,10 @@ the 'Clear Console' entry (<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>L</kbd> shortcu
 shortcut), which brings the Pd window to the front or sends it behind and brings back to
 focus the last focused window.
 
-
-
 <P>On PCs, this menu shows the <kbd>Ctrl</kbd>+<kbd>Q</kbd> entry to quit Pd, which prompts
 you to confirm the action (on Macs, this is listed in the <b>Pd menu</b>). To quit
 without confirmation, use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>Q</kbd>.
 
-<P>Here is a simple Pd patch:
-
-<figure>
-<IMG src="img/2.1.9.png" ALT="simple patch">
-    <figcaption>A simple patch</figcaption>
-</figure>
-
-<P>There are four <I>text boxes</I> in this patch: a number box (showing zero),
-an object box showing "print", plus two "comments" (which are simply commentaries
-that don't really affect the patch and can't be connected to anything). The number
-box is connected to the object box, with the output of the number box feeding into
-the input of the [print] object box. Boxes may have zero or more inputs and/or
-outputs, with the inputs on top and the outputs on the bottom. When clicking and
-dragging on the number box, the values are printed in the main "Pd" window.
 
 <H4> <A id="s2.1.2"> 2.1.2. Object boxes</A> </H4>
 
