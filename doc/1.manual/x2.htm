@@ -68,11 +68,26 @@ and also referred to as "patch". The main Pd window which looks like this:
 at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry,
 as it's common for all apps in macOS).
 
-<P>On the upper right, there is a "DSP" toggle box, which stands for "Digital Signal
-Processing" and turns audio processing on and off globally. When "DSP" is on, Pd is
-computing audio samples in realtime for all open patches (whether they are visible
-or not). Turning off "DSP" halts the computation and releases any audio devices that
-Pure Data is utilizing. You can configure audio devices as described in
+<P>You can create and open patches via the <b>File menu</b>, where you can also close
+and save them (note the handy shortcuts).
+
+<figure>
+<IMG src="img/2.1.2.png" ALT="file menu">
+    <figcaption>The File menu</figcaption>
+</figure>
+
+<P>And when you create a new file you get a blank window like this.
+
+<figure>
+<IMG src="img/2.1.3.png" ALT="patch canvas">
+    <figcaption>A new and blank patch canvas</figcaption>
+</figure>
+
+<P>On the upper right of the main Pd window, there is a "DSP" toggle box, which stands
+for "Digital Signal Processing" and turns audio processing on and off globally. When "DSP"
+is on, Pd is computing audio samples in realtime for all open patches (whether they are
+visible or not). Turning off "DSP" halts the computation and releases any audio devices
+that Pure Data is utilizing. You can configure audio devices as described in
 <A href="x3.htm#s3.3.1">3.3.1. Audio settings</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl</kbd>+<kbd>/</kbd>
@@ -82,10 +97,9 @@ audio level if you select "Test Audio and MIDI" and make other Audio and MIDI te
 about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <figure>
-<IMG src="img/2.1.2.png" ALT="media menu">
+<IMG src="img/2.1.4.png" ALT="media menu">
     <figcaption>The Media menu</figcaption>
 </figure>
-
 
 <P>The lower part of the Pd window is a console area for printout from the output of
 boxes in patches and for messages from Pd itself, which can be several things, mostly
@@ -97,17 +111,20 @@ offending object in the patch. You can also use the "Find Last Error" entry in t
 (include pic of find menu with the "Find Last Error" entry selected)
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
-using the 'Font' dialog entry in the <b>Edit menu</b> as shown below. Make your
-adjustments if you are having trouble reading on HiDPI screens.
+using the 'Font' dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="img/2.1.3.png" ALT="edit menu">
+<IMG src="img/2.1.5.png" ALT="edit menu">
     <figcaption>The Edit menu</figcaption>
 </figure>
 
+<P> Make your adjustments in the Font dialog window and increase the size if you are
+having trouble reading on HiDPI screens. Ignore the "stretch" parameter, that only
+works for Pd documents.
+
 <figure>
-<IMG src="img/2.1.3.1.png" ALT="font settings">
-    <figcaption>The Font settings window</figcaption>
+<IMG src="img/2.1.6.png" ALT="font settings">
+    <figcaption>The Font settings dialog</figcaption>
 </figure>
 
 <P>Pd documents ("patches" or "canvases") have their own main window and any number of
@@ -115,20 +132,19 @@ sub-windows. The sub-windows can be opened and closed, but they are always runni
 whether you see them or not. When opened, sub-windows show up as a separate canvases.
 When you have a patch window focused, you can use the 'Font' dialog entry in the
 <b>Edit menu</b> to set the patch's font size, which also applies to its subwindows.
-It is useful to increase the font size of patches if you're having trouble reading
+It is also useful to increase the font size of patches if you're having trouble reading
 them on HiDPI screens. Note that the patch's font size gets saved with the file.
 
-<figure>
-<IMG src="img/2.1.3.2.png" ALT="patch canvas">
-    <figcaption>The patch canvas</figcaption>
-</figure>
+<P>In the case of patch canvases, you can also use the "Stretch" feature, which stretches
+or compresses text elements (boxes) of you patch. This might be useful because when you
+change the font size, boxes may overlap if you increase or become too much further apart.
 
-<P>Also in the <b>Edit menu</b>, you can "Zoom In" and "Zoom Out" a patch window.
+<P>In the <b>Edit menu</b> you can also "Zoom In" and "Zoom Out" a patch window.
 The Zoom settings is not saved in the patch and a zoomed window can also help with
 HiDPI screens.
 
 <figure>
-<IMG src="img/2.1.3.3.png" ALT="zoomed in and out">
+<IMG src="img/2.1.7.png" ALT="zoomed in and out">
     <figcaption>A patch in standard and zoomed state</figcaption>
 </figure>
 
@@ -138,13 +154,6 @@ the 'Clear Console' entry (<kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>L</kbd> shortcu
 shortcut), which brings the Pd window to the front or sends it behind and brings back to
 focus the last focused window.
 
-<P>You can create and open patches via the <b>File menu</b>, where you can also close
-and save them (note the handy shortcuts).
-
-<figure>
-<IMG src="img/2.1.4.png" ALT="file menu">
-    <figcaption>The File menu</figcaption>
-</figure>
 
 
 <P>On PCs, this menu shows the <kbd>Ctrl</kbd>+<kbd>Q</kbd> entry to quit Pd, which prompts
@@ -154,7 +163,7 @@ without confirmation, use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>Q</kbd>.
 <P>Here is a simple Pd patch:
 
 <figure>
-<IMG src="img/2.1.5.png" ALT="simple patch">
+<IMG src="img/2.1.8.png" ALT="simple patch">
     <figcaption>A simple patch</figcaption>
 </figure>
 
@@ -173,7 +182,7 @@ object box from the <b>Put menu</b>. When you insert a new object box, it is emp
 and presented with a dashed border before creation.
 
 <figure>
-<IMG src="img/2.1.6.png" ALT="dashed box">
+<IMG src="img/2.1.9.png" ALT="dashed box">
     <figcaption>An uncreated object box</figcaption>
 </figure>
 
@@ -184,7 +193,7 @@ will create, while the subsequent atoms, known as <I>creation arguments</I>,
 instruct Pd how to initialize the object. For instance, you can type "+ 13".
 
 <figure>
-<IMG src="img/2.1.7.png" ALT="object box">
+<IMG src="img/2.1.10.png" ALT="object box">
     <figcaption>A created object box</figcaption>
 </figure>
 
@@ -213,7 +222,7 @@ arguments.
 synthesizes a pure tone:
 
 <figure>
-<IMG src="img/2.1.8.png" ALT="simple MIDI synthesizer">
+<IMG src="img/2.1.11.png" ALT="simple MIDI synthesizer">
     <figcaption>A simple MIDI synthesizer</figcaption>
 </figure>
 
@@ -265,7 +274,7 @@ a click on the message box sends the message "21" to an object box, which adds 1
 to it.
 
 <figure>
-<IMG src="img/2.1.9.png" ALT="Different box shapes">
+<IMG src="img/2.1.12.png" ALT="Different box shapes">
     <figcaption>Different box shapes</figcaption>
 </figure>
 
@@ -314,7 +323,7 @@ able to click on a box. In run mode, you mostly click and interact with GUIs (li
 number box) and message boxes (which are used as controls to send messages).
 
 <figure>
-<IMG src="img/2.1.10.png" ALT="run mode arrow">
+<IMG src="img/2.2.1.png" ALT="run mode arrow">
     <figcaption>Pointer arrow in run mode</figcaption>
 </figure>
 
@@ -322,7 +331,7 @@ number box) and message boxes (which are used as controls to send messages).
 <b>Edit menu</b> to activate and check it on.
 
 <figure>
-<IMG src="img/2.2.1.png" ALT="edit mode">
+<IMG src="img/2.2.2.png" ALT="edit mode">
     <figcaption>Selecting edit mode from the Edit menu</figcaption>
 </figure>
 
@@ -336,7 +345,7 @@ mode, the mouse cursor becomes a pointing hand instead of an arrow. Unchecking t
 arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between these modes.
 
 <figure>
-<IMG src="img/2.2.1.1.png" ALT="edit mode hand pointer">
+<IMG src="img/2.2.3.png" ALT="edit mode hand pointer">
     <figcaption>The hand pointer visible during edit mode</figcaption>
 </figure>
 
@@ -352,7 +361,7 @@ arrow. You can then click and drag horizontally to resize these boxes. IEMguis d
 offer this feature yet and some externals may offer this or other possibilities.
 
 <figure>
-<IMG src="img/2.2.1.2.png" ALT="resizing boxes">
+<IMG src="img/2.2.4.png" ALT="resizing boxes">
     <figcaption>The pointer indicating the resize action</figcaption>
 </figure>
 
@@ -372,7 +381,7 @@ also "Undo" and "Redo" while in run mode.
 note the handy shortcuts to create each item specifically.
 
 <figure>
-<IMG src="img/2.2.2.png" ALT="put menu">
+<IMG src="img/2.2.5.png" ALT="put menu">
     <figcaption>The Put menu</figcaption>
 </figure>
 
@@ -438,7 +447,7 @@ are also possible, but aligning horizontally and vertically separately tends to 
 better results.
 
 <figure>
-<IMG src="img/2.2.3.png" ALT="tidy up">
+<IMG src="img/2.2.6.png" ALT="tidy up">
     <figcaption>Tidying up (aligning) vertically</figcaption>
 </figure>
 
@@ -488,7 +497,7 @@ the old object and creates a new one; so the internal state of the old one
 is completely lost.
 
 <figure>
-<IMG src="img/2.2.4.png" ALT="changing text">
+<IMG src="img/2.2.7.png" ALT="changing text">
     <figcaption>Editing text in an object box</figcaption>
 </figure>
 
@@ -511,7 +520,7 @@ anywhere within the target box and the connection will be made to the nearest
 inlet.
 
 <figure>
-<IMG src="img/2.2.5.png" ALT="connecting boxes">
+<IMG src="img/2.2.8.png" ALT="connecting boxes">
     <figcaption>Connecting boxes via click and drag</figcaption>
 </figure>
 
@@ -522,7 +531,7 @@ it. You can't just select patch cords with click and drag for a rectangular
 area and you can only select a single connection by clicking on it.
 
 <figure>
-<IMG src="img/2.2.6.png" ALT="disconnecting boxes">
+<IMG src="img/2.2.9.png" ALT="disconnecting boxes">
     <figcaption>Selecting a patch cord connection to delete it</figcaption>
 </figure>
 
