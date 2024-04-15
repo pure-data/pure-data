@@ -86,6 +86,12 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
     pd_error(x->i_owner, "inlet: expected '%s' but got '%s'",
         x->i_symfrom->s_name, s->s_name);
 }
+static void _inlet_wrong(t_inlet *x, t_symbol *s, int argc, t_atom*argv)
+{
+    (void)argc;
+    (void)argv;
+    inlet_wrong(x, s);
+}
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
 extern t_class *vinlet_class;
