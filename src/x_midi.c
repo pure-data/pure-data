@@ -75,13 +75,13 @@ static void midiin_setup(void)
 {
     midiin_class = class_new(gensym("midiin"), (t_newmethod)midiin_new,
         (t_method)midiin_free, sizeof(t_midiin),
-            CLASS_NOINLET, A_DEFFLOAT, 0);
+            CLASS_NOINLET, 0);
     class_addlist(midiin_class, midiin_list);
     class_sethelpsymbol(midiin_class, gensym("midi"));
 
     sysexin_class = class_new(gensym("sysexin"), (t_newmethod)sysexin_new,
         (t_method)sysexin_free, sizeof(t_midiin),
-            CLASS_NOINLET, A_DEFFLOAT, 0);
+            CLASS_NOINLET, 0);
     class_addlist(sysexin_class, midiin_list);
     class_sethelpsymbol(sysexin_class, gensym("midi"));
 }
@@ -544,7 +544,7 @@ static void midirealtimein_setup(void)
 {
     midirealtimein_class = class_new(gensym("midirealtimein"),
         (t_newmethod)midirealtimein_new, (t_method)midirealtimein_free,
-            sizeof(t_midirealtimein), CLASS_NOINLET, A_DEFFLOAT, 0);
+            sizeof(t_midirealtimein), CLASS_NOINLET, 0);
     class_addlist(midirealtimein_class, midirealtimein_list);
         class_sethelpsymbol(midirealtimein_class, gensym("midi"));
 }
@@ -600,7 +600,7 @@ static void midiout_list(t_midiout *x, t_symbol *s, int ac, t_atom *av)
 static void midiout_setup(void)
 {
     midiout_class = class_new(gensym("midiout"), (t_newmethod)midiout_new, 0,
-        sizeof(t_midiout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_midiout), 0, A_DEFFLOAT, 0);
     class_addfloat(midiout_class, midiout_float);
     class_addlist(midiout_class, midiout_list);
     class_sethelpsymbol(midiout_class, gensym("midi"));
