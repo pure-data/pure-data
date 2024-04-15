@@ -89,6 +89,9 @@ AS_CASE([$host],
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
+        # helps for machine/endian.h to be found
+        PD_CFLAGS="-D_DARWIN_C_SOURCE"
+
         # a set of search paths are used on macOS in s_inter.c
         wish="default search paths"
 
