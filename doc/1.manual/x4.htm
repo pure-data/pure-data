@@ -459,12 +459,14 @@ or ~/pd-externals (deprecated but still usable).
 
 <H4> <A id=s4.2.2> 4.2.2. How to download externals from Pd</A> </H4>
 
-<p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a
-built in .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
-for reference). Open it by selecting the <b>Help => Find externals</b> tab. Then you
-can type and search for object name, library name or both. The wildcard '*' can be used
-to broaden the search, or an exact name can be used instead. All available versions of
-the library/external specific for your operating system will be shown to you. See figure below.
+<p>Since version 0.47-0, Pd Vanilla has its own external manager!
+This is a built in .tcl plug-in named "deken" (check
+<ahref="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
+for reference). Open it by selecting the "Find externals" entry from the
+<b>Help menu</b>. Then you can type and search for object name, library
+name or both. The wildcard '*' can be used to broaden the search, or an
+exact name can be used instead. All available versions of the library/external
+specific for your operating system will be shown to you. See figure below.
 
 <figure>
     <IMG src="img/4.2.2.png" ALT="deken install">
@@ -472,10 +474,19 @@ the library/external specific for your operating system will be shown to you. Se
 </figure>
 
 <p>When you double-click on the version you want, by default Pd downloads it to
-"~/Documents/Pd/externals".
-<br>
-<br>
+"~/Documents/Pd/externals". Note you can click on multiple librries and download
+them at the same time. (INCLUDE PIC)
 
+<p>Moreover, if you have a an object creation error in the console, you can
+<kbd>control</kbd>+<kbd>click</kbd> on the error and it will open deken with
+a prompt search for objct ready to go. (INCLUDE PIC)
+
+<p>Note that when the external manager window is focused, there are
+dedicated menus: <b>File</b> and <b>Edit</b>. You can use <b>File</b>
+to open and instal a ".dek" file, and <b>Edit</b> to opem "Preferences"
+for the plugin manager (INCLUDE PIC).
+
+<kbd>cont
 
 <H3> <A id=s4.3>4.3. Loading externals </A> </H3>
 
