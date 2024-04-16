@@ -19,7 +19,9 @@ objects use Posix-like threads. */
 #include <stdio.h>
 #include <pthread.h>
 
-/* Supported sample formats: LPCM (16 or 24 bit int) & 32 bit float */
+/* Supported sample formats: LPCM (16 or 24 bit int) & 32 or 64 bit float */
+
+#define VALID_BYTESPERSAMPLE(b) (b == 2 || b == 3 || b == 4 || b == 8)
 
 #define MAXSFCHANS 64
 
@@ -37,7 +39,7 @@ objects use Posix-like threads. */
 
 #define SCALE (1. / (1024. * 1024. * 1024. * 2.))
 
-    /* float sample conversion wrapper */
+    /* float sample conversion wrappers */
 typedef union _floatuint
 {
   float f;
@@ -709,7 +711,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
                 ((bytespersample = argv[1].a_w.w_float) < 2) ||
-                    bytespersample > 8 || bytespersample < 8)
+                    !VALID_BYTESPERSAMPLE(bytespersample))
                         return -1;
             argc -= 2; argv += 2;
         }
@@ -779,7 +781,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     }
 
         /* check requested endianness */
-    bigendian = type->t_endiannessfn(endianness);
+    bigendian = type->t_endiannessfn(endianness, bytespersample);
     if (endianness != -1 && endianness != bigendian)
     {
         post("%s: forced to %s endian", type->t_name,
@@ -1279,7 +1281,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 (sf.sf_nchannels > MAXSFCHANS) ||
                 argv[3].a_type != A_FLOAT ||
                 ((sf.sf_bytespersample = argv[3].a_w.w_float) < 2) ||
-                    (sf.sf_bytespersample > 8) || (sf.sf_bytespersample < 8) ||
+                    !VALID_BYTESPERSAMPLE(sf.sf_bytespersample) ||
                 argv[4].a_type != A_SYMBOL ||
                     ((endianness = argv[4].a_w.w_symbol->s_name[0]) != 'b'
                     && endianness != 'l' && endianness != 'n'))

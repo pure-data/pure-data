@@ -404,7 +404,7 @@ static int caf_addextension(char *filename, size_t size)
 }
 
     /* default to big endian if not specified */
-static int caf_endianness(int endianness)
+static int caf_endianness(int endianness, int bytespersample)
 {
     if (endianness == -1)
         return 1;

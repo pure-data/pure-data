@@ -270,7 +270,7 @@ static int next_addextension(char *filename, size_t size)
 }
 
     /* machine native if not specified */
-static int next_endianness(int endianness)
+static int next_endianness(int endianness, int bytespersample)
 {
     if (endianness == -1)
         return sys_isbigendian();

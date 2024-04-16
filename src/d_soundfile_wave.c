@@ -30,7 +30,7 @@
   this implementation:
 
   * supports basic and extended format chunks (WAVE Rev. 3)
-  * implicitly writes extended format for 32 bit float (see below)
+  * implicitly writes extended format for 32 or 64 bit float (see below)
   * implements chunks: format, fact, sound data
   * ignores chunks: info, cset, cue, playlist, associated data, instrument,
                     sample, display, junk, pad, time code, digitization time
@@ -503,7 +503,7 @@ static int wave_addextension(char *filename, size_t size)
 }
 
     /* force little endian */
-static int wave_endianness(int endianness)
+static int wave_endianness(int endianness, int bytespersample)
 {
     return 0;
 }

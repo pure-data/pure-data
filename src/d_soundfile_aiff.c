@@ -256,7 +256,7 @@ static void aiff_postcomm(const t_commchunk *comm, int isaiffc, int swap)
     }
 }
 
-    /** post sata info for debugging */
+    /** post data info for debugging */
 static void aiff_postdata(const t_datachunk *data, int swap)
 {
     aiff_postchunk((const t_chunk *)data, swap);
@@ -607,10 +607,10 @@ static int aiff_addextension(char *filename, size_t size)
     return 1;
 }
 
-    /* default to big endian unless overridden */
-static int aiff_endianness(int endianness)
+    /* big endian unless overridden for 16 or 24 bit int */
+static int aiff_endianness(int endianness, int bytespersample)
 {
-    if (endianness == 0)
+    if ((bytespersample == 2 || bytespersample == 3) && endianness == 0)
         return 0;
     return 1;
 }
