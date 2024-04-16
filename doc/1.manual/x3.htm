@@ -120,7 +120,7 @@ from the <b>Media menu</b>. You should see a window like this:
 
 <figure>
     <IMG src="img/3.3.1.png" ALT="test audio and midi patch">
-    <figcaption style="text-align:center;">Test Audio and MIDI patch</figcaption>
+    <figcaption>Test Audio and MIDI patch</figcaption>
 </figure>
 
 <P> First, try to get Pd to play a sine wave over your speakers. The
@@ -330,7 +330,7 @@ looks like this:
 
 <figure>
     <IMG src="img/3.3.2.png" ALT="audio settings dialog">
-    <figcaption style="text-align:center;">Audio settings dialog</figcaption>
+    <figcaption>Audio settings dialog</figcaption>
 </figure>
 
 
@@ -355,7 +355,7 @@ multiple devices" and you'll be allowed up to 4 input and 4 output devices.
 
 <p> There's also a MIDI settings dialog for you to configure one or more MIDI
 input and output devices. If more than one device is chosen for either input and
-output, they are resgistered in different MIDI ports. The "channel message" midi
+output, they are registered in different MIDI ports. The "channel message" midi
 objects in Pd (such as [notein] or [pgmout]) will take channels 1-16. Note,
 however, that the MIDI port is encoded in the channel number, where channels 1-16
 mean the first open MIDI port, 17-32 the second one, and so on. The [midiin],
@@ -377,7 +377,10 @@ opens a submenu with "Edit Preferences..." and more. By selecting this entry,
 you open the main preferences dialog with different tabs for: "Path", "Startup",
 "Audio", "MIDI" and "misc".
 
-(INCLUDE PIC, with all tabs and "path" chosen)
+<figure>
+    <IMG src="img/3.3.3.png" ALT="preferences dialog">
+    <figcaption>Preferences dialog</figcaption>
+</figure>
 
 <P> The Audio and MIDI tabs are actually the same settings windows that you
 can open via the <b>Media menu</b>, so there's nothing new. The "Path" tabs
@@ -452,7 +455,7 @@ dialog and must be only set via startup flags.
 
 <figure>
     <IMG src="img/3.4.1.png" ALT="startup dialog">
-    <figcaption style="text-align:center;">Startup dialog</figcaption>
+    <figcaption>Startup dialog</figcaption>
 </figure>
 
 <P> Startup flags initialize Pd in many ways, but many configurations can

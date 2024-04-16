@@ -128,14 +128,20 @@ about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI<
 You can use the log level for printing information. The default is level "2" (normal), you can
 increase it to get more detailed information or decrease to get only fatal errros.
 
-(Include pic of log levels)
+<figure>
+    <IMG src="img/2.1.6.1.png" ALT="log levels">
+    <figcaption>log levels menu</figcaption>
+</figure>
 
 <P> Errors are mostly given by objects and printed in the Pd window with a red font. If you
 <kbd>Ctrl</kbd>+<kbd>click</kbd> on the error, Pd selects the offending object in the patch.
 Examples of this are presented later in this manual. You can also use the "Find Last Error"
 entry in the <b>Find menu</b> for the same effect.
 
-(include a pic of a random error)
+<figure>
+    <IMG src="img/2.4.3.1.png" ALT="find error">
+    <figcaption>finding error in patch via Ctrl+Click on log entry</figcaption>
+</figure>
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
 using the 'Font' dialog entry in the <b>Edit menu</b>.
@@ -1118,9 +1124,12 @@ more.
 <P>The <b>File menu</b> has a "Message..." entry that works as a message box with
 a semicolon. This allows you to type in a message while in run mode. You need to
 start the message with the receive symbol (and you can also send messages to "pd"
-this way").
+this way).
 
-(include pic of "Message")
+<figure>
+    <IMG src="img/2.4.9.1.png" ALT="message dialog">
+    <figcaption>Sending messages with the message dialog</figcaption>
+</figure>
 
 <P>You can put variables in message boxes as shown below:
 
@@ -1199,7 +1208,10 @@ must be non-cyclic. If there are loops at "sort time", you will see an error
 message on the main Pd window, saying <b>"DSP loop detected (some tilde
 objects weren't scheduled)"</b>.
 
-(include pic of error and the selected object)
+<figure>
+    <IMG src="img/2.5.1.png" ALT="dsp loop error">
+    <figcaption>DSP loop error</figcaption>
+</figure>
 
 <P> You can build algorithms with feedback using nonlocal signal connections
 as explained in the <A href="x2.htm#s2.5.5">2.5.5. subsection</A>.
