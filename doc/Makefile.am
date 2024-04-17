@@ -72,6 +72,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.1.11.png \
      ./1.manual/img/2.1.12.png \
      ./1.manual/img/2.1.13.png \
+     ./1.manual/img/2.1.14.png \
      ./1.manual/img/2.2.1.png \
      ./1.manual/img/2.2.2.png \
      ./1.manual/img/2.2.3.png \
@@ -117,6 +118,8 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.4.8.png \
      ./1.manual/img/2.4.9.png \
      ./1.manual/img/2.4.10.png \
+     ./1.manual/img/2.4.11.png \
+     ./1.manual/img/2.4.12.png \
      ./1.manual/img/2.6.1.png \
      ./1.manual/img/2.8.1.png \
      ./1.manual/img/2.8.2.png \
@@ -139,10 +142,14 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/3.3.1.png \
      ./1.manual/img/3.3.2.png \
      ./1.manual/img/3.4.1.png \
+     ./1.manual/img/3.4.2.png \
      ./1.manual/img/4.1.1.png \
      ./1.manual/img/4.1.2.png \
      ./1.manual/img/4.2.1.png \
      ./1.manual/img/4.2.2.png \
+     ./1.manual/img/4.2.3.png \
+     ./1.manual/img/4.2.4.png \
+     ./1.manual/img/4.2.5.png \
      ./1.manual/img/4.3.1.png \
      ./1.manual/img/4.3.2.png \
      ./1.manual/img/4.3.3.png \
