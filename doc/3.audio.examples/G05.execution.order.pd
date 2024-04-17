@@ -1,4 +1,4 @@
-#N canvas 509 23 518 683 12;
+#N canvas 509 25 518 627 12;
 #X declare -stdpath ./;
 #X floatatom 296 312 4 0 100 0 - - - 0;
 #X obj 74 471 +~;
@@ -43,13 +43,13 @@
 #X obj 296 391 line~;
 #X text 45 187 To hear the difference scroll the delay time between 0 and 100 samples. The patch at left doesn't let you get below 64 samples \, but the patch at right can go all the way down to one sample., f 64;
 #X text 336 312 <= delay in samples;
-#X text 171 520 <= off to hear left-hand side \; on to hear right hand side.;
 #X obj 295 584 declare -stdpath ./;
 #X text 69 16 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~;
 #X obj 296 428 delread4~ G05-d1;
 #X text 263 629 updated for Pd version 0.52;
 #X text 45 238 You can use the same strategy to avoid an unwanted delay of one block in pairs of [send~]/[receive~] \, [tabsend~]/[tabreceive~] or [throw~]/[catch~] objects., f 64;
 #X text 45 108 To get them to go off in the correct order \, put the [delwrite~] into a subptach \, then the [delread4~] and/or [delread4~] objects into another subpatch. The audio connections between these subpatches force the "reader" to be sorted after the "writer". DSP sorting in Pd follows the hierarchy of subpatches., f 64;
+#X text 171 520 <= on to hear correctly ordered version using subpatches \; off to hear "wrong" version with delread4~ and delwrite~ in the same patch without a clear sort order.;
 #X connect 0 0 8 0;
 #X connect 1 0 4 1;
 #X connect 1 0 7 0;
@@ -65,5 +65,5 @@
 #X connect 12 0 5 0;
 #X connect 12 0 13 0;
 #X connect 14 0 6 1;
-#X connect 14 0 20 0;
-#X connect 20 0 1 1;
+#X connect 14 0 19 0;
+#X connect 19 0 1 1;
