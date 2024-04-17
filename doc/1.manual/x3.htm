@@ -330,7 +330,7 @@ looks like this:
 
 <figure>
     <IMG src="img/3.3.2.png" ALT="audio settings dialog">
-    <figcaption>Audio settings dialog</figcaption>
+    <figcaption>The audio settings dialog as called from the Media menu</figcaption>
 </figure>
 
 
@@ -362,12 +362,16 @@ mean the first open MIDI port, 17-32 the second one, and so on. The [midiin],
 [midirealtimein] and [sysexin] objects output the port number in their right
 outlet and [midiout] has a separate inlet to specify which MIDI port you want.
 
-(INCLUDE PIC)
+<figure>
+    <IMG src="img/3.3.3.png" ALT="MIDI settings">
+    <figcaption>The MIDI settings dialog as called from the Media menu</figcaption>
+</figure>
+
 
 <P> System exclusive MIDI message input and output are theoretically supported
 but does not work uniformly across all operating systems..
 
-<H3> <A id=s3.4> 3.4. Preferences and startup options </A> </H3>
+<H3> <A id=s3.4> 3.4. Path and startup</A> </H3>
 
 <P> In addition to the Audio and MIDI settings shown above, you can customize
 Pd to instruct it where to find files, what font size to use, and much more.
@@ -375,73 +379,35 @@ Pd has a main "Preferences" window, which you can select from the <b>Pd
 menu</b> in macOS or the <b>File menu</b> otherwise. The "Preferences" entry
 opens a submenu with "Edit Preferences..." and more. By selecting this entry,
 you open the main preferences dialog with different tabs for: "Path", "Startup",
-"Audio", "MIDI" and "misc".
+"Audio", "MIDI" and "misc". The Audio and MIDI tabs are actually the same settings
+windows that you can open via the <b>Media menu</b>, so there's nothing new but
+the fact they are also found here.
 
 <figure>
     <IMG src="img/3.4.1.png" ALT="preferences dialog">
-    <figcaption>The Paath dialog in the tabbed Preferences</figcaption>
+    <figcaption>The Path dialog in the tabbed Preferences</figcaption>
 </figure>
 
-<P> The Audio and MIDI tabs are actually the same settings windows that you
-can open via the <b>Media menu</b>, so there's nothing new. The "Path" tabs
-configures search paths that Pd will use to find files and externals when
-opening a patch. This is covered in depth in <a href="x4.htm">Chapter 4: Externals</a>.
-In short, Pd searches for files and externals relative to the patch directory
-and, if it fails, in paths that are set in this tab next. Note you can use
-things like "../samples" to point to folders and subfolders that are relative
-to the patch directory and other search paths.
+<P>The "Path" tabs configures search paths that Pd will use to load externals
+and abstractions (spaces in the path are allowed by the way). This also used
+for files in objects that load them like [soundfiler], [text] and even arrays
+(aka tables). The path must be correctly set before you load a patch or it may
+fail to find anything. Filenames in Pd are always separated byc(Unix-style)
+forward slashes, even if you're on Windows (which uses backslashes). Also, note
+that objects that can load files do expand "~" to your home directory.
 
-<!--- comment out
-If your path has an item, "../sound", and your patch is in "my stuff/all mine",
-then Pd will look in "my stuff/sound". Spaces should be OK in the path to
-the patch, but not in the path entry (../sound) itself. This is useful if
-you have a patch and supporting files (even a supporting snapshot of pd)
-that you want to distribute or carry around together.
+<P> In a nutshell, Pd searches for files and externals relative to the patch
+directory and, if it fails, it searches next in the paths that are set in this
+tab. Note you can use things like "../samples" to point to folders and subfolders
+that are relative to the patch directory and other search paths. Note you can also
+use [declare] to add paths for particular patches - this and other details about
+path management is also covered in depth in <a href="x4.htm">Chapter 4: Externals</a>,
+such as in <a href="x4.htm#s4.5">4.5. Search order in Pd for objects and files</a>.
 
-
-<P>
-    <IMG src="img/3.4.1.png" ALT="path dialog">
-</P>
-
-
-<P> The path must be correctly set before you load
-a patch or it may fail to find files and external abstractions, etc., that are needed to
-construct the patch. When Pd searches for an abstraction or an
-"extern" it uses the path to try to find the necessary file.
-
-The "read" messages to qlists and arrays (aka tables) do this too.
-
-
-
-<P> If "use standard extensions" is enabled, the usual "extra" directory
-is also searched. This contains standard external objects like "sigmund~"
-(as well as it's predecessor "fiddle~") and "bonk~", and perhaps much more
-depending on the distribution of Pd you're using.
-
-
-
-<P> Regardless of path, Pd should look first in the directory containing
-the patch before searching down the path. Pd does not automatically look
-in the <I> current directory </I> however; to enable that, include "." in
-the path. The "extra" directory, if enabled, is searched last.
-
-<P> Filenames in Pd are always separated by (Unix-style) forward slashes, even
-if you're on Windows (which uses backslashes). This is so that patches can be
-ported more easily between operating systems. On the other hand, if you
-specify a filename on the command line (as in "pd -path c:\pdlib") the file
-separator should agree with the operating system. <BR>
-
-<P> A filename specified in a patch with any "/" characters in it (such as
-"../sounds/sample1.wav") causes Pd to look both in the path and relative
-to the directory containing the patch. You may also invoke externs that way
-(see <a href="x4.htm">Externals</a> for more on externals and how to load them).
-
-<P> As of version 0.35, there may be spaces in the path to Pd itself; also,
-the "openpanel" and "savepanel" objects can handle spaces. Spaces in the
-path should work as of version 0.38.
-
-/// end comment out -->
-
+<figure>
+    <IMG src="img/3.4.2.png" ALT="startup dialog">
+    <figcaption>Startup dialog</figcaption>
+</figure>
 
 <P> The "Startup" tab has configurations for initializing Pd and an entry for
 Startup flags. Most of the configurations in Pd may be changed using the
@@ -452,11 +418,6 @@ by the way). Nevertheless, this and every other configuration in Pd (from
 Audio and MIDI settings and whatnot) can also be configurable via startup
 flags. Other than that, some configurations are too cranky to put in a GUI
 dialog and must be only set via startup flags.
-
-<figure>
-    <IMG src="img/3.4.2.png" ALT="startup dialog">
-    <figcaption>Startup dialog</figcaption>
-</figure>
 
 <P> Startup flags initialize Pd in many ways, but many configurations can
 be changed while Pd is running. Some configurations, on the other hand,
@@ -479,14 +440,6 @@ as arguments. Command line settings, if given, override the corresponding
 settings that were saved from Pd.
 
 <H4> <A id=s3.4.1>3.4.1. Startup flags </A> </H4>
-
-    <!--- comment out
-    <P> The "startup flags" allow you to add to Pd's command line on startup. This
-    is specified as described below, except that the initial word, "pd", is
-    understood. For example, putting "-rt" in this field sets real-time
-    scheduling; "-sleepgrain 1" sets the sleep grain to 1 (see under MIDI below),
-    and typing "-rt -sleepgrain 1" does both.
-    /// end comment out -->
 
 <P> Here's a list of all startup flags that you can use in the "Startup" tab under
 "Preferences" or by running Pd from the command line.
@@ -598,7 +551,11 @@ by default. Use "-font-weight" to change that if you don't like your default set
 <H4> Path </H4>
 
 <P> Paths may contain any number of entries if separated by colons in Unix or
-semicolons in Windows.
+semicolons in Windows. Filenames in Pd are always separated by (Unix-style)
+forward slashes, even if you're on Windows (which uses backslashes). This is
+so that patches can be ported more easily between operating systems. On the
+other hand, if you specify a filename on the command line (as in "pd -path
+c:\pdlib") the file separator should agree with the operating system.
 
 <H4> MIDI multiple devices and sleepgrain </H4>
 
