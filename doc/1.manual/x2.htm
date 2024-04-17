@@ -129,25 +129,19 @@ You can use the log level for printing information. The default is level "2" (no
 increase it to get more detailed information or decrease to get only fatal errros.
 
 <figure>
-    <IMG src="img/2.1.6.1.png" ALT="log levels">
-    <figcaption>log levels menu</figcaption>
+    <IMG src="img/2.1.7.png" ALT="log levels">
+    <figcaption>The log level popup menu</figcaption>
 </figure>
 
-<P> Errors are mostly given by objects and printed in the Pd window with a red font. If you
-<kbd>Ctrl</kbd>+<kbd>click</kbd> on the error, Pd selects the offending object in the patch.
-Examples of this are presented later in this manual. You can also use the "Find Last Error"
-entry in the <b>Find menu</b> for the same effect.
-
-<figure>
-    <IMG src="img/2.4.3.1.png" ALT="find error">
-    <figcaption>finding error in patch via Ctrl+Click on log entry</figcaption>
-</figure>
+<P> Errors are mostly given by objects and printed in the Pd window with a red font.
+You can find errors via the console window with <kbd>Ctrl</kbd>+<kbd>click</kbd>
+as shown in <A href="x2.htm#sfinderror">here</A>).
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
 using the 'Font' dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="img/2.1.7.png" ALT="edit menu">
+<IMG src="img/2.1.8.png" ALT="edit menu">
     <figcaption>The Edit menu</figcaption>
 </figure>
 
@@ -156,7 +150,7 @@ having trouble reading on HiDPI screens. Ignore the "stretch" parameter, that on
 works for Pd documents.
 
 <figure>
-<IMG src="img/2.1.8.png" ALT="font settings">
+<IMG src="img/2.1.9.png" ALT="font settings">
     <figcaption>The Font settings dialog</figcaption>
 </figure>
 
@@ -177,7 +171,7 @@ The Zoom settings is not saved in the patch and a zoomed window can also help wi
 HiDPI screens.
 
 <figure>
-<IMG src="img/2.1.9.png" ALT="zoomed in and out">
+<IMG src="img/2.1.10.png" ALT="zoomed in and out">
     <figcaption>A patch in standard and zoomed state</figcaption>
 </figure>
 
@@ -199,7 +193,7 @@ object box from the <b>Put menu</b>. When you insert a new object box, it is emp
 and presented with a dashed border before creation.
 
 <figure>
-<IMG src="img/2.1.10.png" ALT="dashed box">
+<IMG src="img/2.1.11.png" ALT="dashed box">
     <figcaption>An uncreated object box</figcaption>
 </figure>
 
@@ -210,7 +204,7 @@ will create, while the subsequent atoms, known as <I>creation arguments</I>,
 instruct Pd how to initialize the object. For instance, you can type "+ 13".
 
 <figure>
-<IMG src="img/2.1.11.png" ALT="object box">
+<IMG src="img/2.1.12.png" ALT="object box">
     <figcaption>A created object box</figcaption>
 </figure>
 
@@ -239,7 +233,7 @@ arguments.
 synthesizes a pure tone:
 
 <figure>
-<IMG src="img/2.1.12.png" ALT="simple MIDI synthesizer">
+<IMG src="img/2.1.13.png" ALT="simple MIDI synthesizer">
     <figcaption>A simple MIDI synthesizer</figcaption>
 </figure>
 
@@ -291,7 +285,7 @@ a click on the message box sends the message "21" to an object box, which adds 1
 to it.
 
 <figure>
-<IMG src="img/2.1.13.png" ALT="Different box shapes">
+<IMG src="img/2.1.14.png" ALT="Different box shapes">
     <figcaption>Different box shapes</figcaption>
 </figure>
 
@@ -341,7 +335,7 @@ number box) and message boxes (which are used as controls to send messages).
 
 <figure>
 <IMG src="img/2.2.1.png" ALT="run mode arrow">
-    <figcaption>Pointer arrow in run mode</figcaption>
+    <figcaption>The arrow cursors in run mode</figcaption>
 </figure>
 
 <P> In order to go into edit mode, you need to select the 'Edit Mode' entry from the
@@ -363,7 +357,7 @@ arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between t
 
 <figure>
 <IMG src="img/2.2.3.png" ALT="edit mode hand pointer">
-    <figcaption>The hand pointer visible during edit mode</figcaption>
+    <figcaption>The hand cursor in edit mode</figcaption>
 </figure>
 
 <P>In edit mode, you can move boxes around by clicking on them and dragging.
@@ -379,7 +373,7 @@ offer this feature yet and some externals may offer this or other possibilities.
 
 <figure>
 <IMG src="img/2.2.4.png" ALT="resizing boxes">
-    <figcaption>The pointer indicating the resize action</figcaption>
+    <figcaption>The double arrow cursor for resizing boxes when in edit mode</figcaption>
 </figure>
 
 <P>If you are predominantly editing a patch, but would like to quickly switch to
@@ -995,18 +989,19 @@ depends on the order the connections were made in.
 
 <figure>
     <IMG src="img/2.4.3.png" ALT="infinite loop">
-    <figcaption>An infinite loop (stack overflow)</figcaption>
+    <figcaption><A id="sfinderror">An infinite loop (stack overflow)</A></figcaption>
 </figure>
 
 <P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
 has been sent "3", and so on. This generates a "<b>stack overflow</b>" error (which means
 'infinite loop') in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
-on (as described earlier) to select the offending object.
+on (as described earlier) to select the offending object. Note you can also use the
+"Find Last Error" entry in the <b>Find menu</b> for the same effect.
 
 <figure>
-    <IMG src="img/2.4.3.1.png" ALT="find error source">
-    <figcaption>Ctrl+click to find source of error</figcaption>
+    <IMG src="img/2.4.4.png" ALT="find error source">
+    <figcaption>Find error via the console window</figcaption>
 </figure>
 
 <P>However, it is legal to make a loop if there is a [delay] object somewhere
@@ -1021,7 +1016,7 @@ inlet as "hot" in the sense that messages to left inlets can result in output
 messages. So the following is a legal (and reasonable) loop construct:
 
 <figure>
-    <IMG src="img/2.4.4.png" ALT="hot and cold inlets">
+    <IMG src="img/2.4.5.png" ALT="hot and cold inlets">
     <figcaption>Avoiding infinite loop with a cold inlet</figcaption>
 </figure>
 
@@ -1043,7 +1038,7 @@ receive their messages. Suppose for example you wish to use [+] to double a
 number. The following is incorrect:
 
 <figure>
-<IMG src="img/2.4.5.png" ALT="incorrect inlet connection">
+<IMG src="img/2.4.6.png" ALT="incorrect inlet connection">
     <figcaption>An undefined connection order</figcaption>
 </figure>
 
@@ -1059,7 +1054,7 @@ second object will get its leftmost inlet last, which is usually what you
 want. Here is how to use [trigger] to disambiguate the previous example:
 
 </P><figure>
-    <IMG src="img/2.4.6.png" ALT="trigger to disambiguate">
+    <IMG src="img/2.4.7.png" ALT="trigger to disambiguate">
     <figcaption>A defined connection order with [trigger]</figcaption>
 </figure>
 
@@ -1082,7 +1077,7 @@ the message or messages are sent, either to the message box's outlet or
 elsewhere as specified.
 
 </P><figure>
-    <IMG src="img/2.4.7.png" ALT="message boxes">
+    <IMG src="img/2.4.8.png" ALT="message boxes">
     <figcaption>Messages with different selectors</figcaption>
 </figure>
 
@@ -1094,7 +1089,7 @@ the selector "my" and the two arguments are the number 5 and the symbol "toes".
 <P>Multiple messages may be separated by commas as shown:
 
 <figure>
-    <IMG src="img/2.4.8.png" ALT="multiple messages in one box">
+    <IMG src="img/2.4.9.png" ALT="multiple messages in one box">
     <figcaption>Messages separated by commas</figcaption>
 </figure>
 
@@ -1112,7 +1107,7 @@ from the outlet to an object named "fred" (which is a receive object here), and
 likewise the next message is sent to "sue".
 
 <figure>
-    <IMG src="img/2.4.9.png" ALT="semicolons to send messages">
+    <IMG src="img/2.4.10.png" ALT="semicolons to send messages">
     <figcaption>Messages sent to receive symbols</figcaption>
 </figure>
 
@@ -1127,14 +1122,14 @@ start the message with the receive symbol (and you can also send messages to "pd
 this way).
 
 <figure>
-    <IMG src="img/2.4.9.1.png" ALT="message dialog">
-    <figcaption>Sending messages with the message dialog</figcaption>
+    <IMG src="img/2.4.11.png" ALT="message dialog">
+    <figcaption>Sending messages via the message dialog</figcaption>
 </figure>
 
 <P>You can put variables in message boxes as shown below:
 
 <figure>
-    <IMG src="img/2.4.10.png" ALT="variables in message boxes">
+    <IMG src="img/2.4.12.png" ALT="variables in message boxes">
     <figcaption>A message with a "$1" variable</figcaption>
 </figure>
 
