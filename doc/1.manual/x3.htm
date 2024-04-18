@@ -190,28 +190,6 @@ it installed.
 
 
 <!--- comment out
-<P> In windows, you can Invoke Pd with flags to specify which one to use; either
-"pd -asio" or "pd -mmio". See details on how to use command line flags in
-<A href=#s4> Preferences and startup options </A>. Other setting canYou can also specify
-
-If
-needed, also specify "-audiodev" and other flags to specify which device. You can
-also set a "-blocksize" different from the default (256 samples) and "-audiobuf" in
-milliseconds. Pd will round this down to a power of two buffers, each of "-blocksize"
-in sample frames.
-
-<P> TIP: You can use your built-in sound-card with the Universal ASIO Driver For
-WDM <a href="http://www.asio4all.org/"> http://www.asio4all.org/</a>
-
-/// end comment out -->
-
-
-
-
-
-
-
-<!--- comment out
 <H3> Testing audio and MIDI in LINUX. </H3>
 
 <P> We want to know whether audio input and output works, separately and simultaneously.
@@ -263,14 +241,7 @@ items.
 
 <p>This instructs Pd to offer the 'loupgarou' audio device in the Audio Settings panel.
 
-/// end comment out -->
 
-
-
-
-
-
-<!--- comment out
 
 <H3> Experiences with particular soudcards </H3>
 
@@ -348,8 +319,10 @@ to the left (which is on by default). Number of input and output
 channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
-<p>In Linux, if you want to open more than one audio device, hit "use
-multiple devices" and you'll be allowed up to 4 input and 4 output devices.
+<p>In Linux and Windows you're allowed up to 4 input and 4 output devices.
+On macOS, if you want more than a single device, there's a workaround by
+creating an aggregate device (via the system's "Audio MIDI Setup") and set
+it in Pd's Audio settings.
 
 <H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
 
@@ -557,7 +530,7 @@ so that patches can be ported more easily between operating systems. On the
 other hand, if you specify a filename on the command line (as in "pd -path
 c:\pdlib") the file separator should agree with the operating system.
 
-<H4> MIDI multiple devices and sleepgrain </H4>
+<H4> Audio and MIDI multiple devices and sleepgrain </H4>
 
 <P> You can specify multiple MIDI input and output devices via flags. For example,
 "pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
@@ -575,13 +548,10 @@ no less than 0.1 and no more than 5. On most OSes, ingoing and outgoing MIDI
 is quantized to this value, so if you care about MIDI timing, reduce this to 1
 or less.
 
-<!--- comment out
-
-<P> Audio device selection is similar, except that you can also specify
+<P> Multiple audio device selection is similar, except that you can also specify
 channels by device: "-audioindev 1,3 -inchannels 2,8" will try to open device 1
-(2 channels) and device 3 (8 channels.)
-
-/// end comment out -->
+(2 channels) and device 3 (8 channels). Note that multiple audio device selection
+is only possbile for Linux and Windows, as noted earlier.
 
 <H4> Sample rate </H4>
 
@@ -614,3 +584,19 @@ default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 </HTML>
 
 
+
+<!--- comment out
+<P> In windows, you can Invoke Pd with flags to specify which one to use; either
+"pd -asio" or "pd -mmio". See details on how to use command line flags in
+<A href=#s4> Preferences and startup options </A>. Other setting canYou can also specify
+
+If
+needed, also specify "-audiodev" and other flags to specify which device. You can
+also set a "-blocksize" different from the default (256 samples) and "-audiobuf" in
+milliseconds. Pd will round this down to a power of two buffers, each of "-blocksize"
+in sample frames.
+
+<P> TIP: You can use your built-in sound-card with the Universal ASIO Driver For
+WDM <a href="http://www.asio4all.org/"> http://www.asio4all.org/</a>
+
+/// end comment out -->
