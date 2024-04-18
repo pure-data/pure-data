@@ -2029,12 +2029,6 @@ handling primitives and the graphical presentation and editing functions.
 
 <!--- comment out
 
-<P>The order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
-message is not done until the "D" one is also, and the "A" is not done until
-all four are. It is not visible whether "B" or "C" is done first; this
-depends on the order the connections were made in (in Max, it's automatically
-sorted right to left).
-
 <P>The corresponding feature for "$1" in abstraction in Max (both Opcode and Ircam)
 was the "#1" construct. In a Max abstraction, "#1", etc., are replaced by the creation
 argument. This has the disadvantage that you can't edit the abstraction as
@@ -2045,9 +2039,6 @@ however, there is the disadvantage that it's confusing to have "$" expanded at
 a different time in an object box than in a message box. In an object box, the
 "$" argument is expanded at creation time, and in a message box, at message
 time.
-
-<P> In MAX, there are separate data types for integers and floating point numbers;
-Pd uses only float.
 
 /// end comment out -->
 
@@ -2068,10 +2059,21 @@ the .maxpat extension introducd in MAX 5, released in 2008.
 closely related to MAX/MSP. Nonetheless, there are differences in semantics between
 the two; a partial list follows.
 
+<P> In MAX, there are separate data types for integers and floating point numbers;
+Pd uses only float. This gives MAX more integer resolution, but with the double
+precision version of Pd (Pd64) this is not a significant issue.
+
+
+<P> In MAX, if an object's outlet is connected to several destinations,
+corresponding messages are always sent in right-to-left screen order.  In
+Pd, the messages are sent in the order you made the connections in.  In either
+case, in situations where you care about the order it's appropriate to use
+a [trigger] object to specify.
+
 <P> In Pd you can edit instantiations of abstractions and save the result back
 to the file of the abstraction. This isn't possible in MAX, because the
 instantiations are different from the abstraction itself in that "#1", etc.,
-are replaced by the instantiation arguments.  In Pd, these arguments appear
+are replaced by the instantiation arguments. In Pd, these arguments appear
 as "$1", etc, and are translated at a slightly later stage of the instantiation
 process so that you still see them as "$" variables in the instantiation.
 see <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>.
@@ -2079,19 +2081,13 @@ see <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>.
 <P> In Pd, to make current all instantiations of the abstraction, either delete
 and recreate them or close and open the patch; this is done automatically in MAX.
 
-<P>  In Pd, if you select "save" while in a subpatch, the parent is saved. In
+<P> In Pd, if you select "save" while in a subpatch, the parent is saved. In
 MAX, if you do this a dialogue box comes up asking if you want to save the
-subpatch as a separate file.  (if you want to save a subpatch to a file in Pd,
-you have to copy and paste the contents to a new document.
+subpatch as a separate file (if you want to save a subpatch to a file in Pd,
+you have to copy and paste the contents to a new document).
 
 <P> In Pd, inlets and outlets are ordinary text objects; in MAX they're
 "gui" objects from the palette.
-
-<P> In MAX, if an object's outlet is connected to several destinations,
-corresponding messages are always sent in right-to-left screen order.  In
-Pd, the messages are sent in the order you made the connections in.  In either
-case, in situations where you care about the order it's appropriate to use
-a [trigger] object to specify.
 
 <P> In Pd, there's no [gate]; instead there's a [spigot] with the inlets in
 the opposite, more natural order.
@@ -2114,10 +2110,10 @@ in Pd; however, Pd's version is quite different from MAX's.
 and you have to use explicit sends and receives to restore values to number
 boxes. Then just make a "message" box to re-send the values you want.
 
-<P> In Macintosh land, instead of getting tabosc4~ and arrays, you get cycle~
-and buffer~. The only gotcha is that you probably can't draw in buffer~ with
-the mouse as you can with arrays, but at least it's possible to
-make a patch that copies a "table" into a "buffer~".
+<P> In MAX, instead of getting [tabosc4~] and arrays, you get [cycle~]
+and [buffer~]. The only gotcha is that you probably can't draw in [buffer~]
+with the mouse as you can with arrays, but at least it's possible to
+make a patch that copies a "table" into a [buffer~] object.
 
 </div>
 <div id="footer">
