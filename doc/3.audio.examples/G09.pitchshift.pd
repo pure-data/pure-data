@@ -1,4 +1,4 @@
-#N canvas 428 23 766 696 12;
+#N canvas 428 25 766 627 12;
 #X declare -stdpath ./;
 #X floatatom 101 97 6 0 0 0 - - - 0;
 #X obj 101 468 *~;
@@ -95,9 +95,8 @@
 #X msg 287 433 \$1 200;
 #X text 151 97 <-- transposition in halftones;
 #X text 369 209 This is a classic rotating-tape-head style pitch shifter using the [delread4~] variable delay object. There are two moving tape heads \, each of which is loudest at the middle of its trajectory \, and enveloped out at the moment it has to jump back (or forward) to start another scratch. Most of the brain work is in computing how fast the tape heads have to move to get the desired transposition., f 52;
-#X text 368 349 The "window size" is the total trajectory of the read points in the delay line \, in milliseconds. The delay times are controlled by a [phasor~] object. The second delay time \, 180 degrees out of phase from the first one \, is computed using the "wrap" object., f 52;
-#X text 367 444 The "window size" is the total trajectory of the read points in the delay line \, in milliseconds. The delay times are controlled by a [phasor~] object. The second delay time \, 180 degrees out of phase from the first one \, is computed using the [wrap~] object., f 52;
-#X text 366 535 The [cos~] objects compute the fadein and fadeout of the two delay line outputs. They each traverse the positive half of the cosine waveform (phase -0.25 to +0.25) over the time the phase goes from one end to the other., f 52;
+#X text 368 343 The "window size" is the total trajectory of the read points in the delay line \, in milliseconds. The delay times are controlled by a [phasor~] object. The second delay time \, 180 degrees out of phase from the first one \, is computed using the "wrap" object., f 52;
+#X text 368 439 The [cos~] objects compute the fadein and fadeout of the two delay line outputs. They each traverse the positive half of the cosine waveform (phase -0.25 to +0.25) over the time the phase goes from one end to the other., f 52;
 #X connect 0 0 33 0;
 #X connect 1 0 14 0;
 #X connect 2 0 1 1;
