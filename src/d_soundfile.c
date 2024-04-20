@@ -21,7 +21,7 @@ objects use Posix-like threads. */
 
 /* Supported sample formats: LPCM (16 or 24 bit int) & 32 or 64 bit float */
 
-#define VALID_BYTESPERSAMPLE(b) (b == 2 || b == 3 || b == 4 || b == 8)
+#define VALID_BYTESPERSAMPLE(b) ((b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
 
 #define MAXSFCHANS 64
 
