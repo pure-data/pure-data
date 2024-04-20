@@ -833,7 +833,11 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
-/* a test for NANs and denormals. Should only be necessary on i386. */
+
+/* a test for NANs and denormals.
+   WARNING: PD_BADFLOAT(0) = 1 -- you can replace a 'BADFLOAT' by 0 but don't
+just do nothing with it. */
+
 #if PD_FLOATSIZE == 32
 
 typedef union

@@ -38,10 +38,12 @@ char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
 
 void pd_init(void);
+void pd_term(void);
 int sys_argparse(int argc, const char **argv);
 void sys_findprogdir(const char *progname);
 void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
+void sys_stopgui(void);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
 int m_batchmain(void);
@@ -324,7 +326,7 @@ static void sys_printusage(void);
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
 {
-    int i, noprefs;
+    int i, noprefs, ret;
     const char *prefsfile = "";
     t_namelist *nl;
     t_patchlist *pl;
@@ -433,19 +435,15 @@ int sys_main(int argc, const char **argv)
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
-        return (sys_run_scheduler(sys_externalschedlibname,
+        ret = (sys_run_scheduler(sys_externalschedlibname,
             sys_extraflagsstring));
     else if (sys_batch)
-        return (m_batchmain());
+        ret = m_batchmain();
     else
-    {
-            /* open audio and MIDI */
-        sys_reopen_midi();
-        if (audio_shouldkeepopen())
-            sys_reopen_audio();
-            /* run scheduler until it quits */
-        return (m_mainloop());
-    }
+        ret = m_mainloop();
+    sys_stopgui();
+    pd_term();
+    return (ret);
 }
 
 static char *(usagemessage[]) = {

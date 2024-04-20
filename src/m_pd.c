@@ -304,6 +304,7 @@ void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 void mess_init(void);
+void sched_init(void);
 void obj_init(void);
 void conf_init(void);
 void glob_init(void);
@@ -327,8 +328,27 @@ void pd_init(void)
     pd_init_systems();
 }
 
-void pd_init_systems(void) {
+void pd_term(void)
+{
+    t_glist *c;
+    for (c = pd_getcanvaslist(); c; c = c->gl_next)
+        canvas_closebang(c);
+#if 0
+        /* Canvases may be slow to close and as a workaround people
+        may want Pd to shutdown quickly. Conversely, others might
+        prefer it if canvases (and all their containing objects) are
+        always freed properly. For now let's exit quickly and LATER
+        figure out a way to handle this. */
+    while ((c = pd_getcanvaslist()))
+        pd_free((t_pd *)c);
+#endif
+    pd_term_systems();
+}
+
+void pd_init_systems(void)
+{
     mess_init();
+    sched_init();
     sys_lock();
     obj_init();
     conf_init();
@@ -337,9 +357,9 @@ void pd_init_systems(void) {
     sys_unlock();
 }
 
-void pd_term_systems(void) {
-    sys_lock();
-    sys_unlock();
+void pd_term_systems(void)
+{
+        /* TODO free resources */
 }
 
 t_canvas *pd_getcanvaslist(void)

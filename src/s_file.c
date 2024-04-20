@@ -869,15 +869,14 @@ void sys_savepreferences(const char *filename)
 
     sys_donesavepreferences();
 }
-
     /* calls from GUI to load/save from/to a file */
 void glob_loadpreferences(t_pd *dummy, t_symbol *filesym)
 {
     sys_loadpreferences(filesym->s_name, 0);
-    sys_close_audio();
-    sys_reopen_audio();
     sys_close_midi();
     sys_reopen_midi();
+    if (audio_isopen())
+        sys_reopen_audio();
 }
 
 void glob_savepreferences(t_pd *dummy, t_symbol *filesym)
