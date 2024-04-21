@@ -142,6 +142,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/3.3.1.png \
      ./1.manual/img/3.3.2.png \
      ./1.manual/img/3.3.3.png \
+     ./1.manual/img/3.3.4.png \
      ./1.manual/img/3.4.1.png \
      ./1.manual/img/3.4.2.png \
      ./1.manual/img/4.1.1.png \

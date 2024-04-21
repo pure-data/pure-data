@@ -301,9 +301,8 @@ looks like this:
 
 <figure>
     <IMG src="img/3.3.2.png" ALT="audio settings dialog">
-    <figcaption>The audio settings dialog as called from the Media menu</figcaption>
+    <figcaption>The Audio Settings dialog as called from the Media menu on macOS</figcaption>
 </figure>
-
 
 <p>The exact choices you get depend on the operating system and API. The
 sample rate controls both audio output and input. The "delay" is the
@@ -319,10 +318,16 @@ to the left (which is on by default). Number of input and output
 channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
-<p>In Linux and Windows you're allowed up to 4 input and 4 output devices.
-On macOS, if you want more than a single device, there's a workaround by
-creating an aggregate device (via the system's "Audio MIDI Setup") and set
-it in Pd's Audio settings.
+<figure>
+    <IMG src="img/3.3.3.png" ALT="audio settings dialog">
+    <figcaption>The Audio Settings dialog as called from the Media menu on Linux</figcaption>
+</figure>
+
+<p>In Linux and Windows you're allowed up to 4 input and 4 output devices
+Note the "Use Multiple Devices" button on the picture above). On macOS,
+if you want more than a single device, there's a workaround by creating
+an aggregate device (via the system's "Audio MIDI Setup") and set it in
+Pd's Audio settings.
 
 <H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
 
@@ -336,8 +341,8 @@ mean the first open MIDI port, 17-32 the second one, and so on. The [midiin],
 outlet and [midiout] has a separate inlet to specify which MIDI port you want.
 
 <figure>
-    <IMG src="img/3.3.3.png" ALT="MIDI settings">
-    <figcaption>The MIDI settings dialog as called from the Media menu</figcaption>
+    <IMG src="img/3.3.4.png" ALT="MIDI settings">
+    <figcaption>The MIDI settings dialog as called from the Media menu on macOS</figcaption>
 </figure>
 
 
