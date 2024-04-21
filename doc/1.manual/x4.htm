@@ -32,8 +32,8 @@ In the "6.externs" subdirectory of the 'doc' folder you can find simple
 examples of externals with their source code and test patches. This is also
 accessible via the browser window.
 
-<p>There’s also an excellent guide to writing externals project by IOhannes
-zmölnig at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>. Check also the
+<p>There’s also an excellent guide to writing externals at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>, written by IOhannes
+zmölnig . Check also the
 pd-lib-builder project (a helper makefile for Pure Data external libraries by
 Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
 
@@ -379,19 +379,29 @@ abstractions or any combination of them.
 These are .tcl file extensions that offer extra GUI features for the Pd
 application.
 
-<H3> <A id=s4.3>4.3. Installing externals </A> </H3>
+<p>These plugins are normally offered with the plugin name appended by
+"-plugin". For example: "completion-plugin", a plugin for autocompleting
+objcet names. It needs to be placed in a search path thatp Pd knows about
+(details in the next section). These plugins are then automatically loaded
+when Pd starts up.
 
-<p>Installing externals in Pd is quite simple, all you need to do is download
-your externals from somewhere (such as from Pd directly as explained later)
-and include them in a proper folder.
+<p>The actual filename is then something like "completion-plugin.tcl" and
+it comes inside a folder with the same name (completion-plugin). In this
+situation, Pd knows to search inside that folder for the plugin!
 
-<H4> <A id=s4.3.1> 4.3.1. Where to include externals</A> </H4>
+<H3> <A id=s4.3>4.3. Installing externals and GUI plugins </A> </H3>
+
+<p>Installing externals and GUI plugins in Pd is quite simple, all you need
+to do is download them from somewhere (such as from Pd directly as explained
+later) and include them in a proper folder.
+
+<H4> <A id=s4.3.1> 4.3.1. Where to include externals and GUI plugins</A> </H4>
 
 <p>Currently, when launching for the first time with a fresh install, Pd asks if
-you want to create a documents directory for patches that includes an
-“externals” subdirectory. This externals folder is where it’s advised to include
-external libraries and it’s automatically included in the user added search
-paths (under the 'Path' tab in Preferences), see figure below.
+you want to create a documents directory for patches that includes an “externals”
+subdirectory. This externals folder is where it’s advised to include externals
+and GUI plugins. This path is automatically included in the user added
+search paths (under the 'Path' tab in Preferences), see figure below.
 
 <figure>
     <IMG src="img/4.3.1.png" ALT="Preferences">
@@ -468,7 +478,7 @@ or ~/pd-externals (deprecated but still usable).
 	<LI><u>Global</u>: <mark><b> /usr/local/lib/pd-externals</b></mark>.
 </UL>
 
-<H4> <A id=s4.3.2> 4.3.2. How to download externals from Pd</A> </H4>
+<H4> <A id=s4.3.2> 4.3.2. How to download externals and GUI plugins from Pd</A> </H4>
 
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a built in
 .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken">
@@ -476,7 +486,9 @@ https://github.com/pure-data/deken</a> for reference). Open it by selecting the
 "Find externals" entry from the <b>Help menu</b>. Then you can type and search for an
 object name, a library name or both. The wildcard '*' can be used to broaden the search,
 or an exact name can be used instead. All available versions of the library/external
-specific for your operating system will be shown to you. See figure below.
+specific for your operating system will be shown to you. See figure below. Note that
+you can also download GUI plugins from deken. Search for '*-plugin' to get a list of
+all options.
 
 <figure>
     <IMG src="img/4.3.2.png" ALT="deken install">
