@@ -215,7 +215,7 @@ object will carry out additions, and the "13" initializes the value to add.
 valid number (like "+") is considered a symbol. Valid numbers may or may not
 have a decimal point, such as "12", "15.6", "-0.456". Numbers may also be written
 in exponential notation, such as "4.5e+06", which means "4.5" times "10ˆ6" (10
-to power of 6, i.e., 1000000) and results in "4500000". Negative exponentials
+to power of 6, i.e., 1000000) and results in "4500000". Negative exponents
 also work, such as 1.5e-06, which means "1.5" times "10ˆ-6" and results in
 "0.0000015".
 
@@ -367,7 +367,7 @@ More details follow below.
 
 <P>In edit mode, you can also resize some boxes in your patch, namely object boxes,
 number/symbol/list boxes, comments and messages. You need to move the cursor to the
-right edge of the object and you'll see the cursor become a double sided horizontal
+right edge of the object and you'll see the cursor become a double-sided horizontal
 arrow. You can then click and drag horizontally to resize these boxes. IEMguis do not
 offer this feature yet and some externals may offer this or other possibilities.
 
@@ -397,8 +397,8 @@ note the handy shortcuts to create each item specifically.
 </figure>
 
 <P> Note that most of these are individual GUI (graphical user interface) boxes.
-Besides the three basic GUI boxes (number, symbol andlists), there's another group
-of GUIs that more options (toggles, sliders, radio buttons, etc). These other GUIs
+Besides the three basic GUI boxes (number, symbol and list), there's another group
+of GUIs that has more options (toggles, sliders, radio buttons, etc). These other GUIs
 are also known as "IEMguis", which used to be an external library package and was
 incorporated natively into Pd in version 0.34 (they can still be created from
 object boxes though - see their help patches for the corresponding symbols). There
@@ -955,7 +955,7 @@ selector, it carries out some corresponding action.
     <figcaption>A [float] object</figcaption>
 </figure>
 
-<P>For instance, in the [float] object above, we two rectangles at the top that
+<P>For instance, in the [float] object above, we see two rectangles at the top that
 are called "inlets", but the one on the left directs incoming messages to the
 [float] object itself, while the one on the right directs messages to an auxiliary
 "inlet" object. The [float] object itself (represented by the left inlet) accepts
@@ -964,9 +964,9 @@ with the "float" selector. These two selectors, together with "symbol" and "list
 are usually used to indicate the main action of an object, whatever it may be,
 so that objects can be linked together with maximum flexibility.
 
-<P>Numbers cannot be used as a selectors. A message single number is always given
+<P>Numbers cannot be used as selectors. A single number message is always given
 the "float" selector automatically, and a message with a number followed by other
-arguments is given the selector "list".
+arguments is automatically given the "list" selector.
 
 <H4> <A id="s2.4.2">2.4.2. Depth first message passing</A> </H4>
 
@@ -1083,7 +1083,7 @@ elsewhere as specified.
 
 <P>The first of the message boxes above contains the single number 1.5; this
 message has an implicit selector of "float". The second is a list with three
-numbers in it and has an implicit selector of "listt". The third message has
+numbers in it and has an implicit selector of "list". The third message has
 the selector "my" and the two arguments are the number 5 and the symbol "toes".
 
 <P>Multiple messages may be separated by commas as shown:
@@ -1222,7 +1222,7 @@ floats to signals as mentioned. At least this is true for all native objects
 in Pd, but there are externals that can behave differently. The [sig~] object
 is also useful for loading a default signal value with its creation argument.
 You can also use [line~] and [vline~] to "convert" from control to signal with
-a smoothen ramp, so to speak, which can be quite useful.
+a smoothing ramp, which can be quite useful.
 
 <P>The other direction, signal to control, requires that you specify at what
 moments you want the signal sampled. This is handled by the [snapshot~] object,
@@ -1567,11 +1567,11 @@ patch shown here:
     <figcaption>The insides of the [abstraction1] abstraction</figcaption>
 </figure>
 
-<p>You may create many instances of [abstraction1] or invoke it from several
-different patches; changing and saving the contents of [abstraction1] will
-affect all invocations of it as they are created. An analogy from the "c"
-programming language is that one-off subpatches are like bracketed blocks of
-code and abstractions are like subroutines.
+<p>You may create many instances of [abstraction1] or invoke it from different
+patches. Changing and saving the contents of [abstraction1] will affect all
+invocations of it as they are created. An analogy from the "c" programming
+language is that one-off subpatches are like bracketed blocks of code and
+abstractions are like subroutines.
 
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
@@ -1640,7 +1640,7 @@ more.
 beginning to make sound, since memory allocation and disk operations may take
 long enough to cause audio buffer overruns or underruns. Pd provides two ways
 to define new arrays, as "graphs" and "tables". In either case, the array
-has a pre-defined name and size (i.e., number of points). Elements of the
+has a predefined name and size (i.e., number of points). Elements of the
 array are stored as floating-point numbers, 4 bytes apiece.
 
 <P>If you use an array to store a one-second sound at 44.1 kHz, you will need
@@ -1664,7 +1664,7 @@ In the "graph on parent" form, an array appears as shown:
 </figure>
 
 <P>Arrays are indexed from 0 to N-1 where N is the number of points in the array.
-You can use objects to read and write arrays an manipulate them in many ways.
+You can use objects to read and write arrays and manipulate them in many ways.
 
 <figure>
     <IMG src="img/2.9.2.png" ALT="array indexing">
@@ -1983,7 +1983,7 @@ the [struct] object itself make for less straightforward situations. The
 user might wish to reorder fields, delete them, add new ones, or rename them.
 When a [struct] object changes, Pd automatically conforms the data from the old
 structure to the new one. Fields with the same name as previously are maintained
-(reordering them as necessary;) and if a field disappears but another of the
+(reordering them as necessary) and if a field disappears but another of the
 same type appears, the new one(s) are taken to be renamings of the old one(s)
 in order of appearance. New fields which cannot be matched in this way with
 previously existing ones are assumed to be new and are initialized.
@@ -2047,38 +2047,37 @@ Pd and MAX/MSP in the of its origin and  some effort had been undertaken (but mo
 would have been needed) to make the two interoperable. It was possible to import
 and export patches to MAX/MSP; you just needed to save as text to a file with
 extension ".pat", and then open in the other program. You'd at least get something.
-By sticking to common or commonizable features youcould actually develop patches
+By sticking to common or commonizable features you could actually develop patches
 for both platforms.
 
 <P> To this day, Pd can still open and save MAX patches with the .pat extension as
-well as MAX's text  files  with  the .mxt extension. However, these are legacy and
-unsupported MAX formats as currently MAX uses a JSON-based file  format  with
-the .maxpat extension introducd in MAX 5, released in 2008.
+well as MAX's text files with the '.mxt' extension. However, these are legacy and
+unsupported MAX formats as currently MAX uses a JSON-based file format with
+the '.maxpat' extension introduced in MAX 5, released in 2008.
 
 <P> Since MAX 5, MAX and Pd have diverged even more over the years, but Pd is still
 closely related to MAX/MSP. Nonetheless, there are differences in semantics between
 the two; a partial list follows.
 
-<P> In MAX, there are separate data types for integers and floating point numbers;
-Pd uses only float. This gives MAX more integer resolution, but with the double
-precision version of Pd (Pd64) this is not a significant issue.
-
+<P> In MAX, there are separate data types for integers and floating point numbers.
+Pd uses only float. This gives MAX more integer resolution; but with the double
+precision version of Pd (Pd64), this is not a significant issue.
 
 <P> In MAX, if an object's outlet is connected to several destinations,
-corresponding messages are always sent in right-to-left screen order.  In
-Pd, the messages are sent in the order you made the connections in.  In either
-case, in situations where you care about the order it's appropriate to use
+corresponding messages are always sent in right-to-left screen order. In
+Pd, the messages are sent in the order you made the connections in. In either
+case, in situations where you care about the order, it's appropriate to use
 a [trigger] object to specify.
 
-<P> In Pd you can edit instantiations of abstractions and save the result back
+<P> In Pd you can edit instances of abstractions and save the result back
 to the file of the abstraction. This isn't possible in MAX, because the
-instantiations are different from the abstraction itself in that "#1", etc.,
-are replaced by the instantiation arguments. In Pd, these arguments appear
-as "$1", etc, and are translated at a slightly later stage of the instantiation
-process so that you still see them as "$" variables in the instantiation.
+instances are different from the abstraction itself in that "#1", etc.,
+are replaced by the instance arguments. In Pd, these arguments appear
+as "$1", etc, and are translated at a slightly later stage of the instance
+process so that you still see them as "$" variables in the instance.
 see <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>.
 
-<P> In Pd, to make current all instantiations of the abstraction, either delete
+<P> In Pd, to make current all instances of the abstraction, either delete
 and recreate them or close and open the patch; this is done automatically in MAX.
 
 <P> In Pd, if you select "save" while in a subpatch, the parent is saved. In
@@ -2106,7 +2105,7 @@ any commonality between the two.
 <P> The "bpatcher" feature in MAX has a correlate, "graph on parent" subpatches,
 in Pd; however, Pd's version is quite different from MAX's.
 
-<P>  In Pd there's no [preset] object (I now think it's basically a bad idea)
+<P>  In Pd, there's no [preset] object (I now think it's basically a bad idea)
 and you have to use explicit sends and receives to restore values to number
 boxes. Then just make a "message" box to re-send the values you want.
 
