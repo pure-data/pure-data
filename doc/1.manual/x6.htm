@@ -686,10 +686,10 @@ tccutil reset All org.puredata.pd.pd-gui
 
 <H4> <A id="s6.5.6"> 6.5.6. Font issues with macOS 10.15+ </A> </H4>
 
-<p>macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
-result that Pd&rsquo;s default font, DejaVu Sans Mono, renders thin and closer
-together than system fonts. This results in objects on the patch canvas that are
-longer their inner text and text selection positioning is off.</p>
+<p>macOS 10.15 added further changes to font rendering beginning with 10.14, with
+the weird result that Pd&rsquo;s default font, DejaVu Sans Mono, renders thinner and
+with narrower letter spacing than system fonts. This results in objects on the patch
+canvas being wider than their inner text and text selection positioning being off.</p>
 
 <p>To remedy this for now, Pd 0.51-3 changed Pd&rsquo;s default font for macOS to Menlo
 which is included with the system since 10.6. Menlo is based on Bitstream Vera
