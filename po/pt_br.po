@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-03-14 18:04+0100\n"
-"PO-Revision-Date: 2023-10-26 07:01+0000\n"
+"PO-Revision-Date: 2024-04-23 21:07+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -587,10 +587,10 @@ msgid "single page"
 msgstr "página única"
 
 msgid "patching helpers"
-msgstr ""
+msgstr "auxiliares de patching"
 
 msgid "Highlight active cord while connecting"
-msgstr ""
+msgstr "Destacar conexão ativa ao conecta-la"
 
 msgid "Preferences"
 msgstr "Preferências"
@@ -802,11 +802,11 @@ msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Arquivo de checksum parece inválido: '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Checksum de referência parece inválid0: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -1007,7 +1007,7 @@ msgid "You can also search for libraries & objects via your web browser:"
 msgstr "Você também pode procurar por bibliotecas e objetos via seu navegador:"
 
 msgid "Find externals"
-msgstr "Procurar externals"
+msgstr "Encontrar externals"
 
 msgid "Install DEK file..."
 msgstr "Instalar arquivo DEK..."
@@ -1132,9 +1132,8 @@ msgstr "Download completo! Verificando..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorando mismatch de checksum"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Ignorando mismatch de checksum"
+msgstr "Ignorando erros de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1465,13 +1464,13 @@ msgid "Graph"
 msgstr "Gráfico"
 
 msgid "Find..."
-msgstr "Procurar..."
+msgstr "Encontrar..."
 
 msgid "Find Again"
-msgstr "Procurar Novamente"
+msgstr "Encontrar Novamente"
 
 msgid "Find Last Error"
-msgstr "Procurar Último Erro"
+msgstr "Encontrar Último Erro"
 
 msgid "DSP On"
 msgstr "DSP Ligado"
