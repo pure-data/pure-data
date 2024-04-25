@@ -27,7 +27,15 @@ set ::pd_i18n::podir  [file join [file dirname [info script]] .. po]
 # > ::pd_i18n::init
 ## usage
 # > puts [_ "Quit" ]
-proc ::pd_i18n::_ {s} {return [::msgcat::mc $s]}
+
+## make `::pd_i18n::_` (and thus `_`) an alias for `::msgcat::mc` (with varargs)
+if {$::tcl_version < 8.5} {
+    # uplevel works an all versions of Tcl-8.x
+    proc ::pd_i18n::_ args {return [uplevel 0 [concat ::msgcat::mc $args]]}
+} else {
+    # the `{*}` operator was introduced with Tcl-8.5
+    proc ::pd_i18n::_ {args} {return [::msgcat::mc {*}$args]}
+}
 
 proc ::pd_i18n::get_system_language {} {
     # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
