@@ -187,7 +187,7 @@ proc ::pd_docsdir::create_path {path} {
     if {[file mkdir [file normalize "$path"]] eq ""} {
         return 1
     }
-    set msg [format [_ "couldn't create Pd documents directory: %s"] $path]
+    set msg [_ "couldn't create Pd documents directory: %s" $path]
     ::pdwindow::error "${msg}\n"
     return 0
 }
@@ -222,7 +222,7 @@ proc ::pd_docsdir::create_externals_path {{path ""}} {
     if {[file mkdir "$newpath" ] eq ""} {
         return 1
     }
-    set msg [format [_ "couldn't create \"externals\" directory in: %s"] $path]
+    set msg [_ "couldn't create \"externals\" directory in: %s" $path]
     ::pdwindow::error "${msg}\n"
     return 0
 }

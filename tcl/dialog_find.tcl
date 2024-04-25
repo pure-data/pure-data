@@ -70,12 +70,12 @@ proc ::dialog_find::ok {mytoplevel} {
             .pdwindow.text see [lindex $matches 0]
             lappend find_history $findstring
             .find.searchin configure -text \
-                [format [_ "Found '%1\$s' in %2\$s"] \
+                [_ "Found '%1\$s' in %2\$s" \
                 [get_search_string] [lookup_windowname $find_in_window] ]
         } else {
             if {$::windowingsystem eq "aqua"} {bell}
             .find.searchin configure -text \
-                [format [_ "Couldn't find '%1\$s' in %2\$s"] \
+                [_ "Couldn't find '%1\$s' in %2\$s" \
                 [get_search_string] [lookup_windowname $find_in_window] ]
         }
         # done searching
@@ -147,7 +147,7 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
         .find.searchin configure -text \
-            [format [_ "Search in %s for:"] [lookup_windowname $find_in_window] ]
+            [_ "Search in %s for:" [lookup_windowname $find_in_window] ]
     }
     update_bindings
 }
@@ -163,16 +163,16 @@ proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
         if {$total eq 0} {
             if {$::windowingsystem eq "aqua"} {bell}
             set infostring \
-                [format [_ "Couldn't find '%1\$s' in %2\$s"] \
+                [_ "Couldn't find '%1\$s' in %2\$s" \
                 [get_search_string] [lookup_windowname $mytoplevel] ]
         } else {
             set infostring \
-                [format [_ "Showed last '%1\$s' in %2\$s"] \
+                [_ "Showed last '%1\$s' in %2\$s" \
                 [get_search_string] [lookup_windowname $mytoplevel] ]
         }
     } else {
         set infostring \
-        [format [_ "Showing '%1\$d' out of %2\$d items in %3\$s"] \
+        [_ "Showing '%1\$d' out of %2\$d items in %3\$s" \
             $which $total [get_search_string] [lookup_windowname $mytoplevel] ]
     }
     ::pdwindow::debug "$infostring\n"
@@ -204,7 +204,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     ::pd_bindings::dialog_bindings .find "find"
 
     label .find.searchin -text \
-            [format [_ "Search in %s for:"] [_ "Pd window"] ]
+            [_ "Search in %s for:" [_ "Pd window"] ]
     pack .find.searchin -side top -fill x -pady 1
 
     entry .find.entry -width 54 -font 18 -relief sunken \

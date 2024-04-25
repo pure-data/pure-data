@@ -160,7 +160,7 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     if [ dict exists $polanguages $lang ] {
         set lang [ dict get $polanguages $lang ]
     }
-    lappend havelanguages [list [format [_ "(default language: %s)" ] $lang] "default" ]
+    lappend havelanguages [list [_ "(default language: %s)" $lang] "default" ]
     lappend havelanguages [list [_ "(no translation)" ] "." ]
     return $havelanguages
 }

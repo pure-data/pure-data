@@ -402,7 +402,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
         set absconfdir ${::pd_guiprefs::configdir}
         catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
 
-        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error [_ "Couldn't create preferences \"%1\$s\" in %2\$s" $domain $absconfdir]
         ::pdwindow::error "\n"
     }
     return $domain
