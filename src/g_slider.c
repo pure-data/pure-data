@@ -509,7 +509,7 @@ static void slider_set(t_slider *x, t_floatarg f)
     int old = x->x_val;
     double g;
     if (PD_BADFLOAT(f))
-        return;
+        f = 0;
 
     x->x_fval = f;
     if (x->x_min > x->x_max)

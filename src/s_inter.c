@@ -1728,6 +1728,8 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
+void sys_do_close_audio(void);
+
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1741,7 +1743,7 @@ void sys_bail(int n)
             /* sys_close_audio() hangs if you're in a signal? */
         fprintf(stderr ,"gui socket %d - \n", INTER->i_guisock);
         fprintf(stderr, "closing audio...\n");
-        sys_close_audio();
+        sys_do_close_audio();
         fprintf(stderr, "closing MIDI...\n");
         sys_close_midi();
         fprintf(stderr, "... done.\n");
@@ -1751,20 +1753,11 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-extern void sys_exit(void);
+void sys_exit(int status);
 
 void glob_exit(void *dummy, t_float status)
 {
-        /* sys_exit() sets the sys_quit flag, so all loops end */
-    sys_exit();
-    sys_close_audio();
-    sys_close_midi();
-    if (sys_havegui())
-    {
-        sys_closesocket(INTER->i_guisock);
-        sys_rmpollfn(INTER->i_guisock);
-    }
-    exit((int)status);
+    sys_exit(status);
 }
 void glob_quit(void *dummy)
 {
