@@ -89,6 +89,12 @@ AS_CASE([$host],
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
+        # helps for machine/endian.h to be found
+        PD_CFLAGS="-D_DARWIN_C_SOURCE"
+
+        # increase max allowed file descriptors
+        PD_CFLAGS="$PD_CFLAGS -D_DARWIN_UNLIMITED_SELECT -DFD_SETSIZE=10240"
+
         # a set of search paths are used on macOS in s_inter.c
         wish="default search paths"
 

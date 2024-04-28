@@ -1614,11 +1614,15 @@ static int sys_do_startgui(const char *libdir)
 
     sys_init_deken();
 
-    do {
+    {
         t_audiosettings as;
         sys_get_audio_settings(&as);
         sys_vgui("set pd_whichapi %d\n", as.a_api);
-    } while(0);
+
+        pdgui_vmess("pdtk_pd_dsp", "s",
+            THISGUI->i_dspstate ? "ON" : "OFF");
+    }
+
     return (0);
 }
 
@@ -1796,11 +1800,11 @@ void sys_doneglobinit( void)
 }
 
     /* start the GUI up.  Before we actually draw our "visible" windows
-    we have to wait for the GUI to give us our font metrics.  LATER
-    it would be cool to figure out what metrics we really need and tell
-    the GUI - that way we can support arbitrary zoom with appropriate font
-    sizes.   And/or: if we ever move definitively to a vector-based GUI
-    lib we might be able to skip this step altogether. */
+    we have to wait for the GUI to give us our font metrics, see
+    glob_initfromgui().  LATER it would be cool to figure out what metrics
+    we really need and tell the GUI - that way we can support arbitrary
+    zoom with appropriate font sizes.   And/or: if we ever move definitively
+    to a vector-based GUI lib we might be able to skip this step altogether. */
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;

@@ -224,7 +224,7 @@ static void sigreceive_setup(void)
         (t_newmethod)sigreceive_new, 0,
         sizeof(t_sigreceive), CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addcreator((t_newmethod)sigreceive_new, gensym("r~"),
-        A_DEFSYM, A_DEFFLOAT, 0);
+        A_DEFSYM, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_set, gensym("set"),
         A_DEFSYM, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
