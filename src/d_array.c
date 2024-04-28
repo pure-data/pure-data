@@ -498,8 +498,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
         goto zero;
 
     maxindex -= 3;
-    if (maxindex < 0) goto zero;
-    if (!buf || maxindex < 1)
+    if (maxindex < 1)
         goto zero;
 
     for (i = 0; i < n; i++)
