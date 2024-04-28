@@ -471,24 +471,23 @@ typedef struct _tabread4_tilde
     t_object x_obj;
     t_arrayvec x_v;
     t_float x_f;
-    t_float x_onset;
 } t_tabread4_tilde;
 
 static void *tabread4_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_tabread4_tilde *x = (t_tabread4_tilde *)pd_new(tabread4_tilde_class);
     arrayvec_init(&x->x_v, x, argc, argv);
+    signalinlet_new(&x->x_obj, 0);
     outlet_new(&x->x_obj, gensym("signal"));
-    floatinlet_new(&x->x_obj, &x->x_onset);
-    x->x_f = x->x_onset = 0;
+    x->x_f = 0;
     return (x);
 }
 
 static t_int *tabread4_tilde_perform(t_int *w)
 {
     t_dsparray *d = (t_dsparray *)(w[1]);
-    double onset = *(t_float *)(w[2]);
-    t_sample *in = (t_sample *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *onset = (t_sample *)(w[3]);
     t_sample *out = (t_sample *)(w[4]);
     int n = (int)(w[5]);
     int maxindex, i;
@@ -499,13 +498,12 @@ static t_int *tabread4_tilde_perform(t_int *w)
         goto zero;
 
     maxindex -= 3;
-    if (maxindex < 0) goto zero;
-    if (!buf || maxindex < 1)
+    if (maxindex < 1)
         goto zero;
 
     for (i = 0; i < n; i++)
     {
-        double findex = *in++ + onset;
+        double findex = (double)*in++ + (double)*onset++;
         int index = findex;
         t_sample frac,  a,  b,  c,  d, cminusb;
         if (index < 1)
@@ -542,13 +540,14 @@ static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s,
 
 static void tabread4_tilde_dsp(t_tabread4_tilde *x, t_signal **sp)
 {
-    int i;
-    signal_setmultiout(&sp[1], x->x_v.v_n);
+    int i, length = sp[0]->s_length;
+    signal_setmultiout(&sp[2], x->x_v.v_n);
     arrayvec_testvec(&x->x_v);
     for (i = 0; i < x->x_v.v_n; i++)
-        dsp_add(tabread4_tilde_perform, 5, &x->x_v.v_vec[i], &x->x_onset,
-            sp[0]->s_vec + (i%(sp[0]->s_nchans)) * sp[0]->s_length,
-                sp[1]->s_vec + i * sp[0]->s_length, (t_int)sp[0]->s_length);
+        dsp_add(tabread4_tilde_perform, 5, &x->x_v.v_vec[i],
+            sp[0]->s_vec + (i % sp[0]->s_nchans) * length,
+                sp[1]->s_vec + (i % sp[1]->s_nchans) * length,
+                    sp[2]->s_vec + i * length, (t_int)length);
 
 }
 
