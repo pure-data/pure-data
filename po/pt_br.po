@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-10-26 07:01+0000\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"PO-Revision-Date: 2024-04-23 21:07+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -586,6 +586,12 @@ msgstr "usar abas"
 msgid "single page"
 msgstr "página única"
 
+msgid "patching helpers"
+msgstr "auxiliares de patching"
+
+msgid "Highlight active cord while connecting"
+msgstr "Destacar conexão ativa ao conecta-la"
+
 msgid "Preferences"
 msgstr "Preferências"
 
@@ -795,6 +801,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "Arquivo de checksum parece inválido: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "Checksum de referência parece inválid0: '%s'."
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Incapaz de fazer verificação SHA256 de '%s'."
 
@@ -869,6 +883,17 @@ msgstr "Preferências do Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plataforma re-detectada: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Verificação SHA256 de '%s' falhou!"
+
+msgid "SHA256 verification failed"
+msgstr "Verificação SHA256 falhou"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum falhou para '%s'"
+
 msgid "Deken Packages"
 msgstr "Pacotes do Deken"
 
@@ -880,17 +905,6 @@ msgstr "Arquivos TAR"
 
 msgid "All Files"
 msgstr "Todos os Arquivos"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksum falhou para '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "Verificação SHA256 de '%s' falhou!"
-
-msgid "SHA256 verification failed"
-msgstr "Verificação SHA256 falhou"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -993,7 +1007,7 @@ msgid "You can also search for libraries & objects via your web browser:"
 msgstr "Você também pode procurar por bibliotecas e objetos via seu navegador:"
 
 msgid "Find externals"
-msgstr "Procurar externals"
+msgstr "Encontrar externals"
 
 msgid "Install DEK file..."
 msgstr "Instalar arquivo DEK..."
@@ -1081,7 +1095,7 @@ msgstr "Instalar %1$s em %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Falha ao instalar em um diretório não existente"
 
 #, tcl-format
@@ -1117,6 +1131,9 @@ msgstr "Download completo! Verificando..."
 
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorando mismatch de checksum"
+
+msgid "Ignoring checksum errors"
+msgstr "Ignorando erros de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1447,13 +1464,13 @@ msgid "Graph"
 msgstr "Gráfico"
 
 msgid "Find..."
-msgstr "Procurar..."
+msgstr "Encontrar..."
 
 msgid "Find Again"
-msgstr "Procurar Novamente"
+msgstr "Encontrar Novamente"
 
 msgid "Find Last Error"
-msgstr "Procurar Último Erro"
+msgstr "Encontrar Último Erro"
 
 msgid "DSP On"
 msgstr "DSP Ligado"
@@ -1581,12 +1598,6 @@ msgstr "Áudio ligado"
 msgid "Audio off"
 msgstr "Áudio desligado"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1636,6 +1647,12 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um arquivo de Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Caminho..."

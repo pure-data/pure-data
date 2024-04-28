@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-10-23 10:04+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"PO-Revision-Date: 2024-03-14 20:00+0000\n"
+"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1.1-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -298,7 +298,7 @@ msgid "Send"
 msgstr "Envoyer"
 
 msgid "Done"
-msgstr "Terminé"
+msgstr "Fermer"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -364,7 +364,7 @@ msgid "Receive symbol:"
 msgstr "Recevoir du symbole :"
 
 msgid "auto"
-msgstr "auto"
+msgstr "automatique"
 
 msgid "Width:"
 msgstr "Largeur :"
@@ -586,7 +586,13 @@ msgid "use tabs"
 msgstr "en onglets"
 
 msgid "single page"
-msgstr "sur une seule page"
+msgstr "une seule page"
+
+msgid "patching helpers"
+msgstr "aide au patch"
+
+msgid "Highlight active cord while connecting"
+msgstr "Mettre le câble actif en surbrillance lors de la connexion"
 
 msgid "Preferences"
 msgstr "Préférences"
@@ -801,6 +807,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Impossible de récupérer le SHA256 de référence pour '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "La somme de contrôle semble non valide : '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "La somme de contrôle de référence semble non valide : '%s'."
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Impossible d'effectuer la vérification SHA256 de '%s'."
 
@@ -880,6 +894,17 @@ msgstr "Préférences de Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plateforme re-détectée : %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Échec de la vérification SHA256 de '%s' !"
+
+msgid "SHA256 verification failed"
+msgstr "Échec de la vérification SHA256"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Erreur de somme de contrôle pour '%s'"
+
 msgid "Deken Packages"
 msgstr "Paquets Deken"
 
@@ -891,17 +916,6 @@ msgstr "Fichiers TAR"
 
 msgid "All Files"
 msgstr "Tous les fichiers"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Erreur de somme de contrôle pour '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "Échec de la vérification SHA256 de '%s' !"
-
-msgid "SHA256 verification failed"
-msgstr "Échec de la vérification SHA256"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1104,7 +1118,7 @@ msgstr ""
 "Annulation du téléchargement de '%s' : aucun répertoire d'installation n'a "
 "été indiqué."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "L'installation a échoué : le répertoire n'existe pas"
 
 #, tcl-format
@@ -1140,6 +1154,9 @@ msgstr "Téléchargement terminé ! Vérification..."
 
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorer l'erreur de somme de contrôle"
+
+msgid "Ignoring checksum errors"
+msgstr "Ignorer les erreurs de somme de contrôle"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1603,12 +1620,6 @@ msgstr "Audio On"
 msgid "Audio off"
 msgstr "Audio Off"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
-
-msgid "Tcl:"
-msgstr "Tcl :"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1658,6 +1669,12 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl :"
 
 #~ msgid "(no device)"
 #~ msgstr "(aucun périphérique)"

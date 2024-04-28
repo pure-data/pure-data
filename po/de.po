@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-10-23 10:04+0000\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"PO-Revision-Date: 2024-03-14 20:00+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.1.1-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -53,7 +53,7 @@ msgid "Undo cut"
 msgstr "Rückgängig: Ausschneiden"
 
 msgid "Undo disconnect"
-msgstr "Rückgängig: Verbindung Trennen"
+msgstr "Rückgängig: Verbindung trennen"
 
 msgid "Undo duplicate"
 msgstr "Rückgängig: Duplizieren"
@@ -77,7 +77,7 @@ msgid "Redo cut"
 msgstr "Wiederholen: Ausschneiden"
 
 msgid "Redo disconnect"
-msgstr "Wiederholen: Verbindung Trennen"
+msgstr "Wiederholen: Verbindung trennen"
 
 msgid "Redo duplicate"
 msgstr "Wiederholen: Duplizieren"
@@ -92,13 +92,13 @@ msgid "Redo typing"
 msgstr "Wiederholen: Eingabe"
 
 msgid "no Pd settings to clear"
-msgstr "Keine Pd Einstellungen zum Zurücksetzen"
+msgstr "Keine Pd-Einstellungen zum Zurücksetzen"
 
 msgid "removed .pdsettings file"
 msgstr "Datei \".pdsettings\" entfernt"
 
 msgid "couldn't delete .pdsettings file"
-msgstr "die Datei \".pdsettings\" konnte nicht gelöscht werden"
+msgstr "Die Datei \".pdsettings\" konnte nicht gelöscht werden"
 
 msgid "failed to erase Pd settings"
 msgstr "Löschen der Pd-Einstellungen schlug fehl"
@@ -115,7 +115,7 @@ msgstr ""
 "Start abgestürzt"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "(speichern Sie die Einstellungen um sie wiederherzustellen)"
+msgstr "(speichern Sie die Einstellungen, um sie wiederherzustellen)"
 
 msgid "File"
 msgstr "Datei"
@@ -148,7 +148,7 @@ msgid "Paste"
 msgstr "Einfügen"
 
 msgid "Array Properties"
-msgstr "Array Eigenschaften"
+msgstr "Array-Eigenschaften"
 
 msgid "Array"
 msgstr "Array"
@@ -259,22 +259,22 @@ msgstr ""
 "WARNUNG: pdtk_canvas_dialog hat unbekannte graphme-Einstellungen detektiert"
 
 msgid "Canvas Properties"
-msgstr "Canvas Eigenschaften"
+msgstr "Canvas-Eigenschaften"
 
 msgid "Scale"
 msgstr "Skalierung"
 
 msgid "X units per pixel:"
-msgstr "X Einheiten pro Pixel:"
+msgstr "X-Einheiten pro Pixel:"
 
 msgid "Y units per pixel:"
-msgstr "Y Einheiten pro Pixel:"
+msgstr "Y-Einheiten pro Pixel:"
 
 msgid "Appearance on parent patch"
 msgstr "Erscheinen auf dem übergeordneten Patch"
 
 msgid "Graph-On-Parent"
-msgstr "Graph on Parent"
+msgstr "Graph-on-Parent"
 
 msgid "Hide object name and arguments"
 msgstr "Objektname und Argumente verbergen"
@@ -295,7 +295,7 @@ msgid "Y range: from"
 msgstr "Y-Spanne, von"
 
 msgid "Data Properties"
-msgstr "Daten Eigenschaften"
+msgstr "Daten-Eigenschaften"
 
 msgid "Send"
 msgstr "Abschicken"
@@ -324,7 +324,7 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr "Zeige %1$d von %2$d Ergebnissen für %3$s"
 
 msgid "Pd window"
-msgstr "Pd Fenster"
+msgstr "Pd-Fenster"
 
 msgid "Match whole word only"
 msgstr "Ganzes Wort abgleichen"
@@ -355,7 +355,7 @@ msgid "Y only"
 msgstr "nur Y"
 
 msgid "GUI Box Properties"
-msgstr "GUI Box Eigenschaften"
+msgstr "GUI-Box-Eigenschaften"
 
 msgid "Messages"
 msgstr "Messages"
@@ -421,7 +421,7 @@ msgid "Toggle"
 msgstr "Schalter"
 
 msgid "Non Zero Value"
-msgstr "Nicht-Null Wert"
+msgstr "Nicht-Null-Wert"
 
 msgid "Value:"
 msgstr "Wert:"
@@ -525,10 +525,10 @@ msgid "MIDI system"
 msgstr "MIDI-System"
 
 msgid "MIDI Settings"
-msgstr "MIDI Einstellungen"
+msgstr "MIDI-Einstellungen"
 
 msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI Einstellungen"
+msgstr "ALSA-MIDI-Einstellungen"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -594,6 +594,12 @@ msgstr "Verwende Tab"
 msgid "single page"
 msgstr "alles auf einer Seite"
 
+msgid "patching helpers"
+msgstr "Patching-Hilfen"
+
+msgid "Highlight active cord while connecting"
+msgstr "Aktive Verbindung während des Verbindens hervorheben"
+
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -607,7 +613,7 @@ msgid "MIDI preferences"
 msgstr "MIDI"
 
 msgid "deken preferences"
-msgstr "Deken Einstellungen"
+msgstr "Deken-Einstellungen"
 
 msgid "misc preferences"
 msgstr "sonstiges"
@@ -622,7 +628,7 @@ msgid "Settings below require a restart of Pd!"
 msgstr "Die folgenden Einstellungen erfordern einen Neustart von Pd!"
 
 msgid "Pd libraries to load on startup"
-msgstr "Pd-Bibliotheken die automatisch geladen werden"
+msgstr "Pd-Bibliotheken, die automatisch geladen werden"
 
 msgid "GUI options"
 msgstr "GUI-Einstellungen"
@@ -667,16 +673,16 @@ msgid "Pd Files"
 msgstr "Pd-Dateien"
 
 msgid "Max Patch Files"
-msgstr "Max Patch Dateien"
+msgstr "Max-Patch-Dateien"
 
 msgid "Max Text Files"
-msgstr "Max Textdateien"
+msgstr "Max-Textdateien"
 
 msgid "Max Patch Files (.pat)"
-msgstr "Max Patch Dateien (.pat)"
+msgstr "Max-Patch-Dateien (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr "Max Textdateien (.mxt)"
+msgstr "Max-Textdateien (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
@@ -757,7 +763,7 @@ msgstr "Installiere deken Paket '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
-msgstr "Ignoriere '%s': dies scheint kein deken Paket zu sein"
+msgstr "Ignoriere '%s': dies scheint kein Deken-Paket zu sein"
 
 #, tcl-format
 msgid "Installing '%s'"
@@ -807,6 +813,14 @@ msgstr "SHA256-Überprüfung von '%s'"
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Referenz-SHA256 für '%s' nicht verfügbar."
+
+#, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "Die Checksumme der Datei sieht ungültig aus: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "Die Referenzchecksumme sieht ungültig aus: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -883,28 +897,28 @@ msgstr "Deken %s Einstellungen"
 msgid "Platform re-detected: %s"
 msgstr "Paketarchitektur korrigiert: %s"
 
-msgid "Deken Packages"
-msgstr "Deken Pakete"
-
-msgid "ZIP Files"
-msgstr "ZIP Archive"
-
-msgid "TAR Files"
-msgstr "TAR Archive"
-
-msgid "All Files"
-msgstr "Alle Dateien"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksummen-Fehler für '%s'"
-
 #, tcl-format
 msgid "SHA256 verification of '%s' failed!"
 msgstr "SHA256-Überprüfung von '%s' hat fehlgeschlagen!"
 
 msgid "SHA256 verification failed"
 msgstr "SHA256-Überprüfung fehlgeschlagen"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksummen-Fehler für '%s'"
+
+msgid "Deken Packages"
+msgstr "Deken-Pakete"
+
+msgid "ZIP Files"
+msgstr "ZIP-Archive"
+
+msgid "TAR Files"
+msgstr "TAR-Archive"
+
+msgid "All Files"
+msgstr "Alle Dateien"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1033,7 +1047,7 @@ msgid "translations"
 msgstr "Übersetzungen"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Installieren Sie nur Externals deren Entwickler_innen Sie vertrauen."
+msgstr "Installieren Sie nur Externals, deren Entwickler_innen Sie vertrauen."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
 msgstr "Deaktiviere Reiteransicht: inkompatible Tcl/Tk-version gefunden"
@@ -1075,7 +1089,7 @@ msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr "%1$d verwendbare Pakete gefunden (von insgesamt %2$d Paketen)."
 
 msgid "It appears that there are no matching packages for your architecture."
-msgstr "Es scheint als gäbe es keine passenden Pakete für Ihre Architektur."
+msgstr "Es scheint, als gäbe es keine passenden Pakete für Ihre Architektur."
 
 msgid "No matching externals found."
 msgstr "Keine passenden Externals gefunden."
@@ -1098,7 +1112,7 @@ msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 "Abbruch des Downloads von '%s': Kein Installationsverzeichnis angegeben."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Die Installation in ein nicht-existierendes Verzeichnis schlug fehl"
 
 #, tcl-format
@@ -1135,9 +1149,12 @@ msgstr "Download abgeschlossen! Überprüfung..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignoriere Checksummen-Fehler"
 
+msgid "Ignoring checksum errors"
+msgstr "Checksummen-Fehler werden ignoriert"
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
+msgstr "[deken] Pd-Paketmanager vom Pfad %s geladen."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1178,7 +1195,7 @@ msgid "Open package webpage"
 msgstr "Webseite des Pakets öffnen"
 
 msgid "Copy package URL"
-msgstr "Paket URL kopieren"
+msgstr "Paket-URL kopieren"
 
 msgid "Copy SHA256 checksum URL"
 msgstr "URL zur SHA256-Prüfsumme kopieren"
@@ -1471,10 +1488,10 @@ msgid "Find Last Error"
 msgstr "Letzten Fehler finden"
 
 msgid "DSP On"
-msgstr "DSP Ein"
+msgstr "DSP ein"
 
 msgid "DSP Off"
-msgstr "DSP Aus"
+msgstr "DSP aus"
 
 msgid "Test Audio and MIDI..."
 msgstr "Audio und MIDI testen..."
@@ -1507,10 +1524,10 @@ msgid "Parent Window"
 msgstr "Übergeordnetes Fenster"
 
 msgid "HTML Manual..."
-msgstr "HTML Anleitung..."
+msgstr "HTML-Anleitung..."
 
 msgid "Browser..."
-msgstr "Patch Browser..."
+msgstr "Patch-Browser..."
 
 msgid "List of objects..."
 msgstr "Liste aller Objekte..."
@@ -1538,7 +1555,7 @@ msgid "removed GUI settings"
 msgstr "GUI-Einstellungen entfernt"
 
 msgid "no Pd-GUI settings to clear"
-msgstr "Keine Pd-GUI Einstellungen zum Zurücksetzen"
+msgstr "Keine Pd-GUI-Einstellungen zum Zurücksetzen"
 
 msgid "Edit Preferences..."
 msgstr "Einstellungen bearbeiten..."
@@ -1596,12 +1613,6 @@ msgstr "Audio ein"
 msgid "Audio off"
 msgstr "Audio aus"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1616,7 +1627,7 @@ msgid "DSP"
 msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr "Audio E/A-Fehler"
+msgstr "Audio-E/A-Fehler"
 
 msgid "Log:"
 msgstr "Protokoll:"
@@ -1652,6 +1663,12 @@ msgstr "Entfernen"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "überspringe '%s': kein Pd-File"
 
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
+
 #~ msgid "(no device)"
 #~ msgstr "(kein Gerät)"
 
@@ -1665,7 +1682,7 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgstr "Audioeinstellungen..."
 
 #~ msgid "MIDI..."
-#~ msgstr "MIDI Einstellungen..."
+#~ msgstr "MIDI-Einstellungen..."
 
 # iemgui
 #~ msgid "-------dimensions(digits)(pix):-------"
@@ -1719,7 +1736,7 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgstr "logarithmisch"
 
 #~ msgid "log-height:"
-#~ msgstr "log Höhe:"
+#~ msgstr "log-Höhe:"
 
 #~ msgid "max:"
 #~ msgstr "max:"
@@ -1759,7 +1776,7 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
-#~ msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
+#~ msgstr "konnte kein \"externals\"-Verzeichnis in '%s' erstellen.\n"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Interruptzeit:"
@@ -1799,10 +1816,10 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgstr "für:"
 
 #~ msgid "really quit?"
-#~ msgstr "Wirklich Abbrechen?"
+#~ msgstr "Wirklich abbrechen?"
 
 #~ msgid "Use multiple ALSA devices"
-#~ msgstr "Mehrere ALSA Geräte verwenden"
+#~ msgstr "Mehrere ALSA-Geräte verwenden"
 
 #~ msgid "Math"
 #~ msgstr "Mathe"
@@ -1823,7 +1840,7 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgstr "Eingabegerät 4:"
 
 #~ msgid "Toggle Console"
-#~ msgstr "Konsole Ein/Aus"
+#~ msgstr "Konsole ein/aus"
 
 #~ msgid "Font Properties"
 #~ msgstr "Zeichensatz-Einstellungen"
@@ -1862,8 +1879,7 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
 #~ msgstr ""
-#~ "WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
-#~ "(%s)"
+#~ "WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet (%s)"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr ""

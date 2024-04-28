@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-28 06:21+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"PO-Revision-Date: 2024-04-23 21:07+0000\n"
+"Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -130,7 +130,7 @@ msgid "Put"
 msgstr "Poner"
 
 msgid "Find"
-msgstr "Buscar"
+msgstr "Encontrar"
 
 msgid "Media"
 msgstr "Medios"
@@ -328,9 +328,7 @@ msgid "Pd window"
 msgstr "Ventana de Pd"
 
 msgid "Match whole word only"
-msgstr ""
-"Comparar sólo con\n"
-"palabra completa"
+msgstr "Coincidir solo con la palabra completa"
 
 msgid "Close"
 msgstr "Cerrar"
@@ -409,7 +407,7 @@ msgid "Label color"
 msgstr "Color de etiqueta"
 
 msgid "Bang"
-msgstr "Estallido"
+msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr "Duración del flash (mseg)"
@@ -421,7 +419,7 @@ msgid "Max:"
 msgstr "Máx:"
 
 msgid "Toggle"
-msgstr "Interruptor"
+msgstr "Toggle"
 
 msgid "Non Zero Value"
 msgstr "Valor cuando no es cero"
@@ -592,6 +590,12 @@ msgstr "usar pestañas"
 
 msgid "single page"
 msgstr "pagina única"
+
+msgid "patching helpers"
+msgstr "Ayudas para parchear"
+
+msgid "Highlight active cord while connecting"
+msgstr "Resalte la conexión activa mientras se conecta"
 
 msgid "Preferences"
 msgstr "Preferencias"
@@ -806,6 +810,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "No se pudo conseguir la referencia SHA256 para '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "La suma de comprobación del archivo parece no válida: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "La suma de comprobación de referencia parece no válida: '%s'."
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "No se pudo hacer la verificación SHA256 para %s."
 
@@ -881,6 +893,17 @@ msgstr "Preferencias de deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plataforma re-detectada: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "¡Falló la verificación SHA256 de '%s'!"
+
+msgid "SHA256 verification failed"
+msgstr "Falló la verificación SHA256"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "El checksum no coincide para '%s'"
+
 msgid "Deken Packages"
 msgstr "Paquetes de deken"
 
@@ -892,17 +915,6 @@ msgstr "Archivos TAR"
 
 msgid "All Files"
 msgstr "Todos los archivos"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "El checksum no coincide para '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "¡Falló la verificación SHA256 de '%s'!"
-
-msgid "SHA256 verification failed"
-msgstr "Falló la verificación SHA256"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1095,7 +1107,7 @@ msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 "Cancelando la descarga de %s: No fue dado el directorio de instalación ."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Falló la installación al directorio no existente"
 
 #, tcl-format
@@ -1131,6 +1143,9 @@ msgstr "¡Descarga completa! Verificando..."
 
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorando diferencia de checksum"
+
+msgid "Ignoring checksum errors"
+msgstr "Los errores de suma de comprobación se ignoran"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1592,12 +1607,6 @@ msgstr "Audio encendido"
 msgid "Audio off"
 msgstr "Audio apagado"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) CORCHETE DE CIERRE FALTANTE ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1647,6 +1656,12 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) CORCHETE DE CIERRE FALTANTE ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(sin dispositivo)"
