@@ -53,7 +53,7 @@
 #X connect 15 0 13 0;
 #X restore 580 430 pd Dealing_with_"\$0";
 #X obj 39 111 hsl 162 19 1 8 0 0 empty empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
-#N canvas 750 87 575 293 reference 0;
+#N canvas 722 96 575 293 reference 0;
 #X obj 11 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
 #X obj 11 186 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
 #X obj 11 231 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
@@ -63,7 +63,6 @@
 #X text 144 95 signal -;
 #X obj 11 148 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 11 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
-#X text 151 157 float -;
 #X text 207 157 sets table onset., f 42;
 #X text 116 117 set <list> -;
 #X text 207 117 set the table names., f 42;
@@ -71,6 +70,7 @@
 #X text 207 198 value(s) of index input from given table(s).;
 #X text 137 243 1) list - sets table names to read from.;
 #X text 207 95 sets index for table(s) with interpolation.;
+#X text 144 157 signal -;
 #X restore 662 17 pd reference;
 #X text 760 16 <= click;
 #X obj 8 50 cnv 1 830 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -149,7 +149,6 @@
 #X obj 128 365 loadbang;
 #X obj 128 420 s bang;
 #X obj 56 368 r bang;
-#X text 625 507 updated for Pd version 0.54;
 #X text 89 137 incoming signal is index. Indices should range from 1 to (size-2) so that the 4-point interpolation is meaningful (from 1 to 8 in this example)., f 52;
 #X text 212 245 set table onset to improve the accuracy of indexing (useful if you have Pd compiled for single precision), f 31;
 #X text 157 200 "set" message lets you switch between arrays, f 22;
@@ -159,10 +158,12 @@
 #X array table2-ex 10 float 2;
 #X coords 0 10 10 0 250 200 1 0 0;
 #X restore 565 132 graph;
+#X obj 166 281 sig~;
+#X text 625 507 updated for Pd version 0.55;
 #X connect 0 0 3 0;
 #X connect 1 0 16 0;
 #X connect 2 0 1 0;
-#X connect 11 0 16 1;
+#X connect 11 0 45 0;
 #X connect 16 0 0 0;
 #X connect 17 0 16 0;
 #X connect 20 0 2 0;
@@ -170,3 +171,4 @@
 #X connect 35 0 37 0;
 #X connect 36 0 35 0;
 #X connect 38 0 0 0;
+#X connect 45 0 16 1;
