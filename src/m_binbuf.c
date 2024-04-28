@@ -485,18 +485,10 @@ int canvas_getdollarzero(void);
 static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     int ac, const t_atom *av, int tonew)
 {
-    int argno = (int)atol(s);
-    int arglen = 0;
-    const char *cs = s;
-    char c = *cs;
+    char *cs;
+    int argno = (int)strtol(s, &cs, 10);
 
     *buf=0;
-    while (c && (c>='0') && (c<='9'))
-    {
-        c = *cs++;
-        arglen++;
-    }
-
     if (cs==s)      /* invalid $-expansion (like "$bla") */
     {
         sprintf(buf, "$");
@@ -518,7 +510,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
         }
         else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
     }
-    return (arglen-1);
+    return (cs - s);
 }
 
 /* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
