@@ -19,7 +19,9 @@ objects use Posix-like threads. */
 #include <stdio.h>
 #include <pthread.h>
 
-/* Supported sample formats: LPCM (16 or 24 bit int) & 32 bit float */
+/* Supported sample formats: LPCM (16 or 24 bit int) & 32 or 64 bit float */
+
+#define VALID_BYTESPERSAMPLE(b) ((b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
 
 #define MAXSFCHANS 64
 
@@ -37,12 +39,17 @@ objects use Posix-like threads. */
 
 #define SCALE (1. / (1024. * 1024. * 1024. * 2.))
 
-    /* float sample conversion wrapper */
+    /* float sample conversion wrappers */
 typedef union _floatuint
 {
   float f;
   uint32_t ui;
 } t_floatuint;
+typedef union _doubleuint
+{
+  double d;
+  uint64_t ui;
+} t_doubleuint;
 
 /* ----- soundfile ----- */
 
@@ -495,6 +502,34 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
                 }
             }
         }
+        else if (sf->sf_bytespersample == 8)
+        {
+            t_doubleuint alias;
+            if (sf->sf_bigendian)
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    alias.ui = (((uint64_t)sp2[0] << 56) | ((uint64_t)sp2[1] << 48) |
+                                ((uint64_t)sp2[2] << 40) | ((uint64_t)sp2[3] << 32) |
+                                ((uint64_t)sp2[4] << 24) | ((uint64_t)sp2[5] << 16) |
+                                ((uint64_t)sp2[6] << 8)  |  (uint64_t)sp2[7]);
+                    *fp = (t_sample)alias.d;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    alias.ui = (((uint64_t)sp2[7] << 56) | ((uint64_t)sp2[6] << 48) |
+                                ((uint64_t)sp2[5] << 40) | ((uint64_t)sp2[4] << 32) |
+                                ((uint64_t)sp2[3] << 24) | ((uint64_t)sp2[2] << 16) |
+                                ((uint64_t)sp2[1] << 8)  |  (uint64_t)sp2[0]);
+                    *fp = (t_sample)alias.d;
+                }
+            }
+        }
     }
         /* zero out other outputs */
     for (i = sf->sf_nchannels; i < nvecs; i++)
@@ -564,6 +599,34 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
                     alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
                                 (sp2[1] << 8)  |  sp2[0]);
                     wp->w_float = (t_float)alias.f;
+                }
+            }
+        }
+        else if (sf->sf_bytespersample == 8)
+        {
+            t_doubleuint alias;
+            if (sf->sf_bigendian)
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    alias.ui = (((uint64_t)sp2[0] << 56) | ((uint64_t)sp2[1] << 48) |
+                                ((uint64_t)sp2[2] << 40) | ((uint64_t)sp2[3] << 32) |
+                                ((uint64_t)sp2[4] << 24) | ((uint64_t)sp2[5] << 16) |
+                                ((uint64_t)sp2[6] << 8)  |  (uint64_t)sp2[7]);
+                    wp->w_float = (t_float)alias.d;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    alias.ui = (((uint64_t)sp2[7] << 56) | ((uint64_t)sp2[6] << 48) |
+                                ((uint64_t)sp2[5] << 40) | ((uint64_t)sp2[4] << 32) |
+                                ((uint64_t)sp2[3] << 24) | ((uint64_t)sp2[2] << 16) |
+                                ((uint64_t)sp2[1] << 8)  |  (uint64_t)sp2[0]);
+                    wp->w_float = (t_float)alias.d;
                 }
             }
         }
@@ -648,7 +711,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
                 ((bytespersample = argv[1].a_w.w_float) < 2) ||
-                    bytespersample > 4)
+                    !VALID_BYTESPERSAMPLE(bytespersample))
                         return -1;
             argc -= 2; argv += 2;
         }
@@ -718,7 +781,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     }
 
         /* check requested endianness */
-    bigendian = type->t_endiannessfn(endianness);
+    bigendian = type->t_endiannessfn(endianness, bytespersample);
     if (endianness != -1 && endianness != bigendian)
     {
         post("%s: forced to %s endian", type->t_name,
@@ -891,6 +954,34 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
                 }
             }
         }
+        else if (sf->sf_bytespersample == 8)
+        {
+            t_doubleuint f2;
+            if (sf->sf_bigendian)
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    f2.d = *fp * normalfactor;
+                    sp2[0] = (f2.ui >> 56); sp2[1] = (f2.ui >> 48);
+                    sp2[2] = (f2.ui >> 40); sp2[3] = (f2.ui >> 32);
+                    sp2[4] = (f2.ui >> 24); sp2[5] = (f2.ui >> 16);
+                    sp2[6] = (f2.ui >> 8);  sp2[7] = f2.ui;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    f2.d = *fp * normalfactor;
+                    sp2[7] = (f2.ui >> 56); sp2[6] = (f2.ui >> 48);
+                    sp2[5] = (f2.ui >> 40); sp2[4] = (f2.ui >> 32);
+                    sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
+                }
+            }
+        }
     }
 }
 
@@ -994,6 +1085,34 @@ static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
                     j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
                 {
                     f2.f = wp->w_float * normalfactor;
+                    sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
+                }
+            }
+        }
+        else if (sf->sf_bytespersample == 8)
+        {
+            t_doubleuint f2;
+            if (sf->sf_bigendian)
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    f2.d = wp->w_float * normalfactor;
+                    sp2[0] = (f2.ui >> 56); sp2[1] = (f2.ui >> 48);
+                    sp2[2] = (f2.ui >> 40); sp2[3] = (f2.ui >> 32);
+                    sp2[4] = (f2.ui >> 24); sp2[5] = (f2.ui >> 16);
+                    sp2[6] = (f2.ui >> 8);  sp2[7] = f2.ui;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    f2.d = wp->w_float * normalfactor;
+                    sp2[7] = (f2.ui >> 56); sp2[6] = (f2.ui >> 48);
+                    sp2[5] = (f2.ui >> 40); sp2[4] = (f2.ui >> 32);
                     sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
                     sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
                 }
@@ -1162,7 +1281,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 (sf.sf_nchannels > MAXSFCHANS) ||
                 argv[3].a_type != A_FLOAT ||
                 ((sf.sf_bytespersample = argv[3].a_w.w_float) < 2) ||
-                    (sf.sf_bytespersample > 4) ||
+                    !VALID_BYTESPERSAMPLE(sf.sf_bytespersample) ||
                 argv[4].a_type != A_SYMBOL ||
                     ((endianness = argv[4].a_w.w_symbol->s_name[0]) != 'b'
                     && endianness != 'l' && endianness != 'n'))
