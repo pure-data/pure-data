@@ -44,7 +44,7 @@
 #X obj 281 449 set-dsp-tgl;
 #X text 312 453 DSP on/off;
 #X text 37 568 Note that the [line~] object cannot start and stop ramps in the middle of an audio block. For that \, you can use [vline~] \, which also has a delay parameter to schedule different line ramps., f 63;
-#X text 28 57 The [line~] object generates linear ramps whose levels and timing are determined by messages you send it. Note that the right inlet value (for ramp time in milliseconds) is cleared when the object receives a value in the left inlet (unlike as other objects in Pd). Thus \, if you don't reset a time in the right inlet before sending [line~] a float \, it jumps immediately to the target value. You can also use a list of two floats to distribute the values over the inlets (as usual in Pd) \, which keeps resetting the time ramp., f 66;
+#X text 28 60 The [line~] object generates linear ramps whose levels and timing are determined by messages you send it. Note that the right inlet value (for ramp time in milliseconds) is cleared when the object receives a value in the left inlet (unlike other objects in Pd). Thus \, if you don't reset a time in the right inlet before sending [line~] a float \, it jumps immediately to the target value. You can also use a list of two floats to distribute the values over the inlets (as usual in Pd) \, which keeps resetting the time ramp., f 66;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 2 0;
