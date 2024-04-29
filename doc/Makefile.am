@@ -56,7 +56,15 @@ nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
      ./1.manual/css/favicon.ico \
      ./1.manual/css/pdmanual.css \
+     ./1.manual/img/1.2.1.png \
+     ./1.manual/img/1.2.2.png \
+     ./1.manual/img/1.2.3.png \
      ./1.manual/img/2.1.1.png \
+     ./1.manual/img/2.1.10.png \
+     ./1.manual/img/2.1.11.png \
+     ./1.manual/img/2.1.12.png \
+     ./1.manual/img/2.1.13.png \
+     ./1.manual/img/2.1.14.png \
      ./1.manual/img/2.1.2.png \
      ./1.manual/img/2.1.3.png \
      ./1.manual/img/2.1.4.png \
@@ -65,21 +73,22 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.1.7.png \
      ./1.manual/img/2.1.8.png \
      ./1.manual/img/2.1.9.png \
+     ./1.manual/img/2.10.1.png \
+     ./1.manual/img/2.10.2.png \
+     ./1.manual/img/2.10.3.png \
+     ./1.manual/img/2.10.4.png \
+     ./1.manual/img/2.10.5.png \
+     ./1.manual/img/2.10.6.png \
      ./1.manual/img/2.2.1.png \
      ./1.manual/img/2.2.2.png \
      ./1.manual/img/2.2.3.png \
      ./1.manual/img/2.2.4.png \
      ./1.manual/img/2.2.5.png \
      ./1.manual/img/2.2.6.png \
+     ./1.manual/img/2.2.7.png \
+     ./1.manual/img/2.2.8.png \
+     ./1.manual/img/2.2.9.png \
      ./1.manual/img/2.3.1.png \
-     ./1.manual/img/2.3.2.png \
-     ./1.manual/img/2.3.3.png \
-     ./1.manual/img/2.3.4.png \
-     ./1.manual/img/2.3.5.png \
-     ./1.manual/img/2.3.6.png \
-     ./1.manual/img/2.3.7.png \
-     ./1.manual/img/2.3.8.png \
-     ./1.manual/img/2.3.9.png \
      ./1.manual/img/2.3.10.png \
      ./1.manual/img/2.3.11.png \
      ./1.manual/img/2.3.12.png \
@@ -90,6 +99,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.3.17.png \
      ./1.manual/img/2.3.18.png \
      ./1.manual/img/2.3.19.png \
+     ./1.manual/img/2.3.2.png \
      ./1.manual/img/2.3.20.png \
      ./1.manual/img/2.3.21.png \
      ./1.manual/img/2.3.22.png \
@@ -97,7 +107,17 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.3.24.png \
      ./1.manual/img/2.3.25.png \
      ./1.manual/img/2.3.26.png \
+     ./1.manual/img/2.3.3.png \
+     ./1.manual/img/2.3.4.png \
+     ./1.manual/img/2.3.5.png \
+     ./1.manual/img/2.3.6.png \
+     ./1.manual/img/2.3.7.png \
+     ./1.manual/img/2.3.8.png \
+     ./1.manual/img/2.3.9.png \
      ./1.manual/img/2.4.1.png \
+     ./1.manual/img/2.4.10.png \
+     ./1.manual/img/2.4.11.png \
+     ./1.manual/img/2.4.12.png \
      ./1.manual/img/2.4.2.png \
      ./1.manual/img/2.4.3.png \
      ./1.manual/img/2.4.4.png \
@@ -106,7 +126,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.4.7.png \
      ./1.manual/img/2.4.8.png \
      ./1.manual/img/2.4.9.png \
-     ./1.manual/img/2.4.10.png \
+     ./1.manual/img/2.5.1.png \
      ./1.manual/img/2.6.1.png \
      ./1.manual/img/2.8.1.png \
      ./1.manual/img/2.8.2.png \
@@ -120,32 +140,28 @@ nobase_dist_libpd_DATA = \
      ./1.manual/img/2.9.4.png \
      ./1.manual/img/2.9.5.png \
      ./1.manual/img/2.9.6.png \
-     ./1.manual/img/2.10.1.png \
-     ./1.manual/img/2.10.2.png \
-     ./1.manual/img/2.10.3.png \
-     ./1.manual/img/2.10.4.png \
-     ./1.manual/img/2.10.5.png \
-     ./1.manual/img/2.10.6.png \
-     ./1.manual/img/3.1.1.png \
-     ./1.manual/img/3.1.2.png \
-     ./1.manual/img/3.5.1.png \
-     ./1.manual/img/3.6.1.png \
+     ./1.manual/img/3.3.1.png \
+     ./1.manual/img/3.3.2.png \
+     ./1.manual/img/3.3.3.png \
+     ./1.manual/img/3.3.4.png \
+     ./1.manual/img/3.4.1.png \
+     ./1.manual/img/3.4.2.png \
      ./1.manual/img/4.1.1.png \
-     ./1.manual/img/4.1.2.png \
-     ./1.manual/img/4.2.1.png \
-     ./1.manual/img/4.2.2.png \
      ./1.manual/img/4.3.1.png \
      ./1.manual/img/4.3.2.png \
      ./1.manual/img/4.3.3.png \
+     ./1.manual/img/4.3.4.png \
+     ./1.manual/img/4.3.5.png \
+     ./1.manual/img/4.3.6.png \
+     ./1.manual/img/4.4.1.png \
+     ./1.manual/img/4.4.2.png \
+     ./1.manual/img/4.4.3.png \
      ./1.manual/index.htm \
      ./1.manual/x1.htm \
      ./1.manual/x2.htm \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
-     ./1.manual/x6-a.htm \
-     ./1.manual/x6-b.htm \
-     ./1.manual/x6-c.htm \
      ./1.manual/x6.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
