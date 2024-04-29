@@ -90,8 +90,8 @@
 #X obj 142 594 realtime;
 #X floatatom 142 622 7 0 0 0 - - - 0;
 #X obj 110 478 t b b;
-#X text 292 492 When [delay] receives a message it schedules a message for the future \, even if the time delay is 0! Here we use [realtime] for a nondeterministic result of how long it actually takes., f 49;
-#X text 292 563 Check the 'Scheduling' section in Pd's manual \, Chapter 2 \, for more details on how Pd operates., f 49;
+#X text 289 497 When [delay] receives a message it schedules a message for the future \, even if the time delay is 0! Here we use [realtime] for a nondeterministic result of how long it actually takes., f 54;
+#X text 289 564 Check the 'Scheduling' section in Pd's manual \, Chapter 2 \, for more details on how Pd operates., f 54;
 #X connect 0 0 6 0;
 #X connect 1 0 13 0;
 #X connect 2 0 18 0;
