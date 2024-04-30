@@ -25,53 +25,52 @@
 <P>The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and run Pd
 are described in the <A href="x3.htm">next chapter</A>. Links to more extensive
-guides (and to more theoretical information about computer music) can be found
+guides (and to more theoretical information about computer music) are provided
 in the <A href="x1.htm">previous chapter</A>.
 
 <H3> <A id="s2.1">2.1. Overview</A> </H3>
 
 <P>Pd (Pure Data) is a real-time graphical programming environment designed for audio
-processing that can be expanded to multimedia processing and more. Pd resembles the
-MAX system but is much simpler and more portable. For example, with Peter Brinkmann's
-libpd you can have Pure Data as an embeddable audio synthesis library. Additionally,
-in its origin, Pd was designed to offer a unique experimental feature not found in MAX,
+processing, that can be extended for multimedia purposes and more. Pd resembles the
+MAX system, but is much simpler and more portable. For example, with Peter Brinkmann's
+libpd, you can use Pd as an embeddable audio synthesis library. Additionally, Pd was
+originally designed to offer a unique experimental feature not found in MAX,
 allowing users to define and access data structures in innovative ways, with the ability
-to attach shapes and colors to the data in order to visualize it and/or edit it graphically
+to attach shapes and colors to data in order to visualize it and/or edit it graphically
 (see section <A href="x2.htm#s2.10">2.10 Data Structures</A> for details).
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
 processing. These include notable extensions like "Ceammc", "Cyclone", "ELSE",
-"FFTease", "IEMlib", "Pmpd", "TimbreID", "Zexy" and many more. External libraries that
-add graphical processing include Mark Dank's GEM package which expands Pd to be used
-for simultaneous computer animation and Zack Lee's "Ofelia" that allows you to use
-openFrameworks and the Lua programming language within Pd for creating audiovisual artwork
-or multimedia applications such as games. For details on installing and managing packages,
-refer to <A href="x4.htm"> Chapter 4: Externals</A>.
+"FFTease", "IEMlib", "Pmpd", "TimbreID", "Zexy" and many more. External libraries for
+graphical processing include Mark Dank's "GEM" and Zack Lee's "Ofelia", which allows you
+to use openFrameworks and the Lua programming language within Pd for creating audiovisual
+artwork or multimedia applications such as games. For details on installing and managing
+packages, refer to <A href="x4.htm"> Chapter 4: Externals</A>.
 
 <H4> <A id="s2.1.1"> 2.1.1. The main window, canvases, and printout</A> </H4>
 
-<P>When you start Pd you'll see a main "Pd" window. When you open a Pd document file
-you'll see a separate window that corresponds to it, which is known in Pd as a "canvas",
-and also referred to as "patch". The main Pd window which looks like this:
+<P>Pd starts with the main "Pd" window. When you open a Pd document file you'll see a
+separate window, known in Pd as a "canvas" and also referred to as "patch". The main Pd
+window looks like this:
 
 <figure>
 <IMG src="img/2.1.1.png" ALT="pd window">
-    <figcaption>The main Pd window (a.k.a. Console window) on Windows</figcaption>
+    <figcaption>The main Pd window (aka "Console window") on Windows</figcaption>
 </figure>
 
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
 <b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
-at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry,
-as it's common for all apps in macOS and seen below). You can create and open patches
-via the <b>File menu</b>, where you can also close and save them (note the handy shortcuts).
+at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry similarly
+to other apps on macOS and as seen below). You can create and open patches via the
+<b>File menu</b>, where you can also close and save them (note the handy shortcuts).
 
 <figure>
 <IMG src="img/2.1.2.png" ALT="file menu">
     <figcaption>The File menu on macOS</figcaption>
 </figure>
 
-<P>And when you create a new file you get a blank window like this.
+<P>Creating a new file creates a blank window.
 
 <figure>
 <IMG src="img/2.1.3.png" ALT="patch canvas">
@@ -79,7 +78,7 @@ via the <b>File menu</b>, where you can also close and save them (note the handy
 </figure>
 
 
-<P>The lower part of the Pd window is a console area for printout from the output of
+<P>The lower part of the Pd window is a console area for printout from outputs of
 boxes in patches and for messages from Pd itself. Here is a simple Pd patch:
 
 <figure>

@@ -24,7 +24,7 @@ BODY {
     counter-increment: item;
 }
 div>ul>li, div>ol>li { /* top level */
-    margin: 1em 0;
+    padding: 0.5em 0;
 }
 figure {
     padding: 1em 0;
