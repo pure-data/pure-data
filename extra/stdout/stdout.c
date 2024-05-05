@@ -8,6 +8,10 @@
 #include "s_stuff.h"
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
+#include <fcntl.h>
+#endif
+
 static t_class *stdout_class;
 
 #define MODE_DEFAULT 0  /* default, FUDI style */
