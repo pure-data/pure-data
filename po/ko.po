@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1269,6 +1269,9 @@ msgstr "비어있는 도메인 삭제가 거부되었습니다"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "환경설정 \"%1$s\"에서 %2$s을(를) 만들지 못했습니다"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr ""
 
@@ -1383,13 +1386,13 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, fuzzy, tcl-format
-msgid "(default language: %s)"
-msgstr "기본 플랫폼: %s"
-
 #, fuzzy
 msgid "(no translation)"
 msgstr "번역"
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "기본 플랫폼: %s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
