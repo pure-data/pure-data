@@ -29,6 +29,9 @@ div>ul>li, div>ol>li { /* top level */
 figure {
     padding: 1em 0;
 }
+div#backnav {
+    margin-bottom: 2em;    
+}
 figcaption{
     padding-top: 0.5em;
     font-size: 95%;
@@ -110,6 +113,28 @@ KBD {
     font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
 
+span.pdobj {
+    border: 1px solid black;
+    font-family: 'Menlo', monospace;
+    white-space: nowrap;
+    font-size: 90%;
+    padding: 2px;
+    margin: 0 4px;
+    font-weight: bolder;
+}
+
+
+/*span.pdobj {
+    font-weight: bolder;
+    white-space: nowrap;
+}
+span.pdobj::before {
+  content: "[";
+}
+span.pdobj::after {
+  content: "]";
+}*/
+
 /* standard link */
 
 a:link {
@@ -133,7 +158,7 @@ a:active {
 }
 
 
-/* green link (like a button) */
+/* green link (like a button) - not needed anymore with the compiler chapters combined */
 
 a.green:link {
     font-family:sans-serif;
@@ -176,7 +201,7 @@ IMG {
     display: block;
     margin: 0 auto;
     width: auto;
-    filter: brightness(1) contrast(1);
+    filter: brightness(1) contrast(1); /* why? */
 }
 
 mark {
