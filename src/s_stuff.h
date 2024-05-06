@@ -439,3 +439,5 @@ EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
 EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
     va_list argptr);
 
+EXTERN char *pd_extraflags;     /* a place to stick an extra startup arg */
+ /* this is used by 'stdout' but could be useful elsewhere perhaps. */

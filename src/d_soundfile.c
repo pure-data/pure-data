@@ -842,11 +842,11 @@ static void soundfile_finishwrite(void *obj, const char *filename,
 {
     if (frameswritten >= nframes) return;
     if (nframes < SFMAXFRAMES)
-        pd_error(obj, "soundfiler write: %ld out of %ld frames written",
+        pd_error(obj, "[soundfiler] write: %ld out of %ld frames written",
             (long)frameswritten, (long)nframes);
     if (sf->sf_type->t_updateheaderfn(sf, frameswritten))
         return;
-    object_sferror(obj, "soundfiler write", filename, errno, sf);
+    object_sferror(obj, "[soundfiler] write", filename, errno, sf);
 }
 
 static void soundfile_xferout_sample(const t_soundfile *sf,
@@ -1163,7 +1163,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
 #endif
     if (framesinfile < 1)
     {
-        pd_error(x, "soundfiler read: %s: empty or very short ascii file",
+        pd_error(x, "[soundfiler] read: %s: empty or very short ascii file",
             filename);
         nframes = 0;
         goto done;
@@ -1172,7 +1172,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     {
         if ((size_t)framesinfile > a->aa_maxsize)
         {
-            pd_error(x, "soundfiler read: truncated to %ld elements",
+            pd_error(x, "[soundfiler] read: truncated to %ld elements",
                 (long)a->aa_maxsize);
             framesinfile = a->aa_maxsize;
         }
@@ -1184,7 +1184,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
             if (!garray_getfloatwords(a->aa_garrays[i], &vecsize,
                 &a->aa_vectors[i]) || (vecsize != nframes))
             {
-                pd_error(x, "soundfiler read: resize failed");
+                pd_error(x, "[soundfiler] read: resize failed");
                 nframes = 0;
                 goto done;
             }
@@ -1347,13 +1347,13 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         if (!(garrays[i] =
             (t_garray *)pd_findbyclass(argv[i].a_w.w_symbol, garray_class)))
         {
-            pd_error(x, "soundfiler read: %s: no such table",
+            pd_error(x, "[soundfiler] read: %s: no such table",
                 argv[i].a_w.w_symbol->s_name);
             goto done;
         }
         else if (!garray_getfloatwords(garrays[i], &vecsize,
                 &vecs[i]))
-            pd_error(x, "soundfiler read: %s: bad template for tabwrite",
+            pd_error(x, "[soundfiler] read: %s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
         if (finalsize && finalsize != (size_t)vecsize && !resize)
         {
@@ -1368,7 +1368,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             {skipframes, finalsize, argc, vecs, garrays, resize, maxsize, 0};
         if (!argc)
         {
-            pd_error(x, "soundfiler read: "
+            pd_error(x, "[soundfiler] read: "
                         "'-ascii' requires at least one table");
             goto done;
         }
@@ -1386,7 +1386,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
     if (fd < 0)
     {
-        object_sferror(x, "soundfiler read", filename, errno, &sf);
+        object_sferror(x, "[soundfiler] read", filename, errno, &sf);
         goto done;
     }
     framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
@@ -1396,7 +1396,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             /* figure out what to resize to using header info */
         if ((size_t)framesinfile > maxsize)
         {
-            pd_error(x, "soundfiler read: truncated to %ld elements",
+            pd_error(x, "[soundfiler] read: truncated to %ld elements",
                 (long)maxsize);
             framesinfile = maxsize;
         }
@@ -1411,7 +1411,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 /* if the resize failed, garray_resize reported the error */
                 || (vecsize != framesinfile))
             {
-                pd_error(x, "soundfiler read: resize failed");
+                pd_error(x, "[soundfiler] read: resize failed");
                 goto done;
             }
         }
@@ -1478,10 +1478,10 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         garray_redraw(garrays[i]);
     goto done;
 usage:
-    pd_error(x, "usage: read [flags] filename [tablename]...");
+    pd_error(x, "[soundfiler]: usage; read [flags] filename [tablename]...");
     post("flags: -skip <n> -resize -maxsize <n> %s -ascii ...", sf_typeargs);
-    post("-raw <headerbytes> <channels> <bytespersample> "
-         "<endian (b, l, or n)>");
+    post("-raw <headerbytes> <channels> <bytespersample> <endian (b, l, or n)>");
+    post("(-ascii flag can only be combined with -resize)");
 done:
     sf.sf_fd = -1;
     if (fd >= 0)
@@ -1552,19 +1552,19 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         if (!(garrays[i] =
             (t_garray *)pd_findbyclass(argv[i].a_w.w_symbol, garray_class)))
         {
-            pd_error(obj, "soundfiler write: %s: no such table",
+            pd_error(obj, "[soundfiler] write: %s: no such table",
                 argv[i].a_w.w_symbol->s_name);
             goto fail;
         }
         else if (!garray_getfloatwords(garrays[i], &vecsize, &vectors[i]))
-            pd_error(obj, "soundfiler write: %s: bad template for tabwrite",
+            pd_error(obj, "[soundfiler] write: %s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
         if (wa.wa_nframes > vecsize - wa.wa_onsetframes)
             wa.wa_nframes = vecsize - wa.wa_onsetframes;
     }
     if (wa.wa_nframes <= 0)
     {
-        pd_error(obj, "soundfiler write: no samples at onset %ld",
+        pd_error(obj, "[soundfiler] write: no samples at onset %ld",
             (long)wa.wa_onsetframes);
         goto fail;
     }
@@ -1597,7 +1597,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
             a.aa_normfactor = 1;
         if ((frameswritten = soundfiler_writeascii(obj, filenamebuf, &a)) == 0)
         {
-            pd_error(obj, "soundfiler write: writing ascii failed");
+            pd_error(obj, "[soundfiler] write: writing ascii failed");
             goto fail;
         }
             /* fill in for info outlet */
@@ -1611,13 +1611,13 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
         sf, wa.wa_nframes)) < 0)
     {
-        object_sferror(obj, "soundfiler write",
+        object_sferror(obj, "[soundfiler] write",
             wa.wa_filesym->s_name, errno, sf);
         goto fail;
     }
     if (!wa.wa_normalize)
     {
-        if (sf->sf_bytespersample != 4 && biggest > 1)
+        if (sf->sf_bytespersample != 4 && sf->sf_bytespersample != 8 && biggest > 1)
         {
             post("%s: reducing max amplitude %f to 1",
                 wa.wa_filesym->s_name, biggest);
@@ -1643,7 +1643,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         byteswritten = write(sf->sf_fd, sampbuf, datasize);
         if (byteswritten < 0 || (size_t)byteswritten < datasize)
         {
-            object_sferror(obj, "soundfiler write",
+            object_sferror(obj, "[soundfiler] write",
                 wa.wa_filesym->s_name, errno, sf);
             if (byteswritten > 0)
                 frameswritten += byteswritten / sf->sf_bytesperframe;
@@ -1662,7 +1662,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     sf->sf_fd = -1;
     return frameswritten;
 usage:
-    pd_error(obj, "usage: write [flags] filename tablename...");
+    pd_error(obj, "[soundfiler] usage; write [flags] filename tablename...");
     post("flags: -skip <n> -nframes <n> -bytes <n> %s ...", sf_typeargs);
     post("-ascii -big -little -normalize");
     post("(defaults to a 16 bit wave file)");
@@ -2171,7 +2171,7 @@ static t_int *readsf_perform(t_int *w)
         {
             int xfersize;
             if (x->x_fileerror)
-                object_sferror(x, "readsf~", x->x_filename,
+                object_sferror(x, "[readsf~]", x->x_filename,
                     x->x_fileerror, &x->x_sf);
                 /* if there's a partial buffer left, copy it out */
             xfersize = (x->x_fifohead - x->x_fifotail + 1) /
@@ -2220,7 +2220,7 @@ static void readsf_start(t_readsf *x)
 {
     if (x->x_state == STATE_STARTUP)
         x->x_state = STATE_STREAM;
-    else pd_error(x, "readsf~: start requested with no prior 'open'");
+    else pd_error(x, "[readsf~]: start requested with no prior 'open'");
 }
 
     /** LATER rethink whether you need the mutex just to set a variable? */
@@ -2280,7 +2280,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     else if (*endian->s_name == 'l')
          x->x_sf.sf_bigendian = 0;
     else if (*endian->s_name)
-        pd_error(x, "readsf~ open: endianness neither 'b' nor 'l'");
+        pd_error(x, "[readsf~] open: endianness neither 'b' nor 'l'");
     else x->x_sf.sf_bigendian = sys_isbigendian();
     x->x_onsetframes = (onsetframes > 0 ? onsetframes : 0);
     x->x_sf.sf_headersize = (headersize > 0 ? headersize :
@@ -2302,7 +2302,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     pthread_mutex_unlock(&x->x_mutex);
     return;
 usage:
-    pd_error(x, "usage: open [flags] filename [onset] [headersize]...");
+    pd_error(x, "[readsf~]: usage; open [flags] filename [onset] [headersize]...");
     pd_error(0, "[nchannels] [bytespersample] [endian (b or l)]");
     post("flags: %s", sf_typeargs);
 }
@@ -2343,7 +2343,7 @@ static void readsf_free(t_readsf *x)
     }
     pthread_mutex_unlock(&x->x_mutex);
     if (pthread_join(x->x_childthread, &threadrtn))
-        pd_error(x, "readsf_free: join failed");
+        pd_error(x, "[readsf~] free: join failed");
 
     pthread_cond_destroy(&x->x_requestcondition);
     pthread_cond_destroy(&x->x_answercondition);
@@ -2685,7 +2685,7 @@ static t_int *writesf_perform(t_int *w)
         if (x->x_eof)
         {
             if (x->x_fileerror)
-                object_sferror(x, "writesf~", x->x_filename,
+                object_sferror(x, "[writesf~]", x->x_filename,
                     x->x_fileerror, &x->x_sf);
             x->x_state = STATE_IDLE;
             sfread_cond_signal(&x->x_requestcondition);
@@ -2719,7 +2719,7 @@ static void writesf_start(t_writesf *x)
     if (x->x_state == STATE_STARTUP)
         x->x_state = STATE_STREAM;
     else
-        pd_error(x, "writesf~: start requested with no prior 'open'");
+        pd_error(x, "[writesf~]: start requested with no prior 'open'");
 }
 
     /** LATER rethink whether you need the mutex just to set a variable? */
@@ -2744,14 +2744,14 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         writesf_stop(x);
     if (soundfiler_parsewriteargs(x, &argc, &argv, &wa) || wa.wa_ascii)
     {
-        pd_error(x, "usage: open [flags] filename...");
+        pd_error(x, "[writesf~]: usage; open [flags] filename...");
         post("flags: -bytes <n> %s -big -little -rate <n>", sf_typeargs);
         return;
     }
     if (wa.wa_normalize || wa.wa_onsetframes || (wa.wa_nframes != SFMAXFRAMES))
-        pd_error(x, "writesf~ open: normalize/onset/nframes argument ignored");
+        pd_error(x, "[writesf~] open: normalize/onset/nframes argument ignored");
     if (argc)
-        pd_error(x, "writesf~ open: extra argument(s) ignored");
+        pd_error(x, "[writesf~] open: extra argument(s) ignored");
     pthread_mutex_lock(&x->x_mutex);
         /* make sure that the child thread has finished writing */
     while (x->x_requestcode != REQUEST_NOTHING)
@@ -2834,7 +2834,7 @@ static void writesf_free(t_writesf *x)
     }
     pthread_mutex_unlock(&x->x_mutex);
     if (pthread_join(x->x_childthread, &threadrtn))
-        pd_error(x, "writesf_free: join failed");
+        pd_error(x, "[writesf~] free: join failed");
 #ifdef DEBUG_SOUNDFILE_THREADS
     fprintf(stderr, "writesf~: ... done\n");
 #endif

@@ -18,9 +18,9 @@
 #X text 69 13 - swap two numbers \, respecting right-to-left order, f 30;
 #X obj 78 333 print L;
 #X obj 145 332 print R;
-#N canvas 732 156 587 339 reference 0;
+#N canvas 686 206 587 339 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
-#X obj 18 171 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 171 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 18 265 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
 #X obj 17 307 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 17 229 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;

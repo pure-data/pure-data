@@ -97,8 +97,7 @@ static int sys_listplease;
 int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
 static int sys_batch;
-int sys_extraflags;
-char sys_extraflagsstring[MAXPDSTRING];
+char *pd_extraflags = 0;
 int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring);
 int sys_noautopatch;    /* temporary hack to defeat new 0.42 editing */
@@ -331,7 +330,6 @@ int sys_main(int argc, const char **argv)
     t_namelist *nl;
     t_patchlist *pl;
     sys_externalschedlib = 0;
-    sys_extraflags = 0;
 #ifdef PD_DEBUG
     fprintf(stderr, "Pd: COMPILED FOR DEBUGGING\n");
 #endif
@@ -435,8 +433,7 @@ int sys_main(int argc, const char **argv)
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
-        ret = (sys_run_scheduler(sys_externalschedlibname,
-            sys_extraflagsstring));
+        ret = (sys_run_scheduler(sys_externalschedlibname, pd_extraflags));
     else if (sys_batch)
         ret = m_batchmain();
     else
@@ -1338,9 +1335,7 @@ int sys_argparse(int argc, const char **argv)
             if (argc < 2)
                 goto usage;
 
-            sys_extraflags = 1;
-            strncpy(sys_extraflagsstring, argv[1],
-                sizeof(sys_extraflagsstring) - 1);
+            pd_extraflags = argv[1];
             argv += 2;
             argc -= 2;
         }

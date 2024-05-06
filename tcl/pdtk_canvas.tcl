@@ -52,24 +52,25 @@ if {[tk windowingsystem] eq "win32" || \
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
-        foreach {width height} [wm maxsize .] {break}
+        foreach {width height} [wm maxsize .] break
 
-        if {$w > $width} {
-            set w $width
-            set x 0
-        }
-        if {$h > $height} {
-            # 30 for window framing
-            set h [expr $height - $::menubarsize]
-            set y $::menubarsize
-        }
-
+        # get virtual root coordinates for minimum position
         set xmin [winfo vrootx .]
         set ymin [winfo vrooty .]
-        set x [expr ($x - $xmin) % $width + $xmin]
-        set y [expr ($y - $ymin) % $height + $ymin]
 
-        return [list ${x} ${y} ${w} ${h}]
+        # clip window size to screen size
+        set w [expr {min($w, $width)}]
+        set h [expr {min($h, $height - $::menubarsize)}]
+
+        # get max position
+        set xmax [expr {$xmin + $width - $w}]
+        set ymax [expr {$ymin + $height - $h}]
+
+        # clip given position
+        set x [expr {max(min($x, $xmax), $xmin)}]
+        set y [expr {max(min($y, $ymax), $ymin + $::menubarsize)}]
+
+        return [list $x $y $w $h]
     }
 } {
     proc pdtk_canvas_wrap_window {x y w h} {
@@ -204,7 +205,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
     set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
-    set message [format [_ "Do you want to save the changes you made in '%s'?"] $filename]
+    set message [_ "Do you want to save the changes you made in '%s'?" $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {

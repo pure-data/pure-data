@@ -873,6 +873,18 @@ void sys_vgui(const char *fmt, ...)
     INTER->i_bytessincelastping += msglen;
 }
 
+
+/* sys_vgui() and sys_gui() are deprecated for externals
+   and shouldn't be used directly within Pd.
+   however, the we do use them for implementing the high-level
+   communication, so we do not want the compiler to shout out loud.
+ */
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined _MSC_VER
+#pragma warning( disable : 4996 )
+#endif
+
 void sys_gui(const char *s)
 {
     sys_vgui("%s", s);

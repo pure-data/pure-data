@@ -95,7 +95,7 @@ proc ::pdwindow::buffer_message {object_id level message} {
             incr keepitems
         }
         set logbuffer [lrange $logbuffer end-$keepitems end]
-        set msg [format [_ "dropped %d lines from the Pd window" ] [expr $_curlogbuffer - $count]]
+        set msg [_ "dropped %d lines from the Pd window" [expr $_curlogbuffer - $count]]
         set _curlogbuffer 0
         ::pdwindow::verbose 10 "$msg\n"
         ::pdwindow::filter_logbuffer
@@ -138,7 +138,7 @@ proc ::pdwindow::filter_logbuffer {} {
 # this has 'args' to satisfy trace, but its not used
 proc ::pdwindow::filter_buffer_to_text {args} {
     set i [::pdwindow::filter_logbuffer]
-    set msg [format [_ "the Pd window filtered %d lines" ] $i ]
+    set msg [_ "the Pd window filtered %d lines" $i ]
     ::pdwindow::verbose 10 "$msg\n"
 }
 
@@ -311,7 +311,7 @@ proc ::pdwindow::update_title {w} {
         switch -- ${::deken::platform(floatsize)} {
             32 { set floatsize "" }
             64 { set floatsize [_ "EXPERIMENTAL double (64bit) precision"] }
-            default  { set floatsize [format [_ "%dbit-floats EXPERIMENTAL" ]  ${::deken::platform(floatsize)}]}
+            default  { set floatsize [_ "%dbit-floats EXPERIMENTAL" ${::deken::platform(floatsize)}]}
         }
         if { ${floatsize} ne "" } {
             set fulltitle "${fulltitle} - ${floatsize}"

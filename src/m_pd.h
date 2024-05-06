@@ -13,6 +13,17 @@ extern "C" {
 #define PD_BUGFIX_VERSION 1
 #define PD_TEST_VERSION ""
 
+/* compile-time version check:
+   #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
+      // put legacy code for Pd<<0.56 in here
+   #endif
+ */
+#define PD_VERSION(major, minor, bugfix) \
+    (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
+#define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
+
+extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
 #if defined(NT) && !defined(MSW)
@@ -51,6 +62,19 @@ extern "C" {
 #define EXTERN_STRUCT struct
 #endif
 
+
+/* util for better inlining of static functions in headers */
+#if defined(__cplusplus)
+# define PD_INLINE inline
+#else
+# if (__STDC_VERSION__ >= 199901L)
+#  define PD_INLINE static inline
+# else
+#  define PD_INLINE static
+# endif
+#endif
+
+
 /* Define some attributes, specific to the compiler */
 #if defined(__GNUC__)
 #define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
@@ -65,6 +89,22 @@ extern "C" {
 #define STATIC_ASSERT static_assert
 #else
 #define STATIC_ASSERT(condition, message) /* no-op */
+#endif
+
+/* deprecation warning */
+#ifndef PD_DEPRECATED
+# ifdef __GNUC__
+#  define PD_DEPRECATED __attribute__ ((deprecated))
+# elif defined(_MSC_VER) && _MSC_VER >= 1300
+#  define PD_DEPRECATED __declspec(deprecated)
+# else
+#  define PD_DEPRECATED
+#  pragma message("PD_DEPRECATED not defined for this compiler")
+# endif
+#endif
+
+#if !defined(_SIZE_T) && !defined(_SIZE_T_)
+#include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
 #include <stddef.h> /* for size_t and offsetof */
@@ -384,7 +424,7 @@ EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
 EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
-EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
+PD_DEPRECATED EXTERN double clock_getsystime(void); /* use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
 EXTERN double clock_gettimesincewithunits(double prevsystime,
     double units, int sampflag);
@@ -586,8 +626,7 @@ typedef enum {
 EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-/* deprecated, use logpost() instead. */
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+PD_DEPRECATED EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3); /* avoid this: use logpost() instead */
 
 
 /* ------------  system interface routines ------------------- */
@@ -737,12 +776,12 @@ EXTERN_STRUCT _garray;
 #define t_garray struct _garray
 
 EXTERN t_class *garray_class;
-EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
+PD_DEPRECATED EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec); /* use garray_getfloatwords() */
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+PD_DEPRECATED EXTERN void garray_resize(t_garray *x, t_floatarg f); /* use garray_resize_long() */
 EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
@@ -758,15 +797,15 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
-EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
 
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);
     /* dialog window creation and destruction */
-EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
-EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
+PD_DEPRECATED EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
+PD_DEPRECATED EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
 
 /*
  * send a message to the GUI, with a simplified formatting syntax
@@ -839,7 +878,6 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
-#ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
 
 /* a test for NANs and denormals.
@@ -854,7 +892,7 @@ typedef union
     unsigned int ui;
 } t_bigorsmall32;
 
-static inline int PD_BADFLOAT(t_float f)  /* malformed float */
+PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed float */
 {
     t_bigorsmall32 pun;
     pun.f = f;
@@ -862,7 +900,7 @@ static inline int PD_BADFLOAT(t_float f)  /* malformed float */
     return((pun.ui == 0) | (pun.ui == 0x7f800000));
 }
 
-static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
+PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 {
     t_bigorsmall32 pun;
     pun.f = f;
@@ -877,7 +915,7 @@ typedef union
     unsigned int ui[2];
 } t_bigorsmall64;
 
-static inline int PD_BADFLOAT(t_float f)  /* malformed double */
+PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed double */
 {
     t_bigorsmall64 pun;
     pun.f = f;
@@ -885,7 +923,7 @@ static inline int PD_BADFLOAT(t_float f)  /* malformed double */
     return((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000));
 }
 
-static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
+PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 {
     t_bigorsmall64 pun;
     pun.f = f;
@@ -898,23 +936,24 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 #define PD_BIGORSMALL(f) 0
 #endif
 
-#else   /* _MSC_VER */
-#if PD_FLOATSIZE == 32
-#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
-    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
-/* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
-    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
-#else   /* 64 bits... don't know what to do here */
-#define PD_BADFLOAT(f) (!(((f) >= 0) || ((f) <= 0)))
-#define PD_BIGORSMALL(f) ((f) > 1e150 || (f) <  -1e150 \
-    || (f) > -1e-150 && (f) < 1e-150 )
+    /* get major/minor/bugfix version numbers and version code at run time */
+EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
+#ifndef PD_INTERNAL
+/* ABI compat hack: do not use _sys_getversioncode() directly! */
+PD_INLINE unsigned int _sys_getversioncode(int*major, int*minor, int*bugfix)
+{
+    int a, b, c;
+    sys_getversion(major, minor, bugfix);
+    sys_getversion(&a, &b, &c);
+    return PD_VERSION(a, b, c);
+}
+#define sys_getversion _sys_getversioncode
 #endif
-#endif /* _MSC_VER */
 
-    /* get version number at run time */
-EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
-EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+    /* get a Pd API function pointer by name. Returns NULL if the function
+    does not exist. For example, This allows to use recently introduced API
+    functions while providing a fallback for older Pd versions. */
+EXTERN t_method sys_getfunbyname(const char *name);
 
     /* get floatsize at run time */
 EXTERN unsigned int sys_getfloatsize(void);
