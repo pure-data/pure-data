@@ -574,12 +574,13 @@ proc pdtk_yesnodialog {mytoplevel message default} {
 ## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
     # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+
     if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
         set message [ list $message ]
     }
 
     if {[ catch {
-              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+              set msg [_ {*}$message]
           } ]} {
            set msg [_ $message]
        }

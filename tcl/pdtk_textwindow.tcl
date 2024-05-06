@@ -121,7 +121,7 @@ proc pdtk_textwindow_close {name ask} {
             if {[string equal -length 1 $title "*"]} {
                 set title [string range $title 1 end]
             }
-            set msg [format [_ "Accept changes to '%s'?"] $title]
+            set msg [_ "Accept changes to '%s'?" $title]
             set answer [tk_messageBox -type yesnocancel \
              -icon question \
              -message $msg \

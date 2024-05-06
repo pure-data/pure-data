@@ -120,7 +120,7 @@ proc ::dialog_font::cancel {gfxstub} {
 proc ::dialog_font::update_font_dialog {mytoplevel} {
     variable canvaswindow $mytoplevel
     if {[winfo exists .font]} {
-        wm title .font [format [_ "%s Font"] [lookup_windowname $mytoplevel]]
+        wm title .font [_ "%s Font" [lookup_windowname $mytoplevel]]
     }
 }
 

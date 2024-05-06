@@ -12,16 +12,16 @@ namespace eval ::pd_guiprefs:: {
     namespace export write_recentfiles
     namespace export update_recentfiles
     namespace export write_loglevel
+
+    # preference keys
+    variable recentfiles_key ""
+    variable loglevel_key "loglevel"
+
+    # platform specific
+    variable domain org.puredata.pd.pd-gui
+    variable configdir ""
+    variable recentfiles_is_array false
 }
-
-# preference keys
-set ::pd_guiprefs::recentfiles_key ""
-set ::pd_guiprefs::loglevel_key "loglevel"
-
-# platform specific
-set ::pd_guiprefs::domain ""
-set ::pd_guiprefs::configdir ""
-set ::pd_guiprefs::recentfiles_is_array false
 
 #################################################################
 # preferences storage locations
@@ -65,11 +65,15 @@ set ::pd_guiprefs::recentfiles_is_array false
 # init preferences
 #
 proc ::pd_guiprefs::init {} {
-    set ::pd_guiprefs::domain org.puredata.pd.pd-gui
-
     switch -- $::platform {
         "Darwin" {
             set backend "plist"
+            # on macOS the domain should be the same as the bundle ID
+            catch {
+                set ::pd_guiprefs::domain [exec defaults read
+                                           [file join $::sys_guidir .. .. Info]
+                                           CFBundleIdentifier]
+            }
         }
         "W32" {
             set backend "registry"
@@ -402,7 +406,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
         set absconfdir ${::pd_guiprefs::configdir}
         catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
 
-        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error [_ "Couldn't create preferences \"%1\$s\" in %2\$s" $domain $absconfdir]
         ::pdwindow::error "\n"
     }
     return $domain
