@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
-"PO-Revision-Date: 2024-03-14 20:00+0000\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"PO-Revision-Date: 2024-05-06 09:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/en/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.5.3\n"
 
 msgid "linear"
 msgstr "linear"
@@ -1244,6 +1244,9 @@ msgstr "refusing to delete empty domain"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Couldn't create preferences \"%1$s\" in %2$s"
 
+msgid "The language can only be set during startup."
+msgstr "The language can only be set during startup."
+
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
@@ -1358,12 +1361,12 @@ msgstr "Vietnamese"
 msgid "Chinese (Traditional)"
 msgstr "Chinese (Traditional)"
 
+msgid "(no translation)"
+msgstr "(no translation)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(default language: %s)"
-
-msgid "(no translation)"
-msgstr "(no translation)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

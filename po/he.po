@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2023-07-01 07:53+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1244,6 +1244,9 @@ msgstr "עלה סירוב למחיקת שם תחום ריק"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr "אפריקאנס"
 
@@ -1358,12 +1361,12 @@ msgstr "וייטנאמית"
 msgid "Chinese (Traditional)"
 msgstr "סינית מסורתית"
 
+msgid "(no translation)"
+msgstr "(אין תרגום)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(שפת ברירת המחדל: %s)"
-
-msgid "(no translation)"
-msgstr "(אין תרגום)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

@@ -12,11 +12,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2024-04-23 21:07+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1262,6 +1262,9 @@ msgstr "negándose a borrar un dominio vacío"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "No se pudo crear el archivo de preferencias '%1$s' en %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
@@ -1376,12 +1379,12 @@ msgstr "Vietnamita"
 msgid "Chinese (Traditional)"
 msgstr "Chino (tradicional)"
 
+msgid "(no translation)"
+msgstr "(sin traducciones)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(Idioma predeterminado: %s)"
-
-msgid "(no translation)"
-msgstr "(sin traducciones)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
