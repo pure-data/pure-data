@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1275,6 +1275,9 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr ""
 
@@ -1389,11 +1392,11 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, tcl-format
-msgid "(default language: %s)"
+msgid "(no translation)"
 msgstr ""
 
-msgid "(no translation)"
+#, tcl-format
+msgid "(default language: %s)"
 msgstr ""
 
 #, tcl-format

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-03-14 18:04+0100\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1275,6 +1275,9 @@ msgstr "空のドメインの削除を拒否されました"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "環境設定 \"%1$s\" を %2$s に作成できませんでした"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr ""
 
@@ -1389,13 +1392,13 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, fuzzy, tcl-format
-msgid "(default language: %s)"
-msgstr "デフォルトのプラットフォーム: %s"
-
 #, fuzzy
 msgid "(no translation)"
 msgstr "翻訳"
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "デフォルトのプラットフォーム: %s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
