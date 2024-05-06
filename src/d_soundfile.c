@@ -1617,7 +1617,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     }
     if (!wa.wa_normalize)
     {
-        if (sf->sf_bytespersample != 4 && biggest > 1)
+        if (sf->sf_bytespersample != 4 && sf->sf_bytespersample != 8 && biggest > 1)
         {
             post("%s: reducing max amplitude %f to 1",
                 wa.wa_filesym->s_name, biggest);
