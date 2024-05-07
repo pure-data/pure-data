@@ -337,11 +337,13 @@ Pd's Audio settings.
 <p> There's also a MIDI settings dialog for you to configure one or more MIDI
 input and output devices. If more than one device is chosen for either input and
 output, they are registered in different MIDI ports. The "channel message" midi
-objects in Pd (such as [notein] or [pgmout]) will take channels 1-16. Note,
-however, that the MIDI port is encoded in the channel number, where channels 1-16
-mean the first open MIDI port, 17-32 the second one, and so on. The [midiin],
-[midirealtimein] and [sysexin] objects output the port number in their right
-outlet and [midiout] has a separate inlet to specify which MIDI port you want.
+objects in Pd (such as <b>[notein]</b> or
+<b>[pgmout]</b>) will take channels 1-16. Note, however, that the MIDI
+port is encoded in the channel number, where channels 1-16 mean the first open MIDI port,
+17-32 the second one, and so on. The <b>[midiin]</b>,
+<b>[midirealtimein]</b> and <b>[sysexin]</b>
+objects output the port number in their right outlet and <b>[midiout]</b>
+has a separate inlet to specify which MIDI port you want.
 
 <figure>
     <IMG src="img/3.3.4.png" ALT="MIDI settings">
@@ -372,7 +374,7 @@ that you can get choices for API this way.
 
 <P>The "Path" tabs configures search paths that Pd will use to load externals
 and abstractions (spaces in the path are allowed by the way). This also used
-for files in objects that load them like [soundfiler], [text] and even arrays
+for files in objects that load them like <b>[soundfiler]</b>, <b>[text]</b> and even arrays
 (aka tables). The path must be correctly set before you load a patch or it may
 fail to find anything. Filenames in Pd are always separated byc(Unix-style)
 forward slashes, even if you're on Windows (which uses backslashes). Also, note
@@ -382,7 +384,7 @@ that objects that can load files do expand "~" to your home directory.
 directory and, if it fails, it searches next in the paths that are set in this
 tab. Note you can use things like "../samples" to point to folders and subfolders
 that are relative to the patch directory and other search paths. Note you can also
-use [declare] to add paths for particular patches - this and other details about
+use <b>[declare]</b> to add paths for particular patches - this and other details about
 path management is also covered in depth in <a href="x4.htm">Chapter 4: Externals</a>,
 and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
 

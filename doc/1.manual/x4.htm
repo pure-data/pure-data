@@ -320,7 +320,7 @@ extensions according to each case. See details in the table below:
 <p>You can have a Pd patch behave like an object by loading it into other
 patches - these are usually called “abstractions” (see
 <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>). Note that some of the
-externals in “extra” are abstractions (for instance, [rev1~] or [hilbert~]).
+externals in “extra” are abstractions (for instance, <b>[rev1~]</b> or <b>[hilbert~]</b>).
 Like any other Pd patch, an abstraction may contain any kind of objects
 (internals, compiled externals and even other abstractions).
 
@@ -535,30 +535,30 @@ a library".
 
 <H3> <A id=s4.4>4.4. Loading externals </A> </H3>
 
-<p>The current best practice is to use the [declare] object to search for,
+<p>The current best practice is to use the <b>[declare]</b> object to search for,
 load and manage externals, but there are alternatives.
 
 <p>If the object is from a library that is distributed as a single binary pack,
 this binary needs to be pre loaded at start time by Pd, so it can create its
-externals. This is done either with [declare] or manually via the 'Startup' tab
+externals. This is done either with <b>[declare]</b> or manually via the 'Startup' tab
 in Preferences.
 
 <p>If the external library only contains abstractions or objects compiled as
 a set of separate binaries, Pd just needs to know its path. Again, this can be
-done via [declare] or manually via the 'Path' tab in Preferences, but yet
+done via <b>[declare]</b> or manually via the 'Path' tab in Preferences, but yet
 another option here is to use slash declarations as we'll see later.
 
-<H4> <A id=s4.4.1>4.4.1. Using the [declare] object</A> </H4>
+<H4> <A id=s4.4.1>4.4.1. Using the <b>[declare]</b> object</A> </H4>
 
-<p>The [declare] object can be used to add search paths or load libraries. When
+<p>The <b>[declare]</b> object can be used to add search paths or load libraries. When
 adding a path, it behaves quite similarly to adding search paths to the
 user added paths via the 'Path' tab in Preferences. The difference is that this
-will only work for the patch that contains this [declare] object - unlike using
+will only work for the patch that contains this <b>[declare]</b> object - unlike using
 Path preferences, which loads the path(s) permanently for any patch.
 
-<p>As for loading a library, once Pd loads it (via [declare] or startup) it
-sticks with it. This means that if you use [declare] to load a library, it will
-also be loaded if you create a new patch without any [declare] object.
+<p>As for loading a library, once Pd loads it (via <b>[declare]</b> or startup) it
+sticks with it. This means that if you use <b>[declare]</b> to load a library, it will
+also be loaded if you create a new patch without any <b>[declare]</b> object.
 
 <H5> <A id=s4.4.1.1>4.4.1.1. [declare -path]</A> </H5>
 
@@ -577,9 +577,9 @@ User Added Paths and Standard Paths. So let’s say you put the ELSE library fol
 for it there and will find it!
 
 <p> Now, in the case of a single external, the best practice is to include it in
-a folder with the same name in “~/Documents/Pd/externals”. An example, the [freeverb~]
+a folder with the same name in “~/Documents/Pd/externals”. An example, the <b>[freeverb~]</b>
 external should be in “~/Documents/Pd/externals/freeverb~”. In this situation, you don’t
-need to add the external folder to the path, manually or use [declare]. This is because
+need to add the external folder to the path, manually or use <b>[declare]</b>. This is because
 when you tell Pd to look for an external, if it finds a folder with the same name as the
 external, it'll know to search inside that folder for the external!
 
@@ -590,11 +590,11 @@ is a single binary pack with many externals. One such example is the
 <a href="https://git.iem.at/pd/zexy/"> Zexy </a> library. So you should
 download and have the 'zexy' folder in “~/Documents/Pd/externals/zexy”.
 Now you can use [declare -lib zexy] to load the external binary. In the
-same way as explained with the [freeverb~] example, the binary is inside
+same way as explained with the <b>[freeverb~]</b> example, the binary is inside
 a folder with the same name. So Pd will search for the external in
 “~/Documents/Pd/externals", will find the 'zexy' folder and know to
 search for the zexy binary in it. This means you don't need to bother in
-using [declare] to define the search path.
+using <b>[declare]</b> to define the search path.
 
 <p>Note that it may be possible for you to load a library binary as an object
 if the developer wished to. But it's still advisable to use either "Startup"
@@ -605,28 +605,28 @@ before Pd tries to create other objects in your patch.
 a very special case as this binary does not actually load any external. What
 it actually loads are some .tcl plugins that add an object browser at right
 clicking on a patch canvas. It also prints information about the release on
-the Console window. Moreover, you can also load [else] as an object in a patch
+the Console window. Moreover, you can also load <b>[else]</b> as an object in a patch
 and it offers the functionality of outputting its version for you to check in
 the patch if it is the correct one.
 
-<p>The Cyclone library also allows you to load [cyclone] as an object and
+<p>The Cyclone library also allows you to load <b>[cyclone]</b> as an object and
 offers the same version output functionality as in ELSE.
 
-<p>For more details on how [declare] works, please check its help file!
+<p>For more details on how <b>[declare]</b> works, please check its help file!
 
 <H4> <A id=s4.4.2> 4.4.2. Load via path and startup</A> </H4>
 
-<p>We'll now see the differences between using [declare] or using "Path" and
+<p>We'll now see the differences between using <b>[declare]</b> or using "Path" and
 "Startup" tabs in Preferences.
 
 <H5> <A id=s4.4.2.1> 4.4.2.1. User added path</A> </H5>
 
 <p>One big difference in adding a search path in 'Preferences' is that this
 permanently adds the path and works every time Pd starts and for any patch
-you open. When you use [declare], the path is loaded only for its owning
+you open. When you use <b>[declare]</b>, the path is loaded only for its owning
 patch and loaded abstractions. Moreover, if you have an abstraction with
 [declare -path], it'll only work for that abstraction and not the parent
-patch! Hence, [declare] allows a much better control and management of
+patch! Hence, <b>[declare]</b> allows a much better control and management of
 paths. But you may want to permanently add a path in your own system if
 you know exactly what you have and what you need.
 
@@ -639,7 +639,7 @@ on “Add newly installed libraries to Pd’s search Path”, which adds downloa
 libraries to the user added search paths (see picture above).
 
 <p>Note also that having a user added search path will not make it have search
-priority like it happens when you use [declare]. In this case, the path relative
+priority like it happens when you use <b>[declare]</b>. In this case, the path relative
 to the patch will have top priority!
 
 <H5> <A id=s4.4.2.2> 4.4.2.2. Startup</A> </H5>
@@ -662,7 +662,7 @@ path. There are many other examples in the picture above. One particularity
 <a href="https://github.com/umlaeute/Gem"> Gem </a> is that it also forces
 Pd to add its path to the search paths, which is needed for some abstractions
 and then you don’t need to bother adding it to the path. Note, however, that
-unlike using [declare], this does not enforce a top search priority! Hence,
+unlike using <b>[declare]</b>, this does not enforce a top search priority! Hence,
 for example, you may prefer to use [declare -path Gem -lib Gem] instead.
 
 <p>It all depends on the developer, but it is a common and good practice that
@@ -706,13 +706,13 @@ correct external.
 part of a single binary pack, unless the developer uses a workaround to add
 this possibility as alternative.
 
-<p>The issue with [declare] or adding a path to the user added paths is that
+<p>The issue with <b>[declare]</b> or adding a path to the user added paths is that
 it'll respect a search order. Whatever path is added first in the search list
 order has a priority, and where ever Pd finds an external first, it'll load
 it and stop searching elsewhere. Again, this kind of problem is not that
 common, but you can solve this with slash declarations. You may also be able
 to sort this issue by setting the desired order. This is quite easy in
-[declare] as which ever -path comes first in the list has a priority, so you
+<b>[declare]</b> as which ever -path comes first in the list has a priority, so you
 can try that if you want to avoid slash declarations when you run into this
 rare issue.
 
@@ -720,23 +720,23 @@ rare issue.
 pack libraries. The problem is that once they get loaded, all of its external
 objects are now part of Pd and have a priority in the search. Here's an
 example, the 'ceammc' library is a single binary pack and it included an
-object called [xfade~]. The ELSE library has separate binaries for each
-object and also has one called [xfade~]. If you're using both libraries,
-ceammc's [xfade~] object will have priority and it doesn't help you to have
+object called <b>[xfade~]</b>. The ELSE library has separate binaries for each
+object and also has one called <b>[xfade~]</b>. If you're using both libraries,
+ceammc's <b>[xfade~]</b> object will have priority and it doesn't help you to have
 [declare -path else].
 
 
 <p>It was mentioned how a library name prefix may also be possible in the
 context of single binary packs. The ceammc library offers this, so you can
-also load its [xfade~] object as [ceammc/xfade~]. But note that this still
-requires you to preload the binary (via startup or [declare]). The slash
+also load its <b>[xfade~]</b> object as <b>[ceammc/xfade~]</b>. But note that this still
+requires you to preload the binary (via startup or <b>[declare]</b>). The slash
 declaration here was only possible because the developer added the
 'ceammc/xfade~' name as an alternative option in the code. So it is just a
 hack to improve the limitation of Pd in handling namespaces. Another library
 that does this is Cyclone, which carries a sublibrary with 12 objects with
-non alphanumeric names, such as [>~]. By using the same trick, you can create
-the [>~] object as [cyclone/>~]. Another single binary pack library that has
-[>~] is zexy, so this way you can make sure you're getting cyclone's instead.
+non alphanumeric names, such as <b>[>~]</b>. By using the same trick, you can create
+the <b>[>~]</b> object as <b>[cyclone/>~]</b>. Another single binary pack library that has
+<b>[>~]</b> is zexy, so this way you can make sure you're getting cyclone's instead.
 
 <p>These issues might be clear if you better understand how Pd works when
 loading externals. See next subsection.
@@ -747,7 +747,7 @@ loading externals. See next subsection.
 happens when you create it. Whenever you create an object that Pd
 doesn't yet know about, Pd looks for the object file named as, for
 instance, "profile.pd_linux". Pd looks first in a path defined by
-[declare] (if any, of course), then in the directory containing
+<b>[declare]</b> (if any, of course), then in the directory containing
 the patch, then in directories listed as user added paths in the
 order they are listed, then in the standard paths. As soon as Pd
 finds the object in this search order, it'll stop searching further
@@ -757,7 +757,7 @@ object you asked for, and if everything is fine with it, this
 happens successfully (creation errors are given otherwise).
 
 <p>In the case of a single binary pack loaded at Startup or with
-[declare], all the externals it contains get preloaded in Pd's class
+<b>[declare]</b>, all the externals it contains get preloaded in Pd's class
 list, even though they're only created in object boxes when you
 require them.
 
@@ -779,15 +779,15 @@ reloaded!
 <H4> <A id=s4.5.1> 4.5.1. Overriding objects (externals and native)</A> </H4>
 
 <p>We've seen that Pd loads and sticks to an external binary,
-but they can get overridden. For instance, if you create [xfade~]
+but they can get overridden. For instance, if you create <b>[xfade~]</b>
 from ELSE and then load ceammc's binary later (that also has an
-[xfade~] object), Pd only knows about [xfade~] from ceammc! It's
+<b>[xfade~]</b> object), Pd only knows about <b>[xfade~]</b> from ceammc! It's
 been also noted how cyclone and zexy have objects with the same
 name. If you first load cyclone's binary and zexy's later, zexy's
-objects with the same name (such as [>~]) will override and prevail.
+objects with the same name (such as <b>[>~]</b>) will override and prevail.
 
 <p>And here's an interesting feature, you can also override internal
-objects with externals! Say you have an external called [phasor~].
+objects with externals! Say you have an external called <b>[phasor~]</b>.
 If it's a single binary, you can force Pd to find it with slash
 declarations. Otherwise, if it's a binary pack, you can load as any
 other library and if it has objects with the same name as vanilla's

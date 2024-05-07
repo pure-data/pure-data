@@ -113,28 +113,6 @@ KBD {
     font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
 
-/*span.pdobj {
-    border: 1px solid black;
-    font-family: 'Menlo', monospace;
-    white-space: nowrap;
-    font-size: 90%;
-    padding: 2px;
-    margin: 0 4px;
-    font-weight: bolder;
-}*/
-
-
-span.pdobj {
-    font-weight: bolder;
-    white-space: nowrap;
-}
-span.pdobj::before {
-  content: "[";
-}
-span.pdobj::after {
-  content: "]";
-}
-
 /* standard link */
 
 a:link {
