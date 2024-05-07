@@ -449,7 +449,10 @@ void sys_do_reopen_audio(void)
 #endif
     if (as.a_api == API_NONE)
         ;
-    else post("unknown audio API specified");
+    else {
+        post("unknown audio API specified %d", as.a_api);
+        outcome = 1;
+    }
     if (outcome)    /* failed */
     {
         sys_audioapiopened = API_NONE;

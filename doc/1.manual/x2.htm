@@ -221,10 +221,12 @@ synthesizes a pure tone:
     <figcaption>A simple MIDI synthesizer</figcaption>
 </figure>
 
+
 <P>This patch mixes <I>control</I> objects (<b>[notein]</b>,
 <b>[stripnote]</b>, and <b>[ftom]</b>) with <I>tilde</I>
 objects (<b>[osc~]</b>, <b>[*~]</b>, and
 <b>[dac~]</b>). These are the two types of objects that exist in Pd:
+
 control objects and signal objects.
 
 <P>The control objects on the upper half carry out their function sporadically, as a
@@ -240,6 +242,7 @@ audio samples. The <b>[osc~]</b> object serves as the interface
 between the two regimes; it takes control messages to set its frequency but outputs
 an audio sine wave to a gain level adjustment in <b>[*~]</b>,
 which then goes to the output via <b>[dac~]</b>.
+
 
 <P>The connections in the patch (the lines between the boxes) are also of the types
 "control" or "signal". Note that they are visually distinct, where signal connections
@@ -478,6 +481,7 @@ the operating system's clipboard. This limitation prevents you from pasting betw
 different versions or flavors of Pure Data. Furthermore, it is not possible to copy
 from a patch and paste into a Pd subprocess that was instantiated through a
 <b>[pd~]</b> object.
+
 
 <H4> <A id="s2.2.5">2.2.5. Changing the text of objects, messages and comments</A> </H4>
 
@@ -744,7 +748,7 @@ boxes.
 
 <H4> <A id="s2.3.5">2.3.5. (Dis)Connect selection</A> </H4>
 
-<P>This is a menu entry in the <b>Edit menu</b>, also available via the shortcut
+<P>This is a menu entry in the <span class="pdobj">Edit menu</span>, also available via the shortcut
 <kbd>Ctrl</kbd>+<kbd>K</kbd>. It allows you to connect and disconnect selected
 boxes in different ways.
 
@@ -828,6 +832,7 @@ select a connection and use <kbd>Ctrl</kbd>+<kbd>T</kbd>. For a control connecti
 <b>[t a]</b> object is created with the text selected, so you can type
 new text to create another object instead. Similarly, for a signal connection, a
 <b>[pd nop~]</b> ("no operation") subpatch is created.
+
 
 <figure>
     <IMG src="img/2.3.20.png" ALT="insert dummy">
@@ -961,6 +966,7 @@ selector, it carries out some corresponding action.
 
 <figure>
     <IMG src="img/2.4.1.png" ALT="float object">
+
     <figcaption>A <b>[float]</b> object</figcaption>
 </figure>
 
@@ -969,6 +975,7 @@ rectangles at the top that are called "inlets", but the one on the left directs 
 messages to the <b>[float]</b> object itself, while the one on the
 right directs messages to an auxiliary "inlet" object. The
 <b>[float]</b> object itself (represented by the left inlet) accepts
+
 messages with the selectors "float" and "bang". The right inlet only accepts messages
 with the "float" selector. These two selectors, together with "symbol" and "list",
 are usually used to indicate the main action of an object, whatever it may be,
@@ -1022,6 +1029,7 @@ Pd's internal scheduler will wake the <b>[delay]</b> back up later.
 <H4> <A id="s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A> </H4>
 
 <P>With few exceptions (notably <b>[timer]</b>), objects treat their leftmost
+
 inlet as <i>hot</i> in the sense that messages to left inlets can result in output
 messages. So the following is a legal (and reasonable) loop construct:
 
@@ -1048,6 +1056,7 @@ through arbitrarily long chains of message passing) to different inlets of a
 single object. In this case it is indeterminate which order the two inlets will
 receive their messages. Suppose for example you wish to use <b>[+]</b>
 to double a number. The following is incorrect:
+
 
 <figure>
 <IMG src="img/2.4.6.png" ALT="incorrect inlet connection">
@@ -1077,6 +1086,7 @@ values (either numbers or symbols). With the exception of <b>[line]</b>,
 <b>[line~]</b> and <b>[vline~]</b>, these values are
 "sticky", i.e., once you set the value it is good until the next time you set it. (The
 "line family" exception is for sanity's sake.)
+
 
 <P>One more question sometimes comes up concerning execution order when two
 messages are sent to a single "cold" inlet. In this situation, since the messages
@@ -1216,6 +1226,7 @@ The <b>[+~]</b>, <b>[-~]</b>, <b>[*~]</b>,
 configured to take control or signal inputs in their 2nd inlet depending on the
 creation argument.
 
+
 <P>The audio network, that is, the tilde objects and their interconnections,
 must be non-cyclic. If there are loops at "sort time", you will see an error
 message on the main Pd window, saying "DSP loop detected (some tilde
@@ -1312,11 +1323,13 @@ or <b>[send~]</b> and <b>[receive~]</b> between windows
 with different block sizes. The only well tested re-blocking mechanisms are
 <b>[inlet~]</b> and <b>[outlet~]</b>.
 
+
 <P>When you send a signal to a point that is earlier in the sorted list of
 tilde objects, the signal doesn't get there until the next cycle of DSP
 computation (one block later), so your signal will be delayed by one block
 (1.45 msec by default). The <b>[delwrite~]</b> and
 <b>[delread~]</b>/<b>[delread4~]</b> have this
+
 same restriction, but here, the 1.45 msec are minimum attainable delay.
 
 <H4> <A id="s2.5.6">2.5.6. Multichannel signals</A> </H4>
@@ -1335,6 +1348,7 @@ one multichannel signal.
 
 <P>The <b>[receive~]</b>, <b>[catch~]</b>, and
 <b>[adc~]</b> objects take arguments to specify the
+
 desired number of channels.
 
 <P>Stateless objects, which have no memory from one DSP tick to the next, have
@@ -1349,6 +1363,7 @@ multichannel signals, because there might be many ways to design multichannel
 versions of them. Instead, you can use the <b>[clone]</b> object to
 perform general operations on multichannel signals. Signal inputs and outputs of cloned
 patches can be used to distribute multichannel signals among the individual cloned
+
 patches.
 
 <H3> <A id="s2.6">2.6. Scheduling</A> </H3>
@@ -1421,6 +1436,7 @@ measure time intervals, measure them in terms of the logical time stamps of the
 message cascades, so that timing a <b>[delay]</b> object always
 gives exactly the theoretical value. (There is, however, a
 <b>[realtime]</b> object that measures real
+
 time, with nondeterministic results.)
 
 <P>If two message cascades are scheduled for the same logical time, they are
@@ -1451,6 +1467,7 @@ arguments (called "creation arguments") are used to parametrize the object
 being created. Thus, in <b>[makenote 64 250]</b> the selector
 "makenote" determines the class of object to create and the creation arguments "64"
 and "250" become the initial velocity and duration.
+
 
 <H4> <A id="s2.7.2">2.7.2. Persistence of data</A> </H4>
 
@@ -1492,6 +1509,7 @@ creation message which is usually a symbol.
 example, the <b>[float]</b> or <b>[f]</b>
 object takes "bang" and "float". These messages are sent to <b>[float]</b>
 objects (objects whose class is float) via the leftmost,
+
 hot inlet (the right inlet is a separate, auxiliary object). Objects of
 class "float" respond to the message "bang" by outputting their current value,
 that is, by sending a "float" message to their outlet. They respond to "float"
@@ -1500,6 +1518,7 @@ messages by setting their value and then outputting it.
 <P>Each other class (like <b>[float]</b>) in Pd has its
 own protocol for responding to messages it is sent, and may take "float" and "bang"
 messages, or others in addition or instead of them.
+
 
 <H4> <A id="s2.7.4">2.7.4. Inlets and lists</A> </H4>
 
@@ -1556,6 +1575,7 @@ example, have an abstraction "a1" that invokes an abstraction "a2" twice, as
 and "abstractions". In either case the subpatch appears as an object box
 in a patch. If you type <b>[pd]</b> or
 <b>[pd my-name]</b> into an object box, this creates
+
 a one-off subpatch. For instance, in this fragment:
 
 <figure>
@@ -1581,6 +1601,7 @@ This works equally for one-off subpatches and abstractions and only accept
 control data messages. The <b>[inlet~]</b> and
 <b>[outlet~]</b> versions create inlets and outlets for audio signals.
 Note you can also mix control messages in an <b>[inlet~]</b>
+
 via its right outlet, but a signal outlet only takes signals. Inlets and outlets
 appear on the invoking box in the same left-to-right order as they appear in the
 subpatch.
@@ -1600,11 +1621,13 @@ patch shown here:
 
 <figure>
     <IMG src="img/2.8.4.png" ALT="abstraction example">
+
     <figcaption>The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
 
 <p>You may create many instances of <b>[abstraction1]</b> or invoke it from different
 patches. Changing and saving the contents of <b>[abstraction1]</b> will affect all
+
 invocations of it as they are created. An analogy from the "c" programming
 language is that one-off subpatches are like bracketed blocks of code and
 abstractions are like subroutines.
@@ -1612,6 +1635,7 @@ abstractions are like subroutines.
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
 you have a file "my-abstraction.pd" you may have <b>[my-abstraction 5]</b> to set the
+
 variable "$1" to 5. This is defined only for object boxes (not for messages) in
 the abstraction. For message boxes, "$1", etc, have a different meaning as
 described above, so note that dollar signs are expanded at a different time in
@@ -1635,6 +1659,7 @@ for example.
 <p>If you open the "properties" dialog for a subpatch or an abstraction, you can
 check the "graph on parent" box to have the controls of the subpatch/abstraction
 appear on the parent. For instance, here is an invocation of <b>[abstraction2]</b>:
+
 
 <figure>
     <IMG src="img/2.8.5.png" ALT="graph-on-parent abstraction">
@@ -1705,6 +1730,7 @@ You can use objects to read and write arrays and manipulate them in many ways.
 <figure>
     <IMG src="img/2.9.2.png" ALT="array indexing">
     <figcaption>Read an array with <b>[tabread]</b></figcaption>
+
 </figure>
 
 
@@ -1714,6 +1740,7 @@ To write into the array, you can use the <b>[tabwrite]</b> object:
 <figure>
     <IMG src="img/2.9.3.png" ALT="setting an value in an array">
     <figcaption>Write to an array with <b>[tabwrite]</b></figcaption>
+
 </figure>
 
 
@@ -1732,10 +1759,11 @@ the patch below creates a 440 Hz tone with "array1" as a waveform:
 <p>Here, <b>[phasor~]</b> outputs a ramp whose output range is from 0 to 1, repeating
 440 times per second. The multiplier and adder adjust the range from 1 to 11
 and then the values are used as indices for <b>[tabread4~]</b>, which is a 4-point
+
 interpolating table lookup module. (Much more detail is available in the
 "3.audio.examples" series in the documentation folder.)
 
-<P>To create a new array, select "array" from the <b>Put menu</b>. A dialog
+<P>To create a new array, select "array" from the <span class="pdobj">Put menu</span>. A dialog
 will appear to set initial properties of the array. By default, a new graph is
 created to hold the array, but it may also be housed in the most recently
 created graph instead. Other properties may be specified there and/or changed
@@ -1845,6 +1873,7 @@ above.
 object) and zero or more drawing instructions (such as <b>[filledpolygon]</b>
 and <b>[plot]</b>). The <b>[struct]</b> object gives
 the template the name "template-event". The data structure
+
 is defined to contain three floating point numbers named "x", "y", and "color",
 and two arrays, one named "pitch" whose elements belong to another template
 named "template-pitch", and similarly for the array "amp" (both data structures
@@ -1856,6 +1885,7 @@ and symbols, text and arrays (whose elements share another, specified template).
 The contents of a Pd window themselves form a list. An array (Pd's correlate of
 Max's <b>[table]</b> object) is implemented as a top-level data
 structure array whose elements are scalars containing a single floating-point number.
+
 
 <P>Data structures in Pd may nest arbitrarily deeply using the array and text
 types. For example, a collection of sinusoidal tracks from an analysis engine
@@ -1874,6 +1904,7 @@ slot in the data structure, so that color will vary according to its "color" slo
 The second <b>[plot]</b> plots the "amp" field and the color is
 given as 0, which is black.
 
+
 <H4> <A id="s2.10.1">2.10.1. Traversal</A> </H4>
 
 <P>Pd objects are provided to traverse lists and arrays, and to address elements
@@ -1891,6 +1922,7 @@ perhaps much more.
 <P> Here is a patch showing how to implement the graphical sequence score shown
 above. It uses the <b>[clone]</b> object to instantiate different
 copies of the <b>[voice]</b>
+
 abstraction, which is responsible for playing back each voice from the score.
 
 <figure>
@@ -1916,6 +1948,7 @@ pointer object takes a "traverse" message to set it to the head of the list
 in the list (i.e., the next in the list of six objects in the score). Let's
 check the <b>[voice]</b> abstraction below.
 
+
 <figure>
     <IMG src="img/2.10.4.png" ALT="[voice] abstraction">
     <figcaption>The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
@@ -1931,6 +1964,7 @@ events.
 
 <P>A second <b>[pointer]</b> object is used here as a storage cell for pointers just
 as <b>[float]</b> is for numbers. The center of the sequencer is the <b>[delay]</b> object,
+
 which must be fed the time difference between each event (including the
 non-event of hitting "start") and the next. As we extract each of the six
 objects in the score, we must wait the delay for playing that object, and
@@ -1946,6 +1980,7 @@ time with <b>[-]</b>, corrected for tempo, and fed to the <b>[delay]</b> object.
 the <b>[get]</b> and <b>[set]</b> objects for reading and writing values from data structures.
 The <b>[get]</b> object shown here obtains the "x" and "y" fields of the current object.
 The template name (template-event) is supplied to the <b>[get]</b> objects so that
+
 they can look up the offset of the necessary field(s) in advance, for greater
 run-time efficiency.
 
@@ -1959,6 +1994,7 @@ structures.
 <figure>
     <IMG src="img/2.10.6.png" ALT="[data-array] abstraction">
     <figcaption>The <b>[data-array]</b> abstraction</figcaption>
+
 </figure>
 
 <P>More general patches can easily be constructed which access heterogeneous
@@ -1970,6 +2006,7 @@ rich personal "score language" can be developed and sequenced.
 <P>In general, accessing or changing data is done via "pointers" to "scalars".
 Numbers and symbols within scalars are accessed using the <b>[get]</b> object and
 changed, in the same way, using <b>[set]</b>. Since lists and arrays are composed of
+
 scalars, every actual number or symbol in a data heap will be a number or symbol
 element of some scalar. To access them, it suffices to have objects to chase
 down elements of lists and arrays (given either a global name or a pointer to
@@ -1978,11 +2015,13 @@ the containing scalar).
 <P>Lists are traversed in the way shown above; to get to a sublist of a scalar,
 the <b>[get]</b> object will provide a pointer, in the same way as it provides "float"
 or "symbol" elements of scalars. For arrays, an <b>[element]</b> object is provided
+
 which, given a scalar, a field name and a number, chases down the numbered,
 scalar, element of the named array field.
 
 <P>To alter "float" or "symbol" elements of scalars is straightforward
 using the <b>[set]</b> object, but arrays and lists can't be set by assignment;
+
 there is no suitable data type available within messages. Lists could
 possibly be "settable" by passing pointers to other lists, but permitting this
 would have required either automatically doing deep copies of data structures
@@ -2061,6 +2100,7 @@ collections are not always simple. It would be desirable to find a more
 straightforward mechanism than that provided by the <b>[pointer]</b>, <b>[get]</b>
 and <b>[set]</b> objects.
 
+
 <P>The "data" facility, although part of the original plan for Pd, has only
 recently been implemented in its current form, and as (hopefully) the user base
 grows there will surely be occasions for many further extensions of the data
@@ -2111,6 +2151,7 @@ Pd, the messages are sent in the order you made the connections in. In either
 case, in situations where you care about the order, it's appropriate to use
 a <b>[trigger]</b> object to specify.
 
+
 <P> In Pd you can edit instances of abstractions and save the result back
 to the file of the abstraction. This isn't possible in MAX, because the
 instances are different from the abstraction itself in that "#1", etc.,
@@ -2155,6 +2196,7 @@ boxes. Then just make a "message" box to re-send the values you want.
 and <b>[buffer~]</b>. The only gotcha is that you probably can't draw in <b>[buffer~]</b>
 with the mouse as you can with arrays, but at least it's possible to
 make a patch that copies a "table" into a <b>[buffer~]</b> object.
+
 
 </div>
 <div id="footer">

@@ -379,7 +379,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
-    int address_n;
+    int address_n = -1;
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
          j < outc; j++)
     {
