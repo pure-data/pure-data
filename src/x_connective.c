@@ -762,6 +762,7 @@ static void pack_bang(t_pack *x)
     int i;
     t_atom *outvec = (t_atom *)alloca(x->x_n * sizeof(t_atom));
     t_gpointer *gpvec, *gp;
+    gp = gpvec = 0;
     if (x->x_nptr > 0)
     {
         gp = gpvec = (t_gpointer *)alloca(x->x_nptr * sizeof(t_gpointer));

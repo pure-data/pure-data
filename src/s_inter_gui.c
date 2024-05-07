@@ -385,7 +385,7 @@ void pdgui_vamess(const char* message, const char* format, va_list args_)
 {
     const char* fmt;
     char* buf;
-    t_val v;
+    t_val v = {0};
     va_list args;
 
     v.type = GUI_VMESS__RAWSTRING;
