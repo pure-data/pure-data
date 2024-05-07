@@ -1222,7 +1222,7 @@ static void init_deken_arch(void)
     {
         int arm_cpu = __ARM_ARCH;
         int cpu_v;
-        int n;
+        int n = 0;
         const char endianness =
 #  if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
             'b';
