@@ -1009,7 +1009,7 @@ depends on the order the connections were made in.
     <figcaption><A id="sfinderror">An infinite loop (stack overflow)</A></figcaption>
 </figure>
 
-<P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
+<P>Here, the left-hand <b>[+ 1]</b> can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
 has been sent "3", and so on. This generates a "stack overflow" error (meaning there's
 an infinite loop) in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
@@ -1272,7 +1272,7 @@ window and all of its subwindows (which may still have their own nested
 <b>[switch~]</b>/<b>[block~]</b> objects though). Both,
 <b>[switch~]</b> and <b>[block~]</b> take a block
 size and optional overlap and up-/downsampling factors as arguments; so for
-instance, [block~ 1024 4] specifies 1024 sample blocks, overlapped by a factor
+instance, <b>[block~ 1024 4]</b> specifies 1024 sample blocks, overlapped by a factor
 of 4 relative to the parent window. The <b>[switch~]</b> version carries
 a small computational overhead in addition to whatever overhead is associated with
 changing the block size.
@@ -1625,12 +1625,11 @@ patch shown here:
     <figcaption>The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
 
-<p>You may create many instances of <b>[abstraction1]</b> or invoke it from different
-patches. Changing and saving the contents of <b>[abstraction1]</b> will affect all
-
-invocations of it as they are created. An analogy from the "c" programming
-language is that one-off subpatches are like bracketed blocks of code and
-abstractions are like subroutines.
+<p>You can create multiple instances of <b>[abstraction1]</b> or invoke it from different
+patches. An analogy from the "c" programming language is that one-off subpatches are
+like bracketed blocks of code and abstractions are like subroutines. Any changes made and
+saved to the contents of <b>[abstraction1]</b> will impact all of its instances and
+reset their state.
 
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
@@ -1642,8 +1641,8 @@ described above, so note that dollar signs are expanded at a different time in
 an object box than in a message box. In an object box, the "$" argument is
 expanded at creation time, and in a message box, at message time. If you want
 to send a message with a "$1" in the sense of a creation argument of an
-abstraction, you must generate it with an object box such as [float $1],
-[symbol $1], or perhaps [pack $1 $2], which may then be sent to a message box.
+abstraction, you must generate it with an object box such as <b>[float $1]</b>,
+<b>[symbol $1]</b>, or perhaps <b>[pack $1 $2]</b>, which may then be sent to a message box.
 
 <P> The <b>[pdcontrol]</b> object has an alternative strategy for retrieving arguments
 in an abstraction with the 'args' message, which makes the object output a list
@@ -1954,7 +1953,7 @@ check the <b>[voice]</b> abstraction below.
     <figcaption>The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
 </figure>
 
-<P>The [pd sequence] subpatch takes care of sequencing the data structure
+<P>The <b>[pd sequence]</b> subpatch takes care of sequencing the data structure
 events.
 
 <figure>
