@@ -97,7 +97,7 @@ static int sys_listplease;
 int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
 static int sys_batch;
-char *pd_extraflags = 0;
+const char *pd_extraflags = 0;
 int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring);
 int sys_noautopatch;    /* temporary hack to defeat new 0.42 editing */
