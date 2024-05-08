@@ -15,12 +15,16 @@ M_PD=$(top_srcdir)/src/m_pd.h
 
 # get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
 PD_MAJOR_VERSION = $(shell grep PD_MAJOR_VERSION $(M_PD) | \
+    grep -Fv PD_VERSION_CODE | \
     sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION = $(shell grep PD_MINOR_VERSION $(M_PD) | \
+    grep -Fv PD_VERSION_CODE | \
     sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
 PD_BUGFIX_VERSION = $(shell grep PD_BUGFIX_VERSION $(M_PD) | \
+    grep -Fv PD_VERSION_CODE | \
     sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
 PD_TEST_VERSION = $(shell grep PD_TEST_VERSION $(M_PD) | \
+    grep -Fv PD_VERSION_CODE | \
     sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
 PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
 
