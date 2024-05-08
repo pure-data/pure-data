@@ -32,11 +32,11 @@ install-data-hook:
 	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 	if test "x${PD_TEST_VERSION}" == "x" ; then \
 	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
+	    sed 's|PD_VERSION|Pd version $(VERSION)|' \
 	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	else \
 	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
+	    sed 's|PD_VERSION|Pd version $(VERSION)-$(PD_TEST_VERSION)|' \
 	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	fi
 	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
