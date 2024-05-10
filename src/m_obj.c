@@ -929,7 +929,7 @@ int obj_issignaloutlet(const t_object *x, int m)
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;
-    static float obj_scalarzero = 0;
+    static t_float obj_scalarzero = 0;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)
