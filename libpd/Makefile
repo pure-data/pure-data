@@ -11,8 +11,7 @@ PLATFORM_ARCH ?= $(shell $(CC) -dumpmachine | sed -e 's,-.*,,')
 
 ifeq ($(UNAME), Darwin)  # Mac
   SOLIB_EXT = dylib
-  PLATFORM_CFLAGS = -DHAVE_ALLOCA_H -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H \
-                    -D_DARWIN_C_SOURCE -D_DARWIN_UNLIMITED_SELECT
+  PLATFORM_CFLAGS = -DHAVE_ALLOCA_H -DHAVE_LIBDL -DHAVE_MACHINE_ENDIAN_H
   PLATFORM_LDFLAGS = -dynamiclib -ldl -Wl,-no_compact_unwind
   # helps for machine/endian.h to be found
   PLATFORM_CFLAGS += -D_DARWIN_C_SOURCE
