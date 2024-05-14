@@ -32,15 +32,19 @@ function copysrc {
 }
 
 usage() {
-    cat <<EOF 1>&2
-Usage: $0 [OPTIONS] [<VERSION>]
+cat <<EOF 1>&2
+Usage: $0 [OPTIONS] [VERSION]
 
-OPTIONS
-   -f       : force (do not abort if '${DEST}/' exists)
-              this updates existing files but keeps removed files.
-              only use this if you know what you are doing!
+Options:
+  -h       display this help message
 
-   <VERSION>  : tag/commitish of portaudio to import
+  -f       force (do not abort if '${DEST}/' exists)
+           this updates existing files but keeps removed files,
+           only use this if you know what you are doing!
+
+Arguments:
+
+VERSION    tag/commit/branch of portaudio to import
 EOF
 }
 
