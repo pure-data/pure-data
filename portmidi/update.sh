@@ -86,7 +86,7 @@ if [ -d "${DEST}" ]; then
         echo "  forced to update existing files" 1>&2
     else
         echo "  Please remove '$(pwd)/${DEST}' before running $0" 1>&2
-        echo "  Or check the '-h' flag" 1>&2
+        echo "  or check the '-h' flag" 1>&2
         exit 1
     fi
 fi
@@ -127,9 +127,6 @@ copysrc pm_mac
 copysrc pm_win
 copysrc porttime
 cp -v "${SRC}"/license.txt "${DEST}/"
-
-# make sure the source-code is not executable
-#find "${DEST}" -type f -perm -u+x "(" -name "*.h" -or -name "*-c" ")" -exec chmod -x {} +
 
 # cleanup
 #rm -rf $SRC
