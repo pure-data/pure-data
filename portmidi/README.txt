@@ -17,11 +17,11 @@ If you want to update to a newer version of PortMidi, simply use the
 
     cd portmidi
     
-    # update to latest PortMidi svn trunk
+    # update to latest PortMidi git master
     ./update.sh
 
-    # update to a specific trunk revision
-    ./update.sh 239
+    # update to a specific tag/branch/commit
+    ./update.sh v2.0.4
 
 You *may* need to add or remove source file or header lines in the Makefile.am,
 if the source or include files have changed in PortMidi.
@@ -38,11 +38,11 @@ As a second option, you can build Pd using a system-installed PortMidi via:
 There may be custom patches to apply to the PortMidi sources in the "patches"
 directory which are applied by the "update.sh" script automatically using:
 
-    patch -p0 < ../patches/some_unreleased_fix.patch
+    patch -p1 < ../patches/some_unreleased_fix.patch
 
-To generate a patch file from a PortMidi svn checkout:
+To generate a patch file from a PortMidi git clone:
 
-    svn diff > some_newfix.patch
+    git diff > some_newfix.patch
 
 ## macOS LIMIT_RATE
 
