@@ -53,8 +53,8 @@
 #X text 42 508 The soundfile is uncompressed 2- or 3-byte integer ("pcm") or 4- or 8-byte floating point. The soundfile format is determined by the file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd")., f 80;
 #N canvas 809 273 480 224 8-byte 0;
 #X text 19 62 The precision of the 8-byte samples is based on the precision of the Pure Data build. If Pd is single precision (using 32-bit float internally) \, the written samples will be cast from 4-byte float to 8-byte double when writing to a file with -bytes 8 argument. In this case it's better to write with 4-byte float samples for a smaller file with the same precision., f 63;
-#X text 19 159 if Pd is double-precision \, writing 8-byte float samples will be full precision as Pd uses 64-bit float internally., f 63;
-#X text 19 19 Writing 8-byte (ie. 64-bit) floating point samples are supported for the .wave \, .aiff/.aifc and .caf file types.;
+#X text 19 159 If Pd is double-precision \, writing 8-byte float samples will be full precision as Pd uses 64-bit float internally., f 63;
+#X text 19 19 Writing 8-byte (ie. 64-bit) floating point samples are supported for the wave \, aiff/aifc \, and caf file types.;
 #X restore 470 175 pd 8-byte float;
 #X text 101 175 -bytes <2 \, 3 \, 4 \, or 8> (number of bytes resolution);
 #X text 241 193 (affects the soundfile header but the file is NOT resampled), f 30;
