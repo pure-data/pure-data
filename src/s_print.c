@@ -113,7 +113,7 @@ static void dopost(const char *s)
 {
     if (STUFF->st_printhook)
         (*STUFF->st_printhook)(s);
-    else if (sys_printtostderr || !sys_havegui())
+    else if (sys_printtostderr || !sys_havetkproc())
     {
 #ifdef _WIN32
         fwprintf(stderr, PD_FWPRINTF_NARROW_FORMATTER, s);
@@ -337,7 +337,7 @@ void pd_error(const void *object, const char *fmt, ...)
 
     if (object && !saidit)
     {
-        if (sys_havegui())
+        if (sys_havetkproc())
             logpost(NULL, PD_VERBOSE,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;

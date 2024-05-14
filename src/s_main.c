@@ -404,7 +404,10 @@ int sys_main(int argc, const char **argv)
     }
     sys_setsignalhandlers();
     sys_afterargparse();                    /* post-argparse settings */
-        /* load dynamic libraries specified with "-lib" args */
+    if (!sys_dontstartgui &&
+        sys_startgui(sys_libdir->s_name))  /* start the gui */
+            return (1);
+         /* load dynamic libraries specified with "-lib" args */
     if (sys_oktoloadfiles(0))
     {
         for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
@@ -427,10 +430,7 @@ int sys_main(int argc, const char **argv)
     }
     namelist_free(sys_messagelist);
     sys_messagelist = 0;
-    if (!sys_dontstartgui &&
-        sys_startgui(sys_libdir->s_name))  /* start the gui */
-            return (1);
-    if (sys_hipriority)
+   if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
         ret = (sys_run_scheduler(sys_externalschedlibname, pd_extraflags));

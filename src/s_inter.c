@@ -127,7 +127,6 @@ typedef struct _guiqueue
 
 struct _instanceinter
 {
-    int i_havegui;
     int i_nfdpoll;
     t_fdpoll *i_fdpoll;
     int i_maxfd;
@@ -139,9 +138,11 @@ struct _instanceinter
     int i_guihead;
     int i_guitail;
     int i_guisize;
-    int i_waitingforping;
     int i_bytessincelastping;
-    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
+    unsigned int i_havetkproc:1;    /* TK process started  */
+    unsigned int i_havegui:1;       /* have TK proc and font metrics too */
+    unsigned int i_fdschanged:1;    /* need to break fdpoll loop */
+    unsigned int i_waitingforping:1;/* sent a ping out and should get answer */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -798,13 +799,23 @@ int sys_havegui(void)
     return (INTER->i_havegui);
 }
 
+int sys_havetkproc(void)
+{
+    return (INTER->i_havetkproc);
+}
+
 void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
 
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
+    {       /* if there's no TK process just throw it to stderr */
+        va_start(ap, fmt);
+        vfprintf(stderr, fmt, ap);
+        va_end(ap);
         return;
+    }
     if (!INTER->i_guibuf)
     {
         if (!(INTER->i_guibuf = malloc(GUI_ALLOCCHUNK)))
@@ -986,7 +997,7 @@ static int sys_flushqueue(void)
     /* flush output buffer and update queue to gui in small time slices */
 static int sys_poll_togui(void) /* returns 1 if did anything */
 {
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
         return (0);
         /* in case there is stuff still in the buffer, try to flush it. */
     sys_flushtogui();
@@ -1795,12 +1806,13 @@ static void glist_maybevis(t_glist *gl)
     }
 }
 
-    /* this is called from main when GUI has given us out font metrics,
+    /* this is called from main when GUI has given us our font metrics,
     so that we can now draw all "visible" canvases.  These include all
     root canvases and all subcanvases that already believe they're visible. */
 void sys_doneglobinit( void)
 {
     t_canvas *x;
+    INTER->i_havegui = 1;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         if (strcmp(x->gl_name->s_name, "_float_template") &&
             strcmp(x->gl_name->s_name, "_float_array_template") &&
@@ -1823,7 +1835,8 @@ int sys_startgui(const char *libdir)
     stderr_isatty = isatty(2);
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-    INTER->i_havegui = 1;
+    INTER->i_havegui = 0;
+    INTER->i_havetkproc = 1;
     INTER->i_guihead = INTER->i_guitail = 0;
     INTER->i_waitingforping = 0;
     if (sys_do_startgui(libdir))
@@ -1831,9 +1844,7 @@ int sys_startgui(const char *libdir)
     return (0);
 }
 
- /* more work needed here - for some reason we can't restart the gui after
- shutting it down this way.  I think the second 'init' message never makes
- it because the to-gui buffer isn't re-initialized. */
+    /* Shut the GUI down. */
 void sys_stopgui(void)
 {
     t_canvas *x;
@@ -1847,6 +1858,7 @@ void sys_stopgui(void)
         INTER->i_guisock = -1;
     }
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
 }
 
 /* ----------- mutexes for thread safety --------------- */
@@ -1862,6 +1874,7 @@ void s_inter_newpdinstance(void)
     INTER->i_freq = 0;
 #endif
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
 }
 
 void s_inter_free(t_instanceinter *inter)

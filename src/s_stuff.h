@@ -40,7 +40,8 @@ extern t_symbol *sys_flags;
 extern int sys_debuglevel;
 extern int sys_verbose;
 EXTERN int sys_noloadbang;
-EXTERN int sys_havegui(void);
+EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
+EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);

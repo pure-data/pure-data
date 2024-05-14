@@ -13,6 +13,11 @@ if "gl_isgraph" is set, and otherwise as a text box.
 A glist is "root" if it has no owner, i.e., a document window.  In this
 case "gl_havewindow" is always set.
 
+Note that "gl_havewindow" being set only means the canvas is visible in the
+case that the GUI is up; the flag may be set before the GUI starts up or
+after it has been shut down.  In this case if we later start the GUI up we
+check this flag and repeat a canvas_vis() call to make it truly visible.
+
 We maintain a list of root windows, so that we can traverse the whole
 collection of everything in a Pd process.
 
