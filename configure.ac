@@ -233,6 +233,7 @@ AC_PROG_LIBTOOL
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_OBJCXX
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -391,6 +392,10 @@ AS_IF([test "x$macos_version_min" != "x"],[
 #########################################
 ##### Configure Options #####
 
+##### event loop
+AC_ARG_ENABLE([eventloop],
+    [AS_HELP_STRING([--disable-eventloop], [build without eventloop])],,enable_eventloop=yes)
+AM_CONDITIONAL(PD_EVENTLOOP, test x$enable_eventloop = xyes)
 
 ##### realtime watchdog #####
 AC_ARG_ENABLE([watchdog],
@@ -837,6 +842,7 @@ AC_MSG_NOTICE([
 
     fftw:                 ${fftw}
     wish(tcl/tk):         ${wish}
+    eventloop:            ${enable_eventloop}
     watchdog:             ${enable_watchdog}
     audio APIs:           ${audio_backends}
     midi APIs:            ${midi_backends}

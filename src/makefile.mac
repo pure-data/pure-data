@@ -49,7 +49,7 @@ MORECFLAGS = -Wno-error -ffast-math -O3
 
 LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
     -framework AudioToolbox -framework Carbon -framework CoreMIDI \
-    -framework CoreFoundation $(ARCH) \
+    -framework CoreFoundation -framework AppKit $(ARCH) \
 
 LIB = -ldl -lm -lpthread
 

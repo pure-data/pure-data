@@ -663,6 +663,9 @@ msgstr "Echtzeit-Modus unterdrücken"
 msgid "Startup flags:"
 msgstr "Kommandozeilenoptionen:"
 
+msgid "Enable event loop"
+msgstr "Event-Loop aktivieren"
+
 msgid "Help Browser"
 msgstr "Hilfebrowser"
 

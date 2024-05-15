@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#ifdef PD_EVENTLOOP
+#include <pthread.h>
+#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -62,6 +65,7 @@ int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
 int sys_defeatrt;       /* flag to cancel real-time */
+int sys_eventloop;
 t_symbol *sys_flags;    /* more command-line flags */
 
 const char *sys_guicmd;
@@ -321,15 +325,48 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 static void sys_afterargparse(void);
 static void sys_printusage(void);
+static int sys_run(void);
+
+#ifdef PD_EVENTLOOP
+static void *sys_runthread(void *x)
+{
+    int *ret = (int *)x;
+    *ret = sys_run();
+    /* fprintf(stderr, "quit event loop\n"); */
+    sys_eventloop_quit();
+    return 0;
+}
+#endif
+
+/* dummy event loop implementation */
+#if !defined(PD_EVENTLOOP) || !defined(__APPLE__)
+int sys_eventloop_setup(void)
+{
+    return 0;
+}
+
+void sys_eventloop_run(void) {}
+
+void sys_eventloop_quit(void) {}
+#endif
+
+int sys_have_eventloop(void)
+{
+    return sys_eventloop;
+}
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
 {
     int i, noprefs, ret;
     const char *prefsfile = "";
-    t_namelist *nl;
-    t_patchlist *pl;
+
     sys_externalschedlib = 0;
+#ifdef __APPLE__
+    /* on macOS we enable the event loop by default,
+     * but only for the Pd app (not for libpd). */
+    sys_eventloop = 1;
+#endif
 #ifdef PD_DEBUG
     fprintf(stderr, "Pd: COMPILED FOR DEBUGGING\n");
 #endif
@@ -407,10 +444,42 @@ int sys_main(int argc, const char **argv)
     if (!sys_dontstartgui &&
         sys_startgui(sys_libdir->s_name))  /* start the gui */
             return (1);
-         /* load dynamic libraries specified with "-lib" args */
+#ifdef PD_EVENTLOOP
+    if (sys_eventloop && !sys_batch)
+    {
+        pthread_t thread;
+        int err;
+            /* First setup event loop. This is necessary in case sys_run()
+            returns before we get a chance to call sys_eventloop_run(). */
+        /* fprintf(stderr, "start event loop\n"); */
+        sys_eventloop_setup();
+        if ((err = pthread_create(&thread, 0, sys_runthread, &ret)))
+        {
+            fprintf(stderr, "pthread_create() failed with %d\n", err);
+            return (1);
+        }
+            /* run event loop in main thread until we receive a quit event */
+        sys_eventloop_run();
+        /* fprintf(stderr, "event loop finished\n"); */
+
+        pthread_join(thread, 0);
+    }
+    else
+#endif
+        ret = sys_run();
+    sys_stopgui();
+    pd_term();
+    return (ret);
+}
+
+static int sys_run(void)
+{
+    t_namelist *nl;
+    t_patchlist *pl;
+        /* load dynamic libraries specified with "-lib" args */
     if (sys_oktoloadfiles(0))
     {
-        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+        for (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
             if (!sys_load_lib(0, nl->nl_string))
                 post("%s: can't load library", nl->nl_string);
         sys_oktoloadfiles(1);
@@ -430,17 +499,14 @@ int sys_main(int argc, const char **argv)
     }
     namelist_free(sys_messagelist);
     sys_messagelist = 0;
-   if (sys_hipriority)
+    if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
-        ret = (sys_run_scheduler(sys_externalschedlibname, pd_extraflags));
+        return (sys_run_scheduler(sys_externalschedlibname, pd_extraflags));
     else if (sys_batch)
-        ret = m_batchmain();
+        return m_batchmain();
     else
-        ret = m_mainloop();
-    sys_stopgui();
-    pd_term();
-    return (ret);
+        return m_mainloop();
 }
 
 static char *(usagemessage[]) = {
@@ -563,7 +629,12 @@ static char *(usagemessage[]) = {
 "-nobatch         -- run interactively (true by default)\n",
 "-autopatch       -- enable auto-patching to new objects (true by default)\n",
 "-noautopatch     -- defeat auto-patching\n",
-"-compatibility <f> -- set back-compatibility to version <f>\n",
+#ifdef PD_EVENTLOOP
+"-eventloop       -- enable event loop. NOTE: on macOS, this breaks externals\n",
+"                    which create their own event loop, e.g. Gem or ophelia\n",
+"-noeventloop     -- disable event loop\n",
+#endif
+"-compatibility <f> -- set back-compatibility to version <f>\n"
 };
 
 static void sys_printusage(void)
@@ -1302,6 +1373,24 @@ int sys_argparse(int argc, const char **argv)
             sys_guicmd = argv[1];
             argc -= 2; argv += 2;
         }
+#ifdef PD_EVENTLOOP
+        else if (!strcmp(*argv, "-eventloop"))
+        {
+            sys_eventloop = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-noeventloop"))
+        {
+            sys_eventloop = 0;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-eventloop") || !strcmp(*argv, "-noeventloop"))
+        {
+            fprintf(stderr, "Pd compiled without event loop support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+#endif
         else if (!strcmp(*argv, "-send"))
         {
             if (argc < 2)
@@ -1619,11 +1708,16 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
+#ifdef PD_EVENTLOOP
+    int eventloop = sys_eventloop;
+#else
+    int eventloop = -1; /* hide button */
+#endif
     sys_gui_preferences();
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_startup_dialog", (void *)glob_start_path_dialog,
-        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
+        "iis", sys_defeatrt, eventloop, sys_flags ? sys_flags->s_name : "");
 }
 
     /* new values from dialog window */
@@ -1633,10 +1727,14 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
     sys_defeatrt = atom_getfloatarg(0, argc, argv);
-    sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for (i = 0; i < argc-2; i++)
+#ifdef PD_EVENTLOOP
+    sys_eventloop = atom_getfloatarg(1, argc, argv);
+#endif
+    sys_flags = sys_decodedialog(atom_getsymbolarg(2, argc, argv));
+    argc -= 3; argv += 3;
+    for (i = 0; i < argc; i++)
     {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
+        t_symbol *s = sys_decodedialog(atom_getsymbol(argv + i));
         if (*s->s_name)
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, s->s_name);

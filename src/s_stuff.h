@@ -43,6 +43,7 @@ EXTERN int sys_noloadbang;
 EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
+extern int sys_eventloop;
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
@@ -442,3 +443,14 @@ EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
 
 EXTERN const char *pd_extraflags;     /* a place to stick an extra startup arg */
  /* this is used by 'stdout' but could be useful elsewhere perhaps. */
+
+/* event loop
+ *
+ * For now, the event loop is only implemented for macOS (see s_macos.mm) where it is
+ * badly needed because the GUI event loop *must* run on the main thread.
+ * A Windows and Linux implementation might follow later, together with API methods for
+ * dispatching function calls to the UI thread (similar to "dispatch_async_f" on macOS) */
+EXTERN int sys_eventloop_setup(void);
+EXTERN void sys_eventloop_run(void);
+EXTERN void sys_eventloop_quit(void);
+EXTERN int sys_have_eventloop(void); /* for externals */
