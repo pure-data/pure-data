@@ -1890,10 +1890,9 @@ and width.)
 
 <P>In general, data structures are built from four data types: scalar floats
 and symbols, text and arrays (whose elements share another, specified template).
-The contents of a Pd window themselves form a list. An array (Pd's correlate of
-Max's <b>[table]</b> object) is implemented as a top-level data
-structure array whose elements are scalars containing a single floating-point number.
-
+The contents of a Pd window themselves form a list. <A href="x2.htm#s2.9">Arrays</A>
+are actually implemented as a top-level data structure array, whose elements are
+scalars containing a single floating-point number.
 
 <P>Data structures in Pd may nest arbitrarily deeply using the array and text
 types. For example, a collection of sinusoidal tracks from an analysis engine
@@ -2117,23 +2116,8 @@ handling primitives and the graphical presentation and editing functions.
 
 <H3> <A id="s2.11">2.11. Differences from MAX </A> </H3>
 
-<!--- comment out
-
-<P>The corresponding feature for "$1" in abstraction in Max (both Opcode and Ircam)
-was the "#1" construct. In a Max abstraction, "#1", etc., are replaced by the creation
-argument. This has the disadvantage that you can't edit the abstraction as
-instantiated in the patch since the "#" variables are substituted. In Pd the
-"$" variables in object boxes are spelled literally as "$" variables so that
-it's meaningful to edit them from within their calling patch. On the Pd side,
-however, there is the disadvantage that it's confusing to have "$" expanded at
-a different time in an object box than in a message box. In an object box, the
-"$" argument is expanded at creation time, and in a message box, at message
-time.
-
-/// end comment out -->
-
 <P> Pd wasn't intended to be a MAX clone, but there were many similarities between
-Pd and MAX/MSP in the of its origin and  some effort had been undertaken (but more
+Pd and MAX/MSP in the of its origin and some effort had been undertaken (but more
 would have been needed) to make the two interoperable. It was possible to import
 and export patches to MAX/MSP; you just needed to save as text to a file with
 extension ".pat", and then open in the other program. You'd at least get something.
@@ -2160,6 +2144,17 @@ case, in situations where you care about the order, it's appropriate to use
 a <b>[trigger]</b> object to specify.
 
 
+<P>The corresponding feature for "$1" in abstraction in Max was the "#1"
+construct. In a Max abstraction, "#1", etc., are replaced by the creation
+argument. This has the disadvantage that you can't edit the abstraction as
+instantiated in the patch since the "#" variables are substituted. In Pd the
+"$" variables in object boxes are spelled literally as "$" variables so that
+it's meaningful to edit them from within their calling patch. On the Pd side,
+however, there is the disadvantage that it's confusing to have "$" expanded at
+a different time in an object box than in a message box. In an object box, the
+"$" argument is expanded at creation time, and in a message box, at message
+time.
+
 <P> In Pd you can edit instances of abstractions and save the result back
 to the file of the abstraction. This isn't possible in MAX, because the
 instances are different from the abstraction itself in that "#1", etc.,
@@ -2168,19 +2163,16 @@ as "$1", etc, and are translated at a slightly later stage of the instance
 process so that you still see them as "$" variables in the instance.
 see <A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>.
 
-<!-- <P> In Pd, to update all instances of the abstraction, either delete
-and recreate them or close and open the patch; this is done automatically in MAX.
- -->
 <P> In Pd, if you select "save" while in a subpatch, the parent is saved. In
 MAX, if you do this a dialogue box comes up asking if you want to save the
 subpatch as a separate file (if you want to save a subpatch to a file in Pd,
 you have to copy and paste the contents to a new document).
 
 <P> In Pd, inlets and outlets are ordinary text objects; in MAX they're
-"gui" objects from the palette.
+"gui" objects and work for both signal and control data.
 
-<P> In Pd, there's no <b>[gate]</b>; instead there's a <b>[spigot]</b> with the inlets in
-the opposite, more natural order.
+<P> In Pd, there's no <b>[gate]</b>; instead there's a <b>[spigot]</b> with
+the inlets in the opposite, more natural order.
 
 <P> Switching subsets of the DSP patch on and off is done in completely
 different ways in Pd and MAX, and block sizes are handled differently
@@ -2194,17 +2186,18 @@ Beyond this essential collection of GUI objects, it's unlikely you'll ever find
 any commonality between the two.
 
 <P> The "bpatcher" feature in MAX has a correlate, "graph on parent" subpatches,
-in Pd; however, Pd's version is quite different from MAX's.
+in Pd; however, Pd's version is quite different from MAX's. Pd's correlate of
+Max's <b>[table]</b> object are Arrays implemented as Data Structures.
 
-<P>  In Pd, there's no <b>[preset]</b> object (I now think it's basically a bad idea)
-and you have to use explicit sends and receives to restore values to number
-boxes. Then just make a "message" box to re-send the values you want.
+<P>In Pd, there's no <b>[preset]</b> object. This is intentional as Miller considers
+this to be basically a bad idea, so you have to use explicit sends and receives to
+restore values to number boxes. Then just make a "message" box to re-send the values
+you want.
 
-<P> In MAX, instead of getting <b>[tabosc4~]</b> and arrays, you get <b>[cycle~]</b>
-and <b>[buffer~]</b>. The only gotcha is that you probably can't draw in <b>[buffer~]</b>
-with the mouse as you can with arrays, but at least it's possible to
-make a patch that copies a "table" into a <b>[buffer~]</b> object.
-
+<P> In MAX, instead of getting <b>[tabosc4~]</b> with arrays, you get <b>[cycle~]</b>
+and <b>[buffer~]</b>. The only gotcha is that you can't draw in <b>[buffer~]</b> with
+the mouse as you can with arrays in Pd, but at least it's possible to make a patch that
+copies a "table" into a <b>[buffer~]</b> object.
 
 </div>
 <div id="footer">
