@@ -381,6 +381,27 @@ run mode just to click on something like a message, you can press and hold the
 and recreate changes you've done in your patch while in edit mode. Note that you can
 also "Undo" and "Redo" while in run mode.
 
+<P>In either edit mode or run mode you can resize the patch window size by clicking
+on any side of the window (up, down, left or right) or any window corner. If you move
+the mouse to the left or right sides the cursor becomes the same horizontal double arrow
+for resizing objects, which indicates you can resize the window size horizontally. For
+the up and down bounds you have a vertical double arrow to increase the window vertically,
+and for the edge corners you have horizontal double arrows to change the size in both
+dimensions. (INCLUDE PIC).
+
+<P>If you resize the window to a smaller area and have boxes out of bounds, then you'll
+see that scrollbars appear. You can use them to navigate through the hidden area in both
+edit and run mode as well. Besides dragging the scrollbars, you can pan the patch
+vertically by turning the mousewheel and horizontally when pressing and holding
+<kbd>Shift</kbd> while doing so. On trackpads, you can use 2-finger scrub gestures to pan
+in all directions. (INCLUDE PIC).
+
+<!-- INCLUDE IMG -->
+<!-- <figure>
+<IMG src="img/2.2.10.png" ALT="scrollbars">
+    <figcaption>Patch window with scrollbars</figcaption>
+</figure> -->
+
 <H4> <A id="s2.2.2"> 2.2.2. Creating boxes</A> </H4>
 
 <P>Pd patches can have four types of boxes: <I>object</I>, <i>message</i>, <i>GUI</I> and
@@ -562,22 +583,6 @@ Ordinary subpatches may also be opened by simply clicking on them, but for
 
 <P>The "Properties" dialog allows you to change certain settings of GUI
 boxes or of the patch itself (when clicking outside any box).
-
-<H4> <A id="s2.2.8">2.2.8. Scrolling the patch area</A> </H4>
-
-<P>Although it's good practice to work with <A href="x2.htm#s2.8">
-subpatches</A> and <A href="x2.htm#s2.8.1">abstractions</A> to keep patches easily
-comprehensible, they can grow outside the bounds of their window. When moving an
-object beyond the border, you'll see that scrollbars appear. Besides dragging the
-scrollbars, you can pan the patch vertically by turning the mousewheel and
-horizontally when pressing and holding <kbd>Shift</kbd> while doing so.
-On trackpads, you can use 2-finger scrub gestures to pan in all directions.
-
-<!-- INCLUDE IMG -->
-<!-- <figure>
-<IMG src="img/2.2.10.png" ALT="scrollbars">
-    <figcaption>Patch window with scrollbars</figcaption>
-</figure> -->
 
 <H3> <A id="s2.3">2.3. Advanced patch editing</A> </H3>
 
@@ -1009,7 +1014,7 @@ depends on the order the connections were made in.
     <figcaption><A id="sfinderror">An infinite loop (stack overflow)</A></figcaption>
 </figure>
 
-<P>Here, the left-hand <b>[+ 1]</b> can't finish processing until the right-hand one has
+<P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
 has been sent "3", and so on. This generates a "stack overflow" error (meaning there's
 an infinite loop) in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
@@ -1272,7 +1277,7 @@ window and all of its subwindows (which may still have their own nested
 <b>[switch~]</b>/<b>[block~]</b> objects though). Both,
 <b>[switch~]</b> and <b>[block~]</b> take a block
 size and optional overlap and up-/downsampling factors as arguments; so for
-instance, <b>[block~ 1024 4]</b> specifies 1024 sample blocks, overlapped by a factor
+instance, [block~ 1024 4] specifies 1024 sample blocks, overlapped by a factor
 of 4 relative to the parent window. The <b>[switch~]</b> version carries
 a small computational overhead in addition to whatever overhead is associated with
 changing the block size.
@@ -1625,11 +1630,12 @@ patch shown here:
     <figcaption>The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
 
-<p>You can create multiple instances of <b>[abstraction1]</b> or invoke it from different
-patches. An analogy from the "c" programming language is that one-off subpatches are
-like bracketed blocks of code and abstractions are like subroutines. Any changes made and
-saved to the contents of <b>[abstraction1]</b> will impact all of its instances and
-reset their state.
+<p>You may create many instances of <b>[abstraction1]</b> or invoke it from different
+patches. Changing and saving the contents of <b>[abstraction1]</b> will affect all
+
+invocations of it as they are created. An analogy from the "c" programming
+language is that one-off subpatches are like bracketed blocks of code and
+abstractions are like subroutines.
 
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
@@ -1641,8 +1647,8 @@ described above, so note that dollar signs are expanded at a different time in
 an object box than in a message box. In an object box, the "$" argument is
 expanded at creation time, and in a message box, at message time. If you want
 to send a message with a "$1" in the sense of a creation argument of an
-abstraction, you must generate it with an object box such as <b>[float $1]</b>,
-<b>[symbol $1]</b>, or perhaps <b>[pack $1 $2]</b>, which may then be sent to a message box.
+abstraction, you must generate it with an object box such as [float $1],
+[symbol $1], or perhaps [pack $1 $2], which may then be sent to a message box.
 
 <P> The <b>[pdcontrol]</b> object has an alternative strategy for retrieving arguments
 in an abstraction with the 'args' message, which makes the object output a list
@@ -1953,7 +1959,7 @@ check the <b>[voice]</b> abstraction below.
     <figcaption>The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
 </figure>
 
-<P>The <b>[pd sequence]</b> subpatch takes care of sequencing the data structure
+<P>The [pd sequence] subpatch takes care of sequencing the data structure
 events.
 
 <figure>
