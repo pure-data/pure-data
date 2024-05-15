@@ -16,15 +16,17 @@ case "gl_havewindow" is always set.
 Note that "gl_havewindow" being set only means the canvas is visible in the
 case that the GUI is up; the flag may be set before the GUI starts up or
 after it has been shut down.  In this case if we later start the GUI up we
-check this flag and repeat a canvas_vis() call to make it truly visible.
-
-We maintain a list of root windows, so that we can traverse the whole
-collection of everything in a Pd process.
+check this flag and repeat a canvas_vis() call to make it truly visible.  This
+is uncomfortable - it seems like we're overloading this flag in a confusing
+way and need a rethink.
 
 If a glist has a window it may still not be "mapped."  Miniaturized
 windows aren't mapped, for example, but a window is also not mapped
 immediately upon creation.  In either case gl_havewindow is true but
 gl_mapped is false.
+
+We maintain a list of root windows, so that we can traverse the whole
+collection of everything in a Pd process.
 
 Closing a non-root window makes it invisible; closing a root destroys it.
 

@@ -423,7 +423,8 @@ void pdgui_endmess(void)
 void pdgui_vmess(const char* message, const char* format, ...)
 {
     va_list args;
-    if (!sys_havegui())return;
+    if (!sys_havetkproc())
+        return;
     if(!format)
     {
         if (message)

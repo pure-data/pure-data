@@ -1872,14 +1872,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
     int flag = (f != 0);
     if (flag)
     {
-            /* If a subpatch/abstraction has GOP/gl_isgraph set, then it will have
+            /* If a subpatch has GOP/gl_isgraph set, then it will have
              * a gl_editor already, if its not, it will not have a gl_editor.
-             * canvas_create_editor(x) checks if a gl_editor is already created,
+             * canvas_create_editor(x) checks if a gl_editor already exists,
              * so its ok to run it on a canvas that already has a gl_editor. */
         if (x->gl_editor && x->gl_havewindow)
         {           /* just put us in front */
             pdgui_vmess("pdtk_canvas_raise", "^", x);
         }
+            /* ouch - if there's no gui yet, because we're still waiting for
+            font metrics, just set the flag and we'll clean up the mess later
+            when the font metrics arrive. */
+        else if (!sys_havegui())
+            x->gl_havewindow = 1;
         else
         {
             char cbuf[MAXPDSTRING];
@@ -1891,11 +1896,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             size_t numparents;
 
             canvas_create_editor(x);
-            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
+                    /* initial values for new windows: */
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) &&
+                (GLIST_DEFCANVASYLOC == x->gl_screeny1))
+                    winpos[0]=0;
+            else
             {
-                winpos[0]=0;
-            } else {
-                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1), (int)(x->gl_screeny1));
+                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1),
+                    (int)(x->gl_screeny1));
             }
 
             pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
@@ -1905,7 +1913,9 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {
-                t_canvas**newparents = (t_canvas**)resizebytes(parents, numparents * sizeof(*newparents), (numparents+1) * sizeof(*newparents));
+                t_canvas**newparents = (t_canvas**)resizebytes(parents,
+                     numparents * sizeof(*newparents),
+                        (numparents+1) * sizeof(*newparents));
                 if (!newparents)
                     break;
                 c = c->gl_owner;
@@ -1913,15 +1923,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 parents[numparents] = c;
                 numparents++;
             }
-            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents, parents);
+            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents,
+                parents);
             freebytes(parents, numparents * sizeof(t_canvas));
 
             x->gl_havewindow = 1;
             canvas_reflecttitle(x);
             canvas_updatewindowlist();
-            pdgui_vmess("pdtk_undomenu", "^ ss",
-                x,
-                udo?(udo->name):"no",
+            pdgui_vmess("pdtk_undomenu", "^ ss", x, udo?(udo->name):"no",
                 (udo && udo->next)?(udo->next->name):"no");
         }
     }
@@ -1932,10 +1941,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (!x->gl_havewindow)
         {
                 /* bug workaround -- a graph in a visible patch gets "invised"
-                   when the patch is closed, and must lose the editor here.  It's
-                   probably not the natural place to do this.  Other cases like
-                   subpatches fall here too but don'd need the editor freed, so
-                   we check if it exists. */
+                when the patch is closed, and must lose the editor here.  It's
+                probably not the natural place to do this.  Other cases like
+                subpatches fall here too but don'd need the editor freed, so
+                we check if it exists. */
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             return;

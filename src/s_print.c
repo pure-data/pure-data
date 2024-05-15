@@ -139,7 +139,7 @@ static void doerror(const void *object, const char *s)
         pd_snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr)
+    else if (sys_printtostderr || !sys_havetkproc())
     {
 #ifdef _WIN32
         fwprintf(stderr, L"error: " PD_FWPRINTF_NARROW_FORMATTER, s);
@@ -167,7 +167,7 @@ static void dologpost(const void *object, const int level, const char *s)
         pd_snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr)
+    else if (sys_printtostderr || !sys_havetkproc())
     {
 #ifdef _WIN32
         fwprintf(stderr, L"verbose(%d): " PD_FWPRINTF_NARROW_FORMATTER, level, s);
