@@ -50,10 +50,12 @@ news about configuration problems and solutions.
 
 <H4> <A id="s3.1.1"> 3.1.1. macOS</A> </H4>
 
-<P>Pd supports macOS from 10.7 and up, but the main download binary for more modern
-OS versions supports 10.10 or newer. This download in the form of .dmg file; just
-double click on this disk image so it opens and you can then drag the Pd app where
-you want (most likely in the Applications folder).
+<P>Pd supports macOS from 10.7 and up. There is a version for 10.7 to 10.9 provided,
+but the main download binary for more modern OS versions supports 10.10 or newer and
+is the form of a .dmg file. This is a universal binary, for both intel or apple silicon
+chips. Just double click on this disk image so it opens and you can then drag the Pd app
+where you want (most likely in the Applications folder). An old 32-bit version is also
+provided for 10.7 up to 10.14, which is suited if you need to run some old external.
 
 <P>You might get various warnings about Pd trying to open an internet port.
 This is normal although some system administrators will prevent you from
@@ -64,13 +66,15 @@ doing this (in which case you can't run Pd on that machine).
 <P> For Windows, you can download a .zip package for manual install or an executable
 installer (a ".exe" file). Run the installer if you are not sure how to install
 manually and select a destination directory when prompted, such as <b>\pd</b> or
-<b>Program Files\pd</b>.
+<b>Program Files\pd</b>. The 64-bit executable works for Windows Vista or newer.
+An old 32-bit version is also provided and works for XP or later (this is suited
+if you need to run some old external or use a 32-bit machine).
 
 <P> If for example you install Pd in <b>C:Program Files\pd</b>, the executable
 program will be <b>C:Program Files\pd\bin\pd/</b>. You can simply adjust your path
 to include <b>C:\pd\bin</b> and then invoke "pd" in a command prompt window. You can
 also make a shortcut to the executable program (left-click on it and drag to the
-desktop, for example.)
+desktop, for example).
 
 <P> Pd requires "TCP/IP networking" to be turned on. This doesn't mean you
 have to be on a real network, but simply that Pd actually consists of two
