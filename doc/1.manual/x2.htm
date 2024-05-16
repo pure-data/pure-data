@@ -2108,14 +2108,26 @@ collections are not always simple. It would be desirable to find a more
 straightforward mechanism than that provided by the <b>[pointer]</b>, <b>[get]</b>
 and <b>[set]</b> objects.
 
-
 <P>The "data" facility, although part of the original plan for Pd, has only
 recently been implemented in its current form, and as (hopefully) the user base
 grows there will surely be occasions for many further extensions of the data
 handling primitives and the graphical presentation and editing functions.
 
 
-<H3> <A id="s2.11">2.11. Differences from MAX </A> </H3>
+<H3> <A id="s2.11">2.11. Pd vs. MAX </A> </H3>
+
+<P> You may be aware that Miller Puckette, the creater and author of Pd was also
+the original author and creator of MAX, which was first developed in the 1980's
+at IRCAM. Pd was designed later with first drafts from 1996 and it does resemble
+the MAX system.  This section addresses the relationship between the two
+environments.
+
+<P> Some external objects and libraries for MAX are also provided for Pd. This,
+of course, depends on the will and intent of the external developer. In the
+early days, it was easier to design externals that could run in both systems,
+but the APIs have become much more distinct over the years.
+
+<H4> <A id="s2.11.1"> 2.11.1. Differences between Pd and MAX</A> </H4>
 
 <P> Pd wasn't intended to be a MAX clone, but there were many similarities between
 Pd and MAX/MSP in the of its origin and some effort had been undertaken (but more
@@ -2247,6 +2259,18 @@ copies a "table" into a <b>[buffer~]</b> object.
 
 <P>MAX can deal with multi-core processing, while [pd~] relies on a <b>[pd~]</b> for that,
 which opens a new Pd subprocess.
+
+<H4> <A id="s2.11.2"> 2.11.2. Running Pd inside MAX with the [pd~] external</A> </H4>
+
+<P>There is a MAX version of the [pd~] object. If you install this external object in MAX
+you can run Pd as a subprocess inside MAX. A download of this object is provided at
+<A href="http://msp.ucsd.edu/software.html">http://msp.ucsd.edu/software.html</A>.
+
+(INCLUDE PIC)
+
+<P>This allows you to run not only Pd's core objects, but also any external you might have
+installed for Pd.
+
 
 </div>
 <div id="footer">
