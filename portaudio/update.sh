@@ -36,43 +36,49 @@ copysrc() {
 }
 
 usage() {
-    cat <<EOF 1>&2
-Usage: $0 [OPTIONS] [<VERSION>]
+cat <<EOF 1>&2
+Usage: $0 [OPTIONS] [VERSION]
 
-OPTIONS
-   -f       : force (do not abort if '${DEST}/' exists)
-              this updates existing files but keeps removed files.
-              only use this if you know what you are doing!
+Options:
+   -h      display this help message
 
-   <VERSION>  : tag/commitish of portaudio to import
+   -f      force (do not abort if '${DEST}/' exists)
+           this updates existing files but keeps removed files,
+           only use this if you know what you are doing!
+
+Arguments:
+
+VERSION    tag/commit/branch of portaudio to import
+
 EOF
 }
 
-
-##### GO
+##### ARGUMENTS
 
 force=no
 OPTIND=1
 while getopts ":hf" opt; do
-  case "$opt" in
-    h)
-      usage
-      exit 0
-      ;;
-    f)
-      force=yes
-      ;;
-    '?')
-      usage
-      exit 1
-      ;;
+    case "$opt" in
+        h)
+            usage
+            exit 0
+            ;;
+        f)
+            force=yes
+            ;;
+        '?')
+            usage
+            exit 1
+            ;;
     esac
 done
-shift "$((OPTIND-1))" # Shift off the options and optional --.
+shift "$((OPTIND-1))" # Shift off the options and optional --
 
 if [ $# -gt 0 ] ; then
     VERSION="$1"
 fi
+
+##### GO
 
 # move to this scripts dir
 scriptdir=$(dirname "$0")
@@ -80,14 +86,14 @@ cd "${scriptdir}"
 
 # check if target exists
 if [ -d "${DEST}" ]; then
-	echo "Destination '${DEST}' exists" 1>&2
-	if [ "${force}" = "yes" ]; then
-		echo "	forced to update existing files" 1>&2
-	else
-		echo "  Please remove '$(pwd)/${DEST}' before running $0" 1>&2
-		echo "  Or check the '-h' flag" 1>&2
-		exit 1
-	fi
+    echo "Destination '${DEST}' exists" 1>&2
+    if [ "${force}" = "yes" ]; then
+        echo "  forced to update existing files" 1>&2
+    else
+        echo "  Please remove '$(pwd)/${DEST}' before running $0" 1>&2
+        echo "  or check the '-h' flag" 1>&2
+        exit 1
+    fi
 fi
 
 # clone source
@@ -104,8 +110,8 @@ fi
 
 # set git revision
 if [ -f "${SRC}"/update_gitrevision.sh ] ; then
-	echo "==== Set git revision"
-	cd "${SRC}" && ./update_gitrevision.sh && cd -
+    echo "==== Set git revision"
+    cd "${SRC}" && ./update_gitrevision.sh && cd -
 fi
 
 echo "==== Copying"
