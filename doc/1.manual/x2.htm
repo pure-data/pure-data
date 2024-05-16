@@ -2119,13 +2119,14 @@ handling primitives and the graphical presentation and editing functions.
 <P> You may be aware that Miller Puckette, the creater and author of Pd was also
 the original author and creator of MAX, which was first developed in the 1980's
 at IRCAM. Pd was designed later with first drafts from 1996 and it does resemble
-the MAX system.  This section addresses the relationship between the two
+the MAX system. This section addresses the relationship between the two
 environments.
 
-<P> Some external objects and libraries for MAX are also provided for Pd. This,
-of course, depends on the will and intent of the external developer. In the
-early days, it was easier to design externals that could run in both systems,
-but the APIs have become much more distinct over the years.
+<P> Some external objects and libraries for MAX are also provided for Pd (such
+as 'Flucoma', 'FFTease', 'soundhack' and more). This, of course, depends on the
+will and intent of the external developer. In the early days, it was easier to
+design externals that could run in both systems, but the APIs have become much
+more distinct over the years.
 
 <H4> <A id="s2.11.1"> 2.11.1. Differences between Pd and MAX</A> </H4>
 
@@ -2264,13 +2265,32 @@ which opens a new Pd subprocess.
 
 <P>There is a MAX version of the [pd~] object. If you install this external object in MAX
 you can run Pd as a subprocess inside MAX. A download of this object is provided at
-<A href="http://msp.ucsd.edu/software.html">http://msp.ucsd.edu/software.html</A>.
+<A href="https://msp.ucsd.edu/software.html">https://msp.ucsd.edu/software.html</A>.
 
 (INCLUDE PIC)
 
 <P>This allows you to run not only Pd's core objects, but also any external you might have
 installed for Pd.
 
+<H4> <A id="s2.11.3"> 2.11.3. The Cyclone library</A> </H4>
+
+<P>The Cyclone library for Pd includes a collection of objects cloned from MAX and includes
+control (MAX) and signal (MSP) objects. This can be useful for MAX users to feel more at
+home and adapt MAX patches in Pd. For more details, please check
+<A href="https://github.com/porres/pd-cyclone"> https://github.com/porres/pd-cyclone</A>.
+
+<P>Cyclone is an old and legagy eternal library for Pd. It was created and developed by
+Krzysztof Czaja from 2002 to 2005. A recent update by Alexandre Porres, Derek Kwan and Matt
+Barber has included some new objects and paired up Cyclone to MAX version 7.3.5. Currently,
+Cyclone is under a maintenance mode only, so don't expect much news other than bug fixes.
+No new objects are planed.
+
+<P>Note other external libraries may offer functionalities and alternatives to objects from
+MAX. The difference is that Cyclone provides as good of a clone as possible. For instance,
+the main current maintainer of Cyclone (Porres) develops the ELSE library, which has
+alternatives for almost all cyclone objects and many objects in ELSE are actually inspired
+by MAX/MSP objects that were not cloned in Cyclone. The 'ceammc' library also provides a
+complete and cohesive system with lots of GUIs and functions you can find in MAX.
 
 </div>
 <div id="footer">
