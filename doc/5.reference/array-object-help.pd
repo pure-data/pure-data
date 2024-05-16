@@ -53,7 +53,7 @@
 #X obj 14 78 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 37 18 array define;
 #X text 138 18 - create \, store \, and/or edit an array.;
-#N canvas 513 133 566 456 other-messages 0;
+#N canvas 513 133 575 507 other-messages 0;
 #X text 282 128 read from a file;
 #X text 302 153 write to a file;
 #X msg 70 93 const 0;
@@ -79,7 +79,7 @@
 #X msg 236 271 15.array.pd;
 #X msg 246 297 16.more.arrays.pd;
 #X text 328 272 <- click to open examples.;
-#X obj 92 373 outlet;
+#X obj 92 462 outlet;
 #X text 35 32 Other messages are forwarded to the array itself so you can send any message an array understand like these ones.;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array5 10 float 3;
@@ -87,12 +87,17 @@
 #X coords 0 1 10 -1 90 35 1 0 0;
 #X restore 445 200 graph;
 #X text 219 189 For a list of all messages and examples \, check the help file of a graphical array and the examples below, f 30;
+#X msg 130 378 write ~/test.txt;
+#X obj 409 421 savepanel;
+#X obj 324 421 openpanel;
+#X text 262 369 "~" expands to home directory in both the read and write messages. You can also use these objects:, f 33;
 #X connect 2 0 11 0;
 #X connect 4 0 11 0;
 #X connect 5 0 11 0;
 #X connect 6 0 11 0;
 #X connect 8 0 7 0;
 #X connect 9 0 7 0;
+#X connect 15 0 11 0;
 #X restore 101 303 pd other-messages;
 #X text 55 95 [array define] maintains an array and can name it so that other objects can find it (and later should have some alternative \, anonymous way to be found)., f 80;
 #X text 90 46 without any arguments \, it defaults to [array define].;
@@ -581,9 +586,9 @@
 #X connect 32 1 13 0;
 #X restore 421 372 pd min+max;
 #X obj 37 384 array min;
-#X obj 177 496 list;
-#X obj 86 496 text;
-#X obj 123 496 scalar;
+#X obj 177 489 list;
+#X obj 86 489 text;
+#X obj 123 489 scalar;
 #X text 370 467 updated for Pd version 0.52;
 #X obj 4 41 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 74 12 - define \, access and manipulate arrays;
@@ -602,7 +607,7 @@
 #X obj 4 454 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 150 361 - find highest value;
 #X text 150 384 - find lowest value;
-#X text 13 496 see also:;
+#X text 13 489 see also:;
 #N canvas 643 412 384 186 array-examples 0;
 #N canvas 491 316 457 285 open 0;
 #X obj 120 23 inlet;

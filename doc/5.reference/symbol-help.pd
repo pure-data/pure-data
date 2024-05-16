@@ -1,4 +1,4 @@
-#N canvas 341 38 815 441 12;
+#N canvas 257 83 817 492 12;
 #X text 114 264 creation argument initializes the value, f 21;
 #X text 54 128 output the value;
 #X text 129 159 set and output the value;
@@ -20,9 +20,9 @@
 #X text 436 61 Note you can also use backslashes to escape spaces and other special characters (comma \, semicolons \, dollar signs and backslash)., f 50;
 #X obj 34 14 symbol;
 #X text 90 13 - store a symbol (i.e. \, string);
-#X text 32 400 see also:;
-#X obj 107 401 float;
-#X text 599 398 updated for Pd version 0.52;
+#X text 32 455 see also:;
+#X obj 207 456 float;
+#X text 599 453 updated for Pd version 0.52;
 #N canvas 685 120 581 310 reference 0;
 #X text 119 115 symbol -;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
@@ -42,13 +42,15 @@
 #X text 113 252 1) symbol - initially stored symbol (default: empty symbol).;
 #X restore 612 15 pd reference;
 #X obj 9 51 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X obj 9 381 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 9 436 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 709 16 <= click;
-#X obj 157 400 int;
+#X obj 257 455 int;
 #X text 14 66 The [symbol] object stores a symbol \, Pd's data type for handling fixed strings (often filenames \, array names \, send/receive names or the names of other objects in pd).;
 #X text 149 321 NOTE: unlike [float] \, [int] \, [value] \, [list store] and [pointer] \, there's no "send" message to forward to another object -- that would conflict with the function of converting arbitrary messages to symbols., f 86;
-#X obj 191 400 list store;
+#X obj 291 455 list store;
 #X obj 29 128 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 106 455 makefilename;
+#X text 149 381 ALSO NOTE: You can't convert floats to symbol with [symbol] \, but if you need it you can use [makefilename] \, which is a powerful symbol formatter., f 86;
 #X connect 3 0 5 0;
 #X connect 4 0 3 0;
 #X connect 5 0 15 0;
