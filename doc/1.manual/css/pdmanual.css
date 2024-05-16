@@ -102,11 +102,11 @@ CODE {
 }
 
 KBD {
-    background-color: #3E4349;
-    border: 1px solid #27292B;
-    color: #ffffff;
+    background-color: #eee;
+    border: 1px solid #bbb;
+    color: #222;
     border-radius: 4px;
-    padding: 2px 4px;
+    padding: 3px 5px;
     margin: 0 2px;
     white-space: nowrap;
     font-size: 80%;
@@ -122,17 +122,16 @@ a:link {
 
 a:visited {
     text-decoration: none;
-    color: #006699;
+    color: #330099;
 }
 
 a:hover {
-
-    background-color:#eeeee4;
+    text-decoration: underline;
 }
 
 a:active {
-    text-decoration: none;
-    color: blue;
+    text-decoration: underline;
+    color: #000;
 }
 
 
