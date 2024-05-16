@@ -207,7 +207,7 @@ unsigned int sys_getversion(int *major, int *minor, int *bugfix)
     if (bugfix)
         *bugfix = PD_BUGFIX_VERSION;
 
-    return PD_CODE_VERSION;
+    return PD_VERSION_CODE;
 }
 
 unsigned int sys_getfloatsize()
