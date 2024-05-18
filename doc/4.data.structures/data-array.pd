@@ -9,7 +9,6 @@
 #X obj 434 478 -;
 #X msg 452 444 0;
 #X obj 473 478 r delay-multiplier;
-#X obj 446 543 r reset-stop;
 #X obj 161 132 inlet;
 #X obj 211 607 outlet;
 #X obj 364 607 outlet;
@@ -28,46 +27,42 @@
 #X text 213 631 new y value, f 5;
 #X text 289 631 new w value, f 5;
 #X text 357 631 time to ramp to new values, f 13;
-#X text 41 17 This is an abstraction used in the sequencer example.
-Here we take a pointer to a scalar and sequence an array belonging
-to it \, either the amplitude or the frequency (depending on the value
-of argument). Both arrays have x \, y and w parameters. The array for
-amplitude does not use the y value \, which represents pitch in the
-pitch array. The 'x' parameter is a time stamp and 'w' (width) is the
-amplitude value for the mplitude array and bandwidth for the pitch
-araay., f 78;
-#X connect 0 0 16 1;
+#X text 41 17 This is an abstraction used in the sequencer example and loaded inside the [voice] abstraction. Here we take a pointer to a scalar and sequence an array belonging to it \, either the amplitude or the frequency (depending on the value of argument). Both arrays have x \, y and w parameters. The array for amplitude does not use the y value \, which represents pitch in the pitch array. The 'x' parameter is a time stamp and 'w' (width) is the amplitude value for the mplitude array and bandwidth for the pitch araay., f 78;
+#X msg 471 539 stop;
+#X obj 471 512 r reset;
+#X connect 0 0 15 1;
 #X connect 1 0 2 0;
-#X connect 1 0 16 0;
+#X connect 1 0 15 0;
 #X connect 2 0 1 1;
 #X connect 3 0 1 1;
-#X connect 4 0 22 0;
-#X connect 5 0 13 0;
-#X connect 5 0 18 0;
+#X connect 4 0 21 0;
+#X connect 5 0 12 0;
+#X connect 5 0 17 0;
 #X connect 6 0 7 1;
 #X connect 6 1 7 0;
 #X connect 7 0 5 0;
 #X connect 8 0 7 1;
 #X connect 9 0 5 1;
-#X connect 10 0 18 0;
-#X connect 11 0 17 0;
-#X connect 15 0 14 0;
+#X connect 10 0 16 0;
+#X connect 14 0 13 0;
+#X connect 14 1 18 0;
 #X connect 15 1 19 0;
-#X connect 16 1 20 0;
+#X connect 16 0 1 0;
+#X connect 16 1 4 0;
+#X connect 16 2 19 1;
+#X connect 16 2 21 1;
+#X connect 16 2 23 0;
+#X connect 16 3 3 0;
+#X connect 16 3 8 0;
 #X connect 17 0 1 0;
-#X connect 17 1 4 0;
-#X connect 17 2 20 1;
-#X connect 17 2 22 1;
-#X connect 17 2 24 0;
-#X connect 17 3 3 0;
-#X connect 17 3 8 0;
-#X connect 18 0 1 0;
-#X connect 19 0 13 0;
-#X connect 20 0 21 0;
-#X connect 21 0 12 0;
-#X connect 21 1 14 0;
-#X connect 21 2 6 0;
-#X connect 22 0 23 0;
-#X connect 23 0 12 0;
-#X connect 23 1 15 0;
-#X connect 24 0 0 0;
+#X connect 18 0 12 0;
+#X connect 19 0 20 0;
+#X connect 20 0 11 0;
+#X connect 20 1 13 0;
+#X connect 20 2 6 0;
+#X connect 21 0 22 0;
+#X connect 22 0 11 0;
+#X connect 22 1 14 0;
+#X connect 23 0 0 0;
+#X connect 29 0 17 0;
+#X connect 30 0 29 0;
