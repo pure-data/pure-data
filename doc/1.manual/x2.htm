@@ -1857,8 +1857,8 @@ has a complicated trajectory in both frequency and dynamic. The color of the
 frequency has no purpose, but could be used to determine a voice number to route it.
 
 <P>Each object is thus composed of a combination of scalar values (color;
-aggregate position in X and Y coordinates) and array values (time/envelope
-pairs for the black traces and time/frequency/bandwidth triples for the
+aggregate position in X and Y coordinates) and array values (time and envelope
+pairs for the black traces and time, frequency and bandwidth triples for the
 colored ones). This is all specified by the user using Pd's "template"
 mechanism. Here is the template associated with the graphical objects shown
 above.
@@ -1917,82 +1917,77 @@ within a much larger range of possibilities, to include random re-orderings of
 events, score following, self-modifying scores, reactive improvisation, and
 perhaps much more.
 
-<P> Here is a patch showing how to implement the graphical sequence score shown
-above. It uses the <b>[clone]</b> object to instantiate different
-copies of the <b>[voice]</b>
-
-abstraction, which is responsible for playing back each voice from the score.
+<P> Here is a screenshot of the subpatch that implements the graphical sequence
+score shown above. It takes a 'start' or 'stop' message and the sequencing is
+done in the [pd sequence] subpatch. It also uses the <b>[clone]</b> object to
+instantiate different copies of the <b>[voice]</b> abstraction, which is
+responsible for synthesizing each voice from the score.
 
 <figure>
-    <IMG src="img/2.10.3.png" ALT="traversal example patch">
-    <figcaption><u>Fig. 2.10.3</u> Traversing in the sequencer patch</figcaption>
+    <IMG src="img/2.10.3.png" ALT="score playing subpatch">
+    <figcaption><u>Fig. 2.10.3</u> The subpatch that plays the graphcal score</figcaption>
 </figure>
 
 <P>Traversal of data is made possible by adding a new type of atom, "pointer",
 to the two previously defined types that make up messages (numbers and symbols).
 Unlike numbers and symbols, pointers have no printed form and thus can't be
-uttered in message boxes. Traversal objects such as <b>[pointer]</b>
-and <b>[get]</b>(among
-several others) can generate or use pointers. The pointer data type is also
-integrated into pipe-fitting objects such as <b>[pack]</b>,
-<b>[unpack]</b>, and <b>[route]</b>.
-The <b>[trigger]</b> object also deals with pointers.
-
-<P>In the patch shown above, the <b>[pointer]</b> object holds
-a pointer to the next object to "play" (by sending it to a copy of the
-<b>[voice]</b> abstractions). The
-pointer object takes a "traverse" message to set it to the head of the list
-(named "pd-data"), and "next" messages to move to (and output) the next datum
-in the list (i.e., the next in the list of six objects in the score). Let's
-check the <b>[voice]</b> abstraction below.
+uttered in message boxes. Traversal objects such as <b>[pointer]</b> and
+<b>[get]</b>(among several others) can generate or use pointers. The pointer
+data type is also integrated into pipe-fitting objects such as <b>[pack]</b>,
+<b>[unpack]</b>, and <b>[route]</b>. The <b>[trigger]</b> object also deals
+with pointers.
 
 <figure>
-    <IMG src="img/2.10.4.png" ALT="[voice] abstraction">
-    <figcaption><u>Fig. 2.10.4</u> The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
+    <IMG src="img/2.10.4.png" ALT="[pd sequence] subpatch">
+    <figcaption><u>Fig. 2.10.4</u> The sequencing subpatch</figcaption>
 </figure>
 
-<P>The [pd sequence] subpatch takes care of sequencing the data structure
-events.
+<P>In the [pd sequence] subpatch shown above, a first <b>[pointer]</b> object
+is used to traverse through the data. It first takes a "traverse" message
+(sent from the parent) to set it to the head of the list (named "pd-data"),
+and "next" messages to move to (and output) the next datum in the list
+(i.e., the next in the list of six objects in the score).
 
-<figure>
-    <IMG src="img/2.10.5.png" ALT="[pd sequence] subpatch">
-    <figcaption><u>Fig. 2.10.5</u> The sequencing subpatch</figcaption>
-</figure>
-
-<P>A second <b>[pointer]</b> object is used here as a storage cell for pointers just
-as <b>[float]</b> is for numbers. The center of the sequencer is the <b>[delay]</b> object,
-
-which must be fed the time difference between each event (including the
-non-event of hitting "start") and the next. As we extract each of the six
-objects in the score, we must wait the delay for playing that object, and
-then send its pointer to other abstractions that read data from the 'pitch'
-and 'amp' arrays. However, we have to inspect the object itself to know the
-delay before playing it. So, in the loop, we peel off the first remaining
-object to play and inspect the time difference between it and the previous
-one, using this value to set the <b>[delay]</b> object.
+<P>A second <b>[pointer]</b> object is used here as a storage cell for pointers
+just as <b>[float]</b> is for numbers. The center of the sequencer is the
+<b>[delay]</b> object, which must be fed the time difference between each
+event (including the non-event of hitting "start") and the next.
 
 <P>The time difference needed to set the <b>[delay]</b> object is obtained using the
 <b>[get template-event]</b> object with the 'x' field. This is converted to incremental
 time with <b>[-]</b>, corrected for tempo, and fed to the <b>[delay]</b> object. Pd provides
 the <b>[get]</b> and <b>[set]</b> objects for reading and writing values from data structures.
 The <b>[get]</b> object shown here obtains the "x" and "y" fields of the current object.
-The template name (template-event) is supplied to the <b>[get]</b> objects so that
+The template name (template-event) is supplied to the <b>[get]</b> objects so that they can
+look up the offset of the necessary field(s) in advance, for greater run-time efficiency.
 
-they can look up the offset of the necessary field(s) in advance, for greater
-run-time efficiency.
+<P> As we extract each of the six objects in the score, we must wait the delay for playing
+that object. Once the delay time has expired, the object's pointer is recalled with the second
+<b>[pointer]</b> object and packed with the pitch base value to cloned instances of the
+<b>[voice]</b> abstraction (for that a 'next' message is prepended to the list, which is
+needed by <b>[clone]</b>). Let's check the <b>[voice]</b> abstraction below.
 
-<P>Once the delay time has expired, the object's pointer is recalled with the
-<b>[pointer]</b> object and sent to the <b>[data-array]</b> abstraction, which extracts the
-pitch and dynamic breakpoints from the arrays (specified as the abstraction's
-argument,) so it contains two sequencers itself. The nesting of the overall
-structure of the sequencer patch mirrors the nesting of the original data
-structures.
+<figure>
+    <IMG src="img/2.10.5.png" ALT="[voice] abstraction">
+    <figcaption><u>Fig. 2.10.5</u> The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
+</figure>
+
+<P>The pointer and pitch value are unpacked. The pointer value is sent to <b>[data-array]</b>
+abstractions, which extract the pitch and dynamic breakpoints from the arrays (specified as
+the abstraction's argument,) so it contains two sub-sequencers itself. The nesting of
+the overall structure of the sequencer patch mirrors the nesting of the original data
+structures. Let's have a look at the <b>[data-array]</b> abstraction below.
 
 <figure>
     <IMG src="img/2.10.6.png" ALT="[data-array] abstraction">
     <figcaption><u>Fig. 2.10.6</u> The <b>[data-array]</b> abstraction</figcaption>
 
 </figure>
+
+<P>We have to inspect the object itself to know the delay before playing it.
+So, in the loop, we peel off the first remaining object to play and inspect
+the time difference between it and the previous one, using this value to set
+the <b>[delay]</b> object.
 
 <P>More general patches can easily be constructed which access heterogeneous
 lists of objects (having different templates). In this way, an arbitrarily
