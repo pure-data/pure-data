@@ -58,7 +58,7 @@ shown in <a href="x1.htm">Chapter 1: Introduction</a> and reproduced below.
 
 <figure>
     <IMG src="img/1.2.3.png" ALT="list of objects">
-    <figcaption>The "help-intro' patch</figcaption>
+    <figcaption><u>Fig. 1.2.3</u> The "help-intro' patch with a list of all internal objects</figcaption>
 </figure>
 
 
@@ -70,7 +70,7 @@ install of Pd and lists the objects in the extra folder.
 
 <figure>
     <IMG src="img/4.1.1.png" ALT="browser window">
-    <figcaption>The browser window</figcaption>
+    <figcaption><u>Fig. 4.1.1</u> The browser window</figcaption>
 </figure>
 
 <H4> <A id=s4.1.2> 4.1.2. Types of external objects </A> </H4>
@@ -402,7 +402,7 @@ search paths (under the 'Path' tab in Preferences), see figure below.
 
 <figure>
     <IMG src="img/4.3.1.png" ALT="Preferences">
-    <figcaption>Path preferences</figcaption>
+    <figcaption><u>Fig. 4.3.1</u> The Path preferences with a few user added paths</figcaption>
 </figure>
 
 <p>We see in the screenshot above that the “Pd” folder is created
@@ -489,7 +489,7 @@ all options.
 
 <figure>
     <IMG src="img/4.3.2.png" ALT="deken install">
-    <figcaption>Installing from 'deken'</figcaption>
+    <figcaption><u>Fig. 4.3.2</u> Installing external libraries from 'deken'</figcaption>
 </figure>
 
 <p>When you double-click on library and version you want, by default Pd downloads it to
@@ -499,7 +499,7 @@ separating the search entries with commas.
 
 <figure>
     <IMG src="img/4.3.3.png" ALT="installing multiple libraries">
-    <figcaption>Installing multiple libraries at once</figcaption>
+    <figcaption><u>Fig. 4.3.3</u> Installing multiple libraries at once</figcaption>
 </figure>
 
 <p>Moreover, if you have a an object creation error in the console, you can
@@ -508,7 +508,7 @@ manager with a prompt search for the missing object ready to go.
 
 <figure>
     <IMG src="img/4.3.4.png" ALT="searching object for creation error">
-    <figcaption>Searching object in the plugin manager via the console window error</figcaption>
+    <figcaption><u>Fig. 4.3.4</u> Searching object in the plugin manager via the console window error</figcaption>
 </figure>
 
 <p>Note that when the external manager window is focused, there are
@@ -518,14 +518,14 @@ for the plugin manager. For macOS these menus are on the top bar.
 
 <figure>
     <IMG src="img/4.3.5.png" ALT="plugin manager menus">
-    <figcaption>The plugin manager's menus</figcaption>
+    <figcaption><u>Fig. 4.3.5</u> The plugin manager's menus</figcaption>
 </figure>
 
 <p>And the plugin manager's preferences are as follows:
 
 <figure>
     <IMG src="img/4.3.6.png" ALT="deken preferences">
-    <figcaption>The plugin manager's preferences</figcaption>
+    <figcaption><u>Fig. 4.3.6</u> The plugin manager's preferences</figcaption>
 </figure>
 
 <p>The above are the default settings. If you want to see results that are not
@@ -589,7 +589,7 @@ external, it'll know to search inside that folder for the external!
 is a single binary pack with many externals. One such example is the
 <a href="https://git.iem.at/pd/zexy/"> Zexy </a> library. So you should
 download and have the 'zexy' folder in “~/Documents/Pd/externals/zexy”.
-Now you can use [declare -lib zexy] to load the external binary. In the
+Now you can use <b>[declare -lib zexy]</b> to load the external binary. In the
 same way as explained with the <b>[freeverb~]</b> example, the binary is inside
 a folder with the same name. So Pd will search for the external in
 “~/Documents/Pd/externals", will find the 'zexy' folder and know to
@@ -598,7 +598,7 @@ using <b>[declare]</b> to define the search path.
 
 <p>Note that it may be possible for you to load a library binary as an object
 if the developer wished to. But it's still advisable to use either "Startup"
-or [declare -lib], because this way you are sure the library is preloaded
+or <b>[declare -lib]</b>, because this way you are sure the library is preloaded
 before Pd tries to create other objects in your patch.
 
 <p>The ELSE library also offers a binary for you to load as a library. This is
@@ -653,7 +653,7 @@ details.
 
 <figure>
     <IMG src="img/4.4.1.png" ALT="startup preferences">
-    <figcaption>Startup preferences</figcaption>
+    <figcaption><u>Fig. 4.4.1</u> The Startup preferences with library binaries to load</figcaption>
 </figure>
 
 <p> As we’ve seen with ‘zexy’, it’s common that the name of the binary is
@@ -663,7 +663,7 @@ path. There are many other examples in the picture above. One particularity
 Pd to add its path to the search paths, which is needed for some abstractions
 and then you don’t need to bother adding it to the path. Note, however, that
 unlike using <b>[declare]</b>, this does not enforce a top search priority! Hence,
-for example, you may prefer to use [declare -path Gem -lib Gem] instead.
+for example, you may prefer to use <b>[declare -path Gem -lib Gem]</b> instead.
 
 <p>It all depends on the developer, but it is a common and good practice that
 when you load a library, Pd’s terminal window will print something to tell us
@@ -672,10 +672,10 @@ of loading cyclone.
 
 <figure>
     <IMG src="img/4.4.2.png" ALT="lib print">
-    <figcaption>Library loading printout</figcaption>
+    <figcaption><u>Fig. 4.4.2</u> Library loading printout</figcaption>
 </figure>
 
-<p>Note that when you load a library via Startup or [declare -lib], all of its
+<p>Note that when you load a library via Startup or <b>[declare -lib]</b>, all of its
 external objects are loaded in Pd and they have search priority over other
 externals that are loaded via paths. This may cause issues discussed on the
 next section.
@@ -683,14 +683,14 @@ next section.
 <H4> <A id=s4.4.3> 4.4.3. Load using slash declarations</A> </H4>
 
 <p>Let’s say you’ve downloaded the ELSE library into ~/Documents/Pd/externals.
-Instead of using [declare -path else] or adding the ELSE folder to the user
+Instead of using <b>[declare -path else]</b> or adding the ELSE folder to the user
 added paths manually, you can just prepend “else/“ before an object name. This
 will make Pd look for this object in a folder called ‘else’ in one of its search
 paths (which includes ~/Documents/Pd/externals) and find it! Here’s an example:
 
 <figure>
     <IMG src="img/4.4.3.png" ALT="slash declaration">
-    <figcaption>Creating an external object with a slash declaration</figcaption>
+    <figcaption><u>Fig. 4.4.3</u> An external object with a slash declaration</figcaption>
 </figure>
 
 <p>This can be an option that some people may prefer for the simple fact that
@@ -818,7 +818,7 @@ in "Preferences". An order is also respected, from top to bottom.
 
 <p><b>Fifth</b> and last, it searches the "standard paths", which
 includes the 'extra' library provided by the Pd Vanilla distribution.
-Note you can use [declare -stdpath ./] to force priority to search
+Note you can use <b>[declare -stdpath ./]</b> to force priority to search
 this folder!
 
 <p>Regarding files, the search order is the same, only the

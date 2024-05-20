@@ -50,10 +50,12 @@ news about configuration problems and solutions.
 
 <H4> <A id="s3.1.1"> 3.1.1. macOS</A> </H4>
 
-<P>Pd supports macOS from 10.7 and up, but the main download binary for more modern
-OS versions supports 10.10 or newer. This download in the form of .dmg file; just
-double click on this disk image so it opens and you can then drag the Pd app where
-you want (most likely in the Applications folder).
+<P>Pd supports macOS from 10.7 and up. There is a version for 10.7 to 10.9 provided,
+but the main download binary for more modern OS versions supports 10.10 or newer and
+is the form of a .dmg file. This is a universal binary, for both intel or apple silicon
+chips. Just double click on this disk image so it opens and you can then drag the Pd app
+where you want (most likely in the Applications folder). An old 32-bit version is also
+provided for 10.7 up to 10.14, which is suited if you need to run some old external.
 
 <P>You might get various warnings about Pd trying to open an internet port.
 This is normal although some system administrators will prevent you from
@@ -64,13 +66,15 @@ doing this (in which case you can't run Pd on that machine).
 <P> For Windows, you can download a .zip package for manual install or an executable
 installer (a ".exe" file). Run the installer if you are not sure how to install
 manually and select a destination directory when prompted, such as <b>\pd</b> or
-<b>Program Files\pd</b>.
+<b>Program Files\pd</b>. The 64-bit executable works for Windows Vista or newer.
+An old 32-bit version is also provided and works for XP or later (this is suited
+if you need to run some old external or use a 32-bit machine).
 
 <P> If for example you install Pd in <b>C:Program Files\pd</b>, the executable
 program will be <b>C:Program Files\pd\bin\pd/</b>. You can simply adjust your path
 to include <b>C:\pd\bin</b> and then invoke "pd" in a command prompt window. You can
 also make a shortcut to the executable program (left-click on it and drag to the
-desktop, for example.)
+desktop, for example).
 
 <P> Pd requires "TCP/IP networking" to be turned on. This doesn't mean you
 have to be on a real network, but simply that Pd actually consists of two
@@ -118,7 +122,7 @@ from the <b>Media menu</b>. You should see a window like this:
 
 <figure>
     <IMG src="img/3.3.1.png" ALT="test audio and midi patch">
-    <figcaption>Test Audio and MIDI patch</figcaption>
+    <figcaption><u>Fig. 3.3.1</u> Test Audio and MIDI patch</figcaption>
 </figure>
 
 <P> First, try to get Pd to play a sine wave over your speakers. The
@@ -183,15 +187,15 @@ start or stop Pd's audio computation.
 
 <P> If there is a choice of audio API to make, the <b>Media menu</b> will display
 them. On Linux, they are OSS, ALSA, Portaudio and JACK; on Windows, you get
-Portaudio and an 'old' MMIO API. In Windows, Portaudio offers ASIO and Windows
+Portaudio and an 'old MMIO system'. In Windows, Portaudio offers ASIO and Windows
 WASAPI. On macOS the default one is Portaudio and you can also use JACK if you
 have it installed. The <b>Media menu</b> also displays choices for MIDI API.
 On Linux, they are OSS-MIDI and ALSA-MIDI.
 
-<P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
-API. Clicking on the API to change it also opens the settings window for the
-newly selected API. If you click on the already selected API, you also open the
-settings window.
+<figure>
+    <IMG src="img/3.3.2.png" ALT="API choices in Windows">
+    <figcaption><u>Fig. 3.3.2</u> API choices in Windows</figcaption>
+</figure>
 
 <!--- comment out
 <H3> Testing audio and MIDI in LINUX. </H3>
@@ -298,18 +302,28 @@ has sync problems.
 
 <H4> <A id=s3.3.1>3.3.1. Audio settings </A> </H4>
 
-<P> As just mentioned, you can open the Audio Settings dialog from the
-<b>Media menu</b>. The Audio Settings dialog looks like this:
+<P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
+API. Clicking on the API to change it also opens the settings window for the
+newly selected API. If you click on the already selected API, you also open the
+settings window.
 
 <figure>
-    <IMG src="img/3.3.2.png" ALT="audio settings dialog">
-    <figcaption>The Audio Settings dialog as called from the Media menu on macOS</figcaption>
+    <IMG src="img/3.3.3.png" ALT="old MMIO API">
+    <figcaption><u>Fig. 3.3.3</u> Audio Settings from the Media menu ('old MMIO system' API on Windows)</figcaption>
 </figure>
 
-<p>The exact choices you get depend on the operating system and API. The
-sample rate controls both audio output and input. The "delay" is the
-nominal amount of time, in milliseconds, that a sound coming into the
-audio input will be delayed if it is copied through Pd straight to the
+<P> The exact choices you get depend on the operating system and API.
+The screenshot above is for when you select 'old MMIO system' in Windows.
+While the screenshot below is for 'portaudio' on macOS.
+
+<figure>
+    <IMG src="img/3.3.4.png" ALT="audio settings dialog">
+    <figcaption><u>Fig. 3.3.4</u> Audio Settings from the Media menu (portaudio API on macOS)</figcaption>
+</figure>
+
+<P> The sample rate controls both audio output and input. The "delay"
+is the nominal amount of time, in milliseconds, that a sound coming into
+the audio input will be delayed if it is copied through Pd straight to the
 output. Naturally you would like this to be as small as possible, but,
 depending on OS, API, and even the specific choice of audio hardware,
 there will be a limit to how small you can make this.
@@ -321,16 +335,16 @@ channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
 <figure>
-    <IMG src="img/3.3.3.png" ALT="audio settings dialog">
-    <figcaption>The Audio Settings dialog as called from the Media menu on Linux</figcaption>
+    <IMG src="img/3.3.5.png" ALT="audio settings dialog">
+    <figcaption><u>Fig. 3.3.5</u> The Audio Settings dialog as called from the Media menu on Linux</figcaption>
 </figure>
 
 <p>In Linux you're allowed up to 4 input and 4 output devices (note the
 "Use Multiple Devices" button on the picture above). On Windows you
-can also do that but you need to be using the MMIO API. On macOS,
-if you want more than a single device, there's a workaround by creating
-an aggregate device (via the system's "Audio MIDI Setup") and set it in
-Pd's Audio settings.
+can also do that but you need to be using the 'old MMIO system' API
+(shown above). On macOS, if you want more than a single device, there's
+a workaround by creating an aggregate device (via the system's "Audio
+MIDI Setup") and set it in Pd's Audio settings.
 
 <H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
 
@@ -346,8 +360,8 @@ objects output the port number in their right outlet and <b>[midiout]</b>
 has a separate inlet to specify which MIDI port you want.
 
 <figure>
-    <IMG src="img/3.3.4.png" ALT="MIDI settings">
-    <figcaption>The MIDI settings dialog as called from the Media menu on macOS</figcaption>
+    <IMG src="img/3.3.6.png" ALT="MIDI settings">
+    <figcaption><u>Fig. 3.3.6</u> The MIDI Settings dialog as called from the Media menu on macOS</figcaption>
 </figure>
 
 
@@ -369,14 +383,25 @@ that you can get choices for API this way.
 
 <figure>
     <IMG src="img/3.4.1.png" ALT="preferences dialog">
-    <figcaption>The Path dialog in the tabbed Preferences</figcaption>
+    <figcaption><u>Fig. 3.4.1</u> The Audio Settings tab in tabbed Preferences on Windows</figcaption>
 </figure>
 
-<P>The "Path" tabs configures search paths that Pd will use to load externals
+<P> The above picture shows Audio Settings on Windows when you select it from
+the tabbed Preferences. The difference here is that you have a new wntry to
+select and change API (where 'old MMIO system' is selected.)
+
+
+<figure>
+    <IMG src="img/3.4.2.png" ALT="preferences dialog">
+    <figcaption><u>Fig. 3.4.2</u> The Path dialog in the tabbed Preferences</figcaption>
+</figure>
+
+<P>The first preference in the tabbed Preferences is the "Path" dialogs.
+This tab configures search paths that Pd will use to load externals
 and abstractions (spaces in the path are allowed by the way). This also used
-for files in objects that load them like <b>[soundfiler]</b>, <b>[text]</b> and even arrays
-(aka tables). The path must be correctly set before you load a patch or it may
-fail to find anything. Filenames in Pd are always separated byc(Unix-style)
+for files in objects that load them like <b>[soundfiler]</b>, <b>[text]</b> and
+even arrays (aka tables). The path must be correctly set before you load a patch
+or it may fail to find anything. Filenames in Pd are always separated byc(Unix-style)
 forward slashes, even if you're on Windows (which uses backslashes). Also, note
 that objects that can load files do expand "~" to your home directory.
 
@@ -389,8 +414,8 @@ path management is also covered in depth in <a href="x4.htm">Chapter 4: External
 and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
 
 <figure>
-    <IMG src="img/3.4.2.png" ALT="startup dialog">
-    <figcaption>Startup dialog</figcaption>
+    <IMG src="img/3.4.3.png" ALT="startup dialog">
+    <figcaption><u>Fig. 3.4.3</u> The startup dialog</figcaption>
 </figure>
 
 <P> The "Startup" tab has configurations for initializing Pd and an entry for
