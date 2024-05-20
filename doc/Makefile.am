@@ -8,12 +8,12 @@ AUTOMAKE_OPTIONS = foreign
 libpddir = $(pkglibdir)/doc
 
 # about text file, needed to write version string into
-ABOUT_FILE=1.manual/1.introduction.txt
+ABOUT_FILE=About.Pd.txt
 
 # location to pd header
 M_PD=$(top_srcdir)/src/m_pd.h
 
-# get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
+# get version info from m_pd.h to use in doc/About.Pd.txt
 PD_MAJOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" $(M_PD) | \
     sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" $(M_PD) | \
@@ -53,7 +53,7 @@ empty=
 # cd doc
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
-     ./1.manual/1.introduction.txt \
+     ./About.Pd.txt \
      ./1.manual/css/favicon.ico \
      ./1.manual/css/pdmanual.css \
      ./1.manual/img/1.2.1.png \
