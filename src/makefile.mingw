@@ -147,7 +147,7 @@ ASIOOBJ = $(ASIOSRC:.cpp=.o)
 OBJC = $(OBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 
 
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
+# get version from m_pd.h to use in doc/About.Pd.txt
 PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
@@ -240,7 +240,7 @@ testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
+ABOUT_FILE=$(DESTDIR)$(pddocdir)/About.Pd.txt
 install:  all
 # locales
 #	make libpddir=$(libpddir) -C ../po install

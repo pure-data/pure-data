@@ -133,7 +133,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 
 OBJ = $(SRC:.c=.o) 
 
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
+# get version from m_pd.h to use in doc/About.Pd.txt
 PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
