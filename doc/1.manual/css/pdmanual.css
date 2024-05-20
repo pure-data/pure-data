@@ -32,10 +32,13 @@ figure {
 div#backnav {
     margin-bottom: 2em;
 }
-figcaption{
+figcaption {
     padding-top: 0.5em;
     font-size: 95%;
     text-align: center;
+}
+figcaption>u {
+    padding-right: 0.5em;
 }
 H1 {
     font-size:   32.7pt;
