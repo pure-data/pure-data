@@ -4,8 +4,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 2: Theory of operation</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="img/favicon.ico">
 </HEAD>
 <BODY>
 
@@ -15,13 +15,13 @@
 <div id="corpus">
 <H2>Chapter 2: Theory of operation</H2>
 
-<div id="backnav"><A href="index.htm#s2">back to table of contents</A></div>
+<div id="backnav"><A href="../index.htm#s2">back to table of contents</A></div>
 
 <P>The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and run Pd
-are described in the <A href="x3.htm">next chapter</A>. Links to more extensive
+are described in the <A href="chapter3.htm">next chapter</A>. Links to more extensive
 guides (and to more theoretical information about computer music) are provided
-in the <A href="x1.htm">previous chapter</A>.
+in the <A href="chapter1.htm">previous chapter</A>.
 
 <H3> <A id="s2.1">2.1. Overview</A> </H3>
 
@@ -32,7 +32,7 @@ libpd, you can use Pd as an embeddable audio synthesis library. Additionally, Pd
 originally designed to offer a unique experimental feature not found in MAX,
 allowing users to define and access data structures in innovative ways, with the ability
 to attach shapes and colors to data in order to visualize it and/or edit it graphically
-(see section <A href="x2.htm#s2.10">2.10 Data Structures</A> for details).
+(see section <A href="chapter2.htm#s2.10">2.10 Data Structures</A> for details).
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
@@ -41,7 +41,7 @@ processing. These include notable extensions like "Ceammc", "Cyclone", "ELSE",
 graphical processing include Mark Dank's "GEM" and Zack Lee's "Ofelia", which allows you
 to use openFrameworks and the Lua programming language within Pd for creating audiovisual
 artwork or multimedia applications such as games. For details on installing and managing
-packages, refer to <A href="x4.htm"> Chapter 4: Externals</A>.
+packages, refer to <A href="chapter4.htm"> Chapter 4: Externals</A>.
 
 <H4> <A id="s2.1.1"> 2.1.1. The main window, canvases, and printout</A> </H4>
 
@@ -100,13 +100,13 @@ audio samples in realtime for all open patches (whether they are visible or not)
 
 <P>Turning off <b>DSP</b> halts the computation and releases any audio devices
 that Pure Data is utilizing. You can configure audio devices as described in
-<A href="x3.htm#s3.3.1">3.3.1. Audio settings</A>.
+<A href="chapter3.htm#s3.3.1">3.3.1. Audio settings</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl</kbd>+<kbd>/</kbd>
 ("Control" key on PCs or "Command" key on Apple computers plus the <kbd>/</kbd> key)
 to turn audio processing on, and <kbd>Ctrl</kbd>+<kbd>.</kbd> to turn it off. You can check the input
 audio level if you select "Test Audio and MIDI..." and make other Audio and MIDI tests (read more
-about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
+about this in <A href="chapter3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <figure>
 <IMG src="img/2.1.6.png" ALT="media menu">
@@ -124,7 +124,7 @@ You can increase it to get more detailed information or decrease it to only see 
 
 <P> Errors are mostly printed by objects and displayed in the Pd window in red color.
 You can find error sources for the corresponding line with <kbd>Ctrl</kbd>+<kbd>click</kbd>
-as shown in <A href="x2.htm#sfinderror">here</A>).
+as shown in <A href="chapter2.htm#sfinderror">here</A>).
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
 using the "Font" dialog entry in the <b>Edit menu</b>.
@@ -297,7 +297,7 @@ while the appearance of an object or message box remains unchanged when a patch 
 running, a number box's content changes to reflect the current value held by the box.
 You can also use a number box as a control by clicking and dragging up and down, or
 by typing values in it and hitting enter (more details on how this and any other GUIs
-work is available in the objects' help files; see <A href="x2.htm#s2.2.7">2.2.7. Popup
+work is available in the objects' help files; see <A href="chapter2.htm#s2.2.7">2.2.7. Popup
 menu for "Properties", "Open" and "Help"</A>.
 
 <H4> <A id="s2.1.4"> 2.1.4. Patches and files</A> </H4>
@@ -309,7 +309,7 @@ as well as close and save them.
 objects in the patch, but only what you see: the objects' creation arguments
 and their interconnections. Nonetheless, the <b>[savestate]</b>
 object offers a mechanism to save the state of abstractions (see
-<A href="x2.htm#s2.8">2.8. Subpatches</A>). Also, certain data-storage objects have
+<A href="chapter2.htm#s2.8">2.8. Subpatches</A>). Also, certain data-storage objects have
 functions for reading and writing files to save and restore their internal
 state (one example is the <b>[text]</b> object). When loading
 a patch, the <b>[loadbang]</b> object can be used to initialize
@@ -317,7 +317,7 @@ the parameters of your patch, so you can load text files and make other preparat
 
 <P>Pd searches for files using specified paths. Most objects capable of reading files
 search along these paths, but when Pd writes files, they are saved to the directory
-where the patch itself is located by default. Check <a href="x3.htm#s3.4">3.4. Path and
+where the patch itself is located by default. Check <a href="chapter3.htm#s3.4">3.4. Path and
 startup</A> for more details.
 
 <H3> <A id="s2.2">2.2. Editing Pd patches</A> </H3>
@@ -363,8 +363,8 @@ arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between t
 You can also edit text, create or delete boxes and make or cut connections (more
 details on this will follow below) and you can resize some boxes in your patch,
 namely object boxes, number/symbol/list boxes, comments, messages. Note you can
-also resize <A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A> and
-<A href="x2.htm#s2.9">Arrays</A>.
+also resize <A href="chapter2.htm#s2.8.2">Graph-on-parent subpatches</A> and
+<A href="chapter2.htm#s2.9">Arrays</A>.
 
 <figure>
 <IMG src="img/2.2.4.png" ALT="resizing boxes">
@@ -574,9 +574,9 @@ what it is and how it works. Asking "Help" for the canvas as a whole
 every object class.
 
 <P>The "Open" menu item is only enabled if you right-click on a
-<A href="x2.htm#s2.8">subpatch</A> and prompts Pd to open it.
+<A href="chapter2.htm#s2.8">subpatch</A> and prompts Pd to open it.
 Ordinary subpatches may also be opened by simply clicking on them,
-but for <A href="x2.htm#s2.8.2">graph-on-parent subpatches</A>
+but for <A href="chapter2.htm#s2.8.2">graph-on-parent subpatches</A>
 this is the only method available.
 
 <P>The "Properties" dialog allows you to change certain settings of GUI
@@ -628,7 +628,7 @@ or <kbd>Shift</kbd>+<kbd>Tab</kbd> to navigate to the previous one.
 <H4> <A id="s2.3.2">2.3.2. Autopatching</A> </H4>
 
 <P>By default, Pd has an "autopatching" mode set to on. You can disable it
-via startup flags (see "-autopatch" flag <a href="x3.htm#s3.4.1">3.4.1.
+via startup flags (see "-autopatch" flag <a href="chapter3.htm#s3.4.1">3.4.1.
 Startup flags</A>). This works with the shortcuts from the <b>Put menu</b>
 for inserting boxes. If you have a selected box and use a shortcut to
 create another one (such as <kbd>Ctrl</kbd>+<kbd>1</kbd> to create an
@@ -649,7 +649,7 @@ box gets deselected and instantiated.
 </figure>
 
 
-<P>You can also autopatch into a newly created subpatch (see <A href="x2.htm#s2.8">
+<P>You can also autopatch into a newly created subpatch (see <A href="chapter2.htm#s2.8">
 2.8. Subpatches</A>). By creating an object box and typing "pd", as soon as you
 deselect the object, a <b>[pd]</b> subpatch is created with an
 inlet - either a control <b>[inlet]</b> if the object
@@ -811,7 +811,7 @@ a <b>[trigger]</b> object after the selected object.
 
 <P>The <b>[trigger]</b> object is widely used in Pd to control the order
 of execution from right to left and is briefly described in
-<A href="x2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
+<A href="chapter2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
 "Triggerize" then creates the <b>[trigger]</b> object taking into account
 the order in which the connections were made, where the first connection starts at the
 rightmost outlet of <b>[trigger]</b> and continues to the leftmost.
@@ -822,7 +822,7 @@ then introduces <b>[t a a a]</b> (short for
 <b>[trigger anything anything anything]</b>) with three outlets and the
 order that the connections from <b>[pack]</b> were made reflect the order
 from right to left. You can swap connections with the <kbd>Shift</kbd> key (as described
-in subsection <A href="x2.htm#s2.3.4">2.3.4.</A>) if you need to adjust the order of
+in subsection <A href="chapter2.htm#s2.3.4">2.3.4.</A>) if you need to adjust the order of
 connections.
 
 <figure>
@@ -924,7 +924,7 @@ space, semicolons, or commas. The arguments may be symbols or numbers.
 <P>Pd is usually compiled for single precision. Experimental binaries are
 available via the community for double precision (aka "Pd64"), but no
 binary is yet provided by the official download site. You can also compile
-Pd for double precision yourself (see details in <A href="x6.htm#s6.2">
+Pd for double precision yourself (see details in <A href="chapter6.htm#s6.2">
 6.2. General Autotools Build steps</A>). If compiled for single precision,
 numbers are kept in 32-bit floating point, while if compiled for double
 precision ou have values in 64-bit floating point precision.Pd doesn't
@@ -1240,11 +1240,11 @@ objects weren't scheduled)".
 </figure>
 
 <P> You can build algorithms with feedback using nonlocal signal connections
-as explained in the <A href="x2.htm#s2.5.5">2.5.5. subsection</A>.
+as explained in the <A href="chapter2.htm#s2.5.5">2.5.5. subsection</A>.
 
 <P>Your subpatches can have audio inlets and outlets via the
 <b>[inlet~]</b> and <b>[outlet~]</b>
-objects (see <A href="x2.htm#s2.8">2.8. Subpatches</A>).
+objects (see <A href="chapter2.htm#s2.8">2.8. Subpatches</A>).
 
 <H4> <A id="s2.5.3">2.5.3. Converting audio to and from messages</A> </H4>
 
@@ -1405,7 +1405,7 @@ but at the same logical time.
 that is, it tries to keep ahead of real time by a small amount in order to be
 able to absorb unpredictable, momentary increases in computation time. This
 is specified using the "-audiobuf" and "-blocksize" command line flags
-(see <a href="x3.htm#s3.4.1">3.4.1. Startup flags</A>).
+(see <a href="chapter3.htm#s3.4.1">3.4.1. Startup flags</A>).
 
 <P>If Pd gets late with respect to real time, gaps (either occasional or
 frequent) will appear in both the input and output audio streams. On the
@@ -1881,7 +1881,7 @@ and width.)
 
 <P>In general, data structures are built from four data types: scalar floats
 and symbols, text and arrays (whose elements share another, specified template).
-The contents of a Pd window themselves form a list. <A href="x2.htm#s2.9">Arrays</A>
+The contents of a Pd window themselves form a list. <A href="chapter2.htm#s2.9">Arrays</A>
 are actually implemented as a top-level data structure array, whose elements are
 scalars containing a single floating-point number.
 
@@ -2223,7 +2223,7 @@ different ways in Pd and MAX, and block sizes are handled differently
 as well.
 
 <P> The "bpatcher" feature in MAX has a correlate in Pd
-(<A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A>);
+(<A href="chapter2.htm#s2.8.2">Graph-on-parent subpatches</A>);
 however, Pd's version is quite different from MAX's.
 
 <P> Pd's correlate of Max's <b>[itable]</b> object are Arrays
@@ -2278,8 +2278,8 @@ complete and cohesive system with lots of GUIs and functions you can find in MAX
 
 </div>
 <div id="footer">
-<A href="x3.htm">next chapter</A><BR>
-<A href="index.htm#s2">back to table of contents</A>
+<A href="chapter3.htm">next chapter</A><BR>
+<A href="../index.htm#s2">back to table of contents</A>
 </div>
 
 </BODY>

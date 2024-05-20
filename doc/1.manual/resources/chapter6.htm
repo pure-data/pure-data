@@ -4,8 +4,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 6: Building Pd from source</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="img/favicon.ico">
 </HEAD>
 <BODY>
 
@@ -17,7 +17,7 @@
 
 <H2>Chapter 6: Building Pd from source</H2>
 
-<div id="backnav"><A href="index.htm#s6">back to table of contents</A></div>
+<div id="backnav"><A href="../index.htm#s6">back to table of contents</A></div>
 
 <P>This chapter offers in depth details on how to build Pd from its source code
 and install it on different operating systems (macOS, Linux, BSD & Windows).
@@ -177,9 +177,9 @@ file src/pd
 src/pd: Mach-O 64-bit executable x86_64
 
 # look at pd inside a macOS .app bundle
-file Pd.app/Contents/Resources/bin/pd
+file Pd.app/Contents/bin/pd
 ...
-Pd-0.55.0.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
+Pd-0.55.0.app/Contents/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
 <p>More details specific to each platform follow next.
 
@@ -408,15 +408,15 @@ build steps. Once built, there are two options for installation:</p>
 
 <p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked
 and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle,
-see <a href="x6.htm#s6.5.1"> 6.5.1. macOS app bundle</a>.
+see <a href="chapter6.htm#s6.5.1"> 6.5.1. macOS app bundle</a>.
 
 <p>If you want to have both the Pd application <em>and</em> use Pd from the commandline,
 add command aliases to the binaries inside the .app to your ~/.bash_profile:</p>
 
 <pre><code>WHICHPD=&quot;Pd-0.55-0&quot;
-alias pd=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pd&quot;
-alias pdsend=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend&quot;
-alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive&quot;
+alias pd=&quot;/Applications/$WHICHPD.app/Contents/bin/pd&quot;
+alias pdsend=&quot;/Applications/$WHICHPD.app/Contents/bin/pdsend&quot;
+alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/bin/pdreceive&quot;
 </code></pre>
 
 <p>Next, reload the profile by either opening a new Terminal window or running:</p>
@@ -592,7 +592,7 @@ script:</p>
 </code></pre>
 
 <p>Note: The &ldquo;wish-shell.tgz&rdquo; is an archive of this app I found on my mac:
-/System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish Shell.app</p>
+/System/Library/Frameworks/Tk.framework/Versions/8.4/Wish Shell.app</p>
 
 <p>A smarter version of the scripts ought to be able to find that file
 automatically on your system so I wouldn&rsquo;t have to include it here.</p>
@@ -715,7 +715,7 @@ Tremblay):</p>
 </ul>
 
 
-<pre><code>    codesign -d /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd \
+<pre><code>    codesign -d /Applications/Pd-0.53-2.app/Contents/bin/pd \
     --entitlements :~/Desktop/pd-entitlements.xml
 </code></pre>
 
@@ -735,12 +735,12 @@ Tremblay):</p>
 
 <pre><code>    codesign -s - --deep --force --options=runtime \
     --entitlements ~/Desktop/pd-entitlements.xml \
-    /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+    /Applications/Pd-0.53-2.app/Contents/bin/pd
 </code></pre>
 
 <p>Now Pd can be run with lldb using:</p>
 
-<pre><code>lldb /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+<pre><code>lldb /Applications/Pd-0.53-2.app/Contents/bin/pd
 </code></pre>
 
 <p>Note: Re-signing using an ad-hoc identifier will work on the development system,
@@ -799,7 +799,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>./configure --disable-mmio</pre>
 
-<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="x6.htm#s6.6.4">6.6.4 Windows ASIO support </a> for further instructions.</p>
+<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="chapter6.htm#s6.6.4">6.6.4 Windows ASIO support </a> for further instructions.</p>
 <p>Once built Pd is built, you can either:</p>
 
 <ul>
@@ -1056,7 +1056,7 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 <pre>make -f makefile.gnu uninstall</pre>
 
 <p>On macOS, you can build a clickable Pd .app bundle using the supplemental build
-scripts in the mac directory (see <a href="x6.htm#s6.5.1">6.5.1 macOS resources</a>
+scripts in the mac directory (see <a href="chapter6.htm#s6.5.1">6.5.1 macOS resources</a>
 for more info).</p>
 
 
@@ -1080,7 +1080,7 @@ for more info).</p>
 
 </div>
 <div id="footer">
-<A href="index.htm#s6"> back to table of contents </A>
+<A href="../index.htm#s6"> back to table of contents </A>
 </div>
 
 </BODY>

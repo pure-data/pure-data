@@ -4,8 +4,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 3: Installing and configuring Pd</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="img/favicon.ico">
 </HEAD>
 <BODY>
 
@@ -17,7 +17,7 @@
 
 <H2>Chapter 3: Installing and configuring Pd</H2>
 
-<div id="backnav"><A href="index.htm#s3">back to table of contents</A></div>
+<div id="backnav"><A href="../index.htm#s3">back to table of contents</A></div>
 
 <P> The following are instructions on how to get Pd installed, configured
 and running on your machine.
@@ -40,7 +40,7 @@ in this link for you to build Pd yourself.
 
 <P> Installation instructions are platform-specific and described in each case in
 this section, but Instructions on how to build Pd yourself for all supported OSes is
-provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+provided in <a href="chapter6.htm">Chapter 6: Building Pd from source</a>.
 
 <P> If you run into any installation trouble you can also consult the Pd mailing list
 archive on <A href="https://lists.puredata.info/listinfo/pd-list">
@@ -87,7 +87,7 @@ intercommunication.
 <P> Pd is available via the package systems for some Linux distributions,
 but not always in the most recent version possible. In case you don't find
 it or want the very latest recent version, you need to compile Pd, which is
-described  in <a href="x6.htm#s6.3">6.3. Building Pd for Linux</a>.
+described  in <a href="chapter6.htm#s6.3">6.3. Building Pd for Linux</a>.
 
 
 <H3> <A id=s3.2> 3.2. Running Pd via the command line </A> </H3>
@@ -159,8 +159,8 @@ CPU cycles uselessly.
 you may need both to run simultaneously. By default, Pd will try to run
 both, but if you don't need either input or output, you may find that Pd
 runs more reliably, or at least more efficiently, with the unused direction
-turned off. This may be specified using the <a href="x3.htm#s3.3.1">Audio
-Settings</a> dialog panel or <a href="x3.htm#s3.4.1">Startup flags</a>.
+turned off. This may be specified using the <a href="chapter3.htm#s3.3.1">Audio
+Settings</a> dialog panel or <a href="chapter3.htm#s3.4.1">Startup flags</a>.
 
 <P> Depending on your application you will have a more or less stringent latency
 requirement. Ideally, when any input (audio, MIDI, keyboard, network) is
@@ -410,8 +410,8 @@ directory and, if it fails, it searches next in the paths that are set in this
 tab. Note you can use things like "../samples" to point to folders and subfolders
 that are relative to the patch directory and other search paths. Note you can also
 use <b>[declare]</b> to add paths for particular patches - this and other details about
-path management is also covered in depth in <a href="x4.htm">Chapter 4: Externals</a>,
-and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
+path management is also covered in depth in <a href="chapter4.htm">Chapter 4: Externals</a>,
+and summarized in <a href="chapter4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
 
 <figure>
     <IMG src="img/3.4.3.png" ALT="startup dialog">
@@ -422,7 +422,7 @@ and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and 
 Startup flags. Most of the configurations in Pd may be changed using the
 various dialogs you can open from Pd's menus. For instance, you can use the
 Font entry from the <b>Edit menu</b> to set what font size size Pd will use
-for its main window (this is described in <a href="x2.htm#s2.1.1">subsection 2.1.1.</a>,
+for its main window (this is described in <a href="chapter2.htm#s2.1.1">subsection 2.1.1.</a>,
 by the way). Nevertheless, this and every other configuration in Pd (from
 Audio and MIDI settings and whatnot) can also be configurable via startup
 flags. Other than that, some configurations are too cranky to put in a GUI
@@ -431,7 +431,7 @@ dialog and must be only set via startup flags.
 <P> Startup flags initialize Pd in many ways, but many configurations can
 be changed while Pd is running. Some configurations, on the other hand,
 requires Pd to restart, such as setting which external binaries to load
-(more about external management in <a href="x4.htm">Chapter 4</a>.
+(more about external management in <a href="chapter4.htm">Chapter 4</a>.
 
 <P> The "defeat real-time scheduling" control, if enabled, makes Pd run
 without its usual effort to become a real-time process (whatever this means
@@ -614,8 +614,8 @@ default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 
 </div>
 <div id="footer">
-<A href="x4.htm"> next chapter </A><BR>
-<A href="index.htm#s3"> back to table of contents </A>
+<A href="chapter4.htm"> next chapter </A><BR>
+<A href="../index.htm#s3"> back to table of contents </A>
 
 </div>
 </BODY>
