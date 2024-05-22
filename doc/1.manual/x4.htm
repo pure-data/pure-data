@@ -4,20 +4,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 4: Externals</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
-<div class="butt">
-
+<div class="nav nav-top">
+    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
-
 <div id=corpus>
 
-<H2>Chapter 4: Externals</H2>
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
-<div id="backnav"><A href="index.htm#s4">back to table of contents</A></div>
+<H2>Chapter 4: Externals</H2>
 
 <p> This chapter explains what are external objects and libraries. It also
 describes everything on how to install and load them in Pure Data.
@@ -31,11 +32,11 @@ accessible via the browser window.
 <p>There’s also an excellent guide to writing externals at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>, written by IOhannes
 zmölnig . Check also the
 pd-lib-builder project (a helper makefile for Pure Data external libraries by
-Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
+Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder</a>
 
 
 
-<H3> <A id=s4.1> 4.1 External Objects & Libraries </A> </H2>
+<H3> <A id=s4.1> 4.1 External Objects & Libraries </A> </H3>
 
 <p> We start this section by defining what are internals and externals.
 The main Pd distribution (a.k.a. “Pd Vanilla”) actually comes with both
@@ -57,7 +58,7 @@ patch’s window and select “help” - this loads the help-intro.pd file that 
 shown in <a href="x1.htm">Chapter 1: Introduction</a> and reproduced below.
 
 <figure>
-    <IMG src="img/1.2.3.png" ALT="list of objects">
+    <IMG src="resources/1.2.3.png" ALT="list of objects">
     <figcaption><u>Fig. 1.2.3</u> The "help-intro' patch with a list of all internal objects</figcaption>
 </figure>
 
@@ -69,7 +70,7 @@ the <b>Help menu</b>. See figure below, which shows how the browser looks in a f
 install of Pd and lists the objects in the extra folder.
 
 <figure>
-    <IMG src="img/4.1.1.png" ALT="browser window">
+    <IMG src="resources/4.1.1.png" ALT="browser window">
     <figcaption><u>Fig. 4.1.1</u> The browser window</figcaption>
 </figure>
 
@@ -401,7 +402,7 @@ and GUI plugins. This path is automatically included in the user added
 search paths (under the 'Path' tab in Preferences), see figure below.
 
 <figure>
-    <IMG src="img/4.3.1.png" ALT="Preferences">
+    <IMG src="resources/4.3.1.png" ALT="Preferences">
     <figcaption><u>Fig. 4.3.1</u> The Path preferences with a few user added paths</figcaption>
 </figure>
 
@@ -488,7 +489,7 @@ you can also download GUI plugins from deken. Search for '*-plugin' to get a lis
 all options.
 
 <figure>
-    <IMG src="img/4.3.2.png" ALT="deken install">
+    <IMG src="resources/4.3.2.png" ALT="deken install">
     <figcaption><u>Fig. 4.3.2</u> Installing external libraries from 'deken'</figcaption>
 </figure>
 
@@ -498,7 +499,7 @@ them at the same time. Note also you can search for multiple objects and librari
 separating the search entries with commas.
 
 <figure>
-    <IMG src="img/4.3.3.png" ALT="installing multiple libraries">
+    <IMG src="resources/4.3.3.png" ALT="installing multiple libraries">
     <figcaption><u>Fig. 4.3.3</u> Installing multiple libraries at once</figcaption>
 </figure>
 
@@ -507,7 +508,7 @@ separating the search entries with commas.
 manager with a prompt search for the missing object ready to go.
 
 <figure>
-    <IMG src="img/4.3.4.png" ALT="searching object for creation error">
+    <IMG src="resources/4.3.4.png" ALT="searching object for creation error">
     <figcaption><u>Fig. 4.3.4</u> Searching object in the plugin manager via the console window error</figcaption>
 </figure>
 
@@ -517,14 +518,14 @@ to open and install a ".dek" file, and <b>Edit</b> to open "Preferences"
 for the plugin manager. For macOS these menus are on the top bar.
 
 <figure>
-    <IMG src="img/4.3.5.png" ALT="plugin manager menus">
+    <IMG src="resources/4.3.5.png" ALT="plugin manager menus">
     <figcaption><u>Fig. 4.3.5</u> The plugin manager's menus</figcaption>
 </figure>
 
 <p>And the plugin manager's preferences are as follows:
 
 <figure>
-    <IMG src="img/4.3.6.png" ALT="deken preferences">
+    <IMG src="resources/4.3.6.png" ALT="deken preferences">
     <figcaption><u>Fig. 4.3.6</u> The plugin manager's preferences</figcaption>
 </figure>
 
@@ -652,7 +653,7 @@ Pd in many ways, see <a href="x3.htm#s3.4.1">3.4.1 Startup flags</a> for
 details.
 
 <figure>
-    <IMG src="img/4.4.1.png" ALT="startup preferences">
+    <IMG src="resources/4.4.1.png" ALT="startup preferences">
     <figcaption><u>Fig. 4.4.1</u> The Startup preferences with library binaries to load</figcaption>
 </figure>
 
@@ -671,7 +672,7 @@ that the libraries were loaded successfully. Here’s a screenshot of the result
 of loading cyclone.
 
 <figure>
-    <IMG src="img/4.4.2.png" ALT="lib print">
+    <IMG src="resources/4.4.2.png" ALT="lib print">
     <figcaption><u>Fig. 4.4.2</u> Library loading printout</figcaption>
 </figure>
 
@@ -689,7 +690,7 @@ will make Pd look for this object in a folder called ‘else’ in one of its se
 paths (which includes ~/Documents/Pd/externals) and find it! Here’s an example:
 
 <figure>
-    <IMG src="img/4.4.3.png" ALT="slash declaration">
+    <IMG src="resources/4.4.3.png" ALT="slash declaration">
     <figcaption><u>Fig. 4.4.3</u> An external object with a slash declaration</figcaption>
 </figure>
 
@@ -825,9 +826,10 @@ this folder!
 first step is ignored.
 
 </div>
-<div id="footer">
-<A href="x5.htm"> next chapter </A><BR>
-<A href="index.htm#s4"> back to table of contents </A>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
 
 </BODY>
