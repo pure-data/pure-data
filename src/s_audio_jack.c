@@ -389,7 +389,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     jack_didshutdown = 0;
     jack_dio_error = 0;
 
-    if ((inchans == 0) && (outchans == 0)) return 0;
+    if ((inchans == 0) && (outchans == 0)) return 1;
 
     if (outchans > MAX_JACK_PORTS) {
         pd_error(0, "JACK: %d output ports not supported, setting to %d",

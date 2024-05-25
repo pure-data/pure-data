@@ -395,6 +395,9 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     logpost(NULL, PD_VERBOSE, "framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
     logpost(NULL, PD_VERBOSE, "rate %d", rate);
 
+    if (!inchans && !outchans)
+        return (1);
+
     pa_inchans = STUFF->st_inchannels = inchans;
     pa_outchans = STUFF->st_outchannels = outchans;
     pa_soundin = soundin;
@@ -408,9 +411,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_sem = sys_semaphore_create();
 #endif
     pa_lastdactime = 0;
-
-    if (!inchans && !outchans)
-        return (0);
 
     if (callbackfn)
     {
