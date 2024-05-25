@@ -356,6 +356,12 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
+        if (pa_indev == -1)
+        {
+            inchans = 0;
+            pd_error(0, "audio input device number (%d) out of range",
+                indeviceno);
+        }
     }
 
     if (outchans > 0)
@@ -376,12 +382,13 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
+        if (pa_outdev == -1)
+        {
+            outchans = 0;
+            pd_error(0, "audio output device number (%d) out of range",
+                outdeviceno);
+        }
     }
-
-    if (inchans > 0 && pa_indev == -1)
-        inchans = 0;
-    if (outchans > 0 && pa_outdev == -1)
-        outchans = 0;
 
     logpost(NULL, PD_VERBOSE, "input device %d, channels %d", pa_indev, inchans);
     logpost(NULL, PD_VERBOSE, "output device %d, channels %d", pa_outdev, outchans);
