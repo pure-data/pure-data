@@ -1850,7 +1850,7 @@ void sys_stopgui(void)
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-    sys_vgui("%s", "exit\n");
+
     if (INTER->i_guisock >= 0)
     {
         sys_closesocket(INTER->i_guisock);
@@ -1875,6 +1875,7 @@ void s_inter_newpdinstance(void)
 #endif
     INTER->i_havegui = 0;
     INTER->i_havetkproc = 0;
+    INTER->i_guisock = -1;
 }
 
 void s_inter_free(t_instanceinter *inter)
