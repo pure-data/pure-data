@@ -93,7 +93,7 @@ extensions according to each case. See details in the table below:
 <th>OS       </th>
 <th>CPU-architecture                   </th>
 <th>float size   </th>
-<th>filename</th>
+<th class="left">extension</th>
 </tr>
 </thead>
 <tbody>
@@ -101,217 +101,221 @@ extensions according to each case. See details in the table below:
 <td>Linux    </td>
 <td><em>unspecified</em> (any architecture)   </td>
 <td>32</td>
-<td><code>my_lib.pd_linux</code> </td>
+<td class="left"><code>.pd_linux</code> </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel/AMD 32bit)             </td>
 <td>32</td>
-<td><code>my_lib.l_i386</code>   </td>
+<td class="left"><code>.l_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>32</td>
-<td><code>my_lib.linux-i386-32.so</code></td>
+<td class="left"><code>.linux-i386-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>64</td>
-<td><code>my_lib.linux-i386-64.so</code></td>
+<td class="left"><code>.linux-i386-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel/AMD 64bit)            </td>
 <td>32</td>
-<td><code>my_lib.l_amd64</code>  </td>
+<td class="left"><code>.l_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>32</td>
-<td><code>my_lib.linux-amd64-32.so</code></td>
+<td class="left"><code>.linux-amd64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>64</td>
-<td><code>my_lib.linux-amd64-64.so</code></td>
+<td class="left"><code>.linux-amd64-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;        </td>
 <td>arm (e.g. RaspberryPi)             </td>
 <td>32</td>
-<td><code>my_lib.l_arm</code>    </td>
+<td class="left"><code>.l_arm</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>32</td>
-<td><code>my_lib.linux-arm-32.so</code></td>
+<td class="left"><code>.linux-arm-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>64</td>
-<td><code>my_lib.linux-arm-64.so</code></td>
+<td class="left"><code>.linux-arm-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>arm64                              </td>
 <td>32</td>
-<td><code>my_lib.l_arm64</code>  </td>
+<td class="left"><code>.l_arm64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>32</td>
-<td><code>my_lib.linux-arm64-32.so</code></td>
+<td class="left"><code>.linux-arm64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
 <td>64</td>
-<td><code>my_lib.linux-arm64-64.so</code></td>
+<td class="left"><code>.linux-arm64-64.so</code></td>
 </tr>
+</tbody>
+<tbody>
 <tr>
 <td>macOS    </td>
 <td><em>unspecified</em> (any architecture)   </td>
 <td>32</td>
-<td><code>my_lib.pd_darwin</code>    </td>
+<td class="left"><code>.pd_darwin</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>fat (multiple archs)               </td>
 <td>32</td>
-<td><code>my_lib.d_fat</code>    </td>
+<td class="left"><code>.d_fat</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.darwin-fat-32.so</code></td>
+<td class="left"><code>.darwin-fat-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.darwin-fat-64.so</code></td>
+<td class="left"><code>.darwin-fat-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>PowerPC                            </td>
 <td>32</td>
-<td><code>my_lib.d_ppc</code>    </td>
+<td class="left"><code>.d_ppc</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.darwin-ppc-32.so</code></td>
+<td class="left"><code>.darwin-ppc-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.darwin-ppc-64.so</code></td>
+<td class="left"><code>.darwin-ppc-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel 32bit)                 </td>
 <td>32</td>
-<td><code>my_lib.d_i386</code>   </td>
+<td class="left"><code>.d_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.darwin-i386-32.so</code></td>
+<td class="left"><code>.darwin-i386-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.darwin-i386-64.so</code></td>
+<td class="left"><code>.darwin-i386-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel 64bit)                </td>
 <td>32</td>
-<td><code>my_lib.d_amd64</code>  </td>
+<td class="left"><code>.d_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.darwin-amd64-32.so</code></td>
+<td class="left"><code>.darwin-amd64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.darwin-amd64-64.so</code></td>
+<td class="left"><code>.darwin-amd64-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>arm64 (Apple Silicon)              </td>
 <td>32</td>
-<td><code>my_lib.d_arm64</code>  </td>
+<td class="left"><code>.d_arm64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.darwin-arm64-32.so</code></td>
+<td class="left"><code>.darwin-arm64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.darwin-arm64-64.so</code></td>
+<td class="left"><code>.darwin-arm64-64.so</code></td>
 </tr>
+</tbody>
+<tbody>
 <tr>
 <td>Windows  </td>
 <td><em>unspecified</em> (any architecture)   </td>
 <td>32</td>
-<td><code>my_lib.dll</code>  </td>
+<td class="left"><code>.dll</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel/AMD 32bit)             </td>
 <td>32</td>
-<td><code>my_lib.m_i386</code>   </td>
+<td class="left"><code>.m_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.windows-i386-32.dll</code></td>
+<td class="left"><code>.windows-i386-32.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.windows-i386-64.dll</code></td>
+<td class="left"><code>.windows-i386-64.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel/AMD 64bit)            </td>
 <td>32</td>
-<td><code>my_lib.m_amd64</code>  </td>
+<td class="left"><code>.m_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>32</td>
-<td><code>my_lib.windows-amd64-32.dll</code></td>
+<td class="left"><code>.windows-amd64-32.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
-<td><code>my_lib.windows-amd64-64.dll</code></td>
+<td class="left"><code>.windows-amd64-64.dll</code></td>
 </tr>
 </tbody>
 </table>
