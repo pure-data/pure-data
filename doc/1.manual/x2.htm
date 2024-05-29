@@ -39,12 +39,8 @@ to attach shapes and colors to data in order to visualize it and/or edit it grap
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
-processing. These include notable extensions like "Ceammc", "Cyclone", "ELSE",
-"FFTease", "IEMlib", "Pmpd", "TimbreID", "Zexy" and many more. External libraries for
-graphical processing include Mark Dank's "GEM" and Zack Lee's "Ofelia", which allows you
-to use openFrameworks and the Lua programming language within Pd for creating audiovisual
-artwork or multimedia applications such as games. For details on installing and managing
-packages, refer to <A href="x4.htm"> Chapter 4: Externals</A>.
+processing, but also for graphical processing and whatnot. For examples and details
+on installing and managing packages, refer to <A href="x4.htm"> Chapter 4: Externals</A>.
 
 <H4> <A href="#s2.1.1" id="s2.1.1"> 2.1.1. The main window, canvases, and printout</A> </H4>
 
@@ -188,10 +184,11 @@ and presented with a dashed border before creation.
 </figure>
 
 <P>You only create a particular <i>object</i> after you entered text into the
-object box. The text consists of <i>atoms</i>, which are separated by spaces.
-The first atom (which needs to be a symbol) determines the type of object Pd
-will create, while the subsequent atoms, known as <i>creation arguments</i>,
-instruct Pd how to initialize the object. For instance, you can type "+ 13".
+object box and click outside it to instantiate it. The text consists of <i>atoms</i>,
+which are separated by spaces. The first atom (which needs to be a symbol) determines
+the type of object Pd will create, while the subsequent atoms, known as <i>creation
+arguments</i>, instruct Pd how to initialize the object. For instance, you can type
+"+ 13".
 
 <figure>
 <IMG src="resources/2.1.12.png" ALT="object box">
@@ -435,12 +432,16 @@ This keeps the box selected and you can deselect it by clicking on an empty spot
 of the patch or using the <kbd>Esc</kbd> key.
 
 <P>Message and object boxes are empty when created. After being positioned you
-starting to type into them. Also, start to typing into them will force position
-them if they haven't been positioned yet by a click. Deselecting the object box
-after you typed the object name creates it.
+can start typing into them. Also, start to typing into them will force position
+the boxes if they haven't been positioned yet by a click. Deselecting an object
+box after you typed the object name creates it.
 
 <P>When you create a comment box, it shows a "comment" symbol. When you position
-it, this symbol is selected, so you can start typing a new commentary.
+it, this symbol is selected, so you can start typing a new commentary. Similar to
+an object box, the comment is only created after deselecting it. Same is true for
+a message box as the message is only part of the patch after deselecting it.
+Saving a patch with not properly created object, comment and message boxes will
+save them as empty boxes.
 
 <P>You may find it more convenient to select a box and "duplicate" it than to use
 the <b>Put menu</b>. If you duplicate a selection of several items, any connections

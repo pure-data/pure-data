@@ -23,6 +23,18 @@
 <p> This chapter explains what are external objects and libraries. It also
 describes everything on how to install and load them in Pure Data.
 
+<P>Pure Data, by intent and design, has a lightweight and portable nature.
+Most likely you'll need or want to install externals to enhance Pd's
+capabilities. Luckily, Pd offers a wide range of external packages by
+third party developers that enhance its capabilities. Most of these are
+primarily focused on audio and control processing, like "Ceammc", "Cyclone",
+"ELSE", "FFTease", "Flucoma", "IEMlib", "Pmpd", "TimbreID", "Zexy", and
+many more. The "vstplugin~" external allows you to run VST plugins inside Pd.
+External libraries for graphical processing include Mark Dank's "GEM" and Zack
+Lee's "Ofelia", which allows you to use openFrameworks and the Lua programming
+language within Pd for creating audiovisual artwork or multimedia applications
+such as games.
+
 <p>You can write your own external objects that you and others can use in
 their Pd applications in C or (if you're smart and brave) in C++ or FORTRAN.
 In the "6.externs" subdirectory of the 'doc' folder you can find simple
@@ -33,7 +45,6 @@ accessible via the browser window.
 zmölnig . Check also the
 pd-lib-builder project (a helper makefile for Pure Data external libraries by
 Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder</a>
-
 
 
 <H3> <A href="#s4.1" id="s4.1"> 4.1 External Objects & Libraries </A> </H3>
@@ -200,24 +211,6 @@ extensions according to each case. See details in the table below:
 <td>&lsquo;&rsquo;                             </td>
 <td>64</td>
 <td class="left"><code>.darwin-fat-64.so</code></td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>PowerPC                            </td>
-<td>32</td>
-<td class="left"><code>.d_ppc</code>    </td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td class="left"><code>.darwin-ppc-32.so</code></td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td class="left"><code>.darwin-ppc-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
