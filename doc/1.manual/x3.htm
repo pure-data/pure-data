@@ -30,7 +30,7 @@ audio and MIDI input and output, and finally get Pd to meet its real-time obliga
 reliably.
 
 
-<H3> <A id=s3.1> 3.1. Installing Pd </A> </H3>
+<H3> <A href="#s3.1" id="s3.1"> 3.1. Installing Pd </A> </H3>
 
 <P> Most commonly, you want to install Pd as a 64 bit application, which is available
 for download, but a 32 bit versions is also available for older OSes. The download
@@ -49,7 +49,7 @@ https://lists.puredata.info/listinfo/pd-list</A>, which often has late-breaking
 news about configuration problems and solutions.
 
 
-<H4> <A id="s3.1.1"> 3.1.1. macOS</A> </H4>
+<H4> <A href="#s3.1.1" id="s3.1.1"> 3.1.1. macOS</A> </H4>
 
 <P>Pd supports macOS from 10.7 and up. There is a version for 10.7 to 10.9 provided,
 but the main download binary for more modern OS versions supports 10.10 or newer and
@@ -62,7 +62,7 @@ provided for 10.7 up to 10.14, which is suited if you need to run some old exter
 This is normal although some system administrators will prevent you from
 doing this (in which case you can't run Pd on that machine).
 
-<H4> <A id=s3.1.2>3.1.2 Microsoft Windows </A> </H4>
+<H4> <A href="#s3.1.2" id="s3.1.2">3.1.2 Microsoft Windows </A> </H4>
 
 <P> For Windows, you can download a .zip package for manual install or an executable
 installer (a ".exe" file). Run the installer if you are not sure how to install
@@ -83,7 +83,7 @@ programs that make a "network link" (locally) to intercommunicate. The first
 time you run Pd the "Windows Firewall" will ask your permission to allow this
 intercommunication.
 
-<H4> <A id=s3.1.3>3.1.3. Linux </A> </H4>
+<H4> <A href="#s3.1.3" id="s3.1.3">3.1.3. Linux </A> </H4>
 
 <P> Pd is available via the package systems for some Linux distributions,
 but not always in the most recent version possible. In case you don't find
@@ -91,7 +91,7 @@ it or want the very latest recent version, you need to compile Pd, which is
 described  in <a href="x6.htm#s6.3">6.3. Building Pd for Linux</a>.
 
 
-<H3> <A id=s3.2> 3.2. Running Pd via the command line </A> </H3>
+<H3> <A href="#s3.2" id="s3.2"> 3.2. Running Pd via the command line </A> </H3>
 
 <P>Besides opening Pd by clicking on a user friendly icon as usual, you may
 open and run Pd as a "command line" program from your "terminal emulator",
@@ -116,7 +116,7 @@ Pd.
 all options.
 
 
-<H3> <A id=s3.3> 3.3. Testing and configuring Audio and MIDI </A> </H3>
+<H3> <A href="#s3.3" id="s3.3"> 3.3. Testing and configuring Audio and MIDI </A> </H3>
 
 <P> To test audio and MIDI, start Pd and select "Test Audio and MIDI..."
 from the <b>Media menu</b>. You should see a window like this:
@@ -301,7 +301,7 @@ has sync problems.
 
 
 
-<H4> <A id=s3.3.1>3.3.1. Audio settings </A> </H4>
+<H4> <A href="#s3.3.1" id="s3.3.1">3.3.1. Audio settings </A> </H4>
 
 <P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
 API. Clicking on the API to change it also opens the settings window for the
@@ -347,7 +347,7 @@ can also do that but you need to be using the 'old MMIO system' API
 a workaround by creating an aggregate device (via the system's "Audio
 MIDI Setup") and set it in Pd's Audio settings.
 
-<H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
+<H4> <A href="#s3.3.2" id="s3.3.2">3.3.2. MIDI settings </A> </H4>
 
 <p> There's also a MIDI settings dialog for you to configure one or more MIDI
 input and output devices. If more than one device is chosen for either input and
@@ -369,7 +369,7 @@ has a separate inlet to specify which MIDI port you want.
 <P> System exclusive MIDI message input and output are theoretically supported
 but does not work uniformly across all operating systems..
 
-<H3> <A id=s3.4> 3.4. Path and startup</A> </H3>
+<H3> <A href="#s3.4" id="s3.4"> 3.4. Path and startup</A> </H3>
 
 <P> In addition to the Audio and MIDI settings shown above, you can customize
 Pd to instruct it where to find files, what font size to use, and much more.
@@ -449,7 +449,7 @@ you can also invoke Pd via the command line using the same startup flags
 as arguments. Command line settings, if given, override the corresponding
 settings that were saved from Pd.
 
-<H4> <A id=s3.4.1>3.4.1. Startup flags </A> </H4>
+<H4> <A href="#s3.4.1" id="s3.4.1">3.4.1. Startup flags </A> </H4>
 
 <P> Here's a list of all startup flags that you can use in the "Startup" tab under
 "Preferences" or by running Pd from the command line.
@@ -553,14 +553,14 @@ general flags:
 <P>See next details on a few of the group of flag items.
 
 
-<H5> <A id=s3.4.1.1> 3.4.1.1. Font flags</A> </H5>
+<H5> <A href="#s3.4.1.1" id="s3.4.1.1"> 3.4.1.1. Font flags</A> </H5>
 
 
 <P> The flags offer more font configurations than just "size". Note that macOS has,
 by default, a "normal" font weight, while in Linux and Windows you have "<b>bold</b>"
 by default. Use "-font-weight" to change that if you don't like your default setting.
 
-<H5> <A id=s3.4.1.2> 3.4.1.2. Path flag</A> </H5>
+<H5> <A href="#s3.4.1.2" id="s3.4.1.2"> 3.4.1.2. Path flag</A> </H5>
 
 <P> Paths may contain any number of entries if separated by colons in Unix or
 semicolons in Windows. Filenames in Pd are always separated by (Unix-style)
@@ -569,7 +569,7 @@ so that patches can be ported more easily between operating systems. On the
 other hand, if you specify a filename on the command line (as in "pd -path
 c:\pdlib") the file separator should agree with the operating system.
 
-<H5> <A id=s3.4.1.3> 3.4.1.3. Flags for Audio and MIDI multiple devices and sleepgrain</A> </H5>
+<H5> <A href="#s3.4.1.3" id="s3.4.1.3"> 3.4.1.3. Flags for Audio and MIDI multiple devices and sleepgrain</A> </H5>
 
 <P> You can specify multiple MIDI input and output devices via flags. For example,
 "pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
@@ -592,7 +592,7 @@ channels by device: "-audioindev 1,3 -inchannels 2,8" will try to open device 1
 (2 channels) and device 3 (8 channels). Note that multiple audio device selection
 is only possible for Linux and Windows, as noted earlier.
 
-<H5> <A id=s3.4.1.4> 3.4.1.4. Sample rate flag</A> </H5>
+<H5> <A href="#s3.4.1.4" id="s3.4.1.4"> 3.4.1.4. Sample rate flag</A> </H5>
 
 <P>The sample rate controls Pd's logical sample rate which need not be that of
 the audio input and output devices. If Pd's sample rate is wrong, time will
@@ -601,7 +601,7 @@ and input devices are running at different rates, Pd will constantly drop frames
 to re-sync them, which will sound bad. You can disable input or output if this
 is a problem.
 
-<H5> <A id=s3.4.1.5> 3.4.1.5. Audio buffer size and block size flags</A> </H5>
+<H5> <A href="#s3.4.1.5" id="s3.4.1.5"> 3.4.1.5. Audio buffer size and block size flags</A> </H5>
 
 <P>You can specify an audio buffer size in milliseconds, typically between 10 and
 300, depending on how responsive your OS and drivers are. If this is set too
