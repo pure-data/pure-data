@@ -29,7 +29,6 @@ first get and install it, and then untangle whatever problems arise in handling
 audio and MIDI input and output, and finally get Pd to meet its real-time obligations
 reliably.
 
-
 <H3> <A href="#s3.1" id="s3.1"> 3.1. Installing Pd </A> </H3>
 
 <P> Most commonly, you want to install Pd as a 64 bit application, which is available
@@ -39,9 +38,24 @@ https://msp.ucsd.edu/software.html</A>. Binaries are provided for Windows and ma
 while Linux users can get Pd from package managers. The source code is also available
 in this link for you to build Pd yourself.
 
-<P> Installation instructions are platform-specific and described in each case in
-this section, but Instructions on how to build Pd yourself for all supported OSes is
-provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+<P> Note that Miller's website only offers Pd compiled for single precision, but Pd
+can also be compiled and run in double precision. An alternative to Miller's website
+we have <A href="https://puredata.info/downloads/pure-data">
+https://puredata.info/downloads/pure-data</A> with Pure Data downloads. Note that
+besides the official single precision application, this link also offers an experimental
+download for double precision. Note that the double precision application needs externals
+compiled speacially for it.
+
+<P> Installation instructions are platform-specific and described in each case in this
+section, but Instructions on how to build Pd yourself for all supported OSes in both single
+or double precision is provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+
+<P> Note that you can have different versions of Pd and also Pd compiled for different
+architectures and float precision in the same machine/OS. The Pd application is named in
+a way that it distinguishes itslf from other versions in each case. The "regular" Pd is
+for 64-bit application and single precision. The double precision Pd application is named
+"Pd64", which can be confusing, meaning that it is for 64-bit architecture, but it means
+it uses double precision really (whose float size is "64").
 
 <P> If you run into any installation trouble you can also consult the Pd mailing list
 archive on <A href="https://lists.puredata.info/listinfo/pd-list">

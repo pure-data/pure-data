@@ -35,17 +35,19 @@ Lee's "Ofelia", which allows you to use openFrameworks and the Lua programming
 language within Pd for creating audiovisual artwork or multimedia applications
 such as games.
 
-<p>You can write your own external objects that you and others can use in
+<p> You can write your own external objects that you and others can use in
 their Pd applications in C or (if you're smart and brave) in C++ or FORTRAN.
 In the "6.externs" subdirectory of the 'doc' folder you can find simple
 examples of externals with their source code and test patches. This is also
 accessible via the browser window.
 
-<p>There’s also an excellent guide to writing externals at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>, written by IOhannes
-zmölnig . Check also the
-pd-lib-builder project (a helper makefile for Pure Data external libraries by
-Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder</a>
-
+<p>There’s also an excellent guide to writing externals at
+<a href="https://github.com/pure-data/externals-howto">
+https://github.com/pure-data/externals-howto</a>, written
+by IOhannes zmölnig . Check also the pd-lib-builder project
+(a helper makefile for Pure Data external libraries by Katja
+Vetter) at <a href="http://github.com/pure-data/pd-lib-builder">
+http://github.com/pure-data/pd-lib-builder</a>.
 
 <H3> <A href="#s4.1" id="s4.1"> 4.1 External Objects & Libraries </A> </H3>
 
@@ -94,15 +96,38 @@ external objects, as discussed below.
 <H5> <A href="#s4.1.2.1" id="s4.1.2.1"> 4.1.2.1. Compiled objects</A> </H5>
 
 <p> These are Pd objects compiled to binaries from programming code (like
-in C or C++). They have to be compiled for your operating system, CPU
-architecture and float precision, which means the binaries have different
-extensions according to each case. See details in the table below:
+in C or C++). They have to be compiled to match your Pd application. Pd is
+made available for diffetent Operating systems, namely Linux, macOS and Windows.
+Moreover, it is available for different CPU architectures and float precision
+(single or double).
+
+<p>In <A href="x3.htm">Chapter 3: Installing and configuring Pd</A> you can see
+how to download different Pd applications. Most commonly, you'll have Pd installed
+as a 64 bit application, which matches most recent systems. Also, currently, Pd does
+not officially support or provides compilation for double precision. You can download
+an experimental release or compile for double precision yourself (for compilation
+instructions, see <A href="x6.htm">Chapter 6: Building Pd from source</A>).
+
+<p>A 32 bit Pd application is mostly suited to run old externals that were not
+updated and compiled for 64-bit architecture. Most important externals are easily
+provided for 64-bit applications though. There can also be the case where one is
+running Pd in an old machine with an old OS for 32-bit architecture.
+
+<p>The double precision Pd application (with float size "64", as opposed to "32"
+for single precision) also requires externals compiled speacially for it. Since
+this is rather recente and not yet fully supported, only a few libraries are made
+available for it yet.
+
+<p>Note you can have externals for different OSes, architectures and even both
+single and double precision all in the same machine and folder. This is because
+each case can have a different file extension for the compiled binary file. Check
+details in the table below:
 
 <table>
 <thead>
 <tr>
 <th>OS       </th>
-<th>CPU-architecture                   </th>
+<th>CPU-architecture  </th>
 <th>float size   </th>
 <th class="left">extension</th>
 </tr>
@@ -110,9 +135,9 @@ extensions according to each case. See details in the table below:
 <tbody>
 <tr>
 <td>Linux    </td>
-<td><em>unspecified</em> (any architecture)   </td>
+<td><em>unspecified</em> (any architecture) </td>
 <td>32</td>
-<td class="left"><code>.pd_linux</code> </td>
+<td class="left"><code>.pd_linux</code>     </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
@@ -152,7 +177,7 @@ extensions according to each case. See details in the table below:
 </tr>
 <tr>
 <td>&lsquo;        </td>
-<td>arm (e.g. RaspberryPi)             </td>
+<td>arm (32-bit)                        </td>
 <td>32</td>
 <td class="left"><code>.l_arm</code>    </td>
 </tr>
@@ -170,7 +195,7 @@ extensions according to each case. See details in the table below:
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
-<td>arm64                              </td>
+<td>arm64 (64-bit)                      </td>
 <td>32</td>
 <td class="left"><code>.l_arm64</code>  </td>
 </tr>
@@ -250,7 +275,7 @@ extensions according to each case. See details in the table below:
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
-<td>arm64 (Apple Silicon)              </td>
+<td>arm64 (aka "Apple Silicon"; 64-bit)        </td>
 <td>32</td>
 <td class="left"><code>.d_arm64</code>  </td>
 </tr>
