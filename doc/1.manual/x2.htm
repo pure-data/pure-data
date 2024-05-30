@@ -423,27 +423,26 @@ incorporated natively into Pd in version 0.34 (they can still be created from
 object boxes though - see their help patches for the corresponding symbols). There
 are also entries for "array" and "graph" that will be explained later.
 
-<P>If you are in run mode and click on an entry on the <b>Put menu</b> or use
-a shortcut, Pd automatically switches to edit mode. When you create boxes
-this way, they are automatically selected and follow the mouse cursor position;
+<P>If you are in run mode and click on an entry in the <b>Put menu</b> or use
+a shortcut, Pd automatically switches to edit mode. When you add boxes
+this way, they are automatically selected and follow the mouse cursor;
 drag them around as desired until you click to position them where you want.
-This keeps the box selected and you can deselect it by clicking on an empty spot
+The box will still be selected and you can input text.
+
+<P>Message and object boxes are empty when added. Typing into them will also
+force position the boxes if they haven't been positioned yet by a click.
+To actually create the object, deselect it by clicking on an empty spot
 of the patch or using the <kbd>Esc</kbd> key.
 
-<P>Message and object boxes are empty when created. After being positioned, you
-can start typing into them. Also, typing into them will force position the boxes
-if they haven't been positioned yet by a click. Deselecting an object
-box after you typed the object name creates it.
-
-<P>When you create a comment box, it shows a "comment" symbol. When you position
-it, this symbol is selected, so you can start typing a new commentary. Similar to
-an object box, the comment is only created after deselecting it. Same is true for
-a message box as the message is only part of the patch after deselecting it.
-Saving a patch with not properly created object, comment and message boxes will
-save them as empty boxes.
+<P>When you add a comment box, it shows a "comment" placeholder text. When you
+position it, the text is selected and you can start typing a new commentary.
+Similar to an object box, the comment is only created after deselecting it.
+Same is true for a message box as the message is only part of the patch after
+deselecting it. Saving a patch without properly created objects, comments or
+message boxes will save them as empty boxes.
 
 <P>You may find it more convenient to select a box and "duplicate" it than to use
-the <b>Put menu</b>. If you duplicate a selection of several items, any connections
+the <b>Put menu</b>. If you duplicate a selection of several items, connections
 between them will be duplicated as well. To deselect more than one box, you
 can also either click on an empty area of your patch or press <kbd>Esc</kbd>.
 
