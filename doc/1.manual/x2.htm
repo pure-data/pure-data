@@ -198,23 +198,23 @@ arguments</i>, instruct Pd how to initialize the object. For instance, you can t
 <P>Here, the "+" specifies the <I>class</I> of the object. In this case the
 object will carry out additions, and the "13" initializes the value to add.
 
-<P>Atoms are either <I>numbers</I> or <I>symbols</I>. Anything that is not a
-valid number (like "+") is considered a symbol. Valid numbers may or may not
-have a decimal point, such as "12", "15.6", "-0.456". Numbers may also be written
-in exponential notation, such as "4.5e+06", which means "4.5" times "10ˆ6" (10
-to power of 6, i.e., 1000000) and results in "4500000". Negative exponents
-also work, such as 1.5e-06, which means "1.5" times "10ˆ-6" and results in
-"0.0000015".
+<P>Atoms are either <I>numbers</I> or <I>symbols</I>. Anything that is not
+a valid number is considered a symbol. Valid numbers may or may not have a
+decimal point, such as "12", "15.6", "-0.456". Numbers in Pd may also be
+written in exponential notation and have limited display and internal precison.
+Check more details in <A href="x2.htm#s2.4.1">subsection 2.4.1.</A>.
 
-<P>Invalid numbers, which are interpreted as symbols, include things like "+5" and "0..6"
-as well as words and names such as "Zack" or "cat". The symbols "gore", "Gore", and
-"GORE" are all distinct, reflecting case sensitivity.
+
+<P>A number that starts with a "+" is not considered a valid number and is
+considered a symbol instead, so is "0..6" as well as words and names such as
+"Zack" or "cat". The symbols "gore", "Gore", and "GORE" are all distinct,
+reflecting case sensitivity.
 
 <P>The text you type into an object box determines how many and what kinds of
 <i>inlets</i> and <i>outlets</i> the object will have. Certain classes, such as
-<b>[+]</b>, consistently maintain a fixed configuration of inlets
-and outlets. However, for other classes, the number and arrangement of inlets and
-outlets can vary based on the creation arguments.
+<b>[+]</b>, consistently maintain a fixed configuration of inlets and outlets.
+However, for other classes, the number and arrangement of inlets and outlets
+can vary based on the creation arguments.
 
 <P>Here is an example of a simple synthesizer that takes a MIDI input and
 synthesizes a pure tone:
@@ -224,13 +224,10 @@ synthesizes a pure tone:
     <figcaption><u>Fig. 2.1.13</u> A simple MIDI synthesizer</figcaption>
 </figure>
 
-
-<P>This patch mixes <I>control</I> objects (<b>[notein]</b>,
-<b>[stripnote]</b>, and <b>[ftom]</b>) with <I>tilde</I>
-objects (<b>[osc~]</b>, <b>[*~]</b>, and
-<b>[dac~]</b>). These are the two types of objects that exist in Pd:
-
-control objects and signal objects.
+<P>This patch mixes <I>control</I> objects (<b>[notein]</b>, <b>[stripnote]</b>,
+and <b>[ftom]</b>) with <I>tilde</I> objects (<b>[osc~]</b>, <b>[*~]</b>, and
+<b>[dac~]</b>). These are the two types of objects that exist in Pd: control
+objects and signal objects.
 
 <P>The control objects on the upper half carry out their function sporadically, as a
 result of one or more types of <I>events</I>. In this case, incoming MIDI note
@@ -921,21 +918,107 @@ Pd messages are sporadic, like MIDI messages or Music N "Note cards".
 The management of messages in Pd corresponds to the "Control" realm, as
 opposed to Audio signals, described in the next section.
 
-<H4> <A href="#s2.4.1" id="s2.4.1">2.4.1. Anatomy of a message</A> </H4>
+<H4> <A href="#s2.4.1" id="s2.4.1">2.4.1. Message types (selector) and float precision</A> </H4>
 
 <P>Messages contain a selector followed by any number of arguments. The selector
-is a symbol, which appears in the patch as a non-numeric string with no white
-space, semicolons, or commas. The arguments may be symbols or numbers.
+is a symbol that defines the message type. The arguments are anything that follows a
+nd may be symbols or numbers (aka 'atoms'). For instance "list a b c" has a "list"
+selector, which defines a "list" data type, and "a b c" is the actual message, a list
+message in this case. This message is only composed of symbols but a list message can
+combine two or more symbols and/or floats.
 
-<P>Pd is usually compiled for single precision. Experimental binaries are
-available via the community for double precision (aka "Pd64"), but no
-binary is yet provided by the official download site. You can also compile
-Pd for double precision yourself (see details in <A href="x6.htm#s6.2">
-6.2. General Autotools Build steps</A>). If compiled for single precision,
-numbers are kept in 32-bit floating point, while if compiled for double
-precision ou have values in 64-bit floating point precision.Pd doesn't
-have a integer data type. The integer resolution is bothsingle and double
-precision is shown on the table below.
+<figure>
+    <IMG src="resources/2.4.1.png" ALT="list selector">
+    <figcaption><u>Fig. 2.4.1</u> List messages</figcaption>
+</figure>
+
+<P>Above we have some options of list messages. Note that when you have a messages
+with two or more elements that start with a number, the list selector is not necessary.
+That is, if you don't specify it, Pd will implicitly consider it a list message. Hence,
+numbers cannot be used as selectors. And while a message with a number followed by other
+arguments is automatically given the "list" selector, a single number message is always
+given the "float" selector automatically.
+
+<P>There are common, or 'special' selectors that Pd defines so that objects can be
+linked together with maximum flexibility. The special types are: float, symbol, list,
+bang and pointer (this one used for data structures only). Other message selectors can
+be anything else. If a message contains only one symbol, like "stop", it is considered
+a selector with no actual message attached (arguments). The bang message is a special
+selector and takes no arguments. The symbol selector can only have one symbol argument.
+See below.
+
+<figure>
+    <IMG src="resources/2.4.2.png" ALT="Different selectors">
+    <figcaption><u>Fig. 2.4.2</u> Different selectors</figcaption>
+</figure>
+
+<P>When a message is passed to something (which is often an inlet of a box
+but could be anything that can receive a message), the selector of the message
+is checked against the receiver. If the receiver recognizes messages of that
+selector, it carries out some corresponding action. Let's take the <b>[float]</b>
+object below as an example.
+
+<figure>
+    <IMG src="resources/2.4.3.png" ALT="float help">
+    <figcaption><u>Fig. 2.4.3</u> The help file of the <b>[float]</b> object</figcaption>
+</figure>
+
+<P>Note that the <b>[float]</b> object has two rectangles at the top that are called "inlets",
+but the one on the left directs incoming messages to the <b>[float]</b> object itself, while
+the one on the right directs messages to an auxiliary "inlet" object. The <b>[float]</b> object
+itself (represented by the left inlet) accepts messages with the selectors "float", "bang",
+"symbol" and "send". The right inlet only accepts messages with the "float" selector. Out of
+the "special" selector, only "list" is not accepted. The help files of objects have a
+"reference" "subwindow that details the funcions of "inlets" and "outlets" and also specify
+what kind of messages it takes and outputs. See below.
+
+<figure>
+    <IMG src="resources/2.4.4.png" ALT="reference">
+        <figcaption><u>Fig. 2.4.4</u> The <b>[float]</b>'s reference</figcaption>
+</figure>
+
+<P>Actual messages are composed of 'atoms' (<I>numbers</I> or <I>symbols</I>). There is
+also an extra <I>pointer</I> type used for data structures but you cannot see it or type
+it on the patch level. So all you can actually see in boxes and printed on the console
+window are numbers and symbols. As mentioned earlir, all that is not considered a number
+is interpreted in Pd as a symbol. Hence, symbols can contain and start with decimal digits.
+
+<P>There is only one type of number atom, which is a 'float'. Hence, Pd does not have a
+'integer' number type or any other. Numbers in Pd may also be written in exponential
+notation, such as "4.5e+06", which means "4.5" times "10ˆ6" (10 to power of 6, i.e.,
+1000000) and results in "4500000". Negative exponents also work, such as 1.5e-06, which
+means "1.5" times "10ˆ-6" and results in "0.0000015".
+
+<P>In fact, depending on the numbers, they are displayed either in exponential
+notation or not. You can only have up to three zeros after the decimal point
+before the first non-zero digit. For instance, "0.0001". If you add another zero
+Pd turns it into exponential notation for display, so "0.00001" becomes "1e-05".
+Conversely, if you type "1e-04", Pd converts it to "0.0001" for display.
+
+<P>Other than this, Pd only displays 6 significant digits. This means you can have
+"100000", but adding another 0 makes it become "1e+06". On the other hand, typing
+"1e+05" makes it 100000".
+
+<P>Having 6 significant digits means that numbers are rounded. You can display
+"0.000123456", which has 6 significant digits, but adding another digit as in
+"0.0001234567" forces Pd to round it to "0.000123457". Now, adding another zero
+before the first significant digit turns this into exponential notation as
+"1.23456e-05", keeping the display of the 6 significant digits. Similarly to
+the earlier example, "1.234567e-05" becomes "1.23457e-05". The 7th significant
+digit is rounded in a way that "0.9999994" or less becomes "0.999999" and
+"0.9999995" or higher becomes "1".
+
+<P>Don't mistake the display precision and rounding that Pd makes with the
+actual float precision. If compiled for single precision, numbers in Pd are
+kept in 32-bit floating point precision, which allows you to represent any
+integer with 7 digits or less, but Pd will only display 6, even though it can
+deal with more resolution.
+
+<P>Note that the display resolution is the same wether Pd is compiled for single
+or double precision, even though the resolution is much higher in Pd64. Since Pd
+has no integer data type. The integer resolution depends on the float precision.
+For both single and double precision, the integer resolution is shown on the
+table below.
 
 <br>
 <br>
@@ -967,31 +1050,27 @@ precision is shown on the table below.
 </table>
 <br>
 
-
-<P>When a message is passed to something (which is often an inlet of a box
-but could be anything that can receive a message), the selector of the message
-is checked against the receiver. If the receiver recognizes messages of that
-selector, it carries out some corresponding action.
+<P>Hence, there is a discrepancy in what Pd displays and what the actual number
+is. In some cases you may not want to represent floats in a message or object as
+it is prone to rounding errors. For instance, Pd can only represent pi as
+"3.14159", but it can be calculated with more precision from math objects.
 
 <figure>
-    <IMG src="resources/2.4.1.png" ALT="float object">
-    <figcaption><u>Fig. 2.4.1</u> A <b>[float]</b> object</figcaption>
+    <IMG src="resources/2.4.5.png" ALT="precision">
+    <figcaption><u>Fig. 2.4.5</u>Display precision</figcaption>
 </figure>
 
-<P>For instance, in the <b>[float]</b> object above, we see two
-rectangles at the top that are called "inlets", but the one on the left directs incoming
-messages to the <b>[float]</b> object itself, while the one on the
-right directs messages to an auxiliary "inlet" object. The
-<b>[float]</b> object itself (represented by the left inlet) accepts
+<P>In the picture above, the <b>[expr]</b> object takes a bang and calculates the
+value of pi. The number box displays "3.14159", with 6 significant digits, but
+internally the precision is finer. We then compare the output of the number box
+with <b>[!=]</b> (a 'not equal' object) to see if it differs from the number we
+can type in Pd with the possible display resolution of the number pi. The <b>[!=]</b>
+object then outputs "1" and activates the toggle, which shows us they are not really
+the same number.
 
-messages with the selectors "float" and "bang". The right inlet only accepts messages
-with the "float" selector. These two selectors, together with "symbol" and "list",
-are usually used to indicate the main action of an object, whatever it may be,
-so that objects can be linked together with maximum flexibility.
-
-<P>Numbers cannot be used as selectors. A single number message is always given
-the "float" selector automatically, and a message with a number followed by other
-arguments is automatically given the "list" selector.
+<P>Note that while typing a number into a message or comment, Pd can display it
+with more precision or even with a different notation (regular instead of exponential),
+but copying it and pasting or saving and reopening forces rounding.
 
 <H4> <A href="#s2.4.2" id="s2.4.2">2.4.2. Depth first message passing</A> </H4>
 
@@ -1001,8 +1080,8 @@ others. So each message sets off a tree of consequent messages. This tree is
 executed in depth first fashion. For instance in the patch below:
 
 <figure>
-    <IMG src="resources/2.4.2.png" ALT="depth first">
-    <figcaption><u>Fig. 2.4.2</u> A tree with depth first message passing</figcaption>
+    <IMG src="resources/2.4.6.png" ALT="depth first">
+    <figcaption><u>Fig. 2.4.6</u> A tree with depth first message passing</figcaption>
 </figure>
 
 <P>The order of arrival of messages is either A-B-C-D or A-C-D-B. The "C"
@@ -1013,11 +1092,11 @@ depends on the order the connections were made in.
 <P>Message-passing can give rise to infinite loops of the sort shown here:
 
 <figure>
-    <IMG src="img/2.4.3.png" ALT="infinite loop">
-    <figcaption><A id="sfinderror"><u>Fig. 2.4.3</u> An infinite loop (stack overflow)</A></figcaption>
+    <IMG src="img/2.4.7.png" ALT="infinite loop">
+    <figcaption><A id="sfinderror"><u>Fig. 2.4.7</u> An infinite loop (stack overflow)</A></figcaption>
 </figure>
 
-<P>Here, the left-hand [+ 1] can't finish processing until the right-hand one has
+<P>Here, the left-hand <b>[+ 1]</b> can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
 has been sent "3", and so on. This generates a "stack overflow" error (meaning there's
 an infinite loop) in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
@@ -1025,32 +1104,29 @@ on (as described earlier) to select the causing object. Note that you can also u
 "Find Last Error" entry in the <b>Find menu</b> for this.
 
 <figure>
-    <IMG src="resources/2.4.4.png" ALT="find error source">
-    <figcaption><u>Fig. 2.4.4</u> Find error via the console window</figcaption>
+    <IMG src="resources/2.4.8.png" ALT="find error source">
+    <figcaption><u>Fig. 2.4.8</u> Find error via the console window</figcaption>
 </figure>
 
-<P>However, it is legal to make a loop if there is a <b>[delay]</b>
-object somewhere in it. When <b>[delay]</b> receives a message, it
-schedules a message for the future (even if the time delay is 0) and is then "finished";
-Pd's internal scheduler will wake the <b>[delay]</b> back up later.
+<P>However, it is legal to make a loop if there is a <b>[delay]</b> object somewhere
+in it. When <b>[delay]</b> receives a message, it schedules a message for the future
+(even if the time delay is 0) and is then "finished"; Pd's internal scheduler will
+wake the <b>[delay]</b> back up later.
 
 <H4> <A href="#s2.4.3" id="s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A> </H4>
 
-<P>With few exceptions (notably <b>[timer]</b>), objects treat their leftmost
-
-inlet as <i>hot</i> in the sense that messages to left inlets can result in output
-messages. So the following is a legal (and reasonable) loop construct:
+<P>With few exceptions (notably <b>[timer]</b>), objects treat their leftmost inlet as <i>hot</i> in
+the sense that messages to left inlets can result in output messages. So the following is a legal
+(and reasonable) loop construct:
 
 <figure>
-    <IMG src="resources/2.4.5.png" ALT="hot and cold inlets">
-    <figcaption><u>Fig. 2.4.5</u> Avoiding infinite loop with a cold inlet</figcaption>
+    <IMG src="resources/2.4.9.png" ALT="hot and cold inlets">
+    <figcaption><u>Fig. 2.4.9</u> Avoiding infinite loop with a cold inlet</figcaption>
 </figure>
 
-<P>Here, the <b>[f]</b> object is an abbreviation for
-<b>[float]</b>. Note that the <b>[+ 1]</b> output
-is connected to the right-hand inlet of <b>[f]</b>. This <i>cold</i> inlet
-merely stores the value for the next time the <b>[f]</b> is sent the
-"bang" message.
+<P>Here, the <b>[f]</b> object is an abbreviation for <b>[float]</b>. Note that the
+<b>[+ 1]</b> output is connected to the right-hand inlet of <b>[f]</b>. This <i>cold</i>
+inlet merely stores the value for the next time the <b>[f]</b> is sent the "bang" message.
 
 <P>It is frequently desirable to send messages to two or more inlets of an object
 to specify its action. For instance, you can use <b>[+]</b> to add two
@@ -1065,10 +1141,9 @@ single object. In this case it is indeterminate which order the two inlets will
 receive their messages. Suppose for example you wish to use <b>[+]</b>
 to double a number. The following is incorrect:
 
-
 <figure>
-<IMG src="resources/2.4.6.png" ALT="incorrect inlet connection">
-    <figcaption><u>Fig. 2.4.6</u> An undefined connection order</figcaption>
+<IMG src="resources/2.4.10.png" ALT="incorrect inlet connection">
+    <figcaption><u>Fig. 2.4.10</u> An undefined connection order</figcaption>
 </figure>
 
 <P>Here, the left inlet was connected before connecting the right hand one
@@ -1076,17 +1151,17 @@ to double a number. The following is incorrect:
 <b>[+]</b> thus adds the new input (at left) to the previous input
 (at right).
 
-<P>The <b>[trigger]</b> object, abbreviated <b>[t]</b>,
-can be used to split out connections from a single outlet in a determinate order.
-By convention, all objects in Pd, when sending messages out more than one outlet,
-do so from right to left. If you connect these to inlets of a second object without
-crossing wires, the second object will get its leftmost inlet last, which is usually
-what you want. Here is how to use <b>[trigger]</b> to disambiguate
+<P>The <b>[trigger]</b> object, abbreviated <b>[t]</b>, can be used to split
+out connections from a single outlet in a determinate order. By convention,
+all objects in Pd, when sending messages out more than one outlet, do so from
+right to left. If you connect these to inlets of a second object without
+crossing wires, the second object will get its leftmost inlet last, which is
+usually what you want. Here is how to use <b>[trigger]</b> to disambiguate
 the previous example:
 
 </P><figure>
-    <IMG src="resources/2.4.7.png" ALT="trigger to disambiguate">
-    <figcaption><u>Fig. 2.4.7</u> A defined connection order with <b>[trigger]</b></figcaption>
+    <IMG src="resources/2.4.11.png" ALT="trigger to disambiguate">
+    <figcaption><u>Fig. 2.4.11</u> A defined connection order with <b>[trigger]</b></figcaption>
 </figure>
 
 <P>"Cold" (non-leftmost) inlets are almost universally used to store single
@@ -1109,8 +1184,8 @@ the message or messages are sent, either to the message box's outlet or
 elsewhere as specified.
 
 </P><figure>
-    <IMG src="resources/2.4.8.png" ALT="message boxes">
-    <figcaption><u>Fig. 2.4.8</u> Messages with different selectors</figcaption>
+    <IMG src="resources/2.4.12.png" ALT="message boxes">
+    <figcaption><u>Fig. 2.4.12</u> Messages with different selectors</figcaption>
 </figure>
 
 <P>The first of the message boxes above contains the single number 1.5; this
@@ -1121,8 +1196,8 @@ the selector "my" and the two arguments are the number 5 and the symbol "toes".
 <P>Multiple messages may be separated by commas as shown:
 
 <figure>
-    <IMG src="resources/2.4.9.png" ALT="multiple messages in one box">
-    <figcaption><u>Fig. 2.4.9</u> Messages separated by commas</figcaption>
+    <IMG src="resources/2.4.13.png" ALT="multiple messages in one box">
+    <figcaption><u>Fig. 2.4.13</u> Messages separated by commas</figcaption>
 </figure>
 
 <P>Here, the three messages are the numbers 1, 2, and 3, and they are sent in
@@ -1140,8 +1215,8 @@ from the outlet to an object named "fred" (which is a receive object here), and
 likewise the next message is sent to "sue".
 
 <figure>
-    <IMG src="resources/2.4.10.png" ALT="semicolons to send messages">
-    <figcaption><u>Fig. 2.4.10</u> Messages sent to receive symbols</figcaption>
+    <IMG src="resources/2.4.14.png" ALT="semicolons to send messages">
+    <figcaption><u>Fig. 2.4.14</u> Messages sent to receive symbols</figcaption>
 </figure>
 
 <P>Certain other objects (Pd windows for example, and arrays) have Pd names as
@@ -1155,15 +1230,15 @@ start the message with the receive symbol (and you can also send messages to "pd
 this way).
 
 <figure>
-    <IMG src="resources/2.4.11.png" ALT="message dialog">
-    <figcaption><u>Fig. 2.4.11</u> Sending messages via the message dialog</figcaption>
+    <IMG src="resources/2.4.15.png" ALT="message dialog">
+    <figcaption><u>Fig. 2.4.15</u> Sending messages via the message dialog</figcaption>
 </figure>
 
 <P>You can put variables in message boxes as shown below:
 
 <figure>
-    <IMG src="resources/2.4.12.png" ALT="variables in message boxes">
-    <figcaption><u>Fig. 2.4.12</u> A message with a "$1" variable</figcaption>
+    <IMG src="resources/2.4.16.png" ALT="variables in message boxes">
+    <figcaption><u>Fig. 2.4.16</u> A message with a "$1" variable</figcaption>
 </figure>
 
 <P>Here, "$1" etc., refer to the arguments of the arriving message (and aren't
