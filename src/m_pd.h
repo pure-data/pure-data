@@ -720,10 +720,6 @@ EXTERN void mayer_ifft(int n, t_sample *real, t_sample *imag);
 EXTERN void mayer_realfft(int n, t_sample *real);
 EXTERN void mayer_realifft(int n, t_sample *real);
 
-EXTERN float *cos_table;
-#define LOGCOSTABSIZE 9
-#define COSTABSIZE (1<<LOGCOSTABSIZE)
-
 EXTERN int canvas_suspend_dsp(void);
 EXTERN void canvas_resume_dsp(int oldstate);
 EXTERN void canvas_update_dsp(void);
