@@ -109,9 +109,10 @@ an experimental release or compile for double precision yourself (for compilatio
 instructions, see <A href="x6.htm">Chapter 6: Building Pd from source</A>).
 
 <p>A 32 bit Pd application is mostly suited to run old externals that were not
-updated and compiled for 64-bit architecture. Most important externals are easily
-provided for 64-bit applications though. There can also be the case where one is
-running Pd in an old machine with an old OS for 32-bit architecture.
+updated and compiled for 64-bit architecture. In recent macOS systems, this is
+impossible though. Most important externals are easily provided for 64-bit
+applications anyway, but there can also be the case where one is
+running Pd in an old machine that only supports 32-bit architecture.
 
 <p>The double precision Pd application (with float size "64", as opposed to "32"
 for single precision) also requires externals compiled speacially for it. Since
@@ -128,7 +129,7 @@ details in the table below:
 <tr>
 <th>OS       </th>
 <th>CPU-architecture  </th>
-<th>float size   </th>
+<th>float precision   </th>
 <th class="left">extension</th>
 </tr>
 </thead>
@@ -136,79 +137,79 @@ details in the table below:
 <tr>
 <td>Linux    </td>
 <td><em>unspecified</em> (any architecture) </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.pd_linux</code>     </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel/AMD 32bit)             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.l_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.linux-i386-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.linux-i386-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel/AMD 64bit)            </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.l_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.linux-amd64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.linux-amd64-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;        </td>
 <td>arm (32-bit)                        </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.l_arm</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.linux-arm-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.linux-arm-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>arm64 (64-bit)                      </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.l_arm64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.linux-arm64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                         </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.linux-arm64-64.so</code></td>
 </tr>
 </tbody>
@@ -216,79 +217,79 @@ details in the table below:
 <tr>
 <td>macOS    </td>
 <td><em>unspecified</em> (any architecture)   </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.pd_darwin</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>fat (multiple archs)               </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.d_fat</code>    </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.darwin-fat-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.darwin-fat-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel 32bit)                 </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.d_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.darwin-i386-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.darwin-i386-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel 64bit)                </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.d_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.darwin-amd64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.darwin-amd64-64.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>arm64 (aka "Apple Silicon"; 64-bit)        </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.d_arm64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.darwin-arm64-32.so</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.darwin-arm64-64.so</code></td>
 </tr>
 </tbody>
@@ -296,43 +297,43 @@ details in the table below:
 <tr>
 <td>Windows  </td>
 <td><em>unspecified</em> (any architecture)   </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.dll</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>i386 (Intel/AMD 32bit)             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.m_i386</code>   </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.windows-i386-32.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.windows-i386-64.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>amd64 (Intel/AMD 64bit)            </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.m_amd64</code>  </td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>32</td>
+<td>single</td>
 <td class="left"><code>.windows-amd64-32.dll</code></td>
 </tr>
 <tr>
 <td>&lsquo;&rsquo;       </td>
 <td>&lsquo;&rsquo;                             </td>
-<td>64</td>
+<td>double</td>
 <td class="left"><code>.windows-amd64-64.dll</code></td>
 </tr>
 </tbody>
