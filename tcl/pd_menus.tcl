@@ -208,9 +208,9 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Font"] \
         -command {::pd_menucommands::scheduleAction menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
+        -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] 1}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
+        -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] -1}
     $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window tidy}
     $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
