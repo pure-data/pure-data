@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.55.0\n"
+"Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -212,7 +212,7 @@ msgstr ""
 msgid "Use Multiple Devices"
 msgstr ""
 
-msgid "Audio System"
+msgid "audio system"
 msgstr ""
 
 msgid "Settings"
@@ -562,25 +562,25 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
-msgid "Patch Windows"
+msgid "Patch windows"
 msgstr ""
 
 msgid "Zoom New Windows"
 msgstr ""
 
-msgid "GUI Settings"
+msgid "GUI settings"
 msgstr ""
 
-msgid "Preference layout (reopen the preferences to see the effect)"
+msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "Use tabs"
+msgid "use tabs"
 msgstr ""
 
-msgid "Single page"
+msgid "single page"
 msgstr ""
 
-msgid "Patching helpers"
+msgid "patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -616,7 +616,7 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "GUI Options"
+msgid "GUI options"
 msgstr ""
 
 msgid "language"
@@ -640,13 +640,13 @@ msgstr ""
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup Options"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup Flags:"
+msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"

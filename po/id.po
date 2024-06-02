@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -214,8 +214,8 @@ msgstr "Perangkat keluar"
 msgid "Use Multiple Devices"
 msgstr "Pakai Banyak Perangkat"
 
-msgid "Audio System"
-msgstr "Sistem audio"
+msgid "audio system"
+msgstr "sistem audio"
 
 msgid "Settings"
 msgstr "Pengaturan"
@@ -566,26 +566,26 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch Windows"
+msgid "Patch windows"
 msgstr "Jendela Pd"
 
 msgid "Zoom New Windows"
 msgstr ""
 
 #, fuzzy
-msgid "GUI Settings"
+msgid "GUI settings"
 msgstr "pengaturan GUI dihapuskan"
 
-msgid "Preference layout (reopen the preferences to see the effect)"
+msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "Use tabs"
+msgid "use tabs"
 msgstr ""
 
-msgid "Single page"
+msgid "single page"
 msgstr ""
 
-msgid "Patching helpers"
+msgid "patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -627,7 +627,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI Options"
+msgid "GUI options"
 msgstr "pengaturan GUI dihapuskan"
 
 msgid "language"
@@ -652,13 +652,13 @@ msgstr "Ukuran blok:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup Options"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup Flags:"
+msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"

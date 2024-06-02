@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"POT-Creation-Date: 2024-05-06 10:09+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Use Multiple Devices"
 msgstr ""
 
-msgid "Audio System"
+msgid "audio system"
 msgstr ""
 
 msgid "Settings"
@@ -600,26 +600,26 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch Windows"
+msgid "Patch windows"
 msgstr "Huvudfönster"
 
 #, fuzzy
 msgid "Zoom New Windows"
 msgstr "Föräldrafönster"
 
-msgid "GUI Settings"
+msgid "GUI settings"
 msgstr ""
 
-msgid "Preference layout (reopen the preferences to see the effect)"
+msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "Use tabs"
+msgid "use tabs"
 msgstr ""
 
-msgid "Single page"
+msgid "single page"
 msgstr ""
 
-msgid "Patching helpers"
+msgid "patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -661,7 +661,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI Options"
+msgid "GUI options"
 msgstr "Egenskaper för Atom"
 
 msgid "language"
@@ -685,13 +685,13 @@ msgstr ""
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup Options"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup Flags:"
+msgid "Startup flags:"
 msgstr ""
 
 #, fuzzy
