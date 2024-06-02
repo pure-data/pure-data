@@ -27,6 +27,25 @@
 
 <P> ------------------ 0.55-0 ------------------------------
 
+<P> The [osc~], [cos~] and [vcf~] objects now rely on a 2048 points
+cosine table. The table size used to be 512-point for fast, approximate
+calculations, which was adequate for most "computer music" applications
+in the 90s when this was decided (and at that time there could be a
+serious performance penalty for using larger tables). To get the original
+512-point tables you can run Pd with compatiblity level 0.54. Also, in
+systems with very tight memory constraints (such as Espressif ESP32),
+Pd can be recompiled with the C preprocessor variable COSTABLESIZE set
+to 512 to get the old memory footprint.
+
+<P> Many bug fixes and code-level updates and improvements, notably to libpd and
+for emscripten support thanks to Claude Heiland-Allen and IOhannes, Dan, and
+Christof. The emscripten support, in particular, should someday allow Pd to run
+in a web browser.
+
+<P> Also thanks to Christof, you can now use just 'set' to unset [receive~] and
+[throw~] objects, plus a much improved audio interfacing and related scheduler
+updates.
+
 <P> Many documentation updates, thanks to Alexandre Porres, Ben Wesch, and
 others. Most notably several updates and edits were made to Pd's HTML manual,
 specially a new section on 'advanced editing techniques' (aka 'intelligent
@@ -42,15 +61,6 @@ paths relative to the parent patch.
 
 <P> 64-bit soundfile reading and writing support by Dan Wilcox for [readsf~],
 [writesf~] and [soundfiler].
-
-<P> Many bug fixes and code-level updates and improvements, notably to libpd and
-for emscripten support thanks to Claude Heiland-Allen and IOhannes, Dan, and
-Christof. The emscripten support, in particular, should someday allow Pd to run
-in a web browser.
-
-<P> Also thanks to Christof, you can now use just 'set' to unset [receive~] and
-[throw~] objects, plus a much improved audio interfacing and related scheduler
-updates.
 
 <P> Updates to language support.
 

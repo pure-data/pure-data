@@ -1,4 +1,4 @@
-#N canvas 451 57 688 626 12;
+#N canvas 438 48 688 626 12;
 #X text 19 579 see also:;
 #N canvas 736 152 572 306 reference 0;
 #X text 75 39 - calculate absolute value function., f 66;
@@ -70,7 +70,7 @@
 #N canvas 181 166 417 228 compatibility 0;
 #X msg 162 130 \; pd compatibility 0.47;
 #X text 57 40 COMPATIBILITY NOTE: in Pd versions before 0.48 \, [wrap~] with an input of 0 did output 1 (but now correctly outputs 0). To get the old behavior \, set "compatibility" to 0.47 or below in Pd's command line or via the message:, f 43;
-#X restore 200 446 pd compatibility;
+#X restore 202 470 pd compatibility;
 #N canvas 648 122 373 442 multichannel 0;
 #X obj 86 163 snake~ in, f 10;
 #X obj 86 271 snake~ out;
@@ -101,8 +101,8 @@
 #X connect 12 0 4 0;
 #X connect 13 0 0 1;
 #X connect 15 0 0 0;
-#X restore 518 495 pd multichannel;
-#X text 367 480 mutichannel signal support ----------->, f 20;
+#X restore 540 496 pd multichannel;
+#X text 389 481 mutichannel signal support ----------->, f 20;
 #X text 103 393 <-- shift-drag here to get non-integers to try;
 #X obj 101 560 abs;
 #X obj 373 560 +~;
@@ -113,6 +113,7 @@
 #X text 137 559 (etc.) - control rate versions;
 #X obj 187 589 clip~;
 #X text 18 63 The [abs~] object passes nonnegative values unchanged \, but replaces negative ones with their (positive) inverses. The [sqrt~] and [rsqrt~] output \, respectively \, the approximate square root and inverse square root - the same as 1/sqrt(input) - using a fast algorithm accurate to about 120 dB (20 bits). There are old [q8_sqrt~]/[q8_rsqrt~] versions with only about 8 bit accuracy that should probably not be used:, f 89;
+#X text 212 430 compatibility note (open):, f 13;
 #X connect 9 0 11 0;
 #X connect 10 0 13 0;
 #X connect 12 0 9 0;
