@@ -219,13 +219,13 @@ proc ::dialog_audio::fill_frame {frame {include_backends 1}} {
     ::dialog_audio::init_devicevars
 
     if { $include_backends != 0 && [llength $::audio_apilist] > 1} {
-        labelframe $frame.backend -text [_ "audio system"] -padx 5 -pady 5 -borderwidth 1
+        labelframe $frame.backend -text [_ "Audio System"] -padx 5 -pady 5 -borderwidth 1
         pack $frame.backend -side top -fill x -pady 5
 
         menubutton $frame.backend.api -indicatoron 1 -menu $frame.backend.api.menu \
             -relief raised -highlightthickness 1 -anchor c \
             -direction flush \
-            -text [_ "audio system" ]
+            -text [_ "Audio System" ]
         menu $frame.backend.api.menu -tearoff 0
 
         foreach api $::audio_apilist {
