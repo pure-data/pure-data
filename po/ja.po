@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -217,7 +217,7 @@ msgstr "出力デバイス"
 msgid "Use Multiple Devices"
 msgstr "複数のデバイスを使用する"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -571,26 +571,26 @@ msgid "Edit existing path [%s]"
 msgstr "既存のパス [%s] の編集"
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Pd ウィンドウ"
 
 msgid "Zoom New Windows"
 msgstr "新しいウィンドウを拡大する"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "GUI設定の削除"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
 msgstr ""
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -632,7 +632,7 @@ msgid "Pd libraries to load on startup"
 msgstr "起動時に読み込むPdライブラリ"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "GUI設定の削除"
 
 msgid "language"
@@ -658,13 +658,13 @@ msgid "Numeric precision of Pd-core"
 msgstr ""
 
 #, fuzzy
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "起動時のフラグ:"
 
 msgid "Defeat real-time scheduling"
 msgstr "リアルタイムスケジューリングより優先"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "起動時のフラグ:"
 
 msgid "Help Browser"

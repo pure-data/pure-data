@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -214,7 +214,7 @@ msgstr "輸出設備"
 msgid "Use Multiple Devices"
 msgstr "使用多個 設備"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -568,26 +568,26 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Pd 主視窗"
 
 msgid "Zoom New Windows"
 msgstr ""
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "MIDI 設定"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
 msgstr ""
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -629,7 +629,7 @@ msgid "Pd libraries to load on startup"
 msgstr "啟動時載入函式庫"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "MIDI 設定"
 
 msgid "language"
@@ -653,13 +653,13 @@ msgstr ""
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"

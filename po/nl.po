@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -216,7 +216,7 @@ msgstr "Uitvoerapparaten"
 msgid "Use Multiple Devices"
 msgstr "Meerdere apparaten gebruiken"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -567,25 +567,25 @@ msgstr "Een nieuw pad toevoegen"
 msgid "Edit existing path [%s]"
 msgstr "Bestaand pad bewerken [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Patch vensters"
 
 msgid "Zoom New Windows"
 msgstr "Nieuwe vensters inzoomen"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "GUI-instellingen"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
 msgstr ""
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -622,7 +622,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "GUI-instellingen"
 
 msgid "language"
@@ -647,13 +647,13 @@ msgstr "Blokgrootte:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Opstart opties"
 
 msgid "Defeat real-time scheduling"
 msgstr "Versla real-time planning"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Opstartvlaggen:"
 
 msgid "Help Browser"
