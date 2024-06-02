@@ -8,6 +8,10 @@
 #include "m_pd.h"
 #include "math.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #define BIGFLOAT 1.0e+19
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
