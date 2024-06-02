@@ -117,7 +117,7 @@ proc ::dialog_startup::fill_frame {frame} {
         [_ "Pd libraries to load on startup"]
 
     ## GUI options
-    labelframe $frame.guiframe -text [_ "GUI Options" ]
+    labelframe $frame.guiframe -text [_ "GUI options" ]
     set f $frame.guiframe
     pack $f -side top -anchor s -fill x -padx 2m -pady 5
 
@@ -237,7 +237,7 @@ proc ::dialog_startup::fill_frame {frame} {
     }
 
     # Startup options and flags
-    labelframe $frame.optionframe -text [_ "Startup Options" ]
+    labelframe $frame.optionframe -text [_ "Startup options" ]
     pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
 
     checkbutton $frame.optionframe.verbose  -anchor w \
@@ -252,7 +252,7 @@ proc ::dialog_startup::fill_frame {frame} {
         pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
     }
 
-    labelframe $frame.flags -text [_ "Startup Flags:" ]
+    labelframe $frame.flags -text [_ "Startup flags:" ]
     pack $frame.flags -side top -anchor s -fill x -padx 2m
     entry $frame.flags.entry -textvariable ::sys_flags
     pack $frame.flags.entry -side right -expand 1 -fill x
