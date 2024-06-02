@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2024-05-06 18:51+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -216,7 +216,7 @@ msgstr "Dispositivos de Saída"
 msgid "Use Multiple Devices"
 msgstr "Usar Múltiplos Dispositivos"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "Sistema de áudio"
 
 msgid "Settings"
@@ -568,26 +568,26 @@ msgstr "Adicionar um novo caminho"
 msgid "Edit existing path [%s]"
 msgstr "Editar caminho existente [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Janelas do Patch"
 
 msgid "Zoom New Windows"
 msgstr "Ampliar Zoom em Novas Janelas"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Configurações de GUI"
 
-msgid "preference layout (reopen the preferences to see the effect)"
-msgstr "preferência de layout (reabra as preferências para ver o efeito)"
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Preferência de layout (reabra as preferências para ver o efeito)"
 
-msgid "use tabs"
-msgstr "usar abas"
+msgid "Use tabs"
+msgstr "Usar abas"
 
-msgid "single page"
-msgstr "página única"
+msgid "Single page"
+msgstr "Página única"
 
-msgid "patching helpers"
-msgstr "auxiliadores de patching"
+msgid "Patching helpers"
+msgstr "Auxiliadores de patching"
 
 msgid "Highlight active cord while connecting"
 msgstr "Destacar conexão ativa ao conecta-la"
@@ -622,8 +622,8 @@ msgstr "As configurações abaixo requerem a reinicialização do Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Bibliotecas de Pd a serem carregadas na inicialização"
 
-msgid "GUI options"
-msgstr "opções de GUI"
+msgid "GUI Options"
+msgstr "Opções de GUI"
 
 msgid "language"
 msgstr "idioma"
@@ -646,13 +646,13 @@ msgstr "Tamanho do float"
 msgid "Numeric precision of Pd-core"
 msgstr "Precisão numérica do núcleo do Pd"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Opções de inicialização"
 
 msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Flags de inicialização:"
 
 msgid "Help Browser"

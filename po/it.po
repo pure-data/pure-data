@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2024-03-20 21:01+0000\n"
 "Last-Translator: Alberto Zin <alberto.zin@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -219,8 +219,8 @@ msgstr "Dispositivo di uscita"
 msgid "Use Multiple Devices"
 msgstr "Usa Dispositivi Multipli"
 
-msgid "audio system"
-msgstr "sistema audio"
+msgid "Audio System"
+msgstr "Sistema audio"
 
 msgid "Settings"
 msgstr "Impostazioni"
@@ -569,26 +569,26 @@ msgstr "Aggiungi nuovo percorso"
 msgid "Edit existing path [%s]"
 msgstr "Modifica percorso esistente [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Finestre Patch"
 
 msgid "Zoom New Windows"
 msgstr "Zoom delle Nuove Finestre"
 
-msgid "GUI settings"
-msgstr "impostazioni GUI"
+msgid "GUI Settings"
+msgstr "Impostazioni GUI"
 
-msgid "preference layout (reopen the preferences to see the effect)"
-msgstr "preferenze di layout (riaprire le preferenze per vedere l'effetto)"
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Preferenze di layout (riaprire le preferenze per vedere l'effetto)"
 
-msgid "use tabs"
-msgstr "usa tab"
+msgid "Use tabs"
+msgstr "Usa tab"
 
-msgid "single page"
-msgstr "pagina singola"
+msgid "Single page"
+msgstr "Pagina singola"
 
-msgid "patching helpers"
-msgstr "aiuti per le connessioni"
+msgid "Patching helpers"
+msgstr "Aiuti per le connessioni"
 
 msgid "Highlight active cord while connecting"
 msgstr "Evidenzia linee attive durante il collegamento"
@@ -623,7 +623,7 @@ msgstr "I settaggi sotto richiedono dei riavviare Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Librerie Pd da caricare all'avvio"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Opzioni della GUI"
 
 msgid "language"
@@ -647,13 +647,13 @@ msgstr "dimensione del valore float"
 msgid "Numeric precision of Pd-core"
 msgstr "Precisione numerica di Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Opzioni di avvio"
 
 msgid "Defeat real-time scheduling"
 msgstr "Non attivare lo scheduling in tempo reale"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Opzioni di avvio:"
 
 msgid "Help Browser"

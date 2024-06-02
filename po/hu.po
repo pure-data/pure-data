@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -230,7 +230,7 @@ msgstr "Kimeneti eszköz:"
 msgid "Use Multiple Devices"
 msgstr "Több eszköz használata"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 #, fuzzy
@@ -595,7 +595,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Pd ablak"
 
 #, fuzzy
@@ -603,19 +603,19 @@ msgid "Zoom New Windows"
 msgstr "Szülő ablak"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Minden bellítást ment"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
 msgstr ""
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -657,7 +657,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Minden bellítást ment"
 
 msgid "language"
@@ -681,13 +681,13 @@ msgstr ""
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 #, fuzzy

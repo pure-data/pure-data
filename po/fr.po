@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2024-05-07 19:07+0000\n"
 "Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -219,7 +219,7 @@ msgstr "Périphériques de sortie"
 msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "Système audio"
 
 msgid "Settings"
@@ -570,25 +570,25 @@ msgstr "Ajouter un chemin"
 msgid "Edit existing path [%s]"
 msgstr "Modifier le chemin d'accès existant [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Fenêtres de patch"
 
 msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Paramètres de l'interface graphique"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr "Disposition des préférences (réouvrir les préférences pour appliquer)"
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "en onglets"
 
-msgid "single page"
+msgid "Single page"
 msgstr "une seule page"
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr "aide au patch"
 
 msgid "Highlight active cord while connecting"
@@ -624,7 +624,7 @@ msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Options de l'interface graphique"
 
 msgid "language"
@@ -648,13 +648,13 @@ msgstr "taille des flottants"
 msgid "Numeric precision of Pd-core"
 msgstr "Précision numérique de Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Options au démarrage"
 
 msgid "Defeat real-time scheduling"
 msgstr "Rejeter la priorité temps-réel"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Options au démarrage :"
 
 msgid "Help Browser"

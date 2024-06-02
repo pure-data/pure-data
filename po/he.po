@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2023-07-01 07:53+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -214,7 +214,7 @@ msgstr "התקני פלט"
 msgid "Use Multiple Devices"
 msgstr "להשתמש במגוון התקנים"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "מערכת שמע"
 
 msgid "Settings"
@@ -564,25 +564,25 @@ msgstr "הוספת נתיב חדש"
 msgid "Edit existing path [%s]"
 msgstr "עריכת נתיב קיים [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "חלונות טלאים"
 
 msgid "Zoom New Windows"
 msgstr "התקרבות על חלונות חדשים"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "הגדרות מנשק משתמש"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr "פריסת העדפות (יש לפתוח את ההעדפות מחדש כדי לראות את ההשפעה)"
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "להשתמש בלשוניות"
 
-msgid "single page"
+msgid "Single page"
 msgstr "עמוד בודד"
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -618,7 +618,7 @@ msgstr "ההגדרות שלהלן דורשות את הפעלת Pd מחדש!"
 msgid "Pd libraries to load on startup"
 msgstr "ספריות Pd לטעינה בהפעלה"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "אפשרויות מנשק משתמש"
 
 msgid "language"
@@ -642,13 +642,13 @@ msgstr "גודל נקודה צפה"
 msgid "Numeric precision of Pd-core"
 msgstr "דיוק עשרוני של Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "אפשרויות הפעלה"
 
 msgid "Defeat real-time scheduling"
 msgstr "הבסת תזמון זמן־אמת"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "דגלוני הפעלה:"
 
 msgid "Help Browser"
