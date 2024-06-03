@@ -84,11 +84,11 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 #if __STDC_VERSION__ >= 201112L
 #include <assert.h>
-#define STATIC_ASSERT _Static_assert
+#define PD_STATIC_ASSERT _Static_assert
 #elif __cplusplus >= 201103L
-#define STATIC_ASSERT static_assert
+#define PD_STATIC_ASSERT static_assert
 #else
-#define STATIC_ASSERT(condition, message) /* no-op */
+#define PD_STATIC_ASSERT(condition, message) /* no-op */
 #endif
 
 /* deprecation warning */
@@ -572,7 +572,7 @@ EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
-    STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
+    PD_STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
     class_domainsignalin(c, offsetof(type, field))
 
          /* prototype for functions to save Pd's to a binbuf */
