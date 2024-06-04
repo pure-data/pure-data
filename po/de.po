@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2024-05-06 09:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -221,7 +221,7 @@ msgstr "Ausgabegeräte"
 msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "Audiosystem"
 
 msgid "Settings"
@@ -574,27 +574,27 @@ msgstr "Neuen Pfad hinzufügen"
 msgid "Edit existing path [%s]"
 msgstr "Vorhandenen Pfad editieren (%s)"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Patch-Fenster"
 
 msgid "Zoom New Windows"
 msgstr "Neue Fenster vergrößern"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "GUI-Einstellungen"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 "Einstellungslayout (öffnen Sie die Einstellungen erneut, um die Auswirkungen "
 "zu sehen)"
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "Verwende Tab"
 
-msgid "single page"
+msgid "Single page"
 msgstr "alles auf einer Seite"
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr "Patching-Hilfen"
 
 msgid "Highlight active cord while connecting"
@@ -630,7 +630,7 @@ msgstr "Die folgenden Einstellungen erfordern einen Neustart von Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Pd-Bibliotheken, die automatisch geladen werden"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "GUI-Einstellungen"
 
 msgid "language"
@@ -654,13 +654,13 @@ msgstr "Zahlengenauigkeit"
 msgid "Numeric precision of Pd-core"
 msgstr "Numerische Genauigkeit des Pd-Kerns"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Kommandozeilenoptionen"
 
 msgid "Defeat real-time scheduling"
 msgstr "Echtzeit-Modus unterdrücken"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Kommandozeilenoptionen:"
 
 msgid "Help Browser"

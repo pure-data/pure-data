@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -223,7 +223,7 @@ msgstr "Συσκευή εξόδου"
 msgid "Use Multiple Devices"
 msgstr "Χρήση πολλαπλών συσκευών"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 #, fuzzy
@@ -593,7 +593,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Παράθυρο Pd"
 
 #, fuzzy
@@ -601,19 +601,19 @@ msgid "Zoom New Windows"
 msgstr "Γονεϊκό Παράθυρο"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Αποθήκευση όλων των ρυθμίσεων"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
+msgstr "Χρήση επανακλήσεων"
+
+msgid "Single page"
 msgstr ""
 
-msgid "single page"
-msgstr ""
-
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -655,7 +655,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Αποθήκευση όλων των ρυθμίσεων"
 
 msgid "language"
@@ -679,13 +679,13 @@ msgstr ""
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 #, fuzzy
