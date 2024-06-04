@@ -2180,112 +2180,111 @@ handling primitives and the graphical presentation and editing functions.
 
 <H3> <A href="#s2.11" id="s2.11">2.11. Pd vs. MAX </A> </H3>
 
-<P> You may be aware that Miller Puckette, the creater and author of Pd was also
-the original author and creator of MAX, which was first developed in the 1980's
+<P> You may be aware that Miller Puckette, the creator and author of Pd, was also
+the original creator and author of MAX, which was developed in the 1980s
 at IRCAM. Pd was designed later with first drafts from 1996 and it does resemble
 the MAX system. This section addresses the relationship between the two
 environments.
 
 <P> Some external objects and libraries for MAX are also provided for Pd (such
-as 'Flucoma', 'FFTease', 'soundhack' and more). This, of course, depends on the
-will and intent of the external developer. In the early days, it was easier to
-design externals that could run in both systems, but the APIs have become much
-more distinct over the years.
+as 'Flucoma', 'FFTease', 'soundhack' and more). This depends on the will and intent
+of the external developer though. In the early days, it was easier to design
+externals that could run in both systems, but the APIs diverged over the years.
 
 <H4> <A href="#s2.11.1" id="s2.11.1"> 2.11.1. Differences between Pd and MAX</A> </H4>
 
-<P> Pd wasn't intended to be a MAX clone, but there were many similarities between
-Pd and MAX/MSP in the of its origin and some effort had been undertaken (but more
-would have been needed) to make the two interoperable. It was possible to import
-and export patches to MAX/MSP; you just needed to save as text to a file with
-extension ".pat", and then open in the other program. You'd at least get something.
-By sticking to common or commonizable features you could actually develop patches
-for both platforms.
+<P> Although Pd wasn't intended to be a MAX clone, there were many similarities in
+its origin and some effort had been undertaken to make the two interoperable.
+It was possible to import and export patches from and to MAX/MSP; you just needed to
+save as text to a file with extension '.pat' and then open in the other program to
+get at least some results. By sticking to common or commonizable features, you could
+develop patches for both platforms.
 
-<P> To this day, Pd can still open and save MAX patches with the .pat extension as
-well as MAX's text files with the '.mxt' extension. However, these are legacy and
-unsupported MAX formats as currently MAX uses a JSON-based file format with
-the '.maxpat' extension introduced in MAX 5, released in 2008.
+<P> To this day, Pd can still open and save MAX patches with the '.pat' extension as
+well as MAX text files with the '.mxt' extension. However, these are legacy and
+unsupported MAX formats. Today, MAX uses a JSON-based file format with the '.maxpat
+extension introduced in MAX 5, released in 2008.
 
-<P> Since MAX 5, MAX and Pd have diverged even more over the years, but Pd is still
-closely related to MAX/MSP. Nonetheless, there are differences in semantics between
-the two; a partial list follows.
+<P> Since then, MAX and Pd have futher diverged, but Pd is still closely related to
+MAX/MSP. Nonetheless, there are differences in semantics between the two; a partial
+list follows.
 
 <P> In MAX, there are separate data types for integers and floating point numbers.
-You can use a "." at the end of the number to specify it is a float, which may be
-needed as arguments is some objects, which will define the data type. MAX has a
-'float' and an 'int' list selector that you can use to specify if a "1" is a float
-or an int in a message. Pd uses only float and only has a float selector, so you
-don't need to worry about any of this, all numbers are floats and there is no
-distinction between "1" and "1."! This gives MAX more integer resolution, but with
-the double precision version of Pd (Pd64), this is not a significant issue.
+You can use a '.' at the end of the number to specify it as a float, which may be
+needed as argument is some objects. Similarly MAX has a 'float' and an 'int' list
+selector that you can use to define whether a '1' is a float or an int in a message.
+Pd only has a float type and selector, so you don't need to worry about any of this
+- all numbers are floats and there is no distinction between '1' and '1.'. This
+gives MAX a higher integer resolution, but with the double precision version of Pd
+(Pd64), this is also not a significant issue anymore.
 
-<P>MAX has a 'list' selector, but it is always implicit. In Pd it is only implicit
+<P> MAX has a 'list' selector, but it is always implicit. In Pd it is only implicit
 if the list starts with a float. If you have a list that starts with a symbol, you
 need the 'list' selector in Pd. MAX has no 'symbol' selector and Pd explicitly needs
 it to define a symbol data type.
 
-<P>In MAX you can put a list inside quotes to specify a symbol, so <i>"a b c"</i> or
+<P> In MAX, you can put a list inside quotes to specify a symbol, so <i>"a b c"</i> or
 <i>"1 2 3"</i> are actually a single symbol. Pd has no quote mechanism but you can
 escape spaces and form a symbol with it, so <i>a\ b\ c</i> and <i>1\ 2\ 3</i> actually
-form symbols. In MAX you can also forca a float to become a symbol with <i>"1"</i>, in
-Pd this is trickier as anything that looks like numbers are floats, but you can use
-<i>[makefilename]</i> to turn a number into a symbol.
+form symbols. In MAX, you can also force a float to become a symbol with <i>"1"</i>, in
+Pd this is trickier, since anything that looks like numbers are floats - but you can
+use <i>[makefilename]</i> to turn a number into a symbol.
 
-<P> In MAX, if an object's outlet is connected to several destinations,
-corresponding messages are always sent in right-to-left screen order. In
-Pd, the messages are sent in the order you made the connections in. In either
-case, in situations where you care about the order, it's appropriate to use
-a <b>[trigger]</b> object to specify.
+<P> In MAX, if an object's outlet is connected to several inlets, corresponding
+messages are always sent in right-to-left order of the inlets' positions. In Pd,
+the messages are sent in the order that the connections were made. Either way,
+when you care about the order, it's appropriate to use a <b>[trigger]</b> object to
+clearly define it.
 
-<P> In Pd, inlets and outlets are ordinary text objects; in MAX they're
-GUI objects and work for both signal and control data.
+<P> In Pd, <b>[inlet]</b> / <b>[outlet]</b> and <b>[inlet~]</b> / <b>[outlet~]</b>
+are regular objects, whereas in MAX they're GUI objects and work for both, signal
+and control data.
 
 <P> MAX offers many GUI objects such as sliders, dials, VU meters, piano
-keyboards, even "bpatchers." Until version 0.34, the only two in Pd were the
-number box and graphical arrays.  Starting in version 0.34, Pd incorporates
-Thomas Musil's GUI objects: sliders, switches, and so on.  (Thanks Thomas!)
-Beyond this essential collection of GUI objects, it's unlikely you'll ever find
+keyboards, even 'bpatchers'. Up until version 0.34, the only two GUI objects in Pd
+were number box and graphical arrays. Starting from version 0.34, Pd incorporates
+Thomas Musil's GUI objects: sliders, switches and so on (Thanks Thomas!).
+Beyond this essential collection of GUI objects, it's unlikely that you'll ever find
 any commonality between the two, unless you install externals that offer more
 GUI options in Pd.
 
-<P> Pd's correlate of MAX's <b>[poly~]</b> object is <b>[clone]</b>. In Pd there
+<P> Pd's correlate of MAX's <b>[poly~]</b> object is <b>[clone]</b>. In Pd, there
 is no <b>[pfft~]</b> object for managing spectral processing and you just use
-regular subpacthes or abstractions that are adapted for it.
+regular subpatches or abstractions that are adapted for it.
 
-<P>Pd has multuchannel connections but no distinction is made. In MAX you need
-to create a special version of the object, such as <b>[mc.+~]</b>, which
-actually is a wrapper that loads <b>[+~]</b> for multichannel capabilities. In
-Pd, objects like <b>[+~]</b> simply also work for multichannel, and <b>[clone]</b>
-can be used to customm wrap abstractions and give them multichannel capabilities
+<P> Pd has multichannel connections, but currently, no visual distinction is made.
+In MAX, you need to create a special version of the object, such as <b>[mc.+~]</b>,
+which actually is a wrapper that loads <b>[+~]</b> for multichannel capabilities. In
+Pd, objects like <b>[+~]</b> simply also work for multichannel and <b>[clone]</b>
+can be used to customly wrap abstractions and give them multichannel capabilities
 if you are using objects without multichannel features.
 
-<P>In abstractions, the corresponding feature for "$1" in Max is the "#1"
-construct. In a Max abstraction, "#1", etc., are replaced by the creation
-argument when you have a look at the patch. In Pd the "$" variables in object
-boxes are always spelled literally as "$" variables. Patches in Pd are also
-ready to be edited, while an abstraction in Max is locked and 'Read Only' if
-you open it, but can be edited-in-place using the Modify Read Only command.
-If you then unlock the abstraction to edit it you can see the "$1" variables.
+<P> In abstractions, the corresponding feature for '$1' in Max is the '#1'
+construct. In a MAX abstraction, '#1' etc. are replaced by the creation
+argument when you have a look at the patch. In Pd, the '$' variables in object
+boxes are always spelled literally as '$' variables. Patches in Pd are also
+ready to be edited, while an abstraction in MAX is locked and "Read Only" if
+you open it; but can be edited in place using the "Modify Read Only" command.
+If you then unlock the abstraction to edit it, you can see the '$1' variables.
 
-<P>In Max, the same "#1" construct is used to expand arguments in messages,
-but Pd can only use "$1" for variables and you cannot load arguments in messages.
-You then need to use "$1" inside an object and then send it to a message with a
-"$1" variable.
+<P> In MAX, the same '#1' construct is used to expand abstraction or clone arguments
+in messages, while Pd can only use '$1' for objects' variables and you cannot load
+arguments in messages. In that case, you need to use '$1' inside an object and then
+send it to a message with a '$1' variable.
 
-<P>In Max the locality mechanism is "#0" and used in both objects and messages,
-but only inside abstractions. In Pd you have "$0" mechanism only in object but
-they also get expanded when not loaded as abstractions. Also, MAX does not let
-you open multiple copies of the same patch document, while Pd is ok with it.
+<P> In MAX, the local patch ID '#0' is used in both, objects and messages,
+but only inside abstractions. In Pd, you can use '$0' only as an object argument,
+but it also gets expanded when not loaded in abstractions. Also, unlike Pd, MAX does
+not let you open multiple copies of the same patch document.
 
-<P>MAX has a <b>[pv]</b> object that is like <b>[value]</b> and can force locality
-of variables in subpatches. In Pd you need to set different names to <b>[value]</b>
+<P> MAX has a <b>[pv]</b> object that is like <b>[value]</b> and can force locality
+of variables in subpatches. In Pd, you need to set different names to <b>[value]</b>
 in each subpatch.
 
-<P>In Pd you can change the send destination of a <b>[send]</b> object, in Max
-you can set a receive name in a <b>[receive]</b> object. The <b>[float]</b>,
-<b>[int]</b> and <b>[value]</b> objects in Pd have a built in 'send' message
-that communicates to receive addresses. GUIs in Pd have built in 'send' and
+<P> In Pd, you can change the send destination of a <b>[send]</b> object, while
+in MAX, you can set the receive name in a <b>[receive]</b> object. The <b>[float]</b>,
+<b>[int]</b> and <b>[value]</b> objects in Pd have a built-in 'send' message
+that communicates to receive addresses. GUIs in Pd have built-in 'send' and
 'receive' names. The <b>[expr]</b> object in Pd can load variables defined by
 <b>[value]</b>.
 
@@ -2294,45 +2293,43 @@ MAX, you can only save from the parent and you can save the subpatch as a
 separate file (if you want to save a subpatch to a file in Pd, you have to
 copy and paste the contents to a new document).
 
-
 <P> In Pd, there's no <b>[gate]</b>; instead there's a <b>[spigot]</b> with
 the inlets in the opposite, more natural order.
 
-<P> Switching subsets of the DSP patch on and off is done in completely
-different ways in Pd and MAX, and block sizes are handled differently
-as well.
+<P> Switching subsets of the DSP patch on and off is done in completely different
+ways in Pd and MAX, and block sizes are handled differently as well.
 
-<P> The "bpatcher" feature in MAX has a correlate in Pd
-(<A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A>);
-however, Pd's version is quite different from MAX's.
+<P> The 'bpatcher' feature in MAX has a correlate in Pd
+(<A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A>); however, Pd's version is
+quite different from the one in MAX.
 
-<P> Pd's correlate of Max's <b>[itable]</b> object are Arrays
-implemented as a high level Data Structure construct.
+<P> Pd's correlate of Max's <b>[itable]</b> object are arrays implemented as a high
+level data structure construct.
 
-<P>In Pd, there's no <b>[preset]</b>, <b>[pattrstorage]</b> and related  objects.
-This is intentional as Miller considers this to be basically a bad idea, so you
+<P> In Pd, there's no <b>[preset]</b>, <b>[pattrstorage]</b> or related object.
+This is intentional, as Miller considers this to be basically a bad idea, so you
 have to use explicit sends and receives to restore values to number boxes. Then
 just make a "message" box to re-send the values you want. You can also save data
-as text from Arrays and [text] objects. Also, a <b>[savestate]</b> is provide to
-save the state of different instances of an abstraction withing the parent patch
-file.
+as text from arrays and [text] objects. Also, a <b>[savestate]</b> is provided to
+save the state of different instances of an abstraction within the parent patch.
 
-<P> In MAX, instead of getting <b>[tabosc4~]</b> with arrays, you get <b>[cycle~]</b>
-and <b>[buffer~]</b>. The only gotcha is that you can't draw in <b>[buffer~]</b> with
-the mouse as you can with arrays in Pd, but at least it's possible to make a patch that
-copies a "table" into a <b>[buffer~]</b> object.
+<P> In MAX, using <b>[tabosc4~]</b> with an array, you'd use <b>[cycle~]</b>
+with <b>[buffer~]</b>. The only gotcha is that you can't draw in <b>[buffer~]</b> with
+the mouse like you can with arrays in Pd - but at least it's possible to make a patch
+that copies a 'table' into a <b>[buffer~]</b> object.
 
-<P>MAX can deal with multi-core processing, while Pd relies on an object called
+<P> MAX can deal with multi-core processing, while Pd relies on an object called
 <b>[pd~]</b> for that, which opens a new Pd subprocess.
 
-<H4><A href="#s2.11.2" id="s2.11.2"> 2.11.2. Running Pd inside MAX with the <b>[pd~]</b> external</A></H4>
+<H4><A href="#s2.11.2" id="s2.11.2"> 2.11.2. Running Pd inside MAX with the <b>[pd~]</b>
+external</A></H4>
 
-<P>There is a MAX version of the <b>[pd~]</b> object. If you install this external object in MAX
+<P> There is a MAX version of the <b>[pd~]</b> object. If you install this external for MAX,
 you can run Pd as a subprocess inside MAX. A download of the external is provided at
 <A href="https://msp.ucsd.edu/software.html">https://msp.ucsd.edu/software.html</A>.
 
-<P>This allows you to run not only Pd's core objects, but also any external you might have
-installed for Pd. In th picture below we have a screenshot of the <b>[pd~]</b> object in MAX 8.
+<P> This allows you to run not only Pd's core objects, but also any external you might have
+installed for Pd. The picture below shows a <b>[pd~]</b> object in MAX 8.
 
 <figure>
 <IMG src="resources/2.11.1.png" ALT="pd~ in max">
@@ -2341,20 +2338,20 @@ installed for Pd. In th picture below we have a screenshot of the <b>[pd~]</b> o
 
 <H4> <A href="#s2.11.3" id="s2.11.3"> 2.11.3. The Cyclone library</A> </H4>
 
-<P>The Cyclone library for Pd includes a collection of objects cloned from MAX and includes
+<P> The Cyclone library for Pd includes a collection of objects cloned from MAX and includes
 control (MAX) and signal (MSP) objects. This can be useful for MAX users to feel more at
 home and adapt MAX patches in Pd. For more details, please check
 <A href="https://github.com/porres/pd-cyclone"> https://github.com/porres/pd-cyclone</A>.
 
-<P>Cyclone is an old and legagy eternal library for Pd. It was created and developed by
+<P> Cyclone is an old and legacy external library for Pd. It was created and developed by
 Krzysztof Czaja from 2002 to 2005. A recent update by Alexandre Porres, Derek Kwan and Matt
 Barber has included some new objects and paired up Cyclone to MAX version 7.3.5. Currently,
-Cyclone is under a maintenance mode only, so don't expect much news other than bug fixes.
-No new objects are planed.
+Cyclone is under maintenance mode, so don't expect updates besides bug fixes. No new objects
+are planned.
 
-<P>Note other external libraries may offer functionalities and alternatives to objects from
-MAX. The difference is that Cyclone provides as good of a clone as possible. For instance,
-the main current maintainer of Cyclone (Porres) develops the ELSE library, which has
+<P>Note that other external libraries may offer functionalities and alternatives to MAX objects
+though (while Cyclone's aim is to exactly imitate MAX objects - even with their flaws). For
+instance, the main current maintainer of Cyclone (Porres) develops the ELSE library, which has
 alternatives for almost all cyclone objects and many objects in ELSE are actually inspired
 by MAX/MSP objects that were not cloned in Cyclone. The 'ceammc' library also provides a
 complete and cohesive system with lots of GUIs and functions you can find in MAX.
