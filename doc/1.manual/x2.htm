@@ -1297,9 +1297,9 @@ every 1.45 milliseconds.
 
 <P>Inlets or outlets are configured in Pd either for messages or audio. You can't
 connect an audio outlet to a non-audio inlet. An object's leftmost inlet may accept
-both audio and messages; any other inlet is either one or the other, but secondary
+audio and message input; any other inlet is either one or the other, but secondary
 audio inlets take floats at control rate and promote them automatically to signals.
-Nonetheless, in some cases, the inlet may take both a float or a sinal and run
+Nonetheless, in some cases, the inlet may take a float or a signal and run
 different algorithms in each case. One example is <b>[lop~]</b>,
 which runs a more efficient routine if no signals are connected to the right inlet.
 The <b>[+~]</b>, <b>[-~]</b>, <b>[*~]</b>,
@@ -1348,11 +1348,10 @@ that outputs control rate floats.
 
 <P>You can use the <b>[switch~]</b> or <b>[block~]</b>
 objects to turn portions of your audio computation on and off and to control the block size
-of computation. There may be only one <b>[switch~]</b> or
-<b>[block~]</b> object per window; it acts on the entire
-window and all of its subwindows (which may still have their own nested
-<b>[switch~]</b>/<b>[block~]</b> objects though). Both,
-<b>[switch~]</b> and <b>[block~]</b> take a block
+of computation. There may be only one <b>[switch~]</b> or <b>[block~]</b> object
+per window; it acts on the entire window and all of its subwindows (which may
+still have their own nested <b>[switch~]</b>/<b>[block~]</b> objects though).
+Both <b>[switch~]</b> and <b>[block~]</b> take a block
 size and optional overlap and up-/downsampling factors as arguments; so for
 instance, [block~ 1024 4] specifies 1024 sample blocks, overlapped by a factor
 of 4 relative to the parent window. The <b>[switch~]</b> version carries
@@ -1384,11 +1383,9 @@ costs a fairly small overhead. A cheaper way to get outputs is to use
 
 <P>You may wish to pass signals non-locally, either to get from one window to
 another, or to feed a signal back to your algorithm's input. This can be done
-using <b>[throw~]</b>/<b>[catch~]</b>,
-<b>[send~]</b>/<b>[receive~]</b>, or
-<b>[delwrite~]</b>/<b>[delread~]</b> or
-<b>[delread4~]</b> pairs. Both, <b>[throw~]</b>
-and <b>[catch~]</b> implement a summing bus; <b>[throw~]</b>
+using <b>[throw~]</b>/<b>[catch~]</b>, <b>[send~]</b>/<b>[receive~]</b>, or
+<b>[delwrite~]</b>/<b>[delread~]</b> or <b>[delread4~]</b> pairs.
+Both <b>[throw~]</b> and <b>[catch~]</b> implement a summing bus; <b>[throw~]</b>
 adds into the bus and <b>[catch~]</b> reads out the accumulated signal and
 zeros the bus for the next time around. There can be many <b>[throw~]</b>
 objects associated with a single <b>[catch~]</b>, but a
@@ -1933,7 +1930,7 @@ shapes aren't constrained to be connected or even to be proximate, but since the
 pertain to the same sound their horizontal positions line up. In this example the
 last (furthest-right) object is percussive (as seen by the black shape) and has a
 fixed frequency and bandwidth, whereas the large, articulated shape in the center
-has a complicated trajectory in both frequency and dynamic. The color of the
+has a complicated trajectory in both frequency and amplitude. The color of the
 frequency has no purpose, but could be used to determine a voice number to route it.
 
 <P>Each object is thus composed of a combination of scalar values (color;
@@ -2237,7 +2234,7 @@ when you care about the order, it's appropriate to use a <b>[trigger]</b> object
 clearly define it.
 
 <P> In Pd, <b>[inlet]</b> / <b>[outlet]</b> and <b>[inlet~]</b> / <b>[outlet~]</b>
-are regular objects, whereas in MAX they're GUI objects and work for both, signal
+are regular objects, whereas in MAX they're GUI objects and work for signal
 and control data.
 
 <P> MAX offers many GUI objects such as sliders, dials, VU meters, piano
@@ -2272,7 +2269,7 @@ in messages, while Pd can only use '$1' for objects' variables and you cannot lo
 arguments in messages. In that case, you need to use '$1' inside an object and then
 send it to a message with a '$1' variable.
 
-<P> In MAX, the local patch ID '#0' is used in both, objects and messages,
+<P> In MAX, the local patch ID '#0' is used for objects and messages,
 but only inside abstractions. In Pd, you can use '$0' only as an object argument,
 but it also gets expanded when not loaded in abstractions. Also, unlike Pd, MAX does
 not let you open multiple copies of the same patch document.
