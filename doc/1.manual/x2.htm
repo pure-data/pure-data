@@ -2322,19 +2322,22 @@ and <b>[buffer~]</b>. The only gotcha is that you can't draw in <b>[buffer~]</b>
 the mouse as you can with arrays in Pd, but at least it's possible to make a patch that
 copies a "table" into a <b>[buffer~]</b> object.
 
-<P>MAX can deal with multi-core processing, while [pd~] relies on a <b>[pd~]</b> for that,
-which opens a new Pd subprocess.
+<P>MAX can deal with multi-core processing, while Pd relies on an object called
+<b>[pd~]</b> for that, which opens a new Pd subprocess.
 
-<H4> <A href="#s2.11.2" id="s2.11.2"> 2.11.2. Running Pd inside MAX with the [pd~] external</A> </H4>
+<H4><A href="#s2.11.2" id="s2.11.2"> 2.11.2. Running Pd inside MAX with the <b>[pd~]</b> external</A></H4>
 
-<P>There is a MAX version of the [pd~] object. If you install this external object in MAX
-you can run Pd as a subprocess inside MAX. A download of this object is provided at
+<P>There is a MAX version of the <b>[pd~]</b> object. If you install this external object in MAX
+you can run Pd as a subprocess inside MAX. A download of the external is provided at
 <A href="https://msp.ucsd.edu/software.html">https://msp.ucsd.edu/software.html</A>.
 
-<!-- INCLUDE PIC -->
-
 <P>This allows you to run not only Pd's core objects, but also any external you might have
-installed for Pd.
+installed for Pd. In th picture below we have a screenshot of the <b>[pd~]</b> object in MAX 8.
+
+<figure>
+<IMG src="resources/2.11.1.png" ALT="pd~ in max">
+    <figcaption><u>Fig. 2.11.1</u> The <b>[pd~]</b> external for MAX</figcaption>
+</figure>
 
 <H4> <A href="#s2.11.3" id="s2.11.3"> 2.11.3. The Cyclone library</A> </H4>
 
@@ -2355,6 +2358,7 @@ the main current maintainer of Cyclone (Porres) develops the ELSE library, which
 alternatives for almost all cyclone objects and many objects in ELSE are actually inspired
 by MAX/MSP objects that were not cloned in Cyclone. The 'ceammc' library also provides a
 complete and cohesive system with lots of GUIs and functions you can find in MAX.
+
 </div>
 <div class="nav nav-bottom">
     <div class="nav-back"><A href="x1.htm">&lt; Chapter 1: Introduction</A></div>
