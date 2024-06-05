@@ -68,12 +68,13 @@ proc ::pd_guiprefs::init {} {
     switch -- $::platform {
         "Darwin" {
             set backend "plist"
-            # on macOS the domain should be the same as the bundle ID
-            catch {
-                set ::pd_guiprefs::domain [exec defaults read
-                                           [file join $::sys_guidir .. .. Info]
-                                           CFBundleIdentifier]
-            }
+            ## on macOS the domain should be the same as the bundle ID
+            ## (disabled for now, as it slows down startup by several seconds)
+            #catch {
+            #    set ::pd_guiprefs::domain [exec defaults read
+            #                               [file join $::sys_guidir .. .. Info]
+            #                               CFBundleIdentifier]
+            #}
         }
         "W32" {
             set backend "registry"
