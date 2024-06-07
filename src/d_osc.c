@@ -183,7 +183,14 @@ static void cos_maketable(void)
     {
         cos_newtable = (float *)getbytes(sizeof(float) * (COSTABLESIZE+1));
         for (i = 0; i < COSTABLESIZE + 1; i++)
-                cos_newtable[i] = cos(2*M_PI*i / (double)COSTABLESIZE);
+            cos_newtable[i] = cos(2*M_PI*i / (double)COSTABLESIZE);
+            /* fill in true 1s and 0s for 1/4-cycle points.  These should
+            be possible to address exactly in cos~ object.  The rest are
+            irrational anyway and hence will never be exact so we leave them
+            as computed by the lobrary cosine function. */ 
+        cos_newtable[0] = cos_newtable[COSTABLESIZE] = 1;
+        cos_newtable[COSTABLESIZE/4] = cos_newtable[3*COSTABLESIZE/4] = 0;
+        cos_newtable[COSTABLESIZE/2] = -1;
     }
 #ifdef OLDTABSIZE
     if (!cos_table)
