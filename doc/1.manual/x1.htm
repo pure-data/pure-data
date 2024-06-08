@@ -4,30 +4,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 1: Introduction</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
-<div class="butt">
-
+<div class="nav nav-top">
+    <div class="nav-back"><A href="index.htm">&lt; Table of contents</A></div>
+    <div class="nav-forward"><A href="x2.htm">Chapter 2: Theory of operation &gt;</A></div>
 </div>
 
 <div id="corpus">
 
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
+
 <H2>Chapter 1: Introduction</H2>
 
-<div id="backnav"><A href="index.htm#s1">back to table of contents</A></div>
+<P> This is the official HTML manual for Pd (Pure Data), a patchable
+computer music environment for audio analysis, synthesis and digital
+signal processing in real time (aka "Live Electronics"). Pd can be
+extended with third-party libraries for additional computer music
+features, multimedia capabilities and more. The latest version of this
+manual is found online on <A href="http://msp.ucsd.edu/software.html">
+http://msp.ucsd.edu/software.html</A>, along with the downloads of the
+latest Pd releases.
 
-<P> This is the official HTML manual for Pd (Pure Data), a patchable computer
-music environment for audio analysis, synthesis and digital signal processing
-in real time (aka "Live Electronics"). Pd can be extended with third-party
-libraries for additional computer music features, multimedia capabilities and
-more. The latest version of this manual is found online on
-<A href="http://msp.ucsd.edu/software.html">http://msp.ucsd.edu/software.html</A>,
-along with the downloads of the latest Pd releases.
-
-<H3> <A id=s1.1> 1.1. Guide to Pd's documentation </A> </H3>
+<H3> <A href="#s1.1" id="s1.1"> 1.1. Guide to Pd's documentation </A> </H3>
 
 <P> Besides this HTML manual, you'll find the 'doc' folder with more documentation
 resources in Pd's installation folder, which is also accessible through the
@@ -83,13 +85,13 @@ is found in <a href="x4.htm">Chapter 4: Externals </a> of this manual.
 specific topics that is referred in the help files.
 </UL>
 
-<H3> <A id=s1.2> 1.2. The Help menu </A> </H3>
+<H3> <A href="#s1.2" id="s1.2"> 1.2. The Help menu </A> </H3>
 
 <P> This section describes Pd's <b>Help menu</b>, which offers shortcuts
 to the documentation and other resources. "Pd Help" opens this HTML manual.
 
 <figure>
-<IMG src="img/1.2.1.png" ALT="pd help">
+<IMG src="resources/1.2.1.png" ALT="pd help">
     <figcaption><u>Fig. 1.2.1</u> The Help menu</figcaption>
 </figure>
 
@@ -99,7 +101,7 @@ folder (just explained above) and it's a quick way to navigate and open
 the manual, particular help files, examples from the tutorials, etc.
 
 <figure>
-<IMG src="img/1.2.2.png" ALT="browser">
+<IMG src="resources/1.2.2.png" ALT="browser">
     <figcaption><u>Fig. 1.2.2</u> The Help browser accessing the Pd's documentation folder</figcaption>
 </figure>
 
@@ -111,7 +113,7 @@ externals here even if you have not yet installed anything.
 includes a list of all native objects with brief explanations.
 
 <figure>
-<IMG src="img/1.2.3.png" ALT="list of objects">
+<IMG src="resources/1.2.3.png" ALT="list of objects">
     <figcaption><u>Fig. 1.2.3</u> The help-intro patch with a list of all internal objects</figcaption>
 </figure>
 
@@ -132,7 +134,7 @@ externals" entry, which opens a Pd extension manager. This is described more det
 <A href="x4.htm#s4.3.2">4.3.2 How to Download Externals from Pd</A>.
 
 
-<H3> <A id=s1.3> 1.3. Other resources </A> </H3>
+<H3> <A href="#s1.3" id="s1.3"> 1.3. Other resources </A> </H3>
 
 <P> The Pd source code is found on github, on the
 <A href=https://github.com/pure-data/pure-data/> Pd GitHub project page</A>. This project
@@ -151,13 +153,13 @@ contact msp@ucsd.edu for help. Many extensions for Pd also get announced on the
 mailing list.
 
 <P> Other community resources online include the <A href="http://forum.pdpatchrepo.info/">
-Pd forum </A>; a <A href="https://telegram.me/puredata ">Pd telegram group</A>; a
+Pd forum</A>, a <A href="https://telegram.me/puredata ">Pd telegram group</A>, a
 <A href="https://www.facebook.com/groups/4729684494 ">Facebook group</A> and a
 <A href="https://discord.gg/bcPZcKQkmW">Discord channel</A>. Here, you can find many users
 that can help you with basic instructions and troubleshooting as well as other interactions
 with the community.
 
-<H3> <A id=s1.4> 1.4. Other flavors </A> </H3>
+<H3> <A href="#s1.4" id="s1.4"> 1.4. Other flavors </A> </H3>
 
 <P> Pure Data, being an open source project, can be forked into alternative projects that
 are developed independently. These forks are also known as "different flavors" of Pd.
@@ -171,10 +173,10 @@ also allows you to run Pd as a plugin in any DAW.
 <P> A very important and historical flavor of Pd was Pd-extended, which has been discontinued
 in 2014. This used to come with a vast collection of externals. Many Pure Data tutorials
 out there are based on this distribution. You can still follow Pd-extended tutorials if you
-install the necessary libraries, but note that these tutorials are very outdated
-and don't include many goodies that have been included in Pd Vanilla over the last years,
-like the <b>[clone]</b> object, <b>[savestate]</b>,
-multichannel connections and many more.
+install the necessary libraries, but note that these tutorials are very outdated and don't
+include many goodies that have been included in Pd Vanilla over the last years, like the
+<b>[clone]</b> object, <b>[savestate]</b>, <b>[file]</b>, multichannel connections and many
+more.
 
 <P> The currently active and main flavors of Pd are presented on the front page
 of <A href="https://puredata.info/"> https://puredata.info/</A>. Note that some
@@ -182,34 +184,10 @@ forks may introduce incompatibilities and not be fully up to date with Pd Vanill
 For forks that are fully compatible, the information in this manual should also apply
 for the most part.
 
-<!--- comment out
-In particular,
-
-for people interested in graphics, there is a 3D graphics rendering package,
-
-named GEM, based on OpenGL, written by Mark Danks, adapted to Linux by
-
-Guenter Geiger, and now maintained by IOhannes zm&ouml;lnig. You can get
-
-it from: <A href="http://gem.iem.at/">http://gem.iem.at/</A>, via "Find
-
-externals" in the <b>Help Menu</b> or package manager of your Linux distribution.
-
-Another option is Ofelia, a Pd external that allows you to use openFrameworks and
-
-Lua within Pd for creating audiovisual artwork or multimedia applications such as
-
-games. Get it also via "Find externals" or from
-
-<A href="https://github.com/cuinjune/Ofelia">https://github.com/cuinjune/Ofelia</A>.
-
-/// end comment out -->
-
-
 </div>
-<div id="footer">
-<A href="x2.htm"> next chapter </A><BR>
-<A href="index.htm#s1"> back to table of contents </A>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="index.htm">&lt; Table of contents</A></div>
+    <div class="nav-forward"><A href="x2.htm">Chapter 2: Theory of operation &gt;</A></div>
 </div>
 
 </BODY>

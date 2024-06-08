@@ -29,9 +29,6 @@ div>ul>li, div>ol>li { /* top level */
 figure {
     padding: 1em 0;
 }
-div#backnav {
-    margin-bottom: 2em;
-}
 figcaption {
     padding-top: 0.5em;
     font-size: 95%;
@@ -41,6 +38,36 @@ figcaption>u {
     font-size: 90%;
     font-weight: bold;
     padding-right: 0.33em;
+}
+div.nav {
+    font-size: 90%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.nav-top {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #3E4349;
+}
+.nav-bottom {
+    padding: 0.5em 0;
+    margin: 3em 0;
+    border-top: 1px solid #3E4349;
+}
+.nav-back, .nav-forward {
+    flex: 2;
+}
+.nav-home {
+    flex: 1;
+}
+.nav-back {
+    text-align: left;
+}
+.nav-home {
+    text-align: center;
+}
+.nav-forward {
+    text-align: right;
 }
 H1 {
     font-size:   32.7pt;
@@ -96,11 +123,18 @@ table {
     border-collapse: collapse;
 }
 
+tbody {
+    border-top: 3px solid black;
+}
+
 td {
     text-align: center;
 }
+th.left, td.left {
+    text-align: left;
+}
 
-tr:nth-child(even) {background-color: #f0f0f0;}
+tr:nth-child(even) {background-color: #f4f4f4;}
 
 CODE {
     font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
@@ -185,7 +219,9 @@ IMG {
     width: auto;
     filter: brightness(1) contrast(1); /* why? */
 }
-
+img#logo {
+    padding-top: 2em;
+}
 mark {
     background-color: #fff0b3;
 }
@@ -193,18 +229,6 @@ mark {
 p.fig {
     text-align: center;
 }
-
-div.butt {
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-div#footer {
-    padding: 2em 0;
-    border-top: 1px solid #3E4349;
-}
-
 blockquote {
     padding: 0;
     margin-right:0px;
