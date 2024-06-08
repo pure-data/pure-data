@@ -71,9 +71,9 @@ copyright date in ../README.txt
 release notes:
     nedit-client  ../doc/1.manual/x5.htm
 git commit -a
-.... (go back and rebuild as above) ...
-git tag $VERSION && git tag |tail
+git tag $VERSION && git tag |tail  !!! you can only push any given tag once !!
 git push origin --tags
+.... (go back and rebuild as above) ...
     ... (I don't use 'mirror' here because afraid of deleting PR branches)
 git push sourceforge --mirror
 mv -i ~/pd/dist/* ~/bis/lib/public_html/Software/
