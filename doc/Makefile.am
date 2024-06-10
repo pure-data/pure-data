@@ -56,6 +56,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
      ./1.manual/resources/favicon.ico \
      ./1.manual/resources/pdmanual.css \
+     ./1.manual/resources/icon.png \
      ./1.manual/resources/1.2.1.png \
      ./1.manual/resources/1.2.2.png \
      ./1.manual/resources/1.2.3.png \
