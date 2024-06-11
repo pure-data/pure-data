@@ -22,8 +22,6 @@ extern "C" {
     (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
 #define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
 
-extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
-
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
 #if defined(NT) && !defined(MSW)
@@ -156,6 +154,8 @@ typedef unsigned __int64  uint64_t;
 #else
 # error invalid FLOATSIZE: must be 32 or 64
 #endif
+
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
