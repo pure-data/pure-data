@@ -241,7 +241,11 @@ void dsp_tick(void);
 void sys_exit(int status)
 {
     pthread_mutex_lock(&sched_mutex);
-    sys_exitcode = status;
+    if (SYS_QUIT_QUIT != sys_quit) {
+        sys_exitcode = status;
+    } else {
+        pd_error(0, "quit already called with exit code %d", sys_exitcode);
+    }
     sys_quit = SYS_QUIT_QUIT;
     pthread_cond_signal(&sched_cond);
     pthread_mutex_unlock(&sched_mutex);
