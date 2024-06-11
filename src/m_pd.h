@@ -126,6 +126,8 @@ typedef unsigned __int64  uint64_t;
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
 #include <stdio.h>
 
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 
@@ -154,8 +156,6 @@ typedef unsigned __int64  uint64_t;
 #else
 # error invalid FLOATSIZE: must be 32 or 64
 #endif
-
-EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
