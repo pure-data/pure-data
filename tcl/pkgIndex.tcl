@@ -22,7 +22,7 @@ package ifneeded dialog_message 0.1 [list source [file join $dir dialog_message.
 package ifneeded dialog_midi 0.1 [list source [file join $dir dialog_midi.tcl]]
 package ifneeded dialog_path 0.1 [list source [file join $dir dialog_path.tcl]]
 package ifneeded dialog_startup 0.1 [list source [file join $dir dialog_startup.tcl]]
-package ifneeded helpbrowser 0.2 [list source [file join $dir helpbrowser.tcl]]
+package ifneeded helpbrowser 0.3 [list source [file join $dir helpbrowser.tcl]]
 package ifneeded opt_parser 0.1 [list source [file join $dir opt_parser.tcl]]
 package ifneeded pd_bindings 0.1 [list source [file join $dir pd_bindings.tcl]]
 package ifneeded pd_connect 0.1 [list source [file join $dir pd_connect.tcl]]
