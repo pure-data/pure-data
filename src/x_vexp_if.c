@@ -1019,15 +1019,21 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 int
 max_ex_var(struct expr *expr, t_symbol *var, struct ex_ex *optr, int idx)
 {
+        int ret;
         optr->ex_type = ET_FLT;
                 if (!strcmp(var->s_name, "sys_idx")) {
                         optr->ex_flt = idx;
                         return (0);
                 }
-        if (value_getfloat(var, &(optr->ex_flt))) {
+        ret = value_getfloat(var, &(optr->ex_flt));
+        if (ret > 0)
+        {
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
-                pd_error(expr, "no such var '%s'", var->s_name);
+                if (ret == 2)
+                    pd_error(expr, "var '%s' is not a float", var->s_name);
+                else
+                    pd_error(expr, "no such var '%s'", var->s_name);
                 return (1);
         }
         return (0);
