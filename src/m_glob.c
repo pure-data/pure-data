@@ -15,6 +15,7 @@ int pd_compatibilitylevel = 100000;  /* e.g., 43 for pd 0.43 compatibility */
 over.  Some others are prototyped in m_imp.h as well. */
 
 void glob_menunew(void *dummy, t_symbol *name, t_symbol *dir);
+void glob_quit(void *dummy, t_floatarg status);
 void glob_verifyquit(void *dummy, t_floatarg f);
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av);
@@ -131,7 +132,8 @@ void glob_init(void)
         A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_open, gensym("open"),
         A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("quit"), A_DEFFLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), A_DEFFLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("exit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);

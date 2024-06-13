@@ -107,7 +107,6 @@ void pd_globalunlock(void);
 
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
-EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
 EXTERN void glob_exit(void *dummy, t_float status);
 EXTERN void glob_watchdog(void *dummy); /* glob_exit(0); */
 EXTERN void open_via_helppath(const char *name, const char *dir);
