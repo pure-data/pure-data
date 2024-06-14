@@ -259,6 +259,15 @@ t_canvasenvironment *canvas_getenv(const t_canvas *x)
     return (x->gl_env);
 }
 
+int glist_getdollarzero(t_glist *gl)
+{
+    t_canvasenvironment *env = canvas_getenv(gl);
+    if (env)
+        return env->ce_dollarzero;
+    else
+        return 0;
+}
+
 int canvas_getdollarzero(void)
 {
     t_canvas *x = canvas_getcurrent();
