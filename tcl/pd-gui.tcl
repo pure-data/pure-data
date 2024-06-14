@@ -79,6 +79,7 @@ namespace import ::pdwindow::pdtk_pd_dsp
 namespace import ::pdwindow::pdtk_pd_meters
 namespace import ::pdtk_canvas::pdtk_canvas_popup
 namespace import ::pdtk_canvas::pdtk_canvas_editmode
+namespace import ::pdtk_canvas::pdtk_canvas_snaptogrid
 namespace import ::pdtk_canvas::pdtk_canvas_getscroll
 namespace import ::pdtk_canvas::pdtk_canvas_setparents
 namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
@@ -202,7 +203,7 @@ set total_recentfiles 5
 set modifier ""
 # current state of the Edit Mode menu item
 set editmode_button 0
-
+set snaptogrid_button 0
 
 ## per toplevel/patch data
 # window location modifiers
@@ -211,6 +212,7 @@ set windowframex 0      ;# different platforms have different window frames
 set windowframey 0      ;# different platforms have different window frames
 # patch properties
 array set editmode {}   ;# store editmode for each open patch canvas
+array set snaptogrid {} ;# store snap to grid mode for each open patch canvas
 array set editingtext {};# if an obj, msg, or comment is being edited, per patch
 array set loaded {}     ;# store whether a patch has completed loading
 array set xscrollable {};# keep track of whether the scrollbars are present
