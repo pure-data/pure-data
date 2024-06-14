@@ -361,6 +361,14 @@ EXTERN void *copybytes(const void *src, size_t nbytes);
 EXTERN void freebytes(void *x, size_t nbytes);
 EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 
+/* safe and fast (recursive) stack allocation routines to be used
+ * within Pd object methods. Replaces the unsafe use of alloca().
+ * IMPORTANT: memory must be freed in the exact reverse order as
+ * it has been allocated! Do not use in perform routines!
+ */
+EXTERN void *pd_stack_alloc(size_t nbytes);
+EXTERN void pd_stack_free(void *x, size_t nbytes);
+
 /* -------------------- atoms ----------------------------- */
 
 #define SETSEMI(atom) ((atom)->a_type = A_SEMI, (atom)->a_w.w_index = 0)

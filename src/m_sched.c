@@ -235,6 +235,7 @@ void sched_term(void)
 }
 
 void dsp_tick(void);
+int pd_stack_check(void);
 
     /* ask the scheduler to quit; this is thread-safe, so it
        can be safely called from within the audio callback. */
@@ -310,6 +311,7 @@ void sched_tick(void)
     pd_this->pd_systime = next_sys_time;
     dsp_tick();
     sched_counter++;
+    pd_stack_check();
 }
 
 int sched_get_sleepgrain(void)

@@ -50,6 +50,13 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #define HAVE_ALLOCA 1
 #endif
 
+#ifdef PD
+
+#define BUF_ALLOCA(n) (pd_stack_alloc(n))
+#define BUF_FREEA(x, n) (pd_stack_free((x), (n)))
+
+#else /* PD */
+
 /* limit stack allocation to ~400kB (enough for 16384 points).
  * usually the stack size is at least 1 MB */
 #define ALLOCA_MAXBYTES 400000
@@ -63,6 +70,8 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #define BUF_ALLOCA(n) (getbytes(n))
 #define BUF_FREEA(x, n) (freebytes((x), (n)))
 #endif
+
+#endif /* PD */
 
 typedef struct peak
 {

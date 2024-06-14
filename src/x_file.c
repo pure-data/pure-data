@@ -152,11 +152,13 @@ static char*do_expandpath(const char *from, char *to, int bufsize)
     }
 #ifdef _WIN32
     {
-        char *buf = alloca(bufsize);
+        char *buf;
+        ALLOCA(char, buf, bufsize, MAXPDSTRING);
         ExpandEnvironmentStrings(to, buf, bufsize-1);
         buf[bufsize-1] = 0;
         strncpy(to, buf, bufsize);
         to[bufsize-1] = 0;
+        FREEA(char, buf, bufsize, MAXPDSTRING);
     }
 #endif
     return to;
@@ -642,8 +644,9 @@ static void file_handle_do_read(t_file_handle*x, t_float f) {
     } else {
         pd_error(x, "couldn't allocate buffer for %d bytes", (int)outc);
     }
-    FREEA(unsigned char, buf, outc, 100);
+        /* free in reverse order! */
     FREEA(t_atom, outv, outc, 100);
+    FREEA(unsigned char, buf, outc, 100);
 }
 static void file_handle_do_write(t_file_handle*x, int argc, t_atom*argv) {
     unsigned char*buf;

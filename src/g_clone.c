@@ -6,7 +6,7 @@
 /* ---------- clone - maintain copies of a patch ----------------- */
 
 #include "m_private_utils.h"
-#define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+#define LIST_NGETBYTE 100 /* bigger than this we allocate on the heap */
 
 t_class *clone_class;
 static t_class *clone_in_class, *clone_out_class;

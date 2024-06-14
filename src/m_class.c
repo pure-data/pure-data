@@ -51,6 +51,8 @@ void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
+void pd_stack_init(void);
+void pd_stack_cleanup(void);
 
 void s_stuff_newpdinstance(void)
 {
@@ -61,10 +63,12 @@ void s_stuff_newpdinstance(void)
     STUFF->st_dacsr = DEFDACSAMPLERATE;
     STUFF->st_printhook = sys_printhook;
     STUFF->st_impdata = NULL;
+    pd_stack_init();
 }
 
 void s_stuff_freepdinstance(void)
 {
+    pd_stack_cleanup();
     freebytes(STUFF, sizeof(*STUFF));
 }
 
