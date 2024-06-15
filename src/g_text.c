@@ -800,13 +800,6 @@ static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
     gatom_bang(x);
 }
 
-static void gatom_reborder(t_gatom *x)
-{
-    t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
-    text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y),
-        rtext_width(y), rtext_height(y), 0);
-}
-
 /* set border back to normal */
 static void gatom_ungrab(t_gatom *x, t_rtext *y) {
     t_canvas *c = glist_getcanvas(x->a_glist);
@@ -938,12 +931,15 @@ int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
 /* change to focused border */
 static void gatom_clickborder(t_gatom *x) {
     t_glist *glist = x->a_glist;
-    t_rtext *y = glist_findrtext(glist, &x->a_text);
-    sys_vgui(".x%lx.c itemconfigure %sR -width %d -outline "
-        "[::pdtk_canvas::get_color atom_box_focus_outline .x%lx]\n",
-        glist_getcanvas(glist), rtext_gettag(y),
-        glist->gl_zoom+glist->gl_zoom,
-        glist_getcanvas(glist));
+    t_glist *canvas_glist = glist_getcanvas(glist);
+    char buf[MAXPDSTRING];
+    sprintf(buf, "%sR", rtext_gettag(glist_findrtext(glist, &x->a_text)));
+    pdgui_vmess("pdtk_canvas::set_option_types",
+                "ci crs ri rr",
+                canvas_glist, 1, canvas_glist,
+                "itemconfigure",
+                buf, "-width", glist->gl_zoom+glist->gl_zoom,
+                "-outline", "atom_box_focus_outline");
 }
 
     /* this is called when gatom is clicked on with patch in run mode. */
@@ -1374,21 +1370,21 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
                 "itemconfigure",
                 buf,
                 "-fill", (state? "selected" : "comment"));
-		else {
-			if (pd_class(&x->te_pd) == text_class)
-					outline = "obj_box_outline_broken";
-			else
-				switch (x->te_type) {
-					case T_MESSAGE:	outline = "msg_box_outline"; break;
-					case T_ATOM: outline = "atom_box_outline"; break;
-					default: outline = "obj_box_outline";
-				}
+        else {
+            if (pd_class(&x->te_pd) == text_class)
+                    outline = "obj_box_outline_broken";
+            else
+                switch (x->te_type) {
+                    case T_MESSAGE:    outline = "msg_box_outline"; break;
+                    case T_ATOM: outline = "atom_box_outline"; break;
+                    default: outline = "obj_box_outline";
+                }
             pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crs rr",
                 glist, 1,
                 glist, "itemconfigure", buf,
                 "-outline", (state? "selected" : outline));
-		}
+        }
     }
 }
 
@@ -1605,10 +1601,9 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
                 "-fill", (issignal ? "signal_iolet" : "msg_iolet"),
                 "-outline", (issignal ? "signal_iolet_border" : "msg_iolet_border"));
         } else
-            sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
-                c, tag, i,
-                onset, y1,
-                onset + iow, y1 + ih - glist->gl_zoom);
+            pdgui_vmess(0, "crs iiii",
+                glist_getcanvas(glist), "coords", tagbuf,
+                onset, y1, onset + iow, y1 + ih - glist->gl_zoom);
     }
 }
 
