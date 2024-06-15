@@ -37,9 +37,35 @@
  *
  */
 
-#include <stdio.h>
 #include "s_audio_paring.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else /* _WIN32 */
+#include <sys/time.h>
+#include <errno.h>
+#if defined(__APPLE__) && defined(__MACH__)
+/* macOS does not support unnamed posix semaphores,
+ * so we use Mach semaphores instead. */
+#include <mach/mach.h>
+#define HAVE_MACH_SEMAPHORE
+#elif defined(__linux__) || defined(__FreeBSD__) || \
+    defined(__NetBSD__) || defined(__OpenBSD__)
+#include <semaphore.h>
+#define HAVE_POSIX_SEMAPHORE
+#else
+/* Some platforms (including Apple) do not support unnamed posix semaphores,
+ * others might not implement sem_timedwait(); to be on the safe side, we
+ * we simply emulate it with a counter, mutex and condition variable.
+ * The critical section is so short that there should not be any locking.
+ */
+#include <pthread.h>
+#endif
+#endif /* _WIN32 */
 
 /* Clear buffer. Should only be called when buffer is NOT being read. */
 static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
@@ -250,4 +276,147 @@ long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
     }
     sys_ringbuf_AdvanceReadIndex( rbuf, numRead );
     return numRead;
+}
+
+/***************************************************************************
+** t_semaphore */
+
+#ifndef _WIN32
+struct _semaphore
+{
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_t sem;
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_t sem;
+#else
+    pthread_mutex_t mutex;
+    pthread_cond_t condvar;
+    int count;
+#endif
+};
+#endif
+
+t_semaphore * sys_semaphore_create(void)
+{
+#ifdef _WIN32
+    return (t_semaphore *)CreateSemaphoreA(0, 0, LONG_MAX, 0);
+#else /* _WIN32 */
+    t_semaphore *sem = (t_semaphore *)malloc(sizeof(t_semaphore));
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_create(mach_task_self(), &sem->sem, SYNC_POLICY_FIFO, 0);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_init(&sem->sem, 0, 0);
+#else
+    pthread_cond_init(&sem->condvar, 0);
+    pthread_mutex_init(&sem->mutex, 0);
+    sem->count = 0;
+#endif
+    return sem;
+#endif /* _WIN32 */
+}
+
+void sys_semaphore_destroy(t_semaphore *sem)
+{
+#ifdef _WIN32
+    CloseHandle((HANDLE)sem);
+#else /* _WIN32 */
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_destroy(mach_task_self(), sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_destroy(&sem->sem);
+#else
+    pthread_mutex_destroy(&sem->mutex);
+    pthread_cond_destroy(&sem->condvar);
+#endif
+    free(sem);
+#endif /* _WIN32 */
+}
+
+void sys_semaphore_wait(t_semaphore *sem)
+{
+#if defined(_WIN32)
+    WaitForSingleObject((HANDLE)sem, INFINITE);
+#elif defined(HAVE_MACH_SEMAPHORE)
+    semaphore_wait(sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    while (sem_wait(&sem->sem) == -1 && errno == EINTR) continue;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    while (sem->count == 0)
+        pthread_cond_wait(&sem->condvar, &sem->mutex);
+    sem->count--;
+    pthread_mutex_unlock(&sem->mutex);
+#endif
+}
+
+int sys_semaphore_waitfor(t_semaphore *sem, double seconds)
+{
+#ifdef _WIN32
+    return WaitForSingleObject((HANDLE)sem, seconds * 1000.0) != WAIT_TIMEOUT;
+#elif defined(HAVE_MACH_SEMAPHORE)
+    mach_timespec_t ts;
+    ts.tv_sec = (unsigned int)seconds;
+    ts.tv_nsec = (seconds - ts.tv_sec) * 1000000000;
+    return semaphore_timedwait(sem->sem, ts) != KERN_OPERATION_TIMED_OUT;
+#else /* Posix semaphore and pthreads */
+        /* first check if the semaphore is available */
+#ifdef HAVE_POSIX_SEMAPHORE
+    if (sem_trywait(&sem->sem) == 0)
+        return 1;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    if (sem->count > 0)
+    {
+        sem->count--;
+        pthread_mutex_unlock(&sem->mutex);
+        return 1;
+    }
+    pthread_mutex_unlock(&sem->mutex);
+#endif
+        /* otherwise wait for it to become available */
+    struct timespec ts;
+    struct timeval now;
+    gettimeofday(&now, 0);
+        /* add fractional part to timeout */
+    seconds += now.tv_usec * 0.000001;
+    ts.tv_sec = now.tv_sec + (time_t)seconds;
+    ts.tv_nsec = (seconds - (time_t)seconds) * 1000000000;
+#ifdef HAVE_POSIX_SEMAPHORE
+    while (sem_timedwait(&sem->sem, &ts) == -1)
+    {
+        if (errno != EINTR) /* ETIMEDOUT */
+            return 0;
+    }
+    return 1;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    while (sem->count == 0)
+    {
+        if (pthread_cond_timedwait(&sem->condvar, &sem->mutex, &ts) == ETIMEDOUT)
+        {
+            pthread_mutex_unlock(&sem->mutex);
+            return 0;
+        }
+    }
+    sem->count--;
+    pthread_mutex_unlock(&sem->mutex);
+    return 1;
+#endif
+#endif
+}
+
+void sys_semaphore_post(t_semaphore *sem)
+{
+#if defined(_WIN32)
+    ReleaseSemaphore((HANDLE)sem, 1, NULL);
+#elif defined(HAVE_MACH_SEMAPHORE)
+    semaphore_signal(sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_post(&sem->sem);
+#else
+    pthread_mutex_lock(&sem->mutex);
+    sem->count++;
+    pthread_mutex_unlock(&sem->mutex);
+    pthread_cond_signal(&sem->condvar);
+#endif
 }

@@ -129,7 +129,7 @@ static char*add_deken_extension(const char*systemext, int float_agnostic, int cp
         return 0;
     ext[MAXPDSTRING-1] = 0;
 
-    if(snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
+    if(pd_snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
         add_dllextension(ext);
     else
     {
@@ -535,7 +535,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         struct stat statbuf;
-        snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
+        pd_snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
             *dllextent);
         sys_bashfilename(filename, filename);
         if(!stat(filename, &statbuf))
@@ -604,7 +604,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         int fd = -1;
 
         t_pd *was = s__X.s_thing;
-        snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+        pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
         if ((fd = canvas_open(canvas, objectname, ".pd",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, objectname, ".pat",
@@ -640,7 +640,7 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
            but we have already tried all paths */
     if (!path) return (0);
 
-    snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+    pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
     if ((fd = sys_trytoopenone(path, objectname, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
         (fd = sys_trytoopenone(path, objectname, ".pat",
@@ -668,4 +668,28 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
         return (1);
     }
     return (0);
+}
+
+t_method sys_getfunbyname(const char *name)
+{
+#ifdef _WIN32
+    HMODULE module;
+        /* Get a handle to the actual module that contains the Pd API functions.
+        For this we just have to pass *any* Pd API function to GetModuleHandleEx().
+        NB: GetModuleHandle(NULL) wouldn't work because it would return a handle
+        to the main executable and GetProcAddress(), unlike dlsym(), does not
+        reach into its dependencies. */
+    if (GetModuleHandleEx(
+        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (LPCSTR)&pd_typedmess, &module))
+            return (t_method)GetProcAddress(module, name);
+    else
+    {
+        fprintf(stderr, "GetModuleHandleEx() failed with error code %d\n",
+            GetLastError());
+        return NULL;
+    }
+#else
+    return (t_method)dlsym(dlopen(NULL, RTLD_NOW), name);
+#endif
 }

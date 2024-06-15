@@ -933,7 +933,7 @@ typedef struct _scalarlog_tilde
 
 static void *log_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("-~: extra arguments ignored");
+    if (argc > 1) post("log~: extra arguments ignored");
     if (argc)
     {
         t_scalarlog_tilde *x =
@@ -1033,7 +1033,7 @@ static void log_tilde_setup(void)
     CLASS_MAINSIGNALIN(log_tilde_class, t_log_tilde, x_f);
     class_addmethod(log_tilde_class, (t_method)log_tilde_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(log_tilde_class, gensym("binops-tilde"));
-    scalarlog_tilde_class = class_new(gensym("-~"), 0, 0,
+    scalarlog_tilde_class = class_new(gensym("log~"), 0, 0,
         sizeof(t_scalarlog_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(scalarlog_tilde_class, t_scalarlog_tilde, x_f);
     class_addmethod(scalarlog_tilde_class, (t_method)scalarlog_tilde_dsp,
@@ -1059,7 +1059,7 @@ typedef struct _scalarpow_tilde
 
 static void *pow_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("-~: extra arguments ignored");
+    if (argc > 1) post("pow~: extra arguments ignored");
     if (argc)
     {
         t_scalarpow_tilde *x =
@@ -1150,7 +1150,7 @@ static void pow_tilde_setup(void)
     CLASS_MAINSIGNALIN(pow_tilde_class, t_pow_tilde, x_f);
     class_addmethod(pow_tilde_class, (t_method)pow_tilde_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(pow_tilde_class, gensym("binops-tilde"));
-    scalarpow_tilde_class = class_new(gensym("-~"), 0, 0,
+    scalarpow_tilde_class = class_new(gensym("pow~"), 0, 0,
         sizeof(t_scalarpow_tilde), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(scalarpow_tilde_class, t_scalarpow_tilde, x_f);
     class_addmethod(scalarpow_tilde_class, (t_method)scalarpow_tilde_dsp,

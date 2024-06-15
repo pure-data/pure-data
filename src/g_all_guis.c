@@ -311,9 +311,9 @@ static t_symbol* color2symbol(int col) {
     {
             /* compatibility with Pd<=0.47: saves colors as numbers with limited resolution */
         int col2 = -1 - (((0xfc0000 & col) >> 6)|((0xfc00 & col) >> 4)|((0xfc & col) >> 2));
-        snprintf(colname, MAXPDSTRING-1, "%d", col2);
+        pd_snprintf(colname, MAXPDSTRING-1, "%d", col2);
     } else {
-        snprintf(colname, MAXPDSTRING-1, "#%06x", col);
+        pd_snprintf(colname, MAXPDSTRING-1, "#%06x", col);
     }
     return gensym(colname);
 }
@@ -822,7 +822,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
 
 void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
 {
-#define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
+#define SETCOLOR(a, col) do {char color[MAXPDSTRING]; pd_snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
     t_float zoom = iemgui->x_glist->gl_zoom;
     t_symbol *srl[3];
     int for_undo = 1;
@@ -1022,6 +1022,13 @@ void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w)
     SET_DRAW(iemgui, select);
     SET_DRAW(iemgui, erase);
     SET_DRAW(iemgui, move);
+}
+
+void iemgui_free(t_iemgui *iemgui) {
+    if(iemgui->x_fsf.x_rcv_able)
+        pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
+    pdgui_stub_deleteforkey(iemgui);
+    sys_unqueuegui(iemgui);
 }
 
 

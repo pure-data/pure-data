@@ -237,7 +237,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
     set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
     set filename "$::sys_libdir/doc/1.manual/1.introduction.txt"
     if {![file exists $filename]} {
-        ::pdwindow::error [format [_ "ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::error [_ "ignoring '%s': doesn't exist" $filename]
         ::pdwindow::error "\n"
         #return
     }
@@ -267,7 +267,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
             }
             close $textfile
         } stderr ] } {
-            ::pdwindow::error [format [_ "couldn't read \"%s\" document" ] [_ "About Pd" ] ]
+            ::pdwindow::error [_ "couldn't read \"%s\" document" [_ "About Pd" ] ]
             ::pdwindow::error "\n\t$stderr\n"
             destroy .aboutpd
         }

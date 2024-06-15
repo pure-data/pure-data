@@ -127,7 +127,6 @@ typedef struct _guiqueue
 
 struct _instanceinter
 {
-    int i_havegui;
     int i_nfdpoll;
     t_fdpoll *i_fdpoll;
     int i_maxfd;
@@ -139,9 +138,11 @@ struct _instanceinter
     int i_guihead;
     int i_guitail;
     int i_guisize;
-    int i_waitingforping;
     int i_bytessincelastping;
-    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
+    unsigned int i_havetkproc:1;    /* TK process started  */
+    unsigned int i_havegui:1;       /* have TK proc and font metrics too */
+    unsigned int i_fdschanged:1;    /* need to break fdpoll loop */
+    unsigned int i_waitingforping:1;/* sent a ping out and should get answer */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -223,15 +224,14 @@ static int sys_domicrosleep(int microsec)
     timeout.tv_usec = 0;
     if (INTER->i_nfdpoll)
     {
-        fd_set readset, writeset, exceptset;
+        fd_set readset, writeset;
         FD_ZERO(&writeset);
         FD_ZERO(&readset);
-        FD_ZERO(&exceptset);
         for (fp = INTER->i_fdpoll,
             i = INTER->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
         if(select(INTER->i_maxfd+1,
-                  &readset, &writeset, &exceptset, &timeout) < 0)
+                  &readset, &writeset, NULL, &timeout) < 0)
           perror("microsleep select");
         INTER->i_fdschanged = 0;
         for (i = 0; i < INTER->i_nfdpoll &&
@@ -799,13 +799,23 @@ int sys_havegui(void)
     return (INTER->i_havegui);
 }
 
+int sys_havetkproc(void)
+{
+    return (INTER->i_havetkproc);
+}
+
 void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
 
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
+    {       /* if there's no TK process just throw it to stderr */
+        va_start(ap, fmt);
+        vfprintf(stderr, fmt, ap);
+        va_end(ap);
         return;
+    }
     if (!INTER->i_guibuf)
     {
         if (!(INTER->i_guibuf = malloc(GUI_ALLOCCHUNK)))
@@ -820,7 +830,7 @@ void sys_vgui(const char *fmt, ...)
             sys_trytogetmoreguibuf(INTER->i_guisize + GUI_ALLOCCHUNK);
     }
     va_start(ap, fmt);
-    msglen = vsnprintf(
+    msglen = pd_vsnprintf(
         INTER->i_guibuf  + INTER->i_guihead,
         INTER->i_guisize - INTER->i_guihead,
         fmt, ap);
@@ -828,19 +838,18 @@ void sys_vgui(const char *fmt, ...)
     if(msglen < 0)
     {
         fprintf(stderr,
-            "Pd: buffer space wasn't sufficient for long GUI string\n");
+            "sys_vgui: pd_snprintf() failed with error code %d\n", errno);
         return;
     }
     if (msglen >= INTER->i_guisize - INTER->i_guihead)
     {
         int msglen2, newsize =
             INTER->i_guisize
-            + 1
-            + (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
+            + (msglen < GUI_ALLOCCHUNK ? GUI_ALLOCCHUNK : msglen + 1);
         sys_trytogetmoreguibuf(newsize);
 
         va_start(ap, fmt);
-        msglen2 = vsnprintf(
+        msglen2 = pd_vsnprintf(
             INTER->i_guibuf  + INTER->i_guihead,
             INTER->i_guisize - INTER->i_guihead,
             fmt, ap);
@@ -874,6 +883,18 @@ void sys_vgui(const char *fmt, ...)
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }
+
+
+/* sys_vgui() and sys_gui() are deprecated for externals
+   and shouldn't be used directly within Pd.
+   however, the we do use them for implementing the high-level
+   communication, so we do not want the compiler to shout out loud.
+ */
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined _MSC_VER
+#pragma warning( disable : 4996 )
+#endif
 
 void sys_gui(const char *s)
 {
@@ -976,7 +997,7 @@ static int sys_flushqueue(void)
     /* flush output buffer and update queue to gui in small time slices */
 static int sys_poll_togui(void) /* returns 1 if did anything */
 {
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
         return (0);
         /* in case there is stuff still in the buffer, try to flush it. */
     sys_flushtogui();
@@ -1106,7 +1127,7 @@ void sys_gui_preferences(void)
 
 static int sys_watchfd = -1;
 
-void glob_watchdog(t_pd *dummy)
+void glob_watchdog(void *dummy)
 {
     if (sys_watchfd < 0)
         return;
@@ -1159,16 +1180,52 @@ static const char*deken_CPU[] = {
 #endif
         , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+static const char*strip_quotes(const char*s, char*outbuf, size_t outsize) {
+    size_t len = strlen(s);
+    const char q = (len>1)?s[0]:0;
+        /* only strip single or double quotes */
+    switch(q) {
+    case '\'':
+    case '"':
+        break;
+    case 0:
+    default:
+        return s;
+    }
+        /* only strip quotes if they are both at the beginning and the end */
+    if (q != s[len-1])
+        return s;
+
+    if(len>outsize)
+        len = outsize;
+
+    outbuf[0] = 0;
+    strncpy(outbuf, s+1, len-2);
+    outbuf[outsize-1] = 0;
+    return outbuf;
+}
+
 static void init_deken_arch(void)
 {
     static int initialized = 0;
+    static char deken_OS_noquotes[MAXPDSTRING];
+    static char deken_CPU_noquotes[MAXPDSTRING];
+
     if(initialized)
         return;
     initialized = 1;
-#define CPUNAME_SIZE 15
 
-#if !defined(DEKEN_CPU)
-# if defined __ARM_ARCH
+#if defined(DEKEN_OS)
+    deken_OS = strip_quotes(deken_OS, deken_OS_noquotes, MAXPDSTRING);
+#endif /* DEKEN_OS */
+
+#define CPUNAME_SIZE 15
+#if defined(DEKEN_CPU)
+    deken_CPU[0] = strip_quotes(deken_CPU[0], deken_CPU_noquotes, MAXPDSTRING);
+#else /* !DEKEN_CPU */
+# if defined(__aarch64__)
+    /* no special-casing for arm64 */
+# elif defined __ARM_ARCH
         /* ARM-specific:
          * if we are running ARMv7, we can also load ARMv6 externals
          */
@@ -1176,7 +1233,7 @@ static void init_deken_arch(void)
     {
         int arm_cpu = __ARM_ARCH;
         int cpu_v;
-        int n;
+        int n = 0;
         const char endianness =
 #  if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
             'b';
@@ -1206,7 +1263,7 @@ static void init_deken_arch(void)
             cpu_v--)
         {
             static char cpuname[CPUNAME_SIZE+1];
-            snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
+            pd_snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
             deken_CPU[n++] = gensym(cpuname)->s_name;
         }
     }
@@ -1231,7 +1288,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
     if ((cpu>=0) && (((!deken_CPU) || (cpu >= (sizeof(deken_CPU)/sizeof(*deken_CPU))) || (!deken_CPU[cpu]))))
         return 0;
 
-    snprintf(buf, bufsize-1,
+    pd_snprintf(buf, bufsize-1,
         "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (int)((float_agnostic?0:8) * sizeof(t_float)));
 
     buf[bufsize-1] = 0;
@@ -1510,13 +1567,13 @@ static int sys_do_startgui(const char *libdir)
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
 
-        snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
+        pd_snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
         sys_bashfilename(wishbuf, wishbuf);
 
-        snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
+        pd_snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
         sys_bashfilename(scriptbuf, scriptbuf);
 
-        snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
+        pd_snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
             WISH, scriptbuf, portno);
 
         memset(&si, 0, sizeof(si));
@@ -1580,11 +1637,15 @@ static int sys_do_startgui(const char *libdir)
 
     sys_init_deken();
 
-    do {
+    {
         t_audiosettings as;
         sys_get_audio_settings(&as);
         sys_vgui("set pd_whichapi %d\n", as.a_api);
-    } while(0);
+
+        pdgui_vmess("pdtk_pd_dsp", "s",
+            THISGUI->i_dspstate ? "ON" : "OFF");
+    }
+
     return (0);
 }
 
@@ -1603,7 +1664,7 @@ void sys_setrealtime(const char *libdir)
     if (sys_hipriority == -1)
         sys_hipriority = 1;
 
-    snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
+    pd_snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
     cmdbuf[MAXPDSTRING-1] = 0;
     if (sys_hipriority)
     {
@@ -1694,6 +1755,8 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
+void sys_do_close_audio(void);
+
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1707,7 +1770,7 @@ void sys_bail(int n)
             /* sys_close_audio() hangs if you're in a signal? */
         fprintf(stderr ,"gui socket %d - \n", INTER->i_guisock);
         fprintf(stderr, "closing audio...\n");
-        sys_close_audio();
+        sys_do_close_audio();
         fprintf(stderr, "closing MIDI...\n");
         sys_close_midi();
         fprintf(stderr, "... done.\n");
@@ -1717,20 +1780,11 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-extern void sys_exit(void);
+void sys_exit(int status);
 
 void glob_exit(void *dummy, t_float status)
 {
-        /* sys_exit() sets the sys_quit flag, so all loops end */
-    sys_exit();
-    sys_close_audio();
-    sys_close_midi();
-    if (sys_havegui())
-    {
-        sys_closesocket(INTER->i_guisock);
-        sys_rmpollfn(INTER->i_guisock);
-    }
-    exit((int)status);
+    sys_exit(status);
 }
 void glob_quit(void *dummy)
 {
@@ -1752,16 +1806,13 @@ static void glist_maybevis(t_glist *gl)
     }
 }
 
-int sys_startgui(const char *libdir)
+    /* this is called from main when GUI has given us our font metrics,
+    so that we can now draw all "visible" canvases.  These include all
+    root canvases and all subcanvases that already believe they're visible. */
+void sys_doneglobinit( void)
 {
     t_canvas *x;
-    stderr_isatty = isatty(2);
-    for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        canvas_vis(x, 0);
     INTER->i_havegui = 1;
-    INTER->i_guihead = INTER->i_guitail = 0;
-    if (sys_do_startgui(libdir))
-        return (-1);
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         if (strcmp(x->gl_name->s_name, "_float_template") &&
             strcmp(x->gl_name->s_name, "_float_array_template") &&
@@ -1770,18 +1821,36 @@ int sys_startgui(const char *libdir)
         glist_maybevis(x);
         canvas_vis(x, 1);
     }
+}
+
+    /* start the GUI up.  Before we actually draw our "visible" windows
+    we have to wait for the GUI to give us our font metrics, see
+    glob_initfromgui().  LATER it would be cool to figure out what metrics
+    we really need and tell the GUI - that way we can support arbitrary
+    zoom with appropriate font sizes.   And/or: if we ever move definitively
+    to a vector-based GUI lib we might be able to skip this step altogether. */
+int sys_startgui(const char *libdir)
+{
+    t_canvas *x;
+    stderr_isatty = isatty(2);
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        canvas_vis(x, 0);
+    INTER->i_havegui = 0;
+    INTER->i_havetkproc = 1;
+    INTER->i_guihead = INTER->i_guitail = 0;
+    INTER->i_waitingforping = 0;
+    if (sys_do_startgui(libdir))
+        return (-1);
     return (0);
 }
 
- /* more work needed here - for some reason we can't restart the gui after
- shutting it down this way.  I think the second 'init' message never makes
- it because the to-gui buffer isn't re-initialized. */
+    /* Shut the GUI down. */
 void sys_stopgui(void)
 {
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-    sys_vgui("%s", "exit\n");
+
     if (INTER->i_guisock >= 0)
     {
         sys_closesocket(INTER->i_guisock);
@@ -1789,6 +1858,7 @@ void sys_stopgui(void)
         INTER->i_guisock = -1;
     }
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
 }
 
 /* ----------- mutexes for thread safety --------------- */
@@ -1804,6 +1874,8 @@ void s_inter_newpdinstance(void)
     INTER->i_freq = 0;
 #endif
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
+    INTER->i_guisock = -1;
 }
 
 void s_inter_free(t_instanceinter *inter)
@@ -1817,7 +1889,7 @@ void s_inter_free(t_instanceinter *inter)
         inter->i_nfdpoll = 0;
     }
 #if PDTHREADS
-    pthread_mutex_destroy(&INTER->i_mutex);
+    pthread_mutex_destroy(&inter->i_mutex);
 #endif
     freebytes(inter, sizeof(*inter));
 }

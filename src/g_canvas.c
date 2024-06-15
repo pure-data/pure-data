@@ -54,6 +54,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
+void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
 
@@ -305,9 +306,9 @@ t_symbol *canvas_getdir(const t_canvas *x)
 void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
     const char *dir = canvas_getenv(x)->ce_dir->s_name;
-    if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
+    if (sys_isabsolutepath(file) || !*dir)
     {
-        strncpy(result, file, resultsize);
+        sys_expandpath(file, result, resultsize);
         result[resultsize-1] = 0;
     }
     else
@@ -687,7 +688,7 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
 t_symbol *canvas_makebindsym(t_symbol *s)
 {
     char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
+    pd_snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
     buf[MAXPDSTRING-1] = 0;
     return (gensym(buf));
 }
@@ -1449,30 +1450,33 @@ void canvas_update_dsp(void)
 }
 
 /* the "dsp" message to pd starts and stops DSP computation, and, if
-appropriate, also opens and closes the audio device.  On exclusive-access
+appropriate, also opens and closes the audio device. On exclusive-access
 APIs such as ALSA, MMIO, and ASIO (I think) it's appropriate to close the
 audio devices when not using them; but jack behaves better if audio I/O
-simply keeps running.  This is wasteful of CPU cycles but we do it anyway
+simply keeps running. Also, we want to preserve any connections made between
+Pd and other Jack clients. This is wasteful of CPU cycles but we do it anyway
 and can perhaps regard this is a design flaw in jack that we're working around
-here.  The function audio_shouldkeepopen() is provided by s_audio.c to tell
-us that we should elide the step of closing audio when DSP is turned off.*/
+here. The function audio_shouldkeepopen() is provided by s_audio.c to tell us
+that we should elide the step of closing audio when DSP is turned off.*/
 
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int newstate;
     if (argc)
     {
-        newstate = atom_getfloatarg(0, argc, argv);
+        int newstate = atom_getfloat(argv);
         if (newstate && !THISGUI->i_dspstate)
         {
-            sys_set_audio_state(1);
+                /* if audio should be kept open, we don't reopen the device,
+                unless it really has been closed (for whatever reason) */
+            if (!audio_shouldkeepopen() || !audio_isopen())
+                sys_reopen_audio();
             canvas_start_dsp();
         }
         else if (!newstate && THISGUI->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
-                sys_set_audio_state(0);
+                sys_close_audio();
         }
     }
     else post("dsp state %d", THISGUI->i_dspstate);
@@ -1676,7 +1680,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1688,7 +1692,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1722,7 +1726,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     /* check whether the given lib is located in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(x, strbuf))
             return;
@@ -1754,7 +1758,7 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
     /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1785,7 +1789,7 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
     /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(0, strbuf))
             return;
@@ -2179,7 +2183,7 @@ void g_canvas_freepdinstance(void)
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
-EXTERN int pd_getdspstate(void)
+int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
 }

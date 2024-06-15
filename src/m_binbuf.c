@@ -485,18 +485,10 @@ int canvas_getdollarzero(void);
 static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     int ac, const t_atom *av, int tonew)
 {
-    int argno = (int)atol(s);
-    int arglen = 0;
-    const char *cs = s;
-    char c = *cs;
+    char *cs;
+    int argno = (int)strtol(s, &cs, 10);
 
     *buf=0;
-    while (c && (c>='0') && (c<='9'))
-    {
-        c = *cs++;
-        arglen++;
-    }
-
     if (cs==s)      /* invalid $-expansion (like "$bla") */
     {
         sprintf(buf, "$");
@@ -518,7 +510,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
         }
         else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
     }
-    return (arglen-1);
+    return (cs - s);
 }
 
 /* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
@@ -796,9 +788,9 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
     char namebuf[MAXPDSTRING];
 
     if (*dirname)
-        snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
     else
-        snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
     namebuf[MAXPDSTRING-1] = 0;
 
     if ((fd = sys_open(namebuf, 0)) < 0)
@@ -893,9 +885,9 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     int indx;
 
     if (*dir)
-        snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
     else
-        snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
     fbuf[MAXPDSTRING-1] = 0;
 
     if (!strcmp(filename + strlen(filename) - 4, ".pat") ||

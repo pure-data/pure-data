@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -241,7 +241,7 @@ msgstr "Irteera gailuak"
 msgid "Use Multiple Devices"
 msgstr "Gailu anitz erabili"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 #, fuzzy
@@ -616,7 +616,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Pd-en leihoa"
 
 #, fuzzy
@@ -624,16 +624,22 @@ msgid "Zoom New Windows"
 msgstr "Leihoa"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr ".pdsettings fitxategia ezabatu da"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 #, fuzzy
@@ -673,7 +679,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr ".pdsettings fitxategia ezabatu da"
 
 msgid "language"
@@ -698,13 +704,13 @@ msgstr "Bloke tamaina:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -854,6 +860,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -926,6 +940,17 @@ msgstr "Hobespenak"
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -940,17 +965,6 @@ msgstr "TAR Fitxategiak"
 #, fuzzy
 msgid "All Files"
 msgstr "Fitxategi guztiak"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr ""
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
-msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1139,7 +1153,7 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 
 #, tcl-format
@@ -1174,6 +1188,9 @@ msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
+msgstr ""
+
+msgid "Ignoring checksum errors"
 msgstr ""
 
 #, tcl-format
@@ -1275,6 +1292,9 @@ msgstr ""
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr ""
+
+msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afrikaans"
@@ -1391,11 +1411,11 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, tcl-format
-msgid "(default language: %s)"
+msgid "(no translation)"
 msgstr ""
 
-msgid "(no translation)"
+#, tcl-format
+msgid "(default language: %s)"
 msgstr ""
 
 #, tcl-format
@@ -1639,12 +1659,6 @@ msgid "Audio on"
 msgstr "Audioaren ezarpenak"
 
 msgid "Audio off"
-msgstr ""
-
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"

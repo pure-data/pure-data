@@ -155,9 +155,9 @@ proc ::pd_bindings::global_bindings {} {
 proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     variable modifier
 
-    bind $mytoplevel <KeyPress-Escape>          "dialog_${dialogname}::cancel $mytoplevel"
-    bind $mytoplevel <KeyPress-Return>          "dialog_${dialogname}::ok $mytoplevel"
-    bind_capslock $mytoplevel $::modifier-Key w "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <KeyPress-Escape>          "dialog_${dialogname}::cancel $mytoplevel; break"
+    bind $mytoplevel <KeyPress-Return>          "dialog_${dialogname}::ok $mytoplevel; break"
+    bind_capslock $mytoplevel $::modifier-Key w "dialog_${dialogname}::cancel $mytoplevel; break"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
     if {$mytoplevel ne ".find"} {

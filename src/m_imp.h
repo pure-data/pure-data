@@ -27,6 +27,13 @@ typedef void (*t_symbolmethod)(t_pd *x, t_symbol *s);
 typedef void (*t_listmethod)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 typedef void (*t_anymethod)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 
+typedef void* (*t_bangmethodr)(t_pd *x);
+typedef void* (*t_pointermethodr)(t_pd *x, t_gpointer *gp);
+typedef void* (*t_floatmethodr)(t_pd *x, t_float f);
+typedef void* (*t_symbolmethodr)(t_pd *x, t_symbol *s);
+typedef void* (*t_listmethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+typedef void* (*t_anymethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+
 struct _class
 {
     t_symbol *c_name;                   /* name (mostly for error reporting) */
@@ -102,6 +109,7 @@ EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
 EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
 EXTERN void glob_exit(void *dummy, t_float status);
+EXTERN void glob_watchdog(void *dummy); /* glob_exit(0); */
 EXTERN void open_via_helppath(const char *name, const char *dir);
 
 #define __m_imp_h_

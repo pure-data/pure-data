@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -218,7 +218,7 @@ msgstr "Выходы"
 msgid "Use Multiple Devices"
 msgstr "Использовать несколько устройств"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -571,23 +571,29 @@ msgid "Edit existing path [%s]"
 msgstr "Редактировать существующий путь [%s]"
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Окно Pd"
 
 msgid "Zoom New Windows"
 msgstr "Развернуть новые окна"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "удаленные настройки GUI"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
@@ -626,7 +632,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Библиотеки Pd, загружаемые при запуске"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "удаленные настройки GUI"
 
 msgid "language"
@@ -652,13 +658,13 @@ msgid "Numeric precision of Pd-core"
 msgstr ""
 
 #, fuzzy
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Флаги при загрузке:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Не использовать режим реального времени планировщика событий"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Флаги при загрузке:"
 
 msgid "Help Browser"
@@ -814,6 +820,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Невозможно получить значение SHA256 для '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Невозможно выполнить верификацию SHA256 для '%s'."
 
@@ -891,6 +905,17 @@ msgstr "Настройки %s Deken"
 msgid "Platform re-detected: %s"
 msgstr "Платформа переобнаружена: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256 для '%s' не подтвержден!"
+
+msgid "SHA256 verification failed"
+msgstr "проверка SHA256 завершилась неудачей"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Контрольная сумма не совпадает для '%s'"
+
 msgid "Deken Packages"
 msgstr "Пакеты Deken"
 
@@ -902,17 +927,6 @@ msgstr "Файлы TAR"
 
 msgid "All Files"
 msgstr "Все файлы"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Контрольная сумма не совпадает для '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256 для '%s' не подтвержден!"
-
-msgid "SHA256 verification failed"
-msgstr "проверка SHA256 завершилась неудачей"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1107,7 +1121,7 @@ msgstr "Установить %1$s в %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Отмена установки '%s': Не указана папка для установки."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Установка в несуществующую папку завершилась неудачно"
 
 #, tcl-format
@@ -1142,6 +1156,10 @@ msgid "Download completed! Verifying..."
 msgstr "Загрузка завершена! Проверка..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Игнорируется несовпадение контрольной суммы"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Игнорируется несовпадение контрольной суммы"
 
 #, tcl-format
@@ -1262,6 +1280,9 @@ msgstr "невозможно удалить пустой объект"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Невозможно создать свойства \"%1$s\" в %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr ""
 
@@ -1376,13 +1397,13 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, fuzzy, tcl-format
-msgid "(default language: %s)"
-msgstr "Платформа по умолчанию: %s"
-
 #, fuzzy
 msgid "(no translation)"
 msgstr "переводы"
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "Платформа по умолчанию: %s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1610,14 +1631,6 @@ msgstr "Аудио включено"
 msgid "Audio off"
 msgstr "Аудио выключено"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-"(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
-"скобка']'] "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1667,6 +1680,14 @@ msgstr "Удалить"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "игнорируется '%s': невозможно распознать файл Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr ""
+#~ "(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
+#~ "скобка']'] "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Путь..."

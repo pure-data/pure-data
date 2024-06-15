@@ -64,6 +64,18 @@
  */
 
 
+/* sys_vgui() and sys_gui() are deprecated for externals
+   and shouldn't be used directly within Pd.
+   however, the we do use them for implementing the high-level
+   communication (such as pdgui_vmess),
+   so we do not want the compiler to shout out loud.
+ */
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined _MSC_VER
+#pragma warning( disable : 4996 )
+#endif
+
 static PERTHREAD char* s_escbuffer = 0;
 static PERTHREAD size_t s_esclength = 0;
 #ifndef GUI_ALLOCCHUNK
@@ -231,8 +243,10 @@ static int addmess(const t_val *v)
         sys_vgui("{%s}", str_escape(v->value.p, v->size));
         break;
     case GUI_VMESS__POINTER:
-    case GUI_VMESS__OBJECT:
         sys_vgui("%p", v->value.p);
+        break;
+    case GUI_VMESS__OBJECT:
+        sys_vgui(PDGUI_FORMAT__OBJECT, v->value.p);
         break;
     case GUI_VMESS__MESSAGE:
         sys_vgui("{");
@@ -371,7 +385,7 @@ void pdgui_vamess(const char* message, const char* format, va_list args_)
 {
     const char* fmt;
     char* buf;
-    t_val v;
+    t_val v = {0};
     va_list args;
 
     v.type = GUI_VMESS__RAWSTRING;
@@ -409,7 +423,8 @@ void pdgui_endmess(void)
 void pdgui_vmess(const char* message, const char* format, ...)
 {
     va_list args;
-    if (!sys_havegui())return;
+    if (!sys_havetkproc())
+        return;
     if(!format)
     {
         if (message)

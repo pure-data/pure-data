@@ -1879,14 +1879,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
     int flag = (f != 0);
     if (flag)
     {
-            /* If a subpatch/abstraction has GOP/gl_isgraph set, then it will have
+            /* If a subpatch has GOP/gl_isgraph set, then it will have
              * a gl_editor already, if its not, it will not have a gl_editor.
-             * canvas_create_editor(x) checks if a gl_editor is already created,
+             * canvas_create_editor(x) checks if a gl_editor already exists,
              * so its ok to run it on a canvas that already has a gl_editor. */
         if (x->gl_editor && x->gl_havewindow)
         {           /* just put us in front */
             pdgui_vmess("pdtk_canvas_raise", "^", x);
         }
+            /* ouch - if there's no gui yet, because we're still waiting for
+            font metrics, just set the flag and we'll clean up the mess later
+            when the font metrics arrive. */
+        else if (!sys_havegui())
+            x->gl_havewindow = 1;
         else
         {
             char cbuf[MAXPDSTRING];
@@ -1898,11 +1903,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             size_t numparents;
 
             canvas_create_editor(x);
-            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
+                    /* initial values for new windows: */
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) &&
+                (GLIST_DEFCANVASYLOC == x->gl_screeny1))
+                    winpos[0]=0;
+            else
             {
-                winpos[0]=0;
-            } else {
-                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1), (int)(x->gl_screeny1));
+                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1),
+                    (int)(x->gl_screeny1));
             }
 
             pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
@@ -1912,7 +1920,9 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {
-                t_canvas**newparents = (t_canvas**)resizebytes(parents, numparents * sizeof(*newparents), (numparents+1) * sizeof(*newparents));
+                t_canvas**newparents = (t_canvas**)resizebytes(parents,
+                     numparents * sizeof(*newparents),
+                        (numparents+1) * sizeof(*newparents));
                 if (!newparents)
                     break;
                 c = c->gl_owner;
@@ -1920,15 +1930,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 parents[numparents] = c;
                 numparents++;
             }
-            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents, parents);
+            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents,
+                parents);
             freebytes(parents, numparents * sizeof(t_canvas));
 
             x->gl_havewindow = 1;
             canvas_reflecttitle(x);
             canvas_updatewindowlist();
-            pdgui_vmess("pdtk_undomenu", "^ ss",
-                x,
-                udo?(udo->name):"no",
+            pdgui_vmess("pdtk_undomenu", "^ ss", x, udo?(udo->name):"no",
                 (udo && udo->next)?(udo->next->name):"no");
         }
     }
@@ -1939,10 +1948,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (!x->gl_havewindow)
         {
                 /* bug workaround -- a graph in a visible patch gets "invised"
-                   when the patch is closed, and must lose the editor here.  It's
-                   probably not the natural place to do this.  Other cases like
-                   subpatches fall here too but don'd need the editor freed, so
-                   we check if it exists. */
+                when the patch is closed, and must lose the editor here.  It's
+                probably not the natural place to do this.  Other cases like
+                subpatches fall here too but don'd need the editor freed, so
+                we check if it exists. */
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             return;
@@ -2918,22 +2927,10 @@ void canvas_mouseup(t_canvas *x,
     else if ((x->gl_editor->e_onmotion == MA_MOVE ||
               x->gl_editor->e_onmotion == MA_RESIZE))
     {
-            /* if there's only one text item selected activate the text.
-            LATER consider under sme conditions not activating it, for instance
-            if it appears to have been desired only to move the object.  Maybe
-            shift-click could allow dragging without activating text?  A
-            different solution (only activating if the object wasn't moved
-            (commit f0df4e586) turned out to flout ctrlD+move+retype. */
+            /* if there's only one text item selected activate the text. */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
-            t_gobj *g = x->gl_editor->e_selection->sel_what;
-            t_glist *gl2;
-                /* first though, check we aren't an abstraction with a
-                   dirty sub-patch that would be discarded if we edit this. */
-            if (canvas_undo_confirmdiscard(g))
-                return;
-                /* OK, activate it */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
@@ -3098,6 +3095,21 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
+                /* if the typed object is also the selected object in the
+                 canvas and is an abstraction, and if its text has not been
+                 modified yet, then ask whether to discard any changes inside
+                  it. */
+            if (x->gl_editor->e_selection &&
+                pd_class(&x->gl_editor->e_selection->sel_what->g_pd)
+                    == canvas_class && !x->gl_editor->e_textdirty
+                    /* only ask if the keystroke would really modify the text */
+                        && keynum
+            )
+            {
+                t_gobj *selected_canvas = x->gl_editor->e_selection->sel_what;
+                if(canvas_undo_confirmdiscard(selected_canvas))
+                    return;
+            }
                 /* send the key to the box's editor */
             if (!x->gl_editor->e_textdirty)
             {
@@ -3311,7 +3323,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
 
             canvas_vis(g2, 1);
             pdgui_vmess("pdtk_canvas_menuclose", "^m",
-                        canvas_getrootfor(g),
+                        canvas_getrootfor(g2),
                         gensym(buf), 2, backmsg);
             return;
         }
@@ -4390,26 +4402,26 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
         if (!src->g_next) {
             src = NULL;
-            logpost(sink, 3, "cannot connect non-existing object");
+            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
             goto bad; /* bug fix thanks to Hannes */
         }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
         if (!sink->g_next) {
             sink = NULL;
-            logpost(src, 3, "cannot connect to non-existing object");
+            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
             goto bad;
         }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
         !(objsink = pd_checkobject(&sink->g_pd))) {
-        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        logpost(src?src:sink, PD_DEBUG, "cannot connect unpatchable object");
         goto bad;
     }
 
         /* check if objects are already connected */
     if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
-        logpost(src, 3, "io pair already connected");
+        logpost(src, PD_DEBUG, "io pair already connected");
         goto bad;
     }
 
@@ -4516,7 +4528,7 @@ static void canvas_tidy(t_canvas *x)
             bestdist = i;
         }
     }
-    logpost(NULL, 3, "tidy: best vertical distance %d", bestdist);
+    logpost(NULL, PD_DEBUG, "tidy: best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
         {

@@ -399,7 +399,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     }
 
     toplevel $mytoplevel -class DialogWindow
-    wm title $mytoplevel [format [_ "%s Properties"] $iemgui_type]
+    wm title $mytoplevel [_ "%s Properties" $iemgui_type]
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
     wm transient $mytoplevel $::focused_window

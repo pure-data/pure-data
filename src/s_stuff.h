@@ -16,10 +16,11 @@ typedef struct _namelist    /* element in a linked list of stored strings */
     char *nl_string;            /* the string */
 } t_namelist;
 
-t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
+EXTERN t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
-void namelist_free(t_namelist *listwas);
-const char *namelist_get(const t_namelist *namelist, int n);
+EXTERN void namelist_free(t_namelist *listwas);
+EXTERN const char *namelist_get(const t_namelist *namelist, int n);
+
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
@@ -38,8 +39,9 @@ extern t_symbol *sys_flags;
 /* s_main.c */
 extern int sys_debuglevel;
 extern int sys_verbose;
-extern int sys_noloadbang;
-EXTERN int sys_havegui(void);
+EXTERN int sys_noloadbang;
+EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
+EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
@@ -147,7 +149,6 @@ typedef void (*t_audiocallback)(void);
 
 extern int sys_schedadvance;
 
-void sys_set_audio_state(int onoff);
 int sys_send_dacs(void);
 void sys_reportidle(void);
 void sys_listdevs(void);
@@ -173,6 +174,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
+int pa_reopen_audio(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -201,6 +203,7 @@ void alsa_getdevs(char *indevlist, int *nindevs,
 int jack_open_audio(int inchans, int outchans, t_audiocallback callback);
 void jack_close_audio(void);
 int jack_send_dacs(void);
+int jack_reopen_audio(void);
 void jack_reportidle(void);
 void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -249,7 +252,7 @@ void dummy_listdevs(void);
                     /* s_midi.c */
 #define MAXMIDIINDEV 16         /* max. number of input ports */
 #define MAXMIDIOUTDEV 16        /* max. number of output ports */
-extern int sys_midiapi;
+EXTERN int sys_midiapi;
 extern int sys_nmidiin;
 extern int sys_nmidiout;
 extern int sys_midiindevlist[];
@@ -310,6 +313,7 @@ EXTERN void sys_log_error(int type);
 #define SCHED_AUDIO_POLL 1
 #define SCHED_AUDIO_CALLBACK 2
 void sched_set_using_audio(int flag);
+int sched_get_using_audio(void);
 extern int sys_sleepgrain;      /* override value set in command line */
 EXTERN int sched_get_sleepgrain( void);     /* returns actual value */
 
@@ -346,7 +350,7 @@ void sys_setalarm(int microsec);
 #endif
 
 void sys_set_priority(int higher);
-extern int sys_hipriority;      /* real-time flag, true if priority boosted */
+EXTERN int sys_hipriority;      /* real-time flag, true if priority boosted */
 
 /* s_print.c */
 
@@ -423,3 +427,18 @@ struct _instancestuff
  * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
  */
 EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
+
+/* format non-trivial data when sending it from core->gui (and vice versa)
+ */
+/* make sure that an object-id is always a string (even on windows, where %p
+ * does not prefix '0x'
+ */
+#define PDGUI_FORMAT__OBJECT "obj:%p"
+
+/* safe cross-platform alternatives to snprintf and vsnprintf. */
+EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
+EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
+    va_list argptr);
+
+EXTERN const char *pd_extraflags;     /* a place to stick an extra startup arg */
+ /* this is used by 'stdout' but could be useful elsewhere perhaps. */

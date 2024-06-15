@@ -20,7 +20,7 @@
 static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey);
 static void my_numbox_draw_update(t_gobj *client, t_glist *glist);
 
-void my_numbox_clip(t_my_numbox *x)
+static void my_numbox_clip(t_my_numbox *x)
 {
     if(x->x_val < x->x_min)
         x->x_val = x->x_min;
@@ -28,7 +28,7 @@ void my_numbox_clip(t_my_numbox *x)
         x->x_val = x->x_max;
 }
 
-void my_numbox_calc_fontwidth(t_my_numbox *x)
+static void my_numbox_calc_fontwidth(t_my_numbox *x)
 {
     int w, f = 31;
 
@@ -42,7 +42,7 @@ void my_numbox_calc_fontwidth(t_my_numbox *x)
     x->x_gui.x_w = (w + (x->x_gui.x_h/2)/IEMGUI_ZOOM(x) + 4) * IEMGUI_ZOOM(x);
 }
 
-void my_numbox_ftoa(t_my_numbox *x)
+static void my_numbox_ftoa(t_my_numbox *x)
 {
     double f = x->x_val;
     int bufsize, is_exp = 0, i, idecimal;
@@ -172,6 +172,8 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-text", x->x_buf,
         "-font", 3, fontatoms,
         "-fill", fcol);
+
+    x->x_buf[0] = 0;
 }
 
 static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
@@ -315,7 +317,7 @@ static void my_numbox_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
-int my_numbox_check_minmax(t_my_numbox *x, double min, double max)
+static int my_numbox_check_minmax(t_my_numbox *x, double min, double max)
 {
     int ret = 0;
 
@@ -739,10 +741,8 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 
 static void my_numbox_free(t_my_numbox *x)
 {
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     clock_free(x->x_clock_wait);
-    pdgui_stub_deleteforkey(x);
+    iemgui_free(&x->x_gui);
 }
 
 void g_numbox_setup(void)

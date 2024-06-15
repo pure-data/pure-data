@@ -9,16 +9,13 @@ package require msgcat
 package require pdtcl_compat
 
 namespace eval ::pd_i18n:: {
-    variable podir
-    variable language
+    variable podir [file join [file dirname [info script]] .. po]
+    variable language ""
+    variable systemlanguage [::msgcat::mcpreferences]
     catch {namespace import ::pdtcl_compat::dict}
 
     namespace export _
 }
-set ::pd_i18n::language ""
-
-set ::pd_i18n::podir  [file join [file dirname [info script]] .. po]
-
 
 #### official GNU gettext msgcat shortcut
 ## initialization code:
@@ -27,56 +24,42 @@ set ::pd_i18n::podir  [file join [file dirname [info script]] .. po]
 # > ::pd_i18n::init
 ## usage
 # > puts [_ "Quit" ]
-proc ::pd_i18n::_ {s} {return [::msgcat::mc $s]}
 
-proc ::pd_i18n::get_system_language {} {
-    # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
-    # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
-    # the Terminal, and Windows doesn't have LANG, etc unless you manually set
-    # it up yourself.  Windows apps don't use the locale env vars usually.
-    if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
-        if {![catch "exec defaults read com.apple.dock loc" lang]} {
-            # ...
-        } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
-            # ...
-        }
-    } elseif {$::tcl_platform(platform) eq "windows"} {
-        # using LANG on Windows is useful for easy debugging
-        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-            set lang $::env(LANG)
-        } elseif {![catch {package require registry}]} {
-            set lang [string tolower \
-                          [string range \
-                               [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-        }
-    } elseif {[info exists ::env(LANG)]} {
-        set lang $::env(LANG)
-    } else {
-        set lang ""
-    }
-    set lang [file rootname [string tolower $lang]]
-    if { $lang == "c" } {
-        set lang "C"
-    }
-    return $lang
+## make `::pd_i18n::_` (and thus `_`) an alias for `::msgcat::mc` (with varargs)
+if {$::tcl_version < 8.5} {
+    # uplevel works an all versions of Tcl-8.x
+    proc ::pd_i18n::_ args {return [uplevel 0 [concat ::msgcat::mc $args]]}
+} else {
+    # the `{*}` operator was introduced with Tcl-8.5
+    proc ::pd_i18n::_ {args} {return [::msgcat::mc {*}$args]}
 }
 
 proc ::pd_i18n::load_locale {{lang ""}} {
+    # loads the current locale, can only be called once!
+    # <lang>=""  : use the preferred language from the system
+    # <lang>="default": use the preferred language from the system (legacy)
+    # <lang>="." : no translation
+    # <lang>="fr": french
+
+    ::msgcat::mcload $::pd_i18n::podir
+
     if { $lang == "default" } {
         set lang ""
     }
-    if { $lang == "" } {
-        set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
+    if { $lang != "" } {
+        ::msgcat::mclocale $lang
     }
+    set ::pd_i18n::language $lang
 
-    if { $::pd_i18n::language == "" || $lang == $::pd_i18n::language } {
-        if { $lang != "" } {
-            ::msgcat::mclocale $lang
-        }
+    # we can only change the language once
+    # (otherwise the menus will play havoc)
+    # so replace *this* proc with a dummy
+    proc [info level 0] {{lang ""}} {
         ::msgcat::mcload $::pd_i18n::podir
-        set ::pd_i18n::language $lang
+        if { $lang != "" && $lang != $::pd_i18n::language} {
+            set msg [_ "The language can only be set during startup."]
+            ::pdwindow::error "${msg}\n"
+        }
     }
 }
 
@@ -148,11 +131,27 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     }
     set havelanguages [lsort -index 0 $havelanguages]
 
-    set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
-    if [ dict exists $polanguages $lang ] {
-        set lang [ dict get $polanguages $lang ]
+    # TODO: get default language
+    #set lang [lindex [split [ ::pd_i18n::get_system_language ] ":" ] 0]
+    #if [ dict exists $polanguages $lang ] {
+    #    set lang [ dict get $polanguages $lang ]
+    #}
+    foreach lang $::pd_i18n::systemlanguage {
+        if [ dict exists $polanguages $lang ] {
+            set lang [ dict get $polanguages $lang ]
+            break
+        }
     }
-    lappend havelanguages [list [format [_ "(default language: %s)" ] $lang] "default" ]
+    if { $lang == "" } {
+        # the system language was not in our list.
+        # either it's a not-yet-supported language (in which case we print its short name)
+        # or it is the default
+        set lang [lindex $::pd_i18n::systemlanguage 0]
+        if { $lang == "" || [string tolower $lang] == "c" } {
+            set lang [_ "(no translation)" ]
+        }
+    }
+    lappend havelanguages [list [_ "(default language: %s)" $lang] "default" ]
     lappend havelanguages [list [_ "(no translation)" ] "." ]
     return $havelanguages
 }

@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.54.0])
+AC_INIT([pd], [0.55.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -88,6 +88,12 @@ AS_CASE([$host],
         watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
+
+        # helps for machine/endian.h to be found
+        PD_CFLAGS="-D_DARWIN_C_SOURCE"
+
+        # increase max allowed file descriptors
+        PD_CFLAGS="$PD_CFLAGS -D_DARWIN_UNLIMITED_SELECT -DFD_SETSIZE=10240"
 
         # a set of search paths are used on macOS in s_inter.c
         wish="default search paths"

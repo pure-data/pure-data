@@ -32,7 +32,6 @@
 #X obj 59 371 r metro;
 #X obj 162 371 r metro;
 #X obj 586 507 metro 100;
-#X obj 586 533 s metro;
 #X msg 544 194 \; pd dsp \$1;
 #X floatatom 49 273 6 0 0 0 - - - 0;
 #X floatatom 254 273 6 0 0 0 - - - 0;
@@ -124,6 +123,7 @@
 #X restore 336 515 pd multichannel;
 #X text 185 500 mutichannel signal support ----------->, f 20;
 #X text 467 608 updated for Pd version 0.54;
+#X obj 586 533 s bang;
 #X connect 0 0 32 0;
 #X connect 1 0 2 0;
 #X connect 2 0 22 0;
@@ -150,10 +150,10 @@
 #X connect 29 0 6 0;
 #X connect 30 0 2 0;
 #X connect 31 0 3 0;
-#X connect 32 0 33 0;
-#X connect 35 0 9 0;
-#X connect 36 0 10 0;
-#X connect 37 0 15 0;
-#X connect 38 0 16 0;
-#X connect 39 0 17 0;
-#X connect 70 0 34 0;
+#X connect 32 0 73 0;
+#X connect 34 0 9 0;
+#X connect 35 0 10 0;
+#X connect 36 0 15 0;
+#X connect 37 0 16 0;
+#X connect 38 0 17 0;
+#X connect 69 0 33 0;

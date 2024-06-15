@@ -134,13 +134,13 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 OBJ = $(SRC:.c=.o) 
 
 # get version from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION := $(shell grep PD_MAJOR_VERSION m_pd.h | \
+PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION := $(shell grep PD_MINOR_VERSION m_pd.h | \
+PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION := $(shell grep PD_BUGFIX_VERSION m_pd.h | \
+PD_BUGFIX_VERSION := $(shell grep "^\s*\#\s*define\s*PD_BUGFIX_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION := $(shell grep PD_TEST_VERSION m_pd.h | \
+PD_TEST_VERSION := $(shell grep "^\s*\#\s*define\s*PD_TEST_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
 PD_VERSION := $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
 ifneq ($(PD_TEST_VERSION),)

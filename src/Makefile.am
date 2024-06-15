@@ -201,12 +201,13 @@ libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
 pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
-    s_net.h x_vexp.h
+    s_net.h x_vexp.h d_osc.h
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h
 noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
+noinst_HEADERS += m_dispatch.h
 
 if LIBPD
 libpdinclude_HEADERS += m_pd.h z_libpd.h
@@ -218,7 +219,8 @@ endif
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu makefile.mac makefile.mingw makefile.msvc \
-    d_soundfile.h s_audio_audiounit.c s_audio_esd.c
+    d_soundfile.h s_audio_audiounit.c s_audio_esd.c \
+    m_dispatch_gen.c
 
 # add WISH define if it's set
 WISH=@WISH@
@@ -229,8 +231,8 @@ pd_CFLAGS += $(WISHDEFINE)
 DEKEN_OS=@DEKEN_OS@
 DEKEN_CPU=@DEKEN_CPU@
 DEKEN_DEFINE=
-DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="$(DEKEN_OS)")
-DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="$(DEKEN_CPU)")
+DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="'$(DEKEN_OS)'")
+DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="'$(DEKEN_CPU)'")
 pd_CFLAGS += $(DEKEN_DEFINE)
 
 

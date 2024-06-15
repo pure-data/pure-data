@@ -6,17 +6,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-27 06:05+0000\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"PO-Revision-Date: 2024-05-06 09:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/en/>\n"
+"Language-Team: English <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/en/>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.5.3\n"
 
 msgid "linear"
 msgstr "linear"
@@ -214,8 +214,8 @@ msgstr "Output Devices"
 msgid "Use Multiple Devices"
 msgstr "Use Multiple Devices"
 
-msgid "audio system"
-msgstr "audio system"
+msgid "Audio System"
+msgstr "Audio System"
 
 msgid "Settings"
 msgstr "Settings"
@@ -564,23 +564,29 @@ msgstr "Add a new path"
 msgid "Edit existing path [%s]"
 msgstr "Edit existing path [%s]"
 
-msgid "Patch windows"
-msgstr "Patch windows"
+msgid "Patch Windows"
+msgstr "Patch Windows"
 
 msgid "Zoom New Windows"
 msgstr "Zoom New Windows"
 
-msgid "GUI settings"
-msgstr "GUI settings"
+msgid "GUI Settings"
+msgstr "GUI Settings"
 
-msgid "preference layout (reopen the preferences to see the effect)"
-msgstr "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Preference layout (reopen the preferences to see the effect)"
 
-msgid "use tabs"
-msgstr "use tabs"
+msgid "Use tabs"
+msgstr "Use tabs"
 
-msgid "single page"
-msgstr "single page"
+msgid "Single page"
+msgstr "Single page"
+
+msgid "Patching helpers"
+msgstr "Patching helpers"
+
+msgid "Highlight active cord while connecting"
+msgstr "Highlight active cord while connecting"
 
 msgid "Preferences"
 msgstr "Preferences"
@@ -595,10 +601,10 @@ msgid "MIDI preferences"
 msgstr "MIDI"
 
 msgid "deken preferences"
-msgstr "deken"
+msgstr "Deken"
 
 msgid "misc preferences"
-msgstr "misc"
+msgstr "Misc"
 
 msgid "Add new library"
 msgstr "Add new library"
@@ -612,8 +618,8 @@ msgstr "Settings below require a restart of Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Pd libraries to load on startup"
 
-msgid "GUI options"
-msgstr "GUI options"
+msgid "GUI Options"
+msgstr "GUI Options"
 
 msgid "language"
 msgstr "language"
@@ -636,14 +642,14 @@ msgstr "float size"
 msgid "Numeric precision of Pd-core"
 msgstr "Numeric precision of Pd-core"
 
-msgid "Startup options"
-msgstr "Startup options"
+msgid "Startup Options"
+msgstr "Startup Options"
 
 msgid "Defeat real-time scheduling"
 msgstr "Defeat real-time scheduling"
 
-msgid "Startup flags:"
-msgstr "Startup flags:"
+msgid "Startup Flags:"
+msgstr "Startup Flags:"
 
 msgid "Help Browser"
 msgstr "Help Browser"
@@ -791,6 +797,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Unable to fetch reference SHA256 for '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "File checksum looks invalid: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "Reference checksum looks invalid: '%s'."
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Unable to perform SHA256 verification for '%s'."
 
@@ -865,6 +879,17 @@ msgstr "Deken %s Preferences"
 msgid "Platform re-detected: %s"
 msgstr "Platform re-detected: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256 verification of '%s' failed!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 verification failed"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum mismatch for '%s'"
+
 msgid "Deken Packages"
 msgstr "Deken Packages"
 
@@ -876,17 +901,6 @@ msgstr "TAR Files"
 
 msgid "All Files"
 msgstr "All Files"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksum mismatch for '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256 verification of '%s' failed!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256 verification failed"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1074,7 +1088,7 @@ msgstr "Install %1$s to %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Cancelling download of '%s': No installation directory given."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Installing to non-existant directory failed"
 
 #, tcl-format
@@ -1110,6 +1124,9 @@ msgstr "Download completed! Verifying..."
 
 msgid "Ignoring checksum mismatch"
 msgstr "Ignoring checksum mismatch"
+
+msgid "Ignoring checksum errors"
+msgstr "Ignoring checksum errors"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1227,6 +1244,9 @@ msgstr "refusing to delete empty domain"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Couldn't create preferences \"%1$s\" in %2$s"
 
+msgid "The language can only be set during startup."
+msgstr "The language can only be set during startup."
+
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
@@ -1341,12 +1361,12 @@ msgstr "Vietnamese"
 msgid "Chinese (Traditional)"
 msgstr "Chinese (Traditional)"
 
+msgid "(no translation)"
+msgstr "(no translation)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(default language: %s)"
-
-msgid "(no translation)"
-msgstr "(no translation)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1572,12 +1592,6 @@ msgstr "Audio on"
 msgid "Audio off"
 msgstr "Audio off"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1627,6 +1641,12 @@ msgstr "Delete"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoring '%s': doesn't look like a Pd file"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(no device)"

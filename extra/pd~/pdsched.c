@@ -22,7 +22,7 @@ outputs audio and messages. */
 #include "binarymsg.c"
 
 #if PD_WATCHDOG
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 
 static void pollwatchdog( void)
 {
@@ -75,10 +75,7 @@ static int readbinmessage(t_binbuf *b)
     {
         t_atom at;
         if (!pd_tilde_getatom(&at, stdin))
-        {
-            fprintf(stderr, "pd-extern: EOF on input\n");
             return (0);
-        }
         else if (at.a_type == A_SEMI)
             return (1);
         else binbuf_add(b, 1, &at);

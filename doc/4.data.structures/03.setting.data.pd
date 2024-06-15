@@ -1,5 +1,5 @@
 #N struct template3 float x float y float w float h float c;
-#N canvas 279 34 676 631 12;
+#N canvas 501 61 676 631 12;
 #X obj 281 337 pointer;
 #X msg 329 301 next;
 #N canvas 961 36 381 425 data3 1;
@@ -216,7 +216,7 @@
 #X text 368 301 <-- get pointer of next scalar;
 #X text 306 204 <-- click to re-initialize;
 #X obj 281 178 loadbang;
-#X text 30 83 Getting parameter values is as in the previous patch. However \, as you traverse the list with "next" messages the new pointers are also sent to the [set] object \, whose arguments define the template name and the name of the fields to set. Values from [get] set the number values of the 5 number boxes and you can drag them to change the parameters of scalars. Clicking the "next" message now loops back to the beggining of the list when reaching its end., f 86;
+#X text 30 83 Getting parameter values is as in the previous patch. However \, as you traverse the list with "next" messages the new pointers are also sent to the [set] object \, whose arguments define the template name and the name of the fields to set. Values from [get] set the number values of the 5 number boxes and you can drag them to change the parameters of scalars. Clicking the "next" message now loops back to the beginning of the list when reaching its end., f 86;
 #X connect 0 0 32 0;
 #X connect 0 1 12 0;
 #X connect 1 0 0 0;

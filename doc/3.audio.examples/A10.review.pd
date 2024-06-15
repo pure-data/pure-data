@@ -35,7 +35,6 @@
 #X obj 88 625 hsl 162 19 0 127 0 0 empty empty empty -2 -10 0 12 #fcfcfc #000000 #000000 0 1;
 #X text 259 624 -- slider;
 #X obj 167 269 dbtorms;
-#X text 227 267 -- accoustic conversions;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array 64 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
@@ -43,3 +42,4 @@
 #X restore 81 443 graph;
 #X text 157 122 -- sampler (which we've only used for graphing audio so far);
 #X text 242 468 -- array (for graphing audio so far);
+#X text 227 267 -- acoustic conversions;

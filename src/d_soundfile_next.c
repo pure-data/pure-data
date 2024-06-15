@@ -25,14 +25,14 @@
 
   this implementation:
 
-    * does not support headerless files
-    * supports big and little endian, system endianness used by default
-    * sets a default info string: "Pd "
-    * tries to set sound data length, otherwise falls back to "unknown size"
-    * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * does not support headerless files
+  * supports big and little endian, system endianness used by default
+  * sets a default info string: "Pd "
+  * tries to set sound data length, otherwise falls back to "unknown size"
+  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
-    Pd versions < 0.51 did *not* write the actual data chunk size when updating
-    the header, but set "unknown size" instead.
+  Pd versions < 0.51 did *not* write the actual data chunk size when updating
+  the header, but set "unknown size" instead.
 
 */
 
@@ -270,7 +270,7 @@ static int next_addextension(char *filename, size_t size)
 }
 
     /* machine native if not specified */
-static int next_endianness(int endianness)
+static int next_endianness(int endianness, int bytespersample)
 {
     if (endianness == -1)
         return sys_isbigendian();

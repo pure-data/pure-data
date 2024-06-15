@@ -8,6 +8,10 @@
 #include "g_canvas.h"
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 /* jsarlo { */
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
 /* } jsarlo */
@@ -883,25 +887,25 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field",
+            x->x_realname->s_name);
         return;
     }
     if (npoints == 0)
-        npoints = 512;  /* dunno what a good default would be... */
+        npoints = 4096;  /* dunno what a good default would be... */
     if (npoints != (1 << ilog2((int)npoints)))
         post("%s: rounding to %d points", array->a_templatesym->s_name,
             (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
-    phaseincr = 2. * 3.14159 / npoints;
-    for (i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
+    phaseincr = 2. * M_PI / npoints;
+    for (i = 0; i < array->a_n; i++)
     {
         double sum = dcval;
         if (sineflag)
-            for (j = 0, fj = phase; j < nsin; j++, fj += phase)
-                sum += vsin[j] * sin(fj);
-        else
-            for (j = 0, fj = 0; j < nsin; j++, fj += phase)
-                sum += vsin[j] * cos(fj);
+            for (j = 0; j < nsin; j++)
+                sum += vsin[j] * sin(((double)j+1.)*(double)i*phaseincr);
+        else for (j = 0; j < nsin; j++)
+                sum += vsin[j] * cos((double)j*(double)i*phaseincr);
         *((t_float *)((array->a_vec + elemsize * i)) + yonset)
             = sum;
     }
@@ -1249,6 +1253,11 @@ void garray_resize_long(t_garray *x, long n)
 }
 
     /* float version to use as Pd method */
+static void garray_doresize(t_garray *x, t_floatarg f)
+{
+    garray_resize_long(x, f);
+}
+    /* deprecated function, kept only for ABI compatibility */
 void garray_resize(t_garray *x, t_floatarg f)
 {
     garray_resize_long(x, f);
@@ -1303,7 +1312,7 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
         A_SYMBOL, A_NULL);
-    class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
+    class_addmethod(garray_class, (t_method)garray_doresize, gensym("resize"),
         A_FLOAT, A_NULL);
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
         A_FLOAT, 0);

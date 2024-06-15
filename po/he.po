@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-26 04:41+0000\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"PO-Revision-Date: 2023-07-01 07:53+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/he/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.0-dev\n"
 
 msgid "linear"
 msgstr "קווי"
@@ -214,7 +214,7 @@ msgstr "התקני פלט"
 msgid "Use Multiple Devices"
 msgstr "להשתמש במגוון התקנים"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "מערכת שמע"
 
 msgid "Settings"
@@ -564,23 +564,29 @@ msgstr "הוספת נתיב חדש"
 msgid "Edit existing path [%s]"
 msgstr "עריכת נתיב קיים [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "חלונות טלאים"
 
 msgid "Zoom New Windows"
 msgstr "התקרבות על חלונות חדשים"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "הגדרות מנשק משתמש"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr "פריסת העדפות (יש לפתוח את ההעדפות מחדש כדי לראות את ההשפעה)"
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "להשתמש בלשוניות"
 
-msgid "single page"
+msgid "Single page"
 msgstr "עמוד בודד"
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
 
 msgid "Preferences"
 msgstr "העדפות"
@@ -612,7 +618,7 @@ msgstr "ההגדרות שלהלן דורשות את הפעלת Pd מחדש!"
 msgid "Pd libraries to load on startup"
 msgstr "ספריות Pd לטעינה בהפעלה"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "אפשרויות מנשק משתמש"
 
 msgid "language"
@@ -636,13 +642,13 @@ msgstr "גודל נקודה צפה"
 msgid "Numeric precision of Pd-core"
 msgstr "דיוק עשרוני של Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "אפשרויות הפעלה"
 
 msgid "Defeat real-time scheduling"
 msgstr "הבסת תזמון זמן־אמת"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "דגלוני הפעלה:"
 
 msgid "Help Browser"
@@ -707,11 +713,10 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "איתור תוספים ב־ ‚%s’ נכשל …מדלגים!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "במהלך הפעלת Pd אירע כשל"
 
-#, fuzzy
 msgid "Failed to start Pd-core"
-msgstr "התקנת ‚%s’ נכשלה!"
+msgstr "הפעלת Pd-core נכשלה"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים '}': "
@@ -792,6 +797,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "לא ניתן למשוך SHA256 לסימוכין עבור ‚%s’."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "לא ניתן לבצע אימות SHA256 עבור ‚%s’."
 
@@ -866,6 +879,17 @@ msgstr "העדפות Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "הפלטפורמה זוהתה מחדש: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "אימות ה־SHA256 של ‚%s’ נכשל!"
+
+msgid "SHA256 verification failed"
+msgstr "אימות ה־SHA256 נכשל"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "חוסר התאמה לסכום בדיקה של ‚%s’"
+
 msgid "Deken Packages"
 msgstr "חבילות Deken"
 
@@ -877,17 +901,6 @@ msgstr "קובצי Tar"
 
 msgid "All Files"
 msgstr "כל הקבצים"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "חוסר התאמה לסכום בדיקה של ‚%s’"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "אימות ה־SHA256 של ‚%s’ נכשל!"
-
-msgid "SHA256 verification failed"
-msgstr "אימות ה־SHA256 נכשל"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1075,7 +1088,8 @@ msgstr "להתקין את %1$s אל %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "ההורדה של ‚%s’ מבוטלת: לא סופקה תיקיית התקנה."
 
-msgid "Installing to non-existant directory failed"
+#, fuzzy
+msgid "Installing to non-existent directory failed"
 msgstr "התקנה לתיקייה שאינה קיימת נכשלה"
 
 #, tcl-format
@@ -1110,6 +1124,10 @@ msgid "Download completed! Verifying..."
 msgstr "ההורדה הושלמה! מתבצע אימות…"
 
 msgid "Ignoring checksum mismatch"
+msgstr "התעלמות מחוסר התאמה של סכום בדיקה"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "התעלמות מחוסר התאמה של סכום בדיקה"
 
 #, tcl-format
@@ -1226,6 +1244,9 @@ msgstr "עלה סירוב למחיקת שם תחום ריק"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr "אפריקאנס"
 
@@ -1340,12 +1361,12 @@ msgstr "וייטנאמית"
 msgid "Chinese (Traditional)"
 msgstr "סינית מסורתית"
 
+msgid "(no translation)"
+msgstr "(אין תרגום)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(שפת ברירת המחדל: %s)"
-
-msgid "(no translation)"
-msgstr "(אין תרגום)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1571,21 +1592,15 @@ msgstr "שמע פעיל"
 msgid "Audio off"
 msgstr "שמע כבוי"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "ניסיוני - דיוק כפול (64 סיביות)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr "כפול (64 סיביות) ניסיוני"
+msgstr "נק׳ צפה ב־%d סיביות - ניסיוני"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1626,6 +1641,12 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(אין התקן)"

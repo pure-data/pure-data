@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
 "PO-Revision-Date: 2023-06-06 09:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -216,7 +216,7 @@ msgstr "Uitvoerapparaten"
 msgid "Use Multiple Devices"
 msgstr "Meerdere apparaten gebruiken"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -567,22 +567,28 @@ msgstr "Een nieuw pad toevoegen"
 msgid "Edit existing path [%s]"
 msgstr "Bestaand pad bewerken [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Patch vensters"
 
 msgid "Zoom New Windows"
 msgstr "Nieuwe vensters inzoomen"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "GUI-instellingen"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
@@ -616,7 +622,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "GUI-instellingen"
 
 msgid "language"
@@ -641,13 +647,13 @@ msgstr "Blokgrootte:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Opstart opties"
 
 msgid "Defeat real-time scheduling"
 msgstr "Versla real-time planning"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Opstartvlaggen:"
 
 msgid "Help Browser"
@@ -801,6 +807,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Kan referentie SHA256 niet ophalen voor '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Kan SHA256-verificatie voor '%s' niet uitvoeren."
 
@@ -877,6 +891,17 @@ msgstr "Deken %s Voorkeuren"
 msgid "Platform re-detected: %s"
 msgstr "Platform opnieuw gedetecteerd: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256-verificatie van '%s' mislukt!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 verificatie mislukt"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum komt niet overeen voor '%s'"
+
 msgid "Deken Packages"
 msgstr "Deken Pakketten"
 
@@ -888,17 +913,6 @@ msgstr "TAR-bestanden"
 
 msgid "All Files"
 msgstr "Alle bestanden"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksum komt niet overeen voor '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256-verificatie van '%s' mislukt!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256 verificatie mislukt"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1091,7 +1105,7 @@ msgstr "Installeer %1$s naar %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Download van '%s' geannulleerd: Geen installatiemap gegeven."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Installeren naar niet-bestaande directory mislukt"
 
 #, tcl-format
@@ -1126,6 +1140,10 @@ msgid "Download completed! Verifying..."
 msgstr "Download compleet! Verifiëren..."
 
 msgid "Ignoring checksum mismatch"
+msgstr "Checksum-mismatch negeren"
+
+#, fuzzy
+msgid "Ignoring checksum errors"
 msgstr "Checksum-mismatch negeren"
 
 #, tcl-format
@@ -1244,6 +1262,9 @@ msgstr "weigeren leeg domein te verwijderen"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Kon voorkeuren \"%1$s\" niet aanmaken in %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr ""
 
@@ -1358,12 +1379,12 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
+msgid "(no translation)"
+msgstr "(geen vertaling)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(standaardtaal: %s)"
-
-msgid "(no translation)"
-msgstr "(geen vertaling)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1588,12 +1609,6 @@ msgstr "Audio aan"
 msgid "Audio off"
 msgstr "Audio uit"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
@@ -1643,6 +1658,12 @@ msgstr "Verwijderen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Pad..."

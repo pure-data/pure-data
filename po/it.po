@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-06-07 05:32+0000\n"
-"Last-Translator: Lorenzo Sutton <lorenzofsutton@gmail.com>\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"PO-Revision-Date: 2024-03-20 21:01+0000\n"
+"Last-Translator: Alberto Zin <alberto.zin@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/it/>\n"
 "Language: it\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "lineare"
@@ -83,7 +83,7 @@ msgid "Redo duplicate"
 msgstr "Ripeti duplicazione"
 
 msgid "Redo motion"
-msgstr "Annulla spostamento"
+msgstr "Ripeti spostamento"
 
 msgid "Redo paste"
 msgstr "Ripeti incolla"
@@ -219,8 +219,8 @@ msgstr "Dispositivo di uscita"
 msgid "Use Multiple Devices"
 msgstr "Usa Dispositivi Multipli"
 
-msgid "audio system"
-msgstr "sistema audio"
+msgid "Audio System"
+msgstr "Sistema audio"
 
 msgid "Settings"
 msgstr "Impostazioni"
@@ -569,23 +569,29 @@ msgstr "Aggiungi nuovo percorso"
 msgid "Edit existing path [%s]"
 msgstr "Modifica percorso esistente [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Finestre Patch"
 
 msgid "Zoom New Windows"
 msgstr "Zoom delle Nuove Finestre"
 
-msgid "GUI settings"
-msgstr "impostazioni GUI"
+msgid "GUI Settings"
+msgstr "Impostazioni GUI"
 
-msgid "preference layout (reopen the preferences to see the effect)"
-msgstr "preferenze di layout (riaprire le preferenze per vedere l'effetto)"
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Preferenze di layout (riaprire le preferenze per vedere l'effetto)"
 
-msgid "use tabs"
-msgstr "usa tab"
+msgid "Use tabs"
+msgstr "Usa tab"
 
-msgid "single page"
-msgstr "pagina singola"
+msgid "Single page"
+msgstr "Pagina singola"
+
+msgid "Patching helpers"
+msgstr "Aiuti per le connessioni"
+
+msgid "Highlight active cord while connecting"
+msgstr "Evidenzia linee attive durante il collegamento"
 
 msgid "Preferences"
 msgstr "Preferenze"
@@ -617,39 +623,37 @@ msgstr "I settaggi sotto richiedono dei riavviare Pd!"
 msgid "Pd libraries to load on startup"
 msgstr "Librerie Pd da caricare all'avvio"
 
-#, fuzzy
-msgid "GUI options"
-msgstr "impostazioni GUI"
+msgid "GUI Options"
+msgstr "Opzioni della GUI"
 
 msgid "language"
 msgstr "lingua"
 
 msgid "Menu language"
-msgstr "menu lingua"
+msgstr "Menu lingua"
 
 msgid "float (32bit)"
-msgstr ""
+msgstr "singola precisione (32bit)"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "double (64bit) SPERIMENTALE"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "doppia precisione (64bit)"
 
-#, fuzzy
 msgid "float size"
-msgstr "Dimensione del blocco:"
+msgstr "dimensione del valore float"
 
 msgid "Numeric precision of Pd-core"
-msgstr ""
+msgstr "Precisione numerica di Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Opzioni di avvio"
 
 msgid "Defeat real-time scheduling"
 msgstr "Non attivare lo scheduling in tempo reale"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Opzioni di avvio:"
 
 msgid "Help Browser"
@@ -717,20 +721,19 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Impossibile trovare plugin in %s ...scartato!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Errore nella partenza di Pd"
 
-#, fuzzy
 msgid "Failed to start Pd-core"
-msgstr "Impossibile installare '%s'!"
+msgstr "Errore nella partenza del core Pd"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MANCA LA PARENTESI GRAFFA DI CHIUSURA'}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr "(Tcl) INVALID COMMAND NAME: "
+msgstr "(Tcl) NOME DI COMANDO NON VALIDO: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr "(Tcl) UNHANDLED ERROR: "
+msgstr "(Tcl) ERRORE NON GESTITO: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -800,6 +803,14 @@ msgstr "Verifica SHA256 di '%s'"
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Impossibile recuperare il riferimento SHA256 per '%s'."
+
+#, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "Il checksum del file sembra non valido: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "Il checksum di riferimento sembra non valido: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -877,6 +888,17 @@ msgstr "Preferenze di Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Piattaforma ri-identificata: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Verifica SHA256 di '%s' fallita!"
+
+msgid "SHA256 verification failed"
+msgstr "Verifica SHA256 fallita"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Non corrispondenza del checksum per '%s'"
+
 msgid "Deken Packages"
 msgstr "Pacchetti Deken"
 
@@ -888,17 +910,6 @@ msgstr "File TAR"
 
 msgid "All Files"
 msgstr "Tutti i file"
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Non corrispondenza del checksum per '%s'"
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "Verifica SHA256 di '%s' fallita!"
-
-msgid "SHA256 verification failed"
-msgstr "Verifica SHA256 fallita"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1095,7 +1106,7 @@ msgstr ""
 "Cancellazione del download di '%s': Nessuna cartella di installazione "
 "fornita."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Installazione su una cartella non esistente fallita"
 
 #, tcl-format
@@ -1131,6 +1142,9 @@ msgstr "Scaricamento completato! Sto verificando..."
 
 msgid "Ignoring checksum mismatch"
 msgstr "Ignoro la non corrispondenza del checksum"
+
+msgid "Ignoring checksum errors"
+msgstr "Trascurare gli errori di checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1249,6 +1263,9 @@ msgstr "non cancello il dominio vuoto"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Impossibile creare le preferenze \"%1$s\" in %2$s"
 
+msgid "The language can only be set during startup."
+msgstr ""
+
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
@@ -1363,12 +1380,12 @@ msgstr "Vietnamita"
 msgid "Chinese (Traditional)"
 msgstr "Cinese (Tradizionale)"
 
+msgid "(no translation)"
+msgstr "(nessuna traduzione)"
+
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "Lingua di default: %s"
-
-msgid "(no translation)"
-msgstr "(nessuna traduzione)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1594,21 +1611,15 @@ msgstr "Audio attivo"
 msgid "Audio off"
 msgstr "Audio inattivo"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
-
 msgid "Pd"
 msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "SPERIMENTALE doppia precisione (64 bit)"
 
 #, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr ""
+msgstr "%dbit-floats SPERIMENTALE"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1649,6 +1660,12 @@ msgstr "Rimuovi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoro '%s': non sembra un file Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "(no device)"
 #~ msgstr "(nessun dispositivo)"

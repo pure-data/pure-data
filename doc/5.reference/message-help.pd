@@ -119,8 +119,7 @@
 #X connect 23 0 24 0;
 #X connect 25 0 26 0;
 #X restore 748 631 pd escaping-characters;
-#N canvas 901 343 445 331 Dealing_with_"\$0" 0;
-#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 49;
+#N canvas 896 198 445 331 Dealing_with_"\$0" 0;
 #X text 35 115 If you are using a message as a 'send' \, you need to load the '\$0' in an object \, since "\$0" doesn't work in messages., f 49;
 #X msg 203 246 \; \$1-x 15;
 #X obj 203 214 f \$0;
@@ -131,11 +130,12 @@
 #X obj 73 187 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 99 186 <-- click -->;
 #X obj 203 187 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X connect 3 0 2 0;
-#X connect 4 0 5 0;
-#X connect 6 0 7 0;
-#X connect 8 0 6 0;
-#X connect 10 0 3 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is especially useful in abstractions so each copy has local names instead of global., f 49;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X connect 5 0 6 0;
+#X connect 7 0 5 0;
+#X connect 9 0 2 0;
 #X restore 794 537 pd Dealing_with_"\$0";
 #X text 59 679 see also:;
 #X msg 110 233 bang;

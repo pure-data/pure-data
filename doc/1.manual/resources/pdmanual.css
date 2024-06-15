@@ -1,0 +1,257 @@
+@charset "utf-8";
+
+:root {
+    font-weight: 400;
+}
+
+BODY {
+    background: #ffffff;;
+    color: #3E4349;
+    font-family: Georgia, serif;  /*Georgia, serif; */ /*Helevetica, sans-serif;*/
+    font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
+    line-height: 1.6;
+    max-width:      8.5in;
+    margin-left: 0.8in;
+    margin-right: 0.8in;
+}
+#toc ol {
+    counter-reset: item;
+    list-style: none;
+    list-style-position: inside;
+}
+#toc ol>li:before {
+    content: counters(item, ".") ". ";
+    counter-increment: item;
+}
+div>ul>li, div>ol>li { /* top level */
+    padding: 0.5em 0;
+}
+figure {
+    padding: 1em 0;
+}
+figcaption {
+    padding-top: 0.5em;
+    font-size: 95%;
+    text-align: center;
+}
+figcaption>u {
+    font-size: 90%;
+    font-weight: bold;
+    padding-right: 0.33em;
+}
+div.nav {
+    font-size: 90%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.nav-top {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #3E4349;
+}
+.nav-bottom {
+    padding: 0.5em 0;
+    margin: 3em 0;
+    border-top: 1px solid #3E4349;
+}
+.nav-back, .nav-forward {
+    flex: 2;
+}
+.nav-home {
+    flex: 1;
+}
+.nav-back {
+    text-align: left;
+}
+.nav-home {
+    text-align: center;
+}
+.nav-forward {
+    text-align: right;
+}
+H1 {
+    font-size:   32.7pt;
+    text-align:  center;
+    font-weight: normal;
+}
+H2 {
+    font-size:   22.7pt;
+    text-align:  center;
+    font-weight: normal;
+}
+H3 {
+    font-size:   14.7pt;
+    text-align:  left;
+    padding-top: 2em;
+    border-top: 1px solid #3E4349;
+}
+H4 {
+    font-size:   13.7pt;
+    text-align:  left;
+    margin-left: 1em;
+}
+H5 {
+    font-size:   12.7pt;
+    text-align:  left;
+    margin-left: 2em;
+}
+H6 {
+    font-size:   10.7pt;
+    text-align:  left;
+    margin-left: 3em;
+}
+
+H1, H2, H3, H4, H5, H6, ol, ul, mark, PRE {
+}
+
+PRE {
+    font-size: 90%;
+    background-color:#f0f0f0;
+    text-align:  left;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
+
+table, td, th {
+    border: 1px solid black;
+    font-size: 12.7pt;
+    padding: 6px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+tbody {
+    border-top: 3px solid black;
+}
+
+td {
+    text-align: center;
+}
+th.left, td.left {
+    text-align: left;
+}
+
+tr:nth-child(even) {background-color: #f4f4f4;}
+
+CODE {
+    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
+
+KBD {
+    background-color: #eee;
+    border: 1px solid #bbb;
+    color: #222;
+    border-radius: 4px;
+    padding: 3px 5px;
+    margin: 0 2px;
+    white-space: nowrap;
+    font-size: 80%;
+    font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+}
+
+/* standard link */
+
+a:link {
+    text-decoration: none;
+    color: #006699;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #330099;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+    color: #000;
+}
+
+
+/* green link (like a button) - not needed anymore with the compiler chapters combined */
+
+a.green:link {
+    font-family:sans-serif;
+    background-color: #4CAF50; /* Green */
+    border-radius: 4px;
+    color: white;
+    padding: 0px 8px ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 80%;
+
+}
+
+a.green:hover {
+    text-decoration: none;
+    background-color: #4CAF50;
+}
+
+a.green:visited {
+    color: white;
+}
+
+
+/* button like a link */
+
+.btn-toggle-theme, .btn-toggle-font {
+  background-color: transparent;
+  border: none;
+  color: #666666;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* standard images */
+
+IMG {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    filter: brightness(1) contrast(1); /* why? */
+}
+img#logo {
+    padding-top: 2em;
+}
+mark {
+    background-color: #fff0b3;
+}
+
+p.fig {
+    text-align: center;
+}
+blockquote {
+    padding: 0;
+    margin-right:0px;
+}
+
+blockquote p {
+    text-align: right;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* responsive css for small "devices" and browser windows */
+
+@media screen and (max-device-width: 700px), screen and (max-width: 700px) {
+    body {
+        padding: 10px;
+        width: auto;
+        margin-left: 6px;
+        margin-right: 6px;
+    }
+    H1 {font-size: 25pt;}
+    IMG {max-width: 100%;}
+}

@@ -453,7 +453,7 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
     x->x_masktime = DEFMASKTIME;
     x->x_maskdecay = DEFMASKDECAY;
     x->x_learn = 0;
-    x->x_learndebounce = clock_getsystime();
+    x->x_learndebounce = clock_getlogicaltime();
     x->x_learncount = 0;
     x->x_debouncedecay = DEFDEBOUNCEDECAY;
     x->x_minvel = DEFMINVEL;
@@ -574,7 +574,7 @@ static void bonk_tick(t_bonk *x)
             }
             else return;
         }
-        x->x_learndebounce = clock_getsystime();
+        x->x_learndebounce = clock_getlogicaltime();
         if (ntemplate)
         {
             t_float bestfit = -1e30;

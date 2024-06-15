@@ -12,10 +12,14 @@ namespace eval scrollbox {
 array set ::scrollbox::entrytext {}
 
 proc ::scrollbox::get_curidx { mytoplevel } {
-    set idx [$mytoplevel.listbox.box index active]
+    set box $mytoplevel.listbox.box
+    if { ! [winfo exists $box] } {
+        return
+    }
+    set idx [$box index active]
     if {$idx < 0 || \
-            $idx == [$mytoplevel.listbox.box index end]} {
-        return [expr {[$mytoplevel.listbox.box index end] + 1}]
+            $idx == [$box index end]} {
+        return [expr {[$box index end] + 1}]
     }
     return [expr $idx]
 }
@@ -104,27 +108,37 @@ proc ::scrollbox::add_item { mytoplevel add_method } {
     } else {
         set dir [$add_method]
     }
-    insert_item $mytoplevel [expr {[get_curidx $mytoplevel] + 1}] $dir
+    set idx [get_curidx $mytoplevel]
+    if { $idx ne {} } {
+        insert_item $mytoplevel [expr {[get_curidx $mytoplevel] + 1}] $dir
+    }
 }
 
 proc ::scrollbox::edit_item { mytoplevel edit_method } {
-    set idx [expr {[get_curidx $mytoplevel]}]
-    set initialValue [$mytoplevel.listbox.box get $idx]
+    set idx [get_curidx $mytoplevel]
+    if { $idx eq {} } {
+        return
+    }
+    set box $mytoplevel.listbox.box
+    set initialValue [$box get $idx]
     if {$initialValue != ""} {
         if { $edit_method == "" } {
             set dir [::scrollbox::my_edit $mytoplevel $initialValue ]
         } else {
             set dir [$edit_method $initialValue]
         }
+        if { ! [winfo exists $box ] } {
+            return
+        }
 
         if {$dir != ""} {
-            $mytoplevel.listbox.box delete $idx
+            $box delete $idx
             insert_item $mytoplevel $idx $dir
         }
-        $mytoplevel.listbox.box activate $idx
-        $mytoplevel.listbox.box selection clear 0 end
-        $mytoplevel.listbox.box selection set active
-        focus $mytoplevel.listbox.box
+        $box activate $idx
+        $box selection clear 0 end
+        $box selection set active
+        focus $box
     }
 }
 

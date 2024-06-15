@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-05-15 22:50+0000\n"
+"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linier"
@@ -196,9 +196,8 @@ msgstr "Menggunakan"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "no device"
-msgstr "Perangkat memasuk"
+msgstr "tidak ada perangkat"
 
 msgid "(same as input device)..."
 msgstr "(sama dengan perangkat memasuk)..."
@@ -215,8 +214,8 @@ msgstr "Perangkat keluar"
 msgid "Use Multiple Devices"
 msgstr "Pakai Banyak Perangkat"
 
-msgid "audio system"
-msgstr ""
+msgid "Audio System"
+msgstr "Sistem audio"
 
 msgid "Settings"
 msgstr "Pengaturan"
@@ -361,7 +360,7 @@ msgid "Receive symbol:"
 msgstr "Terima simbol:"
 
 msgid "auto"
-msgstr ""
+msgstr "Otomatis"
 
 msgid "Width:"
 msgstr "Lebar:"
@@ -430,10 +429,10 @@ msgid "Height:"
 msgstr "Tinggi:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Rentang output"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Tinggi log:"
 
 msgid "Vslider"
 msgstr "Vtombolgeser"
@@ -445,44 +444,44 @@ msgid "Vradio"
 msgstr "Vradio"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Jumlah sel:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "Hradio"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "VU Meter"
 
 msgid "Canvas"
 msgstr "Kanvas"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Persegi Panjang Tampak (pix)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "%s Properti"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parameter"
 
 msgid "Init"
-msgstr ""
+msgstr "Init"
 
 msgid "No init"
-msgstr ""
+msgstr "Tidak ada init"
 
 msgid "Jump on click"
-msgstr ""
+msgstr "Loncat saat diklik"
 
 msgid "Steady on click"
-msgstr ""
+msgstr "Diam saat diklik"
 
 msgid "X offset:"
-msgstr ""
+msgstr "X offset:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "Y offset:"
 
 msgid "Colors"
 msgstr "Warna"
@@ -503,20 +502,19 @@ msgid "Send a Pd message"
 msgstr "Mengirim sebuah pesan Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(gunakan tombol panah untuk riwayat)"
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Perangkat memasuk"
+msgstr "tidak ada perangkat input"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "Port Masuk:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "Port Keluaran:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "Sistem MIDI"
 
 msgid "MIDI Settings"
 msgstr "Pengaturan MIDI"
@@ -525,35 +523,34 @@ msgid "ALSA MIDI Settings"
 msgstr "Pengaturan ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Jalur pencarian Pd untuk objek, bantuan, audio, teks, dan file lainnya"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Gunakan lokasi standar"
 
 msgid "Verbose"
 msgstr "Bertele-tele"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Direktori Dokumen Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Jelajah"
 
 msgid "Reset"
-msgstr ""
+msgstr "Setel ulang"
 
 msgid "Disable"
-msgstr ""
+msgstr "Nonaktifkan"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Direktori Instalasi Eksternal"
 
 msgid "Clear"
-msgstr ""
+msgstr "Bersihkan"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Preferensi"
+msgstr "Lokasi preferensi"
 
 msgid "Choose Pd documents directory:"
 msgstr ""
@@ -569,23 +566,29 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Jendela Pd"
 
 msgid "Zoom New Windows"
 msgstr ""
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "pengaturan GUI dihapuskan"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
@@ -624,7 +627,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "pengaturan GUI dihapuskan"
 
 msgid "language"
@@ -649,13 +652,13 @@ msgstr "Ukuran blok:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -804,6 +807,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -876,6 +887,17 @@ msgstr ""
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -886,17 +908,6 @@ msgid "TAR Files"
 msgstr ""
 
 msgid "All Files"
-msgstr ""
-
-#, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr ""
-
-#, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
 msgstr ""
 
 #, tcl-format
@@ -1083,7 +1094,7 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 
 #, tcl-format
@@ -1118,6 +1129,9 @@ msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
+msgstr ""
+
+msgid "Ignoring checksum errors"
 msgstr ""
 
 #, tcl-format
@@ -1217,6 +1231,9 @@ msgstr ""
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr ""
+
+msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afrikaans"
@@ -1333,11 +1350,11 @@ msgstr ""
 msgid "Chinese (Traditional)"
 msgstr ""
 
-#, tcl-format
-msgid "(default language: %s)"
+msgid "(no translation)"
 msgstr ""
 
-msgid "(no translation)"
+#, tcl-format
+msgid "(default language: %s)"
 msgstr ""
 
 #, tcl-format
@@ -1562,12 +1579,6 @@ msgstr "Audio hidup"
 
 msgid "Audio off"
 msgstr "Audio mati"
-
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
-msgstr ""
 
 msgid "Pd"
 msgstr "Pd"

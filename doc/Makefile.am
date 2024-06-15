@@ -14,13 +14,13 @@ ABOUT_FILE=1.manual/1.introduction.txt
 M_PD=$(top_srcdir)/src/m_pd.h
 
 # get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION = $(shell grep PD_MAJOR_VERSION $(M_PD) | \
+PD_MAJOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" $(M_PD) | \
     sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION = $(shell grep PD_MINOR_VERSION $(M_PD) | \
+PD_MINOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" $(M_PD) | \
     sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION = $(shell grep PD_BUGFIX_VERSION $(M_PD) | \
+PD_BUGFIX_VERSION = $(shell grep "^\s*\#\s*define\s*PD_BUGFIX_VERSION\>" $(M_PD) | \
     sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION = $(shell grep PD_TEST_VERSION $(M_PD) | \
+PD_TEST_VERSION = $(shell grep "^\s*\#\s*define\s*PD_TEST_VERSION\>" $(M_PD) | \
     sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
 PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
 
@@ -32,11 +32,11 @@ install-data-hook:
 	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 	if test "x${PD_TEST_VERSION}" == "x" ; then \
 	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
+	    sed 's|PD_VERSION|Pd version $(VERSION)|' \
 	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	else \
 	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
+	    sed 's|PD_VERSION|Pd version $(VERSION)-$(PD_TEST_VERSION)|' \
 	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	fi
 	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
@@ -54,59 +54,123 @@ empty=
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
-     ./1.manual/deken.gif \
-     ./1.manual/favicon.ico \
-     ./1.manual/fig1.1.png \
-     ./1.manual/fig1.2.jpg \
-     ./1.manual/fig1.3.jpg \
-     ./1.manual/fig1.4.png \
-     ./1.manual/fig1.5.jpg \
-     ./1.manual/fig11.1.png \
-     ./1.manual/fig11.2.png \
-     ./1.manual/fig11.3.png \
-     ./1.manual/fig11.4.png \
-     ./1.manual/fig3.1.jpg \
-     ./1.manual/fig3.10.jpg \
-     ./1.manual/fig3.2.jpg \
-     ./1.manual/fig3.3.jpg \
-     ./1.manual/fig3.4.jpg \
-     ./1.manual/fig3.5.jpg \
-     ./1.manual/fig3.6.jpg \
-     ./1.manual/fig3.7.jpg \
-     ./1.manual/fig3.8.jpg \
-     ./1.manual/fig3.9.jpg \
-     ./1.manual/fig4.1.png \
-     ./1.manual/fig4.2.png \
-     ./1.manual/fig4.3.png \
-     ./1.manual/fig4.4.png \
-     ./1.manual/fig4.5.png \
-     ./1.manual/fig4.6.png \
-     ./1.manual/fig4.7.png \
-     ./1.manual/fig7.1.jpg \
-     ./1.manual/fig7.2.jpg \
-     ./1.manual/fig7.3.jpg \
-     ./1.manual/fig7.4.jpg \
-     ./1.manual/fig7.5.jpg \
-     ./1.manual/fig7.6.jpg \
-     ./1.manual/fig8.1.jpg \
-     ./1.manual/fig8.2.jpg \
-     ./1.manual/fig8.3.jpg \
-     ./1.manual/fig8.4.jpg \
-     ./1.manual/fig8.5.jpg \
-     ./1.manual/fig8.6.jpg \
-     ./1.manual/fig9.1.jpg \
-     ./1.manual/fig9.2.jpg \
-     ./1.manual/fig9.3.jpg \
+     ./1.manual/resources/favicon.ico \
+     ./1.manual/resources/pdmanual.css \
+     ./1.manual/resources/1.2.1.png \
+     ./1.manual/resources/1.2.2.png \
+     ./1.manual/resources/1.2.3.png \
+     ./1.manual/resources/2.1.1.png \
+     ./1.manual/resources/2.1.10.png \
+     ./1.manual/resources/2.1.11.png \
+     ./1.manual/resources/2.1.12.png \
+     ./1.manual/resources/2.1.13.png \
+     ./1.manual/resources/2.1.14.png \
+     ./1.manual/resources/2.1.2.png \
+     ./1.manual/resources/2.1.3.png \
+     ./1.manual/resources/2.1.4.png \
+     ./1.manual/resources/2.1.5.png \
+     ./1.manual/resources/2.1.6.png \
+     ./1.manual/resources/2.1.7.png \
+     ./1.manual/resources/2.1.8.png \
+     ./1.manual/resources/2.1.9.png \
+     ./1.manual/resources/2.10.1.png \
+     ./1.manual/resources/2.10.2.png \
+     ./1.manual/resources/2.10.3.png \
+     ./1.manual/resources/2.10.4.png \
+     ./1.manual/resources/2.10.5.png \
+     ./1.manual/resources/2.10.6.png \
+     ./1.manual/resources/2.11.1.png \
+     ./1.manual/resources/2.2.1.png \
+     ./1.manual/resources/2.2.10.png \
+     ./1.manual/resources/2.2.2.png \
+     ./1.manual/resources/2.2.3.png \
+     ./1.manual/resources/2.2.4.png \
+     ./1.manual/resources/2.2.5.png \
+     ./1.manual/resources/2.2.6.png \
+     ./1.manual/resources/2.2.7.png \
+     ./1.manual/resources/2.2.8.png \
+     ./1.manual/resources/2.2.9.png \
+     ./1.manual/resources/2.3.1.png \
+     ./1.manual/resources/2.3.10.png \
+     ./1.manual/resources/2.3.11.png \
+     ./1.manual/resources/2.3.12.png \
+     ./1.manual/resources/2.3.13.png \
+     ./1.manual/resources/2.3.14.png \
+     ./1.manual/resources/2.3.15.png \
+     ./1.manual/resources/2.3.16.png \
+     ./1.manual/resources/2.3.17.png \
+     ./1.manual/resources/2.3.18.png \
+     ./1.manual/resources/2.3.19.png \
+     ./1.manual/resources/2.3.2.png \
+     ./1.manual/resources/2.3.20.png \
+     ./1.manual/resources/2.3.21.png \
+     ./1.manual/resources/2.3.22.png \
+     ./1.manual/resources/2.3.23.png \
+     ./1.manual/resources/2.3.24.png \
+     ./1.manual/resources/2.3.25.png \
+     ./1.manual/resources/2.3.26.png \
+     ./1.manual/resources/2.3.3.png \
+     ./1.manual/resources/2.3.4.png \
+     ./1.manual/resources/2.3.5.png \
+     ./1.manual/resources/2.3.6.png \
+     ./1.manual/resources/2.3.7.png \
+     ./1.manual/resources/2.3.8.png \
+     ./1.manual/resources/2.3.9.png \
+     ./1.manual/resources/2.4.1.png \
+     ./1.manual/resources/2.4.10.png \
+     ./1.manual/resources/2.4.11.png \
+     ./1.manual/resources/2.4.12.png \
+     ./1.manual/resources/2.4.13.png \
+     ./1.manual/resources/2.4.14.png \
+     ./1.manual/resources/2.4.15.png \
+     ./1.manual/resources/2.4.16.png \
+     ./1.manual/resources/2.4.2.png \
+     ./1.manual/resources/2.4.3.png \
+     ./1.manual/resources/2.4.4.png \
+     ./1.manual/resources/2.4.5.png \
+     ./1.manual/resources/2.4.6.png \
+     ./1.manual/resources/2.4.7.png \
+     ./1.manual/resources/2.4.8.png \
+     ./1.manual/resources/2.4.9.png \
+     ./1.manual/resources/2.5.1.png \
+     ./1.manual/resources/2.6.1.png \
+     ./1.manual/resources/2.8.1.png \
+     ./1.manual/resources/2.8.2.png \
+     ./1.manual/resources/2.8.3.png \
+     ./1.manual/resources/2.8.4.png \
+     ./1.manual/resources/2.8.5.png \
+     ./1.manual/resources/2.8.6.png \
+     ./1.manual/resources/2.9.1.png \
+     ./1.manual/resources/2.9.2.png \
+     ./1.manual/resources/2.9.3.png \
+     ./1.manual/resources/2.9.4.png \
+     ./1.manual/resources/2.9.5.png \
+     ./1.manual/resources/2.9.6.png \
+     ./1.manual/resources/3.3.1.png \
+     ./1.manual/resources/3.3.2.png \
+     ./1.manual/resources/3.3.3.png \
+     ./1.manual/resources/3.3.4.png \
+     ./1.manual/resources/3.3.5.png \
+     ./1.manual/resources/3.3.6.png \
+     ./1.manual/resources/3.4.1.png \
+     ./1.manual/resources/3.4.2.png \
+     ./1.manual/resources/3.4.3.png \
+     ./1.manual/resources/4.1.1.png \
+     ./1.manual/resources/4.3.1.png \
+     ./1.manual/resources/4.3.2.png \
+     ./1.manual/resources/4.3.3.png \
+     ./1.manual/resources/4.3.4.png \
+     ./1.manual/resources/4.3.5.png \
+     ./1.manual/resources/4.3.6.png \
+     ./1.manual/resources/4.4.1.png \
+     ./1.manual/resources/4.4.2.png \
+     ./1.manual/resources/4.4.3.png \
      ./1.manual/index.htm \
-     ./1.manual/pdmanual.css \
      ./1.manual/x1.htm \
      ./1.manual/x2.htm \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
-     ./1.manual/x6-a.htm \
-     ./1.manual/x6-b.htm \
-     ./1.manual/x6-c.htm \
      ./1.manual/x6.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
@@ -317,6 +381,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/clip~-help.pd \
      ./5.reference/clone-abs-a.pd \
      ./5.reference/clone-abs-b.pd \
+     ./5.reference/clone-abs-c.pd \
      ./5.reference/clone-help.pd \
      ./5.reference/cnv-help.pd \
      ./5.reference/cos~-help.pd \
@@ -390,6 +455,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savepanel-help.pd \
      ./5.reference/savestate-ex1.pd \
      ./5.reference/savestate-ex2.pd \
+     ./5.reference/savestate-ex3.pd \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \

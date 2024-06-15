@@ -24,7 +24,7 @@
 #X text 123 376 input (delay time in ms);
 #X msg 49 376 500;
 #X text 732 527 updated for Pd version 0.52;
-#X text 213 329 2nd argument: length of delay line in msec (the maximum delay time in read objects), f 42;
+#X text 214 329 2nd argument: length of delay line in msec (the maximum delay time in read objects), f 42;
 #X text 119 64 - read from a delay line with 4-point interpolation (for variable delay times), f 40;
 #X text 656 198 signal input (variable delay time in ms);
 #X obj 491 70 vd~;
@@ -80,10 +80,10 @@
 #X text 784 275 -- old name of;
 #X text 588 468 See also other examples in the "G" section for more fun with delays \, such as feedback delays., f 46;
 #X obj 155 529 send~;
-#X text 12 112 The [delread~] and [delread4~] objects read from a delay line allocated in a [delwrite~] object with the same name. You can use more than one [delread~] and/or [delread4~] objects for the same [delwrite~] object. If the specified delay time in [delread~]/[delread4~] is longer than the size of the delay line or less than zero it is clipped to the length of the delay line., f 81;
+#X text 30 112 The [delread~] and [delread4~] objects read from a delay line allocated in a [delwrite~] object with the same name. You can use more than one [delread~] and/or [delread4~] objects for the same [delwrite~] object. If the specified delay time in [delread~]/[delread4~] is longer than the size of the delay line or less than zero it is clipped to the length of the delay line., f 76;
 #X text 246 450 Note that in this help file we're using delay names with "\$0" (the patch ID number used to force locality in Pd)., f 40;
-#X text 138 188 Usually \, [delread~]/[delread4~] must have the same block size \, overlap and upsampling factors as the corresponding [delwrite~] object \, otherwise you might get unexpected results \, unless you really know what you're doing. This example patch uses the default block size of 64 samples but you can change it with:, f 63;
-#X obj 510 270 block~;
+#X text 121 188 Usually \, [delread~]/[delread4~] must have the same block size \, overlap and upsampling factors as the corresponding [delwrite~] object \, otherwise you might get unexpected results \, unless you really know what you're doing. This example patch uses the default block size of 64 samples but you can change it with:, f 63;
+#X obj 518 269 block~;
 #X text 113 280 <-- set all samples of delay line to zero.;
 #X connect 3 0 7 0;
 #X connect 5 0 3 0;
