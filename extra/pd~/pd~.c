@@ -38,6 +38,13 @@ typedef int socklen_t;
 #define stat _stat
 #endif
 
+#ifdef _WIN32
+# define PIPE(p) _pipe(p, 65536, O_BINARY | O_NOINHERIT)
+#else
+# define PIPE(p) pipe(p)
+#endif
+
+
 #ifdef MSP
 #include "ext.h"
 #include "z_dsp.h"
@@ -102,27 +109,35 @@ static t_class *pd_tilde_class;
 
 
 static const char *pd_tilde_dllextent[] = {
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || \
-    defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
     ".pd_linux",
-    ".so",
 #elif defined(__APPLE__)
-    ".d_fat",
     ARCHDLLEXT(".d_")
+    ".d_fat",
     ".pd_darwin",
-    ".so",
-#elif defined(__OPENBSD__)
-    ARCHDLLEXT(".o_")
-    ".pd_openbsd",
-    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+#endif
+        /* and some generic extensions */
+#if defined(_WIN32) || defined(__CYGWIN__)
     ".dll",
 #else
     ".so",
 #endif
     0};
+
+
+static const char**get_dllextent()
+{
+#if PD
+    const char**dllextent = sys_get_dllextensions();
+    if(dllextent && *dllextent)
+        return dllextent;
+#endif
+    return pd_tilde_dllextent;
+}
+
 
 #include "binarymsg.c"
 
@@ -562,7 +577,7 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
         }
     }
         /* check that the scheduler dynamic linkable exists w either suffix */
-    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
+    for(dllextent=get_dllextent(); *dllextent; dllextent++)
     {
       snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
       sys_bashfilename(tmpbuf, schedbuf);
@@ -654,20 +669,12 @@ gotone:
     for (i = 0; i < argc+FIXEDARG; i++)
         post("arg %d = %s", i, execargv[i]);
 #endif
-#ifdef _WIN32
-    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe1) < 0)   
-#endif
+    if (PIPE(pipe1) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail1;
     }
-#ifdef _WIN32
-    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe2) < 0)   
-#endif
+    if (PIPE(pipe2) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail2;
@@ -1330,7 +1337,7 @@ static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s, long ac, t_atom *av)
 }
 
 void ext_main( void *r)
-{       
+{
     t_class *c;
 
     c = class_new("pd~", (method)pd_tilde_new, (method)pd_tilde_free,

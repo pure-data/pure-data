@@ -2,7 +2,7 @@
 #N struct array1-template float y;
 #N struct array2-template float x float y;
 #N struct array3-template float y float w;
-#N canvas 561 23 519 318 12;
+#N canvas 596 38 519 318 12;
 #N canvas 564 184 788 529 plot-template 0;
 #X obj 558 392 struct plot-template float x float y array array1 array1-template array array2 array2-template array array3 array3-template, f 20;
 #X text 27 51 Optional flags:;
@@ -49,7 +49,7 @@
 #X restore 266 206 pd array3-template;
 #X text 292 274 updated for Pd version 0.52;
 #X obj 98 283 array;
-#N canvas 166 29 391 243 plot-data 1;
+#N canvas 183 60 391 243 plot-data 1;
 #X scalar plot-template 33 78 \; -46 \; 75 \; -5 \; 47 \; 10 \; \; -9 -4 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 53 -19 \; \; 50 7 \; 6 17 \; 15 10 \; 32 1 \; -5 4 \; -28 20 \; 18 5 \; \;;
 #X coords 0 243 1 242 0 0 0;
 #X restore 120 181 pd plot-data;

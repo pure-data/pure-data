@@ -1,13 +1,13 @@
 # Translation of Pure Data to Russian.
 # This file is put in the public domain.
-# Alex Nadzharov <anadjarov@gmail.com>, 2022.
-#
+# Alex Nadzharov <anadjarov@gmail.com>, 2022, 2023.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-02-19 20:36+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ru/>\n"
@@ -15,9 +15,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "линейный"
@@ -199,8 +199,27 @@ msgstr "Применить"
 msgid "OK"
 msgstr "ОК"
 
-msgid "Audio Settings"
-msgstr "Настройки Аудио"
+#, fuzzy
+msgid "no device"
+msgstr "Входы"
+
+msgid "(same as input device)..."
+msgstr "(такой же, как вход)..."
+
+msgid "Channels:"
+msgstr "Каналы:"
+
+msgid "Input Devices"
+msgstr "Входы"
+
+msgid "Output Devices"
+msgstr "Выходы"
+
+msgid "Use Multiple Devices"
+msgstr "Использовать несколько устройств"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "Настройки"
@@ -226,20 +245,8 @@ msgstr "Размер блока:"
 msgid "Use callbacks"
 msgstr "Использовать обратный вызов функции (callback)"
 
-msgid "Input Devices"
-msgstr "Входы"
-
-msgid "Channels:"
-msgstr "Каналы:"
-
-msgid "Output Devices"
-msgstr "Выходы"
-
-msgid "(same as input device)..."
-msgstr "(такой же, как вход)..."
-
-msgid "Use Multiple Devices"
-msgstr "Использовать несколько устройств"
+msgid "Audio Settings"
+msgstr "Настройки Аудио"
 
 msgid "Save All Settings"
 msgstr "Сохранить все настройки"
@@ -354,6 +361,9 @@ msgstr "Отправить символ:"
 
 msgid "Receive symbol:"
 msgstr "Получить символ:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Ширина:"
@@ -497,17 +507,24 @@ msgstr "Отправить сообщение Pd"
 msgid "(use arrow keys for history)"
 msgstr "(используйте клавиши со стрелками вверх-вниз для просмотра истории)"
 
-msgid "MIDI Settings"
-msgstr "Настройки MIDI"
-
-msgid "ALSA MIDI Settings"
-msgstr "Настройки MIDI в ALSA"
+#, fuzzy
+msgid "no input devices"
+msgstr "Входы"
 
 msgid "In Ports:"
 msgstr "Входы:"
 
 msgid "Out Ports:"
 msgstr "Выходы:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Настройки MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Настройки MIDI в ALSA"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Путь поиска Pd для объектов, справки, аудио, текстовых и других файлов"
@@ -536,6 +553,10 @@ msgstr "Папка для внешних объектов"
 msgid "Clear"
 msgstr "Сбросить"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Настройки"
+
 msgid "Choose Pd documents directory:"
 msgstr "Выбрать папку документов Pd:"
 
@@ -549,20 +570,96 @@ msgstr "Добавить новый путь"
 msgid "Edit existing path [%s]"
 msgstr "Редактировать существующий путь [%s]"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Окно Pd"
+
+msgid "Zoom New Windows"
+msgstr "Развернуть новые окна"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "удаленные настройки GUI"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Настройки"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Настройки"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Настройки"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Настройки"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Настройки %s Deken"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Настройки"
+
 msgid "Add new library"
 msgstr "Добавить новую библиотеку"
 
 msgid "Edit library"
 msgstr "Редактировать библиотеку"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "Библиотеки Pd, загружаемые при запуске"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr "удаленные настройки GUI"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "Размер блока:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
 msgstr "Флаги при загрузке:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Не использовать режим реального времени планировщика событий"
+
+msgid "Startup flags:"
+msgstr "Флаги при загрузке:"
 
 msgid "Help Browser"
 msgstr "Просмотр справки"
@@ -628,6 +725,13 @@ msgstr "Невозможно прочитать плагин %s ...пропущ�
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Невозможно найти плагины в %s ...пропущено!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "Невозможно установить '%s'!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
@@ -1158,6 +1262,128 @@ msgstr "невозможно удалить пустой объект"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Невозможно создать свойства \"%1$s\" в %2$s"
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "Платформа по умолчанию: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "переводы"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "игнорируется '%s': не существует"
@@ -1326,20 +1552,9 @@ msgstr "удаленные настройки GUI"
 msgid "no Pd-GUI settings to clear"
 msgstr "нет настроек Pd-GUI для удаления"
 
-msgid "Path..."
-msgstr "Путь..."
-
-msgid "Startup..."
-msgstr "Настройки при запуске..."
-
-msgid "Audio..."
-msgstr "Аудио..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Развернуть новые окна"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "Свойства..."
 
 msgid "Save All Preferences"
 msgstr "Сохранить все настройки"
@@ -1353,7 +1568,8 @@ msgstr "Загрузить из..."
 msgid "Forget All..."
 msgstr "Забыть все..."
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Настройки"
 
 msgid "Open Recent"
@@ -1368,6 +1584,17 @@ msgstr "Вы хотите сохранить изменения в '%s'?"
 
 msgid "Properties"
 msgstr "Свойства"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Принять изменения в '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Принятие изменений обновит содержимое в связанном объекте. Вам необоходимо "
+"сохранить патч, чтобы сделать эти изменения постоянными."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1394,6 +1621,13 @@ msgstr "Tcl:"
 msgid "Pd"
 msgstr "Pd"
 
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
+
 msgid "DSP"
 msgstr "DSP"
 
@@ -1418,6 +1652,9 @@ msgstr "отладочные"
 msgid "all"
 msgstr "все"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "Новый..."
 
@@ -1430,3 +1667,15 @@ msgstr "Удалить"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "игнорируется '%s': невозможно распознать файл Pd"
+
+#~ msgid "Path..."
+#~ msgstr "Путь..."
+
+#~ msgid "Startup..."
+#~ msgstr "Настройки при запуске..."
+
+#~ msgid "Audio..."
+#~ msgstr "Аудио..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

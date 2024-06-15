@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
-"Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/el/>\n"
+"Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/el/>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -202,8 +202,29 @@ msgstr "Εφαρμογή"
 msgid "OK"
 msgstr "ΟΚ"
 
-msgid "Audio Settings"
-msgstr "Ρυθμίσεις Ήχου"
+#, fuzzy
+msgid "no device"
+msgstr "Συσκευή εισόδου 2:"
+
+#, fuzzy
+msgid "(same as input device)..."
+msgstr "(ομοίως με συσκευή εισόδου) .............."
+
+msgid "Channels:"
+msgstr "Κανάλια:"
+
+msgid "Input Devices"
+msgstr "Συσκευή εισόδου"
+
+msgid "Output Devices"
+msgstr "Συσκευή εξόδου"
+
+#, fuzzy
+msgid "Use Multiple Devices"
+msgstr "Χρήση πολλαπλών συσκευών"
+
+msgid "audio system"
+msgstr ""
 
 #, fuzzy
 msgid "Settings"
@@ -231,22 +252,8 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Χρήση επανακλήσεων"
 
-msgid "Input Devices"
-msgstr "Συσκευή εισόδου"
-
-msgid "Channels:"
-msgstr "Κανάλια:"
-
-msgid "Output Devices"
-msgstr "Συσκευή εξόδου"
-
-#, fuzzy
-msgid "(same as input device)..."
-msgstr "(ομοίως με συσκευή εισόδου) .............."
-
-#, fuzzy
-msgid "Use Multiple Devices"
-msgstr "Χρήση πολλαπλών συσκευών"
+msgid "Audio Settings"
+msgstr "Ρυθμίσεις Ήχου"
 
 msgid "Save All Settings"
 msgstr "Αποθήκευση όλων των ρυθμίσεων"
@@ -365,6 +372,9 @@ msgstr "Αποστολή symbol:"
 
 msgid "Receive symbol:"
 msgstr "Λήψη συμβόλου:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Εύρος:"
@@ -518,17 +528,24 @@ msgstr "Αποστολή Μηνύματος..."
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "Ρυθμίσεις MIDI"
-
-msgid "ALSA MIDI Settings"
-msgstr "Ρυθμίσεις ALSA MIDI"
+#, fuzzy
+msgid "no input devices"
+msgstr "Συσκευή εισόδου"
 
 msgid "In Ports:"
 msgstr "Θύρες Εισόδου:"
 
 msgid "Out Ports:"
 msgstr "Θύρες Εξόδου:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Ρυθμίσεις MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Ρυθμίσεις ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -558,6 +575,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Καθαρισμός Μενού"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Προτιμήσεις"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -571,19 +592,94 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Παράθυρο Pd"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Γονεϊκό Παράθυρο"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Προτιμήσεις"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup flags:"
 msgstr ""
 
 #, fuzzy
@@ -650,6 +746,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1155,6 +1257,127 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1328,23 +1551,9 @@ msgstr "Αποθήκευση όλων των ρυθμίσεων"
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
 #, fuzzy
-msgid "Audio..."
-msgstr "Ρυθμίσεις Ήχου..."
-
-#, fuzzy
-msgid "MIDI..."
-msgstr "Ρυθμίσεις MIDI..."
-
-#, fuzzy
-msgid "Zoom New Windows"
-msgstr "Γονεϊκό Παράθυρο"
+msgid "Edit Preferences..."
+msgstr "Προτιμήσεις..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1360,7 +1569,8 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Προτιμήσεις"
 
 msgid "Open Recent"
@@ -1375,6 +1585,15 @@ msgstr "Αποθήκευση αλλαγών που έγιναν στο '%s';"
 
 msgid "Properties"
 msgstr "Ιδιότητες"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Απόρριψη αλλαγών σε '%s';"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1398,6 +1617,13 @@ msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 msgid "DSP"
@@ -1424,6 +1650,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr ""
 
@@ -1438,6 +1667,18 @@ msgstr "Διαγραφή πίνακα"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "(no device)"
+#~ msgstr "Συσκευή εισόδου 2:"
+
+#, fuzzy
+#~ msgid "Audio..."
+#~ msgstr "Ρυθμίσεις Ήχου..."
+
+#, fuzzy
+#~ msgid "MIDI..."
+#~ msgstr "Ρυθμίσεις MIDI..."
 
 #, fuzzy
 #~ msgid "bottom:"
@@ -1468,9 +1709,6 @@ msgstr ""
 
 #~ msgid "Output device 3:"
 #~ msgstr "Συσκευή εξόδου 3:"
-
-#~ msgid "Input device 2:"
-#~ msgstr "Συσκευή εισόδου 2:"
 
 #, fuzzy
 #~ msgid "really quit?"

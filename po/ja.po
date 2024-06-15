@@ -2,22 +2,22 @@
 # This file is put in the public domain.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 # Shozo KUZE <shozo@mathrax.com>, 2022.
-# umläute <dev@umlaeute.mur.at>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-11-22 20:35+0000\n"
+"POT-Creation-Date: 2023-06-26 22:30+0200\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/ja/>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "線形"
@@ -108,7 +108,8 @@ msgid "no Pd settings to erase"
 msgstr "Pd設定がないので削除できません"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "環境設定の読み込みをスキップしています... Pdが起動時にクラッシュしたようです"
+msgstr ""
+"環境設定の読み込みをスキップしています... Pdが起動時にクラッシュしたようです"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(環境設定を再保存すると元に戻ります）"
@@ -197,8 +198,27 @@ msgstr "適用する"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "オーディオ設定"
+#, fuzzy
+msgid "no device"
+msgstr "入力デバイス"
+
+msgid "(same as input device)..."
+msgstr "(入力デバイスと同じ)..."
+
+msgid "Channels:"
+msgstr "チャンネル:"
+
+msgid "Input Devices"
+msgstr "入力デバイス"
+
+msgid "Output Devices"
+msgstr "出力デバイス"
+
+msgid "Use Multiple Devices"
+msgstr "複数のデバイスを使用する"
+
+msgid "audio system"
+msgstr ""
 
 msgid "Settings"
 msgstr "設定"
@@ -224,20 +244,8 @@ msgstr "ブロックサイズ:"
 msgid "Use callbacks"
 msgstr "コールバックを使用する"
 
-msgid "Input Devices"
-msgstr "入力デバイス"
-
-msgid "Channels:"
-msgstr "チャンネル:"
-
-msgid "Output Devices"
-msgstr "出力デバイス"
-
-msgid "(same as input device)..."
-msgstr "(入力デバイスと同じ)..."
-
-msgid "Use Multiple Devices"
-msgstr "複数のデバイスを使用する"
+msgid "Audio Settings"
+msgstr "オーディオ設定"
 
 msgid "Save All Settings"
 msgstr "すべての設定を保存"
@@ -352,6 +360,9 @@ msgstr "シンボルを送る:"
 
 msgid "Receive symbol:"
 msgstr "シンボルを受けとる:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "幅:"
@@ -495,11 +506,9 @@ msgstr "Pdメッセージの送信"
 msgid "(use arrow keys for history)"
 msgstr "(矢印キーで履歴を使用できます)"
 
-msgid "MIDI Settings"
-msgstr "MIDI設定"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI設定"
+#, fuzzy
+msgid "no input devices"
+msgstr "入力デバイス"
 
 msgid "In Ports:"
 msgstr "入力ポート:"
@@ -507,8 +516,18 @@ msgstr "入力ポート:"
 msgid "Out Ports:"
 msgstr "出力ポート:"
 
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI設定"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI設定"
+
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr "Pdの検索パス(オブジェクト、ヘルプ、オーディオ、テキスト、その他のファイル)"
+msgstr ""
+"Pdの検索パス(オブジェクト、ヘルプ、オーディオ、テキスト、その他のファイル)"
 
 msgid "Use standard paths"
 msgstr "標準パスを使用"
@@ -534,6 +553,10 @@ msgstr "Externals インストールディレクトリ"
 msgid "Clear"
 msgstr "クリア"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "環境設定"
+
 msgid "Choose Pd documents directory:"
 msgstr "Pd documentsディレクトリを選択:"
 
@@ -547,20 +570,96 @@ msgstr "新しいパスの追加"
 msgid "Edit existing path [%s]"
 msgstr "既存のパス [%s] の編集"
 
+#, fuzzy
+msgid "Patch windows"
+msgstr "Pd ウィンドウ"
+
+msgid "Zoom New Windows"
+msgstr "新しいウィンドウを拡大する"
+
+#, fuzzy
+msgid "GUI settings"
+msgstr "GUI設定の削除"
+
+msgid "preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "use tabs"
+msgstr ""
+
+msgid "single page"
+msgstr ""
+
+msgid "Preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "環境設定"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Deken %s 設定"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "環境設定"
+
 msgid "Add new library"
 msgstr "新規ライブラリの追加"
 
 msgid "Edit library"
 msgstr "ライブラリの編集"
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr "起動時に読み込むPdライブラリ"
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI options"
+msgstr "GUI設定の削除"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+#, fuzzy
+msgid "float size"
+msgstr "ブロックサイズ:"
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+#, fuzzy
+msgid "Startup options"
 msgstr "起動時のフラグ:"
 
 msgid "Defeat real-time scheduling"
 msgstr "リアルタイムスケジューリングより優先"
+
+msgid "Startup flags:"
+msgstr "起動時のフラグ:"
 
 msgid "Help Browser"
 msgstr "ヘルプブラウザ"
@@ -589,12 +688,14 @@ msgstr "検出されたフォント: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr "警告: フォントファミリー '%1$s' が見つかりません、デフォルト (%2$s) "
-"を使用します"
+msgstr ""
+"警告: フォントファミリー '%1$s' が見つかりません、デフォルト (%2$s) を使用し"
+"ます"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
+msgstr ""
+"警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -623,6 +724,13 @@ msgstr "プラグイン %s の読み込みに失敗しました...スキップ�
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "プラグイン %s を見つけられませんでした...スキップします!"
+
+msgid "Pd startup failure"
+msgstr ""
+
+#, fuzzy
+msgid "Failed to start Pd-core"
+msgstr "'%s' のインストールに失敗しました!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) 閉じ括弧 '}' がありません: "
@@ -880,17 +988,20 @@ msgid "e.g. 'freeverb~'"
 msgstr "例) 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr "ワイルドカード '*' を使用すると、任意の数の文字と一致させることができます。"
+msgstr ""
+"ワイルドカード '*' を使用すると、任意の数の文字と一致させることができます。"
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "例) '*-plugin' と入力すると 'deken-plugin' "
-"にマッチします（その他にもマッチします）。"
+msgstr ""
+"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチし"
+"ます）。"
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr "ライブラリのみ または オブジェクトのみに 検索を制限できます。"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
+msgstr ""
+"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
 "い。"
 
 msgid "Right-clicking a search result will give you more options..."
@@ -963,8 +1074,9 @@ msgstr "検索を実行できません。ネットに接続できていますか
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr "使用可能なパッケージが %1$d 個見つかりました (合計 %2$d "
-"個のパッケージのうち)。"
+msgstr ""
+"使用可能なパッケージが %1$d 個見つかりました (合計 %2$d 個のパッケージのう"
+"ち)。"
 
 msgid "It appears that there are no matching packages for your architecture."
 msgstr "お使いのアーキテクチャに対応するパッケージがないようです。"
@@ -987,8 +1099,9 @@ msgstr "%1$s を %2$s にインストールしますか？"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr "'%s' のダウンロードをキャンセルしています: "
-"インストール先のディレクトリが指定されていません。"
+msgstr ""
+"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指定"
+"されていません。"
 
 msgid "Installing to non-existant directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
@@ -1029,7 +1142,8 @@ msgstr "チェックサムの不一致を無視する"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "[deken] deken-plugin.tcl (Pd externals 検索) は %s からロードされました。"
+msgstr ""
+"[deken] deken-plugin.tcl (Pd externals 検索) は %s からロードされました。"
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1091,8 +1205,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
-"\n"
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用します"
+"か？\n"
 "\n"
 "場所: %s\n"
 "\n"
@@ -1107,8 +1221,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
-"\n"
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用します"
+"か？\n"
 "\n"
 "場所: %s\n"
 "\n"
@@ -1142,6 +1256,128 @@ msgstr "空のドメインの削除を拒否されました"
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "環境設定 \"%1$s\" を %2$s に作成できませんでした"
+
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "Finnish"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Armenian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "Japanese"
+msgstr ""
+
+msgid "Korean"
+msgstr ""
+
+msgid "Dutch"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Polish"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Russian"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Turkish"
+msgstr ""
+
+msgid "Ukrainian"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "(default language: %s)"
+msgstr "デフォルトのプラットフォーム: %s"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "翻訳"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1311,20 +1547,9 @@ msgstr "GUI設定の削除"
 msgid "no Pd-GUI settings to clear"
 msgstr "Pd-GUIの設定が存在しないのでクリアできません"
 
-msgid "Path..."
-msgstr "パス..."
-
-msgid "Startup..."
-msgstr "スタートアップ..."
-
-msgid "Audio..."
-msgstr "オーディオ..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "新しいウィンドウを拡大する"
+#, fuzzy
+msgid "Edit Preferences..."
+msgstr "環境設定..."
 
 msgid "Save All Preferences"
 msgstr "すべての設定を保存"
@@ -1338,7 +1563,8 @@ msgstr "読込..."
 msgid "Forget All..."
 msgstr "全てを忘れる..."
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "環境設定"
 
 msgid "Open Recent"
@@ -1353,6 +1579,15 @@ msgstr "'%s'で行った変更を保存しますか？"
 
 msgid "Properties"
 msgstr "プロパティ"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "'%s' の変更を受け付けますか?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1376,6 +1611,13 @@ msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr ""
 
 msgid "DSP"
 msgstr "DSP"
@@ -1401,6 +1643,9 @@ msgstr "デバッグ"
 msgid "all"
 msgstr "全て"
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr "新規..."
 
@@ -1413,3 +1658,15 @@ msgstr "削除"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s'を無視: Pd ファイルではないようです"
+
+#~ msgid "Path..."
+#~ msgstr "パス..."
+
+#~ msgid "Startup..."
+#~ msgstr "スタートアップ..."
+
+#~ msgid "Audio..."
+#~ msgstr "オーディオ..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

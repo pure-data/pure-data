@@ -52,6 +52,7 @@ EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 typedef int (*loader_t)(t_canvas *canvas, const char *classname, const char*path); /* callback type */
 EXTERN int sys_load_lib(t_canvas *canvas, const char *classname);
 EXTERN void sys_register_loader(loader_t loader);
+EXTERN const char**sys_get_dllextensions(void);
 
                         /* s_audio.c */
 
@@ -66,9 +67,9 @@ typedef struct _audiosettings
     int a_nchindev;
     int a_chindevvec[MAXAUDIOINDEV];
     int a_noutdev;
-    int a_outdevvec[MAXAUDIOINDEV];
+    int a_outdevvec[MAXAUDIOOUTDEV];
     int a_nchoutdev;
-    int a_choutdevvec[MAXAUDIOINDEV];
+    int a_choutdevvec[MAXAUDIOOUTDEV];
     int a_srate;
     int a_advance;
     int a_callback;
@@ -100,12 +101,12 @@ typedef struct _audiosettings
     sound.  (You'd think portaudio would be best but it seems to default
     to jack on linux, and on Windows we only use it for ASIO).
     If nobody shows up, define DUMMY and make it the default.*/
-#if defined(USEAPI_MMIO)
-# define API_DEFAULT API_MMIO
-# define API_DEFSTRING "MMIO"
-#elif defined(USEAPI_ALSA)
+#if defined(USEAPI_ALSA)
 # define API_DEFAULT API_ALSA
 # define API_DEFSTRING "ALSA"
+#elif defined(USEAPI_PORTAUDIO)
+# define API_DEFAULT API_PORTAUDIO
+# define API_DEFSTRING "portaudio"
 #elif defined(USEAPI_OSS)
 # define API_DEFAULT API_OSS
 # define API_DEFSTRING "OSS"
@@ -115,12 +116,12 @@ typedef struct _audiosettings
 #elif defined(USEAPI_ESD)
 # define API_DEFAULT API_ESD
 # define API_DEFSTRING "ESD (?)"
-#elif defined(USEAPI_PORTAUDIO)
-# define API_DEFAULT API_PORTAUDIO
-# define API_DEFSTRING "portaudio"
 #elif defined(USEAPI_JACK)
 # define API_DEFAULT API_JACK
 # define API_DEFSTRING "Jack audio connection kit"
+#elif defined(USEAPI_MMIO)
+# define API_DEFAULT API_MMIO
+# define API_DEFSTRING "MMIO"
 #else
 # ifndef USEAPI_DUMMY   /* we need at least one so bring in the dummy */
 # define USEAPI_DUMMY

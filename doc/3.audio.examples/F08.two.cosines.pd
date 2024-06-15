@@ -24,7 +24,6 @@
 #X obj 161 190 pack 0 50;
 #X text 211 329 synthesize the two partials;
 #X text 461 589 updated for Pd version 0.37;
-#X obj 161 510 hip~;
 #X obj 161 559 output~;
 #X text 282 125 The other \, spiffier way is to make a sum of cosines to interpolate between adjacent harmonics. Suppose for example we want a center frequency of 5.3 (in units of the fundamental.) We just take partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f 52;
 #X obj 246 511 tabwrite~ F08-carrier;
@@ -41,6 +40,7 @@
 #X text 196 459 q * c2 + (1-q) * c1;
 #X obj 524 27 declare -stdpath ./;
 #X text 269 485 <-- graph;
+#X obj 161 510 hip~ 5;
 #X connect 0 0 15 1;
 #X connect 0 0 17 0;
 #X connect 1 0 2 0;
@@ -50,7 +50,7 @@
 #X connect 5 0 13 0;
 #X connect 5 0 12 0;
 #X connect 6 0 18 0;
-#X connect 8 0 26 0;
+#X connect 8 0 25 0;
 #X connect 11 0 15 0;
 #X connect 12 0 13 1;
 #X connect 12 0 16 1;
@@ -58,11 +58,10 @@
 #X connect 14 0 11 0;
 #X connect 15 0 16 0;
 #X connect 16 0 17 1;
-#X connect 17 0 21 0;
-#X connect 17 0 24 0;
+#X connect 17 0 23 0;
+#X connect 17 0 37 0;
 #X connect 18 0 5 0;
-#X connect 21 0 22 0;
-#X connect 21 0 22 1;
-#X connect 25 0 24 0;
-#X connect 26 0 4 0;
-#X connect 26 0 14 1;
+#X connect 24 0 23 0;
+#X connect 25 0 4 0;
+#X connect 25 0 14 1;
+#X connect 37 0 21 0;

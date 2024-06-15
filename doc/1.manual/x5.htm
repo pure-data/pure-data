@@ -30,6 +30,57 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.54-0 ------------------------------
+
+<P> Multichannel audio signals are supported for many objects.  They may be created
+or split into component channels using the new [snake~] object.  Supported obects
+include stateless tilde objects such as [abs~], [sqrt~], [rsqrt~], [wrap~], [exp~],
+[cos~], [ftom~], [mtof~], [dbtorms~], [rmstodb~], [dbtopow~], [powtodb~], [clip~],
+[+], [-], [*], [/], [max~], [min~], [log~], [pow~], [fft~], ifft~], [rfft~], [rifft~] and
+[lrshift~]. The [send~]/[receive~], [throw~]/[catch~] also manage multichannel signals and
+[tabwrite~], [tabread~], [tabread4~] and [tabplay~] now deal with more than one array and
+multichannel signals.
+
+<P> The [inlet~]/[outlet~] objects are not always stateless but it was judged necessary to
+support them. The [clone] object received special attention since it might be desirable to
+distribute multichannel signals among the cloned patches or to pass them directly into all
+copies as multichannel inputs and outputs. The [adc~] object can also generate multichannel
+signals from the input card, while [dac~] can directly manage a multichannel signal and
+distribute to different channels.
+
+<P> The [clone] object takes a message to change the number of copies.  So now Pd
+is useful as a non-real-time software synthesizer.  Changing the number of
+copies will cause massive reinitialization and memory allocation and should not
+be used during preformance, only during setup.
+
+<P> The [sigmund~] object got some new optimizations and has more parameters that can be
+tuned for a particular instrument.  A longstanding octave-jumping problem has been
+partially addressed, and anyway, a new output type offers even/odd balance so
+that a synth can play in unison with an instrument with very few octave jumps
+by coherently mixing both possible octaves.
+
+<P> The [lop~] object can now also take a signal to set rolloff frequency, but the same
+slightly faster algorithm is used if you have a scalar input instead.
+
+<P> The 64-bit windows build uses the lower-latency WASAPI audio system in place
+of the older MMIO.  This therefore only runs on Windows 7 and newer.  The 32-bit version
+can still run all the way back to Windows XP.
+
+<P> There's a new design for the stereo [output~] abstraction in the 'extra' library
+by Alexandre Porres. This is widely used in the documentation and now has a slider
+to set the volume and you can also use a number box. It can also distribute a mono
+input to both channels.
+
+<P> The Windows installer can be run on non-admin users.
+
+<P> Improved settings dialog window.
+
+<P> As usual, countless bug fixes and miscellaneous improvements.
+
+<P> ------------------ 0.53-2 ------------------------------
+
+<P> Update portaudio to version v19.7.0 to fix macintosh hanging problem.
+
 <P> ------------------ 0.53-1 ------------------------------
 
 <P> Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of

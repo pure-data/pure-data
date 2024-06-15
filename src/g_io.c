@@ -521,7 +521,9 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
         return;
     x->x_justcopyout = (switched && !reblock);
     x->x_parentsignal = (parentsigs?
-        &parentsigs[outlet_getsignalindex(x->x_parentoutlet)] : 0);;
+        &parentsigs[outlet_getsignalindex(x->x_parentoutlet)] : 0);
+    if (!parentsigs)
+        return;
     if (switched || reblock)
         x->x_borrowed = 0;
     else    /* OK, borrow it */
@@ -538,17 +540,9 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
         int parentvecsize, buflength, i;
         int re_parentvecsize;
         int bigperiod, epilogphase, blockphase;
-        if (parentsigs)
-        {
-            parentvecsize = (*x->x_parentsignal)->s_length;
-            re_parentvecsize = parentvecsize * upsample / downsample;
-        }
-        else /* we should never reblock w/o a parent */
-        {
-            bug("voutlet_dspprolog");
-            parentvecsize = 1;
-            re_parentvecsize = 1;
-        }
+
+        parentvecsize = (*x->x_parentsignal)->s_length;
+        re_parentvecsize = parentvecsize * upsample / downsample;
         buflength = re_parentvecsize;
         if (buflength < myvecsize)
             buflength = myvecsize;
@@ -602,12 +596,14 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
 {
     if (!x->x_rb)
         return;  /* this shouldn't be necesssary... */
+    if (!x->x_parentsignal) /* toplevels do nothing */
+        return;
     if (reblock)
     {
         int parentvecsize, i;
         int re_parentvecsize;
         int bigperiod, epilogphase, blockphase;
-        if (*x->x_parentsignal)
+        if (x->x_parentsignal)
         {
             parentvecsize = (*x->x_parentsignal)->s_length;
             re_parentvecsize = parentvecsize * upsample / downsample;
@@ -630,7 +626,7 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         if (period == 1 && frequency > 1)
             x->x_hop = re_parentvecsize / frequency;
         else x->x_hop = period * re_parentvecsize;
-        if (*x->x_parentsignal)
+        if (x->x_parentsignal)
         {
                     /* set epilog pointer and schedule it */
             x->x_empty = re_parentvecsize * epilogphase;

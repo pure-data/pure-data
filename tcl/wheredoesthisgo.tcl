@@ -163,6 +163,18 @@ proc respace_text {x} {
     concat $y
 }
 
+# 'set' a variable with escaped value(s) unescaped
+# (to be used over the wire)
+proc set_escaped {varname args} {
+    upvar ${varname} localvar
+    set localvar {}
+    foreach arg ${args} {
+        set x [subst -nocommands -novariables ${arg}]
+        lappend localvar $x
+    }
+}
+
+
 # ------------------------------------------------------------------------------
 # watchdog functions
 

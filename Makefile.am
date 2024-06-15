@@ -44,6 +44,12 @@ LIBPD_DIST = libpd/Makefile libpd/README.txt libpd/test_libpd/Makefile \
 # files that are included but not built
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt $(LIBPD_DIST)
 
+pkgdata_DATA = \
+    LICENSE.txt \
+    README.txt \
+    $(empty)
+
+
 # subdirs that are built,
 # mac before src due to uninstall target order kludge (see mac/Makefile.am)
 SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc tcl extra font
@@ -78,8 +84,8 @@ endif
 # startup location for GUI plugins and/or patches,
 # leftover from Pd-extended & not currently used
 install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(libdir)/pd/startup
-	$(INSTALL) -d $(DESTDIR)$(libdir)/pd/startup/disabled
+	$(INSTALL) -d $(DESTDIR)$(pkglibdir)/startup
+	$(INSTALL) -d $(DESTDIR)$(pkglibdir)/startup/disabled
 
 # remove the leftover $(libdir)/pd dir, fail silently on any non-empty dirs
 # The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw

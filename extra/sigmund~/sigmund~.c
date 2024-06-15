@@ -76,6 +76,15 @@ typedef struct peak
     t_float p_tmp;
 } t_peak;
 
+typedef struct _pitchpt
+{
+    t_float p_weight;
+    t_float p_loudness;
+    t_float p_evenness;
+    t_float p_unused;
+} t_pitchpt;
+
+
 /********************** service routines **************************/
 
 /* these three are adapted from elsewhere in Pd but included here for
@@ -390,33 +399,28 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
 /*************** Routines for finding fundamental pitch *************/
 
 #define PITCHNPEAK 12
-#define HALFTONEINC 0.059
-#define SUBHARMONICS 16
-#define DBPERHALFTONE 0.0
+#define NHARMONICS 16
+#define STEPSPEROCTAVE 48
+#define PITCHSTEPS(npts) (STEPSPEROCTAVE * sigmund_ilog2((npts)))
 
 static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
-    t_float npts, t_float srate, t_float nharmonics, t_float amppower, int loud)
+    t_float *qualityp, t_float *evennessp,
+    t_float npts, t_float srate, t_float *harmonicweights, t_float amppowerlaw,
+    t_float qualitythreshold, t_pitchpt *ppt, int compat, int verbose)
 {
-    t_float fperbin = 0.5 * srate / npts;
-    int npit = 48 * sigmund_ilog2(npts), i, j, k, nsalient;
-    t_float bestbin, bestweight, sumamp, sumweight, sumfreq, freq;
-    t_float *weights =  0;
+    t_float fperbin = 0.5 * srate / npts, fbestbin;
+    int npit = PITCHSTEPS(npts), i, j, k, nsalient, bestbin;
+    t_float bestweight, sumamp, sumloudness, sumfreq, sumweight, freq = 0;
     t_peak *bigpeaks[PITCHNPEAK];
-    size_t weight_len = sizeof(t_float) * npit;
-    if(weight_len > 65536)
-      weight_len = 65536;
-    weights = (t_float *)alloca(weight_len);
+
     if (npeak < 1)
-    {
-        freq = 0;
         goto done;
-    }
     for (i = 0; i < npit; i++)
-        weights[i] = 0;
+        ppt[i].p_weight = ppt[i].p_loudness = ppt[i].p_evenness = 0;
     for (i = 0; i < npeak; i++)
     {
         peakv[i].p_tmp = 0;
-        peakv[i].p_salience = peakv[i].p_db - DBPERHALFTONE * peakv[i].p_pit;
+        peakv[i].p_salience = peakv[i].p_db;
     }
     for (nsalient = 0; nsalient < PITCHNPEAK; nsalient++)
     {
@@ -432,22 +436,21 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
             break;
         bigpeaks[nsalient] = bestpeak;
         bestpeak->p_tmp = 1;
-        /* post("peak f=%f a=%f", bestpeak->p_freq, bestpeak->p_amp); */
+        /* post("peak f=%f a=%f", bestpeak.p_freq, bestpeak.p_amp); */
     }
-    sumweight = 0;
+    sumloudness = 0;
     for (i = 0; i < nsalient; i++)
     {
         t_peak *thispeak = bigpeaks[i];
-        t_float weightindex = (48./LOG2) *
+        t_float weightindex = (STEPSPEROCTAVE/LOG2) *
             log(thispeak->p_freq/(2.*fperbin));
-        t_float loudness = pow(thispeak->p_amp, amppower);
+        t_float loudness = pow(thispeak->p_amp, amppowerlaw);
         /* post("index %f, uncertainty %f", weightindex, pitchuncertainty); */
-        for (j = 0; j < SUBHARMONICS; j++)
+        for (j = 0; j < NHARMONICS; j++)
         {
-            t_float subindex = weightindex -
-                (48./LOG2) * log(j + 1.);
-            int loindex = subindex - 0.5;
-            int hiindex = loindex+2;
+            int loindex = weightindex -
+                (STEPSPEROCTAVE/LOG2) * log(j + 1.) - 0.5;
+            int hiindex = loindex + 2;
             if (hiindex < 0)
                 break;
             if (hiindex >= npit)
@@ -455,34 +458,45 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
             if (loindex < 0)
                 loindex = 0;
             for (k = loindex; k <= hiindex; k++)
-                weights[k] += loudness * nharmonics / (nharmonics + j);
+            {
+                ppt[k].p_weight += loudness * harmonicweights[j];
+                ppt[k].p_loudness += loudness;
+                if (j&1)
+                    ppt[k].p_evenness += loudness;
+            }
         }
-        sumweight += loudness;
+        sumloudness += loudness;
     }
     bestbin = -1;
     bestweight = -1e20;
     for (i = 0; i < npit; i++)
-        if (weights[i] > bestweight)
-            bestweight = weights[i], bestbin = i;
-    if (bestweight < sumweight * 0.4)
-        bestbin = -1;
-    
-    if (bestbin < 0)
+        if (ppt[i].p_weight > bestweight)
+            bestweight = ppt[i].p_weight, bestbin = i;
+
+    if (bestbin < 0 || bestbin >= npit - 1 || sumloudness <= 0 ||
+        ppt[bestbin].p_loudness <= 0 ||
+        (compat && bestweight < sumloudness * 0.4) ||
+        (!compat && ppt[bestbin].p_loudness < sumloudness * qualitythreshold))
     {
-        freq = 0;
+        *qualityp = 0;
+        *evennessp = 0;
         goto done;
     }
-    if (bestbin > 0 && bestbin < npit-1)
-    {
-        int ibest = bestbin;
-        bestbin += (weights[ibest+1] - weights[ibest-1]) /
-            (weights[ibest+1] +  weights[ibest] + weights[ibest-1]);
-    }
-    freq = 2*fperbin * exp((LOG2/48.)*bestbin);
+
+    *qualityp = ppt[bestbin].p_loudness / sumloudness;
+    *evennessp = ppt[bestbin].p_evenness / ppt[bestbin].p_loudness;
+
+        /* first guess by parabolic peak fitting */
+    fbestbin = bestbin + (ppt[bestbin+1].p_weight
+        - ppt[bestbin-1].p_weight) /
+            (ppt[bestbin+1].p_weight +  ppt[bestbin].p_weight +
+                ppt[bestbin-1].p_weight);
+
+    freq = 2*fperbin * exp((LOG2/STEPSPEROCTAVE)*fbestbin);
     for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
     {
         t_peak *thispeak = bigpeaks[i];
-        t_float thisloudness = thispeak->p_amp;
+        t_float thisamp = thispeak->p_amp;
         t_float thisfreq = thispeak->p_freq;
         t_float harmonic = thisfreq/freq;
         t_float intpart = (int)(0.5 + harmonic);
@@ -494,7 +508,7 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
         if (intpart >= 1 && intpart <= 16 &&
             inharm < 0.015 * intpart && inharm > - (0.015 * intpart))
         {
-            t_float weight = thisloudness * intpart;
+            t_float weight = thisamp * intpart;
             sumweight += weight;
             sumfreq += weight*thisfreq/intpart;
 #if 0
@@ -821,14 +835,18 @@ whole file can be included in other, non-PD and non-Max projects.  */
 #define STABLETIME_DEF 50
 #define MINPOWER_DEF 50
 #define GROWTH_DEF 7
+#define AMPPOWERLAW_DEF 0.5
+#define NHARMONICS_DEF 6
+#define QUALITY_DEF 0.4
 
 #define OUT_PITCH 0
 #define OUT_ENV 1
 #define OUT_NOTE 2
 #define OUT_PEAKS 3
 #define OUT_TRACKS 4
-#define OUT_SMSPITCH 5
-#define OUT_SMSNONPITCH 6
+#define OUT_SPECTRUM 5
+#define OUT_QUALITY 6
+#define OUT_EVENNESS 7
 
 typedef struct _varout
 {
@@ -862,14 +880,20 @@ typedef struct _sigmund
     int x_npeak;        /* number of peaks to find */
     int x_loud;         /* debug level */
     t_sample *x_inbuf;  /* input buffer */
+    t_pitchpt *x_pitchbuf;  /* input buffer */
     int x_infill;       /* number of points filled */
     int x_countdown;    /* countdown to start filling buffer */
-    int x_hop;          /* samples between analyses */ 
-    t_float x_maxfreq;    /* highest-frequency peak to report */ 
-    t_float x_vibrato;    /* vibrato depth in half tones */ 
-    t_float x_stabletime; /* period of stability needed for note */ 
-    t_float x_growth;     /* growth to set off a new note */ 
-    t_float x_minpower;   /* minimum power, in DB, for a note */ 
+    int x_hop;          /* samples between analyses */
+    t_float x_maxfreq;    /* highest-frequency peak to report */
+    t_float x_vibrato;    /* vibrato depth in half tones */
+    t_float x_stabletime; /* period of stability needed for note */
+    t_float x_growth;     /* growth to set off a new note */
+    t_float x_minpower;   /* minimum power, in DB, for a note */
+    t_float x_hweights[NHARMONICS];  /* harmonic weights for pitch detection */
+    t_float x_nharmonics; /* harmonic droppoff point to calculate hweights */
+    t_float x_octavebias; /* octave-up or down bias to calculate hweights */
+    t_float x_amppowerlaw; /* power to raise amplitudes to get pitch weight */
+    t_float x_quality;    /* required quality to report pitch */
     t_float x_param1;     /* three parameters for temporary use */
     t_float x_param2;
     t_float x_param3;
@@ -881,11 +905,17 @@ typedef struct _sigmund
     unsigned int x_dotracks:1;
 } t_sigmund;
 
+static void sigmund_nharmonics(t_sigmund *x, t_floatarg nharmonics,
+    t_floatarg octavebias);
+
 static void sigmund_preinit(t_sigmund *x)
 {
     x->x_npts = NPOINTS_DEF;
-    x->x_param1 = 6;
-    x->x_param2 = 0.5;
+    sigmund_nharmonics(x, NHARMONICS_DEF, 0);
+    x->x_amppowerlaw = AMPPOWERLAW_DEF;
+    x->x_quality = QUALITY_DEF;
+    x->x_param1 = 0;
+    x->x_param2 = 0;
     x->x_param3 = 0;
     x->x_hop = HOP_DEF;
     x->x_mode = MODE_STREAM;
@@ -903,6 +933,7 @@ static void sigmund_preinit(t_sigmund *x)
     x->x_ntrack = 0;
     x->x_dopitch = x->x_donote = x->x_dotracks = 0;
     x->x_inbuf = 0;
+    x->x_pitchbuf = (t_pitchpt *)getbytes(PITCHSTEPS(x->x_npts));
 #ifdef MSP
     x->x_inbuf2 = 0;
 #endif
@@ -946,6 +977,9 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
         }
     }
     else x->x_inbuf = 0;
+    x->x_pitchbuf = (t_pitchpt *)resizebytes(x->x_pitchbuf,
+        PITCHSTEPS(nwas) * sizeof(t_pitchpt),
+            PITCHSTEPS(npts) * sizeof(t_pitchpt));
     x->x_npts = npts;
 }
 
@@ -1005,24 +1039,75 @@ static void sigmund_minpower(t_sigmund *x, t_floatarg f)
     x->x_minpower = f;
 }
 
+static void sigmund_nharmonics(t_sigmund *x, t_floatarg nharmonics,
+    t_floatarg octavebias)
+{
+    int i;
+    t_float evenbias, oddbias;
+    if (nharmonics < 0)
+        nharmonics = 0;
+    if (octavebias < -100)
+        octavebias = -100;
+    else if (octavebias > 100)
+        octavebias = 100;
+    evenbias = (octavebias > 0 ? 1 : 1 + octavebias/100);
+    oddbias = (octavebias < 0 ? 1 : 1 - octavebias/100);
+    for (i = 0; i < NHARMONICS; i++)
+        x->x_hweights[i] = (nharmonics <= 0 ? (i==0) :
+            (nharmonics / (nharmonics + i)) * ((i & 1) ? oddbias : evenbias));
+    x->x_nharmonics = nharmonics;
+    x->x_octavebias = octavebias;
+}
+
+static void sigmund_amppowerlaw(t_sigmund *x, t_floatarg f)
+{
+    if (f <= 0.01)
+       f = 0.01;
+    else if (f > 10)
+        f = 10;
+    x->x_amppowerlaw = f;
+}
+
+static void sigmund_quality(t_sigmund *x, t_floatarg f)
+{
+    if (f <= 0)
+        f = 0;
+    else if (f > 1)
+        f = 1;
+    x->x_quality = f;
+}
+
+static void sigmund_outspectrum(t_sigmund *x, t_outlet *outlet,
+    t_float basepit)
+{
+        /* "&0xffff" below silences spurious compiler warning */
+    int nsteps = PITCHSTEPS(x->x_npts) & 0xffff, i;
+    t_atom *at = (t_atom *)alloca(sizeof(t_atom) * (nsteps + 1));
+    SETFLOAT(at, basepit);
+    for (i = 0; i < nsteps; i++)
+        SETFLOAT(at + (i+1), x->x_pitchbuf[i].p_weight);
+    outlet_list(outlet, 0, nsteps+1, at);
+}
+
 static void sigmund_doit(t_sigmund *x, int npts, t_float *arraypoints,
-    int loud, t_float srate)
+    int debug, t_float srate)
 {
     t_peak *peakv = (t_peak *)alloca(sizeof(t_peak) * x->x_npeak);
     int nfound, i, cnt;
-    t_float freq = 0, power, note = 0;
+    t_float freq = 0, quality = 0, evenness = 0, power, note = 0;
     sigmund_getrawpeaks(npts, arraypoints, x->x_npeak, peakv,
-        &nfound, &power, srate, loud, x->x_maxfreq);
+        &nfound, &power, srate, debug, x->x_maxfreq);
     if (x->x_dopitch)
-        sigmund_getpitch(nfound, peakv, &freq, npts, srate, 
-        x->x_param1, x->x_param2, loud);
+        sigmund_getpitch(nfound, peakv, &freq, &quality, &evenness, npts,
+        srate, x->x_hweights, x->x_amppowerlaw, x->x_quality,
+        x->x_pitchbuf, (pd_compatibilitylevel < 54), debug);
     if (x->x_donote)
         notefinder_doit(&x->x_notefinder, freq, power, &note, x->x_vibrato, 
             1 + x->x_stabletime * 0.001 * srate / (t_float)x->x_hop,
-                exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, loud);
+                exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, debug);
     if (x->x_dotracks)
         sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, 
-            2* srate / npts, loud);
+            2* srate / npts, debug);
     for (cnt = x->x_nvarout; cnt--;)
     {
         t_varout *v = &x->x_varoutv[cnt];
@@ -1030,6 +1115,16 @@ static void sigmund_doit(t_sigmund *x, int npts, t_float *arraypoints,
         {
         case OUT_PITCH:
             outlet_float(v->v_outlet, sigmund_ftom(freq));
+            break;
+        case OUT_EVENNESS:
+            outlet_float(v->v_outlet, evenness);
+            break;
+        case OUT_QUALITY:
+            outlet_float(v->v_outlet, quality);
+            break;
+        case OUT_SPECTRUM:
+            sigmund_outspectrum(x, v->v_outlet,
+                sigmund_ftom(2 * srate / npts));
             break;
         case OUT_ENV:
             outlet_float(v->v_outlet, sigmund_powtodb(power));
@@ -1089,7 +1184,8 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
 
 static void sigmund_print(t_sigmund *x)
 {
-    post("sigmund~ settings:");
+    int i;
+    post("sigmund~ version 0.08 settings:");
     post("npts %d", (int)x->x_npts);
     post("hop %d", (int)x->x_hop);
     post("npeak %d", (int)x->x_npeak);
@@ -1098,6 +1194,26 @@ static void sigmund_print(t_sigmund *x)
     post("stabletime %g", x->x_stabletime);
     post("growth %g", x->x_growth);
     post("minpower %g", x->x_minpower);
+    post("amppowerlaw %g", x->x_amppowerlaw);
+    post("quality %g", x->x_quality);
+    if (x->x_nharmonics >= 0)
+        post("nharmonics %f %f", x->x_nharmonics, x->x_octavebias),
+        post("resulting harmonic weights:");
+    else post("harmonic weights specified individually:");
+
+    post("%5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f",
+      x->x_hweights[0], x->x_hweights[1],
+      x->x_hweights[2], x->x_hweights[3],
+      x->x_hweights[4], x->x_hweights[5],
+      x->x_hweights[6], x->x_hweights[7]);
+    post("%5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f",
+     x->x_hweights[8], x->x_hweights[9],
+     x->x_hweights[10],  x->x_hweights[11],
+     x->x_hweights[12], x->x_hweights[13],
+     x->x_hweights[14], x->x_hweights[15]);
+    if (x->x_sr > 0)
+        post("minimum possible pitch at sample rate %f is %f",
+            x->x_sr, sigmund_ftom(2 * x->x_sr / x->x_npts));
     x->x_loud = 1;
 }
 
@@ -1110,6 +1226,7 @@ static void sigmund_free(t_sigmund *x)
         freebytes(x->x_inbuf2, x->x_npts * sizeof(*x->x_inbuf2));
 #endif
     }
+    freebytes(x->x_pitchbuf, PITCHSTEPS(x->x_npts) * sizeof(*x->x_inbuf));
     if (x->x_trackv)
         freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
     freebytes(x->x_varoutv, x->x_nvarout * sizeof(t_varout));
@@ -1132,6 +1249,8 @@ static void sigmund_vibrato(t_sigmund *x, t_floatarg f);
 static void sigmund_stabletime(t_sigmund *x, t_floatarg f);
 static void sigmund_growth(t_sigmund *x, t_floatarg f);
 static void sigmund_minpower(t_sigmund *x, t_floatarg f);
+static void sigmund_amppowerlaw(t_sigmund *x, t_floatarg f);
+static void sigmund_quality(t_sigmund *x, t_floatarg f);
 
 static void sigmund_tick(t_sigmund *x)
 {
@@ -1242,6 +1361,22 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
             sigmund_minpower(x, atom_getfloatarg(1, argc, argv));
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-nharmonics") && argc > 2)
+        {
+            sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
+                atom_getfloatarg(2, argc, argv));
+            argc -= 3; argv += 3;
+        }
+        else if (!strcmp(firstarg->s_name, "-amppowerlaw") && argc > 1)
+        {
+            sigmund_amppowerlaw(x, atom_getfloatarg(1, argc, argv));
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-quality") && argc > 1)
+        {
+            sigmund_quality(x, atom_getfloatarg(1, argc, argv));
+            argc -= 2; argv += 2;
+        }
         else if (!strcmp(firstarg->s_name, "pitch"))
         {
             int n2 = x->x_nvarout+1;
@@ -1250,6 +1385,42 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
             x->x_varoutv[x->x_nvarout].v_outlet =
                 outlet_new(&x->x_obj, &s_float);
             x->x_varoutv[x->x_nvarout].v_what = OUT_PITCH;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+            argc--, argv++;
+        }
+        else if (!strcmp(firstarg->s_name, "quality"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_outlet =
+                outlet_new(&x->x_obj, &s_float);
+            x->x_varoutv[x->x_nvarout].v_what = OUT_QUALITY;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+            argc--, argv++;
+        }
+        else if (!strcmp(firstarg->s_name, "evenness"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_outlet =
+                outlet_new(&x->x_obj, &s_float);
+            x->x_varoutv[x->x_nvarout].v_what = OUT_EVENNESS;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+            argc--, argv++;
+        }
+        else if (!strcmp(firstarg->s_name, "spectrum"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_outlet =
+                outlet_new(&x->x_obj, &s_float);
+            x->x_varoutv[x->x_nvarout].v_what = OUT_SPECTRUM;
             x->x_nvarout = n2;
             x->x_dopitch = 1;
             argc--, argv++;
@@ -1345,10 +1516,10 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     t_garray *a;
     t_float *arraypoints, pit;
     t_word *wordarray = 0;
-    if (argc < 5)
+    if (argc < 4)
     {
         post(
-         "sigmund~: array-name, npts, array-onset, samplerate, loud");
+"sigmund~: array-name, npts, array-onset, samplerate, [optional debug flag]");
         return;
     }
     if (npts < 64 || npts != (1 << ilog2(npts))) 
@@ -1392,6 +1563,15 @@ static void sigmund_clear(t_sigmund *x)
     if (x->x_trackv)
         memset(x->x_trackv, 0, x->x_ntrack * sizeof(*x->x_trackv));
     x->x_infill = x->x_countdown = 0;
+}
+
+static void sigmund_harmonicweights(t_sigmund *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int i;
+    for (i = 0; i < NHARMONICS; i++)
+        x->x_hweights[i] = atom_getfloatarg(i, argc, argv);
+    x->x_nharmonics = x->x_octavebias = -1;
 }
 
     /* these are for testing; their meanings vary... */
@@ -1445,11 +1625,20 @@ void sigmund_tilde_setup(void)
         gensym("growth"), A_FLOAT, 0);
     class_addmethod(sigmund_class, (t_method)sigmund_minpower,
         gensym("minpower"), A_FLOAT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_nharmonics,
+        gensym("nharmonics"), A_FLOAT, A_DEFFLOAT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_harmonicweights,
+        gensym("harmonicweights"), A_GIMME, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_amppowerlaw,
+        gensym("amppowerlaw"), A_FLOAT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_quality,
+        gensym("quality"), A_FLOAT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_clear,
+        gensym("clear"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_print,
         gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
-    post("sigmund~ version 0.07");
 }
 
 #endif /* PD */
@@ -1530,6 +1719,33 @@ static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
             x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
                 x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
             x->x_varoutv[x->x_nvarout].v_what = OUT_PITCH;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+        }
+        else if (!strcmp(s, "spectrum"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_SPECTRUM;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+        }
+        else if (!strcmp(s, "quality"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_QUALITY;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+        }
+        else if (!strcmp(s, "evenness"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_EVENNESS;
             x->x_nvarout = n2;
             x->x_dopitch = 1;
         }

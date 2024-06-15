@@ -5,7 +5,11 @@
 
 /* this file inputs and outputs audio using the OSS API available on linux. */
 
-#include <sys/soundcard.h>
+#ifdef HAVE_SOUNDCARD_H
+# include <soundcard.h>
+#else
+# include <sys/soundcard.h>
+#endif
 
 #ifndef SNDCTL_DSP_GETISPACE
 #define SNDCTL_DSP_GETISPACE SOUND_PCM_GETISPACE

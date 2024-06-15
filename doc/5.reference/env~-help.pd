@@ -11,8 +11,7 @@
 #X text 164 279 creation arguments:;
 #X text 30 92 The analysis is "Hanning" (raised cosine) windowed., f 67;
 #X text 30 114 The optional creation arguments are the analysis window size in samples \, and the period (the number of samples between analyses). The latter should normally be a multiple of the DSP block size \, although this isn't enforced., f 67;
-#X msg 369 208 \; pd dsp \$1;
-#X obj 369 182 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X msg 368 221 \; pd dsp \$1;
 #X obj 48 415 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0;
 #X obj 47 382 - 100;
 #X obj 5 42 cnv 1 535 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -38,11 +37,13 @@
 #X text 114 347 <-- the output is RMS amplitude which (for a sinusoid) is about 3 dB below peak-to-peak amplitude., f 54;
 #X text 105 427 <-- see also [vu];
 #X text 321 563 updated for Pd version 0.4;
-#X connect 0 0 15 0;
+#X obj 368 185 set-dsp-tgl;
+#X text 399 189 DSP on/off;
+#X connect 0 0 14 0;
 #X connect 3 0 4 0;
 #X connect 4 0 8 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
 #X connect 8 0 0 0;
-#X connect 13 0 12 0;
-#X connect 15 0 14 0;
+#X connect 14 0 13 0;
+#X connect 25 0 12 0;

@@ -56,7 +56,6 @@
 #X connect 6 0 18 1;
 #X connect 7 0 8 2;
 #X connect 8 0 15 0;
-#X connect 8 0 15 1;
 #X connect 9 0 8 1;
 #X connect 16 0 2 0;
 #X connect 17 0 18 0;

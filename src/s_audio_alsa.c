@@ -18,6 +18,8 @@
 #include <string.h>
 #include "s_audio_alsa.h"
 
+#include "m_private_utils.h"
+
 /* Defines */
 #define DEBUG(x) x
 #define DEBUG2(x) {x;}

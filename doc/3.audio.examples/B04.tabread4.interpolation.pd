@@ -1,4 +1,4 @@
-#N canvas 367 47 745 541 12;
+#N canvas 330 47 738 541 12;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array waveform13 11 float 1;
 #A 0 1 1 1 1 1 1 1 -1 -1 -1 -1;
@@ -32,12 +32,13 @@
 #X text 59 97 generation =>;
 #X text 204 217 <-- click to graph;
 #X obj 179 218 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X msg 53 233 \; pd dsp \$1;
-#X obj 53 208 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 41 198 ../5.reference/set-dsp-tgl;
+#X text 72 201 DSP on/off;
+#X msg 41 235 \; pd dsp \$1;
 #X connect 2 0 8 0;
 #X connect 8 0 7 0;
 #X connect 9 0 2 0;
 #X connect 10 0 9 0;
 #X connect 12 0 13 0;
 #X connect 21 0 7 0;
-#X connect 23 0 22 0;
+#X connect 22 0 24 0;

@@ -21,13 +21,7 @@
 #include <windows.h>
 #include <winbase.h>
 #endif
-#ifdef __APPLE__
-#include <mach-o/dyld.h>
-#endif
-
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #define stringify(s) str(s)
 #define str(s) #s
@@ -65,7 +59,15 @@ t_symbol *sys_flags;    /* more command-line flags */
 
 const char *sys_guicmd;
 t_symbol *sys_libdir;
-static t_namelist *sys_openlist;
+
+typedef struct _patchlist
+{
+    struct _patchlist *pl_next;
+    char *pl_file;
+    char *pl_args;
+} t_patchlist;
+
+static t_patchlist *sys_openlist;
 static t_namelist *sys_messagelist;
 static int sys_version;
 int sys_oldtclversion;      /* hack to warn g_rtext.c about old text sel */
@@ -189,7 +191,50 @@ int sys_fontheight(int fontsize)
 int sys_defaultfont;
 #define DEFAULTFONT 12
 
-static void openit(const char *dirname, const char *filename)
+static t_patchlist * patchlist_append(t_patchlist *listwas,
+    const char *files, const char *args)
+{
+    t_namelist *nl, *nl2;
+    nl = namelist_append_files(0, files);
+    for (nl2 = nl; nl2; nl2 = nl2->nl_next)
+    {
+        t_patchlist *pl, *pl2;
+        pl = (t_patchlist *)(getbytes(sizeof(*pl)));
+        pl->pl_next = 0;
+        pl->pl_file = (char *)getbytes(strlen(nl2->nl_string) + 1);
+        strcpy(pl->pl_file, nl2->nl_string);
+        if (args)
+        {
+            pl->pl_args = (char *)getbytes(strlen(args) + 1);
+            strcpy(pl->pl_args, args);
+        }
+        else pl->pl_args = 0;
+        if (!listwas)
+            listwas = pl;
+        else
+        {
+            for (pl2 = listwas; pl2->pl_next; pl2 = pl2->pl_next) ;
+            pl2->pl_next = pl;
+        }
+    }
+    namelist_free(nl);
+    return (listwas);
+}
+
+static void patchlist_free(t_patchlist *list)
+{
+    t_patchlist *pl, *pl2;
+    for (pl = list; pl; pl = pl2)
+    {
+        pl2 = pl->pl_next;
+        freebytes(pl->pl_file, strlen(pl->pl_file) + 1);
+        if (pl->pl_args)
+            freebytes(pl->pl_args, strlen(pl->pl_args) + 1);
+        freebytes(pl, sizeof(*pl));
+    }
+}
+
+static void openit(const char *dirname, const char *filename, const char *args)
 {
     char dirbuf[MAXPDSTRING], *nameptr;
     int fd = open_via_path(dirname, filename, "", dirbuf, &nameptr,
@@ -197,6 +242,15 @@ static void openit(const char *dirname, const char *filename)
     if (fd >= 0)
     {
         close (fd);
+        if (args && *args)
+        {
+            t_binbuf *b1 = binbuf_new(), *b2 = binbuf_new();
+            binbuf_text(b1, args, strlen(args));
+            binbuf_addbinbuf(b2, b1); // bash semis, commas and dollars
+            canvas_setargs(binbuf_getnatom(b2), binbuf_getvec(b2));
+            binbuf_free(b1);
+            binbuf_free(b2);
+        }
         glob_evalfile(0, gensym(nameptr), gensym(dirbuf));
     }
     else
@@ -214,6 +268,7 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
+    t_patchlist *pl;
     t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;
@@ -256,9 +311,9 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
         sys_oktoloadfiles(1);
     }
         /* open patches specifies with "-open" args */
-    for  (nl = sys_openlist; nl; nl = nl->nl_next)
-        openit(cwd, nl->nl_string);
-    namelist_free(sys_openlist);
+    for (pl = sys_openlist; pl; pl = pl->pl_next)
+        openit(cwd, pl->pl_file, pl->pl_args);
+    patchlist_free(sys_openlist);
     sys_openlist = 0;
         /* send messages specified with "-send" args */
     for  (nl = sys_messagelist; nl; nl = nl->nl_next)
@@ -440,15 +495,15 @@ static char *(usagemessage[]) = {
 
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-"-asio            -- use ASIO audio driver (via Portaudio)\n",
-"-pa              -- synonym for -asio\n",
+"-pa              -- use Portaudio API (for ASIO or WASAPI)\n",
+"-asio            -- synonym for -pa\n",
 #else
 "-pa              -- use Portaudio API\n",
 #endif
 #endif
 
 #ifdef USEAPI_MMIO
-"-mmio            -- use MMIO audio API (default for Windows)\n",
+"-mmio            -- use legacy MMIO audio API\n",
 #endif
 
 #ifdef USEAPI_AUDIOUNIT
@@ -485,6 +540,7 @@ static char *(usagemessage[]) = {
 "-stdpath         -- search standard directory (true by default)\n",
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
+"-open-with-args <file> <args> -- open file(s) on startup with arguments\n",
 "-lib <file>      -- load object library(s) (omit file extensions)\n",
 "-font-size <n>      -- specify default font size in points\n",
 "-font-face <name>   -- specify default font\n",
@@ -660,12 +716,6 @@ void sys_findprogdir(const char *progname)
     }
 #endif
 }
-
-#ifdef _WIN32
-static int sys_mmio = 1;
-#else
-static int sys_mmio = 0;
-#endif
 
 int sys_argparse(int argc, const char **argv)
 {
@@ -853,7 +903,6 @@ int sys_argparse(int argc, const char **argv)
             || !strcmp(*argv, "-asio"))
         {
             as.a_api = API_PORTAUDIO;
-            sys_mmio = 0;
             argc--; argv++;
         }
 #else
@@ -872,7 +921,6 @@ int sys_argparse(int argc, const char **argv)
         else if (!strcmp(*argv, "-mmio"))
         {
             as.a_api = API_MMIO;
-            sys_mmio = 1;
             argc--; argv++;
         }
 #else
@@ -1151,9 +1199,15 @@ int sys_argparse(int argc, const char **argv)
         {
             if (argc < 2)
                 goto usage;
-
-            sys_openlist = namelist_append_files(sys_openlist, argv[1]);
+            sys_openlist = patchlist_append(sys_openlist, argv[1], 0);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-open-with-args"))
+        {
+            if (argc < 3)
+                goto usage;
+            sys_openlist = patchlist_append(sys_openlist, argv[1], argv[2]);
+            argc -= 3; argv += 3;
         }
         else if (!strcmp(*argv, "-lib"))
         {
@@ -1382,9 +1436,10 @@ int sys_argparse(int argc, const char **argv)
     if (!sys_defaultfont)
         sys_defaultfont = DEFAULTFONT;
     for (; argc > 0; argc--, argv++)
-        sys_openlist = namelist_append_files(sys_openlist, *argv);
+        sys_openlist = patchlist_append(sys_openlist, *argv, 0);
 
     sys_set_audio_settings(&as);
+
     return (0);
 }
 
@@ -1512,58 +1567,24 @@ t_symbol *sys_decodedialog(t_symbol *s)
     return (gensym(buf));
 }
 
-static void namelist2gui(const char*name, t_namelist*namelist)
+
+/* start the generic preference window */
+void sys_gui_preferences(void);
+void sys_gui_audiopreferences(void);
+void sys_gui_midipreferences(void);
+void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
 {
-    const size_t allocchunk = 32;
-    int i;
-    t_namelist *nl;
-
-    size_t namesize = allocchunk;
-    const char**names=(const char**)getbytes(namesize*sizeof(const char*));
-
-    for (nl = namelist, i = 0; nl; nl = nl->nl_next, i++)
-    {
-        if(i>=namesize) {
-            size_t newsize = namesize + allocchunk;
-            const char**newnames = (const char**)resizebytes(
-                names,
-                namesize*sizeof(const char*),
-                newsize*sizeof(const char*));
-            if (!newnames)
-                break;
-            names = newnames;
-            namesize = newsize;
-        }
-        names[i] = nl->nl_string;
-    }
-    pdgui_vmess("set", "rS",
-              name,
-              i, names);
-    freebytes(names, namesize*sizeof(const char*));
+    sys_gui_preferences();
+    sys_gui_audiopreferences();
+    sys_gui_midipreferences();
+    pdgui_vmess("::dialog_preferences::create", "");
 }
 
-    /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
-{
-    namelist2gui("::sys_searchpath", STUFF->st_searchpath);
-}
-
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
-{
-    namelist2gui("::sys_temppath", STUFF->st_temppath);
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    namelist2gui("::sys_staticpath", STUFF->st_staticpath);
-}
 
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-    sys_set_searchpath();
+    sys_gui_preferences();
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_path_dialog", (void *)glob_start_path_dialog,
@@ -1607,22 +1628,10 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     }
 }
 
-    /* set the global list vars for startup libraries and flags */
-void sys_set_startup(void)
-{
-    int i;
-    t_namelist *nl;
-    char obuf[MAXPDSTRING];
-
-    pdgui_vmess("set", "rs", "::startup_flags", (sys_flags ? sys_flags->s_name : ""));
-
-    namelist2gui("::startup_libraries", STUFF->st_externlist);
-}
-
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
-    sys_set_startup();
+    sys_gui_preferences();
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_startup_dialog", (void *)glob_start_path_dialog,
