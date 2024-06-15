@@ -1821,14 +1821,14 @@ static void plot_vis(t_gobj *z, t_glist *glist,
           * FLOATARRAY is impractical (as it sends a list, and the GUI expects arguments)
           */
         t_word coordinates[1024*2];
+        t_canvas *c = glist_getcanvas(glist);
+        t_float fcolor = fielddesc_getfloat(&x->x_outlinecolor, template, data, 1);
+        int color = (fcolor < 0) ? fcolor : numbertocolor(fcolor);
 
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
-            int color = numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
-
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
                 t_float yval, xpix, ypix, nextxloc, usexloc;
@@ -1862,14 +1862,24 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-
-                    pdgui_vmess(0, "crr iiii rk rf rS",
-                        glist_getcanvas(glist), "create", "rectangle",
-                        ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
-                        "-fill", color,
-                        "-width", 0.,
-                        "-tags", 3, tags);
+                    if(color < 0)
+                        pdgui_vmess("pdtk_canvas::set_option_types",
+                            "ci crr iiii rf rS rr",
+                            c, 1, c,
+                            "create", "rectangle",
+                            ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
+                            inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
+                            "-width", 0.,
+                            "-tags", 3, tags,
+                            "-fill", "array_values");
+                    else
+                        pdgui_vmess(0, "crr iiii rk rf rS",
+                            glist_getcanvas(glist), "create", "rectangle",
+                            ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
+                            inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
+                            "-fill", color,
+                            "-width", 0.,
+                            "-tags", 3, tags);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -1879,8 +1889,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         }
         else
         {
-            int outline = numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
             int lastpixel = -1, ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
@@ -1978,17 +1986,26 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ndrawn++;
                 }
             ouch:
-
-                pdgui_vmess(0, "crr ri rk rk ri rS",
-                    glist_getcanvas(glist), "create", "polygon",
-                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    "-fill", outline,
-                    "-outline", outline,
-                    "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags);
+                if(color < 0)
+                    pdgui_vmess("pdtk_canvas::set_option_types",
+                        "ci crr ri ri rS rr rr",
+                        c, 2, c, "create", "polygon",
+                        "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags,
+                        "-fill", "array_values",
+                        "-outline", "array_values");
+                else
+                    pdgui_vmess(0, "crr ri rk rk ri rS",
+                        glist_getcanvas(glist), "create", "polygon",
+                        "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                        "-fill", color,
+                        "-outline", color,
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags);
 
                 pdgui_vmess(0, "crs w",
-                    glist_getcanvas(glist), "coords", tag0,
+                    c, "coords", tag0,
                     ndrawn*2, coordinates);
             }
             else if (linewidth > 0)
@@ -2036,15 +2053,25 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
                 if(ndrawn)
                 {
-                    pdgui_vmess(0, "crr iiii rf rk ri rS",
-                        glist_getcanvas(glist), "create", "line",
-                        0, 0, 0, 0,
-                        "-width", linewidth,
-                        "-fill", outline,
-                        "-smooth", (style == PLOTSTYLE_BEZ),
-                        "-tags", 3, tags);
+                    if(color < 0)
+                        pdgui_vmess("pdtk_canvas::set_option_types",
+                            "ci crr iiii rf ri rS rr",
+                            c, 1, c, "create", "line",
+                            0, 0, 0, 0,
+                            "-width", linewidth,
+                            "-smooth", (style == PLOTSTYLE_BEZ),
+                            "-tags", 3, tags,
+                            "-fill", "array_values");
+                    else
+                        pdgui_vmess(0, "crr iiii rf rk ri rS",
+                            c, "create", "line",
+                            0, 0, 0, 0,
+                            "-width", linewidth,
+                            "-fill", color,
+                            "-smooth", (style == PLOTSTYLE_BEZ),
+                            "-tags", 3, tags);
                     pdgui_vmess(0, "crs w",
-                        glist_getcanvas(glist), "coords", tag0,
+                        c, "coords", tag0,
                         ndrawn*2, coordinates);
                 }
             }
