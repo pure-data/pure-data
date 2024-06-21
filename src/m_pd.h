@@ -22,8 +22,6 @@ extern "C" {
     (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
 #define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
 
-extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
-
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
 #if defined(NT) && !defined(MSW)
@@ -127,6 +125,8 @@ typedef unsigned __int64  uint64_t;
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
 #include <stdio.h>
+
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
