@@ -1,4 +1,4 @@
-#N canvas 299 39 1004 645 12;
+#N canvas 239 53 1004 645 12;
 #X obj 508 180 table;
 #X obj 552 557 table help-tab1 25;
 #N canvas 1 51 450 300 (subpatch) 0;
@@ -145,5 +145,9 @@
 #X coords 0 1 100 -1 200 140 1;
 #X restore 467 305 graph;
 #X text 499 450 (using canvas [cnv] for backgound color), f 20;
+#N canvas 47 74 450 300 (subpatch) 0;
+#X restore 266 23 page;
+#X text 308 23 (deprecated alias);
+#X text 241 23 or;
 #X connect 24 0 23 0;
 #X connect 25 0 23 0;
