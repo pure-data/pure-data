@@ -18,6 +18,63 @@
 # include "config.h"
 #endif
 
+/* ------------------------------ atomics ----------------------------------- */
+
+#ifdef _MSC_VER
+/* NB: Visual Studio only added C11 atomics support in version 17.5 */
+#if _MSC_VER >= 1935
+#define HAVE_C11_ATOMICS
+#endif
+#elif __STDC_VERSION__ >= 201112L
+#define HAVE_C11_ATOMICS
+#endif
+
+#ifdef HAVE_C11_ATOMICS
+/* use C11 stdatomic if available. */
+#include <stdatomic.h>
+#define atomic_int _Atomic int
+#define atomic_int_load atomic_load
+#define atomic_int_store atomic_store
+#define atomic_int_fetch_add atomic_fetch_add
+#define atomic_int_fetch_sub atomic_fetch_sub
+#define atomic_int_exchange atomic_exchange
+#define atomic_int_compare_exchange atomic_compare_exchange_strong
+#else
+/* emulate C11 atomics with platform specific intrinsics */
+#ifdef _MSC_VER
+/* Win32 instrinsics */
+#include <windows.h>
+#define atomic_int volatile int
+#define atomic_int_load(ptr) _InterlockedOr((volatile long *)(ptr), 0)
+#define atomic_int_store(ptr, value) _InterlockedExchange((volatile long *)(ptr), value)
+#define atomic_int_fetch_add(ptr, value) _InterlockedExchangeAdd((volatile long *)(ptr), value)
+#define atomic_int_fetch_sub(ptr, value) _InterlockedExchangeAdd((volatile long *)(ptr), -(value))
+#define atomic_int_exchange(ptr, value) _InterlockedExchange((volatile long *)(ptr), value)
+static int atomic_int_compare_exchange(volatile int *ptr, int *expected, int desired)
+{
+    long old = _InterlockedCompareExchange((volatile long *)ptr, *expected, desired);
+    if (old == *expected)
+        return 1;
+    else
+    {
+        *expected = old;
+        return 0;
+    }
+}
+#elif __GNUC__
+/* GCC/Clang atomics */
+#define atomic_int volatile int
+#define atomic_int_load(ptr) __atomic_load_4(ptr, __ATOMIC_SEQ_CST)
+#define atomic_int_store(ptr, value) __atomic_store_4(ptr, value, __ATOMIC_SEQ_CST)
+#define atomic_int_fetch_add(ptr, value) __atomic_fetch_add(ptr, value, __ATOMIC_SEQ_CST)
+#define atomic_int_fetch_sub(ptr, value) __atomic_fetch_sub(ptr, value, __ATOMIC_SEQ_CST)
+#define atomic_int_exchange(ptr, value) __atomic_exchange_4(ptr, value, __ATOMIC_SEQ_CST)
+#define atomic_int_compare_exchange(ptr, expected, desired) \
+    __atomic_compare_exchange_4(ptr, expected, desired, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)
+#else
+#error "compiler not supported"
+#endif
+#endif
 
 /* --------------------------- stack allocation helpers --------------------- */
 /* alloca helpers
