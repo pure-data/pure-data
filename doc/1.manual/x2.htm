@@ -763,6 +763,10 @@ boxes in different ways.
     <figcaption><u>Fig. 2.3.14</u> The "(Dis)Connect selection" entry from the Edit menu</figcaption>
 </figure>
 
+<P>If one box is selected  you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
+them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
+from possible remaining outlets to inlets.
+
 <P>For 2 selected boxes you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
 them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
 from possible remaining outlets to inlets.
@@ -804,6 +808,14 @@ to include the third one in the connection.
     <figcaption><u>Fig. 2.3.18</u> Exclude box</figcaption>
 </figure>
 
+<P>If you select only one connected box, <kbd>Ctrl</kbd>+<kbd>K</kbd> will remove all of
+its connections.
+
+<figure>
+    <IMG src="resources/2.3.19.png" ALT="exclude box">
+    <figcaption><u>Fig. 2.3.19</u> Remove connections</figcaption>
+</figure>
+
 <H4> <A href="#s2.3.6" id="s2.3.6">2.3.6. Triggerize</A> </H4>
 
 <P>The "Triggerize" entry in the <b>Edit menu</b> (with the <kbd>Ctrl</kbd>+<kbd>T</kbd>
@@ -829,8 +841,8 @@ in subsection <A href="x2.htm#s2.3.4">2.3.4.</A>) if you need to adjust the orde
 connections.
 
 <figure>
-    <IMG src="resources/2.3.19.png" ALT="triggerize object">
-    <figcaption><u>Fig. 2.3.19</u> Add a [trigger] object</figcaption>
+    <IMG src="resources/2.3.20.png" ALT="triggerize object">
+    <figcaption><u>Fig. 2.3.20</u> Add a [trigger] object</figcaption>
 </figure>
 
 <P>Additionally, the "Triggerize" option can be used to insert a dummy object. To do so,
@@ -841,8 +853,8 @@ new text to create another object instead. Similarly, for a signal connection, a
 
 
 <figure>
-    <IMG src="resources/2.3.20.png" ALT="insert dummy">
-    <figcaption><u>Fig. 2.3.20</u> Insert a dummy subpatch</figcaption>
+    <IMG src="resources/2.3.21.png" ALT="insert dummy">
+    <figcaption><u>Fig. 2.3.21</u> Insert a dummy subpatch</figcaption>
 </figure>
 
 <P>Triggerize also allows you to create or remove outlets of a selected
@@ -851,16 +863,16 @@ and outlets. As shown below, if each outlet has a single connection, it will ins
 outlet on the left.
 
 <figure>
-    <IMG src="resources/2.3.21.png" ALT="add 1st outlet">
-    <figcaption><u>Fig. 2.3.21</u> Add a leftmost outlet</figcaption>
+    <IMG src="resources/2.3.22.png" ALT="add 1st outlet">
+    <figcaption><u>Fig. 2.3.22</u> Add a leftmost outlet</figcaption>
 </figure>
 
 Now, if the <b>[trigger]</b> object has more outlets than outgoing
 connections, "Triggerize" removes the unused outlets.
 
 <figure>
-    <IMG src="resources/2.3.22.png" ALT="reduce outlets">
-    <figcaption><u>Fig. 2.3.22</u> Reduce outlets</figcaption>
+    <IMG src="resources/2.3.23.png" ALT="reduce outlets">
+    <figcaption><u>Fig. 2.3.23</u> Reduce outlets</figcaption>
 </figure>
 
 In case there are more connections than outlets, "Triggerize" adds outlets
@@ -868,8 +880,8 @@ to distribute all connections to separate ones (following the creation order
 of the connections from right to left).
 
 <figure>
-    <IMG src="resources/2.3.23.png" ALT="distribute connections">
-    <figcaption><u>Fig. 2.3.23</u> Distribute connections</figcaption>
+    <IMG src="resources/2.3.24.png" ALT="distribute connections">
+    <figcaption><u>Fig. 2.3.24</u> Distribute connections</figcaption>
 </figure>
 
 <H4> <A href="#s2.3.7" id="s2.3.7">2.3.7. Paste replace</A> </H4>
@@ -883,8 +895,8 @@ Replace". All the selected boxes of the same type get replaced by the copied box
 connections are preserved.
 
 <figure>
-    <IMG src="resources/2.3.24.png" ALT="paste replace entry">
-    <figcaption><u>Fig. 2.3.24</u> Paste replacing an object</figcaption>
+    <IMG src="resources/2.3.25.png" ALT="paste replace entry">
+    <figcaption><u>Fig. 2.3.25</u> Paste replacing an object</figcaption>
 </figure>
 
 <P>Alternatively, you can copy a number box instead of a <b>[float]</b> object
@@ -898,8 +910,8 @@ A subpatch or an abstraction can also be used for "Paste Replace" and they
 count as the same object group type.
 
 <figure>
-    <IMG src="resources/2.3.25.png" ALT="paste replace boxes">
-    <figcaption><u>Fig. 2.3.25</u> Paste replacing a number box</figcaption>
+    <IMG src="resources/2.3.26.png" ALT="paste replace boxes">
+    <figcaption><u>Fig. 2.3.26</u> Paste replacing a number box</figcaption>
 </figure>
 
 <P>If you have a selection of boxes to replace that includes different
@@ -907,8 +919,8 @@ types of boxes, the "Paste Replace" will only replace the boxes of the
 same type that was copied.
 
 <figure>
-    <IMG src="resources/2.3.26.png" ALT="paste replace similar type">
-    <figcaption>><u>Fig. 2.3.26</u> Paste replacing the same box type</figcaption>
+    <IMG src="resources/2.3.27.png" ALT="paste replace similar type">
+    <figcaption><u>Fig. 2.3.27</u> Paste replacing the same box type</figcaption>
 </figure>
 
 <H3> <A href="#s2.4" id="s2.4">2.4. Messages</A> </H3>
