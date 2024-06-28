@@ -763,17 +763,15 @@ boxes in different ways.
     <figcaption><u>Fig. 2.3.14</u> The "(Dis)Connect selection" entry from the Edit menu</figcaption>
 </figure>
 
-<P>If one box is selected  you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
-them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
-from possible remaining outlets to inlets.
-
 <P>For 2 selected boxes you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
-them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
-from possible remaining outlets to inlets.
+them. It starts by connecting the leftmost outlet to the leftmost inlet. It
+there are more outlets and inlets to connect, you can repeat using
+<kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections from possible the
+remaining outlets to inlets.
 
 <figure>
     <IMG src="resources/2.3.15.png" ALT="repeat ctrl+k">
-    <figcaption><u>Fig. 2.3.15</u> Repeating ctrl+k for multiple connections</figcaption>
+    <figcaption><u>Fig. 2.3.15</u> Using ctrl+k for one or multiple connections between 2 selected boxes</figcaption>
 </figure>
 
 
@@ -783,9 +781,16 @@ to fan out and connect the same outlet to all inlets.
 
 <figure>
     <IMG src="resources/2.3.16.png" ALT="fan out audio">
-    <figcaption><u>Fig. 2.3.16</u> Fan out audio connections</figcaption>
+    <figcaption><u>Fig. 2.3.16</u> Fan out audio connections with ctrl+k</figcaption>
 </figure>
 
+<P>As for disconneting, you can use this shortcut to remove all connections from a
+single selected box.
+
+<figure>
+    <IMG src="resources/2.3.17.png" ALT="exclude box">
+    <figcaption><u>Fig. 2.3.17</u> Remove connections</figcaption>
+</figure>
 
 <P>For last, you can include or bypass a box into or from a connection
 (being it any connection from any outlet into any inlet). To include a box,
@@ -796,24 +801,16 @@ boxes with a connection between 2 of them and then use <kbd>Shift</kbd>+<kbd>Cli
 to include the third one in the connection.
 
 <figure>
-    <IMG src="resources/2.3.17.png" ALT="insert box">
-    <figcaption><u>Fig. 2.3.17</u> Insert box</figcaption>
+    <IMG src="resources/2.3.18.png" ALT="insert box">
+    <figcaption><u>Fig. 2.3.18</u> Insert box</figcaption>
 </figure>
 
 <P>To bypass a box, you can select 3 boxes connected in a row and use
 <kbd>Ctrl</kbd>+<kbd>K</kbd> to bypass and remove the middle box from the connection.
 
 <figure>
-    <IMG src="resources/2.3.18.png" ALT="exclude box">
-    <figcaption><u>Fig. 2.3.18</u> Exclude box</figcaption>
-</figure>
-
-<P>If you select only one connected box, <kbd>Ctrl</kbd>+<kbd>K</kbd> will remove all of
-its connections.
-
-<figure>
     <IMG src="resources/2.3.19.png" ALT="exclude box">
-    <figcaption><u>Fig. 2.3.19</u> Remove connections</figcaption>
+    <figcaption><u>Fig. 2.3.19</u> Exclude box</figcaption>
 </figure>
 
 <H4> <A href="#s2.3.6" id="s2.3.6">2.3.6. Triggerize</A> </H4>
