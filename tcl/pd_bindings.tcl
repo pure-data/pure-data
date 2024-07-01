@@ -434,11 +434,13 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
     #              : do some substitution based on $key
     #              : else use $key
 
-    if { [string length $iso] == 0 && $state == 0 } {
+    set isosplit [split $iso {}]
+
+    if { [llength $isosplit] == 0 && $state == 0 } {
         catch {set iso [dict get $::pd_bindings::key2iso $keycode] }
     }
 
-    switch -- [string length $iso] {
+    switch -- [llength $isosplit] {
         0 {
             switch -- $key {
                 "BackSpace" { set key   8 }
@@ -466,7 +468,7 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
         }
         default {
             # split a multi-char $iso in single chars
-            foreach k [split $iso {}] {
+            foreach k $isosplit {
                 ::pd_bindings::sendkey $window $state $key $k $shift $keycode
             }
             return
