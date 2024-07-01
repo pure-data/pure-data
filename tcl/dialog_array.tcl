@@ -125,7 +125,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 
 
     frame $windowName.data
-    pack $windowName.data -fill "both" -side top
+    pack $windowName.data -fill "both" -side top -expand 1
     frame $windowName.buttons
     pack $windowName.buttons -fill "x" -side bottom
 
