@@ -174,6 +174,23 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
 }
 
 # this is for canvas windows
+proc ::pd_bindings::clear_compose_keys {window} {
+    # this is an ugly hack!
+    # on macOS we might need to clear interim compose characters
+    # but only while editing.
+    # otherwise, we might send the BackSpace only to a selected object
+    # and delete that (https://github.com/pure-data/pure-data/issues/2224)
+    set skip 0
+    catch {
+      if { $::editingtext([winfo toplevel $window]) == 0 } {
+        set skip 1
+      }
+    }
+    if { $skip } { return }
+
+    ::pd_bindings::sendkey ${window} 1 BackSpace "" 0
+    ::pd_bindings::sendkey ${window} 0 BackSpace "" 0
+}
 proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -260,13 +277,11 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
         # }
         bind $tkcanvas <<TkClearIMEMarkedText>> {
             # ::pdwindow::post "%W clear marked text\n"
-            ::pd_bindings::sendkey %W 1 BackSpace "" 0
-            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+            ::pd_bindings::clear_compose_keys %W
         }
         bind $tkcanvas <<TkAccentBackspace>> {
             # ::pdwindow::post "%W accent backspace\n"
-            ::pd_bindings::sendkey %W 1 BackSpace "" 0
-            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+            ::pd_bindings::clear_compose_keys %W
         }
     } stderr
 
