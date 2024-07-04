@@ -36,41 +36,41 @@ proc ::pd_bindings::setup {} {
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
     #event_set  <<VirtualEvent>>           ${*}bindings
-    event_set  <<File|New>>               <${control}-Key-n> <${control}-Key-N>
-    event_set  <<File|Open>>              <${control}-Key-o> <${control}-Key-O>
-    event_set  <<File|Save>>              <${control}-Key-s> <${control}-Key-S>
-    event_set  <<File|SaveAs>>            <${control}-Shift-Key-s> <${control}-Shift-Key-S>
-    event_set  <<File|Print>>             <${control}-Key-p> <${control}-Key-P>
+    event_set  <<File|New>>               <${control}-Key-N> <${control}-Key-n>
+    event_set  <<File|Open>>              <${control}-Key-O> <${control}-Key-o>
+    event_set  <<File|Save>>              <${control}-Key-S> <${control}-Key-s>
+    event_set  <<File|SaveAs>>            <${control}-Shift-Key-S> <${control}-Shift-Key-s>
+    event_set  <<File|Print>>             <${control}-Key-P> <${control}-Key-p>
     event_set  <<File|ClearRecentFiles>>  {}
-    event_set  <<File|Close>>             <${control}-Key-w> <${control}-Key-W>
-    event_set  <<File|CloseNow>>          <${control}-Shift-Key-w> <${control}-Shift-Key-W>
-    event_set  <<File|QuitNow>>           <${control}-Shift-Key-q> <${control}-Shift-Key-Q>
+    event_set  <<File|Close>>             <${control}-Key-W> <${control}-Key-w>
+    event_set  <<File|CloseNow>>          <${control}-Shift-Key-W> <${control}-Shift-Key-w>
+    event_set  <<File|QuitNow>>           <${control}-Shift-Key-Q> <${control}-Shift-Key-q>
 
     # (at least on X11) the built-in events Undo/Redo/Cut/Copy/Paste are already bound to the usual shortcuts
     # this is somewhat problematic, as we cannot unbind these events from the keys
-    event_set  <<Edit|Undo>>              <${control}-Key-z> <${control}-Key-Z>
-    event_set  <<Edit|Redo>>              <${control}-Shift-Key-z> <${control}-Shift-Key-Z>
-    event_set  <<Edit|Cut>>               <${control}-Key-x> <${control}-Key-X>
-    event_set  <<Edit|Copy>>              <${control}-Key-c> <${control}-Key-C>
+    event_set  <<Edit|Undo>>              <${control}-Key-Z> <${control}-Key-z>
+    event_set  <<Edit|Redo>>              <${control}-Shift-Key-Z> <${control}-Shift-Key-z>
+    event_set  <<Edit|Cut>>               <${control}-Key-X> <${control}-Key-x>
+    event_set  <<Edit|Copy>>              <${control}-Key-C> <${control}-Key-c>
     # TclTk says:
     # <<Paste>>   Replace the currently selected widget contents with the contents of the clipboard.
     # <<PasteSelection>> Insert the contents of the selection at the mouse location.
-    event_set  <<Edit|Paste>>             <${control}-Key-v> <${control}-Key-V>
+    event_set  <<Edit|Paste>>             <${control}-Key-V> <${control}-Key-v>
 
     event_set  <<Edit|PasteReplace>>      {}
-    event_set  <<Edit|Duplicate>>         <${control}-Key-d> <${control}-Key-D>
-    event_set  <<Edit|SelectAll>>         <${control}-Key-a> <${control}-Key-A>
+    event_set  <<Edit|Duplicate>>         <${control}-Key-D> <${control}-Key-d>
+    event_set  <<Edit|SelectAll>>         <${control}-Key-A> <${control}-Key-a>
     event_set  <<Edit|SelectNone>>        <KeyPress-Escape>
     event_set  <<Edit|Font>>              {}
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
     # expected it... go figure.
-    event_set  <<Edit|ZoomIn>>            <${control}-Key-equal> <${control}-Key-plus> <${control}-Key-KP_Add>
+    event_set  <<Edit|ZoomIn>>            <${control}-Key-plus> <${control}-Key-KP_Add> <${control}-Key-equal>
     event_set  <<Edit|ZoomOut>>           <${control}-Key-minus> <${control}-Key-KP_Subtract>
-    event_set  <<Edit|TidyUp>>            <${control}-Shift-Key-r> <${control}-Shift-Key-R>
-    event_set  <<Edit|ConnectSelection>>  <${control}-Key-k> <${control}-Key-K>
-    event_set  <<Edit|Triggerize>>        <${control}-Key-t> <${control}-Key-T>
-    event_set  <<Edit|EditMode>>          <${control}-Key-e> <${control}-Key-E>
+    event_set  <<Edit|TidyUp>>            <${control}-Shift-Key-R> <${control}-Shift-Key-r>
+    event_set  <<Edit|ConnectSelection>>  <${control}-Key-K> <${control}-Key-k>
+    event_set  <<Edit|Triggerize>>        <${control}-Key-T> <${control}-Key-t>
+    event_set  <<Edit|EditMode>>          <${control}-Key-E> <${control}-Key-e>
 
     event_set  <<Put|Object>>             <${control}-Key-1>
     event_set  <<Put|Message>>            <${control}-Key-2>
@@ -79,20 +79,20 @@ proc ::pd_bindings::setup {} {
     event_set  <<Put|Symbol>>             {}
     event_set  <<Put|Comment>>            <${control}-Key-5>
 
-    event_set  <<Put|Bang>>               <${control}-Shift-Key-b> <${control}-Shift-Key-B>
-    event_set  <<Put|Toggle>>             <${control}-Shift-Key-t> <${control}-Shift-Key-T>
-    event_set  <<Put|Number2>>            <${control}-Shift-Key-n> <${control}-Shift-Key-N>
-    event_set  <<Put|VerticalSlider>>     <${control}-Shift-Key-v> <${control}-Shift-Key-V>
-    event_set  <<Put|HorizontalSlider>>   <${control}-Shift-Key-j> <${control}-Shift-Key-J>
-    event_set  <<Put|VerticalRadio>>      <${control}-Shift-Key-d> <${control}-Shift-Key-D>
-    event_set  <<Put|HorizontalRadio>>    <${control}-Shift-Key-i> <${control}-Shift-Key-I>
-    event_set  <<Put|VUMeter>>            <${control}-Shift-Key-u> <${control}-Shift-Key-U>
-    event_set  <<Put|Canvas>>             <${control}-Shift-Key-c> <${control}-Shift-Key-C>
-    event_set  <<Put|Graph>>              <${control}-Shift-Key-g> <${control}-Shift-Key-G>
-    event_set  <<Put|Array>>              <${control}-Shift-Key-a> <${control}-Shift-Key-A>
+    event_set  <<Put|Bang>>               <${control}-Shift-Key-B> <${control}-Shift-Key-b>
+    event_set  <<Put|Toggle>>             <${control}-Shift-Key-T> <${control}-Shift-Key-t>
+    event_set  <<Put|Number2>>            <${control}-Shift-Key-N> <${control}-Shift-Key-n>
+    event_set  <<Put|VerticalSlider>>     <${control}-Shift-Key-V> <${control}-Shift-Key-v>
+    event_set  <<Put|HorizontalSlider>>   <${control}-Shift-Key-J> <${control}-Shift-Key-j>
+    event_set  <<Put|VerticalRadio>>      <${control}-Shift-Key-D> <${control}-Shift-Key-d>
+    event_set  <<Put|HorizontalRadio>>    <${control}-Shift-Key-I> <${control}-Shift-Key-i>
+    event_set  <<Put|VUMeter>>            <${control}-Shift-Key-U> <${control}-Shift-Key-u>
+    event_set  <<Put|Canvas>>             <${control}-Shift-Key-C> <${control}-Shift-Key-c>
+    event_set  <<Put|Graph>>              <${control}-Shift-Key-G> <${control}-Shift-Key-g>
+    event_set  <<Put|Array>>              <${control}-Shift-Key-A> <${control}-Shift-Key-a>
 
-    event_set  <<Find|Find>>              <${control}-Key-f> <${control}-Key-F>
-    event_set  <<Find|FindAgain>>         <${control}-Key-g> <${control}-Key-G>
+    event_set  <<Find|Find>>              <${control}-Key-F> <${control}-Key-f>
+    event_set  <<Find|FindAgain>>         <${control}-Key-G> <${control}-Key-g>
     event_set  <<Find|FindLastError>>     {}
 
     event_set  <<Media|DSPOn>>            <${control}-Key-slash>
@@ -105,30 +105,30 @@ proc ::pd_bindings::setup {} {
     if {[tk windowingsystem] eq "aqua"} {
          # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            event_set <<File|Quit>>       <${control}-Key-q> <${control}-Key-Q>
-            event_set <<Window|Minimize>> <${control}-Key-m> <${control}-Key-M>
+            event_set <<File|Quit>>       <${control}-Key-Q> <${control}-Key-q>
+            event_set <<Window|Minimize>> <${control}-Key-M> <${control}-Key-m>
             event_set <<Window|Next>>     <${control}-quoteleft>
         }
     } else {
-        event_set  <<File|Quit>>          <${control}-Key-q> <${control}-Key-Q>
-        event_set  <<Window|Minimize>>    <${control}-Key-m> <${control}-Key-M>
+        event_set  <<File|Quit>>          <${control}-Key-Q> <${control}-Key-q>
+        event_set  <<Window|Minimize>>    <${control}-Key-M> <${control}-Key-m>
         event_set  <<Window|Next>>        <${control}-Next> <${control}-greater>
         event_set  <<Window|Previous>>    <${control}-Prior> <${control}-less>
     }
 
-    event_set  <<Window|PdWindow>>        <${control}-Key-r> <${control}-Key-R>
+    event_set  <<Window|PdWindow>>        <${control}-Key-R> <${control}-Key-r>
     event_set  <<Window|Parent>>          {}
 
     event_set  <<Help|About>>             {}
     event_set  <<Help|Manual>>            {}
-    event_set  <<Help|Browser>>           <${control}-Key-b> <${control}-Key-B>
+    event_set  <<Help|Browser>>           <${control}-Key-B> <${control}-Key-b>
     event_set  <<Help|ListObjects>>       {}
     event_set  <<Help|puredata.info>>     {}
     event_set  <<Help|CheckUpdates>>      {}
     event_set  <<Help|ReportBug>>         {}
 
-    event_set  <<Pd|Message>>             <${control}-Shift-Key-m> <${control}-Shift-Key-M>
-    event_set  <<Pd|ClearConsole>>        <${control}-Shift-Key-l> <${control}-Shift-Key-L>
+    event_set  <<Pd|Message>>             <${control}-Shift-Key-M> <${control}-Shift-Key-m>
+    event_set  <<Pd|ClearConsole>>        <${control}-Shift-Key-L> <${control}-Shift-Key-l>
 
     event_set  <<Preferences|Edit>>       {}
     event_set  <<Preferences|Audio>>      {}
