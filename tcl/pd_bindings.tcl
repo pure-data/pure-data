@@ -187,11 +187,17 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<File|SaveAs>>            {::pd_menucommands::scheduleAction menu_send %W menusaveas}
     bind  all  <<Pd|Message>>             {::pd_menucommands::scheduleAction menu_message_dialog}
     bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print $::focused_window}
+    bind  all  <<File|ClearRecentFiles>>  {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
     bind  all  <<File|Close>>             {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W}
     bind  all  <<File|CloseNow>>          {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W 1}
     bind  all  <<File|Quit>>              {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
     bind  all  <<File|QuitNow>>           {::pd_menucommands::scheduleAction pdsend "pd quit"}
 
+    bind  all  <<Preferences|Edit>>       {::pd_menucommands::scheduleAction menu_preference_dialog}
+    bind  all  <<Preferences|Save>>       {::pd_menucommands::scheduleAction pdsend "pd save-preferences"}
+    bind  all  <<Preferences|SaveTo>>     {::pd_menucommands::scheduleAction ::pd_menus::savepreferences}
+    bind  all  <<Preferences|Load>>       {::pd_menucommands::scheduleAction ::pd_menus::loadpreferences}
+    bind  all  <<Preferences|Forget>>     {::pd_menucommands::scheduleAction ::pd_menus::forgetpreferences}
 
     bind  all  <<Edit|Undo>>              {::pd_menucommands::scheduleAction menu_undo}
     bind  all  <<Edit|Redo>>              {::pd_menucommands::scheduleAction menu_redo}
@@ -199,10 +205,10 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Edit|Copy>>              {::pd_menucommands::scheduleAction menu_send %W copy}
     bind  all  <<Edit|Paste>>             {::pd_menucommands::scheduleAction menu_send %W paste}
     bind  all  <<Edit|Duplicate>>         {::pd_menucommands::scheduleAction menu_send %W duplicate}
-    bind  all  <<Edit|PasteReplace>>      {::pd_menucommands::scheduleAction puts "TODO bind PasteReplace"}
+    bind  all  <<Edit|PasteReplace>>      {::pd_menucommands::scheduleAction menu_send %W paste-replace}
     bind  all  <<Edit|SelectAll>>         {::pd_menucommands::scheduleAction menu_send %W selectall}
 
-    bind  all  <<Edit|Font>>              {::pd_menucommands::scheduleAction puts "TODO bind Font"}
+    bind  all  <<Edit|Font>>              {::pd_menucommands::scheduleAction menu_font_dialog}
     bind  all  <<Edit|ZoomIn>>            {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
     bind  all  <<Edit|ZoomOut>>           {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
     bind  all  <<Edit|TidyUp>>            {::pd_menucommands::scheduleAction menu_send %W tidy}
@@ -232,30 +238,30 @@ proc ::pd_bindings::global_bindings {} {
 
     bind  all  <<Find|Find>>              {::pd_menucommands::scheduleAction menu_find_dialog}
     bind  all  <<Find|FindAgain>>         {::pd_menucommands::scheduleAction menu_send %W findagain}
-    bind  all  <<Find|FindLastError>>     {::pd_menucommands::scheduleAction puts "TODO bind FindLastError"}
+    bind  all  <<Find|FindLastError>>     {::pd_menucommands::scheduleAction pdsend {pd finderror}}
 
     bind  all  <<Media|DSPOn>>            {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
     bind  all  <<Media|DSPOff>>           {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
-    bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction puts "TODO bind AudioSettings"}
-    bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction puts "TODO bind MIDISettings"}
-    bind  all  <<Media|TestAudioMIDI>>    {::pd_menucommands::scheduleAction puts "TODO bind TestAudioMIDI"}
-    bind  all  <<Media|LoadMeter>>        {::pd_menucommands::scheduleAction puts "TODO bind LoadMeter"}
+    bind  all  <<Media|TestAudioMIDI>>    {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools testtone.pd}
+    bind  all  <<Media|LoadMeter>>        {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
+    bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
+    bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
 
-    bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction puts "TODO bind Window|Minimize"}
-    bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction puts "TODO bind Window|Maximize"}
-    bind  all  <<Window|AllToFront>>      {::pd_menucommands::scheduleAction puts "TODO bind Window|AllToFront"}
-    bind  all  <<Window|Next>>            {::pd_menucommands::scheduleAction puts "TODO bind Window|Next"}
-    bind  all  <<Window|Previous>>        {::pd_menucommands::scheduleAction puts "TODO bind Window|Previous"}
+    bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction menu_minimize $::focused_window}
+    bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction menu_maximize $::focused_window}
+    bind  all  <<Window|AllToFront>>      {::pd_menucommands::scheduleAction menu_bringalltofront}
+    bind  all  <<Window|Next>>            {::pd_menucommands::scheduleAction menu_raisenextwindow}
+    bind  all  <<Window|Previous>>        {::pd_menucommands::scheduleAction menu_raisepreviouswindow}
     bind  all  <<Window|PdWindow>>        {::pd_menucommands::scheduleAction menu_raise_pdwindow}
-    bind  all  <<Window|Parent>>          {::pd_menucommands::scheduleAction puts "TODO bind Window|Parent"}
+    bind  all  <<Window|Parent>>          {::pd_menucommands::scheduleAction menu_send %W findparent}
 
-    bind  all  <<Help|About>>             {::pd_menucommands::scheduleAction puts "TODO bind Help|About"}
-    bind  all  <<Help|Manual>>            {::pd_menucommands::scheduleAction puts "TODO bind Help|Manual"}
+    bind  all  <<Help|About>>             {::pd_menucommands::scheduleAction menu_aboutpd}
+    bind  all  <<Help|Manual>>            {::pd_menucommands::scheduleAction menu_manual}
     bind  all  <<Help|Browser>>           {::pd_menucommands::scheduleAction menu_helpbrowser}
-    bind  all  <<Help|ListObjects>>       {::pd_menucommands::scheduleAction puts "TODO bind Help|ListObjects"}
-    bind  all  <<Help|puredata.info>>     {::pd_menucommands::scheduleAction puts "TODO bind Help|puredata.info"}
-    bind  all  <<Help|CheckUpdates>>      {::pd_menucommands::scheduleAction puts "TODO bind Help|CheckUpdates"}
-    bind  all  <<Help|ReportBug>>         {::pd_menucommands::scheduleAction puts "TODO bind Help|ReportBug"}
+    bind  all  <<Help|ListObjects>>       {::pd_menucommands::scheduleAction menu_objectlist}
+    bind  all  <<Help|puredata.info>>     {::pd_menucommands::scheduleAction menu_openfile {https://puredata.info}}
+    bind  all  <<Help|CheckUpdates>>      {::pd_menucommands::scheduleAction menu_openfile {https://pdlatest.puredata.info}}
+    bind  all  <<Help|ReportBug>>         {::pd_menucommands::scheduleAction menu_openfile {https://bugs.puredata.info}}
 
 
     # JMZ: shouldn't the keybindings only apply to PatchWindows?
