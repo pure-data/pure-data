@@ -620,7 +620,3 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
     }
     pdsend "$mytoplevel key $state $key $shift"
 }
-
-
-
-::pd_bindings::setup

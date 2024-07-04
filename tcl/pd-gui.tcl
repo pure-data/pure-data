@@ -534,6 +534,8 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
     pdsend "pd init [enquote_path [pwd]] $oldtclversion \
         $::font_measured $::font_zoom2_measured"
+
+    ::pd_bindings::setup
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
