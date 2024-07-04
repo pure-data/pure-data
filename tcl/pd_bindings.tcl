@@ -3,6 +3,7 @@ package provide pd_bindings 0.1
 package require pd_menucommands
 package require dialog_find
 package require pd_connect
+package require pd_guiprefs
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -130,15 +131,23 @@ namespace eval ::pd_bindings:: {
 }
 
 proc ::pd_bindings::setup {} {
-    foreach {event shortcuts} $::pd_bindings::bindlist {
-        event delete $event
-        foreach keys $shortcuts {
-            if { "$keys" != "" } {
-                event add $event $keys
-            } else {
-                puts "OOPSIE $event"
+    set data [::pd_guiprefs::read KeyBindings true]
+    if { ${data} != {} } {
+        set ::pd_bindings::bindlist $data
+    }
+    if {[catch {
+        foreach {event shortcuts} $::pd_bindings::bindlist {
+            event delete $event
+            foreach keys $shortcuts {
+                if { "$keys" != "" } {
+                    if {[catch {event add $event $keys} stderr1]} {
+                        ::pdwindow::error "Failed to bind $event to $keys: $stderr1\n"
+                    }
+                }
             }
         }
+    } stderr]} {
+        ::pdwindow::error "Failed to add bind: $stderr\n"
     }
 }
 
