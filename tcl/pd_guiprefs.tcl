@@ -301,9 +301,7 @@ proc ::pd_guiprefs::get_config_file {domain key {islist false}} {
         && [file readable $filename]
     } {
         set fl [open $filename r]
-        while {[gets $fl line] >= 0} {
-            lappend conf $line
-        }
+        set conf [::read -nonewline $fl]
         close $fl
     }
     return $conf
@@ -314,8 +312,10 @@ proc ::pd_guiprefs::get_config_file {domain key {islist false}} {
 #
 proc ::pd_guiprefs::write_config_file {data domain key {islist false}} {
     ::pd_guiprefs::prepare_domain ${domain}
-    # right now I (yvan) assume that data are just \n separated, i.e. no keys
-    set data [join $data "\n"]
+    ## originally, yvan assumed that data are just \n separated, i.e. no keys
+    #set data [join $data "\n"]
+    # this however breaks if we do have data that contains \n.
+    # much better to just let Tcl handle the serialization
     set filename [file join ${::pd_guiprefs::configdir} ${domain} ${key}.conf]
     if {[catch {set fl [open $filename w]} errorMsg]} {
         ::pdwindow::error "write_config $data $key: $errorMsg\n"
