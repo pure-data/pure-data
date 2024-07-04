@@ -35,14 +35,13 @@ proc ::pd_bindings::setup {} {
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
-
     #event_set  <<VirtualEvent>>           ${*}bindings
     event_set  <<File|New>>               <${control}-Key-n> <${control}-Key-N>
     event_set  <<File|Open>>              <${control}-Key-o> <${control}-Key-O>
     event_set  <<File|Save>>              <${control}-Key-s> <${control}-Key-S>
     event_set  <<File|SaveAs>>            <${control}-Shift-Key-s> <${control}-Shift-Key-S>
-    event_set  <<File|Message>>           <${control}-Shift-Key-m> <${control}-Shift-Key-M>
     event_set  <<File|Print>>             <${control}-Key-p> <${control}-Key-P>
+    event_set  <<File|ClearRecentFiles>>  {}
     event_set  <<File|Close>>             <${control}-Key-w> <${control}-Key-W>
     event_set  <<File|CloseNow>>          <${control}-Shift-Key-w> <${control}-Shift-Key-W>
     event_set  <<File|QuitNow>>           <${control}-Shift-Key-q> <${control}-Shift-Key-Q>
@@ -71,7 +70,6 @@ proc ::pd_bindings::setup {} {
     event_set  <<Edit|TidyUp>>            <${control}-Shift-Key-r> <${control}-Shift-Key-R>
     event_set  <<Edit|ConnectSelection>>  <${control}-Key-k> <${control}-Key-K>
     event_set  <<Edit|Triggerize>>        <${control}-Key-t> <${control}-Key-T>
-    event_set  <<Edit|ClearConsole>>      <${control}-Shift-Key-l> <${control}-Shift-Key-L>
     event_set  <<Edit|EditMode>>          <${control}-Key-e> <${control}-Key-E>
 
     event_set  <<Put|Object>>             <${control}-Key-1>
@@ -101,8 +99,6 @@ proc ::pd_bindings::setup {} {
     event_set  <<Media|DSPOff>>           <${control}-Key-period>
     event_set  <<Media|TestAudioMIDI>>    {}
     event_set  <<Media|LoadMeter>>        {}
-    event_set  <<Media|AudioSettings>>    {}
-    event_set  <<Media|MIDISettings>>     {}
 
     event_set  <<Window|Maximize>>        {}
     event_set  <<Window|AllToFront>>      {}
@@ -130,6 +126,17 @@ proc ::pd_bindings::setup {} {
     event_set  <<Help|puredata.info>>     {}
     event_set  <<Help|CheckUpdates>>      {}
     event_set  <<Help|ReportBug>>         {}
+
+    event_set  <<Pd|Message>>             <${control}-Shift-Key-m> <${control}-Shift-Key-M>
+    event_set  <<Pd|ClearConsole>>        <${control}-Shift-Key-l> <${control}-Shift-Key-L>
+
+    event_set  <<Preferences|Edit>>       {}
+    event_set  <<Preferences|Audio>>      {}
+    event_set  <<Preferences|MIDI>>       {}
+    event_set  <<Preferences|Save>>       {}
+    event_set  <<Preferences|SaveTo>>     {}
+    event_set  <<Preferences|Load>>       {}
+    event_set  <<Preferences|Forget>>     {}
 }
 
 # wrapper around bind(3tk)to deal with CapsLock
@@ -178,7 +185,7 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<File|Open>>              {::pd_menucommands::scheduleAction menu_open}
     bind  all  <<File|Save>>              {::pd_menucommands::scheduleAction menu_send %W menusave}
     bind  all  <<File|SaveAs>>            {::pd_menucommands::scheduleAction menu_send %W menusaveas}
-    bind  all  <<File|Message>>           {::pd_menucommands::scheduleAction menu_message_dialog}
+    bind  all  <<Pd|Message>>             {::pd_menucommands::scheduleAction menu_message_dialog}
     bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print $::focused_window}
     bind  all  <<File|Close>>             {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W}
     bind  all  <<File|CloseNow>>          {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W 1}
@@ -201,7 +208,7 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Edit|TidyUp>>            {::pd_menucommands::scheduleAction menu_send %W tidy}
     bind  all  <<Edit|ConnectSelection>>  {::pd_menucommands::scheduleAction menu_send %W connect_selection}
     bind  all  <<Edit|Triggerize>>        {::pd_menucommands::scheduleAction menu_send %W triggerize}
-    bind  all  <<Edit|ClearConsole>>      {::pd_menucommands::scheduleAction menu_clear_console}
+    bind  all  <<Pd|ClearConsole>>        {::pd_menucommands::scheduleAction menu_clear_console}
     bind  all  <<Edit|EditMode>>          {::pd_menucommands::scheduleAction menu_toggle_editmode}
     bind  all  <<Edit|SelectNone>>        {::pd_menucommands::scheduleAction menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
 
@@ -229,10 +236,10 @@ proc ::pd_bindings::global_bindings {} {
 
     bind  all  <<Media|DSPOn>>            {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
     bind  all  <<Media|DSPOff>>           {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
+    bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction puts "TODO bind AudioSettings"}
+    bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction puts "TODO bind MIDISettings"}
     bind  all  <<Media|TestAudioMIDI>>    {::pd_menucommands::scheduleAction puts "TODO bind TestAudioMIDI"}
     bind  all  <<Media|LoadMeter>>        {::pd_menucommands::scheduleAction puts "TODO bind LoadMeter"}
-    bind  all  <<Media|AudioSettings>>    {::pd_menucommands::scheduleAction puts "TODO bind AudioSettings"}
-    bind  all  <<Media|MIDISettings>>     {::pd_menucommands::scheduleAction puts "TODO bind MIDISettings"}
 
     bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction puts "TODO bind Window|Minimize"}
     bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction puts "TODO bind Window|Maximize"}
