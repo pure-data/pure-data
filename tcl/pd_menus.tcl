@@ -24,6 +24,21 @@ namespace eval ::pd_menus:: {
 
     # turn off tearoff menus globally
     option add *tearOff 0
+
+    array set keynames { \
+                             "Key" "" \
+                             "Mod1" "Cmd" \
+                             "Control" "Ctrl" \
+                             "equal" "=" \
+                             "less" "<" \
+                             "greater" ">" \
+                             "plus" "+" \
+                             "minus" "-" \
+                             "Next" "Page Down" \
+                             "Prior" "Page Up" \
+                             "slash" "/" \
+                             "period" "." \
+                         }
 }
 
 # ------------------------------------------------------------------------------
@@ -164,13 +179,43 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         ::pd_menus::reenable_help_items_aqua $menubar
     }
 }
-
-
 # ------------------------------------------------------------------------------
 # menu building functions
+proc ::pd_menus::get_accelerator_for_event {event} {
+    foreach shortcut [event info $event] {
+        set accel {}
+        foreach k [split [string trim $shortcut <>] -] {
+            foreach {longname k} [array get ::pd_menus::keynames $k] {break}
+            if { $k != "" } {
+                lappend accel $k
+            }
+        }
+
+        if { $accel != {} } {
+            return [join $accel +]
+        }
+    }
+    return ""
+}
+proc ::pd_menus::add_menu {menu type label event args} {
+    $menu add $type \
+        -label $label \
+        -command "event generate \[focus\] $event"
+    set accel [::pd_menus::get_accelerator_for_event $event]
+    if { $accel != {} } {
+        $menu entryconfigure end -accelerator $accel
+    }
+    foreach {k v} $args {
+        $menu entryconfigure end $k $v
+    }
+}
+
+
 proc ::pd_menus::build_file_menu {mymenu} {
+    puts "build_file_menu"
     # run the platform-specific build_file_menu_* procs first, and config them
     [format build_file_menu_%s $::windowingsystem] $mymenu
+    puts "build the rest"
     $mymenu entryconfigure [_ "New"]        -command {event generate [focus] <<File|New>>}
     $mymenu entryconfigure [_ "Open"]       -command {event generate [focus] <<File|Open>>}
     $mymenu entryconfigure [_ "Save"]       -command {event generate [focus] <<File|Save>>}
@@ -187,43 +232,33 @@ proc ::pd_menus::build_file_menu {mymenu} {
 
 proc ::pd_menus::build_edit_menu {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "Undo"]       -accelerator "$accelerator+Z" \
-        -command {event generate [focus] <<Edit|Undo>>}
-    $mymenu add command -label [_ "Redo"]       -accelerator "Shift+$accelerator+Z" \
-        -command {event generate [focus] <<Edit|Redo>>}
+    add_menu $mymenu command [_ "Undo" ] "<<Edit|Undo>>"
+    add_menu $mymenu command [_ "Redo" ] "<<Edit|Redo>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Cut"]        -accelerator "$accelerator+X" \
-        -command {event generate [focus] <<Edit|Cut>>}
-    $mymenu add command -label [_ "Copy"]       -accelerator "$accelerator+C" \
-        -command {event generate [focus] <<Edit|Copy>>}
-    $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
-        -command {event generate [focus] <<Edit|Paste>>}
-    $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
-        -command {event generate [focus] <<Edit|Duplicate>>}
-    $mymenu add command -label [_ "Paste Replace" ]  \
-        -command {event generate [focus] <<Edit|PasteReplace>>}
-    $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
-        -command {event generate [focus] <<Edit|SelectAll>>}
+    add_menu $mymenu command [_ "Cut" ] "<<Edit|Cut>>"
+    add_menu $mymenu command [_ "Copy" ] "<<Edit|Copy>>"
+    add_menu $mymenu command [_ "Paste" ] "<<Edit|Paste>>"
+    add_menu $mymenu command [_ "Duplicate" ] "<<Edit|Duplicate>>"
+    add_menu $mymenu command [_ "Paste Replace" ] "<<Edit|PasteReplace>>"
+    add_menu $mymenu command [_ "Select All" ] "<<Edit|SelectAll>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Font"] \
-        -command {event generate [focus] <<Edit|Font>>}
-    $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
-        -command {event generate [focus] <<Edit|ZoomIn>>}
-    $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
-        -command {event generate [focus] <<Edit|ZoomOut>>}
-    $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
-        -command {event generate [focus] <<Edit|TidyUp>>}
-    $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
-        -command {event generate [focus] <<Edit|ConnectSelection>>}
-    $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
-        -command {event generate [focus] <<Edit|Triggerize>>}
-    $mymenu add command -label [_ "Clear Console"] -accelerator "Shift+$accelerator+L" \
-        -command {event generate [focus] <<Pd|ClearConsole>>}
+    add_menu $mymenu command [_ "Font" ] "<<Edit|Font>>"
+    add_menu $mymenu command [_ "Zoom In" ] "<<Edit|ZoomIn>>"
+    add_menu $mymenu command [_ "Zoom Out" ] "<<Edit|ZoomOut>>"
+
+    add_menu $mymenu command [_ "Tidy Up" ] "<<Edit|TidyUp>>"
+    add_menu $mymenu command [_ "(Dis)Connect Selection" ] "<<Edit|ConnectSelection>>"
+    add_menu $mymenu command [_ "Triggerize" ] "<<Edit|Triggerize>>"
+    add_menu $mymenu command [_ "Clear Console" ] "<<Pd|ClearConsole>>"
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
-    $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
+    $mymenu add check -label [_ "Edit Mode"] \
         -variable ::editmode_button \
         -command {::pd_menucommands::scheduleAction menu_editmode $::editmode_button}
+    set accel [::pd_menus::get_accelerator_for_event  <<Edit|EditMode>>]
+    if { $accel != "" } {
+        $mymenu entryconfigure end -accelerator $accel
+    }
 }
 
 proc ::pd_menus::build_put_menu {mymenu} {
@@ -231,66 +266,42 @@ proc ::pd_menus::build_put_menu {mymenu} {
     # The trailing 0 in menu_send_float basically means leave the object box
     # sticking to the mouse cursor. The iemguis always do that when created
     # from the menu, as defined in canvas_iemguis()
-    $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
-        -command {event generate [focus] <<Put|Object>>}
-    $mymenu add command -label [_ "Message"]  -accelerator "$accelerator+2" \
-        -command {event generate [focus] <<Put|Message>>}
-    $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
-        -command {event generate [focus] <<Put|Number>>}
-    $mymenu add command -label [_ "List"]   -accelerator "$accelerator+4" \
-        -command {event generate [focus] <<Put|List>>}
-    $mymenu add command -label [_ "Symbol"]  \
-        -command {event generate [focus] <<Put|Symbol>>}
-    $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
-        -command {event generate [focus] <<Put|Comment>>}
+    add_menu $mymenu command [_ "Object" ] "<<Put|Object>>"
+    add_menu $mymenu command [_ "Message" ] "<<Put|Message>>"
+    add_menu $mymenu command [_ "Number" ] "<<Put|Number>>"
+    add_menu $mymenu command [_ "List" ] "<<Put|List>>"
+    add_menu $mymenu command [_ "Symbol" ] "<<Put|Symbol>>"
+    add_menu $mymenu command [_ "Comment" ] "<<Put|Comment>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Bang"]     -accelerator "Shift+$accelerator+B" \
-        -command {event generate [focus] <<Put|Bang>>}
-    $mymenu add command -label [_ "Toggle"]   -accelerator "Shift+$accelerator+T" \
-        -command {event generate [focus] <<Put|Toggle>>}
-    $mymenu add command -label [_ "Number2"]  -accelerator "Shift+$accelerator+N" \
-        -command {event generate [focus] <<Put|Number2>>}
-    $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
-        -command {event generate [focus] <<Put|VerticalSlider>>}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+J" \
-        -command {event generate [focus] <<Put|HorizontalSlider>>}
-    $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
-        -command {event generate [focus] <<Put|VerticalRadio>>}
-    $mymenu add command -label [_ "Hradio"]   -accelerator "Shift+$accelerator+I" \
-        -command {event generate [focus] <<Put|HorizontalRadio>>}
-    $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U" \
-        -command {event generate [focus] <<Put|VUMeter>>}
-    $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
-        -command {event generate [focus] <<Put|Canvas>>}
+    add_menu $mymenu command [_ "Bang" ] "<<Put|Bang>>"
+    add_menu $mymenu command [_ "Toggle" ] "<<Put|Toggle>>"
+    add_menu $mymenu command [_ "Number2" ] "<<Put|Number2>>"
+    add_menu $mymenu command [_ "Vslider" ] "<<Put|VerticalSlider>>"
+    add_menu $mymenu command [_ "Hslider" ] "<<Put|HorizontalSlider>>"
+    add_menu $mymenu command [_ "Vradio" ] "<<Put|VerticalRadio>>"
+    add_menu $mymenu command [_ "Hradio" ] "<<Put|HorizontalRadio>>"
+    add_menu $mymenu command [_ "VU Meter" ] "<<Put|VUMeter>>"
+    add_menu $mymenu command [_ "Canvas" ] "<<Put|Canvas>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Graph"]    -accelerator "Shift+$accelerator+G" \
-        -command {event generate [focus] <<Put|Graph>>}
-    $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
-        -command {event generate [focus] <<Put|Array>>}
+    add_menu $mymenu command [_ "Graph" ] "<<Put|Graph>>"
+    add_menu $mymenu command [_ "Array" ] "<<Put|Array>>"
 }
 
 proc ::pd_menus::build_find_menu {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "Find..."]    -accelerator "$accelerator+F" \
-        -command {event generate [focus] <<Find|Find>>}
-    $mymenu add command -label [_ "Find Again"] -accelerator "$accelerator+G" \
-        -command {event generate [focus] <<Find|Again>>}
-    $mymenu add command -label [_ "Find Last Error"] \
-        -command {event generate [focus] <<Find|FindLastError>>}
+    add_menu $mymenu command [_ "Find..."] "<<Find|Find>>"
+    add_menu $mymenu command [_ "Find Again"] "<<Find|FindAgain>>"
+    add_menu $mymenu command [_ "Find Last Error"] "<<Find|FindLastError>>"
 }
 
 proc ::pd_menus::build_media_menu {mymenu} {
     variable accelerator
-    $mymenu add radiobutton -label [_ "DSP On"]  -accelerator "$accelerator+/" \
-        -variable ::dsp -value 1 -command {event generate [focus] <<Media|DSPOn>>}
-    $mymenu add radiobutton -label [_ "DSP Off"] -accelerator "$accelerator+." \
-        -variable ::dsp -value 0 -command {event generate [focus] <<Media|DSPOff>>}
+    add_menu $mymenu radiobutton [_ "DSP On" ] "<<Media|DSPOn>>" -variable ::dsp -value 1
+    add_menu $mymenu radiobutton [_ "DSP Off" ] "<<Media|DSPOff>>" -variable ::dsp -value 0
 
     $mymenu add  separator
-    $mymenu add command -label [_ "Test Audio and MIDI..."] \
-        -command {event generate [focus] <<Media|TestAudioMIDI>>}
-    $mymenu add command -label [_ "Load Meter"] \
-        -command {event generate [focus] <<Media|LoadMeter>>}
+    add_menu $mymenu command [_ "Test Audio and MIDI..."] "<<Media|TestAudioMIDI>>"
+    add_menu $mymenu command [_ "Load Meter"] "<<Media|LoadMeter>>"
 
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
@@ -311,10 +322,8 @@ proc ::pd_menus::build_media_menu {mymenu} {
     }
 
     $mymenu add  separator
-    $mymenu add command -label [_ "Audio Settings..."] \
-        -command {event generate [focus] <<Preferences|Audio>>}
-    $mymenu add command -label [_ "MIDI Settings..."] \
-        -command  {event generate [focus] <<Preferences|MIDI>>}
+    add_menu $mymenu command [_ "Audio Settings..."] "<<Preferences|Audio>>"
+    add_menu $mymenu command [_ "MIDI Settings..."] "<<Preferences|MIDI>>"
 }
 
 proc ::pd_menus::build_window_menu {mymenu} {
@@ -322,30 +331,19 @@ proc ::pd_menus::build_window_menu {mymenu} {
     if {$::windowingsystem eq "aqua"} {
         # Tk 8.5+ automatically adds default Mac window menu items
         if {$::tcl_version < 8.5} {
-            $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
-                -command {event generate [focus] <<Window|Minimize>>}
-            $mymenu add command -label [_ "Zoom"] \
-                -command {event generate [focus] <<Window|Maximize>>}
+            add_menu $mymenu command [_ "Minimize" ] "<<Window|Minimize>>"
+            add_menu $mymenu command [_ "Zoom" ] "<<Window|Maximize>>"
             $mymenu add  separator
-            $mymenu add command -label [_ "Bring All to Front"] \
-                -command {event generate [focus] <<Window|AllToFront>>}
+            add_menu $mymenu command [_ "Bring All to Front" ] "<<Window|AllToFront>>"
         }
     } else {
-        $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
-                -command {event generate [focus] <<Window|Minimize>>}
-        $mymenu add command -label [_ "Next Window"] \
-            -command {event generate [focus] <<Window|Next>>} \
-            -accelerator [_ "$accelerator+Page Down"]
-        $mymenu add command -label [_ "Previous Window"] \
-            -command {event generate [focus] <<Window|Previous>>} \
-            -accelerator [_ "$accelerator+Page Up"]
+        add_menu $mymenu command [_ "Minimize" ] "<<Window|Minimize>>"
+        add_menu $mymenu command [_ "Next Window" ] "<<Window|Next>>"
+        add_menu $mymenu command [_ "Previous Window" ] "<<Window|Previous>>"
     }
     $mymenu add  separator
-    $mymenu add command -label [_ "Pd window"] \
-        -command  {event generate [focus] <<Window|PdWindow>>} \
-        -accelerator "$accelerator+R"
-    $mymenu add command -label [_ "Parent Window"] \
-        -command {event generate [focus] <<Window|Parent>>}
+    add_menu $mymenu command [_ "Pd window" ] "<<Window|PdWindow>>"
+    add_menu $mymenu command [_ "Parent Window" ] "<<Window|Parent>>"
     $mymenu add  separator
 }
 
@@ -353,25 +351,18 @@ proc ::pd_menus::build_help_menu {mymenu} {
     variable accelerator
     if {$::windowingsystem ne "aqua"} {
         # Tk creates this automatically on Mac
-        $mymenu add command -label [_ "About Pd"] \
-            -command {event generate [focus] <<Help|About>>}
+        add_menu $mymenu command [_ "About Pd" ] "<<Help|About>>"
     }
     if {$::windowingsystem ne "aqua" || $::tcl_version < 8.5} {
         # TK 8.5+ on Mac creates this automatically, other platforms do not
-        $mymenu add command -label [_ "HTML Manual..."] \
-            -command {event generate [focus] <<Help|Manual>>}
+        add_menu $mymenu command [_ "HTML Manual..." ] "<<Help|Manual>>"
     }
-    $mymenu add command -label [_ "Browser..."] -accelerator "$accelerator+B" \
-        -command {event generate [focus] <<Help|Browser>>}
-    $mymenu add command -label [_ "List of objects..."] \
-        -command {event generate [focus] <<Help|ListObjects>>}
+    add_menu $mymenu command [_ "Browser..." ] "<<Help|Browser>>"
+    add_menu $mymenu command [_ "List of objects..." ] "<<Help|ListObjects>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "puredata.info"] \
-        -command {event generate [focus] <<Help|puredata.info>>}
-    $mymenu add command -label [_ "Check for updates"] \
-        -command {event generate [focus] <<Help|CheckUpdates>>}
-    $mymenu add command -label [_ "Report a bug"] \
-        -command {event generate [focus] <<Help|ReportBug>>}
+    add_menu $mymenu command [_ "puredata.info" ] "<<Help|puredata.info>>"
+    add_menu $mymenu command [_ "Check for updates" ] "<<Help|CheckUpdates>>"
+    add_menu $mymenu command [_ "Report a bug" ] "<<Help|ReportBug>>"
 }
 
 #------------------------------------------------------------------------------#
@@ -576,17 +567,12 @@ proc ::pd_menus::forgetpreferences {} {
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
-    $mymenu add command -label [_ "Edit Preferences..."] \
-        -command {event generate [focus] <<Preferences|Edit>>}
+    add_menu $mymenu command [_ "Edit Preferences..." ] "<<Preferences|Edit>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save All Preferences"] \
-        -command {event generate [focus] <<Preferences|Save>>}
-    $mymenu add command -label [_ "Save to..."] \
-        -command {event generate [focus] <<Preferences|SaveTo>>}
-    $mymenu add command -label [_ "Load from..."] \
-        -command {event generate [focus] <<Preferences|Load>>}
-    $mymenu add command -label [_ "Forget All..."] \
-        -command {event generate [focus] <<Preferences|Forget>>}
+    add_menu $mymenu command [_ "Save All Preferences" ] "<<Preferences|Save>>"
+    add_menu $mymenu command [_ "Save to..." ] "<<Preferences|SaveTo>>"
+    add_menu $mymenu command [_ "Load from..." ] "<<Preferences|Load>>"
+    add_menu $mymenu command [_ "Forget All..." ] "<<Preferences|Forget>>"
     $mymenu add  separator
     $mymenu add check -label [_ "Tabbed preferences"] \
         -variable ::dialog_preferences::use_ttknotebook \
@@ -612,30 +598,24 @@ proc ::pd_menus::create_apple_menu {mymenu} {
 
 proc ::pd_menus::build_file_menu_aqua {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
+    add_menu $mymenu command [_ "New" ] "<<File|New>>"
+    add_menu $mymenu command [_ "Open" ] "<<File|Open>>"
     # this is now done in main ::pd_menus::build_file_menu
     #::pd_menus::update_openrecent_menu_aqua .openrecent
     $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "$accelerator+Shift+S"
-    #$mymenu add command -label [_ "Save All"]
-    #$mymenu add command -label [_ "Revert to Saved"]
+    add_menu $mymenu command [_ "Close" ] "<<File|Close>>"
+    add_menu $mymenu command [_ "Save" ] "<<File|Save>>"
+    add_menu $mymenu command [_ "Save As..." ] "<<File|SaveAs>>"
+    #add_menu $mymenu command [_ "Save All" ] "<<File|SaveAll>>"
+    #add_menu $mymenu command [_ "Revert to Saved" ] "<<File|Revert>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."] -accelerator "$accelerator+Shift+M"
+    add_menu $mymenu command [_ "Message..." ] "<<Pd|Message>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
+    add_menu $mymenu command [_ "Print..." ] "<<File|Print>>"
 }
 
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_aqua {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_aqua {mymenu} {
-}
+# the other menus do not have cross-platform differences
 
 # FIXME: remove this when it is no longer necessary
 # there is a Tk Cocoa bug where Help menu items after separators may be
@@ -654,34 +634,25 @@ proc ::pd_menus::reenable_help_items_aqua {mymenu} {
 
 proc ::pd_menus::build_file_menu_x11 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
+    add_menu $mymenu command [_ "New" ] "<<File|New>>"
+    add_menu $mymenu command [_ "Open" ] "<<File|Open>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
+    add_menu $mymenu command [_ "Save" ] "<<File|Save>>"
+    add_menu $mymenu command [_ "Save As..." ] "<<File|SaveAs>>"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
+    add_menu $mymenu command [_ "Message..." ] "<<Pd|Message>>"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
+    add_menu $mymenu command [_ "Print..." ] "<<File|Print>>"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {event generate [focus] <<File|Quit>>}
+    add_menu $mymenu command [_ "Close" ] "<<File|Close>>"
+    add_menu $mymenu command [_ "Quit" ] "<<File|Quit>>"
 }
 
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_x11 {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_x11 {mymenu} {
-}
-
-# the "Help" does not have cross-platform differences
+# the other menus do not have cross-platform differences
 
 # ------------------------------------------------------------------------------
 # menu building functions for Windows/Win32
@@ -701,31 +672,22 @@ proc ::pd_menus::create_system_menu {mymenubar} {
 
 proc ::pd_menus::build_file_menu_win32 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
+    add_menu $mymenu command [_ "New" ] "<<File|New>>"
+    add_menu $mymenu command [_ "Open" ] "<<File|Open>>"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
+    add_menu $mymenu command [_ "Save" ] "<<File|Save>>"
+    add_menu $mymenu command [_ "Save As..." ] "<<File|SaveAs>>"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
+    add_menu $mymenu command [_ "Message..." ] "<<Pd|Message>>"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
+    add_menu $mymenu command [_ "Print..." ] "<<File|Print>>"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {event generate [focus] <<File|Quit>>}
+    add_menu $mymenu command [_ "Close" ] "<<File|Close>>"
+    add_menu $mymenu command [_ "Quit" ] "<<File|Quit>>"
 }
 
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_win32 {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_win32 {mymenu} {
-}
-
-# the "Help" does not have cross-platform differences
+# the other menus do not have cross-platform differences
