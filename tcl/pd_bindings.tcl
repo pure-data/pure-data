@@ -8,10 +8,17 @@ namespace eval ::pd_bindings:: {
     namespace export global_bindings
     namespace export dialog_bindings
     namespace export patch_bindings
-    variable key2iso
-}
-set ::pd_bindings::key2iso ""
+    variable key2iso ""
 
+    variable alt "Alt"
+    variable control "Control"
+
+    # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
+    if {[tk windowingsystem] eq "aqua"} {
+        set alt "Option"
+        set control "Mod1"
+    }
+}
 
 # wrapper around bind(3tk)to deal with CapsLock
 # the actual bind-sequence is is build as '<${seq_prefix}-${seq_nocase}',
@@ -51,6 +58,8 @@ proc ::pd_bindings::class_bindings {} {
 }
 
 proc ::pd_bindings::global_bindings {} {
+    variable control
+    variable alt
     # we use 'bind all' everywhere to get as much of Tk's automatic binding
     # behaviors as possible, things like not sending an event for 'O' when
     # 'Control-O' is pressed
@@ -205,14 +214,8 @@ proc ::pd_bindings::clear_compose_keys {window} {
 }
 proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
+    variable alt
     set tkcanvas [tkcanvas_name $mytoplevel]
-
-    # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
-    if {$::windowingsystem eq "aqua"} {
-        set alt "Option"
-    } else {
-        set alt "Alt"
-    }
 
     # TODO move mouse bindings to global and bind to 'all'
 
