@@ -186,7 +186,7 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<File|Save>>              {::pd_menucommands::scheduleAction menu_send %W menusave}
     bind  all  <<File|SaveAs>>            {::pd_menucommands::scheduleAction menu_send %W menusaveas}
     bind  all  <<Pd|Message>>             {::pd_menucommands::scheduleAction menu_message_dialog}
-    bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print $::focused_window}
+    bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print %W}
     bind  all  <<File|ClearRecentFiles>>  {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
     bind  all  <<File|Close>>             {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W}
     bind  all  <<File|CloseNow>>          {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W 1}
@@ -247,8 +247,8 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
     bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
 
-    bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction menu_minimize $::focused_window}
-    bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction menu_maximize $::focused_window}
+    bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction menu_minimize %W}
+    bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction menu_maximize %W}
     bind  all  <<Window|AllToFront>>      {::pd_menucommands::scheduleAction menu_bringalltofront}
     bind  all  <<Window|Next>>            {::pd_menucommands::scheduleAction menu_raisenextwindow}
     bind  all  <<Window|Previous>>        {::pd_menucommands::scheduleAction menu_raisepreviouswindow}
