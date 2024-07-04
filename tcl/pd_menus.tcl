@@ -171,14 +171,14 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 proc ::pd_menus::build_file_menu {mymenu} {
     # run the platform-specific build_file_menu_* procs first, and config them
     [format build_file_menu_%s $::windowingsystem] $mymenu
-    $mymenu entryconfigure [_ "New"]        -command {::pd_menucommands::scheduleAction menu_new}
-    $mymenu entryconfigure [_ "Open"]       -command {::pd_menucommands::scheduleAction menu_open}
-    $mymenu entryconfigure [_ "Save"]       -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusave}
-    $mymenu entryconfigure [_ "Save As..."] -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusaveas}
-    #$mymenu entryconfigure [_ "Revert*"]    -command {::pd_menucommands::scheduleAction menu_revert $::focused_window}
-    $mymenu entryconfigure [_ "Close"]      -command {::pd_menucommands::scheduleAction ::pd_bindings::window_close $::focused_window}
-    $mymenu entryconfigure [_ "Message..."] -command {::pd_menucommands::scheduleAction menu_message_dialog}
-    $mymenu entryconfigure [_ "Print..."]   -command {::pd_menucommands::scheduleAction menu_print $::focused_window}
+    $mymenu entryconfigure [_ "New"]        -command {event generate [focus] <<File|New>>}
+    $mymenu entryconfigure [_ "Open"]       -command {event generate [focus] <<File|Open>>}
+    $mymenu entryconfigure [_ "Save"]       -command {event generate [focus] <<File|Save>>}
+    $mymenu entryconfigure [_ "Save As..."] -command {event generate [focus] <<File|SaveAs>>}
+    #$mymenu entryconfigure [_ "Revert*"]    -command {event generate [focus] <<File|Revert>>}
+    $mymenu entryconfigure [_ "Close"]      -command {event generate [focus] <<File|Close>>}
+    $mymenu entryconfigure [_ "Message..."] -command {event generate [focus] <<Pd|Message>>}
+    $mymenu entryconfigure [_ "Print..."]   -command {event generate [focus] <<File|Print>>}
     # update recent files
     if {[llength $::recentfiles_list] > 0} {
         ::pd_menus::update_recentfiles_menu false
@@ -188,37 +188,37 @@ proc ::pd_menus::build_file_menu {mymenu} {
 proc ::pd_menus::build_edit_menu {mymenu} {
     variable accelerator
     $mymenu add command -label [_ "Undo"]       -accelerator "$accelerator+Z" \
-        -command {::pd_menucommands::scheduleAction menu_undo}
+        -command {event generate [focus] <<Edit|Undo>>}
     $mymenu add command -label [_ "Redo"]       -accelerator "Shift+$accelerator+Z" \
-        -command {::pd_menucommands::scheduleAction menu_redo}
+        -command {event generate [focus] <<Edit|Redo>>}
     $mymenu add  separator
     $mymenu add command -label [_ "Cut"]        -accelerator "$accelerator+X" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window cut}
+        -command {event generate [focus] <<Edit|Cut>>}
     $mymenu add command -label [_ "Copy"]       -accelerator "$accelerator+C" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
+        -command {event generate [focus] <<Edit|Copy>>}
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
+        -command {event generate [focus] <<Edit|Paste>>}
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
+        -command {event generate [focus] <<Edit|Duplicate>>}
     $mymenu add command -label [_ "Paste Replace" ]  \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste-replace}
+        -command {event generate [focus] <<Edit|PasteReplace>>}
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window selectall}
+        -command {event generate [focus] <<Edit|SelectAll>>}
     $mymenu add  separator
     $mymenu add command -label [_ "Font"] \
-        -command {::pd_menucommands::scheduleAction menu_font_dialog}
+        -command {event generate [focus] <<Edit|Font>>}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
+        -command {event generate [focus] <<Edit|ZoomIn>>}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
+        -command {event generate [focus] <<Edit|ZoomOut>>}
     $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window tidy}
+        -command {event generate [focus] <<Edit|TidyUp>>}
     $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window connect_selection}
+        -command {event generate [focus] <<Edit|ConnectSelection>>}
     $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window triggerize}
-    $mymenu add command -label [_ "Clear Console"] \
-        -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}
+        -command {event generate [focus] <<Edit|Triggerize>>}
+    $mymenu add command -label [_ "Clear Console"] -accelerator "Shift+$accelerator+L" \
+        -command {event generate [focus] <<Pd|ClearConsole>>}
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
@@ -232,65 +232,65 @@ proc ::pd_menus::build_put_menu {mymenu} {
     # sticking to the mouse cursor. The iemguis always do that when created
     # from the menu, as defined in canvas_iemguis()
     $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window obj 0}
+        -command {event generate [focus] <<Put|Object>>}
     $mymenu add command -label [_ "Message"]  -accelerator "$accelerator+2" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window msg 0}
+        -command {event generate [focus] <<Put|Message>>}
     $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window floatatom 0}
+        -command {event generate [focus] <<Put|Number>>}
     $mymenu add command -label [_ "List"]   -accelerator "$accelerator+4" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window listbox 0}
+        -command {event generate [focus] <<Put|List>>}
     $mymenu add command -label [_ "Symbol"]  \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window symbolatom 0}
+        -command {event generate [focus] <<Put|Symbol>>}
     $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window text 0}
+        -command {event generate [focus] <<Put|Comment>>}
     $mymenu add  separator
     $mymenu add command -label [_ "Bang"]     -accelerator "Shift+$accelerator+B" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window bng}
+        -command {event generate [focus] <<Put|Bang>>}
     $mymenu add command -label [_ "Toggle"]   -accelerator "Shift+$accelerator+T" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window toggle}
+        -command {event generate [focus] <<Put|Toggle>>}
     $mymenu add command -label [_ "Number2"]  -accelerator "Shift+$accelerator+N" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window numbox}
+        -command {event generate [focus] <<Put|Number2>>}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window vslider}
+        -command {event generate [focus] <<Put|VerticalSlider>>}
     $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+J" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window hslider}
+        -command {event generate [focus] <<Put|HorizontalSlider>>}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window vradio}
+        -command {event generate [focus] <<Put|VerticalRadio>>}
     $mymenu add command -label [_ "Hradio"]   -accelerator "Shift+$accelerator+I" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window hradio}
+        -command {event generate [focus] <<Put|HorizontalRadio>>}
     $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window vumeter}
+        -command {event generate [focus] <<Put|VUMeter>>}
     $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window mycnv}
+        -command {event generate [focus] <<Put|Canvas>>}
     $mymenu add  separator
     $mymenu add command -label [_ "Graph"]    -accelerator "Shift+$accelerator+G" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window graph}
+        -command {event generate [focus] <<Put|Graph>>}
     $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window menuarray}
+        -command {event generate [focus] <<Put|Array>>}
 }
 
 proc ::pd_menus::build_find_menu {mymenu} {
     variable accelerator
     $mymenu add command -label [_ "Find..."]    -accelerator "$accelerator+F" \
-        -command {::pd_menucommands::scheduleAction menu_find_dialog}
+        -command {event generate [focus] <<Find|Find>>}
     $mymenu add command -label [_ "Find Again"] -accelerator "$accelerator+G" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window findagain}
+        -command {event generate [focus] <<Find|Again>>}
     $mymenu add command -label [_ "Find Last Error"] \
-        -command {::pd_menucommands::scheduleAction pdsend {pd finderror}}
+        -command {event generate [focus] <<Find|FindLastError>>}
 }
 
 proc ::pd_menus::build_media_menu {mymenu} {
     variable accelerator
     $mymenu add radiobutton -label [_ "DSP On"]  -accelerator "$accelerator+/" \
-        -variable ::dsp -value 1 -command {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
+        -variable ::dsp -value 1 -command {event generate [focus] <<Media|DSPOn>>}
     $mymenu add radiobutton -label [_ "DSP Off"] -accelerator "$accelerator+." \
-        -variable ::dsp -value 0 -command {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
+        -variable ::dsp -value 0 -command {event generate [focus] <<Media|DSPOff>>}
 
     $mymenu add  separator
     $mymenu add command -label [_ "Test Audio and MIDI..."] \
-        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools testtone.pd}
+        -command {event generate [focus] <<Media|TestAudioMIDI>>}
     $mymenu add command -label [_ "Load Meter"] \
-        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
+        -command {event generate [focus] <<Media|LoadMeter>>}
 
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
@@ -312,9 +312,9 @@ proc ::pd_menus::build_media_menu {mymenu} {
 
     $mymenu add  separator
     $mymenu add command -label [_ "Audio Settings..."] \
-        -command {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
+        -command {event generate [focus] <<Preferences|Audio>>}
     $mymenu add command -label [_ "MIDI Settings..."] \
-        -command {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
+        -command  {event generate [focus] <<Preferences|MIDI>>}
 }
 
 proc ::pd_menus::build_window_menu {mymenu} {
@@ -323,28 +323,29 @@ proc ::pd_menus::build_window_menu {mymenu} {
         # Tk 8.5+ automatically adds default Mac window menu items
         if {$::tcl_version < 8.5} {
             $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
-                -command {::pd_menucommands::scheduleAction menu_minimize $::focused_window}
+                -command {event generate [focus] <<Window|Minimize>>}
             $mymenu add command -label [_ "Zoom"] \
-                -command {::pd_menucommands::scheduleAction menu_maximize $::focused_window}
+                -command {event generate [focus] <<Window|Maximize>>}
             $mymenu add  separator
             $mymenu add command -label [_ "Bring All to Front"] \
-                -command {::pd_menucommands::scheduleAction menu_bringalltofront}
+                -command {event generate [focus] <<Window|AllToFront>>}
         }
     } else {
         $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
-                -command {::pd_menucommands::scheduleAction menu_minimize $::focused_window}
+                -command {event generate [focus] <<Window|Minimize>>}
         $mymenu add command -label [_ "Next Window"] \
-            -command {::pd_menucommands::scheduleAction menu_raisenextwindow} \
+            -command {event generate [focus] <<Window|Next>>} \
             -accelerator [_ "$accelerator+Page Down"]
         $mymenu add command -label [_ "Previous Window"] \
-            -command {::pd_menucommands::scheduleAction menu_raisepreviouswindow} \
+            -command {event generate [focus] <<Window|Previous>>} \
             -accelerator [_ "$accelerator+Page Up"]
     }
     $mymenu add  separator
-    $mymenu add command -label [_ "Pd window"] -command {::pd_menucommands::scheduleAction menu_raise_pdwindow} \
+    $mymenu add command -label [_ "Pd window"] \
+        -command  {event generate [focus] <<Window|PdWindow>>} \
         -accelerator "$accelerator+R"
     $mymenu add command -label [_ "Parent Window"] \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window findparent}
+        -command {event generate [focus] <<Window|Parent>>}
     $mymenu add  separator
 }
 
@@ -352,24 +353,25 @@ proc ::pd_menus::build_help_menu {mymenu} {
     variable accelerator
     if {$::windowingsystem ne "aqua"} {
         # Tk creates this automatically on Mac
-        $mymenu add command -label [_ "About Pd"] -command {::pd_menucommands::scheduleAction menu_aboutpd}
+        $mymenu add command -label [_ "About Pd"] \
+            -command {event generate [focus] <<Help|About>>}
     }
     if {$::windowingsystem ne "aqua" || $::tcl_version < 8.5} {
         # TK 8.5+ on Mac creates this automatically, other platforms do not
         $mymenu add command -label [_ "HTML Manual..."] \
-                -command {::pd_menucommands::scheduleAction menu_manual}
+            -command {event generate [focus] <<Help|Manual>>}
     }
     $mymenu add command -label [_ "Browser..."] -accelerator "$accelerator+B" \
-        -command {::pd_menucommands::scheduleAction menu_helpbrowser}
+        -command {event generate [focus] <<Help|Browser>>}
     $mymenu add command -label [_ "List of objects..."] \
-        -command {::pd_menucommands::scheduleAction menu_objectlist}
+        -command {event generate [focus] <<Help|ListObjects>>}
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
-        -command {::pd_menucommands::scheduleAction menu_openfile {https://puredata.info}}
-    $mymenu add command -label [_ "Check for updates"] -command {::pd_menucommands::scheduleAction menu_openfile \
-        {https://pdlatest.puredata.info}}
-    $mymenu add command -label [_ "Report a bug"] -command {::pd_menucommands::scheduleAction menu_openfile \
-        {https://bugs.puredata.info}}
+        -command {event generate [focus] <<Help|puredata.info>>}
+    $mymenu add command -label [_ "Check for updates"] \
+        -command {event generate [focus] <<Help|CheckUpdates>>}
+    $mymenu add command -label [_ "Report a bug"] \
+        -command {event generate [focus] <<Help|ReportBug>>}
 }
 
 #------------------------------------------------------------------------------#
@@ -423,7 +425,7 @@ proc ::pd_menus::update_openrecent_menu_aqua {mymenu {write}} {
     # clear button
     $mymenu add  separator
     $mymenu add command -label [_ "Clear Menu"] \
-        -command {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
+        -command {event generate [focus] <<File|ClearRecentFiles>>}
     # write to config file
     if {$write == true} { ::pd_guiprefs::write_recentfiles }
 }
@@ -494,7 +496,8 @@ proc ::pd_menus::insert_into_menu {mymenu entry parent} {
         append label " "
     }
     append label $::windowname($entry)
-    $mymenu insert $insertat command -label $label -command "::pd_menucommands::scheduleAction raise $entry"
+    $mymenu insert $insertat command -label $label \
+        -command "::pd_menucommands::scheduleAction raise $entry"
 }
 
 # recurse through a list of parent windows and add to the menu
@@ -574,16 +577,16 @@ proc ::pd_menus::forgetpreferences {} {
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
     $mymenu add command -label [_ "Edit Preferences..."] \
-        -command {menu_preference_dialog}
+        -command {event generate [focus] <<Preferences|Edit>>}
     $mymenu add  separator
     $mymenu add command -label [_ "Save All Preferences"] \
-        -command {::pd_menucommands::scheduleAction pdsend "pd save-preferences"}
+        -command {event generate [focus] <<Preferences|Save>>}
     $mymenu add command -label [_ "Save to..."] \
-        -command {::pd_menucommands::scheduleAction ::pd_menus::savepreferences}
+        -command {event generate [focus] <<Preferences|SaveTo>>}
     $mymenu add command -label [_ "Load from..."] \
-        -command {::pd_menucommands::scheduleAction ::pd_menus::loadpreferences}
+        -command {event generate [focus] <<Preferences|Load>>}
     $mymenu add command -label [_ "Forget All..."] \
-        -command {::pd_menucommands::scheduleAction ::pd_menus::forgetpreferences}
+        -command {event generate [focus] <<Preferences|Forget>>}
     $mymenu add  separator
     $mymenu add check -label [_ "Tabbed preferences"] \
         -variable ::dialog_preferences::use_ttknotebook \
@@ -597,7 +600,8 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
 proc ::pd_menus::create_apple_menu {mymenu} {
     # TODO this should open a Pd patch called about.pd
     menu $mymenu.apple
-    $mymenu.apple add command -label [_ "About Pd"] -command {::pd_menucommands::scheduleAction menu_aboutpd}
+    $mymenu.apple add command -label [_ "About Pd"] \
+        -command {event generate [focus] <<Help|About>>}
     $mymenu.apple add separator
     create_preferences_menu $mymenu.apple.preferences
     $mymenu.apple add cascade -label [_ "Preferences"] \
@@ -666,7 +670,7 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {::pd_connect::menu_quit}
+        -command {event generate [focus] <<File|Quit>>}
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences
@@ -713,7 +717,7 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {::pd_connect::menu_quit}
+        -command {event generate [focus] <<File|Quit>>}
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences
