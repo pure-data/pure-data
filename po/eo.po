@@ -7,83 +7,86 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-05-06 10:09+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-07-05 16:09+0000\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "lineara"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logaritma"
 
 msgid "new-only"
-msgstr ""
+msgstr "nur novaj"
 
 msgid "new&old"
-msgstr ""
+msgstr "novaj & malnovaj"
 
 msgid "no scale"
-msgstr ""
+msgstr "sen skalo"
 
 msgid "scale"
-msgstr ""
+msgstr "kun skalo"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "Ĉu forĵeti ŝanĝojn pri «%s»?"
 
 msgid "Undo clear"
 msgstr ""
 
 msgid "Undo connect"
-msgstr ""
+msgstr "Malfari konekton"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "Malfari eltondon"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "Malfari malkonekton"
 
 msgid "Undo duplicate"
 msgstr ""
 
 msgid "Undo motion"
-msgstr ""
+msgstr "Malfari movon"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "Malfari algluon"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Malfari tajpadon"
 
 msgid "Redo clear"
 msgstr ""
 
 msgid "Redo connect"
-msgstr ""
+msgstr "Refari konekton"
 
 msgid "Redo cut"
-msgstr ""
+msgstr "Refari eltondon"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "Refari malkonekton"
 
 msgid "Redo duplicate"
 msgstr ""
 
 msgid "Redo motion"
-msgstr ""
+msgstr "Refari movon"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "Refari algluon"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Refari tajpadon"
 
 msgid "no Pd settings to clear"
 msgstr ""
@@ -110,130 +113,130 @@ msgid "(re-save preferences to reinstate them)"
 msgstr ""
 
 msgid "File"
-msgstr ""
+msgstr "Dosiero"
 
 msgid "Edit"
-msgstr ""
+msgstr "Redakti"
 
 msgid "Put"
-msgstr ""
+msgstr "Meti"
 
 msgid "Find"
-msgstr ""
+msgstr "Trovi"
 
 msgid "Media"
-msgstr ""
+msgstr "Aŭdvidaĵo"
 
 msgid "Window"
-msgstr ""
+msgstr "Fenestro"
 
 msgid "Help"
-msgstr ""
+msgstr "Helpo"
 
 msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
-msgstr ""
+msgstr "Kopii"
 
 msgid "Paste"
-msgstr ""
+msgstr "Alglui"
 
 msgid "Array Properties"
-msgstr ""
+msgstr "Atributoj pri tabelo"
 
 msgid "Array"
-msgstr ""
+msgstr "Tabelo"
 
 msgid "Name:"
-msgstr ""
+msgstr "Nomo:"
 
 msgid "Size:"
-msgstr ""
+msgstr "Grando:"
 
 msgid "Save contents"
-msgstr ""
+msgstr "Konservi la enhavon"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "Desegni kiel jenon:"
 
 msgid "Polygon"
-msgstr ""
+msgstr "Plurlatero"
 
 msgid "Points"
-msgstr ""
+msgstr "Punktoj"
 
 msgid "Bezier curve"
-msgstr ""
+msgstr "Bézier-kurbo"
 
 msgid "Put array into:"
-msgstr ""
+msgstr "Meti tabelon en la jenon:"
 
 msgid "New graph"
-msgstr ""
+msgstr "Nova grafo"
 
 msgid "Last graph"
-msgstr ""
+msgstr "Lasta grafo"
 
 msgid "Options"
-msgstr ""
+msgstr "Opcioj"
 
 msgid "Open List View..."
-msgstr ""
+msgstr "Malfermi listan vidon…"
 
 msgid "Delete array"
-msgstr ""
+msgstr "Forviŝi tabelon"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Nuligi"
 
 msgid "Apply"
-msgstr ""
+msgstr "Efektivigi"
 
 msgid "OK"
-msgstr ""
+msgstr "Bone"
 
 msgid "no device"
-msgstr ""
+msgstr "neniu aparato"
 
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(sama kiel eniga aparato)…"
 
 msgid "Channels:"
-msgstr ""
+msgstr "Kanaloj:"
 
 msgid "Input Devices"
-msgstr ""
+msgstr "Enigaj aparatoj"
 
 msgid "Output Devices"
-msgstr ""
+msgstr "Eligaj aparatoj"
 
 msgid "Use Multiple Devices"
-msgstr ""
+msgstr "Uzi plurajn aparatojn"
 
 msgid "audio system"
-msgstr ""
+msgstr "sonsistemo"
 
 msgid "Settings"
-msgstr ""
+msgstr "Agordoj"
 
 msgid "Sample rate:"
-msgstr ""
+msgstr "Sampla ofto:"
 
 msgid "Delay (msec):"
 msgstr ""
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44,1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Grando de bloko:"
 
 msgid "Use callbacks"
 msgstr ""
@@ -242,16 +245,16 @@ msgid "Audio Settings"
 msgstr ""
 
 msgid "Save All Settings"
-msgstr ""
+msgstr "Konservi ĉiujn agordojn"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Atributoj de kanvaso"
 
 msgid "Scale"
-msgstr ""
+msgstr "Skalo"
 
 msgid "X units per pixel:"
 msgstr ""
@@ -263,46 +266,46 @@ msgid "Appearance on parent patch"
 msgstr ""
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Grafo-sur-patro"
 
 msgid "Hide object name and arguments"
 msgstr ""
 
 msgid "Range and size"
-msgstr ""
+msgstr "Gamo kaj grando"
 
 msgid "X range: from"
-msgstr ""
+msgstr "X-gamo: de"
 
 msgid "to"
-msgstr ""
+msgstr "al"
 
 msgid "Margin:"
-msgstr ""
+msgstr "Marĝeno:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Y-gamo: de"
 
 msgid "Data Properties"
-msgstr ""
+msgstr "Datenaj atributoj"
 
 msgid "Send"
-msgstr ""
+msgstr "Sendi"
 
 msgid "Done"
-msgstr ""
+msgstr "Farite"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Trovis «%1$s» en %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Ne trovis «%1$s» en %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "Serĉi en %s pri:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -313,86 +316,86 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
 msgid "Pd window"
-msgstr ""
+msgstr "Pd-fenestro"
 
 msgid "Match whole word only"
 msgstr ""
 
 msgid "Close"
-msgstr ""
+msgstr "Fermi"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "Tiparo %s"
 
 msgid "Font"
-msgstr ""
+msgstr "Tiparo"
 
 msgid "Font Size"
-msgstr ""
+msgstr "Tipara grando"
 
 msgid "Stretch"
 msgstr ""
 
 msgid "X and Y"
-msgstr ""
+msgstr "X kaj Y"
 
 msgid "X only"
-msgstr ""
+msgstr "Nur X"
 
 msgid "Y only"
-msgstr ""
+msgstr "Nur Y"
 
 msgid "GUI Box Properties"
 msgstr ""
 
 msgid "Messages"
-msgstr ""
+msgstr "Mesaĝoj"
 
 msgid "Send symbol:"
-msgstr ""
+msgstr "Sendi simbolon:"
 
 msgid "Receive symbol:"
-msgstr ""
+msgstr "Ricevi simbolon:"
 
 msgid "auto"
-msgstr ""
+msgstr "aŭtomata"
 
 msgid "Width:"
-msgstr ""
+msgstr "Larĝo:"
 
 msgid "Limits"
-msgstr ""
+msgstr "Limoj"
 
 msgid "Lower:"
-msgstr ""
+msgstr "Malsupra:"
 
 msgid "Upper:"
-msgstr ""
+msgstr "Supra:"
 
 msgid "Label"
-msgstr ""
+msgstr "Etikedo"
 
 msgid "Left"
-msgstr ""
+msgstr "Maldekstra"
 
 msgid "Right"
-msgstr ""
+msgstr "Dekstra"
 
 msgid "Top"
-msgstr ""
+msgstr "Supra"
 
 msgid "Bottom"
-msgstr ""
+msgstr "Malsupra"
 
 msgid "Background color"
-msgstr ""
+msgstr "Fona koloro"
 
 msgid "Foreground color"
-msgstr ""
+msgstr "Malfona koloro"
 
 msgid "Label color"
-msgstr ""
+msgstr "Etikeda koloro"
 
 msgid "Bang"
 msgstr ""
@@ -401,34 +404,34 @@ msgid "Flash Time (msec)"
 msgstr ""
 
 msgid "Min:"
-msgstr ""
+msgstr "Minimumo:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Maksimumo:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "Baskuligi"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Nenula valoro"
 
 msgid "Value:"
-msgstr ""
+msgstr "Valoro:"
 
 msgid "Number2"
-msgstr ""
+msgstr "Nombro2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Larĝo (ciferoj):"
 
 msgid "Height:"
-msgstr ""
+msgstr "Alto:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Eliga gamo"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Logaritma alto:"
 
 msgid "Vslider"
 msgstr ""
@@ -449,7 +452,7 @@ msgid "VU Meter"
 msgstr ""
 
 msgid "Canvas"
-msgstr ""
+msgstr "Kanvaso"
 
 msgid "Visible Rectangle (pix)"
 msgstr ""
@@ -459,7 +462,7 @@ msgid "%s Properties"
 msgstr ""
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parametroj"
 
 msgid "Init"
 msgstr ""
@@ -480,13 +483,13 @@ msgid "Y offset:"
 msgstr ""
 
 msgid "Colors"
-msgstr ""
+msgstr "Koloroj"
 
 msgid "Background"
-msgstr ""
+msgstr "Fono"
 
 msgid "Front"
-msgstr ""
+msgstr "Malfono"
 
 msgid "Compose color"
 msgstr ""
@@ -495,7 +498,7 @@ msgid "Test label"
 msgstr ""
 
 msgid "Send a Pd message"
-msgstr ""
+msgstr "Sendi Pd-mesaĝon"
 
 msgid "(use arrow keys for history)"
 msgstr ""
@@ -504,16 +507,16 @@ msgid "no input devices"
 msgstr ""
 
 msgid "In Ports:"
-msgstr ""
+msgstr "En-pordoj:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "El-pordoj:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "MIDI-sistemo"
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "Agordoj pri MIDI"
 
 msgid "ALSA MIDI Settings"
 msgstr ""
@@ -522,7 +525,7 @@ msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Uzi normajn dosierlokojn"
 
 msgid "Verbose"
 msgstr ""
@@ -531,13 +534,13 @@ msgid "Pd Documents Directory"
 msgstr ""
 
 msgid "Browse"
-msgstr ""
+msgstr "Foliumi"
 
 msgid "Reset"
 msgstr ""
 
 msgid "Disable"
-msgstr ""
+msgstr "Malŝalti"
 
 msgid "Externals Install Directory"
 msgstr ""
@@ -568,7 +571,7 @@ msgid "Zoom New Windows"
 msgstr ""
 
 msgid "GUI settings"
-msgstr ""
+msgstr "Agordoj pri grafika fasado"
 
 msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
@@ -586,7 +589,7 @@ msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
-msgstr ""
+msgstr "Preferoj"
 
 msgid "startup preferences"
 msgstr ""
@@ -595,7 +598,7 @@ msgid "audio preferences"
 msgstr ""
 
 msgid "MIDI preferences"
-msgstr ""
+msgstr "Preferoj pri MIDI"
 
 msgid "deken preferences"
 msgstr ""
@@ -604,10 +607,10 @@ msgid "misc preferences"
 msgstr ""
 
 msgid "Add new library"
-msgstr ""
+msgstr "Aldoni novan bibliotekon"
 
 msgid "Edit library"
-msgstr ""
+msgstr "Modifi bibliotekon"
 
 msgid "Settings below require a restart of Pd!"
 msgstr ""
@@ -619,22 +622,22 @@ msgid "GUI options"
 msgstr ""
 
 msgid "language"
-msgstr ""
+msgstr "lingvo"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menua lingvo"
 
 msgid "float (32bit)"
-msgstr ""
+msgstr "32-bita glitkomo"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "64-bita glitkomo EKSPERIMENTA"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "64-bita glitkomo"
 
 msgid "float size"
-msgstr ""
+msgstr "glitkoma grando"
 
 msgid "Numeric precision of Pd-core"
 msgstr ""
@@ -649,13 +652,13 @@ msgid "Startup flags:"
 msgstr ""
 
 msgid "Help Browser"
-msgstr ""
+msgstr "Helpo-legilo"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "Asociitaj dosieroj"
 
 msgid "Pd Files"
-msgstr ""
+msgstr "Pd-dosieroj"
 
 msgid "Max Patch Files"
 msgstr ""
@@ -825,10 +828,10 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
 msgid "Create"
-msgstr ""
+msgstr "Krei"
 
 msgid "Check"
-msgstr ""
+msgstr "Kontroli"
 
 msgid "Installation options:"
 msgstr ""
@@ -955,14 +958,14 @@ msgid "Show all"
 msgstr ""
 
 msgid "Search"
-msgstr ""
+msgstr "Serĉi"
 
 #, tcl-format
 msgid "Install (%d)"
-msgstr ""
+msgstr "Instali (%d)"
 
 msgid "Install"
-msgstr ""
+msgstr "Instali"
 
 #, tcl-format
 msgid "%s%% of download completed"
@@ -972,7 +975,7 @@ msgid "Enter an exact library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
-msgstr ""
+msgstr "ekz. «freeverb~»"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -996,25 +999,25 @@ msgid "Find externals"
 msgstr ""
 
 msgid "Install DEK file..."
-msgstr ""
+msgstr "Instali DEK-dosieron…"
 
 msgid "Preferences..."
-msgstr ""
+msgstr "Preferoj…"
 
 msgid "Search for: "
-msgstr ""
+msgstr "Serĉi la jenon: "
 
 msgid "libraries"
-msgstr ""
+msgstr "bibliotekoj"
 
 msgid "objects"
-msgstr ""
+msgstr "objektoj"
 
 msgid "both"
-msgstr ""
+msgstr "ambaŭ"
 
 msgid "translations"
-msgstr ""
+msgstr "tradukoj"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
@@ -1023,29 +1026,29 @@ msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
 msgstr ""
 
 msgid "Library"
-msgstr ""
+msgstr "Biblioteko"
 
 msgid "Version"
-msgstr ""
+msgstr "Versio"
 
 msgid "Description"
-msgstr ""
+msgstr "Priskribo"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Alŝutinto"
 
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 msgid "Search Results"
-msgstr ""
+msgstr "Serĉaj rezultoj"
 
 msgid "Log"
-msgstr ""
+msgstr "Protokolo"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr ""
+msgstr "Serĉante «%s»…"
 
 #, tcl-format
 msgid "online? %s"
@@ -1075,7 +1078,7 @@ msgstr ""
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
-msgstr ""
+msgstr "Ĉu instali %1$s al %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
@@ -1086,17 +1089,17 @@ msgstr ""
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
+msgstr "Ne povas instali al «%s»"
 
 msgid "Directory does not exist!"
-msgstr ""
+msgstr "Dosierujo ne ekzistas!"
 
 msgid "Directory is not writable!"
 msgstr ""
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr ""
+msgstr "Elŝutante «%s»"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
@@ -1110,7 +1113,7 @@ msgid "Downloading '%s' failed"
 msgstr ""
 
 msgid "Download failed!"
-msgstr ""
+msgstr "Elŝuto malsukcesis!"
 
 msgid "Download completed! Verifying..."
 msgstr ""
@@ -1149,7 +1152,7 @@ msgid "Searching for '%s' failed!"
 msgstr ""
 
 msgid "Search failed"
-msgstr ""
+msgstr "Serĉo malsukcesis"
 
 msgid "Unable to perform search."
 msgstr ""
@@ -1158,23 +1161,23 @@ msgid "Select package for installation"
 msgstr ""
 
 msgid "Deselect package"
-msgstr ""
+msgstr "Malelekti pakon"
 
 msgid "Open package webpage"
 msgstr ""
 
 msgid "Copy package URL"
-msgstr ""
+msgstr "Kopii retadreson de pako"
 
 msgid "Copy SHA256 checksum URL"
-msgstr ""
+msgstr "Kopii adreson de SHA256-kontrolsumo"
 
 msgid "Copy OpenGPG signature URL"
-msgstr ""
+msgstr "Kopii adreson de OpenGPG-signaturo"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr ""
+msgstr "Malinstali «%s»"
 
 #, tcl-format
 msgid ""
@@ -1224,145 +1227,145 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikanso"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Araba"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbajĝana"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belorusa"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgara"
 
 msgid "German"
-msgstr ""
+msgstr "Germana"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Germana (aŭstra)"
 
 msgid "Greek"
-msgstr ""
+msgstr "Greka"
 
 msgid "English"
-msgstr ""
+msgstr "Angla"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Angla (Kanada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Angla (brita)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Angla (Usona)"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Hispana"
 
 msgid "Basque"
-msgstr ""
+msgstr "Eŭska"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finna"
 
 msgid "French"
-msgstr ""
+msgstr "Franca"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Guĝarata"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebrea"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindia"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Hungara"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armena"
 
 msgid "Italian"
-msgstr ""
+msgstr "Itala"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonezia"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japana"
 
 msgid "Korean"
-msgstr ""
+msgstr "Korea"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Nederlanda"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panĝaba"
 
 msgid "Polish"
-msgstr ""
+msgstr "Pola"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugala"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugala (Brazila)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugala (Portugalia)"
 
 msgid "Russian"
-msgstr ""
+msgstr "Rusa"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albana"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Sveda"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turka"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukraina"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vjetnama"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Ĉina (tradicia)"
 
 msgid "(no translation)"
-msgstr ""
+msgstr "(sen traduko)"
 
 #, tcl-format
 msgid "(default language: %s)"
-msgstr ""
+msgstr "(implicita lingvo: %s)"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
 msgid "About Pd"
-msgstr ""
+msgstr "Pri Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Konservi"
 
 msgid "Save As..."
-msgstr ""
+msgstr "Konservi kiel…"
 
 msgid "Print..."
-msgstr ""
+msgstr "Presi…"
 
 msgid "Paste Replace"
 msgstr ""
@@ -1371,10 +1374,10 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Zoom In"
-msgstr ""
+msgstr "Enzomi"
 
 msgid "Zoom Out"
-msgstr ""
+msgstr "Elzomi"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1386,61 +1389,61 @@ msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"
-msgstr ""
+msgstr "Redakta reĝimo"
 
 msgid "Undo"
-msgstr ""
+msgstr "Malfari"
 
 msgid "Redo"
-msgstr ""
+msgstr "Refari"
 
 msgid "New"
-msgstr ""
+msgstr "Nova"
 
 msgid "Open"
-msgstr ""
+msgstr "Malfermi"
 
 msgid "Message..."
-msgstr ""
+msgstr "Mesaĝo…"
 
 msgid "Cut"
-msgstr ""
+msgstr "Eltondi"
 
 msgid "Select All"
-msgstr ""
+msgstr "Elekti ĉiujn"
 
 msgid "Clear Console"
-msgstr ""
+msgstr "Forviŝi konzolon"
 
 msgid "Object"
-msgstr ""
+msgstr "Objekto"
 
 msgid "Message"
-msgstr ""
+msgstr "Mesaĝo"
 
 msgid "Number"
-msgstr ""
+msgstr "Nombro"
 
 msgid "List"
-msgstr ""
+msgstr "Listo"
 
 msgid "Symbol"
-msgstr ""
+msgstr "Simbolo"
 
 msgid "Comment"
-msgstr ""
+msgstr "Komento"
 
 msgid "Graph"
-msgstr ""
+msgstr "Grafo"
 
 msgid "Find..."
-msgstr ""
+msgstr "Trovi…"
 
 msgid "Find Again"
-msgstr ""
+msgstr "Retrovi"
 
 msgid "Find Last Error"
-msgstr ""
+msgstr "Trovi lastan eraron"
 
 msgid "DSP On"
 msgstr ""
@@ -1455,49 +1458,49 @@ msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "Sonaj agordoj…"
 
 msgid "MIDI Settings..."
-msgstr ""
+msgstr "Agordoj pri MIDI…"
 
 msgid "Minimize"
-msgstr ""
+msgstr "Minimumigi"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Zomi"
 
 msgid "Bring All to Front"
-msgstr ""
+msgstr "Malfonigi ĉiujn"
 
 msgid "Next Window"
-msgstr ""
+msgstr "Sekva fenestro"
 
 msgid "Previous Window"
-msgstr ""
+msgstr "Malsekva fenestro"
 
 msgid "Parent Window"
-msgstr ""
+msgstr "Patra fenestro"
 
 msgid "HTML Manual..."
-msgstr ""
+msgstr "HTML-manlibro…"
 
 msgid "Browser..."
-msgstr ""
+msgstr "Foliumilo…"
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Listo de objektoj…"
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
-msgstr ""
+msgstr "Kontroli ĝisdatigojn"
 
 msgid "Report a bug"
-msgstr ""
+msgstr "Raporti cimon"
 
 msgid "Clear Menu"
-msgstr ""
+msgstr "Forviŝi menuon"
 
 msgid ""
 "Delete all preferences?\n"
@@ -1511,39 +1514,39 @@ msgid "no Pd-GUI settings to clear"
 msgstr ""
 
 msgid "Edit Preferences..."
-msgstr ""
+msgstr "Modifi preferojn…"
 
 msgid "Save All Preferences"
-msgstr ""
+msgstr "Konservi ĉiujn preferojn"
 
 msgid "Save to..."
-msgstr ""
+msgstr "Konservi al…"
 
 msgid "Load from..."
-msgstr ""
+msgstr "Ŝargi de…"
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Forgesi ĉion…"
 
 msgid "Tabbed preferences"
 msgstr ""
 
 msgid "Open Recent"
-msgstr ""
+msgstr "Malfermi lastajn"
 
 msgid "Quit"
-msgstr ""
+msgstr "Forlasi"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
 msgstr ""
 
 msgid "Properties"
-msgstr ""
+msgstr "Atributoj"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
-msgstr ""
+msgstr "Ĉu akcepti ŝanĝojn pri «%s»?"
 
 msgid ""
 "Accepting will update the contents in the associated object. You still have "
@@ -1565,50 +1568,50 @@ msgid "Audio off"
 msgstr ""
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "EKSPERIMENTA duobla (64-bita) glitkomo"
 
 #, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr ""
+msgstr "%d-bita glitkomo EKSPERIMENTA"
 
 msgid "DSP"
 msgstr ""
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Sona eneliga eraro"
 
 msgid "Log:"
-msgstr ""
+msgstr "Protokolo:"
 
 msgid "fatal"
 msgstr ""
 
 msgid "error"
-msgstr ""
+msgstr "eraro"
 
 msgid "normal"
-msgstr ""
+msgstr "normala"
 
 msgid "debug"
-msgstr ""
+msgstr "sencimiga"
 
 msgid "all"
-msgstr ""
+msgstr "ĉiaj"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
-msgstr ""
+msgstr "Nova…"
 
 msgid "Edit..."
-msgstr ""
+msgstr "Redakti…"
 
 msgid "Delete"
-msgstr ""
+msgstr "Forigi"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
