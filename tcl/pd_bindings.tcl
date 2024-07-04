@@ -3,6 +3,7 @@ package provide pd_bindings 0.1
 package require pd_menucommands
 package require dialog_find
 package require pd_connect
+package require pd_guiprefs
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -138,6 +139,11 @@ namespace eval ::pd_bindings:: {
 }
 
 proc ::pd_bindings::setup {} {
+    set data [::pd_guiprefs::read KeyBindings true]
+    if { ${data} != {} } {
+        set ::pd_bindings::bindlist ${data}
+    }
+
     foreach {ev shortcuts} $::pd_bindings::bindlist {
         set event <<${ev}>>
         event delete ${event}
