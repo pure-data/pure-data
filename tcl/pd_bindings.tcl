@@ -18,125 +18,128 @@ namespace eval ::pd_bindings:: {
         set alt "Option"
         set control "Mod1"
     }
-}
-
-proc ::pd_bindings::event_set {vevent args} {
-    event delete $vevent
-    foreach binding $args {
-        if { "${binding}" != "" } {
-            event add $vevent $binding
-        }
-    }
-}
-
-proc ::pd_bindings::setup {} {
-    variable control
-    # defines all the virtual events for menu interaction
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
-
-    #event_set  <<VirtualEvent>>           ${*}bindings
-    event_set  <<File|New>>               <${control}-Key-N> <${control}-Key-n>
-    event_set  <<File|Open>>              <${control}-Key-O> <${control}-Key-o>
-    event_set  <<File|Save>>              <${control}-Key-S> <${control}-Key-s>
-    event_set  <<File|SaveAs>>            <${control}-Shift-Key-S> <${control}-Shift-Key-s>
-    event_set  <<File|Print>>             <${control}-Key-P> <${control}-Key-p>
-    event_set  <<File|ClearRecentFiles>>  {}
-    event_set  <<File|Close>>             <${control}-Key-W> <${control}-Key-w>
-    event_set  <<File|CloseNow>>          <${control}-Shift-Key-W> <${control}-Shift-Key-w>
-    event_set  <<File|QuitNow>>           <${control}-Shift-Key-Q> <${control}-Shift-Key-q>
+    variable bindlist {}
+    lappend bindlist "<<File|New>>"               [list <${control}-Key-N> <${control}-Key-n>]
+    lappend bindlist "<<File|Open>>"              [list <${control}-Key-O> <${control}-Key-o>]
+    lappend bindlist "<<File|Save>>"              [list <${control}-Key-S> <${control}-Key-s>]
+    lappend bindlist "<<File|SaveAs>>"            [list <${control}-Shift-Key-S> <${control}-Shift-Key-s>]
+    lappend bindlist "<<File|Print>>"             [list <${control}-Key-P> <${control}-Key-p>]
+    lappend bindlist "<<File|ClearRecentFiles>>"  {}
+    lappend bindlist "<<File|Close>>"             [list <${control}-Key-W> <${control}-Key-w>]
+    lappend bindlist "<<File|CloseNow>>"          [list <${control}-Shift-Key-W> <${control}-Shift-Key-w>]
+    if {[tk windowingsystem] eq "aqua"} {
+        # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+        if {$::tcl_version < 8.5} {
+            lappend bindlist <<File|Quit>>       [list <${control}-Key-Q> <${control}-Key-q>]
+        }
+    } else {
+        lappend bindlist <<File|Quit>>          [list <${control}-Key-Q> <${control}-Key-q>]
+    }
+    lappend bindlist "<<File|QuitNow>>"           [list <${control}-Shift-Key-Q> <${control}-Shift-Key-q>]
 
     # (at least on X11) the built-in events Undo/Redo/Cut/Copy/Paste are already bound to the usual shortcuts
     # this is somewhat problematic, as we cannot unbind these events from the keys
-    event_set  <<Edit|Undo>>              <${control}-Key-Z> <${control}-Key-z>
-    event_set  <<Edit|Redo>>              <${control}-Shift-Key-Z> <${control}-Shift-Key-z>
-    event_set  <<Edit|Cut>>               <${control}-Key-X> <${control}-Key-x>
-    event_set  <<Edit|Copy>>              <${control}-Key-C> <${control}-Key-c>
+    lappend bindlist "<<Edit|Undo>>"              [list <${control}-Key-Z> <${control}-Key-z>]
+    lappend bindlist "<<Edit|Redo>>"              [list <${control}-Shift-Key-Z> <${control}-Shift-Key-z>]
+    lappend bindlist "<<Edit|Cut>>"               [list <${control}-Key-X> <${control}-Key-x>]
+    lappend bindlist "<<Edit|Copy>>"              [list <${control}-Key-C> <${control}-Key-c>]
     # TclTk says:
-    # <<Paste>>   Replace the currently selected widget contents with the contents of the clipboard.
-    # <<PasteSelection>> Insert the contents of the selection at the mouse location.
-    event_set  <<Edit|Paste>>             <${control}-Key-V> <${control}-Key-v>
-
-    event_set  <<Edit|PasteReplace>>      {}
-    event_set  <<Edit|Duplicate>>         <${control}-Key-D> <${control}-Key-d>
-    event_set  <<Edit|SelectAll>>         <${control}-Key-A> <${control}-Key-a>
-    event_set  <<Edit|SelectNone>>        <KeyPress-Escape>
-    event_set  <<Edit|Font>>              {}
+    # lappend bindlist "<<Paste>>"   Replace the currently selected widget contents with the contents of the clipboard.
+    # lappend bindlist "<<PasteSelection>>" Insert the contents of the selection at the mouse location.
+    lappend bindlist "<<Edit|Paste>>"             [list <${control}-Key-V> <${control}-Key-v>]
+    lappend bindlist "<<Edit|PasteReplace>>"      {}
+    lappend bindlist "<<Edit|Duplicate>>"         [list <${control}-Key-D> <${control}-Key-d>]
+    lappend bindlist "<<Edit|SelectAll>>"         [list <${control}-Key-A> <${control}-Key-a>]
+    lappend bindlist "<<Edit|SelectNone>>"        [list <KeyPress-Escape>]
+    lappend bindlist "<<Edit|Font>>"              {}
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
     # expected it... go figure.
-    event_set  <<Edit|ZoomIn>>            <${control}-Key-plus> <${control}-Key-KP_Add> <${control}-Key-equal>
-    event_set  <<Edit|ZoomOut>>           <${control}-Key-minus> <${control}-Key-KP_Subtract>
-    event_set  <<Edit|TidyUp>>            <${control}-Shift-Key-R> <${control}-Shift-Key-r>
-    event_set  <<Edit|ConnectSelection>>  <${control}-Key-K> <${control}-Key-k>
-    event_set  <<Edit|Triggerize>>        <${control}-Key-T> <${control}-Key-t>
-    event_set  <<Edit|EditMode>>          <${control}-Key-E> <${control}-Key-e>
+    lappend bindlist "<<Edit|ZoomIn>>"            [list <${control}-Key-plus> <${control}-Key-KP_Add> <${control}-Key-equal>]
+    lappend bindlist "<<Edit|ZoomOut>>"           [list <${control}-Key-minus> <${control}-Key-KP_Subtract>]
+    lappend bindlist "<<Edit|TidyUp>>"            [list <${control}-Shift-Key-R> <${control}-Shift-Key-r>]
+    lappend bindlist "<<Edit|ConnectSelection>>"  [list <${control}-Key-K> <${control}-Key-k>]
+    lappend bindlist "<<Edit|Triggerize>>"        [list <${control}-Key-T> <${control}-Key-t>]
+    lappend bindlist "<<Edit|EditMode>>"          [list <${control}-Key-E> <${control}-Key-e>]
 
-    event_set  <<Put|Object>>             <${control}-Key-1>
-    event_set  <<Put|Message>>            <${control}-Key-2>
-    event_set  <<Put|Number>>             <${control}-Key-3>
-    event_set  <<Put|List>>               <${control}-Key-4>
-    event_set  <<Put|Symbol>>             {}
-    event_set  <<Put|Comment>>            <${control}-Key-5>
+    lappend bindlist "<<Put|Object>>"             [list <${control}-Key-1>]
+    lappend bindlist "<<Put|Message>>"            [list <${control}-Key-2>]
+    lappend bindlist "<<Put|Number>>"             [list <${control}-Key-3>]
+    lappend bindlist "<<Put|List>>"               [list <${control}-Key-4>]
+    lappend bindlist "<<Put|Symbol>>"             {}
+    lappend bindlist "<<Put|Comment>>"            [list <${control}-Key-5>]
+    lappend bindlist "<<Put|Bang>>"               [list <${control}-Shift-Key-B> <${control}-Shift-Key-b>]
+    lappend bindlist "<<Put|Toggle>>"             [list <${control}-Shift-Key-T> <${control}-Shift-Key-t>]
+    lappend bindlist "<<Put|Number2>>"            [list <${control}-Shift-Key-N> <${control}-Shift-Key-n>]
+    lappend bindlist "<<Put|VerticalSlider>>"     [list <${control}-Shift-Key-V> <${control}-Shift-Key-v>]
+    lappend bindlist "<<Put|HorizontalSlider>>"   [list <${control}-Shift-Key-J> <${control}-Shift-Key-j>]
+    lappend bindlist "<<Put|VerticalRadio>>"      [list <${control}-Shift-Key-D> <${control}-Shift-Key-d>]
+    lappend bindlist "<<Put|HorizontalRadio>>"    [list <${control}-Shift-Key-I> <${control}-Shift-Key-i>]
+    lappend bindlist "<<Put|VUMeter>>"            [list <${control}-Shift-Key-U> <${control}-Shift-Key-u>]
+    lappend bindlist "<<Put|Canvas>>"             [list <${control}-Shift-Key-C> <${control}-Shift-Key-c>]
+    lappend bindlist "<<Put|Graph>>"              [list <${control}-Shift-Key-G> <${control}-Shift-Key-g>]
+    lappend bindlist "<<Put|Array>>"              [list <${control}-Shift-Key-A> <${control}-Shift-Key-a>]
 
-    event_set  <<Put|Bang>>               <${control}-Shift-Key-B> <${control}-Shift-Key-b>
-    event_set  <<Put|Toggle>>             <${control}-Shift-Key-T> <${control}-Shift-Key-t>
-    event_set  <<Put|Number2>>            <${control}-Shift-Key-N> <${control}-Shift-Key-n>
-    event_set  <<Put|VerticalSlider>>     <${control}-Shift-Key-V> <${control}-Shift-Key-v>
-    event_set  <<Put|HorizontalSlider>>   <${control}-Shift-Key-J> <${control}-Shift-Key-j>
-    event_set  <<Put|VerticalRadio>>      <${control}-Shift-Key-D> <${control}-Shift-Key-d>
-    event_set  <<Put|HorizontalRadio>>    <${control}-Shift-Key-I> <${control}-Shift-Key-i>
-    event_set  <<Put|VUMeter>>            <${control}-Shift-Key-U> <${control}-Shift-Key-u>
-    event_set  <<Put|Canvas>>             <${control}-Shift-Key-C> <${control}-Shift-Key-c>
-    event_set  <<Put|Graph>>              <${control}-Shift-Key-G> <${control}-Shift-Key-g>
-    event_set  <<Put|Array>>              <${control}-Shift-Key-A> <${control}-Shift-Key-a>
+    lappend bindlist "<<Find|Find>>"              [list <${control}-Key-F> <${control}-Key-f>]
+    lappend bindlist "<<Find|FindAgain>>"         [list <${control}-Key-G> <${control}-Key-g>]
+    lappend bindlist "<<Find|FindLastError>>"     {}
 
-    event_set  <<Find|Find>>              <${control}-Key-F> <${control}-Key-f>
-    event_set  <<Find|FindAgain>>         <${control}-Key-G> <${control}-Key-g>
-    event_set  <<Find|FindLastError>>     {}
+    lappend bindlist "<<Media|DSPOn>>"            [list <${control}-Key-slash>]
+    lappend bindlist "<<Media|DSPOff>>"           [list <${control}-Key-period>]
+    lappend bindlist "<<Media|TestAudioMIDI>>"    {}
+    lappend bindlist "<<Media|LoadMeter>>"        {}
 
-    event_set  <<Media|DSPOn>>            <${control}-Key-slash>
-    event_set  <<Media|DSPOff>>           <${control}-Key-period>
-    event_set  <<Media|TestAudioMIDI>>    {}
-    event_set  <<Media|LoadMeter>>        {}
+    lappend bindlist "<<Window|Maximize>>"        {}
+    lappend bindlist "<<Window|AllToFront>>"      {}
+    lappend bindlist "<<Window|PdWindow>>"        [list <${control}-Key-R> <${control}-Key-r>]
+    lappend bindlist "<<Window|Parent>>"          {}
 
-    event_set  <<Window|Maximize>>        {}
-    event_set  <<Window|AllToFront>>      {}
     if {[tk windowingsystem] eq "aqua"} {
-         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+        # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            event_set <<File|Quit>>       <${control}-Key-Q> <${control}-Key-q>
-            event_set <<Window|Minimize>> <${control}-Key-M> <${control}-Key-m>
-            event_set <<Window|Next>>     <${control}-quoteleft>
+            lappend bindlist <<Window|Minimize>> [list <${control}-Key-M> <${control}-Key-m>]
+            lappend bindlist <<Window|Next>>     [list <${control}-quoteleft>]
         }
     } else {
-        event_set  <<File|Quit>>          <${control}-Key-Q> <${control}-Key-q>
-        event_set  <<Window|Minimize>>    <${control}-Key-M> <${control}-Key-m>
-        event_set  <<Window|Next>>        <${control}-Next> <${control}-greater>
-        event_set  <<Window|Previous>>    <${control}-Prior> <${control}-less>
+        lappend bindlist <<Window|Minimize>>    [list <${control}-Key-M> <${control}-Key-m>]
+        lappend bindlist <<Window|Next>>        [list <${control}-Next> <${control}-greater>]
+        lappend bindlist <<Window|Previous>>    [list <${control}-Prior> <${control}-less>]
     }
 
-    event_set  <<Window|PdWindow>>        <${control}-Key-R> <${control}-Key-r>
-    event_set  <<Window|Parent>>          {}
+    lappend bindlist "<<Help|About>>"             {}
+    lappend bindlist "<<Help|Manual>>"            {}
+    lappend bindlist "<<Help|Browser>>"           [list <${control}-Key-B> <${control}-Key-b>]
+    lappend bindlist "<<Help|ListObjects>>"       {}
+    lappend bindlist "<<Help|puredata.info>>"     {}
+    lappend bindlist "<<Help|CheckUpdates>>"      {}
+    lappend bindlist "<<Help|ReportBug>>"         {}
 
-    event_set  <<Help|About>>             {}
-    event_set  <<Help|Manual>>            {}
-    event_set  <<Help|Browser>>           <${control}-Key-B> <${control}-Key-b>
-    event_set  <<Help|ListObjects>>       {}
-    event_set  <<Help|puredata.info>>     {}
-    event_set  <<Help|CheckUpdates>>      {}
-    event_set  <<Help|ReportBug>>         {}
+    lappend bindlist "<<Pd|Message>>"             [list <${control}-Shift-Key-M> <${control}-Shift-Key-m>]
+    lappend bindlist "<<Pd|ClearConsole>>"        [list <${control}-Shift-Key-L> <${control}-Shift-Key-l>]
 
-    event_set  <<Pd|Message>>             <${control}-Shift-Key-M> <${control}-Shift-Key-m>
-    event_set  <<Pd|ClearConsole>>        <${control}-Shift-Key-L> <${control}-Shift-Key-l>
+    lappend bindlist "<<Preferences|Edit>>"       {}
+    lappend bindlist "<<Preferences|Audio>>"      {}
+    lappend bindlist "<<Preferences|MIDI>>"       {}
+    lappend bindlist "<<Preferences|Save>>"       {}
+    lappend bindlist "<<Preferences|SaveTo>>"     {}
+    lappend bindlist "<<Preferences|Load>>"       {}
+    lappend bindlist "<<Preferences|Forget>>"     {}
 
-    event_set  <<Preferences|Edit>>       {}
-    event_set  <<Preferences|Audio>>      {}
-    event_set  <<Preferences|MIDI>>       {}
-    event_set  <<Preferences|Save>>       {}
-    event_set  <<Preferences|SaveTo>>     {}
-    event_set  <<Preferences|Load>>       {}
-    event_set  <<Preferences|Forget>>     {}
+}
+
+proc ::pd_bindings::setup {} {
+    foreach {event shortcuts} $::pd_bindings::bindlist {
+        event delete $event
+        foreach keys $shortcuts {
+            if { "$keys" != "" } {
+                event add $event $keys
+            } else {
+                puts "OOPSIE $event"
+            }
+        }
+    }
 }
 
 # wrapper around bind(3tk)to deal with CapsLock
