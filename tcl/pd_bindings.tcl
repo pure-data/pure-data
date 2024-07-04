@@ -20,6 +20,118 @@ namespace eval ::pd_bindings:: {
     }
 }
 
+proc ::pd_bindings::event_set {vevent args} {
+    event delete $vevent
+    foreach binding $args {
+        if { "${binding}" != "" } {
+            event add $vevent $binding
+        }
+    }
+}
+
+proc ::pd_bindings::setup {} {
+    variable control
+    # defines all the virtual events for menu interaction
+
+    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
+
+
+    #event_set  <<VirtualEvent>>           ${*}bindings
+    event_set  <<File|New>>               <${control}-Key-n> <${control}-Key-N>
+    event_set  <<File|Open>>              <${control}-Key-o> <${control}-Key-O>
+    event_set  <<File|Save>>              <${control}-Key-s> <${control}-Key-S>
+    event_set  <<File|SaveAs>>            <${control}-Shift-Key-s> <${control}-Shift-Key-S>
+    event_set  <<File|Message>>           <${control}-Shift-Key-m> <${control}-Shift-Key-M>
+    event_set  <<File|Print>>             <${control}-Key-p> <${control}-Key-P>
+    event_set  <<File|Close>>             <${control}-Key-w> <${control}-Key-W>
+    event_set  <<File|CloseNow>>          <${control}-Shift-Key-w> <${control}-Shift-Key-W>
+    event_set  <<File|QuitNow>>           <${control}-Shift-Key-q> <${control}-Shift-Key-Q>
+
+    # (at least on X11) the built-in events Undo/Redo/Cut/Copy/Paste are already bound to the usual shortcuts
+    # this is somewhat problematic, as we cannot unbind these events from the keys
+    event_set  <<Edit|Undo>>              <${control}-Key-z> <${control}-Key-Z>
+    event_set  <<Edit|Redo>>              <${control}-Shift-Key-z> <${control}-Shift-Key-Z>
+    event_set  <<Edit|Cut>>               <${control}-Key-x> <${control}-Key-X>
+    event_set  <<Edit|Copy>>              <${control}-Key-c> <${control}-Key-C>
+    # TclTk says:
+    # <<Paste>>   Replace the currently selected widget contents with the contents of the clipboard.
+    # <<PasteSelection>> Insert the contents of the selection at the mouse location.
+    event_set  <<Edit|Paste>>             <${control}-Key-v> <${control}-Key-V>
+
+    event_set  <<Edit|PasteReplace>>      {}
+    event_set  <<Edit|Duplicate>>         <${control}-Key-d> <${control}-Key-D>
+    event_set  <<Edit|SelectAll>>         <${control}-Key-a> <${control}-Key-A>
+    event_set  <<Edit|SelectNone>>        <KeyPress-Escape>
+    event_set  <<Edit|Font>>              {}
+    # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
+    # "+" key... this only makes sense on US keyboards but some users
+    # expected it... go figure.
+    event_set  <<Edit|ZoomIn>>            <${control}-Key-equal> <${control}-Key-plus> <${control}-Key-KP_Add>
+    event_set  <<Edit|ZoomOut>>           <${control}-Key-minus> <${control}-Key-KP_Subtract>
+    event_set  <<Edit|TidyUp>>            <${control}-Shift-Key-r> <${control}-Shift-Key-R>
+    event_set  <<Edit|ConnectSelection>>  <${control}-Key-k> <${control}-Key-K>
+    event_set  <<Edit|Triggerize>>        <${control}-Key-t> <${control}-Key-T>
+    event_set  <<Edit|ClearConsole>>      <${control}-Shift-Key-l> <${control}-Shift-Key-L>
+    event_set  <<Edit|EditMode>>          <${control}-Key-e> <${control}-Key-E>
+
+    event_set  <<Put|Object>>             <${control}-Key-1>
+    event_set  <<Put|Message>>            <${control}-Key-2>
+    event_set  <<Put|Number>>             <${control}-Key-3>
+    event_set  <<Put|List>>               <${control}-Key-4>
+    event_set  <<Put|Symbol>>             {}
+    event_set  <<Put|Comment>>            <${control}-Key-5>
+
+    event_set  <<Put|Bang>>               <${control}-Shift-Key-b> <${control}-Shift-Key-B>
+    event_set  <<Put|Toggle>>             <${control}-Shift-Key-t> <${control}-Shift-Key-T>
+    event_set  <<Put|Number2>>            <${control}-Shift-Key-n> <${control}-Shift-Key-N>
+    event_set  <<Put|VerticalSlider>>     <${control}-Shift-Key-v> <${control}-Shift-Key-V>
+    event_set  <<Put|HorizontalSlider>>   <${control}-Shift-Key-j> <${control}-Shift-Key-J>
+    event_set  <<Put|VerticalRadio>>      <${control}-Shift-Key-d> <${control}-Shift-Key-D>
+    event_set  <<Put|HorizontalRadio>>    <${control}-Shift-Key-i> <${control}-Shift-Key-I>
+    event_set  <<Put|VUMeter>>            <${control}-Shift-Key-u> <${control}-Shift-Key-U>
+    event_set  <<Put|Canvas>>             <${control}-Shift-Key-c> <${control}-Shift-Key-C>
+    event_set  <<Put|Graph>>              <${control}-Shift-Key-g> <${control}-Shift-Key-G>
+    event_set  <<Put|Array>>              <${control}-Shift-Key-a> <${control}-Shift-Key-A>
+
+    event_set  <<Find|Find>>              <${control}-Key-f> <${control}-Key-F>
+    event_set  <<Find|FindAgain>>         <${control}-Key-g> <${control}-Key-G>
+    event_set  <<Find|FindLastError>>     {}
+
+    event_set  <<Media|DSPOn>>            <${control}-Key-slash>
+    event_set  <<Media|DSPOff>>           <${control}-Key-period>
+    event_set  <<Media|TestAudioMIDI>>    {}
+    event_set  <<Media|LoadMeter>>        {}
+    event_set  <<Media|AudioSettings>>    {}
+    event_set  <<Media|MIDISettings>>     {}
+
+    event_set  <<Window|Maximize>>        {}
+    event_set  <<Window|AllToFront>>      {}
+    if {[tk windowingsystem] eq "aqua"} {
+         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+        if {$::tcl_version < 8.5} {
+            event_set <<File|Quit>>       <${control}-Key-q> <${control}-Key-Q>
+            event_set <<Window|Minimize>> <${control}-Key-m> <${control}-Key-M>
+            event_set <<Window|Next>>     <${control}-quoteleft>
+        }
+    } else {
+        event_set  <<File|Quit>>          <${control}-Key-q> <${control}-Key-Q>
+        event_set  <<Window|Minimize>>    <${control}-Key-m> <${control}-Key-M>
+        event_set  <<Window|Next>>        <${control}-Next> <${control}-greater>
+        event_set  <<Window|Previous>>    <${control}-Prior> <${control}-less>
+    }
+
+    event_set  <<Window|PdWindow>>        <${control}-Key-r> <${control}-Key-R>
+    event_set  <<Window|Parent>>          {}
+
+    event_set  <<Help|About>>             {}
+    event_set  <<Help|Manual>>            {}
+    event_set  <<Help|Browser>>           <${control}-Key-b> <${control}-Key-B>
+    event_set  <<Help|ListObjects>>       {}
+    event_set  <<Help|puredata.info>>     {}
+    event_set  <<Help|CheckUpdates>>      {}
+    event_set  <<Help|ReportBug>>         {}
+}
+
 # wrapper around bind(3tk)to deal with CapsLock
 # the actual bind-sequence is is build as '<${seq_prefix}-${seq_nocase}',
 # with the $seq_nocase part bing bound both as upper-case and lower-case
@@ -39,96 +151,110 @@ proc ::pd_bindings::bind_capslock {tag seq_prefix seq_nocase script} {
 # binding by class is not recursive, so its useful for window events
 proc ::pd_bindings::class_bindings {} {
     # and the Pd window is in a class to itself
-    bind PdWindow <FocusIn>           "::pd_bindings::window_focusin %W"
-    bind PdWindow <Destroy>           "::pd_bindings::window_destroy %W"
+    bind PdWindow     <FocusIn>       "::pd_bindings::window_focusin %W"
+    bind PdWindow     <Destroy>       "::pd_bindings::window_destroy %W"
     # bind to all the windows dedicated to patch canvases
-    bind PatchWindow <FocusIn>        "::pd_bindings::window_focusin %W"
-    bind PatchWindow <Map>            "::pd_bindings::patch_map %W"
-    bind PatchWindow <Unmap>          "::pd_bindings::patch_unmap %W"
-    bind PatchWindow <Configure>      "::pd_bindings::patch_configure %W %w %h %x %y"
-    bind PatchWindow <Destroy>        "::pd_bindings::window_destroy %W"
+    bind PatchWindow  <FocusIn>       "::pd_bindings::window_focusin %W"
+    bind PatchWindow  <Map>           "::pd_bindings::patch_map %W"
+    bind PatchWindow  <Unmap>         "::pd_bindings::patch_unmap %W"
+    bind PatchWindow  <Configure>     "::pd_bindings::patch_configure %W %w %h %x %y"
+    bind PatchWindow  <Destroy>       "::pd_bindings::window_destroy %W"
     # dialog panel windows bindings, which behave differently than PatchWindows
     bind DialogWindow <Configure>     "::pd_bindings::dialog_configure %W"
     bind DialogWindow <FocusIn>       "::pd_bindings::dialog_focusin %W"
     bind DialogWindow <Destroy>       "::pd_bindings::window_destroy %W"
     # help browser bindings
-    bind HelpBrowser <Configure>      "::pd_bindings::dialog_configure %W"
-    bind HelpBrowser <FocusIn>        "::pd_bindings::dialog_focusin %W"
-    bind HelpBrowser <Destroy>        "::pd_bindings::window_destroy %W"
+    bind HelpBrowser  <Configure>     "::pd_bindings::dialog_configure %W"
+    bind HelpBrowser  <FocusIn>       "::pd_bindings::dialog_focusin %W"
+    bind HelpBrowser  <Destroy>       "::pd_bindings::window_destroy %W"
 }
 
 proc ::pd_bindings::global_bindings {} {
-    variable control
-    variable alt
     # we use 'bind all' everywhere to get as much of Tk's automatic binding
     # behaviors as possible, things like not sending an event for 'O' when
     # 'Control-O' is pressed
-    bind_capslock all ${control}-Key a {menu_send %W selectall}
-    bind_capslock all ${control}-Key b {menu_helpbrowser}
-    bind_capslock all ${control}-Key c {menu_send %W copy}
-    bind_capslock all ${control}-Key d {menu_send %W duplicate}
-    bind_capslock all ${control}-Key e {menu_toggle_editmode}
-    bind_capslock all ${control}-Key f {menu_find_dialog}
-    bind_capslock all ${control}-Key g {menu_send %W findagain}
-    bind_capslock all ${control}-Key k {menu_send %W connect_selection}
-    bind_capslock all ${control}-Key n {menu_new}
-    bind_capslock all ${control}-Key o {menu_open}
-    bind_capslock all ${control}-Key p {menu_print $::focused_window}
-    bind_capslock all ${control}-Key r {menu_raise_pdwindow}
-    bind_capslock all ${control}-Key s {menu_send %W menusave}
-    bind_capslock all ${control}-Key t {menu_send %W triggerize}
-    bind_capslock all ${control}-Key v {menu_send %W paste}
-    bind_capslock all ${control}-Key w {::pd_bindings::window_close %W}
-    bind_capslock all ${control}-Key x {menu_send %W cut}
-    bind_capslock all ${control}-Key z {menu_undo}
-    bind all <${control}-Key-1>        {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
-    bind all <${control}-Key-2>        {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
-    bind all <${control}-Key-3>        {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
-    bind all <${control}-Key-4>        {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
-    bind all <${control}-Key-5>        {::pd_menucommands::scheduleAction menu_send_float %W text 0}
-    bind all <${control}-Key-slash>    {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
-    bind all <${control}-Key-period>   {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
 
-    # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
-    # "+" key... this only makes sense on US keyboards but some users
-    # expected it... go figure.
-    bind all <${control}-Key-equal>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <${control}-Key-plus>        {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <${control}-Key-minus>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
-    bind all <${control}-Key-KP_Add>      {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <${control}-Key-KP_Subtract> {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind  all  <<File|New>>               {menu_new}
+    bind  all  <<File|Open>>              {menu_open}
+    bind  all  <<File|Save>>              {menu_send %W menusave}
+    bind  all  <<File|SaveAs>>            {menu_send %W menusaveas}
+    bind  all  <<File|Message>>           {menu_message_dialog}
+    bind  all  <<File|Print>>             {menu_print $::focused_window}
+    bind  all  <<File|Close>>             {::pd_bindings::window_close %W}
+    bind  all  <<File|CloseNow>>          {::pd_bindings::window_close %W 1}
+    bind  all  <<File|Quit>>              {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
+    bind  all  <<File|QuitNow>>           {pdsend "pd quit"}
 
-    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
-    # annoying, but Tk's bind needs uppercase letter to get the Shift
-    bind_capslock all ${control}-Shift-Key A {menu_send %W menuarray}
-    bind_capslock all ${control}-Shift-Key B {menu_send %W bng}
-    bind_capslock all ${control}-Shift-Key C {menu_send %W mycnv}
-    bind_capslock all ${control}-Shift-Key D {menu_send %W vradio}
-    bind_capslock all ${control}-Shift-Key G {menu_send %W graph}
-    bind_capslock all ${control}-Shift-Key J {menu_send %W hslider}
-    bind_capslock all ${control}-Shift-Key I {menu_send %W hradio}
-    bind_capslock all ${control}-Shift-Key L {menu_clear_console}
-    bind_capslock all ${control}-Shift-Key M {menu_message_dialog}
-    bind_capslock all ${control}-Shift-Key N {menu_send %W numbox}
-    bind_capslock all ${control}-Shift-Key Q {pdsend "pd quit"}
-    bind_capslock all ${control}-Shift-Key R {menu_send %W tidy}
-    bind_capslock all ${control}-Shift-Key S {menu_send %W menusaveas}
-    bind_capslock all ${control}-Shift-Key T {menu_send %W toggle}
-    bind_capslock all ${control}-Shift-Key U {menu_send %W vumeter}
-    bind_capslock all ${control}-Shift-Key V {menu_send %W vslider}
-    bind_capslock all ${control}-Shift-Key W {::pd_bindings::window_close %W 1}
-    bind_capslock all ${control}-Shift-Key Z {menu_redo}
-    bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
+    bind  all  <<Edit|Undo>>              {menu_undo}
+    bind  all  <<Edit|Redo>>              {menu_redo}
+    bind  all  <<Edit|Cut>>               {menu_send %W cut}
+    bind  all  <<Edit|Copy>>              {menu_send %W copy}
+    bind  all  <<Edit|Paste>>             {menu_send %W paste}
+    bind  all  <<Edit|Duplicate>>         {menu_send %W duplicate}
+    bind  all  <<Edit|PasteReplace>>      {puts "TODO bind PasteReplace"}
+    bind  all  <<Edit|SelectAll>>         {menu_send %W selectall}
+
+    bind  all  <<Edit|Font>>              {puts "TODO bind Font"}
+    bind  all  <<Edit|ZoomIn>>            {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
+    bind  all  <<Edit|ZoomOut>>           {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind  all  <<Edit|TidyUp>>            {menu_send %W tidy}
+    bind  all  <<Edit|ConnectSelection>>  {menu_send %W connect_selection}
+    bind  all  <<Edit|Triggerize>>        {menu_send %W triggerize}
+    bind  all  <<Edit|ClearConsole>>      {menu_clear_console}
+    bind  all  <<Edit|EditMode>>          {menu_toggle_editmode}
+    bind  all  <<Edit|SelectNone>>        {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
+
+    bind  all  <<Put|Object>>             {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
+    bind  all  <<Put|Message>>            {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
+    bind  all  <<Put|Number>>             {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
+    bind  all  <<Put|Symbol>>             {::pd_menucommands::scheduleAction menu_send_float %W symbolatom 0}
+    bind  all  <<Put|List>>               {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
+    bind  all  <<Put|Comment>>            {::pd_menucommands::scheduleAction menu_send_float %W text 0}
+    bind  all  <<Put|Array>>              {menu_send %W menuarray}
+    bind  all  <<Put|Bang>>               {menu_send %W bng}
+    bind  all  <<Put|Canvas>>             {menu_send %W mycnv}
+    bind  all  <<Put|VerticalRadio>>      {menu_send %W vradio}
+    bind  all  <<Put|Graph>>              {menu_send %W graph}
+    bind  all  <<Put|HorizontalSlider>>   {menu_send %W hslider}
+    bind  all  <<Put|HorizontalRadio>>    {menu_send %W hradio}
+    bind  all  <<Put|Number2>>            {menu_send %W numbox}
+    bind  all  <<Put|Toggle>>             {menu_send %W toggle}
+    bind  all  <<Put|VUMeter>>            {menu_send %W vumeter}
+    bind  all  <<Put|VerticalSlider>>     {menu_send %W vslider}
+
+    bind  all  <<Find|Find>>              {menu_find_dialog}
+    bind  all  <<Find|FindAgain>>         {menu_send %W findagain}
+    bind  all  <<Find|FindLastError>>     {puts "TODO bind FindLastError"}
+
+    bind  all  <<Media|DSPOn>>            {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
+    bind  all  <<Media|DSPOff>>           {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
+    bind  all  <<Media|TestAudioMIDI>>    {puts "TODO bind TestAudioMIDI"}
+    bind  all  <<Media|LoadMeter>>        {puts "TODO bind LoadMeter"}
+    bind  all  <<Media|AudioSettings>>    {puts "TODO bind AudioSettings"}
+    bind  all  <<Media|MIDISettings>>     {puts "TODO bind MIDISettings"}
+
+    bind  all  <<Window|Minimize>>        {puts "TODO bind Window|Minimize"}
+    bind  all  <<Window|Maximize>>        {puts "TODO bind Window|Maximize"}
+    bind  all  <<Window|AllToFront>>      {puts "TODO bind Window|AllToFront"}
+    bind  all  <<Window|Next>>            {puts "TODO bind Window|Next"}
+    bind  all  <<Window|Previous>>        {puts "TODO bind Window|Previous"}
+    bind  all  <<Window|PdWindow>>        {menu_raise_pdwindow}
+    bind  all  <<Window|Parent>>          {puts "TODO bind Window|Parent"}
+
+    bind  all  <<Help|About>>             {puts "TODO bind Help|About"}
+    bind  all  <<Help|Manual>>            {puts "TODO bind Help|Manual"}
+    bind  all  <<Help|Browser>>           {menu_helpbrowser}
+    bind  all  <<Help|ListObjects>>       {puts "TODO bind Help|ListObjects"}
+    bind  all  <<Help|puredata.info>>     {puts "TODO bind Help|puredata.info"}
+    bind  all  <<Help|CheckUpdates>>      {puts "TODO bind Help|CheckUpdates"}
+    bind  all  <<Help|ReportBug>>         {puts "TODO bind Help|ReportBug"}
+
+
+    # JMZ: shouldn't the keybindings only apply to PatchWindows?
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
-         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
-        if {$::tcl_version < 8.5} {
-            bind_capslock all ${control}-Key q       {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
-            bind_capslock all ${control}-Key m       {::pd_menucommands::scheduleAction menu_minimize %W}
-            bind all <${control}-quoteleft>   {::pd_menucommands::scheduleAction menu_raisenextwindow}
-        }
         # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
         # so we set them to the empty string and let ::pd_bindings::sendkey guess the correct values
         bind all <KeyPress-BackSpace>      {::pd_bindings::sendkey %W 1 %K "" 1 %k}
@@ -139,15 +265,6 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyRelease-KP_Enter>     {::pd_bindings::sendkey %W 0 %K "" 1 %k}
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
-    } else {
-        bind_capslock all ${control}-Key q       {::pd_connect::menu_quit}
-        bind_capslock all ${control}-Key m       {menu_minimize %W}
-
-        bind all <${control}-Next>        {menu_raisenextwindow}    ;# PgUp
-        bind all <${control}-Prior>       {menu_raisepreviouswindow};# PageDown
-        # these can conflict with CMD+comma & CMD+period bindings in Tk Cococa
-        bind all <${control}-greater>     {menu_raisenextwindow}
-        bind all <${control}-less>        {menu_raisepreviouswindow}
     }
 
     bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0 %k}
@@ -487,3 +604,7 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
     }
     pdsend "$mytoplevel key $state $key $shift"
 }
+
+
+
+::pd_bindings::setup
