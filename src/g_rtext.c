@@ -418,23 +418,43 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     {
         const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
         int lmargin = LMARGIN, tmargin = TMARGIN;
+        const char *txtcolor;
         if (glist_getzoom(x->x_glist) > 1)
         {
             /* zoom margins */
             lmargin *= glist_getzoom(x->x_glist);
             tmargin *= glist_getzoom(x->x_glist);
         }
-            /* we add an extra space to the string just in case the last
+        /* we add an extra space to the string just in case the last
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        pdgui_vmess("pdtk_text_new", "c S ii s i r",
-            canvas,
+        switch (x->x_text->te_type) {
+            case T_OBJECT:
+            /*SS: check if we're gop */
+                if (pd_class(&x->x_text->te_pd) == canvas_class &&
+                    glist_isgraph((t_glist *)(x->x_text)))
+                {
+                    if(glist_isselected(((t_glist *)(x->x_text))->gl_owner,
+                        &x->x_text->te_g))
+                    txtcolor = "selected";
+                    else txtcolor = "graph_text";
+                }
+                else txtcolor = "obj_box_text";
+                break;
+            case T_TEXT: txtcolor = "comment"; break;
+            case T_MESSAGE: txtcolor = "msg_box_text"; break;
+            case T_ATOM: txtcolor = "atom_box_text";
+        }
+        pdgui_vmess("pdtk_canvas::set_option_types",
+            "ci rc S ii s i r",
+            canvas, 1,
+            "pdtk_text_new", canvas,
             3, tags,
             text_xpix(x->x_text, x->x_glist) + lmargin, text_ypix(x->x_text, x->x_glist) + tmargin,
             tempbuf,
             guifontsize,
-            (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
+            (glist_isselected(x->x_glist, &x->x_text->te_g)? "selected" : txtcolor));
     }
     else if (action == SEND_UPDATE)
     {
@@ -529,9 +549,31 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 
 void rtext_select(t_rtext *x, int state)
 {
-    pdgui_vmess(0, "crs rr",
-        glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? "blue" : "black"));
+    t_canvas *c = glist_getcanvas(x->x_glist);
+    if(state)
+        pdgui_vmess("pdtk_canvas::set_option_types",
+            "ci crs rr",
+            c, 1, c, "itemconfigure", x->x_tag,
+            "-fill", "selected");
+    else {
+        char* txtcolor;
+        switch (x->x_text->te_type) {
+            case T_TEXT: txtcolor = "comment"; break;
+            case T_OBJECT:
+                /*SS: check if we're gop */
+                if (pd_class(&x->x_text->te_pd) == canvas_class &&
+                glist_isgraph((t_glist *)(x->x_text)))
+                    txtcolor = "graph_text";
+                else txtcolor = "obj_box_text";
+                break;
+            case T_MESSAGE: txtcolor = "msg_box_text"; break;
+            case T_ATOM: txtcolor = "atom_box_text";
+        }
+        pdgui_vmess("pdtk_canvas::set_option_types",
+            "ci crs rr",
+            c, 1, c, "itemconfigure", x->x_tag,
+            "-fill", txtcolor);
+    }
 }
 
 void gatom_undarken(t_text *x);

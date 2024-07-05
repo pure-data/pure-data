@@ -78,6 +78,26 @@ proc ::helpbrowser::make_frame {mytoplevel} {
     make_rootlistbox
 }
 
+proc ::helpbrowser::set_listbox_colors {inbox} {
+    set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
+    if {$tmpcol ne ""} {
+		$inbox configure -background $tmpcol \
+		    -highlightbackground $tmpcol -highlightcolor $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
+    if {$tmpcol ne ""} {
+		$inbox configure -foreground $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_hl_text .helpbrowser]
+	if {$tmpcol ne ""} {
+		$inbox configure -selectforeground $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_highlight .helpbrowser]
+    if {$tmpcol ne ""} {
+		$inbox configure -selectbackground $tmpcol
+	}
+}
+
 # make the root listbox of the help browser using the pre-built lists
 # set select to true to focus and select first item
 proc ::helpbrowser::make_rootlistbox {{select true}} {
@@ -85,10 +105,10 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable helplist
 
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" \
+        -yscrollcommand "$b-scroll set" -highlightthickness 5 \
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+    ::helpbrowser::set_listbox_colors $current_listbox
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     # first show the directories (for easier navigation)
@@ -218,10 +238,11 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
 
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" \
+        -yscrollcommand "$b-scroll set" -highlightthickness 5 \
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+
+    ::helpbrowser::set_listbox_colors $current_listbox
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
@@ -276,10 +297,10 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
-                             -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
+        -yscrollcommand "$b-scroll set" -highlightthickness 5 \
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+
+    ::helpbrowser::set_listbox_colors $current_listbox
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {

@@ -133,8 +133,25 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     canvas $tkcanvas -width $width -height $height \
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
-        -yscrollcommand "$mytoplevel.yscroll set" \
-        -background white
+        -yscrollcommand "$mytoplevel.yscroll set"
+    set tmpcol [::pdtk_canvas::get_color txt_highlight $mytoplevel]
+    if {$tmpcol ne ""} {
+        $tkcanvas configure -selectbackground $tmpcol
+    }
+    set tmpcol [::pdtk_canvas::get_color canvas_fill $mytoplevel]
+    if {$tmpcol ne ""} {
+        $tkcanvas configure -background $tmpcol
+    }
+    set tmpcol [::pdtk_canvas::get_color canvas_text_cursor $mytoplevel]
+    if {$tmpcol ne ""} {
+        $tkcanvas configure -insertbackground $tmpcol
+    }
+    #in Tk 8.6 the selectforeground is set by the os theme?
+    set tmpcol [::pdtk_canvas::get_color txt_highlight_front $mytoplevel]
+    if {$tmpcol ne ""} {
+        $tkcanvas configure -selectforeground $tmpcol
+    }
+
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
@@ -505,4 +522,22 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
             }
         }
     }
+}
+
+# get color value for pd
+proc ::pdtk_canvas::get_color {type {canv 0}} {
+	return $::pd_colors($type)
+}
+
+# proc for configuring (color) options
+# takes a command, with list of alternating options and values to replace
+# options to replace must be at the end
+proc ::pdtk_canvas::set_option_types {canv num args} {
+    set last [expr {[llength $args] - 1}]
+    for {set i $last} {$i > [expr {$last - $num*2}]} {incr i -2} {
+        # pdwindow::post "color: [get_color [lindex $args $i]]\n"
+        set args [lreplace $args $i $i [get_color [lindex $args[set args {}] $i] $canv]]
+    }
+    # pdwindow::post "second args: $args\n"
+    {*}$args
 }

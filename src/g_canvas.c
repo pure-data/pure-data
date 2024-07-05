@@ -763,22 +763,24 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
 
 void canvas_drawredrect(t_canvas *x, int doit)
 {
+    t_canvas *c = glist_getcanvas(x);
     if (doit)
     {
         int x1 = x->gl_zoom * x->gl_xmargin,
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
-            glist_getcanvas(x), "create", "line",
+        pdgui_vmess("pdtk_canvas::set_option_types",
+            "ci crr iiiiiiiiii rr ri rr rr",
+            c, 1, c, "create", "line",
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", "#ff8080",
+            "-tags", "GOP",
             "-width", x->gl_zoom,
             "-capstyle", "projecting",
-            "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
+            "-fill", "gop_box"); /* better: "-tags", 1, &"GOP" */
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess(0, "crs", c, "delete", "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -937,21 +939,26 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
+    int zoom = x->gl_zoom; /* slight offset to hide thick line corners */
     {
         char tag[128];
-        const char*tags[2] = {tag, "cord"};
+        const char *tags[2] = {tag, "cord"};
+        int issignal;
+        t_canvas *c = glist_getcanvas(x);
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
+            issignal = (outlet_getsymbol(t.tr_outlet) == &s_signal);
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rS",
-                glist_getcanvas(x), "create", "line",
+            pdgui_vmess("pdtk_canvas::set_option_types", "ci crr iiii ri rS rr",
+                c, 1, c, "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
-                "-tags", 2, tags);
+                "-width", (issignal ? 2 : 1) * x->gl_zoom,
+                "-tags", 2, tags, "-fill", (issignal ? "signal_cord" : "msg_cord"));
         }
     }
 }
+
 void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;

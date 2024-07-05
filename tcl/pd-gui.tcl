@@ -236,6 +236,57 @@ array set redo_actions {}
 set undo_action no
 set redo_action no
 
+# color scheme
+array set ::pd_colors {
+selected "#00f"
+selection_rectangle "#000"
+txt_highlight ""
+txt_highlight_front ""
+msg_iolet "#000"
+msg_iolet_border "#000"
+signal_iolet "#000"
+signal_iolet_border "#000"
+obj_box_outline "#000"
+obj_box_fill ""
+obj_box_text "#000"
+msg_box_outline "#000"
+msg_box_fill ""
+msg_box_text "#000"
+atom_box_outline "#000"
+atom_box_focus_outline "#000"
+atom_box_fill ""
+atom_box_text "#000"
+atom_box_label "#000"
+msg_cord "#000"
+signal_cord "#000"
+obj_box_outline_broken "#000"
+canvas_fill "#FFFFFF"
+canvas_text_cursor ""
+comment "#000"
+graph_outline "#000"
+graph_text "#000"
+graph_open "#c0c0c0"
+array_name "#000"
+array_values "#000"
+gop_box "#FF8080"
+text_window_fill "#FFFFFF"
+text_window_text "#000"
+text_window_highlight ""
+text_window_hl_text ""
+text_window_cursor "#000"
+pdwindow_fill "#FFFFFF"
+pdwindow_fatal_text "#D00"
+pdwindow_fatal_highlight "#FFE0E8"
+pdwindow_error_text "#D00"
+pdwindow_post_text "#000"
+pdwindow_debug_text "#484848"
+pdwindow_hl_text ""
+helpbrowser_fill "#FFFFFF"
+helpbrowser_text ""
+helpbrowser_highlight ""
+helpbrowser_hl_text ""
+}
+
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
@@ -542,6 +593,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
     load_startup_plugins
+    ::pdwindow::set_colors
     open_filestoopen
     set ::done_init 1
 }
