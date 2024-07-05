@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-05-06 10:09+0200\n"
-"PO-Revision-Date: 2024-07-05 16:09+0000\n"
+"PO-Revision-Date: 2024-07-06 17:09+0000\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/eo/>\n"
@@ -134,7 +134,7 @@ msgid "Help"
 msgstr "Helpo"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Montri &kaŝitajn dosierojn kaj dosierujojn"
 
 msgid "Copy"
 msgstr "Kopii"
@@ -242,7 +242,7 @@ msgid "Use callbacks"
 msgstr ""
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "Agordoj pri sono"
 
 msgid "Save All Settings"
 msgstr "Konservi ĉiujn agordojn"
@@ -257,10 +257,10 @@ msgid "Scale"
 msgstr "Skalo"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "X-unuoj en bildero:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Y-unuoj en bildero:"
 
 msgid "Appearance on parent patch"
 msgstr ""
@@ -504,7 +504,7 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "no input devices"
-msgstr ""
+msgstr "neniu eniga aparato"
 
 msgid "In Ports:"
 msgstr "En-pordoj:"
@@ -519,7 +519,7 @@ msgid "MIDI Settings"
 msgstr "Agordoj pri MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "Agordoj pri ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -568,7 +568,7 @@ msgid "Patch windows"
 msgstr ""
 
 msgid "Zoom New Windows"
-msgstr ""
+msgstr "Zomi novajn fenestrojn"
 
 msgid "GUI settings"
 msgstr "Agordoj pri grafika fasado"
@@ -577,10 +577,10 @@ msgid "preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
 msgid "use tabs"
-msgstr ""
+msgstr "uzi langetojn"
 
 msgid "single page"
-msgstr ""
+msgstr "unu paĝo"
 
 msgid "patching helpers"
 msgstr ""
@@ -619,7 +619,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 msgid "GUI options"
-msgstr ""
+msgstr "Opcioj pri grafika fasado"
 
 msgid "language"
 msgstr "lingvo"
@@ -686,7 +686,7 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr ""
+msgstr "uzante la tiparon %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -702,7 +702,7 @@ msgstr ""
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "MALSUKCESIS ŜARGI %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
@@ -716,16 +716,16 @@ msgid "Pd startup failure"
 msgstr ""
 
 msgid "Failed to start Pd-core"
-msgstr ""
+msgstr "Malsukcesis lanĉi Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) MANKAS FERMA KUNIGA KRAMPO «}»: "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) NEVALIDA NOMO DE KOMANDO: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) NETRAKTITA ERARO: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -741,7 +741,7 @@ msgstr ""
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr ""
+msgstr "instalante deken-pakon «%s»"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
@@ -749,7 +749,7 @@ msgstr ""
 
 #, tcl-format
 msgid "Installing '%s'"
-msgstr ""
+msgstr "Instalante «%s»"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -889,16 +889,16 @@ msgid "Checksum mismatch for '%s'"
 msgstr ""
 
 msgid "Deken Packages"
-msgstr ""
+msgstr "Deken-pakoj"
 
 msgid "ZIP Files"
-msgstr ""
+msgstr "ZIP-dosieroj"
 
 msgid "TAR Files"
-msgstr ""
+msgstr "TAR-dosieroj"
 
 msgid "All Files"
-msgstr ""
+msgstr "Ĉiuj dosieroj"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -910,21 +910,21 @@ msgstr ""
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr ""
+msgstr "Instalante la pakon «%s»"
 
 msgid "Installation completed!"
-msgstr ""
+msgstr "Finis instali!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr ""
+msgstr "Sukcese instalis «%s»!"
 
 msgid "Installation failed!"
-msgstr ""
+msgstr "Malsukcesis instali!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
-msgstr ""
+msgstr "Malsukcesis instali «%s»!"
 
 msgid "Package installation failed"
 msgstr ""
@@ -955,7 +955,7 @@ msgid "Processed %d packages selected for installation."
 msgstr ""
 
 msgid "Show all"
-msgstr ""
+msgstr "Montri ĉion"
 
 msgid "Search"
 msgstr "Serĉi"
@@ -1095,7 +1095,7 @@ msgid "Directory does not exist!"
 msgstr "Dosierujo ne ekzistas!"
 
 msgid "Directory is not writable!"
-msgstr ""
+msgstr "Ne eblas skribi en dosierujon!"
 
 #, tcl-format
 msgid "Downloading '%s'"
@@ -1103,14 +1103,14 @@ msgstr "Elŝutante «%s»"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
+msgstr "Ekelŝutante «%1$s» al «%2$s»…"
 
 msgid "aborting."
 msgstr ""
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr ""
+msgstr "Malsukcesis elŝuti «%s»"
 
 msgid "Download failed!"
 msgstr "Elŝuto malsukcesis!"
@@ -1119,10 +1119,10 @@ msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
-msgstr ""
+msgstr "Ignorante malsamecon de kontrolsumoj"
 
 msgid "Ignoring checksum errors"
-msgstr ""
+msgstr "Ignorante kontrolsumajn erarojn"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1145,7 +1145,7 @@ msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr ""
+msgstr "Alŝutita de %1$s je %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1529,7 +1529,7 @@ msgid "Forget All..."
 msgstr "Forgesi ĉion…"
 
 msgid "Tabbed preferences"
-msgstr ""
+msgstr "Langetaj preferoj"
 
 msgid "Open Recent"
 msgstr "Malfermi lastajn"
@@ -1587,7 +1587,7 @@ msgid "Log:"
 msgstr "Protokolo:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatala"
 
 msgid "error"
 msgstr "eraro"
