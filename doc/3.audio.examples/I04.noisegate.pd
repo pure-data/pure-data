@@ -1,4 +1,4 @@
-#N canvas 496 32 564 552 12;
+#N canvas 496 38 564 552 12;
 #X declare -stdpath ./;
 #X floatatom 274 372 4 0 1000 0 - - - 0;
 #X floatatom 82 358 6 0 100 0 - - - 0;
@@ -226,7 +226,7 @@
 #X text 275 295 masking;
 #X text 107 12 DENOISER;
 #X msg 319 335 0;
-#N canvas 500 29 431 582 test-signal 0;
+#N canvas 500 38 431 582 test-signal 0;
 #X obj 89 316 line~;
 #X obj 213 152 r insamprate;
 #X obj 246 451 *~;
