@@ -335,7 +335,7 @@ msgid "Font Size"
 msgstr "Tipara grando"
 
 msgid "Stretch"
-msgstr ""
+msgstr "Streĉo"
 
 msgid "X and Y"
 msgstr "X kaj Y"
@@ -565,7 +565,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Patch windows"
-msgstr ""
+msgstr "Fliki fenestrojn"
 
 msgid "Zoom New Windows"
 msgstr "Zomi novajn fenestrojn"
@@ -601,7 +601,7 @@ msgid "MIDI preferences"
 msgstr "Preferoj pri MIDI"
 
 msgid "deken preferences"
-msgstr ""
+msgstr "Preferoj pri deken"
 
 msgid "misc preferences"
 msgstr ""
@@ -640,7 +640,7 @@ msgid "float size"
 msgstr "glitkoma grando"
 
 msgid "Numeric precision of Pd-core"
-msgstr ""
+msgstr "Nombra precizo de Pd-core"
 
 msgid "Startup options"
 msgstr ""
@@ -674,7 +674,7 @@ msgstr ""
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "trovis tiparon: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
@@ -713,7 +713,7 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr ""
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Malsukcesis lanĉi Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Malsukcesis lanĉi Pd-core"
@@ -763,22 +763,22 @@ msgstr ""
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Maldensigu %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Kopiu la enhavon en la dosierujon %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr ""
+msgstr "3. Forviŝu %s. (nedeviga)"
 
 #, tcl-format
 msgid "Removing '%s'"
-msgstr ""
+msgstr "Forigante «%s»"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
@@ -817,7 +817,7 @@ msgid "Unable to download from '%s'!"
 msgstr ""
 
 msgid "Download failed"
-msgstr ""
+msgstr "Elŝutado malsukcesis"
 
 #, tcl-format
 msgid "Unable to remove stray file '%s'"
@@ -834,7 +834,7 @@ msgid "Check"
 msgstr "Kontroli"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "Opcioj pri instalado:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
@@ -856,13 +856,13 @@ msgstr ""
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Implicita platformo: %s"
 
 msgid "User-defined platform:"
 msgstr ""
 
 msgid "Hide foreign architectures"
-msgstr ""
+msgstr "Kaŝi fremdajn arĥitekturojn"
 
 msgid ""
 "Only show the newest version of a library\n"
@@ -1068,10 +1068,10 @@ msgid "No matching externals found."
 msgstr ""
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr ""
+msgstr "Provu uzi la plenan nomon, ekz. «freeverb~»."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr ""
+msgstr "Aŭ uzu ĵokerojn kiel «freeverb*»."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
