@@ -53,29 +53,29 @@ proc ::dialog_preferences::tab_changed {mytoplevel} {
 
 proc ::dialog_preferences::fill_frame {prefs} {
     # patch-window settings
-    labelframe $prefs.extraframe -text [_ "Patch windows" ] -padx 5 -pady 5 -borderwidth 1
+    labelframe $prefs.extraframe -text [_ "Patch Windows" ] -padx 5 -pady 5 -borderwidth 1
     checkbutton $prefs.extraframe.zoom -text [_ "Zoom New Windows"] \
         -variable ::sys_zoom_open -anchor w
     pack $prefs.extraframe.zoom -side left -expand 1
     pack $prefs.extraframe -side top -anchor n -fill x
 
-    labelframe $prefs.guiframe -text [_ "GUI settings" ] -padx 5 -pady 5 -borderwidth 1
+    labelframe $prefs.guiframe -text [_ "GUI Settings" ] -padx 5 -pady 5 -borderwidth 1
     pack $prefs.guiframe -side top -anchor n -fill x
 
     labelframe $prefs.guiframe.prefsnavi -padx 5 -pady 5 -borderwidth 0 \
-        -text [_ "preference layout (reopen the preferences to see the effect)" ]
+        -text [_ "Preference layout (reopen the preferences to see the effect)" ]
     pack $prefs.guiframe.prefsnavi -side top -anchor w -expand 1
     radiobutton $prefs.guiframe.prefsnavi.tab \
-        -text [_ "use tabs" ] \
+        -text [_ "Use tabs" ] \
         -value 1 -variable ::dialog_preferences::use_ttknotebook
     radiobutton $prefs.guiframe.prefsnavi.scroll \
-        -text [_ "single page" ] \
+        -text [_ "Single page" ] \
         -value 0 -variable ::dialog_preferences::use_ttknotebook
     pack $prefs.guiframe.prefsnavi.tab -side left -anchor w
     pack $prefs.guiframe.prefsnavi.scroll -side left -anchor w
 
     labelframe $prefs.guiframe.patching -padx 5 -pady 5 -borderwidth 0 \
-        -text [_ "patching helpers" ]
+        -text [_ "Patching helpers" ]
     pack $prefs.guiframe.patching -side top -anchor w -expand 1
     checkbutton $prefs.guiframe.patching.highlight_connections -text [_ "Highlight active cord while connecting"] \
         -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w

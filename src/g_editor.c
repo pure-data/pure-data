@@ -3321,7 +3321,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
             ".pdwindow",
             1, &msg,
             "pd quit", "yes");
-    else glob_quit(0);
+    else glob_exit(0, 0);
 }
 
     /* close a window (or possibly quit Pd), checking for dirty flags.

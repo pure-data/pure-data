@@ -331,6 +331,7 @@ int sys_main(int argc, const char **argv)
 {
     int i, noprefs, ret;
     const char *prefsfile = "";
+    char cwd[MAXPDSTRING];
     t_namelist *nl;
     t_patchlist *pl;
     sys_externalschedlib = 0;
@@ -377,6 +378,14 @@ int sys_main(int argc, const char **argv)
         sys_sockerror("socket_init()");
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
+        /* get current working directory */
+#ifdef _WIN32
+    if (GetCurrentDirectory(MAXPDSTRING, cwd) == 0)
+        strcpy(cwd, ".");
+#else
+    if (!getcwd(cwd, MAXPDSTRING))
+        strcpy(cwd, ".");
+#endif
     for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
     {
         /* for prefs override */
@@ -425,7 +434,7 @@ int sys_main(int argc, const char **argv)
     }
         /* open patches specifies with "-open" args */
     for (pl = sys_openlist; pl; pl = pl->pl_next)
-        openit(".", pl->pl_file, pl->pl_args);
+        openit(cwd, pl->pl_file, pl->pl_args);
     patchlist_free(sys_openlist);
     sys_openlist = 0;
         /* send messages specified with "-send" args */

@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 55
 #define PD_BUGFIX_VERSION 0
-#define PD_TEST_VERSION "test2"
+#define PD_TEST_VERSION ""
 
 /* compile-time version check:
    #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
@@ -21,8 +21,6 @@ extern "C" {
 #define PD_VERSION(major, minor, bugfix) \
     (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
 #define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
-
-extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -84,11 +82,11 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 #if __STDC_VERSION__ >= 201112L
 #include <assert.h>
-#define STATIC_ASSERT _Static_assert
+#define PD_STATIC_ASSERT _Static_assert
 #elif __cplusplus >= 201103L
-#define STATIC_ASSERT static_assert
+#define PD_STATIC_ASSERT static_assert
 #else
-#define STATIC_ASSERT(condition, message) /* no-op */
+#define PD_STATIC_ASSERT(condition, message) /* no-op */
 #endif
 
 /* deprecation warning */
@@ -127,6 +125,8 @@ typedef unsigned __int64  uint64_t;
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
 #include <stdio.h>
+
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
@@ -572,7 +572,7 @@ EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
-    STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
+    PD_STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
     class_domainsignalin(c, offsetof(type, field))
 
          /* prototype for functions to save Pd's to a binbuf */
@@ -719,10 +719,6 @@ EXTERN void mayer_fft(int n, t_sample *real, t_sample *imag);
 EXTERN void mayer_ifft(int n, t_sample *real, t_sample *imag);
 EXTERN void mayer_realfft(int n, t_sample *real);
 EXTERN void mayer_realifft(int n, t_sample *real);
-
-EXTERN float *cos_table;
-#define LOGCOSTABSIZE 9
-#define COSTABSIZE (1<<LOGCOSTABSIZE)
 
 EXTERN int canvas_suspend_dsp(void);
 EXTERN void canvas_resume_dsp(int oldstate);

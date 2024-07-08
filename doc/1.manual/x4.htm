@@ -4,44 +4,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 4: Externals</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
-<div class="butt">
-
+<div class="nav nav-top">
+    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
-
 <div id=corpus>
 
-<H2>Chapter 4: Externals</H2>
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
-<div id="backnav"><A href="index.htm#s4">back to table of contents</A></div>
+<H2>Chapter 4: Externals</H2>
 
 <p> This chapter explains what are external objects and libraries. It also
 describes everything on how to install and load them in Pure Data.
 
-<p>You can write your own external objects that you and others can use in
+<P>Pure Data, by intent and design, has a lightweight and portable nature.
+Most likely you'll need or want to install externals to enhance Pd's
+capabilities. Luckily, Pd offers a wide range of external packages by
+third party developers that enhance its capabilities. Most of these are
+primarily focused on audio and control processing, like "Ceammc", "Cyclone",
+"ELSE", "FFTease", "Flucoma", "IEMlib", "Pmpd", "TimbreID", "Zexy", and
+many more. The "vstplugin~" external allows you to run VST plugins inside Pd.
+External libraries for graphical processing include Mark Dank's "GEM" and Zack
+Lee's "Ofelia", which allows you to use openFrameworks and the Lua programming
+language within Pd for creating audiovisual artwork or multimedia applications
+such as games.
+
+<p> You can write your own external objects that you and others can use in
 their Pd applications in C or (if you're smart and brave) in C++ or FORTRAN.
 In the "6.externs" subdirectory of the 'doc' folder you can find simple
 examples of externals with their source code and test patches. This is also
 accessible via the browser window.
 
-<p>There’s also an excellent guide to writing externals at <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>, written by IOhannes
-zmölnig . Check also the
-pd-lib-builder project (a helper makefile for Pure Data external libraries by
-Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
+<p>There’s also an excellent guide to writing externals at
+<a href="https://github.com/pure-data/externals-howto">
+https://github.com/pure-data/externals-howto</a>, written
+by IOhannes zmölnig . Check also the pd-lib-builder project
+(a helper makefile for Pure Data external libraries by Katja
+Vetter) at <a href="http://github.com/pure-data/pd-lib-builder">
+http://github.com/pure-data/pd-lib-builder</a>.
 
-
-
-<H3> <A id=s4.1> 4.1 External Objects & Libraries </A> </H2>
+<H3> <A href="#s4.1" id="s4.1"> 4.1 External Objects & Libraries </A> </H3>
 
 <p> We start this section by defining what are internals and externals.
 The main Pd distribution (a.k.a. “Pd Vanilla”) actually comes with both
 internals and externals.
 
-<H4> <A id=s4.1.1> 4.1.1 Vanilla objects, internals & externals </A> </H4>
+<H4> <A href="#s4.1.1" id="s4.1.1"> 4.1.1 Vanilla objects, internals & externals </A> </H4>
 
 <p> Internal objects come as part of the Pd binary, whereas external objects
 are separate from it. Pd Vanilla also comes with a few “extra” objects that
@@ -57,7 +71,7 @@ patch’s window and select “help” - this loads the help-intro.pd file that 
 shown in <a href="x1.htm">Chapter 1: Introduction</a> and reproduced below.
 
 <figure>
-    <IMG src="img/1.2.3.png" ALT="list of objects">
+    <IMG src="resources/1.2.3.png" ALT="list of objects">
     <figcaption><u>Fig. 1.2.3</u> The "help-intro' patch with a list of all internal objects</figcaption>
 </figure>
 
@@ -69,253 +83,266 @@ the <b>Help menu</b>. See figure below, which shows how the browser looks in a f
 install of Pd and lists the objects in the extra folder.
 
 <figure>
-    <IMG src="img/4.1.1.png" ALT="browser window">
+    <IMG src="resources/4.1.1.png" ALT="browser window">
     <figcaption><u>Fig. 4.1.1</u> The browser window</figcaption>
 </figure>
 
-<H4> <A id=s4.1.2> 4.1.2. Types of external objects </A> </H4>
+<H4> <A href="#s4.1.2" id="s4.1.2"> 4.1.2. Types of external objects </A> </H4>
 
 <p> An object in Pd can be either a patch file (an abstraction) or a
 compiled binary. Nonetheless, a binary can contain only one or several
 external objects, as discussed below.
 
-<H5> <A id=s4.1.2.1> 4.1.2.1. Compiled objects</A> </H5>
+<H5> <A href="#s4.1.2.1" id="s4.1.2.1"> 4.1.2.1. Compiled objects</A> </H5>
 
-<p> These are Pd objects compiled to binaries from programming code (like
-in C or C++). They have to be compiled for your operating system, CPU
-architecture and float precision, which means the binaries have different
-extensions according to each case. See details in the table below:
+<p> Compiled objects are binaries compiled from code (like C or C++).
+They have to be compiled to match your Pd application. Pd is made available for
+different Operating Systems, namely Linux, macOS and Windows. Moreover, it is
+available for different CPU architectures and numerical precision (32-bit or 64-bit
+floats aka "single-precision floating point numbers" or "double-precision floating
+point numbers" respectively "single" or "double").
 
-<table>
+<p>In <A href="x3.htm">Chapter 3: Installing and configuring Pd</A> you can see
+how to download different Pd applications. Most commonly, you'll have Pd installed
+as a 64-bit application, which corresponds to most recent systems.
+
+<p>A Pd application compiled for 32-bit systems is mostly suited to run old externals
+that were not yet compiled for 64-bit systems. Most relevant and maintained externals
+are provided for 64-bit systems though; but of course, there can be cases where one is
+running Pd on an (old) system that only supports 32-bit applications.
+
+<p>Also, at this point, Pure Data does not officially support double-precision numbers.
+You can download <b>Pd64</b> beta releases or compile them yourself though (for
+compilation instructions, see <A href="x6.htm">Chapter 6: Building Pd from source</A>).
+Note that the numerical resolution of Pd and Pd64 here must not be confused with the
+register size of the system it's running on.
+
+<p>The Pd64 application requires specially compiled externals. As this is a recent
+development and not yet fully supported, only a few libraries are currently available.
+
+<p>You can have externals for different operating systems, architectures, and even
+for single- and double-precision numbers (i.e., for Pd and Pd64) in the same folder with
+different file extensions. Refer to the table below for common combinations:
+
+<figure>
+<table class="center">
 <thead>
 <tr>
-<th>OS       </th>
-<th>CPU-architecture                   </th>
-<th>float size   </th>
-<th>filename</th>
+<th>OS</th>
+<th>CPU-architecture</th>
+<th>Pd / Pd64</th>
+<th class="left">extension</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Linux    </td>
-<td><em>unspecified</em> (any architecture)   </td>
-<td>32</td>
-<td><code>my_lib.pd_linux</code> </td>
+<td>Linux </td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.pd_linux</code>  </td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>i386 (Intel/AMD 32bit)             </td>
-<td>32</td>
-<td><code>my_lib.l_i386</code>   </td>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_i386</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>32</td>
-<td><code>my_lib.linux-i386-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-i386-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>64</td>
-<td><code>my_lib.linux-i386-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-i386-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>amd64 (Intel/AMD 64bit)            </td>
-<td>32</td>
-<td><code>my_lib.l_amd64</code>  </td>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_amd64</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>32</td>
-<td><code>my_lib.linux-amd64-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-amd64-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>64</td>
-<td><code>my_lib.linux-amd64-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-amd64-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;        </td>
-<td>arm (e.g. RaspberryPi)             </td>
-<td>32</td>
-<td><code>my_lib.l_arm</code>    </td>
+<td>&lsquo;</td>
+<td>arm (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_arm</code> </td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>32</td>
-<td><code>my_lib.linux-arm-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-arm-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>64</td>
-<td><code>my_lib.linux-arm-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-arm-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>arm64                              </td>
-<td>32</td>
-<td><code>my_lib.l_arm64</code>  </td>
+<td>&lsquo;&rsquo;</td>
+<td>arm64/aarch64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_arm64</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>32</td>
-<td><code>my_lib.linux-arm64-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-arm64-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                         </td>
-<td>64</td>
-<td><code>my_lib.linux-arm64-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-arm64-64.so</code></td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>macOS </td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.pd_darwin</code> </td>
 </tr>
 <tr>
-<td>macOS    </td>
-<td><em>unspecified</em> (any architecture)   </td>
-<td>32</td>
-<td><code>my_lib.pd_darwin</code>    </td>
+<td>&lsquo;&rsquo;</td>
+<td>fat (multiple archs)</td>
+<td>Pd</td>
+<td class="left"><code>.d_fat</code> </td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>fat (multiple archs)               </td>
-<td>32</td>
-<td><code>my_lib.d_fat</code>    </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-fat-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.darwin-fat-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-fat-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.darwin-fat-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_i386</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>PowerPC                            </td>
-<td>32</td>
-<td><code>my_lib.d_ppc</code>    </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-i386-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.darwin-ppc-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-i386-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.darwin-ppc-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_amd64</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>i386 (Intel 32bit)                 </td>
-<td>32</td>
-<td><code>my_lib.d_i386</code>   </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-amd64-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.darwin-i386-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-amd64-64.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.darwin-i386-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>arm64/aarch64 (<em>Apple Silicon</em>; 64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_arm64</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>amd64 (Intel 64bit)                </td>
-<td>32</td>
-<td><code>my_lib.d_amd64</code>  </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-arm64-32.so</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.darwin-amd64-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-arm64-64.so</code></td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>Windows</td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.dll</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.darwin-amd64-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)   </td>
+<td>Pd</td>
+<td class="left"><code>.m_i386</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>arm64 (Apple Silicon)              </td>
-<td>32</td>
-<td><code>my_lib.d_arm64</code>  </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.windows-i386-32.dll</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.darwin-arm64-32.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.windows-i386-64.dll</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.darwin-arm64-64.so</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.m_amd64</code></td>
 </tr>
 <tr>
-<td>Windows  </td>
-<td><em>unspecified</em> (any architecture)   </td>
-<td>32</td>
-<td><code>my_lib.dll</code>  </td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.windows-amd64-32.dll</code></td>
 </tr>
 <tr>
-<td>&lsquo;&rsquo;       </td>
-<td>i386 (Intel/AMD 32bit)             </td>
-<td>32</td>
-<td><code>my_lib.m_i386</code>   </td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.windows-i386-32.dll</code></td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.windows-i386-64.dll</code></td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>amd64 (Intel/AMD 64bit)            </td>
-<td>32</td>
-<td><code>my_lib.m_amd64</code>  </td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>32</td>
-<td><code>my_lib.windows-amd64-32.dll</code></td>
-</tr>
-<tr>
-<td>&lsquo;&rsquo;       </td>
-<td>&lsquo;&rsquo;                             </td>
-<td>64</td>
-<td><code>my_lib.windows-amd64-64.dll</code></td>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.windows-amd64-64.dll</code></td>
 </tr>
 </tbody>
 </table>
+<figcaption><u>Table 4.1</u>File extensions for different operating systems, architectures and numerical precision</figcaption>
+</figure>
 
-<H5> <A id=s4.1.2.2> 4.1.2.2. Abstractions</A> </H5>
+<H5> <A href="#s4.1.2.2" id="s4.1.2.2"> 4.1.2.2. Abstractions</A> </H5>
 
 <p>You can have a Pd patch behave like an object by loading it into other
 patches - these are usually called “abstractions” (see
@@ -324,7 +351,7 @@ externals in “extra” are abstractions (for instance, <b>[rev1~]</b> or <b>[h
 Like any other Pd patch, an abstraction may contain any kind of objects
 (internals, compiled externals and even other abstractions).
 
-<H4> <A id=s4.1.3> 4.1.3. External libraries </A> </H4>
+<H4> <A href="#s4.1.3" id="s4.1.3"> 4.1.3. External libraries </A> </H4>
 
 <p>In practical terms, an external library is a collection of external objects
 of any kind (abstractions or compiled objects). But when it comes to compiled
@@ -341,7 +368,7 @@ that a library is just a set of objects.
 loaded depending if they’re a single binary pack or a set of separate binaries
 (as explained in the next subsections).
 
-<H4> <A id=s4.1.4> 4.1.4. Types of external libraries </A> </H4>
+<H4> <A href="#s4.1.4" id="s4.1.4"> 4.1.4. Types of external libraries </A> </H4>
 
 <p>Libraries can come in all sorts of ways; as only a collection of
 abstractions (like "list-abs"), only compiled objects, or both. It can even mix
@@ -352,7 +379,7 @@ pack</b>. Basically, any combination is possible for a set of externals.
 which provides most of its objects as a <b>set of separate binaries</b>, but also includes
 a small collection of 12 objects as a <b>single binary pack</b> plus a couple of abstractions.
 
-<H4> <A id=s4.1.5> 4.1.5. Wrapping up section 4.1</A> </H4>
+<H4> <A href="#s4.1.5" id="s4.1.5"> 4.1.5. Wrapping up section 4.1</A> </H4>
 
 <p>In short, we have:
 
@@ -369,7 +396,7 @@ abstractions or any combination of these.
 <br>
 <br>
 
-<H3> <A id=s4.2>4.2. GUI (.tcl) plugins </A> </H3>
+<H3> <A href="#s4.2" id="s4.2">4.2. GUI (.tcl) plugins </A> </H3>
 
 <p>There's also a catefgory of GUI externals, mostly known as "GUI plugins".
 These are .tcl file extensions that offer extra GUI features for the Pd
@@ -386,13 +413,13 @@ section). These plugins are then automatically loaded when Pd starts up.
 it comes inside a folder with the same name (completion-plugin). In this
 situation, Pd knows to search inside that folder for the plugin!
 
-<H3> <A id=s4.3>4.3. Installing externals and GUI plugins </A> </H3>
+<H3> <A href="#s4.3" id="s4.3">4.3. Installing externals and GUI plugins </A> </H3>
 
 <p>Installing externals and GUI plugins in Pd is quite simple, all you need
 to do is download them from somewhere (such as from Pd directly as explained
 later) and include them in a proper folder.
 
-<H4> <A id=s4.3.1> 4.3.1. Where to include externals and GUI plugins</A> </H4>
+<H4> <A href="#s4.3.1" id="s4.3.1"> 4.3.1. Where to include externals and GUI plugins</A> </H4>
 
 <p>Currently, when launching for the first time with a fresh install, Pd asks if
 you want to create a documents directory for patches that includes an “externals”
@@ -401,7 +428,7 @@ and GUI plugins. This path is automatically included in the user added
 search paths (under the 'Path' tab in Preferences), see figure below.
 
 <figure>
-    <IMG src="img/4.3.1.png" ALT="Preferences">
+    <IMG src="resources/4.3.1.png" ALT="Preferences">
     <figcaption><u>Fig. 4.3.1</u> The Path preferences with a few user added paths</figcaption>
 </figure>
 
@@ -475,7 +502,7 @@ or ~/pd-externals (deprecated but still usable).
 	<LI><u>Global</u>: <mark><b> /usr/local/lib/pd-externals</b></mark>.
 </UL>
 
-<H4> <A id=s4.3.2> 4.3.2. How to download externals and GUI plugins from Pd</A> </H4>
+<H4> <A href="#s4.3.2" id="s4.3.2"> 4.3.2. How to download externals and GUI plugins from Pd</A> </H4>
 
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a built in
 .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken">
@@ -488,7 +515,7 @@ you can also download GUI plugins from deken. Search for '*-plugin' to get a lis
 all options.
 
 <figure>
-    <IMG src="img/4.3.2.png" ALT="deken install">
+    <IMG src="resources/4.3.2.png" ALT="deken install">
     <figcaption><u>Fig. 4.3.2</u> Installing external libraries from 'deken'</figcaption>
 </figure>
 
@@ -498,7 +525,7 @@ them at the same time. Note also you can search for multiple objects and librari
 separating the search entries with commas.
 
 <figure>
-    <IMG src="img/4.3.3.png" ALT="installing multiple libraries">
+    <IMG src="resources/4.3.3.png" ALT="installing multiple libraries">
     <figcaption><u>Fig. 4.3.3</u> Installing multiple libraries at once</figcaption>
 </figure>
 
@@ -507,7 +534,7 @@ separating the search entries with commas.
 manager with a prompt search for the missing object ready to go.
 
 <figure>
-    <IMG src="img/4.3.4.png" ALT="searching object for creation error">
+    <IMG src="resources/4.3.4.png" ALT="searching object for creation error">
     <figcaption><u>Fig. 4.3.4</u> Searching object in the plugin manager via the console window error</figcaption>
 </figure>
 
@@ -517,14 +544,14 @@ to open and install a ".dek" file, and <b>Edit</b> to open "Preferences"
 for the plugin manager. For macOS these menus are on the top bar.
 
 <figure>
-    <IMG src="img/4.3.5.png" ALT="plugin manager menus">
+    <IMG src="resources/4.3.5.png" ALT="plugin manager menus">
     <figcaption><u>Fig. 4.3.5</u> The plugin manager's menus</figcaption>
 </figure>
 
 <p>And the plugin manager's preferences are as follows:
 
 <figure>
-    <IMG src="img/4.3.6.png" ALT="deken preferences">
+    <IMG src="resources/4.3.6.png" ALT="deken preferences">
     <figcaption><u>Fig. 4.3.6</u> The plugin manager's preferences</figcaption>
 </figure>
 
@@ -533,7 +560,7 @@ suited for your system, uncheck "Hide foreign architectures". If you want to
 find older versions of the library, uncheck "Only show the newest version of
 a library".
 
-<H3> <A id=s4.4>4.4. Loading externals </A> </H3>
+<H3> <A href="#s4.4" id="s4.4">4.4. Loading externals </A> </H3>
 
 <p>The current best practice is to use the <b>[declare]</b> object to search for,
 load and manage externals, but there are alternatives.
@@ -548,7 +575,7 @@ a set of separate binaries, Pd just needs to know its path. Again, this can be
 done via <b>[declare]</b> or manually via the 'Path' tab in Preferences, but yet
 another option here is to use slash declarations as we'll see later.
 
-<H4> <A id=s4.4.1>4.4.1. Using the <b>[declare]</b> object</A> </H4>
+<H4> <A href="#s4.4.1" id="s4.4.1">4.4.1. Using the <b>[declare]</b> object</A> </H4>
 
 <p>The <b>[declare]</b> object can be used to add search paths or load libraries. When
 adding a path, it behaves quite similarly to adding search paths to the
@@ -560,7 +587,7 @@ Path preferences, which loads the path(s) permanently for any patch.
 sticks with it. This means that if you use <b>[declare]</b> to load a library, it will
 also be loaded if you create a new patch without any <b>[declare]</b> object.
 
-<H5> <A id=s4.4.1.1>4.4.1.1. [declare -path]</A> </H5>
+<H5> <A href="#s4.4.1.1" id="s4.4.1.1">4.4.1.1. [declare -path]</A> </H5>
 
 <p>Let's take for an example the <a href="http://github.com/porres/pd-else"> ELSE</a>
 library. This library mostly contains separate binaries and abstractions, so Pd only
@@ -583,7 +610,7 @@ need to add the external folder to the path, manually or use <b>[declare]</b>. T
 when you tell Pd to look for an external, if it finds a folder with the same name as the
 external, it'll know to search inside that folder for the external!
 
-<H5> <A id=s4.4.1.2> 4.4.1.2. [declare -lib]</A> </H5>
+<H5> <A href="#s4.4.1.2" id="s4.4.1.2"> 4.4.1.2. [declare -lib]</A> </H5>
 
 <p>The '-lib' flag is needed for the classic Pd library format, which
 is a single binary pack with many externals. One such example is the
@@ -614,12 +641,12 @@ offers the same version output functionality as in ELSE.
 
 <p>For more details on how <b>[declare]</b> works, please check its help file!
 
-<H4> <A id=s4.4.2> 4.4.2. Load via path and startup</A> </H4>
+<H4> <A href="#s4.4.2" id="s4.4.2"> 4.4.2. Load via path and startup</A> </H4>
 
 <p>We'll now see the differences between using <b>[declare]</b> or using "Path" and
 "Startup" tabs in Preferences.
 
-<H5> <A id=s4.4.2.1> 4.4.2.1. User added path</A> </H5>
+<H5> <A href="#s4.4.2.1" id="s4.4.2.1"> 4.4.2.1. User added path</A> </H5>
 
 <p>One big difference in adding a search path in 'Preferences' is that this
 permanently adds the path and works every time Pd starts and for any patch
@@ -642,7 +669,7 @@ libraries to the user added search paths (see picture above).
 priority like it happens when you use <b>[declare]</b>. In this case, the path relative
 to the patch will have top priority!
 
-<H5> <A id=s4.4.2.2> 4.4.2.2. Startup</A> </H5>
+<H5> <A href="#s4.4.2.2" id="s4.4.2.2"> 4.4.2.2. Startup</A> </H5>
 
 <p>"Preferences => Startup" loads a window that says <i>"Pd libraries to load
 on startup"</i>. This is where you can manually and permanently load single
@@ -652,7 +679,7 @@ Pd in many ways, see <a href="x3.htm#s3.4.1">3.4.1 Startup flags</a> for
 details.
 
 <figure>
-    <IMG src="img/4.4.1.png" ALT="startup preferences">
+    <IMG src="resources/4.4.1.png" ALT="startup preferences">
     <figcaption><u>Fig. 4.4.1</u> The Startup preferences with library binaries to load</figcaption>
 </figure>
 
@@ -671,7 +698,7 @@ that the libraries were loaded successfully. Here’s a screenshot of the result
 of loading cyclone.
 
 <figure>
-    <IMG src="img/4.4.2.png" ALT="lib print">
+    <IMG src="resources/4.4.2.png" ALT="lib print">
     <figcaption><u>Fig. 4.4.2</u> Library loading printout</figcaption>
 </figure>
 
@@ -680,7 +707,7 @@ external objects are loaded in Pd and they have search priority over other
 externals that are loaded via paths. This may cause issues discussed on the
 next section.
 
-<H4> <A id=s4.4.3> 4.4.3. Load using slash declarations</A> </H4>
+<H4> <A href="#s4.4.3" id="s4.4.3"> 4.4.3. Load using slash declarations</A> </H4>
 
 <p>Let’s say you’ve downloaded the ELSE library into ~/Documents/Pd/externals.
 Instead of using <b>[declare -path else]</b> or adding the ELSE folder to the user
@@ -689,7 +716,7 @@ will make Pd look for this object in a folder called ‘else’ in one of its se
 paths (which includes ~/Documents/Pd/externals) and find it! Here’s an example:
 
 <figure>
-    <IMG src="img/4.4.3.png" ALT="slash declaration">
+    <IMG src="resources/4.4.3.png" ALT="slash declaration">
     <figcaption><u>Fig. 4.4.3</u> An external object with a slash declaration</figcaption>
 </figure>
 
@@ -741,7 +768,7 @@ the <b>[>~]</b> object as <b>[cyclone/>~]</b>. Another single binary pack librar
 <p>These issues might be clear if you better understand how Pd works when
 loading externals. See next subsection.
 
-<H3> <A id=s4.5>4.5. How external binaries are loaded</A> </H3>
+<H3> <A href="#s4.5" id="s4.5">4.5. How external binaries are loaded</A> </H3>
 
 <p>Once you make sure Pd can load an external binary via a path, this is what
 happens when you create it. Whenever you create an object that Pd
@@ -776,7 +803,7 @@ quite differently! As they get updated any time they’re updated and
 reloaded!
 
 
-<H4> <A id=s4.5.1> 4.5.1. Overriding objects (externals and native)</A> </H4>
+<H4> <A href="#s4.5.1" id="s4.5.1"> 4.5.1. Overriding objects (externals and native)</A> </H4>
 
 <p>We've seen that Pd loads and sticks to an external binary,
 but they can get overridden. For instance, if you create <b>[xfade~]</b>
@@ -797,7 +824,7 @@ old "phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably
 don't want to mess with overriding internals, but it makes sense if you
 provide new versions with more features that are fully backwards compatible.
 
-<H3> <A id=s4.6> 4.6. Search order in Pd for objects and files</A> </H3>
+<H3> <A href="#s4.6" id="s4.6"> 4.6. Search order in Pd for objects and files</A> </H3>
 
 <p>This information has been provided in pieces throughout this section of the Manual. But
 now well wrap it up after all the information has been presented.
@@ -825,9 +852,10 @@ this folder!
 first step is ignored.
 
 </div>
-<div id="footer">
-<A href="x5.htm"> next chapter </A><BR>
-<A href="index.htm#s4"> back to table of contents </A>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
 
 </BODY>

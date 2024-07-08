@@ -1,4 +1,4 @@
-#N canvas 574 23 590 723 12;
+#N canvas 462 23 590 723 12;
 #X declare;
 #X obj 54 2364 delay;
 #X obj 54 2416 metro;
@@ -495,8 +495,7 @@
 #X text 249 2080 - get information on existing files;
 #X text 183 7408 - use [struct] now;
 #X text 183 7434 - use [mod] instead;
-#X text 183 7476 - fast \, cheap 8 bits versions of square root functions (use [srqt~]/[rsqrt~] instead), f 46;
-#X text 183 7230 - simple stereo output GUI abstraction, f 38;
+#X text 183 7230 - simple stereo output GUI abstraction;
 #X text 197 7245 (used in the documentation), f 36;
 #X text 183 6372 - set block size \, overlap and up/downsampling, f 49;
 #X text 197 6388 (and switch subpatches if invoked as [switch~]);
@@ -507,3 +506,4 @@
 #X text 172 225 click and open for all Graphical User Interface (GUI) objects in Pd, f 48;
 #X obj 76 226 all_guis;
 #X text 143 225 <--;
+#X text 183 7476 - cheap 8 bits versions of square root functions (use [srqt~]/[rsqrt~] instead), f 40;

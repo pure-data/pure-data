@@ -4,28 +4,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 5: Current status</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
-
-<div class="butt">
-
+<div class="nav nav-top">
+    <div class="nav-back"><A href="x4.htm">&lt; Chapter 4: Externals</A></div>
+    <div class="nav-home"><A href="index.htm#s5">Table of contents</A></div>
+    <div class="nav-forward"><A href="x6.htm">Chapter 6: Building Pd from source &gt;</A></div>
 </div>
-
 <div id="corpus">
 
-<H2>Chapter 5: Current status</H2>
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
-<div id="backnav"><A href="index.htm#s5">back to table of contents</A></div>
+<H2>Chapter 5: Current status</H2>
 
 <P>This chapter tracks changes in Pd's current implementation.</P>
 
 
-<H3> <A id="s5.1"> 5.1. Release notes </A> </H3>
+<H3> <A href="#s5.1" id="s5.1"> 5.1. Release notes </A> </H3>
 
 <P> ------------------ 0.55-0 ------------------------------
+
+<P> The [osc~], [cos~] and [vcf~] objects now rely on a 2048 points
+cosine table. The table size used to be 512-point for fast, approximate
+calculations, which was adequate for most "computer music" applications
+in the 90s when this was decided (and at that time there could be a
+serious performance penalty for using larger tables). To get the original
+512-point tables you can run Pd with compatiblity level 0.54. Also, in
+systems with very tight memory constraints (such as Espressif ESP32),
+Pd can be recompiled with the C preprocessor variable COSTABLESIZE set
+to 512 to get the old memory footprint.
+
+<P> Many bug fixes and code-level updates and improvements, notably to libpd and
+for emscripten support thanks to Claude Heiland-Allen and IOhannes, Dan, and
+Christof. The emscripten support, in particular, should someday allow Pd to run
+in a web browser.
+
+<P> Also thanks to Christof, you can now use just 'set' to unset [receive~] and
+[throw~] objects, plus a much improved audio interfacing and related scheduler
+updates.
 
 <P> Many documentation updates, thanks to Alexandre Porres, Ben Wesch, and
 others. Most notably several updates and edits were made to Pd's HTML manual,
@@ -42,15 +61,6 @@ paths relative to the parent patch.
 
 <P> 64-bit soundfile reading and writing support by Dan Wilcox for [readsf~],
 [writesf~] and [soundfiler].
-
-<P> Many bug fixes and code-level updates and improvements, notably to libpd and
-for emscripten support thanks to Claude Heiland-Allen and IOhannes, Dan, and
-Christof. The emscripten support, in particular, should someday allow Pd to run
-in a web browser.
-
-<P> Also thanks to Christof, you can now use just 'set' to unset [receive~] and
-[throw~] objects, plus a much improved audio interfacing and related scheduler
-updates.
 
 <P> Updates to language support.
 
@@ -184,7 +194,7 @@ is better control of latency under jack.
 to prevent rogue invisible pd instances from collecting behind the scenes.
 
 <P> Bugfix in bob~ to output "correct" signal (old behavior still available
-by setting pd compatibility < 52).
+by setting pd compatibility &lt; 52).
 
 <P> libpd included as part of the Pd distribution.  A test libpd project is included
 in ../pd/libpd.
@@ -246,7 +256,7 @@ type that one in.
 <P> On Macintosh tcl/tk is upgraded to 8.6.10 (should work on MacOS from
 10.6 to 11.0 aka "Bug Sur").
 
-<P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full
+<P> You can send "pd fast-forward &lt;msecs&gt;" to make Pd run its scheduler at full
 speed, without waiting for A/D/A or the real-time clock.  Useful for running
 batch-style jobs interactively.  You can advance a variable amount of time by
 specifying a large value and then later sending "pd fast-forward 0" - but note
@@ -329,7 +339,7 @@ for outputting pointers to themselves
 
 <P> An optional argument was added to the "pd open" message, to allow opening
 a file only if it is not currently open; to get this behavior send "pd open
-<file> <directory> 1".  It is still under discussion whether this would be the
+&lt;file&gt; &lt;directory&gt; 1".  It is still under discussion whether this would be the
 appropriate response when the user clicks on a patch to open it in the file
 browser.
 
@@ -1156,8 +1166,8 @@ on the fly via a dialog in the "File" menu.
 
 <P> A "vline" object acts like "line" but to sub-sample accuracy.  See
 the audio example, C04.control.to.signal.pd (and/or chapter 3 of
-<A HREF="http://msp.ucsd.edu/techniques.htm"
-<I> Theory and Techniques of Electronic Music </I> ).</a>
+<A HREF="http://msp.ucsd.edu/techniques.htm">
+<I> Theory and Techniques of Electronic Music </I></a>).
 
 <P> The block~/switch~ object now takes a "set" message to dynamically change
 block size, etc.
@@ -2205,7 +2215,7 @@ serial get netsend netreceive
 <P>
 
 MATH:
-+ - * / == != > < >= <= & && | || %
++ - * / == != &gt; &lt; &gt;= &lt;= & && | || %
 mod div sin cos tan atan atan2 sqrt log exp abs
 mtof ftom powtodb rmstodb dbtopow dbtorms
 <P>
@@ -2252,7 +2262,7 @@ general: print int float send receive select pack unpack trigger spigot
 <BR>
 time handling: delay metro line timer
 <BR>
-arithmetic: + + - - * * / / == == != != > > < < >= >= <= <= & && | || %
+arithmetic: + - * / == != &gt; &lt; &gt;= &lt;= & && | || %
 <BR>
 midi: notein noteout makenote stripnote
 <BR>
@@ -2367,15 +2377,16 @@ paste, and duplicate seem to work, and a "Pd" class offers subwindows.
 The following max-like objects are included:
 
     print;
-    +, *, -, /, ==, !=, >, <, >=, <=, &, |, &&, ||, %;
+    +, *, -, /, ==, !=, &gt;, &lt;, &gt;=, &lt;=, &, |, &&, ||, %;
     int, float, pack, unpack, trigger;
     delay, metro, timer;
     send, receive.
 
 </div>
-<div id="footer">
-<A href="x6.htm"> next chapter </A><BR>
-<A href="index.htm#s5"> back to table of contents </A>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="x4.htm">&lt; Chapter 4: Externals</A></div>
+    <div class="nav-home"><A href="index.htm#s5">Table of contents</A></div>
+    <div class="nav-forward"><A href="x6.htm">Chapter 6: Building Pd from source &gt;</A></div>
 </div>
 
 </BODY>

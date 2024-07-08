@@ -9,10 +9,10 @@ See the file:
 
 Reference manual for Pd lives in:
     PD_BASEDIR/doc/1.manual/index.htm
-or online:
+or online at:
     http://msp.ucsd.edu/Pd_documentation/
 
-Information of all sorts (guides, development, meetings, more documentation, etc):
+Information of all sorts (guides, development, forks, meetings, more documentation, etc):
     http://puredata.info
 
 Code repository:

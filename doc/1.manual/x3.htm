@@ -4,20 +4,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 3: Installing and configuring Pd</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/pdmanual.css" media="screen">
-<link rel="icon" type="image/png" href="css/favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
-<div class="butt">
-
+<div class="nav nav-top">
+    <div class="nav-back"><A href="x2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="x4.htm">Chapter 4: Externals &gt;</A></div>
 </div>
-
 <div id="corpus">
 
-<H2>Chapter 3: Installing and configuring Pd</H2>
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
-<div id="backnav"><A href="index.htm#s3">back to table of contents</A></div>
+<H2>Chapter 3: Installing and configuring Pd</H2>
 
 <P> The following are instructions on how to get Pd installed, configured
 and running on your machine.
@@ -28,8 +29,7 @@ first get and install it, and then untangle whatever problems arise in handling
 audio and MIDI input and output, and finally get Pd to meet its real-time obligations
 reliably.
 
-
-<H3> <A id=s3.1> 3.1. Installing Pd </A> </H3>
+<H3> <A href="#s3.1" id="s3.1"> 3.1. Installing Pd </A> </H3>
 
 <P> Most commonly, you want to install Pd as a 64 bit application, which is available
 for download, but a 32 bit versions is also available for older OSes. The download
@@ -38,9 +38,24 @@ https://msp.ucsd.edu/software.html</A>. Binaries are provided for Windows and ma
 while Linux users can get Pd from package managers. The source code is also available
 in this link for you to build Pd yourself.
 
-<P> Installation instructions are platform-specific and described in each case in
-this section, but Instructions on how to build Pd yourself for all supported OSes is
-provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+<P> Note that Miller's website only offers Pd compiled for single precision, but Pd
+can also be compiled and run in double precision. An alternative to Miller's website
+we have <A href="https://puredata.info/downloads/pure-data">
+https://puredata.info/downloads/pure-data</A> with Pure Data downloads. Note that
+besides the official single precision application, this link also offers an experimental
+download for double precision. Note that the double precision application needs externals
+compiled speacially for it.
+
+<P> Installation instructions are platform-specific and described in each case in this
+section, but Instructions on how to build Pd yourself for all supported OSes in both single
+or double precision is provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+
+<P> Note that you can have different versions of Pd and also Pd compiled for different
+architectures and float precision in the same machine/OS. The Pd application is named in
+a way that it distinguishes itslf from other versions in each case. The "regular" Pd is
+for 64-bit application and single precision. The double precision Pd application is named
+"Pd64", which can be confusing, meaning that it is for 64-bit architecture, but it means
+it uses double precision really (whose float size is "64").
 
 <P> If you run into any installation trouble you can also consult the Pd mailing list
 archive on <A href="https://lists.puredata.info/listinfo/pd-list">
@@ -48,7 +63,7 @@ https://lists.puredata.info/listinfo/pd-list</A>, which often has late-breaking
 news about configuration problems and solutions.
 
 
-<H4> <A id="s3.1.1"> 3.1.1. macOS</A> </H4>
+<H4> <A href="#s3.1.1" id="s3.1.1"> 3.1.1. macOS</A> </H4>
 
 <P>Pd supports macOS from 10.7 and up. There is a version for 10.7 to 10.9 provided,
 but the main download binary for more modern OS versions supports 10.10 or newer and
@@ -61,7 +76,7 @@ provided for 10.7 up to 10.14, which is suited if you need to run some old exter
 This is normal although some system administrators will prevent you from
 doing this (in which case you can't run Pd on that machine).
 
-<H4> <A id=s3.1.2>3.1.2 Microsoft Windows </A> </H4>
+<H4> <A href="#s3.1.2" id="s3.1.2">3.1.2 Microsoft Windows </A> </H4>
 
 <P> For Windows, you can download a .zip package for manual install or an executable
 installer (a ".exe" file). Run the installer if you are not sure how to install
@@ -82,7 +97,7 @@ programs that make a "network link" (locally) to intercommunicate. The first
 time you run Pd the "Windows Firewall" will ask your permission to allow this
 intercommunication.
 
-<H4> <A id=s3.1.3>3.1.3. Linux </A> </H4>
+<H4> <A href="#s3.1.3" id="s3.1.3">3.1.3. Linux </A> </H4>
 
 <P> Pd is available via the package systems for some Linux distributions,
 but not always in the most recent version possible. In case you don't find
@@ -90,7 +105,7 @@ it or want the very latest recent version, you need to compile Pd, which is
 described  in <a href="x6.htm#s6.3">6.3. Building Pd for Linux</a>.
 
 
-<H3> <A id=s3.2> 3.2. Running Pd via the command line </A> </H3>
+<H3> <A href="#s3.2" id="s3.2"> 3.2. Running Pd via the command line </A> </H3>
 
 <P>Besides opening Pd by clicking on a user friendly icon as usual, you may
 open and run Pd as a "command line" program from your "terminal emulator",
@@ -115,13 +130,13 @@ Pd.
 all options.
 
 
-<H3> <A id=s3.3> 3.3. Testing and configuring Audio and MIDI </A> </H3>
+<H3> <A href="#s3.3" id="s3.3"> 3.3. Testing and configuring Audio and MIDI </A> </H3>
 
 <P> To test audio and MIDI, start Pd and select "Test Audio and MIDI..."
 from the <b>Media menu</b>. You should see a window like this:
 
 <figure>
-    <IMG src="img/3.3.1.png" ALT="test audio and midi patch">
+    <IMG src="resources/3.3.1.png" ALT="test audio and midi patch">
     <figcaption><u>Fig. 3.3.1</u> Test Audio and MIDI patch</figcaption>
 </figure>
 
@@ -193,7 +208,7 @@ have it installed. The <b>Media menu</b> also displays choices for MIDI API.
 On Linux, they are OSS-MIDI and ALSA-MIDI.
 
 <figure>
-    <IMG src="img/3.3.2.png" ALT="API choices in Windows">
+    <IMG src="resources/3.3.2.png" ALT="API choices in Windows">
     <figcaption><u>Fig. 3.3.2</u> API choices in Windows</figcaption>
 </figure>
 
@@ -300,7 +315,7 @@ has sync problems.
 
 
 
-<H4> <A id=s3.3.1>3.3.1. Audio settings </A> </H4>
+<H4> <A href="#s3.3.1" id="s3.3.1">3.3.1. Audio settings </A> </H4>
 
 <P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
 API. Clicking on the API to change it also opens the settings window for the
@@ -308,7 +323,7 @@ newly selected API. If you click on the already selected API, you also open the
 settings window.
 
 <figure>
-    <IMG src="img/3.3.3.png" ALT="old MMIO API">
+    <IMG src="resources/3.3.3.png" ALT="old MMIO API">
     <figcaption><u>Fig. 3.3.3</u> Audio Settings from the Media menu ('old MMIO system' API on Windows)</figcaption>
 </figure>
 
@@ -317,7 +332,7 @@ The screenshot above is for when you select 'old MMIO system' in Windows.
 While the screenshot below is for 'portaudio' on macOS.
 
 <figure>
-    <IMG src="img/3.3.4.png" ALT="audio settings dialog">
+    <IMG src="resources/3.3.4.png" ALT="audio settings dialog">
     <figcaption><u>Fig. 3.3.4</u> Audio Settings from the Media menu (portaudio API on macOS)</figcaption>
 </figure>
 
@@ -335,7 +350,7 @@ channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
 <figure>
-    <IMG src="img/3.3.5.png" ALT="audio settings dialog">
+    <IMG src="resources/3.3.5.png" ALT="audio settings dialog">
     <figcaption><u>Fig. 3.3.5</u> The Audio Settings dialog as called from the Media menu on Linux</figcaption>
 </figure>
 
@@ -346,7 +361,7 @@ can also do that but you need to be using the 'old MMIO system' API
 a workaround by creating an aggregate device (via the system's "Audio
 MIDI Setup") and set it in Pd's Audio settings.
 
-<H4> <A id=s3.3.2>3.3.2. MIDI settings </A> </H4>
+<H4> <A href="#s3.3.2" id="s3.3.2">3.3.2. MIDI settings </A> </H4>
 
 <p> There's also a MIDI settings dialog for you to configure one or more MIDI
 input and output devices. If more than one device is chosen for either input and
@@ -360,7 +375,7 @@ objects output the port number in their right outlet and <b>[midiout]</b>
 has a separate inlet to specify which MIDI port you want.
 
 <figure>
-    <IMG src="img/3.3.6.png" ALT="MIDI settings">
+    <IMG src="resources/3.3.6.png" ALT="MIDI settings">
     <figcaption><u>Fig. 3.3.6</u> The MIDI Settings dialog as called from the Media menu on macOS</figcaption>
 </figure>
 
@@ -368,7 +383,7 @@ has a separate inlet to specify which MIDI port you want.
 <P> System exclusive MIDI message input and output are theoretically supported
 but does not work uniformly across all operating systems..
 
-<H3> <A id=s3.4> 3.4. Path and startup</A> </H3>
+<H3> <A href="#s3.4" id="s3.4"> 3.4. Path and startup</A> </H3>
 
 <P> In addition to the Audio and MIDI settings shown above, you can customize
 Pd to instruct it where to find files, what font size to use, and much more.
@@ -382,7 +397,7 @@ but the fact they are also found here. There's one difference though, which is
 that you can get choices for API this way.
 
 <figure>
-    <IMG src="img/3.4.1.png" ALT="preferences dialog">
+    <IMG src="resources/3.4.1.png" ALT="preferences dialog">
     <figcaption><u>Fig. 3.4.1</u> The Audio Settings tab in tabbed Preferences on Windows</figcaption>
 </figure>
 
@@ -392,7 +407,7 @@ select and change API (where 'old MMIO system' is selected.)
 
 
 <figure>
-    <IMG src="img/3.4.2.png" ALT="preferences dialog">
+    <IMG src="resources/3.4.2.png" ALT="preferences dialog">
     <figcaption><u>Fig. 3.4.2</u> The Path dialog in the tabbed Preferences</figcaption>
 </figure>
 
@@ -414,7 +429,7 @@ path management is also covered in depth in <a href="x4.htm">Chapter 4: External
 and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
 
 <figure>
-    <IMG src="img/3.4.3.png" ALT="startup dialog">
+    <IMG src="resources/3.4.3.png" ALT="startup dialog">
     <figcaption><u>Fig. 3.4.3</u> The startup dialog</figcaption>
 </figure>
 
@@ -448,7 +463,7 @@ you can also invoke Pd via the command line using the same startup flags
 as arguments. Command line settings, if given, override the corresponding
 settings that were saved from Pd.
 
-<H4> <A id=s3.4.1>3.4.1. Startup flags </A> </H4>
+<H4> <A href="#s3.4.1" id="s3.4.1">3.4.1. Startup flags </A> </H4>
 
 <P> Here's a list of all startup flags that you can use in the "Startup" tab under
 "Preferences" or by running Pd from the command line.
@@ -552,14 +567,14 @@ general flags:
 <P>See next details on a few of the group of flag items.
 
 
-<H5> <A id=s3.4.1.1> 3.4.1.1. Font flags</A> </H5>
+<H5> <A href="#s3.4.1.1" id="s3.4.1.1"> 3.4.1.1. Font flags</A> </H5>
 
 
 <P> The flags offer more font configurations than just "size". Note that macOS has,
 by default, a "normal" font weight, while in Linux and Windows you have "<b>bold</b>"
 by default. Use "-font-weight" to change that if you don't like your default setting.
 
-<H5> <A id=s3.4.1.2> 3.4.1.2. Path flag</A> </H5>
+<H5> <A href="#s3.4.1.2" id="s3.4.1.2"> 3.4.1.2. Path flag</A> </H5>
 
 <P> Paths may contain any number of entries if separated by colons in Unix or
 semicolons in Windows. Filenames in Pd are always separated by (Unix-style)
@@ -568,7 +583,7 @@ so that patches can be ported more easily between operating systems. On the
 other hand, if you specify a filename on the command line (as in "pd -path
 c:\pdlib") the file separator should agree with the operating system.
 
-<H5> <A id=s3.4.1.3> 3.4.1.3. Flags for Audio and MIDI multiple devices and sleepgrain</A> </H5>
+<H5> <A href="#s3.4.1.3" id="s3.4.1.3"> 3.4.1.3. Flags for Audio and MIDI multiple devices and sleepgrain</A> </H5>
 
 <P> You can specify multiple MIDI input and output devices via flags. For example,
 "pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
@@ -591,7 +606,7 @@ channels by device: "-audioindev 1,3 -inchannels 2,8" will try to open device 1
 (2 channels) and device 3 (8 channels). Note that multiple audio device selection
 is only possible for Linux and Windows, as noted earlier.
 
-<H5> <A id=s3.4.1.4> 3.4.1.4. Sample rate flag</A> </H5>
+<H5> <A href="#s3.4.1.4" id="s3.4.1.4"> 3.4.1.4. Sample rate flag</A> </H5>
 
 <P>The sample rate controls Pd's logical sample rate which need not be that of
 the audio input and output devices. If Pd's sample rate is wrong, time will
@@ -600,7 +615,7 @@ and input devices are running at different rates, Pd will constantly drop frames
 to re-sync them, which will sound bad. You can disable input or output if this
 is a problem.
 
-<H5> <A id=s3.4.1.5> 3.4.1.5. Audio buffer size and block size flags</A> </H5>
+<H5> <A href="#s3.4.1.5" id="s3.4.1.5"> 3.4.1.5. Audio buffer size and block size flags</A> </H5>
 
 <P>You can specify an audio buffer size in milliseconds, typically between 10 and
 300, depending on how responsive your OS and drivers are. If this is set too
@@ -613,10 +628,10 @@ default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 
 
 </div>
-<div id="footer">
-<A href="x4.htm"> next chapter </A><BR>
-<A href="index.htm#s3"> back to table of contents </A>
-
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="x2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="x4.htm">Chapter 4: Externals &gt;</A></div>
 </div>
 </BODY>
 </HTML>

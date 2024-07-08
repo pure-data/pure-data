@@ -356,6 +356,12 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
+        if (pa_indev == -1)
+        {
+            inchans = 0;
+            pd_error(0, "audio input device number (%d) out of range",
+                indeviceno);
+        }
     }
 
     if (outchans > 0)
@@ -376,17 +382,21 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
+        if (pa_outdev == -1)
+        {
+            outchans = 0;
+            pd_error(0, "audio output device number (%d) out of range",
+                outdeviceno);
+        }
     }
-
-    if (inchans > 0 && pa_indev == -1)
-        inchans = 0;
-    if (outchans > 0 && pa_outdev == -1)
-        outchans = 0;
 
     logpost(NULL, PD_VERBOSE, "input device %d, channels %d", pa_indev, inchans);
     logpost(NULL, PD_VERBOSE, "output device %d, channels %d", pa_outdev, outchans);
     logpost(NULL, PD_VERBOSE, "framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
     logpost(NULL, PD_VERBOSE, "rate %d", rate);
+
+    if (!inchans && !outchans)
+        return (1);
 
     pa_inchans = STUFF->st_inchannels = inchans;
     pa_outchans = STUFF->st_outchannels = outchans;
@@ -401,9 +411,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_sem = sys_semaphore_create();
 #endif
     pa_lastdactime = 0;
-
-    if (!inchans && !outchans)
-        return (0);
 
     if (callbackfn)
     {
