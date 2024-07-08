@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-07-08 15:19+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"PO-Revision-Date: 2024-07-08 17:20+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "線形"
@@ -857,7 +857,8 @@ msgid "Installation options:"
 msgstr "インストールオプション:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr "ライブラリのチェックサムを確認してから(再)インストールしてみてください"
+msgstr ""
+"ライブラリのチェックサムを確認してから(再)インストールしてみてください"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "ライブラリを削除してから(再)インストールしてみてください"
@@ -1007,16 +1008,16 @@ msgstr ""
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr ""
-"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチし"
-"ます）。"
+"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチ"
+"します）。"
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr "ライブラリのみ または オブジェクトのみに 検索を制限できます。"
 
 msgid "To get a list of all available externals, try an empty search."
 msgstr ""
-"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
-"い。"
+"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくだ"
+"さい。"
 
 msgid "Right-clicking a search result will give you more options..."
 msgstr "検索結果を右クリックすると、さらに多くのオプションが表示されます..."
@@ -1114,8 +1115,8 @@ msgstr "%1$s を %2$s にインストールしますか？"
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
-"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指定"
-"されていません。"
+"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指"
+"定されていません。"
 
 msgid "Installing to non-existent directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
@@ -1279,123 +1280,121 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afar"
-msgstr ""
+msgstr "アファル語"
 
 msgid "Abkhazian"
-msgstr ""
+msgstr "アブハズ語"
 
 msgid "Avestan"
-msgstr ""
+msgstr "アヴェスター語"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "アフリカーンス語"
 
 msgid "Akan"
-msgstr ""
+msgstr "アカン語"
 
 msgid "Amharic"
-msgstr ""
+msgstr "アムハラ語"
 
 msgid "Aragonese"
-msgstr ""
+msgstr "アラゴン語"
 
 msgid "Arabic"
-msgstr ""
+msgstr "アラビア語"
 
 msgid "Assamese"
-msgstr ""
+msgstr "アッサム語"
 
 msgid "Avaric"
-msgstr ""
+msgstr "アヴァル語"
 
 msgid "Aymara"
-msgstr ""
+msgstr "アイマラ語"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "アゼルバイジャン語"
 
 msgid "Bashkir"
-msgstr ""
+msgstr "バシキール語"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "ベラルーシ語"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "ブルガリア語"
 
 msgid "Bihari"
-msgstr ""
+msgstr "ビハール語"
 
 msgid "Bislama"
-msgstr ""
+msgstr "ビスラマ語"
 
 msgid "Bambara"
-msgstr ""
+msgstr "バンバラ語"
 
 msgid "Bengali"
-msgstr ""
+msgstr "ベンガル語"
 
 msgid "Tibetan"
-msgstr ""
+msgstr "チベット語"
 
 msgid "Breton"
-msgstr ""
+msgstr "ブルターニュ語"
 
 msgid "Bosnian"
-msgstr ""
+msgstr "ボスニア語"
 
-#, fuzzy
 msgid "Catalan"
-msgstr "致命的"
+msgstr "カタルーニャ語"
 
-#, fuzzy
 msgid "Chechen"
-msgstr "チェック"
+msgstr "チェチェン語"
 
 msgid "Chamorro"
-msgstr ""
+msgstr "チャモロ語"
 
 msgid "Corsican"
-msgstr ""
+msgstr "コルシカ語"
 
 msgid "Cree"
-msgstr ""
+msgstr "クリー語"
 
 msgid "Czech"
-msgstr ""
+msgstr "チェコ語"
 
 msgid "Chuvash"
-msgstr ""
+msgstr "チュヴァシ語"
 
 msgid "Welsh"
-msgstr ""
+msgstr "ウェールズ語"
 
 msgid "Danish"
-msgstr ""
+msgstr "デンマーク語"
 
 msgid "German"
-msgstr ""
+msgstr "ドイツ語"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "ドイツ語 (オーストリア)"
 
 msgid "Dhivehi"
-msgstr ""
+msgstr "ディベヒ語"
 
 msgid "Dzongkha"
-msgstr ""
+msgstr "ゾンカ語"
 
 msgid "Ewe"
-msgstr ""
+msgstr "エウェ語"
 
 msgid "Greek"
-msgstr ""
+msgstr "ギリシャ語"
 
 msgid "English"
-msgstr ""
+msgstr "英語"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "英語 (カナダ)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1404,429 +1403,427 @@ msgid "English (USA)"
 msgstr ""
 
 msgid "Esperanto"
-msgstr ""
+msgstr "エスペラント語"
 
 msgid "Spanish"
-msgstr ""
+msgstr "スペイン語"
 
 msgid "Estonian"
-msgstr ""
+msgstr "エストニア語"
 
 msgid "Basque"
-msgstr ""
+msgstr "バスク語"
 
-#, fuzzy
 msgid "Persian"
-msgstr "バージョン"
+msgstr "ペルシア語"
 
 msgid "Fulah"
-msgstr ""
+msgstr "フラ語"
 
 msgid "Finnish"
-msgstr ""
+msgstr "フィンランド語"
 
 msgid "Fijian"
-msgstr ""
+msgstr "フィジー語"
 
 msgid "Faroese"
-msgstr ""
+msgstr "フェロー語"
 
 msgid "French"
-msgstr ""
+msgstr "フランス語"
 
 msgid "Frisian"
-msgstr ""
+msgstr "フリジア語"
 
 msgid "Irish"
-msgstr ""
+msgstr "アイルランド語"
 
 msgid "Gaelic"
-msgstr ""
+msgstr "ゲール語"
 
 msgid "Galician"
-msgstr ""
+msgstr "ガリシア語"
 
 msgid "Guarani"
-msgstr ""
+msgstr "グアラニー語"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "グジャラート語"
 
 msgid "Manx"
-msgstr ""
+msgstr "マン島語"
 
 msgid "Hausa"
-msgstr ""
+msgstr "ハウサ語"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "ヘブライ語"
 
 msgid "Hindi"
-msgstr ""
+msgstr "ヒンディー語"
 
 msgid "Hiri Motu"
-msgstr ""
+msgstr "ヒリモツ語"
 
 msgid "Croatian"
-msgstr ""
+msgstr "クロアチア語"
 
 msgid "Haitian"
-msgstr ""
+msgstr "ハイチ語"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "ハンガリー語"
 
 msgid "Armenian"
-msgstr ""
+msgstr "アルメニア語"
 
 msgid "Herero"
-msgstr ""
+msgstr "ヘレロ語"
 
 msgid "Interlingua"
-msgstr ""
+msgstr "インターリングア"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "インドネシア語"
 
 msgid "Occidental"
-msgstr ""
+msgstr "オクツィデンタル"
 
 msgid "Igbo"
-msgstr ""
+msgstr "イボ語"
 
 msgid "Nuosu"
-msgstr ""
+msgstr "四川彝語"
 
 msgid "Inupiaq"
-msgstr ""
+msgstr "イヌピアック語"
 
 msgid "Ido"
-msgstr ""
+msgstr "イド語"
 
 msgid "Icelandic"
-msgstr ""
+msgstr "アイスランド語"
 
 msgid "Italian"
-msgstr ""
+msgstr "イタリア語"
 
 msgid "Inuktitut"
-msgstr ""
+msgstr "イヌクティトゥット語"
 
 msgid "Japanese"
-msgstr ""
+msgstr "日本語"
 
 msgid "Javanese"
-msgstr ""
+msgstr "ジャワ語"
 
 msgid "Georgian"
-msgstr ""
+msgstr "グルジア語"
 
 msgid "Kongo"
-msgstr ""
+msgstr "コンゴ語"
 
 msgid "Gikuyu"
-msgstr ""
+msgstr "キクユ語"
 
 msgid "Kwanyama"
-msgstr ""
+msgstr "クワニャマ語"
 
 msgid "Kazakh"
-msgstr ""
+msgstr "カザフ語"
 
 msgid "Greenlandic"
-msgstr ""
+msgstr "グリーンランド語"
 
 msgid "Kannada"
-msgstr ""
+msgstr "カンナダ語"
 
 msgid "Korean"
-msgstr ""
+msgstr "朝鮮語"
 
 msgid "Kanuri"
-msgstr ""
+msgstr "カヌリ語"
 
 msgid "Kashmiri"
-msgstr ""
+msgstr "カシミール語"
 
 msgid "Kurdish"
-msgstr ""
+msgstr "クルド語"
 
 msgid "Komi"
-msgstr ""
+msgstr "コミ語"
 
 msgid "Cornish"
-msgstr ""
+msgstr "コーンウォール語"
 
 msgid "Kyrgyz"
-msgstr ""
+msgstr "キルギス語"
 
 msgid "Latin"
-msgstr ""
+msgstr "ラテン語"
 
 msgid "Luxembourgish"
-msgstr ""
+msgstr "ルクセンブルク語"
 
 msgid "Luganda"
-msgstr ""
+msgstr "ガンダ語"
 
 msgid "Limburgish"
-msgstr ""
+msgstr "リンブルフ語"
 
 msgid "Lingala"
-msgstr ""
+msgstr "リンガラ語"
 
-#, fuzzy
 msgid "Lao"
-msgstr "ログ"
+msgstr "ラオ語"
 
 msgid "Lithuanian"
-msgstr ""
+msgstr "リトアニア語"
 
 msgid "Luba-Katanga"
-msgstr ""
+msgstr "ルバ・カタンガ語"
 
 msgid "Latvian"
-msgstr ""
+msgstr "ラトビア語"
 
 msgid "Malagasy"
-msgstr ""
+msgstr "マダガスカル語"
 
 msgid "Marshallese"
-msgstr ""
+msgstr "マーシャル語"
 
 msgid "Maori"
-msgstr ""
+msgstr "マオリ語"
 
 msgid "Macedonian"
-msgstr ""
+msgstr "マケドニア語"
 
 msgid "Malayalam"
-msgstr ""
+msgstr "マラヤーラム語"
 
 msgid "Mongolian"
-msgstr ""
+msgstr "モンゴル語"
 
 msgid "Marathi"
-msgstr ""
+msgstr "マラーティー語"
 
 msgid "Malay"
-msgstr ""
+msgstr "マレー語"
 
 msgid "Maltese"
-msgstr ""
+msgstr "マルタ語"
 
 msgid "Burmese"
-msgstr ""
+msgstr "ビルマ語"
 
 msgid "Nauru"
-msgstr ""
+msgstr "ナウル語"
 
 msgid "Nepali"
-msgstr ""
+msgstr "ネパール語"
 
 msgid "Ndonga"
-msgstr ""
+msgstr "ンドンガ語"
 
 msgid "Dutch"
-msgstr ""
+msgstr "オランダ語"
 
 msgid "Norwegian Nynorsk"
-msgstr ""
+msgstr "ノルウェー語 (ニーノシュク)"
 
 msgid "Navaho"
-msgstr ""
+msgstr "ナバホ語"
 
 msgid "Nyanja"
-msgstr ""
+msgstr "ニャンジャ語"
 
 msgid "Occitan"
-msgstr ""
+msgstr "オック語"
 
 msgid "Ojibwe"
-msgstr ""
+msgstr "オジブエ語"
 
 msgid "Oromo"
-msgstr ""
+msgstr "オロモ語"
 
 msgid "Odia"
-msgstr ""
+msgstr "オリヤー語"
 
 msgid "Ossetian"
-msgstr ""
+msgstr "オセット語"
 
 msgid "Panjabi"
 msgstr ""
 
 msgid "Pali"
-msgstr ""
+msgstr "パーリ語"
 
 msgid "Polish"
-msgstr ""
+msgstr "ポーランド語"
 
 msgid "Pashto"
-msgstr ""
+msgstr "パシュトー語"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "ポルトガル語"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "ポルトガル語 (ブラジル)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "ポルトガル語 (ポルトガル)"
 
 msgid "Quechua"
-msgstr ""
+msgstr "ケチュア語"
 
 msgid "Romansh"
-msgstr ""
+msgstr "ロマンシュ語"
 
 msgid "Rundi"
-msgstr ""
+msgstr "ルンディ語"
 
 msgid "Romanian"
-msgstr ""
+msgstr "ルーマニア語"
 
 msgid "Russian"
-msgstr ""
+msgstr "ロシア語"
 
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "ルワンダ語"
 
 msgid "Sanskrit"
-msgstr ""
+msgstr "サンスクリット"
 
 msgid "Sardinian"
-msgstr ""
+msgstr "サルデーニャ語"
 
 msgid "Sindhi"
-msgstr ""
+msgstr "シンド語"
 
 msgid "Sango"
-msgstr ""
+msgstr "サンゴ語"
 
 msgid "Sinhala"
-msgstr ""
+msgstr "シンハラ語"
 
 msgid "Slovak"
-msgstr ""
+msgstr "スロバキア語"
 
 msgid "Slovenian"
-msgstr ""
+msgstr "スロベニア語"
 
 msgid "Samoan"
-msgstr ""
+msgstr "サモア語"
 
 msgid "Shona"
-msgstr ""
+msgstr "ショナ語"
 
 msgid "Somali"
-msgstr ""
+msgstr "ソマリ語"
 
 msgid "Albanian"
-msgstr ""
+msgstr "アルバニア語"
 
 msgid "Serbian"
-msgstr ""
+msgstr "セルビア語"
 
 msgid "Swati"
-msgstr ""
+msgstr "スワジ語"
 
 msgid "Sundanese"
-msgstr ""
+msgstr "スンダ語"
 
 msgid "Swedish"
-msgstr ""
+msgstr "スウェーデン語"
 
 msgid "Swahili"
-msgstr ""
+msgstr "スワヒリ語"
 
 msgid "Tamil"
-msgstr ""
+msgstr "タミル語"
 
 msgid "Telugu"
-msgstr ""
+msgstr "テルグ語"
 
 msgid "Tajik"
-msgstr ""
+msgstr "タジク語"
 
 msgid "Thai"
-msgstr ""
+msgstr "タイ語"
 
 msgid "Tigrinya"
-msgstr ""
+msgstr "ティグリニャ語"
 
 msgid "Turkmen"
-msgstr ""
+msgstr "トルクメン語"
 
 msgid "Tagalog"
-msgstr ""
+msgstr "タガログ語"
 
 msgid "Tswana"
-msgstr ""
+msgstr "ツワナ語"
 
 msgid "Tongan"
-msgstr ""
+msgstr "トンガ語"
 
 msgid "Turkish"
-msgstr ""
+msgstr "トルコ語"
 
 msgid "Tsonga"
-msgstr ""
+msgstr "ツォンガ語"
 
 msgid "Tatar"
-msgstr ""
+msgstr "タタール語"
 
 msgid "Twi"
-msgstr ""
+msgstr "トウィ語"
 
 msgid "Tahitian"
-msgstr ""
+msgstr "タヒチ語"
 
 msgid "Uyghur"
-msgstr ""
+msgstr "ウイグル語"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "ウクライナ語"
 
 msgid "Urdu"
-msgstr ""
+msgstr "ウルドゥー語"
 
 msgid "Uzbek"
-msgstr ""
+msgstr "ウズベク語"
 
 msgid "Venda"
-msgstr ""
+msgstr "ヴェンダ語"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "ベトナム語"
 
 msgid "Volapük"
-msgstr ""
+msgstr "ヴォラピュク"
 
 msgid "Walloon"
-msgstr ""
+msgstr "ワロン語"
 
 msgid "Wolof"
-msgstr ""
+msgstr "ウォロフ語"
 
 msgid "Xhosa"
-msgstr ""
+msgstr "コサ語"
 
 msgid "Yiddish"
-msgstr ""
+msgstr "イディッシュ語"
 
 msgid "Yoruba"
-msgstr ""
+msgstr "ヨルバ語"
 
 msgid "Zhuang"
-msgstr ""
+msgstr "チワン語"
 
 msgid "Chinese (Traditional)"
 msgstr ""
 
 msgid "Zulu"
-msgstr ""
+msgstr "ズールー語"
 
 #, fuzzy
 msgid "(no translation)"

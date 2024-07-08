@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-07-08 15:19+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"PO-Revision-Date: 2024-07-08 17:41+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "лінійний"
@@ -1297,123 +1297,121 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afar"
-msgstr ""
+msgstr "Афарська"
 
 msgid "Abkhazian"
-msgstr ""
+msgstr "Абхазька"
 
 msgid "Avestan"
-msgstr ""
+msgstr "Авестійська"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Африкаанс"
 
 msgid "Akan"
-msgstr ""
+msgstr "Акан"
 
 msgid "Amharic"
-msgstr ""
+msgstr "Амхарська"
 
 msgid "Aragonese"
-msgstr ""
+msgstr "Арагонська"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Арабська"
 
 msgid "Assamese"
-msgstr ""
+msgstr "Асамська"
 
 msgid "Avaric"
-msgstr ""
+msgstr "Аварська"
 
 msgid "Aymara"
-msgstr ""
+msgstr "Аймарська"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Азербайджанська"
 
 msgid "Bashkir"
-msgstr ""
+msgstr "Башкирська"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Білоруська"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Болгарська"
 
 msgid "Bihari"
-msgstr ""
+msgstr "Біхарська"
 
 msgid "Bislama"
-msgstr ""
+msgstr "Біслама"
 
 msgid "Bambara"
-msgstr ""
+msgstr "Бамбара"
 
 msgid "Bengali"
-msgstr ""
+msgstr "Бенгальська"
 
 msgid "Tibetan"
-msgstr ""
+msgstr "Тибетська"
 
 msgid "Breton"
-msgstr ""
+msgstr "Бретонська"
 
 msgid "Bosnian"
-msgstr ""
+msgstr "Боснійська"
 
-#, fuzzy
 msgid "Catalan"
-msgstr "критичні"
+msgstr "Каталонська"
 
-#, fuzzy
 msgid "Chechen"
-msgstr "Перевірити"
+msgstr "Чеченська"
 
 msgid "Chamorro"
-msgstr ""
+msgstr "Чаморро"
 
 msgid "Corsican"
-msgstr ""
+msgstr "Корсиканська"
 
 msgid "Cree"
-msgstr ""
+msgstr "Крі"
 
 msgid "Czech"
-msgstr ""
+msgstr "Чеська"
 
 msgid "Chuvash"
-msgstr ""
+msgstr "Чуваська"
 
 msgid "Welsh"
-msgstr ""
+msgstr "Валлійська"
 
 msgid "Danish"
-msgstr ""
+msgstr "Данська"
 
 msgid "German"
-msgstr ""
+msgstr "Німецька"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Німецька (Австрія)"
 
 msgid "Dhivehi"
-msgstr ""
+msgstr "Мальдівська"
 
 msgid "Dzongkha"
-msgstr ""
+msgstr "Дзонгкха"
 
 msgid "Ewe"
-msgstr ""
+msgstr "Еве"
 
 msgid "Greek"
-msgstr ""
+msgstr "Грецька"
 
 msgid "English"
-msgstr ""
+msgstr "Англійська"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Англійська (Канада)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1422,429 +1420,427 @@ msgid "English (USA)"
 msgstr ""
 
 msgid "Esperanto"
-msgstr ""
+msgstr "Есперанто"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Іспанська"
 
 msgid "Estonian"
-msgstr ""
+msgstr "Естонська"
 
 msgid "Basque"
-msgstr ""
+msgstr "Баскська"
 
-#, fuzzy
 msgid "Persian"
-msgstr "Версія"
+msgstr "Перська"
 
 msgid "Fulah"
-msgstr ""
+msgstr "Фула"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Фінська"
 
 msgid "Fijian"
-msgstr ""
+msgstr "Фіджійська"
 
 msgid "Faroese"
-msgstr ""
+msgstr "Фарерська"
 
 msgid "French"
-msgstr ""
+msgstr "Французька"
 
 msgid "Frisian"
-msgstr ""
+msgstr "Фризька"
 
 msgid "Irish"
-msgstr ""
+msgstr "Ірландська"
 
 msgid "Gaelic"
-msgstr ""
+msgstr "Гельська"
 
 msgid "Galician"
-msgstr ""
+msgstr "Галісійська"
 
 msgid "Guarani"
-msgstr ""
+msgstr "Ґуарані"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Гуджараті"
 
 msgid "Manx"
-msgstr ""
+msgstr "Менська"
 
 msgid "Hausa"
-msgstr ""
+msgstr "Гауса"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Іврит"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Гінді"
 
 msgid "Hiri Motu"
-msgstr ""
+msgstr "Гірімоту"
 
 msgid "Croatian"
-msgstr ""
+msgstr "Хорватська"
 
 msgid "Haitian"
-msgstr ""
+msgstr "Гаїтянська"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Угорська"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Вірменська"
 
 msgid "Herero"
-msgstr ""
+msgstr "Гереро"
 
 msgid "Interlingua"
-msgstr ""
+msgstr "Інтерлінгва"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Індонезійська"
 
 msgid "Occidental"
-msgstr ""
+msgstr "Окциденталь"
 
 msgid "Igbo"
-msgstr ""
+msgstr "Ігбо"
 
 msgid "Nuosu"
-msgstr ""
+msgstr "Нуосу"
 
 msgid "Inupiaq"
-msgstr ""
+msgstr "Інуп'Як"
 
 msgid "Ido"
-msgstr ""
+msgstr "Ідо"
 
 msgid "Icelandic"
-msgstr ""
+msgstr "Ісландська"
 
 msgid "Italian"
-msgstr ""
+msgstr "Італійська"
 
 msgid "Inuktitut"
-msgstr ""
+msgstr "Інуктітут"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Японська"
 
 msgid "Javanese"
-msgstr ""
+msgstr "Яванська"
 
 msgid "Georgian"
-msgstr ""
+msgstr "Грузинська"
 
 msgid "Kongo"
-msgstr ""
+msgstr "Конґо"
 
 msgid "Gikuyu"
-msgstr ""
+msgstr "Ґікую"
 
 msgid "Kwanyama"
-msgstr ""
+msgstr "Кваняма"
 
 msgid "Kazakh"
-msgstr ""
+msgstr "Казахська"
 
 msgid "Greenlandic"
-msgstr ""
+msgstr "Ґренландська"
 
 msgid "Kannada"
-msgstr ""
+msgstr "Каннада"
 
 msgid "Korean"
-msgstr ""
+msgstr "Корейська"
 
 msgid "Kanuri"
-msgstr ""
+msgstr "Канурі"
 
 msgid "Kashmiri"
-msgstr ""
+msgstr "Кашмірська"
 
 msgid "Kurdish"
-msgstr ""
+msgstr "Курдська"
 
 msgid "Komi"
-msgstr ""
+msgstr "Комі"
 
 msgid "Cornish"
-msgstr ""
+msgstr "Корнська"
 
 msgid "Kyrgyz"
-msgstr ""
+msgstr "Киргизька"
 
 msgid "Latin"
-msgstr ""
+msgstr "Латинська"
 
 msgid "Luxembourgish"
-msgstr ""
+msgstr "Люксембурзька"
 
 msgid "Luganda"
-msgstr ""
+msgstr "Луґанда"
 
 msgid "Limburgish"
-msgstr ""
+msgstr "Лімбурзька"
 
 msgid "Lingala"
-msgstr ""
+msgstr "Лінґала"
 
-#, fuzzy
 msgid "Lao"
-msgstr "Журнал"
+msgstr "Лаоська"
 
 msgid "Lithuanian"
-msgstr ""
+msgstr "Литовська"
 
 msgid "Luba-Katanga"
-msgstr ""
+msgstr "Луба-Катанґа"
 
 msgid "Latvian"
-msgstr ""
+msgstr "Латиська"
 
 msgid "Malagasy"
-msgstr ""
+msgstr "Малагасійська"
 
 msgid "Marshallese"
-msgstr ""
+msgstr "Маршальська"
 
 msgid "Maori"
-msgstr ""
+msgstr "Маорійська"
 
 msgid "Macedonian"
-msgstr ""
+msgstr "Македонська"
 
 msgid "Malayalam"
-msgstr ""
+msgstr "Малаялам"
 
 msgid "Mongolian"
-msgstr ""
+msgstr "Монгольська"
 
 msgid "Marathi"
-msgstr ""
+msgstr "Маратхі"
 
 msgid "Malay"
-msgstr ""
+msgstr "Малайська"
 
 msgid "Maltese"
-msgstr ""
+msgstr "Мальтійська"
 
 msgid "Burmese"
-msgstr ""
+msgstr "Бірманська"
 
 msgid "Nauru"
-msgstr ""
+msgstr "Науру"
 
 msgid "Nepali"
-msgstr ""
+msgstr "Непальська"
 
 msgid "Ndonga"
-msgstr ""
+msgstr "Ндонга"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Нідерландська"
 
 msgid "Norwegian Nynorsk"
-msgstr ""
+msgstr "Норвезька (Нюношк)"
 
 msgid "Navaho"
-msgstr ""
+msgstr "Навахо"
 
 msgid "Nyanja"
-msgstr ""
+msgstr "Ньянджа"
 
 msgid "Occitan"
-msgstr ""
+msgstr "Окситанська"
 
 msgid "Ojibwe"
-msgstr ""
+msgstr "Оджибве"
 
 msgid "Oromo"
-msgstr ""
+msgstr "Оромо"
 
 msgid "Odia"
-msgstr ""
+msgstr "Одія"
 
 msgid "Ossetian"
-msgstr ""
+msgstr "Осетинська"
 
 msgid "Panjabi"
 msgstr ""
 
 msgid "Pali"
-msgstr ""
+msgstr "Палі"
 
 msgid "Polish"
-msgstr ""
+msgstr "Польська"
 
 msgid "Pashto"
-msgstr ""
+msgstr "Пушту"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Португальська"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Португальська (Бразилія)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Португальська (Португалія)"
 
 msgid "Quechua"
-msgstr ""
+msgstr "Кечуа"
 
 msgid "Romansh"
-msgstr ""
+msgstr "Ретороманська"
 
 msgid "Rundi"
-msgstr ""
+msgstr "Рунді"
 
 msgid "Romanian"
-msgstr ""
+msgstr "Румунська"
 
 msgid "Russian"
-msgstr ""
+msgstr "Російська"
 
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "Руандійська"
 
 msgid "Sanskrit"
-msgstr ""
+msgstr "Санскрит"
 
 msgid "Sardinian"
-msgstr ""
+msgstr "Сардинська"
 
 msgid "Sindhi"
-msgstr ""
+msgstr "Синдхі"
 
 msgid "Sango"
-msgstr ""
+msgstr "Санґо"
 
 msgid "Sinhala"
-msgstr ""
+msgstr "Сингальська"
 
 msgid "Slovak"
-msgstr ""
+msgstr "Словацька"
 
 msgid "Slovenian"
-msgstr ""
+msgstr "Словенська"
 
 msgid "Samoan"
-msgstr ""
+msgstr "Самоанська"
 
 msgid "Shona"
-msgstr ""
+msgstr "Шона"
 
 msgid "Somali"
-msgstr ""
+msgstr "Сомалійська"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Албанська"
 
 msgid "Serbian"
-msgstr ""
+msgstr "Сербська"
 
 msgid "Swati"
-msgstr ""
+msgstr "Сваті"
 
 msgid "Sundanese"
-msgstr ""
+msgstr "Сунданська"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Шведська"
 
 msgid "Swahili"
-msgstr ""
+msgstr "Суахілі"
 
 msgid "Tamil"
-msgstr ""
+msgstr "Тамільська"
 
 msgid "Telugu"
-msgstr ""
+msgstr "Телугу"
 
 msgid "Tajik"
-msgstr ""
+msgstr "Таджицька"
 
 msgid "Thai"
-msgstr ""
+msgstr "Тайська"
 
 msgid "Tigrinya"
-msgstr ""
+msgstr "Тигринья"
 
 msgid "Turkmen"
-msgstr ""
+msgstr "Туркменська"
 
 msgid "Tagalog"
-msgstr ""
+msgstr "Тагальська"
 
 msgid "Tswana"
-msgstr ""
+msgstr "Тсвана"
 
 msgid "Tongan"
-msgstr ""
+msgstr "Тонґанська"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Турецька"
 
 msgid "Tsonga"
-msgstr ""
+msgstr "Тсонга"
 
 msgid "Tatar"
-msgstr ""
+msgstr "Татарська"
 
 msgid "Twi"
-msgstr ""
+msgstr "Тві"
 
 msgid "Tahitian"
-msgstr ""
+msgstr "Таїтянська"
 
 msgid "Uyghur"
-msgstr ""
+msgstr "Уйгурська"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"
 
 msgid "Urdu"
-msgstr ""
+msgstr "Урду"
 
 msgid "Uzbek"
-msgstr ""
+msgstr "Узбецька"
 
 msgid "Venda"
-msgstr ""
+msgstr "Венда"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "В'Єтнамська"
 
 msgid "Volapük"
-msgstr ""
+msgstr "Волапюк"
 
 msgid "Walloon"
-msgstr ""
+msgstr "Валлонська"
 
 msgid "Wolof"
-msgstr ""
+msgstr "Волоф"
 
 msgid "Xhosa"
-msgstr ""
+msgstr "Коса"
 
 msgid "Yiddish"
-msgstr ""
+msgstr "Ідиш"
 
 msgid "Yoruba"
-msgstr ""
+msgstr "Йоруба"
 
 msgid "Zhuang"
-msgstr ""
+msgstr "Чуанг"
 
 msgid "Chinese (Traditional)"
 msgstr ""
 
 msgid "Zulu"
-msgstr ""
+msgstr "Зулуська"
 
 #, fuzzy
 msgid "(no translation)"

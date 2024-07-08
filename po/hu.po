@@ -1279,121 +1279,121 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afar"
-msgstr ""
+msgstr "Afar"
 
 msgid "Abkhazian"
-msgstr ""
+msgstr "Abház"
 
 msgid "Avestan"
-msgstr ""
+msgstr "Avesztán"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 msgid "Akan"
-msgstr ""
+msgstr "Akan"
 
 msgid "Amharic"
-msgstr ""
+msgstr "Amhara"
 
 msgid "Aragonese"
-msgstr ""
+msgstr "Aragóniai"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arab"
 
 msgid "Assamese"
-msgstr ""
+msgstr "Asszámi"
 
 msgid "Avaric"
-msgstr ""
+msgstr "Avar"
 
 msgid "Aymara"
-msgstr ""
+msgstr "Aymara"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azeri"
 
 msgid "Bashkir"
-msgstr ""
+msgstr "Baskír"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belorusz"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bolgár"
 
 msgid "Bihari"
-msgstr ""
+msgstr "Bihári"
 
 msgid "Bislama"
-msgstr ""
+msgstr "Biszlama"
 
 msgid "Bambara"
-msgstr ""
+msgstr "Bambara"
 
 msgid "Bengali"
-msgstr ""
+msgstr "Bengáli"
 
 msgid "Tibetan"
-msgstr ""
+msgstr "Tibeti"
 
 msgid "Breton"
-msgstr ""
+msgstr "Breton"
 
 msgid "Bosnian"
-msgstr ""
+msgstr "Bosnyák"
 
 msgid "Catalan"
-msgstr ""
+msgstr "Katalán"
 
 msgid "Chechen"
-msgstr ""
+msgstr "Csecsen"
 
 msgid "Chamorro"
-msgstr ""
+msgstr "Csamorro"
 
 msgid "Corsican"
-msgstr ""
+msgstr "Korzikai"
 
 msgid "Cree"
-msgstr ""
+msgstr "Krí"
 
 msgid "Czech"
-msgstr ""
+msgstr "Cseh"
 
 msgid "Chuvash"
-msgstr ""
+msgstr "Csuvas"
 
 msgid "Welsh"
-msgstr ""
+msgstr "Walesi"
 
 msgid "Danish"
-msgstr ""
+msgstr "Dán"
 
 msgid "German"
-msgstr ""
+msgstr "Német"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Német (Ausztria)"
 
 msgid "Dhivehi"
-msgstr ""
+msgstr "Divehi"
 
 msgid "Dzongkha"
-msgstr ""
+msgstr "Dzsonga"
 
 msgid "Ewe"
-msgstr ""
+msgstr "Eve"
 
 msgid "Greek"
-msgstr ""
+msgstr "Görög"
 
 msgid "English"
-msgstr ""
+msgstr "Angol"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Angol (Kanada)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1402,427 +1402,427 @@ msgid "English (USA)"
 msgstr ""
 
 msgid "Esperanto"
-msgstr ""
+msgstr "Eszperantó"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Spanyol"
 
 msgid "Estonian"
-msgstr ""
+msgstr "Észt"
 
 msgid "Basque"
-msgstr ""
+msgstr "Baszk"
 
 msgid "Persian"
-msgstr ""
+msgstr "Perzsa"
 
 msgid "Fulah"
-msgstr ""
+msgstr "Ful"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finn"
 
 msgid "Fijian"
-msgstr ""
+msgstr "Fidzsi"
 
 msgid "Faroese"
-msgstr ""
+msgstr "Feröeri"
 
 msgid "French"
-msgstr ""
+msgstr "Francia"
 
 msgid "Frisian"
-msgstr ""
+msgstr "Fríz"
 
 msgid "Irish"
-msgstr ""
+msgstr "Ír"
 
 msgid "Gaelic"
-msgstr ""
+msgstr "Skót gael"
 
 msgid "Galician"
-msgstr ""
+msgstr "Galiciai"
 
 msgid "Guarani"
-msgstr ""
+msgstr "Guarani"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gudzsaráti"
 
 msgid "Manx"
-msgstr ""
+msgstr "Manx"
 
 msgid "Hausa"
-msgstr ""
+msgstr "Hausza"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Héber"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 msgid "Hiri Motu"
-msgstr ""
+msgstr "Hiri motu"
 
 msgid "Croatian"
-msgstr ""
+msgstr "Horvát"
 
 msgid "Haitian"
-msgstr ""
+msgstr "Haiti"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Magyar"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Örmény"
 
 msgid "Herero"
-msgstr ""
+msgstr "Herero"
 
 msgid "Interlingua"
-msgstr ""
+msgstr "Interlingva"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonéz"
 
 msgid "Occidental"
-msgstr ""
+msgstr "Occidental"
 
 msgid "Igbo"
-msgstr ""
+msgstr "Igbó"
 
 msgid "Nuosu"
-msgstr ""
+msgstr "Nuoszu"
 
 msgid "Inupiaq"
-msgstr ""
+msgstr "Inupiak"
 
 msgid "Ido"
-msgstr ""
+msgstr "Ido"
 
 msgid "Icelandic"
-msgstr ""
+msgstr "Izlandi"
 
 msgid "Italian"
-msgstr ""
+msgstr "Olasz"
 
 msgid "Inuktitut"
-msgstr ""
+msgstr "Inuktitut"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japán"
 
 msgid "Javanese"
-msgstr ""
+msgstr "Jávai"
 
 msgid "Georgian"
-msgstr ""
+msgstr "Grúz"
 
 msgid "Kongo"
-msgstr ""
+msgstr "Kongo"
 
 msgid "Gikuyu"
-msgstr ""
+msgstr "Kikuju"
 
 msgid "Kwanyama"
-msgstr ""
+msgstr "Kvanyama"
 
 msgid "Kazakh"
-msgstr ""
+msgstr "Kazak"
 
 msgid "Greenlandic"
-msgstr ""
+msgstr "Grönlandi"
 
 msgid "Kannada"
-msgstr ""
+msgstr "Kannada"
 
 msgid "Korean"
-msgstr ""
+msgstr "Koreai"
 
 msgid "Kanuri"
-msgstr ""
+msgstr "Kanuri"
 
 msgid "Kashmiri"
-msgstr ""
+msgstr "Kasmíri"
 
 msgid "Kurdish"
-msgstr ""
+msgstr "Kurd"
 
 msgid "Komi"
-msgstr ""
+msgstr "Komi"
 
 msgid "Cornish"
-msgstr ""
+msgstr "Korni"
 
 msgid "Kyrgyz"
-msgstr ""
+msgstr "Kirgiz"
 
 msgid "Latin"
-msgstr ""
+msgstr "Latin"
 
 msgid "Luxembourgish"
-msgstr ""
+msgstr "Luxemburgi"
 
 msgid "Luganda"
-msgstr ""
+msgstr "Luganda"
 
 msgid "Limburgish"
-msgstr ""
+msgstr "Limburgi"
 
 msgid "Lingala"
-msgstr ""
+msgstr "Lingala"
 
 msgid "Lao"
-msgstr ""
+msgstr "Lao"
 
 msgid "Lithuanian"
-msgstr ""
+msgstr "Litván"
 
 msgid "Luba-Katanga"
-msgstr ""
+msgstr "Luba-katanga"
 
 msgid "Latvian"
-msgstr ""
+msgstr "Lett"
 
 msgid "Malagasy"
-msgstr ""
+msgstr "Malgas"
 
 msgid "Marshallese"
-msgstr ""
+msgstr "Marshall-szigeteki"
 
 msgid "Maori"
-msgstr ""
+msgstr "Maori"
 
 msgid "Macedonian"
-msgstr ""
+msgstr "Macedón"
 
 msgid "Malayalam"
-msgstr ""
+msgstr "Malajálam"
 
 msgid "Mongolian"
-msgstr ""
+msgstr "Mongol"
 
 msgid "Marathi"
-msgstr ""
+msgstr "Maráthi"
 
 msgid "Malay"
-msgstr ""
+msgstr "Maláj"
 
 msgid "Maltese"
-msgstr ""
+msgstr "Máltai"
 
 msgid "Burmese"
-msgstr ""
+msgstr "Burmai"
 
 msgid "Nauru"
-msgstr ""
+msgstr "Naurui"
 
 msgid "Nepali"
-msgstr ""
+msgstr "Nepáli"
 
 msgid "Ndonga"
-msgstr ""
+msgstr "Ndonga"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Holland"
 
 msgid "Norwegian Nynorsk"
-msgstr ""
+msgstr "Norvég nynorsk"
 
 msgid "Navaho"
-msgstr ""
+msgstr "Navahó"
 
 msgid "Nyanja"
-msgstr ""
+msgstr "Nyandzsa"
 
 msgid "Occitan"
-msgstr ""
+msgstr "Okcitán"
 
 msgid "Ojibwe"
-msgstr ""
+msgstr "Odzsibva"
 
 msgid "Oromo"
-msgstr ""
+msgstr "Oromó"
 
 msgid "Odia"
-msgstr ""
+msgstr "Odia"
 
 msgid "Ossetian"
-msgstr ""
+msgstr "Oszét"
 
 msgid "Panjabi"
 msgstr ""
 
 msgid "Pali"
-msgstr ""
+msgstr "Pali"
 
 msgid "Polish"
-msgstr ""
+msgstr "Lengyel"
 
 msgid "Pashto"
-msgstr ""
+msgstr "Pastu"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugál"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugál (Brazília)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugál (Portugália)"
 
 msgid "Quechua"
-msgstr ""
+msgstr "Kecsua"
 
 msgid "Romansh"
-msgstr ""
+msgstr "Romans"
 
 msgid "Rundi"
-msgstr ""
+msgstr "Rundi"
 
 msgid "Romanian"
-msgstr ""
+msgstr "Román"
 
 msgid "Russian"
-msgstr ""
+msgstr "Orosz"
 
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "Kinyarvanda"
 
 msgid "Sanskrit"
-msgstr ""
+msgstr "Szanszkrit"
 
 msgid "Sardinian"
-msgstr ""
+msgstr "Szardíniai"
 
 msgid "Sindhi"
-msgstr ""
+msgstr "Szindhi"
 
 msgid "Sango"
-msgstr ""
+msgstr "Szangó"
 
 msgid "Sinhala"
-msgstr ""
+msgstr "Szingaléz"
 
 msgid "Slovak"
-msgstr ""
+msgstr "Szlovák"
 
 msgid "Slovenian"
-msgstr ""
+msgstr "Szlovén"
 
 msgid "Samoan"
-msgstr ""
+msgstr "Szamoai"
 
 msgid "Shona"
-msgstr ""
+msgstr "Sona"
 
 msgid "Somali"
-msgstr ""
+msgstr "Szomáli"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albán"
 
 msgid "Serbian"
-msgstr ""
+msgstr "Szerb"
 
 msgid "Swati"
-msgstr ""
+msgstr "Szvázi"
 
 msgid "Sundanese"
-msgstr ""
+msgstr "Szundanéz"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Svéd"
 
 msgid "Swahili"
-msgstr ""
+msgstr "Szuahéli"
 
 msgid "Tamil"
-msgstr ""
+msgstr "Tamil"
 
 msgid "Telugu"
-msgstr ""
+msgstr "Telugu"
 
 msgid "Tajik"
-msgstr ""
+msgstr "Tádzsik"
 
 msgid "Thai"
-msgstr ""
+msgstr "Thai"
 
 msgid "Tigrinya"
-msgstr ""
+msgstr "Tigrinya"
 
 msgid "Turkmen"
-msgstr ""
+msgstr "Türkmén"
 
 msgid "Tagalog"
-msgstr ""
+msgstr "Tagalog"
 
 msgid "Tswana"
-msgstr ""
+msgstr "Csvana"
 
 msgid "Tongan"
-msgstr ""
+msgstr "Tongai"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Török"
 
 msgid "Tsonga"
-msgstr ""
+msgstr "Conga"
 
 msgid "Tatar"
-msgstr ""
+msgstr "Tatár"
 
 msgid "Twi"
-msgstr ""
+msgstr "Tvi"
 
 msgid "Tahitian"
-msgstr ""
+msgstr "Tahiti"
 
 msgid "Uyghur"
-msgstr ""
+msgstr "Ujgur"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrán"
 
 msgid "Urdu"
-msgstr ""
+msgstr "Urdu"
 
 msgid "Uzbek"
-msgstr ""
+msgstr "Üzbég"
 
 msgid "Venda"
-msgstr ""
+msgstr "Venda"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnámi"
 
 msgid "Volapük"
-msgstr ""
+msgstr "Volapük"
 
 msgid "Walloon"
-msgstr ""
+msgstr "Vallon"
 
 msgid "Wolof"
-msgstr ""
+msgstr "Volof"
 
 msgid "Xhosa"
-msgstr ""
+msgstr "Xhosza"
 
 msgid "Yiddish"
-msgstr ""
+msgstr "Jiddis"
 
 msgid "Yoruba"
-msgstr ""
+msgstr "Joruba"
 
 msgid "Zhuang"
-msgstr ""
+msgstr "Csuang"
 
 msgid "Chinese (Traditional)"
 msgstr ""
 
 msgid "Zulu"
-msgstr ""
+msgstr "Zulu"
 
 msgid "(no translation)"
 msgstr ""

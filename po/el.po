@@ -1278,121 +1278,121 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afar"
-msgstr ""
+msgstr "Αφάρ"
 
 msgid "Abkhazian"
-msgstr ""
+msgstr "Αμπχαζιανά"
 
 msgid "Avestan"
-msgstr ""
+msgstr "Αβεστικά"
 
 msgid "Afrikaans"
-msgstr ""
+msgstr "Αφρικάνικα"
 
 msgid "Akan"
-msgstr ""
+msgstr "Ακανικά"
 
 msgid "Amharic"
-msgstr ""
+msgstr "Αμχαρικά"
 
 msgid "Aragonese"
-msgstr ""
+msgstr "Αραγονικά"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Αραβικά"
 
 msgid "Assamese"
-msgstr ""
+msgstr "Ασσαμέζικα"
 
 msgid "Avaric"
-msgstr ""
+msgstr "Αβάρικα"
 
 msgid "Aymara"
-msgstr ""
+msgstr "Αϊμάρα"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Αζέρικα"
 
 msgid "Bashkir"
-msgstr ""
+msgstr "Βασκιρικά"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Λευκορωσικά"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Βουλγαρικά"
 
 msgid "Bihari"
-msgstr ""
+msgstr "Μπιχαριανός"
 
 msgid "Bislama"
-msgstr ""
+msgstr "Μπισλάμα"
 
 msgid "Bambara"
-msgstr ""
+msgstr "Μπαμπαρικά"
 
 msgid "Bengali"
-msgstr ""
+msgstr "Βεγγαλικά"
 
 msgid "Tibetan"
-msgstr ""
+msgstr "Θιβετιανά"
 
 msgid "Breton"
-msgstr ""
+msgstr "Βρετονικά"
 
 msgid "Bosnian"
-msgstr ""
+msgstr "Βοσνιακά"
 
 msgid "Catalan"
-msgstr ""
+msgstr "Καταλανικά"
 
 msgid "Chechen"
-msgstr ""
+msgstr "Τσετσενικά"
 
 msgid "Chamorro"
-msgstr ""
+msgstr "Καμόρρο"
 
 msgid "Corsican"
-msgstr ""
+msgstr "Κορσικανικά"
 
 msgid "Cree"
-msgstr ""
+msgstr "Κρεεϊκά"
 
 msgid "Czech"
-msgstr ""
+msgstr "Τσέχικα"
 
 msgid "Chuvash"
-msgstr ""
+msgstr "Τσουβασικά"
 
 msgid "Welsh"
-msgstr ""
+msgstr "Ουαλικά"
 
 msgid "Danish"
-msgstr ""
+msgstr "Δανέζικα"
 
 msgid "German"
-msgstr ""
+msgstr "Γερμανικά"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Γερμανικά (Αυστρίας)"
 
 msgid "Dhivehi"
-msgstr ""
+msgstr "Ντιβέχι"
 
 msgid "Dzongkha"
-msgstr ""
+msgstr "Ντζονγκικά"
 
 msgid "Ewe"
-msgstr ""
+msgstr "Έουε"
 
 msgid "Greek"
-msgstr ""
+msgstr "Ελληνικά"
 
 msgid "English"
-msgstr ""
+msgstr "Αγγλικά"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Αγγλικά (Καναδά)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1401,427 +1401,427 @@ msgid "English (USA)"
 msgstr ""
 
 msgid "Esperanto"
-msgstr ""
+msgstr "Εσπεράντο"
 
 msgid "Spanish"
-msgstr ""
+msgstr "Ισπανικά"
 
 msgid "Estonian"
-msgstr ""
+msgstr "Εσθονικά"
 
 msgid "Basque"
-msgstr ""
+msgstr "Βάσκικα"
 
 msgid "Persian"
-msgstr ""
+msgstr "Περσικά"
 
 msgid "Fulah"
-msgstr ""
+msgstr "Φούλα"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Φινλανδικά"
 
 msgid "Fijian"
-msgstr ""
+msgstr "Φιτζιανά"
 
 msgid "Faroese"
-msgstr ""
+msgstr "Φαροϊκά"
 
 msgid "French"
-msgstr ""
+msgstr "Γαλλικά"
 
 msgid "Frisian"
-msgstr ""
+msgstr "Φριζική"
 
 msgid "Irish"
-msgstr ""
+msgstr "Ιρλανδικά"
 
 msgid "Gaelic"
-msgstr ""
+msgstr "Γαελικά"
 
 msgid "Galician"
-msgstr ""
+msgstr "Γαλικιανά"
 
 msgid "Guarani"
-msgstr ""
+msgstr "Γκουαράνι"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Γκουτζαράτ"
 
 msgid "Manx"
-msgstr ""
+msgstr "Μανξ"
 
 msgid "Hausa"
-msgstr ""
+msgstr "Χαουσανικά"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Εβραϊκά"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Χίντι"
 
 msgid "Hiri Motu"
-msgstr ""
+msgstr "Χίρι Μότου"
 
 msgid "Croatian"
-msgstr ""
+msgstr "Κροατικά"
 
 msgid "Haitian"
-msgstr ""
+msgstr "Αϊτικά"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Ουγγρικά"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Αρμένικα"
 
 msgid "Herero"
-msgstr ""
+msgstr "Χερέρο"
 
 msgid "Interlingua"
-msgstr ""
+msgstr "Ιντερλίνγκουα"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Ινδονησιακά"
 
 msgid "Occidental"
-msgstr ""
+msgstr "Οξιντένταλ"
 
 msgid "Igbo"
-msgstr ""
+msgstr "Ίγκμπο"
 
 msgid "Nuosu"
-msgstr ""
+msgstr "Νουοσού"
 
 msgid "Inupiaq"
-msgstr ""
+msgstr "Ινουπιάκ"
 
 msgid "Ido"
-msgstr ""
+msgstr "Ίντο"
 
 msgid "Icelandic"
-msgstr ""
+msgstr "Ισλανδικά"
 
 msgid "Italian"
-msgstr ""
+msgstr "Ιταλικά"
 
 msgid "Inuktitut"
-msgstr ""
+msgstr "Ινούκτιτουτ"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Ιαπωνικά"
 
 msgid "Javanese"
-msgstr ""
+msgstr "Ιαβανέζικα"
 
 msgid "Georgian"
-msgstr ""
+msgstr "Γεωργιανά"
 
 msgid "Kongo"
-msgstr ""
+msgstr "Κονγκό"
 
 msgid "Gikuyu"
-msgstr ""
+msgstr "Κικούγιου"
 
 msgid "Kwanyama"
-msgstr ""
+msgstr "Κουανγιάμα"
 
 msgid "Kazakh"
-msgstr ""
+msgstr "Καζακικά"
 
 msgid "Greenlandic"
-msgstr ""
+msgstr "Γροιλανδικά"
 
 msgid "Kannada"
-msgstr ""
+msgstr "Κανάντα"
 
 msgid "Korean"
-msgstr ""
+msgstr "Κορεάτικα"
 
 msgid "Kanuri"
-msgstr ""
+msgstr "Κανούρι"
 
 msgid "Kashmiri"
-msgstr ""
+msgstr "Κασμιρικά"
 
 msgid "Kurdish"
-msgstr ""
+msgstr "Κουρδικά"
 
 msgid "Komi"
-msgstr ""
+msgstr "Κόμι"
 
 msgid "Cornish"
-msgstr ""
+msgstr "Κορνουαλικά"
 
 msgid "Kyrgyz"
-msgstr ""
+msgstr "Κυργκιζικά"
 
 msgid "Latin"
-msgstr ""
+msgstr "Λατινικά"
 
 msgid "Luxembourgish"
-msgstr ""
+msgstr "Λουξεμβρουργικά"
 
 msgid "Luganda"
-msgstr ""
+msgstr "Λουγκάντα"
 
 msgid "Limburgish"
-msgstr ""
+msgstr "Λιμβουργικά"
 
 msgid "Lingala"
-msgstr ""
+msgstr "Λινγκαλανικά"
 
 msgid "Lao"
-msgstr ""
+msgstr "Λαοτινά"
 
 msgid "Lithuanian"
-msgstr ""
+msgstr "Λιθουανικά"
 
 msgid "Luba-Katanga"
-msgstr ""
+msgstr "Λούμπα-Κατάνγκα"
 
 msgid "Latvian"
-msgstr ""
+msgstr "Λεττονικά"
 
 msgid "Malagasy"
-msgstr ""
+msgstr "Μαλαγασικά"
 
 msgid "Marshallese"
-msgstr ""
+msgstr "Μαρσαλέζικα"
 
 msgid "Maori"
-msgstr ""
+msgstr "Μαορικά"
 
 msgid "Macedonian"
-msgstr ""
+msgstr "Σλαβομακεδονικά"
 
 msgid "Malayalam"
-msgstr ""
+msgstr "Μαλαγιάλαμ"
 
 msgid "Mongolian"
-msgstr ""
+msgstr "Μογγολικά"
 
 msgid "Marathi"
-msgstr ""
+msgstr "Μαραθικά"
 
 msgid "Malay"
-msgstr ""
+msgstr "Μαλαϊκά"
 
 msgid "Maltese"
-msgstr ""
+msgstr "Μαλτέζικα"
 
 msgid "Burmese"
-msgstr ""
+msgstr "Μπουρμεσεϊκά"
 
 msgid "Nauru"
-msgstr ""
+msgstr "Ναούρου"
 
 msgid "Nepali"
-msgstr ""
+msgstr "Νεπαλέζικα"
 
 msgid "Ndonga"
-msgstr ""
+msgstr "Νντόγκα"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Ολλανδικά"
 
 msgid "Norwegian Nynorsk"
-msgstr ""
+msgstr "Νορβηγικά Nynorsk"
 
 msgid "Navaho"
-msgstr ""
+msgstr "Ναβάχο"
 
 msgid "Nyanja"
-msgstr ""
+msgstr "Νιανιανικά"
 
 msgid "Occitan"
-msgstr ""
+msgstr "Οτσιτανικά"
 
 msgid "Ojibwe"
-msgstr ""
+msgstr "Οτζιβουεϊκά"
 
 msgid "Oromo"
-msgstr ""
+msgstr "Ορόμο"
 
 msgid "Odia"
-msgstr ""
+msgstr "Όντια"
 
 msgid "Ossetian"
-msgstr ""
+msgstr "Οσσετικά"
 
 msgid "Panjabi"
 msgstr ""
 
 msgid "Pali"
-msgstr ""
+msgstr "Πάλι"
 
 msgid "Polish"
-msgstr ""
+msgstr "Πολωνικά"
 
 msgid "Pashto"
-msgstr ""
+msgstr "Παστού"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Πορτογαλικά"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Πορτογαλικά (Βραζιλία)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Πορτογαλικά (Πορτογαλία)"
 
 msgid "Quechua"
-msgstr ""
+msgstr "Κέτσουα"
 
 msgid "Romansh"
-msgstr ""
+msgstr "Ρομανσικά"
 
 msgid "Rundi"
-msgstr ""
+msgstr "Ρούντι"
 
 msgid "Romanian"
-msgstr ""
+msgstr "Ρουμανικά"
 
 msgid "Russian"
-msgstr ""
+msgstr "Ρωσικά"
 
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "Κινυαργανταϊκά"
 
 msgid "Sanskrit"
-msgstr ""
+msgstr "Σανσκριτικά"
 
 msgid "Sardinian"
-msgstr ""
+msgstr "Σαρδινικά"
 
 msgid "Sindhi"
-msgstr ""
+msgstr "Σιντχικά"
 
 msgid "Sango"
-msgstr ""
+msgstr "Σάνγκο"
 
 msgid "Sinhala"
-msgstr ""
+msgstr "Σιναλεζικά"
 
 msgid "Slovak"
-msgstr ""
+msgstr "Σλοβακικά"
 
 msgid "Slovenian"
-msgstr ""
+msgstr "Σλοβενικά"
 
 msgid "Samoan"
-msgstr ""
+msgstr "Σαμοανά"
 
 msgid "Shona"
-msgstr ""
+msgstr "Σόνα"
 
 msgid "Somali"
-msgstr ""
+msgstr "Σομαλέζικα"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Αλβανικά"
 
 msgid "Serbian"
-msgstr ""
+msgstr "Σερβικά"
 
 msgid "Swati"
-msgstr ""
+msgstr "Σουάτι"
 
 msgid "Sundanese"
-msgstr ""
+msgstr "Σουντικά"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Σουηδικά"
 
 msgid "Swahili"
-msgstr ""
+msgstr "Σουαχίλι"
 
 msgid "Tamil"
-msgstr ""
+msgstr "Ταμίλ"
 
 msgid "Telugu"
-msgstr ""
+msgstr "Τελούγκου"
 
 msgid "Tajik"
-msgstr ""
+msgstr "Τατζικικά"
 
 msgid "Thai"
-msgstr ""
+msgstr "Ταϊλανδικά"
 
 msgid "Tigrinya"
-msgstr ""
+msgstr "Τιγκρινιανικά"
 
 msgid "Turkmen"
-msgstr ""
+msgstr "Τουρκμενικά"
 
 msgid "Tagalog"
-msgstr ""
+msgstr "Ταγκαλογικά"
 
 msgid "Tswana"
-msgstr ""
+msgstr "Τσουάνα"
 
 msgid "Tongan"
-msgstr ""
+msgstr "Τόγκα"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Τουρκικά"
 
 msgid "Tsonga"
-msgstr ""
+msgstr "Τσονγκαϊκά"
 
 msgid "Tatar"
-msgstr ""
+msgstr "Ταταρικά"
 
 msgid "Twi"
-msgstr ""
+msgstr "Τούι"
 
 msgid "Tahitian"
-msgstr ""
+msgstr "Ταϊτιανά"
 
 msgid "Uyghur"
-msgstr ""
+msgstr "Ουιγούρ"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ουκρανικά"
 
 msgid "Urdu"
-msgstr ""
+msgstr "Ούρντου"
 
 msgid "Uzbek"
-msgstr ""
+msgstr "Ουζμπεκικά"
 
 msgid "Venda"
-msgstr ""
+msgstr "Βέντακικά"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Βιετναμέζικα"
 
 msgid "Volapük"
-msgstr ""
+msgstr "Βολαπιούκ"
 
 msgid "Walloon"
-msgstr ""
+msgstr "Βαλλωνικά"
 
 msgid "Wolof"
-msgstr ""
+msgstr "Γουολοφικά"
 
 msgid "Xhosa"
-msgstr ""
+msgstr "Κόσα"
 
 msgid "Yiddish"
-msgstr ""
+msgstr "Γίντις"
 
 msgid "Yoruba"
-msgstr ""
+msgstr "Γιορούμπα"
 
 msgid "Zhuang"
-msgstr ""
+msgstr "Ζουάνγκ"
 
 msgid "Chinese (Traditional)"
 msgstr ""
 
 msgid "Zulu"
-msgstr ""
+msgstr "Ζουλού"
 
 msgid "(no translation)"
 msgstr ""
