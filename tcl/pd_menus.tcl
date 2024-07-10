@@ -235,6 +235,37 @@ proc ::pd_menus::update_accelerators {{menu .}} {
         ::pd_menus::update_accelerators $m
     }
 }
+proc ::pd_menus::get_all_events {{menu .}} {
+    if { ! [winfo exists $menu] } {return}
+    set events {}
+    array set seen {}
+    if { [winfo class $menu] == "Menu" } {
+        # this is a real menu, so update it
+        set lastmenu [$menu index end]
+        for {set i 0} {$i <= $lastmenu} {incr i} {
+            set cmd {}
+            catch {
+                set cmd [$menu entrycget $i -command]
+            }
+            if { $cmd == "" } {continue}
+            if { [regexp -all {event generate \[focus\] (<<[^>]*|[^>]*>>)} $cmd _ ev] } {
+                if { ! [info exists seen($ev) ] } {
+                    lappend events $ev
+                    set seen($ev) 1
+                }
+            }
+        }
+    }
+    foreach m [winfo children $menu] {
+        foreach ev [::pd_menus::get_all_events $m] {
+            if { ! [info exists seen($ev) ] } {
+                lappend events $ev
+                set seen($ev) 1
+            }
+        }
+    }
+    return $events
+}
 
 
 proc ::pd_menus::build_file_menu {mymenu} {
