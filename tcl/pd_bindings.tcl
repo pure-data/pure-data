@@ -20,134 +20,144 @@ namespace eval ::pd_bindings:: {
         set alt "Option"
     }
 
-    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
     variable bindlist {}
-    lappend bindlist "<<File|New>>"               [list <${control}-Key-N> <${control}-Key-n>]
-    lappend bindlist "<<File|Open>>"              [list <${control}-Key-O> <${control}-Key-o>]
-    lappend bindlist "<<File|Save>>"              [list <${control}-Key-S> <${control}-Key-s>]
-    lappend bindlist "<<File|SaveAs>>"            [list <${control}-Shift-Key-S> <${control}-Shift-Key-s>]
-    lappend bindlist "<<File|Print>>"             [list <${control}-Key-P> <${control}-Key-p>]
-    lappend bindlist "<<File|ClearRecentFiles>>"  {}
-    lappend bindlist "<<File|Close>>"             [list <${control}-Key-W> <${control}-Key-w>]
-    lappend bindlist "<<File|CloseNow>>"          [list <${control}-Shift-Key-W> <${control}-Shift-Key-w>]
+    proc setshortcuts {event args} {
+        variable bindlist
+        lappend bindlist $event $args
+    }
+
+    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
+    setshortcuts "File|New"               "${control} N"
+    setshortcuts "File|Open"              "${control} O"
+    setshortcuts "File|Save"              "${control} S"
+    setshortcuts "File|SaveAs"            "${control} Shift S"
+    setshortcuts "File|Print"             "${control} P"
+    setshortcuts "File|ClearRecentFiles"
+    setshortcuts "File|Close"             "${control} W"
+    setshortcuts "File|CloseNow"          "${control} Shift W"
     if {[tk windowingsystem] eq "aqua"} {
         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            lappend bindlist <<File|Quit>>       [list <${control}-Key-Q> <${control}-Key-q>]
+            setshortcuts "File|Quit"      "${control} Q"
         }
     } else {
-        lappend bindlist <<File|Quit>>          [list <${control}-Key-Q> <${control}-Key-q>]
+        setshortcuts "File|Quit"          "${control} Q"
     }
-    lappend bindlist "<<File|QuitNow>>"           [list <${control}-Shift-Key-Q> <${control}-Shift-Key-q>]
+    setshortcuts "File|QuitNow"           "${control} Shift Q"
 
     # (at least on X11) the built-in events Undo/Redo/Cut/Copy/Paste are already bound to the usual shortcuts
     # this is somewhat problematic, as we cannot unbind these events from the keys
-    lappend bindlist "<<Edit|Undo>>"              [list <${control}-Key-Z> <${control}-Key-z>]
-    lappend bindlist "<<Edit|Redo>>"              [list <${control}-Shift-Key-Z> <${control}-Shift-Key-z>]
-    lappend bindlist "<<Edit|Cut>>"               [list <${control}-Key-X> <${control}-Key-x>]
-    lappend bindlist "<<Edit|Copy>>"              [list <${control}-Key-C> <${control}-Key-c>]
+    setshortcuts "Edit|Undo"              "${control} Z"
+    setshortcuts "Edit|Redo"              "${control} Shift Z"
+    setshortcuts "Edit|Cut"               "${control} X"
+    setshortcuts "Edit|Copy"              "${control} C"
     # TclTk says:
-    # lappend bindlist "<<Paste>>"   Replace the currently selected widget contents with the contents of the clipboard.
-    # lappend bindlist "<<PasteSelection>>" Insert the contents of the selection at the mouse location.
-    lappend bindlist "<<Edit|Paste>>"             [list <${control}-Key-V> <${control}-Key-v>]
-    lappend bindlist "<<Edit|PasteReplace>>"      {}
-    lappend bindlist "<<Edit|Duplicate>>"         [list <${control}-Key-D> <${control}-Key-d>]
-    lappend bindlist "<<Edit|SelectAll>>"         [list <${control}-Key-A> <${control}-Key-a>]
-    lappend bindlist "<<Edit|SelectNone>>"        [list <KeyPress-Escape>]
-    lappend bindlist "<<Edit|Font>>"              {}
+    # setshortcuts "Paste"   Replace the currently selected widget contents with the contents of the clipboard.
+    # setshortcuts "PasteSelection" Insert the contents of the selection at the mouse location.
+    setshortcuts "Edit|Paste"             "${control} V"
+    setshortcuts "Edit|PasteReplace"
+    setshortcuts "Edit|Duplicate"         "${control} D"
+    setshortcuts "Edit|SelectAll"         "${control} A"
+    setshortcuts "Edit|SelectNone"        "Escape"
+    setshortcuts "Edit|Font"
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
     # expected it... go figure.
-    lappend bindlist "<<Edit|ZoomIn>>"            [list <${control}-Key-plus> <${control}-Key-KP_Add> <${control}-Key-equal>]
-    lappend bindlist "<<Edit|ZoomOut>>"           [list <${control}-Key-minus> <${control}-Key-KP_Subtract>]
-    lappend bindlist "<<Edit|TidyUp>>"            [list <${control}-Shift-Key-R> <${control}-Shift-Key-r>]
-    lappend bindlist "<<Edit|ConnectSelection>>"  [list <${control}-Key-K> <${control}-Key-k>]
-    lappend bindlist "<<Edit|Triggerize>>"        [list <${control}-Key-T> <${control}-Key-t>]
-    lappend bindlist "<<Edit|EditMode>>"          [list <${control}-Key-E> <${control}-Key-e>]
+    setshortcuts "Edit|ZoomIn"            "${control} plus" "${control} KP_Add" "${control} equal"
+    setshortcuts "Edit|ZoomOut"           "${control} minus" "${control} KP_Subtract"
+    setshortcuts "Edit|TidyUp"            "${control} Shift R"
+    setshortcuts "Edit|ConnectSelection"  "${control} K"
+    setshortcuts "Edit|Triggerize"        "${control} T"
+    setshortcuts "Edit|EditMode"          "${control} E"
 
-    lappend bindlist "<<Put|Object>>"             [list <${control}-Key-1>]
-    lappend bindlist "<<Put|Message>>"            [list <${control}-Key-2>]
-    lappend bindlist "<<Put|Number>>"             [list <${control}-Key-3>]
-    lappend bindlist "<<Put|List>>"               [list <${control}-Key-4>]
-    lappend bindlist "<<Put|Symbol>>"             {}
-    lappend bindlist "<<Put|Comment>>"            [list <${control}-Key-5>]
-    lappend bindlist "<<Put|Bang>>"               [list <${control}-Shift-Key-B> <${control}-Shift-Key-b>]
-    lappend bindlist "<<Put|Toggle>>"             [list <${control}-Shift-Key-T> <${control}-Shift-Key-t>]
-    lappend bindlist "<<Put|Number2>>"            [list <${control}-Shift-Key-N> <${control}-Shift-Key-n>]
-    lappend bindlist "<<Put|VerticalSlider>>"     [list <${control}-Shift-Key-V> <${control}-Shift-Key-v>]
-    lappend bindlist "<<Put|HorizontalSlider>>"   [list <${control}-Shift-Key-J> <${control}-Shift-Key-j>]
-    lappend bindlist "<<Put|VerticalRadio>>"      [list <${control}-Shift-Key-D> <${control}-Shift-Key-d>]
-    lappend bindlist "<<Put|HorizontalRadio>>"    [list <${control}-Shift-Key-I> <${control}-Shift-Key-i>]
-    lappend bindlist "<<Put|VUMeter>>"            [list <${control}-Shift-Key-U> <${control}-Shift-Key-u>]
-    lappend bindlist "<<Put|Canvas>>"             [list <${control}-Shift-Key-C> <${control}-Shift-Key-c>]
-    lappend bindlist "<<Put|Graph>>"              [list <${control}-Shift-Key-G> <${control}-Shift-Key-g>]
-    lappend bindlist "<<Put|Array>>"              [list <${control}-Shift-Key-A> <${control}-Shift-Key-a>]
+    setshortcuts "Put|Object"             "${control} 1"
+    setshortcuts "Put|Message"            "${control} 2"
+    setshortcuts "Put|Number"             "${control} 3"
+    setshortcuts "Put|List"               "${control} 4"
+    setshortcuts "Put|Symbol"
+    setshortcuts "Put|Comment"            "${control} 5"
+    setshortcuts "Put|Bang"               "${control} Shift B"
+    setshortcuts "Put|Toggle"             "${control} Shift T"
+    setshortcuts "Put|Number2"            "${control} Shift N"
+    setshortcuts "Put|VerticalSlider"     "${control} Shift V"
+    setshortcuts "Put|HorizontalSlider"   "${control} Shift J"
+    setshortcuts "Put|VerticalRadio"      "${control} Shift D"
+    setshortcuts "Put|HorizontalRadio"    "${control} Shift I"
+    setshortcuts "Put|VUMeter"            "${control} Shift U"
+    setshortcuts "Put|Canvas"             "${control} Shift C"
+    setshortcuts "Put|Graph"              "${control} Shift G"
+    setshortcuts "Put|Array"              "${control} Shift A"
 
-    lappend bindlist "<<Find|Find>>"              [list <${control}-Key-F> <${control}-Key-f>]
-    lappend bindlist "<<Find|FindAgain>>"         [list <${control}-Key-G> <${control}-Key-g>]
-    lappend bindlist "<<Find|FindLastError>>"     {}
+    setshortcuts "Find|Find"              "${control} F"
+    setshortcuts "Find|FindAgain"         "${control} G"
+    setshortcuts "Find|FindLastError"
 
-    lappend bindlist "<<Media|DSPOn>>"            [list <${control}-Key-slash>]
-    lappend bindlist "<<Media|DSPOff>>"           [list <${control}-Key-period>]
-    lappend bindlist "<<Media|TestAudioMIDI>>"    {}
-    lappend bindlist "<<Media|LoadMeter>>"        {}
+    setshortcuts "Media|DSPOn"            "${control} slash"
+    setshortcuts "Media|DSPOff"           "${control} period"
+    setshortcuts "Media|TestAudioMIDI"
+    setshortcuts "Media|LoadMeter"
 
-    lappend bindlist "<<Window|Maximize>>"        {}
-    lappend bindlist "<<Window|AllToFront>>"      {}
-    lappend bindlist "<<Window|PdWindow>>"        [list <${control}-Key-R> <${control}-Key-r>]
-    lappend bindlist "<<Window|Parent>>"          {}
+    setshortcuts "Window|Maximize"
+    setshortcuts "Window|AllToFront"
+    setshortcuts "Window|PdWindow"        "${control} R"
+    setshortcuts "Window|Parent"
 
     if {[tk windowingsystem] eq "aqua"} {
         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            lappend bindlist <<Window|Minimize>> [list <${control}-Key-M> <${control}-Key-m>]
-            lappend bindlist <<Window|Next>>     [list <${control}-quoteleft>]
+            setshortcuts "Window|Minimize" "${control} M"
+            setshortcuts "Window|Next"     "${control} quoteleft"
         }
     } else {
-        lappend bindlist <<Window|Minimize>>    [list <${control}-Key-M> <${control}-Key-m>]
-        lappend bindlist <<Window|Next>>        [list <${control}-Next> <${control}-greater>]
-        lappend bindlist <<Window|Previous>>    [list <${control}-Prior> <${control}-less>]
+        setshortcuts "Window|Minimize"    "${control} M"
+        setshortcuts "Window|Next"        "${control} Next" "${control} greater"
+        setshortcuts "Window|Previous"    "${control} Prior" "${control} less"
     }
 
-    lappend bindlist "<<Help|About>>"             {}
-    lappend bindlist "<<Help|Manual>>"            {}
-    lappend bindlist "<<Help|Browser>>"           [list <${control}-Key-B> <${control}-Key-b>]
-    lappend bindlist "<<Help|ListObjects>>"       {}
-    lappend bindlist "<<Help|puredata.info>>"     {}
-    lappend bindlist "<<Help|CheckUpdates>>"      {}
-    lappend bindlist "<<Help|ReportBug>>"         {}
+    setshortcuts "Help|About"
+    setshortcuts "Help|Manual"
+    setshortcuts "Help|Browser"           "${control} B"
+    setshortcuts "Help|ListObjects"
+    setshortcuts "Help|puredata.info"
+    setshortcuts "Help|CheckUpdates"
+    setshortcuts "Help|ReportBug"
 
-    lappend bindlist "<<Pd|Message>>"             [list <${control}-Shift-Key-M> <${control}-Shift-Key-m>]
-    lappend bindlist "<<Pd|ClearConsole>>"        [list <${control}-Shift-Key-L> <${control}-Shift-Key-l>]
+    setshortcuts "Pd|Message"             "${control} Shift M"
+    setshortcuts "Pd|ClearConsole"        "${control} Shift L"
 
-    lappend bindlist "<<Preferences|Edit>>"       {}
-    lappend bindlist "<<Preferences|Audio>>"      {}
-    lappend bindlist "<<Preferences|MIDI>>"       {}
-    lappend bindlist "<<Preferences|Save>>"       {}
-    lappend bindlist "<<Preferences|SaveTo>>"     {}
-    lappend bindlist "<<Preferences|Load>>"       {}
-    lappend bindlist "<<Preferences|Forget>>"     {}
-
+    setshortcuts "Preferences|Audio"
+    setshortcuts "Preferences|MIDI"
+    setshortcuts "Preferences|Edit"
+    setshortcuts "Preferences|Save"
+    setshortcuts "Preferences|SaveTo"
+    setshortcuts "Preferences|Load"
+    setshortcuts "Preferences|Forget"
 }
 
 proc ::pd_bindings::setup {} {
     set data [::pd_guiprefs::read KeyBindings true]
     if { ${data} != {} } {
-        set ::pd_bindings::bindlist $data
+        set ::pd_bindings::bindlist ${data}
     }
-    if {[catch {
-        foreach {event shortcuts} $::pd_bindings::bindlist {
-            event delete $event
-            foreach keys $shortcuts {
-                if { "$keys" != "" } {
-                    if {[catch {event add $event $keys} stderr1]} {
-                        ::pdwindow::error "Failed to bind $event to $keys: $stderr1\n"
-                    }
+
+    foreach {ev shortcuts} $::pd_bindings::bindlist {
+        set event <<${ev}>>
+        event delete ${event}
+        foreach keys ${shortcuts} {
+            if { "$keys" == "" } {continue}
+            set wantkeys $keys
+            set key [lindex $keys end]
+            lset keys end Key
+            foreach k [list $key [string tolower $key] [string totitle $key]] {
+                catch {
+                    event add $event <[join [concat $keys $k] -]>
+                    set wantkeys {}
                 }
             }
+            if { $wantkeys != {}} {
+                ::pdwindow::error "Failed to bind $event to ${wantkeys}\n"
+            }
         }
-    } stderr]} {
-        ::pdwindow::error "Failed to add bind: $stderr\n"
     }
 }
 
