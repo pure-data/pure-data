@@ -655,6 +655,33 @@ namespace eval ::pd_bindings::editor:: {
         $treeid configure -columns $columns
     }
 
+    #.menubar add cascade -label Tools -underline 0 -menu [set m [menu .menubar.tools]]
+    #::pd_menus::add_menu $m command [_ "Install externals..." ] "<<Tools|Deken>>"
+    proc get_extra_bindings {bindlist} {
+        # tries to find additional bindings from the menu, and returns [concat $bindlist $newbindings]
+        # with duplicates removed
+        array set seen {}
+
+        foreach {ev binding} $bindlist {
+            set seen($ev) 1
+        }
+        foreach event [::pd_menus::get_all_events] {
+            set ev [string trim $event <>]
+            if { [winfo exists seen($ev)] } {
+                continue
+            }
+            set shortcuts {}
+            foreach b [event info ${event}] {
+                lappend shortcuts [split [string map {-Key- -} [string trim $b <>]]  -]
+            }
+            lappend bindlist $ev
+            lappend bindlist $shortcuts
+            set seen($ev) 1
+        }
+        return $bindlist
+    }
+
+
     proc create {winid} {
         label ${winid}.label -justify left \
             -text [_ "To edit a shortcut key, click on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
@@ -662,6 +689,8 @@ namespace eval ::pd_bindings::editor:: {
         set treeid ${winid}.tree
         ::ttk::treeview ${treeid} -selectmode browse -show tree
         pack $treeid -expand 1 -fill both
+
+        set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
 
         filltree $treeid $::pd_bindings::bindlist
 
