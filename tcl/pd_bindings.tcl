@@ -17,7 +17,7 @@ namespace eval ::pd_bindings:: {
     # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
     if {[tk windowingsystem] eq "aqua"} {
         set alt "Option"
-        set control "Mod1"
+        set control "Command"
     }
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS

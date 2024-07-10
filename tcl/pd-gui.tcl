@@ -333,7 +333,7 @@ proc init_for_platform {} {
             # load tk::mac event callbacks here, this way launching pd
             # from the commandline incorporates the special mac event handling
             package require apple_events
-            set ::modifier "Mod1"
+            set ::modifier "Command"
             if {$::tcl_version < 8.5} {
                 # old default font for Tk 8.4 on macOS
                 # since font detection requires 8.5+

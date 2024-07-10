@@ -28,6 +28,7 @@ namespace eval ::pd_menus:: {
     array set keynames { \
                              "Key" "" \
                              "Mod1" "Cmd" \
+                             "Command" "Cmd" \
                              "Control" "Ctrl" \
                              "equal" "=" \
                              "less" "<" \
