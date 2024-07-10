@@ -11,13 +11,13 @@ namespace eval ::pd_bindings:: {
     namespace export patch_bindings
     variable key2iso ""
 
-    variable alt "Alt"
     variable control "Control"
+    variable alt "Alt"
 
     # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
     if {[tk windowingsystem] eq "aqua"} {
-        set alt "Option"
         set control "Command"
+        set alt "Option"
     }
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
