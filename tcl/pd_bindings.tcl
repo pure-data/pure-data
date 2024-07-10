@@ -743,7 +743,10 @@ namespace eval ::pd_bindings::editor:: {
     }
     proc apply {winid} {
         set data [getshortcuts ${winid}.tree]
+        set ::pd_bindings::bindlist $data
         ::pd_guiprefs::write KeyBindings $data
+        ::pd_bindings::make_events ${data}
+        ::pd_menus::update_accelerators
     }
 }
 
