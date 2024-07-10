@@ -196,6 +196,30 @@ proc ::pd_menus::menubar_for_dialog {mytoplevel} {
     $mytoplevel configure -menu $menubar
 }
 
+proc ::pd_menus::update_accelerators {{menu .}} {
+    if { ! [winfo exists $menu] } {return}
+    if { [winfo class $menu] == "Menu" } {
+        # this is a real menu, so update it
+        set lastmenu [$menu index end]
+        if { "${lastmenu}" eq "none" } { set lastmenu 0 }
+        for {set i 0} {$i <= $lastmenu} {incr i} {
+            set cmd {}
+            catch {
+                set cmd [$menu entrycget $i -command]
+            }
+            if { $cmd == "" } {continue}
+            if { [regexp -all {event generate \[focus\] <<([^>]*|[^>]*)>>} $cmd _ ev] } {
+                set accel [ ::pd_menus::get_accelerator_for_event <<${ev}>>]
+                $menu entryconfigure $i -accelerator $accel
+            }
+        }
+    }
+    foreach m [winfo children $menu] {
+        ::pd_menus::update_accelerators $m
+    }
+}
+
+
 
 
 proc ::pd_menus::build_file_menu {mymenu {patchwindow true}} {
