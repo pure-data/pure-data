@@ -30,15 +30,18 @@ namespace eval ::pd_menus:: {
                              "Mod1" "Cmd" \
                              "Command" "Cmd" \
                              "Control" "Ctrl" \
+                             "Next" "Page Down" \
+                             "Prior" "Page Up" \
                              "equal" "=" \
                              "less" "<" \
                              "greater" ">" \
                              "plus" "+" \
                              "minus" "-" \
-                             "Next" "Page Down" \
-                             "Prior" "Page Up" \
                              "slash" "/" \
+                             "asterisk" "*" \
                              "period" "." \
+                             "comma" "," \
+                             "asciitilde" "~" \
                          }
 }
 
