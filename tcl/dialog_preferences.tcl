@@ -127,6 +127,10 @@ proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
         ::preferencewindow::add_apply ${mytoplevel} "::deken::preferences::apply ${prefs}"
     }
 
+    # shortcut options
+    set prefs [::preferencewindow::add_frame $mytoplevel [_ "keyboard shortcuts"]]
+    ::dialog_bindings::create $prefs
+    ::preferencewindow::add_apply ${mytoplevel} "::dialog_bindings::apply ${prefs}"
 
     # misc options
     set prefs [::preferencewindow::add_frame $mytoplevel [_ "misc preferences"]]
