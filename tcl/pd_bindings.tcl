@@ -560,6 +560,190 @@ proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift {keycode ""}
     ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift $keycode
 }
 
+
+namespace eval ::pd_bindings::editor:: {
+    # the current shortcut as displayed (e.g. 'Control+Shift+M')
+    variable currentshortcut
+    # the treeview cell ({<treeid> <item> <column>}, e.g. {.editor.f.tree File|New #1}
+    # or empty
+    variable currentID
+
+    proc getleaveitems {treeid {root {}}} {
+        set items {}
+        foreach item [$treeid children $root] {
+            if { [$treeid children $item] == {} } {
+                set values {}
+                foreach v [$treeid item $item -values] {
+                    if { $v != {} } {
+                        dict set values $v 1
+                    }
+                }
+                lappend items $item
+                lappend items [dict keys $values]
+            } else {
+                set items [concat $items [getleaveitems $treeid $item]]
+            }
+        }
+        return $items
+    }
+
+    # https://wiki.tcl-lang.org/page/Combinatorial%20mathematics%20functions
+    proc combinations {myList size {prefix {}}} {
+        ;# End recursion when size is 0 or equals our list size
+        if {$size == 0} {return [list $prefix]}
+        if {$size == [llength $myList]} {return [list [concat $prefix $myList]]}
+
+        set first [lindex $myList 0]
+        set rest [lrange $myList 1 end]
+
+        ;# Combine solutions w/ first element and solutions w/o first element
+        set ans1 [combinations $rest [expr {$size-1}] [concat $prefix $first]]
+        set ans2 [combinations $rest $size $prefix]
+        return [concat $ans1 $ans2]
+    }
+
+    proc getshortcuts {treeid} {
+        set result {}
+        foreach {ev keys} [getleaveitems $treeid] {
+            set shortcuts {}
+            foreach k $keys {
+                lappend shortcuts [split $k +]
+            }
+            lappend result $ev $shortcuts
+        }
+        return $result
+    }
+
+
+    proc create {winid} {
+        label ${winid}.label -text "Here you can edit your shortcuts"
+        pack ${winid}.label
+        set treeid ${winid}.tree
+        ::ttk::treeview ${treeid}
+        pack $treeid -expand 1 -fill both
+        set numshortcuts 0
+        foreach {event shortcuts} $::pd_bindings::bindlist {
+            #puts "processing event ${event}"
+            set evs {}
+            foreach e [split $event "|"] {
+                set evs2 [concat $evs $e]
+                set ev [join $evs2 "|"]
+                if { ![$treeid exists $ev] } {
+                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${e}
+                }
+                set evs $evs2
+            }
+            if { [llength $shortcuts] > $numshortcuts } {
+                set numshortcuts [llength $shortcuts]
+            }
+            set values {}
+            foreach shortcut $shortcuts {
+                lappend values [join $shortcut +]
+            }
+            $treeid item ${event} -values ${values}
+        }
+        set columns {}
+        for {set i 0} {$i < $numshortcuts} {incr i} {
+            lappend columns "Shortcut${i}"
+        }
+        $treeid configure -columns $columns
+        bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
+
+        set metakeys {Control Shift Alt}
+        #lappend metakeys Command Option
+
+        set tag ::pd_bindings::editor::popup
+        for {set i 1} {$i <= [llength $metakeys]} {incr i} {
+            foreach modifiers [combinations $metakeys $i] {
+                if {$modifiers  == "Shift" } {continue}
+                set binding [join [concat $modifiers Key] -]
+                bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 1]
+                set binding [join [concat $modifiers KeyRelease] -]
+                bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 0]
+            }
+        }
+    }
+    proc doubleclick {treeid x y} {
+        set popup ${treeid}.popup
+        destroy $popup
+        set item [$treeid identify item $x $y]
+        set col [$treeid identify column $x $y]
+        if { [$treeid identify region $x $y] != "cell" } {
+            # we are only interested in the shortcut cells
+            return
+        }
+        if { [$treeid children $item] != {} } {
+            # we are only interested in leaves
+            return
+        }
+        foreach {x y w h} [$treeid bbox $item $col] {break;}
+        set ::pd_bindings::editor::currentshortcut [$treeid set $item $col]
+        entry ${popup} -textvariable ::pd_bindings::editor::currentshortcut -state readonly
+        place $popup -x $x -y $y -w $w -h $h
+        set ::pd_bindings::editor::currentID [list $treeid $item $col]
+
+        bind $popup <FocusOut> [list ::pd_bindings::editor::popup_destroy %W]
+        bind $popup <Leave> [list ::pd_bindings::editor::popup_destroy %W]
+        bind $popup <Key-Escape> [list ::pd_bindings::editor::popup_destroy %W]
+        bind $popup <Key-BackSpace> [list ::pd_bindings::editor::shortcut_clear %W]
+        bind $popup <Key-Delete> [list ::pd_bindings::editor::shortcut_clear %W]
+        bindtags $popup [concat [bindtags $popup] ::pd_bindings::editor::popup]
+
+        focus $popup
+    }
+    proc popup_destroy {popid} {
+        # cleanup the popup
+        destroy $popid
+        set ::pd_bindings::editor::currentID {}
+        set ::pd_bindings::editor::currentshortcut {}
+    }
+    proc shortcut_set {shortcut} {
+        foreach {treeid item col} $::pd_bindings::editor::currentID {break}
+        if { ${col} != {} } {
+            # try to normalize the keyboard shortcut (titlecasing the actual key)
+            set keys [split $shortcut "+"]
+            set Keys [lreplace $keys end end [string totitle [lindex $keys end]]]
+
+            set testevent <<::pd_binding::editor::shortcut::test>>
+            catch {
+                event add ${testevent} <[join $Keys -]>
+                set keys $Keys
+            }
+            event delete ${testevent}
+
+            $treeid set $item $col [join $keys "+"]
+        }
+    }
+    proc shortcut {popid key modifier state} {
+        # the user pressed a new shortcut
+        # - ideally, prevent combination that only consist of modifier keys (e.g. "Control+Shift")
+        # - if they are releasing (the top-level combination), assign
+        set treeid [winfo parent $popid]
+        if { ! $state } {
+            # releasing and the user selected a shortcut
+            shortcut_set ${::pd_bindings::editor::currentshortcut}
+            popup_destroy $popid
+            return
+        }
+        set ::pd_bindings::editor::currentshortcut [join [concat $modifier $key] +]
+    }
+    proc shortcut_clear {winid} {
+        shortcut_set ""
+    }
+
+
+    proc reset {winid} {
+        set treeid ${winid}.tree
+        ::pdwindow::error "TODO: ::pd_bindings::editor::reset\n"
+    }
+    proc apply {winid} {
+        set data [getshortcuts ${winid}.tree]
+        ::pd_guiprefs::write KeyBindings $data
+    }
+}
+
+
+
 #------------------------------------------------------------------------------#
 # key usage
 
