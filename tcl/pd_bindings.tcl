@@ -572,6 +572,8 @@ namespace eval ::pd_bindings::editor:: {
     # or empty
     variable currentID
 
+    array set usedshortcuts {}
+
     proc getleaveitems {treeid {root {}}} {
         set items {}
         foreach item [$treeid children $root] {
@@ -607,17 +609,20 @@ namespace eval ::pd_bindings::editor:: {
     }
 
     proc getshortcuts {treeid} {
+        # get a list of <event> <shortcuts> tuples, as stored in the current treeview
+        # as a side-effect, this updates the 'usedshortcuts' array
         set result {}
+        array unset ::pd_bindings::editor::usedshortcuts
         foreach {ev keys} [getleaveitems $treeid] {
             set shortcuts {}
             foreach k $keys {
                 lappend shortcuts [split $k +]
+                set ::pd_bindings::editor::usedshortcuts($k) $ev
             }
             lappend result $ev $shortcuts
         }
         return $result
     }
-
 
     proc create {winid} {
         label ${winid}.label -text "Here you can edit your shortcuts"
@@ -627,7 +632,6 @@ namespace eval ::pd_bindings::editor:: {
         pack $treeid -expand 1 -fill both
         set numshortcuts 0
         foreach {event shortcuts} $::pd_bindings::bindlist {
-            #puts "processing event ${event}"
             set evs {}
             foreach e [split $event "|"] {
                 set evs2 [concat $evs $e]
@@ -666,6 +670,8 @@ namespace eval ::pd_bindings::editor:: {
                 bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 0]
             }
         }
+        # update the list of used shortcuts:
+        getshortcuts $treeid
     }
     proc doubleclick {treeid x y} {
         set popup ${treeid}.popup
@@ -691,7 +697,10 @@ namespace eval ::pd_bindings::editor:: {
         bind $popup <Key-Escape> [list ::pd_bindings::editor::popup_destroy %W]
         bind $popup <Key-BackSpace> [list ::pd_bindings::editor::shortcut_clear %W]
         bind $popup <Key-Delete> [list ::pd_bindings::editor::shortcut_clear %W]
-        bindtags $popup [concat [bindtags $popup] ::pd_bindings::editor::popup]
+
+        # make need to bind to '::pd_bindings::editor::popup' as this is where the shortcut-keys go
+        # we also must make sure to *not* bind to 'all', so the normal keybindings do not work for us
+        bindtags $popup [list $popup [winfo class $popup] ::pd_bindings::editor::popup]
 
         focus $popup
     }
@@ -703,21 +712,59 @@ namespace eval ::pd_bindings::editor:: {
     }
     proc shortcut_set {shortcut} {
         foreach {treeid item col} $::pd_bindings::editor::currentID {break}
-        if { ${col} != {} } {
-            # try to normalize the keyboard shortcut (titlecasing the actual key)
-            set keys [split $shortcut "+"]
-            set Keys [lreplace $keys end end [string totitle [lindex $keys end]]]
+        if { ${col} == {} } {return}
 
-            set testevent <<::pd_binding::editor::shortcut::test>>
-            catch {
-                event add ${testevent} <[join $Keys -]>
-                set keys $Keys
-            }
-            event delete ${testevent}
+        # try to normalize the keyboard shortcut (titlecasing the actual key)
+        set keys [split $shortcut "+"]
+        set Keys [lreplace $keys end end [string totitle [lindex $keys end]]]
 
-            $treeid set $item $col [join $keys "+"]
+        set testevent <<::pd_binding::editor::shortcut::test>>
+        catch {
+            event add ${testevent} <[join $Keys -]>
+            set keys $Keys
         }
+        event delete ${testevent}
+
+        # check if shortcut is already taken
+        set sc [join $keys "+"]
+        set oldev [shortcut_check $sc]
+        if { $oldev != "" && $oldev != $item } {
+            tk_messageBox \
+                -title [_ "Shortcut in use!"] \
+                -message [_ "The shortcut '%1\$s' is already used for the <<%2\$s>> event." $sc $oldev] \
+                -detail [_ "Please remove the old shortcut before assigning it to a new event." ] \
+                -icon error -type ok
+            return
+        }
+
+        set ::pd_bindings::editor::usedshortcuts([$treeid set $item $col]) ""
+        if { $sc !=  {} } {
+            set ::pd_bindings::editor::usedshortcuts($sc) $item
+        }
+
+        $treeid set $item $col $sc
+
+        # remove duplicate and empty entries for the same event
+        set shortcuts {}
+        foreach {_ sc} [$treeid set $item] {
+            if { $sc != {} } {
+                dict set shortcuts $sc 1
+            }
+        }
+        $treeid item $item -values [dict keys $shortcuts]
     }
+
+    proc shortcut_clear {popid} {
+        shortcut_set ""
+        after idle ::pd_bindings::editor::popup_destroy $popid
+    }
+    proc shortcut_check {shortcut} {
+        if { [info exists ::pd_bindings::editor::usedshortcuts($shortcut) ] } {
+            return $::pd_bindings::editor::usedshortcuts($shortcut)
+        }
+        return ""
+    }
+
     proc shortcut {popid key modifier state} {
         # the user pressed a new shortcut
         # - ideally, prevent combination that only consist of modifier keys (e.g. "Control+Shift")
@@ -731,11 +778,6 @@ namespace eval ::pd_bindings::editor:: {
         }
         set ::pd_bindings::editor::currentshortcut [join [concat $modifier $key] +]
     }
-    proc shortcut_clear {popid} {
-        shortcut_set ""
-        after idle ::pd_bindings::editor::popup_destroy $popid
-    }
-
 
     proc reset {winid} {
         set treeid ${winid}.tree
