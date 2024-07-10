@@ -727,8 +727,9 @@ namespace eval ::pd_bindings::editor:: {
         }
         set ::pd_bindings::editor::currentshortcut [join [concat $modifier $key] +]
     }
-    proc shortcut_clear {winid} {
+    proc shortcut_clear {popid} {
         shortcut_set ""
+        after idle ::pd_bindings::editor::popup_destroy $popid
     }
 
 
