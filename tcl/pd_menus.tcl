@@ -218,6 +218,87 @@ proc ::pd_menus::update_accelerators {{menu .}} {
         ::pd_menus::update_accelerators $m
     }
 }
+proc ::pd_menus::get_events {{menu .} args} {
+    # recursively search the given menu for any commands that generate a virtual event
+    # and return a list of these events:
+    # e.g. '::pd_menus::get_events .menu.edit' -> '{<<Copy>> <<Paste>>}'
+    # the optional <args> is a list of additional options to query:
+    # e.g. '::pd_menus::get_events .menu.edit label accelerator' -> '{<<Copy>> {{Copy} {Ctrl-C}} <<Paste>> {{Paste} {Ctrl-V}}}'
+    if { ! [winfo exists $menu] } {return}
+
+    # flat list of events (for order preservation)
+    set events {}
+    # array with args-options of each event
+    array set seen {}
+
+    if { [winfo class $menu] == "Menu" } {
+        # this is a real menu, so update it
+        set lastmenu [$menu index end]
+        if { "${lastmenu}" eq "none" } { set lastmenu 0 }
+        for {set i 0} {$i <= $lastmenu} {incr i} {
+            set cmd {}
+            catch {
+                # some menu types (e.g. Seperators) do not have a command, so beware
+                set cmd [$menu entrycget $i -command]
+            }
+            if { $cmd == "" } {continue}
+            if { [regexp -all {event generate .* (<<[^>]*|[^>]*>>)} $cmd _ ev] } {
+                set options {}
+                foreach a $args {
+                    set o {}
+                    catch {
+                        set o [$menu entrycget $i -$a]
+                    }
+                    lappend options $o
+                }
+                if { [info exists seen($ev) ] } {
+                    # already seen, check if there are some new options
+                    set newoptions {}
+                    foreach o0 $seen($ev) o1 $options {
+                        if { $o0 != "" } {
+                            lappend newoptions $o0
+                        } else {
+                            lappend newoptions $o1
+                        }
+                    }
+                    set seen($ev) $newoptions
+                } else {
+                    lappend events $ev
+                    set seen($ev) $options
+                }
+            }
+        }
+    }
+
+    foreach m [winfo children $menu] {
+        foreach {ev options} [::pd_menus::get_events $m $args] {
+            if { [info exists seen($ev) ] } {
+                # already seen, check if there are some new options
+                set newoptions {}
+                foreach o0 $seen($ev) o1 $options {
+                    if { $o0 != "" } {
+                        lappend newoptions $o0
+                    } else {
+                        lappend newoptions $o1
+                    }
+                }
+                set seen($ev) $newoptions
+            } else {
+                lappend events $ev
+                set seen($ev) $options
+            }
+        }
+    }
+
+    set result {}
+    foreach ev $events {
+        lappend result $ev
+        if { $args != {} } {
+            lappend result $seen($ev)
+        }
+    }
+    return $result
+}
 
 
 
