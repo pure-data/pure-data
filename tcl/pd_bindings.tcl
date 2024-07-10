@@ -134,13 +134,8 @@ namespace eval ::pd_bindings:: {
     setshortcuts "Preferences|Forget"
 }
 
-proc ::pd_bindings::setup {} {
-    set data [::pd_guiprefs::read KeyBindings true]
-    if { ${data} != {} } {
-        set ::pd_bindings::bindlist ${data}
-    }
-
-    foreach {ev shortcuts} $::pd_bindings::bindlist {
+proc ::pd_bindings::make_events {bindlist} {
+    foreach {ev shortcuts} $bindlist {
         set event <<${ev}>>
         event delete ${event}
         foreach keys ${shortcuts} {
@@ -159,6 +154,15 @@ proc ::pd_bindings::setup {} {
             }
         }
     }
+}
+
+proc ::pd_bindings::setup {} {
+    set data [::pd_guiprefs::read KeyBindings]
+    if { ${data} != {} } {
+        set ::pd_bindings::bindlist ${data}
+    }
+    set stderr {}
+    catch {::pd_bindings::make_events $::pd_bindings::bindlist} stderr
 }
 
 # wrapper around bind(3tk)to deal with CapsLock
