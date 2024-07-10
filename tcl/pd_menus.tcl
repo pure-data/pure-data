@@ -213,10 +213,8 @@ proc ::pd_menus::add_menu {menu type label event args} {
 
 
 proc ::pd_menus::build_file_menu {mymenu} {
-    puts "build_file_menu"
     # run the platform-specific build_file_menu_* procs first, and config them
     [format build_file_menu_%s $::windowingsystem] $mymenu
-    puts "build the rest"
     $mymenu entryconfigure [_ "New"]        -command {event generate [focus] <<File|New>>}
     $mymenu entryconfigure [_ "Open"]       -command {event generate [focus] <<File|Open>>}
     $mymenu entryconfigure [_ "Save"]       -command {event generate [focus] <<File|Save>>}
