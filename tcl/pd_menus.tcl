@@ -32,17 +32,42 @@ namespace eval ::pd_menus:: {
                              "Control" "Ctrl" \
                              "Next" "Page Down" \
                              "Prior" "Page Up" \
-                             "equal" "=" \
-                             "less" "<" \
-                             "greater" ">" \
-                             "plus" "+" \
-                             "minus" "-" \
-                             "slash" "/" \
+                             "exclam" "!" \
+                             "quotedbl" "\"" \
+                             "numbersign" "#" \
+                             "dollar" "$" \
+                             "percent" "%" \
+                             "ampersand" "&" \
+                             "apostrophe" "'" \
+                             "parenleft" "(" \
+                             "parenright" ")" \
                              "asterisk" "*" \
-                             "period" "." \
+                             "plus" "+" \
                              "comma" "," \
+                             "minus" "-" \
+                             "period" "." \
+                             "slash" "/" \
+                             "colon" ":" \
+                             "semicolon" ";" \
+                             "less" "<" \
+                             "equal" "=" \
+                             "greater" ">" \
+                             "question" "?" \
+                             "at" "@" \
+                             "bracketleft" "[" \
+                             "backslash" "\\" \
+                             "bracketright" "]" \
+                             "asciicircum" "^" \
+                             "underscore" "_" \
+                             "grave" "`" \
+                             "braceleft" "{" \
+                             "bar" "|" \
+                             "braceright" "}" \
                              "asciitilde" "~" \
-                         }
+                             "section" "§" \
+                             "acute" "´" \
+                             "degree" "°" \
+    }
 }
 
 # ------------------------------------------------------------------------------
