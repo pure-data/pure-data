@@ -21,9 +21,12 @@ namespace eval ::pd_bindings:: {
     }
 
     variable bindlist {}
+    variable default_bindlist {}
     proc setshortcuts {event args} {
         variable bindlist
+        variable default_bindlist
         lappend bindlist $event $args
+        lappend default_bindlist $event $args
     }
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
@@ -624,15 +627,9 @@ namespace eval ::pd_bindings::editor:: {
         return $result
     }
 
-    proc create {winid} {
-        label ${winid}.label -justify left \
-            -text [_ "To edit a shortcut key, click on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
-        pack ${winid}.label
-        set treeid ${winid}.tree
-        ::ttk::treeview ${treeid} -selectmode browse -show tree
-        pack $treeid -expand 1 -fill both
+    proc filltree {treeid bindlist} {
         set numshortcuts 0
-        foreach {event shortcuts} $::pd_bindings::bindlist {
+        foreach {event shortcuts} $bindlist {
             set evs {}
             foreach e [split $event "|"] {
                 set evs2 [concat $evs $e]
@@ -656,6 +653,26 @@ namespace eval ::pd_bindings::editor:: {
             lappend columns "Shortcut${i}"
         }
         $treeid configure -columns $columns
+    }
+
+    proc create {winid} {
+        label ${winid}.label -justify left \
+            -text [_ "To edit a shortcut key, click on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
+        pack ${winid}.label
+        set treeid ${winid}.tree
+        ::ttk::treeview ${treeid} -selectmode browse -show tree
+        pack $treeid -expand 1 -fill both
+
+        filltree $treeid $::pd_bindings::bindlist
+
+        set f [frame $winid.but]
+        pack $f -side left -pady 5 -padx 5 -ipadx 5
+        button $f.previous -text [_ "Reset to previous state" ] -command [list ::pd_bindings::editor::filltree $treeid $::pd_bindings::bindlist]
+        button $f.defaults -text [_ "Reset to defaults" ] -command [list ::pd_bindings::editor::filltree $treeid $::pd_bindings::default_bindlist]
+        pack $f.previous -side left
+        pack $f.defaults -side left
+
+
         bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
 
         set metakeys {Control Shift Alt}
