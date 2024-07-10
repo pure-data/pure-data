@@ -214,6 +214,29 @@ proc ::pd_menus::add_menu {menu type label event args} {
     }
 }
 
+proc ::pd_menus::update_accelerators {{menu .}} {
+    if { ! [winfo exists $menu] } {return}
+    if { [winfo class $menu] == "Menu" } {
+        # this is a real menu, so update it
+        set lastmenu [$menu index end]
+        for {set i 0} {$i <= $lastmenu} {incr i} {
+            set cmd {}
+            catch {
+                set cmd [$menu entrycget $i -command]
+            }
+            if { $cmd == "" } {continue}
+            if { [regexp -all {event generate \[focus\] <<([^>]*|[^>]*)>>} $cmd _ ev] } {
+                set accel [ ::pd_menus::get_accelerator_for_event <<${ev}>>]
+                $menu entryconfigure $i -accelerator $accel
+                puts "$menu setting accelerator for $ev to $accel"
+            }
+        }
+    }
+    foreach m [winfo children $menu] {
+        ::pd_menus::update_accelerators $m
+    }
+}
+
 
 proc ::pd_menus::build_file_menu {mymenu} {
     # run the platform-specific build_file_menu_* procs first, and config them
