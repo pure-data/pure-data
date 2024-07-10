@@ -625,10 +625,11 @@ namespace eval ::pd_bindings::editor:: {
     }
 
     proc create {winid} {
-        label ${winid}.label -text "Here you can edit your shortcuts"
+        label ${winid}.label -justify left \
+            -text [_ "To edit a shortcut key, click on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
         pack ${winid}.label
         set treeid ${winid}.tree
-        ::ttk::treeview ${treeid}
+        ::ttk::treeview ${treeid} -selectmode browse -show tree
         pack $treeid -expand 1 -fill both
         set numshortcuts 0
         foreach {event shortcuts} $::pd_bindings::bindlist {
@@ -637,7 +638,7 @@ namespace eval ::pd_bindings::editor:: {
                 set evs2 [concat $evs $e]
                 set ev [join $evs2 "|"]
                 if { ![$treeid exists $ev] } {
-                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${e}
+                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${e} -open 1
                 }
                 set evs $evs2
             }
@@ -678,16 +679,23 @@ namespace eval ::pd_bindings::editor:: {
         destroy $popup
         set item [$treeid identify item $x $y]
         set col [$treeid identify column $x $y]
-        if { [$treeid identify region $x $y] != "cell" } {
-            # we are only interested in the shortcut cells
-            return
-        }
+        set type [$treeid identify region $x $y]
         if { [$treeid children $item] != {} } {
             # we are only interested in leaves
             return
         }
-        foreach {x y w h} [$treeid bbox $item $col] {break;}
-        set ::pd_bindings::editor::currentshortcut [$treeid set $item $col]
+        if { $type == "cell" } {
+            foreach {x y w h} [$treeid bbox $item $col] {break;}
+            set ::pd_bindings::editor::currentshortcut [$treeid set $item $col]
+        } elseif { $type == "tree" } {
+            foreach {x0 y w h} [$treeid bbox $item] {break;}
+            foreach x [$treeid bbox $item #1] {break;}
+            set w [expr $w + $x0 - $x]
+            set ::pd_bindings::editor::currentshortcut {}
+        } else {
+            # we are only interested in the shortcut cells
+            return
+        }
         entry ${popup} -textvariable ::pd_bindings::editor::currentshortcut -state readonly
         place $popup -x $x -y $y -w $w -h $h
         set ::pd_bindings::editor::currentID [list $treeid $item $col]
@@ -737,21 +745,38 @@ namespace eval ::pd_bindings::editor:: {
             return
         }
 
-        set ::pd_bindings::editor::usedshortcuts([$treeid set $item $col]) ""
         if { $sc !=  {} } {
             set ::pd_bindings::editor::usedshortcuts($sc) $item
         }
 
-        $treeid set $item $col $sc
+        set shortcuts {}
+
+        if { $col != "#0" } {
+            set oldsc [$treeid set $item $col]
+            set ::pd_bindings::editor::usedshortcuts($oldsc) ""
+            $treeid set $item $col $sc
+        } else {
+            if { $sc != {} } {
+                dict set shortcuts $sc 1
+            }
+        }
 
         # remove duplicate and empty entries for the same event
-        set shortcuts {}
         foreach {_ sc} [$treeid set $item] {
             if { $sc != {} } {
                 dict set shortcuts $sc 1
             }
         }
-        $treeid item $item -values [dict keys $shortcuts]
+        set shortcuts [dict keys $shortcuts]
+        set numshortcuts [llength $shortcuts]
+        if { $numshortcuts > [llength [$treeid cget -columns]] } {
+            set columns {}
+            for {set i 0} {$i < $numshortcuts} {incr i} {
+                lappend columns "Shortcut${i}"
+            }
+            $treeid configure -columns $columns
+        }
+        $treeid item $item -values $shortcuts
     }
 
     proc shortcut_clear {popid} {
