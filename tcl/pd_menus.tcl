@@ -228,7 +228,6 @@ proc ::pd_menus::update_accelerators {{menu .}} {
             if { [regexp -all {event generate \[focus\] <<([^>]*|[^>]*)>>} $cmd _ ev] } {
                 set accel [ ::pd_menus::get_accelerator_for_event <<${ev}>>]
                 $menu entryconfigure $i -accelerator $accel
-                puts "$menu setting accelerator for $ev to $accel"
             }
         }
     }
