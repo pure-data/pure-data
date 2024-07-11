@@ -724,7 +724,9 @@ namespace eval ::pd_bindings::editor:: {
         bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
 
         set metakeys {Control Shift Alt}
-        #lappend metakeys Command Option
+        if {$::windowingsystem eq "aqua"} {
+            lappend metakeys Command Option
+        }
 
         set tag ::pd_bindings::editor::popup
         for {set i 1} {$i <= [llength $metakeys]} {incr i} {
