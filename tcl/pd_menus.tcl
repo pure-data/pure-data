@@ -38,7 +38,7 @@ proc ::pd_menus::create_menubar {} {
     }
     menu $menubar
     if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
-    set menulist "file edit put find media window help"
+    set menulist "file edit put find media window tools help"
     foreach mymenu $menulist {
         if {$mymenu eq "find"} {
             set underlined 3
@@ -177,7 +177,6 @@ proc ::pd_menus::build_file_menu {mymenu} {
     $mymenu entryconfigure [_ "Save As..."] -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusaveas}
     #$mymenu entryconfigure [_ "Revert*"]    -command {::pd_menucommands::scheduleAction menu_revert $::focused_window}
     $mymenu entryconfigure [_ "Close"]      -command {::pd_menucommands::scheduleAction ::pd_bindings::window_close $::focused_window}
-    $mymenu entryconfigure [_ "Message..."] -command {::pd_menucommands::scheduleAction menu_message_dialog}
     $mymenu entryconfigure [_ "Print..."]   -command {::pd_menucommands::scheduleAction menu_print $::focused_window}
     # update recent files
     if {[llength $::recentfiles_list] > 0} {
@@ -348,6 +347,14 @@ proc ::pd_menus::build_window_menu {mymenu} {
     $mymenu add command -label [_ "Parent Window"] \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window findparent}
     $mymenu add  separator
+}
+
+proc ::pd_menus::build_tools_menu {mymenu} {
+    variable accelerator
+
+    $mymenu add command -label [_ "Message..."] \
+        -accelerator "$accelerator+Shift+M" \
+        -command {::pd_menucommands::scheduleAction menu_message_dialog}
 }
 
 proc ::pd_menus::build_help_menu {mymenu} {
@@ -622,8 +629,6 @@ proc ::pd_menus::build_file_menu_aqua {mymenu} {
     #$mymenu add command -label [_ "Save All"]
     #$mymenu add command -label [_ "Revert to Saved"]
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."] -accelerator "$accelerator+Shift+M"
-    $mymenu add  separator
     $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
 }
 
@@ -659,7 +664,6 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
@@ -706,7 +710,6 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
