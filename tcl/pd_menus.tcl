@@ -14,8 +14,10 @@ package require pd_connect
 # opposite of the 'bind' commands in pd_bindings.tcl
 
 namespace eval ::pd_menus:: {
-    variable accelerator
-    variable menubar ".menubar"
+    variable accelerator "Ctrl"
+    if {[tk windowingsystem] eq "aqua"} {
+        set accelerator "Cmd"
+    }
 
     namespace export create_menubar
     namespace export configure_for_pdwindow
@@ -30,138 +32,152 @@ namespace eval ::pd_menus:: {
 #
 proc ::pd_menus::create_menubar {} {
     variable accelerator
-    variable menubar
+    # a menu for PatchWindows
+    menu $::patch_menubar
+    # a shared menu for preferences
+    build_preferences_menu .preferences
+    # a shared menu for recentfiles
+    ::pd_menus::update_openrecent_menu .openrecent 0
+
     if {$::windowingsystem eq "aqua"} {
-        set accelerator "Cmd"
-    } else {
-        set accelerator "Ctrl"
+        create_apple_menu $::patch_menubar
     }
-    menu $menubar
-    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
-    set menulist "file edit put find media window help"
-    foreach mymenu $menulist {
+
+    foreach mymenu "file edit" {
+        [format build_%s_menu $mymenu] [menu $::patch_menubar.$mymenu] 1
+        $::patch_menubar add cascade -label [_ [string totitle $mymenu]] \
+            -underline 0 -menu $::patch_menubar.$mymenu
+        [format build_%s_menu $mymenu] [menu $::pdwindow_menubar.$mymenu] 0
+        $::pdwindow_menubar add cascade -label [_ [string totitle $mymenu]] \
+            -underline 0 -menu $::pdwindow_menubar.$mymenu
+    }
+
+    build_put_menu [menu $::patch_menubar.put]
+    $::patch_menubar add cascade -label [_ Put] \
+            -underline 0 -menu $::patch_menubar.put
+
+    foreach mymenu "find media window help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
             set underlined 0
         }
-        menu $menubar.$mymenu
-        $menubar add cascade -label [_ [string totitle $mymenu]] \
-            -underline $underlined -menu $menubar.$mymenu
-        [format build_%s_menu $mymenu] $menubar.$mymenu
+        [format build_%s_menu $mymenu] [menu $::patch_menubar.$mymenu]
+        $::patch_menubar add cascade -label [_ [string totitle $mymenu]] \
+            -underline $underlined -menu $::patch_menubar.$mymenu
+        $::pdwindow_menubar add cascade -label [_ [string totitle $mymenu]] \
+            -underline $underlined -menu $::patch_menubar.$mymenu
     }
-    if {$::windowingsystem eq "win32"} {create_system_menu $menubar}
-    . configure -menu $menubar
+
+    if {$::windowingsystem eq "win32"} {create_system_menu $::patch_menubar}
+    . configure -menu $::patch_menubar
 }
 
 proc ::pd_menus::configure_for_pdwindow {} {
-    variable menubar
     # these are meaningless for the Pd window, so disable them
     # File menu
-    $menubar.file entryconfigure [_ "Close"] -state disabled
-    $menubar.file entryconfigure [_ "Save"] -state disabled
-    $menubar.file entryconfigure [_ "Save As..."] -state normal
-    $menubar.file entryconfigure [_ "Print..."] -state disabled
+    $::patch_menubar.file entryconfigure [_ "Close"] -state disabled
+    $::patch_menubar.file entryconfigure [_ "Save"] -state disabled
+    $::patch_menubar.file entryconfigure [_ "Save As..."] -state normal
+    $::patch_menubar.file entryconfigure [_ "Print..."] -state disabled
 
     # Edit menu
-    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
-    $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Font"] -state normal
-    $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
-    $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
-    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
-    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
-    $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Duplicate"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Font"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Zoom In"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Triggerize"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
-    $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
-    $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
+    $::patch_menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
+    $::patch_menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
     # disable everything on the Put menu
-    for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
+    for {set i 0} {$i <= [$::patch_menubar.put index end]} {incr i} {
         # catch errors that happen when trying to disable separators
-        catch {$menubar.put entryconfigure $i -state disabled }
+        catch {$::patch_menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
     if {$::windowingsystem eq "aqua"} {
-        ::pd_menus::reenable_help_items_aqua $menubar
+        ::pd_menus::reenable_help_items_aqua $::patch_menubar
     }
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
-    variable menubar
     # File menu
-    $menubar.file entryconfigure [_ "Close"] -state normal
-    $menubar.file entryconfigure [_ "Save"] -state normal
-    $menubar.file entryconfigure [_ "Save As..."] -state normal
-    $menubar.file entryconfigure [_ "Print..."] -state normal
+    $::patch_menubar.file entryconfigure [_ "Close"] -state normal
+    $::patch_menubar.file entryconfigure [_ "Save"] -state normal
+    $::patch_menubar.file entryconfigure [_ "Save As..."] -state normal
+    $::patch_menubar.file entryconfigure [_ "Print..."] -state normal
     # Edit menu
-    $menubar.edit entryconfigure [_ "Paste Replace"] -state normal
-    $menubar.edit entryconfigure [_ "Duplicate"] -state normal
-    $menubar.edit entryconfigure [_ "Font"] -state normal
-    $menubar.edit entryconfigure [_ "Zoom In"] -state normal
-    $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
-    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state normal
-    $menubar.edit entryconfigure [_ "Triggerize"] -state normal
-    $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Paste Replace"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Duplicate"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Font"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Zoom In"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Zoom Out"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Tidy Up"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Triggerize"] -state normal
+    $::patch_menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
-    for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
+    for {set i 0} {$i <= [$::patch_menubar.put index end]} {incr i} {
         # catch errors that happen when trying to disable separators
-        if {[$menubar.put type $i] ne "separator"} {
-            $menubar.put entryconfigure $i -state normal
+        if {[$::patch_menubar.put type $i] ne "separator"} {
+            $::patch_menubar.put entryconfigure $i -state normal
         }
     }
     update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
     if {$::windowingsystem eq "aqua"} {
-        ::pd_menus::reenable_help_items_aqua $menubar
+        ::pd_menus::reenable_help_items_aqua $::patch_menubar
     }
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
-    variable menubar
     # these are meaningless for the dialog panels, so disable them except for
     # the ones that make sense in the Find dialog panel and it's canvas
     # File menu
-    $menubar.file entryconfigure [_ "Close"] -state disabled
+    $::patch_menubar.file entryconfigure [_ "Close"] -state disabled
     if {$mytoplevel eq ".find"} {
         # these bindings are passed through Find to it's target search window
-        $menubar.file entryconfigure [_ "Save As..."] -state disabled
+        $::patch_menubar.file entryconfigure [_ "Save As..."] -state disabled
         if {$mytoplevel ne ".pdwindow"} {
             # these don't do anything in the pdwindow
-            $menubar.file entryconfigure [_ "Save"] -state disabled
-            $menubar.file entryconfigure [_ "Print..."] -state disabled
+            $::patch_menubar.file entryconfigure [_ "Save"] -state disabled
+            $::patch_menubar.file entryconfigure [_ "Print..."] -state disabled
         }
     } else {
-        $menubar.file entryconfigure [_ "Save"] -state disabled
-        $menubar.file entryconfigure [_ "Save As..."] -state disabled
-        $menubar.file entryconfigure [_ "Print..."] -state disabled
+        $::patch_menubar.file entryconfigure [_ "Save"] -state disabled
+        $::patch_menubar.file entryconfigure [_ "Save As..."] -state disabled
+        $::patch_menubar.file entryconfigure [_ "Print..."] -state disabled
     }
 
     # Edit menu
-    $menubar.edit entryconfigure [_ "Font"] -state disabled
-    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
-    $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
-    $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
-    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
-    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
-    $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Font"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Duplicate"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Zoom In"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Triggerize"] -state disabled
+    $::patch_menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
-    $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
-    $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
+    $::patch_menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
+    $::patch_menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
     # disable everything on the Put menu
-    for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
+    for {set i 0} {$i <= [$::patch_menubar.put index end]} {incr i} {
         # catch errors that happen when trying to disable separators
-        catch {$menubar.put entryconfigure $i -state disabled }
+        catch {$::patch_menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
     if {$::windowingsystem eq "aqua"} {
-        ::pd_menus::reenable_help_items_aqua $menubar
+        ::pd_menus::reenable_help_items_aqua $::patch_menubar
     }
 }
 
@@ -376,32 +392,30 @@ proc ::pd_menus::build_help_menu {mymenu} {
 # undo/redo menu items
 
 proc ::pd_menus::update_undo_on_menu {mytoplevel undo redo} {
-    variable menubar
     if {$undo eq "no"} { set undo "" }
     if {$redo eq "no"} { set redo "" }
 
     if {$undo ne ""} {
-        $menubar.edit entryconfigure 0 -state normal \
+        $::patch_menubar.edit entryconfigure 0 -state normal \
             -label [_ "Undo $undo"]
     } else {
-        $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
+        $::patch_menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
     }
     if {$redo ne ""} {
-        $menubar.edit entryconfigure 1 -state normal \
+        $::patch_menubar.edit entryconfigure 1 -state normal \
             -label [_ "Redo $redo"]
     } else {
-        $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
+        $::patch_menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
     }
 }
 
 # ------------------------------------------------------------------------------
 # update the menu entries for opening recent files (write arg should always be true except the first time when pd is opened)
 proc ::pd_menus::update_recentfiles_menu {{write true}} {
-    variable menubar
     switch -- $::windowingsystem {
         "aqua"  {::pd_menus::update_openrecent_menu_aqua .openrecent $write}
-        "win32" {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
-        "x11"   {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
+        "win32" {::pd_menus::update_recentfiles_on_menu ${::patch_menubar}.file $write}
+        "x11"   {::pd_menus::update_recentfiles_on_menu ${::patch_menubar}.file $write}
     }
 }
 

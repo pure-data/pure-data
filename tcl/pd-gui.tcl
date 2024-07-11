@@ -223,7 +223,7 @@ array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
 # variables for holding the menubar to allow for configuration by plugins
 set ::pdwindow_menubar ".menubar"
 set ::patch_menubar   ".menubar"
-set ::dialog_menubar   ""
+set ::dialog_menubar   ".menubar"
 
 # minimum size of the canvas window of a patch
 set canvas_minwidth 50
