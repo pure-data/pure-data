@@ -184,6 +184,14 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     }
 }
 
+proc ::pd_menus::menubar_for_dialog {mytoplevel} {
+    set menubar $::dialog_menubar
+    if {$::windowingsystem eq "aqua"} {
+        set menubar $::pdwindow_menubar
+    }
+    $mytoplevel configure -menu $::menubar
+}
+
 
 # ------------------------------------------------------------------------------
 # menu building functions
