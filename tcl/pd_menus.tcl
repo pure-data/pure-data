@@ -59,7 +59,7 @@ proc ::pd_menus::create_menubar {} {
     $::patch_menubar add cascade -label [_ Put] \
             -underline 0 -menu $::patch_menubar.put
 
-    foreach mymenu "find media window help" {
+    foreach mymenu "find media window tools help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
@@ -134,7 +134,6 @@ proc ::pd_menus::build_file_menu {mymenu {patchwindow true}} {
     if { $patchwindow } {
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P" -command {::pd_menucommands::scheduleAction menu_print $::focused_window}
     }
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M" -command {::pd_menucommands::scheduleAction menu_message_dialog}
     $mymenu add  separator
     if {$::windowingsystem ne "aqua"} {
         $mymenu add command -label [_ "Quit"]    -accelerator "$accelerator+Q" \
@@ -332,6 +331,14 @@ proc ::pd_menus::build_window_menu {mymenu} {
     $mymenu add command -label [_ "Parent Window"] \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window findparent}
     $mymenu add  separator
+}
+
+proc ::pd_menus::build_tools_menu {mymenu} {
+    variable accelerator
+
+    $mymenu add command -label [_ "Message..."] \
+        -accelerator "$accelerator+Shift+M" \
+        -command {::pd_menucommands::scheduleAction menu_message_dialog}
 }
 
 proc ::pd_menus::build_help_menu {mymenu} {
