@@ -627,7 +627,12 @@ namespace eval ::pd_bindings::editor:: {
         return $result
     }
 
-    proc filltree {treeid bindlist} {
+    proc filltree {treeid bindlist {labelroot {}}} {
+        array set labels {}
+        if { $labelroot != {} } {
+            array set labels [::pd_menus::get_event_labels $labelroot]
+            puts "labels [array get labels]"
+        }
         set numshortcuts 0
         foreach {event shortcuts} $bindlist {
             set evs {}
@@ -635,7 +640,13 @@ namespace eval ::pd_bindings::editor:: {
                 set evs2 [concat $evs $e]
                 set ev [join $evs2 "|"]
                 if { ![$treeid exists $ev] } {
-                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${e} -open 1
+                    set name $e
+                    puts "checking $ev for name '$e'"
+                    if { [info exists labels(<<${ev}>>)] } {
+                        set name $labels(<<${ev}>>)
+                    }
+                    puts "\tuse '${name}'"
+                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${name} -open 1
                 }
                 set evs $evs2
             }
@@ -692,7 +703,7 @@ namespace eval ::pd_bindings::editor:: {
 
         set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
 
-        filltree $treeid $::pd_bindings::bindlist
+        filltree $treeid $::pd_bindings::bindlist .
 
         set f [frame $winid.but]
         pack $f -side left -pady 5 -padx 5 -ipadx 5
