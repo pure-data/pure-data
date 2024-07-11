@@ -37,6 +37,8 @@ proc ::pd_menus::create_menubar {} {
         set accelerator "Ctrl"
     }
     menu $menubar
+    build_preferences_menu .preferences
+
     if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     set menulist "file edit put find media window tools help"
     foreach mymenu $menulist {
@@ -169,19 +171,30 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 # ------------------------------------------------------------------------------
 # menu building functions
 proc ::pd_menus::build_file_menu {mymenu} {
-    # run the platform-specific build_file_menu_* procs first, and config them
-    [format build_file_menu_%s $::windowingsystem] $mymenu
-    $mymenu entryconfigure [_ "New"]        -command {::pd_menucommands::scheduleAction menu_new}
-    $mymenu entryconfigure [_ "Open"]       -command {::pd_menucommands::scheduleAction menu_open}
-    $mymenu entryconfigure [_ "Save"]       -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusave}
-    $mymenu entryconfigure [_ "Save As..."] -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusaveas}
-    #$mymenu entryconfigure [_ "Revert*"]    -command {::pd_menucommands::scheduleAction menu_revert $::focused_window}
-    $mymenu entryconfigure [_ "Close"]      -command {::pd_menucommands::scheduleAction ::pd_bindings::window_close $::focused_window}
-    $mymenu entryconfigure [_ "Print..."]   -command {::pd_menucommands::scheduleAction menu_print $::focused_window}
-    # update recent files
-    if {[llength $::recentfiles_list] > 0} {
-        ::pd_menus::update_recentfiles_menu false
+    variable accelerator
+    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N" -command {::pd_menucommands::scheduleAction menu_new}
+    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O" -command {::pd_menucommands::scheduleAction menu_open}
+
+    $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
+    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W" -command {::pd_menucommands::scheduleAction ::pd_bindings::window_close $::focused_window}
+    $mymenu add separator
+    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S" -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusave}
+    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S" -command {::pd_menucommands::scheduleAction menu_send $::focused_window menusaveas}
+    #$mymenu add command -label [_ "Save All"]
+    #$mymenu add command -label [_ "Revert to Saved"] -command {::pd_menucommands::scheduleAction menu_revert $::focused_window}
+    $mymenu add  separator
+    if {$::windowingsystem ne "aqua"} {
+        $mymenu add cascade -label [_ "Preferences"] -menu .preferences
     }
+    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P" -command {::pd_menucommands::scheduleAction menu_print $::focused_window}
+    $mymenu add  separator
+    if {$::windowingsystem ne "aqua"} {
+        $mymenu add command -label [_ "Quit"]    -accelerator "$accelerator+Q" \
+            -command {::pd_connect::menu_quit}
+    }
+
+    # update recent files
+    ::pd_menus::update_recentfiles_menu false
 }
 
 proc ::pd_menus::build_edit_menu {mymenu} {
@@ -407,11 +420,7 @@ proc ::pd_menus::update_undo_on_menu {mytoplevel undo redo} {
 # update the menu entries for opening recent files (write arg should always be true except the first time when pd is opened)
 proc ::pd_menus::update_recentfiles_menu {{write true}} {
     variable menubar
-    switch -- $::windowingsystem {
-        "aqua"  {::pd_menus::update_openrecent_menu_aqua .openrecent $write}
-        "win32" {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
-        "x11"   {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
-    }
+    ::pd_menus::update_openrecent_menu .openrecent $write
 }
 
 proc ::pd_menus::clear_recentfiles_menu {} {
@@ -420,54 +429,35 @@ proc ::pd_menus::clear_recentfiles_menu {} {
     ::pd_menus::update_recentfiles_menu
 }
 
-proc ::pd_menus::update_openrecent_menu_aqua {mymenu {write}} {
-    if {! [winfo exists $mymenu]} {menu $mymenu}
-    $mymenu delete 0 end
-
-    # now the list is last first so we just add
-    foreach filename $::recentfiles_list {
-        $mymenu add command -label [file tail $filename] \
-            -command "::pd_menucommands::scheduleAction open_file {$filename}"
+proc ::pd_menus::update_openrecent_menu {mymenu {write}} {
+    if {! [winfo exists $mymenu]} {
+        menu $mymenu
     }
-    # clear button
-    $mymenu add  separator
+    $mymenu delete  0 end
+
+    set i 1
+    foreach filename $::recentfiles_list {
+        set label [file tail $filename]
+        if {$::windowingsystem ne "aqua"} {
+            set label "$i. $label"
+        }
+        $mymenu add command \
+            -label $label -underline 0 \
+            -command [list ::pd_menucommands::scheduleAction open_file {$filename}]
+        incr i
+    }
+    $mymenu add separator
     $mymenu add command -label [_ "Clear Menu"] \
         -command {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
-    # write to config file
-    if {$write == true} { ::pd_guiprefs::write_recentfiles }
-}
 
-# ------------------------------------------------------------------------------
-# this expects to be run on the File menu, and to insert above the last separator
-proc ::pd_menus::update_recentfiles_on_menu {mymenu {write}} {
-    set lastitem [$mymenu index end]
-    set i 1
-    while {[$mymenu type [expr $lastitem-$i]] ne "separator"} {incr i}
-    set bottom_separator [expr $lastitem-$i]
-    incr i
-
-    while {[$mymenu type [expr $lastitem-$i]] ne "separator"} {incr i}
-    set top_separator [expr $lastitem-$i]
-    if {$top_separator < [expr $bottom_separator-1]} {
-        $mymenu delete [expr $top_separator+1] [expr $bottom_separator-1]
-    }
-    # insert the list from the end because we insert each element on the top
-    set i [llength $::recentfiles_list]
-    while {[incr i -1] > -1} {
-        set filename [lindex $::recentfiles_list $i]
-        set j [expr $i + 1]
-        if {$::windowingsystem eq "aqua"} {
-            set label [file tail $filename]
-        } else {
-            set label [concat "$j. " [file tail $filename]]
-        }
-        $mymenu insert [expr $top_separator+1] command \
-            -label $label -command "::pd_menucommands::scheduleAction open_file {$filename}" -underline 0
+    if {[llength $::recentfiles_list] == 0} {
+        $mymenu entryconfigure end -state disabled
     }
 
     # write to config file
     if {$write == true} { ::pd_guiprefs::write_recentfiles }
 }
+
 
 # ------------------------------------------------------------------------------
 # lots of crazy recursion to update the Window menu
@@ -580,7 +570,7 @@ proc ::pd_menus::forgetpreferences {} {
     }
 }
 
-proc ::pd_menus::create_preferences_menu {mymenu} {
+proc ::pd_menus::build_preferences_menu {mymenu} {
     menu $mymenu
     $mymenu add command -label [_ "Edit Preferences..."] \
         -command {menu_preference_dialog}
@@ -608,28 +598,10 @@ proc ::pd_menus::create_apple_menu {mymenu} {
     menu $mymenu.apple
     $mymenu.apple add command -label [_ "About Pd"] -command {::pd_menucommands::scheduleAction menu_aboutpd}
     $mymenu.apple add separator
-    create_preferences_menu $mymenu.apple.preferences
     $mymenu.apple add cascade -label [_ "Preferences"] \
-        -menu $mymenu.apple.preferences
+        -menu .preferences
     # this needs to be last for things to function properly
     $mymenu add cascade -label "Apple" -menu $mymenu.apple
-}
-
-proc ::pd_menus::build_file_menu_aqua {mymenu} {
-    variable accelerator
-    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
-    # this is now done in main ::pd_menus::build_file_menu
-    #::pd_menus::update_openrecent_menu_aqua .openrecent
-    $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
-    $mymenu add  separator
-    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "$accelerator+Shift+S"
-    #$mymenu add command -label [_ "Save All"]
-    #$mymenu add command -label [_ "Revert to Saved"]
-    $mymenu add  separator
-    $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
 }
 
 # FIXME: remove this when it is no longer necessary
@@ -642,29 +614,6 @@ proc ::pd_menus::reenable_help_items_aqua {mymenu} {
         $mymenu.help entryconfigure [_ "List of objects..."] -state normal
         $mymenu.help entryconfigure [_ "Report a bug"] -state normal
     #}
-}
-
-# ------------------------------------------------------------------------------
-# menu building functions for UNIX/X11
-
-proc ::pd_menus::build_file_menu_x11 {mymenu} {
-    variable accelerator
-    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
-    $mymenu add  separator
-    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
-    #    $mymenu add command -label "Revert"
-    $mymenu add  separator
-    create_preferences_menu $mymenu.preferences
-    $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
-    $mymenu add  separator
-    # the recent files get inserted in here by update_recentfiles_on_menu
-    $mymenu add  separator
-    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {::pd_connect::menu_quit}
 }
 
 # ------------------------------------------------------------------------------
@@ -681,8 +630,4 @@ proc ::pd_menus::create_system_menu {mymenubar} {
     # that is on the top left corner of the window frame
     # http://wiki.tcl.tk/1006
     # TODO add Edit Mode here
-}
-
-proc ::pd_menus::build_file_menu_win32 {mymenu} {
-    ::pd_menus::build_file_menu_x11 $mymenu
 }
