@@ -631,7 +631,6 @@ namespace eval ::pd_bindings::editor:: {
         array set labels {}
         if { $labelroot != {} } {
             array set labels [::pd_menus::get_events $labelroot label]
-            puts "labels [array get labels]"
         }
         set numshortcuts 0
         foreach {event shortcuts} $bindlist {
@@ -641,11 +640,9 @@ namespace eval ::pd_bindings::editor:: {
                 set ev [join $evs2 "|"]
                 if { ![$treeid exists $ev] } {
                     set name $e
-                    puts "checking $ev for name '$e'"
                     if { [info exists labels(<<${ev}>>)] } {
                         foreach name $labels(<<${ev}>>) {break}
                     }
-                    puts "\tuse '${name}'"
                     ${treeid} insert [join $evs "|"] end -id ${ev} -text ${name} -open 1
                 }
                 set evs $evs2
