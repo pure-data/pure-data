@@ -808,7 +808,7 @@ namespace eval ::pd_bindings::editor:: {
         }
 
         # remove duplicate and empty entries for the same event
-        foreach {_ sc} [$treeid set $item] {
+        foreach {it sc} [$treeid set $item] {
             if { $sc != {} } {
                 dict set shortcuts $sc 1
             }
