@@ -292,6 +292,44 @@ proc ::pd_menus::get_all_events {{menu .}} {
     return $events
 }
 
+proc ::pd_menus::get_event_labels {{menu .}} {
+    if { ! [winfo exists $menu] } {return}
+    set events {}
+    array set seen {}
+    if { [winfo class $menu] == "Menu" } {
+        # this is a real menu, so update it
+        set lastmenu [$menu index end]
+        for {set i 0} {$i <= $lastmenu} {incr i} {
+            set cmd {}
+            set label {}
+            catch {
+                set cmd [$menu entrycget $i -command]
+                set label [$menu entrycget $i -label]
+            }
+            if { $cmd == "" } {continue}
+            if { $label == "" } {continue}
+            if { [regexp -all {event generate \[focus\] (<<[^>]*|[^>]*>>)} $cmd _ ev] } {
+                if { ! [info exists seen($ev) ] } {
+                    lappend events $ev
+                    lappend events $label
+                    set seen($ev) 1
+                }
+            }
+        }
+    }
+    foreach m [winfo children $menu] {
+        foreach {ev label} [::pd_menus::get_event_labels $m] {
+            if { ! [info exists seen($ev) ] } {
+                lappend events $ev
+                lappend events $label
+                set seen($ev) 1
+            }
+        }
+    }
+    return $events
+}
+
+
 
 proc ::pd_menus::build_file_menu {mymenu} {
     # run the platform-specific build_file_menu_* procs first, and config them
