@@ -246,13 +246,6 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window selectall}
     $mymenu add  separator
-    $mymenu add command -label [_ "Font"] \
-        -command {::pd_menucommands::scheduleAction menu_font_dialog}
-    $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
-    $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
-    $mymenu add  separator
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
     $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
@@ -261,6 +254,13 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window connect_selection}
     $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window triggerize}
+    $mymenu add  separator
+    $mymenu add command -label [_ "Font"] \
+        -command {::pd_menucommands::scheduleAction menu_font_dialog}
+    $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
+        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
+    $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
+        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
     $mymenu add  separator
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}
