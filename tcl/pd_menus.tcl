@@ -14,8 +14,12 @@ package require pd_connect
 # opposite of the 'bind' commands in pd_bindings.tcl
 
 namespace eval ::pd_menus:: {
-    variable accelerator
     variable menubar ".menubar"
+
+    variable accelerator "Ctrl"
+    if {[tk windowingsystem] eq "aqua"} {
+        set accelerator "Cmd"
+    }
 
     namespace export create_menubar
     namespace export configure_for_pdwindow
@@ -31,27 +35,46 @@ namespace eval ::pd_menus:: {
 proc ::pd_menus::create_menubar {} {
     variable accelerator
     variable menubar
-    if {$::windowingsystem eq "aqua"} {
-        set accelerator "Cmd"
-    } else {
-        set accelerator "Ctrl"
-    }
+    # a menu for PatchWindows
     menu $menubar
+    # a menu for the PdWindow
+    menu .pdmenu
+    # a shared menu for preferences
     build_preferences_menu .preferences
+    # a shared menu for recentfiles
+    ::pd_menus::update_openrecent_menu .openrecent 0
 
-    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
-    set menulist "file edit put find media window tools help"
-    foreach mymenu $menulist {
+    if {$::windowingsystem eq "aqua"} {
+        create_apple_menu $menubar
+        create_apple_menu .pdmenu
+    }
+
+    foreach mymenu "file edit" {
+        [format build_%s_menu $mymenu] [menu $menubar.$mymenu] 1
+        $menubar add cascade -label [_ [string totitle $mymenu]] \
+            -underline 0 -menu $menubar.$mymenu
+        [format build_%s_menu $mymenu] [menu .pdmenu.$mymenu] 0
+        .pdmenu add cascade -label [_ [string totitle $mymenu]] \
+            -underline 0 -menu .pdmenu.$mymenu
+    }
+
+    build_put_menu [menu $menubar.put]
+    $menubar add cascade -label [_ Put] \
+            -underline 0 -menu $menubar.put
+
+    foreach mymenu "find media window tools help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
             set underlined 0
         }
-        menu $menubar.$mymenu
+        [format build_%s_menu $mymenu] [menu $menubar.$mymenu]
         $menubar add cascade -label [_ [string totitle $mymenu]] \
             -underline $underlined -menu $menubar.$mymenu
-        [format build_%s_menu $mymenu] $menubar.$mymenu
+        .pdmenu add cascade -label [_ [string totitle $mymenu]] \
+            -underline $underlined -menu $menubar.$mymenu
     }
+
     if {$::windowingsystem eq "win32"} {create_system_menu $menubar}
     . configure -menu $menubar
 }
@@ -170,7 +193,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 
 # ------------------------------------------------------------------------------
 # menu building functions
-proc ::pd_menus::build_file_menu {mymenu} {
+proc ::pd_menus::build_file_menu {mymenu {patchwindow true}} {
     variable accelerator
     $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N" -command {::pd_menucommands::scheduleAction menu_new}
     $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O" -command {::pd_menucommands::scheduleAction menu_open}
@@ -197,8 +220,9 @@ proc ::pd_menus::build_file_menu {mymenu} {
     ::pd_menus::update_recentfiles_menu false
 }
 
-proc ::pd_menus::build_edit_menu {mymenu} {
+proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
     variable accelerator
+    if { $patchwindow } {
     $mymenu add command -label [_ "Undo"]       -accelerator "$accelerator+Z" \
         -command {::pd_menucommands::scheduleAction menu_undo}
     $mymenu add command -label [_ "Redo"]       -accelerator "Shift+$accelerator+Z" \
@@ -210,10 +234,9 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
-    $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
     $mymenu add command -label [_ "Paste Replace" ]  \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste-replace}
+    $mymenu add  separator
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window selectall}
     $mymenu add  separator
@@ -223,12 +246,16 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
         -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
+    $mymenu add  separator
+    $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window duplicate}
     $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window tidy}
     $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window connect_selection}
     $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window triggerize}
+    $mymenu add  separator
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}
     $mymenu add  separator
@@ -236,6 +263,26 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \
         -command {::pd_menucommands::scheduleAction menu_editmode $::editmode_button}
+
+    } else {
+    $mymenu add command -label [_ "Cut"]        -accelerator "$accelerator+X" \
+        -state disabled \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window cut}
+    $mymenu add command -label [_ "Copy"]       -accelerator "$accelerator+C" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
+    $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
+        -state disabled \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
+    $mymenu add  separator
+    $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window selectall}
+    $mymenu add  separator
+    $mymenu add command -label [_ "Font"] \
+        -command {::pd_menucommands::scheduleAction menu_font_dialog}
+    $mymenu add  separator
+    $mymenu add command -label [_ "Clear Console"] \
+        -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}
+    }
 }
 
 proc ::pd_menus::build_put_menu {mymenu} {
@@ -281,12 +328,14 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window menuarray}
 }
 
-proc ::pd_menus::build_find_menu {mymenu} {
+proc ::pd_menus::build_find_menu {mymenu {patchwindow true}} {
     variable accelerator
     $mymenu add command -label [_ "Find..."]    -accelerator "$accelerator+F" \
         -command {::pd_menucommands::scheduleAction menu_find_dialog}
+    if { $patchwindow } {
     $mymenu add command -label [_ "Find Again"] -accelerator "$accelerator+G" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window findagain}
+    }
     $mymenu add command -label [_ "Find Last Error"] \
         -command {::pd_menucommands::scheduleAction pdsend {pd finderror}}
 }
