@@ -678,7 +678,7 @@ namespace eval ::pd_bindings::editor:: {
         }
         foreach event [::pd_menus::get_events] {
             set ev [string trim $event <>]
-            if { [winfo exists seen($ev)] } {
+            if { [info exists seen($ev)] } {
                 continue
             }
             set shortcuts {}
