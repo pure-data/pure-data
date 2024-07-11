@@ -804,7 +804,7 @@ namespace eval ::pd_bindings::editor:: {
         if { $oldev != "" && $oldev != $item } {
             tk_messageBox \
                 -title [_ "Shortcut in use!"] \
-                -message [_ "The shortcut '%1\$s' is already used for the <<%2\$s>> event." $sc $oldev] \
+                -message [_ "The shortcut '%1\$s' is already used for the '%2\$s' event." $sc $oldev] \
                 -detail [_ "Please remove the old shortcut before assigning it to a new event." ] \
                 -icon error -type ok
             return
@@ -836,7 +836,7 @@ namespace eval ::pd_bindings::editor:: {
         }
 
         # remove duplicate and empty entries for the same event
-        foreach {_ sc} [$treeid set $item] {
+        foreach {it sc} [$treeid set $item] {
             if { $sc != {} } {
                 dict set shortcuts $sc 1
             }
