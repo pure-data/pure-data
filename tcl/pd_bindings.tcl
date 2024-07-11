@@ -822,7 +822,16 @@ namespace eval ::pd_bindings::editor:: {
             $treeid set $item $col $sc
         } else {
             if { $sc != {} } {
+                # *add* a new shortcut (rather than replace an existing one
                 dict set shortcuts $sc 1
+            } else {
+                # remove all shortcuts
+                foreach col [$treeid cget -columns] {
+                    set oldsc [$treeid set $item $col]
+                    set ::pd_bindings::editor::usedshortcuts($oldsc) ""
+                    $treeid set $item $col $sc
+                }
+
             }
         }
 
