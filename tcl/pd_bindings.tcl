@@ -669,6 +669,7 @@ namespace eval ::pd_bindings::editor:: {
             $treeid item ${event} -values ${values}
         }
         make_treecolumns $treeid $numshortcuts
+        getshortcuts $treeid
     }
 
     #.menubar add cascade -label Tools -underline 0 -menu [set m [menu .menubar.tools]]
