@@ -630,14 +630,6 @@ proc ::pd_menus::build_file_menu_aqua {mymenu} {
     $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
 }
 
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_aqua {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_aqua {mymenu} {
-}
-
 # FIXME: remove this when it is no longer necessary
 # there is a Tk Cocoa bug where Help menu items after separators may be
 # disabled after windows are cycled, as of Nov 2020 this is fixed via a fresh
@@ -672,16 +664,6 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {::pd_connect::menu_quit}
 }
-
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_x11 {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_x11 {mymenu} {
-}
-
-# the "Help" does not have cross-platform differences
 
 # ------------------------------------------------------------------------------
 # menu building functions for Windows/Win32
@@ -718,13 +700,3 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {::pd_connect::menu_quit}
 }
-
-# the "Edit", "Put", and "Find" menus do not have cross-platform differences
-
-proc ::pd_menus::build_media_menu_win32 {mymenu} {
-}
-
-proc ::pd_menus::build_window_menu_win32 {mymenu} {
-}
-
-# the "Help" does not have cross-platform differences
