@@ -199,7 +199,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     wm group .find .
     wm resizable .find 0 0
     wm transient .find
-    .find configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog .find
     .find configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .find "find"
 

@@ -35,7 +35,7 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     wm title $mytoplevel [_ "Data Properties"]
     wm group $mytoplevel $::focused_window
     wm transient $mytoplevel $::focused_window
-    $mytoplevel configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 0 -pady 0
 
     frame $mytoplevel.buttonframe

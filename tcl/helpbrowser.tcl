@@ -27,7 +27,7 @@ proc ::helpbrowser::open_helpbrowser {} {
         bind .helpbrowser <$::modifier-Key-w> "wm withdraw .helpbrowser"
 
         if {$::windowingsystem eq "aqua"} {
-            .helpbrowser configure -menu $::dialog_menubar
+            ::pd_menus::menubar_for_dialog .helpbrowser
         }
 
         # set the maximum number of child columns to create
