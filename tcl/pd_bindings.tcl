@@ -676,7 +676,7 @@ namespace eval ::pd_bindings::editor:: {
         foreach {ev binding} $bindlist {
             set seen($ev) 1
         }
-        foreach event [::pd_menus::get_all_events] {
+        foreach event [::pd_menus::get_events] {
             set ev [string trim $event <>]
             if { [winfo exists seen($ev)] } {
                 continue

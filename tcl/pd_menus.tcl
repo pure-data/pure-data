@@ -260,7 +260,7 @@ proc ::pd_menus::update_accelerators {{menu .}} {
         ::pd_menus::update_accelerators $m
     }
 }
-proc ::pd_menus::get_all_events {{menu .}} {
+proc ::pd_menus::get_events {{menu .}} {
     if { ! [winfo exists $menu] } {return}
     set events {}
     array set seen {}
@@ -282,7 +282,7 @@ proc ::pd_menus::get_all_events {{menu .}} {
         }
     }
     foreach m [winfo children $menu] {
-        foreach ev [::pd_menus::get_all_events $m] {
+        foreach ev [::pd_menus::get_events $m] {
             if { ! [info exists seen($ev) ] } {
                 lappend events $ev
                 set seen($ev) 1
