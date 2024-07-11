@@ -107,7 +107,7 @@ proc ::pd_menus::menubar_for_dialog {mytoplevel} {
     if {$::windowingsystem eq "aqua"} {
         set menubar $::pdwindow_menubar
     }
-    $mytoplevel configure -menu $::menubar
+    $mytoplevel configure -menu $menubar
 }
 
 
