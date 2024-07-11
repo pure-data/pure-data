@@ -684,21 +684,5 @@ proc ::pd_menus::create_system_menu {mymenubar} {
 }
 
 proc ::pd_menus::build_file_menu_win32 {mymenu} {
-    variable accelerator
-    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
-    $mymenu add  separator
-    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
-    #    $mymenu add command -label "Revert"
-    $mymenu add  separator
-    create_preferences_menu $mymenu.preferences
-    $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
-    $mymenu add  separator
-    # the recent files get inserted in here by update_recentfiles_on_menu
-    $mymenu add  separator
-    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {::pd_connect::menu_quit}
+    ::pd_menus::build_file_menu_x11 $mymenu
 }
