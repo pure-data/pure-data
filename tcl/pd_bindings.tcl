@@ -627,6 +627,18 @@ namespace eval ::pd_bindings::editor:: {
         return $result
     }
 
+
+    proc make_treecolumns {treeid numcolumns} {
+        set columns {}
+        for {set i 0} {$i < $numcolumns} {incr i} {
+            lappend columns [_ "Shortcut#%d" $i]
+        }
+        $treeid configure -columns $columns
+        foreach c $columns {
+            $treeid heading $c -text $c
+        }
+    }
+
     proc filltree {treeid bindlist {labelroot {}}} {
         array set labels {}
         if { $labelroot != {} } {
@@ -656,11 +668,7 @@ namespace eval ::pd_bindings::editor:: {
             }
             $treeid item ${event} -values ${values}
         }
-        set columns {}
-        for {set i 0} {$i < $numshortcuts} {incr i} {
-            lappend columns "Shortcut${i}"
-        }
-        $treeid configure -columns $columns
+        make_treecolumns $treeid $numshortcuts
     }
 
     #.menubar add cascade -label Tools -underline 0 -menu [set m [menu .menubar.tools]]
@@ -694,7 +702,9 @@ namespace eval ::pd_bindings::editor:: {
         label ${winid}.label -justify left \
             -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
         set treeid ${winid}.tree
-        ::ttk::treeview ${treeid} -selectmode browse -show tree
+        ::ttk::treeview ${treeid} -selectmode browse
+        $treeid column #0 -stretch
+        $treeid heading #0 -text [_ "Event" ]
         pack $treeid -expand 1 -fill both
         pack ${winid}.label -padx 5 -pady 5
 
@@ -824,11 +834,7 @@ namespace eval ::pd_bindings::editor:: {
         set shortcuts [dict keys $shortcuts]
         set numshortcuts [llength $shortcuts]
         if { $numshortcuts > [llength [$treeid cget -columns]] } {
-            set columns {}
-            for {set i 0} {$i < $numshortcuts} {incr i} {
-                lappend columns "Shortcut${i}"
-            }
-            $treeid configure -columns $columns
+            make_treecolumns $treeid $numshortcuts
         }
         $treeid item $item -values $shortcuts
     }
