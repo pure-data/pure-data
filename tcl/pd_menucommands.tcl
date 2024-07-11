@@ -37,6 +37,7 @@ proc ::pd_menucommands::menu_open {} {
 proc ::pd_menucommands::menu_print {mytoplevel} {
     set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
     set filename [tk_getSaveFile -initialfile $initialfile \
+                      -title [_ "Print..." ] \
                       -defaultextension .ps \
                       -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
