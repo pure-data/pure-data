@@ -692,7 +692,7 @@ namespace eval ::pd_bindings::editor:: {
 
     proc create {winid} {
         label ${winid}.label -justify left \
-            -text [_ "To edit a keyboard shortcut, click on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
+            -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
         set treeid ${winid}.tree
         ::ttk::treeview ${treeid} -selectmode browse -show tree
         pack $treeid -expand 1 -fill both
