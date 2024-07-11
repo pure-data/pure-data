@@ -630,7 +630,7 @@ namespace eval ::pd_bindings::editor:: {
     proc filltree {treeid bindlist {labelroot {}}} {
         array set labels {}
         if { $labelroot != {} } {
-            array set labels [::pd_menus::get_event_labels $labelroot]
+            array set labels [::pd_menus::get_events $labelroot label]
             puts "labels [array get labels]"
         }
         set numshortcuts 0
@@ -643,7 +643,7 @@ namespace eval ::pd_bindings::editor:: {
                     set name $e
                     puts "checking $ev for name '$e'"
                     if { [info exists labels(<<${ev}>>)] } {
-                        set name $labels(<<${ev}>>)
+                        foreach name $labels(<<${ev}>>) {break}
                     }
                     puts "\tuse '${name}'"
                     ${treeid} insert [join $evs "|"] end -id ${ev} -text ${name} -open 1
