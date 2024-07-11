@@ -412,7 +412,7 @@ proc ::pd_menus::update_openrecent_menu {mymenu {write}} {
         }
         $mymenu add command \
             -label $label -underline 0 \
-            -command [list ::pd_menucommands::scheduleAction open_file {$filename}]
+            -command [list ::pd_menucommands::scheduleAction open_file ${filename}]
         incr i
     }
     $mymenu add separator
