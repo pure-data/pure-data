@@ -326,7 +326,7 @@ proc ::dialog_midi::create {id} {
     wm resizable $id 0 0
     wm transient $id
     wm minsize $id 240 260
-    $id configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $id
     $id configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $id "midi"
 
