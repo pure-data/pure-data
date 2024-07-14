@@ -132,8 +132,7 @@ proc ::pd_guiprefs::init {} {
                         }
                     }
                 } else {
-                    set escaped [escape_for_plist $data]
-                    if {[catch {exec defaults write $domain $key $escaped} errorMsg]} {
+                    if {[catch {exec defaults write $domain $key -string $data} errorMsg]} {
                         puts "write_config $key: $errorMsg\n"
                     }
                 }
