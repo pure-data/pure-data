@@ -723,9 +723,26 @@ namespace eval ::pd_bindings::editor:: {
 
         bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
 
-        set metakeys {Control Shift Alt}
+        # order of modifier keys:
+        # - TheGIMP  : Shift-Control-Alt
+        # - Apple    : Control-Option-Shift-Command
+        # - Microsoft: Control-Alt-Shift
+        # - JMZ      : i would type either Ctrl-Alt-Shift or Ctrl-Shift-Alt
+
+        # guidelines:
+        # - https://developer.apple.com/design/human-interface-guidelines/macos/user-interaction/keyboard/
+        # - http://msdn.microsoft.com/en-us/library/ms971323.aspx#atg_keyboardshortcuts_windows_shortcut_keys
+
+        # we *really* want the default shortcutsto yield the same results as a recorded shortcut.
+        # (e.g. '${control} Shift S'), so duplicate detection is easier
+        set metakeys {Control Alt Shift}
         if {$::windowingsystem eq "aqua"} {
-            lappend metakeys Command Option
+            # macOS displays accelerators in this order: Control-Option-Shift-Command
+            # with 'Alt' a synonym for 'Option', and 'Control' being distinct from 'Command'
+            # we would like the recorded shortcuts match closely with the shown accelerator.
+            # however, 'Command' needs to go before 'Shift' (for dupe detection)
+
+            set metakeys {Control Command Option Shift}
         }
 
         set tag ::pd_bindings::editor::popup
