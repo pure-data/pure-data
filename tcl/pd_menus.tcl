@@ -28,8 +28,10 @@ namespace eval ::pd_menus:: {
     array set keynames { \
                              "Key" "" \
                              "Mod1" "Cmd" \
+                             "Mod2" "Option" \
                              "Command" "Cmd" \
                              "Control" "Ctrl" \
+                             "ISO_Level3_Shift" "AltGr" \
                              "Next" "Page Down" \
                              "Prior" "Page Up" \
                              "exclam" "!" \
