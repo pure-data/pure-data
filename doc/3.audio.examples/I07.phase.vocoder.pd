@@ -1,9 +1,9 @@
-#N canvas 388 26 672 589 12;
+#N canvas 388 38 672 589 12;
 #X declare -stdpath ./;
 #X floatatom 404 277 5 0 0 0 - transpo-set - 0;
 #X floatatom 123 317 5 0 0 0 - speed-set - 0;
 #X floatatom 30 319 7 0 0 0 - location-set - 0;
-#N canvas 457 34 740 709 fft-analysis 0;
+#N canvas 457 38 740 709 fft-analysis 0;
 #X obj 54 483 *~;
 #X obj 21 483 *~;
 #X obj 21 505 -~;
@@ -454,7 +454,6 @@
 #X text 530 252 samples;
 #X text 72 240 ------- location controls -------;
 #X obj 286 344 s auto;
-#X text 38 65 This patch takes a sound \, analyzes windows in it both for channel magnitude and for phase precession in each channel (compared to another overlapping window). The real-time output recreates the same magnitudes and phase precession \, although the phases themselves are in general different. You can control either the location or its motion (setting location stops motion \, while setting a non-zero motion causes the location to change automatically). "Rewind" goes back to the beginning. You can use different window sizes (use the message boxes - the number box is for readout). The "lock" feature forces phase coherency between neighboring channels \, which makes a more present sound but can add artifacts to the sound. Look in "pd fft-analysis" to see the workings., f 82;
 #X obj 402 243 bng 22 250 50 0 no-detune empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 41 20 PHASE VOCODER FOR TIME STRETCHING AND CONTRACTION;
 #X obj 467 18 declare -stdpath ./;
@@ -469,6 +468,7 @@
 #X text 371 439 record -->;
 #X text 517 484 sample length in msec, f 13;
 #X text 521 430 window size;
+#X text 38 65 This patch takes a sound \, analyzes windows in it both for channel magnitude and for phase precession in each channel (compared to another overlapping window). The real-time output recreates the same magnitudes and phase precession \, although the phases themselves are in general different. You can control either the location or its motion (setting location stops motion \, while setting a non-zero motion causes the location to change automatically). "Rewind" goes back to the beginning. You can use different window sizes (use the message boxes - the number box is for readout). The "lock" feature forces phase coherency between neighboring channels \, which makes a more present sound but can add artifacts to the sound. Look into the [pd fft-analysis] subppatch to see the workings., f 82;
 #X connect 0 0 4 0;
 #X connect 1 0 17 0;
 #X connect 2 0 16 0;
@@ -484,6 +484,6 @@
 #X connect 32 0 35 0;
 #X connect 33 0 35 0;
 #X connect 34 0 35 0;
-#X connect 44 0 18 0;
-#X connect 45 0 9 0;
-#X connect 46 0 9 1;
+#X connect 43 0 18 0;
+#X connect 44 0 9 0;
+#X connect 45 0 9 1;

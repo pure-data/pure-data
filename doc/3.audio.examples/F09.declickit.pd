@@ -1,4 +1,4 @@
-#N canvas 413 23 623 690 12;
+#N canvas 560 38 623 690 12;
 #X declare -stdpath ./;
 #X obj 73 487 cos~;
 #X obj 73 427 *~;

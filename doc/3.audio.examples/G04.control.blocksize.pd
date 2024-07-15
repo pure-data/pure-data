@@ -42,7 +42,7 @@
 #X text 34 396 rectangular, f 12;
 #X text 34 382 this makes a;
 #X msg 128 380 1 \, 0 0 1;
-#X obj 48 280 declare -stdpath ./;
+#X obj 378 222 declare -stdpath ./;
 #X obj 230 252 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X text 247 460 <-- here is the delay feedback loop;
 #X obj 230 309 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;

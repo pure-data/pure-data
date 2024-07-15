@@ -1,4 +1,4 @@
-#N canvas 539 44 606 633 12;
+#N canvas 507 44 606 633 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-sum 882 float 0;
@@ -23,13 +23,13 @@
 #X obj 95 194 +~ 1;
 #X obj 204 242 *~;
 #X obj 179 269 min~;
-#X text 295 127 0.5;
-#X text 296 246 -0.5;
+#X text 305 122 0.5;
+#X text 299 246 -0.5;
 #X text 175 92 up;
 #X text 222 92 down;
-#X text 51 441 Occasionally a second method for making corners is more convenient. Here we specify the slopes of the rising and falling segments (as always \, in units per cycle). We then make a triangle wave with a corner at (0 \, 0) and another one \, placed somewhere within the cycle. The slopes of the two lines determine the second point \, which will have an x value of t/(s+t) (if we let s denote the rising slope and t the falling one \, both as positive numbers). The y value is st/(s+t). If we wish instead to specify the corner location (x \, y) (with x in cycles \, 0<x<1) we set s = y/x and t = y/(1-x). The DC value is y/2., f 68;
 #X text 37 24 MAKING WAVEFORMS WITH CORNERS BY SPECIFYING LINE SEGMENT SLOPES, f 63;
 #X obj 430 69 declare -stdpath ./;
+#X text 51 441 Occasionally a second method for making corners is more convenient. Here we specify the slopes of the rising and falling segments (as always \, in units per cycle). We then make a triangle wave with a corner at (0 \, 0) and another one \, placed somewhere within the cycle. The slopes of the two lines determine the second point \, which will have an x value of t/(s+t) (if we let 's' denote the rising slope and 't' the falling one \, both as positive numbers). The y value is st/(s+t). If we wish instead to specify the corner location (x \, y) (with x in cycles \, 0<x<1) we set s = y/x and t = y/(1-x). The DC value is y/2., f 68;
 #X connect 5 0 15 1;
 #X connect 6 0 5 0;
 #X connect 7 0 18 1;

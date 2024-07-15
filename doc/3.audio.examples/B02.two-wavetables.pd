@@ -6,7 +6,6 @@
 #X coords 0 1.02 258 -1.02 258 130 1;
 #X restore 323 194 graph;
 #X text 395 455 updated for Pd version 0.34;
-#X text 19 44 WAVETABLE OSCILLATORS;
 #X text 47 147 wavetable;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array pitch11 259 float 1;
@@ -16,12 +15,13 @@
 #X obj 145 128 tabosc4~ pitch11;
 #X obj 145 164 tabosc4~ waveform11;
 #X obj 145 96 sig~ 0.5;
-#X text 41 164 oscillator =>;
-#X text 69 95 pitch =>;
 #X obj 145 215 output~;
 #X obj 144 291 declare -stdpath ./;
-#X text 63 349 Here's a [tabosc4~] controlling the frequency of another one. If you get properties on the two arrays \, you'll see that the top graph has a vertical scale from 0 to 1000, f 69;
-#X text 63 397 We're looping through that at a frequency of 0.5 Hz. and the output is used as the frequency input of the second [tabosc4~]. I've detected Klingons \, Captain Kirk..., f 69;
-#X connect 5 0 6 0;
-#X connect 6 0 10 0;
-#X connect 7 0 5 0;
+#X text 67 24 TWO WAVETABLE OSCILLATORS;
+#X text 69 95 pitch -->;
+#X text 41 164 oscillator -->;
+#X text 63 349 Here's a [tabosc4~] controlling the frequency of another one. If you get properties on the two arrays \, you'll see that the top graph has a vertical scale from 0 to 1000 \, to represent a range in Hz., f 69;
+#X text 63 397 We're looping through that at a frequency of 0.5 Hz and the output is used as the frequency input of the second [tabosc4~]. I've detected Klingons \, Captain Kirk..., f 69;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 6 0 4 0;

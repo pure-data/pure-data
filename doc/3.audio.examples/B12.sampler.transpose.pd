@@ -1,4 +1,4 @@
-#N canvas 375 23 836 666 12;
+#N canvas 375 38 836 666 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table21 44103 float 2;
@@ -13,7 +13,7 @@
 #X obj 81 515 *~;
 #X obj 143 427 line~;
 #X obj 143 377 * 441;
-#X floatatom 143 352 0 0 0 0 - - - 0;
+#X floatatom 143 352 5 0 0 0 - - - 0;
 #X obj 143 402 pack 0 100;
 #X obj 81 456 +~;
 #X obj 143 452 samphold~;
@@ -49,18 +49,18 @@
 #X text 615 604 updated for Pd version 0.37;
 #X text 592 430 --- 44103 samples ---;
 #X obj 29 87 expr pow(2 \, $f1/120);
-#X text 218 87 speed change;
+#X text 190 86 speed change;
 #X text 376 189 You might also want to have a way to retrigger the loop to sync it with some other process. By the time we had all this built the patch would be fairly involved. For now \, we'll move on to the next topic...;
 #X obj 29 190 phasor~;
 #X obj 364 488 tabwrite~ table21;
 #X msg 366 560 read ../sound/voice.wav table21;
-#X text 101 261 <= chunk size (100ths of a second);
-#X text 180 352 <= read point in 100ths of a second;
-#X text 71 62 <= transposition (10ths of a halftone);
 #X text 403 460 <= record;
 #X obj 635 17 declare -stdpath ./;
 #X obj 379 461 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 81 543 hip~ 5;
+#X text 71 62 <-- transposition (10ths of a halftone);
+#X text 95 261 <-- chunk size (100ths of a second);
+#X text 184 352 <-- read point in 100ths of a second;
 #X connect 1 0 50 0;
 #X connect 2 0 3 0;
 #X connect 2 0 25 0;
@@ -68,7 +68,7 @@
 #X connect 4 0 12 0;
 #X connect 5 0 6 0;
 #X connect 6 0 49 0;
-#X connect 7 0 57 0;
+#X connect 7 0 54 0;
 #X connect 8 0 13 0;
 #X connect 9 0 11 0;
 #X connect 10 0 9 0;
@@ -96,5 +96,5 @@
 #X connect 45 0 30 0;
 #X connect 48 0 19 0;
 #X connect 50 0 35 0;
-#X connect 56 0 49 0;
-#X connect 57 0 40 0;
+#X connect 53 0 49 0;
+#X connect 54 0 40 0;

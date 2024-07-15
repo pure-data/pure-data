@@ -1,8 +1,8 @@
-#N canvas 441 23 712 706 12;
+#N canvas 441 38 712 706 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array osc-output 4410 float 0;
-#X coords 0 1.02 4410 -1.02 200 130 1;
+#X coords 0 1.02 4409 -1.02 200 130 1;
 #X restore 449 248 graph;
 #X obj 165 316 tabwrite~ osc-output;
 #X floatatom 326 117 5 0 0 0 - - - 0;

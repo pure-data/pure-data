@@ -1,4 +1,4 @@
-#N canvas 469 23 503 684 12;
+#N canvas 469 38 503 684 12;
 #X declare -stdpath ./;
 #X floatatom 325 330 4 0 100 0 - - - 0;
 #X obj 307 475 +~;
@@ -21,7 +21,7 @@
 #X text 53 49 dummy inlet;
 #X text 165 49 delay time;
 #X text 307 119 This subpatch reads the delay writing before the reading., f 29;
-#X text 60 248 The summy inlet is just needed to connect to the previous subpatch to force the correct order., f 33;
+#X text 79 247 The dummy inlet is just needed to connect to the previous subpatch to force the correct order., f 33;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
 #X restore 113 495 pd delay-reader;
@@ -29,11 +29,11 @@
 #X obj 325 357 / 44.1;
 #X obj 95 559 output~;
 #N canvas 521 164 217 214 pulse 0;
-#X obj 52 148 outlet~;
+#X obj 51 148 outlet~;
 #X obj 51 44 phasor~ 50;
 #X obj 51 70 *~ 100;
 #X obj 51 95 clip~ 0.75 1.25;
-#X obj 52 121 cos~;
+#X obj 51 121 cos~;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
