@@ -772,10 +772,12 @@ namespace eval ::pd_bindings::editor:: {
                 bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 0]
             }
         }
+        # the KeyRelease events are intentionally bound to shortcut,
+        # to properly detect KeyRelease on macOS if the modifiers are released before the actual key
         bind ${tag} <Shift-Key> [list ::pd_bindings::editor::shortcut1 %W %K Shift 1]
-        bind ${tag} <Shift-KeyRelease> [list ::pd_bindings::editor::shortcut1 %W %K Shift 0]
+        bind ${tag} <Shift-KeyRelease> [list ::pd_bindings::editor::shortcut %W %K Shift 0]
         bind ${tag} <KeyPress> [list ::pd_bindings::editor::shortcut1 %W %K {} 1]
-        bind ${tag} <KeyRelease> [list ::pd_bindings::editor::shortcut1 %W %K {} 0]
+        bind ${tag} <KeyRelease> [list ::pd_bindings::editor::shortcut %W %K {} 0]
 
         # update the list of used shortcuts:
         getshortcuts $treeid
