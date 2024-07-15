@@ -704,7 +704,7 @@ namespace eval ::pd_bindings::editor:: {
 
     proc create {winid} {
         label ${winid}.help -justify left \
-            -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
+            -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding event (or shortcut) and type a new accelerator, or press BackSpace to clear." ]
 
         checkbutton ${winid}.allow1char \
             -variable ::pd_bindings::editor::allow1char \
