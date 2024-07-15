@@ -575,6 +575,9 @@ namespace eval ::pd_bindings::editor:: {
     # or empty
     variable currentID
 
+    # whether we allow single-char shortcuts, like 'a' or 'Shift-A'
+    variable allow1char 0
+
     array set usedshortcuts {}
 
     proc getleaveitems {treeid {root {}}} {
@@ -702,6 +705,12 @@ namespace eval ::pd_bindings::editor:: {
     proc create {winid} {
         label ${winid}.help -justify left \
             -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
+
+        checkbutton ${winid}.allow1char \
+            -variable ::pd_bindings::editor::allow1char \
+            -justify left \
+            -text [_ "Allow single-character shortcuts.\nDANGER: this can seriously impact the patching workflow." ]
+
         set treeid ${winid}.tree
         ::ttk::treeview ${treeid} -selectmode browse
         $treeid column #0 -stretch
@@ -709,6 +718,7 @@ namespace eval ::pd_bindings::editor:: {
 
         pack ${winid}.help -anchor w -padx 5 -pady 5
         pack ${winid}.allow1char -anchor w -padx 5 -pady 5
+        pack ${treeid} -expand 1 -fill both
 
         set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
 
@@ -756,6 +766,11 @@ namespace eval ::pd_bindings::editor:: {
                 bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 0]
             }
         }
+        bind ${tag} <Shift-Key> [list ::pd_bindings::editor::shortcut1 %W %K Shift 1]
+        bind ${tag} <Shift-KeyRelease> [list ::pd_bindings::editor::shortcut1 %W %K Shift 0]
+        bind ${tag} <KeyPress> [list ::pd_bindings::editor::shortcut1 %W %K {} 1]
+        bind ${tag} <KeyRelease> [list ::pd_bindings::editor::shortcut1 %W %K {} 0]
+
         # update the list of used shortcuts:
         getshortcuts $treeid
     }
@@ -896,6 +911,13 @@ namespace eval ::pd_bindings::editor:: {
         }
         set ::pd_bindings::editor::currentshortcut [join [concat $modifier $key] +]
     }
+    proc shortcut1 {popid key modifier state} {
+        set allowed  $::pd_bindings::editor::allow1char
+        if { $allowed } {
+            return [::pd_bindings::editor::shortcut $popid $key $modifier $state]
+        }
+    }
+
 
     proc reset {winid} {
         set treeid ${winid}.tree
