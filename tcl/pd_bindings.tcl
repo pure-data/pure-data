@@ -801,8 +801,6 @@ namespace eval ::pd_bindings::editor:: {
         set ::pd_bindings::editor::currentID [list $treeid $item $col]
 
         bind $popup <FocusOut> [list ::pd_bindings::editor::popup_destroy %W]
-        bind $popup <Leave> [list ::pd_bindings::editor::popup_destroy %W]
-        bind $popup <Key-Escape> [list ::pd_bindings::editor::popup_destroy %W]
         bind $popup <Key-BackSpace> [list ::pd_bindings::editor::shortcut_clear %W]
         bind $popup <Key-Delete> [list ::pd_bindings::editor::shortcut_clear %W]
 
