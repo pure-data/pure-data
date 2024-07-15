@@ -700,14 +700,15 @@ namespace eval ::pd_bindings::editor:: {
 
 
     proc create {winid} {
-        label ${winid}.label -justify left \
+        label ${winid}.help -justify left \
             -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding row and type a new accelerator, or press BackSpace to clear." ]
         set treeid ${winid}.tree
         ::ttk::treeview ${treeid} -selectmode browse
         $treeid column #0 -stretch
         $treeid heading #0 -text [_ "Event" ]
-        pack $treeid -expand 1 -fill both
-        pack ${winid}.label -padx 5 -pady 5
+
+        pack ${winid}.help -anchor w -padx 5 -pady 5
+        pack ${winid}.allow1char -anchor w -padx 5 -pady 5
 
         set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
 
