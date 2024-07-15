@@ -883,6 +883,9 @@ namespace eval ::pd_bindings::editor:: {
         # the user pressed a new shortcut
         # - ideally, prevent combination that only consist of modifier keys (e.g. "Control+Shift")
         # - if they are releasing (the top-level combination), assign
+        if { ! [winfo exists $popid ] } {
+            return
+        }
         set treeid [winfo parent $popid]
         if { ! $state } {
             # releasing and the user selected a shortcut
