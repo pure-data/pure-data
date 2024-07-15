@@ -704,7 +704,7 @@ namespace eval ::pd_bindings::editor:: {
 
     proc create {winid} {
         label ${winid}.help -justify left \
-            -text [_ "To edit a keyboard shortcut, doubleclick on the corresponding event (or shortcut) and type a new accelerator, or press BackSpace to clear." ]
+            -text [_ "To edit a keyboard shortcut, double-click on the corresponding event (or shortcut) and type a new accelerator.\nUse right-click for a context-menu to remove shortcuts." ]
 
         checkbutton ${winid}.allow1char \
             -variable ::pd_bindings::editor::allow1char \
@@ -733,6 +733,12 @@ namespace eval ::pd_bindings::editor:: {
 
 
         bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
+        if {$::windowingsystem eq "aqua"} {
+            set rightbutton <2>
+        } else {
+            set rightbutton <3>
+        }
+        bind $treeid $rightbutton "::pd_bindings::editor::rightclick %W %x %y"
 
         # order of modifier keys:
         # - TheGIMP  : Shift-Control-Alt
@@ -801,8 +807,6 @@ namespace eval ::pd_bindings::editor:: {
         set ::pd_bindings::editor::currentID [list $treeid $item $col]
 
         bind $popup <FocusOut> [list ::pd_bindings::editor::popup_destroy %W]
-        bind $popup <Key-BackSpace> [list ::pd_bindings::editor::shortcut_clear %W]
-        bind $popup <Key-Delete> [list ::pd_bindings::editor::shortcut_clear %W]
 
         # make need to bind to '::pd_bindings::editor::popup' as this is where the shortcut-keys go
         # we also must make sure to *not* bind to 'all', so the normal keybindings do not work for us
@@ -810,6 +814,42 @@ namespace eval ::pd_bindings::editor:: {
 
         focus $popup
     }
+    proc rightclick {treeid X Y} {
+        set m ${treeid}.contextmenu
+        destroy $m
+        set item [$treeid identify item $X $Y]
+        set col [$treeid identify column $X $Y]
+        set type [$treeid identify region $X $Y]
+        if { [$treeid children $item] != {} } {
+            # we are only interested in leaves
+            return
+        }
+
+        menu $m
+        if { $type == "cell" } {
+            foreach {x y w h} [$treeid bbox $item $col] {break;}
+            $m add command -label [_ "Edit shortcut" ] \
+                -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
+            $m add command -label [_ "Delete shortcut" ] \
+                -command [list ::pd_bindings::editor::shortcut_clear %W]
+        } elseif { $type == "tree" } {
+            foreach {x y w h} [$treeid bbox $item] {break;}
+            #foreach x [$treeid bbox $item #1] {break;}
+            $m add command -label [_ "Add shortcut" ] \
+                -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
+            $m add command -label [_ "Delete shortcuts" ] \
+                -command [list ::pd_bindings::editor::shortcut_clear %W]
+        } else {
+            # we are only interested in the shortcut cells
+            destroy $m
+            return
+        }
+
+        set ::pd_bindings::editor::currentID [list $treeid $item $col]
+        bindtags $m [list $m [winfo class $m] ::pd_bindings::editor::m]
+        tk_popup $m [expr [winfo rootx $treeid] + $x] [expr [winfo rooty $treeid] + $y]
+    }
+
     proc popup_destroy {popid} {
         # cleanup the popup
         destroy $popid
