@@ -24,7 +24,6 @@
 #X obj 134 201 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
 #X text 33 138 We've added an amplitude control here so that the test oscillator only speaks while you're dragging the pitch up and down or when hitting 'bang'. Be sure to try shift-dragging on the pitch control., f 66;
 #X text 189 229 <-- set pitch;
-#X text 295 557 updated for Pd version 0.37-1;
 #X text 356 284 ADSR only uses attack and decay stages, f 22;
 #X connect 0 0 5 0;
 #X connect 0 0 6 0;

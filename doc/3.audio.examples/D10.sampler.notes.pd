@@ -184,7 +184,6 @@
 #X obj 372 25 r note;
 #X listbox 372 54 23 0 0 0 - - - 0;
 #X text 289 693 microtones OK too;
-#X text 587 711 updated for Pd version 0.52;
 #X connect 0 0 26 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;

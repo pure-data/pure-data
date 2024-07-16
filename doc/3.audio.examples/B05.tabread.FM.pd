@@ -1,4 +1,4 @@
-#N canvas 478 98 693 435 12;
+#N canvas 478 98 692 410 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array pitchmod14 131 float 1;
@@ -13,7 +13,6 @@
 #X obj 127 265 osc~;
 #X obj 145 130 tabosc4~ pitchmod14;
 #X text 65 31 FREQUENCY MODULATION BY WAVETABLE;
-#X text 399 361 updated for Pd version 0.37;
 #X obj 127 307 output~;
 #X obj 445 31 declare -stdpath ./;
 #X text 357 88 This [tabosc4~] controls the pitch of a sinusoidal oscillator ([osc~]). Try changing the waveform as well as the three familiar parameters., f 37;
@@ -25,5 +24,5 @@
 #X connect 3 0 5 1;
 #X connect 4 0 3 1;
 #X connect 5 0 6 0;
-#X connect 6 0 10 0;
+#X connect 6 0 9 0;
 #X connect 7 0 3 0;

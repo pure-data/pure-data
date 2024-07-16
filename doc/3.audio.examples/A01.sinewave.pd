@@ -1,4 +1,4 @@
-#N canvas 619 38 527 791 12;
+#N canvas 619 38 527 752 12;
 #X obj 129 128 osc~ 440;
 #X obj 129 187 dac~;
 #X obj 129 157 *~ 0.05;
@@ -13,7 +13,6 @@
 #X obj 327 651 ../5.reference/set-dsp-tgl;
 #X text 328 630 DSP on/off;
 #X msg 327 688 \; pd dsp \$1;
-#X text 309 753 updated for Pd version 0.54;
 #X text 363 655 <-- open abstraction;
 #X text 80 336 click these -->, f 9;
 #X obj 298 378 send pd;
@@ -29,5 +28,5 @@
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X connect 11 0 13 0;
-#X connect 19 0 17 0;
-#X connect 20 0 17 0;
+#X connect 18 0 16 0;
+#X connect 19 0 16 0;

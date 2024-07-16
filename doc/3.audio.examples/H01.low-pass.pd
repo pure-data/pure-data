@@ -32,7 +32,6 @@
 #X connect 2 0 1 0;
 #X restore 227 558 pd init;
 #X text 33 54 This and the following patches show how to use filters in Pd \, starting with the simplest one: the one-pole low-pass filter. Here we test it with an input of white noise. The [lop~] object does the filtering. Its left inlet takes an audio signal to be filtered \, and its right inlet takes messages or signals to set its cutoff frequency in Hertz., f 75;
-#X text 369 564 updated for Pd version 0.55;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;

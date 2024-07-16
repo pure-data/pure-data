@@ -34,7 +34,6 @@
 #X floatatom 87 155 6 10 130 0 - - - 0;
 #X floatatom 147 221 6 0 100 0 - - - 0;
 #X obj 87 294 output~;
-#X text 211 476 updated for Pd version 0.37-1;
 #X text 27 57 Here is a simple recirculating reverberator. "Feedback" should be between 0 and 100 - if 100 \, the reverberation lasts forever.;
 #N canvas 342 38 753 717 reverb 0;
 #X obj 34 19 inlet~;
@@ -141,9 +140,9 @@
 #X obj 311 428 rev3~, f 8;
 #X text 119 129 <-- pitch in MIDI (triggers envelope).;
 #X text 140 155 <-- you can also click and drag.;
-#X connect 0 0 7 0;
+#X connect 0 0 6 0;
 #X connect 2 0 0 0;
-#X connect 3 0 7 1;
-#X connect 7 0 4 0;
-#X connect 7 1 4 1;
-#X connect 11 0 2 0;
+#X connect 3 0 6 1;
+#X connect 6 0 4 0;
+#X connect 6 1 4 1;
+#X connect 10 0 2 0;

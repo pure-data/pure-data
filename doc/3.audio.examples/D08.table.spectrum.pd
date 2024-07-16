@@ -26,7 +26,6 @@
 #X text 205 437 And here we send bangs to "poll-table" needed by the abstraction., f 23;
 #X text 54 290 The [clone] object carries the bank of oscillators \, which is 30 copies of the [spectrum-partial] abstraction - click to open and see it:, f 39;
 #X obj 67 390 clone -s 1 spectrum-partial 30;
-#X text 514 464 Updated for Pd version 0.52;
 #X text 144 126 <-- pitch;
 #X text 148 196 <-- left or right shift (normally 0), f 19;
 #X text 598 402 <-- make the number labels, f 14;

@@ -328,7 +328,6 @@
 #X text 495 383 sample lengths \,;
 #X text 499 406 msec;
 #X text 61 54 This is a Fourier-based "vocoder" (perhaps better called a "timbre stamp") like the one the Convolution brothers use. The "control source" is analyzed to get its spectral envelope \, which is then stamped onto the "filter input" by adjusting the amplitudes of its Fourier transform. The "filter input" is first whitened by the compression algorithm from the previous patch in this series. The best value of "squelch" to use depends critically on what kind of sounds are used for the filter input and the control source., f 67;
-#X text 387 475 updated for Pd version 0.39;
 #X obj 451 20 declare -stdpath ./;
 #X obj 210 365 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 121 365 <- record ->;
@@ -344,5 +343,5 @@
 #X connect 14 0 15 0;
 #X connect 20 0 0 0;
 #X connect 20 1 0 1;
-#X connect 30 0 20 1;
-#X connect 33 0 20 0;
+#X connect 29 0 20 1;
+#X connect 32 0 20 0;

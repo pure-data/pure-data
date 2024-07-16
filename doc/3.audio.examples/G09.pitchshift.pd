@@ -83,7 +83,6 @@
 #X obj 536 79 declare -stdpath ./;
 #X obj 269 517 delread4~ G09-del, f 9;
 #X obj 101 506 delread4~ G09-del, f 9;
-#X text 519 617 updated for Pd version 0.52;
 #X text 275 124 <-- window (msec);
 #X msg 224 342 \$1 200;
 #X msg 287 408 \$1 200;
@@ -132,10 +131,10 @@
 #X connect 40 0 1 0;
 #X connect 40 0 28 0;
 #X connect 40 0 27 0;
-#X connect 41 0 53 0;
+#X connect 41 0 52 0;
 #X connect 44 0 10 0;
-#X connect 44 0 52 0;
+#X connect 44 0 51 0;
 #X connect 48 0 22 1;
 #X connect 49 0 16 1;
-#X connect 52 0 2 0;
-#X connect 53 0 11 0;
+#X connect 51 0 2 0;
+#X connect 52 0 11 0;

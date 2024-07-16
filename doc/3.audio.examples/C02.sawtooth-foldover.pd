@@ -1,7 +1,6 @@
-#N canvas 516 98 520 604 12;
+#N canvas 516 98 521 549 12;
 #X declare -stdpath ./;
 #X obj 136 395 output~;
-#X text 273 533 updated for Pd version 0.37;
 #X text 77 17 FOLDOVER IN SAWTOOTH WAVES;
 #X obj 136 358 clip~ 0 1;
 #X obj 136 168 mtof;
@@ -24,11 +23,11 @@
 #X text 271 248 <-- sawtooth amplitude;
 #X text 259 414 <-- pulse train amplitude;
 #X text 179 145 <-- pitch;
-#X connect 3 0 0 0;
-#X connect 4 0 8 0;
-#X connect 5 0 4 0;
-#X connect 6 0 7 0;
-#X connect 7 0 3 0;
-#X connect 8 0 6 0;
-#X connect 8 0 9 0;
-#X connect 12 0 5 0;
+#X connect 2 0 0 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 2 0;
+#X connect 7 0 5 0;
+#X connect 7 0 8 0;
+#X connect 11 0 4 0;

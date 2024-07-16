@@ -1,4 +1,4 @@
-#N canvas 542 38 581 742 12;
+#N canvas 542 38 578 742 12;
 #X declare -stdpath ./;
 #X obj 114 121 r trigger;
 #X text 124 16 USING ADSR'S OUTPUT AS dB;
@@ -61,16 +61,15 @@
 #X text 82 437 The table is indexed from 1 to 120 so that 1 gives a true zero out and 120 gives 10 (a 20 dB boost.) The extra 20 dB are for headroom.;
 #X text 80 606 Notice how the attack sounds different when you retrigger than when you start from zero. This is because if you go from the steady state you only rise 30 dB instead of 100 \, so it sounds slower... a slur effect. If you don't want this \, you might try increasing the amplitude of retriggered notes in comparison to isolated ones.;
 #X obj 96 266 output~;
-#X text 331 707 updated for Pd version 0.37;
 #X obj 96 344 declare -stdpath ./;
 #X text 76 47 For more natural sounding amplitude control \, you can use the ADSR's output as log amplitude. Technically \, this is more efficient if done using a lookup table.;
 #X text 78 487 There's also a "real" [dbtorms~] object that you can just use instead if CPU cost is not a concern and the next example will use that instead \, but for didatical reasons it's shown how to implement a lookup table instead in cases where you might be really concerned (as running Pd in a microcontroller) since [dbtorms~] it's almost certainly much more compute-intensive than ptabread4~] \, since it has to call a library "exp" function.);
 #X obj 114 147 tgl 21 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X text 324 110 attack:;
 #X text 414 110 release:;
-#X connect 0 0 21 0;
+#X connect 0 0 20 0;
 #X connect 2 0 11 1;
 #X connect 6 0 11 0;
 #X connect 11 0 16 0;
 #X connect 13 0 2 0;
-#X connect 21 0 13 0;
+#X connect 20 0 13 0;

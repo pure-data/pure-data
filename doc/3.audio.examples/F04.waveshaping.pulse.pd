@@ -98,7 +98,6 @@
 #X obj 88 257 hip~ 5;
 #X text 503 264 ------ partial number ------;
 #X text 20 495 This is the form of pulse train used in the original Phase Aligned Formant (PAF) algorithm \, which was protected by patents belonging to IRCAM from 1993 to 2011, f 66;
-#X text 544 507 updated for Pd version 0.55;
 #X connect 0 0 3 1;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;

@@ -24,7 +24,6 @@
 #X text 71 241 The synthesis technique is the same as in the previous patch \, done in a simpler (but less general) way with a [cos~] object replacing the wavetable lookup., f 58;
 #X obj 105 424 poly 1 1;
 #X text 208 443 velocity;
-#X text 304 751 updated for Pd version 0.55;
 #X msg 153 322 55 64;
 #X msg 246 322 55 0;
 #X msg 105 322 48 64;
@@ -56,9 +55,9 @@
 #X connect 18 0 11 1;
 #X connect 22 1 0 0;
 #X connect 22 2 16 0;
-#X connect 25 0 30 0;
-#X connect 26 0 30 0;
-#X connect 27 0 30 0;
-#X connect 28 0 30 0;
-#X connect 29 0 30 0;
-#X connect 30 0 22 0;
+#X connect 24 0 29 0;
+#X connect 25 0 29 0;
+#X connect 26 0 29 0;
+#X connect 27 0 29 0;
+#X connect 28 0 29 0;
+#X connect 29 0 22 0;

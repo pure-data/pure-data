@@ -1,9 +1,8 @@
-#N canvas 614 38 541 452 12;
+#N canvas 614 38 549 415 12;
 #X text 90 27 INTRODUCTION TO THE PD AUDIO EXAMPLE PATCHES;
 #X msg 146 218 browse http://msp.ucsd.edu/techniques.htm;
 #X obj 146 252 pdcontrol;
 #X text 37 66 This is the second of three tutorial series on Pd. This one shows the time and frequency domain audio processing features. (The first one showed how to use Pd to do "control" computations \, and the third is about data structures.), f 67;
 #X text 36 135 These patches are accompanied by an ONLINE BOOK \, which develops the underlying theory at <http://msp.ucsd.edu/techniques.htm>. Click on the message below to open it., f 67;
 #X text 60 308 Note \, however \, that the examples here on this version of Pd are a bit more up to date with the more recent features. The link above carries a download for the exact example files that were used on the book., f 65;
-#X text 290 410 updated for Pd version 0.55;
 #X connect 1 0 2 0;

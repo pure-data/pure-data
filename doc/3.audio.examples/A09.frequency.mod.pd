@@ -1,4 +1,4 @@
-#N canvas 495 38 652 674 12;
+#N canvas 495 38 650 659 12;
 #X declare -stdpath ./;
 #X obj 218 172 *~;
 #X floatatom 218 87 5 0 0 0 - - - 0;
@@ -23,7 +23,6 @@
 #X text 426 233 --- 0.01 seconds ----;
 #X text 61 489 To get the FM sound \, set all three of carrier frequency \, modulation frequency \, and modulation index in the hundreds. Note that you get a timbral change as you sweep modulation index \, because this changes the amplitudes of the components of the output sound but not their frequencies., f 71;
 #X obj 148 319 output~;
-#X text 390 630 updated for Pd version 0.37;
 #X text 61 393 This patch shows the classical FM synthesis technique developed by John Chowning. It's nothing but an oscillator with vibrato controlled by another "modulation" oscillator. First \, to understand the patch \, set carrier frequency to 400 or so \, modulation frequency between 5 and 10 \, and try modulation index values between 0 and 400 \, say. You'll hear a sine wave with vibrato., f 71;
 #X text 61 568 The component frequencies are equal to the carrier frequency \, plus or minus multiples of the modulator frequency. A more complete discussion of FM occurs in part 5 of this series., f 71;
 #X obj 461 26 declare -stdpath ./;
@@ -39,4 +38,4 @@
 #X connect 12 0 5 0;
 #X connect 12 0 19 0;
 #X connect 16 0 0 0;
-#X connect 24 0 5 0;
+#X connect 23 0 5 0;

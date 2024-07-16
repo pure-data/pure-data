@@ -31,7 +31,6 @@
 #X obj 155 241 pack f 100;
 #X obj 99 237 osc~;
 #X obj 254 397 delread4~ G03-del;
-#X text 364 627 updated for Pd version 0.52;
 #X text 30 58 This is a fuzzed FM generator going into a delay loop \, this time using a variable delay object ([delread4~]) that also performs interpolation for non integer indexes. You can get several interesting effects this way. We have taken the precaution of clipping inside the loop to avoid instabilities. You can push the loop gain past 1 if you want \, it will just oscillate., f 76;
 #X obj 254 484 pack f 100;
 #X text 148 152 <-- pitch;
@@ -44,10 +43,10 @@
 #X connect 0 0 14 0;
 #X connect 1 0 27 0;
 #X connect 2 0 18 1;
-#X connect 3 0 40 0;
+#X connect 3 0 39 0;
 #X connect 4 0 6 0;
 #X connect 5 0 17 1;
-#X connect 6 0 33 0;
+#X connect 6 0 32 0;
 #X connect 7 0 15 0;
 #X connect 8 0 9 1;
 #X connect 9 0 10 0;
@@ -69,6 +68,6 @@
 #X connect 28 0 8 0;
 #X connect 29 0 9 0;
 #X connect 30 0 16 1;
-#X connect 33 0 5 0;
-#X connect 39 0 20 0;
-#X connect 40 0 39 0;
+#X connect 32 0 5 0;
+#X connect 38 0 20 0;
+#X connect 39 0 38 0;

@@ -33,7 +33,6 @@
 #X text 115 403 sync phase with snapshots;
 #X obj 59 456 fft~;
 #X text 163 12 The [fft~] object has separate inlets for the real and imaginary parts of a complex-valued signal and outputs its Fourier transform \, again using separate outlets for the real and imaginary part. The transform is done on one block of samples (here the block size is 64 \, Pd's default.) The outputs give the complex amplitudes of the harmonics of the input signal \, from DC up. The harmonics are tuned to the fundamental frequency of the analysis \, 1/64th of the sample rate. If the frequency (in harmonics) is an integer \, the result is two harmonics symmetric about the Nyquist frequency. Fractional frequencies spill across harmonics. Changing the initial phase rotates energy from real to imaginary and back., f 67;
-#X text 478 674 updated for Pd version 0.39;
 #X obj 238 572 ../5.reference/set-dsp-tgl;
 #X text 269 575 DSP on/off;
 #X msg 238 607 \; pd dsp \$1;
@@ -65,4 +64,4 @@
 #X connect 24 0 2 0;
 #X connect 26 0 7 0;
 #X connect 26 1 8 0;
-#X connect 29 0 31 0;
+#X connect 28 0 30 0;

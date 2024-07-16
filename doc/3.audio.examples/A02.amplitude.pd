@@ -1,4 +1,4 @@
-#N canvas 614 76 546 671 12;
+#N canvas 614 76 546 638 12;
 #X obj 83 141 osc~ 440;
 #X obj 71 360 dac~;
 #X text 75 56 CONTROLLING AMPLITUDE;
@@ -6,7 +6,6 @@
 #X floatatom 108 241 8 0 0 0 - - - 0;
 #X obj 108 208 dbtorms;
 #X floatatom 108 176 8 0 80 0 - - - 0;
-#X text 302 615 updated for Pd version 0.33;
 #X obj 325 37 ../5.reference/set-dsp-tgl;
 #X text 356 40 DSP on/off;
 #X msg 325 74 \; pd dsp \$1;
@@ -25,4 +24,4 @@
 #X connect 4 0 3 1;
 #X connect 5 0 4 0;
 #X connect 6 0 5 0;
-#X connect 8 0 10 0;
+#X connect 7 0 9 0;

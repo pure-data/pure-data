@@ -47,7 +47,6 @@
 #X obj 55 592 output~;
 #X text 75 14 USING ADSRS FOR PORTAMENTO AND ADDING VIBRATO TOO;
 #X text 25 56 Portamento can be treated as a special case of an ADSR envelope \, with 100 percent sustain. Vibrato is properly computed in units of pitch \, but it's also possible to do the job without having to convert from pitch to frequency units at the audio rate. To do this we just raise the "pitch" to the fourth power \, so that it acts pseudo-exponentially. Rather than add vibrato to the ADSR output \, we multiply a signal which controls relative frequency. The relative frequency change is one plus an oscillator., f 94;
-#X text 479 632 updated for Pd version 0.39;
 #X text 25 152 The table below holds 6 cycles of vibrato with small variations to get a not-exactly-repeating vibrato. We thus have to divide vibrato frequency by six. You can just use a sine or triangle wave if you prefer., f 94;
 #X obj 238 622 declare -stdpath ./;
 #X text 576 414 <-- middle C;

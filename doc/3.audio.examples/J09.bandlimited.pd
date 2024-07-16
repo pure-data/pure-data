@@ -128,7 +128,6 @@
 #X connect 33 0 4 0;
 #X connect 33 0 32 0;
 #X restore 262 397 pd transition-table;
-#X text 662 600 updated for Pd version 0.39;
 #X text 434 317 The "band limit" controls how fast the transition table is read. If it is set to the Nyquist frequency the table is read at 0.4 times the Nyquist \, or five samples a cycle. Lowering the band limit cuts off the partials of the generated sawtooth wave at frequencies below the Nyquist., f 60;
 #X obj 710 25 declare -stdpath ./;
 #X obj 196 509 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
@@ -149,7 +148,7 @@
 #X connect 8 0 9 0;
 #X connect 9 0 0 0;
 #X connect 11 0 23 0;
-#X connect 11 0 32 0;
+#X connect 11 0 31 0;
 #X connect 12 0 13 0;
 #X connect 13 0 21 0;
 #X connect 14 0 5 0;
@@ -159,5 +158,5 @@
 #X connect 21 0 1 0;
 #X connect 22 0 2 0;
 #X connect 23 0 8 0;
-#X connect 31 0 24 0;
-#X connect 32 0 16 0;
+#X connect 30 0 24 0;
+#X connect 31 0 16 0;

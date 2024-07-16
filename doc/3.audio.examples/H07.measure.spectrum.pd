@@ -61,7 +61,6 @@
 #X obj 193 580 line~;
 #X obj 193 605 +~ 100;
 #X obj 145 670 *~;
-#X text 411 795 updated for Pd version 0.55;
 #X obj 62 679 vu 21 160 empty empty -1 -10 0 12 #404040 #000000 1 0;
 #X obj 61 645 - 100;
 #X text 130 799 <-- the [vu] object is used to display values in dBFS, f 27;
@@ -75,7 +74,7 @@
 #X connect 4 0 1 2;
 #X connect 4 0 0 2;
 #X connect 5 0 2 0;
-#X connect 6 0 33 0;
+#X connect 6 0 32 0;
 #X connect 7 0 8 0;
 #X connect 8 0 16 0;
 #X connect 14 0 15 0;
@@ -88,4 +87,4 @@
 #X connect 28 0 29 0;
 #X connect 29 0 26 0;
 #X connect 30 0 12 0;
-#X connect 33 0 32 0;
+#X connect 32 0 31 0;

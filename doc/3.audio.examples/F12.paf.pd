@@ -139,7 +139,6 @@
 #X connect 29 0 21 1;
 #X restore 163 672 pd fft;
 #X text 28 214 Then with [*~] we do the ring modulation and we're done. This is the PAF (phase-aligned formant) synthesis algorithm (patented 1993 by IRCAM \, the patent ran out in 2011)., f 87;
-#X text 440 743 updated for Pd version 0.55;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;

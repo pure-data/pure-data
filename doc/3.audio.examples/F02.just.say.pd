@@ -63,7 +63,6 @@
 #X text 345 309 We interrupt this series of patches to bring you an important message from Nancy Reagan. If \, anywhere \, at any time \, someone offers you an illicit drug \, just say one word in reply..., f 40;
 #X text 345 407 Now that I'm sure you've heard this important message \, we can return to the essentially frivolous occupation of making turn-of-the-millennium western art music., f 40;
 #X obj 145 208 *~ 6;
-#X text 419 510 updated for Pd version 0.34;
 #X obj 127 482 output~;
 #X obj 483 49 declare -stdpath ./;
 #X obj 181 109 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
@@ -71,11 +70,11 @@
 #X text 230 33 negative frequency generates downwards ramps, f 25;
 #X obj 127 369 +~ 1;
 #X obj 127 401 *~ 0.5;
-#X connect 0 0 31 0;
+#X connect 0 0 30 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;
-#X connect 5 0 26 0;
+#X connect 5 0 25 0;
 #X connect 6 0 14 0;
 #X connect 6 0 11 0;
 #X connect 7 0 14 1;
@@ -89,6 +88,6 @@
 #X connect 16 0 17 0;
 #X connect 17 0 2 0;
 #X connect 24 0 10 0;
-#X connect 28 0 11 0;
-#X connect 31 0 32 0;
-#X connect 32 0 5 0;
+#X connect 27 0 11 0;
+#X connect 30 0 31 0;
+#X connect 31 0 5 0;

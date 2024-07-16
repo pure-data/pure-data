@@ -109,7 +109,6 @@
 #X obj 611 296 clone -s 1 sampvoice2 8;
 #X msg 542 217 \$1 0;
 #X msg 588 218 \$2;
-#X text 822 606 updated for Pd version 0.52;
 #X msg 93 513 \; onoff 1 90 60 5 0 0 100;
 #X msg 94 555 \; onoff 2 90 48 5 0 0 100;
 #X msg 224 608 \; note 51 90 1000 5 0 0 100;

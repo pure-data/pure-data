@@ -1,6 +1,6 @@
-#N canvas 568 60 520 620 12;
+#N canvas 568 60 520 565 12;
 #X declare -stdpath ./;
-#N canvas 514 169 716 525 16x 1;
+#N canvas 514 169 716 525 16x 0;
 #X obj 35 254 *~ 0.125;
 #X obj 35 279 rzero~ -1;
 #X obj 35 304 rzero~ -1;
@@ -68,7 +68,6 @@
 #X text 263 253 not;
 #X text 115 269 sampled;
 #X text 115 253 16x up-;
-#X text 284 569 Updated for Pd version 0.42;
 #X text 51 467 You can trade off cutoff frequency with foldover. Here \, the filter is set for a cutoff of 15 kHz. Lowering it to 7500 Hz would further reduce foldover by 18 dB at the expense of losing energy in the range 7500-15000 Hz.;
 #X text 270 57 <= pitch;
 #X obj 362 23 declare -stdpath ./;

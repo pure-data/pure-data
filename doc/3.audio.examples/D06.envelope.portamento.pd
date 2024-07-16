@@ -16,7 +16,6 @@
 #X msg 400 175 96, f 2;
 #X floatatom 117 111 4 0 0 0 - - - 0;
 #X floatatom 319 214 6 0 0 0 - - - 0;
-#X text 334 302 updated for Pd version 0.35;
 #X obj 291 149 loadbang;
 #X obj 50 274 output~;
 #X obj 407 97 declare -stdpath ./;
@@ -25,9 +24,9 @@
 #X obj 50 203 mtof~;
 #X text 44 49 Portamento can be done using just [line~] \, but you still might want to sweep in pitch \, not frequency:;
 #X text 429 175 <-- set pitch;
-#X connect 0 0 18 0;
-#X connect 2 0 22 0;
-#X connect 3 0 20 0;
+#X connect 0 0 17 0;
+#X connect 2 0 21 0;
+#X connect 3 0 19 0;
 #X connect 4 0 15 0;
 #X connect 5 0 15 0;
 #X connect 6 0 15 0;
@@ -37,8 +36,8 @@
 #X connect 10 0 15 0;
 #X connect 12 0 15 0;
 #X connect 13 0 15 0;
-#X connect 14 0 20 1;
+#X connect 14 0 19 1;
 #X connect 15 0 11 0;
-#X connect 17 0 7 0;
-#X connect 20 0 2 0;
-#X connect 22 0 0 0;
+#X connect 16 0 7 0;
+#X connect 19 0 2 0;
+#X connect 21 0 0 0;

@@ -21,7 +21,6 @@
 #X obj 45 420 output~;
 #X obj 45 387 +~;
 #X obj 59 242 delwrite~ delay1 1000;
-#X text 439 405 updated for Pd version 0.37-1;
 #X text 61 198 test signal to delay;
 #X obj 440 62 declare -stdpath ./;
 #X text 269 126 You can delay a signal using the [delwrite~] and [delread~] objects. In this example \, a sample loops continuously and is added to a delayed copy of itself., f 55;
@@ -37,7 +36,7 @@
 #X connect 4 0 9 1;
 #X connect 5 0 9 0;
 #X connect 5 0 10 0;
-#X connect 6 0 20 0;
+#X connect 6 0 19 0;
 #X connect 9 0 8 0;
-#X connect 19 0 6 0;
-#X connect 20 0 5 0;
+#X connect 18 0 6 0;
+#X connect 19 0 5 0;

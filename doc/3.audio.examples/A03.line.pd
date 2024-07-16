@@ -18,7 +18,6 @@
 #X obj 362 127 ../5.reference/set-dsp-tgl;
 #X text 393 130 DSP on/off;
 #X msg 362 164 \; pd dsp \$1;
-#X text 615 569 updated for Pd version 0.54;
 #X obj 649 244 hsl 162 19 0 1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X obj 646 303 pow 4;
 #X obj 560 381 osc~ 440;
@@ -55,12 +54,12 @@
 #X connect 8 0 3 0;
 #X connect 9 0 3 0;
 #X connect 16 0 18 0;
+#X connect 19 0 26 0;
 #X connect 20 0 27 0;
-#X connect 21 0 28 0;
-#X connect 22 0 25 0;
-#X connect 23 0 24 0;
+#X connect 21 0 24 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 1;
+#X connect 24 0 25 0;
 #X connect 24 0 25 1;
-#X connect 25 0 26 0;
-#X connect 25 0 26 1;
-#X connect 27 0 21 0;
-#X connect 28 0 23 0;
+#X connect 26 0 20 0;
+#X connect 27 0 22 0;

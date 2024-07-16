@@ -48,7 +48,6 @@
 #X text 512 418 second phase signal out of phase from first one, f 13;
 #X obj 459 578 declare -stdpath ./;
 #X text 67 47 The stretched wavetable method is an alternative to the PAF generator \, slightly more expensive in processing time but with the advantage it can be generalized to use samples instead of sinusoids to make complex spectral shapes., f 71;
-#X text 397 668 updated for Pd version 0.55;
 #X text 67 115 The patch is almost exactly like B13 (the overlapping sample) except that \, instead of using [tabread~] we just use [cos~] \, and that we control pulse width (for bandwidth) as well as wavetable transposition (for center frequency)., f 71;
 #X text 257 195 center freq., f 6;
 #X connect 0 0 12 0;

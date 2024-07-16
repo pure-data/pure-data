@@ -1,4 +1,4 @@
-#N canvas 510 45 535 586 12;
+#N canvas 510 45 536 549 12;
 #X floatatom 140 248 5 0 0 0 - - - 0;
 #X obj 167 125 f;
 #X obj 140 198 random 4;
@@ -27,14 +27,13 @@
 #X text 227 355 to random increment;
 #X text 282 28 coercion to range 0-100 \; if out of range \, reflect;
 #X text 281 58 us back in.;
-#X text 270 542 updated for Pd version 0.37-1;
 #X obj 74 276 sel 0 1;
 #X text 59 398 A random walk is a special case of a Markov chain \, in which the states are integers and the transitions add or subtract a small amount from the previous state to get a new one. Here the [f] holds the state. When it gets a bang \, the previous state is added to a random number (from 1 to 4) multiplied by a random sign (-1 or 1). The new value is then coerced into the range (from 0 to 100).;
 #X connect 0 0 9 0;
 #X connect 1 0 5 0;
 #X connect 2 0 0 0;
 #X connect 3 0 4 0;
-#X connect 4 0 29 0;
+#X connect 4 0 28 0;
 #X connect 5 0 3 0;
 #X connect 5 1 2 0;
 #X connect 5 2 6 1;
@@ -53,5 +52,5 @@
 #X connect 16 0 17 0;
 #X connect 17 0 10 0;
 #X connect 18 0 11 0;
-#X connect 29 0 12 0;
-#X connect 29 1 18 0;
+#X connect 28 0 12 0;
+#X connect 28 1 18 0;

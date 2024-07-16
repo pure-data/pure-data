@@ -1,4 +1,4 @@
-#N canvas 520 54 686 677 12;
+#N canvas 520 54 686 666 12;
 #X declare -stdpath ./;
 #X obj 55 377 osc~;
 #X obj 55 407 *~;
@@ -29,7 +29,6 @@
 #X text 202 268 QUARTIC;
 #X obj 55 446 output~;
 #X obj 250 578 output~;
-#X text 452 603 updated for Pd version 0.37;
 #X text 75 61 This patch has two sine wave oscillators \, one with linear envelopes \, the other with quartic ones which sound more uniform. The message boxes sweep the amplitude and frequency up and down. You can compare the two to see that quartic-shaped changes sound more uniform than linear ones., f 68;
 #X obj 55 574 declare -stdpath ./;
 #X text 75 141 In the quartic example \, for both the amplitude and the frequency \, we have to take the fourth root of the target value (which we get by taking square root twice.) Then we raise the [line~] output to the fourth power by squaring twice (the [*~] objects \, whose left and right inlets are the same.) The cost is mostly that of the four additional [*~] objects., f 68;

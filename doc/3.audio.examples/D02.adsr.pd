@@ -1,4 +1,4 @@
-#N canvas 616 48 533 748 12;
+#N canvas 616 48 533 728 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array adsr-output 44100 float 0;
@@ -13,7 +13,6 @@
 #X msg 297 194 \; trigger 0;
 #X text 463 424 1;
 #X text 151 19 ENVELOPE GENERATOR ABSTRACTION;
-#X text 296 696 updated for Pd version 0.37;
 #X obj 45 147 osc~ 440;
 #X obj 45 393 *~;
 #X obj 45 428 output~;
@@ -28,13 +27,13 @@
 #X obj 297 169 del 750;
 #X obj 63 261 adsr 1 100 200 50 250;
 #X text 461 549 0;
-#X connect 2 0 21 0;
+#X connect 2 0 20 0;
 #X connect 4 0 3 0;
+#X connect 10 0 11 0;
 #X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 15 0 5 0;
-#X connect 15 0 22 0;
-#X connect 21 0 23 0;
-#X connect 22 0 7 0;
-#X connect 23 0 3 0;
-#X connect 23 0 12 1;
+#X connect 14 0 5 0;
+#X connect 14 0 21 0;
+#X connect 20 0 22 0;
+#X connect 21 0 7 0;
+#X connect 22 0 3 0;
+#X connect 22 0 11 1;

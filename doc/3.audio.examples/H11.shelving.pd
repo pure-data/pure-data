@@ -25,7 +25,6 @@
 #X text 318 278 pole;
 #X text 272 278 zero;
 #X text 356 278 (in hundredths);
-#X text 546 405 updated for Pd version 0.46;
 #N canvas 876 177 293 245 init 0;
 #X obj 58 24 loadbang;
 #X obj 58 51 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;

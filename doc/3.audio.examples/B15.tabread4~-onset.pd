@@ -27,7 +27,6 @@
 #X msg 418 382 \; pd dsp 1 \, fast-forward 4000;
 #X text 20 178 You can use the "onset" inlet to [tabread4~] to get good accuracy reading longer arrays. The [tabread4~] object adds the index and the "main" (signal) inlet in double precision. So if \, for example \, the onset inlet could specify an integer exactly up to about 8 million (190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement., f 89;
 #X obj 300 383 sig~;
-#X text 426 585 updated for Pd version 0.55;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X connect 4 0 0 0;

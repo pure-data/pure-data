@@ -33,7 +33,6 @@
 #X msg 509 502 read ../sound/voice.wav table18;
 #X text 550 403 <-- click here to record to table;
 #X text 600 481 v-- re-read the original sound;
-#X text 613 562 updated for Pd version 0.37;
 #X obj 221 313 declare -stdpath ./;
 #X text 225 220 <-- click to graph envelope;
 #X text 131 49 <-- frequency (Hz.);
@@ -59,5 +58,5 @@
 #X connect 19 0 7 0;
 #X connect 22 0 12 1;
 #X connect 24 0 13 0;
-#X connect 32 0 20 0;
-#X connect 33 0 23 0;
+#X connect 31 0 20 0;
+#X connect 32 0 23 0;

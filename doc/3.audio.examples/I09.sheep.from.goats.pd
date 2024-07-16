@@ -236,8 +236,8 @@
 #X text 64 295 amplitudes (dB);
 #N canvas 388 86 722 350 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 2;
-#X coords 0 1 155944 -1 400 150 1;
+#X array \$0-sample 62079 float 2;
+#X coords 0 1 62079 -1 400 150 1;
 #X restore 259 38 graph;
 #X obj 19 23 r read-sample;
 #X obj 19 74 unpack s f;
@@ -296,7 +296,6 @@
 #X obj 358 302 s dirty;
 #X text 354 323 100=silent;
 #X text 356 340 0=all;
-#X text 351 566 updated for Pd version 0.39;
 #X text 43 198 Two separate thresholds may be adjusted to listen to the "clean" or "dirty" part of the signal. You'll hear anything less incoherent than the clean threshold \, OR more incoherent than the dirty one., f 75;
 #X text 43 54 This patch applies a very simple coherence test to distinguish between sinusoids and noise in an input signal. It works very imperfectly (since noise is random \, no matter what test we place on it it will sometimes spoof its way in.) Here we just test that neighboring channels are 180 degrees (pi radians) out of phase \, as they should be in the main lobe in response to a sinusoid. If any three channels are so arranged \, all three are considered as contributing to a sinusoid. To do this we make an "incoherence" measure which is zero if the phase relationship is perfect and progressively larger otherwise., f 75;
 #N canvas 577 259 559 559 tables 0;

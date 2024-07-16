@@ -43,7 +43,6 @@
 #X connect 14 0 12 0;
 #X connect 16 0 10 0;
 #X restore 63 385 pd fft-analysis;
-#X text 393 458 updated for Pd version 0.39;
 #N canvas 687 159 571 372 Hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 512 float 0;
@@ -97,7 +96,7 @@
 #X msg 233 391 const 1;
 #X text 173 323 Click on the array to draw and change the gains.;
 #X obj 233 364 loadbang;
-#X connect 0 0 3 0;
-#X connect 4 0 0 0;
-#X connect 16 0 6 0;
-#X connect 18 0 16 0;
+#X connect 0 0 2 0;
+#X connect 3 0 0 0;
+#X connect 15 0 5 0;
+#X connect 17 0 15 0;

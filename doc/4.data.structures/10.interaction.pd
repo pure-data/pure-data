@@ -27,19 +27,12 @@
 #N canvas 267 109 673 314 template9 0;
 #X obj 343 207 filledpolygon q 0 1 0 0 w 0 w h 0 h;
 #X obj 344 234 drawnumber q 0 0 0;
-#X obj 171 124 struct template9 float x float y float w float h float
-q;
+#X obj 171 124 struct template9 float x float y float w float h float q;
 #X obj 171 268 outlet;
 #X obj 182 159 print struct-template9;
 #X text 347 158 <-- print all messages.;
 #X obj 171 199 route select change;
-#X text 42 17 [struct] outputs messages notifying you when objects
-of this structure are interacted with. In run mode you get: 'click'
-(when you click on them) and 'change' (when you change field values
-by dragging). In edit mode you get: 'select' when you select the object
-\, 'deselect' when you deselect it and 'displace' when you move it
-around. Here we catch 'change' and 'select' interactions and pass the
-pointer through with the [route] object., f 86;
+#X text 42 17 [struct] outputs messages notifying you when objects of this structure are interacted with. In run mode you get: 'click' (when you click on them) and 'change' (when you change field values by dragging). In edit mode you get: 'select' when you select the object \, 'deselect' when you deselect it and 'displace' when you move it around. Here we catch 'change' and 'select' interactions and pass the pointer through with the [route] object., f 86;
 #X connect 2 0 4 0;
 #X connect 2 0 6 0;
 #X connect 6 0 3 0;
@@ -65,23 +58,10 @@ pointer through with the [route] object., f 86;
 #X floatatom 79 367 5 0 0 0 - set-w - 0;
 #X floatatom 79 425 5 0 0 0 - set-h - 0;
 #X floatatom 79 482 5 0 0 0 - set-q - 0;
-#X text 46 66 To try it \, unlock the subpatch (data9) and select a
-scalar. The 5 parameters should show up under the [get] object in this
-window and set the number boxes connected to the [set] objects so you're
-able to change them. The blue "selection" rectangle ought to notice
-when the object that got selected gets moved or resized \, but this
-isn't done yet (as of Pd version 0.39)., f 79;
-#X text 420 509 updated for Pd version 0.52;
+#X text 46 66 To try it \, unlock the subpatch (data9) and select a scalar. The 5 parameters should show up under the [get] object in this window and set the number boxes connected to the [set] objects so you're able to change them. The blue "selection" rectangle ought to notice when the object that got selected gets moved or resized \, but this isn't done yet (as of Pd version 0.39)., f 79;
 #X text 375 219 <-- open for details;
-#X text 46 17 The [struct] object outputs a pointers in different interaction
-situations as in the case of any selected object of template9 or when
-you click and change any parameter. This patch demonstrates catching
-these interactions., f 79;
-#X text 46 142 When in run mode (that is 'locked' and not in edit mode)
-you can click on any corner of the rectangles to drag and change the
-field values or also click on the color number and drag it too. You'll
-then also see the parameters come out of the [get] objects., f 79
-;
+#X text 46 17 The [struct] object outputs a pointers in different interaction situations as in the case of any selected object of template9 or when you click and change any parameter. This patch demonstrates catching these interactions., f 79;
+#X text 46 142 When in run mode (that is 'locked' and not in edit mode) you can click on any corner of the rectangles to drag and change the field values or also click on the color number and drag it too. You'll then also see the parameters come out of the [get] objects., f 79;
 #X connect 0 0 8 0;
 #X connect 2 0 3 0;
 #X connect 2 0 14 1;

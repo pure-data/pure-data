@@ -73,7 +73,6 @@
 #X text 200 381 to fundamental;
 #X text 217 616 ring mod;
 #X obj 181 655 output~;
-#X text 393 672 updated for Pd version 0.37;
 #X obj 291 413 *~ 0.5;
 #X obj 457 239 declare -stdpath ./;
 #X text 23 41 The more "natural" units for describing a formant might be center frequency and bandwidth \, so that you can change the fundamental without having the formant shift up and down in parallel. Here all three frequencies are expressed in MIDI units. The bandwidth and center frequency have to be divided by the fundamental (the expr 1/$f1 takes its reciprocal and two [*~] objects finish the division.), f 81;
@@ -100,7 +99,7 @@
 #X connect 13 0 9 1;
 #X connect 13 0 1 0;
 #X connect 13 0 5 1;
-#X connect 13 0 43 0;
+#X connect 13 0 42 0;
 #X connect 14 0 27 0;
 #X connect 15 0 32 0;
 #X connect 16 0 33 0;
@@ -120,4 +119,4 @@
 #X connect 32 0 18 0;
 #X connect 33 0 34 0;
 #X connect 34 0 17 1;
-#X connect 43 0 21 0;
+#X connect 42 0 21 0;

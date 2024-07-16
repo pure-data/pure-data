@@ -151,7 +151,6 @@
 #X connect 21 0 20 0;
 #X connect 23 0 9 0;
 #X restore 299 323 pd insample;
-#X text 92 431 updated for Pd version 0.39;
 #X text 63 61 Here we divide each complex channel in the Fourier analysis by its own magnitude to "flatten" the spectrum. The "squelch" control limits the amplitude boost the algorithm will apply. If infinite \, you'll get a white spectrum. If less \, the louder parts of the spectrum will be flattened but the quieter ones will only be boosted by the squelch value., f 61;
 #X text 84 24 DYNAMIC RANGE COMPRESSION BY FOURIER ANALYSIS CHANNEL;
 #X floatatom 299 359 8 0 0 0 - - - 0;
@@ -217,9 +216,9 @@
 #X restore 457 434 pd init;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
-#X connect 4 0 8 0;
-#X connect 9 0 4 1;
+#X connect 4 0 7 0;
+#X connect 8 0 4 1;
+#X connect 10 0 4 0;
 #X connect 11 0 4 0;
 #X connect 12 0 4 0;
-#X connect 13 0 4 0;
-#X connect 15 0 11 0;
+#X connect 14 0 10 0;

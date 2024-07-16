@@ -30,7 +30,6 @@
 #X obj 405 119 tabread4~ tab28;
 #X msg 149 178 \; phase 1 \, 4.41e+08 1e+07 \; cutoff 1;
 #X msg 662 116 0 \, 1 5;
-#X text 670 595 updated for Pd version 0.37;
 #X text 651 532 My apologies to Jonathan Harvey whose bell this is., f 26;
 #X text 132 236 set the upper line~ to start at the first sample and go forever (until the next trigger), f 31;
 #X text 54 140 cut the sound off, f 9;
@@ -61,8 +60,8 @@
 #X connect 23 0 18 0;
 #X connect 24 0 7 0;
 #X connect 26 0 12 0;
-#X connect 35 0 11 0;
-#X connect 35 0 10 0;
-#X connect 36 0 15 0;
-#X connect 36 0 26 0;
-#X connect 36 0 22 0;
+#X connect 34 0 11 0;
+#X connect 34 0 10 0;
+#X connect 35 0 15 0;
+#X connect 35 0 26 0;
+#X connect 35 0 22 0;

@@ -39,7 +39,6 @@
 #X obj 420 307 tabwrite~ table20;
 #X msg 459 419 read ../sound/voice.wav table20;
 #X text 310 525 This example differs from the previous one in having samphold~ objects which allow the chunk size and especially the read point to change only at points where the phase wraps around. This removes signal discontinuities (when the chunk size changes) and doppler shift when the read point is changing., f 67;
-#X text 640 606 updated for Pd version 0.37;
 #X obj 397 58 declare -stdpath ./;
 #X text 250 343 <-- graph table index;
 #X text 459 279 <-- record;
@@ -50,7 +49,7 @@
 #X text 275 169 <-- read point in 100ths of a second;
 #X text 601 362 ------ 1 second ------;
 #X msg 447 474 \; graph20 ylabel 46000 0 44100;
-#X connect 1 0 43 0;
+#X connect 1 0 42 0;
 #X connect 1 0 31 0;
 #X connect 2 0 24 0;
 #X connect 3 0 7 0;
@@ -78,5 +77,5 @@
 #X connect 27 0 12 0;
 #X connect 29 0 12 1;
 #X connect 31 0 22 0;
-#X connect 37 0 30 0;
-#X connect 38 0 28 0;
+#X connect 36 0 30 0;
+#X connect 37 0 28 0;

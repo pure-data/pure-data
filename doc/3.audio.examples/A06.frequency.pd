@@ -23,7 +23,6 @@
 #X text 85 588 Note also the "set" messages going to the number boxes so that they can each update the other without bringing on an infinite loop. (get help on number boxes for details.), f 70;
 #X text 152 195 to "MIDI" pitch;
 #X obj 106 354 output~;
-#X text 471 659 updated for Pd version 0.36;
 #X obj 106 287 osc~;
 #X obj 512 25 declare -stdpath ./;
 #X text 100 127 <-- set frequency;
@@ -38,7 +37,7 @@
 #X text 190 286 <-- bang button \, click to graph;
 #X connect 2 0 10 0;
 #X connect 2 0 11 0;
-#X connect 3 0 21 0;
+#X connect 3 0 20 0;
 #X connect 4 0 2 0;
 #X connect 5 0 8 0;
 #X connect 5 0 14 0;
@@ -47,6 +46,6 @@
 #X connect 9 0 4 0;
 #X connect 11 0 12 0;
 #X connect 14 0 13 0;
-#X connect 21 0 1 0;
-#X connect 21 0 19 0;
-#X connect 27 0 1 0;
+#X connect 20 0 1 0;
+#X connect 20 0 19 0;
+#X connect 26 0 1 0;

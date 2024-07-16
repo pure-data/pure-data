@@ -1,4 +1,4 @@
-#N canvas 602 38 641 655 12;
+#N canvas 602 38 631 631 12;
 #X declare -stdpath ./;
 #X obj 193 184 line~;
 #X obj 71 255 cos~;
@@ -90,7 +90,6 @@
 #X text 492 205 10;
 #X text 524 205 12;
 #X text 556 205 14;
-#X text 393 617 updated for Pd version 0.37;
 #X obj 71 75 r freq;
 #X obj 469 25 declare -stdpath ./;
 #X text 214 331 <-- repeatedly;
@@ -112,7 +111,7 @@
 #X connect 18 0 17 1;
 #X connect 19 0 17 2;
 #X connect 20 0 17 0;
-#X connect 20 0 39 0;
+#X connect 20 0 38 0;
 #X connect 21 0 4 0;
-#X connect 35 0 21 0;
-#X connect 39 0 16 0;
+#X connect 34 0 21 0;
+#X connect 38 0 16 0;

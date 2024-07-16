@@ -16,7 +16,6 @@
 #X obj 111 226 mtof;
 #X obj 124 301 phasor~;
 #X obj 124 355 *~;
-#X text 288 562 updated for Pd version 0.39;
 #X text 52 140 Note the different effects of negative and positive sweep speeds., f 53;
 #X obj 123 437 mtof~;
 #X text 52 59 If you want actively changing center frequencies \, use [vcf~] instead of [bp~]. The [vcf~] module takes an audio signal to set center frequency (Q is still set by messages though) \, which makes it computationally somewhat more expensive than [bp~]., f 53;
@@ -39,7 +38,7 @@
 #X text 171 251 [phasor~] as a sawtooth like oscillator;
 #X connect 0 0 13 0;
 #X connect 2 0 8 0;
-#X connect 3 0 18 0;
+#X connect 3 0 17 0;
 #X connect 4 0 3 1;
 #X connect 5 0 14 0;
 #X connect 6 0 15 1;
@@ -48,4 +47,4 @@
 #X connect 13 0 2 0;
 #X connect 14 0 15 0;
 #X connect 15 0 3 0;
-#X connect 18 0 8 1;
+#X connect 17 0 8 1;

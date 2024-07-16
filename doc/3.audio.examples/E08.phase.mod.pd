@@ -34,7 +34,6 @@
 #X obj 250 263 tabwrite~ phase-out;
 #X obj 240 290 tabwrite~ cos-out;
 #X obj 135 322 output~;
-#X text 636 559 updated for Pd version 0.37;
 #X text 531 392 The "modulation" index \, which in true FM is in units of Hertz \, is dimensionless for phase modulation. "Good" values tend to be between 0 and 1... in this patch the index is in hundredths., f 45;
 #X obj 691 55 declare -stdpath ./;
 #X obj 240 225 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
@@ -61,13 +60,13 @@
 #X connect 4 0 29 0;
 #X connect 4 0 30 0;
 #X connect 5 0 4 0;
-#X connect 5 0 36 0;
+#X connect 5 0 35 0;
 #X connect 6 0 0 0;
 #X connect 7 0 2 0;
 #X connect 8 0 9 0;
 #X connect 9 0 7 0;
 #X connect 20 0 5 0;
 #X connect 22 0 21 0;
-#X connect 34 0 28 0;
-#X connect 34 0 29 0;
-#X connect 36 0 28 0;
+#X connect 33 0 28 0;
+#X connect 33 0 29 0;
+#X connect 35 0 28 0;

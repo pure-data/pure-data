@@ -1,4 +1,4 @@
-#N canvas 376 88 740 645 12;
+#N canvas 376 88 740 623 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array waveform12 131 float 1;
@@ -23,7 +23,6 @@
 #X restore 399 193 graph;
 #X obj 197 267 tabwrite~ wave-out12;
 #X obj 250 139 +~ 128;
-#X text 484 599 updated for Pd version 0.37;
 #X obj 157 307 output~;
 #X obj 522 357 declare -stdpath ./;
 #X obj 197 231 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
@@ -35,12 +34,12 @@
 #X text 71 518 You would use [tabread4~] (as opposed to [tabosc4~]) if you need direct control of the phase \, for instance to advance nonlinearly through the table. In the case shown here \, the "squeeze" factor makes the phase grow to a value at least \, and possibly much greater than \, 129 (to which [tabread4~] then limits it). So the resulting waveform is compressed in time., f 87;
 #X connect 2 0 8 0;
 #X connect 3 0 14 0;
-#X connect 3 0 17 0;
+#X connect 3 0 16 0;
 #X connect 4 0 3 0;
 #X connect 5 0 2 0;
-#X connect 6 0 21 0;
+#X connect 6 0 20 0;
 #X connect 7 0 15 0;
 #X connect 8 0 4 0;
 #X connect 15 0 8 1;
-#X connect 19 0 14 0;
-#X connect 21 0 7 0;
+#X connect 18 0 14 0;
+#X connect 20 0 7 0;

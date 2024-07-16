@@ -25,7 +25,6 @@
 #X text 227 379 ramp down;
 #X text 398 379 to 1/2;
 #X text 597 518 ------ 1 second ------;
-#X text 581 622 updated for Pd version 0.33;
 #X obj 222 137 tabwrite~ oscillator;
 #X text 31 33 Here again is a [line~] controlling the amplitude of an [osc~] \, but with the outputs graphed:, f 63;
 #X text 33 478 Click the message boxes above to try it. Note that in the first two boxes \, the [line~] objects get two messages. The first one \, with no time value \, causes the [line~] to jump immediately to the value. The third box takes [line~]'s previous value as a point of departure. What you see will depend on which box you last clicked and how long you waited between the two., f 68;
@@ -38,15 +37,15 @@
 #X text 153 328 <-- out;
 #X text 31 571 On very old machines you may hear an interruption in the sound one second after you click on the first or third box. This is because the graphical updates are likely to eat more CPU time than your audio buffer has pre-buffered for. You can avoid this if you keep your graphs in sub-windows and open them only when you need them. In some future version of Pd this behavior will be improved. Until then \, you'll have to avoid having arrays getting re-drawn during music performances., f 68;
 #X connect 0 0 2 0;
-#X connect 0 0 18 0;
+#X connect 0 0 17 0;
 #X connect 2 0 10 0;
 #X connect 2 0 12 0;
 #X connect 3 0 2 1;
 #X connect 3 0 11 0;
-#X connect 5 0 18 0;
+#X connect 5 0 17 0;
 #X connect 5 0 11 0;
 #X connect 5 0 12 0;
 #X connect 6 0 3 0;
 #X connect 10 0 1 0;
 #X connect 10 0 1 1;
-#X connect 21 0 23 0;
+#X connect 20 0 22 0;

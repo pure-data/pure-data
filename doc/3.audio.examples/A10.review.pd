@@ -28,7 +28,6 @@
 #X msg 84 522;
 #X text 121 522 -- message box;
 #X text 26 397 ... and these other (non-object) boxes:;
-#X text 417 615 updated for Pd version 0.54;
 #X text 117 69 (etc.) -- bynary operation on audio signals;
 #X obj 85 596 bng 19 250 50 0 empty empty empty 0 -10 0 12 #fcfcfc #000000 #000000;
 #X text 112 596 -- bang button;
