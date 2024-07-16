@@ -50,10 +50,9 @@
 #X restore 564 64 graph;
 #X floatatom 166 281 4 0 0 0 - - - 0;
 #X obj 166 307 phasor~ 100;
-#X text 51 16 WINDOWED PACKETS;
 #X text 54 470 window;
 #X text 282 440 magnified phase;
-#X text 37 47 The simpler of two techniques for making slidable center frequencies is to synthesize enveloped sinusoidal wave packets. The packets should repeat at the fundamental frequency \, but the frequency of the packet itself controls the center frequency of the formant. The length of the packet varies inversely with bandwidth., f 68;
+#X text 35 51 The simpler of two techniques for making slidable center frequencies is to synthesize enveloped sinusoidal wave packets. The packets should repeat at the fundamental frequency \, but the frequency of the packet itself controls the center frequency of the formant. The length of the packet varies inversely with bandwidth., f 68;
 #X obj 106 596 output~;
 #X obj 265 529 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 106 479 *~ 0.5;
@@ -72,7 +71,8 @@
 #X text 287 527 <-- graph;
 #X text 286 463 <-- this cosine goes at the;
 #X obj 106 556 hip~ 5;
-#X text 38 135 In the patch below \, the [clip~] followed by [cos~] and [+~ 1] is the enveloping ("windowing") function \, which appears in the top graph. The carrier \, on the other hand \, is a broken sinusoid made by amplifying the [phasor~] (the [*~] controlled by "center freq.") and taking the [cos~] of the result. The "breaks" in the sinusoid only occur when the enveloping signal is zero., f 68;
+#X text 36 139 In the patch below \, the [clip~] followed by [cos~] and [+~ 1] is the enveloping ("windowing") function \, which appears in the top graph. The carrier \, on the other hand \, is a broken sinusoid made by amplifying the [phasor~] (the [*~] controlled by "center freq.") and taking the [cos~] of the result. The "breaks" in the sinusoid only occur when the enveloping signal is zero., f 68;
+#X obj 61 10 cnv 5 5 25 empty empty Windowed\ Packets 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 3 0 0 0;
@@ -83,11 +83,11 @@
 #X connect 7 0 3 0;
 #X connect 8 0 1 0;
 #X connect 10 0 6 1;
-#X connect 11 0 31 0;
+#X connect 11 0 30 0;
 #X connect 12 0 13 1;
 #X connect 12 0 18 2;
 #X connect 13 0 18 0;
-#X connect 13 0 46 0;
+#X connect 13 0 45 0;
 #X connect 14 0 15 0;
 #X connect 15 0 20 0;
 #X connect 17 0 12 0;
@@ -95,7 +95,7 @@
 #X connect 20 0 19 0;
 #X connect 23 0 24 0;
 #X connect 24 0 5 0;
-#X connect 30 0 18 3;
-#X connect 31 0 13 0;
-#X connect 31 0 18 1;
-#X connect 46 0 29 0;
+#X connect 29 0 18 3;
+#X connect 30 0 13 0;
+#X connect 30 0 18 1;
+#X connect 45 0 28 0;

@@ -1,4 +1,4 @@
-#N canvas 514 73 468 523 12;
+#N canvas 514 73 467 484 12;
 #X declare -stdpath ./;
 #N canvas 647 153 495 454 test-input 0;
 #X obj 240 392 outlet~;
@@ -30,7 +30,6 @@
 #X connect 11 0 5 0;
 #X connect 13 0 8 1;
 #X restore 87 185 pd test-input;
-#X text 60 21 REVERBERATOR;
 #X floatatom 87 155 6 10 130 0 - - - 0;
 #X floatatom 147 221 6 0 100 0 - - - 0;
 #X obj 87 294 output~;
@@ -140,9 +139,10 @@
 #X obj 311 428 rev3~, f 8;
 #X text 119 129 <-- pitch in MIDI (triggers envelope).;
 #X text 140 155 <-- you can also click and drag.;
-#X connect 0 0 6 0;
-#X connect 2 0 0 0;
-#X connect 3 0 6 1;
-#X connect 6 0 4 0;
-#X connect 6 1 4 1;
-#X connect 10 0 2 0;
+#X obj 66 15 cnv 5 5 25 empty empty Reverberator 15 13 0 16 #dfdfdf #202020 0;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 5 1;
+#X connect 5 0 3 0;
+#X connect 5 1 3 1;
+#X connect 9 0 1 0;

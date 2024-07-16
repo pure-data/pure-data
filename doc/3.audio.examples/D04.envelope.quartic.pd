@@ -22,7 +22,6 @@
 #X obj 107 357 r amp;
 #X obj 197 295 r freq;
 #X obj 268 295 r amp;
-#X text 79 26 QUARTIC AND LINEAR ENVELOPES COMPARED;
 #X obj 467 483 loadbang;
 #X msg 467 511 \; amp 1 \; freq 1760;
 #X text 56 297 LINEAR;
@@ -40,12 +39,13 @@
 #X msg 511 364 \; freq 880 1000;
 #X msg 511 407 \; freq 220 1000;
 #X msg 377 407 \; freq 110 5000;
+#X obj 112 16 cnv 5 5 25 empty empty Quartic\ and\ Linear\ Envelopes\ Compared 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 1 0;
-#X connect 1 0 27 0;
+#X connect 1 0 26 0;
 #X connect 2 0 1 1;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
-#X connect 5 0 28 0;
+#X connect 5 0 27 0;
 #X connect 6 0 14 0;
 #X connect 6 0 14 1;
 #X connect 7 0 12 0;
@@ -68,4 +68,4 @@
 #X connect 19 0 2 0;
 #X connect 20 0 16 0;
 #X connect 21 0 17 0;
-#X connect 23 0 24 0;
+#X connect 22 0 23 0;

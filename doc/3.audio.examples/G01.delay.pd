@@ -1,6 +1,5 @@
 #N canvas 538 93 688 503 12;
 #X declare -stdpath ./;
-#X text 97 22 DELAYS;
 #N canvas 293 125 428 350 sample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array G01-tab 62079 float 2;
@@ -22,7 +21,7 @@
 #X obj 45 387 +~;
 #X obj 59 242 delwrite~ delay1 1000;
 #X text 61 198 test signal to delay;
-#X obj 440 62 declare -stdpath ./;
+#X obj 454 72 declare -stdpath ./;
 #X text 269 126 You can delay a signal using the [delwrite~] and [delread~] objects. In this example \, a sample loops continuously and is added to a delayed copy of itself., f 55;
 #X text 269 181 The [delwrite~] object creates the delay line. You give it a name and a size in milliseconds. Each [delwrite~] should have a different name., f 55;
 #X text 269 232 The arguments of [delread~] are the name of a delwrite (of which there should be exactly one) and an optional delay time in milliseconds between 0 and the length of the delay line. The [delread~] object delays the signal at integer number of samples and does no interpolation., f 55;
@@ -32,11 +31,12 @@
 #X obj 44 134 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
 #X text 69 73 <-- play repeatedly;
 #X text 71 135 <-- play;
-#X connect 2 0 4 0;
-#X connect 4 0 9 1;
-#X connect 5 0 9 0;
-#X connect 5 0 10 0;
-#X connect 6 0 19 0;
-#X connect 9 0 8 0;
-#X connect 18 0 6 0;
-#X connect 19 0 5 0;
+#X obj 282 67 cnv 5 5 25 empty empty Delays 15 13 0 16 #dfdfdf #202020 0;
+#X connect 1 0 3 0;
+#X connect 3 0 8 1;
+#X connect 4 0 8 0;
+#X connect 4 0 9 0;
+#X connect 5 0 18 0;
+#X connect 8 0 7 0;
+#X connect 17 0 5 0;
+#X connect 18 0 4 0;

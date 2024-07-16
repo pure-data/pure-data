@@ -29,13 +29,13 @@
 #X obj 381 215 tabwrite~ \$0-phasor;
 #X text 38 550 This is a classic technique for gaining separate control over the even and odd harmonics in a synthetic sound. It can also be used conceptually to understand the harmonic content of a square wave in terms of that of a sawtooth \, or vice versa., f 66;
 #X text 27 198 180 degree out of phase sawtooth form the sum and difference, f 13;
-#X text 32 22 SPLITTING A SAWTOOTH WAVE INTO EVEN AND ODD HARMONICS;
 #X obj 664 35 declare -stdpath ./;
 #X obj 345 139 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 368 138 <-- click to graph;
 #X text 257 410 output level for sum, f 12;
 #X text 272 331 output level for difference, f 14;
 #X text 38 484 This patch splits a sawtooth wave into its even and odd harmonics. The [wrap~] object is used to make the phased copy. Adding and subtracting this to and from the original gives the results shown and heard. (Listen to the two outputs separately \, then together.), f 66;
+#X obj 48 17 cnv 5 5 25 empty empty Splitting\ a\ Sawtooth\ Wave\ into\ Even\ &\ Odd\ Harmonics 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 2 0 12 0;
@@ -48,7 +48,7 @@
 #X connect 12 0 16 0;
 #X connect 13 0 8 1;
 #X connect 13 0 15 0;
-#X connect 22 0 14 0;
-#X connect 22 0 15 0;
-#X connect 22 0 16 0;
-#X connect 22 0 17 0;
+#X connect 21 0 14 0;
+#X connect 21 0 15 0;
+#X connect 21 0 16 0;
+#X connect 21 0 17 0;

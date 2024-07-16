@@ -60,7 +60,6 @@
 #X obj 111 99 sigmund~ -npts 2048;
 #X text 255 99 track pitch;
 #X text 173 125 reject low numbers indicating no pitch found;
-#X text 89 16 OCTAVE DIVIDING BY RING MODULATION;
 #X obj 118 288 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 100 317 *~;
 #X obj 71 288 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
@@ -72,6 +71,7 @@
 #X text 192 334 This patch demonstrates using ring modulation to alias a sound down one octave. The ring modulation itself ([osc~] and multiplier) is easy. (We step it up by a factor of 2 to balance the original better.), f 70;
 #X text 192 386 Harder is getting the fundamental frequency of the original sound. We do this with the complicated [sigmund~] object \, which puts out a stream of analysis data for an incoming signal. The "-npts 2048" argument specifies the analysis window size. The analysis is most closely aligned with what the sound was doing at the middle of the window \, i.e. \, 1024 samples ago. The [pd delay] window delays the signal itself 1024 samples so it will be as tightly synchronized with the analysis data as possible. (If you're doing this on a real-time input \, you might drop the delay and settle for less perfect synchronization.), f 70;
 #X text 193 538 About [sigmund~] \, suffice it to say that the left outlet \, by default \, outputs pitch of the analyzed sound. When it fails to find a pitch \, [sigmund~] outputs -1500 \, so we use [moses] to filter these values. The pitch is converted from MIDI to Hertz \, and multiplied by 1/2 to control the modulation oscillator. (You can also try large-ish integers which leave the pitch intact but introduce funny formants.), f 70;
+#X obj 81 19 cnv 5 5 25 empty empty Octave\ Dividing\ by\ Ring\ Modulation 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 2 0 5 0;
@@ -83,16 +83,16 @@
 #X connect 11 0 12 0;
 #X connect 12 0 10 1;
 #X connect 13 0 12 0;
-#X connect 14 0 27 0;
+#X connect 14 0 26 0;
 #X connect 15 0 11 0;
 #X connect 16 0 18 0;
 #X connect 16 0 22 0;
 #X connect 17 0 5 0;
 #X connect 18 0 8 0;
-#X connect 18 0 29 0;
+#X connect 18 0 28 0;
 #X connect 21 1 9 0;
 #X connect 22 0 21 0;
-#X connect 26 0 27 1;
-#X connect 27 0 1 0;
-#X connect 28 0 29 1;
-#X connect 29 0 1 0;
+#X connect 25 0 26 1;
+#X connect 26 0 1 0;
+#X connect 27 0 28 1;
+#X connect 28 0 1 0;

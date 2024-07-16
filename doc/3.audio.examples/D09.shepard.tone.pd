@@ -27,11 +27,11 @@
 #X obj 324 478 rev2~, f 13;
 #X obj 250 521 output~;
 #X obj 109 242 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
-#X text 46 23 SHEPARD TONE;
 #X obj 371 24 declare -stdpath ./;
 #X obj 324 386 clone 20 shepvoice;
 #X text 26 53 This patch has a bank of 20 sinusoids (the [shepvoice] abstraction with 20 copies in [clone]) \, arranged so that their frequencies sweep upward or downward in parallel \, and their amplitudes fade in and out so that each one is quiet when it wraps around from one end to the other. The overall "phase" computed here is added to each voice's relative phase (its creation argument). The "incr" parameter controls how fast the phase changes \, "dropoff" the slope at which the amplitudes fall off at the ends \, "pitch" the center pitch of the cluster \, "interval" the number of (tenths of halftones) between successive voices \, and "rev" and "revtime" the reverberator at bottom., f 71;
 #X msg 322 238 \; dropoff 10 \; pitch 60 \; interval 120 \; metro 1 \; rev 84 \; revtime 87 \; incr -2;
+#X obj 84 16 cnv 5 5 25 empty empty Shepard\ Tone 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 12 0;
 #X connect 1 0 9 0;
 #X connect 3 0 23 1;
@@ -55,4 +55,4 @@
 #X connect 24 0 25 0;
 #X connect 24 1 25 1;
 #X connect 26 0 5 0;
-#X connect 29 0 24 0;
+#X connect 28 0 24 0;

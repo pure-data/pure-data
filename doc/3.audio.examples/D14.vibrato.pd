@@ -1,4 +1,4 @@
-#N canvas 423 68 717 685 12;
+#N canvas 389 74 717 685 12;
 #X declare -stdpath ./;
 #X obj 55 235 r trigger;
 #X obj 55 453 *~;
@@ -45,13 +45,13 @@
 #X text 215 255 in Hertz;
 #X obj 55 376 adsr 0 100 200 100 300;
 #X obj 55 592 output~;
-#X text 75 14 USING ADSRS FOR PORTAMENTO AND ADDING VIBRATO TOO;
 #X text 25 56 Portamento can be treated as a special case of an ADSR envelope \, with 100 percent sustain. Vibrato is properly computed in units of pitch \, but it's also possible to do the job without having to convert from pitch to frequency units at the audio rate. To do this we just raise the "pitch" to the fourth power \, so that it acts pseudo-exponentially. Rather than add vibrato to the ADSR output \, we multiply a signal which controls relative frequency. The relative frequency change is one plus an oscillator., f 94;
 #X text 25 152 The table below holds 6 cycles of vibrato with small variations to get a not-exactly-repeating vibrato. We thus have to divide vibrato frequency by six. You can just use a sine or triangle wave if you prefer., f 94;
 #X obj 238 622 declare -stdpath ./;
 #X text 576 414 <-- middle C;
 #X text 576 452 <-- octave up;
 #X text 550 493 <-- release is optional, f 11;
+#X obj 54 15 cnv 5 5 25 empty empty Using\ ADSR\ Envelopes\ for\ Portamento\ and\ Vibrato 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 5 0;
 #X connect 1 0 2 0;
 #X connect 1 0 2 1;

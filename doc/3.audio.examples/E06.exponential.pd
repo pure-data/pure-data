@@ -144,12 +144,12 @@
 #X text 701 177 10;
 #X text 25 641 When the index of modulation exceeds 5 we scan past the right hand border of the table (the thousandth point \, corresponding to exp(-10). This isn't a problem because the values are all close to zero there., f 61;
 #X text 25 401 Here we use an exponential function as a waveshaping transfer function. The theory is shown in detail in the accompanying book \, but in short \, we adjust the sinusoid so that \, as the index increases \, we scan starting from the left of the transfer function (previously the reading location grew from the center). The table contains exp(-x) with x varying from 0 to 10 When the index is zero \, the output is the constant 1 and the spectrum holds only DC. As the index grows \, the output is a sequence of steadily narrower pulses \, whose spectrum gets progressively fatter., f 61;
-#X text 48 10 WAVESHAPING USING AN EXPONENTIAL FUNCTION;
 #X obj 686 21 declare -stdpath ./;
 #X text 264 286 <-- repeatedly;
 #X text 230 258 <-- graph once;
 #X text 237 87 <-- index in;
 #X text 25 549 Table lookup is prepared as follows. First add one to the sinusoid and adjust its amplitude according to index so it ranges from 0 to 2*index. Then adjust for the table's input scale (100 points per unit \, so multiply by 100) and add one to skip the interpolation point at the beginning of the table., f 61;
+#X obj 42 14 cnv 5 5 25 empty empty Waveshaphing\ using\ Exponential\ Function 15 13 0 16 #dfdfdf #202020 0;
 #X connect 1 0 6 0;
 #X connect 5 0 3 1;
 #X connect 17 0 18 0;

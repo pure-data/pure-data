@@ -96,9 +96,9 @@
 #X connect 1 0 3 0;
 #X restore 95 614 pd init;
 #X obj 30 338 adsr, f 16;
-#X text 323 17 ANALOG STYLE SYNTH USING QLIST;
 #X obj 398 532 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
 #X text 425 533 start;
+#X obj 263 13 cnv 5 5 25 empty empty Analog\ Style\ Using\ [qlist] 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 82 0;
 #X connect 1 0 45 0;
 #X connect 2 0 3 0;
@@ -160,7 +160,7 @@
 #X connect 56 0 53 1;
 #X connect 62 0 20 0;
 #X connect 64 0 68 0;
-#X connect 66 0 84 0;
+#X connect 66 0 83 0;
 #X connect 69 0 68 0;
 #X connect 70 0 68 0;
 #X connect 71 0 72 0;
@@ -168,4 +168,4 @@
 #X connect 74 0 21 0;
 #X connect 80 0 55 0;
 #X connect 82 0 2 0;
-#X connect 84 0 64 0;
+#X connect 83 0 64 0;

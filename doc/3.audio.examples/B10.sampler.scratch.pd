@@ -1,4 +1,4 @@
-#N canvas 386 38 831 688 12;
+#N canvas 530 68 831 688 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table19 44103 float 2;
@@ -32,7 +32,6 @@
 #X obj 86 201 *~ 0.5;
 #X obj 86 230 cos~;
 #X obj 87 407 output~;
-#X text 56 23 ENVELOPING THE LOOPING SAMPLER;
 #X text 74 595 You should hear some doppler shift as you change the read point. To see why \, click on "graph table index" and quickly start changing the read point--- you should see entertaining pictures in "table-index". The next patch shows how to prevent this if you wish to.;
 #X obj 148 351 tabread4~ table19;
 #X obj 194 322 tabwrite~ graph19;
@@ -46,9 +45,10 @@
 #X text 192 66 <-- frequency (Hz.);
 #X text 208 121 <-- chunk size (100ths of a second);
 #X text 234 183 <--;
-#X text 259 183 read point (100ths of a second), f 19;
+#X text 259 183 read point (100ths of a second), f 18;
 #X text 550 349 ----- 1 second -----;
 #X msg 534 502 \; graph19 ylabel 46000 0 44100;
+#X obj 112 22 cnv 5 5 25 empty empty Sliding\ Loops 15 13 0 16 #dfdfdf #202020 0;
 #X connect 1 0 22 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 1;
@@ -56,13 +56,13 @@
 #X connect 5 0 13 0;
 #X connect 6 0 7 0;
 #X connect 7 0 19 0;
-#X connect 9 0 36 0;
+#X connect 9 0 35 0;
 #X connect 10 0 13 1;
-#X connect 11 0 32 0;
+#X connect 11 0 31 0;
 #X connect 12 0 11 0;
+#X connect 13 0 27 0;
 #X connect 13 0 28 0;
-#X connect 13 0 29 0;
-#X connect 15 0 42 0;
+#X connect 15 0 41 0;
 #X connect 15 0 20 0;
 #X connect 20 0 17 0;
 #X connect 21 0 23 0;
@@ -70,8 +70,8 @@
 #X connect 22 0 21 0;
 #X connect 23 0 24 0;
 #X connect 24 0 9 0;
-#X connect 28 0 9 1;
-#X connect 32 0 10 0;
-#X connect 33 0 19 0;
-#X connect 34 0 29 0;
-#X connect 36 0 25 0;
+#X connect 27 0 9 1;
+#X connect 31 0 10 0;
+#X connect 32 0 19 0;
+#X connect 33 0 28 0;
+#X connect 35 0 25 0;

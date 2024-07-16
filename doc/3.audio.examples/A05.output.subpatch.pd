@@ -1,6 +1,5 @@
 #N canvas 452 47 568 532 12;
 #X declare -stdpath ./;
-#X text 231 24 CONTROLLING OUTPUT AMPLITUDE;
 #X obj 66 54 osc~ 440;
 #X obj 84 85 osc~ 550;
 #X obj 102 117 osc~ 660;
@@ -14,8 +13,9 @@
 #X text 180 86 <-- Here we make an A major triad as a test signal., f 28;
 #X text 200 183 <--;
 #X text 230 184 this is an abstraction - right click on it and select "open" to see inside. Also select 'help' for more information, f 39;
-#X connect 1 0 4 0;
+#X obj 196 24 cnv 5 5 25 empty empty Controlling\ output\ amplitude 15 13 0 16 #dfdfdf #202020 0;
+#X connect 0 0 3 0;
+#X connect 1 0 3 1;
 #X connect 2 0 4 1;
-#X connect 3 0 5 1;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 5 0 6 0;

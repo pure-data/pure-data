@@ -58,7 +58,6 @@
 #X array \$0-out 882 float 0;
 #X coords 0 1 882 -1 200 140 1;
 #X restore 438 436 graph;
-#X text 51 26 BAND-LIMITED SAWTOOTH GENERATOR USING A TRANSITION TABLE;
 #N canvas 271 38 943 585 transition-table 0;
 #X obj 761 173 cos~;
 #X obj 668 173 cos~;
@@ -129,11 +128,12 @@
 #X connect 33 0 32 0;
 #X restore 262 397 pd transition-table;
 #X text 434 317 The "band limit" controls how fast the transition table is read. If it is set to the Nyquist frequency the table is read at 0.4 times the Nyquist \, or five samples a cycle. Lowering the band limit cuts off the partials of the generated sawtooth wave at frequencies below the Nyquist., f 60;
-#X obj 710 25 declare -stdpath ./;
+#X obj 691 25 declare -stdpath ./;
 #X obj 196 509 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 134 124 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 433 73 A more sophisticated way to control foldover in sawtooth waves is to replace the once-a-cycle jump with a bandlimited transition. To get a band-limited transition we synthesize a band-limited square wave and harvest the transition from the middle of the top half to the middle of the bottom half. Here we use a square wave at SR/10 \, so that only partials 1 and 3 fit below the Nyquist. The transition should take 1/2 period \, or 5 samples. The table is calculated and stored in the "transition-table" subpatch.;
 #X text 434 209 Now any time we wish to make a discontinuity in the output signal \, we make it look exactly like the bandlimited square wave looks. We do this by reading through the table we recorded \, carefully adding a "digital" \, non-band-limited \, sawtooth to "\$0-transition" so that the discontinuities in the two cancel out and what you have left is the transition in the table., f 60;
+#X obj 43 19 cnv 5 5 25 empty empty Band-Limited\ Sawtooth\ Generator\ Using\ a\ Transition\ Table 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 22 0;
 #X connect 1 0 18 0;
 #X connect 1 0 20 0;
@@ -148,7 +148,7 @@
 #X connect 8 0 9 0;
 #X connect 9 0 0 0;
 #X connect 11 0 23 0;
-#X connect 11 0 31 0;
+#X connect 11 0 30 0;
 #X connect 12 0 13 0;
 #X connect 13 0 21 0;
 #X connect 14 0 5 0;
@@ -158,5 +158,5 @@
 #X connect 21 0 1 0;
 #X connect 22 0 2 0;
 #X connect 23 0 8 0;
-#X connect 30 0 24 0;
-#X connect 31 0 16 0;
+#X connect 29 0 24 0;
+#X connect 30 0 16 0;

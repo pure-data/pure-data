@@ -19,7 +19,6 @@
 #X obj 52 206 s pitch;
 #X obj 52 177 ftom;
 #X text 472 389 ---- 0.1 seconds ----;
-#X text 97 20 FREQUENCY AND PITCH;
 #X text 85 588 Note also the "set" messages going to the number boxes so that they can each update the other without bringing on an infinite loop. (get help on number boxes for details.), f 70;
 #X text 152 195 to "MIDI" pitch;
 #X obj 106 354 output~;
@@ -35,9 +34,10 @@
 #X text 85 485 Frequency and pitch are converted using the [ftom] and [mtof] objects. Frequency refers to the number of cycles per second. Pitch is "60" for Middle C \, 61 for C sharp \, 72 for the next C up \, and so on., f 70;
 #X text 85 537 [mtof] and [ftom] work fine for microtones (non-integral "MIDI pitch") and don't have MIDI's range restriction - for example \, MIDI -36 is about 1 Hz., f 70;
 #X text 190 286 <-- bang button \, click to graph;
+#X obj 79 18 cnv 5 5 25 empty empty Frequency\ and\ Pitch 15 13 0 16 #dfdfdf #202020 0;
 #X connect 2 0 10 0;
 #X connect 2 0 11 0;
-#X connect 3 0 20 0;
+#X connect 3 0 19 0;
 #X connect 4 0 2 0;
 #X connect 5 0 8 0;
 #X connect 5 0 14 0;
@@ -46,6 +46,6 @@
 #X connect 9 0 4 0;
 #X connect 11 0 12 0;
 #X connect 14 0 13 0;
-#X connect 20 0 1 0;
-#X connect 20 0 19 0;
-#X connect 26 0 1 0;
+#X connect 19 0 1 0;
+#X connect 19 0 18 0;
+#X connect 25 0 1 0;

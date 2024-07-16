@@ -15,7 +15,6 @@
 #X obj 162 186 tabread4~ waveform13;
 #X obj 162 133 *~ 8;
 #X obj 162 97 phasor~ 220;
-#X text 63 35 4-POINT INTERPOLATION IN DETAIL;
 #X obj 214 318 sig~ 220;
 #X obj 214 348 tabosc4~ waveform13;
 #X text 204 217 <-- click to graph;
@@ -33,10 +32,11 @@
 #X text 195 52 initialize waveform;
 #X connect 0 0 1 0;
 #X restore 564 429 pd init_waveform;
+#X obj 34 25 cnv 5 5 25 empty empty 4-Point\ Interpolation\ in\ detail 15 13 0 16 #dfdfdf #202020 0;
 #X connect 1 0 6 0;
 #X connect 6 0 5 0;
 #X connect 7 0 1 0;
 #X connect 8 0 7 0;
-#X connect 10 0 11 0;
-#X connect 13 0 5 0;
-#X connect 14 0 16 0;
+#X connect 9 0 10 0;
+#X connect 12 0 5 0;
+#X connect 13 0 15 0;
