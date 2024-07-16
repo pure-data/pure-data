@@ -98,7 +98,7 @@
 #X obj 30 338 adsr, f 16;
 #X obj 398 532 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
 #X text 425 533 start;
-#X obj 263 13 cnv 5 5 25 empty empty Analog\ Style\ Using\ [qlist] 15 13 0 16 #dfdfdf #202020 0;
+#X obj 223 13 cnv 5 5 25 empty empty Analog\ Synth\ Style\ Using\ [qlist] 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 82 0;
 #X connect 1 0 45 0;
 #X connect 2 0 3 0;

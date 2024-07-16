@@ -220,10 +220,10 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/B04.tabread4.interpolation.pd \
      ./3.audio.examples/B05.tabread.FM.pd \
      ./3.audio.examples/B06.table.switching.pd \
-     ./3.audio.examples/B07.sampler.pd \
+     ./3.audio.examples/B07.sampler.scratch.pd \
      ./3.audio.examples/B08.sampler.loop.pd \
      ./3.audio.examples/B09.sampler.loop.smooth.pd \
-     ./3.audio.examples/B10.sampler.scratch.pd \
+     ./3.audio.examples/B10.sampler.sliding.loop.pd \
      ./3.audio.examples/B11.sampler.nodoppler.pd \
      ./3.audio.examples/B12.sampler.transpose.pd \
      ./3.audio.examples/B13.sampler.overlap.pd \
@@ -258,7 +258,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/E02.ring.modulation.pd \
      ./3.audio.examples/E03.octave.divider.pd \
      ./3.audio.examples/E04.difference.tone.pd \
-     ./3.audio.examples/E05.chebychev.pd \
+     ./3.audio.examples/E05.chebyshev.pd \
      ./3.audio.examples/E06.exponential.pd \
      ./3.audio.examples/E07.evenodd.pd \
      ./3.audio.examples/E08.phase.mod.pd \
