@@ -41,7 +41,6 @@
 #X connect 5 0 1 0;
 #X restore 340 444 pd html-reference;
 #X text 363 414 <-- Open Pd's manual index;
-#X text 44 413 Besides checking this tutorial and the help files of the objects \, take a look at section 2.9 (theory of operation / Data Structures) for more information., f 39;
 #X text 28 12 This patch shows a simple data window with two graphical objects in it. This kind of object is called a "scalar" and its data structures and appearances are defined by the "template1" subpatch. A single template is used to create the two objects \, which have a triangular shape., f 77;
 #N canvas 176 126 1015 508 template1 0;
 #X obj 104 99 struct template1 float x float y float z float q;
@@ -60,4 +59,5 @@
 #X restore 213 343 pd template1;
 #X text 28 116 When the data window is locked (not in edit mode) you can drag the apex of either triangle up or down to change the altitude (you should see the cursor change when dragging is possible and why this happens is explained in the "template1" subpatch.) You can also right click and ask for properties \, so you can see the Data Structures of the selected scalar \, you can also change values in the properties window. In edit (unlocked) mode \, you can move the entire triangles around \, or cut \, copy \, and paste them., f 77;
 #X text 28 222 Scalars are described by "templates" \, which are defined in [struct] objects inside a given subwindow. In this case \, the subwindow is "template1" but it could have any other name. The template in [struct] describes what form the data take and how it is shown. It's possible to mix data of many different templates in the same collection \, but each template needs its own distinct subwindow. The data is displayed in the [pd data1] subpatch., f 77;
+#X text 44 413 Besides checking this tutorial and the help files of the objects \, take a look at section 2.1 (theory of operation / Data Structures) for more information., f 39;
 #X connect 4 0 5 0;

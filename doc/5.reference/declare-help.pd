@@ -1,4 +1,4 @@
-#N canvas 148 35 1137 665 12;
+#N canvas 148 38 1137 665 12;
 #X declare;
 #X declare;
 #X declare -path path1 -path path2;
@@ -17,12 +17,12 @@
 #X obj 101 190 pdcontrol;
 #X obj 101 130 pdcontrol;
 #X msg 101 105 dir;
-#X msg 101 159 browse \$1/../1.manual/x4.htm;
 #X text 205 94 this window opens the html manual link via the [pdcontrol] object., f 25;
+#X msg 101 159 browse \$1/../1.manual/resources/chapter4.htm;
 #X connect 0 0 3 0;
-#X connect 2 0 4 0;
+#X connect 2 0 5 0;
 #X connect 3 0 2 0;
-#X connect 4 0 1 0;
+#X connect 5 0 1 0;
 #X restore 708 424 pd open-manual;
 #X msg 917 517 \; pd compatibility \$1;
 #X msg 917 456 0.46;
