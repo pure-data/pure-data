@@ -1,4 +1,4 @@
-#N canvas 386 39 528 713 12;
+#N canvas 545 63 534 746 12;
 #X obj 105 258 phasor~ 100;
 #X obj 158 328 phasor~;
 #X floatatom 158 290 5 0 999 0 - \$0-freq - 0;
@@ -31,7 +31,7 @@
 #X text 201 289 <-- test frequency, f 9;
 #X text 261 355 modulate test frequency to DC, f 15;
 #X text 204 453 <-- responsiveness;
-#N canvas 536 459 361 258 init 0;
+#N canvas 834 434 361 258 init 0;
 #X obj 68 22 loadbang;
 #X obj 68 46 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 68 75 f \$0;

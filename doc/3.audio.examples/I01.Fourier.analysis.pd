@@ -39,7 +39,7 @@
 #X text 144 370 <--;
 #X text 171 369 phase in hundredths of a cycle, f 10;
 #X text 153 342 bang-on-snapshot from below;
-#X text 97 477 [fft~] computes the Fourier transform \, given the real and imaginary part of a complex-valued signal. Here the imaginary part is zero (the input is real-valued). The output is a (real \, imaginary) pair for each frequency from 0 to 63 (in units of SR/64)., f 41;
+#X text 97 474 [fft~] computes the Fourier transform \, given the real and imaginary part of a complex-valued signal. Here the imaginary part is zero (the input is real-valued). The output is a (real \, imaginary) pair for each frequency from 0 to 63 (in units of SR/64)., f 41;
 #X text 246 688 real and imaginary outputs are graphed separately., f 27;
 #X obj 85 21 cnv 5 5 25 empty empty Fourier\ Analysis 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 9 0;

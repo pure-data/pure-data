@@ -1,4 +1,4 @@
-#N canvas 616 38 568 608 12;
+#N canvas 538 57 568 608 12;
 #N canvas 349 161 612 574 fft-analysis 0;
 #X obj 46 184 *~;
 #X obj 45 119 inlet~;

@@ -216,7 +216,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/A10.review.pd \
      ./3.audio.examples/B01.wavetables.pd \
      ./3.audio.examples/B02.two-wavetables.pd \
-     ./3.audio.examples/B03.tabread4.pd \
+     ./3.audio.examples/B03.tabread4~.pd \
      ./3.audio.examples/B04.tabread4.interpolation.pd \
      ./3.audio.examples/B05.tabread.FM.pd \
      ./3.audio.examples/B06.table.switching.pd \
@@ -302,7 +302,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/H13.butterworth.pd \
      ./3.audio.examples/H14.all.pass.pd \
      ./3.audio.examples/H15.phaser.pd \
-     ./3.audio.examples/H16.adsr.filter.qlist.pd \
+     ./3.audio.examples/H16.adsr.filter.text.pd \
      ./3.audio.examples/I01.Fourier.analysis.pd \
      ./3.audio.examples/I02.Hann.window.pd \
      ./3.audio.examples/I03.resynthesis.pd \
@@ -331,7 +331,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/partial.pd \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
-     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/reverb-echo.pd \
      ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \

@@ -1,7 +1,7 @@
 #N canvas 506 38 613 631 12;
 #X declare -stdpath ./;
 #X obj 96 373 mtof;
-#X floatatom 96 350 5 0 0 0 - \$0-pit - 0;
+#X floatatom 96 350 5 0 0 0 - \$0-pitch - 0;
 #X obj 72 546 output~;
 #X obj 71 423 lop~;
 #X obj 71 320 noise~;
@@ -12,8 +12,7 @@
 #X obj 145 453 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X text 170 452 graphing on/off;
 #X text 399 524 --- 0.02 sec ---;
-#X text 33 139 The lop~ object is normalized to pass DC (the lowest frequency) with a gain of one. Higher frequencies are progressively more and more attenuated. The lower the cutoff frequency \, the lower the total power of the filtered noise. If you graph the output you'll see that the waveform gets smoother (and smaller overall) as the cutoff frequency is lowered., f 75;
-#X text 40 218 At the cutoff frequency the gain is about -3 dB \, and above that the gain drops a further 6 dB per octave. (Sometimes one uses the word "rolloff" instead of "cutoff" to emphasize the gradual way the gain drops off with frequency.), f 74;
+#X text 33 218 At the cutoff frequency the gain is about -3 dB \, and above that the gain drops a further 6 dB per octave. (Sometimes one uses the word "rolloff" instead of "cutoff" to emphasize the gradual way the gain drops off with frequency.), f 75;
 #X text 125 319 white noise \, test signal;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array H01-graph 882 float 0;
@@ -23,15 +22,16 @@
 #X text 155 397 <-- cutoff (Hertz);
 #N canvas 774 414 291 271 init 0;
 #X obj 107 103 loadbang;
-#X obj 107 168 s \$0-pit;
 #X msg 107 135 60;
 #X obj 79 218 declare -stdpath ./;
 #X text 42 27 This subpatch initializes the patch and loads a value in the pitch number box., f 30;
-#X connect 0 0 2 0;
-#X connect 2 0 1 0;
+#X obj 107 168 s \$0-pitch;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
 #X restore 227 564 pd init;
 #X text 33 60 This and the following patches show how to use filters in Pd \, starting with the simplest one: the one-pole low-pass filter. Here we test it with an input of white noise. The [lop~] object does the filtering. Its left inlet takes an audio signal to be filtered \, and its right inlet takes messages or signals to set its cutoff frequency in Hertz., f 75;
 #X obj 136 15 cnv 5 5 25 empty empty One-Pole\ Low-Pass\ Filter 15 13 0 16 #dfdfdf #202020 0;
+#X text 33 139 The [lop~] object is normalized to pass DC (the lowest frequency) with a gain of one. Higher frequencies are progressively more and more attenuated. The lower the cutoff frequency \, the lower the total power of the filtered noise. If you graph the output you'll see that the waveform gets smoother (and smaller overall) as the cutoff frequency is lowered., f 75;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;

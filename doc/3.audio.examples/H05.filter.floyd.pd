@@ -1,4 +1,4 @@
-#N canvas 600 38 589 749 12;
+#N canvas 559 38 589 749 12;
 #X declare -stdpath ./;
 #X obj 167 472 line~;
 #X obj 167 444 pack 0 100;
@@ -43,7 +43,7 @@
 #X obj 122 470 -~ 1;
 #X text 28 451 make it go from -1 to 1, f 12;
 #X obj 179 548 max 3;
-#X text 196 583 Put two [vcf~] objects in series for better rejection of the stop bands without having to make the passband excessively narrow., f 43;
+#X text 209 592 Put two [vcf~] objects in series for better rejection of the stop bands without having to make the passband excessively narrow., f 43;
 #X text 224 549 at least 3;
 #X obj 140 178 metro 85;
 #X obj 140 256 tabread \$0-sequence;
@@ -51,7 +51,7 @@
 #X text 531 186 72;
 #X text 67 65 Here's an approximate reconstruction of an old riff by Pink Floyd. Because we're filtering a triangular waveform with odd partials \, it's easier to pick out the partials in the filtered sound than if we had had both even and odd ones.;
 #X text 459 170 Picthes;
-#X obj 112 24 cnv 5 5 25 empty empty Another\ Filter\ Sweeping\ Example 15 13 0 16 #dfdfdf #202020 0;
+#X obj 38 15 cnv 5 5 25 empty empty Another\ Filter\ Sweeping\ Example 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 20 0;
 #X connect 1 0 0 0;
 #X connect 2 0 18 0;

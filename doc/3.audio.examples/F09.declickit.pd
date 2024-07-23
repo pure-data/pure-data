@@ -20,7 +20,7 @@
 #X msg 137 142 4;
 #X obj 73 216 phasor~ 80;
 #X obj 175 183 pack f f;
-#X obj 427 110 declare -stdpath ./;
+#X obj 286 633 declare -stdpath ./;
 #X text 264 156 <-- gliss time;
 #X obj 267 254 hradio 19 1 0 2 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0;
 #X obj 229 298 == 0;
