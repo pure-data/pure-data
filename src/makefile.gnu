@@ -133,7 +133,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 
 OBJ = $(SRC:.c=.o) 
 
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
+# get version from m_pd.h to use in doc/0.about.txt
 PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
@@ -195,7 +195,7 @@ externs:
 
 BINARYMODE=-m755
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
+ABOUT_FILE=$(DESTDIR)$(pddocdir)/0.about.txt
 install:  all
 	install -d $(DESTDIR)$(libpdbindir)
 	install $(BIN_DIR)/pd-watchdog $(DESTDIR)$(libpdbindir)/pd-watchdog
@@ -206,7 +206,7 @@ install:  all
 	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive 
 	install -d $(DESTDIR)$(libpdtcldir)
 	install ../tcl/* $(DESTDIR)$(libpdtcldir)
-	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
+	for dir in $(shell ls -1 ../doc | grep -v CVS | grep -v 0.about.txt); do \
 		echo "installing $$dir"; \
 		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
 		install -m644 -p ../doc/$$dir/*.* $(DESTDIR)$(pddocdir)/$$dir ; \

@@ -147,7 +147,7 @@ ASIOOBJ = $(ASIOSRC:.cpp=.o)
 OBJC = $(OBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 
 
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
+# get version from m_pd.h to use in doc/0.about.txt
 PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
 PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
@@ -240,7 +240,7 @@ testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
+ABOUT_FILE=$(DESTDIR)$(pddocdir)/0.about.txt
 install:  all
 # locales
 #	make libpddir=$(libpddir) -C ../po install
@@ -255,7 +255,7 @@ install:  all
 	install -p ../tcl/pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
 	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
-	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
+	for dir in $(shell ls -1 ../doc | grep -v CVS | grep -v 0.about.txt); do \
 		echo "installing $$dir"; \
 		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
 		install -p ../doc/$$dir/*.* $(DESTDIR)$(pddocdir)/$$dir ; \
@@ -265,6 +265,7 @@ install:  all
 		install -d $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 		install -p ../doc/7.stuff/$$dir/*.* $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 	done
+    install -p ../doc/0.about.txt $(ABOUT_FILE)
 	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
 		> $(ABOUT_FILE)
