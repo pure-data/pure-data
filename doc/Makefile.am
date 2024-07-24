@@ -170,6 +170,7 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/24.loops.pd \
      ./2.control.examples/dollarsign.pd \
      ./2.control.examples/dollarsign2.pd \
+     ./2.control.examples/gop-abs.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
      ./3.audio.examples/A01.sinewave.pd \
