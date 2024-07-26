@@ -34,7 +34,6 @@
 #X restore 350 410 pd init;
 #X text 55 71 You can use the [filter-graph1] and [filter-graph2] abstractions as shown to test filters. Connect them as shown with a filter between them. Try varying the parameters and/or substituting other filters., f 51;
 #X text 55 139 [filter-graph1] takes as arguments the number of points to graph and the frequency range \, while [filter-graph2] takes as arguments the name of a table to hold the (frequency dependent) gain \, and another \, if specified \, for the phase., f 51;
-#X text 55 225 You can edit this patch to replace [bp~] with any other filter you're curious about., f 51;
 #X text 505 398 0;
 #X text 517 212 0 Hz;
 #X text 700 212 44100 Hz;
@@ -43,12 +42,13 @@
 #X text 517 417 0 Hz;
 #X text 700 417 44100 Hz;
 #X obj 29 25 cnv 5 5 25 empty empty Measuring\ Filter\ Frequency/Phase\ Response 15 13 0 16 #dfdfdf #202020 0;
+#X text 55 225 You can edit this patch to replace [bp~] with any other filter you're curious about. Try \, for instance \, [vcf~] and [bob~]., f 51;
 #X connect 5 0 10 0;
-#X connect 6 0 24 0;
+#X connect 6 0 23 0;
 #X connect 8 0 11 1;
 #X connect 9 0 11 2;
 #X connect 10 0 6 0;
 #X connect 10 1 11 0;
-#X connect 10 1 24 1;
-#X connect 10 2 24 2;
-#X connect 11 0 24 3;
+#X connect 10 1 23 1;
+#X connect 10 2 23 2;
+#X connect 11 0 23 3;
