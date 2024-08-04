@@ -1371,7 +1371,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         {
             sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
                 atom_getfloatarg(2, argc, argv));
-            argc -= 3; argv += 3;
+            argc -= 2; argv += 2;
         }
         else if (!strcmp(firstarg->s_name, "-amppowerlaw") && argc > 1)
         {
