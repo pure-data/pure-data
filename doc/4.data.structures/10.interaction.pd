@@ -24,7 +24,7 @@
 #X scalar template9 288 91 72 19 325 \;;
 #X coords 0 446 1 445 0 0 0;
 #X restore 508 286 pd data9;
-#N canvas 150 451 673 314 template9 0;
+#N canvas 282 376 705 419 template9 0;
 #X obj 393 207 filledpolygon q 0 1 0 0 w 0 w h 0 h;
 #X obj 394 234 drawnumber q 0 0 0;
 #X obj 171 124 struct template9 float x float y float w float h float q;
@@ -34,6 +34,7 @@
 #X text 42 17 [struct] outputs messages notifying you when objects of this structure are interacted with. In run mode you get: 'click' (when you click on them) and 'change' (when you change field values by dragging). In edit mode you get: 'select' when you select the object \, 'deselect' when you deselect it and 'displace' when you move it around. Here we catch 'change' and 'select' interactions and pass the pointer through with the [route] object., f 86;
 #X obj 171 199 route select change displace;
 #X obj 299 229 unpack p;
+#X text 153 316 Note: later we'll see how to deal with arrays in data structures. Unfortunately \, at least until now \, you can't have messages like 'change' when clicking and dragging an array element value., f 65;
 #X connect 2 0 4 0;
 #X connect 2 0 7 0;
 #X connect 7 0 3 0;
