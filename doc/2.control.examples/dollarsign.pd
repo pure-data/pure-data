@@ -1,4 +1,4 @@
-#N canvas 559 33 613 599 12;
+#N canvas 559 38 612 582 12;
 #X obj 200 54 inlet;
 #X obj 200 81 s \$1-a;
 #X obj 335 81 s \$1-b;
@@ -16,7 +16,6 @@
 #X obj 459 319 s \$0-d;
 #X obj 460 349 r \$0-d;
 #X text 96 17 This is an abstraction used in example 13 \, "locality".;
-#X text 343 556 updated for Pd version 0.52;
 #X obj 77 454 float \$0;
 #X msg 77 485 \; \$1-d 10;
 #X obj 77 425 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
@@ -32,5 +31,5 @@
 #X connect 11 0 8 0;
 #X connect 12 0 14 0;
 #X connect 15 0 13 0;
-#X connect 18 0 19 0;
-#X connect 20 0 18 0;
+#X connect 17 0 18 0;
+#X connect 19 0 17 0;

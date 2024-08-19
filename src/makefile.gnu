@@ -131,21 +131,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     x_file.c x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c \
     $(SYSSRC)
 
-OBJ = $(SRC:.c=.o) 
-
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION := $(shell grep "^\s*\#\s*define\s*PD_BUGFIX_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION := $(shell grep "^\s*\#\s*define\s*PD_TEST_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
-PD_VERSION := $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
-ifneq ($(PD_TEST_VERSION),)
-	PD_VERSION := $(PD_VERSION)-$(PD_TEST_VERSION)
-endif
+OBJ = $(SRC:.c=.o)
 
 #
 #  ------------------ targets ------------------------------------
@@ -195,7 +181,6 @@ externs:
 
 BINARYMODE=-m755
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
 	install -d $(DESTDIR)$(libpdbindir)
 	install $(BIN_DIR)/pd-watchdog $(DESTDIR)$(libpdbindir)/pd-watchdog
@@ -217,10 +202,6 @@ install:  all
 		install -m644 -p ../doc/7.stuff/$$dir/*.* \
                     $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 	done
-	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
-	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
-		> $(ABOUT_FILE)
-	rm $(ABOUT_FILE).tmp
 	cp -pr ../extra $(DESTDIR)$(libpddir)/
 	rm -f $(DESTDIR)$(libpddir)/extra/*/*.o
 	install -d $(DESTDIR)$(includedir)

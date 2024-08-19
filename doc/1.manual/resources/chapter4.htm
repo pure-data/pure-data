@@ -4,19 +4,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 4: Externals</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
-<link rel="icon" href="resources/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
 </HEAD>
 <BODY>
 
 <div class="nav nav-top">
-    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
-    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
-    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
+    <div class="nav-back"><A href="chapter3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="../index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
 <div id=corpus>
 
-<IMG id="logo" src="resources/icon.png" ALT="pd icon">
+<IMG id="logo" src="icon.png" ALT="pd icon">
 
 <H2>Chapter 4: Externals</H2>
 
@@ -68,10 +68,10 @@ Pd patches. Some other flavors of Pd usually come with pre installed externals.
 <p> To get a full list of all objects in Pd Vanilla, go to the <b>Help menu</b> and
 then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
 patch’s window and select “help” - this loads the help-intro.pd file that was already
-shown in <a href="x1.htm">Chapter 1: Introduction</a> and reproduced below.
+shown in <a href="chapter1.htm">Chapter 1: Introduction</a> and reproduced below.
 
 <figure>
-    <IMG src="resources/1.2.3.png" ALT="list of objects">
+    <IMG src="1.2.3.png" ALT="list of objects">
     <figcaption><u>Fig. 1.2.3</u> The "help-intro' patch with a list of all internal objects</figcaption>
 </figure>
 
@@ -83,7 +83,7 @@ the <b>Help menu</b>. See figure below, which shows how the browser looks in a f
 install of Pd and lists the objects in the extra folder.
 
 <figure>
-    <IMG src="resources/4.1.1.png" ALT="browser window">
+    <IMG src="4.1.1.png" ALT="browser window">
     <figcaption><u>Fig. 4.1.1</u> The browser window</figcaption>
 </figure>
 
@@ -102,7 +102,7 @@ available for different CPU architectures and numerical precision (32-bit or 64-
 floats aka "single-precision floating point numbers" or "double-precision floating
 point numbers" respectively "single" or "double").
 
-<p>In <A href="x3.htm">Chapter 3: Installing and configuring Pd</A> you can see
+<p>In <A href="chapter3.htm">Chapter 3: Installing and configuring Pd</A> you can see
 how to download different Pd applications. Most commonly, you'll have Pd installed
 as a 64-bit application, which corresponds to most recent systems.
 
@@ -113,7 +113,7 @@ running Pd on an (old) system that only supports 32-bit applications.
 
 <p>Also, at this point, Pure Data does not officially support double-precision numbers.
 You can download <b>Pd64</b> beta releases or compile them yourself though (for
-compilation instructions, see <A href="x6.htm">Chapter 6: Building Pd from source</A>).
+compilation instructions, see <A href="chapter6.htm">Chapter 6: Building Pd from source</A>).
 Note that the numerical resolution of Pd and Pd64 here must not be confused with the
 register size of the system it's running on.
 
@@ -346,7 +346,7 @@ different file extensions. Refer to the table below for common combinations:
 
 <p>You can have a Pd patch behave like an object by loading it into other
 patches - these are usually called “abstractions” (see
-<A href="x2.htm#s2.8.1">2.8.1. Abstractions</A>). Note that some of the
+<A href="chapter2.htm#s2.8.1">2.8.1. Abstractions</A>). Note that some of the
 externals in “extra” are abstractions (for instance, <b>[rev1~]</b> or <b>[hilbert~]</b>).
 Like any other Pd patch, an abstraction may contain any kind of objects
 (internals, compiled externals and even other abstractions).
@@ -428,7 +428,7 @@ and GUI plugins. This path is automatically included in the user added
 search paths (under the 'Path' tab in Preferences), see figure below.
 
 <figure>
-    <IMG src="resources/4.3.1.png" ALT="Preferences">
+    <IMG src="4.3.1.png" ALT="Preferences">
     <figcaption><u>Fig. 4.3.1</u> The Path preferences with a few user added paths</figcaption>
 </figure>
 
@@ -472,7 +472,7 @@ list of the Standard Paths for all operating systems:
 <UL>
 	<LI><u>Application-specific</u>: <mark><b>/$PdPath/Contents/Resources/extra</b></mark> - this is
 inside the Pd Application (like Pd-0.49-1 in ~/Applications); right click it and
-choose "Show Package Contents", then navigate to "Resources/extra".
+choose "Show Package Contents", then navigate to "extra".
 	<LI><u>User-specific</u>: <mark><b>~/Library/Pd</b></mark> (/Users/user_name/Library/Pd)
 	<LI><u>Global</u>: <mark><b>/Library/Pd</b></mark>
 
@@ -515,7 +515,7 @@ you can also download GUI plugins from deken. Search for '*-plugin' to get a lis
 all options.
 
 <figure>
-    <IMG src="resources/4.3.2.png" ALT="deken install">
+    <IMG src="4.3.2.png" ALT="deken install">
     <figcaption><u>Fig. 4.3.2</u> Installing external libraries from 'deken'</figcaption>
 </figure>
 
@@ -525,7 +525,7 @@ them at the same time. Note also you can search for multiple objects and librari
 separating the search entries with commas.
 
 <figure>
-    <IMG src="resources/4.3.3.png" ALT="installing multiple libraries">
+    <IMG src="4.3.3.png" ALT="installing multiple libraries">
     <figcaption><u>Fig. 4.3.3</u> Installing multiple libraries at once</figcaption>
 </figure>
 
@@ -534,7 +534,7 @@ separating the search entries with commas.
 manager with a prompt search for the missing object ready to go.
 
 <figure>
-    <IMG src="resources/4.3.4.png" ALT="searching object for creation error">
+    <IMG src="4.3.4.png" ALT="searching object for creation error">
     <figcaption><u>Fig. 4.3.4</u> Searching object in the plugin manager via the console window error</figcaption>
 </figure>
 
@@ -544,14 +544,14 @@ to open and install a ".dek" file, and <b>Edit</b> to open "Preferences"
 for the plugin manager. For macOS these menus are on the top bar.
 
 <figure>
-    <IMG src="resources/4.3.5.png" ALT="plugin manager menus">
+    <IMG src="4.3.5.png" ALT="plugin manager menus">
     <figcaption><u>Fig. 4.3.5</u> The plugin manager's menus</figcaption>
 </figure>
 
 <p>And the plugin manager's preferences are as follows:
 
 <figure>
-    <IMG src="resources/4.3.6.png" ALT="deken preferences">
+    <IMG src="4.3.6.png" ALT="deken preferences">
     <figcaption><u>Fig. 4.3.6</u> The plugin manager's preferences</figcaption>
 </figure>
 
@@ -675,11 +675,11 @@ to the patch will have top priority!
 on startup"</i>. This is where you can manually and permanently load single
 binary pack libraries. But since they're only needed during startup, you need
 to restart Pd so this takes effect. The startup is also used for configuring
-Pd in many ways, see <a href="x3.htm#s3.4.1">3.4.1 Startup flags</a> for
+Pd in many ways, see <a href="chapter3.htm#s3.4.1">3.4.1 Startup flags</a> for
 details.
 
 <figure>
-    <IMG src="resources/4.4.1.png" ALT="startup preferences">
+    <IMG src="4.4.1.png" ALT="startup preferences">
     <figcaption><u>Fig. 4.4.1</u> The Startup preferences with library binaries to load</figcaption>
 </figure>
 
@@ -698,7 +698,7 @@ that the libraries were loaded successfully. Here’s a screenshot of the result
 of loading cyclone.
 
 <figure>
-    <IMG src="resources/4.4.2.png" ALT="lib print">
+    <IMG src="4.4.2.png" ALT="lib print">
     <figcaption><u>Fig. 4.4.2</u> Library loading printout</figcaption>
 </figure>
 
@@ -716,7 +716,7 @@ will make Pd look for this object in a folder called ‘else’ in one of its se
 paths (which includes ~/Documents/Pd/externals) and find it! Here’s an example:
 
 <figure>
-    <IMG src="resources/4.4.3.png" ALT="slash declaration">
+    <IMG src="4.4.3.png" ALT="slash declaration">
     <figcaption><u>Fig. 4.4.3</u> An external object with a slash declaration</figcaption>
 </figure>
 
@@ -853,9 +853,9 @@ first step is ignored.
 
 </div>
 <div class="nav nav-bottom">
-    <div class="nav-back"><A href="x3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
-    <div class="nav-home"><A href="index.htm#s4">Table of contents</A></div>
-    <div class="nav-forward"><A href="x5.htm">Chapter 5: Current status &gt;</A></div>
+    <div class="nav-back"><A href="chapter3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="../index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter5.htm">Chapter 5: Current status &gt;</A></div>
 </div>
 
 </BODY>

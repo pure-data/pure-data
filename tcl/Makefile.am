@@ -18,6 +18,7 @@ CLEANFILES += pd-gui
 
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
 dist_libpdtcl_DATA = \
+    about.txt \
     AppMain.tcl \
     apple_events.tcl \
     dialog_array.tcl \

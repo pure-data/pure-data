@@ -14,7 +14,6 @@
 #X text 29 140 When you first open a Pd document like this one \, your cursor will be an arrow. This is also known as "run" mode and you can then click and interact with objects like messages \, number boxes and bang buttons. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. The patch is now in edit mode. You can move any object by clicking on it and dragging it. You can also select a set of objects and then move them all., f 58;
 #X text 29 276 Select "Edit mode" again to uncheck it in the Edit menu and you're back in run mode with the arrow cursor which acts on objects without moving them., f 58;
 #X text 29 333 Note that the Edit menu also shows you a keyboard shortcuts to alter into and out of "Edit mode". If you are predominantly editing a patch but would like to quickly get out of it just to click on a message or something \, you can just press and hold the control key (command in mac computers) and you'll note the arrow is back until you release the key so you can briefly do what you want., f 58;
-#X text 737 503 updated for Pd version 0.55;
 #X text 497 247 The Put menu creates new text items of any of the four types. Note that there are other GUI boxes in this menu \, like the list box than can hold one or more atoms. An atom in Pd is a message item \, usually either a float or a symbol. The put menu also offers a "symbol" atom box \, a GUI box analogous to the atom number box but for showing and entering single text strings. Other GUIs like bang \, toggle are also in this menu \, as well as arrays and graphs (which we'll see later on).;
 #X obj 556 462 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #N canvas 798 148 456 264 open-manual 0;
@@ -23,7 +22,7 @@
 #X obj 101 130 pdcontrol;
 #X msg 101 105 dir;
 #X text 205 94 this window opens the html manual link via the [pdcontrol] object., f 25;
-#X msg 101 159 browse \$1/../1.manual/x2.htm;
+#X msg 101 159 browse \$1/../1.manual/resources/chapter2.htm;
 #X connect 0 0 3 0;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
@@ -34,4 +33,4 @@
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 10 0 1 0;
-#X connect 17 0 18 0;
+#X connect 16 0 17 0;

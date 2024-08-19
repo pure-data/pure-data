@@ -4,27 +4,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 2: Theory of operation</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
-<link rel="icon" href="resources/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
 </HEAD>
 <BODY>
 
 <div class="nav nav-top">
-    <div class="nav-back"><A href="x1.htm">&lt; Chapter 1: Introduction</A></div>
-    <div class="nav-home"><A href="index.htm#s2">Table of contents</A></div>
-    <div class="nav-forward"><A href="x3.htm">Chapter 3: Installing and configuring Pd &gt;</A></div>
+    <div class="nav-back"><A href="chapter1.htm">&lt; Chapter 1: Introduction</A></div>
+    <div class="nav-home"><A href="../index.htm#s2">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter3.htm">Chapter 3: Installing and configuring Pd &gt;</A></div>
 </div>
 <div id="corpus">
 
-<IMG id="logo" src="resources/icon.png" ALT="pd icon">
+<IMG id="logo" src="icon.png" ALT="pd icon">
 
 <H2>Chapter 2: Theory of operation</H2>
 
 <P>The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and run Pd
-are described in the <A href="x3.htm">next chapter</A>. Links to more extensive
+are described in the <A href="chapter3.htm">next chapter</A>. Links to more extensive
 guides (and to more theoretical information about computer music) are provided
-in the <A href="x1.htm">previous chapter</A>.
+in the <A href="chapter1.htm">previous chapter</A>.
 
 <H3> <A href="#s2.1" id="s2.1">2.1. Overview</A> </H3>
 
@@ -35,12 +35,12 @@ libpd, you can use Pd as an embeddable audio synthesis library. Additionally, Pd
 originally designed to offer a unique experimental feature not found in MAX,
 allowing users to define and access data structures in innovative ways, with the ability
 to attach shapes and colors to data in order to visualize it and/or edit it graphically
-(see section <A href="x2.htm#s2.10">2.10 Data Structures</A> for details).
+(see section <A href="chapter2.htm#s2.10">2.10 Data Structures</A> for details).
 
 <P>Despite its lightweight and portable nature, Pd offers a wide range of external
 packages that enhance its capabilities, primarily focusing on audio and control
 processing, but also for graphical processing and whatnot. For examples and details
-on installing and managing packages, refer to <A href="x4.htm"> Chapter 4: Externals</A>.
+on installing and managing packages, refer to <A href="chapter4.htm"> Chapter 4: Externals</A>.
 
 <H4> <A href="#s2.1.1" id="s2.1.1"> 2.1.1. The main window, canvases, and printout</A> </H4>
 
@@ -49,7 +49,7 @@ separate window, known in Pd as a <i>canvas</i> and also referred to as <i>patch
 The main Pd window looks like this:
 
 <figure>
-<IMG src="resources/2.1.1.png" ALT="pd window">
+<IMG src="2.1.1.png" ALT="pd window">
     <figcaption><u>Fig. 2.1.1</u> The main Pd window (aka "Console window") on Windows</figcaption>
 </figure>
 
@@ -60,14 +60,14 @@ to other apps on macOS and as seen below). You can create and open patches via t
 <b>File menu</b>, where you can also close and save them (note the handy shortcuts).
 
 <figure>
-<IMG src="resources/2.1.2.png" ALT="file menu">
+<IMG src="2.1.2.png" ALT="file menu">
     <figcaption><u>Fig. 2.1.2</u> The File menu on macOS</figcaption>
 </figure>
 
 <P>Creating a new file creates a blank window.
 
 <figure>
-<IMG src="resources/2.1.3.png" ALT="patch canvas">
+<IMG src="2.1.3.png" ALT="patch canvas">
     <figcaption><u>Fig. 2.1.3</u> A new and blank patch canvas</figcaption>
 </figure>
 
@@ -76,7 +76,7 @@ to other apps on macOS and as seen below). You can create and open patches via t
 boxes in patches and for messages from Pd itself. Here is a simple Pd patch:
 
 <figure>
-<IMG src="resources/2.1.4.png" ALT="simple patch">
+<IMG src="2.1.4.png" ALT="simple patch">
     <figcaption><u>Fig. 2.1.4</u> A simple patch</figcaption>
 </figure>
 
@@ -95,22 +95,22 @@ is off by default when Pd is opened. When you turn it on, Pd starts computing
 audio samples in realtime for all open patches (whether they are visible or not).
 
 <figure>
-<IMG src="resources/2.1.5.png" ALT="DSP on">
+<IMG src="2.1.5.png" ALT="DSP on">
     <figcaption><u>Fig. 2.1.5</u> Activated DSP toggle in the Pd window on a mac</figcaption>
 </figure>
 
 <P>Turning off <b>DSP</b> halts the computation and releases any audio devices
 that Pure Data is utilizing. You can configure audio devices as described in
-<A href="x3.htm#s3.3.1">3.3.1. Audio settings</A>.
+<A href="chapter3.htm#s3.3.1">3.3.1. Audio settings</A>.
 
 <P>The <b>Media menu</b> offers shortcuts to toggle DSP on and off. Use <kbd>Ctrl</kbd>+<kbd>/</kbd>
 ("Control" key on PCs or "Command" key on Apple computers plus the <kbd>/</kbd> key)
 to turn audio processing on, and <kbd>Ctrl</kbd>+<kbd>.</kbd> to turn it off. You can check the input
 audio level if you select "Test Audio and MIDI..." and make other Audio and MIDI tests (read more
-about this in <A href="x3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
+about this in <A href="chapter3.htm#s3.3">3.3. Testing and configuring Audio and MIDI</A>).
 
 <figure>
-<IMG src="resources/2.1.6.png" ALT="media menu">
+<IMG src="2.1.6.png" ALT="media menu">
     <figcaption><u>Fig. 2.1.6</u> The Media menu</figcaption>
 </figure>
 
@@ -119,19 +119,19 @@ You can set different log levels to filter the output. The default level is 2 (n
 You can increase it to get more detailed information or decrease it to only see fatal errors.
 
 <figure>
-    <IMG src="resources/2.1.7.png" ALT="log levels">
+    <IMG src="2.1.7.png" ALT="log levels">
     <figcaption><u>Fig. 2.1.7</u> The log level popup menu</figcaption>
 </figure>
 
 <P> Errors are mostly printed by objects and displayed in the Pd window in red color.
 You can find error sources for the corresponding line with <kbd>Ctrl</kbd>+<kbd>click</kbd>
-as shown in <A href="x2.htm#sfinderror">here</A>).
+as shown in <A href="chapter2.htm#sfinderror">here</A>).
 
 <P> If the Pd window is focused, the font size for menus and printout can be changed
 using the "Font" dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="resources/2.1.8.png" ALT="edit menu">
+<IMG src="2.1.8.png" ALT="edit menu">
     <figcaption><u>Fig. 2.1.8</u> The Edit menu</figcaption>
 </figure>
 
@@ -140,7 +140,7 @@ having trouble reading on HiDPI screens. You can ignore the "Stretch" parameter 
 that only works for Pd documents.
 
 <figure>
-<IMG src="resources/2.1.9.png" ALT="font settings">
+<IMG src="2.1.9.png" ALT="font settings">
     <figcaption><u>Fig. 2.1.9</u> The Font settings dialog</figcaption>
 </figure>
 
@@ -159,7 +159,7 @@ accordingly to font size changes which don't affect the layout.
 Note that the Zoom setting is not saved in the patch though.
 
 <figure>
-<IMG src="resources/2.1.10.png" ALT="zoomed in and out">
+<IMG src="2.1.10.png" ALT="zoomed in and out">
     <figcaption><u>Fig. 2.1.10</u> A patch in standard and zoomed state</figcaption>
 </figure>
 
@@ -179,7 +179,7 @@ object box from the <b>Put menu</b>. When you insert a new object box, it is emp
 and presented with a dashed border before creation.
 
 <figure>
-<IMG src="resources/2.1.11.png" ALT="dashed box">
+<IMG src="2.1.11.png" ALT="dashed box">
     <figcaption><u>Fig. 2.1.11</u> An uncreated object box</figcaption>
 </figure>
 
@@ -191,7 +191,7 @@ arguments</i>, instruct Pd how to initialize the object. For instance, you can t
 "+ 13".
 
 <figure>
-<IMG src="resources/2.1.12.png" ALT="object box">
+<IMG src="2.1.12.png" ALT="object box">
     <figcaption><u>Fig. 2.1.12</u> A created object box</figcaption>
 </figure>
 
@@ -202,7 +202,7 @@ object will carry out additions, and the "13" initializes the value to add.
 a valid number is considered a symbol. Valid numbers may or may not have a
 decimal point, such as "12", "15.6", "-0.456". Numbers in Pd may also be
 written in exponential notation and have limited display and internal precison.
-Check more details in <A href="x2.htm#s2.4.1">subsection 2.4.1.</A>.
+Check more details in <A href="chapter2.htm#s2.4.1">subsection 2.4.1.</A>.
 
 
 <P>A number that starts with a "+" is not considered a valid number and is
@@ -220,7 +220,7 @@ can vary based on the creation arguments.
 synthesizes a pure tone:
 
 <figure>
-<IMG src="resources/2.1.13.png" ALT="simple MIDI synthesizer">
+<IMG src="2.1.13.png" ALT="simple MIDI synthesizer">
     <figcaption><u>Fig. 2.1.13</u> A simple MIDI synthesizer</figcaption>
 </figure>
 
@@ -281,7 +281,7 @@ In the example below, a click on the message box sends the message "21" to the
 connected object box, which adds 13 to it.
 
 <figure>
-<IMG src="resources/2.1.14.png" ALT="Different box shapes">
+<IMG src="2.1.14.png" ALT="Different box shapes">
     <figcaption><u>Fig. 2.1.14</u> Different box shapes</figcaption>
 </figure>
 
@@ -298,7 +298,7 @@ while the appearance of an object or message box remains unchanged when a patch 
 running, a number box's content changes to reflect the current value held by the box.
 You can also use a number box as a control by clicking and dragging up and down, or
 by typing values in it and hitting enter (more details on how this and any other GUIs
-work is available in the objects' help files; see <A href="x2.htm#s2.2.7">2.2.7. Popup
+work is available in the objects' help files; see <A href="chapter2.htm#s2.2.7">2.2.7. Popup
 menu for "Properties", "Open" and "Help"</A>.
 
 <H4> <A href="#s2.1.4" id="s2.1.4"> 2.1.4. Patches and files</A> </H4>
@@ -310,7 +310,7 @@ as well as close and save them.
 objects in the patch, but only what you see: the objects' creation arguments
 and their interconnections. Nonetheless, the <b>[savestate]</b>
 object offers a mechanism to save the state of abstractions (see
-<A href="x2.htm#s2.8">2.8. Subpatches</A>). Also, certain data-storage objects have
+<A href="chapter2.htm#s2.8">2.8. Subpatches</A>). Also, certain data-storage objects have
 functions for reading and writing files to save and restore their internal
 state (one example is the <b>[text]</b> object). When loading
 a patch, the <b>[loadbang]</b> object can be used to initialize
@@ -318,7 +318,7 @@ the parameters of your patch, so you can load text files and make other preparat
 
 <P>Pd searches for files using specified paths. Most objects capable of reading files
 search along these paths, but when Pd writes files, they are saved to the directory
-where the patch itself is located by default. Check <a href="x3.htm#s3.4">3.4. Path and
+where the patch itself is located by default. Check <a href="chapter3.htm#s3.4">3.4. Path and
 startup</A> for more details.
 
 <H3> <A href="#s2.2" id="s2.2">2.2. Editing Pd patches</A> </H3>
@@ -334,7 +334,7 @@ able to click on a box. In run mode, you mostly click and interact with GUIs (li
 number box) and message boxes (which are used as controls to send messages).
 
 <figure>
-<IMG src="resources/2.2.1.png" ALT="run mode arrow">
+<IMG src="2.2.1.png" ALT="run mode arrow">
     <figcaption><u>Fig. 2.2.1</u> The arrow cursors in run mode</figcaption>
 </figure>
 
@@ -342,7 +342,7 @@ number box) and message boxes (which are used as controls to send messages).
 <b>Edit menu</b> to activate and check it on.
 
 <figure>
-<IMG src="resources/2.2.2.png" ALT="edit mode">
+<IMG src="2.2.2.png" ALT="edit mode">
     <figcaption><u>Fig. 2.2.2</u> Selecting edit mode from the Edit menu</figcaption>
 </figure>
 
@@ -356,7 +356,7 @@ edit mode, the mouse cursor becomes a pointing hand instead of an arrow. Uncheck
 arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between these modes.
 
 <figure>
-<IMG src="resources/2.2.3.png" ALT="edit mode hand pointer">
+<IMG src="2.2.3.png" ALT="edit mode hand pointer">
     <figcaption><u>Fig. 2.2.3</u> The hand cursor in edit mode</figcaption>
 </figure>
 
@@ -364,11 +364,11 @@ arrow. You can use the <kbd>Ctrl</kbd>+<kbd>E</kbd> shortcut to switch between t
 You can also edit text, create or delete boxes and make or cut connections (more
 details on this will follow below) and you can resize some boxes in your patch,
 namely object boxes, number/symbol/list boxes, comments, messages. Note you can
-also resize <A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A> and
-<A href="x2.htm#s2.9">Arrays</A>.
+also resize <A href="chapter2.htm#s2.8.2">Graph-on-parent subpatches</A> and
+<A href="chapter2.htm#s2.9">Arrays</A>.
 
 <figure>
-<IMG src="resources/2.2.4.png" ALT="resizing boxes">
+<IMG src="2.2.4.png" ALT="resizing boxes">
     <figcaption><u>Fig. 2.2.4</u> The double arrow cursor for resizing boxes when in edit mode</figcaption>
 </figure>
 
@@ -396,7 +396,7 @@ pan in all directions. Resizing the patch window to fit all objects in removes t
 scrollbars.
 
 <figure>
-<IMG src="resources/2.2.5.png" ALT="scrollbars">
+<IMG src="2.2.5.png" ALT="scrollbars">
     <figcaption><u>Fig. 2.2.5</u> A patch window with scrollbars</figcaption>
 </figure>
 
@@ -408,7 +408,7 @@ You can create these boxes using the <b>Put menu</b>. Also note the handy shortc
 to create each item specifically.
 
 <figure>
-<IMG src="resources/2.2.6.png" ALT="put menu">
+<IMG src="2.2.6.png" ALT="put menu">
     <figcaption><u>Fig. 2.2.6</u> The Put menu</figcaption>
 </figure>
 
@@ -476,7 +476,7 @@ are also possible, but aligning horizontally and vertically separately tends to 
 better results. When boxes are misaligned drastically, this action won't do anything.
 
 <figure>
-<IMG src="resources/2.2.7.png" ALT="tidy up">
+<IMG src="2.2.7.png" ALT="tidy up">
     <figcaption><u>Fig. 2.2.7</u> Tidying up (aligning) vertically</figcaption>
 </figure>
 
@@ -524,7 +524,7 @@ the old object and creates a new one; so the internal state of the old one
 is completely lost.
 
 <figure>
-<IMG src="resources/2.2.8.png" ALT="changing text">
+<IMG src="2.2.8.png" ALT="changing text">
     <figcaption><u>Fig. 2.2.8</u> Editing text in an object box</figcaption>
 </figure>
 
@@ -547,18 +547,18 @@ anywhere within the target box and the connection will be made to the nearest
 inlet.
 
 <figure>
-<IMG src="resources/2.2.9.png" ALT="connecting boxes">
+<IMG src="2.2.9.png" ALT="connecting boxes">
     <figcaption><u>Fig. 2.2.9</u> Connecting boxes via click and drag</figcaption>
 </figure>
 
 <P>If you move the mouse cursor over a patch cord, you'll see it takes the shape
-of an "X" to denote you can select it and delete it. Click on the connection
+of an "chapter" to denote you can select it and delete it. Click on the connection
 to select it and press <kbd>Backspace</kbd> or <kbd>Delete</kbd> key to delete
 it. You can't just select patch cords with click and drag for a rectangular
 area and you can only select a single connection by clicking on it.
 
 <figure>
-<IMG src="resources/2.2.10.png" ALT="disconnecting boxes">
+<IMG src="2.2.10.png" ALT="disconnecting boxes">
     <figcaption><u>Fig. 2.2.10</u> Selecting a patch cord connection to delete it</figcaption>
 </figure>
 
@@ -577,9 +577,9 @@ what it is and how it works. Asking "Help" for the canvas as a whole
 every object class.
 
 <P>The "Open" menu item is only enabled if you right-click on a
-<A href="x2.htm#s2.8">subpatch</A> and prompts Pd to open it.
+<A href="chapter2.htm#s2.8">subpatch</A> and prompts Pd to open it.
 Ordinary subpatches may also be opened by simply clicking on them,
-but for <A href="x2.htm#s2.8.2">graph-on-parent subpatches</A>
+but for <A href="chapter2.htm#s2.8.2">graph-on-parent subpatches</A>
 this is the only method available.
 
 <P>The "Properties" dialog allows you to change certain settings of GUI
@@ -600,7 +600,7 @@ press <kbd>Shift</kbd>+<kbd>Tab</kbd> to navigate in reverse order, moving from 
 most recently created box back towards the first created ones.
 
 <figure>
-<IMG src="resources/2.3.1.png" ALT="tab navigation boxes">
+<IMG src="2.3.1.png" ALT="tab navigation boxes">
     <figcaption><u>Fig. 2.3.1</u> Navigating through objects with Tab</figcaption>
 </figure>
 
@@ -609,7 +609,7 @@ you have one selected. You can move from first to last with <kbd>Tab</kbd>
 and from last to first with <kbd>Shift</kbd>+<kbd>Tab</kbd>.
 
 <figure>
-<IMG src="resources/2.3.2.png" ALT="tab navigation cords">
+<IMG src="2.3.2.png" ALT="tab navigation cords">
     <figcaption><u>Fig. 2.3.2</u> Navigating through patch cords with Tab</figcaption>
 </figure>
 
@@ -619,19 +619,21 @@ The navigation order is left to right and it also cycles back. Pressing
 <kbd>Shift</kbd>+<kbd>Tab</kbd> navigates from right to left.
 
 <figure>
-<IMG src="resources/2.3.3.png" ALT="tab navigation outlets">
+<IMG src="2.3.3.png" ALT="tab navigation outlets">
     <figcaption><u>Fig. 2.3.3</u> Navigating through outlets with Tab</figcaption>
 </figure>
 
-<P>In Linux and Windows you can also cycle between inlets. This is currently
-not possible on macOS. When dragging a connection into an inlet area, without
-releasing the mouse, you can use <kbd>Tab</kbd> to navigate to the next inlet,
-or <kbd>Shift</kbd>+<kbd>Tab</kbd> to navigate to the previous one.
+<P>In Linux and Windows you can also cycle between inlets (this is currently
+not possible on macOS). When dragging a connection into an inlet area without
+releasing the mouse, you can use <kbd>Tab</kbd> to navigate to the next inlet.
+<kbd>Shift</kbd>+<kbd>Tab</kbd> is also possible, but it might produce unexpected
+results since pressing <kbd>Shift</kbd> while dragging a cord on an inlet creates
+a connection (see "fan out" interaction below).
 
 <H4> <A href="#s2.3.2" id="s2.3.2">2.3.2. Autopatching</A> </H4>
 
 <P>By default, Pd has an "autopatching" mode set to on. You can disable it
-via startup flags (see "-autopatch" flag <a href="x3.htm#s3.4.1">3.4.1.
+via startup flags (see "-autopatch" flag <a href="chapter3.htm#s3.4.1">3.4.1.
 Startup flags</A>). This works with the shortcuts from the <b>Put menu</b>
 for inserting boxes. If you have a selected box and use a shortcut to
 create another one (such as <kbd>Ctrl</kbd>+<kbd>1</kbd> to create an
@@ -647,12 +649,12 @@ created box, since when you autopatch for the next one, the object or message
 box gets deselected and instantiated.
 
 <figure>
-<IMG src="resources/2.3.4.png" ALT="autopatch objects">
+<IMG src="2.3.4.png" ALT="autopatch objects">
     <figcaption><u>Fig. 2.3.4</u> Autopatching with shortcuts from the Put menu</figcaption>
 </figure>
 
 
-<P>You can also autopatch into a newly created subpatch (see <A href="x2.htm#s2.8">
+<P>You can also autopatch into a newly created subpatch (see <A href="chapter2.htm#s2.8">
 2.8. Subpatches</A>). By creating an object box and typing "pd", as soon as you
 deselect the object, a <b>[pd]</b> subpatch is created with an
 inlet - either a control <b>[inlet]</b> if the object
@@ -660,7 +662,7 @@ above is a control object, or a signal <b>[inlet~]</b> if
 it is a tilde object instead.
 
 <figure>
-<IMG src="resources/2.3.5.png" ALT="autopatching subpatches">
+<IMG src="2.3.5.png" ALT="autopatching subpatches">
     <figcaption><u>Fig. 2.3.5</u> Creating subpatches with autopatching</figcaption>
 </figure>
 
@@ -672,7 +674,7 @@ outlet and inlet for connections, you can use <kbd>Ctrl</kbd>+<kbd>D</kbd> to
 duplicate and create more connections.
 
 <figure>
-<IMG src="resources/2.3.6.png" ALT="duplicate connections">
+<IMG src="2.3.6.png" ALT="duplicate connections">
     <figcaption><u>Fig. 2.3.6</u> Duplicate connections with Ctrl+D</figcaption>
 </figure>
 
@@ -682,7 +684,7 @@ duplicate and create more connections.
 <kbd>Shift</kbd>+<kbd>Click</kbd> on another one.
 
 <figure>
-<IMG src="resources/2.3.7.png" ALT="swap connections">
+<IMG src="2.3.7.png" ALT="swap connections">
     <figcaption><u>Fig. 2.3.7</u> Swap connections</figcaption>
 </figure>
 
@@ -694,7 +696,7 @@ another connection from the outlet for you to drag somewhere else and
 connect the same outlet to to multiple inlets sequentially.
 
 <figure>
-    <IMG src="resources/2.3.8.png" ALT="shift fan out">
+    <IMG src="2.3.8.png" ALT="shift fan out">
     <figcaption><u>Fig. 2.3.8</u> Faning out</figcaption>
 </figure>
 
@@ -704,7 +706,7 @@ to create a connection into the same inlet number of the selected boxes (which d
 not need to be of the same type or class).
 
 <figure>
-    <IMG src="resources/2.3.9.png" ALT="select fan out">
+    <IMG src="2.3.9.png" ALT="select fan out">
     <figcaption><u>Fig. 2.3.9</u> Faning out with box selections</figcaption>
 </figure>
 
@@ -715,7 +717,7 @@ connections from the same outlet number of the selected boxes (which do not need
 be of the same type or class).
 
 <figure>
-    <IMG src="resources/2.3.10.png" ALT="select fan in">
+    <IMG src="2.3.10.png" ALT="select fan in">
     <figcaption><u>Fig. 2.3.10</u> Faning in with box selections</figcaption>
 </figure>
 
@@ -724,7 +726,7 @@ boxes. Start creating a connection and click <kbd>Shift</kbd> at completion.
 This creates all possible connections starting from the chosen outlet and inlet.
 
 <figure>
-<IMG src="resources/2.3.11.png" ALT="multiple connections">
+<IMG src="2.3.11.png" ALT="multiple connections">
     <figcaption><u>Fig. 2.3.11</u> Multiple connections between 2 objects</figcaption>
 </figure>
 
@@ -736,7 +738,7 @@ not need to be of the same type or class) into separate inlets, starting from th
 chosen inlet.
 
 <figure>
-    <IMG src="resources/2.3.12.png" ALT="many to one">
+    <IMG src="2.3.12.png" ALT="many to one">
     <figcaption><u>Fig. 2.3.12</u> Multiple connections between many to one</figcaption>
 </figure>
 
@@ -748,7 +750,7 @@ made from the outlets of the source box to the same inlet numbers of the target
 boxes.
 
 <figure>
-<IMG src="resources/2.3.13.png" ALT=" one to many">
+<IMG src="2.3.13.png" ALT=" one to many">
     <figcaption><u>Fig. 2.3.13</u> Multiple connections between one to many</figcaption>
 </figure>
 
@@ -759,17 +761,19 @@ boxes.
 boxes in different ways.
 
 <figure>
-<IMG src="resources/2.3.14.png" ALT="ctrl+k">
+<IMG src="2.3.14.png" ALT="ctrl+k">
     <figcaption><u>Fig. 2.3.14</u> The "(Dis)Connect selection" entry from the Edit menu</figcaption>
 </figure>
 
 <P>For 2 selected boxes you can use <kbd>Ctrl</kbd>+<kbd>K</kbd> to connect
-them. Repeat using <kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections
-from possible remaining outlets to inlets.
+them. It starts by connecting the leftmost outlet to the leftmost inlet. It
+there are more outlets and inlets to connect, you can repeat using
+<kbd>Ctrl</kbd>+<kbd>K</kbd> to make multiple connections from possible the
+remaining outlets to inlets.
 
 <figure>
-    <IMG src="resources/2.3.15.png" ALT="repeat ctrl+k">
-    <figcaption><u>Fig. 2.3.15</u> Repeating ctrl+k for multiple connections</figcaption>
+    <IMG src="2.3.15.png" ALT="repeat ctrl+k">
+    <figcaption><u>Fig. 2.3.15</u> Using ctrl+k for one or multiple connections between 2 selected boxes</figcaption>
 </figure>
 
 
@@ -778,10 +782,17 @@ the target object has many inlets, you can repeatedly use <kbd>Ctrl</kbd>+<kbd>K
 to fan out and connect the same outlet to all inlets.
 
 <figure>
-    <IMG src="resources/2.3.16.png" ALT="fan out audio">
-    <figcaption><u>Fig. 2.3.16</u> Fan out audio connections</figcaption>
+    <IMG src="2.3.16.png" ALT="fan out audio">
+    <figcaption><u>Fig. 2.3.16</u> Fan out audio connections with ctrl+k</figcaption>
 </figure>
 
+<P>As for disconneting, you can use this shortcut to remove all connections from a
+single selected box.
+
+<figure>
+    <IMG src="2.3.17.png" ALT="exclude box">
+    <figcaption><u>Fig. 2.3.17</u> Remove connections</figcaption>
+</figure>
 
 <P>For last, you can include or bypass a box into or from a connection
 (being it any connection from any outlet into any inlet). To include a box,
@@ -792,16 +803,16 @@ boxes with a connection between 2 of them and then use <kbd>Shift</kbd>+<kbd>Cli
 to include the third one in the connection.
 
 <figure>
-    <IMG src="resources/2.3.17.png" ALT="insert box">
-    <figcaption><u>Fig. 2.3.17</u> Insert box</figcaption>
+    <IMG src="2.3.18.png" ALT="insert box">
+    <figcaption><u>Fig. 2.3.18</u> Insert box</figcaption>
 </figure>
 
 <P>To bypass a box, you can select 3 boxes connected in a row and use
 <kbd>Ctrl</kbd>+<kbd>K</kbd> to bypass and remove the middle box from the connection.
 
 <figure>
-    <IMG src="resources/2.3.18.png" ALT="exclude box">
-    <figcaption><u>Fig. 2.3.18</u> Exclude box</figcaption>
+    <IMG src="2.3.19.png" ALT="exclude box">
+    <figcaption><u>Fig. 2.3.19</u> Exclude box</figcaption>
 </figure>
 
 <H4> <A href="#s2.3.6" id="s2.3.6">2.3.6. Triggerize</A> </H4>
@@ -814,7 +825,7 @@ a <b>[trigger]</b> object after the selected object.
 
 <P>The <b>[trigger]</b> object is widely used in Pd to control the order
 of execution from right to left and is briefly described in
-<A href="x2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
+<A href="chapter2.htm#s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A>.
 "Triggerize" then creates the <b>[trigger]</b> object taking into account
 the order in which the connections were made, where the first connection starts at the
 rightmost outlet of <b>[trigger]</b> and continues to the leftmost.
@@ -825,12 +836,12 @@ then introduces <b>[t a a a]</b> (short for
 <b>[trigger anything anything anything]</b>) with three outlets and the
 order that the connections from <b>[pack]</b> were made reflect the order
 from right to left. You can swap connections with the <kbd>Shift</kbd> key (as described
-in subsection <A href="x2.htm#s2.3.4">2.3.4.</A>) if you need to adjust the order of
+in subsection <A href="chapter2.htm#s2.3.4">2.3.4.</A>) if you need to adjust the order of
 connections.
 
 <figure>
-    <IMG src="resources/2.3.19.png" ALT="triggerize object">
-    <figcaption><u>Fig. 2.3.19</u> Add a [trigger] object</figcaption>
+    <IMG src="2.3.20.png" ALT="triggerize object">
+    <figcaption><u>Fig. 2.3.20</u> Add a [trigger] object</figcaption>
 </figure>
 
 <P>Additionally, the "Triggerize" option can be used to insert a dummy object. To do so,
@@ -841,8 +852,8 @@ new text to create another object instead. Similarly, for a signal connection, a
 
 
 <figure>
-    <IMG src="resources/2.3.20.png" ALT="insert dummy">
-    <figcaption><u>Fig. 2.3.20</u> Insert a dummy subpatch</figcaption>
+    <IMG src="2.3.21.png" ALT="insert dummy">
+    <figcaption><u>Fig. 2.3.21</u> Insert a dummy subpatch</figcaption>
 </figure>
 
 <P>Triggerize also allows you to create or remove outlets of a selected
@@ -851,16 +862,16 @@ and outlets. As shown below, if each outlet has a single connection, it will ins
 outlet on the left.
 
 <figure>
-    <IMG src="resources/2.3.21.png" ALT="add 1st outlet">
-    <figcaption><u>Fig. 2.3.21</u> Add a leftmost outlet</figcaption>
+    <IMG src="2.3.22.png" ALT="add 1st outlet">
+    <figcaption><u>Fig. 2.3.22</u> Add a leftmost outlet</figcaption>
 </figure>
 
 Now, if the <b>[trigger]</b> object has more outlets than outgoing
 connections, "Triggerize" removes the unused outlets.
 
 <figure>
-    <IMG src="resources/2.3.22.png" ALT="reduce outlets">
-    <figcaption><u>Fig. 2.3.22</u> Reduce outlets</figcaption>
+    <IMG src="2.3.23.png" ALT="reduce outlets">
+    <figcaption><u>Fig. 2.3.23</u> Reduce outlets</figcaption>
 </figure>
 
 In case there are more connections than outlets, "Triggerize" adds outlets
@@ -868,8 +879,8 @@ to distribute all connections to separate ones (following the creation order
 of the connections from right to left).
 
 <figure>
-    <IMG src="resources/2.3.23.png" ALT="distribute connections">
-    <figcaption><u>Fig. 2.3.23</u> Distribute connections</figcaption>
+    <IMG src="2.3.24.png" ALT="distribute connections">
+    <figcaption><u>Fig. 2.3.24</u> Distribute connections</figcaption>
 </figure>
 
 <H4> <A href="#s2.3.7" id="s2.3.7">2.3.7. Paste replace</A> </H4>
@@ -883,8 +894,8 @@ Replace". All the selected boxes of the same type get replaced by the copied box
 connections are preserved.
 
 <figure>
-    <IMG src="resources/2.3.24.png" ALT="paste replace entry">
-    <figcaption><u>Fig. 2.3.24</u> Paste replacing an object</figcaption>
+    <IMG src="2.3.25.png" ALT="paste replace entry">
+    <figcaption><u>Fig. 2.3.25</u> Paste replacing an object</figcaption>
 </figure>
 
 <P>Alternatively, you can copy a number box instead of a <b>[float]</b> object
@@ -898,8 +909,8 @@ A subpatch or an abstraction can also be used for "Paste Replace" and they
 count as the same object group type.
 
 <figure>
-    <IMG src="resources/2.3.25.png" ALT="paste replace boxes">
-    <figcaption><u>Fig. 2.3.25</u> Paste replacing a number box</figcaption>
+    <IMG src="2.3.26.png" ALT="paste replace boxes">
+    <figcaption><u>Fig. 2.3.26</u> Paste replacing a number box</figcaption>
 </figure>
 
 <P>If you have a selection of boxes to replace that includes different
@@ -907,8 +918,8 @@ types of boxes, the "Paste Replace" will only replace the boxes of the
 same type that was copied.
 
 <figure>
-    <IMG src="resources/2.3.26.png" ALT="paste replace similar type">
-    <figcaption>><u>Fig. 2.3.26</u> Paste replacing the same box type</figcaption>
+    <IMG src="2.3.27.png" ALT="paste replace similar type">
+    <figcaption><u>Fig. 2.3.27</u> Paste replacing the same box type</figcaption>
 </figure>
 
 <H3> <A href="#s2.4" id="s2.4">2.4. Messages</A> </H3>
@@ -928,7 +939,7 @@ message is only composed of symbols but a list message can combine two or more
 symbols and/or floats.
 
 <figure>
-    <IMG src="resources/2.4.1.png" ALT="list selector">
+    <IMG src="2.4.1.png" ALT="list selector">
     <figcaption><u>Fig. 2.4.1</u> List messages</figcaption>
 </figure>
 
@@ -948,7 +959,7 @@ contains only one symbol, like "stop", it is considered a selector with no actua
 arguments. The symbol selector can only have one symbol argument. See below.
 
 <figure>
-    <IMG src="resources/2.4.2.png" ALT="Different selectors">
+    <IMG src="2.4.2.png" ALT="Different selectors">
     <figcaption><u>Fig. 2.4.2</u> Different selectors</figcaption>
 </figure>
 
@@ -958,7 +969,7 @@ the receiver. If the receiver recognizes messages of that selector, it carries o
 corresponding action. Let's take the <b>[float]</b> object below as an example.
 
 <figure>
-    <IMG src="resources/2.4.3.png" ALT="float help">
+    <IMG src="2.4.3.png" ALT="float help">
     <figcaption><u>Fig. 2.4.3</u> The help file of the <b>[float]</b> object</figcaption>
 </figure>
 
@@ -973,7 +984,7 @@ explanations for the funcions of all inlets and outlets, also specifying what ki
 of messages they take and output. See below.
 
 <figure>
-    <IMG src="resources/2.4.4.png" ALT="reference">
+    <IMG src="2.4.4.png" ALT="reference">
         <figcaption><u>Fig. 2.4.4</u> The <b>[float]</b>'s reference</figcaption>
 </figure>
 
@@ -1037,7 +1048,7 @@ precision. The integer range is shown below for single and double precision.
 <tr>
 <td> <strong>min</strong> integer </td>
 <td>&minus;2<sup>24</sup> (&minus;16777216) </td>
-<td>&minus;2<sup>53</sup> (&minus;007199254740992) </td>
+<td>&minus;2<sup>53</sup> (&minus;9007199254740992) </td>
 </tr>
 <tr>
 <td> <strong>max</strong> integer </td>
@@ -1055,7 +1066,7 @@ it is prone to rounding errors. For instance, Pd can only represent Pi as
 "3.14159", but it can be calculated with more precision from math objects.
 
 <figure>
-    <IMG src="resources/2.4.5.png" ALT="precision">
+    <IMG src="2.4.5.png" ALT="precision">
     <figcaption><u>Fig. 2.4.5</u>Display precision</figcaption>
 </figure>
 
@@ -1079,7 +1090,7 @@ others. So each message sets off a tree of subsequent messages. This tree is
 executed in depth first fashion. For instance in the patch below:
 
 <figure>
-    <IMG src="resources/2.4.6.png" ALT="depth first">
+    <IMG src="2.4.6.png" ALT="depth first">
     <figcaption><u>Fig. 2.4.6</u> A tree with depth first message passing</figcaption>
 </figure>
 
@@ -1091,7 +1102,7 @@ depends on the order the connections were made in.
 <P>Message-passing can give rise to infinite loops of the sort shown here:
 
 <figure>
-    <IMG src="resources/2.4.7.png" ALT="infinite loop">
+    <IMG src="2.4.7.png" ALT="infinite loop">
     <figcaption><A id="sfinderror"><u>Fig. 2.4.7</u> An infinite loop (stack overflow)</A></figcaption>
 </figure>
 
@@ -1103,7 +1114,7 @@ on (as described earlier) to select the causing object. Note that you can also u
 "Find Last Error" entry in the <b>Find menu</b> for this.
 
 <figure>
-    <IMG src="resources/2.4.8.png" ALT="find error source">
+    <IMG src="2.4.8.png" ALT="find error source">
     <figcaption><u>Fig. 2.4.8</u> Find error via the console window</figcaption>
 </figure>
 
@@ -1119,7 +1130,7 @@ wake the <b>[delay]</b> back up later.
 So the following is a legal (and reasonable) loop construct:
 
 <figure>
-    <IMG src="resources/2.4.9.png" ALT="hot and cold inlets">
+    <IMG src="2.4.9.png" ALT="hot and cold inlets">
     <figcaption><u>Fig. 2.4.9</u> Avoiding infinite loop with a cold inlet</figcaption>
 </figure>
 
@@ -1141,7 +1152,7 @@ receive their messages. Suppose for example you wish to use <b>[+]</b>
 to double a number. The following is incorrect:
 
 <figure>
-<IMG src="resources/2.4.10.png" ALT="incorrect inlet connection">
+<IMG src="2.4.10.png" ALT="incorrect inlet connection">
     <figcaption><u>Fig. 2.4.10</u> An undefined connection order</figcaption>
 </figure>
 
@@ -1159,7 +1170,7 @@ usually what you want. Here is how to use <b>[trigger]</b> to disambiguate
 the previous example:
 
 </P><figure>
-    <IMG src="resources/2.4.11.png" ALT="trigger to disambiguate">
+    <IMG src="2.4.11.png" ALT="trigger to disambiguate">
     <figcaption><u>Fig. 2.4.11</u> A defined connection order with <b>[trigger]</b></figcaption>
 </figure>
 
@@ -1183,7 +1194,7 @@ the message or messages are sent, either to the message box's outlet or
 elsewhere as specified.
 
 </P><figure>
-    <IMG src="resources/2.4.12.png" ALT="message boxes">
+    <IMG src="2.4.12.png" ALT="message boxes">
     <figcaption><u>Fig. 2.4.12</u> Messages with different selectors</figcaption>
 </figure>
 
@@ -1195,7 +1206,7 @@ the selector "my" and the two arguments are the number 5 and the symbol "toes".
 <P>Multiple messages may be separated by commas as shown:
 
 <figure>
-    <IMG src="resources/2.4.13.png" ALT="multiple messages in one box">
+    <IMG src="2.4.13.png" ALT="multiple messages in one box">
     <figcaption><u>Fig. 2.4.13</u> Messages separated by commas</figcaption>
 </figure>
 
@@ -1214,7 +1225,7 @@ from the outlet to an object named "fred" (which is a receive object here), and
 likewise the next message is sent to "sue".
 
 <figure>
-    <IMG src="resources/2.4.14.png" ALT="semicolons to send messages">
+    <IMG src="2.4.14.png" ALT="semicolons to send messages">
     <figcaption><u>Fig. 2.4.14</u> Messages sent to receive symbols</figcaption>
 </figure>
 
@@ -1229,14 +1240,14 @@ start the message with the receive symbol (and you can also send messages to "pd
 this way).
 
 <figure>
-    <IMG src="resources/2.4.15.png" ALT="message dialog">
+    <IMG src="2.4.15.png" ALT="message dialog">
     <figcaption><u>Fig. 2.4.15</u> Sending messages via the message dialog</figcaption>
 </figure>
 
 <P>You can put variables in message boxes as shown below:
 
 <figure>
-    <IMG src="resources/2.4.16.png" ALT="variables in message boxes">
+    <IMG src="2.4.16.png" ALT="variables in message boxes">
     <figcaption><u>Fig. 2.4.16</u> A message with a "$1" variable</figcaption>
 </figure>
 
@@ -1315,16 +1326,16 @@ message on the main Pd window, saying "DSP loop detected (some tilde
 objects weren't scheduled)".
 
 <figure>
-    <IMG src="resources/2.5.1.png" ALT="dsp loop error">
+    <IMG src="2.5.1.png" ALT="dsp loop error">
     <figcaption><u>Fig. 2.5.1</u> A DSP loop error</figcaption>
 </figure>
 
 <P> You can build algorithms with feedback using nonlocal signal connections
-as explained in the <A href="x2.htm#s2.5.5">2.5.5. subsection</A>.
+as explained in the <A href="chapter2.htm#s2.5.5">2.5.5. subsection</A>.
 
 <P>Your subpatches can have audio inlets and outlets via the
 <b>[inlet~]</b> and <b>[outlet~]</b>
-objects (see <A href="x2.htm#s2.8">2.8. Subpatches</A>).
+objects (see <A href="chapter2.htm#s2.8">2.8. Subpatches</A>).
 
 <H4> <A href="#s2.5.3" id="s2.5.3">2.5.3. Converting audio to and from messages</A> </H4>
 
@@ -1460,7 +1471,7 @@ milliseconds. You may turn DSP computation on and off in a patch by sending
 the messages "dsp 1" and "dsp 0" to "pd".
 
 <figure>
-    <IMG src="resources/2.6.1.png" ALT="dsp on and off on patch level">
+    <IMG src="2.6.1.png" ALT="dsp on and off on patch level">
     <figcaption><u>Fig. 2.6.1</u> Setting the DSP status on the patch level</figcaption>
 </figure>
 
@@ -1482,7 +1493,7 @@ but at the same logical time.
 that is, it tries to keep ahead of real time by a small amount in order to be
 able to absorb unpredictable, momentary increases in computation time. This
 is specified using the "-audiobuf" and "-blocksize" command line flags
-(see <a href="x3.htm#s3.4.1">3.4.1. Startup flags</A>).
+(see <a href="chapter3.htm#s3.4.1">3.4.1. Startup flags</A>).
 
 <P>If Pd gets late with respect to real time, gaps (either occasional or
 frequent) will appear in both the input and output audio streams. On the
@@ -1658,14 +1669,14 @@ in a patch. If you type <b>[pd]</b> or
 a one-off subpatch. For instance, in this fragment:
 
 <figure>
-    <IMG src="resources/2.8.1.png" ALT="subpatch">
+    <IMG src="2.8.1.png" ALT="subpatch">
     <figcaption><u>Fig. 2.8.1</u> A subpatch called "my-subpatch"</figcaption>
 </figure>
 
 <p>The box in the middle, if clicked on, opens the sub-patch shown here:
 
 <figure>
-    <IMG src="resources/2.8.2.png" ALT="open subpatch window">
+    <IMG src="2.8.2.png" ALT="open subpatch window">
     <figcaption><u>Fig. 2.8.2</u> The insides of the subpatch</figcaption>
 </figure>
 
@@ -1691,7 +1702,7 @@ subpatch.
 and then invoke it in an object box as <b>[abstraction1]</b>:
 
 <figure>
-    <IMG src="resources/2.8.3.png" ALT="abstraction">
+    <IMG src="2.8.3.png" ALT="abstraction">
     <figcaption><u>Fig. 2.8.3</u> An abstraction (a patch file loaded as an object)</figcaption>
 </figure>
 
@@ -1699,7 +1710,7 @@ and then invoke it in an object box as <b>[abstraction1]</b>:
 patch shown here:
 
 <figure>
-    <IMG src="resources/2.8.4.png" ALT="abstraction example">
+    <IMG src="2.8.4.png" ALT="abstraction example">
 
     <figcaption><u>Fig. 2.8.4</u> The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
@@ -1740,14 +1751,14 @@ check the "graph on parent" box to have the controls of the subpatch/abstraction
 appear on the parent. For instance, here is an invocation of <b>[abstraction2]</b>:
 
 <figure>
-    <IMG src="resources/2.8.5.png" ALT="graph-on-parent abstraction">
+    <IMG src="2.8.5.png" ALT="graph-on-parent abstraction">
     <figcaption><u>Fig. 2.8.5</u> An abstraction with "Graph-on-Parent" enabled</figcaption>
 </figure>
 
 <p>Where the patch "abstraction2.pd" contains:
 
 <figure>
-    <IMG src="resources/2.8.6.png" ALT="inside graph-on-parent abstraction">
+    <IMG src="2.8.6.png" ALT="inside graph-on-parent abstraction">
     <figcaption><u>Fig. 2.8.6</u> The insides of the "Graph-on-Parent" <b>[abstraction2.pd]</b> abstraction</figcaption>
 </figure>
 
@@ -1798,7 +1809,7 @@ the containing patch), or as a regular subpatch (which you see as a text box).
 In the "graph on parent" form, an array appears as shown:
 
 <figure>
-    <IMG src="resources/2.9.1.png" ALT="array">
+    <IMG src="2.9.1.png" ALT="array">
     <figcaption><u>Fig. 2.9.1</u> An array</figcaption>
 </figure>
 
@@ -1806,7 +1817,7 @@ In the "graph on parent" form, an array appears as shown:
 You can use objects to read and write arrays and manipulate them in many ways.
 
 <figure>
-    <IMG src="resources/2.9.2.png" ALT="array indexing">
+    <IMG src="2.9.2.png" ALT="array indexing">
     <figcaption><u>Fig. 2.9.2</u> Reading an array with <b>[tabread]</b></figcaption>
 
 </figure>
@@ -1816,7 +1827,7 @@ You can use objects to read and write arrays and manipulate them in many ways.
 To write into the array, you can use the <b>[tabwrite]</b> object:
 
 <figure>
-    <IMG src="resources/2.9.3.png" ALT="setting an value in an array">
+    <IMG src="2.9.3.png" ALT="setting an value in an array">
     <figcaption><u>Fig. 2.9.3</u>Writing to an array with <b>[tabwrite]</b></figcaption>
 </figure>
 
@@ -1828,7 +1839,7 @@ and to arrays. These may also be done using audio signals. For example,
 the patch below creates a 440 Hz tone with "array1" as a waveform:
 
 <figure>
-    <IMG src="resources/2.9.4.png" ALT="setting an array with a waveform">
+    <IMG src="2.9.4.png" ALT="setting an array with a waveform">
     <figcaption><u>Fig. 2.9.4</u> Using signals to read an array with <b>[tabread4~]</b></figcaption>
 </figure>
 
@@ -1849,7 +1860,7 @@ later using the "Properties" dialog.
 for the array and one for the graph. The array dialog looks like this:
 
 <figure>
-    <IMG src="resources/2.9.5.png" ALT="array properties window">
+    <IMG src="2.9.5.png" ALT="array properties window">
     <figcaption><u>Fig. 2.9.5</u> The array properties dialog</figcaption>
 </figure>
 
@@ -1869,7 +1880,7 @@ lacks a mechanism for selecting arrays (so that "cut" could serve this purpose).
 <P>The graph dialog (which also pops up) is shown here:
 
 <figure>
-    <IMG src="resources/2.9.6.png" ALT="graph properties">
+    <IMG src="2.9.6.png" ALT="graph properties">
     <figcaption><u>Fig. 2.9.6</u> The canvas properties dialog</figcaption>
 </figure>
 
@@ -1916,7 +1927,7 @@ with many examples. Here is one simple example from this series (09.sequencer.pd
 with a very short musical sketch realized using Pd:
 
 <figure>
-    <IMG src="resources/2.10.1.png" ALT="graphical score">
+    <IMG src="2.10.1.png" ALT="graphical score">
     <figcaption><u>Fig. 2.10.1</u> A graphical score with Data Structures</figcaption>
 </figure>
 
@@ -1941,7 +1952,7 @@ mechanism. Here is the template associated with the graphical objects shown
 above.
 
 <figure>
-    <IMG src="resources/2.10.2.png" ALT="template for graphical score">
+    <IMG src="2.10.2.png" ALT="template for graphical score">
     <figcaption><u>Fig. 2.10.2</u> The "struct" and drawing instructions for the score's elements</figcaption>
 </figure>
 
@@ -1950,15 +1961,15 @@ object) and zero or more drawing instructions (such as <b>[filledpolygon]</b>
 and <b>[plot]</b>). The <b>[struct]</b> object gives the template the name
 "template-event". The data structure
 
-is defined to contain three floating point numbers named "x", "y", and "color",
+is defined to contain three floating point numbers named "chapter", "y", and "color",
 and two arrays, one named "pitch" whose elements belong to another template
 named "template-pitch", and similarly for the array "amp" (both data structures
-contain three floating point numbers named "x", "y", and "w", for x/y position
+contain three floating point numbers named "chapter", "y", and "w", for x/y position
 and width.)
 
 <P>In general, data structures are built from four data types: scalar floats
 and symbols, text and arrays (whose elements share another, specified template).
-The contents of a Pd window themselves form a list. <A href="x2.htm#s2.9">Arrays</A>
+The contents of a Pd window themselves form a list. <A href="chapter2.htm#s2.9">Arrays</A>
 are actually implemented as a top-level data structure array, whose elements are
 scalars containing a single floating-point number.
 
@@ -1984,7 +1995,7 @@ given as 0, which is black.
 
 <P>Pd objects are provided to traverse lists and arrays, and to address elements
 of data structures for getting and setting. Pd has no built-in sequencer, nor
-even any notion that "x" values should be used as a time axis. (However, a
+even any notion that "chapter" values should be used as a time axis. (However, a
 "sort" function is provided, which reorders a list from left to right, on the
 assumption that users might often want to use Pd data collections as x-ordered
 sequences.) Recording sequences of events into lists, and/or playing the lists
@@ -2001,7 +2012,7 @@ instantiate different copies of the <b>[voice]</b> abstraction, which is
 responsible for synthesizing each voice from the score.
 
 <figure>
-    <IMG src="resources/2.10.3.png" ALT="score playing subpatch">
+    <IMG src="2.10.3.png" ALT="score playing subpatch">
     <figcaption><u>Fig. 2.10.3</u> The subpatch that plays the graphcal score</figcaption>
 </figure>
 
@@ -2015,7 +2026,7 @@ data type is also integrated into pipe-fitting objects such as <b>[pack]</b>,
 with pointers.
 
 <figure>
-    <IMG src="resources/2.10.4.png" ALT="[pd sequence] subpatch">
+    <IMG src="2.10.4.png" ALT="[pd sequence] subpatch">
     <figcaption><u>Fig. 2.10.4</u> The sequencing subpatch</figcaption>
 </figure>
 
@@ -2034,7 +2045,7 @@ event (including the non-event of hitting "start") and the next.
 <b>[get template-event]</b> object with the 'x' field. This is converted to incremental
 time with <b>[-]</b>, corrected for tempo, and fed to the <b>[delay]</b> object. Pd provides
 the <b>[get]</b> and <b>[set]</b> objects for reading and writing values from data structures.
-The <b>[get]</b> object shown here obtains the "x" and "y" fields of the current object.
+The <b>[get]</b> object shown here obtains the "chapter" and "y" fields of the current object.
 The template name (template-event) is supplied to the <b>[get]</b> objects so that they can
 look up the offset of the necessary field(s) in advance, for greater run-time efficiency.
 
@@ -2045,7 +2056,7 @@ that object. Once the delay time has expired, the object's pointer is recalled w
 needed by <b>[clone]</b>). Let's check the <b>[voice]</b> abstraction below.
 
 <figure>
-    <IMG src="resources/2.10.5.png" ALT="[voice] abstraction">
+    <IMG src="2.10.5.png" ALT="[voice] abstraction">
     <figcaption><u>Fig. 2.10.5</u> The cloned <b>[voice]</b> abstraction with sound synthesis</figcaption>
 </figure>
 
@@ -2056,7 +2067,7 @@ the overall structure of the sequencer patch mirrors the nesting of the original
 structures. Let's have a look at the <b>[data-array]</b> abstraction below.
 
 <figure>
-    <IMG src="resources/2.10.6.png" ALT="[data-array] abstraction">
+    <IMG src="2.10.6.png" ALT="[data-array] abstraction">
     <figcaption><u>Fig. 2.10.6</u> The <b>[data-array]</b> abstraction</figcaption>
 
 </figure>
@@ -2297,7 +2308,7 @@ the inlets in the opposite, more natural order.
 ways in Pd and MAX, and block sizes are handled differently as well.
 
 <P> The 'bpatcher' feature in MAX has a correlate in Pd
-(<A href="x2.htm#s2.8.2">Graph-on-parent subpatches</A>); however, Pd's version is
+(<A href="chapter2.htm#s2.8.2">Graph-on-parent subpatches</A>); however, Pd's version is
 quite different from the one in MAX.
 
 <P> Pd's correlate of Max's <b>[itable]</b> object are arrays implemented as a high
@@ -2329,7 +2340,7 @@ you can run Pd as a subprocess inside MAX. A download of the external is provide
 installed for Pd. The picture below shows a <b>[pd~]</b> object in MAX 8.
 
 <figure>
-<IMG src="resources/2.11.1.png" ALT="pd~ in max">
+<IMG src="2.11.1.png" ALT="pd~ in max">
     <figcaption><u>Fig. 2.11.1</u> The <b>[pd~]</b> external for MAX</figcaption>
 </figure>
 
@@ -2355,9 +2366,9 @@ complete and cohesive system with lots of GUIs and functions you can find in MAX
 
 </div>
 <div class="nav nav-bottom">
-    <div class="nav-back"><A href="x1.htm">&lt; Chapter 1: Introduction</A></div>
-    <div class="nav-home"><A href="index.htm#s2">Table of contents</A></div>
-    <div class="nav-forward"><A href="x3.htm">Chapter 3: Installing and configuring Pd &gt;</A></div>
+    <div class="nav-back"><A href="chapter1.htm">&lt; Chapter 1: Introduction</A></div>
+    <div class="nav-home"><A href="../index.htm#s2">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter3.htm">Chapter 3: Installing and configuring Pd &gt;</A></div>
 </div>
 
 </BODY>
