@@ -1042,6 +1042,9 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
         int size;
         long indx;
         t_word *wvec;
+        t_float *op;    // output pointer
+        t_float *ap;    // arg pointer
+        int j;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
             !garray_getfloatwords(garray, &size, &wvec)) {
@@ -1055,23 +1058,43 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
 
         switch (arg->ex_type) {
         case ET_INT:
+                optr->ex_type = ET_FLT;
                 indx = arg->ex_int;
                 break;
         case ET_FLT:
+                optr->ex_type = ET_FLT;
                 /* strange interpolation code deleted here -msp */
                 indx = arg->ex_flt;
+                break;
+        case ET_VI:
+                if (optr->ex_type != ET_VEC) {
+                    optr->ex_type = ET_VEC;
+                    optr->ex_vec = (t_float *)fts_malloc(sizeof(t_float)*expr->exp_vsize);
+                }
+                op = optr->ex_vec;
+                ap = arg->ex_vec;
+                j = expr->exp_vsize;
+                while (j--) {
+                    indx = (int)*ap;
+                    if (indx < 0) indx = 0;
+                    else if (indx >= size) indx = size - 1;
+                    *op = (t_float)wvec[indx].w_float;
+                    ap++; op++;
+                }
                 break;
 
         default:        /* do something with strings */
                 pd_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
                 indx = 0;
         }
-        if (indx < 0) indx = 0;
-        else if (indx >= size) indx = size - 1;
-        optr->ex_flt = wvec[indx].w_float;
+        if (optr->ex_type == ET_FLT) {
+            if (indx < 0) indx = 0;
+            else if (indx >= size) indx = size - 1;
+            optr->ex_flt = wvec[indx].w_float;
+        }
 #else /*  if 1 tabled code */
- The code below implement 4 point interpolation of table access
- which for now I (sdy) am tabling for the next release
+/* The code below implements 4 point interpolation of table access
+ which for now I (sdy) am tabling for the next release*/
         long n;
         float flt_value;
         t_float pos, a, b, c, d, cminusb, frac;
