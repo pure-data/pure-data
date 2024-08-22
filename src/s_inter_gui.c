@@ -411,6 +411,12 @@ void pdgui_vamess(const char* message, const char* format, va_list args_)
     }
     va_end(args);
 }
+void pdgui_lock(void) {}
+void pdgui_unlock(void) {}
+void pdgui_startmess(void)
+{
+    pdgui_lock();
+}
 void pdgui_endmess(void)
 {
     t_val v;
@@ -418,6 +424,7 @@ void pdgui_endmess(void)
     v.size = 1;
     v.value.p = ";\n";
     addmess(&v);
+    pdgui_unlock();
 }
 
 
@@ -434,6 +441,7 @@ void pdgui_vmess(const char* message, const char* format, ...)
             sys_vgui("%s;\n", message);
         return;
     }
+    pdgui_startmess();
     va_start(args, format);
     pdgui_vamess(message, format, args);
     va_end(args);
