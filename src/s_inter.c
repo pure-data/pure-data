@@ -990,7 +990,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            pdgui_vmess("pdtk_ping", "");
+            pdgui_vmess("pdtk_ping", 0);
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -1123,10 +1123,14 @@ void sys_gui_preferences(void)
                 , nlibs, startuplibs
                 );
 
-    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
-    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
-    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
-    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+        /* FIXME: 'set_escaped' is really low-level Tcl code,
+           we want something more highlevel
+        */
+    pdgui_vmess("set_escaped", "ri", "::sys_verbose", sys_verbose);
+    pdgui_vmess("set_escaped", "ri", "::sys_use_stdpath", sys_usestdpath);
+    pdgui_vmess("set_escaped", "ri", "::sys_defeatrt", sys_defeatrt);
+    pdgui_vmess("set_escaped", "ri", "::sys_zoom_open", (sys_zoom_open == 2));
+
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));
 
@@ -1647,7 +1651,7 @@ static int sys_do_startgui(const char *libdir)
             /* here is where we start the pinging. */
 #if PD_WATCHDOG
     if (sys_hipriority)
-        pdgui_vmess("pdtk_watchdog", "");
+        pdgui_vmess("pdtk_watchdog", 0);
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
@@ -1655,19 +1659,21 @@ static int sys_do_startgui(const char *libdir)
     sys_gui_preferences();     /* tell GUI about path and startup flags */
 
         /* ... and about font, media APIS, etc */
-    sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
-             PD_MAJOR_VERSION, PD_MINOR_VERSION,
-             PD_BUGFIX_VERSION, PD_TEST_VERSION,
-             apibuf, apibuf2,
-             pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
-             sys_fontweight);
+    pdgui_vmess("pdtk_pd_startup", "iiis rr ss"
+                , PD_MAJOR_VERSION, PD_MINOR_VERSION
+                , PD_BUGFIX_VERSION, PD_TEST_VERSION
 
+                , apibuf, apibuf2
+                , sys_font, sys_fontweight
+        );
     sys_init_deken();
 
     {
         t_audiosettings as;
         sys_get_audio_settings(&as);
-        sys_vgui("set pd_whichapi %d\n", as.a_api);
+        pdgui_vmess("set", "ri"
+                    , "pd_whichapi", as.a_api
+            );
 
         pdgui_vmess("pdtk_pd_dsp", "s",
             THISGUI->i_dspstate ? "ON" : "OFF");
