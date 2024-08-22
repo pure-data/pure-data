@@ -77,7 +77,7 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
             gfxstub_deleteforkey(key);
     if (strlen(cmd) + 50 > 4*MAXPDSTRING)
     {
-        bug("audio dialog too long");
+        bug("dialog too long");
         bug("%s", cmd);
         return;
     }
