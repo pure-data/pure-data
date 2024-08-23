@@ -82,7 +82,7 @@
 #X msg 99 114 set 1;
 #X msg 60 45 4 5 horse 6;
 #X listbox 332 319 12 0 0 0 - - - 0;
-#X text 230 34 [oscparse] outputs addresses as symbols even if they look like floats. Nonetheless \, you probably want them to be interpeted as floats \, but you need to use the '-n' flag for that. This way you can also use [route] to route the message according to the float address., f 51;
+#X text 230 34 [oscparse] outputs addresses as symbols even if they look like floats. Nonetheless \, you probably want them to be interpreted as floats \, but you need to use the '-n' flag for that. This way you can also use [route] to route the message according to the float address., f 51;
 #X floatatom 429 198 3 0 0 0 - - - 0;
 #X connect 0 0 6 0;
 #X connect 1 0 2 0;
