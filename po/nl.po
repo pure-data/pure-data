@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2024-07-08 17:21+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1818,6 +1818,9 @@ msgstr "(geen vertaling)"
 msgid "(default language: %s)"
 msgstr "(standaardtaal: %s)"
 
+msgid "Print..."
+msgstr "Afdrukken..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "'%s' wordt genegeerd: bestaat niet"
@@ -1834,9 +1837,6 @@ msgstr "Opslaan"
 
 msgid "Save As..."
 msgstr "Opslaan als..."
-
-msgid "Print..."
-msgstr "Afdrukken..."
 
 msgid "Paste Replace"
 msgstr "Plakken Vervangen"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1834,6 +1834,9 @@ msgstr ""
 msgid "(default language: %s)"
 msgstr ""
 
+msgid "Print..."
+msgstr "Skriv ut..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1850,9 +1853,6 @@ msgstr "Spara"
 
 msgid "Save As..."
 msgstr "Spara som..."
-
-msgid "Print..."
-msgstr "Skriv ut..."
 
 msgid "Paste Replace"
 msgstr ""

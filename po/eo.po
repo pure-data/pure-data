@@ -1789,6 +1789,9 @@ msgstr "(sen traduko)"
 msgid "(default language: %s)"
 msgstr "(implicita lingvo: %s)"
 
+msgid "Print..."
+msgstr "Presi…"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1805,9 +1808,6 @@ msgstr "Konservi"
 
 msgid "Save As..."
 msgstr "Konservi kiel…"
-
-msgid "Print..."
-msgstr "Presi…"
 
 msgid "Paste Replace"
 msgstr ""

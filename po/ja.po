@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2024-07-08 17:20+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -857,8 +857,7 @@ msgid "Installation options:"
 msgstr "インストールオプション:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr ""
-"ライブラリのチェックサムを確認してから(再)インストールしてみてください"
+msgstr "ライブラリのチェックサムを確認してから(再)インストールしてみてください"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "ライブラリを削除してから(再)インストールしてみてください"
@@ -1008,16 +1007,16 @@ msgstr ""
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr ""
-"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチ"
-"します）。"
+"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチし"
+"ます）。"
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr "ライブラリのみ または オブジェクトのみに 検索を制限できます。"
 
 msgid "To get a list of all available externals, try an empty search."
 msgstr ""
-"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくだ"
-"さい。"
+"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
+"い。"
 
 msgid "Right-clicking a search result will give you more options..."
 msgstr "検索結果を右クリックすると、さらに多くのオプションが表示されます..."
@@ -1115,8 +1114,8 @@ msgstr "%1$s を %2$s にインストールしますか？"
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
-"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指"
-"定されていません。"
+"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指定"
+"されていません。"
 
 msgid "Installing to non-existent directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
@@ -1833,6 +1832,9 @@ msgstr "翻訳"
 msgid "(default language: %s)"
 msgstr "デフォルトのプラットフォーム: %s"
 
+msgid "Print..."
+msgstr "プリント..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "無視 '%s': 存在しません"
@@ -1849,9 +1851,6 @@ msgstr "保存"
 
 msgid "Save As..."
 msgstr "名前を付けて保存..."
-
-msgid "Print..."
-msgstr "プリント..."
 
 msgid "Paste Replace"
 msgstr "ペーストして置き換え"

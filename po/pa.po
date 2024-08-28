@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2005-11-04 08:04+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1844,6 +1844,10 @@ msgstr ""
 msgid "(default language: %s)"
 msgstr ""
 
+#, fuzzy
+msgid "Print..."
+msgstr "ਸੋਧ(_E)..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1861,10 +1865,6 @@ msgstr "ਸੰਭਾਲੋ"
 
 msgid "Save As..."
 msgstr "ਇੰਞ ਸੰਭਾਲੋ..."
-
-#, fuzzy
-msgid "Print..."
-msgstr "ਸੋਧ(_E)..."
 
 msgid "Paste Replace"
 msgstr ""

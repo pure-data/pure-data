@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2005-05-04 12:50+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1842,6 +1842,10 @@ msgstr ""
 msgid "(default language: %s)"
 msgstr ""
 
+#, fuzzy
+msgid "Print..."
+msgstr "संपादित करें (_E)..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1860,10 +1864,6 @@ msgstr "सहेजें"
 #, fuzzy
 msgid "Save As..."
 msgstr "इस रूप में सहेजें"
-
-#, fuzzy
-msgid "Print..."
-msgstr "संपादित करें (_E)..."
 
 msgid "Paste Replace"
 msgstr ""

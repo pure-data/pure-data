@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2024-07-08 17:32+0200\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -1809,6 +1809,9 @@ msgstr "(sem tradução)"
 msgid "(default language: %s)"
 msgstr "(idioma padrão: %s)"
 
+msgid "Print..."
+msgstr "Imprimir..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ignorando '%s': não existe"
@@ -1825,9 +1828,6 @@ msgstr "Salvar"
 
 msgid "Save As..."
 msgstr "Salvar Como..."
-
-msgid "Print..."
-msgstr "Imprimir..."
 
 msgid "Paste Replace"
 msgstr "Colar Substituir"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2024-07-08 17:41+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1850,6 +1850,9 @@ msgstr "переклади"
 msgid "(default language: %s)"
 msgstr "Платформа за замовчуванням: %s"
 
+msgid "Print..."
+msgstr "Друк..."
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ігнорується '%s': немає"
@@ -1866,9 +1869,6 @@ msgstr "Зберегти"
 
 msgid "Save As..."
 msgstr "Зберегти як..."
-
-msgid "Print..."
-msgstr "Друк..."
 
 msgid "Paste Replace"
 msgstr "Вставка із заміною"
