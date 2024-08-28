@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-07-08 15:19+0200\n"
-"PO-Revision-Date: 2024-07-06 17:09+0000\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-08-28 18:54+0200\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/eo/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "lineara"
@@ -215,7 +215,7 @@ msgid "Use Multiple Devices"
 msgstr "Uzi plurajn aparatojn"
 
 msgid "Audio System"
-msgstr "sonsistemo"
+msgstr "Sonsistemo"
 
 msgid "Settings"
 msgstr "Agordoj"
@@ -577,10 +577,10 @@ msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
 msgid "Use tabs"
-msgstr "uzi langetojn"
+msgstr "Uzi langetojn"
 
 msgid "Single page"
-msgstr "unu paĝo"
+msgstr "Unu paĝo"
 
 msgid "Patching helpers"
 msgstr ""
@@ -1292,13 +1292,11 @@ msgstr ""
 msgid "Bosnian"
 msgstr ""
 
-#, fuzzy
 msgid "Catalan"
-msgstr "fatala"
+msgstr ""
 
-#, fuzzy
 msgid "Chechen"
-msgstr "Kontroli"
+msgstr ""
 
 msgid "Chamorro"
 msgstr ""
@@ -1318,9 +1316,8 @@ msgstr ""
 msgid "Welsh"
 msgstr ""
 
-#, fuzzy
 msgid "Danish"
-msgstr "Hispana"
+msgstr ""
 
 msgid "German"
 msgstr "Germana"
@@ -1364,9 +1361,8 @@ msgstr ""
 msgid "Basque"
 msgstr "Eŭska"
 
-#, fuzzy
 msgid "Persian"
-msgstr "Versio"
+msgstr ""
 
 msgid "Fulah"
 msgstr ""
@@ -1464,9 +1460,8 @@ msgstr ""
 msgid "Japanese"
 msgstr "Japana"
 
-#, fuzzy
 msgid "Javanese"
-msgstr "Japana"
+msgstr ""
 
 msgid "Georgian"
 msgstr ""
@@ -1525,9 +1520,8 @@ msgstr ""
 msgid "Lingala"
 msgstr ""
 
-#, fuzzy
 msgid "Lao"
-msgstr "Protokolo"
+msgstr ""
 
 msgid "Lithuanian"
 msgstr ""
@@ -1556,9 +1550,8 @@ msgstr ""
 msgid "Mongolian"
 msgstr ""
 
-#, fuzzy
 msgid "Marathi"
-msgstr "Guĝarata"
+msgstr ""
 
 msgid "Malay"
 msgstr ""
@@ -1587,9 +1580,8 @@ msgstr ""
 msgid "Navaho"
 msgstr ""
 
-#, fuzzy
 msgid "Nyanja"
-msgstr "Panĝaba"
+msgstr ""
 
 msgid "Occitan"
 msgstr ""
@@ -1636,9 +1628,8 @@ msgstr ""
 msgid "Rundi"
 msgstr ""
 
-#, fuzzy
 msgid "Romanian"
-msgstr "Albana"
+msgstr ""
 
 msgid "Russian"
 msgstr "Rusa"
@@ -1649,9 +1640,8 @@ msgstr ""
 msgid "Sanskrit"
 msgstr ""
 
-#, fuzzy
 msgid "Sardinian"
-msgstr "Ukraina"
+msgstr ""
 
 msgid "Sindhi"
 msgstr ""
