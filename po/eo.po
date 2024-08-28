@@ -214,7 +214,7 @@ msgstr "Eligaj aparatoj"
 msgid "Use Multiple Devices"
 msgstr "Uzi plurajn aparatojn"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "sonsistemo"
 
 msgid "Settings"
@@ -564,25 +564,25 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Fliki fenestrojn"
 
 msgid "Zoom New Windows"
 msgstr "Zomi novajn fenestrojn"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Agordoj pri grafika fasado"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "uzi langetojn"
 
-msgid "single page"
+msgid "Single page"
 msgstr "unu paĝo"
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Opcioj pri grafika fasado"
 
 msgid "language"
@@ -642,13 +642,13 @@ msgstr "glitkoma grando"
 msgid "Numeric precision of Pd-core"
 msgstr "Nombra precizo de Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"
