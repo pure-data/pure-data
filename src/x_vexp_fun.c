@@ -83,6 +83,15 @@
 
 #include "x_vexp.h"
 
+#ifdef _MSC_VER
+# ifndef snprintf
+/* For Pd, we already redefined snprintf() to pd_snprintf() */
+#  define snprintf _snprintf
+# endif
+# define strcasecmp _stricmp
+# define strncasecmp _strnicmp
+#endif
+
 struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int i);
 

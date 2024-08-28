@@ -12,6 +12,8 @@
 
 #ifdef PD
 #include "m_pd.h"
+#include "s_stuff.h"
+#define snprintf pd_snprintf
 #else /* MSP */
 #include "ext.h"
 #include "z_dsp.h"
