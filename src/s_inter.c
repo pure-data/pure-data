@@ -135,6 +135,9 @@ struct _instanceinter
     t_guiqueue *i_guiqueuehead;
     t_binbuf *i_inbinbuf;
     char *i_guibuf;
+#if PDTHREADS
+    pthread_t i_thread;             /* thread this instance was created for */
+#endif
     int i_guihead;
     int i_guitail;
     int i_guisize;
@@ -801,7 +804,11 @@ int sys_havegui(void)
 
 int sys_havetkproc(void)
 {
-    return (INTER->i_havetkproc);
+    return (
+#if PDTHREADS
+        (INTER->i_thread == pthread_self()) &&
+#endif
+            INTER->i_havetkproc);
 }
 
 void sys_vgui(const char *fmt, ...)
@@ -1872,6 +1879,7 @@ void s_inter_newpdinstance(void)
 #if PDTHREADS
     pthread_mutex_init(&INTER->i_mutex, NULL);
     pd_this->pd_islocked = 0;
+    INTER->i_thread = pthread_self();
 #endif
 #ifdef _WIN32
     INTER->i_freq = 0;

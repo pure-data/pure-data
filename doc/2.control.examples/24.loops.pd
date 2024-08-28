@@ -1,4 +1,4 @@
-#N canvas 561 23 511 708 12;
+#N canvas 561 38 513 680 12;
 #X obj 180 286 until;
 #X floatatom 180 254 5 0 0 1 - - - 0;
 #X obj 180 330 print repetition;
@@ -15,7 +15,6 @@
 #X text 33 179 You can perform a counting loop by sending a positive number to until:;
 #X text 291 595 In pseudo-code: "x=0 \; do print x++ until x>=10";
 #X text 42 360 In pseudo-code: "for i = 1 to 5 do print end";
-#X text 275 662 updated for Pd version 0.41;
 #X text 39 12 Looping with the [until] object;
 #X text 37 39 It is sometimes desirable to make a loop without an embedded delay (as in "06.more.counters.pd") but rather to make the entire loop take place in the context of a single incoming message.;
 #X text 33 103 The [until] object is provided to make this possible and has two modes: It can either run automatically for a certain number of times (a "counting" loop) or it can run forever until stopped through its right inlet (a "conditional" loop).;
@@ -34,4 +33,4 @@
 #X connect 7 1 8 0;
 #X connect 8 0 6 1;
 #X connect 10 0 5 1;
-#X connect 22 0 6 0;
+#X connect 21 0 6 0;

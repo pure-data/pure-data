@@ -26,7 +26,6 @@
 #X obj 644 380 list prepend six;
 #X obj 644 410 list trim;
 #X obj 644 440 print;
-#X text 701 496 updated for Pd version 0.52;
 #X listbox 644 353 15 0 0 0 - - - 0;
 #X floatatom 138 465 5 0 0 0 - - - 0;
 #X text 37 40 In object boxes \, dollar signs refer to the abstraction's creation arguments. In Messages \, they change dynamically:;
@@ -41,7 +40,7 @@
 #X connect 4 0 3 0;
 #X connect 6 0 9 0;
 #X connect 7 0 8 0;
-#X connect 10 0 29 0;
+#X connect 10 0 28 0;
 #X connect 11 0 13 0;
 #X connect 14 0 16 0;
 #X connect 15 0 16 1;
@@ -50,12 +49,12 @@
 #X connect 21 0 14 0;
 #X connect 21 1 15 0;
 #X connect 22 0 23 0;
-#X connect 23 0 28 0;
+#X connect 23 0 27 0;
 #X connect 24 0 25 0;
 #X connect 25 0 26 0;
-#X connect 28 0 24 0;
-#X connect 29 0 11 0;
-#X connect 34 0 7 0;
-#X connect 35 0 6 0;
-#X connect 36 0 10 0;
-#X connect 37 0 21 0;
+#X connect 27 0 24 0;
+#X connect 28 0 11 0;
+#X connect 33 0 7 0;
+#X connect 34 0 6 0;
+#X connect 35 0 10 0;
+#X connect 36 0 21 0;

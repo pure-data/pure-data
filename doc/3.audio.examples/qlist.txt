@@ -1,8 +1,8 @@
-# This is a qlist for patch number 68, which demonstrates an oscillator
-bank.
-;
-# comments start with a "#" which must be followed by a space.  The comment
-is terminated by a semicolon like this: ;
+# This is a [qlist] text file used in the D13 example, which demonstrates an oscillator
+bank. ;
+
+# comments in this file start with a "#" which must be followed by a space.  The comment
+is terminated by a semicolon like this -> ;
 
 # first an arpeggio.  You can group them in lines as you please.  The 100s at
 the beginnings of lines are delay times. ;

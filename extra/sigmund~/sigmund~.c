@@ -488,9 +488,9 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
 
         /* first guess by parabolic peak fitting */
     fbestbin = bestbin + (ppt[bestbin+1].p_weight
-        - ppt[bestbin-1].p_weight) /
+        - ppt[bestbin == 0 ? 0 : bestbin-1].p_weight) /
             (ppt[bestbin+1].p_weight +  ppt[bestbin].p_weight +
-                ppt[bestbin-1].p_weight);
+                ppt[bestbin == 0 ? 0 : bestbin-1].p_weight);
 
     freq = 2*fperbin * exp((LOG2/STEPSPEROCTAVE)*fbestbin);
     for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
@@ -1371,7 +1371,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         {
             sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
                 atom_getfloatarg(2, argc, argv));
-            argc -= 3; argv += 3;
+            argc -= 2; argv += 2;
         }
         else if (!strcmp(firstarg->s_name, "-amppowerlaw") && argc > 1)
         {

@@ -53,10 +53,10 @@ static t_audiocallback pa_callback;
 static int pa_started;
 static volatile int pa_dio_error;
 
-static PA_VOLATILE char *pa_outbuf;
-static PA_VOLATILE sys_ringbuf pa_outring;
-static PA_VOLATILE char *pa_inbuf;
-static PA_VOLATILE sys_ringbuf pa_inring;
+static char *pa_outbuf;
+static sys_ringbuf pa_outring;
+static char *pa_inbuf;
+static sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 t_semaphore *pa_sem;
 #endif

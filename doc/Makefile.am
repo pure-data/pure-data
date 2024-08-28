@@ -7,39 +7,8 @@ AUTOMAKE_OPTIONS = foreign
 # but we want $(prefix)/lib/pd/doc
 libpddir = $(pkglibdir)/doc
 
-# about text file, needed to write version string into
-ABOUT_FILE=1.manual/1.introduction.txt
-
 # location to pd header
 M_PD=$(top_srcdir)/src/m_pd.h
-
-# get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" $(M_PD) | \
-    sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION = $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" $(M_PD) | \
-    sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION = $(shell grep "^\s*\#\s*define\s*PD_BUGFIX_VERSION\>" $(M_PD) | \
-    sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION = $(shell grep "^\s*\#\s*define\s*PD_TEST_VERSION\>" $(M_PD) | \
-    sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
-PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
-
-#########################################
-##### Targets #####
-
-# build version string & write into about file during install
-install-data-hook:
-	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
-	if test "x${PD_TEST_VERSION}" == "x" ; then \
-	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(VERSION)|' \
-	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
-	else \
-	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(VERSION)-$(PD_TEST_VERSION)|' \
-	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
-	fi
-	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 
 #########################################
 ##### Files, Binaries, & Libs #####
@@ -53,9 +22,9 @@ empty=
 # cd doc
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
-     ./1.manual/1.introduction.txt \
      ./1.manual/resources/favicon.ico \
      ./1.manual/resources/pdmanual.css \
+     ./1.manual/resources/icon.png \
      ./1.manual/resources/1.2.1.png \
      ./1.manual/resources/1.2.2.png \
      ./1.manual/resources/1.2.3.png \
@@ -109,6 +78,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/resources/2.3.24.png \
      ./1.manual/resources/2.3.25.png \
      ./1.manual/resources/2.3.26.png \
+     ./1.manual/resources/2.3.27.png \
      ./1.manual/resources/2.3.3.png \
      ./1.manual/resources/2.3.4.png \
      ./1.manual/resources/2.3.5.png \
@@ -166,12 +136,12 @@ nobase_dist_libpd_DATA = \
      ./1.manual/resources/4.4.2.png \
      ./1.manual/resources/4.4.3.png \
      ./1.manual/index.htm \
-     ./1.manual/x1.htm \
-     ./1.manual/x2.htm \
-     ./1.manual/x3.htm \
-     ./1.manual/x4.htm \
-     ./1.manual/x5.htm \
-     ./1.manual/x6.htm \
+     ./1.manual/resources/chapter1.htm \
+     ./1.manual/resources/chapter2.htm \
+     ./1.manual/resources/chapter3.htm \
+     ./1.manual/resources/chapter4.htm \
+     ./1.manual/resources/chapter5.htm \
+     ./1.manual/resources/chapter6.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
@@ -200,6 +170,7 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/24.loops.pd \
      ./2.control.examples/dollarsign.pd \
      ./2.control.examples/dollarsign2.pd \
+     ./2.control.examples/gop-abs.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
      ./3.audio.examples/A01.sinewave.pd \
@@ -214,14 +185,14 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/A10.review.pd \
      ./3.audio.examples/B01.wavetables.pd \
      ./3.audio.examples/B02.two-wavetables.pd \
-     ./3.audio.examples/B03.tabread4.pd \
+     ./3.audio.examples/B03.tabread4~.pd \
      ./3.audio.examples/B04.tabread4.interpolation.pd \
      ./3.audio.examples/B05.tabread.FM.pd \
      ./3.audio.examples/B06.table.switching.pd \
-     ./3.audio.examples/B07.sampler.pd \
+     ./3.audio.examples/B07.sampler.scratch.pd \
      ./3.audio.examples/B08.sampler.loop.pd \
      ./3.audio.examples/B09.sampler.loop.smooth.pd \
-     ./3.audio.examples/B10.sampler.scratch.pd \
+     ./3.audio.examples/B10.sampler.sliding.loop.pd \
      ./3.audio.examples/B11.sampler.nodoppler.pd \
      ./3.audio.examples/B12.sampler.transpose.pd \
      ./3.audio.examples/B13.sampler.overlap.pd \
@@ -256,7 +227,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/E02.ring.modulation.pd \
      ./3.audio.examples/E03.octave.divider.pd \
      ./3.audio.examples/E04.difference.tone.pd \
-     ./3.audio.examples/E05.chebychev.pd \
+     ./3.audio.examples/E05.chebyshev.pd \
      ./3.audio.examples/E06.exponential.pd \
      ./3.audio.examples/E07.evenodd.pd \
      ./3.audio.examples/E08.phase.mod.pd \
@@ -300,7 +271,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/H13.butterworth.pd \
      ./3.audio.examples/H14.all.pass.pd \
      ./3.audio.examples/H15.phaser.pd \
-     ./3.audio.examples/H16.adsr.filter.qlist.pd \
+     ./3.audio.examples/H16.adsr.filter.text.pd \
      ./3.audio.examples/I01.Fourier.analysis.pd \
      ./3.audio.examples/I02.Hann.window.pd \
      ./3.audio.examples/I03.resynthesis.pd \
@@ -329,7 +300,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/partial.pd \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
-     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/reverb-echo.pd \
      ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \
@@ -352,6 +322,7 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/15.sliderule.pd \
      ./4.data.structures/16.FFT-plot.pd \
      ./4.data.structures/17.partialtracer.pd \
+     ./4.data.structures/18.scope2d.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \

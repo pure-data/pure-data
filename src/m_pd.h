@@ -893,7 +893,7 @@ PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed float */
     t_bigorsmall32 pun;
     pun.f = f;
     pun.ui &= 0x7f800000;
-    return((pun.ui == 0) | (pun.ui == 0x7f800000));
+    return((f != 0) && ((pun.ui == 0) | (pun.ui == 0x7f800000)));
 }
 
 PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
@@ -916,7 +916,7 @@ PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed double */
     t_bigorsmall64 pun;
     pun.f = f;
     pun.ui[1] &= 0x7ff00000;
-    return((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000));
+    return((f != 0) && ((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000)));
 }
 
 PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */

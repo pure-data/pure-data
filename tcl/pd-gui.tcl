@@ -532,8 +532,6 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
-        $::font_measured $::font_zoom2_measured"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
@@ -542,6 +540,8 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
     load_startup_plugins
+    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
+        $::font_measured $::font_zoom2_measured"
     open_filestoopen
     set ::done_init 1
 }
