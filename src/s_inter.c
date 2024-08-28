@@ -806,7 +806,7 @@ int sys_havetkproc(void)
 {
     return (
 #if PDTHREADS
-        (INTER->i_thread == pthread_self()) &&
+        pthread_equal(INTER->i_thread, pthread_self()) &&
 #endif
             INTER->i_havetkproc);
 }
