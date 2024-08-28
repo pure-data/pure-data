@@ -63,7 +63,7 @@
 #X msg 243 156 \; pd compatibility 0.55;
 #X text 59 132 (old table size);
 #X text 259 132 (new table size);
-#X text 29 31 Up to version 0.54 \, [vcf~] relied on a 512-point cosine table. The default table size is now increased to 2048 points \, which improves th filter's frequency resolution. To get the original 512-point tables you can run Pd with compatiblity level set to 0.54., f 56;
+#X text 29 31 Up to version 0.54 \, [vcf~] relied on a 512-point cosine table. The default table size is now increased to 2048 points \, which improves th filter's frequency resolution. To get the original 512-point tables you can run Pd with compatibility level set to 0.54., f 56;
 #X restore 483 306 pd compatibility;
 #X text 489 268 compatibility note (open):, f 13;
 #X connect 0 0 30 0;

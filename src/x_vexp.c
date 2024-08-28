@@ -10,8 +10,8 @@
 /*
  *
  * July 2024, Version 0.58 (major changes)
- *      - Added string functions in expr; now expr can output sympols
- *      - fixed the expr~ array[0]" bug
+ *      - Added string functions in expr; now expr can output symbols
+ *      - fixed the expr~ array[0] bug
  *      - Provide better error messages;
  *        now expr prints the expr string when reporting errors
  *      - fixed a memory issue were extra unused vector output was

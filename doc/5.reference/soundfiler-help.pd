@@ -146,7 +146,7 @@
 #X text 27 83 -maxsize <float> (maximum number of samples to resize to *), f 73;
 #X text 27 66 -resize (resizes arrays to the size of the sound file *), f 73;
 #X text 1043 131 read overriding the file's header, f 17;
-#X text 17 288 * When loading a file \, [soundfiler] populates the array until reaching its size. If the sound file is smaller \, the remaining points are zeroed out. The -resize flag resizes the array to the sample size \, while the -maxsize flag sets a maximum size to clip to even if used in conjunction with the '-resize' flag (also \, errors are given to warn you about the truncation). The -maxsize was needed for historical reasons when its default value used to be rather small (4 million). The default now is much bigger \, hence \, this flag can just be ingored., f 78;
+#X text 17 288 * When loading a file \, [soundfiler] populates the array until reaching its size. If the sound file is smaller \, the remaining points are zeroed out. The -resize flag resizes the array to the sample size \, while the -maxsize flag sets a maximum size to clip to even if used in conjunction with the '-resize' flag (also \, errors are given to warn you about the truncation). The -maxsize was needed for historical reasons when its default value used to be rather small (4 million). The default now is much bigger \, hence \, this flag can just be ignored., f 78;
 #X text 18 485 -nframes <float> (maximum points to write \, default from skip point to end of array), f 83;
 #X text 18 503 -bytes <float> (bytes per sample: 2 \, 3 \, 4 \, or 8 default: 2);
 #X connect 0 0 11 0;

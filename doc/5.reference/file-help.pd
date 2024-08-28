@@ -335,7 +335,7 @@
 #X text 105 194 symbol - the input symbol if file isn't located.;
 #X text 39 83 list <symbol \, float> - file name and patch depth level to search., f 65;
 #X restore 518 15 pd reference;
-#X text 27 63 [file which] tries to locate a file using Pd's search-paths. This includes the same relative path (the folder where the patch lives \, and other Pd seatch paths like the ones set via preferences and/or the [declare] object. If the file is found \, the object returns a list in the left outlet with the resolved path and a flag to inform if it is a file (0) or a directory (1) \, though this currently only works for filesT If nothing is found \, the entry is sent to the right outlet., f 79;
+#X text 27 63 [file which] tries to locate a file using Pd's search-paths. This includes the same relative path (the folder where the patch lives \, and other Pd search paths like the ones set via preferences and/or the [declare] object. If the file is found \, the object returns a list in the left outlet with the resolved path and a flag to inform if it is a file (0) or a directory (1) \, though this currently only works for filesT If nothing is found \, the entry is sent to the right outlet., f 79;
 #X text 166 444 directory flag: 0 if file \, 1 if directory (currently this only works for files), f 41;
 #X text 134 506 note: - currently only the first match is returned;
 #N canvas 628 410 738 232 flags 0;

@@ -43,7 +43,7 @@
 #X coords 0 1 440 -1 200 100 1 0 0;
 #X restore 338 217 graph;
 #N canvas 572 114 468 431 compatibility 0;
-#X text 38 22 Up to version 0.54 \, [osc~] relied on a 512-point cosine table \, which was adequate for most "computer music" applications in the 90s with a signal-to-noise ratio of about 110 dB. The default table size is now increased to 2048 points \, improving signal-to-noise by an additional 36 dB. To get the original 512-point tables you can run Pd with compatiblity level set to 0.54., f 56;
+#X text 38 22 Up to version 0.54 \, [osc~] relied on a 512-point cosine table \, which was adequate for most "computer music" applications in the 90s with a signal-to-noise ratio of about 110 dB. The default table size is now increased to 2048 points \, improving signal-to-noise by an additional 36 dB. To get the original 512-point tables you can run Pd with compatibility level set to 0.54., f 56;
 #X msg 61 177 \; pd compatibility 0.54;
 #X msg 257 177 \; pd compatibility 0.55;
 #X obj 181 265 osc~ 440;
