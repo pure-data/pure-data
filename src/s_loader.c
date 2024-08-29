@@ -394,7 +394,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         if ((fd = sys_trytoopenone(path, objectname, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -407,7 +407,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         if ((fd = sys_trytoopenone(path, filename, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -420,7 +420,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         strcpy(libname+len-1, "_tilde");
     }
     if ((fd = sys_trytoopenone(path, libname, ".so",
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
 #endif
@@ -642,11 +642,11 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
 
     pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
     if ((fd = sys_trytoopenone(path, objectname, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
         (fd = sys_trytoopenone(path, objectname, ".pat",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
         (fd = sys_trytoopenone(path, classslashclass, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
     {
         t_class*c=0;
         close(fd);
