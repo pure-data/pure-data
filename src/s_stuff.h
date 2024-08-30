@@ -29,7 +29,7 @@ extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp,
     int okgui);
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin, int okgui);
 t_symbol *sys_decodedialog(t_symbol *s);
 

@@ -1841,7 +1841,7 @@ typedef struct _canvasopen
 static int canvas_open_iter(const char *path, t_canvasopen *co)
 {
     int fd;
-    if ((fd = sys_trytoopenone(path, co->name, co->ext,
+    if ((fd = sys_trytoopenit(path, co->name, co->ext,
         co->dirresult, co->nameresult, co->size, co->bin, 1)) >= 0)
     {
         co->fd = fd;

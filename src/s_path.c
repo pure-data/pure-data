@@ -262,7 +262,7 @@ void sys_setextrapath(const char *p)
     The "bin" flag requests opening for binary (which only makes a difference
     on Windows). */
 
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin,
     int okgui)
 {
@@ -320,6 +320,16 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     return (-1);
 }
 
+
+int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin)
+{
+    pd_error(0,
+        "obsolete call to sys_trytoopenone(): some extern needs an update");
+    return (sys_trytoopenit(dir, name, ext, dirresult, nameresult, size, bin,
+        1));
+}
+
     /* check if we were given an absolute pathname, if so try to open it
     and return 1 to signal the caller to cancel any path searches */
 int sys_open_absolute(const char *name, const char* ext,
@@ -337,7 +347,7 @@ int sys_open_absolute(const char *name, const char* ext,
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
         dirbuf[dirlen] = 0;
-        *fdp = sys_trytoopenone(dirbuf, name+(dirlen+1), ext,
+        *fdp = sys_trytoopenit(dirbuf, name+(dirlen+1), ext,
             dirresult, nameresult, size, bin, okgui);
         return (1);
     }
@@ -368,24 +378,24 @@ int do_open_via_path(const char *dir, const char *name,
             return (fd);
 
         /* otherwise "name" is relative; try the directory "dir" first. */
-    if ((fd = sys_trytoopenone(dir, name, ext,
+    if ((fd = sys_trytoopenit(dir, name, ext,
         dirresult, nameresult, size, bin, okgui)) >= 0)
             return (fd);
 
         /* next go through the temp paths from the commandline */
     for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin, okgui)) >= 0)
                 return (fd);
         /* next look in built-in paths like "extra" */
     for (nl = searchpath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin, okgui)) >= 0)
                 return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
-            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
                 dirresult, nameresult, size, bin, okgui)) >= 0)
                     return (fd);
 

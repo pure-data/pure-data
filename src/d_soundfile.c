@@ -2283,6 +2283,15 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
         namelist_free(x->x_namelist), x->x_namelist = 0;
     canvas_path_iterate(x->x_canvas,
         (t_canvas_path_iterator)readsf_one_iter, x);
+    if (sys_verbose)    /* do a fake open just for the verbose printout */
+    {
+        char buf[MAXPDSTRING], *dummy;
+        int fd;
+        fd = do_open_via_path(canvas_getdir(x->x_canvas)->s_name,
+            filesym->s_name, "", buf, &dummy, MAXPDSTRING, 1, x->x_namelist, 1);
+        if (fd >= 0)
+            close(fd);
+    }
     soundfile_clear(&x->x_sf);
     x->x_requestcode = REQUEST_OPEN;
     x->x_filename = filesym->s_name;

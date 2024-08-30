@@ -393,7 +393,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
+        if ((fd = sys_trytoopenit(path, objectname, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
@@ -406,7 +406,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     filename[MAXPDSTRING-1] = 0;
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, filename, *dllextent,
+        if ((fd = sys_trytoopenit(path, filename, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
@@ -419,7 +419,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if (libname[len-1] == '~' && len < MAXPDSTRING - 6) {
         strcpy(libname+len-1, "_tilde");
     }
-    if ((fd = sys_trytoopenone(path, libname, ".so",
+    if ((fd = sys_trytoopenit(path, libname, ".so",
         dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
@@ -641,11 +641,11 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     if (!path) return (0);
 
     pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-    if ((fd = sys_trytoopenone(path, objectname, ".pd",
+    if ((fd = sys_trytoopenit(path, objectname, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, objectname, ".pat",
+        (fd = sys_trytoopenit(path, objectname, ".pat",
               dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, classslashclass, ".pd",
+        (fd = sys_trytoopenit(path, classslashclass, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
     {
         t_class*c=0;
