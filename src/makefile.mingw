@@ -51,14 +51,14 @@ ASIODIR ?= $(asiodir)
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
-INCLUDE = -I$(pd_src)/src 
+INCLUDE = -I$(pd_src)/src
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
-LDFLAGS = 
+LDFLAGS =
 LIBS = -lm -lws2_32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
-OPT_CFLAGS = 
+OPT_CFLAGS =
 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
@@ -139,8 +139,8 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 
 SRSRC = u_pdsend.c u_pdreceive.c s_net.c
 
-OBJ = $(SRC:.c=.o) 
-SROBJ = $(SRSRC:.c=.o) 
+OBJ = $(SRC:.c=.o)
+SROBJ = $(SRSRC:.c=.o)
 PAOBJ = $(PASRC:.c=.o)
 ASIOOBJ = $(ASIOSRC:.cpp=.o)
 #VOBJ = $(VSRC:.c=.o)
@@ -155,25 +155,25 @@ OBJC = $(OBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 all: $(PDDLL) $(PDEXEC) $(PDSEND) $(PDRECEIVE) $(PDCOM)
 
 $(OBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(GOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(GINCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(GINCLUDE) -c -o $*.o $*.c
 
 $(SROBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(PAOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCPA) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCPA) -c -o $*.o $*.c
 
 $(ASIOOBJ) : %.o : %.cpp
 	$(CXX) $(CFLAGS) $(INCPA) -c -o $*.o $*.cpp
 
 $(PMOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(PMINCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(PMINCLUDE) -c -o $*.o $*.c
 
 $(VOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(PDSEND): $(EXECDIR) u_pdsend.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
@@ -193,7 +193,7 @@ $(PDCOM): $(EXECDIR) s_entry.o
 
 $(PDDLL): $(EXECDIR) $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
-		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
+		-Wl,--export-all-symbols -Wl,--out-implib=pd.a;
 	$(STRIP) $(PDDLL)
 
 pd.res: pd.rc
@@ -212,7 +212,7 @@ $(EXECDIR):
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
 #	--output-lib=vst.a --dllname=vstschedlib.dll s_audio_vst.o pd.a $(LIBS)
 
-externs: 
+externs:
 	make -C ../extra all
 
 # kludge to put stuff into the pd/bin dir for testing

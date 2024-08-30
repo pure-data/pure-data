@@ -996,7 +996,7 @@ ex_vectablelookup(t_expr *e, t_word *wvec, int tsize, t_float *iptr, struct ex_e
         /* alternative interpolation code */
         int_pos = (int)floorl(pos);
         frac_pos = pos - int_pos;
-    
+
         x2  = wvec[(tsize + int_pos - 2) % tsize].w_float;
         x1  = wvec[(tsize + int_pos - 1) % tsize].w_float;
         x0  = wvec[(tsize + int_pos)     % tsize].w_float;
@@ -1130,8 +1130,8 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
                                       expr->exp_string, optr->ex_type);
                         break;
                 case ET_INT:
-                case ET_FLT: 
-                default:                
+                case ET_FLT:
+                default:
                         optr->ex_type = ET_FLT;
                         optr->ex_flt = flt_value;
                         return(0);
