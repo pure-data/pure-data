@@ -324,8 +324,14 @@ int sys_trytoopenit(const char *dir, const char *name, const char* ext,
 int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
-    pd_error(0,
-        "obsolete call to sys_trytoopenone(): some extern needs an update");
+    if (PD_VERSION_CODE >= PD_VERSION(0, 56, 0))
+    {
+        static int warned = 0;
+        if (!warned)
+            pd_error(0,
+    "obsolete call to sys_trytoopenone(): some extern needs an update");
+        warned = 1;
+    }
     return (sys_trytoopenit(dir, name, ext, dirresult, nameresult, size, bin,
         1));
 }
