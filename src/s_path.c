@@ -320,8 +320,9 @@ int sys_trytoopenit(const char *dir, const char *name, const char* ext,
     return (-1);
 }
 
-
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+    /* keep this in the Pd app for binary compatibility
+    with existing loaders such as pdlua. */
+EXTERN int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     if (PD_VERSION_CODE >= PD_VERSION(0, 56, 0))
