@@ -42,7 +42,7 @@ CPPFLAGS = -DINSTALL_PREFIX=\"$(prefix)\" \
     -I$(PADIR)/src/os/mac_osx/ -I$(PMDIR)/pm_common \
     -I$(PMDIR)/pm_mac -I$(PMDIR)/porttime \
     -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
-ARCH_CFLAGS = $(ARCH) 
+ARCH_CFLAGS = $(ARCH)
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
      -Wno-parentheses -Wno-switch
 MORECFLAGS = -Wno-error -ffast-math -O3
@@ -121,7 +121,7 @@ bin: pd $(BIN_DIR)/pd-watchdog gui $(BIN_DIR)/pdsend \
     $(BIN_DIR)/pdreceive
 
 $(OBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
+	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c
 
 $(OBJ): $(OBJ_DIR)
 
@@ -148,7 +148,7 @@ $(PDEXEC): $(OBJ) $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
 EXTERNTYPE=d_fat
-externs: 
+externs:
 	make -C ../extra/bonk~    DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
 	make -C ../extra/choice   DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
 	make -C ../extra/fiddle~  DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
@@ -169,7 +169,7 @@ install:  all
 	install -d $(DESTDIR)$(bindir)
 	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(bindir)/pd
 	install -m755 $(BIN_DIR)/pdsend $(DESTDIR)$(bindir)/pdsend
-	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive 
+	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive
 	install -d $(DESTDIR)$(libpdtcldir)
 	install ../tcl/* $(DESTDIR)$(libpdtcldir)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
@@ -200,7 +200,7 @@ local-clean:
 	-rm -f ../obj/* $(BIN_DIR)/pd $(BIN_DIR)/pdsend \
 	    $(BIN_DIR)/pdreceive $(BIN_DIR)/pd-watchdog m_stamp.c \
             $(BIN_DIR)/*.tcl
-	-rm -f `find ../portaudio -name "*.o"` 
+	-rm -f `find ../portaudio -name "*.o"`
 	-rm -f *~
 	-(cd ../doc/6.externs; rm -f *.pd_linux)
 	-rm -f makefile.dependencies

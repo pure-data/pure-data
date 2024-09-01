@@ -3,7 +3,7 @@ release checklist
 test compilation on linux/msw/mac:
 
 VERSION=tmp
-... later:  VERSION=0.54-0test1
+... later:  VERSION=0.55-1test1
 
 
 ------------- remake po: ----------------
@@ -63,13 +63,13 @@ grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
 or try: https://git.iem.at/pd/pure-data/-/pipelines
 
 --> pure-data_$VERSION_macOS.zip
-mv -i ~/pure-data_master_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
+mv -i ~/pure-data_"$VERSION"_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
 copyright date in ../README.txt
 release notes:
-    nedit-client  ../doc/1.manual/x5.htm
+    nedit-client  ../doc/1.manual/resources/chapter5.htm
 git commit -a
 git tag $VERSION && git tag |tail  !!! you can only push any given tag once !!
 git push origin --tags

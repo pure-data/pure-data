@@ -1343,7 +1343,7 @@ ex_getstring(t_expr *e, struct ex_ex *eptr)
                 if (eptr->ex_flags & EX_F_TSYM)
                         return (eptr->ex_ptr);
                 return (ex_symname((t_symbol *) eptr->ex_ptr));
-                   
+
         case ET_SI:
                 if (!e->exp_var[eptr->ex_int].ex_ptr)
                         return ("");
@@ -1362,7 +1362,7 @@ ex_getnumber(t_expr *e, struct ex_ex *eptr)
         switch (eptr->ex_type) {
         case ET_INT:
                 return (eptr->ex_int);
-                   
+
         case ET_FLT:
                 return ((int) eptr->ex_flt);
 
@@ -1371,7 +1371,7 @@ ex_getnumber(t_expr *e, struct ex_ex *eptr)
                         free(eptr->ex_ptr);
                         eptr->ex_flags &= ~EX_F_TSYM;
                 }
-               
+
         default:
                 return (0);
         }
@@ -1414,7 +1414,7 @@ ex_makesymbol(t_expr *e, struct ex_ex *optr, size_t size)
 
 #define CHECK_LR_STR(left, right)                       \
         CHECK_LEFT_STR(left)                     		\
-        CHECK_RIGHT_STR(right) 
+        CHECK_RIGHT_STR(right)
 
 
 #define STRFUNC_DEF(func)                                                       \
@@ -1468,7 +1468,7 @@ ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 			return;
 
 		case ET_SI:
-			strp = ex_getstring(e, left); 
+			strp = ex_getstring(e, left);
 			if (!strp) {
         		if (!ex_makesymbol(e, optr, 1))
                 	goto goterror;
@@ -1522,7 +1522,7 @@ ex_symboln(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         switch (left->ex_type) {
         case ET_SYM:
 		case ET_SI:
-			strp = ex_getstring(e, left); 
+			strp = ex_getstring(e, left);
 			if (!strp) {
         		if (!ex_makesymbol(e, optr, 1))
                 	goto goterror;
@@ -1587,7 +1587,7 @@ STRSINGLEFUNC_DEF(ex_tonlower)
         size = strlen(leftstr);
         if (!ex_makesymbol(e, optr, size))
                 return;
-        num =  ex_getnumber(e, argv + 1); 
+        num =  ex_getnumber(e, argv + 1);
         strcat(optr->ex_ptr, leftstr);
         num = min (size, num);
         for (i = 0; i < num; i++)
@@ -1621,7 +1621,7 @@ STRSINGLEFUNC_DEF(ex_tonupper)
         size = strlen(leftstr);
         if (!ex_makesymbol(e, optr, size))
                 return;
-        num =  ex_getnumber(e, argv + 1); 
+        num =  ex_getnumber(e, argv + 1);
         strcat(optr->ex_ptr, leftstr);
         num = min (size, num);
         for (i = 0; i < num; i++)
@@ -1646,7 +1646,7 @@ ex_strcat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         char *p; /* string pointer */
         int i;
         int size = 0;
-                                
+
         /* find the size */
         for (i = 0; i < argc; i ++) {
             p = ex_getstring(e, &argv[i]);
@@ -1676,7 +1676,7 @@ ex_strcat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
  */
 STRFUNC_DEF(ex_strncat)
         int num, size;
-        num =  ex_getnumber(e, argv + 2); 
+        num =  ex_getnumber(e, argv + 2);
 		size = min(num, strlen(rightstr));
 
         if (!ex_makesymbol(e, optr, size))

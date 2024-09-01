@@ -12,6 +12,8 @@ thread so that they can be used in real time.  The readsf~ and writesf~
 objects use Posix-like threads. */
 
 #include "d_soundfile.h"
+#include "g_canvas.h"
+#include "s_stuff.h"
 #ifdef _WIN32
 #include <io.h>
 #endif
@@ -405,26 +407,23 @@ badheader:
     return -1;
 }
 
-    /** open a soundfile, using open_via_path().  This is used by readsf~ in
-        a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
-        version of open_soundfile_via_canvas().
-        returns number of frames in the soundfile */
-int open_soundfile_via_path(const char *dirname, const char *filename,
-    t_soundfile *sf, size_t skipframes)
+    /* open a soundfile, using supplied path.  Returns a file descriptor
+    or -1 on error. */
+int open_soundfile_via_namelist(const char *dirname, const char *filename,
+    t_namelist *nl, t_soundfile *sf, size_t skipframes)
 {
     char buf[MAXPDSTRING], *dummy;
     int fd, sf_fd;
-    fd = open_via_path(dirname, filename, "", buf, &dummy, MAXPDSTRING, 1);
+    fd = do_open_via_path(dirname, filename, "", buf, &dummy, MAXPDSTRING,
+        1, nl, 0);
     if (fd < 0)
         return -1;
     sf_fd = open_soundfile_via_fd(fd, sf, skipframes);
     return sf_fd;
 }
 
-    /** open a soundfile, using open_via_canvas().  This is used by readsf~ in
-        a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
-        version of open_soundfile_via_canvas().
-        returns number of frames in the soundfile */
+    /* open a soundfile, using open_via_canvas(). Returns a file descriptor
+    or -1 on error. */
 int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
     t_soundfile *sf, size_t skipframes)
 {
@@ -1752,7 +1751,7 @@ typedef struct _readsf
     t_float x_insamplerate;           /**< input signal sample rate, if known */
         /* parameters to communicate with subthread */
     t_soundfile_request x_requestcode; /**< pending request to I/O thread */
-    const char *x_filename;   /**< file to open (string permanently allocated) */
+    const char *x_filename;   /**< file to open (permanently allocated) */
     int x_fileerror;          /**< slot for "errno" return */
     t_soundfile x_sf;         /**< soundfile fd, type, and format info */
     size_t x_onsetframes;     /**< number of sample frames to skip */
@@ -1768,6 +1767,7 @@ typedef struct _readsf
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
     pthread_t x_childthread;
+    t_namelist *x_namelist;
 #ifdef PDINSTANCE
     t_pdinstance *x_pd_this;  /**< pointer to the owner pd instance */
 #endif
@@ -1864,7 +1864,8 @@ static void *readsf_child_main(void *zz)
 
                 /* open the soundfile with the mutex unlocked */
             pthread_mutex_unlock(&x->x_mutex);
-            open_soundfile_via_path(dirname, filename, &sf, onsetframes);
+            open_soundfile_via_namelist(dirname, filename, x->x_namelist,
+                &sf, onsetframes);
             pthread_mutex_lock(&x->x_mutex);
 
 #ifdef DEBUG_SOUNDFILE_THREADS
@@ -2124,6 +2125,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+    x->x_namelist = 0;
 #ifdef PDINSTANCE
     x->x_pd_this = pd_this;
 #endif
@@ -2240,6 +2242,13 @@ static void readsf_float(t_readsf *x, t_floatarg f)
     else readsf_stop(x);
 }
 
+static int readsf_one_iter(const char *path, t_readsf *x)
+{
+    fprintf(stderr, "%s\n", path);
+    x->x_namelist = namelist_append(x->x_namelist, path, 0);
+    return 1;
+}
+
     /** open method.  Called as:
         open [flags] filename [onsetframes headersize channels bytes endianness]
         (if headersize is zero, header is taken to be automatically detected;
@@ -2270,6 +2279,19 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
         return; /* no filename */
 
     pthread_mutex_lock(&x->x_mutex);
+    if (x->x_namelist)
+        namelist_free(x->x_namelist), x->x_namelist = 0;
+    canvas_path_iterate(x->x_canvas,
+        (t_canvas_path_iterator)readsf_one_iter, x);
+    if (sys_verbose)    /* do a fake open just for the verbose printout */
+    {
+        char buf[MAXPDSTRING], *dummy;
+        int fd;
+        fd = do_open_via_path(canvas_getdir(x->x_canvas)->s_name,
+            filesym->s_name, "", buf, &dummy, MAXPDSTRING, 1, x->x_namelist, 1);
+        if (fd >= 0)
+            close(fd);
+    }
     soundfile_clear(&x->x_sf);
     x->x_requestcode = REQUEST_OPEN;
     x->x_filename = filesym->s_name;

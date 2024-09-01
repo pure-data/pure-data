@@ -738,7 +738,7 @@ processtable:
                                 tmpex = optr;
                                 tmpex->ex_end = ++optr;
                                 return (optr);
-                                
+
                         }
                         eptr = (struct ex_ex *) eptr[1].ex_ptr;
                         break;

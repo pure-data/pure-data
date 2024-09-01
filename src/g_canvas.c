@@ -1841,8 +1841,8 @@ typedef struct _canvasopen
 static int canvas_open_iter(const char *path, t_canvasopen *co)
 {
     int fd;
-    if ((fd = sys_trytoopenone(path, co->name, co->ext,
-        co->dirresult, co->nameresult, co->size, co->bin)) >= 0)
+    if ((fd = sys_trytoopenit(path, co->name, co->ext,
+        co->dirresult, co->nameresult, co->size, co->bin, 1)) >= 0)
     {
         co->fd = fd;
         return 0;
@@ -1869,7 +1869,7 @@ int canvas_open(const t_canvas *x, const char *name, const char *ext,
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
-    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd, 1))
         return (fd);
 
         /* otherwise "name" is relative; iterate over all the search-paths */

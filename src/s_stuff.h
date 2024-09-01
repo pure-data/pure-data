@@ -20,13 +20,17 @@ EXTERN t_namelist *namelist_append(t_namelist *listwas, const char *s, int allow
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 EXTERN void namelist_free(t_namelist *listwas);
 EXTERN const char *namelist_get(const t_namelist *namelist, int n);
+int do_open_via_path(const char *dir, const char *name,
+    const char *ext, char *dirresult, char **nameresult, unsigned int size,
+    int bin, t_namelist *searchpath, int okgui);
 
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp);
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin);
+    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp,
+    int okgui);
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin, int okgui);
 t_symbol *sys_decodedialog(t_symbol *s);
 
 /* s_file.c */
