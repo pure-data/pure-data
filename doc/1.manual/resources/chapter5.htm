@@ -27,12 +27,14 @@
 
 <P> ------------------ 0.55-1 ------------------------------
 
+<P> Shahrokh updated the "expr" family of objects and added string handling (yay!)
+
 <P> bug fixes, notably a crasher bug when sending "open" to [readsf~] in verbose
 mode, but other improvements in thread safety mostly relevant to RISC architectures.
+The [readsf~]'s "open" method now also searches in the canvas environment. This means
+you can use paths added via [declare] (which wasn't possible before).
 
 <P> Numerous documentation improvements
-
-<P> Updated "expr~" object from Shahrokh adding string handling (yay!)
 
 <P> ------------------ 0.55-0 ------------------------------
 
