@@ -47,7 +47,8 @@ proc ::dialog_gatom::apply {mytoplevel} {
         $gatomlabel_radio($mytoplevel) \
         [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]] \
         [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]] \
-        $::dialog_gatom::fontsize"
+        $::dialog_gatom::fontsize \
+        $::dialog_gatom::edit"
 }
 
 proc ::dialog_gatom::cancel {mytoplevel} {
@@ -61,11 +62,12 @@ proc ::dialog_gatom::ok {mytoplevel} {
 
 # set up the panel with the info from pd
 proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper \
-    initgatomlabel_radio  initgatomlabel initreceive initsend  fontsize} {
+    initgatomlabel_radio  initgatomlabel initreceive initsend  fontsize edit} {
 
     global gatomlabel_radio
     set gatomlabel_radio($mytoplevel) $initgatomlabel_radio
     set ::dialog_gatom::fontsize $fontsize
+    set ::dialog_gatom::edit $edit
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -120,6 +122,16 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_gatom::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
+
+    # Misc properties of the object.
+    labelframe $mytoplevel.gatomproperties -text [_ "Properties"] -padx 5 -pady 5 -borderwidth 1
+    pack $mytoplevel.gatomproperties -side bottom -fill x -pady 5
+
+    # edit <float> -> 0 (false), !0 (true)
+    # Object can be edited by UI interactions.
+    checkbutton $mytoplevel.gatomproperties.edit -text [_ "Editable"] \
+        -variable ::dialog_gatom::edit -anchor w
+    pack $mytoplevel.gatomproperties.edit -side top -anchor w
 
     labelframe $mytoplevel.s_r -text [_ "Messages"] -padx 5 -pady 5 -borderwidth 1
     pack $mytoplevel.s_r -side bottom -fill x
