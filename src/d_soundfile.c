@@ -2244,7 +2244,6 @@ static void readsf_float(t_readsf *x, t_floatarg f)
 
 static int readsf_one_iter(const char *path, t_readsf *x)
 {
-    fprintf(stderr, "%s\n", path);
     x->x_namelist = namelist_append(x->x_namelist, path, 0);
     return 1;
 }
@@ -2281,8 +2280,10 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     pthread_mutex_lock(&x->x_mutex);
     if (x->x_namelist)
         namelist_free(x->x_namelist), x->x_namelist = 0;
-    canvas_path_iterate(x->x_canvas,
-        (t_canvas_path_iterator)readsf_one_iter, x);
+        /* see open_soundfile_via_namelist() */
+    if (!sys_isabsolutepath(filesym->s_name))
+        canvas_path_iterate(x->x_canvas,
+            (t_canvas_path_iterator)readsf_one_iter, x);
     if (sys_verbose)    /* do a fake open just for the verbose printout */
     {
         char buf[MAXPDSTRING], *dummy;
