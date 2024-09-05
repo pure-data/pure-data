@@ -1635,10 +1635,13 @@ ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
                 case ET_INT:
                 if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
-                goto goterror;
-                        snprintf(format, 25, "%%.%dld", num1);
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
-                        return;
+                    goto goterror;
+                if (num2 == -1)
+                    snprintf(format, 25, "%%.%dld", num1);
+                else
+                    snprintf(format, 25, "%%%d.%dld", num2, num1);
+                snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
+                return;
 
                 case ET_FLT:
                 if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
