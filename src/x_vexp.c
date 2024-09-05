@@ -1623,8 +1623,11 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 
         }
 
+/* (nivlekp) commenting this for now;
+* Why are we assuming the type of optr?
+* This does not work well with table
         optr->ex_type = ET_INT;
-        optr->ex_int = 0;
+        optr->ex_int = 0; */
         if (!novar)
                 (void)max_ex_var(expr, (t_symbol *)var, optr, idx);
         return (++eptr);
