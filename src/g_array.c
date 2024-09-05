@@ -1296,7 +1296,14 @@ static void garray_edit(t_garray *x, t_floatarg f)
 {
     x->x_edit = (int)f;
 }
-
+static void garray_visname(t_garray *x, t_floatarg f)
+{
+    int hidewas = x->x_hidename;
+    x->x_hidename = !((int)f);
+    if (hidewas != x->x_hidename) {
+        glist_redraw(x->x_glist);
+    }
+}
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1329,6 +1336,8 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_color, gensym("color"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_visname, gensym("visname"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_rename, gensym("rename"),
         A_SYMBOL, 0);
