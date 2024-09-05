@@ -943,11 +943,15 @@ static void canvas_drawlines(t_canvas *x)
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
+            int nchannels = obj_sigoutletgetchans(t.tr_ob, t.tr_outno);
+            int width =
+                (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2 : 1) * x->gl_zoom;
+
             sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
+                "-width", width,
                 "-tags", 2, tags);
         }
     }
@@ -1401,6 +1405,9 @@ static void canvas_start_dsp(void)
     canvas_dspstate = THISGUI->i_dspstate = 1;
     if (gensym("pd-dsp-started")->s_thing)
         pd_bang(gensym("pd-dsp-started")->s_thing);
+
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        canvas_redraw(x);
 }
 
 static void canvas_stop_dsp(void)
