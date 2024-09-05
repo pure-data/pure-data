@@ -19,10 +19,10 @@
  *      - cleaned up some indentation issues
  *
  * Oct 2020, Version 0.57
- *	- fixed a bug in fact()
- *	- fixed the bad lvalue bug - "4 + 5 = 3" was not caught before
- *	- fact() (factorial) now calculates and returns its value in double
- *	- Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
+ *      - fixed a bug in fact()
+ *      - fixed the bad lvalue bug - "4 + 5 = 3" was not caught before
+ *      - fact() (factorial) now calculates and returns its value in double
+ *      - Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
  *
  *  July 2017,  Version 0.55
  *      - The arrays now redraw after a store into one of their members
@@ -833,15 +833,15 @@ ex_checklval(struct expr *e, struct ex_ex *eptr)
 
         extmp = eptr->ex_end;
         while (eptr->ex_type && eptr != extmp) {
-				if (eptr->ex_type == ET_OP && eptr->ex_op == OP_STORE) {
+                                if (eptr->ex_type == ET_OP && eptr->ex_op == OP_STORE) {
                         if (eptr[1].ex_type != ET_VAR &&
                             eptr[1].ex_type != ET_SI &&
                             eptr[1].ex_type != ET_TBL) {
                                 post("expr: '%s' - Bad left value: ", e->exp_string);
                                return (1);
                          }
-				}
-				eptr++;
+                                }
+                                eptr++;
         }
         return (0);
 }
@@ -1141,17 +1141,17 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 if (optr->ex_type == ET_VEC) {
                         if (!(expr->exp_error & EE_BADSYM)) {
                                 expr->exp_error |= EE_BADSYM;
-                        		post_error((fts_object_t *) expr,
-                       				"expr~: '%s': cannot convert string to vector\n",
-									expr->exp_string);
+                                        post_error((fts_object_t *) expr,
+                                                "expr~: '%s': cannot convert string to vector\n",
+                                                                        expr->exp_string);
                                 post_error(expr,
-									"expr~: No more symbol-vector errors will be reported");
+                                                                        "expr~: No more symbol-vector errors will be reported");
                                 post_error(expr,
-									"expr~: till the next reset");
+                                                                        "expr~: till the next reset");
                         }
                         ex_mkvector(optr->ex_vec, 0, expr->exp_vsize);
                 } else
-						*optr = *eptr;
+                                                *optr = *eptr;
                 return (++eptr);
         case ET_II:
                 if (eptr->ex_int == -1) {
@@ -1263,20 +1263,20 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 /* check if the symbol input is a table */
                 if (eptr->ex_flags & EX_F_SI_TAB) {
                         eptr = eval_tab(expr, eptr, optr, idx);
-						return (eptr);
+                                                return (eptr);
                         //return (eval_tab(expr, eptr, optr, idx));
-				}
+                                }
                 /* it is just a symbol input */
                 if (optr->ex_type == ET_VEC) {
                         if (!(expr->exp_error & EE_BADSYM)) {
                                 expr->exp_error |= EE_BADSYM;
-                        		post_error((fts_object_t *) expr,
-                       				"expr~: '%s': cannot convert string inlet to vector\n",
-									expr->exp_string);
+                                        post_error((fts_object_t *) expr,
+                                                "expr~: '%s': cannot convert string inlet to vector\n",
+                                                                        expr->exp_string);
                                 post_error(expr,
-									"expr~: No more symbol-vector errors will be reported");
+                                                                        "expr~: No more symbol-vector errors will be reported");
                                 post_error(expr,
-									"expr~: till the next reset");
+                                                                        "expr~: till the next reset");
                         }
                         ex_mkvector(optr->ex_vec, 0, expr->exp_vsize);
                         return (exNULL);
@@ -1623,10 +1623,16 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 
         }
 
-        optr->ex_type = ET_INT;
-        optr->ex_int = 0;
         if (!novar)
                 (void)max_ex_var(expr, (t_symbol *)var, optr, idx);
+        else {
+            if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, 0, expr->exp_vsize);
+            else {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+            }
+        }
         return (++eptr);
 }
 

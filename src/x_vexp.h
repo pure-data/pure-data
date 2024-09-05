@@ -13,7 +13,12 @@
 #ifdef PD
 #include "m_pd.h"
 #include "s_stuff.h"
+/*
+ * below is added to account for an anomoly in windows implementation of snprintf()
+ */
+#undef snprintf
 #define snprintf pd_snprintf
+
 #else /* MSP */
 #include "ext.h"
 #include "z_dsp.h"

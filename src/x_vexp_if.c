@@ -466,9 +466,9 @@ expr_perform(t_int *w)
                  * inputs
                  */
                 if ( x->exp_nexpr == 1) {
-                                                x->exp_res[0].ex_type = ET_VEC;
+                        x->exp_res[0].ex_type = ET_VEC;
                         ex_eval(x, x->exp_stack[0], &x->exp_res[0], 0);
-                                } else {
+                } else {
                         res.ex_type = ET_VEC;
                         for (i = 0; i < x->exp_nexpr; i++) {
                                 res.ex_vec = x->exp_tmpres[i];
@@ -1263,16 +1263,39 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 int
 max_ex_var(struct expr *expr, t_symbol *var, struct ex_ex *optr, int idx)
 {
-        optr->ex_type = ET_FLT;
+        t_float value;
         if (!strcmp(var->s_name, "sys_idx")) {
-                optr->ex_flt = idx;
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, (t_float) idx, expr->exp_vsize);
+                else {
+                    optr->ex_int = idx;
+                    optr->ex_type = ET_INT;
+                }
                 return (0);
         }
-        if (value_getfloat(var, &(optr->ex_flt))) {
-                optr->ex_type = ET_FLT;
-                optr->ex_flt = 0;
-                pd_error(expr, "no such var '%s'", var->s_name);
+        if (value_getfloat(var, &value)) {
+                if (!(expr->exp_error & EE_NOVAR)) {
+                        ex_error(expr, "no such var '%s'", var->s_name);
+                    if (!IS_EXPR(expr)) {
+                        post("expr: no more var errors will be reported");
+                        post("expr: till the next reset");
+                        expr->exp_error |= EE_NOVAR;
+                    }
+                }
+
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_int = 0;
+                    optr->ex_type = ET_INT;
+                }
                 return (1);
+        }
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, value, expr->exp_vsize);
+        else {
+            optr->ex_flt = value;
+            optr->ex_type = ET_FLT;
         }
         return (0);
 }
@@ -1325,8 +1348,12 @@ ex_size(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
         ISTABLE(e, s, garray, size, wvec);
 
-        optr->ex_type = ET_INT;
-        optr->ex_int = size;
+        if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, (t_float) size, e->exp_vsize);
+        else  {
+                optr->ex_type = ET_INT;
+                optr->ex_int = size;
+        }
 }
 
 /*
@@ -1348,8 +1375,12 @@ ex_sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         for (indx = 0, sum = 0; indx < size; indx++)
                 sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum;
+        if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, (t_float) size, e->exp_vsize);
+        else  {
+                optr->ex_type = ET_FLT;
+                optr->ex_flt = sum;
+        }
 }
 
 
@@ -1377,9 +1408,13 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             n1 = argv->ex_flt;
             break;
         default:
-            post("expr: Sum: boundaries have to be fix values\n");
-            optr->ex_type = ET_INT;
-            optr->ex_int = 0;
+            ex_error(e, "expr: Sum: boundaries have to be fix values\n");
+            if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+            else {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+            }
             return;
         }
         if (n1 < 0)
@@ -1393,9 +1428,13 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             n2 = argv->ex_flt;
             break;
         default:
-            post("expr: Sum: boundaries have to be fix values\n");
-            optr->ex_type = ET_INT;
-            optr->ex_int = 0;
+            ex_error(e, "expr: Sum: boundaries have to be fix values\n");
+            if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+            else {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+            }
             return;
         }
         if (n2 > size)
@@ -1405,8 +1444,12 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             if (indx >= 0 && indx < size)
                 sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum;
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum, e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum;
+        }
 }
 
 /*
@@ -1428,8 +1471,12 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         for (indx = 0, sum = 0; indx < size; indx++)
                 sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum / size;
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum / size, e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum / size;
+        }
 }
 
 
@@ -1457,9 +1504,13 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 n1 = argv->ex_flt;
                         break;
         default:
-                post("expr: Avg: boundaries have to be fix values\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
+                ex_error(e, "expr: Avg: boundaries have to be fix values\n");
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
                 return;
         }
         if (n1 < 0)
@@ -1473,9 +1524,14 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 n2 = argv->ex_flt;
                         break;
         default:
-                post("expr: Avg: boundaries have to be fix values\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0; return;
+                ex_error(e, "expr: Avg: boundaries have to be fix values\n");
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
+                return;
         }
         if (n2 >= size)
                 n2 = size - 1;
@@ -1484,8 +1540,12 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 if (indx >= 0 && indx < size)
                         sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum / (n2 - n1 + 1);
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum / (n2 - n1 + 1), e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum / (n2 - n1 + 1);
+        }
 }
 
 /*
@@ -1496,7 +1556,6 @@ max_ex_var_store(struct expr *expr, t_symbol * var, struct ex_ex *eptr, struct e
 {
         t_float value = 0.;
 
-        *optr = *eptr;
         switch (eptr->ex_type) {
         case ET_INT:
                 value = eptr->ex_int;
@@ -1505,18 +1564,30 @@ max_ex_var_store(struct expr *expr, t_symbol * var, struct ex_ex *eptr, struct e
                 value = eptr->ex_flt;
                 break;
         default:
-                post("bad right value - '%s'\n", expr->exp_string);
-                optr->ex_int = 0;
-                optr->ex_type = ET_INT;
+                ex_error(expr, "bad right value - '%s'\n", expr->exp_string);
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_int = 0;
+                    optr->ex_type = ET_INT;
+                }
                 return (1);
         }
 
         if (value_setfloat(var, value)) {
-                optr->ex_int = 0;
-                optr->ex_type = ET_INT;
-                pd_error(expr, "no such var '%s'", var->s_name);
+                ex_error(expr, "no such var '%s'", var->s_name);
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
                 return (1);
         }
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, value, expr->exp_vsize);
+        else
+            *optr = *eptr;
         return (0);
 }
 
