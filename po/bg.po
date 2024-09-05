@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1276,35 +1276,122 @@ msgstr ""
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "Афарски"
+
+msgid "Abkhazian"
+msgstr "Абхазки"
+
+msgid "Avestan"
+msgstr "Авестийски"
+
 msgid "Afrikaans"
-msgstr ""
+msgstr "Африканс"
+
+msgid "Akan"
+msgstr "Акан"
+
+msgid "Amharic"
+msgstr "Амхарски"
+
+msgid "Aragonese"
+msgstr "Арагонски"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Арабски"
+
+msgid "Assamese"
+msgstr "Асамски"
+
+msgid "Avaric"
+msgstr "Аварски"
+
+msgid "Aymara"
+msgstr "Аймараски"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Азербайджански"
+
+msgid "Bashkir"
+msgstr "Башкирски"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Беларуски"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Български"
+
+msgid "Bihari"
+msgstr "Бихарски"
+
+msgid "Bislama"
+msgstr "Бислама"
+
+msgid "Bambara"
+msgstr "Бамбара"
+
+msgid "Bengali"
+msgstr "Бенгалски"
+
+msgid "Tibetan"
+msgstr "Тибетски"
+
+msgid "Breton"
+msgstr "Бретонски"
+
+msgid "Bosnian"
+msgstr "Босненски"
+
+msgid "Catalan"
+msgstr "Каталонски"
+
+msgid "Chechen"
+msgstr "Чеченски"
+
+msgid "Chamorro"
+msgstr "Чаморо"
+
+msgid "Corsican"
+msgstr "Корсикански"
+
+msgid "Cree"
+msgstr "Кри"
+
+msgid "Czech"
+msgstr "Чешки"
+
+msgid "Chuvash"
+msgstr "Чувашки"
+
+msgid "Welsh"
+msgstr "Уелски"
+
+msgid "Danish"
+msgstr "Датски"
 
 msgid "German"
-msgstr ""
+msgstr "Немски"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Немски (Австрия)"
+
+msgid "Dhivehi"
+msgstr "Дивехи"
+
+msgid "Dzongkha"
+msgstr "Дзонгкха"
+
+msgid "Ewe"
+msgstr "Еве"
 
 msgid "Greek"
-msgstr ""
+msgstr "Гръцки"
 
 msgid "English"
-msgstr ""
+msgstr "Английски"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Английски (Канада)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1312,83 +1399,428 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Есперанто"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Испански"
+
+msgid "Estonian"
+msgstr "Естонски"
 
 msgid "Basque"
-msgstr ""
+msgstr "Баски"
+
+msgid "Persian"
+msgstr "Персийски"
+
+msgid "Fulah"
+msgstr "Фула"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Фински"
+
+msgid "Fijian"
+msgstr "Фиджийски"
+
+msgid "Faroese"
+msgstr "Фарьорски"
 
 msgid "French"
-msgstr ""
+msgstr "Френски"
+
+msgid "Frisian"
+msgstr "Фризийски"
+
+msgid "Irish"
+msgstr "Ирландски"
+
+msgid "Gaelic"
+msgstr "Келтски"
+
+msgid "Galician"
+msgstr "Галисийски"
+
+msgid "Guarani"
+msgstr "Гуарански"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Гуджаратски"
+
+msgid "Manx"
+msgstr "Мански"
+
+msgid "Hausa"
+msgstr "Хауса"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Иврит"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Хинди"
+
+msgid "Hiri Motu"
+msgstr "Хири моту"
+
+msgid "Croatian"
+msgstr "Хърватски"
+
+msgid "Haitian"
+msgstr "Хаитянски креолски"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Унгарски"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Арменски"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Хереро"
+
+msgid "Interlingua"
+msgstr "Интерлингва"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Индонезийски"
+
+msgid "Occidental"
+msgstr "Окцидентал"
+
+msgid "Igbo"
+msgstr "Игбо"
+
+msgid "Nuosu"
+msgstr "Носу"
+
+msgid "Inupiaq"
+msgstr "Инупиак"
+
+msgid "Ido"
+msgstr "Идо"
+
+msgid "Icelandic"
+msgstr "Исландски"
+
+msgid "Italian"
+msgstr "Италиански"
+
+msgid "Inuktitut"
+msgstr "Инуктитут"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Японски"
+
+msgid "Javanese"
+msgstr "Явански"
+
+msgid "Georgian"
+msgstr "Грузински"
+
+msgid "Kongo"
+msgstr "Конго"
+
+msgid "Gikuyu"
+msgstr "Кикую"
+
+msgid "Kwanyama"
+msgstr "Кваняма"
+
+msgid "Kazakh"
+msgstr "Казахски"
+
+msgid "Greenlandic"
+msgstr "Гренландски"
+
+msgid "Kannada"
+msgstr "Каннада"
 
 msgid "Korean"
-msgstr ""
+msgstr "Корейски"
+
+msgid "Kanuri"
+msgstr "Канури"
+
+msgid "Kashmiri"
+msgstr "Кашмирски"
+
+msgid "Kurdish"
+msgstr "Кюрдски"
+
+msgid "Komi"
+msgstr "Коми"
+
+msgid "Cornish"
+msgstr "Корнуолски"
+
+msgid "Kyrgyz"
+msgstr "Киргизки"
+
+msgid "Latin"
+msgstr "Латински"
+
+msgid "Luxembourgish"
+msgstr "Люксембургски"
+
+msgid "Luganda"
+msgstr "Луганда"
+
+msgid "Limburgish"
+msgstr "Лимбургски"
+
+msgid "Lingala"
+msgstr "Лингала"
+
+msgid "Lao"
+msgstr "Лаоски"
+
+msgid "Lithuanian"
+msgstr "Литовски"
+
+msgid "Luba-Katanga"
+msgstr "Луба-катанга"
+
+msgid "Latvian"
+msgstr "Латвийски"
+
+msgid "Malagasy"
+msgstr "Малгашки"
+
+msgid "Marshallese"
+msgstr "Маршалски"
+
+msgid "Maori"
+msgstr "Маорски"
+
+msgid "Macedonian"
+msgstr "Македонска лит. норма"
+
+msgid "Malayalam"
+msgstr "Малаялам"
+
+msgid "Mongolian"
+msgstr "Монголски"
+
+msgid "Marathi"
+msgstr "Маратхи"
+
+msgid "Malay"
+msgstr "Малайски"
+
+msgid "Maltese"
+msgstr "Малтийски"
+
+msgid "Burmese"
+msgstr "Бирмански"
+
+msgid "Nauru"
+msgstr "Науруански"
+
+msgid "Nepali"
+msgstr "Непалски"
+
+msgid "Ndonga"
+msgstr "Ндонга"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Нидерландски"
+
+msgid "Norwegian Nynorsk"
+msgstr "Норвежки нюношк"
+
+msgid "Navaho"
+msgstr "Навахо"
+
+msgid "Nyanja"
+msgstr "Нянджа"
+
+msgid "Occitan"
+msgstr "Окситански"
+
+msgid "Ojibwe"
+msgstr "Оджибве"
+
+msgid "Oromo"
+msgstr "Оромо"
+
+msgid "Odia"
+msgstr "Одия"
+
+msgid "Ossetian"
+msgstr "Осетински"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Пали"
+
 msgid "Polish"
-msgstr ""
+msgstr "Полски"
+
+msgid "Pashto"
+msgstr "Пущунски"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Португалски"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Португалски (Бразилия)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Португалски (Португалия)"
+
+msgid "Quechua"
+msgstr "Кечуа"
+
+msgid "Romansh"
+msgstr "Романшки"
+
+msgid "Rundi"
+msgstr "Рунди"
+
+msgid "Romanian"
+msgstr "Румънски"
 
 msgid "Russian"
-msgstr ""
+msgstr "Руски"
+
+msgid "Kinyarwanda"
+msgstr "Руанда"
+
+msgid "Sanskrit"
+msgstr "Санскрит"
+
+msgid "Sardinian"
+msgstr "Сардински"
+
+msgid "Sindhi"
+msgstr "Синдхи"
+
+msgid "Sango"
+msgstr "Санго"
+
+msgid "Sinhala"
+msgstr "Синхалски"
+
+msgid "Slovak"
+msgstr "Словашки"
+
+msgid "Slovenian"
+msgstr "Словенски"
+
+msgid "Samoan"
+msgstr "Самоански"
+
+msgid "Shona"
+msgstr "Шона"
+
+msgid "Somali"
+msgstr "Сомалийски"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Албански"
+
+msgid "Serbian"
+msgstr "Сръбски"
+
+msgid "Swati"
+msgstr "Свази"
+
+msgid "Sundanese"
+msgstr "Сундански"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Шведски"
+
+msgid "Swahili"
+msgstr "Суахили"
+
+msgid "Tamil"
+msgstr "Тамилски"
+
+msgid "Telugu"
+msgstr "Телугу"
+
+msgid "Tajik"
+msgstr "Таджикски"
+
+msgid "Thai"
+msgstr "Тайски"
+
+msgid "Tigrinya"
+msgstr "Тигриня"
+
+msgid "Turkmen"
+msgstr "Туркменски"
+
+msgid "Tagalog"
+msgstr "Тагалог"
+
+msgid "Tswana"
+msgstr "Тсвана"
+
+msgid "Tongan"
+msgstr "Тонгански"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Турски"
+
+msgid "Tsonga"
+msgstr "Цонга"
+
+msgid "Tatar"
+msgstr "Татарски"
+
+msgid "Twi"
+msgstr "Чви"
+
+msgid "Tahitian"
+msgstr "Таитянски"
+
+msgid "Uyghur"
+msgstr "Уйгурски"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Украински"
+
+msgid "Urdu"
+msgstr "Урду"
+
+msgid "Uzbek"
+msgstr "Узбекски"
+
+msgid "Venda"
+msgstr "Венда"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Виетнамски"
+
+msgid "Volapük"
+msgstr "Волапюк"
+
+msgid "Walloon"
+msgstr "Валонски"
+
+msgid "Wolof"
+msgstr "Волоф"
+
+msgid "Xhosa"
+msgstr "Кхоса"
+
+msgid "Yiddish"
+msgstr "Идиш"
+
+msgid "Yoruba"
+msgstr "Йоруба"
+
+msgid "Zhuang"
+msgstr "Джуански"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "Зулуски"
 
 msgid "(no translation)"
 msgstr ""
@@ -1396,6 +1828,10 @@ msgstr ""
 #, tcl-format
 msgid "(default language: %s)"
 msgstr ""
+
+#, fuzzy
+msgid "Print..."
+msgstr "_Редактиране..."
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1415,10 +1851,6 @@ msgstr "Запазване"
 #, fuzzy
 msgid "Save As..."
 msgstr "Записване като..."
-
-#, fuzzy
-msgid "Print..."
-msgstr "_Редактиране..."
 
 msgid "Paste Replace"
 msgstr ""

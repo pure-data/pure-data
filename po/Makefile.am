@@ -78,7 +78,7 @@ ALL_LINGUAS = \
 	az \
 	bg \
 	de \
-	el en en_ca es eu \
+	el en en_ca eo es eu \
 	fr \
 	gu \
 	he hi hu \

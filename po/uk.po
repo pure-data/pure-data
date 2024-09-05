@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-07-08 17:41+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "лінійний"
@@ -1296,35 +1296,122 @@ msgstr "Неможливо створити властивості %1$s у %2$s"
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "Афарська"
+
+msgid "Abkhazian"
+msgstr "Абхазька"
+
+msgid "Avestan"
+msgstr "Авестійська"
+
 msgid "Afrikaans"
-msgstr ""
+msgstr "Африкаанс"
+
+msgid "Akan"
+msgstr "Акан"
+
+msgid "Amharic"
+msgstr "Амхарська"
+
+msgid "Aragonese"
+msgstr "Арагонська"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Арабська"
+
+msgid "Assamese"
+msgstr "Асамська"
+
+msgid "Avaric"
+msgstr "Аварська"
+
+msgid "Aymara"
+msgstr "Аймарська"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Азербайджанська"
+
+msgid "Bashkir"
+msgstr "Башкирська"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Білоруська"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Болгарська"
+
+msgid "Bihari"
+msgstr "Біхарська"
+
+msgid "Bislama"
+msgstr "Біслама"
+
+msgid "Bambara"
+msgstr "Бамбара"
+
+msgid "Bengali"
+msgstr "Бенгальська"
+
+msgid "Tibetan"
+msgstr "Тибетська"
+
+msgid "Breton"
+msgstr "Бретонська"
+
+msgid "Bosnian"
+msgstr "Боснійська"
+
+msgid "Catalan"
+msgstr "Каталонська"
+
+msgid "Chechen"
+msgstr "Чеченська"
+
+msgid "Chamorro"
+msgstr "Чаморро"
+
+msgid "Corsican"
+msgstr "Корсиканська"
+
+msgid "Cree"
+msgstr "Крі"
+
+msgid "Czech"
+msgstr "Чеська"
+
+msgid "Chuvash"
+msgstr "Чуваська"
+
+msgid "Welsh"
+msgstr "Валлійська"
+
+msgid "Danish"
+msgstr "Данська"
 
 msgid "German"
-msgstr ""
+msgstr "Німецька"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Німецька (Австрія)"
+
+msgid "Dhivehi"
+msgstr "Мальдівська"
+
+msgid "Dzongkha"
+msgstr "Дзонгкха"
+
+msgid "Ewe"
+msgstr "Еве"
 
 msgid "Greek"
-msgstr ""
+msgstr "Грецька"
 
 msgid "English"
-msgstr ""
+msgstr "Англійська"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Англійська (Канада)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1332,83 +1419,428 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Есперанто"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Іспанська"
+
+msgid "Estonian"
+msgstr "Естонська"
 
 msgid "Basque"
-msgstr ""
+msgstr "Баскська"
+
+msgid "Persian"
+msgstr "Перська"
+
+msgid "Fulah"
+msgstr "Фула"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Фінська"
+
+msgid "Fijian"
+msgstr "Фіджійська"
+
+msgid "Faroese"
+msgstr "Фарерська"
 
 msgid "French"
-msgstr ""
+msgstr "Французька"
+
+msgid "Frisian"
+msgstr "Фризька"
+
+msgid "Irish"
+msgstr "Ірландська"
+
+msgid "Gaelic"
+msgstr "Гельська"
+
+msgid "Galician"
+msgstr "Галісійська"
+
+msgid "Guarani"
+msgstr "Ґуарані"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Гуджараті"
+
+msgid "Manx"
+msgstr "Менська"
+
+msgid "Hausa"
+msgstr "Гауса"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Іврит"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Гінді"
+
+msgid "Hiri Motu"
+msgstr "Гірімоту"
+
+msgid "Croatian"
+msgstr "Хорватська"
+
+msgid "Haitian"
+msgstr "Гаїтянська"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Угорська"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Вірменська"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Гереро"
+
+msgid "Interlingua"
+msgstr "Інтерлінгва"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Індонезійська"
+
+msgid "Occidental"
+msgstr "Окциденталь"
+
+msgid "Igbo"
+msgstr "Ігбо"
+
+msgid "Nuosu"
+msgstr "Нуосу"
+
+msgid "Inupiaq"
+msgstr "Інуп'Як"
+
+msgid "Ido"
+msgstr "Ідо"
+
+msgid "Icelandic"
+msgstr "Ісландська"
+
+msgid "Italian"
+msgstr "Італійська"
+
+msgid "Inuktitut"
+msgstr "Інуктітут"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Японська"
+
+msgid "Javanese"
+msgstr "Яванська"
+
+msgid "Georgian"
+msgstr "Грузинська"
+
+msgid "Kongo"
+msgstr "Конґо"
+
+msgid "Gikuyu"
+msgstr "Ґікую"
+
+msgid "Kwanyama"
+msgstr "Кваняма"
+
+msgid "Kazakh"
+msgstr "Казахська"
+
+msgid "Greenlandic"
+msgstr "Ґренландська"
+
+msgid "Kannada"
+msgstr "Каннада"
 
 msgid "Korean"
-msgstr ""
+msgstr "Корейська"
+
+msgid "Kanuri"
+msgstr "Канурі"
+
+msgid "Kashmiri"
+msgstr "Кашмірська"
+
+msgid "Kurdish"
+msgstr "Курдська"
+
+msgid "Komi"
+msgstr "Комі"
+
+msgid "Cornish"
+msgstr "Корнська"
+
+msgid "Kyrgyz"
+msgstr "Киргизька"
+
+msgid "Latin"
+msgstr "Латинська"
+
+msgid "Luxembourgish"
+msgstr "Люксембурзька"
+
+msgid "Luganda"
+msgstr "Луґанда"
+
+msgid "Limburgish"
+msgstr "Лімбурзька"
+
+msgid "Lingala"
+msgstr "Лінґала"
+
+msgid "Lao"
+msgstr "Лаоська"
+
+msgid "Lithuanian"
+msgstr "Литовська"
+
+msgid "Luba-Katanga"
+msgstr "Луба-Катанґа"
+
+msgid "Latvian"
+msgstr "Латиська"
+
+msgid "Malagasy"
+msgstr "Малагасійська"
+
+msgid "Marshallese"
+msgstr "Маршальська"
+
+msgid "Maori"
+msgstr "Маорійська"
+
+msgid "Macedonian"
+msgstr "Македонська"
+
+msgid "Malayalam"
+msgstr "Малаялам"
+
+msgid "Mongolian"
+msgstr "Монгольська"
+
+msgid "Marathi"
+msgstr "Маратхі"
+
+msgid "Malay"
+msgstr "Малайська"
+
+msgid "Maltese"
+msgstr "Мальтійська"
+
+msgid "Burmese"
+msgstr "Бірманська"
+
+msgid "Nauru"
+msgstr "Науру"
+
+msgid "Nepali"
+msgstr "Непальська"
+
+msgid "Ndonga"
+msgstr "Ндонга"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Нідерландська"
+
+msgid "Norwegian Nynorsk"
+msgstr "Норвезька (Нюношк)"
+
+msgid "Navaho"
+msgstr "Навахо"
+
+msgid "Nyanja"
+msgstr "Ньянджа"
+
+msgid "Occitan"
+msgstr "Окситанська"
+
+msgid "Ojibwe"
+msgstr "Оджибве"
+
+msgid "Oromo"
+msgstr "Оромо"
+
+msgid "Odia"
+msgstr "Одія"
+
+msgid "Ossetian"
+msgstr "Осетинська"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Палі"
+
 msgid "Polish"
-msgstr ""
+msgstr "Польська"
+
+msgid "Pashto"
+msgstr "Пушту"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Португальська"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Португальська (Бразилія)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Португальська (Португалія)"
+
+msgid "Quechua"
+msgstr "Кечуа"
+
+msgid "Romansh"
+msgstr "Ретороманська"
+
+msgid "Rundi"
+msgstr "Рунді"
+
+msgid "Romanian"
+msgstr "Румунська"
 
 msgid "Russian"
-msgstr ""
+msgstr "Російська"
+
+msgid "Kinyarwanda"
+msgstr "Руандійська"
+
+msgid "Sanskrit"
+msgstr "Санскрит"
+
+msgid "Sardinian"
+msgstr "Сардинська"
+
+msgid "Sindhi"
+msgstr "Синдхі"
+
+msgid "Sango"
+msgstr "Санґо"
+
+msgid "Sinhala"
+msgstr "Сингальська"
+
+msgid "Slovak"
+msgstr "Словацька"
+
+msgid "Slovenian"
+msgstr "Словенська"
+
+msgid "Samoan"
+msgstr "Самоанська"
+
+msgid "Shona"
+msgstr "Шона"
+
+msgid "Somali"
+msgstr "Сомалійська"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Албанська"
+
+msgid "Serbian"
+msgstr "Сербська"
+
+msgid "Swati"
+msgstr "Сваті"
+
+msgid "Sundanese"
+msgstr "Сунданська"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Шведська"
+
+msgid "Swahili"
+msgstr "Суахілі"
+
+msgid "Tamil"
+msgstr "Тамільська"
+
+msgid "Telugu"
+msgstr "Телугу"
+
+msgid "Tajik"
+msgstr "Таджицька"
+
+msgid "Thai"
+msgstr "Тайська"
+
+msgid "Tigrinya"
+msgstr "Тигринья"
+
+msgid "Turkmen"
+msgstr "Туркменська"
+
+msgid "Tagalog"
+msgstr "Тагальська"
+
+msgid "Tswana"
+msgstr "Тсвана"
+
+msgid "Tongan"
+msgstr "Тонґанська"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Турецька"
+
+msgid "Tsonga"
+msgstr "Тсонга"
+
+msgid "Tatar"
+msgstr "Татарська"
+
+msgid "Twi"
+msgstr "Тві"
+
+msgid "Tahitian"
+msgstr "Таїтянська"
+
+msgid "Uyghur"
+msgstr "Уйгурська"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"
+
+msgid "Urdu"
+msgstr "Урду"
+
+msgid "Uzbek"
+msgstr "Узбецька"
+
+msgid "Venda"
+msgstr "Венда"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "В'Єтнамська"
+
+msgid "Volapük"
+msgstr "Волапюк"
+
+msgid "Walloon"
+msgstr "Валлонська"
+
+msgid "Wolof"
+msgstr "Волоф"
+
+msgid "Xhosa"
+msgstr "Коса"
+
+msgid "Yiddish"
+msgstr "Ідиш"
+
+msgid "Yoruba"
+msgstr "Йоруба"
+
+msgid "Zhuang"
+msgstr "Чуанг"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "Зулуська"
 
 #, fuzzy
 msgid "(no translation)"
@@ -1417,6 +1849,9 @@ msgstr "переклади"
 #, fuzzy, tcl-format
 msgid "(default language: %s)"
 msgstr "Платформа за замовчуванням: %s"
+
+msgid "Print..."
+msgstr "Друк..."
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1434,9 +1869,6 @@ msgstr "Зберегти"
 
 msgid "Save As..."
 msgstr "Зберегти як..."
-
-msgid "Print..."
-msgstr "Друк..."
 
 msgid "Paste Replace"
 msgstr "Вставка із заміною"

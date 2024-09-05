@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
-"PO-Revision-Date: 2005-03-07 11:12+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-07-08 17:37+0200\n"
 "Last-Translator: Besnik Bleta <besnik@spymac.com>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/sq/>\n"
@@ -15,6 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr ""
@@ -1290,35 +1291,122 @@ msgstr ""
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "Afarisht"
+
+msgid "Abkhazian"
+msgstr "Abkazisht"
+
+msgid "Avestan"
+msgstr "Avestisht"
+
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akanisht"
+
+msgid "Amharic"
+msgstr "Amharike"
+
+msgid "Aragonese"
+msgstr "Aragonisht"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arabisht"
+
+msgid "Assamese"
+msgstr "Asameze"
+
+msgid "Avaric"
+msgstr "Avarisht"
+
+msgid "Aymara"
+msgstr "Ajmarisht"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbajxhanisht"
+
+msgid "Bashkir"
+msgstr "Bashkirisht"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Bjellorusisht"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bullgarisht"
+
+msgid "Bihari"
+msgstr "Bihari"
+
+msgid "Bislama"
+msgstr "Bislamisht"
+
+msgid "Bambara"
+msgstr "Bambarisht"
+
+msgid "Bengali"
+msgstr "Bengalisht"
+
+msgid "Tibetan"
+msgstr "Tibetisht"
+
+msgid "Breton"
+msgstr "Bretonisht"
+
+msgid "Bosnian"
+msgstr "Boshnjake"
+
+msgid "Catalan"
+msgstr "Katalanisht"
+
+msgid "Chechen"
+msgstr "Çeçenisht"
+
+msgid "Chamorro"
+msgstr "Çamoroisht"
+
+msgid "Corsican"
+msgstr "Korsikanisht"
+
+msgid "Cree"
+msgstr "Kri"
+
+msgid "Czech"
+msgstr "Çekisht"
+
+msgid "Chuvash"
+msgstr "Çuvashisht"
+
+msgid "Welsh"
+msgstr "Uellsisht"
+
+msgid "Danish"
+msgstr "Danisht"
 
 msgid "German"
-msgstr ""
+msgstr "Gjermanisht"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Gjermanisht (Austri)"
+
+msgid "Dhivehi"
+msgstr "Divehi"
+
+msgid "Dzongkha"
+msgstr "Xonga"
+
+msgid "Ewe"
+msgstr "Eveisht"
 
 msgid "Greek"
-msgstr ""
+msgstr "Greqisht"
 
 msgid "English"
-msgstr ""
+msgstr "Anglisht"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Anglisht (Kanada)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1326,83 +1414,428 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Esperanto"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Spanjisht"
+
+msgid "Estonian"
+msgstr "Estonisht"
 
 msgid "Basque"
-msgstr ""
+msgstr "Baskisht"
+
+msgid "Persian"
+msgstr "Persisht"
+
+msgid "Fulah"
+msgstr "Fula"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandisht"
+
+msgid "Fijian"
+msgstr "Fixhianisht"
+
+msgid "Faroese"
+msgstr "Faroisht"
 
 msgid "French"
-msgstr ""
+msgstr "Frëngjisht"
+
+msgid "Frisian"
+msgstr "Frizisht"
+
+msgid "Irish"
+msgstr "Irlandisht"
+
+msgid "Gaelic"
+msgstr "Galisht"
+
+msgid "Galician"
+msgstr "Galicisht"
+
+msgid "Guarani"
+msgstr "Guaranisht"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujaratase"
+
+msgid "Manx"
+msgstr "Manksisht"
+
+msgid "Hausa"
+msgstr "Hausisht"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Hebraisht"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Indisht"
+
+msgid "Hiri Motu"
+msgstr "Hiri Motu"
+
+msgid "Croatian"
+msgstr "Kroatisht"
+
+msgid "Haitian"
+msgstr "Haitisht"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Hungarisht"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenisht"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Hereroisht"
+
+msgid "Interlingua"
+msgstr "Interlingua"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonezisht"
+
+msgid "Occidental"
+msgstr "Occidental"
+
+msgid "Igbo"
+msgstr "Igboisht"
+
+msgid "Nuosu"
+msgstr "Nuosu"
+
+msgid "Inupiaq"
+msgstr "Inupikisht"
+
+msgid "Ido"
+msgstr "Idoisht"
+
+msgid "Icelandic"
+msgstr "Islandisht"
+
+msgid "Italian"
+msgstr "Italisht"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Japonisht"
+
+msgid "Javanese"
+msgstr "Xhavanisht"
+
+msgid "Georgian"
+msgstr "Gjeorgjisht"
+
+msgid "Kongo"
+msgstr "Kongoisht"
+
+msgid "Gikuyu"
+msgstr "Gikuyu"
+
+msgid "Kwanyama"
+msgstr "Kwanyama"
+
+msgid "Kazakh"
+msgstr "Kazake"
+
+msgid "Greenlandic"
+msgstr "Groenlandisht"
+
+msgid "Kannada"
+msgstr "Kanadisht"
 
 msgid "Korean"
-msgstr ""
+msgstr "Koreanisht"
+
+msgid "Kanuri"
+msgstr "Kanurisht"
+
+msgid "Kashmiri"
+msgstr "Kashmire"
+
+msgid "Kurdish"
+msgstr "Kurdisht"
+
+msgid "Komi"
+msgstr "Komisht"
+
+msgid "Cornish"
+msgstr "Kornuellse"
+
+msgid "Kyrgyz"
+msgstr "Kirgizisht"
+
+msgid "Latin"
+msgstr "Latinisht"
+
+msgid "Luxembourgish"
+msgstr "Luksemburgisht"
+
+msgid "Luganda"
+msgstr "Luganda"
+
+msgid "Limburgish"
+msgstr "Limburgisht"
+
+msgid "Lingala"
+msgstr "Lingalisht"
+
+msgid "Lao"
+msgstr "Laosisht"
+
+msgid "Lithuanian"
+msgstr "Lituanisht"
+
+msgid "Luba-Katanga"
+msgstr "Luba-katangaisht"
+
+msgid "Latvian"
+msgstr "Letonisht"
+
+msgid "Malagasy"
+msgstr "Malagashe"
+
+msgid "Marshallese"
+msgstr "Marshallisht"
+
+msgid "Maori"
+msgstr "Maorisht"
+
+msgid "Macedonian"
+msgstr "Maqedonisht"
+
+msgid "Malayalam"
+msgstr "Malajalame"
+
+msgid "Mongolian"
+msgstr "Mongolisht"
+
+msgid "Marathi"
+msgstr "Marati"
+
+msgid "Malay"
+msgstr "Malaje"
+
+msgid "Maltese"
+msgstr "Maltisht"
+
+msgid "Burmese"
+msgstr "Burmeze"
+
+msgid "Nauru"
+msgstr "Nauru"
+
+msgid "Nepali"
+msgstr "Nepaleze"
+
+msgid "Ndonga"
+msgstr "Ndongaisht"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Holandisht"
+
+msgid "Norwegian Nynorsk"
+msgstr "Norvegjisht Nynorsk"
+
+msgid "Navaho"
+msgstr "Navaho"
+
+msgid "Nyanja"
+msgstr "Nianjisht"
+
+msgid "Occitan"
+msgstr "Oçitanisht"
+
+msgid "Ojibwe"
+msgstr "Ojibwe"
+
+msgid "Oromo"
+msgstr "Oromoisht"
+
+msgid "Odia"
+msgstr "Odisht"
+
+msgid "Ossetian"
+msgstr "Osetisht"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Palizisht"
+
 msgid "Polish"
-msgstr ""
+msgstr "Polonisht"
+
+msgid "Pashto"
+msgstr "Pashtoisht"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugalisht"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugalisht (Brazil)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugalisht (Portugali)"
+
+msgid "Quechua"
+msgstr "Keçuaisht"
+
+msgid "Romansh"
+msgstr "Retoromanisht"
+
+msgid "Rundi"
+msgstr "Rundisht"
+
+msgid "Romanian"
+msgstr "Rumanisht"
 
 msgid "Russian"
-msgstr ""
+msgstr "Rusisht"
+
+msgid "Kinyarwanda"
+msgstr "Kiniaruandisht"
+
+msgid "Sanskrit"
+msgstr "Sanskritisht"
+
+msgid "Sardinian"
+msgstr "Sardinisht"
+
+msgid "Sindhi"
+msgstr "Sindisht"
+
+msgid "Sango"
+msgstr "Sangoisht"
+
+msgid "Sinhala"
+msgstr "Sinhalisht"
+
+msgid "Slovak"
+msgstr "Sllovakisht"
+
+msgid "Slovenian"
+msgstr "Sllovenisht"
+
+msgid "Samoan"
+msgstr "Samoanisht"
+
+msgid "Shona"
+msgstr "Shonisht"
+
+msgid "Somali"
+msgstr "Somalisht"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Shqip"
+
+msgid "Serbian"
+msgstr "Serbisht"
+
+msgid "Swati"
+msgstr "Suatisht"
+
+msgid "Sundanese"
+msgstr "Sundanisht"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Suedisht"
+
+msgid "Swahili"
+msgstr "Suahili"
+
+msgid "Tamil"
+msgstr "Tamilisht"
+
+msgid "Telugu"
+msgstr "Teluguisht"
+
+msgid "Tajik"
+msgstr "Taxhikisht"
+
+msgid "Thai"
+msgstr "Tailandisht"
+
+msgid "Tigrinya"
+msgstr "Tigrinjaisht"
+
+msgid "Turkmen"
+msgstr "Turkmenisht"
+
+msgid "Tagalog"
+msgstr "Tagaloge"
+
+msgid "Tswana"
+msgstr "cuanaisht"
+
+msgid "Tongan"
+msgstr "Tonganisht"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turqisht"
+
+msgid "Tsonga"
+msgstr "Congaisht"
+
+msgid "Tatar"
+msgstr "Tatarisht"
+
+msgid "Twi"
+msgstr "Tuisht"
+
+msgid "Tahitian"
+msgstr "Tahitisht"
+
+msgid "Uyghur"
+msgstr "Ujgurisht"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainisht"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Uzbeke"
+
+msgid "Venda"
+msgstr "Vendaisht"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamisht"
+
+msgid "Volapük"
+msgstr "Volapykisht"
+
+msgid "Walloon"
+msgstr "Valonisht"
+
+msgid "Wolof"
+msgstr "Uolofisht"
+
+msgid "Xhosa"
+msgstr "Xhosaisht"
+
+msgid "Yiddish"
+msgstr "Jidisht"
+
+msgid "Yoruba"
+msgstr "Jorubaisht"
+
+msgid "Zhuang"
+msgstr "Zhuang"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "Zuluisht"
 
 msgid "(no translation)"
 msgstr ""
@@ -1410,6 +1843,10 @@ msgstr ""
 #, tcl-format
 msgid "(default language: %s)"
 msgstr ""
+
+#, fuzzy
+msgid "Print..."
+msgstr "_Përpuno..."
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1429,10 +1866,6 @@ msgstr "Ruaj"
 #, fuzzy
 msgid "Save As..."
 msgstr "Ruaj Si"
-
-#, fuzzy
-msgid "Print..."
-msgstr "_Përpuno..."
 
 msgid "Paste Replace"
 msgstr ""

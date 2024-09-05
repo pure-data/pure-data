@@ -1,101 +1,92 @@
-# Hungarian translation of Pure Data.
-# This file is put in the public domain
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Andras Muranyi <muranyia@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.43\n"
+"Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2024-08-28 18:42+0200\n"
-"PO-Revision-Date: 2010-01-29 21:09+0100\n"
-"Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/hu/>\n"
-"Language: hu\n"
+"PO-Revision-Date: 2024-08-28 18:54+0200\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/eo/>\n"
+"Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
-msgstr ""
+msgstr "lineara"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logaritma"
 
 msgid "new-only"
-msgstr ""
+msgstr "nur novaj"
 
 msgid "new&old"
-msgstr ""
+msgstr "novaj & malnovaj"
 
-#, fuzzy
 msgid "no scale"
-msgstr "Méretarány"
+msgstr "sen skalo"
 
-#, fuzzy
 msgid "scale"
-msgstr "Méretarány"
+msgstr "kun skalo"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Elveti '%s' változtatásait?"
+msgstr "Ĉu forĵeti ŝanĝojn pri «%s»?"
 
 msgid "Undo clear"
-msgstr "Mégsem töröl"
+msgstr ""
 
 msgid "Undo connect"
-msgstr "Mégsem csatlakoztat"
+msgstr "Malfari konekton"
 
 msgid "Undo cut"
-msgstr "Mégsem vág ki"
+msgstr "Malfari eltondon"
 
 msgid "Undo disconnect"
-msgstr "Mégsem törli a csatlakozást"
+msgstr "Malfari malkonekton"
 
 msgid "Undo duplicate"
-msgstr "Mégsem duplikál"
+msgstr ""
 
 msgid "Undo motion"
-msgstr "Mégsem mozgat"
+msgstr "Malfari movon"
 
 msgid "Undo paste"
-msgstr "Mégsem illeszt be"
+msgstr "Malfari algluon"
 
 msgid "Undo typing"
-msgstr "Mégsem ír"
+msgstr "Malfari tajpadon"
 
-#, fuzzy
 msgid "Redo clear"
-msgstr "Mégsem töröl"
+msgstr ""
 
-#, fuzzy
 msgid "Redo connect"
-msgstr "Mégsem csatlakoztat"
+msgstr "Refari konekton"
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "Mégsem vág ki"
+msgstr "Refari eltondon"
 
-#, fuzzy
 msgid "Redo disconnect"
-msgstr "Mégsem törli a csatlakozást"
+msgstr "Refari malkonekton"
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "Mégsem duplikál"
+msgstr ""
 
-#, fuzzy
 msgid "Redo motion"
-msgstr "Mégsem mozgat"
+msgstr "Refari movon"
 
-#, fuzzy
 msgid "Redo paste"
-msgstr "Mégsem illeszt be"
+msgstr "Refari algluon"
 
-#, fuzzy
 msgid "Redo typing"
-msgstr "Mégsem ír"
+msgstr "Refari tajpadon"
 
 msgid "no Pd settings to clear"
 msgstr ""
@@ -109,9 +100,8 @@ msgstr ""
 msgid "failed to erase Pd settings"
 msgstr ""
 
-#, fuzzy
 msgid "erased Pd settings"
-msgstr "Minden bellítást ment"
+msgstr ""
 
 msgid "no Pd settings to erase"
 msgstr ""
@@ -123,209 +113,199 @@ msgid "(re-save preferences to reinstate them)"
 msgstr ""
 
 msgid "File"
-msgstr "Fájl"
+msgstr "Dosiero"
 
-#, fuzzy
 msgid "Edit"
-msgstr "Szerkeszt"
+msgstr "Redakti"
 
 msgid "Put"
-msgstr "Új"
+msgstr "Meti"
 
 msgid "Find"
-msgstr "Keres"
+msgstr "Trovi"
 
 msgid "Media"
-msgstr "Média"
+msgstr "Aŭdvidaĵo"
 
 msgid "Window"
-msgstr "Ablak"
+msgstr "Fenestro"
 
 msgid "Help"
-msgstr "Súgó"
+msgstr "Helpo"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Montri &kaŝitajn dosierojn kaj dosierujojn"
 
 msgid "Copy"
-msgstr "Másol"
+msgstr "Kopii"
 
 msgid "Paste"
-msgstr "Beilleszt"
+msgstr "Alglui"
 
 msgid "Array Properties"
-msgstr "Array tulajdonságai"
+msgstr "Atributoj pri tabelo"
 
 msgid "Array"
-msgstr "Array"
+msgstr "Tabelo"
 
 msgid "Name:"
-msgstr "Név:"
+msgstr "Nomo:"
 
 msgid "Size:"
-msgstr "Méret:"
+msgstr "Grando:"
 
 msgid "Save contents"
-msgstr "Tartalom mentése"
+msgstr "Konservi la enhavon"
 
 msgid "Draw as:"
-msgstr "Megjelenítés:"
+msgstr "Desegni kiel jenon:"
 
 msgid "Polygon"
-msgstr "Sokszög"
+msgstr "Plurlatero"
 
 msgid "Points"
-msgstr "Pontok"
+msgstr "Punktoj"
 
 msgid "Bezier curve"
-msgstr "Bezier görbe"
+msgstr "Bézier-kurbo"
 
 msgid "Put array into:"
-msgstr "Array helye:"
+msgstr "Meti tabelon en la jenon:"
 
 msgid "New graph"
-msgstr "Új graph"
+msgstr "Nova grafo"
 
 msgid "Last graph"
-msgstr "Legutóbbi graph"
+msgstr "Lasta grafo"
 
 msgid "Options"
-msgstr ""
+msgstr "Opcioj"
 
 msgid "Open List View..."
-msgstr "Lista nézet megnyitása..."
+msgstr "Malfermi listan vidon…"
 
 msgid "Delete array"
-msgstr "Array-t töröl"
+msgstr "Forviŝi tabelon"
 
 msgid "Cancel"
-msgstr "Mégsem"
+msgstr "Nuligi"
 
 msgid "Apply"
-msgstr "Alkalmaz"
+msgstr "Efektivigi"
 
 msgid "OK"
-msgstr "OK"
+msgstr "Bone"
 
-#, fuzzy
 msgid "no device"
-msgstr "3. bemeneti eszköz:"
+msgstr "neniu aparato"
 
-#, fuzzy
 msgid "(same as input device)..."
-msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
+msgstr "(sama kiel eniga aparato)…"
 
 msgid "Channels:"
-msgstr "Csatornák:"
+msgstr "Kanaloj:"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Bemeneti eszköz:"
+msgstr "Enigaj aparatoj"
 
-#, fuzzy
 msgid "Output Devices"
-msgstr "Kimeneti eszköz:"
+msgstr "Eligaj aparatoj"
 
-#, fuzzy
 msgid "Use Multiple Devices"
-msgstr "Több eszköz használata"
+msgstr "Uzi plurajn aparatojn"
 
 msgid "Audio System"
-msgstr ""
+msgstr "Sonsistemo"
 
-#, fuzzy
 msgid "Settings"
-msgstr "MIDI beállítások"
+msgstr "Agordoj"
 
 msgid "Sample rate:"
-msgstr "Mintavétel (Hz):"
+msgstr "Sampla ofto:"
 
 msgid "Delay (msec):"
-msgstr "Késés (ms):"
+msgstr ""
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44,1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Grando de bloko:"
 
 msgid "Use callbacks"
-msgstr "Callback-ek használata"
+msgstr ""
 
 msgid "Audio Settings"
-msgstr "Hang beállítások"
+msgstr "Agordoj pri sono"
 
 msgid "Save All Settings"
-msgstr "Minden bellítást ment"
+msgstr "Konservi ĉiujn agordojn"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 
 msgid "Canvas Properties"
-msgstr "Canvas tulajdonságai"
+msgstr "Atributoj de kanvaso"
 
 msgid "Scale"
-msgstr "Méretarány"
+msgstr "Skalo"
 
 msgid "X units per pixel:"
-msgstr "X egység képpontonként:"
+msgstr "X-unuoj en bildero:"
 
 msgid "Y units per pixel:"
-msgstr "Y egység képpontonként:"
+msgstr "Y-unuoj en bildero:"
 
 msgid "Appearance on parent patch"
-msgstr "Megjelenés a szülő patch-en"
+msgstr ""
 
 msgid "Graph-On-Parent"
-msgstr "Megjelenítés a szülőn (GOP)"
+msgstr "Grafo-sur-patro"
 
 msgid "Hide object name and arguments"
-msgstr "Elemnév és paraméterek elrejtése"
+msgstr ""
 
 msgid "Range and size"
-msgstr "Tartomány és méret"
+msgstr "Gamo kaj grando"
 
-#, fuzzy
 msgid "X range: from"
-msgstr "X tartomány kezdete"
+msgstr "X-gamo: de"
 
 msgid "to"
-msgstr "vége"
+msgstr "al"
 
 msgid "Margin:"
-msgstr "Margó:"
+msgstr "Marĝeno:"
 
-#, fuzzy
 msgid "Y range: from"
-msgstr "Y tartomány kezdete"
+msgstr "Y-gamo: de"
 
-#, fuzzy
 msgid "Data Properties"
-msgstr "Canvas tulajdonságai"
+msgstr "Datenaj atributoj"
 
 msgid "Send"
-msgstr ""
+msgstr "Sendi"
 
 msgid "Done"
-msgstr ""
+msgstr "Farite"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Trovis «%1$s» en %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Ne trovis «%1$s» en %2$s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "Keresés itt:"
+msgstr "Serĉi en %s pri:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -336,224 +316,216 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
 msgid "Pd window"
-msgstr "Pd ablak"
+msgstr "Pd-fenestro"
 
 msgid "Match whole word only"
-msgstr "Csak egész szavas egyezés"
+msgstr ""
 
 msgid "Close"
-msgstr "Bezár"
+msgstr "Fermi"
 
 #, tcl-format
 msgid "%s Font"
-msgstr "%s betűkészlet"
+msgstr "Tiparo %s"
 
 msgid "Font"
-msgstr "Betű"
+msgstr "Tiparo"
 
 msgid "Font Size"
-msgstr "Betűméret"
+msgstr "Tipara grando"
 
 msgid "Stretch"
-msgstr "Nyújtás"
+msgstr "Streĉo"
 
 msgid "X and Y"
-msgstr "X és Y"
+msgstr "X kaj Y"
 
 msgid "X only"
-msgstr "csak X"
+msgstr "Nur X"
 
 msgid "Y only"
-msgstr "csak Y"
+msgstr "Nur Y"
 
-#, fuzzy
 msgid "GUI Box Properties"
-msgstr "Atom Box tulajdonságai"
+msgstr ""
 
 msgid "Messages"
-msgstr "Üzenetek"
+msgstr "Mesaĝoj"
 
 msgid "Send symbol:"
-msgstr "Küldött symbol:"
+msgstr "Sendi simbolon:"
 
 msgid "Receive symbol:"
-msgstr "Fogadott symbol:"
+msgstr "Ricevi simbolon:"
 
 msgid "auto"
-msgstr ""
+msgstr "aŭtomata"
 
 msgid "Width:"
-msgstr "Szélesség:"
+msgstr "Larĝo:"
 
 msgid "Limits"
-msgstr "Korlátok"
+msgstr "Limoj"
 
 msgid "Lower:"
-msgstr "Alsó:"
+msgstr "Malsupra:"
 
 msgid "Upper:"
-msgstr "Felső:"
+msgstr "Supra:"
 
 msgid "Label"
-msgstr "Címke"
+msgstr "Etikedo"
 
-#, fuzzy
 msgid "Left"
-msgstr "Bal"
+msgstr "Maldekstra"
 
 msgid "Right"
-msgstr "Jobb"
+msgstr "Dekstra"
 
 msgid "Top"
-msgstr "Fent"
+msgstr "Supra"
 
 msgid "Bottom"
-msgstr "Lent"
+msgstr "Malsupra"
 
 msgid "Background color"
-msgstr "Háttérszín"
+msgstr "Fona koloro"
 
 msgid "Foreground color"
-msgstr "Szín"
+msgstr "Malfona koloro"
 
 msgid "Label color"
-msgstr "Címkeszín"
+msgstr "Etikeda koloro"
 
 msgid "Bang"
-msgstr "Bang"
+msgstr ""
 
-#, fuzzy
 msgid "Flash Time (msec)"
-msgstr "Késés (ms):"
+msgstr ""
 
 msgid "Min:"
-msgstr ""
+msgstr "Minimumo:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Maksimumo:"
 
 msgid "Toggle"
-msgstr "Toggle"
+msgstr "Baskuligi"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Nenula valoro"
 
 msgid "Value:"
-msgstr ""
+msgstr "Valoro:"
 
 msgid "Number2"
-msgstr "Number2"
+msgstr "Nombro2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Larĝo (ciferoj):"
 
-#, fuzzy
 msgid "Height:"
-msgstr "Jobb"
+msgstr "Alto:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Eliga gamo"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Logaritma alto:"
 
 msgid "Vslider"
-msgstr "Vslider"
+msgstr ""
 
 msgid "Hslider"
-msgstr "Hslider"
+msgstr ""
 
 msgid "Vradio"
-msgstr "Vradio"
+msgstr ""
 
 msgid "Num cells:"
 msgstr ""
 
 msgid "Hradio"
-msgstr "Hradio"
+msgstr ""
 
 msgid "VU Meter"
-msgstr "VU meter"
+msgstr ""
 
 msgid "Canvas"
-msgstr "Canvas"
+msgstr "Kanvaso"
 
 msgid "Visible Rectangle (pix)"
 msgstr ""
 
 #, tcl-format
 msgid "%s Properties"
-msgstr "%s tulajdonságai"
-
-msgid "Parameters"
 msgstr ""
 
+msgid "Parameters"
+msgstr "Parametroj"
+
 msgid "Init"
-msgstr "Kezdőérték"
+msgstr ""
 
 msgid "No init"
-msgstr "Nincs kezdőérték"
+msgstr ""
 
 msgid "Jump on click"
-msgstr "Kattintásra ugorjon"
+msgstr ""
 
 msgid "Steady on click"
-msgstr "Kattintásra várjon"
+msgstr ""
 
-#, fuzzy
 msgid "X offset:"
-msgstr "X offszet"
+msgstr ""
 
-#, fuzzy
 msgid "Y offset:"
-msgstr "Y offszet"
+msgstr ""
 
 msgid "Colors"
-msgstr "Színek"
+msgstr "Koloroj"
 
 msgid "Background"
-msgstr "Háttér"
+msgstr "Fono"
 
 msgid "Front"
-msgstr "Előtér"
+msgstr "Malfono"
 
 msgid "Compose color"
-msgstr "Színkeverés"
+msgstr ""
 
 msgid "Test label"
-msgstr "Teszt címke"
+msgstr ""
 
-#, fuzzy
 msgid "Send a Pd message"
-msgstr "Üzenet küldése..."
+msgstr "Sendi Pd-mesaĝon"
 
 msgid "(use arrow keys for history)"
 msgstr ""
 
-#, fuzzy
 msgid "no input devices"
-msgstr "Bemeneti eszköz:"
+msgstr "neniu eniga aparato"
 
 msgid "In Ports:"
-msgstr "Bejövő portok:"
+msgstr "En-pordoj:"
 
 msgid "Out Ports:"
-msgstr "Kimenő portok:"
+msgstr "El-pordoj:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "MIDI-sistemo"
 
 msgid "MIDI Settings"
-msgstr "MIDI beállítások"
+msgstr "Agordoj pri MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI beállítások"
+msgstr "Agordoj pri ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Uzi normajn dosierlokojn"
 
 msgid "Verbose"
 msgstr ""
@@ -562,24 +534,22 @@ msgid "Pd Documents Directory"
 msgstr ""
 
 msgid "Browse"
-msgstr ""
+msgstr "Foliumi"
 
 msgid "Reset"
 msgstr ""
 
 msgid "Disable"
-msgstr ""
+msgstr "Malŝalti"
 
 msgid "Externals Install Directory"
 msgstr ""
 
-#, fuzzy
 msgid "Clear"
-msgstr "Menüt ürít"
+msgstr ""
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Beállítások"
+msgstr ""
 
 msgid "Choose Pd documents directory:"
 msgstr ""
@@ -594,26 +564,23 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
-#, fuzzy
 msgid "Patch Windows"
-msgstr "Pd ablak"
+msgstr "Fliki fenestrojn"
 
-#, fuzzy
 msgid "Zoom New Windows"
-msgstr "Szülő ablak"
+msgstr "Zomi novajn fenestrojn"
 
-#, fuzzy
 msgid "GUI Settings"
-msgstr "Minden bellítást ment"
+msgstr "Agordoj pri grafika fasado"
 
 msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
 msgid "Use tabs"
-msgstr ""
+msgstr "Uzi langetojn"
 
 msgid "Single page"
-msgstr ""
+msgstr "Unu paĝo"
 
 msgid "Patching helpers"
 msgstr ""
@@ -622,33 +589,28 @@ msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
-msgstr "Beállítások"
+msgstr "Preferoj"
 
-#, fuzzy
 msgid "startup preferences"
-msgstr "Beállítások"
+msgstr ""
 
-#, fuzzy
 msgid "audio preferences"
-msgstr "Beállítások"
+msgstr ""
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Beállítások"
+msgstr "Preferoj pri MIDI"
 
-#, fuzzy
 msgid "deken preferences"
-msgstr "Beállítások"
+msgstr "Preferoj pri deken"
 
-#, fuzzy
 msgid "misc preferences"
-msgstr "Beállítások"
+msgstr ""
 
 msgid "Add new library"
-msgstr ""
+msgstr "Aldoni novan bibliotekon"
 
 msgid "Edit library"
-msgstr ""
+msgstr "Modifi bibliotekon"
 
 msgid "Settings below require a restart of Pd!"
 msgstr ""
@@ -656,30 +618,29 @@ msgstr ""
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-#, fuzzy
 msgid "GUI Options"
-msgstr "Minden bellítást ment"
+msgstr "Opcioj pri grafika fasado"
 
 msgid "language"
-msgstr ""
+msgstr "lingvo"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menua lingvo"
 
 msgid "float (32bit)"
-msgstr ""
+msgstr "32-bita glitkomo"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "64-bita glitkomo EKSPERIMENTA"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "64-bita glitkomo"
 
 msgid "float size"
-msgstr ""
+msgstr "glitkoma grando"
 
 msgid "Numeric precision of Pd-core"
-msgstr ""
+msgstr "Nombra precizo de Pd-core"
 
 msgid "Startup Options"
 msgstr ""
@@ -690,46 +651,42 @@ msgstr ""
 msgid "Startup Flags:"
 msgstr ""
 
-#, fuzzy
 msgid "Help Browser"
-msgstr "Beépített böngésző..."
+msgstr "Helpo-legilo"
 
 msgid "Associated Files"
-msgstr "Kapcsolódó fájlok"
+msgstr "Asociitaj dosieroj"
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "Pd fájlok"
+msgstr "Pd-dosieroj"
 
 msgid "Max Patch Files"
-msgstr "Max patch fájlok"
+msgstr ""
 
 msgid "Max Text Files"
-msgstr "Max szövegfájlok"
+msgstr ""
 
 msgid "Max Patch Files (.pat)"
-msgstr "Max patch fájlok (.pat)"
+msgstr ""
 
 msgid "Max Text Files (.mxt)"
-msgstr "Max szövegfájlok (.mxt)"
+msgstr ""
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "trovis tiparon: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
-"FIGYELEM: Nem található '%s' betűcsalád, az alapbeállítás (%s) érvényes"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
-"FIGYELEM: Nem található '%s' betűvastagság, az alapbeállítás (%s) érvényes"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr ""
+msgstr "uzante la tiparon %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -745,7 +702,7 @@ msgstr ""
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "MALSUKCESIS ŜARGI %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
@@ -756,19 +713,19 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr ""
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Malsukcesis lanĉi Pd"
 
 msgid "Failed to start Pd-core"
-msgstr ""
+msgstr "Malsukcesis lanĉi Pd-core"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) MANKAS FERMA KUNIGA KRAMPO «}»: "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) NEVALIDA NOMO DE KOMANDO: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) NETRAKTITA ERARO: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -784,15 +741,15 @@ msgstr ""
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr ""
+msgstr "instalante deken-pakon «%s»"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Installing '%s'"
-msgstr "Elveti '%s' változtatásait?"
+msgstr "Instalante «%s»"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -806,22 +763,22 @@ msgstr ""
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Maldensigu %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Kopiu la enhavon en la dosierujon %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr ""
+msgstr "3. Forviŝu %s. (nedeviga)"
 
 #, tcl-format
 msgid "Removing '%s'"
-msgstr ""
+msgstr "Forigante «%s»"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
@@ -860,7 +817,7 @@ msgid "Unable to download from '%s'!"
 msgstr ""
 
 msgid "Download failed"
-msgstr ""
+msgstr "Elŝutado malsukcesis"
 
 #, tcl-format
 msgid "Unable to remove stray file '%s'"
@@ -871,13 +828,13 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
 msgid "Create"
-msgstr ""
+msgstr "Krei"
 
 msgid "Check"
-msgstr ""
+msgstr "Kontroli"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "Opcioj pri instalado:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
@@ -899,22 +856,22 @@ msgstr ""
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Implicita platformo: %s"
 
 msgid "User-defined platform:"
 msgstr ""
 
 msgid "Hide foreign architectures"
-msgstr ""
+msgstr "Kaŝi fremdajn arĥitekturojn"
 
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Beállítások"
+msgstr ""
 
 #, tcl-format
 msgid "Platform re-detected: %s"
@@ -932,19 +889,16 @@ msgid "Checksum mismatch for '%s'"
 msgstr ""
 
 msgid "Deken Packages"
-msgstr ""
+msgstr "Deken-pakoj"
 
-#, fuzzy
 msgid "ZIP Files"
-msgstr "ZIP fájlok"
+msgstr "ZIP-dosieroj"
 
-#, fuzzy
 msgid "TAR Files"
-msgstr "TAR fájlok"
+msgstr "TAR-dosieroj"
 
-#, fuzzy
 msgid "All Files"
-msgstr "Minden fájl"
+msgstr "Ĉiuj dosieroj"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -956,21 +910,21 @@ msgstr ""
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr ""
+msgstr "Instalante la pakon «%s»"
 
 msgid "Installation completed!"
-msgstr ""
+msgstr "Finis instali!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr ""
+msgstr "Sukcese instalis «%s»!"
 
 msgid "Installation failed!"
-msgstr ""
+msgstr "Malsukcesis instali!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
-msgstr ""
+msgstr "Malsukcesis instali «%s»!"
 
 msgid "Package installation failed"
 msgstr ""
@@ -1001,18 +955,17 @@ msgid "Processed %d packages selected for installation."
 msgstr ""
 
 msgid "Show all"
-msgstr ""
+msgstr "Montri ĉion"
 
-#, fuzzy
 msgid "Search"
-msgstr "Keresés itt:"
+msgstr "Serĉi"
 
 #, tcl-format
 msgid "Install (%d)"
-msgstr ""
+msgstr "Instali (%d)"
 
 msgid "Install"
-msgstr ""
+msgstr "Instali"
 
 #, tcl-format
 msgid "%s%% of download completed"
@@ -1022,7 +975,7 @@ msgid "Enter an exact library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
-msgstr ""
+msgstr "ekz. «freeverb~»"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1046,27 +999,25 @@ msgid "Find externals"
 msgstr ""
 
 msgid "Install DEK file..."
-msgstr ""
+msgstr "Instali DEK-dosieron…"
 
 msgid "Preferences..."
-msgstr "Beállítások..."
+msgstr "Preferoj…"
 
-#, fuzzy
 msgid "Search for: "
-msgstr "Keresés itt:"
+msgstr "Serĉi la jenon: "
 
 msgid "libraries"
-msgstr ""
+msgstr "bibliotekoj"
 
-#, fuzzy
 msgid "objects"
-msgstr "Object"
+msgstr "objektoj"
 
 msgid "both"
-msgstr ""
+msgstr "ambaŭ"
 
 msgid "translations"
-msgstr ""
+msgstr "tradukoj"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
@@ -1075,30 +1026,29 @@ msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
 msgstr ""
 
 msgid "Library"
-msgstr ""
+msgstr "Biblioteko"
 
 msgid "Version"
-msgstr ""
+msgstr "Versio"
 
 msgid "Description"
-msgstr ""
+msgstr "Priskribo"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Alŝutinto"
 
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
-#, fuzzy
 msgid "Search Results"
-msgstr "Keresés itt:"
+msgstr "Serĉaj rezultoj"
 
 msgid "Log"
-msgstr ""
+msgstr "Protokolo"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Elveti '%s' változtatásait?"
+msgstr "Serĉante «%s»…"
 
 #, tcl-format
 msgid "online? %s"
@@ -1118,17 +1068,17 @@ msgid "No matching externals found."
 msgstr ""
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr ""
+msgstr "Provu uzi la plenan nomon, ekz. «freeverb~»."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr ""
+msgstr "Aŭ uzu ĵokerojn kiel «freeverb*»."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
-msgstr ""
+msgstr "Ĉu instali %1$s al %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
@@ -1139,40 +1089,40 @@ msgstr ""
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
+msgstr "Ne povas instali al «%s»"
 
 msgid "Directory does not exist!"
-msgstr ""
+msgstr "Dosierujo ne ekzistas!"
 
 msgid "Directory is not writable!"
-msgstr ""
+msgstr "Ne eblas skribi en dosierujon!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr ""
+msgstr "Elŝutante «%s»"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
+msgstr "Ekelŝutante «%1$s» al «%2$s»…"
 
 msgid "aborting."
 msgstr ""
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr ""
+msgstr "Malsukcesis elŝuti «%s»"
 
 msgid "Download failed!"
-msgstr ""
+msgstr "Elŝuto malsukcesis!"
 
 msgid "Download completed! Verifying..."
 msgstr ""
 
 msgid "Ignoring checksum mismatch"
-msgstr ""
+msgstr "Ignorante malsamecon de kontrolsumoj"
 
 msgid "Ignoring checksum errors"
-msgstr ""
+msgstr "Ignorante kontrolsumajn erarojn"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1182,9 +1132,9 @@ msgstr ""
 msgid "[deken] Platform detected: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching on %s..."
-msgstr "Elveti '%s' változtatásait?"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
@@ -1195,15 +1145,14 @@ msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
+msgstr "Alŝutita de %1$s je %2$s"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
 msgstr ""
 
-#, fuzzy, tcl-format
-msgid "Searching for '%s' failed!"
-msgstr "Elveti '%s' változtatásait?"
-
-#, fuzzy
 msgid "Search failed"
-msgstr "Keresés itt:"
+msgstr "Serĉo malsukcesis"
 
 msgid "Unable to perform search."
 msgstr ""
@@ -1212,24 +1161,23 @@ msgid "Select package for installation"
 msgstr ""
 
 msgid "Deselect package"
-msgstr ""
+msgstr "Malelekti pakon"
 
-#, fuzzy
 msgid "Open package webpage"
-msgstr "Legutóbbi fájlok"
+msgstr ""
 
 msgid "Copy package URL"
-msgstr ""
+msgstr "Kopii retadreson de pako"
 
 msgid "Copy SHA256 checksum URL"
-msgstr ""
+msgstr "Kopii adreson de SHA256-kontrolsumo"
 
 msgid "Copy OpenGPG signature URL"
-msgstr ""
+msgstr "Kopii adreson de OpenGPG-signaturo"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr ""
+msgstr "Malinstali «%s»"
 
 #, tcl-format
 msgid ""
@@ -1279,594 +1227,592 @@ msgid "The language can only be set during startup."
 msgstr ""
 
 msgid "Afar"
-msgstr "Afar"
+msgstr ""
 
 msgid "Abkhazian"
-msgstr "Abház"
+msgstr ""
 
 msgid "Avestan"
-msgstr "Avesztán"
+msgstr ""
 
 msgid "Afrikaans"
-msgstr "Afrikaans"
+msgstr "Afrikanso"
 
 msgid "Akan"
-msgstr "Akan"
+msgstr ""
 
 msgid "Amharic"
-msgstr "Amhara"
+msgstr ""
 
 msgid "Aragonese"
-msgstr "Aragóniai"
+msgstr ""
 
 msgid "Arabic"
-msgstr "Arab"
+msgstr "Araba"
 
 msgid "Assamese"
-msgstr "Asszámi"
+msgstr ""
 
 msgid "Avaric"
-msgstr "Avar"
+msgstr ""
 
 msgid "Aymara"
-msgstr "Aymara"
+msgstr ""
 
 msgid "Azerbaijani"
-msgstr "Azeri"
+msgstr "Azerbajĝana"
 
 msgid "Bashkir"
-msgstr "Baskír"
+msgstr ""
 
 msgid "Belarusian"
-msgstr "Belorusz"
+msgstr "Belorusa"
 
 msgid "Bulgarian"
-msgstr "Bolgár"
+msgstr "Bulgara"
 
 msgid "Bihari"
-msgstr "Bihári"
+msgstr ""
 
 msgid "Bislama"
-msgstr "Biszlama"
+msgstr ""
 
 msgid "Bambara"
-msgstr "Bambara"
+msgstr ""
 
 msgid "Bengali"
-msgstr "Bengáli"
+msgstr ""
 
 msgid "Tibetan"
-msgstr "Tibeti"
+msgstr ""
 
 msgid "Breton"
-msgstr "Breton"
+msgstr ""
 
 msgid "Bosnian"
-msgstr "Bosnyák"
+msgstr ""
 
 msgid "Catalan"
-msgstr "Katalán"
+msgstr ""
 
 msgid "Chechen"
-msgstr "Csecsen"
+msgstr ""
 
 msgid "Chamorro"
-msgstr "Csamorro"
+msgstr ""
 
 msgid "Corsican"
-msgstr "Korzikai"
+msgstr ""
 
 msgid "Cree"
-msgstr "Krí"
+msgstr ""
 
 msgid "Czech"
-msgstr "Cseh"
+msgstr ""
 
 msgid "Chuvash"
-msgstr "Csuvas"
+msgstr ""
 
 msgid "Welsh"
-msgstr "Walesi"
+msgstr ""
 
 msgid "Danish"
-msgstr "Dán"
+msgstr ""
 
 msgid "German"
-msgstr "Német"
+msgstr "Germana"
 
 msgid "German (Austria)"
-msgstr "Német (Ausztria)"
+msgstr "Germana (aŭstra)"
 
 msgid "Dhivehi"
-msgstr "Divehi"
+msgstr ""
 
 msgid "Dzongkha"
-msgstr "Dzsonga"
+msgstr ""
 
 msgid "Ewe"
-msgstr "Eve"
+msgstr ""
 
 msgid "Greek"
-msgstr "Görög"
+msgstr "Greka"
 
 msgid "English"
-msgstr "Angol"
+msgstr "Angla"
 
 msgid "English (Canada)"
-msgstr "Angol (Kanada)"
+msgstr "Angla (Kanada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Angla (brita)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Angla (Usona)"
 
 msgid "Esperanto"
-msgstr "Eszperantó"
+msgstr ""
 
 msgid "Spanish"
-msgstr "Spanyol"
+msgstr "Hispana"
 
 msgid "Estonian"
-msgstr "Észt"
+msgstr ""
 
 msgid "Basque"
-msgstr "Baszk"
+msgstr "Eŭska"
 
 msgid "Persian"
-msgstr "Perzsa"
+msgstr ""
 
 msgid "Fulah"
-msgstr "Ful"
+msgstr ""
 
 msgid "Finnish"
-msgstr "Finn"
+msgstr "Finna"
 
 msgid "Fijian"
-msgstr "Fidzsi"
+msgstr ""
 
 msgid "Faroese"
-msgstr "Feröeri"
+msgstr ""
 
 msgid "French"
-msgstr "Francia"
+msgstr "Franca"
 
 msgid "Frisian"
-msgstr "Fríz"
+msgstr ""
 
 msgid "Irish"
-msgstr "Ír"
+msgstr ""
 
 msgid "Gaelic"
-msgstr "Skót gael"
+msgstr ""
 
 msgid "Galician"
-msgstr "Galiciai"
+msgstr ""
 
 msgid "Guarani"
-msgstr "Guarani"
+msgstr ""
 
 msgid "Gujarati"
-msgstr "Gudzsaráti"
+msgstr "Guĝarata"
 
 msgid "Manx"
-msgstr "Manx"
+msgstr ""
 
 msgid "Hausa"
-msgstr "Hausza"
+msgstr ""
 
 msgid "Hebrew"
-msgstr "Héber"
+msgstr "Hebrea"
 
 msgid "Hindi"
-msgstr "Hindi"
+msgstr "Hindia"
 
 msgid "Hiri Motu"
-msgstr "Hiri motu"
+msgstr ""
 
 msgid "Croatian"
-msgstr "Horvát"
+msgstr ""
 
 msgid "Haitian"
-msgstr "Haiti"
+msgstr ""
 
 msgid "Hungarian"
-msgstr "Magyar"
+msgstr "Hungara"
 
 msgid "Armenian"
-msgstr "Örmény"
+msgstr "Armena"
 
 msgid "Herero"
-msgstr "Herero"
+msgstr ""
 
 msgid "Interlingua"
-msgstr "Interlingva"
+msgstr ""
 
 msgid "Indonesian"
-msgstr "Indonéz"
+msgstr "Indonezia"
 
 msgid "Occidental"
-msgstr "Occidental"
+msgstr ""
 
 msgid "Igbo"
-msgstr "Igbó"
+msgstr ""
 
 msgid "Nuosu"
-msgstr "Nuoszu"
+msgstr ""
 
 msgid "Inupiaq"
-msgstr "Inupiak"
+msgstr ""
 
 msgid "Ido"
-msgstr "Ido"
+msgstr ""
 
 msgid "Icelandic"
-msgstr "Izlandi"
+msgstr ""
 
 msgid "Italian"
-msgstr "Olasz"
+msgstr "Itala"
 
 msgid "Inuktitut"
-msgstr "Inuktitut"
+msgstr ""
 
 msgid "Japanese"
-msgstr "Japán"
+msgstr "Japana"
 
 msgid "Javanese"
-msgstr "Jávai"
+msgstr ""
 
 msgid "Georgian"
-msgstr "Grúz"
+msgstr ""
 
 msgid "Kongo"
-msgstr "Kongo"
+msgstr ""
 
 msgid "Gikuyu"
-msgstr "Kikuju"
+msgstr ""
 
 msgid "Kwanyama"
-msgstr "Kvanyama"
+msgstr ""
 
 msgid "Kazakh"
-msgstr "Kazak"
+msgstr ""
 
 msgid "Greenlandic"
-msgstr "Grönlandi"
+msgstr ""
 
 msgid "Kannada"
-msgstr "Kannada"
+msgstr ""
 
 msgid "Korean"
-msgstr "Koreai"
+msgstr "Korea"
 
 msgid "Kanuri"
-msgstr "Kanuri"
+msgstr ""
 
 msgid "Kashmiri"
-msgstr "Kasmíri"
+msgstr ""
 
 msgid "Kurdish"
-msgstr "Kurd"
+msgstr ""
 
 msgid "Komi"
-msgstr "Komi"
+msgstr ""
 
 msgid "Cornish"
-msgstr "Korni"
+msgstr ""
 
 msgid "Kyrgyz"
-msgstr "Kirgiz"
+msgstr ""
 
 msgid "Latin"
-msgstr "Latin"
+msgstr ""
 
 msgid "Luxembourgish"
-msgstr "Luxemburgi"
+msgstr ""
 
 msgid "Luganda"
-msgstr "Luganda"
+msgstr ""
 
 msgid "Limburgish"
-msgstr "Limburgi"
+msgstr ""
 
 msgid "Lingala"
-msgstr "Lingala"
+msgstr ""
 
 msgid "Lao"
-msgstr "Lao"
+msgstr ""
 
 msgid "Lithuanian"
-msgstr "Litván"
+msgstr ""
 
 msgid "Luba-Katanga"
-msgstr "Luba-katanga"
+msgstr ""
 
 msgid "Latvian"
-msgstr "Lett"
+msgstr ""
 
 msgid "Malagasy"
-msgstr "Malgas"
+msgstr ""
 
 msgid "Marshallese"
-msgstr "Marshall-szigeteki"
+msgstr ""
 
 msgid "Maori"
-msgstr "Maori"
+msgstr ""
 
 msgid "Macedonian"
-msgstr "Macedón"
+msgstr ""
 
 msgid "Malayalam"
-msgstr "Malajálam"
+msgstr ""
 
 msgid "Mongolian"
-msgstr "Mongol"
+msgstr ""
 
 msgid "Marathi"
-msgstr "Maráthi"
+msgstr ""
 
 msgid "Malay"
-msgstr "Maláj"
+msgstr ""
 
 msgid "Maltese"
-msgstr "Máltai"
+msgstr ""
 
 msgid "Burmese"
-msgstr "Burmai"
+msgstr ""
 
 msgid "Nauru"
-msgstr "Naurui"
+msgstr ""
 
 msgid "Nepali"
-msgstr "Nepáli"
+msgstr ""
 
 msgid "Ndonga"
-msgstr "Ndonga"
+msgstr ""
 
 msgid "Dutch"
-msgstr "Holland"
+msgstr "Nederlanda"
 
 msgid "Norwegian Nynorsk"
-msgstr "Norvég nynorsk"
+msgstr ""
 
 msgid "Navaho"
-msgstr "Navahó"
+msgstr ""
 
 msgid "Nyanja"
-msgstr "Nyandzsa"
+msgstr ""
 
 msgid "Occitan"
-msgstr "Okcitán"
+msgstr ""
 
 msgid "Ojibwe"
-msgstr "Odzsibva"
+msgstr ""
 
 msgid "Oromo"
-msgstr "Oromó"
+msgstr ""
 
 msgid "Odia"
-msgstr "Odia"
+msgstr ""
 
 msgid "Ossetian"
-msgstr "Oszét"
+msgstr ""
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panĝaba"
 
 msgid "Pali"
-msgstr "Pali"
+msgstr ""
 
 msgid "Polish"
-msgstr "Lengyel"
+msgstr "Pola"
 
 msgid "Pashto"
-msgstr "Pastu"
+msgstr ""
 
 msgid "Portuguese"
-msgstr "Portugál"
+msgstr "Portugala"
 
 msgid "Portuguese (Brazil)"
-msgstr "Portugál (Brazília)"
+msgstr "Portugala (Brazila)"
 
 msgid "Portuguese (Portugal)"
-msgstr "Portugál (Portugália)"
+msgstr "Portugala (Portugalia)"
 
 msgid "Quechua"
-msgstr "Kecsua"
+msgstr ""
 
 msgid "Romansh"
-msgstr "Romans"
+msgstr ""
 
 msgid "Rundi"
-msgstr "Rundi"
+msgstr ""
 
 msgid "Romanian"
-msgstr "Román"
+msgstr ""
 
 msgid "Russian"
-msgstr "Orosz"
+msgstr "Rusa"
 
 msgid "Kinyarwanda"
-msgstr "Kinyarvanda"
+msgstr ""
 
 msgid "Sanskrit"
-msgstr "Szanszkrit"
+msgstr ""
 
 msgid "Sardinian"
-msgstr "Szardíniai"
+msgstr ""
 
 msgid "Sindhi"
-msgstr "Szindhi"
+msgstr ""
 
 msgid "Sango"
-msgstr "Szangó"
+msgstr ""
 
 msgid "Sinhala"
-msgstr "Szingaléz"
+msgstr ""
 
 msgid "Slovak"
-msgstr "Szlovák"
+msgstr ""
 
 msgid "Slovenian"
-msgstr "Szlovén"
+msgstr ""
 
 msgid "Samoan"
-msgstr "Szamoai"
+msgstr ""
 
 msgid "Shona"
-msgstr "Sona"
+msgstr ""
 
 msgid "Somali"
-msgstr "Szomáli"
+msgstr ""
 
 msgid "Albanian"
-msgstr "Albán"
+msgstr "Albana"
 
 msgid "Serbian"
-msgstr "Szerb"
+msgstr ""
 
 msgid "Swati"
-msgstr "Szvázi"
+msgstr ""
 
 msgid "Sundanese"
-msgstr "Szundanéz"
+msgstr ""
 
 msgid "Swedish"
-msgstr "Svéd"
+msgstr "Sveda"
 
 msgid "Swahili"
-msgstr "Szuahéli"
+msgstr ""
 
 msgid "Tamil"
-msgstr "Tamil"
+msgstr ""
 
 msgid "Telugu"
-msgstr "Telugu"
+msgstr ""
 
 msgid "Tajik"
-msgstr "Tádzsik"
+msgstr ""
 
 msgid "Thai"
-msgstr "Thai"
+msgstr ""
 
 msgid "Tigrinya"
-msgstr "Tigrinya"
+msgstr ""
 
 msgid "Turkmen"
-msgstr "Türkmén"
+msgstr ""
 
 msgid "Tagalog"
-msgstr "Tagalog"
+msgstr ""
 
 msgid "Tswana"
-msgstr "Csvana"
+msgstr ""
 
 msgid "Tongan"
-msgstr "Tongai"
+msgstr ""
 
 msgid "Turkish"
-msgstr "Török"
+msgstr "Turka"
 
 msgid "Tsonga"
-msgstr "Conga"
+msgstr ""
 
 msgid "Tatar"
-msgstr "Tatár"
+msgstr ""
 
 msgid "Twi"
-msgstr "Tvi"
+msgstr ""
 
 msgid "Tahitian"
-msgstr "Tahiti"
+msgstr ""
 
 msgid "Uyghur"
-msgstr "Ujgur"
+msgstr ""
 
 msgid "Ukrainian"
-msgstr "Ukrán"
+msgstr "Ukraina"
 
 msgid "Urdu"
-msgstr "Urdu"
+msgstr ""
 
 msgid "Uzbek"
-msgstr "Üzbég"
+msgstr ""
 
 msgid "Venda"
-msgstr "Venda"
+msgstr ""
 
 msgid "Vietnamese"
-msgstr "Vietnámi"
+msgstr "Vjetnama"
 
 msgid "Volapük"
-msgstr "Volapük"
+msgstr ""
 
 msgid "Walloon"
-msgstr "Vallon"
+msgstr ""
 
 msgid "Wolof"
-msgstr "Volof"
+msgstr ""
 
 msgid "Xhosa"
-msgstr "Xhosza"
+msgstr ""
 
 msgid "Yiddish"
-msgstr "Jiddis"
+msgstr ""
 
 msgid "Yoruba"
-msgstr "Joruba"
+msgstr ""
 
 msgid "Zhuang"
-msgstr "Csuang"
+msgstr ""
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Ĉina (tradicia)"
 
 msgid "Zulu"
-msgstr "Zulu"
+msgstr ""
 
 msgid "(no translation)"
-msgstr ""
+msgstr "(sen traduko)"
 
 #, tcl-format
 msgid "(default language: %s)"
-msgstr ""
+msgstr "(implicita lingvo: %s)"
 
 msgid "Print..."
-msgstr "Nyomtat..."
+msgstr "Presi…"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
 msgid "About Pd"
-msgstr "A Pd-ről"
+msgstr "Pri Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
 msgid "Save"
-msgstr "Ment"
+msgstr "Konservi"
 
 msgid "Save As..."
-msgstr "Ment új néven..."
+msgstr "Konservi kiel…"
 
 msgid "Paste Replace"
 msgstr ""
 
 msgid "Duplicate"
-msgstr "Duplikál"
+msgstr ""
 
-#, fuzzy
 msgid "Zoom In"
-msgstr "Nagyító"
+msgstr "Enzomi"
 
-#, fuzzy
 msgid "Zoom Out"
-msgstr "Nagyító"
+msgstr "Elzomi"
 
 msgid "Tidy Up"
-msgstr "Elrendez"
+msgstr ""
 
 msgid "(Dis)Connect Selection"
 msgstr ""
@@ -1875,172 +1821,164 @@ msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"
-msgstr "Szerkesztő üzemmód"
+msgstr "Redakta reĝimo"
 
 msgid "Undo"
-msgstr "Mégsem!"
+msgstr "Malfari"
 
 msgid "Redo"
-msgstr "Mégis!"
+msgstr "Refari"
 
 msgid "New"
-msgstr "Új"
+msgstr "Nova"
 
 msgid "Open"
-msgstr "Megnyit"
+msgstr "Malfermi"
 
-#, fuzzy
 msgid "Message..."
-msgstr "Üzenet"
+msgstr "Mesaĝo…"
 
 msgid "Cut"
-msgstr "Kivág"
+msgstr "Eltondi"
 
 msgid "Select All"
-msgstr "Mindent kijelöl"
+msgstr "Elekti ĉiujn"
 
 msgid "Clear Console"
-msgstr "Konzolt ürít"
+msgstr "Forviŝi konzolon"
 
 msgid "Object"
-msgstr "Object"
+msgstr "Objekto"
 
 msgid "Message"
-msgstr "Üzenet"
+msgstr "Mesaĝo"
 
 msgid "Number"
-msgstr "Number"
+msgstr "Nombro"
 
 msgid "List"
-msgstr ""
+msgstr "Listo"
 
 msgid "Symbol"
-msgstr "Symbol"
+msgstr "Simbolo"
 
 msgid "Comment"
-msgstr "Comment"
+msgstr "Komento"
 
 msgid "Graph"
-msgstr "Graph"
+msgstr "Grafo"
 
 msgid "Find..."
-msgstr "Keres..."
+msgstr "Trovi…"
 
 msgid "Find Again"
-msgstr "Újra keres"
+msgstr "Retrovi"
 
 msgid "Find Last Error"
-msgstr "Legutóbbi hiba helye"
+msgstr "Trovi lastan eraron"
 
 msgid "DSP On"
-msgstr "DSP be"
+msgstr ""
 
 msgid "DSP Off"
-msgstr "DSP ki"
+msgstr ""
 
 msgid "Test Audio and MIDI..."
-msgstr "Hang és MIDI tesztelése..."
+msgstr ""
 
 msgid "Load Meter"
-msgstr "Terhelésmérő"
+msgstr ""
 
 msgid "Audio Settings..."
-msgstr "Hang beállítások..."
+msgstr "Sonaj agordoj…"
 
 msgid "MIDI Settings..."
-msgstr "MIDI beállítások..."
+msgstr "Agordoj pri MIDI…"
 
 msgid "Minimize"
-msgstr "Kicsinyít"
+msgstr "Minimumigi"
 
 msgid "Zoom"
-msgstr "Nagyító"
+msgstr "Zomi"
 
 msgid "Bring All to Front"
-msgstr "Mindent előtérbe hoz"
+msgstr "Malfonigi ĉiujn"
 
-#, fuzzy
 msgid "Next Window"
-msgstr "Szülő ablak"
+msgstr "Sekva fenestro"
 
-#, fuzzy
 msgid "Previous Window"
-msgstr "Szülő ablak"
+msgstr "Malsekva fenestro"
 
 msgid "Parent Window"
-msgstr "Szülő ablak"
+msgstr "Patra fenestro"
 
 msgid "HTML Manual..."
-msgstr "HTML kézikönyv..."
+msgstr "HTML-manlibro…"
 
 msgid "Browser..."
-msgstr "Beépített böngésző..."
+msgstr "Foliumilo…"
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Listo de objektoj…"
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
-msgstr ""
+msgstr "Kontroli ĝisdatigojn"
 
 msgid "Report a bug"
-msgstr ""
+msgstr "Raporti cimon"
 
 msgid "Clear Menu"
-msgstr "Menüt ürít"
+msgstr "Forviŝi menuon"
 
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
 
-#, fuzzy
 msgid "removed GUI settings"
-msgstr "Minden bellítást ment"
+msgstr ""
 
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-#, fuzzy
 msgid "Edit Preferences..."
-msgstr "Beállítások..."
+msgstr "Modifi preferojn…"
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "Beállítások"
+msgstr "Konservi ĉiujn preferojn"
 
-#, fuzzy
 msgid "Save to..."
-msgstr "Ment új néven..."
+msgstr "Konservi al…"
 
 msgid "Load from..."
-msgstr ""
+msgstr "Ŝargi de…"
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Forgesi ĉion…"
 
-#, fuzzy
 msgid "Tabbed preferences"
-msgstr "Beállítások"
+msgstr "Langetaj preferoj"
 
 msgid "Open Recent"
-msgstr "Legutóbbi fájlok"
+msgstr "Malfermi lastajn"
 
 msgid "Quit"
-msgstr "Kilép"
+msgstr "Forlasi"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr "El akarja menteni '%s' változásait?"
+msgstr ""
 
 msgid "Properties"
-msgstr "Tulajdonságok"
+msgstr "Atributoj"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Accept changes to '%s'?"
-msgstr "Elveti '%s' változtatásait?"
+msgstr "Ĉu akcepti ŝanĝojn pri «%s»?"
 
 msgid ""
 "Accepting will update the contents in the associated object. You still have "
@@ -2055,172 +1993,58 @@ msgstr ""
 msgid "the Pd window filtered %d lines"
 msgstr ""
 
-#, fuzzy
 msgid "Audio on"
-msgstr "Hang beállítások"
+msgstr ""
 
 msgid "Audio off"
 msgstr ""
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "EKSPERIMENTA duobla (64-bita) glitkomo"
 
 #, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr ""
+msgstr "%d-bita glitkomo EKSPERIMENTA"
 
 msgid "DSP"
-msgstr "DSP"
+msgstr ""
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Sona eneliga eraro"
 
 msgid "Log:"
-msgstr ""
+msgstr "Protokolo:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatala"
 
 msgid "error"
-msgstr ""
+msgstr "eraro"
 
 msgid "normal"
-msgstr ""
+msgstr "normala"
 
 msgid "debug"
-msgstr ""
+msgstr "sencimiga"
 
 msgid "all"
-msgstr ""
+msgstr "ĉiaj"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
-msgstr ""
+msgstr "Nova…"
 
-#, fuzzy
 msgid "Edit..."
-msgstr "Szerkeszt"
+msgstr "Redakti…"
 
-#, fuzzy
 msgid "Delete"
-msgstr "Array-t töröl"
+msgstr "Forigi"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
-
-#, fuzzy
-#~ msgid "(no device)"
-#~ msgstr "3. bemeneti eszköz:"
-
-#, fuzzy
-#~ msgid "Audio..."
-#~ msgstr "Hang beállítások..."
-
-#, fuzzy
-#~ msgid "MIDI..."
-#~ msgstr "MIDI beállítások..."
-
-#, fuzzy
-#~ msgid "bottom:"
-#~ msgstr "Lent"
-
-#, fuzzy
-#~ msgid "height:"
-#~ msgstr "Jobb"
-
-#, fuzzy
-#~ msgid "right:"
-#~ msgstr "Jobb"
-
-#, fuzzy
-#~ msgid "size:"
-#~ msgstr "Méret:"
-
-#, fuzzy
-#~ msgid "width:"
-#~ msgstr "Szélesség:"
-
-#, fuzzy
-#~ msgid "start searching for externals..."
-#~ msgstr "Elveti '%s' változtatásait?"
-
-#~ msgid "for:"
-#~ msgstr "erre:"
-
-#~ msgid "Filters"
-#~ msgstr "Szűrők"
-
-#~ msgid "Sampling"
-#~ msgstr "Mintavételezés"
-
-#~ msgid "Untitled"
-#~ msgstr "Névtelen"
-
-#~ msgid "GUI"
-#~ msgstr "Kezelőfelület"
-
-#~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
-#~ msgstr "HIBA: a 'pd' nem jelentkezett, a 'pd-gui' kilép!"
-
-#~ msgid "Font Properties"
-#~ msgstr "Betű tulajdonságai"
-
-#~ msgid "Output device 3:"
-#~ msgstr "3. kimeneti eszköz:"
-
-#~ msgid "Input device 2:"
-#~ msgstr "2. bemeneti eszköz:"
-
-#~ msgid "Signal"
-#~ msgstr "Jel"
-
-#~ msgid "Others"
-#~ msgstr "Egyéb"
-
-#~ msgid "really quit?"
-#~ msgstr "tényleg kilép?"
-
-#~ msgid "Patch Font"
-#~ msgstr "Patch betűkészlet"
-
-#~ msgid "Close this window??"
-#~ msgstr "Bezárja ezt az ablakot?"
-
-#~ msgid "Toggle Console"
-#~ msgstr "Konzol ki/be"
-
-#~ msgid "Generators"
-#~ msgstr "Generátorok"
-
-#~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "FIGYELEM: nem található %s betűkészlet %sx%s (%s) méretben!"
-
-#~ msgid "Math"
-#~ msgstr "Számítások"
-
-#~ msgid "Output device 2:"
-#~ msgstr "2. kimeneti eszköz:"
-
-#~ msgid "I/O"
-#~ msgstr "I/O"
-
-#~ msgid "Input device 4:"
-#~ msgstr "4. bemeneti eszköz:"
-
-#~ msgid "Discard changes to this window??"
-#~ msgstr "Elveti az ablak változtatásait?"
-
-#~ msgid "Text Editor"
-#~ msgstr "Szövegszerkesztő"
-
-#~ msgid "Use multiple ALSA devices"
-#~ msgstr "Több ALSA eszköz használata"
-
-#~ msgid "Output device 4:"
-#~ msgstr "4. kimeneti eszköz:"
