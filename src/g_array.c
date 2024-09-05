@@ -1100,6 +1100,7 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
         scalartemplate, gensym("style"), x->x_scalar->sc_vec, 1);
     if (style != stylewas)
     {
+        t_float width;
         t_array *a = garray_getarray(x);
         if (!a)
         {
@@ -1110,10 +1111,16 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
             garray_fittograph(x, a->a_n, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
-    #if 1
+
+        width = template_getfloat(
+            scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+        if (style == PLOTSTYLE_POINTS && width < 2)
+            width = 2;
+        if (width < 1)
+            width = 1;
         template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
-            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
-    #endif
+            width, 1);
+
         garray_redraw(x);
     }
 }
