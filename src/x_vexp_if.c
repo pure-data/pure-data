@@ -1041,6 +1041,7 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
         t_garray *garray;
         int size;
         long indx;
+        t_float flt_value = 0.0;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -1051,7 +1052,6 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
                 return (1);
         }
 #if 1
-        optr->ex_type = ET_FLT;
 
         switch (arg->ex_type) {
         case ET_INT:
@@ -1063,12 +1063,38 @@ max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
                 break;
 
         default:        /* do something with strings */
-                pd_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
-                indx = 0;
+                ex_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
+                return (1);
         }
-        if (indx < 0) indx = 0;
-        else if (indx >= size) indx = size - 1;
-        optr->ex_flt = wvec[indx].w_float;
+        if (indx < 0)
+            indx = 0;
+        else if (indx >= size)
+            indx = size - 1;
+        flt_value = wvec[indx].w_float;
+        switch (optr->ex_type) {
+        case ET_VEC:
+            ex_mkvector(optr->ex_vec, flt_value, expr->exp_vsize);
+            return(0);
+        case ET_SYM:
+            ex_error(expr, "expr:'%s' bad output type  '%ld'\n",
+                              expr->exp_string, optr->ex_type);
+            break;
+        case ET_INT:
+        case ET_FLT:
+        default:
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = flt_value;
+            return(0);
+        }
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return(1);
 #else /*  if 1 tabled code */
  The code below implement 4 point interpolation of table access
  which for now I (sdy) am tabling for the next release

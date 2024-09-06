@@ -50,9 +50,9 @@
  *  July 2017 --sdy
  *
  *      - ex_if() is reworked to only evaluate either the left or the right arg
- *      October 2020 --sdy
- *              - fact() (factorial) now calculates and returns its value in double
- *              - Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
+ *  October 2020 --sdy
+ *      - fact() (factorial) now calculates and returns its value in double
+ *      - Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
  *
  */
 
@@ -223,12 +223,12 @@ t_ex_func ex_funcs[] = {
         {"ldexp",       ex_ldexp,       2},
         {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
-        {"mtof",                ex_mtof,                1},
-        {"ftom",                ex_ftom,                1},
-        {"dbtorms",             ex_dbtorms,             1},
-        {"rmstodb",             ex_rmstodb,             1},
-        {"dbtopow",             ex_dbtopow,             1},
-        {"powtodb",             ex_powtodb,             1},
+        {"mtof",        ex_mtof,        1},
+        {"ftom",        ex_ftom,        1},
+        {"dbtorms",     ex_dbtorms,     1},
+        {"rmstodb",     ex_rmstodb,     1},
+        {"dbtopow",     ex_dbtopow,     1},
+        {"powtodb",     ex_powtodb,     1},
 #if !defined(_MSC_VER) || (_MSC_VER >= 1700)
         {"asinh",       ex_asinh,       1},
         {"acosh",       ex_acosh,       1},
@@ -1394,7 +1394,7 @@ ex_makesymbol(t_expr *e, struct ex_ex *optr, size_t size)
 }
 
 
-#define CHECK_LEFT_STR(left)                                    \
+#define CHECK_LEFT_STR(left)                            \
         left = argv;                                    \
         leftstr =  ex_getstring(e, left);               \
         if (!leftstr) {                                 \
@@ -1403,7 +1403,7 @@ ex_makesymbol(t_expr *e, struct ex_ex *optr, size_t size)
                 return;                                 \
         }                                               \
 
-#define CHECK_RIGHT_STR(right)                                  \
+#define CHECK_RIGHT_STR(right)                          \
         right = argv + 1;                               \
         rightstr =  ex_getstring(e, right);             \
         if (!rightstr) {                                \
@@ -1414,7 +1414,7 @@ ex_makesymbol(t_expr *e, struct ex_ex *optr, size_t size)
 
 
 #define CHECK_LR_STR(left, right)                       \
-        CHECK_LEFT_STR(left)                                    \
+        CHECK_LEFT_STR(left)                            \
         CHECK_RIGHT_STR(right)
 
 
@@ -1477,7 +1477,7 @@ func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)\
                 }                                                     \
                 break;                                                \
             default:                                                  \
-                            ex_error(e, "expr: bad return type INTERNAL ERROR",   \
+                ex_error(e, "expr: bad return type INTERNAL ERROR",   \
                                                 e->exp_string);       \
             }                                                         \
             return;                                                   \
@@ -1532,67 +1532,67 @@ static void
 ex_symbol1(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-                                                /* we will not realloc to exact size for efficiecy */
-                int i;
-                char *strp; /* string pointer */
+                        /* we will not realloc to exact size for efficiecy */
+        int i;
+        char *strp; /* string pointer */
 
         left = argv;
         switch (left->ex_type) {
         case ET_SYM:
-                        *optr = *left;
-                        left->ex_type = ET_INT;
-                        left->ex_flags = 0;
-                        left->ex_ptr = (char *)0;
-                        return;
+            *optr = *left;
+            left->ex_type = ET_INT;
+            left->ex_flags = 0;
+            left->ex_ptr = (char *)0;
+            return;
 
-                case ET_SI:
-                        strp = ex_getstring(e, left);
-                        if (!strp) {
-                        if (!ex_makesymbol(e, optr, 1))
-                        goto goterror;
-                                *optr->ex_ptr = 0;
-                                return;
-                        }
-                        if (!ex_makesymbol(e, optr, strlen(strp)))
-                                goto goterror;
-                        strcpy (optr->ex_ptr, strp);
-                        return;
-
-
-                case ET_INT:
-                if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+        case ET_SI:
+            strp = ex_getstring(e, left);
+            if (!strp) {
+                if (!ex_makesymbol(e, optr, 1))
+                    goto goterror;
+                *optr->ex_ptr = 0;
+                return;
+            }
+            if (!ex_makesymbol(e, optr, strlen(strp)))
                 goto goterror;
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%ld", left->ex_int);
-                        return;
+            strcpy (optr->ex_ptr, strp);
+            return;
 
-                case ET_FLT:
-                if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+
+        case ET_INT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%.6f", left->ex_flt);
-                        for (i = strlen(optr->ex_ptr) - 1; i && optr->ex_ptr[i] == '0'; i--)
-                                if (optr->ex_ptr[i-1] != '.')
-                                                optr->ex_ptr[i] = 0;
-                        return;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%ld", left->ex_int);
+            return;
 
-                default:
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
-                }
+        case ET_FLT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%.6f", left->ex_flt);
+            for (i = strlen(optr->ex_ptr) - 1; i && optr->ex_ptr[i] == '0'; i--)
+                if (optr->ex_ptr[i-1] != '.')
+                        optr->ex_ptr[i] = 0;
+            return;
+
+        default:
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
+        }
 
 goterror:
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return;
 }
 
 static void
 ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-                char format[25]; /* the largest int in a 64 bit is 20 characters */
-                int i, num1, num2;
-                char *strp; /* string pointer */
+        char format[25]; /* the largest int in a 64 bit is 20 characters */
+        int i, num1, num2;
+        char *strp; /* string pointer */
 
         if (!argc) {
             ex_makesymbol(e, optr, 1);
@@ -1602,64 +1602,64 @@ ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             return (ex_symbol1(e, argc, argv, optr));
 
         if (argc != 2 && argc != 3) {
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        ex_error(e, "expr: symbol/sym takes no more than 3 arguments", e->exp_string);
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            ex_error(e, "expr: symbol/sym takes no more than 3 arguments", e->exp_string);
             return;
         }
 
         left = argv;
-                num1 = ex_getnumber(e, argv + 1);
+        num1 = ex_getnumber(e, argv + 1);
         if (argc == 2)
                 num2 = -1;
         else
                 num2 = ex_getnumber(e, argv + 2);
         switch (left->ex_type) {
         case ET_SYM:
-                case ET_SI:
-                        strp = ex_getstring(e, left);
-                        if (!strp) {
-                        if (!ex_makesymbol(e, optr, 1))
-                        goto goterror;
-                                *optr->ex_ptr = 0;
-                                return;
-                        }
-                if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
-                                goto goterror;
+        case ET_SI:
+            strp = ex_getstring(e, left);
+            if (!strp) {
+                if (!ex_makesymbol(e, optr, 1))
+                    goto goterror;
+                *optr->ex_ptr = 0;
+                return;
+            }
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
             if (num2 == -1)
                     snprintf(format, 25, "%%.%ds", num1);
             else
                     snprintf(format, 25, "%%%d.%ds", num2, num1);
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, strp);
-                        return;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, strp);
+            return;
 
-                case ET_INT:
-                if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+        case ET_INT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
-                        snprintf(format, 25, "%%.%dld", num1);
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
-                        return;
+            snprintf(format, 25, "%%.%dld", num1);
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
+            return;
 
-                case ET_FLT:
-                if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+        case ET_FLT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
             if (num2 == -1)
                     snprintf(format, 25, "%%.%df", num1);
             else
                     snprintf(format, 25, "%%%d.%df", num2, num1);
-                        snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_flt);
-                        return;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_flt);
+            return;
 
-                default:
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
-                }
+        default:
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
+        }
 
 goterror:
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return;
 }
 
 /*
@@ -1700,7 +1700,7 @@ ex_strcat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 STRFUNC_DEF(ex_strncat)
         int num, size;
         num =  ex_getnumber(e, argv + 2);
-                size = min(num, strlen(rightstr));
+        size = min(num, strlen(rightstr));
 
         if (!ex_makesymbol(e, tmpoptr, size))
                 return;
