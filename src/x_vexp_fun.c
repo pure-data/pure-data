@@ -1627,16 +1627,19 @@ ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
             if (num2 == -1)
-                    snprintf(format, 25, "%%.%ds", num1);
+                snprintf(format, 25, "%%.%ds", num1);
             else
-                    snprintf(format, 25, "%%%d.%ds", num2, num1);
+                snprintf(format, 25, "%%%d.%ds", num2, num1);
             snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, strp);
             return;
 
         case ET_INT:
             if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
-            snprintf(format, 25, "%%.%dld", num1);
+            if (num2 == -1)
+                snprintf(format, 25, "%%.%dld", num1);
+            else
+                snprintf(format, 25, "%%%d.%dld", num2, num1);
             snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
             return;
 
@@ -1644,9 +1647,9 @@ ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
             if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
                 goto goterror;
             if (num2 == -1)
-                    snprintf(format, 25, "%%.%df", num1);
+                snprintf(format, 25, "%%.%df", num1);
             else
-                    snprintf(format, 25, "%%%d.%df", num2, num1);
+                snprintf(format, 25, "%%%d.%df", num2, num1);
             snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_flt);
             return;
 
