@@ -159,10 +159,10 @@ text-align: center;
 <h2>
 <br>
 <font face="Helvetica, Arial, sans-serif">Expr family objects by</font>
-<font face="Helvetica, Arial, sans-serif"><a href="http://yadegari.org/"> Shahrokh  Yadegari</a>	</font></h2>
+<font face="Helvetica, Arial, sans-serif"><a href="https://urldefense.com/v3/__http://yadegari.org/__;!!Mih3wA!FhpY8zO40hj1jgqk-RpOxiF4WYSe9sCGpdJbW5jn5NzEjaBfYg_J-MJaQnG27KlC1wWEpKjj9ShcLKPLYmo$"> Shahrokh  Yadegari</a>	</font></h2>
 
-<p>To see a directory listing of downloadable files, which also includes older releases, <a href="http://yadegari.org/download"> click here</a>.<br>
-<br> Back to the <a href="http://yadegari.org/software">Software Page</a>
+<p>To see a directory listing of downloadable files, which also includes older releases, <a href="https://urldefense.com/v3/__http://yadegari.org/download__;!!Mih3wA!FhpY8zO40hj1jgqk-RpOxiF4WYSe9sCGpdJbW5jn5NzEjaBfYg_J-MJaQnG27KlC1wWEpKjj9Shch2SdlSY$"> click here</a>.<br>
+<br> Back to the <a href="https://urldefense.com/v3/__http://yadegari.org/software__;!!Mih3wA!FhpY8zO40hj1jgqk-RpOxiF4WYSe9sCGpdJbW5jn5NzEjaBfYg_J-MJaQnG27KlC1wWEpKjj9Shcerh93Z4$">Software Page</a>
  <br>
 
 <hr width="100%" size="2" align="left">
@@ -707,22 +707,37 @@ Acoustics Functions
 </thead>
 <tbody>
 <tr style="vertical-align:top">
-	<td> symbol(int/float/symbol)<BR>sym(int/float/symbol) </td>
-<td> 1         </td>
+	<td> symbol(int/float/symbol [, int X, int Y])<BR>sym(int/float/symbol) </td>
+<td> 0, 1, 2, or 3         </td>
 <td> symbol         </td>
-<td style="text-align:left;"> symbol formatted based on the type of the input 
+<td style="text-align:left;"> symbol formatted based on the type of the input
+<BR>
+<BR>
+0 argument will result in an empty symbol
+<BR>
+<BR>
+
+1 argument will produce a symbol from string/symbol, int, float, according to the %s, %d, %f syntax in sprintf() respectively
+<BR>
+<BR>
+2 argument (sym, X) will produce a symbol from string/symbol, int, float, according to the %Xs, %.Xd, %.Xf syntax in sprintf() respectively
+
+<BR>
+<BR>
+
+3 arguments (sym, X, Y) will produce a symbol from string/symbol, int, float, according to the %Y.Xs, %Y.Xd, %Y.Xf syntax in sprintf() respectively
 </tr>
 <tr style="vertical-align:top">
-	<td> symboln(int/float/symbol, int, int)<BR>symn(int/float/symbol, int, int) </td>
-	<td> 3         </td>
-	<td> symbol         </td>
-	<td style="text-align:left;"> symbol formatted using sprintf "%#.#s" formatting string construction, where the first number argument is the length of the final symbol, and the second number argument is the number of decimal point included  
+	<td> var(symbol)</td>
+	<td> 1         </td>
+	<td> float         </td>
+	<td style="text-align:left;"> var() will treat the value of the symbol argument as a variable name and returns the value of the variable
 </tr>
 <tr>
 <td> strlen(symbol) </td>
 <td> 1         </td>
 <td> int         </td>
-<td style="text-align:left;"> length of symbol 
+<td style="text-align:left;"> length of symbol
 </tr>
 <tr style="vertical-align:top">
 <td> tolower(symbol)</td>
