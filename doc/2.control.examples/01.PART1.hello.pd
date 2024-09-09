@@ -1,8 +1,7 @@
-#N canvas 576 35 490 585 12;
+#N canvas 576 38 490 568 12;
 #X msg 126 84 hello world;
 #X obj 126 177 print;
 #X floatatom 149 115 5 0 0 0 - - - 0;
-#X text 274 540 updated for version 0.52;
 #X obj 164 144 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 24 418 Objects \, like [print] above \, may have all sorts of functions depending on what's typed into them. The [print] object simply prints out every message it receives \, either from message boxes \, GUIs or the outlet of other objects., f 63;
 #X text 173 177 <-- object box;
@@ -15,4 +14,4 @@
 #X text 24 16 There are four types of text (or 'box') objects in Pd: Message \, GUI \, Object \, and Comment. Comments are simple texts (like this one) that do nothing. Check the options below:, f 63;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
-#X connect 4 0 1 0;
+#X connect 3 0 1 0;

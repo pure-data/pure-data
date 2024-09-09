@@ -12,6 +12,7 @@ namespace eval ::dialog_array:: {
 array set ::dialog_array::listview_entry {}
 array set ::dialog_array::listview_id {}
 array set ::dialog_array::listview_page {}
+array set ::dialog_array::listview_numpages {}
 set ::dialog_array::listview_pagesize 1000
 # this stores the state of the "save me" check button
 array set ::dialog_array::saveme_button {}
@@ -33,6 +34,7 @@ proc ::dialog_array::listview_lbname {arrayName} {
 
 proc ::dialog_array::listview_setpage {arrayName page {numpages {}} {pagesize {}}} {
     set ::dialog_array::listview_page($arrayName) $page
+    set ::dialog_array::listview_numpages($arrayName) $numpages
     if {$pagesize ne {} && [string is double $pagesize]} {
         set ::dialog_array::listview_pagesize $pagesize
     }
@@ -125,7 +127,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 
 
     frame $windowName.data
-    pack $windowName.data -fill "both" -side top
+    pack $windowName.data -fill "both" -side top -expand 1
     frame $windowName.buttons
     pack $windowName.buttons -fill "x" -side bottom
 
@@ -173,11 +175,19 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     button $windowName.buttons.next -text "\u2192" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
 
-    entry $windowName.buttons.page -textvariable ::dialog_array::listview_page($arrayName) \
+    frame $windowName.buttons.page
+
+    entry $windowName.buttons.page.current -textvariable ::dialog_array::listview_page($arrayName) \
         -validate key -validatecommand "string is double %P" \
         -justify "right" -width 5
-    bind $windowName.buttons.page <Return> \
+    bind $windowName.buttons.page.current <Return> \
         "::dialog_array::listview_changepage \{$arrayName\} 0"
+    label $windowName.buttons.page.slash -text "/"
+    label $windowName.buttons.page.total -text 0 -textvariable ::dialog_array::listview_numpages($arrayName)
+    pack $windowName.buttons.page.current -side left
+    pack $windowName.buttons.page.slash -side left
+    pack $windowName.buttons.page.total -side left
+
 
     pack $windowName.buttons.prev -side left -ipadx 20 -pady 10 -anchor s
     pack $windowName.buttons.page -side left -padx 20 -pady 10 -anchor s

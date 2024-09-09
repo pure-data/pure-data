@@ -556,7 +556,7 @@
 #X text 127 236 - string;
 #X text 33 366 The types can be preceded by optional fields \, which can be combined and included in the order below:;
 #X restore 392 379 pd possible_types_&_syntax;
-#X text 412 443 updated for Pd version 0.51;
+#X text 412 442 updated for Pd version 0.51;
 #X msg 48 209 set cat\ %d.wav;
 #X obj 43 263 makefilename dog\ %d.aif;
 #X obj 392 249 makefilename dog\ %s.aif;
@@ -592,6 +592,8 @@
 #X obj 24 365 makefilename %d;
 #X symbolatom 24 395 5 0 0 0 - - - 0;
 #X text 67 395 <-- number converted to symbol;
+#X text 151 442 and string functions in;
+#X obj 324 442 expr;
 #X connect 0 0 13 0;
 #X connect 0 0 31 0;
 #X connect 1 0 14 0;

@@ -15,7 +15,6 @@
 #X obj 211 421 r crackers;
 #X obj 211 394 s crackers;
 #X text 65 398 send and receive can be abbreviated:, f 19;
-#X text 342 407 updated for Pd version 0.34;
 #X text 50 245 You can use the semicolon feature of message boxes to address [receives] \, too. This is useful if you want to do a whole list of things:, f 63;
 #X text 40 15 The [send] and [receive] objects allow you to make non-local connections. These work globally--you can use them to make two different patches intercommunicate if you wish. Any message a [send] gets appears at the output of every [receive] of the same name. There can be any number of [send] and [receive] objects sharing the same name:, f 73;
 #X text 173 311 The transaction takes place in zero time--i.e. \, if you tried to use [timer] to measure the time delay between the two \, you would get zero., f 48;

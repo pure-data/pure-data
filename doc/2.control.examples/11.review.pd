@@ -1,5 +1,4 @@
-#N canvas 540 23 492 597 12;
-#X text 269 561 updated for Pd version 0.34;
+#N canvas 540 38 492 584 12;
 #X obj 82 252 receive;
 #X obj 82 223 send;
 #X obj 82 310 pack;

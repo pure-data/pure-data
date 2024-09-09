@@ -196,7 +196,7 @@
 #X text 68 297 -s <symbol \, symbol>: struct name and field name of main structure., f 67;
 #X text 68 315 -f <symbol \, symbol>: struct name and field name of element structure., f 69;
 #X obj 38 17 array sum;
-#X text 125 16 - output the sum of the array or a range selecion.;
+#X text 125 16 - output the sum of the array or a range selection.;
 #X text 117 110 float - onset (index to sum from \, 0 is the start).;
 #X obj 7 133 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 65 144 float - number or points to sum from onset (-1 is the end of array)., f 68;

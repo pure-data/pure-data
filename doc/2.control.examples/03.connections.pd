@@ -1,4 +1,4 @@
-#N canvas 511 32 530 673 12;
+#N canvas 511 38 529 651 12;
 #X floatatom 245 490 5 0 0 0 - - - 0;
 #X floatatom 198 490 5 0 0 0 - - - 0;
 #X floatatom 216 390 4 0 0 0 - - - 0;
@@ -19,7 +19,6 @@
 #X obj 198 464 -;
 #X text 285 489 square;
 #X text 76 491 first difference;
-#X text 296 637 updated for Pd version 0.33;
 #X obj 216 417 t f f;
 #X text 265 417 same as:;
 #X obj 330 417 trigger float float;
@@ -27,7 +26,7 @@
 #X text 37 233 In Pd you must sometimes think about what order an object is going to get its messages in. If an outlet is connected to more than one inlet it's undefined which inlet will get the cookie first. I've rigged this example so that the left-hand side box gets its inputs in the good \, right-to-left order \, so that the hot inlet gets hit when all the data are good. The "bad adder" happens to receive its inputs in the wrong order and is perpetually doing its addition before all the data are in. There's a [trigger] object that exists solely to allow you to control message order explicitly:, f 67;
 #X text 44 544 A [trigger] takes any number of "bang" and "float" arguments (among others). The object and arguments can be abbreviated with the first letter. It sequences messages in right-to-left order. Hook it to two inputs without crossing the wires and you get the expected result. Cross the wires and you get a memory effect., f 64;
 #X text 235 99 Here's the downside: drag this -->, f 20;
-#X connect 2 0 21 0;
+#X connect 2 0 20 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 6 0 7 1;
@@ -39,7 +38,7 @@
 #X connect 11 0 8 0;
 #X connect 16 0 0 0;
 #X connect 17 0 1 0;
-#X connect 21 0 16 0;
-#X connect 21 0 17 1;
-#X connect 21 1 16 1;
-#X connect 21 1 17 0;
+#X connect 20 0 16 0;
+#X connect 20 0 17 1;
+#X connect 20 1 16 1;
+#X connect 20 1 17 0;

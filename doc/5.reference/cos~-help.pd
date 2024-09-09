@@ -111,7 +111,7 @@
 #X msg 257 177 \; pd compatibility 0.55;
 #X text 73 153 (old table size);
 #X text 273 153 (new table size);
-#X text 38 22 Up to version 0.54 \, [cos~] relied on a 512-point cosine table \, which was adequate for most "computer music" applications in the 90s with a signal-to-noise ratio of about 110 dB. The default table size is now increased to 2048 points \, improving signal-to-noise by an additional 36 dB. To get the original 512-point tables you can run Pd with compatiblity level set to 0.54., f 56;
+#X text 38 22 Up to version 0.54 \, [cos~] relied on a 512-point cosine table \, which was adequate for most "computer music" applications in the 90s with a signal-to-noise ratio of about 110 dB. The default table size is now increased to 2048 points \, improving signal-to-noise by an additional 36 dB. To get the original 512-point tables you can run Pd with compatibility level set to 0.54., f 56;
 #X restore 339 285 pd compatibility;
 #X text 345 247 compatibility note (open):, f 13;
 #X text 320 531 updated for Pd version 0.55;

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1277,35 +1277,122 @@ msgstr ""
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "Αφάρ"
+
+msgid "Abkhazian"
+msgstr "Αμπχαζιανά"
+
+msgid "Avestan"
+msgstr "Αβεστικά"
+
 msgid "Afrikaans"
-msgstr ""
+msgstr "Αφρικάνικα"
+
+msgid "Akan"
+msgstr "Ακανικά"
+
+msgid "Amharic"
+msgstr "Αμχαρικά"
+
+msgid "Aragonese"
+msgstr "Αραγονικά"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Αραβικά"
+
+msgid "Assamese"
+msgstr "Ασσαμέζικα"
+
+msgid "Avaric"
+msgstr "Αβάρικα"
+
+msgid "Aymara"
+msgstr "Αϊμάρα"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Αζέρικα"
+
+msgid "Bashkir"
+msgstr "Βασκιρικά"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Λευκορωσικά"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Βουλγαρικά"
+
+msgid "Bihari"
+msgstr "Μπιχαριανός"
+
+msgid "Bislama"
+msgstr "Μπισλάμα"
+
+msgid "Bambara"
+msgstr "Μπαμπαρικά"
+
+msgid "Bengali"
+msgstr "Βεγγαλικά"
+
+msgid "Tibetan"
+msgstr "Θιβετιανά"
+
+msgid "Breton"
+msgstr "Βρετονικά"
+
+msgid "Bosnian"
+msgstr "Βοσνιακά"
+
+msgid "Catalan"
+msgstr "Καταλανικά"
+
+msgid "Chechen"
+msgstr "Τσετσενικά"
+
+msgid "Chamorro"
+msgstr "Καμόρρο"
+
+msgid "Corsican"
+msgstr "Κορσικανικά"
+
+msgid "Cree"
+msgstr "Κρεεϊκά"
+
+msgid "Czech"
+msgstr "Τσέχικα"
+
+msgid "Chuvash"
+msgstr "Τσουβασικά"
+
+msgid "Welsh"
+msgstr "Ουαλικά"
+
+msgid "Danish"
+msgstr "Δανέζικα"
 
 msgid "German"
-msgstr ""
+msgstr "Γερμανικά"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Γερμανικά (Αυστρίας)"
+
+msgid "Dhivehi"
+msgstr "Ντιβέχι"
+
+msgid "Dzongkha"
+msgstr "Ντζονγκικά"
+
+msgid "Ewe"
+msgstr "Έουε"
 
 msgid "Greek"
-msgstr ""
+msgstr "Ελληνικά"
 
 msgid "English"
-msgstr ""
+msgstr "Αγγλικά"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Αγγλικά (Καναδά)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1313,83 +1400,428 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Εσπεράντο"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Ισπανικά"
+
+msgid "Estonian"
+msgstr "Εσθονικά"
 
 msgid "Basque"
-msgstr ""
+msgstr "Βάσκικα"
+
+msgid "Persian"
+msgstr "Περσικά"
+
+msgid "Fulah"
+msgstr "Φούλα"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Φινλανδικά"
+
+msgid "Fijian"
+msgstr "Φιτζιανά"
+
+msgid "Faroese"
+msgstr "Φαροϊκά"
 
 msgid "French"
-msgstr ""
+msgstr "Γαλλικά"
+
+msgid "Frisian"
+msgstr "Φριζική"
+
+msgid "Irish"
+msgstr "Ιρλανδικά"
+
+msgid "Gaelic"
+msgstr "Γαελικά"
+
+msgid "Galician"
+msgstr "Γαλικιανά"
+
+msgid "Guarani"
+msgstr "Γκουαράνι"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Γκουτζαράτ"
+
+msgid "Manx"
+msgstr "Μανξ"
+
+msgid "Hausa"
+msgstr "Χαουσανικά"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Εβραϊκά"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Χίντι"
+
+msgid "Hiri Motu"
+msgstr "Χίρι Μότου"
+
+msgid "Croatian"
+msgstr "Κροατικά"
+
+msgid "Haitian"
+msgstr "Αϊτικά"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Ουγγρικά"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Αρμένικα"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Χερέρο"
+
+msgid "Interlingua"
+msgstr "Ιντερλίνγκουα"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Ινδονησιακά"
+
+msgid "Occidental"
+msgstr "Οξιντένταλ"
+
+msgid "Igbo"
+msgstr "Ίγκμπο"
+
+msgid "Nuosu"
+msgstr "Νουοσού"
+
+msgid "Inupiaq"
+msgstr "Ινουπιάκ"
+
+msgid "Ido"
+msgstr "Ίντο"
+
+msgid "Icelandic"
+msgstr "Ισλανδικά"
+
+msgid "Italian"
+msgstr "Ιταλικά"
+
+msgid "Inuktitut"
+msgstr "Ινούκτιτουτ"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Ιαπωνικά"
+
+msgid "Javanese"
+msgstr "Ιαβανέζικα"
+
+msgid "Georgian"
+msgstr "Γεωργιανά"
+
+msgid "Kongo"
+msgstr "Κονγκό"
+
+msgid "Gikuyu"
+msgstr "Κικούγιου"
+
+msgid "Kwanyama"
+msgstr "Κουανγιάμα"
+
+msgid "Kazakh"
+msgstr "Καζακικά"
+
+msgid "Greenlandic"
+msgstr "Γροιλανδικά"
+
+msgid "Kannada"
+msgstr "Κανάντα"
 
 msgid "Korean"
-msgstr ""
+msgstr "Κορεάτικα"
+
+msgid "Kanuri"
+msgstr "Κανούρι"
+
+msgid "Kashmiri"
+msgstr "Κασμιρικά"
+
+msgid "Kurdish"
+msgstr "Κουρδικά"
+
+msgid "Komi"
+msgstr "Κόμι"
+
+msgid "Cornish"
+msgstr "Κορνουαλικά"
+
+msgid "Kyrgyz"
+msgstr "Κυργκιζικά"
+
+msgid "Latin"
+msgstr "Λατινικά"
+
+msgid "Luxembourgish"
+msgstr "Λουξεμβρουργικά"
+
+msgid "Luganda"
+msgstr "Λουγκάντα"
+
+msgid "Limburgish"
+msgstr "Λιμβουργικά"
+
+msgid "Lingala"
+msgstr "Λινγκαλανικά"
+
+msgid "Lao"
+msgstr "Λαοτινά"
+
+msgid "Lithuanian"
+msgstr "Λιθουανικά"
+
+msgid "Luba-Katanga"
+msgstr "Λούμπα-Κατάνγκα"
+
+msgid "Latvian"
+msgstr "Λεττονικά"
+
+msgid "Malagasy"
+msgstr "Μαλαγασικά"
+
+msgid "Marshallese"
+msgstr "Μαρσαλέζικα"
+
+msgid "Maori"
+msgstr "Μαορικά"
+
+msgid "Macedonian"
+msgstr "Σλαβομακεδονικά"
+
+msgid "Malayalam"
+msgstr "Μαλαγιάλαμ"
+
+msgid "Mongolian"
+msgstr "Μογγολικά"
+
+msgid "Marathi"
+msgstr "Μαραθικά"
+
+msgid "Malay"
+msgstr "Μαλαϊκά"
+
+msgid "Maltese"
+msgstr "Μαλτέζικα"
+
+msgid "Burmese"
+msgstr "Μπουρμεσεϊκά"
+
+msgid "Nauru"
+msgstr "Ναούρου"
+
+msgid "Nepali"
+msgstr "Νεπαλέζικα"
+
+msgid "Ndonga"
+msgstr "Νντόγκα"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Ολλανδικά"
+
+msgid "Norwegian Nynorsk"
+msgstr "Νορβηγικά Nynorsk"
+
+msgid "Navaho"
+msgstr "Ναβάχο"
+
+msgid "Nyanja"
+msgstr "Νιανιανικά"
+
+msgid "Occitan"
+msgstr "Οτσιτανικά"
+
+msgid "Ojibwe"
+msgstr "Οτζιβουεϊκά"
+
+msgid "Oromo"
+msgstr "Ορόμο"
+
+msgid "Odia"
+msgstr "Όντια"
+
+msgid "Ossetian"
+msgstr "Οσσετικά"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Πάλι"
+
 msgid "Polish"
-msgstr ""
+msgstr "Πολωνικά"
+
+msgid "Pashto"
+msgstr "Παστού"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Πορτογαλικά"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Πορτογαλικά (Βραζιλία)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Πορτογαλικά (Πορτογαλία)"
+
+msgid "Quechua"
+msgstr "Κέτσουα"
+
+msgid "Romansh"
+msgstr "Ρομανσικά"
+
+msgid "Rundi"
+msgstr "Ρούντι"
+
+msgid "Romanian"
+msgstr "Ρουμανικά"
 
 msgid "Russian"
-msgstr ""
+msgstr "Ρωσικά"
+
+msgid "Kinyarwanda"
+msgstr "Κινυαργανταϊκά"
+
+msgid "Sanskrit"
+msgstr "Σανσκριτικά"
+
+msgid "Sardinian"
+msgstr "Σαρδινικά"
+
+msgid "Sindhi"
+msgstr "Σιντχικά"
+
+msgid "Sango"
+msgstr "Σάνγκο"
+
+msgid "Sinhala"
+msgstr "Σιναλεζικά"
+
+msgid "Slovak"
+msgstr "Σλοβακικά"
+
+msgid "Slovenian"
+msgstr "Σλοβενικά"
+
+msgid "Samoan"
+msgstr "Σαμοανά"
+
+msgid "Shona"
+msgstr "Σόνα"
+
+msgid "Somali"
+msgstr "Σομαλέζικα"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Αλβανικά"
+
+msgid "Serbian"
+msgstr "Σερβικά"
+
+msgid "Swati"
+msgstr "Σουάτι"
+
+msgid "Sundanese"
+msgstr "Σουντικά"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Σουηδικά"
+
+msgid "Swahili"
+msgstr "Σουαχίλι"
+
+msgid "Tamil"
+msgstr "Ταμίλ"
+
+msgid "Telugu"
+msgstr "Τελούγκου"
+
+msgid "Tajik"
+msgstr "Τατζικικά"
+
+msgid "Thai"
+msgstr "Ταϊλανδικά"
+
+msgid "Tigrinya"
+msgstr "Τιγκρινιανικά"
+
+msgid "Turkmen"
+msgstr "Τουρκμενικά"
+
+msgid "Tagalog"
+msgstr "Ταγκαλογικά"
+
+msgid "Tswana"
+msgstr "Τσουάνα"
+
+msgid "Tongan"
+msgstr "Τόγκα"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Τουρκικά"
+
+msgid "Tsonga"
+msgstr "Τσονγκαϊκά"
+
+msgid "Tatar"
+msgstr "Ταταρικά"
+
+msgid "Twi"
+msgstr "Τούι"
+
+msgid "Tahitian"
+msgstr "Ταϊτιανά"
+
+msgid "Uyghur"
+msgstr "Ουιγούρ"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ουκρανικά"
+
+msgid "Urdu"
+msgstr "Ούρντου"
+
+msgid "Uzbek"
+msgstr "Ουζμπεκικά"
+
+msgid "Venda"
+msgstr "Βέντακικά"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Βιετναμέζικα"
+
+msgid "Volapük"
+msgstr "Βολαπιούκ"
+
+msgid "Walloon"
+msgstr "Βαλλωνικά"
+
+msgid "Wolof"
+msgstr "Γουολοφικά"
+
+msgid "Xhosa"
+msgstr "Κόσα"
+
+msgid "Yiddish"
+msgstr "Γίντις"
+
+msgid "Yoruba"
+msgstr "Γιορούμπα"
+
+msgid "Zhuang"
+msgstr "Ζουάνγκ"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "Ζουλού"
 
 msgid "(no translation)"
 msgstr ""
@@ -1397,6 +1829,9 @@ msgstr ""
 #, tcl-format
 msgid "(default language: %s)"
 msgstr ""
+
+msgid "Print..."
+msgstr "Εκτύπωση..."
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1414,9 +1849,6 @@ msgstr "Αποθήκευση"
 
 msgid "Save As..."
 msgstr "Αποθήκευση Ως..."
-
-msgid "Print..."
-msgstr "Εκτύπωση..."
 
 msgid "Paste Replace"
 msgstr ""

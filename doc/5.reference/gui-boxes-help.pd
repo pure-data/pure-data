@@ -27,7 +27,7 @@
 #X text 240 272 <-- width of 7;
 #X text 299 506 <-- click;
 #X msg 197 170 0.99999;
-#X text 42 15 The width is 5 characters by default. If the number has more characters \, the box shows ">" as the last character to indicated it didn't fit. Note that floating point numbers get tuncated without indication \, unless it contains scientific notation., f 59;
+#X text 42 15 The width is 5 characters by default. If the number has more characters \, the box shows ">" as the last character to indicated it didn't fit. Note that floating point numbers get truncated without indication \, unless it contains scientific notation., f 59;
 #X msg 205 201 -1.2345e+12;
 #X connect 1 0 8 0;
 #X connect 3 0 2 0;

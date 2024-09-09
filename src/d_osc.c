@@ -187,7 +187,7 @@ static void cos_maketable(void)
             /* fill in true 1s and 0s for 1/4-cycle points.  These should
             be possible to address exactly in cos~ object.  The rest are
             irrational anyway and hence will never be exact so we leave them
-            as computed by the lobrary cosine function. */ 
+            as computed by the lobrary cosine function. */
         cos_newtable[0] = cos_newtable[COSTABLESIZE] = 1;
         cos_newtable[COSTABLESIZE/4] = cos_newtable[3*COSTABLESIZE/4] = 0;
         cos_newtable[COSTABLESIZE/2] = -1;

@@ -200,7 +200,7 @@
 #X text 17 56 The [route] object checks a message's first element against its arguments \, which may be numbers or symbols (but not a mixture of the two). If a match is found \, the rest of the message appears on the corresponding outlet. If there's no match \, the message is repeated to the last "rejection" outlet. The number of outlets is the number of arguments plus one., f 74;
 #X msg 663 166 1;
 #X msg 671 192 4;
-#X text 559 426 There are ecxeptions though when we're dealing with special selectors that Pd deals with \, namely: list \, float \, symbol and bang. One byproduct of [route] is that it can also be used to route messages according to these types. Open the subpatch below for details, f 62;
+#X text 559 426 There are exceptions though when we're dealing with special selectors that Pd deals with \, namely: list \, float \, symbol and bang. One byproduct of [route] is that it can also be used to route messages according to these types. Open the subpatch below for details, f 62;
 #X connect 3 0 37 0;
 #X connect 3 1 38 0;
 #X connect 3 2 39 0;

@@ -1,5 +1,5 @@
 #N struct template4 float x float y float z float q;
-#N canvas 229 23 618 532 12;
+#N canvas 229 38 618 532 12;
 #X obj 235 356 pointer;
 #X obj 70 387 append template4 x y z q;
 #X msg 311 281 \; pd-data4 clear;
@@ -16,7 +16,6 @@
 #X text 185 217 <-- click to re-initialize;
 #X text 27 15 The objects below put three items in the data window. First the window is cleared by sending the 'clear' message to the subpatch name preceded by 'pd-' ("pd-data4" in this case). Then a [pointer] object is instructed to point to the head of the list at the beginning of the data window ("traverse pd-data") \, and to output this pointer value ("bang") to the [append] object. This object is then given numeric values to create three items., f 78;
 #X msg 276 476 \; pd-data4 scalar template4 175 200 80 600;
-#X text 25 497 Updated for Pd version 0.52;
 #X text 132 432 You can also add scalars by sending a 'scalar' message to the suboatch. The arguments of this message is template name and its field values., f 62;
 #X msg 70 302 50 250 40 9 \, 200 50 80 90 \, 100 200 -50 0, f 13;
 #N canvas 861 111 365 362 data4 1;
@@ -27,8 +26,8 @@
 #X restore 457 303 pd data4;
 #X connect 0 0 1 4;
 #X connect 4 0 0 0;
-#X connect 5 0 14 0;
+#X connect 5 0 13 0;
 #X connect 5 1 4 0;
 #X connect 5 2 2 0;
 #X connect 8 0 5 0;
-#X connect 14 0 1 0;
+#X connect 13 0 1 0;

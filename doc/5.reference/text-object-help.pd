@@ -497,7 +497,7 @@
 #X text 159 565 matches 1 & 3 \, both are equally good \, so 1 wins \, unless you narrow the range, f 48;
 #X msg 20 587 range 2 3;
 #X text 24 536 narrow between 2 and 4, f 7;
-#X text 13 457 Match a message for which the search key is greater than the element zero of that message. The message getting closest to the key wins. You can also use the 'range' message to narrow the search \, wich takes an offset and number of messages., f 68;
+#X text 13 457 Match a message for which the search key is greater than the element zero of that message. The message getting closest to the key wins. You can also use the 'range' message to narrow the search \, which takes an offset and number of messages., f 68;
 #X connect 4 0 0 0;
 #X connect 5 0 4 1;
 #X connect 6 0 4 0;

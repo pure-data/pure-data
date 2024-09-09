@@ -109,11 +109,10 @@ static void textbuf_open(t_textbuf *x)
     {
         char buf[40];
         sprintf(buf, "%dx%d", 600, 340);
-        pdgui_vmess("pdtk_textwindow_open", "^r si",
-                  x, buf,
-                  x->b_sym->s_name,
-                  sys_hostfontsize(glist_getfont(x->b_canvas), glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", x);
+        pdgui_vmess("pdtk_textwindow_open", "^r si", x, buf,
+            x->b_sym->s_name, sys_hostfontsize(glist_getfont(x->b_canvas),
+                glist_getzoom(x->b_canvas)));
+        sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }

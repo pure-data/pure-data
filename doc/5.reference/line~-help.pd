@@ -1,4 +1,4 @@
-#N canvas 507 23 517 678 12;
+#N canvas 507 38 517 678 12;
 #X obj 78 503 snapshot~;
 #X obj 31 15 line~;
 #X obj 78 441 line~;
@@ -6,7 +6,6 @@
 #X msg 50 207 1 1000;
 #X msg 91 313 2;
 #X msg 77 260 stop;
-#X text 114 261 "stop" message freezes line~ at its current value;
 #X msg 86 290 0;
 #X text 16 643 see also:;
 #X obj 94 644 line;
@@ -45,15 +44,16 @@
 #X text 312 453 DSP on/off;
 #X text 37 568 Note that the [line~] object cannot start and stop ramps in the middle of an audio block. For that \, you can use [vline~] \, which also has a delay parameter to schedule different line ramps., f 63;
 #X text 28 60 The [line~] object generates linear ramps whose levels and timing are determined by messages you send it. Note that the right inlet value (for ramp time in milliseconds) is cleared when the object receives a value in the left inlet (unlike other objects in Pd). Thus \, if you don't reset a time in the right inlet before sending [line~] a float \, it jumps immediately to the target value. You can also use a list of two floats to distribute the values over the inlets (as usual in Pd) \, which keeps resetting the time ramp., f 66;
+#X text 115 261 "stop" message freezes [line~] at its current value;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 6 0 2 0;
-#X connect 8 0 2 0;
-#X connect 14 0 2 1;
-#X connect 18 0 2 0;
-#X connect 19 0 0 0;
-#X connect 20 0 19 0;
-#X connect 26 0 2 0;
-#X connect 28 0 21 0;
+#X connect 7 0 2 0;
+#X connect 13 0 2 1;
+#X connect 17 0 2 0;
+#X connect 18 0 0 0;
+#X connect 19 0 18 0;
+#X connect 25 0 2 0;
+#X connect 27 0 20 0;

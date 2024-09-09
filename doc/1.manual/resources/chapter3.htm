@@ -4,19 +4,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 3: Installing and configuring Pd</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
-<link rel="icon" href="resources/favicon.ico">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
 </HEAD>
 <BODY>
 
 <div class="nav nav-top">
-    <div class="nav-back"><A href="x2.htm">&lt; Chapter 2: Theory of operation</A></div>
-    <div class="nav-home"><A href="index.htm#s3">Table of contents</A></div>
-    <div class="nav-forward"><A href="x4.htm">Chapter 4: Externals &gt;</A></div>
+    <div class="nav-back"><A href="chapter2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="../index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter4.htm">Chapter 4: Externals &gt;</A></div>
 </div>
 <div id="corpus">
 
-<IMG id="logo" src="resources/icon.png" ALT="pd icon">
+<IMG id="logo" src="icon.png" ALT="pd icon">
 
 <H2>Chapter 3: Installing and configuring Pd</H2>
 
@@ -48,7 +48,7 @@ compiled speacially for it.
 
 <P> Installation instructions are platform-specific and described in each case in this
 section, but Instructions on how to build Pd yourself for all supported OSes in both single
-or double precision is provided in <a href="x6.htm">Chapter 6: Building Pd from source</a>.
+or double precision is provided in <a href="chapter6.htm">Chapter 6: Building Pd from source</a>.
 
 <P> Note that you can have different versions of Pd and also Pd compiled for different
 architectures and float precision in the same machine/OS. The Pd application is named in
@@ -102,7 +102,7 @@ intercommunication.
 <P> Pd is available via the package systems for some Linux distributions,
 but not always in the most recent version possible. In case you don't find
 it or want the very latest recent version, you need to compile Pd, which is
-described  in <a href="x6.htm#s6.3">6.3. Building Pd for Linux</a>.
+described  in <a href="chapter6.htm#s6.3">6.3. Building Pd for Linux</a>.
 
 
 <H3> <A href="#s3.2" id="s3.2"> 3.2. Running Pd via the command line </A> </H3>
@@ -136,7 +136,7 @@ all options.
 from the <b>Media menu</b>. You should see a window like this:
 
 <figure>
-    <IMG src="resources/3.3.1.png" ALT="test audio and midi patch">
+    <IMG src="3.3.1.png" ALT="test audio and midi patch">
     <figcaption><u>Fig. 3.3.1</u> Test Audio and MIDI patch</figcaption>
 </figure>
 
@@ -174,8 +174,8 @@ CPU cycles uselessly.
 you may need both to run simultaneously. By default, Pd will try to run
 both, but if you don't need either input or output, you may find that Pd
 runs more reliably, or at least more efficiently, with the unused direction
-turned off. This may be specified using the <a href="x3.htm#s3.3.1">Audio
-Settings</a> dialog panel or <a href="x3.htm#s3.4.1">Startup flags</a>.
+turned off. This may be specified using the <a href="chapter3.htm#s3.3.1">Audio
+Settings</a> dialog panel or <a href="chapter3.htm#s3.4.1">Startup flags</a>.
 
 <P> Depending on your application you will have a more or less stringent latency
 requirement. Ideally, when any input (audio, MIDI, keyboard, network) is
@@ -208,7 +208,7 @@ have it installed. The <b>Media menu</b> also displays choices for MIDI API.
 On Linux, they are OSS-MIDI and ALSA-MIDI.
 
 <figure>
-    <IMG src="resources/3.3.2.png" ALT="API choices in Windows">
+    <IMG src="3.3.2.png" ALT="API choices in Windows">
     <figcaption><u>Fig. 3.3.2</u> API choices in Windows</figcaption>
 </figure>
 
@@ -323,7 +323,7 @@ newly selected API. If you click on the already selected API, you also open the
 settings window.
 
 <figure>
-    <IMG src="resources/3.3.3.png" ALT="old MMIO API">
+    <IMG src="3.3.3.png" ALT="old MMIO API">
     <figcaption><u>Fig. 3.3.3</u> Audio Settings from the Media menu ('old MMIO system' API on Windows)</figcaption>
 </figure>
 
@@ -332,7 +332,7 @@ The screenshot above is for when you select 'old MMIO system' in Windows.
 While the screenshot below is for 'portaudio' on macOS.
 
 <figure>
-    <IMG src="resources/3.3.4.png" ALT="audio settings dialog">
+    <IMG src="3.3.4.png" ALT="audio settings dialog">
     <figcaption><u>Fig. 3.3.4</u> Audio Settings from the Media menu (portaudio API on macOS)</figcaption>
 </figure>
 
@@ -350,7 +350,7 @@ channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
 
 <figure>
-    <IMG src="resources/3.3.5.png" ALT="audio settings dialog">
+    <IMG src="3.3.5.png" ALT="audio settings dialog">
     <figcaption><u>Fig. 3.3.5</u> The Audio Settings dialog as called from the Media menu on Linux</figcaption>
 </figure>
 
@@ -375,7 +375,7 @@ objects output the port number in their right outlet and <b>[midiout]</b>
 has a separate inlet to specify which MIDI port you want.
 
 <figure>
-    <IMG src="resources/3.3.6.png" ALT="MIDI settings">
+    <IMG src="3.3.6.png" ALT="MIDI settings">
     <figcaption><u>Fig. 3.3.6</u> The MIDI Settings dialog as called from the Media menu on macOS</figcaption>
 </figure>
 
@@ -397,7 +397,7 @@ but the fact they are also found here. There's one difference though, which is
 that you can get choices for API this way.
 
 <figure>
-    <IMG src="resources/3.4.1.png" ALT="preferences dialog">
+    <IMG src="3.4.1.png" ALT="preferences dialog">
     <figcaption><u>Fig. 3.4.1</u> The Audio Settings tab in tabbed Preferences on Windows</figcaption>
 </figure>
 
@@ -407,7 +407,7 @@ select and change API (where 'old MMIO system' is selected.)
 
 
 <figure>
-    <IMG src="resources/3.4.2.png" ALT="preferences dialog">
+    <IMG src="3.4.2.png" ALT="preferences dialog">
     <figcaption><u>Fig. 3.4.2</u> The Path dialog in the tabbed Preferences</figcaption>
 </figure>
 
@@ -425,11 +425,11 @@ directory and, if it fails, it searches next in the paths that are set in this
 tab. Note you can use things like "../samples" to point to folders and subfolders
 that are relative to the patch directory and other search paths. Note you can also
 use <b>[declare]</b> to add paths for particular patches - this and other details about
-path management is also covered in depth in <a href="x4.htm">Chapter 4: Externals</a>,
-and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
+path management is also covered in depth in <a href="chapter4.htm">Chapter 4: Externals</a>,
+and summarized in <a href="chapter4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
 
 <figure>
-    <IMG src="resources/3.4.3.png" ALT="startup dialog">
+    <IMG src="3.4.3.png" ALT="startup dialog">
     <figcaption><u>Fig. 3.4.3</u> The startup dialog</figcaption>
 </figure>
 
@@ -437,7 +437,7 @@ and summarized in <a href="x4.htm#s4.6">4.6. Search order in Pd for objects and 
 Startup flags. Most of the configurations in Pd may be changed using the
 various dialogs you can open from Pd's menus. For instance, you can use the
 Font entry from the <b>Edit menu</b> to set what font size size Pd will use
-for its main window (this is described in <a href="x2.htm#s2.1.1">subsection 2.1.1.</a>,
+for its main window (this is described in <a href="chapter2.htm#s2.1.1">subsection 2.1.1.</a>,
 by the way). Nevertheless, this and every other configuration in Pd (from
 Audio and MIDI settings and whatnot) can also be configurable via startup
 flags. Other than that, some configurations are too cranky to put in a GUI
@@ -446,7 +446,7 @@ dialog and must be only set via startup flags.
 <P> Startup flags initialize Pd in many ways, but many configurations can
 be changed while Pd is running. Some configurations, on the other hand,
 requires Pd to restart, such as setting which external binaries to load
-(more about external management in <a href="x4.htm">Chapter 4</a>.
+(more about external management in <a href="chapter4.htm">Chapter 4</a>.
 
 <P> The "defeat real-time scheduling" control, if enabled, makes Pd run
 without its usual effort to become a real-time process (whatever this means
@@ -629,9 +629,9 @@ default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 
 </div>
 <div class="nav nav-bottom">
-    <div class="nav-back"><A href="x2.htm">&lt; Chapter 2: Theory of operation</A></div>
-    <div class="nav-home"><A href="index.htm#s3">Table of contents</A></div>
-    <div class="nav-forward"><A href="x4.htm">Chapter 4: Externals &gt;</A></div>
+    <div class="nav-back"><A href="chapter2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="../index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter4.htm">Chapter 4: Externals &gt;</A></div>
 </div>
 </BODY>
 </HTML>

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
-"PO-Revision-Date: 2023-07-01 07:53+0000\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-07-08 17:19+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/he/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "קווי"
@@ -1247,26 +1247,113 @@ msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "עפרית"
+
+msgid "Abkhazian"
+msgstr "אבחזית"
+
+msgid "Avestan"
+msgstr "אבסטית"
+
 msgid "Afrikaans"
 msgstr "אפריקאנס"
+
+msgid "Akan"
+msgstr "אקאן"
+
+msgid "Amharic"
+msgstr "אמהרית"
+
+msgid "Aragonese"
+msgstr "אראגונית"
 
 msgid "Arabic"
 msgstr "ערבית"
 
+msgid "Assamese"
+msgstr "אסאמית"
+
+msgid "Avaric"
+msgstr "אווארית"
+
+msgid "Aymara"
+msgstr "איימארית"
+
 msgid "Azerbaijani"
 msgstr "אזרית"
 
+msgid "Bashkir"
+msgstr "בשקירית"
+
 msgid "Belarusian"
-msgstr "בלרוסית"
+msgstr "בלארוסית"
 
 msgid "Bulgarian"
 msgstr "בולגרית"
+
+msgid "Bihari"
+msgstr "ביהרית"
+
+msgid "Bislama"
+msgstr "ביסלמה"
+
+msgid "Bambara"
+msgstr "במברה"
+
+msgid "Bengali"
+msgstr "בנגלית"
+
+msgid "Tibetan"
+msgstr "טיבטית"
+
+msgid "Breton"
+msgstr "ברטונית"
+
+msgid "Bosnian"
+msgstr "בוסנית"
+
+msgid "Catalan"
+msgstr "קטלאנית"
+
+msgid "Chechen"
+msgstr "צ׳צ׳נית"
+
+msgid "Chamorro"
+msgstr "צ׳אמורו"
+
+msgid "Corsican"
+msgstr "קורסיקאית"
+
+msgid "Cree"
+msgstr "קרי"
+
+msgid "Czech"
+msgstr "צ׳כית"
+
+msgid "Chuvash"
+msgstr "צ׳ובשית"
+
+msgid "Welsh"
+msgstr "ולשית"
+
+msgid "Danish"
+msgstr "דנית"
 
 msgid "German"
 msgstr "גרמנית"
 
 msgid "German (Austria)"
 msgstr "גרמנית אוסטרית"
+
+msgid "Dhivehi"
+msgstr "דיבהי"
+
+msgid "Dzongkha"
+msgstr "דזונגקה"
+
+msgid "Ewe"
+msgstr "אווה"
 
 msgid "Greek"
 msgstr "יוונית"
@@ -1283,26 +1370,74 @@ msgstr "אנגלית בריטית"
 msgid "English (USA)"
 msgstr "אנגלית אמריקאית"
 
+msgid "Esperanto"
+msgstr "אספרנטו"
+
 msgid "Spanish"
 msgstr "ספרדית"
+
+msgid "Estonian"
+msgstr "אסטונית"
 
 msgid "Basque"
 msgstr "בסקית"
 
+msgid "Persian"
+msgstr "פרסית"
+
+msgid "Fulah"
+msgstr "פולאני"
+
 msgid "Finnish"
 msgstr "פינית"
+
+msgid "Fijian"
+msgstr "פיג׳ית"
+
+msgid "Faroese"
+msgstr "פארואזית"
 
 msgid "French"
 msgstr "צרפתית"
 
+msgid "Frisian"
+msgstr "פריזית"
+
+msgid "Irish"
+msgstr "אירית"
+
+msgid "Gaelic"
+msgstr "גאלית"
+
+msgid "Galician"
+msgstr "גליסית"
+
+msgid "Guarani"
+msgstr "גוארני"
+
 msgid "Gujarati"
-msgstr "גוג׳ראטית"
+msgstr "גוג׳ראטי"
+
+msgid "Manx"
+msgstr "מאנית"
+
+msgid "Hausa"
+msgstr "האוסה"
 
 msgid "Hebrew"
 msgstr "עברית"
 
 msgid "Hindi"
-msgstr "הינדי"
+msgstr "הינדית"
+
+msgid "Hiri Motu"
+msgstr "הירי מוטו"
+
+msgid "Croatian"
+msgstr "קרואטית"
+
+msgid "Haitian"
+msgstr "האיטית"
 
 msgid "Hungarian"
 msgstr "הונגרית"
@@ -1310,26 +1445,191 @@ msgstr "הונגרית"
 msgid "Armenian"
 msgstr "ארמנית"
 
-msgid "Italian"
-msgstr "איטלקית"
+msgid "Herero"
+msgstr "הררו"
+
+msgid "Interlingua"
+msgstr "אינטרלינגואה"
 
 msgid "Indonesian"
 msgstr "אינדונזית"
 
+msgid "Occidental"
+msgstr "אוקסידנטלית"
+
+msgid "Igbo"
+msgstr "איגבו"
+
+msgid "Nuosu"
+msgstr "נואוסו"
+
+msgid "Inupiaq"
+msgstr "אינופיאק"
+
+msgid "Ido"
+msgstr "אידו"
+
+msgid "Icelandic"
+msgstr "איסלנדית"
+
+msgid "Italian"
+msgstr "איטלקית"
+
+msgid "Inuktitut"
+msgstr "אינוקטיטוט"
+
 msgid "Japanese"
 msgstr "יפנית"
+
+msgid "Javanese"
+msgstr "ג׳אווה"
+
+msgid "Georgian"
+msgstr "גאורגית"
+
+msgid "Kongo"
+msgstr "קונגו"
+
+msgid "Gikuyu"
+msgstr "קיקויו"
+
+msgid "Kwanyama"
+msgstr "קואניאמה"
+
+msgid "Kazakh"
+msgstr "קזחית"
+
+msgid "Greenlandic"
+msgstr "גרינלנדית"
+
+msgid "Kannada"
+msgstr "קאנדה"
 
 msgid "Korean"
 msgstr "קוריאנית"
 
+msgid "Kanuri"
+msgstr "קאנורי"
+
+msgid "Kashmiri"
+msgstr "קשמירית"
+
+msgid "Kurdish"
+msgstr "כורדית"
+
+msgid "Komi"
+msgstr "קומי"
+
+msgid "Cornish"
+msgstr "קורנית"
+
+msgid "Kyrgyz"
+msgstr "קירגיזית"
+
+msgid "Latin"
+msgstr "לטינית"
+
+msgid "Luxembourgish"
+msgstr "לוקסמבורגית"
+
+msgid "Luganda"
+msgstr "לוגנדה"
+
+msgid "Limburgish"
+msgstr "לימבורגית"
+
+msgid "Lingala"
+msgstr "לינגאלה"
+
+msgid "Lao"
+msgstr "לאו"
+
+msgid "Lithuanian"
+msgstr "ליטאית"
+
+msgid "Luba-Katanga"
+msgstr "לובה קטנגה"
+
+msgid "Latvian"
+msgstr "לטבית"
+
+msgid "Malagasy"
+msgstr "מלגשית"
+
+msgid "Marshallese"
+msgstr "מרשלית"
+
+msgid "Maori"
+msgstr "מאורית"
+
+msgid "Macedonian"
+msgstr "מקדונית"
+
+msgid "Malayalam"
+msgstr "מלאיאלאם"
+
+msgid "Mongolian"
+msgstr "מונגולית"
+
+msgid "Marathi"
+msgstr "מראטהית"
+
+msgid "Malay"
+msgstr "מלאית"
+
+msgid "Maltese"
+msgstr "מלטית"
+
+msgid "Burmese"
+msgstr "בורמזית"
+
+msgid "Nauru"
+msgstr "נאורית"
+
+msgid "Nepali"
+msgstr "נפאלית"
+
+msgid "Ndonga"
+msgstr "נדונגה"
+
 msgid "Dutch"
 msgstr "הולנדית"
+
+msgid "Norwegian Nynorsk"
+msgstr "נורווגית חדשה (נינורשק)"
+
+msgid "Navaho"
+msgstr "נאוואחו"
+
+msgid "Nyanja"
+msgstr "צי׳אווה"
+
+msgid "Occitan"
+msgstr "אוקסיטנית"
+
+msgid "Ojibwe"
+msgstr "אוג׳יבווה"
+
+msgid "Oromo"
+msgstr "אורומו"
+
+msgid "Odia"
+msgstr "אורייה"
+
+msgid "Ossetian"
+msgstr "אוסטית"
 
 msgid "Panjabi"
 msgstr "פנג׳אבי"
 
+msgid "Pali"
+msgstr "פאלי"
+
 msgid "Polish"
 msgstr "פולנית"
+
+msgid "Pashto"
+msgstr "פשטו"
 
 msgid "Portuguese"
 msgstr "פורטוגלית"
@@ -1338,28 +1638,160 @@ msgid "Portuguese (Brazil)"
 msgstr "פורטוגלית ברזילאית"
 
 msgid "Portuguese (Portugal)"
-msgstr "פורטוגלית (פורטוגל)"
+msgstr "פורטוגלית של פורטוגל"
+
+msgid "Quechua"
+msgstr "קצ׳ואה"
+
+msgid "Romansh"
+msgstr "רומאנש"
+
+msgid "Rundi"
+msgstr "קירונדי"
+
+msgid "Romanian"
+msgstr "רומנית"
 
 msgid "Russian"
 msgstr "רוסית"
 
+msgid "Kinyarwanda"
+msgstr "קינירואנדה"
+
+msgid "Sanskrit"
+msgstr "סנסקריט"
+
+msgid "Sardinian"
+msgstr "סרדינית"
+
+msgid "Sindhi"
+msgstr "סינדהי"
+
+msgid "Sango"
+msgstr "סנגו"
+
+msgid "Sinhala"
+msgstr "סינהלית"
+
+msgid "Slovak"
+msgstr "סלובקית"
+
+msgid "Slovenian"
+msgstr "סלובנית"
+
+msgid "Samoan"
+msgstr "סמואית"
+
+msgid "Shona"
+msgstr "שונה"
+
+msgid "Somali"
+msgstr "סומלית"
+
 msgid "Albanian"
 msgstr "אלבנית"
+
+msgid "Serbian"
+msgstr "סרבית"
+
+msgid "Swati"
+msgstr "סיסוואטי"
+
+msgid "Sundanese"
+msgstr "סונדנית"
 
 msgid "Swedish"
 msgstr "שוודית"
 
+msgid "Swahili"
+msgstr "סווהילי"
+
+msgid "Tamil"
+msgstr "טמילית"
+
+msgid "Telugu"
+msgstr "טלוגו"
+
+msgid "Tajik"
+msgstr "טג׳יקית"
+
+msgid "Thai"
+msgstr "תאית"
+
+msgid "Tigrinya"
+msgstr "תגרית"
+
+msgid "Turkmen"
+msgstr "טורקמנית"
+
+msgid "Tagalog"
+msgstr "טאגאלוג"
+
+msgid "Tswana"
+msgstr "טסואנה"
+
+msgid "Tongan"
+msgstr "טונגאית"
+
 msgid "Turkish"
 msgstr "טורקית"
+
+msgid "Tsonga"
+msgstr "צונגה"
+
+msgid "Tatar"
+msgstr "טטרית"
+
+msgid "Twi"
+msgstr "טווי"
+
+msgid "Tahitian"
+msgstr "טהיטית"
+
+msgid "Uyghur"
+msgstr "אויגור"
 
 msgid "Ukrainian"
 msgstr "אוקראינית"
 
+msgid "Urdu"
+msgstr "אורדו"
+
+msgid "Uzbek"
+msgstr "אוזבקית"
+
+msgid "Venda"
+msgstr "ונדה"
+
 msgid "Vietnamese"
 msgstr "וייטנאמית"
 
+msgid "Volapük"
+msgstr "וולאפיק"
+
+msgid "Walloon"
+msgstr "ולונית"
+
+msgid "Wolof"
+msgstr "וולוף"
+
+msgid "Xhosa"
+msgstr "׳קוסה"
+
+msgid "Yiddish"
+msgstr "יידיש"
+
+msgid "Yoruba"
+msgstr "יורובה"
+
+msgid "Zhuang"
+msgstr "ג׳ואנג"
+
 msgid "Chinese (Traditional)"
 msgstr "סינית מסורתית"
+
+msgid "Zulu"
+msgstr "זולו"
 
 msgid "(no translation)"
 msgstr "(אין תרגום)"
@@ -1367,6 +1799,9 @@ msgstr "(אין תרגום)"
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(שפת ברירת המחדל: %s)"
+
+msgid "Print..."
+msgstr "הדפסה…"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1384,9 +1819,6 @@ msgstr "שמירה"
 
 msgid "Save As..."
 msgstr "שמירה בשם…"
-
-msgid "Print..."
-msgstr "הדפסה…"
 
 msgid "Paste Replace"
 msgstr "הדבקה והחלפה"

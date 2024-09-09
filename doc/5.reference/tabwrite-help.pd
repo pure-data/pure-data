@@ -91,7 +91,7 @@
 #X coords 0 10 10 0 250 200 1 0 0;
 #X restore 373 137 graph;
 #X msg 65 231 5 2;
-#X text 99 225 A list inut spread values into inlets as usual in Pd, f 30;
+#X text 99 225 A list input spread values into inlets as usual in Pd, f 30;
 #X connect 1 0 14 0;
 #X connect 2 0 14 1;
 #X connect 15 0 14 0;

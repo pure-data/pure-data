@@ -1,4 +1,4 @@
-#N canvas 368 23 736 636 12;
+#N canvas 368 38 736 636 12;
 #X declare -stdpath ./;
 #N canvas 86 373 1216 368 trace-list 1;
 #X coords 0 92 1 91.75 0 0 0;
@@ -513,7 +513,6 @@
 #X connect 5 0 4 0;
 #X connect 6 0 5 0;
 #X restore 649 244 pd init;
-#X text 511 583 updated for Pd version 0.54-0;
 #X text 51 295 To resynthesize \, activate 'start' toggle and then 'step' over and over to move to the next resynthesis frame (hit toggle again to stop). Alternatively \, you can step with [metro] at a given rate in msec. The 'loop' toggle goes back to the beginning of the sample when done., f 91;
 #X connect 6 0 11 2;
 #X connect 7 0 27 0;

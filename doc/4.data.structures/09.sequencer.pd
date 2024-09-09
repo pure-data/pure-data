@@ -170,7 +170,6 @@
 #X restore 262 306 pd guts;
 #X f 9;
 #X text 308 233 (or restart);
-#X text 23 372 Updated for Pd version 0.55-0;
 #X connect 3 0 13 1;
 #X connect 4 0 13 0;
 #X connect 5 0 13 0;

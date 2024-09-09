@@ -303,7 +303,7 @@
 #X obj 288 101 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 312 101 show/hide;
 #X obj 288 170 s pd-subpatch;
-#X text 91 24 A 'vis 1' message shows the window while 'vis 0' hides it (so it does't get closed). In order to send messages to a subpatch name \, you need to precede its name with 'pd-'.;
+#X text 91 24 A 'vis 1' message shows the window while 'vis 0' hides it (so it doesn't get closed). In order to send messages to a subpatch name \, you need to precede its name with 'pd-'.;
 #X msg 332 542 vis \$1;
 #X obj 332 512 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 356 512 show/hide;

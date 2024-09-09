@@ -2,7 +2,7 @@ This file describes implementation and API changes; stuff more visible to the
 user appears in the "release notes" instead.  See the bottom of this file
 for original notes on source style and organization.
 
-0.42.0 
+0.42.0
 
 changed definition of t_float, t_sample, t_floatarg so that they can be
 set via #defines (PD_FLOATTYPE, etc).
@@ -20,7 +20,7 @@ by zmoelnig).
 
 canvas_dspstate and signalinlet_new() exported to m_pd.h
 
-new function verbose() added to m_pd.h 
+new function verbose() added to m_pd.h
 
 0.38.0
 
@@ -41,9 +41,9 @@ t_int to int in binbuf_addv prototype
 Pd now uses portaudio out-of-the-box; customized files are moved to
 "src" directory.
 
-All "tags" are printf'd as %lx to make 64-bit safe.  
+All "tags" are printf'd as %lx to make 64-bit safe.
 
-GUI queueing mechanism added: sys_queuegui() etc. 
+GUI queueing mechanism added: sys_queuegui() etc.
 
 massive rewrite of array code to unify arrays and scalars.
 
@@ -112,7 +112,7 @@ I could never get sysex working in it as I had wanted.)
 Took bug fixes from s_midi_pm.c, s_audio_jack.c, s_inter.c from "devel" branch;
 also added "static" flag to configure.in (but the devel configure.in as a whole
 doesn't seem to work for OSX, for me at least.)
- 
+
 Might have fixed a bug where labels disappear in buttons, etc, when saved
 and reloaded.
 
@@ -244,7 +244,7 @@ Important packages are:
           class   -- functions manipulating classes
           (other) -- functions common to the named Pd class
 
-5. Source file prefixes. 
+5. Source file prefixes.
 PD:
 s    system interface
 m    message system

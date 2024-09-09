@@ -1,5 +1,3 @@
-#N canvas 477 173 433 205 12;
-#X text 148 131 updated for Pd version 0.34;
-#X obj 168 78 dollarsign2 three 4;
-#X text 53 28 An abstraction's creation arguments may be either numbers
-or symbols. Gory details are inside:, f 43;
+#N canvas 477 173 413 180 12;
+#X obj 173 105 dollarsign2 three 4;
+#X text 53 28 An abstraction's creation arguments may be either numbers or symbols. Gory details are inside:, f 43;

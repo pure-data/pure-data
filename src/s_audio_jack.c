@@ -92,10 +92,10 @@ static int jack_blocksize = 0; /* should this be PERTHREAD? */
 #ifdef THREADSIGNAL
 t_semaphore *jack_sem;
 #endif
-static PA_VOLATILE char *jack_outbuf;
-static PA_VOLATILE sys_ringbuf jack_outring;
-static PA_VOLATILE char *jack_inbuf;
-static PA_VOLATILE sys_ringbuf jack_inring;
+static char *jack_outbuf;
+static sys_ringbuf jack_outring;
+static char *jack_inbuf;
+static sys_ringbuf jack_inring;
 
     /* callback routine for non-callback client... throw samples into
         and read them out of a FIFO.  Since we don't know at compile time

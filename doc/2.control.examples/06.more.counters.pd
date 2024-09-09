@@ -15,7 +15,6 @@
 #X obj 163 434 float;
 #X obj 217 435 + 1;
 #X msg 130 405 -1;
-#X text 396 464 updated for Pd version 0.34;
 #X text 51 77 conditionally stop the metronome, f 13;
 #X text 293 194 select can be abbreviated as:;
 #X obj 509 193 sel;
@@ -42,10 +41,10 @@
 #X connect 11 0 12 0;
 #X connect 12 0 15 0;
 #X connect 12 1 13 0;
-#X connect 12 1 25 0;
+#X connect 12 1 24 0;
 #X connect 13 0 14 0;
 #X connect 14 0 13 1;
-#X connect 14 0 21 0;
+#X connect 14 0 20 0;
 #X connect 15 0 13 0;
-#X connect 20 0 11 0;
-#X connect 22 0 5 0;
+#X connect 19 0 11 0;
+#X connect 21 0 5 0;

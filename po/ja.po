@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-06-02 13:43+0200\n"
-"PO-Revision-Date: 2023-02-13 12:36+0000\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-07-08 17:20+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "線形"
@@ -1278,35 +1278,122 @@ msgstr "環境設定 \"%1$s\" を %2$s に作成できませんでした"
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr "アファル語"
+
+msgid "Abkhazian"
+msgstr "アブハズ語"
+
+msgid "Avestan"
+msgstr "アヴェスター語"
+
 msgid "Afrikaans"
-msgstr ""
+msgstr "アフリカーンス語"
+
+msgid "Akan"
+msgstr "アカン語"
+
+msgid "Amharic"
+msgstr "アムハラ語"
+
+msgid "Aragonese"
+msgstr "アラゴン語"
 
 msgid "Arabic"
-msgstr ""
+msgstr "アラビア語"
+
+msgid "Assamese"
+msgstr "アッサム語"
+
+msgid "Avaric"
+msgstr "アヴァル語"
+
+msgid "Aymara"
+msgstr "アイマラ語"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "アゼルバイジャン語"
+
+msgid "Bashkir"
+msgstr "バシキール語"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "ベラルーシ語"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "ブルガリア語"
+
+msgid "Bihari"
+msgstr "ビハール語"
+
+msgid "Bislama"
+msgstr "ビスラマ語"
+
+msgid "Bambara"
+msgstr "バンバラ語"
+
+msgid "Bengali"
+msgstr "ベンガル語"
+
+msgid "Tibetan"
+msgstr "チベット語"
+
+msgid "Breton"
+msgstr "ブルターニュ語"
+
+msgid "Bosnian"
+msgstr "ボスニア語"
+
+msgid "Catalan"
+msgstr "カタルーニャ語"
+
+msgid "Chechen"
+msgstr "チェチェン語"
+
+msgid "Chamorro"
+msgstr "チャモロ語"
+
+msgid "Corsican"
+msgstr "コルシカ語"
+
+msgid "Cree"
+msgstr "クリー語"
+
+msgid "Czech"
+msgstr "チェコ語"
+
+msgid "Chuvash"
+msgstr "チュヴァシ語"
+
+msgid "Welsh"
+msgstr "ウェールズ語"
+
+msgid "Danish"
+msgstr "デンマーク語"
 
 msgid "German"
-msgstr ""
+msgstr "ドイツ語"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "ドイツ語 (オーストリア)"
+
+msgid "Dhivehi"
+msgstr "ディベヒ語"
+
+msgid "Dzongkha"
+msgstr "ゾンカ語"
+
+msgid "Ewe"
+msgstr "エウェ語"
 
 msgid "Greek"
-msgstr ""
+msgstr "ギリシャ語"
 
 msgid "English"
-msgstr ""
+msgstr "英語"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "英語 (カナダ)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1314,83 +1401,428 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "エスペラント語"
+
 msgid "Spanish"
-msgstr ""
+msgstr "スペイン語"
+
+msgid "Estonian"
+msgstr "エストニア語"
 
 msgid "Basque"
-msgstr ""
+msgstr "バスク語"
+
+msgid "Persian"
+msgstr "ペルシア語"
+
+msgid "Fulah"
+msgstr "フラ語"
 
 msgid "Finnish"
-msgstr ""
+msgstr "フィンランド語"
+
+msgid "Fijian"
+msgstr "フィジー語"
+
+msgid "Faroese"
+msgstr "フェロー語"
 
 msgid "French"
-msgstr ""
+msgstr "フランス語"
+
+msgid "Frisian"
+msgstr "フリジア語"
+
+msgid "Irish"
+msgstr "アイルランド語"
+
+msgid "Gaelic"
+msgstr "ゲール語"
+
+msgid "Galician"
+msgstr "ガリシア語"
+
+msgid "Guarani"
+msgstr "グアラニー語"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "グジャラート語"
+
+msgid "Manx"
+msgstr "マン島語"
+
+msgid "Hausa"
+msgstr "ハウサ語"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "ヘブライ語"
 
 msgid "Hindi"
-msgstr ""
+msgstr "ヒンディー語"
+
+msgid "Hiri Motu"
+msgstr "ヒリモツ語"
+
+msgid "Croatian"
+msgstr "クロアチア語"
+
+msgid "Haitian"
+msgstr "ハイチ語"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "ハンガリー語"
 
 msgid "Armenian"
-msgstr ""
+msgstr "アルメニア語"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "ヘレロ語"
+
+msgid "Interlingua"
+msgstr "インターリングア"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "インドネシア語"
+
+msgid "Occidental"
+msgstr "オクツィデンタル"
+
+msgid "Igbo"
+msgstr "イボ語"
+
+msgid "Nuosu"
+msgstr "四川彝語"
+
+msgid "Inupiaq"
+msgstr "イヌピアック語"
+
+msgid "Ido"
+msgstr "イド語"
+
+msgid "Icelandic"
+msgstr "アイスランド語"
+
+msgid "Italian"
+msgstr "イタリア語"
+
+msgid "Inuktitut"
+msgstr "イヌクティトゥット語"
 
 msgid "Japanese"
-msgstr ""
+msgstr "日本語"
+
+msgid "Javanese"
+msgstr "ジャワ語"
+
+msgid "Georgian"
+msgstr "グルジア語"
+
+msgid "Kongo"
+msgstr "コンゴ語"
+
+msgid "Gikuyu"
+msgstr "キクユ語"
+
+msgid "Kwanyama"
+msgstr "クワニャマ語"
+
+msgid "Kazakh"
+msgstr "カザフ語"
+
+msgid "Greenlandic"
+msgstr "グリーンランド語"
+
+msgid "Kannada"
+msgstr "カンナダ語"
 
 msgid "Korean"
-msgstr ""
+msgstr "朝鮮語"
+
+msgid "Kanuri"
+msgstr "カヌリ語"
+
+msgid "Kashmiri"
+msgstr "カシミール語"
+
+msgid "Kurdish"
+msgstr "クルド語"
+
+msgid "Komi"
+msgstr "コミ語"
+
+msgid "Cornish"
+msgstr "コーンウォール語"
+
+msgid "Kyrgyz"
+msgstr "キルギス語"
+
+msgid "Latin"
+msgstr "ラテン語"
+
+msgid "Luxembourgish"
+msgstr "ルクセンブルク語"
+
+msgid "Luganda"
+msgstr "ガンダ語"
+
+msgid "Limburgish"
+msgstr "リンブルフ語"
+
+msgid "Lingala"
+msgstr "リンガラ語"
+
+msgid "Lao"
+msgstr "ラオ語"
+
+msgid "Lithuanian"
+msgstr "リトアニア語"
+
+msgid "Luba-Katanga"
+msgstr "ルバ・カタンガ語"
+
+msgid "Latvian"
+msgstr "ラトビア語"
+
+msgid "Malagasy"
+msgstr "マダガスカル語"
+
+msgid "Marshallese"
+msgstr "マーシャル語"
+
+msgid "Maori"
+msgstr "マオリ語"
+
+msgid "Macedonian"
+msgstr "マケドニア語"
+
+msgid "Malayalam"
+msgstr "マラヤーラム語"
+
+msgid "Mongolian"
+msgstr "モンゴル語"
+
+msgid "Marathi"
+msgstr "マラーティー語"
+
+msgid "Malay"
+msgstr "マレー語"
+
+msgid "Maltese"
+msgstr "マルタ語"
+
+msgid "Burmese"
+msgstr "ビルマ語"
+
+msgid "Nauru"
+msgstr "ナウル語"
+
+msgid "Nepali"
+msgstr "ネパール語"
+
+msgid "Ndonga"
+msgstr "ンドンガ語"
 
 msgid "Dutch"
-msgstr ""
+msgstr "オランダ語"
+
+msgid "Norwegian Nynorsk"
+msgstr "ノルウェー語 (ニーノシュク)"
+
+msgid "Navaho"
+msgstr "ナバホ語"
+
+msgid "Nyanja"
+msgstr "ニャンジャ語"
+
+msgid "Occitan"
+msgstr "オック語"
+
+msgid "Ojibwe"
+msgstr "オジブエ語"
+
+msgid "Oromo"
+msgstr "オロモ語"
+
+msgid "Odia"
+msgstr "オリヤー語"
+
+msgid "Ossetian"
+msgstr "オセット語"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "パーリ語"
+
 msgid "Polish"
-msgstr ""
+msgstr "ポーランド語"
+
+msgid "Pashto"
+msgstr "パシュトー語"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "ポルトガル語"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "ポルトガル語 (ブラジル)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "ポルトガル語 (ポルトガル)"
+
+msgid "Quechua"
+msgstr "ケチュア語"
+
+msgid "Romansh"
+msgstr "ロマンシュ語"
+
+msgid "Rundi"
+msgstr "ルンディ語"
+
+msgid "Romanian"
+msgstr "ルーマニア語"
 
 msgid "Russian"
-msgstr ""
+msgstr "ロシア語"
+
+msgid "Kinyarwanda"
+msgstr "ルワンダ語"
+
+msgid "Sanskrit"
+msgstr "サンスクリット"
+
+msgid "Sardinian"
+msgstr "サルデーニャ語"
+
+msgid "Sindhi"
+msgstr "シンド語"
+
+msgid "Sango"
+msgstr "サンゴ語"
+
+msgid "Sinhala"
+msgstr "シンハラ語"
+
+msgid "Slovak"
+msgstr "スロバキア語"
+
+msgid "Slovenian"
+msgstr "スロベニア語"
+
+msgid "Samoan"
+msgstr "サモア語"
+
+msgid "Shona"
+msgstr "ショナ語"
+
+msgid "Somali"
+msgstr "ソマリ語"
 
 msgid "Albanian"
-msgstr ""
+msgstr "アルバニア語"
+
+msgid "Serbian"
+msgstr "セルビア語"
+
+msgid "Swati"
+msgstr "スワジ語"
+
+msgid "Sundanese"
+msgstr "スンダ語"
 
 msgid "Swedish"
-msgstr ""
+msgstr "スウェーデン語"
+
+msgid "Swahili"
+msgstr "スワヒリ語"
+
+msgid "Tamil"
+msgstr "タミル語"
+
+msgid "Telugu"
+msgstr "テルグ語"
+
+msgid "Tajik"
+msgstr "タジク語"
+
+msgid "Thai"
+msgstr "タイ語"
+
+msgid "Tigrinya"
+msgstr "ティグリニャ語"
+
+msgid "Turkmen"
+msgstr "トルクメン語"
+
+msgid "Tagalog"
+msgstr "タガログ語"
+
+msgid "Tswana"
+msgstr "ツワナ語"
+
+msgid "Tongan"
+msgstr "トンガ語"
 
 msgid "Turkish"
-msgstr ""
+msgstr "トルコ語"
+
+msgid "Tsonga"
+msgstr "ツォンガ語"
+
+msgid "Tatar"
+msgstr "タタール語"
+
+msgid "Twi"
+msgstr "トウィ語"
+
+msgid "Tahitian"
+msgstr "タヒチ語"
+
+msgid "Uyghur"
+msgstr "ウイグル語"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "ウクライナ語"
+
+msgid "Urdu"
+msgstr "ウルドゥー語"
+
+msgid "Uzbek"
+msgstr "ウズベク語"
+
+msgid "Venda"
+msgstr "ヴェンダ語"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "ベトナム語"
+
+msgid "Volapük"
+msgstr "ヴォラピュク"
+
+msgid "Walloon"
+msgstr "ワロン語"
+
+msgid "Wolof"
+msgstr "ウォロフ語"
+
+msgid "Xhosa"
+msgstr "コサ語"
+
+msgid "Yiddish"
+msgstr "イディッシュ語"
+
+msgid "Yoruba"
+msgstr "ヨルバ語"
+
+msgid "Zhuang"
+msgstr "チワン語"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "ズールー語"
 
 #, fuzzy
 msgid "(no translation)"
@@ -1399,6 +1831,9 @@ msgstr "翻訳"
 #, fuzzy, tcl-format
 msgid "(default language: %s)"
 msgstr "デフォルトのプラットフォーム: %s"
+
+msgid "Print..."
+msgstr "プリント..."
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1416,9 +1851,6 @@ msgstr "保存"
 
 msgid "Save As..."
 msgstr "名前を付けて保存..."
-
-msgid "Print..."
-msgstr "プリント..."
 
 msgid "Paste Replace"
 msgstr "ペーストして置き換え"
