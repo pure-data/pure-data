@@ -848,6 +848,9 @@ namespace eval ::pd_bindings::editor:: {
             if {[$treeid set $item $col] == "" } {
                 set delstate disabled
             }
+            set msg [_ "Modify shortcut" ]
+            #$m add command -label $msg -state disabled
+            $m add separator
             foreach {x y w h} [$treeid bbox $item $col] {break;}
             $m add command -label [_ "Edit shortcut" ] \
                 -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
