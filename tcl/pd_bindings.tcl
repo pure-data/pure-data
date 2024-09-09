@@ -848,14 +848,14 @@ namespace eval ::pd_bindings::editor:: {
             $m add command -label [_ "Edit shortcut" ] \
                 -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
             $m add command -label [_ "Delete shortcut" ] \
-                -command [list ::pd_bindings::editor::shortcut_clear %W]
+                -command [list ::pd_bindings::editor::shortcut_clear $m]
         } elseif { $type == "tree" } {
             foreach {x y w h} [$treeid bbox $item] {break;}
             #foreach x [$treeid bbox $item #1] {break;}
             $m add command -label [_ "Add shortcut" ] \
                 -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
             $m add command -label [_ "Delete shortcuts" ] \
-                -command [list ::pd_bindings::editor::shortcut_clear %W]
+                -command [list ::pd_bindings::editor::shortcut_clear $m]
         } else {
             # we are only interested in the shortcut cells
             destroy $m
