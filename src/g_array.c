@@ -391,6 +391,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
         gl = glist_addglist(parent, &s_, 0, 1,
             size, -1, 0, 0, 0, 0);
     a = graph_array(gl, name, &s_float, size, flags);
+    glist_redraw(gl);
     canvas_dirty(parent, 1);
 }
 
