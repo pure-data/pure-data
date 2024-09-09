@@ -747,28 +747,6 @@ static void garray_save(t_gobj *z, t_binbuf *b)
         fval = template_getfloat(
             scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
         binbuf_addv(b, "ssf;", gensym("#A"), gensym("width"), fval);
-
-        binbuf_addv(b, "ssffi;", gensym("#A"), gensym("xticks"),
-                    x->x_glist->gl_xtick.k_point, x->x_glist->gl_xtick.k_inc, x->x_glist->gl_xtick.k_lperb);
-        binbuf_addv(b, "ssffi;", gensym("#A"), gensym("yticks"),
-                    x->x_glist->gl_ytick.k_point, x->x_glist->gl_ytick.k_inc, x->x_glist->gl_ytick.k_lperb);
-
-        if(x->x_glist->gl_nxlabels>0) {
-            int i;
-            binbuf_addv(b, "ssf", gensym("#A"), gensym("xlabel"), x->x_glist->gl_xlabely);
-            for(i=0; i<x->x_glist->gl_nxlabels; i++) {
-                binbuf_addv(b, "s", x->x_glist->gl_xlabel[i]);
-            }
-            binbuf_addv(b, ";");
-        }
-        if(x->x_glist->gl_nylabels>0) {
-            int i;
-            binbuf_addv(b, "ssf", gensym("#A"), gensym("ylabel"), x->x_glist->gl_ylabelx);
-            for(i=0; i<x->x_glist->gl_nylabels; i++) {
-                binbuf_addv(b, "s", x->x_glist->gl_ylabel[i]);
-            }
-            binbuf_addv(b, ";");
-        }
     }
 }
 

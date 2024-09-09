@@ -715,6 +715,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
         binbuf_addv(b, "ssiiii;", gensym("#X"), gensym("connect"),
             srcno, t.tr_outno, sinkno, t.tr_inno);
     }
+
         /* unless everything is the default (as in ordinary subpatches)
         print out a "coords" message to set up the coordinate systems */
     if (x->gl_isgraph || x->gl_x1 || x->gl_y1 ||
@@ -736,6 +737,36 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 x->gl_x2, x->gl_y2,
                 (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
                 (t_float)x->gl_isgraph);
+    }
+
+        /* graph ticks and labels */
+    if (x->gl_isgraph)
+    {
+        if (x->gl_xtick.k_lperb) {
+            binbuf_addv(b, "ssffi;", gensym("#A"), gensym("xticks"),
+                x->gl_xtick.k_point, x->gl_xtick.k_inc, x->gl_xtick.k_lperb);
+        }
+        if (x->gl_ytick.k_lperb) {
+            binbuf_addv(b, "ssffi;", gensym("#A"), gensym("yticks"),
+                x->gl_ytick.k_point, x->gl_ytick.k_inc, x->gl_ytick.k_lperb);
+        }
+
+        if(x->gl_nxlabels>0) {
+            int i;
+            binbuf_addv(b, "ssf", gensym("#A"), gensym("xlabel"), x->gl_xlabely);
+            for(i=0; i<x->gl_nxlabels; i++) {
+                binbuf_addv(b, "s", x->gl_xlabel[i]);
+            }
+            binbuf_addv(b, ";");
+        }
+        if(x->gl_nylabels>0) {
+            int i;
+            binbuf_addv(b, "ssf", gensym("#A"), gensym("ylabel"), x->gl_ylabelx);
+            for(i=0; i<x->gl_nylabels; i++) {
+                binbuf_addv(b, "s", x->gl_ylabel[i]);
+            }
+            binbuf_addv(b, ";");
+        }
     }
 }
 
