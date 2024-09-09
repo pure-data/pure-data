@@ -14,7 +14,7 @@ BEGIN
       VALUE "LegalCopyright", "Miller Puckette, et al."
       VALUE "OriginalFilename", "pd.exe"
       VALUE "ProductName", "Pure Data"
-      VALUE "ProductVersion", "0.55-1test1"
+      VALUE "ProductVersion", "0.55-1testb1"
     END
   END
 
