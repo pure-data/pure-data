@@ -844,11 +844,16 @@ namespace eval ::pd_bindings::editor:: {
 
         menu $m
         if { $type == "cell" } {
+            set delstate normal
+            if {[$treeid set $item $col] == "" } {
+                set delstate disabled
+            }
             foreach {x y w h} [$treeid bbox $item $col] {break;}
             $m add command -label [_ "Edit shortcut" ] \
                 -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
             $m add command -label [_ "Delete shortcut" ] \
-                -command [list ::pd_bindings::editor::shortcut_clear $m]
+                -command [list ::pd_bindings::editor::shortcut_clear $m] \
+                -state $delstate
         } elseif { $type == "tree" } {
             foreach {x y w h} [$treeid bbox $item] {break;}
             #foreach x [$treeid bbox $item #1] {break;}
