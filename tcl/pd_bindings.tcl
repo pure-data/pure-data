@@ -3,15 +3,170 @@ package provide pd_bindings 0.1
 package require pd_menucommands
 package require dialog_find
 package require pd_connect
+package require pd_guiprefs
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
     namespace export dialog_bindings
     namespace export patch_bindings
-    variable key2iso
-}
-set ::pd_bindings::key2iso ""
+    variable key2iso ""
 
+    variable control "Control"
+    variable alt "Alt"
+
+    # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
+    if {[tk windowingsystem] eq "aqua"} {
+        set control "Command"
+        set alt "Option"
+    }
+
+    variable bindlist {}
+    variable default_bindlist {}
+    proc setshortcuts {event args} {
+        variable bindlist
+        variable default_bindlist
+        lappend bindlist $event $args
+        lappend default_bindlist $event $args
+    }
+
+    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
+    setshortcuts "File|New"               "${control} N"
+    setshortcuts "File|Open"              "${control} O"
+    setshortcuts "File|Save"              "${control} S"
+    setshortcuts "File|SaveAs"            "${control} Shift S"
+    setshortcuts "File|Print"             "${control} P"
+    setshortcuts "File|ClearRecentFiles"
+    setshortcuts "File|Close"             "${control} W"
+    setshortcuts "File|CloseNow"          "${control} Shift W"
+    if {[tk windowingsystem] eq "aqua"} {
+        # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+        if {$::tcl_version < 8.5} {
+            setshortcuts "File|Quit"      "${control} Q"
+        }
+    } else {
+        setshortcuts "File|Quit"          "${control} Q"
+    }
+    setshortcuts "File|QuitNow"           "${control} Shift Q"
+
+    # (at least on X11) the built-in events Undo/Redo/Cut/Copy/Paste are already bound to the usual shortcuts
+    # this is somewhat problematic, as we cannot unbind these events from the keys
+    setshortcuts "Edit|Undo"              "${control} Z"
+    setshortcuts "Edit|Redo"              "${control} Shift Z"
+    setshortcuts "Edit|Cut"               "${control} X"
+    setshortcuts "Edit|Copy"              "${control} C"
+    # TclTk says:
+    # setshortcuts "Paste"   Replace the currently selected widget contents with the contents of the clipboard.
+    # setshortcuts "PasteSelection" Insert the contents of the selection at the mouse location.
+    setshortcuts "Edit|Paste"             "${control} V"
+    setshortcuts "Edit|PasteReplace"
+    setshortcuts "Edit|Duplicate"         "${control} D"
+    setshortcuts "Edit|SelectAll"         "${control} A"
+    setshortcuts "Edit|SelectNone"        "Escape"
+    setshortcuts "Edit|Font"
+    # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
+    # "+" key... this only makes sense on US keyboards but some users
+    # expected it... go figure.
+    setshortcuts "Edit|ZoomIn"            "${control} plus" "${control} KP_Add" "${control} equal"
+    setshortcuts "Edit|ZoomOut"           "${control} minus" "${control} KP_Subtract"
+    setshortcuts "Edit|TidyUp"            "${control} Shift R"
+    setshortcuts "Edit|ConnectSelection"  "${control} K"
+    setshortcuts "Edit|Triggerize"        "${control} T"
+    setshortcuts "Edit|EditMode"          "${control} E"
+
+    setshortcuts "Put|Object"             "${control} 1"
+    setshortcuts "Put|Message"            "${control} 2"
+    setshortcuts "Put|Number"             "${control} 3"
+    setshortcuts "Put|List"               "${control} 4"
+    setshortcuts "Put|Symbol"
+    setshortcuts "Put|Comment"            "${control} 5"
+    setshortcuts "Put|Bang"               "${control} Shift B"
+    setshortcuts "Put|Toggle"             "${control} Shift T"
+    setshortcuts "Put|Number2"            "${control} Shift N"
+    setshortcuts "Put|VerticalSlider"     "${control} Shift V"
+    setshortcuts "Put|HorizontalSlider"   "${control} Shift J"
+    setshortcuts "Put|VerticalRadio"      "${control} Shift D"
+    setshortcuts "Put|HorizontalRadio"    "${control} Shift I"
+    setshortcuts "Put|VUMeter"            "${control} Shift U"
+    setshortcuts "Put|Canvas"             "${control} Shift C"
+    setshortcuts "Put|Graph"              "${control} Shift G"
+    setshortcuts "Put|Array"              "${control} Shift A"
+
+    setshortcuts "Find|Find"              "${control} F"
+    setshortcuts "Find|FindAgain"         "${control} G"
+    setshortcuts "Find|FindLastError"
+
+    setshortcuts "Media|DSPOn"            "${control} slash"
+    setshortcuts "Media|DSPOff"           "${control} period"
+    setshortcuts "Media|TestAudioMIDI"
+    setshortcuts "Media|LoadMeter"
+
+    setshortcuts "Window|Maximize"
+    setshortcuts "Window|AllToFront"
+    setshortcuts "Window|PdWindow"        "${control} R"
+    setshortcuts "Window|Parent"
+
+    if {[tk windowingsystem] eq "aqua"} {
+        # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+        if {$::tcl_version < 8.5} {
+            setshortcuts "Window|Minimize" "${control} M"
+            setshortcuts "Window|Next"     "${control} quoteleft"
+        }
+    } else {
+        setshortcuts "Window|Minimize"    "${control} M"
+        setshortcuts "Window|Next"        "${control} Next" "${control} greater"
+        setshortcuts "Window|Previous"    "${control} Prior" "${control} less"
+    }
+
+    setshortcuts "Help|About"
+    setshortcuts "Help|Manual"
+    setshortcuts "Help|Browser"           "${control} B"
+    setshortcuts "Help|ListObjects"
+    setshortcuts "Help|puredata.info"
+    setshortcuts "Help|CheckUpdates"
+    setshortcuts "Help|ReportBug"
+
+    setshortcuts "Pd|Message"             "${control} Shift M"
+    setshortcuts "Pd|ClearConsole"        "${control} Shift L"
+
+    setshortcuts "Preferences|Audio"
+    setshortcuts "Preferences|MIDI"
+    setshortcuts "Preferences|Edit"
+    setshortcuts "Preferences|Save"
+    setshortcuts "Preferences|SaveTo"
+    setshortcuts "Preferences|Load"
+    setshortcuts "Preferences|Forget"
+}
+
+proc ::pd_bindings::make_events {bindlist} {
+    foreach {ev shortcuts} $bindlist {
+        set event <<${ev}>>
+        event delete ${event}
+        foreach keys ${shortcuts} {
+            if { "$keys" == "" } {continue}
+            set wantkeys $keys
+            set key [lindex $keys end]
+            lset keys end Key
+            foreach k [list $key [string tolower $key] [string totitle $key]] {
+                catch {
+                    event add $event <[join [concat $keys $k] -]>
+                    set wantkeys {}
+                }
+            }
+            if { $wantkeys != {}} {
+                ::pdwindow::error "Failed to bind $event to ${wantkeys}\n"
+            }
+        }
+    }
+}
+
+proc ::pd_bindings::setup {} {
+    set data [::pd_guiprefs::read KeyBindings]
+    if { ${data} != {} } {
+        set ::pd_bindings::bindlist ${data}
+    }
+    set stderr {}
+    catch {::pd_bindings::make_events $::pd_bindings::bindlist} stderr
+}
 
 # wrapper around bind(3tk)to deal with CapsLock
 # the actual bind-sequence is is build as '<${seq_prefix}-${seq_nocase}',
@@ -32,94 +187,116 @@ proc ::pd_bindings::bind_capslock {tag seq_prefix seq_nocase script} {
 # binding by class is not recursive, so its useful for window events
 proc ::pd_bindings::class_bindings {} {
     # and the Pd window is in a class to itself
-    bind PdWindow <FocusIn>           "::pd_bindings::window_focusin %W"
-    bind PdWindow <Destroy>           "::pd_bindings::window_destroy %W"
+    bind PdWindow     <FocusIn>       "::pd_bindings::window_focusin %W"
+    bind PdWindow     <Destroy>       "::pd_bindings::window_destroy %W"
     # bind to all the windows dedicated to patch canvases
-    bind PatchWindow <FocusIn>        "::pd_bindings::window_focusin %W"
-    bind PatchWindow <Map>            "::pd_bindings::patch_map %W"
-    bind PatchWindow <Unmap>          "::pd_bindings::patch_unmap %W"
-    bind PatchWindow <Configure>      "::pd_bindings::patch_configure %W %w %h %x %y"
-    bind PatchWindow <Destroy>        "::pd_bindings::window_destroy %W"
+    bind PatchWindow  <FocusIn>       "::pd_bindings::window_focusin %W"
+    bind PatchWindow  <Map>           "::pd_bindings::patch_map %W"
+    bind PatchWindow  <Unmap>         "::pd_bindings::patch_unmap %W"
+    bind PatchWindow  <Configure>     "::pd_bindings::patch_configure %W %w %h %x %y"
+    bind PatchWindow  <Destroy>       "::pd_bindings::window_destroy %W"
     # dialog panel windows bindings, which behave differently than PatchWindows
     bind DialogWindow <Configure>     "::pd_bindings::dialog_configure %W"
     bind DialogWindow <FocusIn>       "::pd_bindings::dialog_focusin %W"
     bind DialogWindow <Destroy>       "::pd_bindings::window_destroy %W"
     # help browser bindings
-    bind HelpBrowser <Configure>      "::pd_bindings::dialog_configure %W"
-    bind HelpBrowser <FocusIn>        "::pd_bindings::dialog_focusin %W"
-    bind HelpBrowser <Destroy>        "::pd_bindings::window_destroy %W"
+    bind HelpBrowser  <Configure>     "::pd_bindings::dialog_configure %W"
+    bind HelpBrowser  <FocusIn>       "::pd_bindings::dialog_focusin %W"
+    bind HelpBrowser  <Destroy>       "::pd_bindings::window_destroy %W"
 }
 
 proc ::pd_bindings::global_bindings {} {
     # we use 'bind all' everywhere to get as much of Tk's automatic binding
     # behaviors as possible, things like not sending an event for 'O' when
     # 'Control-O' is pressed
-    bind_capslock all $::modifier-Key a {menu_send %W selectall}
-    bind_capslock all $::modifier-Key b {menu_helpbrowser}
-    bind_capslock all $::modifier-Key c {menu_send %W copy}
-    bind_capslock all $::modifier-Key d {menu_send %W duplicate}
-    bind_capslock all $::modifier-Key e {menu_toggle_editmode}
-    bind_capslock all $::modifier-Key f {menu_find_dialog}
-    bind_capslock all $::modifier-Key g {menu_send %W findagain}
-    bind_capslock all $::modifier-Key k {menu_send %W connect_selection}
-    bind_capslock all $::modifier-Key n {menu_new}
-    bind_capslock all $::modifier-Key o {menu_open}
-    bind_capslock all $::modifier-Key p {menu_print $::focused_window}
-    bind_capslock all $::modifier-Key r {menu_raise_pdwindow}
-    bind_capslock all $::modifier-Key s {menu_send %W menusave}
-    bind_capslock all $::modifier-Key t {menu_send %W triggerize}
-    bind_capslock all $::modifier-Key v {menu_send %W paste}
-    bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
-    bind_capslock all $::modifier-Key x {menu_send %W cut}
-    bind_capslock all $::modifier-Key z {menu_undo}
-    bind all <$::modifier-Key-1>        {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
-    bind all <$::modifier-Key-2>        {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
-    bind all <$::modifier-Key-3>        {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
-    bind all <$::modifier-Key-4>        {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
-    bind all <$::modifier-Key-5>        {::pd_menucommands::scheduleAction menu_send_float %W text 0}
-    bind all <$::modifier-Key-slash>    {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
-    bind all <$::modifier-Key-period>   {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
 
-    # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
-    # "+" key... this only makes sense on US keyboards but some users
-    # expected it... go figure.
-    bind all <$::modifier-Key-equal>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-plus>        {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-minus>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
-    bind all <$::modifier-Key-KP_Add>      {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-KP_Subtract> {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind  all  <<File|New>>               {::pd_menucommands::scheduleAction menu_new}
+    bind  all  <<File|Open>>              {::pd_menucommands::scheduleAction menu_open}
+    bind  all  <<File|Save>>              {::pd_menucommands::scheduleAction menu_send %W menusave}
+    bind  all  <<File|SaveAs>>            {::pd_menucommands::scheduleAction menu_send %W menusaveas}
+    bind  all  <<Pd|Message>>             {::pd_menucommands::scheduleAction menu_message_dialog}
+    bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print %W}
+    bind  all  <<File|ClearRecentFiles>>  {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
+    bind  all  <<File|Close>>             {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W}
+    bind  all  <<File|CloseNow>>          {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W 1}
+    bind  all  <<File|Quit>>              {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
+    bind  all  <<File|QuitNow>>           {::pd_menucommands::scheduleAction pdsend "pd quit"}
 
-    # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
+    bind  all  <<Preferences|Edit>>       {::pd_menucommands::scheduleAction menu_preference_dialog}
+    bind  all  <<Preferences|Save>>       {::pd_menucommands::scheduleAction pdsend "pd save-preferences"}
+    bind  all  <<Preferences|SaveTo>>     {::pd_menucommands::scheduleAction ::pd_menus::savepreferences}
+    bind  all  <<Preferences|Load>>       {::pd_menucommands::scheduleAction ::pd_menus::loadpreferences}
+    bind  all  <<Preferences|Forget>>     {::pd_menucommands::scheduleAction ::pd_menus::forgetpreferences}
 
-    # annoying, but Tk's bind needs uppercase letter to get the Shift
-    bind_capslock all $::modifier-Shift-Key A {menu_send %W menuarray}
-    bind_capslock all $::modifier-Shift-Key B {menu_send %W bng}
-    bind_capslock all $::modifier-Shift-Key C {menu_send %W mycnv}
-    bind_capslock all $::modifier-Shift-Key D {menu_send %W vradio}
-    bind_capslock all $::modifier-Shift-Key G {menu_send %W graph}
-    bind_capslock all $::modifier-Shift-Key J {menu_send %W hslider}
-    bind_capslock all $::modifier-Shift-Key I {menu_send %W hradio}
-    bind_capslock all $::modifier-Shift-Key L {menu_clear_console}
-    bind_capslock all $::modifier-Shift-Key M {menu_message_dialog}
-    bind_capslock all $::modifier-Shift-Key N {menu_send %W numbox}
-    bind_capslock all $::modifier-Shift-Key Q {pdsend "pd quit"}
-    bind_capslock all $::modifier-Shift-Key R {menu_send %W tidy}
-    bind_capslock all $::modifier-Shift-Key S {menu_send %W menusaveas}
-    bind_capslock all $::modifier-Shift-Key T {menu_send %W toggle}
-    bind_capslock all $::modifier-Shift-Key U {menu_send %W vumeter}
-    bind_capslock all $::modifier-Shift-Key V {menu_send %W vslider}
-    bind_capslock all $::modifier-Shift-Key W {::pd_bindings::window_close %W 1}
-    bind_capslock all $::modifier-Shift-Key Z {menu_redo}
-    bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
+    bind  all  <<Edit|Undo>>              {::pd_menucommands::scheduleAction menu_undo}
+    bind  all  <<Edit|Redo>>              {::pd_menucommands::scheduleAction menu_redo}
+    bind  all  <<Edit|Cut>>               {::pd_menucommands::scheduleAction menu_send %W cut}
+    bind  all  <<Edit|Copy>>              {::pd_menucommands::scheduleAction menu_send %W copy}
+    bind  all  <<Edit|Paste>>             {::pd_menucommands::scheduleAction menu_send %W paste}
+    bind  all  <<Edit|Duplicate>>         {::pd_menucommands::scheduleAction menu_send %W duplicate}
+    bind  all  <<Edit|PasteReplace>>      {::pd_menucommands::scheduleAction menu_send %W paste-replace}
+    bind  all  <<Edit|SelectAll>>         {::pd_menucommands::scheduleAction menu_send %W selectall}
+
+    bind  all  <<Edit|Font>>              {::pd_menucommands::scheduleAction menu_font_dialog}
+    bind  all  <<Edit|ZoomIn>>            {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
+    bind  all  <<Edit|ZoomOut>>           {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind  all  <<Edit|TidyUp>>            {::pd_menucommands::scheduleAction menu_send %W tidy}
+    bind  all  <<Edit|ConnectSelection>>  {::pd_menucommands::scheduleAction menu_send %W connect_selection}
+    bind  all  <<Edit|Triggerize>>        {::pd_menucommands::scheduleAction menu_send %W triggerize}
+    bind  all  <<Pd|ClearConsole>>        {::pd_menucommands::scheduleAction menu_clear_console}
+    bind  all  <<Edit|EditMode>>          {::pd_menucommands::scheduleAction menu_toggle_editmode}
+    bind  all  <<Edit|SelectNone>>        {::pd_menucommands::scheduleAction menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
+
+    bind  all  <<Put|Object>>             {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
+    bind  all  <<Put|Message>>            {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
+    bind  all  <<Put|Number>>             {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
+    bind  all  <<Put|Symbol>>             {::pd_menucommands::scheduleAction menu_send_float %W symbolatom 0}
+    bind  all  <<Put|List>>               {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
+    bind  all  <<Put|Comment>>            {::pd_menucommands::scheduleAction menu_send_float %W text 0}
+    bind  all  <<Put|Array>>              {::pd_menucommands::scheduleAction menu_send %W menuarray}
+    bind  all  <<Put|Bang>>               {::pd_menucommands::scheduleAction menu_send %W bng}
+    bind  all  <<Put|Canvas>>             {::pd_menucommands::scheduleAction menu_send %W mycnv}
+    bind  all  <<Put|VerticalRadio>>      {::pd_menucommands::scheduleAction menu_send %W vradio}
+    bind  all  <<Put|Graph>>              {::pd_menucommands::scheduleAction menu_send %W graph}
+    bind  all  <<Put|HorizontalSlider>>   {::pd_menucommands::scheduleAction menu_send %W hslider}
+    bind  all  <<Put|HorizontalRadio>>    {::pd_menucommands::scheduleAction menu_send %W hradio}
+    bind  all  <<Put|Number2>>            {::pd_menucommands::scheduleAction menu_send %W numbox}
+    bind  all  <<Put|Toggle>>             {::pd_menucommands::scheduleAction menu_send %W toggle}
+    bind  all  <<Put|VUMeter>>            {::pd_menucommands::scheduleAction menu_send %W vumeter}
+    bind  all  <<Put|VerticalSlider>>     {::pd_menucommands::scheduleAction menu_send %W vslider}
+
+    bind  all  <<Find|Find>>              {::pd_menucommands::scheduleAction menu_find_dialog}
+    bind  all  <<Find|FindAgain>>         {::pd_menucommands::scheduleAction menu_send %W findagain}
+    bind  all  <<Find|FindLastError>>     {::pd_menucommands::scheduleAction pdsend {pd finderror}}
+
+    bind  all  <<Media|DSPOn>>            {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
+    bind  all  <<Media|DSPOff>>           {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
+    bind  all  <<Media|TestAudioMIDI>>    {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools testtone.pd}
+    bind  all  <<Media|LoadMeter>>        {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
+    bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
+    bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
+
+    bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction menu_minimize %W}
+    bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction menu_maximize %W}
+    bind  all  <<Window|AllToFront>>      {::pd_menucommands::scheduleAction menu_bringalltofront}
+    bind  all  <<Window|Next>>            {::pd_menucommands::scheduleAction menu_raisenextwindow}
+    bind  all  <<Window|Previous>>        {::pd_menucommands::scheduleAction menu_raisepreviouswindow}
+    bind  all  <<Window|PdWindow>>        {::pd_menucommands::scheduleAction menu_raise_pdwindow}
+    bind  all  <<Window|Parent>>          {::pd_menucommands::scheduleAction menu_send %W findparent}
+
+    bind  all  <<Help|About>>             {::pd_menucommands::scheduleAction menu_aboutpd}
+    bind  all  <<Help|Manual>>            {::pd_menucommands::scheduleAction menu_manual}
+    bind  all  <<Help|Browser>>           {::pd_menucommands::scheduleAction menu_helpbrowser}
+    bind  all  <<Help|ListObjects>>       {::pd_menucommands::scheduleAction menu_objectlist}
+    bind  all  <<Help|puredata.info>>     {::pd_menucommands::scheduleAction menu_openfile {https://puredata.info}}
+    bind  all  <<Help|CheckUpdates>>      {::pd_menucommands::scheduleAction menu_openfile {https://pdlatest.puredata.info}}
+    bind  all  <<Help|ReportBug>>         {::pd_menucommands::scheduleAction menu_openfile {https://bugs.puredata.info}}
+
+
+    # JMZ: shouldn't the keybindings only apply to PatchWindows?
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
-         # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
-        if {$::tcl_version < 8.5} {
-            bind_capslock all $::modifier-Key q       {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
-            bind_capslock all $::modifier-Key m       {::pd_menucommands::scheduleAction menu_minimize %W}
-            bind all <$::modifier-quoteleft>   {::pd_menucommands::scheduleAction menu_raisenextwindow}
-        }
         # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
         # so we set them to the empty string and let ::pd_bindings::sendkey guess the correct values
         bind all <KeyPress-BackSpace>      {::pd_bindings::sendkey %W 1 %K "" 1 %k}
@@ -130,15 +307,6 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyRelease-KP_Enter>     {::pd_bindings::sendkey %W 0 %K "" 1 %k}
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
-    } else {
-        bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
-        bind_capslock all $::modifier-Key m       {menu_minimize %W}
-
-        bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
-        bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
-        # these can conflict with CMD+comma & CMD+period bindings in Tk Cococa
-        bind all <$::modifier-greater>     {menu_raisenextwindow}
-        bind all <$::modifier-less>        {menu_raisepreviouswindow}
     }
 
     bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0 %k}
@@ -153,22 +321,22 @@ proc ::pd_bindings::global_bindings {} {
 # properties, iemgui properties, canvas properties, data structures
 # properties, Audio setup, and MIDI setup
 proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
-    variable modifier
+    variable control
 
     bind $mytoplevel <KeyPress-Escape>          "dialog_${dialogname}::cancel $mytoplevel; break"
+    bind_capslock $mytoplevel ${control}-Key w "dialog_${dialogname}::cancel $mytoplevel; break"
     bind $mytoplevel <KeyPress-Return>          "dialog_${dialogname}::ok $mytoplevel; break"
-    bind_capslock $mytoplevel $::modifier-Key w "dialog_${dialogname}::cancel $mytoplevel; break"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
     if {$mytoplevel ne ".find"} {
-        bind_capslock $mytoplevel $::modifier-Key s       {bell; break}
-        bind_capslock $mytoplevel $::modifier-Shift-Key s {bell; break}
-        bind_capslock $mytoplevel $::modifier-Key p       {bell; break}
+        bind_capslock $mytoplevel ${control}-Key s       {bell; break}
+        bind_capslock $mytoplevel ${control}-Shift-Key s {bell; break}
+        bind_capslock $mytoplevel ${control}-Key p       {bell; break}
     } else {
         # find may may allow passthrough to it's target search patch
         ::dialog_find::update_bindings
     }
-    bind_capslock $mytoplevel $::modifier-Key t           {bell; break}
+    bind_capslock $mytoplevel ${control}-Key t           {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
@@ -192,15 +360,9 @@ proc ::pd_bindings::clear_compose_keys {window} {
     ::pd_bindings::sendkey ${window} 0 BackSpace "" 0
 }
 proc ::pd_bindings::patch_bindings {mytoplevel} {
-    variable modifier
+    variable control
+    variable alt
     set tkcanvas [tkcanvas_name $mytoplevel]
-
-    # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
-    if {$::windowingsystem eq "aqua"} {
-        set alt "Option"
-    } else {
-        set alt "Alt"
-    }
 
     # TODO move mouse bindings to global and bind to 'all'
 
@@ -209,45 +371,45 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # events over the window frame and $tkcanvas for events over the canvas
     bind $tkcanvas <Motion>                    "pdtk_canvas_motion %W %x %y 0"
     bind $tkcanvas <Shift-Motion>              "pdtk_canvas_motion %W %x %y 1"
-    bind $tkcanvas <$::modifier-Motion>        "pdtk_canvas_motion %W %x %y 2"
-    bind $tkcanvas <$::modifier-Shift-Motion>  "pdtk_canvas_motion %W %x %y 3"
-    bind $tkcanvas <$alt-Motion>               "pdtk_canvas_motion %W %x %y 4"
-    bind $tkcanvas <$alt-Shift-Motion>         "pdtk_canvas_motion %W %x %y 5"
-    bind $tkcanvas <$::modifier-$alt-Motion>   "pdtk_canvas_motion %W %x %y 6"
-    bind $tkcanvas <$::modifier-$alt-Shift-Motion> "pdtk_canvas_motion %W %x %y 7"
+    bind $tkcanvas <${control}-Motion>        "pdtk_canvas_motion %W %x %y 2"
+    bind $tkcanvas <${control}-Shift-Motion>  "pdtk_canvas_motion %W %x %y 3"
+    bind $tkcanvas <${alt}-Motion>               "pdtk_canvas_motion %W %x %y 4"
+    bind $tkcanvas <${alt}-Shift-Motion>         "pdtk_canvas_motion %W %x %y 5"
+    bind $tkcanvas <${control}-${alt}-Motion>   "pdtk_canvas_motion %W %x %y 6"
+    bind $tkcanvas <${control}-${alt}-Shift-Motion> "pdtk_canvas_motion %W %x %y 7"
 
     bind $tkcanvas <ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 0"
     bind $tkcanvas <Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 1"
-    bind $tkcanvas <$::modifier-ButtonPress-1> \
+    bind $tkcanvas <${control}-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 2"
-    bind $tkcanvas <$::modifier-Shift-ButtonPress-1> \
+    bind $tkcanvas <${control}-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 3"
-    bind $tkcanvas <$alt-ButtonPress-1> \
+    bind $tkcanvas <${alt}-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 4"
-    bind $tkcanvas <$alt-Shift-ButtonPress-1> \
+    bind $tkcanvas <${alt}-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 5"
-    bind $tkcanvas <$::modifier-$alt-ButtonPress-1> \
+    bind $tkcanvas <${control}-${alt}-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 6"
-    bind $tkcanvas <$::modifier-$alt-Shift-ButtonPress-1> \
+    bind $tkcanvas <${control}-${alt}-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 7"
 
     bind $tkcanvas <ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 0"
     bind $tkcanvas <Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 1"
-    bind $tkcanvas <$::modifier-ButtonRelease-1> \
+    bind $tkcanvas <${control}-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 2"
-    bind $tkcanvas <$::modifier-Shift-ButtonRelease-1> \
+    bind $tkcanvas <${control}-Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 3"
-    bind $tkcanvas <$alt-ButtonRelease-1> \
+    bind $tkcanvas <${alt}-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 4"
-    bind $tkcanvas <$alt-Shift-ButtonRelease-1> \
+    bind $tkcanvas <${alt}-Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 5"
-    bind $tkcanvas <$::modifier-$alt-ButtonRelease-1> \
+    bind $tkcanvas <${control}-${alt}-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 6"
-    bind $tkcanvas <$::modifier-$alt-Shift-ButtonRelease-1> \
+    bind $tkcanvas <${control}-${alt}-Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 7"
 
     if {$::windowingsystem eq "x11"} {
@@ -419,6 +581,421 @@ proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift {keycode ""}
     menu_send_float $mytoplevel cycleselect $cycledir
     ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift $keycode
 }
+
+
+namespace eval ::pd_bindings::editor:: {
+    # the current shortcut as displayed (e.g. 'Control+Shift+M')
+    variable currentshortcut
+    # the treeview cell ({<treeid> <item> <column>}, e.g. {.editor.f.tree File|New #1}
+    # or empty
+    variable currentID
+
+    # whether we allow single-char shortcuts, like 'a' or 'Shift-A'
+    variable allow1char 0
+
+    array set usedshortcuts {}
+
+    proc getleaveitems {treeid {root {}}} {
+        set items {}
+        foreach item [$treeid children $root] {
+            if { [$treeid children $item] == {} } {
+                set values {}
+                foreach v [$treeid item $item -values] {
+                    if { $v != {} } {
+                        dict set values $v 1
+                    }
+                }
+                lappend items $item
+                lappend items [dict keys $values]
+            } else {
+                set items [concat $items [getleaveitems $treeid $item]]
+            }
+        }
+        return $items
+    }
+
+    # https://wiki.tcl-lang.org/page/Combinatorial%20mathematics%20functions
+    proc combinations {myList size {prefix {}}} {
+        ;# End recursion when size is 0 or equals our list size
+        if {$size == 0} {return [list $prefix]}
+        if {$size == [llength $myList]} {return [list [concat $prefix $myList]]}
+
+        set first [lindex $myList 0]
+        set rest [lrange $myList 1 end]
+
+        ;# Combine solutions w/ first element and solutions w/o first element
+        set ans1 [combinations $rest [expr {$size-1}] [concat $prefix $first]]
+        set ans2 [combinations $rest $size $prefix]
+        return [concat $ans1 $ans2]
+    }
+
+    proc getshortcuts {treeid} {
+        # get a list of <event> <shortcuts> tuples, as stored in the current treeview
+        # as a side-effect, this updates the 'usedshortcuts' array
+        set result {}
+        array unset ::pd_bindings::editor::usedshortcuts
+        foreach {ev keys} [getleaveitems $treeid] {
+            set shortcuts {}
+            foreach k $keys {
+                lappend shortcuts [split $k +]
+                set ::pd_bindings::editor::usedshortcuts($k) $ev
+            }
+            lappend result $ev $shortcuts
+        }
+        return $result
+    }
+
+
+    proc make_treecolumns {treeid numcolumns} {
+        set columns {}
+        for {set i 0} {$i < $numcolumns} {incr i} {
+            lappend columns [_ "Shortcut#%d" $i]
+        }
+        $treeid configure -columns $columns
+        foreach c $columns {
+            $treeid heading $c -text $c
+        }
+    }
+
+    proc filltree {treeid bindlist {labelroot {}}} {
+        array set labels {}
+        if { $labelroot != {} } {
+            array set labels [::pd_menus::get_events $labelroot label]
+        }
+        set numshortcuts 0
+        foreach {event shortcuts} $bindlist {
+            set evs {}
+            foreach e [split $event "|"] {
+                set evs2 [concat $evs $e]
+                set ev [join $evs2 "|"]
+                if { ![$treeid exists $ev] } {
+                    set name $e
+                    if { [info exists labels(<<${ev}>>)] } {
+                        foreach name $labels(<<${ev}>>) {break}
+                    }
+                    ${treeid} insert [join $evs "|"] end -id ${ev} -text ${name} -open 1
+                }
+                set evs $evs2
+            }
+            if { [llength $shortcuts] > $numshortcuts } {
+                set numshortcuts [llength $shortcuts]
+            }
+            set values {}
+            foreach shortcut $shortcuts {
+                lappend values [join $shortcut +]
+            }
+            $treeid item ${event} -values ${values}
+        }
+        make_treecolumns $treeid $numshortcuts
+        getshortcuts $treeid
+    }
+
+    #.menubar add cascade -label Tools -underline 0 -menu [set m [menu .menubar.tools]]
+    #::pd_menus::add_menu $m command [_ "Install externals..." ] "<<Tools|Deken>>"
+    proc get_extra_bindings {bindlist} {
+        # tries to find additional bindings from the menu, and returns [concat $bindlist $newbindings]
+        # with duplicates removed
+        array set seen {}
+
+        foreach {ev binding} $bindlist {
+            set seen($ev) 1
+        }
+        foreach event [::pd_menus::get_events] {
+            set ev [string trim $event <>]
+            if { [info exists seen($ev)] } {
+                continue
+            }
+            set shortcuts {}
+            foreach b [event info ${event}] {
+                lappend shortcuts [split [string map {-Key- -} [string trim $b <>]]  -]
+            }
+            lappend bindlist $ev
+            lappend bindlist $shortcuts
+            set seen($ev) 1
+        }
+        return $bindlist
+    }
+
+
+    proc create {winid} {
+        label ${winid}.help -justify left \
+            -text [_ "To edit a keyboard shortcut, double-click on the corresponding event (or shortcut) and type a new accelerator.\nUse right-click for a context-menu to remove shortcuts." ]
+
+        checkbutton ${winid}.allow1char \
+            -variable ::pd_bindings::editor::allow1char \
+            -justify left \
+            -text [_ "Allow single-character shortcuts.\nDANGER: this can seriously impact the patching workflow." ]
+
+        set treeid ${winid}.tree
+        ::ttk::treeview ${treeid} -selectmode browse
+        $treeid column #0 -stretch
+        $treeid heading #0 -text [_ "Event" ]
+
+        pack ${winid}.help -anchor w -padx 5 -pady 5
+        pack ${winid}.allow1char -anchor w -padx 5 -pady 5
+        pack ${treeid} -expand 1 -fill both
+
+        set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
+
+        filltree $treeid $::pd_bindings::bindlist .
+
+        set f [frame $winid.but]
+        pack $f -side left -pady 5 -padx 5 -ipadx 5
+        button $f.previous -text [_ "Reset to previous state" ] -command [list ::pd_bindings::editor::filltree $treeid $::pd_bindings::bindlist]
+        button $f.defaults -text [_ "Reset to defaults" ] -command [list ::pd_bindings::editor::filltree $treeid $::pd_bindings::default_bindlist]
+        pack $f.previous -side left
+        pack $f.defaults -side left
+
+
+        bind $treeid <Double-ButtonRelease-1> "::pd_bindings::editor::doubleclick %W %x %y"
+        if {$::windowingsystem eq "aqua"} {
+            set rightbutton <2>
+        } else {
+            set rightbutton <3>
+        }
+        bind $treeid $rightbutton "::pd_bindings::editor::rightclick %W %x %y"
+
+        # order of modifier keys:
+        # - TheGIMP  : Shift-Control-Alt
+        # - Apple    : Control-Option-Shift-Command
+        # - Microsoft: Control-Alt-Shift
+        # - JMZ      : i would type either Ctrl-Alt-Shift or Ctrl-Shift-Alt
+
+        # guidelines:
+        # - https://developer.apple.com/design/human-interface-guidelines/macos/user-interaction/keyboard/
+        # - http://msdn.microsoft.com/en-us/library/ms971323.aspx#atg_keyboardshortcuts_windows_shortcut_keys
+
+        # we *really* want the default shortcutsto yield the same results as a recorded shortcut.
+        # (e.g. '${control} Shift S'), so duplicate detection is easier
+        set metakeys {Control Alt Shift}
+        if {$::windowingsystem eq "aqua"} {
+            # macOS displays accelerators in this order: Control-Option-Shift-Command
+            # with 'Alt' a synonym for 'Option', and 'Control' being distinct from 'Command'
+            # we would like the recorded shortcuts match closely with the shown accelerator.
+            # however, 'Command' needs to go before 'Shift' (for dupe detection)
+
+            set metakeys {Control Command Option Shift}
+        }
+
+        set tag ::pd_bindings::editor::popup
+        for {set i 1} {$i <= [llength $metakeys]} {incr i} {
+            foreach modifiers [combinations $metakeys $i] {
+                if {$modifiers  == "Shift" } {continue}
+                set binding [join [concat $modifiers Key] -]
+                bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 1]
+                set binding [join [concat $modifiers KeyRelease] -]
+                bind ${tag} <${binding}> [list ::pd_bindings::editor::shortcut %W %K ${modifiers} 0]
+            }
+        }
+        # the KeyRelease events are intentionally bound to shortcut,
+        # to properly detect KeyRelease on macOS if the modifiers are released before the actual key
+        bind ${tag} <Shift-Key> [list ::pd_bindings::editor::shortcut1 %W %K Shift 1]
+        bind ${tag} <Shift-KeyRelease> [list ::pd_bindings::editor::shortcut %W %K Shift 0]
+        bind ${tag} <KeyPress> [list ::pd_bindings::editor::shortcut1 %W %K {} 1]
+        bind ${tag} <KeyRelease> [list ::pd_bindings::editor::shortcut %W %K {} 0]
+
+        # update the list of used shortcuts:
+        getshortcuts $treeid
+    }
+    proc doubleclick {treeid x y} {
+        set popup ${treeid}.popup
+        destroy $popup
+        set item [$treeid identify item $x $y]
+        set col [$treeid identify column $x $y]
+        set type [$treeid identify region $x $y]
+        if { [$treeid children $item] != {} } {
+            # we are only interested in leaves
+            return
+        }
+        if { $type == "cell" } {
+            foreach {x y w h} [$treeid bbox $item $col] {break;}
+            set ::pd_bindings::editor::currentshortcut [$treeid set $item $col]
+        } elseif { $type == "tree" } {
+            foreach {x0 y w h} [$treeid bbox $item] {break;}
+            foreach x [$treeid bbox $item #1] {break;}
+            set w [expr $w + $x0 - $x]
+            set ::pd_bindings::editor::currentshortcut {}
+        } else {
+            # we are only interested in the shortcut cells
+            return
+        }
+        entry ${popup} -textvariable ::pd_bindings::editor::currentshortcut -state readonly
+        place $popup -x $x -y $y -w $w -h $h
+        set ::pd_bindings::editor::currentID [list $treeid $item $col]
+
+        bind $popup <FocusOut> [list ::pd_bindings::editor::popup_destroy %W]
+
+        # make need to bind to '::pd_bindings::editor::popup' as this is where the shortcut-keys go
+        # we also must make sure to *not* bind to 'all', so the normal keybindings do not work for us
+        bindtags $popup [list $popup [winfo class $popup] ::pd_bindings::editor::popup]
+
+        focus $popup
+    }
+    proc rightclick {treeid X Y} {
+        set m ${treeid}.contextmenu
+        destroy $m
+        set item [$treeid identify item $X $Y]
+        set col [$treeid identify column $X $Y]
+        set type [$treeid identify region $X $Y]
+        if { [$treeid children $item] != {} } {
+            # we are only interested in leaves
+            return
+        }
+
+        menu $m
+        if { $type == "cell" } {
+            set delstate normal
+            if {[$treeid set $item $col] == "" } {
+                set delstate disabled
+            }
+            set msg [_ "Modify shortcut" ]
+            #$m add command -label $msg -state disabled
+            $m add separator
+            foreach {x y w h} [$treeid bbox $item $col] {break;}
+            $m add command -label [_ "Edit shortcut" ] \
+                -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
+            $m add command -label [_ "Delete shortcut" ] \
+                -command [list ::pd_bindings::editor::shortcut_clear $m] \
+                -state $delstate
+        } elseif { $type == "tree" } {
+            foreach {x y w h} [$treeid bbox $item] {break;}
+            #foreach x [$treeid bbox $item #1] {break;}
+            $m add command -label [_ "Add shortcut" ] \
+                -command [list ::pd_bindings::editor::doubleclick $treeid $X $Y]
+            $m add command -label [_ "Delete shortcuts" ] \
+                -command [list ::pd_bindings::editor::shortcut_clear $m]
+        } else {
+            # we are only interested in the shortcut cells
+            destroy $m
+            return
+        }
+
+        set ::pd_bindings::editor::currentID [list $treeid $item $col]
+        bindtags $m [list $m [winfo class $m] ::pd_bindings::editor::m]
+        tk_popup $m [expr [winfo rootx $treeid] + $x] [expr [winfo rooty $treeid] + $y]
+    }
+
+    proc popup_destroy {popid} {
+        # cleanup the popup
+        destroy $popid
+        set ::pd_bindings::editor::currentID {}
+        set ::pd_bindings::editor::currentshortcut {}
+    }
+    proc shortcut_set {shortcut} {
+        foreach {treeid item col} $::pd_bindings::editor::currentID {break}
+        if { ${col} == {} } {return}
+
+        # try to normalize the keyboard shortcut (titlecasing the actual key)
+        set keys [split $shortcut "+"]
+        set Keys [lreplace $keys end end [string totitle [lindex $keys end]]]
+
+        set testevent <<::pd_binding::editor::shortcut::test>>
+        catch {
+            event add ${testevent} <[join $Keys -]>
+            set keys $Keys
+        }
+        event delete ${testevent}
+
+        # check if shortcut is already taken
+        set sc [join $keys "+"]
+        set oldev [shortcut_check $sc]
+        if { $oldev != "" && $oldev != $item } {
+            tk_messageBox \
+                -title [_ "Shortcut in use!"] \
+                -message [_ "The shortcut '%1\$s' is already used for the '%2\$s' event." $sc $oldev] \
+                -detail [_ "Please remove the old shortcut before assigning it to a new event." ] \
+                -icon error -type ok
+            return
+        }
+
+        if { $sc !=  {} } {
+            set ::pd_bindings::editor::usedshortcuts($sc) $item
+        }
+
+        set shortcuts {}
+
+        if { $col != "#0" } {
+            set oldsc [$treeid set $item $col]
+            set ::pd_bindings::editor::usedshortcuts($oldsc) ""
+            $treeid set $item $col $sc
+        } else {
+            if { $sc != {} } {
+                # *add* a new shortcut (rather than replace an existing one
+                dict set shortcuts $sc 1
+            } else {
+                # remove all shortcuts
+                foreach col [$treeid cget -columns] {
+                    set oldsc [$treeid set $item $col]
+                    set ::pd_bindings::editor::usedshortcuts($oldsc) ""
+                    $treeid set $item $col $sc
+                }
+
+            }
+        }
+
+        # remove duplicate and empty entries for the same event
+        foreach {it sc} [$treeid set $item] {
+            if { $sc != {} } {
+                dict set shortcuts $sc 1
+            }
+        }
+        set shortcuts [dict keys $shortcuts]
+        set numshortcuts [llength $shortcuts]
+        if { $numshortcuts > [llength [$treeid cget -columns]] } {
+            make_treecolumns $treeid $numshortcuts
+        }
+        $treeid item $item -values $shortcuts
+    }
+
+    proc shortcut_clear {popid} {
+        shortcut_set ""
+        after idle ::pd_bindings::editor::popup_destroy $popid
+    }
+    proc shortcut_check {shortcut} {
+        if { [info exists ::pd_bindings::editor::usedshortcuts($shortcut) ] } {
+            return $::pd_bindings::editor::usedshortcuts($shortcut)
+        }
+        return ""
+    }
+
+    proc shortcut {popid key modifier state} {
+        # the user pressed a new shortcut
+        # - ideally, prevent combination that only consist of modifier keys (e.g. "Control+Shift")
+        # - if they are releasing (the top-level combination), assign
+        if { ! [winfo exists $popid ] } {
+            return
+        }
+        set treeid [winfo parent $popid]
+        if { ! $state } {
+            # releasing and the user selected a shortcut
+            shortcut_set ${::pd_bindings::editor::currentshortcut}
+            popup_destroy $popid
+            return
+        }
+        set ::pd_bindings::editor::currentshortcut [join [concat $modifier $key] +]
+    }
+    proc shortcut1 {popid key modifier state} {
+        set allowed  $::pd_bindings::editor::allow1char
+        if { $allowed } {
+            return [::pd_bindings::editor::shortcut $popid $key $modifier $state]
+        }
+    }
+
+
+    proc reset {winid} {
+        set treeid ${winid}.tree
+        ::pdwindow::error "TODO: ::pd_bindings::editor::reset\n"
+    }
+    proc apply {winid} {
+        set data [getshortcuts ${winid}.tree]
+        set ::pd_bindings::bindlist $data
+        ::pd_guiprefs::write KeyBindings $data
+        ::pd_bindings::make_events ${data}
+        ::pd_menus::update_accelerators
+    }
+}
+
+
 
 #------------------------------------------------------------------------------#
 # key usage
