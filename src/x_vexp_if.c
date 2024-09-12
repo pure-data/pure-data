@@ -427,7 +427,9 @@ SDY the following coredumps why?
         }
         for (i = 0; i < EX_MAX_INLETS; i++) {
                 if (x->exp_var[i].ex_type == ET_VI ||
-                    x->exp_var[i].ex_type == ET_XI)
+                    x->exp_var[i].ex_type == ET_XI ||
+                    x->exp_var[i].ex_type == ET_YO ||
+                    0)
                         x->exp_p_var[i] = fts_calloc(x->exp_vsize,
                                                         sizeof (t_float));
                 else
@@ -606,7 +608,9 @@ expr_dsp(t_expr *x, t_signal **sp)
         }
         for (i = 0; i < EX_MAX_INLETS; i++) {
                 if (x->exp_var[i].ex_type == ET_VI ||
-                    x->exp_var[i].ex_type == ET_XI)
+                    x->exp_var[i].ex_type == ET_XI ||
+                    x->exp_var[i].ex_type == ET_YO ||
+                    0)
                         x->exp_p_var[i] = fts_calloc(x->exp_vsize,
                                                         sizeof (t_float));
                 else
