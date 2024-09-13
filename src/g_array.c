@@ -863,7 +863,7 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
 void garray_setsaveit(t_garray *x, int saveit)
 {
     if (x->x_saveit && !saveit)
-        post("warning: array %s: clearing save-in-patch flag",
+        logpost(x->x_glist, PD_NORMAL, "warning: array %s: clearing save-in-patch flag",
             x->x_name->s_name);
     x->x_saveit = saveit;
 }
