@@ -867,6 +867,10 @@ void garray_setsaveit(t_garray *x, int saveit)
             x->x_name->s_name);
     x->x_saveit = saveit;
 }
+static void garray_saveit(t_garray *x, t_floatarg f)
+{
+    garray_setsaveit(x, (int)f);
+}
 
 /*------------------- Pd messages ------------------------ */
 static void garray_const(t_garray *x, t_floatarg g)
@@ -1327,6 +1331,8 @@ void g_array_setup(void)
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_rename, gensym("rename"),
         A_SYMBOL, 0);
+    class_addmethod(garray_class, (t_method)garray_saveit, gensym("keep"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_read, gensym("read"),
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
