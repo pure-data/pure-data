@@ -445,10 +445,17 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             gensym("style"), x->x_scalar->sc_vec, 1);
     if (deleteit != 0)
     {
+        const char *undo_name = "add array";
+        t_atom undo[4];
+        t_glist *gl = x->x_glist;
         garray_deleteit(x);
-    }
-    else
-    {
+        SETSYMBOL(undo+0, name);
+        SETFLOAT (undo+1, fsize);
+        SETSYMBOL(undo+2, gensym("float"));
+        SETFLOAT (undo+3, fflags);
+        pd_undo_set_objectstate(glist_getcanvas(gl), (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
+        glist_redraw(gl);
+    } else {
         long size;
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
