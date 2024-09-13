@@ -6,6 +6,7 @@
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_undo.h"
 #include <math.h>
 
 #ifndef M_PI
@@ -377,22 +378,57 @@ void garray_properties(t_garray *x)
         a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
+static void garray_deleteit(t_garray *x) {
+    int wasused = x->x_usedindsp;
+    glist_delete(x->x_glist, &x->x_gobj);
+    if (wasused)
+        canvas_update_dsp();
+}
+
     /* this is called back from the dialog window to create a garray.
     The otherflag requests that we find an existing graph to put it in. */
 void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     t_floatarg fflags, t_floatarg otherflag)
 {
+    const char *undo_name = "add array";
     t_glist *gl;
     t_garray *a;
     int flags = fflags;
+    t_atom undo[4];
+
     if (size < 1)
         size = 1;
+
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
+    {
+        undo_name = "create";
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
         gl = glist_addglist(parent, &s_, 0, 1,
             size, -1, 0, 0, 0, 0);
+        if (!canvas_undo_get(glist_getcanvas(parent))->u_doing)
+            canvas_undo_add(glist_getcanvas(parent), UNDO_CREATE, "create",
+                (void *)canvas_undo_set_create(glist_getcanvas(parent)));
+    } else {
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
+    }
     a = graph_array(gl, name, &s_float, size, flags);
+
+    SETSYMBOL(undo+0, name);
+    SETFLOAT (undo+1, size);
+    SETSYMBOL(undo+2, gensym("float"));
+    SETFLOAT (undo+3, fflags);
+    pd_undo_set_objectstate(parent, (t_pd*)gl, gensym("array"), 1, undo, 4, undo);
+    canvas_undo_add(parent, UNDO_SEQUENCE_END, undo_name, 0);
+
     glist_redraw(gl);
     canvas_dirty(parent, 1);
+}
+
+/* remove a named array from a graph */
+void glist_removearray(t_glist *x, t_symbol *name) {
+    t_garray*a = (t_garray*)pd_findbyclass(name, garray_class);
+    if (a && x == a->x_glist)
+        garray_deleteit(a);
 }
 
     /* this is called from the properties dialog window for an existing array */
@@ -409,10 +445,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             gensym("style"), x->x_scalar->sc_vec, 1);
     if (deleteit != 0)
     {
-        int wasused = x->x_usedindsp;
-        glist_delete(x->x_glist, &x->x_gobj);
-        if (wasused)
-            canvas_update_dsp();
+        garray_deleteit(x);
     }
     else
     {
