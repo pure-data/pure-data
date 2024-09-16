@@ -28,6 +28,7 @@
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #define off_t ssize_t
+#endif /* _MSC_VER */
 /* choose appropriate size if SSIZE_MAX is not defined */
 #ifndef SSIZE_MAX
 #ifdef _WIN64
@@ -36,7 +37,6 @@ typedef SSIZE_T ssize_t;
 #define SSIZE_MAX INT_MAX
 #endif
 #endif /* SSIZE_MAX */
-#endif /* _MSC_VER */
 
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128
