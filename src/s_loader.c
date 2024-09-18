@@ -689,7 +689,9 @@ t_method sys_getfunbyname(const char *name)
             GetLastError());
         return NULL;
     }
-#else
+#elif HAVE_LIBDL
     return (t_method)dlsym(dlopen(NULL, RTLD_NOW), name);
+#else
+    return NULL;
 #endif
 }
