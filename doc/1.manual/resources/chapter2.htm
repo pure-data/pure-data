@@ -374,8 +374,11 @@ also resize <A href="chapter2.htm#s2.8.2">Graph-on-parent subpatches</A> and
 
 <p>You need to move the cursor to the right edge of the object and you'll see the cursor
 becoming a double-sided horizontal arrow. You can then click and drag horizontally to
-resize these box. IEMguis do not offer this feature yet and other externals may
-offer this or custom possibilities for resizing.
+resize these box. The exception to this rule are the IEMguis objects (toggles, sliders,
+radio buttons, etc). These used to be an external library package but were incorporated
+natively into Pd in version 0.34 (they can still be created from object boxes though -
+see their help patches for the corresponding symbols). At the time of this writting,
+they can't be resized in edit mode with the mouse cursor.
 
 <P>If you are predominantly editing a patch, but would like to quickly switch to
 run mode just to click on something like a message, you can press and hold the
@@ -414,11 +417,9 @@ to create each item specifically.
 
 <P> Note that most of these are individual GUI (graphical user interface) boxes.
 Besides the three basic GUI boxes (number, symbol and list), there's another group
-of GUIs that has more options (toggles, sliders, radio buttons, etc). These other GUIs
-are also known as "IEMguis", which used to be an external library package and was
-incorporated natively into Pd in version 0.34 (they can still be created from
-object boxes though - see their help patches for the corresponding symbols). There
-are also entries for "array" and "graph" that will be explained later.
+of GUIs that has more options (toggles, sliders, radio buttons, etc). These are
+also known as "IEMguis". There are also entries for "array" and "graph" that will
+be explained later.
 
 <P>If you are in run mode and click on an entry in the <b>Put menu</b> or use
 a shortcut, Pd automatically switches to edit mode. When you add boxes
@@ -1261,9 +1262,8 @@ variable message selectors or destinations.
 
 <p>The "\" (backslash) character is used in Pd to escape special
 characters that are handled differently in Pd. Such characters are:
-"Space", "," (comma), ";" (semicolon) and "$" (dollar sign). Also, the backslash
-character itself can be escaped.
-
+"Space", "," (comma), ";" (semicolon) and "$" (dollar sign). Also,
+the backslash character itself can be escaped.
 
 <p>This way, the "Hi\, how are you?" message in a message box does
 not interpret the comma as it normally would, splitting the message in two.
@@ -1627,13 +1627,12 @@ as a "float" or "symbol" message.
 <H4> <A href="#s2.7.5" id="s2.7.5">2.7.5. Dollar signs</A> </H4>
 
 <p>In message or object boxes, message arguments starting with a dollar sign
-and a number (like "$1" or "$3-bazoo") are variables which are substituted
-with values supplied as part of the environment the message is passed in.
-In the case of message boxes, the environment consists of the arguments of
-the "list" message (possibly extrapolated from "bang", "float",
-or other) that the message box is responding to. Thus, if a message box gets
-"23 skidoo" and if it contains the text, "$2 until $1", out comes the message,
-"skidoo until 23".
+and a number (like "$1" or "$3-bazoo") are variables which are substituted with
+values supplied as part of the environment the message is passed in. In the case
+of message boxes, the environment consists of the arguments of the "list" message
+(possibly extrapolated from "bang", "float", or other) that the message box is
+responding to. Thus, if a message box gets "23 skidoo" and if it contains the
+text, "$2 until $1", out comes the message, "skidoo until 23".
 
 <P>Object boxes contain text which forms a message to be sent to Pd to create
 and initialize the object. Here, $1, etc., are taken from the context in which
@@ -1646,7 +1645,8 @@ is the mechanism for making local variables. In particular, $0 is a counter,
 where every patch gets its own value. In an abstraction this guarantees a unique
 ID number to that abstraction, so sends and receives with names like "$0-bear"
 can be used as local send/receive pairs. This is also useful for things like
-array names, value names and text names (as defined in the text object).
+array names, variable names in <b>[value]</b> objects and text names (as defined
+in the <b>[text]</b> object).
 
 <P>Occasionally, you may want to have double or triple substitutions; this can
 be done one stage at a time by nesting abstractions (with each subpatch
@@ -1658,6 +1658,12 @@ example, have an abstraction "a1" that invokes an abstraction "a2" twice, as
 "a2 $1-food" and "a2 $1-ears", and then in a third patch call a1 twice, as
 "a1 cat" and "a1 dog". Inside the four "a2" copies, $1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
+
+<P>In the case of IEMguis, you can set a receive and/or send name via a message.
+Note that if you want to use the "$0" counter in this case you have to escape
+it with a backslash (see <A href="chapter2.htm#s2.4.5">2.4.5. Escaping characters</A>).
+This is needed so the object receives a literal and unexpanded '$0' symbol to store
+when the patch is saved. Examples are given in their help files.
 
 <H3> <A href="#s2.8" id="s2.8">2.8. Subpatches</A> </H3>
 
