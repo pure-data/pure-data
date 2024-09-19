@@ -115,7 +115,8 @@ int rb_read_from_buffer(ring_buffer *buffer, char *dest, int len) {
     memcpy(dest, buffer->buf_ptr + read_idx, d);
     memcpy(dest + d, buffer->buf_ptr, len - d);
   }
-  atomic_int_store(&buffer->read_idx, read_idx); // includes memory barrier
+  // includes memory barrier
+  atomic_int_store(&buffer->read_idx, (read_idx + len) % buffer->size);
   return 0;
 }
 

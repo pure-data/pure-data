@@ -32,7 +32,7 @@
 #ifdef HAVE_C11_ATOMICS
 /* use C11 stdatomic if available. */
 #include <stdatomic.h>
-#define atomic_int _Atomic int
+/* atomic_int is defined in <stdatomic.h> */
 #define atomic_int_load atomic_load
 #define atomic_int_store atomic_store
 #define atomic_int_fetch_add atomic_fetch_add
