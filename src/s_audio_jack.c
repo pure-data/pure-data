@@ -88,6 +88,8 @@ static volatile int jack_dio_error;
 static volatile int jack_didshutdown;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
+static int jack_defaultsource = 0;
+static int jack_defaultsink = 0;
 static int jack_blocksize = 0; /* should this be PERTHREAD? */
 #ifdef THREADSIGNAL
 t_semaphore *jack_sem;
@@ -257,6 +259,7 @@ static char** jack_get_clients(void)
     regex_t port_regex;
     jack_ports = jack_get_ports(jack_client, "", "", 0);
     regcomp(&port_regex, "^[^:]*", REG_EXTENDED);
+    jack_defaultsource = jack_defaultsink = -1;
 
     jack_client_names[0] = NULL;
 
@@ -265,8 +268,12 @@ static char** jack_get_clients(void)
     {
         int client_seen;
         regmatch_t match_info;
+        jack_port_t*port = 0;
 
         if (num_clients >= MAX_CLIENTS) break;
+
+        if(jack_port_by_name)
+            port = jack_port_by_name(jack_client, jack_ports[i]);
 
         /* extract the client name from the port name, using a regex
          * that parses the clientname:portname syntax */
@@ -284,6 +291,7 @@ static char** jack_get_clients(void)
 
         if (client_seen == 0)
         {
+            int cur_client = num_clients;
             jack_client_names[num_clients] = (char*)getbytes(strlen(tmp_client_name) + 1);
 
             /* The alsa_pcm client should go in spot 0.  If this
@@ -299,11 +307,20 @@ static char** jack_get_clients(void)
                 jack_client_names[num_clients] = jack_client_names[0];
                 jack_client_names[0] = tmp;
                 strcpy( jack_client_names[0], tmp_client_name);
+                cur_client = 0;
             }
             else
             {
                 /* put the new client at the end of the client list */
                 strcpy(jack_client_names[num_clients], tmp_client_name);
+            }
+            if(jack_defaultsource < 0 && port && jack_port_flags(port) & JackPortIsOutput)
+            {
+                jack_defaultsource = cur_client;
+            }
+            if(jack_defaultsink < 0 && port && jack_port_flags(port) & JackPortIsInput)
+            {
+                jack_defaultsink = cur_client;
             }
             num_clients++;
         }
@@ -313,6 +330,12 @@ static char** jack_get_clients(void)
 
     freebytes(tmp_client_name, tmp_client_name_size);
     free(jack_ports);
+
+    if (jack_defaultsource < 0)
+        jack_defaultsource = 0;
+    if (jack_defaultsink < 0)
+        jack_defaultsink = 0;
+
     return jack_client_names;
 }
 
@@ -554,7 +577,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
 
     if (jack_client_names[0] && jack_should_autoconnect)
-        jack_connect_ports(jack_client_names[0], jack_client_names[0]);
+        jack_connect_ports(jack_client_names[jack_defaultsource], jack_client_names[jack_defaultsink]);
     return 0;
 }
 
