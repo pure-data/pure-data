@@ -150,6 +150,7 @@ struct _instanceinter
 #endif
 #if PDTHREADS
     pthread_mutex_t i_mutex;
+    pthread_mutex_t i_guimutex;
 #endif
 
     unsigned char i_recvbuf[NET_MAXPACKETSIZE];
@@ -838,7 +839,7 @@ void sys_vgui(const char *fmt, ...)
     if(msglen < 0)
     {
         fprintf(stderr,
-            "sys_vgui: pd_snprintf() failed with error code %d\n", errno);
+            "Pd: buffer space wasn't sufficient for long GUI string\n");
         return;
     }
     if (msglen >= INTER->i_guisize - INTER->i_guihead)
@@ -916,9 +917,11 @@ static const char**namelist2strings(t_namelist *nl, unsigned int *N) {
     }
     return result;
 }
-
+void pdgui_lock(void);
+void pdgui_unlock(void);
 static int sys_flushtogui(void)
 {
+    pdgui_lock();
     int writesize = INTER->i_guihead - INTER->i_guitail,
         nwrote = 0;
     if (writesize > 0)
@@ -926,7 +929,6 @@ static int sys_flushtogui(void)
             INTER->i_guisock,
             INTER->i_guibuf + INTER->i_guitail,
             writesize, 0);
-
 #if 0
     if (writesize)
         fprintf(stderr, "wrote %d of %d\n", nwrote, writesize);
@@ -937,8 +939,10 @@ static int sys_flushtogui(void)
         perror("pd-to-gui socket");
         sys_bail(1);
     }
-    else if (!nwrote)
+    else if (!nwrote) {
+        pdgui_unlock();
         return (0);
+    }
     else if (nwrote >= INTER->i_guihead - INTER->i_guitail)
         INTER->i_guihead = INTER->i_guitail = 0;
     else if (nwrote)
@@ -953,6 +957,7 @@ static int sys_flushtogui(void)
             INTER->i_guitail = 0;
         }
     }
+    pdgui_unlock();
     return (1);
 }
 
@@ -974,7 +979,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            sys_gui("pdtk_ping\n");
+            pdgui_vmess("pdtk_ping", 0);
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -1107,10 +1112,14 @@ void sys_gui_preferences(void)
                 , nlibs, startuplibs
                 );
 
-    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
-    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
-    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
-    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+        /* FIXME: 'set_escaped' is really low-level Tcl code,
+           we want something more highlevel
+        */
+    pdgui_vmess("set_escaped", "ri", "::sys_verbose", sys_verbose);
+    pdgui_vmess("set_escaped", "ri", "::sys_use_stdpath", sys_usestdpath);
+    pdgui_vmess("set_escaped", "ri", "::sys_defeatrt", sys_defeatrt);
+    pdgui_vmess("set_escaped", "ri", "::sys_zoom_open", (sys_zoom_open == 2));
+
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));
 
@@ -1620,7 +1629,7 @@ static int sys_do_startgui(const char *libdir)
             /* here is where we start the pinging. */
 #if PD_WATCHDOG
     if (sys_hipriority)
-        sys_gui("pdtk_watchdog\n");
+        pdgui_vmess("pdtk_watchdog", 0);
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
@@ -1628,19 +1637,21 @@ static int sys_do_startgui(const char *libdir)
     sys_gui_preferences();     /* tell GUI about path and startup flags */
 
         /* ... and about font, media APIS, etc */
-    sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
-             PD_MAJOR_VERSION, PD_MINOR_VERSION,
-             PD_BUGFIX_VERSION, PD_TEST_VERSION,
-             apibuf, apibuf2,
-             pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
-             sys_fontweight);
+    pdgui_vmess("pdtk_pd_startup", "iiis rr ss"
+                , PD_MAJOR_VERSION, PD_MINOR_VERSION
+                , PD_BUGFIX_VERSION, PD_TEST_VERSION
 
+                , apibuf, apibuf2
+                , sys_font, sys_fontweight
+        );
     sys_init_deken();
 
     {
         t_audiosettings as;
         sys_get_audio_settings(&as);
-        sys_vgui("set pd_whichapi %d\n", as.a_api);
+        pdgui_vmess("set", "ri"
+                    , "pd_whichapi", as.a_api
+            );
 
         pdgui_vmess("pdtk_pd_dsp", "s",
             THISGUI->i_dspstate ? "ON" : "OFF");
@@ -1872,6 +1883,7 @@ void s_inter_newpdinstance(void)
 #if PDTHREADS
     pthread_mutex_init(&INTER->i_mutex, NULL);
     pd_this->pd_islocked = 0;
+    pthread_mutex_init(&INTER->i_guimutex, NULL);
 #endif
 #ifdef _WIN32
     INTER->i_freq = 0;
@@ -1893,6 +1905,7 @@ void s_inter_free(t_instanceinter *inter)
     }
 #if PDTHREADS
     pthread_mutex_destroy(&inter->i_mutex);
+    pthread_mutex_destroy(&inter->i_guimutex);
 #endif
     freebytes(inter, sizeof(*inter));
 }
@@ -1983,6 +1996,14 @@ int sys_trylock(void)
 #endif
 }
 
+void pdgui_lock(void)
+{
+    pthread_mutex_lock(&INTER->i_guimutex);
+}
+void pdgui_unlock(void)
+{
+    pthread_mutex_unlock(&INTER->i_guimutex);
+}
 #else /* PDTHREADS */
 
 #ifdef TEST_LOCKING /* run standalone Pd with this to find deadlocks */
@@ -2004,5 +2025,8 @@ void sys_unlock(void) {}
 #endif
 void pd_globallock(void) {}
 void pd_globalunlock(void) {}
+
+void pdgui_lock(void) {}
+void pdgui_unlock(void) {}
 
 #endif /* PDTHREADS */
