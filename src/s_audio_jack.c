@@ -321,40 +321,50 @@ static char** jack_get_clients(void)
  *
  */
 
-static int jack_connect_ports(char* client)
+static int jack_connect_ports(const char* source, const char* sink)
 {
     char  regex_pattern[100]; /* its always the same, ... */
     int i;
     const char **jack_ports;
+    int ret = -1;
 
-    if (strlen(client) > 96)  return -1;
+    if (source && strlen(source) <= 96) {
+        sprintf(regex_pattern, "%s:.*", source);
 
-    sprintf(regex_pattern, "%s:.*", client);
-
-    jack_ports = jack_get_ports(jack_client, regex_pattern,
-                                NULL, JackPortIsOutput);
-    if (jack_ports)
-    {
-        for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
-            if (jack_connect (jack_client, jack_ports[i],
-                jack_port_name (input_port[i])))
+        jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                    NULL, JackPortIsOutput);
+        if (jack_ports)
+        {
+            for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
+                if (jack_connect (jack_client, jack_ports[i],
+                                  jack_port_name (input_port[i])))
                     pd_error(0, "JACK: cannot connect input ports %s -> %s",
-                        jack_ports[i],jack_port_name (input_port[i]));
-        free(jack_ports);
+                             jack_ports[i],jack_port_name (input_port[i]));
+                else
+                    ret = 0;
+            free(jack_ports);
+        }
     }
-    jack_ports = jack_get_ports(jack_client, regex_pattern,
-                                NULL, JackPortIsInput);
-    if (jack_ports)
-    {
-        for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
-            if (jack_connect (jack_client, jack_port_name(output_port[i]),
-                jack_ports[i]))
-                    pd_error(0,  "JACK: cannot connect output ports %s -> %s",
-                        jack_port_name (output_port[i]),jack_ports[i]);
+    if (sink && strlen(sink) <= 96) {
+        sprintf(regex_pattern, "%s:.*", sink);
 
-        free(jack_ports);
+        jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                    NULL, JackPortIsInput);
+        if (jack_ports)
+        {
+            for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
+                if (jack_connect (jack_client, jack_port_name(output_port[i]),
+                                  jack_ports[i]))
+                    pd_error(0,  "JACK: cannot connect output ports %s -> %s",
+                             jack_port_name (output_port[i]),jack_ports[i]);
+                else
+                    ret = 0;
+
+            free(jack_ports);
+        }
     }
-    return 0;
+
+    return ret;
 }
 
 
@@ -544,7 +554,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
 
     if (jack_client_names[0] && jack_should_autoconnect)
-        jack_connect_ports(jack_client_names[0]);
+        jack_connect_ports(jack_client_names[0], jack_client_names[0]);
     return 0;
 }
 
