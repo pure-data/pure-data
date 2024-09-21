@@ -85,11 +85,11 @@
 #X text 98 363 xticks <list> -;
 #X text 210 362 sets a point to put a tick \, the interval between ticks \, and the number of ticks overall per large tick., f 67;
 #X text 98 394 yticks <list> - same as above for the 'y' axis., f 83;
-#X text 91 412 xlabels <list> - first element is a label offset \, remaining are the values to label., f 84;
-#X text 91 429 ylabels <list> - first element is a label offset \, remaining are the values to label., f 84;
 #X obj 13 76 cnv 5 700 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020 #000000 0;
 #X text 164 90 NONE (input is via messages sent to the array name).;
 #X text 156 36 - "array": graphical array;
+#X text 98 412 xlabel <list> - first element is a label offset \, remaining are the values to label., f 83;
+#X text 98 429 ylabel <list> - first element is a label offset \, remaining are the values to label., f 83;
 #X restore 768 82 pd reference;
 #X text 895 179 <= click;
 #N canvas 786 245 483 218 reference 0;
