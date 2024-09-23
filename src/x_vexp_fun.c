@@ -187,6 +187,8 @@ extern void ex_store(t_expr *expr, long int argc, struct ex_ex *argv,
                                                         struct ex_ex *optr);
 extern void ex_var (t_expr *expr, long int argc, struct ex_ex *argv,
                                                         struct ex_ex *optr);
+extern void ex_ref (t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
 extern void ex_tabread4(t_expr *expr, long int argc, struct ex_ex *argv,
                                                         struct ex_ex *optr);
 
@@ -266,6 +268,7 @@ t_ex_func ex_funcs[] = {
         {"strspn",      ex_strspn,      2},
         {"strcspn",     ex_strcspn,     2},
         {"var",         ex_var,         1},
+        {"ref",         ex_ref,         1},
 
 #ifdef PD
         {"size",        ex_size,        1},
@@ -1487,6 +1490,39 @@ func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)\
 }
 
 #define EXPR_MAX_SYM_SIZE 512 /*largest symbol size, in sprintf it may be 500*/
+
+/* same as var() but returns a variable to a symbol */
+void
+ex_ref(t_expr *expr, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+{
+        if (argc != 1) {
+        ex_error(expr, "ref(): requires one argument");
+        return;
+        }
+
+        optr->ex_type = ET_VAR;
+        switch(argv->ex_type) {
+                case ET_SYM:
+                        if (argv->ex_flags & EX_F_TSYM)
+                                optr->ex_ptr = gensym(argv->ex_ptr);
+                        else
+                                optr->ex_ptr = argv->ex_ptr;
+                        return;
+
+                case ET_SI:
+                        optr->ex_ptr = expr->exp_var[argv->ex_int].ex_ptr;
+                        optr->ex_flags = 0;
+                        return;
+
+                default:
+                        ex_error(expr, "ref(): argument must be a symbol or string");
+                        break;
+        }
+        
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return;
+}
 
 void
 ex_var (t_expr *expr, long int argc, struct ex_ex *argv, struct ex_ex *optr)
