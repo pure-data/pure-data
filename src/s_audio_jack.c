@@ -157,7 +157,7 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
             }
         }
     }
-    FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
+
 #ifdef THREADSIGNAL
     sys_semaphore_post(jack_sem);
 #endif
