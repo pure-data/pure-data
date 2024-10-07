@@ -11,7 +11,7 @@
 #
 
 # The minimum version of TCL that allows the plugin to run
-package require Tcl 8.4
+package require Tcl 8.4 9
 
 package require pdwindow 0.1
 package require pd_guiprefs 0.1
