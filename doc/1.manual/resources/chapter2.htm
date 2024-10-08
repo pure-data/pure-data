@@ -1612,17 +1612,19 @@ messages, or others in addition or instead of them.
 
 <H4> <A href="#s2.7.4" id="s2.7.4">2.7.4. Inlets and lists</A> </H4>
 
-<P>The leftmost connection point at the top of most objects represents the
-object itself. Any other dark rectangle is a separate object called an "inlet",
-although there are 4 different inlet classes in Pd. The class of the inlet
-determines the type of message it will accept: symbol, float or other; and the
-inlet passes the message either to the object itself or to a proxy, usually
-one created by the object for the occasion.
+<P>Most objects have connection inputs at the top (represented as a dark rectangle).
+The leftmost input represents the object itself. An object may have other inputs, but
+each is a separate object called an "inlet". There are 4 different inlet classes in Pd.
+The class of the inlet determines the type of message it will accept: symbol, float or
+other; and the inlet passes the message either to the object itself or to a proxy,
+sually one created by the object for the occasion.
 
-<P>Unless they are specified otherwise by defining a "list" method, objects
-respond to the "list" message by distributing the arguments of the message to
-their inlets, except for the first argument, which is passed to the main object
-as a "float" or "symbol" message.
+<P>Unless they are specified otherwise by defining a "list" method, objects respond to
+the "list" message by distributing the arguments of the message to the object and its
+inlets (if any). If there's just a single input for the object (that is, no inlets for
+extra inputs), the first element of the list is passed to the object as a "float" or
+"symbol" message. The extra arguments of the list is then distributed to the inlets if
+any (also as either a a "float" or "symbol").
 
 <H4> <A href="#s2.7.5" id="s2.7.5">2.7.5. Dollar signs</A> </H4>
 
