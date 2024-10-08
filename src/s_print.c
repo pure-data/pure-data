@@ -173,7 +173,7 @@ static void dologpost(const void *object, const int level, const char *s)
         fwprintf(stderr, L"verbose(%d): " PD_FWPRINTF_NARROW_FORMATTER, level, s);
         fflush(stderr);
 #else
-        fprintf(stderr, "verbose(%d): %s", level, s);
+        fprintf(stderr, "%s", s);
 #endif
     }
     else

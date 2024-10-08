@@ -974,7 +974,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            sys_gui("pdtk_ping\n");
+            pdgui_vmess("pdtk_ping", "");
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -1452,7 +1452,10 @@ static int sys_do_startgui(const char *libdir)
 
 #ifndef _WIN32
         if (sys_guicmd)
-            guicmd = sys_guicmd;
+        {
+            sprintf(cmdbuf, "\"%s\" %d\n", sys_guicmd, portno);
+            guicmd = cmdbuf;
+        }
         else
         {
 #ifdef __APPLE__
@@ -1620,7 +1623,7 @@ static int sys_do_startgui(const char *libdir)
             /* here is where we start the pinging. */
 #if PD_WATCHDOG
     if (sys_hipriority)
-        sys_gui("pdtk_watchdog\n");
+        pdgui_vmess("pdtk_watchdog", "");
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);

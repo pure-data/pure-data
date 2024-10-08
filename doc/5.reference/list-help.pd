@@ -661,7 +661,7 @@
 #X obj 182 527 float;
 #X obj 143 527 text;
 #X obj 230 527 symbol;
-#N canvas 485 65 613 631 from/to 1;
+#N canvas 485 65 613 631 from/to 0;
 #X symbolatom 47 221 10 0 0 0 - - - 0;
 #X obj 47 251 list fromsymbol;
 #X msg 239 163 115 101 118 101 110 116 101 101 110;
