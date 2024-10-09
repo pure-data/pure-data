@@ -213,7 +213,7 @@ static void cos_cleanup(t_class *c)
 #endif
     if (cos_newtable)
         freebytes(cos_newtable, sizeof(float) * (COSTABLESIZE+1));
-    cos_table = 0;
+    cos_newtable = 0;
 }
 
 static void cos_setup(void)

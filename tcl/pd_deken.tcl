@@ -18,7 +18,7 @@
 ## + make the "add to path" thingy configurable
 
 # The minimum version of TCL that allows the plugin to run
-package require Tcl 8.4
+package require Tcl 8.4 9
 # If Tk or Ttk is needed
 #package require Ttk
 # Any elements of the Pd GUI that are required
