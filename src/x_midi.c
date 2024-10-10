@@ -5,7 +5,7 @@
 /* MIDI. */
 
 #include "m_pd.h"
-void outmidi_noteon(int portno, int channel, int pitch, int velo);
+void outmidi_noteon(int portno, int channel, int pitch, int velo, int flag);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
 void outmidi_pitchbend(int portno, int channel, int value);
@@ -116,18 +116,30 @@ typedef struct _notein
 {
     t_object x_obj;
     t_float x_channel;
+    t_int x_off;
     t_outlet *x_outlet1;
     t_outlet *x_outlet2;
     t_outlet *x_outlet3;
 } t_notein;
 
-static void *notein_new(t_floatarg f)
+static void *notein_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_notein *x = (t_notein *)pd_new(notein_class);
-    x->x_channel = f;
+    x->x_channel = x->x_off = 0;
+    if(argc)
+    {
+        if(atom_getsymbol(argv) == gensym("-off"))
+        {
+            x->x_off = 1;
+            argc--;
+            argv++;
+        }
+        if(argc)
+            x->x_channel = atom_getfloatarg(0, argc, argv);
+    }
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    if (f == 0) x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
+    if (x->x_channel == 0) x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
     pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_notein_sym);
     return (x);
 }
@@ -137,6 +149,13 @@ static void notein_list(t_notein *x, t_symbol *s, int argc, t_atom *argv)
     t_float pitch = atom_getfloatarg(0, argc, argv);
     t_float velo = atom_getfloatarg(1, argc, argv);
     t_float channel = atom_getfloatarg(2, argc, argv);
+    t_int flag = atom_getfloatarg(3, argc, argv);
+    if(x->x_off)
+    {
+        if(flag) return;
+    }
+    else if(!flag)
+        velo = 0;
     if (x->x_channel != 0)
     {
         if (channel != x->x_channel) return;
@@ -159,20 +178,21 @@ static void notein_free(t_notein *x)
 static void notein_setup(void)
 {
     notein_class = class_new(gensym("notein"), (t_newmethod)notein_new,
-        (t_method)notein_free, sizeof(t_notein), CLASS_NOINLET, A_DEFFLOAT, 0);
+        (t_method)notein_free, sizeof(t_notein), CLASS_NOINLET, A_GIMME, 0);
     class_addlist(notein_class, notein_list);
     class_sethelpsymbol(notein_class, gensym("midi"));
 }
 
-void inmidi_noteon(int portno, int channel, int pitch, int velo)
+void inmidi_noteon(int portno, int channel, int pitch, int velo, int flag)
 {
     if (pd_this->pd_midi->m_notein_sym->s_thing)
     {
-        t_atom at[3];
+        t_atom at[4];
         SETFLOAT(at, pitch);
         SETFLOAT(at+1, velo);
         SETFLOAT(at+2, (channel + (portno << 4) + 1));
-        pd_list(pd_this->pd_midi->m_notein_sym->s_thing, &s_list, 3, at);
+        SETFLOAT(at+3, flag);
+        pd_list(pd_this->pd_midi->m_notein_sym->s_thing, &s_list, 4, at);
     }
 }
 
@@ -615,14 +635,26 @@ typedef struct _noteout
     t_object x_obj;
     t_float x_velo;
     t_float x_channel;
+    t_int x_off;
 } t_noteout;
 
-static void *noteout_new(t_floatarg channel)
+static void *noteout_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_noteout *x = (t_noteout *)pd_new(noteout_class);
+    x->x_channel = x->x_off = 0;
+    if(argc)
+    {
+        if(atom_getsymbol(argv) == gensym("-off"))
+        {
+            x->x_off = 1;
+            argc--;
+            argv++;
+        }
+        if(argc)
+            x->x_channel = atom_getfloatarg(0, argc, argv);
+    }
     x->x_velo = 0;
-    if (channel < 1) channel = 1;
-    x->x_channel = channel;
+    if (x->x_channel < 1) x->x_channel = 1;
     floatinlet_new(&x->x_obj, &x->x_velo);
     floatinlet_new(&x->x_obj, &x->x_channel);
     return (x);
@@ -634,13 +666,13 @@ static void noteout_float(t_noteout *x, t_float f)
     if (binchan < 0)
         binchan = 0;
     outmidi_noteon((binchan >> 4),
-        (binchan & 15), (int)f, (int)x->x_velo);
+        (binchan & 15), (int)f, (int)x->x_velo, x->x_off);
 }
 
 static void noteout_setup(void)
 {
     noteout_class = class_new(gensym("noteout"), (t_newmethod)noteout_new, 0,
-        sizeof(t_noteout), 0, A_DEFFLOAT, 0);
+        sizeof(t_noteout), 0, A_GIMME, 0);
     class_addfloat(noteout_class, noteout_float);
     class_sethelpsymbol(noteout_class, gensym("midi"));
 }
