@@ -1367,11 +1367,16 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
             sigmund_minpower(x, atom_getfloatarg(1, argc, argv));
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(firstarg->s_name, "-nharmonics") && argc > 2)
+        else if (!strcmp(firstarg->s_name, "-nharmonics") && argc > 1)
         {
-            sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
-                atom_getfloatarg(2, argc, argv));
-            argc -= 2; argv += 2;
+            if (argc <= 2){
+                pd_error(x, "sigmund~: -nharmonics: takes 2 arguments");
+                argc -= 2; argv += 2;
+            } else {
+                sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
+                    atom_getfloatarg(2, argc, argv));
+                argc -= 3; argv += 3;
+            }
         }
         else if (!strcmp(firstarg->s_name, "-amppowerlaw") && argc > 1)
         {
