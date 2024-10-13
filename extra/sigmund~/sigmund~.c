@@ -1371,7 +1371,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         {
             sigmund_nharmonics(x, atom_getfloatarg(1, argc, argv),
                 atom_getfloatarg(2, argc, argv));
-            argc -= 2; argv += 2;
+            argc -= 3; argv += 3;
         }
         else if (!strcmp(firstarg->s_name, "-amppowerlaw") && argc > 1)
         {
@@ -1480,7 +1480,10 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "sigmund~: %s: unknown flag or argument missing",
+            if (argv->a_type == A_FLOAT)
+                pd_error(x, "sigmund~: argument '%g' ignored",
+                    atom_getfloatarg(0, argc, argv));
+            else pd_error(x, "sigmund~: %s: unknown flag or argument missing",
                 firstarg->s_name);
             argc--, argv++;
         }
