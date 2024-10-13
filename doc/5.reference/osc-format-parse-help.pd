@@ -1,4 +1,4 @@
-#N canvas 237 36 893 650 12;
+#N canvas 396 59 893 650 12;
 #X msg 292 171 1 2 3;
 #X obj 577 271 oscparse;
 #X obj 26 418 oscparse;
@@ -14,7 +14,7 @@
 #X text 120 274 a 'blob';
 #X obj 29 10 oscformat;
 #X text 101 9 - convert lists to OSC packets;
-#X listbox 577 332 11 0 0 0 - - - 0;
+#X listbox 577 332 13 0 0 0 - - - 0;
 #X listbox 26 446 28 0 0 0 - - - 0;
 #X obj 91 617 fudiformat;
 #X obj 36 34 oscparse;
@@ -62,9 +62,9 @@
 #X text 29 41 OSC is a complicated networking protocol (FUDI \, as used in [netsend] and [netreceive] is simpler and better but less widely used). The [oscparse] and [oscformat] objects make no attempt to deal with timetags or aggregates of packets \, nor with streaming OSC. Also \, no attempt is made to clearly distinguish between blobs and lists of numbers - it is assumed that you know what types the message should contain. You can alternatively use the OSC externals \, such as from the "mrpeach" or "else" library \, which offer more features and conveniences than these., f 85;
 #X restore 741 559 pd more-about-OSC;
 #X text 663 616 updated for Pd version 0.55-0;
-#X floatatom 756 273 4 0 0 0 - - - 0;
-#X obj 577 302 list split, f 26;
-#X listbox 666 332 15 0 0 0 - - - 0;
+#X floatatom 777 273 4 0 0 0 - - - 0;
+#X obj 577 302 list split, f 29;
+#X listbox 677 332 15 0 0 0 - - - 0;
 #X text 750 250 split point;
 #X text 734 201 receive OSC via UDP \, binary at port 5000, f 20;
 #N canvas 590 199 628 392 -n 0;
