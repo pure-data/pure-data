@@ -13,11 +13,6 @@
 # error m_private_utils.h is a PRIVATE header. do *not* use it in your externals
 #endif
 
-#ifdef HAVE_CONFIG_H
-/* autotools might put all the HAVE_... defines into "config.h" */
-# include "config.h"
-#endif
-
 /* ------------------------------ atomics ----------------------------------- */
 
 #ifdef _MSC_VER
@@ -32,7 +27,7 @@
 #ifdef HAVE_C11_ATOMICS
 /* use C11 stdatomic if available. */
 #include <stdatomic.h>
-#define atomic_int _Atomic int
+/* atomic_int is defined in <stdatomic.h> */
 #define atomic_int_load atomic_load
 #define atomic_int_store atomic_store
 #define atomic_int_fetch_add atomic_fetch_add

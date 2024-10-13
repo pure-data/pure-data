@@ -12,6 +12,7 @@
 #include <string.h>
 #include <math.h>
 #include "m_pd.h"
+#include "m_private_utils.h"
 #include "s_stuff.h"
 #include "s_audio_paring.h"
 #ifdef __APPLE__
@@ -27,54 +28,12 @@
  * `JACK_CLIENT_NAME_SIZE` definitions I could find in the wild. */
 #define CLIENT_NAME_SIZE_FALLBACK 128
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-# define HAVE_ALLOCA 1
-#endif
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#if HAVE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
-#endif
-
 #define MAX_ALLOCA_SAMPLES 16*1024
 
 /* enable thread signaling instead of polling */
 #if 1
 #define THREADSIGNAL
 #endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-# define HAVE_ALLOCA 1
-#endif
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#if HAVE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
-#endif
-
-#define MAX_ALLOCA_SAMPLES 16*1024
 
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
@@ -157,7 +116,6 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
             }
         }
     }
-    FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
 #ifdef THREADSIGNAL
     sys_semaphore_post(jack_sem);
 #endif
