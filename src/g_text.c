@@ -1320,12 +1320,21 @@ static void text_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_text *x = (t_text *)z;
-    x->te_xpix += dx;
-    x->te_ypix += dy;
+
+    int grid_zoomed = GRID_UNIT / glist->gl_zoom;
+    int round_x = round(x->te_xpix/grid_zoomed)*grid_zoomed;
+    int round_y = round(x->te_ypix/grid_zoomed)*grid_zoomed;
+    int diff_x = round_x - x->te_xpix;
+    int diff_y = round_y - x->te_ypix;
+    x->te_xpix = !glist->gl_snaptogrid ? x->te_xpix + dx : round_x + dx;
+    x->te_ypix = !glist->gl_snaptogrid ? x->te_ypix + dy : round_y + dy;
+
     if (glist_isvisible(glist))
     {
-        t_rtext *y = glist_findrtext(glist, x);
-        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
+        t_rtext *y = glist_findrtext(glist, x); 
+        rtext_displace(y, 
+            !glist->gl_snaptogrid ? glist->gl_zoom * dx : glist->gl_zoom * dx + diff_x, 
+            !glist->gl_snaptogrid ? glist->gl_zoom * dy : glist->gl_zoom * dy + diff_y);        
         text_drawborder(x, glist, rtext_gettag(y),
             rtext_width(y), rtext_height(y), 0);
         canvas_fixlinesfor(glist, x);
