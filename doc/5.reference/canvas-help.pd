@@ -63,7 +63,7 @@
 #X coords 0 1 10 -1 90 35 1 0 0;
 #X restore 56 26 graph;
 #X obj 13 541 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000 0;
-#X text 161 130 list - sets values into array \, fisty element is starting index (from 0)., f 74;
+#X text 161 130 list - sets values into array \, first element is starting index (from 0)., f 74;
 #X text 98 147 const <float> - optional float sets a constant value to all indexes (default 0)., f 83;
 #X text 91 164 resize <float> - resizes the array., f 84;
 #X text 91 185 sinesum <list> -;
