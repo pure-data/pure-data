@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include "m_pd.h"
+#include "s_stuff.h"
 #include "m_imp.h"
 
 #include "g_canvas.h"
@@ -1321,7 +1322,7 @@ static void text_displace(t_gobj *z, t_glist *glist,
 {
     t_text *x = (t_text *)z;
 
-    int grid_zoomed = GRID_UNIT / glist->gl_zoom;
+    int grid_zoomed = sys_gridsize / glist->gl_zoom;
     int round_x = round(x->te_xpix/grid_zoomed)*grid_zoomed;
     int round_y = round(x->te_ypix/grid_zoomed)*grid_zoomed;
     int diff_x = round_x - x->te_xpix;

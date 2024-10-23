@@ -744,6 +744,8 @@ void sys_loadpreferences(const char *filename, int startingup)
 #endif
     if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_zoom_open);
+    if (sys_getpreference("gridsize", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &sys_gridsize);
 
     sys_doneloadpreferences();
 }
@@ -865,6 +867,9 @@ void sys_savepreferences(const char *filename)
         /* misc */
     sprintf(buf1, "%d", sys_zoom_open);
     sys_putpreference("zoom", buf1);
+    sprintf(buf1, "%d", sys_gridsize);
+    sys_putpreference("gridsize", buf1);
+
     sys_putpreference("loading", "no");
 
     sys_donesavepreferences();

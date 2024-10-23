@@ -117,6 +117,11 @@ void glob_zoom_open(t_pd *dummy, t_floatarg f)
     sys_zoom_open = (f != 0 ? 2 : 1);
 }
 
+int sys_gridsize = 10;
+void glob_set_grid_size(t_pd *dummy, t_floatarg f) {
+    sys_gridsize = (int)f;
+}
+
 void glob_init(void)
 {
     maxclass = class_new(gensym("max"), 0, 0, sizeof(t_pd),
@@ -178,6 +183,8 @@ void glob_init(void)
         gensym("forget-preferences"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_zoom_open,
         gensym("zoom-open"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_set_grid_size, 
+        gensym("set-grid-size"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_version,
         gensym("version"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_perf,

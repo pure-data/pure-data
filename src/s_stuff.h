@@ -400,6 +400,7 @@ EXTERN void inmidi_polyaftertouch(int portno,
                                   int value);
 /* } jsarlo */
 EXTERN int sys_zoom_open;
+EXTERN int sys_gridsize;
 
 struct _instancestuff
 {

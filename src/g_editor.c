@@ -2283,8 +2283,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (x->gl_editor->e_onmotion != MA_NONE)
         return;
 
-    x->gl_editor->e_xwas = !x->gl_snaptogrid ? xpos : round(xpos/GRID_UNIT) * GRID_UNIT;
-    x->gl_editor->e_ywas = !x->gl_snaptogrid ? ypos : round(ypos/GRID_UNIT) * GRID_UNIT;
+    x->gl_editor->e_xwas = !x->gl_snaptogrid ? xpos : round(xpos/sys_gridsize) * sys_gridsize;
+    x->gl_editor->e_ywas = !x->gl_snaptogrid ? ypos : round(ypos/sys_gridsize) * sys_gridsize;
     if (runmode && !rightclick)
     {
             /* is a text activated ? */
@@ -3127,13 +3127,13 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         }
             /* check for arrow keys */
         else if (!strcmp(gotkeysym->s_name, "Up"))
-            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? -GRID_UNIT : -1);
+            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? -sys_gridsize : -1);
         else if (!strcmp(gotkeysym->s_name, "Down"))
-            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? GRID_UNIT : 1);
+            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? sys_gridsize : 1);
         else if (!strcmp(gotkeysym->s_name, "Left"))
-            canvas_displaceselection(x, shift || x->gl_snaptogrid ? -GRID_UNIT : -1, 0);
+            canvas_displaceselection(x, shift || x->gl_snaptogrid ? -sys_gridsize : -1, 0);
         else if (!strcmp(gotkeysym->s_name, "Right"))
-            canvas_displaceselection(x, shift || x->gl_snaptogrid ? GRID_UNIT : 1, 0);
+            canvas_displaceselection(x, shift || x->gl_snaptogrid ? sys_gridsize : 1, 0);
         else if ((MA_CONNECT == x->gl_editor->e_onmotion)
             && (CURSOR_EDITMODE_CONNECT == EDITOR->canvas_cursorwas)
                  && !strncmp(gotkeysym->s_name, "Shift", 5))
@@ -3186,8 +3186,8 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             x->gl_editor->e_clock = clock_new(x, (t_method)delay_move);
         clock_unset(x->gl_editor->e_clock);
         clock_delay(x->gl_editor->e_clock, 5);
-        x->gl_editor->e_xnew = !x->gl_snaptogrid ? xpos : round(xpos/GRID_UNIT) * GRID_UNIT;
-        x->gl_editor->e_ynew = !x->gl_snaptogrid ? ypos : round(ypos/GRID_UNIT) * GRID_UNIT;
+        x->gl_editor->e_xnew = !x->gl_snaptogrid ? xpos : round(xpos/sys_gridsize) * sys_gridsize;
+        x->gl_editor->e_ynew = !x->gl_snaptogrid ? ypos : round(ypos/sys_gridsize) * sys_gridsize;
     }
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 0);
@@ -4561,7 +4561,7 @@ static void canvas_tidy(t_canvas *x)
                     gobj_displace(y, x, 0, 0);
             }
         }
-        logpost(NULL, 3, "tidy: snap to grid enabled, rounded positions to nearest %d pixels", GRID_UNIT);
+        logpost(NULL, 3, "tidy: snap to grid enabled, rounded positions to nearest %d pixels", sys_gridsize);
     }
     canvas_dirty(x, 1);
 }

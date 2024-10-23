@@ -57,7 +57,6 @@ extern "C" {
 #define IOMIDDLE ((IOWIDTH-1)/2)
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
-#define GRID_UNIT 10
 
 #define GLIST_DEFCANVASXLOC 0
 #ifdef __APPLE__

@@ -8,6 +8,7 @@ to this file... */
 
 #include <stdlib.h>
 #include "m_pd.h"
+#include "s_stuff.h"
 
 #include "g_canvas.h"
 #include <stdio.h>
@@ -981,7 +982,7 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         text_widgetbehavior.w_displacefn(z, glist, dx, dy);
     else
     {
-        int grid_zoomed = GRID_UNIT / glist->gl_zoom;
+        int grid_zoomed = sys_gridsize / glist->gl_zoom;
         int round_x = round(x->gl_obj.te_xpix/grid_zoomed)*grid_zoomed;
         int round_y = round(x->gl_obj.te_ypix/grid_zoomed)*grid_zoomed;            
         x->gl_obj.te_xpix = !glist->gl_snaptogrid ? x->gl_obj.te_xpix + dx : round_x + dx;
