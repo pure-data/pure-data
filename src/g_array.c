@@ -1220,7 +1220,7 @@ static void garray_rename(t_garray *x, t_symbol *s)
     /* } jsarlo */
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
     pd_bind(&x->x_gobj.g_pd, x->x_realname = x->x_name = s);
-    garray_redraw(x);
+    glist_redraw(x->x_glist);
 }
 
 static void garray_read(t_garray *x, t_symbol *filename)
