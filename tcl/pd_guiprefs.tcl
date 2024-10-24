@@ -385,6 +385,8 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
         }
     }
 
+    catch { set confdir [file tildeexpand $confdir] }
+
     set ::pd_guiprefs::configdir $confdir
     set ::pd_guiprefs::domain $domain
 
