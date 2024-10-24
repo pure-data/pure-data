@@ -103,9 +103,10 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
         if (port < 0) goto error;
     }
 
+    const char * midi_device_name = get_device_name();
     snd_seq_client_info_malloc(&alsainfo);
     snd_seq_get_client_info(midi_handle, alsainfo);
-    snd_seq_client_info_set_name(alsainfo,"Pure Data");
+    snd_seq_client_info_set_name(alsainfo,midi_device_name);
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);

@@ -361,13 +361,19 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
         inchans = MAX_JACK_PORTS;
     }
 
+    char * devname;
+    if (desired_client_name && strlen(desired_client_name)){
+        devname = desired_client_name;
+    }
+    else{
+        devname = get_device_name();   
+    }
+
     /* try to become a client of the JACK server.  (If no JACK server exists,
         jack_client_open() will start uone up by default.  It's not clear
         whether or not this is desirable; see long Pd list thread started by
-        yvan volochine, June 2013) */
-    if (!desired_client_name || !strlen(desired_client_name))
-        jack_client_name("pure_data");
-    jack_client = jack_client_open (desired_client_name, JackNoStartServer,
+        yvan volochine, June 2013) */    
+    jack_client = jack_client_open(devname, JackNoStartServer,
       &status, NULL);
     if (status & JackFailure) {
         pd_error(0, "JACK: couldn't connect to server, is JACK running?");
@@ -379,7 +385,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
     if (status & JackNameNotUnique)
         jack_client_name(jack_get_client_name(jack_client));
-    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", desired_client_name);
+    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", devname);
 
     STUFF->st_inchannels = inchans;
     STUFF->st_outchannels = outchans;

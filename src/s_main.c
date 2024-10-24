@@ -482,6 +482,7 @@ static char *(usagemessage[]) = {
 "-callback        -- use callbacks if possible\n",
 "-nocallback      -- use polling-mode (true by default)\n",
 "-listdev         -- list audio and MIDI devices\n",
+"-devicename      -- device name for this pd session used by audio and midi APIs\n",
 
 #ifdef USEAPI_OSS
 "-oss             -- use OSS audio API\n",
@@ -887,7 +888,6 @@ int sys_argparse(int argc, const char **argv)
         {
             if (argc < 2)
                 goto usage;
-            as.a_api = API_JACK;
             jack_client_name(argv[1]);
             argc -= 2; argv +=2;
         }
@@ -969,6 +969,13 @@ int sys_argparse(int argc, const char **argv)
         {
             sys_listplease = 1;
             argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-devicename"))
+        {
+            if (argc < 2)
+                goto usage;
+            set_device_name(argv[1]);
+            argc -= 2; argv +=2;
         }
         else if (!strcmp(*argv, "-soundindev") ||
             !strcmp(*argv, "-audioindev"))
@@ -1448,6 +1455,32 @@ int sys_argparse(int argc, const char **argv)
     sys_set_audio_settings(&as);
 
     return (0);
+}
+
+void set_device_name(const char *name)
+{
+    if (sys_devicename) {
+        free(sys_devicename);
+        sys_devicename = NULL;
+    }
+    if (name) {
+        sys_devicename = (char*)getbytes(strlen(name) + 1);
+        strcpy(sys_devicename, name);
+    }
+}
+
+char * get_device_name()
+{
+    char * devname = NULL;
+    if (!sys_devicename) {
+        devname = (char*)getbytes(strlen(sys_default_device_name) + 1);
+        strcpy(devname, sys_default_device_name);
+    }
+    else{
+        devname = (char*)getbytes(strlen(sys_devicename) + 1);
+        strcpy(devname, sys_devicename);
+    }
+    return devname;
 }
 
 int sys_getblksize(void)
