@@ -374,9 +374,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
         STUFF->st_inchannels = STUFF->st_outchannels = 0;
         return 1;
     } 
-    if (status & JackNameNotUnique)
-        pd_snprintf(sys_devicename, MAXPDSTRING-1, jack_get_client_name(jack_client));
-    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", sys_devicename);
+    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", jack_get_client_name(jack_client));
 
     STUFF->st_inchannels = inchans;
     STUFF->st_outchannels = outchans;
