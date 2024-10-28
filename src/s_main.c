@@ -53,6 +53,7 @@ void alsa_adddev(const char *name);
 #endif
 int sys_oktoloadfiles(int done);
 void sys_doneglobinit( void);
+char sys_devicename[MAXPDSTRING] = "Pure Data";
 
 int sys_debuglevel;
 int sys_verbose;
@@ -888,7 +889,7 @@ int sys_argparse(int argc, const char **argv)
         {
             if (argc < 2)
                 goto usage;
-            jack_client_name(argv[1]);
+            pd_snprintf(sys_devicename, MAXPDSTRING-1, argv[1]);
             argc -= 2; argv +=2;
         }
 #else
@@ -974,7 +975,7 @@ int sys_argparse(int argc, const char **argv)
         {
             if (argc < 2)
                 goto usage;
-            set_device_name(argv[1]);
+            pd_snprintf(sys_devicename, MAXPDSTRING-1, argv[1]);
             argc -= 2; argv +=2;
         }
         else if (!strcmp(*argv, "-soundindev") ||
@@ -1455,32 +1456,6 @@ int sys_argparse(int argc, const char **argv)
     sys_set_audio_settings(&as);
 
     return (0);
-}
-
-void set_device_name(const char *name)
-{
-    if (sys_devicename) {
-        free(sys_devicename);
-        sys_devicename = NULL;
-    }
-    if (name) {
-        sys_devicename = (char*)getbytes(strlen(name) + 1);
-        strcpy(sys_devicename, name);
-    }
-}
-
-char * get_device_name()
-{
-    char * devname = NULL;
-    if (!sys_devicename) {
-        devname = (char*)getbytes(strlen(sys_default_device_name) + 1);
-        strcpy(devname, sys_default_device_name);
-    }
-    else{
-        devname = (char*)getbytes(strlen(sys_devicename) + 1);
-        strcpy(devname, sys_devicename);
-    }
-    return devname;
 }
 
 int sys_getblksize(void)

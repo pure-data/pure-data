@@ -41,7 +41,6 @@ static int jack_started = 0;
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
-static char * desired_client_name = NULL;
 char *jack_client_names[MAX_CLIENTS];
 static volatile int jack_dio_error;
 static volatile int jack_didshutdown;
@@ -361,19 +360,11 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
         inchans = MAX_JACK_PORTS;
     }
 
-    char * devname;
-    if (desired_client_name && strlen(desired_client_name)){
-        devname = desired_client_name;
-    }
-    else{
-        devname = get_device_name();   
-    }
-
     /* try to become a client of the JACK server.  (If no JACK server exists,
         jack_client_open() will start uone up by default.  It's not clear
         whether or not this is desirable; see long Pd list thread started by
         yvan volochine, June 2013) */    
-    jack_client = jack_client_open(devname, JackNoStartServer,
+    jack_client = jack_client_open(sys_devicename, JackNoStartServer,
       &status, NULL);
     if (status & JackFailure) {
         pd_error(0, "JACK: couldn't connect to server, is JACK running?");
@@ -382,10 +373,10 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
         /* jack spits out enough messages already, do not warn */
         STUFF->st_inchannels = STUFF->st_outchannels = 0;
         return 1;
-    }
+    } 
     if (status & JackNameNotUnique)
-        jack_client_name(jack_get_client_name(jack_client));
-    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", devname);
+        pd_snprintf(sys_devicename, MAXPDSTRING-1, jack_get_client_name(jack_client));
+    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", sys_devicename);
 
     STUFF->st_inchannels = inchans;
     STUFF->st_outchannels = outchans;
@@ -649,18 +640,6 @@ void jack_listdevs(void)
 void jack_autoconnect(int v)
 {
     jack_should_autoconnect = v;
-}
-
-void jack_client_name(const char *name)
-{
-    if (desired_client_name) {
-        free(desired_client_name);
-        desired_client_name = NULL;
-    }
-    if (name) {
-        desired_client_name = (char*)getbytes(strlen(name) + 1);
-        strcpy(desired_client_name, name);
-    }
 }
 
 int jack_get_blocksize(void)

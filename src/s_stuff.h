@@ -47,10 +47,7 @@ EXTERN int sys_noloadbang;
 EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
-static const char * sys_default_device_name = "Pure Data";
-static char * sys_devicename = NULL;
-void set_device_name(const char *name);
-char * get_device_name();
+extern char sys_devicename[MAXPDSTRING];
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
@@ -156,6 +153,7 @@ typedef struct _audiosettings
 typedef void (*t_audiocallback)(void);
 
 extern int sys_schedadvance;
+
 int sys_send_dacs(void);
 void sys_reportidle(void);
 void sys_listdevs(void);
@@ -173,6 +171,7 @@ EXTERN void sys_get_audio_devs(char *indevlist, int *nindevs,
                           char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
                           int maxndev, int devdescsize, int api);
 EXTERN void sys_get_audio_apis(char *buf);
+
 
         /* audio API specific functions */
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
