@@ -2,7 +2,7 @@
 #N struct float float y;
 #N struct array-struct2 float x float y array z element-struct2;
 #N struct element-struct2 float x float y float w;
-#N canvas 429 23 589 533 12;
+#N canvas 485 54 589 533 12;
 #N canvas 471 26 760 611 define 0;
 #X text 321 388 creation arguments:;
 #X text 351 459 optional name;
@@ -586,10 +586,10 @@
 #X connect 32 1 13 0;
 #X restore 421 374 pd min+max;
 #X obj 37 386 array min;
-#X obj 177 490 list;
-#X obj 86 490 text;
-#X obj 123 490 scalar;
-#X text 370 469 updated for Pd version 0.52;
+#X obj 177 496 list;
+#X obj 86 496 text;
+#X obj 123 496 scalar;
+#X text 371 468 updated for Pd version 0.52;
 #X obj 4 43 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 501 12 <= click;
 #N canvas 729 145 579 214 reference 0;
@@ -606,7 +606,7 @@
 #X obj 4 456 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 150 363 - find highest value;
 #X text 150 386 - find lowest value;
-#X text 13 490 see also:;
+#X text 13 496 see also:;
 #N canvas 643 412 384 186 array-examples 0;
 #N canvas 491 316 457 285 open 0;
 #X obj 120 23 inlet;
@@ -629,11 +629,11 @@
 #X text 47 22 See also and the "array" examples from the section 2 of Pd's tutorial:, f 39;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X restore 319 498 pd array-examples;
+#X restore 401 496 pd array-examples;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array9 10 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0;
-#X coords 0 1 10 -1 90 35 1 0 0;
+#X coords 0 1 10 -1 90 40 1 0 0;
 #X restore 220 482 graph;
 #X text 150 340 - array as weighted probabilities;
 #X text 414 168 click for details:;
@@ -716,3 +716,4 @@
 #X restore 359 423 pd data-structures;
 #X text 68 12 - manage arrays (defaults to [array define]);
 #X text 34 58 In Pd an array may be part of a "garray" (a graphical array of numbers) or appear as a slot in a data structure (in which case the elements may be arbitrary data \, not necessarily just numbers). The [array] object can define an array (so far just of numbers but maybe later arbitrary data structures) or access an array defined elsewhere to get or change its size \, set or read its elements \, and more (see details below)., f 72;
+#X obj 320 496 soundfiler;

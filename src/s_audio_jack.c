@@ -16,7 +16,9 @@
 #include "s_stuff.h"
 #include "s_audio_paring.h"
 #ifdef __APPLE__
-#include <jack/weakjack.h>
+# include <jack/weakjack.h>
+#elif defined _MSC_VER
+# define strdup _strdup
 #endif
 #include <jack/jack.h>
 #include <regex.h>
@@ -46,6 +48,8 @@ static volatile int jack_dio_error;
 static volatile int jack_didshutdown;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
+static int jack_defaultsource = 0;
+static int jack_defaultsink = 0;
 static int jack_blocksize = 0; /* should this be PERTHREAD? */
 #ifdef THREADSIGNAL
 t_semaphore *jack_sem;
@@ -203,73 +207,144 @@ static int jack_xrun(void* arg)
     return 0;
 }
 
-static char** jack_get_clients(void)
+typedef struct _jclient {
+    const char*name;
+    int input;
+    int output;
+    struct _jclient *next;
+} t_jclient;
+static const char** jack_get_clients(void)
 {
+    int jack_physicalsource = -1;
+    int jack_physicalsink = -1;
     const char **jack_ports;
     int tmp_client_name_size = jack_client_name_size ?
         jack_client_name_size() : CLIENT_NAME_SIZE_FALLBACK;
     char* tmp_client_name = (char*)getbytes(tmp_client_name_size);
-    int i,j;
+    int i;
     int num_clients = 0;
+    t_jclient*available_clients = 0;
     regex_t port_regex;
-    jack_ports = jack_get_ports(jack_client, "", "", 0);
     regcomp(&port_regex, "^[^:]*", REG_EXTENDED);
 
-    jack_client_names[0] = NULL;
+    for (i=0; i< MAX_CLIENTS; i++)
+        jack_client_names[i] = NULL;
 
-    /* Build a list of clients from the list of ports */
-    for (i = 0; jack_ports[i] != NULL; i++)
-    {
-        int client_seen;
-        regmatch_t match_info;
 
-        if (num_clients >= MAX_CLIENTS) break;
-
-        /* extract the client name from the port name, using a regex
-         * that parses the clientname:portname syntax */
-        regexec(&port_regex, jack_ports[i], 1, &match_info, 0);
-        memcpy(tmp_client_name, &jack_ports[i][match_info.rm_so],
-            match_info.rm_eo - match_info.rm_so);
-        tmp_client_name[ match_info.rm_eo - match_info.rm_so ] = '\0';
-
-        /* do we know about this port's client yet? */
-        client_seen = 0;
-
-        for (j = 0; j < num_clients; j++)
-            if (strcmp(tmp_client_name, jack_client_names[j]) == 0)
-                client_seen = 1;
-
-        if (client_seen == 0)
+    jack_ports = jack_get_ports(jack_client, "", JACK_DEFAULT_AUDIO_TYPE, 0);
+    if(jack_ports) {
+        t_jclient*tmp_client;
+        for (i = 0; jack_ports[i] != NULL; i++)
         {
-            jack_client_names[num_clients] = (char*)getbytes(strlen(tmp_client_name) + 1);
+            regmatch_t match_info;
+            t_jclient*last_client=0;
+            jack_port_t*port = 0;
+            if(jack_port_by_name)
+                port = jack_port_by_name(jack_client, jack_ports[i]);
 
-            /* The alsa_pcm client should go in spot 0.  If this
-             * is the alsa_pcm client AND we are NOT about to put
-             * it in spot 0 put it in spot 0 and move whatever
-             * was already in spot 0 to the end. */
+                /* extract the client name from the port name, using a regex
+                 * that parses the clientname:portname syntax */
+            regexec(&port_regex, jack_ports[i], 1, &match_info, 0);
+            memcpy(tmp_client_name, &jack_ports[i][match_info.rm_so],
+                match_info.rm_eo - match_info.rm_so);
+            tmp_client_name[ match_info.rm_eo - match_info.rm_so ] = '\0';
 
-            if (strcmp("alsa_pcm", tmp_client_name) == 0 && num_clients > 0)
+                /* check if we already have this port */
+            for(tmp_client=available_clients; tmp_client; tmp_client=tmp_client->next)
             {
-                char* tmp;
-                    /* alsa_pcm goes in spot 0 */
-                tmp = jack_client_names[num_clients];
-                jack_client_names[num_clients] = jack_client_names[0];
-                jack_client_names[0] = tmp;
-                strcpy( jack_client_names[0], tmp_client_name);
+                last_client = tmp_client;
+                if(strcmp(tmp_client_name, tmp_client->name) == 0) {
+                    break;
+                }
             }
-            else
-            {
-                /* put the new client at the end of the client list */
-                strcpy(jack_client_names[num_clients], tmp_client_name);
+                /* append the new port */
+            if(!tmp_client) {
+                tmp_client = getbytes(sizeof(*tmp_client));
+                tmp_client->name = strdup(tmp_client_name);
+
+                    /* The alsa_pcm client should go in spot 0. */
+                if(strcmp("alsa_pcm", tmp_client_name) == 0) {
+                    tmp_client->next = available_clients;
+                    available_clients = tmp_client;
+                } else if(!available_clients) {
+                    available_clients = tmp_client;
+                } else {
+                    last_client->next = tmp_client;
+                }
             }
-            num_clients++;
+                /* remember the capabilities of this client;
+                 * we keep input and output separate,
+                 * so we can distinguish between physical inputs and outputs
+                 * (e.g. a client that has physical outputs but no physical inputs)
+                 */
+            if(port && jack_port_flags) {
+                int flags = jack_port_flags(port);
+                if (flags & JackPortIsInput)
+                    tmp_client->input |= flags;
+                if (flags & JackPortIsOutput)
+                    tmp_client->output |= flags;
+            }
         }
     }
 
-    /*    for (i=0;i<num_clients;i++) post("client: %s",jack_client_names[i]); */
+        /* now that we have a list of usable JACK clients,
+           filter for inputs and outputs
+        */
+    jack_defaultsource = jack_defaultsink = -1;
+    if(available_clients) {
+        t_jclient*tmp_client;
+        for(num_clients=0, tmp_client = available_clients;
+            num_clients < MAX_CLIENTS && tmp_client;
+            tmp_client = tmp_client->next)
+        {
+#if 0
+            printf("JACK client#%d: '%s' source:%d sink:%d\n", num_clients, tmp_client->name, tmp_client->output, tmp_client->input);
+#endif
+            jack_client_names[num_clients] = tmp_client->name;
+            tmp_client->name = 0; /* so we don't free it later */
+            if(tmp_client->input) {
+                if(jack_defaultsink < 0)
+                    jack_defaultsink = num_clients;
+                if ((jack_physicalsink < 0) && (tmp_client->input & JackPortIsPhysical))
+                    jack_physicalsink = num_clients;
+            }
+            if(tmp_client->output) {
+                if(jack_defaultsource < 0)
+                    jack_defaultsource = num_clients;
+                if ((jack_physicalsource < 0) && (tmp_client->output & JackPortIsPhysical))
+                    jack_physicalsource = num_clients;
+            }
+            num_clients++;
+        }
 
-    freebytes(tmp_client_name, tmp_client_name_size);
+            /* clean up */
+        tmp_client = available_clients;
+        while(tmp_client) {
+            t_jclient*next = tmp_client->next;
+            free((void*)tmp_client->name);
+            freebytes(tmp_client, sizeof(*tmp_client));
+            tmp_client = next;
+        }
+    }
+#if 0
+    for (i=0;i<num_clients;i++) post("client: %s",jack_client_names[i]);
+#endif
+
     free(jack_ports);
+    regfree(&port_regex);
+    freebytes(tmp_client_name, tmp_client_name_size);
+
+        /* if we have a physical client, prefer that */
+    if(jack_physicalsource >= 0)
+        jack_defaultsource = jack_physicalsource;
+    if(jack_physicalsink >= 0)
+        jack_defaultsink = jack_physicalsink;
+
+    if (jack_defaultsource < 0)
+        jack_defaultsource = 0;
+    if (jack_defaultsink < 0)
+        jack_defaultsink = 0;
+
     return jack_client_names;
 }
 
@@ -278,40 +353,50 @@ static char** jack_get_clients(void)
  *
  */
 
-static int jack_connect_ports(char* client)
+static int jack_connect_ports(const char* source, const char* sink)
 {
     char  regex_pattern[100]; /* its always the same, ... */
     int i;
     const char **jack_ports;
+    int ret = -1;
 
-    if (strlen(client) > 96)  return -1;
+    if (source && strlen(source) <= 96) {
+        sprintf(regex_pattern, "%s:.*", source);
 
-    sprintf(regex_pattern, "%s:.*", client);
-
-    jack_ports = jack_get_ports(jack_client, regex_pattern,
-                                NULL, JackPortIsOutput);
-    if (jack_ports)
-    {
-        for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
-            if (jack_connect (jack_client, jack_ports[i],
-                jack_port_name (input_port[i])))
+        jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                    NULL, JackPortIsOutput);
+        if (jack_ports)
+        {
+            for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
+                if (jack_connect (jack_client, jack_ports[i],
+                                  jack_port_name (input_port[i])))
                     pd_error(0, "JACK: cannot connect input ports %s -> %s",
-                        jack_ports[i],jack_port_name (input_port[i]));
-        free(jack_ports);
+                             jack_ports[i],jack_port_name (input_port[i]));
+                else
+                    ret = 0;
+            free(jack_ports);
+        }
     }
-    jack_ports = jack_get_ports(jack_client, regex_pattern,
-                                NULL, JackPortIsInput);
-    if (jack_ports)
-    {
-        for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
-            if (jack_connect (jack_client, jack_port_name(output_port[i]),
-                jack_ports[i]))
-                    pd_error(0,  "JACK: cannot connect output ports %s -> %s",
-                        jack_port_name (output_port[i]),jack_ports[i]);
+    if (sink && strlen(sink) <= 96) {
+        sprintf(regex_pattern, "%s:.*", sink);
 
-        free(jack_ports);
+        jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                    NULL, JackPortIsInput);
+        if (jack_ports)
+        {
+            for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
+                if (jack_connect (jack_client, jack_port_name(output_port[i]),
+                                  jack_ports[i]))
+                    pd_error(0,  "JACK: cannot connect output ports %s -> %s",
+                             jack_port_name (output_port[i]),jack_ports[i]);
+                else
+                    ret = 0;
+
+            free(jack_ports);
+        }
     }
-    return 0;
+
+    return ret;
 }
 
 
@@ -361,7 +446,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
 
     /* try to become a client of the JACK server.  (If no JACK server exists,
-        jack_client_open() will start uone up by default.  It's not clear
+        jack_client_open() don't start one up by default.  It's not clear
         whether or not this is desirable; see long Pd list thread started by
         yvan volochine, June 2013) */    
     jack_client = jack_client_open(sys_devicename, JackNoStartServer,
@@ -497,7 +582,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
 
     if (jack_client_names[0] && jack_should_autoconnect)
-        jack_connect_ports(jack_client_names[0]);
+        jack_connect_ports(jack_client_names[jack_defaultsource], jack_client_names[jack_defaultsink]);
     return 0;
 }
 
