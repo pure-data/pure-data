@@ -48,7 +48,7 @@ ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
 ---------- test reality check ----------
 
 cd ~/bis/work/reality-check/test-manoury-en-echo/
-SCRIPT=../old-vector/betty-test.txt ./test-me.sh
+./test-me.sh
 cd ../test-hagan-ofpulsesandtimes
 ./test-me.sh
 (add more as available)
