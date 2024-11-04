@@ -379,6 +379,10 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+    # delay until we are ready
+    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+}
+proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
     }
