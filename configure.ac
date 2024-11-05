@@ -277,6 +277,9 @@ AC_CHECK_TYPE(off64_t, [AC_DEFINE([HAVE_OFF64_T], 1, [Define if we have the 'off
 #include <sys/types.h>
 #include <unistd.h>
 ]])
+AC_CHECK_TYPE(sig_t, [], [AC_DEFINE([DONT_HAVE_SIG_T], 1, [Define if we do NOT have the 'sig_t' type])], [[
+#include <signal.h>
+]])
 
 # Checks for functions.
 AC_FUNC_ALLOCA

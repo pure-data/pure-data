@@ -269,6 +269,9 @@ void sys_microsleep( void)
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
+#if DONT_HAVE_SIG_T
+typedef void (*sig_t)(int);
+#endif
 static void sys_signal(int signo, sig_t sigfun)
 {
     struct sigaction action;
