@@ -257,6 +257,7 @@ AC_CHECK_HEADERS([fcntl.h \
                   sys/time.h \
                   sys/timeb.h \
                   sys/utsname.h \
+                  sys/filio.h \
                   unistd.h
                   ])
 

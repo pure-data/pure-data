@@ -14,6 +14,11 @@
 #include <sys/time.h>
 #endif
 
+#ifdef HAVE_SYS_FILIO_H
+/* IllumOS defines FIONREAD in sys/filio.h */
+#include <sys/filio.h>
+#endif
+
     /* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
