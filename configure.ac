@@ -361,6 +361,9 @@ AC_CHECK_LIBM
 AC_SEARCH_LIBS([pthread_create], [pthread pthreadGC2 pthreadGC1 pthreadGC], [],
                AC_MSG_WARN([pthreads required]))
 
+# Illumos needs to link against libsocket for 'sendto' and friends
+AC_SEARCH_LIBS([sendto], [socket])
+
 # Define variables for use in Makefiles
 AC_SUBST(EXTERNTARGET)
 AC_SUBST(EXTERNAL_EXTENSION)
