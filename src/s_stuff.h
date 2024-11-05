@@ -10,6 +10,8 @@ in future releases.  The public (stable) API is in m_pd.h. */
 
 /* in s_path.c */
 
+#include <stdarg.h>
+
 typedef struct _namelist    /* element in a linked list of stored strings */
 {
     struct _namelist *nl_next;  /* next in list */
