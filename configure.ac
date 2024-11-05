@@ -271,6 +271,13 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
+
+AC_CHECK_TYPE(off64_t, [AC_DEFINE([HAVE_OFF64_T], 1, [Define if we have the 'off64_t' type])], [], [[
+#define _LARGEFILE64_SOURCE
+#include <sys/types.h>
+#include <unistd.h>
+]])
+
 # Checks for functions.
 AC_FUNC_ALLOCA
 AC_FUNC_ERROR_AT_LINE
