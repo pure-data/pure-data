@@ -287,7 +287,6 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 \
                 floor \
                 getcwd \
