@@ -1352,7 +1352,7 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
 {
     char buf[MAXPDSTRING];
     if(!x->x_format) {
-        pd_error(x, "makefilename: no format specifier given");
+        pd_error(x, "makefilename: invalid format string");
         return;
     }
     switch(x->x_accept) {
@@ -1382,7 +1382,7 @@ static void makefilename_symbol(t_makefilename *x, t_symbol *s)
 {
     char buf[MAXPDSTRING];
     if(!x->x_format) {
-        pd_error(x, "makefilename: no format specifier given");
+        pd_error(x, "makefilename: invalid format string");
         return;
     }
     switch(x->x_accept) {
@@ -1409,7 +1409,7 @@ static void makefilename_bang(t_makefilename *x)
 {
     char buf[MAXPDSTRING];
     if(!x->x_format) {
-        pd_error(x, "makefilename: no format specifier given");
+        pd_error(x, "makefilename: invalid format string");
         return;
     }
     switch(x->x_accept) {
