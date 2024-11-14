@@ -739,14 +739,38 @@ proc check_for_running_instances { } {
 # ------------------------------------------------------------------------------
 # load plugins on startup
 
-proc load_plugin_script {filename} {
+proc load_plugin_script {filename {duplicate basename} {warn 1}} {
+    # read $filename and evaluate it (for loading plugins)
+    # $duplicate: specifies how to check for duplicates; possible values are
+    # - ignore: do not do any duplicate checking (might load scripts multiple times)
+    # - basename: only check the base filename (without path) [ DEFAULT ]
+    # - filename: check the full $filename
+    # $warn: whether an attempt to load a script multiple times leads to a warning or not
+    # - 1 : warn if duplicate [ DEFAULT ]
+    # - 0 : silently ignore duplicates
     global errorInfo
 
-    set basename [file tail $filename]
-    if {[lsearch $::loaded_plugins $basename] > -1} {
-        ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+    if {[ file exists $filename ]} {} else {
+        ::pdwindow::post [_ "Ignoring non-existant plugin '%s'" $filename]
         ::pdwindow::post "\n"
         return
+    }
+
+    set basename [ file tail $filename ]
+    if { $duplicate eq "filename" } {
+        set dupe $filename
+    } else {
+        set dupe $basename
+    }
+
+    if { $duplicate ne "ignore" } {
+        if {[lsearch $::loaded_plugins $dupe] > -1} {
+            if { $warn } {
+                ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+                ::pdwindow::post "\n"
+            }
+            return
+        }
     }
 
     ::pdwindow::debug [ format [_ "Loading plugin: %s"] $filename ]
@@ -762,6 +786,9 @@ proc load_plugin_script {filename} {
         ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
+        if { $basename ne $filename } {
+               lappend ::loaded_plugins $filename
+        }
     }
 }
 
