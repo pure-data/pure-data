@@ -792,6 +792,12 @@ proc load_plugin_script {filename {duplicate basename} {warn 1}} {
     }
 }
 
+proc load_plugin {name {path {}}} {
+    # load a GUI plugin $name (without extension) found in $path
+    # so the actual filename is "${path}/${name}.tcl"
+    set filename [ file join ${path} ${name} ]
+    load_plugin_script "${filename}.tcl" filename 0
+}
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]
