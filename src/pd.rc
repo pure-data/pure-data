@@ -9,12 +9,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "puredata.info"
       VALUE "FileDescription", "Pure Data Application"
-      VALUE "FileVersion", "0.55-2test1"
+      VALUE "FileVersion", "0.55-2"
       VALUE "InternalName", "pd.exe"
       VALUE "LegalCopyright", "Miller Puckette, et al."
       VALUE "OriginalFilename", "pd.exe"
       VALUE "ProductName", "Pure Data"
-      VALUE "ProductVersion", "0.55-2test1"
+      VALUE "ProductVersion", "0.55-2"
     END
   END
 
