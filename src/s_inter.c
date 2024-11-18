@@ -1114,6 +1114,7 @@ void sys_gui_preferences(void)
     sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
     sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
     sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+    sys_vgui("set_escaped ::sys_gridsize %d\n", sys_gridsize);
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));
 
