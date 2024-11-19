@@ -105,7 +105,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
 
     snd_seq_client_info_malloc(&alsainfo);
     snd_seq_get_client_info(midi_handle, alsainfo);
-    snd_seq_client_info_set_name(alsainfo,"Pure Data");
+    snd_seq_client_info_set_name(alsainfo,sys_devicename);
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
