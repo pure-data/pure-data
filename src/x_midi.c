@@ -1173,6 +1173,15 @@ static void bag_float(t_bag *x, t_float f)
     }
 }
 
+static void bag_bang(t_bag *x)
+{
+    t_bagelem *bagelem;
+    for (bagelem = x->x_first; bagelem; bagelem = bagelem->e_next)
+    {
+        outlet_float(x->x_obj.ob_outlet, bagelem->e_value);
+    }
+}
+
 static void bag_flush(t_bag *x)
 {
     t_bagelem *bagelem;
@@ -1200,6 +1209,7 @@ static void bag_setup(void)
         (t_newmethod)bag_new, (t_method)bag_clear,
         sizeof(t_bag), 0, 0);
     class_addfloat(bag_class, bag_float);
+    class_addbang(bag_class, bag_bang);
     class_addmethod(bag_class, (t_method)bag_flush, gensym("flush"), 0);
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
 }
