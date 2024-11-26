@@ -997,39 +997,47 @@ is not considered a number is interpreted in Pd as a symbol. Hence, symbols can 
 and start with decimal digits.
 
 <P>Number atoms are always of type <i>float</i>, meaning that Pd does not have an
-<i>integer</i> number type. Numbers in Pd may also be written in exponential
-notation, such as "4.5e+06", which means 4.5*10<sup>6</sup>, resulting in
-<i>4'500'000</i>. Negative exponents also work, such as 1.5e-06, which
-means 1.5*10<sup>&minus;6</sup> and results in <i>0.0000015</i>.
+<i>integer</i> number type. Numbers in Pd are formatted with the '%g' pattern from
+the 'sprintf' function, with a precision of '6'. This allows formatting numbers
+with and without exponential (or scientific) notation. One example of this notation
+is "4.5e+06", which means 4.5*10<sup>6</sup>, resulting in <i>4'500'000</i>.
+Negative exponents also work, such as 1.5e-06, which means 1.5*10<sup>&minus;6</sup>
+and results in <i>0.0000015</i>.
 
 <P>Depending on their value, numbers are displayed either in decimal or exponential
-notation. You'll only see up to three zeros after the decimal point before the
-first non-zero digit. For instance, "0.0001". If you add another zero, Pd turns it
+notation. For negative exponential notation, the exponent number needs to be '-5'
+or lower. This means you'll only see up to three zeros after the decimal point before
+the first non-zero digit. For instance, "0.0001". If you add another zero, Pd turns it
 into exponential notation for display, so "0.00001" becomes "1e-05". Conversely, if
 you type "1e-04", Pd converts it to "0.0001" for display.
 
-<P>Other than this, Pd only displays 6 significant digits. This means that you can have
-"100000", but adding another zero will switch the representation to "1e+06". Similarly,
-typing "1e+05" results in "100000".
+<P>As for positive exponent numbers, the scientific notation is only used if the
+exponent value is '6' or higher. '6' is also the default numeric precision, so Pd
+only displays 6 significant digits. This means that you can have "100000", but
+adding another zero will switch the representation to "1e+06". Similarly, typing
+"1e+05" results in "100000".
 
-<P>Having 6 significant digits means that numbers are rounded. You can display
-"0.000123456", which has 6 significant digits, but adding another digit as in
-"0.0001234567" forces Pd to round it to "0.000123457". Now, adding another zero
-before the first significant digit turns this into exponential notation as
-"1.23456e-05", keeping the display of the 6 significant digits. Similarly to
-the earlier example, "1.234567e-05" becomes "1.23457e-05". The 7th significant
+<P>Having a 6 digit precision means that numbers are rounded. The 7th significant
 digit is rounded in a way that "0.9999994" or less becomes "0.999999" and
-"0.9999995" or higher becomes "1".
+"0.9999995" or higher becomes "1". You can display "0.000123456", which has 6
+significant digits, but adding another digit as in "0.0001234567" forces Pd to
+round it to "0.000123457". If instead you add another zero before the first
+significant digit, it turns it into exponential notation as "1.23456e-05",
+keeping the display of the 6 significant digits. Similarly to the earlier example,
+"1.234567e-05" becomes "1.23457e-05".
+
+<P>Trailing zeros are not displayed in Pd, and no decimal point is shown if there's
+no fractional part of the number. So if you type <b>1.</b>, it becomes <b>"1"</b>.
 
 <P>Don't mistake the display precision and rounding with the actual floating point
 precision though. If compiled for single precision, numbers in Pd are handled as
 32-bit floats, which allows you to represent any integer with 7 digits or less, even
 though Pd will only display 6.
 
-<P>Note that the display resolution remains the same when Pure Data is compiled for double
-precision, even though the resolution is much higher in Pd64. Since Pure Data has no
-integer data type, the range of representable integer numbers depends on the float
-precision. The integer range is shown below for single and double precision.
+<P>Note that the display resolution remains the same when Pure Data is compiled for
+double precision, even though the resolution is much higher in Pd64. Since Pure Data
+has no integer data type, the range of representable integer numbers depends on the
+float precision. The integer range is shown below for single and double precision.
 
 <figure>
 <table class="center">
