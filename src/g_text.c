@@ -23,6 +23,11 @@
 
 #define MESSAGE_CLICK_WIDTH 5
 
+#define COL_SELECTED_DEFAULT "blue"
+#define COL_UNSELECTED_DEFAULT "black"
+#define COL_SELECTED_NOTEDITABLE "gray60"
+#define COL_UNSELECTED_NOTEDITABLE "gray80"
+
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
@@ -593,6 +598,7 @@ typedef struct _gatom
     unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
     unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
     unsigned int a_doubleclicked:1; /* 1 if dragging from a double click */
+    unsigned int a_edit:1;          /* 1 if changable by grabbing */
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
@@ -826,6 +832,13 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     t_atom *ap = gatom_getatom(x);
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
+
+    /* Do not respond to keypresses on the grabbed widget, if editing is disabled. */
+    if (!x->a_edit) {
+        /* assert(t != x->a_glist->gl_editor->e_textedfor); */
+        return;
+    }
+
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
@@ -933,6 +946,13 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
 
     if (!doit)
         return (1);
+
+    /* Do not permit grabbing when editing is disabled. Should probably still
+       handle doubleclicks */
+    if (!x->a_edit) {
+        return (1);
+    }
+
     t = glist_findrtext(x->a_glist, &x->a_text);
     if (t == x->a_glist->gl_editor->e_textedfor)
     {
@@ -1004,7 +1024,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
     int newfont = atom_getfloatarg(7, argc, argv);
-    t_atom undo[8];
+    int edit = atom_getfloatarg(8, argc, argv) != 0;
+    t_atom undo[9];
     int is_visible = glist_isvisible(x->a_glist);
     int should_visible = gobj_shouldvis((t_gobj*)x, x->a_glist);
 
@@ -1016,8 +1037,9 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     SETSYMBOL(undo+5, gatom_escapit(x->a_symfrom));
     SETSYMBOL(undo+6, gatom_escapit(x->a_symto));
     SETFLOAT (undo+7, x->a_fontsize);
+    SETFLOAT (undo+8, x->a_edit);
     pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
-                            8, undo,
+                            9, undo,
                             argc, argv);
 
     if(is_visible)
@@ -1050,6 +1072,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_wherelabel = ((int)wherelabel & 3);
     x->a_label = label;
     x->a_fontsize = newfont;
+    x->a_edit = edit;
     if (*x->a_symfrom->s_name)
         pd_unbind(&x->a_text.te_pd,
             canvas_realizedollar(x->a_glist, x->a_symfrom));
@@ -1066,6 +1089,18 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     if(is_visible)
         canvas_fixlinesfor(x->a_glist, (t_text*)x);
     /* glist_retext(x->a_glist, &x->a_text); */
+}
+
+static void text_select(t_gobj *z, t_glist *glist, int state);
+static void gatom_edit(t_gatom *x, t_floatarg f)
+{
+    unsigned int old = x->a_edit;
+    x->a_edit = f != 0.;
+    if (old != x->a_edit) {
+        /* FIXME: there must be a better way */
+        int state = glist_isselected(x->a_glist, (t_gobj*)x);
+        text_select((t_gobj*)x, (t_glist*)x->a_glist, state);
+    }
 }
 
 static int gatom_fontsize(t_gatom *x)
@@ -1168,6 +1203,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_grabbed = 0;
     x->a_revertbuf = 0;
     x->a_fontsize = 0;
+    x->a_edit = 1; /* editable by default to match legacy behaviour */
     (void)gatom_getatom(x);  /* this forces initialization of binbuf */
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
@@ -1251,14 +1287,15 @@ static void gatom_properties(t_gobj *z, t_glist *owner)
 {
     t_gatom *x = (t_gatom *)z;
     pdgui_stub_vnew(&x->a_text.te_pd, "pdtk_gatom_dialog", x,
-        "i ff i sss i",
+        "i ff i sss ii",
         x->a_text.te_width,
         x->a_draglo, x->a_draghi,
         x->a_wherelabel,
         gatom_escapit(x->a_label)->s_name,
         gatom_escapit(x->a_symfrom)->s_name,
         gatom_escapit(x->a_symto)->s_name,
-        x->a_fontsize);
+        x->a_fontsize,
+        x->a_edit);
 }
 
 
@@ -1332,6 +1369,18 @@ static void text_displace(t_gobj *z, t_glist *glist,
     }
 }
 
+/* non-zero if the object does not a gatom with "edit" disabled. */
+static int text_is_interactive(t_gobj *z)
+{
+    t_text *x = (t_text *)z;
+    if (x->te_type == T_ATOM)
+    {
+        t_gatom *a = (t_gatom *)z;
+        return a->a_edit != 0;
+    }
+    return 1;
+}
+
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
@@ -1341,11 +1390,24 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     {
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? "blue" : "black"));
+
+        if (text_is_interactive(z))
+        {
+            pdgui_vmess(0, "crs rr",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? COL_SELECTED_DEFAULT : COL_UNSELECTED_DEFAULT ));
+        }
+        else
+        {
+            /* FIXME: perhaps the text colour should match the border */
+            pdgui_vmess(0, "crs rr",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? COL_SELECTED_NOTEDITABLE : COL_UNSELECTED_NOTEDITABLE ));
+        }
     }
 }
 
@@ -1861,6 +1923,8 @@ void g_text_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
+    class_addmethod(gatom_class, (t_method)gatom_edit, gensym("edit"),
+        A_FLOAT, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
     class_sethelpsymbol(gatom_class, gensym("gui-boxes"));

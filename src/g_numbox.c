@@ -427,7 +427,7 @@ static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
     double k2 = 1.0;
-    if (up != 0)
+    if (up != 0 || x->x_cantchange != 0)
         return;
 
     if(x->x_gui.x_fsf.x_finemoved)
@@ -444,8 +444,11 @@ static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,
 static void my_numbox_click(t_my_numbox *x, t_floatarg xpos, t_floatarg ypos,
                             t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
-    glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
-        (t_glistmotionfn)my_numbox_motion, my_numbox_key, xpos, ypos);
+    t_glistmotionfn motionfn = 0;
+    if (x->x_cantchange == 0)
+        motionfn = (t_glistmotionfn)my_numbox_motion;
+    glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g, motionfn, my_numbox_key,
+        xpos, ypos);
 }
 
 static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
@@ -663,6 +666,11 @@ static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
     }
 }
 
+static void my_numbox_cantchange(t_my_numbox *x, t_floatarg v)
+{
+     x->x_cantchange = v != 0.;
+}
+
 static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_my_numbox *x = (t_my_numbox *)iemgui_new(my_numbox_class);
@@ -793,6 +801,8 @@ void g_numbox_setup(void)
         gensym("log_height"), A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
+    class_addmethod(my_numbox_class, (t_method)my_numbox_cantchange,
+        gensym("cantchange"), A_FLOAT, 0);
     my_numbox_widgetbehavior.w_getrectfn =    my_numbox_getrect;
     my_numbox_widgetbehavior.w_displacefn =   iemgui_displace;
     my_numbox_widgetbehavior.w_selectfn =     iemgui_select;
