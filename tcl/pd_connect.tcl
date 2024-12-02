@@ -129,6 +129,8 @@ proc ::pd_connect::pd_readsocket {} {
                          [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
                  }
              }
+             ::pdwindow::fatal \
+                 [concat [_ "(Tcl) COMMAND SOURCE CODE: "] $docmds "\n"]
          }
      }
 }
