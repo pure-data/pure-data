@@ -218,13 +218,14 @@ static void sys_queuemidimess(int portno, int onebyte, int a, int b, int c)
     sys_pollmidioutqueue();
 }
 
-void outmidi_noteon(int portno, int channel, int pitch, int velo)
+void outmidi_noteon(int portno, int channel, int pitch, int velo, int flag)
 {
     if (pitch < 0) pitch = 0;
     else if (pitch > 127) pitch = 127;
     if (velo < 0) velo = 0;
     else if (velo > 127) velo = 127;
-    sys_queuemidimess(portno, 0, MIDI_NOTEON + (channel & 0xf), pitch, velo);
+    int status = flag ? MIDI_NOTEOFF : MIDI_NOTEON;
+    sys_queuemidimess(portno, 0, status + (channel & 0xf), pitch, velo);
 }
 
 void outmidi_controlchange(int portno, int channel, int ctl, int value)
@@ -296,7 +297,7 @@ typedef struct midiparser
 void inmidi_realtimein(int portno, int cmd);
 void inmidi_byte(int portno, int byte);
 void inmidi_sysex(int portno, int byte);
-void inmidi_noteon(int portno, int channel, int pitch, int velo);
+void inmidi_noteon(int portno, int channel, int pitch, int velo, int flag);
 void inmidi_controlchange(int portno, int channel, int ctlnumber, int value);
 void inmidi_programchange(int portno, int channel, int value);
 void inmidi_pitchbend(int portno, int channel, int value);
@@ -369,13 +370,13 @@ static void sys_dispatchnextmidiin(void)
             {
                 case MIDI_NOTEOFF:
                     if (gotbyte1)
-                        inmidi_noteon(portno, chan, byte1, 0),
+                        inmidi_noteon(portno, chan, byte1, byte, 0),
                             parserp->mp_gotbyte1 = 0;
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
                 case MIDI_NOTEON:
                     if (gotbyte1)
-                        inmidi_noteon(portno, chan, byte1, byte),
+                        inmidi_noteon(portno, chan, byte1, byte, 1),
                             parserp->mp_gotbyte1 = 0;
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
