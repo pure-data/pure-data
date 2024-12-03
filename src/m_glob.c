@@ -42,7 +42,8 @@ void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);
 void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
 void glob_fastforward(t_pd *ignore, t_floatarg f);
-void glob_settracing(void *dummy, t_float f);
+void glob_settracing(void *dummy, t_floatarg f);
+void glob_vis(void *dummy, t_symbol *s);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -136,9 +137,12 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("exit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_dsp, gensym("dsp"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_key, gensym("key"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_foo,
+        gensym("foo"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_dsp,
+        gensym("dsp"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_key,
+        gensym("key"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audiostatus,
         gensym("audiostatus"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_finderror,
@@ -194,6 +198,8 @@ void glob_init(void)
          gensym("set-tracing"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_vis,
+        gensym("vis"), A_DEFSYM, 0);
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }

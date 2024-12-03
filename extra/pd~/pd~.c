@@ -1010,6 +1010,17 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         }
         else PDERROR "pd~ pddir: needs symbol argument");
     }
+    else if (sel == gensym("vis"))
+    {
+        if ((argc > 1) && argv[1].a_type == A_FLOAT)
+        {
+            int onoff = (argv[1].a_w.w_float != 0);
+            if (onoff)
+                vmess(&x->x_obj.te_pd, gensym("pd"), "ss", sel, x->x_pddir);
+            else vmess(&x->x_obj.te_pd, gensym("pd"), "s", sel);
+        }
+        else PDERROR "pd~ vis: needs float argument");
+    }
     else PDERROR "pd~: unknown control message: %s", sel->s_name);
 }
 

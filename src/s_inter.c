@@ -1853,7 +1853,10 @@ int sys_startgui(const char *libdir)
     INTER->i_guihead = INTER->i_guitail = 0;
     INTER->i_waitingforping = 0;
     if (sys_do_startgui(libdir))
+    {
+        INTER->i_havetkproc = 0;
         return (-1);
+    }
     return (0);
 }
 
@@ -1875,6 +1878,17 @@ void sys_stopgui(void)
     }
     INTER->i_havegui = 0;
     INTER->i_havetkproc = 0;
+}
+
+    /* message to pd to start or stop the gui.  If the symbol
+    argument is nonempty it is the "libdir" from which to start a new GUI.
+    if it's just "" we stop whatever gui might be running. */
+void glob_vis(void *dummy, t_symbol *s)
+{
+    if (*s->s_name && !INTER->i_havetkproc)
+        sys_startgui(s->s_name);
+    else if (!*s->s_name && INTER->i_havetkproc)
+        sys_stopgui();
 }
 
 /* ----------- mutexes for thread safety --------------- */

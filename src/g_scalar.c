@@ -9,6 +9,7 @@ can contain numbers, sublists, and arrays.
 */
 
 #include <stdio.h>      /* for read/write to files */
+#include <string.h>
 #include "m_pd.h"
 #include "g_canvas.h"
 
