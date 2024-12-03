@@ -96,7 +96,7 @@ static int sys_listplease;
 
 int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
-static int sys_batch;
+int sys_batch;
 const char *pd_extraflags = 0;
 int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring);
@@ -1431,8 +1431,13 @@ int sys_argparse(int argc, const char **argv)
             return (1);
         }
     }
-    if (sys_batch)
+    if (sys_batch)  /* if batch, turn off gui, real-time, audio and MIDI */
+    {
         sys_dontstartgui = 1;
+        sys_hipriority = 0;
+        as.a_noutdev = as.a_nchoutdev = as.a_nindev = as.a_nchindev = 0;
+        sys_nmidiin = sys_nmidiout = 0;
+    }
     if (sys_dontstartgui)
         sys_printtostderr = 1;
 #ifdef _WIN32
