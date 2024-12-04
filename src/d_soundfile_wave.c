@@ -286,7 +286,7 @@ static int wave_readheader(t_soundfile *sf)
             bytespersample = swap2(format->fc_bitspersample, swap) / 8;
             switch (bytespersample)
             {
-                case 2: case 3: break;
+                case 1: case 2: case 3: break;
                 case 4: case 8:
                     if (formattag == WAVE_FORMAT_FLOAT) /* 32 bit int? */
                         break;
