@@ -55,8 +55,8 @@ t_rtext *rtext_new(t_glist *glist, t_text *who)
 
 void rtext_free(t_rtext *x)
 {
-    if (x->x_glist->gl_editor->e_textedfor == x)
-        x->x_glist->gl_editor->e_textedfor = 0;
+    if (glist_textedfor(x->x_glist) == x)
+        glist_settexted(x->x_glist, 0);
     if (x->x_glist->gl_editor->e_rtext == x)
         x->x_glist->gl_editor->e_rtext = x->x_next;
     else
@@ -544,7 +544,7 @@ void rtext_activate(t_rtext *x, int state)
     if (state)
     {
         pdgui_vmess("pdtk_text_editing", "^si", canvas, x->x_tag, 1);
-        glist->gl_editor->e_textedfor = x;
+        glist_settexted(glist, x);
         glist->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
         x->x_selend = x->x_bufsize;
@@ -553,8 +553,8 @@ void rtext_activate(t_rtext *x, int state)
     else
     {
         pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
-        if (glist->gl_editor->e_textedfor == x)
-            glist->gl_editor->e_textedfor = 0;
+        if (glist_textedfor(glist) == x)
+            glist_settexted(glist, 0);
         x->x_active = 0;
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);

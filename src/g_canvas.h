@@ -456,6 +456,9 @@ EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
 
+t_rtext *glist_textedfor(t_glist *gl);
+void glist_settexted(t_glist *gl, t_rtext *x);
+
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize);
 EXTERN void text_drawborder(t_text *x, t_glist *glist, const char *tag,
