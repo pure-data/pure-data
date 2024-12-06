@@ -1052,6 +1052,14 @@ void sys_startiothread(t_pdinstance* pd_that) {}
 void sys_stopiothread(t_pdinstance* pd_that) {}
 #endif // THREADED_IO
 
+void glob_setthreadedio(void *dummy, t_float f)
+{
+    if(f)
+        sys_startiothread(pd_this);
+    else
+        sys_stopiothread(pd_this);
+}
+
 int sys_hasthreadedio()
 {
 #ifdef THREADED_IO
