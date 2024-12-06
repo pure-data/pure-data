@@ -1094,7 +1094,7 @@ static int graph_click(t_gobj *z, struct _glist *glist,
                 /* check if the object wants to be clicked */
             if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2)
                 &&  (clickreturned = gobj_click(y, x, xpix, ypix,
-                    shift, alt, 0, doit)))
+                    shift, alt, dbl, doit)))
                         break;
         }
         if (!doit)

@@ -271,16 +271,23 @@ static t_gobj *glist_nth(t_glist *x, int n)
 
 t_rtext *glist_textedfor(t_glist *gl)
 {
-    if (gl->gl_editor)
-        return (gl->gl_editor->e_textedfor);
+    t_canvas *canvas = glist_getcanvas(gl);
+    if (canvas->gl_editor)
+        return (canvas->gl_editor->e_textedfor);
     else return (0);
 }
 
 void glist_settexted(t_glist *gl, t_rtext *x)
 {
-    if (!gl->gl_editor)
-        bug("glist_settexted");
-    gl->gl_editor->e_textedfor = x;
+    while (gl->gl_owner && !gl->gl_isclone && !gl->gl_havewindow &&
+        gl->gl_isgraph)
+    {
+        gl->gl_editor->e_textedfor = 0;
+        gl = gl->gl_owner;
+    }
+    if (gl->gl_editor)
+        gl->gl_editor->e_textedfor = x;
+    else bug("glist_settexted");
 }
 
 /* ------------------- support for undo/redo  -------------------------- */
@@ -2304,16 +2311,16 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             /* is a text activated ? */
         if (glist_textedfor(x)  && doit)
         {
-            hitobj = rtext_getowner(glist_textedfor(x));
-            if (canvas_hitbox(x, &hitobj->te_g,
-                xpos, ypos, &x1, &y1, &x2, &y2))
+           hitobj = rtext_getowner(glist_textedfor(x));
+            if (canvas_hitbox(rtext_getglist(glist_textedfor(x)),
+                &hitobj->te_g, xpos, ypos, &x1, &y1, &x2, &y2))
             {
                 rtext_mouse(glist_textedfor(x), xpos - x1, ypos - y1,
                     (shiftmod? RTEXT_SHIFT :
                         (doublemod ? RTEXT_DBL : RTEXT_DOWN)));
-                    x->gl_editor->e_onmotion = MA_DRAGTEXT;
-                    x->gl_editor->e_xwas = x1;
-                    x->gl_editor->e_ywas = y1;
+                x->gl_editor->e_onmotion = MA_DRAGTEXT;
+                x->gl_editor->e_xwas = x1;
+                x->gl_editor->e_ywas = y1;
             }
             else
             {

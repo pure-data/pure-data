@@ -175,7 +175,7 @@ struct _glist
     struct _glist *gl_owner;    /* parent glist, supercanvas, or 0 if none */
     int gl_pixwidth;            /* width in pixels (on parent, if a graph) */
     int gl_pixheight;
-    t_float gl_x1;                /* bounding rectangle in our own coordinates */
+    t_float gl_x1;              /* bounding rectangle in our own coordinates */
     t_float gl_y1;
     t_float gl_x2;
     t_float gl_y2;
@@ -491,6 +491,7 @@ EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
 EXTERN t_text *rtext_getowner(t_rtext *x);
+EXTERN t_glist *rtext_getglist(t_rtext *x);
 
 /* -------------------- functions on canvases ------------------------ */
 EXTERN t_class *canvas_class;

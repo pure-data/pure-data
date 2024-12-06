@@ -94,6 +94,11 @@ t_text *rtext_getowner(t_rtext *x)
     return (x->x_text);
 }
 
+t_glist *rtext_getglist(t_rtext *x)
+{
+    return (x->x_glist);
+}
+
 /* convert t_text te_type symbol for use as a Tk tag */
 static t_symbol *rtext_gettype(t_rtext *x)
 {
@@ -533,8 +538,6 @@ void rtext_select(t_rtext *x, int state)
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
         "-fill", (state? "blue" : "black"));
 }
-
-void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
