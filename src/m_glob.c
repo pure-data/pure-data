@@ -48,6 +48,7 @@ void glob_closesubs(void *dummy);
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop);
 void glob_rescanaudio(void *dummy);
+void glob_setthreadedio(void *dummy, t_float f);
 
 void glob_setthreadedio(void *dummy, t_float f);
 
