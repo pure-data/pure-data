@@ -2536,6 +2536,7 @@ typedef struct _drawnumber
     t_fielddesc x_xloc;
     t_fielddesc x_yloc;
     t_fielddesc x_color;
+    t_fielddesc x_size;
     t_fielddesc x_vis;
     t_symbol *x_label;
     t_canvas *x_canvas;
@@ -2546,6 +2547,8 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
     const char *classname = classsym->s_name;
 
+    x->x_label = &s_;
+    fielddesc_setfloat_const(&x->x_size, 0);
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
     while (1)
@@ -2581,8 +2584,19 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
-        x->x_label = atom_getsymbolarg(0, argc, argv);
-    else x->x_label = &s_;
+    {
+        if(argv->a_type == A_SYMBOL)
+        {
+            x->x_label = atom_getsymbolarg(0, argc, argv);
+        }
+        else
+        {
+            fielddesc_setfloatarg(&x->x_size, argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc)
+        fielddesc_setfloatarg(&x->x_size, argc--, argv++);
 
     return (x);
 }
@@ -2750,9 +2764,11 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         int color = numbertocolor(
             fielddesc_getfloat(&x->x_color, template, data, 1));
         drawnumber_getbuf(x, data, template, buf);
-
         SETSYMBOL(fontatoms+0, gensym(sys_font));
-        SETFLOAT (fontatoms+1,-sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+        int size = fielddesc_getfloat(&x->x_size, template, data, 1);
+            if (size <= 0)
+                size = -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist));
+        SETFLOAT (fontatoms+1, size);
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
         pdgui_vmess(0, "crr ii rs rk rs rA rS",
             glist_getcanvas(glist), "create", "text",
