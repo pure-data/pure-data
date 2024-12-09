@@ -1641,18 +1641,19 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
     return 1;
 }
 
-int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
+int clone_match(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 static void canvas_cut(t_canvas *x);
+int clone_reload(t_pd *z, t_canvas *except);
+int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
     /* LATER try to do the same trick for externs. */
-static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
-    t_gobj *except)
+void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except)
 {
     t_gobj *g;
     int hadwindow = gl->gl_havewindow;
-    int found = 0;
+    int found = 0, done = 0;
         /* to optimize redrawing we select all objects that need to be updated
            and redraw (cut+undo) them together. Then we look for sub-patches that may have
            more of the same... */
@@ -1660,16 +1661,20 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     {
             /* remake the object if it's an abstraction that appears to have
                been loaded from the file we just saved */
-        int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
+        int remakeit = (g != &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
                     canvas_getdir((t_canvas *)g) == dir);
-            /* also remake it if it's a "clone" with that name */
+            /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
-            clone_match(&g->g_pd, name, dir))
+            clone_match(&g->g_pd, name, dir, except))
         {
-                /* LATER try not to remake the one that equals "except" */
-            remakeit = 1;
+                /* try to reload "clone" object, otherwise remake it */
+            if (!clone_reload(&g->g_pd, except))
+                remakeit = 1;
+                /* if it's an anonymous clone abstraction, we can stop searching */
+            if (except->gl_isclone && except->gl_anonymous)
+                done = 1;
         }
         if (remakeit)
         {
@@ -1691,6 +1696,8 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
             }
             glist_select(gl, g);
         }
+        if (done)
+            break;
     }
         /* cut all selected (matched) objects and undo, to reinstantiate them */
     if (found)
@@ -1701,37 +1708,56 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         glist_noselect(gl);
     }
 
-        /* now iterate over all the sub-patches... */
-    for (g = gl->gl_list; g; g = g->g_next)
+        /* now iterate over all the sub-patches and also abstractions and clones,
+        but only the ones that don't match! */
+    if (!done)
     {
-        if (g != except && pd_class(&g->g_pd) == canvas_class &&
-            (!canvas_isabstraction((t_canvas *)g) ||
-                 ((t_canvas *)g)->gl_name != name ||
-                 canvas_getdir((t_canvas *)g) != dir)
-           )
-                glist_doreload((t_canvas *)g, name, dir, except);
+        for (g = gl->gl_list; g; g = g->g_next)
+        {
+            if (g == &except->gl_gobj)
+                continue;
+            if (pd_class(&g->g_pd) == canvas_class &&
+                (!canvas_isabstraction((t_canvas *)g) ||
+                     ((t_canvas *)g)->gl_name != name ||
+                        canvas_getdir((t_canvas *)g) != dir))
+                    glist_doreload((t_canvas *)g, name, dir, except);
+            else if (pd_class(&g->g_pd) == clone_class &&
+                    !clone_match(&g->g_pd, name, dir, except))
+                clone_doreload(&g->g_pd, name, dir, except);
+        }
     }
     if (!hadwindow && gl->gl_havewindow)
         canvas_vis(glist_getcanvas(gl), 0);
 }
 
-    /* call canvas_doreload on everyone */
+    /* call glist_doreload on everyone */
 void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 {
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
     t_binbuf*b = 0;
-    if(EDITOR->copy_binbuf)
+    if (EDITOR->copy_binbuf)
         b = binbuf_duplicate(EDITOR->copy_binbuf);
 
     THISGUI->i_reloadingabstraction = except;
-        /* find all root canvases */
-    for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_doreload(x, name, dir, &except->gl_gobj);
-    THISGUI->i_reloadingabstraction = 0;
-    if(b)
+        /* anonymous clone abstraction: only search parent canvas */
+    if (except->gl_isclone && except->gl_anonymous)
     {
-        if(EDITOR->copy_binbuf)
+        glist_doreload(except->gl_owner, name, dir, except);
+        THISGUI->i_reloadingabstraction = 0;
+            /* mark the parent canvas dirty, so we don't accidentally
+            lose our changes when we close the patch. */
+        canvas_dirty(except->gl_owner, 1);
+    }
+    else /* search all root canvases */
+    {
+        for (x = pd_getcanvaslist(); x; x = x->gl_next)
+            glist_doreload(x, name, dir, except);
+        THISGUI->i_reloadingabstraction = 0;
+    }
+    if (b)
+    {
+        if (EDITOR->copy_binbuf)
             binbuf_free(EDITOR->copy_binbuf);
         EDITOR->copy_binbuf = b;
     }

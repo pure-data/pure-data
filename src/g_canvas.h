@@ -210,6 +210,7 @@ struct _glist
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
+    unsigned int gl_anonymous:1;    /* anonymous abstraction */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
     void *gl_privatedata;           /* private data */
 };
@@ -283,6 +284,8 @@ struct _instancecanvas
     int i_dspstate;
     int i_dollarzero;
     t_float i_graph_lastxpix, i_graph_lastypix;
+    t_binbuf *i_loadbuf; /* temporary load buffer; for embedded patches */
+    t_binbuf *i_savebuf; /* temporary save buffer; for clone */
 };
 
 void g_editor_newpdinstance(void);

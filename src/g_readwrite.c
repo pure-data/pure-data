@@ -798,28 +798,42 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     float fdestroy)
 {
     t_binbuf *b = binbuf_new();
+    int result;
     canvas_savetemplatesto(x, b, 1);
     canvas_saveto(x, b);
-    errno = 0;
-    if (binbuf_write(b, filename->s_name, dir->s_name, 0))
-        post("%s/%s: %s", dir->s_name, filename->s_name,
-            (errno ? strerror(errno) : "write failed"));
-    else
+        /* anonymous clone abstraction: just publish the save buffer, so that
+        the corresponding clone object can copy it in clone_reload(). */
+    if (x->gl_isclone && x->gl_anonymous)
+        THISGUI->i_savebuf = b;
+    else /* write to file */
     {
-            /* if not an abstraction, reset title bar and directory */
-        if (!x->gl_owner)
-{
-            canvas_rename(x, filename, dir);
-            /* update window list in case Save As changed the window name */
-            canvas_updatewindowlist();
-}
+        errno = 0;
+        result = binbuf_write(b, filename->s_name, dir->s_name, 0);
+        binbuf_free(b);
+        if (result)
+        {
+            post("%s/%s: %s", dir->s_name, filename->s_name,
+                (errno ? strerror(errno) : "write failed"));
+            return;
+        }
         post("saved to: %s/%s", dir->s_name, filename->s_name);
-        canvas_dirty(x, 0);
-        canvas_reload(filename, dir, x);
-        if (fdestroy != 0)
-            vmess(&x->gl_pd, gensym("menuclose"), "f", 1.);
     }
-    binbuf_free(b);
+        /* if not an abstraction, reset title bar and directory */
+    if (!x->gl_owner)
+    {
+        canvas_rename(x, filename, dir);
+        /* update window list in case Save As changed the window name */
+        canvas_updatewindowlist();
+    }
+    canvas_dirty(x, 0);
+    canvas_reload(filename, dir, x);
+    if (fdestroy != 0)
+        vmess(&x->gl_pd, gensym("menuclose"), "f", 1.);
+    if (THISGUI->i_savebuf)
+    {
+        binbuf_free(THISGUI->i_savebuf);
+        THISGUI->i_savebuf = 0;
+    }
 }
 
 static void canvas_menusaveas(t_canvas *x, t_float fdestroy)
