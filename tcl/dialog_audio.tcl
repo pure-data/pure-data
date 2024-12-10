@@ -391,7 +391,7 @@ proc ::dialog_audio::create {mytoplevel} {
     wm resizable $mytoplevel 0 0
     wm transient $mytoplevel
     wm minsize $mytoplevel 380 320
-    $mytoplevel configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
 
