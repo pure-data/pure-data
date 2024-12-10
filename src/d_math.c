@@ -51,10 +51,29 @@ static t_int *clip_perform(t_int *w)
     return (w+5);
 }
 
+static t_int *clip_perf8(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        // this partial unrolling gives best results on cortex-a8 with both clang and gcc
+        t_sample f[8];
+        for(int i = 8; i--; )
+            f[i] = in[i] < x->x_lo ? x->x_lo : in[i];
+        for(int i = 8; i--; )
+            out[i] = f[i] > x->x_hi ? x->x_hi : f[i];
+    }
+    return (w+5);
+}
+
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    dsp_add((SIGTOTAL(sp[0]) & 7) ? clip_perform : clip_perf8,
+        4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
 }
 
 static void clip_setup(void)
