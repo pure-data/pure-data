@@ -1842,11 +1842,11 @@ STRFUNC_DEF(ex_strpbrk)
                  * we turn a pointer to an empty (NULL) string
                  */
                 ex_makesymbol(e, tmpoptr, 1);
+        } else {
+            if (!ex_makesymbol(e, tmpoptr, strlen(result) + 1))
                 return;
+            strcpy(tmpoptr->ex_ptr, result);
         }
-        if (!ex_makesymbol(e, tmpoptr, strlen(result) + 1))
-                return;
-        strcpy(tmpoptr->ex_ptr, result);
 STRFUNC_END()
 
 /*
