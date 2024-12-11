@@ -29,7 +29,7 @@
   * supports big and little endian, system endianness used by default
   * sets a default info string: "Pd "
   * tries to set sound data length, otherwise falls back to "unknown size"
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * sample format: 8, 16, and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
   Pd versions < 0.51 did *not* write the actual data chunk size when updating
   the header, but set "unknown size" instead.
@@ -41,6 +41,7 @@
 
 #define NEXTMAXBYTES 0xffffffff /**< max unsigned 32 bit size */
 
+#define NEXT_FORMAT_LINEAR_8  2 /**< 8 bit int */
 #define NEXT_FORMAT_LINEAR_16 3 /**< 16 bit int */
 #define NEXT_FORMAT_LINEAR_24 4 /**< 24 bit int */
 #define NEXT_FORMAT_FLOAT     6 /**< 32 bit float */
@@ -87,6 +88,9 @@ static void next_posthead(const t_nextstep *next, int swap)
         post("  data length %d", datasize);
     switch (format)
     {
+        case NEXT_FORMAT_LINEAR_8:
+            post("  format %d (8 bit int)", format);
+            break;
         case NEXT_FORMAT_LINEAR_16:
             post("  format %d (16 bit int)", format);
             break;
@@ -154,6 +158,7 @@ static int next_readheader(t_soundfile *sf)
     format = swap4(next->ns_format, swap);
     switch (format)
     {
+        case NEXT_FORMAT_LINEAR_8:  bytespersample = 1; break;
         case NEXT_FORMAT_LINEAR_16: bytespersample = 2; break;
         case NEXT_FORMAT_LINEAR_24: bytespersample = 3; break;
         case NEXT_FORMAT_FLOAT:     bytespersample = 4; break;
@@ -199,6 +204,9 @@ static int next_writeheader(t_soundfile *sf, size_t nframes)
         swapstring4(next.ns_id, 1);
     switch (sf->sf_bytespersample)
     {
+        case 1:
+            next.ns_format = swap4(NEXT_FORMAT_LINEAR_8, swap);
+            break;
         case 2:
             next.ns_format = swap4(NEXT_FORMAT_LINEAR_16, swap);
             break;

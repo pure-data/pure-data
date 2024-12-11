@@ -40,7 +40,7 @@
   * ignores any chunks after finding the sound data chunk
   * assumes there is always a sound data chunk
   * does not block align sound data
-  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+  * sample format: 8, 16, and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
 
   Pd versions < 0.55 did not read or write 64 bit float.
 
@@ -345,6 +345,7 @@ static int aiff_readheader(t_soundfile *sf)
             bitspersample = swap2(comm->cc_bitspersample, swap);
             switch (bitspersample)
             {
+                case 8:  bytespersample = 1; break;
                 case 16: bytespersample = 2; break;
                 case 24: bytespersample = 3; break;
                 case 32: bytespersample = 4; break;

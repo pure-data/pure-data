@@ -37,7 +37,7 @@
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
   * does not support 64-bit size variants or BWF file-splitting
-  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+  * sample format: 8, 16, and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
 
   Pd versions < 0.55 did not read or write 64 bit float.
 

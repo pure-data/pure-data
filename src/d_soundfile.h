@@ -67,7 +67,8 @@ typedef struct _soundfile
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
-    int sf_bytespersample; /**< bit rate, 2: 16 bit, 3: 24, 4: 32, 8: 64  */
+    int sf_bytespersample; /**< bit rate
+                                1: 8 bit, 2: 16 bit, 3: 24, 4: 32, 8: 64  */
     ssize_t sf_headersize; /**< header size in bytes, -1 for unknown size */
     int sf_bigendian;      /**< sample endianness, 1 : big or 0 : little  */
     int sf_bytesperframe;  /**< number of bytes per sample frame          */
