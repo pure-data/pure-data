@@ -218,6 +218,7 @@ static int next_writeheader(t_soundfile *sf, size_t nframes)
             next.ns_format = swap4(NEXT_FORMAT_FLOAT, swap);
             break;
         default: /* unsupported format */
+            errno = SOUNDFILE_ERRSAMPLEFMT;
             return -1;
     }
 

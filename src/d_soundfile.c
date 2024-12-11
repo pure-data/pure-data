@@ -861,6 +861,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     return fd;
 
 badcreate:
+    object_sferror(NULL, "[soundfiler] write", filename, errno, sf);
     sf->sf_fd = -1;
     if (fd >= 0)
         sys_close(fd);

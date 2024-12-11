@@ -333,7 +333,10 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     t_datachunk data = {"data", {0}, 0};
 
     if (sf->sf_bytespersample < 2)
+    {
+        errno = SOUNDFILE_ERRSAMPLEFMT;
         return -1; /* unsupported format */
+    }
 
         /* file header */
     memcpy(buf + headersize, &head, CAFHEADSIZE);
