@@ -10,6 +10,8 @@ in future releases.  The public (stable) API is in m_pd.h. */
 
 /* in s_path.c */
 
+#include <stdarg.h>
+
 typedef struct _namelist    /* element in a linked list of stored strings */
 {
     struct _namelist *nl_next;  /* next in list */
@@ -47,6 +49,7 @@ EXTERN int sys_noloadbang;
 EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
+extern int sys_batch;
 
 EXTERN int sys_nearestfontsize(int fontsize);
 

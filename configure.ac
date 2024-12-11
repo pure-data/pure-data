@@ -257,6 +257,7 @@ AC_CHECK_HEADERS([fcntl.h \
                   sys/time.h \
                   sys/timeb.h \
                   sys/utsname.h \
+                  sys/filio.h \
                   unistd.h
                   ])
 
@@ -270,13 +271,22 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
+
+AC_CHECK_TYPE(off64_t, [AC_DEFINE([HAVE_OFF64_T], 1, [Define if we have the 'off64_t' type])], [], [[
+#define _LARGEFILE64_SOURCE
+#include <sys/types.h>
+#include <unistd.h>
+]])
+AC_CHECK_TYPE(sig_t, [], [AC_DEFINE([DONT_HAVE_SIG_T], 1, [Define if we do NOT have the 'sig_t' type])], [[
+#include <signal.h>
+]])
+
 # Checks for functions.
 AC_FUNC_ALLOCA
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 \
                 floor \
                 getcwd \
@@ -349,6 +359,9 @@ AC_CHECK_LIBM
 ## CHECK whether this can be replaced by AX_PTHREAD
 AC_SEARCH_LIBS([pthread_create], [pthread pthreadGC2 pthreadGC1 pthreadGC], [],
                AC_MSG_WARN([pthreads required]))
+
+# Illumos needs to link against libsocket for 'sendto' and friends
+AC_SEARCH_LIBS([sendto], [socket])
 
 # Define variables for use in Makefiles
 AC_SUBST(EXTERNTARGET)

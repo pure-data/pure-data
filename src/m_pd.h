@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 55
 #define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION "test1"
+#define PD_TEST_VERSION ""
 
 /* compile-time version check:
    #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)

@@ -35,12 +35,15 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef _WIN32
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
+
 #include <stdlib.h>
+
 #ifdef _MSC_VER
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4305 )

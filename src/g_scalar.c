@@ -9,6 +9,7 @@ can contain numbers, sublists, and arrays.
 */
 
 #include <stdio.h>      /* for read/write to files */
+#include <string.h>
 #include "m_pd.h"
 #include "g_canvas.h"
 
@@ -208,6 +209,25 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     }
 }
 
+    /* block versions of word_init and word_initvec are provided because
+    creating and destroying large arrays had been absurdly slowing down patch
+    loading and closing */
+void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
+{
+    if (n > 0)
+    {
+        long ndone = 1;
+        word_init(wp, template, gp);
+        while (ndone < n)
+        {
+            long ncopy = (n-ndone > ndone ? ndone : n-ndone);
+            memcpy(wp + template->t_n*ndone, wp,
+                ncopy*template->t_n*sizeof(t_word));
+            ndone += ncopy;
+        }
+    }
+}
+
 void word_restore(t_word *wp, t_template *template,
     int argc, t_atom *argv)
 {
@@ -253,6 +273,25 @@ void word_free(t_word *wp, t_template *template)
             array_free(wp[i].w_array);
         else if (dt->ds_type == DT_TEXT)
             binbuf_free(wp[i].w_binbuf);
+    }
+}
+
+void word_freevec(t_word *wp, t_template *template, long n)
+{
+    int i, j;
+    t_dataslot *dt;
+    for (dt = template->t_vec, i = 0; i < template->t_n; i++, dt++)
+    {
+        if (dt->ds_type == DT_ARRAY)
+        {
+            for (j = 0; j < n; j++)
+                array_free(wp[i + j * template->t_n].w_array);
+        }
+        else if (dt->ds_type == DT_TEXT)
+        {
+            for (j = 0; j < n; j++)
+                binbuf_free(wp[i + j * template->t_n].w_binbuf);
+        }
     }
 }
 
