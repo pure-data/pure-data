@@ -1200,7 +1200,7 @@ static void *subcanvas_new(t_symbol *s)
         /* check if subpatch is supposed to be connected (on the 1st inlet) */
     if(z && z->gl_editor && z->gl_editor->e_connectbuf)
     {
-        t_atom*argv = binbuf_getvec(z->gl_editor->e_connectbuf);
+        t_atom *argv = binbuf_getvec(z->gl_editor->e_connectbuf);
         int argc = binbuf_getnatom(z->gl_editor->e_connectbuf);
         t_symbol *sob = 0;
         if ((argc == 7)
@@ -1215,18 +1215,18 @@ static void *subcanvas_new(t_symbol *s)
                     int outno = (int)atom_getfloat(argv+3);
                     t_gobj*outobj=z->gl_list;
                         /* get handle to object */
-                    while(index1-->0 && outobj)
+                    while (index1-->0 && outobj)
                         outobj=outobj->g_next;
-                    if(outobj && pd_checkobject(&outobj->g_pd))
+                    if (outobj && pd_checkobject(&outobj->g_pd))
                     {
-                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
-                            sob = gensym("inlet~");
-                        else
-                            sob = gensym("inlet");
+                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd),
+                            outno))
+                               sob = gensym("inlet~");
+                        else sob = gensym("inlet");
                     }
                 }
         }
-        if(sob)
+        if (sob)
         {
                 /* JMZ: weirdo hardcoded numbers, taken from
                  * glist_getnextxy(): 40

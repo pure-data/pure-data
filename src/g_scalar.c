@@ -369,6 +369,9 @@ void glist_scalar(t_glist *glist,
     binbuf_free(b);
 }
 
+extern t_class *drawnumber_class;
+
+
 /* -------------------- widget behavior for scalar ------------ */
 void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey)
 {
@@ -480,10 +483,12 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) -
+                glist_pixelstox(glist, 0));
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) -
+                glist_pixelstoy(glist, 0));
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
@@ -538,7 +543,8 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
-        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, basex, basey, vis);
+        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, x,
+            basex, basey, vis);
     }
     if (glist_isselected(owner, &x->sc_gobj))
     {
@@ -595,7 +601,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     return (0);
 }
 
-static int scalar_click(t_gobj *z, struct _glist *owner,
+int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_scalar *x = (t_scalar *)z;

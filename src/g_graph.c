@@ -22,6 +22,13 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
 
 /* -------------------- maintaining the list -------------------- */
 
+static void canvas_redrawdataforthis(t_glist *gl, int action)
+{
+    t_template *t = glist_findtemplate(gl);
+    if (t)
+        canvas_redrawallfortemplate(t, action);
+}
+
 void canvas_drawredrect(t_canvas *x, int doit);
 
 void glist_add(t_glist *x, t_gobj *y)
@@ -35,8 +42,6 @@ void glist_add(t_glist *x, t_gobj *y)
         for (y2 = x->gl_list; y2->g_next; y2 = y2->g_next);
         y2->g_next = y;
     }
-    if (x->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext_new(x, ob);
     if (x->gl_editor && x->gl_isgraph && !x->gl_goprect
         && pd_checkobject(&y->g_pd))
     {
@@ -46,8 +51,7 @@ void glist_add(t_glist *x, t_gobj *y)
     if (glist_isvisible(x))
         gobj_vis(y, x, 1);
     if (class_isdrawcommand(y->g_pd))
-        canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
-            glist_getcanvas(x)->gl_name)), 0);
+        canvas_redrawdataforthis(x, 0);
 }
 
     /* this is to protect against a hairy problem in which deleting
@@ -110,23 +114,22 @@ void glist_delete(t_glist *x, t_gobj *y)
             {
                 if (glist_isvisible(x))
                     text_eraseborder(&gl->gl_obj, x,
-                        rtext_gettag(glist_findrtext(x, &gl->gl_obj)));
+                        rtext_gettag(glist_getrtext(x, &gl->gl_obj)));
             }
         }
     }
         /* if we're a drawing command, erase all scalars now, before deleting
         it; we'll redraw them once it's deleted below. */
     if (drawcommand)
-        canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
-            glist_getcanvas(x)->gl_name)), 2);
+        canvas_redrawdataforthis(x, 2);
     gobj_delete(y, x);
     if (glist_isvisible(canvas))
     {
         gobj_vis(y, x, 0);
     }
     if (x->gl_editor && (ob = pd_checkobject(&y->g_pd)) &&
-        !(rtext = glist_findrtext(x, ob)))
-            rtext = rtext_new(x, ob);
+        !(rtext = glist_getrtext(x, ob)))
+            rtext = glist_getrtext(x, ob);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
@@ -141,8 +144,7 @@ void glist_delete(t_glist *x, t_gobj *y)
         rtext_free(rtext);
     if (chkdsp) canvas_update_dsp();
     if (drawcommand)
-        canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
-            glist_getcanvas(x)->gl_name)), 1);
+        canvas_redrawdataforthis(x, 1);
     canvas_setdeleting(canvas, wasdeleting);
 }
 
@@ -174,7 +176,7 @@ void glist_retext(t_glist *glist, t_text *y)
         /* check that we have built rtexts yet.  LATER need a better test. */
     if (glist->gl_editor && glist->gl_editor->e_rtext)
     {
-        t_rtext *rt = glist_findrtext(glist, y);
+        t_rtext *rt = glist_getrtext(glist, y);
         if (rt)
             rtext_retext(rt);
     }
@@ -695,7 +697,7 @@ static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2, cons
               "-tags", 2, tags2);
 }
 
-static void _graph_create_text(
+static void graph_create_text(
     t_glist *x, int posX, int posY,
     const char*name,
     const char*anchor,
@@ -734,10 +736,10 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     }
 
     if (vis && canvas_showtext(x))
-        rtext_draw(glist_findrtext(parent_glist, &x->gl_obj));
+        rtext_draw(glist_getrtext(parent_glist, &x->gl_obj));
     graph_getrect(gr, parent_glist, &x1, &y1, &x2, &y2);
     if (!vis)
-        rtext_erase(glist_findrtext(parent_glist, &x->gl_obj));
+        rtext_erase(glist_getrtext(parent_glist, &x->gl_obj));
 
     sprintf(tag, "graph%lx", (t_int)x);
     if (vis)
@@ -790,7 +792,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 !garray_getname((t_garray *)g, &arrayname))
         {
             i -= glist_fontheight(x);
-            _graph_create_text(x,
+            graph_create_text(x,
                 x1, i,
                 arrayname->s_name,
                 "nw", -fs,
@@ -873,7 +875,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         }
             /* draw x labels */
         for (i = 0; i < x->gl_nxlabels; i++)
-            _graph_create_text(x,
+            graph_create_text(x,
                 (int)glist_xtopixels(x, atof(x->gl_xlabel[i]->s_name)),
                 (int)glist_ytopixels(x, x->gl_xlabely),
                 x->gl_xlabel[i]->s_name,
@@ -881,7 +883,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 3, tags3);
             /* draw y labels */
         for (i = 0; i < x->gl_nylabels; i++)
-            _graph_create_text(x,
+            graph_create_text(x,
                 (int)glist_xtopixels(x, x->gl_ylabelx),
                 (int)glist_ytopixels(x, atof(x->gl_ylabel[i]->s_name)),
                 x->gl_ylabel[i]->s_name,
@@ -996,7 +998,7 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         text_widgetbehavior.w_selectfn(z, glist, state);
     else
     {
-        t_rtext *y = glist_findrtext(glist, &x->gl_obj);
+        t_rtext *y = glist_getrtext(glist, &x->gl_obj);
         char tag[80];
         if (canvas_showtext(x))
             rtext_select(y, state);

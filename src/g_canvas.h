@@ -82,8 +82,8 @@ typedef void (*t_glistkeyfn)(void *z, t_symbol *keysym, t_floatarg key);
 EXTERN_STRUCT _rtext;
 #define t_rtext struct _rtext
 
-EXTERN_STRUCT _gtemplate;
-#define t_gtemplate struct _gtemplate
+EXTERN_STRUCT _pdstruct;
+#define t_pdstruct struct _pdstruct
 
 EXTERN_STRUCT _guiconnect;
 #define t_guiconnect struct _guiconnect
@@ -226,19 +226,19 @@ struct _glist
 
 typedef struct _dataslot
 {
-    int ds_type;
-    t_symbol *ds_name;
-    t_symbol *ds_arraytemplate;     /* filled in for arrays only */
+    int ds_type;                    /* one of DT_FLOAT, etc. */
+    t_symbol *ds_name;              /* name of the data slot */
+    t_symbol *ds_arraytemplate;     /* arrays only: template for elements */
 } t_dataslot;
 
 typedef struct _template
 {
     t_pd t_pdobj;               /* header */
-    struct _gtemplate *t_list;  /* list of "struct"/gtemplate objects */
+    struct _pdstruct *t_list;   /* list of "struct" objects with this name */
     t_symbol *t_sym;            /* name */
     int t_n;                    /* number of dataslots (fields) */
     t_dataslot *t_vec;          /* array of dataslots */
-    struct _template *t_next;
+    struct _template *t_next;   /* next in a list of all templates */
 } t_template;
 
 struct _array
@@ -271,18 +271,18 @@ typedef struct _linetraverser
     int tr_nextoutno;
 } t_linetraverser;
 
-struct _instancecanvas
+struct _instancecanvas  /* per-instance stuff for canvases */
 {
-    struct _instanceeditor *i_editor;
+    struct _instanceeditor *i_editor;       /* more, semi-private stuff */
     struct _instancetemplate *i_template;
-    t_symbol *i_newfilename;
-    t_symbol *i_newdirectory;
-    int i_newargc;
+    t_symbol *i_newfilename;                /* name of file being read */
+    t_symbol *i_newdirectory;               /* its directory */
+    int i_newargc;                          /* creation args for new canvas */
     t_atom *i_newargv;
-    t_glist *i_reloadingabstraction;
-    int i_dspstate;
-    int i_dollarzero;
-    t_float i_graph_lastxpix, i_graph_lastypix;
+    t_glist *i_reloadingabstraction;        /* abstrction we're reloading */
+    int i_dspstate;                         /* whether DSP is running */
+    int i_dollarzero;                       /* counter for $0 */
+    t_float i_graph_lastxpix, i_graph_lastypix; /* state for dragging */
 };
 
 void g_editor_newpdinstance(void);
@@ -291,8 +291,6 @@ void g_editor_freepdinstance(void);
 void g_template_freepdinstance(void);
 
 #define THISGUI (pd_this->pd_gui)
-#define EDITOR (pd_this->pd_gui->i_editor)
-#define TEMPLATE (pd_this->pd_gui->i_template)
 
 /* function types used to define graphical behavior for gobjs, a bit like X
 widgets.  We don't use Pd methods because Pd's typechecking can't specify the
@@ -355,8 +353,8 @@ typedef void (*t_parentactivatefn)(t_gobj *x, struct _glist *glist,
     int state);
         /*  making visible or invisible */
 typedef void (*t_parentvisfn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, t_float basex, t_float basey,
-    int flag);
+    t_word *data, t_template *tmpl, t_scalar *sc,
+    t_float basex, t_float basey, int flag);
         /*  field a mouse click */
 typedef int (*t_parentclickfn)(t_gobj *x, struct _glist *glist,
     t_word *data, t_template *tmpl, t_scalar *sc, t_array *ap,
@@ -462,7 +460,7 @@ void glist_settexted(t_glist *gl, t_rtext *x);
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize);
 EXTERN void text_drawborder(t_text *x, t_glist *glist, const char *tag,
-    int width, int height, int firsttime);
+    int firsttime);
 EXTERN void text_eraseborder(t_text *x, t_glist *glist, const char *tag);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
@@ -474,8 +472,9 @@ extern const t_widgetbehavior text_widgetbehavior;
 #define RTEXT_DBL 3
 #define RTEXT_SHIFT 4
 
-EXTERN t_rtext *rtext_new(t_glist *glist, t_text *who);
-EXTERN t_rtext *glist_findrtext(t_glist *gl, t_text *who);
+EXTERN t_rtext *glist_getrtext(t_glist *gl, t_text *who);
+EXTERN t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
+    t_gobj *drawtext);
 EXTERN void rtext_draw(t_rtext *x);
 EXTERN void rtext_erase(t_rtext *x);
 EXTERN int rtext_height(t_rtext *x);
@@ -492,6 +491,15 @@ EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
 EXTERN t_text *rtext_getowner(t_rtext *x);
 EXTERN t_glist *rtext_getglist(t_rtext *x);
+EXTERN void rtext_unmouse(t_rtext *x);
+EXTERN void rtext_untype(t_rtext *x);
+EXTERN void rtext_getrect(t_rtext *x, int *x1p, int *y1p, int *x2p, int *y2p);
+EXTERN void rtext_retextforscalar(t_rtext *x, char *buf, int len,
+    int xpix, int ypix);
+EXTERN int rtext_hit(t_rtext *x, int xpix, int ypix,
+    int *x1p, int *y1p, int *x2p, int *y2p);
+t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
+    t_text **text, t_scalar **scalar, t_word **words, t_gobj **drawtext);
 
 /* -------------------- functions on canvases ------------------------ */
 EXTERN t_class *canvas_class;
@@ -609,6 +617,11 @@ EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     int amarrayelement);
 EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     int *p_nextmsg, int selectit);
+EXTERN void scalar_addrtexts(t_scalar *y, t_glist *gl);
+EXTERN int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
+    t_array *ap, struct _glist *owner,
+    t_float xloc, t_float yloc, int xpix, int ypix,
+    int shift, int alt, int dbl, int doit);
 
 /* ------helper routines for "garrays" and "plots" -------------- */
 EXTERN void array_getcoordinate(t_glist *glist,
@@ -637,8 +650,11 @@ EXTERN t_symbol *template_getsymbol(t_template *x, t_symbol *fieldname,
     t_word *wp, int loud);
 EXTERN void template_setsymbol(t_template *x, t_symbol *fieldname,
     t_word *wp, t_symbol *s, int loud);
+void template_notifyforscalar(t_template *template, t_glist *owner,
+    t_scalar *sc, t_symbol *s, int argc, t_atom *argv);
 
-EXTERN t_template *gtemplate_get(t_gtemplate *x);
+EXTERN t_template *gtemplate_get(t_pdstruct *x);
+EXTERN t_template *glist_findtemplate(t_glist *gl);
 EXTERN t_template *template_findbyname(t_symbol *s);
 EXTERN t_canvas *template_findcanvas(t_template *tmpl);
 EXTERN void template_notify(t_template *tmpl,
@@ -651,6 +667,8 @@ EXTERN void fielddesc_setcoord(t_fielddesc *f, t_template *tmpl,
 EXTERN t_float fielddesc_cvttocoord(t_fielddesc *f, t_float val);
 EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
+EXTERN int drawtext_gettype(t_gobj *z, t_template *template, int *onsetp);
+EXTERN t_template *drawtext_gettemplate(t_gobj *z);
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
 EXTERN t_guiconnect *guiconnect_new(t_pd *who, t_symbol *sym);
