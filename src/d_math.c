@@ -757,6 +757,8 @@ static void *abs_tilde_new(void)
     return (x);
 }
 
+#define ABS_DO(f) ((f) >= 0 ? (f) : -(f))
+
 t_int *abs_tilde_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
@@ -765,16 +767,34 @@ t_int *abs_tilde_perform(t_int *w)
     while (n--)
     {
         t_sample f = *in1++;
-        *out++ = (f >= 0 ? f : -f);
+        *out++ = ABS_DO(f);
+    }
+    return (w+4);
+}
+
+t_int *abs_tilde_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    int n = (int)(w[3]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = ABS_DO(f0); out[1] = ABS_DO(f1);
+        out[2] = ABS_DO(f2); out[3] = ABS_DO(f3);
+        out[4] = ABS_DO(f4); out[5] = ABS_DO(f5);
+        out[6] = ABS_DO(f6); out[7] = ABS_DO(f7);
     }
     return (w+4);
 }
 
 static void abs_tilde_dsp(t_abs_tilde *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(abs_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    dsp_add(((n & 7) ? abs_tilde_perform : abs_tilde_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 static void abs_tilde_setup(void)
