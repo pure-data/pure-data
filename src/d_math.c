@@ -324,18 +324,39 @@ static void *sigwrap_new(void)
     return (x);
 }
 
-static t_int *sigwrap_perform(t_int *w)
+#define WRAP_CHECK(f) \
+    (((f) > (t_sample)INT_MAX || (f) < (t_sample)INT_MIN) ? 0. : (f))
+
+#define WRAP_DO(f) \
+    ((int)(f) <= (f) ? (f) - (int)(f) : (f) - ((int)(f) - 1))
+
+t_int *sigwrap_perform(t_int *w)
 {
     t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
     int n = (int)w[3];
     while (n--)
     {
-        int k;
         t_sample f = *in++;
-        f = (f>INT_MAX || f<INT_MIN)?0.:f;
-        k = (int)f;
-        if (k <= f) *out++ = f-k;
-        else *out++ = f - (k-1);
+        f = WRAP_CHECK(f);
+        *out++ = WRAP_DO(f);
+    }
+    return (w + 4);
+}
+
+t_int *sigwrap_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = WRAP_CHECK(in[0]), f1 = WRAP_CHECK(in[1]);
+        t_sample f2 = WRAP_CHECK(in[2]), f3 = WRAP_CHECK(in[3]);
+        t_sample f4 = WRAP_CHECK(in[4]), f5 = WRAP_CHECK(in[5]);
+        t_sample f6 = WRAP_CHECK(in[6]), f7 = WRAP_CHECK(in[7]);
+        out[0] = WRAP_DO(f0); out[1] = WRAP_DO(f1);
+        out[2] = WRAP_DO(f2); out[3] = WRAP_DO(f3);
+        out[4] = WRAP_DO(f4); out[5] = WRAP_DO(f5);
+        out[6] = WRAP_DO(f6); out[7] = WRAP_DO(f7);
     }
     return (w + 4);
 }
@@ -357,10 +378,12 @@ static t_int *sigwrap_old_perform(t_int *w)
 
 static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add((pd_compatibilitylevel < 48 ?
-        sigwrap_old_perform : sigwrap_perform),
-            3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    if (pd_compatibilitylevel < 48)
+        dsp_add(sigwrap_old_perform, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigwrap_perform : sigwrap_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigwrap_setup(void)
