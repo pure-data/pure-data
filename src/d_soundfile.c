@@ -21,9 +21,10 @@ objects use Posix-like threads. */
 #include <stdio.h>
 #include <pthread.h>
 
-/* Supported sample formats: LPCM (16 or 24 bit int) & 32 or 64 bit float */
+/* Supported sample formats: LPCM (8, 16, or 24 bit int) & 32 or 64 bit float */
 
-#define VALID_BYTESPERSAMPLE(b) ((b) == 1 || (b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
+#define VALID_BYTESPERSAMPLE(b) \
+    ((b) == 1 || (b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
 
 #define MAXSFCHANS 64
 
@@ -449,9 +450,7 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
         {
             for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
                 j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
-            {
-                *fp = ((t_sample)(*sp2) - 128) / 128.0;
-            }
+                    *fp = ((t_sample)(*sp2) - 128) / 128.0;
         }
         else if (sf->sf_bytespersample == 2)
         {
@@ -557,9 +556,7 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
         {
             for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
                 j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
-            {
-                wp->w_float = ((t_sample)(*sp2) - 128) / 128.0;
-            }
+                    wp->w_float = ((t_sample)(*sp2) - 128) / 128.0;
         }
         else if (sf->sf_bytespersample == 2)
         {
@@ -875,13 +872,16 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
     for (i = 0, sp = buf; i < sf->sf_nchannels; i++,
         sp += sf->sf_bytespersample)
     {
-        if (sf->sf_bytespersample == 1){
+        if (sf->sf_bytespersample == 1)
+        {
             for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
                 j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
             {
                 int sample = (int)((*fp * 128.0) + 128);
-                if (sample < 0) sample = 0;
-                if (sample > 255) sample = 255;
+                if (sample < 0)
+                    sample = 0;
+                if (sample > 255)
+                    sample = 255;
                 *sp2 = (unsigned char)sample;
             }
         } 
@@ -1021,14 +1021,16 @@ static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
     for (i = 0, sp = buf; i < sf->sf_nchannels;
          i++, sp += sf->sf_bytespersample)
     {
-        
-        if (sf->sf_bytespersample == 1){
+        if (sf->sf_bytespersample == 1)
+        {
             for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
                 j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
             {
                 int sample = (int)((wp->w_float + 1.0) * 127.5);
-                if (sample < 0) sample = 0;
-                if (sample > 255) sample = 255;
+                if (sample < 0)
+                    sample = 0;
+                if (sample > 255)
+                    sample = 255;
                 *sp2 = (unsigned char)sample;
             }
         }
