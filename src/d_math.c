@@ -208,14 +208,34 @@ static t_int *sigrsqrt_perform(t_int *w)
     return (w + 4);
 }
 
+static t_int *sigrsqrt_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = f0 <= 0 ? 0 : 1./sqrt(f0);
+        out[1] = f1 <= 0 ? 0 : 1./sqrt(f1);
+        out[2] = f2 <= 0 ? 0 : 1./sqrt(f2);
+        out[3] = f3 <= 0 ? 0 : 1./sqrt(f3);
+        out[4] = f4 <= 0 ? 0 : 1./sqrt(f4);
+        out[5] = f5 <= 0 ? 0 : 1./sqrt(f5);
+        out[6] = f6 <= 0 ? 0 : 1./sqrt(f6);
+        out[7] = f7 <= 0 ? 0 : 1./sqrt(f7);
+    }
+    return (w + 4);
+}
+
 static void sigrsqrt_dsp(t_sigrsqrt *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     if (pd_compatibilitylevel < 55)
-        dsp_add(sigrsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec,
-            SIGTOTAL(sp[0]));
-    else dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
-        SIGTOTAL(sp[0]));
+        dsp_add(sigrsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigrsqrt_perform : sigrsqrt_perform8), 3,
+                sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigrsqrt_setup(void)
@@ -286,14 +306,34 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
     return (w + 4);
 }
 
+static t_int *sigsqrt_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = f0 < 0 ? 0 : sqrt(f0);
+        out[1] = f1 < 0 ? 0 : sqrt(f1);
+        out[2] = f2 < 0 ? 0 : sqrt(f2);
+        out[3] = f3 < 0 ? 0 : sqrt(f3);
+        out[4] = f4 < 0 ? 0 : sqrt(f4);
+        out[5] = f5 < 0 ? 0 : sqrt(f5);
+        out[6] = f6 < 0 ? 0 : sqrt(f6);
+        out[7] = f7 < 0 ? 0 : sqrt(f7);
+    }
+    return (w + 4);
+}
+
 static void sigsqrt_dsp(t_sigsqrt *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     if (pd_compatibilitylevel < 55)
-        dsp_add(sigsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec,
-            SIGTOTAL(sp[0]));
-    else dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
-        SIGTOTAL(sp[0]));
+        dsp_add(sigsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigsqrt_perform : sigsqrt_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigsqrt_setup(void)
