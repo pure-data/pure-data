@@ -332,6 +332,9 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     t_descchunk desc = {"desc", {0}, {0}};
     t_datachunk data = {"data", {0}, 0};
 
+    if (sf->sf_bytespersample < 2)
+        return -1; /* unsupported format */
+
         /* file header */
     memcpy(buf + headersize, &head, CAFHEADSIZE);
     headersize += CAFHEADSIZE;
