@@ -35,26 +35,49 @@ static void *clip_new(t_floatarg lo, t_floatarg hi)
     return (x);
 }
 
+#define CLIP_DO(f, lo, hi) \
+    ((f) < (lo) ? (lo) : (f) > (hi) ? (hi) : (f))
+
 static t_int *clip_perform(t_int *w)
 {
     t_clip *x = (t_clip *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
+    t_sample lo = x->x_lo, hi = x->x_hi;
     while (n--)
     {
         t_sample f = *in++;
-        if (f < x->x_lo) f = x->x_lo;
-        if (f > x->x_hi) f = x->x_hi;
-        *out++ = f;
+        *out++ = CLIP_DO(f, lo, hi);
+    }
+    return (w+5);
+}
+
+static t_int *clip_perform8(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    t_sample lo = x->x_lo, hi = x->x_hi;
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = CLIP_DO(f0, lo, hi); out[1] = CLIP_DO(f1, lo, hi);
+        out[2] = CLIP_DO(f2, lo, hi); out[3] = CLIP_DO(f3, lo, hi);
+        out[4] = CLIP_DO(f4, lo, hi); out[5] = CLIP_DO(f5, lo, hi);
+        out[6] = CLIP_DO(f6, lo, hi); out[7] = CLIP_DO(f7, lo, hi);
     }
     return (w+5);
 }
 
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    dsp_add(((n & 7) ? clip_perform : clip_perform8), 4, x,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 static void clip_setup(void)
