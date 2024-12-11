@@ -30,6 +30,7 @@
   * sets a default info string: "Pd "
   * tries to set sound data length, otherwise falls back to "unknown size"
   * sample format: 8, 16, and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * 8, 16, and 24 bit samples are signed integers
 
   Pd versions < 0.51 did *not* write the actual data chunk size when updating
   the header, but set "unknown size" instead.
@@ -285,6 +286,12 @@ static int next_endianness(int endianness, int bytespersample)
     return endianness;
 }
 
+    /* all integer samples are signed  */
+static int next_signedness(int bytespersample)
+{
+    return 1;
+}
+
 /* ------------------------- setup routine ------------------------ */
 
 t_soundfile_type next = {
@@ -296,7 +303,8 @@ t_soundfile_type next = {
     next_updateheader,
     next_hasextension,
     next_addextension,
-    next_endianness
+    next_endianness,
+    next_signedness
 };
 
 void soundfile_next_setup( void)

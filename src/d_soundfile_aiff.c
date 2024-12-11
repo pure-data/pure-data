@@ -41,6 +41,7 @@
   * assumes there is always a sound data chunk
   * does not block align sound data
   * sample format: 8, 16, and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+  * 8, 16, 24 bit samples are signed integers
 
   Pd versions < 0.55 did not read or write 64 bit float.
 
@@ -616,6 +617,12 @@ static int aiff_endianness(int endianness, int bytespersample)
     return 1;
 }
 
+    /* all integer samples are signed  */
+static int aiff_signedness(int bytespersample)
+{
+    return 1;
+}
+
 /* ------------------------- setup routine ------------------------ */
 
 static const t_soundfile_type aiff = {
@@ -627,7 +634,8 @@ static const t_soundfile_type aiff = {
     aiff_updateheader,
     aiff_hasextension,
     aiff_addextension,
-    aiff_endianness
+    aiff_endianness,
+    aiff_signedness
 };
 
 void soundfile_aiff_setup( void)

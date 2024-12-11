@@ -71,7 +71,7 @@ void soundfile_copy(t_soundfile *dst, const t_soundfile *src)
 
 int soundfile_needsbyteswap(const t_soundfile *sf)
 {
-    return sf->sf_bigendian != sys_isbigendian();
+    return sf->sf_bytespersample == 1 || sf->sf_bigendian != sys_isbigendian();
 }
 
 const char* soundfile_strerror(int errnum)
@@ -448,9 +448,18 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
     {
         if (sf->sf_bytespersample == 1)
         {
-            for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
-                j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
-                    *fp = ((t_sample)(*sp2) - 128) / 128.0;
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                        *fp = (t_sample)((int8_t)*sp2) / 127.5;
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                        *fp = ((t_sample)(*sp2) - 128) / 128.0;
+            }
         }
         else if (sf->sf_bytespersample == 2)
         {
@@ -554,9 +563,18 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
     {
         if (sf->sf_bytespersample == 1)
         {
-            for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
-                j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
-                    wp->w_float = ((t_sample)(*sp2) - 128) / 128.0;
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                        wp->w_float = (t_sample)((int8_t)*sp2) / 127.5;
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                        wp->w_float = ((t_sample)(*sp2) - 128) / 128.0;
+            }
         }
         else if (sf->sf_bytespersample == 2)
         {
@@ -874,15 +892,31 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
     {
         if (sf->sf_bytespersample == 1)
         {
-            for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
-                j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
             {
-                int sample = (int)((*fp * 128.0) + 128);
-                if (sample < 0)
-                    sample = 0;
-                if (sample > 255)
-                    sample = 255;
-                *sp2 = (unsigned char)sample;
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    int xx = (int)(*fp * 128.0);
+                    if (xx < -128)
+                        xx = 128;
+                    if (xx > 127)
+                        xx = 127;
+                    *sp2 = (int8_t)xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    int xx = (int)((*fp * 128.0) + 128);
+                    if (xx < 0)
+                        xx = 0;
+                    if (xx > 255)
+                        xx = 255;
+                    *sp2 = (unsigned char)xx;
+                }
             }
         } 
         else if (sf->sf_bytespersample == 2)
@@ -1023,15 +1057,32 @@ static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
     {
         if (sf->sf_bytespersample == 1)
         {
-            for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
-                j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
             {
-                int sample = (int)((wp->w_float + 1.0) * 127.5);
-                if (sample < 0)
-                    sample = 0;
-                if (sample > 255)
-                    sample = 255;
-                *sp2 = (unsigned char)sample;
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+
+                    int xx = (int)(wp->w_float * 127.5 / 2);
+                    if (xx < -128)
+                        xx = 0;
+                    if (xx > 127)
+                        xx = 127;
+                    *sp2 = (int8_t)xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    int xx = (int)((wp->w_float + 1.0) * 127.5);
+                    if (xx < 0)
+                        xx = 0;
+                    if (xx > 255)
+                        xx = 255;
+                    *sp2 = (unsigned char)xx;
+                }
             }
         }
         else if (sf->sf_bytespersample == 2)

@@ -38,6 +38,7 @@
   * assumes there is only 1 sound data chunk
   * does not support 64-bit size variants or BWF file-splitting
   * sample format: 8, 16, and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+  * 8 bit samples are unsigned integers, 16, & 24 bit are signed integers
 
   Pd versions < 0.55 did not read or write 64 bit float.
 
@@ -508,6 +509,12 @@ static int wave_endianness(int endianness, int bytespersample)
     return 0;
 }
 
+    /* 8 bit (1 byte) integer samples are unsigned, the rest signed  */
+static int wave_signedness(int bytespersample)
+{
+    return (bytespersample > 1);
+}
+
 /* ------------------------- setup routine ------------------------ */
 
 t_soundfile_type wave = {
@@ -519,7 +526,8 @@ t_soundfile_type wave = {
     wave_updateheader,
     wave_hasextension,
     wave_addextension,
-    wave_endianness
+    wave_endianness,
+    wave_signedness
 };
 
 void soundfile_wave_setup( void)
