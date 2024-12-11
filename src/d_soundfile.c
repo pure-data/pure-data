@@ -71,7 +71,7 @@ void soundfile_copy(t_soundfile *dst, const t_soundfile *src)
 
 int soundfile_needsbyteswap(const t_soundfile *sf)
 {
-    return sf->sf_bytespersample == 1 || sf->sf_bigendian != sys_isbigendian();
+    return sf->sf_bigendian != sys_isbigendian();
 }
 
 const char* soundfile_strerror(int errnum)
@@ -2399,7 +2399,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_sf.sf_headersize = (headersize > 0 ? headersize :
         (headersize == 0 ? -1 : 0));
     x->x_sf.sf_nchannels = (nchannels >= 1 ? nchannels : 1);
-    x->x_sf.sf_bytespersample = (bytespersample > 2 ? bytespersample : 2);
+    x->x_sf.sf_bytespersample = (bytespersample > 0 ? bytespersample : 2);
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
     if (type && x->x_sf.sf_headersize >= 0)
     {
@@ -2909,7 +2909,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         x->x_sf.sf_samplerate = x->x_insamplerate;
     else x->x_sf.sf_samplerate = sys_getsr();
     x->x_sf.sf_bytespersample =
-        (wa.wa_bytespersample > 2 ? wa.wa_bytespersample : 2);
+        (wa.wa_bytespersample > 0 ? wa.wa_bytespersample : 2);
     x->x_sf.sf_bigendian = wa.wa_bigendian;
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
     x->x_frameswritten = 0;
