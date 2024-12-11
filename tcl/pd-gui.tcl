@@ -12,13 +12,12 @@ if { [catch {wm withdraw .} fid] } { exit 2 }
 
 # This is mainly for OSX as older versions only
 # have 8.4 while newer versions have 8.5.
-if { [catch {package provide Tcl 8.5}] } {
+if { [catch {package require Tcl 8.5 9}] } {
     # Tcl 8.5 not available
     package require Tcl 8.4
     package require Tk
 } else {
-    # Tcl 8.5 is available
-    package require Tcl 8.5
+    # Tcl >=8.5,>=9 is available
     package require Tk
 
     # replace Tk widgets with Ttk widgets on 8.5

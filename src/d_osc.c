@@ -213,7 +213,7 @@ static void cos_cleanup(t_class *c)
 #endif
     if (cos_newtable)
         freebytes(cos_newtable, sizeof(float) * (COSTABLESIZE+1));
-    cos_table = 0;
+    cos_newtable = 0;
 }
 
 static void cos_setup(void)
@@ -342,12 +342,20 @@ static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
                 &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
+static void sigvcf_clear(t_sigvcf *x)
+{
+    x->x_cspace.c_re = 0;
+    x->x_cspace.c_im = 0;
+}
+
 static
 void sigvcf_setup(void)
 {
     sigvcf_class = class_new(gensym("vcf~"), (t_newmethod)sigvcf_new, 0,
         sizeof(t_sigvcf), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(sigvcf_class, t_sigvcf, x_f);
+    class_addmethod(sigvcf_class, (t_method)sigvcf_clear,
+        gensym("clear"), 0);
     class_addmethod(sigvcf_class, (t_method)sigvcf_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigvcf_class, (t_method)sigvcf_ft1,

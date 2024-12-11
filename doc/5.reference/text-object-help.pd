@@ -1,5 +1,5 @@
 #N struct text-struct float x float y text z;
-#N canvas 456 25 541 585 12;
+#N canvas 802 50 541 585 12;
 #X obj 92 552 list;
 #X obj 29 16 text;
 #X text 15 552 see also:;
@@ -826,7 +826,7 @@
 #X connect 23 0 21 0;
 #X connect 24 0 3 0;
 #X restore 354 290 pd insert;
-#N canvas 332 170 766 438 text-and-data-structures 0;
+#N canvas 888 354 766 438 text-and-data-structures 1;
 #X floatatom 82 189 5 0 0 0 - - - 0;
 #X msg 47 158 0;
 #X msg 122 158 2;
@@ -842,7 +842,7 @@
 #X text 77 29 fields 'x/y' for coordinates and 'z' for text;
 #X obj 68 224 drawpolygon 0 4 0 -10 0 55 140 55 140 -10 0 -10;
 #X restore 463 58 pd text-struct;
-#N canvas 1094 180 226 165 text-data 0;
+#N canvas 598 439 226 165 text-data 1;
 #X scalar text-struct 20 20 \; 10 20 300 \\\; a b c d \\\; 100 200 292 \\\; \;;
 #X text 13 86 We have one datum (above) whose "z" field is text., f 25;
 #X restore 462 30 pd text-data;
@@ -876,7 +876,7 @@
 #X restore 454 382 pd open;
 #X text 486 334 open first example of the 4.Data.Structure section., f 25;
 #X obj 82 288 print line;
-#X text 560 30 <= open to see scalat;
+#X text 560 30 <= open to see scalar;
 #X connect 0 0 6 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;

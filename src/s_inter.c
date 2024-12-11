@@ -269,6 +269,9 @@ void sys_microsleep( void)
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
+#if DONT_HAVE_SIG_T
+typedef void (*sig_t)(int);
+#endif
 static void sys_signal(int signo, sig_t sigfun)
 {
     struct sigaction action;
@@ -974,7 +977,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            sys_gui("pdtk_ping\n");
+            pdgui_vmess("pdtk_ping", "");
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -1363,6 +1366,10 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+#ifndef _WIN32
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
+#endif
         #if 1
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 fprintf(stderr, "setsockopt (TCP_NODELAY) failed");
@@ -1417,6 +1424,10 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+#ifndef _WIN32
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
+#endif
         #if 1
             /* ask OS to allow another process to reopen this port after we close it */
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
@@ -1452,7 +1463,10 @@ static int sys_do_startgui(const char *libdir)
 
 #ifndef _WIN32
         if (sys_guicmd)
-            guicmd = sys_guicmd;
+        {
+            sprintf(cmdbuf, "\"%s\" %d\n", sys_guicmd, portno);
+            guicmd = cmdbuf;
+        }
         else
         {
 #ifdef __APPLE__
@@ -1620,7 +1634,7 @@ static int sys_do_startgui(const char *libdir)
             /* here is where we start the pinging. */
 #if PD_WATCHDOG
     if (sys_hipriority)
-        sys_gui("pdtk_watchdog\n");
+        pdgui_vmess("pdtk_watchdog", "");
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
@@ -1726,8 +1740,10 @@ void sys_setrealtime(const char *libdir)
                 close our copy - otherwise it might hang waiting for some
                 stupid child process (as seems to happen if jackd auto-starts
                 for us.) */
+#ifndef _WIN32
             if(fcntl(pipe9[1], F_SETFD, FD_CLOEXEC) < 0)
               perror("close-on-exec");
+#endif
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
@@ -1843,7 +1859,10 @@ int sys_startgui(const char *libdir)
     INTER->i_guihead = INTER->i_guitail = 0;
     INTER->i_waitingforping = 0;
     if (sys_do_startgui(libdir))
+    {
+        INTER->i_havetkproc = 0;
         return (-1);
+    }
     return (0);
 }
 
@@ -1853,7 +1872,10 @@ void sys_stopgui(void)
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-
+    sys_vgui("%s", "exit\n");
+        /* flush twice just in case contents in FIFO wrapped around: */
+    sys_flushtogui();
+    sys_flushtogui();
     if (INTER->i_guisock >= 0)
     {
         sys_closesocket(INTER->i_guisock);
@@ -1862,6 +1884,17 @@ void sys_stopgui(void)
     }
     INTER->i_havegui = 0;
     INTER->i_havetkproc = 0;
+}
+
+    /* message to pd to start or stop the gui.  If the symbol
+    argument is nonempty it is the "libdir" from which to start a new GUI.
+    if it's just "" we stop whatever gui might be running. */
+void glob_vis(void *dummy, t_symbol *s)
+{
+    if (*s->s_name && !INTER->i_havetkproc)
+        sys_startgui(s->s_name);
+    else if (!*s->s_name && INTER->i_havetkproc)
+        sys_stopgui();
 }
 
 /* ----------- mutexes for thread safety --------------- */

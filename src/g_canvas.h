@@ -175,7 +175,7 @@ struct _glist
     struct _glist *gl_owner;    /* parent glist, supercanvas, or 0 if none */
     int gl_pixwidth;            /* width in pixels (on parent, if a graph) */
     int gl_pixheight;
-    t_float gl_x1;                /* bounding rectangle in our own coordinates */
+    t_float gl_x1;              /* bounding rectangle in our own coordinates */
     t_float gl_y1;
     t_float gl_x2;
     t_float gl_y2;
@@ -456,6 +456,9 @@ EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
 
+t_rtext *glist_textedfor(t_glist *gl);
+void glist_settexted(t_glist *gl, t_rtext *x);
+
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize);
 EXTERN void text_drawborder(t_text *x, t_glist *glist, const char *tag,
@@ -488,6 +491,7 @@ EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
 EXTERN t_text *rtext_getowner(t_rtext *x);
+EXTERN t_glist *rtext_getglist(t_rtext *x);
 
 /* -------------------- functions on canvases ------------------------ */
 EXTERN t_class *canvas_class;
@@ -592,11 +596,13 @@ EXTERN void gpointer_setarray(t_gpointer *gp, t_array *array, t_word *w);
 
 /* --------------------- scalars ------------------------- */
 EXTERN void word_init(t_word *wp, t_template *tmpl, t_gpointer *gp);
+EXTERN void word_initvec(t_word *wp, t_template *tmpl, t_gpointer *gp, long n);
 EXTERN void word_restore(t_word *wp, t_template *tmpl,
     int argc, t_atom *argv);
 EXTERN t_scalar *scalar_new(t_glist *owner,
     t_symbol *templatesym);
 EXTERN void word_free(t_word *wp, t_template *tmpl);
+EXTERN void word_freevec(t_word *wp, t_template *tmpl, long n);
 EXTERN void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey);
 EXTERN void scalar_redraw(t_scalar *x, t_glist *glist);
 EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,

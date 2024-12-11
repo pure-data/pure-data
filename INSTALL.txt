@@ -262,7 +262,9 @@ double-clicked and/or copied to /Applications. For more info & options regarding
 the Pd .app bundle, see mac/README.txt
 
 If you want to have both the Pd application *and* use Pd from the commandline,
-add command aliases to the binaries inside the .app to your ~/.bash_profile:
+add command aliases to the binaries inside the .app to your shell environment
+~/.zshrc (newer systems with zsh, macOS 10.15+) or ~/.bash_profile (older
+systems with bash):
 
 # pd commandline
 WHICHPD="Pd-0.47-1"
@@ -270,8 +272,13 @@ alias pd="/Applications/$WHICHPD.app/Contents/Resources/bin/pd"
 alias pdsend="/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend"
 alias pdreceive="/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive"
 
-Next, reload the profile by either opening a new Terminal window or running:
+Next, reload the shell environment by either opening a new Terminal window or
+running:
 
+    # zsh (new)
+    . ~/.zshrc
+
+    # bash (old)
     source ~/.bash_profile
 
 If you install Pd to your system with "make install", the Tk 8.5.9 currently

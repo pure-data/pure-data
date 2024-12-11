@@ -143,10 +143,10 @@ void glist_deselect(t_glist *x, t_gobj *y)
         return;
 
     if (!glist_isselected(x, y)) bug("glist_deselect");
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
         t_rtext *fuddy = glist_findrtext(x, (t_text *)y);
-        if (x->gl_editor->e_textedfor == fuddy)
+        if (glist_textedfor(x) == fuddy)
         {
             if (x->gl_editor->e_textdirty)
             {
@@ -190,7 +190,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
         rtext_gettext(z, &buf, &bufsize);
         text_setto((t_text *)y, x, buf, bufsize);
         canvas_fixlinesfor(x, (t_text *)y);
-        x->gl_editor->e_textedfor = 0;
+        glist_settexted(x, 0);
         canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
     }
     if (fixdsp)
@@ -267,6 +267,27 @@ static t_gobj *glist_nth(t_glist *x, int n)
         if (indx == n)
             return (y);
     return (0);
+}
+
+t_rtext *glist_textedfor(t_glist *gl)
+{
+    t_canvas *canvas = glist_getcanvas(gl);
+    if (canvas->gl_editor)
+        return (canvas->gl_editor->e_textedfor);
+    else return (0);
+}
+
+void glist_settexted(t_glist *gl, t_rtext *x)
+{
+    while (gl->gl_owner && !gl->gl_isclone && !gl->gl_havewindow &&
+        gl->gl_isgraph)
+    {
+        gl->gl_editor->e_textedfor = 0;
+        gl = gl->gl_owner;
+    }
+    if (gl->gl_editor)
+        gl->gl_editor->e_textedfor = x;
+    else bug("glist_settexted");
 }
 
 /* ------------------- support for undo/redo  -------------------------- */
@@ -1852,8 +1873,8 @@ void canvas_destroy_editor(t_glist *x)
     {
         t_rtext *rtext;
             /* this happens if we had activated an atom box in run mode: */
-        if (x->gl_editor->e_textedfor)
-            rtext_activate(x->gl_editor->e_textedfor, 0);
+        if (glist_textedfor(x))
+            rtext_activate(glist_textedfor(x), 0);
         while ((rtext = x->gl_editor->e_rtext))
             rtext_free(rtext);
         editor_free(x->gl_editor, x);
@@ -2288,23 +2309,23 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (runmode && !rightclick)
     {
             /* is a text activated ? */
-        if (x->gl_editor->e_textedfor  && doit)
+        if (glist_textedfor(x)  && doit)
         {
-            hitobj = rtext_getowner(x->gl_editor->e_textedfor);
-            if (canvas_hitbox(x, &hitobj->te_g,
-                xpos, ypos, &x1, &y1, &x2, &y2))
+           hitobj = rtext_getowner(glist_textedfor(x));
+            if (canvas_hitbox(rtext_getglist(glist_textedfor(x)),
+                &hitobj->te_g, xpos, ypos, &x1, &y1, &x2, &y2))
             {
-                rtext_mouse(x->gl_editor->e_textedfor, xpos - x1, ypos - y1,
+                rtext_mouse(glist_textedfor(x), xpos - x1, ypos - y1,
                     (shiftmod? RTEXT_SHIFT :
                         (doublemod ? RTEXT_DBL : RTEXT_DOWN)));
-                    x->gl_editor->e_onmotion = MA_DRAGTEXT;
-                    x->gl_editor->e_xwas = x1;
-                    x->gl_editor->e_ywas = y1;
+                x->gl_editor->e_onmotion = MA_DRAGTEXT;
+                x->gl_editor->e_xwas = x1;
+                x->gl_editor->e_ywas = y1;
             }
             else
             {
-                rtext_retext(x->gl_editor->e_textedfor);
-                rtext_activate(x->gl_editor->e_textedfor, 0);
+                rtext_retext(glist_textedfor(x));
+                rtext_activate(glist_textedfor(x), 0);
             }
             return;
         }
@@ -2332,11 +2353,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         be a number box - so if we clicked outside the box, deactivate it.
         This is a different situation from the "deselect" action below
         when we're unlocked.  */
-    /* if (doit) post("%d %x %x %x", x->gl_edit, x->gl_editor->e_textedfor,
+    /* if (doit) post("%d %x %x %x", x->gl_edit, glist_textedfor(x),
         hitobj, (hitobj ? glist_findrtext(x, hitobj) : 0));
-    if (doit && (!x->gl_edit) && x->gl_editor->e_textedfor &&
-        (!hitobj || (glist_findrtext(x, hitobj) != x->gl_editor->e_textedfor)))
-            rtext_activate(x->gl_editor->e_textedfor, 0);   */
+    if (doit && (!x->gl_edit) && glist_textedfor(x) &&
+        (!hitobj || (glist_findrtext(x, hitobj) != glist_textedfor(x))))
+            rtext_activate(glist_textedfor(x), 0);   */
     if (hitbox)
     {
             /* we're in a rectangle */
@@ -2347,7 +2368,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             if (doit)
             {
                 t_rtext *rt;
-                if (hitobj && (rt = x->gl_editor->e_textedfor) &&
+                if (hitobj && (rt = glist_textedfor(x)) &&
                     rt == glist_findrtext(x, hitobj))
                 {
                     rtext_mouse(rt, xpos - x1, ypos - y1, RTEXT_SHIFT);
@@ -2431,7 +2452,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 t_rtext *rt;
                     /* check if the box is being text edited */
             nooutletafterall:
-                if (hitobj && (rt = x->gl_editor->e_textedfor) &&
+                if (hitobj && (rt = glist_textedfor(x)) &&
                     rt == glist_findrtext(x, hitobj))
                 {
                     rtext_mouse(rt, xpos - x1, ypos - y1,
@@ -3076,7 +3097,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                     (x->gl_editor->e_grab, gotkeysym, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
                it is either "real" (has a key number) or else is an arrow key. */
-        else if (x->gl_editor->e_textedfor && (keynum
+        else if (glist_textedfor(x) && (keynum
             || !strcmp(gotkeysym->s_name, "Home")
             || !strcmp(gotkeysym->s_name, "End")
             || !strcmp(gotkeysym->s_name, "Up")
@@ -3105,8 +3126,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 canvas_setundo(x, canvas_undo_cut,
                     canvas_undo_set_cut(x, UCUT_TEXT), "typing");
             }
-            rtext_key(x->gl_editor->e_textedfor,
-                (int)keynum, gotkeysym);
+            rtext_key(glist_textedfor(x), (int)keynum, gotkeysym);
             if (x->gl_editor->e_textdirty)
                 canvas_dirty(x, 1);
         }
@@ -3208,7 +3228,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     }
     else if (x->gl_editor->e_onmotion == MA_DRAGTEXT)
     {
-        t_rtext *rt = x->gl_editor->e_textedfor;
+        t_rtext *rt = glist_textedfor(x);
         if (rt)
             rtext_mouse(rt, xpos - x->gl_editor->e_xwas,
                 ypos - x->gl_editor->e_ywas, RTEXT_DRAG);
@@ -3720,11 +3740,11 @@ static void canvas_copy(t_canvas *x)
         binbuf_free(EDITOR->copy_binbuf);
         EDITOR->copy_binbuf = canvas_docopy(x);
     }
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
         char *buf;
         int bufsize;
-        rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
+        rtext_getseltext(glist_textedfor(x), &buf, &bufsize);
         pdgui_vmess("clipboard", "r", "clear");
         pdgui_vmess("clipboard", "rp",  "append", bufsize, buf);
     }
@@ -3762,7 +3782,7 @@ static void canvas_doclear(t_canvas *x)
         /* if text is selected, deselecting it might remake the
            object. So we deselect it and hunt for a "new" object on
            the glist to reselect. */
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
         t_gobj *selwas = x->gl_editor->e_selection->sel_what;
         pd_this->pd_newest = 0;
@@ -3798,22 +3818,22 @@ static void canvas_cut(t_canvas *x)
         return;
     if (x->gl_editor->e_selectedline)   /* delete line */
         canvas_clearline(x);
-    else if (x->gl_editor->e_textedfor) /* delete selected text in a box */
+    else if (glist_textedfor(x)) /* delete selected text in a box */
     {
         char *buf;
         int bufsize;
-        rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
+        rtext_getseltext(glist_textedfor(x), &buf, &bufsize);
         if (!bufsize && x->gl_editor->e_selection &&
             !x->gl_editor->e_selection->sel_next)
         {
                 /* if the text is already empty, delete the box.  We
                    first clear 'textedfor' so that canvas_doclear later will
                    think the whole box was selected, not the text */
-            x->gl_editor->e_textedfor = 0;
+            glist_settexted(x, 0);
             goto deleteobj;
         }
         canvas_copy(x);
-        rtext_key(x->gl_editor->e_textedfor, 127, &s_);
+        rtext_key(glist_textedfor(x), 127, &s_);
         canvas_dirty(x, 1);
     }
     else if (x->gl_editor->e_selection)
@@ -4094,7 +4114,7 @@ static void canvas_paste(t_canvas *x)
 {
     if (!x->gl_editor)
         return;
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
             /* simulate keystrokes as if the copy buffer were typed in. */
         pdgui_vmess("pdtk_pastetext", "^", x);
@@ -4350,7 +4370,7 @@ static void canvas_reselect(t_canvas *x)
     t_gobj *g, *gwas;
         /* if someone is text editing, and if only one object is
            selected,  deselect everyone and reselect.  */
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
             /* only do this if exactly one item is selected. */
         if ((gwas = x->gl_editor->e_selection->sel_what) &&
@@ -4802,7 +4822,7 @@ static void canvas_texteditor(t_canvas *x)
     t_rtext *foo;
     char *buf;
     int bufsize;
-    if ((foo = x->gl_editor->e_textedfor))
+    if ((foo = glist_textedfor(x)))
         rtext_gettext(foo, &buf, &bufsize);
     else buf = "", bufsize = 0;
     pdgui_vmess("pdtk_pd_texteditor", "p", bufsize, buf);

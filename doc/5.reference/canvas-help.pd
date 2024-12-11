@@ -63,7 +63,7 @@
 #X coords 0 1 10 -1 90 35 1 0 0;
 #X restore 56 26 graph;
 #X obj 13 541 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000 0;
-#X text 161 130 list - sets values into array \, fisty element is starting index (from 0)., f 74;
+#X text 161 130 list - sets values into array \, first element is starting index (from 0)., f 74;
 #X text 98 147 const <float> - optional float sets a constant value to all indexes (default 0)., f 83;
 #X text 91 164 resize <float> - resizes the array., f 84;
 #X text 91 185 sinesum <list> -;
@@ -85,11 +85,11 @@
 #X text 98 363 xticks <list> -;
 #X text 210 362 sets a point to put a tick \, the interval between ticks \, and the number of ticks overall per large tick., f 67;
 #X text 98 394 yticks <list> - same as above for the 'y' axis., f 83;
-#X text 91 412 xlabels <list> - first element is a label offset \, remaining are the values to label., f 84;
-#X text 91 429 ylabels <list> - first element is a label offset \, remaining are the values to label., f 84;
 #X obj 13 76 cnv 5 700 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020 #000000 0;
 #X text 164 90 NONE (input is via messages sent to the array name).;
 #X text 156 36 - "array": graphical array;
+#X text 98 412 xlabel <list> - first element is a label offset \, remaining are the values to label., f 83;
+#X text 98 429 ylabel <list> - first element is a label offset \, remaining are the values to label., f 83;
 #X restore 768 82 pd reference;
 #X text 895 179 <= click;
 #N canvas 786 245 483 218 reference 0;
@@ -128,7 +128,6 @@
 #X text 197 313 <-- click to open;
 #X text 54 469 right click to open -->;
 #X text 787 382 <-- click to open examples.;
-#X text 532 508 [table] builds a subpatch with an array inside \, but the array contents (and other properties) aren't saved with the patch., f 62;
 #X text 22 232 A 'canvas' is a patch window. By typing "pd" into an object box \, you create a 'subwindow' (or a 'subpatch'). An optional argument sets its name. Click to open and right click on it to access its canvas properties., f 55;
 #X text 15 517 You can send messages to the canvas of a subpatch by sending them to the subpatch's name \, which is useful for Dynamic Patching (see [pd-messages] below). Alternatively \, you can also use the [namecanvas] object., f 66;
 #X obj 6 590 cnv 1 990 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -140,13 +139,14 @@
 #X obj 468 306 cnv 19 198 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array2 100 float 3;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.528571 0.528571 0.5 0.428572 0.378573 0.328573 0.285716 0.24286 0.214289 0.185717 0.164289 0.142861 0.135718 0.128575 0.121432 0.11429 0.111432 0.108575 0.105718 0.102861 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.100004 0.102045 0.104086 0.106126 0.108167 0.110208 0.112249 0.11429 0.117147 0.120004 0.122861 0.125718 0.128575 0.131432 0.134289 0.137146 0.140004 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.142861 0.128575 0.128575 0 0 0 0 0 0 0;
+#A 0 -0.842856 -0.82857 -0.799999 -0.771428 -0.757142 -0.7 -0.614287 -0.500002 -0.300004 -0.200005 -0.114292 -0.0285786 0.0285636 0.0714203 0.114277 0.142848 0.185705 0.228562 0.271418 0.299989 0.314275 0.32856 0.314275 0.285704 0.257133 0.19999 0.171419 0.114277 0.0285636 -0.0714353 -0.157149 -0.171434 -0.171434 -0.171434 -0.157149 -0.128578 -0.114292 -0.0428642 0.0571347 0.157134 0.242847 0.299989 0.342846 0.385703 0.414274 0.428559 0.442845 0.457131 0.457131 0.457131 0.457131 0.457131 0.442845 0.428559 0.414274 0.399988 0.371417 0.357132 0.32856 0.314275 0.271418 0.257133 0.228562 0.214276 0.19999 0.214276 0.257133 0.285704 0.321418 0.357132 0.385703 0.414274 0.442845 0.471416 0.499987 0.528558 0.55713 0.571415 0.585701 0.585701 0.585701 0.599986 0.599986 0.599986 0.599986 0.599986 0.599986 0.599986 0.585701 0.55713 0.514273 0.471416 0.442845 0.385703 0.314275 0.228562 0.185705 0.142848 0.0857059 -7.51019e-06;
 #X coords 0 1 100 -1 200 140 1;
 #X restore 467 305 graph;
-#X text 499 450 (using canvas [cnv] for background color), f 20;
+#X text 479 450 (using canvas [cnv] for background color), f 23;
 #N canvas 47 74 450 300 (subpatch) 0;
 #X restore 266 23 page;
 #X text 308 23 (deprecated alias);
 #X text 241 23 or;
+#X text 532 498 [table] builds a subpatch with an array inside \, but the array contents (and other properties) aren't saved with the patch (you can use the newer [array] object instead)., f 62;
 #X connect 24 0 23 0;
 #X connect 25 0 23 0;

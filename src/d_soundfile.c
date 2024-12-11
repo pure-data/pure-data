@@ -2541,8 +2541,9 @@ static void *writesf_child_main(void *zz)
                 (x->x_requestcode == REQUEST_CLOSE &&
                     x->x_fifohead != x->x_fifotail))
             {
-                int fifosize = x->x_fifosize, fifotail;
+                int fifosize = x->x_fifosize, fifotail, updated;
                 char *buf = x->x_buf;
+                off_t sought;
 #ifdef DEBUG_SOUNDFILE_THREADS
                 fprintf(stderr, "writesf~: 77\n");
 #endif
@@ -2602,6 +2603,24 @@ static void *writesf_child_main(void *zz)
                         x->x_fifotail = 0;
                 }
                 x->x_frameswritten += byteswritten / sf.sf_bytesperframe;
+                pthread_mutex_unlock(&x->x_mutex);
+                    /* update header on each write.  Since the update-header
+                    function might perform an lseek on the file, we save and
+                    restore the current file pointer so that later writes
+                    continue where we left off. */
+                sought = lseek(x->x_sf.sf_fd, 0, SEEK_CUR);
+                if (sought > 0)
+                    updated = x->x_sf.sf_type->t_updateheaderfn(&x->x_sf,
+                        x->x_frameswritten);
+                else updated = 0;
+                if (updated)
+                    updated = (lseek(x->x_sf.sf_fd, sought, SEEK_SET) > 0);
+                pthread_mutex_lock(&x->x_mutex);
+                if (!updated)
+                {
+                    x->x_fileerror = errno;
+                    goto bail;
+                }
 #ifdef DEBUG_SOUNDFILE_THREADS
                 fprintf(stderr, "writesf~: after head %d tail %d written %ld\n",
                     x->x_fifohead, x->x_fifotail, x->x_frameswritten);
@@ -2792,6 +2811,16 @@ static void writesf_stop(t_writesf *x)
     fprintf(stderr, "writesf~: signal 2\n");
 #endif
     sfread_cond_signal(&x->x_requestcondition);
+    if (sys_batch)
+    {
+        fprintf(stderr, "foo\n");
+            /* if we're running batch, wait for child to finish */
+        while (x->x_requestcode != REQUEST_NOTHING)
+        {
+            sfread_cond_signal(&x->x_requestcondition);
+            sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
+        }
+    }
     pthread_mutex_unlock(&x->x_mutex);
 }
 

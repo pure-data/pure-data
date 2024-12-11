@@ -829,7 +829,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
-        if (t == x->a_glist->gl_editor->e_textedfor)
+        if (t == glist_textedfor(x->a_glist))
             rtext_activate(t, 0);
         x->a_grabbed = 0;
         gatom_reborder(x);
@@ -838,7 +838,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     else if (c == '\n')
     {
         x->a_doubleclicked = 0;
-        if (t == x->a_glist->gl_editor->e_textedfor)
+        if (t == glist_textedfor(x->a_glist))
         {
             rtext_gettext(t, &buf, &bufsize);
             rtext_key(t, 0, gensym("End"));
@@ -861,7 +861,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
     else
     {
-        if (t != x->a_glist->gl_editor->e_textedfor)
+        if (t != glist_textedfor(x->a_glist))
         {
             rtext_activate(t, 1);
             rtext_key(t, '.', &s_);
@@ -934,14 +934,6 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     if (!doit)
         return (1);
     t = glist_findrtext(x->a_glist, &x->a_text);
-    if (t == x->a_glist->gl_editor->e_textedfor)
-    {
-        rtext_mouse(t, xpos, ypos, (dbl ? RTEXT_DBL : RTEXT_DOWN));
-        x->a_glist->gl_editor->e_onmotion = MA_DRAGTEXT;
-        x->a_glist->gl_editor->e_xwas = xpos;
-        x->a_glist->gl_editor->e_ywas = ypos;
-        return (1);
-    }
     if (x->a_flavor == A_FLOAT)
     {
         if (x->a_text.te_width == 1)
@@ -1353,8 +1345,7 @@ static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
     t_rtext *y = glist_findrtext(glist, x);
-    if (z->g_pd != gatom_class)
-        rtext_activate(y, state);
+    rtext_activate(y, state);
 }
 
 static void text_delete(t_gobj *z, t_glist *glist)
@@ -1502,7 +1493,7 @@ static const t_widgetbehavior gatom_widgetbehavior =
     text_getrect,
     gatom_displace,
     text_select,
-    text_activate,
+    0,
     text_delete,
     gatom_vis,
     gatom_doclick,
