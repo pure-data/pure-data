@@ -72,13 +72,15 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
 # functions called from Edit menu
 
 proc ::pd_menucommands::menu_undo {} {
-    if { $::focused_window ne ".pdwindow" } {
+    set mytoplevel [winfo toplevel $::focused_window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$::focused_window undo"
     }
 }
 
 proc ::pd_menucommands::menu_redo {} {
-    if { $::focused_window ne ".pdwindow" } {
+    set mytoplevel [winfo toplevel $::focused_window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$::focused_window redo"
     }
 }
