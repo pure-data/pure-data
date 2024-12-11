@@ -919,7 +919,7 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
                     *sp2 = (unsigned char)xx;
                 }
             }
-        } 
+        }
         else if (sf->sf_bytespersample == 2)
         {
             t_sample ff = normalfactor * 32768.;
