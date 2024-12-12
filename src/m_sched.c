@@ -289,7 +289,9 @@ int sched_get_using_audio(void)
     return sched_useaudio;
 }
 
-    /* take the scheduler forward one DSP tick, also handling clock timeouts */
+void taskqueue_poll(void);
+
+    /* take the scheduler forward one DSP tick, also handling clock timeouts and tasks. */
 void sched_tick(void)
 {
     double next_sys_time = pd_this->pd_systime + SYSTIMEPERTICK;
@@ -312,6 +314,7 @@ void sched_tick(void)
             return;
     }
     pd_this->pd_systime = next_sys_time;
+    taskqueue_poll();
     dsp_tick();
     sched_counter++;
 }
