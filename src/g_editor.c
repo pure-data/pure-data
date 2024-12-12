@@ -3,6 +3,7 @@
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include <stdio.h>
+#include <math.h>
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
@@ -2303,9 +2304,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (x->gl_editor->e_onmotion != MA_NONE)
         return;
 
-    x->gl_editor->e_xwas = xpos;
-    x->gl_editor->e_ywas = ypos;
-
+    x->gl_editor->e_xwas = !x->gl_snaptogrid ? xpos : round(xpos/sys_gridsize) * sys_gridsize;
+    x->gl_editor->e_ywas = !x->gl_snaptogrid ? ypos : round(ypos/sys_gridsize) * sys_gridsize;
     if (runmode && !rightclick)
     {
             /* is a text activated ? */
@@ -3147,13 +3147,13 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         }
             /* check for arrow keys */
         else if (!strcmp(gotkeysym->s_name, "Up"))
-            canvas_displaceselection(x, 0, shift ? -10 : -1);
+            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? -sys_gridsize : -1);
         else if (!strcmp(gotkeysym->s_name, "Down"))
-            canvas_displaceselection(x, 0, shift ? 10 : 1);
+            canvas_displaceselection(x, 0, shift || x->gl_snaptogrid ? sys_gridsize : 1);
         else if (!strcmp(gotkeysym->s_name, "Left"))
-            canvas_displaceselection(x, shift ? -10 : -1, 0);
+            canvas_displaceselection(x, shift || x->gl_snaptogrid ? -sys_gridsize : -1, 0);
         else if (!strcmp(gotkeysym->s_name, "Right"))
-            canvas_displaceselection(x, shift ? 10 : 1, 0);
+            canvas_displaceselection(x, shift || x->gl_snaptogrid ? sys_gridsize : 1, 0);
         else if ((MA_CONNECT == x->gl_editor->e_onmotion)
             && (CURSOR_EDITMODE_CONNECT == EDITOR->canvas_cursorwas)
                  && !strncmp(gotkeysym->s_name, "Shift", 5))
@@ -3206,8 +3206,8 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             x->gl_editor->e_clock = clock_new(x, (t_method)delay_move);
         clock_unset(x->gl_editor->e_clock);
         clock_delay(x->gl_editor->e_clock, 5);
-        x->gl_editor->e_xnew = xpos;
-        x->gl_editor->e_ynew = ypos;
+        x->gl_editor->e_xnew = !x->gl_snaptogrid ? xpos : round(xpos/sys_gridsize) * sys_gridsize;
+        x->gl_editor->e_ynew = !x->gl_snaptogrid ? ypos : round(ypos/sys_gridsize) * sys_gridsize;
     }
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 0);
@@ -4480,7 +4480,9 @@ static void canvas_tidy(t_canvas *x)
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
     canvas_undo_add(x, UNDO_MOTION, "{tidy up}", canvas_undo_set_move(x, !all));
-
+        /* skip tidying if snap to grid is enabled, and round to nearest grid unit */
+    if(!x->gl_snaptogrid)
+    {
         /* tidy horizontally */
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
@@ -4569,6 +4571,18 @@ static void canvas_tidy(t_canvas *x)
             }
         nothead: ;
         }
+    }
+    else
+    {
+        for(y = x->gl_list; y; y = y->g_next)
+        {
+            if(all || glist_isselected(x,y))
+            {
+                    gobj_displace(y, x, 0, 0);
+            }
+        }
+        logpost(NULL, 3, "tidy: snap to grid enabled, rounded positions to nearest %d pixels", sys_gridsize);
+    }
     canvas_dirty(x, 1);
 }
 
@@ -4871,6 +4885,20 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
     }
 }
 
+void canvas_snaptogrid(t_canvas *x, t_floatarg state)
+{
+    if (x->gl_snaptogrid == (unsigned int) state)
+        return;
+    x->gl_snaptogrid = (unsigned int) state;
+
+    if (glist_isvisible(x) && x->gl_havewindow)
+    {
+        sys_vgui("pdtk_canvas_snaptogrid .x%lx %d\n",
+            glist_getcanvas(x), x->gl_snaptogrid);
+    }
+}
+
+
     /* called by canvas_font below */
 static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
     t_floatarg yresize)
@@ -4982,6 +5010,8 @@ void g_editor_setup(void)
         gensym("texteditor"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_editmode,
         gensym("editmode"), A_DEFFLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_snaptogrid,
+        gensym("snaptogrid"), A_DEFFLOAT, A_NULL);    
     class_addmethod(canvas_class, (t_method)canvas_print,
         gensym("print"), A_SYMBOL, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_menufont,

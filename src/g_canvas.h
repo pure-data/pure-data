@@ -210,6 +210,7 @@ struct _glist
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
+    unsigned int gl_snaptogrid:1;   /* snap to grid mode */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
     void *gl_privatedata;           /* private data */
 };
@@ -524,6 +525,7 @@ EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
 EXTERN void canvas_updatewindowlist(void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
+EXTERN void canvas_snaptogrid(t_canvas *x, t_floatarg state);
 EXTERN int canvas_isabstraction(const t_canvas *x);
 EXTERN int canvas_istable(const t_canvas *x);
 EXTERN int canvas_showtext(const t_canvas *x);

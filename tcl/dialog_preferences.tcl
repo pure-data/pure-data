@@ -12,6 +12,7 @@ after idle ::dialog_preferences::read
 # allow updating the audio resp MIDI frame if the backend changes
 set ::dialog_preferences::audio_frame {}
 set ::dialog_preferences::midi_frame {}
+set ::dialog_preferences::grid_size 10
 
 
 proc ::dialog_preferences::cancel {mytoplevel} {
@@ -23,7 +24,9 @@ proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
     ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
+    ::pd_guiprefs::write "grid_size" $::dialog_preferences::grid_size
     pdsend "pd zoom-open $::sys_zoom_open"
+    pdsend "pd set-grid-size $::dialog_preferences::grid_size"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
     ::preferencewindow::apply $mytoplevel
@@ -38,12 +41,16 @@ proc ::dialog_preferences::read {} {
     }
     set ::pdtk_canvas::enable_cords_to_foreground $x
     ::dialog_preferences::read_usettknotebook
+    ::dialog_preferences::read_grid_size
 }
 proc ::dialog_preferences::read_usettknotebook {} {
     set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
 }
 proc ::dialog_preferences::write_usettknotebook {} {
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
+}
+proc ::dialog_preferences::read_grid_size {} {
+    set ::dialog_preferences::grid_size [::pd_guiprefs::read grid_size]
 }
 
 proc ::dialog_preferences::tab_changed {mytoplevel} {
@@ -80,6 +87,16 @@ proc ::dialog_preferences::fill_frame {prefs} {
     checkbutton $prefs.guiframe.patching.highlight_connections -text [_ "Highlight active cord while connecting"] \
         -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w
     pack $prefs.guiframe.patching.highlight_connections -side left -anchor w
+    
+    labelframe $prefs.guiframe.grid -padx 5 -pady 5 -borderwidth 0 \
+        -text [_ "Canvas grid" ]
+    pack $prefs.guiframe.grid -side top -anchor w -expand 1
+
+    label $prefs.guiframe.grid.grid_size_label -text [_ "Grid size:"]
+    pack $prefs.guiframe.grid.grid_size_label -side left -anchor w
+
+    entry $prefs.guiframe.grid.grid_size_entry -textvariable ::dialog_preferences::grid_size -width 4
+    pack $prefs.guiframe.grid.grid_size_entry -side left -anchor w
 }
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
