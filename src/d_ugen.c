@@ -188,17 +188,17 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
         downsample = 1.0 / fupsample;
         upsample   = 1;
     }
-    if (overlap != (1 << ilog2(overlap)))
+    if (overlap & (overlap - 1))
     {
         pd_error(x, "block~: overlap not a power of 2");
         overlap = 1;
     }
-    if (downsample != (1 << ilog2(downsample)))
+    if (downsample & (downsample - 1))
     {
         pd_error(x, "block~: downsampling not a power of 2");
         downsample = 1;
     }
-    if (upsample != (1 << ilog2(upsample)))
+    if (upsample & (upsample - 1))
     {
         pd_error(x, "block~: upsampling not a power of 2");
         upsample = 1;
