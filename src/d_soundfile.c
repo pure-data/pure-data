@@ -861,7 +861,6 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     return fd;
 
 badcreate:
-    object_sferror(NULL, "[soundfiler] write", filename, errno, sf);
     sf->sf_fd = -1;
     if (fd >= 0)
         sys_close(fd);
@@ -898,7 +897,7 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
                 for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
                     j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
                 {
-                    int xx = (int)(*fp * 128.0);
+                    int xx = (int)(*fp * 127.5);
                     if (xx < -128)
                         xx = 128;
                     if (xx > 127)
@@ -1064,7 +1063,7 @@ static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
                     j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
                 {
 
-                    int xx = (int)(wp->w_float * 127.5 / 2);
+                    int xx = (int)(wp->w_float * 127.5);
                     if (xx < -128)
                         xx = 0;
                     if (xx > 127)
