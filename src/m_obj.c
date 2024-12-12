@@ -328,6 +328,7 @@ struct _outlet
     t_object *o_owner;
     struct _outlet *o_next;
     t_outconnect *o_connections;
+    t_int o_nchans;
     t_symbol *o_sym;
 };
 
@@ -920,12 +921,33 @@ int obj_issignaloutlet(const t_object *x, int m)
     return (o2 && (o2->o_sym == &s_signal));
 }
 
+void obj_sigoutletsetchans(const t_object *x, int m, int nchans)
+{
+    t_outlet *o2;
+    for (o2 = x->ob_outlet; o2 && m--; o2 = o2->o_next);
+    if (o2 && (o2->o_sym == &s_signal))
+        o2->o_nchans = nchans;
+}
+
+int obj_sigoutletgetchans(const t_object *x, int m)
+{
+    int n;
+    t_outlet *o2;
+    for (o2 = x->ob_outlet; o2 && m--; o2 = o2->o_next);
+
+    if (o2 && (o2->o_sym == &s_signal))
+        return (o2->o_nchans > 0) ? o2->o_nchans : 1;
+    else
+        return 0;
+}
+
     /* return a pointer to a scalar holding the inlet's value.  If we
     can't find a value, return a pointer to a fixed location holding zero.
     This should only happen for a left-hand signal inlet for which no
     "MAINSIGNALIN" has been provided, in which case the object won't
     promote scalars correctly.  Nonetheless we provide it so that at least
     such a badly written object won't crash Pd. */
+
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;

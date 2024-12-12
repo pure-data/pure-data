@@ -2427,7 +2427,10 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 {
                     if (doit)
                     {
-                        int issignal = obj_issignaloutlet(hitobj, closest);
+                        int nchannels = obj_sigoutletgetchans(hitobj, closest);
+                        int connection_thickness =
+                            (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2 : 1) * x->gl_zoom;
+
                         int xout = x1 + IOMIDDLE * x->gl_zoom +
                             (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
@@ -2437,7 +2440,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         pdgui_vmess(0, "crr iiii ri rs",
                             x, "create", "line",
                             x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos,
-                            "-width", (issignal ? 2 : 1) * x->gl_zoom,
+                            "-width", connection_thickness,
                             "-tags", "x");
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
@@ -2643,6 +2646,10 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             noutlets1 = obj_noutlets(src);
             ninlets = obj_ninlets(sink);
 
+            int nchannels = obj_sigoutletgetchans(src, nout);
+            int connection_thickness =
+                (nchannels > 1 ? MC_CONNECTION_WIDTH : nchannels == 1 ? 2 : 1) * x->gl_zoom;
+
             lx1 = x11 + (noutlets1 > 1 ?
                              ((x12-x11-iow) * nout)/(noutlets1-1) : 0)
                 + iom;
@@ -2654,7 +2661,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
                 lx1,ly1, lx2,ly2,
-                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                "-width", connection_thickness,
                 "-tags", 2, tags);
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
