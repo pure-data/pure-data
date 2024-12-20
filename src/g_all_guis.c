@@ -929,7 +929,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crr iiii rs rS",
             canvas, "create", "rectangle",
             xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", "black",
+            "-fill", "$::pd_colors(foreground)",
             "-tags", 2, tags);
         /* keep label above outlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -942,7 +942,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crr iiii rs rS",
             canvas, "create", "rectangle",
             xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
+            "-fill", "$::pd_colors(foreground)",
             "-tags", 2, tags);
         /* keep label above inlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);

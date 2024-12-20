@@ -61,7 +61,7 @@ static void _editor_selectlinecolor(t_glist*x, const char*color)
 {
     char tag[128];
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
-    pdgui_vmess(0, "crs rs",
+    pdgui_vmess(0, "crs rr",
         x, "itemconfigure", tag,
         "-fill", color);
 
@@ -79,7 +79,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, "blue");
+        _editor_selectlinecolor(x, "$::pd_colors(alt)");
     }
 }
 
@@ -88,7 +88,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, "black");
+        _editor_selectlinecolor(x, "$::pd_colors(foreground)");
     }
 }
 

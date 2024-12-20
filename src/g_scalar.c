@@ -434,7 +434,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
                   glist_getcanvas(glist), "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
                   "-width", 0,
-                  "-fill", "blue",
+                  "-fill", "$::pd_colors(alt)",
                   "-tags", tag);
     } else {
         pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
