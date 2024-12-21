@@ -1004,11 +1004,11 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         sprintf(tag, "%sR",  rtext_gettag(y));
         pdgui_vmess(0, "crs rr",
                   glist, "itemconfigure", tag,
-                  "-fill", (state? "blue" : "black"));
+                  "-fill", (state? "$::pd_colors(alt)" : "$::pd_colors(foreground)"));
         sprintf(tag, "graph%lx", (t_int)z);
         pdgui_vmess(0, "crs rr",
                   glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? "blue" : "black"));
+                  "-fill", (state? "$::pd_colors(alt)" : "$::pd_colors(foreground)"));
     }
 }
 

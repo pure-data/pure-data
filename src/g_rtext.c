@@ -439,7 +439,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             text_xpix(x->x_text, x->x_glist) + lmargin, text_ypix(x->x_text, x->x_glist) + tmargin,
             tempbuf,
             guifontsize,
-            (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
+            (glist_isselected(x->x_glist, &x->x_text->te_g)? "$::pd_colors(alt)" : "$::pd_colors(foreground)"));
     }
     else if (action == SEND_UPDATE)
     {
@@ -536,7 +536,7 @@ void rtext_select(t_rtext *x, int state)
 {
     pdgui_vmess(0, "crs rr",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? "blue" : "black"));
+        "-fill", (state? "$::pd_colors(alt)" : "$::pd_colors(foreground)"));
 }
 
 void rtext_activate(t_rtext *x, int state)

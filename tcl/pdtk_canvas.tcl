@@ -134,7 +134,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
         -yscrollcommand "$mytoplevel.yscroll set" \
-        -background white
+        -background $::pd_colors(background)
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
@@ -498,7 +498,7 @@ proc ::pdtk_canvas::cleanname {name} {
 
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     if {$::pdtk_canvas::enable_cords_to_foreground} {
-        set col black
+        set col $::pd_colors(foreground)
         if { $state == 0 } {
             set col lightgrey
         }

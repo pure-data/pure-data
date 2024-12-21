@@ -239,6 +239,16 @@ namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
 
+# foreground "#0a0"
+# background "#333"
+# alt "#08f"
+
+array set ::pd_colors {
+    background "#777"
+    foreground "#555"
+    alt "#00c"
+}
+
 #------------------------------------------------------------------------------#
 # coding style
 #
@@ -289,11 +299,13 @@ proc init_for_platform {} {
     # 2013.07.19 msp - trying without this to see what breaks - it's having
     # deleterious effects on dialog window font sizes.
     # tk scaling 1
+    #option add *PatchWindow*Canvas.fill "$::pd_colors(foreground)" startupFile
+    option add *PatchWindow*Canvas.outline "$::pd_colors(foreground)"
 
     switch -- $::windowingsystem {
         "x11" {
             set ::modifier "Control"
-            option add *PatchWindow*Canvas.background "white" startupFile
+            option add *PatchWindow*Canvas.background "$::pd_colors(background)" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
             catch {tk_getOpenFile -with-invalid-argument}
@@ -370,7 +382,7 @@ proc init_for_platform {} {
         }
         "win32" {
             set ::modifier "Control"
-            option add *PatchWindow*Canvas.background "white" startupFile
+            option add *PatchWindow*Canvas.background "$::pd_colors(background)" startupFile
             # fix menu font size on Windows with tk scaling = 1
             font create menufont -family Tahoma -size -11
             option add *Menu.font menufont startupFile

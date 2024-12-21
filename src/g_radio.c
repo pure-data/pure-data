@@ -47,7 +47,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
             xpos, ypos + height + zoom - ioh,
             xpos + iow, ypos + height,
-            "-fill", "black",
+            "-fill", "$::pd_colors(foreground)",
             "-tags", 2, tags);
 
             /* keep buttons above outlet */
@@ -61,7 +61,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
             xpos, ypos,
             xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
+            "-fill", "$::pd_colors(foreground)",
             "-tags", 2, tags);
 
             /* keep buttons above inlet */
