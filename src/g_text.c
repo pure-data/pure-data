@@ -1520,11 +1520,12 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[0] = tagbuf;
         tags[1] = "outlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
+            pdgui_vmess(0, "crr iiii rS rrrr",
                 glist_getcanvas(glist), "create", "rectangle",
                 onset, y2 - oh + glist->gl_zoom, onset + iow, y2,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "$::pd_colors(foreground)");
+                "-fill", "$::pd_colors(foreground)",
+                "-outline", "$::pd_colors(foreground)");
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
@@ -1539,12 +1540,13 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[0] = tagbuf;
         tags[1] = "inlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
+            pdgui_vmess(0, "crr iiii rS rrrr",
                 glist_getcanvas(glist),
                 "create", "rectangle",
                 onset, y1, onset + iow, y1 + ih - glist->gl_zoom,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "$::pd_colors(foreground)");
+                "-fill", "$::pd_colors(foreground)",
+                "-outline", "$::pd_colors(foreground)");
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
