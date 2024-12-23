@@ -6,6 +6,7 @@
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_undo.h"
 #include <math.h>
 
 #ifndef M_PI
@@ -377,21 +378,57 @@ void garray_properties(t_garray *x)
         a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
+static void garray_deleteit(t_garray *x) {
+    int wasused = x->x_usedindsp;
+    glist_delete(x->x_glist, &x->x_gobj);
+    if (wasused)
+        canvas_update_dsp();
+}
+
     /* this is called back from the dialog window to create a garray.
     The otherflag requests that we find an existing graph to put it in. */
 void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     t_floatarg fflags, t_floatarg otherflag)
 {
+    const char *undo_name = "add array";
     t_glist *gl;
     t_garray *a;
     int flags = fflags;
+    t_atom undo[4];
+
     if (size < 1)
         size = 1;
+
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
+    {
+        undo_name = "create";
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
         gl = glist_addglist(parent, &s_, 0, 1,
             size, -1, 0, 0, 0, 0);
+        if (!canvas_undo_get(glist_getcanvas(parent))->u_doing)
+            canvas_undo_add(glist_getcanvas(parent), UNDO_CREATE, "create",
+                (void *)canvas_undo_set_create(glist_getcanvas(parent)));
+    } else {
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
+    }
     a = graph_array(gl, name, &s_float, size, flags);
+
+    SETSYMBOL(undo+0, name);
+    SETFLOAT (undo+1, size);
+    SETSYMBOL(undo+2, gensym("float"));
+    SETFLOAT (undo+3, fflags);
+    pd_undo_set_objectstate(parent, (t_pd*)gl, gensym("array"), 1, undo, 4, undo);
+    canvas_undo_add(parent, UNDO_SEQUENCE_END, undo_name, 0);
+
+    glist_redraw(gl);
     canvas_dirty(parent, 1);
+}
+
+/* remove a named array from a graph */
+void glist_removearray(t_glist *x, t_symbol *name) {
+    t_garray*a = (t_garray*)pd_findbyclass(name, garray_class);
+    if (a && x == a->x_glist)
+        garray_deleteit(a);
 }
 
     /* this is called from the properties dialog window for an existing array */
@@ -408,13 +445,17 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             gensym("style"), x->x_scalar->sc_vec, 1);
     if (deleteit != 0)
     {
-        int wasused = x->x_usedindsp;
-        glist_delete(x->x_glist, &x->x_gobj);
-        if (wasused)
-            canvas_update_dsp();
-    }
-    else
-    {
+        const char *undo_name = "add array";
+        t_atom undo[4];
+        t_glist *gl = x->x_glist;
+        garray_deleteit(x);
+        SETSYMBOL(undo+0, name);
+        SETFLOAT (undo+1, fsize);
+        SETSYMBOL(undo+2, gensym("float"));
+        SETFLOAT (undo+3, fflags);
+        pd_undo_set_objectstate(glist_getcanvas(gl), (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
+        glist_redraw(gl);
+    } else {
         long size;
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
@@ -736,6 +777,17 @@ static void garray_save(t_gobj *z, t_binbuf *b)
         x->x_name, array->a_n, &s_float,
             x->x_saveit + 2 * filestyle + 8*x->x_hidename);
     garray_savecontentsto(x, b);
+
+    if (pd_compatibilitylevel >= 52) {
+        t_float fval;
+        style = template_getfloat(
+            scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
+        binbuf_addv(b, "ssi;", gensym("#A"), gensym("color"), style);
+
+        fval = template_getfloat(
+            scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+        binbuf_addv(b, "ssf;", gensym("#A"), gensym("width"), fval);
+    }
 }
 
 const t_widgetbehavior garray_widgetbehavior =
@@ -850,9 +902,13 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
 void garray_setsaveit(t_garray *x, int saveit)
 {
     if (x->x_saveit && !saveit)
-        post("warning: array %s: clearing save-in-patch flag",
+        logpost(x->x_glist, PD_NORMAL, "warning: array %s: clearing save-in-patch flag",
             x->x_name->s_name);
     x->x_saveit = saveit;
+}
+static void garray_saveit(t_garray *x, t_floatarg f)
+{
+    garray_setsaveit(x, (int)f);
 }
 
 /*------------------- Pd messages ------------------------ */
@@ -1066,6 +1122,7 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
         scalartemplate, gensym("style"), x->x_scalar->sc_vec, 1);
     if (style != stylewas)
     {
+        t_float width;
         t_array *a = garray_getarray(x);
         if (!a)
         {
@@ -1076,10 +1133,16 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
             garray_fittograph(x, a->a_n, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
-    #if 1
+
+        width = template_getfloat(
+            scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+        if (style == PLOTSTYLE_POINTS && width < 2)
+            width = 2;
+        if (width < 1)
+            width = 1;
         template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
-            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
-    #endif
+            width, 1);
+
         garray_redraw(x);
     }
 }
@@ -1156,7 +1219,7 @@ static void garray_rename(t_garray *x, t_symbol *s)
     /* } jsarlo */
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
     pd_bind(&x->x_gobj.g_pd, x->x_realname = x->x_name = s);
-    garray_redraw(x);
+    glist_redraw(x->x_glist);
 }
 
 static void garray_read(t_garray *x, t_symbol *filename)
@@ -1262,7 +1325,14 @@ static void garray_edit(t_garray *x, t_floatarg f)
 {
     x->x_edit = (int)f;
 }
-
+static void garray_visname(t_garray *x, t_floatarg f)
+{
+    int hidewas = x->x_hidename;
+    x->x_hidename = !((int)f);
+    if (hidewas != x->x_hidename) {
+        glist_redraw(x->x_glist);
+    }
+}
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1296,8 +1366,12 @@ void g_array_setup(void)
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
         A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_visname, gensym("visname"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_rename, gensym("rename"),
         A_SYMBOL, 0);
+    class_addmethod(garray_class, (t_method)garray_saveit, gensym("keep"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_read, gensym("read"),
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
