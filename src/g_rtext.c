@@ -112,14 +112,15 @@ t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
 
 void rtext_free(t_rtext *x)
 {
-    if (glist_textedfor(x->x_glist) == x)
-        glist_settexted(x->x_glist, 0);
-    if (x->x_glist->gl_editor->e_rtext == x)
-        x->x_glist->gl_editor->e_rtext = x->x_next;
+    t_glist *canvas = glist_getcanvas(x->x_glist);
+    if (glist_textedfor(canvas) == x)
+        glist_settexted(canvas, 0);
+    if (canvas->gl_editor->e_rtext == x)
+        canvas->gl_editor->e_rtext = x->x_next;
     else
     {
         t_rtext *e2;
-        for (e2 = glist_getcanvas(x->x_glist)->gl_editor->e_rtext; e2;
+        for (e2 = canvas->gl_editor->e_rtext; e2;
             e2 = e2->x_next)
                 if (e2->x_next == x)
         {
