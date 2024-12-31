@@ -31,6 +31,7 @@
                     information, unique material identifier, user-defined
   * ignores any chunks after finding the data chunk
   * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+  * 16 and 24 bit samples are signed integers
 
   Pd versions < 0.55 did not read or write 64 bit float.
 
@@ -331,6 +332,12 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     t_descchunk desc = {"desc", {0}, {0}};
     t_datachunk data = {"data", {0}, 0};
 
+    if (sf->sf_bytespersample < 2)
+    {
+        errno = SOUNDFILE_ERRSAMPLEFMT;
+        return -1; /* unsupported format */
+    }
+
         /* file header */
     memcpy(buf + headersize, &head, CAFHEADSIZE);
     headersize += CAFHEADSIZE;
@@ -411,6 +418,12 @@ static int caf_endianness(int endianness, int bytespersample)
     return endianness;
 }
 
+    /* all integer samples are signed  */
+static int caf_signedness(int bytespersample)
+{
+    return 1;
+}
+
 /* ------------------------- setup routine ------------------------ */
 
 static const t_soundfile_type caf = {
@@ -422,7 +435,8 @@ static const t_soundfile_type caf = {
     caf_updateheader,
     caf_hasextension,
     caf_addextension,
-    caf_endianness
+    caf_endianness,
+    caf_signedness
 };
 
 void soundfile_caf_setup( void)
