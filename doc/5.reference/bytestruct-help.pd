@@ -1,0 +1,646 @@
+#N canvas 196 105 753 818 12;
+#X text 459 69 details:;
+#X text 457 52 click for;
+#X text 38 703 see also:;
+#X text 405 712 updated for Pd version 0.52;
+#X obj 28 96 bytestruct pack;
+#X obj 28 126 bytestruct unpack;
+#X obj 28 166 bytestruct size;
+#X obj 123 702 oscformat;
+#X obj 123 732 oscparse;
+#X obj 215 702 fudiformat;
+#X obj 215 732 fudiparse;
+#X obj 304 716 file;
+#N canvas 458 97 1119 822 pack 0;
+#X text 146 24 pack - convert Pd atoms in bytelists;
+#X floatatom 62 239 3 0 0 0 - - -;
+#X floatatom 85 239 3 0 0 0 - - -;
+#X floatatom 108 239 3 0 0 0 - - -;
+#X floatatom 131 239 3 0 0 0 - - -;
+#X floatatom 172 239 3 0 0 0 - - -;
+#X floatatom 195 239 3 0 0 0 - - -;
+#X floatatom 218 239 3 0 0 0 - - -;
+#X floatatom 241 239 3 0 0 0 - - -;
+#X floatatom 282 239 3 0 0 0 - - -;
+#X floatatom 305 239 3 0 0 0 - - -;
+#X floatatom 328 239 3 0 0 0 - - -;
+#X floatatom 351 239 3 0 0 0 - - -;
+#X obj 62 155 bytestruct pack f2i3s;
+#X obj 62 180 unpack 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X floatatom 395 239 3 0 0 0 - - -;
+#X floatatom 418 239 3 0 0 0 - - -;
+#X floatatom 441 239 3 0 0 0 - - -;
+#X text 66 264 float;
+#X text 190 264 int;
+#X text 289 264 int;
+#X text 401 264 string;
+#X text 489 236 byte representation;
+#X text 236 145 packs the incoming numbers according to the "format
+specification": float \, float \, integer \, char[3], f 67;
+#X msg 62 126 list 1.5 2 0 pi;
+#X obj 67 431 list prepend set;
+#X obj 67 456 list trim;
+#X obj 307 431 list prepend set;
+#X obj 307 456 list trim;
+#X text 754 371 hhl: 2*short int + 1*long int;
+#X obj 517 431 list prepend set;
+#X obj 517 456 list trim;
+#X obj 517 406 bytestruct pack <hhl;
+#X obj 757 431 list prepend set;
+#X obj 757 456 list trim;
+#X obj 757 406 bytestruct pack >hhl;
+#X obj 67 373 t l l l l;
+#X obj 67 406 bytestruct pack @hhl;
+#X obj 307 406 bytestruct pack =hhl;
+#X text 73 574 native size & byte-order;
+#X text 316 504 standard-size;
+#X text 318 521 + native byte order;
+#X text 518 521 + little endian;
+#X text 761 521 + big endian;
+#X text 516 504 standard-size;
+#X text 756 504 standard-size;
+#X msg 67 310 list 1 2 -1;
+#X msg 103 346 list 3.14 100000 0;
+#X text 263 335 fractional numbers and out-of-range numbers are converted
+to the specified numbers;
+#X msg 67 551;
+#X msg 307 481;
+#X msg 517 482;
+#X msg 757 481;
+#X obj 1016 411 loadbang;
+#X msg 68 671 list oopsie;
+#X obj 68 696 bytestruct pack @d;
+#X obj 191 721 bng 20 250 50 0 empty empty empty 17 7 0 10 -257985
+-258113 -1;
+#X obj 68 721 print nada;
+#X obj 471 721 bng 20 250 50 0 empty empty empty 17 7 0 10 -257985
+-258113 -1;
+#X obj 348 721 print nada;
+#X obj 348 696 bytestruct pack @Z;
+#X msg 348 672 list 3;
+#X text 66 646 invalid input;
+#X text 346 646 invalid format specification;
+#X connect 13 0 14 0;
+#X connect 14 0 1 0;
+#X connect 14 1 2 0;
+#X connect 14 2 3 0;
+#X connect 14 3 4 0;
+#X connect 14 4 5 0;
+#X connect 14 5 6 0;
+#X connect 14 6 7 0;
+#X connect 14 7 8 0;
+#X connect 14 8 9 0;
+#X connect 14 9 10 0;
+#X connect 14 10 11 0;
+#X connect 14 11 12 0;
+#X connect 14 12 15 0;
+#X connect 14 13 16 0;
+#X connect 14 14 17 0;
+#X connect 24 0 13 0;
+#X connect 25 0 26 0;
+#X connect 26 0 49 0;
+#X connect 27 0 28 0;
+#X connect 28 0 50 0;
+#X connect 30 0 31 0;
+#X connect 31 0 51 0;
+#X connect 32 0 30 0;
+#X connect 33 0 34 0;
+#X connect 34 0 52 0;
+#X connect 35 0 33 0;
+#X connect 36 0 37 0;
+#X connect 36 1 38 0;
+#X connect 36 2 32 0;
+#X connect 36 3 35 0;
+#X connect 37 0 25 0;
+#X connect 38 0 27 0;
+#X connect 46 0 36 0;
+#X connect 47 0 36 0;
+#X connect 53 0 33 0;
+#X connect 53 0 30 0;
+#X connect 53 0 27 0;
+#X connect 53 0 25 0;
+#X connect 54 0 55 0;
+#X connect 55 0 57 0;
+#X connect 55 1 56 0;
+#X connect 60 0 59 0;
+#X connect 60 1 58 0;
+#X connect 61 0 60 0;
+#X restore 460 96 pd pack;
+#N canvas 751 166 707 608 unpack 0;
+#X text 146 24 unpack - convert byteslists to Pd atoms;
+#X text 53 79 a "byteslist" is just an list of numbers in the range
+0..255;
+#X obj 46 186 unpack s f f f;
+#X symbolatom 46 304 0 0 0 0 - - -;
+#X floatatom 77 276 5 0 0 0 - - -;
+#X floatatom 109 246 5 0 0 0 - - -;
+#X floatatom 141 216 5 0 0 0 - - -;
+#X msg 46 136 112 117 114 101 32 100 97 116 97 0 51 0 3 0 0 0;
+#X obj 46 160 bytestruct unpack <9sBHI;
+#X msg 32 414 0 0 0 1;
+#X floatatom 32 465 5 0 0 0 - - -;
+#X msg 169 412 symbol >i;
+#X obj 32 440 bytestruct unpack >h;
+#X obj 169 464 bng 20 250 50 0 empty empty empty 17 7 0 10 -257985
+-258113 -1;
+#X text 27 380 wrong number of bytes;
+#X text 33 526 to check the number of bytes required \, you can use
+, f 38;
+#X obj 33 569 bytestruct size;
+#X text 252 412 this format is better;
+#X connect 2 0 3 0;
+#X connect 2 1 4 0;
+#X connect 2 2 5 0;
+#X connect 2 3 6 0;
+#X connect 7 0 8 0;
+#X connect 8 0 2 0;
+#X connect 9 0 12 0;
+#X connect 11 0 12 1;
+#X connect 12 0 10 0;
+#X connect 12 1 13 0;
+#X restore 460 126 pd unpack;
+#N canvas 730 134 747 498 size 0;
+#X text 65 44 Size - calculate the bytesize required to hold the struct
+specified by the format;
+#X obj 102 427 bytestruct size;
+#X symbolatom 102 397 10 0 0 0 - - -;
+#X floatatom 102 452 5 0 0 1 size - -;
+#X obj 204 452 bng 20 250 50 0 empty empty error 25 10 0 10 -257985
+-258113 -1;
+#X msg 102 117 symbol f;
+#X text 200 119 single float (4 bytes);
+#X text 200 156 three doubles (each 8 bytes) + one short int (2 bytes)
++ 2 ints (each 4 bytes). "native" alignment requires 2 padding bytes
+between the short int and the 2 ints which are automatically added.
+;
+#X msg 102 177 symbol 3dh2i;
+#X msg 102 257 symbol =3dh2i;
+#X text 204 236 same as above but with standard sizes and no alignment.
+because there's no alignment \, there are no automatic padding bytes
+and the result is 2 bytes shorter;
+#X msg 113 320 symbol !2BH2H2BH2I;
+#X text 253 313 simplified header of an IP packet (the last two integers
+are source and destination IP address);
+#X msg 145 361 symbol Z;
+#X text 225 366 an illegal struct format...;
+#X connect 1 0 3 0;
+#X connect 1 1 4 0;
+#X connect 2 0 1 0;
+#X connect 5 0 2 0;
+#X connect 8 0 2 0;
+#X connect 9 0 2 0;
+#X connect 11 0 2 0;
+#X connect 13 0 2 0;
+#X restore 460 166 pd size;
+#X text 28 67 The bytestruct object's first argument sets its function:
+;
+#X text 165 125 - unpack bytelists into Pd atoms;
+#X text 165 95 - pack Pd atoms into bytelists;
+#X text 166 167 - calculate the number of bytes required;
+#X text 59 223 struct format specification;
+#X text 28 422 the format specification string closely follows the
+specifications of the Python standard library "struct";
+#X text 31 464 you may also want to consult https://docs.python.org/3/library/struct.html
+, f 74;
+#N canvas 6 187 450 300 (subpatch) 0;
+#X obj 100 100 bng 30 250 50 0 \$0-pythonstruct \$0-pythonstruct empty
+17 7 0 10 -262144 -1 -1;
+#X obj 60 210 pdcontrol;
+#X msg 60 185 browse https://docs.python.org/3/library/struct.html
+;
+#X obj 60 155 r \$0-pythonstruct;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X coords 0 -1 1 1 30 30 1 100 100;
+#X restore 566 457 pd;
+#X text 26 311 each format character CAN be preceded by a 'repeat count'.
+, f 60;
+#X text 27 335 by default \, the byte representation uses the machine's
+native format and byte order and is properly aligned ny skipping pads
+if necessary. this can be adjusted by a optional first character that
+indicates byte-order \, size and alignment;
+#N canvas 6 70 838 840 format 0;
+#X text 49 11 format characters;
+#X text 71 50 Character;
+#X text 246 50 C Type;
+#X text 162 41 std.size;
+#X text 382 50 Pd-type;
+#X msg 110 100 x;
+#X msg 110 130 c;
+#X text 200 130 1;
+#X msg 250 130 char;
+#X msg 110 160 b;
+#X text 200 160 1;
+#X msg 110 190 B;
+#X text 200 190 1;
+#X msg 110 220 ?;
+#X text 200 220 1;
+#X msg 110 260 h;
+#X text 200 260 2;
+#X msg 250 260 short;
+#X msg 110 290 H;
+#X text 200 290 2;
+#X msg 110 320 i;
+#X text 200 320 4;
+#X msg 250 320 int;
+#X msg 110 350 I;
+#X text 200 350 4;
+#X msg 110 380 l;
+#X text 200 380 4;
+#X msg 250 380 long;
+#X msg 110 410 L;
+#X text 200 410 4;
+#X msg 110 440 q;
+#X text 200 440 8;
+#X msg 110 470 Q;
+#X text 200 470 8;
+#X msg 110 500 n;
+#X msg 250 500 ssize_t;
+#X msg 110 530 N;
+#X msg 250 530 size_t;
+#X msg 110 560 e;
+#X text 200 560 2;
+#X msg 110 590 f;
+#X text 200 590 4;
+#X msg 250 590 float;
+#X msg 110 620 d;
+#X text 200 620 8;
+#X msg 250 620 double;
+#X msg 110 650 s;
+#X text 200 650 ...;
+#X msg 250 650 char[];
+#X msg 110 680 S;
+#X text 200 680 ...;
+#X msg 250 680 wchar[];
+#X msg 110 710 p;
+#X text 200 710 ...;
+#X msg 110 740 P;
+#X msg 250 740 void*;
+#X msg 250 160 signed char;
+#X msg 250 190 unsigned char;
+#X msg 250 290 unsigned short;
+#X msg 250 350 unsigned int;
+#X msg 250 410 unsigned long;
+#X msg 250 440 long long;
+#X msg 250 470 unsigned long long;
+#X text 250 560 (float16);
+#X text 250 220 (Bool);
+#X text 400 100 (none);
+#X text 161 59 (in bytes);
+#X text 400 260 'number';
+#X text 400 290 positive 'number';
+#X text 400 320 'number';
+#X text 400 350 positive 'number';
+#X text 400 380 'number';
+#X text 400 410 positive 'number';
+#X text 400 440 'number';
+#X text 400 470 positive 'number';
+#X text 400 160 'number' (in the range of -128..127);
+#X text 400 190 positive 'number' (in the range of 0..255);
+#X text 400 560 'number';
+#X text 400 590 'number';
+#X text 400 620 'number';
+#X text 400 650 'symbol';
+#X text 400 680 'symbol';
+#X text 400 710 'symbol';
+#X text 400 740 ??? (only available for "native" alignment);
+#X text 400 530 positive 'number' (only available for "native" size)
+;
+#X text 400 500 'number' (only available in "native" size);
+#X text 200 500 ?;
+#X text 200 530 ?;
+#X text 200 740 ?;
+#X text 60 76 -----------------------------------------------------
+;
+#X text 49 21 =================;
+#X text 250 710 pascal string;
+#X text 97 779 some of the larger number formats - like double \, (unsigned)
+int \, (unsigned) long \, (unsigned) long long - may not be representable
+accurately within Pd for some values.;
+#X text 400 123 single byte \, either a 'number' in the range 0..255
+\, or (when packing) the first character of a 'symbol'.;
+#X text 401 212 boolean value (when packing \, 0 and empty symbol are
+false \, the rest is true \; for unpacking this is either 0 or 1);
+#X text 243 100 (pad byte);
+#X restore 473 281 pd format characters;
+#N canvas 81 128 506 513 byte-order 0;
+#X text 101 110 Character;
+#X text 44 344 Native size and alignment are determined using the C
+compiler's "sizeof" expression. This is always combined with native
+byte order.;
+#X text 190 150 native;
+#X text 290 150 native;
+#X text 370 150 native;
+#X msg 130 180 @;
+#X text 190 180 native;
+#X text 290 180 native;
+#X text 370 180 native;
+#X msg 130 210 =;
+#X text 190 210 native;
+#X text 290 210 standard;
+#X text 370 210 none;
+#X msg 130 240 <;
+#X text 190 240 little-endian;
+#X text 290 240 standard;
+#X text 370 240 none;
+#X msg 130 270 >;
+#X text 290 270 standard;
+#X text 370 270 none;
+#X msg 130 300 !;
+#X text 190 300 network;
+#X text 290 300 standard;
+#X text 370 300 none;
+#X text 190 110 Byte Order;
+#X text 290 110 Size;
+#X text 370 110 Alignment;
+#X text 190 270 big-endian;
+#X text 190 315 (big-endian);
+#X text 120 150 (none);
+#X text 45 451 "none"-Alignment means \, that struct members are packed
+without any automatic padding;
+#X text 90 126 -------------------------------------------------;
+#X text 39 21 byte-order & alignment;
+#X text 39 31 ======================;
+#X text 43 63 the first character (only) can select the byte-order
+\, size and alignment of the struct;
+#X text 41 399 Some struct types (like 'size_t' and 'ssize_t') can
+only be used with native size.;
+#X restore 473 361 pd byte-order & alignment;
+#N canvas 260 163 504 506 size 0;
+#X text 38 24 size specifications;
+#X text 38 34 ===================;
+#X text 62 75 Prefixing a format character with an integer number \,
+which simply repeats that character.;
+#X text 62 115 E.g. the format string '4h' means exactly the same as
+'hhhh' (that is: four signed int16 numbers);
+#X text 62 335 The pascal string format 'p' is similar to the string
+format \, but includes a leading byte indicating the length of the
+string.;
+#X text 62 255 E.g. "10s" means a single string (symbol) consisting
+of 10 bytes \, whereas "10c" are 10 separate characters (bytes) \,
+unpacked as numbers.;
+#X text 62 395 E.g. "3p" means a pascal string of 3 bytes \, the first
+byte holding the length of the remaining string (<=2) \, followed by
+two (2) bytes (characters) that constitute the actual string.;
+#X text 62 185 For the string formats 's' and 'S' \, the size specifier
+means the length of the string. for packing \, the incoming symbol
+may be truncated or zero-padded as appropriate to make it fit the specifications.
+;
+#X restore 473 321 pd size specification;
+#X text 38 538 here are some examples showing how to use these objects
+;
+#N canvas 410 128 848 741 read 0;
+#X obj 142 136 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 142 161 openpanel;
+#X obj 142 320 file;
+#X obj 142 348 bytestruct unpack <4s4x4s4s4xHHIIHH;
+#X symbolatom 312 405 10 0 0 0 - - -;
+#X symbolatom 312 465 10 0 0 0 - - -;
+#X obj 142 373 unpack s s s f f f f f f;
+#X symbolatom 312 495 10 0 0 0 - - -;
+#X floatatom 314 555 5 0 0 0 - - -;
+#X floatatom 314 585 5 0 0 0 - - -;
+#X floatatom 314 615 5 0 0 0 - - -;
+#X floatatom 314 645 0 0 0 0 - - -;
+#X floatatom 314 676 5 0 0 0 - - -;
+#X floatatom 314 706 5 0 0 0 - - -;
+#X text 279 313 the format-spec that reads the RIFF-header + the fmt-chunk
+takes exactly 36 bytes;
+#X text 191 76 this only works for WAV-files (no AIFF \, CAF \, ...)
+\, and assumes that the 'fmt' chunk is the very first chunk (which
+is true for most WAV-files \, but there might be the odd outlier);
+#X text 416 407 4s: magic header 'RIFF';
+#X text 416 467 4s: RIFF-type 'WAVE';
+#X text 423 557 H: compression code (1=PCM);
+#X text 423 587 H: number of channels;
+#X text 423 617 I: sample rate;
+#X text 416 437 4x: (ignored): filesize;
+#X text 416 527 4x: (ignored): chunksize;
+#X text 423 677 H: block align;
+#X text 423 707 H: bits-per-sample;
+#X text 423 647 I: average bytes per second;
+#X text 419 376 <: WAV-Files are always littlen-endian;
+#X msg 218 211 open \$1;
+#X obj 165 234 bytestruct size <4s4x4s4s4xHHIIHH;
+#X floatatom 165 259 5 0 0 0 - - -;
+#X msg 142 285 close;
+#X obj 142 188 t b b s;
+#X text 416 497 4s: chunk name ("fmt ");
+#X text 95 49 example 2: read the header of a WAV-file and display
+some meta-information, f 74;
+#X connect 0 0 1 0;
+#X connect 1 0 31 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 6 0 4 0;
+#X connect 6 1 5 0;
+#X connect 6 2 7 0;
+#X connect 6 3 8 0;
+#X connect 6 4 9 0;
+#X connect 6 5 10 0;
+#X connect 6 6 11 0;
+#X connect 6 7 12 0;
+#X connect 6 8 13 0;
+#X connect 27 0 2 0;
+#X connect 28 0 29 0;
+#X connect 29 0 2 0;
+#X connect 30 0 2 0;
+#X connect 31 0 30 0;
+#X connect 31 1 28 0;
+#X connect 31 2 27 0;
+#X restore 133 602 pd read WAV header;
+#N canvas 251 172 1204 760 read 0;
+#X text 99 61 WAV-files can store loops in the 'smpl' chunk.;
+#X text 99 80 the loops-points are stored as byte-offsets - so we need
+to convert them to sample-offsets first (the information for that is
+within the 'fmt ' chunk) \,;
+#X text 592 103 https://sites.google.com/site/musicgapi/technical-documents/wav-file-format
+, f 75;
+#X text 590 78 a description of the WAV chunks:;
+#X msg 142 265 open \$1 \, 12 \, close;
+#X obj 142 351 list trim;
+#X obj 142 374 route RIFF;
+#X obj 142 397 route WAVE;
+#X obj 142 328 bytestruct unpack <4s4x4s;
+#X obj 142 467 until;
+#X obj 748 567 until;
+#X msg 748 486 seek 28 current \, 8;
+#X text 887 594 each loop takes 24 bytes;
+#X obj 142 564 bytestruct unpack <4sI;
+#X obj 748 541 bytestruct unpack <I4x;
+#X obj 748 637 bytestruct unpack <6I;
+#X obj 142 422 t b;
+#X msg 748 592 seek 0 current \, 24;
+#X obj 142 589 pack s f f;
+#X obj 272 539 route bang seek;
+#X obj 748 615 file handle \$0.file;
+#X obj 142 663 file handle \$0.file;
+#X obj 142 515 file handle \$0.file;
+#X obj 142 290 file handle \$0.file;
+#X obj 748 514 file handle \$0.file;
+#X msg 142 492 seek 0 relative \, 8;
+#X msg 142 638 seek \$3 start \, seek \$2 relative \, seek 8 relative
+;
+#X text 852 663 loop# loop-type start end fraction repeatcount;
+#X text 339 328 read and verify the RIFF-header;
+#X text 424 530 iterate over chunks;
+#X obj 142 612 t l l;
+#X obj 174 702 list trim;
+#X obj 174 725 route smpl;
+#X text 272 703 <chunkID> <chunkLen> <chunkPos>;
+#X text 718 397 here we parse the 'smpl' chunk for the loop-information
+;
+#X obj 142 206 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 142 231 openpanel;
+#X obj 748 662 print LOOP;
+#X obj 736 254 file define \$0.file;
+#X text 99 146 again \, this only works for WAV-files.;
+#X text 914 491 skip the header \, and read the number of loops, f
+36;
+#X text 732 216 all [file handle] objects work on the same file:,
+f 25;
+#X text 71 27 example 3: this extract loop-points from WAV-files;
+#X connect 4 0 23 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 16 0;
+#X connect 8 0 5 0;
+#X connect 9 0 25 0;
+#X connect 10 0 17 0;
+#X connect 11 0 24 0;
+#X connect 13 0 18 0;
+#X connect 14 0 10 0;
+#X connect 15 0 37 0;
+#X connect 16 0 9 0;
+#X connect 17 0 20 0;
+#X connect 18 0 30 0;
+#X connect 19 0 9 1;
+#X connect 19 1 18 2;
+#X connect 20 0 15 0;
+#X connect 22 0 13 0;
+#X connect 22 1 19 0;
+#X connect 23 0 8 0;
+#X connect 24 0 14 0;
+#X connect 25 0 22 0;
+#X connect 26 0 21 0;
+#X connect 30 0 26 0;
+#X connect 30 1 31 0;
+#X connect 31 0 32 0;
+#X connect 32 0 11 0;
+#X connect 35 0 36 0;
+#X connect 36 0 4 0;
+#X restore 133 629 pd read WAV loop-points;
+#N canvas 358 106 1378 681 OSC-bundles 0;
+#X obj 603 277 bytestruct unpack !8sQ;
+#X obj 603 252 list split 16;
+#X obj 626 483 list, f 19;
+#X obj 230 396 oscformat;
+#X obj 190 314 list;
+#X obj 190 363 list split 1;
+#X obj 190 338 t l s;
+#X obj 262 461 list length;
+#X obj 230 429 t l l;
+#X obj 110 597 list store;
+#X obj 110 208 route ] [, f 12;
+#X obj 110 233 t b;
+#X obj 262 486 bytestruct pack !I;
+#X obj 230 511 list prepend append;
+#X obj 230 536 list trim;
+#X obj 177 267 bytestruct pack !8sQ;
+#X msg 177 242 list #bundle 1;
+#X obj 110 622 t a a;
+#X obj 142 652 print rawOSC;
+#X obj 603 302 list trim;
+#X obj 603 327 route #bundle;
+#X floatatom 844 372 0 0 0 0 timestamp - -;
+#X msg 603 379 0;
+#X obj 564 411 spigot;
+#X obj 564 220 t l l b;
+#X msg 781 262 1;
+#X obj 603 352 t b b f;
+#X obj 626 508 t l l;
+#X obj 791 508 list split 4;
+#X obj 791 533 bytestruct unpack !I;
+#X obj 626 562 list split, f 24;
+#X obj 564 591 t l;
+#X obj 564 616 oscparse;
+#X obj 626 531 list split 4;
+#X obj 626 457 until;
+#X obj 791 630 t b;
+#X obj 564 641 print OSC;
+#X msg 110 183 [ \, test 5 6 7 \, dog eat dog \, ];
+#X msg 284 364 set \$1;
+#X text 338 253 bundle header;
+#X text 403 467 each OSC-message is prepended by its length, f 18
+;
+#X text 566 162 split an OSC-bundle into separate messages;
+#X text 98 155 build a bundle with multiple OSC-messages;
+#X text 807 298 here we detect if the OSC-message actually is an OSC-bundle
+(it starts with '#bundle'), f 36;
+#X text 948 534 read the message size;
+#X text 841 565 and extract the message.;
+#X text 845 583 the rest is left for the next iteration;
+#X text 831 633 stop if all the messages are done;
+#X text 67 27 example 1: build and parse OSC-bundles;
+#X text 102 59 Pd's built-in [oscformat] and [oscparse] objects only
+deal with simple OSC messages \, but not with OSC-bundles.;
+#X text 105 98 bytestruct to the rescue!;
+#X connect 0 0 19 0;
+#X connect 1 0 0 0;
+#X connect 1 1 2 1;
+#X connect 2 0 27 0;
+#X connect 3 0 8 0;
+#X connect 4 0 6 0;
+#X connect 5 1 3 0;
+#X connect 6 0 5 0;
+#X connect 6 1 38 0;
+#X connect 7 0 12 0;
+#X connect 8 0 13 0;
+#X connect 8 1 7 0;
+#X connect 9 0 17 0;
+#X connect 10 0 11 0;
+#X connect 10 1 16 0;
+#X connect 10 2 4 0;
+#X connect 11 0 9 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 0;
+#X connect 14 0 9 0;
+#X connect 15 0 9 1;
+#X connect 16 0 15 0;
+#X connect 17 0 24 0;
+#X connect 17 1 18 0;
+#X connect 19 0 20 0;
+#X connect 20 0 26 0;
+#X connect 22 0 23 1;
+#X connect 23 0 31 0;
+#X connect 24 0 23 0;
+#X connect 24 1 1 0;
+#X connect 24 2 25 0;
+#X connect 25 0 23 1;
+#X connect 26 0 22 0;
+#X connect 26 1 34 0;
+#X connect 26 2 21 0;
+#X connect 27 0 33 0;
+#X connect 27 1 28 0;
+#X connect 28 0 29 0;
+#X connect 28 2 35 0;
+#X connect 29 0 30 1;
+#X connect 30 0 31 0;
+#X connect 30 1 2 1;
+#X connect 30 2 35 0;
+#X connect 31 0 32 0;
+#X connect 32 0 36 0;
+#X connect 33 1 30 0;
+#X connect 34 0 2 0;
+#X connect 35 0 34 1;
+#X connect 37 0 10 0;
+#X connect 38 0 3 0;
+#X restore 133 573 pd OSC-bundles;
+#X text 59 233 ---------------------------;
+#X text 29 20 bytestruct - parse lists of bytes into messages according
+to a struct definition, f 81;
+#X text 25 257 the "format specification string" describes a fixed-sized
+data-layout. it consists of a number of "format characters" that define
+the type of data to be packed/unpacked.;
