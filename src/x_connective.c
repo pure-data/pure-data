@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
 #elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
@@ -1345,6 +1346,7 @@ static void *makefilename_new(t_symbol *s)
     x->x_format = s;
     x->x_accept = NONE;
     makefilename_scanformat(x);
+    setlocale(LC_NUMERIC, "en_US.UTF-8");
     return (x);
 }
 
