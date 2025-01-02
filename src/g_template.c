@@ -44,7 +44,8 @@ struct _pdstruct
 };
 
     /* stuff that was once static but is now per-PD-instance, used for
-    stateful editing such as dragging. */
+    stateful editing such as dragging.  LATER consider using the same gpointer,
+     etc., variables for the various motion callbacks below. */
 
 struct _instancetemplate
 {
@@ -70,6 +71,7 @@ struct _instancetemplate
     t_array *array_motion_array;
     t_word *array_motion_wp;
     t_template *array_motion_template;
+    t_gpointer array_motion_gpointer;
     int array_motion_npoints;
     int array_motion_elemsize;
     int array_motion_altkey;
@@ -111,7 +113,8 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
     return ((!nametoo || ds1->ds_name == ds2->ds_name) &&
         ds1->ds_type == ds2->ds_type &&
             (ds1->ds_type != DT_ARRAY ||
-                ds1->ds_arraytemplate == ds2->ds_arraytemplate));
+                (ds1->ds_arraytemplate == ds2->ds_arraytemplate &&
+                    ds1->ds_arraydeflength == ds2->ds_arraydeflength)));
 }
 
 /* -- templates, the active ingredient in "struct" objects defined below. -- */
@@ -145,7 +148,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     template_addtolist(x);
     while (argc > 0)
     {
-        int newtype, oldn, newn;
+        int newtype, oldn, newn, newarraydeflength= 1;
         t_symbol *newname, *newarraytemplate = &s_, *newtypesym;
         if (argc < 2 || argv[0].a_type != A_SYMBOL ||
             argv[1].a_type != A_SYMBOL)
@@ -166,10 +169,18 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
-            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
             newtype = DT_ARRAY;
-            argc--;
-            argv++;
+            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
+                /* optional third float arg sets initial array length */
+            if (argc > 3 && argv[3].a_type == A_FLOAT)
+            {
+                if ((newarraydeflength = argv[3].a_w.w_float) < 1)
+                    newarraydeflength = 1;
+                argc -= 2;
+                argv += 2;
+                post("deflength %d", newarraydeflength);
+            }
+            else argc--, argv++;
         }
         else
         {
@@ -183,6 +194,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
+        x->t_vec[oldn].ds_arraydeflength = newarraydeflength;
     bad:
         argc -= 2; argv += 2;
     }
@@ -619,10 +631,9 @@ static void template_setup(void)
         sizeof(t_template), CLASS_PD, 0);
     class_addmethod(pd_canvasmaker, (t_method)template_usetemplate,
         gensym("struct"), A_GIMME, 0);
-
 }
 
-/* ---------------- gtemplates.  One per canvas. ----------- */
+/* ---------------- "Struct" object.  One per canvas. ----------- */
 
 /* "Struct": an object that searches for, and if necessary creates,
 a template (above).  Other objects in the canvas then can give drawing
@@ -719,6 +730,63 @@ t_template *gtemplate_get(t_pdstruct *x)
     return (x->x_template);
 }
 
+    /* add a new scalar for this template to the named canvas.  First argument
+    is the template name, and following pairs of arguments (name, value)
+    initialize float or symbol fields.  (Array and text fields can't be
+    initialized.) */
+static void gtemplate_add(t_pdstruct *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_glist *glist;
+    t_symbol *canvasname, *elemtemplatesym;
+
+    if (argc < 1 || argv[0].a_type != A_SYMBOL)
+        pd_error(x, "gtemplate_add: needs a symbol argument for canvas");
+    else if (!(glist = (t_glist *)pd_findbyclass(argv[0].a_w.w_symbol,
+        canvas_class)))
+            pd_error(x, "gtemplate_add: no canvas named '%s'",
+                argv[0].a_w.w_symbol->s_name);
+    else
+    {
+        t_scalar *sc = scalar_new(x->x_owner, x->x_sym);
+        int i, type, onset;
+        for (i = 1; i < argc-1; i += 2)
+        {
+            if (argv[i].a_type != A_SYMBOL)
+                pd_error(x, "gtemplate_add: field name %f not a symbol",
+                    argv[i].a_w.w_float);
+            else if (!template_find_field(x->x_template,
+                argv[i].a_w.w_symbol, &onset, &type,
+                    &elemtemplatesym))
+                        pd_error(x, "gtemplate_add: field %s not found",
+                            argv[i].a_w.w_symbol->s_name);
+            else if (type == DT_FLOAT)
+            {
+                if (argv[i+1].a_type == A_FLOAT)
+                    *(t_float *)(((char *)(sc->sc_vec)) + onset) =
+                        argv[i+1].a_w.w_float;
+                else pd_error(x,
+                    "gtemplate_add: can't set float field %s to %s",
+                            argv[i].a_w.w_symbol->s_name,
+                                argv[i+1].a_w.w_symbol->s_name);
+            }
+            else if (type == DT_SYMBOL)
+            {
+                if (argv[i+1].a_type == A_SYMBOL)
+                    *(t_symbol **)(((char *)(sc->sc_vec)) + onset) =
+                        argv[i+1].a_w.w_symbol;
+                else pd_error(x,
+                    "gtemplate_add: can't set symbol field %s to %f",
+                            argv[i].a_w.w_symbol->s_name,
+                                argv[i+1].a_w.w_float);
+            }
+            else pd_error(x,
+      "gtemplate_add: can't initialize field %s (float or symbol only)",
+                argv[i].a_w.w_symbol->s_name);
+        }
+        glist_add(glist, &sc->sc_gobj);
+    }
+}
+
 static void gtemplate_free(t_pdstruct *x)
 {
         /* get off the template's list */
@@ -764,9 +832,11 @@ static void gtemplate_setup(void)
 {
     gtemplate_class = class_new(gensym("struct"),
         (t_newmethod)gtemplate_new, (t_method)gtemplate_free,
-        sizeof(t_pdstruct), CLASS_NOINLET, A_GIMME, 0);
+        sizeof(t_pdstruct), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)gtemplate_new_old, gensym("template"),
         A_GIMME, 0);
+    class_addmethod(gtemplate_class, (t_method)gtemplate_add,
+        gensym("add"), A_GIMME, 0);
 }
 
 t_template *glist_findtemplate(t_glist *gl)
@@ -883,40 +953,41 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 #define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
 #define NOMOUSEEDIT 8 /* same in edit mode */
 #define NOVERTICES 16 /* disable only vertex grabbing in run mode */
+#define DRAGGABLE 32  /* can use to drag entire scalar around */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setfloat_const(fd, 0);
-        else if (argv->a_type == A_SYMBOL)
-            fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
-        else fielddesc_setfloat_const(fd, argv->a_w.w_float);
+    if (argc <= 0) fielddesc_setfloat_const(fd, 0);
+    else if (argv->a_type == A_SYMBOL)
+        fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
+    else fielddesc_setfloat_const(fd, argv->a_w.w_float);
 }
 
 static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
-        else if (argv->a_type == A_SYMBOL)
-        {
-            fd->fd_type = A_SYMBOL;
-            fd->fd_var = 1;
-            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-            fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
-                fd->fd_quantum = 0;
-        }
-        else fielddesc_setsymbol_const(fd, &s_);
+    if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
+    else if (argv->a_type == A_SYMBOL)
+    {
+        fd->fd_type = A_SYMBOL;
+        fd->fd_var = 1;
+        fd->fd_un.fd_varsym = argv->a_w.w_symbol;
+        fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
+            fd->fd_quantum = 0;
+    }
+    else fielddesc_setsymbol_const(fd, &s_);
 }
 
 static void fielddesc_setarrayarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setfloat_const(fd, 0);
-        else if (argv->a_type == A_SYMBOL)
-        {
-            fd->fd_type = A_ARRAY;
-            fd->fd_var = 1;
-            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-        }
-        else fielddesc_setfloat_const(fd, argv->a_w.w_float);
+    if (argc <= 0) fielddesc_setfloat_const(fd, 0);
+    else if (argv->a_type == A_SYMBOL)
+    {
+        fd->fd_type = A_ARRAY;
+        fd->fd_var = 1;
+        fd->fd_un.fd_varsym = argv->a_w.w_symbol;
+    }
+    else fielddesc_setfloat_const(fd, argv->a_w.w_float);
 }
 
     /* getting and setting values via fielddescs -- note confusing names;
@@ -1031,7 +1102,8 @@ void fielddesc_setcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            pd_error(0, "attempt to set constant or symbolic data field to a number");
+            pd_error(0,
+                "attempt to set constant or symbolic data field to a number");
     }
 }
 
@@ -1106,6 +1178,11 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             /* disable changing vertices in run mode */
             flags |= NOVERTICES;
+        }
+        else if (!strcmp(flag, "-d"))
+        {
+            /* clicking on this drags entire scalar (i.e., changes x,y) */
+            flags |= DRAGGABLE;
         }
         else
         {
@@ -1304,7 +1381,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     glist_getcanvas(glist), "itemconfigure", tag,
                     "-fill", outline);
         }
-        else post("warning: drawing shapes need at least two points to be graphed");
+        else post(
+            "warning: drawing shapes need at least two points to be graphed");
     }
     else
     {
@@ -1313,21 +1391,28 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     }
 }
 
-    /* LATER protect against the template changing or the scalar disappearing
-    probably by attaching a gpointer here ... */
-
 static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
     t_curve *x = (t_curve *)z;
-    t_fielddesc *f = x->x_vec + THISTMPL->curve_motion_field;
+    t_fielddesc *f;
     t_atom at;
     if (up != 0)
+    {
+        gpointer_unset(&THISTMPL->curve_motion_gpointer);
         return;
+    }
     if (!gpointer_check(&THISTMPL->curve_motion_gpointer, 0))
     {
         post("curve_motion: scalar disappeared");
         return;
     }
+    if (THISTMPL->curve_motion_field < 0)   /* drag the whole object */
+    {
+        gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
+            THISTMPL->curve_motion_glist, dx, dy);
+        return;
+    }
+    f = x->x_vec + THISTMPL->curve_motion_field;
     THISTMPL->curve_motion_xcumulative += dx;
     THISTMPL->curve_motion_ycumulative += dy;
     if (f->fd_var && (dx != 0))
@@ -1346,17 +1431,27 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
             THISTMPL->curve_motion_ycumulative * THISTMPL->curve_motion_yper,
                 1);
     }
-        /* LATER figure out what to do to notify for an array? */
     if (THISTMPL->curve_motion_scalar)
+    {
         template_notifyforscalar(THISTMPL->curve_motion_template,
             THISTMPL->curve_motion_glist,
             THISTMPL->curve_motion_scalar, gensym("change"), 1, &at);
-    if (THISTMPL->curve_motion_scalar)
         scalar_redraw(THISTMPL->curve_motion_scalar,
             THISTMPL->curve_motion_glist);
-    if (THISTMPL->curve_motion_array)
+    }
+    else
+    {
+            /* chase back to owning scalar to notify it */
+        t_array *owner_array =
+            THISTMPL->curve_motion_gpointer.gp_stub->gs_un.gs_array;
+        while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+            owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+        template_notifyforscalar(THISTMPL->curve_motion_template,
+            THISTMPL->curve_motion_glist,
+            owner_array->a_gp.gp_un.gp_scalar, gensym("change"), 1, &at);
         array_redraw(THISTMPL->curve_motion_array,
             THISTMPL->curve_motion_glist);
+    }
 }
 
 static int curve_click(t_gobj *z, t_glist *glist,
@@ -1395,8 +1490,18 @@ static int curve_click(t_gobj *z, t_glist *glist,
             bestn = i;
         }
     }
-    if (besterror > 6)
-        return (0);
+    if (besterror > 6)  /* no hot points got hit */
+    {
+        if (x->x_flags & DRAGGABLE) /* can we drag the whole scalar? */
+        {
+            int x1, y1, x2, y2;
+            curve_getrect(z, glist, data, template, basex, basey,
+                &x1, &y1, &x2, &y2);
+            if (xpix < x1 || xpix > x2 || ypix < y1 || ypix > y2)
+                 return (0);
+        }
+        else return (0);
+    }
     if (doit)
     {
         THISTMPL->curve_motion_xper = glist_pixelstox(glist, 1)
@@ -1409,7 +1514,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
         THISTMPL->curve_motion_scalar = sc;
         THISTMPL->curve_motion_array = ap;
         THISTMPL->curve_motion_wp = data;
-        THISTMPL->curve_motion_field = 2*bestn;
+        THISTMPL->curve_motion_field = (besterror <= 6 ? 2*bestn : -1);
         THISTMPL->curve_motion_template = template;
         if (THISTMPL->curve_motion_scalar)
             gpointer_setglist(&THISTMPL->curve_motion_gpointer,
@@ -1700,8 +1805,9 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     int i;
     t_float xpix, ypix, wpix;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
-        /* if we're the only plot in the glist claim the whole thing */
-    if (glist->gl_list && !glist->gl_list->g_next)
+        /* if run mode and we're the only plot in the glist claim the whole
+           thing so you can click anywhere in an "array" glist to draw on it */
+    if (!glist->gl_edit && glist->gl_list && !glist->gl_list->g_next)
     {
         *xp1 = *yp1 = -0x7fffffff;
         *xp2 = *yp2 = 0x7fffffff;
@@ -2141,13 +2247,19 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     }
 }
 
-    /* LATER protect against the template changing or the scalar disappearing
-    probably by attaching a gpointer here ... */
-
 static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
+    t_atom at;
     if (up != 0)
+    {
+        gpointer_unset(&THISTMPL->array_motion_gpointer);
         return;
+    }
+    if (!gpointer_check(&THISTMPL->array_motion_gpointer, 0))
+    {
+        post("array_motion: scalar disappeared");
+        return;
+    }
     THISTMPL->array_motion_xcumulative += dx * THISTMPL->array_motion_xperpix;
     THISTMPL->array_motion_ycumulative += dy * THISTMPL->array_motion_yperpix;
     if (THISTMPL->array_motion_xfield)
@@ -2221,13 +2333,30 @@ static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
          THISTMPL->array_motion_lastx = thisx;
     }
     if (THISTMPL->array_motion_scalar)
+    {
+        template_notifyforscalar(
+            template_findbyname(THISTMPL->array_motion_scalar->sc_template),
+                THISTMPL->array_motion_glist,
+                    THISTMPL->array_motion_scalar, gensym("change"), 1, &at);
         scalar_redraw(THISTMPL->array_motion_scalar,
             THISTMPL->array_motion_glist);
-    if (THISTMPL->array_motion_array)
+    }
+    else
+    {
+            /* chase back to owning scalar to notify it */
+        t_array *owner_array =
+            THISTMPL->array_motion_gpointer.gp_stub->gs_un.gs_array;
+        while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+            owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+        template_notifyforscalar(
+            template_findbyname(owner_array->a_gp.gp_un.gp_scalar->sc_template),
+                THISTMPL->array_motion_glist,
+                    owner_array->a_gp.gp_un.gp_scalar,
+                        gensym("change"), 1, &at);
         array_redraw(THISTMPL->array_motion_array,
             THISTMPL->array_motion_glist);
+    }
 }
-
 
     /* try clicking on an element of the array as a scalar (if clicking
     on the trace of the array failed) */
@@ -2323,6 +2452,13 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
+                if (THISTMPL->array_motion_scalar)
+                    gpointer_setglist(&THISTMPL->array_motion_gpointer,
+                        THISTMPL->array_motion_glist,
+                            THISTMPL->array_motion_scalar);
+                else gpointer_setarray(&THISTMPL->array_motion_gpointer,
+                    THISTMPL->array_motion_array,
+                        THISTMPL->array_motion_wp);
                 glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                 if (THISTMPL->array_motion_scalar)
                     scalar_redraw(THISTMPL->array_motion_scalar,
@@ -2491,6 +2627,13 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             THISTMPL->array_motion_yfield = 0;
                             THISTMPL->array_motion_ycumulative = 0;
                         }
+                        if (THISTMPL->array_motion_scalar)
+                            gpointer_setglist(&THISTMPL->array_motion_gpointer,
+                                THISTMPL->array_motion_glist,
+                                    THISTMPL->array_motion_scalar);
+                        else gpointer_setarray(&THISTMPL->array_motion_gpointer,
+                            THISTMPL->array_motion_array,
+                                THISTMPL->array_motion_wp);
                         glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                     }
                     if (alt)

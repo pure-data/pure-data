@@ -203,26 +203,32 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
-            wp->w_array = array_new(datatypes->ds_arraytemplate, gp);
+            wp->w_array = array_new(datatypes->ds_arraytemplate,
+                datatypes->ds_arraydeflength, gp);
         else if (type == DT_TEXT)
+        {
             wp->w_binbuf = binbuf_new();
+            binbuf_addv(wp->w_binbuf, "s", gensym("..."));
+        }
     }
 }
 
-    /* block versions of word_init and word_initvec are provided because
+    /* a block versions of word_init is provided because
     creating and destroying large arrays had been absurdly slowing down patch
-    loading and closing */
+    loading and closing.  The first one is created as above and the rest
+    are simply copied from the first one, in a way that now appears
+    unnecessarily convoluted. */
 void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
 {
     if (n > 0)
     {
         long ndone = 1;
-        word_init(wp, template, gp);
+        word_init(wp, template, gp);  /* init the first one */
         while (ndone < n)
         {
             long ncopy = (n-ndone > ndone ? ndone : n-ndone);
             memcpy(wp + template->t_n*ndone, wp,
-                ncopy*template->t_n*sizeof(t_word));
+                ncopy * template->t_n * sizeof(t_word));
             ndone += ncopy;
         }
     }
@@ -426,12 +432,12 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
     char tag[128];
-        /* FIXME: get rid of this tag (if it's unused) */
     sprintf(tag, "select%p", x);
     if (state)
     {
         int x1, y1, x2, y2;
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
+        post("rectangle %d %d %d %d", x1, y1, x2, y2);
         x1--; x2++; y1--; y2++;
         pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
                   glist_getcanvas(glist), "create", "line",
@@ -580,15 +586,8 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_atom at[3];
     t_float basex = template_getfloat(template, gensym("x"), data, 0);
     t_float basey = template_getfloat(template, gensym("y"), data, 0);
-    SETFLOAT(at, 0); /* unused - this is later bashed to the gpointer */
-    SETFLOAT(at+1, basex + xloc);
-    SETFLOAT(at+2, basey + yloc);
-    if (doit)
-        template_notifyforscalar(template, owner,
-            sc, gensym("click"), 3, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
@@ -596,7 +595,21 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
         if ((hit = (*wb->w_parentclickfn)(y, owner,
             data, template, sc, ap, basex + xloc, basey + yloc,
             xpix, ypix, shift, alt, dbl, doit)))
-                return (hit);
+        {
+            if (doit)
+            {
+                t_atom at[6];
+                SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
+                SETFLOAT(at+1, basex + xpix);
+                SETFLOAT(at+2, basey + ypix);
+                SETFLOAT(at+3, shift);
+                SETFLOAT(at+4, alt);
+                SETFLOAT(at+5, dbl);
+                template_notifyforscalar(template, owner,
+                    sc, gensym("click"), 6, at);
+            }
+            return (hit);
+        }
     }
     return (0);
 }

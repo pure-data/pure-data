@@ -207,7 +207,7 @@ struct _glist
     unsigned int gl_isdeleting:1;   /* we're inside glist_delete -- hack! */
     unsigned int gl_goprect:1;      /* draw rectangle for graph-on-parent */
     unsigned int gl_isgraph:1;      /* show as graph on parent */
-    unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
+    unsigned int gl_hidetext:1;     /* hide object-name + args when GOP */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
@@ -229,6 +229,7 @@ typedef struct _dataslot
     int ds_type;                    /* one of DT_FLOAT, etc. */
     t_symbol *ds_name;              /* name of the data slot */
     t_symbol *ds_arraytemplate;     /* arrays only: template for elements */
+    int ds_arraydeflength;          /* arrays only: default # of elements */
 } t_dataslot;
 
 typedef struct _template
@@ -590,7 +591,8 @@ EXTERN t_template *garray_template(t_garray *x);
 
 EXTERN t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *tmpl,
     t_floatarg f, t_floatarg flags);
-EXTERN t_array *array_new(t_symbol *templatesym, t_gpointer *parent);
+EXTERN t_array *array_new(t_symbol *templatesym, int length,
+    t_gpointer *parent);
 EXTERN void array_resize(t_array *x, int n);
 EXTERN void array_free(t_array *x);
 EXTERN void array_redraw(t_array *a, t_glist *glist);

@@ -22,22 +22,23 @@
 They are instantiated by "garrays" below or can be elements of other
 scalars (g_scalar.c); their graphical behavior is defined accordingly. */
 
-t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
+t_array *array_new(t_symbol *templatesym, int length, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
     t_template *template;
+    post("length %d", length);
     template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
-    x->a_n = 1;
+    x->a_n = length;
     x->a_elemsize = sizeof(t_word) * template->t_n;
-    x->a_vec = (char *)getbytes(x->a_elemsize);
+    x->a_vec = (char *)getbytes(length * x->a_elemsize);
         /* note here we blithely copy a gpointer instead of "setting" a
         new one; this gpointer isn't accounted for and needn't be since
         we'll be deleted before the thing pointed to gets deleted anyway;
         see array_free. */
     x->a_gp = *parent;
     x->a_stub = gstub_new(0, x);
-    word_init((t_word *)(x->a_vec), template, parent);
+    word_initvec((t_word *)(x->a_vec), template, parent, length);
     return (x);
 }
 
@@ -598,7 +599,8 @@ void array_getcoordinate(t_glist *glist,
 static void array_getrect(t_array *array, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
+    t_float x1 = 0x7fffffff, y1 = 0x7fffffff,
+        x2 = -0x7fffffff, y2 = -0x7fffffff;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i;
