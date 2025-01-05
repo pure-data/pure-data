@@ -2340,9 +2340,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 rtext_activate(rtext, 1);
                 return;
             }
-            scalar_doclick(&hitscalar->sc_vec[0], template, hitscalar, 0,
-                rtext_getglist(rtext), 0, 0, xpix, ypix, shiftmod, altmod,
-                    doubleclick, 1);
+            scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
+                xpix, ypix, shiftmod, altmod, doubleclick, 1);
             return;
         }
     }

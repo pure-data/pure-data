@@ -178,7 +178,6 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                     newarraydeflength = 1;
                 argc -= 2;
                 argv += 2;
-                post("deflength %d", newarraydeflength);
             }
             else argc--, argv++;
         }
@@ -2373,6 +2372,8 @@ static int array_doclick_element(t_array *array, t_glist *glist,
 
     if (elemtemplatesym == &s_float)
         return (0);
+    if (doit)
+       post("array_doclick_element");
     if (array_getfields(elemtemplatesym, &elemtemplatecanvas,
         &elemtemplate, &elemsize, xfield, yfield, wfield,
             &xonset, &yonset, &wonset))

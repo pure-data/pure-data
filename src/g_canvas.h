@@ -207,7 +207,7 @@ struct _glist
     unsigned int gl_isdeleting:1;   /* we're inside glist_delete -- hack! */
     unsigned int gl_goprect:1;      /* draw rectangle for graph-on-parent */
     unsigned int gl_isgraph:1;      /* show as graph on parent */
-    unsigned int gl_hidetext:1;     /* hide object-name + args when GOP */
+    unsigned int gl_hidetext:1;     /* hide object-name + args when GO */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
@@ -620,6 +620,9 @@ EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
 EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     int *p_nextmsg, int selectit);
 EXTERN void scalar_addrtexts(t_scalar *y, t_glist *gl);
+EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
+    int xpix, int ypix, int shift, int alt, int dbl, int doit);
+
 EXTERN int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,

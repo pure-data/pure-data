@@ -26,7 +26,6 @@ t_array *array_new(t_symbol *templatesym, int length, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
     t_template *template;
-    post("length %d", length);
     template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
     x->a_n = length;

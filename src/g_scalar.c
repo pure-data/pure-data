@@ -311,7 +311,8 @@ static int template_cancreate(t_template *template)
             (!(elemtemplate = template_findbyname(datatypes->ds_arraytemplate))
                 || !template_cancreate(elemtemplate)))
     {
-        pd_error(0, "%s: no such template", datatypes->ds_arraytemplate->s_name);
+        pd_error(0, "%s: no such template",
+            datatypes->ds_arraytemplate->s_name);
         return (0);
     }
     return (1);
@@ -437,7 +438,6 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
     {
         int x1, y1, x2, y2;
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
-        post("rectangle %d %d %d %d", x1, y1, x2, y2);
         x1--; x2++; y1--; y2++;
         pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
                   glist_getcanvas(glist), "create", "line",
@@ -586,22 +586,20 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_float basex = template_getfloat(template, gensym("x"), data, 0);
-    t_float basey = template_getfloat(template, gensym("y"), data, 0);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         if ((hit = (*wb->w_parentclickfn)(y, owner,
-            data, template, sc, ap, basex + xloc, basey + yloc,
+            data, template, sc, ap, xloc,        yloc,
             xpix, ypix, shift, alt, dbl, doit)))
         {
             if (doit)
             {
                 t_atom at[6];
                 SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
-                SETFLOAT(at+1, basex + xpix);
-                SETFLOAT(at+2, basey + ypix);
+                SETFLOAT(at+1, xpix - glist_xtopixels(owner, xloc));
+                SETFLOAT(at+2, ypix - glist_ytopixels(owner, yloc));
                 SETFLOAT(at+3, shift);
                 SETFLOAT(at+4, alt);
                 SETFLOAT(at+5, dbl);
@@ -619,8 +617,10 @@ int scalar_click(t_gobj *z, struct _glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
+    t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,
-        owner, 0, 0, xpix, ypix, shift, alt, dbl, doit));
+        owner, basex, basey, xpix, ypix, shift, alt, dbl, doit));
 }
 
 static void scalar_save(t_gobj *z, t_binbuf *b)
