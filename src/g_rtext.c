@@ -59,7 +59,7 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
     x->x_buf = 0;
     x->x_bufsize = 0;
     if (!last)  /* first in list */
-        glist->gl_editor->e_rtext = x;
+        glist_getcanvas(glist)->gl_editor->e_rtext = x;
     else last->x_next = x;
     x->x_next = 0;
     sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
