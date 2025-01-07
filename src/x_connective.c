@@ -1300,7 +1300,7 @@ static const char* _formatscan(const char*str, t_printtype*typ) {
                 *typ = STRING;
                 return str;
             }
-            if (strchr("fgGeEaA",*str)!=0) {
+            if (strchr("fFgGeEaA",*str)!=0) {
                 *typ = FLOAT;
                 return str;
             }
