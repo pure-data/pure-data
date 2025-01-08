@@ -1279,10 +1279,11 @@ typedef struct _makefilename
 {
     t_object x_obj;
     t_symbol *x_format;
+    t_int x_long;
     t_printtype x_accept;
 } t_makefilename;
 
-static const char* _formatscan(const char*str, t_printtype*typ) {
+static const char* _formatscan(t_makefilename *x, const char*str, t_printtype*typ) {
     int infmt=0;
     for (; *str; str++) {
         if (!infmt && *str=='%') {
@@ -1294,8 +1295,11 @@ static const char* _formatscan(const char*str, t_printtype*typ) {
                 infmt=0;
                 continue;
             }
-            if (strchr("-.#0123456789",*str)!=0)
+            if (strchr("+- #.0123456789hlL",*str)!=0) {
+                if (*str=='l')
+                    x->x_long = 1;
                 continue;
+            }
             if (*str=='s') {
                 *typ = STRING;
                 return str;
@@ -1328,11 +1332,11 @@ static void makefilename_scanformat(t_makefilename *x)
     t_printtype typ;
     if (!x->x_format) return;
     str = x->x_format->s_name;
-    str = _formatscan(str, &typ);
+    str = _formatscan(x, str, &typ);
     x->x_accept = typ;
     if (str && (NONE != typ)) {
             /* try again, to see if there's another format specifier (which we forbid) */
-        str = _formatscan(str, &typ);
+        str = _formatscan(x, str, &typ);
         if (NONE != typ) {
             pd_error(x, "makefilename: invalid format string '%s' (too many format specifiers)", x->x_format->s_name);
             x->x_format = 0;
@@ -1349,6 +1353,7 @@ static void *makefilename_new(t_symbol *s)
     outlet_new(&x->x_obj, &s_symbol);
     x->x_format = s;
     x->x_accept = NONE;
+    x->x_long = 0;
     makefilename_scanformat(x);
     return (x);
 }
@@ -1365,10 +1370,12 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
         sprintf(buf, "%s",  x->x_format->s_name);
         break;
     case INT:
-        sprintf(buf, x->x_format->s_name, (int)f);
+        sprintf(buf, x->x_format->s_name,
+            x->x_long ? (long)f : (int)f);
         break;
     case UINT:
-        sprintf(buf, x->x_format->s_name, (unsigned int)f);
+        sprintf(buf, x->x_format->s_name,
+            x->x_long ? (unsigned long)f : (unsigned int)f);
         break;
     case POINTER:
         sprintf(buf, x->x_format->s_name, (t_int)f);
