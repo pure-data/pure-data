@@ -531,7 +531,7 @@ int m_mainloop(void)
 {
         /* open audio and MIDI */
     sys_reopen_midi();
-    if (audio_shouldkeepopen())
+    if (audio_shouldkeepopen() && !audio_isopen())
         sys_reopen_audio();
 
         /* run the scheduler until it quits. */
