@@ -624,6 +624,7 @@ void jack_close_audio(void)
 
 void sys_do_close_audio(void);
 
+    /* Always called with Pd locked! */
 int jack_reopen_audio(void)
 {
         /* we don't actually try to reopen (yet?) */
@@ -659,7 +660,9 @@ int jack_send_dacs(void)
     {
         if (jack_didshutdown)
         {
+            sys_lock();
             jack_reopen_audio(); /* handle server shutdown */
+            sys_unlock();
             return (SENDDACS_NO);
         }
 #ifdef THREADSIGNAL
