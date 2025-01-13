@@ -288,13 +288,18 @@ audio device in that same scheduler tick because it would deadlock.
 For now, we just post an error message, but LATER we might want to fix this.
 In practice, there is hardly a reason why a user would want to start audio
 and then immediately stop or (re)open it. Note, however, that it's always ok
-to toggle DSP states while audio is already running (which has its use cases). */
+to toggle DSP states while audio is already running (which has its use cases).
+
+If Pd is built with -DUSEAPI_DUMMY=1, sys_reopen_audio() and sys_close_audio()
+are simply no-ops since there are no audio devices that can be opened or closed.
+This also avoids potential issues with libpd. */
 
 static int sched_request;
 
     /* always called with Pd locked */
 void sys_reopen_audio(void)
 {
+#ifndef USEAPI_DUMMY
     if (sys_ismainthread())
     {
         if (sched_useaudio != SCHED_AUDIO_CALLBACK)
@@ -315,11 +320,13 @@ void sys_reopen_audio(void)
     }
     else /* called from the audio callback, see sched_audio_callbackfn() */
         sched_request = SYS_QUIT_REOPEN;
+#endif
 }
 
     /* always called with Pd locked */
 void sys_close_audio(void)
 {
+#ifndef USEAPI_DUMMY
     if (sys_ismainthread())
     {
         if (sched_useaudio != SCHED_AUDIO_CALLBACK)
@@ -329,6 +336,7 @@ void sys_close_audio(void)
     }
     else /* called from the audio callback, see sched_audio_callbackfn() */
         sched_request = SYS_QUIT_CLOSE;
+#endif
 }
 
     /* called by sys_do_reopen_audio() and sys_do_close_audio() */
