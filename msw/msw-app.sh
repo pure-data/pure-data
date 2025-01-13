@@ -242,7 +242,8 @@ if [ "x$strip" = xtrue ] ; then
     | while read file ; do \
         "${STRIP}" ${STRIPARGS} -o "$file.stripped" "$file" && \
         mv "$file.stripped" "$file" && \
-        echo "stripped $file" ; \
+        echo "stripped $file" || \
+        echo "NOT stripped $file" ; \
     done
 fi
 
