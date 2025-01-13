@@ -176,6 +176,8 @@ if [  "${PDARCH}" = "" ]; then
         PDARCH=32
     elif file -b "${pd_exe}" | grep -E "^PE32\+ .* x86-64[, ]" >/dev/null; then
         PDARCH=64
+    elif file -b "${pd_exe}" | grep -E "^PE32\+ .* (ARM|Aarch)64[, ]" >/dev/null; then
+        PDARCH=64
     fi
 fi
 if [  "${PDARCH}" = "" ]; then
