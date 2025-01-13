@@ -116,6 +116,25 @@ fi
 mkdir -p "${DEST}"
 
 
+# 64 bit support
+if [ "${FORCE64BIT}" = true ] ; then
+    echo "==== Forcing 64 bit"
+    OPTIONS="${OPTIONS} --enable-64bit"
+else
+    # try to detect 64 bit MinGW using MSYSTEM env var
+    case "${MSYSTEM}" in
+        MINGW64 | UCRT64 | CLANG64)
+            echo "==== Detected 64 bit"
+            OPTIONS="${OPTIONS} --enable-64bit"
+            ;;
+        CLANGARM64)
+            echo "==== Detected 64 bit (arm)"
+            OPTIONS="${OPTIONS} --enable-64bit=arm64"
+            ;;
+    esac
+fi
+
+
 echo "==== Creating tcltk-${TCLTK}"
 
 # fetch Tcl and Tk
@@ -141,18 +160,6 @@ else
 
     tcldir="tcl${TCLTK}"
     tkdir="tk${TCLTK}"
-fi
-
-# 64 bit support
-if [ "${FORCE64BIT}" = true ] ; then
-    echo "==== Forcing 64 bit"
-    OPTIONS="${OPTIONS} --enable-64bit"
-else
-    # try to detect 64 bit MinGW using MSYSTEM env var
-    if [ "x${MSYSTEM}" = "xMINGW64" ] ; then
-        echo "==== Detected 64 bit"
-        OPTIONS="${OPTIONS} --enable-64bit"
-    fi
 fi
 
 # build Tcl and Tk
