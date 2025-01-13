@@ -76,15 +76,15 @@ EOF
 
 # Parse command line arguments
 #----------------------------------------------------------
-while [ "$1" != "" ] ; do
-    case $1 in
+while [ -n "${1}" ] ; do
+    case "${1}" in
         -t|--tk)
             shift 1
             if [ $# = 0 ] ; then
                 echo "-t,--tk option requires a VER or DIR argument" 1>&2
                 exit 1
             fi
-            TK="$1"
+            TK="${1}"
             prototype_tk=false
             ;;
         -s|--sources)
@@ -217,11 +217,13 @@ fi
 # * Windows:             $MINGW_PREFIX/bin
 # * Linux cross-compile: $MINGW_PREFIX/lib
 if [ -n "${MINGW_PREFIX}" ] ; then
-    if [ -e "${MINGW_PREFIX}/bin/${PTHREAD_DLL}" ] ; then
-        pthread_dll="${MINGW_PREFIX}/bin/${PTHREAD_DLL}"
-    elif [ -e "${MINGW_PREFIX}/lib/${PTHREAD_DLL}" ] ; then
-        pthread_dll="${MINGW_PREFIX}/lib/${PTHREAD_DLL}"
-    fi
+    for p in bin lib; do
+        p="${MINGW_PREFIX}/${p}/${PTHREAD_DLL}"
+        if [ -e "${p}" ] ; then
+            pthread_dll="${p}"
+            break
+        fi
+    done
 fi
 
 if [ -e "${pthread_dll}" ]; then
