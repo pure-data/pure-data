@@ -183,36 +183,6 @@ if [ "${sources}" = true ] ; then
     done
 fi
 
-# untar pdprototype.tgz
-tar -xf pdprototype.tgz -C "${APP}/" --strip-components=1
-if [ "$prototype_tk" = false ] ; then
-
-    # remove bundled tcl & tk as we'll install our own,
-    # keep dlls needed by pd & externals
-    rm -rf "${APP:?}/bin"/tcl* "${APP:?}/bin"/tk* \
-           "${APP:?}/bin"/wish*.exe "${APP:?}/bin"/tclsh*.exe \
-           "${APP:?}/lib"
-
-    # remove headers which should be provided by MinGW
-    rm -f "${APP}/src/pthread.h"
-
-    # build, if needed
-    if [ "${build_tk}" = true ] ; then
-         echo "Building tcltk-$TK"
-        ./tcltk-dir.sh "${TK}"
-        TK="tcltk-${TK}"
-    else
-        echo "Using $TK"
-    fi
-
-    # install tcl & tk
-    cp -R "${TK}/bin" "${APP}"/
-    cp -R "${TK}/lib" "${APP}/"
-
-    # remove bundled Tcl packages Pd doesn't need
-    rm -rf "${APP}/lib"/itcl* "${APP}/lib"/sqlite* "${APP}/lib"/tdbc*
-fi
-
 # install pthread from MinGW from:
 # * Windows:             $MINGW_PREFIX/bin
 # * Linux cross-compile: $MINGW_PREFIX/lib
@@ -248,6 +218,42 @@ if [ "${strip}" = true ] ; then
         echo "NOT stripped ${file}" ; \
     done
 fi
+
+# untar pdprototype.tgz
+# NOTE: TclTk binaries MUST NOT be stripped
+#       as of Tcl/Tk-9, the tcl90.dll (resp tclsh90.exe)
+#       have (parts of) the stdlib embedded as a ZIP-file
+#       that is appended to the actual DLL
+#       running 'strip' on the file will remove the stdlib!
+tar -xf pdprototype.tgz -C "${APP}/" --strip-components=1
+if [ "${prototype_tk}" = false ] ; then
+
+    # remove bundled tcl & tk as we'll install our own,
+    # keep dlls needed by pd & externals
+    rm -rf "${APP:?}/bin"/tcl* "${APP:?}/bin"/tk* \
+           "${APP:?}/bin"/wish*.exe "${APP:?}/bin"/tclsh*.exe \
+           "${APP:?}/lib"
+
+    # remove headers which should be provided by MinGW
+    rm -f "${APP}/src/pthread.h"
+
+    # build, if needed
+    if [ "${build_tk}" = true ] ; then
+         echo "Building tcltk-${TK}"
+        ./tcltk-dir.sh "${TK}"
+        TK="tcltk-${TK}"
+    else
+        echo "Using ${TK}"
+    fi
+
+    # install tcl & tk
+    cp -R "${TK}/bin" "${APP}"/
+    cp -R "${TK}/lib" "${APP}/"
+
+    # remove bundled Tcl packages Pd doesn't need
+    rm -rf "${APP}/lib"/itcl* "${APP}/lib"/sqlite* "${APP}/lib"/tdbc*
+fi
+
 
 # set permissions and clean up
 find "${APP}" -type f -exec chmod -x {} +
