@@ -472,6 +472,7 @@ void pa_close_audio(void)
 void sys_do_close_audio(void);
 void sys_do_reopen_audio(void);
 
+    /* Always call with Pd locked! */
 int pa_reopen_audio(void)
 {
     int success;
@@ -529,13 +530,19 @@ int pa_send_dacs(void)
             /* only go to sleep if there is nothing else to do. */
         if (!sys_semaphore_waitfor(pa_sem, POLL_TIMEOUT))
         {
+            sys_lock();
             pa_reopen_audio();
+            sys_unlock();
             return SENDDACS_NO;
         }
         retval = SENDDACS_SLEPT;
 #else
         if ((timeref - pa_lastdactime) >= POLL_TIMEOUT)
+        {
+            sys_lock();
             pa_reopen_audio();
+            sys_unlock();
+        }
         return SENDDACS_NO;
 #endif
     }
