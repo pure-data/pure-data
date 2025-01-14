@@ -26,7 +26,7 @@
 #X text 127 354 output elapsed time. You can click multiple times since it was last reset., f 25;
 #X obj 183 593 text sequence;
 #X text 111 412 elapsed time in the specified time units, f 20;
-#X text 39 476 Note you need to reset the elapsed time to zero when you change the tempo message when the object is runnng \, otherwise you get funny results because the change takes effect immediately and gets applied to the remaining part of the elapsed time., f 75;
+#X text 39 476 Note you need to reset the elapsed time to zero when you change the tempo message when the object is running \, otherwise you get funny results because the change takes effect immediately and gets applied to the remaining part of the elapsed time., f 75;
 #N canvas 700 98 489 311 reference 0;
 #X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
 #X obj 18 229 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
