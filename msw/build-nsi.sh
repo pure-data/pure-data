@@ -172,9 +172,11 @@ fi
 
 # autodetect architecture if not given on the cmdline
 if [  "${PDARCH}" = "" ]; then
-    if file -b "${pd_exe}" | grep -E "^PE32 .* 80386 " >/dev/null; then
+    if file -b "${pd_exe}" | grep -E "^PE32 .* 80386[, ]" >/dev/null; then
         PDARCH=32
-    elif file -b "${pd_exe}" | grep -E "^PE32\+ .* x86-64 " >/dev/null; then
+    elif file -b "${pd_exe}" | grep -E "^PE32\+ .* x86-64[, ]" >/dev/null; then
+        PDARCH=64
+    elif file -b "${pd_exe}" | grep -E "^PE32\+ .* (ARM|Aarch)64[, ]" >/dev/null; then
         PDARCH=64
     fi
 fi
@@ -256,7 +258,7 @@ if makensis -DPDVER="${PDVERSION}" -DWISHN="${WISHNAME}" -DARCHI="${PDARCH}" \
     -DPDEXE=$(basename "${pd_exe}") "${NSIFILE}" 1>&2
 then
   error "Build successful"
-  echo "${OUTDIR}/pd-${PDVERSION}.windows-installer.exe"
+  echo "${OUTDIR}/Pd-${PDVERSION}.windows-installer.exe"
 else
   error "Some error occurred during compilation of ${NSIFILE}"
   error "(files are not cleaned up so you can inspect them)"
