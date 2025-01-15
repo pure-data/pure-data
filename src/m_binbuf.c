@@ -826,6 +826,23 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int flag
         buf+= 3;
     }
 
+        /* optionally skip the shebang */
+    if (flag & BINBUF_SHEBANG
+        && length >=3
+        && buf[0] == '#' && buf[1] == '!')
+    {
+        long offset = 0;
+        for(offset = 0; offset<length; offset++)
+        {
+            if (buf[offset] == '\n')
+            {
+                length -= offset;
+                buf += offset;
+                break;
+            }
+        }
+    }
+
         /* optionally map carriage return to semicolon */
     if (flag & BINBUF_CR)
     {
@@ -1452,7 +1469,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     int dspstate = canvas_suspend_dsp();
         /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
-    if (binbuf_read(b, name->s_name, dir->s_name, 0))
+    if (binbuf_read(b, name->s_name, dir->s_name, BINBUF_SHEBANG))
         pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
     else
     {

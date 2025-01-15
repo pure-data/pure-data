@@ -406,6 +406,7 @@ EXTERN int binbuf_resize(t_binbuf *x, int newsize);
 EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv);
 /* binbuf read/write flags */
 #define BINBUF_CR      (1<<0)
+#define BINBUF_SHEBANG (1<<1)
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int flag);
 EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
