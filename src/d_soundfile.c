@@ -1146,7 +1146,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     t_asciiargs *a)
 {
     t_binbuf *b = binbuf_new();
-    int i, j, vecsize;
+    int i, j, vecsize, parse_errors = 0;
     ssize_t framesinfile, nframes = a->aa_nframes;
     t_atom *atoms, *ap;
     if (binbuf_read_via_canvas(b, filename, x->x_canvas, 0))
@@ -1198,7 +1198,15 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
         atoms += a->aa_onsetframe * a->aa_nchannels;
     for (j = 0, ap = atoms; j < nframes; j++)
         for (i = 0; i < a->aa_nchannels; i++)
+        {
+            if (ap->a_type != A_FLOAT)
+                parse_errors++;
             a->aa_vectors[i][j].w_float = atom_getfloat(ap++);
+        }
+        /* report parse errors */
+    if (parse_errors > 0)
+        pd_error(x, "[soundfiler] read: %s: %d element%s could not be parsed",
+            filename, parse_errors, parse_errors > 1 ? "s" : "");
         /* zero out remaining elements of vectors */
     for (i = 0; i < a->aa_nchannels; i++)
     {

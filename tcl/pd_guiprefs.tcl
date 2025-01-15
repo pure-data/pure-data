@@ -374,7 +374,7 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
             # linux uses ~/.config/pure-data dir
             set confdir [file join ~ .config Pd]
             if {[info exists ::env(XDG_CONFIG_HOME)]} {
-                set confdir [file join $::env(XDG_CONFIG_HOME) pd]
+                set confdir [file join $::env(XDG_CONFIG_HOME) Pd]
             }
         }
     }
