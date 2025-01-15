@@ -30,9 +30,9 @@ DOWNLOAD=true
 BUILD=true
 LEAVE=false
 PATCHES=true
-
-# set deployment target to enable weak-linking for older macOS version support
-CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
+tcltk_macos_min=10.6
+macos_version_min="${tcltk_macos_min}"
+override_macos_version_min="no"
 
 # Help message
 #----------------------------------------------------------
@@ -55,6 +55,9 @@ Options:
                       10.14 - 10.15: x86_64
                       11.0+:         arm64 x86_64
 
+  --macosx-version-min VER
+		      compile for the given macOS VERsion onwards (DEFAULT: ${macos_version_min})
+
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
                       any arguments after VERSION are passed to git
 
@@ -64,7 +67,7 @@ Options:
   -b,--build          (re)build from tcl{$VERSION}/tk{$VERSION} source paths,
                       do not download
 
-  -l,--leave          leave source paths, do not delete after building
+  -k,--keep           keep source paths, do not delete after building
 
   --no-patches        do not apply any local patches to the tcl or tk sources
 
@@ -95,8 +98,8 @@ Examples:
     tcltk-wish.sh --download 8.5.19
 
     # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
-    # note: --leave ensures the source trees are not deleted after building
-    tcltk-wish.sh --build --leave 8.5.19
+    # note: --keep ensures the source trees are not deleted after building
+    tcltk-wish.sh --build --keep 8.5.19
 
 EOF
 }
@@ -120,6 +123,15 @@ while [ "$1" != "" ] ; do
         --universal)
             UNIVERSAL=true
             ;;
+        --macosx-version-min|--macos-version-min)
+            if [ $# = 0 ] ; then
+                echo "--macosx-version-min option requires a version argument"
+                exit 1
+            fi
+            shift 1
+            macos_version_min="${1}"
+            override_macos_version_min="yes"
+            ;;
         --git)
             GIT=true
             ;;
@@ -131,7 +143,7 @@ while [ "$1" != "" ] ; do
             DOWNLOAD=false
             BUILD=true
             ;;
-        -l|--leave)
+        -l|--leave|-k|--keep)
             LEAVE=true
             ;;
         --no-patches)
@@ -150,6 +162,27 @@ if [ "$1" = "" ] ; then
 fi
 TCLTK=$1
 shift 1
+
+
+# TCLTK>=9 needs a macos_version_min>=10.10(?)
+if { echo "${TCLTK}"; echo 9; } | sort -Vr | head -1 | grep -Fwq "${TCLTK}"; then
+    # TCLTK>=9
+    tcltk_macos_min=10.9
+fi
+if [ "${override_macos_version_min}" = "no" ]; then
+    macos_version_min="${tcltk_macos_min}"
+elif [ -n "${macos_version_min}" ]; then
+    if { echo "${macos_version_min}"; echo "${tcltk_macos_min}"; } | sort -Vr | head -1 | grep -Fwq "${macos_version_min}"; then
+        echo "TclTk-${TCLTK} needs at least macosx_version_min=${tcltk_macos_min} ...all good!"
+    else
+        echo "TclTk-${TCLTK} needs at least macosx_version_min=${tcltk_macos_min} ...proceeding with ${macos_version_min} at your own risk!"
+    fi
+fi
+
+# set deployment target to enable weak-linking for older macOS version support
+if [ -n "${macos_version_min}" ]; then
+	CFLAGS="-mmacosx-version-min=${macos_version_min} $CFLAGS"
+fi
 
 # Go
 #----------------------------------------------------------
