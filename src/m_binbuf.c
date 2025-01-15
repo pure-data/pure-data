@@ -779,7 +779,7 @@ broken:
          FREEA(t_atom, mstack, maxnargs, HUGEMSG);
 }
 
-int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
+int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int flag)
 {
     long length, length0;
     int fd;
@@ -827,7 +827,7 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
     }
 
         /* optionally map carriage return to semicolon */
-    if (crflag)
+    if (flag & BINBUF_CR)
     {
         int i;
         for (i = 0; i < length; i++)
@@ -927,7 +927,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         }
         if ((ap->a_type == A_SEMI || ap->a_type == A_COMMA) &&
             bp > sbuf && bp[-1] == ' ') bp--;
-        if (!crflag || ap->a_type != A_SEMI)
+        if (!(crflag & BINBUF_CR) || ap->a_type != A_SEMI)
         {
             atom_string(ap, bp, (unsigned int)((ep-bp)-2));
             length = (int)strlen(bp);

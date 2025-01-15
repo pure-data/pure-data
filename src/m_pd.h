@@ -404,14 +404,16 @@ EXTERN int binbuf_getnatom(const t_binbuf *x);
 EXTERN t_atom *binbuf_getvec(const t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
 EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv);
+/* binbuf read/write flags */
+#define BINBUF_CR      (1<<0)
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
-    int crflag);
+    int flag);
 EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
-    int crflag);
+    int flag);
 EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
-    int crflag);
+    int flag);
 EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
-    int crflag);
+    int flag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
