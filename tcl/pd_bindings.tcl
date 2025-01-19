@@ -263,6 +263,11 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     }
     bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
+    catch {
+        # TclTk-9.0 has a new even for touchpad gestures
+        bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}
+        puts "bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}"
+    }
 
     # clear interim compose character by sending a virtual BackSpace,
     # these events are pulled from Tk library/entry.tcl
