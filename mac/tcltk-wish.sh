@@ -48,7 +48,7 @@ Options:
   -h,--help           display this help message
 
   --arch ARCH         choose a specific arch ie. ppc, i386, x86_64, arm64
-  
+
   --universal         "universal" multi-arch build based on detected macOS SDK
                       10.6:          ppc i386 x86_64
                       10.7  - 10.13: i386 x86_64
@@ -92,7 +92,7 @@ Examples:
     tcltk-wish.sh --universal 8.6.6
 
     # build Wish-master-git.app with the latest master branch from git
-    tcltk-wish.sh --git master-git 
+    tcltk-wish.sh --git master-git
 
     # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
@@ -106,6 +106,29 @@ Examples:
     tcltk-wish.sh --build --keep 8.5.19
 
 EOF
+}
+
+buildinfo() {
+    cat <<EOF
+# Tcl/Tk
+${TCLTK}
+
+# macOS
+EOF
+sw_vers
+
+cat <<EOF
+
+# XCode
+EOF
+pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+
+
+cat <<EOF
+
+# buildflags
+EOF
+echo "CFLAGS: ${CFLAGS}"
 }
 
 # Parse command line arguments
@@ -323,7 +346,7 @@ fi
 export CFLAGS
 
 # build Tcl and Tk
-# outputs into local "build" & "embedded" directories 
+# outputs into local "build" & "embedded" directories
 make -C "${tcldir}/macosx" embedded
 make -C "${tkdir}/macosx" embedded
 make -C "${tcldir}/macosx" install-embedded INSTALL_ROOT="$(pwd)/embedded"
@@ -331,6 +354,7 @@ make -C "${tkdir}/macosx"  install-embedded INSTALL_ROOT="$(pwd)/embedded"
 
 # move Wish.app located in "embedded"
 mv embedded/Applications/Utilities/Wish.app "${WISH}"
+buildinfo > "${WISH}/Contents/Resources/tcltck_buildinfo.txt"
 
 # finish up
 if [ $LEAVE = false ] ; then
