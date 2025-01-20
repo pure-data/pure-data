@@ -38,7 +38,7 @@ override_macos_version_min="no"
 #----------------------------------------------------------
 help() {
 cat <<EOF
-Usage: tcltk-wish.sh [OPTIONS] VERSION
+Usage: $0 [OPTIONS] VERSION
 
   Downloads and builds a Wish-VERSION.app for macOS
   with the chosen Tcl/Tk framework version,
@@ -82,28 +82,28 @@ Arguments:
 Examples:
 
     # build Wish-8.5.19.app with embedded Tcl/Tk 8.5.19
-    tcltk-wish.sh 8.5.19
+    $0 8.5.19
 
     # build 32bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
-    tcltk-wish.sh --arch i386 8.6.6
+    $0 --arch i386 8.6.6
 
     # build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
     # and universal archs (detected from Xcode macOS SDK)
-    tcltk-wish.sh --universal 8.6.6
+    $0 --universal 8.6.6
 
     # build Wish-master-git.app with the latest master branch from git
-    tcltk-wish.sh --git master-git
+    $0 --git master-git
 
     # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
-    tcltk-wish.sh --git 8.6.6-git -b master core_8_6_6
+    $0 --git 8.6.6-git -b master core_8_6_6
 
     # download the tcl8.5.19 and tk8.5.19 source paths, do not build
-    tcltk-wish.sh --download 8.5.19
+    $0 --download 8.5.19
 
     # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
     # note: --keep ensures the source trees are not deleted after building
-    tcltk-wish.sh --build --keep 8.5.19
+    $0 --build --keep 8.5.19
 
 EOF
 }
