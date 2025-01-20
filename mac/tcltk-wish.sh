@@ -64,8 +64,12 @@ Options:
   -d,--download       download source to tcl{$VERSION}/tk{$VERSION} paths,
                       do not build
 
+  --no-build          do not build
+
   -b,--build          (re)build from tcl{$VERSION}/tk{$VERSION} source paths,
                       do not download
+
+  --no-download       do not download
 
   -k,--keep           keep source paths, do not delete after building
 
@@ -107,7 +111,7 @@ EOF
 # Parse command line arguments
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
-    case $1 in
+    case "$1" in
         -h|--help)
             help
             exit 0
@@ -139,9 +143,15 @@ while [ "$1" != "" ] ; do
             DOWNLOAD=true
             BUILD=false
             ;;
+        --no-download)
+            DOWNLOAD=false
+            ;;
         -b|--build)
             DOWNLOAD=false
             BUILD=true
+            ;;
+        --no-build)
+            BUILD=false
             ;;
         -l|--leave|-k|--keep)
             LEAVE=true
@@ -160,7 +170,7 @@ if [ "$1" = "" ] ; then
     echo "Usage: tcltk-wish.sh [OPTIONS] VERSION"
     exit 1
 fi
-TCLTK=$1
+TCLTK="$1"
 shift 1
 
 
@@ -187,10 +197,10 @@ fi
 # Go
 #----------------------------------------------------------
 
-WISH=$(pwd)/Wish-${TCLTK}.app
+WISH="$(pwd)/Wish-${TCLTK}.app"
 
 # change to the dir of this script
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 # remove old app if found
 if [ -d "$WISH" ] ; then
@@ -206,27 +216,37 @@ if [ $DOWNLOAD = true ] ; then
     if [ $GIT = true ] ; then
 
         # shallow clone sources, pass remaining args to git
-        git clone --depth 1 https://github.com/tcltk/tcl.git tcl${TCLTK} $@
-        git clone --depth 1 https://github.com/tcltk/tk.git tk${TCLTK} $@
+        git clone --depth 1 "https://github.com/tcltk/tcl.git tcl${TCLTK}" "$@"
+        git clone --depth 1 "https://github.com/tcltk/tk.git tk${TCLTK}" "$@"
     else
 
         # download source packages
-        curl -LO http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz
-        curl -LO http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz
+        curl -LO "http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz"
+        curl -LO "http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz"
 
         # unpack
-        tar -xzf tcl${TCLTK}-src.tar.gz
-        tar -xzf tk${TCLTK}-src.tar.gz
+        tar -xzf "tcl${TCLTK}-src.tar.gz"
+        tar -xzf "tk${TCLTK}-src.tar.gz"
     fi
 else
+    # check source directories
+    if [ ! -d "$tcldir" ] && [ -e "tcl${TCLTK}-src.tar.gz" ] ; then
+        echo "---- Extracting tcl${TCLTK}-src.tar.gz ---"
+        tar -xzf "tcl${TCLTK}-src.tar.gz" || exit 1
+    fi
+    if [ ! -d "$tkdir" ] && [ -e "tk${TCLTK}-src.tar.gz" ] ; then
+        echo "---- Extracting tk${TCLTK}-src.tar.gz --- "
+        tar -xzf "tk${TCLTK}-src.tar.gz" || exit 1
+    fi
+
     echo  "==== Using sources in $tcldir $tkdir"
 
     # check source directories
-    if [ ! -e "$tcldir" ] ; then
+    if [ ! -d "$tcldir" ] ; then
         echo "$tcldir not found"
         exit 1
     fi
-    if [ ! -e "$tkdir" ] ; then
+    if [ ! -d "$tkdir" ] ; then
         echo "$tkdir not found"
         exit 1
     fi
@@ -242,7 +262,7 @@ fi
 if [ $PATCHES = true ] ; then
     set +e
     for p in $(find ./patches -type f -name "tcl${TCLTK}*.patch") ; do
-        cd tcl${TCLTK}
+        cd "tcl${TCLTK}"
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
         if [ $? = 0 ] ; then
             echo "==== Applying $p"
@@ -251,7 +271,7 @@ if [ $PATCHES = true ] ; then
         cd ../
     done
     for p in $(find ./patches -type f -name "tk${TCLTK}*.patch") ; do
-        cd tk${TCLTK}
+        cd "tk${TCLTK}"
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
         if [ $? = 0 ] ; then
             echo "==== Applying $p"
@@ -280,17 +300,17 @@ if [ $UNIVERSAL = true ] ; then
         XCODE_VER=$(xcodebuild -version | grep "Xcode" | \
                     sed "s/[^0-9]*\([0-9]*\).*/\1/")
     fi
-    if [ $XCODE_VER -gt 11 ] ; then
+    if [ "${XCODE_VER}" -gt 11 ] ; then
         # Xcode 12+: 11.0+
         CFLAGS="-arch x86_64 -arch arm64 $CFLAGS"
-    elif [ $XCODE_VER -gt 9 ] ; then
+    elif [ "${XCODE_VER}" -gt 9 ] ; then
         # Xcode 10 - 11: 10.14 - 10.15
         echo "warning: Xcode version $XCODE_VER only builds x86_64"
         CFLAGS="-arch x86_64 $CFLAGS"
-    elif [ $XCODE_VER -gt 3 ] ; then
+    elif [ "${XCODE_VER}" -gt 3 ] ; then
         # Xcode 4 - 9: 10.7 - 10.13
         CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
-    elif [ "$XCODE_VER" = "3" ] ; then
+    elif [ "${XCODE_VER}" = "3" ] ; then
         # Xcode 3: 10.6
         CFLAGS="-arch ppc -arch i386 -arch x86_64 $CFLAGS"
     else
@@ -304,17 +324,17 @@ export CFLAGS
 
 # build Tcl and Tk
 # outputs into local "build" & "embedded" directories 
-make -C ${tcldir}/macosx embedded
-make -C ${tkdir}/macosx embedded
-make -C ${tcldir}/macosx install-embedded INSTALL_ROOT=`pwd`/embedded
-make -C ${tkdir}/macosx  install-embedded INSTALL_ROOT=`pwd`/embedded
+make -C "${tcldir}/macosx" embedded
+make -C "${tkdir}/macosx" embedded
+make -C "${tcldir}/macosx" install-embedded INSTALL_ROOT="$(pwd)/embedded"
+make -C "${tkdir}/macosx"  install-embedded INSTALL_ROOT="$(pwd)/embedded"
 
 # move Wish.app located in "embedded"
-mv embedded/Applications/Utilities/Wish.app $WISH
+mv embedded/Applications/Utilities/Wish.app "${WISH}"
 
 # finish up
 if [ $LEAVE = false ] ; then
-    rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
+    rm -rf "${tcldir}" "${tkdir}" "${tcldir}-src.tar.gz" "${tkdir}-src.tar.gz"
     rm -rf build embedded
 fi
 
