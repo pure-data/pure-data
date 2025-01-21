@@ -781,10 +781,10 @@ broken:
 
 int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
 {
-    long length;
+    long length, length0;
     int fd;
     int readret;
-    char *buf;
+    char *buf, *buf0;
     char namebuf[MAXPDSTRING];
 
     if (*dirname)
@@ -799,14 +799,16 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         perror(namebuf);
         return (1);
     }
-    if ((length = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
-        || !(buf = t_getbytes(length)))
+    if ((length0 = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
+        || !(buf0 = t_getbytes(length0)))
     {
         fprintf(stderr, "lseek: ");
         perror(namebuf);
         close(fd);
         return(1);
     }
+    length = length0;
+    buf = buf0;
     if ((readret = (int)read(fd, buf, length)) < length)
     {
         fprintf(stderr, "read (%d %ld) -> %d\n", fd, length, readret);
@@ -815,6 +817,15 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         t_freebytes(buf, length);
         return(1);
     }
+
+        /* skip any (totally unnecessary) BOM header */
+    if (length >= 3 &&
+        ((int)buf[0] & 0xFF) == 0xEF && ((int)buf[1] & 0xFF) == 0xBB && ((int)buf[2] & 0xFF) == 0xBF)
+    {
+        length -= 3;
+        buf+= 3;
+    }
+
         /* optionally map carriage return to semicolon */
     if (crflag)
     {
@@ -823,13 +834,14 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
             if (buf[i] == '\n')
                 buf[i] = ';';
     }
+
     binbuf_text(b, buf, length);
 
 #if 0
     startpost("binbuf_read "); postatom(b->b_n, b->b_vec); endpost();
 #endif
 
-    t_freebytes(buf, length);
+    t_freebytes(buf0, length0);
     close(fd);
     return (0);
 }

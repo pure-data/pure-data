@@ -28,7 +28,9 @@
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_REOPEN 2
 #define SYS_QUIT_CLOSE 3
+#define SYS_QUIT_RESTART 4
 static int sys_quit;
+static pthread_t mainthread_id;
 static pthread_cond_t sched_cond;
 static pthread_mutex_t sched_mutex;
 static int sched_useaudio = SCHED_AUDIO_NONE;
@@ -226,6 +228,7 @@ void sched_init(void)
 {
     pthread_mutex_init(&sched_mutex, 0);
     pthread_cond_init(&sched_cond, 0);
+    mainthread_id = pthread_self();
 }
 
 void sched_term(void)
@@ -234,10 +237,15 @@ void sched_term(void)
     pthread_cond_destroy(&sched_cond);
 }
 
+int sys_ismainthread(void)
+{
+    return pthread_equal(pthread_self(), mainthread_id);
+}
+
 void dsp_tick(void);
 
     /* ask the scheduler to quit; this is thread-safe, so it
-       can be safely called from within the audio callback. */
+    can be safely called from within the audio callback. */
 void sys_exit(int status)
 {
     pthread_mutex_lock(&sched_mutex);
@@ -251,24 +259,84 @@ void sys_exit(int status)
     pthread_mutex_unlock(&sched_mutex);
 }
 
-    /* ask the scheduler to (re)open the audio system; thread-safe! */
+void sys_do_reopen_audio(void);
+void sys_do_close_audio(void);
+
+/* Implementation notes about (re)opening and closing the audio device:
+
+If we are in the main thread, we can safely close and (re)open the audio
+device *synchronously*. This makes sure that objects immediately see the
+actual samplerate. For example, the sample rate might have been changed
+by the user in the audio settings, or the actual rate might differ from
+the initial (default) rate.
+
+If we are in the audio thread, however, we can't do this because it would
+deadlock; instead we send a request to main thread. However, we cannot
+do this immediately because we don't want the main thread to interrupt
+us halfway and accidentally send us back to polling scheduler, just
+because we temporarily turned off DSP. Instead we capture all requests
+to open and close the device in `sched_request`. Only at the end of the
+audio callback we send the most recent request to the main thread, which
+in turn will either close or (re)open the device. This allows users to
+toggle the DSP state multiple times within a single scheduler tick.
+See m_callbackscheduler() and sched_audio_callbackfn().
+
+When we start audio with callbacks we need to break from the polling
+scheduler. This is done by setting `sys_quit` to SYS_QUIT_RESTART.
+NOTE: in this case it is NOT possible to further (re)open or close the
+audio device in that same scheduler tick because it would deadlock.
+For now, we just post an error message, but LATER we might want to fix this.
+In practice, there is hardly a reason why a user would want to start audio
+and then immediately stop or (re)open it. Note, however, that it's always ok
+to toggle DSP states while audio is already running (which has its use cases).
+
+If Pd is built with -DUSEAPI_DUMMY=1, sys_reopen_audio() and sys_close_audio()
+are simply no-ops since there are no audio devices that can be opened or closed.
+This also avoids potential issues with libpd. */
+
+static int sched_request;
+
+    /* always called with Pd locked */
 void sys_reopen_audio(void)
 {
-    pthread_mutex_lock(&sched_mutex);
-    if (sys_quit != SYS_QUIT_QUIT)
-        sys_quit = SYS_QUIT_REOPEN;
-    pthread_cond_signal(&sched_cond);
-    pthread_mutex_unlock(&sched_mutex);
+#ifndef USEAPI_DUMMY
+    if (sys_ismainthread())
+    {
+        if (sched_useaudio != SCHED_AUDIO_CALLBACK)
+        {
+            sys_do_reopen_audio(); /* (re)open synchronously */
+                /* if we have started the callback scheduler,
+                break from the polling scheduler! */
+            if (sched_useaudio == SCHED_AUDIO_CALLBACK)
+            {
+                pthread_mutex_lock(&sched_mutex);
+                if (sys_quit != SYS_QUIT_QUIT)
+                    sys_quit = SYS_QUIT_RESTART;
+                pthread_mutex_unlock(&sched_mutex);
+            }
+        }
+        else /* See comments above sys_reopen_audio() */
+            pd_error(0, "Cannot reopen audio: would deadlock");
+    }
+    else /* called from the audio callback, see sched_audio_callbackfn() */
+        sched_request = SYS_QUIT_REOPEN;
+#endif
 }
 
-    /* ask the scheduler to close the audio system; thread-safe! */
+    /* always called with Pd locked */
 void sys_close_audio(void)
 {
-    pthread_mutex_lock(&sched_mutex);
-    if (sys_quit != SYS_QUIT_QUIT)
-        sys_quit = SYS_QUIT_CLOSE;
-    pthread_cond_signal(&sched_cond);
-    pthread_mutex_unlock(&sched_mutex);
+#ifndef USEAPI_DUMMY
+    if (sys_ismainthread())
+    {
+        if (sched_useaudio != SCHED_AUDIO_CALLBACK)
+            sys_do_close_audio(); /* close synchronously */
+        else  /* See comments above sys_reopen_audio() */
+            pd_error(0, "Cannot close audio: would deadlock");
+    }
+    else /* called from the audio callback, see sched_audio_callbackfn() */
+        sched_request = SYS_QUIT_CLOSE;
+#endif
 }
 
     /* called by sys_do_reopen_audio() and sys_do_close_audio() */
@@ -459,7 +527,12 @@ static volatile int callback_inprogress;
 
 void sched_audio_callbackfn(void)
 {
+        /* do not process once we have asked
+        to leave the callback scheduler! */
+    if (sys_quit) return;
+
     callback_inprogress = 1;
+    sched_request = 0;
     sys_lock();
     sys_addhist(0);
     sched_tick();
@@ -469,6 +542,15 @@ void sched_audio_callbackfn(void)
     sys_unlock();
     (void)sched_idletask();
     sys_addhist(3);
+    if (sched_request)
+    {
+            /* notify main thread! */
+        pthread_mutex_lock(&sched_mutex);
+        if (sys_quit != SYS_QUIT_QUIT)
+            sys_quit = sched_request;
+        pthread_cond_signal(&sched_cond);
+        pthread_mutex_unlock(&sched_mutex);
+    }
     callback_inprogress = 0;
 }
 
@@ -508,13 +590,13 @@ static void m_callbackscheduler(void)
         if (pthread_cond_timedwait(&sched_cond, &sched_mutex, &ts) == ETIMEDOUT)
         {
                 /* check if the schedular has advanced since the last time
-                   we checked (while it was not in progress) */
+                we checked (while it was not in progress) */
             if (!sys_quit && !wasinprogress && (pd_this->pd_systime == timewas))
             {
                 pthread_mutex_unlock(&sched_mutex);
                     /* if the scheduler has not advanced, but the callback is
-                       still in progress, it just blocks on some Pd message.
-                       Otherwise, the audio device got stuck or disconnected. */
+                    still in progress, it just blocks on some Pd message.
+                    Otherwise, the audio device got stuck or disconnected. */
                 if (!callback_inprogress && !sys_try_reopen_audio())
                     return;
                 pthread_mutex_lock(&sched_mutex);
@@ -524,29 +606,30 @@ static void m_callbackscheduler(void)
     pthread_mutex_unlock(&sched_mutex);
 }
 
-void sys_do_reopen_audio(void);
-void sys_do_close_audio(void);
-
 int m_mainloop(void)
 {
         /* open audio and MIDI */
     sys_reopen_midi();
-    if (audio_shouldkeepopen())
-        sys_reopen_audio();
+    if (audio_shouldkeepopen() && !audio_isopen())
+    {
+        sys_lock();
+        sys_do_reopen_audio();
+        sys_unlock();
+    }
 
         /* run the scheduler until it quits. */
     while (sys_quit != SYS_QUIT_QUIT)
     {
-            /* check if we should close/reopen the audio device. */
-        if (sys_quit != 0)
-        {
-            int reopen = sys_quit == SYS_QUIT_REOPEN;
-            sys_quit = 0;
-            sys_do_close_audio();
-            if (reopen)
-                sys_do_reopen_audio();
-        }
         sys_lock();
+            /* check if we should close/reopen the audio device. */
+        if (sys_quit == SYS_QUIT_REOPEN)
+        {
+            sys_do_close_audio();
+            sys_do_reopen_audio();
+        }
+        else if (sys_quit == SYS_QUIT_CLOSE)
+            sys_do_close_audio();
+        sys_quit = 0;
         sys_initmidiqueue();
         sys_unlock();
         if (sched_useaudio == SCHED_AUDIO_CALLBACK)

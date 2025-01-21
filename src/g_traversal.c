@@ -228,7 +228,7 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
         pd_error(x, "pointer equal: empty pointer");
         return;
     }
-    /* we don't care for the actual type in the union because they are all pointers */
+    /* we can compare any union element because they are all pointers */
     result = (gp->gp_stub->gs_un.gs_glist == x->x_gp.gp_stub->gs_un.gs_glist) &&
         (gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
     if (!result)

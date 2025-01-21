@@ -171,7 +171,16 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
             for (last = first; last < natoms && vec[last].a_type != A_SEMI;
                 last++);
             binbuf_restore(z, last-first, vec+first);
-            binbuf_add(w[i].w_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
+                /* binbufs are initialized continaing "..." so they can be
+                clicked on.  Until there's a way to click on empty binbufs
+                we just leave the "..." in place in case the saved binbuf is
+                empty.  LATER figure out a way do allow and deal with empty
+                ones. */
+            if (binbuf_getnatom(z))
+            {
+                binbuf_clear(w[i].w_binbuf);
+                binbuf_add(w[i].w_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
+            }
             binbuf_free(z);
             last++;
             if (last > natoms) last = natoms;
@@ -781,8 +790,9 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
                 default: type = &s_float; bug("canvas_write");
             }
             if (template->t_vec[j].ds_type == DT_ARRAY)
-                binbuf_addv(b, "sss", type, template->t_vec[j].ds_name,
-                    gensym(template->t_vec[j].ds_arraytemplate->s_name + 3));
+                binbuf_addv(b, "sssf", type, template->t_vec[j].ds_name,
+                    gensym(template->t_vec[j].ds_arraytemplate->s_name + 3),
+                    (double)template->t_vec[j].ds_arraydeflength);
             else binbuf_addv(b, "ss", type, template->t_vec[j].ds_name);
         }
         binbuf_addsemi(b);

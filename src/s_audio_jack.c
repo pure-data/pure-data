@@ -40,6 +40,7 @@
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
+static int jack_isopening = 0;
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
@@ -172,13 +173,17 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 
 static int jack_srate(jack_nframes_t srate, void *arg)
 {
-    sys_lock();
-    if (srate != STUFF->st_dacsr)
+        /* prevent recursion/deadlock in jack_open_audio()! */
+    if (!jack_isopening)
     {
-        STUFF->st_dacsr = srate;
-        canvas_update_dsp();
+        sys_lock();
+        if (srate != STUFF->st_dacsr)
+        {
+            STUFF->st_dacsr = srate;
+            canvas_update_dsp();
+        }
+        sys_unlock();
     }
-    sys_unlock();
     return 0;
 }
 
@@ -483,11 +488,12 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     jack_set_xrun_callback (jack_client, jack_xrun, NULL);
 #endif
 
-    /* tell the JACK server to call `jack_srate()' whenever
-       the sample rate of the system changes.
-    */
-
+        /* tell the JACK server to call `jack_srate()' whenever the
+        sample rate of the system changes. Curiously, this immediately
+        fires the callback, so we need to guard it. See jack_srate() */
+    jack_isopening = 1;
     jack_set_sample_rate_callback (jack_client, jack_srate, 0);
+    jack_isopening = 0;
 
     /* tell the JACK server to call `jack_bsize()' whenever
        the buffer size of the system changes.
@@ -579,6 +585,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     /* tell the JACK server that we are ready to roll */
 
+        /* this calls the jack_block_size() callback */
     if (jack_activate (jack_client))
     {
         pd_error(0, "cannot activate client");
@@ -617,6 +624,7 @@ void jack_close_audio(void)
 
 void sys_do_close_audio(void);
 
+    /* Always called with Pd locked! */
 int jack_reopen_audio(void)
 {
         /* we don't actually try to reopen (yet?) */
@@ -652,7 +660,9 @@ int jack_send_dacs(void)
     {
         if (jack_didshutdown)
         {
+            sys_lock();
             jack_reopen_audio(); /* handle server shutdown */
+            sys_unlock();
             return (SENDDACS_NO);
         }
 #ifdef THREADSIGNAL

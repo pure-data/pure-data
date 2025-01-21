@@ -203,26 +203,32 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
-            wp->w_array = array_new(datatypes->ds_arraytemplate, gp);
+            wp->w_array = array_new(datatypes->ds_arraytemplate,
+                datatypes->ds_arraydeflength, gp);
         else if (type == DT_TEXT)
+        {
             wp->w_binbuf = binbuf_new();
+            binbuf_addv(wp->w_binbuf, "s", gensym("..."));
+        }
     }
 }
 
-    /* block versions of word_init and word_initvec are provided because
+    /* a block versions of word_init is provided because
     creating and destroying large arrays had been absurdly slowing down patch
-    loading and closing */
+    loading and closing.  The first one is created as above and the rest
+    are simply copied from the first one, in a way that now appears
+    unnecessarily convoluted. */
 void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
 {
     if (n > 0)
     {
         long ndone = 1;
-        word_init(wp, template, gp);
+        word_init(wp, template, gp);  /* init the first one */
         while (ndone < n)
         {
             long ncopy = (n-ndone > ndone ? ndone : n-ndone);
             memcpy(wp + template->t_n*ndone, wp,
-                ncopy*template->t_n*sizeof(t_word));
+                ncopy * template->t_n * sizeof(t_word));
             ndone += ncopy;
         }
     }
@@ -305,7 +311,8 @@ static int template_cancreate(t_template *template)
             (!(elemtemplate = template_findbyname(datatypes->ds_arraytemplate))
                 || !template_cancreate(elemtemplate)))
     {
-        pd_error(0, "%s: no such template", datatypes->ds_arraytemplate->s_name);
+        pd_error(0, "%s: no such template",
+            datatypes->ds_arraytemplate->s_name);
         return (0);
     }
     return (1);
@@ -369,6 +376,9 @@ void glist_scalar(t_glist *glist,
     binbuf_free(b);
 }
 
+extern t_class *drawnumber_class;
+
+
 /* -------------------- widget behavior for scalar ------------ */
 void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey)
 {
@@ -423,7 +433,6 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
     char tag[128];
-        /* FIXME: get rid of this tag (if it's unused) */
     sprintf(tag, "select%p", x);
     if (state)
     {
@@ -480,10 +489,12 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) -
+                glist_pixelstox(glist, 0));
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) -
+                glist_pixelstoy(glist, 0));
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
@@ -538,7 +549,8 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
-        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, basex, basey, vis);
+        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, x,
+            basex, basey, vis);
     }
     if (glist_isselected(owner, &x->sc_gobj))
     {
@@ -574,34 +586,41 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_atom at[3];
-    t_float basex = template_getfloat(template, gensym("x"), data, 0);
-    t_float basey = template_getfloat(template, gensym("y"), data, 0);
-    SETFLOAT(at, 0); /* unused - this is later bashed to the gpointer */
-    SETFLOAT(at+1, basex + xloc);
-    SETFLOAT(at+2, basey + yloc);
-    if (doit)
-        template_notifyforscalar(template, owner,
-            sc, gensym("click"), 3, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         if ((hit = (*wb->w_parentclickfn)(y, owner,
-            data, template, sc, ap, basex + xloc, basey + yloc,
+            data, template, sc, ap, xloc,        yloc,
             xpix, ypix, shift, alt, dbl, doit)))
-                return (hit);
+        {
+            if (doit)
+            {
+                t_atom at[6];
+                SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
+                SETFLOAT(at+1, xpix - glist_xtopixels(owner, xloc));
+                SETFLOAT(at+2, ypix - glist_ytopixels(owner, yloc));
+                SETFLOAT(at+3, shift);
+                SETFLOAT(at+4, alt);
+                SETFLOAT(at+5, dbl);
+                template_notifyforscalar(template, owner,
+                    sc, gensym("click"), 6, at);
+            }
+            return (hit);
+        }
     }
     return (0);
 }
 
-static int scalar_click(t_gobj *z, struct _glist *owner,
+int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
+    t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,
-        owner, 0, 0, xpix, ypix, shift, alt, dbl, doit));
+        owner, basex, basey, xpix, ypix, shift, alt, dbl, doit));
 }
 
 static void scalar_save(t_gobj *z, t_binbuf *b)
