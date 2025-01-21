@@ -263,6 +263,11 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     }
     bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
+    catch {
+        # TclTk-9.0 has a new event for touchpad gestures
+        bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}
+        puts "bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}"
+    }
 
     # clear interim compose character by sending a virtual BackSpace,
     # these events are pulled from Tk library/entry.tcl
@@ -288,7 +293,9 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem {
         "aqua" {
-            bind $tkcanvas <ButtonPress-2>    "pdtk_canvas_rightclick %W %x %y %b"
+            # button order changed in TclTk-9.0
+            set rightbtn [expr {$::tcl_version < 9.0 ? 2 : 3}]
+            bind $tkcanvas <ButtonPress-$rightbtn> "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
             bind $tkcanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
         } "x11" {
