@@ -1369,14 +1369,20 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
     case NONE:
         sprintf(buf, "%s",  x->x_format->s_name);
         break;
-    case INT:
-        sprintf(buf, x->x_format->s_name,
-            x->x_long ? (long)f : (int)f);
+    case INT: {
+        if (x->x_long)
+            sprintf(buf, x->x_format->s_name, (long)f);
+        else
+            sprintf(buf, x->x_format->s_name, (int)f);
         break;
-    case UINT:
-        sprintf(buf, x->x_format->s_name,
-            x->x_long ? (unsigned long)f : (unsigned int)f);
+    }
+    case UINT: {
+        if (x->x_long)
+            sprintf(buf, x->x_format->s_name, (unsigned long)f);
+        else
+            sprintf(buf, x->x_format->s_name, (unsigned int)f);
         break;
+    }
     case POINTER:
         sprintf(buf, x->x_format->s_name, (t_int)f);
         break;
