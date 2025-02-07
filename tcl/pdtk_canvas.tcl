@@ -255,6 +255,84 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
     }
 }
 
+proc ::pdtk_canvas::pdtk_get_clipboard_text {tkcanvas} {
+    # TODO: max size is now limited by binbuf_text MAXPDSTRING (1000)
+    # pdsend max size is 65536 bytes (I think), so could maybe optimize this by 
+    # sending larger chunks and processing smaller chunks in C side
+    set MAX_CHUNK_SIZE 1000
+    set total_bytes 0
+    set toplevel [winfo toplevel $tkcanvas]
+    set clipboard_data [clipboard get]
+    if {[string length $clipboard_data] == 0} {
+        ::pdwindow::post "Clipboard is empty.\n"
+        return
+    }
+    # TODO: better validation of PD patch clipboard data
+    if {[string index $clipboard_data 0] != "#"} {
+        ::pdwindow::post "Warning: Clipboard content does not seem to be valid PD patch: \n"
+        ::pdwindow::post $clipboard_data
+        return
+    }
+    pdsend "$toplevel got-clipboard-contents reset"
+    set output {}
+    foreach char [split $clipboard_data ""] {
+        set char_bytes [string bytelength $char]
+        if { $total_bytes + $char_bytes > $MAX_CHUNK_SIZE } {
+            pdsend "$toplevel got-clipboard-contents addbytes $output"
+            set output {}
+            set total_bytes 0
+        }
+        lappend output [scan $char %c]
+        incr total_bytes $char_bytes
+    }
+    if { [llength $output] > 0 } {
+        pdsend "$toplevel got-clipboard-contents addbytes $output"
+    }
+    pdsend "$toplevel got-clipboard-contents submit"
+}
+
+proc pdtk_copy_to_clipboard_as_text {tkcanvas args} {
+    clipboard clear
+    set clipboard_content ""
+    set atom_line ""
+    set obj_type ""
+    for {set i 0} {$i < [llength $args]} {incr i} {
+        set prev_atom [lindex $args [expr $i - 1]]
+        set atom [lindex $args $i]
+        set next_atom [lindex $args [expr $i + 1]]
+        set next_next_atom [lindex $args [expr $i + 2]]
+        # Check for beginning of new line (#) but discard hex colors
+        if {[string first "#" $atom] == 0 && ![regexp {^#[0-9a-fA-F]{6}$} $atom]} {
+            append clipboard_content [string trim $atom_line]
+            append clipboard_content "\n"
+            set atom_line "$atom "
+            set obj_type $next_atom
+        } else {
+            if {$atom == ";" && ([string first "#" $next_atom] == 0 || $next_atom == "")} {
+                set atom_line [string trimright $atom_line]
+                set atom_line [regsub -all -- {\$} $atom_line {\\$}]
+                append atom_line ";"
+            } elseif {$atom == ";"} {
+                append atom_line "\\; "
+            } elseif {$atom == ","} {
+                # text items can have unescaped comma delimiting the width attribute
+                if {$obj_type == "text"} {
+                    append atom_line [expr {$next_atom != "f" ? "\\, " : ", "}]
+                } else {
+                    append atom_line "\\, "
+                }
+            } else {
+                set delimiter [expr {$obj_type == "text" && $next_next_atom == "f" ? "" : " "}]
+                append atom_line $atom $delimiter
+            }
+        }
+    }
+    append clipboard_content "$atom_line\n"
+    set processed_content $clipboard_content
+    clipboard append [string trimleft $processed_content]
+}
+
+
 #------------------------------------------------------------------------------#
 # canvas popup menu
 
