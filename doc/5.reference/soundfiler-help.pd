@@ -63,10 +63,8 @@
 #X array sample 88200 float 2;
 #X coords 0 1 88200 -1 250 100 1 0 0;
 #X restore 284 247 graph;
-#X text 28 61 The [soundfiler] object loads files into arrays and also saves arrays into files. The soundfiles may contain uncompressed 2- or 3-byte integer ("pcm") or 4- or 8-byte floating point samples in wave \, aiff \, caf and next formats. Also \, [soundfiler] deals with ascii text files., f 72;
 #X text 577 312 Also note that the number of channels is limited to 64 for both reading and writing., f 62;
 #X text 580 365 Open subpatch to see how to deal with '\$0';
-#X text 799 602 updated for Pd version 0.55-0;
 #X text 29 396 A 'read' message takes a filename and one or more arrays to load it into (when the file has more than one channel). The number of channels of the soundfile need not match the number of arrays given to read (extras channels are dropped and unsupplied channels are zeroed out in the extra arrays). The 'write' message takes a filename to save to and one or more arrays (one for each channel). Note that both 'read' and 'write' messages can expand "~" to the home directory., f 73;
 #X text 29 499 Also note: Loading a soundfile into an array might be useful for more flexible playing strategies with table reading objects in the 'see section' below. For a simpler alternative that streams a soundfile directly from your hard drive \, see [readsf~]., f 73;
 #X msg 83 271 write ~/test.wav sample;
@@ -139,7 +137,7 @@
 #X text 19 62 The precision of the 8-byte samples is based on the precision of the Pure Data build. If Pd is single precision (using 32-bit float internally) \, the written samples will be cast from 4-byte float to 8-byte double when writing to a file with -bytes 8 argument. In this case it's better to write with 4-byte float samples for a smaller file with the same precision., f 63;
 #X text 19 159 if Pd is double-precision \, writing 8-byte float samples will be full precision as Pd uses 64-bit float internally., f 63;
 #X text 19 19 Writing 8-byte (ie. 64-bit) floating point samples are supported for the .wave \, .aiff/.aifc and .caf file types.;
-#X restore 440 503 pd 8-byte float;
+#X restore 465 503 pd 8-byte float;
 #X text 18 540 -normalize (normalize file to '1' \, note that arrays whose values exceed the -1 to 1 range are automatically normalized), f 71;
 #X text 611 547 # samples;
 #X text 696 548 info: sample rate \, header size \, channels \, bytes \, endianness;
@@ -148,7 +146,7 @@
 #X text 1043 131 read overriding the file's header, f 17;
 #X text 17 288 * When loading a file \, [soundfiler] populates the array until reaching its size. If the sound file is smaller \, the remaining points are zeroed out. The -resize flag resizes the array to the sample size \, while the -maxsize flag sets a maximum size to clip to even if used in conjunction with the '-resize' flag (also \, errors are given to warn you about the truncation). The -maxsize was needed for historical reasons when its default value used to be rather small (4 million). The default now is much bigger \, hence \, this flag can just be ignored., f 78;
 #X text 18 485 -nframes <float> (maximum points to write \, default from skip point to end of array), f 83;
-#X text 18 503 -bytes <float> (bytes per sample: 2 \, 3 \, 4 \, or 8 default: 2);
+#X text 18 503 -bytes <float> (bytes per sample: 1 \, 2 \, 3 \, 4 \, or 8 default: 2), f 62;
 #X connect 0 0 11 0;
 #X connect 0 1 8 0;
 #X connect 9 0 0 0;
@@ -170,8 +168,10 @@
 #A 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 10 -1 90 40 1 0 0;
 #X restore 116 598 graph;
+#X text 28 61 The [soundfiler] object loads files into arrays and also saves arrays into files. The soundfiles may contain uncompressed 1- \, 2- \, or 3-byte integer ("pcm") or 4- or 8-byte floating point samples in wave \, aiff \, caf and next formats. Also \, [soundfiler] deals with ascii text files., f 72;
+#X text 799 602 updated for Pd version 0.56-0;
 #X connect 0 0 1 0;
 #X connect 0 1 11 0;
 #X connect 15 0 0 0;
 #X connect 16 0 0 0;
-#X connect 36 0 0 0;
+#X connect 34 0 0 0;
