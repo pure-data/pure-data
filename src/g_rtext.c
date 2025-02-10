@@ -518,8 +518,12 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         struct, just grab the glist's fint info  */
 
     if (x->x_text)
+    {
         text_getfont(x->x_text, x->x_glist,
             &fontwidth, &fontheight, &guifontsize);
+        x->x_xpix = text_xpix(x->x_text, x->x_glist);
+        x->x_ypix = text_ypix(x->x_text, x->x_glist);
+    }
     else text_getfont(&x->x_glist->gl_obj, x->x_glist,
             &fontwidth, &fontheight, &guifontsize);
     if (x->x_bufsize >= 100)
