@@ -4677,8 +4677,17 @@ static int canvas_try_bypassobj1(t_canvas* x,
     if(out0<0 || out1<0 || out2>=0 || in0>=0 || in1<0 || in2<0)
         return 0;
         /* check whether the connection types match */
-    if(obj_issignaloutlet(obj0, out0) ^ obj_issignaloutlet(obj1, out1))
-        return 0;
+    if(obj_issignaloutlet(obj0, out0) && !obj_issignalinlet(obj2, in2))
+    {
+        /* prevent new sig->msg connections! */
+        if ((obj_issignalinlet(obj1, in1) && !obj_issignaloutlet(obj1, out1)))
+            return 0;
+            /* if we reach this, the new (bypass) connection is wrong,
+             * but the bypassed object was wrongly connected anyhow,
+             * so no new regression is introduced
+             */
+    }
+
     A = glist_getindex(x, &obj0->te_g);
     B = glist_getindex(x, &obj1->te_g);
     C = glist_getindex(x, &obj2->te_g);
