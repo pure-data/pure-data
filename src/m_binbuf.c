@@ -20,6 +20,15 @@
 
 #include "m_private_utils.h"
 
+    /* returns the start of a valid dollar or dollsym */
+static const char *str_dollar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (('0' <= s[1] && s[1] <= '9'))
+            break;
+    return s;
+}
+
 struct _binbuf
 {
     int b_n;
@@ -393,8 +402,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     usestr = buf;
                 }
                 else usestr = str;
-                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
-                    str2[1] >= '0' && str2[1] <= '9'))
+                if (dollar || (usestr == str && (str2 = str_dollar(usestr))))
                 {
                     int dollsym = 0;
                     if (*usestr != '$')
