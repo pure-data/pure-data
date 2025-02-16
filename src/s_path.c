@@ -24,6 +24,7 @@
 #endif
 
 #include <string.h>
+#include <errno.h>
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
@@ -502,6 +503,11 @@ FILE *sys_fopen(const char *filename, const char *mode)
    across dll-boundaries, but we provide it for other platforms as well */
 int sys_close(int fd)
 {
+    if (fd < 0)
+    {
+        errno = EBADF;
+        return -1;
+    }
 #ifdef _WIN32
     return _close(fd);  /* Bill Gates is a big fat hen */
 #else
