@@ -262,13 +262,14 @@ int socket_connect(int socket, const struct sockaddr *addr,
     #endif
             return -1; /* break on "real" error */
 
-            /* block with select() using timeout.
-            NB: the watchdog may cause select() to be interrupted by a signal
-            and thus fail with EINTR! In this case we just decrease the timeout
-            value by the elapsed time and try again. */
+        /* block with select() using timeout.
+        NB: the watchdog may cause select() to be interrupted by a signal
+        and thus fail with EINTR! In this case we just decrease the timeout
+        value by the elapsed time and try again. */
         while (1)
         {
-            int status;
+            int status, err;
+            socklen_t len;
             struct timeval timeoutval;
         #ifndef _WIN32
             struct timeval t1;
@@ -277,10 +278,12 @@ int socket_connect(int socket, const struct sockaddr *addr,
             if (timeout < 0) timeout = 0;
             timeoutval.tv_sec = (int)timeout;
             timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
+            /* the operation has been completed once the socket is writeable. */
             FD_ZERO(&writefds);
-            FD_SET(socket, &writefds); /* socket is connected when writable */
+            FD_SET(socket, &writefds);
+            /* also check for errors */
             FD_ZERO(&errfds);
-            FD_SET(socket, &errfds); /* catch exceptions */
+            FD_SET(socket, &errfds);
 
         #ifndef _WIN32
             gettimeofday(&t1, NULL);
@@ -319,10 +322,17 @@ int socket_connect(int socket, const struct sockaddr *addr,
                 return -1;
             }
 
-            if (FD_ISSET(socket, &errfds)) /* connection failed */
+            /* Once the socket is writeable we must check the SO_ERROR socket option
+            to determine whether the connection has been successful. We also wait
+            for exceptions because it can give better (and earlier) error messages,
+            but we must not rely on it! (See the documentation for EINPROGRESS in
+            https://man7.org/linux/man-pages/man2/connect.2.html.) */
+            len = sizeof(err);
+            getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
+            if (err == 0)
+                break; /* success! */
+            else
             {
-                int err; socklen_t len = sizeof(err);
-                getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
             #ifdef _WIN32
                 WSASetLastError(err);
             #else
@@ -330,8 +340,6 @@ int socket_connect(int socket, const struct sockaddr *addr,
             #endif
                 return -1;
             }
-
-            break; /* success! */
         }
     }
     /* done, set blocking again */
