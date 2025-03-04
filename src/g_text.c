@@ -117,6 +117,11 @@ static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
     buf[bufsize] = 0;
     logpost(x, PD_CRITICAL, "%s", buf);
     pd_error(x, "%s", errmsg);
+    if(x) {
+        t_atom*argv = binbuf_getvec(b);
+        t_symbol*s = atom_getsymbol(argv);
+        pdgui_vmess("::pdwindow::add_missingobject", "os", x, s->s_name);
+    }
     freebytes(buf, bufsize);
 }
 

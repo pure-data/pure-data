@@ -23,6 +23,7 @@ namespace eval ::pdwindow:: {
     namespace export pdtk_pd_dio
     namespace export pdtk_pd_audio
 }
+array set ::pdwindow::missingobjects {}
 
 # TODO make the Pd window save its size and location between running
 
@@ -312,11 +313,20 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
     }
 }
 
+proc ::pdwindow::add_missingobject {obj name} {
+    set ::pdwindow::missingobjects($obj) $name
+}
+
+
 proc ::pdwindow::message_contextmenu {widget theX theY obj} {
     set m .pdwindow.message_contextmenu
     destroy $m
     menu $m
-    $m add command -label [_ "Find source" ]  -command "::pdwindow::select_by_id $obj"
+    $m add command -label [_ "Find source" ]  -command [list ::pdwindow::select_by_id $obj]
+    if { [info exists ::pdwindow::missingobjects($obj)] } {
+        set cmd [list ::deken::open_search_objects $::pdwindow::missingobjects($obj)]
+        $m add command -label [_ "Find externals" ]  -command $cmd
+    }
 
     tk_popup $m [expr [winfo rootx $widget] + $theX] [expr [winfo rooty $widget] + $theY]
 }
