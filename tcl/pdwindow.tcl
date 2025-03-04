@@ -119,12 +119,10 @@ proc ::pdwindow::insert_log_line {object_id level message} {
             "::pdwindow::select_by_id $object_id; break"
         $win tag bind $tag <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
         $win tag bind $tag <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
-        if {$::windowingsystem eq "aqua"} {
-            set key <2>
-        } else {
-            set key <3>
+        set rightclicks [expr {$::windowingsystem eq "aqua" ? {<2> <Control-Button-1>} : {<3>}}]
+        foreach event $rightclicks {
+            $win tag bind $tag $event [list ::pdwindow::message_contextmenu %W %x %y $object_id]
         }
-        $win tag bind $tag $key [list ::pdwindow::message_contextmenu %W %x %y $object_id]
     }
 }
 
