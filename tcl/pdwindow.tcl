@@ -118,6 +118,12 @@ proc ::pdwindow::insert_log_line {object_id level message} {
             "::pdwindow::select_by_id $object_id; break"
         $win tag bind $tag <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
         $win tag bind $tag <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
+        if {$::windowingsystem eq "aqua"} {
+            set key <2>
+        } else {
+            set key <3>
+        }
+        $win tag bind $tag $key [list ::pdwindow::message_contextmenu %W %x %y $object_id]
     }
 }
 
@@ -304,6 +310,15 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
             $widget configure -cursor based_arrow_up
         }
     }
+}
+
+proc ::pdwindow::message_contextmenu {widget theX theY obj} {
+    set m .pdwindow.message_contextmenu
+    destroy $m
+    menu $m
+    $m add command -label [_ "Find source" ]  -command "::pdwindow::select_by_id $obj"
+
+    tk_popup $m [expr [winfo rootx $widget] + $theX] [expr [winfo rooty $widget] + $theY]
 }
 
 #--create the window-----------------------------------------------------------#
