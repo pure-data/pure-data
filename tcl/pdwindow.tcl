@@ -103,19 +103,21 @@ proc ::pdwindow::buffer_message {object_id level message} {
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
+    set win .pdwindow.text.internal
     set message [subst -nocommands -novariables $message]
     if {$object_id eq "" || $object_id eq "obj:(nil)"} {
-        .pdwindow.text.internal insert end $message log$level
+        $win insert end $message log$level
     } else {
-        .pdwindow.text.internal insert end $message [list log$level obj$object_id]
-        .pdwindow.text.internal tag bind obj$object_id <$::modifier-ButtonRelease-1> \
+        set tag obj$object_id
+        $win insert end $message [list log$level $tag]
+        $win tag bind $tag <$::modifier-ButtonRelease-1> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-Return> \
+        $win tag bind $tag <Key-Return> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-KP_Enter> \
+        $win tag bind $tag <Key-KP_Enter> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
-        .pdwindow.text.internal tag bind obj$object_id <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
+        $win tag bind $tag <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
+        $win tag bind $tag <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
     }
 }
 
