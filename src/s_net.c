@@ -255,9 +255,6 @@ int socket_connect(int socket, const struct sockaddr *addr,
 
     if (connect(socket, addr, addrlen) < 0)
     {
-        int status;
-        struct timeval timeoutval;
-        fd_set writefds, errfds;
     #ifdef _WIN32
         if (socket_errno() != WSAEWOULDBLOCK)
     #else
@@ -265,41 +262,76 @@ int socket_connect(int socket, const struct sockaddr *addr,
     #endif
             return -1; /* break on "real" error */
 
-        /* block with select using timeout */
-        if (timeout < 0) timeout = 0;
-        timeoutval.tv_sec = (int)timeout;
-        timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
-        FD_ZERO(&writefds);
-        FD_SET(socket, &writefds); /* socket is connected when writable */
-        FD_ZERO(&errfds);
-        FD_SET(socket, &errfds); /* catch exceptions */
-
-        status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
-        if (status < 0) /* select failed */
+            /* block with select() using timeout.
+            NB: the watchdog may cause select() to be interrupted by a signal
+            and thus fail with EINTR! In this case we just decrease the timeout
+            value by the elapsed time and try again. */
+        while (1)
         {
-            fprintf(stderr, "socket_connect: select failed");
-            return -1;
-        }
-        else if (status == 0) /* connection timed out */
-        {
-        #ifdef _WIN32
-            WSASetLastError(WSAETIMEDOUT);
-        #else
-            errno = ETIMEDOUT;
+            int status;
+            struct timeval timeoutval;
+        #ifndef _WIN32
+            struct timeval t1;
         #endif
-            return -1;
-        }
+            fd_set writefds, errfds;
+            if (timeout < 0) timeout = 0;
+            timeoutval.tv_sec = (int)timeout;
+            timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
+            FD_ZERO(&writefds);
+            FD_SET(socket, &writefds); /* socket is connected when writable */
+            FD_ZERO(&errfds);
+            FD_SET(socket, &errfds); /* catch exceptions */
 
-        if (FD_ISSET(socket, &errfds)) /* connection failed */
-        {
-            int err; socklen_t len = sizeof(err);
-            getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
-        #ifdef _WIN32
-            WSASetLastError(err);
-        #else
-            errno = err;
+        #ifndef _WIN32
+            gettimeofday(&t1, NULL);
         #endif
-            return -1;
+
+            status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
+            if (status < 0) /* select failed */
+            {
+            #ifndef _WIN32
+                if (errno == EINTR)
+                {
+                    double elapsed;
+                    struct timeval t2;
+                    gettimeofday(&t2, NULL);
+                    elapsed = ((t2.tv_sec - t1.tv_sec) +
+                        (1./1000000.) * (t2.tv_usec - t1.tv_usec));
+                    timeout -= elapsed;
+                #if 0
+                    fprintf(stderr, "socket_connect: interrupted after %f ms\n",
+                            elapsed * 1000);
+                    fprintf(stderr, "remaining timeout: %f ms\n", timeout * 1000);
+                #endif
+                    continue;
+                }
+            #endif
+                fprintf(stderr, "socket_connect: select failed (%d)\n", errno);
+                return -1;
+            }
+            else if (status == 0) /* connection timed out */
+            {
+            #ifdef _WIN32
+                WSASetLastError(WSAETIMEDOUT);
+            #else
+                errno = ETIMEDOUT;
+            #endif
+                return -1;
+            }
+
+            if (FD_ISSET(socket, &errfds)) /* connection failed */
+            {
+                int err; socklen_t len = sizeof(err);
+                getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
+            #ifdef _WIN32
+                WSASetLastError(err);
+            #else
+                errno = err;
+            #endif
+                return -1;
+            }
+
+            break; /* success! */
         }
     }
     /* done, set blocking again */
