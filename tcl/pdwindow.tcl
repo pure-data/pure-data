@@ -104,7 +104,7 @@ proc ::pdwindow::buffer_message {object_id level message} {
 
 proc ::pdwindow::insert_log_line {object_id level message} {
     set message [subst -nocommands -novariables $message]
-    if {$object_id eq ""} {
+    if {$object_id eq "" || $object_id eq "obj:(nil)"} {
         .pdwindow.text.internal insert end $message log$level
     } else {
         .pdwindow.text.internal insert end $message [list log$level obj$object_id]
@@ -114,6 +114,8 @@ proc ::pdwindow::insert_log_line {object_id level message} {
             "::pdwindow::select_by_id $object_id; break"
         .pdwindow.text.internal tag bind obj$object_id <Key-KP_Enter> \
             "::pdwindow::select_by_id $object_id; break"
+        .pdwindow.text.internal tag bind obj$object_id <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
+        .pdwindow.text.internal tag bind obj$object_id <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
     }
 }
 
@@ -410,9 +412,6 @@ proc ::pdwindow::create_window {} {
     raise .pdwindow
     focus .pdwindow.text
     pdwindow_bindings
-    # set cursor to show when clicking in 'findinstance' mode
-    bind .pdwindow <KeyPress> "+::pdwindow::set_findinstance_cursor %W %K %s"
-    bind .pdwindow <KeyRelease> "+::pdwindow::set_findinstance_cursor %W %K %s"
 
     # hack to make a good read-only text widget from http://wiki.tcl.tk/1152
     rename ::.pdwindow.text ::.pdwindow.text.internal
