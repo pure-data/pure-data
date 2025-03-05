@@ -1331,6 +1331,7 @@ static void makefilename_scanformat(t_makefilename *x)
     const char *str;
     t_printtype typ;
     if (!x->x_format) return;
+    x->x_long = 0;
     str = x->x_format->s_name;
     str = _formatscan(x, str, &typ);
     x->x_accept = typ;
@@ -1353,7 +1354,6 @@ static void *makefilename_new(t_symbol *s)
     outlet_new(&x->x_obj, &s_symbol);
     x->x_format = s;
     x->x_accept = NONE;
-    x->x_long = 0;
     makefilename_scanformat(x);
     return (x);
 }
