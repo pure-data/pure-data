@@ -1279,7 +1279,7 @@ typedef struct _makefilename
 {
     t_object x_obj;
     t_symbol *x_format;
-    t_int x_long;
+    int x_long;
     t_printtype x_accept;
 } t_makefilename;
 
