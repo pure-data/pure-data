@@ -2319,7 +2319,13 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         rtext = rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
             &hitwords, &hitdrawtext);
     }
-
+        /* if not a click but in the editing box, set cursor and return */
+    else if (!doit && x->gl_editor->e_textedfor &&
+        rtext == x->gl_editor->e_textedfor)
+    {
+        canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
+        return;
+    }
         /* did we click in run mode inside a text which is not active? */
     if (doit && runmode && rtext && rtext != x->gl_editor->e_textedfor)
     {

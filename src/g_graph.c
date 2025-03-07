@@ -64,9 +64,6 @@ int canvas_setdeleting(t_canvas *x, int flag)
     return (ret);
 }
 
-    /* JMZ: emit a closebang message */
-void rtext_freefortext(t_glist *gl, t_text *who);
-
     /* delete an object from a glist and free it */
 void glist_delete(t_glist *x, t_gobj *y)
 {
@@ -124,12 +121,9 @@ void glist_delete(t_glist *x, t_gobj *y)
         canvas_redrawdataforthis(x, 2);
     gobj_delete(y, x);
     if (glist_isvisible(canvas))
-    {
         gobj_vis(y, x, 0);
-    }
-    if (x->gl_editor && (ob = pd_checkobject(&y->g_pd)) &&
-        !(rtext = glist_getrtext(x, ob)))
-            rtext = glist_getrtext(x, ob);
+    if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
+        rtext = glist_getrtext(x, ob);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
