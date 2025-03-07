@@ -5,13 +5,14 @@
 #X obj 119 83 + 1;
 #X obj 185 139 osc~;
 #X obj 273 175 print \$0-frequency;
-#X obj 294 107 loadbang;
+#X obj 294 77 loadbang;
 #X obj 88 40 bang~;
 #X msg 294 139 loadbang;
 #X obj 185 40 r frequency;
 #X obj 42 175 noteout;
 #X obj 42 139 makenote 64 1;
 #X obj 42 107 + 60;
+#X msg 206 114 -0.25;
 #X connect 2 0 0 0;
 #X connect 2 0 3 0;
 #X connect 2 0 12 0;
@@ -19,6 +20,7 @@
 #X connect 4 0 1 0;
 #X connect 4 0 1 1;
 #X connect 6 0 8 0;
+#X connect 6 0 13 0;
 #X connect 7 0 2 0;
 #X connect 8 0 5 0;
 #X connect 9 0 4 0;
@@ -26,3 +28,4 @@
 #X connect 11 0 10 0;
 #X connect 11 1 10 1;
 #X connect 12 0 11 0;
+#X connect 13 0 4 1;

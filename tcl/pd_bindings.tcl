@@ -266,7 +266,6 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     catch {
         # TclTk-9.0 has a new event for touchpad gestures
         bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}
-        puts "bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}"
     }
 
     # clear interim compose character by sending a virtual BackSpace,
