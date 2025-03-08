@@ -295,6 +295,12 @@ static void vline_tilde_float(t_vline *x, t_float f)
     t_float inlet1 = (x->x_inlet1 < 0 ? 0 : x->x_inlet1);
     t_float inlet2 = x->x_inlet2;
     double starttime = timenow + inlet2;
+
+        /* add one-sample delay to segments with non-zero length to include
+        their start value */
+    if (inlet1 > 0 && pd_compatibilitylevel > 55)
+        starttime += x->x_msecpersamp;
+
     t_vseg *s1, *s2, *deletefrom = 0, *snew;
     if (PD_BIGORSMALL(f))
         f = 0;
