@@ -238,6 +238,63 @@ static t_int *vline_tilde_perform(t_int *w)
     {
         double timenext = timenow + msecpersamp;
     checknext:
+            /* new segment is present and starts before next sample */
+        if (s && s->s_starttime < timenext)
+        {
+                /* update value if targettime elapsed */
+            if (x->x_targettime <= timenow)
+                f = x->x_target;
+                /* if zero-length segment bash output value */
+            if (s->s_targettime <= s->s_starttime)
+                f = s->s_target, inc = 0;
+                /* manage regular increment if starttime elapsed */
+            if (s->s_starttime <= timenow)
+            {
+                double incpermsec = (s->s_target - f) /
+                    (s->s_targettime - s->s_starttime);
+                f = f + incpermsec * (timenow - s->s_starttime);
+                inc = incpermsec * msecpersamp;
+                x->x_inc = inc;
+                x->x_target = s->s_target;
+                x->x_targettime = s->s_targettime;
+                x->x_list = s->s_next;
+                t_freebytes(s, sizeof(*s));
+                s = x->x_list;
+                goto checknext;
+            }
+        }
+        if (x->x_targettime <= timenow)
+            f = x->x_target, inc = x->x_inc = 0, x->x_targettime = 1e20;
+        *out++ = f;
+        f = f + inc;
+        timenow = timenext;
+    }
+    x->x_value = f;
+    return (w+4);
+}
+
+static t_int *vline_tilde_perform_old(t_int *w)
+{
+    t_vline *x = (t_vline *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    int n = (int)(w[3]), i;
+    double f = x->x_value;
+    double inc = x->x_inc;
+    double msecpersamp = x->x_msecpersamp;
+    double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
+    t_vseg *s = x->x_list;
+    if (logicaltimenow != x->x_lastlogicaltime)
+    {
+        int sampstotime = (n > DEFDACBLKSIZE ? n : DEFDACBLKSIZE);
+        x->x_lastlogicaltime = logicaltimenow;
+        x->x_nextblocktime = logicaltimenow - sampstotime * msecpersamp;
+    }
+    timenow = x->x_nextblocktime;
+    x->x_nextblocktime = timenow + n * msecpersamp;
+    for (i = 0; i < n; i++)
+    {
+        double timenext = timenow + msecpersamp;
+    checknext:
         if (s)
         {
             /* has starttime elapsed?  If so update value and increment */
@@ -296,11 +353,6 @@ static void vline_tilde_float(t_vline *x, t_float f)
     t_float inlet2 = x->x_inlet2;
     double starttime = timenow + inlet2;
 
-        /* add one-sample delay to segments with non-zero length to include
-        their start value */
-    if (inlet1 > 0 && pd_compatibilitylevel > 55)
-        starttime += x->x_msecpersamp;
-
     t_vseg *s1, *s2, *deletefrom = 0, *snew;
     if (PD_BIGORSMALL(f))
         f = 0;
@@ -356,7 +408,8 @@ static void vline_tilde_float(t_vline *x, t_float f)
 
 static void vline_tilde_dsp(t_vline *x, t_signal **sp)
 {
-    dsp_add(vline_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(pd_compatibilitylevel > 55 ? vline_tilde_perform : vline_tilde_perform_old,
+        3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     x->x_samppermsec = ((double)(sp[0]->s_sr)) / 1000;
     x->x_msecpersamp = ((double)1000) / sp[0]->s_sr;
 }
