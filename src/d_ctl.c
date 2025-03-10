@@ -216,6 +216,9 @@ typedef struct _vline
     t_vseg *x_list;
 } t_vline;
 
+    /* new perform function for Pd 0.56 to avoid incremented values in
+    ramps' start samples. vline_tilde_perform_old (below) is still used
+    for previous compatibility levels */
 static t_int *vline_tilde_perform(t_int *w)
 {
     t_vline *x = (t_vline *)(w[1]);
@@ -244,7 +247,7 @@ static t_int *vline_tilde_perform(t_int *w)
                 /* update value if targettime elapsed */
             if (x->x_targettime <= timenow)
                 f = x->x_target;
-                /* if zero-length segment bash output value */
+                /* bash output value for zero-length segment */
             if (s->s_targettime <= s->s_starttime)
                 f = s->s_target, inc = 0;
                 /* manage regular increment if starttime elapsed */
