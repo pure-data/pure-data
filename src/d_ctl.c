@@ -229,10 +229,10 @@ typedef struct _vline
 
 static t_int *vline_tilde_perform(t_int *w)
 {
-    const int compat = (pd_compatibilitylevel < 56) ? 1 : 0;
     t_vline *x = (t_vline *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]), i;
+    const int instant = x->x_instant || (pd_compatibilitylevel < 56);
     double f = x->x_value;
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
@@ -252,7 +252,7 @@ static t_int *vline_tilde_perform(t_int *w)
             /* new mechanism for Pd 0.56 avoids incremented values
             in ramps' start samples. old mechanism is used for previous
             compatibility levels */
-        double timecheck = (compat || x->x_instant) ? timenext : timenow;
+        double timecheck = instant ? timenext : timenow;
     checknext:
             /* new segment is present and starts before next sample */
         if (s && s->s_starttime < timecheck + msecpersamp)
@@ -266,10 +266,13 @@ static t_int *vline_tilde_perform(t_int *w)
                 /* manage regular increment if starttime elapsed */
             if (s->s_starttime <= timecheck)
             {
-                double incpermsec = (s->s_target - f) /
-                    (s->s_targettime - s->s_starttime);
-                f = f + incpermsec * (timecheck - s->s_starttime);
-                inc = incpermsec * msecpersamp;
+                if (s->s_targettime > s->s_starttime)
+                {
+                    double incpermsec = (s->s_target - f) /
+                        (s->s_targettime - s->s_starttime);
+                    f = f + incpermsec * (timecheck - s->s_starttime);
+                    inc = incpermsec * msecpersamp;
+                }
                 x->x_inc = inc;
                 x->x_target = s->s_target;
                 x->x_targettime = s->s_targettime;
@@ -279,7 +282,7 @@ static t_int *vline_tilde_perform(t_int *w)
                 goto checknext;
             }
         }
-        if (x->x_targettime <= timecheck)
+        if (x->x_targettime <= timecheck && inc != 0)
             f = x->x_target, inc = x->x_inc = 0, x->x_targettime = 1e20;
         *out++ = f;
         f = f + inc;
