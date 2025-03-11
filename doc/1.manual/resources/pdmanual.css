@@ -243,6 +243,35 @@ blockquote p {
     margin-right: auto;
 }
 
+/* release notes */
+.releasenote h4:before, .releasenote h4:after {
+    display: inline-block;
+    content: "";
+
+    border-top:1px solid;
+
+    height:5px;
+    width: 5rem;
+}
+.releasenote h4:before {
+    right:100%;
+    margin-right:15px;
+}
+.releasenote h4:after {
+    left:100%;
+    margin-left:15px;
+    width: 6rem;
+}
+.releasenote h4 {
+    font-weight: normal;
+    font-size: inherit;
+    margin-left: 0;
+}
+.releasenote li {
+    padding: 0;
+}
+
+
 /* responsive css for small "devices" and browser windows */
 
 @media screen and (max-device-width: 700px), screen and (max-width: 700px) {
