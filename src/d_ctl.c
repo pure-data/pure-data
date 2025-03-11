@@ -61,6 +61,7 @@ typedef struct _line
     t_float x_inletwas;
     int x_ticksleft;
     int x_retarget;
+    int x_instant;
 } t_line;
 
 static t_int *line_tilde_perform(t_int *w)
@@ -84,7 +85,10 @@ static t_int *line_tilde_perform(t_int *w)
     if (x->x_ticksleft)
     {
         t_sample f = x->x_value;
-        while (n--) *out++ = f, f += x->x_inc;
+        if (x->x_instant)
+            while (n--) f += x->x_inc, *out++ = f;
+        else
+            while (n--) *out++ = f, f += x->x_inc;
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
@@ -119,7 +123,10 @@ static t_int *line_tilde_perf8(t_int *w)
     if (x->x_ticksleft)
     {
         t_sample f = x->x_value;
-        while (n--) *out++ = f, f += x->x_inc;
+        if (x->x_instant)
+            while (n--) f += x->x_inc, *out++ = f;
+        else
+            while (n--) *out++ = f, f += x->x_inc;
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
@@ -167,20 +174,23 @@ static void line_tilde_dsp(t_line *x, t_signal **sp)
     x->x_dspticktomsec = sp[0]->s_sr / (1000 * sp[0]->s_n);
 }
 
-static void *line_tilde_new(void)
+static void *line_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_line *x = (t_line *)pd_new(line_tilde_class);
     outlet_new(&x->x_obj, gensym("signal"));
     floatinlet_new(&x->x_obj, &x->x_inletvalue);
     x->x_ticksleft = x->x_retarget = 0;
     x->x_value = x->x_target = x->x_inletvalue = x->x_inletwas = 0;
+    x->x_instant = (argc && argv[0].a_type == A_SYMBOL &&
+                   argv[0].a_w.w_symbol == gensym("-i"));
     return (x);
 }
 
 static void line_tilde_setup(void)
 {
-    line_tilde_class = class_new(gensym("line~"), line_tilde_new, 0,
-        sizeof(t_line), 0, 0);
+    line_tilde_class = class_new(gensym("line~"),
+        (t_newmethod)line_tilde_new, 0,
+        sizeof(t_line), 0, A_GIMME, 0);
     class_addfloat(line_tilde_class, (t_method)line_tilde_float);
     class_addmethod(line_tilde_class, (t_method)line_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -214,6 +224,7 @@ typedef struct _vline
     t_float x_inlet1;
     t_float x_inlet2;
     t_vseg *x_list;
+    int x_instant;
 } t_vline;
 
 static t_int *vline_tilde_perform(t_int *w)
@@ -238,10 +249,10 @@ static t_int *vline_tilde_perform(t_int *w)
     for (i = 0; i < n; i++)
     {
         double timenext = timenow + msecpersamp;
-            /* new mechanism for Pd 0.56 to avoid incremented values
+            /* new mechanism for Pd 0.56 avoids incremented values
             in ramps' start samples. old mechanism is used for previous
             compatibility levels */
-        double timecheck = compat ? timenext : timenow;
+        double timecheck = (compat || x->x_instant) ? timenext : timenow;
     checknext:
             /* new segment is present and starts before next sample */
         if (s && s->s_starttime < timecheck + msecpersamp)
@@ -356,7 +367,7 @@ static void vline_tilde_dsp(t_vline *x, t_signal **sp)
     x->x_msecpersamp = ((double)1000) / sp[0]->s_sr;
 }
 
-static void *vline_tilde_new(void)
+static void *vline_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vline *x = (t_vline *)pd_new(vline_tilde_class);
     outlet_new(&x->x_obj, gensym("signal"));
@@ -369,13 +380,16 @@ static void *vline_tilde_new(void)
     x->x_list = 0;
     x->x_samppermsec = 0;
     x->x_targettime = 1e20;
+    x->x_instant = (argc && argv[0].a_type == A_SYMBOL &&
+                   argv[0].a_w.w_symbol == gensym("-i"));
     return (x);
 }
 
 static void vline_tilde_setup(void)
 {
-    vline_tilde_class = class_new(gensym("vline~"), vline_tilde_new,
-        (t_method)vline_tilde_stop, sizeof(t_vline), 0, 0);
+    vline_tilde_class = class_new(gensym("vline~"),
+        (t_newmethod)vline_tilde_new, (t_method)vline_tilde_stop,
+        sizeof(t_vline), 0, A_GIMME, 0);
     class_addfloat(vline_tilde_class, (t_method)vline_tilde_float);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
