@@ -1212,6 +1212,7 @@ static void garray_vis_msg(t_garray *x, t_floatarg fvis)
     /* change the name of a garray. */
 static void garray_rename(t_garray *x, t_symbol *s)
 {
+    int wasused = x->x_usedindsp;
     /* jsarlo { */
     if (x->x_listviewing)
     {
@@ -1221,6 +1222,8 @@ static void garray_rename(t_garray *x, t_symbol *s)
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
     pd_bind(&x->x_gobj.g_pd, x->x_realname = x->x_name = s);
     glist_redraw(x->x_glist);
+    if (wasused)
+        canvas_update_dsp();
 }
 
 static void garray_read(t_garray *x, t_symbol *filename)
