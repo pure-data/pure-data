@@ -57,6 +57,7 @@ static int dsparray_get_array(t_dsparray *d, int *npoints, t_word **vec,
         else
         {
             gpointer_setarray(&d->d_gp, garray_getarray(a), *vec);
+            garray_usedindsp(a);
             return 1;
         }
     }
