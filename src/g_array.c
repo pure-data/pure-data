@@ -17,6 +17,22 @@
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
 /* } jsarlo */
 
+
+/* helpers */
+
+/* the GUI sends empty names as '-',
+ * and names starting with '-' are prefixed with dash as well
+ * so here we undo this
+ */
+static t_symbol *garray_unescapit(t_symbol *s)
+{
+    if (*s->s_name == '-')
+        return (gensym(s->s_name+1));
+    return s;
+}
+
+
+
 /* --------- "pure" arrays with scalars for elements. --------------- */
 
 /* Pure arrays have no a priori graphical capabilities.
@@ -396,6 +412,12 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     int flags = fflags;
     t_atom undo[4];
 
+    name = garray_unescapit(name);
+    if(!*name->s_name) {
+        pd_error(0, "glist: cannot create array without a name");
+        return;
+    }
+
     if (size < 1)
         size = 1;
 
@@ -443,6 +465,13 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     t_float stylewas = template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1);
+
+    name = garray_unescapit(name);
+    if(!*name->s_name) {
+        pd_error(0, "array: cannot create array without a name");
+        return;
+    }
+
     if (deleteit != 0)
     {
         const char *undo_name = "add array";
