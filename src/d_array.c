@@ -9,6 +9,7 @@
 #include "g_canvas.h"
 
     /* common struct for reading or writing to an array at DSP time. */
+#define MAX_PHASE 0x7fffffff
 typedef struct _dsparray
 {
     t_symbol *d_symbol;
@@ -94,7 +95,7 @@ static void arrayvec_set(t_arrayvec *v, int argc, t_atom *argv)
                 v->v_vec[i].d_symbol = &s_;
         else
         {
-            v->v_vec[i].d_phase = 0x7fffffff;
+            v->v_vec[i].d_phase = MAX_PHASE;
             v->v_vec[i].d_symbol = argv[i].a_w.w_symbol;
         }
     }
@@ -119,7 +120,7 @@ static void arrayvec_init(t_arrayvec *v, void *x, int rawargc, t_atom *rawargv)
     for (i = 0; i < v->v_n; i++)
     {
         v->v_vec[i].d_owner = x;
-        v->v_vec[i].d_phase = 0x7fffffff;
+        v->v_vec[i].d_phase = MAX_PHASE;
         gpointer_init(&v->v_vec[i].d_gp);
     }
     arrayvec_set(v, argc, argv);
@@ -187,11 +188,11 @@ static t_int *tabwrite_tilde_perform(t_int *w)
         if (phase >= endphase)
         {
             tabwrite_tilde_redraw(d->d_symbol);
-            phase = 0x7fffffff;
+            phase = MAX_PHASE;
         }
         d->d_phase = phase;
     }
-    else d->d_phase = 0x7fffffff;
+    else d->d_phase = MAX_PHASE;
 noop:
     return (w+4);
 }
@@ -228,10 +229,10 @@ static void tabwrite_tilde_stop(t_tabwrite_tilde *x)
 {
     int i;
     for (i = 0; i < x->x_v.v_n; i++)
-        if (x->x_v.v_vec[i].d_phase != 0x7fffffff)
+        if (x->x_v.v_vec[i].d_phase != MAX_PHASE)
     {
         tabwrite_tilde_redraw(x->x_v.v_vec[i].d_symbol);
-        x->x_v.v_vec[i].d_phase = 0x7fffffff;
+        x->x_v.v_vec[i].d_phase = MAX_PHASE;
     }
 }
 
@@ -307,10 +308,10 @@ static t_int *tabplay_tilde_perform(t_int *w)
     if (phase >= endphase)
     {
         int i, playing = 0;
-        d->d_phase = 0x7fffffff;
+        d->d_phase = MAX_PHASE;
             /* set the clock when all channels have run out */
         for (i = 0; i < x->x_v.v_n; i++)
-            if (x->x_v.v_vec[i].d_phase < 0x7fffffff)
+            if (x->x_v.v_vec[i].d_phase < MAX_PHASE)
                 playing = 1;
         if (!playing)
             clock_delay(x->x_clock, 0);
@@ -349,7 +350,7 @@ static void tabplay_tilde_list(t_tabplay_tilde *x, t_symbol *s,
     int i;
     if (start < 0) start = 0;
     if (length <= 0)
-        x->x_limit = 0x7fffffff;
+        x->x_limit = MAX_PHASE;
     else
         x->x_limit = (int)(start + length);
     for (i = 0; i < x->x_v.v_n; i++)
@@ -360,7 +361,7 @@ static void tabplay_tilde_stop(t_tabplay_tilde *x)
 {
     int i;
     for (i = 0; i < x->x_v.v_n; i++)
-        x->x_v.v_vec[i].d_phase = 0x7fffffff;
+        x->x_v.v_vec[i].d_phase = MAX_PHASE;
 }
 
 static void tabplay_tilde_tick(t_tabplay_tilde *x)
