@@ -2372,8 +2372,6 @@ static int array_doclick_element(t_array *array, t_glist *glist,
 
     if (elemtemplatesym == &s_float)
         return (0);
-    if (doit)
-       post("array_doclick_element");
     if (array_getfields(elemtemplatesym, &elemtemplatecanvas,
         &elemtemplate, &elemsize, xfield, yfield, wfield,
             &xonset, &yonset, &wonset))

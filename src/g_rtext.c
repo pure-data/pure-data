@@ -232,6 +232,10 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
         /* post("xpix %d (%d,%d) ypix %d (%d,%d)",
             xpix, x->x_xpix, x->x_xpix + x->x_pixwidth,
             ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
+                /* check if the text is visible */
+        if (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            x->x_scalar && !gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist))
+                continue;
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
             ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight)
         {
@@ -518,8 +522,12 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         struct, just grab the glist's fint info  */
 
     if (x->x_text)
+    {
         text_getfont(x->x_text, x->x_glist,
             &fontwidth, &fontheight, &guifontsize);
+        x->x_xpix = text_xpix(x->x_text, x->x_glist);
+        x->x_ypix = text_ypix(x->x_text, x->x_glist);
+    }
     else text_getfont(&x->x_glist->gl_obj, x->x_glist,
             &fontwidth, &fontheight, &guifontsize);
     if (x->x_bufsize >= 100)

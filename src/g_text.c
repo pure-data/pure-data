@@ -117,6 +117,11 @@ static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
     buf[bufsize] = 0;
     logpost(x, PD_CRITICAL, "%s", buf);
     pd_error(x, "%s", errmsg);
+    if(x) {
+        t_atom*argv = binbuf_getvec(b);
+        t_symbol*s = atom_getsymbol(argv);
+        pdgui_vmess("::pdwindow::add_missingobject", "os", x, s->s_name);
+    }
     freebytes(buf, bufsize);
 }
 
@@ -1256,10 +1261,12 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     t_text *x = (t_text *)z;
     int width, height, iscomment = (x->te_type == T_TEXT);
     int x1, y1, x2, y2;
+    t_glist *canvas = glist_getcanvas(glist);
 
-    if (glist->gl_editor && glist->gl_editor->e_rtext)
+    if (canvas->gl_editor)
     {
         t_rtext *y = glist_getrtext(glist, x);
+            /* x1 and y1 might be wrong here - they're overwritten below. */
         rtext_getrect(y, &x1, &y1, &x2, &y2);
         width = x2 - x1;
         height = y2 - y1 - (iscomment << 1);
@@ -1269,7 +1276,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
     else if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        width = (x->te_width > 0 ? x->te_width : 6) * glist_fontwidth(glist);
+        width = x->te_width * glist_fontwidth(glist);
         height = glist_fontheight(glist);
         if (glist_getzoom(glist) > 1)
         {
@@ -1586,14 +1593,16 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist), "create", "line",
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,  x1, y1,
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,
+                x2+corner, y2,  x1, y2,  x1, y1,
                 "-width", glist->gl_zoom,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
         else
             pdgui_vmess(0, "crs iiiiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,  x1, y1);
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,
+                x2+corner, y2,  x1, y2,  x1, y1);
     }
     else if (x->te_type == T_ATOM && (((t_gatom *)x)->a_flavor == A_FLOAT ||
            ((t_gatom *)x)->a_flavor == A_SYMBOL))
@@ -1606,7 +1615,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist), "create", "line",
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,  x1p, y2,  x1p, y1p,
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,
+                x1p, y2,  x1p, y1p,
                 "-width", glist->gl_zoom+grabbed,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
@@ -1614,7 +1624,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         {
             pdgui_vmess(0, "crs iiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,  x1p, y2,  x1p, y1p);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,
+                x1p, y2,  x1p, y1p);
             pdgui_vmess(0, "crs ri",
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);
@@ -1630,7 +1641,8 @@ void text_drawborder(t_text *x, t_glist *glist,
             pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist),
                 "create", "line",
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2-corner,  x2-corner, y2,  x1p, y2,  x1p, y1p,
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
+                x2, y2-corner,  x2-corner, y2,  x1p, y2,  x1p, y1p,
                 "-width", glist->gl_zoom+grabbed,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
@@ -1638,7 +1650,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         {
             pdgui_vmess(0, "crs iiiiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1p,y1p, x2-corner,y1p, x2,y1p+corner, x2,y2-corner, x2-corner,y2, x1p,y2, x1p,y1p);
+                x1p,y1p, x2-corner,y1p, x2,y1p+corner, x2,y2-corner,
+                x2-corner,y2, x1p,y2, x1p,y1p);
             pdgui_vmess(0, "crs ri",
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);

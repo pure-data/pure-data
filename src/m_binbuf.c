@@ -20,6 +20,15 @@
 
 #include "m_private_utils.h"
 
+    /* returns the start of a valid dollar or dollsym */
+static const char *str_dollar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (('0' <= s[1] && s[1] <= '9'))
+            break;
+    return s;
+}
+
 struct _binbuf
 {
     int b_n;
@@ -393,8 +402,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     usestr = buf;
                 }
                 else usestr = str;
-                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
-                    str2[1] >= '0' && str2[1] <= '9'))
+                if (dollar || (usestr == str && (str2 = str_dollar(usestr))))
                 {
                     int dollsym = 0;
                     if (*usestr != '$')
@@ -779,7 +787,7 @@ broken:
          FREEA(t_atom, mstack, maxnargs, HUGEMSG);
 }
 
-int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
+int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int flag)
 {
     long length, length0;
     int fd;
@@ -799,8 +807,9 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         perror(namebuf);
         return (1);
     }
-    if ((length0 = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
-        || !(buf0 = t_getbytes(length0)))
+    if ((length0 = (long)lseek(fd, 0, SEEK_END)) < 0 ||
+        lseek(fd, 0, SEEK_SET) < 0
+            || !(buf0 = t_getbytes(length0)))
     {
         fprintf(stderr, "lseek: ");
         perror(namebuf);
@@ -820,14 +829,32 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 
         /* skip any (totally unnecessary) BOM header */
     if (length >= 3 &&
-        ((int)buf[0] & 0xFF) == 0xEF && ((int)buf[1] & 0xFF) == 0xBB && ((int)buf[2] & 0xFF) == 0xBF)
+        ((int)buf[0] & 0xFF) == 0xEF && ((int)buf[1] & 0xFF) == 0xBB
+            && ((int)buf[2] & 0xFF) == 0xBF)
     {
         length -= 3;
         buf+= 3;
     }
 
+        /* optionally skip the shebang */
+    if (flag & BINBUF_SHEBANG
+        && length >=3
+        && buf[0] == '#' && buf[1] == '!')
+    {
+        long offset = 0;
+        for(offset = 0; offset<length; offset++)
+        {
+            if (buf[offset] == '\n')
+            {
+                length -= offset;
+                buf += offset;
+                break;
+            }
+        }
+    }
+
         /* optionally map carriage return to semicolon */
-    if (crflag)
+    if (flag & BINBUF_CR)
     {
         int i;
         for (i = 0; i < length; i++)
@@ -887,7 +914,8 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd);
 
     /* write a binbuf to a text file.  If "crflag" is set we suppress
     semicolons. */
-int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int crflag)
+int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
+    int crflag)
 {
     FILE *f = 0;
     char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
@@ -927,7 +955,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         }
         if ((ap->a_type == A_SEMI || ap->a_type == A_COMMA) &&
             bp > sbuf && bp[-1] == ' ') bp--;
-        if (!crflag || ap->a_type != A_SEMI)
+        if (!(crflag & BINBUF_CR) || ap->a_type != A_SEMI)
         {
             atom_string(ap, bp, (unsigned int)((ep-bp)-2));
             length = (int)strlen(bp);
@@ -1452,7 +1480,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     int dspstate = canvas_suspend_dsp();
         /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
-    if (binbuf_read(b, name->s_name, dir->s_name, 0))
+    if (binbuf_read(b, name->s_name, dir->s_name, BINBUF_SHEBANG))
         pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
     else
     {

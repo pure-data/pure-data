@@ -2319,7 +2319,13 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         rtext = rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
             &hitwords, &hitdrawtext);
     }
-
+        /* if not a click but in the editing box, set cursor and return */
+    else if (!doit && x->gl_editor->e_textedfor &&
+        rtext == x->gl_editor->e_textedfor)
+    {
+        canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
+        return;
+    }
         /* did we click in run mode inside a text which is not active? */
     if (doit && runmode && rtext && rtext != x->gl_editor->e_textedfor)
     {
@@ -3651,17 +3657,6 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             canvas_vis((t_canvas *)gl, 1);
             canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
-            if (pd_class(&g->g_pd) == text_class) {
-                t_text* x = (t_text*)g;
-                int argc = binbuf_getnatom(x->te_binbuf);
-                t_atom*argv = binbuf_getvec(x->te_binbuf);
-                if(argc>0 && A_SYMBOL == argv[0].a_type) {
-                    t_symbol*s = atom_getsymbol(argv);
-                    if (s && s->s_name && *s->s_name)
-                        pdgui_vmess("::deken::open_search_objects", "s",
-                            s->s_name);
-                }
-            }
             return (1);
         }
         else if (g->g_pd == canvas_class)
@@ -4677,8 +4672,17 @@ static int canvas_try_bypassobj1(t_canvas* x,
     if(out0<0 || out1<0 || out2>=0 || in0>=0 || in1<0 || in2<0)
         return 0;
         /* check whether the connection types match */
-    if(obj_issignaloutlet(obj0, out0) ^ obj_issignaloutlet(obj1, out1))
-        return 0;
+    if(obj_issignaloutlet(obj0, out0) && !obj_issignalinlet(obj2, in2))
+    {
+        /* prevent new sig->msg connections! */
+        if ((obj_issignalinlet(obj1, in1) && !obj_issignaloutlet(obj1, out1)))
+            return 0;
+            /* if we reach this, the new (bypass) connection is wrong,
+             * but the bypassed object was wrongly connected anyhow,
+             * so no new regression is introduced
+             */
+    }
+
     A = glist_getindex(x, &obj0->te_g);
     B = glist_getindex(x, &obj1->te_g);
     C = glist_getindex(x, &obj2->te_g);

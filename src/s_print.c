@@ -313,6 +313,7 @@ void verbose(int level, const char *fmt, ...)
 
 static const void *error_object;
 static char error_string[256];
+
 void canvas_finderror(const void *object);
 
 void pd_error(const void *object, const char *fmt, ...)
@@ -330,10 +331,11 @@ void pd_error(const void *object, const char *fmt, ...)
 
     doerror(object, buf);
 
-    if(object)
+    if(object) {
         error_object = object;
-    strncpy(error_string, buf, 256);
-    error_string[255] = 0;
+        strncpy(error_string, buf, 256);
+        error_string[255] = 0;
+    }
 
     if (object && !saidit)
     {
