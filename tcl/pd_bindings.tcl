@@ -221,17 +221,17 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 1"
     bind $tkcanvas <$::modifier-ButtonPress-1> \
-        "pdtk_canvas_mouse %W %x %y %b 2"
+        "::pd_bindings::handle_modifier_click %W %x %y %b 2"
     bind $tkcanvas <$::modifier-Shift-ButtonPress-1> \
-        "pdtk_canvas_mouse %W %x %y %b 3"
+        "::pd_bindings::handle_modifier_click %W %x %y %b 3"
     bind $tkcanvas <$alt-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 4"
     bind $tkcanvas <$alt-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 5"
     bind $tkcanvas <$::modifier-$alt-ButtonPress-1> \
-        "pdtk_canvas_mouse %W %x %y %b 6"
+        "::pd_bindings::handle_modifier_click %W %x %y %b 6"
     bind $tkcanvas <$::modifier-$alt-Shift-ButtonPress-1> \
-        "pdtk_canvas_mouse %W %x %y %b 7"
+        "::pd_bindings::handle_modifier_click %W %x %y %b 7"
 
     bind $tkcanvas <ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 0"
@@ -321,6 +321,19 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
 
 #------------------------------------------------------------------------------#
 # event handlers
+
+# handle modifier clicks with focus management
+proc ::pd_bindings::handle_modifier_click {window x y button modifier} {
+    # force focus on macOS if we're clicking in a different window
+    if {$::windowingsystem eq "aqua"} {
+        set mytoplevel [winfo toplevel $window]
+        if {$mytoplevel ne $::focused_window} {
+            focus -force $window
+            ::pd_bindings::window_focusin $mytoplevel
+        }
+    }
+    pdtk_canvas_mouse $window $x $y $button $modifier
+}
 
 # do tasks when changing focus (Window menu, scrollbars, etc.)
 proc ::pd_bindings::window_focusin {mytoplevel} {
