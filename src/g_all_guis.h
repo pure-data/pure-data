@@ -270,10 +270,18 @@ typedef struct _my_numbox
     int      x_log_height;
 } t_my_numbox;
 
+typedef struct _colorscheme
+{
+    int x_normal;
+    int x_selected;
+    int x_edited;
+} t_colorscheme;
+
 extern int iemgui_color_hex[];
 extern int iemgui_vu_db2i[];
 extern int iemgui_vu_col[];
 extern char *iemgui_vu_scale_str[];
+extern t_colorscheme colorscheme_current;
 
 EXTERN int iemgui_clip_size(int size);
 EXTERN int iemgui_clip_font(int size);

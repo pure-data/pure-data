@@ -51,6 +51,12 @@ int iemgui_color_hex[]=
     7874580, 2641940, 17488, 5256, 5767248
 };
 
+t_colorscheme colorscheme_current = {
+    .x_normal   = IEM_GUI_COLOR_NORMAL,
+    .x_selected = IEM_GUI_COLOR_SELECTED,
+    .x_edited   = IEM_GUI_COLOR_EDITED
+};
+
 int iemgui_vu_db2i[]=
 {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
