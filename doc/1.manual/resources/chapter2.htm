@@ -123,16 +123,29 @@ You can increase it to get more detailed information or decrease it to only see 
     <figcaption><u>Fig. 2.1.7</u> The log level popup menu</figcaption>
 </figure>
 
-<P> Errors are mostly printed by objects and displayed in the Pd window in red color.
+<P id="sfinderror">Errors are mostly printed by objects and displayed in the Pd window in red color.
 You can find error sources for the corresponding line with <kbd>Ctrl</kbd>+<kbd>click</kbd>
-as shown in <A href="chapter2.htm#sfinderror">here</A>).
+or through the context menu on right click as shown below. Alternatively, you can use the
+"Find Last Error" entry in the <b>Find menu</b> for this.
 
-<P> If the Pd window is focused, the font size for menus and printout can be changed
+<p>Note that you can also find objects printing regular log outputs via right click or
+<kbd>Ctrl</kbd>+<kbd>click</kbd> in many cases (a cursor change will signalize this option
+when hovering the log lines).
+
+<p>In cases of objects that couldn't be created, the context menu also contains a
+"Find externals" option that will open <b>deken</b> with a prefilled search field.
+
+<figure>
+    <IMG src="2.1.8.png" ALT="find error">
+    <figcaption><u>Fig. 2.1.8</u>Find error source via right click</figcaption>
+</figure>
+
+<P>If the Pd window is focused, the font size for menus and printout can be changed
 using the "Font" dialog entry in the <b>Edit menu</b>.
 
 <figure>
-<IMG src="2.1.8.png" ALT="edit menu">
-    <figcaption><u>Fig. 2.1.8</u> The Edit menu</figcaption>
+<IMG src="2.1.9.png" ALT="edit menu">
+    <figcaption><u>Fig. 2.1.9</u> The Edit menu</figcaption>
 </figure>
 
 <P> Make your adjustments in the Font dialog window and increase the size if you are
@@ -140,8 +153,8 @@ having trouble reading on HiDPI screens. You can ignore the "Stretch" parameter 
 that only works for Pd documents.
 
 <figure>
-<IMG src="2.1.9.png" ALT="font settings">
-    <figcaption><u>Fig. 2.1.9</u> The Font settings dialog</figcaption>
+<IMG src="2.1.10.png" ALT="font settings">
+    <figcaption><u>Fig. 2.1.10</u> The Font settings dialog</figcaption>
 </figure>
 
 <P>Pd documents (called "patches" or "canvases") have their own main window and any number of
@@ -159,8 +172,8 @@ accordingly to font size changes which don't affect the layout.
 Note that the Zoom setting is not saved in the patch though.
 
 <figure>
-<IMG src="2.1.10.png" ALT="zoomed in and out">
-    <figcaption><u>Fig. 2.1.10</u> A patch in standard and zoomed state</figcaption>
+<IMG src="2.1.11.png" ALT="zoomed in and out">
+    <figcaption><u>Fig. 2.1.11</u> A patch in standard and zoomed state</figcaption>
 </figure>
 
 <P>In the <b>Edit menu</b>, you can also clear all messages printed in the Pd window with
@@ -179,8 +192,8 @@ object box from the <b>Put menu</b>. When you insert a new object box, it is emp
 and presented with a dashed border before creation.
 
 <figure>
-<IMG src="2.1.11.png" ALT="dashed box">
-    <figcaption><u>Fig. 2.1.11</u> An uncreated object box</figcaption>
+<IMG src="2.1.12.png" ALT="dashed box">
+    <figcaption><u>Fig. 2.1.12</u> An uncreated object box</figcaption>
 </figure>
 
 <P>You only create a particular <i>object</i> after you entered text into the
@@ -191,8 +204,8 @@ arguments</i>, instruct Pd how to initialize the object. For instance, you can t
 "+ 13".
 
 <figure>
-<IMG src="2.1.12.png" ALT="object box">
-    <figcaption><u>Fig. 2.1.12</u> A created object box</figcaption>
+<IMG src="2.1.13.png" ALT="object box">
+    <figcaption><u>Fig. 2.1.13</u> A created object box</figcaption>
 </figure>
 
 <P>Here, the "+" specifies the <I>class</I> of the object. In this case the
@@ -220,8 +233,8 @@ can vary based on the creation arguments.
 synthesizes a pure tone:
 
 <figure>
-<IMG src="2.1.13.png" ALT="simple MIDI synthesizer">
-    <figcaption><u>Fig. 2.1.13</u> A simple MIDI synthesizer</figcaption>
+<IMG src="2.1.14.png" ALT="simple MIDI synthesizer">
+    <figcaption><u>Fig. 2.1.14</u> A simple MIDI synthesizer</figcaption>
 </figure>
 
 <P>This patch mixes <I>control</I> objects (<b>[notein]</b>, <b>[stripnote]</b>,
@@ -1112,15 +1125,14 @@ depends on the order the connections were made in.
 
 <figure>
     <IMG src="2.4.7.png" ALT="infinite loop">
-    <figcaption><A id="sfinderror"><u>Fig. 2.4.7</u> An infinite loop (stack overflow)</A></figcaption>
+    <figcaption><u>Fig. 2.4.7</u> An infinite loop (stack overflow)</figcaption>
 </figure>
 
 <P>Here, the left-hand <b>[+ 1]</b> can't finish processing until the right-hand one has
 been sent the result "2", which can't finish processing until the left-hand one
 has been sent "3", and so on. This generates a "stack overflow" error (meaning there's
-an infinite loop) in the Pd window that you can <kbd>Ctrl</kbd>+<kbd>click</kbd>
-on (as described earlier) to select the causing object. Note that you can also use the
-"Find Last Error" entry in the <b>Find menu</b> for this.
+an infinite loop) in the Pd window that you can interact with (as described
+<a href="chapter2.htm#sfinderror">earlier</a>) to select the causing object.
 
 <figure>
     <IMG src="2.4.8.png" ALT="find error source">
