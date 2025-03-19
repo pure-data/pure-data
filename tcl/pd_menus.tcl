@@ -65,11 +65,14 @@ proc ::pd_menus::create_menubar {} {
         } {
             set underlined 0
         }
-        [format build_%s_menu $mymenu] [menu $::patch_menubar.$mymenu]
+        # some GUI-plugins do expect that common menus are available under
+        # ${::patch_menubar}.${mymenu} (e.g. ".menubar.help")
+        set m [menu $::patch_menubar.$mymenu]
+        [format build_%s_menu $mymenu] ${m}
         $::patch_menubar add cascade -label [_ [string totitle $mymenu]] \
-            -underline $underlined -menu $::patch_menubar.$mymenu
+            -underline $underlined -menu $m
         $::pdwindow_menubar add cascade -label [_ [string totitle $mymenu]] \
-            -underline $underlined -menu $::patch_menubar.$mymenu
+            -underline $underlined -menu $m
     }
 
     if {$::windowingsystem eq "win32"} {create_system_menu $::patch_menubar}
