@@ -145,6 +145,18 @@ proc ::pd_bindings::global_bindings {} {
     bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0 %k}
     bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1 %k}
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
+
+    if {$::windowingsystem eq "x11"} {
+        # from http://wiki.tcl.tk/3893
+        bind all <Button-4> \
+            {event generate [focus -displayof %W] <MouseWheel> -delta  1}
+        bind all <Button-5> \
+            {event generate [focus -displayof %W] <MouseWheel> -delta -1}
+        bind all <Shift-Button-4> \
+            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta  1}
+        bind all <Shift-Button-5> \
+            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta -1}
+    }
 }
 
 # bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
@@ -250,17 +262,6 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <$::modifier-$alt-Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 7"
 
-    if {$::windowingsystem eq "x11"} {
-        # from http://wiki.tcl.tk/3893
-        bind all <Button-4> \
-            {event generate [focus -displayof %W] <MouseWheel> -delta  1}
-        bind all <Button-5> \
-            {event generate [focus -displayof %W] <MouseWheel> -delta -1}
-        bind all <Shift-Button-4> \
-            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta  1}
-        bind all <Shift-Button-5> \
-            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta -1}
-    }
     bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
     catch {
