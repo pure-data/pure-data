@@ -2784,7 +2784,6 @@ static void writesf_stop(t_writesf *x)
     sfread_cond_signal(&x->x_requestcondition);
     if (sys_batch)
     {
-        fprintf(stderr, "foo\n");
             /* if we're running batch, wait for child to finish */
         while (x->x_requestcode != REQUEST_NOTHING)
         {
