@@ -467,6 +467,8 @@ static void vu_ft1(t_vu *x, t_floatarg peak)
 {
     int i;
     int old = x->x_peak;
+    if (PD_BADFLOAT(peak))
+        return;
     if(peak <= IEM_VU_MINDB)
         x->x_peak = 0;
     else if(peak >= IEM_VU_MAXDB)
