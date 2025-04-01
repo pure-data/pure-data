@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
 #elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
@@ -1360,6 +1362,7 @@ static void *makefilename_new(t_symbol *s)
 
 static void makefilename_float(t_makefilename *x, t_floatarg f)
 {
+#define CLAMP(var, min, max) (var>(t_float)max)?max:(var<(t_float)min)?min:var
     char buf[MAXPDSTRING];
     if(!x->x_format) {
         pd_error(x, "makefilename: invalid format string");
@@ -1370,17 +1373,23 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
         sprintf(buf, "%s",  x->x_format->s_name);
         break;
     case INT: {
-        if (x->x_long)
-            sprintf(buf, x->x_format->s_name, (long)f);
-        else
-            sprintf(buf, x->x_format->s_name, (int)f);
+        if (x->x_long) {
+            long int i = CLAMP(f, LONG_MIN, LONG_MAX);
+            sprintf(buf, x->x_format->s_name, i);
+        } else {
+            int i = CLAMP(f, INT_MIN, INT_MAX);
+            sprintf(buf, x->x_format->s_name, i);
+        }
         break;
     }
     case UINT: {
-        if (x->x_long)
-            sprintf(buf, x->x_format->s_name, (unsigned long)f);
-        else
-            sprintf(buf, x->x_format->s_name, (unsigned int)f);
+        if (x->x_long) {
+            unsigned long int i = CLAMP(f, 0, ULONG_MAX);
+            sprintf(buf, x->x_format->s_name, i);
+        } else {
+            unsigned int i = CLAMP(f, 0, UINT_MAX);
+            sprintf(buf, x->x_format->s_name, i);
+        }
         break;
     }
     case POINTER:
