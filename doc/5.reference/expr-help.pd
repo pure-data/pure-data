@@ -1315,7 +1315,6 @@
 #X restore 561 91 pd reference;
 #X text 338 328 <-- 1st inlet is an audio signal vector/block;
 #X text 256 440 'n' index for '$x#' is from 0 to minus "vector size - 1".;
-#X text 256 457 'n' index for '$x#' is from -1 to minus "vector size - 1".;
 #X text 474 57 <-- Open HTML reference;
 #X obj 85 608 abs;
 #X obj 116 608 abs~;
@@ -1408,6 +1407,7 @@
 #X connect 42 0 38 0;
 #X restore 580 489 pd [value] & var();
 #X text 213 607 - unary/binary operators;
+#X text 256 457 'n' index for '$y#' is from -1 to minus "vector size - 1".;
 #X connect 15 0 14 2;
 #X connect 16 0 14 1;
 #X connect 17 0 14 0;
