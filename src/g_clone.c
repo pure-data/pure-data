@@ -177,8 +177,6 @@ static void clone_out_anything(t_outproxy *x, t_symbol *s, int argc, t_atom *arg
     FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
-static PERTHREAD int clone_voicetovis = -1;
-
 static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
 {
     t_canvas *retval;
@@ -472,6 +470,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             bug("clone 3 %d", sp[i]->s_refcount);
     }
 }
+
+static PERTHREAD int clone_voicetovis = -1;
 
 static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
