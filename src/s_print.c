@@ -206,6 +206,21 @@ void startlogpost(const void *object, const int level, const char *fmt, ...)
     dologpost(object, level, buf);
 }
 
+/* pd_post is the same as post but less likely to give name clashes when
+used in a dynamic library such as a VST plug-in */
+void pd_post(const char *fmt, ...)
+{
+    char buf[MAXPDSTRING];
+    va_list ap;
+    t_int arg[8];
+    int i;
+    va_start(ap, fmt);
+    pd_vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    va_end(ap);
+    strcat(buf, "\n");
+
+    dopost(buf);
+}
 
 void post(const char *fmt, ...)
 {

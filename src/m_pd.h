@@ -539,6 +539,25 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
     automatically unless the CLASS_MULTICHANNEL flag is also set.
 */
 
+/* new names with pd_ prefix for class_new() etc.
+Use these if you want to protect against name clashes when
+using within libpd, for example when running in a VST.  If you only want
+to run in Pd as a standalone app the old names below will be OK.
+We only provide new names for the ones that seem likely to clash.  In the
+case of class_addbang, etc., the names are hidden by macros defined
+below.  We don't expect clashes there so we just define them back to the
+old names.  It's unclear where to stop with this name clash avoidance
+hooha, so here the choice is made to do as little as we seem to be able
+to get away with. */
+
+EXTERN t_class *pd_class_new(t_symbol *name, t_newmethod newmethod,
+    t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
+EXTERN void pd_class_addmethod(t_class *c, t_method fn, t_symbol *sel,
+    t_atomtype arg1, ...);
+
+/* ... and here are the traditional names for the same functions: */
+
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
 
@@ -604,6 +623,8 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 /* ------------   printing --------------------------------- */
 
+/* post and pd_post are synonyms; pd_post is safer if dynamically linked */
+EXTERN void pd_post(const char *fmt, ...);
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
