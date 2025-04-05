@@ -522,20 +522,24 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 t_class *pd_class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
+    t_class *ret;
     va_list ap;
     va_start(ap, type1);
-    class_donew(s, newmethod, freemethod, size, flags, type1, ap);
+    ret = class_donew(s, newmethod, freemethod, size, flags, type1, ap);
     va_end(ap);
+    return (ret);
 }
 
     /* traditional name: */
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
+    t_class *ret;
     va_list ap;
     va_start(ap, type1);
-    class_donew(s, newmethod, freemethod, size, flags, type1, ap);
+    ret = class_donew(s, newmethod, freemethod, size, flags, type1, ap);
     va_end(ap);
+    return (ret);
 }
 
 void class_free(t_class *c)
