@@ -9,8 +9,8 @@ BIN_DIR = ../bin
 PDEXEC = $(BIN_DIR)/pd
 EXT= pd_darwin
 GUINAME= libPdTcl.dylib
-ARCH= -arch i386 -arch ppc
-EXTRAARCH= -arch i386 -arch x86_64 -arch ppc
+ARCH=
+EXTRAARCH=
 
 MKDIR_P = mkdir -p
 
