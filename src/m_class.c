@@ -624,6 +624,10 @@ void class_doaddmethod(t_class *c, t_method fn, t_symbol *sel,
     int nargs, i;
     if(!c)
         return;
+#ifdef VST_CLEANSER     /* temporary workaround; see m_pd.h */
+    vst_cleanser(&sel);
+#endif
+
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
         is obsolete; you should now use the CLASS_MAINSIGNALIN macro. */

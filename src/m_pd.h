@@ -1087,6 +1087,18 @@ EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
   s_signal, s__N, s__X, s_x, s_y, s_;
 #endif
 
+#ifdef VST_CLEANSER
+/* LATER get rid of this, perhaps in 2035 .
+If we're in a VST plug-in and want to import plug-ins that use symbols like
+"s__X" directly, we need to provide them even though PDINSTANCE is set.  In
+this case we need to cleanse occurrences of the global symbols so that plug-ins
+don't bind to them or use them in messages.  So we expect the VST plug-in to
+provide those global symbols, along with a function to catch the extern using
+them and alias them to the per-instance version of the same symbol.  This should
+go along with a warning message that this will get removed someday. */
+void vst_cleanser(t_symbol **s);
+#endif
+
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);
 
