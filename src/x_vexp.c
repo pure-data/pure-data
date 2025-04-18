@@ -834,12 +834,22 @@ ex_checklval(struct expr *e, struct ex_ex *eptr)
         extmp = eptr->ex_end;
         while (eptr->ex_type && eptr != extmp) {
                 if (eptr->ex_type == ET_OP && eptr->ex_op == OP_STORE) {
+
                         if (eptr[1].ex_type != ET_VAR &&
                             eptr[1].ex_type != ET_SI &&
                             eptr[1].ex_type != ET_TBL) {
-                                post("expr: '%s' - Bad left value: ", e->exp_string);
-                               return (1);
-                         }
+
+                                if (eptr[1].ex_type == ET_FUNC) {
+                                        t_ex_func *f = (t_ex_func *) eptr[1].ex_ptr;
+                                        if (strcmp(f->f_name, "ref")) {
+                                                post("expr: '%s' - only ref() is permitted on lhs", e->exp_string);
+                                                return (1);
+                                        }
+                                } else {
+                                        post("expr: '%s' - Bad left value: ", e->exp_string);
+                                        return (1);
+                                }
+                        }
                 }
                 eptr++;
         }
@@ -1289,6 +1299,23 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         case ET_VAR:
                 return (eval_var(expr, eptr, optr, idx));
         case ET_OP:
+                if (eptr[1].ex_type == ET_FUNC) {
+                        t_ex_func *f = (t_ex_func *) eptr[1].ex_ptr;
+                        if (!strcmp(f->f_name, "ref")){
+                                /* evaluate ref() on the lhs */
+                                eptr = eval_func(expr, ++eptr, &left, idx);
+                                /* variable referring to the symbol */
+                                char *var = (char *) left.ex_ptr;
+                                /* evaluate rhs */
+                                eptr = ex_eval(expr, eptr, &right, idx);
+                                /* bind the variable */
+                                if (max_ex_var_store(expr, (t_symbol *)var, &right, optr)){
+                                        return exNULL;
+                                } else {
+                                        return eptr;
+                                }
+                        }
+                }
                 break;
         case ET_STR:
         case ET_LP:
