@@ -440,6 +440,7 @@ EXTERN void pd_free(t_pd *x);
 EXTERN void pd_bind(t_pd *x, t_symbol *s);
 EXTERN void pd_unbind(t_pd *x, t_symbol *s);
 EXTERN t_pd *pd_findbyclass(t_symbol *s, const t_class *c);
+EXTERN t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname);
 EXTERN void pd_pushsym(t_pd *x);
 EXTERN void pd_popsym(t_pd *x);
 EXTERN void pd_bang(t_pd *x);
