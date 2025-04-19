@@ -294,17 +294,21 @@ typedef struct _oscparse
                     ((((int)(((x)+2)->a_w.w_float)) & 0xff) << 8) | \
                     ((((int)(((x)+3)->a_w.w_float)) & 0xff) << 0)
 
-#define READDOUBLE(x) ({ \
-    uint32_t hi = READINT(x); \
-    uint32_t lo = READINT((x)+4); \
-    union { \
-        double d; \
-        struct { uint32_t lo; uint32_t hi; } i; \
-    } u; \
-    u.i.lo = lo; \
-    u.i.hi = hi; \
-    u.d; \
-})
+static double readdouble(t_atom *x)
+{
+    uint32_t hi = READINT(x);
+    uint32_t lo = READINT((x)+4);
+    union {
+        double d;
+        struct {
+            uint32_t lo;
+            uint32_t hi;
+        } i;
+    } u;
+    u.i.lo = lo;
+    u.i.hi = hi;
+    return u.d;
+}
 
 static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
 {
@@ -478,7 +482,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             if (k > argc - 8)
                 goto tooshort;
             {
-                double d = READDOUBLE(argv+k);
+                double d = readdouble(argv+k);
                 /* lossy conversion from double to float */
                 t_float f = (t_float)d;
                 if (PD_BADFLOAT(f))
