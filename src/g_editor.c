@@ -3,6 +3,7 @@
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
@@ -3799,6 +3800,17 @@ static void canvas_copy(t_canvas *x)
     }
 }
 
+static void canvas_copy_to_clipboard_as_text(t_canvas *x)
+{
+    t_binbuf *bb = canvas_docopy(x);
+    if (!bb)
+        return;
+    t_atom *atoms = binbuf_getvec(bb);
+    int num_atoms = binbuf_getnatom(bb);
+    pdgui_vmess("pdtk_copy_to_clipboard_as_text", "ca", x, num_atoms, atoms);
+    binbuf_free(bb);
+}
+
 static void canvas_clearline(t_canvas *x)
 {
     if (x->gl_editor->e_selectedline)
@@ -4206,6 +4218,44 @@ static void canvas_paste(t_canvas *x)
                 gobj_displace(y->sel_what, x,
                     offset, offset);
         }
+    }
+}
+
+static char* clipboard_patch_text = NULL;
+static size_t clipboard_patch_len = 0;
+
+void canvas_got_clipboard_contents(t_canvas *x, t_symbol*s, int argc, t_atom*argv) {
+    t_symbol *reset = gensym("reset");
+    t_symbol *submit = gensym("submit");
+    t_symbol *addbytes = gensym("addbytes");    
+    t_symbol*sflag = (argc>0)?atom_getsymbol(argv):0;
+    int flag = 0;
+    int i;
+    if(sflag == reset || sflag == submit) {
+        if (clipboard_patch_text) {
+            if(sflag == submit) {
+                t_binbuf *temp_bb = binbuf_new();
+                binbuf_text(temp_bb, clipboard_patch_text, clipboard_patch_len);
+                canvas_dopaste(x, temp_bb);
+            }
+            freebytes(clipboard_patch_text, clipboard_patch_len);
+        }
+        clipboard_patch_text = NULL;
+        clipboard_patch_len = 0;
+    } else if(sflag == addbytes) {
+        if (clipboard_patch_text) {
+            clipboard_patch_text = resizebytes(clipboard_patch_text, clipboard_patch_len, clipboard_patch_len + argc);
+        } else {
+            clipboard_patch_text = getbytes(argc);
+            clipboard_patch_len = 0;
+        }
+        for(i=1; i<argc; i++) {
+            int v = (int)atom_getfloat(argv+i);
+            clipboard_patch_text[clipboard_patch_len] = (char)v;
+            clipboard_patch_len++;
+        }
+    } else {
+        post("Invalid flag received in canvas_got_clipboard_contents.");
     }
 }
 
@@ -5013,7 +5063,8 @@ void g_editor_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
+    class_addmethod(canvas_class, (t_method)canvas_got_clipboard_contents,
+        gensym("got-clipboard-contents"), A_GIMME, A_NULL);
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
         gensym("menuclose"), A_DEFFLOAT, 0);
@@ -5021,6 +5072,8 @@ void g_editor_setup(void)
         gensym("cut"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_copy,
         gensym("copy"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_copy_to_clipboard_as_text,
+        gensym("copy-to-clipboard-as-text"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste_replace,

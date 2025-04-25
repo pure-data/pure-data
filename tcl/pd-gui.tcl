@@ -199,6 +199,8 @@ set recentfiles_list {}
 set total_recentfiles 5
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
+# on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
+set alt ""
 # current state of the Edit Mode menu item
 set editmode_button 0
 
@@ -293,6 +295,7 @@ proc init_for_platform {} {
     switch -- $::windowingsystem {
         "x11" {
             set ::modifier "Control"
+            set ::alt "Alt"
             option add *PatchWindow*Canvas.background "white" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
@@ -333,6 +336,7 @@ proc init_for_platform {} {
             # from the commandline incorporates the special mac event handling
             package require apple_events
             set ::modifier "Mod1"
+            set ::alt "Option"
             if {$::tcl_version < 8.5} {
                 # old default font for Tk 8.4 on macOS
                 # since font detection requires 8.5+
@@ -370,6 +374,7 @@ proc init_for_platform {} {
         }
         "win32" {
             set ::modifier "Control"
+            set ::alt "Alt"
             option add *PatchWindow*Canvas.background "white" startupFile
             # fix menu font size on Windows with tk scaling = 1
             font create menufont -family Tahoma -size -11
