@@ -294,7 +294,7 @@ typedef struct _oscparse
                     ((((int)(((x)+2)->a_w.w_float)) & 0xff) << 8) | \
                     ((((int)(((x)+3)->a_w.w_float)) & 0xff) << 0)
 
-static double readdouble(t_atom *x)
+PD_INLINE double readdouble(t_atom *x)
 {
     uint32_t hi = READINT(x);
     uint32_t lo = READINT((x)+4);
