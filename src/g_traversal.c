@@ -35,30 +35,94 @@ static t_symbol *template_getbindsym(t_symbol *s)
 
 /* ---------------------- pointer ----------------------------- */
 
-static t_class *ptrobj_class;
+/* pointers can be shared via a name (if instantiated as "vpointer") or
+private (if as original "pointer").  If shared the pointer is held by a
+"pcommon" object.  The struct name "pointer" would be confusing so the
+class is internally called "t_ptrobj".  */
+
+static t_class *ptrobj_class, *pcommon_class;
+
+typedef struct _pcommon /* area to share gpointers between ptrobjs */
+{
+    t_pd c_pd;
+    int c_refcount;
+    t_gpointer c_gp;
+} t_pcommon;
 
 typedef struct
 {
-    t_symbol *to_type;
-    t_outlet *to_outlet;
+    t_symbol *to_type;      /* name of template */
+    t_outlet *to_outlet;    /* corresponding outlet */
 } t_typedout;
 
 typedef struct _ptrobj
 {
     t_object x_obj;
-    t_gpointer x_gp;
-    t_typedout *x_typedout;
-    int x_ntypedout;
-    t_outlet *x_otherout;
-    t_outlet *x_bangout;
+    t_gpointer *x_gpp;      /* ptr to our gpointer, whether shared or not */
+    t_gpointer x_privategp; /* gpointer, if it's private */
+    t_symbol *x_name;       /* name of pcommon if shared, 0 if not */
+    t_typedout *x_typedout; /* array of typed outlets for matching templates */
+    int x_ntypedout;        /* number of typed outlets */
+    t_outlet *x_otherout;   /* an outlet for any other template */
+    t_outlet *x_bangout;    /* bang outlet for end of list or failure */
 } t_ptrobj;
+
+    /* get a pointer to a named floating-point variable.  The variable
+    belongs to a "vcommon" object, which is created if necessary. */
+t_gpointer *pcommon_get(t_symbol *s)
+{
+    t_pcommon *c = (t_pcommon *)pd_findbyclass(s, pcommon_class);
+    if (!c)
+    {
+        c = (t_pcommon *)pd_new(pcommon_class);
+        gpointer_init(&c->c_gp);
+        c->c_refcount = 0;
+        pd_bind(&c->c_pd, s);
+        post("new pcommon");
+    }
+    c->c_refcount++;
+    return (&c->c_gp);
+}
+
+    /* release a variable.  This only frees the "vcommon" resource when the
+    last interested party releases it. */
+void pcommon_release(t_symbol *s)
+{
+    t_pcommon *c = (t_pcommon *)pd_findbyclass(s, pcommon_class);
+    if (c)
+    {
+        if (!--c->c_refcount)
+        {
+            pd_unbind(&c->c_pd, s);
+            gpointer_unset(&c->c_gp);
+            pd_free(&c->c_pd);
+            post("free pcommon");
+        }
+    }
+    else bug("pointer_release");
+}
+
+static void pcommon_pointer(t_pcommon *x, t_gpointer *gp)
+{
+    gpointer_unset(&x->c_gp);
+    gpointer_copy(gp, &x->c_gp);
+}
 
 static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
 {
     t_ptrobj *x = (t_ptrobj *)pd_new(ptrobj_class);
     t_typedout *to;
     int n;
-    gpointer_init(&x->x_gp);
+    if (!strcmp(classname->s_name, "vpointer"))   /* shared */
+    {
+        x->x_name = atom_getsymbolarg(0, argc, argv);
+        if (argc)
+            argc--, argv++;
+    }
+    else x->x_name = &s_;
+    if (*x->x_name->s_name)
+        x->x_gpp = pcommon_get(x->x_name);
+    else gpointer_init((x->x_gpp = &x->x_privategp));
     x->x_typedout = to = (t_typedout *)getbytes(argc * sizeof (*to));
     x->x_ntypedout = n = argc;
     for (; n--; to++)
@@ -68,21 +132,29 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
     }
     x->x_otherout = outlet_new(&x->x_obj, &s_pointer);
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
-    pointerinlet_new(&x->x_obj, &x->x_gp);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("pointer"), gensym("set"));
     return (x);
+}
+
+static void ptrobj_set(t_ptrobj *x, t_gpointer *gp)
+{
+    gpointer_unset(x->x_gpp);
+    *x->x_gpp = *gp;
+    if (gp->gp_stub)
+        gp->gp_stub->gs_refcount++;
 }
 
 static void ptrobj_traverse(t_ptrobj *x, t_symbol *s)
 {
     t_glist *glist = (t_glist *)pd_findbyclass(s, canvas_class);
-    if (glist) gpointer_setglist(&x->x_gp, glist, 0);
+    if (glist) gpointer_setglist(x->x_gpp, glist, 0);
     else pd_error(x, "pointer: list '%s' not found", s->s_name);
 }
 
 static void ptrobj_vnext(t_ptrobj *x, t_float f)
 {
     t_gobj *gobj;
-    t_gpointer *gp = &x->x_gp;
+    t_gpointer *gp = x->x_gpp;
     t_gstub *gs = gp->gp_stub;
     t_glist *glist;
     int wantselected = (f != 0);
@@ -129,11 +201,11 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
         {
             if (to->to_type == templatesym)
             {
-                outlet_pointer(to->to_outlet, &x->x_gp);
+                outlet_pointer(to->to_outlet, x->x_gpp);
                 return;
             }
         }
-        outlet_pointer(x->x_otherout, &x->x_gp);
+        outlet_pointer(x->x_otherout, x->x_gpp);
     }
     else
     {
@@ -150,7 +222,7 @@ static void ptrobj_next(t_ptrobj *x)
 static void ptrobj_delete(t_ptrobj *x)
 {
     t_gobj *gobj, *old;
-    t_gpointer *gp = &x->x_gp;
+    t_gpointer *gp = x->x_gpp;
     t_gstub *gs = gp->gp_stub;
     t_glist *glist;
     if (!gs)
@@ -203,11 +275,11 @@ static void ptrobj_delete(t_ptrobj *x)
         {
             if (to->to_type == templatesym)
             {
-                outlet_pointer(to->to_outlet, &x->x_gp);
+                outlet_pointer(to->to_outlet, x->x_gpp);
                 return;
             }
         }
-        outlet_pointer(x->x_otherout, &x->x_gp);
+        outlet_pointer(x->x_otherout, x->x_gpp);
     }
     else
     {
@@ -223,29 +295,30 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     t_symbol *templatesym;
     int n, which, result;
     t_typedout *to;
-    if (!gpointer_check(&x->x_gp, 1))
+    if (!gpointer_check(x->x_gpp, 1))
     {
         pd_error(x, "pointer equal: empty pointer");
         return;
     }
     /* we can compare any union element because they are all pointers */
-    result = (gp->gp_stub->gs_un.gs_glist == x->x_gp.gp_stub->gs_un.gs_glist) &&
-        (gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
+    result = (gp->gp_stub->gs_un.gs_glist ==
+        x->x_gpp->gp_stub->gs_un.gs_glist) &&
+            (gp->gp_un.gp_scalar == x->x_gpp->gp_un.gp_scalar);
     if (!result)
     {
         outlet_bang(x->x_bangout);
         return;
     }
-    templatesym = gpointer_gettemplatesym(&x->x_gp);
+    templatesym = gpointer_gettemplatesym(x->x_gpp);
     for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
     {
         if (to->to_type == templatesym)
         {
-            outlet_pointer(to->to_outlet, &x->x_gp);
+            outlet_pointer(to->to_outlet, x->x_gpp);
             return;
         }
     }
-    outlet_pointer(x->x_otherout, &x->x_gp);
+    outlet_pointer(x->x_otherout, x->x_gpp);
 }
 
     /* send a message to the window containing the object pointed to */
@@ -258,12 +331,12 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     t_glist *glist;
     t_pd *canvas;
     t_gstub *gs;
-    if (!gpointer_check(&x->x_gp, 1))
+    if (!gpointer_check(x->x_gpp, 1))
     {
         pd_error(x, "pointer send-window: empty pointer");
         return;
     }
-    gs = x->x_gp.gp_stub;
+    gs = x->x_gpp->gp_stub;
     if (gs->gs_which == GP_GLIST)
         glist = gs->gs_un.gs_glist;
     else
@@ -285,9 +358,9 @@ static void ptrobj_send(t_ptrobj *x, t_symbol *s)
 {
     if (!s->s_thing)
         pd_error(x, "%s: no such object", s->s_name);
-    else if (!gpointer_check(&x->x_gp, 1))
+    else if (!gpointer_check(x->x_gpp, 1))
         pd_error(x, "pointer send: empty pointer");
-    else pd_pointer(s->s_thing, &x->x_gp);
+    else pd_pointer(s->s_thing, x->x_gpp);
 }
 
 static void ptrobj_bang(t_ptrobj *x)
@@ -295,28 +368,28 @@ static void ptrobj_bang(t_ptrobj *x)
     t_symbol *templatesym;
     int n;
     t_typedout *to;
-    if (!gpointer_check(&x->x_gp, 1))
+    if (!gpointer_check(x->x_gpp, 1))
     {
         pd_error(x, "pointer bang: empty pointer");
         return;
     }
-    templatesym = gpointer_gettemplatesym(&x->x_gp);
+    templatesym = gpointer_gettemplatesym(x->x_gpp);
     for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
     {
         if (to->to_type == templatesym)
         {
-            outlet_pointer(to->to_outlet, &x->x_gp);
+            outlet_pointer(to->to_outlet, x->x_gpp);
             return;
         }
     }
-    outlet_pointer(x->x_otherout, &x->x_gp);
+    outlet_pointer(x->x_otherout, x->x_gpp);
 }
 
 
 static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
 {
-    gpointer_unset(&x->x_gp);
-    gpointer_copy(gp, &x->x_gp);
+    gpointer_unset(x->x_gpp);
+    gpointer_copy(gp, x->x_gpp);
     ptrobj_bang(x);
 }
 
@@ -330,32 +403,39 @@ static void ptrobj_rewind(t_ptrobj *x)
     t_glist *glist;
     t_pd *canvas;
     t_gstub *gs;
-    if (!gpointer_check(&x->x_gp, 1))
+    if (!gpointer_check(x->x_gpp, 1))
     {
         pd_error(x, "pointer rewind: empty pointer");
         return;
     }
-    gs = x->x_gp.gp_stub;
+    gs = x->x_gpp->gp_stub;
     if (gs->gs_which != GP_GLIST)
     {
         pd_error(x, "pointer rewind: sorry, unavailable for arrays");
         return;
     }
     glist = gs->gs_un.gs_glist;
-    gpointer_setglist(&x->x_gp, glist, 0);
+    gpointer_setglist(x->x_gpp, glist, 0);
     ptrobj_bang(x);
 }
 
 static void ptrobj_free(t_ptrobj *x)
 {
     freebytes(x->x_typedout, x->x_ntypedout * sizeof (*x->x_typedout));
-    gpointer_unset(&x->x_gp);
+    if (*x->x_name->s_name)
+        pcommon_release(x->x_name);
+    else gpointer_unset(&x->x_privategp);
 }
 
 static void ptrobj_setup(void)
 {
     ptrobj_class = class_new(gensym("pointer"), (t_newmethod)ptrobj_new,
         (t_method)ptrobj_free, sizeof(t_ptrobj), 0, A_GIMME, 0);
+
+    class_addcreator((t_newmethod)ptrobj_new, gensym("vpointer"),
+        A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_set, gensym("set"),
+        A_POINTER, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_next, gensym("next"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_send, gensym("send"),
         A_SYMBOL, 0);
@@ -364,13 +444,18 @@ static void ptrobj_setup(void)
     class_addmethod(ptrobj_class, (t_method)ptrobj_vnext, gensym("vnext"),
         A_DEFFLOAT, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_delete, gensym("delete"), 0);
-    class_addmethod(ptrobj_class, (t_method)ptrobj_equal, gensym("equal"), A_POINTER, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_equal, gensym("equal"),
+        A_POINTER, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,
         gensym("rewind"), 0);
     class_addpointer(ptrobj_class, ptrobj_pointer);
     class_addbang(ptrobj_class, ptrobj_bang);
+
+    pcommon_class = class_new(gensym("pointer"), 0, 0, sizeof(t_pcommon),
+        CLASS_PD, 0);
+    class_addpointer(pcommon_class, pcommon_pointer);
 }
 
 /* ---------------------- get ----------------------------- */

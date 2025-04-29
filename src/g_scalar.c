@@ -591,7 +591,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         if ((hit = (*wb->w_parentclickfn)(y, owner,
-            data, template, sc, ap, xloc,        yloc,
+            data, template, sc, ap, xloc, yloc,
             xpix, ypix, shift, alt, dbl, doit)))
         {
             if (doit)
