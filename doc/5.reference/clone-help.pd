@@ -135,10 +135,9 @@
 #X text 23 347 Just a float sends an empty list to the instance \, which becomes a bang!, f 19;
 #X text 23 121 [clone]'s inlets/outlets correspond to those of the contained patch and may be control and/or signal inlets/outlets. This example has one control inlet. It also has a signal and another control outlet. You can click on the [clone] object to see the first of the cloned instances. At least one control inlet is present even if the abstraction has none \, so [clone] can receive the 'vis' and 'resize' messages. The way control inlets/outlets forward messages is shown below., f 104;
 #X text 23 197 Signal inlets can get non float control messages via their 2nd outlet in the same way \, but signals are sent to all the instances. See [pd multichannel] example for more details on how signal distribution works in [clone]., f 104;
-#X obj 131 265 poly;
 #X obj 236 678 notein;
-#X text 32 290 for a polyphonic synth example with [clone] and a list input., f 22;
-#X text 32 250 see also the help of ---->, f 13;
+#X text 22 261 Check [poly]'s help for a polyphonic synth example with [clone] and a list input, f 22;
+#X obj 147 311 poly;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 11 1;
