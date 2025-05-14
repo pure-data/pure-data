@@ -87,11 +87,6 @@ void array_free(t_array *x)
     t_template *scalartemplate = template_findbyname(x->a_templatesym);
     gstub_cutoff(x->a_stub);
     word_freevec((t_word *)x->a_vec, scalartemplate, x->a_n);
-    for (i = 0; i < x->a_n; i++)
-    {
-        t_word *wp = (t_word *)(x->a_vec + x->a_elemsize * i);
-        word_free(wp, scalartemplate);
-    }
     freebytes(x->a_vec, x->a_elemsize * x->a_n);
     freebytes(x, sizeof *x);
 }
