@@ -44,6 +44,7 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
 void glob_fastforward(t_pd *ignore, t_floatarg f);
 void glob_settracing(void *dummy, t_floatarg f);
 void glob_vis(void *dummy, t_symbol *s);
+void glob_closesubs(void *dummy);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -200,6 +201,8 @@ void glob_init(void)
         gensym("watchdog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_vis,
         gensym("vis"), A_DEFSYM, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_closesubs,
+        gensym("close-subwindows"), 0);
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }

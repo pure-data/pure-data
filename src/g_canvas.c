@@ -2235,3 +2235,30 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
     if (!glob_evalfile(ignore, name, dir))
         pdgui_vmess("::pdwindow::busyrelease", 0);
 }
+
+/* close visible subwindows */
+static void glist_closesubsfor(t_glist *glist)
+{
+    t_gobj *g;
+    for (g = glist->gl_list; g; g = g->g_next)
+    {
+        if (g->g_pd == canvas_class)
+        {
+            t_glist *gl2 = (t_glist *)g;
+            if (gl2->gl_havewindow)
+                canvas_vis(gl2, 0);
+            glist_closesubsfor(gl2);
+        }
+    }
+}
+
+/* close all visible non-root windows */
+void glob_closesubs(t_pd *ignore)
+{
+    t_glist *gl;
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_closesubsfor(gl);
+            /* if there's anyone open, move it to front */
+    if (pd_this->pd_canvaslist)
+        canvas_vis(pd_this->pd_canvaslist, 1);
+}
