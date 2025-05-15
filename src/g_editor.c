@@ -2491,6 +2491,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_MOVE;
+                    x->gl_editor->e_waittodrag = 1;
                 }
             }
             else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
@@ -3230,8 +3231,17 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
 static void delay_move(t_canvas *x)
 {
-    int incx = (x->gl_editor->e_xnew - x->gl_editor->e_xwas)/x->gl_zoom,
-        incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
+    int incx = x->gl_editor->e_xnew - x->gl_editor->e_xwas,
+        incy = x->gl_editor->e_ynew - x->gl_editor->e_ywas;
+        /* insist on at elast 2 pixel displacement to avoid accidental
+        displacements of objects you only meant to select */
+    if (x->gl_editor->e_waittodrag &&
+        incx > -2 && incx < 2 && incy > -2 && incy < 2)
+            return;
+    incx /= x->gl_zoom;
+    incy /= x->gl_zoom;
+
+    x->gl_editor->e_waittodrag = 0;
     if (incx || incy)
         canvas_displaceselection(x, incx, incy);
     x->gl_editor->e_xwas += incx * x->gl_zoom;
@@ -3338,6 +3348,7 @@ void canvas_startmotion(t_canvas *x)
     glist_getnextxy(x, &xval, &yval);
     if (xval == 0 && yval == 0) return;
     x->gl_editor->e_onmotion = MA_MOVE;
+    x->gl_editor->e_waittodrag = 0;
     x->gl_editor->e_xwas = xval;
     x->gl_editor->e_ywas = yval;
 }

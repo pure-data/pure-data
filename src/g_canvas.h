@@ -129,6 +129,7 @@ typedef struct _editor
     unsigned int e_lastmoved: 1;    /* one if mouse has moved since click */
     unsigned int e_textdirty: 1;    /* one if e_textedfor has changed */
     unsigned int e_selectedline: 1; /* one if a line is selected */
+    unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
     t_clock *e_clock;               /* clock to filter GUI move messages */
     int e_xnew;                     /* xpos for next move event */
     int e_ynew;                     /* ypos, similarly */
