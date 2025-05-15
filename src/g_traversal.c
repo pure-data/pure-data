@@ -517,8 +517,13 @@ static void ptrobj_donext(t_ptrobj *x, int skip, t_symbol *templatesym,
 static void ptrobj_next(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
     ptrobj_donext(x, (argc ? atom_getfloat(argv) : 1),
-        atom_getsymbolarg(1, argc, argv),
+        template_getbindsym(atom_getsymbolarg(1, argc, argv)),
             (atom_getfloatarg(2, argc, argv) != 0));
+}
+
+static void ptrobj_vnext(t_ptrobj *x, t_float f)
+{
+    ptrobj_donext(x, 1, gensym(""), (f != 0));
 }
 
 static void ptrobj_nearest(t_ptrobj *x, t_floatarg xval, t_floatarg yval)
@@ -558,11 +563,6 @@ static void ptrobj_nearest(t_ptrobj *x, t_floatarg xval, t_floatarg yval)
     }
     if (bestgobj)
         ptrobj_setandoutput(x, bestgobj);
-}
-
-static void ptrobj_vnext(t_ptrobj *x, t_float f)
-{
-    ptrobj_donext(x, 1, gensym(""), (f != 0));
 }
 
 static void ptrobj_delete(t_ptrobj *x)
