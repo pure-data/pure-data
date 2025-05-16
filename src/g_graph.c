@@ -1000,11 +1000,13 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         sprintf(tag, "%sR",  rtext_gettag(y));
         pdgui_vmess(0, "crs rr",
                   glist, "itemconfigure", tag,
-                  "-fill", (state? "blue" : "black"));
+                  "-fill", (state? THISGUI->i_selectcolor->s_name :
+                      THISGUI->i_foregroundcolor->s_name));
         sprintf(tag, "graph%lx", (t_int)z);
         pdgui_vmess(0, "crs rr",
                   glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? "blue" : "black"));
+                  "-fill", (state? THISGUI->i_selectcolor->s_name :
+                      THISGUI->i_foregroundcolor->s_name));
     }
 }
 
@@ -1088,7 +1090,7 @@ static int graph_click(t_gobj *z, struct _glist *glist,
         {
             int x1, y1, x2, y2;
                 /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2)
+            if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0)
                 &&  (clickreturned = gobj_click(y, x, xpix, ypix,
                     shift, alt, dbl, doit)))
                         break;

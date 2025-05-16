@@ -772,7 +772,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
         pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
             glist_getcanvas(x), "create", "line",
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", "#ff8080",
+            "-fill", THISGUI->i_gopcolor->s_name,
             "-width", x->gl_zoom,
             "-capstyle", "projecting",
             "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
@@ -950,10 +950,13 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rS",
+            pdgui_vmess(0, "crr iiii ri rr rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
+                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+                    * x->gl_zoom,
+                "-fill", THISGUI->i_foregroundcolor->s_name,
+
                 "-tags", 2, tags);
         }
     }
@@ -2171,6 +2174,10 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
+    THISGUI->i_foregroundcolor = gensym("black");
+    THISGUI->i_backgroundcolor = gensym("white");
+    THISGUI->i_selectcolor = gensym("blue");
+    THISGUI->i_gopcolor = gensym("red");
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2262,3 +2269,29 @@ void glob_closesubs(t_pd *ignore)
     if (pd_this->pd_canvaslist)
         canvas_vis(pd_this->pd_canvaslist, 1);
 }
+
+static void glist_dorevis(t_glist *glist)
+{
+    t_gobj *g;
+    if (glist->gl_havewindow)
+    {
+        canvas_vis(glist, 0);
+        canvas_vis(glist, 1);
+    }
+    for (g = glist->gl_list; g; g = g->g_next)
+        if (g->g_pd == canvas_class)
+            glist_dorevis((t_glist *)g);
+}
+
+void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+    t_symbol *gop)
+{
+    t_glist *gl;
+    THISGUI->i_foregroundcolor = fg;
+    THISGUI->i_backgroundcolor = bg;
+    THISGUI->i_selectcolor = sel;
+    THISGUI->i_gopcolor = (*gop->s_name ? gop : sel);
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_dorevis(gl);
+}
+

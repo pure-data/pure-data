@@ -62,10 +62,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
 
             /* keep knob above outlet */
@@ -76,10 +77,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
 
             /* keep knob above inlet */

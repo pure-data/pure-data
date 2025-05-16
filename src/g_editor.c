@@ -61,7 +61,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
 
-static void _editor_selectlinecolor(t_glist*x, const char*color)
+static void _editor_selectlinecolor(t_glist *x, const char*color)
 {
     char tag[128];
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
@@ -83,7 +83,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, "blue");
+        _editor_selectlinecolor(x, THISGUI->i_selectcolor->s_name);
     }
 }
 
@@ -92,7 +92,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, "black");
+        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor->s_name);
     }
 }
 
@@ -1758,13 +1758,14 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
 
     /* check if a point lies in a gobj.  */
 int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
-    int *x1p, int *y1p, int *x2p, int *y2p)
+    int *x1p, int *y1p, int *x2p, int *y2p, int extrapix)
 {
     int x1, y1, x2, y2;
     if (!gobj_shouldvis(y, x))
         return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
-    if (xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
+    if (xpos >= x1-extrapix && xpos <= x2+extrapix
+        && ypos >= y1-extrapix && ypos <= y2+extrapix)
     {
         *x1p = x1;
         *y1p = y1;
@@ -1784,7 +1785,16 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     *x1p = -0x7fffffff;
     for (y = x->gl_list; y; y = y->g_next)
     {
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2)
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0)
+            && (x1 > *x1p))
+                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
+    }
+        /* if none, try again with fatter boxes so that we can click on
+        inlets or outlets from slightly outside the box */
+    if (!rval)
+        for (y = x->gl_list; y; y = y->g_next)
+    {
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 4)
             && (x1 > *x1p))
                 *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
     }
@@ -1795,9 +1805,10 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     {
         t_selection *sel;
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-            if (canvas_hitbox(x, sel->sel_what, xpos, ypos, &x1, &y1, &x2, &y2))
-                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
-                    rval = sel->sel_what;
+            if (canvas_hitbox(x, sel->sel_what, xpos, ypos,
+                &x1, &y1, &x2, &y2,  0))
+                    *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
+                        rval = sel->sel_what;
     }
     return (rval);
 }
@@ -1896,10 +1907,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                     (int)(x->gl_screeny1));
             }
 
-            pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
+            pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                winpos, x->gl_edit);
+                winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {
@@ -2141,7 +2152,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
     for (y = x->gl_list; y; y = y->g_next)
     {
         int x1, y1, x2, y2;
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2))
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0))
         {
             if (which == 0)     /* properties */
             {
@@ -2361,7 +2372,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 click location against their particular assortments of
                 hot points. */
             if ((hitbox->g_pd == scalar_class ||
-                canvas_hitbox(x, hitbox, xpix, ypix, &x1, &y1, &x2, &y2))
+                canvas_hitbox(x, hitbox, xpix, ypix, &x1, &y1, &x2, &y2, 0))
                     && (clickreturned = gobj_click(hitbox, x, xpix, ypix,
                         shiftmod, ((mod & CTRLMOD) && (!x->gl_edit)) || altmod,
                             doubleclick, doit)))
@@ -2404,8 +2415,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         else
         {
             int noutlet;
-            int out_activeminh = (OHEIGHT + 1)  * x->gl_zoom;
-            int out_activemaxh = (y2 - y1) / 4;
+            int out_activeminh = OHEIGHT  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 8;
             int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
             if (out_activeheight > out_activemaxh)
                 out_activeheight = out_activemaxh;
