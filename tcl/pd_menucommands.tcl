@@ -237,7 +237,7 @@ proc ::pd_menucommands::set_filenewdir {mytoplevel} {
 
 # parse the textfile for the About Pd page
 proc ::pd_menucommands::menu_aboutpd {} {
-    set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
+    set versionstring "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
     set filename [file join $::sys_guidir about.txt]
     if {![file exists $filename]} {
         ::pdwindow::error [_ "ignoring '%s': doesn't exist" $filename]

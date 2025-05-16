@@ -110,6 +110,7 @@ namespace import ::dialog_array::pdtk_array_listview_closeWindow
 # should all have been properly initialized by the time startup plugins are
 # loaded.
 
+set PD_APPLICATION_NAME "Pd"
 set PD_MAJOR_VERSION 0
 set PD_MINOR_VERSION 0
 set PD_BUGFIX_VERSION 0

@@ -182,7 +182,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
       inlet_symbol(x, atom_getsymbol(argv));
     else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
         inlet_fwd(x, &s_list, argc, argv);
-    else post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
+    else inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
