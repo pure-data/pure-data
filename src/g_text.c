@@ -140,9 +140,8 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
         if (!pd_this->pd_newest)
             x = 0;
         else if (!(x = pd_checkobject(pd_this->pd_newest)))
-        {
-            canvas_error_couldntcreate(0, b, "... didn't return a patchable object");
-        }
+            canvas_error_couldntcreate(0, b,
+                "... didn't return a patchable object");
     }
     else x = 0;
     if (!x)

@@ -2031,6 +2031,16 @@ void canvas_properties(t_gobj*z, t_glist*unused)
     int isgraph = glist_isgraph(x);
     t_float x1=0., y1=-1., x2=1., y2=1.;
     t_float xscale=0., yscale=0.;
+    char *textbuf = 0;
+    int textsize;
+    if (x->gl_owner && canvas_isabstraction(x))
+    {
+        binbuf_gettext(x->gl_obj.te_binbuf, &textbuf, &textsize);
+        textbuf = (char *)resizebytes(textbuf, textsize, textsize+1);
+        textbuf[textsize] = 0;
+    }
+    else post("not: %lx %d", x->gl_owner, canvas_isabstraction(x));
+    pdgui_vmess("::dialog_canvas::set_text", "s", (textbuf ? textbuf : ""));
     if(isgraph) {
         x1=x->gl_x1;
         y1=x->gl_y1;
@@ -2047,10 +2057,13 @@ void canvas_properties(t_gobj*z, t_glist*unused)
         (int)x->gl_pixwidth, (int)x->gl_pixheight,
         (int)x->gl_xmargin, (int)x->gl_ymargin);
 
+
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == garray_class)
             garray_properties((t_garray *)y);
+    if (textbuf)
+        freebytes(textbuf, textsize+1);
 }
 
     /* called from the gui when "OK" is selected on the canvas properties
@@ -2060,6 +2073,20 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
+
+    if (x->gl_owner && argc > 12)
+    {
+        t_binbuf *b = binbuf_new();
+        char *textbuf;
+        int textsize;
+        binbuf_add(b, argc-12, argv+12);
+        binbuf_gettext(b, &textbuf, &textsize);
+        binbuf_free(b);
+        text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
+        freebytes(textbuf, textsize);
+        canvas_dirty(x->gl_owner, 1);
+        return;
+    }
 
     xperpix = atom_getfloatarg(0, argc, argv);
     yperpix = atom_getfloatarg(1, argc, argv);
