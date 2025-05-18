@@ -1497,12 +1497,17 @@ static int curve_click(t_gobj *z, t_glist *glist,
     {
             /* if we're in the bounding rect and the draggable flag
             is set we can drag the whole object; othrwise we don't
-            do anything.  But we still return 1 if we're in the rectangle
-            so that the struct object can notify the patch of the click. */
+            do anything.  But we still return -1 if we're in the rectangle
+            so that the struct object can notify the patch of the click.
+            The "-1" tells scalar_doclick() to call template_notifyforscalar()
+            but scalar_click() then returns 0 so that the search for a click
+            will continue.  This way, all polygons that got clicked on will
+            get notified up to and until someone gets bonked on a hot point,
+            at which point the search stops. */
         if (xpix < x1 || xpix > x2 || ypix < y1 || ypix > y2)
             return (0);
         if (!(x->x_flags & DRAGGABLE))
-            return (1);
+            return (-1);
     }
     if (doit)
     {

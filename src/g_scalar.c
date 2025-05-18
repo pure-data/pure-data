@@ -546,7 +546,9 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
                 template_notifyforscalar(template, owner,
                     sc, gensym("click"), 6, at);
             }
-            return (hit);
+                /* hit might be -1 (see curve_click()) indicating "please
+                notify" but keep looking for something else to click on */
+            return (hit > 0);
         }
     }
     return (0);
