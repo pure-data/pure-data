@@ -238,6 +238,25 @@ proc ::pd_menucommands::set_filenewdir {mytoplevel} {
 # parse the textfile for the About Pd page
 proc ::pd_menucommands::menu_aboutpd {} {
     set versionstring "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
+
+    # add the architecture to the version-string
+    set precision ""
+    if { [info exists ::deken::platform(floatsize)] } {
+        switch -- ${::deken::platform(floatsize)} {
+            32 { set precision [_ "single precision"] }
+            64 { set precision [_ "double precision"] }
+            "" { set precision ""}
+            default  { set precision [_ "%dbit-floats" ${::deken::platform(floatsize)}]}
+        }
+    }
+    if { ${precision} ne "" } {
+        set precision " - $precision"
+    }
+
+    if {[info exists ::deken::platform(os)]} {
+        set versionstring "$versionstring ($::deken::platform(os)/$::deken::platform(machine)${precision})"
+    }
+
     set filename [file join $::sys_guidir about.txt]
     if {![file exists $filename]} {
         ::pdwindow::error [_ "ignoring '%s': doesn't exist" $filename]
