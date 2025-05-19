@@ -125,6 +125,16 @@ typedef struct _guiqueue
     struct _guiqueue *gq_next;
 } t_guiqueue;
 
+#if PDTHREADS
+typedef struct _messqueue
+{
+    t_pd *m_obj;
+    void *m_data;
+    t_messfn m_fn;
+    struct _messqueue *m_next;
+} t_messqueue;
+#endif
+
 struct _instanceinter
 {
     int i_nfdpoll;
@@ -150,6 +160,9 @@ struct _instanceinter
 #endif
 #if PDTHREADS
     pthread_mutex_t i_mutex;
+    pthread_mutex_t i_messqueue_mutex;
+    t_messqueue *i_messqueue_head;
+    t_messqueue *i_messqueue_tail;
 #endif
 
     unsigned char i_recvbuf[NET_MAXPACKETSIZE];
@@ -1904,6 +1917,7 @@ void s_inter_newpdinstance(void)
     INTER = getbytes(sizeof(*INTER));
 #if PDTHREADS
     pthread_mutex_init(&INTER->i_mutex, NULL);
+    pthread_mutex_init(&INTER->i_messqueue_mutex, NULL);
     pd_this->pd_islocked = 0;
 #endif
 #ifdef _WIN32
@@ -1926,6 +1940,16 @@ void s_inter_free(t_instanceinter *inter)
     }
 #if PDTHREADS
     pthread_mutex_destroy(&inter->i_mutex);
+        /* flush message queue */
+    while (inter->i_messqueue_head)
+    {
+        t_messqueue *m = inter->i_messqueue_head, *next = m->m_next;
+            /* m_fn is responsible for freeing m_data */
+        m->m_fn(NULL, m->m_data);
+        freebytes(m, sizeof(*m));
+        inter->i_messqueue_head = next;
+    }
+    pthread_mutex_destroy(&inter->i_messqueue_mutex);
 #endif
     freebytes(inter, sizeof(*inter));
 }
@@ -2016,6 +2040,55 @@ int sys_trylock(void)
 #endif
 }
 
+void pd_queue_mess(struct _pdinstance *instance, t_pd *obj, void *data, t_messfn fn)
+{
+    t_instanceinter *inter = instance->pd_inter;
+    t_messqueue *m = (t_messqueue *)getbytes(sizeof(*m));
+    m->m_obj = obj;
+    m->m_data = data;
+    m->m_fn = fn;
+    m->m_next = 0;
+    pthread_mutex_lock(&inter->i_messqueue_mutex);
+    if (inter->i_messqueue_tail) /* add to tail */
+        inter->i_messqueue_tail = (inter->i_messqueue_tail->m_next = m);
+    else /* empty queue */
+        inter->i_messqueue_head = inter->i_messqueue_tail = m;
+    pthread_mutex_unlock(&inter->i_messqueue_mutex);
+}
+
+void pd_queue_cancel(t_pd *obj)
+{
+    t_messqueue *m;
+    pthread_mutex_lock(&INTER->i_messqueue_mutex);
+    for (m = INTER->i_messqueue_head; m; m = m->m_next)
+    {
+        if (m->m_obj == obj)
+            m->m_obj = NULL; /* mark as canceled */
+    }
+    pthread_mutex_unlock(&INTER->i_messqueue_mutex);
+}
+
+void messqueue_dispatch(void)
+{
+    t_messqueue *m, *next;
+        /* first unlink all messages */
+    pthread_mutex_lock(&INTER->i_messqueue_mutex);
+    m = INTER->i_messqueue_head;
+    INTER->i_messqueue_head = INTER->i_messqueue_tail = NULL;
+    pthread_mutex_unlock(&INTER->i_messqueue_mutex);
+        /* then dispatch (without lock!) */
+    while (m)
+    {
+            /* NB: if the message has been canceled, m_obj is NULL;
+            we still need to call m_fn because it is responsible
+            for freeing the data! */
+        next = m->m_next;
+        m->m_fn(m->m_obj, m->m_data);
+        freebytes(m, sizeof(*m));
+        m = next;
+    }
+}
+
 #else /* PDTHREADS */
 
 #ifdef TEST_LOCKING /* run standalone Pd with this to find deadlocks */
@@ -2037,5 +2110,15 @@ void sys_unlock(void) {}
 #endif
 void pd_globallock(void) {}
 void pd_globalunlock(void) {}
+
+    /* doesn't really make sense without threads... */
+void pd_queue_mess(struct _pdinstance instance, t_pd *obj, void *data, t_messfn fn)
+{
+    fn(obj, data);
+}
+
+void pd_queue_cancel(t_pd *obj) {}
+
+void messqueue_dispatch(void) {}
 
 #endif /* PDTHREADS */
