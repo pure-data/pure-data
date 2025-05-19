@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -315,6 +315,10 @@ msgstr "Marjina:"
 
 msgid "Y range: from"
 msgstr "Y heina:"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Objektu"
 
 #, fuzzy
 msgid "Data Properties"
@@ -890,10 +894,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Bilatu"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -965,6 +982,19 @@ msgstr "TAR Fitxategiak"
 #, fuzzy
 msgid "All Files"
 msgstr "Fitxategi guztiak"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1156,11 +1186,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1199,6 +1229,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, tcl-format
@@ -1996,6 +2030,10 @@ msgstr "Leihoa"
 msgid "Previous Window"
 msgstr ""
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Lehioa honetan itxi?"
+
 msgid "Parent Window"
 msgstr ""
 
@@ -2092,6 +2130,10 @@ msgstr "Audioaren ezarpenak"
 
 msgid "Audio off"
 msgstr ""
+
+#, fuzzy
+msgid "Find source"
+msgstr "Azken Akatsa Bilatu"
 
 msgid "Pd"
 msgstr ""
@@ -2225,10 +2267,6 @@ msgstr ""
 
 #~ msgid "Signal"
 #~ msgstr "Seinalea"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "Lehioa honetan itxi?"
 
 #~ msgid "Output device 3:"
 #~ msgstr "Irtendako tresna 3:"

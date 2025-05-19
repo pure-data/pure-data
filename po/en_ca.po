@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-12-06 11:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/en_CA/>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -286,6 +286,10 @@ msgstr "Margin:"
 
 msgid "Y range: from"
 msgstr "Y range: from"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Object"
 
 msgid "Data Properties"
 msgstr "Data Properties"
@@ -828,11 +832,26 @@ msgstr "Unable to remove stray file '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Unable to rename downloaded file to '%s'"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Search Results"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "Added %s to search paths"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Create"
 
 msgid "Check"
 msgstr "Check"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Installation failed!"
 
 msgid "Installation options:"
 msgstr "Installation options:"
@@ -902,6 +921,19 @@ msgstr "TAR Files"
 
 msgid "All Files"
 msgstr "All Files"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1092,12 +1124,12 @@ msgstr "Cancelling download of '%s': No installation directory given."
 msgid "Installing to non-existent directory failed"
 msgstr "Installing to non-existent directory failed"
 
+msgid "Directory does not exist!"
+msgstr "Directory does not exist!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Unable to install to '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Directory does not exist!"
 
 msgid "Directory is not writable!"
 msgstr "Directory is not writable!"
@@ -1136,6 +1168,10 @@ msgstr "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platform detected: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1932,6 +1968,9 @@ msgstr "Next Window"
 msgid "Previous Window"
 msgstr "Previous Window"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "Parent Window"
 
@@ -2024,6 +2063,10 @@ msgstr "Audio on"
 
 msgid "Audio off"
 msgstr "Audio off"
+
+#, fuzzy
+msgid "Find source"
+msgstr "Find Last Error"
 
 msgid "Pd"
 msgstr "Pd"

@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-11-12 11:00+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -285,6 +285,10 @@ msgstr "גבול:"
 
 msgid "Y range: from"
 msgstr "טווח Y: התחלה"
+
+#, fuzzy
+msgid "Object:"
+msgstr "עצם"
 
 msgid "Data Properties"
 msgstr "מאפייני נתונים"
@@ -827,11 +831,26 @@ msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "תוצאות חיפוש"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "%s נוסף לנתיבי החיפוש"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "יצירה"
 
 msgid "Check"
 msgstr "בדיקה"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "ההתקנה נכשלה!"
 
 msgid "Installation options:"
 msgstr "אפשרויות התקנה:"
@@ -901,6 +920,19 @@ msgstr "קובצי Tar"
 
 msgid "All Files"
 msgstr "כל הקבצים"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1091,12 +1123,12 @@ msgstr "ההורדה של ‚%s’ מבוטלת: לא סופקה תיקיית ה
 msgid "Installing to non-existent directory failed"
 msgstr "התקנה לתיקייה שאינה קיימת נכשלה"
 
+msgid "Directory does not exist!"
+msgstr "התיקייה לא קיימת!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "לא ניתן להתקין אל ‚%s’"
-
-msgid "Directory does not exist!"
-msgstr "התיקייה לא קיימת!"
 
 msgid "Directory is not writable!"
 msgstr "התיקייה נעולה לכתיבה!"
@@ -1135,6 +1167,10 @@ msgstr "[deken] deken-plugin.tcl (חיפוש חיצוניות של Pd) נטען 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] התגלתה פלטפורמה: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1929,6 +1965,9 @@ msgstr "החלון הבא"
 msgid "Previous Window"
 msgstr "החלון הקודם"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "חלון ההורה"
 
@@ -2021,6 +2060,10 @@ msgstr "שמע פעיל"
 
 msgid "Audio off"
 msgstr "שמע כבוי"
+
+#, fuzzy
+msgid "Find source"
+msgstr "איתור השגיאה האחרונה"
 
 msgid "Pd"
 msgstr "Pd"

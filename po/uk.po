@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-07-08 17:41+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -292,6 +292,10 @@ msgstr "Відступ:"
 
 msgid "Y range: from"
 msgstr "Діапазон значень Y: від"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Об'єкт"
 
 #, fuzzy
 msgid "Data Properties"
@@ -866,11 +870,26 @@ msgstr "Неможливо видалити тимчасовий файл '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Неможливо перейменувати завантажений файл на '%s'"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Результати пошуку"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "Додано %s у шляху для пошуку"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Створити"
 
 msgid "Check"
 msgstr "Перевірити"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Встановлення завершилося невдачею!"
 
 msgid "Installation options:"
 msgstr "Опції встановлення:"
@@ -941,6 +960,19 @@ msgstr "Файли TAR"
 
 msgid "All Files"
 msgstr "Усі файли"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1137,12 +1169,12 @@ msgstr "Скасування установки '%s': Не вказано пап
 msgid "Installing to non-existent directory failed"
 msgstr "Встановлення в неіснуючу папку завершилося невдало"
 
+msgid "Directory does not exist!"
+msgstr "Папки немає!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Неможливо встановити '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Папки немає!"
 
 msgid "Directory is not writable!"
 msgstr "Папка недоступна для запису!"
@@ -1182,6 +1214,10 @@ msgstr "[deken] deken-plugin.tcl (Pd externals search) завантажений 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Виявлено платформу: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1983,6 +2019,9 @@ msgstr "Наступне вікно"
 msgid "Previous Window"
 msgstr "Попереднє вікно"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "Батьківське вікно"
 
@@ -2075,6 +2114,10 @@ msgstr "Аудіо включено"
 
 msgid "Audio off"
 msgstr "Аудіо вимкнено"
+
+#, fuzzy
+msgid "Find source"
+msgstr "Знайти останню помилку"
 
 msgid "Pd"
 msgstr "Pd"

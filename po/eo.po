@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-08-28 18:54+0200\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -285,6 +285,10 @@ msgstr "Marĝeno:"
 
 msgid "Y range: from"
 msgstr "Y-gamo: de"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Objekto"
 
 msgid "Data Properties"
 msgstr "Datenaj atributoj"
@@ -827,11 +831,25 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Serĉaj rezultoj"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Krei"
 
 msgid "Check"
 msgstr "Kontroli"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Malsukcesis instali!"
 
 msgid "Installation options:"
 msgstr "Opcioj pri instalado:"
@@ -899,6 +917,19 @@ msgstr "TAR-dosieroj"
 
 msgid "All Files"
 msgstr "Ĉiuj dosieroj"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1087,12 +1118,12 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
+msgid "Directory does not exist!"
+msgstr "Dosierujo ne ekzistas!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Ne povas instali al «%s»"
-
-msgid "Directory does not exist!"
-msgstr "Dosierujo ne ekzistas!"
 
 msgid "Directory is not writable!"
 msgstr "Ne eblas skribi en dosierujon!"
@@ -1130,6 +1161,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, tcl-format
@@ -1910,6 +1945,9 @@ msgstr "Sekva fenestro"
 msgid "Previous Window"
 msgstr "Malsekva fenestro"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "Patra fenestro"
 
@@ -1998,6 +2036,10 @@ msgstr ""
 
 msgid "Audio off"
 msgstr ""
+
+#, fuzzy
+msgid "Find source"
+msgstr "Trovi lastan eraron"
 
 msgid "Pd"
 msgstr "Pd"

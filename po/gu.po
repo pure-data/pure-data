@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data-0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2005-09-14 12:49+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -306,6 +306,9 @@ msgid "Margin:"
 msgstr "માર્કર લાઈન:"
 
 msgid "Y range: from"
+msgstr ""
+
+msgid "Object:"
 msgstr ""
 
 msgid "Data Properties"
@@ -886,10 +889,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "લખાણ શોધો..."
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -961,6 +977,19 @@ msgstr "TAR ફાઇલો"
 #, fuzzy
 msgid "All Files"
 msgstr "બધી ફાઈલ"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1152,11 +1181,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1195,6 +1224,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1997,6 +2030,10 @@ msgid "Previous Window"
 msgstr "મોકલો વિન્ડો"
 
 #, fuzzy
+msgid "Close subwindows"
+msgstr "આ ટેબ/વિન્ડો બંધ કરો"
+
+#, fuzzy
 msgid "Parent Window"
 msgstr "મોકલો વિન્ડો"
 
@@ -2092,6 +2129,9 @@ msgstr ""
 msgid "Audio off"
 msgstr ""
 
+msgid "Find source"
+msgstr ""
+
 msgid "Pd"
 msgstr ""
 
@@ -2168,10 +2208,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "for:"
 #~ msgstr "પોર્ટ:"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "આ ટેબ/વિન્ડો બંધ કરો"
 
 #, fuzzy
 #~ msgid "Filters"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2005-11-04 08:04+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -305,6 +305,9 @@ msgid "Margin:"
 msgstr "ਨਿਸ਼ਾਨ ਰੇਖਾ:"
 
 msgid "Y range: from"
+msgstr ""
+
+msgid "Object:"
 msgstr ""
 
 msgid "Data Properties"
@@ -885,10 +888,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "ਪਾਠ ਖੋਜ..."
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -960,6 +976,19 @@ msgstr "TAR ਫਾਈਲਾਂ"
 #, fuzzy
 msgid "All Files"
 msgstr "ਸਾਰੀਆਂ ਫਾਈਲਾਂ"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1151,11 +1180,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1194,6 +1223,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1995,6 +2028,10 @@ msgid "Previous Window"
 msgstr "ਭੇਜਣ ਝਰੋਖਾ"
 
 #, fuzzy
+msgid "Close subwindows"
+msgstr "ਝਰੋਖਾ ਬੰਦ(_C)"
+
+#, fuzzy
 msgid "Parent Window"
 msgstr "ਭੇਜਣ ਝਰੋਖਾ"
 
@@ -2091,6 +2128,9 @@ msgstr ""
 msgid "Audio off"
 msgstr ""
 
+msgid "Find source"
+msgstr ""
+
 msgid "Pd"
 msgstr ""
 
@@ -2167,10 +2207,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "for:"
 #~ msgstr "ਪੋਰਟ:"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "ਝਰੋਖਾ ਬੰਦ(_C)"
 
 #, fuzzy
 #~ msgid "Filters"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -298,6 +298,9 @@ msgstr "Περιθώριο:"
 #, fuzzy
 msgid "Y range: from"
 msgstr "περιοχή Y, από"
+
+msgid "Object:"
+msgstr ""
 
 #, fuzzy
 msgid "Data Properties"
@@ -869,10 +872,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Αναζήτηση σε"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -944,6 +960,19 @@ msgstr "Αρχεία TAR"
 #, fuzzy
 msgid "All Files"
 msgstr "Ολα τα αρχεία"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1135,11 +1164,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1179,6 +1208,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1966,6 +1999,10 @@ msgstr "Γονεϊκό Παράθυρο"
 msgid "Previous Window"
 msgstr "Γονεϊκό Παράθυρο"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Κλείσιμο αυτού του παραθύρου;;"
+
 msgid "Parent Window"
 msgstr "Γονεϊκό Παράθυρο"
 
@@ -2061,6 +2098,10 @@ msgstr "Ρυθμίσεις Ήχου"
 
 msgid "Audio off"
 msgstr ""
+
+#, fuzzy
+msgid "Find source"
+msgstr "Εύρεση Τελευταίου Σφάλματος"
 
 msgid "Pd"
 msgstr ""
@@ -2199,9 +2240,6 @@ msgstr ""
 
 #~ msgid "Input device 3:"
 #~ msgstr "Συσκευή εισόδου 3:"
-
-#~ msgid "Close this window??"
-#~ msgstr "Κλείσιμο αυτού του παραθύρου;;"
 
 #~ msgid "Signal"
 #~ msgstr "Σήμα"

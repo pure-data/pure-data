@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-07-08 17:32+0200\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -291,6 +291,9 @@ msgstr "Margines:"
 
 msgid "Y range: from"
 msgstr "Y zakres: od"
+
+msgid "Object:"
+msgstr ""
 
 msgid "Data Properties"
 msgstr "Właściwości Danych"
@@ -838,10 +841,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Szukaj w %s dla:"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -909,6 +925,19 @@ msgid "TAR Files"
 msgstr ""
 
 msgid "All Files"
+msgstr ""
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
 msgstr ""
 
 #, tcl-format
@@ -1098,11 +1127,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1141,6 +1170,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, tcl-format
@@ -1923,6 +1956,9 @@ msgstr ""
 msgid "Previous Window"
 msgstr ""
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr ""
 
@@ -2010,6 +2046,9 @@ msgid "Audio on"
 msgstr ""
 
 msgid "Audio off"
+msgstr ""
+
+msgid "Find source"
 msgstr ""
 
 msgid "Pd"
