@@ -1,168 +1,21 @@
-#N canvas 304 34 927 598 12;
-#X obj 35 122 osc~;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-graph 1000 float 1;
-#A 0 -0.239854 -0.245719 -0.251574 -0.25742 -0.263255 -0.269079 -0.274893
--0.280696 -0.286488 -0.292268 -0.298037 -0.303793 -0.309538 -0.315271
--0.320991 -0.326698 -0.332393 -0.338074 -0.343743 -0.349397 -0.355039
--0.360666 -0.366279 -0.371878 -0.377463 -0.383033 -0.388588 -0.394128
--0.399653 -0.405162 -0.410656 -0.416135 -0.421597 -0.427043 -0.432473
--0.437887 -0.443284 -0.448664 -0.454028 -0.459374 -0.464539 -0.469444
--0.474091 -0.478482 -0.482619 -0.486504 -0.49014 -0.493527 -0.496669
--0.499566 -0.502222 -0.504637 -0.506815 -0.508757 -0.510465 -0.511941
--0.513187 -0.514205 -0.514997 -0.515566 -0.515913 -0.51604 -0.515949
--0.515643 -0.515123 -0.514391 -0.51345 -0.512302 -0.510949 -0.509392
--0.507635 -0.505678 -0.503525 -0.501178 -0.498637 -0.495907 -0.492988
--0.489883 -0.486594 -0.483123 -0.479474 -0.475646 -0.471644 -0.467469
--0.463124 -0.45861 -0.45393 -0.449086 -0.444081 -0.438916 -0.433594
--0.428118 -0.422489 -0.41671 -0.410784 -0.404712 -0.398497 -0.392141
--0.385647 -0.379017 -0.372253 -0.365358 -0.358334 -0.351183 -0.343909
--0.33661 -0.329311 -0.322012 -0.314713 -0.307414 -0.300115 -0.292816
--0.285517 -0.278218 -0.27092 -0.263621 -0.256322 -0.249023 -0.241724
--0.234425 -0.227126 -0.219827 -0.212528 -0.205229 -0.19793 -0.190631
--0.183332 -0.176033 -0.168734 -0.161435 -0.154136 -0.146837 -0.139538
--0.132239 -0.12494 -0.117641 -0.110342 -0.103043 -0.0957445 -0.0884455
--0.0811465 -0.0738476 -0.0665486 -0.0592497 -0.0519507 -0.0446517 -0.0373528
--0.0300538 -0.0227548 -0.0154559 -0.00815693 -0.000857967 0.00644099
-0.01374 0.0210389 0.0283379 0.0356368 0.0429358 0.0502348 0.0575337
-0.0648327 0.0721316 0.0794306 0.0867296 0.0940285 0.101327 0.108626
-0.115925 0.123224 0.130523 0.137822 0.145121 0.15242 0.159719 0.167018
-0.174317 0.181616 0.188915 0.196214 0.203513 0.210812 0.218111 0.22541
-0.232709 0.240008 0.247307 0.254606 0.261905 0.269204 0.276502 0.283801
-0.2911 0.298399 0.305698 0.312997 0.320296 0.327595 0.334894 0.342193
-0.349492 0.356791 0.36409 0.371389 0.378688 0.385987 0.393286 0.400585
-0.407884 0.415182 0.422481 0.42978 0.437079 0.444378 0.451677 0.458976
-0.466275 0.473574 0.480873 0.488172 0.495471 0.50277 0.510069 0.517368
-0.524667 0.531966 0.539265 0.546564 0.553862 0.561161 0.568403 0.575451
-0.582305 0.588966 0.595432 0.601705 0.607784 0.61367 0.619362 0.624862
-0.630168 0.63528 0.6402 0.644928 0.649463 0.653806 0.657957 0.661916
-0.665684 0.669261 0.672647 0.675842 0.678848 0.681663 0.68429 0.686727
-0.688976 0.691037 0.692911 0.694597 0.696097 0.697411 0.69854 0.699484
-0.700244 0.70082 0.701213 0.701425 0.701454 0.701303 0.700972 0.700462
-0.699774 0.698908 0.697865 0.696646 0.695252 0.693685 0.691944 0.690031
-0.687946 0.685692 0.683268 0.680677 0.677918 0.674994 0.671904 0.668651
-0.665236 0.661659 0.657922 0.654027 0.649974 0.645764 0.6414 0.636882
-0.632212 0.627391 0.622421 0.617302 0.612037 0.606692 0.601337 0.595972
-0.590598 0.585214 0.579821 0.574417 0.569004 0.56358 0.558147 0.552703
-0.54725 0.541787 0.536313 0.53083 0.525336 0.519832 0.514318 0.508794
-0.50326 0.497716 0.492162 0.486597 0.481022 0.475438 0.469843 0.464238
-0.458623 0.452999 0.447364 0.441719 0.436065 0.4304 0.424726 0.419042
-0.413348 0.407645 0.401932 0.39621 0.390478 0.384737 0.378986 0.373226
-0.367457 0.361679 0.355891 0.350095 0.34429 0.338476 0.332654 0.326823
-0.320983 0.315136 0.30928 0.303415 0.297543 0.291663 0.285775 0.279879
-0.273976 0.268065 0.262147 0.256222 0.25029 0.244351 0.238405 0.232453
-0.226494 0.220528 0.214557 0.208579 0.202596 0.196607 0.190612 0.184612
-0.178607 0.172597 0.166582 0.160562 0.154537 0.148508 0.142475 0.136438
-0.130397 0.124353 0.118305 0.112253 0.106199 0.100141 0.0940813 0.0880188
-0.0819539 0.0758868 0.0698179 0.0637472 0.057675 0.0516014 0.0455267
-0.0394512 0.0333749 0.0272982 0.0212211 0.015144 0.00906699 0.00299037
--0.00308567 -0.00916093 -0.0152352 -0.0213082 -0.0273798 -0.0334498
--0.0395178 -0.0455838 -0.0516474 -0.0577085 -0.0637668 -0.0698221 -0.0758742
--0.0819228 -0.0879677 -0.0940088 -0.100046 -0.106078 -0.112106 -0.118129
--0.124148 -0.130161 -0.136168 -0.14217 -0.148165 -0.154155 -0.160138
--0.166114 -0.172084 -0.178047 -0.184002 -0.18995 -0.19589 -0.201822
--0.207745 -0.213661 -0.219567 -0.225465 -0.231353 -0.237233 -0.243102
--0.248962 -0.254812 -0.260652 -0.266481 -0.2723 -0.278108 -0.283904
--0.28969 -0.295463 -0.301226 -0.306976 -0.312714 -0.318439 -0.324153
--0.329853 -0.33554 -0.341214 -0.346875 -0.352523 -0.358156 -0.363776
--0.369381 -0.374972 -0.380548 -0.38611 -0.391657 -0.397189 -0.402705
--0.408206 -0.413691 -0.419161 -0.424614 -0.430052 -0.435472 -0.440877
--0.446265 -0.451636 -0.45699 -0.46227 -0.467291 -0.472052 -0.476557
--0.480807 -0.484804 -0.48855 -0.492048 -0.495298 -0.498304 -0.501067
--0.503589 -0.505873 -0.507919 -0.509731 -0.51131 -0.512658 -0.513777
--0.514669 -0.515337 -0.515782 -0.516007 -0.516013 -0.515802 -0.515377
--0.514739 -0.513891 -0.512835 -0.511573 -0.510106 -0.508438 -0.50657
--0.504504 -0.502242 -0.499787 -0.497141 -0.494305 -0.491283 -0.488076
--0.484686 -0.481116 -0.477367 -0.473442 -0.469344 -0.465074 -0.460635
--0.456028 -0.451257 -0.446323 -0.441229 -0.435977 -0.430569 -0.425008
--0.419295 -0.413434 -0.407427 -0.401275 -0.394981 -0.388549 -0.381979
--0.375274 -0.368437 -0.36147 -0.354375 -0.347156 -0.339857 -0.332558
--0.325259 -0.31796 -0.310661 -0.303362 -0.296063 -0.288764 -0.281465
--0.274166 -0.266867 -0.259568 -0.25227 -0.244971 -0.237672 -0.230373
--0.223074 -0.215775 -0.208476 -0.201177 -0.193878 -0.186579 -0.17928
--0.171981 -0.164682 -0.157383 -0.150084 -0.142785 -0.135486 -0.128187
--0.120888 -0.113589 -0.10629 -0.0989913 -0.0916924 -0.0843934 -0.0770945
--0.0697955 -0.0624965 -0.0551976 -0.0478986 -0.0405997 -0.0333007 -0.0260017
--0.0187028 -0.0114038 -0.00410485 0.00319411 0.0104931 0.017792 0.025091
-0.03239 0.0396889 0.0469879 0.0542868 0.0615858 0.0688848 0.0761837
-0.0834827 0.0907816 0.0980806 0.10538 0.112679 0.119977 0.127276 0.134575
-0.141874 0.149173 0.156472 0.163771 0.17107 0.178369 0.185668 0.192967
-0.200266 0.207565 0.214864 0.222163 0.229462 0.236761 0.24406 0.251359
-0.258658 0.265957 0.273256 0.280555 0.287854 0.295152 0.302451 0.30975
-0.317049 0.324348 0.331647 0.338946 0.346245 0.353544 0.360843 0.368142
-0.375441 0.38274 0.390039 0.397338 0.404637 0.411936 0.419235 0.426533
-0.433832 0.441131 0.44843 0.455729 0.463028 0.470327 0.477626 0.484925
-0.492224 0.499523 0.506822 0.514121 0.52142 0.528719 0.536018 0.543317
-0.550616 0.557915 0.565214 0.572347 0.579287 0.586034 0.592586 0.598945
-0.605111 0.611082 0.61686 0.622445 0.627837 0.633035 0.638041 0.642854
-0.647475 0.651903 0.656139 0.660184 0.664036 0.667698 0.671169 0.674449
-0.677538 0.680438 0.683149 0.68567 0.688003 0.690147 0.692104 0.693873
-0.695456 0.696853 0.698064 0.69909 0.699931 0.700589 0.701063 0.701356
-0.701466 0.701395 0.701144 0.700714 0.700104 0.699317 0.698352 0.697212
-0.695896 0.694405 0.692741 0.690904 0.688896 0.686717 0.684368 0.681851
-0.679167 0.676316 0.673299 0.670119 0.666776 0.66327 0.659605 0.655779
-0.651796 0.647656 0.643361 0.638911 0.634308 0.629554 0.62465 0.619597
-0.614397 0.609056 0.603705 0.598345 0.592975 0.587595 0.582206 0.576807
-0.571398 0.565979 0.56055 0.555111 0.549662 0.544203 0.538734 0.533255
-0.527766 0.522267 0.516757 0.511238 0.505708 0.500169 0.494619 0.489059
-0.483489 0.477908 0.472318 0.466718 0.461108 0.455487 0.449857 0.444217
-0.438567 0.432907 0.427237 0.421557 0.415868 0.410169 0.40446 0.398742
-0.393014 0.387277 0.38153 0.375775 0.37001 0.364235 0.358452 0.35266
-0.346859 0.341049 0.33523 0.329403 0.323568 0.317723 0.311871 0.30601
-0.300142 0.294265 0.288381 0.282488 0.276588 0.270681 0.264766 0.258844
-0.252915 0.246979 0.241036 0.235087 0.229131 0.223168 0.2172 0.211225
-0.205244 0.199257 0.193265 0.187268 0.181265 0.175257 0.169244 0.163226
-0.157203 0.151176 0.145145 0.13911 0.133071 0.127028 0.120981 0.114931
-0.108878 0.102822 0.0967633 0.0907019 0.084638 0.0785719 0.0725038
-0.0664338 0.0603623 0.0542893 0.0482151 0.04214 0.036064 0.0299874
-0.0239105 0.0178334 0.0117564 0.00567956 -0.000396765 -0.0064724 -0.0125471
--0.0186207 -0.024693 -0.0307636 -0.0368325 -0.0428995 -0.0489641 -0.0550263
--0.0610859 -0.0671425 -0.073196 -0.0792462 -0.0852928 -0.0913357 -0.0973744
--0.103409 -0.109439 -0.115464 -0.121485 -0.1275 -0.13351 -0.139514
--0.145512 -0.151505 -0.157491 -0.16347 -0.169443 -0.175409 -0.181367
--0.187318 -0.193262 -0.199197 -0.205125 -0.211044 -0.216954 -0.222856
--0.228748 -0.234632 -0.240506 -0.24637 -0.252224 -0.258069 -0.263903
--0.269726 -0.275539 -0.28134 -0.287131 -0.29291 -0.298677 -0.304432
--0.310176 -0.315907 -0.321626 -0.327332 -0.333025 -0.338705 -0.344372
--0.350025 -0.355665 -0.36129 -0.366902 -0.372499 -0.378082 -0.383651
--0.389204 -0.394742 -0.400266 -0.405774 -0.411266 -0.416742 -0.422203
--0.427647 -0.433076 -0.438487 -0.443883 -0.449261 -0.454623 -0.459967
--0.465103 -0.469979 -0.474597 -0.47896 -0.483069 -0.486926 -0.490534
--0.493894 -0.497008 -0.499878 -0.502507 -0.504896 -0.507048 -0.508963
--0.510645 -0.512095 -0.513316 -0.514309 -0.515076 -0.51562 -0.515942
--0.516045 -0.51593 -0.515599 -0.515056 -0.514301 -0.513337 -0.512166
--0.51079 -0.509211 -0.507431 -0.505453 -0.503278 -0.500908 -0.498347
--0.495595 -0.492655 -0.48953 -0.486221 -0.48273 -0.47906 -0.475214
--0.471192 -0.466998 -0.462634 -0.458101 -0.453403 -0.448541 -0.443518
--0.438335 -0.432996 -0.427503 -0.421857 -0.416062 -0.410119 -0.404031
--0.3978 -0.391429 -0.384919 -0.378274 -0.371496 -0.364586 -0.357548
--0.350384 -0.343095 -0.335797 -0.328498 -0.321199 -0.3139 -0.306601
--0.299302;
-#X coords 0 1 999 -1 500 140 1 0 0;
-#X restore 404 384 graph;
+#N canvas 330 49 927 598 12;
 #X floatatom 35 96 5 0 0 0 - - - 0;
-#X obj 81 478 tabwrite~ \$0-graph;
-#X obj 107 447 metro 500;
-#X obj 107 401 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X floatatom 116 159 5 0 10000 0 - - - 0;
-#X floatatom 152 186 5 0 10000 0 - - - 0;
-#X floatatom 224 269 5 0 0 0 - - - 0;
-#X msg 83 133 set 0;
-#X obj 224 292 / 100;
-#X obj 152 209 / 100;
-#X obj 81 363 slop~ 1000 1e+09 0 1e+09 0;
-#X text 158 159 cutoff frequency in linear region;
-#X floatatom 188 236 5 0 10000 0 - - - 0;
-#X text 198 186 maximum downward slew of linear region;
-#X text 231 226 asymptotic downward cutoff frequency (for downward
-slews greater than maximum), f 41;
-#X text 273 267 maximum upward slew of linear region;
-#X text 305 316 asymptotic upward cutoff frequency (for upward slews
-greater than maximum), f 41;
-#X floatatom 260 323 5 0 10000 0 - - - 0;
+#X obj 81 486 tabwrite~ \$0-graph;
+#X obj 107 455 metro 500;
+#X obj 107 414 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X floatatom 116 179 5 0 10000 0 - - - 0;
+#X floatatom 152 206 5 0 10000 0 - - - 0;
+#X floatatom 224 289 5 0 10000 0 - - - 0;
+#X msg 83 153 set 0;
+#X obj 224 312 / 100;
+#X obj 152 229 / 100;
+#X text 158 179 cutoff frequency in linear region;
+#X floatatom 188 256 5 0 10000 0 - - - 0;
+#X text 231 246 asymptotic downward cutoff frequency (for downward slews greater than maximum), f 41;
+#X text 305 332 asymptotic upward cutoff frequency (for upward slews greater than maximum), f 40;
+#X floatatom 260 343 5 0 10000 0 - - - 0;
 #X text 76 96 frequency of test oscillator;
-#N canvas 756 141 1015 691 compander-limiter 0;
+#N canvas 477 38 964 672 compander-limiter 0;
 #N canvas 622 189 476 482 generate-test 0;
 #X obj 77 159 osc~ 440;
 #X obj 197 162 line~;
@@ -185,93 +38,69 @@ greater than maximum), f 41;
 #X connect 8 0 3 0;
 #X connect 8 0 2 0;
 #X restore 221 64 pd generate-test;
-#X obj 88 101 tgl 16 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
+#X obj 88 99 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 88 126 metro 500;
 #X obj 88 156 s \$0-testpulse;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-test-in 20000 float 0;
-#X coords 0 1 19999 -1 500 140 1 0 0;
-#X restore 33 260 graph;
 #N canvas 323 324 347 253 resize 0;
 #X obj 83 52 inlet;
 #X msg 83 79 resize \$1;
-#X obj 96 109 s \$0-test-in;
-#X obj 89 141 s \$0-slop-out;
+#X obj 105 109 s \$0-test-in;
+#X obj 98 141 s \$0-slop-out;
 #X obj 83 168 s \$0-compander-out;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 0 3 0;
 #X connect 1 0 4 0;
-#X restore 647 640 pd resize;
-#X msg 663 609 20000;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-slop-out 20000 float 0;
-#X coords 0 1 19999 0 500 70 1 0 0;
-#X restore 33 430 graph;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-compander-out 20000 float 0;
-#X coords 0 1 19999 -1 500 140 1 0 0;
-#X restore 33 531 graph;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-dynamic-curve 102 float 1;
-#A 0 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
-47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69
-70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92
-93 94 95 96 97 98 99 100 100;
-#X coords 0 100 101 0 202 200 1 0 0;
-#X restore 702 100 graph;
-#N canvas 969 23 760 864 parameters 0;
-#X obj 307 29 inlet;
-#X obj 50 84 r \$0-limit;
-#X obj 58 107 r \$0-knee;
-#X obj 66 130 r \$0-boost;
-#X obj 82 174 r \$0-thresh;
-#X obj 75 152 r \$0-ratio;
-#X obj 50 210 b;
-#X obj 50 235 del 0;
-#X obj 50 260 t b b;
-#X obj 50 310 until;
-#X obj 108 337 + 1;
-#X msg 99 307 0;
-#X obj 117 807 tabwrite \$0-dynamic-curve, f 52;
-#X obj 498 565 moses;
-#X obj 569 515 r \$0-thresh;
-#X obj 631 552 r \$0-ratio;
-#X obj 631 579 f;
-#X obj 631 604 / 100;
-#X obj 117 753 +;
-#X msg 530 591 0;
-#X obj 508 658 expr ($f1-$f2)*$f3;
-#X obj 117 778 max 0;
-#X obj 631 629 - 1;
-#X obj 50 430 +;
-#X obj 68 403 r \$0-boost;
-#X obj 138 432 r \$0-limit;
-#X obj 120 465 f;
-#X obj 138 490 -;
-#X obj 50 465 t f b;
-#X obj 292 419 r \$0-knee;
-#X obj 203 558 +;
-#X obj 82 532 -;
-#X obj 50 559 moses;
-#X obj 117 589 moses;
-#X obj 144 653 b;
-#X obj 380 586 r \$0-limit;
-#X obj 164 686 f;
-#X obj 117 621 expr $f4 - ($f2-$f1)*($f2-$f1)/(4*$f3);
-#X obj 72 600 +;
-#X msg 50 285 102;
-#X obj 292 444 f;
-#X obj 292 469 / 2;
-#X obj 156 465 r \$0-boost;
-#X obj 107 557 r \$0-boost;
-#X obj 50 368 trigger float float, f 61;
-#X obj 182 652 r \$0-limit;
-#X obj 50 335 float;
-#X obj 307 94 unpack f f f f f f;
-#N canvas 416 159 334 253 set-speed 0;
+#X restore 607 610 pd resize;
+#X msg 624 579 20000;
+#N canvas 455 38 698 690 parameters 0;
+#X obj 191 14 inlet;
+#X obj 29 32 r \$0-limit;
+#X obj 37 55 r \$0-knee;
+#X obj 45 78 r \$0-boost;
+#X obj 61 122 r \$0-thresh;
+#X obj 54 100 r \$0-ratio;
+#X obj 29 158 t b b;
+#X obj 29 208 until;
+#X obj 87 235 + 1;
+#X msg 78 205 0;
+#X obj 96 649 tabwrite \$0-dynamic-curve, f 52;
+#X obj 472 427 moses;
+#X obj 543 377 r \$0-thresh;
+#X obj 605 414 r \$0-ratio;
+#X obj 605 441 f;
+#X obj 605 466 / 100;
+#X obj 96 595 +;
+#X msg 504 453 0;
+#X obj 482 520 expr ($f1-$f2)*$f3;
+#X obj 96 620 max 0;
+#X obj 605 491 - 1;
+#X obj 29 318 +;
+#X obj 47 294 r \$0-boost;
+#X obj 137 294 r \$0-limit;
+#X obj 119 327 f;
+#X obj 137 352 -;
+#X obj 29 344 t f b;
+#X obj 271 294 r \$0-knee;
+#X obj 182 420 +;
+#X obj 61 394 -;
+#X obj 29 421 moses;
+#X obj 96 451 moses;
+#X obj 123 515 b;
+#X obj 359 448 r \$0-limit;
+#X obj 143 548 f;
+#X obj 96 483 expr $f4 - ($f2-$f1)*($f2-$f1)/(4*$f3);
+#X obj 51 462 +;
+#X msg 29 183 102;
+#X obj 271 320 f;
+#X obj 271 345 / 2;
+#X obj 155 327 r \$0-boost;
+#X obj 86 419 r \$0-boost;
+#X obj 29 266 trigger float float, f 61;
+#X obj 161 514 r \$0-limit;
+#X obj 29 233 float;
+#X obj 191 49 unpack f f f f f f;
+#N canvas 92 344 334 253 set-speed 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
 #X obj 115 111 s \$0-speed-set;
@@ -279,7 +108,7 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 430 121 pd set-speed;
+#X restore 314 76 pd set-speed;
 #N canvas 416 159 334 253 set-thresh 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
@@ -288,7 +117,7 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 405 148 pd set-thresh;
+#X restore 289 103 pd set-thresh;
 #N canvas 416 159 334 253 set-ratio 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
@@ -297,7 +126,7 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 380 174 pd set-ratio;
+#X restore 264 129 pd set-ratio;
 #N canvas 416 159 334 253 set-boost 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
@@ -306,7 +135,7 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 356 201 pd set-boost;
+#X restore 240 156 pd set-boost;
 #N canvas 416 159 334 253 set-knee 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
@@ -315,7 +144,7 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 331 225 pd set-knee;
+#X restore 215 180 pd set-knee;
 #N canvas 416 159 334 253 set-limit 0;
 #X msg 115 81 set \$1;
 #X obj 95 43 inlet;
@@ -324,85 +153,81 @@ greater than maximum), f 41;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 3 0;
-#X restore 307 249 pd set-limit;
-#X connect 0 0 47 0;
+#X restore 191 204 pd set-limit;
+#X connect 0 0 45 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;
 #X connect 3 0 6 0;
 #X connect 4 0 6 0;
 #X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 8 0 39 0;
-#X connect 8 1 11 0;
-#X connect 9 0 46 0;
-#X connect 10 0 46 1;
-#X connect 11 0 46 1;
-#X connect 13 0 20 0;
-#X connect 13 1 19 0;
-#X connect 14 0 13 1;
-#X connect 14 0 20 1;
-#X connect 15 0 16 0;
-#X connect 16 0 17 0;
-#X connect 17 0 22 0;
-#X connect 18 0 21 0;
-#X connect 19 0 18 1;
-#X connect 20 0 18 1;
-#X connect 21 0 12 0;
-#X connect 22 0 20 2;
-#X connect 23 0 28 0;
-#X connect 24 0 23 1;
-#X connect 25 0 26 1;
-#X connect 26 0 27 0;
-#X connect 27 0 30 0;
-#X connect 27 0 31 0;
-#X connect 28 0 32 0;
-#X connect 28 1 26 0;
-#X connect 29 0 40 0;
-#X connect 30 0 33 1;
-#X connect 30 0 37 1;
-#X connect 31 0 32 1;
-#X connect 32 0 38 0;
-#X connect 32 1 33 0;
-#X connect 33 0 37 0;
-#X connect 33 1 34 0;
-#X connect 34 0 36 0;
-#X connect 35 0 37 3;
-#X connect 36 0 18 0;
-#X connect 37 0 18 0;
-#X connect 38 0 18 0;
-#X connect 39 0 9 0;
-#X connect 40 0 41 0;
-#X connect 41 0 31 1;
-#X connect 41 0 30 1;
-#X connect 41 0 37 2;
-#X connect 42 0 27 1;
-#X connect 43 0 38 1;
-#X connect 44 0 23 0;
-#X connect 44 1 12 1;
-#X connect 44 1 13 0;
-#X connect 45 0 36 1;
-#X connect 46 0 10 0;
-#X connect 46 0 44 0;
-#X connect 47 0 53 0;
-#X connect 47 1 52 0;
-#X connect 47 2 51 0;
-#X connect 47 3 50 0;
-#X connect 47 4 49 0;
-#X connect 47 5 48 0;
-#X restore 749 530 pd parameters;
-#X floatatom 658 370 3 0 100 0 limit \$0-limit-set \$0-limit 0;
-#X floatatom 658 391 3 0 20 0 knee \$0-knee-set \$0-knee 0;
-#X floatatom 658 412 3 0 50 0 boost \$0-boost-set \$0-boost 0;
-#X floatatom 658 433 3 0 200 0 ratio \$0-ratio-set \$0-ratio 0;
-#X floatatom 658 455 3 0 100 0 thresh \$0-thresh-set \$0-thresh 0;
-#X floatatom 658 476 3 0 200 0 speed \$0-speed-set \$0-speed 0;
-#N canvas 298 363 615 643 run-compander 0;
+#X connect 6 0 37 0;
+#X connect 6 1 9 0;
+#X connect 7 0 44 0;
+#X connect 8 0 44 1;
+#X connect 9 0 44 1;
+#X connect 11 0 18 0;
+#X connect 11 1 17 0;
+#X connect 12 0 11 1;
+#X connect 12 0 18 1;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 20 0;
+#X connect 16 0 19 0;
+#X connect 17 0 16 1;
+#X connect 18 0 16 1;
+#X connect 19 0 10 0;
+#X connect 20 0 18 2;
+#X connect 21 0 26 0;
+#X connect 22 0 21 1;
+#X connect 23 0 24 1;
+#X connect 24 0 25 0;
+#X connect 25 0 28 0;
+#X connect 25 0 29 0;
+#X connect 26 0 30 0;
+#X connect 26 1 24 0;
+#X connect 27 0 38 0;
+#X connect 28 0 31 1;
+#X connect 28 0 35 1;
+#X connect 29 0 30 1;
+#X connect 30 0 36 0;
+#X connect 30 1 31 0;
+#X connect 31 0 35 0;
+#X connect 31 1 32 0;
+#X connect 32 0 34 0;
+#X connect 33 0 35 3;
+#X connect 34 0 16 0;
+#X connect 35 0 16 0;
+#X connect 36 0 16 0;
+#X connect 37 0 7 0;
+#X connect 38 0 39 0;
+#X connect 39 0 29 1;
+#X connect 39 0 28 1;
+#X connect 39 0 35 2;
+#X connect 40 0 25 1;
+#X connect 41 0 36 1;
+#X connect 42 0 21 0;
+#X connect 42 1 10 1;
+#X connect 42 1 11 0;
+#X connect 43 0 34 1;
+#X connect 44 0 8 0;
+#X connect 44 0 42 0;
+#X connect 45 0 51 0;
+#X connect 45 1 50 0;
+#X connect 45 2 49 0;
+#X connect 45 3 48 0;
+#X connect 45 4 47 0;
+#X connect 45 5 46 0;
+#X restore 719 530 pd parameters;
+#X floatatom 618 340 4 0 100 0 limit \$0-limit-set \$0-limit 0;
+#X floatatom 618 361 4 0 20 0 knee \$0-knee-set \$0-knee 0;
+#X floatatom 618 382 4 0 50 0 boost \$0-boost-set \$0-boost 0;
+#X floatatom 618 403 4 0 200 0 ratio \$0-ratio-set \$0-ratio 0;
+#X floatatom 618 425 4 0 100 0 thresh \$0-thresh-set \$0-thresh 0;
+#X floatatom 618 446 4 0 200 0 speed \$0-speed-set \$0-speed 0;
+#N canvas 403 113 573 630 run-compander 0;
 #X obj 47 20 inlet~;
 #X obj 83 174 slop~ 0 0 0 0 1e+09;
-#X obj 161 82 r \$0-speed;
-#X obj 161 107 f;
-#X obj 161 132 / 10;
+#X obj 161 112 r \$0-speed;
 #X obj 343 231 r \$0-testpulse;
 #X obj 357 289 tabwrite~ \$0-slop-out;
 #X obj 83 142 abs~;
@@ -414,45 +239,37 @@ greater than maximum), f 41;
 #X obj 47 428 *~;
 #X obj 47 563 outlet~;
 #X obj 343 517 tabwrite~ \$0-compander-out;
-#X text 241 168 same envelope follower as in the peak meter example
-, f 26;
-#X text 130 322 "correct" the level by applying a gain calculated from
-the difference between the measured and desired level, f 27;
-#X connect 0 0 7 0;
-#X connect 0 0 13 0;
-#X connect 1 0 6 0;
-#X connect 1 0 12 0;
-#X connect 2 0 3 0;
+#X text 231 167 same envelope follower as in the peak meter example, f 26;
+#X text 130 322 "correct" the level by applying a gain calculated from the difference between the measured and desired level, f 27;
+#X floatatom 161 138 5 0 0 0 - - - 0;
+#X text 203 139 hz;
+#X connect 0 0 5 0;
+#X connect 0 0 11 0;
+#X connect 1 0 4 0;
+#X connect 1 0 10 0;
+#X connect 2 0 16 0;
 #X connect 3 0 4 0;
-#X connect 4 0 1 3;
-#X connect 5 0 6 0;
-#X connect 5 0 15 0;
-#X connect 7 0 1 0;
+#X connect 3 0 13 0;
+#X connect 5 0 1 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
 #X connect 8 0 9 0;
-#X connect 9 0 10 0;
-#X connect 10 0 11 0;
-#X connect 11 0 13 1;
-#X connect 12 0 9 1;
-#X connect 12 0 8 0;
-#X connect 13 0 14 0;
-#X connect 13 0 15 0;
+#X connect 9 0 11 1;
+#X connect 10 0 7 1;
+#X connect 10 0 6 0;
+#X connect 11 0 12 0;
+#X connect 11 0 13 0;
+#X connect 16 0 1 3;
 #X restore 221 149 pd run-compander;
-#X msg 655 581 2000;
-#X msg 646 555 300;
-#X msg 760 424 100 0 0 200 100 100;
-#X msg 740 368 100 0 0 100 0 50;
-#X text 861 367 no change;
-#X text 871 397 limit;
-#X text 902 422 expand;
-#X text 902 452 compress;
-#X text 906 480 noise gate;
-#X msg 780 481 100 0 0 200 60 30;
-#X msg 770 452 100 0 0 50 100 100;
-#X text 36 22 Using slop~ to make a compressor/expander/limiter;
-#X msg 750 397 90 10 0 100 0 50;
+#X msg 616 551 2000;
+#X msg 607 525 300;
+#X text 827 367 no change;
+#X text 835 397 limit;
+#X text 868 422 expand;
+#X text 868 452 compress;
+#X text 872 480 noise gate;
 #N canvas 601 360 267 339 (subpatch) 0;
-#X obj 108 109 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc
-#000000 #000000 0 1;
+#X obj 108 109 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc #000000 #000000 0 1;
 #X obj 87 43 inlet~;
 #X obj 105 148 pow 4;
 #X obj 105 199 line~;
@@ -469,8 +286,7 @@ the difference between the measured and desired level, f 27;
 #X coords 0 -1 1 1 116 32 2 100 100;
 #X restore 245 100 pd;
 #N canvas 601 360 267 339 (subpatch) 0;
-#X obj 108 109 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc
-#000000 #000000 0 1;
+#X obj 108 109 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc #000000 #000000 0 1;
 #X obj 87 43 inlet~;
 #X obj 105 148 pow 4;
 #X obj 105 199 line~;
@@ -486,80 +302,151 @@ the difference between the measured and desired level, f 27;
 #X connect 5 0 6 1;
 #X coords 0 -1 1 1 116 32 2 100 100;
 #X restore 221 186 pd;
-#X text 428 44 See the HTML documentation (link on main page of this
-patch) for details.;
-#X obj 740 339 loadbang;
-#X connect 0 0 17 0;
-#X connect 0 0 31 0;
+#X text 440 47 See the HTML documentation (link on main page of this patch) for details.;
+#X obj 710 339 loadbang;
+#X text 36 22 Using [slop~] to make a compressor/expander/limiter;
+#X msg 458 152 \; pd dsp \$1;
+#X obj 458 117 set-dsp-tgl;
+#X text 489 121 DSP on/off;
+#X obj 34 241 cnv 19 498 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#X obj 34 411 cnv 19 498 68 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-test-in 20000 float 2;
+#X coords 0 1 20000 -1 500 140 1 0 0;
+#X restore 33 240 graph;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-slop-out 20000 float 2;
+#X coords 0 1 20000 0 500 70 1 0 0;
+#X restore 33 410 graph;
+#X obj 34 512 cnv 19 498 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-compander-out 20000 float 2;
+#X coords 0 1 20000 -1 500 140 1 0 0;
+#X restore 33 511 graph;
+#X obj 673 111 cnv 19 198 198 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-dynamic-curve 102 float 0;
+#X coords 0 100 101 0 200 200 1 0 0;
+#X restore 672 110 graph;
+#X msg 710 368 100 0 0 100 0 5;
+#X msg 720 397 90 10 0 100 0 5;
+#X msg 730 424 100 0 0 200 100 10;
+#X msg 740 452 100 0 0 50 100 10;
+#X msg 750 481 100 0 0 200 60 3;
+#X connect 0 0 13 0;
+#X connect 0 0 21 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 6 0 5 0;
-#X connect 17 0 32 0;
-#X connect 18 0 5 0;
-#X connect 19 0 5 0;
-#X connect 20 0 10 0;
-#X connect 21 0 10 0;
-#X connect 27 0 10 0;
-#X connect 28 0 10 0;
-#X connect 30 0 10 0;
-#X connect 34 0 21 0;
-#X restore 704 301 pd compander-limiter;
-#N canvas 559 148 852 482 slew-limiter 0;
-#X floatatom 106 123 5 0 1000 0 - - - 0;
-#X obj 106 147 t f b;
-#X obj 138 176 samplerate~;
-#X obj 106 176 /;
-#X obj 80 381 metro 500;
-#X obj 80 336 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X obj 54 412 tabwrite~ \$0-slew-graph;
+#X connect 5 0 4 0;
+#X connect 13 0 22 0;
+#X connect 14 0 4 0;
+#X connect 15 0 4 0;
+#X connect 24 0 37 0;
+#X connect 27 0 26 0;
+#X connect 37 0 6 0;
+#X connect 38 0 6 0;
+#X connect 39 0 6 0;
+#X connect 40 0 6 0;
+#X connect 41 0 6 0;
+#X restore 701 291 pd compander-limiter;
+#N canvas 522 50 880 817 slew-limiter 0;
+#X floatatom 134 76 6 0 1000 0 - - - 0;
+#X obj 134 100 t f b;
+#X obj 166 129 samplerate~;
+#X obj 134 129 /;
+#X obj 74 368 metro 500;
+#X obj 54 402 tabwrite~ \$0-slew-graph;
+#X floatatom 214 187 6 0 1000 0 - - - 0;
+#X obj 214 211 t f b;
+#X obj 246 239 samplerate~;
+#X obj 214 240 /;
+#X obj 54 191 osc~ 100;
+#X text 184 75 max downward slope;
+#X text 265 186 max upward slope;
+#X text 419 32 The slew limiter is a filter whose cutoff frequency is infinite (so that the output follows the input exactly) unless the input varies from the previous output by more than the highest slope we allow (the slew limit) times the sample period (i.e. \, the maximum variation allowed over the space of a sample). This limit is therefore in units of amplitude per sample. The number boxes specify amplitude change per second \, which we divide by the sample rate to convert to the units needed by [slop~]., f 61;
+#X obj 74 326 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 98 325 <- start metronome to graph output, f 18;
+#X text 83 17 Using [slop~] to make a slew limiter;
+#X msg 280 372 \; pd dsp \$1;
+#X obj 280 337 set-dsp-tgl;
+#X text 310 341 DSP on/off;
+#X obj 442 282 cnv 19 402 182 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-slew-graph 1000 float 0;
-#X coords 0 1 999 -1 500 140 1 0 0;
-#X restore 308 306 graph;
-#X text 55 39 Using slop~ to make a slew limiter;
-#X floatatom 158 211 5 0 1000 0 - - - 0;
-#X obj 158 235 t f b;
-#X obj 190 263 samplerate~;
-#X obj 158 264 /;
-#X obj 54 302 slop~ 1e+09 0 0 0 0;
-#X obj 54 81 osc~ 100;
-#X text 387 237 See the HTML documentation (link on main page of this
-patch) for details.;
-#X text 387 167 Here the maximum slope of the 100-Hz. sinusoid is 200pi
-\, about 628.3. Setting upward or downward slew limits below that will
-replace the waveform with straight line segments on the way up and/or
-down., f 60;
-#X text 154 122 max downward slope;
-#X text 206 210 max upward slope;
-#X text 387 34 The slew limiter is a filter whose cutoff frequency
-is infinite (so that the output follows the input exactly) unless the
-input varies from the previous output by more than the highest slope
-we allow (the slew limit) times the sample period (i.e. \, the maximum
-variation allowed over the space of a sample). This limit is therefore
-in units of amplitude per sample. The number boxes specify amplitude
-change per second \, which we divide by the sample rate to convert
-to the units needed by slop~., f 60;
-#X text 104 335 <= start metronome to graph output, f 18;
+#X coords 0 1 999 -1 402 182 1 0 0;
+#X restore 441 281 graph;
+#X obj 137 49 hsl 162 19 628.3 100 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 217 161 hsl 162 19 628.3 100 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X floatatom 134 160 9 0 0 0 - - - 0;
+#X obj 54 292 slop~ 1e+09 0.0142 0 0.0142 0;
+#X floatatom 214 265 9 0 0 0 - - - 0;
+#X text 419 174 Here the maximum slope of the 100 Hz sinusoid is 200pi \, about 628.3. Setting upward or downward slew limits below that will replace the waveform with straight line segments on the way up and/or down. See the HTML documentation (link on main page of this patch) for details., f 61;
+#X floatatom 212 506 5 10 125 0 - - - 0;
+#X floatatom 212 598 8 0 0 0 - - - 0;
+#X obj 125 595 sig~;
+#X obj 125 465 tgl 20 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000 0 1;
+#X floatatom 125 565 5 0 0 0 - - - 0;
+#X text 254 489 amplitude per second, f 10;
+#X obj 212 534 t f b;
+#X obj 244 563 samplerate~;
+#X obj 212 563 /;
+#X obj 142 659 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 142 686 metro 25;
+#X obj 125 716 snapshot~;
+#X obj 128 771 hsl 162 19 0 1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X msg 212 483 1;
+#X text 434 502 One way to look at it is that we define a maximum amplitude jump limit \, which slows the rising and falling of audio signals. On the example to the left we have immediate signal jumps that are slowed and smoothened by [slop~]., f 57;
+#X text 434 582 Now \, instead of a fixed period of time that the change is smoothened \, like what you get with [line~] and [vline~] \, you get a fixed ramp step (or 'limit') no matter what the target point is. This means it has a fixed speed \, whereas [line~] and [vline~] provide a fixed time., f 57;
+#X text 435 665 The input parameter is the step per sample. Hence \, the speed is then defined as "amplitude per second" when you divide it by the sample rate \, where a value of "1" means it takes one second to move from an amplitude value of 0 to 1 \, but it will take half a second to move from 0 to 0.5 \, test the values to the left., f 57;
+#X floatatom 125 743 8 0 0 0 - - - 0;
+#X text 166 659 <- convert to control data;
+#X msg 140 498 0.5;
+#X msg 149 527 0;
+#X obj 212 458 loadbang;
+#X text 278 590 amplitude per sample, f 11;
+#X obj 125 628 slop~ 1e+09, f 16;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
 #X connect 1 1 2 0;
 #X connect 2 0 3 1;
-#X connect 3 0 13 2;
-#X connect 4 0 6 0;
-#X connect 5 0 4 0;
-#X connect 9 0 10 0;
-#X connect 10 0 12 0;
-#X connect 10 1 11 0;
-#X connect 11 0 12 1;
-#X connect 12 0 13 4;
-#X connect 13 0 6 0;
-#X connect 14 0 13 0;
-#X restore 704 249 pd slew-limiter;
-#X text 701 564 updated for Pd version 0.50.;
-#N canvas 535 70 763 564 peak-meter 0;
+#X connect 3 0 24 0;
+#X connect 4 0 5 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 7 1 8 0;
+#X connect 8 0 9 1;
+#X connect 9 0 26 0;
+#X connect 10 0 25 0;
+#X connect 14 0 4 0;
+#X connect 18 0 17 0;
+#X connect 22 0 0 0;
+#X connect 23 0 6 0;
+#X connect 24 0 25 2;
+#X connect 25 0 5 0;
+#X connect 26 0 25 4;
+#X connect 28 0 34 0;
+#X connect 29 0 51 4;
+#X connect 29 0 51 2;
+#X connect 30 0 51 0;
+#X connect 31 0 32 0;
+#X connect 32 0 30 0;
+#X connect 34 0 36 0;
+#X connect 34 1 35 0;
+#X connect 35 0 36 1;
+#X connect 36 0 29 0;
+#X connect 37 0 38 0;
+#X connect 38 0 39 0;
+#X connect 39 0 45 0;
+#X connect 41 0 28 0;
+#X connect 45 0 40 0;
+#X connect 47 0 32 0;
+#X connect 48 0 32 0;
+#X connect 49 0 41 0;
+#X connect 51 0 39 0;
+#X restore 701 243 pd slew-limiter;
+#N canvas 590 165 749 548 peak-meter 0;
 #X floatatom 217 132 5 0 50 0 - \$0-decay-speed-init - 0;
-#N canvas 392 300 639 450 generate-test 0;
+#N canvas 422 246 639 450 generate-test 0;
 #X obj 45 196 osc~ 440;
 #X msg 98 166 -0.25;
 #X obj 165 239 *~;
@@ -607,129 +494,105 @@ to the units needed by slop~., f 60;
 #X connect 20 0 21 1;
 #X restore 47 101 pd generate-test;
 #X text 365 155 Envelope follower for use in peak metering;
-#X text 314 467 See the HTML documentation (link on main page of this
-patch) for more details., f 54;
-#X floatatom 101 63 5 1 100 2 pulse-length \$0-pulse-length-init -
-0;
+#X text 314 467 See the HTML documentation (link on main page of this patch) for more details., f 54;
+#X floatatom 101 63 5 1 100 2 pulse-length \$0-pulse-length-init - 0;
 #X obj 47 214 env~ 1024;
 #X obj 139 183 abs~;
 #X obj 139 248 snapshot~;
 #X obj 139 281 rmstodb;
 #X obj 127 347 vu 18 160 empty VU -20 20 0 12 #404040 #000000 1 0;
 #X obj 139 213 slop~ 0 0 0 0 1e+09;
-#X text 314 420 When the pulse is very short (1 msec \, for instance)
-the RMS meter acts badly but the slop~-driven one still shows the peak.
-, f 54;
 #X obj 47 248 t f b;
 #X obj 47 289 - 100;
 #X obj 139 306 - 100;
-#X obj 47 24 tgl 18 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000
-0 1;
-#X text 71 23 <= turn on test pulse;
+#X obj 47 24 tgl 19 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000 0 1;
 #X obj 217 156 expr 1000 / $f1;
 #X text 197 132 ms;
 #X text 215 109 decay speed;
-#X text 314 204 A slew limiter can be used as a fast-rising envelope
-follower \, useful for example in peak metering. In this example a
-short burst of sound is metered using both the "env~" follower (which
-measures an average over a time window) and a fast-rising envelope
-follower cosisting of an abs~ object (to rectify the signal) followed
-by a slop~ object set to rise quickly (1e9 asymptotic rise speed \,
-0 up-slew needed to engage it) and with controllable decay (asymptotic
-downward speed controlled by a number box). There is no linear region
-at all so the linear cutoff frequency has no effect., f 54;
 #X floatatom 217 182 5 0 0 0 - - - 0;
 #X text 197 183 hz;
-#X text 314 368 The output is sampled using a snapshot~ object. Both
-envelope followers are converted to dBFS for the IEM VU meter., f
-54;
-#X obj 159 73 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc
-#000000 #000000 0 1;
-#X text 35 421 see also =>;
-#X connect 0 0 17 0;
+#X obj 159 72 hsl 128 19 0 1 0 0 empty empty empty 32 9 0 12 #dcdcdc #000000 #000000 0 1;
+#X text 314 204 A slew limiter can be used as a fast-rising envelope follower \, useful for example in peak metering. In this example a short burst of sound is metered using both the [env~] follower (which measures an average over a time window) and a fast-rising envelope follower consisting of an [abs~] object (to rectify the signal) followed by a [slop~] object set to rise quickly (1e09 asymptotic rise speed \, 0 up-slew needed to engage it) and with controllable decay (asymptotic downward speed controlled by a number box). There is no linear region at all so the linear cutoff frequency has no effect., f 54;
+#X text 314 368 The output is sampled using a [snapshot~] object. Both envelope followers are converted to dBFS for the IEM VU meter., f 54;
+#X text 314 420 When the pulse is very short (1 msec \, for instance) the RMS meter acts badly but the [slop~]-driven one still shows the peak., f 54;
+#X text 198 73 Volume;
+#X text 71 23 <- turn on test pulse;
+#X text 35 421 see also ->;
+#X msg 385 81 \; pd dsp \$1;
+#X obj 385 46 set-dsp-tgl;
+#X text 416 50 DSP on/off;
+#X connect 0 0 15 0;
 #X connect 1 0 5 0;
 #X connect 1 0 6 0;
 #X connect 4 0 1 1;
-#X connect 5 0 12 0;
+#X connect 5 0 11 0;
 #X connect 6 0 10 0;
 #X connect 7 0 8 0;
-#X connect 8 0 14 0;
+#X connect 8 0 13 0;
 #X connect 10 0 7 0;
-#X connect 12 0 13 0;
-#X connect 12 1 7 0;
-#X connect 13 0 9 0;
-#X connect 14 0 9 1;
-#X connect 15 0 1 0;
-#X connect 17 0 21 0;
-#X connect 21 0 10 3;
-#X connect 24 0 1 2;
-#X restore 704 274 pd peak-meter;
-#X text 129 132 set state (previously stored output);
+#X connect 11 0 12 0;
+#X connect 11 1 7 0;
+#X connect 12 0 9 0;
+#X connect 13 0 9 1;
+#X connect 14 0 1 0;
+#X connect 15 0 18 0;
+#X connect 18 0 10 3;
+#X connect 20 0 1 2;
+#X connect 28 0 27 0;
+#X restore 701 267 pd peak-meter;
+#X text 129 152 set state (previously stored output);
 #N canvas 467 45 850 454 jitter-remover 0;
-#X floatatom 132 194 5 0 100 0 - - - 0;
+#X floatatom 132 204 7 0 100 0 - - - 0;
 #X obj 95 354 metro 500;
-#X obj 95 308 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-jitter-graph 1000 float 0;
-#X coords 0 1 999 -1 500 140 1 0 0;
-#X restore 305 262 graph;
+#X obj 95 308 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 69 70 osc~ 100;
 #X obj 69 385 tabwrite~ \$0-jitter-graph;
 #X obj 69 101 clip~ -0.3 0.3;
 #X obj 186 85 osc~ 1000;
-#X obj 186 110 *~ 0.03;
 #X obj 69 146 +~;
 #X obj 69 255 slop~ 0 0 1e+09 0 1e+09;
-#X obj 132 218 / 1000;
-#X text 179 193 jitter range \, 0 to 0.1;
 #X text 69 27 jitter remover;
-#X text 377 159 Set the jitter range to zero to see the original signal
-and raise it to see smoothing.;
-#X text 120 306 <= start metronome to graph output, f 18;
-#X text 378 68 If you have a noisy sensor \, one approach to smoothing
-it is to set slop~ up to only react to motion past a certain window.
-The linear frequency cutoff is set to zero so that the output only
-changes when the input strays by more than the maximum upward or downward
-slew.;
-#X connect 0 0 11 0;
-#X connect 1 0 5 0;
+#X text 417 150 Set the jitter range to zero to see the original signal and raise it to see smoothing., f 53;
+#X text 417 59 If you have a noisy sensor \, one approach to smoothing it is to set slop~ up to only react to motion past a certain window. The linear frequency cutoff is set to zero so that the output only changes when the input strays by more than the maximum upward or downward slew., f 53;
+#X text 120 308 <-- start metronome to graph output, f 19;
+#X msg 281 108 \; pd dsp \$1;
+#X obj 281 73 set-dsp-tgl;
+#X text 312 77 DSP on/off;
+#X obj 306 263 cnv 19 498 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-jitter-graph 1000 float 0;
+#X coords 0 1 999 -1 500 140 1 0 0;
+#X restore 305 262 graph;
+#X obj 135 175 hsl 162 19 0 0.1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 190 203 jitter range (0 to 0.1);
+#X obj 186 110 *~ 0.03;
+#X connect 0 0 8 2;
+#X connect 0 0 8 4;
+#X connect 1 0 4 0;
 #X connect 2 0 1 0;
-#X connect 4 0 6 0;
-#X connect 6 0 9 0;
+#X connect 3 0 5 0;
+#X connect 5 0 7 0;
+#X connect 6 0 20 0;
 #X connect 7 0 8 0;
-#X connect 8 0 9 1;
-#X connect 9 0 10 0;
-#X connect 10 0 5 0;
-#X connect 11 0 10 2;
-#X connect 11 0 10 4;
-#X restore 704 329 pd jitter-remover;
-#X text 133 399 <= start metronome to graph output, f 18;
-#X text 699 223 Examples:;
-#X text 518 106 The slop~ object is a low-pass filter whose frequency
-response (i.e. \, reaction speed) can vary according to the filter's
-state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise
-gates) \, and soft saturation. Examples below are explained in the
-HTML reference (linked above)., f 55;
+#X connect 8 0 4 0;
+#X connect 14 0 13 0;
+#X connect 18 0 0 0;
+#X connect 20 0 7 1;
+#X restore 701 317 pd jitter-remover;
+#X text 688 216 Examples:;
 #X text 22 565 see also:;
-#X obj 101 564 lop~;
-#X obj 151 564 fexpr~;
+#X obj 101 565 lop~;
+#X obj 151 565 fexpr~;
 #X obj 24 44 slop~, f 7;
-#X text 84 43 - slew-limiting low-pass filter;
-#X obj 10 75 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 436 15 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
-#000000;
-#X obj 10 551 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 459 14 <= Open HTML reference;
+#X obj 10 75 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 436 15 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 10 551 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 798 148 488 282 html-reference 0;
 #X obj 101 59 inlet;
 #X obj 101 190 pdcontrol;
 #X obj 101 130 pdcontrol;
 #X msg 101 105 dir;
-#X text 205 94 this window opens the html reference link via the [pdcontrol]
-object., f 25;
+#X text 205 94 this window opens the html reference link via the [pdcontrol] object., f 25;
 #X msg 101 159 browse \$1/../8.topics/slop-tilde.htm;
 #X connect 0 0 3 0;
 #X connect 2 0 5 0;
@@ -737,60 +600,166 @@ object., f 25;
 #X connect 5 0 1 0;
 #X restore 436 44 pd html-reference;
 #N canvas 734 107 574 398 reference 0;
-#X obj 11 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 11 242 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 11 275 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 10 371 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 11 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 9 117 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 11 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 11 242 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 11 275 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 10 371 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 11 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 9 117 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 24 15 slop~, f 7;
-#X text 84 14 - slew-limiting low-pass filter;
-#X obj 11 141 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 9 165 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 11 191 cnv 1 550 1 empty empty 5th: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 9 217 cnv 1 550 1 empty empty 6th: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 11 141 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 9 165 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 11 191 cnv 1 550 1 empty empty 5th: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 9 217 cnv 1 550 1 empty empty 6th: 8 12 0 13 #7c7c7c #000000 0;
 #X text 120 78 signal - input signal to be filtered., f 46;
 #X text 85 96 set <float> - set state (previously stored output).;
-#X text 120 120 signal - cutoff frequency in linear region., f 46
-;
+#X text 120 120 signal - cutoff frequency in linear region., f 46;
 #X text 120 144 signal - maximum downward slew of linear region.;
 #X text 120 169 signal - asymptotic downward cutoff frequency.;
 #X text 120 195 signal - maximum upward slew of linear region.;
 #X text 120 250 signal - filtered signal.;
 #X text 120 220 signal - asymptotic upward cutoff frequency.;
-#X text 107 281 1) float - cutoff frequency in linear region (default
-0)., f 62;
-#X text 107 298 2) float - maximum downward slew of linear region (default
-0)., f 62;
-#X text 107 315 3) float - asymptotic downward cutoff frequency (default
-0)., f 62;
-#X text 107 332 4) float - maximum upward slew of linear region (default
-0)., f 62;
-#X text 107 349 5) float - asymptotic upward cutoff frequency (default
-0)., f 62;
+#X text 107 281 1) float - cutoff frequency in linear region (default 0)., f 62;
+#X text 107 298 2) float - maximum downward slew of linear region (default 0)., f 62;
+#X text 107 315 3) float - asymptotic downward cutoff frequency (default 0)., f 62;
+#X text 107 332 4) float - maximum upward slew of linear region (default 0)., f 62;
+#X text 107 349 5) float - asymptotic upward cutoff frequency (default 0)., f 62;
+#X text 84 14 - slew-limiting / low-pass filter;
 #X restore 739 44 pd reference;
 #X text 837 43 <= click;
-#X connect 0 0 12 0;
-#X connect 2 0 0 0;
-#X connect 4 0 3 0;
-#X connect 5 0 4 0;
-#X connect 6 0 12 1;
-#X connect 7 0 11 0;
-#X connect 8 0 10 0;
-#X connect 9 0 12 0;
-#X connect 10 0 12 4;
-#X connect 11 0 12 2;
-#X connect 12 0 3 0;
-#X connect 14 0 12 3;
-#X connect 19 0 12 5;
-#X connect 36 0 39 0;
+#X text 497 103 The [slop~] object is a low-pass filter whose frequency response (i.e. \, reaction speed) can vary according to the filter's state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise gates) \, and soft saturation. Examples below are explained in the HTML reference (linked above)., f 55;
+#X text 459 14 <- Open HTML reference;
+#X text 84 43 - slew-limiting / low-pass filter;
+#X msg 252 489 \; pd dsp \$1;
+#X obj 252 454 set-dsp-tgl;
+#X text 283 458 DSP on/off;
+#X obj 405 398 cnv 19 498 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-graph 1000 float 0;
+#X coords 0 1 999 -1 500 140 1 0 0;
+#X restore 404 397 graph;
+#X text 686 564 updated for Pd version 0.50-0;
+#X obj 35 122 osc~ 110;
+#X obj 81 377 slop~ 55 1e+09 0 1e+09 0, f 26;
+#N canvas 460 83 810 730 non-linear-envelope 0;
+#X obj 207 585 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 232 585 <-- start metronome to graph output, f 19;
+#X obj 469 514 cnv 19 248 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-adsr 4410 float 0;
+#X coords 0 1 4409 0 250 140 1 0 0;
+#X restore 468 513 graph;
+#X obj 181 662 tabwrite~ \$0-adsr;
+#X obj 181 383 vline~;
+#X obj 293 202 t f f;
+#X obj 181 82 trigger float float;
+#X obj 254 414 expr 1000./$f1;
+#X msg 181 328 0;
+#X obj 181 110 != 0;
+#X obj 535 387 v D_\$0;
+#X floatatom 466 359 5 0 0 0 - - - 0;
+#X obj 466 278 loadbang;
+#X obj 466 329 unpack float float float float;
+#X floatatom 535 359 5 0 0 0 - - - 0;
+#X floatatom 604 359 5 0 0 0 - - - 0;
+#X floatatom 673 359 5 0 0 0 - - - 0;
+#X obj 306 361 v D_\$0;
+#X obj 604 387 s S_\$0;
+#X obj 343 174 r S_\$0;
+#X obj 466 387 s A_\$0;
+#X obj 304 490 expr 1000./$f1;
+#X obj 304 445 r A_\$0;
+#X obj 254 360 v R_\$0;
+#X obj 673 387 v R_\$0;
+#X obj 292 257 pack f f f;
+#X obj 359 229 r A_\$0;
+#X msg 292 286 \$1 \, \$2 0 \$3;
+#X obj 293 174 f;
+#X obj 181 140 sel 0 1;
+#X obj 325 229 *;
+#X obj 181 24 tgl 22 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X floatatom 181 55 4 0 0 0 - - - 0;
+#X msg 466 305 500 250 0.5 1500;
+#X obj 207 631 metro 150;
+#X text 453 644 0;
+#X text 453 504 1;
+#X obj 49 595 *~;
+#X obj 49 513 osc~ 440;
+#X obj 49 634 output~;
+#X text 212 24 gate;
+#X floatatom 304 520 6 0 0 0 - - - 0;
+#X floatatom 254 520 6 0 0 0 - - - 0;
+#X text 464 416 attack;
+#X text 537 416 decay;
+#X text 601 416 sustain;
+#X text 669 416 release;
+#X floatatom 254 390 6 0 0 0 - - - 0;
+#X floatatom 304 467 6 0 0 0 - - - 0;
+#X floatatom 343 200 6 0 0 0 - - - 0;
+#X text 446 48 Here we use [vline~] and [slop~] to make a non-linear ADSR envelope. This example is hopefully simple enough to not require more details in the HTML reference., f 43;
+#X text 446 118 This example uses [vline~] to schedule an attack and decay stage when receiving a gate on message. The sustain point is defined as a ratio of the gate value. The attack \, decay and release time are defined in ms and are converted to values in Hz., f 43;
+#X obj 181 548 slop~, f 18;
+#X connect 0 0 35 0;
+#X connect 5 0 53 0;
+#X connect 6 0 26 0;
+#X connect 6 1 31 0;
+#X connect 7 0 10 0;
+#X connect 7 1 29 1;
+#X connect 8 0 43 0;
+#X connect 9 0 5 0;
+#X connect 10 0 30 0;
+#X connect 12 0 21 0;
+#X connect 13 0 34 0;
+#X connect 14 0 12 0;
+#X connect 14 1 15 0;
+#X connect 14 2 16 0;
+#X connect 14 3 17 0;
+#X connect 15 0 11 0;
+#X connect 16 0 19 0;
+#X connect 17 0 25 0;
+#X connect 18 0 48 0;
+#X connect 20 0 50 0;
+#X connect 22 0 42 0;
+#X connect 23 0 49 0;
+#X connect 24 0 48 0;
+#X connect 26 0 28 0;
+#X connect 27 0 26 2;
+#X connect 28 0 5 0;
+#X connect 29 0 6 0;
+#X connect 30 0 24 0;
+#X connect 30 0 9 0;
+#X connect 30 1 18 0;
+#X connect 30 1 29 0;
+#X connect 31 0 26 1;
+#X connect 32 0 33 0;
+#X connect 33 0 7 0;
+#X connect 34 0 14 0;
+#X connect 35 0 4 0;
+#X connect 38 0 40 0;
+#X connect 39 0 38 0;
+#X connect 42 0 53 5;
+#X connect 43 0 53 3;
+#X connect 48 0 8 0;
+#X connect 49 0 22 0;
+#X connect 50 0 31 1;
+#X connect 53 0 4 0;
+#X connect 53 0 38 1;
+#X restore 701 343 pd non-linear-envelope;
+#X text 198 206 maximum downward slew of linear region (slew limit in amplitude per sample), f 38;
+#X text 273 287 maximum upward slew of linear region (slew limit in amplitude per sample), f 36;
+#X text 133 412 <-- graph output;
+#X connect 0 0 41 0;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 42 1;
+#X connect 5 0 9 0;
+#X connect 6 0 8 0;
+#X connect 7 0 42 0;
+#X connect 8 0 42 4;
+#X connect 9 0 42 2;
+#X connect 11 0 42 3;
+#X connect 14 0 42 5;
+#X connect 27 0 29 0;
+#X connect 36 0 35 0;
+#X connect 41 0 42 0;
+#X connect 42 0 1 0;

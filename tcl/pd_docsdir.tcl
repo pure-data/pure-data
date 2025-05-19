@@ -11,7 +11,7 @@
 #
 
 # The minimum version of TCL that allows the plugin to run
-package require Tcl 8.4
+package require Tcl 8.4 9
 
 package require pdwindow 0.1
 package require pd_guiprefs 0.1
@@ -110,7 +110,7 @@ proc ::pd_docsdir::init {{reset false}} {
                     set newpath [tk_chooseDirectory -title [_ "Choose Pd documents directory:"] \
                                                     -initialdir $::env(HOME)]
                     if {$newpath ne ""} {
-                        if{![::pd_docsdir::update_path $newpath]} {
+                        if {![::pd_docsdir::update_path $newpath]} {
                             # didn't work
                             return
                         }
@@ -187,7 +187,8 @@ proc ::pd_docsdir::create_path {path} {
     if {[file mkdir [file normalize "$path"]] eq ""} {
         return 1
     }
-    ::pdwindow::error [format [_ "couldn't create Pd documents directory: %s\n"] $path]
+    set msg [_ "couldn't create Pd documents directory: %s" $path]
+    ::pdwindow::error "${msg}\n"
     return 0
 }
 
@@ -221,7 +222,8 @@ proc ::pd_docsdir::create_externals_path {{path ""}} {
     if {[file mkdir "$newpath" ] eq ""} {
         return 1
     }
-    ::pdwindow::error [format [_ "couldn't create \"externals\" directory in: %s\n"] $path]
+    set msg [_ "couldn't create \"externals\" directory in: %s" $path]
+    ::pdwindow::error "${msg}\n"
     return 0
 }
 

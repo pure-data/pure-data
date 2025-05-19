@@ -1,85 +1,79 @@
-#N canvas 480 56 608 558 12;
+#N canvas 435 61 654 570 12;
 #X declare -stdpath ./;
-#X obj 225 247 sig~;
-#X floatatom 225 216 5 0 0 0 - - - 0;
-#X floatatom 259 277 5 0 0 0 - - - 0;
-#X obj 34 14 vcf~;
-#X text 52 484 see also:;
-#X obj 130 484 bp~;
-#X obj 192 309 vcf~ 1, f 10;
-#X text 384 484 updated for Pd version 0.46;
-#X text 126 430 (bandpass);
-#X text 258 431 (lowpass);
-#X text 126 413 real output;
-#X text 245 413 imaginary output;
-#X obj 164 484 bob~;
-#X obj 131 243 noise~;
-#X text 114 218 test input;
-#X text 303 276 Q;
-#X text 274 309 optional argument initializes Q;
-#X obj 134 353 output~;
-#X obj 259 353 output~;
-#X obj 205 484 lop~;
-#X obj 245 484 hip~;
-#X obj 373 371 declare -stdpath ./;
-#X obj 65 520 biquad~;
-#X obj 124 519 slop~, f 7;
-#X obj 183 519 cpole~, f 7;
-#X obj 245 519 fexpr~;
-#X text 301 519 - unfriendly filters;
-#X obj 7 43 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#N canvas 667 114 517 345 reference 0;
-#X obj 9 42 cnv 5 490 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 187 cnv 2 490 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 277 cnv 2 490 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 317 cnv 5 490 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 86 76 signal - audio signal to be filtered.;
-#X text 93 95 clear - clear filter's memory., f 36;
-#X obj 11 119 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X floatatom 188 238 8 0 0 0 - - - 0;
+#X floatatom 257 296 5 0 0 0 - - - 0;
+#X obj 28 14 vcf~;
+#X text 12 504 see also:;
+#X obj 90 504 bp~;
+#X obj 120 328 vcf~ 1, f 20;
+#X text 123 449 (band-pass);
+#X text 123 432 real output;
+#X text 252 432 imaginary output;
+#X obj 124 504 bob~;
+#X obj 119 288 noise~;
+#X text 122 254 test input, f 5;
+#X text 301 295 Q;
+#X obj 120 372 output~;
+#X obj 257 372 output~;
+#X obj 165 504 lop~;
+#X obj 205 504 hip~;
+#X obj 474 218 declare -stdpath ./;
+#X obj 25 536 biquad~;
+#X obj 84 535 slop~, f 7;
+#X obj 143 535 cpole~, f 7;
+#X obj 205 535 fexpr~;
+#X text 261 535 - unfriendly filters;
+#X obj 7 44 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#N canvas 667 114 515 345 reference 0;
+#X obj 9 42 cnv 5 490 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 9 192 cnv 2 490 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 9 282 cnv 2 490 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 8 322 cnv 5 490 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 96 76 signal - audio signal to be filtered.;
+#X obj 11 124 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 28 14 vcf~;
 #X text 70 14 - voltage-controlled band/low-pass filter;
-#X text 87 126 signal - resonant frequency in Hz.;
-#X obj 11 153 cnv 1 490 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 11 71 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 94 160 float - set Q.;
-#X text 134 287 1) float - initial Q (default 0).;
-#X obj 11 242 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 11 211 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 86 217 signal - real output (bandpasse filtered signal).;
-#X text 86 250 signal - imaginary output (bandpasse filtered signal).
-;
-#X restore 414 14 pd reference;
-#X text 512 14 <= click;
-#X text 25 53 Vcf~ is a resonant band-pass and low-pass filter that
-takes either a control or an audio signal to set center frequency \,
-which may thus change continuously in time as in an analog voltage
-controlled filter (and unlike 'bp~' and 'lop~' that only take control
-values). The "Q" or filter sharpness is still only set by control messages.
-It is more expensive but more powerful than the bp~ bandpass filter.
-, f 78;
-#X text 24 146 Vcf~ is implemented as a one-pole complex filter with
-outlets for the real and imaginary value. These may be used as bandpass
-and lowpass filter outputs \, or combined to allow other possibilities.
-, f 78;
-#X obj 7 465 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 97 131 signal - resonant frequency in Hz.;
+#X obj 11 158 cnv 1 490 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 11 71 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X text 144 292 1) float - initial Q (default 0).;
+#X obj 11 247 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 11 216 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X text 96 222 signal - real output (band-pass filtered signal).;
+#X text 104 165 float - resonance Q.;
+#X text 96 255 signal - imaginary output ("low-pass" filtered signal).;
+#X text 103 95 clear - clear filter's memory., f 36;
+#X restore 474 14 pd reference;
+#X text 572 14 <= click;
 #X text 76 14 - voltage-controlled band/low-pass filter;
-#X text 270 216 resonant frequency in Hz;
-#X connect 0 0 6 1;
-#X connect 1 0 0 0;
-#X connect 2 0 6 2;
-#X connect 6 0 17 1;
-#X connect 6 0 17 0;
-#X connect 6 1 18 0;
-#X connect 6 1 18 1;
-#X connect 13 0 6 0;
+#X obj 191 211 hsl 169 18 200 2000 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 260 267 hsl 169 18 1 20 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 188 269 sig~ 200;
+#X text 242 503 - friendly filters;
+#X obj 7 485 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 36 129 [vcf~] can take a signal to set the resonant frequency as in an analog voltage controlled filter ("vcf" for short). It is thus more expensive but more powerful than [bp~]. The resonance "Q" or filter sharpness is still only set by control messages., f 83;
+#X text 390 362 Listen to how the white noise input is filtered. The higher the Q \, the more attenuation we have for frequencies besides the center frequency \, so the less wide the frequency band is., f 32;
+#X text 36 59 [vcf~] is a one-pole complex filter with outlets for the real (left) and imaginary (right) parts \, which are \, respectively \, a band-pass and a low-pass filter (that can be combined to allow other possibilities). The maximum gain is constant at 0dB \, what makes the lowpass output more like a bandpass really \, and similar to [bp~]., f 83;
+#X text 275 450 (low-pass);
+#X text 274 328 argument initializes Q;
+#N canvas 672 179 443 244 compatibility 0;
+#X msg 47 156 \; pd compatibility 0.54;
+#X msg 243 156 \; pd compatibility 0.55;
+#X text 59 132 (old table size);
+#X text 259 132 (new table size);
+#X text 29 31 Up to version 0.54 \, [vcf~] relied on a 512-point cosine table. The default table size is now increased to 2048 points \, which improves th filter's frequency resolution. To get the original 512-point tables you can run Pd with compatibility level set to 0.54., f 56;
+#X restore 483 306 pd compatibility;
+#X text 489 268 compatibility note (open):, f 13;
+#X text 430 504 updated for Pd version 0.55-2;
+#X msg 63 244 clear;
+#X text 256 238 <-- resonant frequency;
+#X text 31 207 reinitialize internal state, f 15;
+#X connect 0 0 29 0;
+#X connect 1 0 5 2;
+#X connect 5 0 13 0;
+#X connect 5 1 14 0;
+#X connect 10 0 5 0;
+#X connect 27 0 0 0;
+#X connect 28 0 1 0;
+#X connect 29 0 5 1;
+#X connect 40 0 5 0;

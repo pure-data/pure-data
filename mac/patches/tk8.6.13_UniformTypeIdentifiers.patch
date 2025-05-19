@@ -1,0 +1,40 @@
+diff --git a/macosx/tkMacOSXFileTypes.c b/macosx/tkMacOSXFileTypes.c
+index 66e4fbbc1..2fcc6cddf 100644
+--- a/macosx/tkMacOSXFileTypes.c
++++ b/macosx/tkMacOSXFileTypes.c
+@@ -25,9 +25,6 @@ without generating deprecation warnings.
+ 
+ #include "tkMacOSXPrivate.h"
+ #include "tkMacOSXFileTypes.h"
+-#if MAC_OS_X_VERSION_MAX_ALLOWED >= 110000
+-#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+-#endif
+ 
+ #define CHARS_TO_OSTYPE(string) (OSType) string[0] << 24 | \
+                                 (OSType) string[1] << 16 | \
+diff --git a/unix/configure b/unix/configure
+index a9ad15082..57ea3f297 100755
+--- a/unix/configure
++++ b/unix/configure
+@@ -9438,7 +9438,7 @@ _ACEOF
+ 
+     LIBS="$LIBS -framework Cocoa -framework Carbon -framework IOKit -framework QuartzCore"
+     if test -d "/System/Library/Frameworks/UniformTypeIdentifiers.framework"; then
+-        LIBS="$LIBS -framework UniformTypeIdentifiers"
++        LIBS="$LIBS -weak_framework UniformTypeIdentifiers"
+     fi
+     EXTRA_CC_SWITCHES='-std=gnu99 -x objective-c'
+     TK_WINDOWINGSYSTEM=AQUA
+diff --git a/unix/configure.in b/unix/configure.in
+index de34db89f..54cfd2c04 100644
+--- a/unix/configure.in
++++ b/unix/configure.in
+@@ -353,7 +353,7 @@ if test $tk_aqua = yes; then
+     AC_DEFINE(MAC_OSX_TK, 1, [Are we building TkAqua?])
+     LIBS="$LIBS -framework Cocoa -framework Carbon -framework IOKit -framework QuartzCore"
+     if test -d "/System/Library/Frameworks/UniformTypeIdentifiers.framework"; then
+-        LIBS="$LIBS -framework UniformTypeIdentifiers"
++        LIBS="$LIBS -weak_framework UniformTypeIdentifiers"
+     fi
+     EXTRA_CC_SWITCHES='-std=gnu99 -x objective-c'
+     TK_WINDOWINGSYSTEM=AQUA

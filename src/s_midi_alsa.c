@@ -9,11 +9,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <alsa/asoundlib.h>
 #include "m_pd.h"
 #include "s_stuff.h"
@@ -43,7 +38,7 @@ static int alsa_midiinfd[MAXMIDIINDEV];
 static int alsa_nmidiout;
 static int alsa_midioutfd[MAXMIDIOUTDEV];
 
-static snd_seq_t *midi_handle;
+static snd_seq_t *midi_handle = NULL;
 
 static snd_midi_event_t *midiev;
 
@@ -114,7 +109,9 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
-    post("opened alsa MIDI client %d in:%d out:%d", client, nmidiin, nmidiout);
+    if (sys_verbose)
+        post("opened alsa MIDI client %d in:%d out:%d",
+            client, nmidiin, nmidiout);
     sys_setalarm(0);
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &midiev);
     alsa_nmidiout = nmidiout;
@@ -196,6 +193,7 @@ void sys_alsa_putmidibyte(int portno, int byte)
   static snd_midi_event_t *dev = NULL;
   int res;
   snd_seq_event_t ev;
+  if (!midi_handle) return;
   if (!dev) {
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
     //assert(dev);
@@ -223,6 +221,7 @@ void sys_alsa_poll_midi(void)
    int count, alsa_source;
    snd_seq_event_t *midievent = NULL;
 
+   if (!midi_handle) return;
    if (!alsa_nmidiout && !alsa_nmidiin) return;
 
    snd_midi_event_init(midiev);

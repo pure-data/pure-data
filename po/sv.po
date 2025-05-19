@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
-"Language-Team: Johannes Burström <johannes@ljud.org>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,80 +19,25 @@ msgstr ""
 "X-Poedit-Country: Sweden\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-msgid "-------dimensions(digits)(pix):-------"
+msgid "linear"
 msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
 msgstr ""
 
-msgid "----------dimensions(pix):-----------"
+msgid "new-only"
 msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr ""
-
-msgid "-----------output-range:-----------"
-msgstr ""
-
-msgid "------selectable_dimensions(pix):------"
-msgstr ""
-
-msgid "------visible_rectangle(pix)(pix):------"
+msgid "new&old"
 msgstr ""
 
 #, fuzzy
-msgid "bottom:"
-msgstr "Underkant"
+msgid "no scale"
+msgstr "Skala"
 
 #, fuzzy
-msgid "height:"
-msgstr "Höger"
-
-msgid "hold:"
-msgstr ""
-
-msgid "intrrpt:"
-msgstr ""
-
-msgid "left:"
-msgstr ""
-
-msgid "lin"
-msgstr ""
-
-msgid "log"
-msgstr ""
-
-msgid "log-height:"
-msgstr ""
-
-msgid "max:"
-msgstr ""
-
-msgid "min:"
-msgstr ""
-
-#, fuzzy
-msgid "right:"
-msgstr "Höger"
-
-#, fuzzy
-msgid "size:"
-msgstr "Storlek:"
-
-msgid "top:"
-msgstr ""
-
-msgid "value:"
-msgstr ""
-
-#, fuzzy
-msgid "width:"
-msgstr "Bredd:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Vill du spara dina ändringar i '%s'?"
+msgid "scale"
+msgstr "Skala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -263,7 +209,26 @@ msgstr "Verkställ"
 msgid "OK"
 msgstr "Ok"
 
-msgid "Audio Settings"
+msgid "no device"
+msgstr ""
+
+msgid "(same as input device)..."
+msgstr ""
+
+#, fuzzy
+msgid "Channels:"
+msgstr "Ångra"
+
+msgid "Input Devices"
+msgstr ""
+
+msgid "Output Devices"
+msgstr ""
+
+msgid "Use Multiple Devices"
+msgstr ""
+
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -290,20 +255,7 @@ msgstr ""
 msgid "Use callbacks"
 msgstr ""
 
-msgid "Input Devices"
-msgstr ""
-
-#, fuzzy
-msgid "Channels:"
-msgstr "Ångra"
-
-msgid "Output Devices"
-msgstr ""
-
-msgid "(same as input device)..."
-msgstr ""
-
-msgid "Use Multiple Devices"
+msgid "Audio Settings"
 msgstr ""
 
 msgid "Save All Settings"
@@ -359,6 +311,12 @@ msgstr "Omfång (y), från:"
 msgid "Data Properties"
 msgstr "Egenskaper för canvas"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr ""
@@ -412,8 +370,22 @@ msgstr "Bara X"
 msgid "Y only"
 msgstr "Bara Y"
 
-msgid "Atom Box Properties"
+#, fuzzy
+msgid "GUI Box Properties"
 msgstr "Egenskaper för Atom"
+
+msgid "Messages"
+msgstr "Meddelanden"
+
+#, fuzzy
+msgid "Send symbol:"
+msgstr "Sändsymbol:"
+
+msgid "Receive symbol:"
+msgstr "Mottagarsymbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Bredd:"
@@ -445,16 +417,6 @@ msgstr "Överkant"
 msgid "Bottom"
 msgstr "Underkant"
 
-msgid "Messages"
-msgstr "Meddelanden"
-
-#, fuzzy
-msgid "Send symbol:"
-msgstr "Sändsymbol:"
-
-msgid "Receive symbol:"
-msgstr "Mottagarsymbol:"
-
 msgid "Background color"
 msgstr "Bakgrundsfärg"
 
@@ -464,28 +426,16 @@ msgstr "Förgrundsfärg"
 msgid "Label color"
 msgstr "Textfärg"
 
-msgid "Init"
-msgstr "Initiera"
-
-msgid "No init"
-msgstr "Initiera inte"
-
-msgid "Jump on click"
-msgstr "Ändra värde vid klick"
-
-msgid "Steady on click"
-msgstr "Behåll värde vid klick"
-
 msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr ""
 
-msgid "Intrrpt:"
+msgid "Min:"
 msgstr ""
 
-msgid "Hold:"
+msgid "Max:"
 msgstr ""
 
 msgid "Toggle"
@@ -544,6 +494,18 @@ msgstr "Egenskaper för %s"
 msgid "Parameters"
 msgstr ""
 
+msgid "Init"
+msgstr "Initiera"
+
+msgid "No init"
+msgstr "Initiera inte"
+
+msgid "Jump on click"
+msgstr "Ändra värde vid klick"
+
+msgid "Steady on click"
+msgstr "Behåll värde vid klick"
+
 #, fuzzy
 msgid "X offset:"
 msgstr "x-position"
@@ -574,10 +536,7 @@ msgstr "Sänd meddelande"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr ""
-
-msgid "ALSA MIDI Settings"
+msgid "no input devices"
 msgstr ""
 
 msgid "In Ports:"
@@ -586,7 +545,16 @@ msgstr ""
 msgid "Out Ports:"
 msgstr ""
 
-msgid "Pd search path for objects, help, fonts, and other files"
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr ""
+
+msgid "ALSA MIDI Settings"
+msgstr ""
+
+msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
@@ -614,6 +582,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Rensa konsoll"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Inställningar"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -623,24 +595,174 @@ msgstr ""
 msgid "Add a new path"
 msgstr ""
 
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
+#, fuzzy
+msgid "Patch Windows"
+msgstr "Huvudfönster"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Föräldrafönster"
+
+msgid "GUI Settings"
+msgstr ""
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "Use tabs"
+msgstr ""
+
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Inställningar"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI Options"
+msgstr "Egenskaper för Atom"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
+msgid "Startup Flags:"
+msgstr ""
+
 #, fuzzy
 msgid "Help Browser"
 msgstr "Bläddra..."
+
+msgid "Associated Files"
+msgstr ""
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Fil"
+
+msgid "Max Patch Files"
+msgstr ""
+
+#, fuzzy
+msgid "Max Text Files"
+msgstr "Fil"
+
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
+msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
@@ -652,84 +774,127 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] > %2$s...skipping!"
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] < %2$s...overwriting!"
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] == %2$s...skipping!"
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "successfully unzipped %1$s into %2$s"
-msgstr ""
-
-msgid "unable to extract package automatically"
-msgstr ""
-
-msgid "please perform the following steps manually:"
+msgid "installing deken package '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "1. unzip %s"
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Installing '%s'"
+msgstr "Förkasta ändringar i '%s'?"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
 msgstr ""
 
 #, tcl-format
-msgid "2. copy the contents into %s"
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling '%s'"
+msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling %1$s from %2$s failed!"
+msgid "3. Remove %s. (optional)"
 msgstr ""
 
 #, tcl-format
-msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
+msgid "Removing '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "platform detected: %s"
+msgid "Uninstalling %1$s from %2$s failed!"
 msgstr ""
 
 #, tcl-format
-msgid "platform re-detected: %s"
+msgid "Skipping SHA256 verification of '%s'."
 msgstr ""
 
-msgid "Show all"
+#, tcl-format
+msgid "SHA256 verification of '%s'"
 msgstr ""
 
-#, fuzzy
-msgid "Search"
-msgstr "Sök i"
-
-msgid "To get a list of all available externals, try an empty search."
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
-msgid "Find externals"
+#, tcl-format
+msgid "File checksum looks invalid: '%s'."
 msgstr ""
 
-msgid "Only install externals uploaded by people you trust."
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
 msgstr ""
 
-msgid "Preferences"
-msgstr "Inställningar"
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
 
 msgid "Installation options:"
 msgstr ""
 
-msgid "Try to remove libraries before (re)installing them?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
 
-msgid "Show README of newly installed libraries (if present)?"
+msgid "Try to remove libraries before (re)installing them"
 msgstr ""
 
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
 msgid "Platform settings:"
@@ -742,34 +907,223 @@ msgstr ""
 msgid "User-defined platform:"
 msgstr ""
 
-msgid "Hide foreign architectures?"
+msgid "Hide foreign architectures"
+msgstr ""
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
 msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Inställningar"
 
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
 #, fuzzy
-msgid "start searching for externals..."
+msgid "ZIP Files"
+msgstr "ZIP-Filer"
+
+#, fuzzy
+msgid "TAR Files"
+msgstr "TAR-Filer"
+
+#, fuzzy
+msgid "All Files"
+msgstr "Alla filer"
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr ""
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr ""
+
+msgid "Installation completed!"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+#, fuzzy
+msgid "Search"
+msgstr "Sök i"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Install DEK file..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr "Inställningar..."
+
+#, fuzzy
+msgid "Search for: "
+msgstr "Sök i"
+
+msgid "libraries"
+msgstr ""
+
+#, fuzzy
+msgid "objects"
+msgstr "Objekt"
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Uploader"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+#, fuzzy
+msgid "Search Results"
+msgstr "Sök i"
+
+msgid "Log"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Searching for \"%s\"..."
 msgstr "Förkasta ändringar i '%s'?"
 
 #, tcl-format
 msgid "online? %s"
 msgstr ""
 
-msgid "Are you online?"
+msgid "Unable to perform search. Are you online?"
 msgstr ""
 
-msgid "Unable to perform search."
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr ""
 
-msgid "no matching externals found"
-msgstr ""
-
-msgid "try using the full name e.g. 'freeverb'"
+msgid "It appears that there are no matching packages for your architecture."
 msgstr ""
 
 msgid "No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "Or use wildcards like 'freeverb*'."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
@@ -780,58 +1134,104 @@ msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
-msgid ""
-"commencing downloading of:\n"
-"%1$s\n"
-"into %2$s..."
+msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "... aborting"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 
 #, tcl-format
-msgid "unable to add %s to search paths"
+msgid "Unable to install to '%s'"
+msgstr ""
+
+msgid "Directory does not exist!"
+msgstr ""
+
+msgid "Directory is not writable!"
 msgstr ""
 
 #, tcl-format
-msgid "Add %s to the Pd search paths?"
+msgid "Downloading '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "added %s to search paths"
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr ""
+
+msgid "aborting."
 msgstr ""
 
 #, tcl-format
-msgid "unable to download from %1$s [%2$s]"
+msgid "Downloading '%s' failed"
+msgstr ""
+
+msgid "Download failed!"
+msgstr ""
+
+msgid "Download completed! Verifying..."
+msgstr ""
+
+msgid "Ignoring checksum mismatch"
+msgstr ""
+
+msgid "Ignoring checksum errors"
 msgstr ""
 
 #, tcl-format
-msgid "unable to remove stray file %s"
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
-msgid "unable to rename downloaded file to %s"
+msgid "[deken] Platform detected: %s"
 msgstr ""
 
 #, fuzzy, tcl-format
-msgid "searching for '%s'"
+msgid "Searching on %s..."
 msgstr "Förkasta ändringar i '%s'?"
 
-msgid "unable to perform search"
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr ""
+
+msgid "No usable servers for searching found..."
 msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-msgid "Install package"
+#, fuzzy, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "Förkasta ändringar i '%s'?"
+
+#, fuzzy
+msgid "Search failed"
+msgstr "Sök i"
+
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Deselect package"
 msgstr ""
 
 #, fuzzy
-msgid "Open webpage"
+msgid "Open package webpage"
 msgstr "Öppna senaste"
 
-msgid "_"
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstall '%s'"
 msgstr ""
 
 #, tcl-format
@@ -864,11 +1264,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s"
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr ""
 
 msgid "refusing to delete empty domain"
@@ -878,17 +1278,581 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "The language can only be set during startup."
+msgstr ""
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abchaziska"
+
+msgid "Avestan"
+msgstr "Avestiska"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amhariska"
+
+msgid "Aragonese"
+msgstr "Aragonska"
+
+msgid "Arabic"
+msgstr "Arabiska"
+
+msgid "Assamese"
+msgstr "Assamesiska"
+
+msgid "Avaric"
+msgstr "Avariska"
+
+msgid "Aymara"
+msgstr "Aymara"
+
+msgid "Azerbaijani"
+msgstr "Azerbajdzjanska"
+
+msgid "Bashkir"
+msgstr "Basjkiriska"
+
+msgid "Belarusian"
+msgstr "Vitryska"
+
+msgid "Bulgarian"
+msgstr "Bulgariska"
+
+msgid "Bihari"
+msgstr "Bihariska"
+
+msgid "Bislama"
+msgstr "Bislama"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengaliska"
+
+msgid "Tibetan"
+msgstr "Tibetanska"
+
+msgid "Breton"
+msgstr "Bretonska"
+
+msgid "Bosnian"
+msgstr "Bosniska"
+
+msgid "Catalan"
+msgstr "Katalanska"
+
+msgid "Chechen"
+msgstr "Tjetjenska"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Korsikanska"
+
+msgid "Cree"
+msgstr "Cree"
+
+msgid "Czech"
+msgstr "Tjeckiska"
+
+msgid "Chuvash"
+msgstr "Tjuvasjiska"
+
+msgid "Welsh"
+msgstr "Walesiska"
+
+msgid "Danish"
+msgstr "Danska"
+
+msgid "German"
+msgstr "Tyska"
+
+msgid "German (Austria)"
+msgstr "Tyska (Österrike)"
+
+msgid "Dhivehi"
+msgstr "Dhivehiska"
+
+msgid "Dzongkha"
+msgstr "Bhutanesiska (Dzongkha)"
+
+msgid "Ewe"
+msgstr "Ewe"
+
+msgid "Greek"
+msgstr "Grekiska"
+
+msgid "English"
+msgstr "Engelska"
+
+msgid "English (Canada)"
+msgstr "Engelska (Kanada)"
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Esperanto"
+msgstr "Esperanto"
+
+msgid "Spanish"
+msgstr "Spanska"
+
+msgid "Estonian"
+msgstr "Estniska"
+
+msgid "Basque"
+msgstr "Baskiska"
+
+msgid "Persian"
+msgstr "Persiska"
+
+msgid "Fulah"
+msgstr "Fula"
+
+msgid "Finnish"
+msgstr "Finska"
+
+msgid "Fijian"
+msgstr "Fijianska"
+
+msgid "Faroese"
+msgstr "Färöiska"
+
+msgid "French"
+msgstr "Franska"
+
+msgid "Frisian"
+msgstr "Frisiska"
+
+msgid "Irish"
+msgstr "Irländska"
+
+msgid "Gaelic"
+msgstr "Gaeliska"
+
+msgid "Galician"
+msgstr "Galiciska"
+
+msgid "Guarani"
+msgstr "Guaraní"
+
+msgid "Gujarati"
+msgstr "Gujarati"
+
+msgid "Manx"
+msgstr "Manx"
+
+msgid "Hausa"
+msgstr "Haussa"
+
+msgid "Hebrew"
+msgstr "Hebreiska"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hiri Motu"
+msgstr "Hiri motu"
+
+msgid "Croatian"
+msgstr "Kroatiska"
+
+msgid "Haitian"
+msgstr "Haitiska"
+
+msgid "Hungarian"
+msgstr "Ungerska"
+
+msgid "Armenian"
+msgstr "Armeniska"
+
+msgid "Herero"
+msgstr "Herero"
+
+msgid "Interlingua"
+msgstr "Interlingua"
+
+msgid "Indonesian"
+msgstr "Indonesiska"
+
+msgid "Occidental"
+msgstr "Occidental"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Nosu"
+
+msgid "Inupiaq"
+msgstr "Inupiak"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "Isländska"
+
+msgid "Italian"
+msgstr "Italienska"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
+
+msgid "Japanese"
+msgstr "Japanska"
+
+msgid "Javanese"
+msgstr "Javanesiska"
+
+msgid "Georgian"
+msgstr "Georgiska"
+
+msgid "Kongo"
+msgstr "Kikongo"
+
+msgid "Gikuyu"
+msgstr "Kikuyu"
+
+msgid "Kwanyama"
+msgstr "Kwanyama"
+
+msgid "Kazakh"
+msgstr "Kazakiska"
+
+msgid "Greenlandic"
+msgstr "Grönländska"
+
+msgid "Kannada"
+msgstr "Kannada"
+
+msgid "Korean"
+msgstr "Koreanska"
+
+msgid "Kanuri"
+msgstr "Kanuri"
+
+msgid "Kashmiri"
+msgstr "Kashmiriska"
+
+msgid "Kurdish"
+msgstr "Kurdiska"
+
+msgid "Komi"
+msgstr "Komi"
+
+msgid "Cornish"
+msgstr "Korniska"
+
+msgid "Kyrgyz"
+msgstr "Kirgiziska"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Luxembourgish"
+msgstr "Luxemburgiska"
+
+msgid "Luganda"
+msgstr "Luganda"
+
+msgid "Limburgish"
+msgstr "Limburgiska"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Laotiska"
+
+msgid "Lithuanian"
+msgstr "Litauiska"
+
+msgid "Luba-Katanga"
+msgstr "Luba-Katanga"
+
+msgid "Latvian"
+msgstr "Lettiska"
+
+msgid "Malagasy"
+msgstr "Malagassiska"
+
+msgid "Marshallese"
+msgstr "Marshallesiska"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Makedonska"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongoliska"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Malajiska"
+
+msgid "Maltese"
+msgstr "Maltesiska"
+
+msgid "Burmese"
+msgstr "Burmesiska"
+
+msgid "Nauru"
+msgstr "Nauriska"
+
+msgid "Nepali"
+msgstr "Nepalesiska"
+
+msgid "Ndonga"
+msgstr "Ndonga"
+
+msgid "Dutch"
+msgstr "Nederländska"
+
+msgid "Norwegian Nynorsk"
+msgstr "Nynorska"
+
+msgid "Navaho"
+msgstr "Navajo"
+
+msgid "Nyanja"
+msgstr "Nyanja"
+
+msgid "Occitan"
+msgstr "Occitanska"
+
+msgid "Ojibwe"
+msgstr "Ojibwe"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Oriya"
+
+msgid "Ossetian"
+msgstr "Ossetiska"
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Pali"
+msgstr "Pali"
+
+msgid "Polish"
+msgstr "Polska"
+
+msgid "Pashto"
+msgstr "Pashto"
+
+msgid "Portuguese"
+msgstr "Portugisiska"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugisiska (Brasilien)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portugisiska (Portugal)"
+
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Rätoromanska"
+
+msgid "Rundi"
+msgstr "Rundi"
+
+msgid "Romanian"
+msgstr "Rumänska"
+
+msgid "Russian"
+msgstr "Ryska"
+
+msgid "Kinyarwanda"
+msgstr "Kinjarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskrit"
+
+msgid "Sardinian"
+msgstr "Sardiska"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Singalesiska"
+
+msgid "Slovak"
+msgstr "Slovakiska"
+
+msgid "Slovenian"
+msgstr "Slovenska"
+
+msgid "Samoan"
+msgstr "Samoanska"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somaliska"
+
+msgid "Albanian"
+msgstr "Albanska"
+
+msgid "Serbian"
+msgstr "Serbiska"
+
+msgid "Swati"
+msgstr "Swati"
+
+msgid "Sundanese"
+msgstr "Sundanesiska"
+
+msgid "Swedish"
+msgstr "Svenska"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamilska"
+
+msgid "Telugu"
+msgstr "Telugu"
+
+msgid "Tajik"
+msgstr "Tadzjikiska"
+
+msgid "Thai"
+msgstr "Thailändska"
+
+msgid "Tigrinya"
+msgstr "Tigrinja"
+
+msgid "Turkmen"
+msgstr "Turkmeniska"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tonganska"
+
+msgid "Turkish"
+msgstr "Turkiska"
+
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tatariska"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahitiska"
+
+msgid "Uyghur"
+msgstr "Uiguriska"
+
+msgid "Ukrainian"
+msgstr "Ukrainska"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Uzbekiska"
+
+msgid "Venda"
+msgstr "Venda"
+
+msgid "Vietnamese"
+msgstr "Vietnamesiska"
+
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Vallonska"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Jiddisch"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+msgid "Zulu"
+msgstr "Zulu"
+
+msgid "(no translation)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "Print..."
+msgstr "Skriv ut..."
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr ""
+
 msgid "About Pd"
 msgstr "Om Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr ""
 
 msgid "Save"
 msgstr "Spara"
 
 msgid "Save As..."
 msgstr "Spara som..."
-
-msgid "Print..."
-msgstr "Skriv ut..."
 
 msgid "Paste Replace"
 msgstr ""
@@ -922,9 +1886,6 @@ msgstr "Ångra"
 msgid "Redo"
 msgstr "Gör om"
 
-msgid "List of objects..."
-msgstr ""
-
 msgid "New"
 msgstr "Ny"
 
@@ -953,6 +1914,9 @@ msgstr "Meddelande"
 
 msgid "Number"
 msgstr "Number"
+
+msgid "List"
+msgstr ""
 
 msgid "Symbol"
 msgstr "Symbol"
@@ -1018,7 +1982,13 @@ msgstr "HTML-manual..."
 msgid "Browser..."
 msgstr "Bläddra..."
 
+msgid "List of objects..."
+msgstr ""
+
 msgid "puredata.info"
+msgstr ""
+
+msgid "Check for updates"
 msgstr ""
 
 msgid "Report a bug"
@@ -1039,21 +2009,9 @@ msgstr ""
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr ""
-
-msgid "MIDI..."
-msgstr ""
-
 #, fuzzy
-msgid "Zoom New Windows"
-msgstr "Föräldrafönster"
+msgid "Edit Preferences..."
+msgstr "Inställningar..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1069,14 +2027,39 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
+#, fuzzy
+msgid "Tabbed preferences"
+msgstr "Inställningar"
+
 msgid "Open Recent"
 msgstr "Öppna senaste"
 
 msgid "Quit"
 msgstr "Avsluta"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Vill du spara dina ändringar i '%s'?"
+
 msgid "Properties"
 msgstr "Egenskaper"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Förkasta ändringar i '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr ""
 
 msgid "Audio on"
 msgstr ""
@@ -1084,13 +2067,14 @@ msgstr ""
 msgid "Audio off"
 msgstr ""
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
-msgstr ""
-
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 #, fuzzy
@@ -1118,6 +2102,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr ""
 
@@ -1130,12 +2117,32 @@ msgid "Delete"
 msgstr "Radera array"
 
 #, tcl-format
-msgid "ignoring '%s': doesn't exist"
-msgstr ""
-
-#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "bottom:"
+#~ msgstr "Underkant"
+
+#, fuzzy
+#~ msgid "height:"
+#~ msgstr "Höger"
+
+#, fuzzy
+#~ msgid "right:"
+#~ msgstr "Höger"
+
+#, fuzzy
+#~ msgid "size:"
+#~ msgstr "Storlek:"
+
+#, fuzzy
+#~ msgid "width:"
+#~ msgstr "Bredd:"
+
+#, fuzzy
+#~ msgid "start searching for externals..."
+#~ msgstr "Förkasta ändringar i '%s'?"
 
 #~ msgid "for:"
 #~ msgstr "efter:"
@@ -1158,10 +2165,6 @@ msgstr ""
 #~ msgid "Font Properties"
 #~ msgstr "Egenskaper"
 
-#, fuzzy
-#~ msgid "Pd Files"
-#~ msgstr "Fil"
-
 #~ msgid "really quit?"
 #~ msgstr "Vill du avsluta?"
 
@@ -1171,6 +2174,3 @@ msgstr ""
 
 #~ msgid "Close this window??"
 #~ msgstr "Stäng fönstret?"
-
-#~ msgid "Preferences..."
-#~ msgstr "Inställningar..."

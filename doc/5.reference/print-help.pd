@@ -1,49 +1,57 @@
-#N canvas 534 27 539 425 12;
-#X msg 185 79 walk the dog;
-#X msg 96 79 bang;
-#X msg 143 78 234;
-#X obj 143 124 print x1;
+#N canvas 526 27 537 605 12;
+#X msg 123 213 walk the dog;
 #X obj 21 12 print;
-#X obj 326 314 print -n;
-#X floatatom 326 289 5 0 0 0 - - - 0;
+#X obj 366 516 print -n;
+#X floatatom 366 491 5 0 0 0 - - - 0;
 #X text 68 12 - print messages to terminal window;
-#X text 21 379 see also:;
-#X obj 101 379 print~;
-#X text 318 380 updated for Pd version 0.52;
-#X text 39 162 Print prints out the messages it receives on the "terminal
-window" that Pd is run from. If no argument is given \, the message
-has a "print:" prefix. Any message as an argument is used as the prefix
-instead (so you can differentiate between different printouts)., f
-66;
-#X text 40 294 With the special "-n" flag the default "print:" prefix
-is suppressed:, f 38;
-#X text 38 234 You can also do command/control + click on the terminal
-window and the corresponding [print] object will be selected in your
-patch., f 66;
-#N canvas 708 126 592 223 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 101 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 138 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 195 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 126 111 NONE, f 54;
-#X text 106 67 anything - any message to print into the terminal window.
-;
+#X text 21 570 see also:;
+#X obj 101 570 print~;
+#X text 318 571 updated for Pd version 0.52;
+#X text 80 496 With the special "-n" flag the default "print:" prefix is suppressed:, f 38;
+#X text 19 126 You can also do command/control + click on the terminal window and the corresponding [print] object will be selected in your patch., f 68;
+#N canvas 708 126 593 280 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 101 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 251 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 125 110 NONE, f 54;
+#X text 106 67 anything - any message to print into the terminal window.;
 #X obj 37 15 print;
 #X text 84 15 - print messages to terminal window;
-#X text 120 146 1) anything -, f 13;
-#X text 219 146 message to distinct one [print] from another (default
-'print:'). Optionally \, use '-n' for no messages., f 44;
+#X text 88 206 1) anything -;
+#X obj 17 136 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 164 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 17 196 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
+#X text 111 170 '-n': suppresses the default 'print:' prefix.;
+#X text 187 206 message to distinct one [print] from another (default 'print:')., f 44;
 #X restore 354 12 pd reference;
 #X text 452 13 <= click;
-#X obj 8 49 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 366 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 0 0 3 0;
-#X connect 1 0 3 0;
-#X connect 2 0 3 0;
-#X connect 6 0 5 0;
+#X obj 8 49 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 557 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 77 184 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 19 62 [print] prints out the messages it receives on the "terminal window" that Pd is run from. If no argument is given \, the message has a "print:" prefix. Any message as an argument is used as the prefix instead (so you can differentiate between different printouts)., f 68;
+#X obj 108 305 print;
+#X obj 266 323 print user prefix;
+#X msg 266 173 list;
+#X msg 277 202 list x;
+#X text 306 172 becomes a bang;
+#X text 332 202 becomes a symbol;
+#X msg 135 245 list a b c;
+#X msg 298 265 float 5;
+#X msg 304 291 list 3 5;
+#X text 374 266 selector ignored, f 8;
+#X text 23 430 Note that [print] also handles pointer \, but just prints "(pointer)" to generically refer to any pointer (for an example \, check the help file of the [pointer] object)., f 69;
+#X floatatom 108 184 5 0 0 0 - - - 0;
+#X msg 288 233 list 4;
+#X text 341 232 same as a float;
+#X text 23 346 In Pd \, a list with no elements is the same as a 'bang' \, whereas a list with a single symbol is the same as a symbol message and lists with single numbers are the same as float. This is clear in [print]. The "list" and "float" selector is implicit when such messages start with a float \, so [print] ignores them., f 69;
+#X msg 158 570 message;
+#X connect 0 0 16 0;
+#X connect 3 0 2 0;
+#X connect 14 0 16 0;
+#X connect 18 0 17 0;
+#X connect 19 0 17 0;
+#X connect 22 0 16 0;
+#X connect 23 0 17 0;
+#X connect 24 0 17 0;
+#X connect 27 0 16 0;
+#X connect 28 0 17 0;

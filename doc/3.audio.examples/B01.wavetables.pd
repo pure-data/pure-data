@@ -1,52 +1,31 @@
-#N canvas 443 44 720 667 12;
+#N canvas 467 43 654 772 12;
 #X declare -stdpath ./;
-#X floatatom 177 53 0 0 0 0 - - - 0;
+#X floatatom 364 201 6 20 100 0 - - - 0;
+#X obj 364 230 mtof;
+#X floatatom 364 257 8 0 0 0 - - - 0;
+#X obj 364 286 tabosc4~ table10;
+#X msg 189 349 \; table10 const 0;
+#X obj 364 324 output~;
+#X obj 397 35 declare -stdpath ./;
+#X text 67 414 If you want a specific sinusoidal composition \, you can send table10 a message \, as below (see 15.arrays in the control examples):;
+#X obj 82 22 cnv 5 5 25 empty empty Wavetable\ Oscillator 15 13 0 16 #dfdfdf #202020 0;
+#X text 72 357 Clear table -->;
+#X text 53 543 Note that I selected "save contents" in the properties dialog for table10 (right click on the table to see.) If this isn't set \, the waveform won't be remembered as part of the patch but will be reinitialized to zero when the patch is reopened. If this is set and you modified the waveform \, the current waveform gets stored with the file when you save the patch., f 74;
+#X text 414 201 <-- pitch;
+#X text 488 286 <-- wavetable oscillator, f 13;
+#X text 61 73 Here \, in place of the [osc~] cosine wave oscillator \, we introduce the [tabosc4~] oscillator which uses arbitrary waveforms from arrays. You can draw a waveform in the array with the mouse., f 66;
+#X msg 154 455 \; table10 cosinesum 256 0.2 -0.2 0.2 -0.2 0.2 -0.2 0.2 \, normalize;
+#X obj 364 147 loadbang;
+#X msg 364 174 60;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table10 259 float 1;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0.612 0.612 0.612 0.612 0.612 0.627692 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769
--0.470769 -0.470769 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0.627692 0.627692 0.627692 0.643385 0.643385 0.643385
-0.659077 0 -0.502154 -0.502154 -0.502154 -0.486462 -0.486462 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0.580615 0.596308 0.596308 0.596308 0.596308
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.612 0.612 0.612 0.612 0.612 0.627692 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.627692 0.627692 0.627692 0.643385 0.643385 0.643385 0.659077 0 -0.502154 -0.502154 -0.502154 -0.486462 -0.486462 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.580615 0.596308 0.596308 0.596308 0.596308 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1.02 258 -1.02 258 130 1;
-#X restore 366 70 graph;
-#X text 485 620 updated for Pd version 0.34;
-#X text 46 18 WAVETABLE OSCILLATORS;
-#X text 78 116 wavetable;
-#X obj 177 80 mtof;
-#X floatatom 177 107 0 0 0 0 - - - 0;
-#X obj 177 133 tabosc4~ table10;
-#X text 63 326 Note that I selected "save contents" in the properties
-dialog for table10 (right click on the table to see.) If this isn't
-set \, the waveform won't be remembered as part of the patch but will
-be reinitialized to zero when the patch is reopened.;
-#X msg 81 572 \; table10 cosinesum 256 0.2 -0.2 0.2 -0.2 0.2 -0.2 0.2
-;
-#X msg 520 252 \; table10 const 0;
-#X text 525 229 CLEAR TABLE;
-#X text 63 408 For efficiency's sake tabosc4~ requires that the table
-have a power of two plus three points (64+3=67 \, 128+3=131 \, 256+3=259
-\, etc.) If you want wraparound to work smoothly \, you should make
-the last three points copies of the first three. This is done because
-tabread4~ does 4-point interpolation.;
-#X text 63 502 If you want a specific sinusoidal composition \, you
-can send table10 a message \, as below (see 11.arrays in the control
-examples):;
-#X text 63 260 Here \, in place of the "osc~" cosine wave oscillator
-\, we introduce the tabosc4~ oscillator which produces an arbitrary
-waveform. You can draw in the waveform with the mouse., f 59;
-#X obj 177 167 output~;
-#X text 72 133 oscillator =>;
-#X text 107 52 pitch =>;
-#X obj 497 24 declare -stdpath ./;
-#X connect 0 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 15 0;
-#X connect 7 0 15 1;
+#X restore 61 173 graph;
+#X text 53 627 For efficiency's sake [tabosc4~] requires that the table has a power of two plus three points (64+3=67 \, 128+3=131 \, 256+3=259 \, etc.) The three extra points are for copies of the first and last two points (more details later). The extra points are needed if you want wraparound to work smoothly and this is done because [tabosc4~] does 4-point interpolation. The sinesum and cosinesum commands already create table with these extra points worked out., f 74;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 0;

@@ -5,7 +5,7 @@
 /* ref: https://developer.apple.com/library/archive/documentation/MusicAudio/Reference/CAFSpec/CAF_spec/CAF_spec.html */
 
 #include "d_soundfile.h"
-#include <math.h>
+
 #ifndef _MSC_VER
 #include <inttypes.h>
 #endif
@@ -30,7 +30,9 @@
                     instrument, MIDI, overview, peak, edit comments,
                     information, unique material identifier, user-defined
   * ignores any chunks after finding the data chunk
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+
+  Pd versions < 0.55 did not read or write 64 bit float.
 
   Pd versions < 0.51 did *not* read or write CAF files.
 
@@ -127,7 +129,7 @@ static off_t caf_firstchunk(const t_soundfile *sf, t_chunk *chunk)
 }
 
     /** read next chunk, chunk should be filled when calling
-        returns fills chunk offset on success or -1 */
+        returns filled chunk offset on success or -1 */
 static off_t caf_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
 {
     int64_t chunksize = caf_getchunksize(chunk, !sys_isbigendian());
@@ -248,12 +250,12 @@ static int caf_readheader(t_soundfile *sf)
     bytespersample = swap4(desc->ds_bitsperchannel, swap) / 8;
     switch (bytespersample)
     {
-        case 2: case 3: case 4: break;
+        case 2: case 3: case 4: case 8: break;
         default:
             errno = SOUNDFILE_ERRSAMPLEFMT;
             return 0;
     }
-    if (bytespersample == 4 && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
+    if ((bytespersample == 4 || bytespersample == 8) && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
     {
         errno = SOUNDFILE_ERRSAMPLEFMT;
         return 0;
@@ -337,7 +339,7 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE - CAFCHUNKSIZE, swap);
     caf_setsamplerate(&desc, sf->sf_samplerate, swap);
     strncpy(desc.ds_fmtid, "lpcm", 4);
-    if (sf->sf_bytespersample == 4)
+    if (sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8)
         uinttmp |= kCAFLinearPCMFormatFlagIsFloat;
     if (!sf->sf_bigendian)
         uinttmp |= kCAFLinearPCMFormatFlagIsLittleEndian;
@@ -402,7 +404,7 @@ static int caf_addextension(char *filename, size_t size)
 }
 
     /* default to big endian if not specified */
-static int caf_endianness(int endianness)
+static int caf_endianness(int endianness, int bytespersample)
 {
     if (endianness == -1)
         return 1;

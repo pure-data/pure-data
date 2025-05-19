@@ -1,41 +1,33 @@
 #N struct template4 float x float y float z float q;
-#N canvas 378 68 608 440 12;
-#X obj 235 354 pointer;
-#X msg 160 215 bang;
-#X text 201 214 click here to re-initialize;
-#X obj 70 385 append template4 x y z q;
-#X msg 311 279 \; pd-data4 clear;
-#N canvas 1012 89 315 341 data4 1;
-#X scalar template4 50 250 30 9 \;;
-#X scalar template4 200 20 80 90 \;;
-#X scalar template4 100 200 -50 0 \;;
-#X restore 459 302 pd data4;
+#N canvas 229 38 618 532 12;
+#X obj 235 356 pointer;
+#X obj 70 387 append template4 x y z q;
+#X msg 311 281 \; pd-data4 clear;
 #N canvas 396 463 460 157 template4 0;
-#X obj 44 63 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X obj 44 38 struct template4 float x float y float z float q;
-#X text 30 98 The template for the three scalars \, as in the last
-patch;
-#X restore 457 326 pd template4;
-#X msg 235 324 traverse pd-data4 \, bang;
-#X text 31 152 The outlet of "append" is a pointer to the newly created
-scalar. You can pass that on to other append objects if you want to
-build heterogeneous lists., f 77;
-#X text 32 96 The "append" object is given the argument "template4"
-to specify what kind of data structure to append. The other arguments
-are the names of variables we'll set., f 77;
-#X obj 160 249 trigger bang bang bang;
-#X text 33 11 The objects below put three items in the data window.
-First the window is cleared bu sending the 'clear' message to the subpatch
-name. Then a "pointer" object is instructed to point to the beginning
-of the data window ("traverse pd-data") \, and to output its value
-("bang") to the "append" object. This object is then given numeric
-values to create three items., f 77;
-#X msg 70 300 50 250 30 9 \, 200 20 80 90 \, 100 200 -50 0, f 13;
-#X text 367 384 Updated for Pd version 0.32;
-#X connect 0 0 3 4;
-#X connect 1 0 10 0;
-#X connect 7 0 0 0;
-#X connect 10 0 12 0;
-#X connect 10 1 7 0;
-#X connect 10 2 4 0;
-#X connect 12 0 3 0;
+#X obj 49 62 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X obj 49 37 struct template4 float x float y float z float q;
+#X text 30 98 The template for the three scalars \, as in previous patches;
+#X restore 457 328 pd template4;
+#X msg 235 326 traverse pd-data4 \, bang;
+#X obj 160 251 trigger bang bang bang;
+#X text 27 110 The [append] object is given the argument "template4" to specify what kind of data structure to append. The other arguments are the names of variables we'll set., f 78;
+#X text 26 161 The outlet of [append] is a pointer to the newly created scalar. You can pass that on to other append objects if you want to build heterogeneous lists., f 78;
+#X obj 160 217 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 185 217 <-- click to re-initialize;
+#X text 27 15 The objects below put three items in the data window. First the window is cleared by sending the 'clear' message to the subpatch name preceded by 'pd-' ("pd-data4" in this case). Then a [pointer] object is instructed to point to the head of the list at the beginning of the data window ("traverse pd-data") \, and to output this pointer value ("bang") to the [append] object. This object is then given numeric values to create three items., f 78;
+#X msg 276 476 \; pd-data4 scalar template4 175 200 80 600;
+#X text 132 432 You can also add scalars by sending a 'scalar' message to the suboatch. The arguments of this message is template name and its field values., f 62;
+#X msg 70 302 50 250 40 9 \, 200 50 80 90 \, 100 200 -50 0, f 13;
+#N canvas 861 111 365 362 data4 1;
+#X scalar template4 50 250 40 9 \;;
+#X scalar template4 200 50 80 90 \;;
+#X scalar template4 100 200 -50 0 \;;
+#X coords 0 362 1 361 300 300 0;
+#X restore 457 303 pd data4;
+#X connect 0 0 1 4;
+#X connect 4 0 0 0;
+#X connect 5 0 13 0;
+#X connect 5 1 4 0;
+#X connect 5 2 2 0;
+#X connect 8 0 5 0;
+#X connect 13 0 1 0;

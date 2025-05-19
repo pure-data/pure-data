@@ -1,71 +1,60 @@
-#N canvas 533 36 948 552 12;
+#N canvas 324 51 948 552 12;
 #X obj 88 119 send \$1;
 #X obj 199 119 + \$2;
 #X floatatom 303 93 0 0 0 0 - - - 0;
 #X obj 303 144 print;
 #X msg 303 119 blah \$1;
-#X text 36 173 This may sound inconsistent \, but it's not--object
-and message boxes are both actually messages \, but in the case of
-the Object box the message is passed at creation time \, and for the
-Message box \, at message time.;
-#X msg 188 284 bang;
+#X text 36 173 This may sound inconsistent \, but it's not--object and message boxes are both actually messages \, but in the case of the Object box the message is passed at creation time \, and for the Message box \, at message time.;
 #X obj 188 312 symbol \$1;
-#X msg 98 284 bang;
 #X obj 98 312 float \$2;
 #X floatatom 98 339 5 0 0 0 - - - 0;
 #X symbolatom 188 341 10 0 0 0 - - - 0;
-#X text 36 241 So how do you put creation arguments in messages? Use
-"float" and "symbol" as shown:;
-#X msg 138 415 bang;
-#X obj 138 439 float \$2;
-#X msg 138 486 five \$1;
-#X text 45 380 Then if you wish \, connect to a message box as in:
-;
-#X obj 138 511 print;
-#X msg 600 62 bang;
+#X obj 138 441 float \$2;
+#X msg 138 488 five \$1;
+#X text 45 380 Then if you wish \, connect to a message box as in:;
+#X obj 138 513 print;
 #X obj 600 116 symbol \$1;
 #X obj 716 116 f \$2;
 #X obj 600 143 pack symbol float;
 #X msg 600 169 six \$1 \$2;
 #X obj 600 196 print;
-#X text 493 29 For messages combining more than one creation argument
-try:;
-#X text 37 40 In Object boxes \, dollar signs refer to the abstraction's
-creation arguments. In Messages \, they change dynamically:;
-#X text 41 8 This is an abstraction used in example 14 \, "dollarsigns".
-;
+#X text 493 29 For messages combining more than one creation argument try:;
+#X text 41 8 This is an abstraction used in example 14 \, "dollarsigns".;
 #X obj 600 88 trigger bang bang;
 #X msg 644 300 args;
 #X obj 644 328 pdcontrol;
 #X obj 644 380 list prepend six;
 #X obj 644 410 list trim;
 #X obj 644 440 print;
-#X text 701 496 updated for Pd version 0.52;
 #X listbox 644 353 15 0 0 0 - - - 0;
-#X floatatom 138 463 5 0 0 0 - - - 0;
-#X text 502 240 You can also use [pdcontrol] \, which is better suited
-for abstractions that can take different numbers of arguments \, which
-come out as a list:;
-#X text 689 298 <= click;
+#X floatatom 138 465 5 0 0 0 - - - 0;
+#X text 37 40 In object boxes \, dollar signs refer to the abstraction's creation arguments. In Messages \, they change dynamically:;
+#X text 36 241 So how do you put creation arguments in messages? Use [float] and [symbol] as shown:;
+#X text 502 240 You can also use [pdcontrol] \, which is better suited for abstractions that can take different numbers of arguments that come out as a list:;
+#X text 689 298 <-- click;
+#X obj 98 284 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 188 284 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 138 415 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 600 61 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 2 0 4 0;
 #X connect 4 0 3 0;
-#X connect 6 0 7 0;
-#X connect 7 0 11 0;
-#X connect 8 0 9 0;
-#X connect 9 0 10 0;
-#X connect 13 0 14 0;
-#X connect 14 0 35 0;
-#X connect 15 0 17 0;
-#X connect 18 0 27 0;
-#X connect 19 0 21 0;
-#X connect 20 0 21 1;
-#X connect 21 0 22 0;
+#X connect 6 0 9 0;
+#X connect 7 0 8 0;
+#X connect 10 0 28 0;
+#X connect 11 0 13 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 1;
+#X connect 16 0 17 0;
+#X connect 17 0 18 0;
+#X connect 21 0 14 0;
+#X connect 21 1 15 0;
 #X connect 22 0 23 0;
-#X connect 27 0 19 0;
-#X connect 27 1 20 0;
-#X connect 28 0 29 0;
-#X connect 29 0 34 0;
-#X connect 30 0 31 0;
-#X connect 31 0 32 0;
-#X connect 34 0 30 0;
-#X connect 35 0 15 0;
+#X connect 23 0 27 0;
+#X connect 24 0 25 0;
+#X connect 25 0 26 0;
+#X connect 27 0 24 0;
+#X connect 28 0 11 0;
+#X connect 33 0 7 0;
+#X connect 34 0 6 0;
+#X connect 35 0 10 0;
+#X connect 36 0 21 0;

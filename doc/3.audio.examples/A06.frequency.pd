@@ -1,63 +1,54 @@
-#N canvas 890 99 712 706 12;
+#N canvas 441 38 781 699 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array osc-output 4410 float 0;
-#X coords 0 1.02 4410 -1.02 200 130 1;
-#X restore 449 248 graph;
-#X obj 209 327 tabwrite~ osc-output;
-#X msg 209 298 bang;
-#X floatatom 326 127 0 0 0 0 - - - 0;
-#X obj 150 262 r frequency;
-#X msg 326 98 set \$1;
-#X floatatom 52 127 0 0 0 0 - - - 0;
-#X obj 52 69 r frequency;
-#X msg 52 98 set \$1;
-#X obj 65 151 s frequency;
-#X obj 326 69 r pitch;
-#X obj 335 151 s pitch;
-#X obj 326 177 mtof;
-#X obj 326 206 s frequency;
-#X obj 52 206 s pitch;
-#X obj 52 177 ftom;
-#X text 85 485 Frequency and pitch are converted using the "ftom" and
-"mtof" objects. Frequency refers to the number of cycles per second.
-Pitch is "60" for Middle C \, 61 for C sharp \, 72 for the next C up
-\, and so on., f 70;
-#X text 472 389 ---- 0.1 seconds ----;
-#X text 97 20 FREQUENCY AND PITCH;
-#X text 85 434 The osc~ object \, if you give it an argument \, expects
-floating-point messages to set its frequency. Without arguments \,
-its frequency is controlled by connecting an audio signal to its input.
-, f 70;
-#X text 85 537 mtof and ftom work fine for microtones (non-integral
-"MIDI pitch" ) and don't have MIDI's range restriction-- for example
-\, MIDI -36 is about 1 Hz., f 70;
-#X text 85 588 Note also the "set" messages going to the number boxes
-so that they can each update the other without bringing on an infinite
-loop. (get help on number boxes for details.), f 70;
-#X text 152 195 to "MIDI" pitch;
-#X obj 92 339 output~;
-#X text 471 660 updated for Pd version 0.36;
-#X obj 150 298 osc~;
-#X text 164 356 <= output level;
-#X text 246 298 <= click to graph;
-#X text 97 177 <= convert frequency;
-#X text 100 127 <= set frequency;
-#X text 370 126 <= set MIDI pitch;
-#X text 373 178 <= convert "MIDI" pitch to frequency;
-#X obj 512 25 declare -stdpath ./;
-#X connect 2 0 1 0;
-#X connect 3 0 11 0;
-#X connect 3 0 12 0;
-#X connect 4 0 25 0;
-#X connect 5 0 3 0;
-#X connect 6 0 9 0;
-#X connect 6 0 15 0;
-#X connect 7 0 8 0;
-#X connect 8 0 6 0;
-#X connect 10 0 5 0;
-#X connect 12 0 13 0;
-#X connect 15 0 14 0;
-#X connect 25 0 1 0;
-#X connect 25 0 23 0;
-#X connect 25 0 23 1;
+#X coords 0 1.02 4409 -1.02 241 178 1;
+#X restore 485 195 graph;
+#X obj 187 556 tabwrite~ osc-output;
+#X floatatom 87 287 8 0 0 0 - - - 0;
+#X obj 128 419 r frequency;
+#X floatatom 292 287 8 0 0 0 - - - 0;
+#X obj 292 229 r frequency;
+#X msg 292 258 set \$1;
+#X obj 87 254 r pitch;
+#X obj 87 333 mtof;
+#X obj 87 372 s frequency;
+#X obj 292 372 s pitch;
+#X obj 292 333 ftom;
+#X text 531 397 ---- 0.1 seconds ----;
+#X obj 128 596 output~;
+#X obj 128 478 osc~;
+#X obj 584 93 declare -stdpath ./;
+#X text 353 286 <-- set frequency, f 9;
+#X text 155 286 <-- set MIDI pitch, f 11;
+#X obj 187 515 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 49 17 cnv 5 5 25 empty empty Frequency\ and\ "MIDI"\ Pitch 15 13 0 16 #dfdfdf #202020 0;
+#X text 332 332 <--;
+#X text 123 331 <-- convert "MIDI" pitch to frequency, f 19;
+#X obj 187 481 metro 500;
+#X obj 187 453 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 210 452 <-- graph repeatedly;
+#X text 425 471 Note the "set" messages going to the number boxes so that they can each update the other without bringing on an infinite loop. (get help on number boxes for details.), f 43;
+#X text 428 570 Note also that [mtof] and [ftom] work fine for microtones (non-integral "MIDI pitch") and don't have MIDI's range restriction - for example \, MIDI -36 is about 1 Hz., f 42;
+#X obj 43 180 loadbang;
+#X msg 43 213 60;
+#X text 358 333 convert to "MIDI" pitch, f 12;
+#X text 28 64 Frequency refers to the number of cycles per second (Hz). Pitch is "MIDI" Pitch \, where "60" correspond to Middle C \, 61 for C sharp \, 72 for the next C up \, and so on. The [osc~] object expects signals or floating-point messages to set its frequency in Hz. You can \, however \, set a "MIDI" Pitch value and convert to Frequency. Frequency and pitch are converted using the [ftom] and [mtof] objects., f 70;
+#X text 212 515 <-- graph once;
+#X text 76 214 <- reset to default;
+#X text 109 175 Default message automatically sent when you load this patch by the [loadbang] object., f 45;
+#X connect 2 0 8 0;
+#X connect 3 0 14 0;
+#X connect 4 0 11 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 2 0;
+#X connect 8 0 9 0;
+#X connect 11 0 10 0;
+#X connect 14 0 1 0;
+#X connect 14 0 13 0;
+#X connect 18 0 1 0;
+#X connect 22 0 18 0;
+#X connect 23 0 22 0;
+#X connect 27 0 28 0;
+#X connect 28 0 2 0;

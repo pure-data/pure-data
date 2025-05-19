@@ -1,6 +1,13 @@
 
 package provide wheredoesthisgo 0.1
 
+namespace eval ::pd::private:: {
+    # these are some private variables for which there is
+    # no more specific namespace yet...
+    variable lastsavedir ""
+    variable lastopendir ""
+}
+
 # a place to temporarily store things until they find a home or go away
 
 proc open_file {filename} {
@@ -8,7 +15,7 @@ proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
     if { ! [file exists $filename]} {
-        ::pdwindow::post [format [_ "ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::post [_ "ignoring '%s': doesn't exist" $filename]
         ::pdwindow::post "\n"
         # remove from recent files
         ::pd_guiprefs::update_recentfiles $filename true
@@ -21,53 +28,88 @@ proc open_file {filename} {
         # now this is done in pd_guiprefs
         ::pd_guiprefs::update_recentfiles $filename
     } else {
-        ::pdwindow::post [format [_ "ignoring '%s': doesn't look like a Pd file"] $filename]
+        ::pdwindow::post [_ "ignoring '%s': doesn't look like a Pd file" $filename]
         ::pdwindow::post "\n"
     }
 }
 
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
-
-proc pdtk_openpanel {target localdir {mode 0}} {
-    if {! [file isdirectory $localdir]} {
+proc pdtk_openpanel {target localdir {mode 0} {parent .pdwindow}} {
+    set localdir [file normalize $localdir]
+    if { $::pd::private::lastopendir == "" } {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
         }
-        set localdir $::fileopendir
+        set ::pd::private::lastopendir $::fileopendir
     }
-    # 0: file, 1: directory, 2: multiple files
-    switch $mode {
-        0 { set result [tk_getOpenFile -initialdir $localdir] }
-        1 { set result [tk_chooseDirectory -initialdir $localdir] }
-        2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
-        default { ::pdwindow::error "bad value for 'mode' argument" }
+    if {! [file isdirectory $localdir]} {
+        set localdir $::pd::private::lastopendir
+    }
+    if { ! [winfo exists parent] } {
+        set parent .pdwindow
+    }
+
+    set result ""
+    if { [winfo exists parent] } {
+        # 0: file, 1: directory, 2: multiple files
+        switch $mode {
+            0 { set result [tk_getOpenFile -initialdir $localdir \
+                                -parent $parent] }
+            1 { set result [tk_chooseDirectory -initialdir $localdir \
+                                -parent $parent] }
+            2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir \
+                                -parent $parent] }
+            default { ::pdwindow::error "bad value for 'mode' argument" }
+        }
+    } else {
+        switch $mode {
+            0 { set result [tk_getOpenFile -initialdir $localdir] }
+            1 { set result [tk_chooseDirectory -initialdir $localdir] }
+            2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
+            default { ::pdwindow::error "bad value for 'mode' argument" }
+        }
     }
     if {$result ne ""} {
         if { $mode == 2 } {
             # 'result' is a list
-            set ::fileopendir [file dirname [lindex $result 0]]
+            set ::pd::private::lastopendir [file dirname [lindex $result 0]]
+            set ::fileopendir $::pd::private::lastopendir
             set args {}
             foreach path $result {
                 lappend args [enquote_path $path]
             }
             pdsend "$target callback [join $args]"
         } else {
-            set ::fileopendir [expr {$mode == 0 ? [file dirname $result] : $result}]
+            set ::pd::private::lastopendir [expr {$mode == 0 ? [file dirname $result] : $result}]
+            set ::fileopendir $::pd::private::lastopendir
             pdsend "$target callback [enquote_path $result]"
         }
     }
 }
 
-proc pdtk_savepanel {target localdir} {
-    if {! [file isdirectory $localdir]} {
+
+proc pdtk_savepanel {target localdir {parent .pdwindow}} {
+    set localdir [file normalize $localdir]
+    if { $::pd::private::lastsavedir == "" } {
         if { ! [file isdirectory $::filenewdir]} {
             set ::filenewdir $::env(HOME)
         }
-        set localdir $::filenewdir
+        set ::pd::private::lastsavedir $::filenewdir
     }
-    set filename [tk_getSaveFile -initialdir $localdir]
+    if {! [file isdirectory $localdir]} {
+        set localdir $::pd::private::lastsavedir
+    }
+    if { ! [winfo exists parent] } {
+        set parent .pdwindow
+    }
+    if { [winfo exists parent] } {
+        set filename [tk_getSaveFile -initialdir $localdir -parent $parent]
+    } else {
+        set filename [tk_getSaveFile -initialdir $localdir]
+    }
     if {$filename ne ""} {
+        set ::pd::private::lastsavedir [file dirname $filename]
         pdsend "$target callback [enquote_path $filename]"
     }
 }
@@ -99,9 +141,11 @@ proc lookup_windowname {mytoplevel} {
     set window [array get ::windowname $mytoplevel]
     if { $window ne ""} {
         return [lindex $window 1]
-    } else {
-        return ERROR
     }
+    if { [winfo exists $mytoplevel] } {
+        return [wm title [winfo toplevel $mytoplevel]]
+    }
+    return ERROR
 }
 
 proc tkcanvas_name {mytoplevel} {
@@ -162,6 +206,18 @@ proc respace_text {x} {
     if {$y eq ""} {set y "empty"}
     concat $y
 }
+
+# 'set' a variable with escaped value(s) unescaped
+# (to be used over the wire)
+proc set_escaped {varname args} {
+    upvar ${varname} localvar
+    set localvar {}
+    foreach arg ${args} {
+        set x [subst -nocommands -novariables ${arg}]
+        lappend localvar $x
+    }
+}
+
 
 # ------------------------------------------------------------------------------
 # watchdog functions

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<HEAD>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual - Chapter 1: Introduction</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
+</HEAD>
+<BODY>
+
+<div class="nav nav-top">
+    <div class="nav-back"><A href="../index.htm">&lt; Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter2.htm">Chapter 2: Theory of operation &gt;</A></div>
+</div>
+
+<div id="corpus">
+
+<IMG id="logo" src="icon.png" ALT="pd icon">
+
+<H2>Chapter 1: Introduction</H2>
+
+<P> This is the official HTML manual for Pure Data, a patchable
+computer music environment for audio analysis, synthesis and digital
+signal processing in real time (aka "Live Electronics"). Pd can be
+extended with third-party libraries for additional computer music
+features, multimedia capabilities and more, making Pd a programming
+environment also for video, graphics, interfacing with arduino, etc.
+
+<P> Pd is commonly used for live music performance, VeeJaying, sound effects,
+composition, audio analysis, interfacing with sensors, using cameras,
+controlling robots, designing apps, procedural audio for games or even
+interacting with websites. Because all of these various media are handled as
+digital data within the program, many fascinating opportunities for
+cross-synthesis between them exist. Sound can be used to manipulate video,
+which could then be streamed over the internet to another computer which might
+analyze that video and use it to control a motor-driven installation and whatnot.
+
+<P> The latest version of this manual is found online
+at <A href="http://msp.ucsd.edu/software.html">
+http://msp.ucsd.edu/software.html</A>,
+along with the downloads of the
+latest Pd releases.
+
+<H3> <A href="#s1.1" id="s1.1"> 1.1. Guide to Pd's documentation </A> </H3>
+
+<P> Besides this HTML manual, you'll find the 'doc' folder with more documentation
+resources in Pd's installation folder, which is also accessible through the
+<b>Help menu</b>. Here's an overview of its structure:
+
+<PRE>
+Pd/
+├── doc/
+    ├── 1.manual/
+    ├── 2.control.examples/
+    ├── 3.audio.examples/
+    ├── 4.data.structures/
+    ├── 5.reference/
+    ├── 6.externs/
+    ├── 7.stuff/
+    ├── 8.topics/
+</PRE>
+
+<UL>
+<LI>The first subfolder <b>1.manual</b> includes this HTML manual and consists of 6 sections:
+
+<UL>
+<LI> This <A href="chapter1.htm"> introduction </A>
+<LI> A <A href="chapter2.htm"> theory of operations</A>, explaining how Pd works
+<LI> Instructions on <A href="chapter3.htm"> installing and configuring Pd</A>
+<LI> Information on managing <A href="chapter4.htm"> externals </A>
+<LI> The <A href="chapter5.htm"> changelog </A>
+<LI> Instructions on <A href="chapter6.htm"> building Pd from source </A>
+</UL>
+
+<LI>Next, there's a series of tutorial patches, starting with <b>2.control.examples</b>,
+which serve as an introduction to Pd's "control" structure (as opposed to audio
+functions which are covered next).
+
+<LI><b>3.audio.examples</b> includes a set of examples that are also part of Miller
+Puckette's book "The Theory and Technique of Electronic Music".
+The book is freely available online at
+<A href="http://msp.ucsd.edu/techniques.htm"> http://msp.ucsd.edu/techniques.htm</A>.
+
+<LI><b>4.data.structures</b> is the last tutorial, giving an introduction to Pd's Data
+Structures feature, also described in this manual in section
+<A href="chapter2.htm#s2.10">2.10 Data Structures</A>.
+
+<LI>In the <b>5.reference</b> folder, you find the help patches for all objects.
+
+<LI>The <b>6.externs</b> folder includes instructions on how to write externals,
+including sample C code for different use cases. More information on externals
+is found in <a href="chapter4.htm">Chapter 4: Externals </a> of this manual.
+
+<LI>In the <b>7.stuff</b> folder, you'll find additional patches to explore.
+
+<LI>The last subfolder <b>8.topics</b> includes extra documentation with more details on
+specific topics that is referred in the help files.
+</UL>
+
+<H3> <A href="#s1.2" id="s1.2"> 1.2. The Help menu </A> </H3>
+
+<P> This section describes Pd's <b>Help menu</b>, which offers shortcuts
+to the documentation and other resources. "Pd Help" opens this HTML manual.
+
+<figure>
+<IMG src="1.2.1.png" ALT="pd help">
+    <figcaption><u>Fig. 1.2.1</u> The Help menu</figcaption>
+</figure>
+
+<P> The "Browser..." entry opens Pd's internal file document browser. The
+"Pure Data" folder shown on top of this file browser points to the 'doc'
+folder (just explained above) and it's a quick way to navigate and open
+the manual, particular help files, examples from the tutorials, etc.
+
+<figure>
+<IMG src="1.2.2.png" ALT="browser">
+    <figcaption><u>Fig. 1.2.2</u> The Help browser accessing the Pd's documentation folder</figcaption>
+</figure>
+
+<P> In this browser window, you'll also find the "externals" installed on your
+system. By default, Pd comes with an 'extra' library, so you'll find these
+externals here even if you have not yet installed anything.
+
+<P> The 'List of objects' entry of the <b>Help menu</b> opens a patch that
+includes a list of all native objects with brief explanations.
+
+<figure>
+<IMG src="1.2.3.png" ALT="list of objects">
+    <figcaption><u>Fig. 1.2.3</u> The help-intro patch with a list of all internal objects</figcaption>
+</figure>
+
+<P> The 'puredata.info' entry opens <a href="http://www.pure-data.info/">
+pure-data.info</a>, an extensive Pd community website that aims to be the central
+resource for Pd, from downloads to forums, member pages, extra documentation resources
+and a patch exchange.
+
+<P> The 'check for updates' entry just opens <a href="http://msp.ucsd.edu/software.html">
+http://msp.ucsd.edu/software.html</a> for you to check if there is a new Pd version for
+download.
+
+<P> The 'report a bug' entry opens the <A href=https://github.com/pure-data/pure-data/issues>
+Pd issue tracker</A> on github, where you can find known bugs and also report them.
+
+<P> The <b>Help menu</b> also allows you to find and download externals with the "Find
+externals" entry, which opens a Pd extension manager. This is described more detailed in
+<A href="chapter4.htm#s4.3.2">4.3.2 How to Download Externals from Pd</A>.
+
+
+<H3> <A href="#s1.3" id="s1.3"> 1.3. Other resources </A> </H3>
+
+<P> The Pd source code is found on github, on the
+<A href=https://github.com/pure-data/pure-data/> Pd GitHub project page</A>. This project
+also includes a repository that focuses on Pd's documentation, called
+<A href=https://github.com/pure-data/pddp>pddp (Pure Data Documentation Project)</A>.
+This repository also has an <A href=https://github.com/pure-data/pddp/issues> issue tracker</A>
+for issues related to the documentation.
+
+<P> Most of the interesting news related to Pd show up on the Pd mailing list,
+maintained by IOhannes zm&ouml;lnig. To subscribe or browse the archives,
+visit: <A href="https://lists.puredata.info/listinfo/pd-list">
+https://lists.puredata.info/listinfo/pd-list</A>. This is the best source of
+recent information regarding installation problems and bugs. It is perfectly
+reasonable to post "beginner" questions on this list; alternatively you can
+contact msp@ucsd.edu for help. Many extensions for Pd also get announced on the
+mailing list.
+
+<P> Other community resources online include the <A href="http://forum.pdpatchrepo.info/">
+Pd forum</A>, a <A href="https://telegram.me/puredata ">Pd telegram group</A>, a
+<A href="https://www.facebook.com/groups/4729684494 ">Facebook group</A> and a
+<A href="https://discord.gg/bcPZcKQkmW">Discord channel</A>. Here, you can find many users
+that can help you with basic instructions and troubleshooting as well as other interactions
+with the community.
+
+<H3> <A href="#s1.4" id="s1.4"> 1.4. Other flavors </A> </H3>
+
+<P> Pure Data, being an open source project, can be forked into alternative projects that
+are developed independently. These forks are also known as "different flavors" of Pd.
+This manual covers the official Pure Data distribution by Miller Puckette, which is also
+known as the "Vanilla" flavor of Pd, so it's commonly referred to "Pd Vanilla".
+
+<P> Other Pd flavors mainly focus on two things, modifying the GUI to offer more user-friendliness
+and extending its default features with pre-installed externals. Notably, the PlugData fork
+also allows you to run Pd as a plugin in any DAW.
+
+<P> A very important and historical flavor of Pd was Pd-extended, which has been discontinued
+in 2014. This used to come with a vast collection of externals. Many Pure Data tutorials
+out there are based on this distribution. You can still follow Pd-extended tutorials if you
+install the necessary libraries, but note that these tutorials are very outdated and don't
+include many goodies that have been included in Pd Vanilla over the last years, like the
+<b>[clone]</b> object, <b>[savestate]</b>, <b>[file]</b>, multichannel connections and many
+more.
+
+<P> The currently active and main flavors of Pd are presented on the front page
+of <A href="https://puredata.info/"> https://puredata.info/</A>. Note that some
+forks may introduce incompatibilities and not be fully up to date with Pd Vanilla.
+For forks that are fully compatible, the information in this manual should also apply
+for the most part.
+
+</div>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="../index.htm">&lt; Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter2.htm">Chapter 2: Theory of operation &gt;</A></div>
+</div>
+
+</BODY>
+</HTML>

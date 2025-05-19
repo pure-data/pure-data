@@ -1,75 +1,59 @@
-#N canvas 588 53 480 548 12;
+#N canvas 541 39 480 601 12;
 #X declare -stdpath ./;
-#X floatatom 139 208 7 0 0 0 - - - 0;
-#X msg 106 181 clear;
-#X text 35 91 The left inlet is the incoming audio signal \, the middle
-control input sets center frequency and the right input sets "Q".,
-f 58;
-#X floatatom 173 235 5 1 50 0 - - - 0;
-#X text 35 53 bp~ passes a sinusoid at the center frequency at unit
-gain (approximately). Other frequencies are attenuated.;
-#X text 25 393 NOTE: the maximum center frequency is sample rate divided
-by 6.28 \, or about 12kHz at the "usual" rates - for a more general
-and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X text 196 208 <= center frequency;
-#X text 153 180 <= reinitialize internal state;
-#X text 194 260 Arguments initialize center frequency and Q, f 22
-;
-#X obj 48 314 output~;
-#X obj 38 196 noise~;
-#X obj 284 141 declare -stdpath ./;
-#X text 220 235 <= Q (controls bandwidth);
-#X obj 106 268 bp~ 500 10;
-#X text 124 312 Listen to how the white noise input is filtered. The
-higher the Q \, the more attenuation we have for frequencies besides
-the center frequency \, so the less wide the frequency band is., f
-48;
+#X floatatom 89 249 7 0 0 0 - - - 0;
+#X msg 56 192 clear;
+#X text 25 91 The left inlet is the incoming audio signal \, the middle control input sets center frequency and the right input sets "Q"., f 63;
+#X floatatom 123 306 5 1 50 0 - - - 0;
+#X obj 56 379 output~;
+#X obj 31 160 noise~;
+#X obj 285 146 declare -stdpath ./;
+#X obj 56 339 bp~ 500 10;
+#X text 181 368 Listen to how the white noise input is filtered. The higher the Q \, the more attenuation we have for frequencies besides the center frequency \, so the less wide the frequency band is., f 38;
 #X obj 20 9 bp~;
-#X text 16 483 see also:;
-#X obj 88 484 vcf~;
-#X text 270 488 updated for Pd version 0.46;
-#X obj 130 484 bob~;
-#X obj 170 484 lop~;
-#X obj 210 484 hip~;
-#X obj 5 42 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 16 543 see also:;
+#X obj 88 544 vcf~;
+#X text 270 548 updated for Pd version 0.46;
+#X obj 130 544 bob~;
+#X obj 170 544 lop~;
+#X obj 210 544 hip~;
+#X obj 5 42 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 694 141 574 303 reference 0;
 #X obj 29 16 bp~;
-#X text 61 15 - 2-pole bandpass filter;
-#X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 185 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 222 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 122 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X text 61 15 - 2-pole band-pass filter;
+#X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 185 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 222 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 122 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 118 83 signal - input signal to be filtered., f 56;
 #X text 125 100 clear - clear filter's memory., f 55;
 #X text 119 195 signal - the filtered signal output., f 49;
-#X obj 8 151 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 151 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 126 127 float - center frequency in Hz., f 49;
 #X text 126 156 float - Q (controls bandwidth)., f 49;
-#X text 126 232 1) float - initial center frequency in Hz (default
-0).;
+#X text 126 232 1) float - initial center frequency in Hz (default 0).;
 #X text 126 250 2) float - initial Q (default 0).;
 #X restore 294 9 pd reference;
 #X text 392 9 <= click;
-#X text 53 9 - 2-pole bandpass filter;
-#X obj 30 513 biquad~;
-#X obj 89 512 slop~, f 7;
-#X obj 148 512 cpole~, f 7;
-#X obj 210 512 fexpr~;
-#X obj 2 471 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 0 0 13 1;
-#X connect 1 0 13 0;
-#X connect 3 0 13 2;
-#X connect 10 0 13 0;
-#X connect 13 0 9 0;
-#X connect 13 0 9 1;
+#X text 53 9 - 2-pole band-pass filter;
+#X obj 30 573 biquad~;
+#X obj 89 572 slop~, f 7;
+#X obj 148 572 cpole~, f 7;
+#X obj 210 572 fexpr~;
+#X obj 2 531 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 103 191 <-- reinitialize internal state;
+#X text 170 306 <-- Q (controls bandwidth);
+#X text 25 453 NOTE: the maximum center frequency is sample rate divided by 6.28 \, or about 12kHz at the "usual" rates - for a more general and stable (but slightly more CPU-expensive) filter \, try [vcf~].;
+#X text 146 249 <-- center frequency in hertz;
+#X obj 92 222 hsl 169 18 200 2000 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 126 279 hsl 169 18 1 20 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 137 339 <-- arguments: frequency and Q;
+#X text 25 53 [bp~] passes a sinusoid at the center frequency at unit gain (approximately). Other frequencies are attenuated., f 63;
+#X connect 0 0 7 1;
+#X connect 1 0 7 0;
+#X connect 3 0 7 2;
+#X connect 5 0 7 0;
+#X connect 7 0 4 0;
+#X connect 29 0 0 0;
+#X connect 30 0 3 0;

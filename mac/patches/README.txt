@@ -29,6 +29,19 @@ To skip applying patches, use the tcltk-wish.sh --no-patches commandline option.
 
 ## Current Patches
 
+### tk8.6.13_UniformTypeIdentifiers.patch
+
+Backport fix to weak link the UniformTypeIdentifiers framework, otherwise builds
+on macOS 11+ will not start on older systems due to the missing framework.
+
+    https://github.com/tcltk/tk/commit/a3eb1edc6e9c2eb227b40c7d46f42e6162be78d6
+
+### tk8.6.12_NSBitmapFormatAlphaFirst.patch
+
+Backport to fix compilation of Tk-8.6.12 on macOS < 10.12, see
+
+    https://core.tcl-lang.org/tk/info/e699a7b606
+
 ### tk8.6.10_zombiewindows.patch
 
 Backport fix for zombie windows on systems with the Touchbar which could cause

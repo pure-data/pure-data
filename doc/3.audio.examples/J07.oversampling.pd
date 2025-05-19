@@ -1,4 +1,4 @@
-#N canvas 674 111 520 620 12;
+#N canvas 568 60 532 632 12;
 #X declare -stdpath ./;
 #N canvas 514 169 716 525 16x 0;
 #X obj 35 254 *~ 0.125;
@@ -22,23 +22,19 @@
 #X floatatom 338 394 7 0 0 0 - - - 0;
 #X floatatom 353 372 7 0 0 0 - - - 0;
 #X floatatom 368 350 7 0 0 0 - - - 0;
-#X text 350 461 normalizer for rpole~;
-#X text 367 438 normalizer for cpole~;
-#X text 381 417 coef for rpole~;
-#X text 397 396 coef for cpole~ real part;
-#X text 428 352 coef for cpole~ imag part;
-#X text 424 372 (same \, other cpole~);
 #X obj 35 187 cpole~ 0.9293 0.10812;
 #X obj 35 223 cpole~ 0.9293 -0.10812;
 #X msg 294 222 15000;
 #X text 344 221 desired cutoff frequency;
-#X text 359 266 divide by nyquist frequency of this subpatch \, which
-is 22050*16 because of the 16-times oversampling., f 36;
+#X text 359 266 divide by nyquist frequency of this subpatch \, which is 22050*16 because of the 16-times oversampling., f 36;
 #X text 288 190 Here is how to calculate the filter coefficients:;
-#X text 163 93 These objects make a 3-pole \, 3-zero Butterworth low-pass
-filter with cutoff at 15kHz (assuming 16x44100 sample rate). The filter
-was designed using the "buttercoef3" abstraction introduced in patch
-H13.butterworth.pd in this series.;
+#X text 163 93 These objects make a 3-pole \, 3-zero Butterworth low-pass filter with cutoff at 15kHz (assuming 16x44100 sample rate). The filter was designed using the [buttercoef3] abstraction introduced in patch H13.butterworth.pd in this series.;
+#X text 424 372 (same \, other [cpole~]);
+#X text 428 352 coef for [cpole~] imaginary part;
+#X text 397 396 coef for [cpole~] real part;
+#X text 381 417 coef for [rpole~];
+#X text 367 438 normalizer for [cpole~];
+#X text 350 461 normalizer for [rpole~];
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
@@ -47,7 +43,7 @@ H13.butterworth.pd in this series.;
 #X connect 6 0 4 0;
 #X connect 8 0 10 0;
 #X connect 9 0 8 0;
-#X connect 10 0 27 0;
+#X connect 10 0 21 0;
 #X connect 11 0 14 0;
 #X connect 11 1 16 0;
 #X connect 11 2 17 0;
@@ -57,42 +53,32 @@ H13.butterworth.pd in this series.;
 #X connect 12 0 15 0;
 #X connect 13 0 11 0;
 #X connect 15 0 13 0;
-#X connect 27 0 28 0;
-#X connect 27 1 28 1;
-#X connect 28 0 0 0;
-#X connect 29 0 12 0;
-#X restore 169 146 pd 16x;
-#X floatatom 225 109 7 0 0 0 - - - 0;
-#X obj 225 146 phasor~;
-#X obj 111 191 output~;
-#X obj 225 191 output~;
-#X obj 225 81 mtof;
-#X floatatom 225 57 3 -24 135 0 - - - 0;
-#X text 55 19 UPSAMPLING TO CONTROL FOLDOVER;
-#X text 242 247 not;
-#X text 114 263 sampled;
-#X text 114 247 16x up-;
-#X text 51 305 The "pd 16x" subpatch at left contains a phasor~ object
-\, but is locally upsampled by a factor of sixteen. Without upsampling
-\, partials as low as 24 kHz. fold back over into the audible range.
-With upsampling \, the first audibly folding over partial is at almost
-700 Hz \, 29 times higher. The relevant partials will be 29 times \,
-or almost 30 dB \, quieter when upsampled.;
-#X text 52 415 A third-order Butterworth filter is used inside the
-"pd 16x" subpatch - without that \, the internal signal would fold
-over as it gets downsampled at the outlet~ object.;
-#X text 284 569 Updated for Pd version 0.42;
-#X text 51 467 You can trade off cutoff frequency with foldover. Here
-\, the filter is set for a cutoff of 15 kHz. Lowering it to 7500 Hz
-would further reduce foldover by 18 dB at the expense of losing energy
-in the range 7500-15000 Hz.;
-#X text 258 55 <= pitch;
-#X obj 362 23 declare -stdpath ./;
+#X connect 21 0 22 0;
+#X connect 21 1 22 1;
+#X connect 22 0 0 0;
+#X connect 23 0 12 0;
+#X restore 131 334 pd 16x;
+#X floatatom 265 297 8 0 0 0 - - - 0;
+#X obj 265 334 phasor~;
+#X obj 131 379 output~;
+#X obj 265 379 output~;
+#X obj 265 271 mtof;
+#X floatatom 265 245 5 -24 135 0 - - - 0;
+#X text 303 441 not;
+#X text 57 544 You can trade off cutoff frequency with foldover. Here \, the filter is set for a cutoff of 15 kHz. Lowering it to 7500 Hz would further reduce foldover by 18 dB at the expense of losing energy in the range 7500-15000 Hz.;
+#X obj 81 250 declare -stdpath ./;
+#X text 52 75 The [pd 16x] subpatch at left contains a [phasor~] object \, but is locally upsampled by a factor of sixteen. Without upsampling \, partials as low as 24 kHz fold back over into the audible range. With upsampling \, the first audibly folding over partial is at almost 700 Hz \, 29 times higher. The relevant partials will be 29 times \, or almost 30 dB \, quieter when upsampled., f 60;
+#X text 57 492 A third-order Butterworth filter is used inside the [pd 16x] subpatch - without that \, the internal signal would fold over as it gets downsampled at the [outlet~] object.;
+#X obj 33 27 cnv 5 5 25 empty empty Upsampling\ to\ Control\ Foldover 15 13 0 16 #dfdfdf #202020 0;
+#X text 310 245 <-- pitch;
+#X text 155 441 16x up- sampled, f 7;
+#X obj 265 194 loadbang;
+#X msg 265 218 82;
 #X connect 0 0 3 0;
-#X connect 0 0 3 1;
 #X connect 1 0 0 0;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
-#X connect 2 0 4 1;
 #X connect 5 0 1 0;
 #X connect 6 0 5 0;
+#X connect 15 0 16 0;
+#X connect 16 0 6 0;

@@ -51,14 +51,14 @@ ASIODIR ?= $(asiodir)
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
-INCLUDE = -I$(pd_src)/src 
+INCLUDE = -I$(pd_src)/src
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
-LDFLAGS = 
+LDFLAGS =
 LIBS = -lm -lws2_32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
-OPT_CFLAGS = 
+OPT_CFLAGS =
 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
@@ -67,8 +67,11 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
 # Also, for SetDllDirectory() s_loader.c, we need a minimum of Windows
 # XP SP1.  WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.
-ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME -DWINVER=0x0502 \
-     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"'
+ARCH_CFLAGS = -DPD -DPD_INTERNAL -DWINVER=0x0502 \
+     -DPA_USE_ASIO -DPA_USE_WASAPI \
+     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO \
+     -mms-bitfields \
+     -DWISH='"wish85.exe"'
 
 CFLAGS += $(ARCH_CFLAGS) $(WARN_CFLAGS) $(OPT_CFLAGS) $(MORECFLAGS)
 
@@ -91,7 +94,7 @@ PASRC = s_audio_pa.c s_audio_paring.c \
     $(PADIR)/src/os/win/pa_win_hostapis.c \
     $(PADIR)/src/os/win/pa_win_util.c \
     $(PADIR)/src/os/win/pa_win_waveformat.c \
-    $(PADIR)/src/hostapi/wmme/pa_win_wmme.c
+    $(PADIR)/src/hostapi/wasapi/pa_win_wasapi.c
 
 ASIOSRC = $(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
           $(PADIR)/src/hostapi/asio/pa_asio.cpp \
@@ -119,12 +122,12 @@ HEADERS = g_all_guis.h m_imp.h g_canvas.h g_undo.h m_pd.h s_stuff.h \
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
-    g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
-    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c \
+    g_all_guis.c g_bang.c g_mycanvas.c g_numbox.c \
+    g_radio.c g_slider.c g_toggle.c g_undo.c g_vumeter.c \
     g_editor_extras.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
-    s_main.c s_inter.c s_file.c s_print.c \
+    s_main.c s_inter.c s_inter_gui.c s_file.c s_print.c \
     s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
@@ -136,28 +139,12 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 
 SRSRC = u_pdsend.c u_pdreceive.c s_net.c
 
-OBJ = $(SRC:.c=.o) 
-SROBJ = $(SRSRC:.c=.o) 
+OBJ = $(SRC:.c=.o)
+SROBJ = $(SRSRC:.c=.o)
 PAOBJ = $(PASRC:.c=.o)
 ASIOOBJ = $(ASIOSRC:.cpp=.o)
 #VOBJ = $(VSRC:.c=.o)
 OBJC = $(OBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
-
-
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION := $(shell grep PD_MAJOR_VERSION m_pd.h | \
-	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION := $(shell grep PD_MINOR_VERSION m_pd.h | \
-	sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION := $(shell grep PD_BUGFIX_VERSION m_pd.h | \
-	sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION := $(shell grep PD_TEST_VERSION m_pd.h | \
-	sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
-PD_VERSION := $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
-ifneq ($(PD_TEST_VERSION),)
-	PD_VERSION := $(PD_VERSION)-$(PD_TEST_VERSION)
-endif
-
 
 #
 #  ------------------ targets ------------------------------------
@@ -168,25 +155,25 @@ endif
 all: $(PDDLL) $(PDEXEC) $(PDSEND) $(PDRECEIVE) $(PDCOM)
 
 $(OBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(GOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(GINCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(GINCLUDE) -c -o $*.o $*.c
 
 $(SROBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(PAOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCPA) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCPA) -c -o $*.o $*.c
 
 $(ASIOOBJ) : %.o : %.cpp
 	$(CXX) $(CFLAGS) $(INCPA) -c -o $*.o $*.cpp
 
 $(PMOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(PMINCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(PMINCLUDE) -c -o $*.o $*.c
 
 $(VOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
+	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c
 
 $(PDSEND): $(EXECDIR) u_pdsend.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
@@ -206,7 +193,7 @@ $(PDCOM): $(EXECDIR) s_entry.o
 
 $(PDDLL): $(EXECDIR) $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
-		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
+		-Wl,--export-all-symbols -Wl,--out-implib=pd.a;
 	$(STRIP) $(PDDLL)
 
 pd.res: pd.rc
@@ -225,7 +212,7 @@ $(EXECDIR):
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
 #	--output-lib=vst.a --dllname=vstschedlib.dll s_audio_vst.o pd.a $(LIBS)
 
-externs: 
+externs:
 	make -C ../extra all
 
 # kludge to put stuff into the pd/bin dir for testing
@@ -237,7 +224,6 @@ testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
 # locales
 #	make libpddir=$(libpddir) -C ../po install
@@ -262,10 +248,6 @@ install:  all
 		install -d $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 		install -p ../doc/7.stuff/$$dir/*.* $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 	done
-	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
-	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
-		> $(ABOUT_FILE)
-	rm $(ABOUT_FILE).tmp
 	install -d $(DESTDIR)$(libpddir)/extra
 #	install -p $(pd_src)/extra/*/*.dll $(DESTDIR)$(libpddir)/extra
 	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(libpddir)/extra

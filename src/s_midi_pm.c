@@ -152,6 +152,8 @@ void sys_putmidibyte(int portno, int byte)
         fit into PortMidi buffers. */
     static int mess[4];
     static int nbytes = 0, sysex = 0, i;
+    if (portno < 0 || portno >= mac_nmidioutdev)
+        return;
     if (byte > MIDI_SYSEXEND)
     {
         /* realtime */

@@ -37,6 +37,7 @@ proc ::pd_menucommands::menu_open {} {
 proc ::pd_menucommands::menu_print {mytoplevel} {
     set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
     set filename [tk_getSaveFile -initialfile $initialfile \
+                      -title [_ "Print..." ] \
                       -defaultextension .ps \
                       -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
@@ -71,13 +72,15 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
 # functions called from Edit menu
 
 proc ::pd_menucommands::menu_undo {} {
-    if { $::focused_window ne ".pdwindow" } {
+    set mytoplevel [winfo toplevel $::focused_window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$::focused_window undo"
     }
 }
 
 proc ::pd_menucommands::menu_redo {} {
-    if { $::focused_window ne ".pdwindow" } {
+    set mytoplevel [winfo toplevel $::focused_window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$::focused_window redo"
     }
 }
@@ -164,6 +167,10 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     }
 }
 
+proc ::pd_menucommands::menu_preference_dialog {} {
+    pdsend "pd start-preference-dialog"
+}
+
 proc ::pd_menucommands::menu_manual {} {
     ::pd_menucommands::menu_doc_open doc/1.manual index.htm
 }
@@ -230,10 +237,10 @@ proc ::pd_menucommands::set_filenewdir {mytoplevel} {
 
 # parse the textfile for the About Pd page
 proc ::pd_menucommands::menu_aboutpd {} {
-    set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
-    set filename "$::sys_libdir/doc/1.manual/1.introduction.txt"
+    set versionstring "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
+    set filename [file join $::sys_guidir about.txt]
     if {![file exists $filename]} {
-        ::pdwindow::error [format [_ "ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::error [_ "ignoring '%s': doesn't exist" $filename]
         ::pdwindow::error "\n"
         #return
     }
@@ -263,7 +270,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
             }
             close $textfile
         } stderr ] } {
-            ::pdwindow::error [format [_ "couldn't read \"%s\" document" ] [_ "About Pd" ] ]
+            ::pdwindow::error [_ "couldn't read \"%s\" document" [_ "About Pd" ] ]
             ::pdwindow::error "\n\t$stderr\n"
             destroy .aboutpd
         }

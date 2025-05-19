@@ -1,267 +1,262 @@
-#N canvas 560 45 541 519 12;
+#N canvas 505 45 541 543 12;
 #X obj 25 10 inlet;
 #X obj 70 10 inlet~;
 #X obj 25 38 outlet;
 #X obj 75 38 outlet~;
-#X obj 273 288 print~;
-#X obj 273 208 sig~ 12;
-#X floatatom 31 212 5 0 0 0 - - - 0;
-#X floatatom 31 264 5 0 0 0 - - - 0;
-#X text 27 191 messages in and out;
-#X text 243 185 audio in and out;
-#X text 19 485 see also:;
-#X obj 93 486 block~;
-#X obj 285 266 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#N canvas 486 122 538 582 up/downsampling 0;
-#X obj 37 395 print~;
-#X obj 55 369 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 133 397 print~;
-#X obj 151 371 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 230 395 print~;
-#X obj 248 369 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 273 296 print~;
+#X obj 273 205 sig~ 12;
+#X floatatom 31 205 5 0 0 0 - - - 0;
+#X floatatom 31 267 5 0 0 0 - - - 0;
+#X text 25 181 messages in and out;
+#X text 18 505 see also:;
+#X obj 91 506 block~;
+#X obj 286 266 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#N canvas 506 110 492 563 up/downsampling 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-tab 64 float 1;
-#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 63 -1 200 140 1;
 #X restore 270 175 graph;
-#X obj 362 360 s \$0-tab;
-#X msg 362 333 const 0 \, 0 0 1;
-#X obj 185 243 print~;
-#X obj 185 218 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 335 382 s \$0-tab;
+#X msg 335 355 const 0 \, 0 0 1;
 #X obj 33 191 tabreceive~ \$0-tab;
-#N canvas 162 294 571 346 test-subpatch-upsampled 0;
+#N canvas 407 237 468 303 test-subpatch-upsampled 0;
 #X obj 40 17 block~ 128 1 2;
-#X obj 183 200 print~;
-#X obj 201 174 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 43 204 print~;
-#X obj 61 178 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 317 209 print~;
-#X obj 334 183 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X text 42 49 Upsampling methods:;
 #X text 41 109 sample/hold;
 #X text 300 114 linear interpolation;
 #X obj 183 144 inlet~ pad;
 #X text 183 113 zero-padded;
-#X text 43 245 The default \, if no method is specified \, is sample/hold.
-;
-#X obj 43 144 inlet~ fwd hold;
-#X obj 318 149 inlet~ fwd lin;
-#X connect 2 0 1 0;
-#X connect 4 0 3 0;
-#X connect 6 0 5 0;
-#X connect 10 0 1 0;
-#X connect 13 0 3 0;
-#X connect 14 0 5 0;
+#X text 43 245 The default \, if no method is specified \, is sample/hold.;
+#X obj 43 144 inlet~ hold;
+#X obj 318 149 inlet~ lin;
+#X obj 201 174 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 61 178 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 334 183 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 43 204 print~ hold;
+#X obj 183 204 print~ pad;
+#X obj 317 204 print~ lin;
+#X connect 4 0 13 0;
+#X connect 7 0 12 0;
+#X connect 8 0 14 0;
+#X connect 9 0 13 0;
+#X connect 10 0 12 0;
+#X connect 11 0 14 0;
 #X restore 33 295 pd test-subpatch-upsampled;
-#N canvas 362 216 585 262 test-subpatch-downsampled 0;
-#X obj 319 151 outlet~ lin;
-#X text 198 171 sample/hold;
-#X text 316 175 linear interpolation;
+#N canvas 369 216 556 257 test-subpatch-downsampled 0;
+#X obj 331 153 outlet~ lin;
+#X text 215 178 sample/hold;
+#X text 328 178 linear interpolation;
 #X obj 105 28 block~ 32 1 0.5;
-#X text 59 167 interleaved zeros;
-#X obj 201 81 tabreceive~ \$0-tab;
-#X obj 64 144 outlet~ pad;
-#X obj 201 147 outlet~ hold;
+#X text 71 178 interleaved zeros;
+#X obj 213 90 tabreceive~ \$0-tab;
+#X obj 76 153 outlet~ pad;
+#X obj 213 153 outlet~ hold;
 #X text 233 29 downsampling methods:;
 #X connect 5 0 0 0;
 #X connect 5 0 6 0;
 #X connect 5 0 7 0;
 #X restore 37 339 pd test-subpatch-downsampled;
-#X text 48 14 When a subpatch is reblocked to a higher or lower sample
-rate \, the inlet~ and outlet~ objects offer a choice of three upsampling
-methods. (The inlet~ upsamples when entering a subpatch with a higher
-sample rate \; the outlet~ upsamples when leaving a subpatch of _lower_
-sample rate \, as demonstrated below.) There is no corresponding choice
-of downsampling method - downsampling is done simply by dropping the
-extra samples.;
-#X msg 314 498 \; pd compatibility 0.43;
-#X text 48 444 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
-default method was "pad". To get the old behavior \, either change
-the patch to specify "pad" \, or set "compatibility" to 0.43 in Pd's
-command line or by a message:;
-#X text 62 150 (DSP needs to be on);
-#X connect 1 0 0 0;
-#X connect 3 0 2 0;
-#X connect 5 0 4 0;
-#X connect 8 0 7 0;
-#X connect 10 0 9 0;
-#X connect 11 0 9 0;
-#X connect 11 0 12 1;
-#X connect 11 0 12 0;
-#X connect 11 0 12 2;
-#X connect 13 0 0 0;
-#X connect 13 1 2 0;
-#X connect 13 2 4 0;
-#X restore 95 325 pd up/downsampling;
-#N canvas 309 180 813 339 subpatch-with-inlets-and-outlets 0;
-#X obj 97 94 inlet;
-#X text 49 64 control inlet for receiving messages;
-#X floatatom 97 122 5 0 0 0 - - - 0;
-#X floatatom 100 223 5 0 0 0 - - - 0;
-#X obj 100 255 outlet;
-#X text 64 193 control outlet for sending message;
-#X obj 466 217 inlet~;
-#X obj 466 268 print~;
-#X msg 481 242 bang;
-#X obj 635 276 outlet~;
-#X obj 635 230 sig~ 34;
-#X floatatom 466 191 5 0 0 0 - - - 0;
-#X text 365 52 Same for signals. Inlet~ objects take float messages
-to set the value if there's no signal connected (the same as with signal
-inlets to other Pd objects) and you can also set this value by a "float"
-message to the inlet~ object. (You'll have to disconnect the signal
-connection on the parent to see this happen.) You can use a "loadbang"
-object to pass arguments to initialize signal inlets in abstractions.
-;
-#X text 427 300 (DSP needs to be on);
+#X msg 294 509 \; pd compatibility 0.43;
+#X text 58 154 (DSP needs to be on);
+#X obj 185 215 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 36 444 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the default method was "pad". You can set "compatibility" to 0.43 in Pd's command line or by a message to get the old behavior. Alternatively you can just explicitly set the patch to specify "pad" \, which is preferred.;
+#X obj 53 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 149 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 246 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 37 397 print~ pad;
+#X obj 133 399 print~ hold;
+#X obj 230 397 print~ lin;
+#X obj 185 243 print~ in;
+#X text 335 332 set table;
+#X text 30 15 When a subpatch is reblocked to a higher or lower sample rate \, the [inlet~] and [outlet~] objects offer a choice of three upsampling methods. (The [inlet~] upsamples when entering a subpatch with a higher sample rate and the [outlet~] upsamples when leaving a subpatch of lower sample rate \, as demonstrated below.) There is no corresponding choice of downsampling method - downsampling is done simply by dropping the extra samples., f 62;
+#X connect 2 0 1 0;
+#X connect 3 0 4 1;
+#X connect 3 0 4 0;
+#X connect 3 0 4 2;
+#X connect 3 0 16 0;
+#X connect 5 0 13 0;
+#X connect 5 1 14 0;
+#X connect 5 2 15 0;
+#X connect 8 0 16 0;
+#X connect 10 0 13 0;
+#X connect 11 0 14 0;
+#X connect 12 0 15 0;
+#X restore 83 344 pd up/downsampling;
+#N canvas 458 159 664 358 subpatch-with-inlets-and-outlets 0;
+#X obj 42 99 inlet;
+#X text 30 25 control inlet for receiving messages, f 9;
+#X floatatom 42 127 5 0 0 0 - - - 0;
+#X floatatom 41 275 5 0 0 0 - - - 0;
+#X obj 41 307 outlet;
+#X text 33 194 control outlet for sending message, f 10;
+#X obj 353 167 inlet~;
+#X obj 503 233 outlet~;
+#X obj 503 187 sig~ 34;
+#X floatatom 353 138 5 0 0 0 - - - 0;
+#X text 197 212 (DSP needs to be on);
+#X obj 353 210 print~ inlet~;
+#X obj 322 174 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 189 21 Same for signals: [inlet~] objects take float messages to set the value if there's no signal connected (so it can behave like signal inlets to regulat Pd objects). You can use a [loadbang] object to pass arguments to initialize signal inlets in abstractions. You'll have to disconnect the signal connection on the parent to see this happen in this example., f 57;
+#X text 168 277 signal [inlet~]/[outlet~] objects also deal with up/downsampling and multichannel connections. Morevover \, [inlet~] can also receive control data via its 2nd outlet - see further examples on the parent patch for more details., f 64;
 #X connect 0 0 2 0;
 #X connect 3 0 4 0;
-#X connect 6 0 7 0;
+#X connect 6 0 11 0;
 #X connect 8 0 7 0;
-#X connect 10 0 9 0;
-#X connect 11 0 6 0;
+#X connect 9 0 6 0;
+#X connect 12 0 11 0;
 #X restore 31 238 pd subpatch-with-inlets-and-outlets;
-#N canvas 0 23 600 400 (subpatch) 0;
-#X restore 146 486 pd;
-#X text 51 83 Inlets/outlets are used to receive and get information
-on a patch window. This can be an abstraction or a subpatch. To create
-a subpatch \, type "pd" into an object box \, then you can put inlets
-and outlets by making "inlet" objects \, etc \, in the subpatch (open
-the patch below to see them.);
-#X text 230 325 <= details on up/downsampling;
-#X text 251 341 for inlet~ and outlet~, f 26;
-#X text 325 485 updated for Pd version 0.51;
+#N canvas 239 184 600 400 (subpatch) 0;
+#X restore 144 506 pd;
 #N canvas 582 179 543 415 inlet~-forwarding 0;
-#X obj 173 182 inlet~ fwd;
-#X floatatom 131 145 5 0 0 0 - - - 0;
-#X msg 174 145 1 2 3;
+#X floatatom 130 145 5 0 0 0 - - - 0;
+#X msg 173 145 1 2 3;
 #X msg 221 145 poodle 50;
-#X obj 174 283 print~;
-#X obj 187 255 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 58 16 you can pass "fwd" as an argument to inlet~ to ask for
-a second outlet that forwards messages. Float messages aren't forwarded
-though - instead \, they set the signal output value in case the parent
-inlet isn't connected. Messages to the inlet~ object are treated the
-same as messages to the inlet on the parent.;
-#X text 64 339 (note: inlet~ objects inside patches that are copied
-using clone~ are always connected to incoming signals \, so a float
-message to such an inlet~ has no effect.);
-#X obj 240 214 print fwd;
-#X text 213 255 (DSP needs to be on);
-#X obj 106 145 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X connect 0 0 4 0;
-#X connect 0 1 8 0;
-#X connect 1 0 0 0;
-#X connect 2 0 0 0;
-#X connect 3 0 0 0;
-#X connect 5 0 4 0;
-#X connect 10 0 0 0;
-#X restore 96 422 pd inlet~-forwarding;
-#X obj 74 387 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X floatatom 39 385 4 0 0 0 - - - 0;
-#X msg 96 387 1 2 3;
-#X msg 143 387 poodle 50;
-#X text 245 421 <= catching messages to inlet~ objects;
-#X text 302 265 (DSP needs to be on);
-#X obj 401 191 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 425 192 DSP on/off;
-#X msg 401 215 \; pd dsp \$1;
-#X text 135 10 - control/audio inlet;
-#X text 136 38 - control/audio outlet;
-#N canvas 229 90 1137 574 reference 0;
-#X obj 8 52 cnv 5 530 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 91 cnv 5 530 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
-0;
+#X text 212 255 (DSP needs to be on);
+#X obj 104 145 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 186 255 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 173 283 print~ signal;
+#X text 63 333 (note: [inlet~] objects inside patches that are copied using [clone] are always connected to incoming signals \, so a float message to such an [inlet~] has no effect.);
+#X text 58 16 The second outlet forwards messages that aren't floats or signals. Float messages \, as mentioned \, set the signal output value in case the parent inlet isn't connected. Other control messages to the [inlet~] object are treated the same as messages to the inlet on the parent.;
+#X obj 173 182 inlet~;
+#X obj 212 213 print control messages;
+#X connect 0 0 9 0;
+#X connect 1 0 9 0;
+#X connect 2 0 9 0;
+#X connect 4 0 9 0;
+#X connect 5 0 6 0;
+#X connect 9 0 6 0;
+#X connect 9 1 10 0;
+#X restore 124 428 pd inlet~-forwarding;
+#X floatatom 64 393 4 0 0 0 - - - 0;
+#X msg 124 393 1 2 3;
+#X msg 172 393 poodle 50;
+#X text 308 266 (DSP needs to be on);
+#X msg 394 208 \; pd dsp \$1;
+#N canvas 230 90 1105 510 reference 0;
+#X obj 8 52 cnv 5 530 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 7 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 91 cnv 5 530 5 empty empty OUTLET: 8 18 0 13 #202020 #000000 0;
 #X obj 30 19 inlet;
-#X text 80 19 - control inlet;
-#X obj 7 132 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000
-0;
+#X obj 7 132 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000 0;
 #X text 153 104 anything - any message from parent patch., f 42;
-#X obj 8 272 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 522 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 311 cnv 5 530 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 425 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000
-0;
-#X obj 30 239 inlet~;
-#X text 84 239 - audio inlet;
+#X obj 8 250 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 7 491 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 329 cnv 5 530 5 empty empty OUTLET: 8 18 0 13 #202020 #000000 0;
+#X obj 7 428 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000 0;
+#X obj 30 220 inlet~;
 #X text 161 144 NONE;
 #X text 156 64 NONE;
-#X text 134 285 float - set default value for no signal connected.
-;
-#X text 111 351 signal - signal from parent patch., f 42;
-#X obj 7 345 cnv 1 530 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 376 cnv 1 530 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 111 437 1) symbol -;
-#X text 199 438 'fwd' to turn message forwarding on. Alternatively
-\, you can set upsampling method: 'hold' for sample/hold (default)
-\, 'pad' for zero-padded and 'lin' for linear interpolation)., f 42
-;
-#X text 112 383 anything -;
-#X text 192 383 any message from parent patch (when give a 'fwd' argument.
-, f 30;
-#X obj 558 52 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 557 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 557 91 cnv 5 530 5 empty empty OUTLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 557 132 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020
-#000000 0;
-#X obj 558 271 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 557 422 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 557 310 cnv 5 530 5 empty empty OUTLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 557 353 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020
-#000000 0;
+#X text 114 264 float - set default value for no signal connected.;
+#X obj 7 363 cnv 1 530 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 394 cnv 1 530 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X text 104 440 1) symbol -;
+#X text 77 401 anything -;
+#X obj 558 52 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 557 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 557 91 cnv 5 530 5 empty empty OUTLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 557 132 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000 0;
+#X obj 558 251 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 557 401 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 557 293 cnv 5 530 5 empty empty OUTLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 557 332 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000 0;
 #X text 731 144 NONE;
-#X text 661 365 1) symbol -;
+#X text 661 344 1) symbol -;
 #X obj 580 19 outlet;
-#X text 632 19 - control outlet;
 #X text 727 104 NONE;
 #X text 676 64 anything - any message to send to parent patch.;
-#X obj 580 238 outlet~;
-#X text 638 238 - audio outlet;
-#X text 684 284 signal - signal to send to parent patch.;
-#X text 711 320 NONE;
-#X text 749 366 downsampling method: 'hold' for sample/hold (default)
-\, 'pad' for zero-padded and 'lin' for linear interpolation)., f 46
-;
+#X obj 580 221 outlet~;
+#X text 711 303 NONE;
+#X text 749 345 downsampling method: 'hold' for sample/hold (default) \, 'pad' for zero-padded and 'lin' for linear interpolation)., f 46;
+#X text 93 283 anything - any other message may be forwarded to right;
+#X text 170 301 outlet if 'fwd' argument is given., f 43;
+#X text 155 400 sends any message from parent patch or inlet.;
+#X text 192 441 set upsampling method: 'hold' for sample/hold (default) \, 'pad' for zero-padded and 'lin' for linear interpolation)., f 45;
+#X text 80 19 - add a control inlet to a subpatch/abstraction;
+#X text 84 220 - add a signal inlet to a subpatch/abstraction;
+#X text 632 19 - add a control outlet to a subpatch/abstraction;
+#X text 638 221 - add a signal outlet to a subpatch/abstraction;
+#X text 629 266 signal(s) - mono or multichannel signal to send to parent patch., f 64;
+#X text 68 369 signal(s) - mono or multichannel signal from parent patch.;
 #X restore 368 33 pd reference;
 #X text 459 33 <= click;
-#X obj 7 70 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 471 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 5 0 14 1;
-#X connect 6 0 14 0;
-#X connect 12 0 4 0;
-#X connect 14 0 7 0;
-#X connect 14 1 4 0;
-#X connect 21 0 20 0;
-#X connect 22 0 20 0;
-#X connect 23 0 20 0;
-#X connect 24 0 20 0;
-#X connect 27 0 29 0;
+#X obj 7 70 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 491 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 99 393 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 301 444 [inlet~] objects, f 19;
+#X text 48 317 for [inlet~] and [outlet~];
+#X text 273 427 <-- sending messages to;
+#X text 325 505 updated for Pd version 0.54;
+#X obj 177 506 clone;
+#X text 48 299 details on up/downsampling;
+#N canvas 619 165 499 492 multi-channel 0;
+#X obj 225 279 metro 250;
+#X obj 225 244 loadbang;
+#X obj 129 334 snapshot~;
+#X floatatom 129 360 11 0 0 0 - - - 0;
+#X obj 225 332 snapshot~;
+#X floatatom 225 358 11 0 0 0 - - - 0;
+#X floatatom 129 131 5 0 0 0 - - - 0;
+#X floatatom 189 131 5 0 0 0 - - - 0;
+#N canvas 844 207 467 361 example 0;
+#X obj 115 114 inlet~;
+#X obj 115 301 outlet~;
+#X obj 153 227 snapshot~;
+#X floatatom 153 253 8 0 0 0 - - - 0;
+#X obj 248 226 snapshot~;
+#X floatatom 248 252 8 0 0 0 - - - 0;
+#X obj 248 181 metro 250;
+#X obj 248 151 loadbang;
+#X obj 153 166 snake~ out;
+#X text 67 27 This subpatch gets a multichannel signal from the parent patch. The multichannel signal is also passed through via [outlet~] to the parent patch., f 43;
+#X connect 0 0 1 0;
+#X connect 0 0 8 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 6 0 4 0;
+#X connect 6 0 2 0;
+#X connect 7 0 6 0;
+#X connect 8 0 2 0;
+#X connect 8 1 4 0;
+#X restore 129 201 pd example;
+#X text 210 200 <-- open for more;
+#X text 178 454 see also:;
+#X obj 251 454 clone;
+#X obj 129 163 snake~ in;
+#X obj 129 254 snake~ out;
+#X msg 348 289 \; pd dsp \$1;
+#X obj 348 251 set-dsp-tgl;
+#X text 379 255 DSP on/off;
+#X text 61 405 The multichannel support for [inlet~]/[outlet~] is quite useful in [clone] \, check its help file for details.;
+#X text 33 11 The [inlet~] and [outlet~] objects support for multichannel connections. Below \, [snake~ in] creates a multichannel connection that goes into the [pd example] subpatch. You can see that the same signal comes out of [pd example] and can be split later with [snake~ out]. Change the number box values to see this.;
+#X connect 0 0 2 0;
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 6 0 12 0;
+#X connect 7 0 12 1;
+#X connect 8 0 13 0;
+#X connect 12 0 8 0;
+#X connect 13 0 2 0;
+#X connect 13 1 4 0;
+#X connect 15 0 14 0;
+#X restore 348 376 pd multi-channel;
+#X text 323 335 Multichannel support for [inlet~]/[outlet~], f 22;
+#X text 42 83 Inlets/outlets are used to receive and send data/signals from and to a patch window. They're used in abstraction or subpatches. To create a subpatch \, type "pd" into an object box \, then you can put inlets and outlets by creating inlet/outlet objects in it (open the subpatches below for details.), f 65;
+#X text 135 10 - control/signal inlet;
+#X text 136 38 - control/signal outlet;
+#X text 227 181 signal in and out;
+#X obj 223 506 snake~;
+#X obj 394 170 set-dsp-tgl;
+#X text 425 174 DSP on/off;
+#X connect 5 0 13 1;
+#X connect 6 0 13 0;
+#X connect 11 0 4 0;
+#X connect 13 0 7 0;
+#X connect 13 1 4 0;
+#X connect 16 0 15 0;
+#X connect 17 0 15 0;
+#X connect 18 0 15 0;
+#X connect 25 0 15 0;
+#X connect 39 0 20 0;

@@ -1,4 +1,4 @@
-#N canvas 380 39 598 499 12;
+#N canvas 529 47 598 499 12;
 #X floatatom 281 226 5 0 0 0 - - - 0;
 #X obj 116 463 pack;
 #X obj 57 14 unpack;
@@ -6,8 +6,7 @@
 #X msg 89 148 3 4 shut;
 #X msg 168 148 5 6 pick 7 8;
 #X text 369 465 updated for Pd version 0.33;
-#X text 362 184 <= creation arguments specify the types of atoms expected
-, f 29;
+#X text 362 184 <= creation arguments specify the types of atoms expected, f 29;
 #X obj 89 185 unpack float float symbol float float;
 #X symbolatom 217 227 7 0 0 0 - - - 0;
 #X obj 152 359 unpack s f;
@@ -24,11 +23,8 @@
 #X floatatom 153 226 5 0 0 0 - - - 0;
 #X floatatom 89 226 5 0 0 0 - - - 0;
 #X floatatom 219 392 5 0 0 0 - - - 0;
-#X text 59 347 abbreviated arguments =>, f 12;
 #X obj 162 463 trigger;
-#N canvas 756 82 610 216 pointer 0;
-#X obj 128 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#N canvas 598 147 610 216 pointer 0;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
 #X obj 58 105 pdcontrol;
@@ -38,50 +34,34 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 128 161 pd open;
-#X text 152 130 <-- open first examle of the 4.Data.Structure section
-;
-#X text 75 40 The [unpack] object unpack a pointer from a list. A pointer
-can be the location of a Data Structure scalar somewhere or the head
-of a Data Structure list. To know more about Data Structures \, how
-to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials., f 70;
-#X connect 0 0 1 0;
-#X restore 363 111 pd pointer;
-#X text 444 111 <= about pointers;
-#X text 70 59 unpack takes lists of atoms and distributes them to its
-outlets. The creation arguments specify the number of outlets and the
-atom type \, possible values are: float (or 'f') \, symbol (or 's')
-and pointer (or 'p') - see [pd pointer]., f 64;
-#X obj 16 45 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#N canvas 579 124 634 263 reference 0;
-#X obj 11 46 cnv 5 600 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 11 97 cnv 2 600 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 11 183 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 10 238 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 11 128 cnv 1 600 1 empty empty n: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 92 101 (depends on the number of arguments);
-#X text 111 193 1) list -;
+#X text 152 130 <-- open first example of the 4.Data.Structure section;
+#X text 75 40 The [unpack] object can also unpack pointers from a list. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 70;
+#X obj 128 130 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X connect 3 0 0 0;
+#X restore 333 111 pd pointer;
+#X obj 16 45 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#N canvas 579 124 623 312 reference 0;
+#X obj 11 46 cnv 5 600 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 11 106 cnv 2 600 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 11 213 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 10 268 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 11 137 cnv 1 600 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
+#X text 92 110 (depends on the number of arguments);
+#X text 111 223 1) list -;
 #X obj 57 14 unpack;
 #X text 110 14 - split a list into atoms.;
 #X text 107 61 list - a list to be split into atoms.;
-#X text 77 137 float/symbol -;
-#X text 184 137 a float or a symbol \, depending on the argument.,
-f 52;
-#X text 180 193 symbols that define atoms's type: float' \, 'symbol'
-\, and 'pointer' \, all of which can be abreviatted (default: f f).
-;
+#X text 108 147 float - unpacked float (if outlet type is float).;
+#X text 102 167 symbol - unpacked symbol (if outlet type is symbol).;
+#X text 180 223 symbols that define atoms's type: 'float' \, 'symbol' \, and 'pointer' \, all of which can be abbreviated (default: f f).;
 #X restore 398 13 pd reference;
 #X text 496 13 <= click;
-#X obj 16 450 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 16 450 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 37 462 see also:;
 #X text 111 14 - split a list into atoms;
+#X text 70 59 [unpack] takes lists of atoms and distributes them to its outlets. The creation arguments specify the number of outlets and the atom type \, possible values are: float (or 'f') \, symbol (or 's') and pointer (or 'p') - see [pd pointer]., f 66;
+#X text 53 344 abbreviated arguments -->, f 13;
+#X text 414 111 <-- about pointers;
 #X connect 3 0 8 0;
 #X connect 4 0 8 0;
 #X connect 5 0 8 0;

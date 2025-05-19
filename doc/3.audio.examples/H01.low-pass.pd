@@ -1,62 +1,42 @@
-#N canvas 650 96 621 690 12;
+#N canvas 506 38 613 631 12;
 #X declare -stdpath ./;
-#X obj 108 429 mtof;
-#X floatatom 108 406 5 0 0 0 - #0-pit - 0;
-#X obj 57 557 output~;
-#X obj 83 479 lop~;
-#X obj 83 376 noise~;
-#X floatatom 108 454 5 0 0 0 - - - 0;
-#X text 363 596 updated for Pd version 0.39;
-#X text 122 481 low-pass filter;
-#X obj 157 562 tabwrite~ H01-graph;
-#X obj 172 532 metro 250;
-#X obj 172 510 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X text 190 507 graphing on/off;
-#X text 407 545 --- 0.02 sec ---;
-#X text 43 44 This and the following patches show how to use filters
-in Pd \, starting with the simplest one: the one-pole low-pass filter.
-Here we test it with an input of white noise. The lop~ object does
-the filtering. Its left inlet takes an audio signal to be filtered
-\, and its right inlet takes messages to set its cutoff frequency in
-Hertz.;
-#X text 41 143 The lop~ object is normalized to pass DC (the lowest
-frequency) with a gain of one. Higher frequencies are progressively
-more and more attenuated. The lower the cutoff frequency \, the lower
-the total power of the filtered noise. If you graph the output you'll
-see that the waveform gets smoother (and smaller overall) as the cutoff
-frequency is lowered.;
-#X text 43 257 At the cutoff frequency the gain is about -3 dB \, and
-above that the gain drops a further 6 dB per octave. (Sometimes one
-uses the word "rolloff" instead of "cutoff" to emphasize the gradual
-way the gain drops off with frequency.);
-#X text 137 375 white noise \, test signal;
-#X text 98 19 ONE-POLE LOW-PASS FILTER;
-#N canvas 774 414 305 205 loadbang 0;
-#X obj 87 23 loadbang;
-#X obj 87 47 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 87 67 f \$0;
-#X msg 87 91 \; \$1-pit 60;
-#X text 47 147 This subpatch loads initial values in number boxes.
-, f 30;
-#X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X restore 194 609 pd loadbang;
-#X text 160 405 <= cutoff (pitch units);
-#X text 163 452 <= cutoff (Hertz);
+#X obj 96 373 mtof;
+#X floatatom 96 350 5 0 0 0 - \$0-pitch - 0;
+#X obj 72 546 output~;
+#X obj 71 423 lop~;
+#X obj 71 320 noise~;
+#X floatatom 96 398 7 0 0 0 - - - 0;
+#X text 107 422 low-pass filter;
+#X obj 145 510 tabwrite~ H01-graph;
+#X obj 145 478 metro 250;
+#X obj 145 453 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X text 170 452 graphing on/off;
+#X text 399 524 --- 0.02 sec ---;
+#X text 33 218 At the cutoff frequency the gain is about -3 dB \, and above that the gain drops a further 6 dB per octave. (Sometimes one uses the word "rolloff" instead of "cutoff" to emphasize the gradual way the gain drops off with frequency.), f 75;
+#X text 125 319 white noise \, test signal;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array H01-graph 882 float 0;
 #X coords 0 1 881 -1 200 140 1 0 0;
-#X restore 375 402 graph;
-#X obj 446 12 declare -stdpath ./;
+#X restore 357 378 graph;
+#X text 140 349 <-- cutoff (pitch units);
+#X text 155 397 <-- cutoff (Hertz);
+#N canvas 774 414 291 271 init 0;
+#X obj 107 103 loadbang;
+#X msg 107 135 60;
+#X obj 79 218 declare -stdpath ./;
+#X text 42 27 This subpatch initializes the patch and loads a value in the pitch number box., f 30;
+#X obj 107 168 s \$0-pitch;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X restore 227 564 pd init;
+#X text 33 60 This and the following patches show how to use filters in Pd \, starting with the simplest one: the one-pole low-pass filter. Here we test it with an input of white noise. The [lop~] object does the filtering. Its left inlet takes an audio signal to be filtered \, and its right inlet takes messages or signals to set its cutoff frequency in Hertz., f 75;
+#X obj 136 15 cnv 5 5 25 empty empty One-Pole\ Low-Pass\ Filter 15 13 0 16 #dfdfdf #202020 0;
+#X text 33 139 The [lop~] object is normalized to pass DC (the lowest frequency) with a gain of one. Higher frequencies are progressively more and more attenuated. The lower the cutoff frequency \, the lower the total power of the filtered noise. If you graph the output you'll see that the waveform gets smoother (and smaller overall) as the cutoff frequency is lowered., f 75;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;
-#X connect 3 0 2 1;
-#X connect 3 0 8 0;
+#X connect 3 0 7 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 1;
+#X connect 8 0 7 0;
 #X connect 9 0 8 0;
-#X connect 10 0 9 0;

@@ -37,74 +37,98 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include "s_audio_paring.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#else /* _WIN32 */
+#include <sys/time.h>
+#include <errno.h>
+#if defined(__APPLE__) && defined(__MACH__)
+/* macOS does not support unnamed posix semaphores,
+ * so we use Mach semaphores instead. */
+#include <mach/mach.h>
+#define HAVE_MACH_SEMAPHORE
+#elif defined(__linux__) || defined(__FreeBSD__) || \
+    defined(__NetBSD__) || defined(__OpenBSD__)
+#include <semaphore.h>
+#define HAVE_POSIX_SEMAPHORE
+#else
+/* Some platforms (including Apple) do not support unnamed posix semaphores,
+ * others might not implement sem_timedwait(); to be on the safe side, we
+ * we simply emulate it with a counter, mutex and condition variable.
+ * The critical section is so short that there should not be any locking.
+ */
+#include <pthread.h>
+#endif
+#endif /* _WIN32 */
+
 /* Clear buffer. Should only be called when buffer is NOT being read. */
-static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
-    PA_VOLATILE void *dataPtr, long nfill);
+static void sys_ringbuf_Flush(sys_ringbuf *rbuf,
+    void *dataPtr, long nfill);
 
 /* Get address of region(s) to which we can write data.
 ** If the region is contiguous, size2 will be zero.
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetWriteRegions(PA_VOLATILE  sys_ringbuf *rbuf,
-    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
-    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer);
-static long sys_ringbuf_AdvanceWriteIndex(PA_VOLATILE sys_ringbuf *rbuf,
-    long numBytes);
+static long sys_ringbuf_GetWriteRegions(sys_ringbuf *rbuf,
+    long numBytes, void **dataPtr1, long *sizePtr1,
+    void **dataPtr2, long *sizePtr2, char *buffer);
+
+static long sys_ringbuf_AdvanceWriteIndex(sys_ringbuf *rbuf, long numBytes);
 
 /* Get address of region(s) from which we can read data.
 ** If the region is contiguous, size2 will be zero.
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be read or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
-    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
-    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer);
+static long sys_ringbuf_GetReadRegions(sys_ringbuf *rbuf,
+    long numBytes, void **dataPtr1, long *sizePtr1,
+    void **dataPtr2, long *sizePtr2, char *buffer);
 
-static long sys_ringbuf_AdvanceReadIndex(PA_VOLATILE sys_ringbuf *rbuf,
-    long numBytes );
+static long sys_ringbuf_AdvanceReadIndex(sys_ringbuf *rbuf, long numBytes);
 
 /***************************************************************************
  * Initialize FIFO.
  */
-long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes,
-    PA_VOLATILE char *dataPtr, long nfill)
+long sys_ringbuf_init(sys_ringbuf *rbuf, long numBytes,
+    char *dataPtr, long nfill)
 {
     rbuf->bufferSize = numBytes;
-    sys_ringbuf_Flush(rbuf, dataPtr,  nfill);
+    sys_ringbuf_Flush(rbuf, dataPtr, nfill);
     return 0;
 }
 /***************************************************************************
 ** Return number of bytes available for reading. */
-long sys_ringbuf_getreadavailable(PA_VOLATILE sys_ringbuf *rbuf)
+long sys_ringbuf_getreadavailable(sys_ringbuf *rbuf)
 {
-    long ret = rbuf->writeIndex - rbuf->readIndex;
+    long ret = atomic_int_load(&rbuf->writeIndex)
+        - atomic_int_load(&rbuf->readIndex);
     if (ret < 0)
         ret += 2 * rbuf->bufferSize;
     if (ret < 0 || ret > rbuf->bufferSize)
         fprintf(stderr,
             "consistency check failed: sys_ringbuf_getreadavailable\n");
-    return ( ret );
+    return (ret);
 }
 /***************************************************************************
 ** Return number of bytes available for writing. */
-long sys_ringbuf_getwriteavailable(PA_VOLATILE sys_ringbuf *rbuf)
+long sys_ringbuf_getwriteavailable(sys_ringbuf *rbuf)
 {
-    return ( rbuf->bufferSize - sys_ringbuf_getreadavailable(rbuf));
+    return (rbuf->bufferSize - sys_ringbuf_getreadavailable(rbuf));
 }
 
 /***************************************************************************
 ** Clear buffer. Should only be called when buffer is NOT being read. */
-static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
-    PA_VOLATILE void *dataPtr, long nfill)
+static void sys_ringbuf_Flush(sys_ringbuf *rbuf,
+    void *dataPtr, long nfill)
 {
-    PA_VOLATILE char *s;
+    char *s;
     long n;
     rbuf->readIndex = 0;
     rbuf->writeIndex = nfill;
@@ -118,21 +142,22 @@ static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetWriteRegions(PA_VOLATILE  sys_ringbuf *rbuf,
-    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
-    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer)
+static long sys_ringbuf_GetWriteRegions(sys_ringbuf *rbuf,
+    long numBytes, void **dataPtr1, long *sizePtr1,
+    void **dataPtr2, long *sizePtr2, char *buffer)
 {
-    long   index;
-    long   available = sys_ringbuf_getwriteavailable( rbuf );
-    if( numBytes > available ) numBytes = available;
-    /* Check to see if write is not contiguous. */
+    long index;
+    long available = sys_ringbuf_getwriteavailable(rbuf);
+    if (numBytes > available) numBytes = available;
+    /* Check to see if write is not contiguous. NB: this is always called
+    by the writer, so we don't need an atomic load */
     index = rbuf->writeIndex;
     while (index >= rbuf->bufferSize)
         index -= rbuf->bufferSize;
     if( (index + numBytes) > rbuf->bufferSize )
     {
         /* Write data in two blocks that wrap the buffer. */
-        long   firstHalf = rbuf->bufferSize - index;
+        long firstHalf = rbuf->bufferSize - index;
         *dataPtr1 = &buffer[index];
         *sizePtr1 = firstHalf;
         *dataPtr2 = &buffer[0];
@@ -151,13 +176,13 @@ static long sys_ringbuf_GetWriteRegions(PA_VOLATILE  sys_ringbuf *rbuf,
 
 /***************************************************************************
 */
-static long sys_ringbuf_AdvanceWriteIndex(PA_VOLATILE sys_ringbuf *rbuf,
-    long numBytes)
+static long sys_ringbuf_AdvanceWriteIndex(sys_ringbuf *rbuf, long numBytes)
 {
     long ret = (rbuf->writeIndex + numBytes);
-    if ( ret >= 2 * rbuf->bufferSize)
+    if (ret >= 2 * rbuf->bufferSize)
         ret -= 2 * rbuf->bufferSize;    /* check for end of buffer */
-    return rbuf->writeIndex = ret;
+    atomic_int_store(&rbuf->writeIndex, ret);
+    return ret;
 }
 
 /***************************************************************************
@@ -166,19 +191,20 @@ static long sys_ringbuf_AdvanceWriteIndex(PA_VOLATILE sys_ringbuf *rbuf,
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
-    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
-    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer)
+static long sys_ringbuf_GetReadRegions(sys_ringbuf *rbuf,
+    long numBytes, void **dataPtr1, long *sizePtr1,
+    void **dataPtr2, long *sizePtr2, char *buffer)
 {
-    long   index;
-    long   available = sys_ringbuf_getreadavailable( rbuf );
+    long index;
+    long available = sys_ringbuf_getreadavailable(rbuf);
     if( numBytes > available ) numBytes = available;
-    /* Check to see if read is not contiguous. */
+    /* Check to see if read is not contiguous. NB: this is always called
+    by the reader, so we don't need an atomic load */
     index = rbuf->readIndex;
     while (index >= rbuf->bufferSize)
         index -= rbuf->bufferSize;
 
-    if( (index + numBytes) > rbuf->bufferSize )
+    if((index + numBytes) > rbuf->bufferSize)
     {
         /* Write data in two blocks that wrap the buffer. */
         long firstHalf = rbuf->bufferSize - index;
@@ -198,58 +224,202 @@ static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
 }
 /***************************************************************************
 */
-static long sys_ringbuf_AdvanceReadIndex(PA_VOLATILE sys_ringbuf *rbuf,
+static long sys_ringbuf_AdvanceReadIndex(sys_ringbuf *rbuf,
     long numBytes)
 {
     long ret = (rbuf->readIndex + numBytes);
     if( ret >= 2 * rbuf->bufferSize)
         ret -= 2 * rbuf->bufferSize;
-    return rbuf->readIndex = ret;
+    atomic_int_store(&rbuf->readIndex, ret);
+    return ret;
 }
 
 /***************************************************************************
 ** Return bytes written. */
-long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
-    long numBytes, PA_VOLATILE char *buffer)
+long sys_ringbuf_write(sys_ringbuf *rbuf, const void *data,
+    long numBytes, char *buffer)
 {
     long size1, size2, numWritten;
-    PA_VOLATILE void *data1, *data2;
-    numWritten = sys_ringbuf_GetWriteRegions( rbuf, numBytes, &data1, &size1,
+    void *data1, *data2;
+    numWritten = sys_ringbuf_GetWriteRegions(rbuf, numBytes, &data1, &size1,
         &data2, &size2, buffer);
-    if( size2 > 0 )
+    if (size2 > 0)
     {
 
-        memcpy((void *)data1, data, size1 );
+        memcpy((void *)data1, data, size1);
         data = ((char *)data) + size1;
-        memcpy((void *)data2, data, size2 );
+        memcpy((void *)data2, data, size2);
     }
     else
     {
-        memcpy((void *)data1, data, size1 );
+        memcpy((void *)data1, data, size1);
     }
-    sys_ringbuf_AdvanceWriteIndex( rbuf, numWritten );
+    sys_ringbuf_AdvanceWriteIndex(rbuf, numWritten);
     return numWritten;
 }
 
 /***************************************************************************
 ** Return bytes read. */
-long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
-    PA_VOLATILE char *buffer)
+long sys_ringbuf_read(sys_ringbuf *rbuf, void *data, long numBytes,
+    char *buffer)
 {
     long size1, size2, numRead;
-    PA_VOLATILE void *data1, *data2;
-    numRead = sys_ringbuf_GetReadRegions( rbuf, numBytes, &data1, &size1,
+    void *data1, *data2;
+    numRead = sys_ringbuf_GetReadRegions(rbuf, numBytes, &data1, &size1,
         &data2, &size2, buffer);
-    if( size2 > 0 )
+    if (size2 > 0)
     {
-        memcpy(data, (void *)data1, size1 );
+        memcpy(data, (void *)data1, size1);
         data = ((char *)data) + size1;
-        memcpy(data, (void *)data2, size2 );
+        memcpy(data, (void *)data2, size2);
     }
     else
     {
-        memcpy( data, (void *)data1, size1 );
+        memcpy(data, (void *)data1, size1);
     }
-    sys_ringbuf_AdvanceReadIndex( rbuf, numRead );
+    sys_ringbuf_AdvanceReadIndex(rbuf, numRead);
     return numRead;
+}
+
+/***************************************************************************
+** t_semaphore */
+
+#ifndef _WIN32
+struct _semaphore
+{
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_t sem;
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_t sem;
+#else
+    pthread_mutex_t mutex;
+    pthread_cond_t condvar;
+    int count;
+#endif
+};
+#endif
+
+t_semaphore * sys_semaphore_create(void)
+{
+#ifdef _WIN32
+    return (t_semaphore *)CreateSemaphoreA(0, 0, LONG_MAX, 0);
+#else /* _WIN32 */
+    t_semaphore *sem = (t_semaphore *)malloc(sizeof(t_semaphore));
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_create(mach_task_self(), &sem->sem, SYNC_POLICY_FIFO, 0);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_init(&sem->sem, 0, 0);
+#else
+    pthread_cond_init(&sem->condvar, 0);
+    pthread_mutex_init(&sem->mutex, 0);
+    sem->count = 0;
+#endif
+    return sem;
+#endif /* _WIN32 */
+}
+
+void sys_semaphore_destroy(t_semaphore *sem)
+{
+#ifdef _WIN32
+    CloseHandle((HANDLE)sem);
+#else /* _WIN32 */
+#ifdef HAVE_MACH_SEMAPHORE
+    semaphore_destroy(mach_task_self(), sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_destroy(&sem->sem);
+#else
+    pthread_mutex_destroy(&sem->mutex);
+    pthread_cond_destroy(&sem->condvar);
+#endif
+    free(sem);
+#endif /* _WIN32 */
+}
+
+void sys_semaphore_wait(t_semaphore *sem)
+{
+#if defined(_WIN32)
+    WaitForSingleObject((HANDLE)sem, INFINITE);
+#elif defined(HAVE_MACH_SEMAPHORE)
+    semaphore_wait(sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    while (sem_wait(&sem->sem) == -1 && errno == EINTR) continue;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    while (sem->count == 0)
+        pthread_cond_wait(&sem->condvar, &sem->mutex);
+    sem->count--;
+    pthread_mutex_unlock(&sem->mutex);
+#endif
+}
+
+int sys_semaphore_waitfor(t_semaphore *sem, double seconds)
+{
+#ifdef _WIN32
+    return WaitForSingleObject((HANDLE)sem, seconds * 1000.0) != WAIT_TIMEOUT;
+#elif defined(HAVE_MACH_SEMAPHORE)
+    mach_timespec_t ts;
+    ts.tv_sec = (unsigned int)seconds;
+    ts.tv_nsec = (seconds - ts.tv_sec) * 1000000000;
+    return semaphore_timedwait(sem->sem, ts) != KERN_OPERATION_TIMED_OUT;
+#else /* Posix semaphore and pthreads */
+        /* first check if the semaphore is available */
+#ifdef HAVE_POSIX_SEMAPHORE
+    if (sem_trywait(&sem->sem) == 0)
+        return 1;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    if (sem->count > 0)
+    {
+        sem->count--;
+        pthread_mutex_unlock(&sem->mutex);
+        return 1;
+    }
+    pthread_mutex_unlock(&sem->mutex);
+#endif
+        /* otherwise wait for it to become available */
+    struct timespec ts;
+    struct timeval now;
+    gettimeofday(&now, 0);
+        /* add fractional part to timeout */
+    seconds += now.tv_usec * 0.000001;
+    ts.tv_sec = now.tv_sec + (time_t)seconds;
+    ts.tv_nsec = (seconds - (time_t)seconds) * 1000000000;
+#ifdef HAVE_POSIX_SEMAPHORE
+    while (sem_timedwait(&sem->sem, &ts) == -1)
+    {
+        if (errno != EINTR) /* ETIMEDOUT */
+            return 0;
+    }
+    return 1;
+#else
+    pthread_mutex_lock(&sem->mutex);
+    while (sem->count == 0)
+    {
+        if (pthread_cond_timedwait(&sem->condvar, &sem->mutex, &ts) == ETIMEDOUT)
+        {
+            pthread_mutex_unlock(&sem->mutex);
+            return 0;
+        }
+    }
+    sem->count--;
+    pthread_mutex_unlock(&sem->mutex);
+    return 1;
+#endif
+#endif
+}
+
+void sys_semaphore_post(t_semaphore *sem)
+{
+#if defined(_WIN32)
+    ReleaseSemaphore((HANDLE)sem, 1, NULL);
+#elif defined(HAVE_MACH_SEMAPHORE)
+    semaphore_signal(sem->sem);
+#elif defined(HAVE_POSIX_SEMAPHORE)
+    sem_post(&sem->sem);
+#else
+    pthread_mutex_lock(&sem->mutex);
+    sem->count++;
+    pthread_mutex_unlock(&sem->mutex);
+    pthread_cond_signal(&sem->condvar);
+#endif
 }

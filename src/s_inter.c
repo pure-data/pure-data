@@ -34,6 +34,7 @@ that didn't really belong anywhere. */
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #ifdef __APPLE__
 #include <sys/types.h>
@@ -43,20 +44,40 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+#ifdef HAVE_SYS_UTSNAME_H
+# include <sys/utsname.h>
+# ifndef USE_UNAME
+#  define USE_UNAME 1
+# endif
+#endif
+
+#include "m_private_utils.h"
+
+/* colorize output, but only on a TTY */
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#else /* if isatty exists outside unistd, please add another #ifdef */
+# define isatty(fd) 0
+#endif
+static int stderr_isatty;
+
+
 #define stringify(s) str(s)
 #define str(s) #s
 
 #define INTER (pd_this->pd_inter)
 
-#define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
-#define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
+#define DEBUG_MESSUP   1<<0    /* messages up from pd to pd-gui */
+#define DEBUG_MESSDOWN 1<<1    /* messages down from pd-gui to pd */
+#define DEBUG_COLORIZE 1<<2    /* colorize messages (if we are on a TTY) */
+
 
 #ifndef PDBINDIR
 #define PDBINDIR "bin/"
 #endif
 
 #ifndef PDGUIDIR
-#define PDGUIDIR "tcl/"
+#define PDGUIDIR "tcl"
 #endif
 
 #ifndef WISH
@@ -104,9 +125,18 @@ typedef struct _guiqueue
     struct _guiqueue *gq_next;
 } t_guiqueue;
 
+#if PDTHREADS
+typedef struct _messqueue
+{
+    t_pd *m_obj;
+    void *m_data;
+    t_messfn m_fn;
+    struct _messqueue *m_next;
+} t_messqueue;
+#endif
+
 struct _instanceinter
 {
-    int i_havegui;
     int i_nfdpoll;
     t_fdpoll *i_fdpoll;
     int i_maxfd;
@@ -118,9 +148,11 @@ struct _instanceinter
     int i_guihead;
     int i_guitail;
     int i_guisize;
-    int i_waitingforping;
     int i_bytessincelastping;
-    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
+    unsigned int i_havetkproc:1;    /* TK process started  */
+    unsigned int i_havegui:1;       /* have TK proc and font metrics too */
+    unsigned int i_fdschanged:1;    /* need to break fdpoll loop */
+    unsigned int i_waitingforping:1;/* sent a ping out and should get answer */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -128,6 +160,9 @@ struct _instanceinter
 #endif
 #if PDTHREADS
     pthread_mutex_t i_mutex;
+    pthread_mutex_t i_messqueue_mutex;
+    t_messqueue *i_messqueue_head;
+    t_messqueue *i_messqueue_tail;
 #endif
 
     unsigned char i_recvbuf[NET_MAXPACKETSIZE];
@@ -135,10 +170,6 @@ struct _instanceinter
 
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
-void sys_set_searchpath(void);
-void sys_set_temppath(void);
-void sys_set_extrapath(void);
-void sys_set_startup(void);
 void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
@@ -206,15 +237,14 @@ static int sys_domicrosleep(int microsec)
     timeout.tv_usec = 0;
     if (INTER->i_nfdpoll)
     {
-        fd_set readset, writeset, exceptset;
+        fd_set readset, writeset;
         FD_ZERO(&writeset);
         FD_ZERO(&readset);
-        FD_ZERO(&exceptset);
         for (fp = INTER->i_fdpoll,
             i = INTER->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
         if(select(INTER->i_maxfd+1,
-                  &readset, &writeset, &exceptset, &timeout) < 0)
+                  &readset, &writeset, NULL, &timeout) < 0)
           perror("microsleep select");
         INTER->i_fdschanged = 0;
         for (i = 0; i < INTER->i_nfdpoll &&
@@ -252,6 +282,9 @@ void sys_microsleep( void)
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
+#if DONT_HAVE_SIG_T
+typedef void (*sig_t)(int);
+#endif
 static void sys_signal(int signo, sig_t sigfun)
 {
     struct sigaction action;
@@ -332,15 +365,14 @@ void sys_setsignalhandlers(void)
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 }
 
+#define MODE_NRT 0
+#define MODE_RT 1
+#define MODE_WATCHDOG 2
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
 #include <sched.h>
 #endif
-
-#define MODE_NRT 0
-#define MODE_RT 1
-#define MODE_WATCHDOG 2
 
 void sys_set_priority(int mode)
 {
@@ -369,7 +401,7 @@ void sys_set_priority(int mode)
             logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
         else logpost(NULL, PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
-#endif
+#endif /* _POSIX_PRIORITY_SCHEDULING */
 
 #if !defined(USEAPI_JACK)
     if (mode != MODE_NRT)
@@ -384,10 +416,17 @@ void sys_set_priority(int mode)
             fprintf(stderr, "memory locking enabled.\n");
     }
     else munlockall();
-#endif
+#endif /* ! USEAPI_JACK */
 }
 
-#endif /* __linux__ */
+#else /* !__linux__ */
+void sys_set_priority(int mode)
+{
+        /* dummy */
+    (void)mode;
+}
+
+#endif /* !__linux__ */
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
@@ -506,15 +545,25 @@ static int socketreceiver_doread(t_socketreceiver *x)
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
                 size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
+                int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+                const char*msg = messbuf;
+                if (('\r' == messbuf[0]) && ('\n' == messbuf[1]))
+                {
+                    bufsize-=2;
+                    msg+=2;
+                }
         #ifdef _WIN32
             #ifdef _MSC_VER
-                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, messbuf);
+                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, msg);
             #else
-                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, messbuf);
+                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, msg);
             #endif
                 fflush(stderr);
         #else
-                fprintf(stderr, "<< %.*s\n", (int)bufsize, messbuf);
+                if(colorize)
+                    fprintf(stderr, "\e[0;1;36m<< %.*s\e[0m\n", (int)bufsize, msg);
+                else
+                    fprintf(stderr, "<< %.*s\n", (int)bufsize, msg);
         #endif
             }
             x->sr_inhead = inhead;
@@ -766,13 +815,23 @@ int sys_havegui(void)
     return (INTER->i_havegui);
 }
 
+int sys_havetkproc(void)
+{
+    return (INTER->i_havetkproc);
+}
+
 void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
 
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
+    {       /* if there's no TK process just throw it to stderr */
+        va_start(ap, fmt);
+        vfprintf(stderr, fmt, ap);
+        va_end(ap);
         return;
+    }
     if (!INTER->i_guibuf)
     {
         if (!(INTER->i_guibuf = malloc(GUI_ALLOCCHUNK)))
@@ -787,7 +846,7 @@ void sys_vgui(const char *fmt, ...)
             sys_trytogetmoreguibuf(INTER->i_guisize + GUI_ALLOCCHUNK);
     }
     va_start(ap, fmt);
-    msglen = vsnprintf(
+    msglen = pd_vsnprintf(
         INTER->i_guibuf  + INTER->i_guihead,
         INTER->i_guisize - INTER->i_guihead,
         fmt, ap);
@@ -795,19 +854,18 @@ void sys_vgui(const char *fmt, ...)
     if(msglen < 0)
     {
         fprintf(stderr,
-            "Pd: buffer space wasn't sufficient for long GUI string\n");
+            "sys_vgui: pd_snprintf() failed with error code %d\n", errno);
         return;
     }
     if (msglen >= INTER->i_guisize - INTER->i_guihead)
     {
         int msglen2, newsize =
             INTER->i_guisize
-            + 1
-            + (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
+            + (msglen < GUI_ALLOCCHUNK ? GUI_ALLOCCHUNK : msglen + 1);
         sys_trytogetmoreguibuf(newsize);
 
         va_start(ap, fmt);
-        msglen2 = vsnprintf(
+        msglen2 = pd_vsnprintf(
             INTER->i_guibuf  + INTER->i_guihead,
             INTER->i_guisize - INTER->i_guihead,
             fmt, ap);
@@ -820,24 +878,59 @@ void sys_vgui(const char *fmt, ...)
     if (sys_debuglevel & DEBUG_MESSUP)
     {
         const char *mess = INTER->i_guibuf + INTER->i_guihead;
+        int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+        static int newmess = 1;
 #ifdef _WIN32
     #ifdef _MSC_VER
-        fwprintf(stderr, L">> %S", mess);
+        fwprintf(stderr, L"%S", mess);
     #else
-        fwprintf(stderr, L">> %s", mess);
+        fwprintf(stderr, L"%s", mess);
     #endif
         fflush(stderr);
 #else
-        fprintf(stderr, ">> %s", mess);
+        if (colorize)
+            fprintf(stderr, "\e[0;1;35m%s%s\e[0m", (newmess)?">> ":"", mess);
+        else
+            fprintf(stderr, "%s%s", (newmess)?">> ":"", mess);
+
+        newmess = ('\n' == mess[msglen-1]);
 #endif
     }
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }
 
+
+/* sys_vgui() and sys_gui() are deprecated for externals
+   and shouldn't be used directly within Pd.
+   however, the we do use them for implementing the high-level
+   communication, so we do not want the compiler to shout out loud.
+ */
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined _MSC_VER
+#pragma warning( disable : 4996 )
+#endif
+
 void sys_gui(const char *s)
 {
     sys_vgui("%s", s);
+}
+
+static const char**namelist2strings(t_namelist *nl, unsigned int *N) {
+    const char**result = 0;
+    unsigned int n=0;
+    *N = 0;
+    for(; nl; nl = nl->nl_next) {
+        const char**newresult = resizebytes(result, n*sizeof(*result), (n+1)*sizeof(*result));
+        if(!newresult)
+            break;
+        result = newresult;
+        result[n] = nl->nl_string;
+        n++;
+        *N = n;
+    }
+    return result;
 }
 
 static int sys_flushtogui(void)
@@ -897,7 +990,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            sys_gui("pdtk_ping\n");
+            pdgui_vmess("pdtk_ping", "");
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -920,7 +1013,7 @@ static int sys_flushqueue(void)
     /* flush output buffer and update queue to gui in small time slices */
 static int sys_poll_togui(void) /* returns 1 if did anything */
 {
-    if (!sys_havegui())
+    if (!INTER->i_havetkproc)
         return (0);
         /* in case there is stuff still in the buffer, try to flush it. */
     sys_flushtogui();
@@ -1012,34 +1105,62 @@ void sys_init_fdpoll(void)
     INTER->i_inbinbuf = binbuf_new();
 }
 
+void sys_gui_preferences(void)
+{
+    unsigned int nsearch, ntemp, nstatic, nlibs;
+    const char**searchpath = namelist2strings(STUFF->st_searchpath, &nsearch);
+    const char**temppath = namelist2strings(STUFF->st_temppath, &ntemp);
+    const char**staticpath = namelist2strings(STUFF->st_staticpath, &nstatic);
+    const char**startuplibs = namelist2strings(STUFF->st_externlist, &nlibs);
+    pdgui_vmess("::dialog_path::set_paths", "SSS"
+                , nsearch, searchpath
+                , ntemp, temppath
+                , nstatic, staticpath
+                );
+
+        /* send the list of loaded libraries ... */
+    pdgui_vmess("::dialog_startup::set_libraries", "S"
+                , nlibs, startuplibs
+                );
+
+    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
+    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
+    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
+    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+    pdgui_vmess("::dialog_startup::set_flags", "s",
+                (sys_flags? sys_flags->s_name : ""));
+
+    freebytes(searchpath, nsearch * sizeof(*searchpath));
+    freebytes(temppath, ntemp * sizeof(*temppath));
+    freebytes(staticpath, nstatic * sizeof(*staticpath));
+    freebytes(startuplibs, nlibs * sizeof(*startuplibs));
+}
+
+
+
+
 /* --------------------- starting up the GUI connection ------------- */
 
-static int sys_watchfd;
+static int sys_watchfd = -1;
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-void glob_watchdog(t_pd *dummy)
+void glob_watchdog(void *dummy)
 {
+    if (sys_watchfd < 0)
+        return;
     if (write(sys_watchfd, "\n", 1) < 1)
     {
         fprintf(stderr, "pd: watchdog process died\n");
         sys_bail(1);
     }
 }
-#endif
 
-static void sys_init_deken(void)
-{
-    const char*os =
-#if defined __linux__
+static const char*deken_OS =
+#if defined DEKEN_OS
+        stringify(DEKEN_OS)
+#elif defined __linux__
         "Linux"
 #elif defined __APPLE__
         "Darwin"
-#elif defined __FreeBSD__
-        "FreeBSD"
-#elif defined __NetBSD__
-        "NetBSD"
-#elif defined __OpenBSD__
-        "OpenBSD"
 #elif defined _WIN32
         "Windows"
 #else
@@ -1049,8 +1170,10 @@ static void sys_init_deken(void)
         0
 #endif
         ;
-    const char*machine =
-#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+static const char*deken_CPU[] = {
+#if defined DEKEN_CPU
+        stringify(DEKEN_CPU)
+#elif defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
         "amd64"
 #elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
         "i386"
@@ -1071,14 +1194,134 @@ static void sys_init_deken(void)
 # endif
         0
 #endif
-        ;
+        , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+static const char*strip_quotes(const char*s, char*outbuf, size_t outsize) {
+    size_t len = strlen(s);
+    const char q = (len>1)?s[0]:0;
+        /* only strip single or double quotes */
+    switch(q) {
+    case '\'':
+    case '"':
+        break;
+    case 0:
+    default:
+        return s;
+    }
+        /* only strip quotes if they are both at the beginning and the end */
+    if (q != s[len-1])
+        return s;
+
+    if(len>outsize)
+        len = outsize;
+
+    outbuf[0] = 0;
+    strncpy(outbuf, s+1, len-2);
+    outbuf[outsize-1] = 0;
+    return outbuf;
+}
+
+static void init_deken_arch(void)
+{
+    static int initialized = 0;
+    static char deken_OS_noquotes[MAXPDSTRING];
+    static char deken_CPU_noquotes[MAXPDSTRING];
+
+    if(initialized)
+        return;
+    initialized = 1;
+
+#if defined(DEKEN_OS)
+    deken_OS = strip_quotes(deken_OS, deken_OS_noquotes, MAXPDSTRING);
+#endif /* DEKEN_OS */
+
+#define CPUNAME_SIZE 15
+#if defined(DEKEN_CPU)
+    deken_CPU[0] = strip_quotes(deken_CPU[0], deken_CPU_noquotes, MAXPDSTRING);
+#else /* !DEKEN_CPU */
+# if defined(__aarch64__)
+    /* no special-casing for arm64 */
+# elif defined __ARM_ARCH
+        /* ARM-specific:
+         * if we are running ARMv7, we can also load ARMv6 externals
+         */
+    if (deken_CPU && sizeof(deken_CPU)/sizeof(*deken_CPU) > 0)
+    {
+        int arm_cpu = __ARM_ARCH;
+        int cpu_v;
+        int n = 0;
+        const char endianness =
+#  if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            'b';
+#  else
+            0;
+#  endif
+
+#  if USE_UNAME
+        /*
+         * Pd might be compiled for ARMv6 (as in Raspbian),
+         * but run on an ARMv7 (or higher) (e.g. RPi2 and newer).
+         * Therefore we try to detect the actual CPU, and announce that
+         */
+        struct utsname name;
+        if (uname (&name) >= 0) {
+            if(!strncmp(name.machine, "armv", 4)) {
+                cpu_v = name.machine[4] - '0';
+                if((cpu_v >= 6) && (cpu_v <= 9))
+                    arm_cpu = cpu_v;
+            }
+        }
+#  endif /* uname() */
+
+            /* list all compatible ARM CPUs */
+        for(cpu_v = arm_cpu;
+            (cpu_v >= 6 && n < (sizeof(deken_CPU)/sizeof(*deken_CPU)));
+            cpu_v--)
+        {
+            static char cpuname[CPUNAME_SIZE+1];
+            pd_snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
+            deken_CPU[n++] = gensym(cpuname)->s_name;
+        }
+    }
+# endif /* arm */
+#endif /* !DEKEN_CPU */
+}
+
+/* get the (normalized) deken-specifier
+ * if 'float_agnostic' is non-0, the float-size is included.
+ *   otherwise a floatsize-agnostic specifier is generated.
+ * 'cpu' is an index in the list of preferred compatible CPUs
+ *   (higher numbers indicate less preferred CPUs)
+ *   a negative 'cpu' indicates 'fat' binaries
+ * returns 0, if the deken-specifier cannot be determined
+ * (e.g. on new architectures, or because the 'cpu' index is invalid)
+ */
+const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int cpu) {
+    unsigned int i;
+    init_deken_arch();
+    if (!deken_OS)
+        return 0;
+    if ((cpu>=0) && (((!deken_CPU) || (cpu >= (sizeof(deken_CPU)/sizeof(*deken_CPU))) || (!deken_CPU[cpu]))))
+        return 0;
+
+    pd_snprintf(buf, bufsize-1,
+        "%s-%s-%d", deken_OS, (cpu<0)?"fat":deken_CPU[cpu], (int)((float_agnostic?0:8) * sizeof(t_float)));
+
+    buf[bufsize-1] = 0;
+    for(i=0; i<bufsize && buf[i]; i++)
+        buf[i] = tolower(buf[i]);
+    return buf;
+}
+
+static void sys_init_deken(void)
+{
+    init_deken_arch();
         /* only send the arch info, if we are sure about it... */
-    if (os && machine)
-        sys_vgui("::deken::set_platform %s %s %d %d\n",
-                 os, machine,
-                 8 * sizeof(char*),
-                 8 * sizeof(t_float));
+    if (deken_OS && deken_CPU && deken_CPU[0])
+        pdgui_vmess("::deken::set_platform", "ssff",
+                 deken_OS, deken_CPU[0],
+                 8. * sizeof(char*),
+                 8. * sizeof(t_float));
 }
 
 static int sys_do_startgui(const char *libdir)
@@ -1136,6 +1379,10 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+#ifndef _WIN32
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
+#endif
         #if 1
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 fprintf(stderr, "setsockopt (TCP_NODELAY) failed");
@@ -1166,12 +1413,13 @@ static int sys_do_startgui(const char *libdir)
         struct sockaddr_storage addr;
         int status;
 #ifdef _WIN32
-        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
-        int spawnret;
+        char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30];
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 #else
-        char cmdbuf[4*MAXPDSTRING];
         const char *guicmd;
 #endif
+        char cmdbuf[4*MAXPDSTRING];
         /* get addrinfo list using hostname (get random port from OS) */
         status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);
         if (status != 0)
@@ -1189,6 +1437,10 @@ static int sys_do_startgui(const char *libdir)
             sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
             if (sockfd < 0)
                 continue;
+#ifndef _WIN32
+            if(fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+                perror("close-on-exec");
+#endif
         #if 1
             /* ask OS to allow another process to reopen this port after we close it */
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
@@ -1224,7 +1476,10 @@ static int sys_do_startgui(const char *libdir)
 
 #ifndef _WIN32
         if (sys_guicmd)
-            guicmd = sys_guicmd;
+        {
+            sprintf(cmdbuf, "\"%s\" %d\n", sys_guicmd, portno);
+            guicmd = cmdbuf;
+        }
         else
         {
 #ifdef __APPLE__
@@ -1283,7 +1538,7 @@ static int sys_do_startgui(const char *libdir)
                     sys_closesocket(sockfd);
                     return (1);
                 }
-                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
+                sprintf(cmdbuf, "\"%s\" \"%s/%s/pd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
             }
 #else /* __APPLE__ */
@@ -1312,9 +1567,7 @@ static int sys_do_startgui(const char *libdir)
         else if (!childpid)                     /* we're the child */
         {
             sys_closesocket(sockfd);     /* child doesn't listen */
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             sys_set_priority(MODE_NRT);  /* child runs non-real-time */
-#endif
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
@@ -1341,22 +1594,25 @@ static int sys_do_startgui(const char *libdir)
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
 
-        strcpy(scriptbuf, "\"");
-        strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
-        sys_bashfilename(scriptbuf, scriptbuf);
-
-        sprintf(portbuf, "%d", portno);
-
-        strcpy(wishbuf, libdir);
-        strcat(wishbuf, "/" PDBINDIR WISH);
+        pd_snprintf(wishbuf, sizeof(wishbuf), "%s/" PDBINDIR WISH, libdir);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, NULL);
-        if (spawnret < 0)
+        pd_snprintf(scriptbuf, sizeof(scriptbuf), "%s/" PDGUIDIR "/pd-gui.tcl", libdir);
+        sys_bashfilename(scriptbuf, scriptbuf);
+
+        pd_snprintf(cmdbuf, sizeof(cmdbuf), "%s \"%s\" %d", /* quote script path! */
+            WISH, scriptbuf, portno);
+
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+            /* CHR: DETACHED_PROCESS makes sure that the GUI process cannot
+            possibly interfere with the core. */
+        if (!CreateProcessA(wishbuf, cmdbuf, NULL, NULL, FALSE,
+            DETACHED_PROCESS, NULL, NULL, &si, &pi))
         {
-            perror("spawnl");
-            fprintf(stderr, "%s: couldn't load TCL\n", wishbuf);
+            char errbuf[MAXPDSTRING];
+            socket_strerror(GetLastError(), errbuf, sizeof(errbuf));
+            fprintf(stderr, "could not start %s: %s\n", wishbuf, errbuf);
             return (1);
         }
 #endif /* NOT _WIN32 */
@@ -1389,39 +1645,41 @@ static int sys_do_startgui(const char *libdir)
             INTER->i_socketreceiver);
 
             /* here is where we start the pinging. */
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
     if (sys_hipriority)
-        sys_gui("pdtk_watchdog\n");
+        pdgui_vmess("pdtk_watchdog", "");
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
-    sys_set_searchpath();     /* tell GUI about path and startup flags */
-    sys_set_temppath();
-    sys_set_extrapath();
-    sys_set_startup();
-                       /* ... and about font, medio APIS, etc */
+
+    sys_gui_preferences();     /* tell GUI about path and startup flags */
+
+        /* ... and about font, media APIS, etc */
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
              apibuf, apibuf2,
              pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
              sys_fontweight);
-    sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
 
-    do {
+    {
         t_audiosettings as;
         sys_get_audio_settings(&as);
         sys_vgui("set pd_whichapi %d\n", as.a_api);
-    } while(0);
+
+        pdgui_vmess("pdtk_pd_dsp", "s",
+            THISGUI->i_dspstate ? "ON" : "OFF");
+    }
+
     return (0);
 }
 
 void sys_setrealtime(const char *libdir)
 {
     char cmdbuf[MAXPDSTRING];
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
         /*  promote this process's priority, if we can and want to.
         If sys_hipriority not specified (-1), we assume real-time was wanted.
         Starting in Linux 2.6 one can permit real-time operation of Pd by]
@@ -1433,7 +1691,7 @@ void sys_setrealtime(const char *libdir)
     if (sys_hipriority == -1)
         sys_hipriority = 1;
 
-    snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
+    pd_snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
     cmdbuf[MAXPDSTRING-1] = 0;
     if (sys_hipriority)
     {
@@ -1495,8 +1753,10 @@ void sys_setrealtime(const char *libdir)
                 close our copy - otherwise it might hang waiting for some
                 stupid child process (as seems to happen if jackd auto-starts
                 for us.) */
+#ifndef _WIN32
             if(fcntl(pipe9[1], F_SETFD, FD_CLOEXEC) < 0)
               perror("close-on-exec");
+#endif
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
@@ -1524,8 +1784,10 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
+void sys_do_close_audio(void);
+
 /* This is called when something bad has happened, like a segfault.
-Call glob_quit() below to exit cleanly.
+Call glob_exit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
 void sys_bail(int n)
 {
@@ -1537,7 +1799,7 @@ void sys_bail(int n)
             /* sys_close_audio() hangs if you're in a signal? */
         fprintf(stderr ,"gui socket %d - \n", INTER->i_guisock);
         fprintf(stderr, "closing audio...\n");
-        sys_close_audio();
+        sys_do_close_audio();
         fprintf(stderr, "closing MIDI...\n");
         sys_close_midi();
         fprintf(stderr, "... done.\n");
@@ -1547,24 +1809,18 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-extern void sys_exit(void);
+void sys_exit(int status);
 
-void glob_exit(void *dummy, t_float status)
+    /* exit scheduler and shut down gracefully */
+void glob_exit(void *dummy, t_floatarg status)
 {
-        /* sys_exit() sets the sys_quit flag, so all loops end */
-    sys_exit();
-    sys_close_audio();
-    sys_close_midi();
-    if (sys_havegui())
-    {
-        sys_closesocket(INTER->i_guisock);
-        sys_rmpollfn(INTER->i_guisock);
-    }
-    exit((int)status);
+    sys_exit(status);
 }
-void glob_quit(void *dummy)
+
+    /* force-quit */
+void glob_quit(void *dummy, t_floatarg status)
 {
-    glob_exit(dummy, 0);
+    exit(status);
 }
 
     /* recursively descend to all canvases and send them "vis" messages
@@ -1582,15 +1838,13 @@ static void glist_maybevis(t_glist *gl)
     }
 }
 
-int sys_startgui(const char *libdir)
+    /* this is called from main when GUI has given us our font metrics,
+    so that we can now draw all "visible" canvases.  These include all
+    root canvases and all subcanvases that already believe they're visible. */
+void sys_doneglobinit( void)
 {
     t_canvas *x;
-    for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        canvas_vis(x, 0);
     INTER->i_havegui = 1;
-    INTER->i_guihead = INTER->i_guitail = 0;
-    if (sys_do_startgui(libdir))
-        return (-1);
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         if (strcmp(x->gl_name->s_name, "_float_template") &&
             strcmp(x->gl_name->s_name, "_float_array_template") &&
@@ -1599,18 +1853,42 @@ int sys_startgui(const char *libdir)
         glist_maybevis(x);
         canvas_vis(x, 1);
     }
+}
+
+    /* start the GUI up.  Before we actually draw our "visible" windows
+    we have to wait for the GUI to give us our font metrics, see
+    glob_initfromgui().  LATER it would be cool to figure out what metrics
+    we really need and tell the GUI - that way we can support arbitrary
+    zoom with appropriate font sizes.   And/or: if we ever move definitively
+    to a vector-based GUI lib we might be able to skip this step altogether. */
+int sys_startgui(const char *libdir)
+{
+    t_canvas *x;
+    stderr_isatty = isatty(2);
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        canvas_vis(x, 0);
+    INTER->i_havegui = 0;
+    INTER->i_havetkproc = 1;
+    INTER->i_guihead = INTER->i_guitail = 0;
+    INTER->i_waitingforping = 0;
+    if (sys_do_startgui(libdir))
+    {
+        INTER->i_havetkproc = 0;
+        return (-1);
+    }
     return (0);
 }
 
- /* more work needed here - for some reason we can't restart the gui after
- shutting it down this way.  I think the second 'init' message never makes
- it because the to-gui buffer isn't re-initialized. */
+    /* Shut the GUI down. */
 void sys_stopgui(void)
 {
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
     sys_vgui("%s", "exit\n");
+        /* flush twice just in case contents in FIFO wrapped around: */
+    sys_flushtogui();
+    sys_flushtogui();
     if (INTER->i_guisock >= 0)
     {
         sys_closesocket(INTER->i_guisock);
@@ -1618,6 +1896,18 @@ void sys_stopgui(void)
         INTER->i_guisock = -1;
     }
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
+}
+
+    /* message to pd to start or stop the gui.  If the symbol
+    argument is nonempty it is the "libdir" from which to start a new GUI.
+    if it's just "" we stop whatever gui might be running. */
+void glob_vis(void *dummy, t_symbol *s)
+{
+    if (*s->s_name && !INTER->i_havetkproc)
+        sys_startgui(s->s_name);
+    else if (!*s->s_name && INTER->i_havetkproc)
+        sys_stopgui();
 }
 
 /* ----------- mutexes for thread safety --------------- */
@@ -1627,12 +1917,15 @@ void s_inter_newpdinstance(void)
     INTER = getbytes(sizeof(*INTER));
 #if PDTHREADS
     pthread_mutex_init(&INTER->i_mutex, NULL);
+    pthread_mutex_init(&INTER->i_messqueue_mutex, NULL);
     pd_this->pd_islocked = 0;
 #endif
 #ifdef _WIN32
     INTER->i_freq = 0;
 #endif
     INTER->i_havegui = 0;
+    INTER->i_havetkproc = 0;
+    INTER->i_guisock = -1;
 }
 
 void s_inter_free(t_instanceinter *inter)
@@ -1646,7 +1939,17 @@ void s_inter_free(t_instanceinter *inter)
         inter->i_nfdpoll = 0;
     }
 #if PDTHREADS
-    pthread_mutex_destroy(&INTER->i_mutex);
+    pthread_mutex_destroy(&inter->i_mutex);
+        /* flush message queue */
+    while (inter->i_messqueue_head)
+    {
+        t_messqueue *m = inter->i_messqueue_head, *next = m->m_next;
+            /* m_fn is responsible for freeing m_data */
+        m->m_fn(NULL, m->m_data);
+        freebytes(m, sizeof(*m));
+        inter->i_messqueue_head = next;
+    }
+    pthread_mutex_destroy(&inter->i_messqueue_mutex);
 #endif
     freebytes(inter, sizeof(*inter));
 }
@@ -1737,6 +2040,55 @@ int sys_trylock(void)
 #endif
 }
 
+void pd_queue_mess(struct _pdinstance *instance, t_pd *obj, void *data, t_messfn fn)
+{
+    t_instanceinter *inter = instance->pd_inter;
+    t_messqueue *m = (t_messqueue *)getbytes(sizeof(*m));
+    m->m_obj = obj;
+    m->m_data = data;
+    m->m_fn = fn;
+    m->m_next = 0;
+    pthread_mutex_lock(&inter->i_messqueue_mutex);
+    if (inter->i_messqueue_tail) /* add to tail */
+        inter->i_messqueue_tail = (inter->i_messqueue_tail->m_next = m);
+    else /* empty queue */
+        inter->i_messqueue_head = inter->i_messqueue_tail = m;
+    pthread_mutex_unlock(&inter->i_messqueue_mutex);
+}
+
+void pd_queue_cancel(t_pd *obj)
+{
+    t_messqueue *m;
+    pthread_mutex_lock(&INTER->i_messqueue_mutex);
+    for (m = INTER->i_messqueue_head; m; m = m->m_next)
+    {
+        if (m->m_obj == obj)
+            m->m_obj = NULL; /* mark as canceled */
+    }
+    pthread_mutex_unlock(&INTER->i_messqueue_mutex);
+}
+
+void messqueue_dispatch(void)
+{
+    t_messqueue *m, *next;
+        /* first unlink all messages */
+    pthread_mutex_lock(&INTER->i_messqueue_mutex);
+    m = INTER->i_messqueue_head;
+    INTER->i_messqueue_head = INTER->i_messqueue_tail = NULL;
+    pthread_mutex_unlock(&INTER->i_messqueue_mutex);
+        /* then dispatch (without lock!) */
+    while (m)
+    {
+            /* NB: if the message has been canceled, m_obj is NULL;
+            we still need to call m_fn because it is responsible
+            for freeing the data! */
+        next = m->m_next;
+        m->m_fn(m->m_obj, m->m_data);
+        freebytes(m, sizeof(*m));
+        m = next;
+    }
+}
+
 #else /* PDTHREADS */
 
 #ifdef TEST_LOCKING /* run standalone Pd with this to find deadlocks */
@@ -1758,5 +2110,15 @@ void sys_unlock(void) {}
 #endif
 void pd_globallock(void) {}
 void pd_globalunlock(void) {}
+
+    /* doesn't really make sense without threads... */
+void pd_queue_mess(struct _pdinstance instance, t_pd *obj, void *data, t_messfn fn)
+{
+    fn(obj, data);
+}
+
+void pd_queue_cancel(t_pd *obj) {}
+
+void messqueue_dispatch(void) {}
 
 #endif /* PDTHREADS */

@@ -2,12 +2,15 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 /* jsarlo { */
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
@@ -19,22 +22,22 @@
 They are instantiated by "garrays" below or can be elements of other
 scalars (g_scalar.c); their graphical behavior is defined accordingly. */
 
-t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
+t_array *array_new(t_symbol *templatesym, int length, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
     t_template *template;
     template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
-    x->a_n = 1;
+    x->a_n = length;
     x->a_elemsize = sizeof(t_word) * template->t_n;
-    x->a_vec = (char *)getbytes(x->a_elemsize);
+    x->a_vec = (char *)getbytes(length * x->a_elemsize);
         /* note here we blithely copy a gpointer instead of "setting" a
         new one; this gpointer isn't accounted for and needn't be since
         we'll be deleted before the thing pointed to gets deleted anyway;
         see array_free. */
     x->a_gp = *parent;
     x->a_stub = gstub_new(0, x);
-    word_init((t_word *)(x->a_vec), template, parent);
+    word_initvec((t_word *)(x->a_vec), template, parent, length);
     return (x);
 }
 
@@ -58,15 +61,8 @@ void array_resize(t_array *x, int n)
     x->a_vec = tmp;
     x->a_n = n;
     if (n > oldn)
-    {
-        char *cp = x->a_vec + elemsize * oldn;
-        int i = n - oldn;
-        for (; i--; cp += elemsize)
-        {
-            t_word *wp = (t_word *)cp;
-            word_init(wp, template, &x->a_gp);
-        }
-    }
+        word_initvec((t_word *)(x->a_vec + elemsize * oldn), template,
+            &x->a_gp, n - oldn);
     x->a_valid = ++glist_valid;
 }
 
@@ -90,11 +86,7 @@ void array_free(t_array *x)
     int i;
     t_template *scalartemplate = template_findbyname(x->a_templatesym);
     gstub_cutoff(x->a_stub);
-    for (i = 0; i < x->a_n; i++)
-    {
-        t_word *wp = (t_word *)(x->a_vec + x->a_elemsize * i);
-        word_free(wp, scalartemplate);
-    }
+    word_freevec((t_word *)x->a_vec, scalartemplate, x->a_n);
     freebytes(x->a_vec, x->a_elemsize * x->a_n);
     freebytes(x, sizeof *x);
 }
@@ -266,7 +258,7 @@ static void garray_fittograph(t_garray *x, int n, int style)
             glist_redraw(gl);
         }
             /* close any dialogs that might have the wrong info now... */
-        gfxstub_deleteforkey(gl);
+        pdgui_stub_deleteforkey(gl);
     }
 }
 
@@ -348,21 +340,21 @@ void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *)canvas;
     int gcount;
-    char cmdbuf[200], arraybuf[80];
+    char arraybuf[80];
     for (gcount = 1; gcount < 1000; gcount++)
     {
         sprintf(arraybuf, "array%d", gcount);
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount);
-    gfxstub_new(&x->gl_pd, x, cmdbuf);
+    pdgui_stub_vnew(&x->gl_pd,
+        "pdtk_array_dialog", x, "siii",
+        arraybuf, 100, 3, 1);
 }
 
     /* called from graph_dialog to set properties */
 void garray_properties(t_garray *x)
 {
-    char cmdbuf[200];
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
     int style = template_getfloat(template_findbyname(sc->sc_template),
@@ -372,14 +364,12 @@ void garray_properties(t_garray *x)
 
     if (!a)
         return;
-    gfxstub_deleteforkey(x);
-        /* create dialog window.  LATER fix this to escape '$'
-        properly; right now we just detect a leading '$' and escape
-        it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, "pdtk_array_dialog %%s {%s} %d %d 0\n",
-            x->x_name->s_name, a->a_n, x->x_saveit +
-            2 * filestyle);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+    pdgui_stub_deleteforkey(x);
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_dialog", x,
+        "siii",
+        x->x_name->s_name,
+        a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
     /* this is called back from the dialog window to create a garray.
@@ -481,6 +471,7 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
 {
     int i, size=0, topItem=(int)fTopItem;
     int pagesize=ARRAYPAGESIZE, page=(int)fPage, maxpage;
+    int offset, length;
     t_word *data=0;
 
     if(!garray_getfloatwords(x, &size, &data)) {
@@ -495,29 +486,25 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
     if(page < 0)
         page = 0;
 
-    sys_vgui("::dialog_array::listview_setpage {%s} %d %d %d\n",
+    pdgui_vmess("::dialog_array::listview_setpage", "s iii",
         x->x_realname->s_name,
         page, maxpage+1, pagesize);
 
-    sys_vgui("::dialog_array::listview_setdata {%s} %ld",
-        x->x_realname->s_name,
-        (long long)(page * pagesize));
-    for (i = page * pagesize;
-         (i < (page + 1) * pagesize && i < size);
-         i++)
-    {
-        sys_vgui(" %g", data[i].w_float);
-    }
-    sys_vgui("\n");
+    offset = page*pagesize;
+    length = ((offset+pagesize) > size)?size-offset:pagesize;
 
-    sys_vgui("::dialog_array::listview_focus {%s} %d\n",
+    pdgui_vmess("::dialog_array::listview_setdata", "siw",
+             x->x_realname->s_name,
+             offset,
+             length, data + offset);
+
+    pdgui_vmess("::dialog_array::listview_focus", "si",
              x->x_realname->s_name,
              topItem);
 }
 
 static void garray_arrayviewlist_new(t_garray *x)
 {
-    char cmdbuf[200];
     int size=0;
     t_word*data=0;
 
@@ -526,11 +513,11 @@ static void garray_arrayviewlist_new(t_garray *x)
         return;
     }
     x->x_listviewing = 1;
-    sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s {%s} %d\n",
-            x->x_realname->s_name,
-            0);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_listview_new", x,
+        "si",
+        x->x_realname->s_name, 0);
 
     garray_arrayviewlist_fillpage(x, 0, 0);
 }
@@ -538,7 +525,7 @@ static void garray_arrayviewlist_new(t_garray *x)
 static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow {%s}\n",
+    pdgui_vmess("pdtk_array_listview_closeWindow", "s",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -553,7 +540,7 @@ static void garray_free(t_garray *x)
         garray_arrayviewlist_close(x);
     }
     /* } jsarlo */
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
     while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
@@ -606,7 +593,8 @@ void array_getcoordinate(t_glist *glist,
 static void array_getrect(t_array *array, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
+    t_float x1 = 0x7fffffff, y1 = 0x7fffffff,
+        x2 = -0x7fffffff, y2 = -0x7fffffff;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i;
@@ -784,7 +772,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage {%s}\n",
+          pdgui_vmess("pdtk_array_listview_fillpage", "s",
                  x->x_realname->s_name);
     }
     /* } jsarlo */
@@ -885,25 +873,25 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field",
+            x->x_realname->s_name);
         return;
     }
     if (npoints == 0)
-        npoints = 512;  /* dunno what a good default would be... */
+        npoints = 4096;  /* dunno what a good default would be... */
     if (npoints != (1 << ilog2((int)npoints)))
         post("%s: rounding to %d points", array->a_templatesym->s_name,
             (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
-    phaseincr = 2. * 3.14159 / npoints;
-    for (i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
+    phaseincr = 2. * M_PI / npoints;
+    for (i = 0; i < array->a_n; i++)
     {
         double sum = dcval;
         if (sineflag)
-            for (j = 0, fj = phase; j < nsin; j++, fj += phase)
-                sum += vsin[j] * sin(fj);
-        else
-            for (j = 0, fj = 0; j < nsin; j++, fj += phase)
-                sum += vsin[j] * cos(fj);
+            for (j = 0; j < nsin; j++)
+                sum += vsin[j] * sin(((double)j+1.)*(double)i*phaseincr);
+        else for (j = 0; j < nsin; j++)
+                sum += vsin[j] * cos((double)j*(double)i*phaseincr);
         *((t_float *)((array->a_vec + elemsize * i)) + yonset)
             = sum;
     }
@@ -1251,6 +1239,11 @@ void garray_resize_long(t_garray *x, long n)
 }
 
     /* float version to use as Pd method */
+static void garray_doresize(t_garray *x, t_floatarg f)
+{
+    garray_resize_long(x, f);
+}
+    /* deprecated function, kept only for ABI compatibility */
 void garray_resize(t_garray *x, t_floatarg f)
 {
     garray_resize_long(x, f);
@@ -1305,7 +1298,7 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
         A_SYMBOL, A_NULL);
-    class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
+    class_addmethod(garray_class, (t_method)garray_doresize, gensym("resize"),
         A_FLOAT, A_NULL);
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
         A_FLOAT, 0);

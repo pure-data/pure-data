@@ -7,8 +7,14 @@
 #pragma once
 
 #include "m_pd.h"
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef _WIN32
+#include <io.h>
 #endif
 #include <string.h>
 #include <limits.h>
@@ -16,8 +22,12 @@
 
 /* GLIBC large file support */
 #ifdef _LARGEFILE64_SOURCE
-#define lseek lseek64
-#define off_t __off64_t
+# define lseek lseek64
+# if HAVE_OFF64_T
+#  define off_t off64_t
+# else
+#  define off_t __off64_t
+# endif
 #endif
 
 /* MSVC doesn't define or uses different naming for these Posix types */
@@ -25,6 +35,7 @@
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #define off_t ssize_t
+#endif /* _MSC_VER */
 /* choose appropriate size if SSIZE_MAX is not defined */
 #ifndef SSIZE_MAX
 #ifdef _WIN64
@@ -33,7 +44,6 @@ typedef SSIZE_T ssize_t;
 #define SSIZE_MAX INT_MAX
 #endif
 #endif /* SSIZE_MAX */
-#endif /* _MSC_VER */
 
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128
@@ -57,7 +67,7 @@ typedef struct _soundfile
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
-    int sf_bytespersample; /**< bit rate, 2: 16 bit, 3: 24 bit, 4: 32 bit */
+    int sf_bytespersample; /**< bit rate, 2: 16 bit, 3: 24, 4: 32, 8: 64  */
     ssize_t sf_headersize; /**< header size in bytes, -1 for unknown size */
     int sf_bigendian;      /**< sample endianness, 1 : big or 0 : little  */
     int sf_bytesperframe;  /**< number of bytes per sample frame          */
@@ -117,9 +127,10 @@ typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
 typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
     /** returns the type's preferred sample endianness based on the
-        requested endianness (0 little, 1 big, -1 unspecified)
+        requested endianness (0 little, 1 big, -1 unspecified) and
+        bytes per sample (-1 unspecified)
         returns 1 for big endian, 0 for little endian */
-typedef int (*t_soundfile_endiannessfn)(int endianness);
+typedef int (*t_soundfile_endiannessfn)(int endianness, int bytespersample);
 
     /* type implementation for a single file format */
 typedef struct _soundfile_type

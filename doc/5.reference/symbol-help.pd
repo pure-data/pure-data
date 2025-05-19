@@ -1,4 +1,4 @@
-#N canvas 341 38 815 441 12;
+#N canvas 257 83 817 492 12;
 #X text 114 264 creation argument initializes the value, f 21;
 #X text 54 128 output the value;
 #X text 129 159 set and output the value;
@@ -20,9 +20,9 @@
 #X text 436 61 Note you can also use backslashes to escape spaces and other special characters (comma \, semicolons \, dollar signs and backslash)., f 50;
 #X obj 34 14 symbol;
 #X text 90 13 - store a symbol (i.e. \, string);
-#X text 32 400 see also:;
-#X obj 107 401 float;
-#X text 599 398 updated for Pd version 0.52;
+#X text 32 455 see also:;
+#X obj 245 455 float;
+#X text 599 453 updated for Pd version 0.52;
 #N canvas 685 120 581 310 reference 0;
 #X text 119 115 symbol -;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;

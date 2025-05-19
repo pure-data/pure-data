@@ -17,17 +17,8 @@
   modified by IOhannes m zmölnig (umlaeute) Nov 2021
   + convert native strings to UTF-8
 */
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
 
 #include "s_utf8.h"
 

@@ -31,7 +31,7 @@
  *
  *      The following are done but not popular enough in math libss
  *      to be included yet
- *              hypoth - Euclidean distance function
+ *              hypot - Euclidean distance function
  *              trunc
  *              round
  *              nearbyint -
@@ -50,9 +50,9 @@
  *  July 2017 --sdy
  *
  *      - ex_if() is reworked to only evaluate either the left or the right arg
- *	October 2020 --sdy
- *		- fact() (factorial) now calculates and returns its value in double
- *		- Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
+ *  October 2020 --sdy
+ *      - fact() (factorial) now calculates and returns its value in double
+ *      - Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
  *
  */
 
@@ -77,12 +77,20 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-#define __STRICT_BSD__
 #include <math.h>
-#undef __STRICT_BSD__
 
 #include "x_vexp.h"
+
+#ifdef _MSC_VER
+# ifndef snprintf
+/* For Pd, we already redefined snprintf() to pd_snprintf() */
+#  define snprintf _snprintf
+# endif
+# define strcasecmp _stricmp
+# define strncasecmp _strnicmp
+#endif
 
 struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int i);
@@ -143,13 +151,44 @@ static void ex_drem(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *o
 static void ex_remainder(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_round(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_trunc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_hypot(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_nearbyint(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+#endif
 
-#endif
-#ifdef notdef
-/* the following will be added once they are more popular in math libraries */
-static void ex_hypoth(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-#endif
+static void ex_symbol1(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_symbol(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_tolower(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_tonlower(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_toupper(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_tonupper(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strlen(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strcat(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strncat(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strcmp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strncmp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strcasecmp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strncasecmp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strchr(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strrchr(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strspn(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strcspn(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_strpbrk(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+extern void ex_size(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_sum(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_Sum(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_avg(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_Avg(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_store(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_var (t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_tabread4(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
 
 
 t_ex_func ex_funcs[] = {
@@ -180,16 +219,16 @@ t_ex_func ex_funcs[] = {
         {"fact",        ex_fact,        1},
         {"random",      ex_random,      2},     /* random number */
         {"abs",         ex_abs,         1},
-        {"if",          (void (*))ex_if,          3},
+        {"if",          (void (*))ex_if,3},
         {"ldexp",       ex_ldexp,       2},
         {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
-		{"mtof",		ex_mtof,		1},
-		{"ftom",		ex_ftom,		1},
-		{"dbtorms",		ex_dbtorms,		1},
-		{"rmstodb",		ex_rmstodb,		1},
-		{"dbtopow",		ex_dbtopow,		1},
-		{"powtodb",		ex_powtodb,		1},
+        {"mtof",        ex_mtof,        1},
+        {"ftom",        ex_ftom,        1},
+        {"dbtorms",     ex_dbtorms,     1},
+        {"rmstodb",     ex_rmstodb,     1},
+        {"dbtopow",     ex_dbtopow,     1},
+        {"powtodb",     ex_powtodb,     1},
 #if !defined(_MSC_VER) || (_MSC_VER >= 1700)
         {"asinh",       ex_asinh,       1},
         {"acosh",       ex_acosh,       1},
@@ -206,24 +245,41 @@ t_ex_func ex_funcs[] = {
         {"nearbyint",   ex_nearbyint,   1},
         {"copysign",    ex_copysign,    2},
         {"isinf",       ex_isinf,       1},
-        {"remainder",   ex_remainder,           2},
+        {"remainder",   ex_remainder,   2},
+        {"hypot",      ex_hypot,        2},
 #endif
+        /* Symbol functions */
+        {"symbol",      ex_symbol,      -1},
+        {"sym",         ex_symbol,      -1},
+        {"tolower",     ex_tolower,     1},
+        {"tonlower",    ex_tonlower,    2},
+        {"toupper",     ex_toupper,     1},
+        {"tonupper",    ex_tonupper,    2},
+        {"strlen",      ex_strlen,      1},
+        {"strcat",      ex_strcat,      -1}, /* variable num of arguments */
+        {"strncat",     ex_strncat,     3},
+        {"strcmp",      ex_strcmp,      2},
+        {"strncmp",     ex_strncmp,     3},
+        {"strcasecmp",  ex_strcasecmp,  2},
+        {"strncasecmp", ex_strncasecmp, 3},
+        {"strpbrk",     ex_strpbrk,     2},
+        {"strspn",      ex_strspn,      2},
+        {"strcspn",     ex_strcspn,     2},
+        {"var",         ex_var,         1},
+
 #ifdef PD
         {"size",        ex_size,        1},
         {"sum",         ex_sum,         1},
         {"Sum",         ex_Sum,         3},
         {"avg",         ex_avg,         1},
         {"Avg",         ex_Avg,         3},
-#endif
-#ifdef notdef
-/* the following will be added once they are more popular in math libraries */
-        {"hypoth",      ex_hypoth,      1},
+//SDY        {"tabread4",    ex_tabread4,    2},    place holder - This will be implemented later
 #endif
         {0,             0,              0}
 };
 
 /*
- * FUN_EVAL --  do type checking, evaluate a function,
+ * FUNC_EVAL -- do type checking, evaluate a function,
  *              if fltret is set return float
  *              otherwise return value based on regular typechecking,
  */
@@ -1013,14 +1069,14 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
         t_float *cp;              /* condition pointer */
         t_float leftvalue, rightvalue;
         int j;
-                int condtrue = 0;
+        int condtrue = 0;
 
-                // evaluate the condition
-                eptr = ex_eval(e, eptr, argv, idx);
+        // evaluate the condition
+        eptr = ex_eval(e, eptr, argv, idx);
         cond = argv++;
-                // only either the left or right will be evaluated depending
-                // on the truth value of the condition
-                // However, if the condition is a vector, both args will be evaluated
+        // only either the left or right will be evaluated depending
+        // on the truth value of the condition
+        // However, if the condition is a vector, both args will be evaluated
 
         switch (cond->ex_type) {
         case ET_VEC:
@@ -1034,20 +1090,32 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                         optr->ex_type = ET_VEC;
                         optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
-                                                if (!optr->ex_vec) {
-                                                        post("expr:if: no mem");
-                                                        /* pass over the left and right args */
-                                                        return(cond->ex_end->ex_end);
-                                                }
+                        if (!optr->ex_vec) {
+                                post("expr:if: no mem");
+                                /* pass over the left and right args */
+                                return(cond->ex_end->ex_end);
+                        }
                 }
-                                /*
-                                 * if the condition is a vector
-                                 * the left and the right args both will get processed
-                                 */
-                                eptr = ex_eval(e, eptr, argv, idx);
-                                left = argv++;
-                                eptr = ex_eval(e, eptr, argv, idx);
-                                right = argv;
+                /*
+                 * if the condition is a vector
+                 * the left and the right args both will get processed
+                 */
+                eptr = ex_eval(e, eptr, argv, idx);
+                left = argv++;
+                eptr = ex_eval(e, eptr, argv, idx);
+                right = argv;
+                if (left->ex_type == ET_SYM || left->ex_type == ET_SI){
+                        pd_error(e,
+                         "'%s': vector condition cannot return symbol value(l)",
+                                                         e->exp_string);
+                        return (eptr);
+                }
+                if (right->ex_type == ET_SYM || right->ex_type == ET_SI){
+                        pd_error(e,
+                         "'%s': vector condition cannot return symbol value(r)",
+                                                         e->exp_string);
+                        return (eptr);
+                }
                 op = optr->ex_vec;
                 j = e->exp_vsize;
                 cp = cond->ex_vec;
@@ -1084,7 +1152,6 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                                         rp++;
                                 }
                                 return (eptr);
-                        case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
@@ -1123,7 +1190,6 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                                         rp++;
                                 }
                                 return (eptr);
-                        case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
@@ -1165,14 +1231,12 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                                         lp++; rp++;
                                 }
                                 return (eptr);
-                        case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
                                                       __LINE__, right->ex_type);
                                 return (eptr);
                         }
-                case ET_SYM:
                 default:
                         post_error((fts_object_t *) e,
                       "expr: FUNC_EVAL(%d): bad left type %ld\n",
@@ -1191,27 +1255,31 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                 else
                         condtrue = 0;
                 break;
+        case ET_SI:
         case ET_SYM:
+                pd_error(e, "'%s': if() condition cannot be a string",
+                                                         e->exp_string);
+                return (eptr);
         default:
                 post_error((fts_object_t *) e,
               "expr: FUNC_EVAL(%d): bad condition type %ld\n",
                                       __LINE__, cond->ex_type);
                 return (eptr);
         }
-                if (condtrue) {
-                        eptr = ex_eval(e, eptr, argv, idx);
-                        res = argv++;
-                        if (!eptr)
-                                return (exNULL);
-                        eptr = eptr->ex_end; /* no right processing */
+        if (condtrue) {
+                eptr = ex_eval(e, eptr, argv, idx);
+                res = argv++;
+                if (!eptr)
+                        return (exNULL);
+                eptr = eptr->ex_end; /* no right processing */
 
-                } else {
-                        if (!eptr)
-                                return (exNULL);
-                        eptr = eptr->ex_end; /* no left rocessing */
-                        eptr = ex_eval(e, eptr, argv, idx);
-                        res = argv++;
-                }
+        } else {
+                if (!eptr)
+                        return (exNULL);
+                eptr = eptr->ex_end; /* no left rocessing */
+                eptr = ex_eval(e, eptr, argv, idx);
+                res = argv++;
+        }
         switch(res->ex_type) {
         case ET_INT:
                 if (optr->ex_type == ET_VEC) {
@@ -1240,14 +1308,21 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                         optr->ex_type = ET_VEC;
                         optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
-                                                if (!optr->ex_vec) {
-                                                        post("expr:if: no mem");
-                            return (eptr);
-                                                }
+                        if (!optr->ex_vec) {
+                                post("expr:if: no mem");
+                                return (eptr);
+                        }
                 }
                 memcpy(optr->ex_vec, res->ex_vec, e->exp_vsize*sizeof(t_float));
                 return (eptr);
         case ET_SYM:
+        case ET_SI:
+                if (optr->ex_type == ET_VEC) {
+                        ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+                        return (eptr);
+                }
+                *optr = *res;
+                return (eptr);
         default:
                 post_error((fts_object_t *) e,
               "expr: FUNC_EVAL(%d): bad res type %ld\n",
@@ -1256,6 +1331,541 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
         }
 
 }
+
+/*
+ * ex_getstring - get a string from an argument
+ */
+
+static char *
+ex_getstring(t_expr *e, struct ex_ex *eptr)
+{
+        switch (eptr->ex_type) {
+        case ET_SYM:
+                if (eptr->ex_flags & EX_F_TSYM)
+                        return (eptr->ex_ptr);
+                return (ex_symname((t_symbol *) eptr->ex_ptr));
+
+        case ET_SI:
+                if (!e->exp_var[eptr->ex_int].ex_ptr)
+                        return ("");
+                return (ex_symname((t_symbol *)
+                                        e->exp_var[eptr->ex_int].ex_ptr));
+        default:
+                post_error(e, "expr: '%s' - argument not a string - type = %ld\n",
+                                e->exp_string, eptr->ex_type);
+                return ((char *) 0);
+        }
+}
+
+static int
+ex_getnumber(t_expr *e, struct ex_ex *eptr)
+{
+        switch (eptr->ex_type) {
+        case ET_INT:
+                return (eptr->ex_int);
+
+        case ET_FLT:
+                return ((int) eptr->ex_flt);
+
+        case ET_SYM:
+                if (eptr->ex_flags & EX_F_TSYM) {
+                        free(eptr->ex_ptr);
+                        eptr->ex_flags &= ~EX_F_TSYM;
+                }
+
+        default:
+                return (0);
+        }
+}
+
+static int
+ex_makesymbol(t_expr *e, struct ex_ex *optr, size_t size)
+{
+        optr->ex_type = ET_SYM;
+        optr->ex_flags |= EX_F_TSYM;
+        optr->ex_ptr = (char *) calloc(size + 1, sizeof (char));
+        if (!optr->ex_ptr) {
+                post_error(e, "expr: '%s' - makesymbol: no memory\n", e->exp_string);
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+                return 0;
+        }
+        return 1;
+}
+
+
+#define CHECK_LEFT_STR(left)                            \
+        left = argv;                                    \
+        leftstr =  ex_getstring(e, left);               \
+        if (!leftstr) {                                 \
+                optr->ex_type = ET_INT;                 \
+                optr->ex_int = 0;                       \
+                return;                                 \
+        }                                               \
+
+#define CHECK_RIGHT_STR(right)                          \
+        right = argv + 1;                               \
+        rightstr =  ex_getstring(e, right);             \
+        if (!rightstr) {                                \
+                optr->ex_type = ET_INT;                 \
+                optr->ex_int = 0;                       \
+                return;                                 \
+        }
+
+
+#define CHECK_LR_STR(left, right)                       \
+        CHECK_LEFT_STR(left)                            \
+        CHECK_RIGHT_STR(right)
+
+
+#define STRFUNC_DEF(func)                                                       \
+static void                                                                     \
+func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)          \
+{                                                                               \
+        struct ex_ex *left = (struct ex_ex *) 0;                                \
+        struct ex_ex *right = (struct ex_ex *) 0;                               \
+        char *leftstr, *rightstr;                                               \
+        struct ex_ex outval;                                          \
+        struct ex_ex *tmpoptr;                                        \
+                                                                      \
+        outval.ex_type = 0;                                           \
+        outval.ex_int = 0;                                            \
+        outval.ex_flags = 0;                                          \
+        tmpoptr = &outval;                                            \
+                                                                      \
+        CHECK_LR_STR(left, right);
+
+/*
+ * only set the left, and be sure right is set to zero
+ * so that CHECK)FREE_STRING() in STREFUNC_END does not free right
+ */
+#define STRSINGLEFUNC_DEF(func)                                       \
+static void                                                           \
+func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)\
+{                                                                     \
+        struct ex_ex *left = (struct ex_ex *) 0;                      \
+        struct ex_ex *right = (struct ex_ex *) 0;                     \
+        char *leftstr, *rightstr;                                     \
+        struct ex_ex outval;                                          \
+        struct ex_ex *tmpoptr;                                        \
+                                                                      \
+        outval.ex_type = 0;                                           \
+        outval.ex_int = 0;                                            \
+        outval.ex_flags = 0;                                          \
+        tmpoptr = &outval;                                            \
+                                                                      \
+        CHECK_LEFT_STR(left);
+
+/*
+ * check to see if we need to free any buffers
+ */
+#define STRFUNC_END()                                                 \
+        if (optr->ex_type == ET_VEC) {                                \
+            switch (tmpoptr->ex_type) {                               \
+            case ET_INT:                                              \
+                ex_mkvector(optr->ex_vec, (t_float) tmpoptr->ex_int,  \
+                                                    e->exp_vsize);    \
+                break;                                                \
+            case ET_FLT:                                              \
+                ex_mkvector(optr->ex_vec, tmpoptr->ex_flt,            \
+                                                    e->exp_vsize);    \
+                break;                                                \
+            case ET_SYM:                                              \
+                ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);         \
+                if (tmpoptr->ex_flags & EX_F_TSYM) {                  \
+                        free(tmpoptr->ex_ptr);                        \
+                }                                                     \
+                break;                                                \
+            default:                                                  \
+                ex_error(e, "expr: bad return type INTERNAL ERROR",   \
+                                                e->exp_string);       \
+            }                                                         \
+            return;                                                   \
+        }                                                             \
+        *optr = *tmpoptr;                                             \
+        return;                                                       \
+}
+
+#define EXPR_MAX_SYM_SIZE 512 /*largest symbol size, in sprintf it may be 500*/
+
+void
+ex_var (t_expr *expr, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+{
+        t_float retval;
+
+
+        switch(argv->ex_type) {
+        case ET_SYM:
+            if (argv->ex_flags & EX_F_TSYM)
+                /*
+                 * SDY - we do not have the idx value here, so we are passing 0
+                 * var() cannot evaluate the sys_idx variable
+                 */
+                max_ex_var(expr, gensym(argv->ex_ptr), optr, 0);
+            else
+                max_ex_var(expr, (t_symbol *) argv->ex_ptr, optr, 0);
+            return;
+
+        case ET_SI:
+                if (!expr->exp_var[argv->ex_int].ex_ptr)
+                        break;
+                max_ex_var(expr,(t_symbol *) expr->exp_var[argv->ex_int].ex_ptr, optr, 0);
+                return;
+
+        default:
+                ex_error(expr, "var(): argument not a string - type = %ld\n",
+                                argv->ex_type);
+                break;
+        }
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+        else {
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+        }
+        return;
+
+}
+
+
+static void
+ex_symbol1(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+{
+        struct ex_ex *left;
+                        /* we will not realloc to exact size for efficiecy */
+        int i;
+        char *strp; /* string pointer */
+
+        left = argv;
+        switch (left->ex_type) {
+        case ET_SYM:
+            *optr = *left;
+            left->ex_type = ET_INT;
+            left->ex_flags = 0;
+            left->ex_ptr = (char *)0;
+            return;
+
+        case ET_SI:
+            strp = ex_getstring(e, left);
+            if (!strp) {
+                if (!ex_makesymbol(e, optr, 1))
+                    goto goterror;
+                *optr->ex_ptr = 0;
+                return;
+            }
+            if (!ex_makesymbol(e, optr, strlen(strp)))
+                goto goterror;
+            strcpy (optr->ex_ptr, strp);
+            return;
+
+
+        case ET_INT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%ld", left->ex_int);
+            return;
+
+        case ET_FLT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, "%.6f", left->ex_flt);
+            for (i = strlen(optr->ex_ptr) - 1; i && optr->ex_ptr[i] == '0'; i--)
+                if (optr->ex_ptr[i-1] != '.')
+                        optr->ex_ptr[i] = 0;
+            return;
+
+        default:
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
+        }
+
+goterror:
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return;
+}
+
+static void
+ex_symbol(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+{
+        struct ex_ex *left;
+        char format[25]; /* the largest int in a 64 bit is 20 characters */
+        int i, num1, num2;
+        char *strp; /* string pointer */
+
+        if (!argc) {
+            ex_makesymbol(e, optr, 1);
+            return;
+        }
+        if (argc == 1)
+            return (ex_symbol1(e, argc, argv, optr));
+
+        if (argc != 2 && argc != 3) {
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            ex_error(e, "expr: symbol/sym takes no more than 3 arguments", e->exp_string);
+            return;
+        }
+
+        left = argv;
+        num1 = ex_getnumber(e, argv + 1);
+        if (argc == 2)
+                num2 = -1;
+        else
+                num2 = ex_getnumber(e, argv + 2);
+        switch (left->ex_type) {
+        case ET_SYM:
+        case ET_SI:
+            strp = ex_getstring(e, left);
+            if (!strp) {
+                if (!ex_makesymbol(e, optr, 1))
+                    goto goterror;
+                *optr->ex_ptr = 0;
+                return;
+            }
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            if (num2 == -1)
+                snprintf(format, 25, "%%.%ds", num1);
+            else
+                snprintf(format, 25, "%%%d.%ds", num2, num1);
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, strp);
+            return;
+
+        case ET_INT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            if (num2 == -1)
+                snprintf(format, 25, "%%.%dld", num1);
+            else
+                snprintf(format, 25, "%%%d.%dld", num2, num1);
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_int);
+            return;
+
+        case ET_FLT:
+            if (!ex_makesymbol(e, optr, EXPR_MAX_SYM_SIZE))
+                goto goterror;
+            if (num2 == -1)
+                snprintf(format, 25, "%%.%df", num1);
+            else
+                snprintf(format, 25, "%%%d.%df", num2, num1);
+            snprintf(optr->ex_ptr, EXPR_MAX_SYM_SIZE, format, left->ex_flt);
+            return;
+
+        default:
+            optr->ex_type = ET_INT;
+            optr->ex_int = 0;
+            post_error((fts_object_t *) e, "expr: bad argument to tosym/sym() - '%s'", e->exp_string);
+        }
+
+goterror:
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return;
+}
+
+/*
+ * ex_strcat - strcat() takes unlimited number of arguments
+ */
+static void
+ex_strcat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+{
+        char *p; /* string pointer */
+        int i;
+        int size = 0;
+
+        /* find the size */
+        for (i = 0; i < argc; i ++) {
+            p = ex_getstring(e, &argv[i]);
+            if (!p) {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+                return;
+            }
+            size += strlen(p);
+        }
+
+        if (!ex_makesymbol(e, optr, size)) {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+                return;
+        }
+
+        for (i = 0; i < argc; i ++)
+            strcat(optr->ex_ptr, ex_getstring(e, &argv[i]));
+        return;
+}
+
+/*
+ * ex_strncat - implement strncat()
+ */
+STRFUNC_DEF(ex_strncat)
+        int num, size;
+        num =  ex_getnumber(e, argv + 2);
+        size = min(num, strlen(rightstr));
+
+        if (!ex_makesymbol(e, tmpoptr, size))
+                return;
+
+        strcat(tmpoptr->ex_ptr, leftstr);
+        strncat(tmpoptr->ex_ptr, rightstr, num);
+
+STRFUNC_END()
+
+/*
+ * ex_tolower - replace all characters of the string with
+ *              the corresponding lowercase letter
+ */
+STRSINGLEFUNC_DEF(ex_tolower)
+        int i, size;
+
+        size = strlen(leftstr);
+        if (!ex_makesymbol(e, tmpoptr, size))
+                return;
+        strcat(tmpoptr->ex_ptr, leftstr);
+        for (i = 0; i < size +1; i++)
+                tmpoptr->ex_ptr[i] = tolower(tmpoptr->ex_ptr[i]);
+STRFUNC_END()
+
+/*
+ * ex_tonlower - replace all characters of the string with
+ *              the corresponding lowercase letter
+ */
+STRSINGLEFUNC_DEF(ex_tonlower)
+        int i, size, num;
+
+        size = strlen(leftstr);
+        if (!ex_makesymbol(e, tmpoptr, size))
+                return;
+        num =  ex_getnumber(e, argv + 1);
+        strcat(tmpoptr->ex_ptr, leftstr);
+        num = min (size, num);
+        for (i = 0; i < num; i++)
+                tmpoptr->ex_ptr[i] = tolower(tmpoptr->ex_ptr[i]);
+STRFUNC_END()
+
+
+
+/*
+ * ex_toupper - replace all characters of the string with
+ *              the corresponding uppercase letter
+ */
+STRSINGLEFUNC_DEF(ex_toupper)
+        int i, size;
+
+        size = strlen(leftstr);
+        if (!ex_makesymbol(e, tmpoptr, size))
+                return;
+        strcat(tmpoptr->ex_ptr, leftstr);
+        for (i = 0; i < size +1; i++)
+                tmpoptr->ex_ptr[i] = toupper(tmpoptr->ex_ptr[i]);
+STRFUNC_END()
+
+/*
+ * ex_tonupper - replace no more than n characters of the string with
+ *              the corresponding uppercase letter
+ */
+STRSINGLEFUNC_DEF(ex_tonupper)
+        int i, size, num;
+
+        size = strlen(leftstr);
+        if (!ex_makesymbol(e, tmpoptr, size))
+                return;
+        num =  ex_getnumber(e, argv + 1);
+        strcat(tmpoptr->ex_ptr, leftstr);
+        num = min (size, num);
+        for (i = 0; i < num; i++)
+                tmpoptr->ex_ptr[i] = toupper(tmpoptr->ex_ptr[i]);
+STRFUNC_END()
+
+/*
+ * ex_strlen - implement strlen()
+ */
+STRSINGLEFUNC_DEF(ex_strlen)
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strlen(leftstr);
+STRFUNC_END()
+
+/*
+ * ex_strcmp - implement strcmp()
+ */
+STRFUNC_DEF(ex_strcmp)
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strcmp(leftstr, rightstr);
+STRFUNC_END()
+
+/*
+ * ex_strncmp - implement strncmp()
+ */
+STRFUNC_DEF(ex_strncmp)
+        int num;
+
+        num =  ex_getnumber(e, argv + 2);
+
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strncmp(leftstr, rightstr, num);
+STRFUNC_END()
+
+/*
+ * ex_strcasecmp - implement strcasecmp()
+ */
+STRFUNC_DEF(ex_strcasecmp)
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strcasecmp(leftstr, rightstr);
+STRFUNC_END()
+
+/*
+ * ex_strncasecmp - implement strncasecmp()
+ */
+STRFUNC_DEF(ex_strncasecmp)
+        int num;
+
+        num =  ex_getnumber(e, argv + 2);
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strncasecmp(leftstr, rightstr, num);
+STRFUNC_END()
+
+
+
+/*
+ * ex_strpbrk - implement strpbrk()
+ */
+STRFUNC_DEF(ex_strpbrk)
+        char *result;
+
+        result = strpbrk(leftstr, rightstr);
+        if (!result) {
+                /*
+                 * strpbrk return NULL and not a pointer to an empty string
+                 * this can be quite cumbersome in Pd, thus, when no character is found
+                 * we turn a pointer to an empty (NULL) string
+                 */
+                ex_makesymbol(e, tmpoptr, 1);
+        } else {
+            if (!ex_makesymbol(e, tmpoptr, strlen(result) + 1))
+                return;
+            strcpy(tmpoptr->ex_ptr, result);
+        }
+STRFUNC_END()
+
+/*
+ * ex_strspn - implement strspn()
+ */
+STRFUNC_DEF(ex_strspn)
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strspn(leftstr, rightstr);
+STRFUNC_END()
+
+
+/*
+ * ex_strcspn - implement strcspn()
+ */
+STRFUNC_DEF(ex_strcspn)
+        tmpoptr->ex_type = ET_INT;
+        tmpoptr->ex_int = strcspn(leftstr, rightstr);
+STRFUNC_END()
+
 
 /*
  * ex_imodf -   extract signed integral value from floating-point number
@@ -1369,13 +1979,10 @@ FUNC_DEF_UNARY(ex_trunc, trunc, (double), 1);
  */
 FUNC_DEF_UNARY(ex_nearbyint, nearbyint, (double), 1);
 
-#endif
-
-#ifdef notdef
-/* the following will be added once they are more popular in math libraries */
 /*
- * ex_hypoth - Euclidean distance function
+ * ex_hypot - Euclidean distance function
  */
-FUNC_DEF(ex_hypoth, hypoth, (double), (double), 1);
+FUNC_DEF(ex_hypot, hypot, (double), (double), 1);
+
 
 #endif

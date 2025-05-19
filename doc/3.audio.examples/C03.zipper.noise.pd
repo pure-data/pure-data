@@ -1,57 +1,45 @@
-#N canvas 597 130 486 508 12;
+#N canvas 521 48 499 541 12;
 #X declare -stdpath ./;
-#X obj 185 368 output~;
-#X text 238 461 updated for Pd version 0.37;
-#X text 55 16 ZIPPER NOISE;
-#X obj 185 328 *~;
-#X obj 269 368 output~;
-#X obj 269 329 *~;
-#X obj 203 269 line;
-#X obj 287 269 line~;
+#X obj 128 435 output~;
+#X obj 128 395 *~;
+#X obj 262 435 output~;
+#X obj 262 396 *~;
+#X obj 146 336 line;
+#X obj 280 336 line~;
 #N canvas 870 186 268 250 metro 0;
-#X obj 86 35 loadbang;
-#X msg 86 65 1;
-#X obj 86 96 metro 500;
-#X obj 86 125 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 86 190 outlet;
-#X obj 150 192 outlet;
-#X obj 86 154 select 0 1;
-#X connect 0 0 1 0;
+#X obj 86 43 loadbang;
+#X obj 86 106 metro 500;
+#X obj 86 135 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 86 200 outlet;
+#X obj 144 202 outlet;
+#X obj 86 164 select 0 1, f 17;
+#X obj 86 73 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X connect 0 0 6 0;
 #X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X connect 3 0 6 0;
-#X connect 6 0 4 0;
-#X connect 6 1 5 0;
-#X restore 203 177 pd metro;
-#X obj 203 205 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 270 206 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X msg 203 226 1 300;
-#X msg 270 228 0 300;
-#X obj 216 297 osc~ 880;
-#X text 29 42 Here is a related issue: if we use a (control) line object
-to change an amplitude \, it sends ramping control messages \, once
-every 20 msec by default. At left we use this to control the amplitude
-of a sinusoid. In effect we're multiplying the sinusoid by a staircase
-signal (50 increments per second.) Using the signal version \, line~
-\, fixes the problem. Line~ outputs a ramp that is incremented every
-sample.;
-#X obj 309 12 declare -stdpath ./;
-#X connect 3 0 0 0;
-#X connect 3 0 0 1;
-#X connect 5 0 4 0;
-#X connect 5 0 4 1;
-#X connect 6 0 3 1;
-#X connect 7 0 5 1;
-#X connect 8 0 9 0;
-#X connect 8 1 10 0;
-#X connect 9 0 11 0;
-#X connect 10 0 12 0;
-#X connect 11 0 6 0;
+#X connect 2 0 5 0;
+#X connect 5 0 3 0;
+#X connect 5 1 4 0;
+#X connect 6 0 1 0;
+#X restore 146 224 pd metro;
+#X msg 146 293 1 300;
+#X msg 280 295 0 300;
+#X obj 195 349 osc~ 880;
+#X obj 318 37 declare -stdpath ./;
+#X obj 146 262 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 280 263 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X text 32 84 Here is a related issue: if we use a (control) [line] object to change an amplitude \, it sends ramping control messages \, once every 20 msec by default. At left we use this to control the amplitude of a sinusoid. In effect we're multiplying the sinusoid by a staircase signal (50 increments per second.) Using the signal version \, [line~] \, fixes the problem \, since [line~] outputs a ramp that is incremented every sample., f 61;
+#X obj 83 33 cnv 5 5 25 empty empty Zipper\ Noise 15 13 0 16 #dfdfdf #202020 0;
+#X connect 1 0 0 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 1;
+#X connect 5 0 3 1;
+#X connect 6 0 11 0;
+#X connect 6 1 12 0;
+#X connect 7 0 4 0;
+#X connect 7 0 5 0;
+#X connect 8 0 4 0;
+#X connect 8 0 5 0;
+#X connect 9 0 1 0;
+#X connect 9 0 3 0;
 #X connect 11 0 7 0;
-#X connect 12 0 6 0;
-#X connect 12 0 7 0;
-#X connect 13 0 3 0;
-#X connect 13 0 5 0;
+#X connect 12 0 8 0;

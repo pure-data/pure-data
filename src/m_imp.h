@@ -8,7 +8,6 @@ Pd, but not shared with Pd objects. */
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
-/* LATER consider whether to use 'char' for method arg types to save space */
 #ifndef __m_imp_h_
 
 /* the structure for a method handler ala Max */
@@ -27,6 +26,13 @@ typedef void (*t_floatmethod)(t_pd *x, t_float f);
 typedef void (*t_symbolmethod)(t_pd *x, t_symbol *s);
 typedef void (*t_listmethod)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 typedef void (*t_anymethod)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+
+typedef void* (*t_bangmethodr)(t_pd *x);
+typedef void* (*t_pointermethodr)(t_pd *x, t_gpointer *gp);
+typedef void* (*t_floatmethodr)(t_pd *x, t_float f);
+typedef void* (*t_symbolmethodr)(t_pd *x, t_symbol *s);
+typedef void* (*t_listmethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+typedef void* (*t_anymethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 
 struct _class
 {
@@ -53,10 +59,13 @@ struct _class
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */
     struct _class *c_next;
     int c_floatsignalin;                /* onset to float for signal input */
-    char c_gobj;                        /* true if is a gobj */
-    char c_patchable;                   /* true if we have a t_object header */
-    char c_firstin;                 /* if patchable, true if draw first inlet */
-    char c_drawcommand;             /* a drawing command for a template */
+    unsigned int c_gobj:1;              /* true if is a gobj */
+    unsigned int c_patchable:1;         /* true if we have a t_object header */
+    unsigned int c_firstin:1;           /* if so, true if drawing first inlet */
+    unsigned int c_drawcommand:1;       /* drawing command for a template */
+    unsigned int c_multichannel:1;      /* can deal with multichannel sigs */
+    unsigned int c_nopromotesig:1;      /* don't promote scalars to signals */
+    unsigned int c_nopromoteleft:1;     /* not even the main (left) inlet */
     t_classfreefn c_classfreefn;    /* function to call before freeing class */
 };
 
@@ -98,10 +107,9 @@ void pd_globalunlock(void);
 
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
-EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
 EXTERN void glob_exit(void *dummy, t_float status);
+EXTERN void glob_watchdog(void *dummy); /* glob_exit(0); */
 EXTERN void open_via_helppath(const char *name, const char *dir);
-
 
 #define __m_imp_h_
 #endif /* __m_imp_h_ */

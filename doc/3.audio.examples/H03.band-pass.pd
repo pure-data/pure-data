@@ -1,59 +1,46 @@
-#N canvas 581 101 599 579 12;
+#N canvas 472 56 599 579 12;
 #X declare -stdpath ./;
-#X obj 76 303 mtof;
-#X floatatom 76 280 5 0 150 0 - #0-pit - 0;
-#X obj 47 458 output~;
-#X obj 67 250 noise~;
-#X floatatom 76 328 5 0 0 0 - - - 0;
-#X text 341 503 updated for Pd version 0.39;
-#X obj 156 439 metro 250;
-#X obj 156 419 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X text 174 416 graphing on/off;
-#X text 391 446 --- 0.02 sec ---;
-#X text 133 249 white noise \, test signal;
-#X obj 67 386 bp~;
-#X text 108 388 band-pass filter;
-#X obj 156 464 tabwrite~ H03-graph;
-#X floatatom 85 358 5 0 1000 0 - #0-q - 0;
-#N canvas 550 179 352 240 loadbang 0;
-#X obj 126 30 loadbang;
-#X obj 126 54 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 126 73 f \$0;
-#X msg 126 97 \; \$1-pit 72 \; \$1-q 1;
-#X text 77 170 This subpatch loads initial values in number boxes.
-, f 27;
-#X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X restore 174 507 pd loadbang;
-#X text 154 8 RESONANT (BAND-PASS) FILTER;
-#X text 50 143 The two controls specify \, first \, the center frequency
-\, and second \, the sharpness of the filter \, commonly called "q".
-If you increase q to 10 or 20 \, you will see a drop in total signal
-power \, and moreover \, you'll see and hear the resonant frequency
-more clearly in the result.;
-#X text 52 44 A simple resonant band-pass filter is provided in the
-bp~ object. Resonant filters can be tuned to a specific "center frequency"
-and then will pass that frequency while attenuating other frequencies
-(the further from the center frequency \, the more attenuation). This
-patch uses a white noise source to demonstrate bp~.;
-#X text 121 328 <= cutoff (Hertz);
-#X text 120 279 <= cutoff (pitch units);
+#X obj 76 301 mtof;
+#X floatatom 76 278 5 0 150 0 - \$0-pit - 0;
+#X obj 67 498 output~;
+#X obj 67 248 noise~;
+#X floatatom 76 326 5 0 0 0 - - - 0;
+#X obj 156 437 metro 250;
+#X text 178 410 graphing on/off;
+#X text 391 444 --- 0.02 sec ---;
+#X text 120 247 white noise \, test signal;
+#X obj 67 384 bp~;
+#X text 105 384 band-pass filter;
+#X obj 156 462 tabwrite~ H03-graph;
+#X floatatom 85 356 5 0 1000 0 - \$0-q - 0;
+#X text 59 141 The two controls specify \, first \, the center frequency \, and second \, the sharpness of the filter \, commonly called "q". If you increase q to 10 or 20 \, you will see a drop in total signal power \, and moreover \, you'll see and hear the resonant frequency more clearly in the result., f 69;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array H03-graph 882 float 0;
 #X coords 0 1 881 -1 200 140 1;
-#X restore 354 303 graph;
-#X text 131 358 <= Q (selectivity);
-#X obj 434 13 declare -stdpath ./;
+#X restore 354 301 graph;
+#X obj 156 411 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X text 120 277 <-- cutoff (pitch units);
+#X text 121 326 <-- cutoff (Hertz);
+#X text 131 356 <-- Q (selectivity);
+#X text 59 52 A simple resonant band-pass filter is provided in the [bp~] object. Resonant filters can be tuned to a specific "center frequency" and then will pass that frequency while attenuating other frequencies (the further from the center frequency \, the more attenuation). This patch uses a white noise source to demonstrate [bp~]., f 69;
+#N canvas 550 179 349 293 init 0;
+#X obj 126 20 loadbang;
+#X obj 126 44 bng 22 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 126 73 f \$0;
+#X msg 126 97 \; \$1-pit 72 \; \$1-q 1;
+#X obj 111 235 declare -stdpath ./;
+#X text 77 170 This subpatch initializes the patch and loads values in number boxes., f 27;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X restore 210 516 pd init;
+#X obj 120 13 cnv 5 5 25 empty empty Resonant\ (Band-Pass)\ Filter 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
-#X connect 3 0 11 0;
-#X connect 4 0 11 1;
-#X connect 6 0 13 0;
-#X connect 7 0 6 0;
-#X connect 11 0 2 0;
-#X connect 11 0 2 1;
-#X connect 11 0 13 0;
-#X connect 14 0 11 2;
+#X connect 3 0 9 0;
+#X connect 4 0 9 1;
+#X connect 5 0 11 0;
+#X connect 9 0 2 0;
+#X connect 9 0 11 0;
+#X connect 12 0 9 2;
+#X connect 15 0 5 0;

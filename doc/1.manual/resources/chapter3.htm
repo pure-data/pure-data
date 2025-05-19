@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<HEAD>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual - Chapter 3: Installing and configuring Pd</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
+</HEAD>
+<BODY>
+
+<div class="nav nav-top">
+    <div class="nav-back"><A href="chapter2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="../index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter4.htm">Chapter 4: Externals &gt;</A></div>
+</div>
+<div id="corpus">
+
+<IMG id="logo" src="icon.png" ALT="pd icon">
+
+<H2>Chapter 3: Installing and configuring Pd</H2>
+
+<P> The following are instructions on how to get Pd installed, configured
+and running on your machine.
+
+<P>Pd runs under Microsoft Windows, Linux, and macOS. How to get Pd up and running
+depends on your operating system, but the overall strategy is the same. You must
+first get and install it, and then untangle whatever problems arise in handling
+audio and MIDI input and output, and finally get Pd to meet its real-time obligations
+reliably.
+
+<H3> <A href="#s3.1" id="s3.1"> 3.1. Installing Pd </A> </H3>
+
+<P> Most commonly, you want to install Pd as a 64 bit application, which is available
+for download, but a 32 bit versions is also available for older OSes. The download
+page for Pd is <A href="https://msp.ucsd.edu/software.html">
+https://msp.ucsd.edu/software.html</A>. Binaries are provided for Windows and macOS,
+while Linux users can get Pd from package managers. The source code is also available
+in this link for you to build Pd yourself.
+
+<P> Note that Miller's website only offers Pd compiled for single precision, but Pd
+can also be compiled and run in double precision. An alternative to Miller's website
+we have <A href="https://puredata.info/downloads/pure-data">
+https://puredata.info/downloads/pure-data</A> with Pure Data downloads. Note that
+besides the official single precision application, this link also offers an experimental
+download for double precision. Note that the double precision application needs externals
+compiled speacially for it.
+
+<P> Installation instructions are platform-specific and described in each case in this
+section, but Instructions on how to build Pd yourself for all supported OSes in both single
+or double precision is provided in <a href="chapter6.htm">Chapter 6: Building Pd from source</a>.
+
+<P> Note that you can have different versions of Pd and also Pd compiled for different
+architectures and float precision in the same machine/OS. The Pd application is named in
+a way that it distinguishes itslf from other versions in each case. The "regular" Pd is
+for 64-bit application and single precision. The double precision Pd application is named
+"Pd64", which can be confusing, meaning that it is for 64-bit architecture, but it means
+it uses double precision really (whose float size is "64").
+
+<P> If you run into any installation trouble you can also consult the Pd mailing list
+archive on <A href="https://lists.puredata.info/listinfo/pd-list">
+https://lists.puredata.info/listinfo/pd-list</A>, which often has late-breaking
+news about configuration problems and solutions.
+
+
+<H4> <A href="#s3.1.1" id="s3.1.1"> 3.1.1. macOS</A> </H4>
+
+<P>Pd supports macOS from 10.7 and up. There is a version for 10.7 to 10.9 provided,
+but the main download binary for more modern OS versions supports 10.10 or newer and
+is the form of a .dmg file. This is a universal binary, for both intel or apple silicon
+chips. Just double click on this disk image so it opens and you can then drag the Pd app
+where you want (most likely in the Applications folder). An old 32-bit version is also
+provided for 10.7 up to 10.14, which is suited if you need to run some old external.
+
+<P>You might get various warnings about Pd trying to open an internet port.
+This is normal although some system administrators will prevent you from
+doing this (in which case you can't run Pd on that machine).
+
+<H4> <A href="#s3.1.2" id="s3.1.2">3.1.2 Microsoft Windows </A> </H4>
+
+<P> For Windows, you can download a .zip package for manual install or an executable
+installer (a ".exe" file). Run the installer if you are not sure how to install
+manually and select a destination directory when prompted, such as <b>\pd</b> or
+<b>Program Files\pd</b>. The 64-bit executable works for Windows Vista or newer.
+An old 32-bit version is also provided and works for XP or later (this is suited
+if you need to run some old external or use a 32-bit machine).
+
+<P> If for example you install Pd in <b>C:Program Files\pd</b>, the executable
+program will be <b>C:Program Files\pd\bin\pd/</b>. You can simply adjust your path
+to include <b>C:\pd\bin</b> and then invoke "pd" in a command prompt window. You can
+also make a shortcut to the executable program (left-click on it and drag to the
+desktop, for example).
+
+<P> Pd requires "TCP/IP networking" to be turned on. This doesn't mean you
+have to be on a real network, but simply that Pd actually consists of two
+programs that make a "network link" (locally) to intercommunicate. The first
+time you run Pd the "Windows Firewall" will ask your permission to allow this
+intercommunication.
+
+<H4> <A href="#s3.1.3" id="s3.1.3">3.1.3. Linux </A> </H4>
+
+<P> Pd is available via the package systems for some Linux distributions,
+but not always in the most recent version possible. In case you don't find
+it or want the very latest recent version, you need to compile Pd, which is
+described  in <a href="chapter6.htm#s6.3">6.3. Building Pd for Linux</a>.
+
+
+<H3> <A href="#s3.2" id="s3.2"> 3.2. Running Pd via the command line </A> </H3>
+
+<P>Besides opening Pd by clicking on a user friendly icon as usual, you may
+open and run Pd as a "command line" program from your "terminal emulator",
+"shell", or "MS-DOS prompt". In Windows, if Pd is started using a "shortcut"
+it is also run from a command line which you can edit using the "properties"
+dialog for the shortcut. In any operating system, Pd can be called from a
+script (called a <I> batch file </I> on Windows or a <I> shell script </I>
+on macOS or Unix). The command line is just a line of text, which should be
+of the form:
+
+<PRE>
+
+    pd [startup flags] [patches to open]
+
+</PRE>
+
+<P> Although you may have to specify a path (such as "~/pd/bin/pd" or
+"C:\program files\pd\bin\pd") so your command interpreter can find
+Pd.
+
+<P> The <A href=#s3.4.1>3.4.1. Startup flags</a> subsection describes
+all options.
+
+
+<H3> <A href="#s3.3" id="s3.3"> 3.3. Testing and configuring Audio and MIDI </A> </H3>
+
+<P> To test audio and MIDI, start Pd and select "Test Audio and MIDI..."
+from the <b>Media menu</b>. You should see a window like this:
+
+<figure>
+    <IMG src="3.3.1.png" ALT="test audio and midi patch">
+    <figcaption><u>Fig. 3.3.1</u> Test Audio and MIDI patch</figcaption>
+</figure>
+
+<P> First, try to get Pd to play a sine wave over your speakers. The
+"OUTPUT MONITOR" section to the left allows you to set an output gain and
+a test sound (either noise or a sinusoid). By default, the first eight output
+channels are turned on so that when you should get output on them when you
+turn the test sound on. If you have fewer than eight output channels open,
+the extra channels aren't played; and if you have more, you need to use the
+radio button to test them. Note that the "AUDIO OUTPUT" toggles must be on
+(which they are by default) for you to hear anything.
+
+<P> If there's anything wrong, the most likely outcome is that you will hear
+nothing at all. This could be for any of at least three reasons: Pd might
+have failed to open the audio device; the audio card's output volume might
+be set to zero; or your audio system might not be set to amplify the computer
+output.
+
+<P> The "INPUT MONITOR" provides VU Meters and number boxes to indicated the
+levels of incoming audio, in dB, with 100 being maximum. Incoming signals may
+clip at RMS levels below 100 (for instance, a sinusoid clips at about 97 dB).
+Any DC present in the input (such as you get with cheap audio hardware)
+will show up as level unless you turn on the "input highpass" toggle
+at right; then the DC component is filtered out before metering. In order
+to hear and monitor the input you need to set the dB level in the "Input
+Monitor" number box. Whatch out for feedbacks if you have microphone inputs.
+
+<P> It is easy to get two copies of Pd running by accident; on most machines
+only one at a time may be inputting and outputting sound. (Some copy of Pd
+might have audio or MIDI devices open and prevent the copy you're trying to use
+from getting access to them). Having extra copies of Pd around will also eat
+CPU cycles uselessly.
+
+<P> You may be interested in getting only audio output or audio input, or
+you may need both to run simultaneously. By default, Pd will try to run
+both, but if you don't need either input or output, you may find that Pd
+runs more reliably, or at least more efficiently, with the unused direction
+turned off. This may be specified using the <a href="chapter3.htm#s3.3.1">Audio
+Settings</a> dialog panel or <a href="chapter3.htm#s3.4.1">Startup flags</a>.
+
+<P> Depending on your application you will have a more or less stringent latency
+requirement. Ideally, when any input (audio, MIDI, keyboard, network) is
+available, the outputs (in particular the audio output) should react instantly.
+In real life, it is necessary to buffer the audio inputs and outputs, trying
+always to keep some number of milliseconds ahead of real time to prepare for the
+inevitable occasions where the CPU runs off to service some different task
+from Pd. How small this latency can be chosen depends on your OS and your
+audio driver.
+
+<P> TIP: If Pd starts up but you get distortion or glitches in the audio
+output, this could be either because the "audio I/O buffer" isn't big enough,
+or else because the CPU load of the patch you're running is too great for the
+machine you have, or else because the ADC and DAC are out of sync or even at
+different sample rates. To test for the first possibility, try increasing the
+delay in "Audio Settings" dialog. For the second, start up your favorite
+performance monitor program; and for the third, try starting Pd up with ADCs
+disabled.
+
+<P> In addition to the "Test Audio and MIDI" patch, the <b>Media menu</b>
+contains items for controlling audio and MIDI settings. The first two
+items, "Audio on" and "Audio off", open or close the audio devices and
+start or stop Pd's audio computation.
+
+<P> If there is a choice of audio API to make, the <b>Media menu</b> will display
+them. On Linux, they are OSS, ALSA, Portaudio and JACK; on Windows, you get
+Portaudio and an 'old MMIO system'. In Windows, Portaudio offers ASIO and Windows
+WASAPI. On macOS the default one is Portaudio and you can also use JACK if you
+have it installed. The <b>Media menu</b> also displays choices for MIDI API.
+On Linux, they are OSS-MIDI and ALSA-MIDI.
+
+<figure>
+    <IMG src="3.3.2.png" ALT="API choices in Windows">
+    <figcaption><u>Fig. 3.3.2</u> API choices in Windows</figcaption>
+</figure>
+
+<!--- comment out
+<H3> Testing audio and MIDI in LINUX. </H3>
+
+<P> We want to know whether audio input and output works, separately and simultaneously.
+First run "aumix" (or any newer audio mixer app) to check audio input and output gains
+and learn which input (mic; line; etc.) is "recording". Then test audio output by
+running
+
+<PRE>
+    pd -noadc
+</PRE>
+
+<P>Selecting "Test Audio and MIDI" from the <b>Media menu</b> to test then quit Pd and
+test audio input via
+
+<PRE>
+    pd -nodac
+</PRE>
+
+<P> Now see if your audio driver can do full duplex by typing "pd" with no
+flags. If you see error messages involving /dev/dsp or /dev/dsp2, you're
+probably not able to run audio in and out at the same time. If on the other
+hand there's no complaint, and if the audio test patch does what you want, you
+might wish to experiment with the "-audiobuffer" flag to see what values of
+audio latency your audio system can handle.
+
+<H3> Audio hardware in Linux </H3>
+
+<P> Installing and testing audio and MIDI drivers in Linux can take
+days or weeks. There appears to be no single place where you can get detailed
+information on Linux audio.
+
+<P> There are two widely-used driver sets, called "OSS" and "ALSA". ALSA is
+included in the standard Linux kernel since 2.4 or so. However, for some
+audio cards you can find newer versions than are included in the kernel
+releases. You can get ALSA from <a href="http://www.alsa-project.org/">
+http://www.alsa-project.org/</A>.
+
+<P> ALSA is able to emulate OSS, so that you can usually run Pd using the
+"OSS" driver settings even if it's actually ALSA that's running.
+
+<P> By default, Pd uses ALSA. You can ask Pd to use ALSA's OSS emulation by
+adding the "-oss" flag to the command line or fooling with the "media" menu
+items.
+
+<P> You can add ALSA devices by name on the Pd command line:
+<PRE>
+    pd -alsaadd loupgarou
+</PRE>
+
+<p>This instructs Pd to offer the 'loupgarou' audio device in the Audio Settings panel.
+
+
+
+<H3> Experiences with particular soudcards </H3>
+
+<P> Here are some of my own experiences with sound cards so far. See
+also the Pd mailing list archives.
+
+<H6> RME 9652 (Hammerfall) </H6>
+
+<P> This is the best PCI sound card out there; it costs around $500 and has 3 ADAT
+I/O ports and one SPDIF. There is a "baby hammerfall" also, which I think is
+the "9632". DO NOT CONFUSE THE 9652/9632 WITH OTHER RME BOARDS WHICH MIGHT
+NOT WORK WITH PD.
+
+<P> The easiest way to use
+Hammerfall boards in Pd is via ALSA and jack; but you can use ALSA alone:
+<PRE>
+    pd -alsa -channels 26
+</PRE>
+<p>works for me.
+
+<H6> MIDIMAN </H6>
+
+<P>Midiman sells PCI devices (delta 44, 66, 1010, and 1010LT)
+with between 4 and 10 channels in and out, for
+which there are ALSA drivers. These are also very good, and they are a
+bit cheaper than Hammerfalls. The driver name is "ice1712".
+
+<H6> USB sound devices</H6>
+
+<P> Ed Kelly reports success with the Lexicon series of USB 1.0 devices (e.g.,
+the Omega Studio; apparently 4 channels in and 4 out). Also known to work well
+is the Edirol box (2 channels in and out).
+
+<P> As of Sept. 2011, the only multi-channel USB device I've been able to use
+with Pd is the Native Instruments Traktor Audio series. (I have the Audio
+Traktor 10 which does indeed get 10 discrete channels in and out; the box is
+designed for turntables and the I/O is all RCA. I haven't yet tested whether
+the inputs are RIAA equalized or flat. To run this device you'll need to
+compile and install an ALSA snapshot from at least September 2011. This won't
+start showing up in Linux distros for at least some months.
+
+<P> The Alsa developer list is reporting progress on the M-audio Ultra series,
+which goes up to 6 in and out (analog) with 2 more as SP/DIF. Things work
+OK for input or output separately but "full duplex" (in and out simultaneously)
+has sync problems.
+
+/// end comment out -->
+
+
+
+<H4> <A href="#s3.3.1" id="s3.3.1">3.3.1. Audio settings </A> </H4>
+
+<P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
+API. Clicking on the API to change it also opens the settings window for the
+newly selected API. If you click on the already selected API, you also open the
+settings window.
+
+<figure>
+    <IMG src="3.3.3.png" ALT="old MMIO API">
+    <figcaption><u>Fig. 3.3.3</u> Audio Settings from the Media menu ('old MMIO system' API on Windows)</figcaption>
+</figure>
+
+<P> The exact choices you get depend on the operating system and API.
+The screenshot above is for when you select 'old MMIO system' in Windows.
+While the screenshot below is for 'portaudio' on macOS.
+
+<figure>
+    <IMG src="3.3.4.png" ALT="audio settings dialog">
+    <figcaption><u>Fig. 3.3.4</u> Audio Settings from the Media menu (portaudio API on macOS)</figcaption>
+</figure>
+
+<P> The sample rate controls both audio output and input. The "delay"
+is the nominal amount of time, in milliseconds, that a sound coming into
+the audio input will be delayed if it is copied through Pd straight to the
+output. Naturally you would like this to be as small as possible, but,
+depending on OS, API, and even the specific choice of audio hardware,
+there will be a limit to how small you can make this.
+
+<p> Next you get a choice of input and output device. If you don't
+need either the input or output device you can uncheck the toggle box
+to the left (which is on by default). Number of input and output
+channels is 2 channels by default, but you may specify just one if
+that's all you need or more if your hardware supports it.
+
+<figure>
+    <IMG src="3.3.5.png" ALT="audio settings dialog">
+    <figcaption><u>Fig. 3.3.5</u> The Audio Settings dialog as called from the Media menu on Linux</figcaption>
+</figure>
+
+<p>In Linux you're allowed up to 4 input and 4 output devices (note the
+"Use Multiple Devices" button on the picture above). On Windows you
+can also do that but you need to be using the 'old MMIO system' API
+(shown above). On macOS, if you want more than a single device, there's
+a workaround by creating an aggregate device (via the system's "Audio
+MIDI Setup") and set it in Pd's Audio settings.
+
+<H4> <A href="#s3.3.2" id="s3.3.2">3.3.2. MIDI settings </A> </H4>
+
+<p> There's also a MIDI settings dialog for you to configure one or more MIDI
+input and output devices. If more than one device is chosen for either input and
+output, they are registered in different MIDI ports. The "channel message" midi
+objects in Pd (such as <b>[notein]</b> or
+<b>[pgmout]</b>) will take channels 1-16. Note, however, that the MIDI
+port is encoded in the channel number, where channels 1-16 mean the first open MIDI port,
+17-32 the second one, and so on. The <b>[midiin]</b>,
+<b>[midirealtimein]</b> and <b>[sysexin]</b>
+objects output the port number in their right outlet and <b>[midiout]</b>
+has a separate inlet to specify which MIDI port you want.
+
+<figure>
+    <IMG src="3.3.6.png" ALT="MIDI settings">
+    <figcaption><u>Fig. 3.3.6</u> The MIDI Settings dialog as called from the Media menu on macOS</figcaption>
+</figure>
+
+
+<P> System exclusive MIDI message input and output are theoretically supported
+but does not work uniformly across all operating systems..
+
+<H3> <A href="#s3.4" id="s3.4"> 3.4. Path and startup</A> </H3>
+
+<P> In addition to the Audio and MIDI settings shown above, you can customize
+Pd to instruct it where to find files, what font size to use, and much more.
+Pd has a main "Preferences" window, which you can select from the <b>Pd
+menu</b> in macOS or the <b>File menu</b> otherwise. The "Preferences" entry
+opens a submenu with "Edit Preferences..." and more. By selecting this entry,
+you open the main preferences dialog with different tabs for: "Path", "Startup",
+"Audio", "MIDI" and "misc". The Audio and MIDI tabs are actually the same settings
+windows that you can open via the <b>Media menu</b>, so there's nothing really new
+but the fact they are also found here. There's one difference though, which is
+that you can get choices for API this way.
+
+<figure>
+    <IMG src="3.4.1.png" ALT="preferences dialog">
+    <figcaption><u>Fig. 3.4.1</u> The Audio Settings tab in tabbed Preferences on Windows</figcaption>
+</figure>
+
+<P> The above picture shows Audio Settings on Windows when you select it from
+the tabbed Preferences. The difference here is that you have a new wntry to
+select and change API (where 'old MMIO system' is selected.)
+
+
+<figure>
+    <IMG src="3.4.2.png" ALT="preferences dialog">
+    <figcaption><u>Fig. 3.4.2</u> The Path dialog in the tabbed Preferences</figcaption>
+</figure>
+
+<P>The first preference in the tabbed Preferences is the "Path" dialogs.
+This tab configures search paths that Pd will use to load externals
+and abstractions (spaces in the path are allowed by the way). This also used
+for files in objects that load them like <b>[soundfiler]</b>, <b>[text]</b> and
+even arrays (aka tables). The path must be correctly set before you load a patch
+or it may fail to find anything. Filenames in Pd are always separated byc(Unix-style)
+forward slashes, even if you're on Windows (which uses backslashes). Also, note
+that objects that can load files do expand "~" to your home directory.
+
+<P> In a nutshell, Pd searches for files and externals relative to the patch
+directory and, if it fails, it searches next in the paths that are set in this
+tab. Note you can use things like "../samples" to point to folders and subfolders
+that are relative to the patch directory and other search paths. Note you can also
+use <b>[declare]</b> to add paths for particular patches - this and other details about
+path management is also covered in depth in <a href="chapter4.htm">Chapter 4: Externals</a>,
+and summarized in <a href="chapter4.htm#s4.6">4.6. Search order in Pd for objects and files</a>.
+
+<figure>
+    <IMG src="3.4.3.png" ALT="startup dialog">
+    <figcaption><u>Fig. 3.4.3</u> The startup dialog</figcaption>
+</figure>
+
+<P> The "Startup" tab has configurations for initializing Pd and an entry for
+Startup flags. Most of the configurations in Pd may be changed using the
+various dialogs you can open from Pd's menus. For instance, you can use the
+Font entry from the <b>Edit menu</b> to set what font size size Pd will use
+for its main window (this is described in <a href="chapter2.htm#s2.1.1">subsection 2.1.1.</a>,
+by the way). Nevertheless, this and every other configuration in Pd (from
+Audio and MIDI settings and whatnot) can also be configurable via startup
+flags. Other than that, some configurations are too cranky to put in a GUI
+dialog and must be only set via startup flags.
+
+<P> Startup flags initialize Pd in many ways, but many configurations can
+be changed while Pd is running. Some configurations, on the other hand,
+requires Pd to restart, such as setting which external binaries to load
+(more about external management in <a href="chapter4.htm">Chapter 4</a>.
+
+<P> The "defeat real-time scheduling" control, if enabled, makes Pd run
+without its usual effort to become a real-time process (whatever this means
+in the operating system you are using.) In Unix, Pd must usually be setuid
+to allow real-time scheduling at all.
+
+<P> All of Pd's settings may be saved automatically between Pd sessions.
+Note the "Save All Preferences" entry in the submenu from "Preferences".
+It is also possible to save preferences to a file, load from one or forget
+it all.
+
+<P> Besides being able to set startup flags in "Preferences -> Startup",
+you can also invoke Pd via the command line using the same startup flags
+as arguments. Command line settings, if given, override the corresponding
+settings that were saved from Pd.
+
+<H4> <A href="#s3.4.1" id="s3.4.1">3.4.1. Startup flags </A> </H4>
+
+<P> Here's a list of all startup flags that you can use in the "Startup" tab under
+"Preferences" or by running Pd from the command line.
+
+<PRE>
+
+audio configuration flags:
+-r &lt;n&gt;           -- specify sample rate
+-audioindev ...  -- sound in device list; e.g., "2,1" for second and first
+-audiooutdev ... -- sound out device list, same as above
+-audiodev ...    -- specify both -audioindev and -audiooutdev together
+-audioaddindev   -- add an audio input device by name
+-audioaddoutdev  -- add an audio output device by name
+-audioadddev     -- add an audio input and output device by name
+-inchannels ...  -- number of audio in channels (by device, like "2" or "16,8")
+-outchannels ... -- number of audio out channels (by device)
+-channels ...    -- specify both input and output channels
+-audiobuf &lt;n&gt;    -- specify size of audio I/O buffer in msec
+-blocksize &lt;n&gt;   -- specify audio I/O block size in sample frames
+-sleepgrain &lt;n&gt;  -- specify number of milliseconds to sleep when idle
+-nodac           -- suppress audio output
+-noadc           -- suppress audio input
+-noaudio         -- suppress audio input and output (-nosound is synonym)
+-callback        -- use callbacks if possible
+-nocallback      -- use polling-mode (true by default)
+-listdev         -- list audio and MIDI devices
+
+(Linux specific audio:)
+-oss            -- use ALSA audio drivers
+-alsa           -- use ALSA audio drivers
+-pa             -- use portaudio (experimental version 19)
+-alsadev &lt;n&gt;    -- obsolete: use -audiodev
+-32bit          -- (probably obsolete) -- use 32 bit OSS extension
+-alsaadd &lt;name&gt;  -- add a device to the ALSA device list
+
+(Windows specific audio:)
+-mmio           -- use MMIO drivers and API
+-asio           -- use ASIO drivers and API
+-pa             -- synonym for -asio
+
+(Using the JACK API:)
+-jack            -- use JACK audio API
+-jackname &lt;name&gt; -- a name for your JACK client
+-nojackconnect   -- do not automatically connect pd to the JACK graph
+-jackconnect     -- automatically connect pd to the JACK graph [default]
+
+MIDI configuration flags:
+-midiindev ...   -- midi in device list; e.g., "1,3" for first and third
+-midioutdev ...  -- midi out device list, same format
+-mididev ...     -- specify -midioutdev and -midiindev together
+-midiaddindev    -- add a MIDI input device by name
+-midiaddoutdev   -- add a MIDI output device by name
+-midiadddev      -- add a MIDI input and output device by name
+-nomidiin        -- suppress MIDI input
+-nomidiout       -- suppress MIDI output
+-nomidi          -- suppress MIDI input and output
+-ossmidi         -- use OSS midi API (Linux only)
+-alsamidi        -- use ALSA midi API (Linux only)
+
+general flags:
+
+-path &lt;path&gt;     -- add to file search path
+-nostdpath       -- don't search standard ("extra") directory
+-stdpath         -- search standard directory (true by default)
+-helppath &lt;path&gt; -- add to help file search path
+-open &lt;file&gt;     -- open file(s) on startup
+-lib &lt;file&gt;      -- load object library(s) (omit file extensions)
+-font-size &lt;n&gt;      -- specify default font size in points
+-font-face &lt;name&gt;   -- specify default font
+-font-weight &lt;name&gt; -- specify default font weight (normal or bold)
+-verbose         -- extra printout on startup and when searching for files
+-noverbose       -- no extra printout
+-version         -- don't run Pd; just print out which version it is
+-d &lt;n&gt;           -- specify debug level
+-loadbang        -- do not suppress all loadbangs (true by default)
+-noloadbang      -- suppress all loadbangs
+-stderr          -- send printout to standard error instead of GUI
+-nostderr        -- send printout to GUI (true by default)
+-gui             -- start GUI (true by default)
+-nogui           -- suppress starting the GUI
+-guiport &lt;n&gt;     -- connect to pre-existing GUI over port &lt;n&gt;
+-guicmd "cmd..." -- start alternative GUI program (e.g., remote via ssh)
+-send "msg..."   -- send a message at startup, after patches are loaded
+-prefs           -- load preferences on startup (true by default)
+-noprefs         -- suppress loading preferences on startup
+-prefsfile &lt;file&gt;  -- load preferences from a file
+-rt or -realtime -- use real-time priority
+-nrt             -- don't use real-time priority
+-sleep           -- sleep when idle, don't spin (true by default)
+-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)
+-schedlib &lt;file&gt; -- plug in external scheduler (omit file extensions)
+-extraflags &lt;s&gt;  -- string argument to send schedlib
+-batch           -- run off-line as a batch process
+-nobatch         -- run interactively (true by default)
+-autopatch       -- enable auto-patching to new objects (true by default)
+-noautopatch     -- defeat auto-patching
+-compatibility &lt;f&gt; -- set back-compatibility to version &lt;f&gt;
+
+</PRE>
+
+<P>See next details on a few of the group of flag items.
+
+
+<H5> <A href="#s3.4.1.1" id="s3.4.1.1"> 3.4.1.1. Font flags</A> </H5>
+
+
+<P> The flags offer more font configurations than just "size". Note that macOS has,
+by default, a "normal" font weight, while in Linux and Windows you have "<b>bold</b>"
+by default. Use "-font-weight" to change that if you don't like your default setting.
+
+<H5> <A href="#s3.4.1.2" id="s3.4.1.2"> 3.4.1.2. Path flag</A> </H5>
+
+<P> Paths may contain any number of entries if separated by colons in Unix or
+semicolons in Windows. Filenames in Pd are always separated by (Unix-style)
+forward slashes, even if you're on Windows (which uses backslashes). This is
+so that patches can be ported more easily between operating systems. On the
+other hand, if you specify a filename on the command line (as in "pd -path
+c:\pdlib") the file separator should agree with the operating system.
+
+<H5> <A href="#s3.4.1.3" id="s3.4.1.3"> 3.4.1.3. Flags for Audio and MIDI multiple devices and sleepgrain</A> </H5>
+
+<P> You can specify multiple MIDI input and output devices via flags. For example,
+"pd -midiindev 3 -midioutdev 4,2" asks for the third MIDI input device and the
+second and fourth MIDI output device.
+
+<P> In Linux, if you ask for "pd -midioutdev 1" for instance, you get /dev/midi0
+or /dev/midi00 (or even /dev/midi). "-midioutdev 45" would be /dev/midi44. In
+Windows, device number 0 is the "MIDI mapper", which is the default MIDI device
+you selected from the control panel; counting from one, the device numbers are
+card numbers as listed by "pd -listdev".
+
+<P> The "sleepgrain" controls how long (in milliseconds) Pd sleeps between
+periods of computation. This is normally the audio buffer divided by 4, but
+no less than 0.1 and no more than 5. On most OSes, ingoing and outgoing MIDI
+is quantized to this value, so if you care about MIDI timing, reduce this to 1
+or less.
+
+<P> Multiple audio device selection is similar, except that you can also specify
+channels by device: "-audioindev 1,3 -inchannels 2,8" will try to open device 1
+(2 channels) and device 3 (8 channels). Note that multiple audio device selection
+is only possible for Linux and Windows, as noted earlier.
+
+<H5> <A href="#s3.4.1.4" id="s3.4.1.4"> 3.4.1.4. Sample rate flag</A> </H5>
+
+<P>The sample rate controls Pd's logical sample rate which need not be that of
+the audio input and output devices. If Pd's sample rate is wrong, time will
+flow at the wrong rate and synthetic sounds will be transposed. If the output
+and input devices are running at different rates, Pd will constantly drop frames
+to re-sync them, which will sound bad. You can disable input or output if this
+is a problem.
+
+<H5> <A href="#s3.4.1.5" id="s3.4.1.5"> 3.4.1.5. Audio buffer size and block size flags</A> </H5>
+
+<P>You can specify an audio buffer size in milliseconds, typically between 10 and
+300, depending on how responsive your OS and drivers are. If this is set too
+low there will be audio I/O errors ("data late"). The higher the value is,
+on the other hand, the more throughput delay you will hear from the audio
+and/or control inputs (MIDI, GUI) and the audio coming out.
+
+<P> You can also specify the audio block size in sample frames. This is 64 by
+default (except for MMIO for which it's 256), and may be 64, 128, or 256.
+
+
+</div>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="chapter2.htm">&lt; Chapter 2: Theory of operation</A></div>
+    <div class="nav-home"><A href="../index.htm#s3">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter4.htm">Chapter 4: Externals &gt;</A></div>
+</div>
+</BODY>
+</HTML>
+
+
+
+<!--- comment out
+<P> In windows, you can Invoke Pd with flags to specify which one to use; either
+"pd -asio" or "pd -mmio". See details on how to use command line flags in
+<A href=#s4> Preferences and startup options </A>. Other setting canYou can also specify
+
+If
+needed, also specify "-audiodev" and other flags to specify which device. You can
+also set a "-blocksize" different from the default (256 samples) and "-audiobuf" in
+milliseconds. Pd will round this down to a power of two buffers, each of "-blocksize"
+in sample frames.
+
+<P> TIP: You can use your built-in sound-card with the Universal ASIO Driver For
+WDM <a href="http://www.asio4all.org/"> http://www.asio4all.org/</a>
+
+/// end comment out -->

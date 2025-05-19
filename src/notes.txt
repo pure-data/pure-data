@@ -94,7 +94,7 @@ menu item to connect selected objects
 highlight connections (and I/Os) on mouse motion
 select line and hit "insert" to interpolate an object
 option-drag an outlet to make a new, connected object
-make a way to make multiple connections  
+make a way to make multiple connections
 "fix width" menu item
 close-subwindows menu item
 canvas zooming (use tcl/tk canvas scale command?)

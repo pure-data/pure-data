@@ -5,6 +5,8 @@
 
 #ifndef __g_all_guis_h_
 
+#include "g_canvas.h"
+
 #define IEM_GUI_COLNR_WHITE          0
 #define IEM_GUI_COLNR_ML_GREY        1
 #define IEM_GUI_COLNR_D_GREY         2
@@ -38,12 +40,16 @@
 #define IEM_GUI_COLNR_D_BLUE         28
 #define IEM_GUI_COLNR_D_MAGENTA      29
 
-#define IEM_GUI_COLOR_SELECTED       255
-#define IEM_GUI_COLOR_NORMAL         0
+#define IEM_GUI_COLOR_SELECTED       0x0000FF
+#define IEM_GUI_COLOR_NORMAL         0x000000
+#define IEM_GUI_COLOR_EDITED         0xFF0000
 
 #define IEM_GUI_MAX_COLOR            30
 
-#define IEM_GUI_DEFAULTSIZE 15
+//#define IEM_GUI_DEFAULTSIZE 15
+/* the "+3+2" = "+TMARGIN+BMARGIN" from g_rtext.c */
+#define IEM_GUI_DEFAULTSIZE (sys_zoomfontheight(canvas_getcurrent()->gl_font, 1, 0) + 2 + 3)
+#define IEM_GUI_DEFAULTSIZE_SCALE IEM_GUI_DEFAULTSIZE/15.
 #define IEM_GUI_MINSIZE     8
 #define IEM_GUI_MAXSIZE     1000
 #define IEM_SL_DEFAULTSIZE  128
@@ -55,7 +61,7 @@
 #define IEM_BNG_MINHOLDFLASHTIME      50
 #define IEM_BNG_MINBREAKFLASHTIME     10
 
-#define IEM_VU_DEFAULTSIZE 3
+#define IEM_VU_DEFAULTSIZE 4
 #define IEM_VU_LARGESMALL  2
 #define IEM_VU_MINSIZE     2
 #define IEM_VU_MAXSIZE     25
@@ -83,7 +89,7 @@
 #define IEM_GUI_DRAW_MODE_CONFIG 5
 #define IEM_GUI_DRAW_MODE_IO     6
 
-#define IEM_GUI_IOHEIGHT 2
+#define IEM_GUI_IOHEIGHT IHEIGHT
 
 #define IS_A_POINTER(atom,index) ((atom+index)->a_type == A_POINTER)
 #define IS_A_FLOAT(atom,index) ((atom+index)->a_type == A_FLOAT)
@@ -97,8 +103,12 @@
 #define IEM_GUI_OLD_SND_FLAG 1
 #define IEM_GUI_OLD_RCV_FLAG 2
 
-#define IEM_GUI_COLOR_EDITED 16711680
 #define IEMGUI_MAX_NUM_LEN 32
+
+typedef enum {
+    horizontal = 0,
+    vertical = 1,
+} t_iem_orientation;
 
 #define IEMGUI_ZOOM(x) ((x)->x_gui.x_glist->gl_zoom)
 
@@ -136,6 +146,16 @@ typedef struct _iem_init_symargs
 
 typedef void (*t_iemfunptr)(void *x, t_glist *glist, int mode);
 
+typedef void (*t_iemdrawfunptr)(void *x, t_glist *glist);
+typedef struct _iemgui_drawfunctions {
+    t_iemdrawfunptr draw_new; /* create all widgets */
+    t_iemdrawfunptr draw_config; /* reconfigure (draw, but don't create) all widgets (except iolets) */
+    t_iemfunptr     draw_iolets;  /* reconfigure (draw, but don't create) all iolets (0 uses default iolets function) */
+    t_iemdrawfunptr draw_update; /* update the changeable part of the iemgui (e.g. the number in a numbox) */
+    t_iemdrawfunptr draw_select; /* highlight object when it's selected */
+    t_iemdrawfunptr draw_erase; /* destroy all widgets; (0 uses default erase function) */
+    t_iemdrawfunptr draw_move; /* move all widgets; (0 uses default move function) */
+} t_iemgui_drawfunctions;
 typedef struct _iemgui
 {
     t_object           x_obj;
@@ -143,6 +163,7 @@ typedef struct _iemgui
     t_iemfunptr        x_draw;
     int                x_h;
     int                x_w;
+    struct _iemgui_private *x_private;
     int                x_ldx;
     int                x_ldy;
     char               x_font[MAXPDSTRING]; /* font names can be long! */
@@ -152,10 +173,12 @@ typedef struct _iemgui
     int                x_fcol;
     int                x_bcol;
     int                x_lcol;
+    /* send/receive/label as used ($args expanded) */
     t_symbol           *x_snd;              /* send symbol */
     t_symbol           *x_rcv;              /* receive */
     t_symbol           *x_lab;              /* label */
-    t_symbol           *x_snd_unexpanded;   /* same 3, with '$' unexpanded */
+    /* same, with $args unexpanded */
+    t_symbol           *x_snd_unexpanded;   /* NULL=uninitialized; gensym("")=empty */
     t_symbol           *x_rcv_unexpanded;
     t_symbol           *x_lab_unexpanded;
     int                x_binbufindex;       /* where in binbuf to find these */
@@ -174,7 +197,7 @@ typedef struct _bng
     double x_lastflashtime;
 } t_bng;
 
-typedef struct _hslider
+typedef struct _slider
 {
     t_iemgui x_gui;
     int      x_pos;
@@ -185,9 +208,10 @@ typedef struct _hslider
     double   x_max;
     double   x_k;
     t_float  x_fval;
-} t_hslider;
+    t_iem_orientation x_orientation;
+} t_slider;
 
-typedef struct _hdial
+typedef struct _radio
 {
     t_iemgui x_gui;
     int      x_on;
@@ -196,8 +220,9 @@ typedef struct _hdial
     int      x_number;
     int      x_drawn;
     t_float  x_fval;
-    t_atom   x_at[2];
-} t_hdial;
+    t_iem_orientation x_orientation;
+    int      x_compat; /* old version */
+} t_radio;
 
 typedef struct _toggle
 {
@@ -214,18 +239,6 @@ typedef struct _my_canvas
     int      x_vis_h;
 } t_my_canvas;
 
-typedef struct _vslider
-{
-    t_iemgui x_gui;
-    int      x_pos;
-    int      x_val;
-    int      x_lin0_log1;
-    int      x_steady;
-    double   x_min;
-    double   x_max;
-    double   x_k;
-    t_float  x_fval;
-} t_vslider;
 
 typedef struct _vu
 {
@@ -256,21 +269,6 @@ typedef struct _my_numbox
     int      x_numwidth;
     int      x_log_height;
 } t_my_numbox;
-
-typedef struct _vdial
-{
-    t_iemgui x_gui;
-    int      x_on;
-    int      x_on_old;
-    int      x_change;
-    int      x_number;
-    int      x_drawn;
-    t_float  x_fval;
-    t_atom   x_at[2];
-} t_vdial;
-
-#define t_vradio t_vdial
-#define t_hradio t_hdial
 
 extern int iemgui_color_hex[];
 extern int iemgui_vu_db2i[];
@@ -314,6 +312,46 @@ EXTERN void iem_inttosymargs(t_iem_init_symargs *symargp, int n);
 EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
 EXTERN void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n);
 EXTERN int iem_fstyletoint(t_iem_fstyle_flags *fstylep);
+EXTERN void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w);
+
+#define IEMGUI_SETDRAWFUNCTIONS(x, prefix)                     \
+    {                                                            \
+        t_iemgui_drawfunctions w;                              \
+        w.draw_new    = (t_iemdrawfunptr)prefix##_draw_new;      \
+        w.draw_config = (t_iemdrawfunptr)prefix##_draw_config;   \
+        w.draw_iolets = (t_iemfunptr)prefix##_draw_io;       \
+        w.draw_update = (t_iemdrawfunptr)prefix##_draw_update;   \
+        w.draw_select = (t_iemdrawfunptr)prefix##_draw_select;   \
+        w.draw_erase = 0;                                        \
+        w.draw_move  = 0;                                        \
+        iemgui_setdrawfunctions(&x->x_gui, &w);                        \
+    }
+
+
+/* wrapper around pd_new() for classes that start with a t_iemgui
+ * initializes the iemgui struct
+ */
+t_iemgui* iemgui_new(t_class*cls);
+
+/* common destructor */
+void iemgui_free(t_iemgui *x);
+
+/* these are deliberately not exported for now */
+
+/* update the label (both internally and on the GUI)
+ * senditup=0 never-to-gui; senditup=1 always-to-gui; senditup<0 autodetect
+ */
+void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup);
+
+void iemgui_new_dialog(void*x, t_iemgui*iemgui,
+                       const char*objname,
+                       t_float width,  t_float width_min,
+                       t_float height, t_float height_min,
+                       t_float range_min, t_float range_max, int range_checkmode,
+                       int mode, /* lin0_log1 */
+                       const char* mode_label0, const char* mode_label1,
+                       int canloadbang, int steady, int number);
+
 
 #define __g_all_guis_h_
 #endif /* __g_all_guis_h_ */

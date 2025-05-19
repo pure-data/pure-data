@@ -16,28 +16,64 @@ life elsewhere. */
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
-void signal_setborrowed(t_signal *sig, t_signal *sig2);
-void signal_makereusable(t_signal *sig);
+
+static int symbol2resamplemethod(t_symbol*s)
+{
+    if      (s == gensym("hold"  )) return 1; /* up: sample and hold */
+    else if (s == gensym("lin"   )) return 2; /* up: linear interpolation */
+    else if (s == gensym("linear")) return 2; /* up: linear interpolation */
+    else if (s == gensym("pad"   )) return 0; /* up: zero pad */
+    return -1;  /* default: sample/hold except zero-pad if version<0.44 */
+}
 
 /* ------------------------- vinlet -------------------------- */
 t_class *vinlet_class;
+
+typedef struct _reblocker
+{
+    t_sample *r_buf;         /* signal buffer; zero if not a signal */
+    t_resample r_updown;
+} t_reblocker;
+
+static void reblocker_init(t_reblocker *rb, int buflength)
+{
+    rb->r_buf = (t_sample *)getbytes(buflength * sizeof(t_sample));
+    resample_init(&rb->r_updown);
+}
+
+static void reblocker_resize(t_reblocker **rb, int oldn, int newn,
+    int buflength)
+{
+    int i;
+    if (oldn == newn)
+        return;
+    for (i = newn; i < oldn; i++)
+    {
+        freebytes((*rb)[i].r_buf, buflength * sizeof(t_sample));
+        resample_free(&(*rb)[i].r_updown);
+    }
+    *rb = (t_reblocker *)resizebytes(*rb, oldn * sizeof(t_reblocker),
+        newn * sizeof(t_reblocker));
+    for (i = oldn; i < newn; i++)
+        reblocker_init(&(*rb)[i], buflength);
+}
 
 typedef struct _vinlet
 {
     t_object x_obj;
     t_canvas *x_canvas;
     t_inlet *x_inlet;
-    int x_bufsize;
-    t_sample *x_buf;         /* signal buffer; zero if not a signal */
-    t_sample *x_endbuf;
-    t_sample *x_fill;
-    t_sample *x_read;
+    int x_buflength;        /* number of samples per channel in buffer */
+    int x_write;            /* write position in reblocker */
+    int x_read;             /* read position in reblocker */
     int x_hop;
-  /* if not reblocking, the next slot communicates the parent's inlet
-     signal from the prolog to the DSP routine: */
+    int x_updownmethod;
+            /* if not reblocking, the next slot communicates the parent's
+                inlet signal from the prolog to the DSP routine: */
     t_signal *x_directsignal;
-    t_resample x_updown;
-    t_outlet *x_fwdout;  /* optional outlet for forwarding messages to inlet~ */
+    int x_nchans;       /* this is also set in prolog & used in dsp */
+    t_outlet *x_fwdout; /* optional outlet for forwarding messages to inlet~ */
+    t_reblocker *x_rb;  /* reblocking and resampling, one per channel */
 } t_vinlet;
 
 static void *vinlet_new(t_symbol *s)
@@ -45,8 +81,9 @@ static void *vinlet_new(t_symbol *s)
     t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
     x->x_canvas = canvas_getcurrent();
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, 0);
-    x->x_bufsize = 0;
-    x->x_buf = 0;
+    x->x_buflength = 0;
+    x->x_nchans = 0;
+    x->x_rb = 0;
     outlet_new(&x->x_obj, 0);
     return (x);
 }
@@ -83,10 +120,14 @@ static void vinlet_anything(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 
 static void vinlet_free(t_vinlet *x)
 {
+    int i;
     canvas_rminlet(x->x_canvas, x->x_inlet);
-    if (x->x_buf)
-        t_freebytes(x->x_buf, x->x_bufsize * sizeof(*x->x_buf));
-    resample_free(&x->x_updown);
+    if (x->x_rb)
+        for (i = 0; i < x->x_nchans; i++)
+    {
+        freebytes((x->x_rb)[i].r_buf, x->x_buflength * sizeof(t_sample));
+        resample_free(&(x->x_rb)[i].r_updown);
+    }
 }
 
 t_inlet *vinlet_getit(t_pd *x)
@@ -98,26 +139,31 @@ t_inlet *vinlet_getit(t_pd *x)
 /* ------------------------- signal inlet -------------------------- */
 int vinlet_issignal(t_vinlet *x)
 {
-    return (x->x_buf != 0);
+    return (x->x_rb != 0);
 }
 
 t_int *vinlet_perform(t_int *w)
 {
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    t_sample *in = x->x_read;
-    while (n--) *out++ = *in++;
-    if (in == x->x_endbuf) in = x->x_buf;
-    x->x_read = in;
-    return (w+4);
+    t_reblocker *rb = (t_reblocker *)(w[3]);
+    int advance = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    t_sample *in = rb->r_buf + read;
+    while (n--)
+        *out++ = *in++;
+    if (advance)    /* only on last channel */
+    {
+        if ((read += advance) == x->x_buflength)
+            read = 0;
+        x->x_read = read;
+    }
+    return (w+6);
 }
-
 
 static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
 
-    if (!x->x_buf)   /* if we're not signal, just forward */
+    if (!x->x_rb)   /* if we're not signal, just forward */
         outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
     else if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
         outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
@@ -125,19 +171,26 @@ static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 
 static void vinlet_dsp(t_vinlet *x, t_signal **sp)
 {
-    t_signal *outsig;
         /* no buffer means we're not a signal inlet */
-    if (!x->x_buf)
+    if (!x->x_rb)
         return;
-    outsig = sp[0];
     if (x->x_directsignal)
     {
+        sp[0] = signal_new(0, 1, sp[0]->s_sr, 0);
         signal_setborrowed(sp[0], x->x_directsignal);
     }
     else
     {
-        dsp_add(vinlet_perform, 3, x, outsig->s_vec, (t_int)outsig->s_vecsize);
-        x->x_read = x->x_buf;
+        int i;
+        signal_setmultiout(sp, x->x_nchans);
+        for (i = 0; i < x->x_nchans; i++)
+        {
+                /* only advance read position on last channel! */
+            int advance = (i == x->x_nchans-1) ? sp[0]->s_length : 0;
+            dsp_add(vinlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
+                &x->x_rb[i], (t_int)advance, (t_int)(sp[0]->s_length));
+        }
+        x->x_read = 0;
     }
 }
 
@@ -145,100 +198,108 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
 t_int *vinlet_doprolog(t_int *w)
 {
     t_vinlet *x = (t_vinlet *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    t_sample *out = x->x_fill;
-    if (out == x->x_endbuf)
-    {
-        t_sample *f1 = x->x_buf, *f2 = x->x_buf + x->x_hop;
-        int nshift = x->x_bufsize - x->x_hop;
-        out -= x->x_hop;
-        while (nshift--) *f1++ = *f2++;
-    }
+    t_sample *in = (t_sample *)(w[2]), *out;
+    t_sample *buf = (t_sample *)(w[3]);
+    int lastone = (int)(w[4]), n = (int)(w[5]), write = x->x_write;
 
-    while (n--) *out++ = *in++;
-    x->x_fill = out;
-    return (w+4);
+    if (write == x->x_buflength)
+    {
+        t_sample *f1 = buf, *f2 = buf + x->x_hop;
+        int nshift = x->x_buflength - x->x_hop;
+        while (nshift--) *f1++ = *f2++;
+        write -= x->x_hop;
+    }
+    out = buf + write;
+    if (lastone)    /* only advance write position on last channel! */
+        x->x_write = write + n;
+    while (n--)
+        *out++ = *in++;
+    return (w+6);
 }
 
 int inlet_getsignalindex(t_inlet *x);
 
         /* set up prolog DSP code  */
 void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample,  int reblock, int switched)
 {
     t_signal *insig;
         /* no buffer means we're not a signal inlet */
-    if (!x->x_buf)
+    if (!x->x_rb)
         return;
-    x->x_updown.downsample = downsample;
-    x->x_updown.upsample   = upsample;
 
         /* if the "reblock" flag is set, arrange to copy data in from the
         parent. */
     if (reblock)
     {
-        int parentvecsize, bufsize, oldbufsize, prologphase;
+        int parentvecsize, bufsize, oldbufsize, prologphase, i;
         int re_parentvecsize; /* resampled parentvectorsize */
-            /* this should never happen: */
-        if (!x->x_buf) return;
 
             /* the prolog code counts from 0 to period-1; the
             phase is backed up by one so that AFTER the prolog code
             runs, the "x_fill" phase is in sync with the "x_read" phase. */
-        prologphase = (phase - 1) & (period - 1);
+        prologphase = (phase + period - 1) % period;
         if (parentsigs)
         {
             insig = parentsigs[inlet_getsignalindex(x->x_inlet)];
-            parentvecsize = insig->s_vecsize;
+            parentvecsize = insig->s_length;
             re_parentvecsize = parentvecsize * upsample / downsample;
+            reblocker_resize(&x->x_rb, x->x_nchans, insig->s_nchans,
+                x->x_buflength);
+            x->x_nchans = insig->s_nchans;
         }
         else
         {
             insig = 0;
-            parentvecsize = 1;
-            re_parentvecsize = 1;
+            parentvecsize = re_parentvecsize = 1;
         }
 
         bufsize = re_parentvecsize;
-        if (bufsize < myvecsize) bufsize = myvecsize;
-        if (bufsize != (oldbufsize = x->x_bufsize))
+        if (bufsize < myvecsize)
+            bufsize = myvecsize;
+        if (bufsize != (oldbufsize = x->x_buflength))
         {
-            t_sample *buf = x->x_buf;
-            t_freebytes(buf, oldbufsize * sizeof(*buf));
-            buf = (t_sample *)t_getbytes(bufsize * sizeof(*buf));
-            memset((char *)buf, 0, bufsize * sizeof(*buf));
-            x->x_bufsize = bufsize;
-            x->x_endbuf = buf + bufsize;
-            x->x_buf = buf;
+            for (i = 0; i < x->x_nchans; i++)
+            {
+                x->x_rb[i].r_buf = (t_sample *)t_resizebytes(x->x_rb[i].r_buf,
+                    oldbufsize * sizeof(t_sample), bufsize * sizeof(t_sample));
+                memset((char *)x->x_rb[i].r_buf, 0, bufsize * sizeof(t_sample));
+            }
+            x->x_buflength = bufsize;
         }
         if (parentsigs)
         {
             x->x_hop = period * re_parentvecsize;
 
-            x->x_fill = prologphase ?
-                x->x_endbuf - (x->x_hop - prologphase * re_parentvecsize) :
-                    x->x_endbuf;
-
-            if (upsample * downsample == 1)
-                    dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
-                        (t_int)re_parentvecsize);
-            else {
-              int method = (x->x_updown.method == 3?
-                  (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
-              resamplefrom_dsp(&x->x_updown, insig->s_vec, parentvecsize,
-                  re_parentvecsize, method);
-              dsp_add(vinlet_doprolog, 3, x, x->x_updown.s_vec,
-                  (t_int)re_parentvecsize);
+            x->x_write = prologphase ?
+                x->x_buflength - (x->x_hop - prologphase * re_parentvecsize) :
+                    x->x_buflength;
+            for (i = 0; i < x->x_nchans; i++)
+            {
+                x->x_rb[i].r_updown.downsample = downsample;
+                x->x_rb[i].r_updown.upsample   = upsample;
+                if (upsample == 1 && downsample == 1)
+                    dsp_add(vinlet_doprolog, 5, x,
+                        insig->s_vec + i * parentvecsize, x->x_rb[i].r_buf,
+                            (t_int)(i == x->x_nchans-1),
+                                (t_int)re_parentvecsize);
+                else
+                {
+                    int method = (x->x_updownmethod == -1?
+                        (pd_compatibilitylevel < 44 ? 0 : 1) :
+                            x->x_updownmethod);
+                    resamplefrom_dsp(&x->x_rb[i].r_updown,
+                        insig->s_vec + i * parentvecsize, parentvecsize,
+                            re_parentvecsize, method);
+                    dsp_add(vinlet_doprolog, 5, x, x->x_rb[i].r_updown.s_vec,
+                        x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
+                            (t_int)re_parentvecsize);
+                }
+            }
         }
-
-            /* if the input signal's reference count is zero, we have
-               to free it here because we didn't in ugen_doit(). */
-            if (!insig->s_refcount)
-                signal_makereusable(insig);
-        }
-        else memset((char *)(x->x_buf), 0, bufsize * sizeof(*x->x_buf));
+        else for (i = 0; i < x->x_nchans; i++)
+            memset((char *)(x->x_rb[i].r_buf), 0, bufsize * sizeof(t_sample));
         x->x_directsignal = 0;
     }
     else
@@ -249,43 +310,46 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
     }
 }
 
-static void *vinlet_newsig(t_symbol *s)
+static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
 {
     t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
     x->x_canvas = canvas_getcurrent();
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, &s_signal);
-    x->x_endbuf = x->x_buf = (t_sample *)getbytes(0);
-    x->x_bufsize = 0;
+    x->x_nchans = 1;
+    x->x_buflength = 0;
+    x->x_rb = (t_reblocker *)getbytes(sizeof(*x->x_rb));
+    reblocker_init(x->x_rb, x->x_buflength);
     x->x_directsignal = 0;
     x->x_fwdout = 0;
     outlet_new(&x->x_obj, &s_signal);
     inlet_new(&x->x_obj, (t_pd *)x->x_inlet, 0, 0);
-    resample_init(&x->x_updown);
 
-    /* this should be though over:
-     * it might prove hard to provide consistency between labeled up- & downsampling methods
-     * maybe indices would be better...
+    /* this should be thought over:
+     * it might prove hard to provide consistency between labeled up- &
+     * downsampling methods - maybe indices would be better...
      *
-     * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
+     * up till now we provide several upsampling methods and 1 single
+     *  downsampling method (no filtering !)
      */
-    if (s == gensym("hold"))
-        x->x_updown.method = 1;       /* up: sample and hold */
-    else if (s == gensym("lin") || s == gensym("linear"))
-        x->x_updown.method = 2;       /* up: linear interpolation */
-    else if (s == gensym("pad"))
-        x->x_updown.method = 0;       /* up: zero-padding */
-    else x->x_updown.method = 3;      /* sample/hold unless version<0.44 */
-
-    if (s == gensym("fwd"))         /* turn on forwarding */
-        x->x_fwdout = outlet_new(&x->x_obj, 0);
+    x->x_updownmethod = -1;
+    while (argc-->0)
+    {
+        int method;
+        s = atom_getsymbol(argv++);
+        method = symbol2resamplemethod(s);
+        if (method >= 0)
+            x->x_updownmethod = method;
+    }
+    x->x_fwdout = outlet_new(&x->x_obj, 0);
     return (x);
 }
 
 static void vinlet_setup(void)
 {
     vinlet_class = class_new(gensym("inlet"), (t_newmethod)vinlet_new,
-        (t_method)vinlet_free, sizeof(t_vinlet), CLASS_NOINLET, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)vinlet_newsig, gensym("inlet~"), A_DEFSYM, 0);
+        (t_method)vinlet_free, sizeof(t_vinlet),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, A_DEFSYM, 0);
+    class_addcreator((t_newmethod)vinlet_newsig, gensym("inlet~"), A_GIMME, 0);
     class_addbang(vinlet_class, vinlet_bang);
     class_addpointer(vinlet_class, vinlet_pointer);
     class_addfloat(vinlet_class, vinlet_float);
@@ -308,20 +372,18 @@ typedef struct _voutlet
     t_object x_obj;
     t_canvas *x_canvas;
     t_outlet *x_parentoutlet;
-    int x_bufsize;
-    t_sample *x_buf;         /* signal buffer; zero if not a signal */
-    t_sample *x_endbuf;
-    t_sample *x_empty;       /* next to read out of buffer in epilog code */
-    t_sample *x_write;       /* next to write in to buffer */
+    int x_buflength;
+    int x_read;             /* next to read out of buffer in epilog code */
+    int x_write;            /* next to write into buffer */
     int x_hop;              /* hopsize */
-        /* vice versa from the inlet, if we don't block, this holds the
-        parent's outlet signal, valid between the prolog and the dsp setup
+    int x_updownmethod;
+        /*  parent's outlet signal, valid between the prolog and the dsp setup
         routines.  */
-    t_signal *x_directsignal;
-        /* and here's a flag indicating that we aren't blocked but have to
-        do a copy (because we're switched). */
-    char x_justcopyout;
-  t_resample x_updown;
+    t_signal **x_parentsignal;
+    int x_nchans;       /* this is also set in prolog & used in dsp */
+    t_reblocker *x_rb;  /* reblocking and resampling, one per channel */
+    unsigned int x_justcopyout:1;   /* switched but not blocked */
+    unsigned int x_borrowed:1;      /* output is borrowed from our inlet */
 } t_voutlet;
 
 static void *voutlet_new(t_symbol *s)
@@ -330,8 +392,9 @@ static void *voutlet_new(t_symbol *s)
     x->x_canvas = canvas_getcurrent();
     x->x_parentoutlet = canvas_addoutlet(x->x_canvas, &x->x_obj.ob_pd, 0);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, 0, 0);
-    x->x_bufsize = 0;
-    x->x_buf = 0;
+    x->x_buflength = 0;
+    x->x_rb = 0;
+    x->x_nchans = 0;
     return (x);
 }
 
@@ -367,10 +430,14 @@ static void voutlet_anything(t_voutlet *x, t_symbol *s, int argc, t_atom *argv)
 
 static void voutlet_free(t_voutlet *x)
 {
+    int i;
     canvas_rmoutlet(x->x_canvas, x->x_parentoutlet);
-    if (x->x_buf)
-        t_freebytes(x->x_buf, x->x_bufsize * sizeof(*x->x_buf));
-    resample_free(&x->x_updown);
+    if (x->x_rb)
+        for (i = 0; i < x->x_nchans; i++)
+    {
+        freebytes((x->x_rb)[i].r_buf, x->x_buflength * sizeof(t_sample));
+        resample_free(&(x->x_rb)[i].r_updown);
+    }
 }
 
 t_outlet *voutlet_getit(t_pd *x)
@@ -383,53 +450,65 @@ t_outlet *voutlet_getit(t_pd *x)
 
 int voutlet_issignal(t_voutlet *x)
 {
-    return (x->x_buf != 0);
+    return (x->x_rb != 0);
 }
 
     /* LATER optimize for non-overlapped case where the "+=" isn't needed */
 t_int *voutlet_perform(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    t_sample *out = x->x_write, *outwas = out;
+    t_sample *in = (t_sample *)(w[2]), *buf= (t_sample *)(w[3]);
+    int lastone = (int)(w[4]), n = (int)(w[5]), write = x->x_write;
+    t_sample *out = buf + write,
+        *endbuf = buf + x->x_buflength;
     while (n--)
     {
         *out++ += *in++;
-        if (out == x->x_endbuf) out = x->x_buf;
+        if (out == endbuf)
+            out = buf;
     }
-    outwas += x->x_hop;
-    if (outwas >= x->x_endbuf) outwas = x->x_buf;
-    x->x_write = outwas;
-    return (w+4);
+    if (lastone)    /* only advance write position on last channel! */
+    {
+        if ((write += x->x_hop) >= x->x_buflength)
+            write = 0;
+        x->x_write = write;
+    }
+    return (w+6);
 }
 
     /* epilog code for blocking: write buffer to parent patch */
 static t_int *voutlet_doepilog(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-
-    int n = (int)(w[3]);
-    t_sample *in = x->x_empty;
-    if (x->x_updown.downsample != x->x_updown.upsample)
-        out = x->x_updown.s_vec;
-    for (; n--; in++) *out++ = *in, *in = 0;
-    if (in == x->x_endbuf) in = x->x_buf;
-    x->x_empty = in;
-    return (w+4);
+    t_sample *in, *out = (t_sample *)(w[2]), *buf = (t_sample *)(w[3]);
+    int lastone = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    if (read == x->x_buflength)
+        read = 0;
+    if (lastone)    /* only advance read position on last channel! */
+        x->x_read = read + n;
+    in = buf + read;
+    for (; n--; in++)
+        *out++ = *in, *in = 0;
+    return (w+6);
 }
 
-static t_int *voutlet_doepilog_resampling(t_int *w)
+    /* It's dumb that we have to offer a duplicate but we don't have the
+    goddam resampling buffer allocated by the time this goes on the DSP
+    chain so we have to look it up dynamically. */
+static t_int *voutlet_doepilog_resample(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
-    int n = (int)(w[2]);
-    t_sample *in  = x->x_empty;
-    t_sample *out = x->x_updown.s_vec;
-    for (; n--; in++) *out++ = *in, *in = 0;
-    if (in == x->x_endbuf) in = x->x_buf;
-    x->x_empty = in;
-    return (w+3);
+    t_sample *in, *out = ((t_resample *)(w[2]))->s_vec,
+        *buf = (t_sample *)(w[3]);
+    int lastone = (int)(w[4]), n = (int)(w[5]), read = x->x_read;
+    if (read == x->x_buflength)
+        read = 0;
+    if (lastone)    /* only advance read position on last channel! */
+        x->x_read = read + n;
+    in = buf + read;
+    for (; n--; in++)
+        *out++ = *in, *in = 0;
+    return (w+6);
 }
 
 int outlet_getsignalindex(t_outlet *x);
@@ -439,125 +518,160 @@ int outlet_getsignalindex(t_outlet *x);
         back to whatever we see on our input during the "dsp" method
         called later.  */
 void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched)
 {
         /* no buffer means we're not a signal outlet */
-    if (!x->x_buf)
+    if (!x->x_rb)
         return;
-    x->x_updown.downsample=downsample;
-    x->x_updown.upsample=upsample;
     x->x_justcopyout = (switched && !reblock);
+    x->x_parentsignal = (parentsigs?
+        &parentsigs[outlet_getsignalindex(x->x_parentoutlet)] : 0);
+    if (!parentsigs)
+        return;
+    if (switched || reblock)
+        x->x_borrowed = 0;
+    else    /* OK, borrow it */
+    {
+        int overlap = (*(x->x_parentsignal))->s_overlap;
+        x->x_borrowed = 1;
+        if (!parentsigs)
+            bug("voutlet_dspprolog");
+                /* create new borrowed signal to be set in dsp routine below */
+        *(x->x_parentsignal) = signal_new(0, 1,
+            (*(x->x_parentsignal))->s_sr, 0);
+        (*(x->x_parentsignal))->s_overlap = overlap;
+    }
     if (reblock)
     {
-        x->x_directsignal = 0;
-    }
-    else
-    {
-        if (!parentsigs) bug("voutlet_dspprolog");
-        x->x_directsignal =
-            parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
+        int parentvecsize, buflength, i;
+        int re_parentvecsize;
+        int bigperiod, epilogphase, blockphase;
+
+        parentvecsize = (*x->x_parentsignal)->s_length;
+        re_parentvecsize = parentvecsize * upsample / downsample;
+        buflength = re_parentvecsize;
+        if (buflength < myvecsize)
+            buflength = myvecsize;
+        if (buflength != x->x_buflength)
+        {
+            for (i = 0; i < x->x_nchans; i++)
+            {
+                x->x_rb[i].r_buf = (t_sample *)t_resizebytes(x->x_rb[i].r_buf,
+                    x->x_buflength * sizeof(t_sample),
+                        buflength * sizeof(t_sample));
+                memset((char *)x->x_rb[i].r_buf, 0,
+                    buflength * sizeof(t_sample));
+            }
+            x->x_buflength = buflength;
+        }
     }
 }
 
 static void voutlet_dsp(t_voutlet *x, t_signal **sp)
 {
-    t_signal *insig;
-    if (!x->x_buf) return;
-    insig = sp[0];
-    if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
-    else if (x->x_directsignal)
+    if (!x->x_rb)
+        return;
+    reblocker_resize(&x->x_rb, x->x_nchans, sp[0]->s_nchans, x->x_buflength);
+    x->x_nchans = sp[0]->s_nchans;
+    if (x->x_borrowed)
     {
             /* if we're just going to make the signal available on the
             parent patch, hand it off to the parent signal. */
-        /* this is done elsewhere--> sp[0]->s_refcount++; */
-        signal_setborrowed(x->x_directsignal, sp[0]);
+        signal_setborrowed(*x->x_parentsignal, sp[0]);
     }
-    else
-        dsp_add(voutlet_perform, 3, x, insig->s_vec, (t_int)insig->s_n);
+    else if (x->x_parentsignal)
+    {
+        int i;
+        signal_setmultiout(x->x_parentsignal, sp[0]->s_nchans);
+        if (x->x_justcopyout)
+            dsp_add_copy(sp[0]->s_vec, (*x->x_parentsignal)->s_vec,
+                sp[0]->s_length * sp[0]->s_nchans);
+        else for (i = 0; i < x->x_nchans; i++)
+                /* NB: x_hop isn't set yet, so we cannot pass it directy! */
+            dsp_add(voutlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
+                x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1), (t_int)sp[0]->s_length);
+    }
 }
 
         /* set up epilog DSP code.  If we're reblocking, this is the
         time to copy the samples out to the containing object's outlets.
         If we aren't reblocking, there's nothing to do here.  */
 void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
-    int myvecsize, int calcsize, int phase, int period, int frequency,
+    int myvecsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched)
 {
-    if (!x->x_buf) return;  /* this shouldn't be necesssary... */
-    x->x_updown.downsample=downsample;
-    x->x_updown.upsample=upsample;
+    if (!x->x_rb)
+        return;  /* this shouldn't be necesssary... */
+    if (!x->x_parentsignal) /* toplevels do nothing */
+        return;
     if (reblock)
     {
-        t_signal *outsig;
-        int parentvecsize, bufsize, oldbufsize;
+        int parentvecsize, i;
         int re_parentvecsize;
         int bigperiod, epilogphase, blockphase;
-        if (parentsigs)
+        if (x->x_parentsignal)
         {
-            outsig = parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
-            parentvecsize = outsig->s_vecsize;
+            parentvecsize = (*x->x_parentsignal)->s_length;
             re_parentvecsize = parentvecsize * upsample / downsample;
         }
         else
         {
-            outsig = 0;
-            parentvecsize = 1;
-            re_parentvecsize = 1;
+            bug("voutlet_dspepilog");
+            parentvecsize = re_parentvecsize = 1;
         }
         bigperiod = myvecsize/re_parentvecsize;
-        if (!bigperiod) bigperiod = 1;
+        if (!bigperiod)
+            bigperiod = 1;
         epilogphase = phase & (bigperiod - 1);
         blockphase = (phase + period - 1) & (bigperiod - 1) & (- period);
-        bufsize = re_parentvecsize;
-        if (bufsize < myvecsize) bufsize = myvecsize;
-        if (bufsize != (oldbufsize = x->x_bufsize))
-        {
-            t_sample *buf = x->x_buf;
-            t_freebytes(buf, oldbufsize * sizeof(*buf));
-            buf = (t_sample *)t_getbytes(bufsize * sizeof(*buf));
-            memset((char *)buf, 0, bufsize * sizeof(*buf));
-            x->x_bufsize = bufsize;
-            x->x_endbuf = buf + bufsize;
-            x->x_buf = buf;
-        }
-        if (re_parentvecsize * period > bufsize) bug("voutlet_dspepilog");
-        x->x_write = x->x_buf + re_parentvecsize * blockphase;
-        if (x->x_write == x->x_endbuf) x->x_write = x->x_buf;
+        if (re_parentvecsize * period > x->x_buflength)
+            bug("voutlet_dspepilog");
+        x->x_write = re_parentvecsize * blockphase;
+        if (x->x_write == x->x_buflength)
+            x->x_write = 0;
         if (period == 1 && frequency > 1)
             x->x_hop = re_parentvecsize / frequency;
         else x->x_hop = period * re_parentvecsize;
-        /* post("phase %d, block %d, parent %d", phase & 63,
-            parentvecsize * blockphase, parentvecsize * epilogphase); */
-        if (parentsigs)
+        if (x->x_parentsignal && (*x->x_parentsignal) && (*x->x_parentsignal)->s_vec)
         {
-            /* set epilog pointer and schedule it */
-            x->x_empty = x->x_buf + re_parentvecsize * epilogphase;
-            if (upsample * downsample == 1)
-                dsp_add(voutlet_doepilog, 3, x, outsig->s_vec,
-                    (t_int)re_parentvecsize);
-            else
+                /* set epilog pointer and schedule it */
+            x->x_read = re_parentvecsize * epilogphase;
+            for (i = 0; i < x->x_nchans; i++)
             {
-                int method = (x->x_updown.method == 3?
-                    (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
-                dsp_add(voutlet_doepilog_resampling, 2, x, (t_int)re_parentvecsize);
-                resampleto_dsp(&x->x_updown, outsig->s_vec, re_parentvecsize,
-                    parentvecsize, method);
+                if (upsample * downsample == 1)
+                    dsp_add(voutlet_doepilog, 5, x,
+                        (*x->x_parentsignal)->s_vec + i * parentvecsize,
+                            x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
+                                (t_int)parentvecsize);
+                else
+                {
+                    int method = (x->x_updownmethod < 0 ?
+                        (pd_compatibilitylevel < 44 ? 0 : 1) :
+                            x->x_updownmethod);
+                    x->x_rb[i].r_updown.downsample=downsample;
+                    x->x_rb[i].r_updown.upsample=upsample;
+                    dsp_add(voutlet_doepilog_resample, 5, x,
+                        &x->x_rb[i].r_updown, x->x_rb[i].r_buf,
+                            (t_int)(i == x->x_nchans-1),
+                                (t_int)re_parentvecsize);
+                    resampleto_dsp(&x->x_rb[i].r_updown,
+                        (*x->x_parentsignal)->s_vec + i * parentvecsize,
+                            re_parentvecsize, parentvecsize, method);
+                }
             }
         }
     }
         /* if we aren't blocked but we are switched, the epilog code just
-        copies zeros to the output.  In this case the blocking code actually
-        jumps over the epilog if the block is running. */
+        copies zeros to the output.  In this case the DSP chain contains a
+        function that causes DSP passes to jump over the epilog when the block
+        is switched on, so this only happens when switched off. */
     else if (switched)
     {
-        if (parentsigs)
-        {
-            t_signal *outsig =
-                parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
-            dsp_add_zero(outsig->s_vec, outsig->s_n);
-        }
+        if (*x->x_parentsignal)
+            dsp_add_zero((*x->x_parentsignal)->s_vec,
+                (*x->x_parentsignal)->s_length *
+                    (*x->x_parentsignal)->s_nchans);
     }
 }
 
@@ -568,22 +682,17 @@ static void *voutlet_newsig(t_symbol *s)
     x->x_parentoutlet = canvas_addoutlet(x->x_canvas,
         &x->x_obj.ob_pd, &s_signal);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-    x->x_endbuf = x->x_buf = (t_sample *)getbytes(0);
-    x->x_bufsize = 0;
+    x->x_buflength = 0;
+    x->x_rb = (t_reblocker *)getbytes(sizeof(*x->x_rb));
+    reblocker_init(x->x_rb, x->x_buflength);
+    x->x_buflength = 0;
+    x->x_nchans = 1;
 
-    resample_init(&x->x_updown);
-
-    /* this should be though over:
-     * it might prove hard to provide consistency between labeled up- & downsampling methods
-     * maybe indices would be better...
-     *
-     * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
+    /*
+     * up till now we provide several upsampling methods and 1 single
+     * downsampling method (no filtering !)
      */
-    if (s == gensym("hold"))x->x_updown.method=1;        /* up: sample and hold */
-    else if (s == gensym("lin"))x->x_updown.method=2;    /* up: linear interpolation */
-    else if (s == gensym("linear"))x->x_updown.method=2; /* up: linear interpolation */
-    else if (s == gensym("pad"))x->x_updown.method=0;    /* up: zero pad */
-    else x->x_updown.method=3;                           /* up: zero-padding; down: ignore samples between */
+    x->x_updownmethod = symbol2resamplemethod(s);
 
     return (x);
 }
@@ -592,7 +701,8 @@ static void *voutlet_newsig(t_symbol *s)
 static void voutlet_setup(void)
 {
     voutlet_class = class_new(gensym("outlet"), (t_newmethod)voutlet_new,
-        (t_method)voutlet_free, sizeof(t_voutlet), CLASS_NOINLET, A_DEFSYM, 0);
+        (t_method)voutlet_free, sizeof(t_voutlet),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addcreator((t_newmethod)voutlet_newsig, gensym("outlet~"), A_DEFSYM, 0);
     class_addbang(voutlet_class, voutlet_bang);
     class_addpointer(voutlet_class, voutlet_pointer);
@@ -604,7 +714,6 @@ static void voutlet_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(voutlet_class, gensym("inlet-outlet"));
 }
-
 
 /* ---------------------------- overall setup ----------------------------- */
 

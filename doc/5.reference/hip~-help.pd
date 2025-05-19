@@ -1,66 +1,51 @@
 #N canvas 541 23 578 563 12;
 #X declare -stdpath ./;
-#X floatatom 216 179 5 0 0 0 - - - 0;
-#X msg 156 152 clear;
+#X floatatom 196 177 8 0 0 0 - - - 0;
+#X msg 93 124 clear;
 #X obj 25 15 hip~;
-#X text 70 14 - one-pole high pass filter;
-#X text 342 502 updated for Pd version 0.44;
+#X text 352 502 updated for Pd version 0.44;
 #X msg 297 442 \; pd compatibility 0.43;
-#X text 231 206 Creation argument initializes cutoff frequency.;
-#X text 40 344 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
-high-frequency output gain was incorrectly greater than one (usually
-only slightly so \, but noticeably if the cutoff frequency was more
-than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY
-in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
-To get the old (0.43 and earlier) behavior \, set "compatibility" to
-0.43 in Pd's command line or by a message:, f 67;
-#X text 205 152 <= reinitialize internal state;
+#X text 211 206 Creation argument initializes cutoff frequency.;
+#X text 40 344 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the high-frequency output gain was incorrectly greater than one (usually only slightly so \, but noticeably if the cutoff frequency was more than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3. To get the old (0.43 and earlier) behavior \, set "compatibility" to 0.43 in Pd's command line or by a message:, f 67;
 #X text 24 503 see also:;
 #X obj 97 502 lop~;
 #X obj 136 502 bp~;
 #X obj 210 502 bob~;
 #X obj 170 502 vcf~;
-#X obj 89 128 noise~;
-#X obj 156 262 output~;
-#X text 263 178 <= set cutoff frequency;
-#X text 39 56 hip~ is a one-pole high pass filter with a specified
-cutoff frequency. Left (audio) inlet is the incoming audio signal.
-Right (control) inlet sets cutoff frequency., f 71;
-#X obj 156 204 hip~ 2000;
-#X obj 295 266 declare -stdpath ./;
+#X obj 136 156 noise~;
+#X obj 136 252 output~;
+#X obj 136 204 hip~ 2000;
+#X obj 323 268 declare -stdpath ./;
 #X obj 96 531 biquad~;
 #X obj 155 530 slop~, f 7;
 #X obj 214 530 cpole~, f 7;
 #X obj 275 530 fexpr~;
 #X text 330 530 - unfriendly filters;
-#X obj 8 43 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 43 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 786 97 475 260 reference 0;
-#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 193 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 233 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 193 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 8 233 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 106 76 signal - audio signal to be filtered.;
 #X text 113 95 clear - clear filter's memory., f 36;
 #X text 106 163 signal - filtered signal.;
-#X obj 9 71 cnv 1 450 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 9 119 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 113 126 float - rolloff frequency., f 36;
+#X obj 9 71 cnv 1 450 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 9 119 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 104 203 1) float - rolloff frequency in Hz (default 0).;
 #X obj 36 12 hip~;
-#X text 78 11 - one-pole high pass filter.;
+#X text 113 126 float - cutoff frequency., f 36;
+#X text 78 11 - 1-pole/1-zero high pass filter.;
 #X restore 395 15 pd reference;
 #X text 493 16 <= click;
-#X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 0 0 18 1;
-#X connect 1 0 18 0;
-#X connect 14 0 18 0;
-#X connect 18 0 15 0;
-#X connect 18 0 15 1;
+#X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 142 124 <-- reinitialize internal state;
+#X text 262 177 <-- set cutoff frequency;
+#X obj 199 150 hsl 169 18 50 5000 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 39 56 [hip~] is a one-pole/one-zero high pass filter with a specified cutoff frequency. The left inlet is the incoming audio signal to filter. The right inlet sets cutoff frequency (at control rate only)., f 72;
+#X text 70 14 - 1-pole/1-zero high pass filter;
+#X connect 0 0 14 1;
+#X connect 1 0 14 0;
+#X connect 12 0 14 0;
+#X connect 14 0 13 0;
+#X connect 27 0 0 0;

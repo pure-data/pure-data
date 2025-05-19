@@ -38,14 +38,14 @@ value.;
 0;
 #X obj 8 248 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 26 66 Moses takes numbers and outputs them at left if they're
-less than a control value \, and at right if they're greater or equal
-to it.;
-#X text 170 161 <= creation argument initializes the value and the
-right inlet changes it., f 37;
 #X obj 145 262 change;
 #X text 17 263 see also:;
 #X obj 90 262 select;
+#X text 26 66 The [moses] object takes numbers and outputs them at left
+if they're less than a control value \, and at right if they're greater
+or equal to it.;
+#X text 172 161 <-- creation argument initializes the value and the
+right inlet changes it., f 37;
 #X connect 0 0 5 0;
 #X connect 0 1 1 0;
 #X connect 6 0 0 0;

@@ -1,4 +1,4 @@
-#N canvas 643 23 468 574 12;
+#N canvas 528 56 468 574 12;
 #X msg 70 63 1;
 #X obj 141 123 + 1;
 #X obj 284 212 print x1;
@@ -6,31 +6,25 @@
 #X obj 284 122 + 1;
 #X obj 284 154 + 1;
 #X obj 284 183 + 1;
-#X text 42 13 In Pd \, message passing is depth first \, so that in
-this patch:, f 46;
+#X text 42 13 In Pd \, message passing is depth first \, so that in this patch:, f 46;
 #X msg 115 310 1;
 #X obj 154 340 + 1;
 #X obj 115 339 f;
 #X floatatom 115 371 5 0 0 0 - - - 0;
-#X text 229 509 updated for Pd version 0.34;
-#X text 44 400 ... because the "depth" is infinite. The counters you've
-seen always have the message chain terminated somewhere in a cold inlet:
-, f 52;
+#X text 44 400 ... because the "depth" is infinite. The counters you've seen always have the message chain terminated somewhere in a cold inlet:, f 52;
 #X msg 106 464 1;
 #X obj 145 494 + 1;
 #X obj 106 493 f;
 #X floatatom 106 525 4 0 0 0 - - - 0;
-#X text 142 464 <= better;
-#X text 146 309 <= maybe you shouldn't click here;
-#X text 106 63 <= click here;
 #X obj 70 92 trigger float float float float;
 #X obj 141 154 print x3;
 #X obj 70 154 print x4;
-#X text 44 247 ... you get "x1" first \, notwithstanding the fact that
-"x2" \, "x3" and "x4" appear to be closer to the source. This means
-that you shouldn't do this:, f 48;
-#X connect 0 0 21 0;
-#X connect 1 0 22 0;
+#X text 44 247 ... you get "x1" first \, notwithstanding the fact that "x2" \, "x3" and "x4" appear to be closer to the source. This means that you shouldn't do this:, f 48;
+#X text 106 63 <-- click here;
+#X text 146 309 <-- maybe you shouldn't click here;
+#X text 142 464 <-- better;
+#X connect 0 0 17 0;
+#X connect 1 0 18 0;
 #X connect 4 0 5 0;
 #X connect 5 0 6 0;
 #X connect 6 0 2 0;
@@ -38,11 +32,11 @@ that you shouldn't do this:, f 48;
 #X connect 9 0 10 0;
 #X connect 10 0 11 0;
 #X connect 10 0 9 0;
-#X connect 14 0 16 0;
-#X connect 15 0 16 1;
-#X connect 16 0 17 0;
-#X connect 16 0 15 0;
-#X connect 21 0 23 0;
-#X connect 21 1 1 0;
-#X connect 21 2 3 0;
-#X connect 21 3 4 0;
+#X connect 13 0 15 0;
+#X connect 14 0 15 1;
+#X connect 15 0 16 0;
+#X connect 15 0 14 0;
+#X connect 17 0 19 0;
+#X connect 17 1 1 0;
+#X connect 17 2 3 0;
+#X connect 17 3 4 0;

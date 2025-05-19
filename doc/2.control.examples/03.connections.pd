@@ -1,50 +1,32 @@
-#N canvas 511 78 557 703 12;
-#X floatatom 251 498 0 0 0 0 - - -;
-#X floatatom 204 499 0 0 0 0 - - -;
-#X floatatom 222 401 0 0 0 0 - - -;
-#X floatatom 302 177 0 0 0 0 - - -;
-#X floatatom 338 177 0 0 0 0 - - -;
-#X obj 302 151 +;
-#X floatatom 320 121 0 0 0 0 - - -;
-#X obj 338 151 +;
-#X floatatom 99 191 0 0 0 0 - - -;
-#X floatatom 99 97 0 0 0 0 - - -;
-#X floatatom 117 121 0 0 0 0 - - -;
-#X obj 99 165 +;
-#X text 75 143 hot;
-#X text 122 145 cold;
-#X text 293 197 good;
-#X text 338 197 bad;
-#X obj 251 474 *;
-#X obj 204 475 -;
-#X text 278 499 square;
-#X text 79 500 first difference;
-#X text 275 655 updated for Pd version 0.33;
-#X text 36 235 In Pd you must sometimes think about what order an object
-is going to get its messages in. If an outlet is connected to more
-than one inlet it's undefined which inlet will get the cookie first.
-I've rigged this example so that the left-hand side box gets its inputs
-in the good \, right-to-left order \, so that the hot inlet gets hit
-when all the data are good. The "bad adder" happens to receive its
-inputs in the wrong order and is perpetually doing its addition before
-all the data are in. There's an object that exists solely to allow
-you to control message order explicitly:, f 67;
-#X text 30 18 In Pd \, most objects carry out their functions when
-they get messages in their leftmost inlets \, and their other inlets
-are for storing values that can modify the next action. Here \, the
-"+" object does its thing only when the left-hand input changes.,
-f 64;
-#X obj 222 428 t f f;
-#X text 228 103 Here's the downside: drag this =>, f 20;
-#X text 271 428 same as:;
-#X obj 336 428 trigger float float;
-#X text 53 543 Trigger takes any number of "bang" and "float" arguments
-(among others). The object and arguments can be abbreviated with the
-first letter. It copies its input to its outlets \, in the requested
-forms \, in right-to-left order. Hook it to two inputs without crossing
-the wires and you get the expected result. Cross the wires and you
-get a memory effect.;
-#X connect 2 0 23 0;
+#N canvas 511 38 529 651 12;
+#X floatatom 245 490 5 0 0 0 - - - 0;
+#X floatatom 198 490 5 0 0 0 - - - 0;
+#X floatatom 216 390 4 0 0 0 - - - 0;
+#X floatatom 296 183 4 0 0 0 - - - 0;
+#X floatatom 332 183 4 0 0 0 - - - 0;
+#X obj 296 157 +;
+#X floatatom 332 117 4 0 0 0 - - - 0;
+#X obj 332 157 +;
+#X floatatom 100 189 0 0 0 0 - - - 0;
+#X floatatom 100 94 4 0 0 0 - - - 0;
+#X floatatom 118 119 4 0 0 0 - - - 0;
+#X obj 100 163 +;
+#X text 76 141 hot;
+#X text 123 143 cold;
+#X text 256 185 good;
+#X text 367 182 bad;
+#X obj 245 463 *;
+#X obj 198 464 -;
+#X text 285 489 square;
+#X text 76 491 first difference;
+#X obj 216 417 t f f;
+#X text 265 417 same as:;
+#X obj 330 417 trigger float float;
+#X text 31 16 In Pd \, most objects carry out their functions when they get messages in their leftmost inlets \, and their other inlets are for storing values that can modify the next action. Here \, the [+] object does its thing only when the left-hand input changes., f 64;
+#X text 37 233 In Pd you must sometimes think about what order an object is going to get its messages in. If an outlet is connected to more than one inlet it's undefined which inlet will get the cookie first. I've rigged this example so that the left-hand side box gets its inputs in the good \, right-to-left order \, so that the hot inlet gets hit when all the data are good. The "bad adder" happens to receive its inputs in the wrong order and is perpetually doing its addition before all the data are in. There's a [trigger] object that exists solely to allow you to control message order explicitly:, f 67;
+#X text 44 544 A [trigger] takes any number of "bang" and "float" arguments (among others). The object and arguments can be abbreviated with the first letter. It sequences messages in right-to-left order. Hook it to two inputs without crossing the wires and you get the expected result. Cross the wires and you get a memory effect., f 64;
+#X text 235 99 Here's the downside: drag this -->, f 20;
+#X connect 2 0 20 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 6 0 7 1;
@@ -56,7 +38,7 @@ get a memory effect.;
 #X connect 11 0 8 0;
 #X connect 16 0 0 0;
 #X connect 17 0 1 0;
-#X connect 23 0 16 0;
-#X connect 23 0 17 1;
-#X connect 23 1 16 1;
-#X connect 23 1 17 0;
+#X connect 20 0 16 0;
+#X connect 20 0 17 1;
+#X connect 20 1 16 1;
+#X connect 20 1 17 0;

@@ -1,53 +1,52 @@
-#N canvas 430 110 554 683 12;
+#N canvas 488 38 648 696 12;
 #X declare -stdpath ./;
-#X text 269 284 attack;
-#X text 340 285 release;
-#X obj 271 421 line~;
-#X msg 341 379 0 500;
-#X text 82 18 ENVELOPE GENERATORS;
-#X obj 168 409 phasor~ 50;
-#X obj 186 473 *~;
-#X obj 186 525 wrap~;
-#X msg 270 379 1 2500;
-#X obj 168 433 -~ 0.5;
-#X msg 205 355 10 200;
-#X obj 270 355 del 200;
-#X text 49 46 This patch uses an envelope generator to control a sound.
-When you hit "attack" two things happen. First \, the line~ object
-rises to 10 in 200 milliseconds. Then after a "delay" of the same 200
-msec \, the second message sends the line~ back down to 1 over another
-2500 msec. The "release" just ramps us down to zero at the end.;
-#X obj 171 586 output~;
-#X text 295 637 updated for Pd version 0.37;
-#X obj 186 498 +~ 0.5;
-#X obj 186 552 hip~ 5;
-#X obj 270 304 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 341 305 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X msg 280 332 stop;
-#X text 48 143 You can hit the "attack" and/or "release" while something
-is still going on from a previous attack or release \, and the envelope
-generator does the "right thing". In particular \, the release button
-sends a "stop" to the "del" object \, in case it is still scheduled
-to go off from a previous attack.;
-#X text 50 227 The synthesis method is a form of waveshaping \, which
-is the subject of a later chapter.;
-#X obj 393 14 declare -stdpath ./;
-#X connect 2 0 6 1;
-#X connect 3 0 2 0;
-#X connect 5 0 9 0;
-#X connect 6 0 15 0;
-#X connect 7 0 16 0;
-#X connect 8 0 2 0;
-#X connect 9 0 6 0;
-#X connect 10 0 2 0;
-#X connect 11 0 8 0;
-#X connect 15 0 7 0;
-#X connect 16 0 13 0;
-#X connect 16 0 13 1;
-#X connect 17 0 11 0;
-#X connect 17 0 10 0;
-#X connect 18 0 3 0;
-#X connect 18 0 19 0;
-#X connect 19 0 11 0;
+#X text 231 269 release;
+#X obj 164 411 line~;
+#X msg 234 369 0 500;
+#X obj 61 399 phasor~ 50;
+#X obj 146 463 *~;
+#X obj 146 524 wrap~;
+#X msg 163 369 1 2500;
+#X obj 61 423 -~ 0.5;
+#X msg 98 345 10 200;
+#X obj 146 594 output~;
+#X obj 146 492 +~ 0.5;
+#X obj 146 556 hip~ 5;
+#X msg 173 320 stop;
+#X obj 332 618 declare -stdpath ./;
+#X obj 163 288 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 234 289 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 163 345 delay 200;
+#X text 41 173 You can hit the "attack" and/or "release" while something is still going on from a previous attack or release \, and the envelope generator does the "right thing". In particular \, the release button sends a "stop" to the [del] object \, in case it is still scheduled to go off from a previous attack., f 73;
+#X obj 64 22 cnv 5 5 25 empty empty Envelope\ Generators 15 13 0 16 #dfdfdf #202020 0;
+#X text 364 340 release;
+#X msg 341 370 0 500;
+#X obj 318 281 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 341 340 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 319 404 vline~;
+#X text 100 266 attack/decay;
+#X msg 318 312 10 200 \, 1 2500 200;
+#X text 343 281 attack/decay;
+#X text 41 67 This patch uses an envelope generator to control a sound. When you hit "attack/decay" two things happen. First \, the [line~] object rises to 10 in 200 milliseconds. Then after a delay of the same 200 ms via the [del] object \, the second message sends the [line~] to decay back down to 1 over another 2500 ms. The "release" just ramps us down to zero at the end. Another simpler version makes use of [vline~] and its feature of scheduling lines., f 73;
+#X text 248 473 The synthesis method is a form of waveshaping \, which is the subject of a later chapter. This technique is producing DC so we have [hip~ 5] to filter it (this is for didactical reasons \, since the [output~] abstraction already includes [hip~] objects., f 49;
+#X connect 1 0 4 1;
+#X connect 2 0 1 0;
+#X connect 3 0 7 0;
+#X connect 4 0 10 0;
+#X connect 5 0 11 0;
+#X connect 6 0 1 0;
+#X connect 7 0 4 0;
+#X connect 8 0 1 0;
+#X connect 10 0 5 0;
+#X connect 11 0 9 0;
+#X connect 12 0 16 0;
+#X connect 14 0 8 0;
+#X connect 14 0 16 0;
+#X connect 15 0 2 0;
+#X connect 15 0 12 0;
+#X connect 16 0 6 0;
+#X connect 20 0 23 0;
+#X connect 21 0 25 0;
+#X connect 22 0 20 0;
+#X connect 23 0 4 1;
+#X connect 25 0 23 0;

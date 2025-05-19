@@ -1,27 +1,17 @@
-#N canvas 736 97 600 496 12;
-#X msg 204 32 hello world;
-#X obj 204 105 print;
-#X floatatom 321 32 0 0 0 0 - - - 0;
-#X text 215 48 message;
-#X text 319 49 atom;
-#X text 201 123 object;
-#X text 53 150 There are four types of text objects in Pd: message
-\, atom \, object \, and comment.;
-#X text 54 187 Messages respond to mouse clicks by sending their contents
-to one or more destinations. The usual destination is the "outlet"
-at the lower left corner of the box.;
-#X text 55 239 Click the message box and watch the terminal window
-Pd was started in. You should see the "hello world" message appear.
-;
-#X text 55 278 Atoms respond to "Dragging" up and down with the mouse
-\, by changing their contents and sending the result out their outlets.
-You can also type at an atom after clicking on it \; hit "enter" to
-output the number or click anywhere else to cancel.;
-#X text 52 359 Objects \, like "print" above \, may have all sorts
-of functions depending on what's typed into them. The "print" object
-simply prints out every message it receives.;
-#X text 53 415 To get help on an object \, right-click it. You should
-see a "help window" for the object.;
-#X text 354 470 updated for version 0.33;
+#N canvas 576 38 490 568 12;
+#X msg 126 84 hello world;
+#X obj 126 177 print;
+#X floatatom 149 115 5 0 0 0 - - - 0;
+#X obj 164 144 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 24 418 Objects \, like [print] above \, may have all sorts of functions depending on what's typed into them. The [print] object simply prints out every message it receives \, either from message boxes \, GUIs or the outlet of other objects., f 63;
+#X text 173 177 <-- object box;
+#X text 195 115 <-- GUI box (number atom box);
+#X text 215 83 <-- message box;
+#X text 24 217 Message boxes respond to mouse clicks by sending their contents to one or more destinations. The usual destination is the "outlet" at the lower left corner of the box. Click on the message box above and watch the terminal window Pd was started in. You should see the "hello world" message appear., f 63;
+#X text 24 484 To get help (for either GUIs \, message box or objects) \, right click it and select "Help". You should see a "help window" for the object., f 63;
+#X text 189 145 <-- bang button (another GUI);
+#X text 24 296 The number atom box is a GUI (graphical user interface) and responds to click and "dragging" up and down with the mouse \, which changes the contents and sends the result out its outlet. You can also type a number after clicking on the atom box \, hit "enter" to output the number or click anywhere else to cancel. You can right click on it for properties. A "bang" GUI sends "bang" messages when clicked on \, you can also right click it for properties., f 63;
+#X text 24 16 There are four types of text (or 'box') objects in Pd: Message \, GUI \, Object \, and Comment. Comments are simple texts (like this one) that do nothing. Check the options below:, f 63;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
+#X connect 3 0 1 0;

@@ -1,6 +1,6 @@
-#N canvas 388 149 623 510 12;
+#N canvas 510 55 623 548 12;
 #X declare -stdpath ./;
-#N canvas 353 77 558 670 fft-analysis 0;
+#N canvas 353 76 558 670 fft-analysis 0;
 #X obj 32 186 *~;
 #X obj 32 105 inlet~;
 #X obj 32 248 rfft~;
@@ -8,84 +8,64 @@
 #X obj 32 365 *~;
 #X obj 71 365 *~;
 #X obj 30 33 block~ 512 4;
-#X text 92 101 The inlet~ now re-uses 3/4 of the previous block \,
-along with the 128 new samples., f 49;
 #X text 197 159 window function as before.;
 #X obj 89 205 tabreceive~ \$0-gain;
 #X obj 89 235 *~;
 #X obj 32 518 *~;
 #X obj 50 492 tabreceive~ \$0-hann;
 #X obj 89 310 /~ 768;
-#X text 152 292 divide by 3N/2 (factor of N because rfft and rifft
-aren't normalized \, and 3/2 is the gain of overlap-4 reconstruction
-when Hann window function is applied twice.), f 52;
-#X text 132 235 Just to show we're doing something \, we multiply each
-channel by a gain controlled by an array in the main window. The control
-is quartic-scaled for easy editing., f 55;
+#X text 132 235 Just to show we're doing something \, we multiply each channel by a gain controlled by an array in the main window. The control is quartic-scaled for easy editing., f 55;
 #X obj 89 263 *~;
-#X text 107 357 Multiply the (complex-valued) spectrum amplitudes by
-the (real-valued) gain-and-normalization-factor, f 50;
-#X obj 32 411 rifft~;
-#X text 98 403 Real-valued inverse Fourier transform. This uses only
-the first N/@ points of its inputs \, supplying the rest by symmetry
-(so it's OK that rfft~ only puts out those N/2 points.) There's only
-one outlet because the output is real-valued.;
+#X text 107 357 Multiply the (complex-valued) spectrum amplitudes by the (real-valued) gain-and-normalization-factor, f 50;
+#X obj 32 421 rifft~;
 #X obj 31 599 outlet~;
-#X text 76 518 Multiply by the Hann window function again \, necessary
-because the operation we performed might result in a signal that doesn't
-go smoothly to zero at both ends.;
-#X text 107 583 This repackages the output into 64-sample chunks for
-the parent window. Since we're operating with an overlap \, the outlet~
-object performs an overlapped sum of the blocks computed in this window.
-;
-#X text 129 19 block~ object specifies vector size of 512 and overlap
-four. This window now computes blocks of 512 samples at intervals of
-128 samples computed on the parent patch., f 55;
+#X text 76 518 Multiply by the Hann window function again \, necessary because the operation we performed might result in a signal that doesn't go smoothly to zero at both ends., f 53;
+#X text 129 19 [block~] object specifies vector size of 512 and overlap four. This window now computes blocks of 512 samples at intervals of 128 samples computed on the parent patch.;
+#X text 92 101 The [inlet~] now re-uses 3/4 of the previous block \, along with the 128 new samples., f 44;
+#X text 154 289 divide by 3N/2 (factor of N because [rfft~] and [rifft~] aren't normalized \, and 3/2 is the gain of overlap-4 reconstruction when Hann window function is applied twice.), f 50;
+#X text 100 398 Real-valued inverse Fourier transform. This uses only the first N/@ points of its inputs \, supplying the rest by symmetry (so it's OK that [rfft~] only puts out those N/2 points.) There's only one outlet because the output is real-valued.;
+#X text 107 583 This repackages the output into 64-sample chunks for the parent window. Since we're operating with an overlap \, the [outlet~] object performs an overlapped sum of the blocks computed in this window.;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
 #X connect 2 1 5 0;
 #X connect 3 0 0 1;
-#X connect 4 0 18 0;
-#X connect 5 0 18 1;
-#X connect 9 0 10 0;
-#X connect 9 0 10 1;
-#X connect 10 0 16 0;
-#X connect 10 0 16 1;
-#X connect 11 0 20 0;
-#X connect 12 0 11 1;
-#X connect 13 0 4 1;
-#X connect 13 0 5 1;
-#X connect 16 0 13 0;
-#X connect 18 0 11 0;
-#X restore 97 372 pd fft-analysis;
-#X text 378 471 updated for Pd version 0.39;
-#N canvas 35 66 592 433 Hann-window 0;
+#X connect 4 0 16 0;
+#X connect 5 0 16 1;
+#X connect 8 0 9 0;
+#X connect 8 0 9 1;
+#X connect 9 0 14 0;
+#X connect 9 0 14 1;
+#X connect 10 0 17 0;
+#X connect 11 0 10 1;
+#X connect 12 0 4 1;
+#X connect 12 0 5 1;
+#X connect 14 0 12 0;
+#X connect 16 0 10 0;
+#X restore 144 406 pd fft-analysis;
+#N canvas 687 159 571 372 Hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 512 float 0;
 #X coords 0 1 511 0 200 120 1;
-#X restore 293 249 graph;
-#X msg 171 263 0;
-#X obj 65 312 osc~;
-#X obj 65 264 samplerate~;
-#X obj 65 335 *~ -0.5;
-#X obj 65 358 +~ 0.5;
-#X obj 57 383 tabwrite~ \$0-hann;
-#X text 279 241 1;
-#X text 272 359 0;
-#X text 288 372 0;
-#X obj 65 288 / 512;
-#X obj 57 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X text 336 221 Hann window;
-#X text 113 310 period 512;
-#X text 90 215 recalculate Hann;
-#X text 125 230 window table;
-#X obj 57 146 loadbang;
-#X msg 79 179 \; pd dsp 1;
-#X text 40 27 The Hann window is now recomputed on 'loadbang' to make
-the file smaller (it doesn't have to be saved with the array.);
-#X text 474 375 511;
+#X restore 293 151 graph;
+#X msg 181 165 0;
+#X obj 75 214 osc~;
+#X obj 75 166 samplerate~;
+#X obj 75 237 *~ -0.5;
+#X obj 75 260 +~ 0.5;
+#X obj 57 285 tabwrite~ \$0-hann;
+#X text 279 143 1;
+#X text 272 261 0;
+#X text 288 274 0;
+#X obj 75 190 / 512;
+#X obj 57 123 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X text 399 126 Hann window;
+#X text 123 212 period 512;
+#X text 100 117 recalculate Hann;
+#X text 135 132 window table;
+#X obj 57 82 loadbang;
+#X text 474 277 511;
+#X text 91 26 The Hann window is now recomputed on [loadbang] to make the file smaller (it doesn't have to be saved with the array.);
 #X connect 1 0 2 1;
 #X connect 2 0 4 0;
 #X connect 3 0 10 0;
@@ -96,39 +76,27 @@ the file smaller (it doesn't have to be saved with the array.);
 #X connect 11 0 1 0;
 #X connect 11 0 6 0;
 #X connect 16 0 11 0;
-#X connect 16 0 17 0;
-#X restore 268 418 pd Hann-window;
-#X obj 97 410 output~;
-#X obj 97 345 noise~;
+#X restore 349 477 pd Hann-window;
+#X obj 144 440 output~;
+#X obj 144 375 noise~;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-gain 256 float 3;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
-#X coords 0 1 256 -0.01 512 100 1 0 0;
+#X array \$0-gain 256 float 0;
+#X coords 0 1.025 255 -0.025 512 100 1 0 0;
 #X restore 54 205 graph;
-#X msg 268 364 const 0;
-#X obj 268 393 s \$0-gain;
-#X text 70 32 FOURIER RESYNTHESIS;
+#X obj 349 441 s \$0-gain;
 #X text 38 294 0;
 #X text 38 195 1;
 #X text 51 304 0;
 #X text 548 307 22K;
 #X text 267 180 GAIN;
-#X text 53 68 Using Fourier resynthesis you can take an incoming sound
-\, operate on its spectrum \, and hear the result. Here we start with
-white noise and apply a frequency-dependent gain \, which works as
-a graphic equalizer. There are N/2 = 256 points \, each spaced SR/512
-Hz. apart (although their frequency ranges overlap). Open the "fft-analysis"
-patch to see the workings., f 68;
-#X text 326 363 <= reset gain;
-#X obj 441 20 declare -stdpath ./;
-#X connect 0 0 3 0;
-#X connect 0 0 3 1;
-#X connect 4 0 0 0;
-#X connect 6 0 7 0;
+#X obj 403 27 declare -stdpath ./;
+#X text 407 411 <-- reset gain;
+#X msg 349 412 const 1;
+#X text 173 323 Click on the array to draw and change the gains.;
+#X obj 349 385 loadbang;
+#X obj 66 20 cnv 5 5 25 empty empty Fourier\ Resynthesis 15 13 0 16 #dfdfdf #202020 0;
+#X text 53 68 Using Fourier resynthesis you can take an incoming sound \, operate on its spectrum \, and hear the result. Here we start with white noise and apply a frequency-dependent gain table \, which works as a graphic equalizer (click on it and drag to alter it). There are N/2 = 256 points \, each spaced SR/512 Hz apart (although their frequency ranges overlap). Open the subpatch [pd fft-analysis] to see the workings., f 73;
+#X connect 0 0 2 0;
+#X connect 3 0 0 0;
+#X connect 13 0 5 0;
+#X connect 15 0 13 0;

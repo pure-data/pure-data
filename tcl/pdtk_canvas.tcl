@@ -10,6 +10,8 @@ namespace eval ::pdtk_canvas:: {
     variable untitled_name "PDUNTITLED"
     variable untitled_len 10
 
+    variable enable_cords_to_foreground 0
+
     namespace export pdtk_canvas_popup
     namespace export pdtk_canvas_editmode
     namespace export pdtk_canvas_getscroll
@@ -21,6 +23,8 @@ namespace eval ::pdtk_canvas:: {
 # store the filename associated with this window,
 # so we can use it during menuclose
 array set ::pdtk_canvas::::window_fullname {}
+
+array set ::pdtk_canvas::geometry_needs_init {}
 
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
@@ -39,33 +43,34 @@ array set ::pdtk_canvas::::window_fullname {}
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
-if {$::tcl_version < 8.5 || \
+if {[tk windowingsystem] eq "win32" || \
+    $::tcl_version < 8.5 || \
         ($::tcl_version == 8.5 && \
              [tk windowingsystem] eq "aqua" && \
              [lindex [split [info patchlevel] "."] 2] < 13) } {
-    # fit the geometry onto screen for Tk 8.4,
+    # fit the geometry onto screen for Tk 8.4 or win32,
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
-        set width [lindex [wm maxsize .] 0]
-        set height [lindex [wm maxsize .] 1]
+        foreach {width height} [wm maxsize .] break
 
-        if {$w > $width} {
-            set w $width
-            set x 0
-        }
-        if {$h > $height} {
-            # 30 for window framing
-            set h [expr $height - $::menubarsize]
-            set y $::menubarsize
-        }
+        # get virtual root coordinates for minimum position
+        set xmin [winfo vrootx .]
+        set ymin [winfo vrooty .]
 
-        set x [ expr $x % $width]
-        set y [ expr $y % $height]
-        if {$x < 0} {set x 0}
-        if {$y < 0} {set y 0}
+        # clip window size to screen size
+        set w [expr {min($w, $width)}]
+        set h [expr {min($h, $height - $::menubarsize)}]
 
-        return [list ${x} ${y} ${w} ${h}]
+        # get max position
+        set xmax [expr {$xmin + $width - $w}]
+        set ymax [expr {$ymin + $height - $h}]
+
+        # clip given position
+        set x [expr {max(min($x, $xmax), $xmin)}]
+        set y [expr {max(min($y, $ymax), $ymin + $::menubarsize)}]
+
+        return [list $x $y $w $h]
     }
 } {
     proc pdtk_canvas_wrap_window {x y w h} {
@@ -93,7 +98,14 @@ proc pdtk_canvas_place_window {width height geometry} {
 #------------------------------------------------------------------------------#
 # canvas new/saveas
 
-proc pdtk_canvas_new {mytoplevel width height geometry editable} {
+proc pdtk_canvas_new {mytoplevel width height geometry editable bgcolor} {
+    if { "" eq $geometry } {
+        # no position set: this is a new window (rather than one loaded from file)
+        # we set a flag here, so we can query (and report) the actual geometry,
+        # once the window is fully created
+        set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
+    }
+
     foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
@@ -122,14 +134,15 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
         -yscrollcommand "$mytoplevel.yscroll set" \
-        -background white
+        -background $bgcolor
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
 
     # for some crazy reason, win32 mousewheel scrolling is in units of
-    # 120, and this forces Tk to interpret 120 to mean 1 scroll unit
-    if {$::windowingsystem eq "win32"} {
+    # 120, and as of TclTk-9.0 this is now the default on all platforms!
+    # the following forces Tk to interpret 120 to mean 1 scroll unit
+    if {$::windowingsystem eq "win32" || [package vsatisfies $::tk_version 9]} {
         $tkcanvas configure -xscrollincrement 1 -yscrollincrement 1
     }
 
@@ -163,7 +176,8 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     if { ! [file isdirectory $initialdir]} {set initialdir $::filenewdir}
     set filename [tk_getSaveFile -initialdir $initialdir \
                       -initialfile [::pdtk_canvas::cleanname "$initialfile"] \
-                      -defaultextension .pd -filetypes $::filetypes]
+                      -defaultextension .pd -filetypes $::filetypes \
+                      -parent $mytoplevel]
     if {$filename eq ""} return; # they clicked cancel
 
     set extension [file extension $filename]
@@ -192,7 +206,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
     set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
-    set message [format {Do you want to save the changes you made in "%s"?} $filename]
+    set message [_ "Do you want to save the changes you made in '%s'?" $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {
@@ -249,37 +263,40 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
 # menu item is called, not when the command is mapped to the menu item.  This
 # is the same as the menubar in pd_menus.tcl but the opposite of the 'bind'
 # commands in pd_bindings.tcl
-proc ::pdtk_canvas::create_popup {} {
-    if { ! [winfo exists .popup]} {
+proc ::pdtk_canvas::create_popup {popupid actionwindow x y} {
+    if { ! [winfo exists $popupid]} {
         # the popup menu for the canvas
-        menu .popup -tearoff false
-        .popup add command -label [_ "Properties"] \
-            -command {::pdtk_canvas::done_popup $::focused_window 0}
-        .popup add command -label [_ "Open"]       \
-            -command {::pdtk_canvas::done_popup $::focused_window 1}
-        .popup add command -label [_ "Help"]       \
-            -command {::pdtk_canvas::done_popup $::focused_window 2}
+        menu $popupid -tearoff false
+
+        $popupid add command -label [_ "Properties"] \
+            -command "::pdtk_canvas::done_popup $actionwindow 0 $x $y"
+        $popupid add command -label [_ "Open"] \
+            -command "::pdtk_canvas::done_popup $actionwindow 1 $x $y"
+        $popupid add command -label [_ "Help"]       \
+            -command "::pdtk_canvas::done_popup $actionwindow 2 $x $y"
     }
 }
 
-proc ::pdtk_canvas::done_popup {mytoplevel action} {
-    pdsend "$mytoplevel done-popup $action $::popup_xcanvas $::popup_ycanvas"
+proc ::pdtk_canvas::done_popup {mytoplevel action x y} {
+    pdsend "$mytoplevel done-popup $action $x $y"
 }
 
 proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties hasopen} {
-    set ::popup_xcanvas $xcanvas
-    set ::popup_ycanvas $ycanvas
+    set toplevel [winfo toplevel $mytoplevel]
+    set tkcanvas [tkcanvas_name $toplevel]
+    set popup ${toplevel}.popup
+    destroy $popup
+    ::pdtk_canvas::create_popup ${popup} ${toplevel} ${xcanvas} ${ycanvas}
     if {$hasproperties} {
-        .popup entryconfigure [_ "Properties"] -state normal
+        ${popup} entryconfigure [_ "Properties"] -state normal
     } else {
-        .popup entryconfigure [_ "Properties"] -state disabled
+        ${popup} entryconfigure [_ "Properties"] -state disabled
     }
     if {$hasopen} {
-        .popup entryconfigure [_ "Open"] -state normal
+        ${popup} entryconfigure [_ "Open"] -state normal
     } else {
-        .popup entryconfigure [_ "Open"] -state disabled
+        ${popup} entryconfigure [_ "Open"] -state disabled
     }
-    set tkcanvas [tkcanvas_name $mytoplevel]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
     set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
@@ -288,7 +305,7 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     # window, and subtract the area that is obscured by scrolling
     set xpopup [expr int($xcanvas + [winfo rootx $tkcanvas] - $left_xview_pix)]
     set ypopup [expr int($ycanvas + [winfo rooty $tkcanvas] - $top_yview_pix)]
-    tk_popup .popup $xpopup $ypopup 0
+    tk_popup ${popup} ${xpopup} ${ypopup} 0
 }
 
 if {[tk windowingsystem] eq "aqua" } {
@@ -322,6 +339,22 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
     set ::loaded($mytoplevel) 1
     # send the virtual events now that everything is loaded
     event generate $mytoplevel <<Loaded>>
+
+    # if the window was created without a position (that is: a new window),
+    # we have the opportunity to query the actual position now
+    if { "" ne [array names ::pdtk_canvas::geometry_needs_init $mytoplevel ] } {
+        array unset ::pdtk_canvas::geometry_needs_init $mytoplevel
+        scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+        # on X11, 'wm geometry' won't report a useful position until the window was moved
+        # but 'winfo geometry' does (though slightly off, but we ignore this offset
+        # for newly created, never moved windows)
+        # other windowingsystems will already report a useful position, and luckily
+        # they report the same for 'wm geometry' and 'winfo geometry'
+        if { "+$x+$y" eq "+0+0" } {
+            scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+            pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+        }
+    }
 }
 
 #------------------------------------------------------------------------------#
@@ -347,6 +380,10 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+    # delay until we are ready
+    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+}
+proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
     }
@@ -387,9 +424,19 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
 proc ::pdtk_canvas::scroll {tkcanvas axis amount} {
     if {$axis eq "x" && $::xscrollable($tkcanvas) == 1} {
         $tkcanvas xview scroll [expr {- ($amount)}] units
+        return
     }
     if {$axis eq "y" && $::yscrollable($tkcanvas) == 1} {
         $tkcanvas yview scroll [expr {- ($amount)}] units
+        return
+    }
+    if {$axis eq "xy" } {
+        # TclTk>=9 has 2D scrolling
+        lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY
+        if {$deltaX != 0 || $deltaY != 0} {
+            tk::ScrollByPixels $tkcanvas $deltaX $deltaY
+        }
+        return
     }
 }
 
@@ -408,15 +455,25 @@ proc ::pdtk_canvas::addchild {mytoplevel child} {
 
 # receive a list of all my parent windows from 'pd'
 proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
-    set ::parentwindows($mytoplevel) $args
+    # check if the user passed a list (instead of multiple arguments)
+    if { [llength $args] == 1 } {set args [lindex $args 0]}
+    set parents {}
     foreach parent $args {
+        if { [catch {set parent [winfo toplevel $parent]}] } {
+            if { [file extension $parent] eq ".c" } {set parent [file rootname $parent]}
+        }
+        lappend parents $parent
         addchild $parent $mytoplevel
     }
+    set ::parentwindows($mytoplevel) $parents
 }
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
+    set path [::pdtk_text::unescape $path]
+    set name [::pdtk_text::unescape $name]
+    set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
@@ -450,11 +507,8 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
-set enable_cords_to_foreground false
-
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
-    global enable_cords_to_foreground
-    if {$enable_cords_to_foreground eq "true"} {
+    if {$::pdtk_canvas::enable_cords_to_foreground} {
         set col black
         if { $state == 0 } {
             set col lightgrey

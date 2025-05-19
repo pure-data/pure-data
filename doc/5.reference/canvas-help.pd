@@ -1,44 +1,30 @@
-#N canvas 299 40 1035 644 12;
-#X obj 558 180 table;
-#X obj 526 552 table help-tab1 25;
+#N canvas 239 53 1004 645 12;
+#X obj 508 180 table;
+#X obj 552 557 table help-tab1 25;
 #N canvas 1 51 450 300 (subpatch) 0;
 #X restore 61 24 pd;
-#X text 91 23 - subpatch;
-#X obj 766 609 array;
+#X obj 338 609 array;
 #N canvas 307 173 430 250 foo 0;
 #X obj 141 41 inlet;
 #X obj 144 171 outlet;
 #X obj 221 41 inlet~;
 #X obj 224 171 outlet~;
-#X text 57 88 this is the subpatch window. Use "inlet" and "outlet"
-objects to create inlets/outlets on the parent window., f 44;
-#X restore 141 325 pd foo;
-#X text 812 603 (newer and better replacement for "table")., f 26
-;
-#X text 668 552 <= optional creation args: name \, size;
+#X text 67 87 This is the subpatch window. Use "inlet" and "outlet" objects to create inlets/outlets on the parent window. Note that the given subwindow name appears at the top bar., f 44;
+#X restore 140 312 pd foo;
+#X text 387 602 (newer and better replacement for "table")., f 26;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X coords 0 1 100 -1 200 140 1;
 #X restore 61 60 graph;
-#X text 271 65 - graph (subpatch with graph on parent), f 21;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array1 100 float 3;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 100 -1 200 140 1;
-#X restore 558 24 graph;
-#X text 495 236 The put menu allows you to create an array \, which
-needs a graph to be displayed. At creation \, you can specify if you
-want the array to be included in a new graph or in a graph previously
-created., f 67;
-#X text 770 33 - graphical array of numbers (a graph with an array)
-, f 28;
-#X text 198 326 <= click to open;
-#X text 426 607 updated for Pd version 0.52;
+#X restore 508 24 graph;
+#X text 472 233 The put menu allows you to create an array \, which needs a graph to be displayed. At creation \, you can specify if you want the array to be included in a new graph or in a graph previously created., f 67;
+#X text 720 33 - graphical array of numbers (a graph with an array), f 28;
+#X text 766 607 updated for Pd version 0.52;
 #N canvas 681 242 263 185 (subpatch) 0;
-#X obj 137 59 bng 30 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 137 59 bng 30 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X floatatom 60 63 5 0 0 0 - - - 16;
 #X obj 60 136 outlet;
 #X obj 60 13 inlet;
@@ -46,140 +32,80 @@ created., f 67;
 #X connect 1 0 2 0;
 #X connect 3 0 1 0;
 #X coords 0 1 100 -1 130 50 1 50 50;
-#X restore 230 460 graph;
-#N canvas 0 22 450 278 (subpatch) 0;
-#X array array2 100 float 3;
-#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0;
-#X coords 0 1 100 -1 200 140 1;
-#X restore 476 328 graph;
-#X text 698 316 For details on how to work with arrays \, click and
-open the files below from the '2.control' examples., f 39;
-#X text 58 479 right click to open =>;
-#X text 22 609 see also:;
-#X obj 96 609 inlet;
-#X obj 142 609 namecanvas;
-#X text 506 498 "Table" builds a subpatch with an array inside. Not
-that the array contents (and other properties) aren't saved with the
-patch., f 66;
-#X text 15 526 You can send messages to the canvas of a subpatch by
-sending them to the subpatch's name \, which is useful for Dynamic
-Patching. Alernatively \, you can also use the namecanvas object.,
-f 63;
-#X text 22 232 A 'canvas' is a patch window. This help file concerns
-subwindows or subpatches and their canvases. By typing "pd" into an
-object box \, you create a subpatch. An optional argument sets the
-subpatch name. Click to open and right click on it to access its canvas
-properties., f 55;
-#X text 25 365 With the put menu \, you can create a 'graph' \, which
-is a subpatch with the canvas properties set to "graph on parent".
-This creates a rectangular subregion of the canvas's window in which
-you can display GUIs and store numeric arrays. Below we have a graph
-displaying GUI objects.;
-#X text 690 608 see also:;
-#X obj 223 609 pd-messages;
-#X obj 7 215 cnv 1 1020 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 590 cnv 1 1020 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 380 151 <= click;
-#N canvas 333 270 612 194 reference 0;
-#X obj 8 105 cnv 2 590 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 54 cnv 5 590 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020
-#000000 0;
+#X restore 226 454 graph;
+#X text 690 307 For details on how to work with arrays \, click and open the files below from the '2.control' examples., f 39;
+#X text 42 609 see also:;
+#X obj 118 609 inlet;
+#X obj 164 609 namecanvas;
+#X obj 245 609 pd-messages;
+#X obj 7 215 cnv 1 990 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#N canvas 333 270 617 248 reference 0;
+#X obj 8 155 cnv 2 590 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 104 cnv 5 590 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020 #000000 0;
 #N canvas 131 166 450 300 (subpatch) 0;
 #X restore 26 18 pd;
-#X text 73 18 - subpatch / graph;
-#X text 174 116 sets the subpatch name that you can use to send messages
-to (see 'dynamic patching' in 'pd-messages' file., f 56;
-#X obj 7 160 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 168 71 - depends on inlet/outlet objects;
-#X text 90 116 1) symbol -;
+#X obj 7 210 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 109 166 1) symbol -;
+#X text 133 18 - define a subpatch.;
+#X text 178 119 depends on [inlet(~)]/[outlet(~)] objects;
+#X text 193 166 sets the subpatch name that you can use to send messages to (see 'dynamic patching' in 'pd-messages' file)., f 56;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X coords 0 1 100 -1 100 40 1 0 0;
+#X restore 26 47 graph;
+#X text 133 57 - "graph": subpatch "with graph on parent".;
 #X restore 286 151 pd reference;
-#X text 889 104 <= click;
+#X text 862 82 <= click;
 #N canvas 631 72 735 570 reference 0;
-#X obj 14 122 cnv 2 700 2 empty empty METHODS: 8 12 0 13 #202020 #000000
-0;
+#X obj 14 122 cnv 2 700 2 empty empty METHODS: 8 12 0 13 #202020 #000000 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array3 10 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 10 -1 90 35 1 0 0;
 #X restore 56 26 graph;
-#X text 156 36 - graphical array (messages received via array name)
-;
-#X obj 13 541 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 161 130 list - sets values into array \, fisty element is starting
-index (from 0)., f 74;
-#X text 98 147 const <float> - optional float sets a constant value
-to all indexes (default 0)., f 83;
+#X obj 13 541 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 161 130 list - sets values into array \, first element is starting index (from 0)., f 74;
+#X text 98 147 const <float> - optional float sets a constant value to all indexes (default 0)., f 83;
 #X text 91 164 resize <float> - resizes the array., f 84;
 #X text 91 185 sinesum <list> -;
-#X text 210 181 first element sets array size \, remaining elements
-set amplitude of sine components., f 67;
+#X text 210 181 first element sets array size \, remaining elements set amplitude of sine components., f 67;
 #X text 77 218 cosinesum <list> -;
-#X text 210 212 first element sets array size \, remaining elements
-set amplitude of cosine components., f 67;
-#X text 154 243 print - prints array information (name \, type \, size)
-on the terminal window., f 75;
-#X text 98 291 read <symbol> - load contents from a text file with
-the symbol name., f 83;
-#X text 91 309 write <symbol> - save contents to a text file with the
-symbol name., f 84;
-#X text 84 327 rename <symbol> - renames the array to a new name defined
-by the given symbol., f 85;
-#X text 98 345 bounds <list> - sets rectangle bounds (xmin \, ymax
-\, xmax \, ymin)., f 83;
-#X text 112 446 vis <float> - zero hides array \, non zero shows it.
-, f 81;
-#X text 98 463 width <float> - sets array's width (default 1)., f
-83;
-#X text 98 480 color <float> - sets array color in the same format
-as Data Structures., f 83;
-#X text 105 515 edit <float> - non zero allows editing with the mouse
-\, zero prevents it., f 82;
-#X text 98 497 style <float> - sets display style (0-point \, 1-polygon
-\, 2-bezier)., f 83;
+#X text 210 212 first element sets array size \, remaining elements set amplitude of cosine components., f 67;
+#X text 154 243 print - prints array information (name \, type \, size) on the terminal window., f 75;
+#X text 98 291 read <symbol> - load contents from a text file with the symbol name., f 83;
+#X text 91 309 write <symbol> - save contents to a text file with the symbol name., f 84;
+#X text 84 327 rename <symbol> - renames the array to a new name defined by the given symbol., f 85;
+#X text 98 345 bounds <list> - sets rectangle bounds (xmin \, ymax \, xmax \, ymin)., f 83;
+#X text 112 446 vis <float> - zero hides array \, non zero shows it., f 81;
+#X text 98 463 width <float> - sets array's width (default 1)., f 83;
+#X text 98 480 color <float> - sets array color in the same format as Data Structures., f 83;
+#X text 105 515 edit <float> - non zero allows editing with the mouse \, zero prevents it., f 82;
+#X text 98 497 style <float> - sets display style (0-point \, 1-polygon \, 2-bezier)., f 83;
 #X text 70 260 normalize <float> -;
-#X text 210 260 normalizes to maximum absolute amplitude set by optional
-float (default 1)., f 67;
+#X text 210 260 normalizes to maximum absolute amplitude set by optional float (default 1)., f 67;
 #X text 98 363 xticks <list> -;
-#X text 210 362 sets a point to put a tick \, the interval between
-ticks \, and the number of ticks overall per large tick., f 67;
-#X text 98 394 yticks <list> - same as above for the 'y' axis., f
-83;
-#X text 91 412 xlabels <list> - first element is a label offset \,
-remaining are the values to label., f 84;
-#X text 91 429 ylabels <list> - first element is a label offset \,
-remaining are the values to label., f 84;
-#X obj 13 76 cnv 5 700 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020
-#000000 0;
-#X text 164 90 NONE (input is via send names).;
-#X restore 795 104 pd reference;
-#X text 604 179 - subpatch with array;
-#X text 891 179 <= click;
+#X text 210 362 sets a point to put a tick \, the interval between ticks \, and the number of ticks overall per large tick., f 67;
+#X text 98 394 yticks <list> - same as above for the 'y' axis., f 83;
+#X obj 13 76 cnv 5 700 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020 #000000 0;
+#X text 164 90 NONE (input is via messages sent to the array name).;
+#X text 156 36 - "array": graphical array;
+#X text 98 412 xlabel <list> - first element is a label offset \, remaining are the values to label., f 83;
+#X text 98 429 ylabel <list> - first element is a label offset \, remaining are the values to label., f 83;
+#X restore 768 82 pd reference;
+#X text 895 179 <= click;
 #N canvas 786 245 483 218 reference 0;
 #X obj 36 18 table;
-#X text 93 18 - subpatch with array;
-#X obj 8 131 cnv 2 460 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 50 cnv 5 460 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 193 cnv 5 460 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 8 131 cnv 2 460 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 50 cnv 5 460 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 7 193 cnv 5 460 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 116 142 1) symbol -;
-#X obj 7 88 cnv 2 460 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
+#X obj 7 88 cnv 2 460 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X text 153 62 NONE;
 #X text 153 102 NONE;
 #X text 123 162 2) float -;
 #X text 202 142 sets array name (default internal).;
 #X text 202 162 sets array size (default 100).;
-#X restore 797 180 pd reference;
+#X text 93 18 - create a subpatch with an array.;
+#X restore 801 180 pd reference;
 #N canvas 491 316 457 285 open 0;
 #X obj 120 23 inlet;
 #X obj 173 121 pdcontrol;
@@ -194,9 +120,33 @@ remaining are the values to label., f 84;
 #X connect 3 0 5 0;
 #X connect 4 0 2 0;
 #X connect 6 0 3 1;
-#X restore 710 436 pd open;
-#X msg 710 381 15.array.pd;
-#X msg 720 407 16.more.arrays.pd;
-#X text 802 382 <- click to open examples.;
-#X connect 38 0 37 0;
-#X connect 39 0 37 0;
+#X restore 695 436 pd open;
+#X msg 695 381 15.array.pd;
+#X msg 705 407 16.more.arrays.pd;
+#X text 694 556 <-- optional creation args: name \, size;
+#X text 380 151 <= click;
+#X text 197 313 <-- click to open;
+#X text 54 469 right click to open -->;
+#X text 787 382 <-- click to open examples.;
+#X text 22 232 A 'canvas' is a patch window. By typing "pd" into an object box \, you create a 'subwindow' (or a 'subpatch'). An optional argument sets its name. Click to open and right click on it to access its canvas properties., f 55;
+#X text 15 517 You can send messages to the canvas of a subpatch by sending them to the subpatch's name \, which is useful for Dynamic Patching (see [pd-messages] below). Alternatively \, you can also use the [namecanvas] object., f 66;
+#X obj 6 590 cnv 1 990 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 91 23 - create a subpatch;
+#X text 271 65 - graph (subpatch with graph on parent), f 21;
+#X text 24 352 With the put menu \, you can create a 'graph' \, which is a subpatch with the canvas properties set to "graph on parent". This creates a rectangular subregion of the canvas' window in which you can display GUIs \, comments \, arrays and data structures scalars. Below we have a graph displaying a couple of GUI objects., f 55;
+#X text 554 179 - create subpatch with an array;
+#X obj 665 608 all_guis;
+#X obj 468 306 cnv 19 198 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array2 100 float 3;
+#A 0 -0.842856 -0.82857 -0.799999 -0.771428 -0.757142 -0.7 -0.614287 -0.500002 -0.300004 -0.200005 -0.114292 -0.0285786 0.0285636 0.0714203 0.114277 0.142848 0.185705 0.228562 0.271418 0.299989 0.314275 0.32856 0.314275 0.285704 0.257133 0.19999 0.171419 0.114277 0.0285636 -0.0714353 -0.157149 -0.171434 -0.171434 -0.171434 -0.157149 -0.128578 -0.114292 -0.0428642 0.0571347 0.157134 0.242847 0.299989 0.342846 0.385703 0.414274 0.428559 0.442845 0.457131 0.457131 0.457131 0.457131 0.457131 0.442845 0.428559 0.414274 0.399988 0.371417 0.357132 0.32856 0.314275 0.271418 0.257133 0.228562 0.214276 0.19999 0.214276 0.257133 0.285704 0.321418 0.357132 0.385703 0.414274 0.442845 0.471416 0.499987 0.528558 0.55713 0.571415 0.585701 0.585701 0.585701 0.599986 0.599986 0.599986 0.599986 0.599986 0.599986 0.599986 0.585701 0.55713 0.514273 0.471416 0.442845 0.385703 0.314275 0.228562 0.185705 0.142848 0.0857059 -7.51019e-06;
+#X coords 0 1 100 -1 200 140 1;
+#X restore 467 305 graph;
+#X text 479 450 (using canvas [cnv] for background color), f 23;
+#N canvas 47 74 450 300 (subpatch) 0;
+#X restore 266 23 page;
+#X text 308 23 (deprecated alias);
+#X text 241 23 or;
+#X text 532 498 [table] builds a subpatch with an array inside \, but the array contents (and other properties) aren't saved with the patch (you can use the newer [array] object instead)., f 62;
+#X connect 24 0 23 0;
+#X connect 25 0 23 0;

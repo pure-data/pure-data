@@ -1,84 +1,60 @@
-#N canvas 553 23 507 587 12;
+#N canvas 553 38 697 632 12;
 #X declare -stdpath ./;
-#X floatatom 113 163 5 0 150 0 - #0-pitch - 0;
-#X text 114 17 SWEEPING FILTERS;
-#X obj 113 210 phasor~;
-#X obj 125 368 +~;
-#X floatatom 143 343 5 0 100 0 - #0-offset - 0;
-#X floatatom 126 239 5 0 0 0 - #0-speed - 0;
-#X floatatom 144 290 5 0 100 0 - #0-depth - 0;
-#X floatatom 138 423 5 0 1000 0 - #0-q - 0;
-#X obj 113 448 vcf~;
-#X obj 125 397 tabread4~ mtof;
-#X text 184 199 sawtooth;
-#X text 185 215 oscillator;
-#X text 203 262 LFO for sweep;
-#X text 161 367 add base to sweep;
-#X text 237 397 convert to Hz.;
-#X obj 113 489 output~;
-#X obj 113 186 mtof;
-#X obj 126 261 phasor~;
-#X obj 126 315 *~;
-#X text 297 545 updated for Pd version 0.39;
-#N canvas 706 247 304 285 startup 0;
-#X obj 85 33 loadbang;
-#X obj 85 57 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X floatatom 193 252 5 0 150 0 - \$0-pitch - 0;
+#X obj 193 320 phasor~;
+#X obj 352 388 +~;
+#X floatatom 370 363 5 0 100 0 - \$0-offset - 0;
+#X floatatom 352 252 5 0 0 0 - \$0-speed - 0;
+#X floatatom 370 310 5 0 100 0 - \$0-depth - 0;
+#X floatatom 365 443 5 0 1000 0 - \$0-q - 0;
+#X text 418 282 LFO for sweep;
+#X text 388 387 add base to sweep;
+#X text 397 417 convert to Hz.;
+#X obj 340 532 output~;
+#X obj 193 286 mtof;
+#X obj 352 281 phasor~;
+#X obj 352 335 *~;
+#X obj 352 417 mtof~;
+#N canvas 706 247 304 346 init 0;
+#X obj 85 23 loadbang;
+#X obj 85 47 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 85 76 f \$0;
-#X msg 85 100 \; \$1-pitch 48 \; \$1-speed -2 \; \$1-depth 27 \; \$1-offset
-56 \; \$1-q 2;
-#X text 66 209 This subpatch loads initial values in number boxes.
-, f 27;
+#X obj 86 277 declare -stdpath ./;
+#X text 66 209 This subpatch initializes the patch and loads values in number boxes., f 27;
+#X msg 85 100 \; \$1-pitch 36 \; \$1-speed -2 \; \$1-depth 27 \; \$1-offset 56 \; \$1-q 3;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X restore 293 506 pd startup;
-#X text 35 118 Note the different effects of negative and positive
-sweep speeds.;
-#N canvas 783 322 378 247 conversion-tables 0;
-#N canvas 0 22 450 300 (subpatch) 0;
-#X array mtof 130 float 1;
-#A 0 8.1758 8.66196 9.17702 9.72272 10.3009 10.9134 11.5623 12.2499
-12.9783 13.75 14.5676 15.4339 16.3516 17.3239 18.354 19.4454 20.6017
-21.8268 23.1247 24.4997 25.9565 27.5 29.1352 30.8677 32.7032 34.6478
-36.7081 38.8909 41.2034 43.6535 46.2493 48.9994 51.9131 55 58.2705
-61.7354 65.4064 69.2957 73.4162 77.7817 82.4069 87.3071 92.4986 97.9989
-103.826 110 116.541 123.471 130.813 138.591 146.832 155.563 164.814
-174.614 184.997 195.998 207.652 220 233.082 246.942 261.626 277.183
-293.665 311.127 329.628 349.228 369.994 391.995 415.305 440 466.164
-493.883 523.251 554.365 587.33 622.254 659.255 698.456 739.989 783.991
-830.609 880 932.328 987.767 1046.5 1108.73 1174.66 1244.51 1318.51
-1396.91 1479.98 1567.98 1661.22 1760 1864.66 1975.53 2093 2217.46 2349.32
-2489.02 2637.02 2793.83 2959.96 3135.96 3322.44 3520 3729.31 3951.07
-4186.01 4434.92 4698.64 4978.03 5274.04 5587.65 5919.91 6271.93 6644.88
-7040 7458.62 7902.13 8372.02 8869.84 9397.27 9956.06 10548.1 11175.3
-11839.8 12543.9 13289.8 14080;
-#X coords 0 12000 130 0 200 100 1;
-#X restore 73 60 graph;
-#X text 83 168 ------ 130 samples ------;
-#X text 282 153 0;
-#X text 284 53 12000;
-#X restore 293 478 pd conversion-tables;
-#X text 159 163 <= pitch;
-#X text 168 238 <= sweep speed;
-#X text 186 291 <= sweep depth;
-#X text 186 343 <= base center frequency;
-#X text 190 422 <= Q (selectivity);
-#X text 34 46 If you want actively changing center frequencies \, use
-"vcf~" instead of "bp~". The vcf~ module takes an audio signal to set
-center frequency. (Q is still set by messages though.) Vcf~ is computationally
-somewhat more expensive than bp~.;
-#X obj 338 17 declare -stdpath ./;
-#X connect 0 0 16 0;
-#X connect 2 0 8 0;
-#X connect 3 0 9 0;
-#X connect 4 0 3 1;
-#X connect 5 0 17 0;
-#X connect 6 0 18 1;
-#X connect 7 0 8 2;
-#X connect 8 0 15 0;
-#X connect 8 0 15 1;
-#X connect 9 0 8 1;
-#X connect 16 0 2 0;
-#X connect 17 0 18 0;
-#X connect 18 0 3 0;
+#X connect 2 0 5 0;
+#X restore 520 523 pd init;
+#X text 408 441 <-- Q (selectivity);
+#X text 413 363 <-- base center frequency;
+#X text 412 311 <-- sweep depth;
+#X text 394 251 <-- sweep speed;
+#X obj 45 22 cnv 5 5 25 empty empty Sweeping\ Filters 15 13 0 16 #dfdfdf #202020 0;
+#X obj 193 382 -~ 1;
+#X obj 193 352 *~ 2;
+#X text 81 324 [phasor~] is turned to a sawtooth like oscillator, f 14;
+#X obj 193 532 output~;
+#X obj 340 488 bob~;
+#X obj 193 491 vcf~;
+#X text 120 251 pitch -->;
+#X text 68 69 If you want actively changing center frequencies \, use [vcf~] or [bob~] instead of [bp~]. The [vcf~] module takes an audio signal to set center frequency (Q is still set by messages though) \, which makes it computationally somewhat more expensive than [bp~] and has two outputs \, the left behaves as bandpass like [bp~] and the right output is a nit more like a resonant lowpass filter., f 80;
+#X text 68 147 For a true resonant lowpass filter \, check [bob~] \, which is even more expensive and emulates the sound of the moog filter. It takes a signal to change the resonant frequency as well as the 'Q' factor. Check the help file of both. Note the different effects of negative and positive sweep speeds., f 80;
+#X connect 0 0 11 0;
+#X connect 1 0 22 0;
+#X connect 2 0 14 0;
+#X connect 3 0 2 1;
+#X connect 4 0 12 0;
+#X connect 5 0 13 1;
+#X connect 6 0 25 2;
+#X connect 6 0 26 2;
+#X connect 11 0 1 0;
+#X connect 12 0 13 0;
+#X connect 13 0 2 0;
+#X connect 14 0 25 1;
+#X connect 14 0 26 1;
+#X connect 21 0 25 0;
+#X connect 21 0 26 0;
+#X connect 22 0 21 0;
+#X connect 25 0 10 0;
+#X connect 26 0 24 0;

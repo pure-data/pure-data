@@ -1,48 +1,40 @@
-#N canvas 516 27 548 342 12;
-#X msg 116 210 2;
-#X msg 93 175 bang;
-#X obj 56 146 phasor~ 1000;
-#X text 133 176 bang prints one vector;
-#X text 151 209 print two or more successive vectors, f 19;
+#N canvas 516 27 533 356 12;
+#X msg 120 187 2;
+#X obj 57 126 phasor~ 1000;
+#X text 119 155 bang prints one vector;
 #X obj 25 14 print~;
-#X text 78 14 - print out raw values of a signal;
-#X text 317 295 Updated for Pd version 0.33;
-#X text 41 296 see also:;
-#X obj 123 297 print;
-#X msg 349 176 \; pd dsp \$1;
-#X obj 349 152 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 368 150 DSP on/off;
+#X text 317 315 Updated for Pd version 0.33;
+#X text 21 316 see also:;
+#X obj 93 317 print;
+#X msg 355 177 \; pd dsp \$1;
 #N canvas 657 103 573 246 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 141 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 178 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 215 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 141 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 178 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 17 215 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 146 151 NONE, f 5;
 #X text 89 67 signal - signal block to print on terminal window.;
 #X obj 39 15 print~;
-#X text 92 15 - print out raw values of a signal;
-#X text 126 189 1) symbol - symbol to distinct one [print~] from another.
-;
 #X text 104 88 bang - print one block on terminal window.;
-#X text 98 108 float - sets and prints number of blocks on terminal
-window.;
+#X text 98 108 float - sets and prints number of blocks on terminal window.;
+#X text 126 189 1) symbol - symbol prefix (default: "print~").;
+#X text 92 15 - print out one or more "blocks".;
 #X restore 359 13 pd reference;
 #X text 457 14 <= click;
-#X obj 9 47 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 41 66 The print~ object takes a signal input and prints one
-or more blocks (or 'vectors') out when you send it a bang or a number.
-By default a blocck is 64 samples., f 63;
-#X obj 9 287 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 93 251 print~;
-#X obj 174 297 block~;
-#X connect 0 0 18 0;
-#X connect 1 0 18 0;
-#X connect 2 0 18 0;
-#X connect 11 0 10 0;
+#X obj 9 47 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 9 307 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 144 317 block~;
+#X obj 94 155 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 41 66 The [print~] object takes a signal input and prints one or more blocks (or 'vectors') out when you send it a bang or a number. By default a block is 64 samples long., f 63;
+#X obj 94 260 print~ phasor;
+#X floatatom 120 219 4 0 0 0 - - - 0;
+#X text 158 184 float sets number of successive vectors to print, f 20;
+#X text 200 252 optional symbol argument gives it a different prefix (default "print~")., f 38;
+#X text 78 14 - print out one or more "blocks";
+#X obj 355 142 set-dsp-tgl;
+#X text 386 146 DSP on/off;
+#X connect 0 0 16 0;
+#X connect 1 0 15 0;
+#X connect 13 0 15 0;
+#X connect 16 0 15 0;
+#X connect 20 0 7 0;

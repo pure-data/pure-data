@@ -3,123 +3,88 @@
 #X msg 476 140 rewind;
 #X msg 482 165 next;
 #X floatatom 456 461 5 0 0 0 - - - 0;
-#X msg 456 88 bang;
 #X obj 488 417 print done;
 #X msg 467 114 tempo 1;
-#X text 22 69 The qlist object reads text files containing time-tagged
-Pd messages. You can have them sequenced automatically (by sending
-a "bang" message \, possibly changing speed via "tempo" messages) or
-manually via the "rewind" and "next" messages., f 56;
-#X text 21 153 To run the qlist automatically \, send it a "read" message
-(the filename is relative to the directory the patch is in) and later
-a "bang." Messages in the file are separated by semicolons. Optional
-leading numbers are delay times in milliseconds. If the tempo is different
-from 1 the messages are sent faster or slower accordingly. Messages
-should start with a symbol giving the destination object. In the file
-"qlist.q" used here \, the messages go to objects "this" and "that"
-which are receives below., f 56;
-#X text 21 303 To run it manually \, send "rewind" followed by "next".
-All messages not preceded by numbers are sent. As soon as a message
-starting with one or more numbers is encountered \, the numbers are
-output as a list. There are many ways you could design a sequencer
-around this., f 56;
-#X text 492 88 sequence automatically;
+#X text 13 303 To run it manually \, send "rewind" followed by "next". All messages not preceded by numbers are sent. As soon as a message starting with one or more numbers is encountered \, the numbers are output as a list. There are many ways you could design a sequencer around this., f 56;
+#X text 479 88 sequence automatically;
 #X text 526 113 set relative tempo;
 #X text 526 141 go to beginning (and stop);
 #X text 518 164 single-step forward;
 #X text 615 291 read a file;
 #X text 666 314 write one;
-#X text 509 454 This outlet gets a list of leading numbers for the
-next message \, for you to use in designing your own sequencer.;
+#X text 509 454 This outlet gets a list of leading numbers for the next message \, for you to use in designing your own sequencer.;
 #X msg 508 291 read qlist.txt;
 #X msg 514 314 write /tmp/qlist.txt;
 #X text 17 512 see also:;
 #X obj 90 513 textfile;
-#X text 22 385 You can also record textual messages and save them to
-a file. Send "clear" to empty the qlist and "add" to add messages (terminated
-with semicolons.) The message \, "add2" adds a list of atoms without
-finishing with a semicolon in case you want to make variable-length
-messages., f 56;
 #X msg 494 217 clear;
 #X msg 499 244 add 500 this is another message;
 #X msg 504 268 add2 that;
 #X text 540 217 empty the qlist;
 #X text 725 245 add a message to a qlist;
 #X text 577 267 add a message to a qlist but don't terminate it;
-#X text 576 401 This outlet gets a bang when you hit the end of the
-sequence. In the file "qlist.txt" the end is delayed 1000 milliseconds
-after the last message., f 49;
-#X text 713 64 These receives are invoked in the file "qlist.txt" in
-this directory., f 35;
+#X text 576 401 This outlet gets a bang when you hit the end of the sequence. In the file "qlist.txt" the end is delayed 1000 milliseconds after the last message., f 49;
+#X text 713 64 These receives are invoked in the file "qlist.txt" in this directory., f 35;
 #X obj 44 14 qlist;
 #X text 97 13 - text-based sequencer;
 #X text 541 190 single-step forward SUPPRESSING MESSAGE-SENDING;
 #X msg 488 191 next 1;
 #X msg 446 63 print;
 #X text 492 62 print contents to Pd window;
-#X obj 488 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 488 389 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 161 513 text sequence;
-#X text 263 512 <= newer and better replacement for qlist, f 42;
 #X obj 754 110 r this;
 #X obj 847 110 r that;
 #X obj 847 139 print that;
 #X obj 754 139 print this;
-#X obj 9 45 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 9 45 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 751 121 568 419 reference 0;
-#X obj 8 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 260 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 356 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 392 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 319 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 285 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 260 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 356 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 392 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 319 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 285 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 26 9 qlist;
 #X text 79 8 - text-based sequencer;
 #X text 112 52 bang - start sequence automatically., f 61;
 #X text 49 71 tempo <float> - set relative tempo., f 70;
 #X text 98 90 rewind - go to beginning (and stop)., f 63;
 #X text 48 108 next <float> -;
-#X text 161 108 single-step forward \, optional floar suppresses message
-sending., f 54;
+#X text 161 108 single-step forward \, optional floar suppresses message sending., f 54;
 #X text 105 140 print - print contents to Pd window., f 62;
 #X text 105 158 clear - empty the qlist., f 62;
 #X text 42 176 add <anything> - add a message to a qlist., f 71;
-#X text 35 195 add2 <anything> - add a message to a qlist but don't
-terminate it., f 72;
+#X text 35 195 add2 <anything> - add a message to a qlist but don't terminate it., f 72;
 #X text 49 214 read <symbol> - read a file into qlist., f 70;
 #X text 42 233 write <symbol> - write contents to a file., f 71;
-#X text 107 291 list - list of leading numbers for the next message.
-;
+#X text 107 291 list - list of leading numbers for the next message.;
 #X text 107 324 bang - when reaching the end of sequence.;
 #X text 140 366 NONE;
 #X restore 807 14 pd reference;
 #X text 901 14 <= click;
-#X obj 9 501 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 503 356 <=;
-#X text 526 356 click to see its contents and edit it \, just like
-a "text define" object., f 50;
+#X obj 9 501 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 530 356 click to see its contents and edit it \, just like a "text define" object., f 38;
 #X text 764 512 Updated for Pd version 0.35;
+#X text 503 356 <--;
+#X obj 456 88 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 14 69 The [qlist] object reads text files containing time-tagged Pd messages. You can have them sequenced automatically (by sending a "bang" message \, possibly changing speed via "tempo" messages) or manually via the "rewind" and "next" messages.;
+#X text 13 153 To run the qlist automatically \, send it a "read" message (the filename is relative to the directory the patch is in) and later a "bang." Messages in the file are separated by semicolons. Optional leading numbers are delay times in milliseconds. If the tempo is different from 1 the messages are sent faster or slower accordingly. Messages should start with a symbol giving the destination object. In the file "qlist.txt" used here \, the messages go to objects "this" and "that" which are receives below., f 56;
+#X text 14 385 You can also record textual messages and save them to a file. Send "clear" to empty the [qlist] and "add" to add messages (terminated with semicolons.) The message \, "add2" adds a list of atoms without finishing with a semicolon in case you want to make variable-length messages., f 56;
+#X text 263 512 <-- newer and better replacement for [qlist];
 #X connect 0 0 3 0;
-#X connect 0 1 36 0;
+#X connect 0 1 32 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X connect 4 0 0 0;
-#X connect 6 0 0 0;
-#X connect 17 0 0 0;
+#X connect 5 0 0 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 0;
 #X connect 18 0 0 0;
-#X connect 22 0 0 0;
-#X connect 23 0 0 0;
-#X connect 24 0 0 0;
-#X connect 33 0 0 0;
-#X connect 34 0 0 0;
-#X connect 36 0 5 0;
-#X connect 39 0 42 0;
-#X connect 40 0 41 0;
+#X connect 19 0 0 0;
+#X connect 20 0 0 0;
+#X connect 29 0 0 0;
+#X connect 30 0 0 0;
+#X connect 32 0 4 0;
+#X connect 34 0 37 0;
+#X connect 35 0 36 0;
+#X connect 45 0 0 0;

@@ -2,36 +2,54 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "m_pd.h"
 #include "g_canvas.h"
 
+    /* pointer to "globals" for templates in this pd instance */
+#define THISTMPL (pd_this->pd_gui->i_template)
+
 /*
 This file contains text objects you would put in a canvas to define a
-template.  Templates describe objects of type "array" (g_array.c) and
-"scalar" (g_scalar.c).
+pd-data-structure. These describe "scalars" (g_scalar.c) and elements
+of "arrays" (g_array.c).  The pd-data-structure is defined by a "struct"
+object and its associated drawing instructions such as "drawcurve".
+
+There are pre-defined "float" and "floatarray" structures used by the
+"array" object, tabread/write, etc.  All others are defined in patches
+using "struct" objects.
+
+A good deal of messing around is needed in case data described by struct
+objects are copied from one patch to another which may have no corresponding
+"struct' object or even a conflicting one.
 */
 
     /* the structure of a "struct" object (also the obsolete "gtemplate"
-    you get when using the name "template" in a box.) */
+    object, which stupidly took the structure name from the containing Pd).
+    This object defines a named "template" which in turn keeps a linked
+    list of every "struct" of that name. */
 
-struct _gtemplate
+struct _pdstruct
 {
     t_object x_obj;
-    t_template *x_template;
-    t_canvas *x_owner;
-    t_symbol *x_sym;
-    struct _gtemplate *x_next;
-    int x_argc;
+    t_template *x_template;     /* actual field definitions */
+    t_canvas *x_owner;          /* canvas containing this "struct" */
+    t_symbol *x_sym;            /* name of the struct */
+    struct _pdstruct *x_next;   /* next "struct" belonging to x_template */
+    int x_argc;                 /* list of creation args */
     t_atom *x_argv;
 };
 
+    /* stuff that was once static but is now per-PD-instance, used for
+    stateful editing such as dragging.  LATER consider using the same gpointer,
+     etc., variables for the various motion callbacks below. */
+
 struct _instancetemplate
 {
-    int curve_motion_field;
+    int curve_motion_vertex;
     t_float curve_motion_xcumulative;
     t_float curve_motion_xbase;
     t_float curve_motion_xper;
@@ -53,6 +71,7 @@ struct _instancetemplate
     t_array *array_motion_array;
     t_word *array_motion_wp;
     t_template *array_motion_template;
+    t_gpointer array_motion_gpointer;
     int array_motion_npoints;
     int array_motion_elemsize;
     int array_motion_altkey;
@@ -61,15 +80,15 @@ struct _instancetemplate
     t_float array_motion_yperpix;
     int array_motion_lastx;
     int array_motion_fatten;
-    t_float drawnumber_motion_ycumulative;
-    t_glist *drawnumber_motion_glist;
-    t_scalar *drawnumber_motion_scalar;
-    t_array *drawnumber_motion_array;
-    t_word *drawnumber_motion_wp;
-    t_template *drawnumber_motion_template;
-    t_gpointer drawnumber_motion_gpointer;
-    int drawnumber_motion_type;
-    int drawnumber_motion_firstkey;
+    t_float drawtext_motion_ycumulative;
+    t_glist *drawtext_motion_glist;
+    t_scalar *drawtext_motion_scalar;
+    t_array *drawtext_motion_array;
+    t_word *drawtext_motion_wp;
+    t_template *drawtext_motion_template;
+    t_gpointer drawtext_motion_gpointer;
+    int drawtext_motion_type;
+    int drawtext_motion_firstkey;
 };
 
 
@@ -87,9 +106,6 @@ static void template_conformglist(t_template *tfrom, t_template *tto,
 static t_class *gtemplate_class;
 static t_class *template_class;
 
-/* there's a pre-defined "float" template.  LATER should we bind this
-to a symbol such as "pd-float"??? */
-
     /* return true if two dataslot definitions match */
 static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
     int nametoo)
@@ -97,10 +113,11 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
     return ((!nametoo || ds1->ds_name == ds2->ds_name) &&
         ds1->ds_type == ds2->ds_type &&
             (ds1->ds_type != DT_ARRAY ||
-                ds1->ds_arraytemplate == ds2->ds_arraytemplate));
+                (ds1->ds_arraytemplate == ds2->ds_arraytemplate &&
+                    ds1->ds_arraydeflength == ds2->ds_arraydeflength)));
 }
 
-/* -- templates, the active ingredient in gtemplates defined below. ------- */
+/* -- templates, the active ingredient in "struct" objects defined below. -- */
 
     /* add a template to the list */
 static void template_addtolist(t_template *x)
@@ -131,7 +148,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     template_addtolist(x);
     while (argc > 0)
     {
-        int newtype, oldn, newn;
+        int newtype, oldn, newn, newarraydeflength= 1;
         t_symbol *newname, *newarraytemplate = &s_, *newtypesym;
         if (argc < 2 || argv[0].a_type != A_SYMBOL ||
             argv[1].a_type != A_SYMBOL)
@@ -152,10 +169,17 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
-            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
             newtype = DT_ARRAY;
-            argc--;
-            argv++;
+            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
+                /* optional third float arg sets initial array length */
+            if (argc > 3 && argv[3].a_type == A_FLOAT)
+            {
+                if ((newarraydeflength = argv[3].a_w.w_float) < 1)
+                    newarraydeflength = 1;
+                argc -= 2;
+                argv += 2;
+            }
+            else argc--, argv++;
         }
         else
         {
@@ -169,6 +193,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
+        x->t_vec[oldn].ds_arraydeflength = newarraydeflength;
     bad:
         argc -= 2; argv += 2;
     }
@@ -513,7 +538,7 @@ t_template *template_findbyname(t_symbol *s)
 
 t_canvas *template_findcanvas(t_template *template)
 {
-    t_gtemplate *gt;
+    t_pdstruct *gt;
     if (!template)
     {
         bug("template_findcanvas");
@@ -522,7 +547,6 @@ t_canvas *template_findcanvas(t_template *template)
     if (!(gt = template->t_list))
         return (0);
     return (gt->x_owner);
-    /* return ((t_canvas *)pd_findbyclass(template->t_sym, canvas_class)); */
 }
 
 void template_notify(t_template *template, t_symbol *s, int argc, t_atom *argv)
@@ -606,10 +630,9 @@ static void template_setup(void)
         sizeof(t_template), CLASS_PD, 0);
     class_addmethod(pd_canvasmaker, (t_method)template_usetemplate,
         gensym("struct"), A_GIMME, 0);
-
 }
 
-/* ---------------- gtemplates.  One per canvas. ----------- */
+/* ---------------- "Struct" object.  One per canvas. ----------- */
 
 /* "Struct": an object that searches for, and if necessary creates,
 a template (above).  Other objects in the canvas then can give drawing
@@ -619,7 +642,7 @@ another one to add new fields, for example. */
 
 static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
 {
-    t_gtemplate *x = (t_gtemplate *)pd_new(gtemplate_class);
+    t_pdstruct *x = (t_pdstruct *)pd_new(gtemplate_class);
     t_template *t = template_findbyname(sym);
     int i;
     t_symbol *sx = gensym("x");
@@ -640,7 +663,7 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
             there. */
         if (t->t_list)
         {
-            t_gtemplate *x2, *x3;
+            t_pdstruct *x2, *x3;
             for (x2 = x->x_template->t_list; (x3 = x2->x_next); x2 = x3)
                 ;
             x2->x_next = x;
@@ -701,16 +724,73 @@ static void *gtemplate_new_old(t_symbol *s, int argc, t_atom *argv)
     return (gtemplate_donew(sym, argc, argv));
 }
 
-t_template *gtemplate_get(t_gtemplate *x)
+t_template *gtemplate_get(t_pdstruct *x)
 {
     return (x->x_template);
 }
 
-static void gtemplate_free(t_gtemplate *x)
+    /* add a new scalar for this template to the named canvas.  First argument
+    is the template name, and following pairs of arguments (name, value)
+    initialize float or symbol fields.  (Array and text fields can't be
+    initialized.) */
+static void gtemplate_add(t_pdstruct *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_glist *glist;
+    t_symbol *canvasname, *elemtemplatesym;
+
+    if (argc < 1 || argv[0].a_type != A_SYMBOL)
+        pd_error(x, "gtemplate_add: needs a symbol argument for canvas");
+    else if (!(glist = (t_glist *)pd_findbyclass(argv[0].a_w.w_symbol,
+        canvas_class)))
+            pd_error(x, "gtemplate_add: no canvas named '%s'",
+                argv[0].a_w.w_symbol->s_name);
+    else
+    {
+        t_scalar *sc = scalar_new(x->x_owner, x->x_sym);
+        int i, type, onset;
+        for (i = 1; i < argc-1; i += 2)
+        {
+            if (argv[i].a_type != A_SYMBOL)
+                pd_error(x, "gtemplate_add: field name %f not a symbol",
+                    argv[i].a_w.w_float);
+            else if (!template_find_field(x->x_template,
+                argv[i].a_w.w_symbol, &onset, &type,
+                    &elemtemplatesym))
+                        pd_error(x, "gtemplate_add: field %s not found",
+                            argv[i].a_w.w_symbol->s_name);
+            else if (type == DT_FLOAT)
+            {
+                if (argv[i+1].a_type == A_FLOAT)
+                    *(t_float *)(((char *)(sc->sc_vec)) + onset) =
+                        argv[i+1].a_w.w_float;
+                else pd_error(x,
+                    "gtemplate_add: can't set float field %s to %s",
+                            argv[i].a_w.w_symbol->s_name,
+                                argv[i+1].a_w.w_symbol->s_name);
+            }
+            else if (type == DT_SYMBOL)
+            {
+                if (argv[i+1].a_type == A_SYMBOL)
+                    *(t_symbol **)(((char *)(sc->sc_vec)) + onset) =
+                        argv[i+1].a_w.w_symbol;
+                else pd_error(x,
+                    "gtemplate_add: can't set symbol field %s to %f",
+                            argv[i].a_w.w_symbol->s_name,
+                                argv[i+1].a_w.w_float);
+            }
+            else pd_error(x,
+      "gtemplate_add: can't initialize field %s (float or symbol only)",
+                argv[i].a_w.w_symbol->s_name);
+        }
+        glist_add(glist, &sc->sc_gobj);
+    }
+}
+
+static void gtemplate_free(t_pdstruct *x)
 {
         /* get off the template's list */
     t_template *t = x->x_template;
-    t_gtemplate *y;
+    t_pdstruct *y;
     if (x == t->t_list)
     {
         canvas_redrawallfortemplate(t, 2);
@@ -734,7 +814,7 @@ static void gtemplate_free(t_gtemplate *x)
     }
     else
     {
-        t_gtemplate *x2, *x3;
+        t_pdstruct *x2, *x3;
         for (x2 = t->t_list; (x3 = x2->x_next); x2 = x3)
         {
             if (x == x3)
@@ -751,9 +831,25 @@ static void gtemplate_setup(void)
 {
     gtemplate_class = class_new(gensym("struct"),
         (t_newmethod)gtemplate_new, (t_method)gtemplate_free,
-        sizeof(t_gtemplate), CLASS_NOINLET, A_GIMME, 0);
+        sizeof(t_pdstruct), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)gtemplate_new_old, gensym("template"),
         A_GIMME, 0);
+    class_addmethod(gtemplate_class, (t_method)gtemplate_add,
+        gensym("add"), A_GIMME, 0);
+}
+
+t_template *glist_findtemplate(t_glist *gl)
+{
+    t_gobj *g;
+    for (g = gl->gl_list; g; g = g->g_next)
+        if (g->g_pd == gtemplate_class)
+    {
+        t_template *t = (t_template *)pd_findbyclass(((t_pdstruct *)g)->x_sym,
+            template_class);
+        if (t)
+            return (t);
+    }
+    return (0);
 }
 
 /* ---------------  FIELD DESCRIPTORS ---------------------- */
@@ -856,40 +952,41 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 #define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
 #define NOMOUSEEDIT 8 /* same in edit mode */
 #define NOVERTICES 16 /* disable only vertex grabbing in run mode */
+#define DRAGGABLE 32  /* can use to drag entire scalar around */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setfloat_const(fd, 0);
-        else if (argv->a_type == A_SYMBOL)
-            fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
-        else fielddesc_setfloat_const(fd, argv->a_w.w_float);
+    if (argc <= 0) fielddesc_setfloat_const(fd, 0);
+    else if (argv->a_type == A_SYMBOL)
+        fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
+    else fielddesc_setfloat_const(fd, argv->a_w.w_float);
 }
 
 static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
-        else if (argv->a_type == A_SYMBOL)
-        {
-            fd->fd_type = A_SYMBOL;
-            fd->fd_var = 1;
-            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-            fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
-                fd->fd_quantum = 0;
-        }
-        else fielddesc_setsymbol_const(fd, &s_);
+    if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
+    else if (argv->a_type == A_SYMBOL)
+    {
+        fd->fd_type = A_SYMBOL;
+        fd->fd_var = 1;
+        fd->fd_un.fd_varsym = argv->a_w.w_symbol;
+        fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
+            fd->fd_quantum = 0;
+    }
+    else fielddesc_setsymbol_const(fd, &s_);
 }
 
 static void fielddesc_setarrayarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
-        if (argc <= 0) fielddesc_setfloat_const(fd, 0);
-        else if (argv->a_type == A_SYMBOL)
-        {
-            fd->fd_type = A_ARRAY;
-            fd->fd_var = 1;
-            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-        }
-        else fielddesc_setfloat_const(fd, argv->a_w.w_float);
+    if (argc <= 0) fielddesc_setfloat_const(fd, 0);
+    else if (argv->a_type == A_SYMBOL)
+    {
+        fd->fd_type = A_ARRAY;
+        fd->fd_var = 1;
+        fd->fd_un.fd_varsym = argv->a_w.w_symbol;
+    }
+    else fielddesc_setfloat_const(fd, argv->a_w.w_float);
 }
 
     /* getting and setting values via fielddescs -- note confusing names;
@@ -1004,7 +1101,8 @@ void fielddesc_setcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            pd_error(0, "attempt to set constant or symbolic data field to a number");
+            pd_error(0,
+                "attempt to set constant or symbolic data field to a number");
     }
 }
 
@@ -1027,7 +1125,7 @@ typedef struct _curve
     t_fielddesc x_width;
     t_fielddesc x_vis;
     int x_npoints;
-    t_fielddesc *x_vec;
+    t_fielddesc *x_vec; /* the vertices, as fields, in pairs */
     t_canvas *x_canvas;
 } t_curve;
 
@@ -1079,6 +1177,11 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             /* disable changing vertices in run mode */
             flags |= NOVERTICES;
+        }
+        else if (!strcmp(flag, "-d"))
+        {
+            /* clicking on this drags entire scalar (i.e., changes x,y) */
+            flags |= DRAGGABLE;
         }
         else
         {
@@ -1197,36 +1300,42 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
     return (ret);
 }
 
-static void numbertocolor(int n, char *s)
+static int numbertocolor(int n)
 {
-    int red, blue, green;
+    int red, green, blue, color = 0;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
     green = n % 10;
-    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(blue),
-        rangecolor(green));
+    blue = ((n / 10) % 10);
+    color |= rangecolor(red)   << 16;
+    color |= rangecolor(blue)  <<  8;
+    color |= rangecolor(green) <<  0;
+    return color;
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int vis)
+    t_word *data, t_template *template, t_scalar *sc,
+        t_float basex, t_float basey, int vis)
 {
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-
+    char tag0[80], tag[80];
+    const char*tags[] = {tag, tag0, "curve"};
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            char outline[20], fill[20];
-            int pix[200];
+            int outline;
+            t_word pix[200];
+
             if (n > 100)
                 n = 100;
                 /* calculate the pixel values before we start printing
@@ -1235,88 +1344,113 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 have to allocate memory here. */
             for (i = 0, f = x->x_vec; i < n; i++, f += 2)
             {
-                pix[2*i] = glist_xtopixels(glist,
+                pix[2*i].w_float = glist_xtopixels(glist,
                     basex + fielddesc_getcoord(f, template, data, 1));
-                pix[2*i+1] = glist_ytopixels(glist,
+                pix[2*i+1].w_float = glist_ytopixels(glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
             if (glist->gl_isgraph)
                 width *= glist_getzoom(glist);
-            numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
-                outline);
+            outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+
+            pdgui_vmess(0, "crr iiii rf ri rS",
+                glist_getcanvas(glist), "create",
+                (flags & CLOSED)?"polygon":"line",
+                0, 0, 0, 0,
+                "-width", width,
+                "-smooth", !!(flags & BEZ),
+                "-tags", 3, tags);
+
+            pdgui_vmess(0, "crs w",
+                glist_getcanvas(glist), "coords", tag,
+                2*n, pix);
+
             if (flags & CLOSED)
             {
-                numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1),
-                    fill);
-                sys_vgui(".x%lx.c create polygon\\\n",
-                    glist_getcanvas(glist));
-            }
-            else sys_vgui(".x%lx.c create line\\\n", glist_getcanvas(glist));
-            for (i = 0; i < n; i++)
-                sys_vgui("%d %d\\\n", pix[2*i], pix[2*i+1]);
-            sys_vgui("-width %f\\\n", width);
-            if (flags & CLOSED) sys_vgui("-fill %s -outline %s\\\n",
-                fill, outline);
-            else sys_vgui("-fill %s\\\n", outline);
-            if (flags & BEZ) sys_vgui("-smooth 1\\\n");
-            sys_vgui("-tags curve%lx\n", data);
+                int fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+                pdgui_vmess(0, "crs rk rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", fill,
+                    "-outline", outline);
+            } else
+                pdgui_vmess(0, "crs rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", outline);
         }
-        else post("warning: drawing shapes need at least two points to be graphed");
+        else post(
+            "warning: drawing shapes need at least two points to be graphed");
     }
     else
     {
-        if (n > 1) sys_vgui(".x%lx.c delete curve%lx\n",
-            glist_getcanvas(glist), data);
+        if (n > 1)
+            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
-
-    /* LATER protect against the template changing or the scalar disappearing
-    probably by attaching a gpointer here ... */
 
 static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
     t_curve *x = (t_curve *)z;
-    t_fielddesc *f = x->x_vec + TEMPLATE->curve_motion_field;
+    t_fielddesc *f;
     t_atom at;
     if (up != 0)
+    {
+        gpointer_unset(&THISTMPL->curve_motion_gpointer);
         return;
-    if (!gpointer_check(&TEMPLATE->curve_motion_gpointer, 0))
+    }
+    if (!gpointer_check(&THISTMPL->curve_motion_gpointer, 0))
     {
         post("curve_motion: scalar disappeared");
         return;
     }
-    TEMPLATE->curve_motion_xcumulative += dx;
-    TEMPLATE->curve_motion_ycumulative += dy;
+    if (THISTMPL->curve_motion_vertex < 0)   /* drag the whole object */
+    {
+        gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
+            THISTMPL->curve_motion_glist, dx, dy);
+        return;
+    }
+    f = x->x_vec + THISTMPL->curve_motion_vertex;
+    THISTMPL->curve_motion_xcumulative += dx;
+    THISTMPL->curve_motion_ycumulative += dy;
     if (f->fd_var && (dx != 0))
     {
-        fielddesc_setcoord(f, TEMPLATE->curve_motion_template,
-            TEMPLATE->curve_motion_wp,
-            TEMPLATE->curve_motion_xbase +
-            TEMPLATE->curve_motion_xcumulative * TEMPLATE->curve_motion_xper,
+        fielddesc_setcoord(f, THISTMPL->curve_motion_template,
+            THISTMPL->curve_motion_wp,
+            THISTMPL->curve_motion_xbase +
+            THISTMPL->curve_motion_xcumulative * THISTMPL->curve_motion_xper,
                 1);
     }
     if ((f+1)->fd_var && (dy != 0))
     {
-        fielddesc_setcoord(f+1, TEMPLATE->curve_motion_template,
-            TEMPLATE->curve_motion_wp,
-            TEMPLATE->curve_motion_ybase +
-            TEMPLATE->curve_motion_ycumulative * TEMPLATE->curve_motion_yper,
+        fielddesc_setcoord(f+1, THISTMPL->curve_motion_template,
+            THISTMPL->curve_motion_wp,
+            THISTMPL->curve_motion_ybase +
+            THISTMPL->curve_motion_ycumulative * THISTMPL->curve_motion_yper,
                 1);
     }
-        /* LATER figure out what to do to notify for an array? */
-    if (TEMPLATE->curve_motion_scalar)
-        template_notifyforscalar(TEMPLATE->curve_motion_template,
-            TEMPLATE->curve_motion_glist,
-            TEMPLATE->curve_motion_scalar, gensym("change"), 1, &at);
-    if (TEMPLATE->curve_motion_scalar)
-        scalar_redraw(TEMPLATE->curve_motion_scalar,
-            TEMPLATE->curve_motion_glist);
-    if (TEMPLATE->curve_motion_array)
-        array_redraw(TEMPLATE->curve_motion_array,
-            TEMPLATE->curve_motion_glist);
+    if (THISTMPL->curve_motion_scalar)
+    {
+        template_notifyforscalar(THISTMPL->curve_motion_template,
+            THISTMPL->curve_motion_glist,
+            THISTMPL->curve_motion_scalar, gensym("change"), 1, &at);
+        scalar_redraw(THISTMPL->curve_motion_scalar,
+            THISTMPL->curve_motion_glist);
+    }
+    else
+    {
+            /* chase back to owning scalar to notify it */
+        t_array *owner_array =
+            THISTMPL->curve_motion_gpointer.gp_stub->gs_un.gs_array;
+        while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+            owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+        template_notifyforscalar(THISTMPL->curve_motion_template,
+            THISTMPL->curve_motion_glist,
+            owner_array->a_gp.gp_un.gp_scalar, gensym("change"), 1, &at);
+        array_redraw(THISTMPL->curve_motion_array,
+            THISTMPL->curve_motion_glist);
+    }
 }
 
 static int curve_click(t_gobj *z, t_glist *glist,
@@ -1329,10 +1463,14 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int bestn = -1;
     int besterror = 0x7fffffff;
     t_fielddesc *f;
-    if ((x->x_flags & NOMOUSERUN) || (x->x_flags & NOVERTICES) ||
+    int x1, y1, x2, y2;
+    curve_getrect(z, glist, data, template, basex, basey,
+        &x1, &y1, &x2, &y2);
+    if ((x->x_flags & NOMOUSERUN)  ||
         !fielddesc_getfloat(&x->x_vis, template, data, 0))
             return (0);
-    for (i = 0, f = x->x_vec; i < n; i++, f += 2)
+    if (!(x->x_flags & NOVERTICES))
+        for (i = 0, f = x->x_vec; i < n; i++, f += 2)
     {
         int xval = fielddesc_getcoord(f, template, data, 0),
             xloc = glist_xtopixels(glist, basex + xval);
@@ -1349,33 +1487,49 @@ static int curve_click(t_gobj *z, t_glist *glist,
             xerr = yerr;
         if (xerr < besterror)
         {
-            TEMPLATE->curve_motion_xbase = xval;
-            TEMPLATE->curve_motion_ybase = yval;
+            THISTMPL->curve_motion_xbase = xval;
+            THISTMPL->curve_motion_ybase = yval;
             besterror = xerr;
             bestn = i;
         }
     }
-    if (besterror > 6)
-        return (0);
+    if (besterror > 6)  /* no hot points got hit */
+    {
+            /* if we're in the bounding rect and the draggable flag
+            is set we can drag the whole object; othrwise we don't
+            do anything.  But we still return -1 if we're in the rectangle
+            so that the struct object can notify the patch of the click.
+            The "-1" tells scalar_doclick() to call template_notifyforscalar()
+            but scalar_click() then returns 0 so that the search for a click
+            will continue.  This way, all polygons that got clicked on will
+            get notified up to and until someone gets bonked on a hot point,
+            at which point the search stops. */
+        if (xpix < x1 || xpix > x2 || ypix < y1 || ypix > y2)
+            return (0);
+        if (!(x->x_flags & DRAGGABLE))
+            return (-1);
+    }
     if (doit)
     {
-        TEMPLATE->curve_motion_xper = glist_pixelstox(glist, 1)
+        THISTMPL->curve_motion_xper = glist_pixelstox(glist, 1)
             - glist_pixelstox(glist, 0);
-        TEMPLATE->curve_motion_yper = glist_pixelstoy(glist, 1)
+        THISTMPL->curve_motion_yper = glist_pixelstoy(glist, 1)
             - glist_pixelstoy(glist, 0);
-        TEMPLATE->curve_motion_xcumulative = 0;
-        TEMPLATE->curve_motion_ycumulative = 0;
-        TEMPLATE->curve_motion_glist = glist;
-        TEMPLATE->curve_motion_scalar = sc;
-        TEMPLATE->curve_motion_array = ap;
-        TEMPLATE->curve_motion_wp = data;
-        TEMPLATE->curve_motion_field = 2*bestn;
-        TEMPLATE->curve_motion_template = template;
-        if (TEMPLATE->curve_motion_scalar)
-            gpointer_setglist(&TEMPLATE->curve_motion_gpointer,
-                TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar);
-        else gpointer_setarray(&TEMPLATE->curve_motion_gpointer,
-                TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_wp);
+        THISTMPL->curve_motion_xcumulative = 0;
+        THISTMPL->curve_motion_ycumulative = 0;
+        THISTMPL->curve_motion_glist = glist;
+        THISTMPL->curve_motion_scalar = sc;
+        THISTMPL->curve_motion_array = ap;
+        THISTMPL->curve_motion_wp = data;
+            /* if we missed all hot points we're dragging the whole thing;
+            otherwise note the vertex to drag on. */
+        THISTMPL->curve_motion_vertex = (besterror <= 6 ? 2*bestn : -1);
+        THISTMPL->curve_motion_template = template;
+        if (THISTMPL->curve_motion_scalar)
+            gpointer_setglist(&THISTMPL->curve_motion_gpointer,
+                THISTMPL->curve_motion_glist, THISTMPL->curve_motion_scalar);
+        else gpointer_setarray(&THISTMPL->curve_motion_gpointer,
+                THISTMPL->curve_motion_array, THISTMPL->curve_motion_wp);
         glist_grab(glist, z, curve_motionfn, 0, xpix, ypix);
     }
     return (1);
@@ -1487,6 +1641,11 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
         else if (*firstarg->s_name == '-')
         {
             pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
@@ -1554,12 +1713,14 @@ static int plot_readownertemplate(t_plot *x,
     if (!template_find_field(ownertemplate, x->x_data.fd_un.fd_varsym,
         &arrayonset, &type, &elemtemplatesym))
     {
-        pd_error(0, "plot: %s: no such field", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: no such field",
+            x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     if (type != DT_ARRAY)
     {
-        pd_error(0, "plot: %s: not an array", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: not an array",
+            x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     array = *(t_array **)(((char *)data) + arrayonset);
@@ -1653,8 +1814,9 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     int i;
     t_float xpix, ypix, wpix;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
-        /* if we're the only plot in the glist claim the whole thing */
-    if (glist->gl_list && !glist->gl_list->g_next)
+        /* if run mode and we're the only plot in the glist claim the whole
+           thing so you can click anywhere in an "array" glist to draw on it */
+    if (!glist->gl_edit && glist->gl_list && !glist->gl_list->g_next)
     {
         *xp1 = *yp1 = -0x7fffffff;
         *xp2 = *yp2 = 0x7fffffff;
@@ -1754,21 +1916,23 @@ static void plot_activate(t_gobj *z, t_glist *glist,
 #define CLIP(x) ((x) < 1e20 && (x) > -1e20 ? x : 0)
 
 static void plot_vis(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int tovis)
+    t_word *data, t_template *template, t_scalar *sc,
+    t_float basex, t_float basey, int tovis)
 {
     t_plot *x = (t_plot *)z;
     int elemsize, yonset, wonset, xonset, i;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, usexloc, yval,
+    t_float linewidth, xloc, xinc, yloc, style, yval,
         vis, scalarvis, edit;
     double xsum;
     t_array *array;
     int nelem;
     char *elem;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
+    char tag[80], tag0[80];
+    const char*tags[] = {tag, tag0, "array"};
         /* even if the array is "invisible", if its visibility is
         set by an instance variable you have to explicitly erase it,
         because the flag could earlier have been on when we were getting
@@ -1789,21 +1953,31 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
+    sprintf(tag , "plot%p", data);
+        /* a tag that uniquely identifies the sub-plot */
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset,
+        yonset);
+
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
+         /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
+            type.  FLOATARRAY is impractical (as it sends a list, and the GUI
+            expects arguments) */
+        t_word coordinates[1024*2];
+
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;
-            int ndrawn = 0;
-            char color[20];
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), color);
+            unsigned int ndrawn = 0;
+            int color = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
-                t_float yval, xpix, ypix, nextxloc;
+                t_float yval, xpix, ypix, nextxloc, usexloc;
                 int ixpix, inextx;
 
                 if (xonset >= 0)
@@ -1834,39 +2008,42 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                        "-fill %s -width 0 -tags [list plot%lx array]\n",
-                        glist_getcanvas(glist),
-                        ixpix, (int)glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth), color, data);
+
+                    pdgui_vmess(0, "crr iiii rk rf rS",
+                        glist_getcanvas(glist), "create", "rectangle",
+                        ixpix , (int) glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, minyval)),
+                        inextx, (int)(glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, maxyval))
+                                + linewidth),
+                        "-fill", color,
+                        "-width", 0.,
+                        "-tags", 3, tags);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
                 }
-                if (ndrawn > 2000 || ixpix >= 3000) break;
+                if (ndrawn > 2000) break;
             }
         }
         else
         {
-            char outline[20];
-            int lastpixel = -1, ndrawn = 0;
+            int outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+            int lastpixel = -1;
+            unsigned int ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), outline);
+
+
             if (wonset >= 0)
             {
                     /* found "w" field which controls linewidth.  The trace is
                     a filled polygon with 2n points. */
-                sys_vgui(".x%lx.c create polygon \\\n",
-                    glist_getcanvas(glist));
-
                 for (i = 0, xsum = xloc; i < nelem; i++)
                 {
+                    t_float usexloc;
                     if (xonset >= 0)
                         usexloc = xloc + *(t_float *)((elem + elemsize * i)
                             + xonset);
@@ -1882,15 +2059,18 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + fielddesc_cvttocoord(yfielddesc,
-                                    yloc + yval) -
-                                        fielddesc_cvttocoord(wfielddesc,wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            - fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
                 lastpixel = -1;
                 for (i = nelem-1; i >= 0; i--)
@@ -1911,79 +2091,114 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix, glist_ytopixels(glist,
-                            basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                yval) +
-                                    fielddesc_cvttocoord(wfielddesc, wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            + fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
+
                     /* TK will complain if there aren't at least 3 points.
                     There should be at least two already. */
                 if (ndrawn < 4)
                 {
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) +
-                                fielddesc_cvttocoord(wfielddesc, wval)));
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) -
-                                fielddesc_cvttocoord(wfielddesc, wval)));
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        - fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
+
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        + fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
                 }
             ouch:
-                sys_vgui(" -width %d -fill %s -outline %s\\\n",
-                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    outline, outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                pdgui_vmess(0, "crr ri rk rk ri rS",
+                    glist_getcanvas(glist), "create", "polygon",
+                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    "-fill", outline,
+                    "-outline", outline,
+                    "-smooth", (style == PLOTSTYLE_BEZ),
+                    "-tags", 3, tags);
+
+                pdgui_vmess(0, "crs w",
+                    glist_getcanvas(glist), "coords", tag0,
+                    ndrawn*2, coordinates);
             }
             else if (linewidth > 0)
             {
                     /* no "w" field.  If the linewidth is positive, draw a
                     segmented line with the requested width; otherwise don't
                     draw the trace at all. */
-                sys_vgui(".x%lx.c create line \\\n", glist_getcanvas(glist));
-
-                for (xsum = xloc, i = 0; i < nelem; i++)
+                for (i = 0, xsum = xloc; i < nelem; i++)
                 {
                     t_float usexloc;
                     if (xonset >= 0)
-                        usexloc = xloc + *(t_float *)((elem + elemsize * i) +
-                            xonset);
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i)
+                            + xonset);
                     else usexloc = xsum, xsum += xinc;
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
                     yval = CLIP(yval);
+
+
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                    yval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) break;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        break;
                 }
+
                     /* TK will complain if there aren't at least 2 points... */
-                if (ndrawn == 0) sys_vgui("0 0 0 0 \\\n");
-                else if (ndrawn == 1) sys_vgui("%d %f \\\n", ixpix + 10,
-                    glist_ytopixels(glist, basey + yloc +
-                        fielddesc_cvttocoord(yfielddesc, yval)));
+                if (ndrawn == 1)
+                {
+                    coordinates[2].w_float = ixpix + 10;
+                    coordinates[3].w_float = glist_ytopixels(glist,
+                        basey + yloc + fielddesc_cvttocoord(yfielddesc, yval));
+                    ndrawn = 2;
+                }
 
-                sys_vgui("-width %f\\\n", linewidth);
-                sys_vgui("-fill %s\\\n", outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
-
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                if(ndrawn)
+                {
+                    pdgui_vmess(0, "crr iiii rf rk ri rS",
+                        glist_getcanvas(glist), "create", "line",
+                        0, 0, 0, 0,
+                        "-width", linewidth,
+                        "-fill", outline,
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags);
+                    pdgui_vmess(0, "crs w",
+                        glist_getcanvas(glist), "coords", tag0,
+                        ndrawn*2, coordinates);
+                }
             }
         }
             /* We're done with the outline; now draw all the points.
@@ -2011,7 +2226,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     if (!wb) continue;
                     (*wb->w_parentvisfn)(y, glist,
                         (t_word *)(elem + elemsize * i),
-                            elemtemplate, usexloc, useyloc, tovis);
+                            elemtemplate, sc, usexloc, useyloc, tovis);
                 }
             }
         }
@@ -2031,108 +2246,126 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                         pd_getparentwidget(&y->g_pd);
                     if (!wb) continue;
                     (*wb->w_parentvisfn)(y, glist,
-                        (t_word *)(elem + elemsize * i), elemtemplate,
+                        (t_word *)(elem + elemsize * i), elemtemplate, sc,
                             0, 0, 0);
                 }
             }
         }
             /* and then the trace */
-        sys_vgui(".x%lx.c delete plot%lx\n",
-            glist_getcanvas(glist), data);
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
-    /* LATER protect against the template changing or the scalar disappearing
-    probably by attaching a gpointer here ... */
-
 static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
+    t_atom at;
     if (up != 0)
+    {
+        gpointer_unset(&THISTMPL->array_motion_gpointer);
         return;
-    TEMPLATE->array_motion_xcumulative += dx * TEMPLATE->array_motion_xperpix;
-    TEMPLATE->array_motion_ycumulative += dy * TEMPLATE->array_motion_yperpix;
-    if (TEMPLATE->array_motion_xfield)
+    }
+    if (!gpointer_check(&THISTMPL->array_motion_gpointer, 0))
+    {
+        post("array_motion: scalar disappeared");
+        return;
+    }
+    THISTMPL->array_motion_xcumulative += dx * THISTMPL->array_motion_xperpix;
+    THISTMPL->array_motion_ycumulative += dy * THISTMPL->array_motion_yperpix;
+    if (THISTMPL->array_motion_xfield)
     {
             /* it's an x, y plot */
         int i;
-        for (i = 0; i < TEMPLATE->array_motion_npoints; i++)
+        for (i = 0; i < THISTMPL->array_motion_npoints; i++)
         {
-            t_word *thisword = (t_word *)(((char *)TEMPLATE->array_motion_wp) +
-                i * TEMPLATE->array_motion_elemsize);
-            t_float xwas = fielddesc_getcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword, 1);
-            t_float ywas = (TEMPLATE->array_motion_yfield ?
-                fielddesc_getcoord(TEMPLATE->array_motion_yfield,
-                    TEMPLATE->array_motion_template, thisword, 1) : 0);
-            fielddesc_setcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword,
-                    xwas + dx * TEMPLATE->array_motion_xperpix, 1);
-            if (TEMPLATE->array_motion_yfield)
+            t_word *thisword = (t_word *)(((char *)THISTMPL->array_motion_wp) +
+                i * THISTMPL->array_motion_elemsize);
+            t_float xwas = fielddesc_getcoord(THISTMPL->array_motion_xfield,
+                THISTMPL->array_motion_template, thisword, 1);
+            t_float ywas = (THISTMPL->array_motion_yfield ?
+                fielddesc_getcoord(THISTMPL->array_motion_yfield,
+                    THISTMPL->array_motion_template, thisword, 1) : 0);
+            fielddesc_setcoord(THISTMPL->array_motion_xfield,
+                THISTMPL->array_motion_template, thisword,
+                    xwas + dx * THISTMPL->array_motion_xperpix, 1);
+            if (THISTMPL->array_motion_yfield)
             {
-                if (TEMPLATE->array_motion_fatten)
+                if (THISTMPL->array_motion_fatten)
                 {
                     if (i == 0)
                     {
                         t_float newy = ywas +
-                            dy * TEMPLATE->array_motion_yperpix;
+                            dy * THISTMPL->array_motion_yperpix;
                         if (newy < 0)
                             newy = 0;
-                        fielddesc_setcoord(TEMPLATE->array_motion_yfield,
-                            TEMPLATE->array_motion_template, thisword, newy, 1);
+                        fielddesc_setcoord(THISTMPL->array_motion_yfield,
+                            THISTMPL->array_motion_template, thisword, newy, 1);
                     }
                 }
                 else
                 {
-                    fielddesc_setcoord(TEMPLATE->array_motion_yfield,
-                        TEMPLATE->array_motion_template, thisword,
-                            ywas + dy * TEMPLATE->array_motion_yperpix, 1);
+                    fielddesc_setcoord(THISTMPL->array_motion_yfield,
+                        THISTMPL->array_motion_template, thisword,
+                            ywas + dy * THISTMPL->array_motion_yperpix, 1);
                 }
             }
         }
     }
-    else if (TEMPLATE->array_motion_yfield)
+    else if (THISTMPL->array_motion_yfield)
     {
             /* a y-only plot. */
-        int thisx = TEMPLATE->array_motion_initx +
-            TEMPLATE->array_motion_xcumulative + 0.5, x2;
+        int thisx = THISTMPL->array_motion_initx +
+            THISTMPL->array_motion_xcumulative + 0.5, x2;
         int increment, i, nchange;
-        t_float newy = TEMPLATE->array_motion_ycumulative,
-            oldy = fielddesc_getcoord(TEMPLATE->array_motion_yfield,
-                TEMPLATE->array_motion_template,
-                    (t_word *)(((char *)TEMPLATE->array_motion_wp) +
-                        TEMPLATE->array_motion_elemsize *
-                            TEMPLATE->array_motion_lastx),
+        t_float newy = THISTMPL->array_motion_ycumulative,
+            oldy = fielddesc_getcoord(THISTMPL->array_motion_yfield,
+                THISTMPL->array_motion_template,
+                    (t_word *)(((char *)THISTMPL->array_motion_wp) +
+                        THISTMPL->array_motion_elemsize *
+                            THISTMPL->array_motion_lastx),
                             1);
         t_float ydiff = newy - oldy;
         if (thisx < 0) thisx = 0;
-        else if (thisx >= TEMPLATE->array_motion_npoints)
-            thisx = TEMPLATE->array_motion_npoints - 1;
-        increment = (thisx > TEMPLATE->array_motion_lastx ? -1 : 1);
-        nchange = 1 + increment * (TEMPLATE->array_motion_lastx - thisx);
+        else if (thisx >= THISTMPL->array_motion_npoints)
+            thisx = THISTMPL->array_motion_npoints - 1;
+        increment = (thisx > THISTMPL->array_motion_lastx ? -1 : 1);
+        nchange = 1 + increment * (THISTMPL->array_motion_lastx - thisx);
 
         for (i = 0, x2 = thisx; i < nchange; i++, x2 += increment)
         {
-            fielddesc_setcoord(TEMPLATE->array_motion_yfield,
-                TEMPLATE->array_motion_template,
-                    (t_word *)(((char *)TEMPLATE->array_motion_wp) +
-                        TEMPLATE->array_motion_elemsize * x2), newy, 1);
+            fielddesc_setcoord(THISTMPL->array_motion_yfield,
+                THISTMPL->array_motion_template,
+                    (t_word *)(((char *)THISTMPL->array_motion_wp) +
+                        THISTMPL->array_motion_elemsize * x2), newy, 1);
             if (nchange > 1)
                 newy -= ydiff * (1./(nchange - 1));
          }
-         TEMPLATE->array_motion_lastx = thisx;
+         THISTMPL->array_motion_lastx = thisx;
     }
-    if (TEMPLATE->array_motion_scalar)
-        scalar_redraw(TEMPLATE->array_motion_scalar,
-            TEMPLATE->array_motion_glist);
-    if (TEMPLATE->array_motion_array)
-        array_redraw(TEMPLATE->array_motion_array,
-            TEMPLATE->array_motion_glist);
+    if (THISTMPL->array_motion_scalar)
+    {
+        template_notifyforscalar(
+            template_findbyname(THISTMPL->array_motion_scalar->sc_template),
+                THISTMPL->array_motion_glist,
+                    THISTMPL->array_motion_scalar, gensym("change"), 1, &at);
+        scalar_redraw(THISTMPL->array_motion_scalar,
+            THISTMPL->array_motion_glist);
+    }
+    else
+    {
+            /* chase back to owning scalar to notify it */
+        t_array *owner_array =
+            THISTMPL->array_motion_gpointer.gp_stub->gs_un.gs_array;
+        while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+            owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+        template_notifyforscalar(
+            template_findbyname(owner_array->a_gp.gp_un.gp_scalar->sc_template),
+                THISTMPL->array_motion_glist,
+                    owner_array->a_gp.gp_un.gp_scalar,
+                        gensym("change"), 1, &at);
+        array_redraw(THISTMPL->array_motion_array,
+            THISTMPL->array_motion_glist);
+    }
 }
-
-int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
-    t_array *ap, struct _glist *owner,
-    t_float xloc, t_float yloc, int xpix, int ypix,
-    int shift, int alt, int dbl, int doit);
 
     /* try clicking on an element of the array as a scalar (if clicking
     on the trace of the array failed) */
@@ -2172,7 +2405,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,
             glist, usexloc, useyloc,
-            xpix, ypix, shift, alt, dbl, doit)))
+            xpix, ypix, shift, alt, dbl, doit)) > 0)
                 return (hit);
     }
     return (0);
@@ -2196,13 +2429,13 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         t_float best = 100;
             /* if it has more than 2000 points, just check 1000 of them. */
         int incr = (array->a_n <= 2000 ? 1 : array->a_n / 1000);
-        TEMPLATE->array_motion_elemsize = elemsize;
-        TEMPLATE->array_motion_glist = glist;
-        TEMPLATE->array_motion_scalar = sc;
-        TEMPLATE->array_motion_array = ap;
-        TEMPLATE->array_motion_template = elemtemplate;
-        TEMPLATE->array_motion_xperpix = glist_dpixtodx(glist, 1);
-        TEMPLATE->array_motion_yperpix = glist_dpixtody(glist, 1);
+        THISTMPL->array_motion_elemsize = elemsize;
+        THISTMPL->array_motion_glist = glist;
+        THISTMPL->array_motion_scalar = sc;
+        THISTMPL->array_motion_array = ap;
+        THISTMPL->array_motion_template = elemtemplate;
+        THISTMPL->array_motion_xperpix = glist_dpixtodx(glist, 1);
+        THISTMPL->array_motion_yperpix = glist_dpixtody(glist, 1);
             /* if we're a garray, the only one here, and if we appear to have
             only a 'y' field, click always succeeds and furthermore we'll
             call "motion" later. */
@@ -2215,26 +2448,33 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 xval = 0;
             else if (xval >= array->a_n)
                 xval = array->a_n - 1;
-            TEMPLATE->array_motion_yfield = yfield;
-            TEMPLATE->array_motion_ycumulative = glist_pixelstoy(glist, ypix);
-            TEMPLATE->array_motion_fatten = 0;
-            TEMPLATE->array_motion_xfield = 0;
-            TEMPLATE->array_motion_xcumulative = 0;
-            TEMPLATE->array_motion_lastx = TEMPLATE->array_motion_initx = xval;
-            TEMPLATE->array_motion_npoints = array->a_n;
-            TEMPLATE->array_motion_wp = (t_word *)((char *)array->a_vec);
+            THISTMPL->array_motion_yfield = yfield;
+            THISTMPL->array_motion_ycumulative = glist_pixelstoy(glist, ypix);
+            THISTMPL->array_motion_fatten = 0;
+            THISTMPL->array_motion_xfield = 0;
+            THISTMPL->array_motion_xcumulative = 0;
+            THISTMPL->array_motion_lastx = THISTMPL->array_motion_initx = xval;
+            THISTMPL->array_motion_npoints = array->a_n;
+            THISTMPL->array_motion_wp = (t_word *)((char *)array->a_vec);
             if (doit)
             {
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
+                if (THISTMPL->array_motion_scalar)
+                    gpointer_setglist(&THISTMPL->array_motion_gpointer,
+                        THISTMPL->array_motion_glist,
+                            THISTMPL->array_motion_scalar);
+                else gpointer_setarray(&THISTMPL->array_motion_gpointer,
+                    THISTMPL->array_motion_array,
+                        THISTMPL->array_motion_wp);
                 glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
-                if (TEMPLATE->array_motion_scalar)
-                    scalar_redraw(TEMPLATE->array_motion_scalar,
-                        TEMPLATE->array_motion_glist);
-                if (TEMPLATE->array_motion_array)
-                    array_redraw(TEMPLATE->array_motion_array,
-                        TEMPLATE->array_motion_glist);
+                if (THISTMPL->array_motion_scalar)
+                    scalar_redraw(THISTMPL->array_motion_scalar,
+                        THISTMPL->array_motion_glist);
+                if (THISTMPL->array_motion_array)
+                    array_redraw(THISTMPL->array_motion_array,
+                        THISTMPL->array_motion_glist);
             }
         }
         else
@@ -2316,10 +2556,10 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 if (dx + dy <= best || dx + dy2 <= best || dx + dy3 <= best)
                 {
                     if (dy < dy2 && dy < dy3)
-                        TEMPLATE->array_motion_fatten = 0;
+                        THISTMPL->array_motion_fatten = 0;
                     else if (dy2 < dy3)
-                        TEMPLATE->array_motion_fatten = -1;
-                    else TEMPLATE->array_motion_fatten = 1;
+                        THISTMPL->array_motion_fatten = -1;
+                    else THISTMPL->array_motion_fatten = 1;
                     if (doit)
                     {
                         char *elem = (char *)array->a_vec;
@@ -2347,55 +2587,62 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         }
                         if (xonset >= 0)
                         {
-                            TEMPLATE->array_motion_xfield = xfield;
-                            TEMPLATE->array_motion_xcumulative =
+                            THISTMPL->array_motion_xfield = xfield;
+                            THISTMPL->array_motion_xcumulative =
                                 fielddesc_getcoord(xfield,
-                                    TEMPLATE->array_motion_template,
+                                    THISTMPL->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
-                                TEMPLATE->array_motion_wp =
+                                THISTMPL->array_motion_wp =
                                     (t_word *)(elem + i * elemsize);
                             if (shift)
-                                TEMPLATE->array_motion_npoints =
+                                THISTMPL->array_motion_npoints =
                                     array->a_n - i;
-                            else TEMPLATE->array_motion_npoints = 1;
+                            else THISTMPL->array_motion_npoints = 1;
                         }
                         else
                         {
-                            TEMPLATE->array_motion_xfield = 0;
-                            TEMPLATE->array_motion_xcumulative = 0;
-                            TEMPLATE->array_motion_wp = (t_word *)elem;
-                            TEMPLATE->array_motion_npoints = array->a_n;
+                            THISTMPL->array_motion_xfield = 0;
+                            THISTMPL->array_motion_xcumulative = 0;
+                            THISTMPL->array_motion_wp = (t_word *)elem;
+                            THISTMPL->array_motion_npoints = array->a_n;
 
-                            TEMPLATE->array_motion_initx = i;
-                            TEMPLATE->array_motion_lastx = i;
-                            TEMPLATE->array_motion_xperpix *=
+                            THISTMPL->array_motion_initx = i;
+                            THISTMPL->array_motion_lastx = i;
+                            THISTMPL->array_motion_xperpix *=
                                 (xinc == 0 ? 1 : 1./xinc);
                         }
-                        if (TEMPLATE->array_motion_fatten)
+                        if (THISTMPL->array_motion_fatten)
                         {
-                            TEMPLATE->array_motion_yfield = wfield;
-                            TEMPLATE->array_motion_ycumulative =
+                            THISTMPL->array_motion_yfield = wfield;
+                            THISTMPL->array_motion_ycumulative =
                                 fielddesc_getcoord(wfield,
-                                    TEMPLATE->array_motion_template,
+                                    THISTMPL->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
-                            if (TEMPLATE->array_motion_yperpix < 0)
-                                TEMPLATE->array_motion_yperpix *= -1;
-                            TEMPLATE->array_motion_yperpix *=
-                                -TEMPLATE->array_motion_fatten;
+                            if (THISTMPL->array_motion_yperpix < 0)
+                                THISTMPL->array_motion_yperpix *= -1;
+                            THISTMPL->array_motion_yperpix *=
+                                -THISTMPL->array_motion_fatten;
                         }
                         else if (yonset >= 0)
                         {
-                            TEMPLATE->array_motion_yfield = yfield;
-                            TEMPLATE->array_motion_ycumulative =
+                            THISTMPL->array_motion_yfield = yfield;
+                            THISTMPL->array_motion_ycumulative =
                                 fielddesc_getcoord(yfield,
-                                    TEMPLATE->array_motion_template,
+                                    THISTMPL->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
                         }
                         else
                         {
-                            TEMPLATE->array_motion_yfield = 0;
-                            TEMPLATE->array_motion_ycumulative = 0;
+                            THISTMPL->array_motion_yfield = 0;
+                            THISTMPL->array_motion_ycumulative = 0;
                         }
+                        if (THISTMPL->array_motion_scalar)
+                            gpointer_setglist(&THISTMPL->array_motion_gpointer,
+                                THISTMPL->array_motion_glist,
+                                    THISTMPL->array_motion_scalar);
+                        else gpointer_setarray(&THISTMPL->array_motion_gpointer,
+                            THISTMPL->array_motion_array,
+                                THISTMPL->array_motion_wp);
                         glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                     }
                     if (alt)
@@ -2404,13 +2651,14 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (TEMPLATE->array_motion_fatten ?
+                    else return (THISTMPL->array_motion_fatten ?
                         CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
                 }
             }
         }
     }
-    return (0);
+        /* JMZ: change the cursor to "clickme" if the array can be edited */
+    return ((!edit)?CURSOR_RUNMODE_NOTHING:CURSOR_RUNMODE_CLICKME);
 }
 
 static int plot_click(t_gobj *z, t_glist *glist,
@@ -2456,17 +2704,18 @@ static void plot_setup(void)
     class_setparentwidget(plot_class, &plot_widgetbehavior);
 }
 
-/* ---------------- drawnumber: draw a number (or symbol) ---------------- */
-
 /*
-    drawnumbers draw numeric fields at controllable locations, with
-    controllable color and label.  invocation:
-    (drawnumber|drawsymbol) [-v <visible>] variable x y color label
+    drawtext: draw a number, symbol, or texts (lists that may include
+    semicolons and commas, as a [test] object can).  The (x,y) offset,
+    visibliity, color, and label may be constants or scalar fields.
+    invocation:
+        (drawnumber|drawsymbol|drawtext) [-v <visibility>] [-n]
+            variable x y color label
 */
 
-t_class *drawnumber_class;
+t_class *drawtext_class;
 
-typedef struct _drawnumber
+typedef struct _drawtext
 {
     t_object x_obj;
     t_symbol *x_fieldname;
@@ -2476,12 +2725,12 @@ typedef struct _drawnumber
     t_fielddesc x_vis;
     t_symbol *x_label;
     t_canvas *x_canvas;
-} t_drawnumber;
+    t_template *x_template; /* saved for drawtext_gettext called from rtext */
+} t_drawtext;
 
-static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
+static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
 {
-    t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
-    const char *classname = classsym->s_name;
+    t_drawtext *x = (t_drawtext *)pd_new(drawtext_class);
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
@@ -2492,6 +2741,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
         }
         else break;
     }
@@ -2505,15 +2765,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
-    else fielddesc_setfloat_const(&x->x_color, 1);
+    else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
     else x->x_label = &s_;
+    x->x_canvas = canvas_getcurrent();
 
     return (x);
 }
 
-void drawnumber_float(t_drawnumber *x, t_floatarg f)
+    /* float method: make visible or invisible */
+void drawtext_float(t_drawtext *x, t_floatarg f)
 {
     int viswas;
     if (x->x_vis.fd_type != A_FLOAT || x->x_vis.fd_var)
@@ -2530,11 +2792,11 @@ void drawnumber_float(t_drawnumber *x, t_floatarg f)
     canvas_redrawallfortemplatecanvas(x->x_canvas, 1);
 }
 
-/* -------------------- widget behavior for drawnumber ------------ */
+/* -------------------- various functions on drawtexts ------------ */
 
-static int drawnumber_gettype(t_drawnumber *x, t_word *data,
-    t_template *template, int *onsetp)
+int drawtext_gettype(t_gobj *z, t_template *template, int *onsetp)
 {
+    t_drawtext *x = (t_drawtext *)z;
     int type;
     t_symbol *arraytype;
     if (template_find_field(template, x->x_fieldname, onsetp, &type,
@@ -2543,190 +2805,223 @@ static int drawnumber_gettype(t_drawnumber *x, t_word *data,
     else return (-1);
 }
 
-#define DRAWNUMBER_BUFSIZE 1024
-static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
-    t_template *template, char *buf)
+t_template *drawtext_gettemplate(t_gobj *z)
 {
-    int nchars, onset, type = drawnumber_gettype(x, data, template, &onset);
-    if (type < 0)
-        buf[0] = 0;
+    t_drawtext *x = (t_drawtext *)z;
+    t_glist *gl = x->x_canvas;
+    t_gobj *g;
+    for (g = gl->gl_list; g; g = g->g_next)
+        if (g->g_pd == gtemplate_class)
+            return (((t_pdstruct *)g)->x_template);
+    return (0);     /* shouldn't happen - we got here through the template */
+}
+
+    /* get the text to draw or edit.  "length" is number of nonzero chars.
+    so buffer has length+1 characters allocated.  */
+static void drawtext_gettext(t_gobj *z, t_word *data, char **bufp, int *lengthp)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    t_template *template = x->x_template;
+    int nchars, onset, type = drawtext_gettype(z, template, &onset);
+    if (type < 0)      /* field not found in template */
+    {
+        *bufp = getbytes(1);
+        (*bufp)[0] = 0;
+        *lengthp = 0;
+    }
+    else if (type == DT_TEXT)
+    {
+        binbuf_gettext(((t_word *)((char *)data + onset))->w_binbuf,
+            bufp, lengthp);
+        *bufp = resizebytes(*bufp, *lengthp, *lengthp+1);
+        (*bufp)[*lengthp] = 0;
+    }
     else
     {
-        strncpy(buf, x->x_label->s_name, DRAWNUMBER_BUFSIZE);
-        buf[DRAWNUMBER_BUFSIZE - 1] = 0;
-        nchars = (int)strlen(buf);
-        if (type == DT_TEXT)
+        t_atom at;
+        char tempbuf[MAXPDSTRING];
+        switch(type)
         {
-            char *buf2;
-            int size2, ncopy;
-            binbuf_gettext(((t_word *)((char *)data + onset))->w_binbuf,
-                &buf2, &size2);
-            ncopy = (size2 > DRAWNUMBER_BUFSIZE-1-nchars ?
-                DRAWNUMBER_BUFSIZE-1-nchars: size2);
-            memcpy(buf+nchars, buf2, ncopy);
-            buf[nchars+ncopy] = 0;
-            if (nchars+ncopy == DRAWNUMBER_BUFSIZE-1)
-                strcpy(buf+(DRAWNUMBER_BUFSIZE-4), "...");
-            t_freebytes(buf2, size2);
+        case DT_FLOAT:
+            SETFLOAT(&at, ((t_word *)((char *)data + onset))->w_float);
+            atom_string(&at, tempbuf, MAXPDSTRING);
+            break;
+        case DT_SYMBOL:
+            strncpy(tempbuf,
+                ((t_word *)((char *)data + onset))->w_symbol->s_name,
+                    MAXPDSTRING);
+            break;
+        default:
+            strncpy(tempbuf, "???", 4);
+            break;
         }
-        else
-        {
-            t_atom at;
-            if (type == DT_FLOAT)
-                SETFLOAT(&at, ((t_word *)((char *)data + onset))->w_float);
-            else SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
-            atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
-        }
+        *bufp = getbytes((*lengthp = strlen(tempbuf)) + 1);
+        strncpy(*bufp, tempbuf, *lengthp);
     }
 }
 
-static void drawnumber_getrect(t_gobj *z, t_glist *glist,
+    /* called from g_rtext.c; update associated scalar for new text */
+void drawtext_newtext(t_gobj *z, t_glist *gl, t_scalar *sc,
+    t_word *words, char *buf)
+{
+    t_template *template = drawtext_gettemplate(z);
+    int onset, type = drawtext_gettype(z, template, &onset);
+    t_atom at;
+    if (type == DT_FLOAT)
+        words[onset/sizeof(t_word)].w_float = atof(buf);
+    else if (type == DT_SYMBOL)
+        words[onset/sizeof(t_word)].w_symbol = gensym(buf);
+    else if (type == DT_TEXT)
+        binbuf_text(words[onset/sizeof(t_word)].w_binbuf, buf, strlen(buf));
+    template_notifyforscalar(template, gl, sc, gensym("change"), 1, &at);
+    scalar_redraw(sc, gl);
+}
+
+/* -------------------- widget behavior for drawtext ------------ */
+
+static void drawtext_getrect(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_drawnumber *x = (t_drawnumber *)z;
-    t_atom at;
-    int xloc, yloc, fontwidth, fontheight, bufsize, width, height;
-    char buf[DRAWNUMBER_BUFSIZE], *startline, *newline;
-
-    if (!fielddesc_getfloat(&x->x_vis, template, data, 0))
-    {
-        *xp1 = *yp1 = 0x7fffffff;
-        *xp2 = *yp2 = -0x7fffffff;
-        return;
-    }
-    xloc = glist_xtopixels(glist,
-        basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
-    yloc = glist_ytopixels(glist,
-        basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-    fontwidth = glist_fontwidth(glist);
-    fontheight = glist_fontheight(glist);
-    drawnumber_getbuf(x, data, template, buf);
-    width = 0;
-    height = 1;
-    for (startline = buf; (newline = strchr(startline, '\n'));
-        startline = newline+1)
-    {
-        if (newline - startline > width)
-            width = (int)(newline - startline);
-        height++;
-    }
-    if (strlen(startline) > (unsigned)width)
-        width = (int)strlen(startline);
-    *xp1 = xloc;
-    *yp1 = yloc;
-    *xp2 = xloc + fontwidth * width;
-    *yp2 = yloc + fontheight * height;
+        /* just report an empty rectangle */
+    *xp1 = *yp1 = 0x7fffffff;
+    *xp2 = *yp2 = -0x7fffffff;
 }
 
-static void drawnumber_displace(t_gobj *z, t_glist *glist,
+static void drawtext_displace(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int dx, int dy)
 {
     /* refuse */
 }
 
-static void drawnumber_select(t_gobj *z, t_glist *glist,
+static void drawtext_select(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
-    post("drawnumber_select %d", state);
+    post("drawtext_select %d", state);
     /* fill in later */
 }
 
-static void drawnumber_activate(t_gobj *z, t_glist *glist,
+static void drawtext_activate(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
-    post("drawnumber_activate %d", state);
+    post("drawtext_activate %d", state);
 }
 
-static void drawnumber_vis(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int vis)
-{
-    t_drawnumber *x = (t_drawnumber *)z;
+void rtext_setcolor(t_rtext *x, int color);
 
+static void drawtext_vis(t_gobj *z, t_glist *glist,
+    t_word *data, t_template *template, t_scalar *sc,
+    t_float basex, t_float basey, int vis)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    char tag[80];
+    const char *tags[] = {tag, "label"};
+    t_rtext *rtext = glist_getforscalar(glist, sc, data, z);
+    x->x_template = template;
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag, "drawtext%p", data);
     if (vis)
     {
+        t_atom fontatoms[3];
         t_atom at;
         int xloc = glist_xtopixels(glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-        char colorstring[20], buf[DRAWNUMBER_BUFSIZE];
-        numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
-            colorstring);
-        drawnumber_getbuf(x, data, template, buf);
-        sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
-                glist_getcanvas(glist), xloc, yloc, colorstring, buf);
-        sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                sys_fontweight);
-        sys_vgui(" -tags [list drawnumber%lx label]\n", data);
+        int color = numbertocolor(
+            fielddesc_getfloat(&x->x_color, template, data, 1));
+        char *textbuf;
+        int textlen;
+            /* draw label */
+        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        SETFLOAT (fontatoms+1,
+            -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+            /* display label */
+        if (*x->x_label->s_name)
+            pdgui_vmess(0, "crr ii rs rk rs rA rS",
+                glist_getcanvas(glist), "create", "text",
+                xloc, yloc,
+                "-anchor", "nw",
+                "-fill", color,
+                "-text", x->x_label->s_name,
+                "-font", 3, fontatoms,
+                "-tags", 2, tags);
+            /* draw text */
+        rtext_setcolor(rtext, color);
+        drawtext_gettext(z, data, &textbuf, &textlen);
+        rtext_retextforscalar(rtext, textbuf, textlen,
+            xloc + glist_fontwidth(glist) * strlen(x->x_label->s_name), yloc);
+        t_freebytes(textbuf, textlen+1);
     }
-    else sys_vgui(".x%lx.c delete drawnumber%lx\n",
-        glist_getcanvas(glist), data);
+    else
+    {
+        if (*x->x_label->s_name)
+            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        rtext_erase(rtext);
+    }
 }
 
-static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
+static void drawtext_motionfn(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
-    t_drawnumber *x = (t_drawnumber *)z;
+    t_drawtext *x = (t_drawtext *)z;
     t_atom at;
     if (up != 0)
         return;
-    if (!gpointer_check(&TEMPLATE->drawnumber_motion_gpointer, 0))
+    if (!gpointer_check(&THISTMPL->drawtext_motion_gpointer, 0))
     {
-        post("drawnumber_motion: scalar disappeared");
+        post("drawtext_motion: scalar disappeared");
         return;
     }
-    if (TEMPLATE->drawnumber_motion_type != DT_FLOAT)
+    if (THISTMPL->drawtext_motion_type != DT_FLOAT)
         return;
-    TEMPLATE->drawnumber_motion_ycumulative -= dy;
-    template_setfloat(TEMPLATE->drawnumber_motion_template,
+    THISTMPL->drawtext_motion_ycumulative -= dy;
+    template_setfloat(THISTMPL->drawtext_motion_template,
         x->x_fieldname,
-            TEMPLATE->drawnumber_motion_wp,
-            TEMPLATE->drawnumber_motion_ycumulative,
+            THISTMPL->drawtext_motion_wp,
+            THISTMPL->drawtext_motion_ycumulative,
                 1);
-    if (TEMPLATE->drawnumber_motion_scalar)
-        template_notifyforscalar(TEMPLATE->drawnumber_motion_template,
-            TEMPLATE->drawnumber_motion_glist,
-                TEMPLATE->drawnumber_motion_scalar,
+    if (THISTMPL->drawtext_motion_scalar)
+        template_notifyforscalar(THISTMPL->drawtext_motion_template,
+            THISTMPL->drawtext_motion_glist,
+                THISTMPL->drawtext_motion_scalar,
                 gensym("change"), 1, &at);
 
-    if (TEMPLATE->drawnumber_motion_scalar)
-        scalar_redraw(TEMPLATE->drawnumber_motion_scalar,
-            TEMPLATE->drawnumber_motion_glist);
-    if (TEMPLATE->drawnumber_motion_array)
-        array_redraw(TEMPLATE->drawnumber_motion_array,
-            TEMPLATE->drawnumber_motion_glist);
+    if (THISTMPL->drawtext_motion_scalar)
+        scalar_redraw(THISTMPL->drawtext_motion_scalar,
+            THISTMPL->drawtext_motion_glist);
+    if (THISTMPL->drawtext_motion_array)
+        array_redraw(THISTMPL->drawtext_motion_array,
+            THISTMPL->drawtext_motion_glist);
 }
 
-static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
+static void drawtext_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
-    t_drawnumber *x = (t_drawnumber *)z;
+    t_drawtext *x = (t_drawtext *)z;
     int key = fkey;
     char sbuf[MAXPDSTRING];
     t_atom at;
-    if (!gpointer_check(&TEMPLATE->drawnumber_motion_gpointer, 0))
+    if (!gpointer_check(&THISTMPL->drawtext_motion_gpointer, 0))
     {
-        post("drawnumber_motion: scalar disappeared");
+        post("drawtext_motion: scalar disappeared");
         return;
     }
     if (key == 0)
         return;
-    if (TEMPLATE->drawnumber_motion_type == DT_SYMBOL)
+    if (THISTMPL->drawtext_motion_type == DT_SYMBOL)
     {
             /* key entry for a symbol field */
-        if (TEMPLATE->drawnumber_motion_firstkey)
+        if (THISTMPL->drawtext_motion_firstkey)
             sbuf[0] = 0;
         else strncpy(sbuf,
-            template_getsymbol(TEMPLATE->drawnumber_motion_template,
-            x->x_fieldname, TEMPLATE->drawnumber_motion_wp, 1)->s_name,
+            template_getsymbol(THISTMPL->drawtext_motion_template,
+            x->x_fieldname, THISTMPL->drawtext_motion_wp, 1)->s_name,
                 MAXPDSTRING);
         sbuf[MAXPDSTRING-1] = 0;
         if (key == '\b')
@@ -2740,16 +3035,16 @@ static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
             sbuf[strlen(sbuf)] = key;
         }
     }
-    else if (TEMPLATE->drawnumber_motion_type == DT_FLOAT)
+    else if (THISTMPL->drawtext_motion_type == DT_FLOAT)
     {
             /* key entry for a numeric field.  This is just a stopgap. */
         double newf;
-        if (TEMPLATE->drawnumber_motion_firstkey)
+        if (THISTMPL->drawtext_motion_firstkey)
             sbuf[0] = 0;
         else sprintf(sbuf, "%g",
-            template_getfloat(TEMPLATE->drawnumber_motion_template,
-            x->x_fieldname, TEMPLATE->drawnumber_motion_wp, 1));
-        TEMPLATE->drawnumber_motion_firstkey = (key == '\n');
+            template_getfloat(THISTMPL->drawtext_motion_template,
+            x->x_fieldname, THISTMPL->drawtext_motion_wp, 1));
+        THISTMPL->drawtext_motion_firstkey = (key == '\n');
         if (key == '\b')
         {
             if (*sbuf)
@@ -2762,56 +3057,56 @@ static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
         }
         if (sscanf(sbuf, "%lg", &newf) < 1)
             newf = 0;
-        template_setfloat(TEMPLATE->drawnumber_motion_template,
-            x->x_fieldname, TEMPLATE->drawnumber_motion_wp, (t_float)newf, 1);
-        if (TEMPLATE->drawnumber_motion_scalar)
-            template_notifyforscalar(TEMPLATE->drawnumber_motion_template,
-                TEMPLATE->drawnumber_motion_glist,
-                    TEMPLATE->drawnumber_motion_scalar,
+        template_setfloat(THISTMPL->drawtext_motion_template,
+            x->x_fieldname, THISTMPL->drawtext_motion_wp, (t_float)newf, 1);
+        if (THISTMPL->drawtext_motion_scalar)
+            template_notifyforscalar(THISTMPL->drawtext_motion_template,
+                THISTMPL->drawtext_motion_glist,
+                    THISTMPL->drawtext_motion_scalar,
                     gensym("change"), 1, &at);
-        if (TEMPLATE->drawnumber_motion_scalar)
-            scalar_redraw(TEMPLATE->drawnumber_motion_scalar,
-                TEMPLATE->drawnumber_motion_glist);
-        if (TEMPLATE->drawnumber_motion_array)
-            array_redraw(TEMPLATE->drawnumber_motion_array,
-                TEMPLATE->drawnumber_motion_glist);
+        if (THISTMPL->drawtext_motion_scalar)
+            scalar_redraw(THISTMPL->drawtext_motion_scalar,
+                THISTMPL->drawtext_motion_glist);
+        if (THISTMPL->drawtext_motion_array)
+            array_redraw(THISTMPL->drawtext_motion_array,
+                THISTMPL->drawtext_motion_glist);
     }
     else post("typing at text fields not yet implemented");
 }
 
-static int drawnumber_click(t_gobj *z, t_glist *glist,
+static int drawtext_click(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_scalar *sc, t_array *ap,
     t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
-    t_drawnumber *x = (t_drawnumber *)z;
+    t_drawtext *x = (t_drawtext *)z;
+    t_rtext *rtext = glist_getforscalar(glist, sc, data, z);
     int x1, y1, x2, y2, type, onset;
-    drawnumber_getrect(z, glist,
-        data, template, basex, basey,
-        &x1, &y1, &x2, &y2);
+    x->x_template = template;
+    rtext_getrect(rtext, &x1, &y1, &x2, &y2);
     if (xpix >= x1 && xpix <= x2 && ypix >= y1 && ypix <= y2 &&
-        ((type = drawnumber_gettype(x, data, template, &onset)) == DT_FLOAT ||
+        ((type = drawtext_gettype(z, template, &onset)) == DT_FLOAT ||
             type == DT_SYMBOL))
     {
         if (doit)
         {
-            TEMPLATE->drawnumber_motion_glist = glist;
-            TEMPLATE->drawnumber_motion_wp = data;
-            TEMPLATE->drawnumber_motion_template = template;
-            TEMPLATE->drawnumber_motion_scalar = sc;
-            TEMPLATE->drawnumber_motion_array = ap;
-            TEMPLATE->drawnumber_motion_firstkey = 1;
-            TEMPLATE->drawnumber_motion_ycumulative =
+            THISTMPL->drawtext_motion_glist = glist;
+            THISTMPL->drawtext_motion_wp = data;
+            THISTMPL->drawtext_motion_template = template;
+            THISTMPL->drawtext_motion_scalar = sc;
+            THISTMPL->drawtext_motion_array = ap;
+            THISTMPL->drawtext_motion_firstkey = 1;
+            THISTMPL->drawtext_motion_ycumulative =
                 template_getfloat(template, x->x_fieldname, data, 0);
-            TEMPLATE->drawnumber_motion_type = type;
-            if (TEMPLATE->drawnumber_motion_scalar)
-                gpointer_setglist(&TEMPLATE->drawnumber_motion_gpointer,
-                    TEMPLATE->drawnumber_motion_glist,
-                        TEMPLATE->drawnumber_motion_scalar);
-            else gpointer_setarray(&TEMPLATE->drawnumber_motion_gpointer,
-                    TEMPLATE->drawnumber_motion_array,
-                        TEMPLATE->drawnumber_motion_wp);
-            glist_grab(glist, z, drawnumber_motionfn, drawnumber_key,
+            THISTMPL->drawtext_motion_type = type;
+            if (THISTMPL->drawtext_motion_scalar)
+                gpointer_setglist(&THISTMPL->drawtext_motion_gpointer,
+                    THISTMPL->drawtext_motion_glist,
+                        THISTMPL->drawtext_motion_scalar);
+            else gpointer_setarray(&THISTMPL->drawtext_motion_gpointer,
+                    THISTMPL->drawtext_motion_array,
+                        THISTMPL->drawtext_motion_wp);
+            glist_grab(glist, z, drawtext_motionfn, drawtext_key,
                 xpix, ypix);
         }
         return (1);
@@ -2819,32 +3114,32 @@ static int drawnumber_click(t_gobj *z, t_glist *glist,
     else return (0);
 }
 
-const t_parentwidgetbehavior drawnumber_widgetbehavior =
+const t_parentwidgetbehavior drawtext_widgetbehavior =
 {
-    drawnumber_getrect,
-    drawnumber_displace,
-    drawnumber_select,
-    drawnumber_activate,
-    drawnumber_vis,
-    drawnumber_click,
+    drawtext_getrect,
+    drawtext_displace,
+    drawtext_select,
+    drawtext_activate,
+    drawtext_vis,
+    drawtext_click,
 };
 
-static void drawnumber_free(t_drawnumber *x)
+static void drawtext_free(t_drawtext *x)
 {
 }
 
-static void drawnumber_setup(void)
+static void drawtext_setup(void)
 {
-    drawnumber_class = class_new(gensym("drawtext"),
-        (t_newmethod)drawnumber_new, (t_method)drawnumber_free,
-        sizeof(t_drawnumber), 0, A_GIMME, 0);
-    class_setdrawcommand(drawnumber_class);
-    class_addfloat(drawnumber_class, drawnumber_float);
-    class_addcreator((t_newmethod)drawnumber_new, gensym("drawsymbol"),
+    drawtext_class = class_new(gensym("drawtext"),
+        (t_newmethod)drawtext_new, (t_method)drawtext_free,
+        sizeof(t_drawtext), 0, A_GIMME, 0);
+    class_setdrawcommand(drawtext_class);
+    class_addfloat(drawtext_class, drawtext_float);
+    class_addcreator((t_newmethod)drawtext_new, gensym("drawsymbol"),
         A_GIMME, 0);
-    class_addcreator((t_newmethod)drawnumber_new, gensym("drawnumber"),
+    class_addcreator((t_newmethod)drawtext_new, gensym("drawnumber"),
         A_GIMME, 0);
-    class_setparentwidget(drawnumber_class, &drawnumber_widgetbehavior);
+    class_setparentwidget(drawtext_class, &drawtext_widgetbehavior);
 }
 
 /* ---------------------- setup function ---------------------------- */
@@ -2855,15 +3150,15 @@ void g_template_setup(void)
     gtemplate_setup();
     curve_setup();
     plot_setup();
-    drawnumber_setup();
+    drawtext_setup();
 }
 
 void g_template_newpdinstance(void)
 {
-    TEMPLATE = getbytes(sizeof(*TEMPLATE));
+    THISTMPL = getbytes(sizeof(*THISTMPL));
 }
 
 void g_template_freepdinstance(void)
 {
-    freebytes(TEMPLATE, sizeof(*TEMPLATE));
+    freebytes(THISTMPL, sizeof(*THISTMPL));
 }

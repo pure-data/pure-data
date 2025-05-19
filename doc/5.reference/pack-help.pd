@@ -1,49 +1,32 @@
-#N canvas 562 39 595 622 12;
+#N canvas 487 35 590 612 12;
 #X floatatom 69 168 6 0 0 0 - - - 0;
-#X msg 36 134 bang;
 #X floatatom 124 253 5 0 0 0 - - - 0;
 #X floatatom 234 280 5 0 0 0 - - - 0;
 #X obj 69 364 print;
 #X msg 179 253 symbol cat;
-#X obj 48 16 pack;
-#X obj 114 582 unpack;
+#X obj 28 16 pack;
+#X obj 94 583 unpack;
 #X msg 82 200 1 2 dog;
-#X text 87 16 - combine several atoms into one message;
-#X text 352 584 updated for Pd version 0.34;
-#X text 37 582 See also:;
-#X text 149 197 <= you can also send a list as Pd distributes its elements
-to the corresponding inlets., f 45;
-#X obj 415 454 pack;
-#X obj 415 420 t b f;
-#X floatatom 415 394 6 0 0 0 - - - 0;
-#X floatatom 362 394 6 0 0 0 - - - 0;
-#X obj 415 507 print;
-#X obj 118 531 print;
-#X msg 118 400 a;
-#X obj 118 473 pack s f;
-#X floatatom 171 437 5 0 0 0 - - - 0;
-#X text 153 395 pack accepts 'anythings' in the left inlet, f 24;
-#X text 316 328 By default \, pack takes two floats. You can use trigger
-to force an output on secondary inlets., f 34;
-#X text 25 459 abbreviated arguments =>, f 13;
-#X text 458 419 <= trigger;
+#X text 372 582 updated for Pd version 0.34;
+#X text 17 582 See also:;
+#X obj 425 454 pack;
+#X obj 425 420 t b f;
+#X floatatom 425 394 6 0 0 0 - - - 0;
+#X floatatom 372 394 6 0 0 0 - - - 0;
+#X obj 425 507 print;
+#X obj 115 531 print;
+#X msg 115 400 a;
+#X obj 115 473 pack s f;
+#X floatatom 168 437 5 0 0 0 - - - 0;
+#X text 468 419 <= trigger;
 #X listbox 69 335 20 0 0 0 - - - 0;
-#X listbox 118 504 20 0 0 0 - - - 0;
-#X listbox 415 480 17 0 0 0 - - - 0;
+#X listbox 115 504 20 0 0 0 - - - 0;
+#X listbox 425 480 17 0 0 0 - - - 0;
 #X obj 69 306 pack 10 100 symbol float;
-#X text 283 250 <= numbers and symbols in the right inlets change the
-values without causing output., f 30;
-#X text 77 134 <= outputs the packed elements;
-#X text 117 167 <= first inlet generates output;
-#X obj 169 582 trigger;
+#X obj 149 583 trigger;
 #N canvas 545 128 559 219 pointer 0;
-#X text 55 22 The [pack] object can pack a pointer into a list. A pointer
-can be the location of a Data Structure scalar somewhere or the head
-of a Data Structure list. To know more about Data Structures \, how
-to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials., f 65;
-#X obj 93 124 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X text 55 22 The [pack] object can pack a pointer into a list. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 65;
+#X obj 93 124 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
 #X obj 58 105 pdcontrol;
@@ -53,65 +36,56 @@ section of the Pd's tutorials., f 65;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 93 154 pd open;
-#X text 117 123 <-- open first examle of the 4.Data.Structure section
-;
+#X text 118 124 <-- open first example of the 4.Data.Structure section;
 #X connect 1 0 2 0;
-#X restore 351 132 pd pointer;
-#X text 432 132 <= about pointers;
-#X text 18 56 The pack object outputs a concatenated list from a series
-of inputs. Creation arguments set the number of inlets and their type
-\, possible values are: float (or 'f') \, symbol (or 's') and pointer
-(or 'p') - see [pd pointer]. A number sets a numeric inlet and initializes
-the value ('float'/'f' initializes to 0)., f 79;
-#X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X restore 360 135 pd pointer;
+#X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 660 81 569 367 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 205 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 243 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 339 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 199 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 237 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 333 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 48 16 pack;
-#X text 87 16 - combine several atoms into one message.;
-#X text 143 215 list - the packed list., f 49;
-#X text 77 61 (number depends on number of arguments);
-#X obj 7 122 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
-;
-#X text 55 130 anything -;
-#X text 132 130 each inlet takes a message type according to its corresponding
-creation argument. These can be float \, symbol and pointer. The 1st
-inlet causes an output and can also match an 'anything' to a symbol.
-, f 53;
+#X text 143 209 list - the packed list., f 49;
+#X obj 7 122 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
 #X text 81 94 bang - output the packed list., f 62;
-#X text 109 269 list of types (defining the number of inlets). These
-can be 'float/'f' \, 'symbol/'s' and 'pointer/'p'. A number sets a
-numeric inlet and initializes the value \, 'float/f' initialized to
-0 (default 0 0)., f 58;
-#X text 41 268 1) list -;
+#X text 41 262 1) list -;
+#X text 87 16 - combine floats/symbols into a list.;
+#X text 77 61 (number of inlets depends on the number of arguments);
+#X text 75 130 float - float input to pack into a list (if type is a float)., f 62;
+#X text 69 149 symbol - symbol input to pack into a list (if type is a symbol)., f 64;
+#X text 62 169 pointer - pointer input to pack into a list (if type is a pointer)., f 67;
+#X text 109 263 list of inlet types (defines the number of inlets). These can be 'float/'f' \, 'symbol/'s' and 'pointer/'p'. A number sets a numeric inlet and initializes the value \, 'float/f' initialized to 0 (default 0 0).;
 #X restore 407 15 pd reference;
 #X text 501 15 <= click;
-#X obj 8 566 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 0 0 29 0;
-#X connect 1 0 29 0;
-#X connect 2 0 29 1;
-#X connect 3 0 29 3;
-#X connect 5 0 29 2;
-#X connect 8 0 29 0;
-#X connect 13 0 28 0;
-#X connect 14 0 13 0;
-#X connect 14 1 13 1;
-#X connect 15 0 14 0;
-#X connect 16 0 13 0;
-#X connect 19 0 20 0;
-#X connect 20 0 27 0;
-#X connect 21 0 20 1;
-#X connect 26 0 4 0;
-#X connect 27 0 18 0;
-#X connect 28 0 17 0;
-#X connect 29 0 26 0;
+#X obj 8 566 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 19 459 abbreviated arguments -->, f 13;
+#X obj 53 134 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 76 133 <-- outputs the packed elements;
+#X text 117 167 <-- first inlet generates output;
+#X text 149 197 <- you can also send a list as Pd distributes its elements to the corresponding inlets., f 45;
+#X text 279 250 <-- numbers and symbols in the right inlets change the values without causing output., f 30;
+#X text 18 56 The [pack] object outputs a concatenated list from a series of inputs. Creation arguments set the number of inlets and their type \, possible values are: float (or 'f') \, symbol (or 's') and pointer (or 'p') - see [pd pointer]. A number sets a numeric inlet and initializes the value ('float'/'f' initializes to 0)., f 79;
+#X text 441 135 <-- about pointers;
+#X text 316 328 By default \, [pack] takes two floats. You can use [trigger] to force an output on secondary inlets., f 36;
+#X text 146 395 [pack] accepts 'anythings' in the left inlet, f 26;
+#X text 67 16 - combine atoms into a list;
+#X connect 0 0 23 0;
+#X connect 1 0 23 1;
+#X connect 2 0 23 3;
+#X connect 4 0 23 2;
+#X connect 7 0 23 0;
+#X connect 10 0 22 0;
+#X connect 11 0 10 0;
+#X connect 11 1 10 1;
+#X connect 12 0 11 0;
+#X connect 13 0 10 0;
+#X connect 16 0 17 0;
+#X connect 17 0 21 0;
+#X connect 18 0 17 1;
+#X connect 20 0 3 0;
+#X connect 21 0 15 0;
+#X connect 22 0 14 0;
+#X connect 23 0 20 0;
+#X connect 31 0 23 0;

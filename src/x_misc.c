@@ -7,9 +7,8 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
-#include <math.h>
-#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <wtypes.h>
 #include <time.h>
@@ -24,7 +23,7 @@
 #if defined (__APPLE__) || defined (__FreeBSD__)
 #define CLOCKHZ CLK_TCK
 #endif
-#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
+#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID) || defined(__EMSCRIPTEN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
 #if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
@@ -33,13 +32,7 @@
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */
@@ -290,6 +283,8 @@ static t_class *oscparse_class;
 typedef struct _oscparse
 {
     t_object x_obj;
+    t_outlet *x_address_n;
+    int x_flag;
 } t_oscparse;
 
 #define ROUNDUPTO4(x) (((x) + 3) & (~3))
@@ -384,9 +379,23 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
+    int address_n = -1;
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
-        j < outc; j++)
-            SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+         j < outc; j++)
+    {
+        if(x->x_flag)
+        {
+            t_symbol *sym = grabstring(argc, argv, &i, 1);
+            t_float f = 0.0f;
+            char *str_end = NULL;
+            f = strtod(sym->s_name, &str_end);
+            if (f == 0 && sym->s_name == str_end)
+                SETSYMBOL(outv+j, sym);
+            else SETFLOAT(outv+j, f);
+        }
+        else SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+        address_n = j + 1;
+    }
     for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
     {
         union
@@ -458,6 +467,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
         }
     }
+    outlet_float(x->x_address_n, address_n);
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
 tooshort:
@@ -467,7 +477,13 @@ tooshort:
 static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_oscparse *x = (t_oscparse *)pd_new(oscparse_class);
+    x->x_flag = 0;
+    if (argc && argv[0].a_w.w_symbol == gensym("-n"))
+    {
+        x->x_flag = 1;
+    }
     outlet_new(&x->x_obj, gensym("list"));
+    x->x_address_n = outlet_new((t_object *)x, &s_float);
     return (x);
 }
 

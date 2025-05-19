@@ -1,39 +1,19 @@
 #N canvas 532 29 631 467 12;
 #X obj 78 344 snapshot~;
 #X obj 32 19 snapshot~;
-#X msg 89 286 bang;
-#X text 135 372 This output updates each time bang is clicked above.
-;
 #X text 112 19 - convert a signal to a number on demand;
-#X text 28 63 The snapshot~ object takes a signal and converts it to
-a control value whenever it receives a bang in its left outlet. This
-object is particularly useful for monitoring outputs., f 81;
 #X obj 78 261 osc~ 0.1;
-#X text 384 429 updated for Pd version 0.37;
+#X text 393 429 updated for Pd version 0.37;
 #X text 147 261 signal in to take snapshots of;
-#X text 27 122 In the example below \, a snapshot~ object prints out
-the values of a low frequency cosine wave every time it is sent a bang
-message., f 81;
-#X text 28 162 A 'set' message is provided for the (rare) situations
-where you might make a known change to the signal input \, and then
-read snapshot's value before any ensuing signal computation., f 81
-;
+#X text 28 162 A 'set' message is provided for the (rare) situations where you might make a known change to the signal input \, and then read snapshot's value before any ensuing signal computation., f 81;
 #X floatatom 78 371 7 0 0 0 - - - 0;
 #X msg 101 314 set 5 \, bang;
-#X msg 430 242 \; pd dsp \$1;
-#X obj 430 215 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 452 217 DSP on/off;
-#X text 78 238 0.1 Hz cosine wave;
+#X text 78 235 0.1 Hz cosine wave;
 #N canvas 702 112 582 226 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 122 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 159 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 196 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 122 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 159 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 196 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 131 66 bang -;
 #X text 166 170 NONE, f 9;
 #X obj 39 20 snapshot~;
@@ -41,20 +21,24 @@ read snapshot's value before any ensuing signal computation., f 81
 #X text 183 66 convert a signal to a float., f 46;
 #X text 82 86 set <float> -;
 #X text 183 86 set a float value for the next DSP block., f 46;
-#X text 126 132 float - the converted signal at every bang., f 54
-;
+#X text 126 132 float - the converted signal at every bang., f 54;
 #X restore 435 19 pd reference;
 #X text 533 19 <= click;
-#X obj 10 51 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 10 51 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 48 428 see also:;
 #X obj 124 429 sig~;
-#X obj 10 414 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 132 285 <-- take one snapshot;
-#X text 190 314 <-- set value (which is reset next DSP block.);
-#X connect 0 0 11 0;
-#X connect 2 0 0 0;
-#X connect 6 0 0 0;
-#X connect 12 0 0 0;
-#X connect 14 0 13 0;
+#X obj 10 414 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 113 286 <-- take one snapshot;
+#X text 28 63 The [snapshot~] object takes a signal and converts it to a control value whenever it receives a bang in its left inlet. This object is particularly useful for monitoring outputs., f 81;
+#X text 27 122 In the example below \, a [snapshot~] object prints out the values of a low frequency cosine wave every time it is sent a bang message., f 83;
+#X obj 89 286 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 135 372 This output updates each time bang is clicked above;
+#X text 190 314 <-- set value (which is reset next DSP block);
+#X msg 411 255 \; pd dsp \$1;
+#X obj 411 220 set-dsp-tgl;
+#X text 442 224 DSP on/off;
+#X connect 0 0 7 0;
+#X connect 3 0 0 0;
+#X connect 8 0 0 0;
+#X connect 19 0 0 0;
+#X connect 23 0 22 0;

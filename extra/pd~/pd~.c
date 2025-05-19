@@ -34,9 +34,15 @@ typedef int socklen_t;
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
-#define snprintf _snprintf
 #define stat _stat
 #endif
+
+#ifdef _WIN32
+# define PIPE(p) _pipe(p, 65536, O_BINARY | O_NOINHERIT)
+#else
+# define PIPE(p) pipe(p)
+#endif
+
 
 #ifdef MSP
 #include "ext.h"
@@ -80,6 +86,13 @@ void critical_exit(int z);
 #include "s_stuff.h"
 static t_class *pd_tilde_class;
 #define PDERROR pd_error(x,
+#else
+#ifdef _MSC_VER
+/* Sorry, MSP! */
+#define pd_snprintf _snprintf
+#else
+#define pd_snprintf snprintf
+#endif
 #endif
 
 #if defined(__x86_64__) || defined(_M_X64)
@@ -102,27 +115,35 @@ static t_class *pd_tilde_class;
 
 
 static const char *pd_tilde_dllextent[] = {
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || \
-    defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
     ".pd_linux",
-    ".so",
 #elif defined(__APPLE__)
-    ".d_fat",
     ARCHDLLEXT(".d_")
+    ".d_fat",
     ".pd_darwin",
-    ".so",
-#elif defined(__OPENBSD__)
-    ARCHDLLEXT(".o_")
-    ".pd_openbsd",
-    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+#endif
+        /* and some generic extensions */
+#if defined(_WIN32) || defined(__CYGWIN__)
     ".dll",
 #else
     ".so",
 #endif
     0};
+
+
+static const char **get_dllextent(void)
+{
+#if PD
+    const char**dllextent = sys_get_dllextensions();
+    if(dllextent && *dllextent)
+        return dllextent;
+#endif
+    return pd_tilde_dllextent;
+}
+
 
 #include "binarymsg.c"
 
@@ -544,15 +565,15 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
     sprintf(ninsigstr, "%d", ninsig);
     sprintf(noutsigstr, "%d", noutsig);
     sprintf(sampleratestr, "%f", (float)samplerate);
-    snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
+    pd_snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
     sys_bashfilename(tmpbuf, pdexecbuf);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
-        snprintf(tmpbuf, MAXPDSTRING, "%s/../../../bin/pd" EXTENT, pddir);
+        pd_snprintf(tmpbuf, MAXPDSTRING, "%s/../../../bin/pd" EXTENT, pddir);
         sys_bashfilename(tmpbuf, pdexecbuf);
         if (stat(pdexecbuf, &statbuf) < 0)
         {
-            snprintf(tmpbuf, MAXPDSTRING, "%s/pd" EXTENT, pddir);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pd" EXTENT, pddir);
             sys_bashfilename(tmpbuf, pdexecbuf);
             if (stat(pdexecbuf, &statbuf) < 0)
             {
@@ -562,9 +583,9 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
         }
     }
         /* check that the scheduler dynamic linkable exists w either suffix */
-    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
+    for(dllextent=get_dllextent(); *dllextent; dllextent++)
     {
-      snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
+      pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
       sys_bashfilename(tmpbuf, schedbuf);
       if (stat(schedbuf, &statbuf) >= 0)
         goto gotone;
@@ -574,33 +595,33 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
 
 gotone:
         /* but the sub-process wants the scheduler name without the suffix */
-    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
+    pd_snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
     sys_bashfilename(tmpbuf, schedbuf);
-    /* was: snprintf(cmdbuf, MAXPDSTRING,
+    /* was: pd_snprintf(cmdbuf, MAXPDSTRING,
 "'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r \
 %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
-    snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf);
+    pd_snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf);
 #ifdef _WIN32
     /* _spawnv wants the command without quotes as in cmdbuf above;
         but in the argument vector paths must be quoted if they contain
         whitespace */
     if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
     {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
-            snprintf(pdexecbuf, MAXPDSTRING, "%s", tmpbuf);
+        if (pd_snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
+            pd_snprintf(pdexecbuf, MAXPDSTRING, "%s", tmpbuf);
     }
     if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
     {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
-            snprintf(schedbuf, MAXPDSTRING, "%s", tmpbuf);
+        if (pd_snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
+            pd_snprintf(schedbuf, MAXPDSTRING, "%s", tmpbuf);
     }
     if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
-        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
+        pd_snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
     else
 #endif /* _WIN32 */
-        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+        pd_snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
 
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
@@ -621,7 +642,7 @@ gotone:
     {
 #ifdef PD
         if (argv[i].a_type == A_SYMBOL)
-            snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
         else if (argv[i].a_type == A_FLOAT)
             sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
@@ -642,8 +663,8 @@ gotone:
         if (strchr(tmpbuf, ' ') && *tmpbuf != '"' && *tmpbuf != '\'')
         {
             char nutherbuf[MAXPDSTRING];
-            snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
-            snprintf(tmpbuf, MAXPDSTRING, "%s", nutherbuf);
+            pd_snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
+            pd_snprintf(tmpbuf, MAXPDSTRING, "%s", nutherbuf);
         }
 #endif /* _WIN32 */
         execargv[FIXEDARG+i] = malloc(strlen(tmpbuf) + 1);
@@ -654,20 +675,12 @@ gotone:
     for (i = 0; i < argc+FIXEDARG; i++)
         post("arg %d = %s", i, execargv[i]);
 #endif
-#ifdef _WIN32
-    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe1) < 0)   
-#endif
+    if (PIPE(pipe1) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail1;
     }
-#ifdef _WIN32
-    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)   
-#else
-    if (pipe(pipe2) < 0)   
-#endif
+    if (PIPE(pipe2) < 0)
     {
         PDERROR "pd~: can't create pipe");
         goto fail2;
@@ -996,6 +1009,17 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
             x->x_pddir = sym;
         }
         else PDERROR "pd~ pddir: needs symbol argument");
+    }
+    else if (sel == gensym("vis"))
+    {
+        if ((argc > 1) && argv[1].a_type == A_FLOAT)
+        {
+            int onoff = (argv[1].a_w.w_float != 0);
+            if (onoff)
+                vmess(&x->x_obj.te_pd, gensym("pd"), "ss", sel, x->x_pddir);
+            else vmess(&x->x_obj.te_pd, gensym("pd"), "s", sel);
+        }
+        else PDERROR "pd~ vis: needs float argument");
     }
     else PDERROR "pd~: unknown control message: %s", sel->s_name);
 }
@@ -1330,7 +1354,7 @@ static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s, long ac, t_atom *av)
 }
 
 void ext_main( void *r)
-{       
+{
     t_class *c;
 
     c = class_new("pd~", (method)pd_tilde_new, (method)pd_tilde_free,

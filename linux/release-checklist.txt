@@ -2,10 +2,12 @@ release checklist
 
 test compilation on linux/msw/mac:
 
-VERSION=0.52-0test3
-MAC=x64
+VERSION=tmp
+... later:  VERSION=0.55-1test1
+
 
 ------------- remake po: ----------------
+... merge l10n branch from github ...
 VERSION=tmp
 cd ~/pd/linux
 ./make-release $VERSION
@@ -19,6 +21,7 @@ cd /tmp/mkpo/pd-$VERSION
 rsync -avl ~/bis/work/pd-versions/po/ $MAC:work/build/po/
 
 ------------- release build ----------
+
 cd ~/pd/linux
 ./make-release $VERSION
 
@@ -27,8 +30,12 @@ cd ~/pd/msw
 rm -rf /tmp/pd-*
 ./build-msw-64.sh $VERSION
 ./build-wxp-32.sh $VERSION
-mv /tmp/pd-$VERSION*.{zip,exe} ~/pd/dist
-rm -rf /tmp/pd-*
+mv /tmp/pd-$VERSION*.zip ~/pd/dist
+mv /tmp/Pd-$VERSION-i386.windows-installer.exe \
+    ~/pd/dist/pd-$VERSION-i386.windows-installer.exe
+mv /tmp/Pd-$VERSION.windows-installer.exe \
+    ~/pd/dist/pd-$VERSION.windows-installer.exe
+rm -rf /tmp/pd-* /tmp/Pd-*
 
 ---- build on macosx 10.7 machine:
 scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
@@ -37,31 +44,39 @@ ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
 ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
     scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
 
---------- build osx10.14 version  --- OLD -- replaced with CI below:
-rsync -avl --delete $MAC:work/build/pd-$VERSION/ /tmp/pd-$VERSION/
-rsync -e "ssh -p 2200" -avzl /tmp/pd-$VERSION/ \
-    localhost:work/build/pd-$VERSION/
-ssh -p 2200 localhost 'cd work/build; ./build-maxosx14 '$VERSION
-scp -P 2200 -p localhost:work/build/pd-$VERSION.mac.tar.gz ~/pd/dist/
+
+---------- test reality check ----------
+
+cd ~/bis/work/reality-check/test-manoury-en-echo/
+./test-me.sh
+cd ../test-hagan-ofpulsesandtimes
+./test-me.sh
+(add more as available)
 
 ---------- grab CI version -----------
-git push origin and wait 1/2 hr.
-grab pure-data_X_macOS.zip from https://git.iem.at/pd/pure-data/pipelines
-rename as ~/pd/dist/pd-$VERSION.macos.zip
+
+git push origin --tags
+git push origin
+*** check that the tag actually makes it up to github ***
+wait 90 min...
+grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
+or try: https://git.iem.at/pd/pure-data/-/pipelines
+
+--> pure-data_$VERSION_macOS.zip
+mv -i ~/pure-data_"$VERSION"_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
 copyright date in ../README.txt
 release notes:
-    nedit-client  ../doc/1.manual/x5.htm
+    nedit-client  ../doc/1.manual/resources/chapter5.htm
 git commit -a
-.... (go back and rebuild as above) ...
-git tag $VERSION && git tag |tail
-git push origin
+git tag $VERSION && git tag |tail  !!! you can only push any given tag once !!
 git push origin --tags
+.... (go back and rebuild as above) ...
     ... (I don't use 'mirror' here because afraid of deleting PR branches)
 git push sourceforge --mirror
-cp -i ~/pd/dist/* ~/bis/lib/public_html/Software/
+mv -i ~/pd/dist/* ~/bis/lib/public_html/Software/
 rsync -avzl --delete ~/pd/doc/1.manual/ \
     ~/bis/lib/public_html/Pd_documentation/
 chmod -R go-w ~/bis/lib/public_html/Pd_documentation/

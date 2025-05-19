@@ -89,7 +89,7 @@ t_int *upsampling_perform_linear(t_int *w)
     if (frac==0.)frac=1.;
     *out++ = frac * b + (1.-frac) * a;
     fp = in+index;
-    b=*fp;
+    b=(index<parent)?*fp:b;
     a=(index)?*(fp-1):a;
   }
 
@@ -103,8 +103,6 @@ t_int *upsampling_perform_linear(t_int *w)
 
 void resample_init(t_resample *x)
 {
-  x->method=0;
-
   x->downsample=x->upsample=1;
 
   x->s_n = x->coefsize = x->bufsize = 0;
@@ -140,7 +138,7 @@ void resample_dsp(t_resample *x,
       return;
     }
     switch (method) {
-    default:
+    default: /* always zero padding */
       dsp_add(downsampling_perform_0, 4, in, out, (t_int)(insize/outsize), (t_int)insize);
     }
 
@@ -151,10 +149,10 @@ void resample_dsp(t_resample *x,
       return;
     }
     switch (method) {
-    case 1:
+    case 1: /* sample and hold */
       dsp_add(upsampling_perform_hold, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
-    case 2:
+    case 2: /* linear interpolation */
       if (x->bufsize != 1) {
         t_freebytes(x->buffer, x->bufsize*sizeof(*x->buffer));
         x->bufsize = 1;
@@ -162,7 +160,7 @@ void resample_dsp(t_resample *x,
       }
       dsp_add(upsampling_perform_linear, 5, x, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
-    default:
+    default: /* zero padding */
       dsp_add(upsampling_perform_0, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
     }
   }

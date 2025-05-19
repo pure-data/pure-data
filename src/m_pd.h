@@ -9,10 +9,18 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 52
+#define PD_MINOR_VERSION 55
 #define PD_BUGFIX_VERSION 2
 #define PD_TEST_VERSION ""
-extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
+
+/* compile-time version check:
+   #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
+      // put legacy code for Pd<<0.56 in here
+   #endif
+ */
+#define PD_VERSION(major, minor, bugfix) \
+    (((major) << 16) + ((minor) << 8) + ((bugfix) > 255 ? 255 : (bugfix)))
+#define PD_VERSION_CODE PD_VERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION)
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -52,6 +60,19 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define EXTERN_STRUCT struct
 #endif
 
+
+/* util for better inlining of static functions in headers */
+#if defined(__cplusplus)
+# define PD_INLINE inline
+#else
+# if (__STDC_VERSION__ >= 199901L)
+#  define PD_INLINE static inline
+# else
+#  define PD_INLINE static
+# endif
+#endif
+
+
 /* Define some attributes, specific to the compiler */
 #if defined(__GNUC__)
 #define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
@@ -59,9 +80,32 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define ATTRIBUTE_FORMAT_PRINTF(a, b)
 #endif
 
+#if __STDC_VERSION__ >= 201112L
+#include <assert.h>
+#define PD_STATIC_ASSERT _Static_assert
+#elif __cplusplus >= 201103L
+#define PD_STATIC_ASSERT static_assert
+#else
+#define PD_STATIC_ASSERT(condition, message) /* no-op */
+#endif
+
+/* deprecation warning */
+#ifndef PD_DEPRECATED
+# ifdef __GNUC__
+#  define PD_DEPRECATED __attribute__ ((deprecated))
+# elif defined(_MSC_VER) && _MSC_VER >= 1300
+#  define PD_DEPRECATED __declspec(deprecated)
+# else
+#  define PD_DEPRECATED
+#  pragma message("PD_DEPRECATED not defined for this compiler")
+# endif
+#endif
+
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
+
+#include <stddef.h> /* for size_t and offsetof */
 
 /* Microsoft Visual Studio is not C99, but since VS2015 has included most C99 headers:
    https://docs.microsoft.com/en-us/previous-versions/hh409293(v=vs.140)#c-runtime-library
@@ -81,6 +125,8 @@ typedef unsigned __int64  uint64_t;
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
 #include <stdio.h>
+
+EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
@@ -168,7 +214,7 @@ typedef union word
 
 typedef enum
 {
-    A_NULL,
+    A_NULL = 0,
     A_FLOAT,
     A_SYMBOL,
     A_POINTER,
@@ -189,6 +235,9 @@ typedef struct _atom
     t_atomtype a_type;
     union word a_w;
 } t_atom;
+
+EXTERN_STRUCT _pdinstance;
+#define t_pdinstance struct _pdinstance
 
 EXTERN_STRUCT _class;
 #define t_class struct _class
@@ -358,14 +407,17 @@ EXTERN int binbuf_getnatom(const t_binbuf *x);
 EXTERN t_atom *binbuf_getvec(const t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
 EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv);
+/* binbuf read/write flags */
+#define BINBUF_CR      (1<<0)
+#define BINBUF_SHEBANG (1<<1)
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
-    int crflag);
+    int flag);
 EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
-    int crflag);
+    int flag);
 EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
-    int crflag);
+    int flag);
 EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
-    int crflag);
+    int flag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
@@ -378,7 +430,7 @@ EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
 EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
-EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
+PD_DEPRECATED EXTERN double clock_getsystime(void); /* use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
 EXTERN double clock_gettimesincewithunits(double prevsystime,
     double units, int sampflag);
@@ -391,6 +443,7 @@ EXTERN void pd_free(t_pd *x);
 EXTERN void pd_bind(t_pd *x, t_symbol *s);
 EXTERN void pd_unbind(t_pd *x, t_symbol *s);
 EXTERN t_pd *pd_findbyclass(t_symbol *s, const t_class *c);
+EXTERN t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname);
 EXTERN void pd_pushsym(t_pd *x);
 EXTERN void pd_popsym(t_pd *x);
 EXTERN void pd_bang(t_pd *x);
@@ -449,6 +502,8 @@ EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
 EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN t_float canvas_getsr(t_canvas *x);
+EXTERN int canvas_getsignallength(t_canvas *x);
 
 /* ---------------- widget behaviors ---------------------- */
 
@@ -462,12 +517,53 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 /* -------------------- classes -------------- */
 
 #define CLASS_DEFAULT 0         /* flags for new classes below */
-#define CLASS_PD 1
-#define CLASS_GOBJ 2
-#define CLASS_PATCHABLE 3
-#define CLASS_NOINLET 8
-
+#define CLASS_PD 1              /* non-canvasable (bare) pd such as an inlet */
+#define CLASS_GOBJ 2            /* pd that can belong to a canvas */
+#define CLASS_PATCHABLE 3       /* pd that also can have inlets and outlets */
 #define CLASS_TYPEMASK 3
+
+#define CLASS_NOINLET 8             /* suppress left inlet */
+#define CLASS_MULTICHANNEL 0x10     /* can deal with multichannel sigs */
+#define CLASS_NOPROMOTESIG 0x20     /* don't promote scalars to signals */
+#define CLASS_NOPROMOTELEFT 0x40    /* not even the main (left) inlet */
+
+/*
+    Setting a tilde object's CLASS_MULTICHANNEL flag declares that it can
+    deal with multichannel inputs.  In this case the channel counts of
+    the inputs might not match; it's up to the dsp method to figure out what
+    to do.  Also, the output signal vectors aren't allocated.  The output
+    channel counts have to be specified by the object at DSP time.  If
+    the object can't put itself on the DSP chain it then has to create
+    outputs anyway and arrange to zero them.
+
+    By default, if a tilde object's inputs are unconnected, Pd fills them
+    in by adding scalar-to-vector conversions to the DSP chain as needed before
+    calling the dsp method.  This behavior can be suppressed for the left
+    (main) inlet by setting CLASS_NOPROMOTELEFT and for one or more non-main
+    inlets by setting CLASS_NOPROMOTESIG.  Seeing this, the object can then
+    opt to supply a faster routine; for example, "+" can do a vector-scalar
+    add.  In any case, signal outputs are all vectors, and are allocated
+    automatically unless the CLASS_MULTICHANNEL flag is also set.
+*/
+
+/* new names with pd_ prefix for class_new() etc.
+Use these if you want to protect against name clashes when
+using within libpd, for example when running in a VST.  If you only want
+to run in Pd as a standalone app the old names below will be OK.
+We only provide new names for the ones that seem likely to clash.  In the
+case of class_addbang, etc., the names are hidden by macros defined
+below.  We don't expect clashes there so we just define them back to the
+old names.  It's unclear where to stop with this name clash avoidance
+hooha, so here the choice is made to do as little as we seem to be able
+to get away with. */
+
+EXTERN t_class *pd_class_new(t_symbol *name, t_newmethod newmethod,
+    t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
+EXTERN void pd_class_addmethod(t_class *c, t_method fn, t_symbol *sel,
+    t_atomtype arg1, ...);
+
+/* ... and here are the traditional names for the same functions: */
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
@@ -499,10 +595,11 @@ EXTERN const char *class_gethelpname(const t_class *c);
 EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(const t_class *c);
-EXTERN void class_domainsignalin(t_class *c, int onset);
 EXTERN void class_set_extern_dir(t_symbol *s);
+EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
-    class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
+    PD_STATIC_ASSERT(sizeof(((type *)NULL)->field) == sizeof(t_float), "field must be t_float!"); \
+    class_domainsignalin(c, offsetof(type, field))
 
          /* prototype for functions to save Pd's to a binbuf */
 typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
@@ -533,6 +630,8 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 /* ------------   printing --------------------------------- */
 
+/* post and pd_post are synonyms; pd_post is safer if dynamically linked */
+EXTERN void pd_post(const char *fmt, ...);
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
@@ -555,8 +654,7 @@ typedef enum {
 EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-/* deprecated, use logpost() instead. */
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+PD_DEPRECATED EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3); /* avoid this: use logpost() instead */
 
 
 /* ------------  system interface routines ------------------- */
@@ -578,11 +676,23 @@ EXTERN int sys_close(int fd);
 EXTERN FILE *sys_fopen(const char *filename, const char *mode);
 EXTERN int sys_fclose(FILE *stream);
 
-/* ------------  threading ------------------- */
+/* ------------- threading ------------------- */
+
+/* NB: do not use this in externals because it may deadlock!
+ * For a safe alternative see pd_queue_mess() */
 EXTERN void sys_lock(void);
 EXTERN void sys_unlock(void);
 EXTERN int sys_trylock(void);
 
+typedef void (*t_messfn)(t_pd *obj, void *data);
+/* send a message to a Pd object from another (helper) thread.
+ * 'fn' will be called on the scheduler thread with 'obj' and 'data'.
+ * If the message has been canceled, the 'obj' argument is NULL, see
+ * pd_queue_cancel() below. NB: do not forget to free the 'data' object! */
+EXTERN void pd_queue_mess(struct _pdinstance *instance, t_pd *obj, void *data, t_messfn fn);
+/* cancel all pending messages for the given object;
+ * typically called in the object destructor AFTER joining the helper thread. */
+EXTERN void pd_queue_cancel(t_pd *obj);
 
 /* --------------- signals ----------------------------------- */
 
@@ -596,22 +706,38 @@ typedef union _sampleint_union {
 
 typedef struct _signal
 {
-    int s_n;            /* number of points in the array */
-    t_sample *s_vec;    /* the array */
-    t_float s_sr;         /* sample rate */
-    int s_refcount;     /* number of times used */
-    int s_isborrowed;   /* whether we're going to borrow our array */
+    union
+    {
+        int s_length;       /* number of items per channel */
+        int s_n;            /* for source compatibility: pre-0.54 name */
+    };
+    t_sample *s_vec;        /* the samples, s_nchans vectors of s_length */
+    t_float s_sr;           /* samples per second per channel */
+    int s_nchans;           /* number of channels */
+    int s_overlap;          /* number of times each sample appears */
+    int s_refcount;         /* number of times signal is referenced */
+    int s_isborrowed;       /* whether we're going to borrow our array */
+    int s_isscalar;         /* scalar for an unconnected signal input */
     struct _signal *s_borrowedfrom;     /* signal to borrow it from */
     struct _signal *s_nextfree;         /* next in freelist */
     struct _signal *s_nextused;         /* next in used list */
-    int s_vecsize;      /* allocated size of array in points */
+    int s_nalloc;      /* allocated size of array in points */
 } t_signal;
 
 typedef t_int *(*t_perfroutine)(t_int *args);
 
+EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
+    t_sample *scalarptr);
+EXTERN void signal_setmultiout(t_signal **sig, int nchans);
+
 EXTERN t_int *plus_perform(t_int *args);
+EXTERN t_int *plus_perf8(t_int *args);
 EXTERN t_int *zero_perform(t_int *args);
+EXTERN t_int *zero_perf8(t_int *args);
 EXTERN t_int *copy_perform(t_int *args);
+EXTERN t_int *copy_perf8(t_int *args);
+EXTERN t_int *scalarcopy_perform(t_int *args);
+EXTERN t_int *scalarcopy_perf8(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
@@ -634,10 +760,6 @@ EXTERN void mayer_ifft(int n, t_sample *real, t_sample *imag);
 EXTERN void mayer_realfft(int n, t_sample *real);
 EXTERN void mayer_realifft(int n, t_sample *real);
 
-EXTERN float *cos_table;
-#define LOGCOSTABSIZE 9
-#define COSTABSIZE (1<<LOGCOSTABSIZE)
-
 EXTERN int canvas_suspend_dsp(void);
 EXTERN void canvas_resume_dsp(int oldstate);
 EXTERN void canvas_update_dsp(void);
@@ -646,7 +768,7 @@ EXTERN int canvas_dspstate;
 /*   up/downsampling */
 typedef struct _resample
 {
-  int method;       /* up/downsampling method ID */
+  int method;       /* unused */
 
   int downsample; /* downsampling factor */
   int upsample;   /* upsampling factor */
@@ -690,12 +812,12 @@ EXTERN_STRUCT _garray;
 #define t_garray struct _garray
 
 EXTERN t_class *garray_class;
-EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
+PD_DEPRECATED EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec); /* use garray_getfloatwords() */
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+PD_DEPRECATED EXTERN void garray_resize(t_garray *x, t_floatarg f); /* use garray_resize_long() */
 EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
@@ -711,14 +833,62 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(const char *fmt, ...);
-EXTERN void sys_gui(const char *s);
+PD_DEPRECATED EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);
     /* dialog window creation and destruction */
-EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd);
-EXTERN void gfxstub_deleteforkey(void *key);
+PD_DEPRECATED EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
+PD_DEPRECATED EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
+
+/*
+ * send a message to the GUI, with a simplified formatting syntax
+ * <destination>: receiver on the GUI side (e.g. a Tcl/Tk 'proc')
+ * <fmt>: string of format specifiers
+ * <...>: values according to the format specifiers
+ *
+ * the <destination> can be a NULL pointer (in which case it is ignored)
+ * the user of NULL as a <destination> is discouraged
+
+ * depending on the format specifiers, one or more values are passed
+ *    'f' : <double:value>        : a floating point number
+ *    'i' : <int:value>           : an integer number
+ *    's' : <const char*:value>   : a string
+ *    'r' : <const char*:value>   : a raw string
+ *    'x' : <void*:value>         : a generic pointer
+ *    'o' : <t_object*:value>     : an graphical object
+ *    '^' : <t_canvas*:value>     : a toplevel window (legacy)
+ *    'c' : <t_canvas*:value>     : a canvas (on a window)
+ *    'F' : <int:size> <const t_float*:values>: array of t_float's
+ *    'S' : <int:size> <const char**:values>: array of strings
+ *    'R' : <int:size> <const char**:values>: array of raw strings
+ *    'a' : <int:size> <const t_atom*:values>: list of atoms
+ *    'A' : <int:size> <const t_atom*:values>: array of atoms
+ *    'w' : <int:size> <const t_word*:values>: list of floatwords
+ *    'W' : <int:size> <const t_word*:values>: array of floatwords
+ *    'm' : <t_symbol*s:recv> <int:argc> <t_atom*:argv>: a Pd message
+ *    'p' : <int:size> <const char*:values>  : a pascal string (explicit size; not \0-terminated)
+ *    'k' : <int:color>           : a color (or kolor, if you prefer)
+ *    ' ' : none                  : ignored
+ * the use of the specifiers 'x^' is discouraged
+ * raw-strings ('rR') should only be used for constant, well-known strings
+ */
+EXTERN void pdgui_vmess(const char* destination, const char* fmt, ...);
+
+
+/* improved dialog window creation
+ * this will insert a first argument to <destination> based on <key>
+ * which the GUI can then use to callback.
+ * gfxstub_new() ensures that the given receiver will be available,
+ * even if the <owner> has been removed in the meantime.
+ * see pdgui_vmess() for a description of <fmt> and the varargs
+ */
+
+EXTERN void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...);
+EXTERN void pdgui_stub_deleteforkey(void *key);
+
 
 extern t_class *glob_pdobject;  /* object to send "pd" messages */
 
@@ -744,26 +914,29 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
-#ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
-#if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
-/* a test for NANs and denormals.  Should only be necessary on i386. */
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+
+/* a test for NANs and denormals.
+   WARNING: PD_BADFLOAT(0) = 1 -- you can replace a 'BADFLOAT' by 0 but don't
+just do nothing with it. */
+
 #if PD_FLOATSIZE == 32
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui;
-}t_bigorsmall32;
+} t_bigorsmall32;
 
-static inline int PD_BADFLOAT(t_float f)  /* malformed float */
+PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed float */
 {
     t_bigorsmall32 pun;
     pun.f = f;
     pun.ui &= 0x7f800000;
-    return((pun.ui == 0) | (pun.ui == 0x7f800000));
+    return((f != 0) && ((pun.ui == 0) | (pun.ui == 0x7f800000)));
 }
 
-static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
+PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 {
     t_bigorsmall32 pun;
     pun.f = f;
@@ -772,21 +945,21 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 
 #elif PD_FLOATSIZE == 64
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui[2];
-}t_bigorsmall64;
+} t_bigorsmall64;
 
-static inline int PD_BADFLOAT(t_float f)  /* malformed double */
+PD_INLINE int PD_BADFLOAT(t_float f)  /* malformed double */
 {
     t_bigorsmall64 pun;
     pun.f = f;
     pun.ui[1] &= 0x7ff00000;
-    return((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000));
+    return((f != 0) && ((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000)));
 }
 
-static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
+PD_INLINE int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 {
     t_bigorsmall64 pun;
     pun.f = f;
@@ -799,21 +972,27 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
 #define PD_BIGORSMALL(f) 0
 #endif
 
-#else   /* _MSC_VER */
-#if PD_FLOATSIZE == 32
-#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
-    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
-/* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
-    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
-#else   /* 64 bits... don't know what to do here */
-#define PD_BADFLOAT(f) (!(((f) >= 0) || ((f) <= 0)))
-#define PD_BIGORSMALL(f) ((f) > 1e150 || (f) <  -1e150 \
-    || (f) > -1e-150 && (f) < 1e-150 )
+    /* get major/minor/bugfix version numbers and version code at run time */
+EXTERN unsigned int sys_getversion(int *major, int *minor, int *bugfix);
+#ifndef PD_INTERNAL
+/* ABI compat hack: do not use _sys_getversioncode() directly! */
+PD_INLINE unsigned int _sys_getversioncode(int*major, int*minor, int*bugfix)
+{
+    int a, b, c;
+    sys_getversion(major, minor, bugfix);
+    sys_getversion(&a, &b, &c);
+    return PD_VERSION(a, b, c);
+}
+#define sys_getversion _sys_getversioncode
 #endif
-#endif /* _MSC_VER */
-    /* get version number at run time */
-EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
+
+    /* get a Pd API function pointer by name. Returns NULL if the function
+    does not exist. For example, This allows to use recently introduced API
+    functions while providing a fallback for older Pd versions. */
+EXTERN t_method sys_getfunbyname(const char *name);
+
+    /* get floatsize at run time */
+EXTERN unsigned int sys_getfloatsize(void);
 
 EXTERN_STRUCT _instancemidi;
 #define t_instancemidi struct _instancemidi
@@ -866,13 +1045,13 @@ struct _pdinstance
     int pd_islocked;
 #endif
 };
-#define t_pdinstance struct _pdinstance
 EXTERN t_pdinstance pd_maininstance;
 
 /* m_pd.c */
 #ifdef PDINSTANCE
 EXTERN t_pdinstance *pdinstance_new(void);
 EXTERN void pd_setinstance(t_pdinstance *x);
+EXTERN t_pdinstance *pd_getinstance(void);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
@@ -887,7 +1066,18 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif
 
 #ifdef PDINSTANCE
-extern PERTHREAD t_pdinstance *pd_this;
+#ifdef _WIN32
+/* Windows does not allow exporting thread-local variables from DLLs,
+so externals need to get 'pd_this' with an (implicit) function call.
+Internally, we may directly access 'pd_this', but we must not export it! */
+#ifdef PD_INTERNAL
+extern PERTHREAD t_pdinstance *pd_this; /* not EXTERN! */
+#else
+#define pd_this pd_getinstance()
+#endif /* PD_INTERNAL */
+#else
+EXTERN PERTHREAD t_pdinstance *pd_this;
+#endif /* _WIN32 */
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else
@@ -910,6 +1100,18 @@ EXTERN int pd_ninstances;
 #else
 EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
   s_signal, s__N, s__X, s_x, s_y, s_;
+#endif
+
+#ifdef VST_CLEANSER
+/* LATER get rid of this, perhaps in 2035 .
+If we're in a VST plug-in and want to import plug-ins that use symbols like
+"s__X" directly, we need to provide them even though PDINSTANCE is set.  In
+this case we need to cleanse occurrences of the global symbols so that plug-ins
+don't bind to them or use them in messages.  So we expect the VST plug-in to
+provide those global symbols, along with a function to catch the extern using
+them and alias them to the per-instance version of the same symbol.  This should
+go along with a warning message that this will get removed someday. */
+void vst_cleanser(t_symbol **s);
 #endif
 
 EXTERN t_canvas *pd_getcanvaslist(void);

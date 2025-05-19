@@ -1,105 +1,89 @@
-#N canvas 601 88 634 474 12;
-#X obj 94 223 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 94 308 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 165 307 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 218 309 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X msg 94 330 1;
-#X msg 165 332 2;
-#X msg 218 333 3;
-#X obj 165 368 s state;
-#X obj 94 134 bng 20 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 128 135 r state;
-#X obj 263 225 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 263 310 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 333 312 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 386 315 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X msg 263 333 1;
-#X msg 333 338 2;
-#X msg 386 339 3;
-#X obj 333 368 s state;
-#X obj 432 226 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 432 311 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 505 310 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 558 313 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X msg 432 334 1;
-#X msg 505 335 2;
-#X msg 558 336 3;
-#X obj 505 370 s state;
-#X msg 305 135 \; state 1;
-#X obj 94 171 f 1;
-#X obj 94 251 random 100;
-#X obj 94 280 moses 30;
-#X obj 165 281 moses 60;
-#X obj 263 252 random 100;
-#X obj 263 282 moses 10;
-#X obj 333 283 moses 60;
-#X obj 432 253 random 100;
-#X obj 432 282 moses 70;
-#X obj 505 282 moses 80;
-#X floatatom 128 170 3 0 0 0 - - - 0;
-#X text 259 142 reset;
-#X text 57 135 STEP;
-#X text 45 16 Here is how to construct a simple \, three-valued Markov
-chain using "random." Each time you click on "step" the previous output
-("state") determines which of three random networks to invoke \, each
-having a different probability distribution for the next value of "state."
-For instance if the state was 3 \, the next state will be 1 70% of
-the time \, state 2 10% \, and state 3 20%., f 70;
-#X text 88 426 updated for Pd version 0.35;
-#X obj 94 197 select 1 2 3, f 73;
-#X connect 0 0 28 0;
-#X connect 1 0 4 0;
-#X connect 2 0 5 0;
-#X connect 3 0 6 0;
-#X connect 4 0 7 0;
-#X connect 5 0 7 0;
-#X connect 6 0 7 0;
-#X connect 8 0 27 0;
-#X connect 9 0 27 1;
-#X connect 9 0 37 0;
-#X connect 10 0 31 0;
-#X connect 11 0 14 0;
-#X connect 12 0 15 0;
-#X connect 13 0 16 0;
-#X connect 14 0 17 0;
-#X connect 15 0 17 0;
-#X connect 16 0 17 0;
-#X connect 18 0 34 0;
-#X connect 19 0 22 0;
-#X connect 20 0 23 0;
-#X connect 21 0 24 0;
-#X connect 22 0 25 0;
-#X connect 23 0 25 0;
-#X connect 24 0 25 0;
-#X connect 27 0 42 0;
+#N canvas 446 48 643 524 12;
+#X obj 158 449 s state;
+#X obj 87 167 bng 25 250 50 0 empty empty Next -51 13 0 19 #dfdfdf #000000 #000000;
+#X obj 326 449 s state;
+#X obj 498 449 s state;
+#X obj 87 312 random 100;
+#X obj 87 345 moses 30;
+#X obj 158 345 moses 60;
+#X obj 256 312 random 100;
+#X obj 256 345 moses 10;
+#X obj 326 345 moses 60;
+#X obj 425 312 random 100;
+#X obj 425 345 moses 70;
+#X obj 498 345 moses 80;
+#X floatatom 133 196 4 1 3 0 - - - 0;
+#X obj 87 280 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 256 280 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 425 280 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 87 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 158 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 211 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 256 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 326 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 379 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 425 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 498 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 551 376 bng 19 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000;
+#X obj 133 144 r state;
+#X obj 133 170 hradio 19 1 0 3 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0;
+#X obj 87 223 float 0;
+#X obj 87 249 select 0 1 2, f 73;
+#X msg 87 409 0;
+#X msg 158 409 1;
+#X msg 211 409 2;
+#X msg 256 409 0;
+#X msg 326 409 1;
+#X msg 379 409 2;
+#X msg 425 409 0;
+#X msg 498 409 1;
+#X msg 551 407 2;
+#X text 196 170 <-- set another state;
+#X text 75 25 Here is how to construct a simple \, three-valued Markov chain using [random]. Each time you click on the "Next" bang the previous output ("state") determines which of three random networks to invoke \, each having a different probability distribution for the next value of "state." For instance if the state was "2" \, the next state will be "0" at 70% of the time \, state "1" at 10% and state "2" at 20%., f 69;
+#X text 111 281 state 0;
+#X text 280 281 state 1;
+#X text 450 280 state 2;
+#X connect 1 0 28 0;
+#X connect 4 0 5 0;
+#X connect 5 0 17 0;
+#X connect 5 1 6 0;
+#X connect 6 0 18 0;
+#X connect 6 1 19 0;
+#X connect 7 0 8 0;
+#X connect 8 0 20 0;
+#X connect 8 1 9 0;
+#X connect 9 0 21 0;
+#X connect 9 1 22 0;
+#X connect 10 0 11 0;
+#X connect 11 0 23 0;
+#X connect 11 1 12 0;
+#X connect 12 0 24 0;
+#X connect 12 1 25 0;
+#X connect 13 0 28 1;
+#X connect 14 0 4 0;
+#X connect 15 0 7 0;
+#X connect 16 0 10 0;
+#X connect 17 0 30 0;
+#X connect 18 0 31 0;
+#X connect 19 0 32 0;
+#X connect 20 0 33 0;
+#X connect 21 0 34 0;
+#X connect 22 0 35 0;
+#X connect 23 0 36 0;
+#X connect 24 0 37 0;
+#X connect 25 0 38 0;
+#X connect 26 0 27 0;
+#X connect 27 0 13 0;
 #X connect 28 0 29 0;
-#X connect 29 0 1 0;
-#X connect 29 1 30 0;
-#X connect 30 0 2 0;
-#X connect 30 1 3 0;
-#X connect 31 0 32 0;
-#X connect 32 0 11 0;
-#X connect 32 1 33 0;
-#X connect 33 0 12 0;
-#X connect 33 1 13 0;
-#X connect 34 0 35 0;
-#X connect 35 0 19 0;
-#X connect 35 1 36 0;
-#X connect 36 0 20 0;
-#X connect 36 1 21 0;
-#X connect 42 0 0 0;
-#X connect 42 1 10 0;
-#X connect 42 2 18 0;
+#X connect 29 0 14 0;
+#X connect 29 1 15 0;
+#X connect 29 2 16 0;
+#X connect 30 0 0 0;
+#X connect 31 0 0 0;
+#X connect 32 0 0 0;
+#X connect 33 0 2 0;
+#X connect 34 0 2 0;
+#X connect 35 0 2 0;
+#X connect 36 0 3 0;
+#X connect 37 0 3 0;
+#X connect 38 0 3 0;

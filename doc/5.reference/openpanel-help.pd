@@ -1,81 +1,62 @@
-#N canvas 499 27 542 539 12;
-#X obj 82 226 openpanel;
-#X msg 82 138 bang;
-#X obj 82 282 print;
-#X text 15 500 see also:;
-#X obj 93 501 savepanel;
-#X msg 98 166 symbol /tmp;
-#X msg 110 195 symbol C:/;
-#X obj 240 446 print;
-#X obj 240 419 openpanel 1;
-#X obj 362 446 print;
-#X obj 362 419 openpanel 2;
-#X msg 240 391 bang;
-#X msg 362 391 bang;
-#X text 238 370 directory;
-#X text 361 370 multiple files;
-#X obj 115 446 print;
-#X msg 115 391 bang;
-#X obj 115 419 openpanel 0;
+#N canvas 499 27 538 647 12;
+#X obj 87 280 openpanel;
+#X text 11 601 see also:;
+#X obj 81 602 savepanel;
+#X msg 103 174 symbol /tmp;
+#X msg 113 200 symbol C:/;
+#X obj 233 468 openpanel 1;
+#X obj 355 468 openpanel 2;
+#X text 231 419 directory;
+#X text 354 419 multiple files;
+#X obj 108 468 openpanel 0;
 #X obj 23 13 openpanel;
-#X text 317 500 updated for Pd version 0.51.;
 #X text 96 13 - query for files or directories;
-#X text 47 65 When openpanel gets a "bang" \, a file browser appears
-on the screen. By default \, if you select a file \, its name appears
-on the outlet.;
-#X text 56 319 A mode argument allow you to select a directory or multiple
-files. See below;
-#N canvas 710 182 389 296 current-directory 0;
-#X obj 155 149 pdcontrol;
-#X msg 155 119 dir;
-#X obj 155 185 openpanel;
-#X text 47 34 With the 'dir' message to the [pdcontrol] object \, you
-can make openpanel open the current directory for querying for files.
-, f 41;
-#X obj 155 219 print;
-#X connect 0 0 2 0;
-#X connect 1 0 0 0;
-#X connect 2 0 4 0;
-#X restore 245 220 pd current-directory;
-#X text 93 368 file (default);
-#X text 193 169 Start in a specified directory given as a symbol,
-f 31;
-#X text 127 137 Starts in default directory;
-#X symbolatom 82 255 60 0 0 0 - - - 0;
-#N canvas 772 83 587 238 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 119 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 157 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 211 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X text 56 372 A mode argument allow you to select a directory or multiple files. See below;
+#X text 86 417 file (default);
+#X text 198 177 Start in a specified directory given as a symbol, f 31;
+#X symbolatom 87 309 60 0 0 0 - - - 0;
+#N canvas 683 137 587 238 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 119 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 157 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 17 211 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 123 66 bang -;
 #X obj 40 18 openpanel;
 #X text 173 66 open dialog window to choose file(s) or directory.;
 #X text 109 85 symbol -;
-#X text 139 130 symbol - directory or file(s)' names., f 54;
 #X text 113 18 - query for files or directories.;
-#X text 173 85 set starting directory and open dialog window., f 50
-;
-#X text 52 184 1) float - mode: 0 (file \, default) \, 1 (directory)
-\, 2 (multiple files)., f 71;
+#X text 173 85 set starting directory and open dialog window., f 50;
+#X text 52 184 1) float - mode: 0 (file \, default) \, 1 (directory) \, 2 (multiple files)., f 71;
+#X text 139 130 symbol - directory or file names., f 54;
 #X restore 361 14 pd reference;
 #X text 456 15 <= click;
-#X obj 8 45 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 8 487 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 170 501 pdcontrol;
-#X connect 0 0 27 0;
-#X connect 1 0 0 0;
-#X connect 5 0 0 0;
-#X connect 6 0 0 0;
-#X connect 8 0 7 0;
-#X connect 10 0 9 0;
-#X connect 11 0 8 0;
-#X connect 12 0 10 0;
-#X connect 16 0 17 0;
-#X connect 17 0 15 0;
-#X connect 27 0 2 0;
+#X obj 8 45 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 8 589 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 87 136 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 233 440 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 355 440 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 108 440 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 108 495 print file;
+#X obj 233 495 print dir;
+#X obj 355 495 print multiple;
+#X obj 87 336 print openpanel;
+#X text 310 602 updated for Pd version 0.55-0;
+#X msg 124 241 symbol ~;
+#X text 115 136 Starts in current patch's directory by default.;
+#X text 196 235 The "~" symbol expands to the home directory, f 22;
+#X obj 153 602 soundfiler;
+#X obj 233 602 readsf~;
+#X text 51 530 You can use this object to feed file names to objects like [readsf~] \, [soundfiler] \, [array] \, [text] and others.;
+#X text 53 64 When [openpanel] gets a "bang" \, a file browser appears on the screen. By default \, if you select a file \, its name appears on the outlet.;
+#X connect 0 0 15 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 25 0;
+#X connect 6 0 26 0;
+#X connect 9 0 24 0;
+#X connect 15 0 27 0;
+#X connect 20 0 0 0;
+#X connect 21 0 5 0;
+#X connect 22 0 6 0;
+#X connect 23 0 9 0;
+#X connect 29 0 0 0;

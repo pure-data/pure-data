@@ -1,56 +1,43 @@
-#N canvas 691 23 655 688 12;
+#N canvas 452 38 663 756 12;
 #X declare -stdpath ./;
-#X obj 218 172 *~;
-#X floatatom 218 87 0 0 0 0 - - - 0;
-#X floatatom 148 132 0 0 0 0 - - - 0;
-#X obj 148 202 +~;
+#X obj 233 277 *~;
+#X floatatom 233 192 5 0 0 0 - - - 0;
+#X floatatom 163 247 5 0 0 0 - - - 0;
+#X obj 163 317 +~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array fm-output 441 float 0;
-#X coords 0 1.02 440 -1.02 200 130 1;
-#X restore 401 97 graph;
-#X msg 204 254 bang;
-#X obj 204 288 tabwrite~ fm-output;
-#X floatatom 236 142 0 0 0 0 - - - 0;
-#X text 123 89 carrier;
-#X text 122 107 frequency;
-#X text 203 63 frequency;
-#X text 204 46 modulation;
-#X text 64 13 FREQUENCY MODULATION ("FM") USING TWO OSCILLATORS;
-#X obj 148 248 osc~;
-#X text 61 229 "carrier";
-#X text 56 164 add modulator;
-#X text 55 182 to carrier;
-#X text 275 154 index;
-#X text 277 135 modulation;
-#X obj 218 112 osc~;
-#X text 405 229 --- 0.01 seconds ----;
-#X text 61 484 To get the FM sound \, set all three of carrier frequency
-\, modulation frequency \, and modulation index in the hundreds. Note
-that you get a timbral change as you sweep modulation index \, because
-this changes the amplitudes of the components of the output sound but
-not their frequencies., f 71;
-#X obj 90 297 output~;
-#X text 369 632 updated for Pd version 0.37;
-#X text 61 388 This patch shows the classical FM synthesis technique
-developed by John Chowning. It's nothing but an oscillator with vibrato
-controlled by another "modulation" oscillator. First \, to understand
-the patch \, set carrier frequency to 400 or so \, modulation frequency
-between 5 and 10 \, and try modulation index values between 0 and 400
-\, say. You'll hear a sine wave with vibrato., f 71;
-#X text 61 563 The component frequencies are equal to the carrier frequency
-\, plus or minus multiples of the modulator frequency. A more complete
-discussion of FM occurs in part 5 of this series., f 71;
-#X text 43 247 oscillator =>;
-#X text 53 201 frequency =>;
-#X text 246 254 <= click to graph;
-#X obj 461 26 declare -stdpath ./;
+#X coords 0 1.02 440 -1.02 218 164 1;
+#X restore 385 287 graph;
+#X obj 223 458 tabwrite~ fm-output;
+#X floatatom 251 247 5 0 0 0 - - - 0;
+#X obj 163 363 osc~;
+#X text 71 345 "carrier";
+#X obj 233 217 osc~;
+#X text 410 469 --- 0.01 seconds ----;
+#X text 83 591 To get the FM sound \, set all three of carrier frequency \, modulation frequency \, and modulation index in the hundreds. Note that you get a timbral change as you sweep modulation index \, because this changes the amplitudes of the components of the output sound but not their frequencies., f 70;
+#X obj 163 498 output~;
+#X text 76 78 This patch shows the classical FM synthesis technique developed by John Chowning. It's nothing but an oscillator with vibrato controlled by another "modulation" oscillator. First \, to understand the patch \, set carrier frequency to 400 or so \, modulation frequency between 5 and 10 \, and try modulation index values between 0 and 400 \, say. You'll hear a sine wave with vibrato., f 71;
+#X obj 316 523 declare -stdpath ./;
+#X obj 223 416 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 62 285 add modulator to carrier frequency -->, f 13;
+#X text 53 363 oscillator -->;
+#X obj 68 27 cnv 5 5 25 empty empty Frequency\ Modulation\ ("FM")\ using\ two\ oscillators 15 13 0 16 #dfdfdf #202020 0;
+#X text 277 188 modulation frequency, f 10;
+#X text 295 239 modulation index, f 10;
+#X text 137 207 carrier frequency, f 9;
+#X obj 223 383 metro 250;
+#X obj 223 334 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 247 415 <-- graph once;
+#X text 247 333 <-- graph repeatedly, f 11;
+#X text 83 678 The component frequencies are equal to the carrier frequency \, plus or minus multiples of the modulator frequency. A more complete discussion of FM occurs in part "E" of this series., f 70;
 #X connect 0 0 3 1;
-#X connect 1 0 19 0;
+#X connect 1 0 9 0;
 #X connect 2 0 3 0;
-#X connect 3 0 13 0;
-#X connect 5 0 6 0;
-#X connect 7 0 0 1;
-#X connect 13 0 6 0;
-#X connect 13 0 22 0;
-#X connect 13 0 22 1;
-#X connect 19 0 0 0;
+#X connect 3 0 7 0;
+#X connect 6 0 0 1;
+#X connect 7 0 5 0;
+#X connect 7 0 12 0;
+#X connect 9 0 0 0;
+#X connect 15 0 5 0;
+#X connect 22 0 15 0;
+#X connect 23 0 22 0;

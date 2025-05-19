@@ -20,8 +20,8 @@ sources=false
 
 # strip binaries
 strip=true
-STRIP=${STRIP-strip}
-STRIPARGS=${STRIPARGS-"--strip-unneeded -R .note -R .comment"}
+STRIP="${STRIP-strip}"
+STRIPARGS="${STRIPARGS-"--strip-unneeded -R .note -R .comment"}"
 
 # build dir, relative to working directory
 custom_builddir=false
@@ -76,15 +76,15 @@ EOF
 
 # Parse command line arguments
 #----------------------------------------------------------
-while [ "$1" != "" ] ; do
-    case $1 in
+while [ -n "${1}" ] ; do
+    case "${1}" in
         -t|--tk)
             shift 1
             if [ $# = 0 ] ; then
                 echo "-t,--tk option requires a VER or DIR argument" 1>&2
                 exit 1
             fi
-            TK="$1"
+            TK="${1}"
             prototype_tk=false
             ;;
         -s|--sources)
@@ -99,7 +99,7 @@ while [ "$1" != "" ] ; do
                 exit 1
             fi
             shift 1
-            BUILD=${1%/} # remove trailing slash
+            BUILD="${1%/}" # remove trailing slash
             custom_builddir=true
             ;;
         -h|--help)
@@ -113,29 +113,29 @@ while [ "$1" != "" ] ; do
 done
 
 # check for version argument and set app path in the dir the script is run from
-if [ "x$1" != "x" ] ; then
-    APP=$(pwd)/pd-$1
+if [ -n "${1}" ] ; then
+    APP="$(pwd)/pd-${1}"
 else
     # version not specified
-    APP=$(pwd)/pd
+    APP="$(pwd)/pd"
 fi
 
 # Go
 #----------------------------------------------------------
 
 # make sure custom build directory is an absolute path
-if [ "x$custom_builddir" = "xtrue" ] ; then
-    if [ "x${BUILD#/}" = "x${BUILD}" ] ; then
+if [ "${custom_builddir}" = "true" ] ; then
+    if [ "${BUILD#/}" = "${BUILD}" ] ; then
         # BUILD isn't absolute as it doesn't start with '/'
-        BUILD="$(pwd)/$BUILD"
+        BUILD="$(pwd)/${BUILD}"
     fi
 fi
 
 # is $TK a version or a directory?
-if [ -d "$TK" ] ; then
+if [ -d "${TK}" ] ; then
     # directory, make sure it's absolute
-    if [ "x${TK#/}" = "x${TK}" ] ; then
-        TK="$(pwd)/$TK"
+    if [ "${TK#/}" = "${TK}" ] ; then
+        TK="$(pwd)/${TK}"
     fi
 else
     # version, so it will be downloaded & built
@@ -143,109 +143,124 @@ else
 fi
 
 # change to the dir of this script
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
-echo "==== Creating $(basename $APP)"
+echo "==== Creating $(basename "${APP}")"
 
 # remove old app dir if found
-if [ -d $APP ] ; then
+if [ -d "${APP}" ] ; then
     echo "removing existing directory"
-    rm -rf $APP
+    rm -rf "${APP}"
 fi
 
 # install to app directory
-make -C $BUILD install DESTDIR=$APP prefix=/
+make -C "${BUILD}" install DESTDIR="${APP}" prefix=/
 
 # don't need man pages
-rm -rf $APP/share
+rm -rf "${APP}/share"
 
 # place headers together in src directory
-mv $APP/include $APP/src
-mv $APP/src/pd/* $APP/src
-rm -rf $APP/src/pd
+mv "${APP}/include" "${APP}/src"
+mv "${APP}/src/pd"/* "${APP}/src"
+rm -rf "${APP}/src/pd"
 
 # move folders from lib/pd into top level directory
-rm -rf $APP/lib/pd/bin
-for d in $APP/lib/pd/*; do
-    mv $d $APP/
+rm -rf "${APP}/lib/pd/bin"
+for d in "${APP}/lib/pd"/*; do
+    mv "${d}" "${APP}/"
 done
-rm -rf $APP/lib/
+rm -rf "${APP:?}/lib/"
 
 # install sources
-if [ "x$sources" = xtrue ] ; then
-    mkdir -p $APP/src
-    cp -v ../src/*.c $APP/src/
-    cp -v ../src/*.h $APP/src/
-    for d in $APP/extra/*/; do
-        s=${d%/}
-        s=../extra/${s##*/}
+if [ "${sources}" = true ] ; then
+    mkdir -p "${APP}/src"
+    cp -v ../src/*.c "${APP}/src/"
+    cp -v ../src/*.h "${APP}/src/"
+    for d in "${APP}/extra"/*/; do
+        s="${d%/}"
+        s="../extra/${s##*/}"
         cp -v "${s}"/*.c "${d}"
     done
-fi
-
-# untar pdprototype.tgz
-tar -xf pdprototype.tgz -C $APP/ --strip-components=1
-if [ "x$prototype_tk" = xfalse ] ; then
-
-    # remove bundled tcl & tk as we'll install our own,
-    # keep dlls needed by pd & externals
-    rm -rf $APP/bin/tcl* $APP/bin/tk* \
-           $APP/bin/wish*.exe $APP/bin/tclsh*.exe \
-           $APP/lib
-
-    # remove headers which should be provided by MinGW
-    rm -f $APP/src/pthread.h
-
-    # build, if needed
-    if [ "x$build_tk" = xtrue ] ; then
-         echo "Building tcltk-$TK"
-        ./tcltk-dir.sh $TK
-        TK=tcltk-${TK}
-    else
-        echo "Using $TK"
-    fi
-
-    # install tcl & tk
-    cp -R $TK/bin $APP/
-    cp -R $TK/lib $APP/
-
-    # remove bundled Tcl packages Pd doesn't need
-    rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
 fi
 
 # install pthread from MinGW from:
 # * Windows:             $MINGW_PREFIX/bin
 # * Linux cross-compile: $MINGW_PREFIX/lib
-if [ "x${MINGW_PREFIX}" != "x" ] ; then
-    if [ -e $MINGW_PREFIX/bin/$PTHREAD_DLL ] ; then
-        cp -v $MINGW_PREFIX/bin/$PTHREAD_DLL $APP/bin
-    elif [ -e $MINGW_PREFIX/lib/$PTHREAD_DLL ] ; then
-        cp -v $MINGW_PREFIX/lib/$PTHREAD_DLL $APP/bin
-    fi
-fi
-
-# copy info and resources not handled via "make install"
-cp -v ../README.txt  $APP/
-cp -v ../LICENSE.txt $APP/
-cp -vR ../font $APP/
-
-# strip executables,
-# use temp files as stripping in place doesn't seem to work reliably on Windows
-if [ "x$strip" = xtrue ] ; then
-    find "${APP}" -type f '(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
-    | while read file ; do \
-        "${STRIP}" ${STRIPARGS} -o "$file.stripped" "$file" && \
-        mv "$file.stripped" "$file" && \
-        echo "stripped $file" ; \
+if [ -n "${MINGW_PREFIX}" ] ; then
+    for p in bin lib; do
+        p="${MINGW_PREFIX}/${p}/${PTHREAD_DLL}"
+        if [ -e "${p}" ] ; then
+            pthread_dll="${p}"
+            break
+        fi
     done
 fi
 
+if [ -e "${pthread_dll}" ]; then
+    find "${APP}" -type f '(' -name "pd.dll" -o -name "pd64.dll" -o -name "pd32.dll" ')' -exec dirname {} ";" | sort -u | while read -r dir ; do
+    cp -v "${pthread_dll}" "${dir}/"
+    done
+fi
+
+# copy info and resources not handled via "make install"
+cp -v ../README.txt  "${APP}/"
+cp -v ../LICENSE.txt "${APP}/"
+cp -vR ../font "${APP}/"
+
+# strip executables,
+# use temp files as stripping in place doesn't seem to work reliably on Windows
+if [ "${strip}" = true ] ; then
+    find "${APP}" -type f '(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
+    | while read -r file ; do \
+        "${STRIP}" ${STRIPARGS} -o "${file}.stripped" "${file}" && \
+        mv "${file}.stripped" "${file}" && \
+        echo "stripped ${file}" || \
+        echo "NOT stripped ${file}" ; \
+    done
+fi
+
+# untar pdprototype.tgz
+# NOTE: TclTk binaries MUST NOT be stripped
+#       as of Tcl/Tk-9, the tcl90.dll (resp tclsh90.exe)
+#       have (parts of) the stdlib embedded as a ZIP-file
+#       that is appended to the actual DLL
+#       running 'strip' on the file will remove the stdlib!
+tar -xf pdprototype.tgz -C "${APP}/" --strip-components=1
+if [ "${prototype_tk}" = false ] ; then
+
+    # remove bundled tcl & tk as we'll install our own,
+    # keep dlls needed by pd & externals
+    rm -rf "${APP:?}/bin"/tcl* "${APP:?}/bin"/tk* \
+           "${APP:?}/bin"/wish*.exe "${APP:?}/bin"/tclsh*.exe \
+           "${APP:?}/lib"
+
+    # remove headers which should be provided by MinGW
+    rm -f "${APP}/src/pthread.h"
+
+    # build, if needed
+    if [ "${build_tk}" = true ] ; then
+         echo "Building tcltk-${TK}"
+        ./tcltk-dir.sh "${TK}"
+        TK="tcltk-${TK}"
+    else
+        echo "Using ${TK}"
+    fi
+
+    # install tcl & tk
+    cp -R "${TK}/bin" "${APP}"/
+    cp -R "${TK}/lib" "${APP}/"
+
+    # remove bundled Tcl packages Pd doesn't need
+    rm -rf "${APP}/lib"/itcl* "${APP}/lib"/sqlite* "${APP}/lib"/tdbc*
+fi
+
+
 # set permissions and clean up
-find $APP -type f -exec chmod -x {} +
-find $APP -type f '(' -iname "*.exe" -o -iname "*.com" ')' -exec chmod +x {} +
-find $APP -type f '(' -iname "*.la" -o -iname "*.dll.a" -o -iname "*.am" ')' -delete
-find $APP/bin -type f -not -name "*.*" -delete
+find "${APP}" -type f -exec chmod -x {} +
+find "${APP}" -type f '(' -iname "*.exe" -o -iname "*.com" ')' -exec chmod +x {} +
+find "${APP}" -type f '(' -iname "*.la" -o -iname "*.dll.a" -o -iname "*.am" ')' -delete
+find "${APP}/bin" -type f -not -name "*.*" -delete
 
 # finished
-touch $APP
-echo  "==== Finished $(basename $APP)"
+touch "${APP}"
+echo  "==== Finished $(basename ${APP})"

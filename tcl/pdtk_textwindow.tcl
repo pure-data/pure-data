@@ -52,6 +52,7 @@ proc pdtk_textwindow_dodirty {name} {
 
 proc pdtk_textwindow_setdirty {name flag} {
     if {[winfo exists $name]} {
+        if { ! $flag } { $name.text edit reset }
         catch {$name.text edit modified $flag}
     }
 }
@@ -66,6 +67,28 @@ proc pdtk_textwindow_append {name contents} {
         $name.text insert end $contents
     }
 }
+
+proc pdtk_textwindow_appendatoms {name atoms} {
+    if {! [winfo exists $name]} { return }
+    set sep ""
+    foreach atom $atoms {
+        if { ";" eq $atom } {
+            # drop any previously added space
+            if { " " eq "$sep" } {
+                $name.text delete "end - 2 chars"
+            }
+            # message separator ';' starts a new line
+            set sep "\n"
+        } else {
+            # escape spaces in symbols
+            set atom [string map {" " "\\ " ";" "\\;"} $atom]
+            # atoms are separated by space
+            set sep " "
+        }
+        $name.text insert end "${atom}${sep}"
+    }
+}
+
 
 proc pdtk_textwindow_clear {name} {
     if {[winfo exists $name]} {
@@ -98,9 +121,12 @@ proc pdtk_textwindow_close {name ask} {
             if {[string equal -length 1 $title "*"]} {
                 set title [string range $title 1 end]
             }
-            set answer [tk_messageBox \-type yesnocancel \
-             \-icon question \
-             \-message [concat Save changes to \"$title\"?]]
+            set msg [_ "Accept changes to '%s'?" $title]
+            set answer [tk_messageBox -type yesnocancel \
+             -icon question \
+             -message $msg \
+             -detail [_ "Accepting will update the contents in the associated object. You still have to save the patch to make the changes persistent." ] \
+            ]
             if {$answer == "yes"} {pdtk_textwindow_send $name}
             if {$answer != "cancel"} {pdsend [concat $name close]}
         } else {pdsend [concat $name close]}

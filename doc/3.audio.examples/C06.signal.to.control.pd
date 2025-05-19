@@ -1,25 +1,18 @@
-#N canvas 649 71 500 361 12;
-#N canvas 857 196 300 260 metro 0;
-#X obj 88 39 loadbang;
-#X msg 88 95 1;
-#X obj 88 158 outlet;
-#X obj 88 126 metro 100;
-#X msg 133 73 \; pd dsp 1;
-#X connect 0 0 1 0;
-#X connect 0 0 4 0;
-#X connect 1 0 3 0;
-#X connect 3 0 2 0;
-#X restore 126 172 pd metro;
-#X obj 126 241 snapshot~;
-#X obj 151 211 phasor~ 1;
-#X floatatom 126 272 5 0 0 0 - - - 0;
-#X text 25 18 CONVERTING SIGNALS TO CONTROLS;
-#X text 31 51 The snapshot~ object allows you to convert from signals
-back to control streams (float messages) -- an opposite of signal~.
-The value output is always the end of the most recently computed audio
-block \, so that even if you bang it metronomically (as here) it need
-not give you samples that are exactly evenly spaced.;
-#X text 263 299 Updated for Pd version 0.37;
-#X connect 0 0 1 0;
-#X connect 1 0 3 0;
-#X connect 2 0 1 0;
+#N canvas 626 71 504 416 12;
+#X obj 175 311 snapshot~;
+#X obj 88 252 phasor~ 1;
+#X floatatom 175 342 10 0 0 0 - - - 16;
+#X obj 175 245 metro 100;
+#X obj 175 212 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 36 90 The [snapshot~] object allows you to convert from signals to control streams (float messages) -- an opposite of [sig~]. The value output is always the end of the most recently computed audio block \, so that even if you bang it metronomically (as here) it need not give you samples that are exactly evenly spaced., f 62;
+#X obj 300 209 ../5.reference/set-dsp-tgl;
+#X text 331 212 DSP on/off;
+#X msg 300 246 \; pd dsp \$1;
+#X obj 67 31 cnv 5 5 25 empty empty Converting\ Signals\ to\ Controls 15 13 0 16 #dfdfdf #202020 0;
+#X obj 175 274 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 3 0 10 0;
+#X connect 4 0 3 0;
+#X connect 6 0 8 0;
+#X connect 10 0 0 0;

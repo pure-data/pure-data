@@ -1,75 +1,70 @@
-#N canvas 289 54 1035 471 12;
-#X msg 84 374 bang;
-#X floatatom 670 67 0 0 0 0 - - -;
+#N canvas 355 84 901 701 12;
+#X floatatom 324 627 4 0 0 0 - - - 0;
 #N canvas 685 165 422 119 sample-subpatch 0;
 #X text 39 43 this is a subpatch of the main patch.;
-#X restore 124 100 pd sample-subpatch;
-#N canvas 566 198 643 322 eager-adder 0;
+#X restore 105 124 pd sample-subpatch;
+#N canvas 566 198 644 307 eager-adder 0;
 #X obj 67 46 inlet;
 #X obj 123 46 inlet;
 #X obj 123 161 outlet;
 #X obj 123 74 t b f;
 #X obj 123 129 +;
-#X text 97 213 Aside: this shows why \, in Pd and Max \, objects such
-as "+" only trigger on their left inlets: it's easy to build up from
-there \, but if more than one inlet were "hot" \, you wouldn't be able
-to change both of them without firing the calculation twice., f 63
-;
-#X text 212 124 Because of the two inlets and the one outlet \, the
-containing box (in the parent patch) has two inlets and one outlet.
-They respect the left-to-right order of the inlet and outlet objects
-in the subpatch., f 52;
-#X text 212 28 This is a sample subpatch which maintains the sum of
-two inputs \, doing the computation when either input changes. If it's
-the left input \, the "+" object takes care if it. If the right \,
-the "trigger" object first gives the "+" the new value \, then "bangs"
-the right inlet to make "+" do the computation., f 52;
+#X text 212 124 Because of the two inlets and the one outlet \, the containing box (in the parent patch) has two inlets and one outlet. They respect the left-to-right order of the inlet and outlet objects in the subpatch., f 52;
+#X text 212 28 This is a sample subpatch which maintains the sum of two inputs \, doing the computation when either input changes. If it's the left input \, the [+] object takes care if it. If the right \, the [trigger] object first gives the [+] the new value \, then "bangs" the right inlet to make [+] do the computation., f 52;
+#X text 97 213 Aside: this shows why \, in Pd and Max \, objects such as [+] only trigger on their left inlets: it's easy to build up from there \, but if more than one inlet were "hot" \, you wouldn't be able to change both of them without firing the calculation twice., f 63;
 #X connect 0 0 4 0;
 #X connect 1 0 3 0;
 #X connect 3 0 4 0;
 #X connect 3 1 4 1;
 #X connect 4 0 2 0;
-#X restore 183 229 pd eager-adder;
-#X floatatom 183 202 0 0 0 0 - - -;
-#X floatatom 278 202 0 0 0 0 - - -;
-#X floatatom 183 257 0 0 0 0 - - -;
-#X text 37 290 There is also a facility for making many copies of a
-patch which track any changes you make in the original. The subpatches
-are called abstractions. For example \, here's a simple abstraction
-that sends a number to a "receive" on command:, f 64;
-#X obj 84 407 sendnumber 45 cookies;
-#X msg 271 374 bang;
-#X obj 271 407 sendnumber 67 pretzels;
-#X floatatom 671 135 0 0 0 0 - - -;
-#X text 535 344 Note that "\$1" \, etc \, has a different meaning in
-object boxes. Open one of the "sendnumber" abstractions for details.
-, f 64;
-#X text 534 278 If you change one copy of an abstraction the change
-isn't automatically made on any other copies. You must keep track \,
-save the changes \, and cause Pd to reload the other copies (for example
-\, by closing and reopening the containing patch.), f 64;
-#X obj 670 40 r cookies;
-#X obj 671 108 r pretzels;
-#X text 34 150 If you click on the box (in run mode) the subwindow
-appears. Click on the one below to see how you give a subpatch inlets
-and outlets., f 63;
-#X text 777 404 updated for Pd version 0.34;
-#X text 534 195 There is a separate file in this directory named "sendnumber.pd"
-which is loaded every time you type "sendnumber" in a box. Click on
-a "sendnumber" box above to see it. You can make changes in the subpatch
-and save them. The changes will be saved back to sendnumber.pd and
-not as part of this (containing) patch., f 64;
-#X text 259 99 <= you can give the window a name as an argument, f
-26;
-#X text 34 16 You can nest entire windows inside Pd boxes (and so on
-\, as deep as you wish.) There are two different ways to do it. First
-\, if you just want to add a room to the house \, so to speak \, type
-"pd" into an object box:, f 63;
-#X text 60 99 click => to open, f 8;
-#X connect 0 0 8 0;
-#X connect 3 0 6 0;
-#X connect 4 0 3 0;
-#X connect 5 0 3 1;
-#X connect 9 0 10 0;
-#X connect 14 0 1 0;
-#X connect 15 0 11 0;
+#X restore 91 350 pd eager-adder;
+#X floatatom 91 323 5 0 0 0 - - - 0;
+#X floatatom 186 323 5 0 0 0 - - - 0;
+#X floatatom 91 378 6 0 0 0 - - - 0;
+#X obj 112 623 sendnumber 45 cookies;
+#X obj 515 58 sendnumber 67 pretzels;
+#X floatatom 727 72 4 0 0 0 - - - 0;
+#X text 503 348 Note that "\$1" \, etc \, has a different meaning in object boxes. Open one of the "sendnumber" abstractions for details., f 45;
+#X text 503 246 If you change one copy of an abstraction the change isn't automatically made on any other copies. You must keep track \, save the changes \, and cause Pd to reload the other copies (for example \, by closing and reopening the containing patch.), f 45;
+#X obj 324 599 r cookies;
+#X obj 727 45 r pretzels;
+#X text 503 116 There is a separate file in this directory named "sendnumber.pd" which is loaded every time you type "sendnumber" in a box. Click on a "sendnumber" box above to see it. You can make changes in the subpatch and save them. The changes will be saved back to sendnumber.pd and not as part of this (containing) patch., f 45;
+#X text 33 123 click --> to open, f 9;
+#X text 240 123 <-- you can give the window;
+#X text 269 139 a name as an argument;
+#X text 51 23 You can nest entire windows inside Pd boxes (and so on \, as deep as you wish.) There are two different ways to do it. First \, if you just want to add a room to the house \, so to speak \, type "pd" into an object box. If you click on the box (in run mode) the subwindow appears., f 56;
+#X text 54 470 There is also a facility for making many copies of a patch which track any changes you make in the original. This subpatch type is called an abstraction. For example \, here's a simple abstraction that sends a number to a "receive" on command:, f 57;
+#X obj 112 590 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 515 25 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X listbox 569 625 8 0 0 0 - - - 0;
+#X floatatom 299 410 6 0 0 0 - - - 0;
+#N canvas 566 198 632 327 eager-adder-2 0;
+#X obj 225 212 outlet;
+#X obj 225 125 t b f;
+#X obj 225 180 +;
+#X floatatom 110 130 5 0 0 0 - - - 0;
+#X floatatom 163 130 5 0 0 0 - - - 0;
+#X floatatom 137 173 5 0 0 0 - - - 0;
+#X connect 1 0 2 0;
+#X connect 1 1 2 1;
+#X connect 2 0 0 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X coords 0 -1 1 1 109 102 1 100 100;
+#X restore 299 299 pd eager-adder-2;
+#X text 677 562 <-- right click and choose "open", f 18;
+#X text 51 192 Click on the one below to the see how you give a subpatch inlets and outlets. Subpatches can also displays graphs on the parent window. This way you can click and interact with GUI objects. Right click on the subpatch below to the right and choose "open" to check it out. You can turn a regular subpatch into a "Graph on Parent" one by accessing the properties on right click.;
+#X text 503 408 Abstractions can also "Graph on Parent" \, as the one below. This example below also makes use of a feature in the [pdcontrol] object to load arguments. Open it to check it out., f 45;
+#X msg 569 499 1 2 3 4;
+#X obj 569 532 gop-abs 17 1 hi;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 4 0 2 1;
+#X connect 11 0 0 0;
+#X connect 12 0 8 0;
+#X connect 19 0 6 0;
+#X connect 20 0 7 0;
+#X connect 23 0 22 0;
+#X connect 27 0 28 0;
+#X connect 28 0 21 0;

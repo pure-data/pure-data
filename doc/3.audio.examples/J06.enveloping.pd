@@ -1,99 +1,107 @@
-#N canvas 462 26 825 773 12;
+#N canvas 457 49 791 820 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-waveform 882 float 0;
-#X coords 0 1.02 881 -1.02 200 130 1;
-#X restore 552 357 graph;
-#X floatatom 65 58 0 0 0 0 - - - 0;
+#X array \$0-waveform 441 float 0;
+#X coords 0 1.02 440 -1.02 200 130 1;
+#X restore 532 556 graph;
+#X floatatom 60 198 5 0 0 0 - freq - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-env 22050 float 0;
 #X coords 0 1.02 22049 -1.02 200 130 1;
-#X restore 552 136 graph;
-#X obj 65 89 phasor~;
-#X text 49 16 ENVELOPE GENERATORS FROM LINE SEGMENTS;
-#X obj 51 597 output~;
-#X text 49 684 updated for Pd version 0.39;
-#X obj 96 128 *~;
-#X obj 65 207 -~;
-#X obj 65 244 *~;
-#X floatatom 135 90 3 0 100 0 - - - 0;
-#X obj 71 282 min~;
-#X floatatom 130 146 3 0 100 0 - - - 0;
-#X obj 130 169 / 100;
-#X floatatom 123 202 3 0 100 0 - - - 0;
-#X obj 114 446 *~ 2;
-#X obj 114 474 min~;
-#X obj 165 446 -~ 1;
-#X obj 114 418 phasor~ 200;
-#X obj 72 542 *~;
-#X obj 113 389 tabwrite~ \$0-env;
-#X obj 113 361 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 123 225 * -1;
-#X obj 128 527 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 114 550 tabwrite~ \$0-waveform;
-#X obj 165 474 *~ -3;
-#X obj 114 500 -~ 0.5;
-#X text 572 499 ----- 0.02 second ----;
-#X text 567 272 ----- 0.5 second ------;
-#X text 183 161 Subtract this to make the phasor cross zero at the
-desired point of the cycle., f 39;
-#X text 165 219 multiply the phasor (with the zero crossing shifted
-as above) by the desired slope \, negating it so the segment points
-downward., f 43;
-#X text 109 275 minimum of rise and decay segments (makes a triangle
-wave), f 32;
-#X obj 71 324 clip~ 0 1;
-#X text 147 318 clip the triangle wave to between 0 and 1 \, to make
-the sustain and silent regions., f 42;
-#X text 213 437 this makes a quick-and-dirty triangle wave;
-#X text 213 453 as described in the previous patch. It's, f 42;
-#X text 283 590 You can make a phasor-generated envelope generator
-using "min" and "clip" to combine line segments. Here a rise segment
-starts at phase 0 \, and a decay segment passes through zero at a controllable
-point (the "duty cycle" \, as a percentage of a cycle.) Each has a
-controllable slope (in units per cycle). The resulting triangle wave
-(the minimum of the rise and decay segments) is limited to 1 \, thus
-making a flat "sustain" segment (unless the rise and decay segments
-meet at a value less than one \, in which case there is none). Limiting
-below by 0 prevents us from following the decay segment into negative
-values. Reasonable values to start with are 6 Hz. frequency \, rise
-and decay slope 10 \, duty cycle 75%., f 73;
-#X text 149 525 <= click to graph audio waveform;
-#X text 133 359 <= click to graph envelope shape;
-#X text 102 58 <= frequency (Hz.);
-#X text 164 90 <= slope of rise segment. Just multiply this by the
-phase to make the segment., f 39;
-#X text 161 144 <= Duty cycle (end of decay segment as % of cycle.)
-;
-#X text 152 201 <= slope of decay segment.;
-#X text 213 469 used here so we'll have something to listen to., f
-42;
-#X obj 604 35 declare -stdpath ./;
+#X restore 534 366 graph;
+#X obj 60 229 phasor~;
+#X obj 67 737 output~;
+#X obj 91 268 *~;
+#X obj 60 347 -~;
+#X obj 60 384 *~;
+#X floatatom 130 230 4 0 100 0 - rise-slope - 0;
+#X obj 66 422 min~;
+#X floatatom 125 276 6 0 100 0 - duty-cycle - 0;
+#X obj 125 299 / 100;
+#X floatatom 125 332 6 0 100 0 - decay-slope - 0;
+#X obj 109 586 *~ 2;
+#X obj 109 614 min~;
+#X obj 160 586 -~ 1;
+#X obj 67 682 *~;
+#X obj 125 355 * -1;
+#X obj 160 614 *~ -3;
+#X obj 109 640 -~ 0.5;
+#X text 549 502 ----- 0.5 second ------;
+#X text 187 349 multiply the phasor (with the zero crossing shifted as above) by the desired slope \, negating it so the segment points downward., f 43;
+#X text 104 415 minimum of rise and decay segments (makes a triangle wave), f 32;
+#X obj 66 464 clip~ 0 1;
+#X text 142 458 clip the triangle wave to between 0 and 1 \, to make the sustain and silent regions., f 42;
+#X text 99 198 <-- frequency (Hz.);
+#X text 164 230 <-- slope of rise segment. Just multiply this by the phase to make the segment., f 40;
+#X text 174 331 <-- slope of decay segment.;
+#X obj 37 13 cnv 5 5 25 empty empty Envelope\ Generators\ From\ Line\ Segments 15 13 0 16 #dfdfdf #202020 0;
+#X text 210 578 this makes a quick-and-dirty triangle wave as described in the previous patch. It's used here so we'll have something to listen to., f 34;
+#N canvas 1101 181 325 323 init 0;
+#X obj 104 248 declare -stdpath ./;
+#X text 71 41 this subpatch initializes the patch and loads values in number boxes., f 29;
+#X obj 113 110 loadbang;
+#X msg 113 140 \; freq 2 \; rise-slope 10 \; decay-slope 10 \; duty-cycle 75;
+#X connect 2 0 3 0;
+#X restore 618 221 pd init;
+#X obj 180 656 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 203 655 <-- graph once;
+#X obj 228 688 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 252 687 <-- graph repeatedly, f 10;
+#N canvas 146 130 450 300 graph 0;
+#X obj 256 73 inlet;
+#X obj 192 73 inlet;
+#X obj 122 73 inlet~;
+#X obj 192 203 tabwrite~ \$0-waveform;
+#X obj 256 137 metro 100;
+#X connect 0 0 4 0;
 #X connect 1 0 3 0;
-#X connect 3 0 7 0;
-#X connect 3 0 8 0;
-#X connect 7 0 11 1;
-#X connect 8 0 9 0;
-#X connect 9 0 11 0;
-#X connect 10 0 7 1;
-#X connect 11 0 32 0;
-#X connect 12 0 13 0;
-#X connect 13 0 8 1;
-#X connect 14 0 22 0;
-#X connect 15 0 16 0;
-#X connect 16 0 26 0;
-#X connect 17 0 25 0;
-#X connect 18 0 15 0;
-#X connect 18 0 17 0;
-#X connect 19 0 5 0;
-#X connect 19 0 5 1;
-#X connect 21 0 20 0;
-#X connect 22 0 9 1;
-#X connect 23 0 24 0;
-#X connect 25 0 16 1;
-#X connect 26 0 24 0;
-#X connect 26 0 19 1;
-#X connect 32 0 19 0;
-#X connect 32 0 20 0;
+#X connect 2 0 3 0;
+#X connect 4 0 3 0;
+#X restore 154 686 pd graph;
+#X obj 134 498 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 157 497 <-- graph once;
+#X obj 182 530 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 206 529 <-- graph repeatedly, f 10;
+#N canvas 146 130 450 300 graph 0;
+#X obj 256 73 inlet;
+#X obj 192 73 inlet;
+#X obj 122 73 inlet~;
+#X obj 192 203 tabwrite~ \$0-env;
+#X obj 256 137 metro 550;
+#X connect 0 0 4 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 0;
+#X connect 4 0 3 0;
+#X restore 108 528 pd graph;
+#X text 72 53 You can make a phasor-generated envelope generator using [min~] and [clip~] to combine line segments. Here a rise segment starts at phase 0 \, and a decay segment passes through zero at a controllable point (the "duty cycle" \, as a percentage of a cycle.) Each has a controllable slope (in units per cycle). The resulting triangle wave (the minimum of the rise and decay segments) is limited to 1 \, thus making a flat "sustain" segment (unless the rise and decay segments meet at a value less than one \, in which case there is none). Limiting below by 0 prevents us from following the decay segment into negative values. Reasonable values to start with are 6 Hz frequency \, rise and decay slope 10 \, duty cycle 75%., f 98;
+#X obj 109 557 phasor~ 220;
+#X text 552 698 ----- 0.01 second ----;
+#X text 173 274 <--;
+#X text 201 274 Duty cycle (end of decay segment as % of cycle.) Subtract this to make the phasor cross zero at the desired point of the cycle., f 48;
+#X connect 1 0 3 0;
+#X connect 3 0 5 0;
+#X connect 3 0 6 0;
+#X connect 5 0 9 1;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 8 0 5 1;
+#X connect 9 0 23 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 1;
+#X connect 12 0 17 0;
+#X connect 13 0 14 0;
+#X connect 14 0 19 0;
+#X connect 15 0 18 0;
+#X connect 16 0 4 0;
+#X connect 17 0 7 1;
+#X connect 18 0 14 1;
+#X connect 19 0 16 1;
+#X connect 19 0 35 0;
+#X connect 23 0 40 0;
+#X connect 23 0 16 0;
+#X connect 31 0 35 1;
+#X connect 33 0 35 2;
+#X connect 36 0 40 1;
+#X connect 38 0 40 2;
+#X connect 42 0 13 0;
+#X connect 42 0 15 0;

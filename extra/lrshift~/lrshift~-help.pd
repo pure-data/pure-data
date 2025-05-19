@@ -1,60 +1,74 @@
-#N canvas 620 66 653 405 12;
-#X msg 288 291 bang;
-#X obj 265 326 print~;
-#X msg 154 292 bang;
-#X obj 130 326 print~;
-#X msg 73 289 bang;
-#X obj 54 326 print~;
-#X text 84 244 shift left, f 5;
-#X text 216 245 shift right, f 6;
-#X obj 130 246 lrshift~ 1;
-#X obj 265 245 lrshift~ -1;
-#X text 41 58 Acting at whatever vector size the window is running
-at \, lrshift~ shifts samples to the left (toward the beginning sample)
-or to the right. The argument gives the direction and the amount of
-the shift. The rightmost (or leftmost) samples are set to zero., f
-81;
+#N canvas 513 80 652 407 12;
+#X obj 253 326 print~;
+#X obj 118 326 print~;
+#X obj 42 326 print~;
+#X text 72 244 shift left, f 5;
+#X text 204 245 shift right, f 6;
+#X obj 118 246 lrshift~ 1;
+#X obj 253 245 lrshift~ -1;
+#X obj 43 175 tabreceive~ shiftin;
+#X obj 38 11 lrshift~;
+#X msg 229 176 \; pd dsp \$1, f 10;
+#X text 562 10 <= click;
+#N canvas 559 250 572 199 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 91 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 132 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 169 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 35 19 lrshift~;
+#X text 116 143 1) float - shift amount \, positive or negative (default 0).;
+#X text 103 19 - shift block elements left or right.;
+#X text 139 65 signal(s) - input signal(s) to shift., f 50;
+#X text 139 103 signal(s) - shifted signal(s)., f 50;
+#X restore 468 11 pd reference;
+#X obj 5 42 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 5 360 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 61 290 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 273 292 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 139 293 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 106 11 - shift block elements left or right;
+#X text 261 141 DSP on/off;
+#X obj 229 139 ../../doc/5.reference/set-dsp-tgl;
+#N canvas 775 164 356 482 multichannel 0;
+#X msg 178 195 \; pd dsp \$1;
+#X text 210 158 DSP on/off;
+#X obj 63 173 snake~ out;
+#X obj 63 250 print~ L;
+#X obj 130 251 print~ R;
+#X obj 81 211 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#X obj 178 154 ../../doc/5.reference/set-dsp-tgl;
+#X obj 63 109 tabreceive~ shiftin shiftin2;
+#X obj 63 141 lrshift~ -2;
+#X text 65 18 [lrshift~] has support for multichannel signals as it is possible from the output of [tabreceive~] and other objects in Pd., f 29;
+#X obj 57 312 cnv 19 248 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array shiftin2 64 float 1;
+#A 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 63 0 250 140 1 0 0;
+#X restore 56 311 graph;
+#X connect 2 0 3 0;
+#X connect 2 1 4 0;
+#X connect 5 0 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 0 0;
+#X connect 7 0 8 0;
+#X connect 8 0 2 0;
+#X restore 501 321 pd multichannel;
+#X text 350 306 mutichannel signal support ----------->, f 20;
+#X text 418 375 Updated for Pd version 0.54;
+#X text 41 58 Acting at whatever vector size the window is running at \, [lrshift~] shifts samples to the left (toward the beginning sample) or to the right. The argument gives the direction and the amount of the shift. The rightmost (or leftmost) samples are set to zero. This is mostly useful for FFT/spectral processing., f 82;
+#X obj 385 145 cnv 19 248 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array shiftin 64 float 1;
-#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 63 0 250 140 1 0 0;
-#X restore 384 158 graph;
-#X obj 55 175 tabreceive~ shiftin;
-#X obj 38 11 lrshift~;
-#X text 106 11 - shift signal vector elements left or right;
-#X msg 236 148 \; pd dsp \$1;
-#X obj 236 125 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 258 123 DSP on/off;
-#X text 562 10 <= click;
-#N canvas 767 120 572 199 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 91 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 132 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 169 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 35 19 lrshift~;
-#X text 103 19 - shift signal vector elements left or right;
-#X text 138 63 signal - input signal vector to shift., f 53;
-#X text 116 143 1) float - shift amount \, positive or negative (default
-0).;
-#X text 138 102 signal - shifted signal vector., f 53;
-#X restore 468 11 pd reference;
-#X obj 5 42 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 5 360 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 418 375 Updated for Pd version 0.31.;
-#X connect 0 0 1 0;
-#X connect 2 0 3 0;
-#X connect 4 0 5 0;
-#X connect 8 0 3 0;
-#X connect 9 0 1 0;
-#X connect 12 0 5 0;
-#X connect 12 0 8 0;
-#X connect 12 0 9 0;
-#X connect 16 0 15 0;
+#X restore 384 144 graph;
+#X connect 5 0 1 0;
+#X connect 6 0 0 0;
+#X connect 7 0 2 0;
+#X connect 7 0 5 0;
+#X connect 7 0 6 0;
+#X connect 14 0 2 0;
+#X connect 15 0 0 0;
+#X connect 16 0 1 0;
+#X connect 19 0 9 0;

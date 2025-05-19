@@ -1,7 +1,7 @@
-#N canvas 595 160 822 441 12;
+#N canvas 428 78 822 441 12;
 #X declare -stdpath ./;
-#N canvas 162 150 1098 501 guts 0;
-#X obj 501 296 +~;
+#N canvas 283 204 898 372 guts 0;
+#X obj 396 225 +~;
 #N canvas 393 122 417 410 audio-transformation 0;
 #X obj 101 49 inlet~;
 #X obj 105 328 outlet~;
@@ -33,32 +33,32 @@
 #X connect 12 0 14 2;
 #X connect 13 0 9 0;
 #X connect 14 0 6 0;
-#X restore 338 254 pd audio-transformation;
-#X obj 501 389 outlet~;
-#X obj 82 165 openpanel;
-#X obj 82 250 soundfiler;
-#X msg 82 319 resize \$1;
-#X obj 82 346 send \$0-output;
-#X msg 82 225 read -resize \$1 \$2;
-#X obj 82 197 list append \$0-input;
-#X obj 853 217 savepanel;
-#X obj 853 290 soundfiler;
-#X obj 656 204 savepanel;
-#X obj 656 293 soundfiler;
-#X obj 853 241 list append \$0-output;
-#X msg 853 265 write \$1 \$1;
-#X msg 656 268 write -normalize \$1 \$2;
-#X obj 656 235 list append \$0-output;
-#X obj 656 177 r \$0-save;
-#X obj 853 191 r \$0-save-normalized;
-#X obj 82 136 r \$0-read;
-#X obj 326 300 tabwrite~ \$0-output, f 9;
-#X obj 518 231 tabplay~ \$0-output, f 9;
-#X obj 518 198 r \$0-hear;
-#X obj 338 212 tabplay~ \$0-input, f 9;
-#X msg 325 130 bang \; pd dsp 1;
-#X obj 325 97 r \$0-run;
-#X obj 85 286 + 44100;
+#X restore 233 183 pd audio-transformation;
+#X obj 396 318 outlet~;
+#X obj 47 94 openpanel;
+#X obj 47 179 soundfiler;
+#X msg 47 248 resize \$1;
+#X obj 47 275 send \$0-output;
+#X msg 47 154 read -resize \$1 \$2;
+#X obj 47 126 list append \$0-input;
+#X obj 718 146 savepanel;
+#X obj 718 219 soundfiler;
+#X obj 521 133 savepanel;
+#X obj 521 222 soundfiler;
+#X obj 718 170 list append \$0-output;
+#X msg 718 194 write \$1 \$1;
+#X msg 521 197 write -normalize \$1 \$2;
+#X obj 521 164 list append \$0-output;
+#X obj 521 106 r \$0-save;
+#X obj 718 120 r \$0-save-normalized;
+#X obj 47 65 r \$0-read;
+#X obj 221 229 tabwrite~ \$0-output, f 9;
+#X obj 414 160 tabplay~ \$0-output, f 9;
+#X obj 414 127 r \$0-hear;
+#X obj 233 141 tabplay~ \$0-input, f 9;
+#X msg 220 59 bang \; pd dsp 1;
+#X obj 220 26 r \$0-run;
+#X obj 47 215 + 44100;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 20 0;
@@ -84,7 +84,7 @@
 #X connect 24 0 23 0;
 #X connect 25 0 24 0;
 #X connect 26 0 5 0;
-#X restore 170 285 pd guts;
+#X restore 142 285 pd guts;
 #X floatatom 572 37 6 0 100 0 - - - 0;
 #X obj 572 68 s revtime;
 #X obj 572 136 s revgain;
@@ -97,16 +97,11 @@
 #X text 107 42 Reverberator. Read in a sample first.;
 #X obj 142 330 output~;
 #X text 95 87 Click below to:;
-#X obj 185 122 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 185 146 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 172 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 196 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 185 221 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 122 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 185 146 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 172 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 196 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 185 221 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 214 121 (read an input file);
 #X text 214 145 (run the transformation);
 #X text 214 171 (hear the output sample);
@@ -120,7 +115,6 @@
 #X floatatom 573 229 6 0 100 0 - - - 0;
 #X obj 645 360 declare -stdpath ./;
 #X connect 0 0 11 0;
-#X connect 0 0 11 1;
 #X connect 1 0 2 0;
 #X connect 7 0 8 0;
 #X connect 8 0 28 0;

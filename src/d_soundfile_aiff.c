@@ -25,13 +25,14 @@
     - sowt "not compressed" little endian
     - fl32 "32-bit floating point" big endian
     - FL32 "Float 32" big endian
+    - fl63 "64-bit floating point" big endian
     - the rest are not relevant to Pd...
   * limited to ~2 GB files as sizes are signed 32 bit ints
 
   this implementation:
 
   * supports AIFF and AIFF-C
-  * implicitly writes AIFF-C header for 32 bit float (see below)
+  * implicitly writes AIFF-C header for 32 and 64 bit float (see below)
   * implements chunks: common, data, version (AIFF-C)
   * ignores chunks: marker, instrument, comment, name, author, copyright,
                     annotation, audio recording, MIDI data, application, ID3
@@ -39,7 +40,9 @@
   * ignores any chunks after finding the sound data chunk
   * assumes there is always a sound data chunk
   * does not block align sound data
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+
+  Pd versions < 0.55 did not read or write 64 bit float.
 
   Pd versions < 0.51 did *not* read or write AIFF files with a 32 bit float
   sample format.
@@ -59,9 +62,11 @@
      /* compression string defines */
 #define AIFF_NONE_STR "not compressed"
 #define AIFF_FL32_STR "32-bit floating point"
+#define AIFF_FL64_STR "64-bit floating point"
 
 #define AIFF_NONE_LEN 16 /**< 1 len byte + 15 bytes + 1 \0 pad byte */
 #define AIFF_FL32_LEN 22 /**< 1 len byte + 22 bytes, no pad byte */
+#define AIFF_FL64_LEN 22 /**< 1 len byte + 22 bytes, no pad byte */
 
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
@@ -115,7 +120,8 @@ typedef struct _verchunk
     /** returns 1 if format requires AIFF-C */
 static int aiff_isaiffc(const t_soundfile *sf)
 {
-    return (!sf->sf_bigendian || sf->sf_bytespersample == 4);
+    return (!sf->sf_bigendian || sf->sf_bytespersample == 4 ||
+                                 sf->sf_bytespersample == 8);
 }
 
     /** pascal string to c string, max size 256, returns *total* pstring size */
@@ -204,7 +210,7 @@ static off_t aiff_firstchunk(const t_soundfile *sf, t_chunk *chunk)
 }
 
     /** read next chunk, chunk should be filled when calling
-        returns fills chunk offset on success or -1 */
+        returns filled chunk offset on success or -1 */
 static off_t aiff_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
 {
     int32_t chunksize = swap4s(chunk->c_size, !sys_isbigendian());
@@ -250,7 +256,7 @@ static void aiff_postcomm(const t_commchunk *comm, int isaiffc, int swap)
     }
 }
 
-    /** post sata info for debugging */
+    /** post data info for debugging */
 static void aiff_postdata(const t_datachunk *data, int swap)
 {
     aiff_postchunk((const t_chunk *)data, swap);
@@ -342,6 +348,7 @@ static int aiff_readheader(t_soundfile *sf)
                 case 16: bytespersample = 2; break;
                 case 24: bytespersample = 3; break;
                 case 32: bytespersample = 4; break;
+                case 64: bytespersample = 8; break;
                 default:
                 {
                     errno = SOUNDFILE_ERRSAMPLEFMT;
@@ -361,9 +368,10 @@ static int aiff_readheader(t_soundfile *sf)
                     bigendian = 0;
                 }
                 else if (!strncmp(comm->cc_comptype, "fl32", 4) ||
-                         !strncmp(comm->cc_comptype, "FL32", 4))
+                         !strncmp(comm->cc_comptype, "FL32", 4) ||
+                         !strncmp(comm->cc_comptype, "fl64", 4))
                 {
-                    if (bytespersample != 4)
+                    if (bytespersample != 4 && bytespersample != 8)
                     {
                         errno = SOUNDFILE_ERRMALFORMED;
                         return 0;
@@ -376,9 +384,9 @@ static int aiff_readheader(t_soundfile *sf)
                     return 0;
                 }
             }
-            if (bytespersample == 4 && !isfloat)
+            if ((bytespersample == 4 || bytespersample == 8) && !isfloat)
             {
-                    /* 32 bit int */
+                    /* 32 bit int or unknown */
                 errno = SOUNDFILE_ERRSAMPLEFMT;
                 return 0;
             }
@@ -452,10 +460,10 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
         swap2(sf->sf_nchannels, swap),          /* channels         */
-        {0},                                      /* sample frames    */
+        {0},                                    /* sample frames    */
         swap2(sf->sf_bytespersample / 8, swap), /* bits per sample  */
-        {0},                                      /* sample rate      */
-        {0}, {0}                                    /* comp info        */
+        {0},                                    /* sample rate      */
+        {0}, {0}                                /* comp info        */
     };
     t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 
@@ -488,6 +496,11 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
         {
             strncpy(comm.cc_comptype, "fl32", 4);
             commsize += 4 + aiff_setpstring(comm.cc_compname, AIFF_FL32_STR);
+        }
+        if (sf->sf_bytespersample == 8)
+        {
+            strncpy(comm.cc_comptype, "fl64", 4);
+            commsize += 4 + aiff_setpstring(comm.cc_compname, AIFF_FL64_STR);
         }
         else
         {
@@ -534,6 +547,8 @@ static int aiff_updateheader(t_soundfile *sf, size_t nframes)
             /* AIFF-C compression info */
         if (sf->sf_bytespersample == 4)
             commsize += 4 + AIFF_FL32_LEN;
+        else if (sf->sf_bytespersample == 8)
+            commsize += 4 + AIFF_FL64_LEN;
         else
             commsize += 4 + AIFF_NONE_LEN;
         headersize += AIFFVERSIZE;
@@ -592,10 +607,10 @@ static int aiff_addextension(char *filename, size_t size)
     return 1;
 }
 
-    /* default to big endian unless overridden */
-static int aiff_endianness(int endianness)
+    /* big endian unless overridden for 16 or 24 bit int */
+static int aiff_endianness(int endianness, int bytespersample)
 {
-    if (endianness == 0)
+    if ((bytespersample == 2 || bytespersample == 3) && endianness == 0)
         return 0;
     return 1;
 }

@@ -1,94 +1,48 @@
 # French translation for Pure Data
 # This file is put in the public domain.
-#
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
+# Antoine Rousseau <antoine@metalu.net>, 2017 2018, 2019, 2020, 2021, 2022.
+# J. Lavoie <j.lavoie@net-c.ca>, 2022.
+# Serguei Mokhov <mokhov@cse.concordia.ca>, 2022.
+# cyrille henry <ch@nozoid.com>, 2009, 2017.
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.49-0\n"
+"Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2021-09-14 19:22+0200\n"
-"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
-"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"PO-Revision-Date: 2024-07-08 17:18+0200\n"
+"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Poedit 3.4.4\n"
 
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "------dimensions(chiffres)(pix):------"
+msgid "linear"
+msgstr "linéaire"
 
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
+msgstr "logarithmique"
 
-msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensions(pix):-----------"
+msgid "new-only"
+msgstr "nouveau seulement"
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "-------durée_du_flash(ms)(ms):------"
+msgid "new&old"
+msgstr "nouveau et ancien"
 
-msgid "-----------output-range:-----------"
-msgstr "---------échelle_de_sortie:--------"
+msgid "no scale"
+msgstr "non gradué"
 
-msgid "------selectable_dimensions(pix):------"
-msgstr "----dimensions_sélectionnable(pix):----"
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "------rectangle_visible(pix)(pix):------"
-
-msgid "bottom:"
-msgstr "bas :"
-
-msgid "height:"
-msgstr "hauteur :"
-
-msgid "hold:"
-msgstr "maintient :"
-
-msgid "intrrpt:"
-msgstr "intrrpt :"
-
-msgid "left:"
-msgstr "gauche :"
-
-msgid "lin"
-msgstr "lin"
-
-msgid "log"
-msgstr "log"
-
-msgid "log-height:"
-msgstr "Hauteur de log :"
-
-msgid "max:"
-msgstr "max :"
-
-msgid "min:"
-msgstr "min :"
-
-msgid "right:"
-msgstr "droite :"
-
-msgid "size:"
-msgstr "taille :"
-
-msgid "top:"
-msgstr "haut :"
-
-msgid "value:"
-msgstr "valeur :"
-
-msgid "width:"
-msgstr "largeur :"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Enregistrer les modifications de '%s' ?"
+msgid "scale"
+msgstr "gradué"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Abandonner les modifications de '%s' ?"
+msgstr "Abandonner les modifications de « %s » ?"
 
 msgid "Undo clear"
 msgstr "Annuler l'effacement"
@@ -158,8 +112,7 @@ msgstr "pas de paramètres a effacer"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
-"Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été "
-"chargées"
+"Pd semble avoir planté au démarrage, les préférences n'ont pas été chargées"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(enregistrez à nouveau les préférences afin de les rétablir)"
@@ -210,7 +163,7 @@ msgid "Save contents"
 msgstr "Enregistrer le contenu"
 
 msgid "Draw as:"
-msgstr "Dessiner en :"
+msgstr "Style :"
 
 msgid "Polygon"
 msgstr "Polygone"
@@ -248,8 +201,26 @@ msgstr "Appliquer"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Paramètres audio"
+msgid "no device"
+msgstr "aucun périphérique"
+
+msgid "(same as input device)..."
+msgstr "(identique au périphérique d'entrée)..."
+
+msgid "Channels:"
+msgstr "Nombre de canaux :"
+
+msgid "Input Devices"
+msgstr "Périphériques d'entrée"
+
+msgid "Output Devices"
+msgstr "Périphériques de sortie"
+
+msgid "Use Multiple Devices"
+msgstr "Utiliser plusieurs périphériques"
+
+msgid "Audio System"
+msgstr "Système audio"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -258,7 +229,7 @@ msgid "Sample rate:"
 msgstr "Fréquence d'échantillonnage :"
 
 msgid "Delay (msec):"
-msgstr "Délai(ms) :"
+msgstr "Délai (ms) :"
 
 msgid "48k"
 msgstr "48k"
@@ -275,29 +246,17 @@ msgstr "Échantillons par bloc :"
 msgid "Use callbacks"
 msgstr "Utiliser des callbacks"
 
-msgid "Input Devices"
-msgstr "Périphériques d'entrée"
-
-msgid "Channels:"
-msgstr "Nombre de canaux :"
-
-msgid "Output Devices"
-msgstr "Périphériques de sortie"
-
-msgid "(same as input device)..."
-msgstr "(même que le périphérique d'entrée)..."
-
-msgid "Use Multiple Devices"
-msgstr "Utiliser plusieurs périphériques"
+msgid "Audio Settings"
+msgstr "Paramètres audio"
 
 msgid "Save All Settings"
 msgstr "Enregistrer tous les réglages"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "ATTENTION: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "ATTENTION : pdtk_canvas_dialog a reçu des paramètres inconnus"
 
 msgid "Canvas Properties"
-msgstr "Propriétés du Canvas"
+msgstr "Propriétés du Canevas"
 
 msgid "Scale"
 msgstr "Échelle"
@@ -312,7 +271,7 @@ msgid "Appearance on parent patch"
 msgstr "Aspect dans le patch parent"
 
 msgid "Graph-On-Parent"
-msgstr "Graph-On-Parent (dessiner dans le patch parent)"
+msgstr "Dessiner dans le patch parent"
 
 msgid "Hide object name and arguments"
 msgstr "Cacher le nom et les arguments de l'objet"
@@ -333,7 +292,13 @@ msgid "Y range: from"
 msgstr "Intervalle Y : de"
 
 msgid "Data Properties"
-msgstr "Propriétés de la donnée"
+msgstr "Propriétés des données"
+
+msgid "Send"
+msgstr "Envoyer"
+
+msgid "Done"
+msgstr "Fermer"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -386,8 +351,20 @@ msgstr "seulement X"
 msgid "Y only"
 msgstr "seulement Y"
 
-msgid "Atom Box Properties"
-msgstr "Propriétés de la boîte Nombre/Symbole"
+msgid "GUI Box Properties"
+msgstr "Propriétés de la Boîte"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Send symbol:"
+msgstr "Envoyer au symbole :"
+
+msgid "Receive symbol:"
+msgstr "Recevoir du symbole :"
+
+msgid "auto"
+msgstr "automatique"
 
 msgid "Width:"
 msgstr "Largeur :"
@@ -396,13 +373,13 @@ msgid "Limits"
 msgstr "Limites"
 
 msgid "Lower:"
-msgstr "Inférieur :"
+msgstr "Basse :"
 
 msgid "Upper:"
-msgstr "Supérieur :"
+msgstr "Haute :"
 
 msgid "Label"
-msgstr "Label"
+msgstr "Étiquette"
 
 msgid "Left"
 msgstr "Gauche"
@@ -416,15 +393,6 @@ msgstr "Haut"
 msgid "Bottom"
 msgstr "Bas"
 
-msgid "Messages"
-msgstr "Messages"
-
-msgid "Send symbol:"
-msgstr "Envoyer au symbole :"
-
-msgid "Receive symbol:"
-msgstr "Recevoir du symbole :"
-
 msgid "Background color"
 msgstr "Couleur de l'arrière plan"
 
@@ -432,19 +400,7 @@ msgid "Foreground color"
 msgstr "Couleur du premier plan"
 
 msgid "Label color"
-msgstr "Couleur du label"
-
-msgid "Init"
-msgstr "Initialisation"
-
-msgid "No init"
-msgstr "Pas d'init."
-
-msgid "Jump on click"
-msgstr "Instantané"
-
-msgid "Steady on click"
-msgstr "Glissant"
+msgstr "Couleur de l'étiquette"
 
 msgid "Bang"
 msgstr "Bang"
@@ -452,11 +408,11 @@ msgstr "Bang"
 msgid "Flash Time (msec)"
 msgstr "Durée du flash (ms)"
 
-msgid "Intrrpt:"
-msgstr "Intrrpt :"
+msgid "Min:"
+msgstr "Min :"
 
-msgid "Hold:"
-msgstr "Maintient :"
+msgid "Max:"
+msgstr "Max :"
 
 msgid "Toggle"
 msgstr "Interrupteur"
@@ -501,10 +457,10 @@ msgid "VU Meter"
 msgstr "VU-mètre"
 
 msgid "Canvas"
-msgstr "Canvas"
+msgstr "Canevas"
 
 msgid "Visible Rectangle (pix)"
-msgstr "Rectangle visible (pix)"
+msgstr "Rectangle visible (px)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -513,11 +469,23 @@ msgstr "Propriétés de l'objet %s"
 msgid "Parameters"
 msgstr "Paramètres"
 
+msgid "Init"
+msgstr "Initialisation"
+
+msgid "No init"
+msgstr "Pas d'initialisation"
+
+msgid "Jump on click"
+msgstr "Instantané"
+
+msgid "Steady on click"
+msgstr "Glissant"
+
 msgid "X offset:"
-msgstr "Offset en X :"
+msgstr "Décalage en X :"
 
 msgid "Y offset:"
-msgstr "Offset en Y :"
+msgstr "Décalage en Y :"
 
 msgid "Colors"
 msgstr "Couleurs"
@@ -532,25 +500,31 @@ msgid "Compose color"
 msgstr "Créer la couleur"
 
 msgid "Test label"
-msgstr "Label de test"
+msgstr "Étiquette de test"
 
 msgid "Send a Pd message"
-msgstr "Envoyer un message à Pd"
+msgstr "Envoyer un message Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "(Utiliser les flèches pour accéder à l'historique)"
+msgstr "(utiliser les flèches pour accéder à l'historique)"
 
-msgid "MIDI Settings"
-msgstr "Paramètres MIDI"
-
-msgid "ALSA MIDI Settings"
-msgstr "Paramètres MIDI (ALSA)"
+msgid "no input devices"
+msgstr "pas de périphériques d'entrée"
 
 msgid "In Ports:"
 msgstr "Ports d'entrée :"
 
 msgid "Out Ports:"
 msgstr "Ports de sortie :"
+
+msgid "MIDI system"
+msgstr "système MIDI"
+
+msgid "MIDI Settings"
+msgstr "Paramètres MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Paramètres MIDI ALSA"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -563,7 +537,7 @@ msgid "Verbose"
 msgstr "Verbeux"
 
 msgid "Pd Documents Directory"
-msgstr "Dossier des Documents"
+msgstr "Dossier des documents Pd"
 
 msgid "Browse"
 msgstr "Choisir"
@@ -575,10 +549,13 @@ msgid "Disable"
 msgstr "Désactiver"
 
 msgid "Externals Install Directory"
-msgstr "Dossier d'installation des Externals"
+msgstr "Dossier d'installation des externals"
 
 msgid "Clear"
 msgstr "Effacer"
+
+msgid "path preferences"
+msgstr "chemins"
 
 msgid "Choose Pd documents directory:"
 msgstr "Choisir le dossier des documents Pd :"
@@ -589,32 +566,176 @@ msgstr "Installer les externals dans le dossier :"
 msgid "Add a new path"
 msgstr "Ajouter un chemin"
 
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr "Modifier le chemin d'accès existant [%s]"
+
+msgid "Patch Windows"
+msgstr "Fenêtres de patch"
+
+msgid "Zoom New Windows"
+msgstr "Zoomer les nouvelles fenêtres"
+
+msgid "GUI Settings"
+msgstr "Paramètres de l'interface graphique"
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Disposition des préférences (réouvrir les préférences pour appliquer)"
+
+msgid "Use tabs"
+msgstr "en onglets"
+
+msgid "Single page"
+msgstr "une seule page"
+
+msgid "Patching helpers"
+msgstr "aide au patch"
+
+msgid "Highlight active cord while connecting"
+msgstr "Mettre le câble actif en surbrillance lors de la connexion"
+
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "startup preferences"
+msgstr "démarrage"
+
+msgid "audio preferences"
+msgstr "audio"
+
+msgid "MIDI preferences"
+msgstr "MIDI"
+
+msgid "deken preferences"
+msgstr "deken"
+
+msgid "misc preferences"
+msgstr "divers"
+
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
 
 msgid "Edit library"
 msgstr "Éditer la bibliothèque"
 
+msgid "Settings below require a restart of Pd!"
+msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
+
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "Startup flags:"
-msgstr "Options au démarrage :"
+msgid "GUI Options"
+msgstr "Options de l'interface graphique"
+
+msgid "language"
+msgstr "langue"
+
+msgid "Menu language"
+msgstr "Langue des menus"
+
+msgid "float (32bit)"
+msgstr "flottant (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "double (64bit) EXPÉRIMENTAL"
+
+msgid "double (64bit)"
+msgstr "double (64bit)"
+
+msgid "float size"
+msgstr "taille des flottants"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Précision numérique de Pd-core"
+
+msgid "Startup Options"
+msgstr "Options au démarrage"
 
 msgid "Defeat real-time scheduling"
-msgstr "Refuser la priorité temps-réel"
+msgstr "Rejeter la priorité temps-réel"
+
+msgid "Startup Flags:"
+msgstr "Options au démarrage :"
 
 msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
+msgid "Associated Files"
+msgstr "Fichiers associés"
+
+msgid "Pd Files"
+msgstr "Fichiers Pd"
+
+msgid "Max Patch Files"
+msgstr "Fichiers de patchs Max"
+
+msgid "Max Text Files"
+msgstr "Fichiers texte Max"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Fichiers de patchs Max (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Fichiers texte Max (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "police détectée : %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+"ATTENTION : la famille de police '%1$s' n'a pas pu être trouvée, utilisation "
+"de la famille par défaut (%2$s)"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+"ATTENTION : la graisse de police '%1$s' n'a pas pu être trouvée, utilisation "
+"de la valeur par défaut (%2$s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "police utilisée : %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "'%1$s' déjà chargé, ignorer : '%2$s'"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "Chargement du plugin : %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "ERREUR NON GÉRÉE : %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "ÉCHEC DU CHARGEMENT DE %s"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "Échec de la lecture du plugin %s ... passer !"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "Impossible de trouver des plugins dans %s... passer !"
+
+msgid "Pd startup failure"
+msgstr "Échec du démarrage de Pd"
+
+msgid "Failed to start Pd-core"
+msgstr "Échec au démarrage de Pd-core"
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) CARACTÈRE MANQUANT '}' : "
+msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) COMMANDE INVALIDE : "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr "(Tcl) ERREUR : "
+msgstr "(Tcl) ERREUR NON GÉRÉE : "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -630,22 +751,22 @@ msgstr "[deken] version installée [%1$s] == %2$s... ignorer !"
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr "désinstallation du paquet deken '%s'"
+msgstr "installation du paquet deken '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr "ignorer '%s' : ne semble pas être un paquet deken"
 
 #, tcl-format
-msgid "Installing %s"
+msgid "Installing '%s'"
 msgstr "Installation de '%s'"
 
 #, tcl-format
-msgid "[deken] Successfully unzipped %1$s into %2$s."
-msgstr "[deken] %1$s décompressé avec succès dans %2$s."
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s a été décompressé avec succès dans %2$s."
 
-msgid "[deken] Unable to extract package automatically."
-msgstr "[deken] Impossible d'extraire le paquet automatiquement."
+msgid "Unable to extract package automatically."
+msgstr "Impossible d'extraire le paquet automatiquement."
 
 msgid "Please perform the following steps manually:"
 msgstr "Effectuez manuellement les étapes suivantes :"
@@ -663,35 +784,43 @@ msgstr "2. Copier le contenu dans %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr "3. Effacer %s (optionnel)."
+msgstr "3. Effacer %s (optionnel)"
 
 #, tcl-format
-msgid "[deken] uninstalling '%s'"
-msgstr "[deken] désinstallation de '%s'"
+msgid "Removing '%s'"
+msgstr "Suppression de '%s'"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
 msgstr "Échec de la désinstallation de %1$s depuis %2$s !"
 
 #, tcl-format
-msgid "skipping SHA256 verification of %s."
-msgstr "ignorer la vérification SHA256 de %s."
+msgid "Skipping SHA256 verification of '%s'."
+msgstr "Passer la vérification SHA256 de %s."
 
 #, tcl-format
-msgid "SHA256 verification of %s"
-msgstr "Vérification SHA256 de %s"
+msgid "SHA256 verification of '%s'"
+msgstr "Vérification SHA256 de '%s'"
 
 #, tcl-format
-msgid "unable to fetch reference SHA256 for %s."
-msgstr "impossible de récupérer la référence SHA256 pour %s."
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr "Impossible de récupérer le SHA256 de référence pour '%s'."
 
 #, tcl-format
-msgid "unable to perform SHA256 verification for %s."
-msgstr "impossible d'effectuer la vérification SHA256 pour %s."
+msgid "File checksum looks invalid: '%s'."
+msgstr "La somme de contrôle semble non valide : '%s'."
 
 #, tcl-format
-msgid "[deken] Unable to download from %1$s [%2$s]"
-msgstr "[deken] Impossible de télécharger depuis %1$s [%2$s]"
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "La somme de contrôle de référence semble non valide : '%s'."
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr "Impossible d'effectuer la vérification SHA256 de '%s'."
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "Impossible de télécharger depuis %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to download from '%s'!"
@@ -701,12 +830,12 @@ msgid "Download failed"
 msgstr "Échec du téléchargement"
 
 #, tcl-format
-msgid "[deken] Unable to remove stray file %s"
-msgstr "[deken] Impossible d'effacer le ficher temporaire %s"
+msgid "Unable to remove stray file '%s'"
+msgstr "Impossible d'effacer le ficher temporaire '%s'"
 
 #, tcl-format
-msgid "[deken] Unable to rename downloaded file to %s"
-msgstr "[deken] Impossible de donner au fichier téléchargé le nom %s"
+msgid "Unable to rename downloaded file to '%s'"
+msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
 msgid "Create"
 msgstr "Créer"
@@ -730,7 +859,7 @@ msgstr ""
 "Afficher le README (si présent) des bibliothèques nouvellement installées"
 
 msgid "Keep package files after installation"
-msgstr "Garder les fichiers paquets après l'installation"
+msgstr "Garder les paquets après l'installation"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
@@ -765,6 +894,17 @@ msgstr "Préférences de Deken %s"
 msgid "Platform re-detected: %s"
 msgstr "Plateforme re-détectée : %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "Échec de la vérification SHA256 de '%s' !"
+
+msgid "SHA256 verification failed"
+msgstr "Échec de la vérification SHA256"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Erreur de somme de contrôle pour '%s'"
+
 msgid "Deken Packages"
 msgstr "Paquets Deken"
 
@@ -778,41 +918,30 @@ msgid "All Files"
 msgstr "Tous les fichiers"
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Erreur de somme de contrôle pour '%s'"
+msgid "Uninstalling previous installation of '%s'"
+msgstr "Désinstallation de la version précédente de '%s'"
 
 #, tcl-format
-msgid "SHA256 verification of %s failed!"
-msgstr "Échec de la vérification SHA256 pour %s !"
-
-msgid "SHA256 verification failed"
-msgstr "Échec de la vérification SHA256"
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr "Échec du déplacement temporaire de %1$s vers %2$s."
 
 #, tcl-format
-msgid "Removing %s"
-msgstr "Suppression de %s"
-
-#, tcl-format
-msgid "[deken] temporarily moving %1$s into %2$s failed."
-msgstr "[deken] échec du déplacement temporaire de %1$s vers %2$s."
-
-#, tcl-format
-msgid "Installing package %s"
-msgstr "Installation du paquet %s"
+msgid "Installing package '%s'"
+msgstr "Installation du paquet '%s'"
 
 msgid "Installation completed!"
 msgstr "Installation terminée !"
 
 #, tcl-format
-msgid "Successfully installed %s!"
-msgstr "L'installation de %s a réussi !"
+msgid "Successfully installed '%s'!"
+msgstr "L'installation de '%s' a réussi !"
 
 msgid "Installation failed!"
 msgstr "L'installation a échoué !"
 
 #, tcl-format
-msgid "Failed to install %s!"
-msgstr "Échec de l'installation de %s !"
+msgid "Failed to install '%s'!"
+msgstr "Échec de l'installation de '%s' !"
 
 msgid "Package installation failed"
 msgstr "Échec de l'installation du paquet"
@@ -826,16 +955,16 @@ msgstr ""
 "Veuillez supprimer manuellement le répertoire %2$s après avoir quitté Pd."
 
 #, tcl-format
-msgid "[deken] Unable to add %s to search paths"
-msgstr "[deken] Impossible d'ajouter %s aux chemins de recherche"
+msgid "Unable to add %s to search paths"
+msgstr "Impossible d'ajouter %s aux chemins de recherche"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
 msgstr "Ajouter %s aux chemins de recherche ?"
 
 #, tcl-format
-msgid "[deken] Added %s to search paths"
-msgstr "[deken] %s a été ajouté aux chemins de recherche"
+msgid "Added %s to search paths"
+msgstr "%s a été ajouté aux chemins de recherche"
 
 msgid "No packages selected for installation."
 msgstr "Aucun paquet sélectionné pour installation."
@@ -849,6 +978,13 @@ msgstr "Tout montrer"
 
 msgid "Search"
 msgstr "Rechercher"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr "Installer (%d)"
+
+msgid "Install"
+msgstr "Installer"
 
 #, tcl-format
 msgid "%s%% of download completed"
@@ -866,7 +1002,7 @@ msgstr ""
 "caractères."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "par exemple  '*-plugin' trouvera 'deken-plugin' (entre autres)"
+msgstr "par exemple '*-plugin' pourra correspondre à 'deken-plugin'."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
@@ -883,11 +1019,22 @@ msgstr ""
 "En cliquant avec le bouton droit de la souris sur un résultat de recherche, "
 "vous obtiendrez plus d'options..."
 
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+"Vous pouvez également rechercher des bibliothèques et des objets via votre "
+"navigateur web :"
+
 msgid "Find externals"
 msgstr "Installer des objets supplémentaires"
 
+msgid "Install DEK file..."
+msgstr "Installer un fichier DEK..."
+
+msgid "Preferences..."
+msgstr "Préférences..."
+
 msgid "Search for: "
-msgstr "Rechercher des :"
+msgstr "Rechercher des : "
 
 msgid "libraries"
 msgstr "bibliothèques"
@@ -906,34 +1053,57 @@ msgstr ""
 "N'installez que des objets ou bibliothèques provenant de sources de "
 "confiance."
 
-msgid "Preferences..."
-msgstr "Préférences..."
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr "Désactivation de la vue par onglets : incompatibilité Tcl/Tk détectée"
 
-msgid "Install DEK file..."
-msgstr "Installer un fichier DEK..."
+msgid "Library"
+msgstr "Bibliothèque"
 
-msgid "More..."
-msgstr "Plus..."
+msgid "Version"
+msgstr "Version"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Uploader"
+msgstr "Mis en ligne par"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Search Results"
+msgstr "Résultats de la recherche"
+
+msgid "Log"
+msgstr "Journal"
 
 #, tcl-format
-msgid "[deken] Start searching for externals... %s"
-msgstr "[deken] Démarrage de la recherche d'externals... %s"
+msgid "Searching for \"%s\"..."
+msgstr "Recherche de « %s »…"
 
 #, tcl-format
-msgid "[deken] online? %s"
-msgstr "[deken] connecté ? %s"
+msgid "online? %s"
+msgstr "connecté ? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
+msgstr "La recherche n'a pas pu aboutir. Êtes-vous connecté(e) ?"
 
-msgid "[deken] No matching externals found."
-msgstr "[deken] Aucun external correspondant trouvé."
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr "%1$d paquets utilisables trouvés (sur un total de %2$d paquets)."
 
-msgid "Try using the full name e.g. 'freeverb~'."
-msgstr "Essayez avec le nom complet, par exemple 'freeverb~'"
+msgid "It appears that there are no matching packages for your architecture."
+msgstr ""
+"Il semble qu'il n'y ait aucun paquet correspondant à votre architecture."
 
 msgid "No matching externals found."
 msgstr "Aucun external correspondant trouvé."
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "Essayez avec le nom complet, par exemple 'freeverb~'."
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr "Ou utilisez le caractère \"*\", comme dans 'freeverb*'."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
@@ -943,27 +1113,31 @@ msgid "Install %1$s to %2$s?"
 msgstr "Installer %1$s dans %2$s ?"
 
 #, tcl-format
-msgid "Cancelling download of %s: No installation directory given."
+msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
-"Annulation du téléchargement de %s : aucun répertoire d'installation n'a "
+"Annulation du téléchargement de '%s' : aucun répertoire d'installation n'a "
 "été indiqué."
 
 msgid "Installing to non-existent directory failed"
-msgstr "L'installation dans un répertoire inexistant a échoué"
+msgstr "L'installation a échoué : le répertoire n'existe pas"
 
 #, tcl-format
-msgid ""
-"Commencing downloading of:\n"
-"%1$s\n"
-"Into %2$s..."
-msgstr ""
-"Début du téléchargement de :\n"
-"%1$s\n"
-"dans %2$s..."
+msgid "Unable to install to '%s'"
+msgstr "Échec de l'installation de %s"
+
+msgid "Directory does not exist!"
+msgstr "Le répertoire n'existe pas !"
+
+msgid "Directory is not writable!"
+msgstr "Le répertoire n'est pas accessible en écriture !"
 
 #, tcl-format
 msgid "Downloading '%s'"
 msgstr "Téléchargement de '%s'"
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr "Début du téléchargement de '%1$s' dans '%2$s'..."
 
 msgid "aborting."
 msgstr "abandon."
@@ -978,17 +1152,34 @@ msgstr "Échec du téléchargement !"
 msgid "Download completed! Verifying..."
 msgstr "Téléchargement terminé ! Vérification..."
 
-#, tcl-format
-msgid "searching for '%s'"
-msgstr "recherche de '%s'"
+msgid "Ignoring checksum mismatch"
+msgstr "Ignorer l'erreur de somme de contrôle"
+
+msgid "Ignoring checksum errors"
+msgstr "Ignorer les erreurs de somme de contrôle"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "[deken] deken-plugin.tcl (recherche d'externals Pd) chargé depuis %s"
+msgstr "[deken] deken-plugin.tcl (recherche d'externals Pd) chargé depuis %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plateforme détectée : %s"
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr "Recherche de %s..."
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr "La recherche de %1$s a donné %2$d résultats"
+
+msgid "No usable servers for searching found..."
+msgstr "Aucun serveur utilisable pour la recherche n'a été trouvé..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "Mis en ligne par '%1$s' le : %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -997,36 +1188,30 @@ msgstr "La recherche de '%s' a échoué !"
 msgid "Search failed"
 msgstr "Échec de la recherche"
 
-msgid "[deken] Unable to perform search."
-msgstr "[deken] Recherche impossible."
-
-#, tcl-format
-msgid "Uploaded by %1$s @ %2$s"
-msgstr "Mis en ligne par '%1$s' le : %2$s"
-
-msgid "Deselect package"
-msgstr "Désélectionner le paquet"
+msgid "Unable to perform search."
+msgstr "Recherche impossible."
 
 msgid "Select package for installation"
 msgstr "Sélectionner le paquet pour installation"
 
-msgid "Install selected packages"
-msgstr "Installer les paquets sélectionnés"
-
-msgid "Install package"
-msgstr "Installer le paquet"
+msgid "Deselect package"
+msgstr "Désélectionner le paquet"
 
 msgid "Open package webpage"
 msgstr "Ouvrir la page web du paquet"
 
 msgid "Copy package URL"
-msgstr "Copier l'URL du paquet "
+msgstr "Copier l'URL du paquet"
 
 msgid "Copy SHA256 checksum URL"
-msgstr "Copier l'URL du checksum SHA256"
+msgstr "Copier l'URL de la somme de contrôle SHA256"
 
 msgid "Copy OpenGPG signature URL"
 msgstr "Copier l'URL de la signature OpenGPG"
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr "Désinstaller '%s'"
 
 #, tcl-format
 msgid ""
@@ -1069,38 +1254,602 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
-"Le dossier Documents n'existe pas :\n"
+"Le dossier Documents de Pd n'existe pas :\n"
 "\n"
 "%s\n"
 "\n"
 "Choisir un nouvel emplacement ?"
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
-msgstr "impossible de créer le dossier Documents : %s\n"
+msgid "couldn't create Pd documents directory: %s"
+msgstr "impossible de créer le dossier de documents Pd : %s"
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
-msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s"
 
 msgid "refusing to delete empty domain"
 msgstr "refus de supprimer un domaine vide"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr "Impossible de créer des préférences \"%1$s\" en %2$s"
+msgstr "Impossible de créer des préférences \"%1$s\" dans %2$s"
+
+msgid "The language can only be set during startup."
+msgstr "Le changement de langue prendra effet au prochain démarrage."
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abkhaze"
+
+msgid "Avestan"
+msgstr "Avestique"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amharique"
+
+msgid "Aragonese"
+msgstr "Aragonais"
+
+msgid "Arabic"
+msgstr "Arabe"
+
+msgid "Assamese"
+msgstr "Assamais"
+
+msgid "Avaric"
+msgstr "Avar"
+
+msgid "Aymara"
+msgstr "aymara"
+
+msgid "Azerbaijani"
+msgstr "Azéri"
+
+msgid "Bashkir"
+msgstr "Bachkir"
+
+msgid "Belarusian"
+msgstr "Biélorusse"
+
+msgid "Bulgarian"
+msgstr "Bulgare"
+
+msgid "Bihari"
+msgstr "Bihari"
+
+msgid "Bislama"
+msgstr "Bichelamar"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengali"
+
+msgid "Tibetan"
+msgstr "Tibétain"
+
+msgid "Breton"
+msgstr "Breton"
+
+msgid "Bosnian"
+msgstr "Bosniaque"
+
+msgid "Catalan"
+msgstr "Catalan"
+
+msgid "Chechen"
+msgstr "Tchétchène"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Corse"
+
+msgid "Cree"
+msgstr "Cri"
+
+msgid "Czech"
+msgstr "Tchèque"
+
+msgid "Chuvash"
+msgstr "Tchouvache"
+
+msgid "Welsh"
+msgstr "Gallois"
+
+msgid "Danish"
+msgstr "Danois"
+
+msgid "German"
+msgstr "Allemand"
+
+msgid "German (Austria)"
+msgstr "Allemand (Autriche)"
+
+msgid "Dhivehi"
+msgstr "Maldivien"
+
+msgid "Dzongkha"
+msgstr "Dzongkha"
+
+msgid "Ewe"
+msgstr "Éwé"
+
+msgid "Greek"
+msgstr "Grec"
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "English (Canada)"
+msgstr "Anglais (Canada)"
+
+msgid "English (UK)"
+msgstr "Anglais (Royaume-Uni)"
+
+msgid "English (USA)"
+msgstr "Anglais (USA)"
+
+msgid "Esperanto"
+msgstr "Espéranto"
+
+msgid "Spanish"
+msgstr "Espagnol"
+
+msgid "Estonian"
+msgstr "Estonien"
+
+msgid "Basque"
+msgstr "Basque"
+
+msgid "Persian"
+msgstr "Persan"
+
+msgid "Fulah"
+msgstr "Peul"
+
+msgid "Finnish"
+msgstr "Finnois"
+
+msgid "Fijian"
+msgstr "Fidjien"
+
+msgid "Faroese"
+msgstr "Féroïen"
+
+msgid "French"
+msgstr "Français"
+
+msgid "Frisian"
+msgstr "Frison occidental"
+
+msgid "Irish"
+msgstr "Irlandais"
+
+msgid "Gaelic"
+msgstr "Gaélique écossais"
+
+msgid "Galician"
+msgstr "Galicien"
+
+msgid "Guarani"
+msgstr "Guarani"
+
+msgid "Gujarati"
+msgstr "Goudjerati"
+
+msgid "Manx"
+msgstr "Mannois"
+
+msgid "Hausa"
+msgstr "Haoussa"
+
+msgid "Hebrew"
+msgstr "Hébreu"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hiri Motu"
+msgstr "Hiri motu"
+
+msgid "Croatian"
+msgstr "Croate"
+
+msgid "Haitian"
+msgstr "Créole haïtien"
+
+msgid "Hungarian"
+msgstr "Hongrois"
+
+msgid "Armenian"
+msgstr "Arménien"
+
+msgid "Herero"
+msgstr "Héréro"
+
+msgid "Interlingua"
+msgstr "Interlingua"
+
+msgid "Indonesian"
+msgstr "Indonésien"
+
+msgid "Occidental"
+msgstr "Interlingue"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Yi du Sichuan"
+
+msgid "Inupiaq"
+msgstr "Inupiaq"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "Islandais"
+
+msgid "Italian"
+msgstr "Italien"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
+
+msgid "Japanese"
+msgstr "Japonais"
+
+msgid "Javanese"
+msgstr "Javanais"
+
+msgid "Georgian"
+msgstr "Géorgien"
+
+msgid "Kongo"
+msgstr "Kikongo"
+
+msgid "Gikuyu"
+msgstr "Kikuyu"
+
+msgid "Kwanyama"
+msgstr "Kuanyama"
+
+msgid "Kazakh"
+msgstr "Kazakh"
+
+msgid "Greenlandic"
+msgstr "Groenlandais"
+
+msgid "Kannada"
+msgstr "Kannada"
+
+msgid "Korean"
+msgstr "Coréen"
+
+msgid "Kanuri"
+msgstr "Kanouri"
+
+msgid "Kashmiri"
+msgstr "Cachemiri"
+
+msgid "Kurdish"
+msgstr "Kurde"
+
+msgid "Komi"
+msgstr "Komi"
+
+msgid "Cornish"
+msgstr "Cornique"
+
+msgid "Kyrgyz"
+msgstr "Kirghize"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Luxembourgish"
+msgstr "Luxembourgeois"
+
+msgid "Luganda"
+msgstr "Ganda"
+
+msgid "Limburgish"
+msgstr "Limbourgeois"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Lao"
+
+msgid "Lithuanian"
+msgstr "Lituanien"
+
+msgid "Luba-Katanga"
+msgstr "Luba-katanga"
+
+msgid "Latvian"
+msgstr "Letton"
+
+msgid "Malagasy"
+msgstr "Malgache"
+
+msgid "Marshallese"
+msgstr "Marshallais"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Macédonien"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongol"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Malais"
+
+msgid "Maltese"
+msgstr "Maltais"
+
+msgid "Burmese"
+msgstr "Birman"
+
+msgid "Nauru"
+msgstr "Nauruan"
+
+msgid "Nepali"
+msgstr "Népalais"
+
+msgid "Ndonga"
+msgstr "Ndonga"
+
+msgid "Dutch"
+msgstr "Néerlandais"
+
+msgid "Norwegian Nynorsk"
+msgstr "Norvégien nynorsk"
+
+msgid "Navaho"
+msgstr "Navajo"
+
+msgid "Nyanja"
+msgstr "Chewa"
+
+msgid "Occitan"
+msgstr "Occitan"
+
+msgid "Ojibwe"
+msgstr "Ojibwa"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Odia"
+
+msgid "Ossetian"
+msgstr "Ossète"
+
+msgid "Panjabi"
+msgstr "Pendjabi"
+
+msgid "Pali"
+msgstr "Pali"
+
+msgid "Polish"
+msgstr "Polonais"
+
+msgid "Pashto"
+msgstr "Pachto"
+
+msgid "Portuguese"
+msgstr "Portugais"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugais (Brésil)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portugais (Portugal)"
+
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Romanche"
+
+msgid "Rundi"
+msgstr "Roundi"
+
+msgid "Romanian"
+msgstr "Roumain"
+
+msgid "Russian"
+msgstr "Russe"
+
+msgid "Kinyarwanda"
+msgstr "Kinyarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskrit"
+
+msgid "Sardinian"
+msgstr "Sarde"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Cingalais"
+
+msgid "Slovak"
+msgstr "Slovaque"
+
+msgid "Slovenian"
+msgstr "Slovène"
+
+msgid "Samoan"
+msgstr "Samoan"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somali"
+
+msgid "Albanian"
+msgstr "Albanais"
+
+msgid "Serbian"
+msgstr "Serbe"
+
+msgid "Swati"
+msgstr "Swati"
+
+msgid "Sundanese"
+msgstr "Soundanais"
+
+msgid "Swedish"
+msgstr "Suédois"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamoul"
+
+msgid "Telugu"
+msgstr "Télougou"
+
+msgid "Tajik"
+msgstr "Tadjik"
+
+msgid "Thai"
+msgstr "Thaï"
+
+msgid "Tigrinya"
+msgstr "Tigrigna"
+
+msgid "Turkmen"
+msgstr "Turkmène"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tongien"
+
+msgid "Turkish"
+msgstr "Turc"
+
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tatar"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahitien"
+
+msgid "Uyghur"
+msgstr "Ouïghour"
+
+msgid "Ukrainian"
+msgstr "Ukrainien"
+
+msgid "Urdu"
+msgstr "Ourdou"
+
+msgid "Uzbek"
+msgstr "Ouzbek"
+
+msgid "Venda"
+msgstr "Venda"
+
+msgid "Vietnamese"
+msgstr "Vietnamien"
+
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Wallon"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Yiddish"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
+
+msgid "Chinese (Traditional)"
+msgstr "Chinois (traditionnel)"
+
+msgid "Zulu"
+msgstr "Zoulou"
+
+msgid "(no translation)"
+msgstr "(pas de traduction)"
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(langue par défaut : %s)"
+
+msgid "Print..."
+msgstr "Imprimer..."
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "ignorer '%s' : n'existe pas"
 
 msgid "About Pd"
 msgstr "À propos de Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "impossible de lire le document \"%s\""
 
 msgid "Save"
 msgstr "Enregistrer"
 
 msgid "Save As..."
 msgstr "Enregistrer sous..."
-
-msgid "Print..."
-msgstr "Imprimer..."
 
 msgid "Paste Replace"
 msgstr "Coller Remplacer"
@@ -1124,7 +1873,7 @@ msgid "Triggerize"
 msgstr "Triggeriser"
 
 msgid "Edit Mode"
-msgstr "Mode d'édition"
+msgstr "Mode édition"
 
 msgid "Undo"
 msgstr "Défaire"
@@ -1159,6 +1908,9 @@ msgstr "Message"
 msgid "Number"
 msgstr "Nombre"
 
+msgid "List"
+msgstr "Liste"
+
 msgid "Symbol"
 msgstr "Symbole"
 
@@ -1178,10 +1930,10 @@ msgid "Find Last Error"
 msgstr "Rechercher la dernière erreur"
 
 msgid "DSP On"
-msgstr "DSP ON"
+msgstr "DSP activé"
 
 msgid "DSP Off"
-msgstr "DSP OFF"
+msgstr "DSP désactivé"
 
 msgid "Test Audio and MIDI..."
 msgstr "Tester l'audio et le MIDI..."
@@ -1214,7 +1966,7 @@ msgid "Parent Window"
 msgstr "Fenêtre parente"
 
 msgid "HTML Manual..."
-msgstr "Aide HTML..."
+msgstr "Manuel HTML..."
 
 msgid "Browser..."
 msgstr "Navigateur d'aide..."
@@ -1225,18 +1977,21 @@ msgstr "Liste des objets..."
 msgid "puredata.info"
 msgstr "puredata.info"
 
+msgid "Check for updates"
+msgstr "Rechercher des mises à jour"
+
 msgid "Report a bug"
 msgstr "Signaler un problème"
 
 msgid "Clear Menu"
-msgstr "Effacer la console"
+msgstr "Effacer le menu"
 
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
 "Effacer toutes les préférences ?\n"
-"(prendra effet au prochain redémarrage)"
+"(prendra effet au prochain redémarrage de Pd)"
 
 msgid "removed GUI settings"
 msgstr "les paramètres de l'interface graphique ont été supprimés"
@@ -1244,20 +1999,8 @@ msgstr "les paramètres de l'interface graphique ont été supprimés"
 msgid "no Pd-GUI settings to clear"
 msgstr "aucun paramètre d'interface graphique à supprimer"
 
-msgid "Path..."
-msgstr "Chemins..."
-
-msgid "Startup..."
-msgstr "Options de démarrage..."
-
-msgid "Audio..."
-msgstr "Paramètres audio..."
-
-msgid "MIDI..."
-msgstr "Paramètres MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Zoomer les nouvelles fenêtres"
+msgid "Edit Preferences..."
+msgstr "Éditer les préférences..."
 
 msgid "Save All Preferences"
 msgstr "Enregistrer toutes les préférences"
@@ -1271,8 +2014,8 @@ msgstr "Charger à partir de..."
 msgid "Forget All..."
 msgstr "Tout oublier..."
 
-msgid "Preferences"
-msgstr "Préférences"
+msgid "Tabbed preferences"
+msgstr "Préférences en onglet"
 
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"
@@ -1280,8 +2023,23 @@ msgstr "Ouvrir un élément récent"
 msgid "Quit"
 msgstr "Quitter"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Enregistrer les modifications de '%s' ?"
+
 msgid "Properties"
 msgstr "Propriétés"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Accepter les modifications de « %s » ?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Si vous acceptez, le contenu de l'objet correspondant sera mis à jour. Vous "
+"devrez quand même sauver le patch pour que ces changements soient conservés."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1292,19 +2050,20 @@ msgid "the Pd window filtered %d lines"
 msgstr "la fenêtre Pd a filtré %d lignes"
 
 msgid "Audio on"
-msgstr "Audio ON"
+msgstr "Audio On"
 
 msgid "Audio off"
-msgstr "Audio OFF"
-
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) CARACTÈRE MANQUANT ']' : "
-
-msgid "Tcl:"
-msgstr "Tcl:"
+msgstr "Audio Off"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "EXPÉRIMENTAL : double précision (64 bits)"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit flottants EXPÉRIMENTAL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1313,7 +2072,7 @@ msgid "Audio I/O error"
 msgstr "Erreur entrée/sortie audio"
 
 msgid "Log:"
-msgstr "Log:"
+msgstr "Log :"
 
 msgid "fatal"
 msgstr "fatal"
@@ -1330,6 +2089,9 @@ msgstr "debug"
 msgid "all"
 msgstr "tout"
 
+msgid "y1"
+msgstr "y1"
+
 msgid "New..."
 msgstr "Nouveau..."
 
@@ -1340,21 +2102,142 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #, tcl-format
-msgid "ignoring '%s': doesn't exist"
-msgstr "ignorer '%s' : n'existe pas"
-
-#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl :"
+
+#~ msgid "(no device)"
+#~ msgstr "(aucun périphérique)"
+
+#~ msgid "Path..."
+#~ msgstr "Chemins..."
+
+#~ msgid "Startup..."
+#~ msgstr "Options de démarrage..."
+
+#~ msgid "Audio..."
+#~ msgstr "Paramètres audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "Paramètres MIDI..."
+
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "------dimensions(chiffres)(pix):------"
+
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------dimensions(pix)(pix):--------"
+
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------dimensions(pix):-----------"
+
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "-------durée_du_flash(ms)(ms):------"
+
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "---------échelle_de_sortie:--------"
+
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "----dimensions_sélectionnable(pix):----"
+
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "------rectangle_visible(pix)(pix):------"
+
+#~ msgid "bottom:"
+#~ msgstr "bas :"
+
+#~ msgid "height:"
+#~ msgstr "hauteur :"
+
+#~ msgid "hold:"
+#~ msgstr "maintient :"
+
+#~ msgid "intrrpt:"
+#~ msgstr "intrrpt :"
+
+#~ msgid "left:"
+#~ msgstr "gauche :"
+
+#~ msgid "lin"
+#~ msgstr "lin"
+
+#~ msgid "log"
+#~ msgstr "log"
+
+#~ msgid "log-height:"
+#~ msgstr "Hauteur de log :"
+
+#~ msgid "max:"
+#~ msgstr "max :"
+
+#~ msgid "min:"
+#~ msgstr "min :"
+
+#~ msgid "right:"
+#~ msgstr "droite :"
+
+#~ msgid "size:"
+#~ msgstr "taille :"
+
+#~ msgid "top:"
+#~ msgstr "haut :"
+
+#~ msgid "value:"
+#~ msgstr "valeur :"
+
+#~ msgid "width:"
+#~ msgstr "largeur :"
+
+#, tcl-format
+#~ msgid "couldn't create Pd documents directory: %s\n"
+#~ msgstr "impossible de créer le dossier Documents : %s\n"
+
+#, tcl-format
+#~ msgid "couldn't create \"externals\" directory in: %s\n"
+#~ msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+
+#, tcl-format
+#~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
+#~ msgstr ""
+#~ "ATTENTION : la famille de police '%s' n'a pas pu être trouvée, "
+#~ "utilisation de la police par défaut (%s)\n"
+
+#, tcl-format
+#~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+#~ msgstr ""
+#~ "ATTENTION : l'épaisseur de police '%s' n'a pas pu être trouvée, "
+#~ "utilisation de la valeur par défaut (%s)\n"
+
+#~ msgid "Intrrpt:"
+#~ msgstr "Intrrpt :"
+
+#~ msgid "Hold:"
+#~ msgstr "Maintient :"
+
+#~ msgid "More..."
+#~ msgstr "Plus..."
+
+#~ msgid "[deken] Start searching for externals... %s"
+#~ msgstr "[deken] Démarrage de la recherche d'externals... %s"
+
+#~ msgid "[deken] No matching externals found."
+#~ msgstr "[deken] Aucun external correspondant trouvé."
+
+#~ msgid "Install selected packages"
+#~ msgstr "Installer les paquets sélectionnés"
+
+#~ msgid "Install package"
+#~ msgstr "Installer le paquet"
 
 #~ msgid "Are you online?"
 #~ msgstr "Êtes-vous connecté(e) ?"
 
 #~ msgid "no matching externals found"
 #~ msgstr "aucun external correspondant trouvé"
-
-#~ msgid "_"
-#~ msgstr "_"
 
 #~ msgid "for:"
 #~ msgstr ":"

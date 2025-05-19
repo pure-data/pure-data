@@ -1,70 +1,37 @@
-#N canvas 407 38 639 585 12;
-#X msg 147 374 print;
-#X msg 26 273 bang;
-#X msg 128 320 start;
-#X msg 135 348 stop;
-#X obj 26 314 del 1000;
-#X text 172 322 start streaming audio;
-#X text 174 348 stop streaming audio;
-#X obj 120 441 writesf~ 2, f 15;
-#X msg 88 241 open /tmp/foo.wav;
-#X obj 101 551 soundfiler;
-#X text 26 550 see also:;
-#X obj 153 407 osc~ 440;
-#X text 24 56 writesf~ creates a subthread whose task is to write audio
-streams to disk. You need not provide any disk access time between
-"open" and "start" \, but between "stop" and the next "open" you must
-give the object time to flush all the output to disk., f 83;
-#X msg 120 292 open -bytes 4 /tmp/foo.wav;
-#X msg 108 267 open -bytes 3 /tmp/foo.wav;
-#X obj 183 551 readsf~;
-#X text 101 193 -rate <sample rate>, f 42;
-#X text 66 116 The "open" message may take flag-style arguments as
-follows:;
+#N canvas 408 60 635 658 12;
+#X msg 123 361 print;
+#X msg 133 391 start;
+#X msg 140 419 stop;
+#X obj 22 384 del 1000;
+#X text 177 393 start streaming audio;
+#X text 179 419 stop streaming audio;
+#X obj 115 481 writesf~ 2, f 15;
+#X obj 101 621 soundfiler;
+#X text 26 620 see also:;
+#X obj 148 447 osc~ 440;
+#X obj 183 621 readsf~;
+#X text 122 193 -rate <sample rate>;
+#X text 87 116 The "open" message may take flag-style arguments as follows:;
 #X obj 45 12 writesf~;
-#X text 111 11 - write audio signals to a soundfile;
-#X text 217 241 create a new 16-bit integer soundfile;
-#X text 299 267 create a 24-bit integer soundfile;
-#X text 313 291 create a 32-bit floating point soundfile;
-#X text 101 157 -big \, -little (sample endianness), f 42;
-#X text 411 550 updated for Pd version 0.51;
-#X text 238 435 The creation argument is the number of channels (1
-to 64)., f 29;
-#X text 42 478 The soundfile is uncompressed 2- or 3-byte integer ("pcm")
-or 4-byte floating point. The soundfile format is determined by the
-file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
-, f 80;
-#X obj 222 407 noise~;
-#X msg 379 358 \; pd dsp \$1;
-#X obj 379 335 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 397 334 DSP on/off;
-#X obj 7 43 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 275 306 create a 24-bit integer soundfile;
+#X text 286 332 create a 32-bit floating point soundfile;
+#X text 122 157 -big \, -little (sample endianness), f 42;
+#X text 233 475 The creation argument is the number of channels (1 to 64)., f 29;
+#X obj 217 447 noise~;
+#X obj 7 43 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 533 11 <= click;
-#N canvas 687 149 575 357 reference 0;
-#X obj 8 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 241 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 276 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 314 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#N canvas 687 149 574 345 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 241 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 276 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 314 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 44 106 open <list> -;
-#X text 86 179 print - prints information on Pd's terminal window.
-, f 64;
+#X text 86 179 print - prints information on Pd's terminal window., f 64;
 #X obj 33 14 writesf~;
-#X text 99 13 - write audio signals to a soundfile;
-#X text 120 285 1) float - sets number of channels (default 1 \, max
-64).;
-#X text 142 106 takes a filename and optional flags: -wave \, -aiff
-\, -caf \, -next \, - big \, -little \, -bytes <float> \, -rate <float>
-;
-#X obj 7 209 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
-;
-#X obj 7 80 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X text 120 285 1) float - sets number of channels (default 1 \, max 64).;
+#X text 142 106 takes a filename and optional flags: -wave \, -aiff \, -caf \, -next \, - big \, -little \, -bytes <float> \, -rate <float>;
+#X obj 7 209 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 80 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 86 140 start -;
 #X text 142 140 start streaming audio., f 56;
 #X text 93 159 stop -;
@@ -73,22 +40,47 @@ file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 #X text 79 87 signal - signal to write to a channel., f 65;
 #X text 79 215 signal - signal to write to a channel., f 65;
 #X text 147 247 NONE;
+#X text 99 13 - record audio signals to a soundfile;
 #X restore 439 12 pd reference;
-#X text 101 139 -wave \, -aiff \, -caf \, -next (file extension);
-#X text 237 194 (affects the soundfile header but the file will _not_
-be resampled.), f 34;
-#X obj 7 538 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 101 175 -bytes <2 \, 3 \, or 4> (bit resolution), f 42;
-#X connect 0 0 7 0;
-#X connect 1 0 2 0;
-#X connect 1 0 4 0;
-#X connect 2 0 7 0;
-#X connect 3 0 7 0;
-#X connect 4 0 3 0;
-#X connect 8 0 7 0;
-#X connect 11 0 7 0;
-#X connect 13 0 7 0;
-#X connect 14 0 7 0;
-#X connect 27 0 7 1;
-#X connect 29 0 28 0;
+#X text 122 139 -wave \, -aiff \, -caf \, -next (file extension);
+#X obj 7 608 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 22 343 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 15 56 [writesf~] creates a subthread whose task is to write audio streams to disk. You need not provide any disk access time between "open" and "start" \, but between "stop" and the next "open" you must give the object time to flush all the output to disk., f 85;
+#X text 111 11 - record audio signals to a soundfile;
+#X msg 400 410 \; pd dsp \$1;
+#X obj 400 375 set-dsp-tgl;
+#X text 431 379 DSP on/off;
+#X text 42 548 The soundfile is uncompressed 2- or 3-byte integer ("pcm") or 4- or 8-byte floating point. The soundfile format is determined by the file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd")., f 80;
+#N canvas 809 273 480 224 8-byte 0;
+#X text 19 62 The precision of the 8-byte samples is based on the precision of the Pure Data build. If Pd is single precision (using 32-bit float internally) \, the written samples will be cast from 4-byte float to 8-byte double when writing to a file with -bytes 8 argument. In this case it's better to write with 4-byte float samples for a smaller file with the same precision., f 63;
+#X text 19 159 If Pd is double-precision \, writing 8-byte float samples will be full precision as Pd uses 64-bit float internally., f 63;
+#X text 19 19 Writing 8-byte (ie. 64-bit) floating point samples are supported for the wave \, aiff/aifc \, and caf file types.;
+#X restore 491 175 pd 8-byte float;
+#X text 122 175 -bytes <2 \, 3 \, 4 \, or 8> (number of bytes resolution);
+#X text 262 193 (affects the soundfile header but the file is NOT resampled), f 30;
+#X text 406 620 updated for Pd version 0.55-0;
+#X msg 83 281 open ~/foo.wav;
+#X msg 103 307 open -bytes 3 ~/foo.wav;
+#X msg 115 332 open -bytes 4 ~/foo.wav;
+#X text 194 280 create a new 16-bit integer soundfile in the home directory.;
+#X obj 246 621 savepanel;
+#X text 42 521 HINT: You can use [savepanel] to set a file name to record to., f 63;
+#X obj 52 222 savepanel;
+#X msg 52 249 open \$1;
+#X obj 52 191 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#X text 124 239 choose where to save;
+#X connect 0 0 6 0;
+#X connect 1 0 6 0;
+#X connect 2 0 6 0;
+#X connect 3 0 2 0;
+#X connect 9 0 6 0;
+#X connect 18 0 6 1;
+#X connect 24 0 1 0;
+#X connect 24 0 3 0;
+#X connect 28 0 27 0;
+#X connect 35 0 6 0;
+#X connect 36 0 6 0;
+#X connect 37 0 6 0;
+#X connect 41 0 42 0;
+#X connect 42 0 6 0;
+#X connect 43 0 41 0;

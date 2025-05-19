@@ -1,63 +1,45 @@
 #N canvas 633 70 509 475 12;
-#X obj 120 382 print x1;
-#X obj 194 382 print x2;
+#X obj 120 385 print x1;
+#X obj 194 385 print x2;
 #X obj 120 333 stripnote, f 11;
-#X msg 120 280 34.5 67.8;
+#X msg 120 277 34.5 67.8;
 #X obj 100 436 makenote;
 #X text 281 436 updated for Pd version 0.28;
 #X obj 26 11 stripnote;
 #X text 21 436 see also:;
 #X floatatom 120 359 5 0 0 0 - - - 0;
 #X floatatom 194 359 5 0 0 0 - - - 0;
-#X text 33 131 The left inlet takes the note number and the right inlet
-takes velocity values. Alternatively \, you can send it a list that
-spreads the values through the inlets., f 63;
-#X msg 97 253 70 127;
+#X msg 97 250 70 127;
 #X msg 138 305 70 0;
 #X text 105 11 - strip "note off" messages;
-#X text 33 182 This is very useful if you want a Note-On message to
-trigger something in Pd but you don't want a Note-Off to trigger anything
-when you release the note., f 63;
 #N canvas 683 85 535 307 reference 0;
-#X obj 18 45 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 143 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 240 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 204 cnv 1 500 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 174 cnv 1 500 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 106 cnv 1 500 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 76 cnv 1 500 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 18 45 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 143 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 240 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 204 cnv 1 500 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 174 cnv 1 500 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 106 cnv 1 500 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 76 cnv 1 500 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 110 83 float - MIDI pitch.;
 #X text 110 180 float - MIDI pitch., f 23;
 #X text 110 213 float - MIDI velocity., f 23;
 #X obj 38 11 stripnote;
 #X text 117 11 - strip "note off" messages;
 #X text 135 251 NONE;
-#X text 110 114 float - MIDI velocity (no output if equal to zero).
-;
-#X obj 17 279 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X text 110 114 float - MIDI velocity (no output if equal to zero).;
+#X obj 17 279 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X restore 327 11 pd reference;
 #X text 425 12 <= click;
-#X obj 8 43 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 8 420 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 33 52 Stripnote ignores note-off (zero-velocity) messages from
-a stream of MIDI-style note message and passes the others through unchanged.
-It can deal with any kind of number (negative \, floats \, whatever)
-even though MIDI values need to be integers from 0 to 127!, f 63;
+#X obj 8 43 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 8 420 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 176 306 <-- note off ignored;
+#X text 33 52 [stripnote] ignores note-off (zero-velocity) messages from a stream of MIDI-style note message and passes the others through unchanged. It can deal with any kind of number (negative \, floats \, whatever) even though MIDI values need to be integers from 0 to 127!, f 63;
+#X text 33 131 The left inlet takes the note number and the right inlet takes velocity values. Alternatively \, you can send it a list that spreads the values through the inlets (as is common in Pd)., f 63;
+#X text 33 182 This object is very useful if you want a Note-On message to trigger something in Pd but you don't want a Note-Off to trigger anything when you release the note., f 63;
 #X connect 2 0 8 0;
 #X connect 2 1 9 0;
 #X connect 3 0 2 0;
 #X connect 8 0 0 0;
 #X connect 9 0 1 0;
+#X connect 10 0 2 0;
 #X connect 11 0 2 0;
-#X connect 12 0 2 0;

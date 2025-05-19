@@ -1,42 +1,27 @@
-#N canvas 490 83 651 500 12;
-#X text 34 18 Besides the metronome \, there are three objects for
-dealing with time:, f 69;
-#X obj 57 113 print;
-#X msg 57 55 bang;
-#X msg 103 57 stop;
-#X obj 57 85 delay 2000;
-#X msg 356 170 bang;
-#X obj 356 220 timer;
-#X text 154 118 The right inlet can be used to set the time value without
-scheduling any output., f 44;
-#X obj 388 195 delay 123.45;
-#X floatatom 356 245 7 0 0 0 - - - 0;
-#X obj 68 381 pipe 2000;
-#X floatatom 68 354 5 0 0 0 - - - 0;
-#X floatatom 68 409 5 0 0 0 - - - 0;
-#X text 159 365 The pipe object allocates memory dynamically in order
-to schedule any number of delayed events. The events may hold any collection
-of data (as usual \, for more details you can consult the help window.)
-;
-#X text 413 448 updated for Pd version 0.43;
-#X text 154 51 The delay object schedules an event for a future time
-expressed in milliseconds. Unlike in Max \, time values need not be
-integers. If a delay has been scheduled and you "bang" it again \,
-it is rescheduled (the previously scheduled output is canceled.),
-f 64;
-#X text 45 189 The timer \, shown to the right \, measures the time
-elapsed between the arrival of 'bang' messages to its left and right
-inlets:, f 40;
-#X text 46 283 Note that all time calculations are idealized. They
-do not show the effects of computation time or OS latency. This way
-you can write deterministic algorithms dealing with time passage.,
-f 63;
-#X connect 2 0 4 0;
-#X connect 3 0 4 0;
-#X connect 4 0 1 0;
-#X connect 5 0 6 0;
-#X connect 5 0 8 0;
-#X connect 6 0 9 0;
-#X connect 8 0 6 1;
-#X connect 10 0 12 0;
-#X connect 11 0 10 0;
+#N canvas 470 64 566 499 12;
+#X obj 57 145 print;
+#X msg 71 84 stop;
+#X obj 57 115 delay 2000;
+#X obj 356 234 timer;
+#X text 154 132 The right inlet can be used to set the time value without scheduling any output., f 55;
+#X obj 388 209 delay 123.45;
+#X floatatom 356 259 7 0 0 0 - - - 0;
+#X obj 68 395 pipe 2000;
+#X floatatom 68 368 5 0 0 0 - - - 0;
+#X floatatom 68 423 5 0 0 0 - - - 0;
+#X text 46 297 Note that all time calculations are idealized. They do not show the effects of computation time or OS latency. This way you can write deterministic algorithms dealing with time passage., f 63;
+#X text 34 18 Besides [metro] \, there are three objects for dealing with time:, f 69;
+#X text 154 51 The [delay] object schedules an event for a future time expressed in milliseconds. Unlike in Max \, time values need not be integers. If a delay has been scheduled and you "bang" it again \, it is rescheduled (the previously scheduled output is canceled.), f 55;
+#X obj 57 55 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 356 182 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 45 203 The [timer] \, shown to the right \, measures the time elapsed between the arrival of "bang" messages to its left and right inlets., f 41;
+#X text 157 376 The [pipe] object allocates memory dynamically in order to schedule any number of delayed events. The events may hold any collection of data (as usual \, for more details you can consult the help window.), f 51;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X connect 3 0 6 0;
+#X connect 5 0 3 1;
+#X connect 7 0 9 0;
+#X connect 8 0 7 0;
+#X connect 13 0 2 0;
+#X connect 14 0 3 0;
+#X connect 14 0 5 0;

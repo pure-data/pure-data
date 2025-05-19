@@ -1,22 +1,18 @@
-#N canvas 620 97 730 518 12;
-#X obj 38 362 rev3~ 100 90 3000 20;
-#X text 316 81 (A more expensive \, presumably better \, one than rev2~.)
-;
+#N canvas 409 31 730 573 12;
+#X obj 57 403 rev3~ 100 90 3000 20;
 #X obj 27 14 rev3~, f 9;
 #X text 104 13 - hard-core \, 2-in \, 4-out reverberator;
-#X obj 38 94 metro 2000;
-#X obj 38 122 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 38 70 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
-0 1;
-#X msg 126 67 20;
-#X msg 135 90 100;
-#X msg 148 137 1000;
-#X floatatom 126 168 5 0 0 0 - - - 0;
-#X msg 142 114 500;
-#X floatatom 82 168 5 0 0 0 - freq - 0;
-#X text 78 147 pitch;
-#X text 57 121 impulse;
+#X obj 57 95 metro 2000;
+#X obj 57 123 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 57 70 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X msg 145 68 20;
+#X msg 154 91 100;
+#X msg 167 138 1000;
+#X floatatom 145 169 5 0 0 0 - - - 0;
+#X msg 161 115 500;
+#X floatatom 101 169 5 0 0 0 - freq - 0;
+#X text 97 148 pitch;
+#X text 78 123 impulse;
 #N canvas 863 156 393 438 test-input 0;
 #X obj 241 191 line~;
 #X obj 241 214 cos~;
@@ -70,105 +66,78 @@
 #X connect 20 0 13 0;
 #X connect 21 0 20 0;
 #X connect 22 0 23 0;
-#X restore 38 205 pd test-input;
-#X text 171 64 <= tone burst durtion in ms, f 14;
-#X floatatom 92 259 4 0 120 0 - - - 0;
-#X floatatom 120 283 4 0 100 0 - - - 0;
-#X floatatom 147 307 6 0 0 0 - - - 0;
-#X floatatom 175 333 4 0 100 0 - - - 0;
-#X text 195 307 crossover frequency \, Hz.;
-#X text 31 483 see also:;
-#X obj 32 394 output~;
-#X obj 124 394 output~;
-#X obj 6 44 cnv 1 715 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X restore 57 206 pd test-input;
+#X floatatom 111 264 4 0 120 0 - - - 0;
+#X floatatom 139 293 4 0 100 0 - - - 0;
+#X floatatom 166 330 6 0 0 0 - - - 0;
+#X floatatom 194 361 4 0 100 0 - - - 0;
+#X text 214 330 crossover frequency \, Hz.;
+#X text 31 543 see also:;
+#X obj 33 449 output~;
+#X obj 148 449 output~;
+#X obj 6 44 cnv 1 715 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 622 12 <= click;
 #N canvas 746 67 573 478 reference 0;
-#X obj 9 39 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 69 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
-0;
-#X obj 9 229 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 371 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 452 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 94 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 122 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 148 cnv 1 550 1 empty empty 4th: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 175 cnv 1 550 1 empty empty 5th: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 254 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 281 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 311 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000
-0;
-#X obj 8 338 cnv 1 550 1 empty empty 4th: 8 12 0 13 #000000 #000000
-0;
+#X obj 9 39 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 69 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
+#X obj 9 229 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 9 371 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 452 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 94 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000 0;
+#X obj 8 122 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000 0;
+#X obj 8 148 cnv 1 550 1 empty empty 4th: 8 12 0 13 #000000 #000000 0;
+#X obj 8 175 cnv 1 550 1 empty empty 5th: 8 12 0 13 #000000 #000000 0;
+#X obj 8 254 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
+#X obj 8 281 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000 0;
+#X obj 8 311 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000 0;
+#X obj 8 338 cnv 1 550 1 empty empty 4th: 8 12 0 13 #000000 #000000 0;
 #X text 138 128 float - level in dB., f 55;
-#X text 138 154 float - liveness (internal feedback percentage).,
-f 55;
+#X text 138 154 float - liveness (internal feedback percentage)., f 55;
 #X text 138 181 float - Crossover frequency in Hz., f 55;
-#X text 138 207 float - High Freuqnecy damping in percentage., f 55
-;
+#X text 138 207 float - High Freuqnecy damping in percentage., f 55;
 #X text 131 258 signal - first reverb output., f 56;
 #X text 131 288 signal - second reverb output., f 56;
 #X text 131 315 signal - third reverb output., f 56;
 #X text 131 344 signal - fourth reverb output.;
 #X text 109 376 1) float - level in dB (default 0)., f 54;
-#X text 109 394 2) float - liveness / internal feedback percentage
-(default 0)., f 63;
-#X text 109 412 3) float - Crossover frequency in Hz (default 3000).
-, f 54;
-#X text 109 430 4) float - High Frequnecy damping in percentage (default
-0).;
+#X text 109 394 2) float - liveness / internal feedback percentage (default 0)., f 63;
+#X text 109 412 3) float - Crossover frequency in Hz (default 3000)., f 54;
+#X text 109 430 4) float - High Frequnecy damping in percentage (default 0).;
 #X obj 27 11 rev3~, f 9;
 #X text 104 10 - hard-core \, 2-in \, 4-out reverberator;
-#X obj 8 202 cnv 1 550 1 empty empty 6th: 8 12 0 13 #000000 #000000
-0;
+#X obj 8 202 cnv 1 550 1 empty empty 6th: 8 12 0 13 #000000 #000000 0;
 #X text 131 72 signal - left channel reverb input., f 56;
 #X text 131 99 signal - right channel reverb input., f 56;
 #X restore 528 13 pd reference;
-#X obj 104 483 rev1~;
-#X text 480 480 updated for Pd version 0.37-1;
-#X obj 5 468 cnv 1 715 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 50 306 *~ -1;
-#X obj 152 483 rev2~, f 8;
-#X text 123 259 output level (dB);
-#X text 153 283 liveness \, feedback percentage (0-100);
-#X text 271 109 The creation arguments (output level \, liveness \,
-crossover frequency \, HF damping) may also be supplied in four inlets
-as shown. The "liveness" (actually the internal feedback percentage)
-should be 100 for infinite reverb \, 90 for longish \, and 80 for short.
-The crossover frequency and HF damping work together: at frequencies
-above crossover \, the feedback is diminished by the "damping" as a
-percentage. So zero HF damping means equal reverb time at all frequencies
-\, and 100% damping means almost nothing above the crossover frequency
-gets through., f 62;
-#X text 210 334 High Frequency damping \, percentage (0-100);
-#X connect 0 0 23 0;
-#X connect 0 1 23 1;
-#X connect 0 2 24 0;
-#X connect 0 3 24 1;
-#X connect 4 0 5 0;
-#X connect 5 0 15 0;
-#X connect 6 0 4 0;
-#X connect 7 0 10 0;
-#X connect 8 0 10 0;
-#X connect 9 0 10 0;
-#X connect 10 0 15 2;
-#X connect 11 0 10 0;
-#X connect 12 0 15 1;
-#X connect 15 0 0 0;
-#X connect 15 0 31 0;
-#X connect 17 0 0 2;
-#X connect 18 0 0 3;
-#X connect 19 0 0 4;
-#X connect 20 0 0 5;
-#X connect 31 0 0 1;
+#X obj 104 543 rev1~;
+#X text 480 540 updated for Pd version 0.37-1;
+#X obj 5 528 cnv 1 715 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 69 317 *~ -1;
+#X obj 152 543 rev2~, f 8;
+#X text 142 264 output level (dB);
+#X text 172 288 liveness \, feedback percentage (0-100), f 18;
+#X text 229 355 High Frequency damping \, percentage (0-100), f 23;
+#X text 189 67 <-- tone burst durtion in ms, f 14;
+#X text 327 68 The [rev3~] object is a more expensive \, presumably better \, reverberator than [rev2~]. It has a bigger feedback delay network matrix and an early reflections stage., f 54;
+#X text 212 402 args: level \, liveness \, crossover \, damping;
+#X text 327 131 The creation arguments (output level \, liveness \, crossover frequency \, high frequency damping) may also be supplied in four inlets as shown. The "liveness" (actually the internal feedback percentage) should be 100 for infinite reverb \, 90 for longish \, and 80 for short. The crossover frequency and high frequency damping work together: at frequencies above crossover \, the feedback is diminished by the "damping" as a percentage. So zero high frequency damping means equal reverb time at all frequencies \, and 100% damping means almost nothing above the crossover frequency gets through., f 54;
+#X connect 0 0 21 0;
+#X connect 0 1 21 1;
+#X connect 0 2 22 0;
+#X connect 0 3 22 1;
+#X connect 3 0 4 0;
+#X connect 4 0 14 0;
+#X connect 5 0 3 0;
+#X connect 6 0 9 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 0;
+#X connect 9 0 14 2;
+#X connect 10 0 9 0;
+#X connect 11 0 14 1;
+#X connect 14 0 29 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 2;
+#X connect 16 0 0 3;
+#X connect 17 0 0 4;
+#X connect 18 0 0 5;
+#X connect 29 0 0 1;

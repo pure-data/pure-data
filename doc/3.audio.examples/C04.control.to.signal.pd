@@ -1,50 +1,72 @@
-#N canvas 625 107 544 580 12;
+#N canvas 320 93 1042 664 12;
 #X declare -stdpath ./;
-#X text 47 16 CONVERTING CONTROL TO SIGNALS;
-#X obj 244 379 output~;
-#X obj 332 381 output~;
+#X obj 154 474 output~;
+#X obj 272 474 output~;
 #N canvas 799 288 303 263 metro 0;
 #X obj 88 38 loadbang;
 #X msg 88 65 1;
-#X obj 88 131 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
+#X obj 88 127 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
 #X obj 88 153 sel 0 1;
 #X obj 88 190 outlet;
 #X obj 152 192 outlet;
-#X obj 88 96 metro 2.1;
+#X obj 88 96 metro 2;
 #X connect 0 0 1 0;
 #X connect 1 0 6 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 3 1 5 0;
 #X connect 6 0 2 0;
-#X restore 244 271 pd metro;
-#X obj 244 334 line~;
-#X obj 332 335 vline~;
-#X text 46 129 Here we try out line~ and vline~ as triangle wave generators.
-The subpatch is still sending alternating bangs as in the last patch
-\, but now at an audible frequency \, every 2 msec.;
-#X text 47 195 The effect of line~ rounding breakpoints to the nearest
-block (on the order of a millisecond) is that each 4-millisecond-long
-cycle has a different shape. Using vline~ resolves the problem.;
-#X text 66 472 Sometimes you will want to use vline~ in place of sig~
-for the same reason.;
-#X text 46 49 For controlling amplitudes \, line~ \, with its block-aligned
-breakpoints \, is accurate enough for most purposes. But certain usages
-\, such as this patch \, demand more accuracy. The vline~ object \,
-somewhat more expensive than line~ \, can handle breakpoints to sub-sample
-accuracy., f 60;
-#X msg 244 297 1 2.1;
-#X msg 332 299 0 2.1;
-#X obj 379 19 declare -stdpath ./;
-#X text 307 523 Updated for Pd version 0.37;
-#X connect 3 0 10 0;
-#X connect 3 1 11 0;
+#X restore 219 313 pd metro;
+#X obj 154 389 line~;
+#X obj 272 389 vline~;
+#X obj 750 62 declare -stdpath ./;
+#X obj 84 18 cnv 5 5 25 empty empty Converting\ Control\ to\ Signals 15 13 0 16 #dfdfdf #202020 0;
+#X msg 154 352 1 2;
+#X msg 272 352 -1 2;
+#X text 63 69 For controlling amplitudes \, [line~] \, with its block-aligned breakpoints \, is accurate enough for most purposes. But some usages \, such as this patch \, demand more accuracy. We then use the [vline~] object \, somewhat more expensive than [line~] \, because it can handle breakpoints to sub-sample accuracy., f 61;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array vline~ 882 float 0;
+#X coords 0 1.02 881 -1.02 356 169 1;
+#X restore 573 366 graph;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array line~ 882 float 0;
+#X coords 0 1.02 881 -1.02 357 169 1 0 0;
+#X restore 573 135 graph;
+#X obj 349 386 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 372 385 <-- graph once;
+#X obj 378 412 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 402 411 <-- graph repeatedly, f 10;
+#N canvas 146 130 660 350 graph 0;
+#X obj 440 87 inlet;
+#X obj 376 87 inlet;
+#X obj 306 87 inlet~;
+#X obj 195 87 inlet~;
+#X obj 195 201 tabwrite~ line~;
+#X obj 376 202 tabwrite~ vline~;
+#X obj 440 136 metro 150;
+#X connect 0 0 6 0;
+#X connect 1 0 4 0;
+#X connect 1 0 5 0;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 6 0 4 0;
+#X connect 6 0 5 0;
+#X restore 290 439 pd graph;
+#X f 13;
+#X text 674 561 ----- 0.2 second ------;
+#X text 667 317 ----- 0.2 second ------;
+#X text 63 149 Here we try out [line~] and [vline~] to generate triangle waves (with ramps going up to 1 and down to -1). The subpatch is still sending alternating bangs as in the last patch \, but now at every 2 ms \, which creates a 250 Hz triangular waveform., f 61;
+#X text 63 225 The effect of [line~] rounding breakpoints to the nearest block (on the order of a millisecond) is that each 4-ms-long cycle has a different shape. Using [vline~] resolves the problem. You can hear and check the graphs to the right., f 61;
+#X text 70 563 Sometimes you will want to use [vline~] in place of [sig~] for the same need to convert to signals with sample accuracy (since [sig~] can only convert and set a single value per block).;
+#X connect 2 0 7 0;
+#X connect 2 1 8 0;
+#X connect 3 0 0 0;
+#X connect 3 0 16 0;
 #X connect 4 0 1 0;
-#X connect 4 0 1 1;
-#X connect 5 0 2 0;
-#X connect 5 0 2 1;
-#X connect 10 0 4 0;
-#X connect 10 0 5 0;
-#X connect 11 0 4 0;
-#X connect 11 0 5 0;
+#X connect 4 0 16 1;
+#X connect 7 0 3 0;
+#X connect 7 0 4 0;
+#X connect 8 0 3 0;
+#X connect 8 0 4 0;
+#X connect 12 0 16 2;
+#X connect 14 0 16 3;

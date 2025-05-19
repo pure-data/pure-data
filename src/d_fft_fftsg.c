@@ -22,17 +22,49 @@ for another, more permissive-sounding copyright notice.  -MSP
 #include "m_pd.h"
 #include "m_imp.h"
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
 #define FFTFLT double
-void cdft(int, int, FFTFLT *, int *, FFTFLT *);
-void rdft(int, int, FFTFLT *, int *, FFTFLT *);
+static void cdft(int, int, FFTFLT *, int *, FFTFLT *);
+static void rdft(int, int, FFTFLT *, int *, FFTFLT *);
+
+static void bitrv2(int n, int *ip, FFTFLT *a);
+static void bitrv208(FFTFLT *a);
+static void bitrv208neg(FFTFLT *a);
+static void bitrv216(FFTFLT *a);
+static void bitrv216neg(FFTFLT *a);
+static void bitrv2conj(int n, int *ip, FFTFLT *a);
+static void cftb040(FFTFLT *a);
+static void cftb1st(int n, FFTFLT *a, FFTFLT *w);
+static void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
+static void cftf040(FFTFLT *a);
+static void cftf081(FFTFLT *a, FFTFLT *w);
+static void cftf082(FFTFLT *a, FFTFLT *w);
+static void cftf161(FFTFLT *a, FFTFLT *w);
+static void cftf162(FFTFLT *a, FFTFLT *w);
+static void cftf1st(int n, FFTFLT *a, FFTFLT *w);
+static void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
+static void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
+static void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
+static void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
+static int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
+static void *cftrec1_th(void *p);
+static void *cftrec2_th(void *p);
+static void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w);
+static void cftx020(FFTFLT *a);
+static void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void ddct(int, int, FFTFLT *, int *, FFTFLT *);
+static void ddst(int, int, FFTFLT *, int *, FFTFLT *);
+static void dfct(int, FFTFLT *, FFTFLT *, int *, FFTFLT *);
+static void dfst(int, FFTFLT *, FFTFLT *, int *, FFTFLT *);
+static void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void makect(int nc, int *ip, FFTFLT *c);
+static void makeipt(int nw, int *ip);
+static void makewt(int nw, int *ip, FFTFLT *w);
+static void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
+static void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
 
 int ilog2(int n);
 
@@ -115,12 +147,12 @@ void mayer_term( void)
 }
 
 /* -------- public routines -------- */
-EXTERN void mayer_fht(t_sample *fz, int n)
+void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");
 }
 
-EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
+static void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
 {
     FFTFLT *buf, *fp3;
     int i;
@@ -143,17 +175,17 @@ EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
     }
 }
 
-EXTERN void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
+void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_dofft(fz1, fz2, n, -1);
 }
 
-EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
+void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_dofft(fz1, fz2, n, 1);
 }
 
-EXTERN void mayer_realfft(int n, t_sample *fz)
+void mayer_realfft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
@@ -171,7 +203,7 @@ EXTERN void mayer_realfft(int n, t_sample *fz)
             *fp1 = fp3[0], *fp2 = fp3[1];
 }
 
-EXTERN void mayer_realifft(int n, t_sample *fz)
+void mayer_realifft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
@@ -492,9 +524,6 @@ Appendix :
 
 void cdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
     int nw;
 
     nw = ip[0];
@@ -512,12 +541,6 @@ void cdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void rdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void makect(int nc, int *ip, FFTFLT *c);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int nw, nc;
     FFTFLT xi;
 
@@ -556,13 +579,6 @@ void rdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void ddct(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void makect(int nc, int *ip, FFTFLT *c);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j, nw, nc;
     FFTFLT xr;
 
@@ -612,13 +628,6 @@ void ddct(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void ddst(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void makect(int nc, int *ip, FFTFLT *c);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j, nw, nc;
     FFTFLT xr;
 
@@ -668,11 +677,6 @@ void ddst(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
 
 void dfct(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void makect(int nc, int *ip, FFTFLT *c);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j, k, l, m, mh, nw, nc;
     FFTFLT xr, xi, yr, yi;
 
@@ -761,11 +765,6 @@ void dfct(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 
 void dfst(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 {
-    void makewt(int nw, int *ip, FFTFLT *w);
-    void makect(int nc, int *ip, FFTFLT *c);
-    void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
-    void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     int j, k, l, m, mh, nw, nc;
     FFTFLT xr, xi, yr, yi;
 
@@ -850,7 +849,6 @@ void dfst(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 
 void makewt(int nw, int *ip, FFTFLT *w)
 {
-    void makeipt(int nw, int *ip);
     int j, nwh, nw0, nw1;
     FFTFLT delta, wn4r, wk1r, wk1i, wk3r, wk3i;
 
@@ -1007,21 +1005,6 @@ void makect(int nc, int *ip, FFTFLT *c)
 
 void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w)
 {
-    void bitrv2(int n, int *ip, FFTFLT *a);
-    void bitrv216(FFTFLT *a);
-    void bitrv208(FFTFLT *a);
-    void cftf1st(int n, FFTFLT *a, FFTFLT *w);
-    void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w);
-    void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
-    void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w);
-    void cftf161(FFTFLT *a, FFTFLT *w);
-    void cftf081(FFTFLT *a, FFTFLT *w);
-    void cftf040(FFTFLT *a);
-    void cftx020(FFTFLT *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftf1st(n, a, &w[nw - (n >> 2)]);
@@ -1055,21 +1038,6 @@ void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w)
 
 void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w)
 {
-    void bitrv2conj(int n, int *ip, FFTFLT *a);
-    void bitrv216neg(FFTFLT *a);
-    void bitrv208neg(FFTFLT *a);
-    void cftb1st(int n, FFTFLT *a, FFTFLT *w);
-    void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w);
-    void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
-    void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w);
-    void cftf161(FFTFLT *a, FFTFLT *w);
-    void cftf081(FFTFLT *a, FFTFLT *w);
-    void cftb040(FFTFLT *a);
-    void cftx020(FFTFLT *a);
-#ifdef USE_CDFT_THREADS
-    void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w);
-#endif /* USE_CDFT_THREADS */
-
     if (n > 8) {
         if (n > 32) {
             cftb1st(n, a, &w[nw - (n >> 2)]);
@@ -2414,8 +2382,6 @@ typedef struct cdft_arg_st cdft_arg_t;
 
 void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
-    void *cftrec1_th(void *p);
-    void *cftrec2_th(void *p);
     int i, idiv4, m, nthread;
     cdft_thread_t th[4];
     cdft_arg_t ag[4];
@@ -2448,9 +2414,6 @@ void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w)
 
 void *cftrec1_th(void *p)
 {
-    int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
-    void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
-    void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
     int isplt, j, k, m, n, n0, nw;
     FFTFLT *a, *w;
 
@@ -2477,9 +2440,6 @@ void *cftrec1_th(void *p)
 
 void *cftrec2_th(void *p)
 {
-    int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
-    void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
-    void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
     int isplt, j, k, m, n, n0, nw;
     FFTFLT *a, *w;
 
@@ -2509,9 +2469,6 @@ void *cftrec2_th(void *p)
 
 void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
-    int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
-    void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
-    void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
     int isplt, j, k, m;
 
     m = n;
@@ -2531,8 +2488,6 @@ void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w)
 
 int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w)
 {
-    void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
-    void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
     int i, isplt, m;
 
     if ((k & 3) != 0) {
@@ -2566,13 +2521,6 @@ int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w)
 
 void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w)
 {
-    void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
-    void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
-    void cftf161(FFTFLT *a, FFTFLT *w);
-    void cftf162(FFTFLT *a, FFTFLT *w);
-    void cftf081(FFTFLT *a, FFTFLT *w);
-    void cftf082(FFTFLT *a, FFTFLT *w);
-
     if (n == 512) {
         cftmdl1(128, a, &w[nw - 64]);
         cftf161(a, &w[nw - 8]);
@@ -2875,11 +2823,6 @@ void cftmdl2(int n, FFTFLT *a, FFTFLT *w)
 
 void cftfx41(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
-    void cftf161(FFTFLT *a, FFTFLT *w);
-    void cftf162(FFTFLT *a, FFTFLT *w);
-    void cftf081(FFTFLT *a, FFTFLT *w);
-    void cftf082(FFTFLT *a, FFTFLT *w);
-
     if (n == 128) {
         cftf161(a, &w[nw - 8]);
         cftf162(&a[32], &w[nw - 32]);

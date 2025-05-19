@@ -1,111 +1,93 @@
-#N canvas 514 51 894 710 12;
+#N canvas 349 38 871 679 12;
 #X declare -stdpath ./;
-#X obj 288 216 f;
-#X obj 322 192 + 1;
-#X obj 322 216 mod 11;
+#X obj 288 186 f;
+#X obj 322 162 + 1;
+#X obj 322 186 mod 11;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E07 11 float 2;
 #X coords 0 96 11 36 200 160 1 0 0;
-#X restore 514 87 graph;
-#X floatatom 348 101 0 10 999 0 - - - 0;
+#X restore 550 74 graph;
+#X floatatom 268 88 5 10 999 0 - - - 0;
 #X obj 288 288 mtof;
-#X msg 85 208 1;
-#X obj 155 410 *~;
-#X obj 155 470 cos~;
-#X obj 155 495 hip~ 5;
-#X obj 155 447 +~ 0.1;
-#X floatatom 117 249 0 0 0 0 - - - 0;
-#X floatatom 216 250 0 0 200 0 - - - 0;
-#X floatatom 150 249 0 0 999 0 - - - 0;
-#X floatatom 183 249 0 0 999 0 - - - 0;
-#X msg 276 397 0;
+#X msg 85 178 1;
+#X obj 155 380 *~;
+#X obj 155 475 cos~;
+#X obj 155 431 +~ 0.1;
+#X floatatom 117 219 0 0 0 0 - - - 0;
+#X floatatom 216 220 0 0 200 0 - - - 0;
+#X floatatom 150 219 0 0 999 0 - - - 0;
+#X floatatom 183 219 0 0 999 0 - - - 0;
+#X msg 276 399 0;
 #X msg 276 375 0.1;
-#X msg 276 419 0.25;
-#X text 126 209 ADSR controls;
-#X text 160 230 A;
-#X text 193 230 D;
-#X text 226 230 S;
-#X floatatom 340 164 0 1 11 0 - - - 0;
-#X obj 84 308 *~ 0.01;
-#X obj 288 104 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 155 524 output~;
-#X text 634 653 updated for Pd version 0.37;
-#X obj 84 275 adsr 70 10 90 50 500, f 24;
+#X msg 276 424 0.25;
+#X text 126 179 ADSR controls;
+#X text 154 200 A;
+#X text 187 200 D;
+#X text 220 200 S;
+#X floatatom 340 134 0 1 11 0 - - - 0;
+#X obj 84 278 *~ 0.01;
+#X obj 208 86 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X obj 155 531 output~;
+#X obj 84 245 adsr 70 10 90 50 500, f 24;
 #X obj 288 265 +;
-#X floatatom 323 265 0 -48 120 0 - - - 0;
-#N canvas 274 153 531 210 make-table 0;
-#X obj 92 81 loadbang;
-#X text 70 21 This patch loads a sequence of pitches into E07. The
-values are floating-point \, so we could use microtones (60.5 \, for
-example) if we wish.;
-#X msg 92 109 \; E07 0 54 55 57 63 61 67 71 57 70 61 63 \; E07 yticks
-36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
+#X floatatom 323 265 5 -48 120 0 - - - 0;
+#N canvas 788 323 531 210 make-table 1;
+#X obj 111 86 loadbang;
+#X text 70 21 This patch loads a sequence of pitches into E07. The values are floating-point \, so we could use microtones (60.5 \, for example) if we wish.;
+#X msg 111 114 \; E07 0 54 55 57 63 61 67 71 57 70 61 63 \; E07 yticks 36 12 1 \; E07 ylabel 11.4 36 48 60 72 84 96;
 #X connect 0 0 2 0;
-#X restore 574 267 pd make-table;
-#X obj 49 180 sel 0;
-#X msg 49 208 0;
-#X text 104 230 level;
-#X obj 288 128 metro 130;
+#X restore 645 42 pd make-table;
+#X obj 49 150 sel 0;
+#X msg 49 178 0;
+#X text 106 200 level;
 #X obj 288 317 osc~;
 #X text 275 355 symmetry;
-#X text 309 395 even;
-#X text 316 418 odd;
+#X text 309 397 even;
+#X text 316 423 odd;
 #X text 311 374 mixed;
 #X obj 288 241 tabread E07;
-#X text 393 324 This patch uses a stepping sequencer to control a waveshaping
-instrument. A metronome (metro 130) drives a counter (f \, +1 \, and
-mod 11) which counts repeatedly through 11 values which are read from
-the stored table (tabread E07). The values may be read in sequence
-\, by twos or threes \, etc. \, according to the "increment" parameter.
-, f 61;
-#X text 393 419 The metronome also triggers an ADSR envelope \, whose
-parameters may also be changed using the "level" \, "A" \, "D" \, and
-"S" controls., f 61;
-#X text 67 29 SEQUENCED WAVESHAPING SYNTHESIZER;
-#X text 394 472 The synthesis (osc~ \, *~ \, +~ 0.1 \, cos~) is a very
-simple application of the waveshaping technique. The oscillator (whose
-amplitude depends on the ADSR generator) is used as an index into the
-"cos~" wavetable. An additional offset ("symmetry") controls how the
-oscillator's waveform is centered on the wavetable. If the offset is
-zero \, the oscillator reads into the (even) cosine function (producing
-only even harmonics). If the offset is 0.25 \, we read 1/4 wave into
-the cosine function: the result is an odd function and we get odd harmonics.
-Between the two we get mixtures of even and odd., f 61;
-#X text 355 265 <= transpose;
-#X text 371 165 <= increment;
-#X text 380 101 <= msec;
-#X text 203 101 ON/OFF =>;
-#X obj 657 22 declare -stdpath ./;
+#X obj 145 617 declare -stdpath ./;
+#X text 129 85 ON/OFF -->;
+#X text 310 88 <-- msec;
+#X text 370 135 <-- increment;
+#X text 366 267 <-- transpose;
+#X text 390 470 The synthesis ([osc~] \, [*~] \, [+~ 0.1] and [cos~]) is a very simple application of the waveshaping technique. The [osc~] oscillator (whose amplitude depends on the ADSR generator) is used as an index into the [cos~] wavetable. An additional offset ("symmetry") controls how the oscillator's waveform is centered on the wavetable. If the offset is zero \, the oscillator reads into the (even) cosine function (producing only even harmonics). If the offset is 0.25 \, we read 1/4 wave into the cosine function: the result is an odd function and we get odd harmonics. Between the two we get mixtures of even and odd., f 62;
+#X obj 208 118 metro 150;
+#X obj 61 21 cnv 5 5 25 empty empty Sequenced\ Waveshaphing\ Synthesizer 15 13 0 16 #dfdfdf #202020 0;
+#X floatatom 288 213 5 0 0 0 - - - 0;
+#X text 390 322 This patch uses a stepping sequencer to control a waveshaping instrument. A metronome ([metro 150]) drives a counter ([f] \, [+ 1] \, and [mod 11]) which counts repeatedly through the 11 values (0-10) which are read from the stored table ("E07"). The values may be read in sequence \, by twos or threes \, etc. \, according to the "increment" parameter., f 62;
+#X floatatom 249 220 0 0 200 0 - - - 0;
+#X text 252 200 R;
+#X text 390 417 The metronome also triggers an ADSR envelope \, whose parameters may also be changed using the "level" \, "A" \, "D" \, "S" and "R" controls., f 62;
 #X connect 0 0 1 0;
-#X connect 0 0 40 0;
+#X connect 0 0 46 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 1;
-#X connect 4 0 34 1;
-#X connect 5 0 35 0;
-#X connect 6 0 27 0;
-#X connect 7 0 10 0;
-#X connect 8 0 9 0;
-#X connect 9 0 25 0;
-#X connect 9 0 25 1;
-#X connect 10 0 8 0;
-#X connect 11 0 27 1;
-#X connect 12 0 27 4;
-#X connect 13 0 27 2;
-#X connect 14 0 27 3;
-#X connect 15 0 10 1;
-#X connect 16 0 10 1;
-#X connect 17 0 10 1;
-#X connect 22 0 1 1;
-#X connect 23 0 7 0;
-#X connect 24 0 31 0;
-#X connect 24 0 34 0;
-#X connect 27 0 23 0;
-#X connect 28 0 5 0;
-#X connect 29 0 28 1;
-#X connect 31 0 32 0;
-#X connect 32 0 27 0;
-#X connect 34 0 0 0;
-#X connect 34 0 6 0;
-#X connect 35 0 7 1;
-#X connect 40 0 28 0;
+#X connect 4 0 44 1;
+#X connect 5 0 32 0;
+#X connect 6 0 25 0;
+#X connect 7 0 9 0;
+#X connect 8 0 24 0;
+#X connect 9 0 8 0;
+#X connect 10 0 25 1;
+#X connect 11 0 25 4;
+#X connect 12 0 25 2;
+#X connect 13 0 25 3;
+#X connect 14 0 9 1;
+#X connect 15 0 9 1;
+#X connect 16 0 9 1;
+#X connect 21 0 1 1;
+#X connect 22 0 7 0;
+#X connect 23 0 29 0;
+#X connect 23 0 44 0;
+#X connect 25 0 22 0;
+#X connect 26 0 5 0;
+#X connect 27 0 26 1;
+#X connect 29 0 30 0;
+#X connect 30 0 25 0;
+#X connect 32 0 7 1;
+#X connect 37 0 26 0;
+#X connect 44 0 0 0;
+#X connect 44 0 6 0;
+#X connect 46 0 37 0;
+#X connect 48 0 25 5;

@@ -1,53 +1,40 @@
-#N canvas 633 85 595 573 12;
+#N canvas 486 38 575 744 12;
 #X declare -stdpath ./;
-#X obj 47 480 output~;
-#X text 326 515 updated for Pd version 0.39;
-#X obj 151 454 metro 250;
-#X obj 151 434 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X text 169 431 graphing on/off;
+#X obj 46 636 output~;
+#X obj 107 547 metro 250;
+#X obj 107 520 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X text 130 519 graphing on/off;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array H02-graph 882 float 0;
 #X coords 0 1 881 -1 200 140 1 0 0;
-#X restore 371 311 graph;
-#X text 415 456 --- 0.02 sec ---;
-#X text 36 41 Many synthesis algorithms and transformations can have
-outputs with a zero-frequency component (commonly called DC for "direct
-current"). These are inaudible and sometimes cause distortion in audio
-output devices \, or when converting to fixed-point soundfile formats.
-It is often desirable to filter an audio signal to remove its DC component.
-, f 65;
-#X text 36 137 The simplest way to do this is to use a one-pole low-pass
-filter \, tuned to a low frequency such as 3 Hertz \, and to subtract
-its output from the original. This difference is called a one-pole
-\, one-zero high-pass filter \, and it is used so often that Pd provides
-one in the "hip~" object., f 65;
-#X obj 71 263 +~ 1;
-#X obj 71 400 hip~ 5;
-#X text 134 400 high-pass filter;
-#X floatatom 110 364 5 0 0 0 - - - 0;
-#X msg 110 289 0;
-#X text 155 238 sinusoidal test signal;
-#X text 117 263 add "DC";
-#X text 148 289 zero for no filtering;
-#X msg 120 312 3;
-#X text 155 313 3 (or so) to remove DC;
-#X text 160 337 higher frequencies affect;
-#X text 202 351 the audible part of;
-#X text 202 367 the signal as well.;
-#X obj 71 238 osc~ 220;
-#X msg 128 337 220;
-#X text 102 9 ONE-POLE \, ONE-ZERO HIGH-PASS FILTER;
-#X obj 133 480 tabwrite~ H02-graph;
-#X obj 425 8 declare -stdpath ./;
-#X connect 2 0 25 0;
-#X connect 3 0 2 0;
-#X connect 9 0 10 0;
-#X connect 10 0 0 0;
-#X connect 10 0 0 1;
-#X connect 10 0 25 0;
-#X connect 12 0 10 1;
-#X connect 13 0 12 0;
-#X connect 17 0 12 0;
+#X restore 341 333 graph;
+#X text 385 479 --- 0.02 sec ---;
+#X text 54 62 Many synthesis algorithms and transformations can have outputs with a zero-frequency component (commonly called DC for "direct current"). These are inaudible and sometimes cause distortion in audio output devices \, or when converting to fixed-point soundfile formats. It is often desirable to filter an audio signal to remove its DC component., f 65;
+#X obj 45 296 +~ 1;
+#X text 100 474 high-pass filter;
+#X floatatom 84 426 7 0 0 0 - - - 0;
+#X msg 84 336 0;
+#X text 112 269 sinusoidal test signal;
+#X text 91 296 add "DC";
+#X text 122 336 zero for no filtering;
+#X msg 94 359 3;
+#X text 129 360 3 (or so) to remove DC;
+#X obj 107 586 tabwrite~ H02-graph;
+#X obj 370 537 declare -stdpath ./;
+#X text 54 154 The simplest way to do this is to use a one-pole low-pass filter \, tuned to a low frequency such as 3 Hertz \, and to subtract its output from the original. This difference is called a one-pole \, one-zero high-pass filter \, and it is used so often that Pd provides one in the [hip~] object., f 65;
+#X text 146 414 higher frequencies affect the audible part of the signal as well., f 23;
+#X obj 45 473 hip~ 3;
+#X obj 93 19 cnv 5 5 25 empty empty One-Pole/One-Zero\ High-Pass\ Filter 15 13 0 16 #dfdfdf #202020 0;
+#X obj 87 386 hsl 162 19 0 500 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 45 270 osc~ 220;
+#X text 173 652 The [output~] abstraction includes [hip~ 3] objects to remove DC component., f 26;
+#X connect 1 0 16 0;
+#X connect 2 0 1 0;
+#X connect 7 0 20 0;
+#X connect 9 0 20 1;
+#X connect 10 0 22 0;
+#X connect 14 0 22 0;
+#X connect 20 0 0 0;
+#X connect 20 0 16 0;
 #X connect 22 0 9 0;
-#X connect 23 0 12 0;
+#X connect 23 0 7 0;

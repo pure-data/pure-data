@@ -1,4 +1,4 @@
-#N canvas 653 218 613 599 12;
+#N canvas 559 38 612 582 12;
 #X obj 200 54 inlet;
 #X obj 200 81 s \$1-a;
 #X obj 335 81 s \$1-b;
@@ -15,28 +15,14 @@
 #X floatatom 460 377 5 0 0 0 - - - 0;
 #X obj 459 319 s \$0-d;
 #X obj 460 349 r \$0-d;
-#X text 96 17 This is an abstraction used in example 13 \, "locality".
-;
-#X text 343 556 updated for Pd version 0.52;
-#X text 42 119 The sends above get named "one-a" and "one-b" \, for
-instance depending on the argument. The window title bar tells you
-the creation arguments in parenthesis for this particular instance.
-, f 75;
-#X text 42 168 You can use this to make an abstraction send values
-to a specific receive in the parent patch. Alternatively \, you can
-make internal local connections as shown below with "\$1-c" \, whereas
-the middle boxes get crosstalk between the windows. "\$0" is a counter
-\, where every patch gets its own value (a unique ID number). Therefore
-\, boxes at right with "\$0" also get unique names., f 75;
+#X text 96 17 This is an abstraction used in example 13 \, "locality".;
 #X obj 77 454 float \$0;
 #X msg 77 485 \; \$1-d 10;
-#X obj 77 425 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X text 191 452 If you're using a message as a send \, as in the initialization
-of an abstraction \, you need to get the value of "\$0" from an object
-like float \, because it doesn't get expanded to an unique ID number
-in messages, f 48;
-#X text 98 422 <= click;
+#X obj 77 425 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 191 452 If you're using a message as a send \, as in the initialization of an abstraction \, you need to get the value of "\$0" from an object like float \, because it doesn't get expanded to an unique ID number in messages, f 48;
+#X text 42 119 The [send] objects above get named "one-a" and "one-b" \, for instance depending on the argument. The window title bar tells you the creation arguments in parenthesis for this particular instance., f 75;
+#X text 42 170 You can use this to make an abstraction send values to a specific [receive] in the parent patch. Alternatively \, you can make internal local connections as shown below with "\$1-c" \, whereas the middle boxes get crosstalk between the windows. "\$0" is a counter \, where every patch gets its own value (a unique ID number). Therefore \, boxes at right with "\$0" also get unique names., f 75;
+#X text 99 426 <-- click;
 #X connect 0 0 1 0;
 #X connect 3 0 2 0;
 #X connect 5 0 7 0;
@@ -45,5 +31,5 @@ in messages, f 48;
 #X connect 11 0 8 0;
 #X connect 12 0 14 0;
 #X connect 15 0 13 0;
-#X connect 20 0 21 0;
-#X connect 22 0 20 0;
+#X connect 17 0 18 0;
+#X connect 19 0 17 0;

@@ -8,15 +8,12 @@
 #include "s_stuff.h"
 #include "s_net.h"
 
-#include <sys/types.h>
 #include <string.h>
-#include <errno.h>
-#include <stdlib.h>
+#include "m_private_utils.h"
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
+#ifndef _WIN32
+#include <fcntl.h>
+#include <errno.h>
 #endif
 
 /* print addrinfo lists for debugging */
@@ -290,11 +287,15 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         if (sockfd < 0)
             continue;
 
+#ifndef _WIN32
+        if (fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+            pd_error(x, "netsend: CLOEXEC failed: %s", strerror(errno));
+#endif
+
 #if 0
         if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_SNDBUF, 0) < 0)
             post("netsend: setsockopt (SO_RCVBUF) failed");
 #endif
-
         /* for stream (TCP) sockets, specify "nodelay" */
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -535,6 +536,7 @@ static void netsend_setup(void)
     class_addlist(netsend_class, (t_method)netsend_send);
     class_addmethod(netsend_class, (t_method)netsend_timeout,
         gensym("timeout"), A_DEFFLOAT, 0);
+    class_sethelpsymbol(netsend_class, gensym("netsend-receive"));
 }
 
 /* ----------------------------- netreceive ------------------------- */
@@ -692,6 +694,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (sockfd < 0)
             continue;
+
+#ifndef _WIN32
+        if (fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+            pd_error(x, "netsend: CLOEXEC failed: %s", strerror(errno));
+#endif
     #if 0
         fprintf(stderr, "receive socket %d\n", sockfd);
     #endif
@@ -927,6 +934,7 @@ static void netreceive_setup(void)
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
     class_addlist(netreceive_class, (t_method)netreceive_send);
+    class_sethelpsymbol(netreceive_class, gensym("netsend-receive"));
 }
 
 void x_net_setup(void)
