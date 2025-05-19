@@ -2266,8 +2266,11 @@ void glob_closesubs(t_pd *ignore)
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_closesubsfor(gl);
             /* if there's anyone open, move it to front */
-    if (pd_this->pd_canvaslist)
-        canvas_vis(pd_this->pd_canvaslist, 1);
+    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        if (strcmp(gl->gl_name->s_name, "_float_template") &&
+            strcmp(gl->gl_name->s_name, "_float_array_template") &&
+                strcmp(gl->gl_name->s_name, "_text_template"))
+                    canvas_vis(gl, 1);
 }
 
 static void glist_dorevis(t_glist *glist)
