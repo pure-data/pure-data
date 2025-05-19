@@ -552,9 +552,9 @@ static void ptrobj_nearest(t_ptrobj *x, t_floatarg xval, t_floatarg yval)
     for (gobj = glist->gl_list; gobj; gobj = gobj->g_next)
         if (pd_class(&gobj->g_pd) == scalar_class)
     {
-        float thisx, thisy;
+        t_float thisx, thisy;
         scalar_getbasexy((t_scalar *)gobj, &thisx, &thisy);
-        float diff = (thisx-xval)*(thisx-xval) + (thisy-yval)*(thisy-yval);
+        t_float diff = (thisx-xval)*(thisx-xval) + (thisy-yval)*(thisy-yval);
         if (diff < bestdiff)
         {
             bestgobj = gobj;
