@@ -138,7 +138,7 @@ void rtext_free(t_rtext *x)
 void rtext_setcolor(t_rtext *x, int color)
 {
     char buf[80];
-    snprintf(buf, 80, "#%06x", color);
+    pd_snprintf(buf, 80, "#%06x", color);
     buf[79] = 0;
     x->x_color = gensym(buf);
 }
