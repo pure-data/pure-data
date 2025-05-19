@@ -57,7 +57,6 @@
 #X msg 34 143 type highshelf \, 1000 0.5 -10, f 29;
 #X text 250 143 a list input spreads floats into inlets.;
 #X obj 66 305 filtercoeff peaking 500 0.5 -24;
-#X msg 137 410 clear;
 #X text 51 62 [filtercoeff] is an abstraction that generates coefficients for [biquad~] for different filter types. The equations are from the "Cookbook formulae for audio EQ biquad filter coefficients" by Robert Bristow-Johnson. The bypass type (default) bypassed the input., f 73;
 #X text 341 184 The lowshelf and highshelf filter types take a slope value (from 0 to 1) instead of "Q". Lowshelf \, Highshelf and Peaking filters also take a gain parameter in dB (which is ignored for all the others)., f 34;
 #X text 54 172 freq (hz);
@@ -82,4 +81,3 @@
 #X connect 34 0 36 0;
 #X connect 36 0 7 0;
 #X connect 36 0 32 0;
-#X connect 37 0 32 0;
