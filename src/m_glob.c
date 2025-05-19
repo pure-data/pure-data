@@ -4,7 +4,6 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
-#include "s_stuff.h"
 
 t_class *glob_pdobject;
 static t_class *maxclass;
@@ -16,13 +15,14 @@ int pd_compatibilitylevel = 100000;  /* e.g., 43 for pd 0.43 compatibility */
 over.  Some others are prototyped in m_imp.h as well. */
 
 void glob_menunew(void *dummy, t_symbol *name, t_symbol *dir);
+void glob_quit(void *dummy, t_floatarg status);
 void glob_verifyquit(void *dummy, t_floatarg f);
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv);
-void glob_meters(void *dummy, t_floatarg f);
 void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av);
 void glob_audiostatus(void *dummy);
 void glob_finderror(t_pd *dummy);
 void glob_findinstance(t_pd *dummy, t_symbol*s);
+void glob_start_preference_dialog(t_pd *dummy, t_symbol*s);
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform);
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_audio_setapi(t_pd *dummy, t_floatarg f);
@@ -36,11 +36,17 @@ void glob_start_startup_dialog(t_pd *dummy, t_floatarg flongform);
 void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_ping(t_pd *dummy);
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 void glob_loadpreferences(t_pd *dummy, t_symbol *s);
 void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);
 void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
+void glob_fastforward(t_pd *ignore, t_floatarg f);
+void glob_settracing(void *dummy, t_floatarg f);
+void glob_vis(void *dummy, t_symbol *s);
+void glob_closesubs(void *dummy);
+void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+    t_symbol *gop);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -71,7 +77,7 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
-static void glob_version(t_pd *dummy, float f)
+static void glob_version(t_pd *dummy, t_float f)
 {
     if (f > (PD_MAJOR_VERSION + 0.01*PD_MINOR_VERSION + 0.001))
     {
@@ -85,10 +91,11 @@ static void glob_version(t_pd *dummy, float f)
     }
 }
 
-static void glob_perf(t_pd *dummy, float f)
+static void glob_perf(t_pd *dummy, t_float f)
 {
     sys_perf = (f != 0);
 }
+
 
 void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -106,18 +113,7 @@ void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
-    char str[80];
-    sys_vgui("pdtk_plugin_dispatch ");
-    for (i = 0; i < argc; i++)
-    {
-        atom_string(argv+i, str, 80);
-        sys_vgui("%s", str);
-        if (i < argc-1) {
-            sys_vgui(" ");
-        }
-    }
-    sys_vgui("\n");
+    pdgui_vmess("pdtk_plugin_dispatch", "a", argc, argv);
 }
 
 int sys_zoom_open = 1;
@@ -141,20 +137,24 @@ void glob_init(void)
         A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_open, gensym("open"),
         A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), A_DEFFLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("exit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_dsp, gensym("dsp"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_meters, gensym("meters"),
-        A_FLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_key, gensym("key"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_foo,
+        gensym("foo"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_dsp,
+        gensym("dsp"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_key,
+        gensym("key"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audiostatus,
         gensym("audiostatus"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_finderror,
         gensym("finderror"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_findinstance,
         gensym("findinstance"), A_SYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_start_preference_dialog,
+        gensym("start-preference-dialog"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_properties,
         gensym("audio-properties"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_dialog,
@@ -196,17 +196,25 @@ void glob_init(void)
         gensym("plugin-dispatch"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_helpintro,
         gensym("help-intro"), A_GIMME, 0);
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+    class_addmethod(glob_pdobject, (t_method)glob_fastforward,
+         gensym("fast-forward"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_settracing,
+         gensym("set-tracing"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
-#endif
+    class_addmethod(glob_pdobject, (t_method)glob_vis,
+        gensym("vis"), A_DEFSYM, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_closesubs,
+        gensym("close-subwindows"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_colors,
+        gensym("colors"), A_SYMBOL, A_SYMBOL, A_SYMBOL, A_DEFSYMBOL, 0);
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }
 
     /* function to return version number at run time.  Any of the
     calling pointers may be zero in case you don't need all of them. */
-void sys_getversion(int *major, int *minor, int *bugfix)
+unsigned int sys_getversion(int *major, int *minor, int *bugfix)
 {
     if (major)
         *major = PD_MAJOR_VERSION;
@@ -214,5 +222,11 @@ void sys_getversion(int *major, int *minor, int *bugfix)
         *minor = PD_MINOR_VERSION;
     if (bugfix)
         *bugfix = PD_BUGFIX_VERSION;
+
+    return PD_VERSION_CODE;
 }
 
+unsigned int sys_getfloatsize()
+{
+    return sizeof(t_float);
+}

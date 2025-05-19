@@ -8,9 +8,6 @@
 #include <string.h>
 extern int ugen_getsortno(void);
 
-#define DEFDELVS 64             /* LATER get this from canvas at DSP time */
-static const int delread_zero = 0;    /* four bytes of zero for delread~, vd~/delread4~*/
-
 /* ----------------------------- delwrite~ ----------------------------- */
 static t_class *sigdelwrite_class;
 
@@ -30,18 +27,19 @@ typedef struct _sigdelwrite
     int x_sortno;   /* DSP sort number at which this was last put on chain */
     int x_rsortno;  /* DSP sort # for first delread or write in chain */
     int x_vecsize;  /* vector size for delread~ to use */
+    t_float x_sr;
     t_float x_f;
 } t_sigdelwrite;
 
 #define XTRASAMPS 4
 #define SAMPBLK 4
 
-static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathieu Bouchard */
+static void sigdelwrite_update(t_sigdelwrite *x) /* added by Mathieu Bouchard */
 {
-    int nsamps = x->x_deltime * sr * (t_float)(0.001f);
+    int nsamps = x->x_deltime * x->x_sr * (t_float)(0.001f);
     if (nsamps < 1) nsamps = 1;
     nsamps += ((- nsamps) & (SAMPBLK - 1));
-    nsamps += DEFDELVS;
+    nsamps += x->x_vecsize;
     if (x->x_cspace.c_n != nsamps)
     {
         x->x_cspace.c_vec = (t_sample *)resizebytes(x->x_cspace.c_vec,
@@ -49,6 +47,9 @@ static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathi
             (nsamps + XTRASAMPS) * sizeof(t_sample));
         x->x_cspace.c_n = nsamps;
         x->x_cspace.c_phase = XTRASAMPS;
+    #if 0
+        post("delay line resized to %d samples", nsamps);
+    #endif
     }
 }
 
@@ -60,18 +61,29 @@ static void sigdelwrite_clear (t_sigdelwrite *x) /* added by Orm Finnendahl */
 
 
     /* routine to check that all delwrites/delreads/vds have same vecsize */
-static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
+static void sigdelwrite_check(t_sigdelwrite *x, int vecsize, t_float sr)
 {
+        /* the first object in the DSP chain sets the vecsize */
     if (x->x_rsortno != ugen_getsortno())
     {
         x->x_vecsize = vecsize;
+        x->x_sr = sr;
         x->x_rsortno = ugen_getsortno();
     }
+#if 1
+    /* Subsequent objects are only allowed to increase the vector size/samplerate */
+    else
+    {
+        if (vecsize > x->x_vecsize)
+            x->x_vecsize = vecsize;
+        if (sr > x->x_sr)
+            x->x_sr = sr;
+    }
+#else
     /*
         LATER this should really check sample rate and blocking, once that is
         supported.  Probably we don't actually care about vecsize.
         For now just suppress this check. */
-#if 0
     else if (vecsize != x->x_vecsize)
         pd_error(x, "delread/delwrite/vd vector size mismatch");
 #endif
@@ -88,6 +100,7 @@ static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
     x->x_cspace.c_vec = getbytes(XTRASAMPS * sizeof(t_sample));
     x->x_sortno = 0;
     x->x_vecsize = 0;
+    x->x_sr = 0;
     x->x_f = 0;
     return (x);
 }
@@ -123,10 +136,10 @@ static t_int *sigdelwrite_perform(t_int *w)
 
 static void sigdelwrite_dsp(t_sigdelwrite *x, t_signal **sp)
 {
-    dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, sp[0]->s_n);
+    dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, (t_int)sp[0]->s_n);
     x->x_sortno = ugen_getsortno();
-    sigdelwrite_checkvecsize(x, sp[0]->s_n);
-    sigdelwrite_updatesr(x, sp[0]->s_sr);
+    sigdelwrite_check(x, sp[0]->s_n, sp[0]->s_sr);
+    sigdelwrite_update(x);
 }
 
 static void sigdelwrite_free(t_sigdelwrite *x)
@@ -146,6 +159,7 @@ static void sigdelwrite_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_clear,
                     gensym("clear"), 0);
+    class_sethelpsymbol(sigdelwrite_class, gensym("delay-tilde-objects"));
 }
 
 /* ----------------------------- delread~ ----------------------------- */
@@ -218,13 +232,13 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
     x->x_n = sp[0]->s_n;
     if (delwriter)
     {
-        sigdelwrite_updatesr(delwriter, sp[0]->s_sr);
-        sigdelwrite_checkvecsize(delwriter, sp[0]->s_n);
+        sigdelwrite_check(delwriter, sp[0]->s_n, sp[0]->s_sr);
+        sigdelwrite_update(delwriter);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
         sigdelread_float(x, x->x_deltime);
         dsp_add(sigdelread_perform, 4,
-            sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, sp[0]->s_n);
+            sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, (t_int)sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
             pd_error(x, "delread~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
@@ -241,6 +255,7 @@ static void sigdelread_setup(void)
     class_addmethod(sigdelread_class, (t_method)sigdelread_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addfloat(sigdelread_class, (t_method)sigdelread_float);
+    class_sethelpsymbol(sigdelread_class, gensym("delay-tilde-objects"));
 }
 
 
@@ -322,12 +337,13 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
     x->x_sr = sp[0]->s_sr * 0.001;
     if (delwriter)
     {
-        sigdelwrite_checkvecsize(delwriter, sp[0]->s_n);
+        sigdelwrite_check(delwriter, sp[0]->s_n, sp[0]->s_sr);
+        sigdelwrite_update(delwriter);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
         dsp_add(sigvd_perform, 5,
             sp[0]->s_vec, sp[1]->s_vec,
-                &delwriter->x_cspace, x, sp[0]->s_n);
+                &delwriter->x_cspace, x, (t_int)sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
             pd_error(x, "delread4~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
@@ -343,6 +359,7 @@ static void sigvd_setup(void)
     class_addcreator((t_newmethod)sigvd_new, gensym("vd~"), A_DEFSYM, 0);
     class_addmethod(sigvd_class, (t_method)sigvd_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(sigvd_class, t_sigvd, x_f);
+    class_sethelpsymbol(sigvd_class, gensym("delay-tilde-objects"));
 }
 
 /* ----------------------- global setup routine ---------------- */

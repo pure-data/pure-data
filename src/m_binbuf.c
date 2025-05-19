@@ -15,13 +15,19 @@
 #ifdef _WIN32
 #include <io.h>
 #endif
-#include <fcntl.h>
 #include <string.h>
 #include <stdarg.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
+
+    /* returns the start of a valid dollar or dollsym */
+static const char *str_dollar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (('0' <= s[1] && s[1] <= '9'))
+            break;
+    return s;
+}
 
 struct _binbuf
 {
@@ -243,7 +249,7 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 
     if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_addmessage: out of space");
+        pd_error(0, "binbuf_addmessage: out of space");
         return;
     }
 #if 0
@@ -268,7 +274,7 @@ void binbuf_addv(t_binbuf *x, const char *fmt, ...)
     {
         if (nargs >= MAXADDMESSV)
         {
-            error("binbuf_addmessv: only %d allowed", MAXADDMESSV);
+            pd_error(0, "binbuf_addmessv: only %d allowed", MAXADDMESSV);
             break;
         }
         switch(*fp++)
@@ -357,7 +363,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 
     if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_restore: out of space");
+        pd_error(0, "binbuf_restore: out of space");
         return;
     }
 
@@ -386,7 +392,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                             slashed = 1;
                         else
                         {
-                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                            if (*sp2 == '$' && sp2[1] >= '0' && sp2[1] <= '9')
                                 dollar = 1;
                             *sp1++ = *sp2;
                             slashed = 0;
@@ -396,8 +402,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     usestr = buf;
                 }
                 else usestr = str;
-                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
-                    str2[1] >= '0' && str2[1] <= '9'))
+                if (dollar || (usestr == str && (str2 = str_dollar(usestr))))
                 {
                     int dollsym = 0;
                     if (*usestr != '$')
@@ -485,68 +490,64 @@ int canvas_getdollarzero(void);
  * buf="10"
  * return value = 1; (s+1=="-bla")
  */
-int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, const t_atom *av, int tonew)
+static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
+    int ac, const t_atom *av, int tonew)
 {
-  int argno = (int)atol(s);
-  int arglen=0;
-  const char*cs=s;
-  char c=*cs;
-  *buf=0;
+    char *cs;
+    int argno = (int)strtol(s, &cs, 10);
 
-  while(c&&(c>='0')&&(c<='9')){
-    c=*cs++;
-    arglen++;
-  }
-
-  if (cs==s) { /* invalid $-expansion (like "$bla") */
-    sprintf(buf, "$");
-    return 0;
-  }
-  else if (argno < 0 || argno > ac) /* undefined argument */
+    *buf=0;
+    if (cs==s)      /* invalid $-expansion (like "$bla") */
     {
-      if(!tonew)return 0;
-      sprintf(buf, "$%d", argno);
+        sprintf(buf, "$");
+        return 0;
     }
-  else if (argno == 0){ /* $0 */
-    atom_string(&dollar0, buf, MAXPDSTRING/2-1);
-  }
-  else{ /* fine! */
-    atom_string(av+(argno-1), buf, MAXPDSTRING/2-1);
-  }
-  return (arglen-1);
+    else if (argno < 0 || argno > ac) /* undefined argument */
+    {
+        if (!tonew)
+            return 0;
+        sprintf(buf, "$%d", argno);
+    }
+    else        /* well formed; expand it */
+    {
+        const t_atom *dollarvalue = (argno ? &av[argno-1] : dollar0);
+        if (dollarvalue->a_type == A_SYMBOL)
+        {
+            strncpy(buf, dollarvalue->a_w.w_symbol->s_name, MAXPDSTRING/2-1);
+            buf[MAXPDSTRING/2-2] = 0;
+        }
+        else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
+    }
+    return (cs - s);
 }
 
+/* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
+context of a message to create a new object; in this case out-of-range '$'
+args become 0 - otherwise zero is returned and the caller has to check the
+result. */
 /* LATER remove the dependence on the current canvas for $0; should be another
 argument. */
-t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew)
+t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
+    int tonew)
 {
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
     const char*str=s->s_name;
     char*substr;
-    int next=0, i=MAXPDSTRING;
+    int next=0;
     t_atom dollarnull;
     SETFLOAT(&dollarnull, canvas_getdollarzero());
-    while(i--)buf2[i]=0;
+    buf2[0] = buf2[MAXPDSTRING-1] = 0;
 
-#if 1
-    /* JMZ: currently, a symbol is detected to be A_DOLLSYM if it starts with '$'
-     * the leading $ is stripped and the rest stored in "s"
-     * i would suggest to NOT strip the leading $
-     * and make everything a A_DOLLSYM that contains(!) a $
-     *
-     * whenever this happened, enable this code
-     */
     substr=strchr(str, '$');
     if (!substr || substr-str >= MAXPDSTRING)
         return (s);
 
-    strncat(buf2, str, (substr-str));
+    strncpy(buf2, str, (substr-str));
+    buf2[substr-str] = 0;
     str=substr+1;
 
-#endif
-
-    while((next=binbuf_expanddollsym(str, buf, dollarnull, ac, av, tonew))>=0)
+    while((next=binbuf_expanddollsym(str, buf, &dollarnull, ac, av, tonew))>=0)
     {
         /*
         * JMZ: i am not sure what this means, so i might have broken it
@@ -556,7 +557,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         * this happens, when expanding in a message-box, but does not happen
         * when the A_DOLLSYM is the name of a subpatch
         */
-        if(!tonew&&(0==next)&&(0==*buf))
+        if (!tonew && (0==next) && (0==*buf))
         {
             return 0; /* JMZ: this should mimic the original behaviour */
         }
@@ -564,7 +565,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         strncat(buf2, buf, MAXPDSTRING-strlen(buf2)-1);
         str+=next;
         substr=strchr(str, '$');
-        if(substr)
+        if (substr)
         {
             unsigned long n = substr-str;
             if(n>MAXPDSTRING-strlen(buf2)-1) n=MAXPDSTRING-strlen(buf2)-1;
@@ -584,35 +585,14 @@ done:
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
-
-#ifdef HAVE_ALLOCA
-
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < HUGEMSG || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
-
 void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 {
     t_atom smallstack[SMALLMSG], *mstack, *msp;
     const t_atom *at = x->b_vec;
     int ac = x->b_n;
     int nargs, maxnargs = 0;
+    t_pd *initial_target = target;
+
     if (ac <= SMALLMSG)
         mstack = smallstack;
     else
@@ -642,14 +622,14 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         }
         if (maxnargs <= SMALLMSG)
             mstack = smallstack;
-        else ATOMS_ALLOCA(mstack, maxnargs);
+        else ALLOCA(t_atom, mstack, maxnargs, HUGEMSG);
 #else
             /* just pessimistically allocate enough to hold everything
             at once.  This turned out to run slower in a simple benchmark
             I tried, perhaps because the extra memory allocation
             hurt the cache hit rate. */
         maxnargs = ac;
-        ATOMS_ALLOCA(mstack, maxnargs);
+        ALLOCA(t_atom, mstack, maxnargs, HUGEMSG);
 #endif
 
     }
@@ -668,13 +648,13 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             {
                 if (at->a_w.w_index <= 0 || at->a_w.w_index > argc)
                 {
-                    error("$%d: not enough arguments supplied",
+                    pd_error(initial_target, "$%d: not enough arguments supplied",
                             at->a_w.w_index);
                     goto cleanup;
                 }
                 else if (argv[at->a_w.w_index-1].a_type != A_SYMBOL)
                 {
-                    error("$%d: symbol needed as message destination",
+                    pd_error(initial_target, "$%d: symbol needed as message destination",
                         at->a_w.w_index);
                     goto cleanup;
                 }
@@ -685,7 +665,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (!(s = binbuf_realizedollsym(at->a_w.w_symbol,
                     argc, argv, 0)))
                 {
-                    error("$%s: not enough arguments supplied",
+                    pd_error(initial_target, "$%s: not enough arguments supplied",
                         at->a_w.w_symbol->s_name);
                     goto cleanup;
                 }
@@ -693,7 +673,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             else s = atom_getsymbol(at);
             if (!(target = s->s_thing))
             {
-                error("%s: no such object", s->s_name);
+                pd_error(initial_target, "%s: no such object ", s->s_name);
             cleanup:
                 do at++, ac--;
                 while (ac && at->a_type != A_SEMI);
@@ -750,7 +730,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                         SETFLOAT(msp, 0);
                     else
                     {
-                        error("$%d: argument number out of range",
+                        pd_error(target, "$%d: argument number out of range",
                             at->a_w.w_index);
                         SETFLOAT(msp, 0);
                     }
@@ -761,7 +741,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     target == &pd_objectmaker);
                 if (!s9)
                 {
-                    error("%s: argument number out of range", at->a_w.w_symbol->s_name);
+                    pd_error(target, "%s: argument number out of range", at->a_w.w_symbol->s_name);
                     SETSYMBOL(msp, at->a_w.w_symbol);
                 }
                 else SETSYMBOL(msp, s9);
@@ -787,7 +767,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (nargs == 1) pd_float(target, mstack->a_w.w_float);
                 else pd_list(target, 0, nargs, mstack);
                 break;
+            case A_POINTER:
+                if (nargs == 1) pd_pointer(target, mstack->a_w.w_gpointer);
+                else pd_list(target, 0, nargs, mstack);
+                break;
             default:
+                bug("bad selector");
                 break;
             }
         }
@@ -799,21 +784,21 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     }
 broken:
     if (maxnargs > SMALLMSG)
-         ATOMS_FREEA(mstack, maxnargs);
+         FREEA(t_atom, mstack, maxnargs, HUGEMSG);
 }
 
-int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
+int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int flag)
 {
-    long length;
+    long length, length0;
     int fd;
     int readret;
-    char *buf;
+    char *buf, *buf0;
     char namebuf[MAXPDSTRING];
 
     if (*dirname)
-        snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
     else
-        snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
     namebuf[MAXPDSTRING-1] = 0;
 
     if ((fd = sys_open(namebuf, 0)) < 0)
@@ -822,14 +807,17 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         perror(namebuf);
         return (1);
     }
-    if ((length = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
-        || !(buf = t_getbytes(length)))
+    if ((length0 = (long)lseek(fd, 0, SEEK_END)) < 0 ||
+        lseek(fd, 0, SEEK_SET) < 0
+            || !(buf0 = t_getbytes(length0)))
     {
         fprintf(stderr, "lseek: ");
         perror(namebuf);
         close(fd);
         return(1);
     }
+    length = length0;
+    buf = buf0;
     if ((readret = (int)read(fd, buf, length)) < length)
     {
         fprintf(stderr, "read (%d %ld) -> %d\n", fd, length, readret);
@@ -838,21 +826,49 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         t_freebytes(buf, length);
         return(1);
     }
+
+        /* skip any (totally unnecessary) BOM header */
+    if (length >= 3 &&
+        ((int)buf[0] & 0xFF) == 0xEF && ((int)buf[1] & 0xFF) == 0xBB
+            && ((int)buf[2] & 0xFF) == 0xBF)
+    {
+        length -= 3;
+        buf+= 3;
+    }
+
+        /* optionally skip the shebang */
+    if (flag & BINBUF_SHEBANG
+        && length >=3
+        && buf[0] == '#' && buf[1] == '!')
+    {
+        long offset = 0;
+        for(offset = 0; offset<length; offset++)
+        {
+            if (buf[offset] == '\n')
+            {
+                length -= offset;
+                buf += offset;
+                break;
+            }
+        }
+    }
+
         /* optionally map carriage return to semicolon */
-    if (crflag)
+    if (flag & BINBUF_CR)
     {
         int i;
         for (i = 0; i < length; i++)
             if (buf[i] == '\n')
                 buf[i] = ';';
     }
+
     binbuf_text(b, buf, length);
 
 #if 0
     startpost("binbuf_read "); postatom(b->b_n, b->b_vec); endpost();
 #endif
 
-    t_freebytes(buf, length);
+    t_freebytes(buf0, length0);
     close(fd);
     return (0);
 }
@@ -866,7 +882,7 @@ int binbuf_read_via_canvas(t_binbuf *b, const char *filename,
     if ((filedesc = canvas_open(canvas, filename, "",
         buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
-        error("%s: can't open", filename);
+        pd_error(0, "%s: can't open", filename);
         return (1);
     }
     else close (filedesc);
@@ -884,7 +900,7 @@ int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     if ((filedesc = open_via_path(
         dirname, filename, "", buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
-        error("%s: can't open", filename);
+        pd_error(0, "%s: can't open", filename);
         return (1);
     }
     else close (filedesc);
@@ -898,7 +914,8 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd);
 
     /* write a binbuf to a text file.  If "crflag" is set we suppress
     semicolons. */
-int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int crflag)
+int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
+    int crflag)
 {
     FILE *f = 0;
     char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
@@ -906,27 +923,22 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     t_binbuf *y = 0;
     const t_binbuf *z = x;
     int indx;
-    int ncolumn = 0;
 
     if (*dir)
-        snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
     else
-        snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
+        pd_snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
     fbuf[MAXPDSTRING-1] = 0;
 
     if (!strcmp(filename + strlen(filename) - 4, ".pat") ||
         !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
         y = binbuf_convert(x, 0);
-        x = y;
+        z = y;
     }
 
     if (!(f = sys_fopen(fbuf, "w")))
-    {
-        fprintf(stderr, "open: ");
-        sys_unixerror(fbuf);
         goto fail;
-    }
     for (ap = z->b_vec, indx = z->b_n; indx--; ap++)
     {
         int length;
@@ -938,43 +950,31 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         if (ep - bp < length)
         {
             if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-            {
-                sys_unixerror(fbuf);
                 goto fail;
-            }
             bp = sbuf;
         }
         if ((ap->a_type == A_SEMI || ap->a_type == A_COMMA) &&
             bp > sbuf && bp[-1] == ' ') bp--;
-        if (!crflag || ap->a_type != A_SEMI)
+        if (!(crflag & BINBUF_CR) || ap->a_type != A_SEMI)
         {
             atom_string(ap, bp, (unsigned int)((ep-bp)-2));
             length = (int)strlen(bp);
             bp += length;
-            ncolumn += length;
         }
-        if (ap->a_type == A_SEMI || (!crflag && ncolumn > 65))
+        if (ap->a_type == A_SEMI)
         {
             *bp++ = '\n';
-            ncolumn = 0;
         }
         else
         {
             *bp++ = ' ';
-            ncolumn++;
         }
     }
     if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (fflush(f) != 0)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (y)
         binbuf_free(y);
@@ -1055,7 +1055,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                 {
                     if (stackdepth >= MAXSTACK)
                     {
-                        error("stack depth exceeded: too many embedded patches");
+                        pd_error(0, "stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1265,7 +1265,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     t_float x, y;
                     if (stackdepth >= MAXSTACK)
                     {
-                        error("stack depth exceeded: too many embedded patches");
+                        pd_error(0, "stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1480,8 +1480,8 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     int dspstate = canvas_suspend_dsp();
         /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
-    if (binbuf_read(b, name->s_name, dir->s_name, 0))
-        error("%s: read failed; %s", name->s_name, strerror(errno));
+    if (binbuf_read(b, name->s_name, dir->s_name, BINBUF_SHEBANG))
+        pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
     else
     {
             /* save bindings of symbols #N, #A (and restore afterward) */
@@ -1530,4 +1530,3 @@ void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
     }
     binbuf_addsemi(bto);
 }
-

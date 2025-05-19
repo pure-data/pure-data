@@ -8,13 +8,128 @@ can contain numbers, sublists, and arrays.
 
 */
 
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>      /* for read/write to files */
+#include <string.h>
 #include "m_pd.h"
 #include "g_canvas.h"
 
-t_class *scalar_class;
+/* ------------- gstubs and gpointers - safe pointing --------------- */
+
+/* create a gstub which is "owned" by a glist (gl) or an array ("a"). */
+
+t_gstub *gstub_new(t_glist *gl, t_array *a)
+{
+    t_gstub *gs = t_getbytes(sizeof(*gs));
+    if (gl)
+    {
+        gs->gs_which = GP_GLIST;
+        gs->gs_un.gs_glist = gl;
+    }
+    else
+    {
+        gs->gs_which = GP_ARRAY;
+        gs->gs_un.gs_array = a;
+    }
+    gs->gs_refcount = 0;
+    return (gs);
+}
+
+/* when a "gpointer" is set to point to this stub (so we can later chase
+down the owner) we increase a reference count.  The following routine is called
+whenever a gpointer is unset from pointing here.  If the owner is
+gone and the refcount goes to zero, we can free the gstub safely. */
+
+static void gstub_dis(t_gstub *gs)
+{
+    int refcount = --gs->gs_refcount;
+    if ((!refcount) && gs->gs_which == GP_NONE)
+        t_freebytes(gs, sizeof (*gs));
+    else if (refcount < 0) bug("gstub_dis");
+}
+
+/* this routing is called by the owner to inform the gstub that it is
+being deleted.  If no gpointers are pointing here, we can free the gstub;
+otherwise we wait for the last gstub_dis() to free it. */
+
+void gstub_cutoff(t_gstub *gs)
+{
+    gs->gs_which = GP_NONE;
+    if (gs->gs_refcount < 0) bug("gstub_cutoff");
+    if (!gs->gs_refcount) t_freebytes(gs, sizeof (*gs));
+}
+
+/* call this to verify that a pointer is fresh, i.e., that it either
+points to real data or to the head of a list, and that in either case
+the object hasn't disappeared since this pointer was generated.
+Unless "headok" is set,  the routine also fails for the head of a list. */
+
+int gpointer_check(const t_gpointer *gp, int headok)
+{
+    t_gstub *gs = gp->gp_stub;
+    if (!gs) return (0);
+    if (gs->gs_which == GP_ARRAY)
+    {
+        if (gs->gs_un.gs_array->a_valid != gp->gp_valid) return (0);
+        else return (1);
+    }
+    else if (gs->gs_which == GP_GLIST)
+    {
+        if (!headok && !gp->gp_un.gp_scalar) return (0);
+        else if (gs->gs_un.gs_glist->gl_valid != gp->gp_valid) return (0);
+        else return (1);
+    }
+    else return (0);
+}
+
+    /* copy a pointer to another, assuming the second one hasn't yet been
+    initialized.  New gpointers should be initialized either by this
+    routine or by gpointer_init below. */
+void gpointer_copy(const t_gpointer *gpfrom, t_gpointer *gpto)
+{
+    *gpto = *gpfrom;
+    if (gpto->gp_stub)
+        gpto->gp_stub->gs_refcount++;
+    else bug("gpointer_copy");
+}
+
+    /* clear a gpointer that was previously set, releasing the associated
+    gstub if this was the last reference to it. */
+void gpointer_unset(t_gpointer *gp)
+{
+    t_gstub *gs;
+    if ((gs = gp->gp_stub))
+    {
+        gstub_dis(gs);
+        gp->gp_stub = 0;
+    }
+}
+
+void gpointer_setglist(t_gpointer *gp, t_glist *glist, t_scalar *x)
+{
+    t_gstub *gs;
+    if ((gs = gp->gp_stub)) gstub_dis(gs);
+    gp->gp_stub = gs = glist->gl_stub;
+    gp->gp_valid = glist->gl_valid;
+    gp->gp_un.gp_scalar = x;
+    gs->gs_refcount++;
+}
+
+void gpointer_setarray(t_gpointer *gp, t_array *array, t_word *w)
+{
+    t_gstub *gs;
+    if ((gs = gp->gp_stub)) gstub_dis(gs);
+    gp->gp_stub = gs = array->a_stub;
+    gp->gp_valid = array->a_valid;
+    gp->gp_un.gp_w = w;
+    gs->gs_refcount++;
+}
+
+void gpointer_init(t_gpointer *gp)
+{
+    gp->gp_stub = 0;
+    gp->gp_valid = 0;
+    gp->gp_un.gp_scalar = 0;
+}
 
 void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 {
@@ -28,9 +143,34 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
-            wp->w_array = array_new(datatypes->ds_arraytemplate, gp);
+            wp->w_array = array_new(datatypes->ds_arraytemplate,
+                datatypes->ds_arraydeflength, gp);
         else if (type == DT_TEXT)
+        {
             wp->w_binbuf = binbuf_new();
+            binbuf_addv(wp->w_binbuf, "s", gensym("..."));
+        }
+    }
+}
+
+    /* a block versions of word_init is provided because
+    creating and destroying large arrays had been absurdly slowing down patch
+    loading and closing.  The first one is created as above and the rest
+    are simply copied from the first one, in a way that now appears
+    unnecessarily convoluted. */
+void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
+{
+    if (n > 0)
+    {
+        long ndone = 1;
+        word_init(wp, template, gp);  /* init the first one */
+        while (ndone < n)
+        {
+            long ncopy = (n-ndone > ndone ? ndone : n-ndone);
+            memcpy(wp + template->t_n*ndone, wp,
+                ncopy * template->t_n * sizeof(t_word));
+            ndone += ncopy;
+        }
     }
 }
 
@@ -82,6 +222,25 @@ void word_free(t_word *wp, t_template *template)
     }
 }
 
+void word_freevec(t_word *wp, t_template *template, long n)
+{
+    int i, j;
+    t_dataslot *dt;
+    for (dt = template->t_vec, i = 0; i < template->t_n; i++, dt++)
+    {
+        if (dt->ds_type == DT_ARRAY)
+        {
+            for (j = 0; j < n; j++)
+                array_free(wp[i + j * template->t_n].w_array);
+        }
+        else if (dt->ds_type == DT_TEXT)
+        {
+            for (j = 0; j < n; j++)
+                binbuf_free(wp[i + j * template->t_n].w_binbuf);
+        }
+    }
+}
+
 static int template_cancreate(t_template *template)
 {
     int i, type, nitems = template->t_n;
@@ -92,12 +251,16 @@ static int template_cancreate(t_template *template)
             (!(elemtemplate = template_findbyname(datatypes->ds_arraytemplate))
                 || !template_cancreate(elemtemplate)))
     {
-        error("%s: no such template", datatypes->ds_arraytemplate->s_name);
+        pd_error(0, "%s: no such template",
+            datatypes->ds_arraytemplate->s_name);
         return (0);
     }
     return (1);
 }
 
+/* ------------------- scalars ---------------------- */
+
+t_class *scalar_class;
     /* make a new scalar and add to the glist.  We create a "gp" here which
     will be used for array items to point back here.  This gp doesn't do
     reference counting or "validation" updates though; the parent won't go away
@@ -113,7 +276,7 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
     template = template_findbyname(templatesym);
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return (0);
     }
     if (!template_cancreate(template))
@@ -152,6 +315,9 @@ void glist_scalar(t_glist *glist,
     canvas_readscalar(glist, natoms, vec, &nextmsg, 0);
     binbuf_free(b);
 }
+
+extern t_class *drawnumber_class;
+
 
 /* -------------------- widget behavior for scalar ------------ */
 void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey)
@@ -206,20 +372,21 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
+    char tag[128];
+    sprintf(tag, "select%p", x);
     if (state)
     {
         int x1, y1, x2, y2;
-
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d \
-            -width 0 -fill blue -tags select%lx\n",
-                glist_getcanvas(glist), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-                x);
-    }
-    else
-    {
-        sys_vgui(".x%lx.c delete select%lx\n", glist_getcanvas(glist), x);
+        pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
+                  glist_getcanvas(glist), "create", "line",
+                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                  "-width", 0,
+                  "-fill", "blue",
+                  "-tags", tag);
+    } else {
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
@@ -251,7 +418,7 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     int xonset, yonset, xtype, ytype, gotx, goty;
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return;
     }
     gotx = template_find_field(template, gensym("x"), &xonset, &xtype, &zz);
@@ -262,10 +429,12 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) -
+                glist_pixelstox(glist, 0));
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) -
+                glist_pixelstoy(glist, 0));
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
@@ -297,14 +466,22 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
         /* if we don't know how to draw it, make a small rectangle */
     if (!templatecanvas)
     {
+        char tag[128];
+            /* FIXME: get rid of this tag (if it's unused) */
+        sprintf(tag, "scalar%p", x);
+
         if (vis)
         {
             int x1 = glist_xtopixels(owner, basex);
             int y1 = glist_ytopixels(owner, basey);
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags scalar%lx\n",
-                glist_getcanvas(owner), x1-1, y1-1, x1+1, y1+1, x);
+            pdgui_vmess(0, "crr iiii rs",
+                      glist_getcanvas(owner),
+                      "create", "rectangle",
+                      x1-1,y1-1, x1+1,y1+1,
+                      "-tags", tag);
         }
-        else sys_vgui(".x%lx.c delete scalar%lx\n", glist_getcanvas(owner), x);
+        else
+            pdgui_vmess(0, "crs", glist_getcanvas(owner), "delete", tag);
         return;
     }
 
@@ -312,7 +489,8 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
-        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, basex, basey, vis);
+        (*wb->w_parentvisfn)(y, owner, x->sc_vec, template, x,
+            basex, basey, vis);
     }
     if (glist_isselected(owner, &x->sc_gobj))
     {
@@ -348,34 +526,45 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_atom at[3];
-    t_float basex = template_getfloat(template, gensym("x"), data, 0);
-    t_float basey = template_getfloat(template, gensym("y"), data, 0);
-    SETFLOAT(at, 0); /* unused - this is later bashed to the gpointer */
-    SETFLOAT(at+1, basex + xloc);
-    SETFLOAT(at+2, basey + yloc);
-    if (doit)
-        template_notifyforscalar(template, owner,
-            sc, gensym("click"), 3, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
         if ((hit = (*wb->w_parentclickfn)(y, owner,
-            data, template, sc, ap, basex + xloc, basey + yloc,
+            data, template, sc, ap, xloc, yloc,
             xpix, ypix, shift, alt, dbl, doit)))
+        {
+            if (doit)
+            {
+                t_atom at[6];
+                SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
+                SETFLOAT(at+1, xpix - glist_xtopixels(owner, xloc));
+                SETFLOAT(at+2, ypix - glist_ytopixels(owner, yloc));
+                SETFLOAT(at+3, shift);
+                SETFLOAT(at+4, alt);
+                SETFLOAT(at+5, dbl);
+                template_notifyforscalar(template, owner,
+                    sc, gensym("click"), 6, at);
+            }
+                /* hit might be -1 (see curve_click()) indicating "please
+                notify" but keep looking for something else to click on.
+                so continue the search until hit is positive. */
+            if (hit > 0)
                 return (hit);
+        }
     }
     return (0);
 }
 
-static int scalar_click(t_gobj *z, struct _glist *owner,
+int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
+    t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,
-        owner, 0, 0, xpix, ypix, shift, alt, dbl, doit));
+        owner, basex, basey, xpix, ypix, shift, alt, dbl, doit));
 }
 
 static void scalar_save(t_gobj *z, t_binbuf *b)
@@ -402,13 +591,9 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     b = glist_writetobinbuf(owner, 0);
     binbuf_gettext(b, &buf, &bufsize);
     binbuf_free(b);
-    buf = t_resizebytes(buf, bufsize, bufsize+1);
-    buf[bufsize] = 0;
-    sprintf(buf2, "pdtk_data_dialog %%s {");
-    gfxstub_new((t_pd *)owner, x, buf2);
-    sys_gui(buf);
-    sys_gui("}\n");
-    t_freebytes(buf, bufsize+1);
+    pdgui_stub_vnew((t_pd*)owner, "pdtk_data_dialog", x,
+        "p", bufsize, buf);
+    t_freebytes(buf, bufsize);
 }
 
 static const t_widgetbehavior scalar_widgetbehavior =
@@ -431,11 +616,11 @@ static void scalar_free(t_scalar *x)
     sys_unqueuegui(x);
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return;
     }
     word_free(x->sc_vec, template);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
         /* the "size" field in the class is zero, so Pd doesn't try to free
         us automatically (see pd_free()) */
     freebytes(x, sizeof(t_scalar) + (template->t_n - 1) * sizeof(*x->sc_vec));

@@ -1,6 +1,5 @@
 #include "m_pd.h"
 #include "g_canvas.h"
-#include <stdio.h>
 #include "g_undo.h"
 
 #if 0
@@ -14,11 +13,102 @@
 
 void canvas_undo_set_name(const char*name);
 
+/* --------- 12. internal object state --------------- */
+int glist_getindex(t_glist *x, t_gobj *y);
+static t_gobj *glist_nth(t_glist *x, int n)
+{
+    t_gobj *y;
+    int indx;
+    for (y = x->gl_list, indx = 0; y; y = y->g_next, indx++)
+        if (indx == n)
+            return (y);
+    return (0);
+}
+typedef struct _undo_object_state {
+    int u_obj;
+    t_symbol*u_symbol;
+    t_binbuf*u_undo;
+    t_binbuf*u_redo;
+} t_undo_object_state;
+
+static int atom_equal(const t_atom*v0, const t_atom*v1)
+{
+    if(v0->a_type != v1->a_type)
+        return 0;
+    switch(v0->a_type) {
+    case (A_FLOAT):
+        return (v0->a_w.w_float == v1->a_w.w_float);
+    case (A_SYMBOL):
+        return (v0->a_w.w_symbol == v1->a_w.w_symbol);
+    default:
+        break;
+    }
+    return 0;
+
+}
+static int lists_are_equal(int c0, const t_atom*v0, int c1, const t_atom*v1)
+{
+    int i;
+    if(c0 != c1)
+        return 0;
+    for(i=0; i<c0; i++)
+        if(!atom_equal(v0++, v1++))
+            return 0;
+    return 1;
+}
+void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
+                                    int undo_argc, t_atom*undo_argv,
+                                    int redo_argc, t_atom*redo_argv)
+{
+    t_undo_object_state *buf;
+    int pos = glist_getindex(canvas, (t_gobj*)x);
+    t_undo *udo = canvas_undo_get(canvas);
+    if (udo && udo->u_doing)
+        return;
+    if(lists_are_equal(undo_argc, undo_argv, redo_argc, redo_argv))
+        return;
+
+    buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
+    buf->u_obj = pos;
+    buf->u_symbol = s;
+    buf->u_undo = binbuf_new();
+    buf->u_redo = binbuf_new();
+    binbuf_add(buf->u_undo, undo_argc, undo_argv);
+    binbuf_add(buf->u_redo, redo_argc, redo_argv);
+#if 0
+    startpost("UNDO:"); binbuf_print(buf->u_undo);
+    startpost("REDO:"); binbuf_print(buf->u_redo);
+#endif
+    canvas_undo_add(canvas, UNDO_OBJECT_STATE, "state", buf);
+}
+
+int canvas_undo_objectstate(t_canvas *cnv, void *z, int action) {
+    t_undo_object_state *buf = z;
+    t_binbuf*bbuf = buf->u_undo;
+    t_pd*x = (t_pd*)glist_nth(cnv, buf->u_obj);
+    switch(action) {
+    case UNDO_FREE:
+        binbuf_free(buf->u_undo);
+        binbuf_free(buf->u_redo);
+        t_freebytes(buf, sizeof(*buf));
+        break;
+    case UNDO_REDO:
+        bbuf = buf->u_redo;     /* falls through */
+    case UNDO_UNDO:
+        if(x)
+            pd_typedmess(x, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
+        break;
+    }
+    return 1;
+}
+
+
+/* --------------- */
 
 static void canvas_show_undomenu(t_canvas*x, const char* undo_action, const char* redo_action)
 {
     if (glist_isvisible(x) && glist_istoplevel(x))
-        sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
+        pdgui_vmess("pdtk_undomenu", "^ ss", x, undo_action, redo_action);
 }
 
 static void canvas_undo_docleardirty(t_canvas *x)
@@ -150,12 +240,13 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
     case UNDO_CREATE:       return canvas_undo_create(x, udo->data, action);       //create
     case UNDO_RECREATE:     return canvas_undo_recreate(x, udo->data, action);     //recreate
     case UNDO_FONT:         return canvas_undo_font(x, udo->data, action);         //font
+    case UNDO_OBJECT_STATE: return canvas_undo_objectstate(x, udo->data, action);  //font
             /* undo sequences are handled in canvas_undo_undo resp canvas_undo_redo */
     case UNDO_SEQUENCE_START: return 1;                                            //start undo sequence
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
     case UNDO_INIT:         if (UNDO_FREE == action) return 1;/* FALLS THROUGH */  //init
     default:
-        error("%s: unsupported undo command %d", funname, udo->type);
+        pd_error(0, "%s: unsupported undo command %d", funname, udo->type);
     }
     return 0;
 }

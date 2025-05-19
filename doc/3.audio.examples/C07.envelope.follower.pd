@@ -1,112 +1,92 @@
-#N canvas 414 23 1039 698 12;
-#X text 86 41 ENVELOPE FOLLOWERS;
-#X text 68 224 The env~ object reports the RMS signal level over the
-last 256 samples (by default) or any other power of 2 that's at least
-twice the block size. The analysis is done in an overlapped fashion
-so that results appear every N/2 points if N is the analysis window
-size. So the larger the window \, the stabler the result and the less
-frequently it appears. Computation time doesn't depend heavily on N.
-, f 54;
-#X text 67 349 Envelope followers are frequently used to detect attacks
-and periods of silence. (There are fancier attack detectors out there
-\, though.) Here is a simple threshold-based attack and rest detector.
-, f 54;
-#X obj 587 58 dbtorms;
-#X obj 511 45 osc~ 440;
-#X obj 511 101 env~;
-#X floatatom 511 144 0 0 0 0 - - -;
-#X floatatom 587 35 0 0 0 0 - - -;
-#X msg 176 132 \; pd dsp 1;
-#X obj 615 128 t b f;
-#X floatatom 615 155 0 0 0 0 - - -;
-#X obj 627 206 pack;
-#X obj 627 229 route 0 1;
-#X obj 607 254 > 55;
-#X obj 657 254 < 45;
-#X obj 607 277 sel 1;
-#X obj 657 277 sel 1;
-#X msg 534 310 1;
-#X msg 571 311 0;
-#X obj 607 312 print attack;
-#X obj 615 181 != 0;
-#X obj 511 350 t b f, f 7;
-#X floatatom 510 384 0 0 0 0 - - -;
-#X obj 522 434 pack;
-#X obj 522 457 route 0 1;
-#X obj 511 485 sel 1;
-#X msg 401 628 1;
-#X msg 439 628 0;
-#X obj 515 412 != 0;
-#X obj 557 385 < 45;
-#X obj 479 549 timer;
-#X obj 602 457 sel 0;
-#X obj 552 598 sel 0;
-#X obj 492 598 sel 1;
-#X obj 492 639 print rest;
-#X obj 479 572 > 1000;
-#X text 699 228 route the RMS value according to state;
-#X text 660 127 ATTACK DETECTION;
-#X text 568 350 REST DETECTION;
-#X text 67 420 Both detectors are state machines with two states \,
-on and off. If on \, a test is run to determine whether to turn off
-\, and vice versa. The tests are run at each output of the rms~ object.
-, f 54;
-#X text 95 569 updated for Pd version 0.37;
-#X obj 176 101 loadbang;
-#X obj 511 78 *~;
-#X text 385 111 note 3.01 dB difference between peak and RMS amplitudes.
-, f 16;
-#X text 651 451 regardless of state \, when RMS isn't low reset the
-timer, f 29;
-#X text 578 491 If we're not in rest \, and the RMS is low \, check
-elapsed time since RMS last wasn't low., f 45;
-#X text 599 374 Here we always will test RMS against a low value but
-as before we route the result according to our state \, 1 if "resting"
-\, 0 if not., f 50;
-#X text 678 155 state -- 1 if waiting for low threshold \, 0 if we've
-attained it and now want the high one., f 30;
-#X text 705 259 if off \, 55 dB means attack. If on \, 45 dB or less
-means state changes to off., f 40;
-#X text 560 564 If more than 1 second \, report a rest.;
-#X text 603 591 If we're at rest \, pop out of it when RMS isn't low
-enough., f 29;
-#X connect 3 0 42 1;
-#X connect 4 0 42 0;
-#X connect 5 0 6 0;
-#X connect 5 0 9 0;
-#X connect 6 0 21 0;
-#X connect 7 0 3 0;
-#X connect 9 0 10 0;
-#X connect 9 1 11 1;
-#X connect 10 0 20 0;
-#X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 12 1 14 0;
-#X connect 13 0 15 0;
-#X connect 14 0 16 0;
-#X connect 15 0 17 0;
-#X connect 15 0 19 0;
-#X connect 16 0 18 0;
-#X connect 17 0 10 0;
-#X connect 18 0 10 0;
-#X connect 20 0 11 0;
-#X connect 21 0 22 0;
-#X connect 21 1 29 0;
-#X connect 22 0 28 0;
-#X connect 23 0 24 0;
-#X connect 24 0 25 0;
-#X connect 24 1 32 0;
-#X connect 25 0 30 1;
-#X connect 26 0 22 0;
+#N canvas 361 49 865 703 12;
+#X text 38 382 Envelope followers are frequently used to detect attacks and periods of silence. (There are fancier attack detectors out there \, though.) Here is a simple threshold-based attack and rest detector., f 48;
+#X obj 507 58 dbtorms;
+#X obj 431 45 osc~ 440;
+#X obj 431 101 env~;
+#X floatatom 431 144 6 0 0 0 - - - 0;
+#X floatatom 507 35 6 0 0 0 - - - 0;
+#X obj 547 128 t b f;
+#X floatatom 547 155 4 0 0 0 - - - 0;
+#X obj 547 229 route 0 1;
+#X obj 527 254 > 55;
+#X obj 577 254 < 45;
+#X obj 527 277 sel 1;
+#X obj 577 277 sel 1;
+#X msg 454 310 1;
+#X msg 491 311 0;
+#X obj 527 312 print attack;
+#X obj 547 181 != 0;
+#X obj 431 350 t b f;
+#X floatatom 430 384 3 0 0 0 - - - 0;
+#X obj 430 468 route 0 1;
+#X obj 419 496 sel 1;
+#X msg 309 639 1;
+#X msg 347 639 0;
+#X obj 430 412 != 0;
+#X obj 483 385 < 45;
+#X obj 387 560 timer;
+#X obj 510 468 sel 0;
+#X obj 460 609 sel 0;
+#X obj 400 609 sel 1;
+#X obj 400 650 print rest;
+#X obj 387 583 > 1000;
+#X text 621 222 route the RMS value according to state, f 20;
+#X text 592 127 ATTACK DETECTION;
+#X text 499 350 REST DETECTION;
+#X obj 431 78 *~;
+#X text 305 111 note 3.01 dB difference between peak and RMS amplitudes., f 16;
+#X text 559 462 regardless of state \, when RMS isn't low reset the timer, f 29;
+#X text 486 502 If we're not in rest \, and the RMS is low \, check elapsed time since RMS last wasn't low., f 33;
+#X text 525 374 Here we always will test RMS against a low value but as before we route the result according to our state \, 1 if "resting" \, 0 if not., f 36;
+#X text 610 155 state -- 1 if waiting for low threshold \, 0 if we've attained it and now want the high one., f 30;
+#X text 621 262 if off \, 55 dB means attack. If on \, 45 dB or less means state changes to off., f 27;
+#X text 475 573 If more than 1 second \, report a rest.;
+#X text 511 602 If we're at rest \, pop out of it when RMS isn't low enough., f 29;
+#X obj 547 206 pack f f;
+#X obj 430 438 pack f f;
+#X obj 136 109 ../5.reference/set-dsp-tgl;
+#X text 167 112 DSP on/off;
+#X msg 136 146 \; pd dsp \$1;
+#X text 38 480 Both detectors are state machines with two states \, "on" and "off". If on \, a test is run to determine whether to turn off \, and vice versa. The tests are run at each output of the [env~] object., f 42;
+#X obj 88 36 cnv 5 5 25 empty empty Envelope\ Followers 15 13 0 16 #dfdfdf #202020 0;
+#X text 38 221 The [env~] object reports the RMS signal level over the last 1024 samples (by default) or any other power of 2 that's at least twice the block size. The analysis is done in an overlapped fashion so that results appear every N/2 points if N is the analysis window size (hence \, by default \, at every 512 samples). So the larger the window \, the stabler the result and the less frequently it appears. Computation time doesn't depend heavily on N., f 48;
+#X connect 1 0 34 1;
+#X connect 2 0 34 0;
+#X connect 3 0 4 0;
+#X connect 3 0 6 0;
+#X connect 4 0 17 0;
+#X connect 5 0 1 0;
+#X connect 6 0 7 0;
+#X connect 6 1 43 1;
+#X connect 7 0 16 0;
+#X connect 8 0 9 0;
+#X connect 8 1 10 0;
+#X connect 9 0 11 0;
+#X connect 10 0 12 0;
+#X connect 11 0 13 0;
+#X connect 11 0 15 0;
+#X connect 12 0 14 0;
+#X connect 13 0 7 0;
+#X connect 14 0 7 0;
+#X connect 16 0 43 0;
+#X connect 17 0 18 0;
+#X connect 17 1 24 0;
+#X connect 18 0 23 0;
+#X connect 19 0 20 0;
+#X connect 19 1 27 0;
+#X connect 20 0 25 1;
+#X connect 21 0 18 0;
+#X connect 22 0 18 0;
+#X connect 23 0 44 0;
+#X connect 24 0 26 0;
+#X connect 24 0 44 1;
+#X connect 25 0 30 0;
+#X connect 26 0 25 0;
 #X connect 27 0 22 0;
-#X connect 28 0 23 0;
-#X connect 29 0 23 1;
-#X connect 29 0 31 0;
-#X connect 30 0 35 0;
-#X connect 31 0 30 0;
-#X connect 32 0 27 0;
-#X connect 33 0 26 0;
-#X connect 33 0 34 0;
-#X connect 35 0 33 0;
-#X connect 41 0 8 0;
-#X connect 42 0 5 0;
+#X connect 28 0 21 0;
+#X connect 28 0 29 0;
+#X connect 30 0 28 0;
+#X connect 34 0 3 0;
+#X connect 43 0 8 0;
+#X connect 44 0 19 0;
+#X connect 45 0 47 0;

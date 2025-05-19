@@ -2,7 +2,6 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <stdio.h>
 #include "m_pd.h"
 #include "m_imp.h"
@@ -11,9 +10,8 @@
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
+
 
 struct _instanceeditor
 {
@@ -38,6 +36,9 @@ struct _instanceeditor
     unsigned int canvas_cursorwas;
 };
 
+    /* pointer to "globals" used in this Pd instance */
+#define THISED (pd_this->pd_gui->i_editor)
+
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
 
@@ -57,110 +58,18 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
-/* ---------------- generic widget behavior ------------------------- */
-
-void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1,
-    int *x2, int *y2)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
-        (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
-    else *x1 = *y1 = 0, *x2 = *y2 = 10;
-}
-
-void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_displacefn)
-        (*x->g_pd->c_wb->w_displacefn)(x, glist, dx, dy);
-}
-
-    /* here we add an extra check whether we're mapped, because some
-       editing moves are carried out on invisible windows (notably, re-creating
-       abstractions when one is saved).  Should any other widget finctions also
-       be doing this?  */
-void gobj_select(t_gobj *x, t_glist *glist, int state)
-{
-    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
-        (*x->g_pd->c_wb->w_selectfn)(x, glist, state);
-}
-
-void gobj_activate(t_gobj *x, t_glist *glist, int state)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_activatefn)
-        (*x->g_pd->c_wb->w_activatefn)(x, glist, state);
-}
-
-void gobj_delete(t_gobj *x, t_glist *glist)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_deletefn)
-        (*x->g_pd->c_wb->w_deletefn)(x, glist);
-}
-
-int gobj_shouldvis(t_gobj *x, struct _glist *glist)
-{
-    t_object *ob;
-        /* if our parent is a graph, and if that graph itself isn't
-           visible, then we aren't either. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_owner
-        && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
-            return (0);
-        /* if we're graphing-on-parent and the object falls outside the
-           graph rectangle, don't draw it. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-        glist->gl_owner)
-    {
-        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
-            /* for some reason the bounds check on arrays and scalars
-               don't seem to apply here.  Perhaps this was in order to allow
-               arrays to reach outside their containers?  I no longer understand
-               this. */
-        if (pd_class(&x->g_pd) == scalar_class
-            || pd_class(&x->g_pd) == garray_class)
-                return (1);
-        gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
-        if (x1 > x2)
-            m = x1, x1 = x2, x2 = m;
-        if (y1 > y2)
-            m = y1, y1 = y2, y2 = m;
-        gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
-#if 0
-        post("graph %d %d %d %d, %s %d %d %d %d",
-             x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2);
-#endif
-        if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
-            gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
-                return (0);
-    }
-    if ((ob = pd_checkobject(&x->g_pd)))
-    {
-            /* return true if the text box should be drawn.  We don't show text
-               boxes inside graphs---except comments, if we're doing the new
-               (goprect) style. */
-        return (glist->gl_havewindow ||
-            (ob->te_pd != canvas_class &&
-                ob->te_pd->c_wb != &text_widgetbehavior) ||
-            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
-            (glist->gl_goprect && (ob->te_type == T_TEXT)));
-    }
-    else return (1);
-}
-
-void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
-        (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
-}
-
-int gobj_click(t_gobj *x, struct _glist *glist,
-    int xpix, int ypix, int shift, int alt, int dbl, int doit)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
-        return ((*x->g_pd->c_wb->w_clickfn)(x,
-            glist, xpix, ypix, shift, alt, dbl, doit));
-    else return (0);
-}
-
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
+
+static void _editor_selectlinecolor(t_glist *x, const char*color)
+{
+    char tag[128];
+    sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
+    pdgui_vmess(0, "crs rs",
+        x, "itemconfigure", tag,
+        "-fill", color);
+
+}
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
     int outno, int index2, int inno)
 {
@@ -174,8 +83,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill blue\n",
-            x, x->gl_editor->e_selectline_tag);
+        _editor_selectlinecolor(x, THISGUI->i_selectcolor->s_name);
     }
 }
 
@@ -184,8 +92,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill black\n",
-            x, x->gl_editor->e_selectline_tag);
+        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor->s_name);
     }
 }
 
@@ -240,10 +147,10 @@ void glist_deselect(t_glist *x, t_gobj *y)
         return;
 
     if (!glist_isselected(x, y)) bug("glist_deselect");
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
-        t_rtext *fuddy = glist_findrtext(x, (t_text *)y);
-        if (x->gl_editor->e_textedfor == fuddy)
+        t_rtext *fuddy = glist_getrtext(x, (t_text *)y);
+        if (glist_textedfor(x) == fuddy)
         {
             if (x->gl_editor->e_textdirty)
             {
@@ -287,7 +194,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
         rtext_gettext(z, &buf, &bufsize);
         text_setto((t_text *)y, x, buf, bufsize);
         canvas_fixlinesfor(x, (t_text *)y);
-        x->gl_editor->e_textedfor = 0;
+        glist_settexted(x, 0);
         canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
     }
     if (fixdsp)
@@ -366,6 +273,27 @@ static t_gobj *glist_nth(t_glist *x, int n)
     return (0);
 }
 
+t_rtext *glist_textedfor(t_glist *gl)
+{
+    t_canvas *canvas = glist_getcanvas(gl);
+    if (canvas->gl_editor)
+        return (canvas->gl_editor->e_textedfor);
+    else return (0);
+}
+
+void glist_settexted(t_glist *gl, t_rtext *x)
+{
+    while (gl->gl_owner && !gl->gl_isclone && !gl->gl_havewindow &&
+        gl->gl_isgraph)
+    {
+        gl->gl_editor->e_textedfor = 0;
+        gl = gl->gl_owner;
+    }
+    if (gl->gl_editor)
+        gl->gl_editor->e_textedfor = x;
+    else bug("glist_settexted");
+}
+
 /* ------------------- support for undo/redo  -------------------------- */
 
 static void canvas_applybinbuf(t_canvas *x, t_binbuf *b)
@@ -395,11 +323,20 @@ static int canvas_undo_confirmdiscard(t_gobj *g)
         canvas_isabstraction((t_glist *)g) &&
         (gl2 = glist_finddirty((t_glist *)g)))
     {
+        t_canvas*c = canvas_getrootfor(gl2);
+        const char *msg[]= {"Discard changes to '%s'?", c->gl_name->s_name};
+        char buf[80];
+        t_atom backmsg[2];
+        sprintf(buf, ".x%lx", gl2);
+        SETSYMBOL(backmsg+0, gensym("dirty"));
+        SETFLOAT (backmsg+1, 0);
         vmess(&gl2->gl_pd, gensym("menu-open"), "");
-        sys_vgui(
-            "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
-            canvas_getrootfor(gl2),
-            canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+        pdgui_vmess("pdtk_check", "^ Sms",
+            c,
+            2, msg,
+            gensym(buf), 2, backmsg,
+            "no");
+
         return 1;
     }
     return 0;
@@ -407,7 +344,7 @@ static int canvas_undo_confirmdiscard(t_gobj *g)
 
 void canvas_undo_set_name(const char*name)
 {
-    EDITOR->canvas_undo_name = name;
+    THISED->canvas_undo_name = name;
 }
 
 void canvas_setundo(t_canvas *x, t_undofn undofn, void *buf,
@@ -416,75 +353,50 @@ void canvas_setundo(t_canvas *x, t_undofn undofn, void *buf,
     int hadone = 0;
         /* blow away the old undo information.  In one special case the
            old undo info is re-used; if so we shouldn't free it here. */
-    if (EDITOR->canvas_undo_fn && EDITOR->canvas_undo_buf && (buf != EDITOR->canvas_undo_buf))
+    if (THISED->canvas_undo_fn && THISED->canvas_undo_buf && (buf != THISED->canvas_undo_buf))
     {
-        (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
+        (*THISED->canvas_undo_fn)(THISED->canvas_undo_canvas, THISED->canvas_undo_buf, UNDO_FREE);
         hadone = 1;
     }
-    EDITOR->canvas_undo_canvas = x;
-    EDITOR->canvas_undo_fn = undofn;
-    EDITOR->canvas_undo_buf = buf;
-    EDITOR->canvas_undo_whatnext = UNDO_UNDO;
-    EDITOR->canvas_undo_name = name;
+    THISED->canvas_undo_canvas = x;
+    THISED->canvas_undo_fn = undofn;
+    THISED->canvas_undo_buf = buf;
+    THISED->canvas_undo_whatnext = UNDO_UNDO;
+    THISED->canvas_undo_name = name;
     if (x && glist_isvisible(x) && glist_istoplevel(x))
             /* enable undo in menu */
-        sys_vgui("pdtk_undomenu .x%lx %s no\n", x, name);
+        pdgui_vmess("pdtk_undomenu", "^ss", x, name, "no");
     else if (hadone)
-        sys_vgui("pdtk_undomenu nobody no no\n");
+        pdgui_vmess("pdtk_undomenu", "rss", "nobody", "no", "no");
 }
 
     /* clear undo if it happens to be for the canvas x.
        (but if x is 0, clear it regardless of who owns it.) */
 void canvas_noundo(t_canvas *x)
 {
-    if (!x || (x == EDITOR->canvas_undo_canvas))
+    if (!x || (x == THISED->canvas_undo_canvas))
         canvas_setundo(0, 0, 0, "foo");
 }
 
-static void canvas_undo(t_canvas *x)
+    /* user hits "undo" in GUI */
+static void canvas_undomenu(t_canvas *x)
 {
-    int dspwas = canvas_suspend_dsp();
-    if (x != EDITOR->canvas_undo_canvas)
-        bug("canvas_undo 1");
-    else if (EDITOR->canvas_undo_whatnext != UNDO_UNDO)
-        bug("canvas_undo 2");
-    else
-    {
-#if 0
-        post("undo");
-#endif
-        (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas,
-            EDITOR->canvas_undo_buf, UNDO_UNDO);
-            /* enable redo in menu */
-        if (glist_isvisible(x) && glist_istoplevel(x))
-            sys_vgui("pdtk_undomenu .x%lx no %s\n", x,
-                EDITOR->canvas_undo_name);
-        EDITOR->canvas_undo_whatnext = UNDO_REDO;
-    }
-    canvas_resume_dsp(dspwas);
-}
-
-static void canvas_redo(t_canvas *x)
-{
-    int dspwas = canvas_suspend_dsp();
-    if (x != EDITOR->canvas_undo_canvas)
-        bug("canvas_undo 1");
-    else if (EDITOR->canvas_undo_whatnext != UNDO_REDO)
-        bug("canvas_undo 2");
-    else
-    {
-#if 0
-        post("redo");
-#endif
-        (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas,
-            EDITOR->canvas_undo_buf, UNDO_REDO);
-            /* enable undo in menu */
-        if (glist_isvisible(x) && glist_istoplevel(x))
-            sys_vgui("pdtk_undomenu .x%lx %s no\n", x,
-                EDITOR->canvas_undo_name);
-        EDITOR->canvas_undo_whatnext = UNDO_UNDO;
-    }
-    canvas_resume_dsp(dspwas);
+        /* first check if there is run-time typing, which we can back
+        out of by merely calling rtext_untype().  Prior to 0.56 this
+        happened when the user clicked outside an atom box - that
+        action now adopts the new text.  If the canvas is in run mode
+        the user might have control-clicked an atom box or scalar text
+        field to change it; it's not clear what "undo" should mean in
+        this case, since typing into a number box is not undo-able in
+        run mode - it's considered a performance input.  But then, what
+        about run-mode editing of numeric fields in scalars?  Shouldn't
+        that be undo-able, even though you go into run mode (or use ctrl
+        key) to do it?  This needs to be reconsidered as the scalar
+        editing features evolve. */
+    if (!x->gl_edit && x->gl_editor->e_textedfor &&
+        x->gl_editor->e_textdirty)
+            rtext_untype(x->gl_editor->e_textedfor);
+    else canvas_undo_undo(x);
 }
 
 /* ------- specific undo methods: 1. connect -------- */
@@ -552,7 +464,12 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            sys_vgui(".x%lx.c delete l%lx\n", x, oc);
+            if (glist_isvisible(x) && x->gl_havewindow)
+            {
+                char tag[128];
+                sprintf(tag, "l%p", oc);
+                pdgui_vmess(0, "crs", x, "delete", tag);
+            }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -652,7 +569,8 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
         buf->u_objectbuf = canvas_docopy(x);
     }
 
-        /* instantiate num_obj and fill array of positions of selected objects */
+        /* instantiate num_obj and fill array of positions of selected
+        objects */
     if (mode == UCUT_CUT || mode == UCUT_CLEAR)
     {
         if (x->gl_list)
@@ -707,7 +625,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        canvas_applybinbuf(x, buf->u_reconnectbuf);
+        if (buf)
+            canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
@@ -725,7 +644,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
                     y_prev = glist_nth(x, paste_pos-1+i);
                     y = glist_nth(x, paste_pos+i);
                     y_next = glist_nth(x, paste_pos+1+i);
-                        /* if the object is supposed to be first in the gl_list */
+                        /* if the object is supposed to be first in the
+                        gl_list */
                     if (buf->p_a[i] == 0)
                     {
                         if (y_prev && y_next)
@@ -734,12 +654,15 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
                         }
                         else if (y_prev && !y_next)
                             y_prev->g_next = NULL;
-                            /* now put the moved object at the beginning of the cue */
+                            /* now put the moved object at the beginning of
+                            the queue */
                         y->g_next = glist_nth(x, 0);
                         x->gl_list = y;
-                            /* LATER when objects are properly tagged lower y here */
+                            /* LATER when objects are properly tagged lower
+                            y here */
                     }
-                        /* if the object is supposed to be in the middle of gl_list */
+                        /* if the object is supposed to be in the middle of\
+                           gl_list */
                     else {
                         if (y_prev && y_next)
                         {
@@ -755,14 +678,15 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
 
                         y_prev->g_next = y;
                         y->g_next = y_next;
-                            /* LATER when objects are properly tagged lower y here */
+                            /* LATER when objects are properly tagged lower
+                                y here */
                     }
                 }
             }
                 /* LATER disable redrawing here */
             if (x->gl_havewindow)
                 canvas_redraw(x);
-            if (x->gl_owner && glist_isvisible(x->gl_owner))
+            if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
             {
                 gobj_vis((t_gobj *)x, x->gl_owner, 0);
                 gobj_vis((t_gobj *)x, x->gl_owner, 1);
@@ -775,8 +699,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
         {
             int i;
                 /* we can't just blindly do clear here when the user may have
-                 * unselected things between undo and redo, so first let's select
-                 * the right stuff
+                 * unselected things between undo and redo, so first let's
+                 *  select the right stuff
                  */
             glist_noselect(x);
             i = 0;
@@ -815,8 +739,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
 typedef struct _undo_move_elem
 {
     int e_index;
-    int e_xpix;
-    int e_ypix;
+    t_float e_xpix;
+    t_float e_ypix;
 } t_undo_move_elem;
 
 typedef struct _undo_move
@@ -841,8 +765,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             {
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 buf->u_vec[i].e_index = indx;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                buf->u_vec[i].e_xpix = x1 / x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1 / x->gl_zoom;
                 i++;
             }
     }
@@ -852,11 +776,11 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         {
             gobj_getrect(y, x, &x1, &y1, &x2, &y2);
             buf->u_vec[indx].e_index = indx;
-            buf->u_vec[indx].e_xpix = x1;
-            buf->u_vec[indx].e_ypix = y1;
+            buf->u_vec[indx].e_xpix = x1 / x->gl_zoom;
+            buf->u_vec[indx].e_ypix = y1 / x->gl_zoom;
         }
     }
-    EDITOR->canvas_undo_already_set_move = 1;
+    THISED->canvas_undo_already_set_move = 1;
     return (buf);
 }
 
@@ -869,22 +793,22 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
         int i;
         for (i = 0; i < buf->u_n; i++)
         {
-            int newx = buf->u_vec[i].e_xpix;
-            int newy = buf->u_vec[i].e_ypix;
+            float newx = (buf->u_vec[i].e_xpix)*x->gl_zoom;
+            float newy = (buf->u_vec[i].e_ypix)*x->gl_zoom;
             t_gobj*y = glist_nth(x, buf->u_vec[i].e_index);
             if (y)
             {
                 int x1=0, y1=0, x2=0, y2=0;
-                int doing = EDITOR->canvas_undo_already_set_move;
+                int doing = THISED->canvas_undo_already_set_move;
                 t_class *cl = pd_class(&y->g_pd);
                 glist_noselect(x);
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
-                EDITOR->canvas_undo_already_set_move = 1;
-                canvas_displaceselection(x, newx-x1, newy - y1);
-                EDITOR->canvas_undo_already_set_move = doing;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                THISED->canvas_undo_already_set_move = 1;
+                canvas_displaceselection(x, (newx - x1)/(x->gl_zoom), (newy - y1)/(x->gl_zoom));
+                THISED->canvas_undo_already_set_move = doing;
+                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
@@ -935,17 +859,17 @@ void *canvas_undo_set_paste(t_canvas *x, int numpasted, int duplicate,
         buf->u_sel_index = -1;
     }
     buf->u_offset = d_offset;
-    buf->u_objectbuf = binbuf_duplicate(EDITOR->copy_binbuf);
+    buf->u_objectbuf = binbuf_duplicate(THISED->copy_binbuf);
     return (buf);
 }
 void *canvas_undo_set_pastebinbuf(t_canvas *x, t_binbuf *b,
     int numpasted, int duplicate, int d_offset)
 {
-    t_binbuf*tmpbuf = EDITOR->copy_binbuf;
+    t_binbuf*tmpbuf = THISED->copy_binbuf;
     void*ret=0;
-    EDITOR->copy_binbuf = b;
+    THISED->copy_binbuf = b;
     ret = canvas_undo_set_paste(x, numpasted, duplicate, d_offset);
-    EDITOR->copy_binbuf = tmpbuf;
+    THISED->copy_binbuf = tmpbuf;
     return ret;
 }
 
@@ -1177,8 +1101,9 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
         y_end->g_next = oldy;
         oldy->g_next = NULL;
 
-            /* now fix links in the hole made in the list due to moving of the oldy
-             * (we know there is oldy_next as y_end != oldy in canvas_done_popup)
+            /* now fix links in the hole made in the list due to moving of
+                the oldy (we know there is oldy_next as y_end != oldy in
+                canvas_done_popup)
              */
         if (oldy_prev) /* there is indeed more before the oldy position */
             oldy_prev->g_next = oldy_next;
@@ -1186,7 +1111,7 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
 
 #if 0
             /* and finally redraw */
-        gui_vmess("gui_raise", "xs", x, "selected");
+        pdgui_vmess("gui_raise", "or", x, "selected");
 #endif
         break;
 
@@ -1194,16 +1119,20 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
         x->gl_list = oldy; /* put it to the beginning of the cue */
         oldy->g_next = y_begin; /* make it point to the old beginning */
 
-            /* now fix links in the hole made in the list due to moving of the oldy
-             * (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
+            /* now fix links in the hole made in the list due to moving of
+              the oldy * (we know there is oldy_prev as y_begin != oldy in
+              canvas_done_popup)
              */
-        if (oldy_next) /* there is indeed more after oldy position */
-            oldy_prev->g_next = oldy_next;
-        else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        if (oldy_prev)
+        {
+            if (oldy_next) /* there is indeed more after oldy position */
+                oldy_prev->g_next = oldy_next;
+            else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        }
 
 #if 0
             /* and finally redraw */
-        gui_vmess("gui_lower", "xs", x, "selected");
+        pdgui_vmess("gui_lower", "or", x, "selected");
 #endif
         break;
     default:
@@ -1303,7 +1232,7 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
         else arrangeaction = 3;
 
 
-            /* if there is an object before ours (in other words our index is > 0) */
+            /* if there is an object before ours (i.e., our index is > 0) */
         if (glist_getindex(x,y))
             oldy_prev = glist_nth(x, buf->u_previndex - 1);
 
@@ -1381,7 +1310,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         t_int properties = gfxstub_haveproperties((void *)x);
         if (properties)
         {
-            gfxstub_deleteforkey(x);
+            pdgui_stub_deleteforkey(x);
         }
 #endif
             /* store current canvas values into temporary data holder */
@@ -1443,7 +1372,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         {
             canvas_redraw(x);
         }
-        if (x->gl_owner && glist_isvisible(x->gl_owner))
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         {
             glist_noselect(x);
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
@@ -1682,29 +1611,15 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
     {
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
-#if 0
-            /* skipping open font editor for now */
-        t_int properties = gfxstub_haveproperties((void *)x2);
-        if (properties)
-        {
-            char tagbuf[MAXPDSTRING];
-            sprintf(tagbuf, ".gfxstub%lx", (long unsigned int)properties);
-            gui_vmess("gui_font_dialog_change_size", "si",
-                tagbuf,
-                u_f->font);
-        }
-        else
-#else
-        if(1)
-#endif
-        {
-            int whichresize = u_f->which;
-            t_float realresize = 100./u_f->resize;
-            t_float realresx = 1, realresy = 1;
-            if (whichresize != 3) realresx = realresize;
-            if (whichresize != 2) realresy = realresize;
-            canvas_dofont(x2, u_f->font, realresx, realresy);
-        }
+
+        int whichresize = u_f->which;
+        t_float realresize = 1./u_f->resize;
+        t_float realresx = 1, realresy = 1;
+        if (whichresize != 3) realresx = realresize;
+        if (whichresize != 2) realresy = realresize;
+        canvas_dofont(x2, u_f->font, realresx, realresy);
+
+        u_f->resize = realresize;
         u_f->font = tmp_font;
     }
     else if (action == UNDO_FREE)
@@ -1717,33 +1632,35 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 static void canvas_cut(t_canvas *x);
+int clone_reload(t_pd *z, t_canvas *except);
+int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
     /* LATER try to do the same trick for externs. */
-static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
-    t_gobj *except)
+void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except)
 {
     t_gobj *g;
     int hadwindow = gl->gl_havewindow;
     int found = 0;
         /* to optimize redrawing we select all objects that need to be updated
-           and redraw (cut+undo) them together. Then we look for sub-patches that may have
-           more of the same... */
+           and redraw (cut+undo) them together. Then we look for sub-patches
+           that may have more of the same... */
     for (g = gl->gl_list; g; g = g->g_next)
     {
             /* remake the object if it's an abstraction that appears to have
                been loaded from the file we just saved */
-        int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
+        int remakeit = (g != &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
                     canvas_getdir((t_canvas *)g) == dir);
-            /* also remake it if it's a "clone" with that name */
+            /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
             clone_match(&g->g_pd, name, dir))
         {
-                /* LATER try not to remake the one that equals "except" */
-            remakeit = 1;
+                /* try to reload "clone" object, otherwise remake it */
+            if (!clone_reload(&g->g_pd, (t_canvas *)except))
+                remakeit = 1;
         }
         if (remakeit)
         {
@@ -1775,15 +1692,20 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         glist_noselect(gl);
     }
 
-        /* now iterate over all the sub-patches... */
+        /* now iterate over all the sub-patches and also abstractions and clones,
+        but only the ones that don't match! */
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if (g != except && pd_class(&g->g_pd) == canvas_class &&
+        if (g == &except->gl_gobj)
+            continue;
+        if (pd_class(&g->g_pd) == canvas_class &&
             (!canvas_isabstraction((t_canvas *)g) ||
                  ((t_canvas *)g)->gl_name != name ||
-                 canvas_getdir((t_canvas *)g) != dir)
-           )
+                    canvas_getdir((t_canvas *)g) != dir))
                 glist_doreload((t_canvas *)g, name, dir, except);
+        else if (pd_class(&g->g_pd) == clone_class &&
+                !clone_match(&g->g_pd, name, dir))
+            clone_doreload(&g->g_pd, name, dir, except);
     }
     if (!hadwindow && gl->gl_havewindow)
         canvas_vis(glist_getcanvas(gl), 0);
@@ -1795,19 +1717,19 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
     t_binbuf*b = 0;
-    if(EDITOR->copy_binbuf)
-        b = binbuf_duplicate(EDITOR->copy_binbuf);
+    if(THISED->copy_binbuf)
+        b = binbuf_duplicate(THISED->copy_binbuf);
 
     THISGUI->i_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_doreload(x, name, dir, &except->gl_gobj);
+        glist_doreload(x, name, dir, except);
     THISGUI->i_reloadingabstraction = 0;
     if(b)
     {
-        if(EDITOR->copy_binbuf)
-            binbuf_free(EDITOR->copy_binbuf);
-        EDITOR->copy_binbuf = b;
+        if(THISED->copy_binbuf)
+            binbuf_free(THISED->copy_binbuf);
+        THISED->copy_binbuf = b;
     }
     canvas_resume_dsp(dspwas);
 }
@@ -1832,24 +1754,25 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
         bug("canvas_setcursor");
         return;
     }
-    if (EDITOR->canvas_cursorcanvaswas != x ||
-        EDITOR->canvas_cursorwas != cursornum)
+    if (THISED->canvas_cursorcanvaswas != x ||
+        THISED->canvas_cursorwas != cursornum)
     {
-        sys_vgui(".x%lx configure -cursor %s\n", x, cursorlist[cursornum]);
-        EDITOR->canvas_cursorcanvaswas = x;
-        EDITOR->canvas_cursorwas = cursornum;
+        pdgui_vmess(0, "^r rr", x, "configure", "-cursor", cursorlist[cursornum]);
+        THISED->canvas_cursorcanvaswas = x;
+        THISED->canvas_cursorwas = cursornum;
     }
 }
 
     /* check if a point lies in a gobj.  */
 int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
-    int *x1p, int *y1p, int *x2p, int *y2p)
+    int *x1p, int *y1p, int *x2p, int *y2p, int extrapix)
 {
     int x1, y1, x2, y2;
     if (!gobj_shouldvis(y, x))
         return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
-    if (xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
+    if (xpos >= x1-extrapix && xpos <= x2+extrapix
+        && ypos >= y1-extrapix && ypos <= y2+extrapix)
     {
         *x1p = x1;
         *y1p = y1;
@@ -1869,7 +1792,16 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     *x1p = -0x7fffffff;
     for (y = x->gl_list; y; y = y->g_next)
     {
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2)
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0)
+            && (x1 > *x1p))
+                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
+    }
+        /* if none, try again with fatter boxes so that we can click on
+        inlets or outlets from slightly outside the box */
+    if (!rval)
+        for (y = x->gl_list; y; y = y->g_next)
+    {
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 4)
             && (x1 > *x1p))
                 *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
     }
@@ -1880,24 +1812,15 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     {
         t_selection *sel;
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-            if (canvas_hitbox(x, sel->sel_what, xpos, ypos, &x1, &y1, &x2, &y2))
-                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
-                    rval = sel->sel_what;
+            if (canvas_hitbox(x, sel->sel_what, xpos, ypos,
+                &x1, &y1, &x2, &y2,  0))
+                    *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
+                        rval = sel->sel_what;
     }
     return (rval);
 }
 
-    /* right-clicking on a canvas object pops up a menu. */
-static void canvas_rightclick(t_canvas *x, int xpos, int ypos, t_gobj *y)
-{
-    int canprop, canopen;
-    canprop = (!y || class_getpropertiesfn(pd_class(&y->g_pd)));
-    canopen = (y && zgetfn(&y->g_pd, gensym("menu-open")));
-    sys_vgui("pdtk_canvas_popup .x%lx %d %d %d %d\n",
-        x, xpos, ypos, canprop, canopen);
-}
-
-/* ----  editors -- perhaps this and "vis" should go to g_editor.c ------- */
+/* -------------------  editors -------------------- */
 
 static t_editor *editor_new(t_glist *owner)
 {
@@ -1923,19 +1846,11 @@ static void editor_free(t_editor *x, t_glist *y)
     freebytes((void *)x, sizeof(*x));
 }
 
-    /* recursively create or destroy all editors of a glist and its
-       sub-glists, as long as they aren't toplevels. */
+    /* create an editor for the glist in preparation for making it visible */
 void canvas_create_editor(t_glist *x)
 {
-    t_gobj *y;
-    t_object *ob;
     if (!x->gl_editor)
-    {
         x->gl_editor = editor_new(x);
-        for (y = x->gl_list; y; y = y->g_next)
-            if ((ob = pd_checkobject(&y->g_pd)))
-                rtext_new(x, ob);
-    }
 }
 
 void canvas_destroy_editor(t_glist *x)
@@ -1944,6 +1859,9 @@ void canvas_destroy_editor(t_glist *x)
     if (x->gl_editor)
     {
         t_rtext *rtext;
+            /* this happens if we had activated an atom box in run mode: */
+        if (glist_textedfor(x))
+            rtext_activate(glist_textedfor(x), 0);
         while ((rtext = x->gl_editor->e_rtext))
             rtext_free(rtext);
         editor_free(x->gl_editor, x);
@@ -1962,42 +1880,66 @@ void canvas_vis(t_canvas *x, t_floatarg f)
     int flag = (f != 0);
     if (flag)
     {
-            /* If a subpatch/abstraction has GOP/gl_isgraph set, then it will have
+            /* If a subpatch has GOP/gl_isgraph set, then it will have
              * a gl_editor already, if its not, it will not have a gl_editor.
-             * canvas_create_editor(x) checks if a gl_editor is already created,
+             * canvas_create_editor(x) checks if a gl_editor already exists,
              * so its ok to run it on a canvas that already has a gl_editor. */
         if (x->gl_editor && x->gl_havewindow)
         {           /* just put us in front */
-            sys_vgui("pdtk_canvas_raise .x%lx\n", x);
+            pdgui_vmess("pdtk_canvas_raise", "^", x);
         }
+            /* ouch - if there's no gui yet, because we're still waiting for
+            font metrics, just set the flag and we'll clean up the mess later
+            when the font metrics arrive. */
+        else if (!sys_havegui())
+            x->gl_havewindow = 1;
         else
         {
             char cbuf[MAXPDSTRING];
             t_canvas *c = x;
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
+            char winpos[128];
+            t_canvas**parents = getbytes(0);
+            size_t numparents;
+
             canvas_create_editor(x);
-            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
+                    /* initial values for new windows: */
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) &&
+                (GLIST_DEFCANVASYLOC == x->gl_screeny1))
+                    winpos[0]=0;
+            else
+            {
+                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1),
+                    (int)(x->gl_screeny1));
+            }
+
+            pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                x->gl_edit);
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
-                (unsigned long)c);
-            while (c->gl_owner) {
-                int cbuflen;
+                winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
+
+            numparents = 0;
+            while (c->gl_owner && !c->gl_isclone) {
+                t_canvas**newparents = (t_canvas**)resizebytes(parents,
+                     numparents * sizeof(*newparents),
+                        (numparents+1) * sizeof(*newparents));
+                if (!newparents)
+                    break;
                 c = c->gl_owner;
-                cbuflen = (int)strlen(cbuf);
-                snprintf(cbuf + cbuflen,
-                    MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                    " .x%lx", (unsigned long)c);
+                parents = newparents;
+                parents[numparents] = c;
+                numparents++;
             }
-            strcat(cbuf, "\n");
-            sys_gui(cbuf);
+            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents,
+                parents);
+            freebytes(parents, numparents * sizeof(t_canvas));
+
             x->gl_havewindow = 1;
             canvas_reflecttitle(x);
             canvas_updatewindowlist();
-            sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, udo?(udo->name):"no", (udo && udo->next)?(udo->next->name):"no");
+            pdgui_vmess("pdtk_undomenu", "^ ss", x, udo?(udo->name):"no",
+                (udo && udo->next)?(udo->next->name):"no");
         }
     }
     else    /* make invisible */
@@ -2007,10 +1949,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (!x->gl_havewindow)
         {
                 /* bug workaround -- a graph in a visible patch gets "invised"
-                   when the patch is closed, and must lose the editor here.  It's
-                   probably not the natural place to do this.  Other cases like
-                   subpatches fall here too but don'd need the editor freed, so
-                   we check if it exists. */
+                when the patch is closed, and must lose the editor here.  It's
+                probably not the natural place to do this.  Other cases like
+                subpatches fall here too but don'd need the editor freed, so
+                we check if it exists. */
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             return;
@@ -2019,12 +1961,12 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (glist_isvisible(x))
             canvas_map(x, 0);
         canvas_destroy_editor(x);
-        sys_vgui("destroy .x%lx\n", x);
+        pdgui_vmess("destroy", "^", x);
         for (i = 1, x2 = x; x2; x2 = x2->gl_next, i++)
             ;
             /* if we're a graph on our parent, and if the parent exists
                and is visible, show ourselves on parent. */
-        if (glist_isgraph(x) && x->gl_owner)
+        if (glist_isgraph(x) && x->gl_owner && !x->gl_isclone)
         {
             t_glist *gl2 = x->gl_owner;
             if (glist_isvisible(gl2))
@@ -2048,12 +1990,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
        any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
+    int can_graph_on_parent = x->gl_owner && !x->gl_isclone && !x->gl_loading
+        && glist_isvisible(x->gl_owner);
     if (!flag && glist_isgraph(x))
     {
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = x->gl_hidetext = 0;
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2067,14 +2011,14 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
         if (x->gl_pixheight <= 0)
             x->gl_pixheight = GLIST_DEFGRAPHHEIGHT;
 
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
         if (glist_isvisible(x) && x->gl_goprect)
             glist_redraw(x);
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2091,27 +2035,42 @@ void canvas_properties(t_gobj*z, t_glist*unused)
 {
     t_glist *x = (t_glist*)z;
     t_gobj *y;
-    char graphbuf[200];
-    if (glist_isgraph(x) != 0)
-        sprintf(graphbuf,
-            "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
-                0., 0.,
-                glist_isgraph(x) ,
-                x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
-                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
-                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
-    else sprintf(graphbuf,
-            "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
-                glist_dpixtodx(x, 1), -glist_dpixtody(x, 1),
-                0,
-                0., -1., 1., 1.,
-                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
-                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
-    gfxstub_new(&x->gl_pd, x, graphbuf);
+    int isgraph = glist_isgraph(x);
+    t_float x1=0., y1=-1., x2=1., y2=1.;
+    t_float xscale=0., yscale=0.;
+    char *textbuf = 0;
+    int textsize;
+    if (x->gl_owner && canvas_isabstraction(x))
+    {
+        binbuf_gettext(x->gl_obj.te_binbuf, &textbuf, &textsize);
+        textbuf = (char *)resizebytes(textbuf, textsize, textsize+1);
+        textbuf[textsize] = 0;
+    }
+    else post("not: %lx %d", x->gl_owner, canvas_isabstraction(x));
+    pdgui_vmess("::dialog_canvas::set_text", "s", (textbuf ? textbuf : ""));
+    if(isgraph) {
+        x1=x->gl_x1;
+        y1=x->gl_y1;
+        x2=x->gl_x2;
+        y2=x->gl_y2;
+    } else {
+        xscale= glist_dpixtodx(x, 1);
+        yscale=-glist_dpixtody(x, 1);
+    }
+    pdgui_stub_vnew(&x->gl_pd, "pdtk_canvas_dialog", x, "ff i ffff ii ii",
+        xscale, yscale,  /* used to be %g ... */
+        isgraph,
+        x1,y1, x2,y2,  /* used to be %g ... */
+        (int)x->gl_pixwidth, (int)x->gl_pixheight,
+        (int)x->gl_xmargin, (int)x->gl_ymargin);
+
+
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == garray_class)
             garray_properties((t_garray *)y);
+    if (textbuf)
+        freebytes(textbuf, textsize+1);
 }
 
     /* called from the gui when "OK" is selected on the canvas properties
@@ -2121,6 +2080,20 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
+
+    if (x->gl_owner && argc > 12)
+    {
+        t_binbuf *b = binbuf_new();
+        char *textbuf;
+        int textsize;
+        binbuf_add(b, argc-12, argv+12);
+        binbuf_gettext(b, &textbuf, &textsize);
+        binbuf_free(b);
+        text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
+        freebytes(textbuf, textsize);
+        canvas_dirty(x->gl_owner, 1);
+        return;
+    }
 
     xperpix = atom_getfloatarg(0, argc, argv);
     yperpix = atom_getfloatarg(1, argc, argv);
@@ -2146,10 +2119,10 @@ static void canvas_donecanvasdialog(t_glist *x,
            applies to individual objects */
     canvas_undo_add(x, UNDO_CANVAS_APPLY, "apply", canvas_undo_set_canvas(x));
 
-    x->gl_pixwidth = xpix * x->gl_zoom;
-    x->gl_pixheight = ypix * x->gl_zoom;
-    x->gl_xmargin = xmargin * x->gl_zoom;
-    x->gl_ymargin = ymargin * x->gl_zoom;
+    x->gl_pixwidth = xpix;
+    x->gl_pixheight = ypix;
+    x->gl_xmargin = xmargin;
+    x->gl_ymargin = ymargin;
 
     yperpix = -yperpix;
     if (xperpix == 0)
@@ -2196,7 +2169,7 @@ static void canvas_donecanvasdialog(t_glist *x,
     canvas_dirty(x, 1);
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (glist_isvisible(x->gl_owner))
+    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -2213,7 +2186,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
     for (y = x->gl_list; y; y = y->g_next)
     {
         int x1, y1, x2, y2;
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2))
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0))
         {
             if (which == 0)     /* properties */
             {
@@ -2284,152 +2257,254 @@ static void canvas_done_popup(t_canvas *x, t_float which,
 
 #define DCLICKINTERVAL 0.25
 
-    /* mouse click */
-static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
-    int mod, int doit)
+    /* undarken deselected gatoms:
+     * it's slightly ugly to have this in here,  but we cannot undarken
+     * in gatom_key (which is the gatom's e_keyfn) as this is also called
+     * when the user just hits <kbd>Enter</kbd>
+     */
+void gatom_undarken(t_text *x);
+static void undarken_if_gatom(t_gobj *gobj)
 {
-    t_gobj *y;
-    int shiftmod, runmode, altmod, doublemod = 0, rightclick;
-    int x1=0, y1=0, x2=0, y2=0, clickreturned = 0;
+    t_object *obj = (gobj ? pd_checkobject(&gobj->g_pd) : 0);
+    if (obj && T_ATOM == obj->te_type)
+        gatom_undarken(obj);
+}
 
-    if (!x->gl_editor)
-    {
-        bug("editor");
-        return;
-    }
+    /* right-clicking on a canvas object pops up a menu. */
+static void canvas_rightclick(t_canvas *x, int xpos, int ypos, int mod)
+{
+    int x1, y1, x2, y2;
+    t_gobj *y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2);
+    int canprop = (!y || class_getpropertiesfn(pd_class(&y->g_pd)));
+    int canopen = (y && zgetfn(&y->g_pd, gensym("menu-open")));
+    pdgui_vmess("pdtk_canvas_popup", "^ ii ii",
+        x,  xpos, ypos,  canprop, canopen);
+}
+
+    /* mouse click or, if !doit, mouse motion (in which case we still search
+    through the canvas to show the appropriate cursor) */
+static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
+{
+    t_gobj *hitbox;
+    int shiftmod, runmode, altmod, doubleclick = 0, rightclick;
+    int x1=0, y1=0, x2=0, y2=0, clickreturned = 0;
+    t_text *hitobj = 0;
+    t_scalar *hitscalar = 0;
+    t_word *hitwords = 0;
+    t_gobj *hitdrawtext = 0;
+    t_rtext *rtext;
 
     shiftmod = (mod & SHIFTMOD);
     runmode = ((mod & CTRLMOD) || (!x->gl_edit));
     altmod = (mod & ALTMOD);
     rightclick = (mod & RIGHTCLICK);
 
-    EDITOR->canvas_undo_already_set_move = 0;
+    THISED->canvas_undo_already_set_move = 0;
 
-        /* if keyboard was grabbed, notify grabber and cancel the grab */
-    if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
-    {
-        (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, 0);
-        glist_grab(x, 0, 0, 0, 0, 0);
-    }
-
-    if (doit && !runmode && xpos == EDITOR->canvas_upx &&
-        ypos == EDITOR->canvas_upy &&
-        sys_getrealtime() - EDITOR->canvas_upclicktime < DCLICKINTERVAL)
-            doublemod = 1;
+    if (doit && xpix == THISED->canvas_upx && ypix == THISED->canvas_upy &&
+        sys_getrealtime() - THISED->canvas_upclicktime < DCLICKINTERVAL)
+            doubleclick = 1;
     x->gl_editor->e_lastmoved = 0;
+
     if (doit)
     {
+        /* if keyboard was grabbed, notify grabber and cancel the grab */
+        if (x->gl_editor->e_grab && x->gl_editor->e_keyfn)
+        {
+            (*x->gl_editor->e_keyfn)(x->gl_editor->e_grab, &s_, 0);
+            undarken_if_gatom(x->gl_editor->e_grab);
+            glist_grab(x, 0, 0, 0, 0, 0);
+        }
         x->gl_editor->e_grab = 0;
         x->gl_editor->e_onmotion = MA_NONE;
     }
+
+        /* do not update cursor if we're dragging  */
+    if (!doit && x->gl_editor->e_onmotion != MA_NONE)
+        return;
 #if 0
-    post("click %d %d %d %d", xpos, ypos, which, mod);
+    post("click %d %d, mod=%d, doit=%d",
+        xpix, ypix, mod, doit);
 #endif
 
-    if (x->gl_editor->e_onmotion != MA_NONE)
-        return;
+    x->gl_editor->e_xwas = xpix;
+    x->gl_editor->e_ywas = ypix;
 
-    x->gl_editor->e_xwas = xpos;
-    x->gl_editor->e_ywas = ypos;
-
-    if (runmode && !rightclick)
+    if (rightclick)
     {
-        for (y = x->gl_list; y; y = y->g_next)
+            /* right click.  "doit" is then true as well. */
+        canvas_rightclick(x, xpix, ypix, mod);
+        return;
+    }
+
+        /* is the mouse over a text, in either an object box or a scalar? */
+    rtext = rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
+        &hitwords, &hitdrawtext);
+
+       /* did we click when there's an active text? */
+    if (doit && x->gl_editor->e_textedfor)
+    {
+            /* did we click inside the active text? */
+        if (rtext == x->gl_editor->e_textedfor)
         {
-                /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2)
-                && (clickreturned = gobj_click(y, x, xpos, ypos,
-                    shiftmod, ((mod & CTRLMOD) && (!x->gl_edit)) || altmod,
-                        0, doit)))
-                            break;
+            int x1, y1, x2, y2;
+            rtext_getrect(rtext, &x1, &y1, &x2, &y2);
+            rtext_mouse(glist_textedfor(x), xpix - x1, ypix - y1,
+                (shiftmod? RTEXT_SHIFT :
+                    (doubleclick ? RTEXT_DBL : RTEXT_DOWN)));
+            x->gl_editor->e_onmotion = MA_DRAGTEXT;
+            x->gl_editor->e_xwas = x1;
+            x->gl_editor->e_ywas = y1;
+            return;
+        }
+            /* otherwise we clicked away from an active text - handle it inside
+            g_rtext.c and fall through to rest of routine */
+        else rtext_unmouse(x->gl_editor->e_textedfor);
+            /* just in case that made rtext disappear, which seems unlikely: */
+        rtext = rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
+            &hitwords, &hitdrawtext);
+    }
+        /* if not a click but in the editing box, set cursor and return */
+    else if (!doit && x->gl_editor->e_textedfor &&
+        rtext == x->gl_editor->e_textedfor)
+    {
+        canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
+        return;
+    }
+        /* did we click in run mode inside a text which is not active? */
+    if (doit && runmode && rtext && rtext != x->gl_editor->e_textedfor)
+    {
+            /* double clicking on an atom activates the text */
+        if (hitobj && hitobj->te_type == T_ATOM && doubleclick)
+        {
+            undarken_if_gatom(&hitobj->te_g);
+            /* gobj_activate(&hitobj->te_g, x, 1); */
+            rtext_activate(rtext, 1);
+            return;
+        }
+        if (hitscalar)   /* hit a scalar */
+        {
+            t_template *template =
+                template_findbyname(hitscalar->sc_template);
+            if (doubleclick)
+            {
+                rtext_activate(rtext, 1);
+                return;
+            }
+            scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
+                xpix, ypix, shiftmod, altmod, doubleclick, 1);
+            return;
+        }
+    }
+
+    if (runmode) /* left mouse click */
+    {
+        for (hitbox = x->gl_list; hitbox; hitbox = hitbox->g_next)
+        {
+                /* check if the object wants to be clicked.  If it's not a
+                scalar, check box bounds first.  Scalars will check
+                click location against their particular assortments of
+                hot points. */
+            if ((hitbox->g_pd == scalar_class ||
+                canvas_hitbox(x, hitbox, xpix, ypix, &x1, &y1, &x2, &y2, 0))
+                    && (clickreturned = gobj_click(hitbox, x, xpix, ypix,
+                        shiftmod, ((mod & CTRLMOD) && (!x->gl_edit)) || altmod,
+                            doubleclick, doit)))
+                                break;
         }
         if (!doit)
         {
-            if (y)
+            if (hitbox)
                 canvas_setcursor(x, clickreturned);
             else canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
         }
         return;
     }
         /* if not a runmode left click, fall here. */
-    if ((y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2)))
+    hitbox = canvas_findhitbox(x, xpix, ypix, &x1, &y1, &x2, &y2);
+    hitobj = (hitbox ? pd_checkobject(&hitbox->g_pd) : 0);
+    if (hitbox)
     {
-        t_object *ob;
-            /* check you're in the rectangle */
-        ob = pd_checkobject(&y->g_pd);
-        if (rightclick)
-            canvas_rightclick(x, xpos, ypos, y);
-        else if (shiftmod)
+        if (shiftmod)
         {
             if (doit)
             {
                 t_rtext *rt;
-                if (ob && (rt = x->gl_editor->e_textedfor) &&
-                    rt == glist_findrtext(x, ob))
+                if (hitobj && (rt = glist_textedfor(x)) &&
+                    rt == glist_getrtext(x, hitobj))
                 {
-                    rtext_mouse(rt, xpos - x1, ypos - y1, RTEXT_SHIFT);
+                    rtext_mouse(rt, xpix - x1, ypix - y1, RTEXT_SHIFT);
                     x->gl_editor->e_onmotion = MA_DRAGTEXT;
                     x->gl_editor->e_xwas = x1;
                     x->gl_editor->e_ywas = y1;
                 }
                 else
                 {
-                    if (glist_isselected(x, y))
-                        glist_deselect(x, y);
-                    else glist_select(x, y);
+                    if (glist_isselected(x, hitbox))
+                        glist_deselect(x, hitbox);
+                    else glist_select(x, hitbox);
                 }
             }
         }
         else
         {
             int noutlet;
-                /* resize?  only for "true" text boxes or canvases*/
-            if (ob && !x->gl_editor->e_selection &&
-                (ob->te_pd->c_wb == &text_widgetbehavior ||
-                    pd_checkglist(&ob->te_pd)) &&
-                        xpos >= x2-4 && ypos < y2-4)
+            int out_activeminh = OHEIGHT  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 8;
+            int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
+            if (out_activeheight > out_activemaxh)
+                out_activeheight = out_activemaxh;
+            if (out_activeheight < out_activeminh)
+                out_activeheight = out_activeminh;
+                /* resize? only for "true" text boxes or canvases */
+            if (xpix >= x2-4 && ypix < y2-4 && hitobj &&
+                    (hitobj->te_pd->c_wb == &text_widgetbehavior ||
+                    hitobj->te_type == T_ATOM ||
+                    pd_checkglist(&hitobj->te_pd)))
             {
                 if (doit)
                 {
-                    if (!glist_isselected(x, y))
+                    if (!glist_isselected(x, hitbox))
                     {
                         glist_noselect(x);
-                        glist_select(x, y);
+                        glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_RESIZE;
                     x->gl_editor->e_xwas = x1;
                     x->gl_editor->e_ywas = y1;
-                    x->gl_editor->e_xnew = xpos;
-                    x->gl_editor->e_ynew = ypos;
+                    x->gl_editor->e_xnew = xpix;
+                    x->gl_editor->e_ynew = ypix;
                     canvas_undo_add(x, UNDO_APPLY, "resize",
-                        canvas_undo_set_apply(x, glist_getindex(x, y)));
+                        canvas_undo_set_apply(x, glist_getindex(x, hitbox)));
                 }
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
             }
                 /* look for an outlet */
-            else if (ob && (noutlet = obj_noutlets(ob)) &&
-                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
+            else if (hitobj && (noutlet = obj_noutlets(hitobj)) &&
+                ypix >= y2 - out_activeheight)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
-                int closest = ((xpos-x1) * (nout1) + width/2)/width;
-                int hotspot = x1 +
-                    (width - iow) * closest / (nout1);
-                if (closest < noutlet &&
-                    xpos >= (hotspot - x->gl_zoom) &&
-                    xpos <= hotspot + (iow + x->gl_zoom))
+                int closest = ((xpix-x1) * (nout1) + width/2)/width;
+                if (noutlet == 1 || closest < noutlet)
                 {
                     if (doit)
                     {
-                        int issignal = obj_issignaloutlet(ob, closest);
+                        int issignal = obj_issignaloutlet(hitobj, closest);
+                        int xout = x1 + IOMIDDLE * x->gl_zoom +
+                            (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
-                        x->gl_editor->e_xwas = xpos;
-                        x->gl_editor->e_ywas = ypos;
-                        sys_vgui(
-                            ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
-                            x, xpos, ypos, xpos, ypos,
-                            (issignal ? 2 : 1) * x->gl_zoom);
+                        x->gl_editor->e_xwas = xout;
+                        x->gl_editor->e_ywas = y2;
+                        pdgui_vmess("::pdtk_canvas::cords_to_foreground",
+                            "ci", x, 0);
+                        pdgui_vmess(0, "crr iiii ri rs",
+                            x, "create", "line",
+                            x->gl_editor->e_xwas,x->gl_editor->e_ywas,
+                            xpix, ypix,
+                            "-width", (issignal ? 2 : 1) * x->gl_zoom,
+                            "-tags", "x");
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2443,11 +2518,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 t_rtext *rt;
                     /* check if the box is being text edited */
             nooutletafterall:
-                if (ob && (rt = x->gl_editor->e_textedfor) &&
-                    rt == glist_findrtext(x, ob))
+                if (hitobj && (rt = glist_textedfor(x)) &&
+                    rt == glist_getrtext(x, hitobj))
                 {
-                    rtext_mouse(rt, xpos - x1, ypos - y1,
-                        (doublemod ? RTEXT_DBL : RTEXT_DOWN));
+                    rtext_mouse(rt, xpix - x1, ypix - y1,
+                        (doubleclick ? RTEXT_DBL : RTEXT_DOWN));
                     x->gl_editor->e_onmotion = MA_DRAGTEXT;
                     x->gl_editor->e_xwas = x1;
                     x->gl_editor->e_ywas = y1;
@@ -2455,26 +2530,22 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 else
                 {
                         /* otherwise select and drag to displace */
-                    if (!glist_isselected(x, y))
+                    if (!glist_isselected(x, hitbox))
                     {
                         glist_noselect(x);
-                        glist_select(x, y);
+                        glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_MOVE;
+                    x->gl_editor->e_waittodrag = 1;
                 }
             }
             else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
         }
         return;
     }
-        /* if right click doesn't hit any boxes, call rightclick
-           routine anyway */
-    if (rightclick)
-        canvas_rightclick(x, xpos, ypos, 0);
 
-        /* if not an editing action, and if we didn't hit a
-           box, set cursor and return */
-    if (runmode || rightclick)
+        /* if in runmode, and didn't hit anything, set cursor and return */
+    if (runmode)
     {
         canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
         return;
@@ -2484,7 +2555,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         t_linetraverser t;
         t_outconnect *oc;
-        t_float fx = xpos, fy = ypos;
+        t_float fx = xpix, fy = ypix;
         t_glist *glist2 = glist_getcanvas(x);
         linetraverser_start(&t, glist2);
         while ((oc = linetraverser_next(&t)))
@@ -2503,7 +2574,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             if (shiftmod)
             {
                 int soutindex, sinindex, soutno, sinno;
-                    /* if no line is selected, just add this line to the selection */
+                    /* if no line is selected, just add this line to
+                        the selection */
                 if(!x->gl_editor->e_selectedline)
                 {
                     if (doit)
@@ -2519,7 +2591,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 sinindex = x->gl_editor->e_selectline_index2;
                 soutno = x->gl_editor->e_selectline_outno;
                 sinno = x->gl_editor->e_selectline_inno;
-                        /* if the hovered line is already selected, deselect it */
+                    /* if the hovered line is already selected, deselect it */
                 if ((outindex == soutindex) && (inindex == sinindex)
                     && (soutno == t.tr_outno) && (sinno == t.tr_inno))
                 {
@@ -2533,13 +2605,17 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 if ((!x->gl_editor->e_selection)
                     && ((outindex == soutindex) || (inindex == sinindex)))
                 {
-                    if(doit)
+                    if (doit)
                     {
                         canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
-                        canvas_disconnect_with_undo(x, soutindex, soutno, sinindex, sinno);
-                        canvas_disconnect_with_undo(x, outindex, t.tr_outno, inindex, t.tr_inno);
-                        canvas_connect_with_undo(x, outindex, t.tr_outno, sinindex, sinno);
-                        canvas_connect_with_undo(x, soutindex, soutno, inindex, t.tr_inno);
+                        canvas_disconnect_with_undo(x, soutindex, soutno,
+                            sinindex, sinno);
+                        canvas_disconnect_with_undo(x, outindex, t.tr_outno,
+                            inindex, t.tr_inno);
+                        canvas_connect_with_undo(x, outindex, t.tr_outno,
+                            sinindex, sinno);
+                        canvas_connect_with_undo(x, soutindex, soutno, inindex,
+                            t.tr_inno);
                         canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
 
                         x->gl_editor->e_selectline_index1 = soutindex;
@@ -2571,19 +2647,25 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
     if (doit)
     {
-        if (!shiftmod) glist_noselect(x);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags x\n",
-            x, xpos, ypos, xpos, ypos);
-        x->gl_editor->e_xwas = xpos;
-        x->gl_editor->e_ywas = ypos;
+        if (!shiftmod)
+            glist_noselect(x);
+        pdgui_vmess(0, "crr iiii rs",
+            x, "create", "rectangle",
+            xpix,ypix, xpix,ypix,
+            "-tags", "x");
+        x->gl_editor->e_xwas = xpix;
+        x->gl_editor->e_ywas = ypix;
         x->gl_editor->e_onmotion = MA_REGION;
     }
 }
 
-void canvas_mouse(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
+    /* mouse click or motion as a Pd message.  The 'which' arg
+    is ignored but kept for back compatibility with anyone who might
+    have reverse-engineered the GUI */
+void canvas_mouse(t_canvas *x, t_floatarg xpix, t_floatarg ypix,
     t_floatarg which, t_floatarg mod)
 {
-    canvas_doclick(x, xpos, ypos, which, mod, 1);
+    canvas_doclick(x, xpix, ypix, mod, 1);
 }
 
 int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
@@ -2599,19 +2681,24 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     return (0);
 }
 
-static int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+static int canconnect(t_canvas*x, t_object *src, int nout,
+    t_object *sink, int nin)
 {
-    if (!src || !sink || sink == src) /* do source and sink exist (and are not the same)?*/
+            /* do source and sink exist (and are not the same)?*/
+    if (!src || !sink || sink == src)
         return 0;
-    if (nin >= obj_ninlets(sink) || (nout >= obj_noutlets(src))) /* do the requested iolets exist? */
+            /* do the requested iolets exist? */
+    if (nin >= obj_ninlets(sink) || (nout >= obj_noutlets(src)))
         return 0;
-    if (canvas_isconnected(x, src, nout, sink, nin)) /* are the objects already connected? */
+            /* are the objects already connected? */
+    if (canvas_isconnected(x, src, nout, sink, nin))
         return 0;
     return (!obj_issignaloutlet(src, nout) || /* are the iolets compatible? */
             obj_issignalinlet(sink, nin));
 }
 
-static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+static int tryconnect(t_canvas*x, t_object *src, int nout,
+    t_object *sink, int nin)
 {
     if(canconnect(x, src, nout, sink, nin))
     {
@@ -2623,6 +2710,9 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int x11=0, x12=0, x21=0, x22=0;
             int y11=0, y12=0, y21=0, y22=0;
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
+            char tag[128];
+            char*tags[] = {tag, "cord"};
+            sprintf(tag, "l%p", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
@@ -2637,14 +2727,13 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            sys_vgui(
-                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                glist_getcanvas(x),
-                lx1, ly1, lx2, ly2,
-                (obj_issignaloutlet(src, nout) ? 2 : 1) *
-                x->gl_zoom,
-                oc);
-            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+            pdgui_vmess(0, "crr iiii ri rS",
+                glist_getcanvas(x), "create", "line",
+                lx1,ly1, lx2,ly2,
+                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                "-tags", 2, tags);
+            canvas_undo_add(x, UNDO_CONNECT, "connect",
+                canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
                     canvas_getindex(x, &sink->ob_g), nin));
             canvas_dirty(x, 1);
@@ -2665,10 +2754,14 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
-    if (doit) sys_vgui(".x%lx.c delete x\n", x);
-    else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
-                  x, x->gl_editor->e_xwas,
-                  x->gl_editor->e_ywas, xpos, ypos);
+    if (doit) {
+        pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
+        pdgui_vmess(0, "crs", x, "delete", "x");
+    }
+    else
+        pdgui_vmess(0, "crs iiii",
+            x, "coords", "x",
+            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
 
     if ((y1 = canvas_findhitbox(x, xwas, ywas, &x11, &y11, &x12, &y12))
         && (y2 = canvas_findhitbox(x, xpos, ypos, &x21, &y21, &x22, &y22)))
@@ -2713,7 +2806,8 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 !obj_issignalinlet(ob2, closest2))
             {
                 if (doit)
-                    error("can't connect signal outlet to control inlet");
+                    pd_error(0,
+                        "can't connect audio signal outlet to nonsignal inlet");
                 canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
                 return;
             }
@@ -2724,26 +2818,33 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
-                    /* now find out if either ob1 xor ob2 are part of the selection,
+                    /* now find out if either ob1 xor ob2 are part of the
+                     * selection,
                      * and if so, connect the rest of the selection as well */
-                if(mod & SHIFTMOD) /* intelligent patching needs to be activated by modifier key */
-                    selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
+                if (mod & SHIFTMOD)
+                    /* intelligent patching needs to be activated by
+                                         modifier key */
+                    selmode = glist_isselected(x, &ob1->ob_g) +
+                        2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
                 case 3: /* both source and sink are selected */
-                        /* if only the source & sink are selected, keep connecting them */
+                        /* if only the source & sink are selected, keep
+                             connecting them */
                     if(0 == x->gl_editor->e_selection->sel_next->sel_next)
                     {
                         int i, j;
-                        for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
-                            tryconnect(x, ob1, i, ob2, j);
+                        for(i=closest1, j=closest2; (i < noutlet1) &&
+                            (j < ninlet2); i++, j++ )
+                                tryconnect(x, ob1, i, ob2, j);
                     }
                     else
-                            /* if other objects are selected as well, connect those either as
-                             * sources or sinks, whichever allows for more connections
+                            /* if other objects are selected as well, connect
+                             * those either as sources or sinks, whichever
+                             * allows for more connections
                              */
                     {
-                            /* get a left-right sorted list of all selected objects
-                             * (but the already connected ones)
+                            /* get a left-right sorted list of all selected
+                             * objects (but the already connected ones)
                              * count the possibles sinks and sources
                              */
                         int mode = 0;
@@ -2754,20 +2855,24 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                         int sigin = obj_issignalinlet(ob2, closest2);
                         t_selection*sortedsel = 0;
                             /* sort the selected objects from left-right */
-                        for(sel = x->gl_editor->e_selection, i=1; sel; sel = sel->sel_next, i++)
+                        for(sel = x->gl_editor->e_selection, i=1; sel;
+                            sel = sel->sel_next, i++)
                         {
                             t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
                             t_selection*sob = 0;
-                                /* skip illegal objects and the reference source&sink */
+                                /* skip illegal objects and the reference
+                                     source&sink */
                             if (!ob || (ob1 == ob) || (ob2 == ob))
                                 continue;
 
-                            if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
+                            if (canconnect(x, ob1, closest1 + 1 + sinks, ob,
+                                 closest2))
                             {
                                 sinks += 1;
                                 ysinks += ob->te_ypix;
                             }
-                            if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
+                            if (canconnect(x, ob, closest1, ob2,
+                                closest2 + 1 + sources))
                             {
                                 sources += 1;
                                 ysources += ob->te_ypix;
@@ -2779,9 +2884,12 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                                 sob->sel_what = &ob->te_g;
                                 for(s=sortedsel; s; s=s->sel_next)
                                 {
-                                    t_object*o = pd_checkobject(&s->sel_what->g_pd);
+                                    t_object*o =
+                                        pd_checkobject(&s->sel_what->g_pd);
                                     if(!o) continue;
-                                    if((ob->te_xpix < o->te_xpix) || ((ob->te_xpix == o->te_xpix) && (ob->te_ypix < o->te_ypix)))
+                                    if((ob->te_xpix < o->te_xpix) ||
+                                       ((ob->te_xpix == o->te_xpix) &&
+                                           (ob->te_ypix < o->te_ypix)))
                                     {
                                         sob->sel_next = s;
                                         if(slast)
@@ -2801,26 +2909,31 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                             /* try to maximize connections */
                         mode = (sinks > sources);
 
-                            /* maximizing failed, so prefer to connect from top to bottom */
+                            /* maximizing failed, so prefer to connect from
+                                top to bottom */
                         if (sinks && (sinks == sources)) {
-                            mode = ((ysinks - ob1->te_ypix) / sinks) > ((ysources - ob2->te_ypix) / sources) * -1.;
+                            mode = ((ysinks - ob1->te_ypix) / sinks) >
+                                ((ysources - ob2->te_ypix) / sources) * -1.;
                         }
 
                         sinks = 0;
                         sources = 0;
                         if (mode)
-                            for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
+                            for(sel=sortedsel; ((closest1 + 1 + sinks) <
+                                 noutlet1) && sel; sel=sel->sel_next)
                             {
-                                sinks += tryconnect(x,
-                                                    ob1, closest1 + 1 + sinks,
-                                                    pd_checkobject(&sel->sel_what->g_pd), closest2);
+                                sinks += tryconnect(x, ob1,
+                                    closest1 + 1 + sinks,
+                                        pd_checkobject(&sel->sel_what->g_pd),
+                                            closest2);
                             }
                         else
-                            for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
+                            for(sel=sortedsel; ((closest2 + 1 + sources) <
+                                 ninlet2) && sel; sel=sel->sel_next)
                             {
-                                sources += tryconnect(x,
-                                                      pd_checkobject(&sel->sel_what->g_pd), closest1,
-                                                      ob2, closest2 + 1 + sources);
+                                sources += tryconnect(x, pd_checkobject(
+                                    &sel->sel_what->g_pd), closest1,
+                                        ob2, closest2 + 1 + sources);
                             }
 
                             /* free the sorted list of selections */
@@ -2833,7 +2946,8 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                     }
                     break;
                 case 1: /* source(s) selected */
-                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                    for(sel = x->gl_editor->e_selection; sel;
+                        sel = sel->sel_next)
                     {
                         t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
                         if (!selo || selo == ob1)
@@ -2842,7 +2956,8 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                     }
                     break;
                 case 2: /* sink(s) selected */
-                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                    for(sel = x->gl_editor->e_selection; sel;
+                        sel = sel->sel_next)
                     {
                         t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
                         if (!selo || selo == ob2)
@@ -2886,12 +3001,13 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        sys_vgui(".x%lx.c delete x\n", x);
+        pdgui_vmess(0, "crs", x, "delete", "x");
         x->gl_editor->e_onmotion = MA_NONE;
     }
-    else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
-                  x, x->gl_editor->e_xwas,
-                  x->gl_editor->e_ywas, xpos, ypos);
+    else
+        pdgui_vmess(0, "crs iiii",
+            x, "coords", "x",
+            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
 }
 
 void canvas_mouseup(t_canvas *x,
@@ -2909,43 +3025,31 @@ void canvas_mouseup(t_canvas *x,
         return;
     }
 
-    EDITOR->canvas_upclicktime = sys_getrealtime();
-    EDITOR->canvas_upx = xpos;
-    EDITOR->canvas_upy = ypos;
+    THISED->canvas_upclicktime = sys_getrealtime();
+    THISED->canvas_upx = xpos;
+    THISED->canvas_upy = ypos;
 
     if (x->gl_editor->e_onmotion == MA_CONNECT)
         canvas_doconnect(x, xpos, ypos, mod, 1);
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
-    else if (x->gl_editor->e_onmotion == MA_MOVE ||
-        x->gl_editor->e_onmotion == MA_RESIZE)
+    else if ((x->gl_editor->e_onmotion == MA_MOVE ||
+              x->gl_editor->e_onmotion == MA_RESIZE))
     {
-            /* after motion or resizing, if there's only one text item
-               selected, activate the text */
+            /* if there's only one text item selected activate the text. */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
-            t_gobj *g = x->gl_editor->e_selection->sel_what;
-            t_glist *gl2;
-                /* first though, check we aren't an abstraction with a
-                   dirty sub-patch that would be discarded if we edit this. */
-            if (pd_class(&g->g_pd) == canvas_class &&
-                canvas_isabstraction((t_glist *)g) &&
-                (gl2 = glist_finddirty((t_glist *)g)))
-            {
-                vmess(&gl2->gl_pd, gensym("menu-open"), "");
-                x->gl_editor->e_onmotion = MA_NONE;
-                sys_vgui(
-                    "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
-                    canvas_getrootfor(gl2),
-                    canvas_getrootfor(gl2)->gl_name->s_name, gl2);
-                return;
-            }
-                /* OK, activate it */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
-
+    else if (x->gl_editor->e_onmotion == MA_PASSOUT)
+    {
+        if (!x->gl_editor->e_motionfn)
+            bug("e_motionfn");
+        (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd,
+            xpos - x->gl_editor->e_xwas, ypos - x->gl_editor->e_ywas, 1);
+    }
     x->gl_editor->e_onmotion = MA_NONE;
 }
 
@@ -2954,10 +3058,10 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
 {
     t_selection *y;
     int resortin = 0, resortout = 0;
-    if (!EDITOR->canvas_undo_already_set_move)
+    if (x->gl_editor->e_selection && !THISED->canvas_undo_already_set_move)
     {
         canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
-        EDITOR->canvas_undo_already_set_move = 1;
+        THISED->canvas_undo_already_set_move = 1;
     }
     for (y = x->gl_editor->e_selection; y; y = y->sel_next)
     {
@@ -2968,7 +3072,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
     }
     if (resortin) canvas_resortinlets(x);
     if (resortout) canvas_resortoutlets(x);
-    sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+    pdgui_vmess("pdtk_canvas_getscroll", "c", x);
     if (x->gl_editor->e_selection)
         canvas_dirty(x, 1);
 }
@@ -2987,7 +3091,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     if (ac < 3)
         return;
 
-    EDITOR->canvas_undo_already_set_move = 0;
+    THISED->canvas_undo_already_set_move = 0;
     down = (atom_getfloat(av) != 0);  /* nonzero if it's a key down */
     shift = (atom_getfloat(av+2) != 0);  /* nonzero if shift-ed */
     if (av[1].a_type == A_SYMBOL)
@@ -3004,7 +3108,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         case 32: gotkeysym = gensym("Space"); break;
         case 127:gotkeysym = gensym("Delete"); break;
         default:
-                /*-- moo: assume keynum is a Unicode codepoint; encode as UTF-8 --*/
+          /*-- moo: assume keynum is a Unicode codepoint; encode as UTF-8 --*/
             u8_wc_toutf8_nul(buf, (UCS4)(av[1].a_w.w_float));
             gotkeysym = gensym(buf);
         }
@@ -3089,10 +3193,10 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         if (x->gl_editor->e_grab
             && x->gl_editor->e_keyfn && keynum)
                 (* x->gl_editor->e_keyfn)
-                    (x->gl_editor->e_grab, (t_float)keynum);
+                    (x->gl_editor->e_grab, gotkeysym, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
                it is either "real" (has a key number) or else is an arrow key. */
-        else if (x->gl_editor->e_textedfor && (keynum
+        else if (glist_textedfor(x) && (keynum
             || !strcmp(gotkeysym->s_name, "Home")
             || !strcmp(gotkeysym->s_name, "End")
             || !strcmp(gotkeysym->s_name, "Up")
@@ -3100,14 +3204,28 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
+                /* if the typed object is also the selected object in the
+                 canvas and is an abstraction, and if its text has not been
+                 modified yet, then ask whether to discard any changes inside
+                  it. */
+            if (x->gl_editor->e_selection &&
+                pd_class(&x->gl_editor->e_selection->sel_what->g_pd)
+                    == canvas_class && !x->gl_editor->e_textdirty
+                    /* only ask if the keystroke would really modify the text */
+                        && keynum
+            )
+            {
+                t_gobj *selected_canvas = x->gl_editor->e_selection->sel_what;
+                if(canvas_undo_confirmdiscard(selected_canvas))
+                    return;
+            }
                 /* send the key to the box's editor */
             if (!x->gl_editor->e_textdirty)
             {
                 canvas_setundo(x, canvas_undo_cut,
                     canvas_undo_set_cut(x, UCUT_TEXT), "typing");
             }
-            rtext_key(x->gl_editor->e_textedfor,
-                (int)keynum, gotkeysym);
+            rtext_key(glist_textedfor(x), (int)keynum, gotkeysym);
             if (x->gl_editor->e_textdirty)
                 canvas_dirty(x, 1);
         }
@@ -3136,13 +3254,15 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         else if (!strcmp(gotkeysym->s_name, "Right"))
             canvas_displaceselection(x, shift ? 10 : 1, 0);
         else if ((MA_CONNECT == x->gl_editor->e_onmotion)
-            && (CURSOR_EDITMODE_CONNECT == EDITOR->canvas_cursorwas)
+            && (CURSOR_EDITMODE_CONNECT == THISED->canvas_cursorwas)
                  && !strncmp(gotkeysym->s_name, "Shift", 5))
         {
                 /* <Shift> while in connect-mode: create connection... */
-            canvas_doconnect(x, x->gl_editor->e_xnew, x->gl_editor->e_ynew, 1, 1);
+            canvas_doconnect(x, x->gl_editor->e_xnew, x->gl_editor->e_ynew,
+                1, 1);
                 /* ... and continue in connect-mode */
-            canvas_doclick(x, x->gl_editor->e_xwas, x->gl_editor->e_ywas, 0, 0, 1);
+            canvas_doclick(x, x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                0, 1);
 
         }
     }
@@ -3156,19 +3276,33 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
 static void delay_move(t_canvas *x)
 {
-    int incx = (x->gl_editor->e_xnew - x->gl_editor->e_xwas)/x->gl_zoom,
-        incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
+    int incx = x->gl_editor->e_xnew - x->gl_editor->e_xwas,
+        incy = x->gl_editor->e_ynew - x->gl_editor->e_ywas;
+        /* insist on at elast 2 pixel displacement to avoid accidental
+        displacements of objects you only meant to select */
+    if (x->gl_editor->e_waittodrag &&
+        incx > -2 && incx < 2 && incy > -2 && incy < 2)
+            return;
+    incx /= x->gl_zoom;
+    incy /= x->gl_zoom;
+
+    x->gl_editor->e_waittodrag = 0;
     if (incx || incy)
         canvas_displaceselection(x, incx, incy);
     x->gl_editor->e_xwas += incx * x->gl_zoom;
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
+    /* defined in g_text.c: */
+extern void text_getfont(t_text *x, t_glist *thisglist,
+    int *fwidthp, int *fheightp, int *guifsize);
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
 #if 0
-    post("motion %g %g %g", xpos, ypos, fmod);
+    post("motion %d %d %d %d", (int)xpos, (int)ypos, (int)fmod,
+        x->gl_editor->e_onmotion);
 #endif
     int mod = fmod;
     if (!x->gl_editor)
@@ -3199,16 +3333,14 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         if (!x->gl_editor->e_motionfn)
             bug("e_motionfn");
         (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd,
-            xpos - x->gl_editor->e_xwas,
-            ypos - x->gl_editor->e_ywas);
+            xpos - x->gl_editor->e_xwas, ypos - x->gl_editor->e_ywas, 0);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
     }
     else if (x->gl_editor->e_onmotion == MA_DRAGTEXT)
     {
-        t_rtext *rt = x->gl_editor->e_textedfor;
-        if (rt)
-            rtext_mouse(rt, xpos - x->gl_editor->e_xwas,
+        if (glist_textedfor(x))
+            rtext_mouse(glist_textedfor(x), xpos - x->gl_editor->e_xwas,
                 ypos - x->gl_editor->e_ywas, RTEXT_DRAG);
     }
     else if (x->gl_editor->e_onmotion == MA_RESIZE)
@@ -3222,10 +3354,13 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             int wantwidth = xpos - x11;
             t_object *ob = pd_checkobject(&y1->g_pd);
             if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
+                ob->te_type == T_ATOM ||
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
             {
-                wantwidth = wantwidth / glist_fontwidth(x);
+                int fwidth, fheight, guifsize;
+                text_getfont(ob, x, &fwidth, &fheight, &guifsize);
+                wantwidth = wantwidth / fwidth;
                 if (wantwidth < 1)
                     wantwidth = 1;
                 ob->te_width = wantwidth;
@@ -3246,7 +3381,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             else post("not resizable");
         }
     }
-    else canvas_doclick(x, xpos, ypos, 0, mod, 0);
+    else canvas_doclick(x, xpos, ypos, mod, 0);
 
     x->gl_editor->e_lastmoved = 1;
 }
@@ -3258,6 +3393,7 @@ void canvas_startmotion(t_canvas *x)
     glist_getnextxy(x, &xval, &yval);
     if (xval == 0 && yval == 0) return;
     x->gl_editor->e_onmotion = MA_MOVE;
+    x->gl_editor->e_waittodrag = 0;
     x->gl_editor->e_xwas = xval;
     x->gl_editor->e_ywas = yval;
 }
@@ -3267,11 +3403,14 @@ extern int sys_perf;
 
 void canvas_print(t_canvas *x, t_symbol *s)
 {
-    if (*s->s_name) sys_vgui(".x%lx.c postscript -file %s\n", x, s->s_name);
-    else sys_vgui(".x%lx.c postscript -file x.ps\n", x);
+    const char*filename = (*s->s_name)?(s->s_name):"x.ps";
+    pdgui_vmess(0, "cr rs",
+        x, "postscript",
+        "-file", filename);
 }
 
-    /* find the innermost dirty sub-glist, if any, of this one (including itself) */
+    /* find the innermost dirty sub-glist, if any, of this one
+        (including itself) */
 static t_glist *glist_finddirty(t_glist *x)
 {
     t_gobj *g;
@@ -3292,18 +3431,29 @@ static t_glist *glist_finddirty(t_glist *x)
 void glob_verifyquit(void *dummy, t_floatarg f)
 {
     t_glist *g, *g2;
+    const char*msg = "really quit?";
         /* find all root canvases */
     for (g = pd_getcanvaslist(); g; g = g->gl_next)
         if ((g2 = glist_finddirty(g)))
         {
+            t_atom backmsg[2];
+            char buf[40];
+            sprintf(buf, ".x%lx", g2);
+            SETSYMBOL(backmsg+0, gensym("menuclose"));
+            SETFLOAT (backmsg+1, 3);
+
             canvas_vis(g2, 1);
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 3;\n}\n",
-                     canvas_getrootfor(g2), g2);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                        canvas_getrootfor(g2),
+                        gensym(buf), 2, backmsg);
             return;
         }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check .pdwindow {really quit?} {pd quit} yes\n");
-    else glob_quit(0);
+        pdgui_vmess("pdtk_check", "r Sss",
+            ".pdwindow",
+            1, &msg,
+            "pd quit", "yes");
+    else glob_exit(0, 0);
 }
 
     /* close a window (or possibly quit Pd), checking for dirty flags.
@@ -3317,23 +3467,36 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
     int force = fforce;
     t_glist *g;
-    if ((x->gl_owner || x->gl_isclone) && (force == 0 || force == 1))
+    t_atom backmsg[2];
+    char buf[40];
+    SETSYMBOL(backmsg+0, gensym("menuclose"));
+    SETSYMBOL(backmsg+1, 0);
+    if (x->gl_owner && (force == 0 || force == 1))
         canvas_vis(x, 0);   /* if subpatch, just invis it */
     else if (force == 0)
     {
         g = glist_finddirty(x);
         if (g)
         {
+            sprintf(buf, ".x%lx", g);
+            SETFLOAT(backmsg+1, 2);
+
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
-                     canvas_getrootfor(g), g);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
         else if (sys_perf)
         {
-            sys_vgui(
-                "pdtk_check .x%lx {Close this window?} {.x%lx menuclose 1;\n} yes\n",
-                canvas_getrootfor(x), x);
+            const char*msg = "Close this window?";
+            sprintf(buf, ".x%lx", x);
+            SETFLOAT(backmsg+1, 1);
+
+            pdgui_vmess("pdtk_check", "^ Sms",
+                canvas_getrootfor(x),
+                1, &msg,
+                gensym(buf), 2, backmsg,
+                "yes");
         }
         else pd_free(&x->gl_pd);
     }
@@ -3342,14 +3505,17 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
     else if (force == 2)
     {
         canvas_dirty(x, 0);
-        while (x->gl_owner)
+        while (x->gl_owner && !x->gl_isclone)
             x = x->gl_owner;
         g = glist_finddirty(x);
         if (g)
         {
+            sprintf(buf, ".x%lx", g);
+            SETFLOAT(backmsg+1, 2);
+
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
-                     canvas_getrootfor(g), g);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                        canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
         else pd_free(&x->gl_pd);
@@ -3364,11 +3530,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
     /* put up a dialog which may call canvas_font back to do the work */
 static void canvas_menufont(t_canvas *x)
 {
-    char buf[80];
     t_canvas *x2 = canvas_getrootfor(x);
-    gfxstub_deleteforkey(x2);
-    sprintf(buf, "pdtk_canvas_dofont %%s %d\n", x2->gl_font);
-    gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
+    pdgui_stub_deleteforkey(x2);
+    pdgui_stub_vnew(&x2->gl_pd, "pdtk_canvas_dofont", &x2->gl_pd,
+        "i", x2->gl_font);
 }
 
 typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
@@ -3444,22 +3609,26 @@ static int atoms_match(int inargc, t_atom *inargv, int searchargc,
     return (0);
 }
 
+extern int clone_get_n(t_gobj *x);
+extern t_glist *clone_get_instance(t_gobj *x, int n);
+
     /* find an atom or string of atoms */
 static int canvas_dofind(t_canvas *x, int *myindexp)
 {
     t_gobj *y;
-    int findargc = binbuf_getnatom(EDITOR->canvas_findbuf), didit = 0;
-    t_atom *findargv = binbuf_getvec(EDITOR->canvas_findbuf);
+    int findargc = binbuf_getnatom(THISED->canvas_findbuf), didit = 0;
+    t_atom *findargv = binbuf_getvec(THISED->canvas_findbuf);
     for (y = x->gl_list; y; y = y->g_next)
     {
         t_object *ob = 0;
         if ((ob = pd_checkobject(&y->g_pd)))
         {
+            int n;
             if (atoms_match(binbuf_getnatom(ob->ob_binbuf),
                 binbuf_getvec(ob->ob_binbuf), findargc, findargv,
-                    EDITOR->canvas_find_wholeword))
+                    THISED->canvas_find_wholeword))
             {
-                if (*myindexp == EDITOR->canvas_find_index)
+                if (*myindexp == THISED->canvas_find_index)
                 {
                     glist_noselect(x);
                     vmess(&x->gl_pd, gensym("menu-open"), "");
@@ -3468,6 +3637,17 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
                     didit = 1;
                 }
                 (*myindexp)++;
+            }
+            if ((n = clone_get_n((t_gobj *)ob)) != 0)
+            {
+                int i = 0;
+                    /* should we search in every clone instance,
+                        or only the first one? */
+                /*for(i = 0; i < n; i++)
+                {*/
+                    didit |= canvas_dofind((t_canvas *)
+                        clone_get_instance((t_gobj *)ob, i), myindexp);
+                /*}*/
             }
         }
     }
@@ -3481,49 +3661,57 @@ static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
 {
     int myindex = 0, found;
     t_symbol *decodedsym = sys_decodedialog(s);
-    if (!EDITOR->canvas_findbuf)
-        EDITOR->canvas_findbuf = binbuf_new();
-    binbuf_text(EDITOR->canvas_findbuf, decodedsym->s_name,
+    if (!THISED->canvas_findbuf)
+        THISED->canvas_findbuf = binbuf_new();
+    binbuf_text(THISED->canvas_findbuf, decodedsym->s_name,
         strlen(decodedsym->s_name));
-    EDITOR->canvas_find_index = 0;
-    EDITOR->canvas_find_wholeword = wholeword;
+    THISED->canvas_find_index = 0;
+    THISED->canvas_find_wholeword = wholeword;
     canvas_whichfind = x;
     found = canvas_dofind(x, &myindex);
     if (found)
-        EDITOR->canvas_find_index = 1;
-    sys_vgui("pdtk_showfindresult .x%lx %d %d %d\n", x, found,
-        EDITOR->canvas_find_index, myindex);
+        THISED->canvas_find_index = 1;
+    pdgui_vmess("pdtk_showfindresult", "^ iii",
+        x,
+        found, THISED->canvas_find_index, myindex);
 }
 
 static void canvas_find_again(t_canvas *x)
 {
     int myindex = 0, found;
-    if (!EDITOR->canvas_findbuf || !canvas_whichfind)
+    if (!THISED->canvas_findbuf || !canvas_whichfind)
         return;
     found = canvas_dofind(canvas_whichfind, &myindex);
-    sys_vgui("pdtk_showfindresult .x%lx %d %d %d\n", x, found,
-        ++EDITOR->canvas_find_index, myindex);
+    pdgui_vmess("pdtk_showfindresult", "^ iii",
+        x,
+       found, ++THISED->canvas_find_index, myindex);
     if (!found)
-        EDITOR->canvas_find_index = 0;
+        THISED->canvas_find_index = 0;
 }
 
 static void canvas_find_parent(t_canvas *x)
 {
     if (x->gl_owner)
-        canvas_vis(glist_getcanvas(x->gl_owner), 1);
+        canvas_vis(x->gl_owner, 1);
 }
+
+extern t_pd *message_get_responder(t_gobj *x);
+extern t_class *text_class;
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
+    int n;
+
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if ((const void *)g == error_object)
+        if (((const void *)g == error_object) ||
+            (message_get_responder(g) == error_object))
         {
                 /* got it... now show it. */
             glist_noselect(gl);
-            canvas_vis(glist_getcanvas(gl), 1);
-            canvas_editmode(glist_getcanvas(gl), 1.);
+            canvas_vis((t_canvas *)gl, 1);
+            canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
             return (1);
         }
@@ -3531,6 +3719,15 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
         {
             if (glist_dofinderror((t_canvas *)g, error_object))
                 return (1);
+        }
+        else if ((n = clone_get_n(g)) != 0)
+        {
+            int i;
+            for(i = 0; i < n; i++)
+            {
+                if (glist_dofinderror(clone_get_instance(g, i), error_object))
+                    return 1;
+            }
         }
     }
     return (0);
@@ -3545,7 +3742,7 @@ void canvas_finderror(const void *error_object)
         if (glist_dofinderror(x, error_object))
             return;
     }
-    error("... sorry, I couldn't find the source of that error.");
+    pd_error(0, "... sorry, I couldn't find the source of that error.");
 }
 
 void canvas_stowconnections(t_canvas *x)
@@ -3641,17 +3838,20 @@ static t_binbuf *canvas_docopy(t_canvas *x)
 
 static void canvas_copy(t_canvas *x)
 {
-    if (!x->gl_editor || !x->gl_editor->e_selection)
+    if (!x->gl_editor)
         return;
-    binbuf_free(EDITOR->copy_binbuf);
-    EDITOR->copy_binbuf = canvas_docopy(x);
-    if (x->gl_editor->e_textedfor)
+    if (x->gl_editor->e_selection)
+    {
+        binbuf_free(THISED->copy_binbuf);
+        THISED->copy_binbuf = canvas_docopy(x);
+    }
+    if (glist_textedfor(x))
     {
         char *buf;
         int bufsize;
-        rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
-        sys_gui("clipboard clear\n");
-        sys_vgui("clipboard append {%.*s}\n", bufsize, buf);
+        rtext_getseltext(glist_textedfor(x), &buf, &bufsize);
+        pdgui_vmess("clipboard", "r", "clear");
+        pdgui_vmess("clipboard", "rp",  "append", bufsize, buf);
     }
 }
 
@@ -3687,7 +3887,7 @@ static void canvas_doclear(t_canvas *x)
         /* if text is selected, deselecting it might remake the
            object. So we deselect it and hunt for a "new" object on
            the glist to reselect. */
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
         t_gobj *selwas = x->gl_editor->e_selection->sel_what;
         pd_this->pd_newest = 0;
@@ -3723,22 +3923,22 @@ static void canvas_cut(t_canvas *x)
         return;
     if (x->gl_editor->e_selectedline)   /* delete line */
         canvas_clearline(x);
-    else if (x->gl_editor->e_textedfor) /* delete selected text in a box */
+    else if (glist_textedfor(x)) /* delete selected text in a box */
     {
         char *buf;
         int bufsize;
-        rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
+        rtext_getseltext(glist_textedfor(x), &buf, &bufsize);
         if (!bufsize && x->gl_editor->e_selection &&
             !x->gl_editor->e_selection->sel_next)
         {
                 /* if the text is already empty, delete the box.  We
                    first clear 'textedfor' so that canvas_doclear later will
                    think the whole box was selected, not the text */
-            x->gl_editor->e_textedfor = 0;
+            glist_settexted(x, 0);
             goto deleteobj;
         }
         canvas_copy(x);
-        rtext_key(x->gl_editor->e_textedfor, 127, &s_);
+        rtext_key(glist_textedfor(x), 127, &s_);
         canvas_dirty(x, 1);
     }
     else if (x->gl_editor->e_selection)
@@ -3747,7 +3947,7 @@ static void canvas_cut(t_canvas *x)
         canvas_undo_add(x, UNDO_CUT, "cut", canvas_undo_set_cut(x, UCUT_CUT));
         canvas_copy(x);
         canvas_doclear(x);
-        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+        pdgui_vmess("pdtk_canvas_getscroll", "c", x);
     }
 }
 
@@ -3780,7 +3980,8 @@ static int binbuf_nextmess(int argc, const t_atom *argv)
 static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
 {
         /*
-         * checks how many objects the binbuf contains and where they are located
+         * checks how many objects the binbuf contains and where they are
+         * located.
          * for simplicity, we stop after the first object...
          * "objects" are any patchable things
          * returns: 0: no objects/...
@@ -3841,6 +4042,7 @@ static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
        || gensym("msg") == s
        || gensym("text") == s
        || gensym("floatatom") == s
+       || gensym("listbox") == s
        || gensym("symbolatom") == s)
     {
         if(x0)*x0=atom_getfloat(argv+2);
@@ -3876,18 +4078,18 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     glist_noselect(x);
     for (g2 = x->gl_list, nbox = 0; g2; g2 = g2->g_next) nbox++;
 
-    EDITOR->paste_onset = nbox;
-    EDITOR->paste_canvas = x;
+    THISED->paste_onset = nbox;
+    THISED->paste_canvas = x;
 
     binbuf_eval(b, 0, 0, 0);
     for (g2 = x->gl_list, count = 0; g2; g2 = g2->g_next, count++)
         if (count >= nbox)
             glist_select(x, g2);
-    EDITOR->paste_canvas = 0;
+    THISED->paste_canvas = 0;
     canvas_resume_dsp(dspstate);
     canvas_dirty(x, 1);
     if (x->gl_mapped)
-        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+        pdgui_vmess("pdtk_canvas_getscroll", "c", x);
     if (!sys_noloadbang)
         glist_donewloadbangs(x);
     asym->s_thing = bounda;
@@ -3895,7 +4097,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     s__N.s_thing = boundn;
 }
 
-static t_symbol*get_object_type(t_object *obj)
+static t_symbol *get_object_type(t_object *obj)
 {
     t_symbol *s=0;
     t_binbuf *bb=0;
@@ -3925,7 +4127,8 @@ static void canvas_paste_replace(t_canvas *x)
     t_symbol *typ0 = 0;
     if (!x->gl_editor)
         return;
-    if(x->gl_editor->e_selection && 1==binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0, &typ0))
+    if(x->gl_editor->e_selection &&
+        1==binbuf_getpos(THISED->copy_binbuf, &x0, &y0, &typ0))
     {
         t_canvas *canvas = glist_getcanvas(x);
         t_selection *mysel = 0, *y;
@@ -3954,7 +4157,8 @@ static void canvas_paste_replace(t_canvas *x)
                continue;
                     /* if the selection mixes obj, msg,... we only want to
                      * replace the same type;
-                     * if the selection is homogeneous (seltype==NULL), we also allow typechanges
+                     * if the selection is homogeneous (seltype==NULL), we
+                     * also allow typechanges
                      */
             if (!seltype && get_object_type(obj) != typ0)
                 continue;
@@ -3972,9 +4176,9 @@ static void canvas_paste_replace(t_canvas *x)
             int dx = o->te_xpix - x0;
             int dy = o->te_ypix - y0;
             glist_noselect(x);
-            EDITOR->canvas_undo_already_set_move = 0;
+            THISED->canvas_undo_already_set_move = 0;
                 /* save connections and move object to the end */
-                /* note: the undo sequence selects the object as a side-effect */
+                /* note: undo sequence selects the object as a side effect */
             canvas_undo_add(x, UNDO_ARRANGE, "arrange",
                 canvas_undo_set_arrange(x, y->sel_what, 1));
             canvas_stowconnections(canvas);
@@ -3985,7 +4189,7 @@ static void canvas_paste_replace(t_canvas *x)
             canvas_doclear(x);
 
                 /* create the new object (and loadbang if needed) */
-            canvas_applybinbuf(x, EDITOR->copy_binbuf);
+            canvas_applybinbuf(x, THISED->copy_binbuf);
 
             glist_noselect(x);
             glist_select(x, glist_nth(x, glist_getindex(x, 0) - 1));
@@ -3997,8 +4201,9 @@ static void canvas_paste_replace(t_canvas *x)
             canvas_undo_add(x, UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(x));
 
-            if (pd_this->pd_newest && pd_class(pd_this->pd_newest) == canvas_class)
-                canvas_loadbang((t_canvas *)pd_this->pd_newest);
+            if (pd_this->pd_newest &&
+                pd_class(pd_this->pd_newest) == canvas_class)
+                    canvas_loadbang((t_canvas *)pd_this->pd_newest);
         }
         canvas_undo_add(x, UNDO_SEQUENCE_END, "paste/replace", 0);
 
@@ -4018,17 +4223,17 @@ static void canvas_paste(t_canvas *x)
 {
     if (!x->gl_editor)
         return;
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
             /* simulate keystrokes as if the copy buffer were typed in. */
-        sys_vgui("pdtk_pastetext .x%lx\n", x);
+        pdgui_vmess("pdtk_pastetext", "^", x);
     }
     else
     {
         int offset = 0;
         int x0 = 0, y0 = 0;
         int foundplace = 0;
-        binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0, 0);
+        binbuf_getpos(THISED->copy_binbuf, &x0, &y0, 0);
         do {
                 /* iterate over all existing objects
                  * to see whether one occupies the space we want.
@@ -4038,7 +4243,8 @@ static void canvas_paste(t_canvas *x)
             foundplace = 1;
             for (y = x->gl_list; y; y = y->g_next) {
                 t_text *txt = (t_text *)y;
-                if((x0 + offset) == txt->te_xpix && (y0 + offset) == txt->te_ypix)
+                if((x0 + offset) == txt->te_xpix &&
+                    (y0 + offset) == txt->te_ypix)
                 {
                     foundplace = 0;
                     offset += PASTE_OFFSET;
@@ -4048,7 +4254,7 @@ static void canvas_paste(t_canvas *x)
         } while(!foundplace);
         canvas_undo_add(x, UNDO_PASTE, "paste",
             (void *)canvas_undo_set_paste(x, 0, 0, offset));
-        canvas_dopaste(x, EDITOR->copy_binbuf);
+        canvas_dopaste(x, THISED->copy_binbuf);
         if(offset)
         {
             t_selection *y;
@@ -4067,7 +4273,7 @@ static void canvas_duplicate(t_canvas *x)
     if (x->gl_editor->e_selection && x->gl_editor->e_selectedline)
         glist_deselectline(x);
 
-        /* if a connection is selected, we extend it to the right (if possible) */
+        /* if a connection is selected, extend it to the right (if possible) */
     if (x->gl_editor->e_selectedline)
     {
         int outindex = x->gl_editor->e_selectline_index1;
@@ -4107,20 +4313,20 @@ static void canvas_duplicate(t_canvas *x)
     {
         t_selection *y;
         t_binbuf*b = 0;
-        if(EDITOR->copy_binbuf)
-            b = binbuf_duplicate(EDITOR->copy_binbuf);
+        if(THISED->copy_binbuf)
+            b = binbuf_duplicate(THISED->copy_binbuf);
         canvas_copy(x);
         canvas_undo_add(x, UNDO_PASTE, "duplicate",
             (void *)canvas_undo_set_paste(x, 0, 1, PASTE_OFFSET));
-        canvas_dopaste(x, EDITOR->copy_binbuf);
+        canvas_dopaste(x, THISED->copy_binbuf);
         for (y = x->gl_editor->e_selection; y; y = y->sel_next)
             gobj_displace(y->sel_what, x,
                 PASTE_OFFSET, PASTE_OFFSET);
         if(b)
         {
-            if(EDITOR->copy_binbuf)
-                binbuf_free(EDITOR->copy_binbuf);
-            EDITOR->copy_binbuf = b;
+            if(THISED->copy_binbuf)
+                binbuf_free(THISED->copy_binbuf);
+            THISED->copy_binbuf = b;
         }
         canvas_dirty(x, 1);
     }
@@ -4159,13 +4365,13 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             /* during connection, cycle through inlets/outlets */
         int xwas = x->gl_editor->e_xwas,
             ywas = x->gl_editor->e_ywas;
-        int xpos = EDITOR->canvas_last_glist_x,
-            ypos = EDITOR->canvas_last_glist_y;
+        int xpos = THISED->canvas_last_glist_x,
+            ypos = THISED->canvas_last_glist_y;
         t_object *src, *snk;
         t_gobj*gobj;
         int srcX1=0, srcY1=0, srcX2=0, srcY2=0;
         int snkX1=0, snkY1=0, snkX2=0, snkY2=0;
-        if(EDITOR->canvas_last_glist != x)
+        if(THISED->canvas_last_glist != x)
                 /* we don't know the current mouse coordinates in this canvas, so return... */
             return;
         gobj = canvas_findhitbox(x, xwas, ywas, &srcX1, &srcY1, &srcX2, &srcY2);
@@ -4189,8 +4395,7 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             closest = ((xpos-snkX1) * (nios-1) + width/2)/width;
             closest = ((closest + offset) % nios + nios) % nios;
             hotspot = snkX1 + (width - IOWIDTH) * closest / (nios-1.0) + IOWIDTH*0.5;
-            sys_vgui("::pdtk_canvas::setmouse .x%lx.c %d %d\n",
-                glist_getcanvas(x), hotspot, ypos);
+            pdgui_vmess("::pdtk_canvas::setmouse", "cii",  glist_getcanvas(x), hotspot, ypos);
         } else {
                 /* cycle outlets */
             int width = srcX2 - srcX1, hotspot, closest;
@@ -4212,7 +4417,8 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         int objectcount = glist_getindex(x, 0);
             /* only cycle selection if the current selection contains exactly 1 item */
         t_gobj* y = x->gl_editor->e_selection->sel_next ? 0 : x->gl_editor->e_selection->sel_what;
-        if(!y)return;
+        if (!y || !objectcount)
+            return;
         newindex = (glist_getindex(x, y) + offset) % objectcount;
         if (newindex < 0) newindex += objectcount;
         glist_deselect(x, y);
@@ -4244,6 +4450,9 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
                 offset--;
         }
 
+        if (!connectioncount)
+            offset = 0;
+
             /* if the offset is non-0, wrap it... */
         if (offset)
         {
@@ -4271,7 +4480,7 @@ static void canvas_reselect(t_canvas *x)
     t_gobj *g, *gwas;
         /* if someone is text editing, and if only one object is
            selected,  deselect everyone and reselect.  */
-    if (x->gl_editor->e_textedfor)
+    if (glist_textedfor(x))
     {
             /* only do this if exactly one item is selected. */
         if ((gwas = x->gl_editor->e_selection->sel_what) &&
@@ -4299,8 +4508,6 @@ static void canvas_reselect(t_canvas *x)
         gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
 
-extern t_class *text_class;
-
 void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_floatarg fwhoin, t_floatarg finno)
 {
@@ -4309,17 +4516,33 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_object *objsrc, *objsink;
     t_outconnect *oc;
     int nin = whoin, nout = whoout;
-    if (EDITOR->paste_canvas == x) whoout += EDITOR->paste_onset,
-        whoin += EDITOR->paste_onset;
+    if (THISED->paste_canvas == x) whoout += THISED->paste_onset,
+        whoin += THISED->paste_onset;
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) goto bad; /* bug fix thanks to Hannes */
+        if (!src->g_next) {
+            src = NULL;
+            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
+            goto bad; /* bug fix thanks to Hannes */
+        }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) goto bad;
+        if (!sink->g_next) {
+            sink = NULL;
+            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
+            goto bad;
+        }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
-        !(objsink = pd_checkobject(&sink->g_pd)))
-            goto bad;
+        !(objsink = pd_checkobject(&sink->g_pd))) {
+        logpost(src?src:sink, PD_DEBUG, "cannot connect unpatchable object");
+        goto bad;
+    }
+
+        /* check if objects are already connected */
+    if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
+        logpost(src, PD_DEBUG, "io pair already connected");
+        goto bad;
+    }
 
         /* if object creation failed, make dummy inlets or outlets
            as needed */
@@ -4331,12 +4554,16 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             inlet_new(objsink, &objsink->ob_pd, 0, 0);
 
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
-    if (glist_isvisible(x))
+    if (glist_isvisible(x) && x->gl_havewindow)
     {
-        sys_vgui(
-            ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-            glist_getcanvas(x), 0, 0, 0, 0,
-            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
+        char tag[128];
+        char*tags[] = {tag, "cord"};
+        sprintf(tag, "l%p", oc);
+        pdgui_vmess(0, "crr iiii ri rS",
+            glist_getcanvas(x), "create", "line",
+            0, 0, 0, 0,
+            "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+            "-tags", 2, tags);
         canvas_fixlinesfor(x, objsrc);
     }
     return;
@@ -4359,7 +4586,7 @@ static void canvas_tidy(t_canvas *x)
     int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
     int histogram[NHIST], *ip, i, besthist, bestdist;
         /* if nobody is selected, this means do it to all boxes;
-           othewise just the selection */
+           otherwise just the selection */
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
     canvas_undo_add(x, UNDO_MOTION, "{tidy up}", canvas_undo_set_move(x, !all));
@@ -4417,7 +4644,7 @@ static void canvas_tidy(t_canvas *x)
             bestdist = i;
         }
     }
-    logpost(NULL, 3, "tidy: best vertical distance %d", bestdist);
+    logpost(NULL, PD_DEBUG, "tidy: best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
         {
@@ -4438,8 +4665,9 @@ static void canvas_tidy(t_canvas *x)
                     if (all || glist_isselected(x, y2))
                     {
                         gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-                        if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE &&
-                            by1 > ay1 && by1 < ay2 + NHIST)
+                        if (bx1 <= ax1 + XTOLERANCE &&
+                            bx1 >= ax1 - XTOLERANCE &&
+                                by1 > ay1 && by1 < ay2 + NHIST)
                         {
                             int vmove = ay2 + bestdist - by1;
                             gobj_displace(y2, x, ax1-bx1, vmove);
@@ -4500,8 +4728,17 @@ static int canvas_try_bypassobj1(t_canvas* x,
     if(out0<0 || out1<0 || out2>=0 || in0>=0 || in1<0 || in2<0)
         return 0;
         /* check whether the connection types match */
-    if(obj_issignaloutlet(obj0, out0) ^ obj_issignaloutlet(obj1, out1))
-        return 0;
+    if(obj_issignaloutlet(obj0, out0) && !obj_issignalinlet(obj2, in2))
+    {
+        /* prevent new sig->msg connections! */
+        if ((obj_issignalinlet(obj1, in1) && !obj_issignaloutlet(obj1, out1)))
+            return 0;
+            /* if we reach this, the new (bypass) connection is wrong,
+             * but the bypassed object was wrongly connected anyhow,
+             * so no new regression is introduced
+             */
+    }
+
     A = glist_getindex(x, &obj0->te_g);
     B = glist_getindex(x, &obj1->te_g);
     C = glist_getindex(x, &obj2->te_g);
@@ -4585,7 +4822,8 @@ static void canvas_connect_selection(t_canvas *x)
             objsink = b?pd_checkobject(&b->g_pd):0;
 
             if(canconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0)
-               && canconnect(x, obj, 0, objsink, x->gl_editor->e_selectline_inno))
+               && canconnect(x, obj, 0, objsink,
+                   x->gl_editor->e_selectline_inno))
             {
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
                 tryconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0);
@@ -4607,7 +4845,8 @@ static void canvas_connect_selection(t_canvas *x)
                 {
                     int srcno = glist_getindex(x, &t.tr_ob->ob_g);
                     int sinkno = glist_getindex(x, &t.tr_ob2->ob_g);
-                    canvas_disconnect_with_undo(x, srcno, t.tr_outno, sinkno, t.tr_inno);
+                    canvas_disconnect_with_undo(x, srcno, t.tr_outno,
+                        sinkno, t.tr_inno);
                 }
             }
             canvas_undo_add(x, UNDO_SEQUENCE_END, "disconnect", 0);
@@ -4705,11 +4944,10 @@ static void canvas_texteditor(t_canvas *x)
     t_rtext *foo;
     char *buf;
     int bufsize;
-    if ((foo = x->gl_editor->e_textedfor))
+    if ((foo = glist_textedfor(x)))
         rtext_gettext(foo, &buf, &bufsize);
     else buf = "", bufsize = 0;
-    sys_vgui("pdtk_pd_texteditor {%.*s}\n", bufsize, buf);
-
+    pdgui_vmess("pdtk_pd_texteditor", "p", bufsize, buf);
 }
 
 void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av)
@@ -4730,24 +4968,25 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
         for (g = x->gl_list; g; g = g->g_next)
             if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
-            {
-                t_rtext *y = glist_findrtext(x, ob);
-                text_drawborder(ob, x,
-                                rtext_gettag(y), rtext_width(y), rtext_height(y), 1);
-            }
+        {
+            t_rtext *y = glist_getrtext(x, ob);
+            text_drawborder(ob, x, rtext_gettag(y), 1);
+        }
     }
     else
     {
-        glist_noselect(x);
+        glist_noselect(x);  /* this can knock us back into edit mode so : */
+        x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            sys_vgui(".x%lx.c delete commentbar\n", glist_getcanvas(x));
+            pdgui_vmess(0, "crs",
+                glist_getcanvas(x), "delete", "commentbar");
         }
     }
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
+        pdgui_vmess("pdtk_canvas_editmode", "^i",
             glist_getcanvas(x), x->gl_edit);
         canvas_reflecttitle(x);
     }
@@ -4772,11 +5011,10 @@ static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
             gobj_displace(y, x, nx1-x1, ny1-y1);
         }
     }
-    if (glist_isvisible(x))
-        glist_redraw(x);
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_checkglist(&y->g_pd)  && !canvas_isabstraction((t_canvas *)y))
             canvas_dofont((t_canvas *)y, font, xresize, yresize);
+    if(x->gl_havewindow) canvas_redraw(x);
 }
 
     /* canvas_menufont calls up a TK dialog which calls this back */
@@ -4804,17 +5042,17 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
 
 void glist_getnextxy(t_glist *gl, int *xpix, int *ypix)
 {
-    if (EDITOR->canvas_last_glist == gl)
-        *xpix = EDITOR->canvas_last_glist_x,
-        *ypix = EDITOR->canvas_last_glist_y;
+    if (THISED->canvas_last_glist == gl)
+        *xpix = THISED->canvas_last_glist_x,
+        *ypix = THISED->canvas_last_glist_y;
     else *xpix = *ypix = 40;
 }
 
 static void glist_setlastxy(t_glist *gl, int xval, int yval)
 {
-    EDITOR->canvas_last_glist = gl;
-    EDITOR->canvas_last_glist_x = xval;
-    EDITOR->canvas_last_glist_y = yval;
+    THISED->canvas_last_glist = gl;
+    THISED->canvas_last_glist_x = xval;
+    THISED->canvas_last_glist_y = yval;
 }
 
 
@@ -4853,7 +5091,7 @@ void g_editor_setup(void)
         gensym("reselect"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_cycleselect,
         gensym("cycleselect"), A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_undo_undo,
+    class_addmethod(canvas_class, (t_method)canvas_undomenu,
         gensym("undo"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_undo_redo,
         gensym("redo"), A_NULL);
@@ -4887,16 +5125,8 @@ void g_editor_setup(void)
         gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_triggerize,
         gensym("triggerize"), 0);
-
-/* -------------- connect method used in reading files ------------------ */
-    class_addmethod(canvas_class, (t_method)canvas_connect,
-        gensym("connect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
-/* -------------- copy buffer ------------------ */
-    EDITOR->copy_binbuf = binbuf_new();
 }
 
 void canvas_editor_for_class(t_class *c)
@@ -4919,21 +5149,23 @@ void canvas_editor_for_class(t_class *c)
 
 void g_editor_newpdinstance(void)
 {
-    EDITOR = getbytes(sizeof(*EDITOR));
+    THISED = getbytes(sizeof(*THISED));
+        /* other stuff is null-checked but this needs to exist: */
+    THISED->copy_binbuf = binbuf_new();
 }
 
 void g_editor_freepdinstance(void)
 {
-    if (EDITOR->copy_binbuf)
-        binbuf_free(EDITOR->copy_binbuf);
-    if (EDITOR->canvas_undo_buf)
+    if (THISED->copy_binbuf)
+        binbuf_free(THISED->copy_binbuf);
+    if (THISED->canvas_undo_buf)
     {
-        if (!EDITOR->canvas_undo_fn)
+        if (!THISED->canvas_undo_fn)
             bug("g_editor_freepdinstance");
-        else (*EDITOR->canvas_undo_fn)
-            (EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
+        else (*THISED->canvas_undo_fn)
+            (THISED->canvas_undo_canvas, THISED->canvas_undo_buf, UNDO_FREE);
     }
-    if (EDITOR->canvas_findbuf)
-        binbuf_free(EDITOR->canvas_findbuf);
-    freebytes(EDITOR, sizeof(*EDITOR));
+    if (THISED->canvas_findbuf)
+        binbuf_free(THISED->canvas_findbuf);
+    freebytes(THISED, sizeof(*THISED));
 }

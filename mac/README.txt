@@ -61,9 +61,9 @@ argument, a "Pd.app" is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.
 
-A pre-built universal (32/64 bit) Tk 8.5.19 Wish with patches applied is
+A pre-built universal (32/64 bit) Tk 8.6.10+ Wish with patches applied is
 included with the Pd source distribution and works across the majority of macOS
-versions up to 10.14. This is the default Wish.app when using osx-app.sh. If you
+versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
 want to use a different Wish.app (a newer version, a custom build, a system
 version), you can specify the donor via commandline options, for example:
 
@@ -103,7 +103,7 @@ embedded Wish.apps you need with tcltk-wish.sh can save you some time as they
 can be reused when (re)making the Pd .app bundle.
 
 Usually, it's best to use stable releases of Tcl/Tk. However, there are times
-when building from the current development version is useful. For instance, 
+when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
 your system, you can then see if there is a fix for this in the Tcl/Tk
 development version on GitHub. If so, then you can test by using the
@@ -176,5 +176,97 @@ Some important per-application settings required by the GUI include:
 * NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving
 * ApplePressAndHoldEnabled: false, disables character compose popup,
                                    enables key repeat for all keys
+* NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+
 
 These are set in `tcl/pd_guiprefs.tcl`.
+
+## Code Signing
+
+As of Pd 0.51, the mac/osx-app.sh script performs "ad-hoc code signing" in order
+to set entitlements to open un-validated dynamic libraries on macOS 10.15+. This
+is required due to the new security settings. Note: ad-hoc signing doesn't
+actually sign the .app bundle with an account certificate, so the unidentified
+developer warning is still shown when the downloaded .app is run for the first
+time.
+
+## Privacy Permissions
+
+macOS 10.14 introduced system privacy permissions for actions applications can
+undertake on a user account, such as accessing files or reading microphone or
+camera input. When an application is started for the first time and tries to
+access something that is covered by the privacy settings, a permissions prompt
+is displayed by the system requesting access. The action is then allowed or
+denied and this setting is saved and applied when the application is run again
+in the future.
+
+As of macOS 10.15, running Pd will request access for the following:
+
+* Files and Folders: Documents
+* Files and Folders: Desktop
+* Microphone
+
+Additionally, using an external such as Gem for camera input will request
+access to the Camera.
+
+The current permissions can be changed in Privacy panel in System Preferences.
+They can also be reset on the commandline using the "tccutil" command and the
+Pd .app bundle id:
+
+    # reset Pd's Microphone privacy setting
+    tccutil reset Microphone org.puredata.pd.pd-gui
+
+    # reset all of Pd's privacy settings
+    tccutil reset All org.puredata.pd.pd-gui
+
+## Font Issues with macOS 10.15+
+
+macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
+result that Pd's default font, DejaVu Sans Mono, renders thin and closer
+together than system fonts. This results in objects on the patch canvas that are
+longer their inner text and text selection positioning is off.
+
+To remedy this for now, Pd 0.51-3 changed Pd's default font for macOS to Menlo
+which is included with the system since 10.6. Menlo is based on Bitstream Vera
+Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or
+positioning.
+
+## Dark Mode
+
+Pd currently disables Dark Mode support by setting the
+NSRequiresAquaSystemAppearance key to true in both the app bundle's Info.plist
+and the GUI defaults preference file. This restriction may be removed in the
+future once Dark Mode is handled in the GUI.
+
+## Debugging Releases
+
+On macOS 10.15+, apps must be signed with an entitlement to allow debugging.
+This is good for security, but bad if you want to run Pd in lldb to figure out
+why your custom external is crashing.
+
+To make this work, the entitlement can be added to an existing Pd release .app
+bundle using the codesign command in Terminal (steps by Pierre Alexandre
+Tremblay):
+
+1. Extract the current Pd entitlements from the internal pd binary:
+
+    codesign -d /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd \
+        --entitlements :~/Desktop/pd-entitlements.xml
+
+2. Edit pd-entitlements.xml on your Desktop, add the following key, and save:
+
+    <key>com.apple.security.get-task-allow</key>
+    <true/>
+
+3. Re-sign the pd binary with the updated entitlements:
+
+    codesign -s - --deep --force --options=runtime \
+        --entitlements ~/Desktop/pd-entitlements.xml \
+        /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+
+Now Pd can be run with lldb using:
+
+    lldb /Applications/Pd-0.53-2.app/Contents/Resources/bin/pd
+
+Note: Re-signing using an ad-hoc identifier will work on the development system,
+      but running the Pd .app bundle on another system will result in security
+      warnings as the original signature and notarization are invalid.

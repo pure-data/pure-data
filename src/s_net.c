@@ -14,7 +14,12 @@
 #include <sys/time.h>
 #endif
 
-// Windows XP winsock doesn't provide inet_ntop
+#ifdef HAVE_SYS_FILIO_H
+/* IllumOS defines FIONREAD in sys/filio.h */
+#include <sys/filio.h>
+#endif
+
+    /* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
@@ -47,17 +52,43 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                              int port, int protocol) {
     struct addrinfo hints;
-    char portstr[10]; // largest port is 65535
+    int result;
+    char portstr[10]; /* largest port is 65535 */
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; // IPv4 or IPv6
+    hints.ai_family = AF_UNSPEC; /* IPv4 or IPv6 */
     hints.ai_socktype = protocol;
     hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
-    hints.ai_flags = AI_ALL |        // both IPv4 and IPv6 addrs
-                     AI_V4MAPPED |   // fallback to IPv4-mapped IPv6 addrs
-                     AI_PASSIVE;     // listen to any addr if hostname is NULL
+    hints.ai_flags =
+#ifdef AI_ALL
+                     AI_ALL |       /* both IPv4 and IPv6 addrs */
+#endif
+#ifdef AI_V4MAPPED
+                     AI_V4MAPPED |  /* fallback to IPv4-mapped IPv6 addrs */
+#endif
+                     AI_PASSIVE;    /* listen to any addr if hostname is NULL */
     portstr[0] = '\0';
     sprintf(portstr, "%d", port);
-    return getaddrinfo(hostname, portstr, &hints, ailist);
+    result = getaddrinfo(hostname, portstr, &hints, ailist);
+        /* There's currently a bug in the BSD libc where getaddrinfo()
+         * will return EAI_BADFLAGS for the AI_ALL and AI_V4MAPPED flags.
+         * NOTE: this also seems to affect Android!
+         * In practice, this means we can't use dual stack sockets,
+         * so we fall back to IPv4 networking... */
+    if (result == EAI_BADFLAGS)
+    {
+        static int warned = 0;
+        if (!warned)
+        {
+            fprintf(stderr, "Warning: can't create IPv6 dual-stack socket - falling "
+                "back to IPv4. (This is a known bug in the BSD libc, which doesn't "
+                "implement the AI_ALL and AI_V4MAPPED flags for getaddrinfo().)\n");
+            warned = 1;
+        }
+        hints.ai_family = AF_INET;
+        hints.ai_flags = AI_PASSIVE;
+        result = getaddrinfo(hostname, portstr, &hints, ailist);
+    }
+    return result;
 }
 
 int addrinfo_ipv4_first(const struct addrinfo* ai1, const struct addrinfo* ai2)
@@ -215,63 +246,103 @@ int socket_init(void)
     return 0;
 }
 
-// kudos to https://stackoverflow.com/a/46062474/6063908
+    /* kudos to https://stackoverflow.com/a/46062474/6063908 */
 int socket_connect(int socket, const struct sockaddr *addr,
                    socklen_t addrlen, float timeout)
 {
-    // set nonblocking and connect
+    /* set nonblocking and connect */
     socket_set_nonblocking(socket, 1);
 
     if (connect(socket, addr, addrlen) < 0)
     {
-        int status;
-        struct timeval timeoutval;
-        fd_set writefds, errfds;
     #ifdef _WIN32
         if (socket_errno() != WSAEWOULDBLOCK)
     #else
         if (socket_errno() != EINPROGRESS)
     #endif
-            return -1; // break on "real" error
+            return -1; /* break on "real" error */
 
-        // block with select using timeout
-        if (timeout < 0) timeout = 0;
-        timeoutval.tv_sec = (int)timeout;
-        timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
-        FD_ZERO(&writefds);
-        FD_SET(socket, &writefds); // socket is connected when writable
-        FD_ZERO(&errfds);
-        FD_SET(socket, &errfds); // catch exceptions
-
-        status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
-        if (status < 0) // select failed
+        /* block with select() using timeout.
+        NB: the watchdog may cause select() to be interrupted by a signal
+        and thus fail with EINTR! In this case we just decrease the timeout
+        value by the elapsed time and try again. */
+        while (1)
         {
-            fprintf(stderr, "socket_connect: select failed");
-            return -1;
-        }
-        else if (status == 0) // connection timed out
-        {
-        #ifdef _WIN32
-            WSASetLastError(WSAETIMEDOUT);
-        #else
-            errno = ETIMEDOUT;
+            int status, err;
+            socklen_t len;
+            struct timeval timeoutval;
+        #ifndef _WIN32
+            struct timeval t1;
         #endif
-            return -1;
-        }
+            fd_set writefds, errfds;
+            if (timeout < 0) timeout = 0;
+            timeoutval.tv_sec = (int)timeout;
+            timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
+            /* the operation has been completed once the socket is writeable. */
+            FD_ZERO(&writefds);
+            FD_SET(socket, &writefds);
+            /* also check for errors */
+            FD_ZERO(&errfds);
+            FD_SET(socket, &errfds);
 
-        if (FD_ISSET(socket, &errfds)) // connection failed
-        {
-            int err; socklen_t len = sizeof(err);
+        #ifndef _WIN32
+            gettimeofday(&t1, NULL);
+        #endif
+
+            status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
+            if (status < 0) /* select failed */
+            {
+            #ifndef _WIN32
+                if (errno == EINTR)
+                {
+                    double elapsed;
+                    struct timeval t2;
+                    gettimeofday(&t2, NULL);
+                    elapsed = ((t2.tv_sec - t1.tv_sec) +
+                        (1./1000000.) * (t2.tv_usec - t1.tv_usec));
+                    timeout -= elapsed;
+                #if 0
+                    fprintf(stderr, "socket_connect: interrupted after %f ms\n",
+                            elapsed * 1000);
+                    fprintf(stderr, "remaining timeout: %f ms\n", timeout * 1000);
+                #endif
+                    continue;
+                }
+            #endif
+                fprintf(stderr, "socket_connect: select failed (%d)\n", errno);
+                return -1;
+            }
+            else if (status == 0) /* connection timed out */
+            {
+            #ifdef _WIN32
+                WSASetLastError(WSAETIMEDOUT);
+            #else
+                errno = ETIMEDOUT;
+            #endif
+                return -1;
+            }
+
+            /* Once the socket is writeable we must check the SO_ERROR socket option
+            to determine whether the connection has been successful. We also wait
+            for exceptions because it can give better (and earlier) error messages,
+            but we must not rely on it! (See the documentation for EINPROGRESS in
+            https://man7.org/linux/man-pages/man2/connect.2.html.) */
+            len = sizeof(err);
             getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
-        #ifdef _WIN32
-            WSASetLastError(err);
-        #else
-            errno = err;
-        #endif
-            return -1;
+            if (err == 0)
+                break; /* success! */
+            else
+            {
+            #ifdef _WIN32
+                WSASetLastError(err);
+            #else
+                errno = err;
+            #endif
+                return -1;
+            }
         }
     }
-    // done, set blocking again
+    /* done, set blocking again */
     socket_set_nonblocking(socket, 0);
     return 0;
 }
@@ -396,7 +467,7 @@ int socket_errno(void)
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
-    if (err == 10044) // WSAESOCKTNOSUPPORT
+    if (err == 10044) /* WSAESOCKTNOSUPPORT */
     {
         fprintf(stderr,
             "Warning: you might not have TCP/IP \"networking\" turned on\n");
@@ -411,8 +482,8 @@ int socket_errno_udp(void)
 {
 #ifdef _WIN32
     int err = socket_errno();
-    // ignore WSAECONNRESET to prevent UDP sockets
-    // from closing in case of a missing receiver
+    /* ignore WSAECONNRESET to prevent UDP sockets
+       from closing in case of a missing receiver */
     if (err == 10054)
         return 0;
     else
@@ -424,14 +495,16 @@ int socket_errno_udp(void)
 
 void socket_strerror(int err, char *buf, int size)
 {
-    if (size <= 0)
-        return;
-#ifdef _WIN32
-    buf[0] = '\0';
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-                   size, NULL);
-#else
-    snprintf(buf, size, "%s", strerror(err));
-#endif
+    if (size > 0)
+    {
+    #ifdef _WIN32
+        wchar_t wbuf[1024];
+        int count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, 1024, NULL);
+        if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, size, 0, 0))
+            *buf = '\0';
+    #else
+        snprintf(buf, size, "%s", strerror(err));
+    #endif
+    }
 }

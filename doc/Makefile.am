@@ -7,39 +7,8 @@ AUTOMAKE_OPTIONS = foreign
 # but we want $(prefix)/lib/pd/doc
 libpddir = $(pkglibdir)/doc
 
-# about text file, needed to write version string into
-ABOUT_FILE=1.manual/1.introduction.txt
-
 # location to pd header
 M_PD=$(top_srcdir)/src/m_pd.h
-
-# get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION = $(shell grep PD_MAJOR_VERSION $(M_PD) | \
-    sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION = $(shell grep PD_MINOR_VERSION $(M_PD) | \
-    sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION = $(shell grep PD_BUGFIX_VERSION $(M_PD) | \
-    sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION = $(shell grep PD_TEST_VERSION $(M_PD) | \
-    sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
-PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
-
-#########################################
-##### Targets #####
-
-# build version string & write into about file during install
-install-data-hook:
-	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
-	if test "x${PD_TEST_VERSION}" == "x" ; then \
-	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
-	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
-	else \
-	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
-	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
-	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
-	fi
-	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 
 #########################################
 ##### Files, Binaries, & Libs #####
@@ -53,55 +22,127 @@ empty=
 # cd doc
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
-     ./1.manual/1.introduction.txt \
-     ./1.manual/fig1.1.png \
-     ./1.manual/fig1.2.jpg \
-     ./1.manual/fig1.3.jpg \
-     ./1.manual/fig1.4.png \
-     ./1.manual/fig1.5.jpg \
-     ./1.manual/fig11.1.png \
-     ./1.manual/fig11.2.png \
-     ./1.manual/fig11.3.png \
-     ./1.manual/fig11.4.png \
-     ./1.manual/fig3.1.jpg \
-     ./1.manual/fig3.10.jpg \
-     ./1.manual/fig3.2.jpg \
-     ./1.manual/fig3.3.jpg \
-     ./1.manual/fig3.4.jpg \
-     ./1.manual/fig3.5.jpg \
-     ./1.manual/fig3.6.jpg \
-     ./1.manual/fig3.7.jpg \
-     ./1.manual/fig3.8.jpg \
-     ./1.manual/fig3.9.jpg \
-     ./1.manual/fig4.1.png \
-     ./1.manual/fig4.2.png \
-     ./1.manual/fig4.3.png \
-     ./1.manual/fig4.4.png \
-     ./1.manual/fig4.5.png \
-     ./1.manual/fig4.6.png \
-     ./1.manual/fig4.7.png \
-     ./1.manual/fig7.1.jpg \
-     ./1.manual/fig7.2.jpg \
-     ./1.manual/fig7.3.jpg \
-     ./1.manual/fig7.4.jpg \
-     ./1.manual/fig7.5.jpg \
-     ./1.manual/fig7.6.jpg \
-     ./1.manual/fig8.1.jpg \
-     ./1.manual/fig8.2.jpg \
-     ./1.manual/fig8.3.jpg \
-     ./1.manual/fig8.4.jpg \
-     ./1.manual/fig8.5.jpg \
-     ./1.manual/fig8.6.jpg \
-     ./1.manual/fig9.1.jpg \
-     ./1.manual/fig9.2.jpg \
-     ./1.manual/fig9.3.jpg \
+     ./1.manual/resources/favicon.ico \
+     ./1.manual/resources/pdmanual.css \
+     ./1.manual/resources/icon.png \
+     ./1.manual/resources/1.2.1.png \
+     ./1.manual/resources/1.2.2.png \
+     ./1.manual/resources/1.2.3.png \
+     ./1.manual/resources/2.1.1.png \
+     ./1.manual/resources/2.1.10.png \
+     ./1.manual/resources/2.1.11.png \
+     ./1.manual/resources/2.1.12.png \
+     ./1.manual/resources/2.1.13.png \
+     ./1.manual/resources/2.1.14.png \
+     ./1.manual/resources/2.1.15.png \
+     ./1.manual/resources/2.1.2.png \
+     ./1.manual/resources/2.1.3.png \
+     ./1.manual/resources/2.1.4.png \
+     ./1.manual/resources/2.1.5.png \
+     ./1.manual/resources/2.1.6.png \
+     ./1.manual/resources/2.1.7.png \
+     ./1.manual/resources/2.1.8.png \
+     ./1.manual/resources/2.1.9.png \
+     ./1.manual/resources/2.10.1.png \
+     ./1.manual/resources/2.10.2.png \
+     ./1.manual/resources/2.10.3.png \
+     ./1.manual/resources/2.10.4.png \
+     ./1.manual/resources/2.10.5.png \
+     ./1.manual/resources/2.10.6.png \
+     ./1.manual/resources/2.11.1.png \
+     ./1.manual/resources/2.2.1.png \
+     ./1.manual/resources/2.2.10.png \
+     ./1.manual/resources/2.2.2.png \
+     ./1.manual/resources/2.2.3.png \
+     ./1.manual/resources/2.2.4.png \
+     ./1.manual/resources/2.2.5.png \
+     ./1.manual/resources/2.2.6.png \
+     ./1.manual/resources/2.2.7.png \
+     ./1.manual/resources/2.2.8.png \
+     ./1.manual/resources/2.2.9.png \
+     ./1.manual/resources/2.3.1.png \
+     ./1.manual/resources/2.3.10.png \
+     ./1.manual/resources/2.3.11.png \
+     ./1.manual/resources/2.3.12.png \
+     ./1.manual/resources/2.3.13.png \
+     ./1.manual/resources/2.3.14.png \
+     ./1.manual/resources/2.3.15.png \
+     ./1.manual/resources/2.3.16.png \
+     ./1.manual/resources/2.3.17.png \
+     ./1.manual/resources/2.3.18.png \
+     ./1.manual/resources/2.3.19.png \
+     ./1.manual/resources/2.3.2.png \
+     ./1.manual/resources/2.3.20.png \
+     ./1.manual/resources/2.3.21.png \
+     ./1.manual/resources/2.3.22.png \
+     ./1.manual/resources/2.3.23.png \
+     ./1.manual/resources/2.3.24.png \
+     ./1.manual/resources/2.3.25.png \
+     ./1.manual/resources/2.3.26.png \
+     ./1.manual/resources/2.3.27.png \
+     ./1.manual/resources/2.3.3.png \
+     ./1.manual/resources/2.3.4.png \
+     ./1.manual/resources/2.3.5.png \
+     ./1.manual/resources/2.3.6.png \
+     ./1.manual/resources/2.3.7.png \
+     ./1.manual/resources/2.3.8.png \
+     ./1.manual/resources/2.3.9.png \
+     ./1.manual/resources/2.4.1.png \
+     ./1.manual/resources/2.4.10.png \
+     ./1.manual/resources/2.4.11.png \
+     ./1.manual/resources/2.4.12.png \
+     ./1.manual/resources/2.4.13.png \
+     ./1.manual/resources/2.4.14.png \
+     ./1.manual/resources/2.4.15.png \
+     ./1.manual/resources/2.4.16.png \
+     ./1.manual/resources/2.4.2.png \
+     ./1.manual/resources/2.4.3.png \
+     ./1.manual/resources/2.4.4.png \
+     ./1.manual/resources/2.4.5.png \
+     ./1.manual/resources/2.4.6.png \
+     ./1.manual/resources/2.4.7.png \
+     ./1.manual/resources/2.4.8.png \
+     ./1.manual/resources/2.4.9.png \
+     ./1.manual/resources/2.5.1.png \
+     ./1.manual/resources/2.6.1.png \
+     ./1.manual/resources/2.8.1.png \
+     ./1.manual/resources/2.8.2.png \
+     ./1.manual/resources/2.8.3.png \
+     ./1.manual/resources/2.8.4.png \
+     ./1.manual/resources/2.8.5.png \
+     ./1.manual/resources/2.8.6.png \
+     ./1.manual/resources/2.9.1.png \
+     ./1.manual/resources/2.9.2.png \
+     ./1.manual/resources/2.9.3.png \
+     ./1.manual/resources/2.9.4.png \
+     ./1.manual/resources/2.9.5.png \
+     ./1.manual/resources/2.9.6.png \
+     ./1.manual/resources/3.3.1.png \
+     ./1.manual/resources/3.3.2.png \
+     ./1.manual/resources/3.3.3.png \
+     ./1.manual/resources/3.3.4.png \
+     ./1.manual/resources/3.3.5.png \
+     ./1.manual/resources/3.3.6.png \
+     ./1.manual/resources/3.4.1.png \
+     ./1.manual/resources/3.4.2.png \
+     ./1.manual/resources/3.4.3.png \
+     ./1.manual/resources/4.1.1.png \
+     ./1.manual/resources/4.3.1.png \
+     ./1.manual/resources/4.3.2.png \
+     ./1.manual/resources/4.3.3.png \
+     ./1.manual/resources/4.3.4.png \
+     ./1.manual/resources/4.3.5.png \
+     ./1.manual/resources/4.3.6.png \
+     ./1.manual/resources/4.4.1.png \
+     ./1.manual/resources/4.4.2.png \
+     ./1.manual/resources/4.4.3.png \
      ./1.manual/index.htm \
-     ./1.manual/pdmanual.css \
-     ./1.manual/x1.htm \
-     ./1.manual/x2.htm \
-     ./1.manual/x3.htm \
-     ./1.manual/x4.htm \
-     ./1.manual/x5.htm \
+     ./1.manual/resources/chapter1.htm \
+     ./1.manual/resources/chapter2.htm \
+     ./1.manual/resources/chapter3.htm \
+     ./1.manual/resources/chapter4.htm \
+     ./1.manual/resources/chapter5.htm \
+     ./1.manual/resources/chapter6.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
@@ -130,9 +171,9 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/24.loops.pd \
      ./2.control.examples/dollarsign.pd \
      ./2.control.examples/dollarsign2.pd \
+     ./2.control.examples/gop-abs.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
-     ./3.audio.examples/A00.intro.txt \
      ./3.audio.examples/A01.sinewave.pd \
      ./3.audio.examples/A02.amplitude.pd \
      ./3.audio.examples/A03.line.pd \
@@ -145,14 +186,14 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/A10.review.pd \
      ./3.audio.examples/B01.wavetables.pd \
      ./3.audio.examples/B02.two-wavetables.pd \
-     ./3.audio.examples/B03.tabread4.pd \
+     ./3.audio.examples/B03.tabread4~.pd \
      ./3.audio.examples/B04.tabread4.interpolation.pd \
      ./3.audio.examples/B05.tabread.FM.pd \
      ./3.audio.examples/B06.table.switching.pd \
-     ./3.audio.examples/B07.sampler.pd \
+     ./3.audio.examples/B07.sampler.scratch.pd \
      ./3.audio.examples/B08.sampler.loop.pd \
      ./3.audio.examples/B09.sampler.loop.smooth.pd \
-     ./3.audio.examples/B10.sampler.scratch.pd \
+     ./3.audio.examples/B10.sampler.sliding.loop.pd \
      ./3.audio.examples/B11.sampler.nodoppler.pd \
      ./3.audio.examples/B12.sampler.transpose.pd \
      ./3.audio.examples/B13.sampler.overlap.pd \
@@ -187,7 +228,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/E02.ring.modulation.pd \
      ./3.audio.examples/E03.octave.divider.pd \
      ./3.audio.examples/E04.difference.tone.pd \
-     ./3.audio.examples/E05.chebychev.pd \
+     ./3.audio.examples/E05.chebyshev.pd \
      ./3.audio.examples/E06.exponential.pd \
      ./3.audio.examples/E07.evenodd.pd \
      ./3.audio.examples/E08.phase.mod.pd \
@@ -231,7 +272,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/H13.butterworth.pd \
      ./3.audio.examples/H14.all.pass.pd \
      ./3.audio.examples/H15.phaser.pd \
-     ./3.audio.examples/H16.adsr.filter.qlist.pd \
+     ./3.audio.examples/H16.adsr.filter.text.pd \
      ./3.audio.examples/I01.Fourier.analysis.pd \
      ./3.audio.examples/I02.Hann.window.pd \
      ./3.audio.examples/I03.resynthesis.pd \
@@ -257,52 +298,51 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/filter-graph1.pd \
      ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/osc-voice.pd \
-     ./3.audio.examples/output~.pd \
      ./3.audio.examples/partial.pd \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
-     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/reverb-echo.pd \
      ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
-     ./3.audio.examples/sinevoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
-     ./4.data.structures/00.intro.txt \
      ./4.data.structures/01.scalars.pd \
      ./4.data.structures/02.getting.data.pd \
      ./4.data.structures/03.setting.data.pd \
      ./4.data.structures/04.append.pd \
-     ./4.data.structures/05.array.pd \
-     ./4.data.structures/06.file.pd \
-     ./4.data.structures/07.sequencer.pd \
-     ./4.data.structures/08.selection.pd \
-     ./4.data.structures/09.scaling.pd \
-     ./4.data.structures/10.onoff.pd \
-     ./4.data.structures/11.array.controls.pd \
-     ./4.data.structures/12.beat-patterns.pd \
-     ./4.data.structures/13.sliderule.pd \
-     ./4.data.structures/14.partialtracer.pd \
+     ./4.data.structures/05.symbol.text.pd \
+     ./4.data.structures/06.array.pd \
+     ./4.data.structures/07.graph.on.parent.pd \
+     ./4.data.structures/08.file.pd \
+     ./4.data.structures/09.sequencer.pd \
+     ./4.data.structures/10.interaction.pd \
+     ./4.data.structures/11.scaling.pd \
+     ./4.data.structures/12.onoff.pd \
+     ./4.data.structures/13.array.controls.pd \
+     ./4.data.structures/14.beat-patterns.pd \
+     ./4.data.structures/15.sliderule.pd \
+     ./4.data.structures/16.FFT-plot.pd \
+     ./4.data.structures/17.partialtracer.pd \
+     ./4.data.structures/18.scope2d.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
-     ./4.data.structures/data-start.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
-     ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
-     ./4.data.structures/z.txt \
-     ./5.reference/0_all_guis-INTRO.txt \
-     ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
-     ./5.reference/acoustics~-help.pd \
+     ./5.reference/acoustics-tilde-help.pd \
      ./5.reference/adc~_dac~-help.pd \
+     ./5.reference/all_guis.pd \
      ./5.reference/append-help.pd \
      ./5.reference/array-object-help.pd \
      ./5.reference/array-object-help.txt \
      ./5.reference/bag-help.pd \
      ./5.reference/bang-help.pd \
      ./5.reference/bang~-help.pd \
+     ./5.reference/binops-help.pd \
+     ./5.reference/binops-other-help.pd \
+     ./5.reference/binops-tilde-help.pd \
      ./5.reference/biquad~-help.pd \
      ./5.reference/block~-help.pd \
      ./5.reference/bng-help.pd \
@@ -311,8 +351,11 @@ nobase_dist_libpd_DATA = \
      ./5.reference/change-help.pd \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \
-     ./5.reference/clone-abstraction.pd \
+     ./5.reference/clone-abs-a.pd \
+     ./5.reference/clone-abs-b.pd \
+     ./5.reference/clone-abs-c.pd \
      ./5.reference/clone-help.pd \
+     ./5.reference/cnv-help.pd \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
@@ -320,58 +363,46 @@ nobase_dist_libpd_DATA = \
      ./5.reference/czero~-help.pd \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
-     ./5.reference/delread4~-help.pd \
-     ./5.reference/delread~-help.pd \
-     ./5.reference/delwrite~-help.pd \
-     ./5.reference/drawpolygon-help.pd \
+     ./5.reference/delay-tilde-objects-help.pd \
+     ./5.reference/draw-shapes-help.pd \
      ./5.reference/drawtext-help.pd \
+     ./5.reference/ds-text.txt \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
      ./5.reference/expr-help.pd \
-     ./5.reference/exp~-help.pd \
      ./5.reference/fft~-help.pd \
+     ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
      ./5.reference/framp~-help.pd \
-     ./5.reference/fudiformat-help.pd \
-     ./5.reference/fudiparse-help.pd \
-     ./5.reference/gatom-help.pd \
+     ./5.reference/fudi-format-parse-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
-     ./5.reference/hdl-help.pd \
+     ./5.reference/gui-boxes-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
-     ./5.reference/hradio-help.pd \
-     ./5.reference/hslider-help.pd \
+     ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
-     ./5.reference/key-help.pd \
+     ./5.reference/key-input-help.pd \
      ./5.reference/line-help.pd \
      ./5.reference/line~-help.pd \
      ./5.reference/list-help.pd \
      ./5.reference/loadbang-help.pd \
-     ./5.reference/log~-help.pd \
      ./5.reference/lop~-help.pd \
      ./5.reference/makefilename-help.pd \
      ./5.reference/makenote-help.pd \
-     ./5.reference/math-help.pd \
      ./5.reference/message-help.pd \
      ./5.reference/metro-help.pd \
      ./5.reference/midi-help.pd \
      ./5.reference/moses-help.pd \
-     ./5.reference/my_canvas-help.pd \
      ./5.reference/namecanvas-help.pd \
-     ./5.reference/netreceive-help.pd \
-     ./5.reference/netsend-help.pd \
+     ./5.reference/nbx-help.pd \
+     ./5.reference/netsend-receive-help.pd \
      ./5.reference/noise~-help.pd \
-     ./5.reference/numbox2-help.pd \
      ./5.reference/openpanel-help.pd \
-     ./5.reference/operators-help.pd \
-     ./5.reference/oscformat-help.pd \
-     ./5.reference/oscparse-help.pd \
+     ./5.reference/osc-format-parse-help.pd \
      ./5.reference/osc~-help.pd \
-     ./5.reference/otherbinops-help.pd \
-     ./5.reference/out1~.pd \
      ./5.reference/pack-help.pd \
-     ./5.reference/pd-help.pd \
+     ./5.reference/pd-messages.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
@@ -379,44 +410,43 @@ nobase_dist_libpd_DATA = \
      ./5.reference/plot-help.pd \
      ./5.reference/pointer-help.pd \
      ./5.reference/poly-help.pd \
-     ./5.reference/pow~-help.pd \
      ./5.reference/print-help.pd \
      ./5.reference/print~-help.pd \
      ./5.reference/qlist-help.pd \
      ./5.reference/qlist.txt \
+     ./5.reference/radio-help.pd \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
-     ./5.reference/receive-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
-     ./5.reference/rsqrt~-help.pd \
      ./5.reference/rzero_rev~-help.pd \
      ./5.reference/rzero~-help.pd \
      ./5.reference/samphold~-help.pd \
      ./5.reference/samplerate~-help.pd \
      ./5.reference/savepanel-help.pd \
-     ./5.reference/savestate-example.pd \
+     ./5.reference/savestate-ex1.pd \
+     ./5.reference/savestate-ex2.pd \
+     ./5.reference/savestate-ex3.pd \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send-help.pd \
-     ./5.reference/send~-help.pd \
+     ./5.reference/send-receive-help.pd \
+     ./5.reference/send-receive-tilde-help.pd \
+     ./5.reference/set-dsp-tgl.pd \
      ./5.reference/set-help.pd \
-     ./5.reference/setctl.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
-     ./5.reference/sigbinops-help.pd \
      ./5.reference/sig~-help.pd \
+     ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
+     ./5.reference/snake-tilde-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
      ./5.reference/spigot-help.pd \
-     ./5.reference/sqrt~-help.pd \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
-     ./5.reference/switch~-help.pd \
      ./5.reference/symbol-help.pd \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
@@ -425,8 +455,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabreceive~-help.pd \
-     ./5.reference/tabsend~-help.pd \
+     ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \
@@ -435,23 +464,22 @@ nobase_dist_libpd_DATA = \
      ./5.reference/textfile-help.pd \
      ./5.reference/textfile.txt \
      ./5.reference/threshold~-help.pd \
-     ./5.reference/throw~-help.pd \
+     ./5.reference/throw~-catch~-help.pd \
      ./5.reference/timer-help.pd \
      ./5.reference/toggle-help.pd \
+     ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
+     ./5.reference/trigonometric-help.pd \
+     ./5.reference/unops-help.pd \
+     ./5.reference/unops-tilde-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
-     ./5.reference/vradio-help.pd \
-     ./5.reference/vslider-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \
-     ./5.reference/wrap~-help.pd \
      ./5.reference/writesf~-help.pd \
-     ./5.reference/x_all_guis.pd \
      ./6.externs/0.README.txt \
      ./6.externs/dspobj~.c \
      ./6.externs/makefile \
@@ -467,8 +495,8 @@ nobase_dist_libpd_DATA = \
      ./6.externs/test-obj4.pd \
      ./6.externs/test-obj5.pd \
      ./7.stuff/soundfile-tools/1.ring-mod.pd \
-     ./7.stuff/soundfile-tools/2.bandpass.pd \
-     ./7.stuff/soundfile-tools/3.phase.vocoder.pd \
+     ./7.stuff/soundfile-tools/2.band-pass.pd \
+     ./7.stuff/soundfile-tools/3.phase-vocoder.pd \
      ./7.stuff/soundfile-tools/4.looper.pd \
      ./7.stuff/soundfile-tools/5.reverb.pd \
      ./7.stuff/soundfile-tools/6.vocoder.pd \
@@ -483,14 +511,14 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/synth/preset3.txt \
      ./7.stuff/synth/preset4.txt \
      ./7.stuff/synth/synthvoice.pd \
-     ./7.stuff/synth/test-gadsr.pd \
      ./7.stuff/tools/latency.pd \
      ./7.stuff/tools/load-meter.pd \
      ./7.stuff/tools/miditester.pd \
      ./7.stuff/tools/sizingtest.pd \
      ./7.stuff/tools/testtone.pd \
-     ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
+     ./8.topics/expr.htm \
+     ./8.topics/fudi.htm \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \
@@ -498,7 +526,6 @@ nobase_dist_libpd_DATA = \
      ./8.topics/slop-slew-limiting-patch.png \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
-     ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice.wav \
      ./sound/voice2.wav \

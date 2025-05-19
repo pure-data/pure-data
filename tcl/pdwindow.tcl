@@ -1,16 +1,21 @@
 
 package provide pdwindow 0.1
 
+package require pd_connect
+
 namespace eval ::pdwindow:: {
+    variable maxlogbuffer 21000 ;# if the logbuffer grows beyond this number, cut it
+    variable keeplogbuffer 1000 ;# if the logbuffer gets automatically cut, keep this many elements
     variable logbuffer {}
-    variable tclentry {}
-    variable tclentry_history {"console show"}
     variable history_position 0
     variable linecolor 0 ;# is toggled to alternate text line colors
     variable logmenuitems
     variable maxloglevel 4
+    variable font_size 12
 
-    variable lastlevel 0
+    # private variables
+    variable _lastlevel 0       ;# loglevel of last post (for automatic endpost level)
+    variable _curlogbuffer 0    ;# number of \n currently in the logbuffer
 
     namespace export create_window
     namespace export pdtk_post
@@ -18,6 +23,7 @@ namespace eval ::pdwindow:: {
     namespace export pdtk_pd_dio
     namespace export pdtk_pd_audio
 }
+array set ::pdwindow::missingobjects {}
 
 # TODO make the Pd window save its size and location between running
 
@@ -56,40 +62,98 @@ proc ::pdwindow::busyrelease {} {
 
 proc ::pdwindow::buffer_message {object_id level message} {
     variable logbuffer
-    lappend logbuffer $object_id $level $message
-}
-
-proc ::pdwindow::insert_log_line {object_id level message} {
-    set message [subst -nocommands -novariables $message]
-    if {$object_id eq ""} {
-        .pdwindow.text.internal insert end $message log$level
-    } else {
-        .pdwindow.text.internal insert end $message [list log$level obj$object_id]
-        .pdwindow.text.internal tag bind obj$object_id <$::modifier-ButtonRelease-1> \
-            "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-Return> \
-            "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-KP_Enter> \
-            "::pdwindow::select_by_id $object_id; break"
+    variable maxlogbuffer
+    variable keeplogbuffer
+    variable _curlogbuffer
+    lappend logbuffer [list $object_id $level $message]
+    set lfi 0
+    while { [set lfi [string first "\n" $message $lfi]] >= 0 } {
+        incr lfi
+        incr _curlogbuffer
+    }
+    # what we are actually counting here is not the number of *lines* in the logbuffer,
+    # but the number of buffer_messages, which is much higher
+    # e.g. printing a 10 element list ([1 2 3 4 5 6 7 8 9 10( -> [print])
+    # will add 22 messages (one prefix, one per atom, one per space-between-atoms, one LF)
+    # LATER we could try to track "\n"
+    # buffer-size limiting is only done if maxlogbuffer is > 0
+    if {$maxlogbuffer > 0 && $_curlogbuffer > $maxlogbuffer} {
+        # so we now have more lines (counting "\n") in the buffer than we actually want
+        set keeplines ${keeplogbuffer}
+        if {$keeplines > $maxlogbuffer} {set keeplines $maxlogbuffer}
+        set count 0
+        set keepitems 0
+        # check how many elements we need to save to keep ${keeplines} lines
+        foreach x [lreverse $logbuffer] {
+            set x [lindex $x 2]
+            set lfi 0
+            while { [set lfi [string first "\n" $x $lfi] ] >= 0} { incr lfi
+                incr count
+            }
+            if { $count >= $keeplines } {
+                break
+            }
+            incr keepitems
+        }
+        set logbuffer [lrange $logbuffer end-$keepitems end]
+        set msg [_ "dropped %d lines from the Pd window" [expr $_curlogbuffer - $count]]
+        set _curlogbuffer 0
+        ::pdwindow::verbose 10 "$msg\n"
+        ::pdwindow::filter_logbuffer
     }
 }
 
-# this has 'args' to satisfy trace, but its not used
-proc ::pdwindow::filter_buffer_to_text {args} {
+proc ::pdwindow::insert_log_line {object_id level message} {
+    set win .pdwindow.text.internal
+    set message [subst -nocommands -novariables $message]
+    if {$object_id eq "" || $object_id eq "obj:(nil)"} {
+        $win insert end $message log$level
+    } else {
+        set tag obj$object_id
+        $win insert end $message [list log$level $tag]
+        $win tag bind $tag <$::modifier-ButtonRelease-1> \
+            "::pdwindow::select_by_id $object_id; break"
+        $win tag bind $tag <Key-Return> \
+            "::pdwindow::select_by_id $object_id; break"
+        $win tag bind $tag <Key-KP_Enter> \
+            "::pdwindow::select_by_id $object_id; break"
+        $win tag bind $tag <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
+        $win tag bind $tag <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
+        if {$::windowingsystem eq "aqua"} {
+            set rightbtn [expr {$::tcl_version < 9.0 ? 2 : 3}]
+            set rightclicks [list <$rightbtn> <Control-Button-1>]
+        } else {
+            set rightclicks {<3>}
+        }
+        foreach event $rightclicks {
+            $win tag bind $tag $event [list ::pdwindow::message_contextmenu %W %x %y $object_id]
+        }
+    }
+}
+
+proc ::pdwindow::filter_logbuffer {} {
     variable logbuffer
     variable maxloglevel
     .pdwindow.text.internal delete 0.0 end
     set i 0
-    foreach {object_id level message} $logbuffer {
-        if { $level <= $::loglevel || $maxloglevel == $::loglevel} {
-            insert_log_line $object_id $level $message
+    foreach logentry $logbuffer {
+        foreach {object_id level message} $logentry {
+            if { $level <= $::loglevel || $maxloglevel == $::loglevel} {
+                insert_log_line $object_id $level $message
+            }
         }
         # this could take a while, so update the GUI every 10000 lines
         if { [expr $i % 10000] == 0} {update idletasks}
         incr i
     }
     .pdwindow.text.internal yview end
-    ::pdwindow::verbose 10 "the Pd window filtered $i lines\n"
+    return $i
+}
+# this has 'args' to satisfy trace, but its not used
+proc ::pdwindow::filter_buffer_to_text {args} {
+    set i [::pdwindow::filter_logbuffer]
+    set msg [_ "the Pd window filtered %d lines" $i ]
+    ::pdwindow::verbose 10 "$msg\n"
 }
 
 proc ::pdwindow::select_by_id {args} {
@@ -105,7 +169,7 @@ proc ::pdwindow::select_by_id {args} {
 # information about the patches they are building
 proc ::pdwindow::logpost {object_id level message} {
     variable maxloglevel
-    variable lastlevel $level
+    variable _lastlevel $level
 
     buffer_message $object_id $level $message
     if {[llength [info commands .pdwindow.text.internal]] &&
@@ -118,7 +182,7 @@ proc ::pdwindow::logpost {object_id level message} {
         after idle .pdwindow.text.internal yview end
     }
     # -stderr only sets $::stderr if 'pd-gui' is started before 'pd'
-    if {$::stderr} {puts stderr $message}
+    if {$::stderr} {puts -nonewline stderr $message}
 }
 
 # shortcuts for posting to the Pd window
@@ -133,8 +197,8 @@ proc ::pdwindow::pdtk_post {message} {post $message}
 
 proc ::pdwindow::endpost {} {
     variable linecolor
-    variable lastlevel
-    logpost {} $lastlevel "\n"
+    variable _lastlevel
+    logpost {} $_lastlevel "\n"
     set linecolor [expr ! $linecolor]
 }
 
@@ -149,19 +213,22 @@ proc ::pdwindow::verbose {level message} {
 # clear the log and the buffer
 proc ::pdwindow::clear_console {} {
     variable logbuffer {}
+    variable _curlogbuffer 0
     .pdwindow.text.internal delete 0.0 end
 }
 
 # save the contents of the pdwindow::logbuffer to a file
 proc ::pdwindow::save_logbuffer_to_file {} {
     variable logbuffer
-    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt]
+    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt -parent .pdwindow]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
-    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
+    puts $f "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
-    foreach {object_id level message} $logbuffer {
-        puts -nonewline $f $message
+    foreach logentry $logbuffer {
+        foreach {object_id level message} $logentry {
+            puts -nonewline $f $message
+        }
     }
     ::pdwindow::post "saved console to: $filename\n"
     close $f
@@ -185,10 +252,11 @@ proc ::pdwindow::pdtk_pd_dsp {value} {
 }
 
 proc ::pdwindow::pdtk_pd_dio {red} {
+    set dio .pdwindow.header.ioframe.dio
     if {$red == 1} {
-        .pdwindow.header.ioframe.dio configure -foreground red
+        $dio configure -foreground red
     } else {
-        .pdwindow.header.ioframe.dio configure -foreground lightgray
+        $dio configure -foreground [[winfo parent $dio] cget -background]
     }
 }
 
@@ -232,77 +300,10 @@ proc ::pdwindow::pdwindow_bindings {} {
     } else {
         # TODO should it possible to close the Pd window and keep Pd open?
         bind .pdwindow <$::modifier-Key-w>   "wm iconify .pdwindow"
-        wm protocol .pdwindow WM_DELETE_WINDOW "pdsend \"pd verifyquit\""
+        wm protocol .pdwindow WM_DELETE_WINDOW "::pd_connect::menu_quit"
     }
 }
 
-#--Tcl entry procs-------------------------------------------------------------#
-
-proc ::pdwindow::eval_tclentry {} {
-    variable tclentry
-    variable tclentry_history
-    variable history_position 0
-    if {$tclentry eq ""} {return} ;# no need to do anything if empty
-    if {[catch {uplevel #0 $tclentry} errorname]} {
-        global errorInfo
-        switch -regexp -- $errorname {
-            "missing close-brace" {
-                ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]\n
-            } "missing close-bracket" {
-                ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACKET '\]': "] $errorInfo]\n
-            } "^invalid command name" {
-                ::pdwindow::error [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]\n
-            } default {
-                ::pdwindow::error [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]\n
-            }
-        }
-    }
-    lappend tclentry_history $tclentry
-    set tclentry {}
-}
-
-proc ::pdwindow::get_history {direction} {
-    variable tclentry_history
-    variable history_position
-
-    incr history_position $direction
-    if {$history_position < 0} {set history_position 0}
-    if {$history_position > [llength $tclentry_history]} {
-        set history_position [llength $tclentry_history]
-    }
-    .pdwindow.tcl.entry delete 0 end
-    .pdwindow.tcl.entry insert 0 \
-        [lindex $tclentry_history end-[expr $history_position - 1]]
-}
-
-proc ::pdwindow::validate_tcl {} {
-    variable tclentry
-    if {[info complete $tclentry]} {
-        .pdwindow.tcl.entry configure -background "white"
-    } else {
-        .pdwindow.tcl.entry configure -background "#FFF0F0"
-    }
-}
-
-#--create tcl entry-----------------------------------------------------------#
-
-proc ::pdwindow::create_tcl_entry {} {
-# Tcl entry box frame
-    label .pdwindow.tcl.label -text [_ "Tcl:"] -anchor e
-    pack .pdwindow.tcl.label -side left
-    entry .pdwindow.tcl.entry -width 200 \
-       -exportselection 1 -insertwidth 2 -insertbackground blue \
-       -textvariable ::pdwindow::tclentry -font TkTextFont
-    pack .pdwindow.tcl.entry -side left -fill x
-# bindings for the Tcl entry widget
-    bind .pdwindow.tcl.entry <$::modifier-Key-a> "%W selection range 0 end; break"
-    bind .pdwindow.tcl.entry <Return> "::pdwindow::eval_tclentry"
-    bind .pdwindow.tcl.entry <Up>     "::pdwindow::get_history 1"
-    bind .pdwindow.tcl.entry <Down>   "::pdwindow::get_history -1"
-    bind .pdwindow.tcl.entry <KeyRelease> +"::pdwindow::validate_tcl"
-
-    bind .pdwindow.text <Key-Tab> "focus .pdwindow.tcl.entry; break"
-}
 
 proc ::pdwindow::set_findinstance_cursor {widget key state} {
     set triggerkeys [list Control_L Control_R Meta_L Meta_R]
@@ -315,7 +316,50 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
     }
 }
 
+proc ::pdwindow::add_missingobject {obj name} {
+    set ::pdwindow::missingobjects($obj) $name
+}
+
+
+proc ::pdwindow::message_contextmenu {widget theX theY obj} {
+    set m .pdwindow.message_contextmenu
+    destroy $m
+    menu $m
+    $m add command -label [_ "Find source" ]  -command [list ::pdwindow::select_by_id $obj]
+    if { [info exists ::pdwindow::missingobjects($obj)] } {
+        set cmd [list ::deken::open_search_objects $::pdwindow::missingobjects($obj)]
+        $m add command -label [_ "Find externals" ]  -command $cmd
+    }
+
+    tk_popup $m [expr [winfo rootx $widget] + $theX] [expr [winfo rooty $widget] + $theY]
+}
+
 #--create the window-----------------------------------------------------------#
+proc ::pdwindow::update_title {w} {
+    # leave the next line for the translations
+    set title [_ "Pd" ]
+    # override with the default application name
+    set title [_ "${::PD_APPLICATION_NAME}" ]
+    set version "${::PD_MAJOR_VERSION}.${::PD_MINOR_VERSION}.${::PD_BUGFIX_VERSION}${::PD_TEST_VERSION}"
+    set fulltitle "${title} ${version}"
+    if { [info exists ::deken::platform(floatsize)] } {
+        switch -- ${::deken::platform(floatsize)} {
+            32 { set floatsize "" }
+            64 { set floatsize [_ "EXPERIMENTAL double (64bit) precision"] }
+            default  { set floatsize [_ "%dbit-floats EXPERIMENTAL" ${::deken::platform(floatsize)}]}
+        }
+        if { ${floatsize} ne "" } {
+            set fulltitle "${fulltitle} - ${floatsize}"
+        }
+    }
+
+    if { [winfo exists ${w} ] } {
+        wm title ${w} "${fulltitle}"
+    }
+    set ::windowname($w) $title
+
+    return ${fulltitle}
+}
 
 proc ::pdwindow::create_window {} {
     variable logmenuitems
@@ -331,14 +375,14 @@ proc ::pdwindow::create_window {} {
     option add *PdWindow*Entry.background "white" startupFile
 
     toplevel .pdwindow -class PdWindow
-    wm title .pdwindow [_ "Pd"]
-    set ::windowname(.pdwindow) [_ "Pd"]
+    ::pdwindow::update_title .pdwindow
+
     if {$::windowingsystem eq "x11"} {
         wm minsize .pdwindow 400 75
     } else {
         wm minsize .pdwindow 400 51
     }
-    wm geometry .pdwindow =500x400+20+50
+    wm geometry .pdwindow =500x400
 
     frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
     pack .pdwindow.header -side top -fill x -ipady 5
@@ -359,15 +403,13 @@ proc ::pdwindow::create_window {} {
     label .pdwindow.header.ioframe.iostate \
         -text [_ "Audio off"] -borderwidth 1 \
         -background lightgray -foreground black \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
         -text [_ "Audio I/O error"] -borderwidth 1 \
         -background lightgray -foreground lightgray \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
     pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
         -side top
@@ -393,23 +435,16 @@ proc ::pdwindow::create_window {} {
     # TODO figure out how to make the menu traversable with the keyboard
     #.pdwindow.header.logmenu configure -takefocus 1
     pack .pdwindow.header.logmenu -side left
-    frame .pdwindow.tcl -borderwidth 0
-    pack .pdwindow.tcl -side bottom -fill x
-    # TODO this should use the pd_font_$size created in pd-gui.tcl
-    text .pdwindow.text -relief raised -bd 2 -font {$::font_family -12} \
+    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family $::pdwindow::font_size] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
-        -yscrollcommand ".pdwindow.scroll set" -width 60 \
+        -yscrollcommand ".pdwindow.scroll set" -width 80 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
     scrollbar .pdwindow.scroll -command ".pdwindow.text.internal yview"
     pack .pdwindow.scroll -side right -fill y
     pack .pdwindow.text -side right -fill both -expand 1
     raise .pdwindow
     focus .pdwindow.text
-    # run bindings last so that .pdwindow.tcl.entry exists
     pdwindow_bindings
-    # set cursor to show when clicking in 'findinstance' mode
-    bind .pdwindow <KeyPress> "+::pdwindow::set_findinstance_cursor %W %K %s"
-    bind .pdwindow <KeyRelease> "+::pdwindow::set_findinstance_cursor %W %K %s"
 
     # hack to make a good read-only text widget from http://wiki.tcl.tk/1152
     rename ::.pdwindow.text ::.pdwindow.text.internal
@@ -433,37 +468,14 @@ proc ::pdwindow::create_window {} {
 #--configure the window menu---------------------------------------------------#
 
 proc ::pdwindow::create_window_finalize {} {
-    # wait until .pdwindow.tcl.entry is visible before opening files so that
-    # the loading logic can grab it and put up the busy cursor
-
     # this ought to be called after all elements of the window (including the
     # menubar!) have been created!
     if {![winfo viewable .pdwindow.text]} { tkwait visibility .pdwindow.text }
-}
-
-proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
-    # on X11 measure the size of the window decoration, so we can open windows at the correct position
-    if {$::windowingsystem eq "x11"} {
-        if {[winfo viewable $winid]} {
-            # wait for possible race-conditions at startup...
-            if {[winfo viewable .pdwindow] && ![winfo viewable .pdwindow.header.pad1]} {
-                tkwait visibility .pdwindow.header.pad1
-            }
-
-            regexp -- {([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)} [wm geometry $winid] -> \
-                _ _ _left _top
-            set ::windowframex [expr {[winfo rootx $winid] - $_left}]
-            set ::windowframey [expr {[winfo rooty $winid] - $_top}]
-
-            #puts "======================="
-            #puts "[wm geometry $winid]"
-            #puts "winfo [winfo rootx $winid] [winfo rooty $winid]"
-            #puts "windowframe: $winid $::windowframex $::windowframey"
-            #puts "======================="
-        }
+    set fontsize [::pd_guiprefs::read menu-fontsize]
+    if {$fontsize != ""} {
+        ::dialog_font::apply .pdwindow $fontsize
     }
 }
-
 
 # this needs to happen *after* the main menu is created, otherwise the default Wish
 # menu is not replaced by the custom Apple menu on OSX

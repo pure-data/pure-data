@@ -14,22 +14,24 @@ fi
 
 pdversion=$1
 installerversion=$1.windows-installer.exe
-tkversion=8.6.8
-
+tkversion=8.6.10
+pddir=`pwd`/..
 
 cd /tmp
 rm -rf pd-$pdversion
-git clone ~/pd pd-$pdversion
+git clone $pddir pd-$pdversion
 cd pd-$pdversion
+
 
 #copy in the ASIO SDK and rename it ASIOSDK
 (cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
     rm -rf __MACOSX/; mv ASIOSDK2.3 ASIOSDK)
 
+
 #do an autotools build
 ./autogen.sh
 ./configure --host=x86_64-w64-mingw32 --with-wish=wish86.exe \
-    CPPFLAGS='-DWISH=\"wish86.exe\"'
+    CPPFLAGS='-DWISH=\"wish86.exe\" -DWINVER=0x0600 -D_WIN32_WINNT=0x0600'
 
 # for some reason, the generated libtool file has a reference to the 'msvcrt'
 # lib which breaks compilation... so get rid of it.  This might no longer be
@@ -45,8 +47,7 @@ cd msw
 cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
 
 # run the app building script itself
-/home/msp/bis/work/pd-versions/build-tk-on-win64/msw/msw-app.sh \
-   --builddir ..  --tk tcltk-$tkversion $pdversion
+./msw-app.sh  --builddir ..  --tk tcltk-$tkversion $pdversion
 
 # On my machine at least, the wrong winpthread library gets loaded (the
 # 32 bit one I think) - manually copy the correct one in.  This too is
@@ -54,9 +55,14 @@ cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
 
 cp /usr/x86_64-w64-mingw32/sys-root/mingw/bin/libwinpthread-1.dll \
    pd-$pdversion/bin/
+   
+# use pdfontloader for wish86 and 64bit Windows
+rm -f pd-$pdversion/bin/pdfontloader.dll
+unzip pdfontloader-64bit-for-wish86.zip -d pd-$pdversion/bin/
+
 
 # make the zip archive
-zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
+zip -r -q /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
 # make an installer
 ~/pd/msw/build-nsi.sh  `pwd`/pd-$pdversion $pdversion wish86.exe

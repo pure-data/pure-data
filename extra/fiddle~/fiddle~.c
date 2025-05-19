@@ -34,16 +34,9 @@
 #pragma warning (disable: 4305 4244)
 #endif
 
-/* this #ifdef does nothing, but its there... */
-#ifdef _WIN32
-#define flog log
-#define fexp exp
-#define fsqrt sqrt
-#else
-#define flog log
-#define fexp exp
-#define fsqrt sqrt
-#endif
+#define LOG  log
+#define EXP  exp
+#define SQRT sqrt
 
 char fiddle_version[] = "fiddle version 1.1 TEST4";
 
@@ -102,16 +95,11 @@ static fts_symbol_t *dsp_symbol = 0;
 #endif /* PD */
 
 #ifdef MSP
-#define flog log
-#define fexp exp
-#define fsqrt sqrt
-#endif /* MSP */
-
-#ifdef MSP
-#define t_floatarg double
 #include "ext.h"
 #include "z_dsp.h"
 #include "fft_mayer.proto.h"
+typedef float t_float;
+typedef double t_floatarg;
 #endif /* MSP */
 
 #include <math.h>
@@ -472,7 +460,7 @@ void sigfiddle_doit(t_sigfiddle *x)
         fp1[1] = 0.7071f * (im - re);
         fp1[4] = fp2[0] + fp3[1];
         fp1[5] = fp2[1] - fp3[0];
-        
+
         fp1 += 8, fp2 += 2, fp3 += 2;
         re= FILT1 * ( fp2[ -2] -fp2[ 1]  -fp3[ -2] +fp3[ 1]) +
             FILT2 * ( fp2[ -3] -fp2[ 2]  -fp3[ -3] +fp3[ 2]) +
@@ -490,7 +478,7 @@ void sigfiddle_doit(t_sigfiddle *x)
         fp1[1] = 0.7071f * (im - re);
         fp1[4] = fp2[0] - fp3[1];
         fp1[5] = fp2[1] + fp3[0];
-        
+
         fp1 += 8, fp2 += 2, fp3 += 2;
     }
 #if 0
@@ -518,7 +506,7 @@ void sigfiddle_doit(t_sigfiddle *x)
     if (total_power > 1e-9f)
     {
         total_db = (100.f - DBFUDGE) + LOGTODB * log(total_power/n);
-        total_loudness = fsqrt(fsqrt(total_power));
+        total_loudness = SQRT(SQRT(total_power));
         if (total_db < 0) total_db = 0;
     }
     else total_db = total_loudness = 0;
@@ -556,7 +544,7 @@ void sigfiddle_doit(t_sigfiddle *x)
     {
         t_float height = fp[2], h1 = fp[-2], h2 = fp[6];
         t_float totalfreq, pfreq, f1, f2, m, var, stdev;
-        
+
         if (height < h1 || height < h2 ||
             h1 < 0.00001f*total_power || h2 < 0.00001f*total_power)
                 continue;
@@ -588,7 +576,7 @@ void sigfiddle_doit(t_sigfiddle *x)
 #endif
             continue;
         }
-        stdev = fsqrt(var);
+        stdev = SQRT(var);
         if (totalfreq < 4)
         {
             if (x->x_nprint) post("oops: was %d,  freq %f, m %f, stdev %f h %f",
@@ -598,7 +586,7 @@ void sigfiddle_doit(t_sigfiddle *x)
         pk1->p_width = stdev;
 
         pk1->p_pow = height;
-        pk1->p_loudness = fsqrt(fsqrt(height));
+        pk1->p_loudness = SQRT(SQRT(height));
         pk1->p_fp = fp;
         pk1->p_freq = totalfreq;
         npeak++;
@@ -636,7 +624,7 @@ void sigfiddle_doit(t_sigfiddle *x)
     for (i = 0, fp1 = histogram; i < maxbin; i++) *fp1++ = 0;
     for (i = 0, pk1 = peaklist; i < npeak; i++, pk1++)
     {
-        t_float pit = BPERO_OVER_LOG2 * flog(pk1->p_freq) - 96.0;
+        t_float pit = BPERO_OVER_LOG2 * LOG(pk1->p_freq) - 96.0;
         t_float binbandwidth = FACTORTOBINS * pk1->p_width/pk1->p_freq;
         t_float putbandwidth = (binbandwidth < 2 ? 2 : binbandwidth);
         t_float weightbandwidth = (binbandwidth < 1.0 ? 1.0 : binbandwidth);
@@ -766,7 +754,7 @@ void sigfiddle_doit(t_sigfiddle *x)
         t_float cumpow = 0, cumstrength = 0, freqnum = 0, freqden = 0;
         int npartials = 0,  nbelow8 = 0;
             /* guessed-at frequency in bins */
-        t_float putfreq = fexp((1.0 / BPERO_OVER_LOG2) *
+        t_float putfreq = EXP((1.0 / BPERO_OVER_LOG2) *
             (histvec[i].h_index + 96.0f));
         for (j = 0; j < npeak; j++)
         {
@@ -787,12 +775,12 @@ void sigfiddle_doit(t_sigfiddle *x)
                 npartials++;
                 if (pnum < 8) nbelow8++;
                 cumpow += peaklist[j].p_pow;
-                cumstrength += fsqrt(fsqrt(peaklist[j].p_pow));
+                cumstrength += SQRT(SQRT(peaklist[j].p_pow));
                 stdev = (peaklist[j].p_width > MINBW ?
                     peaklist[j].p_width : MINBW);
                 weight = 1.0f / ((stdev*fipnum) * (stdev*fipnum));
                 freqden += weight;
-                freqnum += weight * peaklist[j].p_freq/fipnum;          
+                freqnum += weight * peaklist[j].p_freq/fipnum;
 #if 1
                 if (x->x_nprint)
                 {
@@ -1079,12 +1067,12 @@ int sigfiddle_setnpoints(t_sigfiddle *x, t_floatarg fnpoints)
     sigfiddle_freebird(x);
     if (npoints < MINPOINTS || npoints > MAXPOINTS)
     {
-        error("fiddle~: npoints out of range; using %d",
+        pd_error(0, "fiddle~: npoints out of range; using %d",
             npoints = DEFAULTPOINTS);
     }
     if (npoints != (1 << sigfiddle_ilog2(npoints)))
     {
-        error("fiddle~: npoints not a power of 2; using %d", 
+        pd_error(0, "fiddle~: npoints not a power of 2; using %d",
             npoints = (1 << sigfiddle_ilog2(npoints)));
     }
     x->x_hop = npoints >> 1;
@@ -1128,13 +1116,13 @@ int sigfiddle_doinit(t_sigfiddle *x, long npoints, long npitch,
         npoints = DEFAULTPOINTS;
     if (!sigfiddle_setnpoints(x, npoints))
     {
-        error("fiddle~: out of memory");
+        pd_error(0, "fiddle~: out of memory");
         return (0);
     }
     if (!(buf4 = (t_peakout *)getbytes(sizeof(*buf4) * npeakout)))
     {
         sigfiddle_freebird(x);
-        error("fiddle~: out of memory");
+        pd_error(0, "fiddle~: out of memory");
         return (0);
     }
     for (i = 0; i < npeakout; i++)
@@ -1416,7 +1404,7 @@ void sigfiddle_dsp(t_sigfiddle *x, t_signal **sp)
     x->x_sr = sp[0]->s_sr;
     sigfiddle_reattack(x, x->x_attacktime, x->x_attackthresh);
     sigfiddle_vibrato(x, x->x_vibtime, x->x_vibdepth);
-    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, sp[0]->s_n);
+    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
     /* This is the callback function for the clock, but also acts as
@@ -1676,7 +1664,7 @@ void sigfiddle_dsp(t_sigfiddle *x, t_signal **sp)
         }
         sigfiddle_reattack(x, x->x_attacktime, x->x_attackthresh);
     sigfiddle_vibrato(x, x->x_vibtime, x->x_vibdepth);
-    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, sp[0]->s_n);
+    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 void sigfiddle_tick(t_sigfiddle *x)     /* callback function for the clock MSP*/
@@ -1709,7 +1697,7 @@ void sigfiddle_tick(t_sigfiddle *x)     /* callback function for the clock MSP*/
         if (ph->h_pitch) outlet_float(x->x_noteout, ph->h_pitch);
 }
 
-void sigfiddle_bang(t_sigfiddle *x)             
+void sigfiddle_bang(t_sigfiddle *x)
 {
     int i;
     t_pitchhist *ph;
@@ -1826,7 +1814,7 @@ void msp_fft(t_float *buf, long np, long inv)
         // a more ambitious person would either do an in-place conversion
         // or rewrite the fft algorithm
         */
-    
+
         real = rp = msp_ffttemp;
         imag = ip = real + MAXPOINTS;
         src = buf;

@@ -1,63 +1,54 @@
-#N canvas 260 23 841 767 12;
-#X obj 170 82 osc~ 440;
-#X obj 170 339 dac~;
-#X obj 170 247 *~;
-#X obj 188 194 line~;
-#X text 167 7 LINES GRAPHED;
-#X text 58 33 Here again is a line~ controlling the amplitude of an
-osc~ \, but with the outputs graphed:, f 48;
-#X obj 252 94 r graphit;
-#X obj 253 193 r graphit;
-#X obj 253 253 r graphit;
-#X obj 188 163 r to-line;
+#N canvas 414 57 797 672 12;
+#X obj 229 261 osc~ 440;
+#X obj 229 511 dac~;
+#X obj 229 429 *~;
+#X obj 247 382 line~;
+#X obj 247 351 r to-line;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array product 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
-#X restore 580 377 graph;
+#X restore 543 368 graph;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array osc-output 44100 float 0;
-#X coords 0 1.02 44100 -1.02 200 130 1;
-#X restore 580 47 graph;
+#X array oscillator 44100 float 0;
+#X coords 0 1.02 44100 -1.02 200 130 1 0 0;
+#X restore 543 38 graph;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array line-output 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
-#X restore 580 212 graph;
-#X obj 252 124 tabwrite~ osc-output;
-#X obj 170 304 *~ 0.1;
-#X msg 59 402 \; pd dsp 1 \; to-line 0 \, 1 500 \; graphit bang;
-#X msg 231 402 \; pd dsp 1 \; to-line 1 \, 0 500 \; graphit bang;
-#X obj 253 223 tabwrite~ line-output;
-#X obj 253 283 tabwrite~ product;
-#X text 91 380 ramp up;
-#X text 256 380 ramp down;
-#X text 427 380 to 1/2;
-#X msg 396 402 \; pd dsp 1 \; to-line 0.5 1000 \; graphit bang;
-#X text 604 519 ------ 1 second ------;
-#X text 88 494 Click the message boxes above to try it. Note that in
-the first two boxes \, the line~ objects get two messages. The first
-one \, with no time value \, causes the line~ to jump immediately to
-the value. The third box takes line~'s previous value as a point of
-departure. What you see will depend on which box you last clicked and
-how long you waited between the two.;
-#X text 597 650 updated for Pd version 0.33;
-#X text 91 609 On most machines \, you will hear an interruption in
-the sound one second after you click on the first or third box. This
-is because the graphical updates are likely to eat more CPU time than
-your audio buffer has pre-buffered for. You can avoid this if you keep
-your graphs in sub-windows and open them only when you need them. In
-some future version of Pd this behavior will be improved. Until then
-\, you'll have to avoid having arrays getting re-drawn during music
-performances.;
-#X text 213 340 <= out;
+#X restore 543 203 graph;
+#X obj 229 476 *~ 0.1;
+#X obj 337 434 tabwrite~ line-output;
+#X obj 321 474 tabwrite~ product;
+#X text 78 235 ramp up;
+#X text 77 338 ramp down;
+#X text 85 446 to 1/2;
+#X text 567 510 ------ 1 second ------;
+#X obj 341 351 tabwrite~ oscillator;
+#X obj 430 199 ../5.reference/set-dsp-tgl;
+#X text 343 203 DSP on/off;
+#X msg 430 236 \; pd dsp \$1;
+#X msg 46 257 \; to-line 0 \, 1 500 \; graphit bang;
+#X msg 46 362 \; to-line 1 \, 0 500 \; graphit bang;
+#X msg 46 467 \; to-line 0.5 1000 \; graphit bang;
+#X text 272 512 <-- out;
+#X obj 75 26 cnv 5 5 25 empty empty [line~]\ objects\ graphed 15 13 0 16 #dfdfdf #202020 0;
+#X text 42 75 Here again is a [line~] controlling the amplitude of an [osc~] \, but with the outputs graphed. Click the message boxes above to try it. Note that in the first two boxes \, the [line~] objects get two messages. The first one \, with no time value \, causes the [line~] to jump immediately to the value. The third box takes [line~]'s previous value as a point of departure. What you see will depend on which box you last clicked and how long you waited between the two., f 63;
+#X text 37 566 On very old machines you may hear an interruption in the sound one second after you click on the first or third box. This is because the graphical updates are likely to eat more CPU time than your audio buffer has pre-buffered for., f 49;
+#X text 407 566 You can avoid this if you keep your graphs in sub-windows and open them only when you need them. In some future version of Pd this behavior will be improved. Until then \, you'll have to avoid having arrays getting re-drawn during music performances., f 50;
+#X obj 321 298 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#X obj 321 270 r graphit;
+#X text 348 299 <-- bang button \, bang to graph, f 16;
 #X connect 0 0 2 0;
-#X connect 0 0 13 0;
-#X connect 2 0 14 0;
-#X connect 2 0 18 0;
+#X connect 0 0 15 0;
+#X connect 2 0 8 0;
+#X connect 2 0 10 0;
 #X connect 3 0 2 1;
-#X connect 3 0 17 0;
-#X connect 6 0 13 0;
-#X connect 7 0 17 0;
-#X connect 8 0 18 0;
-#X connect 9 0 3 0;
-#X connect 14 0 1 0;
-#X connect 14 0 1 1;
+#X connect 3 0 9 0;
+#X connect 4 0 3 0;
+#X connect 8 0 1 0;
+#X connect 8 0 1 1;
+#X connect 16 0 18 0;
+#X connect 27 0 15 0;
+#X connect 27 0 9 0;
+#X connect 27 0 10 0;
+#X connect 28 0 27 0;

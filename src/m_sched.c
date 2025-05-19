@@ -9,16 +9,35 @@
 #include "s_stuff.h"
 #ifdef _WIN32
 #include <windows.h>
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
 #endif
+#include <errno.h>
+#include <pthread.h>
 
     /* LATER consider making this variable.  It's now the LCM of all sample
     rates we expect to see: 32000, 44100, 48000, 88200, 96000. */
 #define TIMEUNITPERMSEC (32. * 441.)
 #define TIMEUNITPERSECOND (TIMEUNITPERMSEC * 1000.)
+#define SYSTIMEPERTICK \
+    ((STUFF->st_schedblocksize/STUFF->st_dacsr) * TIMEUNITPERSECOND)
+#define APPROXTICKSPERSEC \
+    ((int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize))
 
 #define SYS_QUIT_QUIT 1
-#define SYS_QUIT_RESTART 2
+#define SYS_QUIT_REOPEN 2
+#define SYS_QUIT_CLOSE 3
+#define SYS_QUIT_RESTART 4
 static int sys_quit;
+static pthread_t mainthread_id;
+static pthread_cond_t sched_cond;
+static pthread_mutex_t sched_mutex;
+static int sched_useaudio = SCHED_AUDIO_NONE;
+static double sched_referencerealtime, sched_referencelogicaltime;
+
+static int sys_exitcode;
+extern int sys_nosleep;
 
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
@@ -165,218 +184,162 @@ void clock_free(t_clock *x)
     freebytes(x, sizeof *x);
 }
 
-/* the following routines maintain a real-execution-time histogram of the
-various phases of real-time execution. */
-
-static int sys_bin[] = {0, 2, 5, 10, 20, 30, 50, 100, 1000};
-#define NBIN (sizeof(sys_bin)/sizeof(*sys_bin))
-#define NHIST 10
-static int sys_histogram[NHIST][NBIN];
-static double sys_histtime;
-static int sched_diddsp, sched_didpoll, sched_didnothing;
-
-void sys_clearhist(void)
-{
-    unsigned int i, j;
-    for (i = 0; i < NHIST; i++)
-        for (j = 0; j < NBIN; j++) sys_histogram[i][j] = 0;
-    sys_histtime = sys_getrealtime();
-    sched_diddsp = sched_didpoll = sched_didnothing = 0;
-}
-
-void sys_printhist(void)
-{
-    unsigned int i, j;
-    for (i = 0; i < NHIST; i++)
-    {
-        int doit = 0;
-        for (j = 0; j < NBIN; j++) if (sys_histogram[i][j]) doit = 1;
-        if (doit)
-        {
-            post("%2d %8d %8d %8d %8d %8d %8d %8d %8d", i,
-                sys_histogram[i][0],
-                sys_histogram[i][1],
-                sys_histogram[i][2],
-                sys_histogram[i][3],
-                sys_histogram[i][4],
-                sys_histogram[i][5],
-                sys_histogram[i][6],
-                sys_histogram[i][7]);
-        }
-    }
-    post("dsp %d, pollgui %d, nothing %d",
-        sched_diddsp, sched_didpoll, sched_didnothing);
-}
-
-static int sys_histphase;
-
-int sys_addhist(int phase)
-{
-    int i, j, phasewas = sys_histphase;
-    double newtime = sys_getrealtime();
-    int msec = (newtime - sys_histtime) * 1000.;
-    for (j = NBIN-1; j >= 0; j--)
-    {
-        if (msec >= sys_bin[j])
-        {
-            sys_histogram[phasewas][j]++;
-            break;
-        }
-    }
-    sys_histtime = newtime;
-    sys_histphase = phase;
-    return (phasewas);
-}
-
-#define NRESYNC 20
-
-typedef struct _resync
-{
-    int r_ntick;
-    int r_error;
-} t_resync;
-
-static int oss_resyncphase = 0;
-static int oss_nresync = 0;
-static t_resync oss_resync[NRESYNC];
-
-
-static char *(oss_errornames[]) = {
-"unknown",
-"ADC blocked",
-"DAC blocked",
-"A/D/A sync",
-"data late"
-};
 
 void glob_audiostatus(void)
 {
-    int dev, nresync, nresyncphase, i;
-    nresync = (oss_nresync >= NRESYNC ? NRESYNC : oss_nresync);
-    nresyncphase = oss_resyncphase - 1;
-    post("audio I/O error history:");
-    post("seconds ago\terror type");
-    for (i = 0; i < nresync; i++)
-    {
-        int errtype;
-        if (nresyncphase < 0)
-            nresyncphase += NRESYNC;
-        errtype = oss_resync[nresyncphase].r_error;
-        if (errtype < 0 || errtype > 4)
-            errtype = 0;
-
-        post("%9.2f\t%s",
-            (sched_diddsp - oss_resync[nresyncphase].r_ntick)
-                * ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr,
-            oss_errornames[errtype]);
-        nresyncphase--;
-    }
+    /* rewrite me */
 }
 
 static int sched_diored;
 static int sched_dioredtime;
 static int sched_meterson;
+static int sched_counter;
+
+static void sys_addhist(int n) {}   /* maybe revive this later for profiling */
+static void sys_clearhist(void) {}
 
 void sys_log_error(int type)
 {
-    oss_resync[oss_resyncphase].r_ntick = sched_diddsp;
-    oss_resync[oss_resyncphase].r_error = type;
-    oss_nresync++;
-    if (++oss_resyncphase == NRESYNC) oss_resyncphase = 0;
     if (type != ERR_NOTHING && !sched_diored &&
-        (sched_diddsp >= sched_dioredtime))
+        (sched_counter >= sched_dioredtime))
     {
-        sys_vgui("pdtk_pd_dio 1\n");
+        pdgui_vmess("pdtk_pd_dio", "i", 1);
         sched_diored = 1;
     }
-    sched_dioredtime =
-        sched_diddsp + (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
+    sched_dioredtime = sched_counter + APPROXTICKSPERSEC;
 }
 
 static int sched_lastinclip, sched_lastoutclip,
     sched_lastindb, sched_lastoutdb;
 
-void glob_watchdog(t_pd *dummy);
+void glob_watchdog(void *dummy);
 
-static void sched_pollformeters(void)
+static float sched_fastforward;
+
+void glob_fastforward(void *dummy, t_floatarg f)
 {
-    int inclip, outclip, indb, outdb;
-    static int sched_nextmeterpolltime, sched_nextpingtime;
-
-        /* if there's no GUI but we're running in "realtime", here is
-        where we arrange to ping the watchdog every 2 seconds. */
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-    if (!sys_havegui() && sys_hipriority &&
-        (sched_diddsp - sched_nextpingtime > 0))
-    {
-        glob_watchdog(0);
-            /* ping every 2 seconds */
-        sched_nextpingtime = sched_diddsp +
-            2 * (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
-    }
-#endif
-
-    if (sched_diddsp - sched_nextmeterpolltime < 0)
-        return;
-    if (sched_diored && (sched_diddsp - sched_dioredtime > 0))
-    {
-        sys_vgui("pdtk_pd_dio 0\n");
-        sched_diored = 0;
-    }
-    if (sched_meterson)
-    {
-        t_sample inmax, outmax;
-        sys_getmeters(&inmax, &outmax);
-        indb = 0.5 + rmstodb(inmax);
-        outdb = 0.5 + rmstodb(outmax);
-        inclip = (inmax > 0.999);
-        outclip = (outmax >= 1.0);
-    }
+    if (sched_useaudio == SCHED_AUDIO_CALLBACK)
+        pd_error(0, "'fast-forward' does not work with 'callbacks' (yet)");
     else
-    {
-        indb = outdb = 0;
-        inclip = outclip = 0;
-    }
-    if (inclip != sched_lastinclip || outclip != sched_lastoutclip
-        || indb != sched_lastindb || outdb != sched_lastoutdb)
-    {
-        sys_vgui("pdtk_pd_meters %d %d %d %d\n", indb, outdb, inclip, outclip);
-        sched_lastinclip = inclip;
-        sched_lastoutclip = outclip;
-        sched_lastindb = indb;
-        sched_lastoutdb = outdb;
-    }
-    sched_nextmeterpolltime =
-        sched_diddsp + (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
+        sched_fastforward = TIMEUNITPERMSEC * f;
 }
 
-void glob_meters(void *dummy, t_float f)
+void sched_init(void)
 {
-    if (f == 0)
-        sys_getmeters(0, 0);
-    sched_meterson = (f != 0);
-    sched_lastinclip = sched_lastoutclip = sched_lastindb = sched_lastoutdb =
-        -1;
+    pthread_mutex_init(&sched_mutex, 0);
+    pthread_cond_init(&sched_cond, 0);
+    mainthread_id = pthread_self();
 }
 
-#if 0
-void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+void sched_term(void)
 {
-    if (argc) sys_clearhist();
-    else sys_printhist();
+    pthread_mutex_destroy(&sched_mutex);
+    pthread_cond_destroy(&sched_cond);
 }
-#endif
+
+int sys_ismainthread(void)
+{
+    return pthread_equal(pthread_self(), mainthread_id);
+}
 
 void dsp_tick(void);
 
-static int sched_useaudio = SCHED_AUDIO_NONE;
-static double sched_referencerealtime, sched_referencelogicaltime;
-
-void sched_reopenmeplease(void)   /* request from s_audio for deferred reopen */
+    /* ask the scheduler to quit; this is thread-safe, so it
+    can be safely called from within the audio callback. */
+void sys_exit(int status)
 {
-    sys_quit = SYS_QUIT_RESTART;
+    pthread_mutex_lock(&sched_mutex);
+    if (SYS_QUIT_QUIT != sys_quit) {
+        sys_exitcode = status;
+    } else {
+        pd_error(0, "quit already called with exit code %d", sys_exitcode);
+    }
+    sys_quit = SYS_QUIT_QUIT;
+    pthread_cond_signal(&sched_cond);
+    pthread_mutex_unlock(&sched_mutex);
 }
 
+void sys_do_reopen_audio(void);
+void sys_do_close_audio(void);
+
+/* Implementation notes about (re)opening and closing the audio device:
+
+If we are in the main thread, we can safely close and (re)open the audio
+device *synchronously*. This makes sure that objects immediately see the
+actual samplerate. For example, the sample rate might have been changed
+by the user in the audio settings, or the actual rate might differ from
+the initial (default) rate.
+
+If we are in the audio thread, however, we can't do this because it would
+deadlock; instead we send a request to main thread. However, we cannot
+do this immediately because we don't want the main thread to interrupt
+us halfway and accidentally send us back to polling scheduler, just
+because we temporarily turned off DSP. Instead we capture all requests
+to open and close the device in `sched_request`. Only at the end of the
+audio callback we send the most recent request to the main thread, which
+in turn will either close or (re)open the device. This allows users to
+toggle the DSP state multiple times within a single scheduler tick.
+See m_callbackscheduler() and sched_audio_callbackfn().
+
+When we start audio with callbacks we need to break from the polling
+scheduler. This is done by setting `sys_quit` to SYS_QUIT_RESTART.
+NOTE: in this case it is NOT possible to further (re)open or close the
+audio device in that same scheduler tick because it would deadlock.
+For now, we just post an error message, but LATER we might want to fix this.
+In practice, there is hardly a reason why a user would want to start audio
+and then immediately stop or (re)open it. Note, however, that it's always ok
+to toggle DSP states while audio is already running (which has its use cases).
+
+If Pd is built with -DUSEAPI_DUMMY=1, sys_reopen_audio() and sys_close_audio()
+are simply no-ops since there are no audio devices that can be opened or closed.
+This also avoids potential issues with libpd. */
+
+static int sched_request;
+
+    /* always called with Pd locked */
+void sys_reopen_audio(void)
+{
+#ifndef USEAPI_DUMMY
+    if (sys_ismainthread())
+    {
+        if (sched_useaudio != SCHED_AUDIO_CALLBACK)
+        {
+            sys_do_reopen_audio(); /* (re)open synchronously */
+                /* if we have started the callback scheduler,
+                break from the polling scheduler! */
+            if (sched_useaudio == SCHED_AUDIO_CALLBACK)
+            {
+                pthread_mutex_lock(&sched_mutex);
+                if (sys_quit != SYS_QUIT_QUIT)
+                    sys_quit = SYS_QUIT_RESTART;
+                pthread_mutex_unlock(&sched_mutex);
+            }
+        }
+        else /* See comments above sys_reopen_audio() */
+            pd_error(0, "Cannot reopen audio: would deadlock");
+    }
+    else /* called from the audio callback, see sched_audio_callbackfn() */
+        sched_request = SYS_QUIT_REOPEN;
+#endif
+}
+
+    /* always called with Pd locked */
+void sys_close_audio(void)
+{
+#ifndef USEAPI_DUMMY
+    if (sys_ismainthread())
+    {
+        if (sched_useaudio != SCHED_AUDIO_CALLBACK)
+            sys_do_close_audio(); /* close synchronously */
+        else  /* See comments above sys_reopen_audio() */
+            pd_error(0, "Cannot close audio: would deadlock");
+    }
+    else /* called from the audio callback, see sched_audio_callbackfn() */
+        sched_request = SYS_QUIT_CLOSE;
+#endif
+}
+
+    /* called by sys_do_reopen_audio() and sys_do_close_audio() */
 void sched_set_using_audio(int flag)
 {
     sched_useaudio = flag;
@@ -385,22 +348,21 @@ void sched_set_using_audio(int flag)
         sched_referencerealtime = sys_getrealtime();
         sched_referencelogicaltime = clock_getlogicaltime();
     }
-        if (flag == SCHED_AUDIO_CALLBACK &&
-            sched_useaudio != SCHED_AUDIO_CALLBACK)
-                sys_quit = SYS_QUIT_RESTART;
-        if (flag != SCHED_AUDIO_CALLBACK &&
-            sched_useaudio == SCHED_AUDIO_CALLBACK)
-                post("sorry, can't turn off callbacks yet; restart Pd");
-                    /* not right yet! */
 
-    sys_vgui("pdtk_pd_audio %s\n", flag ? "on" : "off");
+    pdgui_vmess("pdtk_pd_audio", "r", flag ? "on" : "off");
 }
+
+int sched_get_using_audio(void)
+{
+    return sched_useaudio;
+}
+
+void messqueue_dispatch();
 
     /* take the scheduler forward one DSP tick, also handling clock timeouts */
 void sched_tick(void)
 {
-    double next_sys_time = pd_this->pd_systime +
-        (STUFF->st_schedblocksize/STUFF->st_dacsr) * TIMEUNITPERSECOND;
+    double next_sys_time = pd_this->pd_systime + SYSTIMEPERTICK;
     int countdown = 5000;
     while (pd_this->pd_clock_setlist &&
         pd_this->pd_clock_setlist->c_settime < next_sys_time)
@@ -413,14 +375,38 @@ void sched_tick(void)
         if (!countdown--)
         {
             countdown = 5000;
-            sys_pollgui();
+            (void)sys_pollgui();
         }
-        if (sys_quit)
+            /* ignore SYS_QUIT_REOPEN and SYS_QUIT_CLOSE! */
+        if (sys_quit == SYS_QUIT_QUIT)
             return;
     }
     pd_this->pd_systime = next_sys_time;
+    messqueue_dispatch();
     dsp_tick();
-    sched_diddsp++;
+    sched_counter++;
+}
+
+int sched_get_sleepgrain(void)
+{
+    if (sys_sleepgrain > 0)
+        return sys_sleepgrain;
+    else if (sched_useaudio == SCHED_AUDIO_POLL)
+    {
+        int sleepgrain = sys_schedadvance / 4;
+        if (sleepgrain > 5000)
+            sleepgrain = 5000;
+        else if (sleepgrain < 100)
+            sleepgrain = 100;
+        return sleepgrain;
+    }
+    else return 1000; /* default */
+}
+
+    /* old stuff for extern binary compatibility -- remove someday */
+int *get_sys_sleepgrain(void)
+{
+    return(&sys_sleepgrain);
 }
 
 /*
@@ -442,179 +428,228 @@ nonzero if you actually used the time; otherwise we're really really idle and
 will now sleep. */
 int (*sys_idlehook)(void);
 
+    /* when audio is idle, see to GUI and other stuff */
+int sched_idletask(void)
+{
+    static int sched_nextmeterpolltime, sched_nextpingtime;
+    int rtn = 0;
+    sys_lock();
+    if (sys_pollgui())
+        rtn = 1;
+    sys_unlock();
+
+        /* if there's no GUI but we're running in "realtime", here is
+        where we arrange to ping the watchdog every 2 seconds.  (If there's
+        a GUI, it initiates the ping instead to be sure there's communication
+        back and forth.) */
+    if (!sys_havegui() && sys_hipriority && sched_counter > sched_nextpingtime)
+    {
+        glob_watchdog(0);
+            /* ping every 2 seconds */
+        sched_nextpingtime = sched_counter + 2 * APPROXTICKSPERSEC;
+    }
+
+        /* clear the "DIO error" warning 1 sec after it flashes */
+    if (sched_counter > sched_nextmeterpolltime)
+    {
+        if (sched_diored && (sched_counter - sched_dioredtime > 0))
+        {
+            pdgui_vmess("pdtk_pd_dio", "i", 0);
+            sched_diored = 0;
+        }
+        sched_nextmeterpolltime = sched_counter + APPROXTICKSPERSEC;
+    }
+    return (rtn || sys_idlehook && sys_idlehook());
+}
+
 static void m_pollingscheduler(void)
 {
-    int idlecount = 0;
-
-        /* delete this when I'm sure it's not needed for back compatibility? */
-    STUFF->st_time_per_dsp_tick = (TIMEUNITPERSECOND) *
-        ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
     sys_lock();
-    sys_clearhist();
-    if (sys_sleepgrain < 100)
-        sys_sleepgrain = sys_schedadvance/4;
-    if (sys_sleepgrain < 100)
-        sys_sleepgrain = 100;
-    else if (sys_sleepgrain > 5000)
-        sys_sleepgrain = 5000;
-    sys_initmidiqueue();
-    while (!sys_quit)
+        /* NB: we don't need to lock the scheduler mutex because sys_quit
+        will only be modified from this thread */
+    while (!sys_quit)   /* outer loop runs once per tick */
     {
-        int didsomething = 0;
-        int timeforward;
-
         sys_addhist(0);
-    waitfortick:
-        if (sched_useaudio != SCHED_AUDIO_NONE)
-        {
-            sys_unlock();
-            timeforward = sys_send_dacs();
-            sys_lock();
-#if 0   /* in linux and windoes, sometimes audio devices would freeze, which
-               in turn would freeze Pd.  This code unfroze things by closing
-               audio in such cases.  But this seems no longer necessary, and
-               on Macs at least, this seems to cause audio to get dropped if
-               the machine sleeps.  */
-                /* if dacs remain "idle" for 1 sec, they're hung up. */
-            if (timeforward != 0)
-                idlecount = 0;
-            else
-            {
-                idlecount++;
-                if (!(idlecount & 31))
-                {
-                    static double idletime;
-                    if (sched_useaudio != SCHED_AUDIO_POLL)
-                    {
-                            bug("m_pollingscheduler\n");
-                            return;
-                    }
-                        /* on 32nd idle, start a clock watch;  every
-                        32 ensuing idles, check it */
-                    if (idlecount == 32)
-                        idletime = sys_getrealtime();
-                    else if (sys_getrealtime() - idletime > 1.)
-                    {
-                        error("audio I/O stuck... closing audio\n");
-                        sys_close_audio();
-                        sched_set_using_audio(SCHED_AUDIO_NONE);
-                        goto waitfortick;
-                    }
-                }
-            }
-#endif /* 0 */
-        }
-        else
-        {
-            if (1000. * (sys_getrealtime() - sched_referencerealtime)
-                > clock_gettimesince(sched_referencelogicaltime))
-                    timeforward = SENDDACS_YES;
-            else timeforward = SENDDACS_NO;
-        }
-        sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
+        sched_tick();
         sys_addhist(1);
-        if (timeforward != SENDDACS_NO)
-            sched_tick();
-        if (timeforward == SENDDACS_YES)
-            didsomething = 1;
 
-        sys_addhist(2);
-        sys_pollmidiqueue();
-        if (sys_pollgui())
+            /* fast forward, in which the scheduler advances without waiting
+            for real time; for patches that alternate between interactive
+            and batch-like computations. */
+        if (sched_fastforward > 0)
         {
-            if (!didsomething)
-                sched_didpoll++;
-            didsomething = 1;
+            sched_fastforward -= SYSTIMEPERTICK;
+            sched_referencerealtime = sys_getrealtime();
+            sched_referencelogicaltime = pd_this->pd_systime;
+            continue;
         }
-        sys_addhist(3);
-            /* test for idle; if so, do graphics updates. */
-        if (!didsomething)
+            /* do at least one GUI update per DSP tick, so that Pd stays responsive
+             * if the scheduler can't keep up with the audio callback */
+        sys_pollgui();
+        sys_pollmidiqueue();
+        sys_addhist(2);
+        while (!sys_quit)   /* inner loop runs until it can transfer audio */
         {
-            sched_pollformeters();
-            sys_reportidle();
-            sys_unlock();   /* unlock while we idle */
-                /* call externally installed idle function if any. */
-            if (!sys_idlehook || !sys_idlehook())
+            int timeforward; /* SENDDACS_YES if audio was transferred, SENDDACS_NO if not,
+                                or SENDDACS_SLEPT if yes but time elapsed during xfer */
+            sys_unlock();
+            if (sched_useaudio == SCHED_AUDIO_NONE)
             {
-                    /* if even that had nothing to do, sleep. */
-                if (timeforward != SENDDACS_SLEPT)
-                    sys_microsleep(sys_sleepgrain);
+                    /* no audio; use system clock */
+                double lateness = 1000. *
+                    (sys_getrealtime() - sched_referencerealtime) -
+                        clock_gettimesince(sched_referencelogicaltime);
+                if (lateness > 20000)   /* if 20" late, don't try to catch up */
+                {
+                    sched_referencerealtime = sys_getrealtime();
+                    sched_referencelogicaltime = pd_this->pd_systime;
+                }
+                timeforward = (lateness > 0 ? SENDDACS_YES : SENDDACS_NO);
             }
-            sys_lock();
+            else
+                timeforward = sys_send_dacs();
+            sys_addhist(3);
+                /* test for idle; if so, do graphics updates. */
+            if (timeforward != SENDDACS_YES && !sched_idletask())
+            {
+                /* if even that had nothing to do, sleep. */
+                sys_addhist(4);
+                if (!sys_nosleep && timeforward != SENDDACS_SLEPT)
+                    sys_microsleep();
+            }
             sys_addhist(5);
-            sched_didnothing++;
+            sys_lock();
+            if (timeforward != SENDDACS_NO)
+                break;
         }
     }
     sys_unlock();
 }
+
+static volatile int callback_inprogress;
 
 void sched_audio_callbackfn(void)
 {
+        /* do not process once we have asked
+        to leave the callback scheduler! */
+    if (sys_quit) return;
+
+    callback_inprogress = 1;
+    sched_request = 0;
     sys_lock();
-    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
-    sys_addhist(1);
-    sched_tick();
-    sys_addhist(2);
-    sys_pollmidiqueue();
-    sys_addhist(3);
-    sys_pollgui();
-    sys_addhist(5);
-    sched_pollformeters();
     sys_addhist(0);
+    sched_tick();
+    sys_addhist(1);
+    sys_pollmidiqueue();
+    sys_addhist(2);
     sys_unlock();
+    (void)sched_idletask();
+    sys_addhist(3);
+    if (sched_request)
+    {
+            /* notify main thread! */
+        pthread_mutex_lock(&sched_mutex);
+        if (sys_quit != SYS_QUIT_QUIT)
+            sys_quit = sched_request;
+        pthread_cond_signal(&sched_cond);
+        pthread_mutex_unlock(&sched_mutex);
+    }
+    callback_inprogress = 0;
 }
+
+    /* callback scheduler timeout in seconds */
+#define CALLBACK_TIMEOUT 2.0
+
+int sys_try_reopen_audio(void);
 
 static void m_callbackscheduler(void)
 {
-    sys_initmidiqueue();
+        /* wait in a loop until the audio callback asks us to quit. */
+    pthread_mutex_lock(&sched_mutex);
     while (!sys_quit)
     {
-        double timewas = pd_this->pd_systime;
-#ifdef _WIN32
-        Sleep(1000);
-#else
-        sleep(1);
-#endif
-        if (pd_this->pd_systime == timewas)
+        int wasinprogress;
+            /* get current system time and add timeout */
+        double timewas, timeout = CALLBACK_TIMEOUT;
+        struct timespec ts;
+    #ifdef _WIN32
+        struct __timeb64 tb;
+        _ftime64(&tb);
+            /* add fractional part to timeout */
+        timeout += tb.millitm * 0.001;
+        ts.tv_sec = tb.time + (time_t)timeout;
+        ts.tv_nsec = (timeout - (time_t)timeout) * 1000000000;
+    #else
+        struct timeval now;
+        gettimeofday(&now, 0);
+            /* add fractional part to timeout */
+        timeout += now.tv_usec * 0.000001;
+        ts.tv_sec = now.tv_sec + (time_t)timeout;
+        ts.tv_nsec = (timeout - (time_t)timeout) * 1000000000;
+    #endif
+            /* sleep on condition variable (with timeout) */
+        timewas = pd_this->pd_systime;
+        wasinprogress = callback_inprogress;
+        if (pthread_cond_timedwait(&sched_cond, &sched_mutex, &ts) == ETIMEDOUT)
         {
-            sys_lock();
-            sys_pollgui();
-            sched_tick();
-            sys_unlock();
+                /* check if the schedular has advanced since the last time
+                we checked (while it was not in progress) */
+            if (!sys_quit && !wasinprogress && (pd_this->pd_systime == timewas))
+            {
+                pthread_mutex_unlock(&sched_mutex);
+                    /* if the scheduler has not advanced, but the callback is
+                    still in progress, it just blocks on some Pd message.
+                    Otherwise, the audio device got stuck or disconnected. */
+                if (!callback_inprogress && !sys_try_reopen_audio())
+                    return;
+                pthread_mutex_lock(&sched_mutex);
+            }
         }
-        if (sys_idlehook)
-            sys_idlehook();
     }
+    pthread_mutex_unlock(&sched_mutex);
 }
 
 int m_mainloop(void)
 {
+        /* open audio and MIDI */
+    sys_reopen_midi();
+    if (audio_shouldkeepopen() && !audio_isopen())
+    {
+        sys_lock();
+        sys_do_reopen_audio();
+        sys_unlock();
+    }
+
+        /* run the scheduler until it quits. */
     while (sys_quit != SYS_QUIT_QUIT)
     {
+        sys_lock();
+            /* check if we should close/reopen the audio device. */
+        if (sys_quit == SYS_QUIT_REOPEN)
+        {
+            sys_do_close_audio();
+            sys_do_reopen_audio();
+        }
+        else if (sys_quit == SYS_QUIT_CLOSE)
+            sys_do_close_audio();
+        sys_quit = 0;
+        sys_initmidiqueue();
+        sys_unlock();
         if (sched_useaudio == SCHED_AUDIO_CALLBACK)
             m_callbackscheduler();
-        else m_pollingscheduler();
-        if (sys_quit == SYS_QUIT_RESTART)
-        {
-            sys_quit = 0;
-            if (audio_isopen())
-            {
-                sys_close_audio();
-                sys_reopen_audio();
-            }
-        }
+        else
+            m_pollingscheduler();
     }
-    return (0);
+
+    sys_do_close_audio();
+    sys_close_midi();
+
+    return (sys_exitcode);
 }
 
 int m_batchmain(void)
 {
     while (sys_quit != SYS_QUIT_QUIT)
         sched_tick();
-    return (0);
-}
-
-void sys_exit(void)
-{
-    sys_quit = SYS_QUIT_QUIT;
+    return (sys_exitcode);
 }

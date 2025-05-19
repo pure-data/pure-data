@@ -1,75 +1,129 @@
-#N canvas 113 52 638 844 12;
-#X msg 31 406 foo bar baz;
-#X obj 189 466 osc~ 440;
-#X obj 114 614 env~ 8192;
-#X floatatom 114 663 5 0 0 0 - - -, f 5;
-#X msg 535 750 \; pd dsp 1;
-#X msg 24 332 pd~ stop;
-#X obj 114 639 i;
-#X obj 228 612 env~ 8192;
-#X floatatom 228 662 5 0 0 0 - - -, f 5;
-#X obj 228 638 i;
-#X obj 123 489 *~;
-#X obj 158 490 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 189 490 *~;
-#X obj 224 491 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 535 724 loadbang;
-#X obj 12 643 print x;
-#X msg 15 309 pd~ start pd~-subprocess.pd;
-#X obj 14 532 pd~ -ninsig 2 -noutsig 2 -fifo 20;
-#X obj 37 20 pd~;
-#X text 69 22 - run a pd sub-process;
-#X text 27 52 The pd~ object starts and manages a Pd sub-process that
-can communicate with the super-process (this one) via audio channels
-and/or Pd messages. In this way you can take advantage of multi-core
-CPUs \, and/or use Pd features from within Max (if you're using the
-Max version of pd~).;
-#X text 24 246 Sending a new "start" message will stop the sub-process
-and start a new one. If you just want to stop the sub-process \, send
-"stop".;
-#X text 33 353 Any message besides "pd~" is sent to the sub-process.
-For instance \, the message below sends "bar baz" to any object in
-the sub-process named "foo" \, such as a "receive" object.;
-#X text 43 430 Audio signals appear in adc~ objects in the sub-process.
-The sub-process doesn't open real audio devices.;
-#X text 302 469 Creation args:;
-#X text 286 486 -insig <n> sets input audio channels;
-#X text 287 504 -outsig <n> sets output channels;
-#X text 290 538 -fifo <n> sets round-trip delay in blocks;
-#X text 293 555 -pddir <s> sets Pd directory \, e.g. \,;
-#X text 320 570 .../Pd-0.42.app/Contents/Resources;
-#X text 293 586 -scheddir <s> sets scheduler dir \, e.g. \,;
-#X text 318 603 .../.../Resources/extra/pd~;
-#X text 288 520 -sr <n> sets sample rate;
-#X text 28 699 The first outlet reports messages the sub-process sends
-us via "stdout" objects. Any other outlets are signals corresponding
-to "dac~" objects in the sub-process.;
-#X text 21 756 ATTENTION: DSP must be running in this process for the
-sub-process to run. This is because its clock is slaved to audio I/O
-it gets from us!;
-#X text 393 802 Updated for Pd version 0.42.;
-#X text 24 132 Messages with "pd~" selector control the sub-process.
-"pd~ start" takes as arguments any startup arguments you wish to send
-the sub-process. For example \, specify "-nogui" to stop the sub-process's
-GUI from appearing. You don't have to specify the number of channels
-in and out \, since that's set by creation arguments below. Audio config
-arguments arguments (-audiobuf \, -audiodev \, etc.) are ignored.;
-#X connect 0 0 17 0;
-#X connect 1 0 10 0;
-#X connect 1 0 12 0;
-#X connect 2 0 6 0;
-#X connect 5 0 17 0;
-#X connect 6 0 3 0;
-#X connect 7 0 9 0;
-#X connect 9 0 8 0;
-#X connect 10 0 17 0;
-#X connect 11 0 10 1;
-#X connect 12 0 17 1;
-#X connect 13 0 12 1;
-#X connect 14 0 4 0;
-#X connect 16 0 17 0;
-#X connect 17 0 15 0;
-#X connect 17 1 2 0;
-#X connect 17 2 7 0;
+#N canvas 231 120 771 739 12;
+#X msg 113 410 foo bar baz;
+#X obj 257 501 osc~ 440;
+#X obj 174 638 env~ 8192;
+#X floatatom 174 667 8 0 0 0 - - - 0;
+#X msg 93 340 pd~ stop;
+#X obj 257 638 env~ 8192;
+#X floatatom 257 667 8 0 0 0 - - - 0;
+#X obj 191 551 *~;
+#X obj 257 551 *~;
+#X obj 34 12 pd~;
+#X msg 636 255 \; pd dsp \$1;
+#X obj 4 41 cnv 1 750 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 672 11 <= click;
+#N canvas 555 116 719 456 reference 0;
+#X obj 6 35 cnv 5 700 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 6 199 cnv 2 700 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 6 287 cnv 2 700 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 5 435 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 5 228 cnv 1 700 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 5 255 cnv 1 700 1 empty empty n: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 42 6 pd~;
+#X obj 5 313 cnv 1 700 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
+#X text 102 319 -ninsig <float>: sets number of input audio channels (default 2)., f 74;
+#X text 102 337 -noutsig <float>: sets number of output audio channels (default 2)., f 74;
+#X obj 6 67 cnv 1 700 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X text 60 73 pd~ start <anything> -;
+#X text 144 105 pd~ stop - stops the pd sub-process., f 78;
+#X text 144 122 anything -;
+#X obj 6 170 cnv 1 700 1 empty empty n: 8 12 0 13 #9f9f9f #000000 0;
+#X text 102 373 -fifo <float>: sets number of blocks for round-trip (default 5)., f 74;
+#X text 102 391 -pddir <symbol>: sets Pd's directory (needed if different than default)., f 74;
+#X text 102 409 -scheddir <symbol>: sets scheduler's directory (also needed if different)., f 74;
+#X text 77 5 - run a pd sub-process (for multiprocessing).;
+#X text 158 143 signal - signal input if there's a corresponding [adc~] input., f 76;
+#X text 158 176 signal - signal input if there's a corresponding [adc~] input., f 76;
+#X text 143 231 anything - messages from the sub-process sent via [stdout] objects., f 67;
+#X text 158 260 signal - signal output if there's a corresponding [dac~] output., f 64;
+#X text 221 73 start a new sub-process. This message takes startup flags and needs a pd file to open., f 67;
+#X text 94 44 total number of 'n' signal inlets as given by the -ninsig flag., f 67;
+#X text 94 206 total number of 'n' signal outlets as given by the -noutsig flag., f 69;
+#X text 221 122 messages besides "pd~" are sent to the sub-process., f 67;
+#X text 102 355 -sr <float>: sets sample rate of subprocess (default Pd's current)., f 74;
+#X restore 578 12 pd reference;
+#X text 29 710 see also:;
+#X obj 105 711 stdout;
+#X obj 292 551 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 226 551 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 543 709 Updated for Pd version 0.42;
+#X text 69 11 - run a pd sub-process (for multiprocessing);
+#X text 666 224 DSP on/off;
+#X obj 636 221 ../../doc/5.reference/set-dsp-tgl;
+#X msg 17 284 pd~ start pd~-subprocess.pd;
+#X obj 3 700 cnv 1 750 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 347 633 The first outlet reports messages the sub-process sends us via [stdout] objects. Any other outlets are signals corresponding to [dac~] objects in the sub-process., f 55;
+#X obj 92 651 print pd~;
+#X obj 126 477 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 270 481 v;
+#X text 270 472 |;
+#X text 274 461 _;
+#X text 280 461 _;
+#X text 27 49 The [pd~] object starts and manages a Pd sub-process that can communicate with the super-process (this one) via audio channels and/or Pd messages. In this way you can take advantage of multi-core CPUs. The Max version of [pd~] \, on the other hand \, allows you to use Pd features from within Max., f 100;
+#X msg 126 504 pd dsp \$1;
+#X msg 332 563 pd-pd~-subprocess.pd vis \$1;
+#X obj 333 537 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X msg 333 504 0;
+#X msg 373 504 1;
+#X text 359 536 hide/show window;
+#X text 403 504 * <-----------------;
+#X obj 92 596 pd~ -ninsig 2 -noutsig 2 -fifo 20 -sr 44100, f 24;
+#X text 271 602 <-- see [pd reference] for creation flag's descriptions.;
+#X msg 126 434 0;
+#X msg 166 434 1;
+#X text 148 478 DSP On/Off;
+#X text 27 219 ATTENTION: DSP must be running in this process for the sub-process to start and run. This is because its clock is slaved to audio I/O it gets from us!, f 75;
+#X text 27 98 Messages with the "pd~" selector control the sub-process. A "pd~ start" message takes a pd file name to open and optional startup flags before it. For example \, "-nogui" prevents the sub-process's GUI from appearing. Note that you shouldn't specify the number of channels in and out or sample rate via startup flags since that's set by [pd~]'s creation flags. The sub-process doesn't open real audio and MIDI devices \, so audio/midi config flags (-audiodev \, -midiindev \, etc.) are ignored. Messages without the "pd~" selector are sent to the sub-process (see examples/details below). Note that the sub-process cannot communicate with MIDI devices connected to Pd \, so MIDI messages need to be sent in and out via regular messages to the sub-process., f 100;
+#X text 560 225 --------->;
+#X obj 162 711 ../../doc/5.reference/pd-messages;
+#X msg 46 315 pd~ start -nogui -send pd\ dsp\ 1 pd~-subprocess.pd;
+#X text 411 316 (re)start with flags \, see -->;
+#N canvas 707 185 554 486 more 0;
+#X obj 106 224 pdcontrol;
+#X obj 106 164 pdcontrol;
+#X msg 106 134 dir;
+#X msg 106 193 browse \$1/../../doc/1.manual/x3.htm;
+#X text 143 132 <-- Click to open Chapter 3 of Pd's Manual;
+#X text 50 28 For a list of all startup flags you can use please refer to the Pd Manual \, Chapter 3 "Getting Pd to run". More specifically \, go to section 3.5 "Preferences and startup options". You can go to the manual via the "help" and "browser" menus or click the message below., f 63;
+#X text 42 266 Note \, however \, that audio/midi flags are ignored as the sub-process doesn't open real audio and MIDI devices \, so please refer to 'general flags' only., f 69;
+#X text 42 320 In the example on the parent patch we used the '-nogui' flag to run Pd without the GUI and also the '-send' flag to send a message to pd to turn the DSP on. Note that unlike the way you'd use this flag in startup menu or command line you should not use quotes. Instead we have to escape spaces with backslashes., f 69;
+#X text 42 404 By the way \, of course you can just use a [loadbang] in the subprocess to turn DSP on \, so these examples are mostly didactical \, not practical., f 69;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 0 0;
+#X restore 620 317 pd more about startup flags;
+#X f 13;
+#X text 218 277 sending a new "start" message stops the sub-process (if there's one) and starts a new one (DSP must be on).;
+#X text 206 407 other messages are sent to the sub-process \, such as to [receive] objects (like 'foo' in this example) and also messages to 'pd' ("pd dsp 1" \, etc). You can also communicate to the patch file itself (see below *)., f 73;
+#X text 291 467 audio input signals appear in [adc~] objects in the sub-process., f 64;
+#X text 549 505 you can communicate to the patch via its file name preceded by 'pd-'. Check the [pd-messages] file in the 'see also' section for more options/details., f 26;
+#X msg 103 363 pd~ vis 1;
+#X msg 103 386 pd~ vis 0;
+#X text 181 366 start or stop subprocess gui;
+#X text 157 340 stop the sub-process;
+#X connect 0 0 39 0;
+#X connect 1 0 7 0;
+#X connect 1 0 8 0;
+#X connect 2 0 3 0;
+#X connect 4 0 39 0;
+#X connect 5 0 6 0;
+#X connect 7 0 39 0;
+#X connect 8 0 39 1;
+#X connect 16 0 8 1;
+#X connect 17 0 7 1;
+#X connect 21 0 10 0;
+#X connect 22 0 39 0;
+#X connect 26 0 32 0;
+#X connect 32 0 39 0;
+#X connect 33 0 39 0;
+#X connect 34 0 33 0;
+#X connect 35 0 34 0;
+#X connect 36 0 34 0;
+#X connect 39 0 25 0;
+#X connect 39 1 2 0;
+#X connect 39 2 5 0;
+#X connect 41 0 26 0;
+#X connect 42 0 26 0;
+#X connect 48 0 39 0;
+#X connect 55 0 39 0;
+#X connect 56 0 39 0;

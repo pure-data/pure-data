@@ -1,37 +1,28 @@
-#N canvas 417 23 543 603 12;
-#X obj 83 101 osc~ 440;
-#X obj 71 320 dac~;
-#X msg 230 21 \; pd dsp 1;
-#X msg 313 21 \; pd dsp 0;
-#X text 255 59 ON;
-#X text 333 57 OFF;
-#X text 54 30 CONTROLLING AMPLITUDE;
-#X text 86 365 Amplitudes of audio signals can have any reasonable
-range \, but when you output a signal via the dac~ object \, the samples
-should range between -1 and +1. Values out of that range will be "clipped."
-, f 55;
-#X obj 83 238 *~ 0;
-#X floatatom 108 201 8 0 0 0 - - -;
-#X obj 108 168 dbtorms;
-#X floatatom 108 136 8 0 80 0 - - -;
-#X text 86 429 Here we calculate a gain for the multiplier (*~) using
-a "dbtorms" object (acronym for "dB to RMS"). 100 dB is normalized
-to one \, and zero dB artificially outputs a true 0, f 55;
-#X text 86 492 Pd assumes you have a two channel audio system unless
-you tell it otherwise., f 55;
-#X text 293 551 updated for Pd version 0.33;
-#X text 164 102 <= 440 Hz. sine wave at full blast;
-#X text 172 135 <= set amplitude here in dB;
-#X text 172 167 <= this converts dB to linear units;
-#X text 172 200 <= this shows the linear gain;
-#X text 110 321 <= and out. We're sending to both channels now.;
-#X text 125 237 <= multiply the sine wave by the gain \, reducing its
-amplitude. You can also use the "*~" object to multiply two signals.
-The "0" argument here instructs it that we'll just send it messages
-to set the multiplier., f 48;
-#X connect 0 0 8 0;
-#X connect 8 0 1 0;
-#X connect 8 0 1 1;
-#X connect 9 0 8 1;
-#X connect 10 0 9 0;
-#X connect 11 0 10 0;
+#N canvas 547 63 576 630 12;
+#X obj 85 174 osc~ 440;
+#X obj 73 403 dac~;
+#X obj 85 321 *~ 0;
+#X floatatom 110 284 8 0 0 0 - - - 0;
+#X obj 110 251 dbtorms;
+#X floatatom 110 219 8 0 80 0 - - - 0;
+#X obj 381 193 ../5.reference/set-dsp-tgl;
+#X text 412 196 DSP on/off;
+#X msg 381 230 \; pd dsp \$1;
+#X text 112 404 <-- and out (we're sending to both channels now).;
+#X text 74 78 Amplitudes of audio signals can have any reasonable range \, but when you output a signal via the [dac~] object \, the samples should range between -1 and +1. Values out of that range will be "clipped".;
+#X text 59 547 Pd assumes you have a two channel audio system unless you tell it otherwise. The [dac~] object \, by default \, connects to these two channels., f 68;
+#X text 59 450 Here we calculate a gain for the multiplier [*~] using a [dbtorms] object (acronym for "dB to RMS"). 100 dB is normalized to one \, and zero dB artificially outputs a true 0 amplitude. Hence \, decibels in Pd are basically dBFS with an offset of 100! The dBFS is usually considered in digital systems and 0 dB corresponds to one \, whereas a true zero amplitude value consists of minus infinity dB., f 68;
+#X obj 113 25 cnv 5 5 25 empty empty Controlling\ Amplitude 15 13 0 16 #dfdfdf #202020 0;
+#X text 176 218 <-- set amplitude in dB;
+#X text 176 250 <-- convert dB to linear;
+#X text 176 283 <-- linear gain;
+#X text 127 320 <-- multiply the sine wave by the gain \, reducing its amplitude. You can use the [*~] object to multiply two signals \, but the "0" argument here instructs it that we'll just send it messages (not audio) to set the multiplier., f 48;
+#X text 152 173 <--, f 3;
+#X text 179 174 440 Hz sine wave at full blast, f 16;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X connect 2 0 1 1;
+#X connect 3 0 2 1;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 8 0;

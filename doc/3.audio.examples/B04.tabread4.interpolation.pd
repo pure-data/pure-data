@@ -1,46 +1,42 @@
-#N canvas 315 93 745 541 12;
+#N canvas 447 89 789 683 12;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array waveform13 11 float 1;
-#A 0 1 1 1 1 1 1 1 -1 -1 -1 -1;
-#X coords 0 1.02 10 -1.02 180 130 1;
-#X restore 404 24 graph;
-#X text 502 500 updated for Pd version 0.34;
+#X array waveform13 11 float 2;
+#X coords 0 1.02 11 -1.02 300 140 1 0 0;
+#X restore 405 39 graph;
 #X obj 162 159 +~ 1;
-#X text 60 82 phase;
-#X text 60 131 range;
+#X text 52 82 phase;
+#X text 52 131 range;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array wave-out13 441 float 0;
-#X coords 0 1.02 440 -1.02 300 140 1;
-#X restore 405 217 graph;
-#X msg 183 218 bang;
-#N canvas 601 297 474 197 other-stuff 0;
-#X obj 73 42 loadbang;
-#X msg 73 74 \; waveform13 0 1 1 1 1 1 1 1 -1 -1 -1 -1 \; waveform13
-xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10 \; pd dsp 1;
-#X connect 0 0 1 0;
-#X restore 561 421 pd other-stuff;
+#X coords 0 1.02 440 -1.02 300 140 1 0 0;
+#X restore 405 237 graph;
 #X obj 162 249 tabwrite~ wave-out13;
 #X obj 162 186 tabread4~ waveform13;
 #X obj 162 133 *~ 8;
 #X obj 162 97 phasor~ 220;
-#X text 63 35 4-POINT INTERPOLATION IN DETAIL;
 #X obj 214 318 sig~ 220;
 #X obj 214 348 tabosc4~ waveform13;
-#X text 63 295 (this would be;
-#X text 64 315 equivalent to the;
-#X text 46 398 This patch demonstrates 4-point interpolation in tabread4~.
-The 11-point table \, waveform13 \, contains a transition from from
-1 to -1 \, which is "smoothed" as seen in wave-out13. There's no such
-transition at the wrap around point--the interpolation always happens
-between 4 consecutive samples of the table \, disregarding wraparound.
-, f 65;
-#X text 138 335 above) =>;
-#X text 229 219 <=click to graph;
-#X text 59 146 adjustment =>;
-#X text 59 97 generation =>;
-#X connect 2 0 9 0;
-#X connect 6 0 8 0;
-#X connect 9 0 8 0;
-#X connect 10 0 2 0;
-#X connect 11 0 10 0;
-#X connect 13 0 14 0;
+#X text 204 217 <-- click to graph;
+#X obj 179 218 bng 19 250 50 0 empty graphit empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 41 198 ../5.reference/set-dsp-tgl;
+#X text 72 201 DSP on/off;
+#X msg 41 235 \; pd dsp \$1;
+#X text 51 97 generation -->;
+#X text 51 146 adjustment -->;
+#X text 86 297 this would be equivalent to the above -->, f 25;
+#X obj 34 25 cnv 5 5 25 empty empty 4-Point\ Interpolation\ in\ detail 15 13 0 16 #dfdfdf #202020 0;
+#X text 545 580 no copies;
+#X text 242 580 with copies;
+#X text 93 491 The table contains a transition from 1 to -1 at index 7 to 8 and \, which is "smoothed" as seen in wave-out13. Since index 9 is a copy of 1 there's a transition back. You can try below a table without copies for the extra points and see how in this case there's not a smooth transition at the wrap around point., f 86;
+#X text 93 405 This patch demonstrates 4-point interpolation in [tabread4~]. The 11-point table \, "waveform13" \, is actually an 8-point table (from index 1 to 8) with extra copied points (0 \, 9 and 10). The 0 index point is a copy of point 8 and points 9 and 10 are copies of points 1 and 2 \, which is needed for the 4-point interpolation (which means the interpolation always happens between 4 consecutive samples of the table)., f 86;
+#X msg 425 603 \; waveform13 0 1 1 1 1 1 1 1 -1 -1 -1 -1 \; graphit bang;
+#X msg 122 603 \; waveform13 0 -1 1 1 1 1 1 1 -1 -1 1 1 \; graphit bang;
+#X obj 122 577 loadbang;
+#X connect 1 0 6 0;
+#X connect 6 0 5 0;
+#X connect 7 0 1 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 12 0 5 0;
+#X connect 13 0 15 0;
+#X connect 26 0 25 0;

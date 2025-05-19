@@ -23,14 +23,6 @@
 #include <windows.h>
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
 #include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
@@ -38,7 +30,6 @@
 #include "s_utf8.h"
 #include <stdio.h>
 #include <fcntl.h>
-#include <ctype.h>
 
 #ifdef _LARGEFILE64_SOURCE
 # define open  open64
@@ -47,6 +38,7 @@
 # define stat  stat64
 #endif
 
+#include "m_private_utils.h"
 
     /* change '/' characters to the system's native file separator */
 void sys_bashfilename(const char *from, char *to)
@@ -94,7 +86,7 @@ int sys_isabsolutepath(const char *dir)
 }
 
 /* expand env vars and ~ at the beginning of a path and make a copy to return */
-static void sys_expandpath(const char *from, char *to, int bufsize)
+void sys_expandpath(const char *from, char *to, int bufsize)
 {
     if ((strlen(from) == 1 && from[0] == '~') || (strncmp(from,"~/", 2) == 0))
     {
@@ -156,7 +148,7 @@ static const char *strtokcpy(char *to, size_t to_len, const char *from, char del
 }
 
 /* add a single item to a namelist.  If "allowdup" is true, duplicates
-may be added; othewise they're dropped.  */
+may be added; otherwise they're dropped.  */
 
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
 {
@@ -270,8 +262,9 @@ void sys_setextrapath(const char *p)
     The "bin" flag requests opening for binary (which only makes a difference
     on Windows). */
 
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin)
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin,
+    int okgui)
 {
     int fd;
     char buf[MAXPDSTRING];
@@ -295,8 +288,9 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
             !S_ISDIR(statbuf.st_mode));
         if (!ok)
         {
-            if (sys_verbose) post("tried %s; stat failed or directory",
-                dirresult);
+            if (okgui)
+                logpost(NULL, PD_VERBOSE, "tried %s; stat failed or directory",
+                    dirresult);
             close (fd);
             fd = -1;
         }
@@ -304,7 +298,8 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
 #endif
         {
             char *slash;
-            if (sys_verbose) post("tried %s and succeeded", dirresult);
+            if (okgui)
+                logpost(NULL, PD_VERBOSE, "tried %s and succeeded", dirresult);
             sys_unbashfilename(dirresult, dirresult);
             slash = strrchr(dirresult, '/');
             if (slash)
@@ -319,15 +314,34 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     }
     else
     {
-        if (sys_verbose) post("tried %s and failed", dirresult);
+        if (okgui)
+            logpost(NULL, PD_VERBOSE, "tried %s and failed", dirresult);
     }
     return (-1);
+}
+
+    /* keep this in the Pd app for binary compatibility
+    with existing loaders such as pdlua. */
+EXTERN int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin)
+{
+    if (PD_VERSION_CODE >= PD_VERSION(0, 56, 0))
+    {
+        static int warned = 0;
+        if (!warned)
+            pd_error(0,
+    "obsolete call to sys_trytoopenone(): some extern needs an update");
+        warned = 1;
+    }
+    return (sys_trytoopenit(dir, name, ext, dirresult, nameresult, size, bin,
+        1));
 }
 
     /* check if we were given an absolute pathname, if so try to open it
     and return 1 to signal the caller to cancel any path searches */
 int sys_open_absolute(const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp)
+    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp,
+        int okgui)
 {
     if (sys_isabsolutepath(name))
     {
@@ -340,8 +354,8 @@ int sys_open_absolute(const char *name, const char* ext,
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
         dirbuf[dirlen] = 0;
-        *fdp = sys_trytoopenone(dirbuf, name+(dirlen+1), ext,
-            dirresult, nameresult, size, bin);
+        *fdp = sys_trytoopenit(dirbuf, name+(dirlen+1), ext,
+            dirresult, nameresult, size, bin, okgui);
         return (1);
     }
     else return (0);
@@ -358,37 +372,38 @@ there is no search and instead we just try to open the file literally.  */
 /* see also canvas_open() which, in addition, searches down the
 canvas-specific path. */
 
-static int do_open_via_path(const char *dir, const char *name,
+int do_open_via_path(const char *dir, const char *name,
     const char *ext, char *dirresult, char **nameresult, unsigned int size,
-    int bin, t_namelist *searchpath)
+    int bin, t_namelist *searchpath, int okgui)
 {
     t_namelist *nl;
     int fd = -1;
 
         /* first check if "name" is absolute (and if so, try to open) */
-    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
-        return (fd);
-
-        /* otherwise "name" is relative; try the directory "dir" first. */
-    if ((fd = sys_trytoopenone(dir, name, ext,
-        dirresult, nameresult, size, bin)) >= 0)
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd,
+        okgui))
             return (fd);
 
-        /* next go through the search path */
-    for (nl = searchpath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-            dirresult, nameresult, size, bin)) >= 0)
-                return (fd);
+        /* otherwise "name" is relative; try the directory "dir" first. */
+    if ((fd = sys_trytoopenit(dir, name, ext,
+        dirresult, nameresult, size, bin, okgui)) >= 0)
+            return (fd);
+
         /* next go through the temp paths from the commandline */
     for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-            dirresult, nameresult, size, bin)) >= 0)
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin, okgui)) >= 0)
+                return (fd);
+        /* next look in built-in paths like "extra" */
+    for (nl = searchpath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin, okgui)) >= 0)
                 return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
-            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-                dirresult, nameresult, size, bin)) >= 0)
+            if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin, okgui)) >= 0)
                     return (fd);
 
     *dirresult = 0;
@@ -401,7 +416,7 @@ int open_via_path(const char *dir, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     return (do_open_via_path(dir, name, ext, dirresult, nameresult,
-        size, bin, STUFF->st_searchpath));
+        size, bin, STUFF->st_searchpath, 1));
 }
 
     /* open a file with a UTF-8 filename
@@ -497,7 +512,7 @@ int sys_fclose(FILE *stream)
     search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
-    char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
+    char realname[MAXPDSTRING], newname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
         /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
     int fd;
@@ -507,9 +522,10 @@ void open_via_helppath(const char *name, const char *dir)
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
+    strncpy(newname, realname, MAXPDSTRING-10);
     strcat(realname, "-help.pd");
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+        MAXPDSTRING, 0, STUFF->st_helppath, 1)) >= 0)
             goto gotone;
 
         /* 2. "help-objectname.pd" */
@@ -517,212 +533,11 @@ void open_via_helppath(const char *name, const char *dir)
     strncat(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-1] = 0;
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+        MAXPDSTRING, 0, STUFF->st_helppath, 1)) >= 0)
             goto gotone;
-
-    post("sorry, couldn't find help patch for \"%s\"", name);
+    post("sorry, couldn't find help patch for \"%s\"", newname);
     return;
 gotone:
     close (fd);
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
-
-int sys_argparse(int argc, char **argv);
-void sys_doflags(void)
-{
-    int i, beginstring = 0, state = 0, len;
-    int rcargc = 0;
-    char *rcargv[MAXPDSTRING];
-    if (!sys_flags)
-        sys_flags = &s_;
-    len = (int)strlen(sys_flags->s_name);
-    if (len > MAXPDSTRING)
-    {
-        error("flags: %s: too long", sys_flags->s_name);
-        return;
-    }
-    for (i = 0; i < len+1; i++)
-    {
-        int c = sys_flags->s_name[i];
-        if (state == 0)
-        {
-            if (c && !isspace(c))
-            {
-                beginstring = i;
-                state = 1;
-            }
-        }
-        else
-        {
-            if (!c || isspace(c))
-            {
-                char *foo = malloc(i - beginstring + 1);
-                if (!foo)
-                    return;
-                strncpy(foo, sys_flags->s_name + beginstring, i - beginstring);
-                foo[i - beginstring] = 0;
-                rcargv[rcargc] = foo;
-                rcargc++;
-                if (rcargc >= MAXPDSTRING)
-                    break;
-                state = 0;
-            }
-        }
-    }
-    if (sys_argparse(rcargc, rcargv))
-        error("error parsing startup arguments");
-}
-
-/* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
-    dollars, and semis down here. */
-t_symbol *sys_decodedialog(t_symbol *s)
-{
-    char buf[MAXPDSTRING];
-    const char *sp = s->s_name;
-    int i;
-    if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
-    else sp++;
-    for (i = 0; i < MAXPDSTRING-1; i++, sp++)
-    {
-        if (!sp[0])
-            break;
-        if (sp[0] == '+')
-        {
-            if (sp[1] == '_')
-                buf[i] = ' ', sp++;
-            else if (sp[1] == '+')
-                buf[i] = '+', sp++;
-            else if (sp[1] == 'c')
-                buf[i] = ',', sp++;
-            else if (sp[1] == 's')
-                buf[i] = ';', sp++;
-            else if (sp[1] == 'd')
-                buf[i] = '$', sp++;
-            else buf[i] = sp[0];
-        }
-        else buf[i] = sp[0];
-    }
-    buf[i] = 0;
-    return (gensym(buf));
-}
-
-    /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
-}
-
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
-}
-
-    /* start a search path dialog window */
-void glob_start_path_dialog(t_pd *dummy)
-{
-     char buf[MAXPDSTRING];
-
-    sys_set_searchpath();
-    sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
-    gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
-}
-
-    /* new values from dialog window */
-void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
-{
-    int i;
-    namelist_free(STUFF->st_searchpath);
-    STUFF->st_searchpath = 0;
-    sys_usestdpath = atom_getfloatarg(0, argc, argv);
-    sys_verbose = atom_getfloatarg(1, argc, argv);
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, s->s_name);
-    }
-}
-
-    /* add one item to search path (intended for use by Deken plugin).
-    if "saveit" is set, also save all settings.  */
-void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
-{
-    t_symbol *s = sys_decodedialog(path);
-    if (*s->s_name)
-    {
-        STUFF->st_searchpath =
-            namelist_append_files(STUFF->st_searchpath, s->s_name);
-        if (saveit != 0)
-            sys_savepreferences(0);
-    }
-}
-
-    /* set the global list vars for startup libraries and flags */
-void sys_set_startup(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_vgui("set ::startup_flags {%s}\n",
-        (sys_flags? sys_flags->s_name : ""));
-    sys_gui("set ::startup_libraries {}\n");
-    for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
-}
-
-    /* start a startup dialog window */
-void glob_start_startup_dialog(t_pd *dummy)
-{
-    char buf[MAXPDSTRING];
-
-    sys_set_startup();
-    sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
-        (sys_flags? sys_flags->s_name : ""));
-    gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
-}
-
-    /* new values from dialog window */
-void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
-{
-    int i;
-    namelist_free(STUFF->st_externlist);
-    STUFF->st_externlist = 0;
-    sys_defeatrt = atom_getfloatarg(0, argc, argv);
-    sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_externlist =
-                namelist_append_files(STUFF->st_externlist, s->s_name);
-    }
-}
-
-

@@ -1,55 +1,65 @@
-#N canvas 369 106 545 705 12;
-#X obj 122 136 osc~ 440;
-#X obj 130 416 dac~;
-#X msg 290 15 \; pd dsp 1;
-#X msg 382 15 \; pd dsp 0;
-#X text 311 48 ON;
-#X text 399 48 OFF;
-#X obj 142 356 *~;
-#X obj 160 330 line~;
-#X msg 151 170 0.1 2000;
-#X msg 171 255 0 2000;
-#X msg 160 192 0.1 50;
-#X msg 178 277 0 50;
-#X msg 167 214 0.1;
-#X msg 183 299 0;
-#X text 312 191 ON;
-#X text 309 284 OFF;
-#X text 33 21 CONTROLLING AMPLITUDE USING LINE~;
-#X text 49 581 The line~ object (and its control brother \, line) treat
-their right inlet specially. The inlets don't retain values the way
-other inlets do but revert to zero whenever a target is received.;
-#X text 32 76 In this patch \, the multiplier is configured to multiply
-two signals. The amplitude is now a signal computed by the line~ object.
-;
-#X text 49 491 (In this example \, message boxes with two numbers each
-are connected to line~'s left inlet. Except in some special cases \,
-Pd objects with more than one inlet will automatically distribute lists
-of numbers across their inlets. In this case \, "0 50" becomes \, "50
-at right and 0 at left."), f 60;
-#X text 301 655 updated for Pd version 0.36;
-#X text 198 135 <= sine wave;
-#X text 233 172 <= slow;
-#X text 212 193 <= fast;
-#X text 197 214 <= instantly;
-#X text 224 255 <= slow;
-#X text 216 277 <= fast;
-#X text 213 299 <= instantly;
-#X text 207 330 <= ramp generator;
-#X text 171 415 <= out;
-#X text 143 237 -------------------------------;
-#X text 49 455 Line~'s left inlet is a target value. It reaches that
-target in the time specified (in milliseconds) to its right inlet.
-;
-#X text 179 355 <= multiply the sine wave by the ramp. There's no longer
-a "0" argument - this tells Pd to expect a signal here., f 38;
-#X connect 0 0 6 0;
-#X connect 6 0 1 0;
-#X connect 6 0 1 1;
-#X connect 7 0 6 1;
-#X connect 8 0 7 0;
-#X connect 9 0 7 0;
-#X connect 10 0 7 0;
-#X connect 11 0 7 0;
-#X connect 12 0 7 0;
-#X connect 13 0 7 0;
+#N canvas 376 68 888 646 12;
+#X obj 89 140 osc~ 440;
+#X obj 89 413 dac~;
+#X obj 89 371 *~;
+#X obj 137 334 line~;
+#X msg 114 174 0.1 2000;
+#X msg 149 259 0 2000;
+#X msg 126 196 0.1 50;
+#X msg 156 281 0 50;
+#X msg 137 218 0.1;
+#X msg 161 303 0;
+#X text 278 195 ON;
+#X text 307 284 OFF;
+#X text 30 453 The left inlet of [line~] is a target value. It reaches that target in the time specified (in milliseconds) to its right inlet., f 67;
+#X text 30 489 (In this example \, message boxes with two numbers each are connected to [line~]'s left inlet. Except in some special cases \, Pd objects with more than one inlet will automatically distribute lists of numbers across their inlets. In this case \, "0 50" becomes \, "50 at right and 0 at left."), f 67;
+#X text 30 566 The [line~] object (and its control brother \, [line]) treat their right inlet specially. The inlets don't retain values the way other inlets do but revert to zero whenever a target is received., f 67;
+#X obj 367 135 ../5.reference/set-dsp-tgl;
+#X text 398 138 DSP on/off;
+#X msg 367 172 \; pd dsp \$1;
+#X obj 622 310 hsl 162 19 0 1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 619 369 pow 4;
+#X obj 601 250 osc~ 440;
+#X msg 619 431 \$1 10;
+#X obj 619 463 line~;
+#X obj 601 512 *~;
+#X obj 601 566 dac~;
+#X floatatom 619 338 10 0 0 0 - - - 0;
+#X floatatom 619 401 11 0 0 0 - - - 0;
+#X text 155 140 <-- sine wave;
+#X text 181 173 <-- slow;
+#X text 178 197 <-- fast;
+#X text 167 218 <-- instantly;
+#X text 202 259 <-- slow;
+#X text 194 281 <-- fast;
+#X text 191 303 <-- instantly;
+#X text 109 239 ---------------------------------------;
+#X text 184 334 <-- ramp generator;
+#X text 162 360 multiply the sine wave by the ramp. There's no longer a "0" argument \, which tells Pd to expect a signal here., f 44;
+#X text 118 369 <----;
+#X text 128 413 <-- out;
+#X text 37 65 In this patch \, the multiplier is configured to multiply two signals. The amplitude is now a signal computed by the [line~] object \, which provides a smoothened ramp., f 62;
+#X text 524 50 Below use a slider that generates values from 0 to 1 \, which passes through a quartic function (by going through [pow 4]). This non linear function is better suited for the way we perceive amplitudes. The value is then combined in a message by assuming the value of the '\$1' variable into a list followed by 10 \, which means that changes to the slider are smoothened by a 10 ms audio ramp! This mechanism is used in an [output~] abstraction presented later., f 43;
+#X text 697 339 <-- linear;
+#X text 703 401 <-- quartic;
+#X obj 57 20 cnv 5 5 25 empty empty Controlling\ Amplitude\ using\ [line~] 15 13 0 16 #dfdfdf #202020 0;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X connect 2 0 1 1;
+#X connect 3 0 2 1;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 0;
+#X connect 8 0 3 0;
+#X connect 9 0 3 0;
+#X connect 15 0 17 0;
+#X connect 18 0 25 0;
+#X connect 19 0 26 0;
+#X connect 20 0 23 0;
+#X connect 21 0 22 0;
+#X connect 22 0 23 1;
+#X connect 23 0 24 0;
+#X connect 23 0 24 1;
+#X connect 25 0 19 0;
+#X connect 26 0 21 0;

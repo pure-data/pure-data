@@ -28,7 +28,8 @@ Optional features:
 
 ## Autotools Build (recommended)
 
-Building Pd using the GNU autotools involves the following steps:
+Building Pd using the GNU autotools involves the following steps for all
+platforms:
 
 1. configure: detect & set library and platform options
 2. make: compile Pd, associated tools, and resource files (ie. translations)
@@ -40,6 +41,9 @@ Overview:
     ./autogen.sh
     ./configure
     make
+
+Note: Additional platform-specific options and build targets are listed in
+following subsections.
 
 Start by opening a commandline shell and navigating to the Pd source directory:
 
@@ -80,6 +84,12 @@ script settings on the commandline:
 
     # build Pd using a system installed PortAudio
     ./configure --without-local-portaudio
+
+If you need to run Pd through a debugger (like gdb), you can
+build Pd with debugging symbols using the "--enable-debug" flag.
+
+    # build Pd with debugging information
+    ./configure --enable-debug
 
 An important configure option for some platforms is --enable-universal which
 allows you to specify the desired architecture(s) when building Pd. For Intel
@@ -137,7 +147,7 @@ double check which architectures Pd was built with, use the "file" command:
     ...
     Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64
 
-### Linux & BSD
+### Linux
 
 Platform requirements:
 
@@ -167,6 +177,9 @@ In case you are using jackd1 instead of jackd2, use:
 
 Most distributions come with Tcl/Tk installed, so you should be able to run Pd
 after it is built.
+
+Once your build system is set up, you can follow the general autotools build
+steps to build Pd.
 
 ### macOS
 
@@ -199,7 +212,8 @@ need. For example, to install the autotools & gettext using Homebrew:
 By default, Pd is built for the current system architecture, usually 64 bit. If
 you want to override this you can use the --enable-universal configure option
 which allows you to specify the desired architecture(s) when building Pd. For
-Intel/AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". By
+Intel/AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". For Apple
+Silicon processors (M1, M2, etc), the 64 bit architecture is called "arm64". By
 default, Pd is built for the architecture of the current system, however you may
 want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You
 can override the defaults with --enable-universal:
@@ -210,11 +224,13 @@ compiler:
 
 * macOS 10.6: i386, x86_64, ppc
 * macOS 10.7+: i386, x86_64
+* macOS 10.15: x86_64
+* macOS 11+: x86_64, arm64
 
 Note: a "fat" Pd may not work on all systems and/or be able to load both 32 or
-64 bit externals. Additonally, you can specify multiple architectures directly:
+64 bit externals. Additionally, you can specify multiple architectures directly:
 
-    # build a "fat" Pd for both 32 and 64 bit
+    # build a "fat" Pd for both 32 and 64 bit Intel
     # may not work on all systems
     ./configure --enable-universal=i386,x86_64
 
@@ -222,16 +238,17 @@ Note: a "fat" Pd may not work on all systems and/or be able to load both 32 or
     # may not work on all systems
     ./configure --enable-universal
 
-The JACK audio server is supported by Pd on macOS. By default, Pd can use the
-Jack OS X runtime framework from http://www.jackosx.com if it is installed on
-the system. Optionally, Pd can also be built with Jack installed via Homebrew or
-Macports, however the runtime framework support must be disabled:
+The JACK audio server is supported by Pd on macOS. By default, Pd can use either
+the offical 64-bit builds for macOS 10.12+ from https://jackaudio.org or the
+older, 32-bit Jack OS X runtime framework if one is installed on the system.
+Optionally, Pd can also be built with Jack installed via Homebrew or Macports,
+however the runtime framework support must be disabled:
 
     brew install jack
-    ./configure --disable-jack-framework
+    ./configure --disable-jack-framework --enable-jack
 
-You should now be ready to build Pd. Once built, there are two options for
-installation:
+You should now be ready to build Pd by following the general autotools build
+steps. Once built, there are two options for installation:
 
 * build a standalone macOS application (recommended)
 * install to your system as a commandline program
@@ -245,7 +262,9 @@ double-clicked and/or copied to /Applications. For more info & options regarding
 the Pd .app bundle, see mac/README.txt
 
 If you want to have both the Pd application *and* use Pd from the commandline,
-add command aliases to the binaries inside the .app to your ~/.bash_profile:
+add command aliases to the binaries inside the .app to your shell environment
+~/.zshrc (newer systems with zsh, macOS 10.15+) or ~/.bash_profile (older
+systems with bash):
 
 # pd commandline
 WHICHPD="Pd-0.47-1"
@@ -253,8 +272,13 @@ alias pd="/Applications/$WHICHPD.app/Contents/Resources/bin/pd"
 alias pdsend="/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend"
 alias pdreceive="/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive"
 
-Next, reload the profile by either opening a new Terminal window or running:
+Next, reload the shell environment by either opening a new Terminal window or
+running:
 
+    # zsh (new)
+    . ~/.zshrc
+
+    # bash (old)
     source ~/.bash_profile
 
 If you install Pd to your system with "make install", the Tk 8.5.9 currently
@@ -262,7 +286,7 @@ included with the system (as of macOS 10.14) is buggy and should *not* be used.
 It is recommended to install a newer version, either via Homebrew or from the
 ActiveState Tcl/Tk downloads.
 
-To see which version the Pd GUI is using: set the log level to 3 & look for the
+To see which version the Pd GUI is using: set the log level to 4 & look for the
 Tk version log line in the Pd window.
 
 Another option is to set the Tk Wish command Pd uses to launch the GUI. At
@@ -297,28 +321,27 @@ if you are using 32 bit Windows) from:
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
-release is 32 bit for Windows, so it is recommended to set up and use the MinGW
-32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
-shell however this is currently considered *experimental*. Due to how MinGW is
-designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
-also means the Pd configure --enable-universal build option has no effect in
-MinGW.
+Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50, the Pd
+release is 64 bit for Windows, so it is recommended to set up and use the MinGW
+64 bit shell. If you want to build a 32 bit Pd, similarly use the MinGW 32 bit
+shell. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit
+MinGW and vice versa. This also means the Pd configure --enable-universal build
+option has no effect in MinGW.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
 
 Open an Msys2 shell and install the compiler chain, autotools, & gettext via:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
-              make pkgconfig autoconf automake libtool \
-              mingw-w64-i686-gettext
-
     # 64 bit
     pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
-              make pkgconfig autoconf automake libtool \
+              make autoconf automake libtool \
               mingw-w64-x86_64-gettext
+
+    # 32 bit
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
+              make autoconf automake libtool \
+              mingw-w64-i686-gettext
 
 Install git if you want to clone the Pd sources from Github, etc:
 
@@ -326,17 +349,18 @@ Install git if you want to clone the Pd sources from Github, etc:
 
 and/or the nsis installer tool if you want to build the Pd Windows installer:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-nsis
-
     # 64 bit
     pacman -S mingw-w64-x86_64-nsis
+
+    # 32 bit
+    pacman -S mingw-w64-i686-nsis
 
 Note: You can also search for packages in Msys2 with:
 
     pacman -S -s <searchterm>
 
-Once the packages are installed, you should now be ready to build Pd.
+Once the packages are installed, you should now be ready to build Pd by
+following the general autotools build steps.
 
 The following audio APIS are available on Windows and can be enabled/disabled
 via their configure flags:
@@ -353,7 +377,7 @@ Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source
 files. If you want to build Pd with ASIO support, see asio/README.txt for
 further instructions.
 
-You should now be ready to build Pd. Once built, you can either:
+Once built Pd is built, you can either:
 
 * build a Pd application directory for Windows (recommended)
 * build a Windows installer
@@ -397,16 +421,119 @@ For example, to build a 32 bit Pd:
 
     ./configure --host=i686-w64-mingw32
 
-Similarily, to build a 64 bit Pd without ASIO support:
+Similarly, to build a 64 bit Pd without ASIO support:
 
-    ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
-
-(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
+    ./configure --disable-asio --host=x86_64-w64-mingw32
 
 If all went well, you should now be ready to build Pd, as explained in the
 instructions above in the "Windows" section:
 
     make app
+
+### BSD
+
+Building Pd for the various BSD variants is similar to the Linux way.
+The major difference is the used package manager (and the names of the packages),
+you'll want to install.
+
+### FreeBSD
+
+(Tested on FreeBSD-13)
+
+Install the core build requirements:
+
+    sudo pkg install gcc automake autoconf libtool gettext gmake
+
+You may install one (or more) libraries (depending on your needs).
+It seems that with FreeBSD-13, there are ALSA and JACK packages available:
+
+    sudo pkg install alsa-lib jackit
+
+Once your build system is set up, you can follow the general autotools build
+steps to build Pd, but make sure to use `gmake` (aka "GNU make").
+The ordinary BSD `make` will not suffice!
+
+    ./autogen.sh
+    ./configure --deken-os=FreeBSD MAKE=gmake
+    gmake
+
+    sudo gmake install
+
+### OpenBSD
+
+(Tested on OpenBSD-7)
+
+Install the core build requirements:
+
+    sudo pkg_add gcc automake autoconf libtool gettext-tools gmake
+
+(If there are multiple versions for one or more of the packages, pick your favourite or the newest one).
+
+
+You may install one (or more) libraries (depending on your needs).
+It seems that with OpenBSD-7, there are only JACK packages available:
+
+    sudo pkg_add jack
+
+By default, OpenBSD installs all its packages into `/usr/local/`,
+but the compiler does not look for headers resp. libraries in this directory.
+We can instruct autotools to automatically consider these directories
+by creating a file '/usr/local/share/config.site':
+
+    cat | sudo tee /usr/local/share/config.site>/dev/null << EOF
+    CPPFLAGS="-I/usr/local/include \$CPPFLAGS"
+    LDFLAGS="-L/usr/local/lib \$LDFLAGS"
+    EOF
+
+Also, because OpenBSD allows to coinstall multiple versions of the autotools (with no "default"),
+we must specify which version we want to use:
+
+   export AUTOCONF_VERSION=$(ls -S /usr/local/bin/autoconf-* | sed -e 's|.*-||' | sort -n | tail -1)
+   export AUTOMAKE_VERSION=$(ls -S /usr/local/bin/automake-* | sed -e 's|.*-||' | sort -n | tail -1)
+
+Now that your build system is set up, you can follow the general autotools build
+steps to build Pd, but make sure to use `gmake` (aka "GNU make").
+The ordinary BSD `make` will not suffice!
+
+    ./autogen.sh
+    ./configure --deken-os=OpenBSD --enable-jack MAKE=gmake
+    gmake
+
+    sudo gmake install
+
+### NetBSD
+
+(Tested on NetBSD-9)
+
+Install the core build requirements:
+
+    sudo pkgin install gcc automake autoconf libtool gettext-tools gmake
+
+You may install one (or more) libraries (depending on your needs).
+It seems that with NetBSD-9, there are JACK and ALSA packages available,
+but the ALSA packages seem to be broken. OSS appears to be built-in.
+
+    sudo pkgin install jack
+
+By default, NetBSD installs all its packages into `/usr/pkg/`,
+but the compiler does not look for headers resp. libraries in this directory.
+We can instruct autotools to automatically consider these directories
+by creating a file '/usr/pkg/share/config.site':
+
+    cat | sudo tee /usr/pkg/share/config.site>/dev/null << EOF
+    CPPFLAGS="-I/usr/pkg/include \$CPPFLAGS"
+    LDFLAGS="-L/usr/pkg/lib -Wl,-R/usr/pkg/lib \$LDFLAGS"
+    EOF
+
+Now that your build system is set up, you can follow the general autotools build
+steps to build Pd, but make sure to use `gmake` (aka "GNU make").
+The ordinary BSD `make` will not suffice!
+
+    ./autogen.sh
+    ./configure --deken-os=NetBSD --prefix=/usr/pkg --disable-alsa --enable-jack MAKE=gmake
+    gmake
+
+    sudo gmake install
 
 ## Makefile Build
 

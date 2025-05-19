@@ -2,19 +2,21 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
-#include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
 #include "g_canvas.h"   /* just for LB_LOAD */
+
+#include <string.h>
 
     /* FIXME no out-of-memory testing yet! */
 
 t_pd *pd_new(t_class *c)
 {
     t_pd *x;
-    if (!c)
+    if (!c) {
         bug ("pd_new: apparently called before setup routine");
+        return NULL;
+    }
     x = (t_pd *)t_getbytes(c->c_size);
     *x = c;
     if (c->c_patchable)
@@ -25,10 +27,12 @@ t_pd *pd_new(t_class *c)
     return (x);
 }
 
+typedef void (*t_freemethod)(t_pd *);
+
 void pd_free(t_pd *x)
 {
     t_class *c = *x;
-    if (c->c_freemethod) (*(t_gotfn)(c->c_freemethod))(x);
+    if (c->c_freemethod) (*(t_freemethod)(c->c_freemethod))(x);
     if (c->c_patchable)
     {
         while (((t_object *)x)->ob_outlet)
@@ -124,6 +128,9 @@ void m_pd_setup(void)
 
 void pd_bind(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER     /* temporary workaround; see m_pd.h */
+    vst_cleanser(&s);
+#endif
     if (s->s_thing)
     {
         if (*s->s_thing == bindlist_class)
@@ -152,6 +159,9 @@ void pd_bind(t_pd *x, t_symbol *s)
 
 void pd_unbind(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER
+    vst_cleanser(&s);
+#endif
     if (s->s_thing == x) s->s_thing = 0;
     else if (s->s_thing && *s->s_thing == bindlist_class)
     {
@@ -164,20 +174,25 @@ void pd_unbind(t_pd *x, t_symbol *s)
         if ((e = b->b_list)->e_who == x)
         {
             b->b_list = e->e_next;
+            e->e_who = 0; e->e_next = 0;
             freebytes(e, sizeof(t_bindelem));
         }
         else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
             e->e_next = e2->e_next;
+            e2->e_who = 0; e2->e_next = 0;
             freebytes(e2, sizeof(t_bindelem));
             break;
         }
         if (!b->b_list->e_next)
         {
+
             s->s_thing = b->b_list->e_who;
             freebytes(b->b_list, sizeof(t_bindelem));
+            b->b_list = 0;
             pd_free(&b->b_pd);
+            b = 0;
         }
     }
     else pd_error(x, "%s: couldn't unbind", s->s_name);
@@ -204,6 +219,42 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
             }
             x = e->e_who;
         }
+    }
+    return x;
+}
+
+t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname)
+{
+    t_pd *x = 0;
+
+    if (!s->s_thing) return (0);
+#ifdef PDINSTANCE
+        /* NB: the class name symbol is shared between instances
+        so we can't rely on pointer identity! */
+    if (!strcmp((*s->s_thing)->c_name->s_name, classname->s_name))
+        return (s->s_thing);
+#else
+    if ((*s->s_thing)->c_name == classname) return (s->s_thing);
+#endif
+    if (*s->s_thing == bindlist_class)
+    {
+        t_bindlist *b = (t_bindlist *)s->s_thing;
+        t_bindelem *e, *e2;
+        int warned = 0;
+        for (e = b->b_list; e; e = e->e_next)
+        #ifdef PDINSTANCE /* see above */
+            if (!strcmp((*e->e_who)->c_name->s_name, classname->s_name))
+        #else
+            if ((*e->e_who)->c_name == classname)
+        #endif
+            {
+                if (x && !warned)
+                {
+                    post("warning: %s: multiply defined", s->s_name);
+                    warned = 1;
+                }
+                x = e->e_who;
+            }
     }
     return x;
 }
@@ -270,7 +321,10 @@ void pd_bang(t_pd *x)
 
 void pd_float(t_pd *x, t_float f)
 {
-    (*(*x)->c_floatmethod)(x, f);
+    if (x == &pd_objectmaker)
+        ((t_floatmethodr)(*(*x)->c_floatmethod))(x, f);
+    else
+        (*(*x)->c_floatmethod)(x, f);
 }
 
 void pd_pointer(t_pd *x, t_gpointer *gp)
@@ -280,20 +334,38 @@ void pd_pointer(t_pd *x, t_gpointer *gp)
 
 void pd_symbol(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER
+    vst_cleanser(&s);
+#endif
     (*(*x)->c_symbolmethod)(x, s);
 }
 
 void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
+#ifdef VST_CLEANSER
+    int i;
+    vst_cleanser(&s);
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type == A_SYMBOL)
+            vst_cleanser(&argv[i].a_w.w_symbol);
+#endif
     (*(*x)->c_listmethod)(x, &s_list, argc, argv);
 }
 
 void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
+#ifdef VST_CLEANSER
+    int i;
+    vst_cleanser(&s);
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type == A_SYMBOL)
+            vst_cleanser(&argv[i].a_w.w_symbol);
+#endif
     (*(*x)->c_anymethod)(x, s, argc, argv);
 }
 
 void mess_init(void);
+void sched_init(void);
 void obj_init(void);
 void conf_init(void);
 void glob_init(void);
@@ -317,8 +389,27 @@ void pd_init(void)
     pd_init_systems();
 }
 
-EXTERN void pd_init_systems(void) {
+void pd_term(void)
+{
+    t_glist *c;
+    for (c = pd_getcanvaslist(); c; c = c->gl_next)
+        canvas_closebang(c);
+#if 0
+        /* Canvases may be slow to close and as a workaround people
+        may want Pd to shutdown quickly. Conversely, others might
+        prefer it if canvases (and all their containing objects) are
+        always freed properly. For now let's exit quickly and LATER
+        figure out a way to handle this. */
+    while ((c = pd_getcanvaslist()))
+        pd_free((t_pd *)c);
+#endif
+    pd_term_systems();
+}
+
+void pd_init_systems(void)
+{
     mess_init();
+    sched_init();
     sys_lock();
     obj_init();
     conf_init();
@@ -327,13 +418,12 @@ EXTERN void pd_init_systems(void) {
     sys_unlock();
 }
 
-EXTERN void pd_term_systems(void) {
-    sys_lock();
-    sys_unlock();
+void pd_term_systems(void)
+{
+        /* TODO free resources */
 }
 
-EXTERN t_canvas *pd_getcanvaslist(void)
+t_canvas *pd_getcanvaslist(void)
 {
     return (pd_this->pd_canvaslist);
 }
-

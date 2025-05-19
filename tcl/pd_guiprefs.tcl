@@ -12,19 +12,19 @@ namespace eval ::pd_guiprefs:: {
     namespace export write_recentfiles
     namespace export update_recentfiles
     namespace export write_loglevel
+
+    # preference keys
+    variable recentfiles_key ""
+    variable loglevel_key "loglevel"
+
+    # platform specific
+    variable domain org.puredata.pd.pd-gui
+    variable configdir ""
+    variable recentfiles_is_array false
 }
 
-# preference keys
-set ::pd_guiprefs::recentfiles_key ""
-set ::pd_guiprefs::loglevel_key "loglevel"
-
-# platform specific
-set ::pd_guiprefs::domain ""
-set ::pd_guiprefs::configdir ""
-set ::pd_guiprefs::recentfiles_is_array false
-
 #################################################################
-# perferences storage locations
+# preferences storage locations
 #
 # legacy
 #   registry
@@ -65,11 +65,13 @@ set ::pd_guiprefs::recentfiles_is_array false
 # init preferences
 #
 proc ::pd_guiprefs::init {} {
-    set ::pd_guiprefs::domain org.puredata.pd.pd-gui
-
     switch -- $::platform {
         "Darwin" {
             set backend "plist"
+            ## on macOS the domain should be the same as the bundle ID
+            if {[info exists ::env(__CFBundleIdentifier)] && [string trim $::env(__CFBundleIdentifier)] != {}} {
+                set ::pd_guiprefs::domain $::env(__CFBundleIdentifier)
+            }
         }
         "W32" {
             set backend "registry"
@@ -94,20 +96,20 @@ proc ::pd_guiprefs::init {} {
             # ------------------------------------------------------------------------------
             # macOS: read a plist file using the 'defaults' command
             #
-            proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-                if {![catch {exec defaults read $adomain $akey} conf]} {
-                    if {$arr} {
+            proc ::pd_guiprefs::get_config {domain key {islist false}} {
+                if {![catch {exec defaults read $domain $key} conf]} {
+                    if {$islist} {
                         set conf [plist_array_to_tcl_list $conf]
                     }
                 } else {
                     # value not found, so set empty value
-                    if {$arr} {
+                    if {$islist} {
                         # initialize w/ empty array for NSRecentDocuments, etc
-                        exec defaults write $adomain $akey -array
+                        exec defaults write $domain $key -array
                         set conf {}
                     } else {
                         # not an array
-                        exec defaults write $adomain $akey ""
+                        exec defaults write $domain $key ""
                         set conf ""
                     }
                 }
@@ -115,27 +117,46 @@ proc ::pd_guiprefs::init {} {
             }
             # ------------------------------------------------------------------------------
             # macOS: write configs to plist file using the 'defaults' command
-            # if $arr is true, we write an array
+            # if $islist is true, we write a list
             #
-            proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                if {$arr} {
+            proc ::pd_guiprefs::write_config {data domain key {islist false}} {
+                if {$islist} {
                     # FIXME empty and write again so we don't lose the order
-                    if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
-                        puts "write_config $akey: $errorMsg\n"
+                    if {[catch {exec defaults write $domain $key -array} errorMsg]} {
+                        puts "write_config $key: $errorMsg\n"
                     }
                     foreach item $data {
                         set escaped [escape_for_plist $item]
-                        if {[catch {eval exec defaults write $adomain $akey -array-add $escaped} errorMsg]} {
-                            puts "write_config $akey: $errorMsg\n"
+                        if {[catch {eval exec defaults write $domain $key -array-add $escaped} errorMsg]} {
+                            puts "write_config $key: $errorMsg\n"
                         }
                     }
                 } else {
-                    set escaped [escape_for_plist $data]
-                    if {[catch {exec defaults write $adomain $akey $escaped} errorMsg]} {
-                        puts "write_config $akey: $errorMsg\n"
+                    if {[catch {exec defaults write $domain $key -string $data} errorMsg]} {
+                        puts "write_config $key: $errorMsg\n"
                     }
                 }
                 return
+            }
+            # ------------------------------------------------------------------------------
+            # macOS: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                if {[catch {
+                    if {$key == ""} {
+                        exec defaults delete ${domain}
+                    } {
+                        exec defaults delete ${domain} ${key}
+                    }
+                } errorMsg] } {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
             }
 
             # Disable window state saving by default for 10.7+ as there is a chance
@@ -147,6 +168,9 @@ proc ::pd_guiprefs::init {} {
 
             # Disable Character Accent Selector popup so key repeat works for all keys.
             exec defaults write $::pd_guiprefs::domain ApplePressAndHoldEnabled -bool false
+
+            # Disable Dark Mode for 10.14+
+            exec defaults write $::pd_guiprefs::domain NSRequiresAquaSystemAppearance -bool true
         }
         "registry" {
             # windows uses registry
@@ -156,32 +180,54 @@ proc ::pd_guiprefs::init {} {
             # ------------------------------------------------------------------------------
             # w32: read in the registry
             #
-            proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
+            proc ::pd_guiprefs::get_config {domain key {islist false}} {
                 package require registry
-                set adomain [join [list ${::pd_guiprefs::registrypath} ${adomain}] \\]
-                if {![catch {registry get ${adomain} $akey} conf]} {
+                set domain [join [list ${::pd_guiprefs::registrypath} ${domain}] \\]
+                if {![catch {registry get ${domain} $key} conf]} {
                     return [expr {$conf}]
                 }
                 return {}
             }
             # ------------------------------------------------------------------------------
             # w32: write configs to registry
-            # if $arr is true, we write an array
+            # if $islist is true, we write a list
             #
-            proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
+            proc ::pd_guiprefs::write_config {data domain key {islist false}} {
                 package require registry
                 # FIXME: ugly
-                set adomain [join [list ${::pd_guiprefs::registrypath} ${adomain}] \\]
-                if {$arr} {
-                    if {[catch {registry set ${adomain} $akey $data multi_sz} errorMsg]} {
-                        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
+                set domain [join [list ${::pd_guiprefs::registrypath} ${domain}] \\]
+                if {$islist} {
+                    if {[catch {registry set ${domain} $key $data multi_sz} errorMsg]} {
+                        ::pdwindow::error "write_config $data $key: $errorMsg\n"
                     }
                 } else {
-                    if {[catch {registry set ${adomain} $akey $data sz} errorMsg]} {
-                        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
+                    if {[catch {registry set ${domain} $key $data sz} errorMsg]} {
+                        ::pdwindow::error "write_config $data $key: $errorMsg\n"
                     }
                 }
                 return
+            }
+            # ------------------------------------------------------------------------------
+            # w32: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                package require registry
+                set domain [join [list ${::pd_guiprefs::registrypath} ${domain}] \\]
+                if {[catch {
+                    if {$key == ""} {
+                        registry delete ${domain}
+                    } {
+                        registry delete ${domain} ${key}
+                    }
+                } errorMsg] } {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
             }
         }
         "file" {
@@ -189,17 +235,43 @@ proc ::pd_guiprefs::init {} {
             prepare_configdir ${::pd_guiprefs::domain}
 
             # ------------------------------------------------------------------------------
-            # linux: read a config file and return its lines splitted.
+            # linux: read a config file and return its lines split.
             #
-            proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-                return [::pd_guiprefs::get_config_file $adomain $akey $arr]
+            proc ::pd_guiprefs::get_config {domain key {islist false}} {
+                return [::pd_guiprefs::get_config_file $domain $key $islist]
             }
             # ------------------------------------------------------------------------------
             # linux: write configs to USER_APP_CONFIG_DIR
-            # $arr is true if the data needs to be written in an array
+            # $islist is true if the data needs to be written in a list
             #
-            proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                return [::pd_guiprefs::write_config_file $data $adomain $akey $arr]
+            proc ::pd_guiprefs::write_config {data domain key {islist false}} {
+                return [::pd_guiprefs::write_config_file $data $domain $key $islist]
+            }
+            # ------------------------------------------------------------------------------
+            # linux: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                set fullconfigdir [file join ${::pd_guiprefs::configdir} ${domain}]
+                set filename [file join ${fullconfigdir} ${key}.conf]
+
+                if {[file isdirectory $fullconfigdir] != 1} {
+                    return 0
+                }
+                if {[catch {
+                    if {$key == ""} {
+                        file delete -force $fullconfigdir
+                    } {
+                        file delete $filename
+                    }
+                } errorMsg] } {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
             }
         }
         default {
@@ -218,34 +290,34 @@ proc ::pd_guiprefs::init {} {
 }
 
 # ------------------------------------------------------------------------------
-# read a config file and return its lines splitted.
+# read a config file and return its lines split.
 #
-proc ::pd_guiprefs::get_config_file {adomain {akey} {arr false}} {
-    set filename [file join ${::pd_guiprefs::configdir} ${adomain} ${akey}.conf]
+proc ::pd_guiprefs::get_config_file {domain key {islist false}} {
+    set filename [file join ${::pd_guiprefs::configdir} ${domain} ${key}.conf]
     set conf {}
     if {
         [file exists $filename] == 1
         && [file readable $filename]
     } {
         set fl [open $filename r]
-        while {[gets $fl line] >= 0} {
-            lappend conf $line
-        }
+        set conf [::read -nonewline $fl]
         close $fl
     }
     return $conf
 }
 # ------------------------------------------------------------------------------
 # write configs to USER_APP_CONFIG_DIR
-# $arr is true if the data needs to be written in an array
+# $islist is true if the data needs to be written in a list
 #
-proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
-    ::pd_guiprefs::prepare_domain ${adomain}
-    # right now I (yvan) assume that data are just \n separated, i.e. no keys
-    set data [join $data "\n"]
-    set filename [file join ${::pd_guiprefs::configdir} ${adomain} ${akey}.conf]
+proc ::pd_guiprefs::write_config_file {data domain key {islist false}} {
+    ::pd_guiprefs::prepare_domain ${domain}
+    ## originally, yvan assumed that data are just \n separated, i.e. no keys
+    #set data [join $data "\n"]
+    # this however breaks if we do have data that contains \n.
+    # much better to just let Tcl handle the serialization
+    set filename [file join ${::pd_guiprefs::configdir} ${domain} ${key}.conf]
     if {[catch {set fl [open $filename w]} errorMsg]} {
-        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
+        ::pdwindow::error "write_config $data $key: $errorMsg\n"
     } else {
         puts -nonewline $fl $data
         close $fl
@@ -257,22 +329,26 @@ proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
 #################################################################
 
 ## these are stubs that will be overwritten in ::pd_guiprefs::init()
-proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
+proc ::pd_guiprefs::write_config {data domain key {islist false}} {
     ::pdwindow::error "::pd_guiprefs::write_config not implemented for $::platform\n"
 }
-proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
+proc ::pd_guiprefs::get_config {domain key {islist false}} {
     ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::platform\n"
+}
+proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+    ::pdwindow::error "::pd_guiprefs::delete_config not implemented for $::platform\n"
+    return 0
 }
 
 # simple API (with a default domain)
-proc ::pd_guiprefs::write {key data {arr false} {domain {}}} {
+proc ::pd_guiprefs::write {key data {islist false} {domain {}}} {
     if {"" eq $domain} { set domain ${::pd_guiprefs::domain} }
-    set result [::pd_guiprefs::write_config $data $domain $key $arr]
+    set result [::pd_guiprefs::write_config $data $domain $key $islist]
     return $result
 }
-proc ::pd_guiprefs::read {key {arr false} {domain {}}} {
+proc ::pd_guiprefs::read {key {islist false} {domain {}}} {
     if {"" eq $domain} { set domain ${::pd_guiprefs::domain} }
-    set result [::pd_guiprefs::get_config $domain $key $arr]
+    set result [::pd_guiprefs::get_config $domain $key $islist]
     return $result
 }
 
@@ -298,7 +374,7 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
             # linux uses ~/.config/pure-data dir
             set confdir [file join ~ .config Pd]
             if {[info exists ::env(XDG_CONFIG_HOME)]} {
-                set confdir [file join $::env(XDG_CONFIG_HOME) pd]
+                set confdir [file join $::env(XDG_CONFIG_HOME) Pd]
             }
         }
     }
@@ -308,6 +384,8 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
             set confdir $::env(PD_CONFIG_DIR)
         }
     }
+
+    catch { set confdir [file tildeexpand $confdir] }
 
     set ::pd_guiprefs::configdir $confdir
     set ::pd_guiprefs::domain $domain
@@ -327,7 +405,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
         set absconfdir ${::pd_guiprefs::configdir}
         catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
 
-        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error [_ "Couldn't create preferences \"%1\$s\" in %2\$s" $domain $absconfdir]
         ::pdwindow::error "\n"
     }
     return $domain
@@ -336,9 +414,9 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 # ------------------------------------------------------------------------------
 # convenience proc to init prefs value, returns default if not found
 #
-proc ::pd_guiprefs::init_config {adomain akey {default ""} {arr false}} {
+proc ::pd_guiprefs::init_config {domain key {default ""} {islist false}} {
     set conf ""
-    catch {set conf [::pd_guiprefs::get_config $adomain $akey $arr]}
+    catch {set conf [::pd_guiprefs::get_config $domain $key $islist]}
     if {$conf eq ""} {set conf $default}
     return $conf
 }

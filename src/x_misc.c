@@ -7,9 +7,8 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
-#include <math.h>
-#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <wtypes.h>
 #include <time.h>
@@ -24,21 +23,16 @@
 #if defined (__APPLE__) || defined (__FreeBSD__)
 #define CLOCKHZ CLK_TCK
 #endif
-#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
+#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID) || defined(__EMSCRIPTEN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
-#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__)
+#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
+    || defined(_WIN32)
 #include <time.h>
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */
@@ -162,6 +156,7 @@ static void namecanvas_setup(void)
 }
 
 /* -------------------------- cputime ------------------------------ */
+#ifdef CLOCKHZ
 
 static t_class *cputime_class;
 
@@ -244,6 +239,7 @@ static void cputime_setup(void)
     class_addbang(cputime_class, cputime_bang);
     class_addmethod(cputime_class, (t_method)cputime_bang2, gensym("bang2"), 0);
 }
+#endif /* CLOCKHZ */
 
 /* -------------------------- realtime ------------------------------ */
 
@@ -291,6 +287,8 @@ static t_class *oscparse_class;
 typedef struct _oscparse
 {
     t_object x_obj;
+    t_outlet *x_address_n;
+    int x_flag;
 } t_oscparse;
 
 #define ROUNDUPTO4(x) (((x) + 3) & (~3))
@@ -385,9 +383,23 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
+    int address_n = -1;
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
-        j < outc; j++)
-            SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+         j < outc; j++)
+    {
+        if(x->x_flag)
+        {
+            t_symbol *sym = grabstring(argc, argv, &i, 1);
+            t_float f = 0.0f;
+            char *str_end = NULL;
+            f = strtod(sym->s_name, &str_end);
+            if (f == 0 && sym->s_name == str_end)
+                SETSYMBOL(outv+j, sym);
+            else SETFLOAT(outv+j, f);
+        }
+        else SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+        address_n = j + 1;
+    }
     for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
     {
         union
@@ -395,7 +407,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             float z_f;
             uint32_t z_i;
         } z;
-        float f;
+        t_float f;
         int blobsize;
         switch ((int)(argv[i].a_w.w_float))
         {
@@ -459,6 +471,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
         }
     }
+    outlet_float(x->x_address_n, address_n);
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
 tooshort:
@@ -468,7 +481,13 @@ tooshort:
 static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_oscparse *x = (t_oscparse *)pd_new(oscparse_class);
+    x->x_flag = 0;
+    if (argc && argv[0].a_w.w_symbol == gensym("-n"))
+    {
+        x->x_flag = 1;
+    }
     outlet_new(&x->x_obj, gensym("list"));
+    x->x_address_n = outlet_new((t_object *)x, &s_float);
     return (x);
 }
 
@@ -477,6 +496,7 @@ void oscparse_setup(void)
     oscparse_class = class_new(gensym("oscparse"), (t_newmethod)oscparse_new,
         0, sizeof(t_oscparse), 0, A_GIMME, 0);
     class_addlist(oscparse_class, oscparse_list);
+    class_sethelpsymbol(oscparse_class, gensym("osc-format-parse"));
 }
 
 /* --------- oscformat - format simple OSC messages -------------- */
@@ -692,6 +712,7 @@ void oscformat_setup(void)
     class_addmethod(oscformat_class, (t_method)oscformat_format,
         gensym("format"), A_DEFSYM, 0);
     class_addlist(oscformat_class, oscformat_list);
+    class_sethelpsymbol(oscformat_class, gensym("osc-format-parse"));
 }
 
 
@@ -781,8 +802,9 @@ void fudiparse_setup(void) {
                               sizeof(t_fudiparse), CLASS_DEFAULT,
                               0);
   class_addlist(fudiparse_class, fudiparse_list);
+  class_sethelpsymbol(fudiparse_class, gensym("fudi-format-parse"));
 }
-/* --------- oscformat - format Pd (FUDI) messages to bytelists ------------ */
+/* --------- fudiformat - format Pd (FUDI) messages to bytelists ------------ */
 
 static t_class *fudiformat_class;
 
@@ -854,6 +876,7 @@ static void fudiformat_setup(void) {
                                sizeof(t_fudiformat), CLASS_DEFAULT,
                                A_DEFSYMBOL, 0);
   class_addanything(fudiformat_class, fudiformat_any);
+  class_sethelpsymbol(fudiformat_class, gensym("fudi-format-parse"));
 }
 
 
@@ -863,7 +886,9 @@ void x_misc_setup(void)
     random_setup();
     loadbang_setup();
     namecanvas_setup();
+#ifdef CLOCKHZ
     cputime_setup();
+#endif /* CLOCKHZ */
     realtime_setup();
     oscparse_setup();
     oscformat_setup();

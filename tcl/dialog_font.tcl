@@ -2,7 +2,8 @@
 package provide dialog_font 0.1
 
 namespace eval ::dialog_font:: {
-    variable fontsize 10
+    # fontsize is for detecting whether the user actually requested a change
+    variable fontsize 0
     variable stretchval 100
     variable whichstretch 1
     variable canvaswindow
@@ -20,27 +21,93 @@ namespace eval ::dialog_font:: {
 # there is a single properties panel that adjusts based on which PatchWindow
 # has focus
 
-proc ::dialog_font::apply {mytoplevel myfontsize} {
+# this could probably just be apply, but keep the old one for tcl plugins that
+# might use apply for "stretch"
+proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
     if {$mytoplevel eq ".pdwindow"} {
-        if {[lsearch [font names] TkTextFont] >= 0} {
-            font configure TkTextFont -size -$myfontsize
+        foreach font [font names] {
+            font configure $font -size $myfontsize
         }
-        if {[lsearch [font names] TkDefaultFont] >= 0} {
-            font configure TkDefaultFont -size -$myfontsize
-        }
-        if {[lsearch [font names] TkMenuFont] >= 0} {
-            font configure TkMenuFont -size -$myfontsize
-        }
-        .pdwindow.text.internal configure -font "-size -$myfontsize"
+        if {[winfo exists ${mytoplevel}.text]} {
+            set font [lindex [${mytoplevel}.text.internal cget -font] 0]
+            if { ${font} eq {} } {
+                set font $::font_family
+            }
+            ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
 
-# repeat a "pack" command so the font dialog can resize itself
-        pack .font.buttonframe -side bottom -fill x -pady 2m
+            # try to adjust the width of the Pd-console to 80 chars
+            catch {
+                set str80 "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                set fnt [${mytoplevel}.text.internal cget -font]
+                # how much space do we need for 80 chars (need an extra char for whatever reasons...)?
+                set w [expr [winfo width ${mytoplevel}] - \
+                           [winfo width ${mytoplevel}.text] + \
+                           [font measure $fnt -displayof ${mytoplevel} "${str80} "] \
+                          ]
+                # make sure it's within reasonable bounds
+                foreach {maxw maxh} [wm maxsize .] {break}
+                if { $w < 400 } {set w 400}
+                if { $w > $maxw } {set w $maxw}
+                # get the current geometry of the .pdwindow
+                scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                if { "+$x+$y" eq "+0+0" } {
+                    scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                }
+                # and fix it
+                if { $w > $width } {
+                    wm geometry $mytoplevel "${w}x${height}+$x+$y"
+                }
+                # scroll down
+                ${mytoplevel}.text.internal yview moveto 1.0
+            }
+            #::pdwindow::post "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
+        }
+        catch {
+            ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
+        }
+
+        # repeat a "pack" command so the font dialog can resize itself
+        if {[winfo exists .font]} {
+            pack .font.buttonframe -side bottom -fill x -pady 2m
+        }
+
+        ::pd_guiprefs::write menu-fontsize "$myfontsize"
+        set ::pdwindow::font_size $myfontsize
 
     } else {
+        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
+        pdsend "$mytoplevel dirty 1"
+    }
+}
+
+proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
+    variable fontsize
+    if {$myfontsize != $fontsize} {
+        set fontsize $myfontsize
+        ::dialog_font::do_apply $mytoplevel $myfontsize 0 2
+    }
+}
+
+proc ::dialog_font::stretch_apply {gfxstub} {
+    if {$gfxstub ne ".pdwindow"} {
+        variable fontsize
         variable stretchval
         variable whichstretch
-        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
+        if {$stretchval == ""} {
+            set stretchval 100
+        }
+        if {$stretchval == 100} {
+            return
+        }
+        pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
+        pdsend "$gfxstub dirty 1"
     }
+}
+
+proc ::dialog_font::apply {mytoplevel myfontsize} {
+    variable stretchval
+    variable whichstretch
+    ::dialog_font::do_apply $mytoplevel $myfontsize $stretchval $whichstretch
 }
 
 proc ::dialog_font::cancel {gfxstub} {
@@ -50,16 +117,10 @@ proc ::dialog_font::cancel {gfxstub} {
     destroy .font
 }
 
-proc ::dialog_font::ok {gfxstub} {
-    variable fontsize
-    apply $gfxstub $fontsize
-    cancel $gfxstub
-}
-
 proc ::dialog_font::update_font_dialog {mytoplevel} {
     variable canvaswindow $mytoplevel
     if {[winfo exists .font]} {
-        wm title .font [format [_ "%s Font"] [lookup_windowname $mytoplevel]]
+        wm title .font [_ "%s Font" [lookup_windowname $mytoplevel]]
     }
 }
 
@@ -72,7 +133,7 @@ proc ::dialog_font::arrow_fontchange {change} {
     set max [llength $sizes]
     if {$position >= $max} {set position [expr $max-1]}
     set fontsize [lindex $sizes $position]
-    ::dialog_font::apply $canvaswindow $fontsize
+    ::dialog_font::radio_apply $canvaswindow $fontsize
 }
 
 # this should be called pdtk_font_dialog like the rest of the panels, but it
@@ -81,6 +142,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     variable fontsize $initsize
     variable whichstretch 1
     variable stretchval 100
+    if {$fontsize < 0} {set fontsize [expr -$fontsize]}
     if {$fontsize < 8} {set fontsize 12}
     if {[winfo exists .font]} {
         wm deiconify .font
@@ -93,6 +155,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     } else {
         create_dialog $gfxstub
     }
+    .font.fontsize.radio$fontsize select
 }
 
 proc ::dialog_font::create_dialog {gfxstub} {
@@ -106,7 +169,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     # replace standard bindings to work around the gfxstub stuff and use
     # break to prevent the close window command from going to other bindings.
     # .font won't exist anymore, so it'll cause errors down the line...
-    bind .font <KeyPress-Return> "::dialog_font::ok $gfxstub; break"
+    bind .font <KeyPress-Return> "::dialog_font::cancel $gfxstub; break"
     bind .font <KeyPress-Escape> "::dialog_font::cancel $gfxstub; break"
     bind .font <$::modifier-Key-w> "::dialog_font::cancel $gfxstub; break"
     wm protocol .font WM_DELETE_WINDOW "dialog_font::cancel $gfxstub"
@@ -115,8 +178,8 @@ proc ::dialog_font::create_dialog {gfxstub} {
 
     frame .font.buttonframe
     pack .font.buttonframe -side bottom -pady 2m
-    button .font.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_font::ok $gfxstub" -default active
+    button .font.buttonframe.ok -text [_ "Close"] \
+        -command "::dialog_font::cancel $gfxstub" -default active
     pack .font.buttonframe.ok -side left -expand 1 -fill x -ipadx 10
 
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
@@ -126,8 +189,8 @@ proc ::dialog_font::create_dialog {gfxstub} {
     # this is whacky Tcl at its finest, but I couldn't resist...
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
-            -variable ::dialog_font::fontsize \
-            -command [format {::dialog_font::apply $::dialog_font::canvaswindow %s} $size]
+            -command [format {::dialog_font::radio_apply \
+                $::dialog_font::canvaswindow %s} $size]
         pack .font.fontsize.radio$size -side top -anchor w
     }
 
@@ -135,7 +198,8 @@ proc ::dialog_font::create_dialog {gfxstub} {
         -width [::msgcat::mcmax "Stretch"] -labelanchor n
     pack .font.stretch -side left -padx 5 -fill y
 
-    entry .font.stretch.entry -textvariable ::dialog_font::stretchval -width 5
+    entry .font.stretch.entry -textvariable ::dialog_font::stretchval -width 5 \
+        -validate key -vcmd {string is int %P}
     pack .font.stretch.entry -side top -pady 5
 
     radiobutton .font.stretch.radio1 -text [_ "X and Y"] \
@@ -148,6 +212,11 @@ proc ::dialog_font::create_dialog {gfxstub} {
     pack .font.stretch.radio1 -side top -anchor w
     pack .font.stretch.radio2 -side top -anchor w
     pack .font.stretch.radio3 -side top -anchor w
+
+    button .font.stretch.apply -text [_ "Apply"] \
+        -command "::dialog_font::stretch_apply $gfxstub" -default active
+    pack .font.stretch.apply -side left -expand 1 -fill x -ipadx 10 \
+        -anchor s
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
