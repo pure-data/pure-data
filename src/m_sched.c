@@ -357,6 +357,8 @@ int sched_get_using_audio(void)
     return sched_useaudio;
 }
 
+void messqueue_dispatch();
+
     /* take the scheduler forward one DSP tick, also handling clock timeouts */
 void sched_tick(void)
 {
@@ -380,6 +382,7 @@ void sched_tick(void)
             return;
     }
     pd_this->pd_systime = next_sys_time;
+    messqueue_dispatch();
     dsp_tick();
     sched_counter++;
 }

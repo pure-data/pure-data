@@ -1497,12 +1497,17 @@ static int curve_click(t_gobj *z, t_glist *glist,
     {
             /* if we're in the bounding rect and the draggable flag
             is set we can drag the whole object; othrwise we don't
-            do anything.  But we still return 1 if we're in the rectangle
-            so that the struct object can notify the patch of the click. */
+            do anything.  But we still return -1 if we're in the rectangle
+            so that the struct object can notify the patch of the click.
+            The "-1" tells scalar_doclick() to call template_notifyforscalar()
+            but scalar_click() then returns 0 so that the search for a click
+            will continue.  This way, all polygons that got clicked on will
+            get notified up to and until someone gets bonked on a hot point,
+            at which point the search stops. */
         if (xpix < x1 || xpix > x2 || ypix < y1 || ypix > y2)
             return (0);
         if (!(x->x_flags & DRAGGABLE))
-            return (1);
+            return (-1);
     }
     if (doit)
     {
@@ -2400,7 +2405,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,
             glist, usexloc, useyloc,
-            xpix, ypix, shift, alt, dbl, doit)))
+            xpix, ypix, shift, alt, dbl, doit)) > 0)
                 return (hit);
     }
     return (0);
@@ -2905,6 +2910,8 @@ static void drawtext_activate(t_gobj *z, t_glist *glist,
     post("drawtext_activate %d", state);
 }
 
+void rtext_setcolor(t_rtext *x, int color);
+
 static void drawtext_vis(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_scalar *sc,
     t_float basex, t_float basey, int vis)
@@ -2946,6 +2953,7 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
                 "-font", 3, fontatoms,
                 "-tags", 2, tags);
             /* draw text */
+        rtext_setcolor(rtext, color);
         drawtext_gettext(z, data, &textbuf, &textlen);
         rtext_retextforscalar(rtext, textbuf, textlen,
             xloc + glist_fontwidth(glist) * strlen(x->x_label->s_name), yloc);

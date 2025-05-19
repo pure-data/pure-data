@@ -131,66 +131,6 @@ void gpointer_init(t_gpointer *gp)
     gp->gp_un.gp_scalar = 0;
 }
 
-/*********  random utility function to find a binbuf in a datum */
-
-/* get the template for the object pointer to.  Assumes we've already checked
-freshness. */
-
-t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
-{
-    t_gstub *gs = gp->gp_stub;
-    if (gs->gs_which == GP_GLIST)
-    {
-        t_scalar *sc = gp->gp_un.gp_scalar;
-        if (sc)
-            return (sc->sc_template);
-        else return (0);
-    }
-    else
-    {
-        t_array *a = gs->gs_un.gs_array;
-        return (a->a_templatesym);
-    }
-}
-
-t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
-    const char *fname)
-{
-    t_symbol *templatesym = gpointer_gettemplatesym(gp), *arraytype;
-    t_template *template;
-    int onset, type;
-    t_binbuf *b;
-    t_gstub *gs = gp->gp_stub;
-    t_word *vec;
-    if (!templatesym)
-    {
-        pd_error(x, "%s: bad pointer", fname);
-        return (0);
-    }
-    if (!(template = template_findbyname(templatesym)))
-    {
-        pd_error(x, "%s: couldn't find template %s", fname,
-            templatesym->s_name);
-        return (0);
-    }
-    if (!template_find_field(template, s, &onset, &type, &arraytype))
-    {
-        pd_error(x, "%s: %s.%s: no such field", fname,
-            templatesym->s_name, s->s_name);
-        return (0);
-    }
-    if (type != DT_TEXT)
-    {
-        pd_error(x, "%s: %s.%s: not a list", fname,
-            templatesym->s_name, s->s_name);
-        return (0);
-    }
-    if (gs->gs_which == GP_ARRAY)
-        vec = gp->gp_un.gp_w;
-    else vec = gp->gp_un.gp_scalar->sc_vec;
-    return (vec[onset].w_binbuf);
-}
-
 void word_init(t_word *wp, t_template *template, t_gpointer *gp)
 {
     int i, nitems = template->t_n;
@@ -606,7 +546,11 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
                 template_notifyforscalar(template, owner,
                     sc, gensym("click"), 6, at);
             }
-            return (hit);
+                /* hit might be -1 (see curve_click()) indicating "please
+                notify" but keep looking for something else to click on.
+                so continue the search until hit is positive. */
+            if (hit > 0)
+                return (hit);
         }
     }
     return (0);

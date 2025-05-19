@@ -36,6 +36,7 @@ struct _rtext
     t_word *x_words;        /* ... and if so, associated data */
     t_gobj *x_drawtext;     /* ... and the drawing instruction */
     t_glist *x_glist;       /* glist owner belongs to */
+    t_symbol *x_color;      /* X11-style name of color to draw */
     char x_tag[50];         /* tag for gui */
     struct _rtext *x_next;  /* next in editor list */
     int x_xpix;           /* (x,y) origin in pixels */
@@ -55,6 +56,7 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
     x->x_words = 0;
     x->x_drawtext = 0;
     x->x_glist = glist;
+    x->x_color = THISGUI->i_foregroundcolor;
     x->x_selstart = x->x_selend = x->x_active = 0;
     x->x_buf = 0;
     x->x_bufsize = 0;
@@ -132,6 +134,15 @@ void rtext_free(t_rtext *x)
         freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     freebytes(x, sizeof *x);
 }
+
+void rtext_setcolor(t_rtext *x, int color)
+{
+    char buf[80];
+    snprintf(buf, 80, "#%06x", color);
+    buf[79] = 0;
+    x->x_color = gensym(buf);
+}
+
 
 static void rtext_findscreenlocation(t_rtext *x)
 {
@@ -585,7 +596,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tempbuf,
             guifontsize,
             (x->x_text && glist_isselected(x->x_glist, &x->x_text->te_g)?
-                "blue" : "black"));
+                THISGUI->i_selectcolor->s_name :
+                    x->x_color->s_name));
     }
     else if (action == SEND_UPDATE)
     {
@@ -687,7 +699,8 @@ void rtext_select(t_rtext *x, int state)
 {
     pdgui_vmess(0, "crs rr",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? "blue" : "black"));
+        "-fill", (state? THISGUI->i_selectcolor->s_name:
+            THISGUI->i_foregroundcolor->s_name));
 }
 
 void rtext_activate(t_rtext *x, int state)

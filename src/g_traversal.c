@@ -18,6 +18,7 @@ append -  add an element to a list
 #include <string.h>
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "m_private_utils.h"
 
     /* templates are named using the name-bashing by which canvases bind
     thenselves, with a leading "pd-".  LATER see if we can have templates
@@ -78,11 +79,11 @@ t_gpointer *pcommon_get(t_symbol *s)
         gpointer_init(&c->c_gp);
         c->c_refcount = 0;
         pd_bind(&c->c_pd, s);
-        post("new pcommon");
     }
     c->c_refcount++;
     return (&c->c_gp);
 }
+
 
     /* release a variable.  This only frees the "vcommon" resource when the
     last interested party releases it. */
@@ -100,6 +101,55 @@ void pcommon_release(t_symbol *s)
         }
     }
     else bug("pointer_release");
+}
+
+    /* set current pointer to 'gobj' and output it.  gobj must either
+    point to a scalar or be zero. */
+static void ptrobj_setandoutput(t_ptrobj *x, t_gobj *gobj)
+{
+    if (gobj)
+    {
+        t_typedout *to;
+        int n;
+        t_scalar *sc = (t_scalar *)gobj;
+        t_symbol *templatesym = sc->sc_template;
+
+        x->x_gpp->gp_un.gp_scalar = sc;
+        for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
+        {
+            if (to->to_type == templatesym)
+            {
+                outlet_pointer(to->to_outlet, x->x_gpp);
+                return;
+            }
+        }
+        outlet_pointer(x->x_otherout, x->x_gpp);
+    }
+    else
+    {
+        gpointer_unset(x->x_gpp);
+        outlet_bang(x->x_bangout);
+    }
+}
+
+/* get the template for the object pointer to.  Assumes we've already checked
+freshness. */
+
+static t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
+{
+    t_gstub *gs = gp->gp_stub;
+    if (gs->gs_which == GP_GLIST)
+    {
+        t_scalar *sc = gp->gp_un.gp_scalar;
+        if (sc)
+            return (sc->sc_template);
+        else return (0);
+    }
+    else
+    {
+        t_array *a = gs->gs_un.gs_array;
+        return (a->a_templatesym);
+    }
 }
 
 static void pcommon_pointer(t_pcommon *x, t_gpointer *gp)
@@ -136,12 +186,274 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
     return (x);
 }
 
-static void ptrobj_set(t_ptrobj *x, t_gpointer *gp)
+/* we need a def for incorrectly setting an atom to a binbuf - just use
+anything that isn't A_FLOAT or A_SYMBOL: */
+
+#define A_BINBUF A_CANT
+#define TRAVERSAL_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+
+static void ptrobj_doget(t_ptrobj *x, int argc, t_atom *argv)
 {
-    gpointer_unset(x->x_gpp);
-    *x->x_gpp = *gp;
-    if (gp->gp_stub)
-        gp->gp_stub->gs_refcount++;
+    int nout, i;
+    t_atom *at;
+    for (i = nout = 0; i < argc; i++)
+        if (argv->a_type == A_BINBUF)
+            nout += binbuf_getnatom(argv[i].a_w.w_binbuf);
+        else nout++;
+    ALLOCA(t_atom, at, nout, TRAVERSAL_NGETBYTE);
+    for (i = nout = 0; i < argc; i++)
+    {
+        if (argv[i].a_type == A_BINBUF)
+        {
+            int ncopy = binbuf_getnatom(argv[i].a_w.w_binbuf), j;
+            t_atom *copyvec = binbuf_getvec(argv[i].a_w.w_binbuf);
+            for (j = 0; j < ncopy; j++)
+                at[nout++] = copyvec[j];
+        }
+        else at[nout++] = argv[i];
+    }
+    outlet_list(x->x_bangout, 0, nout, at);
+    FREEA(t_atom, at, nout, TRAVERSAL_NGETBYTE);
+}
+
+static void ptrobj_get(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int narg, nout = 0;
+    t_template *template;
+    t_atom *outvec;
+    t_word *vec;
+
+        /* "get <field> ..."
+        if the field is an array, <field> is of the form
+            <field-name> <array-index> <subfield-name> [index2 subname2 ...]
+        to allow arbitrary-depth array traversal.  Other fields are
+        single symbols to name them.  You can "get" arbitrarily many values
+        in a single message, except that only the last one (or the only one)
+        can be a list.  Output is list of all the requested fields.*/
+
+    if (!argc)
+        return;
+    if (!gpointer_check(x->x_gpp, 0))
+    {
+        pd_error(x, "pointer_set: stale or empty pointer");
+        return;
+    }
+    if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
+    {
+        pd_error(x, "pointer_set: couldn't find template %s",
+            gpointer_gettemplatesym(x->x_gpp)->s_name);
+        return;
+    }
+    ALLOCA(t_atom, outvec, argc, TRAVERSAL_NGETBYTE);
+    if (x->x_gpp->gp_stub->gs_which == GP_ARRAY)
+        vec = x->x_gpp->gp_un.gp_w;
+    else vec = x->x_gpp->gp_un.gp_scalar->sc_vec;
+    for (narg = 0; narg < argc; )
+    {
+        t_template *elemtemplate = template;
+        int onset, type, indx, elemsize, nitems;
+        t_symbol *arraytype;
+        t_array *array;
+        if (argv[narg].a_type != A_SYMBOL)
+        {
+            pd_error(x, "pointer_get: non-symbol field name:");
+            postatom(argc-narg, argv+narg);
+            goto fail;
+        }
+        if (!template_find_field(elemtemplate, argv[narg].a_w.w_symbol,
+            &onset, &type, &arraytype))
+        {
+            pd_error(x, "pointer_get: %s.%s: no such field",
+                elemtemplate->t_sym->s_name, argv[narg].a_w.w_symbol->s_name);
+            goto fail;
+        }
+        while (type == DT_ARRAY)
+        {
+            if (narg + 2 >= argc || argv[narg+1].a_type != A_FLOAT ||
+                argv[narg+2].a_type != A_SYMBOL)
+            {
+                pd_error(x,
+                    "pointer_get: array %s.%s needs index and subfield name",
+                        elemtemplate->t_sym->s_name,
+                            argv[narg].a_w.w_symbol->s_name);
+                goto fail;
+            }
+            if (!(elemtemplate = template_findbyname(arraytype)))
+            {
+                pd_error(x, "pointer_get: couldn't find template %s",
+                    arraytype->s_name);
+                goto fail;
+            }
+            array = *(t_array **)(((char *)vec) + onset);
+            if (!template_find_field(elemtemplate, argv[narg+2].a_w.w_symbol,
+                &onset, &type, &arraytype))
+            {
+                pd_error(x, "pointer_get: %s.%s: no such field",
+                    elemtemplate->t_sym->s_name,
+                        argv[narg+2].a_w.w_symbol->s_name);
+                goto fail;
+            }
+            elemsize = elemtemplate->t_n * sizeof(t_word);
+
+            nitems = array->a_n;
+            indx = argv[narg+1].a_w.w_float;
+            if (indx < 0)
+                indx = 0;
+            if (indx >= nitems)
+                indx = nitems-1;
+
+            vec = (t_word *)((char *)(array->a_vec) + indx * elemsize);
+            narg += 2;
+        }
+        if (type == DT_FLOAT)
+            SETFLOAT(&outvec[nout],
+                ((t_word *)(((char *)vec) + onset))->w_float);
+        else if (type == DT_SYMBOL)
+            SETSYMBOL(&outvec[nout],
+                ((t_word *)(((char *)vec) + onset))->w_symbol);
+        else outvec[nout].a_type = A_BINBUF,
+                outvec[nout].a_w.w_binbuf =
+                    ((t_word *)(((char *)vec) + onset))->w_binbuf;
+        narg++;
+        nout++;
+    }
+    ptrobj_doget(x, nout, outvec);
+fail:
+    FREEA(t_atom, outvec, argc, TRAVERSAL_NGETBYTE);
+}
+
+static void ptrobj_set(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int narg;
+    t_template *template;
+    t_word *vec;
+
+        /* original form: "set <pointer> sets our pointer. */
+    if (argc == 1 && argv->a_type == A_POINTER)
+    {
+        gpointer_unset(x->x_gpp);
+        *x->x_gpp = *(argv->a_w.w_gpointer);
+        if (x->x_gpp->gp_stub)
+            x->x_gpp->gp_stub->gs_refcount++;
+        return;
+    }
+        /* otherwise, it's a second-form message, "set <field> <value> ..."
+        if the field is an array, <field> is of the form
+            <field-name> <array-index> <subfield-name> [index2 subname2 ...]
+        to allow arbitrary-depth array traversal.  Other fields are
+        single symbols to name them.  You can "set" arbitrarily many values
+        in a single message, except that if you set a field that happens to
+        be a list, the whole rest of the message is the new list. */
+
+    if (!gpointer_check(x->x_gpp, 0))
+    {
+        pd_error(x, "pointer_set: stale or empty pointer");
+        return;
+    }
+    if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
+    {
+        pd_error(x, "pointer_set: couldn't find template %s",
+            gpointer_gettemplatesym(x->x_gpp)->s_name);
+        return;
+    }
+    if (x->x_gpp->gp_stub->gs_which == GP_ARRAY)
+        vec = x->x_gpp->gp_un.gp_w;
+    else vec = x->x_gpp->gp_un.gp_scalar->sc_vec;
+    for (narg = 0; narg < argc; )
+    {
+        t_template *elemtemplate = template;
+        int onset, type, indx, elemsize, nitems;
+        t_symbol *arraytype;
+        t_array *array;
+        if (argv[narg].a_type != A_SYMBOL)
+        {
+            pd_error(x, "pointer_set: non-symbol field name:");
+            postatom(argc-narg, argv+narg);
+            return;
+        }
+        if (!template_find_field(elemtemplate, argv[narg].a_w.w_symbol,
+            &onset, &type, &arraytype))
+        {
+            pd_error(x, "pointer_set: %s.%s: no such field",
+                elemtemplate->t_sym->s_name, argv[narg].a_w.w_symbol->s_name);
+            return;
+        }
+        while (type == DT_ARRAY)
+        {
+            if (narg + 3 >= argc || argv[narg+1].a_type != A_FLOAT ||
+                argv[narg+2].a_type != A_SYMBOL)
+            {
+                pd_error(x,
+                    "pointer_set: array %s.%s needs index and subfield name",
+                        elemtemplate->t_sym->s_name,
+                            argv[narg].a_w.w_symbol->s_name);
+                return;
+            }
+            if (!(elemtemplate =
+                template_findbyname(arraytype)))
+            {
+                pd_error(x, "pointer_set: couldn't find template %s",
+                    arraytype->s_name);
+                return;
+            }
+            array = *(t_array **)(((char *)vec) + onset);
+            if (!template_find_field(elemtemplate, argv[narg+2].a_w.w_symbol,
+                &onset, &type, &arraytype))
+            {
+                pd_error(x, "pointer_set: %s.%s: no such field",
+                    elemtemplate->t_sym->s_name,
+                        argv[narg+2].a_w.w_symbol->s_name);
+                return;
+            }
+            elemsize = elemtemplate->t_n * sizeof(t_word);
+
+            nitems = array->a_n;
+            indx = argv[narg+1].a_w.w_float;
+            if (indx < 0)
+                indx = 0;
+            if (indx >= nitems)
+                indx = nitems-1;
+
+            vec = (t_word *)((char *)(array->a_vec) + indx * elemsize);
+            narg += 2;
+        }
+        if (type == DT_FLOAT)
+        {
+            if (narg + 1 >= argc || argv[narg+1].a_type != A_FLOAT)
+            {
+                pd_error(x, "pointer_set: %s.%s: needs float argument",
+                    elemtemplate->t_sym->s_name,
+                        argv[narg].a_w.w_symbol->s_name);
+                return;
+            }
+            else ((t_word *)(((char *)vec) + onset))->w_float =
+                    argv[narg+1].a_w.w_float;
+        }
+        else if (type == DT_SYMBOL)
+        {
+            if (narg + 1 >= argc || argv[narg+1].a_type != A_SYMBOL)
+            {
+                pd_error(x, "pointer_set: %s.%s: needs symbol argument",
+                    elemtemplate->t_sym->s_name,
+                        argv[narg+1].a_w.w_symbol->s_name);
+                return;
+            }
+            else ((t_word *)(((char *)vec) + onset))->w_symbol =
+                    argv[narg].a_w.w_symbol;
+        }
+        else if (type == DT_TEXT)
+        {
+            t_binbuf *b = ((t_word *)(((char *)vec) + onset))->w_binbuf;
+            binbuf_clear(b);
+            binbuf_restore(b, argc - narg - 1, argv + narg+1);
+            goto done;
+        }
+        else bug("pointer_set");
+        narg += 2;
+    }
+done:
+    scalar_redraw(x->x_gpp->gp_un.gp_scalar,
+        x->x_gpp->gp_stub->gs_un.gs_glist);
 }
 
 static void ptrobj_traverse(t_ptrobj *x, t_symbol *s)
@@ -151,14 +463,16 @@ static void ptrobj_traverse(t_ptrobj *x, t_symbol *s)
     else pd_error(x, "pointer: list '%s' not found", s->s_name);
 }
 
-static void ptrobj_vnext(t_ptrobj *x, t_float f)
+static void ptrobj_donext(t_ptrobj *x, int skip, t_symbol *templatesym,
+    int wantselected)
 {
     t_gobj *gobj;
     t_gpointer *gp = x->x_gpp;
     t_gstub *gs = gp->gp_stub;
     t_glist *glist;
-    int wantselected = (f != 0);
-
+    int count;
+    if (!strcmp(templatesym->s_name, "-"))
+        templatesym = gensym("");
     if (!gs)
     {
         pd_error(x, "pointer next: no current pointer");
@@ -182,41 +496,73 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
         return;
     }
     gobj = &gp->gp_un.gp_scalar->sc_gobj;
-
-    if (!gobj) gobj = glist->gl_list;
-    else gobj = gobj->g_next;
-    while (gobj && ((pd_class(&gobj->g_pd) != scalar_class) ||
-        (wantselected && !glist_isselected(glist, gobj))))
-            gobj = gobj->g_next;
-
-    if (gobj)
+    for (count = 0; count < skip; count++)
     {
-        t_typedout *to;
-        int n;
-        t_scalar *sc = (t_scalar *)gobj;
-        t_symbol *templatesym = sc->sc_template;
-
-        gp->gp_un.gp_scalar = sc;
-        for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
+        do
         {
-            if (to->to_type == templatesym)
-            {
-                outlet_pointer(to->to_outlet, x->x_gpp);
-                return;
-            }
+            if (!gobj)
+                gobj = glist->gl_list;
+            else gobj = gobj->g_next;
         }
-        outlet_pointer(x->x_otherout, x->x_gpp);
+        while (gobj && ((pd_class(&gobj->g_pd) != scalar_class) ||
+            (wantselected && !glist_isselected(glist, gobj)) ||
+            (*templatesym->s_name) &&
+                templatesym != ((t_scalar *)gobj)->sc_template)) ;
+        if (!gobj)
+            break;
     }
-    else
-    {
-        gpointer_unset(gp);
-        outlet_bang(x->x_bangout);
-    }
+    ptrobj_setandoutput(x, gobj);
 }
 
-static void ptrobj_next(t_ptrobj *x)
+static void ptrobj_next(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
-    ptrobj_vnext(x, 0);
+    ptrobj_donext(x, (argc ? atom_getfloat(argv) : 1),
+        template_getbindsym(atom_getsymbolarg(1, argc, argv)),
+            (atom_getfloatarg(2, argc, argv) != 0));
+}
+
+static void ptrobj_vnext(t_ptrobj *x, t_float f)
+{
+    ptrobj_donext(x, 1, gensym(""), (f != 0));
+}
+
+static void ptrobj_nearest(t_ptrobj *x, t_floatarg xval, t_floatarg yval)
+{
+    t_gobj *gobj, *bestgobj = 0;
+    t_gstub *gs = x->x_gpp->gp_stub;
+    t_float bestdiff = 1e35;
+    t_glist *glist;
+    if (!gs)
+    {
+        pd_error(x, "pointer nearest: no current pointer");
+        return;
+    }
+    if (gs->gs_which != GP_GLIST)
+    {
+        pd_error(x, "pointer nearest: initial pointer is an array");
+        return;
+    }
+    glist = gs->gs_un.gs_glist;
+    if (glist->gl_valid != x->x_gpp->gp_valid)
+    {
+        pd_error(x, "pointer nearest: stale pointer");
+        return;
+    }
+    glist = x->x_gpp->gp_stub->gs_un.gs_glist;
+    for (gobj = glist->gl_list; gobj; gobj = gobj->g_next)
+        if (pd_class(&gobj->g_pd) == scalar_class)
+    {
+        t_float thisx, thisy;
+        scalar_getbasexy((t_scalar *)gobj, &thisx, &thisy);
+        t_float diff = (thisx-xval)*(thisx-xval) + (thisy-yval)*(thisy-yval);
+        if (diff < bestdiff)
+        {
+            bestgobj = gobj;
+            bestdiff = diff;
+        }
+    }
+    if (bestgobj)
+        ptrobj_setandoutput(x, bestgobj);
 }
 
 static void ptrobj_delete(t_ptrobj *x)
@@ -263,32 +609,7 @@ static void ptrobj_delete(t_ptrobj *x)
         gobj = gobj->g_next;
     glist_delete(glist, old);
     gp->gp_valid = glist->gl_valid;
-    if (gobj)
-    {
-        t_typedout *to;
-        int n;
-        t_scalar *sc = (t_scalar *)gobj;
-        t_symbol *templatesym = sc->sc_template;
-
-        gp->gp_un.gp_scalar = sc;
-        for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
-        {
-            if (to->to_type == templatesym)
-            {
-                outlet_pointer(to->to_outlet, x->x_gpp);
-                return;
-            }
-        }
-        outlet_pointer(x->x_otherout, x->x_gpp);
-    }
-    else
-    {
-        gpointer_unset(gp);
-        outlet_bang(x->x_bangout);
-    }
 }
-
-t_symbol *gpointer_gettemplatesym(const t_gpointer *gp);
 
 static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
 {
@@ -435,8 +756,11 @@ static void ptrobj_setup(void)
     class_addcreator((t_newmethod)ptrobj_new, gensym("vpointer"),
         A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_set, gensym("set"),
-        A_POINTER, 0);
-    class_addmethod(ptrobj_class, (t_method)ptrobj_next, gensym("next"), 0);
+        A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_get, gensym("get"),
+        A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_next, gensym("next"),
+        A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_send, gensym("send"),
         A_SYMBOL, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_traverse, gensym("traverse"),
@@ -450,6 +774,8 @@ static void ptrobj_setup(void)
         gensym("send-window"), A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,
         gensym("rewind"), 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_nearest,
+        gensym("nearest"), A_FLOAT, A_FLOAT, 0);
     class_addpointer(ptrobj_class, ptrobj_pointer);
     class_addbang(ptrobj_class, ptrobj_bang);
 
@@ -551,7 +877,8 @@ static void get_pointer(t_get *x, t_gpointer *gp)
     {
         int onset, type;
         t_symbol *arraytype;
-        if (template_find_field(template, vp->gv_sym, &onset, &type, &arraytype))
+        if (template_find_field(template, vp->gv_sym,
+            &onset, &type, &arraytype))
         {
             if (type == DT_FLOAT)
                 outlet_float(vp->gv_outlet,
@@ -1283,4 +1610,44 @@ void g_traversal_setup(void)
     getsize_setup();
     setsize_setup();
     append_setup();
+}
+
+/********* misc utility function to find a binbuf in a datum *****/
+
+t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
+    const char *fname)
+{
+    t_symbol *templatesym = gpointer_gettemplatesym(gp), *arraytype;
+    t_template *template;
+    int onset, type;
+    t_binbuf *b;
+    t_gstub *gs = gp->gp_stub;
+    t_word *vec;
+    if (!templatesym)
+    {
+        pd_error(x, "%s: bad pointer", fname);
+        return (0);
+    }
+    if (!(template = template_findbyname(templatesym)))
+    {
+        pd_error(x, "%s: couldn't find template %s", fname,
+            templatesym->s_name);
+        return (0);
+    }
+    if (!template_find_field(template, s, &onset, &type, &arraytype))
+    {
+        pd_error(x, "%s: %s.%s: no such field", fname,
+            templatesym->s_name, s->s_name);
+        return (0);
+    }
+    if (type != DT_TEXT)
+    {
+        pd_error(x, "%s: %s.%s: not a list", fname,
+            templatesym->s_name, s->s_name);
+        return (0);
+    }
+    if (gs->gs_which == GP_ARRAY)
+        vec = gp->gp_un.gp_w;
+    else vec = gp->gp_un.gp_scalar->sc_vec;
+    return (vec[onset].w_binbuf);
 }

@@ -772,7 +772,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
         pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
             glist_getcanvas(x), "create", "line",
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", "#ff8080",
+            "-fill", THISGUI->i_gopcolor->s_name,
             "-width", x->gl_zoom,
             "-capstyle", "projecting",
             "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
@@ -950,10 +950,13 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rS",
+            pdgui_vmess(0, "crr iiii ri rr rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
+                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+                    * x->gl_zoom,
+                "-fill", THISGUI->i_foregroundcolor->s_name,
+
                 "-tags", 2, tags);
         }
     }
@@ -1972,6 +1975,7 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (!x->gl_list)
         return;
+        /* apply the format to the most recently created object */
     for (g = x->gl_list; (g2 = g->g_next); g = g2)
         ;
     if ((ob = pd_checkobject(&g->g_pd)))
@@ -2171,6 +2175,10 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
+    THISGUI->i_foregroundcolor = gensym("black");
+    THISGUI->i_backgroundcolor = gensym("white");
+    THISGUI->i_selectcolor = gensym("blue");
+    THISGUI->i_gopcolor = gensym("red");
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2234,4 +2242,59 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
     }
     if (!glob_evalfile(ignore, name, dir))
         pdgui_vmess("::pdwindow::busyrelease", 0);
+}
+
+/* close visible subwindows */
+static void glist_closesubsfor(t_glist *glist)
+{
+    t_gobj *g;
+    for (g = glist->gl_list; g; g = g->g_next)
+    {
+        if (g->g_pd == canvas_class)
+        {
+            t_glist *gl2 = (t_glist *)g;
+            if (gl2->gl_havewindow)
+                canvas_vis(gl2, 0);
+            glist_closesubsfor(gl2);
+        }
+    }
+}
+
+/* close all visible non-root windows */
+void glob_closesubs(t_pd *ignore)
+{
+    t_glist *gl;
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_closesubsfor(gl);
+            /* if there's anyone open, move it to front */
+    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        if (strcmp(gl->gl_name->s_name, "_float_template") &&
+            strcmp(gl->gl_name->s_name, "_float_array_template") &&
+                strcmp(gl->gl_name->s_name, "_text_template"))
+                    canvas_vis(gl, 1);
+}
+
+static void glist_dorevis(t_glist *glist)
+{
+    t_gobj *g;
+    if (glist->gl_havewindow)
+    {
+        canvas_vis(glist, 0);
+        canvas_vis(glist, 1);
+    }
+    for (g = glist->gl_list; g; g = g->g_next)
+        if (g->g_pd == canvas_class)
+            glist_dorevis((t_glist *)g);
+}
+
+void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+    t_symbol *gop)
+{
+    t_glist *gl;
+    THISGUI->i_foregroundcolor = fg;
+    THISGUI->i_backgroundcolor = bg;
+    THISGUI->i_selectcolor = sel;
+    THISGUI->i_gopcolor = (*gop->s_name ? gop : sel);
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_dorevis(gl);
 }

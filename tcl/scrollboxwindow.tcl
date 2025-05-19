@@ -58,15 +58,14 @@ proc ::scrollboxwindow::ok {mytoplevel commit_method } {
 # resizable -- 0 or 1, set to 1 for dialog to be resizeable
 proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_method title width height resizable } {
     ::preferencewindow::create ${mytoplevel} ${title} [list $width $height]
-    if {$resizable == 0} {
-        wm resizable $winid 0 0
+    if {${resizable} == 0} {
+        wm resizable ${mytoplevel} 0 0
     }
 
     set my [::preferencewindow::add_frame ${mytoplevel} "${title}" ]
     ::preferencewindow::add_cancel ${mytoplevel} "::scrollboxwindow::cancel ${mytoplevel}"
     ::preferencewindow::add_apply ${mytoplevel} "::scrollboxwindow::apply ${my} ${commit_method}"
     ::preferencewindow::add_apply ${mytoplevel} {pdsend "pd save-preferences"}
-
 
     # Add the scrollbox widget
     ::scrollbox::make ${my} ${listdata} ${add_method} ${edit_method}

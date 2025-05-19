@@ -61,7 +61,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
 
-static void _editor_selectlinecolor(t_glist*x, const char*color)
+static void _editor_selectlinecolor(t_glist *x, const char*color)
 {
     char tag[128];
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
@@ -83,7 +83,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, "blue");
+        _editor_selectlinecolor(x, THISGUI->i_selectcolor->s_name);
     }
 }
 
@@ -92,7 +92,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, "black");
+        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor->s_name);
     }
 }
 
@@ -1632,12 +1632,13 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 static void canvas_cut(t_canvas *x);
+int clone_reload(t_pd *z, t_canvas *except);
+int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
     /* LATER try to do the same trick for externs. */
-static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
-    t_gobj *except)
+void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except)
 {
     t_gobj *g;
     int hadwindow = gl->gl_havewindow;
@@ -1649,16 +1650,17 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     {
             /* remake the object if it's an abstraction that appears to have
                been loaded from the file we just saved */
-        int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
+        int remakeit = (g != &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
                     canvas_getdir((t_canvas *)g) == dir);
-            /* also remake it if it's a "clone" with that name */
+            /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
             clone_match(&g->g_pd, name, dir))
         {
-                /* LATER try not to remake the one that equals "except" */
-            remakeit = 1;
+                /* try to reload "clone" object, otherwise remake it */
+            if (!clone_reload(&g->g_pd, (t_canvas *)except))
+                remakeit = 1;
         }
         if (remakeit)
         {
@@ -1690,15 +1692,20 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         glist_noselect(gl);
     }
 
-        /* now iterate over all the sub-patches... */
+        /* now iterate over all the sub-patches and also abstractions and clones,
+        but only the ones that don't match! */
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if (g != except && pd_class(&g->g_pd) == canvas_class &&
+        if (g == &except->gl_gobj)
+            continue;
+        if (pd_class(&g->g_pd) == canvas_class &&
             (!canvas_isabstraction((t_canvas *)g) ||
                  ((t_canvas *)g)->gl_name != name ||
-                 canvas_getdir((t_canvas *)g) != dir)
-           )
+                    canvas_getdir((t_canvas *)g) != dir))
                 glist_doreload((t_canvas *)g, name, dir, except);
+        else if (pd_class(&g->g_pd) == clone_class &&
+                !clone_match(&g->g_pd, name, dir))
+            clone_doreload(&g->g_pd, name, dir, except);
     }
     if (!hadwindow && gl->gl_havewindow)
         canvas_vis(glist_getcanvas(gl), 0);
@@ -1716,7 +1723,7 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
     THISGUI->i_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_doreload(x, name, dir, &except->gl_gobj);
+        glist_doreload(x, name, dir, except);
     THISGUI->i_reloadingabstraction = 0;
     if(b)
     {
@@ -1758,13 +1765,14 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
 
     /* check if a point lies in a gobj.  */
 int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
-    int *x1p, int *y1p, int *x2p, int *y2p)
+    int *x1p, int *y1p, int *x2p, int *y2p, int extrapix)
 {
     int x1, y1, x2, y2;
     if (!gobj_shouldvis(y, x))
         return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
-    if (xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
+    if (xpos >= x1-extrapix && xpos <= x2+extrapix
+        && ypos >= y1-extrapix && ypos <= y2+extrapix)
     {
         *x1p = x1;
         *y1p = y1;
@@ -1784,7 +1792,16 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     *x1p = -0x7fffffff;
     for (y = x->gl_list; y; y = y->g_next)
     {
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2)
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0)
+            && (x1 > *x1p))
+                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
+    }
+        /* if none, try again with fatter boxes so that we can click on
+        inlets or outlets from slightly outside the box */
+    if (!rval)
+        for (y = x->gl_list; y; y = y->g_next)
+    {
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 4)
             && (x1 > *x1p))
                 *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
     }
@@ -1795,9 +1812,10 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
     {
         t_selection *sel;
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-            if (canvas_hitbox(x, sel->sel_what, xpos, ypos, &x1, &y1, &x2, &y2))
-                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
-                    rval = sel->sel_what;
+            if (canvas_hitbox(x, sel->sel_what, xpos, ypos,
+                &x1, &y1, &x2, &y2,  0))
+                    *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
+                        rval = sel->sel_what;
     }
     return (rval);
 }
@@ -1896,10 +1914,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                     (int)(x->gl_screeny1));
             }
 
-            pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
+            pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                winpos, x->gl_edit);
+                winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {
@@ -2020,6 +2038,16 @@ void canvas_properties(t_gobj*z, t_glist*unused)
     int isgraph = glist_isgraph(x);
     t_float x1=0., y1=-1., x2=1., y2=1.;
     t_float xscale=0., yscale=0.;
+    char *textbuf = 0;
+    int textsize;
+    if (x->gl_owner && canvas_isabstraction(x))
+    {
+        binbuf_gettext(x->gl_obj.te_binbuf, &textbuf, &textsize);
+        textbuf = (char *)resizebytes(textbuf, textsize, textsize+1);
+        textbuf[textsize] = 0;
+    }
+    else post("not: %lx %d", x->gl_owner, canvas_isabstraction(x));
+    pdgui_vmess("::dialog_canvas::set_text", "s", (textbuf ? textbuf : ""));
     if(isgraph) {
         x1=x->gl_x1;
         y1=x->gl_y1;
@@ -2036,10 +2064,13 @@ void canvas_properties(t_gobj*z, t_glist*unused)
         (int)x->gl_pixwidth, (int)x->gl_pixheight,
         (int)x->gl_xmargin, (int)x->gl_ymargin);
 
+
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == garray_class)
             garray_properties((t_garray *)y);
+    if (textbuf)
+        freebytes(textbuf, textsize+1);
 }
 
     /* called from the gui when "OK" is selected on the canvas properties
@@ -2049,6 +2080,20 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
+
+    if (x->gl_owner && argc > 12)
+    {
+        t_binbuf *b = binbuf_new();
+        char *textbuf;
+        int textsize;
+        binbuf_add(b, argc-12, argv+12);
+        binbuf_gettext(b, &textbuf, &textsize);
+        binbuf_free(b);
+        text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
+        freebytes(textbuf, textsize);
+        canvas_dirty(x->gl_owner, 1);
+        return;
+    }
 
     xperpix = atom_getfloatarg(0, argc, argv);
     yperpix = atom_getfloatarg(1, argc, argv);
@@ -2141,7 +2186,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
     for (y = x->gl_list; y; y = y->g_next)
     {
         int x1, y1, x2, y2;
-        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2))
+        if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2, 0))
         {
             if (which == 0)     /* properties */
             {
@@ -2361,7 +2406,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 click location against their particular assortments of
                 hot points. */
             if ((hitbox->g_pd == scalar_class ||
-                canvas_hitbox(x, hitbox, xpix, ypix, &x1, &y1, &x2, &y2))
+                canvas_hitbox(x, hitbox, xpix, ypix, &x1, &y1, &x2, &y2, 0))
                     && (clickreturned = gobj_click(hitbox, x, xpix, ypix,
                         shiftmod, ((mod & CTRLMOD) && (!x->gl_edit)) || altmod,
                             doubleclick, doit)))
@@ -2404,8 +2449,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         else
         {
             int noutlet;
-            int out_activeminh = (OHEIGHT + 1)  * x->gl_zoom;
-            int out_activemaxh = (y2 - y1) / 4;
+            int out_activeminh = OHEIGHT  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 8;
             int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
             if (out_activeheight > out_activemaxh)
                 out_activeheight = out_activemaxh;
@@ -2491,6 +2536,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_MOVE;
+                    x->gl_editor->e_waittodrag = 1;
                 }
             }
             else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
@@ -3230,8 +3276,17 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
 static void delay_move(t_canvas *x)
 {
-    int incx = (x->gl_editor->e_xnew - x->gl_editor->e_xwas)/x->gl_zoom,
-        incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
+    int incx = x->gl_editor->e_xnew - x->gl_editor->e_xwas,
+        incy = x->gl_editor->e_ynew - x->gl_editor->e_ywas;
+        /* insist on at elast 2 pixel displacement to avoid accidental
+        displacements of objects you only meant to select */
+    if (x->gl_editor->e_waittodrag &&
+        incx > -2 && incx < 2 && incy > -2 && incy < 2)
+            return;
+    incx /= x->gl_zoom;
+    incy /= x->gl_zoom;
+
+    x->gl_editor->e_waittodrag = 0;
     if (incx || incy)
         canvas_displaceselection(x, incx, incy);
     x->gl_editor->e_xwas += incx * x->gl_zoom;
@@ -3338,6 +3393,7 @@ void canvas_startmotion(t_canvas *x)
     glist_getnextxy(x, &xval, &yval);
     if (xval == 0 && yval == 0) return;
     x->gl_editor->e_onmotion = MA_MOVE;
+    x->gl_editor->e_waittodrag = 0;
     x->gl_editor->e_xwas = xval;
     x->gl_editor->e_ywas = yval;
 }

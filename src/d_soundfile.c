@@ -439,7 +439,7 @@ int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
 static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
     t_sample **vecs, size_t framesread, unsigned char *buf, size_t nframes)
 {
-    int nchannels = (sf->sf_nchannels < nvecs ? sf->sf_nchannels : nvecs), i;
+    int i, nchannels = (sf->sf_nchannels < nvecs ? sf->sf_nchannels : nvecs);
     size_t j;
     unsigned char *sp, *sp2;
     t_sample *fp;
@@ -848,16 +848,15 @@ static void soundfile_finishwrite(void *obj, const char *filename,
     object_sferror(obj, "[soundfiler] write", filename, errno, sf);
 }
 
-static void soundfile_xferout_sample(const t_soundfile *sf,
+static void soundfile_xferout_sample(const t_soundfile *sf, int nvecs,
     t_sample **vecs, unsigned char *buf, size_t nframes, size_t onsetframes,
     t_sample normalfactor)
 {
-    int i;
+    int i, nchannels = (sf->sf_nchannels < nvecs ? sf->sf_nchannels : nvecs);
     size_t j;
     unsigned char *sp, *sp2;
     t_sample *fp;
-    for (i = 0, sp = buf; i < sf->sf_nchannels; i++,
-        sp += sf->sf_bytespersample)
+    for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
         if (sf->sf_bytespersample == 2)
         {
@@ -982,18 +981,21 @@ static void soundfile_xferout_sample(const t_soundfile *sf,
             }
         }
     }
+        /* zero out other channels */
+    for (i = nchannels; i < sf->sf_nchannels; i++, sp += sf->sf_bytespersample)
+        for (j = 0, sp2 = sp; j < nframes; j++, sp2 += sf->sf_bytesperframe)
+            memset(sp2, 0, sf->sf_bytespersample);
 }
 
-static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
-    unsigned char *buf, size_t nframes, size_t onsetframes,
+static void soundfile_xferout_words(const t_soundfile *sf, int nvecs,
+    t_word **vecs, unsigned char *buf, size_t nframes, size_t onsetframes,
     t_sample normalfactor)
 {
-    int i;
+    int i, nchannels = (sf->sf_nchannels < nvecs ? sf->sf_nchannels : nvecs);
     size_t j;
     unsigned char *sp, *sp2;
     t_word *wp;
-    for (i = 0, sp = buf; i < sf->sf_nchannels;
-         i++, sp += sf->sf_bytespersample)
+    for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
         if (sf->sf_bytespersample == 2)
         {
@@ -1118,6 +1120,10 @@ static void soundfile_xferout_words(const t_soundfile *sf, t_word **vecs,
             }
         }
     }
+        /* zero out other channels */
+    for (i = nchannels; i < sf->sf_nchannels; i++, sp += sf->sf_bytespersample)
+        for (j = 0, sp2 = sp; j < nframes; j++, sp2 += sf->sf_bytesperframe)
+            memset(sp2, 0, sf->sf_bytespersample);
 }
 
 /* ----- soundfiler - reads and writes soundfiles to/from "garrays" ----- */
@@ -1645,7 +1651,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         ssize_t byteswritten;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         datasize = sf->sf_bytesperframe * thiswrite;
-        soundfile_xferout_words(sf, vectors, (unsigned char *)sampbuf,
+        soundfile_xferout_words(sf, argc, vectors, (unsigned char *)sampbuf,
             thiswrite, wa.wa_onsetframes, normfactor);
         byteswritten = write(sf->sf_fd, sampbuf, datasize);
         if (byteswritten < 0 || (size_t)byteswritten < datasize)
@@ -1751,8 +1757,10 @@ typedef struct _readsf
     t_clock *x_clock;
     char *x_buf;                      /**< soundfile buffer */
     int x_bufsize;                    /**< buffer size in bytes */
-    int x_noutlets;                   /**< number of audio outlets */
-    t_sample *(x_outvec[MAXSFCHANS]); /**< audio vectors */
+    int x_nchannels;                  /**< number of channels */
+    int x_ninlets;                    /**< number of inlets (for writesf~) */
+    int x_multi;                      /**< multichannel mode (for readsf~) */
+    t_sample *x_vec[MAXSFCHANS];      /**< audio vectors */
     int x_vecsize;                    /**< vector size for transfers */
     t_outlet *x_bangout;              /**< bang-on-done outlet */
     t_soundfile_state x_state;        /**< opened, running, or idle */
@@ -2095,11 +2103,21 @@ static void *readsf_child_main(void *zz)
 
 static void readsf_tick(t_readsf *x);
 
-static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
+static void *readsf_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_readsf *x;
-    int nchannels = fnchannels, bufsize = fbufsize, i;
+    int nchannels, bufsize, i, multi = 0;
     char *buf;
+
+        /* [-m] [nchans] [bufsize] */
+    if (argc && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m")) /* multichannel */
+    {
+        multi = 1;
+        argc--; argv++;
+    }
+    nchannels = atom_getfloatarg(0, argc, argv);
+    bufsize = atom_getfloatarg(1, argc, argv + 1);
 
     if (nchannels < 1)
         nchannels = 1;
@@ -2114,10 +2132,12 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     if (!buf) return 0;
 
     x = (t_readsf *)pd_new(readsf_class);
-
-    for (i = 0; i < nchannels; i++)
+    if (multi) /* create a single (multichannel) outlet */
         outlet_new(&x->x_obj, gensym("signal"));
-    x->x_noutlets = nchannels;
+    else /* create one outlet for each channel */
+        for (i = 0; i < nchannels; i++)
+            outlet_new(&x->x_obj, gensym("signal"));
+    x->x_nchannels = nchannels;
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
     pthread_mutex_init(&x->x_mutex, 0);
     pthread_cond_init(&x->x_requestcondition, 0);
@@ -2126,6 +2146,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_state = STATE_IDLE;
     x->x_clock = clock_new(x, (t_method)readsf_tick);
     x->x_canvas = canvas_getcurrent();
+    x->x_multi = multi;
     soundfile_clear(&x->x_sf);
     x->x_sf.sf_bytespersample = 2;
     x->x_sf.sf_nchannels = 1;
@@ -2149,7 +2170,7 @@ static void readsf_tick(t_readsf *x)
 static t_int *readsf_perform(t_int *w)
 {
     t_readsf *x = (t_readsf *)(w[1]);
-    int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i;
+    int vecsize = x->x_vecsize, nchans = x->x_nchannels, i;
     size_t j;
     t_sample *fp;
     if (x->x_state == STATE_STREAM)
@@ -2188,7 +2209,7 @@ static t_int *readsf_perform(t_int *w)
                        sf.sf_bytesperframe;
             if (xfersize)
             {
-                soundfile_xferin_sample(&sf, noutlets, x->x_outvec, 0,
+                soundfile_xferin_sample(&sf, nchans, x->x_vec, 0,
                     (unsigned char *)(x->x_buf + x->x_fifotail), xfersize);
                 vecsize -= xfersize;
             }
@@ -2196,13 +2217,13 @@ static t_int *readsf_perform(t_int *w)
                 /* send bang and zero out the (rest of the) output */
             clock_delay(x->x_clock, 0);
             x->x_state = STATE_IDLE;
-            for (i = 0; i < noutlets; i++)
-                for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
+            for (i = 0; i < nchans; i++)
+                for (j = vecsize, fp = x->x_vec[i] + xfersize; j--;)
                     *fp++ = 0;
             return w + 2;
         }
 
-        soundfile_xferin_sample(&sf, noutlets, x->x_outvec, 0,
+        soundfile_xferin_sample(&sf, nchans, x->x_vec, 0,
             (unsigned char *)(x->x_buf + x->x_fifotail), vecsize);
 
         x->x_fifotail += wantbytes;
@@ -2217,8 +2238,8 @@ static t_int *readsf_perform(t_int *w)
     }
     else
     {
-        for (i = 0; i < noutlets; i++)
-            for (j = vecsize, fp = x->x_outvec[i]; j--;)
+        for (i = 0; i < nchans; i++)
+            for (j = vecsize, fp = x->x_vec[i]; j--;)
                 *fp++ = 0;
     }
     return w + 2;
@@ -2338,14 +2359,47 @@ usage:
     post("flags: %s", sf_typeargs);
 }
 
+static void readsf_channels(t_readsf *x, t_floatarg f)
+{
+    if (x->x_multi)
+    {
+        int nchans = (int)f;
+        if (nchans < 1)
+            nchans = 1;
+        else if (nchans > MAXSFCHANS)
+            nchans = MAXSFCHANS;
+            /* NB: x_nchannels is never read on the child thread, so we can
+            safely change it without locking a mutex. */
+        if (nchans != x->x_nchannels)
+        {
+            x->x_nchannels = nchans;
+            canvas_update_dsp();
+        }
+    }
+    else pd_error(x,
+        "readsf~: 'channels' message only works in multichannel mode");
+}
+
 static void readsf_dsp(t_readsf *x, t_signal **sp)
 {
-    int i, noutlets = x->x_noutlets;
+    int i, nchans = x->x_nchannels;
     pthread_mutex_lock(&x->x_mutex);
-    x->x_vecsize = sp[0]->s_n;
+    x->x_vecsize = sp[0]->s_length;
     x->x_sigperiod = x->x_fifosize / (x->x_sf.sf_bytesperframe * x->x_vecsize);
-    for (i = 0; i < noutlets; i++)
-        x->x_outvec[i] = sp[i]->s_vec;
+    if (x->x_multi) /* multichannel mode */
+    {
+        signal_setmultiout(&sp[0], nchans);
+        for (i = 0; i < nchans; i++)
+            x->x_vec[i] = sp[0]->s_vec + i * x->x_vecsize;
+    }
+    else /* singlechannel mode */
+    {
+        for (i = 0; i < nchans; i++)
+        {
+            signal_setmultiout(&sp[i], 1);
+            x->x_vec[i] = sp[i]->s_vec;
+        }
+    }
     pthread_mutex_unlock(&x->x_mutex);
     dsp_add(readsf_perform, 1, x);
 }
@@ -2387,7 +2441,7 @@ static void readsf_setup(void)
 {
     readsf_class = class_new(gensym("readsf~"),
         (t_newmethod)readsf_new, (t_method)readsf_free,
-        sizeof(t_readsf), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_readsf), CLASS_MULTICHANNEL, A_GIMME, 0);
     class_addfloat(readsf_class, (t_method)readsf_float);
     class_addmethod(readsf_class, (t_method)readsf_start, gensym("start"), 0);
     class_addmethod(readsf_class, (t_method)readsf_stop, gensym("stop"), 0);
@@ -2395,6 +2449,8 @@ static void readsf_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(readsf_class, (t_method)readsf_open,
         gensym("open"), A_GIMME, 0);
+    class_addmethod(readsf_class, (t_method)readsf_channels,
+        gensym("channels"), A_FLOAT, 0);
     class_addmethod(readsf_class, (t_method)readsf_print, gensym("print"), 0);
 }
 
@@ -2662,7 +2718,6 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     t_writesf *x;
     int nchannels = fnchannels, bufsize = fbufsize, i;
     char *buf;
-
     if (nchannels < 1)
         nchannels = 1;
     else if (nchannels > MAXSFCHANS)
@@ -2678,9 +2733,10 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x = (t_writesf *)pd_new(writesf_class);
 
     for (i = 1; i < nchannels; i++)
-        inlet_new(&x->x_obj,  &x->x_obj.ob_pd, &s_signal, &s_signal);
+        signalinlet_new(&x->x_obj, 0);
 
     x->x_f = 0;
+    x->x_nchannels = x->x_ninlets = nchannels;
     pthread_mutex_init(&x->x_mutex, 0);
     pthread_cond_init(&x->x_requestcondition, 0);
     pthread_cond_init(&x->x_answercondition, 0);
@@ -2743,7 +2799,7 @@ static t_int *writesf_perform(t_int *w)
             return w + 2;
         }
 
-        soundfile_xferout_sample(&sf, x->x_outvec,
+        soundfile_xferout_sample(&sf, x->x_nchannels, x->x_vec,
             (unsigned char *)(x->x_buf + x->x_fifohead), vecsize, 0, 1.);
 
         x->x_fifohead += wantbytes;
@@ -2820,6 +2876,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     }
     x->x_filename = wa.wa_filesym->s_name;
     x->x_sf.sf_type = wa.wa_type;
+    x->x_sf.sf_nchannels = x->x_nchannels;
     if (wa.wa_samplerate > 0)
         x->x_sf.sf_samplerate = wa.wa_samplerate;
     else if (x->x_insamplerate > 0)
@@ -2851,13 +2908,22 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 
 static void writesf_dsp(t_writesf *x, t_signal **sp)
 {
-    int i, ninlets = x->x_sf.sf_nchannels;
+    int i, j, nchans, ninlets = x->x_ninlets;
+    t_sample **vp = x->x_vec;
     pthread_mutex_lock(&x->x_mutex);
     x->x_vecsize = sp[0]->s_n;
     x->x_sigperiod = (x->x_fifosize /
-            (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
-    for (i = 0; i < ninlets; i++)
-        x->x_outvec[i] = sp[i]->s_vec;
+        (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
+        /* set and count channels */
+    for (i = 0, nchans = 0; i < ninlets; i++)
+    {
+        for (j = 0; j < sp[i]->s_nchans && nchans < MAXSFCHANS; j++, nchans++)
+            *vp++ = sp[i]->s_vec + j * x->x_vecsize;
+    }
+    if (nchans != x->x_sf.sf_nchannels && x->x_state != STATE_IDLE)
+        logpost(x, PD_NORMAL,
+            "writesf~: warning: channel count changed while streaming");
+    x->x_nchannels = nchans;
     x->x_insamplerate = sp[0]->s_sr;
     pthread_mutex_unlock(&x->x_mutex);
     dsp_add(writesf_perform, 1, x);
@@ -2908,7 +2974,7 @@ static void writesf_setup(void)
 {
     writesf_class = class_new(gensym("writesf~"),
         (t_newmethod)writesf_new, (t_method)writesf_free,
-        sizeof(t_writesf), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_writesf), CLASS_MULTICHANNEL, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(writesf_class, (t_method)writesf_start, gensym("start"), 0);
     class_addmethod(writesf_class, (t_method)writesf_stop, gensym("stop"), 0);
     class_addmethod(writesf_class, (t_method)writesf_dsp,

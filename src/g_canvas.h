@@ -129,6 +129,7 @@ typedef struct _editor
     unsigned int e_lastmoved: 1;    /* one if mouse has moved since click */
     unsigned int e_textdirty: 1;    /* one if e_textedfor has changed */
     unsigned int e_selectedline: 1; /* one if a line is selected */
+    unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
     t_clock *e_clock;               /* clock to filter GUI move messages */
     int e_xnew;                     /* xpos for next move event */
     int e_ynew;                     /* ypos, similarly */
@@ -283,7 +284,9 @@ struct _instancecanvas  /* per-instance stuff for canvases */
     t_glist *i_reloadingabstraction;        /* abstrction we're reloading */
     int i_dspstate;                         /* whether DSP is running */
     int i_dollarzero;                       /* counter for $0 */
-    t_float i_graph_lastxpix, i_graph_lastypix; /* state for dragging */
+    t_float i_graph_lastxpix, i_graph_lastypix;       /* state for dragging */
+    t_symbol *i_foregroundcolor, *i_backgroundcolor;  /* color of fg & bg */
+    t_symbol *i_selectcolor, *i_gopcolor;             /* ...selection and GOP */
 };
 
 void g_editor_newpdinstance(void);
@@ -541,7 +544,7 @@ EXTERN t_canvasenvironment *canvas_getenv(const t_canvas *x);
 EXTERN void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir);
 EXTERN void canvas_loadbang(t_canvas *x);
 EXTERN int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
-    int *x1p, int *y1p, int *x2p, int *y2p);
+    int *x1p, int *y1p, int *x2p, int *y2p, int extrapix);
 EXTERN int canvas_setdeleting(t_canvas *x, int flag);
 
 #define LB_LOAD 0       /* "loadbang" actions - 0 for original meaning */
