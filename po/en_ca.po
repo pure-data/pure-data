@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-19 12:57+0200\n"
-"PO-Revision-Date: 2024-12-06 11:02+0000\n"
+"PO-Revision-Date: 2025-05-20 08:43+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/en_CA/>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -287,9 +287,8 @@ msgstr "Margin:"
 msgid "Y range: from"
 msgstr "Y range: from"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Object"
+msgstr "Object:"
 
 msgid "Data Properties"
 msgstr "Data Properties"
@@ -832,16 +831,14 @@ msgstr "Unable to remove stray file '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Unable to rename downloaded file to '%s'"
 
-#, fuzzy
 msgid "Search URLs:"
-msgstr "Search Results"
+msgstr "Search URLs:"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "Added %s to search paths"
+msgstr "Additional search URLs"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "Ephemeral search URLs"
 
 msgid "Create"
 msgstr "Create"
@@ -849,9 +846,8 @@ msgstr "Create"
 msgid "Check"
 msgstr "Check"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "Installation failed!"
+msgstr "Deken Installation Target"
 
 msgid "Installation options:"
 msgstr "Installation options:"
@@ -924,16 +920,18 @@ msgstr "All Files"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "Installing incompatible architecture of '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "Replacing library with incompatible architecture!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1171,7 +1169,7 @@ msgstr "[deken] Platform detected: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "Could not find a menu for adding '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1969,7 +1967,7 @@ msgid "Previous Window"
 msgstr "Previous Window"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Close subwindows"
 
 msgid "Parent Window"
 msgstr "Parent Window"
@@ -2064,9 +2062,8 @@ msgstr "Audio on"
 msgid "Audio off"
 msgstr "Audio off"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Find Last Error"
+msgstr "Find source"
 
 msgid "Pd"
 msgstr "Pd"
