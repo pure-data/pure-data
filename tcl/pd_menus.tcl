@@ -340,6 +340,8 @@ proc ::pd_menus::build_window_menu {mymenu} {
             -command {::pd_menucommands::scheduleAction menu_raisepreviouswindow} \
             -accelerator [_ "$accelerator+Page Up"]
     }
+    $mymenu add command -label [_ "Close subwindows"] \
+        -command {pdsend "pd close-subwindows"}
     $mymenu add  separator
     $mymenu add command -label [_ "Pd window"] -command {::pd_menucommands::scheduleAction menu_raise_pdwindow} \
         -accelerator "$accelerator+R"

@@ -22,22 +22,22 @@
 They are instantiated by "garrays" below or can be elements of other
 scalars (g_scalar.c); their graphical behavior is defined accordingly. */
 
-t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
+t_array *array_new(t_symbol *templatesym, int length, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
     t_template *template;
     template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
-    x->a_n = 1;
+    x->a_n = length;
     x->a_elemsize = sizeof(t_word) * template->t_n;
-    x->a_vec = (char *)getbytes(x->a_elemsize);
+    x->a_vec = (char *)getbytes(length * x->a_elemsize);
         /* note here we blithely copy a gpointer instead of "setting" a
         new one; this gpointer isn't accounted for and needn't be since
         we'll be deleted before the thing pointed to gets deleted anyway;
         see array_free. */
     x->a_gp = *parent;
     x->a_stub = gstub_new(0, x);
-    word_init((t_word *)(x->a_vec), template, parent);
+    word_initvec((t_word *)(x->a_vec), template, parent, length);
     return (x);
 }
 
@@ -61,15 +61,8 @@ void array_resize(t_array *x, int n)
     x->a_vec = tmp;
     x->a_n = n;
     if (n > oldn)
-    {
-        char *cp = x->a_vec + elemsize * oldn;
-        int i = n - oldn;
-        for (; i--; cp += elemsize)
-        {
-            t_word *wp = (t_word *)cp;
-            word_init(wp, template, &x->a_gp);
-        }
-    }
+        word_initvec((t_word *)(x->a_vec + elemsize * oldn), template,
+            &x->a_gp, n - oldn);
     x->a_valid = ++glist_valid;
 }
 
@@ -93,11 +86,7 @@ void array_free(t_array *x)
     int i;
     t_template *scalartemplate = template_findbyname(x->a_templatesym);
     gstub_cutoff(x->a_stub);
-    for (i = 0; i < x->a_n; i++)
-    {
-        t_word *wp = (t_word *)(x->a_vec + x->a_elemsize * i);
-        word_free(wp, scalartemplate);
-    }
+    word_freevec((t_word *)x->a_vec, scalartemplate, x->a_n);
     freebytes(x->a_vec, x->a_elemsize * x->a_n);
     freebytes(x, sizeof *x);
 }
@@ -604,7 +593,8 @@ void array_getcoordinate(t_glist *glist,
 static void array_getrect(t_array *array, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
+    t_float x1 = 0x7fffffff, y1 = 0x7fffffff,
+        x2 = -0x7fffffff, y2 = -0x7fffffff;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i;

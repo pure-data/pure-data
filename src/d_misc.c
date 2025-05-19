@@ -23,24 +23,35 @@ static t_int *print_perform(t_int *w)
 {
     t_print *x = (t_print *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
+    int nchans = (int)(w[3]);
+    int n = (int)(w[4]);
     if (x->x_count)
     {
-        int i=0;
+        int i, j;
         startpost("%s:", x->x_sym->s_name);
-        for(i=0; i<n; i++) {
-          if(i%8==0)endpost();
-          startpost("%.4g  ", in[i]);
+        for (j = 0; j < nchans; j++)
+        {
+            if (nchans > 1)
+            {
+                endpost();
+                startpost("channel %d:", j + 1);
+            }
+            for (i = 0; i < n; i++) {
+                if (i % 8 == 0)
+                    endpost();
+                startpost("%.4g  ", in[j * n + i]);
+            }
         }
         endpost();
         x->x_count--;
     }
-    return (w+4);
+    return (w+5);
 }
 
 static void print_dsp(t_print *x, t_signal **sp)
 {
-    dsp_add(print_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(print_perform, 4, x, sp[0]->s_vec,
+        (t_int)sp[0]->s_nchans, (t_int)sp[0]->s_n);
 }
 
 static void print_float(t_print *x, t_float f)
@@ -66,7 +77,7 @@ static void *print_new(t_symbol *s)
 static void print_setup(void)
 {
     print_class = class_new(gensym("print~"), (t_newmethod)print_new, 0,
-        sizeof(t_print), 0, A_DEFSYM, 0);
+        sizeof(t_print), CLASS_MULTICHANNEL, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(print_class, t_print, x_f);
     class_addmethod(print_class, (t_method)print_dsp, gensym("dsp"), A_CANT, 0);
     class_addbang(print_class, print_bang);

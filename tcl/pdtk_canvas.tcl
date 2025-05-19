@@ -98,7 +98,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 #------------------------------------------------------------------------------#
 # canvas new/saveas
 
-proc pdtk_canvas_new {mytoplevel width height geometry editable} {
+proc pdtk_canvas_new {mytoplevel width height geometry editable bgcolor} {
     if { "" eq $geometry } {
         # no position set: this is a new window (rather than one loaded from file)
         # we set a flag here, so we can query (and report) the actual geometry,
@@ -134,14 +134,15 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
         -yscrollcommand "$mytoplevel.yscroll set" \
-        -background white
+        -background $bgcolor
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
 
     # for some crazy reason, win32 mousewheel scrolling is in units of
-    # 120, and this forces Tk to interpret 120 to mean 1 scroll unit
-    if {$::windowingsystem eq "win32"} {
+    # 120, and as of TclTk-9.0 this is now the default on all platforms!
+    # the following forces Tk to interpret 120 to mean 1 scroll unit
+    if {$::windowingsystem eq "win32" || [package vsatisfies $::tk_version 9]} {
         $tkcanvas configure -xscrollincrement 1 -yscrollincrement 1
     }
 
@@ -423,9 +424,19 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
 proc ::pdtk_canvas::scroll {tkcanvas axis amount} {
     if {$axis eq "x" && $::xscrollable($tkcanvas) == 1} {
         $tkcanvas xview scroll [expr {- ($amount)}] units
+        return
     }
     if {$axis eq "y" && $::yscrollable($tkcanvas) == 1} {
         $tkcanvas yview scroll [expr {- ($amount)}] units
+        return
+    }
+    if {$axis eq "xy" } {
+        # TclTk>=9 has 2D scrolling
+        lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY
+        if {$deltaX != 0 || $deltaY != 0} {
+            tk::ScrollByPixels $tkcanvas $deltaX $deltaY
+        }
+        return
     }
 }
 
