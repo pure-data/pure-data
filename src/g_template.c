@@ -2405,7 +2405,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,
             glist, usexloc, useyloc,
-            xpix, ypix, shift, alt, dbl, doit)))
+            xpix, ypix, shift, alt, dbl, doit)) > 0)
                 return (hit);
     }
     return (0);

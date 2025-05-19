@@ -547,8 +547,10 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
                     sc, gensym("click"), 6, at);
             }
                 /* hit might be -1 (see curve_click()) indicating "please
-                notify" but keep looking for something else to click on */
-            return (hit > 0);
+                notify" but keep looking for something else to click on.
+                so continue the search until hit is positive. */
+            if (hit > 0)
+                return (hit);
         }
     }
     return (0);
