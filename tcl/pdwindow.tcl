@@ -223,7 +223,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt -parent .pdwindow]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
-    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
+    puts $f "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
     foreach logentry $logbuffer {
         foreach {object_id level message} $logentry {
@@ -336,7 +336,10 @@ proc ::pdwindow::message_contextmenu {widget theX theY obj} {
 
 #--create the window-----------------------------------------------------------#
 proc ::pdwindow::update_title {w} {
+    # leave the next line for the translations
     set title [_ "Pd" ]
+    # override with the default application name
+    set title [_ "${::PD_APPLICATION_NAME}" ]
     set version "${::PD_MAJOR_VERSION}.${::PD_MINOR_VERSION}.${::PD_BUGFIX_VERSION}${::PD_TEST_VERSION}"
     set fulltitle "${title} ${version}"
     if { [info exists ::deken::platform(floatsize)] } {
