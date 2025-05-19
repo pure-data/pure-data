@@ -35,26 +35,49 @@ static void *clip_new(t_floatarg lo, t_floatarg hi)
     return (x);
 }
 
+#define CLIP_DO(f, lo, hi) \
+    ((f) < (lo) ? (lo) : (f) > (hi) ? (hi) : (f))
+
 static t_int *clip_perform(t_int *w)
 {
     t_clip *x = (t_clip *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
+    t_sample lo = x->x_lo, hi = x->x_hi;
     while (n--)
     {
         t_sample f = *in++;
-        if (f < x->x_lo) f = x->x_lo;
-        if (f > x->x_hi) f = x->x_hi;
-        *out++ = f;
+        *out++ = CLIP_DO(f, lo, hi);
+    }
+    return (w+5);
+}
+
+static t_int *clip_perform8(t_int *w)
+{
+    t_clip *x = (t_clip *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    t_sample lo = x->x_lo, hi = x->x_hi;
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = CLIP_DO(f0, lo, hi); out[1] = CLIP_DO(f1, lo, hi);
+        out[2] = CLIP_DO(f2, lo, hi); out[3] = CLIP_DO(f3, lo, hi);
+        out[4] = CLIP_DO(f4, lo, hi); out[5] = CLIP_DO(f5, lo, hi);
+        out[6] = CLIP_DO(f6, lo, hi); out[7] = CLIP_DO(f7, lo, hi);
     }
     return (w+5);
 }
 
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    dsp_add(((n & 7) ? clip_perform : clip_perform8), 4, x,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 static void clip_setup(void)
@@ -185,14 +208,34 @@ static t_int *sigrsqrt_perform(t_int *w)
     return (w + 4);
 }
 
+static t_int *sigrsqrt_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = f0 <= 0 ? 0 : 1./sqrt(f0);
+        out[1] = f1 <= 0 ? 0 : 1./sqrt(f1);
+        out[2] = f2 <= 0 ? 0 : 1./sqrt(f2);
+        out[3] = f3 <= 0 ? 0 : 1./sqrt(f3);
+        out[4] = f4 <= 0 ? 0 : 1./sqrt(f4);
+        out[5] = f5 <= 0 ? 0 : 1./sqrt(f5);
+        out[6] = f6 <= 0 ? 0 : 1./sqrt(f6);
+        out[7] = f7 <= 0 ? 0 : 1./sqrt(f7);
+    }
+    return (w + 4);
+}
+
 static void sigrsqrt_dsp(t_sigrsqrt *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     if (pd_compatibilitylevel < 55)
-        dsp_add(sigrsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec,
-            SIGTOTAL(sp[0]));
-    else dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
-        SIGTOTAL(sp[0]));
+        dsp_add(sigrsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigrsqrt_perform : sigrsqrt_perform8), 3,
+                sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigrsqrt_setup(void)
@@ -263,14 +306,34 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
     return (w + 4);
 }
 
+static t_int *sigsqrt_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = f0 < 0 ? 0 : sqrt(f0);
+        out[1] = f1 < 0 ? 0 : sqrt(f1);
+        out[2] = f2 < 0 ? 0 : sqrt(f2);
+        out[3] = f3 < 0 ? 0 : sqrt(f3);
+        out[4] = f4 < 0 ? 0 : sqrt(f4);
+        out[5] = f5 < 0 ? 0 : sqrt(f5);
+        out[6] = f6 < 0 ? 0 : sqrt(f6);
+        out[7] = f7 < 0 ? 0 : sqrt(f7);
+    }
+    return (w + 4);
+}
+
 static void sigsqrt_dsp(t_sigsqrt *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
     if (pd_compatibilitylevel < 55)
-        dsp_add(sigsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec,
-            SIGTOTAL(sp[0]));
-    else dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
-        SIGTOTAL(sp[0]));
+        dsp_add(sigsqrt_perform_quick, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigsqrt_perform : sigsqrt_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigsqrt_setup(void)
@@ -301,18 +364,39 @@ static void *sigwrap_new(void)
     return (x);
 }
 
-static t_int *sigwrap_perform(t_int *w)
+#define WRAP_CHECK(f) \
+    (((f) > (t_sample)INT_MAX || (f) < (t_sample)INT_MIN) ? 0. : (f))
+
+#define WRAP_DO(f) \
+    ((int)(f) <= (f) ? (f) - (int)(f) : (f) - ((int)(f) - 1))
+
+t_int *sigwrap_perform(t_int *w)
 {
     t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
     int n = (int)w[3];
     while (n--)
     {
-        int k;
         t_sample f = *in++;
-        f = (f>INT_MAX || f<INT_MIN)?0.:f;
-        k = (int)f;
-        if (k <= f) *out++ = f-k;
-        else *out++ = f - (k-1);
+        f = WRAP_CHECK(f);
+        *out++ = WRAP_DO(f);
+    }
+    return (w + 4);
+}
+
+t_int *sigwrap_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    int n = (int)w[3];
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = WRAP_CHECK(in[0]), f1 = WRAP_CHECK(in[1]);
+        t_sample f2 = WRAP_CHECK(in[2]), f3 = WRAP_CHECK(in[3]);
+        t_sample f4 = WRAP_CHECK(in[4]), f5 = WRAP_CHECK(in[5]);
+        t_sample f6 = WRAP_CHECK(in[6]), f7 = WRAP_CHECK(in[7]);
+        out[0] = WRAP_DO(f0); out[1] = WRAP_DO(f1);
+        out[2] = WRAP_DO(f2); out[3] = WRAP_DO(f3);
+        out[4] = WRAP_DO(f4); out[5] = WRAP_DO(f5);
+        out[6] = WRAP_DO(f6); out[7] = WRAP_DO(f7);
     }
     return (w + 4);
 }
@@ -334,10 +418,12 @@ static t_int *sigwrap_old_perform(t_int *w)
 
 static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add((pd_compatibilitylevel < 48 ?
-        sigwrap_old_perform : sigwrap_perform),
-            3, sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    if (pd_compatibilitylevel < 48)
+        dsp_add(sigwrap_old_perform, 3, sp[0]->s_vec, sp[1]->s_vec, n);
+    else dsp_add(((n & 7) ? sigwrap_perform : sigwrap_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 void sigwrap_setup(void)
@@ -711,6 +797,8 @@ static void *abs_tilde_new(void)
     return (x);
 }
 
+#define ABS_DO(f) ((f) >= 0 ? (f) : -(f))
+
 t_int *abs_tilde_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
@@ -719,16 +807,34 @@ t_int *abs_tilde_perform(t_int *w)
     while (n--)
     {
         t_sample f = *in1++;
-        *out++ = (f >= 0 ? f : -f);
+        *out++ = ABS_DO(f);
+    }
+    return (w+4);
+}
+
+t_int *abs_tilde_perform8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    int n = (int)(w[3]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+        out[0] = ABS_DO(f0); out[1] = ABS_DO(f1);
+        out[2] = ABS_DO(f2); out[3] = ABS_DO(f3);
+        out[4] = ABS_DO(f4); out[5] = ABS_DO(f5);
+        out[6] = ABS_DO(f6); out[7] = ABS_DO(f7);
     }
     return (w+4);
 }
 
 static void abs_tilde_dsp(t_abs_tilde *x, t_signal **sp)
 {
+    t_int n = SIGTOTAL(sp[0]);
     signal_setmultiout(&sp[1], sp[0]->s_nchans);
-    dsp_add(abs_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, SIGTOTAL(sp[0]));
+    dsp_add(((n & 7) ? abs_tilde_perform : abs_tilde_perform8), 3,
+        sp[0]->s_vec, sp[1]->s_vec, n);
 }
 
 static void abs_tilde_setup(void)

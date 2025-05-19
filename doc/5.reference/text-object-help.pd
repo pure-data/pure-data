@@ -1,5 +1,5 @@
 #N struct text-struct float x float y text z;
-#N canvas 802 50 541 585 12;
+#N canvas 472 81 541 585 12;
 #X obj 92 552 list;
 #X obj 29 16 text;
 #X text 15 552 see also:;
@@ -490,7 +490,6 @@
 #X text 597 53 If the search pattern (the incoming list) has more elements than we have specified search elements \, extra search patterns match succeeding elements starting from the last one give as an argument. So for example if there are no arguments we look for matches to any number of elements starting from the beginning of the message in the text., f 42;
 #X text 531 407 Here we ask for element 2 to equal 3 and elements starting at 0 to be 'near' the following arguments., f 41;
 #X text 562 488 element 2 is 3 and element 0 nearest 3;
-#X text 605 516 here messages 0 and 2 tie over 2.4 (1 and 4 are equally far from it) so message 0 whose second element is closer to 1 wins., f 42;
 #X text 607 578 Here message 2 wins because its element 0 is nearer to 3 \, notwithstanding that its element 1 is farther from 1, f 40;
 #X text 215 359 here we ask to match both element 0 and 3 exactly. In element 3 we're testing symbols for equality., f 50;
 #X obj 112 653 text search text-search > 0, f 33;
@@ -498,6 +497,7 @@
 #X msg 20 587 range 2 3;
 #X text 24 536 narrow between 2 and 4, f 7;
 #X text 13 457 Match a message for which the search key is greater than the element zero of that message. The message getting closest to the key wins. You can also use the 'range' message to narrow the search \, which takes an offset and number of messages., f 68;
+#X text 605 516 here messages 0 and 2 tie over 2.5 (1 and 4 are equally far from it) so message 0 whose second element is closer to 1 wins., f 42;
 #X connect 4 0 0 0;
 #X connect 5 0 4 1;
 #X connect 6 0 4 0;
@@ -515,15 +515,15 @@
 #X connect 20 0 18 0;
 #X connect 21 0 18 0;
 #X connect 22 0 18 0;
-#X connect 24 0 54 0;
-#X connect 25 0 54 0;
-#X connect 26 0 54 0;
+#X connect 24 0 53 0;
+#X connect 25 0 53 0;
+#X connect 26 0 53 0;
 #X connect 27 0 28 0;
 #X connect 29 0 27 0;
 #X connect 30 0 27 0;
 #X connect 31 0 27 0;
-#X connect 54 0 23 0;
-#X connect 56 0 54 0;
+#X connect 53 0 23 0;
+#X connect 55 0 53 0;
 #X restore 354 411 pd search;
 #X text 58 435 sequencer/message-sender;
 #X obj 242 435 text sequence;
@@ -826,7 +826,7 @@
 #X connect 23 0 21 0;
 #X connect 24 0 3 0;
 #X restore 354 290 pd insert;
-#N canvas 888 354 766 438 text-and-data-structures 1;
+#N canvas 704 354 766 438 text-and-data-structures 0;
 #X floatatom 82 189 5 0 0 0 - - - 0;
 #X msg 47 158 0;
 #X msg 122 158 2;
@@ -842,7 +842,7 @@
 #X text 77 29 fields 'x/y' for coordinates and 'z' for text;
 #X obj 68 224 drawpolygon 0 4 0 -10 0 55 140 55 140 -10 0 -10;
 #X restore 463 58 pd text-struct;
-#N canvas 598 439 226 165 text-data 1;
+#N canvas 598 439 226 165 text-data 0;
 #X scalar text-struct 20 20 \; 10 20 300 \\\; a b c d \\\; 100 200 292 \\\; \;;
 #X text 13 86 We have one datum (above) whose "z" field is text., f 25;
 #X restore 462 30 pd text-data;

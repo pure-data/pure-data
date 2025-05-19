@@ -6,6 +6,8 @@
 #include "m_imp.h"
 #include "g_canvas.h"   /* just for LB_LOAD */
 
+#include <string.h>
+
     /* FIXME no out-of-memory testing yet! */
 
 t_pd *pd_new(t_class *c)
@@ -126,6 +128,9 @@ void m_pd_setup(void)
 
 void pd_bind(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER     /* temporary workaround; see m_pd.h */
+    vst_cleanser(&s);
+#endif
     if (s->s_thing)
     {
         if (*s->s_thing == bindlist_class)
@@ -154,6 +159,9 @@ void pd_bind(t_pd *x, t_symbol *s)
 
 void pd_unbind(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER
+    vst_cleanser(&s);
+#endif
     if (s->s_thing == x) s->s_thing = 0;
     else if (s->s_thing && *s->s_thing == bindlist_class)
     {
@@ -211,6 +219,42 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
             }
             x = e->e_who;
         }
+    }
+    return x;
+}
+
+t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname)
+{
+    t_pd *x = 0;
+
+    if (!s->s_thing) return (0);
+#ifdef PDINSTANCE
+        /* NB: the class name symbol is shared between instances
+        so we can't rely on pointer identity! */
+    if (!strcmp((*s->s_thing)->c_name->s_name, classname->s_name))
+        return (s->s_thing);
+#else
+    if ((*s->s_thing)->c_name == classname) return (s->s_thing);
+#endif
+    if (*s->s_thing == bindlist_class)
+    {
+        t_bindlist *b = (t_bindlist *)s->s_thing;
+        t_bindelem *e, *e2;
+        int warned = 0;
+        for (e = b->b_list; e; e = e->e_next)
+        #ifdef PDINSTANCE /* see above */
+            if (!strcmp((*e->e_who)->c_name->s_name, classname->s_name))
+        #else
+            if ((*e->e_who)->c_name == classname)
+        #endif
+            {
+                if (x && !warned)
+                {
+                    post("warning: %s: multiply defined", s->s_name);
+                    warned = 1;
+                }
+                x = e->e_who;
+            }
     }
     return x;
 }
@@ -290,16 +334,33 @@ void pd_pointer(t_pd *x, t_gpointer *gp)
 
 void pd_symbol(t_pd *x, t_symbol *s)
 {
+#ifdef VST_CLEANSER
+    vst_cleanser(&s);
+#endif
     (*(*x)->c_symbolmethod)(x, s);
 }
 
 void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
+#ifdef VST_CLEANSER
+    int i;
+    vst_cleanser(&s);
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type == A_SYMBOL)
+            vst_cleanser(&argv[i].a_w.w_symbol);
+#endif
     (*(*x)->c_listmethod)(x, &s_list, argc, argv);
 }
 
 void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
+#ifdef VST_CLEANSER
+    int i;
+    vst_cleanser(&s);
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type == A_SYMBOL)
+            vst_cleanser(&argv[i].a_w.w_symbol);
+#endif
     (*(*x)->c_anymethod)(x, s, argc, argv);
 }
 

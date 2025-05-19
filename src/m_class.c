@@ -432,10 +432,9 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 extern void text_save(t_gobj *z, t_binbuf *b);
 
-t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
-    size_t size, int flags, t_atomtype type1, ...)
+t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, va_list ap)
 {
-    va_list ap;
     t_atomtype vec[MAXPDARG+1], *vp = vec;
     int count = 0, i;
     t_class *c;
@@ -443,7 +442,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     if (!typeflag) typeflag = CLASS_PATCHABLE;
     *vp = type1;
 
-    va_start(ap, type1);
     while (*vp)
     {
         if (count == MAXPDARG)
@@ -460,7 +458,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         count++;
         *vp = va_arg(ap, t_atomtype);
     }
-    va_end(ap);
 
     if (pd_objectmaker && newmethod)
     {
@@ -520,6 +517,29 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     post("class: %s", c->c_name->s_name);
 #endif
     return (c);
+}
+
+t_class *pd_class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+    t_class *ret;
+    va_list ap;
+    va_start(ap, type1);
+    ret = class_donew(s, newmethod, freemethod, size, flags, type1, ap);
+    va_end(ap);
+    return (ret);
+}
+
+    /* traditional name: */
+t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+    t_class *ret;
+    va_list ap;
+    va_start(ap, type1);
+    ret = class_donew(s, newmethod, freemethod, size, flags, type1, ap);
+    va_end(ap);
+    return (ret);
 }
 
 void class_free(t_class *c)
@@ -597,15 +617,17 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 }
 
-void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
-    t_atomtype arg1, ...)
+void class_doaddmethod(t_class *c, t_method fn, t_symbol *sel,
+    t_atomtype arg1, va_list ap)
 {
-    va_list ap;
     t_atomtype argtype = arg1;
     int nargs, i;
     if(!c)
         return;
-    va_start(ap, arg1);
+#ifdef VST_CLEANSER     /* temporary workaround; see m_pd.h */
+    vst_cleanser(&sel);
+#endif
+
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
         is obsolete; you should now use the CLASS_MAINSIGNALIN macro. */
@@ -673,9 +695,29 @@ phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
         (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
 done:
-    va_end(ap);
     return;
 }
+
+    /* traditional name */
+void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
+    t_atomtype arg1, ...)
+{
+    va_list ap;
+    va_start(ap, arg1);
+    class_doaddmethod(c, fn, sel, arg1, ap);
+    va_end(ap);
+}
+
+    /* new name to avoid shared-lib name clashes */
+void pd_class_addmethod(t_class *c, t_method fn, t_symbol *sel,
+    t_atomtype arg1, ...)
+{
+    va_list ap;
+    va_start(ap, arg1);
+    class_doaddmethod(c, fn, sel, arg1, ap);
+    va_end(ap);
+}
+
 
     /* Instead of these, see the "class_addfloat", etc.,  macros in m_pd.h */
 void class_addbang(t_class *c, t_method fn)
