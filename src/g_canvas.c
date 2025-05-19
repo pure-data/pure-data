@@ -2298,4 +2298,3 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
 }
-
