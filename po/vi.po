@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -304,6 +304,9 @@ msgid "Margin:"
 msgstr "Dòng đánh dấu:"
 
 msgid "Y range: from"
+msgstr ""
+
+msgid "Object:"
 msgstr ""
 
 msgid "Data Properties"
@@ -884,10 +887,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Tìm kiếm trong văn bản..."
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -959,6 +975,19 @@ msgstr "Tệp TAR"
 #, fuzzy
 msgid "All Files"
 msgstr "Tất cả các tệp"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1150,11 +1179,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1193,6 +1222,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1995,6 +2028,10 @@ msgid "Previous Window"
 msgstr "Cửa sô Gởi"
 
 #, fuzzy
+msgid "Close subwindows"
+msgstr "Đóng thanh/cửa sổ này"
+
+#, fuzzy
 msgid "Parent Window"
 msgstr "Cửa sô Gởi"
 
@@ -2090,6 +2127,9 @@ msgstr ""
 msgid "Audio off"
 msgstr ""
 
+msgid "Find source"
+msgstr ""
+
 msgid "Pd"
 msgstr ""
 
@@ -2166,10 +2206,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "for:"
 #~ msgstr "Cổng:"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "Đóng thanh/cửa sổ này"
 
 #, fuzzy
 #~ msgid "Filters"

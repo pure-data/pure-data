@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-07-08 17:33+0200\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
@@ -288,6 +288,10 @@ msgstr "Margem:"
 
 msgid "Y range: from"
 msgstr "Registro de Y: de"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Object"
 
 msgid "Data Properties"
 msgstr "Propriedades da Estrutura de Dados"
@@ -831,11 +835,26 @@ msgstr "Incapaz de remover ficheiro 'stray' '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear ficheiro descarregado de '%s'"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Resultados de Busca"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "%s adicionado aos caminhos de busca"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Criar"
 
 msgid "Check"
 msgstr "Checar"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Instalação falhou!"
 
 msgid "Installation options:"
 msgstr "Opções de instalação:"
@@ -905,6 +924,19 @@ msgstr "Ficheiros TAR"
 
 msgid "All Files"
 msgstr "Todos os Ficheiros"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1097,12 +1129,12 @@ msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido
 msgid "Installing to non-existent directory failed"
 msgstr "Falha ao instalar num diretório não existente"
 
+msgid "Directory does not exist!"
+msgstr "Diretório não existe!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Incapaz de instalar em '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Diretório não existe!"
 
 msgid "Directory is not writable!"
 msgstr "Directório não é 'gravável'!"
@@ -1142,6 +1174,10 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] platforma detectada: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1938,6 +1974,10 @@ msgstr "Próxima Janela"
 msgid "Previous Window"
 msgstr "Janela Anterior"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Fechar esta janela?"
+
 msgid "Parent Window"
 msgstr "Janela superior"
 
@@ -2030,6 +2070,10 @@ msgstr "Áudio ligado"
 
 msgid "Audio off"
 msgstr "Áudio desligado"
+
+#, fuzzy
+msgid "Find source"
+msgstr "Localizar último erro"
 
 msgid "Pd"
 msgstr "Pd"
@@ -2137,9 +2181,6 @@ msgstr "ignorando '%s': não parece ser um ficheiro de Pd"
 
 #~ msgid "GUI"
 #~ msgstr "GUI"
-
-#~ msgid "Close this window??"
-#~ msgstr "Fechar esta janela?"
 
 #~ msgid "Output device 3:"
 #~ msgstr "Dispositivo de saída 3:"

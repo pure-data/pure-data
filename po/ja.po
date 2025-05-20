@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-07-08 17:20+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -288,6 +288,10 @@ msgstr "余白:"
 
 msgid "Y range: from"
 msgstr "Y範囲: はじまり"
+
+#, fuzzy
+msgid "Object:"
+msgstr "オブジェクト"
 
 msgid "Data Properties"
 msgstr "データプロパティ"
@@ -847,11 +851,26 @@ msgstr "不明なファイル '%s' を削除できません"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "ダウンロードしたファイルの名前を '%s' に変更できません"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "検索結果"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "検索パスに %s を追加しました"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "作成"
 
 msgid "Check"
 msgstr "チェック"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "インストールに失敗!"
 
 msgid "Installation options:"
 msgstr "インストールオプション:"
@@ -921,6 +940,19 @@ msgstr "TAR ファイル"
 
 msgid "All Files"
 msgstr "全てのファイル"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1120,12 +1152,12 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
 
+msgid "Directory does not exist!"
+msgstr "ディレクトリが存在しません!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "'%s' にインストールできません"
-
-msgid "Directory does not exist!"
-msgstr "ディレクトリが存在しません!"
 
 msgid "Directory is not writable!"
 msgstr "ディレクトリが書き込み禁止になっています!"
@@ -1166,6 +1198,10 @@ msgstr ""
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] プラットフォームが検出されました: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1963,6 +1999,9 @@ msgstr "次のウインドウ"
 msgid "Previous Window"
 msgstr "前のウィンドウ"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "親ウィンドウ"
 
@@ -2055,6 +2094,10 @@ msgstr "オーディオ オン"
 
 msgid "Audio off"
 msgstr "オーディオ オフ"
+
+#, fuzzy
+msgid "Find source"
+msgstr "最後のエラーを検索する"
 
 msgid "Pd"
 msgstr "Pd"

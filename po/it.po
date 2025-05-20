@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2024-07-08 17:19+0200\n"
 "Last-Translator: Alberto Zin <alberto.zin@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -290,6 +290,10 @@ msgstr "Margine:"
 
 msgid "Y range: from"
 msgstr "Intervallo Y: da"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Oggetto"
 
 msgid "Data Properties"
 msgstr "Proprietà Dati"
@@ -835,11 +839,26 @@ msgstr "Impossibile rimuovere il file randagio '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossibile rinominare il file scaricato in '%s'"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Risultati della Ricerca"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "%s aggiunto ai percorsi di ricerca"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Crea"
 
 msgid "Check"
 msgstr "Controlla"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Installazione non riuscita!"
 
 msgid "Installation options:"
 msgstr "Opzioni di installazione:"
@@ -910,6 +929,19 @@ msgstr "File TAR"
 
 msgid "All Files"
 msgstr "Tutti i file"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1109,12 +1141,12 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr "Installazione su una cartella non esistente fallita"
 
+msgid "Directory does not exist!"
+msgstr "La cartella non esiste!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Impossibile installare in '%s'"
-
-msgid "Directory does not exist!"
-msgstr "La cartella non esiste!"
 
 msgid "Directory is not writable!"
 msgstr "Non è possibile scrivere nella cartella!"
@@ -1153,6 +1185,10 @@ msgstr "[deken] deken-plugin.tcl (ricerca di externals di Pd) caricato da %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Piattaforma identificata: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1950,6 +1986,10 @@ msgstr "Finestra Successiva"
 msgid "Previous Window"
 msgstr "Finestra Precedente"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Chiudere questa finestra??"
+
 msgid "Parent Window"
 msgstr "Finestra parent"
 
@@ -2042,6 +2082,10 @@ msgstr "Audio attivo"
 
 msgid "Audio off"
 msgstr "Audio inattivo"
+
+#, fuzzy
+msgid "Find source"
+msgstr "Trova l'ultimo errore"
 
 msgid "Pd"
 msgstr "Pd"
@@ -2143,9 +2187,6 @@ msgstr "ignoro '%s': non sembra un file Pd"
 
 #~ msgid "Signal"
 #~ msgstr "Segnali"
-
-#~ msgid "Close this window??"
-#~ msgstr "Chiudere questa finestra??"
 
 #~ msgid "Output device 4:"
 #~ msgstr "Dispositivo di uscita 4:"

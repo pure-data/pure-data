@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
+"POT-Creation-Date: 2025-05-19 12:57+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -306,6 +306,10 @@ msgstr "Marginal:"
 #, fuzzy
 msgid "Y range: from"
 msgstr "Omfång (y), från:"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Objekt"
 
 #, fuzzy
 msgid "Data Properties"
@@ -873,10 +877,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Sök i"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -948,6 +965,19 @@ msgstr "TAR-Filer"
 #, fuzzy
 msgid "All Files"
 msgstr "Alla filer"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1140,11 +1170,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1183,6 +1213,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1973,6 +2007,10 @@ msgstr "Föräldrafönster"
 msgid "Previous Window"
 msgstr "Föräldrafönster"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Stäng fönstret?"
+
 msgid "Parent Window"
 msgstr "Föräldrafönster"
 
@@ -2066,6 +2104,10 @@ msgstr ""
 
 msgid "Audio off"
 msgstr ""
+
+#, fuzzy
+msgid "Find source"
+msgstr "Sök senaste fel"
 
 msgid "Pd"
 msgstr ""
@@ -2171,6 +2213,3 @@ msgstr ""
 #, fuzzy
 #~ msgid "Filters"
 #~ msgstr "Fil"
-
-#~ msgid "Close this window??"
-#~ msgstr "Stäng fönstret?"
