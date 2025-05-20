@@ -64,6 +64,7 @@
 #X restore 452 372 pd multichannel;
 #X text 28 63 The [snapshot~] object takes a signal and converts it to a control value whenever it receives a bang in its left inlet. This object is particularly useful for monitoring outputs and has support for multichannel connections., f 81;
 #X text 393 429 updated for Pd version 0.56;
+#X obj 170 429 print~;
 #X connect 0 0 6 0;
 #X connect 3 0 0 0;
 #X connect 7 0 0 0;
