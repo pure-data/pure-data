@@ -13,16 +13,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-19 12:57+0200\n"
-"PO-Revision-Date: 2024-07-08 17:17+0200\n"
+"PO-Revision-Date: 2025-05-20 08:43+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -295,9 +295,8 @@ msgstr "Margen:"
 msgid "Y range: from"
 msgstr "Rango Y: de"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Objeto"
+msgstr "Objeto:"
 
 msgid "Data Properties"
 msgstr "Propiedades de los datos"
@@ -703,7 +702,7 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr "se utilizaá la fuente: %1$s %2$s"
+msgstr "Utilizando fuente: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -844,16 +843,14 @@ msgstr "No se pudo eliminar el archivo suelto '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "No se pudo renombrar el archivo descargado a '%s'"
 
-#, fuzzy
 msgid "Search URLs:"
-msgstr "Resultados de búsqueda"
+msgstr "Buscar URLs"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "Se ha agregado %s a las rutas de búsqueda"
+msgstr "Búsqueda adicional de URLs"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "URL de búsqueda efímeras"
 
 msgid "Create"
 msgstr "Crear"
@@ -861,9 +858,8 @@ msgstr "Crear"
 msgid "Check"
 msgstr "Probar"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "¡La instalación falló!"
+msgstr "Ruta de destino de instalación de Deken"
 
 msgid "Installation options:"
 msgstr "Opciones de instalación:"
@@ -937,16 +933,18 @@ msgstr "Todos los archivos"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "Instalando arquitectura incompatible de '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "Reemplazando librería con arquitectura incompatible!!!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Desea reemplazar la librería '%1$s' en '%2$s' con una versión que es "
+"incompatible con su computadora?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1189,7 +1187,7 @@ msgstr "[deken] plataforma detectada: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "No se pudo encontrar un menú para agregar '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1986,7 +1984,7 @@ msgid "Previous Window"
 msgstr "Ventana anterior"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Cerrar sub-ventanas"
 
 msgid "Parent Window"
 msgstr "Ventana contenedora"
@@ -2081,9 +2079,8 @@ msgstr "Audio encendido"
 msgid "Audio off"
 msgstr "Audio apagado"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Buscar el último error"
+msgstr "Encontrar origen"
 
 msgid "Pd"
 msgstr "Pd"
