@@ -11,16 +11,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-19 12:57+0200\n"
-"PO-Revision-Date: 2024-07-08 17:18+0200\n"
-"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/fr/>\n"
+"PO-Revision-Date: 2025-05-20 14:41+0000\n"
+"Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -291,9 +291,8 @@ msgstr "Marges :"
 msgid "Y range: from"
 msgstr "Intervalle Y : de"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Objet"
+msgstr "Objet :"
 
 msgid "Data Properties"
 msgstr "Propriétés des données"
@@ -841,16 +840,14 @@ msgstr "Impossible d'effacer le ficher temporaire '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
-#, fuzzy
 msgid "Search URLs:"
-msgstr "Résultats de la recherche"
+msgstr "URL de recherche :"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "%s a été ajouté aux chemins de recherche"
+msgstr "URL de recherche supplémentaires"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "URL de recherche éphémères"
 
 msgid "Create"
 msgstr "Créer"
@@ -858,9 +855,8 @@ msgstr "Créer"
 msgid "Check"
 msgstr "Vérifier"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "L'installation a échoué !"
+msgstr "Destination d'installation pour Deken"
 
 msgid "Installation options:"
 msgstr "Options d'installation :"
@@ -938,16 +934,18 @@ msgstr "Tous les fichiers"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "Installation d'une architecture incompatible avec '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "Remplacement d'une bibliothèque par une architecture incompatible !"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Voulez-vous remplacer la bibliothèque '%1$s' dans '%2$s' par une version "
+"incompatible avec votre ordinateur ?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1200,7 +1198,7 @@ msgstr "[deken] Plateforme détectée : %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "Impossible de trouver un menu où ajouter '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1999,7 +1997,7 @@ msgid "Previous Window"
 msgstr "Fenêtre précédente"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Fermer les sous-patchs"
 
 msgid "Parent Window"
 msgstr "Fenêtre parente"
@@ -2094,9 +2092,8 @@ msgstr "Audio On"
 msgid "Audio off"
 msgstr "Audio Off"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Rechercher la dernière erreur"
+msgstr "Localiser la source"
 
 msgid "Pd"
 msgstr "Pd"
