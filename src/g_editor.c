@@ -1831,7 +1831,6 @@ static t_editor *editor_new(t_glist *owner)
     x->e_glist = owner;
     sprintf(buf, ".x%lx", (t_int)owner);
     x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
-    x->e_clock = 0;
     return (x);
 }
 
@@ -1841,8 +1840,7 @@ static void editor_free(t_editor *x, t_glist *y)
     guiconnect_notarget(x->e_guiconnect, 1000);
     binbuf_free(x->e_connectbuf);
     binbuf_free(x->e_deleted);
-    if (x->e_clock)
-        clock_free(x->e_clock);
+    sys_unqueuegui(x);
     freebytes((void *)x, sizeof(*x));
 }
 
@@ -3274,8 +3272,9 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 CURSOR_RUNMODE_NOTHING :CURSOR_EDITMODE_NOTHING);
 }
 
-static void delay_move(t_canvas *x)
+static void delay_move(t_gobj *client, t_glist *glist)
 {
+    t_canvas *x = (t_canvas *)client;
     int incx = x->gl_editor->e_xnew - x->gl_editor->e_xwas,
         incy = x->gl_editor->e_ynew - x->gl_editor->e_ywas;
         /* insist on at elast 2 pixel displacement to avoid accidental
@@ -3313,10 +3312,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     glist_setlastxy(x, xpos, ypos);
     if (x->gl_editor->e_onmotion == MA_MOVE)
     {
-        if (!x->gl_editor->e_clock)
-            x->gl_editor->e_clock = clock_new(x, (t_method)delay_move);
-        clock_unset(x->gl_editor->e_clock);
-        clock_delay(x->gl_editor->e_clock, 5);
+        sys_queuegui(x, glist_getcanvas(x), delay_move);
         x->gl_editor->e_xnew = xpos;
         x->gl_editor->e_ynew = ypos;
     }
