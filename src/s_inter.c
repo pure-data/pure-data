@@ -1173,12 +1173,17 @@ static int sys_domicrosleep(int microsec)
     if (INTER->i_nfdpoll)
     {
 #ifdef THREADED_IO
-        // Pd was built with THREADED_IO support, but no one has taken
-        // charge of the IO duties, so we do it ourselves in the audio thread.
-        // Sub-optimal because of the extra memory copies, but better than
-        // nothing.
         if(!INTER->i_dontmanageio)
-            sys_doio(pd_this);
+        {
+            // Pd was built with THREADED_IO support, but no one has taken
+            // charge of the IO duties, so we do it ourselves in the audio thread.
+            // Sub-optimal because of the extra memory copies, but better than
+            // nothing.
+            int didsomething;
+            do
+                didsomething = sys_doio(pd_this);
+            while(didsomething);
+        }
         ring_buffer* rbrmfdsend = INTER->i_rbrmfdsend;
         if(rbrmfdsend)
         {
