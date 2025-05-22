@@ -337,9 +337,9 @@ typedef struct _socketprivate {
 #ifdef THREADED_IO
     int sk_threaded; // should use threaded I/O
     t_rbskt* sk_rbskt; // threaded input stuff. Not owned by us
-    int sk_hassenderrfn;
-    int sk_missingsenderrfnwarned;
-    int sk_missingrecvfnwarned;
+    unsigned int sk_hassenderrfn:1;
+    unsigned int sk_missingsenderrfnwarned:1;
+    unsigned int sk_missingrecvfnwarned:1;
 #endif // THREADED_IO
     t_sktsenderr* sk_sktsenderr; // when not threaded but a senderrfn is provided
 } t_socketprivate;
