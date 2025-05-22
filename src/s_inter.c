@@ -969,7 +969,8 @@ static int poll_fds()
         unsigned int size = rb_available_to_write(rb);
         if(0 == size
             || (rbskt->rs_preserve_boundaries
-                && (socket_bytes_available(fd) + sizeof(ret)) > size))
+                && (socket_bytes_available(fd) + sizeof(ret)
+				+ sizeof(socklen_t) + sizeof(struct sockaddr_storage)) > size))
         {
             // not enough space in the ring buffer: let's postpone
             // recv() while the audio thread empties the ringbuffer
