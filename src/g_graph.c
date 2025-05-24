@@ -800,33 +800,23 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             t_float upix, lpix;
             if (y2 < y1)
                 upix = y1, lpix = y2;
-            else upix = y2, lpix = y1;
-            for (i = 0, f = x->gl_xtick.k_point;
-                f < 0.99 * x->gl_x2 + 0.01*x->gl_x1; i++,
-                    f += x->gl_xtick.k_inc)
+            else
+                upix = y2, lpix = y1;
+
+            for (i = (int)((x->gl_x1 - x->gl_xtick.k_point) / x->gl_xtick.k_inc) + (x->gl_xtick.k_point<x->gl_x1);
+                 i <= (int)((x->gl_x2 - x->gl_xtick.k_point) / x->gl_xtick.k_inc) - (x->gl_xtick.k_point>x->gl_x2);
+                 i++)
             {
+                t_float fx = x->gl_xtick.k_point + (i * x->gl_xtick.k_inc);
                 int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
+                int ix = (int)glist_xtopixels(x, x->gl_xtick.k_point + (i * x->gl_xtick.k_inc));
                 _graph_create_line4(x,
-                    (int)glist_xtopixels(x, f), (int)upix,
-                    (int)glist_xtopixels(x, f), (int)upix - tickpix,
+                    ix, (int)upix,
+                    ix, (int)upix - tickpix,
                     tags2);
                 _graph_create_line4(x,
-                    (int)glist_xtopixels(x, f), (int)lpix,
-                    (int)glist_xtopixels(x, f), (int)lpix + tickpix,
-                    tags2);
-            }
-            for (i = 1, f = x->gl_xtick.k_point - x->gl_xtick.k_inc;
-                f > 0.99 * x->gl_x1 + 0.01*x->gl_x2;
-                    i++, f -= x->gl_xtick.k_inc)
-            {
-                int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
-                _graph_create_line4(x,
-                    (int)glist_xtopixels(x, f), (int)upix,
-                    (int)glist_xtopixels(x, f), (int)upix - tickpix,
-                    tags2);
-                _graph_create_line4(x,
-                    (int)glist_xtopixels(x, f), (int)lpix,
-                    (int)glist_xtopixels(x, f), (int)lpix + tickpix,
+                    ix, (int)lpix,
+                    ix, (int)lpix + tickpix,
                     tags2);
             }
         }
@@ -837,33 +827,23 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             t_float ubound, lbound;
             if (x->gl_y2 < x->gl_y1)
                 ubound = x->gl_y1, lbound = x->gl_y2;
-            else ubound = x->gl_y2, lbound = x->gl_y1;
-            for (i = 0, f = x->gl_ytick.k_point;
-                f < 0.99 * ubound + 0.01 * lbound;
-                    i++, f += x->gl_ytick.k_inc)
+            else
+                ubound = x->gl_y2, lbound = x->gl_y1;
+            for (i =  (int)((lbound - x->gl_ytick.k_point) / x->gl_ytick.k_inc) + (x->gl_ytick.k_point<lbound);
+                 i <= (int)((ubound - x->gl_ytick.k_point) / x->gl_ytick.k_inc) - (x->gl_ytick.k_point>ubound);
+                 i++)
             {
+                t_float fy = x->gl_ytick.k_point + (i * x->gl_ytick.k_inc);
                 int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
+                int iy = (int)glist_ytopixels(x, fy);
+
                 _graph_create_line4(x,
-                    x1, (int)glist_ytopixels(x, f),
-                    x1 + tickpix, (int)glist_ytopixels(x, f),
+                    x1, iy,
+                    x1 + tickpix, iy,
                     tags2);
                 _graph_create_line4(x,
-                    x2, (int)glist_ytopixels(x, f),
-                    x2 - tickpix, (int)glist_ytopixels(x, f),
-                    tags2);
-            }
-            for (i = 1, f = x->gl_ytick.k_point - x->gl_ytick.k_inc;
-                f > 0.99 * lbound + 0.01 * ubound;
-                    i++, f -= x->gl_ytick.k_inc)
-            {
-                int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
-                _graph_create_line4(x,
-                    x1, (int)glist_ytopixels(x, f),
-                    x1 + tickpix, (int)glist_ytopixels(x, f),
-                    tags2);
-                _graph_create_line4(x,
-                    x2, (int)glist_ytopixels(x, f),
-                    x2 - tickpix, (int)glist_ytopixels(x, f),
+                    x2, iy,
+                    x2 - tickpix, iy,
                     tags2);
             }
         }
@@ -1130,6 +1110,7 @@ t_glist *glist_findgraph(t_glist *x)
 
 extern void canvas_menuarray(t_glist *canvas);
 
+void glist_removearray(t_glist *x, t_symbol *name);
         /* in emscripten, the function signatures must match exactly
            (including the return type), so we need a (void)-returning wrapper
            around graph_array() to be used as canvas-method
@@ -1137,9 +1118,13 @@ extern void canvas_menuarray(t_glist *canvas);
 static void _graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     t_floatarg fsize, t_floatarg fflags)
 {
-    graph_array(gl, s, templateargsym, fsize, fflags);
+    if(templateargsym == gensym("")) {
+        glist_removearray(gl, s);
+        glist_redraw(gl);
+    } else {
+        graph_array(gl, s, templateargsym, fsize, fflags);
+    }
 }
-
 void g_graph_setup_class(t_class *c)
 {
     class_setwidget(c, &graph_widgetbehavior);
@@ -1154,7 +1139,7 @@ void g_graph_setup_class(t_class *c)
     class_addmethod(c, (t_method)graph_ylabel, gensym("ylabel"),
         A_GIMME, 0);
     class_addmethod(c, (t_method)_graph_array, gensym("array"),
-        A_SYMBOL, A_FLOAT, A_SYMBOL, A_DEFFLOAT, A_NULL);
+        A_SYMBOL, A_DEFFLOAT, A_DEFSYMBOL, A_DEFFLOAT, A_NULL);
     class_addmethod(c, (t_method)canvas_menuarray,
         gensym("menuarray"), A_NULL);
     class_addmethod(c, (t_method)glist_sort,
