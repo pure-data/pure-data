@@ -1912,10 +1912,18 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                     (int)(x->gl_screeny1));
             }
 
-            pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
-                (int)(x->gl_screenx2 - x->gl_screenx1),
+                /* if color isn't white, pass color as extra argument to
+                pdtk_canvas_new; but if it's just white don't pass it in
+                case we're talking to an older GUI version (so that
+                pureVST can work with Pd 0.55 as its GUI) */
+            if (strcmp(THISGUI->i_backgroundcolor->s_name, "white"))
+                pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
-                winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
+                    winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
+            else pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                (int)(x->gl_screeny2 - x->gl_screeny1), winpos, x->gl_edit);
 
             numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {

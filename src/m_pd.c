@@ -344,7 +344,8 @@ void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
 #ifdef VST_CLEANSER
     int i;
-    vst_cleanser(&s);
+    if (s)
+        vst_cleanser(&s);
     for (i = 0; i < argc; i++)
         if (argv[i].a_type == A_SYMBOL)
             vst_cleanser(&argv[i].a_w.w_symbol);
