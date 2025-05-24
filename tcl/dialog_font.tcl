@@ -160,7 +160,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
 
 proc ::dialog_font::create_dialog {gfxstub} {
     toplevel .font -class DialogWindow
-    .font configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog .font
     .font configure -padx 10 -pady 5
     wm group .font .
     wm title .font [_ "Font"]

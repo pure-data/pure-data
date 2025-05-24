@@ -221,7 +221,7 @@ array set childwindows {}  ;# all child windows based on mytoplevel IDs
 array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
 
 # variables for holding the menubar to allow for configuration by plugins
-set ::pdwindow_menubar ".menubar"
+set ::pdwindow_menubar ".pdmenu"
 set ::patch_menubar   ".menubar"
 set ::dialog_menubar   ""
 
