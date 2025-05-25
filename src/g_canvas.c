@@ -548,6 +548,7 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 
+void canvas_startmotion(t_canvas *x);
     /* make a new glist and add it to this glist.  It will appear as
     a "graph", not a text object.  */
 t_glist *glist_addglist(t_glist *g, t_symbol *sym,
@@ -587,6 +588,20 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     }
     if (x1 == x2 || y1 == y2)
         x1 = 0, x2 = 100, y1 = 1, y2 = -1;
+
+    if (menu && px1 >= px2 && py1 >= py2)
+    {
+        /* when creating the graph from menu (even indirectly via garray)
+           position it near the mouse.
+         */
+        int xpos = (int)px1, ypos = (int)py2;
+        glist_getnextxy(g, &xpos, &ypos);
+        px1 = (t_float)xpos;
+        px2 = px1 + GLIST_DEFGRAPHWIDTH;
+        py1 = (t_float)ypos;
+        py2 = py1 + GLIST_DEFGRAPHHEIGHT;
+    }
+
     if (px1 >= px2 || py1 >= py2)
         px1 = 100, py1 = 20, px2 = 100 + GLIST_DEFGRAPHWIDTH,
             py2 = 20 + GLIST_DEFGRAPHHEIGHT;
@@ -618,6 +633,21 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     if (!menu)
         pd_pushsym(&x->gl_pd);
     glist_add(g, &x->gl_gobj);
+
+        /* when creating the graph from menu (even indirectly via garray)
+           switch to edit-mode and stick it to the mouse-pointer
+           so user can position it whereever they want
+         */
+    if(menu) {
+        pd_vmess((t_pd*)g, gensym("editmode"), "i", 1);
+        glist_noselect(g);
+        glist_select(g, (t_gobj*)x);
+        if(x->gl_editor) {
+            /* poor man's replacement for glist_nograb() */
+            x->gl_editor->e_grab = 0;
+        }
+        canvas_startmotion(g);
+    }
     return (x);
 }
 
