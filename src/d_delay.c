@@ -393,22 +393,26 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
 {
     t_sigdelwrite *delwriter =
         (t_sigdelwrite *)pd_findbyclass(x->x_sym, sigdelwrite_class);
-    int i, length = sp[0]->s_length;
+    int i, length = sp[0]->s_length, nchans;
     x->x_sr = sp[0]->s_sr * 0.001;
     if (delwriter)
     {
-        signal_setmultiout(&sp[1], delwriter->x_nchans);
+            /* The output channel count is the maximum of the phase input channels
+            and the delwrite~ channels. The smaller one simply wraps around. */
+        nchans = sp[0]->s_nchans > delwriter->x_nchans ?
+            sp[0]->s_nchans : delwriter->x_nchans;
+        signal_setmultiout(&sp[1], nchans);
         sigdelwrite_check(delwriter, length, sp[0]->s_sr);
         sigdelwrite_update(delwriter);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
             /* NB: do not pass a direct pointer to the delay buffer because
             it might get resized by another object, see sigdelwrite_update() */
-        for (i = 0; i < delwriter->x_nchans; i++)
+        for (i = 0; i < nchans; i++)
             dsp_add(sigvd_perform, 6,
                 sp[0]->s_vec + (i % sp[0]->s_nchans) * length,
                     sp[1]->s_vec + i * length, &delwriter->x_cspace,
-                        x, (t_int)i, (t_int)length);
+                        x, (t_int)(i % delwriter->x_nchans), (t_int)length);
         /* check block size - but only if delwriter has been initialized */
         if (delwriter->x_cspace.c_n > 0 && length > delwriter->x_cspace.c_n)
             pd_error(x, "delread4~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
