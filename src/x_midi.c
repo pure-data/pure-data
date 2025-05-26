@@ -1286,6 +1286,13 @@ static void bag_count(t_bag *x, t_float fpit)
     outlet_float(x->x_auxout, (t_floatarg)count);
 }
 
+    /* change unique flag - note that this won't clean up duplicates that
+    are already in the bag. */
+static void bag_unique(t_bag *x, t_float f)
+{
+    x->x_unique = (f != 0);
+}
+
 static void bag_setup(void)
 {
     bag_class = class_new(gensym("bag"),
@@ -1296,6 +1303,8 @@ static void bag_setup(void)
     class_addmethod(bag_class, (t_method)bag_flush, gensym("flush"), 0);
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
     class_addmethod(bag_class, (t_method)bag_count, gensym("count"),
+        A_FLOAT, 0);
+    class_addmethod(bag_class, (t_method)bag_unique, gensym("unique"),
         A_FLOAT, 0);
 }
 
