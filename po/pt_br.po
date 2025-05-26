@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-19 12:57+0200\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
 "PO-Revision-Date: 2025-05-20 14:41+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1846,6 +1846,17 @@ msgstr "(idioma padrão: %s)"
 
 msgid "Print..."
 msgstr "Imprimir..."
+
+msgid "single precision"
+msgstr ""
+
+#, fuzzy
+msgid "double precision"
+msgstr "EXPERIMENTAL precisão double (64bit)"
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit-floats EXPERIMENTAL"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

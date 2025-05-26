@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-19 12:57+0200\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -1879,6 +1879,16 @@ msgstr ""
 #, fuzzy
 msgid "Print..."
 msgstr "_Hiệu chỉnh..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr ""
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

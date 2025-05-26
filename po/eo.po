@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-19 12:57+0200\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
 "PO-Revision-Date: 2024-08-28 18:54+0200\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1816,6 +1816,17 @@ msgstr "(implicita lingvo: %s)"
 
 msgid "Print..."
 msgstr "Presi…"
+
+msgid "single precision"
+msgstr ""
+
+#, fuzzy
+msgid "double precision"
+msgstr "EKSPERIMENTA duobla (64-bita) glitkomo"
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats"
+msgstr "%d-bita glitkomo EKSPERIMENTA"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

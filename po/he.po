@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-19 12:57+0200\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
 "PO-Revision-Date: 2024-11-12 11:00+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1836,6 +1836,17 @@ msgstr "(שפת ברירת המחדל: %s)"
 
 msgid "Print..."
 msgstr "הדפסה…"
+
+msgid "single precision"
+msgstr ""
+
+#, fuzzy
+msgid "double precision"
+msgstr "ניסיוני - דיוק כפול (64 סיביות)"
+
+#, fuzzy, tcl-format
+msgid "%dbit-floats"
+msgstr "נק׳ צפה ב־%d סיביות - ניסיוני"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"

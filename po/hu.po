@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-19 12:57+0200\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1867,6 +1867,16 @@ msgstr ""
 
 msgid "Print..."
 msgstr "Nyomtat..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr ""
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
