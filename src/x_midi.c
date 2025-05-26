@@ -5,6 +5,8 @@
 /* MIDI. */
 
 #include "m_pd.h"
+#include "string.h"
+
 void outmidi_noteon(int portno, int channel, int pitch, int velo);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
@@ -1202,34 +1204,61 @@ typedef struct _bagelem
 typedef struct _bag
 {
     t_object x_obj;
+    t_outlet *x_auxout;  /* for count and/or bang-on-already-present */
     t_float x_velo;
     t_bagelem *x_first;
+    int x_unique;
 } t_bag;
 
-static void *bag_new(void)
+static void *bag_new(t_symbol *flag)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
     x->x_velo = 0;
+    if (!strcmp(flag->s_name, "-u"))
+        x->x_unique = 1;
+    else
+    {
+        if (*flag->s_name)
+            pd_error(x, "bag %s: unknown flag", flag->s_name);
+        x->x_unique = 0;
+    }
     floatinlet_new(&x->x_obj, &x->x_velo);
     outlet_new(&x->x_obj, &s_float);
+    x->x_auxout = outlet_new(&x->x_obj, &s_list);
     x->x_first = 0;
     return (x);
 }
 
-static void bag_float(t_bag *x, t_float f)
+static t_bagelem *bag_newelem(t_float f)
 {
-    t_bagelem *bagelem, *e2, *e3;
+    t_bagelem *bagelem = (t_bagelem *)getbytes(sizeof *bagelem);
+    bagelem->e_next = 0;
+    bagelem->e_value = f;
+    return (bagelem);
+}
+
+static void bag_float(t_bag *x, t_floatarg f)
+{
+    t_bagelem *e2, *e3;
     if (x->x_velo != 0)
     {
-        bagelem = (t_bagelem *)getbytes(sizeof *bagelem);
-        bagelem->e_next = 0;
-        bagelem->e_value = f;
-        if (!x->x_first) x->x_first = bagelem;
-        else    /* LATER replace with a faster algorithm */
+        if (!x->x_first)
+            x->x_first = bag_newelem(f);
+        else if (x->x_unique)
+        {
+            for (e2 = e3 = x->x_first; e2; e3 = e2, e2 = e2->e_next)
+                if (e2->e_value == f)
+            {
+                outlet_bang(x->x_auxout);
+                return;
+            }
+            e3->e_next = bag_newelem(f);
+        }
+        else
         {
             for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
                 ;
-            e2->e_next = bagelem;
+            e2->e_next = bag_newelem(f);
         }
     }
     else
@@ -1237,7 +1266,7 @@ static void bag_float(t_bag *x, t_float f)
         if (!x->x_first) return;
         if (x->x_first->e_value == f)
         {
-            bagelem = x->x_first;
+            t_bagelem *bagelem = x->x_first;
             x->x_first = x->x_first->e_next;
             freebytes(bagelem, sizeof(*bagelem));
             return;
@@ -1273,14 +1302,27 @@ static void bag_clear(t_bag *x)
     }
 }
 
+    /* output number of items matching pitch */
+static void bag_count(t_bag *x, t_float fpit)
+{
+    t_bagelem *bagelem;
+    int count = 0;
+    for (bagelem = x->x_first; bagelem; bagelem = bagelem->e_next)
+        if (bagelem->e_value == fpit)
+            count++;
+    outlet_float(x->x_auxout, (t_floatarg)count);
+}
+
 static void bag_setup(void)
 {
     bag_class = class_new(gensym("bag"),
         (t_newmethod)bag_new, (t_method)bag_clear,
-        sizeof(t_bag), 0, 0);
+        sizeof(t_bag), 0, A_DEFSYM, 0);
     class_addfloat(bag_class, bag_float);
     class_addmethod(bag_class, (t_method)bag_flush, gensym("flush"), 0);
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
+    class_addmethod(bag_class, (t_method)bag_count, gensym("count"),
+        A_FLOAT, 0);
 }
 
 void x_midi_setup(void)

@@ -523,7 +523,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     t_float xloc, t_float yloc, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
-    int hit = 0;
+    int hit = 0, notified = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
     for (y = templatecanvas->gl_list; y; y = y->g_next)
@@ -534,7 +534,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
             data, template, sc, ap, xloc, yloc,
             xpix, ypix, shift, alt, dbl, doit)))
         {
-            if (doit)
+            if (doit && !notified)
             {
                 t_atom at[6];
                 SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
@@ -545,9 +545,10 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
                 SETFLOAT(at+5, dbl);
                 template_notifyforscalar(template, owner,
                     sc, gensym("click"), 6, at);
+                notified = 1;
             }
-                /* hit might be -1 (see curve_click()) indicating "please
-                notify" but keep looking for something else to click on.
+                /* hit might be -1 (see curve_click()) indicating "scalar
+                was notified" but keep looking for something to start dragging
                 so continue the search until hit is positive. */
             if (hit > 0)
                 return (hit);

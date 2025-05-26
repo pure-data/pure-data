@@ -1,5 +1,5 @@
 #N struct text-struct float x float y text z;
-#N canvas 802 50 541 585 12;
+#N canvas 472 81 541 585 12;
 #X obj 92 552 list;
 #X obj 29 16 text;
 #X text 15 552 see also:;
@@ -826,7 +826,7 @@
 #X connect 23 0 21 0;
 #X connect 24 0 3 0;
 #X restore 354 290 pd insert;
-#N canvas 888 354 766 438 text-and-data-structures 0;
+#N canvas 704 354 766 438 text-and-data-structures 0;
 #X floatatom 82 189 5 0 0 0 - - - 0;
 #X msg 47 158 0;
 #X msg 122 158 2;
