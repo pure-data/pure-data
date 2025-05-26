@@ -1165,13 +1165,14 @@ typedef struct _bag
     t_outlet *x_auxout;  /* for count and/or bang-on-already-present */
     t_float x_velo;
     t_bagelem *x_first;
-    int x_unique;
+    int x_unique;       /* true if limiting to one entry per value */
+    int x_reenter;      /* reentrancy protection */
 } t_bag;
 
 static void *bag_new(t_symbol *flag)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
-    x->x_velo = 0;
+    x->x_velo = x->x_reenter = 0;
     if (!strcmp(flag->s_name, "-u"))
         x->x_unique = 1;
     else
@@ -1198,6 +1199,11 @@ static t_bagelem *bag_newelem(t_float f)
 static void bag_float(t_bag *x, t_floatarg f)
 {
     t_bagelem *e2, *e3;
+    if (x->x_reenter)
+    {
+        pd_error(x, "bag: sorry, unable to reenter");
+        return;
+    }
     if (x->x_velo != 0)
     {
         if (!x->x_first)
@@ -1239,25 +1245,34 @@ static void bag_float(t_bag *x, t_floatarg f)
     }
 }
 
-static void bag_flush(t_bag *x)
+static void bag_bang(t_bag *x)
 {
     t_bagelem *bagelem;
-    while ((bagelem = x->x_first))
-    {
+    x->x_reenter = 1;
+    for (bagelem = x->x_first; bagelem; bagelem = bagelem->e_next)
         outlet_float(x->x_obj.ob_outlet, bagelem->e_value);
-        x->x_first = bagelem->e_next;
-        freebytes(bagelem, sizeof(*bagelem));
-    }
+    x->x_reenter = 0;
 }
 
 static void bag_clear(t_bag *x)
 {
     t_bagelem *bagelem;
+    if (x->x_reenter)
+    {
+        pd_error(x, "bag: sorry, unable to reenter");
+        return;
+    }
     while ((bagelem = x->x_first))
     {
         x->x_first = bagelem->e_next;
         freebytes(bagelem, sizeof(*bagelem));
     }
+}
+
+static void bag_flush(t_bag *x)
+{
+    bag_bang(x);
+    bag_clear(x);
 }
 
     /* output number of items matching pitch */
@@ -1276,6 +1291,7 @@ static void bag_setup(void)
     bag_class = class_new(gensym("bag"),
         (t_newmethod)bag_new, (t_method)bag_clear,
         sizeof(t_bag), 0, A_DEFSYM, 0);
+    class_addbang(bag_class, bag_bang);
     class_addfloat(bag_class, bag_float);
     class_addmethod(bag_class, (t_method)bag_flush, gensym("flush"), 0);
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
