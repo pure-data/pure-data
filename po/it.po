@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-26 13:19+0200\n"
-"PO-Revision-Date: 2024-07-08 17:19+0200\n"
-"Last-Translator: Alberto Zin <alberto.zin@gmail.com>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/it/>\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "lineare"
@@ -291,9 +291,8 @@ msgstr "Margine:"
 msgid "Y range: from"
 msgstr "Intervallo Y: da"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Oggetto"
+msgstr "Oggetto:"
 
 msgid "Data Properties"
 msgstr "Proprietà Dati"
@@ -1861,13 +1860,12 @@ msgstr "Stampa..."
 msgid "single precision"
 msgstr ""
 
-#, fuzzy
 msgid "double precision"
-msgstr "SPERIMENTALE doppia precisione (64 bit)"
+msgstr "doppia precisione"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats"
-msgstr "%dbit-floats SPERIMENTALE"
+msgstr "%dbit-floats"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
