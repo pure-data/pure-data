@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-26 13:19+0200\n"
-"PO-Revision-Date: 2025-05-20 14:41+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/pt_BR/>\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -289,9 +289,8 @@ msgstr "Margem:"
 msgid "Y range: from"
 msgstr "Registro de Y: de"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Objeto"
+msgstr "Objeto:"
 
 msgid "Data Properties"
 msgstr "Propriedades da Estrutura de Dados"
@@ -1848,15 +1847,14 @@ msgid "Print..."
 msgstr "Imprimir..."
 
 msgid "single precision"
-msgstr ""
+msgstr "precisão simples"
 
-#, fuzzy
 msgid "double precision"
-msgstr "EXPERIMENTAL precisão double (64bit)"
+msgstr "precisão double"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats"
-msgstr "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-floats"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
