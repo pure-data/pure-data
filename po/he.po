@@ -6,17 +6,17 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-05-26 13:19+0200\n"
-"PO-Revision-Date: 2024-11-12 11:00+0000\n"
+"PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "קווי"
@@ -286,9 +286,8 @@ msgstr "גבול:"
 msgid "Y range: from"
 msgstr "טווח Y: התחלה"
 
-#, fuzzy
 msgid "Object:"
-msgstr "עצם"
+msgstr "עצם:"
 
 msgid "Data Properties"
 msgstr "מאפייני נתונים"
@@ -831,16 +830,14 @@ msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
-#, fuzzy
 msgid "Search URLs:"
-msgstr "תוצאות חיפוש"
+msgstr "כתובות חיפוש:"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "%s נוסף לנתיבי החיפוש"
+msgstr "כתובות חיפוש נוספות"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "כתובות חיפוש מתחלפות"
 
 msgid "Create"
 msgstr "יצירה"
@@ -848,9 +845,8 @@ msgstr "יצירה"
 msgid "Check"
 msgstr "בדיקה"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "ההתקנה נכשלה!"
+msgstr "יעד התקנת Deken"
 
 msgid "Installation options:"
 msgstr "אפשרויות התקנה:"
@@ -923,16 +919,16 @@ msgstr "כל הקבצים"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "מתבצעת התקנה של ארכיטקטורת ‚%s’ שאינה נתמכת."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "הספרייה מוחלפת בארכיטקטורה לא תואמת!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
-msgstr ""
+msgstr "להחליף את הספרייה ‚%1$s’ בספרייה ‚%2$s’ עם גרסה שאינה תואמת למחשב שלך?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1170,7 +1166,7 @@ msgstr "[deken] התגלתה פלטפורמה: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "לא ניתן למצוא תפריט להוספת ‚%s’"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1838,15 +1834,14 @@ msgid "Print..."
 msgstr "הדפסה…"
 
 msgid "single precision"
-msgstr ""
+msgstr "דיוק יחיד"
 
-#, fuzzy
 msgid "double precision"
-msgstr "ניסיוני - דיוק כפול (64 סיביות)"
+msgstr "דיוק כפול"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats"
-msgstr "נק׳ צפה ב־%d סיביות - ניסיוני"
+msgstr "נק׳ צפה ב־%d סיביות"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1977,7 +1972,7 @@ msgid "Previous Window"
 msgstr "החלון הקודם"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "סגירת תת־חלונות"
 
 msgid "Parent Window"
 msgstr "חלון ההורה"
@@ -2072,9 +2067,8 @@ msgstr "שמע פעיל"
 msgid "Audio off"
 msgstr "שמע כבוי"
 
-#, fuzzy
 msgid "Find source"
-msgstr "איתור השגיאה האחרונה"
+msgstr "איתור מקור"
 
 msgid "Pd"
 msgstr "Pd"
