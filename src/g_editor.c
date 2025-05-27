@@ -2052,7 +2052,6 @@ void canvas_properties(t_gobj*z, t_glist*unused)
         textbuf = (char *)resizebytes(textbuf, textsize, textsize+1);
         textbuf[textsize] = 0;
     }
-    else post("not: %lx %d", x->gl_owner, canvas_isabstraction(x));
     pdgui_vmess("::dialog_canvas::set_text", "s", (textbuf ? textbuf : ""));
     if(isgraph) {
         x1=x->gl_x1;
