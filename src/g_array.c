@@ -514,6 +514,8 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 1);
             }
+                /* see garray_rename() */
+            garray_getarray(x)->a_valid = ++glist_valid;
             canvas_update_dsp();
         }
         size = fsize;
@@ -1246,6 +1248,10 @@ static void garray_rename(t_garray *x, t_symbol *s)
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
     pd_bind(&x->x_gobj.g_pd, x->x_realname = x->x_name = s);
     glist_redraw(x->x_glist);
+        /* Invalidate any existing gpointers into this array. This will
+        trigger an error message in table DSP objects that are currently
+        bound to this array, see dsparray_get_array() in d_array.c */
+    garray_getarray(x)->a_valid = ++glist_valid;
     if (wasused)
         canvas_update_dsp();
 }
