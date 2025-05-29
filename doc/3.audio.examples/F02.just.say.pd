@@ -2,8 +2,8 @@
 #X declare -stdpath ./;
 #X obj 128 402 cos~;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array env-output 44100 float 0;
-#X coords 0 1.02 44100 -1.02 200 130 1;
+#X array env-output 48000 float 0;
+#X coords 0 1.02 48000 -1.02 200 130 1;
 #X restore 416 91 graph;
 #X obj 71 296 -~ 0.5;
 #X obj 128 344 *~;

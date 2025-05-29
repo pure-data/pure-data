@@ -1,4 +1,4 @@
-#N canvas 453 60 682 628 12;
+#N canvas 939 47 682 628 12;
 #X declare -stdpath ./;
 #X obj 68 518 output~;
 #X obj 415 434 samplerate~;
@@ -24,9 +24,9 @@
 #X obj 421 557 array define \$0-tab 200000;
 #X text 28 58 None of this is needed if you have Pd compiled for double precision \, but in the case you have Pd compiled to work on 32-bit audio samples (a.k.a single precision) you do not have enough precision for use as indices into an array of more than about 32K samples. This is because the mantissa of a 32-bit floating point number has only 24 bits \, out of which you would be using 16 bits or more to address a sample more than 32K into the array \, so there would remain 8 or fewer bits to supply the fraction. In the most extreme situation possible \, the sample could contain a Nyquist frequency sinusoid and the output would then have only about 8 bits of accuracy!, f 89;
 #X msg 426 385 \; pd dsp 1 \, fast-forward 4000;
-#X text 28 181 You can use the "onset" inlet to [tabread4~] to get good accuracy reading longer arrays. The [tabread4~] object adds the index and the "main" (signal) inlet in double precision. So if \, for example \, the onset inlet could specify an integer exactly up to about 8 million (190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement., f 89;
 #X obj 308 386 sig~;
 #X obj 46 19 cnv 5 5 25 empty empty [tabread4~]\ Onset\ to\ Improve\ Accuracy\ in\ Single\ Precision 15 13 0 16 #dfdfdf #202020 0;
+#X text 28 181 You can use the "onset" inlet to [tabread4~] to get good accuracy reading longer arrays. The [tabread4~] object adds the index and the "main" (signal) inlet in double precision. So if \, for example \, the onset inlet could specify an integer exactly up to about 8 million (174 seconds at 48000 Hz) \, and the signal inlet could act as a displacement., f 89;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X connect 4 0 0 0;
@@ -35,12 +35,12 @@
 #X connect 8 0 9 0;
 #X connect 8 0 6 0;
 #X connect 9 0 4 0;
-#X connect 10 0 25 0;
+#X connect 10 0 24 0;
 #X connect 11 0 10 0;
 #X connect 12 0 8 0;
 #X connect 13 0 10 0;
 #X connect 20 0 1 0;
 #X connect 20 0 3 0;
 #X connect 20 0 23 0;
-#X connect 25 0 6 1;
-#X connect 25 0 9 1;
+#X connect 24 0 6 1;
+#X connect 24 0 9 1;

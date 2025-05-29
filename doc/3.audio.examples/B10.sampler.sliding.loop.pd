@@ -7,7 +7,7 @@
 #X obj 435 399 adc~ 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array graph19 22050 float 0;
-#X coords 0 44100 22049 0 200 130 1 0 0;
+#X coords 0 48000 22049 0 200 130 1 0 0;
 #X restore 536 65 graph;
 #X obj 270 367 line~;
 #X floatatom 270 291 8 0 0 0 - - - 0;
@@ -65,7 +65,7 @@
 #X restore 389 312 pd init;
 #X text 560 198 ----- 0.5 second -----;
 #X text 742 184 0;
-#X text 742 56 44100;
+#X text 742 56 48000;
 #X text 42 69 In this patch we can loop in any "window" of the input sample. The "read point" gives the starting point of the window and "chunk" is its size (both in milliseconds). Try \, for example \, frequency 4 \, chunk size 250 \, and vary the read point from -250 to 1000 \, listening to the result.;
 #X floatatom 198 241 8 0 0 0 - - - 0;
 #X connect 1 0 9 0;

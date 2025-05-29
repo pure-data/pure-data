@@ -15,7 +15,7 @@
 #X text 502 63 2;
 #X floatatom 291 308 5 0 10000 0 - \$0-freq - 0;
 #X floatatom 300 351 4 0 999 0 - \$0-q - 0;
-#X obj 69 327 filter-graph1 100 44100;
+#X obj 69 327 filter-graph1 100 48000;
 #X obj 282 381 bp~;
 #X text 100 364 index;
 #X text 93 298 <-- compute;
@@ -36,11 +36,11 @@
 #X text 55 139 [filter-graph1] takes as arguments the number of points to graph and the frequency range \, while [filter-graph2] takes as arguments the name of a table to hold the (frequency dependent) gain \, and another \, if specified \, for the phase., f 51;
 #X text 505 398 0;
 #X text 517 212 0 Hz;
-#X text 700 212 44100 Hz;
+#X text 700 212 48000 Hz;
 #X text 503 199 0;
 #X obj 82 419 filter-graph2 \$0-amp \$0-phase;
 #X text 517 417 0 Hz;
-#X text 700 417 44100 Hz;
+#X text 700 417 48000 Hz;
 #X obj 29 25 cnv 5 5 25 empty empty Measuring\ Filter\ Frequency/Phase\ Response 15 13 0 16 #dfdfdf #202020 0;
 #X text 55 225 You can edit this patch to replace [bp~] with any other filter you're curious about. Try \, for instance \, [vcf~] and [bob~]., f 51;
 #X connect 5 0 10 0;

@@ -220,8 +220,8 @@ static int wave_isheader(const char *buf, size_t size)
 
 static int wave_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
-        swap = (bigendian != sys_isbigendian()), formatfound = 1;
+    int nchannels = 1, bytespersample = 2, samplerate = DEFAULTSRATE,
+        bigendian = 0, swap = (bigendian != sys_isbigendian()), formatfound = 1;
     off_t headersize = WAVEHEADSIZE;
     size_t bytelimit = WAVEMAXBYTES;
     union

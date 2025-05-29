@@ -1,8 +1,8 @@
 #N canvas 616 48 576 708 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array adsr-output 44100 float 0;
-#X coords 0 1.02 44100 -0.02 200 130 1 0 0;
+#X array adsr-output 48000 float 0;
+#X coords 0 1.02 48000 -0.02 200 130 1 0 0;
 #X restore 269 429 graph;
 #X text 289 565 ------ 1 second ------;
 #X obj 64 199 r trigger;
