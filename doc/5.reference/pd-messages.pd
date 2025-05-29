@@ -40,8 +40,8 @@
 #X msg 176 268 5000;
 #X text 216 266 <-- time amount to render (5 seconds), f 19;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array fast-forward 441000 float 2;
-#X coords 0 1 441000 -1 250 120 1 0 0;
+#X array fast-forward 480000 float 2;
+#X coords 0 1 480000 -1 250 120 1 0 0;
 #X restore 411 209 graph;
 #X text 399 415 tells pd to 'fast-forward' and render the given amount of time in ms, f 37;
 #X obj 389 493 osc~ 0.25;

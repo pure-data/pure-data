@@ -1307,8 +1307,8 @@ describes how Pd treats audio signals.
 you have all the dynamic range you could want. However, depending on your
 hardware, audio I/O is usually limited to 16 or 24 bits. Inputs all appear
 between the values of -1 and 1; and output values will be clipped to that range.
-Pd assumes a sample rate of 44100 unless you override this (in Pd's command line
-or in the "audio setup" dialog).
+Pd runs at a sample rate of 48000 unless you override this (in Pd's command line
+or in an "audio setup" or "preferences" dialog window).
 
 <P>Pd can read or write samples to files either in 16-bit or 24-bit fixed point
 or in 32-bit floating point, in 'wave', 'aiff', 'caf', and 'next' formats via
@@ -1318,13 +1318,13 @@ and <b>[writesf~]</b> objects.
 <H4> <A href="#s2.5.2" id="s2.5.2">2.5.2. Tilde objects and audio connections</A> </H4>
 
 <P>Audio computations in Pd are carried out by "tilde objects" such as
-<b>[osc~]</b>, whose names conventionally end with a tilde character
-(which resembles a sinusoid, symbolizing their function in handling audio signals).
-Tilde objects can intercommunicate via audio connections. When audio computation is
-turned on or when you change the audio network while audio is on, Pd sorts all the
-tilde objects into a linear order for running; this linear list is then by default
-run down in blocks of 64 samples each at 44100 Hz. this means the audio network runs
-every 1.45 milliseconds.
+<b>[osc~]</b>, whose names conventionally end with a tilde character (which
+resembles a sinusoid, symbolizing their function in handling audio signals).
+Tilde objects can intercommunicate via audio connections. When audio computation
+is turned on or when you change the audio network while audio is on, Pd sorts
+all the tilde objects into a linear order for running; this linear list is then
+by default run down in blocks of 64 samples each at 48000 Hz.  The
+audio network then runs every 1-1/3 (about 1.33) milliseconds.
 
 <P>Inlets or outlets are configured in Pd either for messages or audio. You can't
 connect an audio outlet to a non-audio inlet. An object's leftmost inlet may accept
@@ -1486,7 +1486,7 @@ in milliseconds.
 
 <P>Audio and message processing are interleaved in Pd. Audio processing
 is scheduled every block (64 samples by default) at Pd's sample rate, which
-is 44100 Hz by default and results in a period of approximately 1.45
+is 48000 Hz by default and results in a period of approximately 1.33
 milliseconds. You may turn DSP computation on and off in a patch by sending
 the messages "dsp 1" and "dsp 0" to "pd".
 

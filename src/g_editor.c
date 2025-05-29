@@ -2052,7 +2052,6 @@ void canvas_properties(t_gobj*z, t_glist*unused)
         textbuf = (char *)resizebytes(textbuf, textsize, textsize+1);
         textbuf[textsize] = 0;
     }
-    else post("not: %lx %d", x->gl_owner, canvas_isabstraction(x));
     pdgui_vmess("::dialog_canvas::set_text", "s", (textbuf ? textbuf : ""));
     if(isgraph) {
         x1=x->gl_x1;
@@ -2089,13 +2088,33 @@ static void canvas_donecanvasdialog(t_glist *x,
 
     if (x->gl_owner && argc > 12)
     {
+        t_gobj *y =  &x->gl_obj.ob_g;
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
         binbuf_add(b, argc-12, argv+12);
         binbuf_gettext(b, &textbuf, &textsize);
+        binbuf_print(b);
         binbuf_free(b);
+        canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
+
+        glist_noselect(x->gl_owner);
+        canvas_undo_add(x->gl_owner, UNDO_ARRANGE, "arrange",
+            canvas_undo_set_arrange(x->gl_owner, y, 1));
+
+            /* store the current connections of the owner */
+        glist_noselect(x->gl_owner);
+        glist_select(x->gl_owner, y);
+        canvas_stowconnections(glist_getcanvas(x->gl_owner));
+
+            /* change the text (this will restore the connections we just stowed away) */
+        glist_noselect(x->gl_owner);
         text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
+
+        canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
+        glist_settexted(x->gl_owner, 0);
+
+        canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_END, "typing", 0);
         freebytes(textbuf, textsize);
         canvas_dirty(x->gl_owner, 1);
         return;

@@ -24,7 +24,7 @@
 #X text 265 193 ---- 44103 samples ----;
 #X obj 66 115 +~ 1;
 #X obj 66 63 phasor~ 1;
-#X obj 66 88 *~ 44100;
+#X obj 66 88 *~ 48000;
 #X obj 66 144 tabread4~ E03-table;
 #X obj 66 170 outlet~;
 #X text 112 235 one-second sample reader loop. You can replace this with an [adc~] if you want to go live., f 46;

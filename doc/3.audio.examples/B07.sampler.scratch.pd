@@ -26,7 +26,7 @@
 #X text 515 368 --- 44103 samples ---;
 #X obj 66 23 cnv 5 5 25 empty empty Scratch\ Machine 15 13 0 16 #dfdfdf #202020 0;
 #X text 490 517 message to read a soundfile into the table., f 27;
-#X msg 91 357 0 \, 44100 1000;
+#X msg 91 357 0 \, 48000 1000;
 #X obj 72 419 +~ 1;
 #X text 39 70 This patch implements a simples scratch machine with [tabread4~] \, which reads audio samples out of a floating-point array \, often called a "sample table." The input is the index of the sample to read. The output is calculated using 4-point cubic interpolation \, which is adequate for most purposes. Because of the interpolation scheme \, [tabread4~]'s input cannot be less than one or greater than the table length minus two., f 96;
 #X text 490 397 (one second plus three extra for 4-point interpolation), f 28;
