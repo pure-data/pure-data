@@ -67,7 +67,8 @@ typedef struct _soundfile
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
-    int sf_bytespersample; /**< bit rate, 2: 16 bit, 3: 24, 4: 32, 8: 64  */
+    int sf_bytespersample; /**< bit rate
+                                1: 8 bit, 2: 16 bit, 3: 24, 4: 32, 8: 64  */
     ssize_t sf_headersize; /**< header size in bytes, -1 for unknown size */
     int sf_bigendian;      /**< sample endianness, 1 : big or 0 : little  */
     int sf_bytesperframe;  /**< number of bytes per sample frame          */
@@ -132,6 +133,11 @@ typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
         returns 1 for big endian, 0 for little endian */
 typedef int (*t_soundfile_endiannessfn)(int endianness, int bytespersample);
 
+    /** retrns the type's preferred integer sample signedness based on the
+        requested bytes per sample (-1 unspecified)
+        returns 1 for signed, 0 for unsigned */
+typedef int (*t_soundfile_signednessfn)(int bytespersample);
+
     /* type implementation for a single file format */
 typedef struct _soundfile_type
 {
@@ -144,6 +150,7 @@ typedef struct _soundfile_type
     t_soundfile_hasextensionfn t_hasextensionfn; /**< must be non-NULL      */
     t_soundfile_addextensionfn t_addextensionfn; /**< must be non-NULL      */
     t_soundfile_endiannessfn t_endiannessfn;     /**< must be non-NULL      */
+    t_soundfile_signednessfn t_signednessfn;     /**< must be non-NULL      */
 } t_soundfile_type;
 
     /** add a new type implementation
