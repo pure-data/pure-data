@@ -1,6 +1,6 @@
 #N canvas 347 132 779 445 12;
 #X floatatom 63 262 5 0 0 0 - - - 0;
-#X obj 63 230 filter-graph1 100 44100;
+#X obj 63 230 filter-graph1 100 48000;
 #X floatatom 371 281 3 -99 99 0 - \$0-pole - 0;
 #X obj 276 301 rpole~;
 #X obj 371 304 / 100;
@@ -33,10 +33,10 @@
 #X text 471 31 2;
 #X text 474 366 0;
 #X text 486 180 0 Hz;
-#X text 669 180 44100 Hz;
+#X text 669 180 48000 Hz;
 #X text 472 167 0;
 #X text 486 385 0 Hz;
-#X text 669 385 44100 Hz;
+#X text 669 385 48000 Hz;
 #X obj 76 329 filter-graph2 \$0-amp \$0-phase;
 #X obj 98 33 cnv 5 5 25 empty empty All-Pass\ Filters 15 13 0 16 #dfdfdf #202020 0;
 #X connect 0 0 22 0;

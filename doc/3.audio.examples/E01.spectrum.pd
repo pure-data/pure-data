@@ -1,11 +1,15 @@
-#N canvas 444 62 733 767 12;
+#N canvas 716 72 733 767 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E01-signal 882 float 0;
+#A color 0;
+#A width 1;
 #X coords 0 6 882 -6 247 147 1 0 0;
 #X restore 424 49 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E01-spectrum 90 float 0;
+#A color 0;
+#A width 1;
 #X coords 0 4300 89 -40 255 130 1 0 0;
 #X restore 419 290 graph;
 #N canvas 310 109 526 363 fft 0;
@@ -112,10 +116,10 @@
 #X obj 198 260 tgl 19 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X text 223 259 <-- graph repeatedly;
 #X text 221 313 <-- graph once;
-#X text 38 493 This next series of patches demonstrates various kinds of modulation: AM \, waveshaping \, and FM. We will need a tool for graphing spectra which is introduced here. In this patch the signal to be analyzed is a simple sum of up to six partials of a fundamental frequency \, which is 172 Hz (close to F below middle C \, if your sample rate happens to be 44100 Hz). The fundamental is chosen to agree with the analysis patch ([pd FFT]) and is computed within [pd init]., f 95;
 #X text 38 572 The partials are the multipliers in the [*] objects and go from 0 through 5 \, where 0 means DC (or 0 Hz frequency) \, 1 is the fundamental \, and so on. The toggle switches allow you to turn them on and off separately. You have to press the "click to graph" button to update the two graphs or use the toggle button to graph repeatedly., f 95;
 #X obj 198 285 metro 500;
 #X obj 126 63 r fundamental;
+#X text 38 493 This next series of patches demonstrates various kinds of modulation: AM \, waveshaping \, and FM. We will need a tool for graphing spectra which is introduced here. In this patch the signal to be analyzed is a simple sum of up to six partials of a fundamental frequency \, which is 187.5 Hz (close to F# below middle C \, if your sample rate happens to be 48000 Hz). The fundamental is chosen to agree with the analysis patch ([pd FFT]) and is computed within [pd init]., f 95;
 #X connect 4 0 2 1;
 #X connect 4 0 6 0;
 #X connect 14 0 15 0;
@@ -151,6 +155,6 @@
 #X connect 54 0 45 0;
 #X connect 54 0 46 0;
 #X connect 54 0 47 0;
-#X connect 55 0 60 0;
-#X connect 60 0 4 0;
-#X connect 61 0 54 0;
+#X connect 55 0 59 0;
+#X connect 59 0 4 0;
+#X connect 60 0 54 0;

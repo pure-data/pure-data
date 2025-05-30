@@ -86,7 +86,7 @@
 #X text 22 417 -big \, -little (sample endianness \, default 'little'), f 69;
 #X msg 696 322 write \$1 array1 array2;
 #X msg 603 86 read -resize \$1 array1 array2;
-#X msg 623 112 read -maxsize 44100 -aiff ../sound/bell.aiff array1 array2;
+#X msg 623 112 read -maxsize 48000 -aiff ../sound/bell.aiff array1 array2;
 #X text 1040 110 set max size and extension;
 #X msg 668 168 read -ascii -resize table.txt array1;
 #X text 722 261 Write a stereo fie;
@@ -123,7 +123,7 @@
 #X msg 41 104 write -next -bytes 2 \$1 array1 array2;
 #X obj 99 319 savepanel;
 #X msg 99 355 write -nframes 3 -skip 2 -ascii \$1 array1;
-#X msg 69 212 write -skip 22050 -nframes 44100 \$1 array1;
+#X msg 69 212 write -skip 22050 -nframes 48000 \$1 array1;
 #X text 120 29 write a stereo file with a 2 byte resolution and in the 'next' format (so when typing into the savepannel dialog you should not set the file extension), f 47;
 #X text 130 273 write an ascii file ('.txt' extension is automatically added with the ascii flag), f 46;
 #X connect 2 0 10 0;

@@ -128,6 +128,7 @@ typedef unsigned __int64  uint64_t;
 
 EXTERN int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
+#define DEFAULTSRATE 48000      /* default audio sample rate */
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 

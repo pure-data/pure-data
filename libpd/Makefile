@@ -76,6 +76,9 @@ MORECFLAGS =
 # additional linker flags to override to add more (like "-g").
 MORELDFLAGS =
 
+# additional source files you might want
+MORESRC =
+
 CFLAGS = $(CPPFLAGS) $(PLATFORM_CFLAGS) $(CODECFLAGS) $(MORECFLAGS)
 LDFLAGS = $(PLATFORM_LDFLAGS) $(MORELDFLAGS)
 
@@ -101,7 +104,7 @@ EXTRASRC = bob~.c bonk~.c choice.c fiddle~.c loop~.c lrshift~.c pique.c \
 LIBPDSRC = s_libpdmidi.c x_libpdreceive.c z_hooks.c z_libpd.c \
            z_print_util.c z_queued.c z_ringbuffer.c
 
-SRC = $(PDSRC) $(EXTRASRC) $(LIBPDSRC)
+SRC = $(PDSRC) $(EXTRASRC) $(LIBPDSRC) $(MORESRC)
 
 OBJ = $(SRC:.c=.o)
 

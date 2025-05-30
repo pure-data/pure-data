@@ -67,7 +67,7 @@
 #X msg 373 504 1;
 #X text 359 536 hide/show window;
 #X text 403 504 * <-----------------;
-#X obj 92 596 pd~ -ninsig 2 -noutsig 2 -fifo 20 -sr 44100, f 24;
+#X obj 92 596 pd~ -ninsig 2 -noutsig 2 -fifo 20 -sr 48000, f 24;
 #X text 271 602 <-- see [pd reference] for creation flag's descriptions.;
 #X msg 126 434 0;
 #X msg 166 434 1;

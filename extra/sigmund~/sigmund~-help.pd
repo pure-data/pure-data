@@ -24,9 +24,9 @@
 #X msg 425 532 \; pd dsp \$1;
 #X text 457 500 DSP on/off;
 #X obj 425 495 ../../doc/5.reference/set-dsp-tgl;
-#X msg 30 287 clear \, list insignal 1024 0 44100;
-#X msg 50 319 clear \, list insignal 512 0 44100;
-#X msg 64 349 list insignal 512 512 44100;
+#X msg 30 287 clear \, list insignal 1024 0 48000;
+#X msg 50 319 clear \, list insignal 512 0 48000;
+#X msg 64 349 list insignal 512 512 48000;
 #X text 106 178 - optional debug flag (print debugging info if nonzero);
 #X text 22 212 Note that in this mode you can't have 'notes' output! Also note that if you're getting tracks output you may want to 'clear' the tracks before starting a new analysis from the beginning of the table., f 73;
 #X obj 49 501 cnv 19 198 138 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;

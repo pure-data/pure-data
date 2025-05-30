@@ -309,7 +309,7 @@
 #X obj 180 206 / 44.1;
 #X obj 180 231 s osc-speed-set;
 #X floatatom 161 292 8 0 0 0 - - - 0;
-#X text 346 146 Note that sample rate for this patch is fixed at 44100 So run Pd at this rate and load files with this same rate., f 36;
+#X text 346 146 Note that sample rate for this patch is fixed at 48000 So run Pd at this rate and load files with this same rate., f 36;
 #X floatatom 307 227 5 0 0 0 - - - 0;
 #X msg 242 472 clear;
 #X obj 153 326 t b f;
@@ -317,7 +317,7 @@
 #X obj 445 405 r window-size;
 #X msg 325 418 set 2 \$1 \, bang;
 #X msg 445 433 set 1 \$1 \, bang;
-#X obj 325 471 list store \$0-sample 2048 0 44100;
+#X obj 325 471 list store \$0-sample 2048 0 48000;
 #X connect 0 0 6 0;
 #X connect 1 0 3 1;
 #X connect 2 0 4 1;

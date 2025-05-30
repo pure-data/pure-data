@@ -98,7 +98,8 @@ proc pdtk_canvas_place_window {width height geometry} {
 #------------------------------------------------------------------------------#
 # canvas new/saveas
 
-proc pdtk_canvas_new {mytoplevel width height geometry editable bgcolor} {
+proc pdtk_canvas_new {mytoplevel width height geometry editable \
+        {bgcolor "white"} } {
     if { "" eq $geometry } {
         # no position set: this is a new window (rather than one loaded from file)
         # we set a flag here, so we can query (and report) the actual geometry,
