@@ -480,5 +480,5 @@ proc ::pdwindow::create_window_finalize {} {
 # this needs to happen *after* the main menu is created, otherwise the default Wish
 # menu is not replaced by the custom Apple menu on OSX
 proc ::pdwindow::configure_menubar {} {
-    .pdwindow configure -menu .menubar
+    .pdwindow configure -menu $::pdwindow_menubar
 }

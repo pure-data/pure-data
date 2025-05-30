@@ -159,7 +159,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     if { [winfo exists $::focused_window] } {
         wm transient $mytoplevel $::focused_window
     }
-    $mytoplevel configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "canvas"
 
