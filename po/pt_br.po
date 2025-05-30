@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
-"PO-Revision-Date: 2024-07-08 17:32+0200\n"
-"Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/pt_BR/>\n"
-"Language: pt_BR\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/pt_BR/>\n"
+"Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -288,6 +288,9 @@ msgstr "Margem:"
 
 msgid "Y range: from"
 msgstr "Registro de Y: de"
+
+msgid "Object:"
+msgstr "Objeto:"
 
 msgid "Data Properties"
 msgstr "Propriedades da Estrutura de Dados"
@@ -831,11 +834,25 @@ msgstr "Incapaz de remover arquivo 'stray' '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear arquivo baixado de '%s'"
 
+msgid "Search URLs:"
+msgstr "Procurar URLs:"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "%s adicionado aos caminhos de busca"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Criar"
 
 msgid "Check"
 msgstr "Checar"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Instalação falhou!"
 
 msgid "Installation options:"
 msgstr "Opções de instalação:"
@@ -905,6 +922,19 @@ msgstr "Arquivos TAR"
 
 msgid "All Files"
 msgstr "Todos os Arquivos"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1098,12 +1128,12 @@ msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido
 msgid "Installing to non-existent directory failed"
 msgstr "Falha ao instalar em um diretório não existente"
 
+msgid "Directory does not exist!"
+msgstr "Diretório não existe!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Incapaz de instalar em '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Diretório não existe!"
 
 msgid "Directory is not writable!"
 msgstr "Directório não é 'gravável'!"
@@ -1142,6 +1172,10 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] platforma detectada: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1812,6 +1846,16 @@ msgstr "(idioma padrão: %s)"
 msgid "Print..."
 msgstr "Imprimir..."
 
+msgid "single precision"
+msgstr "precisão simples"
+
+msgid "double precision"
+msgstr "precisão double"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit-floats"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ignorando '%s': não existe"
@@ -1940,6 +1984,9 @@ msgstr "Próxima Janela"
 msgid "Previous Window"
 msgstr "Janela Anterior"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "Janela Mãe"
 
@@ -2032,6 +2079,10 @@ msgstr "Áudio ligado"
 
 msgid "Audio off"
 msgstr "Áudio desligado"
+
+#, fuzzy
+msgid "Find source"
+msgstr "Encontrar Último Erro"
 
 msgid "Pd"
 msgstr "Pd"

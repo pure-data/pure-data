@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
-"PO-Revision-Date: 2024-11-12 11:00+0000\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/he/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "קווי"
@@ -285,6 +285,9 @@ msgstr "גבול:"
 
 msgid "Y range: from"
 msgstr "טווח Y: התחלה"
+
+msgid "Object:"
+msgstr "עצם:"
 
 msgid "Data Properties"
 msgstr "מאפייני נתונים"
@@ -827,11 +830,23 @@ msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
+msgid "Search URLs:"
+msgstr "כתובות חיפוש:"
+
+msgid "Additional search URLs"
+msgstr "כתובות חיפוש נוספות"
+
+msgid "Ephemeral search URLs"
+msgstr "כתובות חיפוש מתחלפות"
+
 msgid "Create"
 msgstr "יצירה"
 
 msgid "Check"
 msgstr "בדיקה"
+
+msgid "Deken Installation Target"
+msgstr "יעד התקנת Deken"
 
 msgid "Installation options:"
 msgstr "אפשרויות התקנה:"
@@ -901,6 +916,19 @@ msgstr "קובצי Tar"
 
 msgid "All Files"
 msgstr "כל הקבצים"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr "מתבצעת התקנה של ארכיטקטורת ‚%s’ שאינה נתמכת."
+
+msgid "Replacing library with incompatible architecture!"
+msgstr "הספרייה מוחלפת בארכיטקטורה לא תואמת!"
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr "להחליף את הספרייה ‚%1$s’ בספרייה ‚%2$s’ עם גרסה שאינה תואמת למחשב שלך?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1091,12 +1119,12 @@ msgstr "ההורדה של ‚%s’ מבוטלת: לא סופקה תיקיית ה
 msgid "Installing to non-existent directory failed"
 msgstr "התקנה לתיקייה שאינה קיימת נכשלה"
 
+msgid "Directory does not exist!"
+msgstr "התיקייה לא קיימת!"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "לא ניתן להתקין אל ‚%s’"
-
-msgid "Directory does not exist!"
-msgstr "התיקייה לא קיימת!"
 
 msgid "Directory is not writable!"
 msgstr "התיקייה נעולה לכתיבה!"
@@ -1135,6 +1163,10 @@ msgstr "[deken] deken-plugin.tcl (חיפוש חיצוניות של Pd) נטען 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] התגלתה פלטפורמה: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr "לא ניתן למצוא תפריט להוספת ‚%s’"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1801,6 +1833,16 @@ msgstr "(שפת ברירת המחדל: %s)"
 msgid "Print..."
 msgstr "הדפסה…"
 
+msgid "single precision"
+msgstr "דיוק יחיד"
+
+msgid "double precision"
+msgstr "דיוק כפול"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "נק׳ צפה ב־%d סיביות"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "התעלמות מ־‚%s’: לא קיים"
@@ -1929,6 +1971,9 @@ msgstr "החלון הבא"
 msgid "Previous Window"
 msgstr "החלון הקודם"
 
+msgid "Close subwindows"
+msgstr "סגירת תת־חלונות"
+
 msgid "Parent Window"
 msgstr "חלון ההורה"
 
@@ -2021,6 +2066,9 @@ msgstr "שמע פעיל"
 
 msgid "Audio off"
 msgstr "שמע כבוי"
+
+msgid "Find source"
+msgstr "איתור מקור"
 
 msgid "Pd"
 msgstr "Pd"

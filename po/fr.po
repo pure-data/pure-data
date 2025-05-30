@@ -10,17 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-08-28 18:42+0200\n"
-"PO-Revision-Date: 2024-07-08 17:18+0200\n"
-"Last-Translator: baptiste <baptiste.chatel@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/fr/>\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -290,6 +290,9 @@ msgstr "Marges :"
 
 msgid "Y range: from"
 msgstr "Intervalle Y : de"
+
+msgid "Object:"
+msgstr "Objet :"
 
 msgid "Data Properties"
 msgstr "Propriétés des données"
@@ -837,11 +840,23 @@ msgstr "Impossible d'effacer le ficher temporaire '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
+msgid "Search URLs:"
+msgstr "URL de recherche :"
+
+msgid "Additional search URLs"
+msgstr "URL de recherche supplémentaires"
+
+msgid "Ephemeral search URLs"
+msgstr "URL de recherche éphémères"
+
 msgid "Create"
 msgstr "Créer"
 
 msgid "Check"
 msgstr "Vérifier"
+
+msgid "Deken Installation Target"
+msgstr "Destination d'installation pour Deken"
 
 msgid "Installation options:"
 msgstr "Options d'installation :"
@@ -916,6 +931,21 @@ msgstr "Fichiers TAR"
 
 msgid "All Files"
 msgstr "Tous les fichiers"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr "Installation d'une architecture incompatible avec '%s'."
+
+msgid "Replacing library with incompatible architecture!"
+msgstr "Remplacement d'une bibliothèque par une architecture incompatible !"
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
+"Voulez-vous remplacer la bibliothèque '%1$s' dans '%2$s' par une version "
+"incompatible avec votre ordinateur ?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1121,12 +1151,12 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr "L'installation a échoué : le répertoire n'existe pas"
 
+msgid "Directory does not exist!"
+msgstr "Le répertoire n'existe pas !"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Échec de l'installation de %s"
-
-msgid "Directory does not exist!"
-msgstr "Le répertoire n'existe pas !"
 
 msgid "Directory is not writable!"
 msgstr "Le répertoire n'est pas accessible en écriture !"
@@ -1165,6 +1195,10 @@ msgstr "[deken] deken-plugin.tcl (recherche d'externals Pd) chargé depuis %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plateforme détectée : %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr "Impossible de trouver un menu où ajouter '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1834,6 +1868,16 @@ msgstr "(langue par défaut : %s)"
 msgid "Print..."
 msgstr "Imprimer..."
 
+msgid "single precision"
+msgstr "simple précision"
+
+msgid "double precision"
+msgstr "double précision"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit flottants"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "ignorer '%s' : n'existe pas"
@@ -1962,6 +2006,9 @@ msgstr "Fenêtre suivante"
 msgid "Previous Window"
 msgstr "Fenêtre précédente"
 
+msgid "Close subwindows"
+msgstr "Fermer les sous-patchs"
+
 msgid "Parent Window"
 msgstr "Fenêtre parente"
 
@@ -2054,6 +2101,9 @@ msgstr "Audio On"
 
 msgid "Audio off"
 msgstr "Audio Off"
+
+msgid "Find source"
+msgstr "Localiser la source"
 
 msgid "Pd"
 msgstr "Pd"

@@ -89,6 +89,7 @@ ALL_LINGUAS = \
 	pa pl pt_br pt_pt \
 	ru \
 	sq sv \
+	ta \
 	uk \
 	vi \
 	zh_tw \
