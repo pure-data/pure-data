@@ -76,6 +76,13 @@ static void random_bang(t_random *x)
     outlet_float(x->x_obj.ob_outlet, nval);
 }
 
+
+static void random_float(t_random *x, t_floatarg f)
+{
+    x->x_f = f;
+    random_bang(x);
+}
+
 static void random_seed(t_random *x, t_float f, t_float glob)
 {
     x->x_state = f;
@@ -86,6 +93,7 @@ static void random_setup(void)
     random_class = class_new(gensym("random"), (t_newmethod)random_new, 0,
         sizeof(t_random), 0, A_DEFFLOAT, 0);
     class_addbang(random_class, random_bang);
+    class_addfloat(random_class, random_float);
     class_addmethod(random_class, (t_method)random_seed,
         gensym("seed"), A_FLOAT, 0);
 }
