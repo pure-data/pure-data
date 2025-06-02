@@ -26,6 +26,52 @@ namespace eval ::pd_menus:: {
 
     # turn off tearoff menus globally
     option add *tearOff 0
+
+    array set keynames { \
+                             "Key" "" \
+                             "Mod1" "Cmd" \
+                             "Mod2" "Option" \
+                             "Command" "Cmd" \
+                             "Control" "Ctrl" \
+                             "ISO_Level3_Shift" "AltGr" \
+                             "Next" "Page Down" \
+                             "Prior" "Page Up" \
+                             "exclam" "!" \
+                             "quotedbl" "\"" \
+                             "numbersign" "#" \
+                             "dollar" "$" \
+                             "percent" "%" \
+                             "ampersand" "&" \
+                             "apostrophe" "'" \
+                             "parenleft" "(" \
+                             "parenright" ")" \
+                             "asterisk" "*" \
+                             "plus" "+" \
+                             "comma" "," \
+                             "minus" "-" \
+                             "period" "." \
+                             "slash" "/" \
+                             "colon" ":" \
+                             "semicolon" ";" \
+                             "less" "<" \
+                             "equal" "=" \
+                             "greater" ">" \
+                             "question" "?" \
+                             "at" "@" \
+                             "bracketleft" "[" \
+                             "backslash" "\\" \
+                             "bracketright" "]" \
+                             "asciicircum" "^" \
+                             "underscore" "_" \
+                             "grave" "`" \
+                             "braceleft" "{" \
+                             "bar" "|" \
+                             "braceright" "}" \
+                             "asciitilde" "~" \
+                             "section" "§" \
+                             "acute" "´" \
+                             "degree" "°" \
+    }
 }
 
 # ------------------------------------------------------------------------------
