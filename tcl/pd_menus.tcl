@@ -430,7 +430,7 @@ proc ::pd_menus::update_openrecent_menu {mymenu {write}} {
         incr i
     }
     $mymenu add separator
-    $mymenu add command -label [_ "Clear Menu"] \
+    $mymenu add command -label [_ "Clear Recent Files"] \
         -command {event generate [focus] <<File|ClearRecentFiles>>}
     # write to config file
     if {$write == true} { ::pd_guiprefs::write_recentfiles }
