@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2005-05-04 12:50+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1901,6 +1901,15 @@ msgstr "के बारे में (_A)"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "नया"
+
+msgid "Open"
+msgstr "खोलें"
+
+msgid "Open Recent"
+msgstr ""
+
 msgid "Save"
 msgstr "सहेजें"
 
@@ -1908,20 +1917,30 @@ msgstr "सहेजें"
 msgid "Save As..."
 msgstr "इस रूप में सहेजें"
 
+msgid "Quit"
+msgstr "बाहर"
+
+#, fuzzy
+msgid "Undo"
+msgstr "यूगांडा"
+
+#, fuzzy
+msgid "Redo"
+msgstr "लाल:"
+
+msgid "Cut"
+msgstr ""
+
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "रंग चुनें"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "तारीख़"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "नीचे"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "नीचे"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1933,37 +1952,20 @@ msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
-msgid "Edit Mode"
-msgstr "मोड"
+msgid "Zoom In"
+msgstr "नीचे"
 
 #, fuzzy
-msgid "Undo"
-msgstr "यूगांडा"
-
-#, fuzzy
-msgid "Redo"
-msgstr "लाल:"
-
-msgid "New"
-msgstr "नया"
-
-msgid "Open"
-msgstr "खोलें"
-
-#, fuzzy
-msgid "Message..."
-msgstr "संदेश"
-
-msgid "Cut"
-msgstr ""
-
-#, fuzzy
-msgid "Select All"
-msgstr "रंग चुनें"
+msgid "Zoom Out"
+msgstr "नीचे"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "सूची साफ करें"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "मोड"
 
 msgid "Object"
 msgstr ""
@@ -2044,6 +2046,10 @@ msgstr "इस tab/window बंद करें"
 msgid "Parent Window"
 msgstr "भेजें विंडो"
 
+#, fuzzy
+msgid "Message..."
+msgstr "संदेश"
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2099,12 +2105,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "प्राथमिकताएं..."
-
-msgid "Open Recent"
-msgstr ""
-
-msgid "Quit"
-msgstr "बाहर"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

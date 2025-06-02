@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2009-08-22 11:20+0100\n"
 "Last-Translator: Johannes Burström <johannes@ljud.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1892,25 +1892,41 @@ msgstr "Om Pd"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Ny"
+
+msgid "Open"
+msgstr "Öppna"
+
+msgid "Open Recent"
+msgstr "Öppna senaste"
+
 msgid "Save"
 msgstr "Spara"
 
 msgid "Save As..."
 msgstr "Spara som..."
 
+msgid "Quit"
+msgstr "Avsluta"
+
+msgid "Undo"
+msgstr "Ångra"
+
+msgid "Redo"
+msgstr "Gör om"
+
+msgid "Cut"
+msgstr "Klipp ut"
+
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Markera allt"
+
 msgid "Duplicate"
 msgstr "Duplicera"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Zooma"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Zooma"
 
 msgid "Tidy Up"
 msgstr "Städa upp"
@@ -1921,34 +1937,20 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Redigeringsläge"
-
-msgid "Undo"
-msgstr "Ångra"
-
-msgid "Redo"
-msgstr "Gör om"
-
-msgid "New"
-msgstr "Ny"
-
-msgid "Open"
-msgstr "Öppna"
+#, fuzzy
+msgid "Zoom In"
+msgstr "Zooma"
 
 #, fuzzy
-msgid "Message..."
-msgstr "Meddelande"
-
-msgid "Cut"
-msgstr "Klipp ut"
-
-msgid "Select All"
-msgstr "Markera allt"
+msgid "Zoom Out"
+msgstr "Zooma"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Rensa konsoll"
+
+msgid "Edit Mode"
+msgstr "Redigeringsläge"
 
 msgid "Object"
 msgstr "Objekt"
@@ -2024,6 +2026,10 @@ msgstr "Stäng fönstret?"
 msgid "Parent Window"
 msgstr "Föräldrafönster"
 
+#, fuzzy
+msgid "Message..."
+msgstr "Meddelande"
+
 msgid "HTML Manual..."
 msgstr "HTML-manual..."
 
@@ -2078,12 +2084,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Inställningar"
-
-msgid "Open Recent"
-msgstr "Öppna senaste"
-
-msgid "Quit"
-msgstr "Avsluta"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

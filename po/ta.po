@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.55.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-01-29 02:02+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1865,23 +1865,41 @@ msgstr "பி.டி பற்றி"
 msgid "couldn't read \"%s\" document"
 msgstr "\"%s\" ஆவணத்தைப் படிக்க முடியவில்லை"
 
+msgid "New"
+msgstr "புதிய"
+
+msgid "Open"
+msgstr "திற"
+
+msgid "Open Recent"
+msgstr "அண்மைக் கால திறப்பு"
+
 msgid "Save"
 msgstr "சேமி"
 
 msgid "Save As..."
 msgstr "சேமி ..."
 
+msgid "Quit"
+msgstr "வெளியேறு"
+
+msgid "Undo"
+msgstr "செயல்தவிர்"
+
+msgid "Redo"
+msgstr "மீண்டும்செய்"
+
+msgid "Cut"
+msgstr "வெட்டு"
+
 msgid "Paste Replace"
 msgstr "மாற்றவும்"
 
+msgid "Select All"
+msgstr "அனைத்தையும் தெரிவுசெய்"
+
 msgid "Duplicate"
 msgstr "நகல்"
-
-msgid "Zoom In"
-msgstr "பெரிதாக்கு"
-
-msgid "Zoom Out"
-msgstr "சிறிதாக்கு"
 
 msgid "Tidy Up"
 msgstr "நேர்த்தியாக"
@@ -1892,32 +1910,17 @@ msgstr "(Dis) தேர்வை இணைக்கவும்"
 msgid "Triggerize"
 msgstr "தூண்டுதல்"
 
-msgid "Edit Mode"
-msgstr "திருத்து பயன்முறை"
+msgid "Zoom In"
+msgstr "பெரிதாக்கு"
 
-msgid "Undo"
-msgstr "செயல்தவிர்"
-
-msgid "Redo"
-msgstr "மீண்டும்செய்"
-
-msgid "New"
-msgstr "புதிய"
-
-msgid "Open"
-msgstr "திற"
-
-msgid "Message..."
-msgstr "செய்தி ..."
-
-msgid "Cut"
-msgstr "வெட்டு"
-
-msgid "Select All"
-msgstr "அனைத்தையும் தெரிவுசெய்"
+msgid "Zoom Out"
+msgstr "சிறிதாக்கு"
 
 msgid "Clear Console"
 msgstr "தெளிவான கன்சோல்"
+
+msgid "Edit Mode"
+msgstr "திருத்து பயன்முறை"
 
 msgid "Object"
 msgstr "பொருள்"
@@ -1988,6 +1991,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "பெற்றோர் சாளரம்"
 
+msgid "Message..."
+msgstr "செய்தி ..."
+
 msgid "HTML Manual..."
 msgstr "உஉகுமொ கையேடு ..."
 
@@ -2039,12 +2045,6 @@ msgstr "அனைத்தையும் மறந்து விடுங்�
 
 msgid "Tabbed preferences"
 msgstr "தாவலாக்கப்பட்ட விருப்பத்தேர்வுகள்"
-
-msgid "Open Recent"
-msgstr "அண்மைக் கால திறப்பு"
-
-msgid "Quit"
-msgstr "வெளியேறு"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

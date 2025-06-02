@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -1902,6 +1902,15 @@ msgstr "_Giới thiệu"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Mới"
+
+msgid "Open"
+msgstr "Mở"
+
+msgid "Open Recent"
+msgstr ""
+
 msgid "Save"
 msgstr "Lưu"
 
@@ -1909,20 +1918,30 @@ msgstr "Lưu"
 msgid "Save As..."
 msgstr "Lưu là"
 
+msgid "Quit"
+msgstr "Thoát"
+
+#, fuzzy
+msgid "Undo"
+msgstr "U-gan-đa"
+
+#, fuzzy
+msgid "Redo"
+msgstr "Màu đỏ:"
+
+msgid "Cut"
+msgstr ""
+
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "Chọn màu"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "Ngày"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Đáy"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Đáy"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1934,37 +1953,20 @@ msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
-msgid "Edit Mode"
-msgstr "Chế độ"
+msgid "Zoom In"
+msgstr "Đáy"
 
 #, fuzzy
-msgid "Undo"
-msgstr "U-gan-đa"
-
-#, fuzzy
-msgid "Redo"
-msgstr "Màu đỏ:"
-
-msgid "New"
-msgstr "Mới"
-
-msgid "Open"
-msgstr "Mở"
-
-#, fuzzy
-msgid "Message..."
-msgstr "Tin nhẳn"
-
-msgid "Cut"
-msgstr ""
-
-#, fuzzy
-msgid "Select All"
-msgstr "Chọn màu"
+msgid "Zoom Out"
+msgstr "Đáy"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Xóa danh sách"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Chế độ"
 
 msgid "Object"
 msgstr ""
@@ -2045,6 +2047,10 @@ msgstr "Đóng thanh/cửa sổ này"
 msgid "Parent Window"
 msgstr "Cửa sô Gởi"
 
+#, fuzzy
+msgid "Message..."
+msgstr "Tin nhẳn"
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2100,12 +2106,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Sở thích..."
-
-msgid "Open Recent"
-msgstr ""
-
-msgid "Quit"
-msgstr "Thoát"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/en_CA/>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1859,23 +1859,41 @@ msgstr "About Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "couldn't read \"%s\" document"
 
+msgid "New"
+msgstr "New"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Open Recent"
+msgstr "Open Recent"
+
 msgid "Save"
 msgstr "Save"
 
 msgid "Save As..."
 msgstr "Save As..."
 
+msgid "Quit"
+msgstr "Quit"
+
+msgid "Undo"
+msgstr "Undo"
+
+msgid "Redo"
+msgstr "Redo"
+
+msgid "Cut"
+msgstr "Cut"
+
 msgid "Paste Replace"
 msgstr "Paste Replace"
 
+msgid "Select All"
+msgstr "Select All"
+
 msgid "Duplicate"
 msgstr "Duplicate"
-
-msgid "Zoom In"
-msgstr "Zoom In"
-
-msgid "Zoom Out"
-msgstr "Zoom Out"
 
 msgid "Tidy Up"
 msgstr "Tidy Up"
@@ -1886,32 +1904,17 @@ msgstr "(Dis)Connect Selection"
 msgid "Triggerize"
 msgstr "Triggerize"
 
-msgid "Edit Mode"
-msgstr "Edit Mode"
+msgid "Zoom In"
+msgstr "Zoom In"
 
-msgid "Undo"
-msgstr "Undo"
-
-msgid "Redo"
-msgstr "Redo"
-
-msgid "New"
-msgstr "New"
-
-msgid "Open"
-msgstr "Open"
-
-msgid "Message..."
-msgstr "Message..."
-
-msgid "Cut"
-msgstr "Cut"
-
-msgid "Select All"
-msgstr "Select All"
+msgid "Zoom Out"
+msgstr "Zoom Out"
 
 msgid "Clear Console"
 msgstr "Clear Console"
+
+msgid "Edit Mode"
+msgstr "Edit Mode"
 
 msgid "Object"
 msgstr "Object"
@@ -1982,6 +1985,9 @@ msgstr "Close subwindows"
 msgid "Parent Window"
 msgstr "Parent Window"
 
+msgid "Message..."
+msgstr "Message..."
+
 msgid "HTML Manual..."
 msgstr "HTML Manual..."
 
@@ -2033,12 +2039,6 @@ msgstr "Forget All..."
 
 msgid "Tabbed preferences"
 msgstr "Tabbed preferences"
-
-msgid "Open Recent"
-msgstr "Open Recent"
-
-msgid "Quit"
-msgstr "Quit"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

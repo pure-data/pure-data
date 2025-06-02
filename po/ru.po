@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:33+0200\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1897,23 +1897,41 @@ msgstr "О Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "невозможно прочитать документ \"%s\""
 
+msgid "New"
+msgstr "Новый"
+
+msgid "Open"
+msgstr "Открыть"
+
+msgid "Open Recent"
+msgstr "Открыть недавние"
+
 msgid "Save"
 msgstr "Сохранить"
 
 msgid "Save As..."
 msgstr "Сохранить Как..."
 
+msgid "Quit"
+msgstr "Выйти"
+
+msgid "Undo"
+msgstr "Отмена"
+
+msgid "Redo"
+msgstr "Повторить"
+
+msgid "Cut"
+msgstr "Вырезать"
+
 msgid "Paste Replace"
 msgstr "Вставка с заменой"
 
+msgid "Select All"
+msgstr "Выбрать все"
+
 msgid "Duplicate"
 msgstr "Сделать копию"
-
-msgid "Zoom In"
-msgstr "Масштаб: приблизить"
-
-msgid "Zoom Out"
-msgstr "Масштаб: удалиться"
 
 msgid "Tidy Up"
 msgstr "Привести в порядок"
@@ -1924,32 +1942,17 @@ msgstr "(От)соединить выбранные объекты"
 msgid "Triggerize"
 msgstr "Добавить выключатели"
 
-msgid "Edit Mode"
-msgstr "Режим редактирования"
+msgid "Zoom In"
+msgstr "Масштаб: приблизить"
 
-msgid "Undo"
-msgstr "Отмена"
-
-msgid "Redo"
-msgstr "Повторить"
-
-msgid "New"
-msgstr "Новый"
-
-msgid "Open"
-msgstr "Открыть"
-
-msgid "Message..."
-msgstr "Сообщение..."
-
-msgid "Cut"
-msgstr "Вырезать"
-
-msgid "Select All"
-msgstr "Выбрать все"
+msgid "Zoom Out"
+msgstr "Масштаб: удалиться"
 
 msgid "Clear Console"
 msgstr "Очистить консоль"
+
+msgid "Edit Mode"
+msgstr "Режим редактирования"
 
 msgid "Object"
 msgstr "Объект"
@@ -2020,6 +2023,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Родительское окно"
 
+msgid "Message..."
+msgstr "Сообщение..."
+
 msgid "HTML Manual..."
 msgstr "Учебник HTML..."
 
@@ -2073,12 +2079,6 @@ msgstr "Забыть все..."
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Настройки"
-
-msgid "Open Recent"
-msgstr "Открыть недавние"
-
-msgid "Quit"
-msgstr "Выйти"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

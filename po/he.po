@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/he/>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1854,23 +1854,41 @@ msgstr "על Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "לא ניתן לקרוא את המסמך „%s”"
 
+msgid "New"
+msgstr "חדש"
+
+msgid "Open"
+msgstr "פתיחה"
+
+msgid "Open Recent"
+msgstr "לפתוח אחרונים"
+
 msgid "Save"
 msgstr "שמירה"
 
 msgid "Save As..."
 msgstr "שמירה בשם…"
 
+msgid "Quit"
+msgstr "יציאה"
+
+msgid "Undo"
+msgstr "החזרה"
+
+msgid "Redo"
+msgstr "ביצוע חוזר"
+
+msgid "Cut"
+msgstr "גזירה"
+
 msgid "Paste Replace"
 msgstr "הדבקה והחלפה"
 
+msgid "Select All"
+msgstr "בחירה בהכול"
+
 msgid "Duplicate"
 msgstr "שכפול"
-
-msgid "Zoom In"
-msgstr "התקרבות"
-
-msgid "Zoom Out"
-msgstr "התרחקות"
 
 msgid "Tidy Up"
 msgstr "סדר וניקיון"
@@ -1881,32 +1899,17 @@ msgstr "חיבור/ניתוק בחירה"
 msgid "Triggerize"
 msgstr "הפיכה לגורם הפעלה"
 
-msgid "Edit Mode"
-msgstr "מצב עריכה"
+msgid "Zoom In"
+msgstr "התקרבות"
 
-msgid "Undo"
-msgstr "החזרה"
-
-msgid "Redo"
-msgstr "ביצוע חוזר"
-
-msgid "New"
-msgstr "חדש"
-
-msgid "Open"
-msgstr "פתיחה"
-
-msgid "Message..."
-msgstr "הודעה…"
-
-msgid "Cut"
-msgstr "גזירה"
-
-msgid "Select All"
-msgstr "בחירה בהכול"
+msgid "Zoom Out"
+msgstr "התרחקות"
 
 msgid "Clear Console"
 msgstr "מחיקת מסוף"
+
+msgid "Edit Mode"
+msgstr "מצב עריכה"
 
 msgid "Object"
 msgstr "עצם"
@@ -1977,6 +1980,9 @@ msgstr "סגירת תת־חלונות"
 msgid "Parent Window"
 msgstr "חלון ההורה"
 
+msgid "Message..."
+msgstr "הודעה…"
+
 msgid "HTML Manual..."
 msgstr "מדריך HTML…"
 
@@ -2028,12 +2034,6 @@ msgstr "שיכחה של הכול…"
 
 msgid "Tabbed preferences"
 msgstr "העדפות בלשוניות"
-
-msgid "Open Recent"
-msgstr "לפתוח אחרונים"
-
-msgid "Quit"
-msgstr "יציאה"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

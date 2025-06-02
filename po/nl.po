@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:21+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1878,23 +1878,41 @@ msgstr "Over Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "kon \"%s\" document niet lezen"
 
+msgid "New"
+msgstr "Nieuw"
+
+msgid "Open"
+msgstr "Openen"
+
+msgid "Open Recent"
+msgstr "Recentelijk geopend"
+
 msgid "Save"
 msgstr "Opslaan"
 
 msgid "Save As..."
 msgstr "Opslaan als..."
 
+msgid "Quit"
+msgstr "Afsluiten"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Redo"
+msgstr "Opnieuw doen"
+
+msgid "Cut"
+msgstr "Knippen"
+
 msgid "Paste Replace"
 msgstr "Plakken Vervangen"
 
+msgid "Select All"
+msgstr "Alles selecteren"
+
 msgid "Duplicate"
 msgstr "Dupliceren"
-
-msgid "Zoom In"
-msgstr "Inzoomen"
-
-msgid "Zoom Out"
-msgstr "Uitzoomen"
 
 msgid "Tidy Up"
 msgstr "Opruimen"
@@ -1905,32 +1923,17 @@ msgstr "Selectie (ont)verbinden"
 msgid "Triggerize"
 msgstr "Triggerize"
 
-msgid "Edit Mode"
-msgstr "Bewerkingsmodus"
+msgid "Zoom In"
+msgstr "Inzoomen"
 
-msgid "Undo"
-msgstr "Ongedaan maken"
-
-msgid "Redo"
-msgstr "Opnieuw doen"
-
-msgid "New"
-msgstr "Nieuw"
-
-msgid "Open"
-msgstr "Openen"
-
-msgid "Message..."
-msgstr "Bericht..."
-
-msgid "Cut"
-msgstr "Knippen"
-
-msgid "Select All"
-msgstr "Alles selecteren"
+msgid "Zoom Out"
+msgstr "Uitzoomen"
 
 msgid "Clear Console"
 msgstr "Console wissen"
+
+msgid "Edit Mode"
+msgstr "Bewerkingsmodus"
 
 msgid "Object"
 msgstr "Object"
@@ -2001,6 +2004,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Bovenliggend venster"
 
+msgid "Message..."
+msgstr "Bericht..."
+
 msgid "HTML Manual..."
 msgstr "HTML-handleiding..."
 
@@ -2053,12 +2059,6 @@ msgstr "Vergeet alles..."
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "audio"
-
-msgid "Open Recent"
-msgstr "Recentelijk geopend"
-
-msgid "Quit"
-msgstr "Afsluiten"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

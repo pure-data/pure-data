@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-08-28 18:54+0200\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1839,23 +1839,41 @@ msgstr "Pri Pd"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Nova"
+
+msgid "Open"
+msgstr "Malfermi"
+
+msgid "Open Recent"
+msgstr "Malfermi lastajn"
+
 msgid "Save"
 msgstr "Konservi"
 
 msgid "Save As..."
 msgstr "Konservi kiel…"
 
+msgid "Quit"
+msgstr "Forlasi"
+
+msgid "Undo"
+msgstr "Malfari"
+
+msgid "Redo"
+msgstr "Refari"
+
+msgid "Cut"
+msgstr "Eltondi"
+
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Elekti ĉiujn"
+
 msgid "Duplicate"
 msgstr ""
-
-msgid "Zoom In"
-msgstr "Enzomi"
-
-msgid "Zoom Out"
-msgstr "Elzomi"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1866,32 +1884,17 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Redakta reĝimo"
+msgid "Zoom In"
+msgstr "Enzomi"
 
-msgid "Undo"
-msgstr "Malfari"
-
-msgid "Redo"
-msgstr "Refari"
-
-msgid "New"
-msgstr "Nova"
-
-msgid "Open"
-msgstr "Malfermi"
-
-msgid "Message..."
-msgstr "Mesaĝo…"
-
-msgid "Cut"
-msgstr "Eltondi"
-
-msgid "Select All"
-msgstr "Elekti ĉiujn"
+msgid "Zoom Out"
+msgstr "Elzomi"
 
 msgid "Clear Console"
 msgstr "Forviŝi konzolon"
+
+msgid "Edit Mode"
+msgstr "Redakta reĝimo"
 
 msgid "Object"
 msgstr "Objekto"
@@ -1962,6 +1965,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Patra fenestro"
 
+msgid "Message..."
+msgstr "Mesaĝo…"
+
 msgid "HTML Manual..."
 msgstr "HTML-manlibro…"
 
@@ -2011,12 +2017,6 @@ msgstr "Forgesi ĉion…"
 
 msgid "Tabbed preferences"
 msgstr "Langetaj preferoj"
-
-msgid "Open Recent"
-msgstr "Malfermi lastajn"
-
-msgid "Quit"
-msgstr "Forlasi"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

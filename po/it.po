@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/it/>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1878,23 +1878,41 @@ msgstr "Informazioni su Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "impossibile leggere il documento \"%s\""
 
+msgid "New"
+msgstr "Nuovo File"
+
+msgid "Open"
+msgstr "Apri File..."
+
+msgid "Open Recent"
+msgstr "Apri recenti"
+
 msgid "Save"
 msgstr "Salva"
 
 msgid "Save As..."
 msgstr "Salva con nome..."
 
+msgid "Quit"
+msgstr "Esci"
+
+msgid "Undo"
+msgstr "Annulla"
+
+msgid "Redo"
+msgstr "Ripristina"
+
+msgid "Cut"
+msgstr "Taglia"
+
 msgid "Paste Replace"
 msgstr "Incolla e Sostituisci"
 
+msgid "Select All"
+msgstr "Seleziona tutto"
+
 msgid "Duplicate"
 msgstr "Duplica"
-
-msgid "Zoom In"
-msgstr "Zoom Avanti"
-
-msgid "Zoom Out"
-msgstr "Zoom Indietro"
 
 msgid "Tidy Up"
 msgstr "Allinea elementi"
@@ -1905,32 +1923,17 @@ msgstr "(Dis)Connetti Selezionati"
 msgid "Triggerize"
 msgstr "Triggerizza"
 
-msgid "Edit Mode"
-msgstr "Modalità modifica"
+msgid "Zoom In"
+msgstr "Zoom Avanti"
 
-msgid "Undo"
-msgstr "Annulla"
-
-msgid "Redo"
-msgstr "Ripristina"
-
-msgid "New"
-msgstr "Nuovo File"
-
-msgid "Open"
-msgstr "Apri File..."
-
-msgid "Message..."
-msgstr "Messaggio..."
-
-msgid "Cut"
-msgstr "Taglia"
-
-msgid "Select All"
-msgstr "Seleziona tutto"
+msgid "Zoom Out"
+msgstr "Zoom Indietro"
 
 msgid "Clear Console"
 msgstr "Pulisci console"
+
+msgid "Edit Mode"
+msgstr "Modalità modifica"
 
 msgid "Object"
 msgstr "Oggetto"
@@ -2002,6 +2005,9 @@ msgstr "Chiudere questa finestra??"
 msgid "Parent Window"
 msgstr "Finestra parent"
 
+msgid "Message..."
+msgstr "Messaggio..."
+
 msgid "HTML Manual..."
 msgstr "Manuale HTML..."
 
@@ -2053,12 +2059,6 @@ msgstr "Rimuovi Tutte..."
 
 msgid "Tabbed preferences"
 msgstr "Preferenze Tab"
-
-msgid "Open Recent"
-msgstr "Apri recenti"
-
-msgid "Quit"
-msgstr "Esci"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

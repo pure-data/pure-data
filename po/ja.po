@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:20+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1892,23 +1892,41 @@ msgstr "Pdについて"
 msgid "couldn't read \"%s\" document"
 msgstr "\"%s \"ドキュメントを読み込みできません"
 
+msgid "New"
+msgstr "新規"
+
+msgid "Open"
+msgstr "開く"
+
+msgid "Open Recent"
+msgstr "最近使った項目を開く"
+
 msgid "Save"
 msgstr "保存"
 
 msgid "Save As..."
 msgstr "名前を付けて保存..."
 
+msgid "Quit"
+msgstr "終了"
+
+msgid "Undo"
+msgstr "取り消し"
+
+msgid "Redo"
+msgstr "やり直し"
+
+msgid "Cut"
+msgstr "カット"
+
 msgid "Paste Replace"
 msgstr "ペーストして置き換え"
 
+msgid "Select All"
+msgstr "すべてを選択"
+
 msgid "Duplicate"
 msgstr "複製"
-
-msgid "Zoom In"
-msgstr "ズームイン"
-
-msgid "Zoom Out"
-msgstr "ズームアウト"
 
 msgid "Tidy Up"
 msgstr "整理する"
@@ -1919,32 +1937,17 @@ msgstr "選択箇所を接続・切断"
 msgid "Triggerize"
 msgstr "トリガーオブジェクトの自動生成"
 
-msgid "Edit Mode"
-msgstr "編集モード"
+msgid "Zoom In"
+msgstr "ズームイン"
 
-msgid "Undo"
-msgstr "取り消し"
-
-msgid "Redo"
-msgstr "やり直し"
-
-msgid "New"
-msgstr "新規"
-
-msgid "Open"
-msgstr "開く"
-
-msgid "Message..."
-msgstr "メッセージ..."
-
-msgid "Cut"
-msgstr "カット"
-
-msgid "Select All"
-msgstr "すべてを選択"
+msgid "Zoom Out"
+msgstr "ズームアウト"
 
 msgid "Clear Console"
 msgstr "コンソールクリア"
+
+msgid "Edit Mode"
+msgstr "編集モード"
 
 msgid "Object"
 msgstr "オブジェクト"
@@ -2015,6 +2018,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "親ウィンドウ"
 
+msgid "Message..."
+msgstr "メッセージ..."
+
 msgid "HTML Manual..."
 msgstr "HTMLマニュアル..."
 
@@ -2068,12 +2074,6 @@ msgstr "全てを忘れる..."
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "環境設定"
-
-msgid "Open Recent"
-msgstr "最近使った項目を開く"
-
-msgid "Quit"
-msgstr "終了"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
