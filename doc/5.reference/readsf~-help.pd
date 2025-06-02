@@ -64,6 +64,7 @@
 #X text 502 484 - number of channels - per channel buffer size in bytes, f 20;
 #X obj 93 479 readsf~ 2 262144, f 55;
 #X text 21 51 The [readsf~] object streams a soundfile from the hard disk. That is \, it doesn't fully load it into the memory \, but into a small local buffer first. The "open" message starts filling this buffer but a playback only starts when you send a "1" or "start" message. A "0" or "stop" message stops it. You may get audio dropouts if you "start" right after the "open" message \, so you should wait a few milliseconds between "open" and "start" to ensure that the buffer is filled in time. You can also increase the default buffer size as the 2nd argument \, but it shouldn't really be necessary. The 1st argument initializes the number of channel outputs., f 94;
+
 #X text 425 407 open at half a second into the file and start right away. Since it's mono \, we only have the left output., f 35;
 #X text 21 155 The 'wave' \, 'aiff' \, 'caf' \, and 'next' formats are supported \, although only uncompressed 2- or 3-byte integer ("pcm") and 4- or 8-byte floating point samples are accepted., f 94;
 #X text 240 438 print info on Pd window, f 12;
@@ -71,6 +72,7 @@
 #X obj 258 725 openpanel;
 #X text 21 189 HINT: The 'open' message can take "~" to define the home directory. Also note you can use [openpanel] to find sound files., f 94;
 #X text 40 643 ALSO NOTE: As of Pd 0.55-1 \, [readsf~]'s "open" method searches in the canvas environment \, just like [soundfiler] and similar objects. This means you can now use paths added via [declare] (which wasn't possible before)., f 89;
+
 #X obj 30 264 openpanel;
 #X msg 30 291 open \$1;
 #X obj 30 237 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;

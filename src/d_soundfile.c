@@ -21,9 +21,10 @@ objects use Posix-like threads. */
 #include <stdio.h>
 #include <pthread.h>
 
-/* Supported sample formats: LPCM (16 or 24 bit int) & 32 or 64 bit float */
+/* Supported sample formats: LPCM (8, 16, or 24 bit int) & 32 or 64 bit float */
 
-#define VALID_BYTESPERSAMPLE(b) ((b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
+#define VALID_BYTESPERSAMPLE(b) \
+    ((b) == 1 || (b) == 2 || (b) == 3 || (b) == 4 || (b) == 8)
 
 #define MAXSFCHANS 64
 
@@ -445,7 +446,22 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
     t_sample *fp;
     for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
-        if (sf->sf_bytespersample == 2)
+        if (sf->sf_bytespersample == 1)
+        {
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                        *fp = (t_sample)((int8_t)*sp2) / 127.5;
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                        *fp = ((t_sample)(*sp2) - 128) / 128.0;
+            }
+        }
+        else if (sf->sf_bytespersample == 2)
         {
             if (sf->sf_bigendian)
             {
@@ -545,7 +561,22 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
     size_t j;
     for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
-        if (sf->sf_bytespersample == 2)
+        if (sf->sf_bytespersample == 1)
+        {
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                        wp->w_float = (t_sample)((int8_t)*sp2) / 127.5;
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                        wp->w_float = ((t_sample)(*sp2) - 128) / 128.0;
+            }
+        }
+        else if (sf->sf_bytespersample == 2)
         {
             if (sf->sf_bigendian)
             {
@@ -709,7 +740,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
         else if (!strcmp(flag, "bytes"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
-                ((bytespersample = argv[1].a_w.w_float) < 2) ||
+                ((bytespersample = argv[1].a_w.w_float) < 1) ||
                     !VALID_BYTESPERSAMPLE(bytespersample))
                         return -1;
             argc -= 2; argv += 2;
@@ -858,7 +889,36 @@ static void soundfile_xferout_sample(const t_soundfile *sf, int nvecs,
     t_sample *fp;
     for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
-        if (sf->sf_bytespersample == 2)
+        if (sf->sf_bytespersample == 1)
+        {
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    int xx = (int)(*fp * 127.5);
+                    if (xx < -128)
+                        xx = 128;
+                    if (xx > 127)
+                        xx = 127;
+                    *sp2 = (int8_t)xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
+                    int xx = (int)((*fp * 128.0) + 128);
+                    if (xx < 0)
+                        xx = 0;
+                    if (xx > 255)
+                        xx = 255;
+                    *sp2 = (unsigned char)xx;
+                }
+            }
+        }
+        else if (sf->sf_bytespersample == 2)
         {
             t_sample ff = normalfactor * 32768.;
             if (sf->sf_bigendian)
@@ -997,7 +1057,37 @@ static void soundfile_xferout_words(const t_soundfile *sf, int nvecs,
     t_word *wp;
     for (i = 0, sp = buf; i < nchannels; i++, sp += sf->sf_bytespersample)
     {
-        if (sf->sf_bytespersample == 2)
+        if (sf->sf_bytespersample == 1)
+        {
+            if (sf->sf_type->t_signednessfn(sf->sf_bytespersample))
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+
+                    int xx = (int)(wp->w_float * 127.5);
+                    if (xx < -128)
+                        xx = 0;
+                    if (xx > 127)
+                        xx = 127;
+                    *sp2 = (int8_t)xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
+                    j < nframes; j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
+                    int xx = (int)((wp->w_float + 1.0) * 127.5);
+                    if (xx < 0)
+                        xx = 0;
+                    if (xx > 255)
+                        xx = 255;
+                    *sp2 = (unsigned char)xx;
+                }
+            }
+        }
+        else if (sf->sf_bytespersample == 2)
         {
             t_sample ff = normalfactor * 32768.;
             if (sf->sf_bigendian)
@@ -2338,7 +2428,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_sf.sf_headersize = (headersize > 0 ? headersize :
         (headersize == 0 ? -1 : 0));
     x->x_sf.sf_nchannels = (nchannels >= 1 ? nchannels : 1);
-    x->x_sf.sf_bytespersample = (bytespersample > 2 ? bytespersample : 2);
+    x->x_sf.sf_bytespersample = (bytespersample > 0 ? bytespersample : 2);
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
     if (type && x->x_sf.sf_headersize >= 0)
     {
@@ -2883,7 +2973,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         x->x_sf.sf_samplerate = x->x_insamplerate;
     else x->x_sf.sf_samplerate = sys_getsr();
     x->x_sf.sf_bytespersample =
-        (wa.wa_bytespersample > 2 ? wa.wa_bytespersample : 2);
+        (wa.wa_bytespersample > 0 ? wa.wa_bytespersample : 2);
     x->x_sf.sf_bigendian = wa.wa_bigendian;
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
     x->x_frameswritten = 0;
