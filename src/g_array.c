@@ -966,7 +966,7 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     }
     if (npoints == 0)
         npoints = 4096;  /* dunno what a good default would be... */
-    if (npoints != (1 << ilog2((int)npoints)))
+    if (npoints & (npoints - 1))
         post("%s: rounding to %d points", array->a_templatesym->s_name,
             (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
