@@ -72,7 +72,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all ${control}-Key k {menu_send %W connect_selection}
     bind_capslock all ${control}-Key n {menu_new}
     bind_capslock all ${control}-Key o {menu_open}
-    bind_capslock all ${control}-Key p {menu_print $::focused_window}
+    bind_capslock all ${control}-Key p {menu_print %W}
     bind_capslock all ${control}-Key r {menu_raise_pdwindow}
     bind_capslock all ${control}-Key s {menu_send %W menusave}
     bind_capslock all ${control}-Key t {menu_send %W triggerize}
