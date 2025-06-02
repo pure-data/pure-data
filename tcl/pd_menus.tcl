@@ -459,6 +459,7 @@ proc ::pd_menus::find_mapped_parent {parentlist} {
 # find the first parent patch that has a mapped window
 proc ::pd_menus::insert_into_menu {mymenu entry parent} {
     set insertat [$mymenu index end]
+    if { "${insertat}" eq "none" } { set insertat 0 }
     for {set i 0} {$i <= [$mymenu index end]} {incr i} {
         if {[$mymenu type $i] ne "command"} {continue}
         set currentcommand [$mymenu entrycget $i -command]
@@ -503,7 +504,9 @@ proc ::pd_menus::update_window_menu {} {
 
     set mymenu $::patch_menubar.window
     # find the last separator and delete everything after that
-    for {set i 0} {$i <= [$mymenu index end]} {incr i} {
+    set lastmenu [$mymenu index end]
+    if { "${lastmenu}" eq "none" } { set lastmenu 0 }
+    for {set i 0} {$i <= $lastmenu} {incr i} {
         if {[$mymenu type $i] eq "separator"} {
             set deleteat $i
         }
