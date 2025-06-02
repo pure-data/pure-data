@@ -23,6 +23,7 @@ dist_libpdtcl_DATA = \
     apple_events.tcl \
     dialog_array.tcl \
     dialog_audio.tcl \
+    dialog_bindings.tcl \
     dialog_canvas.tcl \
     dialog_data.tcl \
     dialog_find.tcl \
