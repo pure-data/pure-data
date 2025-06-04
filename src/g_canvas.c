@@ -880,7 +880,7 @@ void glist_menu_open(t_glist *x)
             gobj_vis(&x->gl_gobj, gl2, 0);
                 /* and blow away all rtexts in parent window -- we can do
                 this because rtexts that are still needed will be recreated
-                on demand by glist_findrtext() */
+                on demand by glist_getrtext() */
             if (gl2->gl_editor)
                 while (gl2->gl_editor->e_rtext)
                     rtext_free(gl2->gl_editor->e_rtext);
@@ -888,8 +888,11 @@ void glist_menu_open(t_glist *x)
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             x->gl_havewindow = 1;
-                    /* redraw ourself in parent window (blanked out this time) */
-            gobj_vis(&x->gl_gobj, gl2, 1);
+                    /* redraw entire parent window because new rtexts when
+                    they reappear need to recreate the texts with their new
+                    tags.  Also the GOP itseld will now appear as a blank
+                     rectangle.  */
+            canvas_redraw(gl2);
         }
     }
     canvas_vis(x, 1);
