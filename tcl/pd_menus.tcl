@@ -188,6 +188,8 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
         -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] 1}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
         -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] -1}
+    $mymenu add command -label [_ "Zoom Reset"]   -accelerator "$accelerator+0" \
+        -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::setzoom [tkcanvas_name $::focused_window] 0}
     $mymenu add  separator
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}

@@ -88,6 +88,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-minus>       {::pd_canvaszoom::stepzoom %W -1}
     bind all <$::modifier-Key-KP_Add>      {::pd_canvaszoom::stepzoom %W 1}
     bind all <$::modifier-Key-KP_Subtract> {::pd_canvaszoom::stepzoom %W -1}
+    bind all <$::modifier-Key-0>           {::pd_canvaszoom::setzoom %W 0}
+    bind all <$::modifier-Key-KP_0>        {::pd_canvaszoom::setzoom %W 0}
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
