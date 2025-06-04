@@ -7,6 +7,7 @@
 /* changes and additions for FFTW3 by Thomas Grill                      */
 
 #include "m_pd.h"
+#include "m_imp.h"
 #include <fftw3.h>
 
 int ilog2(int n);

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-10-23 01:02+0000\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.1\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 msgid "linear"
 msgstr "linier"
@@ -214,8 +214,8 @@ msgstr "Perangkat keluar"
 msgid "Use Multiple Devices"
 msgstr "Pakai Banyak Perangkat"
 
-msgid "audio system"
-msgstr "sistem audio"
+msgid "Audio System"
+msgstr "Sistem audio"
 
 msgid "Settings"
 msgstr "Pengaturan"
@@ -286,6 +286,9 @@ msgstr "Batas:"
 
 msgid "Y range: from"
 msgstr "Rentang Y: dari"
+
+msgid "Object:"
+msgstr ""
 
 msgid "Data Properties"
 msgstr "Properti Data"
@@ -456,7 +459,7 @@ msgid "Canvas"
 msgstr "Kanvas"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Persegi Panjang Tampak (pix)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -511,10 +514,10 @@ msgid "In Ports:"
 msgstr "Port Masuk:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "Port Keluaran:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "Sistem MIDI"
 
 msgid "MIDI Settings"
 msgstr "Pengaturan MIDI"
@@ -523,35 +526,34 @@ msgid "ALSA MIDI Settings"
 msgstr "Pengaturan ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Jalur pencarian Pd untuk objek, bantuan, audio, teks, dan file lainnya"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Gunakan lokasi standar"
 
 msgid "Verbose"
 msgstr "Bertele-tele"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Direktori Dokumen Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Jelajah"
 
 msgid "Reset"
-msgstr ""
+msgstr "Setel ulang"
 
 msgid "Disable"
-msgstr ""
+msgstr "Nonaktifkan"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Direktori Instalasi Eksternal"
 
 msgid "Clear"
-msgstr ""
+msgstr "Bersihkan"
 
-#, fuzzy
 msgid "path preferences"
-msgstr "Preferensi"
+msgstr "Lokasi preferensi"
 
 msgid "Choose Pd documents directory:"
 msgstr ""
@@ -567,23 +569,29 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Jendela Pd"
 
 msgid "Zoom New Windows"
 msgstr ""
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "pengaturan GUI dihapuskan"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
@@ -622,7 +630,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "pengaturan GUI dihapuskan"
 
 msgid "language"
@@ -647,13 +655,13 @@ msgstr "Ukuran blok:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -802,6 +810,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -824,10 +840,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Mencari ini di %s:"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -874,6 +903,17 @@ msgstr ""
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -887,14 +927,16 @@ msgid "All Files"
 msgstr ""
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
 msgstr ""
 
 #, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
 msgstr ""
 
 #, tcl-format
@@ -1081,14 +1123,14 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
+msgstr ""
+
+msgid "Directory does not exist!"
 msgstr ""
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
-
-msgid "Directory does not exist!"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1118,12 +1160,19 @@ msgstr ""
 msgid "Ignoring checksum mismatch"
 msgstr ""
 
+msgid "Ignoring checksum errors"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, tcl-format
@@ -1217,35 +1266,125 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
-msgid "Afrikaans"
+msgid "The language can only be set during startup."
 msgstr ""
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abkhazia"
+
+msgid "Avestan"
+msgstr "Avesta"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amharic"
+
+msgid "Aragonese"
+msgstr "Aragon"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Arab"
+
+msgid "Assamese"
+msgstr "Assam"
+
+msgid "Avaric"
+msgstr "Avar"
+
+msgid "Aymara"
+msgstr "Aymara"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azerbaijan"
+
+msgid "Bashkir"
+msgstr "Bashkir"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Belarusia"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgaria"
+
+msgid "Bihari"
+msgstr "Bihari"
+
+msgid "Bislama"
+msgstr "Bislama"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengali"
+
+msgid "Tibetan"
+msgstr "Tibet"
+
+msgid "Breton"
+msgstr "Breton"
+
+msgid "Bosnian"
+msgstr "Bosnia"
+
+msgid "Catalan"
+msgstr "Katala"
+
+msgid "Chechen"
+msgstr "Chechnya"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Korsika"
+
+msgid "Cree"
+msgstr "Cree"
+
+msgid "Czech"
+msgstr "Ceko"
+
+msgid "Chuvash"
+msgstr "Chuvash"
+
+msgid "Welsh"
+msgstr "Wales"
+
+msgid "Danish"
+msgstr "Denmark"
 
 msgid "German"
-msgstr ""
+msgstr "Jerman"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Jerman (Austria)"
+
+msgid "Dhivehi"
+msgstr "Divehi"
+
+msgid "Dzongkha"
+msgstr "Dzongkha"
+
+msgid "Ewe"
+msgstr "Ewe"
 
 msgid "Greek"
-msgstr ""
+msgstr "Yunani"
 
 msgid "English"
-msgstr ""
+msgstr "Inggris"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Inggris (Kanada)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1253,89 +1392,447 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Esperanto"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Spanyol"
+
+msgid "Estonian"
+msgstr "Estonia"
 
 msgid "Basque"
-msgstr ""
+msgstr "Basque"
+
+msgid "Persian"
+msgstr "Persia"
+
+msgid "Fulah"
+msgstr "Fulah"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Finlandia"
+
+msgid "Fijian"
+msgstr "Fiji"
+
+msgid "Faroese"
+msgstr "Faroe"
 
 msgid "French"
-msgstr ""
+msgstr "Prancis"
+
+msgid "Frisian"
+msgstr "Frisia"
+
+msgid "Irish"
+msgstr "Irlandia"
+
+msgid "Gaelic"
+msgstr "Gaelik"
+
+msgid "Galician"
+msgstr "Galisia"
+
+msgid "Guarani"
+msgstr "Guarani"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarat"
+
+msgid "Manx"
+msgstr "Manx"
+
+msgid "Hausa"
+msgstr "Hausa"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Ibrani"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
+
+msgid "Hiri Motu"
+msgstr "Hiri Motu"
+
+msgid "Croatian"
+msgstr "Kroasia"
+
+msgid "Haitian"
+msgstr "Haiti"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Hongaria"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Armenia"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Herero"
+
+msgid "Interlingua"
+msgstr "Interlingua"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonesia"
+
+msgid "Occidental"
+msgstr "Occidental"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Nuosu"
+
+msgid "Inupiaq"
+msgstr "Inupiaq"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "Islandia"
+
+msgid "Italian"
+msgstr "Italia"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Jepang"
+
+msgid "Javanese"
+msgstr "Jawa"
+
+msgid "Georgian"
+msgstr "Georgia"
+
+msgid "Kongo"
+msgstr "Kongo"
+
+msgid "Gikuyu"
+msgstr "Kikuyu"
+
+msgid "Kwanyama"
+msgstr "Kwanyama"
+
+msgid "Kazakh"
+msgstr "Kazakh"
+
+msgid "Greenlandic"
+msgstr "Kalaallisut"
+
+msgid "Kannada"
+msgstr "Kannada"
 
 msgid "Korean"
-msgstr ""
+msgstr "Korea"
+
+msgid "Kanuri"
+msgstr "Kanuri"
+
+msgid "Kashmiri"
+msgstr "Kashmiri"
+
+msgid "Kurdish"
+msgstr "Kurdi"
+
+msgid "Komi"
+msgstr "Komi"
+
+msgid "Cornish"
+msgstr "Kernowek"
+
+msgid "Kyrgyz"
+msgstr "Kirgiz"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Luxembourgish"
+msgstr "Luksemburg"
+
+msgid "Luganda"
+msgstr "Luganda"
+
+msgid "Limburgish"
+msgstr "Limburg"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Lao"
+
+msgid "Lithuanian"
+msgstr "Lithuania"
+
+msgid "Luba-Katanga"
+msgstr "Luba-Katanga"
+
+msgid "Latvian"
+msgstr "Latvia"
+
+msgid "Malagasy"
+msgstr "Malagasi"
+
+msgid "Marshallese"
+msgstr "Marshall"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Makedonia"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongolia"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Melayu"
+
+msgid "Maltese"
+msgstr "Maltese"
+
+msgid "Burmese"
+msgstr "Myanmar"
+
+msgid "Nauru"
+msgstr "Nauru"
+
+msgid "Nepali"
+msgstr "Nepal"
+
+msgid "Ndonga"
+msgstr "Ndonga"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Belanda"
+
+msgid "Norwegian Nynorsk"
+msgstr "Norwegia Nynorsk"
+
+msgid "Navaho"
+msgstr "Navaho"
+
+msgid "Nyanja"
+msgstr "Nyanja"
+
+msgid "Occitan"
+msgstr "Oksitan"
+
+msgid "Ojibwe"
+msgstr "Ojibwe"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Odia"
+
+msgid "Ossetian"
+msgstr "Ossetian"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Pali"
+
 msgid "Polish"
-msgstr ""
+msgstr "Polandia"
+
+msgid "Pashto"
+msgstr "Pashto"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugis"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Portugis (Brasil)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugis (Portugal)"
+
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Romawi"
+
+msgid "Rundi"
+msgstr "Rundi"
+
+msgid "Romanian"
+msgstr "Rumania"
 
 msgid "Russian"
-msgstr ""
+msgstr "Rusia"
+
+msgid "Kinyarwanda"
+msgstr "Kinyarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskrit"
+
+msgid "Sardinian"
+msgstr "Sardinian"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Sinhala"
+
+msgid "Slovak"
+msgstr "Slowakia"
+
+msgid "Slovenian"
+msgstr "Slovenia"
+
+msgid "Samoan"
+msgstr "Samoa"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somali"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Albania"
+
+msgid "Serbian"
+msgstr "Serbia"
+
+msgid "Swati"
+msgstr "Swati"
+
+msgid "Sundanese"
+msgstr "Sunda"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Swedia"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamil"
+
+msgid "Telugu"
+msgstr "Telugu"
+
+msgid "Tajik"
+msgstr "Tajik"
+
+msgid "Thai"
+msgstr "Thai"
+
+msgid "Tigrinya"
+msgstr "Tigrinya"
+
+msgid "Turkmen"
+msgstr "Turkmen"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tonga"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Turki"
+
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tatar"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahiti"
+
+msgid "Uyghur"
+msgstr "Uighur"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukraina"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Uzbek"
+
+msgid "Venda"
+msgstr "Venda"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnam"
+
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Walloon"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Yiddi"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
 
 msgid "Chinese (Traditional)"
+msgstr ""
+
+msgid "Zulu"
+msgstr "Zulu"
+
+msgid "(no translation)"
 msgstr ""
 
 #, tcl-format
 msgid "(default language: %s)"
 msgstr ""
 
-msgid "(no translation)"
+msgid "Print..."
+msgstr ""
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
 msgstr ""
 
 #, tcl-format
@@ -1353,9 +1850,6 @@ msgid "Save"
 msgstr ""
 
 msgid "Save As..."
-msgstr ""
-
-msgid "Print..."
 msgstr ""
 
 msgid "Paste Replace"
@@ -1469,6 +1963,9 @@ msgstr ""
 msgid "Previous Window"
 msgstr ""
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr ""
 
@@ -1561,10 +2058,7 @@ msgstr "Audio hidup"
 msgid "Audio off"
 msgstr "Audio mati"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
+msgid "Find source"
 msgstr ""
 
 msgid "Pd"

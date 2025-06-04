@@ -109,7 +109,9 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
-    post("opened alsa MIDI client %d in:%d out:%d", client, nmidiin, nmidiout);
+    if (sys_verbose)
+        post("opened alsa MIDI client %d in:%d out:%d",
+            client, nmidiin, nmidiout);
     sys_setalarm(0);
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &midiev);
     alsa_nmidiout = nmidiout;

@@ -17,6 +17,17 @@ away before the panel does... */
 
 /* --------------------- graphics responder  ---------------- */
 
+/* gfxstub_* are deprecated for externals and shouldn't be used directly within Pd.
+   however, the we do use them for implementing the high-level
+   communication pdgui_stub_*(), so we do not want the compiler to shout out loud.
+ */
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined _MSC_VER
+#pragma warning( disable : 4996 )
+#endif
+
+
 /* make one of these if you want to put up a dialog window but want to be
 protected from getting deleted and then having the dialog call you back.  In
 this design the calling object doesn't have to keep the address of the dialog

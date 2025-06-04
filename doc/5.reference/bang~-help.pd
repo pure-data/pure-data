@@ -26,7 +26,7 @@
 #X text 453 14 <= click;
 #X obj 8 322 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 32 61 After each DSP block cycle \, [bang~] outputs a bang (at the same logical time as the DSP cycle.) This is primarily useful for sampling the outputs of analysis algorithms., f 61;
-#X text 32 120 By default \, the block size is 64 samples at a 44100 sample rate (this about 1.45 ms.) You can change the sample rate in audio settings and the block size with the [block~] or [switch~] object. Note that the minimum block size [bang~] can handle is 64!, f 49;
+#X text 32 120 By default \, the block size is 64 samples at a 48000 sample rate (about 1.33 ms.) You can change the sample rate in audio settings and the block size with the [block~] or [switch~] object. Note that the minimum block size [bang~] can handle is 64!, f 49;
 #X text 239 232 [bang~] only outputs when DSP is on., f 20;
 #X obj 148 336 metro;
 #X obj 196 336 bang;

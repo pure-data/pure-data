@@ -23,6 +23,7 @@ namespace eval ::pdwindow:: {
     namespace export pdtk_pd_dio
     namespace export pdtk_pd_audio
 }
+array set ::pdwindow::missingobjects {}
 
 # TODO make the Pd window save its size and location between running
 
@@ -95,7 +96,7 @@ proc ::pdwindow::buffer_message {object_id level message} {
             incr keepitems
         }
         set logbuffer [lrange $logbuffer end-$keepitems end]
-        set msg [format [_ "dropped %d lines from the Pd window" ] [expr $_curlogbuffer - $count]]
+        set msg [_ "dropped %d lines from the Pd window" [expr $_curlogbuffer - $count]]
         set _curlogbuffer 0
         ::pdwindow::verbose 10 "$msg\n"
         ::pdwindow::filter_logbuffer
@@ -103,17 +104,30 @@ proc ::pdwindow::buffer_message {object_id level message} {
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
+    set win .pdwindow.text.internal
     set message [subst -nocommands -novariables $message]
-    if {$object_id eq ""} {
-        .pdwindow.text.internal insert end $message log$level
+    if {$object_id eq "" || $object_id eq "obj:(nil)"} {
+        $win insert end $message log$level
     } else {
-        .pdwindow.text.internal insert end $message [list log$level obj$object_id]
-        .pdwindow.text.internal tag bind obj$object_id <$::modifier-ButtonRelease-1> \
+        set tag obj$object_id
+        $win insert end $message [list log$level $tag]
+        $win tag bind $tag <$::modifier-ButtonRelease-1> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-Return> \
+        $win tag bind $tag <Key-Return> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text.internal tag bind obj$object_id <Key-KP_Enter> \
+        $win tag bind $tag <Key-KP_Enter> \
             "::pdwindow::select_by_id $object_id; break"
+        $win tag bind $tag <Enter> "::pdwindow::set_findinstance_cursor %W Control_L 1"
+        $win tag bind $tag <Leave> "::pdwindow::set_findinstance_cursor %W Control_L 0"
+        if {$::windowingsystem eq "aqua"} {
+            set rightbtn [expr {$::tcl_version < 9.0 ? 2 : 3}]
+            set rightclicks [list <$rightbtn> <Control-Button-1>]
+        } else {
+            set rightclicks {<3>}
+        }
+        foreach event $rightclicks {
+            $win tag bind $tag $event [list ::pdwindow::message_contextmenu %W %x %y $object_id]
+        }
     }
 }
 
@@ -138,7 +152,7 @@ proc ::pdwindow::filter_logbuffer {} {
 # this has 'args' to satisfy trace, but its not used
 proc ::pdwindow::filter_buffer_to_text {args} {
     set i [::pdwindow::filter_logbuffer]
-    set msg [format [_ "the Pd window filtered %d lines" ] $i ]
+    set msg [_ "the Pd window filtered %d lines" $i ]
     ::pdwindow::verbose 10 "$msg\n"
 }
 
@@ -209,7 +223,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt -parent .pdwindow]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
-    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
+    puts $f "$::PD_APPLICATION_NAME $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
     foreach logentry $logbuffer {
         foreach {object_id level message} $logentry {
@@ -302,16 +316,37 @@ proc ::pdwindow::set_findinstance_cursor {widget key state} {
     }
 }
 
+proc ::pdwindow::add_missingobject {obj name} {
+    set ::pdwindow::missingobjects($obj) $name
+}
+
+
+proc ::pdwindow::message_contextmenu {widget theX theY obj} {
+    set m .pdwindow.message_contextmenu
+    destroy $m
+    menu $m
+    $m add command -label [_ "Find source" ]  -command [list ::pdwindow::select_by_id $obj]
+    if { [info exists ::pdwindow::missingobjects($obj)] } {
+        set cmd [list ::deken::open_search_objects $::pdwindow::missingobjects($obj)]
+        $m add command -label [_ "Find externals" ]  -command $cmd
+    }
+
+    tk_popup $m [expr [winfo rootx $widget] + $theX] [expr [winfo rooty $widget] + $theY]
+}
+
 #--create the window-----------------------------------------------------------#
 proc ::pdwindow::update_title {w} {
+    # leave the next line for the translations
     set title [_ "Pd" ]
+    # override with the default application name
+    set title [_ "${::PD_APPLICATION_NAME}" ]
     set version "${::PD_MAJOR_VERSION}.${::PD_MINOR_VERSION}.${::PD_BUGFIX_VERSION}${::PD_TEST_VERSION}"
     set fulltitle "${title} ${version}"
     if { [info exists ::deken::platform(floatsize)] } {
         switch -- ${::deken::platform(floatsize)} {
             32 { set floatsize "" }
             64 { set floatsize [_ "EXPERIMENTAL double (64bit) precision"] }
-            default  { set floatsize [format [_ "%dbit-floats EXPERIMENTAL" ]  ${::deken::platform(floatsize)}]}
+            default  { set floatsize [_ "%dbit-floats EXPERIMENTAL" ${::deken::platform(floatsize)}]}
         }
         if { ${floatsize} ne "" } {
             set fulltitle "${fulltitle} - ${floatsize}"
@@ -410,9 +445,6 @@ proc ::pdwindow::create_window {} {
     raise .pdwindow
     focus .pdwindow.text
     pdwindow_bindings
-    # set cursor to show when clicking in 'findinstance' mode
-    bind .pdwindow <KeyPress> "+::pdwindow::set_findinstance_cursor %W %K %s"
-    bind .pdwindow <KeyRelease> "+::pdwindow::set_findinstance_cursor %W %K %s"
 
     # hack to make a good read-only text widget from http://wiki.tcl.tk/1152
     rename ::.pdwindow.text ::.pdwindow.text.internal
@@ -448,5 +480,5 @@ proc ::pdwindow::create_window_finalize {} {
 # this needs to happen *after* the main menu is created, otherwise the default Wish
 # menu is not replaced by the custom Apple menu on OSX
 proc ::pdwindow::configure_menubar {} {
-    .pdwindow configure -menu .menubar
+    .pdwindow configure -menu $::pdwindow_menubar
 }

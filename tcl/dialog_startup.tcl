@@ -2,6 +2,8 @@
 package provide dialog_startup 0.1
 
 package require scrollboxwindow
+package require msgcat
+package require pd_guiprefs
 
 namespace eval dialog_startup {
     namespace export pdtk_startup_dialog
@@ -61,14 +63,30 @@ proc ::dialog_startup::edit { current_library } {
 }
 
 proc ::dialog_startup::commit { new_startup } {
+    # i18n
     if {$::dialog_startup::language eq "default" } {
         set ::dialog_startup::language ""
     }
     set ::pd_i18n::language $::dialog_startup::language
     ::pd_guiprefs::write "gui_language" $::dialog_startup::language
+    if {$::platform eq "Darwin"} {
+        # on macOS, we also want to write the per-application language to the system settings
+        set key AppleLanguages
+        catch {
+            if {$::pd_i18n::language eq "" || $::pd_i18n::language eq "."} {
+                exec defaults delete $::pd_guiprefs::domain $key
+            } else {
+                exec defaults write $::pd_guiprefs::domain $key -array $::pd_i18n::language
+            }
+        }
+    }
+
+    # Pd32 vs Pd64
     if { $::dialog_startup::precision_binary != "" } {
         ::pd_guiprefs::write "pdcore_precision_binary" $::dialog_startup::precision_binary
     }
+
+    # libraries
     set ::startup_libraries $new_startup
     pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
 }
@@ -99,7 +117,7 @@ proc ::dialog_startup::fill_frame {frame} {
         [_ "Pd libraries to load on startup"]
 
     ## GUI options
-    labelframe $frame.guiframe -text [_ "GUI options" ]
+    labelframe $frame.guiframe -text [_ "GUI Options" ]
     set f $frame.guiframe
     pack $f -side top -anchor s -fill x -padx 2m -pady 5
 
@@ -219,7 +237,7 @@ proc ::dialog_startup::fill_frame {frame} {
     }
 
     # Startup options and flags
-    labelframe $frame.optionframe -text [_ "Startup options" ]
+    labelframe $frame.optionframe -text [_ "Startup Options" ]
     pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
 
     checkbutton $frame.optionframe.verbose  -anchor w \
@@ -234,7 +252,7 @@ proc ::dialog_startup::fill_frame {frame} {
         pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
     }
 
-    labelframe $frame.flags -text [_ "Startup flags:" ]
+    labelframe $frame.flags -text [_ "Startup Flags:" ]
     pack $frame.flags -side top -anchor s -fill x -padx 2m
     entry $frame.flags.entry -textvariable ::sys_flags
     pack $frame.flags.entry -side right -expand 1 -fill x

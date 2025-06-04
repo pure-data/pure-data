@@ -8,9 +8,9 @@
 #X msg 692 277 saturation \$1;
 #X msg 666 192 oversample \$1;
 #N canvas 635 124 513 424 test 0;
-#X obj 313 147 min~;
-#X obj 357 123 -~ 1;
-#X obj 357 148 *~ -50;
+#X obj 313 137 min~;
+#X obj 367 123 -~ 1;
+#X obj 367 148 *~ -50;
 #X floatatom 105 105 5 0 128 0 - - - 0;
 #X obj 233 52 mtof;
 #X text 301 49 test signal;
@@ -19,7 +19,7 @@
 #X obj 65 34 loadbang;
 #X msg 105 70 57;
 #X msg 65 102 1;
-#X obj 362 239 noise~;
+#X obj 362 244 noise~;
 #X obj 233 277 *~ 0;
 #X obj 313 244 *~ 0;
 #X obj 362 287 *~ 0;
@@ -29,12 +29,13 @@
 #X obj 105 127 vradio 19 1 0 3 empty empty empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
 #X obj 258 225 == 0;
 #X obj 105 207 == 2;
-#X obj 338 206 == 1;
-#X obj 313 172 -~ 0.5;
+#X obj 338 221 == 1;
+#X obj 313 162 -~ 0.5;
 #X text 127 126 Sine, f 8;
 #X text 127 146 Sawtooth;
 #X text 127 165 Noise, f 8;
 #X text 144 104 Pitch;
+#X obj 313 190 *~ 2;
 #X connect 0 0 22 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 1;
@@ -59,7 +60,8 @@
 #X connect 19 0 12 1;
 #X connect 20 0 14 1;
 #X connect 21 0 13 1;
-#X connect 22 0 13 0;
+#X connect 22 0 27 0;
+#X connect 27 0 13 0;
 #X coords 0 -1 1 1 93 90 2 100 100;
 #X restore 126 162 pd test;
 #X obj 33 15 bob~;

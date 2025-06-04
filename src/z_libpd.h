@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
- * Copyright (c) 2012-2019 libpd team
+ * Copyright (c) 2012-2021 libpd team
  *
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
@@ -78,6 +78,7 @@ EXTERN int libpd_process_short(const int ticks,
 /// process interleaved double samples from inBuffer -> libpd -> outBuffer
 /// buffer sizes are based on # of ticks and channels where:
 ///     size = ticks * libpd_blocksize() * (in/out)channels
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
 /// returns 0 on success
 EXTERN int libpd_process_double(const int ticks,
     const double *inBuffer, double *outBuffer);
@@ -103,6 +104,7 @@ EXTERN int libpd_process_raw_short(const short *inBuffer, short *outBuffer);
 /// copies buffer contents to/from libpd without striping
 /// buffer sizes are based on a single tick and # of channels where:
 ///     size = libpd_blocksize() * (in/out)channels
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
 /// returns 0 on success
 EXTERN int libpd_process_raw_double(const double *inBuffer, double *outBuffer);
 
@@ -127,7 +129,25 @@ EXTERN int libpd_read_array(float *dest, const char *name, int offset, int n);
 /// returns 0 on success or a negative error code if the array is non-existent
 /// or offset + n exceeds range of array
 EXTERN int libpd_write_array(const char *name, int offset,
-	const float *src, int n);
+    const float *src, int n);
+
+/// read n values from named src array and write into dest starting at an offset
+/// note: performs no bounds checking on dest
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+/// returns 0 on success or a negative error code if the array is non-existent
+/// or offset + n exceeds range of array
+/// double-precision variant of libpd_read_array()
+EXTERN int libpd_read_array_double(double *dest, const char *src,
+    int offset, int n);
+
+/// read n values from src and write into named dest array starting at an offset
+/// note: performs no bounds checking on src
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+/// returns 0 on success or a negative error code if the array is non-existent
+/// or offset + n exceeds range of array
+/// double-precision variant of libpd_write_array()
+EXTERN int libpd_write_array_double(const char *dest, int offset,
+    const double *src, int n);
 
 /* sending messages to pd */
 
@@ -140,6 +160,12 @@ EXTERN int libpd_bang(const char *recv);
 /// ex: libpd_float("foo", 1) will send a 1.0 to [s foo] on the next tick
 /// returns 0 on success or -1 if receiver name is non-existent
 EXTERN int libpd_float(const char *recv, float x);
+
+/// send a double to a destination receiver
+/// ex: libpd_double("foo", 1.1) will send a 1.1 to [s foo] on the next tick
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+/// returns 0 on success or -1 if receiver name is non-existent
+EXTERN int libpd_double(const char *recv, double x);
 
 /// send a symbol to a destination receiver
 /// ex: libpd_symbol("foo", "bar") will send "bar" to [s foo] on the next tick
@@ -156,6 +182,10 @@ EXTERN int libpd_start_message(int maxlen);
 
 /// add a float to the current message in progress
 EXTERN void libpd_add_float(float x);
+
+/// add a double to the current message in progress
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+EXTERN void libpd_add_double(double x);
 
 /// add a symbol to the current message in progress
 EXTERN void libpd_add_symbol(const char *symbol);
@@ -185,6 +215,10 @@ EXTERN int libpd_finish_message(const char *recv, const char *msg);
 /// write a float value to the given atom
 EXTERN void libpd_set_float(t_atom *a, float x);
 
+/// write a double value to the given atom
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+EXTERN void libpd_set_double(t_atom *v, double x);
+
 /// write a symbol value to the given atom
 EXTERN void libpd_set_symbol(t_atom *a, const char *symbol);
 
@@ -205,7 +239,7 @@ EXTERN int libpd_list(const char *recv, int argc, t_atom *argv);
 ///     libpd_set_float(v, 1);
 ///     libpd_message("pd", "dsp", 1, v);
 EXTERN int libpd_message(const char *recv, const char *msg,
-	int argc, t_atom *argv);
+    int argc, t_atom *argv);
 
 /* receiving messages from pd */
 
@@ -232,6 +266,10 @@ typedef void (*t_libpd_banghook)(const char *recv);
 
 /// float receive hook signature, recv is the source receiver name
 typedef void (*t_libpd_floathook)(const char *recv, float x);
+
+/// double receive hook signature, recv is the source receiver name
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+typedef void (*t_libpd_doublehook)(const char *recv, double x);
 
 /// symbol receive hook signature, recv is the source receiver name
 typedef void (*t_libpd_symbolhook)(const char *recv, const char *symbol);
@@ -282,8 +320,20 @@ EXTERN void libpd_set_printhook(const t_libpd_printhook hook);
 EXTERN void libpd_set_banghook(const t_libpd_banghook hook);
 
 /// set the float receiver hook, NULL by default
-/// note: do not call this while DSP is running
+/// note: avoid calling this while DSP is running
+/// note: you can either have a float receiver hook, or a double receiver
+///       hook (see below), but not both.
+///       calling this, will automatically unset the double receiver hook
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
 EXTERN void libpd_set_floathook(const t_libpd_floathook hook);
+
+/// set the double receiver hook, NULL by default
+/// note: avoid calling this while DSP is running
+/// note: you can either have a double receiver hook, or a float receiver
+///       hook (see above), but not both.
+///       calling this, will automatically unset the float receiver hook
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+EXTERN void libpd_set_doublehook(const t_libpd_doublehook hook);
 
 /// set the symbol receiver hook, NULL by default
 /// note: do not call this while DSP is running
@@ -309,8 +359,13 @@ EXTERN int libpd_is_symbol(t_atom *a);
 /// note: no NULL or type checks are performed
 EXTERN float libpd_get_float(t_atom *a);
 
+/// returns the double value of an atom
 /// note: no NULL or type checks are performed
-/// get symbol value of an atom
+/// note: only full-precision when compiled with PD_FLOATSIZE=64
+EXTERN double libpd_get_double(t_atom *a);
+
+/// returns the symbol value of an atom
+/// note: no NULL or type checks are performed
 EXTERN const char *libpd_get_symbol(t_atom *a);
 
 /// increment to the next atom in an atom vector
@@ -473,30 +528,41 @@ EXTERN int libpd_poll_gui(void);
 
 /* multiple instances */
 
-/// create a new pd instance
+/// create a new pd instance and set as current
+/// note: use this in place of pdinstance_new()
 /// returns new instance or NULL when libpd is not compiled with PDINSTANCE
 EXTERN t_pdinstance *libpd_new_instance(void);
 
 /// set the current pd instance
 /// subsequent libpd calls will affect this instance only
+/// note: use this in place of pd_setinstance()
 /// does nothing when libpd is not compiled with PDINSTANCE
-EXTERN void libpd_set_instance(t_pdinstance *p);
+EXTERN void libpd_set_instance(t_pdinstance *pd);
 
-/// free a pd instance
+/// free a pd instance and set main instance as current
+/// note: use this in place of pdinstance_free()
 /// does nothing when libpd is not compiled with PDINSTANCE
-EXTERN void libpd_free_instance(t_pdinstance *p);
+EXTERN void libpd_free_instance(t_pdinstance *pd);
 
 /// get the current pd instance
 EXTERN t_pdinstance *libpd_this_instance(void);
 
-/// get a pd instance by index
-/// returns NULL if index is out of bounds or "this" instance when libpd is not
-/// compiled with PDINSTANCE
-EXTERN t_pdinstance *libpd_get_instance(int index);
+/// get the main pd instance, always valid
+EXTERN t_pdinstance *libpd_main_instance(void);
 
-/// get the number of pd instances
+/// get the number of pd instances, including the main instance
 /// returns number or 1 when libpd is not compiled with PDINSTANCE
 EXTERN int libpd_num_instances(void);
+
+/// per-instance data free hook signature
+typedef void (*t_libpd_freehook)(void *data);
+
+/// set per-instance user data and optional free hook
+/// note: if non-NULL, freehook is called by libpd_free_instance()
+EXTERN void libpd_set_instancedata(void *data, t_libpd_freehook freehook);
+
+/// get per-instance user data
+EXTERN void* libpd_get_instancedata(void);
 
 /* log level */
 

@@ -926,10 +926,11 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     sprintf(tag, "%pOUT%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_snd_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
+        pdgui_vmess(0, "crr iiii rs rs rS",
             canvas, "create", "rectangle",
             xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
         /* keep label above outlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -939,10 +940,11 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     sprintf(tag, "%pIN%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_rcv_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
+        pdgui_vmess(0, "crr iiii rs rs rS",
             canvas, "create", "rectangle",
             xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
         /* keep label above inlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);

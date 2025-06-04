@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<HEAD>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual - Chapter 4: Externals</TITLE>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" href="favicon.ico">
+</HEAD>
+<BODY>
+
+<div class="nav nav-top">
+    <div class="nav-back"><A href="chapter3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="../index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter5.htm">Chapter 5: Current status &gt;</A></div>
+</div>
+<div id=corpus>
+
+<IMG id="logo" src="icon.png" ALT="pd icon">
+
+<H2>Chapter 4: Externals</H2>
+
+<p> This chapter explains what are external objects and libraries. It also
+describes everything on how to install and load them in Pure Data.
+
+<P>Pure Data, by intent and design, has a lightweight and portable nature.
+Most likely you'll need or want to install externals to enhance Pd's
+capabilities. Luckily, Pd offers a wide range of external packages by
+third party developers that enhance its capabilities. Most of these are
+primarily focused on audio and control processing, like "Ceammc", "Cyclone",
+"ELSE", "FFTease", "Flucoma", "IEMlib", "Pmpd", "TimbreID", "Zexy", and
+many more. The "vstplugin~" external allows you to run VST plugins inside Pd.
+External libraries for graphical processing include Mark Dank's "GEM" and Zack
+Lee's "Ofelia", which allows you to use openFrameworks and the Lua programming
+language within Pd for creating audiovisual artwork or multimedia applications
+such as games.
+
+<p> You can write your own external objects that you and others can use in
+their Pd applications in C or (if you're smart and brave) in C++ or FORTRAN.
+In the "6.externs" subdirectory of the 'doc' folder you can find simple
+examples of externals with their source code and test patches. This is also
+accessible via the browser window.
+
+<p>There’s also an excellent guide to writing externals at
+<a href="https://github.com/pure-data/externals-howto">
+https://github.com/pure-data/externals-howto</a>, written
+by IOhannes zmölnig . Check also the pd-lib-builder project
+(a helper makefile for Pure Data external libraries by Katja
+Vetter) at <a href="http://github.com/pure-data/pd-lib-builder">
+http://github.com/pure-data/pd-lib-builder</a>.
+
+<H3> <A href="#s4.1" id="s4.1"> 4.1 External Objects & Libraries </A> </H3>
+
+<p> We start this section by defining what are internals and externals.
+The main Pd distribution (a.k.a. “Pd Vanilla”) actually comes with both
+internals and externals.
+
+<H4> <A href="#s4.1.1" id="s4.1.1"> 4.1.1 Vanilla objects, internals & externals </A> </H4>
+
+<p> Internal objects come as part of the Pd binary, whereas external objects
+are separate from it. Pd Vanilla also comes with a few “extra” objects that
+are not part of its binary. Therefore, the set of “vanilla objects” (the
+built-in objects in Pd) include internals and externals. Nonetheless,
+“externals” mostly refer objects not available in the Pd Vanilla distribution,
+that you need to download and install them properly so they can be loaded into
+Pd patches. Some other flavors of Pd usually come with pre installed externals.
+
+<p> To get a full list of all objects in Pd Vanilla, go to the <b>Help menu</b> and
+then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
+patch’s window and select “help” - this loads the help-intro.pd file that was already
+shown in <a href="chapter1.htm">Chapter 1: Introduction</a> and reproduced below.
+
+<figure>
+    <IMG src="1.2.3.png" ALT="list of objects">
+    <figcaption><u>Fig. 1.2.3</u> The "help-intro' patch with a list of all internal objects</figcaption>
+</figure>
+
+
+<p> The set of externals that come with Pd Vanilla is available in the ‘extra’ library
+and is located in a folder named “extra” inside the Pd application. These appear at the
+very end of the “help-intro.pd” and can also be viewed in the "Browser" menu entry in
+the <b>Help menu</b>. See figure below, which shows how the browser looks in a fresh
+install of Pd and lists the objects in the extra folder.
+
+<figure>
+    <IMG src="4.1.1.png" ALT="browser window">
+    <figcaption><u>Fig. 4.1.1</u> The browser window</figcaption>
+</figure>
+
+<H4> <A href="#s4.1.2" id="s4.1.2"> 4.1.2. Types of external objects </A> </H4>
+
+<p> An object in Pd can be either a patch file (an abstraction) or a
+compiled binary. Nonetheless, a binary can contain only one or several
+external objects, as discussed below.
+
+<H5> <A href="#s4.1.2.1" id="s4.1.2.1"> 4.1.2.1. Compiled objects</A> </H5>
+
+<p> Compiled objects are binaries compiled from code (like C or C++).
+They have to be compiled to match your Pd application. Pd is made available for
+different Operating Systems, namely Linux, macOS and Windows. Moreover, it is
+available for different CPU architectures and numerical precision (32-bit or 64-bit
+floats aka "single-precision floating point numbers" or "double-precision floating
+point numbers" respectively "single" or "double").
+
+<p>In <A href="chapter3.htm">Chapter 3: Installing and configuring Pd</A> you can see
+how to download different Pd applications. Most commonly, you'll have Pd installed
+as a 64-bit application, which corresponds to most recent systems.
+
+<p>A Pd application compiled for 32-bit systems is mostly suited to run old externals
+that were not yet compiled for 64-bit systems. Most relevant and maintained externals
+are provided for 64-bit systems though; but of course, there can be cases where one is
+running Pd on an (old) system that only supports 32-bit applications.
+
+<p>Also, at this point, Pure Data does not officially support double-precision numbers.
+You can download <b>Pd64</b> beta releases or compile them yourself though (for
+compilation instructions, see <A href="chapter6.htm">Chapter 6: Building Pd from source</A>).
+Note that the numerical resolution of Pd and Pd64 here must not be confused with the
+register size of the system it's running on.
+
+<p>The Pd64 application requires specially compiled externals. As this is a recent
+development and not yet fully supported, only a few libraries are currently available.
+
+<p>You can have externals for different operating systems, architectures, and even
+for single- and double-precision numbers (i.e., for Pd and Pd64) in the same folder with
+different file extensions. Refer to the table below for common combinations:
+
+<figure>
+<table class="center">
+<thead>
+<tr>
+<th>OS</th>
+<th>CPU-architecture</th>
+<th>Pd / Pd64</th>
+<th class="left">extension</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux </td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.pd_linux</code>  </td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_i386</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-i386-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-i386-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_amd64</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-amd64-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-amd64-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;</td>
+<td>arm (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_arm</code> </td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-arm-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-arm-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>arm64/aarch64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.l_arm64</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.linux-arm64-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.linux-arm64-64.so</code></td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>macOS </td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.pd_darwin</code> </td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>fat (multiple archs)</td>
+<td>Pd</td>
+<td class="left"><code>.d_fat</code> </td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-fat-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-fat-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_i386</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-i386-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-i386-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_amd64</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-amd64-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-amd64-64.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>arm64/aarch64 (<em>Apple Silicon</em>; 64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.d_arm64</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.darwin-arm64-32.so</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.darwin-arm64-64.so</code></td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>Windows</td>
+<td><em>unspecified</em> (any architecture)</td>
+<td>Pd</td>
+<td class="left"><code>.dll</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>i386 (32-bit)   </td>
+<td>Pd</td>
+<td class="left"><code>.m_i386</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.windows-i386-32.dll</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.windows-i386-64.dll</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>amd64/x86_64 (64-bit)</td>
+<td>Pd</td>
+<td class="left"><code>.m_amd64</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd</td>
+<td class="left"><code>.windows-amd64-32.dll</code></td>
+</tr>
+<tr>
+<td>&lsquo;&rsquo;</td>
+<td>&lsquo;&rsquo;</td>
+<td>Pd64</td>
+<td class="left"><code>.windows-amd64-64.dll</code></td>
+</tr>
+</tbody>
+</table>
+<figcaption><u>Table 4.1</u>File extensions for different operating systems, architectures and numerical precision</figcaption>
+</figure>
+
+<H5> <A href="#s4.1.2.2" id="s4.1.2.2"> 4.1.2.2. Abstractions</A> </H5>
+
+<p>You can have a Pd patch behave like an object by loading it into other
+patches - these are usually called “abstractions” (see
+<A href="chapter2.htm#s2.8.1">2.8.1. Abstractions</A>). Note that some of the
+externals in “extra” are abstractions (for instance, <b>[rev1~]</b> or <b>[hilbert~]</b>).
+Like any other Pd patch, an abstraction may contain any kind of objects
+(internals, compiled externals and even other abstractions).
+
+<H4> <A href="#s4.1.3" id="s4.1.3"> 4.1.3. External libraries </A> </H4>
+
+<p>In practical terms, an external library is a collection of external objects
+of any kind (abstractions or compiled objects). But when it comes to compiled
+objects, a library can provide several objects as a <b>single binary pack</b>
+or as a <b>set of separate binaries</b> (where each object has its own binary).
+
+<p>The “classic” library format is a single binary pack (with two or more
+externals), but splitting into separate binaries became a very common
+practice. A single external binary (not part of any set of objects) is still,
+technically, a library with just one object. But again, the prevailing idea is
+that a library is just a set of objects.
+
+<p> It’s important to note that there are differences on how externals are
+loaded depending if they’re a single binary pack or a set of separate binaries
+(as explained in the next subsections).
+
+<H4> <A href="#s4.1.4" id="s4.1.4"> 4.1.4. Types of external libraries </A> </H4>
+
+<p>Libraries can come in all sorts of ways; as only a collection of
+abstractions (like "list-abs"), only compiled objects, or both. It can even mix
+compiled externals both as a <b>set of separate binaries</b> and a <b>single binary
+pack</b>. Basically, any combination is possible for a set of externals.
+
+<p>One example that combines all external options is <i>Cyclone</i> (since version 0.3),
+which provides most of its objects as a <b>set of separate binaries</b>, but also includes
+a small collection of 12 objects as a <b>single binary pack</b> plus a couple of abstractions.
+
+<H4> <A href="#s4.1.5" id="s4.1.5"> 4.1.5. Wrapping up section 4.1</A> </H4>
+
+<p>In short, we have:
+
+<UL>
+	<LI> <b>Internal objects:</b> Objects that are part of Pd Vanilla's binary.
+	<LI> <b>External objects:</b> Objects that are <u>NOT</u> part of Pd Vanilla's binary.
+	<LI> <b>Vanilla objects:</b> Built-in objects in the Pd Vanilla distribution
+(including internals and a small collection of externals - the "extra" objects).
+	<LI> <b>Types of external objects:</b> Compiled binaries or abstractions.
+	<LI> <b>External library:</b> Collection of external objects in any form, be it a
+<u>single binary pack</u> containing several objects, a <u>set of separate binaries</u> /
+abstractions or any combination of these.
+</UL>
+<br>
+<br>
+
+<H3> <A href="#s4.2" id="s4.2">4.2. GUI (.tcl) plugins </A> </H3>
+
+<p>There's also a catefgory of GUI externals, mostly known as "GUI plugins".
+These are .tcl file extensions that offer extra GUI features for the Pd
+application.
+
+<p>These plugins are normally offered with the plugin name appended by
+"-plugin". For example: "completion-plugin", a plugin for autocompleting
+objcet names. Another interesting plugin is the "patcherize-plugin",
+which turns bits of patches into subpatches or abstractions. These need
+to be placed in a search path that Pd knows about (see details in next
+section). These plugins are then automatically loaded when Pd starts up.
+
+<p>The actual filename is then something like "completion-plugin.tcl" and
+it comes inside a folder with the same name (completion-plugin). In this
+situation, Pd knows to search inside that folder for the plugin!
+
+<H3> <A href="#s4.3" id="s4.3">4.3. Installing externals and GUI plugins </A> </H3>
+
+<p>Installing externals and GUI plugins in Pd is quite simple, all you need
+to do is download them from somewhere (such as from Pd directly as explained
+later) and include them in a proper folder.
+
+<H4> <A href="#s4.3.1" id="s4.3.1"> 4.3.1. Where to include externals and GUI plugins</A> </H4>
+
+<p>Currently, when launching for the first time with a fresh install, Pd asks if
+you want to create a documents directory for patches that includes an “externals”
+subdirectory. This externals folder is where it’s advised to include externals
+and GUI plugins. This path is automatically included in the user added
+search paths (under the 'Path' tab in Preferences), see figure below.
+
+<figure>
+    <IMG src="4.3.1.png" ALT="Preferences">
+    <figcaption><u>Fig. 4.3.1</u> The Path preferences with a few user added paths</figcaption>
+</figure>
+
+<p>We see in the screenshot above that the “Pd” folder is created
+under ~/Documents, and inside it we have the "externals" subfolder.
+Even if you did not create this folder, here is where you can create it
+by clicking the “Reset” button under “Pd Documents Directory”. The picture
+also shows other paths for external libraries, all inside the
+~/Documents/Pd/externals.
+
+<p>Externals can actually be anywhere in your computer, but Pd must
+know where to look for them. Pd looks for files (including externals) in the
+user added search paths, but it also searches in other folders not listed there
+such as: the same folder that your patch is saved on (the <u>Relative Path</u>)
+and the <u>Standard Paths</u>. Note the "Use standard paths" toggle in the picture
+above, which is on by default. This tells Pd to use these paths, which are:
+
+<UL>
+	<LI>A) <u>Application-specific</u>: The "extra" folder inside a particular Pure Data
+application.
+	<LI>B) <u>User-specific</u>: A system folder for a specific user in the machine.
+	<LI>C) <u>Global</u>: A system folder for all users on the machine.
+</UL>
+
+<p>Officially, there’s only one ‘Standard Path’ which is the ‘extra’ folder.
+The others are not automatically created by Pd and are part of an old
+structure. Currently, the best practice is to use the default external folders or
+user added paths, but these other options are documented here anyway and
+may be useful in some edge cases.
+
+
+<p>The <u>Global</u> folder affects all Pure Data Applications for all users.
+The <u>User-specific</u> folder affects all Pure Data Applications for that user.
+And since you can have different versions of Pd installed in your system, the
+<u>Application-specific</u> folder affects only that particular Pd Application
+- multiple Pd applications can be of different versions (an older and a newer
+one or both single and double precision variants). For reference, here’s the
+list of the Standard Paths for all operating systems:
+
+<p>A) macOS:
+<UL>
+	<LI><u>Application-specific</u>: <mark><b>/$PdPath/Contents/Resources/extra</b></mark> - this is
+inside the Pd Application (like Pd-0.49-1 in ~/Applications); right click it and
+choose "Show Package Contents", then navigate to "extra".
+	<LI><u>User-specific</u>: <mark><b>~/Library/Pd</b></mark> (/Users/user_name/Library/Pd)
+	<LI><u>Global</u>: <mark><b>/Library/Pd</b></mark>
+
+</UL>
+
+<p>B) Windows:
+<UL>
+	<LI><u>Application-specific</u>: <mark><b> %ProgramFiles(x86)%\Pd\extra</b></mark> (for 64-bit
+OS and 32-bit Pd) or %ProgramFiles%\Pd\extra; this is
+inside the Pd Application (usually in C:\Program Files).
+This folder needs to be set to writeable.
+	<LI><u>User-specific</u>: <mark><b> %AppData%\Pd</b></mark>
+(usually in C:\Users\user_name\AppData\Roaming\Pd).
+	<LI><u>Global</u>: <mark><b> %CommonProgramFiles%\Pd</b></mark>
+(usually in C:\Program Files\Common Files\Pd).
+
+</UL>
+
+C) GNU/Linux:
+
+<UL>
+
+	<LI><u>Application-specific</u>: <mark><b> /usr/lib/pd/extra</b></mark> if installed via a package
+manager (apt-get) or /usr/local/lib/pd/extra if compiled by yourself.
+	<LI><u>User-specific</u>: <mark><b> ~/.local/lib/pd/extra</b></mark> (preferred since version Pd-0.47-1)
+or ~/pd-externals (deprecated but still usable).
+	<LI><u>Global</u>: <mark><b> /usr/local/lib/pd-externals</b></mark>.
+</UL>
+
+<H4> <A href="#s4.3.2" id="s4.3.2"> 4.3.2. How to download externals and GUI plugins from Pd</A> </H4>
+
+<p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a built in
+.tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken">
+https://github.com/pure-data/deken</a> for reference). Open it by selecting the
+"Find externals" entry from the <b>Help menu</b>. Then you can type and search for an
+object name, a library name or both. The wildcard '*' can be used to broaden the search,
+or an exact name can be used instead. All available versions of the library/external
+specific for your operating system will be shown to you. See figure below. Note that
+you can also download GUI plugins from deken. Search for '*-plugin' to get a list of
+all options.
+
+<figure>
+    <IMG src="4.3.2.png" ALT="deken install">
+    <figcaption><u>Fig. 4.3.2</u> Installing external libraries from 'deken'</figcaption>
+</figure>
+
+<p>When you double-click on library and version you want, by default Pd downloads it to
+"~/Documents/Pd/externals". Note you can click on multiple libraries and download
+them at the same time. Note also you can search for multiple objects and libraries by
+separating the search entries with commas.
+
+<figure>
+    <IMG src="4.3.3.png" ALT="installing multiple libraries">
+    <figcaption><u>Fig. 4.3.3</u> Installing multiple libraries at once</figcaption>
+</figure>
+
+<p>Moreover, if you have a an object creation error in the console, you can
+<kbd>control</kbd>+<kbd>click</kbd> on the error and it will open the plugin
+manager with a prompt search for the missing object ready to go.
+
+<figure>
+    <IMG src="4.3.4.png" ALT="searching object for creation error">
+    <figcaption><u>Fig. 4.3.4</u> Searching object in the plugin manager via the console window error</figcaption>
+</figure>
+
+<p>Note that when the external manager window is focused, there are
+dedicated menus: <b>File</b> and <b>Edit</b>. You can use <b>File</b>
+to open and install a ".dek" file, and <b>Edit</b> to open "Preferences"
+for the plugin manager. For macOS these menus are on the top bar.
+
+<figure>
+    <IMG src="4.3.5.png" ALT="plugin manager menus">
+    <figcaption><u>Fig. 4.3.5</u> The plugin manager's menus</figcaption>
+</figure>
+
+<p>And the plugin manager's preferences are as follows:
+
+<figure>
+    <IMG src="4.3.6.png" ALT="deken preferences">
+    <figcaption><u>Fig. 4.3.6</u> The plugin manager's preferences</figcaption>
+</figure>
+
+<p>The above are the default settings. If you want to see results that are not
+suited for your system, uncheck "Hide foreign architectures". If you want to
+find older versions of the library, uncheck "Only show the newest version of
+a library".
+
+<H3> <A href="#s4.4" id="s4.4">4.4. Loading externals </A> </H3>
+
+<p>The current best practice is to use the <b>[declare]</b> object to search for,
+load and manage externals, but there are alternatives.
+
+<p>If the object is from a library that is distributed as a single binary pack,
+this binary needs to be pre loaded at start time by Pd, so it can create its
+externals. This is done either with <b>[declare]</b> or manually via the 'Startup' tab
+in Preferences.
+
+<p>If the external library only contains abstractions or objects compiled as
+a set of separate binaries, Pd just needs to know its path. Again, this can be
+done via <b>[declare]</b> or manually via the 'Path' tab in Preferences, but yet
+another option here is to use slash declarations as we'll see later.
+
+<H4> <A href="#s4.4.1" id="s4.4.1">4.4.1. Using the <b>[declare]</b> object</A> </H4>
+
+<p>The <b>[declare]</b> object can be used to add search paths or load libraries. When
+adding a path, it behaves quite similarly to adding search paths to the
+user added paths via the 'Path' tab in Preferences. The difference is that this
+will only work for the patch that contains this <b>[declare]</b> object - unlike using
+Path preferences, which loads the path(s) permanently for any patch.
+
+<p>As for loading a library, once Pd loads it (via <b>[declare]</b> or startup) it
+sticks with it. This means that if you use <b>[declare]</b> to load a library, it will
+also be loaded if you create a new patch without any <b>[declare]</b> object.
+
+<H5> <A href="#s4.4.1.1" id="s4.4.1.1">4.4.1.1. [declare -path]</A> </H5>
+
+<p>Let's take for an example the <a href="http://github.com/porres/pd-else"> ELSE</a>
+library. This library mostly contains separate binaries and abstractions, so Pd only
+needs to know its location path to load them. We then use the '-path' flag as in
+[declare -path else]. This makes Pd look for a folder named 'else' to add it to the
+search path for that patch only.If it succeeds, this is where Pd will prioritize the
+search of objects and other files, moving on to other possible search places if
+nothing is found.
+
+<p>But where does Pd look for the 'else' folder? Well, the -path flag is first meant
+to search in the Relative Path, but if it doesn't find it, it falls back to the
+User Added Paths and Standard Paths. So let’s say you put the ELSE library folder in
+“~/Documents/Pd/externals”, which is the current best practice, Pd will know to look
+for it there and will find it!
+
+<p> Now, in the case of a single external, the best practice is to include it in
+a folder with the same name in “~/Documents/Pd/externals”. An example, the <b>[freeverb~]</b>
+external should be in “~/Documents/Pd/externals/freeverb~”. In this situation, you don’t
+need to add the external folder to the path, manually or use <b>[declare]</b>. This is because
+when you tell Pd to look for an external, if it finds a folder with the same name as the
+external, it'll know to search inside that folder for the external!
+
+<H5> <A href="#s4.4.1.2" id="s4.4.1.2"> 4.4.1.2. [declare -lib]</A> </H5>
+
+<p>The '-lib' flag is needed for the classic Pd library format, which
+is a single binary pack with many externals. One such example is the
+<a href="https://git.iem.at/pd/zexy/"> Zexy </a> library. So you should
+download and have the 'zexy' folder in “~/Documents/Pd/externals/zexy”.
+Now you can use <b>[declare -lib zexy]</b> to load the external binary. In the
+same way as explained with the <b>[freeverb~]</b> example, the binary is inside
+a folder with the same name. So Pd will search for the external in
+“~/Documents/Pd/externals", will find the 'zexy' folder and know to
+search for the zexy binary in it. This means you don't need to bother in
+using <b>[declare]</b> to define the search path.
+
+<p>Note that it may be possible for you to load a library binary as an object
+if the developer wished to. But it's still advisable to use either "Startup"
+or <b>[declare -lib]</b>, because this way you are sure the library is preloaded
+before Pd tries to create other objects in your patch.
+
+<p>The ELSE library also offers a binary for you to load as a library. This is
+a very special case as this binary does not actually load any external. What
+it actually loads are some .tcl plugins that add an object browser at right
+clicking on a patch canvas. It also prints information about the release on
+the Console window. Moreover, you can also load <b>[else]</b> as an object in a patch
+and it offers the functionality of outputting its version for you to check in
+the patch if it is the correct one.
+
+<p>The Cyclone library also allows you to load <b>[cyclone]</b> as an object and
+offers the same version output functionality as in ELSE.
+
+<p>For more details on how <b>[declare]</b> works, please check its help file!
+
+<H4> <A href="#s4.4.2" id="s4.4.2"> 4.4.2. Load via path and startup</A> </H4>
+
+<p>We'll now see the differences between using <b>[declare]</b> or using "Path" and
+"Startup" tabs in Preferences.
+
+<H5> <A href="#s4.4.2.1" id="s4.4.2.1"> 4.4.2.1. User added path</A> </H5>
+
+<p>One big difference in adding a search path in 'Preferences' is that this
+permanently adds the path and works every time Pd starts and for any patch
+you open. When you use <b>[declare]</b>, the path is loaded only for its owning
+patch and loaded abstractions. Moreover, if you have an abstraction with
+[declare -path], it'll only work for that abstraction and not the parent
+patch! Hence, <b>[declare]</b> allows a much better control and management of
+paths. But you may want to permanently add a path in your own system if
+you know exactly what you have and what you need.
+
+<p>We’ve seen that even if you have a folder in “~/Documents/Pd/externals”
+you still need to tell Pd to look for it. You can manually add a User Added
+Paths in Preferences => Path by clicking “New”.
+
+<p>Another possibility is that under deken’s preferences tabs you can click
+on “Add newly installed libraries to Pd’s search Path”, which adds downloaded
+libraries to the user added search paths (see picture above).
+
+<p>Note also that having a user added search path will not make it have search
+priority like it happens when you use <b>[declare]</b>. In this case, the path relative
+to the patch will have top priority!
+
+<H5> <A href="#s4.4.2.2" id="s4.4.2.2"> 4.4.2.2. Startup</A> </H5>
+
+<p>"Preferences => Startup" loads a window that says <i>"Pd libraries to load
+on startup"</i>. This is where you can manually and permanently load single
+binary pack libraries. But since they're only needed during startup, you need
+to restart Pd so this takes effect. The startup is also used for configuring
+Pd in many ways, see <a href="chapter3.htm#s3.4.1">3.4.1 Startup flags</a> for
+details.
+
+<figure>
+    <IMG src="4.4.1.png" ALT="startup preferences">
+    <figcaption><u>Fig. 4.4.1</u> The Startup preferences with library binaries to load</figcaption>
+</figure>
+
+<p> As we’ve seen with ‘zexy’, it’s common that the name of the binary is
+the same as the library’s, so you don’t need to worry about adding it to the
+path. There are many other examples in the picture above. One particularity
+<a href="https://github.com/umlaeute/Gem"> Gem </a> is that it also forces
+Pd to add its path to the search paths, which is needed for some abstractions
+and then you don’t need to bother adding it to the path. Note, however, that
+unlike using <b>[declare]</b>, this does not enforce a top search priority! Hence,
+for example, you may prefer to use <b>[declare -path Gem -lib Gem]</b> instead.
+
+<p>It all depends on the developer, but it is a common and good practice that
+when you load a library, Pd’s terminal window will print something to tell us
+that the libraries were loaded successfully. Here’s a screenshot of the result
+of loading cyclone.
+
+<figure>
+    <IMG src="4.4.2.png" ALT="lib print">
+    <figcaption><u>Fig. 4.4.2</u> Library loading printout</figcaption>
+</figure>
+
+<p>Note that when you load a library via Startup or <b>[declare -lib]</b>, all of its
+external objects are loaded in Pd and they have search priority over other
+externals that are loaded via paths. This may cause issues discussed on the
+next section.
+
+<H4> <A href="#s4.4.3" id="s4.4.3"> 4.4.3. Load using slash declarations</A> </H4>
+
+<p>Let’s say you’ve downloaded the ELSE library into ~/Documents/Pd/externals.
+Instead of using <b>[declare -path else]</b> or adding the ELSE folder to the user
+added paths manually, you can just prepend “else/“ before an object name. This
+will make Pd look for this object in a folder called ‘else’ in one of its search
+paths (which includes ~/Documents/Pd/externals) and find it! Here’s an example:
+
+<figure>
+    <IMG src="4.4.3.png" ALT="slash declaration">
+    <figcaption><u>Fig. 4.4.3</u> An external object with a slash declaration</figcaption>
+</figure>
+
+<p>This can be an option that some people may prefer for the simple fact that
+it's just clearer from which library folder we're loading the external. But
+there are some rare cases where this is the only way to guarantee you have
+loaded the correct external, which is a problem when you have too many
+libraries in your system and are using more than one that has an external
+with the same name. Hence, some external libraries like 'Cyclone' and 'ELSE'
+use this in the documentation of the help files to make sure you load the
+correct external.
+
+<p>Note, however, that this is not possible for an external that is loaded as
+part of a single binary pack, unless the developer uses a workaround to add
+this possibility as alternative.
+
+<p>The issue with <b>[declare]</b> or adding a path to the user added paths is that
+it'll respect a search order. Whatever path is added first in the search list
+order has a priority, and where ever Pd finds an external first, it'll load
+it and stop searching elsewhere. Again, this kind of problem is not that
+common, but you can solve this with slash declarations. You may also be able
+to sort this issue by setting the desired order. This is quite easy in
+<b>[declare]</b> as which ever -path comes first in the list has a priority, so you
+can try that if you want to avoid slash declarations when you run into this
+rare issue.
+
+<p>Name clash conflicts can also happen when you're loading single binary
+pack libraries. The problem is that once they get loaded, all of its external
+objects are now part of Pd and have a priority in the search. Here's an
+example, the 'ceammc' library is a single binary pack and it included an
+object called <b>[xfade~]</b>. The ELSE library has separate binaries for each
+object and also has one called <b>[xfade~]</b>. If you're using both libraries,
+ceammc's <b>[xfade~]</b> object will have priority and it doesn't help you to have
+[declare -path else].
+
+
+<p>It was mentioned how a library name prefix may also be possible in the
+context of single binary packs. The ceammc library offers this, so you can
+also load its <b>[xfade~]</b> object as <b>[ceammc/xfade~]</b>. But note that this still
+requires you to preload the binary (via startup or <b>[declare]</b>). The slash
+declaration here was only possible because the developer added the
+'ceammc/xfade~' name as an alternative option in the code. So it is just a
+hack to improve the limitation of Pd in handling namespaces. Another library
+that does this is Cyclone, which carries a sublibrary with 12 objects with
+non alphanumeric names, such as <b>[>~]</b>. By using the same trick, you can create
+the <b>[>~]</b> object as <b>[cyclone/>~]</b>. Another single binary pack library that has
+<b>[>~]</b> is zexy, so this way you can make sure you're getting cyclone's instead.
+
+<p>These issues might be clear if you better understand how Pd works when
+loading externals. See next subsection.
+
+<H3> <A href="#s4.5" id="s4.5">4.5. How external binaries are loaded</A> </H3>
+
+<p>Once you make sure Pd can load an external binary via a path, this is what
+happens when you create it. Whenever you create an object that Pd
+doesn't yet know about, Pd looks for the object file named as, for
+instance, "profile.pd_linux". Pd looks first in a path defined by
+<b>[declare]</b> (if any, of course), then in the directory containing
+the patch, then in directories listed as user added paths in the
+order they are listed, then in the standard paths. As soon as Pd
+finds the object in this search order, it'll stop searching further
+more and will add the found object to its "class list", which is
+the set of all Pd classes you can use. Pd then tries to create the
+object you asked for, and if everything is fine with it, this
+happens successfully (creation errors are given otherwise).
+
+<p>In the case of a single binary pack loaded at Startup or with
+<b>[declare]</b>, all the externals it contains get preloaded in Pd's class
+list, even though they're only created in object boxes when you
+require them.
+
+<p>In both cases, once an external object's binary is in Pd's memory,
+there is no real difference between it and a native object. They're
+all seen equally now in Pd. Once a new separate binary or single binary
+pack is loaded, it's there for the duration of your Pd session. This
+means that if you replace the binaries, the objects won't be updated
+even if you recreate them. You can also even delete the binary as Pd
+now carries it for good in its memory. Hence, if you're working on the
+development of an object's binary and decide to change it, you have to
+exit and re-enter Pd to get the change to take effect.
+
+<p>Let us just make the distinction that external abstractions work
+quite differently! As they get updated any time they’re updated and
+reloaded!
+
+
+<H4> <A href="#s4.5.1" id="s4.5.1"> 4.5.1. Overriding objects (externals and native)</A> </H4>
+
+<p>We've seen that Pd loads and sticks to an external binary,
+but they can get overridden. For instance, if you create <b>[xfade~]</b>
+from ELSE and then load ceammc's binary later (that also has an
+<b>[xfade~]</b> object), Pd only knows about <b>[xfade~]</b> from ceammc! It's
+been also noted how cyclone and zexy have objects with the same
+name. If you first load cyclone's binary and zexy's later, zexy's
+objects with the same name (such as <b>[>~]</b>) will override and prevail.
+
+<p>And here's an interesting feature, you can also override internal
+objects with externals! Say you have an external called <b>[phasor~]</b>.
+If it's a single binary, you can force Pd to find it with slash
+declarations. Otherwise, if it's a binary pack, you can load as any
+other library and if it has objects with the same name as vanilla's
+internals, they get overridden! But Pd still keeps a copy of the old
+one and renames it by appending "_aliased", so you can still load the
+old "phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably
+don't want to mess with overriding internals, but it makes sense if you
+provide new versions with more features that are fully backwards compatible.
+
+<H3> <A href="#s4.6" id="s4.6"> 4.6. Search order in Pd for objects and files</A> </H3>
+
+<p>This information has been provided in pieces throughout this section of the Manual. But
+now well wrap it up after all the information has been presented.
+
+<p>So, whenever you tell Pd to create an object in its box, this is what happens.
+
+<p><b>First</b> it searches in its object list. This includes all of Pd's internals and
+other externals that may have been previously loaded.
+
+<p><b>Second</b> it moves on to unknown objects in possible paths. And if you have
+[declare -path] in your patch, the defined path(s) has/have priority respecting
+the order they are listed from left to right.
+
+<p><b>Third</b> is time to search the path relative to the patch.
+
+<p><b>Fourth</b> it goes to the user added paths, defined at "Path"
+in "Preferences". An order is also respected, from top to bottom.
+
+<p><b>Fifth</b> and last, it searches the "standard paths", which
+includes the 'extra' library provided by the Pd Vanilla distribution.
+Note you can use <b>[declare -stdpath ./]</b> to force priority to search
+this folder!
+
+<p>Regarding files, the search order is the same, only the
+first step is ignored.
+
+</div>
+<div class="nav nav-bottom">
+    <div class="nav-back"><A href="chapter3.htm">&lt; Chapter 3: Installing and configuring Pd</A></div>
+    <div class="nav-home"><A href="../index.htm#s4">Table of contents</A></div>
+    <div class="nav-forward"><A href="chapter5.htm">Chapter 5: Current status &gt;</A></div>
+</div>
+
+</BODY>
+</HTML>

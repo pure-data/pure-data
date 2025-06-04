@@ -24,7 +24,7 @@ endif
 
 PD_DIR = ../..
 LIBPD_DIR = ..
-LIBPD = $(LIBPD_DIR)/$(SOLIB_PREFIX)pd.$(SOLIB_EXT)
+LIBPD = $(SOLIB_PREFIX)pd.$(SOLIB_EXT)
 LIBPD_STATIC = $(LIBPD_DIR)/libpd.$(STATICLIB_EXT)
 
 SRC_FILES = test_libpd.c
@@ -38,7 +38,9 @@ all: $(TARGET)
 
 ##### libs
 
+# build libpd and move a copy here
 $(LIBPD):
+	make -C $(LIBPD_DIR)
 	cp $(LIBPD_DIR)/$(LIBPD) .
 
 # on windows, copy libpd and MinGW winpthread dll to here

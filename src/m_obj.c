@@ -86,6 +86,12 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
     pd_error(x->i_owner, "inlet: expected '%s' but got '%s'",
         x->i_symfrom->s_name, s->s_name);
 }
+static void _inlet_wrong(t_inlet *x, t_symbol *s, int argc, t_atom*argv)
+{
+    (void)argc;
+    (void)argv;
+    inlet_wrong(x, s);
+}
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
 extern t_class *vinlet_class;
@@ -176,7 +182,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
       inlet_symbol(x, atom_getsymbol(argv));
     else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
         inlet_fwd(x, &s_list, argc, argv);
-    else post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
+    else inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -923,7 +929,7 @@ int obj_issignaloutlet(const t_object *x, int m)
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;
-    static float obj_scalarzero = 0;
+    static t_float obj_scalarzero = 0;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)

@@ -109,11 +109,10 @@ static void textbuf_open(t_textbuf *x)
     {
         char buf[40];
         sprintf(buf, "%dx%d", 600, 340);
-        pdgui_vmess("pdtk_textwindow_open", "^r si",
-                  x, buf,
-                  x->b_sym->s_name,
-                  sys_hostfontsize(glist_getfont(x->b_canvas), glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", x);
+        pdgui_vmess("pdtk_textwindow_open", "^r si", x, buf,
+            x->b_sym->s_name, sys_hostfontsize(glist_getfont(x->b_canvas),
+                glist_getzoom(x->b_canvas)));
+        sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
@@ -1953,7 +1952,7 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
             {
                 clock_delay(x->x_clock,
                     x->x_clockdelay = ap->a_w.w_float * x->x_tempo);
-                x->x_whenclockset = clock_getsystime();
+                x->x_whenclockset = clock_getlogicaltime();
             }
             else outlet_list(x->x_ob.ob_outlet, 0, onset2-onset, ap);
             x->x_innext = 0;
@@ -2020,7 +2019,7 @@ static void qlist_bang(t_qlist *x)
         up to do this non-reentrantly after a delay of 0 */
     if (x->x_innext)
     {
-        x->x_whenclockset = clock_getsystime();
+        x->x_whenclockset = clock_getlogicaltime();
         x->x_clockdelay = 0;
         clock_delay(x->x_clock, 0);
     }

@@ -4,7 +4,7 @@
   <name>Pure Data (Pd)</name>
   <developer_name>Miller S. Puckette et al.</developer_name>
 
-  <summary>A real-time graphical programming environment for live interactive computer music</summary>
+  <summary>realtime computer music system</summary>
 
   <metadata_license>FSFAP</metadata_license>
   <project_license>BSD-3-Clause</project_license>
@@ -32,6 +32,7 @@
   <screenshots>
     <screenshot type="default">
       <image>https://screenshots.debian.net/shrine/screenshot/12081/simage/large-f07fad807ae33903b32a38d2c7cedd66.png</image>
+      <caption>Pure Data with many patches open (netpd project)</caption>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.0"/>

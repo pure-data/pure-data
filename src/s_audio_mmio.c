@@ -270,7 +270,7 @@ static double initsystime = -1;
     /* call this whenever we reset audio */
 static void nt_resetmidisync(void)
 {
-    initsystime = clock_getsystime();
+    initsystime = clock_getlogicaltime();
     nt_hibuftime = sys_getrealtime();
 }
 
@@ -707,7 +707,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
-            (int)(MAXBUFFER * ((nt_blocksize * 1000.)/44100.)));
+            (int)(MAXBUFFER * ((nt_blocksize * 1000.)/DEFAULTSRATE)));
         nbuf = MAXBUFFER;
     }
     else if (nbuf < 4) nbuf = 4;

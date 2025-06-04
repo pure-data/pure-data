@@ -173,7 +173,7 @@ static void bng_set(t_bng *x)
 {
     int holdtime = x->x_flashtime_hold;
     int sincelast = clock_gettimesince(x->x_lastflashtime);
-    x->x_lastflashtime = clock_getsystime();
+    x->x_lastflashtime = clock_getlogicaltime();
     if (sincelast < x->x_flashtime_hold*2)
         holdtime = sincelast/2;
     if (holdtime < x->x_flashtime_break)
@@ -392,7 +392,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     bng_check_minmax(x, ftbreak, fthold);
     x->x_gui.x_isa.x_locked = 0;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    x->x_lastflashtime = clock_getsystime();
+    x->x_lastflashtime = clock_getlogicaltime();
     x->x_clock_hld = clock_new(x, (t_method)bng_tick_hld);
     x->x_clock_lck = clock_new(x, (t_method)bng_tick_lck);
     iemgui_newzoom(&x->x_gui);

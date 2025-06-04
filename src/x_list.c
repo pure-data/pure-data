@@ -822,7 +822,7 @@ static void list_tosymbol_setup(void)
 
 /* ------------- list ------------------- */
 
-static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
+void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
         pd_this->pd_newest = list_append_new(s, argc, argv);

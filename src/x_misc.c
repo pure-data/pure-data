@@ -8,6 +8,7 @@
 #include "s_stuff.h"
 #include "g_canvas.h"
 #include <string.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <wtypes.h>
 #include <time.h>
@@ -22,7 +23,7 @@
 #if defined (__APPLE__) || defined (__FreeBSD__)
 #define CLOCKHZ CLK_TCK
 #endif
-#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
+#if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID) || defined(__EMSCRIPTEN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
 #if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
@@ -75,6 +76,13 @@ static void random_bang(t_random *x)
     outlet_float(x->x_obj.ob_outlet, nval);
 }
 
+
+static void random_float(t_random *x, t_floatarg f)
+{
+    x->x_f = f;
+    random_bang(x);
+}
+
 static void random_seed(t_random *x, t_float f, t_float glob)
 {
     x->x_state = f;
@@ -85,6 +93,7 @@ static void random_setup(void)
     random_class = class_new(gensym("random"), (t_newmethod)random_new, 0,
         sizeof(t_random), 0, A_DEFFLOAT, 0);
     class_addbang(random_class, random_bang);
+    class_addfloat(random_class, random_float);
     class_addmethod(random_class, (t_method)random_seed,
         gensym("seed"), A_FLOAT, 0);
 }
@@ -282,6 +291,8 @@ static t_class *oscparse_class;
 typedef struct _oscparse
 {
     t_object x_obj;
+    t_outlet *x_address_n;
+    int x_flag;
 } t_oscparse;
 
 #define ROUNDUPTO4(x) (((x) + 3) & (~3))
@@ -376,9 +387,23 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
+    int address_n = -1;
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
-        j < outc; j++)
-            SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+         j < outc; j++)
+    {
+        if(x->x_flag)
+        {
+            t_symbol *sym = grabstring(argc, argv, &i, 1);
+            t_float f = 0.0f;
+            char *str_end = NULL;
+            f = strtod(sym->s_name, &str_end);
+            if (f == 0 && sym->s_name == str_end)
+                SETSYMBOL(outv+j, sym);
+            else SETFLOAT(outv+j, f);
+        }
+        else SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+        address_n = j + 1;
+    }
     for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
     {
         union
@@ -450,6 +475,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
         }
     }
+    outlet_float(x->x_address_n, address_n);
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
 tooshort:
@@ -459,7 +485,13 @@ tooshort:
 static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_oscparse *x = (t_oscparse *)pd_new(oscparse_class);
+    x->x_flag = 0;
+    if (argc && argv[0].a_w.w_symbol == gensym("-n"))
+    {
+        x->x_flag = 1;
+    }
     outlet_new(&x->x_obj, gensym("list"));
+    x->x_address_n = outlet_new((t_object *)x, &s_float);
     return (x);
 }
 

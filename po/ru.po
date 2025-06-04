@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2023-06-26 22:30+0200\n"
-"PO-Revision-Date: 2023-02-19 20:36+0000\n"
+"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"PO-Revision-Date: 2024-07-08 17:33+0200\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ru/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Poedit 3.4.4\n"
 
 msgid "linear"
 msgstr "линейный"
@@ -218,7 +218,7 @@ msgstr "Выходы"
 msgid "Use Multiple Devices"
 msgstr "Использовать несколько устройств"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -289,6 +289,10 @@ msgstr "Отступ:"
 
 msgid "Y range: from"
 msgstr "Диапазон значений Y: от"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Объект"
 
 msgid "Data Properties"
 msgstr "Свойства данных"
@@ -571,23 +575,29 @@ msgid "Edit existing path [%s]"
 msgstr "Редактировать существующий путь [%s]"
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Окно Pd"
 
 msgid "Zoom New Windows"
 msgstr "Развернуть новые окна"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "удаленные настройки GUI"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
 msgstr ""
 
 msgid "Preferences"
@@ -626,7 +636,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Библиотеки Pd, загружаемые при запуске"
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "удаленные настройки GUI"
 
 msgid "language"
@@ -652,13 +662,13 @@ msgid "Numeric precision of Pd-core"
 msgstr ""
 
 #, fuzzy
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Флаги при загрузке:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Не использовать режим реального времени планировщика событий"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Флаги при загрузке:"
 
 msgid "Help Browser"
@@ -814,6 +824,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Невозможно получить значение SHA256 для '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Невозможно выполнить верификацию SHA256 для '%s'."
 
@@ -836,11 +854,26 @@ msgstr "Невозможно удалить временный файл '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Невозможно переименовать скачанный файл в '%s'"
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Результаты поиска"
+
+#, fuzzy
+msgid "Additional search URLs"
+msgstr "Добавлено %s в пути для поиска"
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr "Создать"
 
 msgid "Check"
 msgstr "Проверить"
+
+#, fuzzy
+msgid "Deken Installation Target"
+msgstr "Установка завершилась неудачей!"
 
 msgid "Installation options:"
 msgstr "Опции установки:"
@@ -891,6 +924,17 @@ msgstr "Настройки %s Deken"
 msgid "Platform re-detected: %s"
 msgstr "Платформа переобнаружена: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256 для '%s' не подтвержден!"
+
+msgid "SHA256 verification failed"
+msgstr "проверка SHA256 завершилась неудачей"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Контрольная сумма не совпадает для '%s'"
+
 msgid "Deken Packages"
 msgstr "Пакеты Deken"
 
@@ -904,15 +948,17 @@ msgid "All Files"
 msgstr "Все файлы"
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Контрольная сумма не совпадает для '%s'"
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
 
 #, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256 для '%s' не подтвержден!"
-
-msgid "SHA256 verification failed"
-msgstr "проверка SHA256 завершилась неудачей"
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1107,15 +1153,15 @@ msgstr "Установить %1$s в %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Отмена установки '%s': Не указана папка для установки."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Установка в несуществующую папку завершилась неудачно"
+
+msgid "Directory does not exist!"
+msgstr "Папка не существует!"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Невозможно установить в '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Папка не существует!"
 
 msgid "Directory is not writable!"
 msgstr "Папка не доступна для записи!"
@@ -1144,6 +1190,10 @@ msgstr "Загрузка завершена! Проверка..."
 msgid "Ignoring checksum mismatch"
 msgstr "Игнорируется несовпадение контрольной суммы"
 
+#, fuzzy
+msgid "Ignoring checksum errors"
+msgstr "Игнорируется несовпадение контрольной суммы"
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr "[deken] deken-plugin.tcl (Pd externals search) загружен из %s."
@@ -1151,6 +1201,10 @@ msgstr "[deken] deken-plugin.tcl (Pd externals search) загружен из %s.
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Обнаружена платформа: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1262,35 +1316,125 @@ msgstr "невозможно удалить пустой объект"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Невозможно создать свойства \"%1$s\" в %2$s"
 
-msgid "Afrikaans"
+msgid "The language can only be set during startup."
 msgstr ""
+
+msgid "Afar"
+msgstr "Афарский"
+
+msgid "Abkhazian"
+msgstr "Абхазский"
+
+msgid "Avestan"
+msgstr "Авестийский"
+
+msgid "Afrikaans"
+msgstr "Африкаанс"
+
+msgid "Akan"
+msgstr "Акан"
+
+msgid "Amharic"
+msgstr "Амхарский"
+
+msgid "Aragonese"
+msgstr "Арагонский"
 
 msgid "Arabic"
-msgstr ""
+msgstr "Арабский"
+
+msgid "Assamese"
+msgstr "Ассамский"
+
+msgid "Avaric"
+msgstr "Аварский"
+
+msgid "Aymara"
+msgstr "аймара"
 
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Азербайджанский"
+
+msgid "Bashkir"
+msgstr "Башкирский"
 
 msgid "Belarusian"
-msgstr ""
+msgstr "Белорусский"
 
 msgid "Bulgarian"
-msgstr ""
+msgstr "Болгарский"
+
+msgid "Bihari"
+msgstr "Бихари"
+
+msgid "Bislama"
+msgstr "Бислама"
+
+msgid "Bambara"
+msgstr "Бамбара"
+
+msgid "Bengali"
+msgstr "Бенгальский"
+
+msgid "Tibetan"
+msgstr "Тибетский"
+
+msgid "Breton"
+msgstr "Бретонский"
+
+msgid "Bosnian"
+msgstr "Боснийский"
+
+msgid "Catalan"
+msgstr "Каталанский"
+
+msgid "Chechen"
+msgstr "Чеченский"
+
+msgid "Chamorro"
+msgstr "Чаморро"
+
+msgid "Corsican"
+msgstr "Корсиканский"
+
+msgid "Cree"
+msgstr "Кри"
+
+msgid "Czech"
+msgstr "Чешский"
+
+msgid "Chuvash"
+msgstr "Чувашский"
+
+msgid "Welsh"
+msgstr "Валлийский"
+
+msgid "Danish"
+msgstr "Датский"
 
 msgid "German"
-msgstr ""
+msgstr "Немецкий"
 
 msgid "German (Austria)"
-msgstr ""
+msgstr "Немецкий (Австрия)"
+
+msgid "Dhivehi"
+msgstr "Мальдивский"
+
+msgid "Dzongkha"
+msgstr "Дзонг-кэ"
+
+msgid "Ewe"
+msgstr "Эве"
 
 msgid "Greek"
-msgstr ""
+msgstr "Греческий"
 
 msgid "English"
-msgstr ""
+msgstr "Английский"
 
 msgid "English (Canada)"
-msgstr ""
+msgstr "Английский (Канада)"
 
 msgid "English (UK)"
 msgstr ""
@@ -1298,91 +1442,449 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr "Эсперанто"
+
 msgid "Spanish"
-msgstr ""
+msgstr "Испанский"
+
+msgid "Estonian"
+msgstr "Эстонский"
 
 msgid "Basque"
-msgstr ""
+msgstr "Баскский"
+
+msgid "Persian"
+msgstr "Фарси"
+
+msgid "Fulah"
+msgstr "Фула"
 
 msgid "Finnish"
-msgstr ""
+msgstr "Финский"
+
+msgid "Fijian"
+msgstr "Фиджийский"
+
+msgid "Faroese"
+msgstr "Фарерский"
 
 msgid "French"
-msgstr ""
+msgstr "Французский"
+
+msgid "Frisian"
+msgstr "Фризский"
+
+msgid "Irish"
+msgstr "Ирландский"
+
+msgid "Gaelic"
+msgstr "Шотландский"
+
+msgid "Galician"
+msgstr "Галисийский"
+
+msgid "Guarani"
+msgstr "Гуарани"
 
 msgid "Gujarati"
-msgstr ""
+msgstr "Гуджарати"
+
+msgid "Manx"
+msgstr "Мэнский"
+
+msgid "Hausa"
+msgstr "Хауса"
 
 msgid "Hebrew"
-msgstr ""
+msgstr "Иврит"
 
 msgid "Hindi"
-msgstr ""
+msgstr "Хинди"
+
+msgid "Hiri Motu"
+msgstr "Хири-моту"
+
+msgid "Croatian"
+msgstr "Хорватский"
+
+msgid "Haitian"
+msgstr "Гаитянский"
 
 msgid "Hungarian"
-msgstr ""
+msgstr "Венгерский"
 
 msgid "Armenian"
-msgstr ""
+msgstr "Армянский"
 
-msgid "Italian"
-msgstr ""
+msgid "Herero"
+msgstr "Гереро"
+
+msgid "Interlingua"
+msgstr "Интерлингва"
 
 msgid "Indonesian"
-msgstr ""
+msgstr "Индонезийский"
+
+msgid "Occidental"
+msgstr "Окциденталь"
+
+msgid "Igbo"
+msgstr "Игбо"
+
+msgid "Nuosu"
+msgstr "Носу"
+
+msgid "Inupiaq"
+msgstr "Инупиак"
+
+msgid "Ido"
+msgstr "Идо"
+
+msgid "Icelandic"
+msgstr "Исландский"
+
+msgid "Italian"
+msgstr "Итальянский"
+
+msgid "Inuktitut"
+msgstr "Инуктитут"
 
 msgid "Japanese"
-msgstr ""
+msgstr "Японский"
+
+msgid "Javanese"
+msgstr "Яванский"
+
+msgid "Georgian"
+msgstr "Грузинский"
+
+msgid "Kongo"
+msgstr "Киконго"
+
+msgid "Gikuyu"
+msgstr "Кикуйю"
+
+msgid "Kwanyama"
+msgstr "Кваньяма"
+
+msgid "Kazakh"
+msgstr "Казахский"
+
+msgid "Greenlandic"
+msgstr "Гренландский"
+
+msgid "Kannada"
+msgstr "Каннада"
 
 msgid "Korean"
-msgstr ""
+msgstr "Корейский"
+
+msgid "Kanuri"
+msgstr "Канури"
+
+msgid "Kashmiri"
+msgstr "Кашмирский"
+
+msgid "Kurdish"
+msgstr "Курдский"
+
+msgid "Komi"
+msgstr "Коми"
+
+msgid "Cornish"
+msgstr "Корнский"
+
+msgid "Kyrgyz"
+msgstr "Кыргызский"
+
+msgid "Latin"
+msgstr "Латинский"
+
+msgid "Luxembourgish"
+msgstr "Люксембургский"
+
+msgid "Luganda"
+msgstr "Луганда"
+
+msgid "Limburgish"
+msgstr "Лимбургский"
+
+msgid "Lingala"
+msgstr "Лингала"
+
+msgid "Lao"
+msgstr "Лаосский"
+
+msgid "Lithuanian"
+msgstr "Литовский"
+
+msgid "Luba-Katanga"
+msgstr "Луба-катанга"
+
+msgid "Latvian"
+msgstr "Латышский"
+
+msgid "Malagasy"
+msgstr "Малагасийский"
+
+msgid "Marshallese"
+msgstr "Маршалльский"
+
+msgid "Maori"
+msgstr "Маори"
+
+msgid "Macedonian"
+msgstr "Македонский (современный)"
+
+msgid "Malayalam"
+msgstr "Малаялам"
+
+msgid "Mongolian"
+msgstr "Монгольский"
+
+msgid "Marathi"
+msgstr "Маратхи"
+
+msgid "Malay"
+msgstr "Малайский"
+
+msgid "Maltese"
+msgstr "Мальтийский"
+
+msgid "Burmese"
+msgstr "Бирманский"
+
+msgid "Nauru"
+msgstr "Науруанский"
+
+msgid "Nepali"
+msgstr "Непальский"
+
+msgid "Ndonga"
+msgstr "Ндонга"
 
 msgid "Dutch"
-msgstr ""
+msgstr "Нидерландский"
+
+msgid "Norwegian Nynorsk"
+msgstr "Норвежский (нюношк)"
+
+msgid "Navaho"
+msgstr "Навахо"
+
+msgid "Nyanja"
+msgstr "Ньянджа"
+
+msgid "Occitan"
+msgstr "Окситанский"
+
+msgid "Ojibwe"
+msgstr "Оджибве"
+
+msgid "Oromo"
+msgstr "Оромо"
+
+msgid "Odia"
+msgstr "Ория"
+
+msgid "Ossetian"
+msgstr "Осетинский"
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr "Пали"
+
 msgid "Polish"
-msgstr ""
+msgstr "Польский"
+
+msgid "Pashto"
+msgstr "Пушту"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Португальский"
 
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "Португальский (Бразилия)"
 
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Португальский (Португалия)"
+
+msgid "Quechua"
+msgstr "Кечуа"
+
+msgid "Romansh"
+msgstr "Романшский"
+
+msgid "Rundi"
+msgstr "Рунди"
+
+msgid "Romanian"
+msgstr "Румынский"
 
 msgid "Russian"
-msgstr ""
+msgstr "Русский"
+
+msgid "Kinyarwanda"
+msgstr "Руанда"
+
+msgid "Sanskrit"
+msgstr "Санскрит"
+
+msgid "Sardinian"
+msgstr "Сардинский"
+
+msgid "Sindhi"
+msgstr "Синдхи"
+
+msgid "Sango"
+msgstr "Санго"
+
+msgid "Sinhala"
+msgstr "Сингальский"
+
+msgid "Slovak"
+msgstr "Словацкий"
+
+msgid "Slovenian"
+msgstr "Словенский"
+
+msgid "Samoan"
+msgstr "Самоанский"
+
+msgid "Shona"
+msgstr "Шона"
+
+msgid "Somali"
+msgstr "Сомалийский"
 
 msgid "Albanian"
-msgstr ""
+msgstr "Албанский"
+
+msgid "Serbian"
+msgstr "Сербский"
+
+msgid "Swati"
+msgstr "Свати"
+
+msgid "Sundanese"
+msgstr "Сунданский"
 
 msgid "Swedish"
-msgstr ""
+msgstr "Шведский"
+
+msgid "Swahili"
+msgstr "Суахили"
+
+msgid "Tamil"
+msgstr "Тамильский"
+
+msgid "Telugu"
+msgstr "Телугу"
+
+msgid "Tajik"
+msgstr "Таджикский"
+
+msgid "Thai"
+msgstr "Тайский"
+
+msgid "Tigrinya"
+msgstr "Тигринья"
+
+msgid "Turkmen"
+msgstr "Туркменский"
+
+msgid "Tagalog"
+msgstr "Тагальский"
+
+msgid "Tswana"
+msgstr "Тсвана"
+
+msgid "Tongan"
+msgstr "Тонганский"
 
 msgid "Turkish"
-msgstr ""
+msgstr "Турецкий"
+
+msgid "Tsonga"
+msgstr "Тсонга"
+
+msgid "Tatar"
+msgstr "Татарский"
+
+msgid "Twi"
+msgstr "Чви"
+
+msgid "Tahitian"
+msgstr "Таитянский"
+
+msgid "Uyghur"
+msgstr "Уйгурский"
 
 msgid "Ukrainian"
-msgstr ""
+msgstr "Украинский"
+
+msgid "Urdu"
+msgstr "Урду"
+
+msgid "Uzbek"
+msgstr "Узбекский"
+
+msgid "Venda"
+msgstr "Венда"
 
 msgid "Vietnamese"
-msgstr ""
+msgstr "Вьетнамский"
+
+msgid "Volapük"
+msgstr "Волапюк"
+
+msgid "Walloon"
+msgstr "Валлонский"
+
+msgid "Wolof"
+msgstr "Волоф"
+
+msgid "Xhosa"
+msgstr "Коса"
+
+msgid "Yiddish"
+msgstr "Идиш"
+
+msgid "Yoruba"
+msgstr "Йоруба"
+
+msgid "Zhuang"
+msgstr "Чжуанский"
 
 msgid "Chinese (Traditional)"
 msgstr ""
+
+msgid "Zulu"
+msgstr "Зулусский"
+
+#, fuzzy
+msgid "(no translation)"
+msgstr "переводы"
 
 #, fuzzy, tcl-format
 msgid "(default language: %s)"
 msgstr "Платформа по умолчанию: %s"
 
-#, fuzzy
-msgid "(no translation)"
-msgstr "переводы"
+msgid "Print..."
+msgstr "Печать..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr ""
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1400,9 +1902,6 @@ msgstr "Сохранить"
 
 msgid "Save As..."
 msgstr "Сохранить Как..."
-
-msgid "Print..."
-msgstr "Печать..."
 
 msgid "Paste Replace"
 msgstr "Вставка с заменой"
@@ -1515,6 +2014,9 @@ msgstr "Следующее окно"
 msgid "Previous Window"
 msgstr "Предыдущее окно"
 
+msgid "Close subwindows"
+msgstr ""
+
 msgid "Parent Window"
 msgstr "Родительское окно"
 
@@ -1610,13 +2112,9 @@ msgstr "Аудио включено"
 msgid "Audio off"
 msgstr "Аудио выключено"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-"(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
-"скобка']'] "
-
-msgid "Tcl:"
-msgstr "Tcl:"
+#, fuzzy
+msgid "Find source"
+msgstr "Найти последнюю ошибку"
 
 msgid "Pd"
 msgstr "Pd"
@@ -1667,6 +2165,14 @@ msgstr "Удалить"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "игнорируется '%s': невозможно распознать файл Pd"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr ""
+#~ "(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
+#~ "скобка']'] "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
 
 #~ msgid "Path..."
 #~ msgstr "Путь..."

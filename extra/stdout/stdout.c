@@ -5,8 +5,13 @@
 */
 
 #include "m_pd.h"
+#include "s_stuff.h"
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
+#include <fcntl.h>
+#endif
+
 static t_class *stdout_class;
 
 #define MODE_DEFAULT 0  /* default, FUDI style */
@@ -19,6 +24,9 @@ typedef struct _stdout
     t_object x_obj;
     int x_mode; /* 0=FUDI; 1=printf (no terminating semicolon); -1=binary */
     int x_flush; /* fflush() stdout after each message */
+#ifdef _WIN32
+    int x_setiobin;   /* we've set stdin and out to binary on MSW */
+#endif
 } t_stdout;
 
 static void *stdout_new(t_symbol*s, int argc, t_atom*argv)
@@ -62,8 +70,9 @@ static void *stdout_new(t_symbol*s, int argc, t_atom*argv)
                 /* unknown mode; ignore it */
         }
     }
-    if (gensym("#pd_binary_stdio")->s_thing)
-        x->x_mode = MODE_PDTILDE;
+#ifdef _WIN32
+    x->x_setiobin = 0;
+#endif
     return (x);
 }
 
@@ -101,19 +110,17 @@ static void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
 static void stdout_anything(t_stdout *x, t_symbol *s, int argc, t_atom *argv)
 {
     char msgbuf[MAXPDSTRING], *sp, *ep = msgbuf+MAXPDSTRING;
-    if (x->x_mode == MODE_BIN)
+    if (pd_extraflags && *pd_extraflags == 'b')
     {
-        if ((gensym("list") == s) || (gensym("float") == s) ||
-            (gensym("bang") == s))
-                stdout_binary(x, argc, argv);
-        else
-            pd_error(x,
- "stdout: only 'list' messages allowed in binary mode (got '%s')",
-                s->s_name);
-        return;
-    }
-    else if (x->x_mode == MODE_PDTILDE)
-    {
+            /* On Windows, set stdin and out to "binary" mode */
+#ifdef _WIN32
+        if (!x->x_setiobin)
+        {
+            setmode(fileno(stdout), O_BINARY);
+            setmode(fileno(stdin), O_BINARY);
+            x->x_setiobin = 1;
+        }
+#endif
         pd_tilde_putsymbol(s, stdout);
         for (; argc--; argv++)
         {
@@ -125,6 +132,25 @@ static void stdout_anything(t_stdout *x, t_symbol *s, int argc, t_atom *argv)
         putc(A_SEMI, stdout);
         if (x->x_flush)
             fflush(stdout);
+        return;
+    }
+    else if (x->x_mode == MODE_BIN)
+    {
+#ifdef _WIN32
+        if (!x->x_setiobin)
+        {
+            setmode(fileno(stdout), O_BINARY);
+            setmode(fileno(stdin), O_BINARY);
+            x->x_setiobin = 1;
+        }
+#endif
+       if ((gensym("list") == s) || (gensym("float") == s) ||
+            (gensym("bang") == s))
+                stdout_binary(x, argc, argv);
+        else
+            pd_error(x,
+ "stdout: only 'list' messages allowed in binary mode (got '%s')",
+                s->s_name);
         return;
     }
     msgbuf[0] = 0;

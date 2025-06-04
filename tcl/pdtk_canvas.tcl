@@ -53,24 +53,25 @@ if {[tk windowingsystem] eq "win32" || \
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
-        foreach {width height} [wm maxsize .] {break}
+        foreach {width height} [wm maxsize .] break
 
-        if {$w > $width} {
-            set w $width
-            set x 0
-        }
-        if {$h > $height} {
-            # 30 for window framing
-            set h [expr $height - $::menubarsize]
-            set y $::menubarsize
-        }
-
+        # get virtual root coordinates for minimum position
         set xmin [winfo vrootx .]
         set ymin [winfo vrooty .]
-        set x [expr ($x - $xmin) % $width + $xmin]
-        set y [expr ($y - $ymin) % $height + $ymin]
 
-        return [list ${x} ${y} ${w} ${h}]
+        # clip window size to screen size
+        set w [expr {min($w, $width)}]
+        set h [expr {min($h, $height - $::menubarsize)}]
+
+        # get max position
+        set xmax [expr {$xmin + $width - $w}]
+        set ymax [expr {$ymin + $height - $h}]
+
+        # clip given position
+        set x [expr {max(min($x, $xmax), $xmin)}]
+        set y [expr {max(min($y, $ymax), $ymin + $::menubarsize)}]
+
+        return [list $x $y $w $h]
     }
 } {
     proc pdtk_canvas_wrap_window {x y w h} {
@@ -98,7 +99,8 @@ proc pdtk_canvas_place_window {width height geometry} {
 #------------------------------------------------------------------------------#
 # canvas new/saveas
 
-proc pdtk_canvas_new {mytoplevel width height geometry editable} {
+proc pdtk_canvas_new {mytoplevel width height geometry editable \
+        {bgcolor "white"} } {
     if { "" eq $geometry } {
         # no position set: this is a new window (rather than one loaded from file)
         # we set a flag here, so we can query (and report) the actual geometry,
@@ -134,14 +136,15 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
         -yscrollcommand "$mytoplevel.yscroll set" \
-        -background white
+        -background $bgcolor
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
 
     # for some crazy reason, win32 mousewheel scrolling is in units of
-    # 120, and this forces Tk to interpret 120 to mean 1 scroll unit
-    if {$::windowingsystem eq "win32"} {
+    # 120, and as of TclTk-9.0 this is now the default on all platforms!
+    # the following forces Tk to interpret 120 to mean 1 scroll unit
+    if {$::windowingsystem eq "win32" || [package vsatisfies $::tk_version 9]} {
         $tkcanvas configure -xscrollincrement 1 -yscrollincrement 1
     }
 
@@ -206,7 +209,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
     set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
-    set message [format [_ "Do you want to save the changes you made in '%s'?"] $filename]
+    set message [_ "Do you want to save the changes you made in '%s'?" $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {
@@ -382,6 +385,10 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+    # delay until we are ready
+    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+}
+proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
     }
@@ -422,9 +429,19 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
 proc ::pdtk_canvas::scroll {tkcanvas axis amount} {
     if {$axis eq "x" && $::xscrollable($tkcanvas) == 1} {
         $tkcanvas xview scroll [expr {- ($amount)}] units
+        return
     }
     if {$axis eq "y" && $::yscrollable($tkcanvas) == 1} {
         $tkcanvas yview scroll [expr {- ($amount)}] units
+        return
+    }
+    if {$axis eq "xy" } {
+        # TclTk>=9 has 2D scrolling
+        lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY
+        if {$deltaX != 0 || $deltaY != 0} {
+            tk::ScrollByPixels $tkcanvas $deltaX $deltaY
+        }
+        return
     }
 }
 

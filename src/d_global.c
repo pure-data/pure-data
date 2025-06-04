@@ -224,9 +224,9 @@ static void sigreceive_setup(void)
         (t_newmethod)sigreceive_new, 0,
         sizeof(t_sigreceive), CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addcreator((t_newmethod)sigreceive_new, gensym("r~"),
-        A_DEFSYM, A_DEFFLOAT, 0);
+        A_DEFSYM, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_set, gensym("set"),
-        A_SYMBOL, 0);
+        A_DEFSYM, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigreceive_class, gensym("send-receive-tilde"));
@@ -396,7 +396,7 @@ static void sigthrow_setup(void)
     sigthrow_class = class_new(gensym("throw~"), (t_newmethod)sigthrow_new, 0,
         sizeof(t_sigthrow), CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addmethod(sigthrow_class, (t_method)sigthrow_set, gensym("set"),
-        A_SYMBOL, 0);
+        A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(sigthrow_class, t_sigthrow, x_f);
     class_addmethod(sigthrow_class, (t_method)sigthrow_dsp,
         gensym("dsp"), A_CANT, 0);
