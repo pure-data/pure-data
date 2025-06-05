@@ -142,9 +142,10 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+    pdgui_vmess(0, "crs ri rk rs", canvas, "itemconfigure", tag,
         "-width", zoom,
-        "-fill", x->x_gui.x_bcol);
+        "-fill", x->x_gui.x_bcol,
+        "-outline", THISGUI->i_foregroundcolor->s_name);
 
     sprintf(tag, "%pKNOB", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -157,9 +158,12 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+    if(x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs rA rs", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor->s_name);
+    else
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -190,16 +194,18 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
 static void slider_draw_select(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
-    char tag[128];
+    char tag[128], lcol_buf[8] = "#000000\0";
+    const char *col = THISGUI->i_foregroundcolor->s_name, *lcol = lcol_buf;
 
     if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
+        col = lcol = THISGUI->i_selectcolor->s_name;
+    else
+        sprintf(lcol_buf + 1, "%06x", x->x_gui.x_lcol);
 
     sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%pLABEL", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
 static void slider_draw_update(t_gobj *client, t_glist *glist)
