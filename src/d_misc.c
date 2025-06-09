@@ -141,27 +141,43 @@ typedef struct _snake_in
 {
     t_object x_obj;
     t_sample x_f;
-    int x_nchans;
+    int x_nin;
+    t_sample *x_copybuf;
+    int x_copysize;
 } t_snake_in;
+
+static void snake_in_tilde_free(t_snake_in *x)
+{
+    if (x->x_copybuf)
+        freebytes(x->x_copybuf, x->x_copysize * sizeof(t_sample));
+}
 
 static void snake_in_tilde_dsp(t_snake_in *x, t_signal **sp)
 {
-    int i;
-        /* create an n-channel output signal. sp has n+1 elements. */
-    signal_setmultiout(&sp[x->x_nchans], x->x_nchans);
-        /* add n copy operations to the DSP chain, one from each input */
-    for (i = 0; i < x->x_nchans; i++)
-         dsp_add_copy(sp[i]->s_vec,
-            sp[x->x_nchans]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+    int i, nchans = 0, offset, copysize;
+    for (i = 0; i < x->x_nin; i++)
+        nchans += sp[i]->s_nchans;
+    copysize = nchans * sp[0]->s_length;
+    x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
+        x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
+    x->x_copysize = copysize;
+        /* snapshot inputs before allocating output */
+    for (offset = 0, i = 0; i < x->x_nin; offset += sp[i]->s_nchans, i++)
+        dsp_add_copy(sp[i]->s_vec, x->x_copybuf + offset * sp[0]->s_length,
+            sp[i]->s_nchans * sp[0]->s_length);
+    signal_setmultiout(&sp[x->x_nin], nchans);
+    dsp_add_copy(x->x_copybuf, sp[x->x_nin]->s_vec, copysize);
 }
 
 static void *snake_in_tilde_new(t_floatarg fnchans)
 {
     t_snake_in *x = (t_snake_in *)pd_new(snake_in_tilde_class);
     int i;
-    if ((x->x_nchans = fnchans) <= 0)
-        x->x_nchans = 2;
-    for (i = 1; i < x->x_nchans; i++)
+    x->x_copybuf = 0;
+    x->x_copysize = 0;
+    if ((x->x_nin = fnchans) <= 0)
+        x->x_nin = 2;
+    for (i = 1; i < x->x_nin; i++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
     return (x);
@@ -231,8 +247,8 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 static void snake_tilde_setup(void)
 {
     snake_in_tilde_class = class_new(gensym("snake_in~"),
-        (t_newmethod)snake_in_tilde_new, 0, sizeof(t_snake_in),
-            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
+        (t_newmethod)snake_in_tilde_new, (t_method)snake_in_tilde_free,
+            sizeof(t_snake_in), CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(snake_in_tilde_class, t_snake_in, x_f);
     class_addmethod(snake_in_tilde_class, (t_method)snake_in_tilde_dsp,
         gensym("dsp"), 0);
