@@ -301,6 +301,86 @@ static void *snake_sum_tilde_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+/* ------------------------ snake_pick~ -------------------------- */
+
+static t_class *snake_pick_tilde_class;
+
+typedef struct _snake_pick
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_npick;        /* number of channels to pick */
+    int *x_indices;     /* array of channel indices */
+} t_snake_pick;
+
+static void snake_pick_tilde_dsp(t_snake_pick *x, t_signal **sp)
+{
+    int i, srcindex;
+    t_signal *inputcopy;
+
+        /* if no indices set, default to pass-through */
+    if (x->x_npick == 0)
+    {
+        signal_setmultiout(&sp[1], sp[0]->s_nchans);
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_nchans * sp[0]->s_length);
+        return;
+    }
+
+    signal_setmultiout(&sp[1], x->x_npick);
+        /* use temporary buffer to avoid overwriting input during reordering */
+    inputcopy = signal_new(sp[0]->s_length, sp[0]->s_nchans, sp[0]->s_sr, 0);
+    for (i = 0; i < sp[0]->s_nchans; i++)
+        dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
+            inputcopy->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+    for (i = 0; i < x->x_npick; i++)
+    {
+        if ((srcindex = x->x_indices[i]) >= 0 && srcindex < sp[0]->s_nchans)
+            dsp_add_copy(inputcopy->s_vec + srcindex * sp[0]->s_length,
+                sp[1]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+        else
+                /* output zeros for invalid or missing input channels */
+            dsp_add_zero(sp[1]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+    }
+}
+
+static void snake_pick_tilde_channels(t_snake_pick *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int i;
+
+        /* (re)allocate indices array if channel count changed */
+    if (argc != x->x_npick)
+    {
+        if (x->x_indices)
+            freebytes(x->x_indices, x->x_npick * sizeof(int));
+        x->x_indices = argc ? (int *)getbytes(argc * sizeof(int)) : NULL;
+        x->x_npick = argc;
+    }
+
+        /* update indices (convert from 1-based to 0-based) */
+    for (i = 0; i < argc; i++)
+        x->x_indices[i] = (int)atom_getfloatarg(i, argc, argv) - 1;
+    canvas_update_dsp();
+}
+
+static void snake_pick_tilde_free(t_snake_pick *x)
+{
+    if (x->x_indices)
+        freebytes(x->x_indices, x->x_npick * sizeof(int));
+}
+
+static void *snake_pick_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_snake_pick *x = (t_snake_pick *)pd_new(snake_pick_tilde_class);
+
+    x->x_npick = 0;
+    x->x_indices = NULL;
+    snake_pick_tilde_channels(x, s, argc, argv);
+
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_list, gensym("channels"));
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -321,6 +401,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "sum"))
             pd_this->pd_newest =
                 snake_sum_tilde_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "pick"))
+            pd_this->pd_newest =
+                snake_pick_tilde_new(s, argc-1, argv+1);
         else
         {
             pd_error(0, "snake~ %s: unknown function", str);
@@ -366,6 +449,16 @@ static void snake_tilde_setup(void)
     class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_bypass,
         gensym("bypass"), A_FLOAT, 0);
     class_sethelpsymbol(snake_sum_tilde_class, gensym("snake-tilde"));
+
+    snake_pick_tilde_class = class_new(gensym("snake_pick~"),
+        (t_newmethod)snake_pick_tilde_new, (t_method)snake_pick_tilde_free,
+            sizeof(t_snake_pick), CLASS_MULTICHANNEL, A_GIMME, 0);
+    CLASS_MAINSIGNALIN(snake_pick_tilde_class, t_snake_pick, x_f);
+    class_addmethod(snake_pick_tilde_class, (t_method)snake_pick_tilde_dsp,
+        gensym("dsp"), 0);
+    class_addmethod(snake_pick_tilde_class, (t_method)snake_pick_tilde_channels,
+        gensym("channels"), A_GIMME, 0);
+    class_sethelpsymbol(snake_pick_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
