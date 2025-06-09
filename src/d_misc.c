@@ -141,27 +141,32 @@ typedef struct _snake_in
 {
     t_object x_obj;
     t_sample x_f;
-    int x_nchans;
+    int x_nin;
 } t_snake_in;
 
 static void snake_in_tilde_dsp(t_snake_in *x, t_signal **sp)
 {
-    int i;
-        /* create an n-channel output signal. sp has n+1 elements. */
-    signal_setmultiout(&sp[x->x_nchans], x->x_nchans);
-        /* add n copy operations to the DSP chain, one from each input */
-    for (i = 0; i < x->x_nchans; i++)
-         dsp_add_copy(sp[i]->s_vec,
-            sp[x->x_nchans]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+    int i, j, outchan = 0;
+        /* count total channels across all (multichannel) inputs */
+    for (i = 0; i < x->x_nin; i++)
+        outchan += sp[i]->s_nchans;
+        /* create output signal with total channel count. sp has n+1 elements. */
+    signal_setmultiout(&sp[x->x_nin], outchan);
+        /* add copy operations to DSP chain, one per channel from each input */
+    for (outchan = 0, i = 0; i < x->x_nin; i++)
+        for (j = 0; j < sp[i]->s_nchans; j++, outchan++)
+            dsp_add_copy(sp[i]->s_vec + j * sp[i]->s_length,
+                sp[x->x_nin]->s_vec + outchan * sp[i]->s_length,
+                sp[i]->s_length);
 }
 
 static void *snake_in_tilde_new(t_floatarg fnchans)
 {
     t_snake_in *x = (t_snake_in *)pd_new(snake_in_tilde_class);
     int i;
-    if ((x->x_nchans = fnchans) <= 0)
-        x->x_nchans = 2;
-    for (i = 1; i < x->x_nchans; i++)
+    if ((x->x_nin = fnchans) <= 0)
+        x->x_nin = 2;
+    for (i = 1; i < x->x_nin; i++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     outlet_new(&x->x_obj, &s_signal);
     return (x);
