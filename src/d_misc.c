@@ -205,6 +205,37 @@ static void *snake_out_tilde_new(t_floatarg fnchans)
     return (x);
 }
 
+/* ------------------------ snake_count~ -------------------------- */
+
+static t_class *snake_count_tilde_class;
+
+typedef struct _snake_count
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_snake_count;
+
+static void snake_count_tilde_dsp(t_snake_count *x, t_signal **sp)
+{
+        /* store actual input channel count */
+    x->x_nchans = sp[0]->s_nchans;
+}
+
+static void snake_count_tilde_bang(t_snake_count *x)
+{
+    outlet_float(x->x_obj.ob_outlet, x->x_nchans);
+}
+
+static void *snake_count_tilde_new(void)
+{
+    t_snake_count *x = (t_snake_count *)pd_new(snake_count_tilde_class);
+        /* default to single channel */
+    x->x_nchans = 1;
+    outlet_new(&x->x_obj, &s_float);
+    return (x);
+}
+
 static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -219,6 +250,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "out"))
             pd_this->pd_newest =
                 snake_out_tilde_new(atom_getfloatarg(1, argc, argv));
+        else if (!strcmp(str, "count"))
+            pd_this->pd_newest =
+                snake_count_tilde_new();
         else
         {
             pd_error(0, "list %s: unknown function", str);
@@ -245,6 +279,15 @@ static void snake_tilde_setup(void)
     class_addmethod(snake_out_tilde_class, (t_method)snake_out_tilde_dsp,
         gensym("dsp"), 0);
     class_sethelpsymbol(snake_out_tilde_class, gensym("snake-tilde"));
+
+    snake_count_tilde_class = class_new(gensym("snake_count~"),
+        (t_newmethod)snake_count_tilde_new, 0, sizeof(t_snake_count),
+            CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(snake_count_tilde_class, t_snake_count, x_f);
+    class_addmethod(snake_count_tilde_class, (t_method)snake_count_tilde_dsp,
+        gensym("dsp"), 0);
+    class_addbang(snake_count_tilde_class, snake_count_tilde_bang);
+    class_sethelpsymbol(snake_count_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
