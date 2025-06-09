@@ -241,6 +241,37 @@ static void *snake_count_tilde_new(void)
     return (x);
 }
 
+/* ------------------------ snake_sum~ -------------------------- */
+
+static t_class *snake_sum_tilde_class;
+
+typedef struct _snake_sum
+{
+    t_object x_obj;
+    t_sample x_f;
+} t_snake_sum;
+
+static void snake_sum_tilde_dsp(t_snake_sum *x, t_signal **sp)
+{
+    int i;
+        /* create single channel output signal */
+    signal_setmultiout(&sp[1], 1);
+        /* copy first channel to output */
+    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_length);
+        /* add remaining channels */
+    for (i = 1; i < sp[0]->s_nchans; i++)
+        dsp_add_plus(sp[1]->s_vec,
+            sp[0]->s_vec + i * sp[0]->s_length,
+            sp[1]->s_vec, sp[0]->s_length);
+}
+
+static void *snake_sum_tilde_new(void)
+{
+    t_snake_sum *x = (t_snake_sum *)pd_new(snake_sum_tilde_class);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -258,6 +289,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "count"))
             pd_this->pd_newest =
                 snake_count_tilde_new();
+        else if (!strcmp(str, "sum"))
+            pd_this->pd_newest =
+                snake_sum_tilde_new();
         else
         {
             pd_error(0, "list %s: unknown function", str);
@@ -293,6 +327,14 @@ static void snake_tilde_setup(void)
         gensym("dsp"), 0);
     class_addbang(snake_count_tilde_class, snake_count_tilde_bang);
     class_sethelpsymbol(snake_count_tilde_class, gensym("snake-tilde"));
+
+    snake_sum_tilde_class = class_new(gensym("snake_sum~"),
+        (t_newmethod)snake_sum_tilde_new, 0, sizeof(t_snake_sum),
+            CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(snake_sum_tilde_class, t_snake_sum, x_f);
+    class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(snake_sum_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
