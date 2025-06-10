@@ -352,6 +352,54 @@ static void *snake_zip_tilde_new(t_floatarg fnin)
     return (x);
 }
 
+/* ------------------------ snake_unzip~ ------------------------- */
+
+static t_class *snake_unzip_tilde_class;
+
+typedef struct _snake_unzip
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nout;         /* number of outputs */
+} t_snake_unzip;
+
+static void snake_unzip_tilde_dsp(t_snake_unzip *x, t_signal **sp)
+{
+    int i, j, nchans = sp[0]->s_nchans;
+    int chans_per_out = (nchans + x->x_nout - 1) / x->x_nout;  /* round up */
+
+        /* set up output signals - each gets same number of channels */
+    for (i = 0; i < x->x_nout; i++)
+        signal_setmultiout(&sp[i + 1], chans_per_out);
+
+        /* de-interlace channels */
+    for (i = 0; i < x->x_nout; i++)              /* for each output */
+        for (j = 0; j < chans_per_out; j++)      /* for each output channel */
+        {
+            int in_ch = i + j * x->x_nout;       /* input channel index */
+            if (in_ch < nchans)
+                    /* copy input channel to de-interlaced output position */
+                dsp_add_copy(sp[0]->s_vec + in_ch * sp[0]->s_length,
+                    sp[i + 1]->s_vec + j * sp[0]->s_length,
+                    sp[0]->s_length);
+            else
+                    /* fill missing channels with zeros */
+                dsp_add_zero(sp[i + 1]->s_vec + j * sp[0]->s_length,
+                    sp[0]->s_length);
+        }
+}
+
+static void *snake_unzip_tilde_new(t_floatarg fnout)
+{
+    t_snake_unzip *x = (t_snake_unzip *)pd_new(snake_unzip_tilde_class);
+    int i;
+    if ((x->x_nout = fnout) <= 0)
+        x->x_nout = 2;
+    for (i = 0; i < x->x_nout; i++)
+        outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 /* ------------------------ snake_split~ ------------------------- */
 
 static t_class *snake_split_tilde_class;
@@ -583,6 +631,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "zip"))
             pd_this->pd_newest =
                 snake_zip_tilde_new(atom_getfloatarg(1, argc, argv));
+        else if (!strcmp(str, "unzip"))
+            pd_this->pd_newest =
+                snake_unzip_tilde_new(atom_getfloatarg(1, argc, argv));
         else if (!strcmp(str, "split"))
             pd_this->pd_newest =
                 snake_split_tilde_new(atom_getfloatarg(1, argc, argv));
@@ -645,6 +696,14 @@ static void snake_tilde_setup(void)
     class_addmethod(snake_zip_tilde_class, (t_method)snake_zip_tilde_dsp,
         gensym("dsp"), 0);
     class_sethelpsymbol(snake_zip_tilde_class, gensym("snake-tilde"));
+
+    snake_unzip_tilde_class = class_new(gensym("snake_unzip~"),
+        (t_newmethod)snake_unzip_tilde_new, 0, sizeof(t_snake_unzip),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(snake_unzip_tilde_class, t_snake_unzip, x_f);
+    class_addmethod(snake_unzip_tilde_class, (t_method)snake_unzip_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(snake_unzip_tilde_class, gensym("snake-tilde"));
 
     snake_split_tilde_class = class_new(gensym("snake_split~"),
         (t_newmethod)snake_split_tilde_new, 0, sizeof(t_snake_split),
