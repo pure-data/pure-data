@@ -301,6 +301,74 @@ static void *snake_sum_tilde_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+/* ------------------------ snake_split~ ------------------------- */
+
+static t_class *snake_split_tilde_class;
+
+typedef struct _snake_split
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_index;        /* split index (0-based) */
+} t_snake_split;
+
+static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
+{
+    int i, nchans = sp[0]->s_nchans;
+    int left_chans, right_chans;
+
+        /* calculate output channel counts */
+    if (x->x_index <= 0) {
+        left_chans = 1;     /* single channel of zeros */
+        right_chans = nchans;
+    } else if (x->x_index >= nchans) {
+        left_chans = nchans;
+        right_chans = 1;    /* single channel of zeros */
+    } else {
+        left_chans = x->x_index;
+        right_chans = nchans - x->x_index;
+    }
+
+        /* set up output signals */
+    signal_setmultiout(&sp[1], left_chans);   /* left output */
+    signal_setmultiout(&sp[2], right_chans);  /* right output */
+
+        /* route channels to outputs */
+    if (x->x_index <= 0) {
+            /* left output: zeros, right output: all channels */
+        dsp_add_zero(sp[1]->s_vec, sp[1]->s_length);
+        dsp_add_copy(sp[0]->s_vec, sp[2]->s_vec, nchans * sp[0]->s_length);
+    } else if (x->x_index >= nchans) {
+            /* left output: all channels, right output: zeros */
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * sp[0]->s_length);
+        dsp_add_zero(sp[2]->s_vec, sp[2]->s_length);
+    } else {
+            /* normal split */
+        for (i = 0; i < left_chans; i++)
+            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
+                sp[1]->s_vec + i * sp[1]->s_length, sp[0]->s_length);
+        for (i = 0; i < right_chans; i++)
+            dsp_add_copy(sp[0]->s_vec + (x->x_index + i) * sp[0]->s_length,
+                sp[2]->s_vec + i * sp[2]->s_length, sp[0]->s_length);
+    }
+}
+
+static void snake_split_tilde_index(t_snake_split *x, t_floatarg f)
+{
+    x->x_index = (int)f;
+    canvas_update_dsp();
+}
+
+static void *snake_split_tilde_new(t_floatarg f)
+{
+    t_snake_split *x = (t_snake_split *)pd_new(snake_split_tilde_class);
+    x->x_index = (int)f;
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_float, gensym("index"));
+    outlet_new(&x->x_obj, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 /* ------------------------ snake_pick~ -------------------------- */
 
 static t_class *snake_pick_tilde_class;
@@ -401,6 +469,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "sum"))
             pd_this->pd_newest =
                 snake_sum_tilde_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "split"))
+            pd_this->pd_newest =
+                snake_split_tilde_new(atom_getfloatarg(1, argc, argv));
         else if (!strcmp(str, "pick"))
             pd_this->pd_newest =
                 snake_pick_tilde_new(s, argc-1, argv+1);
@@ -449,6 +520,16 @@ static void snake_tilde_setup(void)
     class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_bypass,
         gensym("bypass"), A_FLOAT, 0);
     class_sethelpsymbol(snake_sum_tilde_class, gensym("snake-tilde"));
+
+    snake_split_tilde_class = class_new(gensym("snake_split~"),
+        (t_newmethod)snake_split_tilde_new, 0, sizeof(t_snake_split),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(snake_split_tilde_class, t_snake_split, x_f);
+    class_addmethod(snake_split_tilde_class, (t_method)snake_split_tilde_dsp,
+        gensym("dsp"), 0);
+    class_addmethod(snake_split_tilde_class, (t_method)snake_split_tilde_index,
+        gensym("index"), A_FLOAT, 0);
+    class_sethelpsymbol(snake_split_tilde_class, gensym("snake-tilde"));
 
     snake_pick_tilde_class = class_new(gensym("snake_pick~"),
         (t_newmethod)snake_pick_tilde_new, (t_method)snake_pick_tilde_free,
