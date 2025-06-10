@@ -294,7 +294,7 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
                 snake_sum_tilde_new();
         else
         {
-            pd_error(0, "list %s: unknown function", str);
+            pd_error(0, "snake~ %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }
