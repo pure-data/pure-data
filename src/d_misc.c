@@ -249,25 +249,54 @@ typedef struct _snake_sum
 {
     t_object x_obj;
     t_sample x_f;
+    int x_bypass;
 } t_snake_sum;
 
 static void snake_sum_tilde_dsp(t_snake_sum *x, t_signal **sp)
 {
     int i;
-        /* create single channel output signal */
-    signal_setmultiout(&sp[1], 1);
-        /* copy first channel to output */
-    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_length);
-        /* add remaining channels */
-    for (i = 1; i < sp[0]->s_nchans; i++)
-        dsp_add_plus(sp[1]->s_vec,
-            sp[0]->s_vec + i * sp[0]->s_length,
-            sp[1]->s_vec, sp[0]->s_length);
+    if (x->x_bypass)
+    {
+            /* bypass mode: forward all input channels */
+        signal_setmultiout(&sp[1], sp[0]->s_nchans);
+        for (i = 0; i < sp[0]->s_nchans; i++)
+            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
+                sp[1]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+    }
+    else
+    {
+            /* create single channel output signal */
+        signal_setmultiout(&sp[1], 1);
+            /* copy first channel to output */
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_length);
+            /* add remaining channels */
+        for (i = 1; i < sp[0]->s_nchans; i++)
+            dsp_add_plus(sp[1]->s_vec,
+                sp[0]->s_vec + i * sp[0]->s_length,
+                sp[1]->s_vec, sp[0]->s_length);
+    }
 }
 
-static void *snake_sum_tilde_new(void)
+static void snake_sum_tilde_bypass(t_snake_sum *x, t_float f)
+{
+    x->x_bypass = (f != 0);
+    canvas_update_dsp();
+}
+
+static void *snake_sum_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_snake_sum *x = (t_snake_sum *)pd_new(snake_sum_tilde_class);
+    x->x_bypass = 0;
+
+        /* check for bypass flag */
+    while (argc--) {
+        if (argv->a_type == A_SYMBOL) {
+            if (argv->a_w.w_symbol == gensym("-b"))
+                x->x_bypass = 1;
+        }
+        argv++;
+    }
+
     outlet_new(&x->x_obj, &s_signal);
     return (x);
 }
@@ -291,7 +320,7 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
                 snake_count_tilde_new();
         else if (!strcmp(str, "sum"))
             pd_this->pd_newest =
-                snake_sum_tilde_new();
+                snake_sum_tilde_new(s, argc-1, argv+1);
         else
         {
             pd_error(0, "snake~ %s: unknown function", str);
@@ -330,10 +359,12 @@ static void snake_tilde_setup(void)
 
     snake_sum_tilde_class = class_new(gensym("snake_sum~"),
         (t_newmethod)snake_sum_tilde_new, 0, sizeof(t_snake_sum),
-            CLASS_MULTICHANNEL, 0);
+            CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(snake_sum_tilde_class, t_snake_sum, x_f);
     class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_dsp,
         gensym("dsp"), 0);
+    class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_bypass,
+        gensym("bypass"), A_FLOAT, 0);
     class_sethelpsymbol(snake_sum_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
