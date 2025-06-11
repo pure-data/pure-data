@@ -528,6 +528,7 @@ nobase_dist_libpd_DATA = \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
      ./sound/bell.aiff \
+     ./sound/stereo.wav \
      ./sound/voice.wav \
      ./sound/voice2.wav \
      $(empty)
