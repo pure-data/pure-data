@@ -111,7 +111,7 @@
 #X text 85 738 as above for "pointer", f 65;
 #X text 11 693 ARGUMENTS FOR VPOINTER:;
 #X text 85 396 equal <pointer> -;
-#X text 205 139 move and output next pointer or "bang" to right outlet if we reach the end of the list. Optional "count" to specify numnber of items forward \, "template" to filter for a specific template \, and "selected" \, nonzero to specify filtering for a selected item., f 55;
+#X text 205 139 move and output next pointer or "bang" to right outlet if we reach the end of the list. Optional "count" to specify number of items forward \, "template" to filter for a specific template \, and "selected" \, nonzero to specify filtering for a selected item., f 55;
 #X text 208 221 short for "next 1 - <float>., f 55;
 #X text 55 281 [<field2> <value2>...;
 #X text 14 267 set <field> <value>;
@@ -173,8 +173,8 @@
 #X obj 548 438 pointer;
 #X floatatom 548 390 5 -20 80 0 - - - 0;
 #X msg 548 413 traverse pd-set_and_get \, next \, set array1 1 y \$1;
-#X text 31 395 To set one or more fields \, send "set" with a field name and a value \, which may be repeated as desired. To set a field within an array \, name the array \, the element numnber \, and the field of the array element like this. (You can enter sub-arrays recursively too). If you set a text field the remaining arguments of the message become the new text (so that should be the last thing you set in this message)., f 71;
-#X text 97 631 here are teh templates. The object belongs to "template3" and has x \, y \, "list1" \, and "array1" as fields. Array1 has elements whose template \, "pointer-template3-element" \, has x \, y \, and "list2" fields.;
+#X text 31 395 To set one or more fields \, send "set" with a field name and a value \, which may be repeated as desired. To set a field within an array \, name the array \, the element number \, and the field of the array element like this. (You can enter sub-arrays recursively too). If you set a text field the remaining arguments of the message become the new text (so that should be the last thing you set in this message)., f 71;
+#X text 97 631 here are the templates. The object belongs to "template3" and has x \, y \, "list1" \, and "array1" as fields. Array1 has elements whose template \, "pointer-template3-element" \, has x \, y \, and "list2" fields.;
 #X text 662 385 set list1;
 #X text 663 454 change an array element;
 #X text 653 534 set x and list1 both;

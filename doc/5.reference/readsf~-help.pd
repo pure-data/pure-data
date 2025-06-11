@@ -86,7 +86,7 @@
 #X msg 125 180 channels 1;
 #X msg 113 139 start;
 #X msg 135 210 channels 2;
-#X text 226 172 The channels message is able to change the number of channels in the connection dinamically, f 31;
+#X text 226 172 The channels message is able to change the number of channels in the connection dynamically, f 31;
 #X obj 82 423 declare -stdpath ./, f 20;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;

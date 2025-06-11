@@ -31,7 +31,7 @@
 #X text 173 160 set <1> or clear <0> "unique" flag., f 47;
 #X text 117 230 float - store flag: true (nonzero) or false (zero)., f 57;
 #X text 60 180 count <float> -;
-#X text 173 179 count the number of stored values that corrspond to the given float (output is on the 2nd outlet)., f 49;
+#X text 173 179 count the number of stored values that correspond to the given float (output is on the 2nd outlet)., f 49;
 #X text 111 332 float -;
 #X text 174 333 output count value on "count" message.;
 #X text 118 351 bang -;
