@@ -449,6 +449,66 @@ static void *snake_pick_tilde_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+/* ------------------------ snake_fromlist~ ------------------------- */
+
+static t_class *snake_fromlist_tilde_class;
+
+typedef struct _snake_fromlist
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;       /* number of channels (list length) */
+    t_sample *x_values; /* array of channel values */
+} t_snake_fromlist;
+
+static void snake_fromlist_tilde_dsp(t_snake_fromlist *x, t_signal **sp)
+{
+    int i;
+    signal_setmultiout(&sp[0], x->x_nchans);
+
+        /* generate constant signals for each channel */
+    for (i = 0; i < x->x_nchans; i++)
+        dsp_add_scalarcopy(&x->x_values[i], sp[0]->s_vec + i * sp[0]->s_length,
+            sp[0]->s_length);
+}
+
+static void snake_fromlist_tilde_list(t_snake_fromlist *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int i, new_nchans = argc ? argc : 1;
+
+    if (new_nchans != x->x_nchans)
+    {
+        x->x_values = (t_sample *)resizebytes(x->x_values,
+            x->x_nchans * sizeof(t_sample), new_nchans * sizeof(t_sample));
+        x->x_nchans = new_nchans;
+    }
+
+    for (i = 0; i < argc; i++)
+        x->x_values[i] = atom_getfloatarg(i, argc, argv);
+    if (!argc)
+        x->x_values[0] = 0;
+
+    canvas_update_dsp();
+}
+
+static void snake_fromlist_tilde_free(t_snake_fromlist *x)
+{
+    if (x->x_values)
+        freebytes(x->x_values, x->x_nchans * sizeof(t_sample));
+}
+
+static void *snake_fromlist_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_snake_fromlist *x = (t_snake_fromlist *)pd_new(snake_fromlist_tilde_class);
+
+    x->x_nchans = 0;
+    x->x_values = NULL;
+    snake_fromlist_tilde_list(x, s, argc, argv);
+
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -475,6 +535,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "pick"))
             pd_this->pd_newest =
                 snake_pick_tilde_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "fromlist"))
+            pd_this->pd_newest =
+                snake_fromlist_tilde_new(s, argc-1, argv+1);
         else
         {
             pd_error(0, "snake~ %s: unknown function", str);
@@ -540,6 +603,14 @@ static void snake_tilde_setup(void)
     class_addmethod(snake_pick_tilde_class, (t_method)snake_pick_tilde_channels,
         gensym("channels"), A_GIMME, 0);
     class_sethelpsymbol(snake_pick_tilde_class, gensym("snake-tilde"));
+
+    snake_fromlist_tilde_class = class_new(gensym("snake_fromlist~"),
+        (t_newmethod)snake_fromlist_tilde_new, (t_method)snake_fromlist_tilde_free,
+            sizeof(t_snake_fromlist), CLASS_MULTICHANNEL, A_GIMME, 0);
+    class_addmethod(snake_fromlist_tilde_class, (t_method)snake_fromlist_tilde_dsp,
+        gensym("dsp"), 0);
+    class_addlist(snake_fromlist_tilde_class, snake_fromlist_tilde_list);
+    class_sethelpsymbol(snake_fromlist_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
