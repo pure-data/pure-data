@@ -1,6 +1,6 @@
 #N struct rect float x float y float w float h;
-#N canvas 276 83 397 213 12;
-#N canvas 226 371 435 231 rect 0;
+#N canvas 200 116 397 213 12;
+#N canvas 158 373 435 231 rect 0;
 #X obj 211 156 pointer;
 #X msg 211 125 traverse pd-test \, bang;
 #X obj 80 69 filledpolygon 0 0 0 0 0 0 h w h w 0 0 0;
@@ -11,7 +11,7 @@
 #X connect 1 0 0 0;
 #X connect 5 0 3 0;
 #X restore 115 121 pd rect;
-#N canvas 700 38 649 658 output 1;
+#N canvas 618 38 649 658 output 1;
 #X scalar rect 57 179 2 10 \;;
 #X scalar rect 82 179 1 10 \;;
 #X scalar rect 107 179 1 10 \;;
@@ -347,7 +347,7 @@
 #X text 304 72 show the proportions.;
 #X coords 0 658 1 657 0 0 0;
 #X restore 114 149 pd output;
-#N canvas 386 64 875 580 generator 0;
+#N canvas 303 158 875 580 generator 0;
 #X obj 664 101 r start;
 #X obj 664 169 pointer;
 #X msg 98 31 \; pd-output clear;
