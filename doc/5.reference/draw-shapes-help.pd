@@ -1,12 +1,12 @@
 #N struct drawshapes-template float x float y float weasel float dog float cat;
-#N canvas 603 165 589 245 12;
+#N canvas 580 151 589 245 12;
 #X text 20 206 see also:;
 #X obj 164 207 plot;
 #X obj 21 10 drawpolygon;
 #X obj 21 34 drawcurve;
 #X obj 116 11 filledpolygon;
 #X obj 117 34 filledcurve;
-#N canvas 376 181 944 504 drawshapes-template 0;
+#N canvas 271 214 944 504 drawshapes-template 0;
 #X msg 41 299 1;
 #X msg 74 299 0;
 #X msg 514 19 1;
@@ -41,12 +41,11 @@
 #X scalar drawshapes-template 67 84 72 200 28 \;;
 #X coords 0 365 1 364 0 0 0;
 #X restore 280 157 pd drawshapes-data;
-#X text 370 208 updated for Pd version 0.51.;
 #X text 222 13 - draw shapes for data structures, f 17;
 #X obj 204 207 set;
 #X obj 96 207 drawtext;
 #X obj 8 67 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#N canvas 714 72 573 494 reference 0;
+#N canvas 671 82 573 462 reference 0;
 #X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
 #X obj 6 106 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 6 144 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
@@ -81,3 +80,4 @@
 #X obj 238 207 get;
 #X text 109 130 explanation is here -->;
 #X text 73 79 Use these objects to draw straight and curved shapes according in a scalar., f 62;
+#X text 370 208 updated for Pd version 0.56;
