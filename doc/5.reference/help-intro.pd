@@ -1,4 +1,4 @@
-#N canvas 419 23 590 723 12;
+#N canvas 419 34 590 723 12;
 #X declare;
 #X obj 54 2364 delay;
 #X obj 54 2416 metro;
@@ -507,3 +507,4 @@
 #X obj 76 226 all_guis;
 #X text 143 225 <--;
 #X text 183 7473 - these used to be cheap 8 bits versions of square root functions but now are the same as srqt~] and [rsqrt~] (so just use them instead), f 51;
+#X obj 114 6648 vpointer;
