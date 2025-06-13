@@ -1,6 +1,6 @@
 #N canvas 368 38 736 636 12;
 #X declare -stdpath ./;
-#N canvas 86 373 1216 368 trace-list 1;
+#N canvas 64 373 1216 368 trace-list 1;
 #X coords 0 92 1 91.75 0 0 0;
 #X restore 567 541 pd trace-list;
 #N canvas 375 90 539 284 trace-template 0;
@@ -111,6 +111,8 @@
 #X obj 351 69 cnv 19 451 88 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-sample 110250 float 2;
+#A color 0;
+#A width 2;
 #X coords 0 1 110250 -1 453 90 1 0 0;
 #X restore 350 68 graph;
 #X connect 0 0 7 0;
