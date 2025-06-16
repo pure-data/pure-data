@@ -608,6 +608,43 @@ static void *snake_fromlist_tilde_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+/* ------------------------ snake_shape~ -------------------------- */
+
+static t_class *snake_shape_tilde_class;
+
+typedef struct _snake_shape
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_snake_shape;
+
+static void snake_shape_tilde_dsp(t_snake_shape *x, t_signal **sp)
+{
+    int i, n = sp[0]->s_length;
+    int inchans = sp[0]->s_nchans;
+    int outchans = x->x_nchans ? x->x_nchans : inchans;
+
+    signal_setmultiout(&sp[1], outchans);
+    for (i = 0; i < outchans; i++)
+        dsp_add_copy(sp[0]->s_vec + (i % inchans) * n,
+            sp[1]->s_vec + i * n, n);
+}
+
+static void snake_shape_tilde_set(t_snake_shape *x, t_floatarg f)
+{
+    if (x->x_nchans != (x->x_nchans = (f <= 0 ? 0 : (int)f)))
+        canvas_update_dsp();
+}
+
+static void *snake_shape_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_snake_shape *x = (t_snake_shape *)pd_new(snake_shape_tilde_class);
+    snake_shape_tilde_set(x, atom_getfloatarg(0, argc, argv));
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
 static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -643,6 +680,9 @@ static void *snake_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else if (!strcmp(str, "fromlist"))
             pd_this->pd_newest =
                 snake_fromlist_tilde_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "shape"))
+            pd_this->pd_newest =
+                snake_shape_tilde_new(s, argc-1, argv+1);
         else
         {
             pd_error(0, "snake~ %s: unknown function", str);
@@ -732,6 +772,16 @@ static void snake_tilde_setup(void)
         gensym("dsp"), 0);
     class_addlist(snake_fromlist_tilde_class, snake_fromlist_tilde_list);
     class_sethelpsymbol(snake_fromlist_tilde_class, gensym("snake-tilde"));
+
+    snake_shape_tilde_class = class_new(gensym("snake_shape~"),
+        (t_newmethod)snake_shape_tilde_new, 0,
+        sizeof(t_snake_shape), CLASS_MULTICHANNEL, A_GIMME, 0);
+    CLASS_MAINSIGNALIN(snake_shape_tilde_class, t_snake_shape, x_f);
+    class_addmethod(snake_shape_tilde_class, (t_method)snake_shape_tilde_dsp,
+        gensym("dsp"), 0);
+    class_addmethod(snake_shape_tilde_class, (t_method)snake_shape_tilde_set,
+        gensym("set"), A_FLOAT, 0);
+    class_sethelpsymbol(snake_shape_tilde_class, gensym("snake-tilde"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
