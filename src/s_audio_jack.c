@@ -218,7 +218,8 @@ typedef struct _jclient {
     int output;
     struct _jclient *next;
 } t_jclient;
-static const char** jack_get_clients(void)
+
+static char **jack_get_clients(void)
 {
     int jack_physicalsource = -1;
     int jack_physicalsink = -1;
@@ -255,7 +256,8 @@ static const char** jack_get_clients(void)
             tmp_client_name[ match_info.rm_eo - match_info.rm_so ] = '\0';
 
                 /* check if we already have this port */
-            for(tmp_client=available_clients; tmp_client; tmp_client=tmp_client->next)
+            for (tmp_client=available_clients; tmp_client;
+                tmp_client=tmp_client->next)
             {
                 last_client = tmp_client;
                 if(strcmp(tmp_client_name, tmp_client->name) == 0) {
@@ -280,7 +282,7 @@ static const char** jack_get_clients(void)
                 /* remember the capabilities of this client;
                  * we keep input and output separate,
                  * so we can distinguish between physical inputs and outputs
-                 * (e.g. a client that has physical outputs but no physical inputs)
+                 * (e.g. a client with physical outputs but no physical inputs)
                  */
             if(port && jack_port_flags) {
                 int flags = jack_port_flags(port);
@@ -303,21 +305,24 @@ static const char** jack_get_clients(void)
             tmp_client = tmp_client->next)
         {
 #if 0
-            printf("JACK client#%d: '%s' source:%d sink:%d\n", num_clients, tmp_client->name, tmp_client->output, tmp_client->input);
+            printf("JACK client#%d: '%s' source:%d sink:%d\n", num_clients,
+                tmp_client->name, tmp_client->output, tmp_client->input);
 #endif
             jack_client_names[num_clients] = tmp_client->name;
             tmp_client->name = 0; /* so we don't free it later */
             if(tmp_client->input) {
                 if(jack_defaultsink < 0)
                     jack_defaultsink = num_clients;
-                if ((jack_physicalsink < 0) && (tmp_client->input & JackPortIsPhysical))
-                    jack_physicalsink = num_clients;
+                if ((jack_physicalsink < 0) && (tmp_client->input &
+                    JackPortIsPhysical))
+                        jack_physicalsink = num_clients;
             }
             if(tmp_client->output) {
                 if(jack_defaultsource < 0)
                     jack_defaultsource = num_clients;
-                if ((jack_physicalsource < 0) && (tmp_client->output & JackPortIsPhysical))
-                    jack_physicalsource = num_clients;
+                if ((jack_physicalsource < 0) && (tmp_client->output &
+                    JackPortIsPhysical))
+                        jack_physicalsource = num_clients;
             }
             num_clients++;
         }

@@ -2192,6 +2192,8 @@ static void canvas_donecanvasdialog(t_glist *x,
         /* LATER avoid doing 2 redraws here (possibly one inside setgraph) */
     canvas_setgraph(x, graphme, 0);
     canvas_dirty(x, 1);
+    if (x->gl_owner && x->gl_owner->gl_havewindow)
+        canvas_redraw(x->gl_owner);
     if (x->gl_havewindow)
         canvas_redraw(x);
     else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
