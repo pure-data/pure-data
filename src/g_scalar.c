@@ -440,7 +440,7 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     SETPOINTER(&at[0], &gp);
     SETFLOAT(&at[1], (t_float)dx);
     SETFLOAT(&at[2], (t_float)dy);
-    template_notify(template, gensym("displace"), 2, at);
+    template_notify(template, gensym("displace"), 3, at);
     scalar_redraw(x, glist);
 }
 
