@@ -625,7 +625,7 @@ EXTERN void scalar_addrtexts(t_scalar *y, t_glist *gl);
 EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 
-EXTERN int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
+EXTERN int scalar_doclick(t_word *data, t_template *pdtemplate, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,
     int shift, int alt, int dbl, int doit);
@@ -657,7 +657,7 @@ EXTERN t_symbol *template_getsymbol(t_template *x, t_symbol *fieldname,
     t_word *wp, int loud);
 EXTERN void template_setsymbol(t_template *x, t_symbol *fieldname,
     t_word *wp, t_symbol *s, int loud);
-void template_notifyforscalar(t_template *template, t_glist *owner,
+void template_notifyforscalar(t_template *x, t_glist *owner,
     t_scalar *sc, t_symbol *s, int argc, t_atom *argv);
 
 EXTERN t_template *gtemplate_get(t_pdstruct *x);
@@ -674,7 +674,7 @@ EXTERN void fielddesc_setcoord(t_fielddesc *f, t_template *tmpl,
 EXTERN t_float fielddesc_cvttocoord(t_fielddesc *f, t_float val);
 EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
-EXTERN int drawtext_gettype(t_gobj *z, t_template *template, int *onsetp);
+EXTERN int drawtext_gettype(t_gobj *z, t_template *pdtemplate, int *onsetp);
 EXTERN t_template *drawtext_gettemplate(t_gobj *z);
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
