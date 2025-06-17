@@ -145,7 +145,9 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 
 void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
+        /* always erase when flag=0 to avoid stale graphics on GOP resize */
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn &&
+        (flag == 0 || gobj_shouldvis(x, glist)))
         (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
 }
 
