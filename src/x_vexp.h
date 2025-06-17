@@ -210,6 +210,7 @@ struct ex_ex {
 #define EE_NOTABLE      0x08    /* NO TABLE */
 #define EE_NOVAR        0x10    /* NO VARIABLE */
 #define EE_BADSYM       0x20    /* Symbol passed for Vector */
+#define EE_YO_RANGE     0x40    /* $y index exceeds number of expressions */
 
 typedef struct expr {
 #ifdef PD

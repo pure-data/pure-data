@@ -1241,6 +1241,16 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                  * we need to look at the previous results buffer
                  */
                 optr->ex_type = ET_FLT;
+                if (eptr->ex_int >= expr->exp_nexpr) {
+                        if (!(expr->exp_error & EE_YO_RANGE)) {
+                                expr->exp_error |= EE_YO_RANGE;
+                                post("fexpr~: $y%d illegal: not that many expr's",
+                                                                    eptr->ex_int + 1);
+                                post("fexpr~: no error report till next reset");
+                        }
+                        optr->ex_flt = 0;
+                        return(++eptr);
+                }
                 if (idx == 0)
                         optr->ex_flt =
                         expr->exp_p_res[eptr->ex_int][expr->exp_vsize - 1];
@@ -1712,8 +1722,12 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                         i = -1;
                 }
                 if (eptr->ex_int >= expr->exp_nexpr) {
-                        post("fexpr~: $y%d illegal: not that many expr's",
-                                                                eptr->ex_int);
+                        if (!(expr->exp_error & EE_YO_RANGE)) {
+                                expr->exp_error |= EE_YO_RANGE;
+                                post("fexpr~: $y%d illegal: not that many expr's",
+                                                                    eptr->ex_int + 1);
+                                post("fexpr~: no error report till next reset");
+                        }
                         optr->ex_flt = 0;
                         return (reteptr);
                 }
