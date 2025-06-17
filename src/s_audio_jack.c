@@ -44,7 +44,7 @@ static int jack_isopening = 0;
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
-char *jack_client_names[MAX_CLIENTS];
+const char *jack_client_names[MAX_CLIENTS];
 static volatile int jack_dio_error;
 static volatile int jack_didshutdown;
 static t_audiocallback jack_callback;
