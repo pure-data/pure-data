@@ -50,6 +50,7 @@ EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
 extern int sys_batch;
+extern char sys_devicename[];
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
