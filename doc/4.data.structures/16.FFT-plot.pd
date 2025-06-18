@@ -1,6 +1,6 @@
 #N canvas 447 38 549 567 12;
 #X declare -stdpath ./;
-#N canvas 136 407 1188 313 peaks-list 1;
+#N canvas 92 407 1188 313 peaks-list 1;
 #X coords 0 313 1 312 0 0 0;
 #X restore 409 365 pd peaks-list;
 #X text 345 367 display:;
@@ -50,7 +50,7 @@
 #X obj 151 212 / 1000;
 #X obj 119 201 *;
 #X obj 26 17 inlet;
-#N canvas 441 320 449 241 record 1;
+#N canvas 441 320 449 241 record 0;
 #X obj 37 37 inlet;
 #X obj 53 145 adc~ 1;
 #X text 191 91 (set array size to 3 seconds);
@@ -121,6 +121,8 @@
 #X obj 351 69 cnv 19 451 88 empty empty empty 20 12 0 12 #e0e0e0 #404040 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-sample 62079 float 2;
+#A color 0;
+#A width 2;
 #X coords 0 1 62079 -1 453 90 1 0 0;
 #X restore 350 68 graph;
 #X connect 0 0 1 0;
