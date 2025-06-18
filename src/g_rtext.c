@@ -648,6 +648,8 @@ void rtext_retext(t_rtext *x)
     x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
     x->x_buf[x->x_bufsize] = 0;
     rtext_findscreenlocation(x);
+        /* force dimension recalculation after text conversion */
+    x->x_pixwidth = x->x_pixheight = -1;
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
 
