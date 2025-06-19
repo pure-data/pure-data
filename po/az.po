@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2004-03-12 22:22+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
@@ -1901,6 +1901,15 @@ msgstr "_Haqqında"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Yeni"
+
+msgid "Open"
+msgstr "Aç"
+
+msgid "Open Recent"
+msgstr ""
+
 msgid "Save"
 msgstr "Qeyd Et"
 
@@ -1908,20 +1917,30 @@ msgstr "Qeyd Et"
 msgid "Save As..."
 msgstr "Fərqli Qeyd Et"
 
+msgid "Quit"
+msgstr "Çıx"
+
+#, fuzzy
+msgid "Undo"
+msgstr "Uqanda"
+
+#, fuzzy
+msgid "Redo"
+msgstr "Səbəb"
+
+msgid "Cut"
+msgstr ""
+
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "Hamısı Sil"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "Tarix"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Altda"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Altda"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1933,37 +1952,20 @@ msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
-msgid "Edit Mode"
-msgstr "Təfərruatlar"
+msgid "Zoom In"
+msgstr "Altda"
 
 #, fuzzy
-msgid "Undo"
-msgstr "Uqanda"
-
-#, fuzzy
-msgid "Redo"
-msgstr "Səbəb"
-
-msgid "New"
-msgstr "Yeni"
-
-msgid "Open"
-msgstr "Aç"
-
-#, fuzzy
-msgid "Message..."
-msgstr "İsmarış"
-
-msgid "Cut"
-msgstr ""
-
-#, fuzzy
-msgid "Select All"
-msgstr "Hamısı Sil"
+msgid "Zoom Out"
+msgstr "Altda"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Siyahını təmizlə"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Təfərruatlar"
 
 msgid "Object"
 msgstr ""
@@ -2044,6 +2046,10 @@ msgstr "Bu səkmə/pəncərəni bağla"
 msgid "Parent Window"
 msgstr "Fayl Yolla"
 
+#, fuzzy
+msgid "Message..."
+msgstr "İsmarış"
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2099,12 +2105,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Seçimlər..."
-
-msgid "Open Recent"
-msgstr ""
-
-msgid "Quit"
-msgstr "Çıx"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1887,25 +1887,41 @@ msgstr "Περί..."
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Νέο"
+
+msgid "Open"
+msgstr "Άνοιγμα"
+
+msgid "Open Recent"
+msgstr "Άνοιγμα Πρόσφατου"
+
 msgid "Save"
 msgstr "Αποθήκευση"
 
 msgid "Save As..."
 msgstr "Αποθήκευση Ως..."
 
+msgid "Quit"
+msgstr "Έξοδος"
+
+msgid "Undo"
+msgstr "Αναίρεση"
+
+msgid "Redo"
+msgstr "Ακύρωση Αναίρεσης"
+
+msgid "Cut"
+msgstr "Αποκοπή"
+
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Επιλογή Όλων"
+
 msgid "Duplicate"
 msgstr "Αντίγραφο"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Εστίαση"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Εστίαση"
 
 msgid "Tidy Up"
 msgstr "Τακτοποίηση"
@@ -1916,33 +1932,19 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Κατάσταση Επεξεργασίας"
-
-msgid "Undo"
-msgstr "Αναίρεση"
-
-msgid "Redo"
-msgstr "Ακύρωση Αναίρεσης"
-
-msgid "New"
-msgstr "Νέο"
-
-msgid "Open"
-msgstr "Άνοιγμα"
+#, fuzzy
+msgid "Zoom In"
+msgstr "Εστίαση"
 
 #, fuzzy
-msgid "Message..."
-msgstr "Μήνυμα"
-
-msgid "Cut"
-msgstr "Αποκοπή"
-
-msgid "Select All"
-msgstr "Επιλογή Όλων"
+msgid "Zoom Out"
+msgstr "Εστίαση"
 
 msgid "Clear Console"
 msgstr "Καθαρισμός Κονσόλας"
+
+msgid "Edit Mode"
+msgstr "Κατάσταση Επεξεργασίας"
 
 msgid "Object"
 msgstr ""
@@ -2016,6 +2018,10 @@ msgstr "Κλείσιμο αυτού του παραθύρου;;"
 msgid "Parent Window"
 msgstr "Γονεϊκό Παράθυρο"
 
+#, fuzzy
+msgid "Message..."
+msgstr "Μήνυμα"
+
 msgid "HTML Manual..."
 msgstr "Εγχειρίδιο HTML..."
 
@@ -2071,12 +2077,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Προτιμήσεις"
-
-msgid "Open Recent"
-msgstr "Άνοιγμα Πρόσφατου"
-
-msgid "Quit"
-msgstr "Έξοδος"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

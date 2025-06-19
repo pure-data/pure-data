@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2010-01-29 21:09+0100\n"
 "Last-Translator: Andras Muranyi <muranyia@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1889,25 +1889,41 @@ msgstr "A Pd-ről"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Új"
+
+msgid "Open"
+msgstr "Megnyit"
+
+msgid "Open Recent"
+msgstr "Legutóbbi fájlok"
+
 msgid "Save"
 msgstr "Ment"
 
 msgid "Save As..."
 msgstr "Ment új néven..."
 
+msgid "Quit"
+msgstr "Kilép"
+
+msgid "Undo"
+msgstr "Mégsem!"
+
+msgid "Redo"
+msgstr "Mégis!"
+
+msgid "Cut"
+msgstr "Kivág"
+
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Mindent kijelöl"
+
 msgid "Duplicate"
 msgstr "Duplikál"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Nagyító"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Nagyító"
 
 msgid "Tidy Up"
 msgstr "Elrendez"
@@ -1918,33 +1934,19 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Szerkesztő üzemmód"
-
-msgid "Undo"
-msgstr "Mégsem!"
-
-msgid "Redo"
-msgstr "Mégis!"
-
-msgid "New"
-msgstr "Új"
-
-msgid "Open"
-msgstr "Megnyit"
+#, fuzzy
+msgid "Zoom In"
+msgstr "Nagyító"
 
 #, fuzzy
-msgid "Message..."
-msgstr "Üzenet"
-
-msgid "Cut"
-msgstr "Kivág"
-
-msgid "Select All"
-msgstr "Mindent kijelöl"
+msgid "Zoom Out"
+msgstr "Nagyító"
 
 msgid "Clear Console"
 msgstr "Konzolt ürít"
+
+msgid "Edit Mode"
+msgstr "Szerkesztő üzemmód"
 
 msgid "Object"
 msgstr "Object"
@@ -2018,6 +2020,10 @@ msgstr "Bezárja ezt az ablakot?"
 msgid "Parent Window"
 msgstr "Szülő ablak"
 
+#, fuzzy
+msgid "Message..."
+msgstr "Üzenet"
+
 msgid "HTML Manual..."
 msgstr "HTML kézikönyv..."
 
@@ -2072,12 +2078,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Beállítások"
-
-msgid "Open Recent"
-msgstr "Legutóbbi fájlok"
-
-msgid "Quit"
-msgstr "Kilép"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

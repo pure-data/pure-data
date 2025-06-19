@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:32+0200\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1849,22 +1849,40 @@ msgstr ""
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Open Recent"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
 msgid "Save As..."
 msgstr ""
 
+msgid "Quit"
+msgstr ""
+
+msgid "Undo"
+msgstr ""
+
+msgid "Redo"
+msgstr ""
+
+msgid "Cut"
+msgstr ""
+
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr ""
+
 msgid "Duplicate"
-msgstr ""
-
-msgid "Zoom In"
-msgstr ""
-
-msgid "Zoom Out"
 msgstr ""
 
 msgid "Tidy Up"
@@ -1876,31 +1894,16 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
+msgid "Zoom In"
 msgstr ""
 
-msgid "Undo"
-msgstr ""
-
-msgid "Redo"
-msgstr ""
-
-msgid "New"
-msgstr ""
-
-msgid "Open"
-msgstr ""
-
-msgid "Message..."
-msgstr ""
-
-msgid "Cut"
-msgstr ""
-
-msgid "Select All"
+msgid "Zoom Out"
 msgstr ""
 
 msgid "Clear Console"
+msgstr ""
+
+msgid "Edit Mode"
 msgstr ""
 
 msgid "Object"
@@ -1972,6 +1975,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr ""
 
+msgid "Message..."
+msgstr ""
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2020,12 +2026,6 @@ msgid "Forget All..."
 msgstr ""
 
 msgid "Tabbed preferences"
-msgstr ""
-
-msgid "Open Recent"
-msgstr ""
-
-msgid "Quit"
 msgstr ""
 
 #, tcl-format

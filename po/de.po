@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1882,23 +1882,41 @@ msgstr "Über Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "konnte das Dokument \"%s\" nicht lesen"
 
+msgid "New"
+msgstr "Neu"
+
+msgid "Open"
+msgstr "Öffnen"
+
+msgid "Open Recent"
+msgstr "Letzte Dateien öffnen"
+
 msgid "Save"
 msgstr "Speichern"
 
 msgid "Save As..."
 msgstr "Speichern als..."
 
+msgid "Quit"
+msgstr "Beenden"
+
+msgid "Undo"
+msgstr "Rückgängig"
+
+msgid "Redo"
+msgstr "Wiederherstellen"
+
+msgid "Cut"
+msgstr "Ausschneiden"
+
 msgid "Paste Replace"
 msgstr "Objekte ersetzen"
 
+msgid "Select All"
+msgstr "Alles auswählen"
+
 msgid "Duplicate"
 msgstr "Duplizieren"
-
-msgid "Zoom In"
-msgstr "Vergrößern"
-
-msgid "Zoom Out"
-msgstr "Verkleinern"
 
 msgid "Tidy Up"
 msgstr "Aufräumen"
@@ -1909,32 +1927,17 @@ msgstr "Auswahl verbinden/trennen"
 msgid "Triggerize"
 msgstr "Trigger hinzufügen"
 
-msgid "Edit Mode"
-msgstr "Editiermodus"
+msgid "Zoom In"
+msgstr "Vergrößern"
 
-msgid "Undo"
-msgstr "Rückgängig"
-
-msgid "Redo"
-msgstr "Wiederherstellen"
-
-msgid "New"
-msgstr "Neu"
-
-msgid "Open"
-msgstr "Öffnen"
-
-msgid "Message..."
-msgstr "Message..."
-
-msgid "Cut"
-msgstr "Ausschneiden"
-
-msgid "Select All"
-msgstr "Alles auswählen"
+msgid "Zoom Out"
+msgstr "Verkleinern"
 
 msgid "Clear Console"
 msgstr "Konsole löschen"
+
+msgid "Edit Mode"
+msgstr "Editiermodus"
 
 msgid "Object"
 msgstr "Objekt"
@@ -2005,6 +2008,9 @@ msgstr "Unterfenster schließen"
 msgid "Parent Window"
 msgstr "Übergeordnetes Fenster"
 
+msgid "Message..."
+msgstr "Message..."
+
 msgid "HTML Manual..."
 msgstr "HTML-Anleitung..."
 
@@ -2056,12 +2062,6 @@ msgstr "Alle Einstellungen zurücksetzen..."
 
 msgid "Tabbed preferences"
 msgstr "Einstellungen mit Tabs"
-
-msgid "Open Recent"
-msgstr "Letzte Dateien öffnen"
-
-msgid "Quit"
-msgstr "Beenden"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

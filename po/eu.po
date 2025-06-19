@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1910,6 +1910,15 @@ msgstr "Pd-ri Buruz"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Berria"
+
+msgid "Open"
+msgstr "Ireki"
+
+msgid "Open Recent"
+msgstr "Azkenaldi Ireki"
+
 msgid "Save"
 msgstr "Gorde"
 
@@ -1917,18 +1926,30 @@ msgstr "Gorde"
 msgid "Save As..."
 msgstr "Gorde Honela..."
 
+msgid "Quit"
+msgstr "Irten"
+
+#, fuzzy
+msgid "Undo"
+msgstr "Desegin"
+
+#, fuzzy
+msgid "Redo"
+msgstr "Berregin"
+
+msgid "Cut"
+msgstr "Mostu"
+
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "Guztia Aukeratu"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "Bikoiztu"
-
-msgid "Zoom In"
-msgstr ""
-
-msgid "Zoom Out"
-msgstr ""
 
 msgid "Tidy Up"
 msgstr "Txukuntzea"
@@ -1939,37 +1960,19 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-#, fuzzy
-msgid "Edit Mode"
-msgstr "Edizio Modua"
+msgid "Zoom In"
+msgstr ""
 
-#, fuzzy
-msgid "Undo"
-msgstr "Desegin"
-
-#, fuzzy
-msgid "Redo"
-msgstr "Berregin"
-
-msgid "New"
-msgstr "Berria"
-
-msgid "Open"
-msgstr "Ireki"
-
-msgid "Message..."
-msgstr "Mezua..."
-
-msgid "Cut"
-msgstr "Mostu"
-
-#, fuzzy
-msgid "Select All"
-msgstr "Guztia Aukeratu"
+msgid "Zoom Out"
+msgstr ""
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Kontsola Garbitu"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Edizio Modua"
 
 msgid "Object"
 msgstr "Objektu"
@@ -2047,6 +2050,9 @@ msgstr "Lehioa honetan itxi?"
 msgid "Parent Window"
 msgstr ""
 
+msgid "Message..."
+msgstr "Mezua..."
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2103,12 +2109,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Hobespenak"
-
-msgid "Open Recent"
-msgstr "Azkenaldi Ireki"
-
-msgid "Quit"
-msgstr "Irten"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

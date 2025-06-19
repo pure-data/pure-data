@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2005-11-04 08:04+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1903,26 +1903,47 @@ msgstr "ਇਸ ਬਾਰੇ(_A)"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+#, fuzzy
+msgid "New"
+msgstr "ਨਵਾਂ(_N)"
+
+msgid "Open"
+msgstr "ਖੋਲੋ"
+
+msgid "Open Recent"
+msgstr ""
+
 msgid "Save"
 msgstr "ਸੰਭਾਲੋ"
 
 msgid "Save As..."
 msgstr "ਇੰਞ ਸੰਭਾਲੋ..."
 
+#, fuzzy
+msgid "Quit"
+msgstr "ਬਾਹਰ(_Q)"
+
+#, fuzzy
+msgid "Undo"
+msgstr "ਯੂਗਾਂਡਾ"
+
+#, fuzzy
+msgid "Redo"
+msgstr "ਲਾਲ:"
+
+msgid "Cut"
+msgstr ""
+
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "ਚੋਣ ਰੰਗ"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "ਮਿਤੀ"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "ਹੇਠਾਂ"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "ਹੇਠਾਂ"
 
 msgid "Tidy Up"
 msgstr ""
@@ -1934,38 +1955,20 @@ msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
-msgid "Edit Mode"
-msgstr "ਮੋਡ"
+msgid "Zoom In"
+msgstr "ਹੇਠਾਂ"
 
 #, fuzzy
-msgid "Undo"
-msgstr "ਯੂਗਾਂਡਾ"
-
-#, fuzzy
-msgid "Redo"
-msgstr "ਲਾਲ:"
-
-#, fuzzy
-msgid "New"
-msgstr "ਨਵਾਂ(_N)"
-
-msgid "Open"
-msgstr "ਖੋਲੋ"
-
-#, fuzzy
-msgid "Message..."
-msgstr "ਸੁਨੇਹਾ"
-
-msgid "Cut"
-msgstr ""
-
-#, fuzzy
-msgid "Select All"
-msgstr "ਚੋਣ ਰੰਗ"
+msgid "Zoom Out"
+msgstr "ਹੇਠਾਂ"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "ਸੂਚੀ ਸਾਫ਼"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "ਮੋਡ"
 
 msgid "Object"
 msgstr ""
@@ -2045,6 +2048,10 @@ msgstr "ਝਰੋਖਾ ਬੰਦ(_C)"
 msgid "Parent Window"
 msgstr "ਭੇਜਣ ਝਰੋਖਾ"
 
+#, fuzzy
+msgid "Message..."
+msgstr "ਸੁਨੇਹਾ"
+
 msgid "HTML Manual..."
 msgstr ""
 
@@ -2100,13 +2107,6 @@ msgstr ""
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "ਮੇਰੀ ਪਸੰਦ..."
-
-msgid "Open Recent"
-msgstr ""
-
-#, fuzzy
-msgid "Quit"
-msgstr "ਬਾਹਰ(_Q)"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

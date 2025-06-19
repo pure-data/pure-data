@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:33+0200\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
@@ -1868,23 +1868,41 @@ msgstr "Sobre o Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "não foi possível ler o documento \"%s\""
 
+msgid "New"
+msgstr "Novo"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Open Recent"
+msgstr "Abrir recente"
+
 msgid "Save"
 msgstr "Guardar"
 
 msgid "Save As..."
 msgstr "Guardar como..."
 
+msgid "Quit"
+msgstr "Sair"
+
+msgid "Undo"
+msgstr "Anular"
+
+msgid "Redo"
+msgstr "Restaurar"
+
+msgid "Cut"
+msgstr "Cortar"
+
 msgid "Paste Replace"
 msgstr "Colar Substituir"
 
+msgid "Select All"
+msgstr "Escolher tudo"
+
 msgid "Duplicate"
 msgstr "Duplicar"
-
-msgid "Zoom In"
-msgstr "Ampliar Zoom"
-
-msgid "Zoom Out"
-msgstr "Reduzir Zoom"
 
 msgid "Tidy Up"
 msgstr "Arrumar"
@@ -1895,32 +1913,17 @@ msgstr "(Des)Conectar Seleção"
 msgid "Triggerize"
 msgstr "Triggerize"
 
-msgid "Edit Mode"
-msgstr "Modo de edição"
+msgid "Zoom In"
+msgstr "Ampliar Zoom"
 
-msgid "Undo"
-msgstr "Anular"
-
-msgid "Redo"
-msgstr "Restaurar"
-
-msgid "New"
-msgstr "Novo"
-
-msgid "Open"
-msgstr "Abrir"
-
-msgid "Message..."
-msgstr "Mensagem..."
-
-msgid "Cut"
-msgstr "Cortar"
-
-msgid "Select All"
-msgstr "Escolher tudo"
+msgid "Zoom Out"
+msgstr "Reduzir Zoom"
 
 msgid "Clear Console"
 msgstr "Limpar consola"
+
+msgid "Edit Mode"
+msgstr "Modo de edição"
 
 msgid "Object"
 msgstr "Object"
@@ -1992,6 +1995,9 @@ msgstr "Fechar esta janela?"
 msgid "Parent Window"
 msgstr "Janela superior"
 
+msgid "Message..."
+msgstr "Mensagem..."
+
 msgid "HTML Manual..."
 msgstr "Manual HTML…"
 
@@ -2043,12 +2049,6 @@ msgstr "Esquecer Todas..."
 
 msgid "Tabbed preferences"
 msgstr "Preferências em guias"
-
-msgid "Open Recent"
-msgstr "Abrir recente"
-
-msgid "Quit"
-msgstr "Sair"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

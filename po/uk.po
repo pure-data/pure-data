@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2024-07-08 17:41+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1910,23 +1910,41 @@ msgstr "Про Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "неможливо прочитати документ \"%s\""
 
+msgid "New"
+msgstr "Новий"
+
+msgid "Open"
+msgstr "Відкрити"
+
+msgid "Open Recent"
+msgstr "Відкрити недавні"
+
 msgid "Save"
 msgstr "Зберегти"
 
 msgid "Save As..."
 msgstr "Зберегти як..."
 
+msgid "Quit"
+msgstr "Вийти"
+
+msgid "Undo"
+msgstr "Режим редагування"
+
+msgid "Redo"
+msgstr "Повторити"
+
+msgid "Cut"
+msgstr "Вирізати"
+
 msgid "Paste Replace"
 msgstr "Вставка із заміною"
 
+msgid "Select All"
+msgstr "Обрати все"
+
 msgid "Duplicate"
 msgstr "Зробити копію"
-
-msgid "Zoom In"
-msgstr "Масштаб: наблизити"
-
-msgid "Zoom Out"
-msgstr "Масштаб: видалитись"
 
 msgid "Tidy Up"
 msgstr "Привести до ладу"
@@ -1937,32 +1955,17 @@ msgstr "(Від) з'єднати вибрані об'єкти"
 msgid "Triggerize"
 msgstr "Додати вимикачі"
 
-msgid "Edit Mode"
-msgstr "Режим редагування"
+msgid "Zoom In"
+msgstr "Масштаб: наблизити"
 
-msgid "Undo"
-msgstr "Режим редагування"
-
-msgid "Redo"
-msgstr "Повторити"
-
-msgid "New"
-msgstr "Новий"
-
-msgid "Open"
-msgstr "Відкрити"
-
-msgid "Message..."
-msgstr "Повідомлення..."
-
-msgid "Cut"
-msgstr "Вирізати"
-
-msgid "Select All"
-msgstr "Обрати все"
+msgid "Zoom Out"
+msgstr "Масштаб: видалитись"
 
 msgid "Clear Console"
 msgstr "Очистити консоль"
+
+msgid "Edit Mode"
+msgstr "Режим редагування"
 
 msgid "Object"
 msgstr "Об'єкт"
@@ -2035,6 +2038,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Батьківське вікно"
 
+msgid "Message..."
+msgstr "Повідомлення..."
+
 msgid "HTML Manual..."
 msgstr "Підручник HTML..."
 
@@ -2088,12 +2094,6 @@ msgstr "Забути все..."
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "Налаштування"
-
-msgid "Open Recent"
-msgstr "Відкрити недавні"
-
-msgid "Quit"
-msgstr "Вийти"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

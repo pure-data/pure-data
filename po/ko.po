@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1890,23 +1890,41 @@ msgstr "Pd에 대하여"
 msgid "couldn't read \"%s\" document"
 msgstr "\"%s\" 문서를 읽지 못했습니다"
 
+msgid "New"
+msgstr "새로 만들기"
+
+msgid "Open"
+msgstr "열기"
+
+msgid "Open Recent"
+msgstr "최근 패치를 열기"
+
 msgid "Save"
 msgstr "저장"
 
 msgid "Save As..."
 msgstr "다른 이름으로 저장..."
 
+msgid "Quit"
+msgstr "종료"
+
+msgid "Undo"
+msgstr "되돌리기"
+
+msgid "Redo"
+msgstr "되돌리기 취소"
+
+msgid "Cut"
+msgstr "잘라내기"
+
 msgid "Paste Replace"
 msgstr "붙여넣기 대체"
 
+msgid "Select All"
+msgstr "모두 선택"
+
 msgid "Duplicate"
 msgstr "복제"
-
-msgid "Zoom In"
-msgstr "확대"
-
-msgid "Zoom Out"
-msgstr "축소"
 
 msgid "Tidy Up"
 msgstr "선 정리"
@@ -1917,32 +1935,17 @@ msgstr "선택된 오브젝트를 연결(해제)"
 msgid "Triggerize"
 msgstr "트리거"
 
-msgid "Edit Mode"
-msgstr "편집 모드"
+msgid "Zoom In"
+msgstr "확대"
 
-msgid "Undo"
-msgstr "되돌리기"
-
-msgid "Redo"
-msgstr "되돌리기 취소"
-
-msgid "New"
-msgstr "새로 만들기"
-
-msgid "Open"
-msgstr "열기"
-
-msgid "Message..."
-msgstr "메시지..."
-
-msgid "Cut"
-msgstr "잘라내기"
-
-msgid "Select All"
-msgstr "모두 선택"
+msgid "Zoom Out"
+msgstr "축소"
 
 msgid "Clear Console"
 msgstr "콘솔 창 지우기"
+
+msgid "Edit Mode"
+msgstr "편집 모드"
 
 msgid "Object"
 msgstr "오브젝트"
@@ -2013,6 +2016,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "부모 창"
 
+msgid "Message..."
+msgstr "메시지..."
+
 msgid "HTML Manual..."
 msgstr "HTML 매뉴얼..."
 
@@ -2066,12 +2072,6 @@ msgstr "모두 잊기..."
 #, fuzzy
 msgid "Tabbed preferences"
 msgstr "환경설정"
-
-msgid "Open Recent"
-msgstr "최근 패치를 열기"
-
-msgid "Quit"
-msgstr "종료"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"

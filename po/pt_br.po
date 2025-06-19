@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-05-26 13:19+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1867,23 +1867,41 @@ msgstr "Sobre o Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "não foi possível ler o documento \"%s\""
 
+msgid "New"
+msgstr "Novo"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Open Recent"
+msgstr "Abrir Recente"
+
 msgid "Save"
 msgstr "Salvar"
 
 msgid "Save As..."
 msgstr "Salvar Como..."
 
+msgid "Quit"
+msgstr "Sair"
+
+msgid "Undo"
+msgstr "Desfazer"
+
+msgid "Redo"
+msgstr "Refazer"
+
+msgid "Cut"
+msgstr "Cortar"
+
 msgid "Paste Replace"
 msgstr "Colar Substituir"
 
+msgid "Select All"
+msgstr "Selecionar Tudo"
+
 msgid "Duplicate"
 msgstr "Duplicar"
-
-msgid "Zoom In"
-msgstr "Ampliar Zoom"
-
-msgid "Zoom Out"
-msgstr "Reduzir Zoom"
 
 msgid "Tidy Up"
 msgstr "Organizar"
@@ -1894,32 +1912,17 @@ msgstr "(Des)Conectar Seleção"
 msgid "Triggerize"
 msgstr "Triggerize"
 
-msgid "Edit Mode"
-msgstr "Modo de Edição"
+msgid "Zoom In"
+msgstr "Ampliar Zoom"
 
-msgid "Undo"
-msgstr "Desfazer"
-
-msgid "Redo"
-msgstr "Refazer"
-
-msgid "New"
-msgstr "Novo"
-
-msgid "Open"
-msgstr "Abrir"
-
-msgid "Message..."
-msgstr "Mensagem..."
-
-msgid "Cut"
-msgstr "Cortar"
-
-msgid "Select All"
-msgstr "Selecionar Tudo"
+msgid "Zoom Out"
+msgstr "Reduzir Zoom"
 
 msgid "Clear Console"
 msgstr "Limpar Console"
+
+msgid "Edit Mode"
+msgstr "Modo de Edição"
 
 msgid "Object"
 msgstr "Objeto"
@@ -1990,6 +1993,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Janela Mãe"
 
+msgid "Message..."
+msgstr "Mensagem..."
+
 msgid "HTML Manual..."
 msgstr "Manual em HTML..."
 
@@ -2041,12 +2047,6 @@ msgstr "Esquecer Todas..."
 
 msgid "Tabbed preferences"
 msgstr "Preferências em abas"
-
-msgid "Open Recent"
-msgstr "Abrir Recente"
-
-msgid "Quit"
-msgstr "Sair"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
