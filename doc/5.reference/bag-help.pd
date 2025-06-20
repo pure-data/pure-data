@@ -63,7 +63,6 @@
 #X text 29 103 The first inlet is a number to add or delete. If the second inlet is nonzero \, the number is added to the collection \, otherwise it is removed. A list can also be given \, which distributes the values into the inlets as usual in Pd., f 69;
 #X text 29 169 By default \, the collection may have many copies of the same number \, but if set to unique mode (via the "unique" message or "-u" flag) \, duplicates are dropped and a "bang" is sent out the second outlet., f 69;
 #X text 29 219 You can output the collection with a bang \, output and empty it with a "flush" message \, or just empty it with "clear"., f 69;
-#X text 287 369 <-- query many 60s are in the collection (the value is sent to the the second output), f 29;
 #X text 299 424 set or clear "unique" flag. A bang is set to the right outlet when there's a repeated input., f 31;
 #X text 29 55 The [bag] object maintains a variable-length collection of numbers \, for instance to implement a MIDI-style sustain pedal or an arpeggiator., f 69;
 #N canvas 275 116 567 592 sustain 0;
@@ -283,6 +282,7 @@
 #X restore 394 539 pd active-voices;
 #X text 325 607 updated for Pd version 0.56;
 #X text 405 487 Examples:;
+#X text 287 369 <-- query how many 60s are in the collection (the count is sent to the second output), f 30;
 #X connect 0 0 16 0;
 #X connect 1 0 16 0;
 #X connect 14 0 3 0;

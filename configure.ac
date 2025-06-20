@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.55.2])
+AC_INIT([pd], [0.56.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])

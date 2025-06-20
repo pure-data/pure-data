@@ -36,6 +36,10 @@ cp -a $HOME/bis/work/pd-versions/tcltk-$tkversion .
 /home/msp/pd/msw/msw-app.sh \
    --builddir ..  --tk tcltk-$tkversion $pdversion
 
+# 0.56 and onward - separately copy in thread lib which was thrown out of
+# the prototype because it conflicted with something else
+cp -p ~/pd/msw/libwinpthread-1.dll32 pd-$pdversion/bin/libwinpthread-1.dll
+
 # make zip archive
 zip -r -q /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
