@@ -25,9 +25,9 @@
 <H3> <A href="#s5.1" id="s5.1"> 5.1. Release notes </A> </H3><section><div>
 
 
-</div></section><section class="releasenote"><h4 id="0.55-2">0.56-0</h4><div>
+</div></section><section class="releasenote"><h4 id="0.56-0">0.56-0</h4><div>
 
-<p>The dafault sample rate is now 48000.  (All the same sample rates as before
+<p>The default sample rate is now 48000.  (All the same sample rates as before
 are still supported).</p>
 
 <p>Reworked text editing mechanism for object/message/gatom/comment boxes and
@@ -38,12 +38,11 @@ easier to traverse the contents of a scalar; and "nearest" and extended "next"
 messages that make it easier to search for a scalar or scan through a list of
 them.  A variant of the pointer object called "vpointer" allows to access the
 same pointer by name from more than one place, like the value object for
-numnbers. There are several other useful additions such as the ability to drag
+numbers. There are several other useful additions such as the ability to drag
 scalars around without having to swap the window into edit mode.</p>
 
-<p>Multichannel support for delread~, etc., tabread~, etc., sig~, snapshot~,
-and print~, all thanks to
-Christof Ressi</p>
+<p>Multichannel support for delread~, etc., tabread~, etc., readsf~, writesf~,
+sig~, snapshot~, and print~, all thanks to Christof Ressi</p>
 
 <p>a phase argument to block~ allows you to explicitly offset block segmentation
 (also Christof)</p>
@@ -64,11 +63,11 @@ should be.</p>
 <p>It's now possible to edit the text contents of a GOP with hidden text from
 its properties dialog.</p>
 
-<p>New "-devicename" argument to set jack's MID and audio device names
+<p>New "-devicename" argument to set jack's MIDI and audio device names
 (-jackname still works for jack audio devices but not for MIDI as before).</p>
 
 <p>New option for the "bag" object to prevent multiple entries of the same
-value, and a "bang" message to output without clearning, plus a "query" message
+value, and a "bang" message to output without clearing, plus a "query" message
 to look at contents without expelling them.</p>
 
 <p>The "random" object takes a "float" message that both sets the range and
