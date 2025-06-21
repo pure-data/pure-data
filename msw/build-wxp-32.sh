@@ -40,6 +40,9 @@ cp -a $HOME/bis/work/pd-versions/tcltk-$tkversion .
 # the prototype because it conflicted with something else
 cp -p ~/pd/msw/libwinpthread-1.dll32 pd-$pdversion/bin/libwinpthread-1.dll
 
+# also pdfontloader.dll for wish85 and 32bit (was removed from prototype)
+cp -p ~/pd/msw/pdfontloader.dll-wish86-32bit pd-$pdversion/bin/pdfontloader.dll
+
 # make zip archive
 zip -r -q /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
