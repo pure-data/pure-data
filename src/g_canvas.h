@@ -480,7 +480,6 @@ EXTERN t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     t_gobj *drawtext);
 EXTERN void rtext_draw(t_rtext *x);
 EXTERN void rtext_erase(t_rtext *x);
-EXTERN int rtext_height(t_rtext *x);
 EXTERN void rtext_displace(t_rtext *x, int dx, int dy);
 EXTERN void rtext_select(t_rtext *x, int state);
 EXTERN void rtext_activate(t_rtext *x, int state);
@@ -488,7 +487,6 @@ EXTERN void rtext_free(t_rtext *x);
 EXTERN void rtext_key(t_rtext *x, int n, t_symbol *s);
 EXTERN void rtext_mouse(t_rtext *x, int xval, int yval, int flag);
 EXTERN void rtext_retext(t_rtext *x);
-EXTERN int rtext_width(t_rtext *x);
 EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
