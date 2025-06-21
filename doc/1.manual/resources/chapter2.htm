@@ -1255,7 +1255,7 @@ destination symbols so you can send them messages this way. Also, the special
 receiver "pd" is defined to which you may send messages to start and stop DSP and
 more.
 
-<P>The <b>File menu</b> has a "Message..." entry that works as a message box with
+<P>The <b>Tools menu</b> has a "Message..." entry that works as a message box with
 a semicolon. This allows you to type in a message while in run mode. You need to
 start the message with the receive symbol (and you can also send messages to "pd"
 this way).
@@ -1468,12 +1468,16 @@ math objects (<b>[+~]</b>, <b>[-~]</b>,
 <b>[sqrt~]</b> and so on) use their inputs to determine their channel counts.
 Binary operations like <b>[+~]</b> can combine single- and multichannel inputs.
 
+<P>Additionally, these objects also support multichannel signals: <b>[delread~]</b>,
+<b>[delwrite~]</b>, <b>[delread4~]</b>, <b>[tabread~]</b>, <b>[tabwrite~]</b>,
+<b>[tabread4~]</b>, <b>[tabplay~]</b>, <b>[tabsend~]</b>, <b>[tabreceive~]</b>,
+<b>[readsf~]</b>, <b>[writesf~]</b>, <b>[sig~]</b>, <b>[snapshot~]</b>, and <b>[print~]</b>.
+
 <P>Other objects, such as filters or oscillators, have not been adapted for
 multichannel signals, because there might be many ways to design multichannel
 versions of them. Instead, you can use the <b>[clone]</b> object to
 perform general operations on multichannel signals. Signal inputs and outputs of cloned
 patches can be used to distribute multichannel signals among the individual cloned
-
 patches.
 
 <H3> <A href="#s2.6" id="s2.6">2.6. Scheduling</A> </H3>
