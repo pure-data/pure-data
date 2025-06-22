@@ -364,9 +364,15 @@ void canvas_menuarray(t_glist *canvas)
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    pdgui_stub_vnew(&x->gl_pd,
-        "pdtk_array_dialog", x, "siii",
-        arraybuf, 100, 3, 1);
+    pdgui_stub_vnew(
+        &x->gl_pd,
+        "::dialog_array::array_dialog", x,
+        "si ri ri ri",
+        arraybuf, 100,
+        "-keep", 1,
+        "-style", 1,
+        "-new", 1
+        );
 }
 
     /* called from graph_dialog to set properties */
@@ -377,14 +383,26 @@ void garray_properties(t_garray *x)
     t_template *scalartemplate = template_findbyname(sc->sc_template);
     int style = template_getfloat(scalartemplate, gensym("style"), sc->sc_vec, 1);
 
+    int color = template_getfloat(scalartemplate, gensym("color"), sc->sc_vec, 1);
+    int width = template_getfloat(scalartemplate, gensym("linewidth"), sc->sc_vec, 1);
+    int vis = template_getfloat(scalartemplate, gensym("v"), sc->sc_vec, 1);
+
     if (!a)
         return;
     pdgui_stub_deleteforkey(x);
-    pdgui_stub_vnew(&x->x_gobj.g_pd,
-        "pdtk_array_dialog", x,
-        "siii",
-        x->x_name->s_name,
-        a->a_n, x->x_saveit + 2 * style, 0);
+    pdgui_stub_vnew(
+        &x->x_gobj.g_pd,
+        "::dialog_array::array_dialog", x,
+        "si ri ri ri ri ri ri ri ri",
+        x->x_name->s_name, a->a_n,
+        "-keep", x->x_saveit,
+        "-edit", x->x_edit,
+        "-style", style,
+        "-width", width,
+        "-color", color,
+        "-vis", vis,
+        "-visname", !(x->x_hidename),
+        "-new", 0);
 }
 
 static void garray_deleteit(t_garray *x) {
