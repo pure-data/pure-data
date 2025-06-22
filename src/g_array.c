@@ -376,8 +376,6 @@ void garray_properties(t_garray *x)
     t_scalar *sc = x->x_scalar;
     t_template *scalartemplate = template_findbyname(sc->sc_template);
     int style = template_getfloat(scalartemplate, gensym("style"), sc->sc_vec, 1);
-    int filestyle = (style == 0 ? PLOTSTYLE_POLY :
-        (style == 1 ? PLOTSTYLE_POINTS : style));
 
     if (!a)
         return;
@@ -386,7 +384,7 @@ void garray_properties(t_garray *x)
         "pdtk_array_dialog", x,
         "siii",
         x->x_name->s_name,
-        a->a_n, x->x_saveit + 2 * filestyle, 0);
+        a->a_n, x->x_saveit + 2 * style, 0);
 }
 
 static void garray_deleteit(t_garray *x) {
@@ -412,6 +410,12 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
         pd_error(0, "glist: cannot create array without a name");
         return;
     }
+
+        /* convert style to filestyle (as expected by graph_array()) */
+    int style = ((flags & GRAPH_ARRAY_PLOTSTYLE) >> 1);
+    int filestyle = (style == PLOTSTYLE_POINTS ? 1 : (style == PLOTSTYLE_POLY ? 0 : style));
+    flags &= ~GRAPH_ARRAY_PLOTSTYLE;
+    flags |= (filestyle << 1);
 
     if (size < 1)
         size = 1;
@@ -454,9 +458,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 {
     int flags = fflags;
     int saveit = ((flags & 1) != 0);
-    int filestyle = ((flags & 6) >> 1);
-    int style = (filestyle == 0 ? PLOTSTYLE_POLY :
-        (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
+    int style = ((flags & 6) >> 1);
     t_float stylewas = template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1);

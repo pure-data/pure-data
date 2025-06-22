@@ -420,15 +420,16 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     # draw as
     labelframe $mytoplevel.drawas -text [_ "Draw as:"] -padx 20 -borderwidth 1
     pack $mytoplevel.drawas -side top -fill x
-    radiobutton $mytoplevel.drawas.points -value 0 \
-        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Polygon"]
-    radiobutton $mytoplevel.drawas.polygon -value 1 \
-        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Points"]
-    radiobutton $mytoplevel.drawas.bezier -value 2 \
-        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Bezier curve"]
-    pack $mytoplevel.drawas.points -side top -anchor w
-    pack $mytoplevel.drawas.polygon -side top -anchor w
-    pack $mytoplevel.drawas.bezier -side top -anchor w
+    set f $mytoplevel.drawas
+    radiobutton ${f}.points  -variable ::dialog_array::drawas_button($mytoplevel) \
+        -value 1 -text [_ "Polygon"]
+    radiobutton ${f}.polygon -variable ::dialog_array::drawas_button($mytoplevel) \
+        -value 0 -text [_ "Points"]
+    radiobutton ${f}.bezier  -variable ::dialog_array::drawas_button($mytoplevel) \
+        -value 2 -text [_ "Bezier curve"]
+    pack ${f}.points -side top -anchor w
+    pack ${f}.polygon -side top -anchor w
+    pack ${f}.bezier -side top -anchor w
 
     # options
     if {$newone == 1} {
