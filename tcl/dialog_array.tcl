@@ -380,8 +380,8 @@ proc ::dialog_array::apply_new {mytoplevel} {
 
     set otherflag $::dialog_array::otherflag_button($mytoplevel)
     if { $otherflag eq "keep" } {lappend data -delete 0} \
-    elseif { $otherflag eq "delete" } {lappend data -delete 1} \
-    else {lappend data -new $otherflag}
+        elseif { $otherflag eq "delete" } {lappend data -delete 1} \
+        else {lappend data -new [expr ! $otherflag]}
 
     pdsend $data
 }
