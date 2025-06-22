@@ -31,7 +31,16 @@ static t_symbol *garray_unescapit(t_symbol *s)
     return s;
 }
 
-
+#define boolean_flag(x)                                     \
+    if(flag == flag_##x) {                                  \
+        x = !!((int)value);                                 \
+        continue;                                           \
+    }
+#define int_flag(x)                                     \
+    if(flag == flag_##x) {                              \
+        x = (int)value;                                 \
+        continue;                                       \
+    }
 
 /* --------- "pure" arrays with scalars for elements. --------------- */
 
@@ -463,6 +472,113 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     canvas_dirty(parent, 1);
 }
 
+void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) {
+        /* this is a re-implementation of glist_arraydialog()
+         * that takes an unlimited number of options,
+         * rather than cramming everything into 4 arguments.
+         *
+         * the msgformat is <arrayname> <size> {-<option> <value>},
+         * e.g. [arraydialog array97 100 -width 8 -color 900(
+         */
+    const char *undo_name = "add array";
+    if(argc<2 || argc%2) {
+        pd_error(0, "invalid arguments for %s message", s->s_name);
+        return;
+    }
+    t_symbol* name = atom_getsymbolarg(0, argc, argv);
+    t_float fsize = atom_getfloatarg(1, argc, argv);
+
+    name = garray_unescapit(name);
+    if(!*name->s_name) {
+        pd_error(0, "glist: cannot create array without a name");
+        return;
+    }
+
+    if(argc == 4 && A_FLOAT == argv[3].a_type) {
+            /* legacy function */
+        glist_arraydialog(
+            parent, name, fsize,
+            atom_getfloatarg(2, argc, argv),
+            atom_getfloatarg(3, argc, argv));
+        return;
+    }
+
+    int size = (fsize<1)?1:(int)fsize;
+    int keep = 0;
+    int keepsize = 0;
+    int edit = 1;
+    int style = 0;
+    int width = 1;
+    int color = 0;
+    int vis = 1;
+    int visname = 1;
+    int putinnew = 0;
+
+    t_symbol*flag_keep = gensym("-keep");
+    t_symbol*flag_keepsize = gensym("-keepsize");
+    t_symbol*flag_edit = gensym("-edit");
+    t_symbol*flag_style = gensym("-style");
+    t_symbol*flag_width = gensym("-width");
+    t_symbol*flag_color = gensym("-color");
+    t_symbol*flag_vis = gensym("-vis");
+    t_symbol*flag_visname = gensym("-visname");
+    t_symbol*flag_putinnew = gensym("-new");
+
+    int i;
+    for(i=2; i<argc; i+=2) {
+        const t_symbol*flag = atom_getsymbolarg(i+0, argc, argv);
+        t_float value = atom_getfloatarg (i+1, argc, argv);
+        boolean_flag(keep);
+        boolean_flag(keepsize);
+        boolean_flag(edit);
+        int_flag(style);
+        int_flag(width);
+        int_flag(color);
+        boolean_flag(vis);
+        boolean_flag(visname);
+        boolean_flag(putinnew);
+        pd_error(parent, "unknown flag '%s' for %s message", flag?flag->s_name:0, s->s_name);
+        return;
+    }
+
+
+    t_glist *gl;
+    if (putinnew || (!(gl = glist_findgraph(parent))))
+    {
+        undo_name = "create";
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
+        gl = glist_addglist(parent, &s_, 0, 1,
+            size, -1, 0, 0, 0, 0);
+        if (!canvas_undo_get(glist_getcanvas(parent))->u_doing)
+            canvas_undo_add(glist_getcanvas(parent), UNDO_CREATE, "create",
+                (void *)canvas_undo_set_create(glist_getcanvas(parent)));
+    } else {
+        canvas_undo_add(parent, UNDO_SEQUENCE_START, undo_name, 0);
+    }
+    int flags = 0;
+    if(keep)
+        flags |= GRAPH_ARRAY_SAVE;
+        /* TODO: savesize */
+    if(keepsize)
+        flags |= GRAPH_ARRAY_SAVESIZE;
+    t_garray *a = graph_array(gl, name, &s_float, size, flags);
+    t_scalar *sc = a->x_scalar;
+    t_template *scalartemplate = template_findbyname(sc->sc_template);
+
+    a->x_edit = edit;
+    template_setfloat(scalartemplate, gensym("style"), sc->sc_vec, (t_float)style, 0);
+    template_setfloat(scalartemplate, gensym("linewidth"), sc->sc_vec, (t_float)width, 0);
+    template_setfloat(scalartemplate, gensym("color"), sc->sc_vec, (t_float)color, 0);
+    template_setfloat(scalartemplate, gensym("v"), sc->sc_vec, (t_float)vis, 0);
+    a->x_hidename = !visname;
+
+        /* TODO: UNDO */
+
+    glist_redraw(gl);
+    canvas_dirty(parent, 1);
+}
+
+
 /* remove a named array from a graph */
 void glist_removearray(t_glist *x, t_symbol *name) {
     t_garray*a = (t_garray*)pd_findbyclass(name, garray_class);
@@ -497,7 +613,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         SETFLOAT (undo+1, fsize);
         SETSYMBOL(undo+2, gensym("float"));
         SETFLOAT (undo+3, fflags);
+        canvas_undo_add(cnv, UNDO_SEQUENCE_START, "clear", 0);
         pd_undo_set_objectstate(cnv, (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
+        canvas_undo_add(cnv, UNDO_SEQUENCE_END, "clear", 0);
         glist_redraw(gl);
     } else {
         long size;
@@ -516,6 +634,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         }
         if (name != x->x_name)
         {
+            post("renaming '%s' -> '%s'", x->x_name->s_name, name->s_name);
             /* jsarlo { */
             if (x->x_listviewing)
             {
@@ -555,6 +674,172 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         canvas_dirty(x->x_glist, 1);
     }
 }
+
+void garray_arraydialog_opt(t_garray *x, t_symbol *s, int argc, t_atom*argv) {
+        /* this is a re-implementation of garray_arraydialog()
+         * that takes an unlimited number of options,
+         * rather than cramming everything into 4 arguments.
+         *
+         * the msgformat is <arrayname> <size> {-<option> <value>},
+         * e.g. [arraydialog array97 100 -width 8 -color 900(
+         */
+    if(argc<2 || argc%2) {
+        pd_error(x, "invalid arguments for %s message", s->s_name);
+        return;
+    }
+
+    t_symbol* name = atom_getsymbolarg(0, argc, argv);
+    t_float fsize = atom_getfloatarg(1, argc, argv);
+
+    if(argc == 4 && A_FLOAT == argv[3].a_type) {
+            /* legacy function */
+        garray_arraydialog(
+            x, name, fsize,
+            atom_getfloatarg(2, argc, argv),
+            atom_getfloatarg(3, argc, argv));
+        return;
+    }
+
+    name = garray_unescapit(name);
+    if(!*name->s_name) {
+        pd_error(0, "array: cannot create array without a name");
+        return;
+    }
+
+    int size = (fsize<1)?1:(int)fsize;
+    int keep = x->x_saveit;
+    int keepsize = x->x_savesize;
+    int edit = x->x_edit;
+    int style = -1;
+    int width = -1;
+    int color = -1;
+    int vis = -1;
+    int visname = !(x->x_hidename);
+    int deleteit = 0;
+
+    t_symbol*flag_keep = gensym("-keep");
+    t_symbol*flag_keepsize = gensym("-keepsize");
+    t_symbol*flag_edit = gensym("-edit");
+    t_symbol*flag_style = gensym("-style");
+    t_symbol*flag_width = gensym("-width");
+    t_symbol*flag_color = gensym("-color");
+    t_symbol*flag_vis = gensym("-vis");
+    t_symbol*flag_visname = gensym("-visname");
+    t_symbol*flag_deleteit = gensym("-delete");
+
+    int i;
+    for(i=2; i<argc; i+=2) {
+        const t_symbol*flag = atom_getsymbolarg(i+0, argc, argv);
+        t_float value = atom_getfloatarg (i+1, argc, argv);
+        boolean_flag(keep);
+        boolean_flag(edit);
+        int_flag(style);
+        int_flag(width);
+        int_flag(color);
+        boolean_flag(vis);
+        boolean_flag(visname);
+        boolean_flag(deleteit);
+        pd_error(x, "unknown flag '%s' for %s message", flag?flag->s_name:0, s->s_name);
+        return;
+    }
+
+    if (deleteit)
+    {
+            /* TODO: undoing should use the original size,... rather than the new one */
+        t_atom undo[4];
+        t_glist *gl = x->x_glist;
+        t_canvas *cnv = glist_getcanvas(gl);
+        garray_deleteit(x);
+        SETSYMBOL(undo+0, name);
+        SETFLOAT (undo+1, fsize);
+        SETSYMBOL(undo+2, gensym("float"));
+        SETFLOAT (undo+3, 0); /* fflags */
+        canvas_undo_add(cnv, UNDO_SEQUENCE_START, "clear", 0);
+        pd_undo_set_objectstate(cnv, (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
+        canvas_undo_add(cnv, UNDO_SEQUENCE_END, "clear", 0);
+        glist_redraw(gl);
+    } else {
+            /* update array properties */
+        long size;
+        t_array *a = garray_getarray(x);
+        t_template *scalartemplate;
+        if (!a)
+        {
+            pd_error(x, "can't find array");
+            return;
+        }
+        if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+        {
+            pd_error(0, "array: no template of type %s",
+                x->x_scalar->sc_template->s_name);
+            return;
+        }
+
+        int old_size = a->a_n;
+        int old_keep = x->x_saveit;
+        int old_edit = x->x_edit;
+        int old_style = template_getfloat(scalartemplate, gensym("style"), x->x_scalar->sc_vec, 1);
+        int old_width = template_getfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+        int old_color = template_getfloat(scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
+        int old_vis = template_getfloat(scalartemplate, gensym("v"), x->x_scalar->sc_vec, 1);
+        int old_visname = !(x->x_hidename);
+
+        if(style<0)
+            style=old_style;
+        if(color<0)
+            color=old_color;
+        if(width<0)
+            width=old_width;
+        if(vis<0)
+            vis = old_vis;
+
+        if (name != x->x_name)
+        {
+            /* jsarlo { */
+            if (x->x_listviewing)
+            {
+              garray_arrayviewlist_close(x);
+            }
+            /* } jsarlo */
+            x->x_name = name;
+            pd_unbind(&x->x_gobj.g_pd, x->x_realname);
+            x->x_realname = canvas_realizedollar(x->x_glist, name);
+            pd_bind(&x->x_gobj.g_pd, x->x_realname);
+                /* redraw the whole glist, just so the name change shows up */
+            if (x->x_glist->gl_havewindow)
+                canvas_redraw(x->x_glist);
+            else if (glist_isvisible(x->x_glist->gl_owner))
+            {
+                gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
+                gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 1);
+            }
+                /* see garray_rename() */
+            garray_getarray(x)->a_valid = ++glist_valid;
+            canvas_update_dsp();
+        }
+        size = fsize;
+        if (size < 1)
+            size = 1;
+        if (size != a->a_n)
+            garray_resize_long(x, size);
+        else if (style != old_style)
+            garray_fittograph(x, (int)size, style);
+
+        garray_setsaveit(x, (keep != 0));
+        x->x_edit = edit;
+        template_setfloat(scalartemplate, gensym("style"), x->x_scalar->sc_vec, (t_float)style, 0);
+        template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, (t_float)width, 0);
+        template_setfloat(scalartemplate, gensym("color"), x->x_scalar->sc_vec, (t_float)color, 0);
+        template_setfloat(scalartemplate, gensym("v"), x->x_scalar->sc_vec, (t_float)vis, 0);
+        x->x_hidename = !visname;
+
+        garray_redraw(x);
+        glist_redraw(x->x_glist);
+        canvas_dirty(x->x_glist, 1);
+    }
+
+}
+
 
 /* jsarlo { */
 static void garray_arrayviewlist_fillpage(t_garray *x,
@@ -1450,8 +1735,8 @@ void g_array_setup(void)
         gensym("cosinesum"), A_GIMME, 0);
     class_addmethod(garray_class, (t_method)garray_normalize,
         gensym("normalize"), A_DEFFLOAT, 0);
-    class_addmethod(garray_class, (t_method)garray_arraydialog,
-        gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(garray_class, (t_method)garray_arraydialog_opt,
+        gensym("arraydialog"), A_GIMME, A_NULL);
 /* jsarlo { */
     class_addmethod(garray_class, (t_method)garray_arrayviewlist_new,
         gensym("arrayviewlistnew"), A_NULL);

@@ -5082,6 +5082,7 @@ static void glist_setlastxy(t_glist *gl, int xval, int yval)
 
 
 void canvas_triggerize(t_glist*cnv);
+void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv);
 
 void g_editor_setup(void)
 {
@@ -5146,8 +5147,8 @@ void g_editor_setup(void)
         gensym("done-popup"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_donecanvasdialog,
         gensym("donecanvasdialog"), A_GIMME, A_NULL);
-    class_addmethod(canvas_class, (t_method)glist_arraydialog,
-        gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)glist_arraydialog_opt,
+        gensym("arraydialog"), A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_triggerize,
         gensym("triggerize"), 0);
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
