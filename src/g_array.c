@@ -806,14 +806,20 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     garray_savecontentsto(x, b);
 
     if (pd_compatibilitylevel >= 52) {
+        t_scalar *sc = x->x_scalar;
         t_float fval;
-        style = template_getfloat(
-            scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
-        binbuf_addv(b, "ssi;", gensym("#A"), gensym("color"), style);
+        int ival;
 
-        fval = template_getfloat(
-            scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+        ival = template_getfloat(scalartemplate, gensym("color"), sc->sc_vec, 1);
+        binbuf_addv(b, "ssi;", gensym("#A"), gensym("color"), ival);
+
+        fval = template_getfloat(scalartemplate, gensym("linewidth"), sc->sc_vec, 1);
         binbuf_addv(b, "ssf;", gensym("#A"), gensym("width"), fval);
+
+        ival = template_getfloat(scalartemplate, gensym("v"), sc->sc_vec, 1);
+        binbuf_addv(b, "ssi;", gensym("#A"), gensym("vis"), ival);
+
+        binbuf_addv(b, "ssi;", gensym("#A"), gensym("edit"), x->x_edit);
     }
 }
 
