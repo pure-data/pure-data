@@ -421,11 +421,29 @@ static void garray_deleteit(t_garray *x) {
         canvas_update_dsp();
 }
 
+void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv);
     /* this is called back from the dialog window to create a garray.
     The otherflag requests that we find an existing graph to put it in. */
-void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
+void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg fsize,
     t_floatarg fflags, t_floatarg otherflag)
 {
+#if 1
+    int flags = fflags;
+    int saveit = ((flags & 1) != 0);
+    int style = ((flags & 6) >> 1);
+    t_atom argv[8];
+    t_atom*ap=argv;
+    SETSYMBOL(ap+0, name);
+    SETFLOAT (ap+1, fsize);
+    SETSYMBOL(ap+2, gensym("-keep"));
+    SETFLOAT (ap+3, saveit);
+    SETSYMBOL(ap+4, gensym("-style"));
+    SETFLOAT (ap+5, style);
+    SETSYMBOL(ap+6, gensym("-new"));
+    SETFLOAT (ap+7, otherflag);
+
+    glist_arraydialog_opt(parent, gensym("arraydialog"), 8, ap);
+#else
     const char *undo_name = "add array";
     t_glist *gl;
     t_garray *a;
@@ -470,6 +488,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
 
     glist_redraw(gl);
     canvas_dirty(parent, 1);
+#endif
 }
 
 void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) {
@@ -480,6 +499,7 @@ void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) 
          * the msgformat is <arrayname> <size> {-<option> <value>},
          * e.g. [arraydialog array97 100 -width 8 -color 900(
          */
+    pd_error(0, "%s(%p, %s,...", __FUNCTION__, parent, s->s_name);postatom(argc, argv);endpost();
     const char *undo_name = "add array";
     if(argc<2 || argc%2) {
         pd_error(0, "invalid arguments for %s message", s->s_name);
@@ -586,6 +606,7 @@ void glist_removearray(t_glist *x, t_symbol *name) {
         garray_deleteit(a);
 }
 
+void garray_arraydialog_opt(t_garray *x, t_symbol *s, int argc, t_atom*argv);
     /* this is called from the properties dialog window for an existing array */
 void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     t_floatarg fflags, t_floatarg deleteit)
@@ -593,86 +614,17 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     int flags = fflags;
     int saveit = ((flags & 1) != 0);
     int style = ((flags & 6) >> 1);
-    t_float stylewas = template_getfloat(
-        template_findbyname(x->x_scalar->sc_template),
-            gensym("style"), x->x_scalar->sc_vec, 1);
+    t_atom ap[8];
+    SETSYMBOL(ap+0, name);
+    SETFLOAT (ap+1, fsize);
+    SETSYMBOL(ap+2, gensym("-keep"));
+    SETFLOAT (ap+3, saveit);
+    SETSYMBOL(ap+4, gensym("-style"));
+    SETFLOAT (ap+5, style);
+    SETSYMBOL(ap+6, gensym("-delete"));
+    SETFLOAT (ap+7, deleteit);
 
-    name = garray_unescapit(name);
-    if(!*name->s_name) {
-        pd_error(0, "array: cannot create array without a name");
-        return;
-    }
-
-    if (deleteit != 0)
-    {
-        t_atom undo[4];
-        t_glist *gl = x->x_glist;
-        t_canvas *cnv = glist_getcanvas(gl);
-        garray_deleteit(x);
-        SETSYMBOL(undo+0, name);
-        SETFLOAT (undo+1, fsize);
-        SETSYMBOL(undo+2, gensym("float"));
-        SETFLOAT (undo+3, fflags);
-        canvas_undo_add(cnv, UNDO_SEQUENCE_START, "clear", 0);
-        pd_undo_set_objectstate(cnv, (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
-        canvas_undo_add(cnv, UNDO_SEQUENCE_END, "clear", 0);
-        glist_redraw(gl);
-    } else {
-        long size;
-        t_array *a = garray_getarray(x);
-        t_template *scalartemplate;
-        if (!a)
-        {
-            pd_error(x, "can't find array\n");
-            return;
-        }
-        if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
-        {
-            pd_error(0, "array: no template of type %s",
-                x->x_scalar->sc_template->s_name);
-            return;
-        }
-        if (name != x->x_name)
-        {
-            post("renaming '%s' -> '%s'", x->x_name->s_name, name->s_name);
-            /* jsarlo { */
-            if (x->x_listviewing)
-            {
-              garray_arrayviewlist_close(x);
-            }
-            /* } jsarlo */
-            x->x_name = name;
-            pd_unbind(&x->x_gobj.g_pd, x->x_realname);
-            x->x_realname = canvas_realizedollar(x->x_glist, name);
-            pd_bind(&x->x_gobj.g_pd, x->x_realname);
-                /* redraw the whole glist, just so the name change shows up */
-            if (x->x_glist->gl_havewindow)
-                canvas_redraw(x->x_glist);
-            else if (glist_isvisible(x->x_glist->gl_owner))
-            {
-                gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
-                gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 1);
-            }
-                /* see garray_rename() */
-            garray_getarray(x)->a_valid = ++glist_valid;
-            canvas_update_dsp();
-        }
-        size = fsize;
-        if (size < 1)
-            size = 1;
-        if (size != a->a_n)
-            garray_resize_long(x, size);
-        else if (style != stylewas)
-            garray_fittograph(x, (int)size, style);
-        template_setfloat(scalartemplate, gensym("style"),
-            x->x_scalar->sc_vec, (t_float)style, 0);
-        template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
-            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 0);
-
-        garray_setsaveit(x, (saveit != 0));
-        garray_redraw(x);
-        canvas_dirty(x->x_glist, 1);
-    }
+    garray_arraydialog_opt(x, gensym("arraydialog"), 8, ap);
 }
 
 void garray_arraydialog_opt(t_garray *x, t_symbol *s, int argc, t_atom*argv) {
@@ -683,6 +635,7 @@ void garray_arraydialog_opt(t_garray *x, t_symbol *s, int argc, t_atom*argv) {
          * the msgformat is <arrayname> <size> {-<option> <value>},
          * e.g. [arraydialog array97 100 -width 8 -color 900(
          */
+    pd_error(0, "%s(%p, %s,...", __FUNCTION__, x, s->s_name);postatom(argc, argv);endpost();
     if(argc<2 || argc%2) {
         pd_error(x, "invalid arguments for %s message", s->s_name);
         return;
@@ -691,18 +644,18 @@ void garray_arraydialog_opt(t_garray *x, t_symbol *s, int argc, t_atom*argv) {
     t_symbol* name = atom_getsymbolarg(0, argc, argv);
     t_float fsize = atom_getfloatarg(1, argc, argv);
 
+    name = garray_unescapit(name);
+    if(!*name->s_name) {
+        pd_error(0, "array: cannot create array without a name");
+        return;
+    }
+
     if(argc == 4 && A_FLOAT == argv[3].a_type) {
             /* legacy function */
         garray_arraydialog(
             x, name, fsize,
             atom_getfloatarg(2, argc, argv),
             atom_getfloatarg(3, argc, argv));
-        return;
-    }
-
-    name = garray_unescapit(name);
-    if(!*name->s_name) {
-        pd_error(0, "array: cannot create array without a name");
         return;
     }
 
