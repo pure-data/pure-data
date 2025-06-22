@@ -561,8 +561,7 @@ void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) 
         return;
     }
 
-
-    t_glist *gl;
+    t_glist *gl = 0;
     if (putinnew || (!(gl = glist_findgraph(parent))))
     {
         undo_name = "create";
@@ -582,6 +581,14 @@ void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) 
     if(keepsize)
         flags |= GRAPH_ARRAY_SAVESIZE;
     t_garray *a = graph_array(gl, name, &s_float, size, flags);
+
+    t_atom undo[4];
+    SETSYMBOL(undo+0, name);
+    SETFLOAT (undo+1, size);
+    SETSYMBOL(undo+2, &s_float);
+    SETFLOAT (undo+3, flags);
+    pd_undo_set_objectstate(parent, (t_pd*)gl, gensym("array"), 1, undo, 4, undo);
+
     t_scalar *sc = a->x_scalar;
     t_template *scalartemplate = template_findbyname(sc->sc_template);
 
@@ -594,6 +601,7 @@ void glist_arraydialog_opt(t_glist *parent, t_symbol *s, int argc, t_atom*argv) 
 
         /* TODO: UNDO */
 
+    canvas_undo_add(parent, UNDO_SEQUENCE_END, undo_name, 0);
     glist_redraw(gl);
     canvas_dirty(parent, 1);
 }
