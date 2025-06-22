@@ -14,10 +14,20 @@ array set ::dialog_array::listview_id {}
 array set ::dialog_array::listview_page {}
 array set ::dialog_array::listview_numpages {}
 set ::dialog_array::listview_pagesize 1000
-# this stores the state of the "save me" check button
+# whether the array stores its values
 array set ::dialog_array::saveme_button {}
-# this stores the state of the "draw as" radio buttons
+# whether we can draw the array with the mouse
+array set ::dialog_array::editable_button {}
+# draw style: polygon(0), points(1), bezier(2)
 array set ::dialog_array::drawas_button {}
+# line width
+array set ::dialog_array::linewidth_entry {}
+# line color
+array set ::dialog_array::linecolor_button {}
+# show data
+array set ::dialog_array::vis_button {}
+# show name
+array set ::dialog_array::visname_button {}
 # this stores the state of the "in new graph"/"in last graph" radio buttons
 # and the "delete array" checkbutton
 array set ::dialog_array::otherflag_button {}
@@ -347,11 +357,14 @@ proc ::dialog_array::listview_close {mytoplevel arrayName} {
 }
 
 proc ::dialog_array::apply {mytoplevel} {
+    set otherflag $::dialog_array::otherflag_button($mytoplevel)
+    if { $otherflag eq "keep" } {set otherflag 0}
+    if { $otherflag eq "delete" } {set otherflag 1}
     pdsend "$mytoplevel arraydialog \
             [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
             [$mytoplevel.array.size.entry get] \
             [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
-            $::dialog_array::otherflag_button($mytoplevel)"
+            ${otherflag}"
 }
 
 proc ::dialog_array::openlistview {mytoplevel} {
@@ -367,7 +380,35 @@ proc ::dialog_array::ok {mytoplevel} {
     ::dialog_array::cancel $mytoplevel
 }
 
-proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
+proc ::dialog_array::array_dialog {mytoplevel name size args} {
+    # ::dialog_array::array_dialog {.gfxstub55eb1bb15ba0} {array97} 100 -keep 0 -edit 1 -style 2 -color 835
+
+    set keep 0
+    set edit 1
+    set style 0
+    set width 1
+    set color 0
+    set vis 1
+    set visname 1
+    set newone 0
+
+    foreach {flag value} ${args} {
+        switch -glob ${flag} {
+            -new {set newone ${value}}
+            -keep {set keep ${value}}
+            -edit {set edit ${value}}
+            -style {set style ${value}}
+            -width {set width ${value}}
+            -color {set color ${value}}
+            -vis {set vis ${value}}
+            -visname {set visname ${value}}
+            * {
+                ::pdwindow::error "::dialog_array::array_dialog: invalid flag ${flag}\n"
+                return
+            }
+        }
+    }
+
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -376,18 +417,64 @@ proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
         create_dialog $mytoplevel $newone
     }
 
-    $mytoplevel.array.name.entry insert 0 [::dialog_gatom::unescape $name]
-    $mytoplevel.array.size.entry insert 0 $size
-    set ::dialog_array::saveme_button($mytoplevel) [expr $flags & 1]
-    set ::dialog_array::drawas_button($mytoplevel) [expr ( $flags & 6 ) >> 1]
-    set ::dialog_array::otherflag_button($mytoplevel) 0
-# pd -> tcl
+    $mytoplevel.array.name.entry insert 0 [::dialog_gatom::unescape ${name}]
+    $mytoplevel.array.size.entry insert 0 ${size}
+
+    set ::dialog_array::saveme_button($mytoplevel) ${keep}
+    set ::dialog_array::editable_button($mytoplevel) ${edit}
+    set ::dialog_array::drawas_button($mytoplevel) ${style}
+    set ::dialog_array::linewidth_entry($mytoplevel) ${width}
+    set ::dialog_array::linecolor_button($mytoplevel) ${color}
+    set ::dialog_array::vis_button($mytoplevel) ${vis}
+    set ::dialog_array::visname_button($mytoplevel) ${visname}
+
+    ::dialog_array::set_linecolor ${mytoplevel} ${color}
+}
+
+
+proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
+    set keep [expr $flags & 1]
+    set style [expr ( $flags & 6 ) >> 1]
+    ::dialog_array::array_dialog ${mytoplevel} ${name} ${size} \
+        -keep ${keep} -style ${style} -new ${newone}
+    # pd -> tcl
 #  2 * (int)(template_getfloat(template_findbyname(sc->sc_template), gensym("style"), x->x_scalar->sc_vec, 1)));
 
 # tcl->pd
 #    int style = ((flags & 6) >> 1);
 }
 
+proc ::dialog_array::color2pd {tclcolor} {
+    scan $tclcolor "#%2x%2x%2x" r g b
+    return [expr $r*8/255 * 100 + $g*8/255 * 10 + $b*8/255 * 1]
+}
+proc ::dialog_array::pd2color {pdcolor} {
+    set pdcolor [expr max(0, min(999, int($pdcolor)))]
+    set R [expr $pdcolor / 100]
+    set G [expr ($pdcolor / 10)%10]
+    set B [expr $pdcolor % 10]
+    set r [expr min(255, max(0, min(8, $R)) << 5)]
+    set g [expr min(255, max(0, min(8, $G)) << 5)]
+    set b [expr min(255, max(0, min(8, $B)) << 5)]
+    return [format "#%02x%02x%02x" $r $g $b]
+}
+proc ::dialog_array::set_linecolor {mytoplevel pdcolor} {
+    set ::dialog_array::linecolor_button($mytoplevel) $pdcolor
+    set tclcolor [pd2color $pdcolor]
+
+    ${mytoplevel}.drawas.right.color configure -background $tclcolor -activebackground $tclcolor
+}
+proc ::dialog_array::choose_linecolor {mytoplevel} {
+    set color "#000000"
+    if {[info exists ::dialog_array::linecolor_button($mytoplevel)]} {
+        set color [pd2color $::dialog_array::linecolor_button($mytoplevel)]
+    }
+    if { "${color}" eq "" } {set color "#000000" }
+    set color [tk_chooseColor -initialcolor $color -title [_ "Graph color" ]]
+    if { $color ne "" } {
+        ::dialog_array::set_linecolor $mytoplevel [color2pd $color]
+    }
+}
 proc ::dialog_array::create_dialog {mytoplevel newone} {
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [_ "Array Properties"]
@@ -410,17 +497,26 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     frame $mytoplevel.array.size -height 7 -padx 5
     pack $mytoplevel.array.size -side top -anchor e
     label $mytoplevel.array.size.label -text [_ "Size:"]
-    entry $mytoplevel.array.size.entry -width 17
+    entry $mytoplevel.array.size.entry -width 17 \
+        -validate key -validatecommand "string is digit %P"
     pack $mytoplevel.array.size.entry $mytoplevel.array.size.label -side right
 
-    checkbutton $mytoplevel.array.saveme -text [_ "Save contents"] \
+    frame $mytoplevel.array.editsave
+    pack $mytoplevel.array.editsave -side top
+    checkbutton $mytoplevel.array.editsave.saveme -text [_ "Save contents"] \
         -variable ::dialog_array::saveme_button($mytoplevel) -anchor w
-    pack $mytoplevel.array.saveme -side top
+    pack $mytoplevel.array.editsave.saveme -side left
+    checkbutton $mytoplevel.array.editsave.editable -text [_ "Allow mouse editing"] \
+        -variable ::dialog_array::editable_button($mytoplevel) -anchor w
+    pack $mytoplevel.array.editsave.editable -side left
 
     # draw as
-    labelframe $mytoplevel.drawas -text [_ "Draw as:"] -padx 20 -borderwidth 1
+    labelframe $mytoplevel.drawas -text [_ "Display:"] -padx 20 -pady 10 -borderwidth 1
     pack $mytoplevel.drawas -side top -fill x
-    set f $mytoplevel.drawas
+
+    set f $mytoplevel.drawas.left
+    labelframe ${f} -text [_ "Draw as:"] -padx 20  -borderwidth 1 -relief flat
+    pack ${f} -side left -fill x
     radiobutton ${f}.points  -variable ::dialog_array::drawas_button($mytoplevel) \
         -value 1 -text [_ "Polygon"]
     radiobutton ${f}.polygon -variable ::dialog_array::drawas_button($mytoplevel) \
@@ -430,6 +526,33 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     pack ${f}.points -side top -anchor w
     pack ${f}.polygon -side top -anchor w
     pack ${f}.bezier -side top -anchor w
+
+    set f $mytoplevel.drawas.right
+    frame ${f} -padx 20 -borderwidth 1
+    pack ${f} -side left -fill x
+
+    set color #000
+
+    checkbutton $f.vis -text [_ "Show array"] \
+        -variable ::dialog_array::vis_button($mytoplevel) -anchor w
+    checkbutton $f.visname -text [_ "Show name"] \
+        -variable ::dialog_array::visname_button($mytoplevel) -anchor w
+    label ${f}.wlabel -text [_ "Width:"]
+    entry ${f}.width -width 17 \
+        -textvariable ::dialog_array::linewidth_entry($mytoplevel) \
+        -validate key -validatecommand "string is digit %P"
+
+    label ${f}.clabel -text [_ "Color:"]
+    label ${f}.color \
+        -background $color -activebackground $color \
+        -relief ridge -padx 7 -pady 0 -width 1
+    bind ${f}.color <Button> "::dialog_array::choose_linecolor $mytoplevel"
+    grid ${f}.wlabel -row 0 -column 0
+    grid ${f}.width  -row 0 -column 1
+    grid ${f}.clabel -row 1 -column 0
+    grid ${f}.color  -row 1 -column 1 -sticky we
+    grid ${f}.vis    -row 2 -column 0 -columnspan 2 -sticky w
+    grid ${f}.visname -row 3 -column 0 -columnspan 2 -sticky w
 
     # options
     if {$newone == 1} {
@@ -441,6 +564,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
             -variable ::dialog_array::otherflag_button($mytoplevel) -text [_ "Last graph"]
         pack $mytoplevel.options.radio0 -side top -anchor w
         pack $mytoplevel.options.radio1 -side top -anchor w
+        set ::dialog_array::otherflag_button($mytoplevel) 0
     } else {
         labelframe $mytoplevel.options -text [_ "Options"] -padx 20 -borderwidth 1
         pack $mytoplevel.options -side top -fill x
@@ -448,7 +572,9 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
             -command "::dialog_array::openlistview $mytoplevel [$mytoplevel.array.name.entry get]"
         pack $mytoplevel.options.listview -side top
         checkbutton $mytoplevel.options.deletearray -text [_ "Delete array"] \
+            -onvalue "delete" -offvalue "keep" \
             -variable ::dialog_array::otherflag_button($mytoplevel) -anchor w
+        set ::dialog_array::otherflag_button($mytoplevel) keep
         pack $mytoplevel.options.deletearray -side top
     }
 
