@@ -356,7 +356,7 @@ proc ::dialog_array::listview_close {mytoplevel arrayName} {
     pdsend "$mytoplevel arrayviewclose"
 }
 
-proc ::dialog_array::apply {mytoplevel} {
+proc ::dialog_array::apply_old {mytoplevel} {
     set otherflag $::dialog_array::otherflag_button($mytoplevel)
     if { $otherflag eq "keep" } {set otherflag 0}
     if { $otherflag eq "delete" } {set otherflag 1}
@@ -366,6 +366,34 @@ proc ::dialog_array::apply {mytoplevel} {
             [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
             ${otherflag}"
 }
+proc ::dialog_array::apply_new {mytoplevel} {
+    set data "$mytoplevel arraydialog"
+    lappend data [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
+        [$mytoplevel.array.size.entry get]
+    lappend data "-keep" $::dialog_array::saveme_button($mytoplevel)
+    lappend data "-edit" $::dialog_array::editable_button($mytoplevel)
+    lappend data "-style" $::dialog_array::drawas_button($mytoplevel)
+    lappend data "-width" $::dialog_array::linewidth_entry($mytoplevel)
+    lappend data "-color" $::dialog_array::linecolor_button($mytoplevel)
+    lappend data "-vis" $::dialog_array::vis_button($mytoplevel)
+    lappend data "-visname" $::dialog_array::visname_button($mytoplevel)
+
+    set otherflag $::dialog_array::otherflag_button($mytoplevel)
+    if { $otherflag eq "keep" } {lappend data -delete 0} \
+    elseif { $otherflag eq "delete" } {lappend data -delete 1} \
+    else {lappend data -new $otherflag}
+
+    pdsend $data
+}
+
+proc ::dialog_array::apply {mytoplevel} {
+    if { 1 } {
+        ::dialog_array::apply_new ${mytoplevel}
+    } else {
+        ::dialog_array::apply_old ${mytoplevel}
+    }
+}
+
 
 proc ::dialog_array::openlistview {mytoplevel} {
     pdsend "$mytoplevel arrayviewlistnew"
@@ -382,6 +410,7 @@ proc ::dialog_array::ok {mytoplevel} {
 
 proc ::dialog_array::array_dialog {mytoplevel name size args} {
     # ::dialog_array::array_dialog {.gfxstub55eb1bb15ba0} {array97} 100 -keep 0 -edit 1 -style 2 -color 835
+    puts [list ::dialog_array::array_dialog ${mytoplevel} $name $size $args]
 
     set keep 0
     set edit 1
