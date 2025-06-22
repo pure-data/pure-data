@@ -374,8 +374,8 @@ void garray_properties(t_garray *x)
 {
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
-    int style = template_getfloat(template_findbyname(sc->sc_template),
-        gensym("style"), x->x_scalar->sc_vec, 1);
+    t_template *scalartemplate = template_findbyname(sc->sc_template);
+    int style = template_getfloat(scalartemplate, gensym("style"), sc->sc_vec, 1);
     int filestyle = (style == 0 ? PLOTSTYLE_POLY :
         (style == 1 ? PLOTSTYLE_POINTS : style));
 
@@ -469,15 +469,15 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 
     if (deleteit != 0)
     {
-        const char *undo_name = "add array";
         t_atom undo[4];
         t_glist *gl = x->x_glist;
+        t_canvas *cnv = glist_getcanvas(gl);
         garray_deleteit(x);
         SETSYMBOL(undo+0, name);
         SETFLOAT (undo+1, fsize);
         SETSYMBOL(undo+2, gensym("float"));
         SETFLOAT (undo+3, fflags);
-        pd_undo_set_objectstate(glist_getcanvas(gl), (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
+        pd_undo_set_objectstate(cnv, (t_pd*)gl, gensym("array"), 4, undo, 1, undo);
         glist_redraw(gl);
     } else {
         long size;
