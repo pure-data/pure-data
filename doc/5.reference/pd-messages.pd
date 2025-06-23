@@ -111,7 +111,7 @@
 #X obj 228 628 namecanvas;
 #X msg 387 628 message;
 #X obj 77 24 cnv 15 242 27 empty empty Messages\ you\ can\ send\ to\ Pd: 11 14 0 14 #e0e0e0 #404040 0;
-#X obj 524 446 cnv 15 420 27 empty empty Messages\ you\ can\ send\ to\ Patch\ windows\ (canvases) 15 14 0 14 #e0e0e0 #404040 0;
+#X obj 524 447 cnv 15 420 27 empty empty Messages\ you\ can\ send\ to\ Patch\ windows\ (canvases) 15 14 0 14 #e0e0e0 #404040 0;
 #X obj 524 473 cnv 15 420 27 empty empty (aka\ Dynamic\ patching): 117 12 0 14 #e0e0e0 #404040 0;
 #N canvas 465 177 863 411 Dynamic-Patching 0;
 #N canvas 338 52 659 663 creating-boxes 0;
@@ -340,7 +340,7 @@
 #X coords 0 1 100 -1 244 28 1;
 #X restore 76 24 graph;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X coords 0 1 100 -1 421 54 1;
+#X coords 0 1 100 -1 422 54 1;
 #X restore 523 447 graph;
 #X obj 310 628 pdcontrol;
 #N canvas 543 122 589 553 dsp-start/stop 0;
