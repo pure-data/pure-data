@@ -2109,14 +2109,15 @@ static void canvas_donecanvasdialog(t_glist *x,
 
             /* change the text (this will restore the connections we just stowed away) */
         glist_noselect(x->gl_owner);
+        t_canvas *owner = x->gl_owner;
         text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
 
-        canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
-        glist_settexted(x->gl_owner, 0);
+        canvas_fixlinesfor(owner, &x->gl_obj);
+        glist_settexted(owner, 0);
 
-        canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_END, "typing", 0);
+        canvas_undo_add(owner, UNDO_SEQUENCE_END, "typing", 0);
         freebytes(textbuf, textsize);
-        canvas_dirty(x->gl_owner, 1);
+        canvas_dirty(owner, 1);
         return;
     }
 
