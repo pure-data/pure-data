@@ -620,6 +620,7 @@ static void scalar_free(t_scalar *x)
         pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return;
     }
+    rtext_cleanupforscalar(x);
     word_free(x->sc_vec, template);
     pdgui_stub_deleteforkey(x);
         /* the "size" field in the class is zero, so Pd doesn't try to free

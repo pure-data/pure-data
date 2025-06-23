@@ -497,6 +497,7 @@ EXTERN void rtext_untype(t_rtext *x);
 EXTERN void rtext_getrect(t_rtext *x, int *x1p, int *y1p, int *x2p, int *y2p);
 EXTERN void rtext_retextforscalar(t_rtext *x, char *buf, int len,
     int xpix, int ypix);
+EXTERN void rtext_cleanupforscalar(t_scalar *sc);
 EXTERN int rtext_hit(t_rtext *x, int xpix, int ypix,
     int *x1p, int *y1p, int *x2p, int *y2p);
 t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,

@@ -135,6 +135,34 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof *x);
 }
 
+static void glist_dortextcleanupforscalar(t_glist *glist, t_scalar *sc)
+{
+    t_rtext *rtext, *next;
+    t_gobj *g;
+        /* clean up rtexts in current canvas */
+    if (glist->gl_editor)
+        for (rtext = glist->gl_editor->e_rtext; rtext; rtext = next)
+        {
+            next = rtext->x_next;
+            if (rtext->x_scalar == sc)
+                rtext_free(rtext);
+        }
+        /* recursively clean up rtexts in child canvases */
+    for (g = glist->gl_list; g; g = g->g_next)
+    {
+        if (g->g_pd == canvas_class)
+            glist_dortextcleanupforscalar((t_glist *)g, sc);
+    }
+}
+
+    /* clean up rtexts that reference a scalar being deleted */
+void rtext_cleanupforscalar(t_scalar *sc)
+{
+    t_glist *glist;
+    for (glist = pd_this->pd_canvaslist; glist; glist = glist->gl_next)
+        glist_dortextcleanupforscalar(glist, sc);
+}
+
 void rtext_setcolor(t_rtext *x, int color)
 {
     char buf[80];
