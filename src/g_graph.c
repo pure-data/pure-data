@@ -702,11 +702,12 @@ static void graph_create_text(
     SETSYMBOL(fontatoms+0, gensym(sys_font));
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess(0, "crr ii rs rr rA rS",
+    pdgui_vmess(0, "crr ii rs rs rr rA rS",
               glist_getcanvas(x),
               "create", "text",
               posX, posY,
               "-text", name,
+              "-fill", THISGUI->i_foregroundcolor->s_name,
               "-anchor", anchor,
               "-font", 3, fontatoms,
               "-tags", numtags, tags);
