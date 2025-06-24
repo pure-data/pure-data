@@ -963,6 +963,11 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         if (glist_isvisible(glist)) {
             glist_redraw(x);
             canvas_fixlinesfor(glist, &x->gl_obj);
+            char tag[80];
+            sprintf(tag, "graph%lx", (t_int)z);
+            pdgui_vmess(0, "crs rr",
+                glist_getcanvas(glist), "itemconfigure", tag,
+                "-fill", THISGUI->i_selectcolor->s_name);
         }
     }
 }
