@@ -2677,9 +2677,10 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     {
         if (!shiftmod)
             glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rs",
+        pdgui_vmess(0, "crr iiii rs rs",
             x, "create", "rectangle",
             xpix,ypix, xpix,ypix,
+            "-outline", THISGUI->i_selectcolor->s_name,
             "-tags", "x");
         x->gl_editor->e_xwas = xpix;
         x->gl_editor->e_ywas = ypix;
