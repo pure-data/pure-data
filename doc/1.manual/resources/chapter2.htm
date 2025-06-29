@@ -1804,6 +1804,11 @@ in the patch.
 work just to click on the object in run mode since clicks are sent to visible
 controls and/or arrays.
 
+<P>Organized patches can tend to have many subpatches. If you want to close all
+open subpatch windows, you can use the "Close subwindows" entry in the<b>Window
+menu</b>. Similarly, you can use the "Parent Window" entry to easily focus the
+parent patch.
+
 <P>When the sub-patch is closed, all controls in it appear on the object
 instead; so the number box in the sub-patch in the example above is the same
 one as you see in the box. Only controls are made visible in this way.
@@ -1825,8 +1830,8 @@ to define new arrays, as "graphs" and "tables". In either case, the array
 has a predefined name and size (i.e., number of points). Elements of the
 array are stored as floating-point numbers, 4 bytes apiece.
 
-<P>If you use an array to store a one-second sound at 44.1 kHz, you will need
-176 kilobytes, for a one-minute sound 10.6 megabytes. To store a sound with
+<P>If you use an array to store a one-second sound at 48 kHz, you will need
+192 kilobytes, for a one-minute sound 11.5 megabytes. To store a sound with
 two or more channels, use a separate array for each channel.
 
 <P>Arrays are also useful as transfer functions, for example for nonlinear
