@@ -96,8 +96,8 @@
 #X restore 629 499 graph;
 #X text 643 505 <-- Only try this if you know what you're doing!, f 24;
 #X msg 554 505 \; pd vis;
-#X text 440 421 'vis' (without args) will stop the GUI. This may seem like Pd stopped \, but the process is still running. You can restart the GUI by sending a 'vis <path>' message \, where <path> is Pd's base directory (where 'tcl/pd-gui.tcl' is found)., f 62;
 #X msg 485 73 \; pd quit;
+#X text 443 421 'vis' (without args) will stop the GUI. This may seem like Pd stopped \, but the process is still running. You can restart the GUI by sending a 'vis <path>' message \, with <path> being Pd's base directory (where 'tcl/pd-gui.tcl' is located)., f 62;
 #X connect 0 0 13 0;
 #X connect 1 0 0 0;
 #X connect 3 0 17 0;
