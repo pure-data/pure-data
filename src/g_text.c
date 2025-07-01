@@ -880,6 +880,54 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
 }
 
+int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
+
+static double gatom_wheel_step(t_gatom *x, t_floatarg modifier, double amount)
+{
+        /* use range-proportional steps when limits are set,
+         * direct wheel amount for unlimited ranges */
+    if (x->a_draghi > x->a_draglo)
+    {
+        double range_step = (x->a_draghi - x->a_draglo) / 127.0;
+        return ((int)modifier & 1) ? amount * range_step * 0.01 : amount * range_step;
+    }
+    else
+        return ((int)modifier & 1) ? amount * 0.01 : amount;
+}
+
+static void gatom_wheel(t_gatom *x, t_symbol *axis, t_floatarg amount,
+    t_floatarg modifier, t_floatarg xpos, t_floatarg ypos)
+{
+        /* only respond to vertical scrolling */
+    if (axis != gensym("y")) return;
+    double step, nval, scaled_amount = amount;
+        /* TclTk>=9 sends much larger wheel deltas that we need to scale down.
+         * threshold and factor are arbitrary, but seem to work well. */
+    if (fabs(scaled_amount) > 30.0)
+        scaled_amount /= 30.0;
+    if (x->a_flavor == A_FLOAT)
+    {
+        t_atom *ap = &binbuf_getvec(x->a_text.te_binbuf)[0];
+        step = gatom_wheel_step(x, modifier, scaled_amount);
+        nval = ap->a_w.w_float - step;
+        gatom_clipfloat(x, ap, nval);
+    }
+    else if (x->a_flavor == A_LIST)
+    {
+        int x1, y1, x2, y2, indx, argc = binbuf_getnatom(x->a_text.te_binbuf);
+        t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
+        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+        gobj_getrect((t_gobj *)x, x->a_glist, &x1, &y1, &x2, &y2);
+        indx = rtext_findatomfor(t, (int)xpos - x1, (int)ypos - y1);
+        if (indx >= 0 && indx < argc && argv[indx].a_type == A_FLOAT)
+        {
+            step = gatom_wheel_step(x, modifier, scaled_amount);
+            nval = argv[indx].a_w.w_float - step;
+            gatom_clipfloat(x, &argv[indx], (float)nval);
+        }
+    }
+}
+
 static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
@@ -924,8 +972,6 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
         }
     }
 }
-
-int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
 
     /* this is called when gatom is clicked on with patch in run mode. */
 static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
@@ -1870,6 +1916,8 @@ void g_text_setup(void)
         A_GIMME, 0);
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
+    class_addmethod(gatom_class, (t_method)gatom_wheel, gensym("wheel"),
+        A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
     class_sethelpsymbol(gatom_class, gensym("gui-boxes"));
