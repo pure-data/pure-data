@@ -1695,17 +1695,15 @@ when the patch is saved. Examples are given in their help files.
 
 <p>Pd offers two mechanisms for making subpatches, called "one-off subpatches"
 and "abstractions". In either case the subpatch appears as an object box
-in a patch. If you type <b>[pd]</b> or
-<b>[pd my-name]</b> into an object box, this creates
-
-a one-off subpatch. For instance, in this fragment:
+in a patch. If you type <b>[pd]</b> or <b>[pd my-name]</b> into an object box,
+this creates a one-off subpatch. For instance, in this fragment:
 
 <figure>
     <IMG src="2.8.1.png" ALT="subpatch">
     <figcaption><u>Fig. 2.8.1</u> A subpatch called "my-subpatch"</figcaption>
 </figure>
 
-<p>The box in the middle, if clicked on, opens the sub-patch shown here:
+<p>The box in the middle, if clicked on, opens the subpatch shown here:
 
 <figure>
     <IMG src="2.8.2.png" ALT="open subpatch window">
@@ -1716,14 +1714,11 @@ a one-off subpatch. For instance, in this fragment:
 one file. If you make several copies of a subpatch you may change them
 individually.
 
-<P>The objects <b>[inlet]</b>, <b>[inlet~]</b>,
-<b>[outlet]</b> and <b>[outlet~]</b>, when put in a
-subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions and only accept
-control data messages. The <b>[inlet~]</b> and
-<b>[outlet~]</b> versions create inlets and outlets for audio signals.
-Note you can also mix control messages in an <b>[inlet~]</b>
-
+<P>The objects <b>[inlet]</b>, <b>[inlet~]</b>, <b>[outlet]</b> and <b>[outlet~]</b>,
+when put in a subpatch, create inlets and outlets for the object box containing the
+subpatch. This works equally for one-off subpatches and abstractions and only accept
+control data messages. The <b>[inlet~]</b> and <b>[outlet~]</b> versions create inlets
+and outlets for audio signals. Note you can also mix control messages in an <b>[inlet~]</b>
 via its right outlet, but a signal outlet only takes signals. Inlets and outlets
 appear on the invoking box in the same left-to-right order as they appear in the
 subpatch.
@@ -1743,13 +1738,11 @@ patch shown here:
 
 <figure>
     <IMG src="2.8.4.png" ALT="abstraction example">
-
     <figcaption><u>Fig. 2.8.4</u> The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
 
 <p>You may create many instances of <b>[abstraction1]</b> or invoke it from different
 patches. Changing and saving the contents of <b>[abstraction1]</b> will affect all
-
 invocations of it as they are created. An analogy from the "c" programming
 language is that one-off subpatches are like bracketed blocks of code and
 abstractions are like subroutines.
@@ -1757,7 +1750,6 @@ abstractions are like subroutines.
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
 you have a file "my-abstraction.pd" you may have <b>[my-abstraction 5]</b> to set the
-
 variable "$1" to 5. This is defined only for object boxes (not for messages) in
 the abstraction. For message boxes, "$1", etc, have a different meaning as
 described above, so note that dollar signs are expanded at a different time in
@@ -1775,6 +1767,11 @@ number of arguments, as well as varying their atom type.
 <P>A <b>[clone]</b> object is provided to automatically create and manage multiple copies
 of an abstraction. You can use it to make voice banks for polyphonic synthesis,
 for example.
+
+<P>Complex patches often have many subpatches. If you want to close all
+open subpatch windows, you can use the "Close subwindows" entry in the<b>Window
+menu</b>. Similarly, you can use the "Parent Window" entry to easily focus the
+parent patch.
 
 <H4> <A href="#s2.8.2" id="s2.8.2">2.8.2. Graph-on-parent subpatches</A> </H4>
 
@@ -1804,13 +1801,8 @@ in the patch.
 work just to click on the object in run mode since clicks are sent to visible
 controls and/or arrays.
 
-<P>Organized patches can tend to have many subpatches. If you want to close all
-open subpatch windows, you can use the "Close subwindows" entry in the<b>Window
-menu</b>. Similarly, you can use the "Parent Window" entry to easily focus the
-parent patch.
-
-<P>When the sub-patch is closed, all controls in it appear on the object
-instead; so the number box in the sub-patch in the example above is the same
+<P>When the subpatch is closed, all controls in it appear on the object
+instead; so the number box in the subpatch in the example above is the same
 one as you see in the box. Only controls are made visible in this way.
 
 
