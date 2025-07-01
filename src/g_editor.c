@@ -57,6 +57,8 @@ static t_glist *glist_finddirty(t_glist *x);
 static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
+void canvas_wheel(t_canvas *x, t_floatarg fxpos, t_floatarg fypos,
+    t_symbol *axis, t_floatarg famount, t_floatarg fmodifier);
 
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
@@ -3080,6 +3082,45 @@ void canvas_mouseup(t_canvas *x,
     x->gl_editor->e_onmotion = MA_NONE;
 }
 
+void canvas_wheel(t_canvas *x, t_floatarg fxpos, t_floatarg fypos,
+    t_symbol *axis, t_floatarg famount, t_floatarg fmodifier)
+{
+    int xpos = fxpos, ypos = fypos, amount = famount, modifier = fmodifier;
+    t_gobj *y;
+    int x1, y1, x2, y2;
+    if (!x->gl_editor) return;
+        /* run mode or edit mode with cmd/ctrl - check for sliders */
+    if (!x->gl_edit || (modifier & 2))
+    {
+        y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2);
+        if (y && zgetfn(&y->g_pd, gensym("wheel")))
+        {
+                /* for xy (touchpad with TclTk>=9) scrolling,
+                 * extract the Y component from packed data and
+                 * scale down deltas to be less sensitive. */
+            t_float slider_amount = amount;
+            if (axis == gensym("xy"))
+            {
+                    /* amount is packed as (deltaX << 16) | deltaY, extract deltaY */
+                int packed = (int)amount;
+                int deltaY = (packed & 0xFFFF);
+                    /* handle signed 16-bit values (convert from unsigned to signed) */
+                if (deltaY > 0x7FFF) deltaY -= 0x10000;
+                    /* scale down deltas to be less sensitive */
+                slider_amount = (t_float)(deltaY >> 1);
+                    /* send as "y" axis to slider */
+                axis = gensym("y");
+            }
+            pd_vmess(&y->g_pd, gensym("wheel"), "sffff", axis, slider_amount, (t_float)modifier, (t_float)xpos, (t_float)ypos);
+            return;  /* event consumed by slider/object */
+        }
+    }
+        /* fall back to canvas scrolling: edit mode, or no slider found */
+        /* if shift+scroll (modifier=1) with vertical axis, treat as horizontal scrolling */
+    const char *scroll_axis = ((axis == gensym("y")) && (modifier == 1)) ? "x" : axis->s_name;
+    pdgui_vmess("::pdtk_canvas::scroll", "csi", x, scroll_axis, (int)amount);
+}
+
     /* displace the selection by (dx, dy) pixels */
 static void canvas_displaceselection(t_canvas *x, int dx, int dy)
 {
@@ -5090,6 +5131,8 @@ void g_editor_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_mouseup, gensym("mouseup"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_DEFFLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_wheel, gensym("wheel"),
+        A_FLOAT, A_FLOAT, A_SYMBOL, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_key, gensym("key"),
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),

@@ -623,6 +623,33 @@ static void slider_steady(t_slider *x, t_floatarg f)
     x->x_steady = (f == 0.0) ? 0 : 1;
 }
 
+static void slider_wheel(t_slider *x, t_symbol *axis, t_floatarg amount,
+    t_floatarg modifier, t_floatarg xpos, t_floatarg ypos)
+{
+        /* only respond to vertical scrolling */
+    if (axis != gensym("y")) return;
+    double f, k2 = ((int)modifier & 1) ? 0.01 : 1.0;
+    double scaled_amount = amount;
+        /* TclTk>=9 sends much larger wheel deltas that we need to scale down.
+         * threshold and factor are arbitrary, but seem to work well. */
+    if (fabs(scaled_amount) > 30.0)
+        scaled_amount /= 30.0;
+    if (x->x_lin0_log1) {
+            /* logarithmic mode */
+        double log_ratio = log(x->x_max / x->x_min);
+        double log_step = log_ratio / 127.0 * k2;
+        f = x->x_fval * exp(-scaled_amount * log_step);
+    } else {
+            /* linear mode */
+        double value_range = x->x_max - x->x_min;
+        double base_step = value_range / 127.0;
+        double step_size = base_step * k2;
+        f = x->x_fval - (scaled_amount * step_size);
+    }
+    f = f > x->x_max ? x->x_max : f < x->x_min ? x->x_min : f;
+    slider_float(x, f);
+}
+
 static void slider_orientation(t_slider *x, t_floatarg forient)
 {
     int orient = !!(int)forient;
@@ -806,6 +833,8 @@ void g_slider_setup(void)
         gensym("steady"), A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_orientation,
         gensym("orientation"), A_FLOAT, 0);
+    class_addmethod(slider_class, (t_method)slider_wheel,
+        gensym("wheel"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_zoom,
         gensym("zoom"), A_CANT, 0);
     slider_widgetbehavior.w_getrectfn =    slider_getrect;

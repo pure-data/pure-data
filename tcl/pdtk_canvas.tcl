@@ -441,6 +441,16 @@ proc ::pdtk_canvas::scroll {tkcanvas axis amount} {
     }
 }
 
+# handle mouse wheel events - check for sliders first, then scroll canvas
+proc ::pdtk_canvas::handle_wheel {tkcanvas x y axis amount {modifier 0}} {
+    set mytoplevel [winfo toplevel $tkcanvas]
+    set canvas_x [$tkcanvas canvasx $x]
+    set canvas_y [$tkcanvas canvasy $y]
+
+    # send wheel event to Pd to check if we hit a slider (handles both y and xy)
+    pdsend "$mytoplevel wheel $canvas_x $canvas_y $axis $amount $modifier"
+}
+
 #------------------------------------------------------------------------------#
 # get patch window child/parent relationships
 
