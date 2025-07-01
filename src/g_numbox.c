@@ -423,6 +423,31 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     iemgui_size(x, &x->x_gui);
 }
 
+static void my_numbox_wheel(t_my_numbox *x, t_symbol *axis, t_floatarg amount,
+    t_floatarg modifier, t_floatarg xpos, t_floatarg ypos)
+{
+        /* only respond to vertical scrolling */
+    if (axis != gensym("y")) return;
+    double k2 = ((int)modifier & 1) ? 0.01 : 1.0;
+    double scaled_amount = amount;
+        /* TclTk>=9 sends much larger wheel deltas that we need to scale down.
+         * threshold and factor are arbitrary, but seem to work well. */
+    if (fabs(scaled_amount) > 30.0)
+        scaled_amount /= 30.0;
+        /* consistent exponential steps for logarithmic mode,
+         * fixed steps for linear mode */
+    if (x->x_lin0_log1) {
+        double log_ratio = log(x->x_max / x->x_min);
+        double log_step = log_ratio / 127.0 * k2;
+        x->x_val *= exp(-scaled_amount * log_step);
+    } else {
+        x->x_val -= scaled_amount * k2;
+    }
+    my_numbox_clip(x);
+    sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    my_numbox_bang(x);
+}
+
 static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
@@ -757,6 +782,8 @@ void g_numbox_setup(void)
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_motion,
         gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
+    class_addmethod(my_numbox_class, (t_method)my_numbox_wheel,
+        gensym("wheel"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,
