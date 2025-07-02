@@ -895,35 +895,32 @@ static double gatom_wheel_step(t_gatom *x, t_floatarg modifier, double amount)
         return ((int)modifier & 1) ? amount * 0.01 : amount;
 }
 
-static void gatom_wheel(t_gatom *x, t_symbol *axis, t_floatarg amount,
-    t_floatarg modifier, t_floatarg xpos, t_floatarg ypos)
+static void gatom_wheel(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
-        /* only respond to vertical scrolling */
-    if (axis != gensym("y")) return;
-    double step, nval, scaled_amount = amount;
-        /* TclTk>=9 sends much larger wheel deltas that we need to scale down.
-         * threshold and factor are arbitrary, but seem to work well. */
-    if (fabs(scaled_amount) > 30.0)
-        scaled_amount /= 30.0;
+    float dy = atom_getfloat(argv+1);
+    if (dy == 0) return;
+    int mod = atom_getint(argv+2);
+    int xpos = atom_getint(argv+3), ypos = atom_getint(argv+4);
+    double step, nval;
     if (x->a_flavor == A_FLOAT)
     {
         t_atom *ap = &binbuf_getvec(x->a_text.te_binbuf)[0];
-        step = gatom_wheel_step(x, modifier, scaled_amount);
+        step = gatom_wheel_step(x, mod, dy);
         nval = ap->a_w.w_float - step;
         gatom_clipfloat(x, ap, nval);
     }
     else if (x->a_flavor == A_LIST)
     {
-        int x1, y1, x2, y2, indx, argc = binbuf_getnatom(x->a_text.te_binbuf);
-        t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
+        int x1, y1, x2, y2, indx, atom_argc = binbuf_getnatom(x->a_text.te_binbuf);
+        t_atom *atom_argv = binbuf_getvec(x->a_text.te_binbuf);
         t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
         gobj_getrect((t_gobj *)x, x->a_glist, &x1, &y1, &x2, &y2);
-        indx = rtext_findatomfor(t, (int)xpos - x1, (int)ypos - y1);
-        if (indx >= 0 && indx < argc && argv[indx].a_type == A_FLOAT)
+        indx = rtext_findatomfor(t, xpos, ypos);
+        if (indx >= 0 && indx < atom_argc && atom_argv[indx].a_type == A_FLOAT)
         {
-            step = gatom_wheel_step(x, modifier, scaled_amount);
-            nval = argv[indx].a_w.w_float - step;
-            gatom_clipfloat(x, &argv[indx], (float)nval);
+            step = gatom_wheel_step(x, mod, dy);
+            nval = atom_argv[indx].a_w.w_float - step;
+            gatom_clipfloat(x, &atom_argv[indx], (float)nval);
         }
     }
 }
@@ -1917,7 +1914,7 @@ void g_text_setup(void)
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
     class_addmethod(gatom_class, (t_method)gatom_wheel, gensym("wheel"),
-        A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+        A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
     class_sethelpsymbol(gatom_class, gensym("gui-boxes"));

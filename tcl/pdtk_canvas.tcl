@@ -422,33 +422,34 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     }
 }
 
-proc ::pdtk_canvas::scroll {tkcanvas axis amount} {
-    if {$axis eq "x" && $::xscrollable($tkcanvas) == 1} {
-        $tkcanvas xview scroll [expr {- ($amount)}] units
-        return
-    }
-    if {$axis eq "y" && $::yscrollable($tkcanvas) == 1} {
-        $tkcanvas yview scroll [expr {- ($amount)}] units
-        return
-    }
-    if {$axis eq "xy" } {
-        # TclTk>=9 has 2D scrolling
-        lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY
-        if {$deltaX != 0 || $deltaY != 0} {
-            tk::ScrollByPixels $tkcanvas $deltaX $deltaY
+proc ::pdtk_canvas::scroll {tkcanvas deltaX deltaY} {
+    if {$::tcl_version >= 9.0 && ($deltaX != 0 || $deltaY != 0)} {
+        tk::ScrollByPixels $tkcanvas $deltaX $deltaY
+    } else {
+        if {$deltaX != 0 && $::xscrollable($tkcanvas) == 1} {
+            $tkcanvas xview scroll [expr {- ($deltaX)}] units
         }
-        return
+        if {$deltaY != 0 && $::yscrollable($tkcanvas) == 1} {
+            $tkcanvas yview scroll [expr {- ($deltaY)}] units
+        }
     }
 }
 
-# handle mouse wheel events - check for sliders first, then scroll canvas
+# handle mouse wheel events
 proc ::pdtk_canvas::handle_wheel {tkcanvas x y axis amount {modifier 0}} {
     set mytoplevel [winfo toplevel $tkcanvas]
     set canvas_x [$tkcanvas canvasx $x]
     set canvas_y [$tkcanvas canvasy $y]
-
-    # send wheel event to Pd to check if we hit a slider (handles both y and xy)
-    pdsend "$mytoplevel wheel $canvas_x $canvas_y $axis $amount $modifier"
+    set deltaX 0
+    set deltaY 0
+    switch $axis {
+        xy {lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY}
+        x {set deltaX $amount}
+        y {set deltaY $amount}
+    }
+    # send wheel event to core to check if we hit any objects
+    # and send the canvas scroll event back if we didn't
+    pdsend "$mytoplevel wheel $deltaX $deltaY $modifier $canvas_x $canvas_y $axis"
 }
 
 #------------------------------------------------------------------------------#

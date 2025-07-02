@@ -423,25 +423,21 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     iemgui_size(x, &x->x_gui);
 }
 
-static void my_numbox_wheel(t_my_numbox *x, t_symbol *axis, t_floatarg amount,
-    t_floatarg modifier, t_floatarg xpos, t_floatarg ypos)
+static void my_numbox_wheel(t_my_numbox *x, t_symbol *s, int argc, t_atom *argv)
 {
-        /* only respond to vertical scrolling */
-    if (axis != gensym("y")) return;
-    double k2 = ((int)modifier & 1) ? 0.01 : 1.0;
-    double scaled_amount = amount;
-        /* TclTk>=9 sends much larger wheel deltas that we need to scale down.
-         * threshold and factor are arbitrary, but seem to work well. */
-    if (fabs(scaled_amount) > 30.0)
-        scaled_amount /= 30.0;
-        /* consistent exponential steps for logarithmic mode,
-         * fixed steps for linear mode */
+    float dy = atom_getfloat(argv+1);
+    if (dy == 0) return;
+    int mod = atom_getint(argv+2);
+    double k2 = (mod & 1) ? 0.01 : 1.0;
+        /* for numboxes, use fixed steps since they're typically unlimited range */
     if (x->x_lin0_log1) {
+            /* logarithmic mode - use exponential steps based on log range */
         double log_ratio = log(x->x_max / x->x_min);
         double log_step = log_ratio / 127.0 * k2;
-        x->x_val *= exp(-scaled_amount * log_step);
+        x->x_val *= exp(-dy * log_step);
     } else {
-        x->x_val -= scaled_amount * k2;
+            /* linear mode - use fixed steps */
+        x->x_val -= dy * k2;
     }
     my_numbox_clip(x);
     sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
@@ -783,7 +779,7 @@ void g_numbox_setup(void)
     class_addmethod(my_numbox_class, (t_method)my_numbox_motion,
         gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_wheel,
-        gensym("wheel"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+        gensym("wheel"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,

@@ -57,8 +57,6 @@ static t_glist *glist_finddirty(t_glist *x);
 static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
-void canvas_wheel(t_canvas *x, t_floatarg fxpos, t_floatarg fypos,
-    t_symbol *axis, t_floatarg famount, t_floatarg fmodifier);
 
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
@@ -3082,43 +3080,40 @@ void canvas_mouseup(t_canvas *x,
     x->gl_editor->e_onmotion = MA_NONE;
 }
 
-void canvas_wheel(t_canvas *x, t_floatarg fxpos, t_floatarg fypos,
-    t_symbol *axis, t_floatarg famount, t_floatarg fmodifier)
+void canvas_wheel(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int xpos = fxpos, ypos = fypos, amount = famount, modifier = fmodifier;
+    t_float dx = atom_getfloat(argv), dy = atom_getfloat(argv+1);
+    int mod = atom_getint(argv+2);
+    int xpix = atom_getint(argv+3), ypix = atom_getint(argv+4);
+    t_symbol *axis = atom_getsymbol(argv+5);
     t_gobj *y;
     int x1, y1, x2, y2;
     if (!x->gl_editor) return;
-        /* run mode or edit mode with cmd/ctrl - check for sliders */
-    if (!x->gl_edit || (modifier & 2))
+        /* run mode or edit mode with cmd/ctrl - check for objects */
+    if (!x->gl_edit || (mod & 2))
     {
-        y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2);
+        y = canvas_findhitbox(x, xpix, ypix, &x1, &y1, &x2, &y2);
         if (y && zgetfn(&y->g_pd, gensym("wheel")))
         {
-                /* for xy (touchpad with TclTk>=9) scrolling,
-                 * extract the Y component from packed data and
-                 * scale down deltas to be less sensitive. */
-            t_float slider_amount = amount;
-            if (axis == gensym("xy"))
+            t_float objx = xpix - x1, objy = ypix - y1;
+            t_float deltax = dx, deltay = dy;
+                /* if not xy (touchpad), normalize to unit steps */
+            if (axis != gensym("xy"))
             {
-                    /* amount is packed as (deltaX << 16) | deltaY, extract deltaY */
-                int packed = (int)amount;
-                int deltaY = (packed & 0xFFFF);
-                    /* handle signed 16-bit values (convert from unsigned to signed) */
-                if (deltaY > 0x7FFF) deltaY -= 0x10000;
-                    /* scale down deltas to be less sensitive */
-                slider_amount = (t_float)(deltaY >> 1);
-                    /* send as "y" axis to slider */
-                axis = gensym("y");
+                deltax = (dx > 0) ? 1.0f : (dx < 0) ? -1.0f : 0.0f;
+                deltay = (dy > 0) ? 1.0f : (dy < 0) ? -1.0f : 0.0f;
             }
-            pd_vmess(&y->g_pd, gensym("wheel"), "sffff", axis, slider_amount, (t_float)modifier, (t_float)xpos, (t_float)ypos);
-            return;  /* event consumed by slider/object */
+            pd_vmess(&y->g_pd, gensym("wheel"), "fffff",
+                deltax, deltay, (t_float)mod, objx, objy);
+            return;  /* event consumed by object */
         }
     }
-        /* fall back to canvas scrolling: edit mode, or no slider found */
-        /* if shift+scroll (modifier=1) with vertical axis, treat as horizontal scrolling */
-    const char *scroll_axis = ((axis == gensym("y")) && (modifier == 1)) ? "x" : axis->s_name;
-    pdgui_vmess("::pdtk_canvas::scroll", "csi", x, scroll_axis, (int)amount);
+        /* fall back to canvas scrolling: edit mode, or no object found.
+         * if shift is pressed, treat as horizontal scrolling */
+    int shift_pressed = mod & 1;
+    pdgui_vmess("::pdtk_canvas::scroll", "cii", x,
+        shift_pressed ? (int)dy : (int)dx,
+        shift_pressed ? 0 : (int)dy);
 }
 
     /* displace the selection by (dx, dy) pixels */
@@ -5132,7 +5127,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_mouseup, gensym("mouseup"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_DEFFLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_wheel, gensym("wheel"),
-        A_FLOAT, A_FLOAT, A_SYMBOL, A_FLOAT, A_FLOAT, A_NULL);
+        A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_key, gensym("key"),
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
