@@ -423,6 +423,11 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
 }
 
 proc ::pdtk_canvas::scroll {tkcanvas deltaX deltaY} {
+    # correct inversion for canvas scrolling if preference is enabled
+    if {$::dialog_preferences::invert_scroll_objects} {
+        set deltaX [expr {-$deltaX}]
+        set deltaY [expr {-$deltaY}]
+    }
     if {$::tcl_version >= 9.0 && ($deltaX != 0 || $deltaY != 0)} {
         tk::ScrollByPixels $tkcanvas $deltaX $deltaY
     } else {
@@ -447,9 +452,16 @@ proc ::pdtk_canvas::handle_wheel {tkcanvas x y axis amount {modifier 0}} {
         x {set deltaX $amount}
         y {set deltaY $amount}
     }
+    # apply scroll direction preference for object manipulation
+    set obj_deltaX $deltaX
+    set obj_deltaY $deltaY
+    if {$::dialog_preferences::invert_scroll_objects} {
+        set obj_deltaX [expr {-$deltaX}]
+        set obj_deltaY [expr {-$deltaY}]
+    }
     # send wheel event to core to check if we hit any objects
     # and send the canvas scroll event back if we didn't
-    pdsend "$mytoplevel wheel $deltaX $deltaY $modifier $canvas_x $canvas_y $axis"
+    pdsend "$mytoplevel wheel $obj_deltaX $obj_deltaY $modifier $canvas_x $canvas_y $axis"
 }
 
 #------------------------------------------------------------------------------#

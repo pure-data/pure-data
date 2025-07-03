@@ -8,6 +8,7 @@ namespace eval ::dialog_preferences:: {
 }
 
 set ::dialog_preferences::use_ttknotebook {}
+set ::dialog_preferences::invert_scroll_objects 0
 after idle ::dialog_preferences::read
 # allow updating the audio resp MIDI frame if the backend changes
 set ::dialog_preferences::audio_frame {}
@@ -23,6 +24,7 @@ proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
     ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
+    ::pd_guiprefs::write "invert_scroll_objects" $::dialog_preferences::invert_scroll_objects
     pdsend "pd zoom-open $::sys_zoom_open"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
@@ -37,6 +39,13 @@ proc ::dialog_preferences::read {} {
         set x 0
     }
     set ::pdtk_canvas::enable_cords_to_foreground $x
+
+    set x [::pd_guiprefs::read invert_scroll_objects]
+    if {[catch { if { $x } { set x 1 } else { set x 0 } }]} {
+        set x 0
+    }
+    set ::dialog_preferences::invert_scroll_objects $x
+
     ::dialog_preferences::read_usettknotebook
 }
 proc ::dialog_preferences::read_usettknotebook {} {
@@ -80,6 +89,13 @@ proc ::dialog_preferences::fill_frame {prefs} {
     checkbutton $prefs.guiframe.patching.highlight_connections -text [_ "Highlight active cord while connecting"] \
         -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w
     pack $prefs.guiframe.patching.highlight_connections -side left -anchor w
+
+    labelframe $prefs.guiframe.scroll -padx 5 -pady 5 -borderwidth 0 \
+        -text [_ "Scroll wheel" ]
+    pack $prefs.guiframe.scroll -side top -anchor w -expand 1
+    checkbutton $prefs.guiframe.scroll.invert_objects -text [_ "Invert scroll direction for objects (sliders, number boxes)"] \
+        -variable ::dialog_preferences::invert_scroll_objects -anchor w
+    pack $prefs.guiframe.scroll.invert_objects -side left -anchor w
 }
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
