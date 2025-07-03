@@ -392,6 +392,8 @@ int sys_main(int argc, const char **argv)
         /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
+        if (!strcmp(argv[i], "-prefs"))
+            noprefs = 0;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
             prefsfile = argv[i+1];
         /* for external scheduler (to ignore audio api in sys_loadpreferences) */
@@ -1429,6 +1431,8 @@ int sys_argparse(int argc, const char **argv)
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
+            argc--, argv++;
+        else if (!strcmp(*argv, "-prefs")) /* did this earlier */
             argc--, argv++;
         else if (!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
             argc -= 2, argv +=2;
