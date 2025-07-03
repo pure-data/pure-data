@@ -423,8 +423,8 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
 }
 
 proc ::pdtk_canvas::scroll {tkcanvas deltaX deltaY} {
-    # correct inversion for canvas scrolling if preference is enabled
-    if {$::dialog_preferences::invert_scroll_objects} {
+    # correct inversion for canvas scrolling on non-macOS platforms
+    if {$::windowingsystem ne "aqua"} {
         set deltaX [expr {-$deltaX}]
         set deltaY [expr {-$deltaY}]
     }
@@ -452,10 +452,10 @@ proc ::pdtk_canvas::handle_wheel {tkcanvas x y axis amount {modifier 0}} {
         x {set deltaX $amount}
         y {set deltaY $amount}
     }
-    # apply scroll direction preference for object manipulation
+    # apply platform-specific scroll direction for object manipulation
     set obj_deltaX $deltaX
     set obj_deltaY $deltaY
-    if {$::dialog_preferences::invert_scroll_objects} {
+    if {$::windowingsystem ne "aqua"} {
         set obj_deltaX [expr {-$deltaX}]
         set obj_deltaY [expr {-$deltaY}]
     }
