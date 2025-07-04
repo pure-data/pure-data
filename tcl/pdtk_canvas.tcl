@@ -447,21 +447,23 @@ proc ::pdtk_canvas::handle_wheel {tkcanvas x y axis amount {modifier 0}} {
     set canvas_y [$tkcanvas canvasy $y]
     set deltaX 0
     set deltaY 0
+    set is_touchpad 0
     switch $axis {
-        xy {lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY}
+        xy {
+            set is_touchpad 1
+            lassign [tk::PreciseScrollDeltas $amount] deltaX deltaY
+        }
         x {set deltaX $amount}
         y {set deltaY $amount}
     }
     # apply platform-specific scroll direction for object manipulation
-    set obj_deltaX $deltaX
-    set obj_deltaY $deltaY
     if {$::windowingsystem ne "aqua"} {
-        set obj_deltaX [expr {-$deltaX}]
-        set obj_deltaY [expr {-$deltaY}]
+        set deltaX [expr {-$deltaX}]
+        set deltaY [expr {-$deltaY}]
     }
     # send wheel event to core to check if we hit any objects
     # and send the canvas scroll event back if we didn't
-    pdsend "$mytoplevel wheel $obj_deltaX $obj_deltaY $modifier $canvas_x $canvas_y $axis"
+    pdsend "$mytoplevel wheel $deltaX $deltaY $modifier $canvas_x $canvas_y $is_touchpad"
 }
 
 #------------------------------------------------------------------------------#

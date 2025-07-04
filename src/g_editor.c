@@ -3082,7 +3082,7 @@ void canvas_mouseup(t_canvas *x,
 
     /* helper function to try wheel event on a specific object with coordinate transform */
 static int canvas_trywheelobj(t_gobj *y, t_canvas *x, int xpix, int ypix,
-    t_float dx, t_float dy, t_symbol *axis, int mod)
+    t_float dx, t_float dy, int is_touchpad, int mod)
 {
     int x1, y1, x2, y2;
     if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0)
@@ -3090,8 +3090,8 @@ static int canvas_trywheelobj(t_gobj *y, t_canvas *x, int xpix, int ypix,
     {
         t_float objx = xpix - x1, objy = ypix - y1;
         t_float deltax = dx, deltay = dy;
-            /* if not xy (touchpad), normalize to unit steps */
-        if (axis != gensym("xy"))
+            /* if not touchpad, normalize to unit steps */
+        if (!is_touchpad)
         {
             deltax = (dx > 0) ? 1.0f : (dx < 0) ? -1.0f : 0.0f;
             deltay = (dy > 0) ? 1.0f : (dy < 0) ? -1.0f : 0.0f;
@@ -3105,7 +3105,7 @@ static int canvas_trywheelobj(t_gobj *y, t_canvas *x, int xpix, int ypix,
 
     /* try wheel event on any object that can handle it, including GOP subpatches */
 static int canvas_trywheel(t_canvas *x, int xpix, int ypix,
-    t_float dx, t_float dy, t_symbol *axis, int mod)
+    t_float dx, t_float dy, int is_touchpad, int mod)
 {
     t_gobj *y;
     for (y = x->gl_list; y; y = y->g_next)
@@ -3120,13 +3120,13 @@ static int canvas_trywheel(t_canvas *x, int xpix, int ypix,
                 if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0))
                 {
                         /* delegate to GOP subpatch */
-                    if (canvas_trywheel(gl, xpix, ypix, dx, dy, axis, mod))
+                    if (canvas_trywheel(gl, xpix, ypix, dx, dy, is_touchpad, mod))
                         return 1;
                 }
             }
         }
             /* then check regular objects */
-        if (canvas_trywheelobj(y, x, xpix, ypix, dx, dy, axis, mod))
+        if (canvas_trywheelobj(y, x, xpix, ypix, dx, dy, is_touchpad, mod))
             return 1;
     }
     return 0;
@@ -3137,12 +3137,12 @@ void canvas_wheel(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     t_float dx = atom_getfloat(argv), dy = atom_getfloat(argv+1);
     int mod = atom_getint(argv+2);
     int xpix = atom_getint(argv+3), ypix = atom_getint(argv+4);
-    t_symbol *axis = atom_getsymbol(argv+5);
+    int is_touchpad = atom_getint(argv+5);
     if (!x->gl_editor) return;
         /* run mode or edit mode with cmd/ctrl - check for objects */
     if (!x->gl_edit || (mod & 2))
     {
-        if (canvas_trywheel(x, xpix, ypix, dx, dy, axis, mod))
+        if (canvas_trywheel(x, xpix, ypix, dx, dy, is_touchpad, mod))
             return;  /* event consumed by object */
     }
         /* fall back to canvas scrolling: edit mode, or no object found.
