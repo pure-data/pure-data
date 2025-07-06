@@ -1104,7 +1104,8 @@ void ugen_done_graph(t_dspcontext *dc)
         if (pd_class(zz) == block_class)
         {
             if (blk)
-                pd_error(blk, "conflicting block~ and/or switch~ objects in same window");
+                pd_error(blk,
+                    "conflicting block~ and/or switch~ objects in same window");
             else blk = (t_block *)zz;
         }
     }
@@ -1196,6 +1197,14 @@ void ugen_done_graph(t_dspcontext *dc)
 
                 if (THIS->u_loud) post("set %lx->%lx", *sigp,
                     (*sigp)->s_borrowedfrom);
+            }
+                /* catch a special situation where a DSP loop prevented this
+                outlet from being scheduled.  In this case just make a new
+                signal. */
+            else if ((*sigp)->s_nchans < 0)
+            {
+                signal_makereusable(*sigp);
+                *sigp = signal_new(parent_vecsize, 1, parent_srate, 0);
             }
         }
     }

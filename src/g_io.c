@@ -590,7 +590,8 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
         else for (i = 0; i < x->x_nchans; i++)
                 /* NB: x_hop isn't set yet, so we cannot pass it directy! */
             dsp_add(voutlet_perform, 5, x, sp[0]->s_vec + i * sp[0]->s_length,
-                x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1), (t_int)sp[0]->s_length);
+                x->x_rb[i].r_buf, (t_int)(i == x->x_nchans-1),
+                    (t_int)sp[0]->s_length);
     }
 }
 
@@ -633,7 +634,8 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         if (period == 1 && frequency > 1)
             x->x_hop = re_parentvecsize / frequency;
         else x->x_hop = period * re_parentvecsize;
-        if (x->x_parentsignal && (*x->x_parentsignal) && (*x->x_parentsignal)->s_vec)
+        if (x->x_parentsignal && (*x->x_parentsignal) &&
+            (*x->x_parentsignal)->s_vec)
         {
                 /* set epilog pointer and schedule it */
             x->x_read = re_parentvecsize * epilogphase;
