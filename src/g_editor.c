@@ -1633,7 +1633,7 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 static void canvas_cut(t_canvas *x);
 int clone_reload(t_pd *z, t_canvas *except);
-int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
+void clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
