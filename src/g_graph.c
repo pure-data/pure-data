@@ -64,6 +64,8 @@ int canvas_setdeleting(t_canvas *x, int flag)
     return (ret);
 }
 
+void glist_deleteforscalar(t_glist *gl, t_scalar *sc);
+
     /* delete an object from a glist and free it */
 void glist_delete(t_glist *x, t_gobj *y)
 {
@@ -132,7 +134,10 @@ void glist_delete(t_glist *x, t_gobj *y)
         break;
     }
     if (y->g_pd == scalar_class)
+    {
         x->gl_valid = ++glist_valid;
+        glist_deleteforscalar(x, (t_scalar *)y);
+    }
     pd_free(&y->g_pd);
     if (rtext)
         rtext_free(rtext);
