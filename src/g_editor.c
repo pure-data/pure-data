@@ -1633,7 +1633,7 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 static void canvas_cut(t_canvas *x);
 int clone_reload(t_pd *z, t_canvas *except);
-int clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
+void clone_doreload(t_pd *z, t_symbol *name, t_symbol *dir, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
@@ -2094,7 +2094,6 @@ static void canvas_donecanvasdialog(t_glist *x,
         int textsize;
         binbuf_add(b, argc-12, argv+12);
         binbuf_gettext(b, &textbuf, &textsize);
-        binbuf_print(b);
         binbuf_free(b);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
 
@@ -2109,14 +2108,15 @@ static void canvas_donecanvasdialog(t_glist *x,
 
             /* change the text (this will restore the connections we just stowed away) */
         glist_noselect(x->gl_owner);
+        t_canvas *owner = x->gl_owner;
         text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
 
-        canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
-        glist_settexted(x->gl_owner, 0);
+        canvas_fixlinesfor(owner, &x->gl_obj);
+        glist_settexted(owner, 0);
 
-        canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_END, "typing", 0);
+        canvas_undo_add(owner, UNDO_SEQUENCE_END, "typing", 0);
         freebytes(textbuf, textsize);
-        canvas_dirty(x->gl_owner, 1);
+        canvas_dirty(owner, 1);
         return;
     }
 

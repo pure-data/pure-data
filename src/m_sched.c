@@ -304,7 +304,9 @@ void sys_reopen_audio(void)
     {
         if (sched_useaudio != SCHED_AUDIO_CALLBACK)
         {
-            sys_do_reopen_audio(); /* (re)open synchronously */
+                /* close and (re)open synchronously */
+            sys_do_close_audio();
+            sys_do_reopen_audio();
                 /* if we have started the callback scheduler,
                 break from the polling scheduler! */
             if (sched_useaudio == SCHED_AUDIO_CALLBACK)

@@ -75,6 +75,12 @@ proc ::pd_menus::create_menubar {} {
             -underline $underlined -menu $m
     }
 
+    # create separate help menu for pdwindow on macOS (system integration)
+    if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
+        build_help_menu [menu $::pdwindow_menubar.help]
+        $::pdwindow_menubar entryconfigure "Help" -menu $::pdwindow_menubar.help
+    }
+
     if {$::windowingsystem eq "win32"} {create_system_menu $::patch_menubar}
     . configure -menu $::patch_menubar
 }
