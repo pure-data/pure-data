@@ -54,7 +54,7 @@ The main Pd window looks like this:
 </figure>
 
 <P>At the top, you'll see the menu entries: <b>File</b>, <b>Edit</b>, <b>Put</b>,
-<b>Find</b>, <b>Media</b>, <b>Window</b> and <b>Help</b> (on Macs, this is shown
+<b>Find</b>, <b>Media</b>, <b>Window</b>, <b>Tools</b> and <b>Help</b> (on Macs, this is shown
 at a top bar on the screen, and there is an additional first <b>Pd</b> menu entry similarly
 to other apps on macOS and as seen below). You can create and open patches via the
 <b>File menu</b>, where you can also close and save them (note the handy shortcuts).
@@ -1255,7 +1255,7 @@ destination symbols so you can send them messages this way. Also, the special
 receiver "pd" is defined to which you may send messages to start and stop DSP and
 more.
 
-<P>The <b>File menu</b> has a "Message..." entry that works as a message box with
+<P>The <b>Tools menu</b> has a "Message..." entry that works as a message box with
 a semicolon. This allows you to type in a message while in run mode. You need to
 start the message with the receive symbol (and you can also send messages to "pd"
 this way).
@@ -1468,12 +1468,16 @@ math objects (<b>[+~]</b>, <b>[-~]</b>,
 <b>[sqrt~]</b> and so on) use their inputs to determine their channel counts.
 Binary operations like <b>[+~]</b> can combine single- and multichannel inputs.
 
+<P>Additionally, these objects also support multichannel signals: <b>[delread~]</b>,
+<b>[delwrite~]</b>, <b>[delread4~]</b>, <b>[tabread~]</b>, <b>[tabwrite~]</b>,
+<b>[tabread4~]</b>, <b>[tabplay~]</b>, <b>[tabsend~]</b>, <b>[tabreceive~]</b>,
+<b>[readsf~]</b>, <b>[writesf~]</b>, <b>[sig~]</b>, <b>[snapshot~]</b>, and <b>[print~]</b>.
+
 <P>Other objects, such as filters or oscillators, have not been adapted for
 multichannel signals, because there might be many ways to design multichannel
 versions of them. Instead, you can use the <b>[clone]</b> object to
 perform general operations on multichannel signals. Signal inputs and outputs of cloned
 patches can be used to distribute multichannel signals among the individual cloned
-
 patches.
 
 <H3> <A href="#s2.6" id="s2.6">2.6. Scheduling</A> </H3>
@@ -1691,17 +1695,15 @@ when the patch is saved. Examples are given in their help files.
 
 <p>Pd offers two mechanisms for making subpatches, called "one-off subpatches"
 and "abstractions". In either case the subpatch appears as an object box
-in a patch. If you type <b>[pd]</b> or
-<b>[pd my-name]</b> into an object box, this creates
-
-a one-off subpatch. For instance, in this fragment:
+in a patch. If you type <b>[pd]</b> or <b>[pd my-name]</b> into an object box,
+this creates a one-off subpatch. For instance, in this fragment:
 
 <figure>
     <IMG src="2.8.1.png" ALT="subpatch">
     <figcaption><u>Fig. 2.8.1</u> A subpatch called "my-subpatch"</figcaption>
 </figure>
 
-<p>The box in the middle, if clicked on, opens the sub-patch shown here:
+<p>The box in the middle, if clicked on, opens the subpatch shown here:
 
 <figure>
     <IMG src="2.8.2.png" ALT="open subpatch window">
@@ -1712,14 +1714,11 @@ a one-off subpatch. For instance, in this fragment:
 one file. If you make several copies of a subpatch you may change them
 individually.
 
-<P>The objects <b>[inlet]</b>, <b>[inlet~]</b>,
-<b>[outlet]</b> and <b>[outlet~]</b>, when put in a
-subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions and only accept
-control data messages. The <b>[inlet~]</b> and
-<b>[outlet~]</b> versions create inlets and outlets for audio signals.
-Note you can also mix control messages in an <b>[inlet~]</b>
-
+<P>The objects <b>[inlet]</b>, <b>[inlet~]</b>, <b>[outlet]</b> and <b>[outlet~]</b>,
+when put in a subpatch, create inlets and outlets for the object box containing the
+subpatch. This works equally for one-off subpatches and abstractions and only accept
+control data messages. The <b>[inlet~]</b> and <b>[outlet~]</b> versions create inlets
+and outlets for audio signals. Note you can also mix control messages in an <b>[inlet~]</b>
 via its right outlet, but a signal outlet only takes signals. Inlets and outlets
 appear on the invoking box in the same left-to-right order as they appear in the
 subpatch.
@@ -1739,13 +1738,11 @@ patch shown here:
 
 <figure>
     <IMG src="2.8.4.png" ALT="abstraction example">
-
     <figcaption><u>Fig. 2.8.4</u> The insides of the <b>[abstraction1]</b> abstraction</figcaption>
 </figure>
 
 <p>You may create many instances of <b>[abstraction1]</b> or invoke it from different
 patches. Changing and saving the contents of <b>[abstraction1]</b> will affect all
-
 invocations of it as they are created. An analogy from the "c" programming
 language is that one-off subpatches are like bracketed blocks of code and
 abstractions are like subroutines.
@@ -1753,7 +1750,6 @@ abstractions are like subroutines.
 <P>Abstractions are instantiated by typing the name of a patch (minus the ".pd"
 extension) into an object box. You may also type arguments; for instance if
 you have a file "my-abstraction.pd" you may have <b>[my-abstraction 5]</b> to set the
-
 variable "$1" to 5. This is defined only for object boxes (not for messages) in
 the abstraction. For message boxes, "$1", etc, have a different meaning as
 described above, so note that dollar signs are expanded at a different time in
@@ -1771,6 +1767,11 @@ number of arguments, as well as varying their atom type.
 <P>A <b>[clone]</b> object is provided to automatically create and manage multiple copies
 of an abstraction. You can use it to make voice banks for polyphonic synthesis,
 for example.
+
+<P>Complex patches often have many subpatches. If you want to close all
+open subpatch windows, you can use the "Close subwindows" entry in the<b>Window
+menu</b>. Similarly, you can use the "Parent Window" entry to easily focus the
+parent patch.
 
 <H4> <A href="#s2.8.2" id="s2.8.2">2.8.2. Graph-on-parent subpatches</A> </H4>
 
@@ -1800,8 +1801,8 @@ in the patch.
 work just to click on the object in run mode since clicks are sent to visible
 controls and/or arrays.
 
-<P>When the sub-patch is closed, all controls in it appear on the object
-instead; so the number box in the sub-patch in the example above is the same
+<P>When the subpatch is closed, all controls in it appear on the object
+instead; so the number box in the subpatch in the example above is the same
 one as you see in the box. Only controls are made visible in this way.
 
 
@@ -1821,8 +1822,8 @@ to define new arrays, as "graphs" and "tables". In either case, the array
 has a predefined name and size (i.e., number of points). Elements of the
 array are stored as floating-point numbers, 4 bytes apiece.
 
-<P>If you use an array to store a one-second sound at 44.1 kHz, you will need
-176 kilobytes, for a one-minute sound 10.6 megabytes. To store a sound with
+<P>If you use an array to store a one-second sound at 48 kHz, you will need
+192 kilobytes, for a one-minute sound 11.5 megabytes. To store a sound with
 two or more channels, use a separate array for each channel.
 
 <P>Arrays are also useful as transfer functions, for example for nonlinear

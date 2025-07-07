@@ -1,4 +1,4 @@
-#N canvas 406 23 640 708 12;
+#N canvas 406 25 640 708 12;
 #X obj 25 12 metro;
 #X floatatom 175 426 5 0 0 0 - - - 0;
 #X msg 30 242 1;
@@ -79,14 +79,14 @@
 #X connect 2 0 0 1;
 #X connect 3 0 0 0;
 #X restore 490 621 pd random example;
-#X text 216 420 right inlet sets the time (if set between tempos \, it only takes affect in the next beat \, unlike the tempo message).;
 #X obj 66 493 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 298 630 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 216 420 right inlet sets the time (if set between beats \, it only takes effect in the next beat \, unlike the tempo message).;
 #X connect 1 0 23 1;
 #X connect 2 0 23 0;
 #X connect 4 0 23 0;
 #X connect 5 0 23 0;
-#X connect 8 0 47 0;
+#X connect 8 0 46 0;
 #X connect 9 0 8 0;
 #X connect 12 0 40 0;
 #X connect 13 0 40 0;
@@ -95,7 +95,7 @@
 #X connect 17 0 16 0;
 #X connect 18 0 23 0;
 #X connect 20 0 23 0;
-#X connect 23 0 46 0;
+#X connect 23 0 45 0;
 #X connect 25 0 8 1;
 #X connect 28 0 23 0;
 #X connect 40 0 25 0;
