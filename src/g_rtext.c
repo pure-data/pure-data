@@ -112,6 +112,29 @@ t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     return (x);
 }
 
+    /* delete all rtexts for a scalar */
+void glist_deleteforscalar(t_glist *gl, t_scalar *sc)
+{
+    t_rtext *x1, *x2 = 0;
+    t_glist *canvas = glist_getcanvas(gl);
+    if (!canvas->gl_editor)
+        return;
+
+    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = x1->x_next)
+    {
+        if (x1->x_scalar == sc)
+        {
+            if (x2)
+                x2->x_next = x1->x_next;
+            else canvas->gl_editor->e_rtext = x1->x_next;
+            if (x1->x_buf)
+                freebytes(x1->x_buf, x1->x_bufsize + 1); /* extra 0 byte */
+            freebytes(x1, sizeof(*x1));
+        }
+        else x2 = x1;
+    }
+}
+
 void rtext_free(t_rtext *x)
 {
     t_glist *canvas = glist_getcanvas(x->x_glist);
@@ -132,7 +155,7 @@ void rtext_free(t_rtext *x)
     }
     if (x->x_buf)
         freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
-    freebytes(x, sizeof *x);
+    freebytes(x, sizeof(*x));
 }
 
 void rtext_setcolor(t_rtext *x, int color)

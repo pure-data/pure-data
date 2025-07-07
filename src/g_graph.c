@@ -64,6 +64,8 @@ int canvas_setdeleting(t_canvas *x, int flag)
     return (ret);
 }
 
+void glist_deleteforscalar(t_glist *gl, t_scalar *sc);
+
     /* delete an object from a glist and free it */
 void glist_delete(t_glist *x, t_gobj *y)
 {
@@ -132,7 +134,10 @@ void glist_delete(t_glist *x, t_gobj *y)
         break;
     }
     if (y->g_pd == scalar_class)
+    {
         x->gl_valid = ++glist_valid;
+        glist_deleteforscalar(x, (t_scalar *)y);
+    }
     pd_free(&y->g_pd);
     if (rtext)
         rtext_free(rtext);
@@ -703,14 +708,13 @@ static void graph_create_text(
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
     pdgui_vmess(0, "crr ii rs rs rr rA rS",
-              glist_getcanvas(x),
-              "create", "text",
-              posX, posY,
-              "-text", name,
-              "-fill", THISGUI->i_foregroundcolor->s_name,
-              "-anchor", anchor,
-              "-font", 3, fontatoms,
-              "-tags", numtags, tags);
+        glist_getcanvas(x), "create", "text",
+        posX, posY,
+        "-text", name,
+        "-fill", THISGUI->i_foregroundcolor->s_name,
+        "-anchor", anchor,
+        "-font", 3, fontatoms,
+        "-tags", numtags, tags);
 }
 
 
@@ -774,13 +778,12 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 
             /* draw a rectangle around the graph */
         pdgui_vmess(0, "crr iiiiiiiiii ri rr rs rS",
-                  glist_getcanvas(x->gl_owner),
-                  "create", "line",
-                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-                  "-width", glist_getzoom(x),
-                  "-capstyle", "projecting",
-                  "-fill", THISGUI->i_foregroundcolor->s_name,
-                  "-tags", 2, tags2);
+            glist_getcanvas(x->gl_owner), "create", "line",
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+            "-width", glist_getzoom(x),
+            "-capstyle", "projecting",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-tags", 2, tags2);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
