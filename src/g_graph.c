@@ -460,6 +460,26 @@ static void graph_bounds(t_glist *x, t_floatarg x1, t_floatarg y1,
     glist_redraw(x);
 }
 
+void canvas_setgraph(t_glist *x, int flag, int nogoprect);
+
+static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
+{
+    x->gl_xmargin = atom_getfloatarg(0, argc, argv);
+    x->gl_ymargin = atom_getfloatarg(1, argc, argv);
+    if (argc > 2)
+    {
+        if ((x->gl_pixwidth = atom_getfloatarg(2, argc, argv)) < 1)
+            x->gl_pixwidth = 1;
+        if ((x->gl_pixheight = atom_getfloatarg(3, argc, argv) < 1)
+            x->gl_pixheight = 1;
+    }
+    if (x->gl_havewindow)
+        glist_redraw(x);
+    else
+        /* glist_redraw() won't remove "ghost objects" */
+        canvas_redraw(glist_getcanvas(x));
+}
+
 static void graph_xticks(t_glist *x,
     t_floatarg point, t_floatarg inc, t_floatarg f)
 {
@@ -1135,6 +1155,8 @@ void g_graph_setup_class(t_class *c)
     class_setwidget(c, &graph_widgetbehavior);
     class_addmethod(c, (t_method)graph_bounds, gensym("bounds"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(c, (t_method)graph_goprect, gensym("goprect"),
+        A_GIMME, 0);
     class_addmethod(c, (t_method)graph_xticks, gensym("xticks"),
         A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(c, (t_method)graph_xlabel, gensym("xlabel"),
