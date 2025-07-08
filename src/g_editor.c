@@ -1916,7 +1916,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 pdtk_canvas_new; but if it's just white don't pass it in
                 case we're talking to an older GUI version (so that
                 pureVST can work with Pd 0.55 as its GUI) */
-            if (strcmp(THISGUI->i_backgroundcolor->s_name, "white"))
+            if (strcmp(THISGUI->i_backgroundcolor->s_name, "#FFFFFF"))
                 pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),

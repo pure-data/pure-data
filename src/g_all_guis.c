@@ -1051,10 +1051,11 @@ t_iemgui *iemgui_new(t_class*cls)
 */
     iem_inttosymargs(&x->x_isa, 0);
     iem_inttofstyle(&x->x_fsf, 0);
-
-    x->x_bcol = 0xFCFCFC;
-    x->x_fcol = 0x00;
-    x->x_lcol = 0x00;
+    t_atom colors[3];
+    SETSYMBOL(colors+0, THISGUI->i_backgroundcolor);
+    SETSYMBOL(colors+1, THISGUI->i_foregroundcolor);
+    SETSYMBOL(colors+2, THISGUI->i_backgroundcolor);
+    iemgui_color(x, x, gensym("color"), 3, colors);
 
     return x;
 }
