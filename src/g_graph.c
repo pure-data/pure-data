@@ -470,7 +470,7 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     {
         if ((x->gl_pixwidth = atom_getfloatarg(2, argc, argv)) < 1)
             x->gl_pixwidth = 1;
-        if ((x->gl_pixheight = atom_getfloatarg(3, argc, argv) < 1)
+        if ((x->gl_pixheight = atom_getfloatarg(3, argc, argv)) < 1)
             x->gl_pixheight = 1;
     }
     if (x->gl_havewindow)
