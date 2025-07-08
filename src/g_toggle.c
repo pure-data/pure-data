@@ -114,9 +114,9 @@ void toggle_draw_select(t_toggle* x, t_glist* glist)
         sprintf(lcol_buf + 1, "%06x", x->x_gui.x_lcol);
 
     sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%pLABEL", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
 void toggle_draw_update(t_toggle *x, t_glist *glist)
