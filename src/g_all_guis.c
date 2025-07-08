@@ -1054,7 +1054,7 @@ t_iemgui *iemgui_new(t_class*cls)
     t_atom colors[3];
     SETSYMBOL(colors+0, THISGUI->i_backgroundcolor);
     SETSYMBOL(colors+1, THISGUI->i_foregroundcolor);
-    SETSYMBOL(colors+2, THISGUI->i_backgroundcolor);
+    SETSYMBOL(colors+2, THISGUI->i_foregroundcolor);
     iemgui_color(x, x, gensym("color"), 3, colors);
 
     return x;
