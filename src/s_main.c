@@ -428,7 +428,7 @@ int sys_main(int argc, const char **argv)
     sys_init_midi();
     sys_init_audio();
          /* load dynamic libraries specified with "-lib" args */
-    if (sys_oktoloadfiles(0))
+    if (sys_oktoloadfiles(0) || noprefs)
     {
         for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
             if (!sys_load_lib(0, nl->nl_string))
