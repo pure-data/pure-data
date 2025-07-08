@@ -2320,30 +2320,39 @@ static void glist_dorevis(t_glist *glist)
             glist_dorevis((t_glist *)g);
 }
 
+static t_symbol *normalize_color(t_symbol *s)
+{
+    if (!s || !s->s_name) return 0;
+    if ('#' == s->s_name[0]) {
+        char colname[MAXPDSTRING];
+        char *endptr;
+        int col = (int)strtol(s->s_name+1, &endptr, 16);
+            /* check for valid hex and exactly 6 hex digits */
+        if ((endptr - (s->s_name+1) == 6) && (*endptr == '\0')) {
+            pd_snprintf(colname, MAXPDSTRING-1, "#%06x", col & 0xFFFFFF);
+            return gensym(colname);
+        }
+    }
+    pd_error(0, "invalid color '%s' (expected #RRGGBB)", s->s_name);
+    return 0;
+}
+
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop)
 {
-    if (fg->s_name[0] != '#'){
-        post("foreground color name \"%s\" not supported", fg->s_name);
-        return;
-    }
-    if (bg->s_name[0] != '#'){
-        post("background  color name \"%s\" not supported", fg->s_name);
-        return;
-    }
-    if (sel->s_name[0] != '#'){
-        post("selection color name \"%s\" not supported", fg->s_name);
-        return;
-    }
-    if (*gop->s_name && gop->s_name[0] != '#'){
-        post("got  color name \"%s\" not supported", fg->s_name);
-        return;
-    }
     t_glist *gl;
-    THISGUI->i_foregroundcolor = fg;
-    THISGUI->i_backgroundcolor = bg;
-    THISGUI->i_selectcolor = sel;
-    THISGUI->i_gopcolor = (*gop->s_name ? gop : sel);
+    t_symbol *nfg = normalize_color(fg);
+    t_symbol *nbg = normalize_color(bg);
+    t_symbol *nsel = normalize_color(sel);
+    t_symbol *ngop = (gop && gop->s_name[0]) ? normalize_color(gop) : 0;
+    if (!nfg || !nbg || !nsel || (gop && gop->s_name[0] && !ngop)) {
+        pd_error(0, "palette not updated due to invalid color(s)");
+        return;
+    }
+    THISGUI->i_foregroundcolor = nfg;
+    THISGUI->i_backgroundcolor = nbg;
+    THISGUI->i_selectcolor = nsel;
+    THISGUI->i_gopcolor = ngop ? ngop : nsel;
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
 }
