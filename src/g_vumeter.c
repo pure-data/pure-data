@@ -172,9 +172,9 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - hmargin, ypos - vmargin,
         xpos+x->x_gui.x_w + hmargin, ypos+x->x_gui.x_h + vmargin);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
-        "-fill", x->x_gui.x_bcol);
+    pdgui_vmess(0, "crs ri rk rs", canvas, "itemconfigure", tag,
+        "-width", zoom, "-fill", x->x_gui.x_bcol,
+        "-outline", THISGUI->i_foregroundcolor->s_name);
 
     sprintf(tag, "%pSCALE", x);
     if(x->x_gui.x_fsf.x_selected)
