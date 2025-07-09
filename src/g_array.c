@@ -1203,7 +1203,7 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
     return (ret);
 }
 
-static void symboltocolor(t_symbol *sym, char *s)
+static void symboltocolor(t_symbol *sym, char s[8])
 {
     if ('#' == sym->s_name[0])
     {
@@ -1212,7 +1212,7 @@ static void symboltocolor(t_symbol *sym, char *s)
     }
     else
     {
-        sprintf(s, "#%6.6x", 0);
+        pd_snprintf(s, 8, "#%06x", 0);
     }
 }
 
