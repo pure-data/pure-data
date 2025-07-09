@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "m_pd.h"
+#include "s_stuff.h"
 
 #include "g_all_guis.h"
 
@@ -244,9 +245,23 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 
     IEMGUI_SETDRAWFUNCTIONS(x, my_canvas);
 
-    x->x_gui.x_bcol = 0xE0E0E0;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x404040;
+    // get contrasting color from background
+    char cnv_color[8];
+    int r, g, b;
+    if(sscanf(THISGUI->i_backgroundcolor->s_name, "#%02x%02x%02x", &r, &g, &b) != 3)
+        pd_snprintf(cnv_color, 8, "#E0E0E0"); // fallback
+    else{
+        int delta = 31;
+        r = (r > 128) ? (r - delta) : (r + delta);
+        g = (g > 128) ? (g - delta) : (g + delta);
+        b = (b > 128) ? (b - delta) : (b + delta);
+        pd_snprintf(cnv_color, 8, "#%02X%02X%02X", r, g, b);
+    }
+    t_atom colors[3];
+    SETSYMBOL(colors+0, gensym(cnv_color));
+    SETSYMBOL(colors+1, THISGUI->i_foregroundcolor);
+    SETSYMBOL(colors+2, THISGUI->i_foregroundcolor);
+    iemgui_color(x, x, gensym("color"), 3, colors);
 
     if(((argc >= 10)&&(argc <= 13))
        &&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2))
