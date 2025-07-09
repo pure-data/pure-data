@@ -4,8 +4,10 @@
 
 #include <string.h>
 #include <stdio.h>      /* for read/write to files */
+#include <stdlib.h>
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 #include "g_undo.h"
 #include <math.h>
 
@@ -131,8 +133,8 @@ static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
 static const char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct float-array array z float float style\n\
-float linewidth float color float v;\n\
-#X obj 43 70 plot -v v z color linewidth 0 0 1 style;\n\
+float linewidth symbol color float v;\n\
+#X obj 43 70 plot -h -v v z color linewidth 0 0 1 style;\n\
 ";
 static const char garray_floattemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
@@ -806,12 +808,10 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     garray_savecontentsto(x, b);
 
     if (pd_compatibilitylevel >= 52) {
-        t_float fval;
-        style = template_getfloat(
+        t_symbol *color = template_getsymbol(
             scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
-        binbuf_addv(b, "ssi;", gensym("#A"), gensym("color"), style);
-
-        fval = template_getfloat(
+        binbuf_addv(b, "sss;", gensym("#A"), gensym("color"), color);
+        t_float fval = template_getfloat(
             scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
         binbuf_addv(b, "ssf;", gensym("#A"), gensym("width"), fval);
     }
@@ -1195,9 +1195,52 @@ static void garray_width(t_garray *x, t_floatarg width)
     }
 }
 
-static void garray_color(t_garray *x, t_floatarg color)
+static int rangecolor(int n)    /* 0 to 9 in 5 steps */
 {
-    t_float colorwas;
+    int n2 = (n == 9 ? 8 : n);               /* 0 to 8 */
+    int ret = (n2 << 5);        /* 0 to 256 in 9 steps */
+    if (ret > 255) ret = 255;
+    return (ret);
+}
+
+static void symboltocolor(t_symbol *sym, char *s)
+{
+    if ('#' == sym->s_name[0])
+    {
+        int col = (int)strtol(sym->s_name+1, 0, 16) & 0xFFFFFF;
+        pd_snprintf(s, 8, "#%06x", col);
+    }
+    else
+    {
+        sprintf(s, "#%6.6x", 0);
+    }
+}
+
+static int numbertocolor(int n)
+{
+    int red, green, blue, color = 0;
+    if (n < 0) n = 0;
+    red = n / 100;
+    green = n % 10;
+    blue = ((n / 10) % 10);
+    color |= rangecolor(red)   << 16;
+    color |= rangecolor(blue)  <<  8;
+    color |= rangecolor(green) <<  0;
+    return color;
+}
+
+static void garray_color(t_garray *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if(!argc)
+        return;
+    char colorstr[8];
+    if(argv->a_type == A_FLOAT){
+        int color = numbertocolor(atom_getfloat(argv));
+        pd_snprintf(colorstr, sizeof(colorstr), "#%06X", color);
+    }
+    else
+        symboltocolor(atom_getsymbol(argv), colorstr);
+//    t_float colorwas;
     t_template *scalartemplate;
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
@@ -1205,14 +1248,17 @@ static void garray_color(t_garray *x, t_floatarg color)
             x->x_scalar->sc_template->s_name);
         return;
     }
-    colorwas = template_getfloat(
+/*    colorwas = template_getfloat(
         scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
     if (color != colorwas)
     {
         template_setfloat(scalartemplate, gensym("color"),
             x->x_scalar->sc_vec, color, 0);
         garray_redraw(x);
-    }
+    }*/
+    template_setsymbol(scalartemplate, gensym("color"),
+        x->x_scalar->sc_vec, gensym(colorstr), 0);
+    garray_redraw(x);
 }
 
 static void garray_vis_msg(t_garray *x, t_floatarg fvis)
@@ -1397,7 +1443,7 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_width, gensym("width"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_color, gensym("color"),
-        A_FLOAT, 0);
+        A_GIMME, 0);
     class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_visname, gensym("visname"),
