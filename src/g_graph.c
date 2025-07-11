@@ -728,12 +728,12 @@ static void graph_create_text(
     SETSYMBOL(fontatoms+0, gensym(sys_font));
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess(0, "crr ii rs rs rr rA rS",
+    pdgui_vmess(0, "crr ii rs rk rr rA rS",
               glist_getcanvas(x),
               "create", "text",
               posX, posY,
               "-text", name,
-              "-fill", THISGUI->i_foregroundcolor->s_name,
+              "-fill", THISGUI->i_foregroundcolor,
               "-anchor", anchor,
               "-font", 3, fontatoms,
               "-tags", numtags, tags);
@@ -800,13 +800,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
-        pdgui_vmess(0, "crr iiiiiiiiii ri rr rs rS",
+        pdgui_vmess(0, "crr iiiiiiiiii ri rr rk rS",
                   glist_getcanvas(x->gl_owner),
                   "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
                   "-width", glist_getzoom(x),
                   "-capstyle", "projecting",
-                  "-fill", THISGUI->i_foregroundcolor->s_name,
+                  "-fill", THISGUI->i_foregroundcolor,
                   "-tags", 2, tags2);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
@@ -992,9 +992,9 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
             canvas_fixlinesfor(glist, &x->gl_obj);
             char tag[80];
             sprintf(tag, "graph%lx", (t_int)z);
-            pdgui_vmess(0, "crs rs",
+            pdgui_vmess(0, "crs rk",
                 glist_getcanvas(glist), "itemconfigure", tag,
-                "-fill", THISGUI->i_selectcolor->s_name);
+                "-fill", THISGUI->i_selectcolor);
         }
     }
 }
@@ -1012,15 +1012,15 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
             rtext_select(y, state);
 
         sprintf(tag, "%sR",  rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
+        pdgui_vmess(0, "crs rk",
                   glist, "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor->s_name :
-                      THISGUI->i_foregroundcolor->s_name));
+                  "-fill", (state? THISGUI->i_selectcolor :
+                      THISGUI->i_foregroundcolor));
         sprintf(tag, "graph%lx", (t_int)z);
-        pdgui_vmess(0, "crs rr",
+        pdgui_vmess(0, "crs rk",
                   glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor->s_name :
-                      THISGUI->i_foregroundcolor->s_name));
+                  "-fill", (state? THISGUI->i_selectcolor :
+                      THISGUI->i_foregroundcolor));
     }
 }
 

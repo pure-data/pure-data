@@ -36,7 +36,7 @@ struct _rtext
     t_word *x_words;        /* ... and if so, associated data */
     t_gobj *x_drawtext;     /* ... and the drawing instruction */
     t_glist *x_glist;       /* glist owner belongs to */
-    t_symbol *x_color;      /* X11-style name of color to draw */
+    unsigned int x_color;      /* (A)RGB value */
     char x_tag[50];         /* tag for gui */
     struct _rtext *x_next;  /* next in editor list */
     int x_xpix;           /* (x,y) origin in pixels */
@@ -166,12 +166,9 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof(*x));
 }
 
-void rtext_setcolor(t_rtext *x, int color)
+void rtext_setcolor(t_rtext *x, unsigned int color)
 {
-    char buf[80];
-    pd_snprintf(buf, 80, "#%06x", color);
-    buf[79] = 0;
-    x->x_color = gensym(buf);
+    x->x_color = color;
 }
 
 
@@ -620,15 +617,14 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        pdgui_vmess("pdtk_text_new", "c S ii s i r",
+        pdgui_vmess("pdtk_text_new", "c S ii s i k",
             canvas,
             2, tags,
             x->x_xpix + lmargin, x->x_ypix + tmargin,
             tempbuf,
             guifontsize,
             (x->x_text && glist_isselected(x->x_glist, &x->x_text->te_g)?
-                THISGUI->i_selectcolor->s_name :
-                    x->x_color->s_name));
+                THISGUI->i_selectcolor : x->x_color));
     }
     else if (action == SEND_UPDATE)
     {
@@ -730,10 +726,10 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 
 void rtext_select(t_rtext *x, int state)
 {
-    pdgui_vmess(0, "crs rr",
+    pdgui_vmess(0, "crs rk",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? THISGUI->i_selectcolor->s_name:
-            THISGUI->i_foregroundcolor->s_name));
+        "-fill", (state? THISGUI->i_selectcolor:
+            THISGUI->i_foregroundcolor));
 }
 
 void rtext_activate(t_rtext *x, int state)

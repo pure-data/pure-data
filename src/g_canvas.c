@@ -810,10 +810,10 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
+        pdgui_vmess(0, "crr iiiiiiiiii rk ri rr rr",
             glist_getcanvas(x), "create", "line",
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", THISGUI->i_gopcolor->s_name,
+            "-fill", THISGUI->i_gopcolor,
             "-width", x->gl_zoom,
             "-capstyle", "projecting",
             "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
@@ -994,12 +994,12 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rr rS",
+            pdgui_vmess(0, "crr iiii ri rk rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
                 "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
                     * x->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
 
                 "-tags", 2, tags);
         }
@@ -2219,10 +2219,10 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
-    THISGUI->i_foregroundcolor = gensym("#000000");
-    THISGUI->i_backgroundcolor = gensym("#FFFFFF");
-    THISGUI->i_selectcolor = gensym("#0000FF");
-    THISGUI->i_gopcolor = gensym("#FF0000");
+    THISGUI->i_foregroundcolor = 0x000000;
+    THISGUI->i_backgroundcolor = 0xFFFFFF;
+    THISGUI->i_selectcolor = 0x0000FF;
+    THISGUI->i_gopcolor = 0xFF0000;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2332,14 +2332,13 @@ static void glist_dorevis(t_glist *glist)
 }
 
     /* normalize a color symbol to a hex color string */
-static t_symbol *normalize_color(t_symbol *s)
+static unsigned int normalize_color(t_symbol *s)
 {
     if ('#' == s->s_name[0])
     {
         char colname[MAXPDSTRING];
         int col = (int)strtol(s->s_name+1, 0, 16);
-        pd_snprintf(colname, MAXPDSTRING-1, "#%06x", col & 0xFFFFFF);
-        return (gensym(colname));
+        return col & 0xFFFFFF;
     }
     pd_error(0,
  "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
@@ -2351,18 +2350,19 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop)
 {
     t_glist *gl;
-    fg = normalize_color(fg);
-    bg = normalize_color(bg);
-    sel = normalize_color(sel);
-    gop = (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
-    if (!fg || !bg || !sel || !gop) {
+    unsigned int c_fg = normalize_color(fg);
+    unsigned int c_bg = normalize_color(bg);
+    unsigned int c_sel = normalize_color(sel);
+    unsigned int c_gop = (gop && gop->s_name[0]) ? normalize_color(gop) : c_sel;
+
+    if ((-1 == c_fg) || (-1 == c_bg) || (-1 == c_sel) || (-1 == c_gop)) {
         pd_error(0, "skipping color update");
         return;
     }
-    THISGUI->i_foregroundcolor = fg;
-    THISGUI->i_backgroundcolor = bg;
-    THISGUI->i_selectcolor = sel;
-    THISGUI->i_gopcolor = gop;
+    THISGUI->i_foregroundcolor = c_fg;
+    THISGUI->i_backgroundcolor = c_bg;
+    THISGUI->i_selectcolor = c_sel;
+    THISGUI->i_gopcolor = c_gop;
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
 }

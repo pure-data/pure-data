@@ -53,8 +53,8 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
         xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
 
     if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs ri rs", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", THISGUI->i_selectcolor->s_name);
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-outline", THISGUI->i_selectcolor);
     else
         pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
             "-width", zoom, "-outline", x->x_gui.x_bcol);
@@ -97,8 +97,8 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     char tag[128];
     sprintf(tag, "%pBASE", x);
     if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
-            "-outline", THISGUI->i_selectcolor->s_name);
+        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
+            "-outline", THISGUI->i_selectcolor);
     else
         pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
             "-outline", x->x_gui.x_bcol);
