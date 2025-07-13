@@ -1916,7 +1916,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 pdtk_canvas_new; but if it's just white don't pass it in
                 case we're talking to an older GUI version (so that
                 pureVST can work with Pd 0.55 as its GUI) */
-            if (strcmp(THISGUI->i_backgroundcolor->s_name, "white"))
+            if (strcmp(THISGUI->i_backgroundcolor->s_name, "#FFFFFF"))
                 pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
@@ -2526,11 +2526,12 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground",
                             "ci", x, 0);
-                        pdgui_vmess(0, "crr iiii ri rs",
+                        pdgui_vmess(0, "crr iiii ri rs rs",
                             x, "create", "line",
                             x->gl_editor->e_xwas,x->gl_editor->e_ywas,
                             xpix, ypix,
                             "-width", (issignal ? 2 : 1) * x->gl_zoom,
+                            "-fill", THISGUI->i_foregroundcolor->s_name,
                             "-tags", "x");
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
@@ -2676,9 +2677,10 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     {
         if (!shiftmod)
             glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rs",
+        pdgui_vmess(0, "crr iiii rs rs",
             x, "create", "rectangle",
             xpix,ypix, xpix,ypix,
+            "-outline", THISGUI->i_selectcolor->s_name,
             "-tags", "x");
         x->gl_editor->e_xwas = xpix;
         x->gl_editor->e_ywas = ypix;
@@ -2754,10 +2756,11 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess(0, "crr iiii ri rS",
+            pdgui_vmess(0, "crr iiii ri rs rS",
                 glist_getcanvas(x), "create", "line",
                 lx1,ly1, lx2,ly2,
                 "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                "-fill", THISGUI->i_foregroundcolor->s_name,
                 "-tags", 2, tags);
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x,
@@ -4584,10 +4587,11 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
         char tag[128];
         char*tags[] = {tag, "cord"};
         sprintf(tag, "l%p", oc);
-        pdgui_vmess(0, "crr iiii ri rS",
+        pdgui_vmess(0, "crr iiii ri rs rS",
             glist_getcanvas(x), "create", "line",
             0, 0, 0, 0,
             "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+            "-fill", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
         canvas_fixlinesfor(x, objsrc);
     }
