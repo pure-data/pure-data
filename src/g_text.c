@@ -488,10 +488,10 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
         /* not zooming click width for now as it gets too fat */
-        t_rtext *y = glist_getrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -506,9 +506,9 @@ static void message_click(t_message *x,
 
 static void message_tick(t_message *x)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
-        t_rtext *y = glist_getrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -806,8 +806,9 @@ static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 
 static void gatom_reborder(t_gatom *x)
 {
-    t_rtext *y = glist_getrtext(x->a_glist, &x->a_text);
-    text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y), 0);
+    t_rtext *y = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (y)
+        text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y), 0);
 }
 
 void gatom_undarken(t_text *x)
@@ -828,7 +829,9 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     char *buf;
     t_atom *ap = gatom_getatom(x);
 
-    t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+    t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (!t)
+        return;
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
@@ -886,7 +889,9 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_gatom *x = (t_gatom *)z;
     if (up != 0)
     {
-        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+        if (!t)
+            return;
         rtext_retext(t);
         if (x->a_doubleclicked)    /* double click - activate text on release */
             rtext_activate(t, 1);
@@ -938,7 +943,8 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     if (!doit)
         return (1);
     x->a_dragindex = -1;
-    t = glist_getrtext(x->a_glist, &x->a_text);
+    if (!(t = glist_getrtext(x->a_glist, &x->a_text, 0)))
+        return (0);
     if (x->a_flavor == A_FLOAT)
     {
         if (x->a_text.te_width == 1)
@@ -1259,21 +1265,23 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     int width, height, iscomment = (x->te_type == T_TEXT);
     int x1, y1, x2, y2;
     t_glist *canvas = glist_getcanvas(glist);
 
-    if (canvas->gl_editor)
+        /* try to get an rtext so we can learn width and height */
+    if (canvas->gl_editor && (y = glist_getrtext(glist, x, 1)))
     {
-        t_rtext *y = glist_getrtext(glist, x);
             /* x1 and y1 might be wrong here - they're overwritten below. */
         rtext_getrect(y, &x1, &y1, &x2, &y2);
         width = x2 - x1;
         height = y2 - y1 - (iscomment << 1);
     }
-        /* for number boxes, we know width and height a priori, and should
-        report them here so that graphs can get swelled to fit. */
 
+        /* for number boxes, we know width and height a priori, and should
+        report them here so that graphs can get swelled to fit, even if
+        we aren't visible yet. */
     else if (x->te_type == T_ATOM && x->te_width > 0)
     {
         width = x->te_width * glist_fontwidth(glist);
@@ -1314,11 +1322,11 @@ static void text_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     x->te_xpix += dx;
     x->te_ypix += dy;
-    if (glist_isvisible(glist))
+    if (glist_isvisible(glist) && (y = glist_getrtext(glist, x, 0)))
     {
-        t_rtext *y = glist_getrtext(glist, x);
         rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
         text_drawborder(x, glist, rtext_gettag(y), 0);
         canvas_fixlinesfor(glist, x);
@@ -1328,26 +1336,30 @@ static void text_displace(t_gobj *z, t_glist *glist,
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_getrtext(glist, x);
-    rtext_select(y, state);
-    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
     {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? THISGUI->i_selectcolor->s_name :
-                THISGUI->i_foregroundcolor->s_name));
+        rtext_select(y, state);
+        if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+        {
+            char buf[MAXPDSTRING];
+            sprintf(buf, "%sR", rtext_gettag(y));
+            pdgui_vmess(0, "crs rr",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? THISGUI->i_selectcolor->s_name :
+                    THISGUI->i_foregroundcolor->s_name));
+        }
     }
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_getrtext(glist, x);
-    rtext_activate(y, state);
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
+        rtext_activate(y, state);
 }
 
 static void text_delete(t_gobj *z, t_glist *glist)
@@ -1359,19 +1371,20 @@ static void text_delete(t_gobj *z, t_glist *glist)
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     if (vis)
     {
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
-            t_rtext *y = glist_getrtext(glist, x);
             text_drawborder(x, glist, rtext_gettag(y), 1);
             rtext_draw(y);
         }
     }
     else
     {
-        t_rtext *y = glist_getrtext(glist, x);
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
             text_eraseborder(x, glist, rtext_gettag(y));
             rtext_erase(y);

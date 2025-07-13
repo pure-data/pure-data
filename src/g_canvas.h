@@ -475,7 +475,7 @@ extern const t_widgetbehavior text_widgetbehavior;
 #define RTEXT_DBL 3
 #define RTEXT_SHIFT 4
 
-EXTERN t_rtext *glist_getrtext(t_glist *gl, t_text *who);
+EXTERN t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really);
 EXTERN t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     t_gobj *drawtext);
 EXTERN void rtext_draw(t_rtext *x);

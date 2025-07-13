@@ -71,14 +71,22 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
     return (x);
 }
 
-/* find the rtext that goes with a text item */
-t_rtext *glist_getrtext(t_glist *gl, t_text *who)
+/* find the rtext that goes with a text item.  Return zero if the
+text item is invisible, either because the glist itself is, or because
+the item is in a GOP subpatch and its (x,y) origin is outside the GOP
+area.  (Or if it's within a nested GOP which itself isn't visible). */
+
+t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
 {
     t_rtext *x, *last = 0;
-        /* This happens for text objs in GOPs - dunno why. */
-    t_glist *canvas = glist_getcanvas(gl);
+    t_glist *canvas = glist_getcanvas(gl);;
+        /* This might happen for text objs in GOPs - dunno why. */
     if (!canvas->gl_editor)
         canvas_create_editor(canvas);
+        /* "really" is for when we're being called within gobj_shouldvis,
+            in which we can't just go call shouldvis back from here */
+    if (!really && !gobj_shouldvis(&who->te_g, gl))
+        return (0);
     for (x = canvas->gl_editor->e_rtext; x; x = x->x_next)
     {
         if (x->x_text == who)

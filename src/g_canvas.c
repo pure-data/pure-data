@@ -96,7 +96,7 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
-    t_object *ob;
+    t_object *ob = pd_checkobject(&x->g_pd);
     int has_parent = !glist->gl_havewindow && glist->gl_isgraph
         && glist->gl_owner && !glist->gl_isclone;
         /* if our parent is a graph, and if that graph itself isn't
@@ -111,15 +111,26 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
             /* for some reason the bounds check on arrays and scalars
                don't seem to apply here.  Perhaps this was in order to allow
                arrays to reach outside their containers?  I no longer understand
-               this. */
+               this - LATER try to get the real bounds rectangle because this
+               could cause trouble for GOPs with losts of scalars inside. */
         if (pd_class(&x->g_pd) == scalar_class
             || pd_class(&x->g_pd) == garray_class)
                 return (1);
+            /* get bounds rectangle of GOP area */
         gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
         if (x1 > x2)
             m = x1, x1 = x2, x2 = m;
         if (y1 > y2)
             m = y1, y1 = y2, y2 = m;
+            /* if it's a text box, try to skip getting the bounds rectangle
+            because that will cause an rtext to be created for us.  Most of the
+            time an invisible text box will have (x,y) outside of the rectangle
+            and we can just check that. */
+        if (ob && ((gx1 = text_xpix(ob, glist)) < x1 || gx1 > x2))
+            return (0);
+        if (ob && ((gy1 = text_ypix(ob, glist)) < y1) || gy1 > y2)
+            return (0);
+            /* If that passed, get the entire rectangle and test again. */
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
 #if 0
         post("graph %d %d %d %d, %s %d %d %d %d",

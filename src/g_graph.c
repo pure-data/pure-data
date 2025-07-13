@@ -111,9 +111,10 @@ void glist_delete(t_glist *x, t_gobj *y)
             }
             else
             {
-                if (glist_isvisible(x))
-                    text_eraseborder(&gl->gl_obj, x,
-                        rtext_gettag(glist_getrtext(x, &gl->gl_obj)));
+                t_rtext *t;
+                if (glist_isvisible(x) &&
+                    (t = glist_getrtext(x, &gl->gl_obj, 0)))
+                        text_eraseborder(&gl->gl_obj, x, rtext_gettag(t));
             }
         }
     }
@@ -125,7 +126,7 @@ void glist_delete(t_glist *x, t_gobj *y)
     if (glist_isvisible(canvas))
         gobj_vis(y, x, 0);
     if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext = glist_getrtext(x, ob);
+        rtext = glist_getrtext(x, ob, 0);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
@@ -175,7 +176,7 @@ void glist_retext(t_glist *glist, t_text *y)
         /* check that we have built rtexts yet.  LATER need a better test. */
     if (glist->gl_editor && glist->gl_editor->e_rtext)
     {
-        t_rtext *rt = glist_getrtext(glist, y);
+        t_rtext *rt = glist_getrtext(glist, y, 0);
         if (rt)
             rtext_retext(rt);
     }
@@ -747,6 +748,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     const char *tags2[] = {tag, "graph" };
     t_gobj *g;
     int x1, y1, x2, y2;
+    t_rtext *t = glist_getrtext(parent_glist, &x->gl_obj, 0);
         /* ordinary subpatches: just act like a text object */
     if (!x->gl_isgraph)
     {
@@ -754,11 +756,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         return;
     }
 
-    if (vis && canvas_showtext(x))
-        rtext_draw(glist_getrtext(parent_glist, &x->gl_obj));
+    if (vis && canvas_showtext(x) && t)
+        rtext_draw(t);
     graph_getrect(gr, parent_glist, &x1, &y1, &x2, &y2);
-    if (!vis)
-        rtext_erase(glist_getrtext(parent_glist, &x->gl_obj));
+    if (!vis && t)
+        rtext_erase(t);
 
     sprintf(tag, "graph%lx", (t_int)x);
     if (vis)
@@ -993,11 +995,11 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *)z;
+    t_rtext *y;
     if (!x->gl_isgraph)
         text_widgetbehavior.w_selectfn(z, glist, state);
-    else
+    else if ((y = glist_getrtext(glist, &x->gl_obj, 0)))
     {
-        t_rtext *y = glist_getrtext(glist, &x->gl_obj);
         char tag[80];
         if (canvas_showtext(x))
             rtext_select(y, state);

@@ -149,8 +149,8 @@ void glist_deselect(t_glist *x, t_gobj *y)
     if (!glist_isselected(x, y)) bug("glist_deselect");
     if (glist_textedfor(x))
     {
-        t_rtext *fuddy = glist_getrtext(x, (t_text *)y);
-        if (glist_textedfor(x) == fuddy)
+        t_rtext *fuddy = glist_getrtext(x, (t_text *)y, 0);
+        if (fuddy && glist_textedfor(x) == fuddy)
         {
             if (x->gl_editor->e_textdirty)
             {
@@ -2458,7 +2458,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
             {
                 t_rtext *rt;
                 if (hitobj && (rt = glist_textedfor(x)) &&
-                    rt == glist_getrtext(x, hitobj))
+                    rt == glist_getrtext(x, hitobj, 0))
                 {
                     rtext_mouse(rt, xpix - x1, ypix - y1, RTEXT_SHIFT);
                     x->gl_editor->e_onmotion = MA_DRAGTEXT;
@@ -2546,7 +2546,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                     /* check if the box is being text edited */
             nooutletafterall:
                 if (hitobj && (rt = glist_textedfor(x)) &&
-                    rt == glist_getrtext(x, hitobj))
+                    rt == glist_getrtext(x, hitobj, 0))
                 {
                     rtext_mouse(rt, xpix - x1, ypix - y1,
                         (doubleclick ? RTEXT_DBL : RTEXT_DOWN));
@@ -4994,8 +4994,9 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         for (g = x->gl_list; g; g = g->g_next)
             if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
         {
-            t_rtext *y = glist_getrtext(x, ob);
-            text_drawborder(ob, x, rtext_gettag(y), 1);
+            t_rtext *y = glist_getrtext(x, ob, 0);
+            if (y)
+                text_drawborder(ob, x, rtext_gettag(y), 1);
         }
     }
     else
