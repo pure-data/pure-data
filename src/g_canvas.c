@@ -2339,10 +2339,12 @@ static t_symbol *normalize_color(t_symbol *s)
         char colname[MAXPDSTRING];
         int col = (int)strtol(s->s_name+1, 0, 16);
         pd_snprintf(colname, MAXPDSTRING-1, "#%06x", col & 0xFFFFFF);
-        return gensym(colname);
+        return (gensym(colname));
     }
-    pd_error(0, "invalid color '%s' (expected hex color)", s->s_name);
-    return 0;
+    pd_error(0,
+ "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
+       s->s_name);
+    return (0);
 }
 
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
@@ -2352,9 +2354,9 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     fg = normalize_color(fg);
     bg = normalize_color(bg);
     sel = normalize_color(sel);
-    gop = (gop && gop->s_name[0]) ? normalize_color(gop) : sel;
+    gop = (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
     if (!fg || !bg || !sel || !gop) {
-        pd_error(0, "palette not updated due to invalid color(s)");
+        pd_error(0, "skipping color update");
         return;
     }
     THISGUI->i_foregroundcolor = fg;
