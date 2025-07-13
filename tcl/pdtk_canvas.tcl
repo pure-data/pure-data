@@ -203,6 +203,21 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     ::pd_guiprefs::update_recentfiles $filename
 }
 
+##### validate tcl/tk color
+proc ::pdtk_canvas::pdtk_canvas_validate_color {name type} {
+    set color_escaped [string map {{ } {\\ }} $name]
+    if {[catch {winfo rgb . $color_escaped} rgb]} {
+        pdsend "pd color_callback 0 $color_escaped $type"
+        return
+    }
+    set r [format %02x [expr {[lindex $rgb 0] / 256}]]
+    set g [format %02x [expr {[lindex $rgb 1] / 256}]]
+    set b [format %02x [expr {[lindex $rgb 2] / 256}]]
+    set hex_color "#$r$g$b"
+    pdsend "pd colors_callback 1 $hex_color $type"
+}
+
+
 ##### ask user Save? Discard? Cancel?, and if so, send a message on to Pd ######
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel

@@ -2331,38 +2331,48 @@ static void glist_dorevis(t_glist *glist)
             glist_dorevis((t_glist *)g);
 }
 
-    /* normalize a color symbol to a hex color string */
-static t_symbol *normalize_color(t_symbol *s)
-{
-    if ('#' == s->s_name[0])
-    {
-        char colname[MAXPDSTRING];
-        int col = (int)strtol(s->s_name+1, 0, 16);
-        pd_snprintf(colname, MAXPDSTRING-1, "#%06x", col & 0xFFFFFF);
-        return (gensym(colname));
+void glob_colors_callback(void *dummy, t_floatarg v, t_symbol *color, t_floatarg t) {
+    int valid = (int)v;
+    int type = (int)t;
+    t_glist *gl;
+    switch (type) {
+        case 0:
+            if (valid)
+                THISGUI->i_foregroundcolor = color;
+            else
+                pd_error(0, "skipping invalid fg color '%s'", color->s_name);
+            break;
+
+        case 1:
+            if (valid)
+                THISGUI->i_backgroundcolor = color;
+            else
+                pd_error(0, "skipping invalid bg color '%s'", color->s_name);
+            break;
+
+        case 2:
+            if (valid)
+                THISGUI->i_selectcolor = color;
+            else
+                pd_error(0, "skipping invalid sel color '%s'", color->s_name);
+            break;
+
+        case 3:
+            if (valid)
+                THISGUI->i_gopcolor = color;
+            else
+                pd_error(0, "skipping invalid gop color '%s'", color->s_name);
+            // refresh all canvases
+            for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+                glist_dorevis(gl);
+            break;
     }
-    pd_error(0,
- "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
-       s->s_name);
-    return (0);
 }
 
-void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
-    t_symbol *gop)
-{
-    t_glist *gl;
-    fg = normalize_color(fg);
-    bg = normalize_color(bg);
-    sel = normalize_color(sel);
-    gop = (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
-    if (!fg || !bg || !sel || !gop) {
-        pd_error(0, "skipping color update");
-        return;
-    }
-    THISGUI->i_foregroundcolor = fg;
-    THISGUI->i_backgroundcolor = bg;
-    THISGUI->i_selectcolor = sel;
-    THISGUI->i_gopcolor = gop;
-    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
-        glist_dorevis(gl);
+void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel, t_symbol *gop) {
+    pdgui_vmess("::pdtk_canvas::pdtk_canvas_validate_color", "si", fg->s_name, 0);
+    pdgui_vmess("::pdtk_canvas::pdtk_canvas_validate_color", "si", bg->s_name, 1);
+    pdgui_vmess("::pdtk_canvas::pdtk_canvas_validate_color", "si", sel->s_name, 2);
+    pdgui_vmess("::pdtk_canvas::pdtk_canvas_validate_color", "si",
+        (gop && gop != &s_) ? gop->s_name : sel->s_name, 3);
 }
