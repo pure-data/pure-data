@@ -57,6 +57,10 @@ proc ::dialog_audio::config2string { } {
         "]
 }
 
+proc ::dialog_audio::refresh_devicelist {mytoplevel} {
+    pdsend "pd audio-refresh-devicelist"
+}
+
 proc ::dialog_audio::apply {mytoplevel {force ""}} {
     set config [config2string]
     if { $force ne "" || $config ne $::dialog_audio::referenceconfig} {
@@ -207,6 +211,13 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
         }
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
+
+    set mytoplevel [winfo toplevel $frame]
+    frame $frame.refreshbutton
+    pack $frame.refreshbutton -side bottom -fill x -pady 5
+    button $frame.refreshbutton.b -text [_ "Refresh Device List"] \
+        -command "::dialog_audio::refresh_devicelist $mytoplevel"
+    pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
 
@@ -370,6 +381,21 @@ proc ::dialog_audio::set_configuration { \
     set ::audio_advance ${advance}
     set ::audio_use_callback ${use_callback}
     set ::audio_can_multidevice ${can_multidevice}
+}
+
+proc ::dialog_audio::refresh_ui {} {
+    # check if we're in the preferences window
+    if {[winfo exists ${::dialog_preferences::audio_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
+        ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
+    }
+    # check if we have the standalone dialog open
+    foreach w [winfo children .] {
+        if {[winfo class $w] eq "DialogWindow" && [wm title $w] eq [_ "Audio Settings"]} {
+            destroy $w
+            ::dialog_audio::create $w
+        }
+    }
 }
 
 proc ::dialog_audio::create {mytoplevel} {

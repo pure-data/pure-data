@@ -66,7 +66,6 @@ t_semaphore *pa_sem;
 #define POLL_TIMEOUT 2.0
 #endif
 static double pa_lastdactime;
-
 static int pa_initialized;
 
 static void pa_init(void)        /* Initialize PortAudio  */

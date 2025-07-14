@@ -677,19 +677,6 @@ void sys_gui_audiopreferences(void) {
 
         /* query the current AUDIO settings */
     sys_get_audio_settings(&as);
-
-#ifdef USEAPI_PORTAUDIO
-        /* sorry about this... if portaudio, we have to reinitialize
-            here so that we can see if the device list has changed. */
-    void pa_reinitialize( void);
-    if (as.a_api == API_PORTAUDIO)
-    {
-        pa_reinitialize();
-        if (canvas_dspstate)
-            sys_reopen_audio();
-    }
-#endif /* USEAPI_PORTAUDIO */
-
     sys_get_audio_devs(indevlist, &num_devicesI, outdevlist, &num_devicesO,
         &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
 
@@ -844,6 +831,27 @@ void sys_listdevs(void)
     }
     post("API number %d\n", audio_nextsettings.a_api);
     sys_listmididevs();
+}
+
+void glob_audio_refresh_devicelist(t_pd *dummy)
+{
+    int was_open;
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot refresh device list in 'callback' mode when audio is running. "
+            "Please turn off DSP and try again.");
+        return;
+    }
+    was_open = audio_isopen();
+    if (was_open) sys_close_audio();
+#ifdef USEAPI_PORTAUDIO
+    if (audio_nextsettings.a_api == API_PORTAUDIO)
+        pa_reinitialize();
+#endif
+    if (was_open) sys_reopen_audio();
+    sys_gui_audiopreferences();
+        /* refresh audio dialog (if it's open) */
+    pdgui_vmess("::dialog_audio::refresh_ui", "");
 }
 
 void glob_audio_setapi(void *dummy, t_floatarg f)

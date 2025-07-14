@@ -183,6 +183,7 @@ void pa_close_audio(void);
 int pa_send_dacs(void);
 int pa_reopen_audio(void);
 void pa_listdevs(void);
+void pa_reinitialize(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);

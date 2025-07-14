@@ -26,6 +26,7 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s);
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform);
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_audio_setapi(t_pd *dummy, t_floatarg f);
+void glob_audio_refresh_devicelist(t_pd *dummy);
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
 void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_midi_setapi(t_pd *dummy, t_floatarg f);
@@ -161,6 +162,8 @@ void glob_init(void)
         gensym("audio-dialog"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_setapi,
         gensym("audio-setapi"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_audio_refresh_devicelist,
+        gensym("audio-refresh-devicelist"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_midi_setapi,
         gensym("midi-setapi"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_midi_properties,
