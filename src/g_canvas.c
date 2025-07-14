@@ -2343,7 +2343,7 @@ static unsigned int normalize_color(t_symbol *s)
     pd_error(0,
  "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
        s->s_name);
-    return (0);
+    return (-1);
 }
 
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
