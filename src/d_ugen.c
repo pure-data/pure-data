@@ -1202,10 +1202,7 @@ void ugen_done_graph(t_dspcontext *dc)
                 outlet from being scheduled.  In this case just make a new
                 signal. */
             else if ((*sigp)->s_nchans < 0)
-            {
-                signal_makereusable(*sigp);
                 *sigp = signal_new(parent_vecsize, 1, parent_srate, 0);
-            }
         }
     }
 
