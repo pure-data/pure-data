@@ -62,11 +62,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
-        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            "-fill", THISGUI->i_foregroundcolor->s_name,
-            "-outline", THISGUI->i_foregroundcolor->s_name,
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep knob above outlet */
@@ -77,11 +77,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
-            "-fill", THISGUI->i_foregroundcolor->s_name,
-            "-outline", THISGUI->i_foregroundcolor->s_name,
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep knob above inlet */
@@ -142,9 +142,10 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+    pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom,
-        "-fill", x->x_gui.x_bcol);
+        "-fill", x->x_gui.x_bcol,
+        "-outline", THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%pKNOB", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -157,9 +158,12 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+    if(x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
+    else
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -190,11 +194,11 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
 static void slider_draw_select(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
     char tag[128];
+    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
 
     if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
+        col = lcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);

@@ -518,7 +518,17 @@ expr_perform(t_int *w)
                         x->exp_tmpres[j][i] = 0;
                         break;
                 default:
-                        post("expr_perform: bad result type %d", res.ex_type);
+                        if (!(x->exp_error & EE_BADRES)) {
+                                x->exp_error |= EE_BADRES;
+                                        post_error((t_object *) x,
+                                                "fexpr~: '%s': bad result, an error may have occured\n",
+                                                                        x->exp_string);
+                                post_error(x,
+                                      "fexpr~: No more such errors will be reported");
+                                post_error(x,
+                                      "fexpr~: till the next reset");
+                        }
+                        x->exp_tmpres[j][i] = 0;
                 }
         }
         /*
@@ -1360,8 +1370,17 @@ max_ex_var(struct expr *expr, t_symbol *var, struct ex_ex *optr, int idx)
                 !garray_getfloatwords(garray, &size, &vec))  {          \
                 optr->ex_type = ET_FLT;                                 \
                 optr->ex_int = 0;                                       \
-                pd_error(0, "%s: no such table '%s'",                   \
-                        e->exp_string, sym?(sym->s_name):"(null)");     \
+                if (!(e->exp_error & EE_NOTABLE)) {                     \
+                        post_error(e, "expr: '%s':  '%s': no such table ",     \
+                            e->exp_string, sym?(sym->s_name):"(null)"); \
+                        if (!IS_EXPR(e)) {                              \
+                                post_error(e,                           \
+                         "expr: No more table errors will be reported");\
+                                post_error(e,                           \
+                                   "expr: till the next reset");        \
+                                e->exp_error |= EE_NOTABLE;             \
+                        }                                               \
+                }                                                       \
                 return;                                                 \
         }
 

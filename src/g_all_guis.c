@@ -30,6 +30,18 @@ typedef struct _iemgui_private {
     int p_binbuf_valid;
 } t_iemgui_private;
 
+typedef enum {
+    FOREGROUND,
+    BACKGROUND,
+    LABEL,
+    UNKNOWN
+} colortype_t;
+
+#define IEM_GUI_COLOR_BACKGROUND 0xFCFCFC
+#define IEM_GUI_COLOR_FOREGROUND 0x000000
+#define IEM_GUI_COLOR_LABEL 0x000000
+
+
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
 
 /* helpers */
@@ -301,7 +313,7 @@ void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
 
 
 
-static t_symbol* color2symbol(int col) {
+static t_symbol* color2symbol(unsigned int col) {
     const int  compat = (pd_compatibilitylevel < 48) ? 1 : 0;
 
     char colname[MAXPDSTRING];
@@ -325,10 +337,10 @@ static void iemgui_all_col2save(t_iemgui *iemgui, t_symbol**bflcol)
     bflcol[2] = color2symbol(iemgui->x_lcol);
 }
 
-static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
+static unsigned int iemgui_getcolorarg(int index, int argc, t_atom*argv, colortype_t ct)
 {
     if(index < 0 || index >= argc)
-        return 0;
+        goto default_color;
     if(IS_A_FLOAT(argv,index))
         return atom_getfloatarg(index, argc, argv);
     if(IS_A_SYMBOL(argv,index))
@@ -340,10 +352,23 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
             return col & 0xFFFFFF;
         }
     }
+
+default_color:
+        /* LATER use THISGUI->i_*color */
+    switch(ct) {
+    case FOREGROUND:
+        return IEM_GUI_COLOR_FOREGROUND;
+    case BACKGROUND:
+        return IEM_GUI_COLOR_BACKGROUND;
+    case LABEL:
+        return IEM_GUI_COLOR_FOREGROUND;
+    default:
+        break;
+    }
     return 0;
 }
 
-static int colfromatomload(t_atom*colatom)
+static unsigned int colfromatomload(t_atom*colatom, colortype_t ct)
 {
     int color;
         /* old-fashioned color argument, either a number or symbol
@@ -356,7 +381,7 @@ static int colfromatomload(t_atom*colatom)
                 color = atoi(colatom->a_w.w_symbol->s_name);
 
         /* symbolic color */
-    else return (iemgui_getcolorarg(0, 1, colatom));
+    else return (iemgui_getcolorarg(0, 1, colatom, ct));
     if (color < 0)
     {
         color = -1 - color;
@@ -373,12 +398,12 @@ static int colfromatomload(t_atom*colatom)
 
 void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol)
 {
-    if(bcol)iemgui->x_bcol = colfromatomload(bcol);
-    if(fcol)iemgui->x_fcol = colfromatomload(fcol);
-    if(lcol)iemgui->x_lcol = colfromatomload(lcol);
+    if(bcol)iemgui->x_bcol = colfromatomload(bcol, BACKGROUND);
+    if(fcol)iemgui->x_fcol = colfromatomload(fcol, FOREGROUND);
+    if(lcol)iemgui->x_lcol = colfromatomload(lcol, LABEL);
 }
 
-int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
+static unsigned int _iemgui_compatible_colorarg(int index, int argc, t_atom* argv, colortype_t ct)
 {
     if (index < 0 || index >= argc)
         return 0;
@@ -393,7 +418,11 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
             else
                return((-1 -col)&0xffffff);
         }
-    return iemgui_getcolorarg(index, argc, argv);
+    return iemgui_getcolorarg(index, argc, argv, ct);
+}
+unsigned int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
+{
+    return _iemgui_compatible_colorarg(index, argc, argv, UNKNOWN);
 }
 
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -590,15 +619,15 @@ void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     if (ac >= 1)
-        iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
+        iemgui->x_bcol = _iemgui_compatible_colorarg(0, ac, av, BACKGROUND);
     if (ac == 2 && pd_compatibilitylevel < 47)
             /* old versions of Pd updated foreground and label color
             if only two args; now we do it more coherently. */
-        iemgui->x_lcol = iemgui_compatible_colorarg(1, ac, av);
+        iemgui->x_lcol = _iemgui_compatible_colorarg(1, ac, av, LABEL);
     else if (ac >= 2)
-        iemgui->x_fcol = iemgui_compatible_colorarg(1, ac, av);
+        iemgui->x_fcol = _iemgui_compatible_colorarg(1, ac, av, FOREGROUND);
     if (ac >= 3)
-        iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
+        iemgui->x_lcol = _iemgui_compatible_colorarg(2, ac, av, LABEL);
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
 }
@@ -738,9 +767,9 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int ldy = (int)atom_getfloatarg(11, argc, argv);
     int f = (int)atom_getfloatarg(12, argc, argv);
     int fs = (int)atom_getfloatarg(13, argc, argv);
-    int bcol = (int)iemgui_getcolorarg(14, argc, argv);
-    int fcol = (int)iemgui_getcolorarg(15, argc, argv);
-    int lcol = (int)iemgui_getcolorarg(16, argc, argv);
+    int bcol = (int)iemgui_getcolorarg(14, argc, argv, BACKGROUND);
+    int fcol = (int)iemgui_getcolorarg(15, argc, argv, FOREGROUND);
+    int lcol = (int)iemgui_getcolorarg(16, argc, argv, LABEL);
     int rcv_changed=0, oldsndrcvable=0;
     int i;
 
@@ -926,11 +955,11 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     sprintf(tag, "%pOUT%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_snd_able) {
-        pdgui_vmess(0, "crr iiii rs rs rS",
+        pdgui_vmess(0, "crr iiii rk rk rS",
             canvas, "create", "rectangle",
             xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", THISGUI->i_foregroundcolor->s_name,
-            "-outline", THISGUI->i_foregroundcolor->s_name,
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
         /* keep label above outlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -940,11 +969,11 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     sprintf(tag, "%pIN%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_rcv_able) {
-        pdgui_vmess(0, "crr iiii rs rs rS",
+        pdgui_vmess(0, "crr iiii rk rk rS",
             canvas, "create", "rectangle",
             xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", THISGUI->i_foregroundcolor->s_name,
-            "-outline", THISGUI->i_foregroundcolor->s_name,
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
         /* keep label above inlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -1052,11 +1081,9 @@ t_iemgui *iemgui_new(t_class*cls)
     iem_inttosymargs(&x->x_isa, 0);
     iem_inttofstyle(&x->x_fsf, 0);
 
-    t_atom colors[3];
-    SETSYMBOL(colors+0, THISGUI->i_backgroundcolor);
-    SETSYMBOL(colors+1, THISGUI->i_foregroundcolor);
-    SETSYMBOL(colors+2, THISGUI->i_foregroundcolor);
-    iemgui_color(x, x, gensym("color"), 3, colors);
+    x->x_bcol = THISGUI->i_backgroundcolor;
+    x->x_fcol = THISGUI->i_foregroundcolor;
+    x->x_lcol = THISGUI->i_foregroundcolor;
 
     return x;
 }
