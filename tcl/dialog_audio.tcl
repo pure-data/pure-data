@@ -5,6 +5,7 @@ package require pdtcl_compat
 namespace eval ::dialog_audio:: {
     namespace export pdtk_audio_dialog
     variable referenceconfig ""
+    variable standalone_window ""
 }
 set ::audio_samplerate 48000
 set ::audio_advance 25
@@ -207,6 +208,12 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
         }
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
+
+    frame $frame.refreshbutton
+    pack $frame.refreshbutton -side bottom -fill x
+    button $frame.refreshbutton.b -text [_ "Rescan Devices"] \
+        -command "pdsend \"pd rescan-audio\""
+    pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
 
@@ -372,6 +379,17 @@ proc ::dialog_audio::set_configuration { \
     set ::audio_can_multidevice ${can_multidevice}
 }
 
+proc ::dialog_audio::refresh_ui {} {
+    # check if we're in the tabbed preferences or standalone audio dialog
+    if {[winfo exists ${::dialog_preferences::audio_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
+        ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
+    } elseif {[winfo exists $::dialog_audio::standalone_window]} {
+        destroy $::dialog_audio::standalone_window
+        ::dialog_audio::create $::dialog_audio::standalone_window
+    }
+}
+
 proc ::dialog_audio::create {mytoplevel} {
     # check if there's already an open gui-preference
     # where we can splat the new audio preferences into
@@ -398,20 +416,14 @@ proc ::dialog_audio::create {mytoplevel} {
     # add the preference widgets to the dialog
     ::dialog_audio::fill_frame $mytoplevel 0
 
-    # save all settings and rescan buttons
-    frame $mytoplevel.otherframe
-    pack $mytoplevel.otherframe -side top -pady 2m
-    button $mytoplevel.otherframe.rescan -text [_ "Rescan devices"] \
-        -command "pdsend \"pd rescan-audio\""
-    pack $mytoplevel.otherframe.rescan -side left -expand 1 -padx 15 -ipadx 10 -pady 5
     # save all settings button
-    button $mytoplevel.otherframe.saveall -text [_ "Save All Settings"] \
+    button $mytoplevel.saveall -text [_ "Save All Settings"] \
         -command "::dialog_audio::apply $mytoplevel 1; pdsend \"pd save-preferences\""
-    pack $mytoplevel.otherframe.saveall -side left -expand 1 -padx 15 -ipadx 10 -pady 5
+    pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
     frame $mytoplevel.buttonframe
-    pack $mytoplevel.buttonframe -side top -after $mytoplevel.otherframe -pady 2m
+    pack $mytoplevel.buttonframe -side top -after $mytoplevel.saveall -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_audio::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
@@ -447,13 +459,14 @@ proc ::dialog_audio::create {mytoplevel} {
     }
 
     # show active focus on save settings button
-    ::preferencewindow::buttonfocus $mytoplevel.otherframe.saveall $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+    ::preferencewindow::buttonfocus $mytoplevel.saveall $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
 
 
     # set min size based on widget sizing & pos over pdwindow
     wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
     position_over_window $mytoplevel .pdwindow
     raise $mytoplevel
+    set ::dialog_audio::standalone_window $mytoplevel
 }
 
 # legacy proc forthe audio-dialog

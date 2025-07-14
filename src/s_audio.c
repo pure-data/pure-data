@@ -788,21 +788,26 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     for which we must deinit and reinit the library to see new devices. */
 void glob_rescanaudio(t_pd *dummy)
 {
-#ifdef USEAPI_PORTAUDIO
-    t_audiosettings as;
-    sys_get_audio_settings(&as);
-    if (as.a_api == API_PORTAUDIO)
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
     {
-        int restart = canvas_dspstate;
-        sys_close_audio();
-        pa_reinitialize();
-        if (restart)
-            sys_reopen_audio();
+        pd_error(0, "Cannot refresh device list in 'callback' mode when audio is running. "
+            "Please turn off DSP and try again.");
+        return;
     }
-    glob_audio_properties(0);
+#ifdef USEAPI_PORTAUDIO
+    if (audio_nextsettings.a_api == API_PORTAUDIO)
+    {
+        int was_open = audio_isopen();
+        if (was_open) sys_close_audio();
+        pa_reinitialize();
+        if (was_open) sys_reopen_audio();
+    }
 #else
-    post("skipping rescan because it's not defined for this API");
+    post("Skipping rescan because it's not defined for this API");
 #endif
+    sys_gui_audiopreferences();
+        /* refresh audio dialog (if it's open) */
+    pdgui_vmess("::dialog_audio::refresh_ui", "");
 }
 
 void sys_listdevs(void)
