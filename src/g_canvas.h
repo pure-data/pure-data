@@ -284,8 +284,8 @@ struct _instancecanvas  /* per-instance stuff for canvases */
     int i_dspstate;                         /* whether DSP is running */
     int i_dollarzero;                       /* counter for $0 */
     t_float i_graph_lastxpix, i_graph_lastypix;       /* state for dragging */
-    t_symbol *i_foregroundcolor, *i_backgroundcolor;  /* color of fg & bg */
-    t_symbol *i_selectcolor, *i_gopcolor;             /* ...selection and GOP */
+    unsigned int i_foregroundcolor, i_backgroundcolor;  /* color of fg & bg */
+    unsigned int i_selectcolor, i_gopcolor;             /* ...selection and GOP */
 };
 
 void g_editor_newpdinstance(void);
