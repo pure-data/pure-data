@@ -125,7 +125,6 @@ void sys_close_midi(void)
 
 void sys_reinit_midi()
 {
-    post("reinit");
     Pm_Terminate();
     Pm_Initialize();
 }
@@ -350,7 +349,6 @@ void midi_getdevs(char *indevlist, int *nindevs,
     int i, nindev = 0, noutdev = 0;
     char utf8device[MAXPDSTRING];
     utf8device[0] = 0;
-    post("getdevs\n");
     for (i = 0; i < Pm_CountDevices(); i++)
     {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
