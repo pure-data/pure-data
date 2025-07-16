@@ -509,22 +509,16 @@ proc ::pdtk_canvas::cleanname {name} {
 }
 
 proc ::pdtk_canvas::adjust_color {hex} {
-    # Parse hex color string "#RRGGBB"
     scan $hex "#%2x%2x%2x" r g b
-    
     foreach val {r g b} {
         set v [set $val]
         if {$v < 128} {
-            # If dark channel, brighten by adding 31 (clamped to 255)
-            set v [expr {min(255, $v + 0x1F)}]
+            set v [expr {$v + 0x1F}]
         } else {
-            # If light channel, darken by subtracting 31 (clamped to 0)
-            set v [expr {max(0, $v - 0x1F)}]
+            set v [expr {$v - 0x1F}]
         }
         set $val $v
     }
-    
-    # Format back to hex string
     format "#%02x%02x%02x" $r $g $b
 }
 
