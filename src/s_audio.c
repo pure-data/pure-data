@@ -726,7 +726,7 @@ void sys_gui_audiopreferences(void) {
 }
 
     /* start an audio settings dialog window */
-void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
+void glob_audio_properties(t_pd *dummy)
 {
     sys_gui_audiopreferences();
     pdgui_stub_deleteforkey(0);
@@ -782,6 +782,27 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_set_audio_settings(&as);
     if (canvas_dspstate || audio_shouldkeepopen())
         sys_reopen_audio();
+}
+
+    /* rescan audio devices.  This is probably only useful for portaudio API
+    for which we must deinit and reinit the library to see new devices. */
+void glob_rescanaudio(t_pd *dummy)
+{
+#ifdef USEAPI_PORTAUDIO
+    t_audiosettings as;
+    sys_get_audio_settings(&as);
+    if (as.a_api == API_PORTAUDIO)
+    {
+        int restart = canvas_dspstate;
+        sys_close_audio();
+        pa_reinitialize();
+        if (restart)
+            sys_reopen_audio();
+    }
+    glob_audio_properties(0);
+#else
+    post("skipping rescan because it's not defined for this API");
+#endif
 }
 
 void sys_listdevs(void)
@@ -849,7 +870,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
             if (canvas_dspstate || audio_shouldkeepopen())
                 sys_reopen_audio();
         }
-        glob_audio_properties(0, 0);
+        glob_audio_properties(0);
     }
     else if (audio_isopen())
     {

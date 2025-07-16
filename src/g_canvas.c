@@ -387,7 +387,7 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
             t->tr_ob = ob;
             t->tr_nout = obj_noutlets(ob);
             outno = 0;
-            if (glist_isvisible(t->tr_x))
+            if (glist_isvisible(t->tr_x) && gobj_shouldvis(y, t->tr_x))
                 gobj_getrect(y, t->tr_x,
                     &t->tr_x11, &t->tr_y11, &t->tr_x12, &t->tr_y12);
             else t->tr_x11 = t->tr_y11 = t->tr_x12 = t->tr_y12 = 0;
