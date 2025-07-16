@@ -677,21 +677,8 @@ void sys_gui_audiopreferences(void) {
 
         /* query the current AUDIO settings */
     sys_get_audio_settings(&as);
-
-#ifdef USEAPI_PORTAUDIO
-        /* sorry about this... if portaudio, we have to reinitialize
-            here so that we can see if the device list has changed. */
-    void pa_reinitialize( void);
-    if (as.a_api == API_PORTAUDIO)
-    {
-        pa_reinitialize();
-        if (canvas_dspstate)
-            sys_reopen_audio();
-    }
-#endif /* USEAPI_PORTAUDIO */
-
-    sys_get_audio_devs(indevlist, &num_devicesI, outdevlist, &num_devicesO,
-        &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
+    sys_get_audio_devs(indevlist, &num_devicesI, outdevlist, &num_devicesO, &canmulti,
+        &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
 
         /* normalize the data a bit */
     if(!num_devicesI) {
@@ -728,15 +715,12 @@ void sys_gui_audiopreferences(void) {
 
     sprintf(srate, "%s%d", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
     sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
-    sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"",
-        as.a_blocksize);
+    sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
 
         /* and send it over to the GUI */
     pdgui_vmess("::dialog_audio::set_configuration", "SFF SFF ssi si",
-        num_devicesI, devicesI, num_usedevsI, usedevsI, num_devchansI,
-            devchansI,
-        num_devicesO, devicesO, num_usedevsO, usedevsO, num_devchansO,
-            devchansO,
+        num_devicesI, devicesI, num_usedevsI, usedevsI, num_devchansI, devchansI,
+        num_devicesO, devicesO, num_usedevsO, usedevsO, num_devchansO, devchansO,
         srate, blocksize, as.a_advance,
         callback, canmulti);
 }
@@ -764,11 +748,9 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < 4; i++)
     {
         as.a_indevvec[i] = atom_getfloatarg(i, argc, argv);
-        as.a_chindevvec[i] = (as.a_indevvec[i] >= 0) ?
-            atom_getfloatarg(i+4, argc, argv) : 0;
+        as.a_chindevvec[i] = (as.a_indevvec[i] >= 0) ? atom_getfloatarg(i+4, argc, argv) : 0;
         as.a_outdevvec[i] = atom_getfloatarg(i+8, argc, argv);
-        as.a_choutdevvec[i] = (as.a_outdevvec[i] >= 0) ?
-            atom_getfloatarg(i+12, argc, argv) : 0;
+        as.a_choutdevvec[i] = (as.a_outdevvec[i] >= 0) ? atom_getfloatarg(i+12, argc, argv) : 0;
     }
         /* compact out any zeros and count nonzero entries */
     for (i = 0, as.a_nindev = 0; i < MAXAUDIOINDEV; i++)
