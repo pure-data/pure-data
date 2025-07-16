@@ -398,14 +398,20 @@ proc ::dialog_audio::create {mytoplevel} {
     # add the preference widgets to the dialog
     ::dialog_audio::fill_frame $mytoplevel 0
 
+    # save all settings and rescan buttons
+    frame $mytoplevel.otherframe
+    pack $mytoplevel.otherframe -side top -pady 2m
+    button $mytoplevel.otherframe.rescan -text [_ "Rescan devices"] \
+        -command "pdsend \"pd rescan-audio\""
+    pack $mytoplevel.otherframe.rescan -side left -expand 1 -padx 15 -ipadx 10 -pady 5
     # save all settings button
-    button $mytoplevel.saveall -text [_ "Save All Settings"] \
+    button $mytoplevel.otherframe.saveall -text [_ "Save All Settings"] \
         -command "::dialog_audio::apply $mytoplevel 1; pdsend \"pd save-preferences\""
-    pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
+    pack $mytoplevel.otherframe.saveall -side left -expand 1 -padx 15 -ipadx 10 -pady 5
 
     # buttons
     frame $mytoplevel.buttonframe
-    pack $mytoplevel.buttonframe -side top -after $mytoplevel.saveall -pady 2m
+    pack $mytoplevel.buttonframe -side top -after $mytoplevel.otherframe -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_audio::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
