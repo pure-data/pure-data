@@ -488,10 +488,10 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
         /* not zooming click width for now as it gets too fat */
-        t_rtext *y = glist_getrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -506,9 +506,9 @@ static void message_click(t_message *x,
 
 static void message_tick(t_message *x)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
-        t_rtext *y = glist_getrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -806,8 +806,9 @@ static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 
 static void gatom_reborder(t_gatom *x)
 {
-    t_rtext *y = glist_getrtext(x->a_glist, &x->a_text);
-    text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y), 0);
+    t_rtext *y = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (y)
+        text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y), 0);
 }
 
 void gatom_undarken(t_text *x)
@@ -828,7 +829,9 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     char *buf;
     t_atom *ap = gatom_getatom(x);
 
-    t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+    t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (!t)
+        return;
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
@@ -886,7 +889,9 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_gatom *x = (t_gatom *)z;
     if (up != 0)
     {
-        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+        if (!t)
+            return;
         rtext_retext(t);
         if (x->a_doubleclicked)    /* double click - activate text on release */
             rtext_activate(t, 1);
@@ -938,7 +943,8 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     if (!doit)
         return (1);
     x->a_dragindex = -1;
-    t = glist_getrtext(x->a_glist, &x->a_text);
+    if (!(t = glist_getrtext(x->a_glist, &x->a_text, 0)))
+        return (0);
     if (x->a_flavor == A_FLOAT)
     {
         if (x->a_text.te_width == 1)
@@ -1127,13 +1133,13 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 "text"
             };
             gatom_getwherelabel(x, glist, &x1, &y1);
-            pdgui_vmess("pdtk_text_new", "cS ff s ir",
+            pdgui_vmess("pdtk_text_new", "cS ff s ik",
                 glist_getcanvas(glist),
                 3, tags,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
                 gatom_fontsize(x) * glist_getzoom(glist),
-                THISGUI->i_foregroundcolor->s_name);
+                THISGUI->i_foregroundcolor);
         }
         else
             pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", buf);
@@ -1259,21 +1265,23 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     int width, height, iscomment = (x->te_type == T_TEXT);
     int x1, y1, x2, y2;
     t_glist *canvas = glist_getcanvas(glist);
 
-    if (canvas->gl_editor)
+        /* try to get an rtext so we can learn width and height */
+    if (canvas->gl_editor && (y = glist_getrtext(glist, x, 1)))
     {
-        t_rtext *y = glist_getrtext(glist, x);
             /* x1 and y1 might be wrong here - they're overwritten below. */
         rtext_getrect(y, &x1, &y1, &x2, &y2);
         width = x2 - x1;
         height = y2 - y1 - (iscomment << 1);
     }
-        /* for number boxes, we know width and height a priori, and should
-        report them here so that graphs can get swelled to fit. */
 
+        /* for number boxes, we know width and height a priori, and should
+        report them here so that graphs can get swelled to fit, even if
+        we aren't visible yet. */
     else if (x->te_type == T_ATOM && x->te_width > 0)
     {
         width = x->te_width * glist_fontwidth(glist);
@@ -1314,11 +1322,11 @@ static void text_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     x->te_xpix += dx;
     x->te_ypix += dy;
-    if (glist_isvisible(glist))
+    if (glist_isvisible(glist) && (y = glist_getrtext(glist, x, 0)))
     {
-        t_rtext *y = glist_getrtext(glist, x);
         rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
         text_drawborder(x, glist, rtext_gettag(y), 0);
         canvas_fixlinesfor(glist, x);
@@ -1328,26 +1336,30 @@ static void text_displace(t_gobj *z, t_glist *glist,
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_getrtext(glist, x);
-    rtext_select(y, state);
-    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
     {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? THISGUI->i_selectcolor->s_name :
-                THISGUI->i_foregroundcolor->s_name));
+        rtext_select(y, state);
+        if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+        {
+            char buf[MAXPDSTRING];
+            sprintf(buf, "%sR", rtext_gettag(y));
+            pdgui_vmess(0, "crs rk",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? THISGUI->i_selectcolor :
+                    THISGUI->i_foregroundcolor));
+        }
     }
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_getrtext(glist, x);
-    rtext_activate(y, state);
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
+        rtext_activate(y, state);
 }
 
 static void text_delete(t_gobj *z, t_glist *glist)
@@ -1359,19 +1371,20 @@ static void text_delete(t_gobj *z, t_glist *glist)
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     if (vis)
     {
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
-            t_rtext *y = glist_getrtext(glist, x);
             text_drawborder(x, glist, rtext_gettag(y), 1);
             rtext_draw(y);
         }
     }
     else
     {
-        t_rtext *y = glist_getrtext(glist, x);
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
             text_eraseborder(x, glist, rtext_gettag(y));
             rtext_erase(y);
@@ -1521,12 +1534,12 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[0] = tagbuf;
         tags[1] = "outlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr rr",
+            pdgui_vmess(0, "crr iiii rS rk rk",
                 glist_getcanvas(glist), "create", "rectangle",
                 onset, y2 - oh + glist->gl_zoom, onset + iow, y2,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
-                "-outline", THISGUI->i_foregroundcolor->s_name);
+                "-fill", THISGUI->i_foregroundcolor,
+                "-outline", THISGUI->i_foregroundcolor);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
@@ -1541,13 +1554,13 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[0] = tagbuf;
         tags[1] = "inlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr rr",
+            pdgui_vmess(0, "crr iiii rS rk rk",
                 glist_getcanvas(glist),
                 "create", "rectangle",
                 onset, y1, onset + iow, y1 + ih - glist->gl_zoom,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
-                "-outline", THISGUI->i_foregroundcolor->s_name);
+                "-fill", THISGUI->i_foregroundcolor,
+                "-outline", THISGUI->i_foregroundcolor);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
@@ -1570,12 +1583,12 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
         char *tags[] = {tagR, "obj"};
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr rS",
+            pdgui_vmess(0, "crr iiiiiiiiii rr ri rk rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1,
                 "-dash", pattern,
                 "-width", glist->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
         else
@@ -1595,12 +1608,12 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (corner > 10*glist->gl_zoom)
             corner = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rr rS",
+            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rk rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,
                 x2+corner, y2,  x1, y2,  x1, y1,
                 "-width", glist->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
         else
@@ -1618,12 +1631,12 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rr rS",
+            pdgui_vmess(0, "crr iiiiiiiiiiii ri rk rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,
                 x1p, y2,  x1p, y1p,
                 "-width", glist->gl_zoom+grabbed,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
         else
@@ -1644,13 +1657,13 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rr rS",
+            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rk rr rS",
                 glist_getcanvas(glist),
                 "create", "line",
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
                 x2, y2-corner,  x2-corner, y2,  x1p, y2,  x1p, y1p,
                 "-width", glist->gl_zoom+grabbed,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
         else
@@ -1671,10 +1684,10 @@ void text_drawborder(t_text *x, t_glist *glist,
     {
         char *tags[] = {tagR, "commentbar"};
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rr rS",
+            pdgui_vmess(0, "crr iiii rk rS",
                 glist_getcanvas(glist), "create", "line",
                 x2, y1,  x2, y2,
-                "-fill", THISGUI->i_foregroundcolor->s_name,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-tags", 2, tags);
         else
             pdgui_vmess(0, "crs iiii",

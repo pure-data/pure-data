@@ -2910,7 +2910,7 @@ static void drawtext_activate(t_gobj *z, t_glist *glist,
     post("drawtext_activate %d", state);
 }
 
-void rtext_setcolor(t_rtext *x, int color);
+void rtext_setcolor(t_rtext *x, unsigned int color);
 
 static void drawtext_vis(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_scalar *sc,

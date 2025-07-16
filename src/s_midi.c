@@ -706,6 +706,8 @@ void sys_gui_midipreferences(void) {
     int noutdev, midioutdev[MAXMIDIOUTDEV];
     t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
+    sys_reinit_midi();
+
         /* query the current MIDI settings */
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);

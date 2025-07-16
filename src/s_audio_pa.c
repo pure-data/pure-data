@@ -67,10 +67,11 @@ t_semaphore *pa_sem;
 #endif
 static double pa_lastdactime;
 
+static int pa_initialized;
+
 static void pa_init(void)        /* Initialize PortAudio  */
 {
-    static int initialized;
-    if (!initialized)
+    if (!pa_initialized)
     {
 #ifdef __APPLE__
         /* for some reason, on the Mac Pa_Initialize() closes file descriptor
@@ -98,8 +99,20 @@ static void pa_init(void)        /* Initialize PortAudio  */
             post("error#%d opening audio: %s", err, Pa_GetErrorText(err));
             return;
         }
-        initialized = 1;
+        pa_initialized = 1;
     }
+}
+
+void pa_reinitialize( void)
+{
+    if (pa_initialized)
+    {
+        int err = Pa_Terminate();
+        if( err != paNoError )
+           printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
+        pa_initialized = 0;
+    }
+    pa_init();
 }
 
 static int pa_lowlevel_callback(const void *inputBuffer,

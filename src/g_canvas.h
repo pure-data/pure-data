@@ -284,8 +284,8 @@ struct _instancecanvas  /* per-instance stuff for canvases */
     int i_dspstate;                         /* whether DSP is running */
     int i_dollarzero;                       /* counter for $0 */
     t_float i_graph_lastxpix, i_graph_lastypix;       /* state for dragging */
-    t_symbol *i_foregroundcolor, *i_backgroundcolor;  /* color of fg & bg */
-    t_symbol *i_selectcolor, *i_gopcolor;             /* ...selection and GOP */
+    unsigned int i_foregroundcolor, i_backgroundcolor;  /* color of fg & bg */
+    unsigned int i_selectcolor, i_gopcolor;             /* ...selection and GOP */
 };
 
 void g_editor_newpdinstance(void);
@@ -475,7 +475,7 @@ extern const t_widgetbehavior text_widgetbehavior;
 #define RTEXT_DBL 3
 #define RTEXT_SHIFT 4
 
-EXTERN t_rtext *glist_getrtext(t_glist *gl, t_text *who);
+EXTERN t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really);
 EXTERN t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     t_gobj *drawtext);
 EXTERN void rtext_draw(t_rtext *x);
