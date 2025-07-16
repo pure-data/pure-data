@@ -2525,7 +2525,10 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         x->gl_editor->e_xwas = xout;
                         x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground",
-                            "ci", x, 0);
+                            "cikkk", x, 0,
+                            THISGUI->i_foregroundcolor,
+                            THISGUI->i_backgroundcolor,
+                            THISGUI->i_selectcolor);
                         pdgui_vmess(0, "crr iiii ri rk rs",
                             x, "create", "line",
                             x->gl_editor->e_xwas,x->gl_editor->e_ywas,
@@ -2785,7 +2788,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
     if (doit) {
-        pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
+        pdgui_vmess("::pdtk_canvas::cords_to_foreground", "cikkk", x, 1,
+            THISGUI->i_foregroundcolor,
+            THISGUI->i_backgroundcolor,
+            THISGUI->i_selectcolor);
         pdgui_vmess(0, "crs", x, "delete", "x");
     }
     else

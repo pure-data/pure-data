@@ -508,15 +508,34 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
-proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
+proc ::pdtk_canvas::adjust_color {hex} {
+    # Parse hex color string "#RRGGBB"
+    scan $hex "#%2x%2x%2x" r g b
+    
+    foreach val {r g b} {
+        set v [set $val]
+        if {$v < 128} {
+            # If dark channel, brighten by adding 31 (clamped to 255)
+            set v [expr {min(255, $v + 0x1F)}]
+        } else {
+            # If light channel, darken by subtracting 31 (clamped to 0)
+            set v [expr {max(0, $v - 0x1F)}]
+        }
+        set $val $v
+    }
+    
+    # Format back to hex string
+    format "#%02x%02x%02x" $r $g $b
+}
+
+proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1} fg bg sel} {
     if {$::pdtk_canvas::enable_cords_to_foreground} {
-        set col black
+        set col $fg
         if { $state == 0 } {
-            set col lightgrey
+            set col [::pdtk_canvas::adjust_color $bg]
         }
         foreach id [$mytoplevel find withtag {cord && !selected}] {
-            # don't apply backgrouding on selected (blue) lines
-            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne $sel } {
                 $mytoplevel itemconfigure $id -fill $col
             }
         }
