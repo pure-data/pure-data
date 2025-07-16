@@ -123,6 +123,12 @@ void sys_close_midi(void)
     mac_nmidioutdev = 0;
 }
 
+void sys_reinit_midi()
+{
+    Pm_Terminate();
+    Pm_Initialize();
+}
+
 void sys_putmidimess(int portno, int a, int b, int c)
 {
     PmEvent buffer;
