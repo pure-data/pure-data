@@ -447,7 +447,7 @@ proc ::dialog_audio::create {mytoplevel} {
     }
 
     # show active focus on save settings button
-    ::preferencewindow::buttonfocus $mytoplevel.saveall $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+    ::preferencewindow::buttonfocus $mytoplevel.otherframe.saveall $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
 
 
     # set min size based on widget sizing & pos over pdwindow
