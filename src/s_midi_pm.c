@@ -123,6 +123,13 @@ void sys_close_midi(void)
     mac_nmidioutdev = 0;
 }
 
+void sys_reinit_midi()
+{
+    post("reinit");
+    Pm_Terminate();
+    Pm_Initialize();
+}
+
 void sys_putmidimess(int portno, int a, int b, int c)
 {
     PmEvent buffer;
@@ -343,6 +350,7 @@ void midi_getdevs(char *indevlist, int *nindevs,
     int i, nindev = 0, noutdev = 0;
     char utf8device[MAXPDSTRING];
     utf8device[0] = 0;
+    post("getdevs\n");
     for (i = 0; i < Pm_CountDevices(); i++)
     {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);

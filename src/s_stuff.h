@@ -284,7 +284,7 @@ EXTERN void sys_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_putmidibyte(int portno, int a);
 EXTERN void sys_poll_midi(void);
 EXTERN void sys_midibytein(int portno, int byte);
-
+EXTERN void sys_reinit_midi( void);
 void sys_listmididevs(void);
 EXTERN void sys_set_midi_api(int whichapi);
 
