@@ -125,8 +125,10 @@ void sys_close_midi(void)
 
 void sys_reinit_midi()
 {
+    sys_close_midi();
     Pm_Terminate();
     Pm_Initialize();
+    sys_reopen_midi();
 }
 
 void sys_putmidimess(int portno, int a, int b, int c)
