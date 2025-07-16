@@ -5,6 +5,7 @@ package require pdtcl_compat
 namespace eval ::dialog_audio:: {
     namespace export pdtk_audio_dialog
     variable referenceconfig ""
+    variable standalone_window ""
 }
 set ::audio_samplerate 48000
 set ::audio_advance 25
@@ -212,11 +213,10 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 
-    set mytoplevel [winfo toplevel $frame]
     frame $frame.refreshbutton
-    pack $frame.refreshbutton -side bottom -fill x -pady 5
+    pack $frame.refreshbutton -side bottom -fill x
     button $frame.refreshbutton.b -text [_ "Refresh Device List"] \
-        -command "::dialog_audio::refresh_devicelist $mytoplevel"
+        -command "::dialog_audio::refresh_devicelist [winfo toplevel $frame]"
     pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
@@ -384,17 +384,13 @@ proc ::dialog_audio::set_configuration { \
 }
 
 proc ::dialog_audio::refresh_ui {} {
-    # check if we're in the preferences window
+    # check if we're in the tabbed preferences or standalone audio dialog
     if {[winfo exists ${::dialog_preferences::audio_frame}]} {
         ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
         ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
-    }
-    # check if we have the standalone dialog open
-    foreach w [winfo children .] {
-        if {[winfo class $w] eq "DialogWindow" && [wm title $w] eq [_ "Audio Settings"]} {
-            destroy $w
-            ::dialog_audio::create $w
-        }
+    } elseif {[winfo exists $::dialog_audio::standalone_window]} {
+        destroy $::dialog_audio::standalone_window
+        ::dialog_audio::create $::dialog_audio::standalone_window
     }
 }
 
@@ -474,6 +470,7 @@ proc ::dialog_audio::create {mytoplevel} {
     wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
     position_over_window $mytoplevel .pdwindow
     raise $mytoplevel
+    set ::dialog_audio::standalone_window $mytoplevel
 }
 
 # legacy proc forthe audio-dialog
