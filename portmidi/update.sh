@@ -129,4 +129,4 @@ copysrc porttime
 cp -v "${SRC}"/license.txt "${DEST}/"
 
 # cleanup
-#rm -rf $SRC
+rm -rf $SRC
