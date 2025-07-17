@@ -380,11 +380,13 @@ proc ::dialog_audio::set_configuration { \
 }
 
 proc ::dialog_audio::refresh_ui {} {
-    # check if we're in the tabbed preferences or standalone audio dialog
+    # check if we're in the tabbed preferences
     if {[winfo exists ${::dialog_preferences::audio_frame}]} {
         ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
         ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
-    } elseif {[winfo exists $::dialog_audio::standalone_window]} {
+    }
+    # or in the standalone audio dialog
+    if {[winfo exists $::dialog_audio::standalone_window]} {
         destroy $::dialog_audio::standalone_window
         ::dialog_audio::create $::dialog_audio::standalone_window
     }
