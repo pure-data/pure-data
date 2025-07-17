@@ -29,6 +29,8 @@ function copysrc {
     mkdir -p "${DEST}/${1}"
     cp -v "${SRC}/${1}"/*.h "${DEST}/${1}" 2>/dev/null || :
     cp -v "${SRC}/${1}"/*.c "${DEST}/${1}" 2>/dev/null || :
+    # fix permissions
+    find  "${DEST}/${1}" -type f -name "*.[ch]" -exec chmod a-x {} + || :
 }
 
 usage() {
