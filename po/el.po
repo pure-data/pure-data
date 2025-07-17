@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2025-07-17 14:59+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -222,6 +222,10 @@ msgstr "Συσκευή εξόδου"
 #, fuzzy
 msgid "Use Multiple Devices"
 msgstr "Χρήση πολλαπλών συσκευών"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "Συσκευή εισόδου"
 
 msgid "Audio System"
 msgstr ""

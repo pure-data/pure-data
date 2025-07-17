@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2025-07-17 14:59+0200\n"
 "PO-Revision-Date: 2024-07-08 17:32+0200\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -216,6 +216,10 @@ msgstr "Urządzenia Wyjściowe"
 
 msgid "Use Multiple Devices"
 msgstr "Użyj wielu różnych urządzeń"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "Urządzenia Wejściowe"
 
 msgid "Audio System"
 msgstr ""
