@@ -508,88 +508,12 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
-proc ::pdtk_canvas::rgb_to_hsv {r g b} {
-    set rf [expr {$r / 255.0}]
-    set gf [expr {$g / 255.0}]
-    set bf [expr {$b / 255.0}]
-
-    set max $rf
-    if {$gf > $max} { set max $gf }
-    if {$bf > $max} { set max $bf }
-
-    set min $rf
-    if {$gf < $min} { set min $gf }
-    if {$bf < $min} { set min $bf }
-
-    set v $max
-    set d [expr {$max - $min}]
-    if {$max == 0} {
-        set s 0.0
-    } else {
-        set s [expr {$d / $max}]
-    }
-
-    if {$d == 0} {
-        set h 0.0
-    } elseif {$max == $rf} {
-        set h [expr {60 * fmod((($gf - $bf) / $d), 6)}]
-    } elseif {$max == $gf} {
-        set h [expr {60 * ((($bf - $rf) / $d) + 2)}]
-    } else {
-        set h [expr {60 * ((($rf - $gf) / $d) + 4)}]
-    }
-
-    if {$h < 0} { set h [expr {$h + 360}] }
-
-    return [list $h $s $v]
-}
-
-proc ::pdtk_canvas::hsv_to_rgb {h s v} {
-    set c [expr {$v * $s}]
-    set x [expr {$c * (1 - abs(fmod($h / 60.0, 2) - 1))}]
-    set m [expr {$v - $c}]
-
-    if {$h < 60} {
-        set rf $c; set gf $x; set bf 0
-    } elseif {$h < 120} {
-        set rf $x; set gf $c; set bf 0
-    } elseif {$h < 180} {
-        set rf 0; set gf $c; set bf $x
-    } elseif {$h < 240} {
-        set rf 0; set gf $x; set bf $c
-    } elseif {$h < 300} {
-        set rf $x; set gf 0; set bf $c
-    } else {
-        set rf $c; set gf 0; set bf $x
-    }
-
-    set r [expr {int(255 * ($rf + $m))}]
-    set g [expr {int(255 * ($gf + $m))}]
-    set b [expr {int(255 * ($bf + $m))}]
-    return [list $r $g $b]
-}
-
-proc ::pdtk_canvas::adjust_color {hex} {
-    scan $hex "#%2x%2x%2x" r g b
-    set hsv [::pdtk_canvas::rgb_to_hsv $r $g $b]
-    set h [lindex $hsv 0]
-    set s [lindex $hsv 1]
-    set v [lindex $hsv 2]
-
-    # Reduce saturation by 20%
-    set s [expr {$s * 0.8}]
-    # Adjust value by 10% in opposite direction of brightness
-    if {$v > 0.5} {
-        set v [expr {$v - 0.1}]
-    } else {
-        set v [expr {$v + 0.1}]
-    }
-
-    set rgb [::pdtk_canvas::hsv_to_rgb $h $s $v]
-    set r [lindex $rgb 0]
-    set g [lindex $rgb 1]
-    set b [lindex $rgb 2]
-
+proc ::pdtk_canvas::interpolate_colors {color1 color2 factor} {
+    scan $color1 "#%2x%2x%2x" r1 g1 b1
+    scan $color2 "#%2x%2x%2x" r2 g2 b2
+    set r [expr {int($r1 + ($r2 - $r1) * $factor)}]
+    set g [expr {int($g1 + ($g2 - $g1) * $factor)}]
+    set b [expr {int($b1 + ($b2 - $b1) * $factor)}]
     return [format "#%02x%02x%02x" $r $g $b]
 }
 
@@ -597,7 +521,7 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1} fg bg sel} {
     if {$::pdtk_canvas::enable_cords_to_foreground} {
         set col $fg
         if { $state == 0 } {
-            set col [::pdtk_canvas::adjust_color $bg]
+            set col [::pdtk_canvas::interpolate_colors $bg $fg 0.17]
         }
         foreach id [$mytoplevel find withtag {cord && !selected}] {
             if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne $sel } {
