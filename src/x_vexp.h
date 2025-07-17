@@ -12,16 +12,37 @@
 
 #ifdef PD
 #include "m_pd.h"
+#include "s_stuff.h"
+/*
+ * below is added to account for an anomoly in windows implementation of snprintf()
+ */
+#undef snprintf
+#define snprintf pd_snprintf
+
 #else /* MSP */
 #include "ext.h"
 #include "z_dsp.h"
 typedef float t_float;      // t_float is from m_pd.h
 #endif
 
-#define fts_malloc malloc
-#define fts_calloc calloc
+#define fts_malloc ex_malloc
+#define fts_calloc ex_calloc
 #define fts_free free
-#define fts_realloc realloc
+#define fts_realloc ex_realloc
+
+void *
+ex_calloc(size_t count, size_t size);
+
+void
+ex_free(void *ptr);
+
+void *
+ex_malloc(size_t size);
+
+void *
+ex_realloc(void *ptr, size_t size);
+
+
 #define fts_atom_t t_atom
 #define fts_object_t t_object
 typedef t_symbol *fts_symbol_t;
@@ -55,11 +76,11 @@ void pd_error(void *object, char *fmt, ...);
 
 /*
  * Currently the maximum number of variables (inlets) that are supported
- * is 10.
+ * is 100.
  */
 
-#define MAX_VARS        100
-#define MINODES         10 /* was 200 */
+#define EX_MAX_INLETS   100    /* max number if inlets or outlets */
+#define EX_MINODES      30
 
 /* terminal defines */
 
@@ -119,7 +140,11 @@ struct ex_ex {
 #define ex_op           ex_cont.op
 #define ex_ptr          ex_cont.ptr
         long ex_type;           /* type of the node */
-                struct ex_ex *ex_end;   /* the node after the end of this expression */
+        struct ex_ex *ex_end;   /* the node after the end of this expression */
+#define EX_F_TSYM       0x1     /* mark this unit as temporary symbol for evaluation */
+#define EX_F_SI_TAB     0x2   /* The symbol input is a table */
+        short ex_flags;
+        short  ex_argc;           /* number of actual arguments */
 };
 #define exNULL  ((struct ex_ex *)0)
 
@@ -184,6 +209,7 @@ struct ex_ex {
 #define EE_BI_INPUT     0x04    /* Bad input index */
 #define EE_NOTABLE      0x08    /* NO TABLE */
 #define EE_NOVAR        0x10    /* NO VARIABLE */
+#define EE_BADSYM       0x20    /* Symbol passed for Vector */
 
 typedef struct expr {
 #ifdef PD
@@ -196,28 +222,28 @@ typedef struct expr {
         int     exp_nexpr;              /* number of expressions */
         char    *exp_string;            /* the full expression string */
         char    *exp_str;               /* current parsing position */
-        t_outlet *exp_outlet[MAX_VARS];
+        t_outlet *exp_outlet[EX_MAX_INLETS];
 #ifdef PD
         struct _exprproxy *exp_proxy;
 #else /* MAX */
-        void *exp_proxy[MAX_VARS];
+        void *exp_proxy[EX_MAX_INLETS];
         long exp_proxy_id;
 #endif
-        struct ex_ex *exp_stack[MAX_VARS];
-        struct ex_ex exp_var[MAX_VARS];
-        struct ex_ex exp_res[MAX_VARS]; /* the evluation result */
-        t_float *exp_p_var[MAX_VARS];
-        t_float *exp_p_res[MAX_VARS];   /* the previous evaluation result */
-        t_float *exp_tmpres[MAX_VARS];  /* temporty result for fexpr~ */
+        struct ex_ex *exp_stack[EX_MAX_INLETS];
+        struct ex_ex exp_var[EX_MAX_INLETS];
+        struct ex_ex exp_res[EX_MAX_INLETS]; /* the evluation result */
+        t_float *exp_p_var[EX_MAX_INLETS];
+        t_float *exp_p_res[EX_MAX_INLETS];   /* the previous evaluation result */
+        t_float *exp_tmpres[EX_MAX_INLETS];  /* temporty result for fexpr~ */
         int exp_vsize;                  /* the size of the signal vector */
         int exp_nivec;                  /* # of vector inlets */
         t_float exp_f;          /* control value to be transformed to signal */
 } t_expr;
 
 typedef struct ex_funcs {
-        char *f_name;                                   /* function name */
+        char *f_name;                            /* function name */
+        /* the real function performing the function  */
         void (*f_func)(t_expr *, long, struct ex_ex *, struct ex_ex *);
-          /* the real function performing the function (void, no return!!!) */
         long f_argc;                            /* number of arguments */
 } t_ex_func;
 
@@ -225,26 +251,19 @@ typedef struct ex_funcs {
 
 extern int
 max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
-                                                                        struct ex_ex *rval, struct ex_ex *optr);
+                                struct ex_ex *rval, struct ex_ex *optr);
 extern int
 max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg,
-                                                                                                                struct ex_ex *optr);
+                                        int interpol, struct ex_ex *optr);
 extern int max_ex_var(struct expr *expr, t_symbol *s, struct ex_ex *optr,
-                                                                                                                                        int idx);
-extern int max_ex_var_store(struct expr *, t_symbol *, struct ex_ex *, struct ex_ex *);
+                                                                    int idx);
+extern int max_ex_var_store(struct expr *, t_symbol *, struct ex_ex *,
+                                                            struct ex_ex *);
 extern int ex_getsym(char *p, t_symbol **s);
-extern const char *ex_symname(t_symbol *s);
+extern char *ex_symname(t_symbol *s);
 void ex_mkvector(t_float *fp, t_float x, int size);
-extern void ex_size(t_expr *expr, long int argc, struct ex_ex *argv,
-                                                        struct ex_ex *optr);
-extern void ex_sum(t_expr *expr, long int argc, struct ex_ex *argv,                                                                     struct ex_ex *optr);
-extern void ex_Sum(t_expr *expr, long int argc, struct ex_ex *argv,                                                                     struct ex_ex *optr);
-extern void ex_avg(t_expr *expr, long int argc, struct ex_ex *argv,                                                                     struct ex_ex *optr);
-extern void ex_Avg(t_expr *expr, long int argc, struct ex_ex *argv,                                                                     struct ex_ex *optr);
-extern void ex_store(t_expr *expr, long int argc, struct ex_ex *argv,                                                                   struct ex_ex *optr);
 
-int value_getonly(t_symbol *s, t_float *f);
-
+void ex_error(t_expr *e, const char *fmt, ...);
 
 /* These pragmas are only used for MSVC, not MinGW or Cygwin <hans@at.or.at> */
 #ifdef _MSC_VER

@@ -12,13 +12,12 @@ if { [catch {wm withdraw .} fid] } { exit 2 }
 
 # This is mainly for OSX as older versions only
 # have 8.4 while newer versions have 8.5.
-if { [catch {package provide Tcl 8.5}] } {
+if { [catch {package require Tcl 8.5 9}] } {
     # Tcl 8.5 not available
     package require Tcl 8.4
     package require Tk
 } else {
-    # Tcl 8.5 is available
-    package require Tcl 8.5
+    # Tcl >=8.5,>=9 is available
     package require Tk
 
     # replace Tk widgets with Ttk widgets on 8.5
@@ -111,6 +110,7 @@ namespace import ::dialog_array::pdtk_array_listview_closeWindow
 # should all have been properly initialized by the time startup plugins are
 # loaded.
 
+set PD_APPLICATION_NAME "Pd"
 set PD_MAJOR_VERSION 0
 set PD_MINOR_VERSION 0
 set PD_BUGFIX_VERSION 0
@@ -221,7 +221,7 @@ array set childwindows {}  ;# all child windows based on mytoplevel IDs
 array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
 
 # variables for holding the menubar to allow for configuration by plugins
-set ::pdwindow_menubar ".menubar"
+set ::pdwindow_menubar ".pdmenu"
 set ::patch_menubar   ".menubar"
 set ::dialog_menubar   ""
 
@@ -532,8 +532,6 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
-        $::font_measured $::font_zoom2_measured"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
@@ -542,6 +540,8 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
     load_startup_plugins
+    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
+        $::font_measured $::font_zoom2_measured"
     open_filestoopen
     set ::done_init 1
 }

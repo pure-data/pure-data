@@ -5,6 +5,8 @@
 /* MIDI. */
 
 #include "m_pd.h"
+#include "string.h"
+
 void outmidi_noteon(int portno, int channel, int pitch, int velo);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
@@ -978,6 +980,8 @@ static void stripnote_setup(void)
 
 /* -------------------------- poly -------------------------- */
 
+/* -------------------------- poly -------------------------- */
+
 static t_class *poly_class;
 
 typedef struct voice
@@ -1019,6 +1023,15 @@ static void *poly_new(t_float fnvoice, t_float fsteal)
     return (x);
 }
 
+static void poly_flushvoice(t_poly *x, t_voice *v, int index)
+{
+    outlet_float(x->x_velout, 0);
+    outlet_float(x->x_pitchout, v->v_pitch);
+    outlet_float(x->x_obj.ob_outlet, index);
+    v->v_used = 0;
+    v->v_serial = x->x_serial++;
+}
+
 static void poly_float(t_poly *x, t_float f)
 {
     int i;
@@ -1032,9 +1045,11 @@ static void poly_float(t_poly *x, t_float f)
             serialon = serialoff = 0xffffffff; i < x->x_n; v++, i++)
         {
             if (v->v_used && v->v_serial < serialon)
-                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial,
+                        onindex = i;
             else if (!v->v_used && v->v_serial < serialoff)
-                    firstoff = v, serialoff = (unsigned int)v->v_serial, offindex = i;
+                    firstoff = v, serialoff = (unsigned int)v->v_serial,
+                        offindex = i;
         }
         if (firstoff)
         {
@@ -1047,12 +1062,11 @@ static void poly_float(t_poly *x, t_float f)
             /* if none, steal one */
         else if (firston && x->x_steal)
         {
-            outlet_float(x->x_velout, 0);
-            outlet_float(x->x_pitchout, firston->v_pitch);
-            outlet_float(x->x_obj.ob_outlet, onindex+1);
+            poly_flushvoice(x, firston, onindex+1);
             outlet_float(x->x_velout, x->x_vel);
             outlet_float(x->x_pitchout, firston->v_pitch = f);
             outlet_float(x->x_obj.ob_outlet, onindex+1);
+            firston->v_used = 1;
             firston->v_serial = x->x_serial++;
         }
     }
@@ -1061,15 +1075,10 @@ static void poly_float(t_poly *x, t_float f)
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
             i < x->x_n; v++, i++)
                 if (v->v_used && v->v_pitch == f && v->v_serial < serialon)
-                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial,
+                        onindex = i;
         if (firston)
-        {
-            firston->v_used = 0;
-            firston->v_serial = x->x_serial++;
-            outlet_float(x->x_velout, 0);
-            outlet_float(x->x_pitchout, firston->v_pitch);
-            outlet_float(x->x_obj.ob_outlet, onindex+1);
-        }
+            poly_flushvoice(x, firston, onindex+1);
     }
 }
 
@@ -1079,13 +1088,7 @@ static void poly_stop(t_poly *x)
     t_voice *v;
     for (i = 0, v = x->x_vec; i < x->x_n; i++, v++)
         if (v->v_used)
-    {
-        outlet_float(x->x_velout, 0L);
-        outlet_float(x->x_pitchout, v->v_pitch);
-        outlet_float(x->x_obj.ob_outlet, i+1);
-        v->v_used = 0;
-        v->v_serial = x->x_serial++;
-    }
+            poly_flushvoice(x, v, i+1);
 }
 
 static void poly_clear(t_poly *x)
@@ -1093,6 +1096,38 @@ static void poly_clear(t_poly *x)
     int i;
     t_voice *v;
     for (v = x->x_vec, i = x->x_n; i--; v++) v->v_used = v->v_serial = 0;
+}
+
+static void poly_resize(t_poly *x, t_float fnvoice)
+{
+    t_voice *v;
+    int i, n = fnvoice;
+    if (n < 1) n = 1;
+    if (n == x->x_n) return;
+
+    if (n < x->x_n)
+    {
+        /* flush excess voices */
+        for (i = n, v = x->x_vec + n; i < x->x_n; i++, v++)
+            if (v->v_used)
+                poly_flushvoice(x, v, i+1);
+    }
+
+    x->x_vec = resizebytes(x->x_vec, x->x_n * sizeof(*x->x_vec),
+        n * sizeof(*x->x_vec));
+
+    if (n > x->x_n)
+    {
+        for (i = x->x_n, v = x->x_vec + x->x_n; i < n; i++, v++)
+            v->v_pitch = v->v_used = v->v_serial = 0;
+    }
+
+    x->x_n = n;
+}
+
+static void poly_steal(t_poly *x, t_float f)
+{
+    x->x_steal = (f != 0);
 }
 
 static void poly_free(t_poly *x)
@@ -1108,6 +1143,10 @@ static void poly_setup(void)
     class_addfloat(poly_class, poly_float);
     class_addmethod(poly_class, (t_method)poly_stop, gensym("stop"), 0);
     class_addmethod(poly_class, (t_method)poly_clear, gensym("clear"), 0);
+    class_addmethod(poly_class, (t_method)poly_resize, gensym("resize"),
+        A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_steal, gensym("steal"),
+        A_FLOAT, 0);
 }
 
 /* -------------------------- bag -------------------------- */
@@ -1123,34 +1162,67 @@ typedef struct _bagelem
 typedef struct _bag
 {
     t_object x_obj;
+    t_outlet *x_auxout;  /* for count and/or bang-on-already-present */
     t_float x_velo;
     t_bagelem *x_first;
+    int x_unique;       /* true if limiting to one entry per value */
+    int x_reenter;      /* reentrancy protection */
 } t_bag;
 
-static void *bag_new(void)
+static void *bag_new(t_symbol *flag)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
-    x->x_velo = 0;
+    x->x_velo = x->x_reenter = 0;
+    if (!strcmp(flag->s_name, "-u"))
+        x->x_unique = 1;
+    else
+    {
+        if (*flag->s_name)
+            pd_error(x, "bag %s: unknown flag", flag->s_name);
+        x->x_unique = 0;
+    }
     floatinlet_new(&x->x_obj, &x->x_velo);
     outlet_new(&x->x_obj, &s_float);
+    x->x_auxout = outlet_new(&x->x_obj, &s_list);
     x->x_first = 0;
     return (x);
 }
 
-static void bag_float(t_bag *x, t_float f)
+static t_bagelem *bag_newelem(t_float f)
 {
-    t_bagelem *bagelem, *e2, *e3;
+    t_bagelem *bagelem = (t_bagelem *)getbytes(sizeof *bagelem);
+    bagelem->e_next = 0;
+    bagelem->e_value = f;
+    return (bagelem);
+}
+
+static void bag_float(t_bag *x, t_floatarg f)
+{
+    t_bagelem *e2, *e3;
+    if (x->x_reenter)
+    {
+        pd_error(x, "bag: sorry, unable to reenter");
+        return;
+    }
     if (x->x_velo != 0)
     {
-        bagelem = (t_bagelem *)getbytes(sizeof *bagelem);
-        bagelem->e_next = 0;
-        bagelem->e_value = f;
-        if (!x->x_first) x->x_first = bagelem;
-        else    /* LATER replace with a faster algorithm */
+        if (!x->x_first)
+            x->x_first = bag_newelem(f);
+        else if (x->x_unique)
+        {
+            for (e2 = e3 = x->x_first; e2; e3 = e2, e2 = e2->e_next)
+                if (e2->e_value == f)
+            {
+                outlet_bang(x->x_auxout);
+                return;
+            }
+            e3->e_next = bag_newelem(f);
+        }
+        else
         {
             for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
                 ;
-            e2->e_next = bagelem;
+            e2->e_next = bag_newelem(f);
         }
     }
     else
@@ -1158,7 +1230,7 @@ static void bag_float(t_bag *x, t_float f)
         if (!x->x_first) return;
         if (x->x_first->e_value == f)
         {
-            bagelem = x->x_first;
+            t_bagelem *bagelem = x->x_first;
             x->x_first = x->x_first->e_next;
             freebytes(bagelem, sizeof(*bagelem));
             return;
@@ -1173,35 +1245,67 @@ static void bag_float(t_bag *x, t_float f)
     }
 }
 
-static void bag_flush(t_bag *x)
+static void bag_bang(t_bag *x)
 {
     t_bagelem *bagelem;
-    while ((bagelem = x->x_first))
-    {
+    x->x_reenter = 1;
+    for (bagelem = x->x_first; bagelem; bagelem = bagelem->e_next)
         outlet_float(x->x_obj.ob_outlet, bagelem->e_value);
-        x->x_first = bagelem->e_next;
-        freebytes(bagelem, sizeof(*bagelem));
-    }
+    x->x_reenter = 0;
 }
 
 static void bag_clear(t_bag *x)
 {
     t_bagelem *bagelem;
+    if (x->x_reenter)
+    {
+        pd_error(x, "bag: sorry, unable to reenter");
+        return;
+    }
     while ((bagelem = x->x_first))
     {
         x->x_first = bagelem->e_next;
         freebytes(bagelem, sizeof(*bagelem));
     }
+}
+
+static void bag_flush(t_bag *x)
+{
+    bag_bang(x);
+    bag_clear(x);
+}
+
+    /* output number of items matching pitch */
+static void bag_count(t_bag *x, t_float fpit)
+{
+    t_bagelem *bagelem;
+    int count = 0;
+    for (bagelem = x->x_first; bagelem; bagelem = bagelem->e_next)
+        if (bagelem->e_value == fpit)
+            count++;
+    outlet_float(x->x_auxout, (t_floatarg)count);
+}
+
+    /* change unique flag - note that this won't clean up duplicates that
+    are already in the bag. */
+static void bag_unique(t_bag *x, t_float f)
+{
+    x->x_unique = (f != 0);
 }
 
 static void bag_setup(void)
 {
     bag_class = class_new(gensym("bag"),
         (t_newmethod)bag_new, (t_method)bag_clear,
-        sizeof(t_bag), 0, 0);
+        sizeof(t_bag), 0, A_DEFSYM, 0);
+    class_addbang(bag_class, bag_bang);
     class_addfloat(bag_class, bag_float);
     class_addmethod(bag_class, (t_method)bag_flush, gensym("flush"), 0);
     class_addmethod(bag_class, (t_method)bag_clear, gensym("clear"), 0);
+    class_addmethod(bag_class, (t_method)bag_count, gensym("count"),
+        A_FLOAT, 0);
+    class_addmethod(bag_class, (t_method)bag_unique, gensym("unique"),
+        A_FLOAT, 0);
 }
 
 void x_midi_setup(void)

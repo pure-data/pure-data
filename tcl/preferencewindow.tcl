@@ -75,7 +75,6 @@ proc ::preferencewindow::fail {args} {
 # winid -- the window id to use
 # title -- top-level title for the dialog
 # width, height -- initial width and height dimensions for the window, also minimum size
-# resizable -- 0 or 1, set to 1 for dialog to be resizeable
 proc ::preferencewindow::create {winid title {dimen {0 0}}} {
     wm deiconify .pdwindow
     raise .pdwindow

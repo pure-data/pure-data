@@ -50,4 +50,3 @@
 #X text 30 18 Screen dimensions can be tailored to specific ranges by adding suffixes in the drawing instructions. For example \, in "template10a" \, a coordinate such as "b(0:100)(7:77)" instructs the drawpolygon object to rescale b from the range 0-100 to the range 7-77.;
 #X text 29 100 The application is to introduce an offset to a coordinate. For example \, the construction "a(0:100)(10:110)" just gives a+10., f 60;
 #X text 29 154 Each of the three arrows of template10a is controlled by a single parameter (a \, b \, or c) and the entire red octagon in template10b likewise., f 60;
-#X text 260 265 updated for Pd version 0.39;

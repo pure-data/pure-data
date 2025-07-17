@@ -193,8 +193,8 @@ static int caf_isheader(const char *buf, size_t size)
 
 static int caf_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
-        fmtflags, swap = !sys_isbigendian();
+    int nchannels = 1, bytespersample = 2, samplerate = DEFAULTSRATE,
+        bigendian = 1, fmtflags, swap = !sys_isbigendian();
     off_t headersize = CAFHEADSIZE + CAFDESCSIZE;
     ssize_t bytelimit = CAFMAXBYTES;
     union

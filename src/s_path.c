@@ -262,8 +262,9 @@ void sys_setextrapath(const char *p)
     The "bin" flag requests opening for binary (which only makes a difference
     on Windows). */
 
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin)
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin,
+    int okgui)
 {
     int fd;
     char buf[MAXPDSTRING];
@@ -287,8 +288,9 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
             !S_ISDIR(statbuf.st_mode));
         if (!ok)
         {
-            logpost(NULL, PD_VERBOSE, "tried %s; stat failed or directory",
-                dirresult);
+            if (okgui)
+                logpost(NULL, PD_VERBOSE, "tried %s; stat failed or directory",
+                    dirresult);
             close (fd);
             fd = -1;
         }
@@ -296,7 +298,8 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
 #endif
         {
             char *slash;
-            logpost(NULL, PD_VERBOSE, "tried %s and succeeded", dirresult);
+            if (okgui)
+                logpost(NULL, PD_VERBOSE, "tried %s and succeeded", dirresult);
             sys_unbashfilename(dirresult, dirresult);
             slash = strrchr(dirresult, '/');
             if (slash)
@@ -311,15 +314,34 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     }
     else
     {
-        logpost(NULL, PD_VERBOSE, "tried %s and failed", dirresult);
+        if (okgui)
+            logpost(NULL, PD_VERBOSE, "tried %s and failed", dirresult);
     }
     return (-1);
+}
+
+    /* keep this in the Pd app for binary compatibility
+    with existing loaders such as pdlua. */
+EXTERN int sys_trytoopenone(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin)
+{
+    if (PD_VERSION_CODE >= PD_VERSION(0, 56, 0))
+    {
+        static int warned = 0;
+        if (!warned)
+            pd_error(0,
+    "obsolete call to sys_trytoopenone(): some extern needs an update");
+        warned = 1;
+    }
+    return (sys_trytoopenit(dir, name, ext, dirresult, nameresult, size, bin,
+        1));
 }
 
     /* check if we were given an absolute pathname, if so try to open it
     and return 1 to signal the caller to cancel any path searches */
 int sys_open_absolute(const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp)
+    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp,
+        int okgui)
 {
     if (sys_isabsolutepath(name))
     {
@@ -332,8 +354,8 @@ int sys_open_absolute(const char *name, const char* ext,
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
         dirbuf[dirlen] = 0;
-        *fdp = sys_trytoopenone(dirbuf, name+(dirlen+1), ext,
-            dirresult, nameresult, size, bin);
+        *fdp = sys_trytoopenit(dirbuf, name+(dirlen+1), ext,
+            dirresult, nameresult, size, bin, okgui);
         return (1);
     }
     else return (0);
@@ -350,37 +372,38 @@ there is no search and instead we just try to open the file literally.  */
 /* see also canvas_open() which, in addition, searches down the
 canvas-specific path. */
 
-static int do_open_via_path(const char *dir, const char *name,
+int do_open_via_path(const char *dir, const char *name,
     const char *ext, char *dirresult, char **nameresult, unsigned int size,
-    int bin, t_namelist *searchpath)
+    int bin, t_namelist *searchpath, int okgui)
 {
     t_namelist *nl;
     int fd = -1;
 
         /* first check if "name" is absolute (and if so, try to open) */
-    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
-        return (fd);
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd,
+        okgui))
+            return (fd);
 
         /* otherwise "name" is relative; try the directory "dir" first. */
-    if ((fd = sys_trytoopenone(dir, name, ext,
-        dirresult, nameresult, size, bin)) >= 0)
+    if ((fd = sys_trytoopenit(dir, name, ext,
+        dirresult, nameresult, size, bin, okgui)) >= 0)
             return (fd);
 
         /* next go through the temp paths from the commandline */
     for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-            dirresult, nameresult, size, bin)) >= 0)
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin, okgui)) >= 0)
                 return (fd);
         /* next look in built-in paths like "extra" */
     for (nl = searchpath; nl; nl = nl->nl_next)
-        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-            dirresult, nameresult, size, bin)) >= 0)
+        if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin, okgui)) >= 0)
                 return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
-            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
-                dirresult, nameresult, size, bin)) >= 0)
+            if ((fd = sys_trytoopenit(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin, okgui)) >= 0)
                     return (fd);
 
     *dirresult = 0;
@@ -393,7 +416,7 @@ int open_via_path(const char *dir, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     return (do_open_via_path(dir, name, ext, dirresult, nameresult,
-        size, bin, STUFF->st_searchpath));
+        size, bin, STUFF->st_searchpath, 1));
 }
 
     /* open a file with a UTF-8 filename
@@ -502,7 +525,7 @@ void open_via_helppath(const char *name, const char *dir)
     strncpy(newname, realname, MAXPDSTRING-10);
     strcat(realname, "-help.pd");
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+        MAXPDSTRING, 0, STUFF->st_helppath, 1)) >= 0)
             goto gotone;
 
         /* 2. "help-objectname.pd" */
@@ -510,7 +533,7 @@ void open_via_helppath(const char *name, const char *dir)
     strncat(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-1] = 0;
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+        MAXPDSTRING, 0, STUFF->st_helppath, 1)) >= 0)
             goto gotone;
     post("sorry, couldn't find help patch for \"%s\"", newname);
     return;

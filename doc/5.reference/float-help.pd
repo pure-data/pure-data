@@ -1,4 +1,4 @@
-#N canvas 506 23 614 537 12;
+#N canvas 506 38 614 537 12;
 #X obj 52 386 float 6.5;
 #X floatatom 52 416 9 0 0 0 - - - 0;
 #X floatatom 53 189 6 0 0 0 - - - 0;
@@ -79,13 +79,13 @@
 #X obj 122 502 symbol;
 #X obj 4 486 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 29 156 bng 19 250 50 0 fgfg fgfhfuf empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 44 90 The [float] object stores a number \, initialized by its creation argument \, which may be reset using its right inlet and output by sending it the "bang" message. Sending a number to the left inletsets a new value and outputs it., f 76;
 #X text 489 308 <-- right click for properties, f 10;
 #X text 172 314 <-- type a number on a symbol box;
 #X text 206 431 open subpatch to see how to deal with '\$0' ------>, f 25;
 #X text 197 231 <----- send to a named GUI \, [receive] or [value] object ----->, f 34;
 #X text 163 354 set value (no output);
 #X text 129 386 argument initializes the value;
+#X text 44 90 The [float] object stores a number \, initialized by its creation argument \, which may be reset using its right inlet and output by sending it the "bang" message. Sending a number to the left inlet sets a new value and outputs it., f 76;
 #X connect 0 0 1 0;
 #X connect 1 0 18 0;
 #X connect 2 0 0 0;

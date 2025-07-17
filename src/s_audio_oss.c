@@ -163,7 +163,8 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
                     linux_fragsize = linux_fragsize/2;
         }
             /* post("adv_samples %d", oss_advance_samples); */
-        nfragment = (sys_schedadvance * (44100. * 1.e-6)) / linux_fragsize;
+        nfragment = (sys_schedadvance * (DEFAULTSRATE * 1.e-6))
+            / linux_fragsize;
 
         fragbytes = linux_fragsize * (dev->d_bytespersamp * nchannels);
         logfragsize = ilog2(fragbytes);

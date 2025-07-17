@@ -58,7 +58,7 @@
 #X obj 233 141 tabplay~ \$0-input, f 9;
 #X msg 220 59 bang \; pd dsp 1;
 #X obj 220 26 r \$0-run;
-#X obj 47 215 + 44100;
+#X obj 47 215 + 48000;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 1 0 20 0;

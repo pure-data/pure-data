@@ -102,17 +102,19 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     if(!snd_able)
     {
         sprintf(tag_n, "%pOUT%d", x, 0);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos - hmargin, ypos + x->x_gui.x_h + vmargin + zoom - ioh,
             xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 3, tags);
 
         sprintf(tag_n, "%pOUT%d", x, 1);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + zoom - ioh,
             xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 3, tags);
             /* keep label above outlets */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -123,17 +125,19 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sprintf(tag_n, "%pIN%d", x, 0);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos - hmargin, ypos - vmargin,
             xpos - hmargin + iow, ypos - vmargin - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 3, tags);
 
         sprintf(tag_n, "%pIN%d", x, 1);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
             xpos + x->x_gui.x_w + hmargin, ypos - vmargin - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 3, tags);
             /* keep label above inlets */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
@@ -467,6 +471,8 @@ static void vu_ft1(t_vu *x, t_floatarg peak)
 {
     int i;
     int old = x->x_peak;
+    if (PD_BADFLOAT(peak))
+        return;
     if(peak <= IEM_VU_MINDB)
         x->x_peak = 0;
     else if(peak >= IEM_VU_MAXDB)

@@ -80,7 +80,9 @@ static int s_initialized = 0;
 int libpd_init(void) {
   if (s_initialized) return -1; // only allow init once (for now)
   s_initialized = 1;
+#ifndef __EMSCRIPTEN__
   signal(SIGFPE, SIG_IGN);
+#endif
   libpd_start_message(32); // allocate array for message assembly
   sys_externalschedlib = 0;
   sys_printtostderr = 0;

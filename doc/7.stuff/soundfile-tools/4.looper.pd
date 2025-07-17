@@ -199,7 +199,7 @@
 #X text 129 32 looping sample player.;
 #N canvas 581 112 275 258 length 0;
 #X obj 48 24 inlet;
-#X obj 49 104 * 44100;
+#X obj 49 104 * 48000;
 #X obj 48 49 min 60;
 #X obj 62 78 s output-length;
 #X obj 43 220 s maxoutsize;

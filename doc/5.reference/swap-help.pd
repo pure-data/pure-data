@@ -19,7 +19,7 @@
 #X obj 78 333 print L;
 #X obj 145 332 print R;
 #N canvas 686 206 587 339 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 18 171 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 18 265 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
 #X obj 17 307 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;

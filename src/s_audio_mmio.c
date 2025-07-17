@@ -707,7 +707,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
-            (int)(MAXBUFFER * ((nt_blocksize * 1000.)/44100.)));
+            (int)(MAXBUFFER * ((nt_blocksize * 1000.)/DEFAULTSRATE)));
         nbuf = MAXBUFFER;
     }
     else if (nbuf < 4) nbuf = 4;

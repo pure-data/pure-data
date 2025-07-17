@@ -1,4 +1,4 @@
-#N canvas 347 60 952 596 12;
+#N canvas 347 60 951 607 12;
 #X obj 600 386 element trace-template partial;
 #X obj 435 416 set point-template y amp;
 #X obj 618 183 r nframe;

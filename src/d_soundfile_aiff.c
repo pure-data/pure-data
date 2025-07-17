@@ -277,8 +277,8 @@ static int aiff_isheader(const char *buf, size_t size)
     /** loop through chunks to find comm and data */
 static int aiff_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
-        swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
+    int nchannels = 1, bytespersample = 2, samplerate = DEFAULTSRATE,
+        bigendian = 1, swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
     off_t headersize = AIFFHEADSIZE;
     size_t bytelimit = AIFFMAXBYTES;
     union

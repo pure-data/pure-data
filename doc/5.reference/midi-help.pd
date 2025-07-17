@@ -345,7 +345,7 @@
 #X text 734 316 ***;
 #X text 546 418 ** Known bug: [bendin] and [bendout] are inconsistent ([bendin] outputs values from 0 to 16383 and [bendout] takes values from -8192 to 8191) - this won't change., f 70;
 #X text 546 465 *** Program change values in [pgmin] and [pgmout] are indexed from 1 \, which means that the possible values are from 1 to 128 (not 0 to 127)!, f 70;
-#X text 546 357 * Release velocity is not supported \, [noteout] only sends Note On velocities and for [notein] a release velocity becomes 0 (commonly interpreted as a "note off"). Tru "note off" messages are still supported via [midiin] and [midiout]., f 70;
+#X text 546 357 * Release velocity is not supported \, [noteout] only sends Note On velocities and for [notein] a release velocity becomes 0 (commonly interpreted as a "note off"). True "note off" messages are still supported via [midiin] and [midiout]., f 70;
 #X msg 836 602 128 68 100;
 #X text 16 578 raw MIDI byte by byte except real-time messages (sysex supported), f 28;
 #X text 357 637 <-- Open for MPE support;

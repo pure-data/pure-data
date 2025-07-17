@@ -393,8 +393,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if ((fd = sys_trytoopenit(path, objectname, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -406,8 +406,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     filename[MAXPDSTRING-1] = 0;
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, filename, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if ((fd = sys_trytoopenit(path, filename, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -419,8 +419,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if (libname[len-1] == '~' && len < MAXPDSTRING - 6) {
         strcpy(libname+len-1, "_tilde");
     }
-    if ((fd = sys_trytoopenone(path, libname, ".so",
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    if ((fd = sys_trytoopenit(path, libname, ".so",
+        dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
 #endif
@@ -488,7 +488,11 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     data.ok = 0;
 
     if (sys_onloadlist(classname))
-        return (1); /* if lib is already loaded, dismiss. */
+    {
+         /* if lib is already loaded, dismiss. */
+        data.ok = 1;
+        goto cleanup;
+    }
 
         /* if classname is absolute, try this first */
     if (sys_isabsolutepath(classname))
@@ -498,7 +502,10 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
         int dirlen;
         if (!z)
-            return (0);
+        {
+            data.ok = 0;
+            goto cleanup;
+        }
         dirlen = (int)(z - classname);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
@@ -520,7 +527,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     if(data.ok)
       sys_putonloadlist(classname);
 
-
+ cleanup:
     canvas_resume_dsp(dspstate);
     return data.ok;
 }
@@ -641,12 +648,12 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     if (!path) return (0);
 
     pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-    if ((fd = sys_trytoopenone(path, objectname, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, objectname, ".pat",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, classslashclass, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    if ((fd = sys_trytoopenit(path, objectname, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
+        (fd = sys_trytoopenit(path, objectname, ".pat",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
+        (fd = sys_trytoopenit(path, classslashclass, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
     {
         t_class*c=0;
         close(fd);
@@ -689,7 +696,9 @@ t_method sys_getfunbyname(const char *name)
             GetLastError());
         return NULL;
     }
-#else
+#elif HAVE_LIBDL
     return (t_method)dlsym(dlopen(NULL, RTLD_NOW), name);
+#else
+    return NULL;
 #endif
 }

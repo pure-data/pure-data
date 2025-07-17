@@ -35,12 +35,15 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef _WIN32
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
+
 #include <stdlib.h>
+
 #ifdef _MSC_VER
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4305 )
@@ -488,9 +491,9 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
 
         /* first guess by parabolic peak fitting */
     fbestbin = bestbin + (ppt[bestbin+1].p_weight
-        - ppt[bestbin-1].p_weight) /
+        - ppt[bestbin == 0 ? 0 : bestbin-1].p_weight) /
             (ppt[bestbin+1].p_weight +  ppt[bestbin].p_weight +
-                ppt[bestbin-1].p_weight);
+                ppt[bestbin == 0 ? 0 : bestbin-1].p_weight);
 
     freq = 2*fperbin * exp((LOG2/STEPSPEROCTAVE)*fbestbin);
     for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
@@ -1480,7 +1483,10 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "sigmund~: %s: unknown flag or argument missing",
+            if (argv->a_type == A_FLOAT)
+                pd_error(x, "sigmund~: argument '%g' ignored",
+                    atom_getfloatarg(0, argc, argv));
+            else pd_error(x, "sigmund~: %s: unknown flag or argument missing",
                 firstarg->s_name);
             argc--, argv++;
         }

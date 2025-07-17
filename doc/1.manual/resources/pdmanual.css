@@ -29,13 +29,45 @@ div>ul>li, div>ol>li { /* top level */
 figure {
     padding: 1em 0;
 }
-div#backnav {
-    margin-bottom: 2em;
-}
-figcaption{
+figcaption {
     padding-top: 0.5em;
     font-size: 95%;
     text-align: center;
+}
+figcaption>u {
+    font-size: 90%;
+    font-weight: bold;
+    padding-right: 0.33em;
+}
+div.nav {
+    font-size: 90%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.nav-top {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #3E4349;
+}
+.nav-bottom {
+    padding: 0.5em 0;
+    margin: 3em 0;
+    border-top: 1px solid #3E4349;
+}
+.nav-back, .nav-forward {
+    flex: 2;
+}
+.nav-home {
+    flex: 1;
+}
+.nav-back {
+    text-align: left;
+}
+.nav-home {
+    text-align: center;
+}
+.nav-forward {
+    text-align: right;
 }
 H1 {
     font-size:   32.7pt;
@@ -91,22 +123,29 @@ table {
     border-collapse: collapse;
 }
 
+tbody {
+    border-top: 3px solid black;
+}
+
 td {
     text-align: center;
 }
+th.left, td.left {
+    text-align: left;
+}
 
-tr:nth-child(even) {background-color: #f0f0f0;}
+tr:nth-child(even) {background-color: #f4f4f4;}
 
 CODE {
     font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
 }
 
 KBD {
-    background-color: #3E4349;
-    border: 1px solid #27292B;
-    color: #ffffff;
+    background-color: #eee;
+    border: 1px solid #bbb;
+    color: #222;
     border-radius: 4px;
-    padding: 2px 4px;
+    padding: 3px 5px;
     margin: 0 2px;
     white-space: nowrap;
     font-size: 80%;
@@ -122,17 +161,16 @@ a:link {
 
 a:visited {
     text-decoration: none;
-    color: #006699;
+    color: #330099;
 }
 
 a:hover {
-
-    background-color:#eeeee4;
+    text-decoration: underline;
 }
 
 a:active {
-    text-decoration: none;
-    color: blue;
+    text-decoration: underline;
+    color: #000;
 }
 
 
@@ -181,7 +219,9 @@ IMG {
     width: auto;
     filter: brightness(1) contrast(1); /* why? */
 }
-
+img#logo {
+    padding-top: 2em;
+}
 mark {
     background-color: #fff0b3;
 }
@@ -189,18 +229,6 @@ mark {
 p.fig {
     text-align: center;
 }
-
-div.butt {
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-div#footer {
-    padding: 2em 0;
-    border-top: 1px solid #3E4349;
-}
-
 blockquote {
     padding: 0;
     margin-right:0px;
@@ -214,6 +242,35 @@ blockquote p {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* release notes */
+.releasenote h4:before, .releasenote h4:after {
+    display: inline-block;
+    content: "";
+
+    border-top:1px solid;
+
+    height:5px;
+    width: 5rem;
+}
+.releasenote h4:before {
+    right:100%;
+    margin-right:15px;
+}
+.releasenote h4:after {
+    left:100%;
+    margin-left:15px;
+    width: 6rem;
+}
+.releasenote h4 {
+    font-weight: normal;
+    font-size: inherit;
+    margin-left: 0;
+}
+.releasenote li {
+    padding: 0;
+}
+
 
 /* responsive css for small "devices" and browser windows */
 

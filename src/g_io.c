@@ -633,7 +633,7 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         if (period == 1 && frequency > 1)
             x->x_hop = re_parentvecsize / frequency;
         else x->x_hop = period * re_parentvecsize;
-        if (x->x_parentsignal)
+        if (x->x_parentsignal && (*x->x_parentsignal) && (*x->x_parentsignal)->s_vec)
         {
                 /* set epilog pointer and schedule it */
             x->x_read = re_parentvecsize * epilogphase;

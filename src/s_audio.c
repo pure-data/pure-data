@@ -280,7 +280,8 @@ void sys_set_audio_settings(t_audiosettings *a)
     pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
 }
 
-    /* close the audio device. Must not be called from a Pd message! */
+    /* close the audio device. Must not be called from a Pd message!
+    Always called with Pd locked. */
 void sys_do_close_audio(void)
 {
     if (sys_externalschedlib)
@@ -349,7 +350,8 @@ void sys_init_audio(void)
 }
 
     /* open audio using currently requested parameters.
-    Must not be called from a Pd message! */
+    Must not be called from a Pd message!
+    Always called with Pd locked. */
 void sys_do_reopen_audio(void)
 {
     t_audiosettings as;
@@ -361,10 +363,7 @@ void sys_do_reopen_audio(void)
         as.a_chindevvec, &totalinchans, MAXAUDIOINDEV);
     audio_compact_and_count_channels(&as.a_noutdev, as.a_outdevvec,
         as.a_choutdevvec, &totaloutchans, MAXAUDIOOUTDEV);
-        /* NB: sys_setchsr() may update the DSP graph, so we need to lock Pd! */
-    sys_lock();
     sys_setchsr(totalinchans, totaloutchans, as.a_srate);
-    sys_unlock();
     if (!as.a_nindev && !as.a_noutdev)
     {
         sched_set_using_audio(SCHED_AUDIO_NONE);
@@ -467,17 +466,28 @@ void sys_do_reopen_audio(void)
     pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
 }
 
-    /* called by the scheduler if the audio system appears to be stuck */
+    /* called by the scheduler if the audio system appears to be stuck. */
 int sys_try_reopen_audio(void)
 {
     int success;
+
+    sys_lock();
+
 #ifdef USEAPI_PORTAUDIO
     if (sys_audioapiopened == API_PORTAUDIO)
-        return pa_reopen_audio();
+    {
+        success = pa_reopen_audio();
+        sys_unlock();
+        return success;
+    }
 #endif
 #ifdef USEAPI_JACK
     if (sys_audioapiopened == API_JACK)
-        return jack_reopen_audio();
+    {
+        success = jack_reopen_audio();
+        sys_unlock();
+        return success;
+    }
 #endif
         /* generic implementation: close audio and try to reopen it */
     sys_do_close_audio();
@@ -492,6 +502,8 @@ int sys_try_reopen_audio(void)
     else
         pd_error(0, "audio device not responding - closing audio.\n"
                     "please try to reconnect and reselect it in the settings (or toggle DSP)");
+
+    sys_unlock();
 
     return success;
 }

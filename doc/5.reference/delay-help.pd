@@ -64,7 +64,7 @@
 #N canvas 570 48 709 670 examples 0;
 #X obj 131 169 delay 1 60 permin;
 #X obj 49 328 delay 1 1 sec;
-#X obj 527 172 delay 1 44100 samp;
+#X obj 527 172 delay 1 48000 samp;
 #X obj 153 328 delay 2 2 persec;
 #X obj 277 328 delay 0.0166667 1 min;
 #X obj 131 116 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
@@ -79,11 +79,11 @@
 #X obj 153 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 277 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 527 124 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 481 22 Here we have yet another way yo set a one second delay \, but it depends on the sample-rate that Pd is running. We're then assuming a 44100 samplerate, f 31;
+#X text 481 22 Here we have yet another way you can set a one second delay \, but it depends on the sample rate that Pd is running. We're assuming a 48000 sample rate, f 31;
 #X obj 527 216 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 527 275 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 527 378 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X obj 527 339 delay 44100 1 samp;
+#X obj 527 339 delay 48000 1 samp;
 #X obj 110 444 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 195 559 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 195 524 delay 0;

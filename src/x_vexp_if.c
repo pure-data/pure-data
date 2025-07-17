@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
 #include "x_vexp.h"
 
@@ -29,6 +32,20 @@ static char *exp_version = "0.57";
 
 extern struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int n);
+extern void ex_size(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_sum(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_Sum(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_avg(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_Avg(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_tabread4(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
+extern void ex_store(t_expr *expr, long int argc, struct ex_ex *argv,
+                                                        struct ex_ex *optr);
 
 #ifdef PD
 static t_class *expr_class;
@@ -50,11 +67,11 @@ t_int *expr_perform(t_int *w);
 
 
 static void
-expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
+expr_list(t_expr *x, t_symbol *s, int argc, const t_atom *argv)
 {
         int i;
 
-        if (argc > MAX_VARS) argc = MAX_VARS;
+        if (argc > EX_MAX_INLETS) argc = EX_MAX_INLETS;
 
         for (i = 0; i < argc; i++)
         {
@@ -65,14 +82,14 @@ expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
                         else if (x->exp_var[i].ex_type == ET_II)
                                 x->exp_var[i].ex_int = argv[i].a_w.w_float;
                         else if (x->exp_var[i].ex_type)
-                            pd_error(x, "expr: type mismatch");
+                            pd_error(x, "expr: type mismatch for inlet %d", i + 1);
                 }
                 else if (argv[i].a_type == A_SYMBOL)
                 {
                         if (x->exp_var[i].ex_type == ET_SI)
                                 x->exp_var[i].ex_ptr = (char *)argv[i].a_w.w_symbol;
                         else if (x->exp_var[i].ex_type)
-                            pd_error(x, "expr: type mismatch");
+                            pd_error(x, "expr: type mismatch for inlet %d", i + 1);
                 }
         }
         expr_bang(x);
@@ -81,7 +98,7 @@ expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
 static void
 expr_flt(t_expr *x, t_float f, int in)
 {
-        if (in >= MAX_VARS)
+        if (in >= EX_MAX_INLETS)
                 return;
 
         if (x->exp_var[in].ex_type == ET_FI)
@@ -119,7 +136,7 @@ exprproxy_float(t_exprproxy *p, t_floatarg f)
         t_expr *x = p->p_owner;
         int in = p->p_index;
 
-        if (in >= MAX_VARS)
+        if (in >= EX_MAX_INLETS)
                 return;
 
         if (x->exp_var[in].ex_type == ET_FI)
@@ -147,14 +164,14 @@ expr_ff(t_expr *x)
 #endif
                 y = x->exp_proxy;
         }
+        t_freebytes(x->exp_string, strlen(x->exp_string));
         for (i = 0 ; i < x->exp_nexpr; i++)
                 if (x->exp_stack[i])
                         fts_free(x->exp_stack[i]);
-/*
- * SDY free all the allocated buffers here for expr~ and fexpr~
- * check to see if there are others
- */
-        for (i = 0; i < MAX_VARS; i++) {
+        /*
+         * free all the allocated buffers here for expr~ and fexpr~
+         */
+        for (i = 0; i < EX_MAX_INLETS; i++) {
                 if (x->exp_p_var[i])
                         fts_free(x->exp_p_var[i]);
                 if (x->exp_p_res[i])
@@ -198,7 +215,6 @@ expr_bang(t_expr *x)
         /* banging a signal or filter object means nothing */
         if (!IS_EXPR(x))
                 return;
-
         for (i = x->exp_nexpr - 1; i > -1 ; i--) {
                 if (!ex_eval(x, x->exp_stack[i], &x->exp_res[i], 0)) {
                         /*fprintf(stderr,"expr_bang(error evaluation)\n"); */
@@ -218,13 +234,33 @@ expr_bang(t_expr *x)
                         break;
 
                 case ET_SYM:
-                        /* CHANGE this will have to be taken care of */
+                        if (x->exp_res[i].ex_flags & EX_F_TSYM) {
+                                outlet_symbol(x->exp_outlet[i],
+                                                                                        gensym(x->exp_res[i].ex_ptr));
+                                free(x->exp_res[i].ex_ptr);
+                        } else {
+                                outlet_symbol(x->exp_outlet[i],
+                                                                                        (t_symbol *) x->exp_res[i].ex_ptr);
+                        }
+                        break;
+
+                case ET_SI:
+                        if (x->exp_var[x->exp_res[i].ex_int].ex_ptr)
+                                outlet_symbol(x->exp_outlet[i], (t_symbol *)
+                                      x->exp_var[x->exp_res[i].ex_int].ex_ptr);
+                        else
+                                outlet_symbol(x->exp_outlet[i],  gensym(""));
+                        break;
 
                 default:
-                        post("expr: bang: unrecognized result %ld\n", x->exp_res[i].ex_type);
+                        post_error(x,
+                            "expr:'%s': bang: unrecognized result %ld\n",
+                                        x->exp_string, x->exp_res[i].ex_type);
                 }
         }
 }
+
+static int expcount;
 
 static t_expr *
 #ifdef PD
@@ -240,6 +276,7 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
         int dsp_index;  /* keeping track of the dsp inlets */
 
 
+//printf ("expcount = %d\n", expcount++);
 /*
  * SDY - we may need to call dsp_setup() in this function
  */
@@ -283,7 +320,7 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
         x->exp_nivec = 0;
         x->exp_nexpr = 0;
         x->exp_error = 0;
-        for (i = 0; i < MAX_VARS; i++) {
+        for (i = 0; i < EX_MAX_INLETS; i++) {
                 x->exp_stack[i] = (struct ex_ex *)0;
                 x->exp_outlet[i] = (t_outlet *)0;
                 x->exp_res[i].ex_type = 0;
@@ -309,7 +346,7 @@ SDY the following coredumps why?
         }
 
         ninlet = 1;
-        for (i = 0, eptr = x->exp_var; i < MAX_VARS ; i++, eptr++)
+        for (i = 0, eptr = x->exp_var; i < EX_MAX_INLETS ; i++, eptr++)
                 if (eptr->ex_type) {
                         ninlet = i + 1;
                 }
@@ -388,8 +425,16 @@ SDY the following coredumps why?
                 x->exp_p_res[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
                 x->exp_tmpres[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
         }
-        for (i = 0; i < MAX_VARS; i++)
-                x->exp_p_var[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
+        for (i = 0; i < EX_MAX_INLETS; i++) {
+                if (x->exp_var[i].ex_type == ET_VI ||
+                    x->exp_var[i].ex_type == ET_XI ||
+                    x->exp_var[i].ex_type == ET_YO ||
+                    0)
+                        x->exp_p_var[i] = fts_calloc(x->exp_vsize,
+                                                        sizeof (t_float));
+                else
+                        x->exp_p_var[i] = (t_float *) 0;
+        }
 
         return (x);
 }
@@ -417,14 +462,15 @@ expr_perform(t_int *w)
 
         if (IS_EXPR_TILDE(x)) {
                 /*
-                 * if we have only one expression, we can right on
+                 * if we have only one expression, we can write on
                  * on the output directly, otherwise we have to copy
                  * the data because, outputs could be the same buffer as
                  * inputs
                  */
-                if ( x->exp_nexpr == 1)
+                if ( x->exp_nexpr == 1) {
+                        x->exp_res[0].ex_type = ET_VEC;
                         ex_eval(x, x->exp_stack[0], &x->exp_res[0], 0);
-                else {
+                } else {
                         res.ex_type = ET_VEC;
                         for (i = 0; i < x->exp_nexpr; i++) {
                                 res.ex_vec = x->exp_tmpres[i];
@@ -439,7 +485,7 @@ expr_perform(t_int *w)
         }
 
         if (!IS_FEXPR_TILDE(x)) {
-                post("expr_perform: bad x->exp_flags = %d - expecting fexpr",
+                post_error(x, "expr_perform: bad x->exp_flags = %d - expecting fexpr",
                                                                 x->exp_flags);
                 return (w + 2);
         }
@@ -458,6 +504,19 @@ expr_perform(t_int *w)
                 case ET_FLT:
                         x->exp_tmpres[j][i] = res.ex_flt;
                         break;
+                case ET_SYM:
+                        if (!(x->exp_error & EE_BADSYM)) {
+                                x->exp_error |= EE_BADSYM;
+                                        post_error((t_object *) x,
+                                                "fexpr~: '%s': cannot convert string to sample value\n",
+                                                                        x->exp_string);
+                                post_error(x,
+                                      "fexpr~: No more such errors will be reported");
+                                post_error(x,
+                                      "fexpr~: till the next reset");
+                        }
+                        x->exp_tmpres[j][i] = 0;
+                        break;
                 default:
                         post("expr_perform: bad result type %d", res.ex_type);
                 }
@@ -468,7 +527,7 @@ expr_perform(t_int *w)
          * same as an input buffer
          */
         n = x->exp_vsize * sizeof(t_float);
-        for (i = 0; i < MAX_VARS; i++)
+        for (i = 0; i < EX_MAX_INLETS; i++)
                 if (x->exp_var[i].ex_type == ET_XI)
                         memcpy(x->exp_p_var[i], x->exp_var[i].ex_vec, n);
         for (i = 0; i < x->exp_nexpr; i++) {
@@ -491,7 +550,7 @@ expr_dsp(t_expr *x, t_signal **sp)
                 x->exp_res[i].ex_type = ET_VEC;
                 x->exp_res[i].ex_vec =  sp[x->exp_nivec + i]->s_vec;
         }
-        for (i = 0, nv = 0; i < MAX_VARS; i++)
+        for (i = 0, nv = 0; i < EX_MAX_INLETS; i++)
                 /*
                  * the first inlet is always a signal
                  *
@@ -538,16 +597,25 @@ expr_dsp(t_expr *x, t_signal **sp)
                         fts_free(x->exp_p_res[i]);
                         fts_free(x->exp_tmpres[i]);
                 }
-                for (i = 0; i < MAX_VARS; i++)
-                        fts_free(x->exp_p_var[i]);
+                for (i = 0; i < EX_MAX_INLETS; i++)
+                        if (x->exp_p_var[i])
+                                fts_free(x->exp_p_var[i]);
 
         }
         for (i = 0; i < x->exp_nexpr; i++) {
                 x->exp_p_res[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
                 x->exp_tmpres[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
         }
-        for (i = 0; i < MAX_VARS; i++)
-                x->exp_p_var[i] = fts_calloc(x->exp_vsize, sizeof (t_float));
+        for (i = 0; i < EX_MAX_INLETS; i++) {
+                if (x->exp_var[i].ex_type == ET_VI ||
+                    x->exp_var[i].ex_type == ET_XI ||
+                    x->exp_var[i].ex_type == ET_YO ||
+                    0)
+                        x->exp_p_var[i] = fts_calloc(x->exp_vsize,
+                                                        sizeof (t_float));
+                else
+                        x->exp_p_var[i] = (t_float *) 0;
+        }
 }
 
 /*
@@ -625,9 +693,9 @@ fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                                 fexpr_set_usage();
                                 return;
                         }
-                        if (vecno >= MAX_VARS) {
+                        if (vecno >= EX_MAX_INLETS) {
                                 post("fexpr~.set: no more than %d inlets",
-                                                                      MAX_VARS);
+                                                              EX_MAX_INLETS);
                                 return;
                         }
                         vecno--;
@@ -719,7 +787,7 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
         if (!argc) {
                 for (i = 0; i < x->exp_nexpr; i++)
                         memset(x->exp_p_res[i], 0, x->exp_vsize*sizeof(t_float));
-                for (i = 0; i < MAX_VARS; i++)
+                for (i = 0; i < EX_MAX_INLETS; i++)
                         if (x->exp_var[i].ex_type == ET_XI)
                                 memset(x->exp_p_var[i], 0,
                                                 x->exp_vsize*sizeof(t_float));
@@ -741,9 +809,9 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                                 post("fexpr~.clear: bad clear x vector number");
                                 return;
                         }
-                        if (vecno >= MAX_VARS) {
+                        if (vecno >= EX_MAX_INLETS) {
                                 post("fexpr~.clear: no more than %d inlets",
-                                                                      MAX_VARS);
+                                                              EX_MAX_INLETS);
                                 return;
                         }
                         vecno--;
@@ -861,19 +929,100 @@ main(void)
 
 
 int
-ex_getsym(char *p, fts_symbol_t *s)
+ex_getsym(char *p, t_symbol **s)
 {
         *s = gensym(p);
         return (0);
 }
 
-const char *
-ex_symname(fts_symbol_t s)
+char *
+ex_symname(t_symbol *s)
 {
         if (!s)
             return (0);
-        return (fts_symbol_name(s));
+        return ((char *) s->s_name);
 }
+
+#if 0
+SDY tabled code for when 4 point interpolation of vectors are implemented
+/*
+ * ex_vectablelookup - a vector table look up with 4point interpolation
+ * return 0 on success
+ *     wvec - pointer to the table
+ *     tsize - table size
+ *     iptr - ptr to the index vector
+ *     optr - output pointer
+ */
+int
+ex_vectablelookup(t_expr *e, t_word *wvec, int tsize, t_float *iptr, struct ex_ex *optr)
+{
+    int i;
+    t_float pos, a, b, c, d, cminusb, frac;
+    t_word *wp;
+    int int_pos;
+    int n ; /* position in the array */
+
+    if (optr->ex_type != ET_VEC) {
+        pd_error(e, "'%s': bad ooutput type", e->exp_string);
+        memset((void *) optr->ex_vec, 0,
+                            e->exp_vsize * sizeof (t_float));
+        return (0);
+    }
+
+    if (tsize < 4) {
+        memset((void *) optr->ex_vec, 0, e->exp_vsize * sizeof (t_float));
+        return (0);
+    }
+    for (i = 0; i < e->exp_vsize; i++) {
+        pos = iptr[i];
+        if (pos <= 1) {
+            optr->ex_vec[i] = wvec[1].w_float;
+            continue;
+        }
+        if (pos >= tsize - 2) {
+            optr->ex_vec[i] = wvec[tsize - 2].w_float;
+            continue;
+        }
+        n = (int) pos;
+        if (n >= tsize - 2)
+            n = tsize - 3;
+        wp = wvec + n;
+        frac = pos - n;
+        a = wp[-1].w_float;
+        b = wp[0].w_float;
+        c = wp[1].w_float;
+        d = wp[2].w_float;
+        cminusb = c-b;
+        optr->ex_vec[i] = b + frac * ( cminusb - 0.1666667f * (1.-frac) * (
+                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)));
+    }
+#if 0
+        /* alternative interpolation code */
+        int_pos = (int)floorl(pos);
+        frac_pos = pos - int_pos;
+
+        x2  = wvec[(tsize + int_pos - 2) % tsize].w_float;
+        x1  = wvec[(tsize + int_pos - 1) % tsize].w_float;
+        x0  = wvec[(tsize + int_pos)     % tsize].w_float;
+        xm1 = wvec[(tsize + int_pos + 1) % tsize].w_float;
+        if(int_pos >= tsize)
+            x1 = x0;
+        if(int_pos >= tsize - 1)
+            x2 = x1;
+        if(int_pos <= 0)
+            x0 = x1;
+        if(int_pos <= 1)
+            xm1 = x0;
+        a = (3.0f * (x0 - x1) - xm1 + x2) * 0.5f;
+        b = 2.0f * x1 + xm1 - (5.0f * x0 + x2) * 0.5f;
+        c = (x1 - xm1) * 0.5f;
+        optr->ex_vec[i] =
+            (((((a * frac_pos) + b) * frac_pos) + c) * frac_pos) + x0;
+#endif
+    return(0);
+}
+#endif
+
 
 /*
  * max_ex_tab -- evaluate this table access
@@ -882,30 +1031,31 @@ ex_symname(fts_symbol_t s)
  *               return 1 on error and 0 otherwise
  *
  * Arguments:
- *  the expr object
- *  table
- *  the argument
- *  the result pointer
+ *          expr - the expr object
+ *          s - table pointer
+ *          arg - pointer to the  the index argument
+ *          interpol - flag to interpolate on single float index
+ *          optr - the result pointer
  */
 int
-max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
+max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, int interpol,
     struct ex_ex *optr)
 {
 #ifdef PD
         t_garray *garray;
         int size;
         long indx;
+        t_float flt_value = 0.0;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
-            !garray_getfloatwords(garray, &size, &wvec))
-        {
+            !garray_getfloatwords(garray, &size, &wvec)) {
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
                 pd_error(expr, "no such table '%s'", ex_symname(s));
                 return (1);
         }
-        optr->ex_type = ET_FLT;
+#if 1
 
         switch (arg->ex_type) {
         case ET_INT:
@@ -917,12 +1067,134 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
                 break;
 
         default:        /* do something with strings */
-                pd_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
-                indx = 0;
+                ex_error(expr, "expr: bad argument for table '%s'\n", fts_symbol_name(s));
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
+                return (1);
         }
-        if (indx < 0) indx = 0;
-        else if (indx >= size) indx = size - 1;
-        optr->ex_flt = wvec[indx].w_float;
+        if (indx < 0)
+            indx = 0;
+        else if (indx >= size)
+            indx = size - 1;
+        flt_value = wvec[indx].w_float;
+        switch (optr->ex_type) {
+        case ET_VEC:
+            ex_mkvector(optr->ex_vec, flt_value, expr->exp_vsize);
+            return(0);
+        case ET_SYM:
+            ex_error(expr, "expr:'%s' bad output type  '%ld'\n",
+                              expr->exp_string, optr->ex_type);
+            break;
+        case ET_INT:
+        case ET_FLT:
+        default:
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = flt_value;
+            return(0);
+        }
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return(1);
+#else /*  if 1 tabled code */
+ The code below implement 4 point interpolation of table access
+ which for now I (sdy) am tabling for the next release
+        long n;
+        float flt_value;
+        t_float pos, a, b, c, d, cminusb, frac;
+        t_word *wp;
+
+        switch (arg->ex_type) {
+        case ET_INT:
+        case ET_FLT:
+                if (arg->ex_type == ET_INT) {
+                    n = arg->ex_int;
+                    n = MAX(0,  MIN(n, size - 1));
+                    flt_value = wvec[n].w_float;
+                } else if (!interpol) {
+                    /*
+                     * for compatibility purposes with older versions we
+                     * do not interpolate the table lookup with float
+                     * values, but it will be done for signal indexes,
+                     * and in the tablelook up function
+                     */
+                    n = arg->ex_flt;
+                    n = MAX(0,  MIN(n, size - 1));
+                    flt_value = wvec[n].w_float;
+                } else { /* interpolate */
+                    pos = arg->ex_flt;
+                    if (size < 4) {
+                        flt_value = 0;
+                    } else if (pos <= 1) {
+                        flt_value = wvec[1].w_float;
+                    } else if (pos >= size - 2) {
+                        flt_value = wvec[size - 2].w_float;
+                    } else {
+                        n = (int) pos;
+                        if (n >= size - 2)
+                            n = size - 3;
+                        wp = wvec + n;
+                        frac = pos - n;
+                        a = wp[-1].w_float;
+                        b = wp[0].w_float;
+                        c = wp[1].w_float;
+                        d = wp[2].w_float;
+                        cminusb = c-b;
+                        flt_value = b + frac *
+                            ( cminusb - 0.1666667f * (1.-frac) * (
+                            (d - a - 3.0f * cminusb) * frac +
+                            (d + 2.0f*a - 3.0f*b)));
+                    }
+                }
+
+                switch (optr->ex_type) {
+                case ET_VEC:
+                        ex_mkvector(optr->ex_vec, flt_value,
+                                        expr->exp_vsize);
+                        return(0);
+                case ET_SYM:
+                        pd_error(expr, "expr:'%s' bad output type  '%ld'\n",
+                                      expr->exp_string, optr->ex_type);
+                        break;
+                case ET_INT:
+                case ET_FLT:
+                default:
+                        optr->ex_type = ET_FLT;
+                        optr->ex_flt = flt_value;
+                        return(0);
+                }
+                break;
+        case ET_VI:
+                if (optr->ex_type != ET_VEC) {
+                        pd_error(expr,
+                "expr:'%s': bad table arg - cannot convert vector to scalar\n",
+                                                expr->exp_string);
+                        break;
+                }
+                return(ex_vectablelookup(expr, wvec, size, arg->ex_vec, optr));
+
+        case ET_VEC:
+                if (optr->ex_type != ET_VEC) {
+                    pd_error(expr,
+                "expr:'%s': bad table arg - cannot convert vector to scalar\n",
+                                                 expr->exp_string);
+                    break;
+                }
+                return (ex_vectablelookup(expr, wvec, size,
+                                            arg->ex_vec, optr));
+        default:        /* do something with strings */
+                pd_error(expr,
+                      "expr:'%s' bad argument for table '%s'\n",
+                           expr->exp_string, s->s_name);
+        }
+        optr->ex_type = ET_INT;
+        optr->ex_int = 0;
+        return(1);
+#endif
+
 #else /* MSP */
         /*
          * table lookup not done for MSP yet
@@ -936,10 +1208,10 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
 
 /*
  * max_ex_tab_store -- store a value in a table
- *                                              tbl[arg->value] = rval.value
- *               eptr is the name of the table and arg is the index we
- *               have to put the result in optr
- *               return 1 on error and 0 otherwise
+ *      tbl[arg->value] = rval.value
+ *      eptr is the name of the table and arg is the index we
+ *      have to put the result in optr
+ *      return 1 on error and 0 otherwise
  *
  * Arguments:
  *  the expr object
@@ -950,7 +1222,7 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
  */
 int
 max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
-                                                                        struct ex_ex *rval, struct ex_ex *optr)
+                                        struct ex_ex *rval, struct ex_ex *optr)
 {
 #ifdef PD
         t_garray *garray;
@@ -963,9 +1235,11 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
                 if (s)
-                    pd_error(expr, "no such table to store '%s'", s->s_name);
+                    pd_error(expr, "%s: no such table to store '%s'",
+                                    expr->exp_string, s->s_name);
                 else
-                    pd_error(expr, "cannot store in unnamed table");
+                    pd_error(expr, "%s: cannot store in unnamed table",
+                                                            expr->exp_string);
                 return (1);
         }
         optr->ex_type = ET_FLT;
@@ -981,7 +1255,7 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 
         default:        /* do something with strings */
                 pd_error(expr, "expr: bad argument for table store '%s'\n",
-                        fts_symbol_name(s));
+                        s->s_name);
                 indx = 0;
         }
         if (indx < 0)
@@ -992,18 +1266,18 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
         switch (rval->ex_type) {
         case ET_INT:
                 wvec[indx].w_float = rval->ex_int;
-                                break;
+                break;
         case ET_FLT:
                 wvec[indx].w_float = rval->ex_flt;
-                                break;
+                break;
         default:
                 pd_error(expr, "expr:bad right value type '%ld'", rval->ex_type);
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
                 return (1);
         }
-                garray_redraw(garray);
-                return(0);
+        garray_redraw(garray);
+        return(0);
 
 #else /* MSP */
         /*
@@ -1019,16 +1293,39 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 int
 max_ex_var(struct expr *expr, t_symbol *var, struct ex_ex *optr, int idx)
 {
-        optr->ex_type = ET_FLT;
-                if (!strcmp(var->s_name, "sys_idx")) {
-                        optr->ex_flt = idx;
-                        return (0);
+        t_float value;
+        if (!strcmp(var->s_name, "sys_idx")) {
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, (t_float) idx, expr->exp_vsize);
+                else {
+                    optr->ex_int = idx;
+                    optr->ex_type = ET_INT;
                 }
-        if (value_getfloat(var, &(optr->ex_flt))) {
-                optr->ex_type = ET_FLT;
-                optr->ex_flt = 0;
-                pd_error(expr, "no such var '%s'", var->s_name);
+                return (0);
+        }
+        if (value_getfloat(var, &value)) {
+                if (!(expr->exp_error & EE_NOVAR)) {
+                        ex_error(expr, "no such var '%s'", var->s_name);
+                    if (!IS_EXPR(expr)) {
+                        post("expr: no more var errors will be reported");
+                        post("expr: till the next reset");
+                        expr->exp_error |= EE_NOVAR;
+                    }
+                }
+
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_int = 0;
+                    optr->ex_type = ET_INT;
+                }
                 return (1);
+        }
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, value, expr->exp_vsize);
+        else {
+            optr->ex_flt = value;
+            optr->ex_type = ET_FLT;
         }
         return (0);
 }
@@ -1036,14 +1333,37 @@ max_ex_var(struct expr *expr, t_symbol *var, struct ex_ex *optr, int idx)
 #ifdef PD /* this goes to the end of this file as the following functions
            * should be defined in the expr object in MSP
            */
-#define ISTABLE(sym, garray, size, vec)                               \
-if (!sym || !(garray = (t_garray *)pd_findbyclass(sym, garray_class)) || \
+#define ISTABLE(e, sym, garray, size, vec)                              \
+        switch  (argv->ex_type) {                                       \
+                case ET_SYM:                                            \
+                    if (argv->ex_flags & EX_F_TSYM) {                   \
+                        /* SDY the symbol has to be freed too */        \
+                        s = gensym(argv->ex_ptr);                       \
+                        argv->ex_flags &= ~EX_F_TSYM;                   \
+                        free(argv->ex_ptr);                             \
+                     } else                                             \
+                        s = (t_symbol *) argv->ex_ptr;                  \
+                    break;                                              \
+                case ET_SI:                                             \
+                    s = (t_symbol *) e->exp_var[argv->ex_int].ex_ptr;   \
+                    break;                                              \
+                default:                                                \
+                    post(                                               \
+                "expr:'%s' arg to function needs to be a table name\n", \
+                                                e->exp_string);         \
+                    optr->ex_type = ET_INT;                             \
+                    optr->ex_int = 0;                                   \
+                    return;                                             \
+        }                                                               \
+        if (!sym || !(garray =                                          \
+                (t_garray *)pd_findbyclass(sym, garray_class)) ||       \
                 !garray_getfloatwords(garray, &size, &vec))  {          \
-        optr->ex_type = ET_FLT;                                         \
-        optr->ex_int = 0;                                               \
-        pd_error(0, "no such table '%s'", sym?(sym->s_name):"(null)");                       \
-        return;                                                         \
-}
+                optr->ex_type = ET_FLT;                                 \
+                optr->ex_int = 0;                                       \
+                pd_error(0, "%s: no such table '%s'",                   \
+                        e->exp_string, sym?(sym->s_name):"(null)");     \
+                return;                                                 \
+        }
 
 /*
  * ex_size -- find the size of a table
@@ -1056,20 +1376,14 @@ ex_size(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         int size;
         t_word *wvec;
 
-        if (argv->ex_type != ET_SYM)
-        {
-                post("expr: size: need a table name\n");
+        ISTABLE(e, s, garray, size, wvec);
+
+        if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, (t_float) size, e->exp_vsize);
+        else  {
                 optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
+                optr->ex_int = size;
         }
-
-        s = (fts_symbol_t ) argv->ex_ptr;
-
-        ISTABLE(s, garray, size, wvec);
-
-        optr->ex_type = ET_INT;
-        optr->ex_int = size;
 }
 
 /*
@@ -1086,23 +1400,17 @@ ex_sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_float sum;
         int indx;
 
-        if (argv->ex_type != ET_SYM)
-        {
-                post("expr: sum: need a table name\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
-        }
-
-        s = (fts_symbol_t ) argv->ex_ptr;
-
-        ISTABLE(s, garray, size, wvec);
+        ISTABLE(e, s, garray, size, wvec);
 
         for (indx = 0, sum = 0; indx < size; indx++)
                 sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum;
+        if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, (t_float) size, e->exp_vsize);
+        else  {
+                optr->ex_type = ET_FLT;
+                optr->ex_flt = sum;
+        }
 }
 
 
@@ -1120,56 +1428,58 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_float sum;
         long indx, n1, n2;
 
-        if (argv->ex_type != ET_SYM)
-        {
-                post("expr: sum: need a table name\n");
+        ISTABLE(e, s, garray, size, wvec);
+
+        switch((++argv)->ex_type) {
+        case ET_INT:
+            n1 = argv->ex_int;
+            break;
+        case ET_FLT:
+            n1 = argv->ex_flt;
+            break;
+        default:
+            ex_error(e, "expr: Sum: boundaries have to be fix values\n");
+            if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+            else {
                 optr->ex_type = ET_INT;
                 optr->ex_int = 0;
-                return;
+            }
+            return;
         }
+        if (n1 < 0)
+            n1 = 0;
 
-        s = (fts_symbol_t ) argv->ex_ptr;
-
-        ISTABLE(s, garray, size, wvec);
-
-                switch((++argv)->ex_type) {
-                case ET_INT:
-                n1 = argv->ex_int;
-                        break;
-                case ET_FLT:
-                n1 = argv->ex_flt;
-                        break;
-                default:
-                        post("expr: Sum: boundaries have to be fix values\n");
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        return;
-                }
-                if (n1 < 0)
-                        n1 = 0;
-
-                switch((++argv)->ex_type) {
-                case ET_INT:
-                n2 = argv->ex_int;
-                        break;
-                case ET_FLT:
-                n2 = argv->ex_flt;
-                        break;
-                default:
-                        post("expr: Sum: boundaries have to be fix values\n");
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        return;
-                }
-                if (n2 > size)
-                        n2 = size;
+        switch((++argv)->ex_type) {
+        case ET_INT:
+            n2 = argv->ex_int;
+            break;
+        case ET_FLT:
+            n2 = argv->ex_flt;
+            break;
+        default:
+            ex_error(e, "expr: Sum: boundaries have to be fix values\n");
+            if (optr->ex_type == ET_VEC)
+                ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+            else {
+                optr->ex_type = ET_INT;
+                optr->ex_int = 0;
+            }
+            return;
+        }
+        if (n2 > size)
+            n2 = size;
 
         for (indx = n1, sum = 0; indx <= n2; indx++)
-                        if (indx >= 0 && indx < size)
-                                sum += wvec[indx].w_float;
+            if (indx >= 0 && indx < size)
+                sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum;
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum, e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum;
+        }
 }
 
 /*
@@ -1186,23 +1496,17 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_float sum;
         int indx;
 
-        if (argv->ex_type != ET_SYM)
-        {
-                post("expr: avg: need a table name\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
-        }
-
-        s = (fts_symbol_t ) argv->ex_ptr;
-
-        ISTABLE(s, garray, size, wvec);
+        ISTABLE(e, s, garray, size, wvec);
 
         for (indx = 0, sum = 0; indx < size; indx++)
                 sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum / size;
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum / size, e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum / size;
+        }
 }
 
 
@@ -1220,56 +1524,58 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_float sum;
         long indx, n1, n2;
 
-        if (argv->ex_type != ET_SYM)
-        {
-                post("expr: sum: need a table name\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                return;
-        }
+        ISTABLE(e, s, garray, size, wvec);
 
-        s = (fts_symbol_t ) argv->ex_ptr;
-
-        ISTABLE(s, garray, size, wvec);
-
-                switch((++argv)->ex_type) {
-                case ET_INT:
+        switch((++argv)->ex_type) {
+        case ET_INT:
                 n1 = argv->ex_int;
-                        break;
-                case ET_FLT:
+                break;
+        case ET_FLT:
                 n1 = argv->ex_flt;
                         break;
-                default:
-                        post("expr: Avg: boundaries have to be fix values\n");
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        return;
+        default:
+                ex_error(e, "expr: Avg: boundaries have to be fix values\n");
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
                 }
-                if (n1 < 0)
-                        n1 = 0;
+                return;
+        }
+        if (n1 < 0)
+                n1 = 0;
 
-                switch((++argv)->ex_type) {
-                case ET_INT:
+        switch((++argv)->ex_type) {
+        case ET_INT:
                 n2 = argv->ex_int;
                         break;
-                case ET_FLT:
+        case ET_FLT:
                 n2 = argv->ex_flt;
                         break;
-                default:
-                        post("expr: Avg: boundaries have to be fix values\n");
-                        optr->ex_type = ET_INT;
-                        optr->ex_int = 0;
-                        return;
+        default:
+                ex_error(e, "expr: Avg: boundaries have to be fix values\n");
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, e->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
                 }
-                if (n2 >= size)
-                        n2 = size - 1;
+                return;
+        }
+        if (n2 >= size)
+                n2 = size - 1;
 
         for (indx = n1, sum = 0; indx <= n2; indx++)
                 if (indx >= 0 && indx < size)
                         sum += wvec[indx].w_float;
 
-        optr->ex_type = ET_FLT;
-        optr->ex_flt = sum / (n2 - n1 + 1);
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, sum / (n2 - n1 + 1), e->exp_vsize);
+        else {
+            optr->ex_type = ET_FLT;
+            optr->ex_flt = sum / (n2 - n1 + 1);
+        }
 }
 
 /*
@@ -1278,29 +1584,46 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 int
 max_ex_var_store(struct expr *expr, t_symbol * var, struct ex_ex *eptr, struct ex_ex *optr)
 {
-                t_float value = 0.;
+        t_float value = 0.;
 
-                *optr = *eptr;
-                switch (eptr->ex_type) {
-                case ET_INT:
-                        value = eptr->ex_int;
-                        break;
-                case ET_FLT:
-                        value = eptr->ex_flt;
-                        break;
-                default:
-                        post("do not know yet\n");
+        switch (eptr->ex_type) {
+        case ET_INT:
+                value = eptr->ex_int;
+                break;
+        case ET_FLT:
+                value = eptr->ex_flt;
+                break;
+        default:
+                ex_error(expr, "bad right value - '%s'\n", expr->exp_string);
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_int = 0;
+                    optr->ex_type = ET_INT;
                 }
-
-        if (value_setfloat(var, value)) {
-                optr->ex_flt = 0;
-                pd_error(expr, "no such var '%s'", var->s_name);
                 return (1);
         }
+
+        if (value_setfloat(var, value)) {
+                ex_error(expr, "no such var '%s'", var->s_name);
+                if (optr->ex_type == ET_VEC)
+                    ex_mkvector(optr->ex_vec, 0.0, expr->exp_vsize);
+                else {
+                    optr->ex_type = ET_INT;
+                    optr->ex_int = 0;
+                }
+                return (1);
+        }
+        if (optr->ex_type == ET_VEC)
+            ex_mkvector(optr->ex_vec, value, expr->exp_vsize);
+        else
+            *optr = *eptr;
         return (0);
 }
 
 /*
+ * UNUSED FUNCTION
+ *
  * ex_store -- store a value in a table
  *             if the index is greater the size of the table,
  *             we will make a modulo the size of the table
@@ -1311,7 +1634,7 @@ ex_store(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
 /* SDY - look into this function */
 #if 0
-        fts_symbol_t s;
+        t_symbol *s;
         fts_integer_vector_t *tw = 0;
 
         if (argv->ex_type != ET_SYM)
@@ -1319,7 +1642,7 @@ ex_store(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 post("expr: store: need a table name\n");
         }
 
-        s = (fts_symbol_t ) (argv++)->ex_ptr;
+        s = (t_symbol *) (argv++)->ex_ptr;
 
         tw = table_integer_vector_get_by_name(s);
 
@@ -1327,7 +1650,7 @@ ex_store(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         {
                 optr->ex_type = ET_INT;
                 optr->ex_int = 0;
-                post("expr: store: no such table %s\n", fts_symbol_name(s));
+                post("expr: store: no such table %s\n", s->s_name);
                 return;
         }
 

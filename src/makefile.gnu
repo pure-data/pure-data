@@ -1,4 +1,4 @@
-# You can use this makefile to compile Pd for Gnu/linux.  Masochists and 
+# You can use this makefile to compile Pd for Gnu/linux.  Masochists and
 # packagers might prefer the automake route as described in ../README.txt
 # You can invoke this one as:  $ make -f makefile.gnu
 # You don't have to "make install" - you can just invoke Pd from ../bin.
@@ -65,7 +65,7 @@ CPPFLAGS = -DPD -DPD_INTERNAL \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
     -Wno-cast-function-type -Wno-stringop-truncation -Wno-format-truncation
 
-# code generation flags (e.g., optimization).  
+# code generation flags (e.g., optimization).
 CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 
 # anything else you want to specify.  Also passed on to "extra" makefiles.
@@ -131,21 +131,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     x_file.c x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c \
     $(SYSSRC)
 
-OBJ = $(SRC:.c=.o) 
-
-# get version from m_pd.h to use in doc/1.manual/1.introduction.txt
-PD_MAJOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MAJOR_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
-PD_MINOR_VERSION := $(shell grep "^\s*\#\s*define\s*PD_MINOR_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
-PD_BUGFIX_VERSION := $(shell grep "^\s*\#\s*define\s*PD_BUGFIX_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
-PD_TEST_VERSION := $(shell grep "^\s*\#\s*define\s*PD_TEST_VERSION\>" m_pd.h | \
-	sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
-PD_VERSION := $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
-ifneq ($(PD_TEST_VERSION),)
-	PD_VERSION := $(PD_VERSION)-$(PD_TEST_VERSION)
-endif
+OBJ = $(SRC:.c=.o)
 
 #
 #  ------------------ targets ------------------------------------
@@ -159,7 +145,7 @@ all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive externs \
 bin: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive
 
 $(OBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
+	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c
 
 pd: $(PDEXEC)
 
@@ -181,21 +167,20 @@ $(PDEXEC): $(OBJ_DIR) $(OBJ)
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(MORELDFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
-externs: 
-	make -C ../extra/bonk~     MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/choice    MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/fiddle~   MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/loop~     MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/lrshift~  MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/pique     MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/sigmund~  MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/pd~       MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/stdout    MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/bob~      MORECFLAGS="$(MORECFLAGS)" 
+externs:
+	make -C ../extra/bonk~     MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/choice    MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/fiddle~   MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/loop~     MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/lrshift~  MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/pique     MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/sigmund~  MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/pd~       MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/stdout    MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/bob~      MORECFLAGS="$(MORECFLAGS)"
 
 BINARYMODE=-m755
 
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
 	install -d $(DESTDIR)$(libpdbindir)
 	install $(BIN_DIR)/pd-watchdog $(DESTDIR)$(libpdbindir)/pd-watchdog
@@ -203,7 +188,7 @@ install:  all
 	install -d $(DESTDIR)$(bindir)
 	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(bindir)/pd
 	install -m755 $(BIN_DIR)/pdsend $(DESTDIR)$(bindir)/pdsend
-	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive 
+	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive
 	install -d $(DESTDIR)$(libpdtcldir)
 	install ../tcl/* $(DESTDIR)$(libpdtcldir)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
@@ -217,10 +202,6 @@ install:  all
 		install -m644 -p ../doc/7.stuff/$$dir/*.* \
                     $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 	done
-	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
-	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
-		> $(ABOUT_FILE)
-	rm $(ABOUT_FILE).tmp
 	cp -pr ../extra $(DESTDIR)$(libpddir)/
 	rm -f $(DESTDIR)$(libpddir)/extra/*/*.o
 	install -d $(DESTDIR)$(includedir)
@@ -238,7 +219,7 @@ local-clean:
 	-rm -f ../obj/* $(BIN_DIR)/pd $(BIN_DIR)/pdsend \
 	    $(BIN_DIR)/pdreceive $(BIN_DIR)/pd-watchdog m_stamp.c \
             $(BIN_DIR)/*.tcl
-	-rm -f `find ../portaudio -name "*.o"` 
+	-rm -f `find ../portaudio -name "*.o"`
 	-rm -f *~
 	-(cd ../doc/6.externs; rm -f *.pd_linux)
 	-rm -f makefile.dependencies

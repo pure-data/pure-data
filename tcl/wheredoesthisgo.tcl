@@ -141,9 +141,11 @@ proc lookup_windowname {mytoplevel} {
     set window [array get ::windowname $mytoplevel]
     if { $window ne ""} {
         return [lindex $window 1]
-    } else {
-        return ERROR
     }
+    if { [winfo exists $mytoplevel] } {
+        return [wm title [winfo toplevel $mytoplevel]]
+    }
+    return ERROR
 }
 
 proc tkcanvas_name {mytoplevel} {

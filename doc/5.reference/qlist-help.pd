@@ -71,7 +71,7 @@
 #X text 14 69 The [qlist] object reads text files containing time-tagged Pd messages. You can have them sequenced automatically (by sending a "bang" message \, possibly changing speed via "tempo" messages) or manually via the "rewind" and "next" messages.;
 #X text 13 153 To run the qlist automatically \, send it a "read" message (the filename is relative to the directory the patch is in) and later a "bang." Messages in the file are separated by semicolons. Optional leading numbers are delay times in milliseconds. If the tempo is different from 1 the messages are sent faster or slower accordingly. Messages should start with a symbol giving the destination object. In the file "qlist.txt" used here \, the messages go to objects "this" and "that" which are receives below., f 56;
 #X text 14 385 You can also record textual messages and save them to a file. Send "clear" to empty the [qlist] and "add" to add messages (terminated with semicolons.) The message \, "add2" adds a list of atoms without finishing with a semicolon in case you want to make variable-length messages., f 56;
-#X text 263 512 <-- newer and better replacement for qlist;
+#X text 263 512 <-- newer and better replacement for [qlist];
 #X connect 0 0 3 0;
 #X connect 0 1 32 0;
 #X connect 1 0 0 0;

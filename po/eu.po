@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -241,7 +241,7 @@ msgstr "Irteera gailuak"
 msgid "Use Multiple Devices"
 msgstr "Gailu anitz erabili"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr ""
 
 #, fuzzy
@@ -315,6 +315,10 @@ msgstr "Marjina:"
 
 msgid "Y range: from"
 msgstr "Y heina:"
+
+#, fuzzy
+msgid "Object:"
+msgstr "Objektu"
 
 #, fuzzy
 msgid "Data Properties"
@@ -616,7 +620,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 #, fuzzy
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Pd-en leihoa"
 
 #, fuzzy
@@ -624,19 +628,19 @@ msgid "Zoom New Windows"
 msgstr "Leihoa"
 
 #, fuzzy
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr ".pdsettings fitxategia ezabatu da"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr ""
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr ""
 
-msgid "single page"
+msgid "Single page"
 msgstr ""
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr ""
 
 msgid "Highlight active cord while connecting"
@@ -679,7 +683,7 @@ msgid "Pd libraries to load on startup"
 msgstr ""
 
 #, fuzzy
-msgid "GUI options"
+msgid "GUI Options"
 msgstr ".pdsettings fitxategia ezabatu da"
 
 msgid "language"
@@ -704,13 +708,13 @@ msgstr "Bloke tamaina:"
 msgid "Numeric precision of Pd-core"
 msgstr ""
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr ""
 
 msgid "Help Browser"
@@ -890,10 +894,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Bilatu"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -965,6 +982,19 @@ msgstr "TAR Fitxategiak"
 #, fuzzy
 msgid "All Files"
 msgstr "Fitxategi guztiak"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1156,11 +1186,11 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr ""
 
-#, tcl-format
-msgid "Unable to install to '%s'"
+msgid "Directory does not exist!"
 msgstr ""
 
-msgid "Directory does not exist!"
+#, tcl-format
+msgid "Unable to install to '%s'"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1199,6 +1229,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, tcl-format
@@ -1297,13 +1331,43 @@ msgstr ""
 msgid "The language can only be set during startup."
 msgstr ""
 
+msgid "Afar"
+msgstr ""
+
+msgid "Abkhazian"
+msgstr ""
+
+msgid "Avestan"
+msgstr ""
+
 msgid "Afrikaans"
+msgstr ""
+
+msgid "Akan"
+msgstr ""
+
+msgid "Amharic"
+msgstr ""
+
+msgid "Aragonese"
 msgstr ""
 
 msgid "Arabic"
 msgstr ""
 
+msgid "Assamese"
+msgstr ""
+
+msgid "Avaric"
+msgstr ""
+
+msgid "Aymara"
+msgstr ""
+
 msgid "Azerbaijani"
+msgstr ""
+
+msgid "Bashkir"
 msgstr ""
 
 msgid "Belarusian"
@@ -1312,10 +1376,67 @@ msgstr ""
 msgid "Bulgarian"
 msgstr ""
 
+msgid "Bihari"
+msgstr ""
+
+msgid "Bislama"
+msgstr ""
+
+msgid "Bambara"
+msgstr ""
+
+msgid "Bengali"
+msgstr ""
+
+msgid "Tibetan"
+msgstr ""
+
+msgid "Breton"
+msgstr ""
+
+msgid "Bosnian"
+msgstr ""
+
+msgid "Catalan"
+msgstr ""
+
+msgid "Chechen"
+msgstr ""
+
+msgid "Chamorro"
+msgstr ""
+
+msgid "Corsican"
+msgstr ""
+
+msgid "Cree"
+msgstr ""
+
+msgid "Czech"
+msgstr ""
+
+msgid "Chuvash"
+msgstr ""
+
+msgid "Welsh"
+msgstr ""
+
+msgid "Danish"
+msgstr ""
+
 msgid "German"
 msgstr ""
 
 msgid "German (Austria)"
+msgstr ""
+
+msgid "Dhivehi"
+msgstr ""
+
+msgid "Dzongkha"
+msgstr ""
+
+msgid "Ewe"
 msgstr ""
 
 msgid "Greek"
@@ -1333,19 +1454,58 @@ msgstr ""
 msgid "English (USA)"
 msgstr ""
 
+msgid "Esperanto"
+msgstr ""
+
 msgid "Spanish"
+msgstr ""
+
+msgid "Estonian"
 msgstr ""
 
 msgid "Basque"
 msgstr ""
 
+msgid "Persian"
+msgstr ""
+
+msgid "Fulah"
+msgstr ""
+
 msgid "Finnish"
+msgstr ""
+
+msgid "Fijian"
+msgstr ""
+
+msgid "Faroese"
 msgstr ""
 
 msgid "French"
 msgstr ""
 
+msgid "Frisian"
+msgstr ""
+
+msgid "Irish"
+msgstr ""
+
+msgid "Gaelic"
+msgstr ""
+
+msgid "Galician"
+msgstr ""
+
+msgid "Guarani"
+msgstr ""
+
 msgid "Gujarati"
+msgstr ""
+
+msgid "Manx"
+msgstr ""
+
+msgid "Hausa"
 msgstr ""
 
 msgid "Hebrew"
@@ -1354,31 +1514,205 @@ msgstr ""
 msgid "Hindi"
 msgstr ""
 
+msgid "Hiri Motu"
+msgstr ""
+
+msgid "Croatian"
+msgstr ""
+
+msgid "Haitian"
+msgstr ""
+
 msgid "Hungarian"
 msgstr ""
 
 msgid "Armenian"
 msgstr ""
 
-msgid "Italian"
+msgid "Herero"
+msgstr ""
+
+msgid "Interlingua"
 msgstr ""
 
 msgid "Indonesian"
 msgstr ""
 
+msgid "Occidental"
+msgstr ""
+
+msgid "Igbo"
+msgstr ""
+
+msgid "Nuosu"
+msgstr ""
+
+msgid "Inupiaq"
+msgstr ""
+
+msgid "Ido"
+msgstr ""
+
+msgid "Icelandic"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Inuktitut"
+msgstr ""
+
 msgid "Japanese"
+msgstr ""
+
+msgid "Javanese"
+msgstr ""
+
+msgid "Georgian"
+msgstr ""
+
+msgid "Kongo"
+msgstr ""
+
+msgid "Gikuyu"
+msgstr ""
+
+msgid "Kwanyama"
+msgstr ""
+
+msgid "Kazakh"
+msgstr ""
+
+msgid "Greenlandic"
+msgstr ""
+
+msgid "Kannada"
 msgstr ""
 
 msgid "Korean"
 msgstr ""
 
+msgid "Kanuri"
+msgstr ""
+
+msgid "Kashmiri"
+msgstr ""
+
+msgid "Kurdish"
+msgstr ""
+
+msgid "Komi"
+msgstr ""
+
+msgid "Cornish"
+msgstr ""
+
+msgid "Kyrgyz"
+msgstr ""
+
+msgid "Latin"
+msgstr ""
+
+msgid "Luxembourgish"
+msgstr ""
+
+msgid "Luganda"
+msgstr ""
+
+msgid "Limburgish"
+msgstr ""
+
+msgid "Lingala"
+msgstr ""
+
+msgid "Lao"
+msgstr ""
+
+msgid "Lithuanian"
+msgstr ""
+
+msgid "Luba-Katanga"
+msgstr ""
+
+msgid "Latvian"
+msgstr ""
+
+msgid "Malagasy"
+msgstr ""
+
+msgid "Marshallese"
+msgstr ""
+
+msgid "Maori"
+msgstr ""
+
+msgid "Macedonian"
+msgstr ""
+
+msgid "Malayalam"
+msgstr ""
+
+msgid "Mongolian"
+msgstr ""
+
+msgid "Marathi"
+msgstr ""
+
+msgid "Malay"
+msgstr ""
+
+msgid "Maltese"
+msgstr ""
+
+msgid "Burmese"
+msgstr ""
+
+msgid "Nauru"
+msgstr ""
+
+msgid "Nepali"
+msgstr ""
+
+msgid "Ndonga"
+msgstr ""
+
 msgid "Dutch"
+msgstr ""
+
+msgid "Norwegian Nynorsk"
+msgstr ""
+
+msgid "Navaho"
+msgstr ""
+
+msgid "Nyanja"
+msgstr ""
+
+msgid "Occitan"
+msgstr ""
+
+msgid "Ojibwe"
+msgstr ""
+
+msgid "Oromo"
+msgstr ""
+
+msgid "Odia"
+msgstr ""
+
+msgid "Ossetian"
 msgstr ""
 
 msgid "Panjabi"
 msgstr ""
 
+msgid "Pali"
+msgstr ""
+
 msgid "Polish"
+msgstr ""
+
+msgid "Pashto"
 msgstr ""
 
 msgid "Portuguese"
@@ -1390,25 +1724,157 @@ msgstr ""
 msgid "Portuguese (Portugal)"
 msgstr ""
 
+msgid "Quechua"
+msgstr ""
+
+msgid "Romansh"
+msgstr ""
+
+msgid "Rundi"
+msgstr ""
+
+msgid "Romanian"
+msgstr ""
+
 msgid "Russian"
+msgstr ""
+
+msgid "Kinyarwanda"
+msgstr ""
+
+msgid "Sanskrit"
+msgstr ""
+
+msgid "Sardinian"
+msgstr ""
+
+msgid "Sindhi"
+msgstr ""
+
+msgid "Sango"
+msgstr ""
+
+msgid "Sinhala"
+msgstr ""
+
+msgid "Slovak"
+msgstr ""
+
+msgid "Slovenian"
+msgstr ""
+
+msgid "Samoan"
+msgstr ""
+
+msgid "Shona"
+msgstr ""
+
+msgid "Somali"
 msgstr ""
 
 msgid "Albanian"
 msgstr ""
 
+msgid "Serbian"
+msgstr ""
+
+msgid "Swati"
+msgstr ""
+
+msgid "Sundanese"
+msgstr ""
+
 msgid "Swedish"
+msgstr ""
+
+msgid "Swahili"
+msgstr ""
+
+msgid "Tamil"
+msgstr ""
+
+msgid "Telugu"
+msgstr ""
+
+msgid "Tajik"
+msgstr ""
+
+msgid "Thai"
+msgstr ""
+
+msgid "Tigrinya"
+msgstr ""
+
+msgid "Turkmen"
+msgstr ""
+
+msgid "Tagalog"
+msgstr ""
+
+msgid "Tswana"
+msgstr ""
+
+msgid "Tongan"
 msgstr ""
 
 msgid "Turkish"
 msgstr ""
 
+msgid "Tsonga"
+msgstr ""
+
+msgid "Tatar"
+msgstr ""
+
+msgid "Twi"
+msgstr ""
+
+msgid "Tahitian"
+msgstr ""
+
+msgid "Uyghur"
+msgstr ""
+
 msgid "Ukrainian"
+msgstr ""
+
+msgid "Urdu"
+msgstr ""
+
+msgid "Uzbek"
+msgstr ""
+
+msgid "Venda"
 msgstr ""
 
 msgid "Vietnamese"
 msgstr ""
 
+msgid "Volapük"
+msgstr ""
+
+msgid "Walloon"
+msgstr ""
+
+msgid "Wolof"
+msgstr ""
+
+msgid "Xhosa"
+msgstr ""
+
+msgid "Yiddish"
+msgstr ""
+
+msgid "Yoruba"
+msgstr ""
+
+msgid "Zhuang"
+msgstr ""
+
 msgid "Chinese (Traditional)"
+msgstr ""
+
+msgid "Zulu"
 msgstr ""
 
 msgid "(no translation)"
@@ -1416,6 +1882,20 @@ msgstr ""
 
 #, tcl-format
 msgid "(default language: %s)"
+msgstr ""
+
+#, fuzzy
+msgid "Print..."
+msgstr "Inprimatu..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
 msgstr ""
 
 #, tcl-format
@@ -1430,6 +1910,15 @@ msgstr "Pd-ri Buruz"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Berria"
+
+msgid "Open"
+msgstr "Ireki"
+
+msgid "Open Recent"
+msgstr "Azkenaldi Ireki"
+
 msgid "Save"
 msgstr "Gorde"
 
@@ -1437,22 +1926,30 @@ msgstr "Gorde"
 msgid "Save As..."
 msgstr "Gorde Honela..."
 
+msgid "Quit"
+msgstr "Irten"
+
 #, fuzzy
-msgid "Print..."
-msgstr "Inprimatu..."
+msgid "Undo"
+msgstr "Desegin"
+
+#, fuzzy
+msgid "Redo"
+msgstr "Berregin"
+
+msgid "Cut"
+msgstr "Mostu"
 
 msgid "Paste Replace"
 msgstr ""
 
 #, fuzzy
+msgid "Select All"
+msgstr "Guztia Aukeratu"
+
+#, fuzzy
 msgid "Duplicate"
 msgstr "Bikoiztu"
-
-msgid "Zoom In"
-msgstr ""
-
-msgid "Zoom Out"
-msgstr ""
 
 msgid "Tidy Up"
 msgstr "Txukuntzea"
@@ -1463,37 +1960,19 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-#, fuzzy
-msgid "Edit Mode"
-msgstr "Edizio Modua"
+msgid "Zoom In"
+msgstr ""
 
-#, fuzzy
-msgid "Undo"
-msgstr "Desegin"
-
-#, fuzzy
-msgid "Redo"
-msgstr "Berregin"
-
-msgid "New"
-msgstr "Berria"
-
-msgid "Open"
-msgstr "Ireki"
-
-msgid "Message..."
-msgstr "Mezua..."
-
-msgid "Cut"
-msgstr "Mostu"
-
-#, fuzzy
-msgid "Select All"
-msgstr "Guztia Aukeratu"
+msgid "Zoom Out"
+msgstr ""
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Kontsola Garbitu"
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Edizio Modua"
 
 msgid "Object"
 msgstr "Objektu"
@@ -1564,8 +2043,15 @@ msgstr "Leihoa"
 msgid "Previous Window"
 msgstr ""
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Lehioa honetan itxi?"
+
 msgid "Parent Window"
 msgstr ""
+
+msgid "Message..."
+msgstr "Mezua..."
 
 msgid "HTML Manual..."
 msgstr ""
@@ -1624,12 +2110,6 @@ msgstr ""
 msgid "Tabbed preferences"
 msgstr "Hobespenak"
 
-msgid "Open Recent"
-msgstr "Azkenaldi Ireki"
-
-msgid "Quit"
-msgstr "Irten"
-
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
 msgstr "'%s' fitxategian egin dituzun aldaketak gorde nahi dituzu?"
@@ -1660,6 +2140,10 @@ msgstr "Audioaren ezarpenak"
 
 msgid "Audio off"
 msgstr ""
+
+#, fuzzy
+msgid "Find source"
+msgstr "Azken Akatsa Bilatu"
 
 msgid "Pd"
 msgstr ""
@@ -1793,10 +2277,6 @@ msgstr ""
 
 #~ msgid "Signal"
 #~ msgstr "Seinalea"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "Lehioa honetan itxi?"
 
 #~ msgid "Output device 3:"
 #~ msgstr "Irtendako tresna 3:"

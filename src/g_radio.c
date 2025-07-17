@@ -44,10 +44,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos, ypos + height + zoom - ioh,
             xpos + iow, ypos + height,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
 
             /* keep buttons above outlet */
@@ -58,10 +59,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rs rs rS", canvas, "create", "rectangle",
             xpos, ypos,
             xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor->s_name,
+            "-outline", THISGUI->i_foregroundcolor->s_name,
             "-tags", 2, tags);
 
             /* keep buttons above inlet */

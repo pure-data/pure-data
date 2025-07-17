@@ -10,6 +10,8 @@ in future releases.  The public (stable) API is in m_pd.h. */
 
 /* in s_path.c */
 
+#include <stdarg.h>
+
 typedef struct _namelist    /* element in a linked list of stored strings */
 {
     struct _namelist *nl_next;  /* next in list */
@@ -20,13 +22,17 @@ EXTERN t_namelist *namelist_append(t_namelist *listwas, const char *s, int allow
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 EXTERN void namelist_free(t_namelist *listwas);
 EXTERN const char *namelist_get(const t_namelist *namelist, int n);
+int do_open_via_path(const char *dir, const char *name,
+    const char *ext, char *dirresult, char **nameresult, unsigned int size,
+    int bin, t_namelist *searchpath, int okgui);
 
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp);
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin);
+    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp,
+    int okgui);
+int sys_trytoopenit(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin, int okgui);
 t_symbol *sys_decodedialog(t_symbol *s);
 
 /* s_file.c */
@@ -43,6 +49,8 @@ EXTERN int sys_noloadbang;
 EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
 extern const char *sys_guicmd;
+extern int sys_batch;
+extern char sys_devicename[];
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
@@ -136,7 +144,6 @@ typedef struct _audiosettings
 
 #define DEFMIDIDEV 0
 
-#define DEFAULTSRATE 44100
 #if defined(_WIN32)
 #define DEFAULTADVANCE 80
 #elif defined(__APPLE__)

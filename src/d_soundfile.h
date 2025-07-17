@@ -7,6 +7,9 @@
 #pragma once
 
 #include "m_pd.h"
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -19,8 +22,12 @@
 
 /* GLIBC large file support */
 #ifdef _LARGEFILE64_SOURCE
-#define lseek lseek64
-#define off_t __off64_t
+# define lseek lseek64
+# if HAVE_OFF64_T
+#  define off_t off64_t
+# else
+#  define off_t __off64_t
+# endif
 #endif
 
 /* MSVC doesn't define or uses different naming for these Posix types */
@@ -28,6 +35,7 @@
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #define off_t ssize_t
+#endif /* _MSC_VER */
 /* choose appropriate size if SSIZE_MAX is not defined */
 #ifndef SSIZE_MAX
 #ifdef _WIN64
@@ -36,7 +44,6 @@ typedef SSIZE_T ssize_t;
 #define SSIZE_MAX INT_MAX
 #endif
 #endif /* SSIZE_MAX */
-#endif /* _MSC_VER */
 
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128

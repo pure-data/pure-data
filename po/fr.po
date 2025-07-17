@@ -10,17 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2024-05-06 10:09+0200\n"
-"PO-Revision-Date: 2024-05-06 18:51+0000\n"
-"Last-Translator: cyrille henry <ch@chnry.net>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.5.4-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -219,7 +219,7 @@ msgstr "Périphériques de sortie"
 msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
 
-msgid "audio system"
+msgid "Audio System"
 msgstr "Système audio"
 
 msgid "Settings"
@@ -290,6 +290,9 @@ msgstr "Marges :"
 
 msgid "Y range: from"
 msgstr "Intervalle Y : de"
+
+msgid "Object:"
+msgstr "Objet :"
 
 msgid "Data Properties"
 msgstr "Propriétés des données"
@@ -570,25 +573,25 @@ msgstr "Ajouter un chemin"
 msgid "Edit existing path [%s]"
 msgstr "Modifier le chemin d'accès existant [%s]"
 
-msgid "Patch windows"
+msgid "Patch Windows"
 msgstr "Fenêtres de patch"
 
 msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
-msgid "GUI settings"
+msgid "GUI Settings"
 msgstr "Paramètres de l'interface graphique"
 
-msgid "preference layout (reopen the preferences to see the effect)"
+msgid "Preference layout (reopen the preferences to see the effect)"
 msgstr "Disposition des préférences (réouvrir les préférences pour appliquer)"
 
-msgid "use tabs"
+msgid "Use tabs"
 msgstr "en onglets"
 
-msgid "single page"
+msgid "Single page"
 msgstr "une seule page"
 
-msgid "patching helpers"
+msgid "Patching helpers"
 msgstr "aide au patch"
 
 msgid "Highlight active cord while connecting"
@@ -624,7 +627,7 @@ msgstr "Les réglages ci-dessous nécessitent de relancer Pd !"
 msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
-msgid "GUI options"
+msgid "GUI Options"
 msgstr "Options de l'interface graphique"
 
 msgid "language"
@@ -648,13 +651,13 @@ msgstr "taille des flottants"
 msgid "Numeric precision of Pd-core"
 msgstr "Précision numérique de Pd-core"
 
-msgid "Startup options"
+msgid "Startup Options"
 msgstr "Options au démarrage"
 
 msgid "Defeat real-time scheduling"
 msgstr "Rejeter la priorité temps-réel"
 
-msgid "Startup flags:"
+msgid "Startup Flags:"
 msgstr "Options au démarrage :"
 
 msgid "Help Browser"
@@ -837,11 +840,23 @@ msgstr "Impossible d'effacer le ficher temporaire '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
+msgid "Search URLs:"
+msgstr "URL de recherche :"
+
+msgid "Additional search URLs"
+msgstr "URL de recherche supplémentaires"
+
+msgid "Ephemeral search URLs"
+msgstr "URL de recherche éphémères"
+
 msgid "Create"
 msgstr "Créer"
 
 msgid "Check"
 msgstr "Vérifier"
+
+msgid "Deken Installation Target"
+msgstr "Destination d'installation pour Deken"
 
 msgid "Installation options:"
 msgstr "Options d'installation :"
@@ -916,6 +931,21 @@ msgstr "Fichiers TAR"
 
 msgid "All Files"
 msgstr "Tous les fichiers"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr "Installation d'une architecture incompatible avec '%s'."
+
+msgid "Replacing library with incompatible architecture!"
+msgstr "Remplacement d'une bibliothèque par une architecture incompatible !"
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
+"Voulez-vous remplacer la bibliothèque '%1$s' dans '%2$s' par une version "
+"incompatible avec votre ordinateur ?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1121,12 +1151,12 @@ msgstr ""
 msgid "Installing to non-existent directory failed"
 msgstr "L'installation a échoué : le répertoire n'existe pas"
 
+msgid "Directory does not exist!"
+msgstr "Le répertoire n'existe pas !"
+
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Échec de l'installation de %s"
-
-msgid "Directory does not exist!"
-msgstr "Le répertoire n'existe pas !"
 
 msgid "Directory is not writable!"
 msgstr "Le répertoire n'est pas accessible en écriture !"
@@ -1165,6 +1195,10 @@ msgstr "[deken] deken-plugin.tcl (recherche d'externals Pd) chargé depuis %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plateforme détectée : %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr "Impossible de trouver un menu où ajouter '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1275,18 +1309,47 @@ msgstr "refus de supprimer un domaine vide"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Impossible de créer des préférences \"%1$s\" dans %2$s"
 
-#, fuzzy
 msgid "The language can only be set during startup."
-msgstr "Le changement de langue prendra effet au prochain chargement."
+msgstr "Le changement de langue prendra effet au prochain démarrage."
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abkhaze"
+
+msgid "Avestan"
+msgstr "Avestique"
 
 msgid "Afrikaans"
 msgstr "Afrikaans"
 
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amharique"
+
+msgid "Aragonese"
+msgstr "Aragonais"
+
 msgid "Arabic"
 msgstr "Arabe"
 
+msgid "Assamese"
+msgstr "Assamais"
+
+msgid "Avaric"
+msgstr "Avar"
+
+msgid "Aymara"
+msgstr "aymara"
+
 msgid "Azerbaijani"
 msgstr "Azéri"
+
+msgid "Bashkir"
+msgstr "Bachkir"
 
 msgid "Belarusian"
 msgstr "Biélorusse"
@@ -1294,11 +1357,68 @@ msgstr "Biélorusse"
 msgid "Bulgarian"
 msgstr "Bulgare"
 
+msgid "Bihari"
+msgstr "Bihari"
+
+msgid "Bislama"
+msgstr "Bichelamar"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengali"
+
+msgid "Tibetan"
+msgstr "Tibétain"
+
+msgid "Breton"
+msgstr "Breton"
+
+msgid "Bosnian"
+msgstr "Bosniaque"
+
+msgid "Catalan"
+msgstr "Catalan"
+
+msgid "Chechen"
+msgstr "Tchétchène"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Corse"
+
+msgid "Cree"
+msgstr "Cri"
+
+msgid "Czech"
+msgstr "Tchèque"
+
+msgid "Chuvash"
+msgstr "Tchouvache"
+
+msgid "Welsh"
+msgstr "Gallois"
+
+msgid "Danish"
+msgstr "Danois"
+
 msgid "German"
 msgstr "Allemand"
 
 msgid "German (Austria)"
 msgstr "Allemand (Autriche)"
+
+msgid "Dhivehi"
+msgstr "Maldivien"
+
+msgid "Dzongkha"
+msgstr "Dzongkha"
+
+msgid "Ewe"
+msgstr "Éwé"
 
 msgid "Greek"
 msgstr "Grec"
@@ -1315,20 +1435,59 @@ msgstr "Anglais (Royaume-Uni)"
 msgid "English (USA)"
 msgstr "Anglais (USA)"
 
+msgid "Esperanto"
+msgstr "Espéranto"
+
 msgid "Spanish"
 msgstr "Espagnol"
+
+msgid "Estonian"
+msgstr "Estonien"
 
 msgid "Basque"
 msgstr "Basque"
 
+msgid "Persian"
+msgstr "Persan"
+
+msgid "Fulah"
+msgstr "Peul"
+
 msgid "Finnish"
 msgstr "Finnois"
+
+msgid "Fijian"
+msgstr "Fidjien"
+
+msgid "Faroese"
+msgstr "Féroïen"
 
 msgid "French"
 msgstr "Français"
 
+msgid "Frisian"
+msgstr "Frison occidental"
+
+msgid "Irish"
+msgstr "Irlandais"
+
+msgid "Gaelic"
+msgstr "Gaélique écossais"
+
+msgid "Galician"
+msgstr "Galicien"
+
+msgid "Guarani"
+msgstr "Guarani"
+
 msgid "Gujarati"
-msgstr "Gujarati"
+msgstr "Goudjerati"
+
+msgid "Manx"
+msgstr "Mannois"
+
+msgid "Hausa"
+msgstr "Haoussa"
 
 msgid "Hebrew"
 msgstr "Hébreu"
@@ -1336,32 +1495,206 @@ msgstr "Hébreu"
 msgid "Hindi"
 msgstr "Hindi"
 
+msgid "Hiri Motu"
+msgstr "Hiri motu"
+
+msgid "Croatian"
+msgstr "Croate"
+
+msgid "Haitian"
+msgstr "Créole haïtien"
+
 msgid "Hungarian"
 msgstr "Hongrois"
 
 msgid "Armenian"
 msgstr "Arménien"
 
-msgid "Italian"
-msgstr "Italien"
+msgid "Herero"
+msgstr "Héréro"
+
+msgid "Interlingua"
+msgstr "Interlingua"
 
 msgid "Indonesian"
 msgstr "Indonésien"
 
+msgid "Occidental"
+msgstr "Interlingue"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Yi du Sichuan"
+
+msgid "Inupiaq"
+msgstr "Inupiaq"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "Islandais"
+
+msgid "Italian"
+msgstr "Italien"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
+
 msgid "Japanese"
 msgstr "Japonais"
+
+msgid "Javanese"
+msgstr "Javanais"
+
+msgid "Georgian"
+msgstr "Géorgien"
+
+msgid "Kongo"
+msgstr "Kikongo"
+
+msgid "Gikuyu"
+msgstr "Kikuyu"
+
+msgid "Kwanyama"
+msgstr "Kuanyama"
+
+msgid "Kazakh"
+msgstr "Kazakh"
+
+msgid "Greenlandic"
+msgstr "Groenlandais"
+
+msgid "Kannada"
+msgstr "Kannada"
 
 msgid "Korean"
 msgstr "Coréen"
 
+msgid "Kanuri"
+msgstr "Kanouri"
+
+msgid "Kashmiri"
+msgstr "Cachemiri"
+
+msgid "Kurdish"
+msgstr "Kurde"
+
+msgid "Komi"
+msgstr "Komi"
+
+msgid "Cornish"
+msgstr "Cornique"
+
+msgid "Kyrgyz"
+msgstr "Kirghize"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Luxembourgish"
+msgstr "Luxembourgeois"
+
+msgid "Luganda"
+msgstr "Ganda"
+
+msgid "Limburgish"
+msgstr "Limbourgeois"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Lao"
+
+msgid "Lithuanian"
+msgstr "Lituanien"
+
+msgid "Luba-Katanga"
+msgstr "Luba-katanga"
+
+msgid "Latvian"
+msgstr "Letton"
+
+msgid "Malagasy"
+msgstr "Malgache"
+
+msgid "Marshallese"
+msgstr "Marshallais"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Macédonien"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongol"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Malais"
+
+msgid "Maltese"
+msgstr "Maltais"
+
+msgid "Burmese"
+msgstr "Birman"
+
+msgid "Nauru"
+msgstr "Nauruan"
+
+msgid "Nepali"
+msgstr "Népalais"
+
+msgid "Ndonga"
+msgstr "Ndonga"
+
 msgid "Dutch"
 msgstr "Néerlandais"
+
+msgid "Norwegian Nynorsk"
+msgstr "Norvégien nynorsk"
+
+msgid "Navaho"
+msgstr "Navajo"
+
+msgid "Nyanja"
+msgstr "Chewa"
+
+msgid "Occitan"
+msgstr "Occitan"
+
+msgid "Ojibwe"
+msgstr "Ojibwa"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Odia"
+
+msgid "Ossetian"
+msgstr "Ossète"
 
 msgid "Panjabi"
 msgstr "Pendjabi"
 
+msgid "Pali"
+msgstr "Pali"
+
 msgid "Polish"
 msgstr "Polonais"
+
+msgid "Pashto"
+msgstr "Pachto"
 
 msgid "Portuguese"
 msgstr "Portugais"
@@ -1372,26 +1705,158 @@ msgstr "Portugais (Brésil)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugais (Portugal)"
 
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Romanche"
+
+msgid "Rundi"
+msgstr "Roundi"
+
+msgid "Romanian"
+msgstr "Roumain"
+
 msgid "Russian"
 msgstr "Russe"
+
+msgid "Kinyarwanda"
+msgstr "Kinyarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskrit"
+
+msgid "Sardinian"
+msgstr "Sarde"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Cingalais"
+
+msgid "Slovak"
+msgstr "Slovaque"
+
+msgid "Slovenian"
+msgstr "Slovène"
+
+msgid "Samoan"
+msgstr "Samoan"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somali"
 
 msgid "Albanian"
 msgstr "Albanais"
 
+msgid "Serbian"
+msgstr "Serbe"
+
+msgid "Swati"
+msgstr "Swati"
+
+msgid "Sundanese"
+msgstr "Soundanais"
+
 msgid "Swedish"
 msgstr "Suédois"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamoul"
+
+msgid "Telugu"
+msgstr "Télougou"
+
+msgid "Tajik"
+msgstr "Tadjik"
+
+msgid "Thai"
+msgstr "Thaï"
+
+msgid "Tigrinya"
+msgstr "Tigrigna"
+
+msgid "Turkmen"
+msgstr "Turkmène"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tongien"
 
 msgid "Turkish"
 msgstr "Turc"
 
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tatar"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahitien"
+
+msgid "Uyghur"
+msgstr "Ouïghour"
+
 msgid "Ukrainian"
 msgstr "Ukrainien"
+
+msgid "Urdu"
+msgstr "Ourdou"
+
+msgid "Uzbek"
+msgstr "Ouzbek"
+
+msgid "Venda"
+msgstr "Venda"
 
 msgid "Vietnamese"
 msgstr "Vietnamien"
 
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Wallon"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Yiddish"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
+
 msgid "Chinese (Traditional)"
 msgstr "Chinois (traditionnel)"
+
+msgid "Zulu"
+msgstr "Zoulou"
 
 msgid "(no translation)"
 msgstr "(pas de traduction)"
@@ -1399,6 +1864,19 @@ msgstr "(pas de traduction)"
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(langue par défaut : %s)"
+
+msgid "Print..."
+msgstr "Imprimer..."
+
+msgid "single precision"
+msgstr "simple précision"
+
+msgid "double precision"
+msgstr "double précision"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit flottants"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1411,26 +1889,41 @@ msgstr "À propos de Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "impossible de lire le document \"%s\""
 
+msgid "New"
+msgstr "Nouveau"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Open Recent"
+msgstr "Ouvrir un élément récent"
+
 msgid "Save"
 msgstr "Enregistrer"
 
 msgid "Save As..."
 msgstr "Enregistrer sous..."
 
-msgid "Print..."
-msgstr "Imprimer..."
+msgid "Quit"
+msgstr "Quitter"
+
+msgid "Undo"
+msgstr "Défaire"
+
+msgid "Redo"
+msgstr "Refaire"
+
+msgid "Cut"
+msgstr "Couper"
 
 msgid "Paste Replace"
 msgstr "Coller Remplacer"
 
+msgid "Select All"
+msgstr "Tout sélectionner"
+
 msgid "Duplicate"
 msgstr "Dupliquer"
-
-msgid "Zoom In"
-msgstr "Zoomer"
-
-msgid "Zoom Out"
-msgstr "Dézoomer"
 
 msgid "Tidy Up"
 msgstr "Aligner"
@@ -1441,32 +1934,17 @@ msgstr "(Dé)Connecter la sélection"
 msgid "Triggerize"
 msgstr "Triggeriser"
 
-msgid "Edit Mode"
-msgstr "Mode édition"
+msgid "Zoom In"
+msgstr "Zoomer"
 
-msgid "Undo"
-msgstr "Défaire"
-
-msgid "Redo"
-msgstr "Refaire"
-
-msgid "New"
-msgstr "Nouveau"
-
-msgid "Open"
-msgstr "Ouvrir"
-
-msgid "Message..."
-msgstr "Message..."
-
-msgid "Cut"
-msgstr "Couper"
-
-msgid "Select All"
-msgstr "Tout sélectionner"
+msgid "Zoom Out"
+msgstr "Dézoomer"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
+
+msgid "Edit Mode"
+msgstr "Mode édition"
 
 msgid "Object"
 msgstr "Objet"
@@ -1531,8 +2009,14 @@ msgstr "Fenêtre suivante"
 msgid "Previous Window"
 msgstr "Fenêtre précédente"
 
+msgid "Close subwindows"
+msgstr "Fermer les sous-patchs"
+
 msgid "Parent Window"
 msgstr "Fenêtre parente"
+
+msgid "Message..."
+msgstr "Message..."
 
 msgid "HTML Manual..."
 msgstr "Manuel HTML..."
@@ -1586,12 +2070,6 @@ msgstr "Tout oublier..."
 msgid "Tabbed preferences"
 msgstr "Préférences en onglet"
 
-msgid "Open Recent"
-msgstr "Ouvrir un élément récent"
-
-msgid "Quit"
-msgstr "Quitter"
-
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
 msgstr "Enregistrer les modifications de '%s' ?"
@@ -1623,6 +2101,9 @@ msgstr "Audio On"
 
 msgid "Audio off"
 msgstr "Audio Off"
+
+msgid "Find source"
+msgstr "Localiser la source"
 
 msgid "Pd"
 msgstr "Pd"

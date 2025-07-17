@@ -170,6 +170,9 @@ static void print_val(t_val v) {
 }
 #else
 static void print_val(t_val v) { ; }
+#ifdef dprintf
+#undef dprintf
+#endif
 int dprintf(int fd, const char* format, ...) { return -1; }
 #endif
 

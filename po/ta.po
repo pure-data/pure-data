@@ -1,0 +1,2129 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.55.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"PO-Revision-Date: 2025-06-16 02:48+0000\n"
+"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ta/>\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.12-dev\n"
+
+msgid "linear"
+msgstr "நேரியல்"
+
+msgid "logarithmic"
+msgstr "மடக்கை"
+
+msgid "new-only"
+msgstr "புதியது மட்டுமே"
+
+msgid "new&old"
+msgstr "புதிய & பழைய"
+
+msgid "no scale"
+msgstr "அளவு இல்லை"
+
+msgid "scale"
+msgstr "அளவு"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "'%s' இல் மாற்றங்களை நிராகரிக்கவா?"
+
+msgid "Undo clear"
+msgstr "தெளிவுபடுத்துங்கள்"
+
+msgid "Undo connect"
+msgstr "இணைக்கவும்"
+
+msgid "Undo cut"
+msgstr "வெட்டு செயல்தவிர்க்கவும்"
+
+msgid "Undo disconnect"
+msgstr "துண்டிக்கவும்"
+
+msgid "Undo duplicate"
+msgstr "நகல் செயல்தவிர்க்கவும்"
+
+msgid "Undo motion"
+msgstr "இயக்கத்தை செயல்தவிர்க்கவும்"
+
+msgid "Undo paste"
+msgstr "ஒட்டவும்"
+
+msgid "Undo typing"
+msgstr "தட்டச்சு செய்வதை செயல்தவிர்க்கவும்"
+
+msgid "Redo clear"
+msgstr "மீண்டும் தெளிவாக"
+
+msgid "Redo connect"
+msgstr "மீண்டும் இணைக்கவும்"
+
+msgid "Redo cut"
+msgstr "மீண்டும் வெட்டு"
+
+msgid "Redo disconnect"
+msgstr "மீண்டும் துண்டிக்கவும்"
+
+msgid "Redo duplicate"
+msgstr "மீண்டும் நகல்"
+
+msgid "Redo motion"
+msgstr "மீண்டும் இயக்கம்"
+
+msgid "Redo paste"
+msgstr "சுற்று பேச்ட்"
+
+msgid "Redo typing"
+msgstr "மீண்டும் தட்டச்சு"
+
+msgid "no Pd settings to clear"
+msgstr "அழிக்க பி.டி அமைப்புகள் இல்லை"
+
+msgid "removed .pdsettings file"
+msgstr "அகற்றப்பட்டது .pdsettings கோப்பு"
+
+msgid "couldn't delete .pdsettings file"
+msgstr ".ptsettings கோப்பை நீக்க முடியவில்லை"
+
+msgid "failed to erase Pd settings"
+msgstr "பி.டி அமைப்புகளை அழிக்கத் தவறிவிட்டது"
+
+msgid "erased Pd settings"
+msgstr "பி.டி அமைப்புகள் அழிக்கப்பட்டன"
+
+msgid "no Pd settings to erase"
+msgstr "அழிக்க பி.டி அமைப்புகள் இல்லை"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr "ஏற்றுதல் விருப்பங்களைத் தவிர்ப்பது... தொடக்கத்தில் பிடி தொங்கிவிட்டது"
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(அவற்றை மீண்டும் நிலைநிறுத்த விருப்பங்களை மீண்டும் சேமிக்கவும்)"
+
+msgid "File"
+msgstr "கோப்பு"
+
+msgid "Edit"
+msgstr "தொகு"
+
+msgid "Put"
+msgstr "போடு"
+
+msgid "Find"
+msgstr "கண்டுபிடி"
+
+msgid "Media"
+msgstr "ஊடகம்"
+
+msgid "Window"
+msgstr "சாளரம்"
+
+msgid "Help"
+msgstr "உதவி"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "மறைக்கப்பட்ட கோப்புகள் மற்றும் கோப்பகங்களைக் காட்டு"
+
+msgid "Copy"
+msgstr "நகலெடு"
+
+msgid "Paste"
+msgstr "ஒட்டு"
+
+msgid "Array Properties"
+msgstr "வரிசை பண்புகள்"
+
+msgid "Array"
+msgstr "வரிசை"
+
+msgid "Name:"
+msgstr "பெயர்:"
+
+msgid "Size:"
+msgstr "அளவு:"
+
+msgid "Save contents"
+msgstr "உள்ளடக்கங்களை சேமிக்கவும்"
+
+msgid "Draw as:"
+msgstr "இவ்வாறு வரையவும்:"
+
+msgid "Polygon"
+msgstr "பலகோணம்"
+
+msgid "Points"
+msgstr "பிரிவகம்"
+
+msgid "Bezier curve"
+msgstr "பெசியர் வளைவு"
+
+msgid "Put array into:"
+msgstr "வரிசையை வைக்கவும்:"
+
+msgid "New graph"
+msgstr "புதிய வரைபடம்"
+
+msgid "Last graph"
+msgstr "கடைசி வரைபடம்"
+
+msgid "Options"
+msgstr "விருப்பங்கள்"
+
+msgid "Open List View..."
+msgstr "திறந்த பட்டியல் பார்வை ..."
+
+msgid "Delete array"
+msgstr "வரிசையை நீக்கு"
+
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+msgid "Apply"
+msgstr "இடு"
+
+msgid "OK"
+msgstr "சரி"
+
+msgid "no device"
+msgstr "சாதனம் இல்லை"
+
+msgid "(same as input device)..."
+msgstr "(உள்ளீட்டு சாதனம் போன்றது) ..."
+
+msgid "Channels:"
+msgstr "சேனல்கள்:"
+
+msgid "Input Devices"
+msgstr "உள்ளீட்டு சாதனங்கள்"
+
+msgid "Output Devices"
+msgstr "வெளியீட்டு சாதனங்கள்"
+
+msgid "Use Multiple Devices"
+msgstr "பல சாதனங்களைப் பயன்படுத்துங்கள்"
+
+msgid "Audio System"
+msgstr "ஆடியோ அமைப்பு"
+
+msgid "Settings"
+msgstr "அமைப்புகள்"
+
+msgid "Sample rate:"
+msgstr "மாதிரி வீதம்:"
+
+msgid "Delay (msec):"
+msgstr "நேரந்தவறுகை (MSEC):"
+
+msgid "48k"
+msgstr "48 கே"
+
+msgid "44.1k"
+msgstr "44.1 கே"
+
+msgid "96k"
+msgstr "உங்கள் பூனை"
+
+msgid "Block size:"
+msgstr "தொகுதி அளவு:"
+
+msgid "Use callbacks"
+msgstr "கால்பேக்குகளைப் பயன்படுத்தவும்"
+
+msgid "Audio Settings"
+msgstr "ஆடியோ அமைப்புகள்"
+
+msgid "Save All Settings"
+msgstr "எல்லா அமைப்புகளையும் சேமிக்கவும்"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "எச்சரிக்கை: PDTK_CANVAS_DIALOG இல் பெறப்பட்ட அறியப்படாத வரைபடக் கொடிகள்"
+
+msgid "Canvas Properties"
+msgstr "கேன்வாச் பண்புகள்"
+
+msgid "Scale"
+msgstr "அளவு"
+
+msgid "X units per pixel:"
+msgstr "பிக்சலுக்கு ஃச் அலகுகள்:"
+
+msgid "Y units per pixel:"
+msgstr "பிக்சலுக்கு ஒய் அலகுகள்:"
+
+msgid "Appearance on parent patch"
+msgstr "பெற்றோர் பேட்சில் தோற்றம்"
+
+msgid "Graph-On-Parent"
+msgstr "வரைபடம்-பெற்றோர்"
+
+msgid "Hide object name and arguments"
+msgstr "பொருள் பெயர் மற்றும் வாதங்களை மறைக்கவும்"
+
+msgid "Range and size"
+msgstr "வரம்பு மற்றும் அளவு"
+
+msgid "X range: from"
+msgstr "ஃச் வரம்பு: இருந்து"
+
+msgid "to"
+msgstr "பெறுநர்"
+
+msgid "Margin:"
+msgstr "விளிம்பு:"
+
+msgid "Y range: from"
+msgstr "ஒய் வரம்பு: இருந்து"
+
+msgid "Object:"
+msgstr "பொருள்:"
+
+msgid "Data Properties"
+msgstr "தரவு பண்புகள்"
+
+msgid "Send"
+msgstr "அனுப்பு"
+
+msgid "Done"
+msgstr "முடிந்தது"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "%2$s இல் ' %1$s' காணப்பட்டது"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "%2$s இல் ' %1$s' கண்டுபிடிக்க முடியவில்லை"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "இதற்கு %s இல் தேடுங்கள்:"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "%2$s இல் கடைசி ' %1$s' காட்டப்பட்டது"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "%3$s இல் %2$d உருப்படிகளில் ' %1$d' ஐக் காட்டுகிறது"
+
+msgid "Pd window"
+msgstr "பி.டி சாளரம்"
+
+msgid "Match whole word only"
+msgstr "முழு வார்த்தையையும் மட்டுமே பொருத்துங்கள்"
+
+msgid "Close"
+msgstr "மூடு"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s எழுத்துரு"
+
+msgid "Font"
+msgstr "எழுத்துரு"
+
+msgid "Font Size"
+msgstr "எழுத்துரு அளவு"
+
+msgid "Stretch"
+msgstr "நீட்டிக்க"
+
+msgid "X and Y"
+msgstr "ஃச் மற்றும் ஒய்"
+
+msgid "X only"
+msgstr "ஃச் மட்டும்"
+
+msgid "Y only"
+msgstr "ஒய் மட்டும்"
+
+msgid "GUI Box Properties"
+msgstr "GUI பெட்டி பண்புகள்"
+
+msgid "Messages"
+msgstr "செய்திகள்"
+
+msgid "Send symbol:"
+msgstr "சின்னத்தை அனுப்பு:"
+
+msgid "Receive symbol:"
+msgstr "சின்னத்தைப் பெறுங்கள்:"
+
+msgid "auto"
+msgstr "தானி"
+
+msgid "Width:"
+msgstr "அகலம்:"
+
+msgid "Limits"
+msgstr "வரம்புகள்"
+
+msgid "Lower:"
+msgstr "கீழ்:"
+
+msgid "Upper:"
+msgstr "மேல்:"
+
+msgid "Label"
+msgstr "சிட்டை"
+
+msgid "Left"
+msgstr "இடது"
+
+msgid "Right"
+msgstr "வலது"
+
+msgid "Top"
+msgstr "மேலே"
+
+msgid "Bottom"
+msgstr "கீழே"
+
+msgid "Background color"
+msgstr "பின்னணி நிறம்"
+
+msgid "Foreground color"
+msgstr "முன்புற நிறம்"
+
+msgid "Label color"
+msgstr "சிட்டை நிறம்"
+
+msgid "Bang"
+msgstr "பேங்"
+
+msgid "Flash Time (msec)"
+msgstr "ஃபிளாச் நேரம் (MSEC)"
+
+msgid "Min:"
+msgstr "நிமிடம்:"
+
+msgid "Max:"
+msgstr "அதிகபட்சம்:"
+
+msgid "Toggle"
+msgstr "மாற்று"
+
+msgid "Non Zero Value"
+msgstr "பூச்சியமற்ற மதிப்பு"
+
+msgid "Value:"
+msgstr "மதிப்பு:"
+
+msgid "Number2"
+msgstr "எண் 2"
+
+msgid "Width (digits):"
+msgstr "அகலம் (இலக்கங்கள்):"
+
+msgid "Height:"
+msgstr "உயரம்:"
+
+msgid "Output Range"
+msgstr "வெளியீட்டு வரம்பு"
+
+msgid "Log height:"
+msgstr "பதிவு உயரம்:"
+
+msgid "Vslider"
+msgstr "செசறுக்கி"
+
+msgid "Hslider"
+msgstr "கிசறுக்கி"
+
+msgid "Vradio"
+msgstr "Vraday"
+
+msgid "Num cells:"
+msgstr "எண் செல்கள்:"
+
+msgid "Hradio"
+msgstr "இராடியோ"
+
+msgid "VU Meter"
+msgstr "மீட்டர்"
+
+msgid "Canvas"
+msgstr "கேன்வாச்"
+
+msgid "Visible Rectangle (pix)"
+msgstr "புலப்படும் செவ்வகம் (பிக்ச்)"
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s பண்புகள்"
+
+msgid "Parameters"
+msgstr "அளவுருக்கள்"
+
+msgid "Init"
+msgstr "தெடக்கம்"
+
+msgid "No init"
+msgstr "துவக்கம் இல்லை"
+
+msgid "Jump on click"
+msgstr "சொடுக்கு செய்யவும்"
+
+msgid "Steady on click"
+msgstr "கிளிக்கில் நிலையானது"
+
+msgid "X offset:"
+msgstr "ஃச் ஆஃப்செட்:"
+
+msgid "Y offset:"
+msgstr "ஒய் ஆஃப்செட்:"
+
+msgid "Colors"
+msgstr "நிறங்கள்"
+
+msgid "Background"
+msgstr "பின்னணி"
+
+msgid "Front"
+msgstr "முன்"
+
+msgid "Compose color"
+msgstr "வண்ணத்தை இயற்றுங்கள்"
+
+msgid "Test label"
+msgstr "சோதனை சிட்டை"
+
+msgid "Send a Pd message"
+msgstr "ஒரு பி.டி செய்தியை அனுப்பவும்"
+
+msgid "(use arrow keys for history)"
+msgstr "(வரலாற்றுக்கு அம்பு விசைகளைப் பயன்படுத்தவும்)"
+
+msgid "no input devices"
+msgstr "உள்ளீட்டு சாதனங்கள் இல்லை"
+
+msgid "In Ports:"
+msgstr "துறைமுகங்களில்:"
+
+msgid "Out Ports:"
+msgstr "வெளியே துறைமுகங்கள்:"
+
+msgid "MIDI system"
+msgstr "மிடி அமைப்பு"
+
+msgid "MIDI Settings"
+msgstr "மிடி அமைப்புகள்"
+
+msgid "ALSA MIDI Settings"
+msgstr "அல்சா மிடி அமைப்புகள்"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr "பொருள்கள், உதவி, ஆடியோ, உரை மற்றும் பிற கோப்புகளுக்கான பி.டி தேடல் பாதை"
+
+msgid "Use standard paths"
+msgstr "நிலையான பாதைகளைப் பயன்படுத்துங்கள்"
+
+msgid "Verbose"
+msgstr "வாய்மொழி"
+
+msgid "Pd Documents Directory"
+msgstr "பி.டி ஆவணங்கள் அடைவு"
+
+msgid "Browse"
+msgstr "உலாவு"
+
+msgid "Reset"
+msgstr "மீட்டமை"
+
+msgid "Disable"
+msgstr "முடக்கு"
+
+msgid "Externals Install Directory"
+msgstr "வெளிப்புறங்கள் கோப்பகத்தை நிறுவுகின்றன"
+
+msgid "Clear"
+msgstr "தெளிவான"
+
+msgid "path preferences"
+msgstr "பாதை விருப்பத்தேர்வுகள்"
+
+msgid "Choose Pd documents directory:"
+msgstr "PD ஆவணங்கள் கோப்பகத்தைத் தேர்வுசெய்க:"
+
+msgid "Install externals to directory:"
+msgstr "கோப்பகத்திற்கு வெளிப்புறங்களை நிறுவவும்:"
+
+msgid "Add a new path"
+msgstr "புதிய பாதையைச் சேர்க்கவும்"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr "இருக்கும் பாதையைத் திருத்தவும் [%s]"
+
+msgid "Patch Windows"
+msgstr "இணைப்பு சன்னல்கள்"
+
+msgid "Zoom New Windows"
+msgstr "புதிய சாளரங்களை பெரிதாக்கவும்"
+
+msgid "GUI Settings"
+msgstr "GUI அமைப்புகள்"
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "விருப்பத்தேர்வு தளவமைப்பு (விளைவைக் காண விருப்பங்களை மீண்டும் திறக்கவும்)"
+
+msgid "Use tabs"
+msgstr "தாவல்களைப் பயன்படுத்தவும்"
+
+msgid "Single page"
+msgstr "ஒற்றை பக்கம்"
+
+msgid "Patching helpers"
+msgstr "உதவியாளர்களை ஒட்டுதல்"
+
+msgid "Highlight active cord while connecting"
+msgstr "இணைக்கும்போது செயலில் உள்ள தண்டு முன்னிலைப்படுத்தவும்"
+
+msgid "Preferences"
+msgstr "விருப்பத்தேர்வுகள்"
+
+msgid "startup preferences"
+msgstr "தொடக்க விருப்பத்தேர்வுகள்"
+
+msgid "audio preferences"
+msgstr "ஆடியோ விருப்பத்தேர்வுகள்"
+
+msgid "MIDI preferences"
+msgstr "மிடி விருப்பத்தேர்வுகள்"
+
+msgid "deken preferences"
+msgstr "போர்வை விருப்பத்தேர்வுகள்"
+
+msgid "misc preferences"
+msgstr "தவறான விருப்பத்தேர்வுகள்"
+
+msgid "Add new library"
+msgstr "புதிய நூலகத்தைச் சேர்க்கவும்"
+
+msgid "Edit library"
+msgstr "நூலகத்தைத் திருத்து"
+
+msgid "Settings below require a restart of Pd!"
+msgstr "கீழே உள்ள அமைப்புகளுக்கு பி.டி.யின் மறுதொடக்கம் தேவை!"
+
+msgid "Pd libraries to load on startup"
+msgstr "தொடக்கத்தில் ஏற்ற பி.டி நூலகங்கள்"
+
+msgid "GUI Options"
+msgstr "GUI விருப்பங்கள்"
+
+msgid "language"
+msgstr "மொழி"
+
+msgid "Menu language"
+msgstr "பட்டி மொழி"
+
+msgid "float (32bit)"
+msgstr "மிதவை (32 பிட்)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "இரட்டை (64 பிட்) சோதனை"
+
+msgid "double (64bit)"
+msgstr "இரட்டை (64 பிட்)"
+
+msgid "float size"
+msgstr "மிதவை அளவு"
+
+msgid "Numeric precision of Pd-core"
+msgstr "PD- கோரின் எண் துல்லியம்"
+
+msgid "Startup Options"
+msgstr "தொடக்க விருப்பங்கள்"
+
+msgid "Defeat real-time scheduling"
+msgstr "நிகழ்நேர திட்டமிடலை தோற்கடிக்கவும்"
+
+msgid "Startup Flags:"
+msgstr "தொடக்க கொடிகள்:"
+
+msgid "Help Browser"
+msgstr "உலாவிக்கு உதவுங்கள்"
+
+msgid "Associated Files"
+msgstr "தொடர்புடைய கோப்புகள்"
+
+msgid "Pd Files"
+msgstr "பி.டி கோப்புகள்"
+
+msgid "Max Patch Files"
+msgstr "அதிகபட்ச இணைப்பு கோப்புகள்"
+
+msgid "Max Text Files"
+msgstr "அதிகபட்ச உரை கோப்புகள்"
+
+msgid "Max Patch Files (.pat)"
+msgstr "அதிகபட்ச ஒட்டு கோப்புகள் (.Pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "அதிகபட்ச உரை கோப்புகள் (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "எழுத்துருக்களைக் கண்டறியவும்: %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+"எச்சரிக்கை: எழுத்துரு குடும்பம் '%1$s' காணப்படவில்லை, இயல்புநிலையைப் பயன்படுத்தி (%2$s)"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+"எச்சரிக்கை: எழுத்துரு எடை '%1$s' காணப்படவில்லை, இயல்புநிலையைப் பயன்படுத்தி (%2$s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "எழுத்துருவைப் பயன்படுத்துதல்: %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "'%1$s' ஏற்கனவே ஏற்றப்பட்டுள்ளது, புறக்கணிக்கிறது: '%2$s'"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "சொருகி ஏற்றுகிறது: %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "தடையற்ற பிழை: %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "%s ஐ ஏற்றுவதில் தோல்வி"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "சொருகி %s படிக்கத் தவறிவிட்டது ... தவிர்க்கவும்!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "%s இல் செருகுநிரல்களைக் கண்டுபிடிப்பதில் தோல்வி ... தவிர்க்கிறது!"
+
+msgid "Pd startup failure"
+msgstr "பி.டி தொடக்க தோல்வி"
+
+msgid "Failed to start Pd-core"
+msgstr "பி.டி.கரு தொடங்க முடியவில்லை"
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr "(டி.சி.எல்) நெருங்கிய அடைப்புக்குறி '}' ஐக் காணவில்லை: "
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr "(டி.சி.எல்) தவறான கட்டளை பெயர்: "
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr "(டி.சி.எல்) தடையற்ற பிழை: "
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr "[டெக்கன்] நிறுவப்பட்ட பதிப்பு [ %1$s]> %2$s ... தவிர்க்கவும்!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr "[டெக்கன்] நிறுவப்பட்ட பதிப்பு [ %1$s] < %2$s ... மேலெழுதும்!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr "[டெக்கன்] நிறுவப்பட்ட பதிப்பு [ %1$s] == %2$s ... ச்கிப்பிங்!"
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr "டெக்கன் தொகுப்பு '%s' ஐ நிறுவுதல்"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr "'%s' ஐ புறக்கணித்து: டெக்கன் தொகுப்பு போல் தெரியவில்லை"
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr "'%s' நிறுவுதல்"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s ஐ %2$s க்கு வெற்றிகரமாக அவிழ்த்து விடுங்கள்."
+
+msgid "Unable to extract package automatically."
+msgstr "தொகுப்பை தானாக பிரித்தெடுக்க முடியவில்லை."
+
+msgid "Please perform the following steps manually:"
+msgstr "தயவுசெய்து பின்வரும் படிகளை கைமுறையாகச் செய்யுங்கள்:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. UNZIP %s."
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr "நீங்கள் .dek இலிருந்து .zip க்கு கோப்பு நீட்டிப்பை மாற்ற வேண்டியிருக்கும்"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. உள்ளடக்கங்களை %s ஆக நகலெடுக்கவும்."
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr "3. %s களை அகற்று. (விரும்பினால்)"
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr "'%s' நீக்குதல்"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "%2$s இலிருந்து %1$s ஐ நிறுவல் நீக்கியது தோல்வியடைந்தது!"
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr "'%s' இன் SHA256 சரிபார்ப்பைத் தவிர்க்கிறது."
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr "'%s' இன் SHA256 சரிபார்ப்பு"
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr "'%s' க்கான குறிப்பு SHA256 ஐப் பெற முடியவில்லை."
+
+#, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "கோப்பு செக்சம் தவறானது: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "குறிப்பு செக்சம் தவறானது: '%s'."
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr "'%s' க்கு SHA256 சரிபார்ப்பைச் செய்ய முடியவில்லை."
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "%1$s இலிருந்து பதிவிறக்கம் செய்ய முடியவில்லை [ %2$s]"
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr "'%s' இலிருந்து பதிவிறக்கம் செய்ய முடியவில்லை!"
+
+msgid "Download failed"
+msgstr "பதிவிறக்கம் தோல்வியடைந்தது"
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr "தவறான கோப்பை '%s' அகற்ற முடியவில்லை"
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr "பதிவிறக்கம் செய்யப்பட்ட கோப்பை '%s' என்று மறுபெயரிட முடியவில்லை"
+
+msgid "Search URLs:"
+msgstr "URLS ஐத் தேடுங்கள்:"
+
+msgid "Additional search URLs"
+msgstr "கூடுதல் தேடல் முகவரி கள்"
+
+msgid "Ephemeral search URLs"
+msgstr "இடைக்கால தேடல் முகவரி கள்"
+
+msgid "Create"
+msgstr "உருவாக்கு"
+
+msgid "Check"
+msgstr "சரிபார்"
+
+msgid "Deken Installation Target"
+msgstr "நிறுவல் இலக்கு சிதைவு"
+
+msgid "Installation options:"
+msgstr "நிறுவல் விருப்பங்கள்:"
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr "அவற்றை நிறுவுவதற்கு முன் (மறு) நூலகங்களின் செக்சம் சரிபார்க்க முயற்சிக்கவும்"
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr "நூலகங்களை நிறுவுவதற்கு முன் (மறு) அகற்ற முயற்சிக்கவும்"
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr "புதிதாக நிறுவப்பட்ட நூலகங்களின் README ஐக் காட்டு (இருந்தால்)"
+
+msgid "Keep package files after installation"
+msgstr "நிறுவலுக்குப் பிறகு தொகுப்பு கோப்புகளை வைத்திருங்கள்"
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr "பி.டி.யின் தேடல் பாதையில் புதிதாக நிறுவப்பட்ட நூலகங்களைச் சேர்க்கவும்"
+
+msgid "Platform settings:"
+msgstr "இயங்குதள அமைப்புகள்:"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "இயல்புநிலை தளம்: %s"
+
+msgid "User-defined platform:"
+msgstr "பயனர் வரையறுக்கப்பட்ட தளம்:"
+
+msgid "Hide foreign architectures"
+msgstr "வெளிநாட்டு கட்டமைப்புகளை மறைக்கவும்"
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+"நூலகத்தின் புதிய பதிப்பை மட்டுமே காண்பி\n"
+" (வெளிநாட்டு கட்டமைப்புகள் போன்ற பிற பதிப்புகளுக்கு சிகிச்சையளிக்கிறது)"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "போர்வை %s விருப்பத்தேர்வுகள்"
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr "இயங்குதளம் மீண்டும் கண்டறியப்பட்டது: %s"
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "'%s' இன் SHA256 சரிபார்ப்பு தோல்வியடைந்தது!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 சரிபார்ப்பு தோல்வியடைந்தது"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "'%s' க்கான செக்சம் பொருந்தாத தன்மை"
+
+msgid "Deken Packages"
+msgstr "போர்வை தொகுப்புகள்"
+
+msgid "ZIP Files"
+msgstr "சிப் கோப்புகள்"
+
+msgid "TAR Files"
+msgstr "தார் கோப்புகள்"
+
+msgid "All Files"
+msgstr "அனைத்து கோப்புகள்"
+
+#, tcl-format
+msgid "Installing incompatible architecture of '%s'."
+msgstr "'%s' இன் பொருந்தாத கட்டமைப்பை நிறுவுதல்."
+
+msgid "Replacing library with incompatible architecture!"
+msgstr "பொருந்தாத கட்டிடக்கலையுடன் நூலகத்தை மாற்றுதல்!"
+
+#, tcl-format
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
+"உங்கள் கணினியுடன் பொருந்தாத ஒரு பதிப்போடு '%2$s' இல் '%1$s' நூலகத்தை மாற்ற "
+"விரும்புகிறீர்களா?"
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr "'%s' இன் முந்தைய நிறுவலை நிறுவல் நீக்குகிறது"
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr "தற்காலிகமாக %1$s ஐ %2$s க்கு நகர்த்துவது தோல்வியடைந்தது."
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr "தொகுப்பு '%s'"
+
+msgid "Installation completed!"
+msgstr "நிறுவல் முடிந்தது!"
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr "'%s' வெற்றிகரமாக நிறுவப்பட்டது!"
+
+msgid "Installation failed!"
+msgstr "நிறுவல் தோல்வியடைந்தது!"
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr "'%s' ஐ நிறுவுவதில் தோல்வி!"
+
+msgid "Package installation failed"
+msgstr "தொகுப்பு நிறுவல் தோல்வியடைந்தது"
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+"%1$s ஐ முழுமையாக அகற்றுவதில் தோல்வி.\n"
+" பி.டி.க்கு வெளியேறிய பிறகு %2$s கோப்பகத்தை கைமுறையாக அகற்றவும்."
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "தேடல் பாதைகளுக்கு %s ஐ சேர்க்க முடியவில்லை"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "பி.டி தேடல் பாதைகளில் %s ஐச் சேர்க்கவா?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "தேடல் பாதைகளுக்கு %s சேர்க்கப்பட்டது"
+
+msgid "No packages selected for installation."
+msgstr "நிறுவலுக்கு தொகுப்புகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr "நிறுவலுக்கு தேர்ந்தெடுக்கப்பட்ட %d தொகுப்புகள்."
+
+msgid "Show all"
+msgstr "அனைத்தையும் காட்டு"
+
+msgid "Search"
+msgstr "தேடல்"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr "நிறுவவும் (%d)"
+
+msgid "Install"
+msgstr "நிறுவவும்"
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr "பதிவிறக்கத்தின்%s %% முடிந்தது"
+
+msgid "Enter an exact library or object name."
+msgstr "சரியான நூலகம் அல்லது பொருள் பெயரை உள்ளிடவும்."
+
+msgid "e.g. 'freeverb~'"
+msgstr "எ.கா. 'ஃப்ரீவெர்ப் ~'"
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr "எந்தவொரு எழுத்துக்களையும் பொருத்த '*' வைல்டு கார்டைப் பயன்படுத்தவும்."
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr "எ.கா. '*-plugin' 'டெக்கன்-ப்ளூசின்' (மேலும் பல) பொருந்தும்."
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr "நீங்கள் தேடலை-நூலகங்கள் அல்லது மட்டுமே பொருள்களுக்கு மட்டுமே கட்டுப்படுத்தலாம்."
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+"கிடைக்கக்கூடிய அனைத்து வெளிப்புறங்களின் பட்டியலையும் பெற, வெற்று தேடலை முயற்சிக்கவும்."
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+"ஒரு தேடல் முடிவை வலது சொடுக்கு செய்வது உங்களுக்கு கூடுதல் விருப்பங்களைத் தரும் ..."
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr "உங்கள் வலை உலாவி வழியாக நூலகங்கள் மற்றும் பொருள்களையும் தேடலாம்:"
+
+msgid "Find externals"
+msgstr "வெளிப்புறங்களைக் கண்டறியவும்"
+
+msgid "Install DEK file..."
+msgstr "டெக் கோப்பை நிறுவவும் ..."
+
+msgid "Preferences..."
+msgstr "விருப்பத்தேர்வுகள் ..."
+
+msgid "Search for: "
+msgstr "தேடு: "
+
+msgid "libraries"
+msgstr "நூலகங்கள்"
+
+msgid "objects"
+msgstr "பொருள்கள்"
+
+msgid "both"
+msgstr "இரண்டும்"
+
+msgid "translations"
+msgstr "மொழிபெயர்ப்புகள்"
+
+msgid "Only install externals uploaded by people you trust."
+msgstr "நீங்கள் நம்பும் நபர்களால் பதிவேற்றிய வெளிப்புறங்களை மட்டுமே நிறுவவும்."
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr "தாவலாக்கப்பட்ட பார்வையை முடக்குதல்: பொருந்தாத TCL/TK கண்டறியப்பட்டது"
+
+msgid "Library"
+msgstr "நூலகம்"
+
+msgid "Version"
+msgstr "பதிப்பு"
+
+msgid "Description"
+msgstr "விவரம்"
+
+msgid "Uploader"
+msgstr "பதிவேற்றுபவர்"
+
+msgid "Date"
+msgstr "திகதி"
+
+msgid "Search Results"
+msgstr "தேடல் முடிவுகள்"
+
+msgid "Log"
+msgstr "பதிவு"
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr "\"%s\" ஐத் தேடுகிறது ..."
+
+#, tcl-format
+msgid "online? %s"
+msgstr "ஆன்லைனில்? %s"
+
+msgid "Unable to perform search. Are you online?"
+msgstr "தேடலை செய்ய முடியவில்லை. நீங்கள் ஆன்லைனில் இருக்கிறீர்களா?"
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr "%1$d பயன்படுத்தக்கூடிய தொகுப்புகள் (மொத்தம் %2$d தொகுப்புகள்) காணப்படுகின்றன."
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr "உங்கள் கட்டமைப்பிற்கு பொருந்தக்கூடிய தொகுப்புகள் எதுவும் இல்லை என்று தெரிகிறது."
+
+msgid "No matching externals found."
+msgstr "பொருந்தக்கூடிய வெளிப்புறங்கள் எதுவும் காணப்படவில்லை."
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "முழு பெயரைப் பயன்படுத்த முயற்சிக்கவும் எ.கா. 'ஃப்ரீவெர்ப் ~'."
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr "அல்லது 'ஃப்ரீவெர்ப்*' போன்ற வைல்டு கார்டுகளைப் பயன்படுத்தவும்."
+
+msgid "Please select a (writable) installation directory!"
+msgstr "தயவுசெய்து ஒரு (எழுதக்கூடிய) நிறுவல் கோப்பகத்தைத் தேர்ந்தெடுக்கவும்!"
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr "%1$s முதல் %2$s ஐ நிறுவவா?"
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr "'%s' இன் பதிவிறக்கத்தை ரத்து செய்தல்: நிறுவல் அடைவு இல்லை."
+
+msgid "Installing to non-existent directory failed"
+msgstr "இல்லாத கோப்பகத்தை நிறுவுவது தோல்வியடைந்தது"
+
+msgid "Directory does not exist!"
+msgstr "அடைவு இல்லை!"
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr "'%s' க்கு நிறுவ முடியவில்லை"
+
+msgid "Directory is not writable!"
+msgstr "அடைவு எழுத முடியாதது அல்ல!"
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr "'%s' பதிவிறக்குதல்"
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr "'%1$s' இன் பதிவிறக்கத்தைத் தொடங்குகிறது '%2$s' ..."
+
+msgid "aborting."
+msgstr "கருக்கலைப்பு."
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr "'%s' பதிவிறக்குவது தோல்வியடைந்தது"
+
+msgid "Download failed!"
+msgstr "பதிவிறக்கம் தோல்வியடைந்தது!"
+
+msgid "Download completed! Verifying..."
+msgstr "பதிவிறக்கம் முடிந்தது! சரிபார்க்கிறது ..."
+
+msgid "Ignoring checksum mismatch"
+msgstr "செக்சம் பொருந்தாத தன்மையை புறக்கணித்தல்"
+
+msgid "Ignoring checksum errors"
+msgstr "செக்சம் பிழைகளை புறக்கணித்தல்"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] deken-plugin.tcl (Pd externals search) loaded இருந்து %s."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[டெக்கன்] இயங்குதளம் கண்டறியப்பட்டது: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr "'%s' சேர்ப்பதற்கான மெனுவைக் கண்டுபிடிக்க முடியவில்லை"
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr "%s இல் தேடுகிறது ..."
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr "%1$s ஐத் தேடுவது %2$d முடிவுகளைத் தருகிறது"
+
+msgid "No usable servers for searching found..."
+msgstr "தேடுவதற்கு பயன்படுத்தக்கூடிய சேவையகங்கள் எதுவும் இல்லை ..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "%1$s @ %2$s ஆல் பதிவேற்றப்பட்டது"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "'%s' ஐத் தேடுவது தோல்வியடைந்தது!"
+
+msgid "Search failed"
+msgstr "தேடல் தோல்வியடைந்தது"
+
+msgid "Unable to perform search."
+msgstr "தேடலை செய்ய முடியவில்லை."
+
+msgid "Select package for installation"
+msgstr "நிறுவலுக்கான தொகுப்பைத் தேர்ந்தெடுக்கவும்"
+
+msgid "Deselect package"
+msgstr "தொகுப்பு தேர்வு"
+
+msgid "Open package webpage"
+msgstr "தொகுப்பு வலைப்பக்கத்தைத் திறக்கவும்"
+
+msgid "Copy package URL"
+msgstr "தொகுப்பு முகவரி ஐ நகலெடுக்கவும்"
+
+msgid "Copy SHA256 checksum URL"
+msgstr "SHA256 செக்சம் முகவரி ஐ நகலெடுக்கவும்"
+
+msgid "Copy OpenGPG signature URL"
+msgstr "OpenPGP கையொப்பம் முகவரி ஐ நகலெடுக்கவும்"
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr "'%s' ஐ நிறுவல் நீக்குதல்"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"திட்டுகள் மற்றும் வெளிப்புற நூலகங்களுக்கு தற்போதுள்ள ஆவணங்கள் கோப்பகத்தைப் பயன்படுத்த பி.டி "
+"விரும்புகிறீர்களா?\n"
+"\n"
+" இடம்: %s\n"
+"\n"
+" இதை நீங்கள் பின்னர் பாதை விருப்பங்களில் மாற்றலாம் அல்லது முடக்கலாம்."
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"திட்டுகள் மற்றும் வெளிப்புற நூலகங்களுக்கான ஆவணங்களின் கோப்பகத்தை பி.டி உருவாக்க "
+"விரும்புகிறீர்களா?\n"
+"\n"
+" இடம்: %s\n"
+"\n"
+" இதை நீங்கள் பின்னர் பாதை விருப்பங்களில் மாற்றலாம் அல்லது முடக்கலாம்."
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"பி.டி ஆவணங்கள் கோப்பகத்தைக் கண்டுபிடிக்க முடியவில்லை:\n"
+"\n"
+" %s\n"
+"\n"
+" புதிய இருப்பிடத்தைத் தேர்வு செய்யவா?"
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr "பி.டி ஆவணங்கள் கோப்பகத்தை உருவாக்க முடியவில்லை: %s"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "\"வெளிப்புறங்கள்\" கோப்பகத்தை உருவாக்க முடியவில்லை: %s"
+
+msgid "refusing to delete empty domain"
+msgstr "வெற்று களத்தை நீக்க மறுக்கிறது"
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "%2$s இல் \" %1$s\" விருப்பங்களை உருவாக்க முடியவில்லை"
+
+msgid "The language can only be set during startup."
+msgstr "தொடக்கத்தின் போது மட்டுமே மொழியை அமைக்க முடியும்."
+
+msgid "Afar"
+msgstr "அஃபார்"
+
+msgid "Abkhazian"
+msgstr "அப்காசியான்"
+
+msgid "Avestan"
+msgstr "அவெச்டன்"
+
+msgid "Afrikaans"
+msgstr "ஆப்பிரிக்கா"
+
+msgid "Akan"
+msgstr "அகான்"
+
+msgid "Amharic"
+msgstr "அம்ஆரிக்"
+
+msgid "Aragonese"
+msgstr "ஆர்கோனீச்"
+
+msgid "Arabic"
+msgstr "அரபு"
+
+msgid "Assamese"
+msgstr "அச்சாமீச்"
+
+msgid "Avaric"
+msgstr "அவேரிக்"
+
+msgid "Aymara"
+msgstr "அய்மாரா"
+
+msgid "Azerbaijani"
+msgstr "அசர்பைசானி"
+
+msgid "Bashkir"
+msgstr "பச்கிர்"
+
+msgid "Belarusian"
+msgstr "பெலாருசியன்"
+
+msgid "Bulgarian"
+msgstr "பல்கேரியன்"
+
+msgid "Bihari"
+msgstr "பிஆரி"
+
+msgid "Bislama"
+msgstr "பிச்லாமா"
+
+msgid "Bambara"
+msgstr "பம்பாரா"
+
+msgid "Bengali"
+msgstr "பெங்காலி"
+
+msgid "Tibetan"
+msgstr "திபெத்திய"
+
+msgid "Breton"
+msgstr "பிரெட்டன்"
+
+msgid "Bosnian"
+msgstr "போச்னிய"
+
+msgid "Catalan"
+msgstr "கற்றலான்"
+
+msgid "Chechen"
+msgstr "செச்சென்"
+
+msgid "Chamorro"
+msgstr "சாமோரோ"
+
+msgid "Corsican"
+msgstr "கார்சிகன்"
+
+msgid "Cree"
+msgstr "க்ரீ"
+
+msgid "Czech"
+msgstr "செக்"
+
+msgid "Chuvash"
+msgstr "சுவாச்"
+
+msgid "Welsh"
+msgstr "வேல்ச்"
+
+msgid "Danish"
+msgstr "டேனிச்"
+
+msgid "German"
+msgstr "செர்மன்"
+
+msgid "German (Austria)"
+msgstr "செர்மன் (ஆச்திரியா)"
+
+msgid "Dhivehi"
+msgstr "திவேஇ"
+
+msgid "Dzongkha"
+msgstr "பூடானி"
+
+msgid "Ewe"
+msgstr "ஈவ்"
+
+msgid "Greek"
+msgstr "கிரேக்கம்"
+
+msgid "English"
+msgstr "ஆங்கிலம்"
+
+msgid "English (Canada)"
+msgstr "ஆங்கிலம் (கனடா)"
+
+msgid "English (UK)"
+msgstr "ஆங்கிலம் (யுகே)"
+
+msgid "English (USA)"
+msgstr "ஆங்கிலம் (அமெரிக்கா)"
+
+msgid "Esperanto"
+msgstr "எச்பெராண்டோ"
+
+msgid "Spanish"
+msgstr "ச்பானிச்"
+
+msgid "Estonian"
+msgstr "எச்டோனிய"
+
+msgid "Basque"
+msgstr "பாச்க்"
+
+msgid "Persian"
+msgstr "பெர்சியன்"
+
+msgid "Fulah"
+msgstr "ஃபுலா"
+
+msgid "Finnish"
+msgstr "பின்னிச்"
+
+msgid "Fijian"
+msgstr "ஃபிசியன்"
+
+msgid "Faroese"
+msgstr "பரோச்"
+
+msgid "French"
+msgstr "பிரஞ்சு"
+
+msgid "Frisian"
+msgstr "ஃபிரிசியன்"
+
+msgid "Irish"
+msgstr "ஐரிச்"
+
+msgid "Gaelic"
+msgstr "கேலிக்"
+
+msgid "Galician"
+msgstr "காலிசியன்"
+
+msgid "Guarani"
+msgstr "க்வாரனி"
+
+msgid "Gujarati"
+msgstr "குசராத்தி"
+
+msgid "Manx"
+msgstr "மேங்க்ச்"
+
+msgid "Hausa"
+msgstr "ஔசா"
+
+msgid "Hebrew"
+msgstr "எபிரேய"
+
+msgid "Hindi"
+msgstr "இந்தி"
+
+msgid "Hiri Motu"
+msgstr "இரி மோட்டு"
+
+msgid "Croatian"
+msgstr "குரோசியன்"
+
+msgid "Haitian"
+msgstr "ஆய்டியன்"
+
+msgid "Hungarian"
+msgstr "அங்கேரியன்"
+
+msgid "Armenian"
+msgstr "ஆர்மீனியன்"
+
+msgid "Herero"
+msgstr "எரேரோ"
+
+msgid "Interlingua"
+msgstr "இன்டர்லிங்வா"
+
+msgid "Indonesian"
+msgstr "இந்தோனேசிய"
+
+msgid "Occidental"
+msgstr "தற்செயலானது"
+
+msgid "Igbo"
+msgstr "இக்போ"
+
+msgid "Nuosu"
+msgstr "நுஒசு"
+
+msgid "Inupiaq"
+msgstr "இனுபியாக்"
+
+msgid "Ido"
+msgstr "இடோ"
+
+msgid "Icelandic"
+msgstr "ஐச்லாந்திய"
+
+msgid "Italian"
+msgstr "இத்தாலிய"
+
+msgid "Inuktitut"
+msgstr "இனுகிடூட்"
+
+msgid "Japanese"
+msgstr "சப்பானியர்கள்"
+
+msgid "Javanese"
+msgstr "சாவானீச்"
+
+msgid "Georgian"
+msgstr "சார்சியன்"
+
+msgid "Kongo"
+msgstr "காங்கோ"
+
+msgid "Gikuyu"
+msgstr "கிகுயு"
+
+msgid "Kwanyama"
+msgstr "குவான்யாமா"
+
+msgid "Kazakh"
+msgstr "கசாக்"
+
+msgid "Greenlandic"
+msgstr "கிரீன்லாந்திக்"
+
+msgid "Kannada"
+msgstr "கன்னடா"
+
+msgid "Korean"
+msgstr "கொரிய"
+
+msgid "Kanuri"
+msgstr "கனுரி"
+
+msgid "Kashmiri"
+msgstr "காச்மிரி"
+
+msgid "Kurdish"
+msgstr "குர்திச்"
+
+msgid "Komi"
+msgstr "கொமி"
+
+msgid "Cornish"
+msgstr "கார்னிச்"
+
+msgid "Kyrgyz"
+msgstr "கிர்கிச்"
+
+msgid "Latin"
+msgstr "லத்தீன்"
+
+msgid "Luxembourgish"
+msgstr "லக்சம்போர்கிச்"
+
+msgid "Luganda"
+msgstr "லுகாண்டா"
+
+msgid "Limburgish"
+msgstr "லிம்பர்கிச்"
+
+msgid "Lingala"
+msgstr "லிங்காலா"
+
+msgid "Lao"
+msgstr "லாவோ"
+
+msgid "Lithuanian"
+msgstr "லிதுவேனியன்"
+
+msgid "Luba-Katanga"
+msgstr "லுபா-கடாங்கா"
+
+msgid "Latvian"
+msgstr "லாட்வியன்"
+
+msgid "Malagasy"
+msgstr "மலகாசி"
+
+msgid "Marshallese"
+msgstr "மார்செலீச்"
+
+msgid "Maori"
+msgstr "மௌரி"
+
+msgid "Macedonian"
+msgstr "மாசிடோனியன்"
+
+msgid "Malayalam"
+msgstr "மலையாளம்"
+
+msgid "Mongolian"
+msgstr "மங்கோலியன்"
+
+msgid "Marathi"
+msgstr "மராத்தி"
+
+msgid "Malay"
+msgstr "மலாய்"
+
+msgid "Maltese"
+msgstr "மால்டிச்"
+
+msgid "Burmese"
+msgstr "பர்மீச்"
+
+msgid "Nauru"
+msgstr "நவ்ரூ"
+
+msgid "Nepali"
+msgstr "நேபாளி"
+
+msgid "Ndonga"
+msgstr "தோங்கா"
+
+msgid "Dutch"
+msgstr "டச்சு"
+
+msgid "Norwegian Nynorsk"
+msgstr "நார்வேசியன் நியூநார்ச்க்"
+
+msgid "Navaho"
+msgstr "நவாஓ"
+
+msgid "Nyanja"
+msgstr "நயன்சா"
+
+msgid "Occitan"
+msgstr "ஒக்கிடன்"
+
+msgid "Ojibwe"
+msgstr "ஓசிப்வே"
+
+msgid "Oromo"
+msgstr "ஒரோமோ"
+
+msgid "Odia"
+msgstr "ஒடியா"
+
+msgid "Ossetian"
+msgstr "ஓச்சேடியன்"
+
+msgid "Panjabi"
+msgstr "பன்சாபி"
+
+msgid "Pali"
+msgstr "பாலி"
+
+msgid "Polish"
+msgstr "போலீச்"
+
+msgid "Pashto"
+msgstr "பச்தோ"
+
+msgid "Portuguese"
+msgstr "போர்த்துகீசியம்"
+
+msgid "Portuguese (Brazil)"
+msgstr "போர்த்துகீசியம் (பிரேசில்)"
+
+msgid "Portuguese (Portugal)"
+msgstr "போர்த்துகீசியம் (போர்ச்சுகல்)"
+
+msgid "Quechua"
+msgstr "க்வெச்சுவா"
+
+msgid "Romansh"
+msgstr "ரோமான்ச்"
+
+msgid "Rundi"
+msgstr "ருண்டி"
+
+msgid "Romanian"
+msgstr "ருமேனிய"
+
+msgid "Russian"
+msgstr "ரச்ய"
+
+msgid "Kinyarwanda"
+msgstr "கின்யாருவான்டா"
+
+msgid "Sanskrit"
+msgstr "செங்கிருதம்"
+
+msgid "Sardinian"
+msgstr "சார்தீனியன்"
+
+msgid "Sindhi"
+msgstr "சிந்தி"
+
+msgid "Sango"
+msgstr "சாங்கோ"
+
+msgid "Sinhala"
+msgstr "சிங்களம்"
+
+msgid "Slovak"
+msgstr "ச்லோவாக்"
+
+msgid "Slovenian"
+msgstr "ச்லோவேனியன்"
+
+msgid "Samoan"
+msgstr "சமோவான்"
+
+msgid "Shona"
+msgstr "சோனா"
+
+msgid "Somali"
+msgstr "சோமாலி"
+
+msgid "Albanian"
+msgstr "அல்பேனிய"
+
+msgid "Serbian"
+msgstr "செர்பிய"
+
+msgid "Swati"
+msgstr "ச்வாடீ"
+
+msgid "Sundanese"
+msgstr "சுந்தானியர்கள்"
+
+msgid "Swedish"
+msgstr "ச்வீடிச்"
+
+msgid "Swahili"
+msgstr "ச்வாஇலி"
+
+msgid "Tamil"
+msgstr "தமிழ்"
+
+msgid "Telugu"
+msgstr "தெலுங்கு"
+
+msgid "Tajik"
+msgstr "தசிக்"
+
+msgid "Thai"
+msgstr "தாய்"
+
+msgid "Tigrinya"
+msgstr "டிக்ரின்யா"
+
+msgid "Turkmen"
+msgstr "துருக்மென்"
+
+msgid "Tagalog"
+msgstr "டாக்லாக்"
+
+msgid "Tswana"
+msgstr "ச்வானா"
+
+msgid "Tongan"
+msgstr "டோங்கான்"
+
+msgid "Turkish"
+msgstr "துருக்கிய"
+
+msgid "Tsonga"
+msgstr "சோங்கா"
+
+msgid "Tatar"
+msgstr "டாடர்"
+
+msgid "Twi"
+msgstr "ட்வி"
+
+msgid "Tahitian"
+msgstr "தஇதியன்"
+
+msgid "Uyghur"
+msgstr "உய்குர்"
+
+msgid "Ukrainian"
+msgstr "உக்ரேனிய"
+
+msgid "Urdu"
+msgstr "உருது"
+
+msgid "Uzbek"
+msgstr "உச்பெக்"
+
+msgid "Venda"
+msgstr "வென்டா"
+
+msgid "Vietnamese"
+msgstr "வியட்நாமிய"
+
+msgid "Volapük"
+msgstr "ஒலாபூக்"
+
+msgid "Walloon"
+msgstr "ஒவாலூன்"
+
+msgid "Wolof"
+msgstr "ஓலோஃப்"
+
+msgid "Xhosa"
+msgstr "ஓசா"
+
+msgid "Yiddish"
+msgstr "யெட்டிச்"
+
+msgid "Yoruba"
+msgstr "யோருபா"
+
+msgid "Zhuang"
+msgstr "சுவாங்"
+
+msgid "Chinese (Traditional)"
+msgstr "சீன (பாரம்பரிய)"
+
+msgid "Zulu"
+msgstr "சுலு"
+
+msgid "(no translation)"
+msgstr "(மொழிபெயர்ப்பு இல்லை)"
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(இயல்புநிலை மொழி: %s)"
+
+msgid "Print..."
+msgstr "அச்சிடுக ..."
+
+msgid "single precision"
+msgstr "ஒற்றை துல்லியம்"
+
+msgid "double precision"
+msgstr "இரட்டை துல்லியம்"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit-flotats"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "'%s' ஐ புறக்கணித்து: இல்லை"
+
+msgid "About Pd"
+msgstr "பி.டி பற்றி"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "\"%s\" ஆவணத்தைப் படிக்க முடியவில்லை"
+
+msgid "New"
+msgstr "புதிய"
+
+msgid "Open"
+msgstr "திற"
+
+msgid "Open Recent"
+msgstr "அண்மைக் கால திறப்பு"
+
+msgid "Save"
+msgstr "சேமி"
+
+msgid "Save As..."
+msgstr "எனச் சேமி..."
+
+msgid "Quit"
+msgstr "வெளியேறு"
+
+msgid "Undo"
+msgstr "செயல்தவிர்"
+
+msgid "Redo"
+msgstr "மீண்டும்செய்"
+
+msgid "Cut"
+msgstr "வெட்டு"
+
+msgid "Paste Replace"
+msgstr "மாற்றவும்"
+
+msgid "Select All"
+msgstr "அனைத்தையும் தெரிவுசெய்"
+
+msgid "Duplicate"
+msgstr "நகல்"
+
+msgid "Tidy Up"
+msgstr "நேர்த்தியாக"
+
+msgid "(Dis)Connect Selection"
+msgstr "(Dis) தேர்வை இணைக்கவும்"
+
+msgid "Triggerize"
+msgstr "தூண்டுதல்"
+
+msgid "Zoom In"
+msgstr "பெரிதாக்கு"
+
+msgid "Zoom Out"
+msgstr "சிறிதாக்கு"
+
+msgid "Clear Console"
+msgstr "தெளிவான கன்சோல்"
+
+msgid "Edit Mode"
+msgstr "திருத்து பயன்முறை"
+
+msgid "Object"
+msgstr "பொருள்"
+
+msgid "Message"
+msgstr "செய்தி"
+
+msgid "Number"
+msgstr "எண்"
+
+msgid "List"
+msgstr "பட்டியல்"
+
+msgid "Symbol"
+msgstr "அடையாளம்"
+
+msgid "Comment"
+msgstr "கருத்து"
+
+msgid "Graph"
+msgstr "வரைபடம்"
+
+msgid "Find..."
+msgstr "கண்டுபிடி ..."
+
+msgid "Find Again"
+msgstr "மீண்டும் கண்டுபிடி"
+
+msgid "Find Last Error"
+msgstr "கடைசி பிழையைக் கண்டறியவும்"
+
+msgid "DSP On"
+msgstr "டிஎச்பி ஆன்"
+
+msgid "DSP Off"
+msgstr "டி.எச்.பி ஆஃப்"
+
+msgid "Test Audio and MIDI..."
+msgstr "ஆடியோ மற்றும் மிடி சோதனை ..."
+
+msgid "Load Meter"
+msgstr "சுமை மீட்டர்"
+
+msgid "Audio Settings..."
+msgstr "ஆடியோ அமைப்புகள் ..."
+
+msgid "MIDI Settings..."
+msgstr "மிடி அமைப்புகள் ..."
+
+msgid "Minimize"
+msgstr "குறைக்கவும்"
+
+msgid "Zoom"
+msgstr "பெரிதாக்கு"
+
+msgid "Bring All to Front"
+msgstr "அனைத்தையும் முன்னால் கொண்டு வாருங்கள்"
+
+msgid "Next Window"
+msgstr "அடுத்த சாளரம்"
+
+msgid "Previous Window"
+msgstr "முந்தைய சாளரம்"
+
+msgid "Close subwindows"
+msgstr "துணைப்பிரிவை மூடு"
+
+msgid "Parent Window"
+msgstr "பெற்றோர் சாளரம்"
+
+msgid "Message..."
+msgstr "செய்தி ..."
+
+msgid "HTML Manual..."
+msgstr "உஉகுமொ கையேடு ..."
+
+msgid "Browser..."
+msgstr "உலாவி ..."
+
+msgid "List of objects..."
+msgstr "பொருட்களின் பட்டியல் ..."
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr "புதுப்பிப்புகளை சரிபார்க்கவும்"
+
+msgid "Report a bug"
+msgstr "ஒரு பிழையைப் புகாரளிக்கவும்"
+
+msgid "Clear Menu"
+msgstr "தெளிவான பட்டியல்"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+"எல்லா விருப்பங்களையும் நீக்கவா?\n"
+" (பி.டி. மறுதொடக்கம் செய்யப்படும்போது நடைமுறைக்கு வருகிறது)"
+
+msgid "removed GUI settings"
+msgstr "GUI அமைப்புகள் அகற்றப்பட்டன"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "அழிக்க PD-GUI அமைப்புகள் இல்லை"
+
+msgid "Edit Preferences..."
+msgstr "விருப்பங்களைத் திருத்து ..."
+
+msgid "Save All Preferences"
+msgstr "எல்லா விருப்பங்களையும் சேமிக்கவும்"
+
+msgid "Save to..."
+msgstr "சேமி இங்கு..."
+
+msgid "Load from..."
+msgstr "இருந்து ஏற்றவும் ..."
+
+msgid "Forget All..."
+msgstr "அனைத்தையும் மறந்து விடுங்கள் ..."
+
+msgid "Tabbed preferences"
+msgstr "தாவலாக்கப்பட்ட விருப்பத்தேர்வுகள்"
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "'%s' இல் நீங்கள் செய்த மாற்றங்களைச் சேமிக்க விரும்புகிறீர்களா?"
+
+msgid "Properties"
+msgstr "பண்புகள்"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "'%s' இல் மாற்றங்களை ஏற்றுக்கொள்கிறீர்களா?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"ஏற்றுக்கொள்வது தொடர்புடைய பொருளில் உள்ள உள்ளடக்கங்களை புதுப்பிக்கும். மாற்றங்களை தொடர்ந்து "
+"செய்ய நீங்கள் இன்னும் பேட்சை சேமிக்க வேண்டும்."
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr "பி.டி சாளரத்திலிருந்து %d கோடுகள் கைவிடப்பட்டன"
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr "PD சாளரம் %d வரிகளை வடிகட்டியது"
+
+msgid "Audio on"
+msgstr "ஆடியோ ஆன்"
+
+msgid "Audio off"
+msgstr "ஆடியோ ஆஃப்"
+
+msgid "Find source"
+msgstr "மூலத்தைக் கண்டறியவும்"
+
+msgid "Pd"
+msgstr "பி.டி."
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "சோதனை இரட்டை (64 பிட்) துல்லியம்"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-flotats சோதனை"
+
+msgid "DSP"
+msgstr "டி.எச்.பி."
+
+msgid "Audio I/O error"
+msgstr "ஆடியோ I/O பிழை"
+
+msgid "Log:"
+msgstr "பதிவு:"
+
+msgid "fatal"
+msgstr "அபாயகரமான"
+
+msgid "error"
+msgstr "பிழை"
+
+msgid "normal"
+msgstr "சாதாரண"
+
+msgid "debug"
+msgstr "பிழைத்திருத்தம்"
+
+msgid "all"
+msgstr "அனைத்தும்"
+
+msgid "y1"
+msgstr "y1"
+
+msgid "New..."
+msgstr "புதியது ..."
+
+msgid "Edit..."
+msgstr "திருத்து ..."
+
+msgid "Delete"
+msgstr "நீக்கு"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "'%s' ஐ புறக்கணித்து: PD கோப்பு போல் தெரியவில்லை"
