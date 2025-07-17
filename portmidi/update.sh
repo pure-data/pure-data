@@ -25,12 +25,20 @@ VERSION=""
 ##### FUNCTIONS
 
 # copy .h & .c files from $SRC to $DEST, ignore missing file errors
-function copysrc {
+copysrc() {
     mkdir -p "${DEST}/${1}"
     cp -v "${SRC}/${1}"/*.h "${DEST}/${1}" 2>/dev/null || :
     cp -v "${SRC}/${1}"/*.c "${DEST}/${1}" 2>/dev/null || :
     # fix permissions
     find  "${DEST}/${1}" -type f -name "*.[ch]" -exec chmod a-x {} + || :
+    # fix line-endings
+    if which dos2unix >/dev/null 2>/dev/null; then
+        find "${DEST}/${1}" -type f -name "*.[ch]" -exec dos2unix {} + || :
+    elif which vi >/dev/null 2>/dev/null; then
+        find "${DEST}/${1}" -type f -name "*.[ch]" -exec vi {} -c "set ff=unix" -c ":wq" ";" || :
+    else
+        echo "skipping CRLF conversion" 1>&2
+    fi
 }
 
 usage() {
@@ -110,12 +118,11 @@ fi
 echo "==== Applying any patches"
 for p in $(find ./patches -type f -name "*.patch") ; do
     cd "${SRC}"
-    set +e
-    (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
-    set -e
-    if [[ $? == 0 ]] ; then
+    if patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1; then
         echo "==== Applying ${p}"
         patch -p1 < "../${p}"
+    else
+        echo "==== Skipping patch ${p}"
     fi
     cd ../
 done
