@@ -94,6 +94,12 @@ proc ::dialog_audio::state2widgets {state args} {
         set s "disabled"
     }
     foreach w $args {
+        if {[winfo exist $w.menu]} {
+            if {[$w.menu index last] < 1} {
+                $w configure -state disabled
+                continue
+            }
+        }
         $w configure -state $s
     }
 
