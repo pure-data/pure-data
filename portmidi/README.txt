@@ -8,7 +8,8 @@ It is built as a libtool convenience library when using autotools to build Pd:
     ./configure
     make
 
-For more info on PortMidi, see http://portmedia.sourceforge.net/portmidi
+For more info on PortMidi, see http://portmedia.sourceforge.net/portmidi and
+https://github.com/PortMidi/portmidi.git
 
 ## Updating
 
