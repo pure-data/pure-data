@@ -1,5 +1,5 @@
 diff --git a/pm_mac/pmmacosxcm.c b/pm_mac/pmmacosxcm.c
-index e8b196c..7e48bca 100755
+index f81a2f1..067e0ee 100755
 --- a/pm_mac/pmmacosxcm.c
 +++ b/pm_mac/pmmacosxcm.c
 @@ -156,7 +156,9 @@
@@ -12,3 +12,21 @@ index e8b196c..7e48bca 100755
  
  #define SYSEX_BUFFER_SIZE 128
  /* What is the maximum PortMidi device number for an IAC device? A
+@@ -716,7 +718,7 @@ static PmError midi_write_short(PmInternal *midi, PmEvent *event)
+     message[2] = Pm_MessageData2(what);
+     messageLength = pm_midi_length((int32_t) what);
+ 
+-#ifdef LIMIT_RATE
++#if LIMIT_RATE
+     /* Make sure we go forward in time. */
+     if (timestamp < info->min_next_time) {
+         timestamp = info->min_next_time;
+@@ -773,7 +775,7 @@ static PmError midi_end_sysex(PmInternal *midi, PmTimestamp when)
+     coremidi_info_type info = (coremidi_info_type) midi->api_info;
+     assert(info);
+     
+-#ifdef LIMIT_RATE
++#if LIMIT_RATE
+     /* make sure we go foreward in time */
+     if (info->sysex_timestamp < info->min_next_time)
+         info->sysex_timestamp = info->min_next_time;
