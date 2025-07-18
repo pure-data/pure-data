@@ -681,6 +681,9 @@ EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
 EXTERN t_symbol *iemgui_put_in_braces(t_symbol *s);
 
+/* ------------- g_canvas.c ------------- */
+EXTERN unsigned int interpolate_colors(unsigned int col1, unsigned int col2, float factor);
+
 /*-------------  g_clone.c ------------- */
 EXTERN t_class *clone_class;
 

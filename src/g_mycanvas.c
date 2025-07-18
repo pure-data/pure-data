@@ -44,8 +44,10 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom);
     pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-        "-fill", x->x_gui.x_bcol,
-        "-outline", x->x_gui.x_bcol);
+        "-fill", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+            interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.12) : x->x_gui.x_bcol,
+        "-outline", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+            interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.12) : x->x_gui.x_bcol);
 
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -54,7 +56,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", zoom,
         "-outline", x->x_gui.x_fsf.x_selected
-            ? THISGUI->i_selectcolor : x->x_gui.x_bcol);
+            ? THISGUI->i_selectcolor : THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -62,7 +64,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
         ypos + x->x_gui.x_ldy * zoom);
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
         "-font", 3, fontatoms,
-        "-fill", x->x_gui.x_lcol);
+        "-fill", iemgui_getcolor_label(&x->x_gui));
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -95,7 +97,7 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
         "-outline", x->x_gui.x_fsf.x_selected
-            ? THISGUI->i_selectcolor : x->x_gui.x_bcol);
+            ? THISGUI->i_selectcolor : THISGUI->i_foregroundcolor);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
@@ -156,8 +158,8 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     int w = atom_getfloatarg(2, argc, argv);
     int h = atom_getfloatarg(3, argc, argv);
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[21];
+    iemgui_setdialogatoms(&x->x_gui, 21, undo);
     SETFLOAT (undo+1, 0);
     SETFLOAT (undo+2, x->x_vis_w);
     SETFLOAT (undo+3, x->x_vis_h);
@@ -165,7 +167,7 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     SETSYMBOL(undo+15, gensym("none"));
 
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            21, undo,
                             argc, argv);
 
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
@@ -247,8 +249,6 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     IEMGUI_SETDRAWFUNCTIONS(x, my_canvas);
 
     x->x_gui.x_bcol = 0xE0E0E0;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x404040;
 
     if(((argc >= 10)&&(argc <= 13))
        &&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2))

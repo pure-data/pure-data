@@ -2357,6 +2357,21 @@ static unsigned int normalize_color(t_symbol *s)
     return (-1);
 }
 
+unsigned int interpolate_colors(unsigned int color1, unsigned int color2, float amount)
+{
+    amount = amount < 0 ? 0 : amount > 1 ? 1 : amount;
+    int r1 = (color1 >> 16) & 0xFF;
+    int g1 = (color1 >>  8) & 0xFF;
+    int b1 =  color1        & 0xFF;
+    int r2 = (color2 >> 16) & 0xFF;
+    int g2 = (color2 >>  8) & 0xFF;
+    int b2 =  color2        & 0xFF;
+    unsigned int r = r1 + (r2 - r1) * amount;
+    unsigned int g = g1 + (g2 - g1) * amount;
+    unsigned int b = b1 + (b2 - b1) * amount;
+    return (r << 16) | (g << 8) | b;
+}
+
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop)
 {
