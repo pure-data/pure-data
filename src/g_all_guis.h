@@ -43,6 +43,11 @@
 #define IEM_GUI_COLOR_SELECTED       0x0000FF
 #define IEM_GUI_COLOR_NORMAL         0x000000
 #define IEM_GUI_COLOR_EDITED         0xFF0000
+#define IEM_GUI_COLOR_BACKGROUND     0xFCFCFC
+#define IEM_GUI_COLOR_FOREGROUND     0x000000
+#define IEM_GUI_COLOR_LABEL          0x000000
+
+#define IEM_GUI_COLOR_DEFAULT_SENTINEL -1
 
 #define IEM_GUI_MAX_COLOR            30
 
@@ -313,6 +318,10 @@ EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
 EXTERN void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n);
 EXTERN int iem_fstyletoint(t_iem_fstyle_flags *fstylep);
 EXTERN void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w);
+
+EXTERN unsigned int iemgui_getcolor_background(t_iemgui *x);
+EXTERN unsigned int iemgui_getcolor_foreground(t_iemgui *x);
+EXTERN unsigned int iemgui_getcolor_label(t_iemgui *x);
 
 #define IEMGUI_SETDRAWFUNCTIONS(x, prefix)                     \
     {                                                            \
