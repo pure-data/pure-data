@@ -257,17 +257,17 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     unsigned int fg = THISGUI->i_foregroundcolor;
     float factor = 0.17f;
 
-    unsigned int r1 = (bg >> 16) & 0xFF;
-    unsigned int g1 = (bg >> 8)  & 0xFF;
-    unsigned int b1 =  bg        & 0xFF;
+    float r1 = (float)((bg >> 16) & 0xFF);
+    float g1 = (float)((bg >> 8)  & 0xFF);
+    float b1 = (float)( bg        & 0xFF);
 
-    unsigned int r2 = (fg >> 16) & 0xFF;
-    unsigned int g2 = (fg >> 8)  & 0xFF;
-    unsigned int b2 =  fg        & 0xFF;
+    float r2 = (float)((fg >> 16) & 0xFF);
+    float g2 = (float)((fg >> 8)  & 0xFF);
+    float b2 = (float)( fg        & 0xFF);
 
-    unsigned int r = (unsigned int)(r1 + (r2 - r1) * factor);
-    unsigned int g = (unsigned int)(g1 + (g2 - g1) * factor);
-    unsigned int b = (unsigned int)(b1 + (b2 - b1) * factor);
+    int r = (int)(r1 + (r2 - r1) * factor + 0.5f);
+    int g = (int)(g1 + (g2 - g1) * factor + 0.5f);
+    int b = (int)(b1 + (b2 - b1) * factor + 0.5f);
 
     unsigned int interp = (r << 16) | (g << 8) | b;
 
