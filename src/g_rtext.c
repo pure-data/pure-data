@@ -74,7 +74,11 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
 /* find the rtext that goes with a text item.  Return zero if the
 text item is invisible, either because the glist itself is, or because
 the item is in a GOP subpatch and its (x,y) origin is outside the GOP
-area.  (Or if it's within a nested GOP which itself isn't visible). */
+area.  (Or if it's within a nested GOP which itself isn't visible).  In
+some cases, the rtext is created in order to check the bounds rectangle,
+in which case it was created even if invisible.  But since gobj_shouldvis()
+first checks the upper right corner (x,y) before creating the rtext, the
+majority of invisible 'text' objects never get rtexts created for them. */
 
 t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
 {
@@ -83,16 +87,18 @@ t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
         /* This might happen for text objs in GOPs - dunno why. */
     if (!canvas->gl_editor)
         canvas_create_editor(canvas);
-        /* "really" is for when we're being called within gobj_shouldvis,
-            in which we can't just go call shouldvis back from here */
-    if (!really && !gobj_shouldvis(&who->te_g, gl))
-        return (0);
+
+        /* if it exists, return it whether or not it should be visible. */
     for (x = canvas->gl_editor->e_rtext; x; x = x->x_next)
     {
         if (x->x_text == who)
             return (x);
         last = x;
     }
+        /* "really" is for when we're being called within gobj_shouldvis,
+            in which we can't just go call shouldvis back from here */
+    if (!really && !gobj_shouldvis(&who->te_g, gl))
+        return (0);
     x = rtext_add(gl, last);
     x->x_text = who;
     rtext_retext(x);
