@@ -2092,15 +2092,20 @@ static void canvas_donecanvasdialog(t_glist *x,
         arguments.  This will break in 0.56 and later.  At least we can
         catch cases in which the patch isn't yet visible and in that case
         ignore the extra args - the dialog should only send this for a
-        visible one.  (Actually, is that really true?) */
+        visible one.  (Actually, is that really true?)  Anyhow, since
+        at least one bandit call to this method contains extra arguments
+        (apparently from the object itself which is then getting deleted
+        and crashing Pd) we test that there's an extra string "text" before
+        the new object creation text.   */
 
-    if (x->gl_owner && argc > 12 && glist_isvisible(x->gl_owner))
+    if (x->gl_owner && argc > 13 && glist_isvisible(x->gl_owner) &&
+        !strcmp(atom_getsymbolarg(12, argc, argv)->s_name, "text"))
     {
         t_gobj *y =  &x->gl_obj.ob_g;
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
-        binbuf_add(b, argc-12, argv+12);
+        binbuf_add(b, argc-13, argv+13);
         binbuf_gettext(b, &textbuf, &textsize);
         binbuf_free(b);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
