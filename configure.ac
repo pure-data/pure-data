@@ -160,7 +160,7 @@ AS_CASE([$host],
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe"
+    wish="wish86.exe"
 
     # externals need to be dynamically linked to pd.dll,
     # but we need to check for --with-floatsize first (see below)
@@ -183,7 +183,7 @@ AS_CASE([$host],
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe"
+    wish="wish86.exe"
 
     # externals need to be dynamically linked to pd.dll,
     # but we need to check for --with-floatsize first (see below)

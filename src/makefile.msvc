@@ -10,7 +10,7 @@ DELETE = del
 VCSDK = "C:/Program Files/Microsoft SDKs/Windows/v6.0A"
 VC9 = "C:/Program Files/Microsoft Visual Studio 9.0/VC"
 
-WISH = wish85.exe
+WISH = wish86.exe
 
 EXTRA_LIBPATH=
 EXTRA_INCLUDES=
