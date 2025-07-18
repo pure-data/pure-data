@@ -718,7 +718,7 @@ static PmError midi_write_short(PmInternal *midi, PmEvent *event)
     message[2] = Pm_MessageData2(what);
     messageLength = pm_midi_length((int32_t) what);
 
-#ifdef LIMIT_RATE
+#if LIMIT_RATE
     /* Make sure we go forward in time. */
     if (timestamp < info->min_next_time) {
         timestamp = info->min_next_time;
@@ -775,7 +775,7 @@ static PmError midi_end_sysex(PmInternal *midi, PmTimestamp when)
     coremidi_info_type info = (coremidi_info_type) midi->api_info;
     assert(info);
     
-#ifdef LIMIT_RATE
+#if LIMIT_RATE
     /* make sure we go foreward in time */
     if (info->sysex_timestamp < info->min_next_time)
         info->sysex_timestamp = info->min_next_time;
