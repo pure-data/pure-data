@@ -2086,7 +2086,15 @@ static void canvas_donecanvasdialog(t_glist *x,
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
 
-    if (x->gl_owner && argc > 12)
+        /* if there are extra arguments, the user has typed new text in
+        the dialog window.  Unfortunately, some old patches use this to
+        resize rectangles programmatically, and moreover send extra
+        arguments.  This will break in 0.56 and later.  At least we can
+        catch cases in which the patch isn't yet visible and in that case
+        ignore the extra args - the dialog should only send this for a
+        visible one.  (Actually, is that really true?) */
+
+    if (x->gl_owner && argc > 12 && glist_isvisible(x->gl_owner))
     {
         t_gobj *y =  &x->gl_obj.ob_g;
         t_binbuf *b = binbuf_new();
@@ -2106,7 +2114,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         glist_select(x->gl_owner, y);
         canvas_stowconnections(glist_getcanvas(x->gl_owner));
 
-            /* change the text (this will restore the connections we just stowed away) */
+            /* change the text (this restores the connections we just saved) */
         glist_noselect(x->gl_owner);
         t_canvas *owner = x->gl_owner;
         text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
