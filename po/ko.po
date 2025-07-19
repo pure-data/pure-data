@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2025-07-17 14:59+0200\n"
 "PO-Revision-Date: 2023-04-26 08:48+0000\n"
 "Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -217,6 +217,10 @@ msgstr "출력 장치"
 
 msgid "Use Multiple Devices"
 msgstr "다수의 장치를 사용하기"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "입력 장치"
 
 msgid "Audio System"
 msgstr ""
