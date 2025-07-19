@@ -241,6 +241,36 @@ namespace eval ::pdgui:: {
 }
 
 #------------------------------------------------------------------------------#
+# color palette and utilities
+
+namespace eval ::pd_colors {
+    variable palette
+    array set palette {
+        foreground "#000000"
+        background "#FFFFFF"
+        selected   "#0000FF"
+        gop        "#FF0000"
+    }
+}
+
+proc ::pd_colors::set_palette {fg bg sel gop} {
+    set ::pd_colors::palette(foreground) $fg
+    set ::pd_colors::palette(background) $bg
+    set ::pd_colors::palette(selected) $sel
+    set ::pd_colors::palette(gop) $gop
+}
+
+proc ::pd_colors::interpolate {color1 color2 amount} {
+    set amount [expr {max(0, min(1, $amount))}]
+    scan $color1 "#%2x%2x%2x" r1 g1 b1
+    scan $color2 "#%2x%2x%2x" r2 g2 b2
+    set r [expr {int($r1 + ($r2 - $r1) * $amount)}]
+    set g [expr {int($g1 + ($g2 - $g1) * $amount)}]
+    set b [expr {int($b1 + ($b2 - $b1) * $amount)}]
+    return [format "#%02x%02x%02x" $r $g $b]
+}
+
+#------------------------------------------------------------------------------#
 # coding style
 #
 # these are preliminary ideas, we'll change them as we work things out:
