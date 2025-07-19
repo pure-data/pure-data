@@ -12,6 +12,17 @@ namespace eval ::pdtk_canvas:: {
 
     variable enable_cords_to_foreground 0
 
+    # color palette variables
+    # TODO remove redundancy with core default color palette
+    variable colors
+    array set colors {
+        fg  "#000000"
+        bg  "#FFFFFF"
+        sel "#0000FF"
+        gop "#FF0000"
+        att "#E0E0E0"
+    }
+
     namespace export pdtk_canvas_popup
     namespace export pdtk_canvas_editmode
     namespace export pdtk_canvas_getscroll
@@ -508,15 +519,23 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
+proc ::pdtk_canvas::set_color_palette {fg bg sel gop att} {
+    set ::pdtk_canvas::colors(fg) $fg
+    set ::pdtk_canvas::colors(bg) $bg
+    set ::pdtk_canvas::colors(sel) $sel
+    set ::pdtk_canvas::colors(gop) $gop
+    set ::pdtk_canvas::colors(att) $att
+}
+
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     if {$::pdtk_canvas::enable_cords_to_foreground} {
-        set col black
+        set col $::pdtk_canvas::colors(fg)
         if { $state == 0 } {
-            set col lightgrey
+            set col $::pdtk_canvas::colors(att)
         }
         foreach id [$mytoplevel find withtag {cord && !selected}] {
-            # don't apply backgrouding on selected (blue) lines
-            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+            # don't apply backgrounding on selected lines
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne $::pdtk_canvas::colors(sel) } {
                 $mytoplevel itemconfigure $id -fill $col
             }
         }
