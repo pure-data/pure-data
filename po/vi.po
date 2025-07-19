@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2025-07-17 14:59+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -230,6 +230,9 @@ msgid "Output Devices"
 msgstr ""
 
 msgid "Use Multiple Devices"
+msgstr ""
+
+msgid "Rescan Devices"
 msgstr ""
 
 msgid "Audio System"

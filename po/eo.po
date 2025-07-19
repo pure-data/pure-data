@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2025-07-17 14:59+0200\n"
 "PO-Revision-Date: 2024-08-28 18:54+0200\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -213,6 +213,10 @@ msgstr "Eligaj aparatoj"
 
 msgid "Use Multiple Devices"
 msgstr "Uzi plurajn aparatojn"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "Enigaj aparatoj"
 
 msgid "Audio System"
 msgstr "Sonsistemo"
