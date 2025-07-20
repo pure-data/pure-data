@@ -79,4 +79,5 @@ int sys_mididevnametonumber(int output, const char *name) { return 0; }
 void sys_mididevnumbertoname(int output, int devno, char *name, int namesize) {}
 void sys_set_midi_api(int api) {}
 void sys_gui_midipreferences(void) {}
+void glob_rescanmidi(t_pd *dummy) {}
 int sys_midiapi;
