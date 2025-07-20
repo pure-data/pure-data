@@ -758,6 +758,15 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         (void *)glob_midi_properties, "");
 }
 
+    /* rescan MIDI devices */
+void glob_rescanmidi(void *dummy)
+{
+    sys_reinit_midi();
+    sys_gui_midipreferences();
+        /* refresh midi dialog (if it's open) */
+    pdgui_vmess("::dialog_midi::refresh_ui", "");
+}
+
 #define MIDI_DIALOG_DEVS 9
 
     /* new values from dialog window */
