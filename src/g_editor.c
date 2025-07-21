@@ -1917,10 +1917,11 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 case we're talking to an older GUI version (so that
                 pureVST can work with Pd 0.55 as its GUI) */
             if (THISGUI->i_backgroundcolor != 0xFFFFFF)
-                pdgui_vmess("pdtk_canvas_new", "^ ii si k", x,
+                pdgui_vmess("pdtk_canvas_new", "^ ii si kk", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                    winpos, x->gl_edit, THISGUI->i_backgroundcolor);
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    winpos, x->gl_edit,
+                    THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor);
             else pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1), winpos, x->gl_edit);
