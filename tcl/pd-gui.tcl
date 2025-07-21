@@ -246,16 +246,16 @@ namespace eval ::pdgui:: {
 namespace eval ::pd_colors {
     variable palette
     array set palette {
-        foreground "#000000"
         background "#FFFFFF"
+        foreground "#000000"
         selected   "#0000FF"
         gop        "#FF0000"
     }
 }
 
-proc ::pd_colors::set_palette {fg bg sel gop} {
-    set ::pd_colors::palette(foreground) $fg
+proc ::pd_colors::set_palette {bg fg sel gop} {
     set ::pd_colors::palette(background) $bg
+    set ::pd_colors::palette(foreground) $fg
     set ::pd_colors::palette(selected) $sel
     set ::pd_colors::palette(gop) $gop
 }

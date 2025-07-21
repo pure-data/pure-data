@@ -2219,8 +2219,8 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
-    THISGUI->i_foregroundcolor = 0x000000;
     THISGUI->i_backgroundcolor = 0xFFFFFF;
+    THISGUI->i_foregroundcolor = 0x000000;
     THISGUI->i_selectcolor = 0x0000FF;
     THISGUI->i_gopcolor = 0xFF0000;
     g_editor_newpdinstance();
@@ -2341,29 +2341,29 @@ static unsigned int normalize_color(t_symbol *s)
         return col & 0xFFFFFF;
     }
     pd_error(0,
- "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
+ "'pd color' message: non-hexadecimal '%s' (should be as in '#0000ff')",
        s->s_name);
     return (-1);
 }
 
-void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+void glob_color(void *dummy, t_symbol *bg, t_symbol *fg, t_symbol *sel,
     t_symbol *gop)
 {
     t_glist *gl;
-    unsigned int c_fg = normalize_color(fg);
     unsigned int c_bg = normalize_color(bg);
+    unsigned int c_fg = normalize_color(fg);
     unsigned int c_sel = normalize_color(sel);
     unsigned int c_gop =
         (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
 
-    if ((-1 == c_fg) || (-1 == c_bg) || (-1 == c_sel) || (-1 == c_gop)) {
+    if ((-1 == c_bg) || (-1 == c_fg) || (-1 == c_sel) || (-1 == c_gop)) {
         pd_error(0, "skipping color update");
         return;
     }
         /* forward palette to gui */
     pdgui_vmess("::pd_colors::set_palette", "kkkk",
-        THISGUI->i_foregroundcolor = c_fg,
         THISGUI->i_backgroundcolor = c_bg,
+        THISGUI->i_foregroundcolor = c_fg,
         THISGUI->i_selectcolor = c_sel,
         THISGUI->i_gopcolor = c_gop
     );
