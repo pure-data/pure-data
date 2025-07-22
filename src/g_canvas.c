@@ -2346,21 +2346,21 @@ static unsigned int normalize_color(t_symbol *s)
     return (-1);
 }
 
-void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+void glob_color(void *dummy, t_symbol *bg, t_symbol *fg, t_symbol *sel,
     t_symbol *gop)
 {
     t_glist *gl;
-    unsigned int c_fg = normalize_color(fg);
     unsigned int c_bg = normalize_color(bg);
+    unsigned int c_fg = normalize_color(fg);
     unsigned int c_sel = normalize_color(sel);
     unsigned int c_gop = (gop && gop->s_name[0]) ? normalize_color(gop) : c_sel;
 
-    if ((-1 == c_fg) || (-1 == c_bg) || (-1 == c_sel) || (-1 == c_gop)) {
+    if ((-1 == c_bg) || (-1 == c_fg) || (-1 == c_sel) || (-1 == c_gop)) {
         pd_error(0, "skipping color update");
         return;
     }
-    THISGUI->i_foregroundcolor = c_fg;
     THISGUI->i_backgroundcolor = c_bg;
+    THISGUI->i_foregroundcolor = c_fg;
     THISGUI->i_selectcolor = c_sel;
     THISGUI->i_gopcolor = c_gop;
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
