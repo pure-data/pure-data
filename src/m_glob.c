@@ -45,7 +45,7 @@ void glob_fastforward(t_pd *ignore, t_floatarg f);
 void glob_settracing(void *dummy, t_floatarg f);
 void glob_vis(void *dummy, t_symbol *s);
 void glob_closesubs(void *dummy);
-void glob_color(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+void glob_color(void *dummy, t_symbol *bg, t_symbol *fg, t_symbol *sel,
     t_symbol *gop);
 void glob_rescanaudio(void *dummy);
 
