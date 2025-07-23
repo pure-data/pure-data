@@ -30,7 +30,7 @@
 #X obj 838 274 pack;
 #X msg 522 565 \; onoff 1 0;
 #X msg 523 607 \; onoff 2 0;
-#X text 35 161 Messages to "onoff" require a tag \, which is a number shared between the note-on and note-off message so that we can track down the voice to turn it off. If you're using MIDI input \, you can just re-use the pitch as a tag., f 67;
+#X text 35 161 Messages to "onoff" require a tag \, which is a number shared between the note-on and note-off message so that we can track down the voice to turn it off. If you're using MIDI input \, you can just reuse the pitch as a tag., f 67;
 #X text 265 660 single messages to do both as before:, f 18;
 #X obj 603 96 unpack f f f f f f f;
 #X obj 617 265 pack f f f f f f f;
