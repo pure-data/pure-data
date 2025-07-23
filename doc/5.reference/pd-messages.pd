@@ -335,7 +335,7 @@
 #X msg 281 181 goprect 150 50 200 70;
 #X msg 266 152 goprect 50 50 100 70;
 #X obj 266 123 loadbang;
-#X text 33 20 Use the "goprect" message to set respectively the horizontal margin \, the vertical margin \, the width and heigth of a GOP ("Graph-On-Parent) rectangle. The width and height are optional so you can just set the margin if you want to., f 49;
+#X text 33 20 Use the "goprect" message to set respectively the horizontal margin \, the vertical margin \, the width and height of a GOP ("Graph-On-Parent) rectangle. The width and height are optional so you can just set the margin if you want to., f 49;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
 #X connect 4 0 3 0;
