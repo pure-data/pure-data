@@ -268,14 +268,10 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
         else
         {
             my_numbox_ftoa(x);
-            if(x->x_gui.x_fsf.x_selected)
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", THISGUI->i_selectcolor,
-                    "-text", x->x_buf);
-            else
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", x->x_gui.x_fcol,
-                    "-text", x->x_buf);
+            pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
+                "-fill", x->x_gui.x_fsf.x_selected
+                    ? THISGUI->i_selectcolor : x->x_gui.x_fcol,
+                "-text", x->x_buf);
             x->x_buf[0] = 0;
         }
     }

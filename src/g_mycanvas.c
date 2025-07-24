@@ -51,13 +51,10 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + offset, ypos + offset,
         xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", x->x_gui.x_bcol);
+    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+        "-width", zoom,
+        "-outline", x->x_gui.x_fsf.x_selected
+            ? THISGUI->i_selectcolor : x->x_gui.x_bcol);
 
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -96,12 +93,9 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
     sprintf(tag, "%pBASE", x);
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-            "-outline", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-            "-outline", x->x_gui.x_bcol);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
+        "-outline", x->x_gui.x_fsf.x_selected
+            ? THISGUI->i_selectcolor : x->x_gui.x_bcol);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
