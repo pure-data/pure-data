@@ -9,7 +9,7 @@
 #X text 136 231 dummy outlet;
 #X text 67 33 This subpatch sorts the delay writing before the reading., f 29;
 #X text 82 271 The outlet is just needed to connect to the next subpatch to force the correct order., f 28;
-#X text 126 146 writting to the delay.;
+#X text 126 146 writing to the delay.;
 #X connect 0 0 1 0;
 #X connect 0 0 2 0;
 #X restore 161 450 pd delay-writer;

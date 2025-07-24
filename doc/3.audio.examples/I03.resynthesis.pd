@@ -21,7 +21,7 @@
 #X obj 31 599 outlet~;
 #X text 76 518 Multiply by the Hann window function again \, necessary because the operation we performed might result in a signal that doesn't go smoothly to zero at both ends., f 53;
 #X text 129 19 [block~] object specifies vector size of 512 and overlap four. This window now computes blocks of 512 samples at intervals of 128 samples computed on the parent patch.;
-#X text 92 101 The [inlet~] now re-uses 3/4 of the previous block \, along with the 128 new samples., f 44;
+#X text 92 101 The [inlet~] now reuses 3/4 of the previous block \, along with the 128 new samples., f 44;
 #X text 154 289 divide by 3N/2 (factor of N because [rfft~] and [rifft~] aren't normalized \, and 3/2 is the gain of overlap-4 reconstruction when Hann window function is applied twice.), f 50;
 #X text 100 398 Real-valued inverse Fourier transform. This uses only the first N/@ points of its inputs \, supplying the rest by symmetry (so it's OK that [rfft~] only puts out those N/2 points.) There's only one outlet because the output is real-valued.;
 #X text 107 583 This repackages the output into 64-sample chunks for the parent window. Since we're operating with an overlap \, the [outlet~] object performs an overlapped sum of the blocks computed in this window.;
