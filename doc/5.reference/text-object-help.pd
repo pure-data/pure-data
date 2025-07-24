@@ -1,17 +1,19 @@
 #N struct text-struct float x float y text z;
-#N canvas 472 81 541 585 12;
+#N canvas 355 63 541 585 12;
 #X obj 92 552 list;
 #X obj 29 16 text;
 #X text 15 552 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
+#A color 0;
+#A width 1;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
 #X restore 132 552 array;
 #X obj 242 214 text define;
 #X text 69 169 The text object's first argument sets its function:, f 27;
-#N canvas 411 30 742 704 define 0;
+#N canvas 411 34 742 704 define 0;
 #X msg 52 182 clear;
 #X msg 102 244 read text-object-help.txt;
 #X text 264 492 creation arguments:;
@@ -220,7 +222,7 @@
 #X text 88 479 here's how to access texts inside data structures:, f 27;
 #X obj 180 552 scalar;
 #X obj 242 340 text size;
-#N canvas 573 102 592 354 size 0;
+#N canvas 529 105 592 354 size 0;
 #X obj 93 119 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 222 304 text define -k text-size;
 #A set 1 2 \; 3 4 5 \; 7 8 9 10 \; cis boom bah \, walk the dog \;;
@@ -232,7 +234,7 @@
 #X text 240 237 arguments: name of the text object or "-s struct-name", f 30;
 #X obj 5 48 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 497 13 <= click;
-#N canvas 699 173 577 372 reference 0;
+#N canvas 673 193 577 372 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
 #X obj 9 211 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
@@ -241,16 +243,16 @@
 #X text 112 160 symbol - set array name., f 46;
 #X text 106 180 pointer - pointer to the array if -s flag is used.;
 #X text 76 280 -s <symbol \, symbol>: struct name and field name of main structure., f 66;
-#X text 107 315 symbol - array name if no flags are given (default: none).;
 #X obj 40 18 text size;
 #X obj 9 250 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 9 276 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 9 308 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
 #X text 120 17 - get number of messages or elements.;
 #X text 124 90 bang - output the number of messages., f 45;
-#X text 117 108 float -, f 7;
+#X text 117 108 float -;
 #X text 173 108 set message number and output its length or -1 if message number is out of range., f 41;
 #X text 124 220 float - number of messages or message's length.;
+#X text 107 315 symbol - text name if no flags are given (default: none).;
 #X restore 403 13 pd reference;
 #X obj 30 15 text size;
 #X text 69 68 [text size] reports the number of messages in the text or the length of a specified message.;
@@ -281,7 +283,7 @@
 #X text 333 314 find another text by name or pointer;
 #X msg 184 209 1e+15;
 #X text 592 17 <= click;
-#N canvas 720 147 575 432 reference 0;
+#N canvas 705 147 575 432 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 9 232 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 8 407 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
@@ -345,7 +347,7 @@
 #X text 91 156 output list;
 #X obj 5 51 cnv 1 512 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 446 18 <= click;
-#N canvas 756 178 573 352 reference 0;
+#N canvas 653 300 573 352 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
 #X obj 9 180 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
@@ -354,7 +356,6 @@
 #X text 112 129 symbol - set array name., f 46;
 #X text 106 149 pointer - pointer to the array if -s flag is used.;
 #X text 76 254 -s <symbol \, symbol>: struct name and field name of main structure., f 66;
-#X text 107 290 symbol - array name if no flags are given (default: none).;
 #X obj 27 17 text tolist;
 #X text 115 16 - convert text to a list.;
 #X text 124 90 bang - output contents as a list.;
@@ -362,6 +363,7 @@
 #X obj 9 223 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 9 249 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 9 281 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
+#X text 107 290 symbol - text name if no flags are given (default: none).;
 #X restore 352 17 pd reference;
 #X obj 25 17 text tolist;
 #X text 113 16 - convert text to a list.;
@@ -386,7 +388,7 @@
 #X text 57 133 set contents of text;
 #X obj 5 51 cnv 1 512 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 446 18 <= click;
-#N canvas 710 204 584 350 reference 0;
+#N canvas 652 249 584 350 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
 #X obj 9 180 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
@@ -395,7 +397,6 @@
 #X text 112 129 symbol - set array name., f 46;
 #X text 106 149 pointer - pointer to the array if -s flag is used.;
 #X text 76 246 -s <symbol \, symbol>: struct name and field name of main structure., f 66;
-#X text 107 284 symbol - array name if no flags are given (default: none).;
 #X text 124 90 list - sets contents of text from given list.;
 #X obj 25 17 text fromlist;
 #X text 134 16 - convert from list.;
@@ -403,6 +404,7 @@
 #X obj 9 241 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 9 273 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
 #X text 127 189 NONE;
+#X text 107 284 symbol - text name if no flags are given (default: none).;
 #X restore 352 17 pd reference;
 #X obj 25 17 text fromlist;
 #X text 134 16 - convert from list.;
@@ -415,7 +417,7 @@
 #X restore 354 388 pd fromlist;
 #X text 107 388 convert from list;
 #X obj 242 411 text search;
-#N canvas 401 23 916 714 search 0;
+#N canvas 267 37 916 714 search 0;
 #X floatatom 46 316 5 0 0 0 - - - 0;
 #X text 340 259 find another text by name or pointer;
 #X text 218 288 arguments: name of the text object or "-s struct-name", f 55;
@@ -454,10 +456,10 @@
 #X obj 6 41 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 29 10 text search;
 #X text 811 11 <= click;
-#N canvas 726 130 570 384 reference 0;
+#N canvas 672 130 567 400 reference 0;
 #X obj 9 47 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 9 203 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
-#X obj 8 363 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 377 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 9 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 122 152 symbol - set array name., f 46;
 #X text 116 172 pointer - pointer to the array if -s flag is used.;
@@ -465,16 +467,16 @@
 #X obj 35 14 text search;
 #X text 136 85 list - search key, f 40;
 #X obj 9 77 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
-#X text 107 312 1) symbol - array name if no flags are given (default: none)., f 61;
 #X text 121 331 2) list -;
 #X obj 9 244 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 9 270 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 9 302 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
 #X text 123 14 - search for a message.;
 #X text 134 212 float - found message number or -1 if not found.;
-#X text 190 323 search element number optionally preceded by ">" \, ">=" \, "<" \, "<=" \, or "near"., f 49;
+#X text 191 331 search element number optionally preceded by ">" \, ">=" \, "<" \, "<=" \, or "near"., f 49;
 #X text 24 104 range <float \, float> -;
 #X text 185 104 onset and range of searched messages (onset indexed from 0), f 44;
+#X text 107 312 1) symbol - text name if no flags are given (default: none)., f 61;
 #X restore 717 11 pd reference;
 #X text 53 95 matches first message (number 0);
 #X text 117 10 - search for a message.;
@@ -527,7 +529,7 @@
 #X restore 354 411 pd search;
 #X text 58 435 sequencer/message-sender;
 #X obj 242 435 text sequence;
-#N canvas 398 23 746 675 sequence 0;
+#N canvas 398 34 746 675 sequence 0;
 #X msg 299 466 symbol text-search;
 #X text 436 466 specify another text by name or pointer;
 #X obj 148 568 print out1;
@@ -660,7 +662,7 @@
 #X text 161 620 <== see more examples here;
 #X obj 15 49 cnv 1 720 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 647 14 <= click;
-#N canvas 636 33 575 610 reference 0;
+#N canvas 636 34 575 610 reference 0;
 #X obj 9 41 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 9 286 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 8 581 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
@@ -691,9 +693,9 @@
 #X obj 9 405 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 9 431 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 9 543 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
-#X text 87 551 1) symbol - array name if no flags are given (default: none)., f 61;
 #X text 34 130 line <float> - set line number (actually "message number" \, from 0)., f 72;
 #X text 90 166 bang - output all messages from current to next waiting point., f 64;
+#X text 87 551 1) symbol - text name if no flags are given (default: none)., f 61;
 #X restore 553 14 pd reference;
 #X obj 42 16 text sequence;
 #X text 190 359 automatically sequence \, interpreting waits as delay times (see examples below)., f 42;
@@ -739,7 +741,7 @@
 #X text 287 267 <= click here to see text;
 #X obj 13 51 cnv 1 720 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 642 17 <= click;
-#N canvas 720 147 582 341 reference 0;
+#N canvas 632 310 582 341 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 9 157 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 8 299 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
@@ -747,7 +749,6 @@
 #X obj 9 76 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 94 114 symbol - set text name., f 48;
 #X text 87 133 pointer - pointer to the text if -s flag is used.;
-#X text 111 271 1) symbol - array name if no flags are given (default: none)., f 61;
 #X obj 34 17 text delete;
 #X obj 9 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 9 199 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
@@ -756,6 +757,7 @@
 #X text 98 81 float - message number to delete (negative deletes all text)., f 62;
 #X text 123 169 NONE.;
 #X text 123 17 - delete a message or clear text.;
+#X text 111 271 1) symbol - text name if no flags are given (default: none)., f 61;
 #X restore 548 18 pd reference;
 #X obj 34 17 text delete;
 #X text 72 67 [text delete] deletes the nth message.;
@@ -769,7 +771,7 @@
 #X restore 354 315 pd delete;
 #X text 135 290 insert a line;
 #X obj 242 290 text insert;
-#N canvas 534 131 743 445 insert 0;
+#N canvas 388 166 743 445 insert 0;
 #X text 382 220 find another text by name or pointer;
 #X msg 249 220 symbol text-delete;
 #X text 170 331 click below to get original text back:;
@@ -786,7 +788,7 @@
 #X obj 77 253 text insert text-insert 3;
 #X obj 13 51 cnv 1 720 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 642 17 <= click;
-#N canvas 720 147 578 370 reference 0;
+#N canvas 658 289 578 370 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 9 193 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
 #X obj 8 344 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
@@ -797,7 +799,6 @@
 #X text 101 113 float -;
 #X text 94 150 symbol - set text name., f 48;
 #X text 87 169 pointer - pointer to the text if -s flag is used.;
-#X text 101 296 1) symbol - array name if no flags are given (default: none)., f 61;
 #X obj 34 17 text insert;
 #X text 123 17 - insert a line.;
 #X text 108 81 list - a line to insert.;
@@ -807,6 +808,7 @@
 #X obj 9 285 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
 #X text 157 113 message number to insert., f 51;
 #X text 108 314 2) float - set message number (default: 0)., f 57;
+#X text 101 296 1) symbol - text name if no flags are given (default: none)., f 61;
 #X restore 548 18 pd reference;
 #X obj 34 17 text insert;
 #X text 123 17 - insert a message.;
