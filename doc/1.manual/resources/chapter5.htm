@@ -44,7 +44,10 @@ around without having to swap the window into edit mode.</p>
 <p>Multichannel support for [delread~], etc., [tabread~], etc., [readsf~], [writesf~],
 [sig~], [snapshot~], and [print~], all thanks to Christof Ressi.</p>
 
-<p>A phase argument to [block~] allows you to offset block computation. A new "goprect" message was added to officially support changing the GOP rectangle (so people can stop abusing "coords" and "donecanvasdialog" messages). Both also thanks to Christof!</p>
+<p>A phase argument to [block~] allows you to offset block computation.
+A new "goprect" message was added to officially support changing the GOP rectangle
+(so people can stop abusing "coords" and "donecanvasdialog" messages).
+Both also thanks to Christof!</p>
 
 <p>Run-time messages added to show/hide the name of arrays and set saving contents or not.
 Ticks and labels on graphs are now saved with the graph, array color and line width are
@@ -74,6 +77,9 @@ value, and a "bang" message to output without clearing, plus a "query" message
 to look at contents without expelling them. Examples were added by Porres to
 show how to use [bag] as a sustain pedal, arpeggiator and more.</p>
 
+<p>The [poly] object now has a "resize" message for changing the number of voices,
+plus a "steal" message for dynamically enabling/disabling note-stealing.
+
 <p>The [random] object takes a "float" message that both sets the range and
 generates an output.</p>
 
@@ -84,6 +90,16 @@ patch file so that you can click on it and have that start Pd.</p>
 "pd~ vis float" message to the [pd~] object.</p>
 
 <p>Improvements to mouse handling in MacOS (Ben Wesch).</p>
+
+<p>Improvements to the [clone] object: support "savestate" in cloned abstractions;
+do not remake the currently saved abstraction.</p>
+
+<p>New API functions "pd_queue_mess()" and "pd_queue_cancel()" for sending messages
+from a helper thread back to the main thread.</p>
+
+<p>New API function "pd_findbyclassname()" that allows to find objects purely by name.
+(Useful for sharing data between externals that don't live in the same binary.)</p>
+
 
 </div></section><section class="releasenote"><h4 id="0.55-2">0.55-2</h4><div>
 
@@ -151,6 +167,11 @@ paths relative to the parent patch.</P>
 [writesf~] and [soundfiler].</P>
 
 <P>Updates to language support.</P>
+
+<P>The new API function "sys_getfunbyname()" allows to get a function pointer
+to any API function by name. It returns NULL if the function does not exist in
+the current Pd binary. This allows external authors to use new API functions
+without causing loader errors in older Pd versions.</P>
 
 
 </div></section><section class="releasenote"><h4 id="0.54-1">0.54-1</h4><div>
