@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2023-02-19 20:36+0000\n"
+"PO-Revision-Date: 2025-07-24 11:05+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/hy/>\n"
@@ -15,25 +15,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "գծային"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "լոգարիթմական"
 
 msgid "new-only"
-msgstr ""
+msgstr "միայն նոր"
 
 msgid "new&old"
-msgstr ""
+msgstr "նոր և հին"
 
 msgid "no scale"
-msgstr ""
+msgstr "առանց մասշտաբի"
 
 msgid "scale"
-msgstr ""
+msgstr "մասշտաբ"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -112,34 +112,34 @@ msgid "(re-save preferences to reinstate them)"
 msgstr ""
 
 msgid "File"
-msgstr ""
+msgstr "Ֆայլ"
 
 msgid "Edit"
-msgstr ""
+msgstr "Խմբագրել"
 
 msgid "Put"
-msgstr ""
+msgstr "Դնել"
 
 msgid "Find"
-msgstr ""
+msgstr "Գտնել"
 
 msgid "Media"
-msgstr ""
+msgstr "Մեդիա"
 
 msgid "Window"
-msgstr ""
+msgstr "Պատուհան"
 
 msgid "Help"
-msgstr ""
+msgstr "Օգնություն"
 
 msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
-msgstr ""
+msgstr "Պատճենել"
 
 msgid "Paste"
-msgstr ""
+msgstr "Տեղադրել"
 
 msgid "Array Properties"
 msgstr ""
@@ -1353,9 +1353,8 @@ msgstr ""
 msgid "Tcl:"
 msgstr ""
 
-#, fuzzy
 msgid "Pd"
-msgstr "պդ"
+msgstr "Պդ"
 
 msgid "DSP"
 msgstr ""
@@ -1367,16 +1366,16 @@ msgid "Log:"
 msgstr ""
 
 msgid "fatal"
-msgstr ""
+msgstr "մահացու"
 
 msgid "error"
-msgstr ""
+msgstr "սխալ"
 
 msgid "normal"
-msgstr ""
+msgstr "նորմալ"
 
 msgid "debug"
-msgstr ""
+msgstr "վրիպազերծում"
 
 msgid "all"
 msgstr "բոլորը"

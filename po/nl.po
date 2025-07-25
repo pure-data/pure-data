@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2024-07-08 17:21+0200\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/nl/>\n"
+"PO-Revision-Date: 2025-07-25 15:04+0000\n"
+"Last-Translator: Bastiaan van den Berg <buzztiaan@gmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "lineair"
@@ -216,12 +216,11 @@ msgstr "Uitvoerapparaten"
 msgid "Use Multiple Devices"
 msgstr "Meerdere apparaten gebruiken"
 
-#, fuzzy
 msgid "Rescan Devices"
-msgstr "Invoerapparaten"
+msgstr "Ververs Invoerapparaten"
 
 msgid "Audio System"
-msgstr ""
+msgstr "Geluidssysteem"
 
 msgid "Settings"
 msgstr "Instellingen"
@@ -370,7 +369,7 @@ msgid "Receive symbol:"
 msgstr "Ontvangstsymbool:"
 
 msgid "auto"
-msgstr ""
+msgstr "auto"
 
 msgid "Width:"
 msgstr "Breedte:"
@@ -524,7 +523,7 @@ msgid "Out Ports:"
 msgstr "Uitgangen:"
 
 msgid "MIDI system"
-msgstr ""
+msgstr "MIDI systeem"
 
 msgid "MIDI Settings"
 msgstr "MIDI-instellingen"
@@ -585,19 +584,19 @@ msgid "GUI Settings"
 msgstr "GUI-instellingen"
 
 msgid "Preference layout (reopen the preferences to see the effect)"
-msgstr ""
+msgstr "Configuratie uiterlijk (heropen de configuratie om het effect te zien)"
 
 msgid "Use tabs"
-msgstr ""
+msgstr "Gebruik tabs"
 
 msgid "Single page"
-msgstr ""
+msgstr "Enkele pagina"
 
 msgid "Patching helpers"
-msgstr ""
+msgstr "Patching helpers"
 
 msgid "Highlight active cord while connecting"
-msgstr ""
+msgstr "Verlicht actief koord tijdens verbinden"
 
 msgid "Preferences"
 msgstr "Voorkeuren"
@@ -624,36 +623,34 @@ msgid "Edit library"
 msgstr "Bibliotheek bewerken"
 
 msgid "Settings below require a restart of Pd!"
-msgstr ""
+msgstr "Wijzigingen hieronder vereisen een herstart van Pd!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
-#, fuzzy
 msgid "GUI Options"
-msgstr "GUI-instellingen"
+msgstr "GUI instellingen"
 
 msgid "language"
-msgstr ""
+msgstr "taal"
 
 msgid "Menu language"
-msgstr ""
+msgstr "Menu taal"
 
 msgid "float (32bit)"
-msgstr ""
+msgstr "float (32bit)"
 
 msgid "double (64bit) EXPERIMENTAL"
-msgstr ""
+msgstr "double (64bit) EXPERIMENTEEL"
 
 msgid "double (64bit)"
-msgstr ""
+msgstr "double (64bit)"
 
-#, fuzzy
 msgid "float size"
-msgstr "Blokgrootte:"
+msgstr "blokgrootte"
 
 msgid "Numeric precision of Pd-core"
-msgstr ""
+msgstr "Numerische precissie van Pd-core"
 
 msgid "Startup Options"
 msgstr "Opstart opties"
@@ -730,11 +727,10 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Niet gelukt om plugin %s te vinden ... wordt overgeslagen!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Pd opstartfout"
 
-#, fuzzy
 msgid "Failed to start Pd-core"
-msgstr "Kan '%s' niet installeren!"
+msgstr "Gefaald om Pd-core te starten"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ONTBREKENDE CLOSE-BRACE '}': "
@@ -816,11 +812,11 @@ msgstr "Kan referentie SHA256 niet ophalen voor '%s'."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Bestand checksum lijkt ongeldig: '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Referentie checksum lijkt ongeldig: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -845,13 +841,11 @@ msgstr "Kan verdwaald bestand '%s' niet verwijderen"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Kan gedownload bestand niet hernoemen naar '%s'"
 
-#, fuzzy
 msgid "Search URLs:"
-msgstr "Zoekresultaten"
+msgstr "Zoekresultaat URLs:"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "%s toegevoegd aan zoekpaden"
+msgstr "Additionele zoekresultaat URLs"
 
 msgid "Ephemeral search URLs"
 msgstr ""
@@ -862,9 +856,8 @@ msgstr "Aanmaken"
 msgid "Check"
 msgstr "Controleren"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "Installatie mislukt!"
+msgstr "Deken installatie Doel"
 
 msgid "Installation options:"
 msgstr "Installatie opties:"
@@ -939,16 +932,18 @@ msgstr "Alle bestanden"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "Installeer onverenigbare architectuur van '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "Bibliotheek vervangende met onverenigbare architectuur!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Wilt u de bibliotheek '%1$s' in '%2$s' vervangen met een versie die "
+"onverenigbaar is met uw computer?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1178,9 +1173,8 @@ msgstr "Download compleet! Verifiëren..."
 msgid "Ignoring checksum mismatch"
 msgstr "Checksum-mismatch negeren"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Checksum-mismatch negeren"
+msgstr "Checksum fouten negeren"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1192,7 +1186,7 @@ msgstr "[deken] Platform gedetecteerd: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "Kan geen menu vinden om '%s' toe te voegen"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1303,7 +1297,7 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Kon voorkeuren \"%1$s\" niet aanmaken in %2$s"
 
 msgid "The language can only be set during startup."
-msgstr ""
+msgstr "De taal kan alleen ingesteld worden tijdens opstarten."
 
 msgid "Afar"
 msgstr "Afar"
@@ -1423,10 +1417,10 @@ msgid "English (Canada)"
 msgstr "Engels (Canada)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Engels (UK)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Engels (Simplified)"
 
 msgid "Esperanto"
 msgstr "Esperanto"
@@ -1678,7 +1672,7 @@ msgid "Ossetian"
 msgstr "Ossetisch"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Panjabi"
 
 msgid "Pali"
 msgstr "Pali"
@@ -1846,7 +1840,7 @@ msgid "Zhuang"
 msgstr "Zhuang"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Chinees (Traditioneel)"
 
 msgid "Zulu"
 msgstr "Zulu"
@@ -1862,14 +1856,14 @@ msgid "Print..."
 msgstr "Afdrukken..."
 
 msgid "single precision"
-msgstr ""
+msgstr "enkele nauwkeurigheid"
 
 msgid "double precision"
-msgstr ""
+msgstr "dubbele nauwkeurigheid"
 
 #, tcl-format
 msgid "%dbit-floats"
-msgstr ""
+msgstr "%dbit nauwkeurigheid getal"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -2003,7 +1997,7 @@ msgid "Previous Window"
 msgstr "Vorig venster"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Sluit subvensters"
 
 msgid "Parent Window"
 msgstr "Bovenliggend venster"
@@ -2060,9 +2054,8 @@ msgstr "Laden van..."
 msgid "Forget All..."
 msgstr "Vergeet alles..."
 
-#, fuzzy
 msgid "Tabbed preferences"
-msgstr "audio"
+msgstr "Vertabuleerde voorkeuren"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -2079,6 +2072,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Accepteren zal de inhoud van het geassocieerde object vernieuwen. U zal nog "
+"steeds de patch moeten bewaren om de wijzigingen permanent te maken."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -2094,19 +2089,18 @@ msgstr "Audio aan"
 msgid "Audio off"
 msgstr "Audio uit"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Laatste fout zoeken"
+msgstr "Zoek bron"
 
 msgid "Pd"
 msgstr "Pd"
 
 msgid "EXPERIMENTAL double (64bit) precision"
-msgstr ""
+msgstr "EXPERIMENTEEL dubbele (64bit) nauwkeurigheid"
 
 #, tcl-format
 msgid "%dbit-floats EXPERIMENTAL"
-msgstr ""
+msgstr "%dbit nauwkeurigheid EXPERIMENTEEL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -2133,7 +2127,7 @@ msgid "all"
 msgstr "alle"
 
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 msgid "New..."
 msgstr "Nieuw..."
