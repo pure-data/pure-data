@@ -9,6 +9,9 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include <fftw3.h>
+#if PDTHREADS && defined(PDINSTANCE)
+#include <pthread.h>
+#endif
 
 int ilog2(int n);
 
@@ -39,48 +42,86 @@ respectively. The flags argument is either FFTW_MEASURE
 
 */
 
-/* complex stuff */
+/* each Pd instance has its own plans and buffers, so that instances in
+different threads can compute FFTs at the same time.  They are stored as
+per-instance data of a class that exists just for this. */
+
+#define NFFT (MAXFFT+1 - MINFFT)
 
 typedef struct {
     fftwf_plan plan;
     fftwf_complex *in,*out;
 } cfftw_info;
 
-static cfftw_info cfftw_fwd[MAXFFT+1 - MINFFT],cfftw_bwd[MAXFFT+1 - MINFFT];
+typedef struct {
+    fftwf_plan plan;
+    float *in,*out;
+} rfftw_info;
+
+typedef struct {
+    cfftw_info c_fwd[NFFT], c_bwd[NFFT];
+    rfftw_info r_fwd[NFFT], r_bwd[NFFT];
+} t_fftwplans;
+
+static t_class *fftwplans_class;
+
+    /* of FFTW's routines only fftwf_execute() is thread-safe */
+#if PDTHREADS && defined(PDINSTANCE)
+static pthread_mutex_t planner_mutex = PTHREAD_MUTEX_INITIALIZER;
+#define planner_lock() pthread_mutex_lock(&planner_mutex)
+#define planner_unlock() pthread_mutex_unlock(&planner_mutex)
+#else
+#define planner_lock()
+#define planner_unlock()
+#endif
+
+static void fftwplans_free(void *z);
+
+static t_fftwplans *fftwplans_get(void)
+{
+    t_fftwplans *x = (t_fftwplans *)class_getinstancedata(fftwplans_class);
+    if (!x)
+    {
+        x = (t_fftwplans *)getbytes(sizeof(*x));
+        class_setinstancedata(fftwplans_class, x, fftwplans_free);
+    }
+    return (x);
+}
+
+/* complex stuff */
 
 static cfftw_info *cfftw_getplan(int n,int fwd)
 {
     cfftw_info *info;
+    t_fftwplans *x;
     int logn = ilog2(n);
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
-    info = (fwd?cfftw_fwd:cfftw_bwd)+(logn-MINFFT);
+    x = fftwplans_get();
+    info = (fwd?x->c_fwd:x->c_bwd)+(logn-MINFFT);
     if (!info->plan)
     {
-        pd_globallock();
-        if (!info->plan)    /* recheck in case it got set while we waited */
-        {
-            info->in =
-                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-            info->out =
-                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-            info->plan = fftwf_plan_dft_1d(n, info->in, info->out,
-                fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
-        }
-        pd_globalunlock();
+        planner_lock();
+        info->in =
+            (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+        info->out =
+            (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+        info->plan = fftwf_plan_dft_1d(n, info->in, info->out,
+            fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
+        planner_unlock();
     }
     return info;
 }
 
-static void cfftw_term(void)
+static void cfftw_term(t_fftwplans *x)
 {
     int i, j;
     cfftw_info *cinfo[2];
 
-    for (i = 0; i < MAXFFT+1 - MINFFT; i++)
+    for (i = 0; i < NFFT; i++)
     {
-      cinfo[0] = &cfftw_fwd[i];
-      cinfo[1] = &cfftw_bwd[i];
+      cinfo[0] = &x->c_fwd[i];
+      cinfo[1] = &x->c_bwd[i];
 
       for (j = 0; j < 2; j++)
       {
@@ -100,38 +141,35 @@ static void cfftw_term(void)
 
 /* real stuff */
 
-typedef struct {
-    fftwf_plan plan;
-    float *in,*out;
-} rfftw_info;
-
-static rfftw_info rfftw_fwd[MAXFFT+1 - MINFFT],rfftw_bwd[MAXFFT+1 - MINFFT];
-
 static rfftw_info *rfftw_getplan(int n,int fwd)
 {
     rfftw_info *info;
+    t_fftwplans *x;
     int logn = ilog2(n);
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
-    info = (fwd?rfftw_fwd:rfftw_bwd)+(logn-MINFFT);
+    x = fftwplans_get();
+    info = (fwd?x->r_fwd:x->r_bwd)+(logn-MINFFT);
     if (!info->plan)
     {
+        planner_lock();
         info->in = (float*) fftwf_malloc(sizeof(float) * n);
         info->out = (float*) fftwf_malloc(sizeof(float) * n);
         info->plan = fftwf_plan_r2r_1d(n, info->in, info->out, fwd?FFTW_R2HC:FFTW_HC2R, FFTW_MEASURE);
+        planner_unlock();
     }
     return info;
 }
 
-static void rfftw_term(void)
+static void rfftw_term(t_fftwplans *x)
 {
     int i, j;
     rfftw_info *rinfo[2];
 
-    for (i = 0; i < MAXFFT+1 - MINFFT; i++)
+    for (i = 0; i < NFFT; i++)
     {
-      rinfo[0] = &rfftw_fwd[i];
-      rinfo[1] = &rfftw_bwd[i];
+      rinfo[0] = &x->r_fwd[i];
+      rinfo[1] = &x->r_bwd[i];
 
       for (j = 0; j < 2; j++)
       {
@@ -148,22 +186,32 @@ static void rfftw_term(void)
     }
 }
 
+    /* called when a Pd instance is freed, or by class_free() below */
+static void fftwplans_free(void *z)
+{
+    t_fftwplans *x = (t_fftwplans *)z;
+    planner_lock();
+    cfftw_term(x);
+    rfftw_term(x);
+    planner_unlock();
+    freebytes(x, sizeof(*x));
+}
+
 static int mayer_refcount = 0;
 
 void mayer_init(void)
 {
     if (mayer_refcount++ == 0)
-    {
-        /* nothing to do */
-    }
+        fftwplans_class = class_new(gensym("fftwplans"), 0, 0,
+            sizeof(t_pd), CLASS_PD, 0);
 }
 
 void mayer_term(void)
 {
     if (--mayer_refcount == 0)
     {
-        cfftw_term();
-        rfftw_term();
+        class_free(fftwplans_class);
+        fftwplans_class = 0;
     }
 }
 
