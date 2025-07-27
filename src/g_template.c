@@ -1229,8 +1229,9 @@ void curve_float(t_curve *x, t_floatarg f)
 /* -------------------- widget behavior for curve ------------ */
 
 static void curve_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int *xp1, int *yp1, int *xp2, int *yp2)
+    t_word *data, t_template *template, t_scalar *sc,
+        t_float basex, t_float basey,
+            int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
@@ -1464,7 +1465,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int besterror = 0x7fffffff;
     t_fielddesc *f;
     int x1, y1, x2, y2;
-    curve_getrect(z, glist, data, template, basex, basey,
+    curve_getrect(z, glist, data, template, sc, basex, basey,
         &x1, &y1, &x2, &y2);
     if ((x->x_flags & NOMOUSERUN)  ||
         !fielddesc_getfloat(&x->x_vis, template, data, 0))
@@ -1799,7 +1800,7 @@ int array_getfields(t_symbol *elemtemplatesym,
 }
 
 static void plot_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
+    t_word *data, t_template *template, t_scalar *sc, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_plot *x = (t_plot *)z;
@@ -1871,7 +1872,7 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
                     if (!wb) continue;
                     (*wb->w_parentgetrectfn)(y, glist,
                         (t_word *)((char *)(array->a_vec) + elemsize * i),
-                            elemtemplate, usexloc, useyloc,
+                            elemtemplate, sc, usexloc, useyloc,
                                 &xx1, &yy1, &xx2, &yy2);
                     if (xx1 < x1)
                         x1 = xx1;
@@ -2880,12 +2881,19 @@ void drawtext_newtext(t_gobj *z, t_glist *gl, t_scalar *sc,
 /* -------------------- widget behavior for drawtext ------------ */
 
 static void drawtext_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int *xp1, int *yp1, int *xp2, int *yp2)
+    t_word *data, t_template *template, t_scalar *sc,
+        t_float basex, t_float basey,
+            int *xp1, int *yp1, int *xp2, int *yp2)
 {
-        /* just report an empty rectangle */
-    *xp1 = *yp1 = 0x7fffffff;
-    *xp2 = *yp2 = -0x7fffffff;
+    t_drawtext *x = (t_drawtext *)z;
+    t_rtext *rtext;
+    if (!gobj_shouldvis(z, glist)
+        || !(rtext = glist_getforscalar(glist, sc, data, z)))
+    {
+        *xp1 = *yp1 = 0x7fffffff;
+        *xp2 = *yp2 = -0x7fffffff;
+    }
+    else rtext_getrect(rtext, xp1, yp1, xp2, yp2);
 }
 
 static void drawtext_displace(t_gobj *z, t_glist *glist,

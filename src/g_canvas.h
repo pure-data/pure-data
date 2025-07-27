@@ -340,7 +340,7 @@ doesn't work on array elements... LATER reconsider this */
 
         /* bounding rectangle: */
 typedef void (*t_parentgetrectfn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, t_float basex, t_float basey,
+    t_word *data, t_template *tmpl, t_scalar *sc, t_float basex, t_float basey,
     int *x1, int *y1, int *x2, int *y2);
         /* displace it */
 typedef void (*t_parentdisplacefn)(t_gobj *x, struct _glist *glist,

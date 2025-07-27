@@ -353,7 +353,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
             int nx1, ny1, nx2, ny2;
             if (!wb) continue;
             (*wb->w_parentgetrectfn)(y, owner,
-                x->sc_vec, template, basex, basey,
+                x->sc_vec, template, x, basex, basey,
                 &nx1, &ny1, &nx2, &ny2);
             if (nx1 < x1) x1 = nx1;
             if (ny1 < y1) y1 = ny1;
