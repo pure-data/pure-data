@@ -129,23 +129,24 @@ t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     /* delete all rtexts for a scalar */
 void glist_deleteforscalar(t_glist *gl, t_scalar *sc)
 {
-    t_rtext *x1, *x2 = 0;
+    t_rtext *x1, *xprev = 0, *xnext = 0;
     t_glist *canvas = glist_getcanvas(gl);
     if (!canvas->gl_editor)
         return;
 
-    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = x1->x_next)
+    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = xnext)
     {
+        xnext = x1->x_next;
         if (x1->x_scalar == sc)
         {
-            if (x2)
-                x2->x_next = x1->x_next;
+            if (xprev)
+                xprev->x_next = x1->x_next;
             else canvas->gl_editor->e_rtext = x1->x_next;
             if (x1->x_buf)
                 freebytes(x1->x_buf, x1->x_bufsize + 1); /* extra 0 byte */
             freebytes(x1, sizeof(*x1));
         }
-        else x2 = x1;
+        else xprev = x1;
     }
 }
 
