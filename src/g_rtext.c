@@ -71,6 +71,12 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
     return (x);
 }
 
+    /* two privat helper routines from drawtext declared here: */
+
+void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
+    t_word *words, char *buf);
+int drawtext_isvisible(t_gobj *z, t_word *words);
+
 /* find the rtext that goes with a text item.  Return zero if the
 text item is invisible, either because the glist itself is, or because
 the item is in a GOP subpatch and its (x,y) origin is outside the GOP
@@ -218,9 +224,6 @@ t_glist *rtext_getglist(t_rtext *x)
     return (x->x_glist);
 }
 
-void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
-    t_word *words, char *buf);
-
     /* deal with an activated rtext when user clicks outside it.
     If the rtext is for a patchable object of type TE_ATOM, or if it is
     for a number or symbol 'data' field, terminate editing and adopt
@@ -280,8 +283,9 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
             ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
                 /* check if the text is visible */
         if (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
-            x->x_scalar && !gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist))
-                continue;
+            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
+                || !drawtext_isvisible(x->x_drawtext, x->x_words)))
+                    continue;
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
             ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight)
         {

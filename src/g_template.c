@@ -2878,6 +2878,21 @@ void drawtext_newtext(t_gobj *z, t_glist *gl, t_scalar *sc,
     scalar_redraw(sc, gl);
 }
 
+    /* called from g_rtext.c; rtext_findhit - if we're a draw command
+        in a scalar, are we visible? */
+int drawtext_isvisible(t_gobj *z, t_word *words)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    t_template *template = drawtext_gettemplate(z);
+    if (!template)
+    {
+        bug("drawtext_isvisible");
+        return (0);
+    }
+    return ((fielddesc_getfloat(&x->x_vis, template, words, 0) != 0));
+}
+
+
 /* -------------------- widget behavior for drawtext ------------ */
 
 static void drawtext_getrect(t_gobj *z, t_glist *glist,
@@ -3088,9 +3103,12 @@ static int drawtext_click(t_gobj *z, t_glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_drawtext *x = (t_drawtext *)z;
-    t_rtext *rtext = glist_getforscalar(glist, sc, data, z);
+    t_rtext *rtext;
     int x1, y1, x2, y2, type, onset;
     x->x_template = template;
+    if (!drawtext_isvisible(z, data))
+        return (0);
+    rtext = glist_getforscalar(glist, sc, data, z);
     rtext_getrect(rtext, &x1, &y1, &x2, &y2);
     if (xpix >= x1 && xpix <= x2 && ypix >= y1 && ypix <= y2 &&
         ((type = drawtext_gettype(z, template, &onset)) == DT_FLOAT ||
