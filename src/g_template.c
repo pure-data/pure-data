@@ -2909,7 +2909,12 @@ static void drawtext_getrect(t_gobj *z, t_glist *glist,
         *xp1 = *yp1 = 0x7fffffff;
         *xp2 = *yp2 = -0x7fffffff;
     }
-    else rtext_getrect(rtext, xp1, yp1, xp2, yp2);
+    else
+    {
+        rtext_getrect(rtext, xp1, yp1, xp2, yp2);
+        if (*x->x_label->s_name)
+            *xp1 -= glist_fontwidth(glist) * strlen(x->x_label->s_name);
+    }
 }
 
 static void drawtext_displace(t_gobj *z, t_glist *glist,
