@@ -12,7 +12,7 @@
 #X restore 506 512 pd data6;
 #N canvas 131 53 529 558 template6 0;
 #X obj 24 213 plot bazoo 700 3 30 10 10;
-#X text 28 122 This [struct] now also declares arrays named "bazoo" and "boom" whose elements are described by spearate template named \, named respectively "template6-element1" and "template6-element2". Array declarations need this extra element's template name which is declared on a separate subpatch., f 65;
+#X text 28 122 This [struct] now also declares arrays named "bazoo" and "boom" whose elements are described by a separate template named \, named respectively "template6-element1" and "template6-element2". Array declarations need this extra element's template name which is declared on a separate subpatch., f 65;
 #X text 212 214 draw instruction for the 'bazoo' array;
 #X text 31 247 The first argument of [plot] is the array name (bazoo) \, other arguments are: color (700) \, line width (3) \, position coordinate (30 \, 40) and horizontal spacing for the elements (5)., f 64;
 #X text 220 324 draw instruction for the 'boom' array;
@@ -45,7 +45,7 @@
 #X text 54 55 This says that array elements have special fields x \, y and w \, which set coordinates (x \, y) and line width (w). We can also include other data types and here we add an extra float data type named "i" (used for the array's index). Alternatively \, you can also add symbol fields \, text fields and even nested arrays indefinitely., f 55;
 #X restore 506 580 pd template6-element2;
 #X text 30 242 The [elemment] object takes an index number and outputs a pointer to the corresponding array element. The [setsize] object sets the array size and [getsize] gets it \, but note you can also use [array] for this and other operations on arrays instead., f 93;
-#X text 30 193 Like explained with other scalars \, the x/y/w values depend on the 'Units per pixel' parameter for the x/y dimensions (1 for both in this case). This means that the display will only increment in integer vaues \, even though you can set values with decimal points., f 93;
+#X text 30 193 Like explained with other scalars \, the x/y/w values depend on the 'Units per pixel' parameter for the x/y dimensions (1 for both in this case). This means that the display will only increment in integer values \, even though you can set values with decimal points., f 93;
 #X obj 94 437 setsize template6 blargh;
 #X floatatom 459 424 5 0 0 0 - - - 0;
 #X obj 435 319 bng 25 250 50 0 empty empty <--\ click\ here\ first 32 13 0 14 #dfdfdf #000000 #000000;

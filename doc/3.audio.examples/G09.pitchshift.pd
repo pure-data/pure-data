@@ -50,7 +50,7 @@
 #X obj 84 104 loadbang;
 #X obj 72 225 declare -stdpath ./;
 #X msg 84 130 \; transpose 0 \; window 100 \; delay 10;
-#X text 41 21 This subpatch initialiazes the patch and loads values into number boxes., f 26;
+#X text 41 21 This subpatch initializes the patch and loads values into number boxes., f 26;
 #X connect 0 0 2 0;
 #X restore 62 630 pd init;
 #X text 364 220 sample loop for test signal -->, f 15;
