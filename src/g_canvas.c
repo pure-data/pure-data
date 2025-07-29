@@ -2353,7 +2353,8 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     unsigned int c_fg = normalize_color(fg);
     unsigned int c_bg = normalize_color(bg);
     unsigned int c_sel = normalize_color(sel);
-    unsigned int c_gop = (gop && gop->s_name[0]) ? normalize_color(gop) : c_sel;
+    unsigned int c_gop =
+        (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
 
     if ((-1 == c_fg) || (-1 == c_bg) || (-1 == c_sel) || (-1 == c_gop)) {
         pd_error(0, "skipping color update");
