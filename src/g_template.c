@@ -2903,6 +2903,7 @@ static void drawtext_getrect(t_gobj *z, t_glist *glist,
     t_drawtext *x = (t_drawtext *)z;
     t_rtext *rtext;
     if (!gobj_shouldvis(z, glist)
+        || !drawtext_isvisible(z, data)
         || !(rtext = glist_getforscalar(glist, sc, data, z)))
     {
         *xp1 = *yp1 = 0x7fffffff;
