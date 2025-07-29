@@ -7,6 +7,7 @@ namespace eval ::dialog_midi:: {
     namespace export pdtk_alsa_midi_dialog
 
     variable referenceconfig ""
+    variable standalone_window ""
 }
 
 # reference configuration string (to detect whether the config has changed)
@@ -173,6 +174,12 @@ proc ::dialog_midi::make_frame_iodevices {frame maxdevs longform} {
             -command  "::dialog_midi::make_frame_iodevices $frame $maxdevs 1"
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
+
+    frame $frame.refreshbutton
+    pack $frame.refreshbutton -side bottom -fill x
+    button $frame.refreshbutton.b -text [_ "Rescan Devices"] \
+        -command "pdsend \"pd rescan-midi\""
+    pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
 proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
@@ -288,6 +295,19 @@ proc ::dialog_midi::set_configuration {API inputdevices indevs outputdevices  ou
     set ::midi_outdevices [lmap _ $outdevs {set _ [expr int($_) ]; if {$_ < 0} continue; set _}]
 }
 
+proc ::dialog_midi::refresh_ui {} {
+    # check if we're in the tabbed preferences
+    if {[winfo exists ${::dialog_preferences::midi_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::midi_frame}
+        ::dialog_midi::fill_frame ${::dialog_preferences::midi_frame}
+    }
+    # or in the standalone midi dialog
+    if {[winfo exists $::dialog_midi::standalone_window]} {
+        destroy $::dialog_midi::standalone_window
+        ::dialog_midi::create $::dialog_midi::standalone_window
+    }
+}
+
 # start a dialog window to select midi devices.  "longform" asks us to make
 # controls for opening several devices; if not, we get an extra button to
 # turn longform on and restart the dialog.
@@ -393,6 +413,7 @@ proc ::dialog_midi::create {id} {
     wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
     raise $id
+    set ::dialog_midi::standalone_window $id
 }
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id \
