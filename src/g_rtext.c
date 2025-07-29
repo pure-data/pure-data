@@ -814,8 +814,9 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
             if (type == DT_FLOAT || type == DT_SYMBOL)
             {
                 if (type == DT_FLOAT)
-                    x->x_words[onset].w_float = atof(x->x_buf);
-                else x->x_words[onset].w_symbol = gensym(x->x_buf);
+                    x->x_words[onset/sizeof(t_word)].w_float = atof(x->x_buf);
+                else x->x_words[onset/sizeof(t_word)].w_symbol =
+                    gensym(x->x_buf);
                 template_notifyforscalar(template, x->x_glist,
                         x->x_scalar, gensym("change"), 1, &at);
                 scalar_redraw(x->x_scalar, x->x_glist);
