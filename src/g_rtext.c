@@ -450,6 +450,39 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         (x->x_text? (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist) : 0);
 }
 
+/* reduce a formatted number (in <buf>) to not exceed <maxsize> chars
+ * the result in <buf> is 0-terminated
+ */
+const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize) {
+    int wantreduce = bufsize - maxsize;
+    char *decimal = 0, *nextchar, *ebuf = buf + bufsize,
+        *s1, *s2;
+    int ndecimals;
+    if(maxsize >= bufsize)
+        return buf;
+    buf[bufsize] = 0;
+    for (decimal = buf; decimal < ebuf; decimal++)
+        if (*decimal == '.')
+            break;
+    if (decimal >= ebuf)
+        goto giveup;
+    for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
+        if (*nextchar < '0' || *nextchar > '9')
+            break;
+    if (nextchar - decimal - 1 < wantreduce)
+        goto giveup;
+    for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
+         s2 < ebuf; s1++, s2++)
+        *s1 = *s2;
+    buf[maxsize-0] = 0;
+    return buf;
+ giveup:
+        /* give up and bash last char to '>' */
+    buf[maxsize-1] = '>';
+    buf[maxsize-0] = 0;
+    return buf;
+}
+
     /* same as above, but for atom boxes, which are always on one line. */
 static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
@@ -464,35 +497,12 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         binbuf_getvec(x->x_text->te_binbuf)->a_type == A_FLOAT &&
         x->x_bufsize > charwidth)
     {
-            /* try to reduce size by dropping decimal digits */
-        int wantreduce = x->x_bufsize - charwidth;
-        char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
-            *s1, *s2;
-        int ndecimals;
+        t_float f = atom_getfloat(binbuf_getvec(x->x_text->te_binbuf));
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
-        tempbuf[x->x_bufsize] = 0;
-        ebuf = tempbuf + x->x_bufsize;
-        for (decimal = tempbuf; decimal < ebuf; decimal++)
-            if (*decimal == '.')
-                break;
-        if (decimal >= ebuf)
-            goto giveup;
-        for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
-            if (*nextchar < '0' || *nextchar > '9')
-                break;
-        if (nextchar - decimal - 1 < wantreduce)
-            goto giveup;
-        for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
-            s2 < ebuf; s1++, s2++)
-                *s1 = *s2;
+            // 3rd argument should be charwidth
+        gatom_float_sizelimit(tempbuf, x->x_bufsize, charwidth);
+
         *outchars_b_p = charwidth;
-        goto done;
-    giveup:
-            /* give up and bash last char to '>' */
-        tempbuf[charwidth-1] = '>';
-        tempbuf[charwidth] = 0;
-        *outchars_b_p = charwidth;
-    done: ;
         *indexp = findx;
         *widthp = charwidth * fontwidth;
     }
