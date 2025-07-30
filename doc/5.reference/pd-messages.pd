@@ -564,10 +564,10 @@
 #X msg 198 669 \; pd colors \$1 \$2 \$3 \$4;
 #X msg 97 282 colors #8B7765 #FFE4E1 #D2691E;
 #X text 37 434 Note that letters can be either lower or upper case., f 17;
-#X text 323 283 ('#D2691E' is for both selection and GOP).;
 #X msg 174 420 list #000000 #ffffff #0000ff #ff0000, f 7;
 #X text 400 663 You can also set colors via startup with the "-send" flag \, for instance: -send "pd colors #cccccc #800080 #ff00ff #ff0000", f 36;
-#X text 35 14 With the "colors" message you can set colors for foregroung \, background \, selection and (optionally) GOP rectangle. This is still experimental and might change in the future. It's not yet incorporated in Pd's preferences as it certainly should be and not fully implemented/integrated in the Pd GUI system. You must use RGB values in hexadecimal starting with "#". The default values for these are "#000000" (black) \, "#ffffff" (white) \, "#0000ff" (blue) and "#ff0000" (red). If not set \, the 4th color (GOP rectangle) takes the value of the 3rd color (selection). The letters in the hexadecimal symbols can be either lower or upper case., f 91;
+#X text 323 283 ('GOP' is left unchanged).;
+#X text 47 14 With the "colors" message you can set colors for foregroung \, background \, selection and (optionally) GOP rectangle (if not set \, it remains the same). This is still experimental and might change in the future. It's not yet incorporated in Pd's preferences as it certainly should be and not fully implemented/integrated in the Pd GUI system. You must use RGB values in hexadecimal starting with "#". The default values for these are "#000000" (black) \, "#ffffff" (white) \, "#0000ff" (blue) and "#ff0000" (red). The letters in the hexadecimal symbols can be either lower or upper case., f 88;
 #X connect 1 0 7 0;
 #X connect 2 0 1 0;
 #X connect 3 0 8 0;
@@ -579,7 +579,7 @@
 #X connect 8 0 15 0;
 #X connect 8 1 15 1;
 #X connect 10 0 12 1;
-#X connect 11 0 29 0;
+#X connect 11 0 28 0;
 #X connect 12 0 25 0;
 #X connect 13 0 12 0;
 #X connect 15 0 10 0;
@@ -591,7 +591,7 @@
 #X connect 23 0 0 0;
 #X connect 24 0 0 0;
 #X connect 26 0 0 0;
-#X connect 29 0 15 0;
+#X connect 28 0 15 0;
 #X restore 780 216 pd change-colors;
 #X text 525 214 Message to set Pd's colors \, see -->;
 #X text 780 627 updated for Pd version 0.56;

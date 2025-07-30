@@ -187,8 +187,8 @@ from Pd. How small this latency can be chosen depends on your OS and your
 audio driver.
 
 <P> TIP: If Pd starts up but you get distortion or glitches in the audio
-output, this could be either because the "audio I/O buffer" isn't big enough,
-or else because the CPU load of the patch you're running is too great for the
+output, this could be either because the "audio I/O buffer" isn't big enough
+or because the CPU load of the patch you're running is too great for the
 machine you have, or else because the ADC and DAC are out of sync or even at
 different sample rates. To test for the first possibility, try increasing the
 delay in "Audio Settings" dialog. For the second, start up your favorite
@@ -197,13 +197,14 @@ disabled.
 
 <P> In addition to the "Test Audio and MIDI" patch, the <b>Media menu</b>
 contains items for controlling audio and MIDI settings. The first two
-items, "Audio on" and "Audio off", open or close the audio devices and
-start or stop Pd's audio computation.
+items, "DSP On" and "DSP Off" open or close the audio devices and start or
+stop Pd's audio computation.
+
 
 <P> If there is a choice of audio API to make, the <b>Media menu</b> will display
 them. On Linux, they are OSS, ALSA, Portaudio and JACK; on Windows, you get
 Portaudio and an 'old MMIO system', where Portaudio offers ASIO and Windows
-WASAPI. On macOS the default one is Portaudio and you can also use JACK if you
+WASAPI. On macOS, the default one is Portaudio and you can also use JACK if you
 have it installed. The <b>Media menu</b> also displays choices for MIDI API.
 On Linux, they are OSS-MIDI and ALSA-MIDI.
 
@@ -317,10 +318,8 @@ has sync problems.
 
 <H4> <A href="#s3.3.1" id="s3.3.1">3.3.1. Audio settings </A> </H4>
 
-<P> The <b>Media menu</b> also calls the Audio or MIDI settings for the selected
-API. Clicking on the API to change it also opens the settings window for the
-newly selected API. If you click on the already selected API, you also open the
-settings window.
+<P> The <b>Media menu</b> also provides Audio or MIDI settings for the selected
+API. Clicking on an API also opens the settings window.
 
 <figure>
     <IMG src="3.3.3.png" ALT="Windows audio settings dialog">
@@ -348,6 +347,9 @@ need either the input or output device you can uncheck the toggle box
 to the left (which is on by default). Number of input and output
 channels is 2 channels by default, but you may specify just one if
 that's all you need or more if your hardware supports it.
+
+<p> If you plugged or unplugged audio devices after Pd was started, you
+can update the device list by pressing the "Rescan Devices" button.
 
 <figure>
     <IMG src="3.3.5.png" ALT="Linux audio settings dialog">
@@ -402,7 +404,7 @@ that you can get choices for API this way.
 </figure>
 
 <P> The above picture shows Audio Settings on Windows when you select it from
-the tabbed Preferences. The difference here is that you have a new wntry to
+the tabbed Preferences. The difference here is that you have a new entry to
 select and change API (where 'old MMIO system' is selected.)
 
 

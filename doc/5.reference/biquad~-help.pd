@@ -48,7 +48,7 @@
 #X obj 183 585 slop~, f 7;
 #X text 14 57 [biquad~] calculates the following difference equation:;
 #X obj 6 545 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X text 227 432 this [biquad~] is a notch filter for fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k), f 36;
+#X text 227 432 this [biquad~] is a notch filter for fn = Pi/4 (= SR/8 = 6000Hz @48k), f 36;
 #X text 327 560 <-- user-friendly filters;
 #X text 242 585 <-- not friendly;
 #X text 14 621 raw filters -->;
