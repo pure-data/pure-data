@@ -142,6 +142,9 @@ msgstr "Média"
 msgid "Window"
 msgstr "Ablak"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Súgó"
 

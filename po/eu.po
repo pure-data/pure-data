@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -146,6 +146,9 @@ msgstr "Media"
 #, fuzzy
 msgid "Window"
 msgstr "Leihoa"
+
+msgid "Tools"
+msgstr ""
 
 msgid "Help"
 msgstr "Laguntza"
