@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/uk/>\n"
 "Language: uk\n"
@@ -630,9 +630,8 @@ msgstr "Налаштування"
 msgid "audio preferences"
 msgstr "Налаштування"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Налаштування"
+msgstr "Налаштування MIDI"
 
 #, fuzzy
 msgid "deken preferences"
@@ -758,7 +757,7 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Неможливо знайти плагіни в %s ...пропущено!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Збій запуску Pd"
 
 #, fuzzy
 msgid "Failed to start Pd-core"
@@ -1336,7 +1335,7 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Неможливо створити властивості %1$s у %2$s"
 
 msgid "The language can only be set during startup."
-msgstr ""
+msgstr "Мову можна встановити лише під час запуску."
 
 msgid "Afar"
 msgstr "Афарська"
@@ -1456,10 +1455,10 @@ msgid "English (Canada)"
 msgstr "Англійська (Канада)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Англійська (Велика Британія)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Англійська (США)"
 
 msgid "Esperanto"
 msgstr "Есперанто"
@@ -1711,7 +1710,7 @@ msgid "Ossetian"
 msgstr "Осетинська"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Панджабі"
 
 msgid "Pali"
 msgstr "Палі"
@@ -1879,7 +1878,7 @@ msgid "Zhuang"
 msgstr "Чуанг"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Китайська (традиційна)"
 
 msgid "Zulu"
 msgstr "Зулуська"
@@ -2039,7 +2038,7 @@ msgid "Previous Window"
 msgstr "Попереднє вікно"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Закрити підвікна"
 
 msgid "Parent Window"
 msgstr "Батьківське вікно"
@@ -2116,6 +2115,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Прийняття оновить вміст пов'язаного об'єкта. Вам все одно потрібно зберегти "
+"патч, щоб зміни були постійними."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
