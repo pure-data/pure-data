@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/nl/>\n"
 "Language: nl\n"
@@ -132,8 +132,9 @@ msgstr "Media"
 msgid "Window"
 msgstr "Venster"
 
+#, fuzzy
 msgid "Tools"
-msgstr ""
+msgstr "Gereedschap"
 
 msgid "Help"
 msgstr "Help"
@@ -849,8 +850,9 @@ msgstr "Zoekresultaat URLs:"
 msgid "Additional search URLs"
 msgstr "Additionele zoekresultaat URLs"
 
+#, fuzzy
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "Tijdelijke zoek-URL's"
 
 msgid "Create"
 msgstr "Aanmaken"
