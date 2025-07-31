@@ -6,10 +6,10 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-30 15:04+0200\n"
-"PO-Revision-Date: 2025-07-24 11:05+0000\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/hy/>\n"
+"Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/hy/>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -298,10 +298,10 @@ msgid "Data Properties"
 msgstr ""
 
 msgid "Send"
-msgstr ""
+msgstr "Ուղարկել"
 
 msgid "Done"
-msgstr ""
+msgstr "Կատարված է"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -330,14 +330,14 @@ msgid "Match whole word only"
 msgstr ""
 
 msgid "Close"
-msgstr ""
+msgstr "Փակել"
 
 #, tcl-format
 msgid "%s Font"
 msgstr ""
 
 msgid "Font"
-msgstr ""
+msgstr "Տառատեսակ"
 
 msgid "Font Size"
 msgstr ""
@@ -366,8 +366,9 @@ msgstr ""
 msgid "Receive symbol:"
 msgstr ""
 
+#, fuzzy
 msgid "auto"
-msgstr ""
+msgstr "ինքնաբերաբար"
 
 msgid "Width:"
 msgstr ""
@@ -992,14 +993,15 @@ msgid "Show all"
 msgstr ""
 
 msgid "Search"
-msgstr ""
+msgstr "Որոնում"
 
 #, tcl-format
 msgid "Install (%d)"
 msgstr ""
 
+#, fuzzy
 msgid "Install"
-msgstr ""
+msgstr "Տեղադրեք"
 
 #, tcl-format
 msgid "%s%% of download completed"
@@ -1377,7 +1379,7 @@ msgid "Greek"
 msgstr ""
 
 msgid "English"
-msgstr ""
+msgstr "Անգլերեն"
 
 msgid "English (Canada)"
 msgstr ""
@@ -1407,7 +1409,7 @@ msgid "Fulah"
 msgstr ""
 
 msgid "Finnish"
-msgstr ""
+msgstr "Ֆիններեն"
 
 msgid "Fijian"
 msgstr ""
@@ -1416,7 +1418,7 @@ msgid "Faroese"
 msgstr ""
 
 msgid "French"
-msgstr ""
+msgstr "Ֆրանսերեն"
 
 msgid "Frisian"
 msgstr ""
@@ -1461,7 +1463,7 @@ msgid "Hungarian"
 msgstr ""
 
 msgid "Armenian"
-msgstr ""
+msgstr "Հայերեն"
 
 msgid "Herero"
 msgstr ""
@@ -1623,34 +1625,34 @@ msgid "Nyanja"
 msgstr ""
 
 msgid "Occitan"
-msgstr ""
+msgstr "Օքսիտաներեն"
 
 msgid "Ojibwe"
-msgstr ""
+msgstr "Օջիբվե"
 
 msgid "Oromo"
-msgstr ""
+msgstr "Օրոմո"
 
 msgid "Odia"
-msgstr ""
+msgstr "Օդիա"
 
 msgid "Ossetian"
-msgstr ""
+msgstr "Օսեթ"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Փանջաբի"
 
 msgid "Pali"
-msgstr ""
+msgstr "Պալի"
 
 msgid "Polish"
-msgstr ""
+msgstr "լեհերեն"
 
 msgid "Pashto"
-msgstr ""
+msgstr "Փաշթու"
 
 msgid "Portuguese"
-msgstr ""
+msgstr "Պորտուգալերեն"
 
 msgid "Portuguese (Brazil)"
 msgstr ""
@@ -1900,40 +1902,40 @@ msgid "Edit Mode"
 msgstr ""
 
 msgid "Object"
-msgstr ""
+msgstr "Օբյեկտ"
 
 msgid "Message"
-msgstr ""
+msgstr "Հաղորդագրություն"
 
 msgid "Number"
-msgstr ""
+msgstr "Համար"
 
 msgid "List"
-msgstr ""
+msgstr "Ցանկ"
 
 msgid "Symbol"
-msgstr ""
+msgstr "Սիմվոլ"
 
 msgid "Comment"
-msgstr ""
+msgstr "Մեկնաբանություն"
 
 msgid "Graph"
 msgstr ""
 
 msgid "Find..."
-msgstr ""
+msgstr "Գտնել..."
 
 msgid "Find Again"
-msgstr ""
+msgstr "Նորից գտնել"
 
 msgid "Find Last Error"
 msgstr ""
 
 msgid "DSP On"
-msgstr ""
+msgstr "DSP-ն միացված է"
 
 msgid "DSP Off"
-msgstr ""
+msgstr "DSP-ն անջատված է"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
@@ -1948,10 +1950,10 @@ msgid "MIDI Settings..."
 msgstr ""
 
 msgid "Minimize"
-msgstr ""
+msgstr "Փոքրացնել"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Մեծացնել"
 
 msgid "Bring All to Front"
 msgstr ""
@@ -1969,7 +1971,7 @@ msgid "Parent Window"
 msgstr ""
 
 msgid "Message..."
-msgstr ""
+msgstr "Հաղորդագրություն..."
 
 msgid "HTML Manual..."
 msgstr ""
@@ -1990,7 +1992,7 @@ msgid "Report a bug"
 msgstr ""
 
 msgid "Clear Menu"
-msgstr ""
+msgstr "Մաքրել ցանկը"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2016,7 +2018,7 @@ msgid "Load from..."
 msgstr ""
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Մոռացեք ամեն ինչ..."
 
 msgid "Tabbed preferences"
 msgstr ""
@@ -2026,7 +2028,7 @@ msgid "Do you want to save the changes you made in '%s'?"
 msgstr ""
 
 msgid "Properties"
-msgstr ""
+msgstr "Հատկություններ"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2046,10 +2048,10 @@ msgid "the Pd window filtered %d lines"
 msgstr ""
 
 msgid "Audio on"
-msgstr ""
+msgstr "Աուդիո միացված է"
 
 msgid "Audio off"
-msgstr ""
+msgstr "Ձայնը անջատված է"
 
 msgid "Find source"
 msgstr ""
@@ -2065,7 +2067,7 @@ msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
 msgstr ""
