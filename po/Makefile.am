@@ -81,7 +81,7 @@ ALL_LINGUAS = \
 	el en en_ca eo es eu \
 	fr \
 	gu \
-	he hi hu \
+	he hi hu hy \
 	id it \
 	ja \
 	ko \
@@ -89,7 +89,7 @@ ALL_LINGUAS = \
 	pa pl pt_br pt_pt \
 	ru \
 	sq sv \
-	ta \
+	ta tr \
 	uk \
 	vi \
 	zh_tw \
