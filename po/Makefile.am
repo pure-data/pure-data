@@ -174,3 +174,9 @@ $(MSGFILES): %.msg: %.po
 .PHONY: etags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
+
+
+allpofiles=$(wildcard $(srcdir)/*.po)
+.PHONY: unused
+unused:
+	@echo "UNUSED TRANSLATIONS: $(patsubst $(srcdir)/%.po,%,$(filter-out $(POFILES), $(allpofiles)))"
