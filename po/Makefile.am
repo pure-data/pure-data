@@ -114,14 +114,13 @@ EXTRA_DIST = \
 #########################################
 ##### Targets #####
 
-.PHONY: locations
-
 all-local: template po msg
 
 clean-local:
 	rm -f $(MSGFILES)
 
 # refresh template.pot from the source code
+.PHONY: template
 template: $(TEMPLATE)
 
 # remove string file locations and header "POT-Creation-Date" to suppress
@@ -145,6 +144,7 @@ $(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
+.PHONY: locations
 locations:
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
@@ -152,6 +152,7 @@ locations:
 		$(FILES)
 
 # refresh .po files from the template
+.PHONY: po
 po: $(POFILES)
 
 # the .po files depend on template.pot, suppress line location changes to
@@ -163,11 +164,13 @@ $(POFILES): %.po: $(TEMPLATE)
 
 # generate .msg files from the .po files,
 # these are installed and loaded by the GUI at runtime
+.PHONY: msg
 msg: $(MSGFILES)
 
 # each .msg file depends on updates to the corresponding .po file
 $(MSGFILES): %.msg: %.po
 	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
+.PHONY: etags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
