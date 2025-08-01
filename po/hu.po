@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-07-29 17:06+0000\n"
-"Last-Translator: Nero97 <sz.benjamin97@gmail.com>\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/hu/>\n"
 "Language: hu\n"
@@ -313,9 +313,8 @@ msgstr "Margó:"
 msgid "Y range: from"
 msgstr "Y tartomány kezdete"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Object"
+msgstr "Object:"
 
 #, fuzzy
 msgid "Data Properties"
