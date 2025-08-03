@@ -384,10 +384,17 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
-proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+# If the optional second parameter is 1, the operation is executed immediately.
+# Otherwise, it is deferred after 'idle'.
+proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas {immediate 0}} {
     # delay until we are ready
-    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    if {$immediate} {
+        ::pdtk_canvas::do_getscroll $tkcanvas
+    } else {
+        after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    }
 }
+
 proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
