@@ -706,10 +706,22 @@ void sys_gui_midipreferences(void) {
     int noutdev, midioutdev[MAXMIDIOUTDEV];
     t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
-        /* query the current MIDI settings */
-    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
-    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+        /* query the current MIDI settings
+         * on macOS, this causes a crash in 'callback' mode when audio is running */
+#ifdef __APPLE__
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running. "
+            "Please turn off DSP and rescan devices.");
+        nindev = noutdev = nindevs = noutdevs = 0;
+    }
+    else
+#endif
+    {
+        sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+            MAXNDEV, DEVDESCSIZE);
+        sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+    }
 
     indevs[0] = outdevs[0] = "none";
     for (i = 0; i < nindevs; i++)
