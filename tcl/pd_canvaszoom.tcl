@@ -165,7 +165,7 @@ proc ::pd_canvaszoom::setzoom {c steps} {
     # update fonts and linewidth
     zoom_text_and_lines $c $oldzdepth $zdepth($c)
     # check new visibility of scrollbars
-    ::pdtk_canvas::pdtk_canvas_getscroll $c
+    ::pdtk_canvas::pdtk_canvas_getscroll $c 1
     # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
     scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
 
