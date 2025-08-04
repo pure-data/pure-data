@@ -325,7 +325,6 @@ proc ::pd_canvaszoom::getzdepth tkcanvas {
 }
 
 proc ::pd_canvaszoom::scale_command {cmd} {
-    set cmd [regsub -lineanchor ";$" $cmd ""]
     set cmd [regsub -all "\}" $cmd "\} "]
     set cmd [regsub -all "\"\]" $cmd "\" \]"]
     set cmd [regsub -all {\\\n} $cmd " "]
@@ -356,6 +355,11 @@ proc ::pd_canvaszoom::scale_command {cmd} {
             return $cmd
         }
     }
+
+    # remove ';' at the end of the line.
+    # Don't do it sooner, as it would hide the ';' in pdtk_text, e.g in [;pd dsp 1(
+    set cmd [regsub -lineanchor ";$" $cmd ""]
+
     switch [lindex $cmd 1] {
         "create" {
             if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
