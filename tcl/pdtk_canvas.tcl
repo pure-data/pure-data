@@ -400,8 +400,9 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
         return
     }
     set mytoplevel [winfo toplevel $tkcanvas]
-    set height [winfo height $tkcanvas]
-    set width [winfo width $tkcanvas]
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
+    set height [expr [winfo height $tkcanvas] * $zdepth]
+    set width [expr [winfo width $tkcanvas] * $zdepth]
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
