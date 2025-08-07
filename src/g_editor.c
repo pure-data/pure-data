@@ -2078,6 +2078,26 @@ void canvas_properties(t_gobj*z, t_glist*unused)
     if (textbuf)
         freebytes(textbuf, textsize+1);
 }
+    /* remove '\' preceding '$', and return new text size */
+static int unescape_dollars(char *textbuf, int textsize)
+{
+    char *textcopy = getbytes(textsize);
+    int newsize = 0;
+    int escape = 0;
+    memcpy(textcopy, textbuf, textsize);
+    for(int i = 0; i < textsize; i++) {
+        char c = textcopy[i];
+        if(c == '\\') {
+            escape = 1;
+            continue;
+        }
+        if(escape && c != '$') textbuf[newsize++] = '\\';
+        textbuf[newsize++] = c;
+        escape = 0;
+    }
+    freebytes(textcopy, textsize);
+    return newsize;
+}
 
     /* called from the gui when "OK" is selected on the canvas properties
        dialog.  Again we negate "y" scale. */
@@ -2106,9 +2126,11 @@ static void canvas_donecanvasdialog(t_glist *x,
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
+        int newsize;
         binbuf_add(b, argc-13, argv+13);
         binbuf_gettext(b, &textbuf, &textsize);
         binbuf_free(b);
+        newsize = unescape_dollars(textbuf, textsize);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
 
         glist_noselect(x->gl_owner);
@@ -2123,7 +2145,7 @@ static void canvas_donecanvasdialog(t_glist *x,
             /* change the text (this restores the connections we just saved) */
         glist_noselect(x->gl_owner);
         t_canvas *owner = x->gl_owner;
-        text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
+        text_setto(&x->gl_obj, x->gl_owner, textbuf, newsize);
 
         canvas_fixlinesfor(owner, &x->gl_obj);
         glist_settexted(owner, 0);
