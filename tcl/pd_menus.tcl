@@ -59,7 +59,7 @@ proc ::pd_menus::create_menubar {} {
     $::patch_menubar add cascade -label [_ Put] \
             -underline 0 -menu $::patch_menubar.put
 
-    foreach mymenu "find media window tools" {
+    foreach mymenu "find media window tools help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
@@ -75,14 +75,11 @@ proc ::pd_menus::create_menubar {} {
             -underline $underlined -menu $m
     }
 
-    # create separate help menus
-    set patch_help [menu $::patch_menubar.help]
-    build_help_menu $patch_help
-    $::patch_menubar add cascade -label [_ Help] -menu $patch_help
-
-    set pdwindow_help [menu $::pdwindow_menubar.help]
-    build_help_menu $pdwindow_help
-    $::pdwindow_menubar add cascade -label [_ Help] -menu $pdwindow_help
+    # create separate help menu for pdwindow on macOS (to get "Pd Help" entry)
+    if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
+        build_help_menu [menu $::pdwindow_menubar.help]
+        $::pdwindow_menubar entryconfigure [_ Help] -menu $::pdwindow_menubar.help
+    }
 
     if {$::windowingsystem eq "win32"} {create_system_menu $::patch_menubar}
     . configure -menu $::patch_menubar
