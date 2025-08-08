@@ -623,7 +623,7 @@ EXTERN void scalar_addrtexts(t_scalar *y, t_glist *gl);
 EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 
-EXTERN int scalar_doclick(t_word *data, t_template *pdtemplate, t_scalar *sc,
+int scalar_doclick(t_word *data, t_template *pdtemplate, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,
     int shift, int alt, int dbl, int doit);
