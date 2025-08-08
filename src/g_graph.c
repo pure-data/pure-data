@@ -479,6 +479,10 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     else
         /* glist_redraw() won't remove "ghost objects" */
         canvas_redraw(glist_getcanvas(x));
+
+        /* always update cords on parent if visible. */
+    if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
+        canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
 }
 
 static void graph_xticks(t_glist *x,
