@@ -475,9 +475,15 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
             x->gl_pixheight = 1;
     }
     if (x->gl_havewindow)
+    {
         glist_redraw(x);
+            /* possibly fix patch cords on parent canvas */
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
+            canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
+    }
     else
-        /* glist_redraw() won't remove "ghost objects" */
+            /* we have to redraw the parent canvas because glist_redraw()
+            won't remove "ghost objects" or update patch cords */
         canvas_redraw(glist_getcanvas(x));
 }
 
