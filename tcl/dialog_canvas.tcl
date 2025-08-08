@@ -25,7 +25,7 @@ proc ::dialog_canvas::set_text {text} {
 proc ::dialog_canvas::apply {mytoplevel} {
     global ::dialog_canvas_text
     if [string compare $::dialog_canvas_text $::dialog_canvas_text_before] {
-            set appendme [concat text $::dialog_canvas_text]
+        set appendme [concat text [string map {"$" "\\$"} $::dialog_canvas_text]]
     } else {
         set appendme ""
     }
