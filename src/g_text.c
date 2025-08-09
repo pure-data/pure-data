@@ -883,6 +883,51 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
 }
 
+int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
+
+static double gatom_wheel_step(t_gatom *x, t_floatarg modifier, double amount)
+{
+        /* use range-proportional steps when limits are set,
+         * direct wheel amount for unlimited ranges */
+    if (x->a_draghi > x->a_draglo)
+    {
+        double range_step = (x->a_draghi - x->a_draglo) / 127.0;
+        return ((int)modifier & 1) ? amount * range_step * 0.01 : amount * range_step;
+    }
+    else
+        return ((int)modifier & 1) ? amount * 0.01 : amount;
+}
+
+static void gatom_wheel(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
+{
+    float dy = atom_getfloat(argv+1);
+    if (dy == 0) return;
+    int mod = atom_getint(argv+2);
+    int xpos = atom_getint(argv+3), ypos = atom_getint(argv+4);
+    double step, nval;
+    if (x->a_flavor == A_FLOAT)
+    {
+        t_atom *ap = &binbuf_getvec(x->a_text.te_binbuf)[0];
+        step = gatom_wheel_step(x, mod, dy);
+        nval = ap->a_w.w_float - step;
+        gatom_clipfloat(x, ap, nval);
+    }
+    else if (x->a_flavor == A_LIST)
+    {
+        int x1, y1, x2, y2, indx, atom_argc = binbuf_getnatom(x->a_text.te_binbuf);
+        t_atom *atom_argv = binbuf_getvec(x->a_text.te_binbuf);
+        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text);
+        gobj_getrect((t_gobj *)x, x->a_glist, &x1, &y1, &x2, &y2);
+        indx = rtext_findatomfor(t, xpos, ypos);
+        if (indx >= 0 && indx < atom_argc && atom_argv[indx].a_type == A_FLOAT)
+        {
+            step = gatom_wheel_step(x, mod, dy);
+            nval = atom_argv[indx].a_w.w_float - step;
+            gatom_clipfloat(x, &atom_argv[indx], (float)nval);
+        }
+    }
+}
+
 static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
@@ -929,8 +974,6 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
         }
     }
 }
-
-int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
 
     /* this is called when gatom is clicked on with patch in run mode. */
 static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
@@ -1882,6 +1925,8 @@ void g_text_setup(void)
     class_addmethod(gatom_class, (t_method)gatom_set, gensym("set"),
         A_GIMME, 0);
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
+        A_GIMME, 0);
+    class_addmethod(gatom_class, (t_method)gatom_wheel, gensym("wheel"),
         A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
