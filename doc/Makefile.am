@@ -483,6 +483,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/writesf~-help.pd \
      ./6.externs/0.README.txt \
      ./6.externs/dspobj~.c \
+     ./6.externs/taskobj.c \
      ./6.externs/makefile \
      ./6.externs/obj1.c \
      ./6.externs/obj2.c \
@@ -490,6 +491,7 @@ nobase_dist_libpd_DATA = \
      ./6.externs/obj4.c \
      ./6.externs/obj5.c \
      ./6.externs/test-dspobj~.pd \
+     ./6.externs/test-taskobj.pd \
      ./6.externs/test-obj1.pd \
      ./6.externs/test-obj2.pd \
      ./6.externs/test-obj3.pd \
