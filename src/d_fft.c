@@ -108,7 +108,7 @@ static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
             "FFT inputs have different channel counts - ignoring extras");
     signal_setmultiout(&sp[2], nchans);
     signal_setmultiout(&sp[3], nchans);
-    if (length < 4 || (length != (1 << ilog2(length))))
+    if (length < 4 || length & (length - 1))
     {
         if (length < 4)
             pd_error(x, "fft: minimum 4 points");
@@ -203,7 +203,7 @@ static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
     int nchans = sp[0]->s_nchans;
     signal_setmultiout(&sp[1], nchans);
     signal_setmultiout(&sp[2], nchans);
-    if (length < 4 || (length != (1 << ilog2(length))))
+    if (length < 4 || length & (length - 1))
     {
         if (length < 4)
             pd_error(x, "fft: minimum 4 points");
@@ -277,7 +277,7 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
         pd_error(x,
             "rifft~ inputs have different channel counts - ignoring extras");
     signal_setmultiout(&sp[2], nchans);
-    if (length < 4 || (length != (1 << ilog2(length))))
+    if (length < 4 || length & (length - 1))
     {
         if (length < 4)
             pd_error(x, "fft: minimum 4 points");
