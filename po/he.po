@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -129,6 +129,9 @@ msgstr "מדיה"
 
 msgid "Window"
 msgstr "חלון"
+
+msgid "Tools"
+msgstr ""
 
 msgid "Help"
 msgstr "עזרה"

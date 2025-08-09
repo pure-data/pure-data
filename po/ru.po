@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-07-24 11:05+0000\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/ru/>\n"
@@ -133,6 +133,9 @@ msgstr "Медиа"
 msgid "Window"
 msgstr "Окно"
 
+msgid "Tools"
+msgstr "Инструменты"
+
 msgid "Help"
 msgstr "Справка"
 
@@ -200,7 +203,7 @@ msgid "OK"
 msgstr "ОК"
 
 msgid "no device"
-msgstr "нет устройства"
+msgstr "устройство не найдено"
 
 msgid "(same as input device)..."
 msgstr "(как устройство ввода)..."
@@ -622,7 +625,7 @@ msgid "Edit library"
 msgstr "Редактировать библиотеку"
 
 msgid "Settings below require a restart of Pd!"
-msgstr "Для активации указанных ниже параметров необходимо перезапустить Pd!"
+msgstr "Указанные ниже настройки требуют перезапуска Pd!"
 
 msgid "Pd libraries to load on startup"
 msgstr "Библиотеки Pd, загружаемые при запуске"
@@ -726,7 +729,7 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Невозможно найти плагины в %s ...пропущено!"
 
 msgid "Pd startup failure"
-msgstr "ошибка запуска Pd"
+msgstr "Ошибка запуска Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Ошибка запуска ядра Pd"

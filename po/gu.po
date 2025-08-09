@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data-0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2005-09-14 12:49+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -139,6 +139,9 @@ msgstr "મેકેડોનિયા"
 #, fuzzy
 msgid "Window"
 msgstr "વિન્ડો (_W)"
+
+msgid "Tools"
+msgstr ""
 
 msgid "Help"
 msgstr "મદદ"

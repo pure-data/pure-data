@@ -10,11 +10,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2025-07-22 17:03+0000\n"
 "Last-Translator: ant1rousseau1 <ant1rousseau1@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,6 +134,9 @@ msgstr "Média"
 
 msgid "Window"
 msgstr "Fenêtre"
+
+msgid "Tools"
+msgstr "Outils"
 
 msgid "Help"
 msgstr "Aide"
@@ -2245,21 +2248,17 @@ msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 #~ msgid "width:"
 #~ msgstr "largeur :"
 
-#, tcl-format
 #~ msgid "couldn't create Pd documents directory: %s\n"
 #~ msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
 #~ msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
-#, tcl-format
 #~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : la famille de police '%s' n'a pas pu être trouvée, "
 #~ "utilisation de la police par défaut (%s)\n"
 
-#, tcl-format
 #~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : l'épaisseur de police '%s' n'a pas pu être trouvée, "

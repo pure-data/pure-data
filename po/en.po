@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-07-18 17:03+0000\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/en/>\n"
@@ -129,6 +129,9 @@ msgstr "Media"
 
 msgid "Window"
 msgstr "Window"
+
+msgid "Tools"
+msgstr "Tools"
 
 msgid "Help"
 msgstr "Help"
@@ -607,7 +610,7 @@ msgid "MIDI preferences"
 msgstr "MIDI"
 
 msgid "deken preferences"
-msgstr "packages"
+msgstr "Packages"
 
 msgid "misc preferences"
 msgstr "Misc"

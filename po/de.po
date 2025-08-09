@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-07-18 17:03+0000\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/de/>\n"
@@ -134,6 +134,9 @@ msgstr "Medien"
 
 msgid "Window"
 msgstr "Fenster"
+
+msgid "Tools"
+msgstr "Werkzeuge"
 
 msgid "Help"
 msgstr "Hilfe"
@@ -2099,7 +2102,7 @@ msgid "Audio off"
 msgstr "Audio aus"
 
 msgid "Find source"
-msgstr "Gehe zum Ursprung"
+msgstr "Gehe zur Ursache"
 
 msgid "Pd"
 msgstr "Pd"
@@ -2248,21 +2251,17 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "width:"
 #~ msgstr "Breite:"
 
-#, tcl-format
 #~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "WARNUNG: Schriftart '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
-#, tcl-format
 #~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
-#, tcl-format
 #~ msgid "couldn't create Pd documents directory: %s\n"
 #~ msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
-#, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
 #~ msgstr "konnte kein \"externals\"-Verzeichnis in '%s' erstellen.\n"
 
@@ -2272,7 +2271,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Hold:"
 #~ msgstr "Haltezeit:"
 
-#, tcl-format
 #~ msgid "[deken] Start searching for externals... %s"
 #~ msgstr "[deken] starte Paketsuche... %s"
 
@@ -2285,11 +2283,9 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Install package"
 #~ msgstr "Paket installieren"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] < %2$s...overwriting!"
 #~ msgstr "überschreibe die installierte Version [%1$s] mit %2$s!"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] == %2$s...skipping!"
 #~ msgstr ""
 #~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
@@ -2357,7 +2353,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Filters"
 #~ msgstr "Filter"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] > %2$s...skipping!"
 #~ msgstr ""
 #~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-07-25 15:04+0000\n"
-"Last-Translator: Bastiaan van den Berg <buzztiaan@gmail.com>\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/nl/>\n"
 "Language: nl\n"
@@ -131,6 +131,10 @@ msgstr "Media"
 
 msgid "Window"
 msgstr "Venster"
+
+#, fuzzy
+msgid "Tools"
+msgstr "Gereedschap"
 
 msgid "Help"
 msgstr "Help"
@@ -292,9 +296,8 @@ msgstr "Marge:"
 msgid "Y range: from"
 msgstr "Y bereik: van"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Object"
+msgstr "Object:"
 
 msgid "Data Properties"
 msgstr "Gegevenseigenschappen"
@@ -847,8 +850,9 @@ msgstr "Zoekresultaat URLs:"
 msgid "Additional search URLs"
 msgstr "Additionele zoekresultaat URLs"
 
+#, fuzzy
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "Tijdelijke zoek-URL's"
 
 msgid "Create"
 msgstr "Aanmaken"
