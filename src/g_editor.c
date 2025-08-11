@@ -2106,7 +2106,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
-        binbuf_add(b, argc-13, argv+13);
+        binbuf_restore(b, argc-13, argv+13);
         binbuf_gettext(b, &textbuf, &textsize);
         binbuf_free(b);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
