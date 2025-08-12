@@ -45,7 +45,7 @@ void glob_fastforward(t_pd *ignore, t_floatarg f);
 void glob_settracing(void *dummy, t_floatarg f);
 void glob_vis(void *dummy, t_symbol *s);
 void glob_closesubs(void *dummy);
-void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+void glob_color(void *dummy, t_symbol *bg, t_symbol *fg, t_symbol *sel,
     t_symbol *gop);
 void glob_rescanaudio(void *dummy);
 
@@ -207,8 +207,8 @@ void glob_init(void)
         gensym("vis"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_closesubs,
         gensym("close-subwindows"), 0);
-    class_addmethod(glob_pdobject, (t_method)glob_colors,
-        gensym("colors"), A_SYMBOL, A_SYMBOL, A_SYMBOL, A_DEFSYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_color,
+        gensym("color"), A_SYMBOL, A_SYMBOL, A_SYMBOL, A_DEFSYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_rescanaudio,
         gensym("rescan-audio"), 0);
     class_addanything(glob_pdobject, max_default);
