@@ -47,7 +47,7 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
-        "-outline", THISGUI->i_foregroundcolor);
+        "-outline", x->x_gui.x_fcol);
 
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -89,16 +89,17 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
-    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
-
+    unsigned int col = THISGUI->i_foregroundcolor;
+    unsigned int lcol = x->x_gui.x_lcol;
+    unsigned int fcol = x->x_gui.x_fcol;
 
     if(x->x_gui.x_fsf.x_selected)
-        col = lcol = THISGUI->i_selectcolor;
+        col = lcol = fcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%pBUT", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", fcol);
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
