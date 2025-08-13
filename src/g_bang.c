@@ -47,7 +47,7 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
-        "-outline", THISGUI->i_foregroundcolor);
+        "-outline", x->x_gui.x_fcol);
 
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -96,8 +96,6 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
         col = lcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pBUT", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
