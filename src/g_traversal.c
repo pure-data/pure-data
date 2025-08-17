@@ -197,7 +197,7 @@ static void ptrobj_doget(t_ptrobj *x, int argc, t_atom *argv)
     int nout, i;
     t_atom *at;
     for (i = nout = 0; i < argc; i++)
-        if (argv->a_type == A_BINBUF)
+        if (argv[i].a_type == A_BINBUF)
             nout += binbuf_getnatom(argv[i].a_w.w_binbuf);
         else nout++;
     ALLOCA(t_atom, at, nout, TRAVERSAL_NGETBYTE);
