@@ -875,6 +875,19 @@ void canvas_redraw(t_canvas *x)
     }
 }
 
+    /* if anyone resizes a canvas GOP area (via canvas_donecanvasdialog()
+    or graph_goprect(), for example) some rtexts might find themselves
+    belonging to a different canvas than before and hell will break loose.
+    So we just nuke all rtexts.  (They're re-created laster as needed).*/
+void glist_clearrtexts(t_glist *x)
+{
+    t_glist *gl2 = glist_getcanvas(x);
+    if (glist_textedfor(gl2) == x)
+        glist_settexted(gl2, 0);
+    if (gl2->gl_editor)
+        while (gl2->gl_editor->e_rtext)
+            rtext_free(gl2->gl_editor->e_rtext);
+}
 
     /* we call this on a non-toplevel glist to "open" it into its
     own window. */
@@ -882,7 +895,7 @@ void glist_menu_open(t_glist *x)
 {
     if (glist_isvisible(x) && !glist_istoplevel(x))
     {
-        t_glist *gl2 = x->gl_owner;
+        t_glist *gl2 = glist_getcanvas(x);
         if (!gl2)
             bug("glist_menu_open");  /* shouldn't happen but not dangerous */
         else
@@ -892,9 +905,7 @@ void glist_menu_open(t_glist *x)
                 /* and blow away all rtexts in parent window -- we can do
                 this because rtexts that are still needed will be recreated
                 on demand by glist_getrtext() */
-            if (gl2->gl_editor)
-                while (gl2->gl_editor->e_rtext)
-                    rtext_free(gl2->gl_editor->e_rtext);
+            glist_clearrtexts(gl2);
                     /* get rid of our editor (and subeditors) */
             if (x->gl_editor)
                 canvas_destroy_editor(x);

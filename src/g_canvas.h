@@ -500,6 +500,7 @@ EXTERN int rtext_hit(t_rtext *x, int xpix, int ypix,
     int *x1p, int *y1p, int *x2p, int *y2p);
 t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
     t_text **text, t_scalar **scalar, t_word **words, t_gobj **drawtext);
+void glist_clearrtexts(t_glist *x);
 
 /* -------------------- functions on canvases ------------------------ */
 EXTERN t_class *canvas_class;

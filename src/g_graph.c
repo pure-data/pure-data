@@ -467,6 +467,7 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     x->gl_xmargin = atom_getfloatarg(0, argc, argv);
     x->gl_ymargin = atom_getfloatarg(1, argc, argv);
+    glist_clearrtexts(x);
     if (argc > 2)
     {
         if ((x->gl_pixwidth = atom_getfloatarg(2, argc, argv)) < 1)

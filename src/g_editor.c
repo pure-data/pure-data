@@ -2086,7 +2086,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
-
+    glist_clearrtexts(x);
         /* if there are extra arguments, the user has typed new text in
         the dialog window.  Unfortunately, some old patches use this to
         resize rectangles programmatically, and moreover send extra
