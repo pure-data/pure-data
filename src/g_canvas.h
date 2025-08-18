@@ -496,8 +496,6 @@ EXTERN void rtext_untype(t_rtext *x);
 EXTERN void rtext_getrect(t_rtext *x, int *x1p, int *y1p, int *x2p, int *y2p);
 EXTERN void rtext_retextforscalar(t_rtext *x, char *buf, int len,
     int xpix, int ypix);
-EXTERN int rtext_hit(t_rtext *x, int xpix, int ypix,
-    int *x1p, int *y1p, int *x2p, int *y2p);
 t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
     t_text **text, t_scalar **scalar, t_word **words, t_gobj **drawtext);
 void glist_clearrtexts(t_glist *x);
@@ -619,7 +617,6 @@ EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     int amarrayelement);
 EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     int *p_nextmsg, int selectit);
-EXTERN void scalar_addrtexts(t_scalar *y, t_glist *gl);
 EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 
