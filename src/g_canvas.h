@@ -490,7 +490,6 @@ EXTERN void rtext_retext(t_rtext *x);
 EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
-EXTERN t_text *rtext_getowner(t_rtext *x);
 EXTERN t_glist *rtext_getglist(t_rtext *x);
 EXTERN void rtext_unmouse(t_rtext *x);
 EXTERN void rtext_untype(t_rtext *x);
