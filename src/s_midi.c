@@ -706,12 +706,22 @@ void sys_gui_midipreferences(void) {
     int noutdev, midioutdev[MAXMIDIOUTDEV];
     t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
-    sys_reinit_midi();
-
-        /* query the current MIDI settings */
-    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
-    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+        /* query the current MIDI settings
+         * on macOS, this causes a crash in 'callback' mode when audio is running */
+#ifdef __APPLE__
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running. "
+            "Please turn off DSP and rescan devices.");
+        nindev = noutdev = nindevs = noutdevs = 0;
+    }
+    else
+#endif
+    {
+        sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+            MAXNDEV, DEVDESCSIZE);
+        sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+    }
 
     indevs[0] = outdevs[0] = "none";
     for (i = 0; i < nindevs; i++)
@@ -738,6 +748,15 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     pdgui_stub_deleteforkey(0);
     pdgui_stub_vnew(&glob_pdobject, "::dialog_midi::create",
         (void *)glob_midi_properties, "");
+}
+
+    /* rescan MIDI devices */
+void glob_rescanmidi(t_pd *dummy)
+{
+    sys_reinit_midi();
+    sys_gui_midipreferences();
+        /* refresh midi dialog (if it's open) */
+    pdgui_vmess("::dialog_midi::refresh_ui", "");
 }
 
     /* new values from dialog window */
