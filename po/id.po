@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
 "PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -129,6 +129,9 @@ msgstr "Media"
 
 msgid "Window"
 msgstr "Jendela"
+
+msgid "Tools"
+msgstr ""
 
 msgid "Help"
 msgstr "Tolong"

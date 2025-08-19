@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2024-07-08 17:41+0200\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/uk/>\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Poedit 3.4.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "лінійний"
@@ -132,6 +132,9 @@ msgstr "Медіа"
 
 msgid "Window"
 msgstr "Вікно"
+
+msgid "Tools"
+msgstr ""
 
 msgid "Help"
 msgstr "Допомога"
@@ -297,9 +300,8 @@ msgstr "Відступ:"
 msgid "Y range: from"
 msgstr "Діапазон значень Y: від"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Об'єкт"
+msgstr "Об'єкт:"
 
 #, fuzzy
 msgid "Data Properties"
@@ -628,9 +630,8 @@ msgstr "Налаштування"
 msgid "audio preferences"
 msgstr "Налаштування"
 
-#, fuzzy
 msgid "MIDI preferences"
-msgstr "Налаштування"
+msgstr "Налаштування MIDI"
 
 #, fuzzy
 msgid "deken preferences"
@@ -756,7 +757,7 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Неможливо знайти плагіни в %s ...пропущено!"
 
 msgid "Pd startup failure"
-msgstr ""
+msgstr "Збій запуску Pd"
 
 #, fuzzy
 msgid "Failed to start Pd-core"
@@ -1334,7 +1335,7 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Неможливо створити властивості %1$s у %2$s"
 
 msgid "The language can only be set during startup."
-msgstr ""
+msgstr "Мову можна встановити лише під час запуску."
 
 msgid "Afar"
 msgstr "Афарська"
@@ -1454,10 +1455,10 @@ msgid "English (Canada)"
 msgstr "Англійська (Канада)"
 
 msgid "English (UK)"
-msgstr ""
+msgstr "Англійська (Велика Британія)"
 
 msgid "English (USA)"
-msgstr ""
+msgstr "Англійська (США)"
 
 msgid "Esperanto"
 msgstr "Есперанто"
@@ -1709,7 +1710,7 @@ msgid "Ossetian"
 msgstr "Осетинська"
 
 msgid "Panjabi"
-msgstr ""
+msgstr "Панджабі"
 
 msgid "Pali"
 msgstr "Палі"
@@ -1877,7 +1878,7 @@ msgid "Zhuang"
 msgstr "Чуанг"
 
 msgid "Chinese (Traditional)"
-msgstr ""
+msgstr "Китайська (традиційна)"
 
 msgid "Zulu"
 msgstr "Зулуська"
@@ -2037,7 +2038,7 @@ msgid "Previous Window"
 msgstr "Попереднє вікно"
 
 msgid "Close subwindows"
-msgstr ""
+msgstr "Закрити підвікна"
 
 msgid "Parent Window"
 msgstr "Батьківське вікно"
@@ -2114,6 +2115,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Прийняття оновить вміст пов'язаного об'єкта. Вам все одно потрібно зберегти "
+"патч, щоб зміни були постійними."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
