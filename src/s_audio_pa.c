@@ -51,7 +51,6 @@ static t_sample *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
 
 static int pa_started;
-static volatile int pa_dio_error;
 
 static char *pa_outbuf;
 static sys_ringbuf pa_outring;
@@ -192,7 +191,7 @@ static int pa_fifo_callback(const void *inputBuffer,
     {
         /* data late: output zeros, drop inputs, and leave FIFos untouched */
         if (pa_started)
-            pa_dio_error = 1;
+            sys_reportxrun(nframes);
         if (outputBuffer)
         {
             for (ch = 0; ch < pa_outchans; ch++)
@@ -450,7 +449,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
             framesperbuf, pa_indev, pa_outdev, pa_fifo_callback);
     }
     pa_started = 0;
-    pa_dio_error = 0;
     if (err != paNoError)
     {
         pd_error(0, "error opening audio: %s", Pa_GetErrorText(err));
@@ -583,11 +581,6 @@ int pa_send_dacs(void)
                         *fp = *fp3;
     }
 
-    if (pa_dio_error)
-    {
-        sys_log_error(ERR_RESYNC);
-        pa_dio_error = 0;
-    }
     pa_started = 1;
 
     memset(STUFF->st_soundout, 0,
