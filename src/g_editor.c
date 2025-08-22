@@ -2210,17 +2210,13 @@ static void canvas_donecanvasdialog(t_glist *x,
         }
     }
         /* LATER avoid doing 2 redraws here (possibly one inside setgraph) */
-    canvas_setgraph(x, graphme, 0);
+    if (graphme != glist_isgraph(x))
+        canvas_setgraph(x, graphme, 0);
     canvas_dirty(x, 1);
-    if (x->gl_owner && x->gl_owner->gl_havewindow)
-        canvas_redraw(x->gl_owner);
+    if (x->gl_owner)
+        canvas_redraw(glist_getcanvas(x->gl_owner));
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
-    {
-        gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        gobj_vis(&x->gl_gobj, x->gl_owner, 1);
-    }
 }
 
     /* called from the gui when a popup menu comes back with "properties,"
