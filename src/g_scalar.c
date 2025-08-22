@@ -153,24 +153,39 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     }
 }
 
-    /* a block versions of word_init is provided because
-    creating and destroying large arrays had been absurdly slowing down patch
-    loading and closing.  The first one is created as above and the rest
-    are simply copied from the first one, in a way that now appears
-    unnecessarily convoluted. */
+    /* return 1 if all dataslots are float or symbol, 0 otherwise */
+static int template_is_flat(t_template *template)
+{
+    int i, nitems = template->t_n;
+    t_dataslot *datatypes = template->t_vec;
+    for (i = 0; i < nitems; i++)
+    {
+        int type = datatypes[i].ds_type;
+        if ((type != DT_FLOAT) && (type != DT_SYMBOL))
+            return 0;
+    }
+    return 1;
+}
+
+    /* a block versions of word_init is provided because creating and
+    destroying large arrays had been absurdly slowing down patch loading
+    and closing: if the template contains only float and symbols, the first
+    one is created as above and the rest are simply copied from the first
+    one, in a way that now appears unnecessarily convoluted. */
 void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
 {
+    long ndone;
     if (n > 0)
     {
-        long ndone = 1;
-        word_init(wp, template, gp);  /* init the first one */
-        while (ndone < n)
+        if (template_is_flat(template))
         {
-            long ncopy = (n-ndone > ndone ? ndone : n-ndone);
-            memcpy(wp + template->t_n*ndone, wp,
-                ncopy * template->t_n * sizeof(t_word));
-            ndone += ncopy;
+            word_init(wp, template, gp);  /* init the first one */
+            for (ndone = 1; ndone < n; ndone++)
+                memcpy(wp + template->t_n * ndone, wp,
+                    template->t_n * sizeof(t_word));
         }
+        else for (ndone = 0; ndone < n; ndone++)
+            word_init(wp + template->t_n * ndone, template, gp);
     }
 }
 
