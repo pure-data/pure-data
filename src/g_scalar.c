@@ -174,23 +174,18 @@ static int template_is_flat(t_template *template)
     one, in a way that now appears unnecessarily convoluted. */
 void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
 {
+    long ndone;
     if (n > 0)
     {
-        if (template_is_flat(template)) {
-            long ndone = 1;
+        if (template_is_flat(template))
+        {
             word_init(wp, template, gp);  /* init the first one */
-            while (ndone < n)
-            {
-                long ncopy = (n-ndone > ndone ? ndone : n-ndone);
-                memcpy(wp + template->t_n*ndone, wp,
-                    ncopy * template->t_n * sizeof(t_word));
-                ndone += ncopy;
-            }
-        } else {
-            for (int i = 0; i < n; i++) {
-                word_init(wp + template->t_n * i, template, gp);
-            }
+            for (ndone = 1; ndone < n; ndone++)
+                memcpy(wp + template->t_n * ndone, wp,
+                    template->t_n * sizeof(t_word));
         }
+        else for (ndone = 0; ndone < n; ndone++)
+            word_init(wp + template->t_n * ndone, template, gp);
     }
 }
 
