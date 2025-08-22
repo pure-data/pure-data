@@ -198,15 +198,19 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     t_scalar *sc;
     int nextmsg = *p_nextmsg;
     int wasvis = glist_isvisible(x);
+    t_symbol *templatename;
 
-    if (nextmsg >= natoms || vec[nextmsg].a_type != A_SYMBOL)
+    if (nextmsg >= natoms ||
+        (vec[nextmsg].a_type != A_SYMBOL && vec[nextmsg].a_type != A_DOLLSYM)
+    )
     {
         if (nextmsg < natoms)
             post("stopping early: type %d", vec[nextmsg].a_type);
         *p_nextmsg = natoms;
         return (0);
     }
-    templatesym = canvas_makebindsym(vec[nextmsg].a_w.w_symbol);
+    templatename = atom_getsymbol_realized(&vec[nextmsg], canvas_getcurrent());
+    templatesym = canvas_makebindsym(templatename);
     *p_nextmsg = nextmsg + 1;
 
     if (!(template = template_findbyname(templatesym)))

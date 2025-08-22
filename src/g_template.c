@@ -195,13 +195,17 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
             newtype = DT_TEXT;
         else if (newtypesym == gensym("array"))
         {
-            if (argc < 3 || argv[2].a_type != A_SYMBOL)
+            t_symbol *templatename;
+            if (argc < 3
+                || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
+            )
             {
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
+            templatename = atom_getsymbol_realized(&argv[2], canvas_getcurrent());
             newtype = DT_ARRAY;
-            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
+            newarraytemplate = canvas_makebindsym(templatename);
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
@@ -610,10 +614,20 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_template *x;
-    t_symbol *templatesym =
-        canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
+    t_symbol *templatename;
+    t_symbol *templatesym;
+    t_binbuf *bb;
+
     if (!argc)
         return (0);
+
+    bb = binbuf_new();
+    binbuf_restore(bb, argc, argv);
+    argc = binbuf_getnatom(bb);
+    argv = binbuf_getvec(bb);
+
+    templatename = atom_getsymbol_realized(&argv[0], canvas_getcurrent());
+    templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
             /* check if there's already a template by this name. */
     if ((x = (t_template *)pd_findbyclass(templatesym, template_class)))
@@ -643,6 +657,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     }
         /* otherwise, just make one. */
     else template_new(templatesym, argc, argv);
+    binbuf_free(bb);
     return (0);
 }
 
