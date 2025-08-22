@@ -476,6 +476,9 @@ static void glist_writelist(t_gobj *y, t_binbuf *b);
 
 void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
 
+    /* defined in g_template.c */
+t_symbol *template_get_creation_name(t_template *x);
+
 void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     int amarrayelement)
 {
@@ -485,7 +488,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     if (!amarrayelement)
     {
         t_atom templatename;
-        SETSYMBOL(&templatename, gensym(templatesym->s_name + 3));
+        SETDOLLSYM(&templatename, template_get_creation_name(template));
         binbuf_add(b, 1, &templatename);
     }
     if (!template)
@@ -686,6 +689,9 @@ static void canvas_collecttemplatesfor(t_canvas *x, int *ntemplatesp,
     }
 }
 
+    /* defined in g_template.c */
+t_binbuf *template_get_creation_binbuf(t_template *x);
+
     /* save the templates needed by a canvas to a binbuf. */
 static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
 {
@@ -698,31 +704,17 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
         int j, m;
         if (!template)
         {
-            bug("canvas_savetemplatesto");
+            bug("canvas_savetemplatesto template_findbyname");
             continue;
         }
-        m = template->t_n;
-            /* drop "pd-" prefix from template symbol to print */
-        binbuf_addv(b, "sss", &s__N, gensym("struct"),
-            gensym(templatevec[i]->s_name + 3));
-        for (j = 0; j < m; j++)
+
+        t_binbuf *bb = template_get_creation_binbuf(template);
+        if (bb)
         {
-            t_symbol *type;
-            switch (template->t_vec[j].ds_type)
-            {
-                case DT_FLOAT: type = &s_float; break;
-                case DT_SYMBOL: type = &s_symbol; break;
-                case DT_ARRAY: type = gensym("array"); break;
-                case DT_TEXT: type = gensym("text"); break;
-                default: type = &s_float; bug("canvas_write");
-            }
-            if (template->t_vec[j].ds_type == DT_ARRAY)
-                binbuf_addv(b, "sssf", type, template->t_vec[j].ds_name,
-                    gensym(template->t_vec[j].ds_arraytemplate->s_name + 3),
-                    (double)template->t_vec[j].ds_arraydeflength);
-            else binbuf_addv(b, "ss", type, template->t_vec[j].ds_name);
-        }
-        binbuf_addsemi(b);
+            binbuf_addv(b, "s", &s__N);
+            binbuf_addbinbuf(b, bb);
+            binbuf_addsemi(b);
+        } else bug("canvas_savetemplatesto template_get_creation_binbuf");
     }
     freebytes(templatevec, ntemplates * sizeof(*templatevec));
 }

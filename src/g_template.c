@@ -101,6 +101,37 @@ static void template_conformarray(t_template *tfrom, t_template *tto,
 static void template_conformglist(t_template *tfrom, t_template *tto,
     t_glist *glist,  int *conformaction);
 
+/* ------------------- save utils ---------------------- */
+
+    /* get the unrealized creation binbuf, from the first "struct" in the list.
+    (this is used in g_readwrite.c) */
+t_binbuf *template_get_creation_binbuf(t_template *x)
+{
+    t_object *o = NULL;
+    if (x->t_list)
+    {
+        o = &x->t_list->x_obj;
+        if (o) return o->te_binbuf;
+    }
+    return NULL;
+}
+
+    /* get the unrealized creation name (e.g "$0-template"); used in g_readwrite.c */
+t_symbol *template_get_creation_name(t_template *x)
+{
+    t_symbol *name = &s_;
+    t_binbuf *bb = template_get_creation_binbuf(x);
+    if (bb)
+    {
+        t_atom *atoms = binbuf_getvec(bb);
+        int natom = binbuf_getnatom(bb);
+        if (natom > 1)
+            name = atoms[1].a_w.w_symbol;
+    }
+    return name;
+}
+
+
 /* ---------------------- storage ------------------------- */
 
 static t_class *gtemplate_class;
