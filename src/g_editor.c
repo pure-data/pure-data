@@ -2003,6 +2003,11 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
     {
         if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
+                /* changing 'isgraph' might change which window some texts
+                should appear on, so the rtexts will have to move.  So we
+                nuke them; they'll be recreated in the correct glist next
+                time each one is asked for. */
+        glist_clearrtexts(x);
         x->gl_isgraph = x->gl_hidetext = 0;
         if (can_graph_on_parent)
         {
@@ -2020,6 +2025,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 
         if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
+        glist_clearrtexts(x);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
@@ -2086,7 +2092,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
-
+    glist_clearrtexts(x);
         /* if there are extra arguments, the user has typed new text in
         the dialog window.  Unfortunately, some old patches use this to
         resize rectangles programmatically, and moreover send extra
@@ -2106,7 +2112,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
-        binbuf_add(b, argc-13, argv+13);
+        binbuf_restore(b, argc-13, argv+13);
         binbuf_gettext(b, &textbuf, &textsize);
         binbuf_free(b);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
@@ -2204,17 +2210,13 @@ static void canvas_donecanvasdialog(t_glist *x,
         }
     }
         /* LATER avoid doing 2 redraws here (possibly one inside setgraph) */
-    canvas_setgraph(x, graphme, 0);
+    if (graphme != glist_isgraph(x))
+        canvas_setgraph(x, graphme, 0);
     canvas_dirty(x, 1);
-    if (x->gl_owner && x->gl_owner->gl_havewindow)
-        canvas_redraw(x->gl_owner);
+    if (x->gl_owner)
+        canvas_redraw(glist_getcanvas(x->gl_owner));
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
-    {
-        gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        gobj_vis(&x->gl_gobj, x->gl_owner, 1);
-    }
 }
 
     /* called from the gui when a popup menu comes back with "properties,"

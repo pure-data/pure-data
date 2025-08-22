@@ -161,7 +161,9 @@ void rtext_free(t_rtext *x)
     t_glist *canvas = glist_getcanvas(x->x_glist);
     if (glist_textedfor(canvas) == x)
         glist_settexted(canvas, 0);
-    if (canvas->gl_editor->e_rtext == x)
+    if (!canvas->gl_editor)
+        bug("rtext_free");
+    else if (canvas->gl_editor->e_rtext == x)
         canvas->gl_editor->e_rtext = x->x_next;
     else
     {
