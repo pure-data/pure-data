@@ -672,6 +672,15 @@ EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 EXTERN int drawtext_gettype(t_gobj *z, t_template *pdtemplate, int *onsetp);
 EXTERN t_template *drawtext_gettemplate(t_gobj *z);
 
+    /* utility function required for template management.
+        if the atom is a symbol, return it.
+        if the atom is a dollar symbol:
+          if canvas is not null, return the realized symbol
+          otherwise return the unchanged symbol.
+        if the atom is something else, return &s_symbol.
+    */
+EXTERN t_symbol *atom_getsymbol_realized(const t_atom *a, t_canvas *canvas);
+
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
 EXTERN t_guiconnect *guiconnect_new(t_pd *who, t_symbol *sym);
 EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
