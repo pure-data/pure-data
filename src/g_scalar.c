@@ -528,6 +528,12 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0, notified = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
+    if (!templatecanvas)
+    {
+        pd_error(sc, "scalar_doclick: no canvas found for template %s",
+            template->t_sym->s_name);
+        return 0;
+    }
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
@@ -564,6 +570,12 @@ int scalar_click(t_gobj *z, struct _glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    if (!template)
+    {
+        pd_error(x, "scalar_click: couldn't find template %s",
+            x->sc_template->s_name);
+        return 0;
+    }
     t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
     t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,
