@@ -26,7 +26,8 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int crossw = 1, w = x->x_gui.x_w;
-    unsigned int col = x->x_on ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+    unsigned int col = x->x_on ?
+        iemgui_getcolor_foreground(&x->x_gui) : iemgui_getcolor_background(&x->x_gui);
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
@@ -42,7 +43,7 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", 1, "-fill", x->x_gui.x_bcol,
+        "-width", 1, "-fill", iemgui_getcolor_background(&x->x_gui),
         "-outline", THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_X1", x);
@@ -65,11 +66,11 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx, ypos + x->x_gui.x_ldy);
-
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
         "-font", 3, fontatoms,
         "-fill", x->x_gui.x_fsf.x_selected
-            ? THISGUI->i_selectcolor : x->x_gui.x_lcol);
+            ? THISGUI->i_selectcolor : iemgui_getcolor_label(&x->x_gui));
+
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 void toggle_draw_new(t_toggle *x, t_glist *glist)
@@ -114,7 +115,8 @@ void toggle_draw_select(t_toggle* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
-    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
+    unsigned int col = THISGUI->i_foregroundcolor;
+    unsigned int lcol = iemgui_getcolor_label(&x->x_gui);
 
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
@@ -130,7 +132,8 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
     if(glist_isvisible(glist))
     {
         t_canvas *canvas = glist_getcanvas(glist);
-        unsigned int col = (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        unsigned int col = (x->x_on != 0.0) ?
+            iemgui_getcolor_foreground(&x->x_gui) : iemgui_getcolor_background(&x->x_gui);
         char tag[128];
         int width = x->x_gui.x_w,
             xwidth = (width >= 60 ? 3: (width >= 30 ? 2 : 1));
@@ -204,14 +207,14 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
     int a = (int)atom_getfloatarg(0, argc, argv);
     t_float nonzero = (t_float)atom_getfloatarg(2, argc, argv);
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[21];
+    iemgui_setdialogatoms(&x->x_gui, 21, undo);
     SETFLOAT (undo+1, 0);
     SETFLOAT (undo+2, x->x_nonzero);
     SETFLOAT (undo+3, 0);
 
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            21, undo,
                             argc, argv);
 
     if(nonzero == 0.0)
