@@ -560,6 +560,7 @@ EXTERN void canvas_connect(t_canvas *x,
     t_floatarg fwhoout, t_floatarg foutno, t_floatarg fwhoin, t_floatarg finno);
 EXTERN void canvas_disconnect(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno);
+EXTERN void canvas_iemgui_set_colors(t_canvas *x, t_symbol *color_type);
 EXTERN int canvas_isconnected (t_canvas *x,
     t_text *ob1, int n1, t_text *ob2, int n2);
 EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy);
