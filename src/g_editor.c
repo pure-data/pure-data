@@ -476,18 +476,15 @@ void canvas_iemgui_set_colors(t_canvas *x, t_symbol *color_type)
             strcmp(classname, "vu") == 0)
         {
             iemgui = (t_iemgui *)y;
-            if (is_adaptive) {
-                iemgui->x_bcol = IEM_GUI_COLOR_DEFAULT_SENTINEL;
-                iemgui->x_fcol = IEM_GUI_COLOR_DEFAULT_SENTINEL;
-                iemgui->x_lcol = IEM_GUI_COLOR_DEFAULT_SENTINEL;
-            } else {
-                unsigned int background_color = IEM_GUI_COLOR_BACKGROUND;
-                if (strcmp(classname, "cnv") == 0) background_color = 0xE0E0E0;
-                else if (strcmp(classname, "vu") == 0) background_color = 0x404040;
-                iemgui->x_bcol = background_color;
-                iemgui->x_fcol = IEM_GUI_COLOR_FOREGROUND;
-                iemgui->x_lcol = IEM_GUI_COLOR_LABEL;
-            }
+            unsigned int background_color = IEM_GUI_COLOR_BACKGROUND;
+            if (strcmp(classname, "cnv") == 0) background_color = 0xE0E0E0;
+            else if (strcmp(classname, "vu") == 0) background_color = 0x404040;
+            iemgui->x_bcol = background_color;
+            iemgui->x_fcol = IEM_GUI_COLOR_FOREGROUND;
+            iemgui->x_lcol = IEM_GUI_COLOR_LABEL;
+            iemgui->x_bcol_default = is_adaptive;
+            iemgui->x_fcol_default = is_adaptive;
+            iemgui->x_lcol_default = is_adaptive;
 
             if (glist_isvisible(x))
                 (*iemgui->x_draw)(y, x, IEM_GUI_DRAW_MODE_CONFIG);

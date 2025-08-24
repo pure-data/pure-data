@@ -47,8 +47,6 @@
 #define IEM_GUI_COLOR_FOREGROUND     0x000000
 #define IEM_GUI_COLOR_LABEL          0x000000
 
-#define IEM_GUI_COLOR_DEFAULT_SENTINEL -1
-
 #define IEM_GUI_MAX_COLOR            30
 
 //#define IEM_GUI_DEFAULTSIZE 15
@@ -178,6 +176,10 @@ typedef struct _iemgui
     unsigned int       x_fcol;
     unsigned int       x_bcol;
     unsigned int       x_lcol;
+    /* default color flags */
+    int                x_fcol_default;
+    int                x_bcol_default;
+    int                x_lcol_default;
     /* send/receive/label as used ($args expanded) */
     t_symbol           *x_snd;              /* send symbol */
     t_symbol           *x_rcv;              /* receive */

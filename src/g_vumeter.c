@@ -70,7 +70,7 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
             int pkh = PEAKHEIGHT * zoom;
 
             pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill",
-                (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+                (x->x_gui.x_bcol_default) ?
                     interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 mid, ypos + pkh, mid, ypos + pkh);
@@ -174,7 +174,7 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         xpos - hmargin, ypos - vmargin,
         xpos+x->x_gui.x_w + hmargin, ypos+x->x_gui.x_h + vmargin);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+        "-width", zoom, "-fill", (x->x_gui.x_bcol_default) ?
             interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
@@ -221,9 +221,9 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         quad1 - zoom, ypos - zoom,
         quad3 + zoom, ypos - zoom + k1*IEM_VU_STEPS);
     pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-        "-fill", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+        "-fill", (x->x_gui.x_bcol_default) ?
             interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol,
-        "-outline", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+        "-outline", (x->x_gui.x_bcol_default) ?
             interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
 
     sprintf(tag, "%pPLED", x);
@@ -232,7 +232,7 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         mid, ypos + PEAKHEIGHT * zoom);
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", ledw+zoom, /* peak LED is slightly fatter */
-        "-fill", (x->x_gui.x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
+        "-fill", (x->x_gui.x_bcol_default) ?
             interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
 
     sprintf(tag, "%pLABEL", x);

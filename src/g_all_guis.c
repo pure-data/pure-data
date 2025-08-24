@@ -164,20 +164,17 @@ int iemgui_modulo_color(int col)
 
 unsigned int iemgui_getcolor_background(t_iemgui *x)
 {
-    return (x->x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        THISGUI->i_backgroundcolor : x->x_bcol;
+    return x->x_bcol_default ? THISGUI->i_backgroundcolor : x->x_bcol;
 }
 
 unsigned int iemgui_getcolor_foreground(t_iemgui *x)
 {
-    return (x->x_fcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        THISGUI->i_foregroundcolor : x->x_fcol;
+    return x->x_fcol_default ? THISGUI->i_foregroundcolor : x->x_fcol;
 }
 
 unsigned int iemgui_getcolor_label(t_iemgui *x)
 {
-    return (x->x_lcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        THISGUI->i_foregroundcolor : x->x_lcol;
+    return x->x_lcol_default ? THISGUI->i_foregroundcolor : x->x_lcol;
 }
 
 t_symbol *iemgui_dollar2raute(t_symbol *s)
@@ -346,14 +343,24 @@ static t_symbol* color2symbol(unsigned int col) {
 
 static void iemgui_all_col2save(t_iemgui *iemgui, t_symbol**bflcol)
 {
-    bflcol[0] = (iemgui->x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        gensym("default") : color2symbol(iemgui->x_bcol);
-    bflcol[1] = (iemgui->x_fcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        gensym("default") : color2symbol(iemgui->x_fcol);
-    bflcol[2] = (iemgui->x_lcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        gensym("default") : color2symbol(iemgui->x_lcol);
+    bflcol[0] = (iemgui->x_bcol_default) ? gensym("default") : color2symbol(iemgui->x_bcol);
+    bflcol[1] = (iemgui->x_fcol_default) ? gensym("default") : color2symbol(iemgui->x_fcol);
+    bflcol[2] = (iemgui->x_lcol_default) ? gensym("default") : color2symbol(iemgui->x_lcol);
 }
 
+static unsigned int _iemgui_default_color(colortype_t ct)
+{
+    switch (ct) {
+    case FOREGROUND:
+        return IEM_GUI_COLOR_FOREGROUND;
+    case BACKGROUND:
+        return IEM_GUI_COLOR_BACKGROUND;
+    case LABEL:
+        return IEM_GUI_COLOR_LABEL;
+    default:
+        return 0;
+    }
+}
 static unsigned int iemgui_getcolorarg(int index, int argc, t_atom*argv, colortype_t ct)
 {
     if(index < 0 || index >= argc)
@@ -368,22 +375,9 @@ static unsigned int iemgui_getcolorarg(int index, int argc, t_atom*argv, colorty
             int col = (int)strtol(s->s_name+1, 0, 16);
             return col & 0xFFFFFF;
         }
-        if (strcmp(s->s_name, "default") == 0)
-            return IEM_GUI_COLOR_DEFAULT_SENTINEL;
     }
-
 default_color:
-    switch(ct) {
-    case FOREGROUND:
-        return IEM_GUI_COLOR_FOREGROUND;
-    case BACKGROUND:
-        return IEM_GUI_COLOR_BACKGROUND;
-    case LABEL:
-        return IEM_GUI_COLOR_FOREGROUND;
-    default:
-        break;
-    }
-    return 0;
+    return _iemgui_default_color(ct);
 }
 
 static unsigned int colfromatomload(t_atom*colatom, colortype_t ct)
@@ -414,17 +408,20 @@ static unsigned int colfromatomload(t_atom*colatom, colortype_t ct)
     return (color);
 }
 
-static unsigned int _iemgui_load_color_with_default(t_atom *color_atom, colortype_t ct)
+static unsigned int _iemgui_load_color_with_default(t_atom *color_atom, colortype_t ct, int *default_flag)
 {
-    if (!color_atom) return IEM_GUI_COLOR_DEFAULT_SENTINEL;
-    return atom_getsymbolarg(0, 1, color_atom) == gensym("default") ?
-        IEM_GUI_COLOR_DEFAULT_SENTINEL : colfromatomload(color_atom, ct);
+    if (!color_atom || atom_getsymbolarg(0, 1, color_atom) == gensym("default")) {
+        *default_flag = 1;
+        return _iemgui_default_color(ct);
+    }
+    *default_flag = 0;
+    return colfromatomload(color_atom, ct);
 }
 void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol)
 {
-    iemgui->x_bcol = _iemgui_load_color_with_default(bcol, BACKGROUND);
-    iemgui->x_fcol = _iemgui_load_color_with_default(fcol, FOREGROUND);
-    iemgui->x_lcol = _iemgui_load_color_with_default(lcol, LABEL);
+    iemgui->x_bcol = _iemgui_load_color_with_default(bcol, BACKGROUND, &iemgui->x_bcol_default);
+    iemgui->x_fcol = _iemgui_load_color_with_default(fcol, FOREGROUND, &iemgui->x_fcol_default);
+    iemgui->x_lcol = _iemgui_load_color_with_default(lcol, LABEL, &iemgui->x_lcol_default);
 }
 
 static unsigned int _iemgui_compatible_colorarg(int index, int argc, t_atom* argv, colortype_t ct)
@@ -643,23 +640,23 @@ void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     if (ac >= 1) {
-        iemgui->x_bcol = (atom_getsymbolarg(0, ac, av) == gensym("default")) ?
-            IEM_GUI_COLOR_DEFAULT_SENTINEL : _iemgui_compatible_colorarg(0, ac, av, BACKGROUND);
+        iemgui->x_bcol_default = (atom_getsymbolarg(0, ac, av) == gensym("default"));
+        iemgui->x_bcol = _iemgui_compatible_colorarg(0, ac, av, BACKGROUND);
     }
     if (ac == 2 && pd_compatibilitylevel < 47)
             /* old versions of Pd updated foreground and label color
             if only two args; now we do it more coherently. */
     {
-        iemgui->x_lcol = (atom_getsymbolarg(1, ac, av) == gensym("default")) ?
-            IEM_GUI_COLOR_DEFAULT_SENTINEL : _iemgui_compatible_colorarg(1, ac, av, LABEL);
+        iemgui->x_lcol_default = (atom_getsymbolarg(1, ac, av) == gensym("default"));
+        iemgui->x_lcol = _iemgui_compatible_colorarg(1, ac, av, LABEL);
     }
     else if (ac >= 2) {
-        iemgui->x_fcol = (atom_getsymbolarg(1, ac, av) == gensym("default")) ?
-            IEM_GUI_COLOR_DEFAULT_SENTINEL : _iemgui_compatible_colorarg(1, ac, av, FOREGROUND);
+        iemgui->x_fcol_default = (atom_getsymbolarg(1, ac, av) == gensym("default"));
+        iemgui->x_fcol = _iemgui_compatible_colorarg(1, ac, av, FOREGROUND);
     }
     if (ac >= 3) {
-        iemgui->x_lcol = (atom_getsymbolarg(2, ac, av) == gensym("default")) ?
-            IEM_GUI_COLOR_DEFAULT_SENTINEL : _iemgui_compatible_colorarg(2, ac, av, LABEL);
+        iemgui->x_lcol_default = (atom_getsymbolarg(2, ac, av) == gensym("default"));
+        iemgui->x_lcol = _iemgui_compatible_colorarg(2, ac, av, LABEL);
     }
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
@@ -792,9 +789,9 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
         iemgui_getcolor_background(iemgui),
         iemgui_getcolor_foreground(iemgui),
         iemgui_getcolor_label(iemgui),
-        !!(iemgui->x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL),
-        !!(iemgui->x_fcol == IEM_GUI_COLOR_DEFAULT_SENTINEL),
-        !!(iemgui->x_lcol == IEM_GUI_COLOR_DEFAULT_SENTINEL));
+        iemgui->x_bcol_default,
+        iemgui->x_fcol_default,
+        iemgui->x_lcol_default);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
@@ -864,13 +861,12 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     iemgui->x_rcv = srl[1];
     iemgui->x_fsf.x_rcv_able = srl_is_valid(srl[1]);
     iemgui->x_lab = srl[2];
-        /* preserve sentinel values for default colors */
-    iemgui->x_bcol = ((unsigned int)bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        IEM_GUI_COLOR_DEFAULT_SENTINEL : (bcol & 0xffffff);
-    iemgui->x_fcol = ((unsigned int)fcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        IEM_GUI_COLOR_DEFAULT_SENTINEL : (fcol & 0xffffff);
-    iemgui->x_lcol = ((unsigned int)lcol == IEM_GUI_COLOR_DEFAULT_SENTINEL) ?
-        IEM_GUI_COLOR_DEFAULT_SENTINEL : (lcol & 0xffffff);
+    iemgui->x_bcol = bcol;
+    iemgui->x_fcol = fcol;
+    iemgui->x_lcol = lcol;
+    iemgui->x_bcol_default = bcol_default;
+    iemgui->x_fcol_default = fcol_default;
+    iemgui->x_lcol_default = lcol_default;
     iemgui->x_ldx = ldx;
     iemgui->x_ldy = ldy;
     if(f == 1) strcpy(iemgui->x_font, "helvetica");
@@ -900,9 +896,9 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
     t_symbol *srl[3];
     int for_undo = 1;
     int i;
-    int bcol_default = (iemgui->x_bcol == IEM_GUI_COLOR_DEFAULT_SENTINEL);
-    int fcol_default = (iemgui->x_fcol == IEM_GUI_COLOR_DEFAULT_SENTINEL);
-    int lcol_default = (iemgui->x_lcol == IEM_GUI_COLOR_DEFAULT_SENTINEL);
+    int bcol_default = iemgui->x_bcol_default;
+    int fcol_default = iemgui->x_fcol_default;
+    int lcol_default = iemgui->x_lcol_default;
     for(i=0; i<argc; i++)
         SETFLOAT(argv+i, -1); /* initialize */
 
@@ -934,9 +930,9 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
     if(argc>14) SETSYMBOL(argv+14, bcol_default ? gensym("default") : color2symbol(iemgui->x_bcol));
     if(argc>15) SETSYMBOL(argv+15, fcol_default ? gensym("default") : color2symbol(iemgui->x_fcol));
     if(argc>16) SETSYMBOL(argv+16, lcol_default ? gensym("default") : color2symbol(iemgui->x_lcol));
-    if(argc>18) SETFLOAT (argv+18, !!bcol_default);
-    if(argc>19) SETFLOAT (argv+19, !!fcol_default);
-    if(argc>20) SETFLOAT (argv+20, !!lcol_default);
+    if(argc>18) SETFLOAT (argv+18, bcol_default);
+    if(argc>19) SETFLOAT (argv+19, fcol_default);
+    if(argc>20) SETFLOAT (argv+20, lcol_default);
 }
 
 
@@ -1131,10 +1127,13 @@ t_iemgui *iemgui_new(t_class*cls)
     iem_inttosymargs(&x->x_isa, 0);
     iem_inttofstyle(&x->x_fsf, 0);
 
-        /* LATER: use IEM_GUI_COLOR_DEFAULT_SENTINEL here */
+        /* LATER: initialize with default:1 here */
     x->x_bcol = IEM_GUI_COLOR_BACKGROUND;
     x->x_fcol = IEM_GUI_COLOR_FOREGROUND;
     x->x_lcol = IEM_GUI_COLOR_LABEL;
+    x->x_bcol_default = 0;
+    x->x_fcol_default = 0;
+    x->x_lcol_default = 0;
 
     return x;
 }
