@@ -302,6 +302,17 @@ t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
     return (ret);
 }
 
+t_symbol *canvas_getsymbol_realized(t_canvas *canvas, const t_atom *a)
+{
+    t_symbol *s;
+    if ((a->a_type != A_SYMBOL) && (a->a_type != A_DOLLSYM))
+        return &s_symbol;
+    s = a->a_w.w_symbol;
+    if (a->a_type == A_DOLLSYM && canvas != NULL)
+        s = canvas_realizedollar(canvas, s);
+    return s;
+}
+
 t_symbol *canvas_getcurrentdir(void)
 {
     t_canvasenvironment *e = canvas_getenv(canvas_getcurrent());

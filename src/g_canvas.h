@@ -572,6 +572,15 @@ EXTERN int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
 /* check string for untitled canvas filename prefix */
 #define UNTITLED_STRNCMP(s) strncmp(s, "PDUNTITLED", 10)
 
+    /* utility function required for template management.
+        if the atom is a symbol, return it.
+        if the atom is a dollar symbol:
+          if canvas is not null, return the realized symbol
+          otherwise return the unchanged symbol.
+        if the atom is something else, return &s_symbol.
+    */
+EXTERN t_symbol *canvas_getsymbol_realized(t_canvas *canvas, const t_atom *a);
+
 /* ---- functions on canvasses as objects  --------------------- */
 
 EXTERN void linetraverser_start(t_linetraverser *t, t_canvas *x);
