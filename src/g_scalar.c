@@ -304,7 +304,7 @@ void glist_scalar(t_glist *glist,
     binbuf_restore(b, argc, argv);
     argc = binbuf_getnatom(b);
     argv = binbuf_getvec(b);
-    templatename = atom_getsymbol_realized(&argv[0], canvas_getcurrent());
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
     templatesym = canvas_makebindsym(templatename);
     if (!template_findbyname(templatesym))
     {

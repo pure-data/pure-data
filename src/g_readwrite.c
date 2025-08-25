@@ -209,7 +209,8 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
         *p_nextmsg = natoms;
         return (0);
     }
-    templatename = atom_getsymbol_realized(&vec[nextmsg], canvas_getcurrent());
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(),
+        &vec[nextmsg]);
     templatesym = canvas_makebindsym(templatename);
     *p_nextmsg = nextmsg + 1;
 

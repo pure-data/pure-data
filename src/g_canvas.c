@@ -302,7 +302,7 @@ t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
     return (ret);
 }
 
-t_symbol *atom_getsymbol_realized(const t_atom *a, t_canvas *canvas)
+t_symbol *canvas_getsymbol_realized(t_canvas *canvas, const t_atom *a)
 {
     t_symbol *s;
     if ((a->a_type != A_SYMBOL) && (a->a_type != A_DOLLSYM))

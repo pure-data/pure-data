@@ -203,7 +203,8 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
-            templatename = atom_getsymbol_realized(&argv[2], canvas_getcurrent());
+            templatename = canvas_getsymbol_realized(canvas_getcurrent(),
+                &argv[2]);
             newtype = DT_ARRAY;
             newarraytemplate = canvas_makebindsym(templatename);
                 /* optional third float arg sets initial array length */
@@ -626,7 +627,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     argc = binbuf_getnatom(bb);
     argv = binbuf_getvec(bb);
 
-    templatename = atom_getsymbol_realized(&argv[0], canvas_getcurrent());
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
     templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
             /* check if there's already a template by this name. */
