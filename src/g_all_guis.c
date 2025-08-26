@@ -1131,9 +1131,9 @@ t_iemgui *iemgui_new(t_class*cls)
     x->x_bcol = IEM_GUI_COLOR_BACKGROUND;
     x->x_fcol = IEM_GUI_COLOR_FOREGROUND;
     x->x_lcol = IEM_GUI_COLOR_LABEL;
-    x->x_bcol_default = 0;
-    x->x_fcol_default = 0;
-    x->x_lcol_default = 0;
+    x->x_bcol_default = THISGUI->i_iemgui_default_colors;
+    x->x_fcol_default = THISGUI->i_iemgui_default_colors;
+    x->x_lcol_default = THISGUI->i_iemgui_default_colors;
 
     return x;
 }

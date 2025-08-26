@@ -2234,6 +2234,7 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_backgroundcolor = 0xFFFFFF;
     THISGUI->i_selectcolor = 0x0000FF;
     THISGUI->i_gopcolor = 0xFF0000;
+    THISGUI->i_iemgui_default_colors = 0;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2395,4 +2396,9 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     );
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
+}
+
+void glob_iemgui_default_colors(void *dummy, t_floatarg use_default)
+{
+    THISGUI->i_iemgui_default_colors = use_default != 0;
 }

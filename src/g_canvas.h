@@ -286,6 +286,7 @@ struct _instancecanvas  /* per-instance stuff for canvases */
     t_float i_graph_lastxpix, i_graph_lastypix;       /* state for dragging */
     unsigned int i_foregroundcolor, i_backgroundcolor;  /* color of fg & bg */
     unsigned int i_selectcolor, i_gopcolor;             /* ...selection and GOP */
+    int i_iemgui_default_colors;             /* force IEMGUI objects to use default colors */
 };
 
 void g_editor_newpdinstance(void);
