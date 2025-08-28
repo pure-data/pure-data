@@ -64,7 +64,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
         ypos + x->x_gui.x_ldy * zoom);
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
         "-font", 3, fontatoms,
-        "-fill", iemgui_getcolor_label(&x->x_gui));
+        "-fill", x->x_gui.x_fsf.x_selected ? THISGUI->i_selectcolor : iemgui_getcolor_label(&x->x_gui));
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -98,6 +98,9 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
         "-outline", x->x_gui.x_fsf.x_selected ? THISGUI->i_selectcolor : (x->x_gui.x_bcol_default) ?
             interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.12) : x->x_gui.x_bcol);
+    sprintf(tag, "%pLABEL", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
+        "-fill", x->x_gui.x_fsf.x_selected ? THISGUI->i_selectcolor : iemgui_getcolor_label(&x->x_gui));
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
