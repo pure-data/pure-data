@@ -72,9 +72,7 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
             pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
                 canvas, tag,
                 0,  /* peak LED is slightly fatter */
-                (x->x_gui.x_bcol_default) ?
-                    interpolate_colors(THISGUI->i_backgroundcolor,
-                        THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
+                iemgui_getcolor_background(&x->x_gui));
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 mid, ypos + pkh, mid, ypos + pkh);
         }
@@ -171,9 +169,7 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         xpos - HMARGIN, ypos - VMARGIN,
         xpos+x->x_gui.x_w + HMARGIN, ypos+x->x_gui.x_h + VMARGIN);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        1, (x->x_gui.x_bcol_default) ?
-            interpolate_colors(THISGUI->i_backgroundcolor,
-                THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol,
+        1, iemgui_getcolor_background(&x->x_gui),
         THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_SCALE", x);
@@ -218,13 +214,8 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         quad1 - 1, ypos - 1,
         quad3 + 1, ypos - 1 + k1*IEM_VU_STEPS);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        1,
-        (x->x_gui.x_bcol_default) ?
-            interpolate_colors(THISGUI->i_backgroundcolor,
-                THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol,
-        (x->x_gui.x_bcol_default) ?
-            interpolate_colors(THISGUI->i_backgroundcolor,
-                THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
+        1, iemgui_getcolor_background(&x->x_gui),
+        iemgui_getcolor_background(&x->x_gui));
 
     sprintf(tag, "%p_PLED", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -233,9 +224,7 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
         canvas, tag,
         ledw + 1,  /* peak LED is slightly fatter */
-        (x->x_gui.x_bcol_default) ?
-            interpolate_colors(THISGUI->i_backgroundcolor,
-                THISGUI->i_foregroundcolor, 0.78) : x->x_gui.x_bcol);
+        iemgui_getcolor_background(&x->x_gui));
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
