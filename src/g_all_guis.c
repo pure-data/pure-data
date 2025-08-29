@@ -164,7 +164,16 @@ int iemgui_modulo_color(int col)
 
 unsigned int iemgui_getcolor_background(t_iemgui *x)
 {
-    return x->x_bcol_default ? THISGUI->i_backgroundcolor : x->x_bcol;
+    if (!x->x_bcol_default)
+        return x->x_bcol;
+    const char *class_name = class_getname(x->x_obj.te_pd);
+        /* interpolated color for cnv background */
+    if (!strcmp(class_name, "cnv"))
+        return interpolate_colors(THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor, 0.12);
+        /* fixed color for vu background */
+    else if (!strcmp(class_name, "vu"))
+        return 0x404040;
+    return THISGUI->i_backgroundcolor;
 }
 
 unsigned int iemgui_getcolor_foreground(t_iemgui *x)
