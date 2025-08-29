@@ -465,20 +465,20 @@ void canvas_iemgui_set_colors(t_canvas *x, t_symbol *color_type)
         const char *classname = class_getname(obj_class);
         if (!classname) continue;
 
-        if (strcmp(classname, "bng") == 0 ||
-            strcmp(classname, "tgl") == 0 ||
-            strcmp(classname, "hradio") == 0 ||
-            strcmp(classname, "vradio") == 0 ||
-            strcmp(classname, "hsl") == 0 ||
-            strcmp(classname, "vsl") == 0 ||
-            strcmp(classname, "nbx") == 0 ||
-            strcmp(classname, "cnv") == 0 ||
-            strcmp(classname, "vu") == 0)
+        if (!strcmp(classname, "bng") ||
+            !strcmp(classname, "tgl") ||
+            !strcmp(classname, "hradio") ||
+            !strcmp(classname, "vradio") ||
+            !strcmp(classname, "hsl") ||
+            !strcmp(classname, "vsl") ||
+            !strcmp(classname, "nbx") ||
+            !strcmp(classname, "cnv") ||
+            !strcmp(classname, "vu"))
         {
             iemgui = (t_iemgui *)y;
             unsigned int background_color = IEM_GUI_COLOR_BACKGROUND;
-            if (strcmp(classname, "cnv") == 0) background_color = 0xE0E0E0;
-            else if (strcmp(classname, "vu") == 0) background_color = 0x404040;
+            if (!strcmp(classname, "cnv")) background_color = 0xE0E0E0;
+            else if (!strcmp(classname, "vu")) background_color = 0x404040;
             iemgui->x_bcol = background_color;
             iemgui->x_fcol = IEM_GUI_COLOR_FOREGROUND;
             iemgui->x_lcol = IEM_GUI_COLOR_LABEL;
