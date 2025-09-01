@@ -668,9 +668,8 @@ int jack_send_dacs(void)
 #ifdef THREADSIGNAL
         if (sched_idletask())
         {
-                /* we might have received a message to close audio
-                or switch to the callback scheduler! */
-            if (sched_get_using_audio() != SCHED_AUDIO_POLL)
+                /* we might have received a "dsp" message or audio dialog message! */
+            if (!jack_client || sched_get_using_audio() != SCHED_AUDIO_POLL)
                 return SENDDACS_NO;
                 /* otherwise check the ringbuffer again */
             continue;

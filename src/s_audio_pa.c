@@ -542,9 +542,8 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
         if (sched_idletask())
         {
-                /* we might have received a message to turn off DSP
-                or switch to the callback scheduler! */
-            if (sched_get_using_audio() != SCHED_AUDIO_POLL)
+                /* we might have received a "dsp" message or audio dialog message! */
+            if (!pa_stream || sched_get_using_audio() != SCHED_AUDIO_POLL)
                 return SENDDACS_NO;
                 /* otherwise check the ringbuffer again */
             continue;
