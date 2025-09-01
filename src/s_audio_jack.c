@@ -644,14 +644,14 @@ int jack_send_dacs(void)
     t_sample *muxbuffer;
     t_sample *fp, *fp2, *jp;
     int j, ch;
-    const size_t muxbufsize = DEFDACBLKSIZE *
-        (STUFF->st_inchannels > STUFF->st_outchannels ?
-         STUFF->st_inchannels : STUFF->st_outchannels);
+    size_t muxbufsize;
     int retval = SENDDACS_YES;
         /* this shouldn't really happen... */
     if (!jack_client || (!STUFF->st_inchannels && !STUFF->st_outchannels))
         return (SENDDACS_NO);
 
+        /* NB: do not cache st_inchannels or st_outchannels because audio settings
+        may change in sched_idletask(), see below. */
     while (
         (sys_ringbuf_getreadavailable(&jack_inring) <
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
@@ -667,7 +667,14 @@ int jack_send_dacs(void)
         }
 #ifdef THREADSIGNAL
         if (sched_idletask())
+        {
+                /* we might have received a message to close audio
+                or switch to the callback scheduler! */
+            if (sched_get_using_audio() != SCHED_AUDIO_POLL)
+                return SENDDACS_NO;
+                /* otherwise check the ringbuffer again */
             continue;
+        }
             /* only go to sleep if there is nothing else to do. */
         sys_semaphore_wait(jack_sem);
         retval = SENDDACS_SLEPT;
@@ -681,8 +688,12 @@ int jack_send_dacs(void)
         jack_dio_error = 0;
     }
     jack_started = 1;
-
+        /* only setup the muxbuffer after the ringbuffer is ready! */
+    muxbufsize = DEFDACBLKSIZE *
+        (STUFF->st_inchannels > STUFF->st_outchannels ?
+            STUFF->st_inchannels : STUFF->st_outchannels);
     ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
+        /* read input */
     if (STUFF->st_inchannels)
     {
         sys_ringbuf_read(&jack_inring, muxbuffer,
@@ -696,6 +707,7 @@ int jack_send_dacs(void)
                     jp[j] = *fp2;
         }
     }
+        /* write output */
     if (STUFF->st_outchannels)
     {
         for (fp = muxbuffer, ch = 0; ch < STUFF->st_outchannels; ch++, fp++)
