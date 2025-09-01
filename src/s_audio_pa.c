@@ -187,8 +187,8 @@ static int pa_fifo_callback(const void *inputBuffer,
                 sys_ringbuf_getreadavailable(&pa_outring),
                 sys_ringbuf_getwriteavailable(&pa_inring));
 #endif
-    if (infiforoom < nframes * STUFF->st_inchannels * sizeof(t_sample) ||
-        outfiforoom < nframes * STUFF->st_outchannels * sizeof(t_sample))
+    if (infiforoom < nframes * STUFF->st_inchannels * sizeof(float) ||
+        outfiforoom < nframes * STUFF->st_outchannels * sizeof(float))
     {
         /* data late: output zeros, drop inputs, and leave FIFos untouched */
         if (pa_started)
@@ -533,9 +533,9 @@ int pa_send_dacs(void)
 
     while (
         (sys_ringbuf_getreadavailable(&pa_inring) <
-            (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
+            (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(float))) ||
         (sys_ringbuf_getwriteavailable(&pa_outring) <
-            (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
+            (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(float))))
     {
 #ifdef THREADSIGNAL
         if (sched_idletask())
