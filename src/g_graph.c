@@ -126,7 +126,7 @@ void glist_delete(t_glist *x, t_gobj *y)
     if (glist_isvisible(canvas))
         gobj_vis(y, x, 0);
     if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext = glist_getrtext(x, ob, 0);
+        rtext = glist_getrtext(x, ob, 1);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
