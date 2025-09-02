@@ -477,14 +477,16 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (x->gl_havewindow)
     {
-        glist_redraw(x);
-            /* possibly fix patch cords on parent canvas */
+        canvas_redraw(x);
+            /* possibly fix patch cords and resized goprect on parent canvas */
         if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
+        {
+            graph_vis(&x->gl_gobj, x->gl_owner, 0);
+            graph_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
+        }
     }
     else
-            /* we have to redraw the parent canvas because glist_redraw()
-            won't remove "ghost objects" or update patch cords */
         canvas_redraw(glist_getcanvas(x));
 }
 
