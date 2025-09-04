@@ -202,7 +202,13 @@ static int pw_make_capture_stream(t_pw_state *st)
 
     struct spa_audio_info_raw info;
     spa_zero(info);
-    info.format   = SPA_AUDIO_FORMAT_F32;
+
+#if PD_FLOATSIZE == 64
+    info.format = SPA_AUDIO_FORMAT_F64;
+#else
+    info.format = SPA_AUDIO_FORMAT_F32;
+#endif
+
     info.channels = st->in_channels > 0 ? (uint32_t)st->in_channels : 0;
     info.rate     = sr;
 
@@ -277,7 +283,12 @@ static int pw_make_playback_stream(t_pw_state *st)
 
     struct spa_audio_info_raw info;
     spa_zero(info);
-    info.format   = SPA_AUDIO_FORMAT_F32;
+#if PD_FLOATSIZE == 64
+    info.format = SPA_AUDIO_FORMAT_F64;
+#else
+    info.format = SPA_AUDIO_FORMAT_F32;
+#endif
+
     info.channels = st->out_channels > 0 ? (uint32_t)st->out_channels : 0;
     info.rate     = sr;
 
