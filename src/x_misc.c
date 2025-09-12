@@ -125,7 +125,6 @@ static void closebang_setup(void)
         sizeof(t_closebang), CLASS_NOINLET, 0);
     class_addmethod(closebang_class, (t_method)closebang_closebang,
         gensym("loadbang"), A_DEFFLOAT, 0);
-    class_sethelpsymbol(closebang_class, gensym("loadbang"));
 }
 
 /* -------------------------- loadbang ------------------------------ */
