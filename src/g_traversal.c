@@ -169,8 +169,8 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
         if (argc)
             argc--, argv++;
     }
-    else x->x_name = &s_;
-    if (*x->x_name->s_name)
+    else x->x_name = 0;
+    if (x->x_name && *x->x_name->s_name)
         x->x_gpp = pcommon_get(x->x_name);
     else gpointer_init((x->x_gpp = &x->x_privategp));
     x->x_typedout = to = (t_typedout *)getbytes(argc * sizeof (*to));
@@ -233,9 +233,15 @@ static void ptrobj_get(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 
     if (!argc)
         return;
+
+        /* for backward compatibility, unnamed pointers just complain to the
+        Pd window.  Vpointers, being new in 0.56, can be more helpful:
+        if the pointer is unset or invalid, send a "bang" out last outlet. */
     if (!gpointer_check(x->x_gpp, 0))
     {
-        pd_error(x, "pointer_set: stale or empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer_set: stale or empty pointer");
         return;
     }
     if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
@@ -347,7 +353,9 @@ static void ptrobj_set(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 
     if (!gpointer_check(x->x_gpp, 0))
     {
-        pd_error(x, "pointer_set: stale or empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer_set: stale or empty pointer");
         return;
     }
     if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
@@ -475,7 +483,9 @@ static void ptrobj_donext(t_ptrobj *x, int skip, t_symbol *templatesym,
         templatesym = gensym("");
     if (!gs)
     {
-        pd_error(x, "pointer next: no current pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer next: no current pointer");
         return;
     }
     if (gs->gs_which != GP_GLIST)
@@ -618,7 +628,9 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     t_typedout *to;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer equal: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer equal: empty pointer");
         return;
     }
     /* we can compare any union element because they are all pointers */
@@ -654,7 +666,9 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     t_gstub *gs;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer send-window: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer send-window: empty pointer");
         return;
     }
     gs = x->x_gpp->gp_stub;
@@ -680,7 +694,11 @@ static void ptrobj_send(t_ptrobj *x, t_symbol *s)
     if (!s->s_thing)
         pd_error(x, "%s: no such object", s->s_name);
     else if (!gpointer_check(x->x_gpp, 1))
-        pd_error(x, "pointer send: empty pointer");
+    {
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer send: empty pointer");
+    }
     else pd_pointer(s->s_thing, x->x_gpp);
 }
 
@@ -691,7 +709,9 @@ static void ptrobj_bang(t_ptrobj *x)
     t_typedout *to;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer bang: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer bang: empty pointer");
         return;
     }
     templatesym = gpointer_gettemplatesym(x->x_gpp);
@@ -726,7 +746,9 @@ static void ptrobj_rewind(t_ptrobj *x)
     t_gstub *gs;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer rewind: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer rewind: empty pointer");
         return;
     }
     gs = x->x_gpp->gp_stub;
@@ -743,7 +765,7 @@ static void ptrobj_rewind(t_ptrobj *x)
 static void ptrobj_free(t_ptrobj *x)
 {
     freebytes(x->x_typedout, x->x_ntypedout * sizeof (*x->x_typedout));
-    if (*x->x_name->s_name)
+    if (x->x_name && *x->x_name->s_name)
         pcommon_release(x->x_name);
     else gpointer_unset(&x->x_privategp);
 }
