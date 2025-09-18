@@ -97,7 +97,6 @@ void pcommon_release(t_symbol *s)
             pd_unbind(&c->c_pd, s);
             gpointer_unset(&c->c_gp);
             pd_free(&c->c_pd);
-            post("free pcommon");
         }
     }
     else bug("pointer_release");
