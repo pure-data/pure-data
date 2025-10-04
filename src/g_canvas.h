@@ -528,6 +528,7 @@ typedef int (*t_canvasapply)(t_canvas *x, t_int x1, t_int x2, t_int x3);
 
 EXTERN void canvas_resortinlets(t_canvas *x);
 EXTERN void canvas_resortoutlets(t_canvas *x);
+EXTERN void canvas_defer(t_canvas *x, t_messfn fn, void *data);
 EXTERN void canvas_free(t_canvas *x);
 EXTERN void canvas_updatewindowlist(void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);

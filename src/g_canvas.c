@@ -29,9 +29,20 @@ struct _canvasenvironment
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
 };
+
+typedef struct _defer_item
+{
+    t_canvas *d_owner;
+    t_clock *d_clock;
+    void *d_data;
+    t_messfn d_fn;
+    struct _defer_item *d_next;
+} t_defer_item;
+
 typedef struct _canvas_private
 {
     t_undo undo;
+    t_defer_item *defer_list; /* see canvas_defer() */
 } t_canvas_private;
 
 #define GLIST_DEFCANVASWIDTH 450
@@ -454,7 +465,10 @@ void glist_init(t_glist *x)
     x->gl_valid = ++glist_valid;
     x->gl_xlabel = (t_symbol **)t_getbytes(0);
     x->gl_ylabel = (t_symbol **)t_getbytes(0);
-    x->gl_privatedata = getbytes(sizeof(t_canvas_private));
+    t_canvas_private *private =
+        (t_canvas_private *)getbytes(sizeof(t_canvas_private));
+    private->defer_list = 0;
+    x->gl_privatedata = private;
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
@@ -970,10 +984,43 @@ int glist_fontheight(t_glist *x)
     return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
 }
 
+static void canvas_defer_tick(t_defer_item *x)
+{
+    t_canvas_private *private = (t_canvas_private *)x->d_owner->gl_privatedata;
+    t_defer_item *d;
+    if (private->defer_list == x) private->defer_list = x->d_next;
+    else for (d = private->defer_list; d; d = d->d_next)
+        if (d->d_next == x)
+    {
+        d->d_next = x->d_next;
+        break;
+    }
+    x->d_fn((t_pd*)x->d_owner, x->d_data);
+    clock_free(x->d_clock);
+    freebytes(x, sizeof(t_defer_item));
+}
+
+    /* safely defer a canvas method call to the end of the current clock tick.
+    If the canvas is destroyed, all pending method calls are automatically
+    cancelled. In this case, the function is called with the first argument
+    set to NULL, so it can still free the data object. */
+void canvas_defer(t_canvas *x, t_messfn fn, void *data)
+{
+    t_canvas_private *private = (t_canvas_private *)x->gl_privatedata;
+    t_defer_item *item = (t_defer_item *)getbytes(sizeof(t_defer_item));
+    item->d_owner = x;
+    item->d_clock = clock_new(item, (t_method)canvas_defer_tick);
+    item->d_data = data;
+    item->d_fn = fn;
+    item->d_next = private->defer_list;
+    private->defer_list = item;
+    clock_delay(item->d_clock, 0);
+}
+
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
-    t_canvas_private*private = x->gl_privatedata;
+    t_canvas_private *private = (t_canvas_private *)x->gl_privatedata;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
     if (canvas_whichfind == x)
@@ -993,6 +1040,15 @@ void canvas_free(t_canvas *x)
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
     canvas_undo_free(x);
+        /* cancel any deferred method calls. */
+    while (private->defer_list)
+    {
+        t_defer_item *item = private->defer_list;
+        private->defer_list = item->d_next;
+        clock_free(item->d_clock);
+        item->d_fn(NULL, item->d_data); /* see canvas_defer() */
+        freebytes(item, sizeof(t_defer_item));
+    }
     freebytes(private, sizeof(*private));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
