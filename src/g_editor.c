@@ -44,6 +44,7 @@ struct _instanceeditor
 
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
+void canvas_free_deferred(t_canvas *x);
 
 /* ------------------ forward declarations --------------- */
 static void canvas_doclear(t_canvas *x);
@@ -3542,10 +3543,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                 gensym(buf), 2, backmsg,
                 "yes");
         }
-        else pd_free(&x->gl_pd);
+        else canvas_free_deferred(x);
     }
     else if (force == 1)
-        pd_free(&x->gl_pd);
+        canvas_free_deferred(x);
     else if (force == 2)
     {
         canvas_dirty(x, 0);
@@ -3562,7 +3563,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                         canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
-        else pd_free(&x->gl_pd);
+        else canvas_free_deferred(x);
     }
     else if (force == 3)
     {

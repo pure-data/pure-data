@@ -32,6 +32,7 @@ struct _canvasenvironment
 typedef struct _canvas_private
 {
     t_undo undo;
+    t_clock *free_deferred; /* see canvas_free_deferred() */
 } t_canvas_private;
 
 #define GLIST_DEFCANVASWIDTH 450
@@ -454,7 +455,10 @@ void glist_init(t_glist *x)
     x->gl_valid = ++glist_valid;
     x->gl_xlabel = (t_symbol **)t_getbytes(0);
     x->gl_ylabel = (t_symbol **)t_getbytes(0);
-    x->gl_privatedata = getbytes(sizeof(t_canvas_private));
+    t_canvas_private *private =
+        (t_canvas_private *)getbytes(sizeof(t_canvas_private));
+    private->free_deferred = 0;
+    x->gl_privatedata = private;
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
@@ -970,10 +974,24 @@ int glist_fontheight(t_glist *x)
     return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
 }
 
+    /* free the canvas on the next clock timeout. This is used by
+    canvas_menuclose() to avoid destroying the canvas within its own method.
+    In particular, this allows to programmaticaly close a canvas from within
+    itself or to close multiple canvasses bound to the same name, without
+    running into memory issues. */
+void canvas_free_deferred(t_canvas *x)
+{
+        /* the clock is only created on demand */
+    t_canvas_private *private = (t_canvas_private *)x->gl_privatedata;
+    if (!private->free_deferred)
+        private->free_deferred = clock_new(x, (t_method)canvas_free);
+    clock_delay(private->free_deferred, 0);
+}
+
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
-    t_canvas_private*private = x->gl_privatedata;
+    t_canvas_private *private = (t_canvas_private *)x->gl_privatedata;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
     if (canvas_whichfind == x)
@@ -993,6 +1011,8 @@ void canvas_free(t_canvas *x)
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
     canvas_undo_free(x);
+    if (private->free_deferred)
+        clock_free(private->free_deferred);
     freebytes(private, sizeof(*private));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
