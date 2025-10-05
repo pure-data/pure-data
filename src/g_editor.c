@@ -3500,12 +3500,22 @@ void glob_verifyquit(void *dummy, t_floatarg f)
     else glob_exit(0, 0);
 }
 
+static void canvas_doclose(t_canvas *x, void *z)
+{
+    if (x) /* check for cancellation, see canvas_defer() */
+        pd_free(&x->gl_obj.ob_pd);
+}
+
     /* close a window (or possibly quit Pd), checking for dirty flags.
        The "force" parameter is interpreted as follows:
        0 - request from GUI to close, verifying whether clean or dirty
        1 - request from GUI to close, no verification
        2 - verified - mark this one clean, then continue as in 1
        3 - verified - mark this one clean, then verify-and-quit
+
+       NB: we defer the actual canvas destruction so we can programmatically
+       close a canvas from within itself or to close multiple canvasses
+       bound to the same name, without running into memory issues.
     */
 void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
@@ -3542,10 +3552,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                 gensym(buf), 2, backmsg,
                 "yes");
         }
-        else pd_free(&x->gl_pd);
+        else canvas_defer(x, (t_messfn)canvas_doclose, NULL);
     }
     else if (force == 1)
-        pd_free(&x->gl_pd);
+        canvas_defer(x, (t_messfn)canvas_doclose, NULL);
     else if (force == 2)
     {
         canvas_dirty(x, 0);
@@ -3562,7 +3572,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                         canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
-        else pd_free(&x->gl_pd);
+        else canvas_defer(x, (t_messfn)canvas_doclose, NULL);
     }
     else if (force == 3)
     {
