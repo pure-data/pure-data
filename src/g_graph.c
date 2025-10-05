@@ -148,26 +148,46 @@ void glist_delete(t_glist *x, t_gobj *y)
     canvas_setdeleting(canvas, wasdeleting);
 }
 
-    /* remove every object from a glist.  Experimental. */
-void glist_clear(t_glist *x)
+    /* remove any non-scalar objects, see glist_clear() below. */
+static void glist_doclear(t_glist *x, void *z)
 {
-    t_gobj *y;
+    t_gobj *y, *y2;
     int dspstate = 0, suspended = 0;
     t_symbol *dspsym = gensym("dsp");
-    while ((y = x->gl_list))
+    if (!x) return; /* check for cancellation, see canvas_defer() */
+    for (y = x->gl_list; y; y = y2)
     {
-            /* to avoid unnecessary DSP resorting, we suspend DSP
-            only if we hit a patchable object. */
-        if (!suspended && pd_checkobject(&y->g_pd) && zgetfn(&y->g_pd, dspsym))
+        y2 = y->g_next;
+        if (y->g_pd != scalar_class)
         {
-            dspstate = canvas_suspend_dsp();
-            suspended = 1;
+                /* to avoid unnecessary DSP resorting, we suspend DSP
+                only if we hit a patchable DSP object. */
+            if (!suspended && pd_checkobject(&y->g_pd) && zgetfn(&y->g_pd, dspsym))
+            {
+                dspstate = canvas_suspend_dsp();
+                suspended = 1;
+            }
+            glist_delete(x, y);
         }
-            /* here's the real deletion. */
-        glist_delete(x, y);
     }
     if (suspended)
         canvas_resume_dsp(dspstate);
+}
+
+    /* remove every object from a glist.  We can immediately destroy all
+    scalars because these are not patchable and protected by gpointers.
+    Destruction of any non-scalar objects, however, must be deferred to
+    prevent possible crashes during message passing. */
+void glist_clear(t_glist *x)
+{
+    t_gobj *y, *y2;
+    for (y = x->gl_list; y; y = y2)
+    {
+        y2 = y->g_next;
+        if (y->g_pd == scalar_class)
+            glist_delete(x, y);
+    }
+    canvas_defer(x, (t_messfn)glist_doclear, NULL);
 }
 
 void glist_retext(t_glist *glist, t_text *y)
