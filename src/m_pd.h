@@ -620,7 +620,9 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 /* set per-instance user data for a given class. 'freefn', if not NULL, will be
 called when a Pd instance is about to be destroyed, so you can release the data.
-HINT: you can create and set the per-instance data lazily in the object constructor. */
+If you unset/replace existing instance data, it is your responsibility to free it.
+HINT: you can create and set the per-instance data lazily in the object constructor.
+See libpd/test_libpd/test_libpd.c for an example. */
 typedef void (*t_classdatafn)(void *);
 EXTERN void class_setinstancedata(t_class *c, void *data, t_classdatafn freefn);
 /* get the per-instance user data of a given class */
