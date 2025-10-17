@@ -34,6 +34,12 @@ typedef void* (*t_symbolmethodr)(t_pd *x, t_symbol *s);
 typedef void* (*t_listmethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 typedef void* (*t_anymethodr)(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 
+typedef struct _class_data
+{
+    void *data;             /* user data */
+    t_classdatafn freefn;   /* called when the instance is destroyed */
+} t_class_data;
+
 struct _class
 {
     t_symbol *c_name;                   /* name (mostly for error reporting) */
@@ -66,7 +72,12 @@ struct _class
     unsigned int c_multichannel:1;      /* can deal with multichannel sigs */
     unsigned int c_nopromotesig:1;      /* don't promote scalars to signals */
     unsigned int c_nopromoteleft:1;     /* not even the main (left) inlet */
-    t_classfreefn c_classfreefn;    /* function to call before freeing class */
+    t_classfreefn c_classfreefn;        /* function to call before freeing class */
+#ifdef PDINSTANCE
+    t_class_data *c_data;               /* per-instance data */
+#else
+    t_class_data c_data;
+#endif
 };
 
 /* m_pd.c */

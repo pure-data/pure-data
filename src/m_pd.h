@@ -613,8 +613,18 @@ typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
 EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
 
+/* set a function to be called when the class object is freed. Use this to free
+global resources (e.g. lookup tables) allocated in the class setup function. */
 typedef void (*t_classfreefn)(t_class *);
 EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
+
+/* set per-instance user data for a given class. 'freefn', if not NULL, will be
+called when a Pd instance is about to be destroyed, so you can release the data.
+HINT: you can create and set the per-instance data lazily in the object constructor. */
+typedef void (*t_classdatafn)(void *);
+EXTERN void class_setinstancedata(t_class *c, void *data, t_classdatafn freefn);
+/* get the per-instance user data of a given class */
+EXTERN void *class_getinstancedata(t_class *c);
 
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))

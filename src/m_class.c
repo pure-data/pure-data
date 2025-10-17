@@ -178,15 +178,22 @@ t_pdinstance *pdinstance_new(void)
     pd_instances[pd_ninstances] = x;
     for (c = class_list; c; c = c->c_next)
     {
+            /* method entries */
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
             pd_ninstances * sizeof(*c->c_methods),
-            (pd_ninstances + 1) * sizeof(*c->c_methods));
+                (pd_ninstances + 1) * sizeof(*c->c_methods));
         c->c_methods[pd_ninstances] = t_getbytes(0);
         for (i = 0; i < c->c_nmethod; i++)
             class_addmethodtolist(c, &c->c_methods[pd_ninstances], i,
                 c->c_methods[0][i].me_fun,
                 dogensym(c->c_methods[0][i].me_name->s_name, 0, x),
                     c->c_methods[0][i].me_arg, x);
+            /* instance data */
+        c->c_data = (t_class_data *)t_resizebytes(c->c_data,
+            pd_ninstances * sizeof(*c->c_data),
+                (pd_ninstances + 1) * sizeof(*c->c_data));
+        c->c_data[pd_ninstances].data = 0;
+        c->c_data[pd_ninstances].freefn = 0;
     }
     pd_ninstances++;
     pdinstance_renumber();
@@ -218,17 +225,24 @@ void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
-        if(c->c_methods[instanceno])
+        if (c->c_methods[instanceno])
             freebytes(c->c_methods[instanceno],
-                      c->c_nmethod * sizeof(**c->c_methods));
-        c->c_methods[instanceno] = NULL;
+                c->c_nmethod * sizeof(**c->c_methods));
+        if (c->c_data[instanceno].freefn)
+            c->c_data[instanceno].freefn(c->c_data[instanceno].data);
         for (i = instanceno; i < pd_ninstances-1; i++)
+        {
             c->c_methods[i] = c->c_methods[i+1];
+            c->c_data[i] = c->c_data[i+1];
+        }
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
             pd_ninstances * sizeof(*c->c_methods),
-            (pd_ninstances - 1) * sizeof(*c->c_methods));
+                (pd_ninstances - 1) * sizeof(*c->c_methods));
+        c->c_data = (t_class_data *)t_resizebytes(c->c_data,
+            pd_ninstances * sizeof(*c->c_data),
+                (pd_ninstances - 1) * sizeof(*c->c_data));
     }
-    for (i =0; i < SYMTABHASHSIZE; i++)
+    for (i = 0; i < SYMTABHASHSIZE; i++)
     {
         while ((s = x->pd_symhash[i]))
         {
@@ -508,10 +522,19 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         pd_ninstances * sizeof(*c->c_methods));
     for (i = 0; i < pd_ninstances; i++)
         c->c_methods[i] = t_getbytes(0);
+    c->c_data = (t_class_data *)t_getbytes(
+        pd_ninstances * sizeof(*c->c_data));
+    for (i = 0; i < pd_ninstances; i++)
+    {
+        c->c_data[i].data = 0;
+        c->c_data[i].freefn = 0;
+    }
     c->c_next = class_list;
     class_list = c;
 #else
     c->c_methods = t_getbytes(0);
+    c->c_data.data = 0;
+    c->c_data.freefn = 0;
 #endif
 #if 0       /* enable this if you want to see a list of all classes */
     post("class: %s", c->c_name->s_name);
@@ -557,8 +580,21 @@ void class_free(t_class *c)
         prev->c_next = c->c_next;
     }
 #endif
+        /* call per-instance free function. */
+#ifdef PDINSTANCE
+    for (i = 0; i < pd_ninstances; i++)
+    {
+        if (c->c_data[i].freefn)
+            c->c_data[i].freefn(c->c_data[i].data);
+    }
+#else
+    if (c->c_data.freefn)
+        c->c_data.freefn(c->c_data.data);
+#endif
+        /* call global free function */
     if (c->c_classfreefn)
         c->c_classfreefn(c);
+        /* free methods */
 #ifdef PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
     {
@@ -567,6 +603,7 @@ void class_free(t_class *c)
         c->c_methods[i] = NULL;
     }
     freebytes(c->c_methods, pd_ninstances * sizeof(*c->c_methods));
+    freebytes(c->c_data, pd_ninstances * sizeof(*c->c_data));
 #else
     freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
 #endif
@@ -576,6 +613,26 @@ void class_free(t_class *c)
 void class_setfreefn(t_class *c, t_classfreefn fn)
 {
     c->c_classfreefn = fn;
+}
+
+void class_setinstancedata(t_class *c, void *data, t_classdatafn freefn)
+{
+#ifdef PDINSTANCE
+    c->c_data[pd_this->pd_instanceno].data = data;
+    c->c_data[pd_this->pd_instanceno].freefn = freefn;
+#else
+    c->c_data.data = data;
+    c->c_data.freefn = freefn;
+#endif
+}
+
+void *class_getinstancedata(t_class *c)
+{
+#ifdef PDINSTANCE
+    return c->c_data[pd_this->pd_instanceno].data;
+#else
+    return c->c_data.data;
+#endif
 }
 
 #ifdef PDINSTANCE
