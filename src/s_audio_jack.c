@@ -41,6 +41,7 @@ static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
 static int jack_isopening = 0;
+static int jack_isclosing = 0;
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
@@ -412,9 +413,14 @@ static int jack_connect_ports(const char* source, const char* sink)
 
 static void pd_jack_error_callback(const char *desc)
 {
-    sys_lock();
-    logpost(0, PD_DEBUG, "JACK error: %s", desc);
-    sys_unlock();
+        /* ignore error messages when closing the client. Also prevents deadlock,
+        see jack_close_audio(). */
+    if (!jack_isclosing)
+    {
+        sys_lock();
+        logpost(0, PD_DEBUG, "JACK error: %s", desc);
+        sys_unlock();
+    }
     return;
 }
 
@@ -600,11 +606,16 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
 void jack_close_audio(void)
 {
-    if (jack_client){
+    if (jack_client)
+    {
+        jack_isclosing = 1;
         jack_deactivate (jack_client);
         jack_client_close(jack_client);
+        jack_isclosing = 0;
         jack_client = 0;
     }
+        /* unset error callback to prevent deadlock in jack_open_audio() via jack_client_open(). */
+    jack_set_error_function(0);
     if (jack_inbuf)
         free(jack_inbuf), jack_inbuf = 0;
     if (jack_outbuf)
