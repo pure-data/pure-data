@@ -2382,10 +2382,13 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
         pd_error(0, "skipping color update");
         return;
     }
-    THISGUI->i_foregroundcolor = c_fg;
-    THISGUI->i_backgroundcolor = c_bg;
-    THISGUI->i_selectcolor = c_sel;
-    THISGUI->i_gopcolor = c_gop;
+        /* forward palette to gui */
+    pdgui_vmess("::pd_colors::set_palette", "kkkk",
+        THISGUI->i_foregroundcolor = c_fg,
+        THISGUI->i_backgroundcolor = c_bg,
+        THISGUI->i_selectcolor = c_sel,
+        THISGUI->i_gopcolor = c_gop
+    );
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
 }
