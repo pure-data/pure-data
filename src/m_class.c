@@ -21,7 +21,34 @@
 
 #include "m_private_utils.h"
 
-static t_symbol *class_loadsym;     /* name under which an extern is invoked */
+void push_loadsym(t_symbol*s);
+t_symbol*pop_loadsym(void);
+
+typedef struct _symbolstack {
+    t_symbol*s_symbol;
+    struct _symbolstack*s_previous;
+} t_symbolstack;
+static t_symbolstack *class_loadsymbol = 0;     /* name under which an extern is invoked */
+void push_loadsym(t_symbol*s) {
+    t_symbolstack*stack = (t_symbolstack*)getbytes(sizeof(t_symbolstack));
+    if(!stack) return;
+    stack->s_symbol = s;
+    stack->s_previous = class_loadsymbol;
+    class_loadsymbol = stack;
+}
+t_symbol*pop_loadsym(void) {
+    t_symbol*s = 0;
+    t_symbolstack*stack = class_loadsymbol;
+    if(!stack) return 0;
+    s = stack->s_symbol;
+    class_loadsymbol = stack->s_previous;
+    freebytes(stack, sizeof(*stack));
+    return s;
+}
+t_symbol*peek_loadsym(void) {
+    return class_loadsymbol?class_loadsymbol->s_symbol:0;
+}
+
 static void pd_defaultfloat(t_pd *x, t_float f);
 static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 t_pd pd_objectmaker;    /* factory for creating "object" boxes */
@@ -461,6 +488,7 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 
     if (pd_objectmaker && newmethod)
     {
+        t_symbol *class_loadsym = peek_loadsym();
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
@@ -959,7 +987,7 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
       return;
     }
     pd_this->pd_newest = 0;
-    class_loadsym = s;
+    push_loadsym(s);
     pd_globallock();
     if (sys_load_lib(canvas_getcurrent(), s->s_name))
     {
@@ -968,7 +996,7 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         tryingalready--;
         return;
     }
-    class_loadsym = 0;
+    pop_loadsym();
     pd_globalunlock();
 }
 
