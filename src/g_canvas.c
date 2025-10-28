@@ -2245,6 +2245,7 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_backgroundcolor = 0xFFFFFF;
     THISGUI->i_selectcolor = 0x0000FF;
     THISGUI->i_gopcolor = 0xFF0000;
+    THISGUI->i_iemgui_default_colors = 0;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2368,6 +2369,21 @@ static unsigned int normalize_color(t_symbol *s)
     return (-1);
 }
 
+unsigned int interpolate_colors(unsigned int color1, unsigned int color2, float amount)
+{
+    amount = amount < 0 ? 0 : amount > 1 ? 1 : amount;
+    int r1 = (color1 >> 16) & 0xFF;
+    int g1 = (color1 >>  8) & 0xFF;
+    int b1 =  color1        & 0xFF;
+    int r2 = (color2 >> 16) & 0xFF;
+    int g2 = (color2 >>  8) & 0xFF;
+    int b2 =  color2        & 0xFF;
+    unsigned int r = r1 + (r2 - r1) * amount;
+    unsigned int g = g1 + (g2 - g1) * amount;
+    unsigned int b = b1 + (b2 - b1) * amount;
+    return (r << 16) | (g << 8) | b;
+}
+
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop)
 {
@@ -2382,10 +2398,18 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
         pd_error(0, "skipping color update");
         return;
     }
-    THISGUI->i_foregroundcolor = c_fg;
-    THISGUI->i_backgroundcolor = c_bg;
-    THISGUI->i_selectcolor = c_sel;
-    THISGUI->i_gopcolor = c_gop;
+        /* forward palette to gui */
+    pdgui_vmess("::pd_colors::set_palette", "kkkk",
+        THISGUI->i_foregroundcolor = c_fg,
+        THISGUI->i_backgroundcolor = c_bg,
+        THISGUI->i_selectcolor = c_sel,
+        THISGUI->i_gopcolor = c_gop
+    );
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
+}
+
+void glob_iemgui_default_colors(void *dummy, t_floatarg use_default)
+{
+    THISGUI->i_iemgui_default_colors = use_default != 0;
 }

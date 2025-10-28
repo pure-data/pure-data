@@ -286,6 +286,7 @@ struct _instancecanvas  /* per-instance stuff for canvases */
     t_float i_graph_lastxpix, i_graph_lastypix;       /* state for dragging */
     unsigned int i_foregroundcolor, i_backgroundcolor;  /* color of fg & bg */
     unsigned int i_selectcolor, i_gopcolor;             /* ...selection and GOP */
+    int i_iemgui_default_colors;             /* force IEMGUI objects to use default colors */
 };
 
 void g_editor_newpdinstance(void);
@@ -560,6 +561,7 @@ EXTERN void canvas_connect(t_canvas *x,
     t_floatarg fwhoout, t_floatarg foutno, t_floatarg fwhoin, t_floatarg finno);
 EXTERN void canvas_disconnect(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno);
+EXTERN void canvas_iemgui_set_colors(t_canvas *x, t_symbol *color_type);
 EXTERN int canvas_isconnected (t_canvas *x,
     t_text *ob1, int n1, t_text *ob2, int n2);
 EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy);
@@ -689,6 +691,9 @@ EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
 EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
 EXTERN t_symbol *iemgui_put_in_braces(t_symbol *s);
+
+/* ------------- g_canvas.c ------------- */
+EXTERN unsigned int interpolate_colors(unsigned int col1, unsigned int col2, float factor);
 
 /*-------------  g_clone.c ------------- */
 EXTERN t_class *clone_class;
