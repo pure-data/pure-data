@@ -75,8 +75,9 @@ typedef struct _patchlist
     char *pl_args;
 } t_patchlist;
 
-static t_patchlist *sys_openlist;
-static t_namelist *sys_messagelist;
+static t_namelist *tmp_externlist = 0;
+static t_patchlist *sys_openlist = 0;
+static t_namelist *sys_messagelist = 0;
 static int sys_version;
 int sys_oldtclversion;      /* hack to warn g_rtext.c about old text sel */
 
@@ -435,6 +436,12 @@ int sys_main(int argc, const char **argv)
                 post("%s: can't load library", nl->nl_string);
         sys_oktoloadfiles(1);
     }
+    for  (nl = tmp_externlist; nl; nl = nl->nl_next)
+    {
+        if (!sys_load_lib(0, nl->nl_string))
+            post("%s: can't load library", nl->nl_string);
+    }
+
         /* open patches specifies with "-open" args */
     for (pl = sys_openlist; pl; pl = pl->pl_next)
         openit(cwd, pl->pl_file, pl->pl_args);
@@ -1233,8 +1240,8 @@ int sys_argparse(int argc, const char **argv)
             if (argc < 2)
                 goto usage;
 
-            STUFF->st_externlist =
-                namelist_append_files(STUFF->st_externlist, argv[1]);
+            tmp_externlist =
+                namelist_append_files(tmp_externlist, argv[1]);
             argc -= 2; argv += 2;
         }
         else if ((!strcmp(*argv, "-font-size") || !strcmp(*argv, "-font")))
