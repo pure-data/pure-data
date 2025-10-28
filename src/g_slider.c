@@ -627,6 +627,28 @@ static void slider_steady(t_slider *x, t_floatarg f)
     x->x_steady = (f == 0.0) ? 0 : 1;
 }
 
+static void slider_wheel(t_slider *x, t_symbol *s, int argc, t_atom *argv)
+{
+    float dy = atom_getfloat(argv+1);
+    if (dy == 0) return;
+    int mod = atom_getint(argv+2);
+    double f, k2 = (mod & 1) ? 0.01 : 1.0;
+    if (x->x_lin0_log1) {
+            /* logarithmic mode - use proper exponential steps based on range */
+        double log_ratio = log(x->x_max / x->x_min);
+        double log_step = log_ratio / 127.0 * k2;
+        f = x->x_fval * exp(-dy * log_step);
+    } else {
+            /* linear mode - use range-proportional steps */
+        double value_range = x->x_max - x->x_min;
+        double base_step = value_range / 127.0;
+        double step_size = base_step * k2;
+        f = x->x_fval - (dy * step_size);
+    }
+    f = f > x->x_max ? x->x_max : f < x->x_min ? x->x_min : f;
+    slider_float(x, f);
+}
+
 static void slider_orientation(t_slider *x, t_floatarg forient)
 {
     int orient = !!(int)forient;
@@ -810,6 +832,8 @@ void g_slider_setup(void)
         gensym("steady"), A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_orientation,
         gensym("orientation"), A_FLOAT, 0);
+    class_addmethod(slider_class, (t_method)slider_wheel,
+        gensym("wheel"), A_GIMME, 0);
     class_addmethod(slider_class, (t_method)slider_zoom,
         gensym("zoom"), A_CANT, 0);
     slider_widgetbehavior.w_getrectfn =    slider_getrect;
