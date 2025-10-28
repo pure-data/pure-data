@@ -100,10 +100,11 @@ typedef struct _audiosettings
 #define API_MMIO 3
 #define API_PORTAUDIO 4
 #define API_JACK 5
-#define API_SGI 6           /* gone */
-#define API_AUDIOUNIT 7
-#define API_ESD 8           /* no idea what this was, probably gone now */
-#define API_DUMMY 9
+#define API_PIPEWIRE 6
+#define API_SGI 7           /* gone */
+#define API_AUDIOUNIT 9
+#define API_ESD 9           /* no idea what this was, probably gone now */
+#define API_DUMMY 10
 
     /* figure out which API should be the default.  The one we judge most
     likely to offer a working device takes precedence so that if you
@@ -129,6 +130,9 @@ typedef struct _audiosettings
 #elif defined(USEAPI_JACK)
 # define API_DEFAULT API_JACK
 # define API_DEFSTRING "Jack audio connection kit"
+#elif defined(USEAPI_PIPEWIRE)
+# define API_DEFAULT API_PIPEWIRE
+# define API_DEFSTRING "PipeWire"
 #elif defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
 # define API_DEFSTRING "MMIO"
@@ -219,6 +223,20 @@ void jack_getdevs(char *indevlist, int *nindevs,
 void jack_listdevs(void);
 void jack_client_name(const char *name);
 void jack_autoconnect(int);
+
+int pipewire_open_audio(int naudioindev, int *audioindev, int nchindev,
+    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
+    int *choutdev, int rate, int blocksize);
+void pipewire_close_audio(void);
+int pipewire_send_dacs(void);
+int pipewire_reopen_audio(void);
+void pipewire_reportidle(void);
+void pipewire_getdevs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti,
+        int maxndev, int devdescsize);
+void pipewire_listdevs(void);
+void pipewire_client_name(const char *name);
+
 
 int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
