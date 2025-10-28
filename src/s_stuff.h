@@ -158,6 +158,7 @@ extern int sys_schedadvance;
 
 int sys_send_dacs(void);
 void sys_reportidle(void);
+void sys_reportxrun(int nsamples);
 void sys_listdevs(void);
 EXTERN void sys_set_audio_settings(t_audiosettings *as);
 EXTERN void sys_get_audio_settings(t_audiosettings *as);
