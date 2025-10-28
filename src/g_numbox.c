@@ -28,20 +28,38 @@ static void my_numbox_clip(t_my_numbox *x)
         x->x_val = x->x_max;
 }
 
+int sys_nearestfontsize(int fontsize);
 static void my_numbox_calc_fontwidth(t_my_numbox *x)
 {
-    int w, f = 31;
+    int w;
+    float f = x->x_gui.x_fontsize;
+    int nearest_fontsize =  sys_nearestfontsize(x->x_gui.x_fontsize);
+    int nearest_fontwidth = sys_zoomfontwidth(nearest_fontsize, 1, 1);
+    float fontwidth = (float)nearest_fontwidth * f / (float)nearest_fontsize;
 
-    if(x->x_gui.x_fsf.x_font_style == 1)
-        f = 27;
-    else if(x->x_gui.x_fsf.x_font_style == 2)
-        f = 25;
+        /* legacy font calculation */
+    switch(x->x_gui.x_fsf.x_font_style) {
+    default:
+        f *= 31./36.;
+        break;
+    case 1:
+        f *= 27./36.;
+        break;
+    case 2:
+        f *= 25./36.;
+        break;
+    }
 
-    w = x->x_gui.x_fontsize * f * x->x_numwidth;
-    w /= 36;
+        /* make sure to not exceed the legacy font-size */
+    if ((f < fontwidth) || (pd_compatibilitylevel < 53))
+        fontwidth = f;
+
+    w = (int)(fontwidth * x->x_numwidth);
     x->x_gui.x_w = (w + (x->x_gui.x_h/2)/IEMGUI_ZOOM(x) + 4) * IEMGUI_ZOOM(x);
 }
 
+/* gatom_float_sizelimit() from g_rtext.c */
+const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize);
 static void my_numbox_ftoa(t_my_numbox *x)
 {
     double f = x->x_val;
@@ -49,54 +67,8 @@ static void my_numbox_ftoa(t_my_numbox *x)
 
     sprintf(x->x_buf, "%g", f);
     bufsize = (int)strlen(x->x_buf);
-    if(bufsize >= 5)/* if it is in exponential mode */
-    {
-        i = bufsize - 4;
-        if((x->x_buf[i] == 'e') || (x->x_buf[i] == 'E'))
-            is_exp = 1;
-    }
-    if(bufsize > x->x_numwidth)/* if to reduce */
-    {
-        if(is_exp)
-        {
-            if(x->x_numwidth <= 5)
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            i = bufsize - 4;
-            for(idecimal = 0; idecimal < i; idecimal++)
-                if(x->x_buf[idecimal] == '.')
-                    break;
-            if(idecimal > (x->x_numwidth - 4))
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            else
-            {
-                int new_exp_index = x->x_numwidth - 4;
-                int old_exp_index = bufsize - 4;
 
-                for(i = 0; i < 4; i++, new_exp_index++, old_exp_index++)
-                    x->x_buf[new_exp_index] = x->x_buf[old_exp_index];
-                x->x_buf[x->x_numwidth] = 0;
-            }
-        }
-        else
-        {
-            for(idecimal = 0; idecimal < bufsize; idecimal++)
-                if(x->x_buf[idecimal] == '.')
-                    break;
-            if(idecimal > x->x_numwidth)
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            else
-                x->x_buf[x->x_numwidth] = 0;
-        }
-    }
+    gatom_float_sizelimit(x->x_buf, bufsize, x->x_numwidth);
 }
 
 /* ------------ nbx gui-my number box ----------------------- */
@@ -118,6 +90,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
     int corner = x->x_gui.x_h/4;
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     char tag[128];
+    int borderwidth = zoom * (1+!!x->x_gui.x_fsf.x_change);
 
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
@@ -145,15 +118,15 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         xpos,              ypos + x->x_gui.x_h,
         xpos,              ypos);
     pdgui_vmess(0, "crs  ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
+        "-width", borderwidth,
         "-outline", THISGUI->i_foregroundcolor,
         "-fill", x->x_gui.x_bcol);
 
-
     sprintf(tag, "%pBASE2", x);
-    pdgui_vmess(0, "crs  ii ii ii", canvas, "coords", tag,
+    pdgui_vmess(0, "crs  ii ii ii ii", canvas, "coords", tag,
         xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
+        xpos + half, ypos + half + x->x_gui.x_h%2,
         xpos + zoom, ypos + x->x_gui.x_h - zoom);
     pdgui_vmess(0, "crs  ri rk", canvas, "itemconfigure", tag,
         "-width", zoom,
@@ -240,28 +213,28 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     if(glist_isvisible(glist))
     {
         t_canvas *canvas = glist_getcanvas(glist);
+        int borderwidth = IEMGUI_ZOOM(x) * (1+!!x->x_gui.x_fsf.x_change);
         char tag[128];
         sprintf(tag, "%pNUMBER", x);
         if(x->x_gui.x_fsf.x_change)
         {
             if(x->x_buf[0])
-            {
+            { /* while typing */
                 char *cp = x->x_buf;
                 int sl = (int)strlen(x->x_buf);
-
                 x->x_buf[sl] = '>';
                 x->x_buf[sl+1] = 0;
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", THISGUI->i_gopcolor, "-text", cp);
+                pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
+                    "-text", cp);
                 x->x_buf[sl] = 0;
             }
             else
-            {
+            { /* when activated */
                 my_numbox_ftoa(x);
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", THISGUI->i_gopcolor, "-text", x->x_buf);
+                pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
+                    "-text", x->x_buf);
                 x->x_buf[0] = 0;
             }
         }
@@ -278,6 +251,11 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                     "-text", x->x_buf);
             x->x_buf[0] = 0;
         }
+        /* highlight border */
+        sprintf(tag, "%pBASE1", x);
+        pdgui_vmess(0, "crs ri", canvas, "itemconfigure", tag,
+            "-width", borderwidth);
+
     }
 }
 
@@ -494,7 +472,7 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
     if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
         x->x_val = ftocompare;
-        if (pd_compatibilitylevel < 53)
+        if (pd_compatibilitylevel < 56)
             my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
