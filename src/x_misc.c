@@ -128,7 +128,7 @@ static void loadbang_setup(void)
         gensym("loadbang"), A_DEFFLOAT, 0);
 }
 
-/* ------------- namecanvas (delete this later) --------------------- */
+/* ------------- namecanvas --------------------- */
 static t_class *namecanvas_class;
 
 typedef struct _namecanvas
@@ -138,11 +138,15 @@ typedef struct _namecanvas
     t_pd *x_owner;
 } t_namecanvas;
 
-static void *namecanvas_new(t_symbol *s)
+static void *namecanvas_new(t_symbol *s, t_floatarg f)
 {
     t_namecanvas *x = (t_namecanvas *)pd_new(namecanvas_class);
-    x->x_owner = (t_pd *)canvas_getcurrent();
+    t_canvas *cnv = canvas_getcurrent();
     x->x_sym = s;
+    int depth = (int)f < 0 ? 0 : (int)f;
+    while(depth-- && cnv->gl_owner)
+        cnv = cnv->gl_owner;
+    x->x_owner = (t_pd *)cnv;
     if (*s->s_name) pd_bind(x->x_owner, s);
     return (x);
 }
@@ -156,7 +160,7 @@ static void namecanvas_setup(void)
 {
     namecanvas_class = class_new(gensym("namecanvas"),
         (t_newmethod)namecanvas_new, (t_method)namecanvas_free,
-            sizeof(t_namecanvas), CLASS_NOINLET, A_DEFSYM, 0);
+            sizeof(t_namecanvas), CLASS_NOINLET, A_DEFSYM, A_DEFFLOAT, 0);
 }
 
 /* -------------------------- cputime ------------------------------ */
