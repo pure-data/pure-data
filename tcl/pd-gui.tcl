@@ -739,11 +739,12 @@ proc check_for_running_instances { } {
 # ------------------------------------------------------------------------------
 # load plugins on startup
 
-proc load_plugin_script {filename} {
+set ::pdgui::_loaded_plugins_fullpath {}
+proc load_plugin_script {filename {check_loaded 1}} {
     global errorInfo
 
     set basename [file tail $filename]
-    if {[lsearch $::loaded_plugins $basename] > -1} {
+    if { $check_loaded && [lsearch $::loaded_plugins $basename] >= 0} {
         ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
         ::pdwindow::post "\n"
         return
@@ -762,6 +763,7 @@ proc load_plugin_script {filename} {
         ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
+        lappend ::pdgui::_loaded_plugins_fullpath $filename
     }
 }
 
@@ -796,6 +798,20 @@ proc load_startup_plugins {} {
                ::pdwindow::debug [ format [_ "Failed to find plugins in %s ...skipping!" ] $dir ]
                ::pdwindow::debug "\n"
            }
+    }
+}
+
+proc ::pdgui::load_plugin {name {path {}}} {
+    set name_dir [ file dirname $name ]
+    set name_file [ file tail $name ]
+    foreach p [list ${name_file} "."] {
+        set script [ file normalize [file join ${path} ${name_dir} ${p} "${name_file}-plugin.tcl"] ]
+        if { [ file isfile "${script}" ] && \
+                 [lsearch ${::pdgui::_loaded_plugins_fullpath} $script] < 0 } {
+            set ::current_plugin_loadpath [file dirname $script]
+            load_plugin_script ${script} 0
+            break
+        }
     }
 }
 

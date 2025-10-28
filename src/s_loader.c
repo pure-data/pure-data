@@ -473,6 +473,9 @@ int sys_loadlib_iter(const char *path, struct _loadlib_data *data)
     for(q = &loaders; q; q = q->next)
         if ((ok = q->loader(data->canvas, data->classname, path)))
             break;
+    if(ok)
+        pdgui_vmess("::pdgui::load_plugin", "ss", data->classname, path);
+
     /* if all loaders failed, try to load as abstraction */
     if (!ok)
         ok = sys_do_load_abs(data->canvas, data->classname, path);
