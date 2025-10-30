@@ -287,7 +287,7 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
             ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight &&
                 /* is the text visible? */
-            (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
             x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
                 || !drawtext_isvisible(x->x_drawtext, x->x_words))))
         {
