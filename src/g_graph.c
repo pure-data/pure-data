@@ -125,8 +125,18 @@ void glist_delete(t_glist *x, t_gobj *y)
     gobj_delete(y, x);
     if (glist_isvisible(canvas))
         gobj_vis(y, x, 0);
+
+        /* We will have to free the rtext, but we can't free it yet since
+        it might get searched for (and accidentally created) as a result of
+        some chain of events set off by pd_free below (for instance "y" might
+        be a canvas that has to close out a bunch of other stuff).  But we
+        can't search for the rtext after pd_free() without causing other
+        bad dereferences.  So, if the window is visible we now force the
+        rtext to be created whether or not glist_getrtext() thinks it's
+        needed.  Since this only happens in visible canvases it's not a huge
+        performance hit.  Thanks to Ben and Iohannes for spotting this. */
     if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext = glist_getrtext(x, ob, 0);
+        rtext = glist_getrtext(x, ob, 1);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
