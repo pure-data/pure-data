@@ -1120,17 +1120,12 @@ static int graph_click(t_gobj *z, struct _glist *glist,
         for (y = x->gl_list; y; y = y->g_next)
         {
             int x1, y1, x2, y2;
-                /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0)
-                &&  (clickreturned = gobj_click(y, x, xpix, ypix,
-                    shift, alt, dbl, doit)))
+                /* scalars handle their own hit testing, others use canvas_hitbox */
+            if ((y->g_pd == scalar_class ||
+                canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0))
+                    && (clickreturned = gobj_click(y, x, xpix, ypix,
+                        shift, alt, dbl, doit)))
                         break;
-        }
-        if (!doit)
-        {
-            if (y)
-                canvas_setcursor(glist_getcanvas(x), clickreturned);
-            else canvas_setcursor(glist_getcanvas(x), CURSOR_RUNMODE_NOTHING);
         }
         return (clickreturned);
     }
