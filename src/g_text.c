@@ -839,7 +839,8 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_activate(t, 0);
         x->a_grabbed = 0;
         gatom_reborder(x);
-        gatom_redraw(&x->a_text.te_g, x->a_glist);
+            /* use canvas (parent) for GOP, which has the editor */
+        gatom_redraw(&x->a_text.te_g, glist_getcanvas(x->a_glist));
     }
     else if (c == '\n')
     {
