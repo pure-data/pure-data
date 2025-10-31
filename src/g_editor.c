@@ -2025,7 +2025,9 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 
         if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        glist_clearrtexts(x);
+            /* only clear rtexts when transitioning into GOP */
+        if (!glist_isgraph(x))
+            glist_clearrtexts(x);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
