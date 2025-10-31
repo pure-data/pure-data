@@ -2381,8 +2381,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     }
 
         /* is the mouse over a text, in either an object box or a scalar? */
-    rtext = rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
-        &hitwords, &hitdrawtext);
+    rtext = doit ? rtext_findhit(x, xpix, ypix, &hitobj, &hitscalar,
+        &hitwords, &hitdrawtext) : 0;
 
        /* did we click when there's an active text? */
     if (doit && x->gl_editor->e_textedfor)
