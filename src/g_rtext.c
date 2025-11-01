@@ -89,7 +89,7 @@ majority of invisible 'text' objects never get rtexts created for them. */
 t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
 {
     t_rtext *x, *last = 0;
-    t_glist *canvas = glist_getcanvas(gl);;
+    t_glist *canvas = glist_getcanvas(gl);
         /* This might happen for text objs in GOPs - dunno why. */
     if (!canvas->gl_editor)
         canvas_create_editor(canvas);
@@ -107,7 +107,7 @@ t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
         return (0);
     x = rtext_add(gl, last);
     x->x_text = who;
-    rtext_retext(x);
+    rtext_retext(x, 0);
     return (x);
 }
 
@@ -261,7 +261,7 @@ void rtext_unmouse(t_rtext *x)
 void rtext_untype(t_rtext *x)
 {
     if (x->x_text)
-        rtext_retext(x);
+        rtext_retext(x, 1);
     else
     {
         gobj_vis(&x->x_scalar->sc_gobj, x->x_glist, 0);
@@ -676,7 +676,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 }
 
     /* make or remake text buffer from binbuf (text boxes only) */
-void rtext_retext(t_rtext *x)
+void rtext_retext(t_rtext *x, int senditup)
 {
     int w = 0, h = 0, indx;
     if (x->x_buf)
@@ -690,7 +690,7 @@ void rtext_retext(t_rtext *x)
     rtext_findscreenlocation(x);
         /* force dimension recalculation after text conversion */
     x->x_pixwidth = x->x_pixheight = -1;
-    rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
+    if(senditup) rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
 
     /* make text buffer for scalar's drawtext instruction and draw it */

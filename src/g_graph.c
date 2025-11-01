@@ -188,7 +188,7 @@ void glist_retext(t_glist *glist, t_text *y)
     {
         t_rtext *rt = glist_getrtext(glist, y, 0);
         if (rt)
-            rtext_retext(rt);
+            rtext_retext(rt, 1);
     }
 }
 

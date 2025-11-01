@@ -892,7 +892,7 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
         t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
         if (!t)
             return;
-        rtext_retext(t);
+        rtext_retext(t, 1);
         if (x->a_doubleclicked)    /* double click - activate text on release */
             rtext_activate(t, 1);
     }
