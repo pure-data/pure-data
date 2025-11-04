@@ -567,9 +567,6 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
         x->gl_ymargin = atom_getfloatarg(8, argc, argv);
         canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 0);
     }
-        /* redraw parent to remove "ghost objects" */
-    if (x->gl_owner && !x->gl_havewindow)
-        canvas_redraw(glist_getcanvas(x->gl_owner));
 }
 
 
