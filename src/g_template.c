@@ -101,6 +101,37 @@ static void template_conformarray(t_template *tfrom, t_template *tto,
 static void template_conformglist(t_template *tfrom, t_template *tto,
     t_glist *glist,  int *conformaction);
 
+/* ------------------- save utils ---------------------- */
+
+    /* get the unrealized creation binbuf, from the first "struct" in the list.
+    (this is used in g_readwrite.c) */
+t_binbuf *template_get_creation_binbuf(t_template *x)
+{
+    t_object *o = NULL;
+    if (x->t_list)
+    {
+        o = &x->t_list->x_obj;
+        if (o) return o->te_binbuf;
+    }
+    return NULL;
+}
+
+    /* get the unrealized creation name (e.g "$0-template"); used in g_readwrite.c */
+t_symbol *template_get_creation_name(t_template *x)
+{
+    t_symbol *name = &s_;
+    t_binbuf *bb = template_get_creation_binbuf(x);
+    if (bb)
+    {
+        t_atom *atoms = binbuf_getvec(bb);
+        int natom = binbuf_getnatom(bb);
+        if (natom > 1)
+            name = atoms[1].a_w.w_symbol;
+    }
+    return name;
+}
+
+
 /* ---------------------- storage ------------------------- */
 
 static t_class *gtemplate_class;
@@ -164,13 +195,18 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
             newtype = DT_TEXT;
         else if (newtypesym == gensym("array"))
         {
-            if (argc < 3 || argv[2].a_type != A_SYMBOL)
+            t_symbol *templatename;
+            if (argc < 3
+                || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
+            )
             {
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
+            templatename = canvas_getsymbol_realized(canvas_getcurrent(),
+                &argv[2]);
             newtype = DT_ARRAY;
-            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
+            newarraytemplate = canvas_makebindsym(templatename);
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
@@ -579,10 +615,20 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_template *x;
-    t_symbol *templatesym =
-        canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
+    t_symbol *templatename;
+    t_symbol *templatesym;
+    t_binbuf *bb;
+
     if (!argc)
         return (0);
+
+    bb = binbuf_new();
+    binbuf_restore(bb, argc, argv);
+    argc = binbuf_getnatom(bb);
+    argv = binbuf_getvec(bb);
+
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
+    templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
             /* check if there's already a template by this name. */
     if ((x = (t_template *)pd_findbyclass(templatesym, template_class)))
@@ -612,6 +658,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     }
         /* otherwise, just make one. */
     else template_new(templatesym, argc, argv);
+    binbuf_free(bb);
     return (0);
 }
 

@@ -311,23 +311,25 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
 void glist_scalar(t_glist *glist,
     t_symbol *classname, int argc, t_atom *argv)
 {
-    t_symbol *templatesym =
-        canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
-    t_binbuf *b;
-    int natoms, nextmsg = 0;
-    t_atom *vec;
+    t_symbol *templatename;
+    t_symbol *templatesym;
+    t_binbuf *b = binbuf_new();
+    int nextmsg = 0;
+
+    binbuf_restore(b, argc, argv);
+    argc = binbuf_getnatom(b);
+    argv = binbuf_getvec(b);
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
+    templatesym = canvas_makebindsym(templatename);
     if (!template_findbyname(templatesym))
     {
-        pd_error(glist, "%s: no such template",
+        pd_error(glist, "glist_scalar %s: no such template",
             atom_getsymbolarg(0, argc, argv)->s_name);
+        binbuf_free(b);
         return;
     }
 
-    b = binbuf_new();
-    binbuf_restore(b, argc, argv);
-    natoms = binbuf_getnatom(b);
-    vec = binbuf_getvec(b);
-    canvas_readscalar(glist, natoms, vec, &nextmsg, 0);
+    canvas_readscalar(glist, argc, argv, &nextmsg, 0);
     binbuf_free(b);
 }
 
@@ -541,6 +543,12 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0, notified = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
+    if (!templatecanvas)
+    {
+        pd_error(sc, "scalar_doclick: no canvas found for template %s",
+            template->t_sym->s_name);
+        return 0;
+    }
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
@@ -577,6 +585,12 @@ int scalar_click(t_gobj *z, struct _glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    if (!template)
+    {
+        pd_error(x, "scalar_click: couldn't find template %s",
+            x->sc_template->s_name);
+        return 0;
+    }
     t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
     t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,

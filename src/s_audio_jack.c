@@ -41,6 +41,7 @@ static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
 static int jack_isopening = 0;
+static int jack_isclosing = 0;
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
@@ -412,9 +413,14 @@ static int jack_connect_ports(const char* source, const char* sink)
 
 static void pd_jack_error_callback(const char *desc)
 {
-    sys_lock();
-    logpost(0, PD_DEBUG, "JACK error: %s", desc);
-    sys_unlock();
+        /* ignore error messages when closing the client. Also prevents deadlock,
+        see jack_close_audio(). */
+    if (!jack_isclosing)
+    {
+        sys_lock();
+        logpost(0, PD_DEBUG, "JACK error: %s", desc);
+        sys_unlock();
+    }
     return;
 }
 
@@ -600,11 +606,16 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
 void jack_close_audio(void)
 {
-    if (jack_client){
+    if (jack_client)
+    {
+        jack_isclosing = 1;
         jack_deactivate (jack_client);
         jack_client_close(jack_client);
+        jack_isclosing = 0;
         jack_client = 0;
     }
+        /* unset error callback to prevent deadlock in jack_open_audio() via jack_client_open(). */
+    jack_set_error_function(0);
     if (jack_inbuf)
         free(jack_inbuf), jack_inbuf = 0;
     if (jack_outbuf)
@@ -644,14 +655,14 @@ int jack_send_dacs(void)
     t_sample *muxbuffer;
     t_sample *fp, *fp2, *jp;
     int j, ch;
-    const size_t muxbufsize = DEFDACBLKSIZE *
-        (STUFF->st_inchannels > STUFF->st_outchannels ?
-         STUFF->st_inchannels : STUFF->st_outchannels);
+    size_t muxbufsize;
     int retval = SENDDACS_YES;
         /* this shouldn't really happen... */
     if (!jack_client || (!STUFF->st_inchannels && !STUFF->st_outchannels))
         return (SENDDACS_NO);
 
+        /* NB: do not cache st_inchannels or st_outchannels because audio settings
+        may change in sched_idletask(), see below. */
     while (
         (sys_ringbuf_getreadavailable(&jack_inring) <
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
@@ -667,7 +678,13 @@ int jack_send_dacs(void)
         }
 #ifdef THREADSIGNAL
         if (sched_idletask())
+        {
+                /* we might have received a "dsp" message or audio dialog message! */
+            if (!jack_client || sched_get_using_audio() != SCHED_AUDIO_POLL)
+                return SENDDACS_NO;
+                /* otherwise check the ringbuffer again */
             continue;
+        }
             /* only go to sleep if there is nothing else to do. */
         sys_semaphore_wait(jack_sem);
         retval = SENDDACS_SLEPT;
@@ -681,8 +698,12 @@ int jack_send_dacs(void)
         jack_dio_error = 0;
     }
     jack_started = 1;
-
+        /* only setup the muxbuffer after the ringbuffer is ready! */
+    muxbufsize = DEFDACBLKSIZE *
+        (STUFF->st_inchannels > STUFF->st_outchannels ?
+            STUFF->st_inchannels : STUFF->st_outchannels);
     ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
+        /* read input */
     if (STUFF->st_inchannels)
     {
         sys_ringbuf_read(&jack_inring, muxbuffer,
@@ -696,6 +717,7 @@ int jack_send_dacs(void)
                     jp[j] = *fp2;
         }
     }
+        /* write output */
     if (STUFF->st_outchannels)
     {
         for (fp = muxbuffer, ch = 0; ch < STUFF->st_outchannels; ch++, fp++)

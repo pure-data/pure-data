@@ -77,6 +77,9 @@ void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
     t_word *words, char *buf);
 int drawtext_isvisible(t_gobj *z, t_word *words);
 
+    /* defined later: */
+static void rtext_refreshbuffer(t_rtext *x);
+
 /* find the rtext that goes with a text item.  Return zero if the
 text item is invisible, either because the glist itself is, or because
 the item is in a GOP subpatch and its (x,y) origin is outside the GOP
@@ -107,7 +110,7 @@ t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
         return (0);
     x = rtext_add(gl, last);
     x->x_text = who;
-    rtext_retext(x);
+    rtext_refreshbuffer(x);
     return (x);
 }
 
@@ -283,13 +286,13 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
         /* post("xpix %d (%d,%d) ypix %d (%d,%d)",
             xpix, x->x_xpix, x->x_xpix + x->x_pixwidth,
             ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
-                /* check if the text is visible */
-        if (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
-            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
-                || !drawtext_isvisible(x->x_drawtext, x->x_words)))
-                    continue;
+                /* in rectangle? */
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
-            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight)
+            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight &&
+                /* is the text visible? */
+            !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
+                || !drawtext_isvisible(x->x_drawtext, x->x_words))))
         {
             *text = x->x_text;
             *scalar = x->x_scalar;
@@ -675,8 +678,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
 }
 
-    /* make or remake text buffer from binbuf (text boxes only) */
-void rtext_retext(t_rtext *x)
+static void rtext_refreshbuffer(t_rtext *x)
 {
     int w = 0, h = 0, indx;
     if (x->x_buf)
@@ -687,6 +689,13 @@ void rtext_retext(t_rtext *x)
         /* allocate extra space for hidden null terminator */
     x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
     x->x_buf[x->x_bufsize] = 0;
+}
+
+    /* make or remake text buffer from binbuf (text boxes only) */
+void rtext_retext(t_rtext *x)
+{
+    int w = 0, h = 0, indx;
+    rtext_refreshbuffer(x);
     rtext_findscreenlocation(x);
         /* force dimension recalculation after text conversion */
     x->x_pixwidth = x->x_pixheight = -1;

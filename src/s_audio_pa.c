@@ -34,6 +34,8 @@
 #include <unistd.h>
 #endif
 
+#define MAX_ALLOCA_SAMPLES 16*1024
+
 /* enable proper thread synchronization instead of polling */
 #if 1
 #define THREADSIGNAL
@@ -187,8 +189,8 @@ static int pa_fifo_callback(const void *inputBuffer,
                 sys_ringbuf_getreadavailable(&pa_outring),
                 sys_ringbuf_getwriteavailable(&pa_inring));
 #endif
-    if (infiforoom < nframes * STUFF->st_inchannels * sizeof(t_sample) ||
-        outfiforoom < nframes * STUFF->st_outchannels * sizeof(t_sample))
+    if (infiforoom < nframes * STUFF->st_inchannels * sizeof(float) ||
+        outfiforoom < nframes * STUFF->st_outchannels * sizeof(float))
     {
         /* data late: output zeros, drop inputs, and leave FIFos untouched */
         if (pa_started)
@@ -524,22 +526,28 @@ int pa_send_dacs(void)
     int j, k;
     int retval = SENDDACS_YES;
     double timeref = sys_getrealtime();
+    size_t conversionbufsize;
         /* this shouldn't really happen... */
     if (!pa_stream || (!STUFF->st_inchannels && !STUFF->st_outchannels))
         return (SENDDACS_NO);
 
-    conversionbuf = (float *)alloca((STUFF->st_inchannels > STUFF->st_outchannels?
-        STUFF->st_inchannels:STUFF->st_outchannels) * DEFDACBLKSIZE * sizeof(float));
-
+        /* NB: do not cache st_inchannels or st_outchannels because audio settings
+        may change in sched_idletask(), see below. */
     while (
         (sys_ringbuf_getreadavailable(&pa_inring) <
-            (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
+            (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(float))) ||
         (sys_ringbuf_getwriteavailable(&pa_outring) <
-            (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
+            (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(float))))
     {
 #ifdef THREADSIGNAL
         if (sched_idletask())
+        {
+                /* we might have received a "dsp" message or audio dialog message! */
+            if (!pa_stream || sched_get_using_audio() != SCHED_AUDIO_POLL)
+                return SENDDACS_NO;
+                /* otherwise check the ringbuffer again */
             continue;
+        }
             /* only go to sleep if there is nothing else to do. */
         if (!sys_semaphore_waitfor(pa_sem, POLL_TIMEOUT))
         {
@@ -560,6 +568,11 @@ int pa_send_dacs(void)
 #endif
     }
     pa_lastdactime = timeref;
+        /* setup the conversion after ringbuffer is ready! */
+    conversionbufsize = DEFDACBLKSIZE *
+        (STUFF->st_inchannels > STUFF->st_outchannels ?
+            STUFF->st_inchannels : STUFF->st_outchannels);
+    conversionbuf = (float*)alloca(conversionbufsize * sizeof(float));
         /* write output */
     if (STUFF->st_outchannels)
     {

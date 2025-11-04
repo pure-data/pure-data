@@ -21,7 +21,7 @@ cd /tmp/
 rm -rf pd-$pdversion
 git clone $HOME/pd pd-$pdversion
 cd pd-$pdversion
-(cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
+(cd asio; unzip $HOME/pd/attic/asio/ASIOSDK2.3.zip;
     rm -rf _MACOSX/; mv ASIOSDK2.3 ASIOSDK)
 ./autogen.sh
 if ./configure --host=i686-w64-mingw32 --with-wish=wish85.exe \

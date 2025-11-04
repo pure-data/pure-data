@@ -125,8 +125,18 @@ void glist_delete(t_glist *x, t_gobj *y)
     gobj_delete(y, x);
     if (glist_isvisible(canvas))
         gobj_vis(y, x, 0);
+
+        /* We will have to free the rtext, but we can't free it yet since
+        it might get searched for (and accidentally created) as a result of
+        some chain of events set off by pd_free below (for instance "y" might
+        be a canvas that has to close out a bunch of other stuff).  But we
+        can't search for the rtext after pd_free() without causing other
+        bad dereferences.  So, if the window is visible we now force the
+        rtext to be created whether or not glist_getrtext() thinks it's
+        needed.  Since this only happens in visible canvases it's not a huge
+        performance hit.  Thanks to Ben and Iohannes for spotting this. */
     if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext = glist_getrtext(x, ob, 0);
+        rtext = glist_getrtext(x, ob, 1);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
@@ -467,7 +477,6 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     x->gl_xmargin = atom_getfloatarg(0, argc, argv);
     x->gl_ymargin = atom_getfloatarg(1, argc, argv);
-    glist_clearrtexts(x);
     if (argc > 2)
     {
         if ((x->gl_pixwidth = atom_getfloatarg(2, argc, argv)) < 1)
@@ -1110,17 +1119,12 @@ static int graph_click(t_gobj *z, struct _glist *glist,
         for (y = x->gl_list; y; y = y->g_next)
         {
             int x1, y1, x2, y2;
-                /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0)
-                &&  (clickreturned = gobj_click(y, x, xpix, ypix,
-                    shift, alt, dbl, doit)))
+                /* scalars handle their own hit testing, others use canvas_hitbox */
+            if ((y->g_pd == scalar_class ||
+                canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0))
+                    && (clickreturned = gobj_click(y, x, xpix, ypix,
+                        shift, alt, dbl, doit)))
                         break;
-        }
-        if (!doit)
-        {
-            if (y)
-                canvas_setcursor(glist_getcanvas(x), clickreturned);
-            else canvas_setcursor(glist_getcanvas(x), CURSOR_RUNMODE_NOTHING);
         }
         return (clickreturned);
     }
