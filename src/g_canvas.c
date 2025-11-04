@@ -589,7 +589,6 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     t_glist *x = (t_glist *)pd_new(canvas_class);
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
-    fprintf(stderr, "y1 a = %f, arraybox = %d\n", y1, arraybox);
     if (!*sym->s_name)
     {
         char buf[40];
@@ -669,7 +668,6 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
          */
     if (menu && !arraybox)
     {
-        fprintf(stderr, "y1 = %f\n", y1);
         pd_vmess((t_pd*)g, gensym("editmode"), "i", 1);
         glist_noselect(g);
         glist_select(g, (t_gobj*)x);
