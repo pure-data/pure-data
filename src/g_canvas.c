@@ -572,16 +572,14 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 
 void canvas_startmotion(t_canvas *x);
     /* make a new glist and add it to this glist.  It will appear as
-    a "graph", not a text object -- except when called from x_array.c -
-    we detect that by x1==0 and y1==-1.  That should have been an
-    extra argument but it's late in the release cycle. */
+    a "graph", not a text object.  */
 t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     t_float x1, t_float y1, t_float x2, t_float y2,
     t_float px1, t_float py1, t_float px2, t_float py2)
 {
     static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
-    int menu = 0, arraybox = (x1 == 0 && y1 == -1);
+    int menu = 0;
     const char *str;
     t_glist *x = (t_glist *)pd_new(canvas_class);
     glist_init(x);
@@ -660,16 +658,13 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
 
         /* when creating the graph from menu (even indirectly via garray)
            switch to edit-mode and stick it to the mouse-pointer
-           so user can position it wherever they want.  But not for
-           objects such as "[array x]" - reported by the 'arraybox" flag
+           so user can position it whereever they want
          */
-    if (menu && !arraybox)
-    {
+    if(menu) {
         pd_vmess((t_pd*)g, gensym("editmode"), "i", 1);
         glist_noselect(g);
         glist_select(g, (t_gobj*)x);
-        if (x->gl_editor)
-        {
+        if(x->gl_editor) {
             /* poor man's replacement for glist_nograb() */
             x->gl_editor->e_grab = 0;
         }
