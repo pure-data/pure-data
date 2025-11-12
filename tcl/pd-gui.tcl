@@ -47,6 +47,7 @@ package require dialog_midi
 package require dialog_path
 package require dialog_startup
 package require dialog_preferences
+package require dialog_bindings
 package require helpbrowser
 package require pd_menucommands
 package require opt_parser
@@ -333,7 +334,7 @@ proc init_for_platform {} {
             # load tk::mac event callbacks here, this way launching pd
             # from the commandline incorporates the special mac event handling
             package require apple_events
-            set ::modifier "Mod1"
+            set ::modifier "Command"
             if {$::tcl_version < 8.5} {
                 # old default font for Tk 8.4 on macOS
                 # since font detection requires 8.5+
@@ -532,8 +533,7 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    ::pd_bindings::class_bindings
-    ::pd_bindings::global_bindings
+    ::pd_bindings::setup
     ::pd_menus::create_menubar
     ::pdwindow::create_window
     ::pdwindow::configure_menubar
