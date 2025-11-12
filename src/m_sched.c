@@ -613,7 +613,7 @@ static void m_callbackscheduler(void)
 
 int m_mainloop(void)
 {
-        /* open audio and MIDI */
+    /* open audio and MIDI */
     sys_reopen_midi();
     if (audio_shouldkeepopen() && !audio_isopen())
     {

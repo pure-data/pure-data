@@ -48,6 +48,7 @@ void glob_closesubs(void *dummy);
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop);
 void glob_rescanaudio(void *dummy);
+void glob_setthreadedio(void *dummy, t_float f);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -201,6 +202,8 @@ void glob_init(void)
          gensym("fast-forward"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_settracing,
          gensym("set-tracing"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_setthreadedio,
+         gensym("set-threaded-io"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_vis,
