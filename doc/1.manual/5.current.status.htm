@@ -4,28 +4,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 5: Current status</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
 <div class="nav nav-top">
-    <div class="nav-back"><A href="chapter4.htm">&lt; Chapter 4: Externals</A></div>
-    <div class="nav-home"><A href="../index.htm#s5">Table of contents</A></div>
-    <div class="nav-forward"><A href="chapter6.htm">Chapter 6: Building Pd from source &gt;</A></div>
+    <div class="nav-back"><A href="4.externals.htm">&lt; Chapter 4: Externals</A></div>
+    <div class="nav-home"><A href="index.htm#s5">Table of contents</A></div>
+    <div class="nav-forward"><A href="6.building.from.source.htm">Chapter 6: Building Pd from source &gt;</A></div>
 </div>
 <div id="corpus">
 
-<IMG id="logo" src="icon.png" ALT="pd icon">
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
 <H2>Chapter 5: Current status</H2>
 
 <P>This chapter tracks changes in Pd's current implementation.</P>
 
-<H3> <A href="#s5.1" id="s5.1"> 5.1. Release notes </A> </H3><section><div>
+<H3> <A href="#s5.1" id="s5.1"> 5.1. Release notes </A> </H3>
 
-
-</div></section><section class="releasenote"><h4 id="0.56-2">0.56-2</h4><div>
+<section class="releasenote"><h4 id="0.56-2">0.56-2</h4><div>
 
 <p>Bug fixes: averted possible crashes when changing audio settings while in
 callback mode, and fixed various problems with text objects in GOPs.</p>
@@ -96,7 +95,7 @@ to look at contents without expelling them. Examples were added by Porres to
 show how to use [bag] as a sustain pedal, arpeggiator and more.</p>
 
 <p>The [poly] object now has a "resize" message for changing the number of voices,
-plus a "steal" message for dynamically enabling/disabling note-stealing.
+plus a "steal" message for dynamically enabling/disabling note-stealing.</p>
 
 <p>The [random] object takes a "float" message that both sets the range and
 generates an output.</p>
@@ -194,9 +193,9 @@ without causing loader errors in older Pd versions.</P>
 
 </div></section><section class="releasenote"><h4 id="0.54-1">0.54-1</h4><div>
 
-<p> Fixes a compatibility problem with MacOS 14.
+<p> Fixes a compatibility problem with MacOS 14.</p>
 
-<p> Numerous bug fixes and documentation updates.</P>
+<p> Numerous bug fixes and documentation updates.</p>
 
 
 </div></section><section class="releasenote"><h4 id="0.54-0">0.54-0</h4><div>
@@ -291,8 +290,7 @@ upward to the jack blocksize if needed (to prevent a hang).</P>
 it now activates the text as traditional until 0.51.  Sometimes one behavior is
 wanted, sometimes the other, so there should be an easy-to-understand way for
 users to control this.  At the moment you can rectangle-select an object to
-displace it without selecting the text, which is perhaps adequate, perhaps not.
-</P>
+displace it without selecting the text, which is perhaps adequate, perhaps not.</P>
 
 <P> added an indirect way to open Pd's gui on one machine and the real-time
 program on another without using X windows (so that it can be easily done on
@@ -300,7 +298,9 @@ MacOS and Windows).  Requires ssh expertise - see commit c0e320f2142.  (This
 was already included in pd-0.51-1 but not documented).</P>
 
 
-</div></section><section class="releasenote" id="0.52-1"><h4 id="0.52-0">0.52-0 and 0.52-1</h4><div>
+</div>
+</section>
+<section class="releasenote" id="0.52-1"><h4 id="0.52-0">0.52-0 and 0.52-1</h4><div>
 
 <P>The Macintosh compiled version is now compiled at IEM (as part of the
 continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
@@ -1393,7 +1393,7 @@ include the (unstable) g_canvas.h to get them.</P>
 compile with fewer warnings and be more portable.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.37-test 1">0.37-test 1</h4><div>
+</div></section><section class="releasenote"><h4 id="0.37-test-1">0.37-test 1</h4><div>
 
 <P>The MacOSX version now prioritizes itself effectively (thanks to
 gert@test.at (v93r)) via Adam Lindsay).  Adam also made a proper MacOSX
@@ -1737,7 +1737,7 @@ MacOS port of Pd though; it's hard to predict when this will be feasible.</P>
 <P>new arrays in 0.32p6 got ill-fitting graphs -- fixed.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.32 PATCH 6">0.32 PATCH 6</h4><div>
+</div></section><section class="releasenote"><h4 id="0.32-PATCH-6">0.32 PATCH 6</h4><div>
 
 <P>Got array and graph dialogs to behave better when there are more
 than one.</P>
@@ -1749,7 +1749,7 @@ than one.</P>
 <P>bug fix in exporting patches to Max</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.32 PATCH 5">0.32 PATCH 5</h4><div>
+</div></section><section class="releasenote"><h4 id="0.32-PATCH-5">0.32 PATCH 5</h4><div>
 
 <P>Reversed the order of these release notes so that the newest appear first.</P>
 
@@ -1771,7 +1771,7 @@ the window title.</P>
 if Pd is run "-verbose".</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.32 PATCH 2, 3, 4">0.32 PATCH 2, 3, 4</h4><div>
+</div></section><section class="releasenote"><h4 id="0.32-PATCH-2,-3,-4">0.32 PATCH 2, 3, 4</h4><div>
 
 <P>Hassled more with font size differences between NT and Linux, and updated
 many help files.  Minor bug fixes here and there.</P>
@@ -1788,7 +1788,7 @@ next SELECTED object.</P>
 <P>bug fix in which RME driver always thought sample rate was 44100.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.32 PATCH 1">0.32 PATCH 1</h4><div>
+</div></section><section class="releasenote"><h4 id="0.32-PATCH-1">0.32 PATCH 1</h4><div>
 
 <P>bug fixes (bugs flagged by mik): vcf~ help window crashed; writesf~
 only wrote 1 channel soundfiles; "table" object didn't open when clicked
@@ -2204,8 +2204,7 @@ The SGI version contains an n32 binary (look at the "bin" directory).</P>
 
 </div></section><section class="releasenote"><h4 id="0.24">0.24</h4><div>
 
-<P>
-new objects:
+<P>new objects:</P>
 <UL>
 <LI>bang - convert any message to a "bang"</LI>
 <LI>qlist -      message sequencer</LI>
@@ -2213,10 +2212,9 @@ new objects:
 <LI>makefilename - format a name with a variable field</LI>
 <LI>openpanel - "Open" dialog</LI>
 <LI>savepanel - "Save as" dialog</LI>
-</UL></P>
+</UL>
 
-<P>
-Bug fixes:
+<P>Bug fixes:</P>
 <UL>
 <LI>Fixed a bug in "const" message to arrays</LI>
 <LI>"exp" was broken on NT, now fixed</LI>
@@ -2230,38 +2228,24 @@ Bug fixes:
 <LI>improved "new object" placement on screen</LI>
 <LI>fixed help dialog to remember previous directory (thanks to Harry Castle)</LI>
 <LI>heterogeneous lists</LI>
-</UL></P>
+</UL>
 
-<P>
-
-Arrays can be written to and read from text files or from 16-bit
+<P>Arrays can be written to and read from text files or from 16-bit
 binary files.  See ../2.starter/2G for an overview.</P>
 
-<P>
-
-Guenter Geiger has contributed a Max-style "table" object which
+<P>Guenter Geiger has contributed a Max-style "table" object which
 creates an "array" object in a subwindow.</P>
 
-<P>
-
-Guenter has also put in a "search path" feature for externs, abstractions,
+<P>Guenter has also put in a "search path" feature for externs, abstractions,
 etc.</P>
 
-<P>
+<P>The Help menu got reworked.</P>
 
-The Help menu got reworked.</P>
+<P>Select and Route were extended to work Zack-style with symbols.</P>
 
-<P>
+<P>"random" takes seeds now (see the "help" window)</P>
 
-Select and Route were extended to work Zack-style with symbols.</P>
-
-<P>
-
-"random" takes seeds now (see the "help" window)</P>
-
-<P>
-
-Some more work on graphical lists; you can see the current state in
+<P>Some more work on graphical lists; you can see the current state in
 ../7.stuff/data-structures.  It's still nascent.</P>
 
 
@@ -2272,16 +2256,14 @@ A first cut at the "pure data" feature is now included.  See section 6
 of the documentation for a quick introduction to it; see also patches 12 and
 14 in the FFT examples.</P>
 
-<P>
-The documentation has been reorganized.  The most interesting new features are:
+<P>The documentation has been reorganized.  The most interesting new features are:</P>
 <UL>
 <LI>some new "tutorial" patches</LI>
 <LI>15 "fft" examples</LI>
 <LI>improved help navigation</LI>
-</UL></P>
+</UL>
 
-<P>
-  more bug fixes:
+<P>more bug fixes:</P>
 <UL>
 <LI>titles on abstractions no longer saved inside file</LI>
 <LI>left-to-right sorting of inlets/outlets now seems to work</LI>
@@ -2294,7 +2276,7 @@ The documentation has been reorganized.  The most interesting new features are:
 <LI>pasting now adds to the end of the list (used to add to beginning)</LI>
 <LI>clicking now selects the most recent object when two or more overlap</LI>
 <LI>Pd's "open" and "help" dialogs now maintain separate paths</LI>
-</UL></P>
+</UL>
 
 <P>
 The phasor~ object's "float" method has been REMOVED -- use the right-hand
@@ -2303,8 +2285,7 @@ objects to convert messages to signals automatically at all signal inputs.</P>
 
 
 </div></section><section class="releasenote"><h4 id="0.22">0.22</h4><div>
-<P>
-bug fixes
+<P>bug fixes</P>
 <UL>
 <LI>parsing 1e+006 gave symbol (now float)</LI>
 <LI>"." parsed as number, should be symbol</LI>
@@ -2318,28 +2299,26 @@ bug fixes
 <LI>bug in pack, unpack</LI>
 <LI>windows restore bigger than saved</LI>
 </UL>
-</P>
 
-<P>
-Nt-specific bug fixes:
+<P>Nt-specific bug fixes:</P>
 <UL>
 <LI>getsockopt for netreceive fails.  Just omitted it for NT.</LI>
-<LI>put tcl dlls in tcl bin, not pd bin</LI>
-  <UL>
-    <LI>archive tcl subsystem for easier version updates</LI>
+<LI>put tcl dlls in tcl bin, not pd bin
+<UL>
+<LI>archive tcl subsystem for easier version updates</LI>
     <LI>fix README accordingly</LI>
-  </UL>
+</UL>
+</LI>
 <LI>deal with bell sound</LI>
 <LI>turn on optimization</LI>
 <LI>looked for audio timeout bug but couldn't find it.</LI>
 </UL>
-</P>
 
 
 </div></section><section class="releasenote"><h4 id="0.21">0.21</h4><div>
 
 <P>
-bug fixes:
+bug fixes:</P>
 
 <P>table size change with DSP on:  It used to crash Pd to resize an array
 when DSP was turned on.  This is now fixed.</P>
@@ -2356,16 +2335,14 @@ forgot window size changes.  This should now be fixed.</P>
 <P> improvement to netreceive suggested by Mark Danks</P>
 <P> style notes fleshed out as suggested by Larry Troxler</P>
 <P> fixed Bill Kleinsasser's bug (short and long array in same graph)</P>
-</P>
 
 <P>
-new features:
+new features:</P>
 
 <P> phase setting for phasor~</P>
 <P> fft objects.  Also, block~, for specifying block sizes and overlaps for FFTs.</P>
 <P> canvas_makefilename() (used, e.g.,  by array_read and write)</P>
 <P> "stuff" directory with examples of real Pd applications.</P>
-</P>
 
 
 </div></section><section class="releasenote"><h4 id="0.20">0.20</h4><div>
@@ -2381,7 +2358,7 @@ Also, the array_write routine was fixed.</P>
 </div></section><section class="releasenote"><h4 id="0.19">0.19</h4><div>
 
 <P>
-notable new objects:
+notable new objects:</P>
 
 <UL>
 <LI> vcf~, a band-pass filter with a signal input for center frequency.</LI>
@@ -2389,7 +2366,6 @@ notable new objects:
 <LI> various math and midi stuff</LI>
 <LI> catch~, throw~, send~, receive~ for nonlocal signal connections</LI>
 </UL>
-</P>
 
 <P>
 an experimental facility for array of floats is included. You can make a new
@@ -2444,29 +2420,21 @@ flaky.  I'm curious how all this will work on other machines...</P>
 <P>
 The list of classes is now:</P>
 
-<P>
-
-GENERAL:
+<P>GENERAL:
 field inlet outlet print int float send receive select route pack unpack
 trigger spigot moses delay metro line timer makenote stripnote random loadbang
 serial get netsend netreceive</P>
 
-<P>
-
-MATH:
+<P>MATH:
 + - * / == != &gt; &lt; &gt;= &lt;= & && | || %
 mod div sin cos tan atan atan2 sqrt log exp abs
 mtof ftom powtodb rmstodb dbtopow dbtorms</P>
 
-<P>
-
-MIDI:
+<P>MIDI:
 notein ctlin pgmin bendin touchin polytouchin noteout ctlout pgmout bendout
 touchout polytouchout</P>
 
-<P>
-
-SIGNAL:
+<P>SIGNAL:
 dac~ adc~ sig~ line~ snapshot~ +~ -~ *~ /~ phasor~ cos~ vcf~ noise~ env~ hip~
 lop~ bp~ biquad~ samphold~ clip~ rsqrt~ sqrt~ wrap~ print~ scope~ tabwrite~
 tabread4~ send~ receive~ catch~ throw~ delwrite~ delread~ vd~</P>
@@ -2486,14 +2454,14 @@ without saving (although "quit" will still exit Pd without verification.)</P>
 Got rid of "dll" error printout when loading abstractions</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.12 - 0.17">0.12 - 0.17</h4><div>
+</div></section><section class="releasenote"><h4 id="0.12---0.17">0.12 - 0.17</h4><div>
 
 <P>
 got Pd running under NT, although driver problems remain.  Gem is also
 distributed for both platforms.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.11 ">0.11 </h4><div>
+</div></section><section class="releasenote"><h4 id="0.11">0.11</h4><div>
 
 Here's a list of all the objects in this release:
 
@@ -2510,12 +2478,12 @@ Here's a list of all the objects in this release:
 <P>"spigot" replaces "gate" but has the inputs reversed.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.10 ">0.10 </h4><div>
+</div></section><section class="releasenote"><h4 id="0.10">0.10</h4><div>
 <P>
 Many bug fixes.  This was the first pre-release to be put on the FTP site.</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.09 ">0.09 </h4><div>
+</div></section><section class="releasenote"><h4 id="0.09">0.09</h4><div>
 <P> set up the "Help" menu</P>
 <P> Bug in DSP sorting fixed</P>
 <P> "Notein" and "noteout" objects</P>
@@ -2523,7 +2491,7 @@ Many bug fixes.  This was the first pre-release to be put on the FTP site.</P>
 <P> The scheduler deals better when sound I/O malfunctions</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.08 ">0.08 </h4><div>
+</div></section><section class="releasenote"><h4 id="0.08">0.08</h4><div>
 
 <P>metro bug</P>
 <P>scrollbars</P>
@@ -2532,7 +2500,7 @@ Many bug fixes.  This was the first pre-release to be put on the FTP site.</P>
 <P>fixed boxes to reconnect on retype</P>
 
 
-</div></section><section class="releasenote"><h4 id="0.07 ">0.07 </h4><div>
+</div></section><section class="releasenote"><h4 id="0.07">0.07</h4><div>
 
 <P>made an adc~ object</P>
 
@@ -2596,8 +2564,7 @@ objects; they can be dragged and connected as in Max; to break a connection,
 just click on it (the cursor becomes a turkey to indicate this.)  Cut,
 paste, and duplicate seem to work, and a "Pd" class offers subwindows.</P>
 
-<P>
-The following max-like objects are included:
+<P>The following max-like objects are included:</P>
 <UL>
 <LI>print</LI>
 <LI>+, *, -, /, ==, !=, &gt;, &lt;, &gt;=, &lt;=, &amp;, |, &amp;&amp;, ||, %</LI>
@@ -2605,15 +2572,14 @@ The following max-like objects are included:
 <LI>delay, metro, timer</LI>
 <LI>send, receive</LI>
 </UL>
-</P>
 </div></section>
 
 </div>
 
 <div class="nav nav-bottom">
-    <div class="nav-back"><A href="chapter4.htm">&lt; Chapter 4: Externals</A></div>
-    <div class="nav-home"><A href="../index.htm#s5">Table of contents</A></div>
-    <div class="nav-forward"><A href="chapter6.htm">Chapter 6: Building Pd from source &gt;</A></div>
+    <div class="nav-back"><A href="4.externals.htm">&lt; Chapter 4: Externals</A></div>
+    <div class="nav-home"><A href="index.htm#s5">Table of contents</A></div>
+    <div class="nav-forward"><A href="6.building.from.source.htm">Chapter 6: Building Pd from source &gt;</A></div>
 </div>
 
 </BODY>
