@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include "g_canvas.h"
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -745,6 +746,40 @@ void sys_loadpreferences(const char *filename, int startingup)
     if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_zoom_open);
 
+    /* load GUI theme colors (if present).  Accept values like "#rrggbb" or "rrggbb". */
+    if (pd_this && pd_this->pd_gui)
+    {
+        char colbuf[MAXPDSTRING];
+        const char *keys[] = {
+            "foregroundcolor", 
+            "backgroundcolor",
+            "selectioncolor", 
+            "gopcolor"
+        };
+        unsigned int *dst[] = {
+            &pd_this->pd_gui->i_foregroundcolor,
+            &pd_this->pd_gui->i_backgroundcolor,
+            &pd_this->pd_gui->i_selectcolor,
+            &pd_this->pd_gui->i_gopcolor
+        };
+        int k;
+        for (k = 0; k < 4; k++)
+        {
+            if (sys_getpreference(keys[k], colbuf, MAXPDSTRING) && colbuf[0])
+            {
+                char *s = colbuf;
+                /* tolerate values longer than 6 by only parsing last 6 chars */
+                int len = strlen(s);
+                if (len > 6) s += (len - 6);
+                if (len >= 1)
+                {
+                    unsigned long v = strtoul(s, NULL, 16);
+                    *dst[k] = (unsigned int)(v & 0xFFFFFF);
+                }
+            }
+        }
+    }
+
     sys_doneloadpreferences();
 }
 
@@ -866,6 +901,27 @@ void sys_savepreferences(const char *filename)
     sprintf(buf1, "%d", sys_zoom_open);
     sys_putpreference("zoom", buf1);
     sys_putpreference("loading", "no");
+
+    /* save GUI theme colors as hex strings (rrggbb) */
+    if (pd_this && pd_this->pd_gui)
+    {
+        char colorbuf[MAXPDSTRING];
+        pd_snprintf(colorbuf, MAXPDSTRING, "%06x",
+            pd_this->pd_gui->i_foregroundcolor & 0xFFFFFF);
+        sys_putpreference("foregroundcolor", colorbuf);
+
+        pd_snprintf(colorbuf, MAXPDSTRING, "%06x",
+            pd_this->pd_gui->i_backgroundcolor & 0xFFFFFF);
+        sys_putpreference("backgroundcolor", colorbuf);
+
+        pd_snprintf(colorbuf, MAXPDSTRING, "%06x",
+            pd_this->pd_gui->i_selectcolor & 0xFFFFFF);
+        sys_putpreference("selectioncolor", colorbuf);
+
+        pd_snprintf(colorbuf, MAXPDSTRING, "%06x",
+            pd_this->pd_gui->i_gopcolor & 0xFFFFFF);
+        sys_putpreference("gopcolor", colorbuf);
+    }
 
     sys_donesavepreferences();
 }

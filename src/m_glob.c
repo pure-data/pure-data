@@ -47,6 +47,8 @@ void glob_vis(void *dummy, t_symbol *s);
 void glob_closesubs(void *dummy);
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop);
+void glob_request_theme_colors(void *dummy);
+void glob_start_theme_dialog(void *dummy);
 void glob_rescanaudio(void *dummy);
 
 static void glob_helpintro(t_pd *dummy)
@@ -209,6 +211,10 @@ void glob_init(void)
         gensym("close-subwindows"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_colors,
         gensym("colors"), A_SYMBOL, A_SYMBOL, A_SYMBOL, A_DEFSYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_request_theme_colors,
+        gensym("request-theme-colors"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_start_theme_dialog,
+        gensym("start-theme-dialog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_rescanaudio,
         gensym("rescan-audio"), 0);
     class_addanything(glob_pdobject, max_default);

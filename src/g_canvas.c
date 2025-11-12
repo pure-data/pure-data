@@ -2389,3 +2389,20 @@ void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
         glist_dorevis(gl);
 }
+
+void glob_start_theme_dialog(void *dummy)
+{
+    pdgui_vmess("::dialog_theme::create_dialog", "");
+}
+
+/* send current theme colors to the GUI dialog (as #rrggbb strings) */
+void glob_request_theme_colors(void *dummy)
+{
+    char fg[16], bg[16], sel[16], gop[16];
+    /* format colors as hex strings */
+    snprintf(fg, sizeof(fg), "#%06x", THISGUI->i_foregroundcolor & 0xFFFFFF);
+    snprintf(bg, sizeof(bg), "#%06x", THISGUI->i_backgroundcolor & 0xFFFFFF);
+    snprintf(sel, sizeof(sel), "#%06x", THISGUI->i_selectcolor & 0xFFFFFF);
+    snprintf(gop, sizeof(gop), "#%06x", THISGUI->i_gopcolor & 0xFFFFFF);
+    pdgui_vmess("::dialog_theme::set_colors", "ssss", fg, bg, sel, gop);
+}

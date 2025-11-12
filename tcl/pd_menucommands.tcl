@@ -171,6 +171,15 @@ proc ::pd_menucommands::menu_preference_dialog {} {
     pdsend "pd start-preference-dialog"
 }
 
+proc ::pd_menucommands::menu_theme_dialog {} {
+    if {[winfo exists .theme]} {
+        raise .theme
+        focus .theme
+    } else {
+        pdsend "pd start-theme-dialog"
+    }
+}
+
 proc ::pd_menucommands::menu_manual {} {
     ::pd_menucommands::menu_doc_open doc/1.manual index.htm
 }

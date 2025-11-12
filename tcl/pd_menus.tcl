@@ -337,6 +337,8 @@ proc ::pd_menus::build_window_menu {mymenu} {
     $mymenu add command -label [_ "Close subwindows"] \
         -command {pdsend "pd close-subwindows"}
     $mymenu add  separator
+    $mymenu add command -label [_ "Theme Editor..."] \
+        -command {::pd_menucommands::scheduleAction menu_theme_dialog}
     $mymenu add command -label [_ "Pd window"] -command {::pd_menucommands::scheduleAction menu_raise_pdwindow} \
         -accelerator "$accelerator+R"
     $mymenu add command -label [_ "Parent Window"] \
