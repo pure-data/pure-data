@@ -252,9 +252,27 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 
     IEMGUI_SETDRAWFUNCTIONS(x, my_canvas);
 
-    x->x_gui.x_bcol = 0xE0E0E0;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x404040;
+    // interpolate between background and foreground color
+    unsigned int bg = THISGUI->i_backgroundcolor;
+    unsigned int fg = THISGUI->i_foregroundcolor;
+    float factor = 0.17f;
+
+    float r1 = (float)((bg >> 16) & 0xFF);
+    float g1 = (float)((bg >> 8)  & 0xFF);
+    float b1 = (float)( bg        & 0xFF);
+
+    float r2 = (float)((fg >> 16) & 0xFF);
+    float g2 = (float)((fg >> 8)  & 0xFF);
+    float b2 = (float)( fg        & 0xFF);
+
+    int r = (int)(r1 + (r2 - r1) * factor + 0.5f);
+    int g = (int)(g1 + (g2 - g1) * factor + 0.5f);
+    int b = (int)(b1 + (b2 - b1) * factor + 0.5f);
+
+    unsigned int interp = (r << 16) | (g << 8) | b;
+
+    x->x_gui.x_bcol = interp;
+    x->x_gui.x_lcol = fg;
 
     if(((argc >= 10)&&(argc <= 13))
        &&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2))
