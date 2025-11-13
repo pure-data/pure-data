@@ -1070,7 +1070,7 @@ int sigfiddle_setnpoints(t_sigfiddle *x, t_floatarg fnpoints)
         pd_error(0, "fiddle~: npoints out of range; using %d",
             npoints = DEFAULTPOINTS);
     }
-    if (npoints != (1 << sigfiddle_ilog2(npoints)))
+    if (npoints & (npoints - 1))
     {
         pd_error(0, "fiddle~: npoints not a power of 2; using %d",
             npoints = (1 << sigfiddle_ilog2(npoints)));
