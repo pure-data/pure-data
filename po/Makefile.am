@@ -29,6 +29,7 @@ TCLFILES = \
     dialog_font.tcl \
     dialog_gatom.tcl \
     dialog_iemgui.tcl \
+    dialog_iemgui_knb.tcl \
     dialog_message.tcl \
     dialog_midi.tcl \
     dialog_path.tcl \

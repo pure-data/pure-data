@@ -511,6 +511,42 @@ msgstr "Créer la couleur"
 msgid "Test label"
 msgstr "Étiquette de test"
 
+msgid "Arc color"
+msgstr "Couleur de l'arc"
+
+msgid "Sensitivity:"
+msgstr "Sensibilité :"
+
+msgid "Move:"
+msgstr "Mouvement :"
+
+msgid "Angle"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "X+Y"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "Ticks: "
+msgstr "Graduations : "
+
+msgid "Arc thickness: "
+msgstr "Épaisseur arc : "
+
+msgid "Start angle: "
+msgstr "Angle début : "
+
+msgid "End angle: "
+msgstr "Angle fin : "
+
+msgid "Arc"
+msgstr ""
+
 msgid "Send a Pd message"
 msgstr "Envoyer un message Pd"
 
@@ -1969,6 +2005,9 @@ msgstr "Symbole"
 
 msgid "Comment"
 msgstr "Commentaire"
+
+msgid "Knob"
+msgstr "Bouton"
 
 msgid "Graph"
 msgstr "Graphique"
