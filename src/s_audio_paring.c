@@ -107,8 +107,10 @@ long sys_ringbuf_init(sys_ringbuf *rbuf, long numBytes,
 ** Return number of bytes available for reading. */
 long sys_ringbuf_getreadavailable(sys_ringbuf *rbuf)
 {
-    long ret = atomic_int_load(&rbuf->writeIndex)
-        - atomic_int_load(&rbuf->readIndex);
+    long write_idx = atomic_int_load(&rbuf->writeIndex);
+    long read_idx = atomic_int_load(&rbuf->readIndex);
+
+    long ret = write_idx - read_idx;
     if (ret < 0)
         ret += 2 * rbuf->bufferSize;
     if (ret < 0 || ret > rbuf->bufferSize)
@@ -116,6 +118,7 @@ long sys_ringbuf_getreadavailable(sys_ringbuf *rbuf)
             "consistency check failed: sys_ringbuf_getreadavailable\n");
     return (ret);
 }
+
 /***************************************************************************
 ** Return number of bytes available for writing. */
 long sys_ringbuf_getwriteavailable(sys_ringbuf *rbuf)

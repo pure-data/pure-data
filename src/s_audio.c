@@ -310,6 +310,11 @@ void sys_do_close_audio(void)
         alsa_close_audio();
     else
 #endif
+#ifdef USEAPI_PIPEWIRE
+    if (sys_audioapiopened == API_PIPEWIRE)
+        pipewire_close_audio();
+    else
+#endif
 #ifdef USEAPI_MMIO
     if (sys_audioapiopened == API_MMIO)
         mmio_close_audio();
@@ -357,6 +362,7 @@ void sys_do_reopen_audio(void)
     t_audiosettings as;
     int outcome = 0, totalinchans, totaloutchans;
     sys_get_audio_settings(&as);
+
     /* fprintf(stderr, "audio in ndev %d, dev %d; out ndev %d, dev %d\n",
         as.a_nindev, as.a_indevvec[0], as.a_noutdev, as.a_outdevvec[0]); */
     audio_compact_and_count_channels(&as.a_nindev, as.a_indevvec,
@@ -418,6 +424,16 @@ void sys_do_reopen_audio(void)
                 as.a_blocksize);
     else
 #endif
+#ifdef USEAPI_PIPEWIRE
+    if (as.a_api == API_PIPEWIRE)
+        outcome = pipewire_open_audio(as.a_nindev, as.a_indevvec,
+            as.a_nindev, as.a_chindevvec, as.a_noutdev,
+            as.a_outdevvec, as.a_noutdev, as.a_choutdevvec, as.a_srate,
+                as.a_blocksize);
+    else
+#endif
+
+
 #ifdef USEAPI_MMIO
     if (as.a_api == API_MMIO)
         outcome = mmio_open_audio(as.a_nindev, as.a_indevvec,
@@ -516,8 +532,13 @@ int sys_send_dacs(void)
     else
 #endif
 #ifdef USEAPI_JACK
-      if (sys_audioapiopened == API_JACK)
+    if (sys_audioapiopened == API_JACK)
         return (jack_send_dacs());
+    else
+#endif
+#ifdef USEAPI_PIPEWIRE
+    if (sys_audioapiopened == API_PIPEWIRE)
+        return (pipewire_send_dacs());
     else
 #endif
 #ifdef USEAPI_OSS
@@ -598,6 +619,15 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     if (api == API_JACK)
     {
         jack_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
+            maxndev, devdescsize);
+        *cancallback = 1;
+    }
+    else
+#endif
+#ifdef USEAPI_PIPEWIRE
+    if (api == API_PIPEWIRE)
+    {
+        pipewire_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
         *cancallback = 1;
     }
@@ -883,7 +913,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     }
 }
 
-#define MAXAPIENTRY 10
+#define MAXAPIENTRY 11
 typedef struct _apientry
 {
     char a_name[30];
@@ -913,6 +943,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #ifdef USEAPI_JACK
     {"jack", API_JACK},
+#endif
+#ifdef USEAPI_PIPEWIRE
+    {"pipewire", API_PIPEWIRE},
 #endif
 #ifdef USEAPI_AUDIOUNIT
     {"Audiounit", API_AUDIOUNIT},
