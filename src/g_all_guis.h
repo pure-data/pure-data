@@ -217,8 +217,9 @@ typedef struct _radio
     int      x_on;
     int      x_on_old;  /* LATER delete this; it's used for old version */
     int      x_change;
-    int      x_number;
-    int      x_drawn;
+    int      x_number[2];
+    // int      x_focflag, x_foc;
+    int      *x_matrix;
     t_float  x_fval;
     t_iem_orientation x_orientation;
     int      x_compat; /* old version */
