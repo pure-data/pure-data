@@ -53,6 +53,11 @@ static void radio_doresize(t_radio *x, int ncols, int nrows) {
     for (int j = 0; j < new_nrows; ++j)
       x->x_matrix[i * new_nrows + j] = 0;
 
+  if (new_ncols == 1)
+      x->x_orientation = vertical;
+  if (new_nrows == 1)
+      x->x_orientation = horizontal;
+
   x->x_number[(int)x->x_orientation] = new_ncols;
   x->x_number[!(int)x->x_orientation] = new_nrows;
 }
@@ -211,11 +216,11 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
             sprintf(tag, "%pSTEP", x);
             sprintf(tag_n, "%pX1%d", x, idx);
             pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-                0, 0, 0, 0, "-tags", 2, tags);
+                0, 0, 0, 0, "-tags", 3, tags);
 
             sprintf(tag_n, "%pX2%d", x, idx);
             pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-                0, 0, 0, 0, "-tags", 2, tags);
+                0, 0, 0, 0, "-tags", 3, tags);
         }
     }
     /* make sure the buttons are above their base */
@@ -224,7 +229,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     pdgui_vmess(0, "crss", canvas, "raise", tag, tag_n);
 
     sprintf(tag, "%pSTEP", x);
-    sprintf(tag_n, "%pBASE", x);
+    sprintf(tag_n, "%pBUT", x);
     pdgui_vmess(0, "crss", canvas, "raise", tag, tag_n);
 
     sprintf(tag, "%pLABEL", x);
@@ -258,7 +263,7 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
     if(glist_isvisible(glist))
     {
         t_canvas *canvas = glist_getcanvas(glist);
-        char tag[128];
+        char tag_but[128], tag_x1[128], tag_x2[128];
 
         int ncols = x->x_number[(int)x->x_orientation];
         int nrows = x->x_number[!(int)x->x_orientation];
@@ -266,22 +271,32 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
             for(int col=0; col<ncols; ++col) {
                 int idx = get_matrix_idx(col, i, ncols, nrows, x->x_orientation);
 
+                int but_on_cell = x->x_on == idx;
+                int step_on_cell = x->x_matrix[idx] == 1;
                 /* paint the BUTton if it is currently on that index */
                 /* draw the X step if the value at that index is other than zero */
-                int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-                int step_color = (x->x_matrix[idx] != 0) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+                int curr_color = but_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+                int step_color = step_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
 
-                sprintf(tag, "%pBUT%d", x, idx);
-                pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-                            "-fill", curr_color,
-                            "-outline", curr_color);
+                sprintf(tag_but, "%pBUT%d", x, idx);
+                pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag_but,
+                            "-fill", curr_color, "-outline", curr_color);
 
-                sprintf(tag, "%pX1%d", x, idx);
-                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-                            "-outline", step_color);
-                sprintf(tag, "%pX2%d", x, idx);
-                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-                            "-outline", step_color);
+                sprintf(tag_x1, "%pX1%d", x, idx);
+                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x1,
+                            "-fill", step_color);
+                sprintf(tag_x2, "%pX2%d", x, idx);
+                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x2,
+                            "-fill", step_color);
+
+                if (step_on_cell == 1 && but_on_cell == 0) {
+                    pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_but);
+                    pdgui_vmess(0, "crss", canvas, "raise", tag_x2, tag_but);
+                } else if (step_on_cell == 0 && but_on_cell == 1) {
+                    pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x1);
+                    pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x2);
+                }
+
 
             }
         }
@@ -324,24 +339,68 @@ static void radio_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp
     *yp2 = *yp1 + x->x_gui.x_h * x->x_number[!(int)x->x_orientation];
 }
 
+// Returns 1 on success, 0 on invalid input.
+static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orientation, int *size) {
+    if (!size) return 0;
+    if (nrows <= 1 || nrows > IEM_RADIO_MAX) return 0;
+    if (ncols <= 1 || ncols > IEM_RADIO_MAX) return 0;
+
+    uint16_t r7 = (uint16_t)(nrows - 1);  // 0..127
+    uint16_t c7 = (uint16_t)(ncols - 1);  // 0..127
+    uint16_t o  = (uint16_t)orientation; // 0/1
+
+    uint16_t code = (uint16_t)((o << 14) | (r7 << 7) | c7); // 0..32767
+    *size = -(int)(code + 1); // -1..-32768
+    return 1;
+}
+
+// If number is extended (<0), decodes into nrows/ncols/orientation and returns 1.
+// If number is not extended (>=0), returns 0 (caller should handle legacy).
+static int radio_decode_extended(int number, int *nrows, int *ncols, t_iem_orientation *orientation) {
+    if (!nrows || !ncols || !orientation) return 0;
+    if (number >= 0) return 0;
+
+    uint16_t code = (uint16_t)(-number - 1); // 0..32767
+
+    int o = (code >> 14) & 1;
+    int r = ((code >> 7) & 0x7F) + 1;
+    int c = (code & 0x7F) + 1;
+
+    // Sanity (should always hold given the encoding)
+    if (r < 1 || r > IEM_RADIO_MAX) return 0;
+    if (c < 1 || c > IEM_RADIO_MAX) return 0;
+
+    *orientation = o;
+    *nrows = r;
+    *ncols = c;
+    return 1;
+}
+
 static void radio_save(t_gobj *z, t_binbuf *b)
 {
     t_radio *x = (t_radio *)z;
     t_symbol *bflcol[3];
     t_symbol *srl[3];
-
     const char*objname;
-    if(x->x_orientation == horizontal)
+    int ncols = x->x_number[(int)x->x_orientation];
+    int nrows = x->x_number[!(int)x->x_orientation];
+    int size;
+
+    if(radio_encode_extended(nrows, ncols, x->x_orientation, &size)) {
+        objname="radio";
+    } else if(x->x_orientation == horizontal)
     {
         if(x->x_compat)
             objname="hdl";
         else
             objname="hradio";
+        size = ncols;
     } else {
         if(x->x_compat)
             objname="vdl";
         else
             objname="vradio";
+        size = nrows;
     }
 
     iemgui_save(&x->x_gui, srl, bflcol);
@@ -350,13 +409,15 @@ static void radio_save(t_gobj *z, t_binbuf *b)
                 (int)x->x_gui.x_obj.te_ypix,
         gensym(objname),
                 x->x_gui.x_w/IEMGUI_ZOOM(x),
-                x->x_change, iem_symargstoint(&x->x_gui.x_isa), x->x_number[(int)x->x_orientation],
+                x->x_change, iem_symargstoint(&x->x_gui.x_isa), size,
                 srl[0], srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
                 x->x_gui.x_isa.x_loadinit?x->x_fval:0.);
     binbuf_addv(b, ";");
+    
+    post("cols,rows = %d,%d\norientation = %d",ncols, nrows, x->x_orientation);
 }
 
 static void radio_properties(t_gobj *z, t_glist *owner)
@@ -748,11 +809,11 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     else { x->x_gui.x_fsf.x_font_style = 0;
         strcpy(x->x_gui.x_font, sys_font); }
 
-    num = clip_int(num, 1, IEM_RADIO_MAX + 1);
+    if(!radio_decode_extended(num, &x->x_number[!(int)x->x_orientation], &x->x_number[(int)x->x_orientation], &x->x_orientation)) {
+        x->x_number[(int)x->x_orientation] = num;
+        x->x_number[!(int)x->x_orientation] = 1;
+    }
 
-    int m = 1; // TODO: update with arg but default to 1
-    x->x_number[(int)x->x_orientation] = num;
-    x->x_number[!(int)x->x_orientation] = m;
     x->x_fval = fval;
     on = fval;
     if(on < 0)
@@ -782,6 +843,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_list);
+    post("done-new - orientation,(n,m) = %d (%d,%d)", x->x_orientation, x->x_number[0], x->x_number[1]);
     return (x);
 }
 
