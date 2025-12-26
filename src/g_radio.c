@@ -110,15 +110,14 @@ static int radio_idx2coord(t_radio *x, int idx, int *col, int *row)
 static int radio_matrix_reindex(t_radio *x)
 {
     int idx, i=0;
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
+    const int ncols = x->x_number[(int)x->x_orientation];
+    const int nrows = x->x_number[!(int)x->x_orientation];
     for(int row=0; row<nrows; ++row)
         for(int col=0; col<ncols; ++col) {
-            if(!radio_coord2idx(x, col, row, &idx))
-                return 0;
+            if(!radio_coord2idx(x, col, row, &idx)) return (0);
             x->x_matrix_idx[i++] = idx;
         }
-    return 1;
+    return (1);
 }
 
 static void radio_doresize(t_radio *x, int ncols, int nrows) {
@@ -143,9 +142,6 @@ static void radio_doresize(t_radio *x, int ncols, int nrows) {
 
     if(!radio_matrix_reindex(x))
         return pd_error(x, "radio_doresize: Could not reindex matrix.");
-
-    post("resize: old (%d,%d)", old_ncols, old_nrows);
-    post("resize: new (%d,%d) orient %d", new_ncols, new_nrows, x->x_orientation);
 
 }
 
@@ -653,7 +649,6 @@ static void radio_fout(t_radio *x, t_floatarg f)
     int i = clip_int((int)f, 0, max_val);
 
     x->x_fval = f;
-    post("fout: val %d, i %d, maxval %d", (int)f, i, max_val);
 
     if(x->x_compat)
     {
@@ -1018,12 +1013,10 @@ static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg
     const int row = clip_int(yy / (float)x->x_gui.x_h, 0, nrows);
     int idx;
     if(!radio_coord2idx(x, col, row, &idx))
-        return pd_error(x, "Bad index.");
+        return(pd_error(x, "Bad index."));
 
-    if (!shift) {
-        post("ncols %d, nrows %d, idx %d, orient %d", ncols, nrows, idx, x->x_orientation);
-        radio_fout(x, (t_float)(idx % (x->x_orientation==vertical?nrows:ncols)));
-    }
+    if (!shift)
+        return(radio_fout(x, (t_float)(idx % (x->x_orientation==vertical?nrows:ncols))));
     else {
         x->x_matrix[idx] = (!x->x_matrix[idx]) ? 1 : 0;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
