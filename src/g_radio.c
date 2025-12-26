@@ -13,7 +13,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
-#include "m_private_utils.h" // for spitting out the matrix
+#include "m_private_utils.h" // for ALLOCA and FREEA in mradio_spit
 
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
@@ -29,13 +29,60 @@ static int clip_int(int val, int min_val, int max_val)
     return val;
 }
 
+static int radio_matrix_initialize(t_radio *x)
+{
+    size_t n;
+    int ncols = x->x_number[(int)x->x_orientation];
+    int nrows = x->x_number[!(int)x->x_orientation];
+
+    if (ncols <= 0 || nrows <= 0)
+        return 0;
+
+    if ((size_t)ncols > (IEM_RADIO_MAX * IEM_RADIO_MAX) / (size_t)nrows)
+        return 0;
+
+
+    if (x->x_matrix && x->x_matrix_idx){
+        size_t nbytes = x->x_number[0] * x->x_number[1] * sizeof(int);
+        freebytes(x->x_matrix, nbytes);
+        freebytes(x->x_matrix_idx, nbytes);
+        x->x_matrix = x->x_matrix_idx = NULL;
+    }
+
+    n = (size_t)ncols * (size_t)nrows;
+
+    x->x_matrix = (int *)getbytes(n * sizeof(int));
+    x->x_matrix_idx = (int *)getbytes(n * sizeof(int));
+
+    if (!x->x_matrix || !x->x_matrix_idx)
+        return 0;
+
+    x->x_number[(int)x->x_orientation] = ncols;
+    x->x_number[!(int)x->x_orientation] = nrows;
+    memset(x->x_matrix, 0, n * sizeof(int));
+    memset(x->x_matrix_idx, 0, n * sizeof(int));
+    return 1;
+}
+
 static int radio_coord2idx(t_radio *x, int col, int row, int *idx)
 {
-    if(x->x_orientation == horizontal)
-        *idx = row * x->x_number[0] + col;
-    else
-        *idx = col * x->x_number[1] + row;
+    const int ncols = x->x_number[(int)x->x_orientation];
+    const int nrows = x->x_number[!(int)x->x_orientation];
 
+    if ((unsigned)col >= (unsigned)ncols || (unsigned)row >= (unsigned)nrows)
+        return 0;
+
+    int i;
+    if (x->x_orientation == horizontal)
+        i = row * ncols + col;
+    else
+        i = col * nrows + row;
+
+    if ((unsigned)i >= (unsigned)(ncols * nrows)) {
+        return 0;
+    }
+
+    *idx = i;
     return 1;
 }
 
@@ -60,30 +107,43 @@ static int radio_idx2coord(t_radio *x, int idx, int *col, int *row)
     return 1;
 }
 
+static int radio_matrix_reindex(t_radio *x)
+{
+    int idx, i=0;
+    int ncols = x->x_number[(int)x->x_orientation];
+    int nrows = x->x_number[!(int)x->x_orientation];
+    for(int row=0; row<nrows; ++row)
+        for(int col=0; col<ncols; ++col) {
+            if(!radio_coord2idx(x, col, row, &idx))
+                return 0;
+            x->x_matrix_idx[i++] = idx;
+        }
+    return 1;
+}
 
 static void radio_doresize(t_radio *x, int ncols, int nrows) {
-  int old_ncols = x->x_number[(int)x->x_orientation];
-  int old_nrows = x->x_number[!(int)x->x_orientation];
-  int new_ncols = (ncols < 1 ? 1 : ncols);
-  int new_nrows = (nrows < 1 ? 1 : nrows);
+    int old_ncols = x->x_number[(int)x->x_orientation];
+    int old_nrows = x->x_number[!(int)x->x_orientation];
+    int new_ncols = (ncols < 1 ? 1 : ncols);
+    int new_nrows = (nrows < 1 ? 1 : nrows);
 
-  if ((new_ncols == old_ncols && new_nrows == old_nrows))
-    return;
+    if ((new_ncols == old_ncols && new_nrows == old_nrows))
+        return;
 
-  freebytes(x->x_matrix, (size_t)sizeof(int) * old_ncols * old_nrows);
-  x->x_matrix = (int *)getbytes(new_ncols * new_nrows * sizeof(int));
+    if (new_ncols == 1)
+        x->x_orientation = vertical;
+    if (new_nrows == 1)
+        x->x_orientation = horizontal;
 
-  for (int i = 0; i < new_ncols; ++i)
-    for (int j = 0; j < new_nrows; ++j)
-      x->x_matrix[i * new_nrows + j] = 0;
+    x->x_number[(int)x->x_orientation] = new_ncols;
+    x->x_number[!(int)x->x_orientation] = new_nrows;
 
-  if (new_ncols == 1)
-      x->x_orientation = vertical;
-  if (new_nrows == 1)
-      x->x_orientation = horizontal;
+    if(!radio_matrix_initialize(x))
+        pd_error(x, "radio_doresize: Could not initialize after resizing.");
 
-  x->x_number[(int)x->x_orientation] = new_ncols;
-  x->x_number[!(int)x->x_orientation] = new_nrows;
+    if(!radio_matrix_reindex(x))
+        return pd_error(x, "radio_doresize: Could not reindex matrix.");
+
 }
 
 /* widget helper functions */
@@ -96,7 +156,6 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     const int zoom = IEMGUI_ZOOM(x);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int ncols = x->x_number[(int)x->x_orientation];
     int nrows = x->x_number[!(int)x->x_orientation];
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
@@ -149,8 +208,6 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
     int y0 = text_ypix(&x->x_gui.x_obj, glist);
     int cellw = x->x_gui.x_w;
     int cellh = x->x_gui.x_h;
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
     int cellw4 = cellw / 4;
     int cellh4 = cellh / 4;
     int crossw = 1, w = x->x_gui.x_w / zoom;
@@ -167,47 +224,46 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
         crossw = 3;
     crossw *= zoom;
 
-    int idx;
-    for(int row=0; row<nrows; ++row) {
-        for(int col=0; col<ncols; ++col) {
-            int xx11 = x0 + col * cellw;
-            int yy11 = y0 + row * cellh;
-            int xx12 = xx11 + cellw;
-            int yy12 = yy11 + cellh;
+    int col, row;
+    for(int i=0; i<x->x_number[0]*x->x_number[1]; i++) {
+        const int idx = x->x_matrix_idx[i];
+ 
+        if(!radio_idx2coord(x, idx, &col, &row))
+            pd_error(x, "radio_draw_config: Bad index (%d)", idx);
+        int xx11 = x0 + col * cellw;
+        int yy11 = y0 + row * cellh;
+        int xx12 = xx11 + cellw;
+        int yy12 = yy11 + cellh;
 
-            if(!radio_coord2idx(x, col, row, &idx))
-                pd_error(x, "Config: Could not find index (%d,%d)", col, row);
+        int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        int step_color = (x->x_matrix[idx] != 0) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
 
-            int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-            int step_color = (x->x_matrix[idx] != 0) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
+        sprintf(tag, "%pBASE%d", x, idx);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+            xx11, yy11, xx12, yy12);
+        pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-fill", x->x_gui.x_bcol,
+            "-outline", x->x_gui.x_fcol);
 
-            sprintf(tag, "%pBASE%d", x, idx);
-            pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-                xx11, yy11, xx12, yy12);
-            pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-                "-width", zoom, "-fill", x->x_gui.x_bcol,
-                "-outline", x->x_gui.x_fcol);
+        sprintf(tag, "%pBUT%d", x, idx);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+            xx11 + cellw4, yy11 + cellh4, xx12 - cellw4, yy12 - cellh4);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", curr_color, "-outline", curr_color);
 
-            sprintf(tag, "%pBUT%d", x, idx);
-            pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-                xx11 + cellw4, yy11 + cellh4, xx12 - cellw4, yy12 - cellh4);
-            pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-                "-fill", curr_color, "-outline", curr_color);
+        sprintf(tag, "%pX1%d", x, idx);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+            xx11 + crossw + zoom, yy11 + crossw + zoom,
+            xx11 + x->x_gui.x_w - crossw - zoom, yy11 + x->x_gui.x_h - crossw - zoom);
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", crossw, "-fill", step_color);
 
-            sprintf(tag, "%pX1%d", x, idx);
-            pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-                xx11 + crossw + zoom, yy11 + crossw + zoom,
-                xx11 + x->x_gui.x_w - crossw - zoom, yy11 + x->x_gui.x_h - crossw - zoom);
-            pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-                "-width", crossw, "-fill", step_color);
-
-            sprintf(tag, "%pX2%d", x, idx);
-            pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-                xx11 + crossw + zoom, yy11 + x->x_gui.x_h - crossw - zoom,
-                xx11 + x->x_gui.x_w - crossw - zoom, yy11 + crossw + zoom);
-            pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-                "-width", crossw, "-fill", step_color);
-        }
+        sprintf(tag, "%pX2%d", x, idx);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+            xx11 + crossw + zoom, yy11 + x->x_gui.x_h - crossw - zoom,
+            xx11 + x->x_gui.x_w - crossw - zoom, yy11 + crossw + zoom);
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", crossw, "-fill", step_color);
     }
 
     sprintf(tag, "%pLABEL", x);
@@ -222,42 +278,34 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
 static void radio_draw_new(t_radio *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
     char tag_n[128], tag[128], tag_object[128];
     char *tags[] = {tag_object, tag, tag_n, "text"};
     sprintf(tag_object, "%pOBJ", x);
-    x->x_matrix = (int *)getbytes(ncols * nrows * sizeof(int));
-    for (int i = 0; i < nrows; ++i)
-        for (int j = 0; j < ncols; ++j)
-            x->x_matrix[i * ncols + j] = 0;
 
-    int idx;
-    for(int row=0; row<nrows; ++row) {
-        for(int col=0; col<ncols; ++col) {
+    if(!radio_matrix_reindex(x))
+        return pd_error(x, "radio_draw_new: could not reindex matrix.");
 
-            if(radio_coord2idx(x, col, row, &idx))
-                x->x_matrix[idx] = 0;
+    for(int i=0; i<x->x_number[0]*x->x_number[1]; i++) {
+        const int idx = x->x_matrix_idx[i];
  
-            sprintf(tag, "%pBASE", x);
-            sprintf(tag_n, "%pBASE%d", x, idx);
-            pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-                0, 0, 0, 0, "-tags", 3, tags);
+        sprintf(tag, "%pBASE", x);
+        sprintf(tag_n, "%pBASE%d", x, idx);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+            0, 0, 0, 0, "-tags", 3, tags);
 
-            sprintf(tag, "%pBUT", x);
-            sprintf(tag_n, "%pBUT%d", x, idx);
-            pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-                0, 0, 0, 0, "-tags", 3, tags);
+        sprintf(tag, "%pBUT", x);
+        sprintf(tag_n, "%pBUT%d", x, idx);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+            0, 0, 0, 0, "-tags", 3, tags);
 
-            sprintf(tag, "%pSTEP", x);
-            sprintf(tag_n, "%pX1%d", x, idx);
-            pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-                0, 0, 0, 0, "-tags", 3, tags);
+        sprintf(tag, "%pSTEP", x);
+        sprintf(tag_n, "%pX1%d", x, idx);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
+            0, 0, 0, 0, "-tags", 3, tags);
 
-            sprintf(tag_n, "%pX2%d", x, idx);
-            pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-                0, 0, 0, 0, "-tags", 3, tags);
-        }
+        sprintf(tag_n, "%pX2%d", x, idx);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
+            0, 0, 0, 0, "-tags", 3, tags);
     }
     /* make sure the buttons are above their base */
     sprintf(tag, "%pBUT", x);
@@ -279,7 +327,6 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
 
 static void radio_draw_select(t_radio* x, t_glist* glist)
 {
-    int n = x->x_number[(int)x->x_orientation], i;
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
     unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
@@ -296,49 +343,41 @@ static void radio_draw_select(t_radio* x, t_glist* glist)
 static void radio_draw_update(t_gobj *client, t_glist *glist)
 {
     t_radio *x = (t_radio *)client;
-    if(glist_isvisible(glist))
-    {
-        t_canvas *canvas = glist_getcanvas(glist);
-        char tag_but[128], tag_x1[128], tag_x2[128];
+    if(!glist_isvisible(glist)) return;
 
-        int idx;
-        int ncols = x->x_number[(int)x->x_orientation];
-        int nrows = x->x_number[!(int)x->x_orientation];
-        for(int row=0; row<nrows; ++row) {
-            for(int col=0; col<ncols; ++col) {
-                if(!radio_coord2idx(x, col, row, &idx))
-                    pd_error(x, "Could not find index (%d,%d)", col, row);
+    t_canvas *canvas = glist_getcanvas(glist);
+    char tag_but[128], tag_x1[128], tag_x2[128];
 
-                int but_on_cell = x->x_on == idx;
-                int step_on_cell = x->x_matrix[idx] == 1;
-                /* paint the BUTton if it is currently on that index */
-                /* draw the X step if the value at that index is other than zero */
-                int curr_color = but_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-                int step_color = step_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+    for(int i=0; i<x->x_number[0]*x->x_number[1]; i++) {
+        const int idx = x->x_matrix_idx[i];
+        int but_on_cell = x->x_on == idx;
+        int step_on_cell = x->x_matrix[idx] == 1;
+        /* paint the BUTton if it is currently on that index */
+        /* draw the X step if the value at that index is other than zero */
+        int curr_color = but_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        int step_color = step_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
 
-                sprintf(tag_but, "%pBUT%d", x, idx);
-                pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag_but,
-                            "-fill", curr_color, "-outline", curr_color);
+        sprintf(tag_but, "%pBUT%d", x, idx);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag_but,
+                    "-fill", curr_color, "-outline", curr_color);
 
-                sprintf(tag_x1, "%pX1%d", x, idx);
-                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x1,
-                            "-fill", step_color);
-                sprintf(tag_x2, "%pX2%d", x, idx);
-                pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x2,
-                            "-fill", step_color);
+        sprintf(tag_x1, "%pX1%d", x, idx);
+        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x1,
+                    "-fill", step_color);
+        sprintf(tag_x2, "%pX2%d", x, idx);
+        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x2,
+                    "-fill", step_color);
 
-                if (step_on_cell == 1 && but_on_cell == 0) {
-                    pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_but);
-                    pdgui_vmess(0, "crss", canvas, "raise", tag_x2, tag_but);
-                }
-                if (step_on_cell == 0 && but_on_cell == 1) {
-                    pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x1);
-                    pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x2);
-                }
-
-
-            }
+        if (step_on_cell == 1 && but_on_cell == 0) {
+            pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_but);
+            pdgui_vmess(0, "crss", canvas, "raise", tag_x2, tag_but);
         }
+        if (step_on_cell == 0 && but_on_cell == 1) {
+            pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x1);
+            pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x2);
+        }
+
+
     }
 }
 
@@ -367,24 +406,6 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
 //   }
 //   (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 // }
-static void radio_spit(t_radio *x)
-{
-    t_atom *lo;
-    int idx;
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
-    /* entire matrix */
-    ALLOCA(t_atom, lo, ncols * nrows, IEM_RADIO_MAX + 1);
-    for (int row=0; row<nrows; ++row)
-        for (int col=0; col<ncols; ++col)
-            if(radio_coord2idx(x, col, row, &idx))
-                SETFLOAT(lo+idx, (t_float)x->x_matrix[idx]);
-
-    outlet_list(x->x_gui.x_obj.ob_outlet, gensym("list"), ncols * nrows, lo);
-    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-        pd_list(x->x_gui.x_snd->s_thing, gensym("list"), ncols * nrows, lo);
-    FREEA(t_atom, lo, ncols * nrows, IEM_RADIO_MAX + 1);
-}
 
 static void radio_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
@@ -473,8 +494,6 @@ static void radio_save(t_gobj *z, t_binbuf *b)
                 bflcol[0], bflcol[1], bflcol[2],
                 x->x_gui.x_isa.x_loadinit?x->x_fval:0.);
     binbuf_addv(b, ";");
-    
-    post("cols,rows = %d,%d\norientation = %d",ncols, nrows, x->x_orientation);
 }
 
 static void radio_properties(t_gobj *z, t_glist *owner)
@@ -723,81 +742,235 @@ static void radio_float(t_radio *x, t_floatarg f)
     }
 }
 
-static void radio_get(t_radio *x, t_floatarg a, t_floatarg b)
+static void radio_spit(t_radio *x)
 {
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
-    int col = clip_int((int)a,0, ncols) ;
-    int row = clip_int((int)b, 0, nrows);
+    t_atom *av;
+    t_symbol *s = &s_list;
+    const int size = x->x_number[0] * x->x_number[1];
 
-    if (ncols == 1 || nrows == 1) {
-        pd_error(x, "get only works with matrices.");
-        return;
+    ALLOCA(t_atom, av, size, IEM_RADIO_MAX + 1);
+    for(int i=0; i<size; i++) {
+        const int idx = x->x_matrix_idx[i];
+        SETFLOAT(&av[i], (t_float)x->x_matrix[idx]);
     }
 
-    int idx;
-    if (!col && !row) {
-        radio_spit(x);
-        return;
-    }
-    if (col && row) {
-        /* cell access (col, row) */
-        if(!radio_coord2idx(x, col, row, &idx))
-            pd_error(x, "Could not find index at (%d,%d)", col, row);
-        t_float outval = (t_float)x->x_matrix[idx];
-        outlet_float(x->x_gui.x_obj.ob_outlet, outval);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, outval);
-        return;
-    }
-    t_atom *lo;
-    // if col is 0, output all columns at given row
-    // if row is 0, output all rows at given column
-    int size = (!col) ? ncols : nrows;
-    ALLOCA(t_atom, lo, size, IEM_RADIO_MAX + 1);
-    if (!col) {
-        for (int c=0; c<size; ++c)
-            if(radio_coord2idx(x, c, row, &idx))
-                SETFLOAT(lo++, (t_float)x->x_matrix[idx]);
-    } else { // if (!row)
-        for (int r=0; r<size; ++r)
-            if(radio_coord2idx(x, col, r, &idx))
-                SETFLOAT(lo++, (t_float)x->x_matrix[idx]);
-    }
-    outlet_list(x->x_gui.x_obj.ob_outlet, gensym("list"), size, lo);
+    outlet_list(x->x_gui.x_obj.ob_outlet, s, size, av);
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-        pd_list(x->x_gui.x_snd->s_thing, gensym("list"), size, lo);
-    postatom(size, lo);
-    endpost();
-    FREEA(t_atom, lo, size, IEM_RADIO_MAX + 1);
+        pd_list(x->x_gui.x_snd->s_thing, s, size, av);
+
+    FREEA(t_atom, av, size, IEM_RADIO_MAX + 1);
 }
 
-static void radio_clear(t_radio *x) {
+static void radio_cell(t_radio *x, t_floatarg fidx)
+{
+    const int idx = clip_int((int)fidx, 0, x->x_number[0] * x->x_number[1]);
+    const t_float outval = (t_float)x->x_matrix[idx];
+    outlet_float(x->x_gui.x_obj.ob_outlet, outval);
+    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+        pd_float(x->x_gui.x_snd->s_thing, outval);
+}
 
-  for (int i = 0; i < x->x_number[0]; ++i)
-    for (int j = 0; j < x->x_number[1]; ++j)
-      x->x_matrix[i * x->x_number[1] + j] = 0;
+static void radio_fill_cell(t_radio *x, t_floatarg fidx, t_floatarg fval)
+{
+    const int idx = clip_int((int)fidx, 0, x->x_number[0] * x->x_number[1]);
+    int val = ((int)fval != 0 ? 1 : 0 );
+    x->x_matrix[idx] = val;
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
 
-  (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+static void radio_line(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
+{
+    t_atom *av;
+    int ac = 0;
+    t_symbol *s = &s_list;
+    const int axis = ((int)faxis != 0 ? 1 : 0);
+    const int max_val = x->x_number[axis];
+    const int i = clip_int((int)flinenum, 0, max_val);
+
+    ALLOCA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
+
+    for (int j = 0; j < max_val; ++j) {
+        int idx;
+        const int col = (!axis) ? j : i;
+        const int row = (!axis) ? i : j;
+        if(radio_coord2idx(x, col, row, &idx)) {
+            SETFLOAT(av + ac, (t_float)x->x_matrix[idx]);
+            ac++;
+        }
+    }
+
+    if (!ac)
+        pd_error(x, "Could not output line.");
+    else {
+        outlet_list(x->x_gui.x_obj.ob_outlet, s, ac, av);
+        if (x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+            pd_list(x->x_gui.x_snd->s_thing, s, ac, av);
+    }
+
+    FREEA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
+}
+
+static void radio_fill_line(t_radio *x, t_floatarg faxis, t_floatarg flinenum, t_floatarg fval)
+{
+    int val = ((int)fval != 0 ? 1 : 0 );
+    const int axis = ((int)faxis != 0 ? 1 : 0);
+    const int max_val = x->x_number[axis];
+    const int i = clip_int((int)flinenum, 0, max_val);
+
+    for (int j = 0; j < max_val; ++j) {
+        int idx;
+        const int col = (!axis) ? j : i;
+        const int row = (!axis) ? i : j;
+        if(radio_coord2idx(x, col, row, &idx))
+            x->x_matrix[idx] = val;
+    }
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
+
+static void radio_row(t_radio *x, t_floatarg frow)
+{
+    t_float faxis = (t_float)horizontal;
+    t_float flinenum = frow;
+    return(radio_line(x, faxis, flinenum));
+}
+
+static void radio_column(t_radio *x, t_floatarg fcol)
+{
+    t_float faxis = (t_float)vertical;
+    t_float flinenum = fcol;
+    return(radio_line(x, faxis, flinenum));
+}
+
+static void radio_fill_row(t_radio *x, t_floatarg frow, t_floatarg fval)
+{
+    t_float faxis = (t_float)horizontal;
+    t_float flinenum = frow;
+    return(radio_fill_line(x, faxis, flinenum, fval));
+}
+
+static void radio_fill_column(t_radio *x, t_floatarg fcol, t_floatarg fval)
+{
+    t_float faxis = (t_float)vertical;
+    t_float flinenum = fcol;
+    return(radio_fill_line(x, faxis, flinenum, fval));
+}
+
+static void radio_get(t_radio *x, t_floatarg fcol, t_floatarg frow)
+{
+    const int ncols = x->x_number[(int)x->x_orientation];
+    const int nrows = x->x_number[!(int)x->x_orientation];
+    // case 1: one column, one row
+    if (ncols == 1 && nrows == 1)
+        return radio_cell(x, 0.0);
+    const int col = clip_int((int)fcol, -1, ncols);
+    const int row = clip_int((int)frow, -1, nrows);
+    int idx = 0;
+    // case 2: one column, multiple rows
+    if (ncols == 1) {
+        if (col > 1)
+            return pd_error(x, "radio_get: Illegal arguments.");
+        if (row < 0) return radio_column(x, 1.0);
+        else {
+            if (!radio_coord2idx(x, 1, row, &idx))
+                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return radio_cell(x, (t_float)idx);
+        }
+    }
+    // case 3: multiple columns, one row
+    if (nrows == 1) {
+        if (row > 1)
+            return pd_error(x, "radio_get: Illegal arguments.");
+        if (col < 0) return radio_row(x, 1.0);
+        else {
+            if (!radio_coord2idx(x, col, 1, &idx))
+                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return radio_cell(x, (t_float)idx);
+        }
+    }
+    // case 4: multiple columns, multiple rows
+    if(col < 0 && row < 0) return radio_spit(x);
+    else if (col < 0) return radio_row(x, (t_float)row);
+    else if (row < 0) return radio_column(x, (t_float)col);
+    else {
+        if (!radio_coord2idx(x, col, row, &idx))
+            return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+        return radio_cell(x, (t_float)idx);
+    }
+}
+
+static void radio_fill(t_radio *x, t_floatarg fval)
+{
+    int val = ((int)fval != 0 ? 1 : 0 );
+    for(int i=0; i<x->x_number[0] * x->x_number[1]; i++)
+        x->x_matrix[i] = val;
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
+
+static void radio_matrix_set(t_radio *x, t_floatarg fcol, t_floatarg frow, t_floatarg fval)
+{
+    const int ncols = x->x_number[(int)x->x_orientation];
+    const int nrows = x->x_number[!(int)x->x_orientation];
+    // case 1: one column, one row
+    if (ncols == 1 && nrows == 1)
+        return radio_fill_cell(x, 0.0, fval);
+    const int col = clip_int((int)fcol, -1, ncols);
+    const int row = clip_int((int)frow, -1, nrows);
+    int idx = 0;
+    // case 2: one column, multiple rows
+    if (ncols == 1) {
+        if (col > 1)
+            return pd_error(x, "radio_get: Illegal arguments.");
+        if (row < 0) return radio_fill_column(x, 1.0, fval);
+        else {
+            if (!radio_coord2idx(x, 1, row, &idx))
+                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return radio_fill_cell(x, (t_float)idx, fval);
+        }
+    }
+    // case 3: multiple columns, one row
+    if (nrows == 1) {
+        if (row > 1)
+            return pd_error(x, "radio_get: Illegal arguments.");
+        if (col < 0) return radio_fill_row(x, 1.0, fval);
+        else {
+            if (!radio_coord2idx(x, col, 1, &idx))
+                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return radio_fill_cell(x, (t_float)idx, fval);
+        }
+    }
+    // case 4: multiple columns, multiple rows
+    if(col < 0 && row < 0) return radio_fill(x, fval);
+    else if (col < 0) return radio_fill_row(x, (t_float)row, fval);
+    else if (row < 0) return radio_fill_column(x, (t_float)col, fval);
+    else {
+        if (!radio_coord2idx(x, col, row, &idx))
+            return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+        return radio_fill_cell(x, (t_float)idx, fval);
+    }
+}
+
+static void radio_clear(t_radio *x)
+{
+    return(radio_fill(x, 0));
 }
 
 static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
-    int ncols = x->x_number[(int)x->x_orientation];
-    int nrows = x->x_number[!(int)x->x_orientation];
-    int xx = (int)xpos - (int)text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
-    int yy = (int)ypos - (int)text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
-    int col = clip_int(xx / (float)x->x_gui.x_w, 0, ncols);
-    int row = clip_int(yy / (float)x->x_gui.x_h, 0, nrows);
+    const int ncols = x->x_number[(int)x->x_orientation];
+    const int nrows = x->x_number[!(int)x->x_orientation];
+    const int xx = (int)xpos - (int)text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
+    const int yy = (int)ypos - (int)text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
+    const int col = clip_int(xx / (float)x->x_gui.x_w, 0, ncols);
+    const int row = clip_int(yy / (float)x->x_gui.x_h, 0, nrows);
     int idx;
     if(!radio_coord2idx(x, col, row, &idx))
-        pd_error(x, "Could not find index.");
+        return pd_error(x, "Bad index.");
 
-    if (!shift) {
+    if (!shift)
         radio_fout(x, (t_float)idx);
-    } else {
-        x->x_matrix[idx] = (x->x_matrix[idx] == 0) ? 1 : 0;
-        post("shift click matrix[%d] = %d", idx, x->x_matrix[idx]);
+    else {
+        x->x_matrix[idx] = (!x->x_matrix[idx]) ? 1 : 0;
+        // post("shift click matrix[%d] = %d", idx, x->x_matrix[idx]);
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     }
 }
@@ -824,7 +997,13 @@ static void radio_number(t_radio *x, t_floatarg num)
 
 static void radio_orientation(t_radio *x, t_floatarg forient)
 {
-    x->x_orientation = !!(int)forient;
+    t_iem_orientation orientation = horizontal;
+    if ((int)forient != 0)
+        orientation = vertical;
+    if (x->x_orientation == orientation)
+        return;
+    x->x_orientation = orientation;
+    radio_matrix_reindex(x);
     iemgui_size(x, &x->x_gui);
 }
 
@@ -937,11 +1116,8 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_on_old = x->x_on;
     x->x_change = (chg == 0) ? 0 : 1;
 
-    /* allocate and initialize the 2d matrix */
-    x->x_matrix = (int *)getbytes(x->x_number[0] * x->x_number[1] * sizeof(int));
-    for (int i = 0; i < x->x_number[0]; ++i)
-        for (int j = 0; j < x->x_number[1]; ++j)
-            x->x_matrix[i * x->x_number[1] + j] = 0;
+    if(!radio_matrix_initialize(x))
+        pd_error(x, "Could not initialize matrix.");
 
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
@@ -953,7 +1129,6 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_list);
-    post("done-new - orientation,(n,m) = %d (%d,%d)", x->x_orientation, x->x_number[0], x->x_number[1]);
     return (x);
 }
 
@@ -968,8 +1143,10 @@ static void *dial_new(t_symbol *s, int argc, t_atom *argv)
 }
 
 static void radio_free(t_radio *x) {
-  freebytes(x->x_matrix, (size_t)sizeof(int) * x->x_number[0] * x->x_number[1]);
-  iemgui_free((t_iemgui *)x);
+    size_t nbytes = x->x_number[0] * x->x_number[1] * sizeof(int);
+    freebytes(x->x_matrix, nbytes);
+    freebytes(x->x_matrix_idx, nbytes);
+    iemgui_free((t_iemgui *)x);
 }
 
 void g_radio_setup(void)
@@ -995,6 +1172,8 @@ void g_radio_setup(void)
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_set,
         gensym("set"), A_FLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_matrix_set,
+        gensym("set"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_size,
         gensym("size"), A_GIMME, 0);
     class_addmethod(radio_class, (t_method)radio_delta,
@@ -1018,7 +1197,7 @@ void g_radio_setup(void)
     class_addmethod(radio_class, (t_method)radio_number,
         gensym("number"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_resize,
-        gensym("resize"), A_FLOAT, A_FLOAT, 0);
+        gensym("resize"), A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_orientation,
         gensym("orientation"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)iemgui_zoom,
@@ -1027,8 +1206,26 @@ void g_radio_setup(void)
     //     gensym("focus"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_spit,
         gensym("spit"), A_NULL);
+    class_addmethod(radio_class, (t_method)radio_fill,
+        gensym("fill"), A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_line,
+        gensym("line"), A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_fill_line,
+        gensym("line"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_get,
-        gensym("get"), A_FLOAT, A_FLOAT, 0);
+        gensym("get"), A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_cell,
+        gensym("cell"), A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_fill_cell,
+        gensym("cell"), A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_row,
+        gensym("row"), A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_fill_row,
+        gensym("row"), A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_column,
+        gensym("column"), A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_fill_column,
+        gensym("column"), A_DEFFLOAT, A_DEFFLOAT, 0);
     radio_widgetbehavior.w_getrectfn = radio_getrect;
     radio_widgetbehavior.w_displacefn = iemgui_displace;
     radio_widgetbehavior.w_selectfn = iemgui_select;
