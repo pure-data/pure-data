@@ -720,6 +720,38 @@ static void radio_cell(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     return(radio_set_cell(x, fidx, fval));
 }
 
+static void radio_line(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
+{
+    t_atom *av;
+    int ac = 0;
+    t_symbol *s = &s_list;
+    const int axis = ((int)faxis != 0 ? 1 : 0);
+    const int max_val = x->x_number[axis];
+    const int i = clip_int((int)flinenum, 0, max_val);
+
+    ALLOCA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
+
+    for (int j = 0; j < max_val; ++j) {
+        int idx;
+        const int col = (!axis) ? j : i;
+        const int row = (!axis) ? i : j;
+        if(radio_coord2idx(x, col, row, &idx)) {
+            SETFLOAT(av + ac, (t_float)x->x_matrix[idx]);
+            ac++;
+        }
+    }
+
+    if (!ac)
+        pd_error(x, "Could not output line.");
+    else {
+        outlet_list(x->x_gui.x_obj.ob_outlet, s, ac, av);
+        if (x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+            pd_list(x->x_gui.x_snd->s_thing, s, ac, av);
+    }
+
+    FREEA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
+}
+
 static void radio_float(t_radio *x, t_floatarg f)
 {
     int ncols = x->x_number[(int)x->x_orientation];
@@ -756,9 +788,14 @@ static void radio_float(t_radio *x, t_floatarg f)
             if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
                 pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
         }
-    } else if (ncols > 1 && nrows > 1)
-        radio_get_cell(x, x->x_fval);
-    else
+    } else if (ncols > 1 && nrows > 1) {
+        if (x->x_output_mode==1)
+            radio_get_cell(x, x->x_fval);
+        else if (x->x_output_mode==2)
+            radio_line(x, x->x_orientation, x->x_fval);
+        else
+            radio_fout(x, x->x_fval);
+    } else
     {
         t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
@@ -790,38 +827,6 @@ static void radio_spit(t_radio *x)
         pd_list(x->x_gui.x_snd->s_thing, s, size, av);
 
     FREEA(t_atom, av, size, IEM_RADIO_MAX + 1);
-}
-
-static void radio_line(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
-{
-    t_atom *av;
-    int ac = 0;
-    t_symbol *s = &s_list;
-    const int axis = ((int)faxis != 0 ? 1 : 0);
-    const int max_val = x->x_number[axis];
-    const int i = clip_int((int)flinenum, 0, max_val);
-
-    ALLOCA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
-
-    for (int j = 0; j < max_val; ++j) {
-        int idx;
-        const int col = (!axis) ? j : i;
-        const int row = (!axis) ? i : j;
-        if(radio_coord2idx(x, col, row, &idx)) {
-            SETFLOAT(av + ac, (t_float)x->x_matrix[idx]);
-            ac++;
-        }
-    }
-
-    if (!ac)
-        pd_error(x, "Could not output line.");
-    else {
-        outlet_list(x->x_gui.x_obj.ob_outlet, s, ac, av);
-        if (x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_list(x->x_gui.x_snd->s_thing, s, ac, av);
-    }
-
-    FREEA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
 }
 
 static void radio_fill_line(t_radio *x, t_floatarg faxis, t_floatarg flinenum, t_floatarg fval)
@@ -1055,6 +1060,15 @@ static void radio_orientation(t_radio *x, t_floatarg forient)
     iemgui_size(x, &x->x_gui);
 }
 
+static void radio_mode(t_radio *x, t_floatarg foutputmode)
+{
+    int output_mode = clip_int((int)foutputmode, 0, 3);
+    if (x->x_output_mode == output_mode)
+        return;
+    x->x_output_mode = output_mode;
+    post("output_mode: %d", x->x_output_mode);
+}
+
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
 {
     x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
@@ -1153,6 +1167,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         *ncols = num;
         *nrows = 1;
     }
+    x->x_output_mode = 0; // default to normal index output
 
     x->x_fval = fval;
     on = fval;
@@ -1255,6 +1270,8 @@ void g_radio_setup(void)
         gensym("zoom"), A_CANT, 0);
     // class_addmethod(radio_class, (t_method)radio_focus,
     //     gensym("focus"), A_FLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_mode,
+        gensym("mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_spit,
         gensym("spit"), A_NULL);
     class_addmethod(radio_class, (t_method)radio_fill,
