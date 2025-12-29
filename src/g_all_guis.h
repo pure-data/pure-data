@@ -222,7 +222,7 @@ typedef struct _radio
     int      *x_matrix_idx;
     int      x_output_mode;
     t_float  x_fval;
-    t_iem_orientation x_orientation;
+    t_iem_orientation x_orientation, x_direction;
     int      x_compat; /* old version */
 } t_radio;
 
