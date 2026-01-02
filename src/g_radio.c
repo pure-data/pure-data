@@ -119,9 +119,9 @@ static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orienta
 
     uint16_t r7 = (uint16_t)(nrows - 1);  // 0..127
     uint16_t c7 = (uint16_t)(ncols - 1);  // 0..127
-    uint16_t d  = (uint16_t)orientation; // 0/1
+    uint16_t o  = (uint16_t)orientation; // 0/1
 
-    uint16_t code = (uint16_t)((d << 14) | (r7 << 7) | c7); // 0..32767
+    uint16_t code = (uint16_t)((o << 14) | (r7 << 7) | c7); // 0..32767
     *size = -(int)(code + 1); // -1..-32768
     return(1);
 }
@@ -134,7 +134,7 @@ static int radio_decode_extended(int number, int *ncols, int *nrows, t_iem_orien
 
     uint16_t code = (uint16_t)(-number - 1); // 0..32767
 
-    int d = (code >> 14) & 1;
+    int o = (code >> 14) & 1;
     int r = ((code >> 7) & 0x7F) + 1;
     int c = (code & 0x7F) + 1;
 
@@ -142,7 +142,7 @@ static int radio_decode_extended(int number, int *ncols, int *nrows, t_iem_orien
     if (r < 1 || r > IEM_RADIO_MAX) return(0);
     if (c < 1 || c > IEM_RADIO_MAX) return(0);
 
-    *orientation = d;
+    *orientation = o;
     *nrows = r;
     *ncols = c;
     return(1);
