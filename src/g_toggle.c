@@ -175,7 +175,7 @@ static void toggle_properties(t_gobj *z, t_glist *owner)
                       x->x_nonzero, 0,
                       1,
                       -1, "", "",
-                      1, -1, -1);
+                      1, -1, -1, -1);
 }
 
 static void toggle_bang(t_toggle *x)

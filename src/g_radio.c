@@ -112,8 +112,8 @@ static int radio_is_vertical(t_radio *x)
 }
 
 // Returns 1 on success, 0 on invalid input.
-static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orientation, int *size) {
-    if (!size) return(0);
+static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orientation, int *ptr_size) {
+    if (!ptr_size) return(0);
     if (nrows <= 1 || nrows > IEM_RADIO_MAX) return(0);
     if (ncols <= 1 || ncols > IEM_RADIO_MAX) return(0);
 
@@ -122,14 +122,14 @@ static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orienta
     uint16_t o  = (uint16_t)orientation; // 0/1
 
     uint16_t code = (uint16_t)((o << 14) | (r7 << 7) | c7); // 0..32767
-    *size = -(int)(code + 1); // -1..-32768
+    *ptr_size = -(int)(code + 1); // -1..-32768
     return(1);
 }
 
 // If number is extended (<0), decodes into nrows/ncols/orientation and returns 1.
 // If number is not extended (>=0), returns 0 (caller should handle legacy).
-static int radio_decode_extended(int number, int *ncols, int *nrows, t_iem_orientation *orientation) {
-    if (!nrows || !ncols || !orientation) return(0);
+static int radio_decode_extended(int number, int *ptr_ncols, int *ptr_nrows, t_iem_orientation *ptr_orientation) {
+    if (!ptr_nrows || !ptr_ncols || !ptr_orientation) return(0);
     if (number >= 0) return(0);
 
     uint16_t code = (uint16_t)(-number - 1); // 0..32767
@@ -142,9 +142,9 @@ static int radio_decode_extended(int number, int *ncols, int *nrows, t_iem_orien
     if (r < 1 || r > IEM_RADIO_MAX) return(0);
     if (c < 1 || c > IEM_RADIO_MAX) return(0);
 
-    *orientation = o;
-    *nrows = r;
-    *ncols = c;
+    *ptr_orientation = o;
+    *ptr_nrows = r;
+    *ptr_ncols = c;
     return(1);
 }
 
@@ -433,7 +433,8 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows) {
   int ncols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
   int nrows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
 
-  if (ncols != x->x_number[(int)x->x_orientation] || nrows != x->x_number[!(int)x->x_orientation]) {
+  if ((ncols != x->x_number[(int)x->x_orientation])
+       || nrows != x->x_number[!(int)x->x_orientation]) {
     int vis = glist_isvisible(x->x_gui.x_glist);
     if(vis)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
@@ -442,28 +443,33 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows) {
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
         canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    } else {
+        /* just reconfigure */
+        iemgui_size((void *)x, &x->x_gui);
     }
   }
 }
 
-static void radio_objname_size(t_radio *x, const char**objname, int*size)
+static int radio_objname_size(t_radio *x, const char**objname, int*ptr_size)
 {
     const int orientation = x->x_orientation;
     const int ncols = x->x_number[(int)orientation];
     const int nrows = x->x_number[!(int)orientation];
 
-    const int extended = radio_encode_extended(nrows, ncols, orientation, size);
+    const int extended = radio_encode_extended(nrows, ncols, orientation, ptr_size);
     const char is_vertical = (orientation == vertical);
 
     const char *compat_name = is_vertical ? "vdl" : "hdl";
     const char *name = is_vertical ? "vradio" : "hradio";
 
-    if (extended)
+    if (extended) {
         *objname = name;
-    else {
-        *objname = (x->x_compat) ? compat_name : name;
-        *size = is_vertical ? nrows : ncols;
+        // size is updated while encoding
+        return(1);
     }
+    *objname = (x->x_compat) ? compat_name : name;
+    *ptr_size = is_vertical ? nrows : ncols;
+    return(0);
 }
 
 static void radio_save(t_gobj *z, t_binbuf *b)
@@ -508,7 +514,7 @@ static void radio_properties(t_gobj *z, t_glist *owner)
         0, 0,
         0,
         hchange, "new-only", "new&old",
-        1, -1, size);
+        1, -1, x->x_number[0], x->x_number[1]);
 }
 
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -516,9 +522,11 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     t_symbol *srl[3];
     int a = (int)atom_getfloatarg(0, argc, argv);
     int chg = (int)atom_getfloatarg(4, argc, argv);
-    int num = (int)atom_getfloatarg(6, argc, argv);
+    // TODO: implement the num's 2nd dimension in the args
+    int num[] = {(int)atom_getfloatarg(6, argc, argv), 1};
+    int cols = num[(int)x->x_orientation];
+    int rows = num[!(int)x->x_orientation];
     int sr_flags;
-    int redraw = 0;
     t_atom undo[18];
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
     SETFLOAT(undo+1, 0);
@@ -536,40 +544,11 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
-
-    int *ncols = &x->x_number[0];
-    int *nrows = &x->x_number[1];
-    t_iem_orientation *orientation = &x->x_orientation;
-    t_iem_orientation arg_orient = ('v' == *s->s_name) ? vertical : horizontal;
-
-    if (num != *ncols && glist_isvisible(x->x_gui.x_glist))
+    radio_resize(x, cols, rows);
+    if(x->x_on >= cols)
     {
-        /* we need to recreate the buttons */
-        /* if it's a matrix, decode size, orientation, and infer and set orientation */
-        if(radio_decode_extended(num, ncols, nrows, orientation))
-            x->x_orientation = (*ncols < *nrows) ? vertical : horizontal;
-        else {
-            /* we need to update the size and the orientation */
-            *ncols = (arg_orient == horizontal) ? num : 1;
-            *nrows = (arg_orient == horizontal) ? 1 : num;
-            x->x_orientation = horizontal; // needs to be horizontal by default
-        }
-        radio_resize(x, *ncols, *nrows);
-        redraw = 1;
-    }
-    if(x->x_on >= *ncols)
-    {
-        x->x_on_old = x->x_on = *ncols - 1;
+        x->x_on_old = x->x_on = cols - 1;
         x->x_on_old = x->x_on;
-    }
-
-    if (redraw && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
-    {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
-        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
-    } else {
-        /* just reconfigure */
-        iemgui_size((void *)x, &x->x_gui);
     }
 }
 
@@ -1119,7 +1098,8 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     int fs = x->x_gui.x_fontsize;
     t_float fval = 0;
 
-    t_iem_orientation arg_orient = ('v' == *s->s_name) ? vertical : horizontal;
+    /* store the orientation encoded in the object name */
+    t_iem_orientation orientation = ('v' == *s->s_name) ? vertical : horizontal;
 
     x->x_compat = old;
 
@@ -1153,26 +1133,29 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     else { x->x_gui.x_fsf.x_font_style = 0;
         strcpy(x->x_gui.x_font, sys_font); }
 
-    /* if it's a matrix, decode size, orientation, and infer and set orientation */
-    int *ncols = &x->x_number[0];
-    int *nrows = &x->x_number[1];
-    t_iem_orientation *orientation = &x->x_orientation;
-    if(radio_decode_extended(num, ncols, nrows, orientation))
-        x->x_orientation = (*ncols < *nrows) ? vertical : horizontal;
-    else {
-        /* we need to update the size and the orientation */
-        *ncols = (arg_orient == horizontal) ? num : 1;
-        *nrows = (arg_orient == horizontal) ? 1 : num;
-        x->x_orientation = horizontal; // needs to be horizontal by default
+    /* if it's a matrix, decode extended size and orientation */
+    int cols = 0;
+    int rows = 0;
+    t_iem_orientation orient = horizontal;
+    if(radio_decode_extended(num, &cols, &rows, &orient)){
+        x->x_orientation = orient;
+        x->x_number[0] = cols;
+        x->x_number[1] = rows;
     }
+    else {
+        x->x_orientation = orientation;
+        x->x_number[0] = num;
+        x->x_number[1] = 1;
+    }
+
     x->x_output_mode = 0; // default to normal index output
 
     x->x_fval = fval;
     on = fval;
     if(on < 0)
         on = 0;
-    if(on >= *ncols)
-        on = (*ncols) - 1;
+    if(on >= x->x_number[0])
+        on = x->x_number[0] - 1;
     if(x->x_gui.x_isa.x_loadinit)
         x->x_on = on;
     else

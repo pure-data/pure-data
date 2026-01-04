@@ -338,7 +338,7 @@ static void slider_properties(t_gobj *z, t_glist *owner)
                       x->x_min, x->x_max,
                       0,
                       x->x_lin0_log1, "linear", "logarithmic",
-                      1, x->x_steady, -1);
+                      1, x->x_steady, -1, -1);
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */

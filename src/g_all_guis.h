@@ -352,7 +352,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        t_float range_min, t_float range_max, int range_checkmode,
                        int mode, /* lin0_log1 */
                        const char* mode_label0, const char* mode_label1,
-                       int canloadbang, int steady, int number);
+                       int canloadbang, int steady, int number, int number2);
 
 
 #define __g_all_guis_h_

@@ -141,7 +141,7 @@ static void my_canvas_properties(t_gobj *z, t_glist *owner)
                       x->x_vis_w, x->x_vis_h,
                       0,
                       -1, "", "",
-                      0, -1, -1);
+                      0, -1, -1, -1);
 
 }
 

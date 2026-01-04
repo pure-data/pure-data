@@ -735,7 +735,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        int mode, /* lin0_log1 */
                        const char* label_mode0,
                        const char* label_mode1,
-                       int canloadbang, int steady, int number)
+                       int canloadbang, int steady, int number, int number2)
 {
     char objname_[MAXPDSTRING];
     t_symbol *srl[3];
@@ -743,7 +743,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
     sprintf(objname_, "|%s|", objname);
 
     pdgui_stub_vnew(&iemgui->x_obj.ob_pd, "pdtk_iemgui_dialog", x,
-        "r s ffs ffs sfsfs i iss ii si sss ii ii kkk",
+        "r s ffs ffs sfsfs i iss ii sisi sss ii ii kkk",
         objname_,
         "",
         width, width_min, "",
@@ -752,7 +752,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
         schedule,
         mode, label_mode0, label_mode1,
         canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
-        "", number,
+        "", number, "", number2,
         srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
         iemgui->x_ldx, iemgui->x_ldy,
         iemgui->x_fsf.x_font_style, iemgui->x_fontsize,

@@ -173,7 +173,7 @@ static void bng_properties(t_gobj *z, t_glist *owner)
                       x->x_flashtime_break, x->x_flashtime_hold,
                       2,
                       -1, "", "",
-                      1, -1, -1);
+                      1, -1, -1, -1);
 }
 
 static void bng_set(t_bng *x)

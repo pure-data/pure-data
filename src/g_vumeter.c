@@ -385,7 +385,7 @@ static void vu_properties(t_gobj *z, t_glist *owner)
                       0, 0,
                       0,
                       x->x_scale, "no scale", "scale",
-                      0, -1, -1);
+                      0, -1, -1, -1);
 }
 
 static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
