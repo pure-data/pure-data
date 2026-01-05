@@ -735,7 +735,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        int mode, /* lin0_log1 */
                        const char* label_mode0,
                        const char* label_mode1,
-                       int canloadbang, int steady, int number, int number2)
+                       int canloadbang, int steady, int number, int number2, int order)
 {
     char objname_[MAXPDSTRING];
     t_symbol *srl[3];
@@ -743,7 +743,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
     sprintf(objname_, "|%s|", objname);
 
     pdgui_stub_vnew(&iemgui->x_obj.ob_pd, "pdtk_iemgui_dialog", x,
-        "r s ffs ffs sfsfs i iss ii sisi sss ii ii kkk",
+        "r s ffs ffs sfsfs i iss ii sisii sss ii ii kkk",
         objname_,
         "",
         width, width_min, "",
@@ -752,7 +752,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
         schedule,
         mode, label_mode0, label_mode1,
         canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
-        "", number, "", number2,
+        "", number, "", number2, order,
         srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
         iemgui->x_ldx, iemgui->x_ldy,
         iemgui->x_fsf.x_font_style, iemgui->x_fontsize,
@@ -763,13 +763,13 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
 {
     char str[144];
     int init = (int)atom_getfloatarg(5, argc, argv);
-    int ldx = (int)atom_getfloatarg(10, argc, argv);
-    int ldy = (int)atom_getfloatarg(11, argc, argv);
-    int f = (int)atom_getfloatarg(12, argc, argv);
-    int fs = (int)atom_getfloatarg(13, argc, argv);
-    int bcol = (int)iemgui_getcolorarg(14, argc, argv, BACKGROUND);
-    int fcol = (int)iemgui_getcolorarg(15, argc, argv, FOREGROUND);
-    int lcol = (int)iemgui_getcolorarg(16, argc, argv, LABEL);
+    int ldx = (int)atom_getfloatarg(12, argc, argv);
+    int ldy = (int)atom_getfloatarg(13, argc, argv);
+    int f = (int)atom_getfloatarg(14, argc, argv);
+    int fs = (int)atom_getfloatarg(15, argc, argv);
+    int bcol = (int)iemgui_getcolorarg(16, argc, argv, BACKGROUND);
+    int fcol = (int)iemgui_getcolorarg(17, argc, argv, FOREGROUND);
+    int lcol = (int)iemgui_getcolorarg(18, argc, argv, LABEL);
     int rcv_changed=0, oldsndrcvable=0;
     int i;
 
@@ -777,23 +777,23 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
         oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
-    if(IS_A_SYMBOL(argv,7))
-        srl[0] = atom_getsymbolarg(7, argc, argv);
-    else if(IS_A_FLOAT(argv,7))
+    if(IS_A_SYMBOL(argv,9))
+        srl[0] = atom_getsymbolarg(9, argc, argv);
+    else if(IS_A_FLOAT(argv,9))
     {
         srl[0] = gensym("empty");
     }
-    if(IS_A_SYMBOL(argv,8))
-        srl[1] = atom_getsymbolarg(8, argc, argv);
-    else if(IS_A_FLOAT(argv,8))
+    if(IS_A_SYMBOL(argv,10))
+        srl[1] = atom_getsymbolarg(10, argc, argv);
+    else if(IS_A_FLOAT(argv,10))
     {
         srl[1] = gensym("empty");
     }
-    if(IS_A_SYMBOL(argv,9))
-        srl[2] = atom_getsymbolarg(9, argc, argv);
-    else if(IS_A_FLOAT(argv,9))
+    if(IS_A_SYMBOL(argv,11))
+        srl[2] = atom_getsymbolarg(11, argc, argv);
+    else if(IS_A_FLOAT(argv,11))
     {
-        sprintf(str, "%g", atom_getfloatarg(9, argc, argv));
+        sprintf(str, "%g", atom_getfloatarg(11, argc, argv));
         srl[2] = gensym(str);
     }
     if(init != 0) init = 1;
@@ -877,16 +877,18 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
     if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
     if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
     if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
-    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
-    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
-    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
-    if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
-    if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
-    if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
-    if(argc>13) SETFLOAT (argv+13, iemgui->x_fontsize);
-    if(argc>14) SETCOLOR (argv+14, iemgui->x_bcol);
-    if(argc>15) SETCOLOR (argv+15, iemgui->x_fcol);
-    if(argc>16) SETCOLOR (argv+16, iemgui->x_lcol);
+    if(argc> 7) SETFLOAT (argv+ 7, 1); /* num2 */
+    if(argc> 8) SETFLOAT (argv+ 8, 0); /* order */
+    if(argc> 9) SETSYMBOL(argv+ 9, srl[0]);
+    if(argc>10) SETSYMBOL(argv+10, srl[1]);
+    if(argc>11) SETSYMBOL(argv+11, srl[2]);
+    if(argc>12) SETFLOAT (argv+12, iemgui->x_ldx);
+    if(argc>13) SETFLOAT (argv+13, iemgui->x_ldy);
+    if(argc>14) SETFLOAT (argv+14, iemgui->x_fsf.x_font_style);
+    if(argc>15) SETFLOAT (argv+15, iemgui->x_fontsize);
+    if(argc>16) SETCOLOR (argv+16, iemgui->x_bcol);
+    if(argc>17) SETCOLOR (argv+17, iemgui->x_fcol);
+    if(argc>18) SETCOLOR (argv+18, iemgui->x_lcol);
 }
 
 

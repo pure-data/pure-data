@@ -338,7 +338,7 @@ static void slider_properties(t_gobj *z, t_glist *owner)
                       x->x_min, x->x_max,
                       0,
                       x->x_lin0_log1, "linear", "logarithmic",
-                      1, x->x_steady, -1, -1);
+                      1, x->x_steady, -1, -1, -1);
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */
@@ -379,23 +379,23 @@ static void slider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
     double min = (double)atom_getfloatarg(2, argc, argv);
     double max = (double)atom_getfloatarg(3, argc, argv);
     int lilo = (int)atom_getfloatarg(4, argc, argv);
-    int steady = (int)atom_getfloatarg(17, argc, argv);
+    int steady = (int)atom_getfloatarg(19, argc, argv);
     int sr_flags;
-    t_atom undo[18];
+    t_atom undo[20];
 
     if(x->x_orientation == horizontal)
         w *= IEMGUI_ZOOM(x);
     else
         h *= IEMGUI_ZOOM(x);
 
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    iemgui_setdialogatoms(&x->x_gui, 20, undo);
     SETFLOAT(undo+2, x->x_min);
     SETFLOAT(undo+3, x->x_max);
     SETFLOAT(undo+4, x->x_lin0_log1);
-    SETFLOAT(undo+17, x->x_steady);
+    SETFLOAT(undo+19, x->x_steady);
 
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            20, undo,
                             argc, argv);
 
     x->x_lin0_log1 = !!lilo;

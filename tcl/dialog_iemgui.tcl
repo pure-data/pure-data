@@ -25,7 +25,10 @@ array set ::dialog_iemgui::var_range_checkmode {} ;# var_iemgui_rng_sch
 array set ::dialog_iemgui::var_mode {} ;# var_iemgui_lin0_log1
 array set ::dialog_iemgui::var_loadbang {} ;# var_iemgui_loadbang
 array set ::dialog_iemgui::var_steady {} ;# var_iemgui_steady
+
 array set ::dialog_iemgui::var_number {} ;# var_iemgui_num
+array set ::dialog_iemgui::var_number2 {} ;# var_iemgui_num2
+array set ::dialog_iemgui::var_order {} ;# var_iemgui_order
 
 array set ::dialog_iemgui::var_snd {} ;# var_send
 array set ::dialog_iemgui::var_rcv {} ;# var_receive
@@ -69,6 +72,11 @@ proc ::dialog_iemgui::clip_num {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
     set ::dialog_iemgui::var_number($vid) [clip $::dialog_iemgui::var_number($vid) 1 2000]
+    set ::dialog_iemgui::var_number2($vid) [clip $::dialog_iemgui::var_number2($vid) 1 128]
+    # force order to be either 0 or 1
+    if {[tonumber $::dialog_iemgui::var_order($vid)] != 0} {
+        set ::dialog_iemgui::var_order($vid) 1
+    }
 }
 
 proc ::dialog_iemgui::sched_rng {mytoplevel} {
@@ -269,6 +277,8 @@ proc ::dialog_iemgui::apply {mytoplevel} {
                 $::dialog_iemgui::var_mode($vid) \
                 $::dialog_iemgui::var_loadbang($vid) \
                 $::dialog_iemgui::var_number($vid) \
+                $::dialog_iemgui::var_number2($vid) \
+                $::dialog_iemgui::var_order($vid) \
                 [string map {"$" {\$}} [unspace_text $sendname]] \
                 [string map {"$" {\$}} [unspace_text $receivename]] \
                 $labelname \
@@ -299,7 +309,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
                                        label_range min_rng label_range_min max_rng \
                                        label_range_max rng_sched \
                                        lin0_log1 lilo0_label lilo1_label \
-                                       loadbang steady label_number num \
+                                       loadbang steady \
+                                       label_number num label_number2 num2 order \
                                        snd rcv \
                                        gui_name \
                                        gn_dx gn_dy gn_f gn_fs \
@@ -323,7 +334,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_mode($vid) $lin0_log1
     set ::dialog_iemgui::var_loadbang($vid) $loadbang
     set ::dialog_iemgui::var_steady($vid) $steady
+
     set ::dialog_iemgui::var_number($vid) $num
+    set ::dialog_iemgui::var_number2($vid) $num2
+    set ::dialog_iemgui::var_order($vid) $order
 
     set ::dialog_iemgui::var_snd($vid) $snd
     set ::dialog_iemgui::var_rcv($vid) $rcv
@@ -379,11 +393,13 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
             set label_width [_ "Size:"]
-            set label_number [_ "Num cells:"] }
+            set label_number [_ "Rows:"]
+            set label_number2 [_ "Columns:"] }
         "|hradio|" {
             set iemgui_type [_ "Hradio"]
             set label_width [_ "Size:"]
-            set label_number [_ "Num cells:"] }
+            set label_number [_ "Columns:"]
+            set label_number2 [_ "Rows:"] }
         "|vu|" {
             set ::dialog_iemgui::var_color_foreground($vid) none
             set iemgui_type [_ "VU Meter"]
@@ -439,6 +455,22 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             pack $mytoplevel.rng.dummy1 $mytoplevel.rng.max_lab $mytoplevel.rng.max_ent -side left}
     }
 
+    set applycmd ""
+    if {$::windowingsystem eq "aqua"} {
+        set applycmd "::dialog_iemgui::apply $mytoplevel"
+    }
+
+    # radio only: orientation / order
+    if {$::dialog_iemgui::var_order($vid) >= 0} {
+        labelframe $mytoplevel.orient -borderwidth 1 -padx 5 -pady 5 -text [_ "Orientation"]
+        pack $mytoplevel.orient -side top -fill x -pady 5
+
+        ::dialog_iemgui::popupmenu $mytoplevel.orient.order \
+            ::dialog_iemgui::var_order($vid) [list [_ "Horizontal"] [_ "Vertical" ] ] \
+            $applycmd
+        pack $mytoplevel.orient.order -side left -expand 1 -ipadx 10
+    }
+
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
@@ -448,10 +480,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     entry $mytoplevel.para.num.ent -textvariable ::dialog_iemgui::var_number($vid) -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
-    set applycmd ""
-    if {$::windowingsystem eq "aqua"} {
-        set applycmd "::dialog_iemgui::apply $mytoplevel"
-    }
+    frame $mytoplevel.para.num2
+    label $mytoplevel.para.num2.lab -text [_ $label_number2]
+    entry $mytoplevel.para.num2.ent -textvariable ::dialog_iemgui::var_number2($vid) -width 3
+    pack $mytoplevel.para.num2.ent $mytoplevel.para.num2.lab -side right -anchor e
 
 
     if {$::dialog_iemgui::var_mode($vid) >= 0} {
@@ -471,9 +503,20 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             $applycmd
         pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
     }
-    if {$::dialog_iemgui::var_number($vid) > 0} {
-        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
+
+    if {$mainheader eq "|vradio|"} {
+        set num_side "right"
+    } else {
+        set num_side "left"
     }
+
+    if {$::dialog_iemgui::var_number($vid) > 0} {
+        pack $mytoplevel.para.num -side $num_side -expand 1 -ipadx 10
+    }
+    if {$::dialog_iemgui::var_number2($vid) > 0} {
+        pack $mytoplevel.para.num2 -side $num_side -expand 1 -ipadx 10
+    }
+
     if {$::dialog_iemgui::var_steady($vid) >= 0} {
         ::dialog_iemgui::popupmenu $mytoplevel.para.stdy_jmp \
             ::dialog_iemgui::var_steady($vid) [list [_ "Jump on click"] [_ "Steady on click"] ] \
@@ -651,6 +694,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         bind $mytoplevel.rng.min.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.rng.max_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.para.num.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.num2.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.order.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.label.name_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.s_r.send.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.s_r.receive.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
@@ -664,6 +709,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         $mytoplevel.rng.min.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.rng.max_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.para.num.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.num2.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.order.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.label.name_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.s_r.send.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.s_r.receive.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"

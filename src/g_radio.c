@@ -435,18 +435,29 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows) {
 
   if ((ncols != x->x_number[(int)x->x_orientation])
        || nrows != x->x_number[!(int)x->x_orientation]) {
+
     int vis = glist_isvisible(x->x_gui.x_glist);
     if(vis)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
-    radio_doresize(x, ncols, nrows);
+
+    x->x_number[(int)x->x_orientation] = ncols;
+    x->x_number[!(int)x->x_orientation] = nrows;
+
+    if(!radio_matrix_initialize(x))
+        pd_error(x, "radio_resize: Could not initialize after resizing.");
+
+    if(!radio_matrix_reindex(x))
+        pd_error(x, "radio_resize: Could not reindex matrix.");
+
     if(vis && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
         canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
-    } else {
-        /* just reconfigure */
-        iemgui_size((void *)x, &x->x_gui);
     }
+  }
+  else {
+    /* just reconfigure */
+    iemgui_size((void *)x, &x->x_gui);
   }
 }
 
@@ -501,7 +512,7 @@ static void radio_properties(t_gobj *z, t_glist *owner)
 {
     t_radio *x = (t_radio *)z;
     int hchange = -1;
-    int size;
+    int size; // not really used here
     const char*objname;
     radio_objname_size(x, &objname, &size);
 
@@ -514,7 +525,7 @@ static void radio_properties(t_gobj *z, t_glist *owner)
         0, 0,
         0,
         hchange, "new-only", "new&old",
-        1, -1, x->x_number[0], x->x_number[1]);
+        1, -1, x->x_number[0], x->x_number[1], (int)x->x_orientation);
 }
 
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -522,21 +533,23 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     t_symbol *srl[3];
     int a = (int)atom_getfloatarg(0, argc, argv);
     int chg = (int)atom_getfloatarg(4, argc, argv);
-    // TODO: implement the num's 2nd dimension in the args
-    int num[] = {(int)atom_getfloatarg(6, argc, argv), 1};
-    int cols = num[(int)x->x_orientation];
-    int rows = num[!(int)x->x_orientation];
+    int num[] = {(int)atom_getfloatarg(6, argc, argv), (int)atom_getfloatarg(7, argc, argv)};
+    int order = (int)atom_getfloatarg(8, argc, argv) != 0 ? 1 : 0;
+    int cols = num[order];
+    int rows = num[!order];
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[20];
+    iemgui_setdialogatoms(&x->x_gui, 20, undo);
     SETFLOAT(undo+1, 0);
     SETFLOAT(undo+2, 0);
     SETFLOAT(undo+3, 0);
     SETFLOAT(undo+4, (x->x_compat)?x->x_change:-1);
     SETFLOAT(undo+6, x->x_number[(int)x->x_orientation]);
+    SETFLOAT(undo+7, x->x_number[!(int)x->x_orientation]);
+    SETFLOAT(undo+8, (int)x->x_orientation);
 
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            20, undo,
                             argc, argv);
 
     if(chg != 0) chg = 1;
@@ -544,7 +557,10 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
+
+    x->x_orientation = order;
     radio_resize(x, cols, rows);
+
     if(x->x_on >= cols)
     {
         x->x_on_old = x->x_on = cols - 1;
@@ -997,6 +1013,11 @@ static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, i
         radio_click((t_radio *)z, (t_floatarg)xpix, (t_floatarg)ypix, (t_floatarg)shift, 0, (t_floatarg)alt);
     return (1);
 }
+
+/*
+ * FIXME: ==288556== Conditional jump or move depends on uninitialised value(s)
+ *        ==288556==    at 0x185B45: radio_loadbang (g_radio.c:1019)
+ */
 
 static void radio_loadbang(t_radio *x, t_floatarg action)
 {

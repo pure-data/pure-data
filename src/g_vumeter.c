@@ -385,7 +385,7 @@ static void vu_properties(t_gobj *z, t_glist *owner)
                       0, 0,
                       0,
                       x->x_scale, "no scale", "scale",
-                      0, -1, -1, -1);
+                      0, -1, -1, -1, -1);
 }
 
 static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
@@ -395,15 +395,15 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     int h = (int)atom_getfloatarg(1, argc, argv);
     int scale = (int)atom_getfloatarg(4, argc, argv);
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[20];
+    iemgui_setdialogatoms(&x->x_gui, 20, undo);
     SETFLOAT(undo+2, 0.01);
     SETFLOAT(undo+3, 1);
     SETFLOAT(undo+4, x->x_scale);
     SETFLOAT(undo+5, -1);
-    SETSYMBOL(undo+15, gensym("none"));
+    SETSYMBOL(undo+17, gensym("none"));
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            20, undo,
                             argc, argv);
 
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
