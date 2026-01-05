@@ -719,13 +719,13 @@ void sys_gui_midipreferences(void) {
 #ifdef __APPLE__
     if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
     {
-        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running.");
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running. "
+            "Please turn off DSP and rescan devices.");
         nindev = noutdev = nindevs = noutdevs = 0;
     }
     else
 #endif
     {
-        sys_reinit_midi();
         sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
             MAXNDEV, DEVDESCSIZE);
         sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
