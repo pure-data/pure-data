@@ -1305,8 +1305,9 @@ describes how Pd treats audio signals.</P>
 
 <P>Pd's audio signals are internally kept as 32-bit floating point numbers, so
 you have all the dynamic range you could want. However, depending on your
-hardware, audio I/O is usually limited to 16 or 24 bits. Inputs all appear
-between the values of -1 and 1; and output values will be clipped to that range.
+hardware, audio I/O is usually limited to 16 or 24 bits. Regular input appears
+between the values of -1 and 1; and output values are expected in the same range.
+Values may be clipped beyond this range depending on OS and audio backend.
 Pd runs at a sample rate of 48000 unless you override this (in Pd's command line
 or in an "audio setup" or "preferences" dialog window).</P>
 
