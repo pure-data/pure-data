@@ -588,12 +588,12 @@ static void radio_get_cell(t_radio *x, t_floatarg fidx)
         pd_float(x->x_gui.x_snd->s_thing, outval);
 }
 
-static void radio_set_cell(t_radio *x, t_floatarg fidx, t_floatarg fval)
+static void radio_fill_cell(t_radio *x, t_floatarg fidx, t_floatarg fval)
 {
     const int max_val = x->x_number[0] * x->x_number[1];
     const int idx = clip_int((int)fidx, 0, max_val);
     int val = ((int)fval != 0 ? 1 : 0 );
-    x->x_matrix[x->x_matrix_idx[idx]] = val;
+    x->x_matrix[idx] = val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
@@ -612,7 +612,7 @@ static void radio_cell(t_radio *x, t_symbol *s, int argc, t_atom *argv)
         postatom(argc-2, argv+2);
         endpost();
     }
-    return(radio_set_cell(x, fidx, fval));
+    return(radio_fill_cell(x, fidx, fval));
 }
 
 static void radio_readline(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
@@ -691,19 +691,14 @@ static void radio_bang(t_radio *x)
         /* compatibility with earlier "[hv]dial" behavior */
         if((x->x_change) && (x->x_on != x->x_on_old))
             radio_output_hdlprev(x);
-
         x->x_on_old = x->x_on;
-        radio_output_hdlcurr(x);
+        return(radio_output_hdlcurr(x));
     }
-    else if (x->x_number[0] > 1 && x->x_number[1] > 1) {
-        /* matrix */
-        if (x->x_output_mode==1)
-            radio_get_cell(x, x->x_fval);
-        else if (x->x_output_mode==2)
-            radio_readline(x, x->x_orientation, x->x_fval);
-    }
-    else
-        radio_output_value(x);
+
+    if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
+        return(radio_readline(x, !(t_float)x->x_orientation, x->x_fval));
+
+    radio_output_value(x);
 }
 
 static void radio_set(t_radio *x, t_floatarg f)
@@ -744,16 +739,14 @@ static void radio_float(t_radio *x, t_floatarg f)
         x->x_on_old = x->x_on;
         return(radio_output_hdlcurr(x));
     }
-    if (x->x_number[0] > 1 && x->x_number[1] > 1) {
-        /* matrix */
-        if (x->x_output_mode==1)
-            return(radio_get_cell(x, x->x_fval));
-        else if (x->x_output_mode==2)
-            return(radio_readline(x, x->x_orientation, x->x_fval));
-    }
+
     x->x_on_old = x->x_on;
     x->x_on = i;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+
+    if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
+        return(radio_readline(x, !(t_float)x->x_orientation, x->x_fval));
+
     radio_output_value(x);
 }
 
@@ -901,7 +894,7 @@ static void radio_fill(t_radio *x, t_floatarg fval)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
-static void radio_matrix_set(t_radio *x, t_floatarg fcol, t_floatarg frow, t_floatarg fval)
+static void radio_put(t_radio *x, t_floatarg fcol, t_floatarg frow, t_floatarg fval)
 {
     const int ncols = x->x_number[0];
     const int nrows = x->x_number[1];
@@ -915,22 +908,22 @@ static void radio_matrix_set(t_radio *x, t_floatarg fcol, t_floatarg frow, t_flo
     // case 2: one column, multiple rows => vertical
     if (ncols == 1) {
         if (col > 1)
-            return pd_error(x, "radio_get: Illegal arguments.");
+            return pd_error(x, "radio_put: Illegal arguments.");
         if (row < 0) return radio_fill_column(x, 1.0, fval);
         else {
             if (!radio_coord2idx(x, 1, row, &idx))
-                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+                return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
             goto fill_cell;
         }
     }
     // case 3: multiple columns, one row => horizontal
     if (nrows == 1) {
         if (row > 1)
-            return pd_error(x, "radio_get: Illegal arguments.");
+            return pd_error(x, "radio_put: Illegal arguments.");
         if (col < 0) return radio_fill_row(x, 1.0, fval);
         else {
             if (!radio_coord2idx(x, col, 1, &idx))
-                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+                return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
             goto fill_cell;
         }
     }
@@ -940,11 +933,11 @@ static void radio_matrix_set(t_radio *x, t_floatarg fcol, t_floatarg frow, t_flo
     else if (row < 0) return radio_fill_column(x, (t_float)col, fval);
     else {
         if (!radio_coord2idx(x, col, row, &idx))
-            return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
         goto fill_cell;
     }
 fill_cell:
-    return radio_set_cell(x, (t_float)idx, fval);
+    return radio_fill_cell(x, (t_float)idx, fval);
 }
 
 static void radio_clear(t_radio *x)
@@ -994,13 +987,12 @@ static void radio_number(t_radio *x, t_floatarg num)
     radio_resize(x, num, 1.0);
 }
 
-static void radio_mode(t_radio *x, t_floatarg foutputmode)
+static void radio_output_mode(t_radio *x, t_floatarg fmode)
 {
-    int output_mode = clip_int((int)foutputmode, 0, 3);
+    int output_mode = (fmode != 0.0 ? 1 : 0);
     if (x->x_output_mode == output_mode)
         return;
     x->x_output_mode = output_mode;
-    post("output_mode: %d", x->x_output_mode);
 }
 
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
@@ -1213,8 +1205,8 @@ void g_radio_setup(void)
         gensym("orientation"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
-    class_addmethod(radio_class, (t_method)radio_mode,
-        gensym("mode"), A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_output_mode,
+        gensym("output_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_spit,
         gensym("spit"), A_NULL);
     class_addmethod(radio_class, (t_method)radio_fill,
@@ -1225,6 +1217,8 @@ void g_radio_setup(void)
         gensym("writeline"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_get,
         gensym("get"), A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addmethod(radio_class, (t_method)radio_put,
+        gensym("put"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_cell,
         gensym("cell"), A_GIMME, 0);
     class_addmethod(radio_class, (t_method)radio_row,
