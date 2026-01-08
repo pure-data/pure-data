@@ -1025,7 +1025,6 @@ static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, i
  * FIXME: ==288556== Conditional jump or move depends on uninitialised value(s)
  *        ==288556==    at 0x185B45: radio_loadbang (g_radio.c:1019)
  */
-
 static void radio_loadbang(t_radio *x, t_floatarg action)
 {
     if(action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
