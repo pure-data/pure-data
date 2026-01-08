@@ -750,6 +750,27 @@ static void radio_float(t_radio *x, t_floatarg f)
     radio_output_value(x);
 }
 
+static void radio_step(t_radio *x, t_floatarg fstep)
+{
+    t_float fval = x->x_fval;
+    t_float next_val = fval + fstep;
+    if (next_val < 0)
+        next_val = 0;
+    if (next_val > x->x_number[(int)x->x_orientation] - 1)
+        next_val = x->x_number[(int)x->x_orientation] - 1;
+    radio_float(x, next_val);
+}
+
+static void radio_next(t_radio *x)
+{
+    return(radio_step(x, 1.0));
+}
+
+static void radio_prev(t_radio *x)
+{
+    return(radio_step(x, -1.0));
+}
+
 static void radio_spit(t_radio *x)
 {
     t_atom *av;
@@ -1225,6 +1246,12 @@ void g_radio_setup(void)
         gensym("row"), A_GIMME, 0);
     class_addmethod(radio_class, (t_method)radio_column,
         gensym("column"), A_GIMME, 0);
+    class_addmethod(radio_class, (t_method)radio_next,
+        gensym("next"), A_NULL);
+    class_addmethod(radio_class, (t_method)radio_prev,
+        gensym("prev"), A_NULL);
+    class_addmethod(radio_class, (t_method)radio_step,
+        gensym("step"), A_DEFFLOAT, 0);
     radio_widgetbehavior.w_getrectfn = radio_getrect;
     radio_widgetbehavior.w_displacefn = iemgui_displace;
     radio_widgetbehavior.w_selectfn = iemgui_select;
