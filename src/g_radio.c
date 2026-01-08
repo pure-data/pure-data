@@ -607,80 +607,6 @@ static void radio_set(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
-static void radio_bang(t_radio *x)
-{
-    if(x->x_compat)
-    {
-            /* compatibility with earlier "[hv]dial" behavior */
-        t_atom at[2];
-        if((x->x_change) && (x->x_on != x->x_on_old))
-        {
-            SETFLOAT(at+0, (t_float)x->x_on_old);
-            SETFLOAT(at+1, 0.0);
-            outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-            if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-        }
-        x->x_on_old = x->x_on;
-        SETFLOAT(at+0, (t_float)x->x_on);
-        SETFLOAT(at+1, 1.0);
-        outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-    }
-    else
-    {
-        t_float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
-        outlet_float(x->x_gui.x_obj.ob_outlet, outval);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, outval);
-    }
-}
-
-static void radio_fout(t_radio *x, t_floatarg f)
-{
-    const int ncols = x->x_number[0];
-    const int nrows = x->x_number[1];
-    const int max_val = (x->x_orientation == horizontal ? ncols : nrows);
-    int i = clip_int((int)f, 0, max_val);
-
-    x->x_fval = f;
-
-    if(x->x_compat)
-    {
-            /* compatibility with earlier "[hv]dial" behavior */
-        t_atom at[2];
-        if((x->x_change) && (i != x->x_on_old))
-        {
-            SETFLOAT(at+0, (t_float)x->x_on_old);
-            SETFLOAT(at+1, 0.0);
-            outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-            if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-        }
-        if(x->x_on != x->x_on_old)
-            x->x_on_old = x->x_on;
-        x->x_on = i;
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-        x->x_on_old = x->x_on;
-        SETFLOAT(at+0, (t_float)x->x_on);
-        SETFLOAT(at+1, 1.0);
-        outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-    }
-    else
-    {
-        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
-        x->x_on_old = x->x_on;
-        x->x_on = i;
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-        outlet_float(x->x_gui.x_obj.ob_outlet, outval);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, outval);
-    }
-}
-
 static void radio_get_cell(t_radio *x, t_floatarg fidx)
 {
     const int max_val = x->x_number[0] * x->x_number[1];
@@ -750,61 +676,118 @@ static void radio_readline(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
     FREEA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
 }
 
-static void radio_float(t_radio *x, t_floatarg f)
+static void radio_output_hdlprev(t_radio *x)
 {
-    const int ncols = x->x_number[0];
-    const int nrows = x->x_number[1];
-    int i = clip_int((int)f, 0, ncols);
+    if(!x->x_gui.x_fsf.x_put_in2out)
+        return;
 
+    t_atom at[2];
+    SETFLOAT(at+0, (t_float)x->x_on_old);
+    SETFLOAT(at+1, 0.0);
+    outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
+    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+        pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
+}
+
+static void radio_output_hdlcurr(t_radio *x)
+{
+    if(!x->x_gui.x_fsf.x_put_in2out)
+        return;
+
+    t_atom at[2];
+    SETFLOAT(at+0, (t_float)x->x_on);
+    SETFLOAT(at+1, 1.0);
+    outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
+    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+        pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
+}
+
+static void radio_output_value(t_radio *x)
+{
+    if(!x->x_gui.x_fsf.x_put_in2out)
+        return;
+
+    t_float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
+    outlet_float(x->x_gui.x_obj.ob_outlet, outval);
+    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+        pd_float(x->x_gui.x_snd->s_thing, outval);
+}
+
+static void radio_bang(t_radio *x)
+{
+    if(x->x_compat)
+    {
+        /* compatibility with earlier "[hv]dial" behavior */
+        if((x->x_change) && (x->x_on != x->x_on_old))
+            radio_output_hdlprev(x);
+
+        x->x_on_old = x->x_on;
+        radio_output_hdlcurr(x);
+    }
+    else
+        radio_output_value(x);
+}
+
+static void radio_fout(t_radio *x, t_floatarg f)
+{
     x->x_fval = f;
+    int i = clip_int((int)f, 0, x->x_number[(int)x->x_orientation]);
 
     if(x->x_compat)
     {
-        t_atom at[2];
-            /* compatibility with earlier "[hv]dial" behavior */
+        /* compatibility with earlier "[hv]dial" behavior */
         if((x->x_change) && (i != x->x_on_old))
-        {
-            if(x->x_gui.x_fsf.x_put_in2out)
-            {
-                SETFLOAT(at+0, (t_float)x->x_on_old);
-                SETFLOAT(at+1, 0.0);
-                outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-                if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                    pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-            }
-        }
+            radio_output_hdlprev(x);
+
         if(x->x_on != x->x_on_old)
             x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         x->x_on_old = x->x_on;
-        if(x->x_gui.x_fsf.x_put_in2out)
-        {
-            SETFLOAT(at+0, (t_float)x->x_on);
-            SETFLOAT(at+1, 1.0);
-            outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, at);
-            if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, at);
-        }
-    } else if (ncols > 1 && nrows > 1) {
+        radio_output_hdlcurr(x);
+    }
+    else
+    {
+        x->x_on_old = x->x_on;
+        x->x_on = i;
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+        return(radio_output_value(x));
+    }
+}
+
+static void radio_float(t_radio *x, t_floatarg f)
+{
+    x->x_fval = f;
+    int i = clip_int((int)f, 0, x->x_number[(int)x->x_orientation]);
+
+    if(x->x_compat)
+    {
+        /* compatibility with earlier "[hv]dial" behavior */
+        if((x->x_change) && (i != x->x_on_old))
+            radio_output_hdlprev(x);
+
+        if(x->x_on != x->x_on_old)
+            x->x_on_old = x->x_on;
+        x->x_on = i;
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+        x->x_on_old = x->x_on;
+        radio_output_hdlcurr(x);
+
+    } else if (x->x_number[0] > 1 && x->x_number[1] > 1) {
+        /* matrix */
         if (x->x_output_mode==1)
             radio_get_cell(x, x->x_fval);
         else if (x->x_output_mode==2)
             radio_readline(x, x->x_orientation, x->x_fval);
         else
             radio_fout(x, x->x_fval);
-    } else
+    }
+    else
     {
-        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-        if(x->x_gui.x_fsf.x_put_in2out)
-        {
-            outlet_float(x->x_gui.x_obj.ob_outlet, outval);
-            if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                pd_float(x->x_gui.x_snd->s_thing, outval);
-        }
+        radio_output_value(x);
     }
 }
 
@@ -1266,8 +1249,6 @@ void g_radio_setup(void)
         gensym("orientation"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
-    // class_addmethod(radio_class, (t_method)radio_focus,
-    //     gensym("focus"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_mode,
         gensym("mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_spit,
