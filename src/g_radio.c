@@ -1034,10 +1034,10 @@ static void radio_loadbang(t_radio *x, t_floatarg action)
 
 static void radio_number(t_radio *x, t_floatarg num)
 {
-    if (x->x_orientation == horizontal)
-        return(radio_resize(x, num, 1.0));
-    else
+    if (x->x_orientation == vertical)
         return(radio_resize(x, 1.0, num));
+
+    radio_resize(x, num, 1.0);
 }
 
 static void radio_mode(t_radio *x, t_floatarg foutputmode)
