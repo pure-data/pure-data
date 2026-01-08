@@ -990,12 +990,21 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     return (1);
 }
 
+static t_float atom_floatelse(int which, int argc, const t_atom *argv,
+    t_float fallback)
+{
+    if (argc <= which) return (fallback);
+    argv += which;
+    if (argv->a_type == A_FLOAT) return (argv->a_w.w_float);
+    else return (fallback);
+}
+
     /* message back from dialog window */
 static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
 {
-    t_float width = atom_getfloatarg(0, argc, argv);
-    t_float draglo = atom_getfloatarg(1, argc, argv);
-    t_float draghi = atom_getfloatarg(2, argc, argv);
+    t_float width = atom_floatelse(0, argc, argv, x->a_text.te_width);
+    t_float draglo = atom_floatelse(1, argc, argv, x->a_draglo);
+    t_float draghi = atom_floatelse(2, argc, argv, x->a_draghi);
     t_symbol *label = gatom_unescapit(atom_getsymbolarg(3, argc, argv));
     t_float wherelabel = atom_getfloatarg(4, argc, argv);
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));

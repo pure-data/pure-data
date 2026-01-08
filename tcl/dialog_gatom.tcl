@@ -40,9 +40,9 @@ proc ::dialog_gatom::apply {mytoplevel} {
     global gatomlabel_radio
 
     pdsend "$mytoplevel param \
-        [$mytoplevel.width.entry get] \
-        [$mytoplevel.limits.lower.entry get] \
-        [$mytoplevel.limits.upper.entry get] \
+        [::dialog_gatom::escape [$mytoplevel.width.entry get]] \
+        [::dialog_gatom::escape [$mytoplevel.limits.lower.entry get]] \
+        [::dialog_gatom::escape [$mytoplevel.limits.upper.entry get]] \
         [::dialog_gatom::escape [$mytoplevel.gatomlabel.name.entry get]] \
         $gatomlabel_radio($mytoplevel) \
         [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]] \
