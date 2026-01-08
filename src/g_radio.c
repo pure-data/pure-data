@@ -724,6 +724,13 @@ static void radio_bang(t_radio *x)
         x->x_on_old = x->x_on;
         radio_output_hdlcurr(x);
     }
+    else if (x->x_number[0] > 1 && x->x_number[1] > 1) {
+        /* matrix */
+        if (x->x_output_mode==1)
+            radio_get_cell(x, x->x_fval);
+        else if (x->x_output_mode==2)
+            radio_readline(x, x->x_orientation, x->x_fval);
+    }
     else
         radio_output_value(x);
 }
@@ -1151,7 +1158,6 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         x->x_number[1] = 1;
     }
 
-    x->x_output_mode = 0; // default to normal index output
 
     x->x_fval = fval;
     on = fval;
@@ -1164,7 +1170,10 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     else
         x->x_on = 0;
     x->x_on_old = x->x_on;
+
     x->x_change = (chg == 0) ? 0 : 1;
+
+    x->x_output_mode = 0;
 
     if(!radio_matrix_allocate(x))
         pd_error(x, "Could not initialize matrix.");
