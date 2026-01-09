@@ -219,11 +219,12 @@ typedef struct _radio
     int      x_change;
     int      x_number[2];
     int      *x_matrix;
-    int      *x_matrix_idx;
+    size_t   *x_matrix_idx;
     int      x_output_mode;
     t_float  x_fval;
     t_iem_orientation x_orientation;
     int      x_compat; /* old version */
+    int      x_block;
 } t_radio;
 
 typedef struct _toggle
