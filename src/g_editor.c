@@ -2339,6 +2339,11 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     t_gobj *hitdrawtext = 0;
     t_rtext *rtext;
 
+    if(!x->gl_editor) {
+        bug("editor");
+        return;
+    }
+
     shiftmod = (mod & SHIFTMOD);
     runmode = ((mod & CTRLMOD) || (!x->gl_edit));
     altmod = (mod & ALTMOD);
