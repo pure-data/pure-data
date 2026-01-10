@@ -245,13 +245,13 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
         if(!radio_idx2coord(x, idx, &col, &row))
             pd_error(x, "radio_draw_config: Bad index (%zu)", idx);
 
-        int xx11 = x0 + col * cellw;
-        int yy11 = y0 + row * cellh;
-        int xx12 = xx11 + cellw;
-        int yy12 = yy11 + cellh;
+        const int xx11 = x0 + col * cellw;
+        const int yy11 = y0 + row * cellh;
+        const int xx12 = xx11 + cellw;
+        const int yy12 = yy11 + cellh;
 
-        int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-        int step_color = (x->x_matrix[idx] != 0) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
+        const int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        const int step_color = (x->x_matrix[idx] != 0) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
 
         sprintf(tag, "%pBASE%zu", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -371,8 +371,8 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++) {
         const size_t idx = x->x_matrix_idx[i];
-        const int but_on_cell = x->x_on == idx;
-        const int step_on_cell = (x->x_matrix[idx] != 0 ? 1 : 0);
+        const int but_on_cell = (x->x_on == idx);
+        const int step_on_cell = (x->x_matrix[idx] != 0);
         /* paint the BUTton if it is currently on that index */
         /* draw the X step if the value at that index is other than zero */
         const int curr_color = but_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
@@ -779,10 +779,19 @@ static void radio_step(t_radio *x, t_floatarg fstep)
 {
     t_float fval = x->x_fval;
     t_float next_val = fval + fstep;
-    if (next_val < 0)
-        next_val = 0;
-    if (next_val > x->x_number[(int)x->x_orientation] - 1)
-        next_val = x->x_number[(int)x->x_orientation] - 1;
+    if (x->x_border_mode)
+    {
+        if (next_val < 0)
+            next_val = x->x_number[(int)x->x_orientation] - 1;
+        if (next_val > x->x_number[(int)x->x_orientation] - 1)
+            next_val = 0;
+    }
+    else {
+        if (next_val < 0)
+            next_val = 0;
+        if (next_val > x->x_number[(int)x->x_orientation] - 1)
+            next_val = x->x_number[(int)x->x_orientation] - 1;
+    }
     radio_float(x, next_val);
 }
 
@@ -1040,6 +1049,14 @@ static void radio_output_mode(t_radio *x, t_floatarg fmode)
     x->x_output_mode = output_mode;
 }
 
+static void radio_border_mode(t_radio *x, t_floatarg fmode)
+{
+    const int border_mode = (fmode != 0.0 ? 1 : 0);
+    if (x->x_border_mode == border_mode)
+        return;
+    x->x_border_mode = border_mode;
+}
+
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
 {
     (void)s; // silence unused parameter warning
@@ -1158,6 +1175,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_on_old = x->x_on = (x->x_gui.x_isa.x_loadinit ? on : 0);
     x->x_change = (chg == 0) ? 0 : 1;
     x->x_output_mode = 0;
+    x->x_border_mode = 0;
 
     if(!radio_matrix_allocate(x))
         pd_error(x, "Could not initialize matrix.");
@@ -1244,6 +1262,8 @@ void g_radio_setup(void)
         gensym("orientation"), A_FLOAT, 0);
     class_addmethod(radio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
+    class_addmethod(radio_class, (t_method)radio_border_mode,
+        gensym("border_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_output_mode,
         gensym("output_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_spit,
