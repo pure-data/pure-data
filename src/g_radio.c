@@ -467,7 +467,7 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
     /* remap the indices */
     radio_matrix_reindex(x);
 
-    x->x_on = clip_int(x->x_on, 1, x->x_orientation == horizontal ? ncols : nrows);
+    x->x_on = clip_int(x->x_on, 0, x->x_number[(int)x->x_orientation]);
     x->x_on_old = x->x_on;
 
     if(vis && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
@@ -577,17 +577,15 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 
     x->x_change = !!(int)chg;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    if (sr_flags==1)
-        pd_error(x, "warning: old send flag");
-    else if (sr_flags==2)
-        pd_error(x, "warning: old receive flag");
-
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
 
     /* resize and set orientation */
     radio_orientation(x, forient);
+    const int configure = ((cols == x->x_number[0]) && (rows == x->x_number[1]));
     radio_resize(x, cols, rows);
+    if (configure)
+        iemgui_size((void *)x, &x->x_gui);
 }
 
 static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
