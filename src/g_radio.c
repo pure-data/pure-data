@@ -251,7 +251,7 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
         const int yy12 = yy11 + cellh;
 
         const int curr_color = (x->x_on == idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-        const int step_color = (x->x_matrix[idx] != 0) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
+        const int step_color = (x->x_matrix[idx]) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
 
         sprintf(tag, "%pBASE%zu", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -371,12 +371,12 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++) {
         const size_t idx = x->x_matrix_idx[i];
-        const int but_on_cell = (x->x_on == idx);
-        const int step_on_cell = (x->x_matrix[idx] != 0);
+        const int button = (x->x_on == idx);
+        const int step = x->x_matrix[idx];
         /* paint the BUTton if it is currently on that index */
         /* draw the X step if the value at that index is other than zero */
-        const int curr_color = but_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-        const int step_color = step_on_cell ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        const int curr_color = button ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        const int step_color = step ? x->x_gui.x_fcol : x->x_gui.x_bcol;
 
         sprintf(tag_x1, "%pX1%zu", x, idx);
         pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x1,
@@ -388,12 +388,13 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
         pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag_but,
                     "-fill", curr_color, "-outline", curr_color);
 
-        if (step_on_cell == 1 && but_on_cell == 0) {
+        /* make sure background button is behind foreground crosses, and viceversa */
+        if (step == 1 && button == 0) {
             pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_x2);
             pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_but);
             pdgui_vmess(0, "crss", canvas, "raise", tag_x2, tag_but);
         }
-        else if (step_on_cell == 0 && but_on_cell == 1) {
+        else if (step == 0 && button == 1) {
             pdgui_vmess(0, "crss", canvas, "raise", tag_x1, tag_x2);
             pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x2);
             pdgui_vmess(0, "crss", canvas, "raise", tag_but, tag_x1);
@@ -502,7 +503,7 @@ static void radio_save(t_gobj *z, t_binbuf *b)
 
 static void radio_orientation(t_radio *x, t_floatarg forient)
 {
-    t_iem_orientation orientation = (forient != 0.0 ? vertical : horizontal);
+    t_iem_orientation orientation = !!(int)forient;
 
     if (x->x_orientation == orientation)
         return;
@@ -541,12 +542,12 @@ static void radio_properties(t_gobj *z, t_glist *owner)
         1, -1, x->x_number[0], x->x_number[1], (int)x->x_orientation);
 }
 
-static void radio_number(t_radio *x, t_floatarg num)
+static void radio_number(t_radio *x, t_floatarg fnum)
 {
     if (x->x_orientation == vertical)
-        return(radio_resize(x, 1.0, num));
+        return(radio_resize(x, 1.0, fnum));
 
-    radio_resize(x, num, 1.0);
+    radio_resize(x, fnum, 1.0);
 }
 
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -574,7 +575,7 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
                             20, undo,
                             argc, argv);
 
-    x->x_change = (chg != 0 ? 1 : 0);
+    x->x_change = !!(int)chg;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     if (sr_flags==1)
         pd_error(x, "warning: old send flag");
@@ -597,7 +598,7 @@ static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 
     for(int i=0; (i < argc) && (i < x->x_number[0]*x->x_number[1]); i++) {
         size_t idx = x->x_matrix_idx[i];
-        x->x_matrix[idx] = (atom_getfloatarg(i,argc,argv) != 0.0 ? 1 : 0);
+        x->x_matrix[idx] = !!(int)atom_getfloatarg(i,argc,argv);
     }
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
@@ -616,7 +617,7 @@ static void radio_fill_cell(t_radio *x, t_floatarg fidx, t_floatarg fval)
 {
     const int max_val = x->x_number[0] * x->x_number[1];
     const int idx = clip_int((int)fidx, 0, max_val);
-    int val = ((int)fval != 0 ? 1 : 0 );
+    int val = !!(int)fval;
     x->x_matrix[idx] = val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
@@ -645,16 +646,16 @@ static void radio_readline(t_radio *x, t_floatarg faxis, t_floatarg flinenum)
     t_atom *av;
     int ac = 0;
     t_symbol *s = &s_list;
-    const int axis = ((int)faxis != 0 ? 1 : 0);
-    const int max_val = x->x_number[axis];
+    const int axis = !!(int)faxis;
+    const int max_val = x->x_number[!axis];
     const int i = clip_int((int)flinenum, 0, max_val);
 
     ALLOCA(t_atom, av, max_val, IEM_RADIO_MAX + 1);
 
     for (int j = 0; j < max_val; ++j) {
         size_t idx;
-        const int col = (!axis) ? j : i;
-        const int row = (!axis) ? i : j;
+        const int col = (!axis ? j : i);
+        const int row = (!axis ? i : j);
         if(radio_coord2idx(x, col, row, &idx)) {
             SETFLOAT(av + ac, (t_float)x->x_matrix[idx]);
             ac++;
@@ -721,7 +722,7 @@ static void radio_bang(t_radio *x)
     }
 
     if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
-        return(radio_readline(x, !(t_float)x->x_orientation, x->x_fval));
+        radio_readline(x, !(t_float)x->x_orientation, x->x_fval);
 
     radio_output_value(x);
 }
@@ -770,7 +771,7 @@ static void radio_float(t_radio *x, t_floatarg f)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 
     if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
-        return(radio_readline(x, !(t_float)x->x_orientation, x->x_fval));
+       radio_readline(x, !(t_float)x->x_orientation, x->x_fval);
 
     radio_output_value(x);
 }
@@ -826,15 +827,15 @@ static void radio_spit(t_radio *x)
 
 static void radio_writeline(t_radio *x, t_floatarg faxis, t_floatarg flinenum, t_floatarg fval)
 {
-    const int val = (fval != 0.0 ? 1 : 0 );
-    const int axis = ((int)faxis != 0 ? 1 : 0);
+    const int val = !!(int)fval;
+    const int axis = !!(int)faxis;
     const int max_val = x->x_number[axis];
     const int i = clip_int((int)flinenum, 0, max_val);
 
     for (int j = 0; j < max_val; ++j) {
         size_t idx;
-        const int col = (!axis) ? j : i;
-        const int row = (!axis) ? i : j;
+        const int col = (!axis ? j : i);
+        const int row = (!axis ? i : j);
         if(radio_coord2idx(x, col, row, &idx))
             x->x_matrix[idx] = val;
     }
@@ -945,7 +946,7 @@ get_cell:
 
 static void radio_fill(t_radio *x, t_floatarg fval)
 {
-    const int val = ((int)fval != 0 ? 1 : 0 );
+    const int val = !!(int)fval;
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++)
         x->x_matrix[i] = val;
@@ -995,7 +996,7 @@ static void radio_put(t_radio *x, t_floatarg fcol, t_floatarg frow, t_floatarg f
         goto fill_cell;
     }
 fill_cell:
-    return radio_fill_cell(x, (t_float)idx, fval);
+    return radio_fill_cell(x, (t_floatarg)idx, fval);
 }
 
 static void radio_clear(t_radio *x)
@@ -1018,7 +1019,7 @@ static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg
     if (!shift)
         return(radio_float(x, (t_float)(idx % x->x_number[(int)x->x_orientation])));
 
-    x->x_matrix[idx] = (x->x_matrix[idx] != 0 ? 1 : 0);
+    x->x_matrix[idx] = !x->x_matrix[idx]; // flip the value when clicking
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
@@ -1043,7 +1044,7 @@ static void radio_loadbang(t_radio *x, t_floatarg action)
 
 static void radio_output_mode(t_radio *x, t_floatarg fmode)
 {
-    const int output_mode = (fmode != 0.0 ? 1 : 0);
+    const int output_mode = !!(int)fmode;
     if (x->x_output_mode == output_mode)
         return;
     x->x_output_mode = output_mode;
@@ -1051,7 +1052,7 @@ static void radio_output_mode(t_radio *x, t_floatarg fmode)
 
 static void radio_border_mode(t_radio *x, t_floatarg fmode)
 {
-    const int border_mode = (fmode != 0.0 ? 1 : 0);
+    const int border_mode = !!(int)fmode;
     if (x->x_border_mode == border_mode)
         return;
     x->x_border_mode = border_mode;
@@ -1091,7 +1092,7 @@ static void radio_label_font(t_radio *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_label_font((void *)x, &x->x_gui, s, ac, av);}
 
 static void radio_init(t_radio *x, t_floatarg f)
-{x->x_gui.x_isa.x_loadinit = (f == 0.0) ? 0 : 1;}
+{x->x_gui.x_isa.x_loadinit = !!(int)f;}
 
 static void radio_double_change(t_radio *x)
 {
@@ -1173,7 +1174,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_fval = fval;
     on = clip_int((int)fval, 0, max_on);
     x->x_on_old = x->x_on = (x->x_gui.x_isa.x_loadinit ? on : 0);
-    x->x_change = (chg == 0) ? 0 : 1;
+    x->x_change = !!(int)chg;
     x->x_output_mode = 0;
     x->x_border_mode = 0;
 
