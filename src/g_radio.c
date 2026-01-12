@@ -13,7 +13,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
-#include "m_private_utils.h" // for ALLOCA and FREEA in radio_spit and radio_readline
+#include "m_private_utils.h" // for ALLOCA and FREEA in radio_dump and radio_readline
 
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
@@ -804,10 +804,9 @@ static void radio_prev(t_radio *x)
     return(radio_step(x, -1.0));
 }
 
-static void radio_spit(t_radio *x)
+static void radio_dump(t_radio *x, t_symbol *s)
 {
     t_atom *av;
-    t_symbol *s = &s_list;
     const int size = x->x_number[0] * x->x_number[1];
 
     ALLOCA(t_atom, av, size, IEM_RADIO_MAX + 1);
@@ -815,11 +814,14 @@ static void radio_spit(t_radio *x)
         const size_t idx = x->x_matrix_idx[i];
         SETFLOAT(&av[i], (t_float)x->x_matrix[idx]);
     }
-
-    outlet_list(x->x_gui.x_obj.ob_outlet, s, size, av);
-    if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-        pd_list(x->x_gui.x_snd->s_thing, s, size, av);
-
+    if (s && s->s_thing)
+        pd_list(s->s_thing, &s_list, size, av);
+    else
+    {
+        outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, size, av);
+        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
+            pd_list(x->x_gui.x_snd->s_thing, &s_list, size, av);
+    }
     FREEA(t_atom, av, size, IEM_RADIO_MAX + 1);
 }
 
@@ -930,7 +932,7 @@ static void radio_get(t_radio *x, t_floatarg fcol, t_floatarg frow)
         }
     }
     // case 4: multiple columns, multiple rows
-    if(col < 0 && row < 0) return radio_spit(x);
+    if(col < 0 && row < 0) return radio_dump(x, 0);
     else if (col < 0) return radio_get_row(x, (t_float)row);
     else if (row < 0) return radio_get_column(x, (t_float)col);
     else {
@@ -1273,8 +1275,8 @@ void g_radio_setup(void)
         gensym("border_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_output_mode,
         gensym("output_mode"), A_DEFFLOAT, 0);
-    class_addmethod(radio_class, (t_method)radio_spit,
-        gensym("spit"), A_NULL);
+    class_addmethod(radio_class, (t_method)radio_dump,
+        gensym("dump"), A_DEFSYM, 0);
     class_addmethod(radio_class, (t_method)radio_fill,
         gensym("fill"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_readline,
