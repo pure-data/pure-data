@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-1999 Miller Puckette.
+/* Copyright (c) 1997-1999 Miller Pucke2te.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 
@@ -1108,7 +1108,7 @@ static void radio_single_change(t_radio *x)
         pd_error(x, "radio: no method for 'single_change'");
 }
 
-static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
+static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int radio_version)
 {
     t_radio *x = (t_radio *)iemgui_new(radio_class);
     int a = IEM_GUI_DEFAULTSIZE, on = 0;
@@ -1119,7 +1119,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     /* store the orientation encoded in the object name */
     t_iem_orientation orientation = ('v' == *s->s_name) ? vertical : horizontal;
 
-    x->x_compat = old;
+    x->x_compat = (radio_version == 1) ? 1 : 0; // old version compatibility
 
     IEMGUI_SETDRAWFUNCTIONS(x, radio);
 
@@ -1152,11 +1152,14 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         strcpy(x->x_gui.x_font, sys_font); }
 
     /* if it's a matrix, decode extended size and orientation */
-    int cols = 0;
-    int rows = 0;
+
+    // default values for menu creation
+    int cols = 3;
+    int rows = 3;
     t_iem_orientation orient = horizontal;
     int max_on;
-    if(radio_decode_extended(num, &cols, &rows, &orient)){
+    if((!argc && radio_version == 2)
+        || radio_decode_extended(num, &cols, &rows, &orient)){
         x->x_orientation = orient;
         x->x_number[0] = cols;
         x->x_number[1] = rows;
@@ -1197,6 +1200,11 @@ static void *radio_new(t_symbol *s, int argc, t_atom *argv)
     return (radio_donew(s, argc, argv, 0));
 }
 
+static void *matrix_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return (radio_donew(s, argc, argv, 2));
+}
+
 static void *dial_new(t_symbol *s, int argc, t_atom *argv)
 {
     return (radio_donew(s, argc, argv, 1));
@@ -1218,7 +1226,7 @@ void g_radio_setup(void)
     class_addcreator((t_newmethod)radio_new, gensym("rdb"), A_GIMME, 0);
     class_addcreator((t_newmethod)radio_new, gensym("radiobut"), A_GIMME, 0);
     class_addcreator((t_newmethod)radio_new, gensym("radiobutton"), A_GIMME, 0);
-    class_addcreator((t_newmethod)radio_new, gensym("radio"), A_GIMME, 0);
+    class_addcreator((t_newmethod)matrix_new, gensym("radio"), A_GIMME, 0);
 
     class_addbang(radio_class, radio_bang);
     class_addfloat(radio_class, radio_float);

@@ -92,6 +92,7 @@ proc ::pd_bindings::global_bindings {} {
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
     # annoying, but Tk's bind needs uppercase letter to get the Shift
+    bind_capslock all $::modifier-Shift-Key X {menu_send %W radio}
     bind_capslock all $::modifier-Shift-Key A {menu_send %W menuarray}
     bind_capslock all $::modifier-Shift-Key B {menu_send %W bng}
     bind_capslock all $::modifier-Shift-Key C {menu_send %W mycnv}

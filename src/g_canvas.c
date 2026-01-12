@@ -2082,6 +2082,7 @@ extern void canvas_hdial(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
     /* new version: */
 extern void canvas_hradio(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_vradio(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
+extern void canvas_radio(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_vumeter(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_mycnv(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 extern void canvas_numbox(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
@@ -2158,6 +2159,8 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_mycnv, gensym("mycnv"),
                     A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_numbox, gensym("numbox"),
+                    A_GIMME, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_radio, gensym("radio"),
                     A_GIMME, A_NULL);
 
 /* ------------------------ gui stuff --------------------------- */
