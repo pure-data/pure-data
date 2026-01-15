@@ -1088,9 +1088,7 @@ static void radio_number(t_radio *x, t_floatarg fnum)
 
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
 {
-    (void)s; // silence unused parameter warning
-    const int size = (int)atom_getfloatarg(0, ac, av) * IEMGUI_ZOOM(x);
-    x->x_gui.x_w = iemgui_clip_size(size);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -1347,5 +1345,4 @@ void g_radio_setup(void)
         gensym("single_change"), 0);
     class_addmethod(radio_class, (t_method)radio_double_change,
         gensym("double_change"), 0);
-    post("under construction...");
 }
