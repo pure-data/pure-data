@@ -449,19 +449,19 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
         return;
 
     int vis = glist_isvisible(x->x_gui.x_glist);
+    if(vis)
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
 
     x->x_number[0] = ncols;
     x->x_number[1] = nrows;
 
-    if(vis)
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
-
     /* initialize the matrix */
     radio_matrix_allocate(x);
 
-    if (ncols == 1 && nrows > 1)
+    if (ncols < nrows)
         x->x_orientation =  vertical;
-    else if (nrows == 1 && ncols > 1)
+
+    if (ncols > nrows)
         x->x_orientation =  horizontal;
 
     /* remap the indices */
@@ -518,7 +518,8 @@ static void radio_orientation(t_radio *x, t_floatarg forient)
     radio_matrix_reindex(x);
 
     /* reconfigure */
-    iemgui_size(x, &x->x_gui);
+    iemgui_size((void *)x, &x->x_gui);
+    return;
 }
 
 static void radio_properties(t_gobj *z, t_glist *owner)
@@ -545,9 +546,9 @@ static void radio_properties(t_gobj *z, t_glist *owner)
 static void radio_number(t_radio *x, t_floatarg fnum)
 {
     if (x->x_orientation == vertical)
-        return(radio_resize(x, 1.0, fnum));
+        return (radio_resize(x, 1.0, fnum));
 
-    radio_resize(x, fnum, 1.0);
+    return (radio_resize(x, fnum, 1.0));
 }
 
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -581,11 +582,25 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_h = x->x_gui.x_w;
 
     /* resize and set orientation */
-    radio_orientation(x, forient);
-    const int configure = ((cols == x->x_number[0]) && (rows == x->x_number[1]));
-    radio_resize(x, cols, rows);
-    if (configure)
-        iemgui_size((void *)x, &x->x_gui);
+    const int want_cols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
+    const int want_rows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
+    const int resize = (want_cols != x->x_number[0] || want_rows != x->x_number[1]);
+    const int reorient = ((int)x->x_orientation != (int)forient);
+
+    if (resize == 1 && reorient == 1)
+    {
+        radio_resize(x, (t_floatarg)want_cols, (t_floatarg)want_rows);
+        return (radio_orientation(x, (t_floatarg)forient));
+    }
+
+    if (resize == 1 && reorient == 0)
+        return (radio_resize(x, (t_floatarg)want_cols, (t_floatarg)want_rows));
+
+    if (resize == 0 && reorient == 1)
+        return (radio_orientation(x, (t_floatarg)forient));
+
+    /* reconfigure if no size/orientation was changed */
+    iemgui_size((void *)x, &x->x_gui);
 }
 
 static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
