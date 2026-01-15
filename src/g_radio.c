@@ -585,22 +585,20 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     const int want_cols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
     const int want_rows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
     const int resize = (want_cols != x->x_number[0] || want_rows != x->x_number[1]);
-    const int reorient = ((int)x->x_orientation != (int)forient);
-
-    if (resize == 1 && reorient == 1)
-    {
-        radio_resize(x, (t_floatarg)want_cols, (t_floatarg)want_rows);
-        return (radio_orientation(x, (t_floatarg)forient));
-    }
-
-    if (resize == 1 && reorient == 0)
-        return (radio_resize(x, (t_floatarg)want_cols, (t_floatarg)want_rows));
-
-    if (resize == 0 && reorient == 1)
-        return (radio_orientation(x, (t_floatarg)forient));
+    const int reorient = ((int)x->x_orientation != !!(int)forient);
 
     /* reconfigure if no size/orientation was changed */
-    iemgui_size((void *)x, &x->x_gui);
+    if (!resize && !reorient)
+        return iemgui_size((void *)x, &x->x_gui);
+
+    if (resize && reorient) {
+        radio_resize(x, cols, rows);
+        return radio_orientation(x, forient);
+    } else if (resize) {
+        return radio_resize(x, cols, rows);
+    } else { /* reorient only */
+        return radio_orientation(x, forient);
+    }
 }
 
 static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
