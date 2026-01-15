@@ -84,7 +84,8 @@ static int radio_matrix_allocate(t_radio *x)
     if (ncols * nrows > IEM_RADIO_MAX)
         return(0);
 
-    if (x->x_matrix && x->x_matrix_idx){
+    if (x->x_matrix && x->x_matrix_idx)
+    {
         freebytes(x->x_matrix, size * sizeof(int));
         freebytes(x->x_matrix_idx, size * sizeof(size_t));
         x->x_matrix = NULL;
@@ -551,7 +552,6 @@ static void radio_orientation(t_radio *x, t_floatarg forient)
 
     /* reconfigure */
     iemgui_size((void *)x, &x->x_gui);
-    return;
 }
 
 static void radio_properties(t_gobj *z, t_glist *owner)
@@ -618,11 +618,11 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     if (resize && reorient) {
         radio_resize(x, cols, rows);
         return(radio_orientation(x, forient));
-    } else if (resize) {
-        return(radio_resize(x, cols, rows));
-    } else { /* reorient only */
-        return(radio_orientation(x, forient));
     }
+    else if (resize)
+        return(radio_resize(x, cols, rows));
+    else /* reorient only */
+        return(radio_orientation(x, forient));
 }
 
 static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -832,14 +832,10 @@ static void radio_step(t_radio *x, t_floatarg fstep)
 }
 
 static void radio_next(t_radio *x)
-{
-    return(radio_step(x, 1.0));
-}
+{radio_step(x, 1.0);}
 
 static void radio_prev(t_radio *x)
-{
-    return(radio_step(x, -1.0));
-}
+{radio_step(x, -1.0);}
 
 static void radio_dump(t_radio *x, t_symbol *s)
 {
@@ -880,14 +876,10 @@ static void radio_writeline(t_radio *x, t_floatarg faxis, t_floatarg flinenum, t
 }
 
 static void radio_get_row(t_radio *x, t_floatarg frow)
-{
-    return(radio_readline(x, 0.0, frow));
-}
+{radio_readline(x, 0.0, frow);}
 
 static void radio_fill_row(t_radio *x, t_floatarg frow, t_floatarg fval)
-{
-    return(radio_writeline(x, 0.0, frow, fval));
-}
+{radio_writeline(x, 0.0, frow, fval);}
 
 static void radio_row(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -909,14 +901,11 @@ static void radio_row(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 static void radio_get_column(t_radio *x, t_floatarg fcol)
-{
-    return(radio_readline(x, 1.0, fcol));
-}
+{radio_readline(x, 1.0, fcol);}
 
 static void radio_fill_column(t_radio *x, t_floatarg fcol, t_floatarg fval)
-{
-    return(radio_writeline(x, 1.0, fcol, fval));
-}
+{radio_writeline(x, 1.0, fcol, fval);}
+
 static void radio_column(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
     (void)s; // silence unused parameter warning
@@ -1037,9 +1026,7 @@ fill_cell:
 }
 
 static void radio_clear(t_radio *x)
-{
-    return(radio_fill(x, 0));
-}
+{radio_fill(x, 0);}
 
 static void radio_output_mode(t_radio *x, t_floatarg fmode)
 {
@@ -1085,10 +1072,6 @@ static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, i
     return(1);
 }
 
-/*
- * FIXME: ==288556== Conditional jump or move depends on uninitialised value(s)
- *        ==288556==    at 0x185B45: radio_loadbang (g_radio.c:1019)
- */
 static void radio_loadbang(t_radio *x, t_floatarg action)
 {
     if(action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
@@ -1247,14 +1230,14 @@ static void *radio_new(t_symbol *s, int argc, t_atom *argv)
     return(radio_donew(s, argc, argv, 0));
 }
 
-static void *matrix_new(t_symbol *s, int argc, t_atom *argv)
-{
-    return(radio_donew(s, argc, argv, 2));
-}
-
 static void *dial_new(t_symbol *s, int argc, t_atom *argv)
 {
     return(radio_donew(s, argc, argv, 1));
+}
+
+static void *matrix_new(t_symbol *s, int argc, t_atom *argv)
+{
+    return(radio_donew(s, argc, argv, 2));
 }
 
 static void radio_free(t_radio *x)
