@@ -100,6 +100,7 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
     }
 }
 
+# swap the columns/rows values after changing orientation
 proc ::dialog_iemgui::reflect_order {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
     set tmp $::dialog_iemgui::var_number($vid)
