@@ -20,13 +20,55 @@
 t_widgetbehavior radio_widgetbehavior;
 static t_class *radio_class;
 
+/* ------------------- helper functions ---------------------------- */
+
 static int clip_int(int val, int min_val, int max_val)
 {
     if (val >= max_val)
         val = max_val - 1;
     if (val < min_val)
         val = min_val;
-    return val;
+    return(val);
+}
+
+/* We encode/decode extended (2d) sizes in negative values for saving in .pd file args
+ * - If number is extended (<0):  columns, rows, and orientation is encoded
+ * - If number is not extended (>=0): it's 1d, so we default to normal hradio/vradio
+ */
+static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orientation, int *ptr_size)
+{
+    if (!ptr_size) return(0);
+    if (nrows <= 1 || nrows > IEM_RADIO_MAX) return(0);
+    if (ncols <= 1 || ncols > IEM_RADIO_MAX) return(0);
+
+    uint16_t r7 = (uint16_t)(nrows - 1);  // 0..127
+    uint16_t c7 = (uint16_t)(ncols - 1);  // 0..127
+    uint16_t o  = (uint16_t)orientation; // 0/1
+
+    uint16_t code = (uint16_t)((o << 14) | (r7 << 7) | c7); // 0..32767
+    *ptr_size = -(int)(code + 1); // -1..-32768
+    return(1);
+}
+
+static int radio_decode_extended(int number, int *ptr_ncols, int *ptr_nrows, t_iem_orientation *ptr_orientation)
+{
+    if (!ptr_nrows || !ptr_ncols || !ptr_orientation) return(0);
+    if (number >= 0) return(0);
+
+    uint16_t code = (uint16_t)(-number - 1); // 0..32767
+
+    int o = (code >> 14) & 1;
+    int r = ((code >> 7) & 0x7F) + 1;
+    int c = (code & 0x7F) + 1;
+
+    // Sanity (should always hold given the encoding)
+    if (r < 1 || r > IEM_RADIO_MAX) return(0);
+    if (c < 1 || c > IEM_RADIO_MAX) return(0);
+
+    *ptr_orientation = o;
+    *ptr_nrows = r;
+    *ptr_ncols = c;
+    return(1);
 }
 
 /* allocates and initializes the integer matrix */
@@ -105,46 +147,6 @@ static int radio_idx2coord(t_radio *x, const size_t idx, int *col, int *row)
     return(1);
 }
 
-/* We encode/decode extended (2d) sizes in negative values for saving in .pd file args
- * - If number is extended (<0):  columns, rows, and orientation is encoded
- * - If number is not extended (>=0): it's 1d, so we default to normal hradio/vradio
- */
-static int radio_encode_extended(int nrows, int ncols, t_iem_orientation orientation, int *ptr_size)
-{
-    if (!ptr_size) return(0);
-    if (nrows <= 1 || nrows > IEM_RADIO_MAX) return(0);
-    if (ncols <= 1 || ncols > IEM_RADIO_MAX) return(0);
-
-    uint16_t r7 = (uint16_t)(nrows - 1);  // 0..127
-    uint16_t c7 = (uint16_t)(ncols - 1);  // 0..127
-    uint16_t o  = (uint16_t)orientation; // 0/1
-
-    uint16_t code = (uint16_t)((o << 14) | (r7 << 7) | c7); // 0..32767
-    *ptr_size = -(int)(code + 1); // -1..-32768
-    return(1);
-}
-
-static int radio_decode_extended(int number, int *ptr_ncols, int *ptr_nrows, t_iem_orientation *ptr_orientation)
-{
-    if (!ptr_nrows || !ptr_ncols || !ptr_orientation) return(0);
-    if (number >= 0) return(0);
-
-    uint16_t code = (uint16_t)(-number - 1); // 0..32767
-
-    int o = (code >> 14) & 1;
-    int r = ((code >> 7) & 0x7F) + 1;
-    int c = (code & 0x7F) + 1;
-
-    // Sanity (should always hold given the encoding)
-    if (r < 1 || r > IEM_RADIO_MAX) return(0);
-    if (c < 1 || c > IEM_RADIO_MAX) return(0);
-
-    *ptr_orientation = o;
-    *ptr_nrows = r;
-    *ptr_ncols = c;
-    return(1);
-}
-
 /* helper to store the indices in the matrix_idx array for easier retrieval */
 static int radio_matrix_reindex(t_radio *x)
 {
@@ -157,6 +159,63 @@ static int radio_matrix_reindex(t_radio *x)
             x->x_matrix_idx[i++] = idx;
         }
     return(1);
+}
+
+/* helper to get the correct object name and size of the widget
+ * depending on its orientation, number of columns and rows
+ * as well as the compatibility name
+ */
+static int radio_objname_size(t_radio *x, const char**objname, int*ptr_size)
+{
+    const int orientation = x->x_orientation;
+    const int ncols = x->x_number[0];
+    const int nrows = x->x_number[1];
+
+    const int extended = radio_encode_extended(nrows, ncols, orientation, ptr_size);
+    const char is_vertical = (orientation == vertical);
+
+    const char *compat_name = is_vertical ? "vdl" : "hdl";
+    const char *name = is_vertical ? "vradio" : "hradio";
+
+    if (extended) {
+        *objname = "radio";
+        // size is updated while encoding extended 2d sizes
+        return(1);
+    }
+    *objname = (x->x_compat) ? compat_name : name;
+    *ptr_size = is_vertical ? nrows : ncols;
+    return(0);
+}
+
+/* clip the max possible size so that we always have N x M <= IEM_RADIO_MAX */
+static int radio_set_newsize(t_radio *x, int ncols, int nrows)
+{
+    int changed = 0;
+
+    if ((long long)ncols * (long long)nrows > IEM_RADIO_MAX) {
+        if (ncols >= nrows) {
+            int max_cols = IEM_RADIO_MAX / nrows;
+            if (max_cols < 1) max_cols = 1;
+            if (ncols != max_cols) {
+                pd_error(x, "Matrix too large. Clipping columns to %d", max_cols);
+                ncols = max_cols;
+                changed = 1;
+            }
+        } else {
+            int max_rows = IEM_RADIO_MAX / ncols;
+            if (max_rows < 1) max_rows = 1;
+            if (nrows != max_rows) {
+                pd_error(x, "Matrix too large. Clipping rows to %d", max_rows);
+                nrows = max_rows;
+                changed = 1;
+            }
+        }
+    }
+
+    x->x_number[0] = ncols;
+    x->x_number[1] = nrows;
+
+    return(changed);
 }
 
 /* widget helper functions */
@@ -299,7 +358,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     sprintf(tag_object, "%pOBJ", x);
 
     if(!radio_matrix_reindex(x))
-        return pd_error(x, "radio_draw_new: could not reindex matrix.");
+        return(pd_error(x, "radio_draw_new: could not reindex matrix."));
 
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++) {
@@ -414,64 +473,6 @@ static void radio_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp
     *yp2 = *yp1 + x->x_gui.x_h * x->x_number[1];
 }
 
-/* helper to get the correct object name and size of the widget
- * depending on its orientation, number of columns and rows
- * as well as the compatibility name
- */
-static int radio_objname_size(t_radio *x, const char**objname, int*ptr_size)
-{
-    const int orientation = x->x_orientation;
-    const int ncols = x->x_number[0];
-    const int nrows = x->x_number[1];
-
-    const int extended = radio_encode_extended(nrows, ncols, orientation, ptr_size);
-    const char is_vertical = (orientation == vertical);
-
-    const char *compat_name = is_vertical ? "vdl" : "hdl";
-    const char *name = is_vertical ? "vradio" : "hradio";
-
-    if (extended) {
-        *objname = "radio";
-        // size is updated while encoding extended 2d sizes
-        return(1);
-    }
-    *objname = (x->x_compat) ? compat_name : name;
-    *ptr_size = is_vertical ? nrows : ncols;
-    return(0);
-}
-
-/* clip the max possible size so that we always have N x M <= IEM_RADIO_MAX */
-static int radio_set_newsize(t_radio *x, int ncols, int nrows)
-{
-    int changed = 0;
-
-    if ((long long)ncols * (long long)nrows > IEM_RADIO_MAX) {
-        if (ncols >= nrows) {
-            int max_cols = IEM_RADIO_MAX / nrows;
-            if (max_cols < 1) max_cols = 1;
-            if (ncols != max_cols) {
-                pd_error(x, "Matrix too large. Clipping columns to %d", max_cols);
-                ncols = max_cols;
-                changed = 1;
-            }
-        } else {
-            int max_rows = IEM_RADIO_MAX / ncols;
-            if (max_rows < 1) max_rows = 1;
-            if (nrows != max_rows) {
-                pd_error(x, "Matrix too large. Clipping rows to %d", max_rows);
-                nrows = max_rows;
-                changed = 1;
-            }
-        }
-    }
-
-    x->x_number[0] = ncols;
-    x->x_number[1] = nrows;
-
-    return changed;
-}
-
-
 static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
 {
     int ncols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
@@ -574,14 +575,6 @@ static void radio_properties(t_gobj *z, t_glist *owner)
         1, -1, x->x_number[0], x->x_number[1], (int)x->x_orientation);
 }
 
-static void radio_number(t_radio *x, t_floatarg fnum)
-{
-    if (x->x_orientation == vertical)
-        return (radio_resize(x, 1.0, fnum));
-
-    return (radio_resize(x, fnum, 1.0));
-}
-
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
     (void)s; // silence unused parameter warning
@@ -620,15 +613,15 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 
     /* reconfigure if no size/orientation was changed */
     if (!resize && !reorient)
-        return iemgui_size((void *)x, &x->x_gui);
+        return(iemgui_size((void *)x, &x->x_gui));
 
     if (resize && reorient) {
         radio_resize(x, cols, rows);
-        return radio_orientation(x, forient);
+        return(radio_orientation(x, forient));
     } else if (resize) {
-        return radio_resize(x, cols, rows);
+        return(radio_resize(x, cols, rows));
     } else { /* reorient only */
-        return radio_orientation(x, forient);
+        return(radio_orientation(x, forient));
     }
 }
 
@@ -956,36 +949,36 @@ static void radio_get(t_radio *x, t_floatarg fcol, t_floatarg frow)
     // case 2: one column, multiple rows
     if (ncols == 1) {
         if (col > 1)
-            return pd_error(x, "radio_get: Illegal arguments.");
-        if (row < 0) return radio_get_column(x, 1.0);
+            return(pd_error(x, "radio_get: Illegal arguments."));
+        if (row < 0) return(radio_get_column(x, 1.0));
         else {
             if (!radio_coord2idx(x, 1, row, &idx))
-                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+                return(pd_error(x, "radio_get: Bad index (%d,%d)", col, row));
             goto get_cell;
         }
     }
     // case 3: multiple columns, one row
     if (nrows == 1) {
         if (row > 1)
-            return pd_error(x, "radio_get: Illegal arguments.");
-        if (col < 0) return radio_get_row(x, 1.0);
+            return(pd_error(x, "radio_get: Illegal arguments."));
+        if (col < 0) return(radio_get_row(x, 1.0));
         else {
             if (!radio_coord2idx(x, col, 1, &idx))
-                return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+                return(pd_error(x, "radio_get: Bad index (%d,%d)", col, row));
             goto get_cell;
         }
     }
     // case 4: multiple columns, multiple rows
-    if(col < 0 && row < 0) return radio_dump(x, 0);
-    else if (col < 0) return radio_get_row(x, (t_float)row);
-    else if (row < 0) return radio_get_column(x, (t_float)col);
+    if(col < 0 && row < 0) return(radio_dump(x, 0));
+    else if (col < 0) return(radio_get_row(x, (t_float)row));
+    else if (row < 0) return(radio_get_column(x, (t_float)col));
     else {
         if (!radio_coord2idx(x, col, row, &idx))
-            return pd_error(x, "radio_get: Bad index (%d,%d)", col, row);
+            return(pd_error(x, "radio_get: Bad index (%d,%d)", col, row));
         goto get_cell;
     }
 get_cell:
-    return radio_get_cell(x, (t_float)idx);
+    return(radio_get_cell(x, (t_float)idx));
 }
 
 static void radio_fill(t_radio *x, t_floatarg fval)
@@ -1011,41 +1004,57 @@ static void radio_put(t_radio *x, t_floatarg fcol, t_floatarg frow, t_floatarg f
     // case 2: one column, multiple rows => vertical
     if (ncols == 1) {
         if (col > 1)
-            return pd_error(x, "radio_put: Illegal arguments.");
-        if (row < 0) return radio_fill_column(x, 1.0, fval);
+            return(pd_error(x, "radio_put: Illegal arguments."));
+        if (row < 0) return(radio_fill_column(x, 1.0, fval));
         else {
             if (!radio_coord2idx(x, 1, row, &idx))
-                return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
+                return(pd_error(x, "radio_put: Bad index (%d,%d)", col, row));
             goto fill_cell;
         }
     }
     // case 3: multiple columns, one row => horizontal
     if (nrows == 1) {
         if (row > 1)
-            return pd_error(x, "radio_put: Illegal arguments.");
-        if (col < 0) return radio_fill_row(x, 1.0, fval);
+            return(pd_error(x, "radio_put: Illegal arguments."));
+        if (col < 0) return(radio_fill_row(x, 1.0, fval));
         else {
             if (!radio_coord2idx(x, col, 1, &idx))
-                return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
+                return(pd_error(x, "radio_put: Bad index (%d,%d)", col, row));
             goto fill_cell;
         }
     }
     // case 4: multiple columns, multiple rows
-    if(col < 0 && row < 0) return radio_fill(x, fval);
-    else if (col < 0) return radio_fill_row(x, (t_float)row, fval);
-    else if (row < 0) return radio_fill_column(x, (t_float)col, fval);
+    if(col < 0 && row < 0) return(radio_fill(x, fval));
+    else if (col < 0) return(radio_fill_row(x, (t_float)row, fval));
+    else if (row < 0) return(radio_fill_column(x, (t_float)col, fval));
     else {
         if (!radio_coord2idx(x, col, row, &idx))
-            return pd_error(x, "radio_put: Bad index (%d,%d)", col, row);
+            return(pd_error(x, "radio_put: Bad index (%d,%d)", col, row));
         goto fill_cell;
     }
 fill_cell:
-    return radio_fill_cell(x, (t_floatarg)idx, fval);
+    return(radio_fill_cell(x, (t_floatarg)idx, fval));
 }
 
 static void radio_clear(t_radio *x)
 {
     return(radio_fill(x, 0));
+}
+
+static void radio_output_mode(t_radio *x, t_floatarg fmode)
+{
+    const int output_mode = !!(int)fmode;
+    if (x->x_output_mode == output_mode)
+        return;
+    x->x_output_mode = output_mode;
+}
+
+static void radio_border_mode(t_radio *x, t_floatarg fmode)
+{
+    const int border_mode = !!(int)fmode;
+    if (x->x_border_mode == border_mode)
+        return;
+    x->x_border_mode = border_mode;
 }
 
 static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
@@ -1073,7 +1082,7 @@ static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, i
     (void)dbl; // silence unused parameter warning
     if(doit)
         radio_click((t_radio *)z, (t_floatarg)xpix, (t_floatarg)ypix, (t_floatarg)shift, 0, (t_floatarg)alt);
-    return (1);
+    return(1);
 }
 
 /*
@@ -1086,20 +1095,12 @@ static void radio_loadbang(t_radio *x, t_floatarg action)
         radio_bang(x);
 }
 
-static void radio_output_mode(t_radio *x, t_floatarg fmode)
+static void radio_number(t_radio *x, t_floatarg fnum)
 {
-    const int output_mode = !!(int)fmode;
-    if (x->x_output_mode == output_mode)
-        return;
-    x->x_output_mode = output_mode;
-}
+    if (x->x_orientation == vertical)
+        return(radio_resize(x, 1.0, fnum));
 
-static void radio_border_mode(t_radio *x, t_floatarg fmode)
-{
-    const int border_mode = !!(int)fmode;
-    if (x->x_border_mode == border_mode)
-        return;
-    x->x_border_mode = border_mode;
+    return(radio_resize(x, fnum, 1.0));
 }
 
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
@@ -1238,22 +1239,22 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int radio_version)
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_list);
-    return (x);
+    return(x);
 }
 
 static void *radio_new(t_symbol *s, int argc, t_atom *argv)
 {
-    return (radio_donew(s, argc, argv, 0));
+    return(radio_donew(s, argc, argv, 0));
 }
 
 static void *matrix_new(t_symbol *s, int argc, t_atom *argv)
 {
-    return (radio_donew(s, argc, argv, 2));
+    return(radio_donew(s, argc, argv, 2));
 }
 
 static void *dial_new(t_symbol *s, int argc, t_atom *argv)
 {
-    return (radio_donew(s, argc, argv, 1));
+    return(radio_donew(s, argc, argv, 1));
 }
 
 static void radio_free(t_radio *x)
