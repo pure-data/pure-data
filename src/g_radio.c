@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-1999 Miller Pucke2te.
+/* Copyright (c) 1997-1999 Miller Puckette.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 
