@@ -39,7 +39,7 @@ static int radio_matrix_allocate(t_radio *x)
     if (ncols <= 0 || nrows <= 0)
         return(0);
 
-    if (ncols > (IEM_RADIO_MAX * IEM_RADIO_MAX) / nrows)
+    if (ncols * nrows > IEM_RADIO_MAX)
         return(0);
 
     if (x->x_matrix && x->x_matrix_idx){
@@ -440,10 +440,42 @@ static int radio_objname_size(t_radio *x, const char**objname, int*ptr_size)
     return(0);
 }
 
+/* clip the max possible size so that we always have N x M <= IEM_RADIO_MAX */
+static int radio_set_newsize(t_radio *x, int ncols, int nrows)
+{
+    int changed = 0;
+
+    if ((long long)ncols * (long long)nrows > IEM_RADIO_MAX) {
+        if (ncols >= nrows) {
+            int max_cols = IEM_RADIO_MAX / nrows;
+            if (max_cols < 1) max_cols = 1;
+            if (ncols != max_cols) {
+                pd_error(x, "Matrix too large. Clipping columns to %d", max_cols);
+                ncols = max_cols;
+                changed = 1;
+            }
+        } else {
+            int max_rows = IEM_RADIO_MAX / ncols;
+            if (max_rows < 1) max_rows = 1;
+            if (nrows != max_rows) {
+                pd_error(x, "Matrix too large. Clipping rows to %d", max_rows);
+                nrows = max_rows;
+                changed = 1;
+            }
+        }
+    }
+
+    x->x_number[0] = ncols;
+    x->x_number[1] = nrows;
+
+    return changed;
+}
+
+
 static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
 {
-    const int ncols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
-    const int nrows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
+    int ncols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
+    int nrows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
  
     if ((ncols == x->x_number[0]) && (nrows == x->x_number[1]))
         return;
@@ -452,8 +484,7 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
     if(vis)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
 
-    x->x_number[0] = ncols;
-    x->x_number[1] = nrows;
+    radio_set_newsize(x, ncols, nrows);
 
     /* initialize the matrix */
     radio_matrix_allocate(x);
