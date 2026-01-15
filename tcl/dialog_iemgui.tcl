@@ -100,6 +100,13 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
     }
 }
 
+proc ::dialog_iemgui::reflect_order {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+    set tmp $::dialog_iemgui::var_number($vid)
+    set ::dialog_iemgui::var_number($vid)  $::dialog_iemgui::var_number2($vid)
+    set ::dialog_iemgui::var_number2($vid) $tmp
+}
+
 proc ::dialog_iemgui::verify_rng {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
@@ -400,6 +407,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             set label_width [_ "Size:"]
             set label_number [_ "Columns:"]
             set label_number2 [_ "Rows:"] }
+        "|radio|" {
+            set iemgui_type [_ "Matrix"]
+            set label_width [_ "Size:"]
+            set label_number [_ "Columns:"]
+            set label_number2 [_ "Rows:"] }
         "|vu|" {
             set ::dialog_iemgui::var_color_foreground($vid) none
             set iemgui_type [_ "VU Meter"]
@@ -467,7 +479,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
         ::dialog_iemgui::popupmenu $mytoplevel.orient.order \
             ::dialog_iemgui::var_order($vid) [list [_ "Horizontal"] [_ "Vertical" ] ] \
-            $applycmd
+            "::dialog_iemgui::reflect_order $mytoplevel; $applycmd"
         pack $mytoplevel.orient.order -side left -expand 1 -ipadx 10
     }
 
@@ -504,17 +516,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
     }
 
-    if {$mainheader eq "|vradio|"} {
-        set num_side "right"
-    } else {
-        set num_side "left"
-    }
-
     if {$::dialog_iemgui::var_number($vid) > 0} {
-        pack $mytoplevel.para.num -side $num_side -expand 1 -ipadx 10
+        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
     }
     if {$::dialog_iemgui::var_number2($vid) > 0} {
-        pack $mytoplevel.para.num2 -side $num_side -expand 1 -ipadx 10
+        pack $mytoplevel.para.num2 -side left -expand 1 -ipadx 10
     }
 
     if {$::dialog_iemgui::var_steady($vid) >= 0} {
