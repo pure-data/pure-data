@@ -556,7 +556,6 @@ static void radio_orientation(t_radio *x, t_floatarg forient)
 
 static void radio_properties(t_gobj *z, t_glist *owner)
 {
-    (void)owner; // silence unused parameter warning
     t_radio *x = (t_radio *)z;
     int hchange = -1;
     int size; // not needed here
@@ -577,7 +576,6 @@ static void radio_properties(t_gobj *z, t_glist *owner)
 
 static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
-    (void)s; // silence unused parameter warning
     const int a = (int)atom_getfloatarg(0, argc, argv);
     const int chg = (int)atom_getfloatarg(4, argc, argv);
     const t_float cols = atom_getfloatarg(6, argc, argv);
@@ -627,7 +625,6 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 
 static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
-    (void)s; // silence unused parameter warning
     if (!argc)
         return;
 
@@ -659,7 +656,6 @@ static void radio_fill_cell(t_radio *x, t_floatarg fidx, t_floatarg fval)
 
 static void radio_cell(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
-    (void)s; // silence unused parameter warning
     if (!argc)
         return;
 
@@ -883,7 +879,6 @@ static void radio_fill_row(t_radio *x, t_floatarg frow, t_floatarg fval)
 
 static void radio_row(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
-    (void)s; // silence unused parameter warning
     if (!argc)
         return;
 
@@ -908,7 +903,6 @@ static void radio_fill_column(t_radio *x, t_floatarg fcol, t_floatarg fval)
 
 static void radio_column(t_radio *x, t_symbol *s, int argc, t_atom *argv)
 {
-    (void)s; // silence unused parameter warning
     if (!argc)
         return;
 
@@ -1046,8 +1040,6 @@ static void radio_border_mode(t_radio *x, t_floatarg fmode)
 
 static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
-    (void)ctrl; // silence unused parameter warning
-    (void)alt; // silence unused parameter warning
     size_t idx;
     const int xx = (int)xpos - (int)text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
     const int yy = (int)ypos - (int)text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
@@ -1065,8 +1057,6 @@ static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg
 
 static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
-    (void)glist; // silence unused parameter warning
-    (void)dbl; // silence unused parameter warning
     if(doit)
         radio_click((t_radio *)z, (t_floatarg)xpix, (t_floatarg)ypix, (t_floatarg)shift, 0, (t_floatarg)alt);
     return(1);
