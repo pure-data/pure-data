@@ -752,23 +752,6 @@ static void radio_output_value(t_radio *x)
         pd_float(x->x_gui.x_snd->s_thing, outval);
 }
 
-static void radio_bang(t_radio *x)
-{
-    if(x->x_compat)
-    {
-        /* compatibility with earlier "[hv]dial" behavior */
-        if((x->x_change) && (x->x_on != x->x_on_old))
-            radio_output_hdlprev(x);
-        x->x_on_old = x->x_on;
-        return(radio_output_hdlcurr(x));
-    }
-
-    if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
-        radio_readline(x, !(t_float)x->x_orientation, x->x_fval);
-
-    radio_output_value(x);
-}
-
 static void radio_set(t_radio *x, t_floatarg f)
 {
     x->x_fval = f;
@@ -787,6 +770,23 @@ static void radio_set(t_radio *x, t_floatarg f)
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     }
+}
+
+static void radio_bang(t_radio *x)
+{
+    if(x->x_compat)
+    {
+        /* compatibility with earlier "[hv]dial" behavior */
+        if((x->x_change) && (x->x_on != x->x_on_old))
+            radio_output_hdlprev(x);
+        x->x_on_old = x->x_on;
+        return(radio_output_hdlcurr(x));
+    }
+
+    if (x->x_number[0] > 1 && x->x_number[1] > 1 && (x->x_output_mode == 1))
+        radio_readline(x, !(t_float)x->x_orientation, x->x_fval);
+
+    radio_output_value(x);
 }
 
 static void radio_float(t_radio *x, t_floatarg f)
