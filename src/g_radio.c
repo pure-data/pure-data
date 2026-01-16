@@ -301,7 +301,7 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++) {
         const size_t idx = x->x_matrix_idx[i];
- 
+
         if(!radio_idx2coord(x, idx, &col, &row))
             pd_error(x, "radio_draw_config: Bad index (%zu)", idx);
 
@@ -364,7 +364,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     const unsigned int size = x->x_number[0] * x->x_number[1];
     for(int i=0; i<size; i++) {
         const size_t idx = x->x_matrix_idx[i];
- 
+
         sprintf(tag, "%pBASE", x);
         sprintf(tag_n, "%pBASE%zu", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
@@ -478,7 +478,7 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
 {
     int ncols = clip_int((int)cols, 1, IEM_RADIO_MAX + 1);
     int nrows = clip_int((int)rows, 1, IEM_RADIO_MAX + 1);
- 
+
     if ((ncols == x->x_number[0]) && (nrows == x->x_number[1]))
         return;
 
