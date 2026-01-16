@@ -108,6 +108,14 @@ proc ::dialog_iemgui::reflect_order {mytoplevel} {
     set ::dialog_iemgui::var_number2($vid) $tmp
 }
 
+# swap the width/height values after changing orientation
+proc ::dialog_iemgui::reflect_dimension {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+    set tmp $::dialog_iemgui::var_width($vid)
+    set ::dialog_iemgui::var_width($vid)  $::dialog_iemgui::var_height($vid)
+    set ::dialog_iemgui::var_height($vid) $tmp
+}
+
 proc ::dialog_iemgui::verify_rng {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
@@ -478,9 +486,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         labelframe $mytoplevel.orient -borderwidth 1 -padx 5 -pady 5 -text [_ "Orientation"]
         pack $mytoplevel.orient -side top -fill x -pady 5
 
+        set reflectcmd "::dialog_iemgui::reflect_order $mytoplevel"
+        if {$mainheader == "|vsl|" || $mainheader == "|hsl|" } {
+            set reflectcmd "::dialog_iemgui::reflect_dimension $mytoplevel"
+        }
+
         ::dialog_iemgui::popupmenu $mytoplevel.orient.order \
             ::dialog_iemgui::var_order($vid) [list [_ "Horizontal"] [_ "Vertical" ] ] \
-            "::dialog_iemgui::reflect_order $mytoplevel; $applycmd"
+            "$reflectcmd; $applycmd"
         pack $mytoplevel.orient.order -side left -expand 1 -ipadx 10
     }
 
