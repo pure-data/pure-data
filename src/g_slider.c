@@ -498,6 +498,49 @@ static int slider_newclick(t_gobj *z, struct _glist *glist,
     return (1);
 }
 
+/* can't use iemgui_resize directly, because for slider:
+ * - if shift is pressed, make it a square
+ * - if ctrl is pressed, make it freeform
+ * - otherwise, lock with orientation
+ */
+static void slider_resize(t_gobj *z, struct _glist *glist, int w, int h, int mod)
+{
+    t_slider *s = (t_slider *)z;
+    t_iemgui *x = &s->x_gui;
+    int cursor = CURSOR_EDITMODE_RESIZE;
+
+    w = iemgui_clip_size(w);
+    h = iemgui_clip_size(h);
+
+    switch(mod) {
+    case 1: /* shift: square resizing */
+        cursor = CURSOR_EDITMODE_RESIZE_LOCKED;
+        x->x_h = x->x_w = (w > h)?w:h;
+        break;
+    case 2: /* control: freeform */
+        cursor = CURSOR_EDITMODE_RESIZE_XY;
+        x->x_w = w;
+        x->x_h = h;
+        break;
+    default: /* no mod: resize along main axis */
+        if (s->x_orientation)
+        {
+            cursor = CURSOR_EDITMODE_RESIZE_Y;
+            x->x_h = h;
+        }
+        else
+        {
+            cursor = CURSOR_EDITMODE_RESIZE_X;
+            x->x_w = w;
+        }
+        break;
+    }
+
+    iemgui_size(s, x);
+    canvas_setcursor(glist, cursor);
+}
+
+
 static void slider_set(t_slider *x, t_floatarg f)
 {
     int old = x->x_val;
@@ -799,6 +842,7 @@ void g_slider_setup(void)
     slider_widgetbehavior.w_visfn =        iemgui_vis;
     slider_widgetbehavior.w_clickfn =      slider_newclick;
     class_setwidget(slider_class, &slider_widgetbehavior);
+    class_setwidgetfn(slider_class, WIDGET_RESIZE, (t_widgetfn)slider_resize);
     class_sethelpsymbol(slider_class, gensym("sliders"));
     class_setsavefn(slider_class, slider_save);
     class_setpropertiesfn(slider_class, slider_properties);
