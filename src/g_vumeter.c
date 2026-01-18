@@ -430,6 +430,18 @@ static void vu_size(t_vu *x, t_symbol *s, int ac, t_atom *av)
     iemgui_size((void *)x, &x->x_gui);
 }
 
+/* can't use iemgui_resize directly, because vumeter clamps height
+ */
+static void vu_resize(t_gobj *z, struct _glist *glist, int w, int h, int mod)
+{
+    t_vu *x = (t_vu *)z;
+    t_atom av[2];
+    SETFLOAT(av+0, (int)w);
+    SETFLOAT(av+1, (int)h);
+    vu_size(x, gensym("size"), 2, av);
+    canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_XY);
+}
+
 static void vu_delta(t_vu *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_delta((void *)x, &x->x_gui, s, ac, av);}
 
@@ -610,6 +622,7 @@ void g_vumeter_setup(void)
     vu_widgetbehavior.w_visfn =        iemgui_vis;
     vu_widgetbehavior.w_clickfn =      NULL;
     class_setwidget(vu_class,&vu_widgetbehavior);
+    class_setwidgetfn(vu_class, WIDGET_RESIZE, (t_widgetfn)vu_resize);
     class_setsavefn(vu_class, vu_save);
     class_setpropertiesfn(vu_class, vu_properties);
 }
