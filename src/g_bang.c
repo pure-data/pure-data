@@ -461,6 +461,7 @@ void g_bang_setup(void)
     bng_widgetbehavior.w_deletefn = iemgui_delete;
     bng_widgetbehavior.w_visfn = iemgui_vis;
     bng_widgetbehavior.w_clickfn = bng_newclick;
+    bng_widgetbehavior.w_resizefn = iemgui_resize;
     class_setwidget(bng_class, &bng_widgetbehavior);
     class_setsavefn(bng_class, bng_save);
     class_setpropertiesfn(bng_class, bng_properties);

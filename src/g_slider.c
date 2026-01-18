@@ -819,6 +819,7 @@ void g_slider_setup(void)
     slider_widgetbehavior.w_deletefn =     iemgui_delete;
     slider_widgetbehavior.w_visfn =        iemgui_vis;
     slider_widgetbehavior.w_clickfn =      slider_newclick;
+    slider_widgetbehavior.w_resizefn =     iemgui_resize;
     class_setwidget(slider_class, &slider_widgetbehavior);
     class_sethelpsymbol(slider_class, gensym("sliders"));
     class_setsavefn(slider_class, slider_save);

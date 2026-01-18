@@ -508,6 +508,18 @@ static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, i
     return (1);
 }
 
+/* cant use iemgui_resize directly because radio width is tethered to the number
+ * of squares and the height is equal to its width
+ */
+static void radio_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
+{
+    t_radio *x = (t_radio *)z;
+    int size = (x->x_orientation ? dy : dx) * IEMGUI_ZOOM(x) / x->x_number;
+    x->x_gui.x_w = iemgui_clip_size(size);
+    x->x_gui.x_h = x->x_gui.x_w;
+    iemgui_size(x, &x->x_gui);
+}
+
 static void radio_loadbang(t_radio *x, t_floatarg action)
 {
     if(action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
@@ -728,6 +740,7 @@ void g_radio_setup(void)
     radio_widgetbehavior.w_deletefn = iemgui_delete;
     radio_widgetbehavior.w_visfn = iemgui_vis;
     radio_widgetbehavior.w_clickfn = radio_newclick;
+    radio_widgetbehavior.w_resizefn = radio_iemgui_resize;
     class_setwidget(radio_class, &radio_widgetbehavior);
 
     class_sethelpsymbol(radio_class, gensym("radio"));

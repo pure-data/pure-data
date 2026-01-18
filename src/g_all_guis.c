@@ -641,6 +641,18 @@ void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     iemgui_do_drawmove(x, x);
 }
 
+void iemgui_resize(t_gobj *z, t_glist *glist, int dx, int dy, int mod)
+{
+    t_iemgui *x = (t_iemgui *)z;
+    int zoom = x->x_glist->gl_zoom;
+    int shift = (int)mod == 1;
+    int w = iemgui_clip_size(dx * zoom);
+    int h = iemgui_clip_size(shift ? w : dy * zoom);
+    x->x_w = w;
+    x->x_h = h;
+    iemgui_size(x, x);
+}
+
 void iemgui_select(t_gobj *z, t_glist *glist, int selected)
 {
     t_iemgui *x = (t_iemgui *)z;
