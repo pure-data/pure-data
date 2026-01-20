@@ -559,12 +559,14 @@ static void my_numbox_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int
 {
     t_my_numbox *x = (t_my_numbox *)z;
     int w = iemgui_clip_size((int)dx);
-    int h = iemgui_clip_size((int)dy);
     x->x_gui.x_w = w * IEMGUI_ZOOM(x);
-    x->x_gui.x_h = h * IEMGUI_ZOOM(x);
-    if(h < 4)
-        h = 4;
-    x->x_gui.x_fontsize = h;
+    if (mod==2) {
+        int h = iemgui_clip_size((int)dy);
+        x->x_gui.x_h = h * IEMGUI_ZOOM(x);
+        if(h < 4)
+            h = 4;
+        x->x_gui.x_fontsize = h;
+    }
     my_numbox_calc_numwidth(x);
     iemgui_size((void *)x, &x->x_gui);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
