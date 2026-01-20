@@ -644,12 +644,7 @@ void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 void iemgui_resize(t_gobj *z, t_glist *glist, int dx, int dy, int mod)
 {
     t_iemgui *x = (t_iemgui *)z;
-    int zoom = x->x_glist->gl_zoom;
-    int shift = (int)mod == 1;
-    int w = iemgui_clip_size(dx * zoom);
-    int h = iemgui_clip_size(shift ? w : dy * zoom);
-    x->x_w = w;
-    x->x_h = h;
+    x->x_h = x->x_w = iemgui_clip_size(dx * x->x_glist->gl_zoom);
     iemgui_size(x, x);
 }
 
