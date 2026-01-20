@@ -230,14 +230,14 @@ static void my_canvas_vis_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 static void my_canvas_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
 {
     t_my_canvas *x = (t_my_canvas *)z;
-    int wantwidth = (int)dx * IEMGUI_ZOOM(x);
-    int wantheight = (int)dy * IEMGUI_ZOOM(x);
-    if (wantwidth < 1)
-        wantwidth = 1;
-    if (wantheight < 1)
-        wantheight = 1;
-    x->x_vis_w = x->x_gui.x_w = wantwidth;
-    x->x_vis_h = x->x_gui.x_h = ((int)mod == 1) ? wantwidth : wantheight;
+    int w = (int)dx * IEMGUI_ZOOM(x);
+    int h = (int)dy * IEMGUI_ZOOM(x);
+    if (w < 1)
+        w = 1;
+    if (h < 1)
+        h = 1;
+    x->x_vis_w = w;
+    x->x_vis_h = ((int)mod == 1) ? w : h;
     iemgui_size(x, &x->x_gui);
 }
 
