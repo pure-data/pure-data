@@ -387,7 +387,12 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_NOTHING 4
 #define CURSOR_EDITMODE_CONNECT 5
 #define CURSOR_EDITMODE_DISCONNECT 6
-#define CURSOR_EDITMODE_RESIZE 7
+#define CURSOR_EDITMODE_RESIZE_X 7 /* horizontal (only) resizing */
+#define CURSOR_EDITMODE_RESIZE_Y 8 /* vertical (only) resizing */
+#define CURSOR_EDITMODE_RESIZE_XY 9 /* free resizing */
+#define CURSOR_EDITMODE_RESIZE_LOCKED 10 /* x/y locked resizing */
+#define CURSOR_EDITMODE_RESIZE CURSOR_EDITMODE_RESIZE_X /* compat */
+
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
 extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */
