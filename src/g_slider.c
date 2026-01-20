@@ -524,12 +524,17 @@ static void slider_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy
     int w = iemgui_clip_size(dx * IEMGUI_ZOOM(x));
     int h = iemgui_clip_size(dy * IEMGUI_ZOOM(x));
 
-    if (x->x_orientation)
+    if (x->x_orientation) {
+        canvas_setcursor(glist, CURSOR_RUNMODE_THICKEN);
         x->x_gui.x_h = h;
-    else
+    }
+    else {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE);
         x->x_gui.x_w = w;
+    }
 
     if (mod==2) {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_FREE);
         if (x->x_orientation)
             x->x_gui.x_w = w;
         else

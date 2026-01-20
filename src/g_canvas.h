@@ -386,6 +386,8 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_CONNECT 5
 #define CURSOR_EDITMODE_DISCONNECT 6
 #define CURSOR_EDITMODE_RESIZE 7
+#define CURSOR_EDITMODE_RESIZE_FREE 8
+#define CURSOR_EDITMODE_RESIZE_SQUARE 9
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
 extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */

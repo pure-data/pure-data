@@ -561,6 +561,7 @@ static void my_numbox_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int
     int w = iemgui_clip_size((int)dx);
     x->x_gui.x_w = w * IEMGUI_ZOOM(x);
     if (mod==2) {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_FREE);
         int h = iemgui_clip_size((int)dy);
         x->x_gui.x_h = h * IEMGUI_ZOOM(x);
         if(h < 4)

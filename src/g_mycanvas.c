@@ -230,6 +230,7 @@ static void my_canvas_vis_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 static void my_canvas_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
 {
     t_my_canvas *x = (t_my_canvas *)z;
+    canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_FREE);
     int w = (int)dx * IEMGUI_ZOOM(x);
     int h = (int)dy * IEMGUI_ZOOM(x);
     if (w < 1)

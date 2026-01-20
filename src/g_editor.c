@@ -1744,7 +1744,9 @@ static const char *cursorlist[] = {
     "$cursor_editmode_nothing",
     "$cursor_editmode_connect",
     "$cursor_editmode_disconnect",
-    "$cursor_editmode_resize"
+    "$cursor_editmode_resize",
+    "$cursor_editmode_resize_free",
+    "$cursor_editmode_resize_square"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)

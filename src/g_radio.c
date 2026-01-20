@@ -546,9 +546,18 @@ static void radio_number(t_radio *x, t_floatarg num)
 static void radio_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
 {
     t_radio *x = (t_radio *)z;
-    int total_size = (x->x_orientation ? dy : dx) * IEMGUI_ZOOM(x);
+    int total_size = dx * IEMGUI_ZOOM(x);
+    if (x->x_orientation) {
+        canvas_setcursor(glist, CURSOR_RUNMODE_THICKEN);
+        total_size = dy * IEMGUI_ZOOM(x);
+    }
     if (mod==2) {
-        int size = (x->x_orientation ? x->x_gui.x_h : x->x_gui.x_w);
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE);
+        int size = x->x_gui.x_w;
+        if (x->x_orientation) {
+            size = x->x_gui.x_h;
+            canvas_setcursor(glist, CURSOR_RUNMODE_THICKEN);
+        }
         int num = total_size / size;
         radio_number(x,(t_floatarg)num);
         return;
