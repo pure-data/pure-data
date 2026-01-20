@@ -541,7 +541,7 @@ static void radio_number(t_radio *x, t_floatarg num)
 
 /* cant use iemgui_resize directly because radio width is tethered to the number
  * of squares and the height is equal to its width
- * - also if ctrl is pressed, change the number 
+ * - also if ctrl is pressed, change the number
  */
 static void radio_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
 {
