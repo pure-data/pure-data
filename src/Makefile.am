@@ -79,7 +79,6 @@ if LIBPD_UTILS
 libpd_la_SOURCES += \
     z_print_util.c \
     z_queued.c \
-    z_ringbuffer.c \
     $(empty)
 endif
 
@@ -240,6 +239,19 @@ DEKEN_DEFINE+=$(if $(EXTERNAL_EXTENSION),-DEXTERNAL_EXTENSION="'.$(EXTERNAL_EXTE
 
 #########################################
 ##### Configurations Per Library #####
+
+if THREADED_IO
+pd_CFLAGS += -DTHREADED_IO
+pd_SOURCES_core += \
+    z_ringbuffer.c \
+    $(empty)
+else
+if LIBPD_UTILS
+libpd_la_SOURCES += \
+    z_ringbuffer.c \
+    $(empty)
+endif
+endif
 
 ##### Advanced Linux Sound Architecture #####
 if ALSA

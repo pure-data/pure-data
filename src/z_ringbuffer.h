@@ -29,6 +29,12 @@ ring_buffer *rb_create(int size);
 /// free a ring buffer
 void rb_free(ring_buffer *buffer);
 
+/// resize the internal buffer and copy up to newsize-1 of the existing data to
+/// the new buffer
+/// note: call this while reads and writes are not taking place
+/// returns 0 on success
+int rb_resize(ring_buffer* rb, int newsize);
+
 /// get the number of bytes that can currently be written
 /// this is safe to call from any thread
 int rb_available_to_write(ring_buffer *buffer);
