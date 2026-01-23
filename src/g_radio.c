@@ -486,6 +486,12 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
     if(vis)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
 
+    /* save the previous matrix */
+    int old_size = x->x_number[0] * x->x_number[1];
+    int *old_matrix = (int *)getbytes(old_size * sizeof(int));
+    for(int i=0; i<old_size; i++)
+        old_matrix[i] = x->x_matrix[x->x_matrix_idx[i]];
+
     radio_set_newsize(x, ncols, nrows);
 
     /* initialize the matrix */
@@ -500,6 +506,13 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
     /* remap the indices */
     radio_matrix_reindex(x);
 
+    /* restore the previous matrix */
+    int new_size = x->x_number[0] * x->x_number[1];
+    for(int i=0; i<new_size && i<old_size; i++)
+       x->x_matrix[x->x_matrix_idx[i]] = old_matrix[i];
+    freebytes(old_matrix, old_size * sizeof(int));
+    old_matrix = NULL;
+
     x->x_on = clip_int(x->x_on, 0, x->x_number[(int)x->x_orientation]);
     x->x_on_old = x->x_on;
 
@@ -508,6 +521,7 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
         canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
     }
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void radio_save(t_gobj *z, t_binbuf *b)
