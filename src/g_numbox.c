@@ -25,9 +25,21 @@ static void my_numbox_clip(t_my_numbox *x)
         x->x_val = x->x_max;
 }
 
+static int my_numbox_fontsize_increment(t_my_numbox *x)
+{
+    int f = 31;
+
+    if(x->x_gui.x_fsf.x_font_style == 1)
+        f = 27;
+    else if(x->x_gui.x_fsf.x_font_style == 2)
+        f = 25;
+
+    return (f);
+}
+
 static void my_numbox_calc_numwidth(t_my_numbox *x)
 {
-    const int fi = IEM_NBX_FS_PROPORTIONS[x->x_gui.x_fsf.x_font_style];
+    const int fi = my_numbox_fontsize_increment(x);
     const int zoom = IEMGUI_ZOOM(x);
     int nw = x->x_gui.x_w / zoom - 4 - (x->x_gui.x_h/2)/zoom;
     nw *= IEM_NBX_FS_FACTOR;
@@ -37,7 +49,7 @@ static void my_numbox_calc_numwidth(t_my_numbox *x)
 
 static void my_numbox_calc_fontwidth(t_my_numbox *x)
 {
-    const int fi = IEM_NBX_FS_PROPORTIONS[x->x_gui.x_fsf.x_font_style];
+    const int fi = my_numbox_fontsize_increment(x);
     const int zoom = IEMGUI_ZOOM(x);
     int w = x->x_gui.x_fontsize * fi * x->x_numwidth;
     w /= IEM_NBX_FS_FACTOR;

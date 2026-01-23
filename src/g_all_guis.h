@@ -82,7 +82,6 @@
 #define IEM_MAX_SYM_LEN 127
 
 #define IEM_NBX_MINDIGITS 1
-#define IEM_NBX_FS_PROPORTIONS ((const int[]){31, 27, 25})
 #define IEM_NBX_FS_FACTOR 36
 
 #define IEM_GUI_DRAW_MODE_UPDATE 0
