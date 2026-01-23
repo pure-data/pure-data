@@ -1109,11 +1109,9 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     {
         char buf[MAXPDSTRING];
         sprintf(buf, "%p.l", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(glist),
-            "move",
-            buf,
-            dx * glist->gl_zoom, dy * glist->gl_zoom);
+        pdgui_vmess(0, "rcs ii",
+            "pdtk_canvas_move", glist_getcanvas(glist), buf,
+                dx * glist->gl_zoom, dy * glist->gl_zoom);
     }
 }
 

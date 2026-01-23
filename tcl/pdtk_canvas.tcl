@@ -551,3 +551,11 @@ proc pdtk_canvas_create_rect {canvas tag width color x1 y1 x2 y2} {
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag
 }
+
+proc pdtk_canvas_move {canvas tag dx dy} {
+    $canvas move $tag $dx $dy
+}
+
+proc pdtk_canvas_coords {canvas tag args} {
+    $canvas coords $tag $args
+}
