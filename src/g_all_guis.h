@@ -220,6 +220,7 @@ typedef struct _radio
     int      x_number[2];
     int      *x_matrix;
     size_t   *x_matrix_idx; /* indices of the values in x_matrix */
+    size_t   *x_on_idx; /* indices of the on indices */
     t_float  x_fval;
     t_iem_orientation x_orientation;
     int      x_compat; /* old version */
