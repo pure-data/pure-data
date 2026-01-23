@@ -525,10 +525,16 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
     freebytes(old_matrix, old_size * sizeof(int));
     old_matrix = NULL;
 
-    x->x_on = clip_int(x->x_on, 0, x->x_number[(int)x->x_orientation]);
+    const int max_on_val = x->x_number[(int)x->x_orientation];
+    const int on_idx_size = x->x_number[!(int)x->x_orientation];
+
+    x->x_on = clip_int(x->x_on, 0, max_on_val);
     x->x_on_old = x->x_on;
 
     radio_matrix_allocate_on_idx(x);
+
+    for (int i=0;i<on_idx_size;i++)
+        x->x_on_idx[i] = clip_int(x->x_on_idx[i], 0, max_on_val);
 
     if(vis && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
     {
