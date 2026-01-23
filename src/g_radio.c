@@ -103,6 +103,18 @@ static int radio_matrix_allocate(t_radio *x)
     return(1);
 }
 
+static int radio_matrix_allocate_on_idx(t_radio *x)
+{
+    int on_idx_size = x->x_number[!(int)x->x_orientation];
+    if (x->x_on_idx)
+    {
+        freebytes(x->x_on_idx, on_idx_size * sizeof(size_t));
+        x->x_on_idx = NULL;
+    }
+    x->x_on_idx = (size_t *)getbytes(on_idx_size * sizeof(size_t));
+    memset(x->x_on_idx, 0, on_idx_size * sizeof(size_t));
+}
+
 static int radio_coord2idx(t_radio *x, const int col, const int row, size_t *idx)
 {
     const int ncols = x->x_number[0];
@@ -515,6 +527,8 @@ static void radio_resize(t_radio *x, t_floatarg cols, t_floatarg rows)
 
     x->x_on = clip_int(x->x_on, 0, x->x_number[(int)x->x_orientation]);
     x->x_on_old = x->x_on;
+
+    radio_matrix_allocate_on_idx(x);
 
     if(vis && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
     {
