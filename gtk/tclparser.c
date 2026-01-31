@@ -75,22 +75,15 @@ static int cmd_canvas(ClientData cdata, Tcl_Interp *interp,
         gfx_canvas_move(x, Tcl_GetString(objv[2]), dx, dy);
         return (TCL_OK);
     }
-        /* "itemconfigure" - variously used to change outline and fill
-        color, line width, and */
-    if (objc == 5 && !strcmp(Tcl_GetString(objv[1]), "move"))
-    {
-        double dx, dy;
-        Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &dx);
-        Tcl_GetDouble(interp, Tcl_GetString(objv[4]), &dy);
-        gfx_canvas_move(x, Tcl_GetString(objv[2]), dx, dy);
-        return (TCL_OK);
-    }
-        /* debugging - print out the list of canvas items */
     else if (objc >= 3 && !strcmp(Tcl_GetString(objv[1]), "raise") &&
          !strcmp(Tcl_GetString(objv[2]), "cord"))
     {
-        /* this was to keep patch cords above everything else.  This will be
-        handled otherwise, so here we just ignore them. */
+        /* this was to keep patch cords above everything else - LATER figure out
+        a better way to do that. */
+    }
+    else if (objc == 3 && !strcmp(Tcl_GetString(objv[1]), "delete"))
+    {
+        gfx_canvas_delete(x, Tcl_GetString(objv[2]));
     }
         /* debugging - print out the list of canvas items */
     else if (objc >= 2 && !strcmp(Tcl_GetString(objv[1]), "spew"))

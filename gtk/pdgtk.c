@@ -34,16 +34,17 @@ static void activate(GtkApplication *app, gpointer user_data)
     gtk_window_set_title (GTK_WINDOW (window), "Pure Data GTK");
     g_signal_connect(window, "destroy", G_CALLBACK (close_window), NULL);
 
+        /* make drawing area */
     frame = gtk_frame_new (NULL);
     gtk_window_set_child(GTK_WINDOW(window), frame);
     drawing_area = gtk_drawing_area_new();
-        /* set minimum size */
     gtk_widget_set_size_request(drawing_area, 300, 300);
     gtk_frame_set_child(GTK_FRAME (frame), drawing_area);
     gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area),
         pdwindow_draw, NULL, NULL);
     g_signal_connect_after(drawing_area, "resize", G_CALLBACK(pdwindow_resize),
         NULL);
+
     gtk_window_present(GTK_WINDOW(window));
 }
 
