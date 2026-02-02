@@ -30,7 +30,7 @@ typedef struct _symbolstack
     struct _symbolstack *s_previous;
 } t_symbolstack;
 
-static t_symbolstack *class_loadsymbol = 0;  /* name extern is invoked as */
+static PERTHREAD t_symbolstack *class_loadsymbol = 0;  /* name extern is invoked as */
 
 void push_loadsym(t_symbol*s) {
     t_symbolstack*stack = (t_symbolstack*)getbytes(sizeof(t_symbolstack));
@@ -1027,7 +1027,7 @@ static t_symbol *addfileextent(t_symbol *s)
 }
 
 #define MAXOBJDEPTH 1000
-static int tryingalready;
+static PERTHREAD int tryingalready;
 
 void canvas_popabstraction(t_canvas *x);
 
