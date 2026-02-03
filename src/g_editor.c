@@ -1668,7 +1668,8 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         int remakeit = (g != &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
-                    canvas_getdir((t_canvas *)g) == dir);
+                    sys_issamepath(canvas_getdir((t_canvas *)g)->s_name,
+                        dir->s_name));
             /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
             clone_match(&g->g_pd, name, dir))
@@ -1721,7 +1722,8 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         if (pd_class(&g->g_pd) == canvas_class &&
             (!canvas_isabstraction((t_canvas *)g) ||
                  ((t_canvas *)g)->gl_name != name ||
-                    canvas_getdir((t_canvas *)g) != dir))
+                    !sys_issamepath(canvas_getdir((t_canvas *)g)->s_name,
+                        dir->s_name)))
                 glist_doreload((t_canvas *)g, name, dir, except);
         else if (pd_class(&g->g_pd) == clone_class &&
                 !clone_match(&g->g_pd, name, dir))
