@@ -890,7 +890,7 @@ void canvas_redraw(t_canvas *x)
 void glist_clearrtexts(t_glist *x)
 {
     t_glist *gl2 = glist_getcanvas(x);
-    if (glist_textedfor(gl2) == x)
+    if ((t_glist*)glist_textedfor(gl2) == x)
         glist_settexted(gl2, 0);
     if (gl2->gl_editor)
         while (gl2->gl_editor->e_rtext)

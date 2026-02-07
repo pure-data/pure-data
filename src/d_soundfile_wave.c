@@ -5,6 +5,7 @@
 /* ref: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html */
 
 #include "d_soundfile.h"
+#include "s_stuff.h"
 
 /* WAVE (Waveform Audio File Format)
 
@@ -481,7 +482,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
 
 static int wave_hasextension(const char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len >= 5 &&
         (!strncmp(filename + (len - 4), ".wav", 4) ||
          !strncmp(filename + (len - 4), ".WAV", 4)))
@@ -495,7 +496,7 @@ static int wave_hasextension(const char *filename, size_t size)
 
 static int wave_addextension(char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len + 4 >= size)
         return 0;
     strcpy(filename + len, ".wav");

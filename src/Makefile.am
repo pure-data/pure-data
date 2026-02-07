@@ -343,6 +343,14 @@ pd_SOURCES_standalone += s_audio_paring.c
 endif PORTAUDIO
 endif !JACK
 
+
+##### IRIX #####
+if SGI
+pd_CFLAGS += -DUSEAPI_SGI
+pd_SOURCES_standalone += s_audio_sgi.c s_midi_sgi.c
+pd_LDADD_standalone += @SGI_LIBS@
+endif
+
 ##### NO API? #####
 # if no audio or midi api was detected/specified, fall back to dummy apis
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
