@@ -1563,7 +1563,7 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
             pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
                 glist_getcanvas(glist), tagbuf, "-", 1,
                 THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor,
-                onset, y2 - oh + glist->gl_zoom, onset + iow, y2);
+                onset, y1, onset + iow, y1 + ih - glist->gl_zoom);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
