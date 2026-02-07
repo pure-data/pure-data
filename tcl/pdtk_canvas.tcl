@@ -564,14 +564,14 @@ proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
     eval [concat $canvas create rectangle $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags $tag]
+    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
 }
 
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
     eval [concat $canvas create oval $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags $tag]
+    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
 }
 
 proc pdtk_canvas_delete {canvas tag} {
