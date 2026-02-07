@@ -5,7 +5,7 @@ turn out to be the best way to support 'wayland' (which linux is migrating to).
 
 To test:
 
-make && pd -guicmd ~/pd/gtk/pdgtk -nrt -stderr test1.pd
+make && pd -guicmd ./pdgtk -nrt -stderr test1.pd
 
 Set the DEBUG environment variable to enable debugging printout.
 
@@ -29,10 +29,10 @@ and adding functions like pdtk_canvas_create_line to the tcl code, so that
 it becomes easier to parse the tcl commands from the gtk end.
 
 todo next:
+fill out menus: copy/paste/delete, close/quit, 'put' menu
 text editing for objects etc - manage and show text selection
 finish replacing "create line" with pdtk_canvas_create_line calls
-add copy, paste, delete
-put in menus and text buffer in main window
+put in text buffer in main window
 
 ideas:
 can some or all of the many dialog windows be re-implemented as Pd patches?

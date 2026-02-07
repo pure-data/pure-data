@@ -5,12 +5,20 @@
 #include <gtk/gtk.h>
 #define USINGGTK
 #include "pdgtk.h"
+#include <math.h>
 
 typedef struct _dpoint
 {
     double p_x;
     double p_y;
 } t_dpoint;
+
+typedef struct _color
+{
+    float c_red;
+    float c_green;
+    float c_blue;
+} t_color;
 
 typedef struct _path
 {
@@ -27,6 +35,8 @@ typedef struct _rect
     double r_y1;
     double r_x2;
     double r_y2;
+    double r_width;
+    int r_oval;
 } t_rect;
 
 typedef struct _text
@@ -34,7 +44,7 @@ typedef struct _text
     double t_x;
     double t_y;
     double t_fontsize;
-    int t_blue;
+    int i_blue;
     char *t_text;
 } t_text;
 
@@ -46,7 +56,9 @@ typedef struct _item
 {
     int i_type;
     char i_tag[80];
-    char i_purpose[80]; /* get rid of this if it really isn't needed */
+    char i_grouptag[80];
+    t_color i_fill;        /* LATER allow paths to have color gradients */
+    t_color i_outline;
     union
     {
         t_path *i_path;
@@ -68,20 +80,35 @@ struct _canvas
     struct _canvas *c_next;
 };
 
-static void gfx_path_draw(t_path *x, t_canvas *c, cairo_t *cr)
+static void gfx_parse_color(const char *str, t_color *c)
+{
+    int color;
+    if (str[0] != '#' || strlen(str) != 7 || sscanf(str+1, "%x", &color) < 1)
+        fprintf(stderr, "can't parse color '%s'\n", str);
+    c->c_red = (((color >> 16)) & 0xff) / 255.;
+    c->c_green = (((color >> 8)) & 0xff) / 255.;
+    c->c_blue = (((color >> 0)) & 0xff) / 255.;
+}
+
+static void gfx_set_color(cairo_t *cr, t_color *c)
+{
+    cairo_set_source_rgb(cr, c->c_red, c->c_green, c->c_blue);
+}
+
+static void gfx_path_draw(t_path *x, t_item *it, t_canvas *c, cairo_t *cr)
 {
     int i;
     if (x->p_n < 1)
         return;
-    cairo_set_source_rgb(cr, 0, 0, 0);
+    gfx_set_color(cr, &it->i_outline);
     cairo_set_line_width(cr, 1.5*x->p_width);
     cairo_move_to(cr, x->p_vec[0].p_x, x->p_vec[0].p_y);
     for (i = 1; i < x->p_n; i++)
-         cairo_line_to(cr, x->p_vec[i].p_x, x->p_vec[i].p_y);
+        cairo_line_to(cr, x->p_vec[i].p_x, x->p_vec[i].p_y);
     cairo_stroke(cr);
 }
 
-void gfx_canvas_addpath(t_canvas *x, char *tag, char *purpose, int dashed,
+void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
     double width, int npoints, double *coords, int patchline)
 {
     t_path *p;
@@ -100,11 +127,28 @@ void gfx_canvas_addpath(t_canvas *x, char *tag, char *purpose, int dashed,
     p->p_width = width;
     p->p_dashed = dashed;
     p->p_patchline = patchline;
+    gfx_parse_color("#000000", &it->i_outline);
+    gfx_parse_color("#000000", &it->i_fill);
     strncpy(it->i_tag, tag, 80);
     it->i_tag[79] = 0;
-    strncpy(it->i_purpose, purpose, 8);
-    it->i_purpose[7] = 0;
+    strncpy(it->i_grouptag, grouptag, 80);
+    it->i_grouptag[79] = 0;
     gtk_widget_queue_draw(x->c_drawing_area);
+}
+
+void gfx_canvas_configurepath(t_canvas *x, char *tag, int width,
+    const char *color)
+{
+    int indx, i;
+    for (indx = 0; indx < x->c_n; indx++)
+        if (x->c_vec[indx].i_type == I_PATH &&
+            !strcmp(tag, x->c_vec[indx].i_tag))
+    {
+        t_path *y = x->c_vec[indx].i_w.i_path;
+        y->p_width = width;
+        gfx_parse_color(color, &x->c_vec[indx].i_outline);
+            gtk_widget_queue_draw(x->c_drawing_area);
+    }
 }
 
 void path_free(t_path *x)
@@ -117,9 +161,10 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
 {
     int indx, i;
     for (indx = 0; indx < x->c_n; indx++)
+        if (!strcmp(tag, x->c_vec[indx].i_tag) ||
+            !strcmp(tag, x->c_vec[indx].i_grouptag))
     {
-        if (x->c_vec[indx].i_type == I_PATH &&
-            !strcmp(tag, x->c_vec[indx].i_tag))
+        if (x->c_vec[indx].i_type == I_PATH)
         {
             t_path *y = x->c_vec[indx].i_w.i_path;
             y->p_vec = (t_dpoint *)realloc(y->p_vec,
@@ -129,16 +174,14 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
             gtk_widget_queue_draw(x->c_drawing_area);
             return;
         }
-        else if (x->c_vec[indx].i_type == I_TEXT &&
-            !strcmp(tag, x->c_vec[indx].i_tag))
+        else if (x->c_vec[indx].i_type == I_TEXT)
         {
             x->c_vec[indx].i_w.i_text->t_x = coords[0];
             x->c_vec[indx].i_w.i_text->t_y = coords[1];
             gtk_widget_queue_draw(x->c_drawing_area);
             return;
         }
-        else if (x->c_vec[indx].i_type == I_RECT &&
-            !strcmp(tag, x->c_vec[indx].i_tag))
+        else if (x->c_vec[indx].i_type == I_RECT)
         {
             x->c_vec[indx].i_w.i_rect->r_x1 = coords[0];
             x->c_vec[indx].i_w.i_rect->r_y1 = coords[1];
@@ -151,12 +194,12 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
     fprintf(stderr, "canvas_coords: unknown tag %s\n", tag);
 }
 
-static void gfx_text_draw(t_text *x, t_canvas *c, cairo_t *cr)
+static void gfx_text_draw(t_text *x, t_item *it, t_canvas *c, cairo_t *cr)
 {
     cairo_font_extents_t extents;
     char line[BIGSTRING], *wherenewline;
     int start, nline, linelength;
-    cairo_set_source_rgb(cr, 0, 0, x->t_blue);
+    gfx_set_color(cr, &it->i_fill);
     cairo_select_font_face(cr, "monospace",
         CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size(cr, x->t_fontsize);
@@ -184,8 +227,8 @@ static void gfx_text_draw(t_text *x, t_canvas *c, cairo_t *cr)
     }
 }
 
-void gfx_canvas_addtext(t_canvas *x, char *tag, char *purpose, char *text,
-    double px, double py, double fontsize, int blue)
+void gfx_canvas_addtext(t_canvas *x, char *tag, char *grouptag, char *text,
+    double px, double py, double fontsize, char *color)
 {
     t_text *t;
     t_item *it;
@@ -201,11 +244,13 @@ void gfx_canvas_addtext(t_canvas *x, char *tag, char *purpose, char *text,
     t->t_x = px;
     t->t_y = py;
     t->t_fontsize = fontsize;
-    t->t_blue = blue;
+    gfx_parse_color(color, &it->i_outline);
+    gfx_parse_color(color, &it->i_fill);
+
     strncpy(it->i_tag, tag, 80);
     it->i_tag[79] = 0;
-    strncpy(it->i_purpose, purpose, 8);
-    it->i_purpose[7] = 0;
+    strncpy(it->i_grouptag, grouptag, 80);
+    it->i_grouptag[79] = 0;
     gtk_widget_queue_draw(x->c_drawing_area);
 }
 
@@ -237,8 +282,9 @@ void text_free(t_text *x)
     free(x);
 }
 
-void gfx_canvas_addrectangle(t_canvas *x, char *tag, char *purpose,
-    double width, double x1, double y1, double x2, double y2)
+void gfx_canvas_addrectangle(t_canvas *x, char *tag, char *grouptag,
+    double width, char *outline, char *fill,
+        double x1, double y1, double x2, double y2, int oval)
 {
     t_rect *r;
     t_item *it;
@@ -253,17 +299,34 @@ void gfx_canvas_addrectangle(t_canvas *x, char *tag, char *purpose,
     r->r_y1 = y1;
     r->r_x2 = x2+width;
     r->r_y2 = y2+width;
+    r->r_width = width;
+    r->r_oval = oval;
+    gfx_parse_color(fill, &it->i_fill);
+    gfx_parse_color(outline, &it->i_outline);
     strncpy(it->i_tag, tag, 80);
     it->i_tag[79] = 0;
-    strncpy(it->i_purpose, purpose, 8);
-    it->i_purpose[7] = 0;
+    strncpy(it->i_grouptag, grouptag, 80);
+    it->i_grouptag[79] = 0;
     gtk_widget_queue_draw(x->c_drawing_area);
 }
 
-static void gfx_rect_draw(t_rect *x, t_canvas *c, cairo_t *cr)
+static void gfx_rect_draw(t_rect *x, t_item *it, t_canvas *c, cairo_t *cr)
 {
-  cairo_rectangle (cr, x->r_x1, x->r_y1, x->r_x2 - x->r_x1, x->r_y2 - x->r_y1);
-  cairo_fill (cr);
+    if (x->r_oval)
+        cairo_arc(cr, 0.5*(x->r_x1+x->r_x2), 0.5*(x->r_y1+x->r_y2),
+            0.5 * fabs(x->r_x1-x->r_x2), 0, 2 * M_PI);
+    else cairo_rectangle(cr, x->r_x1, x->r_y1, x->r_x2 - x->r_x1,
+        x->r_y2 - x->r_y1);
+    gfx_set_color(cr, &it->i_fill);
+    cairo_fill(cr);
+    cairo_set_line_width(cr, 1.5*x->r_width);
+    if (x->r_oval)
+        cairo_arc(cr, 0.5*(x->r_x1+x->r_x2), 0.5*(x->r_y1+x->r_y2),
+            0.5 * fabs(x->r_x1-x->r_x2), 0, 2 * M_PI);
+    else cairo_rectangle(cr, x->r_x1, x->r_y1, x->r_x2 - x->r_x1,
+        x->r_y2 - x->r_y1);
+    gfx_set_color(cr, &it->i_outline);
+    cairo_stroke(cr);
 }
 
 void rect_free(t_rect *x)
@@ -273,17 +336,38 @@ void rect_free(t_rect *x)
 
 void gfx_canvas_move(t_canvas *x, char *tag, double dx, double dy)
 {
-    int indx;
+    int indx, didone = 0, i;
     for (indx = 0; indx < x->c_n; indx++)
-        if (x->c_vec[indx].i_type == I_TEXT &&
-            !strcmp(tag, x->c_vec[indx].i_tag))
+        if (!strcmp(tag, x->c_vec[indx].i_tag) ||
+            !strcmp(tag, x->c_vec[indx].i_grouptag))
     {
-        x->c_vec[indx].i_w.i_text->t_x += dx;
-        x->c_vec[indx].i_w.i_text->t_y += dy;
-        gtk_widget_queue_draw(x->c_drawing_area);
-        return;
+        if (x->c_vec[indx].i_type == I_TEXT)
+        {
+            x->c_vec[indx].i_w.i_text->t_x += dx;
+            x->c_vec[indx].i_w.i_text->t_y += dy;
+            gtk_widget_queue_draw(x->c_drawing_area);
+            didone = 1;
+        }
+        else if (x->c_vec[indx].i_type == I_PATH)
+        {
+            for (i = 0; i < x->c_vec[indx].i_w.i_path->p_n; i++)
+                x->c_vec[indx].i_w.i_path->p_vec[i].p_x += dx,
+                    x->c_vec[indx].i_w.i_path->p_vec[i].p_y += dy;
+            gtk_widget_queue_draw(x->c_drawing_area);
+            didone = 1;
+        }
+        else if (x->c_vec[indx].i_type == I_RECT)
+        {
+            x->c_vec[indx].i_w.i_rect->r_x1 += dx;
+            x->c_vec[indx].i_w.i_rect->r_x2 += dx;
+            x->c_vec[indx].i_w.i_rect->r_y1 += dy;
+            x->c_vec[indx].i_w.i_rect->r_y2 += dy;
+            gtk_widget_queue_draw(x->c_drawing_area);
+            didone = 1;
+        }
     }
-    fprintf(stderr, "canvas_move: unknown tag %s\n", tag);
+    if (!didone)
+        fprintf(stderr, "canvas_move: unknown tag %s\n", tag);
 }
 
 void gfx_canvas_delete(t_canvas *x, char *tag)
@@ -324,7 +408,7 @@ void gfx_canvas_spew(t_canvas *x)
         {
             case I_PATH:
                 fprintf(stderr, "path %s %s:", x->c_vec[i].i_tag,
-                    x->c_vec[i].i_purpose);
+                    x->c_vec[i].i_grouptag);
                 for (j = 0; j < x->c_vec[i].i_w.i_path->p_n; j++)
                     fprintf(stderr, "%f %f:",
                         x->c_vec[i].i_w.i_path->p_vec[j].p_x,
@@ -333,7 +417,7 @@ void gfx_canvas_spew(t_canvas *x)
                 break;
             case I_RECT:
                 fprintf(stderr, "rect %s %s:", x->c_vec[i].i_tag,
-                    x->c_vec[i].i_purpose);
+                    x->c_vec[i].i_grouptag);
                 break;
             case I_TEXT:
                 fprintf(stderr, "text\n");
@@ -405,13 +489,13 @@ static void gfx_window_draw(GtkDrawingArea *drawing_area, cairo_t *cr,
         switch (x->c_vec[i].i_type)
         {
             case I_PATH:
-                gfx_path_draw(x->c_vec[i].i_w.i_path, x, cr);
+                gfx_path_draw(x->c_vec[i].i_w.i_path, &x->c_vec[i], x, cr);
                 break;
             case I_RECT:
-                gfx_rect_draw(x->c_vec[i].i_w.i_rect, x, cr);
+                gfx_rect_draw(x->c_vec[i].i_w.i_rect, &x->c_vec[i], x, cr);
                 break;
             case I_TEXT:
-                gfx_text_draw(x->c_vec[i].i_w.i_text, x, cr);
+                gfx_text_draw(x->c_vec[i].i_w.i_text, &x->c_vec[i], x, cr);
                 break;
             default:
                 fprintf(stderr, "unknown item\n");
@@ -517,8 +601,8 @@ static void gfx_released(GtkGestureClick *gesture, int n_press,
 #endif
 }
 
-t_canvas *gfx_canvas_new(const char *tag, int xloc, int yloc,
-    int width, int height, int editmode)
+t_canvas *gfx_canvas_new(const char *tag,
+    int xloc, int yloc, int width, int height, int editmode)
 {
     GtkEventController *ctl_motion;
     GtkEventController *ctl_key;
@@ -530,8 +614,11 @@ t_canvas *gfx_canvas_new(const char *tag, int xloc, int yloc,
     x->c_editmode = editmode;
     strncpy(x->c_tag, tag, 80);
     x->c_tag[79] = 0;
-    x->c_window = gtk_window_new();
-    gtk_window_set_title (GTK_WINDOW(x->c_window), "Pure Data");
+    x->c_window =
+        gtk_application_window_new((GtkApplication *)pdgtk_thisapp());
+    gtk_window_set_title(GTK_WINDOW(x->c_window), "Pure Data");
+    gtk_application_window_set_show_menubar(GTK_APPLICATION_WINDOW(x->c_window),
+        TRUE);
 
     g_signal_connect(x->c_window, "destroy", G_CALLBACK(gfx_window_destroy), x);
 

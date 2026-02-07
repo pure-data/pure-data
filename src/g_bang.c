@@ -46,8 +46,8 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
         xpos + inset, ypos + inset,
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
-        "-outline", THISGUI->i_foregroundcolor);
+        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol :
+            x->x_gui.x_bcol), "-outline", THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -70,12 +70,16 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
     sprintf(tag_object, "%p_", x);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
     sprintf(tag, "%p_BUT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_oval",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
