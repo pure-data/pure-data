@@ -477,7 +477,6 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
 
     switch -- [llength $isosplit] {
         0 {
-            puts stderr [concat ZZZ $key ZZZ]
             switch -- $key {
                 "BackSpace" { set key   8 }
                 "Tab"       { set key   9 }
