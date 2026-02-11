@@ -3165,11 +3165,6 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     else gotkeysym = gensym("?");
     fflag = (av[0].a_type == A_FLOAT ? av[0].a_w.w_float : 0);
     keynum = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float : 0);
-    if (keynum == '{' || keynum == '}')
-    {
-        post("keycode %d: dropped", (int)keynum);
-        return;
-    }
 #if 0
     post("keynum %d, down %d", (int)keynum, down);
 #endif
