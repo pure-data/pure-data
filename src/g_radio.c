@@ -575,7 +575,6 @@ static void radio_on_idx_resize(t_radio *x,
     x->x_on_old = x->x_on;
     for (int i=0;i<new_size;i++)
         x->x_on_idx[i] = clip_int(x->x_on_idx[i], 0, max_val);
-    post("old:%d new:%d restore:%d | (%d,%d),%d",old_size,new_size,restore, x->x_number[0], x->x_number[1], x->x_orientation);
 }
 
 
@@ -925,7 +924,7 @@ static void radio_bang(t_radio *x)
             return radio_readline(x, 0.0, (t_floatarg)x->x_on);
         case OUTPUT_MODE_COORDS:
             if (radio_idx2coord(x, x->x_on, &col,&row))
-                return radio_output_pair(x, (t_float)col, row);
+                return radio_output_pair(x, (t_float)col, (t_float)row);
         default:
         case OUTPUT_MODE_FLOAT_UNBOUND: // pd >= 46
             return radio_output_value(x, (t_float)x->x_fval);
@@ -935,12 +934,10 @@ static void radio_bang(t_radio *x)
 static void radio_set(t_radio *x, t_floatarg f)
 {
     x->x_fval = f;
-    // if (x->x_output_mode <= OUTPUT_MODE_FLOAT_UNBOUND)
     int idx = (int)x->x_fval;
     if (x->x_output_mode <= OUTPUT_MODE_INT_CLIPPED)
         idx = clip_int(idx, 0, x->x_number[(int)x->x_orientation]);
 
-    post("setting idx %d", idx);
     if(x->x_on != x->x_on_old)
     {
         int old = x->x_on_old;
