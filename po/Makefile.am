@@ -95,8 +95,8 @@ ALL_LINGUAS = \
 	zh_tw \
 	$(empty)
 
-POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
-MSGFILES = $(ALL_LINGUAS:=.msg)
+POFILES = $(addprefix $(top_srcdir)/po/, $(filter-out .po,$(ALL_LINGUAS:=.po)))
+MSGFILES = $(patsubst %.po,%.msg,$(notdir $(POFILES)))
 
 TEMPLATE = $(top_srcdir)/po/template.pot
 

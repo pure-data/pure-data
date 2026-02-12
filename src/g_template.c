@@ -2056,8 +2056,16 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
+                    pdgui_vmess(0, "r cri k iiii", "pdtk_canvas_create_rect",
+                        glist_getcanvas(glist), tag, 0,
+                        THISGUI->i_foregroundcolor,
+                        ixpix , (int) glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, minyval)),
+                        inextx, (int)(glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, maxyval))
+                                + linewidth));
 
-                    pdgui_vmess(0, "crr iiii rk rf rS",
+                    /* pdgui_vmess(0, "crr iiii rk rf rS",
                         glist_getcanvas(glist), "create", "rectangle",
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -2066,7 +2074,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                                 + linewidth),
                         "-fill", color,
                         "-width", 0.,
-                        "-tags", 3, tags);
+                        "-tags", 3, tags); */
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -2300,7 +2308,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess(0, "r cr", "pdtk_canvas_delete",
+            glist_getcanvas(glist), tag);
     }
 }
 

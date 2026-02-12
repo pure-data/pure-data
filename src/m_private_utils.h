@@ -151,6 +151,22 @@ static int atomic_int_compare_exchange(volatile int *ptr, int *expected, int des
 # endif
 #endif
 
+#ifdef __mips
+# if !defined(LITTLE_ENDIAN)
+#  define LITTLE_ENDIAN 1234
+# endif
+# if !defined(BIG_ENDIAN)
+#  define BIG_ENDIAN 4321
+# endif
+# if !defined(BYTE_ORDER)
+#  if defined(MIPSEL)
+#   define BYTE_ORDER LITTLE_ENDIAN
+#  elif defined(MIPSEB)
+#   define BYTE_ORDER BIG_ENDIAN
+#  endif
+# endif
+#endif
+
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
 # if defined(__GNUC__) && defined(_XOPEN_SOURCE)
 #  warning unable to detect endianness (continuing anyhow)

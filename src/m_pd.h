@@ -801,7 +801,7 @@ EXTERN t_float dbtopow(t_float);
 
 EXTERN t_float q8_sqrt(t_float);
 EXTERN t_float q8_rsqrt(t_float);
-#ifndef N32
+#if !defined(__mips) || !defined(_ABIN32)
 EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
 EXTERN t_float qrsqrt(t_float);
 #endif

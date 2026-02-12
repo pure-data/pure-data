@@ -5,6 +5,7 @@
 /* ref: https://developer.apple.com/library/archive/documentation/MusicAudio/Reference/CAFSpec/CAF_spec/CAF_spec.html */
 
 #include "d_soundfile.h"
+#include "s_stuff.h"
 
 #ifndef _MSC_VER
 #include <inttypes.h>
@@ -386,7 +387,7 @@ static int caf_updateheader(t_soundfile *sf, size_t nframes)
 
 static int caf_hasextension(const char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len >= 5 &&
         (!strncmp(filename + (len - 4), ".caf", 4) ||
          !strncmp(filename + (len - 4), ".CAF", 4)))
@@ -396,7 +397,7 @@ static int caf_hasextension(const char *filename, size_t size)
 
 static int caf_addextension(char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len + 4 >= size)
         return 0;
     strcpy(filename + len, ".caf");

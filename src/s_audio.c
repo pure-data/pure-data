@@ -325,6 +325,11 @@ void sys_do_close_audio(void)
         esd_close_audio();
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        sgi_close_audio();
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         dummy_close_audio();
@@ -434,10 +439,18 @@ void sys_do_reopen_audio(void)
     else
 #endif
 #ifdef USEAPI_ESD
-    if (as.a_api == API_ALSA)
+    if (as.a_api == API_ESD)
         outcome = esd_open_audio(as.a_nindev, as.a_indevvec,
             as.a_nindev, as.a_chindevvec, as.a_noutdev,
                 as.a_outdevvec, as.a_noutdev, as.a_choutdevvec, as.a_srate);
+    else
+#endif
+#ifdef USEAPI_SGI
+    if (as.a_api == API_SGI)
+        outcome = sgi_open_audio(
+            as.a_nindev, as.a_indevvec, as.a_nindev, as.a_chindevvec,
+            as.a_noutdev, as.a_outdevvec, as.a_noutdev, as.a_choutdevvec,
+            as.a_srate);
     else
 #endif
 #ifdef USEAPI_DUMMY
@@ -545,6 +558,11 @@ int sys_send_dacs(void)
         return (esd_send_dacs());
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        return (sgi_send_dacs());
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         return (dummy_send_dacs());
@@ -637,6 +655,14 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     if (api == API_ESD)
     {
         esd_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
+            maxndev, devdescsize);
+    }
+    else
+#endif
+#ifdef USEAPI_SGI
+    if (api == API_SGI)
+    {
+        sgi_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
     }
     else
@@ -919,6 +945,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #ifdef USEAPI_ESD
     {"ESD",  API_ESD},
+#endif
+#ifdef USEAPI_SGI
+    {"sgi", API_SGI},
 #endif
 #ifdef USEAPI_DUMMY
     {"dummy", API_DUMMY},
