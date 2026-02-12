@@ -33,6 +33,8 @@ fill out menus: copy/paste/delete, close/quit, 'put' menu
 text editing for objects etc - manage and show text selection
 finish replacing "create line" with pdtk_canvas_create_line calls
 put in text buffer in main window
+string translations
+
 
 ideas:
 can some or all of the many dialog windows be re-implemented as Pd patches?

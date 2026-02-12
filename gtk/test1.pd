@@ -60,7 +60,7 @@
 #X obj 30 451 expr symbol($f1 \, 3 \, 10);
 #X listbox 36 505 20 0 0 0 - - - 0;
 #X listbox 36 552 20 0 0 0 - - - 0;
-#X obj 352 50 sigmund~ -nharmonics 5 0;
+#X obj 37 13 sigmund~ -nharmonics 5 0;
 #X msg 866 155 open /tmp/foo.wav \, start;
 #X obj 916 197 osc~ 440;
 #X obj 907 246 writesf~ 4;

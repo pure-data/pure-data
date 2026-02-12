@@ -4,7 +4,7 @@
 */
 
 #include <gtk/gtk.h>
-#define USINGGTK
+#include <glib/gi18n.h>
 #include "pdgtk.h"
 #include <sys/socket.h>
 
@@ -24,6 +24,8 @@ static void close_window(void)
 {
 }
 
+static char pdtcl_newdir[BIGSTRING];
+
 static void pdgtk_openfile(GFile *file)
 {
     GFile *parent = g_file_get_parent(file);
@@ -34,6 +36,8 @@ static void pdgtk_openfile(GFile *file)
     snprintf(pdcmd, BIGSTRING, "pd open %s %s;\n", basename, dir);
     pdcmd[BIGSTRING-1] = 0;
     socket_send(pdcmd);
+    if (!*pdtcl_newdir)
+        strncpy(pdtcl_newdir, dir, BIGSTRING), pdtcl_newdir[BIGSTRING-1] = 0;
     g_free(basename);
     g_free(dir);
     g_object_unref (parent);
@@ -56,6 +60,51 @@ static void pdgtk_menu_open(GObject *source, GAsyncResult *result,
     g_object_unref (file);
 }
 
+/* enquote a string for find, path, and startup dialog panels, to be decoded
+    in Pd by sys_decodedialog() */
+
+static void pdtcl_enquote_path(char *quotedir, const char *dir)
+{
+    int i, j;
+    for (i = j = 0; dir[i] && j < BIGSTRING-2; i++)
+        switch (dir[i])
+    {
+    case ' ':
+        quotedir[j] = '+'; quotedir[j+1] = '_'; j+=2; break;
+    case '$':
+        quotedir[j] = '+'; quotedir[j+1] = 'd'; j+=2; break;
+    case ';':
+        quotedir[j] = '+'; quotedir[j+1] = 's'; j+=2; break;
+    case ',':
+        quotedir[j] = '+'; quotedir[j+1] = 'c'; j+=2; break;
+    default:
+        quotedir[j] = dir[i]; j++; break;
+    }
+    quotedir[j] = 0;
+}
+
+static void filemenu_new(GApplication *app, gpointer *data)
+{
+    char pdcmd[BIGSTRING], quotedir[BIGSTRING];
+    static int untitlednumber = 0;
+    if (!*pdtcl_newdir)
+    {
+        if (!getenv("HOME"))
+            strcpy(pdtcl_newdir, "/");
+        else strncpy(pdtcl_newdir, getenv("HOME"), BIGSTRING);
+        pdtcl_newdir[BIGSTRING-1] = 0;
+    }
+    fprintf(stderr, "new\n");
+    pdcmd[BIGSTRING-1] = 0;
+    pdtcl_enquote_path(quotedir, pdtcl_newdir);
+    if (untitlednumber)
+        snprintf(pdcmd, BIGSTRING, "pd menunew UNTITLED-%s %s;\n",
+            untitlednumber, quotedir);
+    else snprintf(pdcmd, BIGSTRING, "pd menunew UNTITLED %s;\n", quotedir);
+    untitlednumber++;
+    socket_send(pdcmd);
+}
+
 static void filemenu_open(GApplication *app, gpointer *data)
 {
     GtkFileDialog *dialog = gtk_file_dialog_new ();
@@ -74,6 +123,12 @@ static void filemenu_open(GApplication *app, gpointer *data)
     g_object_unref (dialog);
 }
 
+static void filemenu_quit(GApplication *app, gpointer *data)
+{
+    fprintf(stderr, "pd verifyquit\n");
+    socket_send("pd verifyquit;\n");
+}
+
 static int pdgtk_havemainwindow;
 #ifdef __APPLE__
 #define ACCELERATORKEY "<Meta>"
@@ -81,42 +136,85 @@ static int pdgtk_havemainwindow;
 #define ACCELERATORKEY "<Control>"
 #endif
 
+static void pdgtk_startup(GtkApplication *app, gpointer user_data)
+{
+    const char *twoaccels[2] = {0, 0};
+    GMenu *menubar, *filemenu;
+    GMenuItem *menu_item_filemenu, *menu_item_new, *menu_item_open,
+        *menu_item_save, *menu_item_saveas, *menu_item_close, *menu_item_quit;
+    GSimpleAction *act_new, *act_save, *act_quit;
+    GSimpleAction *action_open;
+
+        /* set up menu - there's only one, not one per window. */
+    menubar = g_menu_new();
+        /* "file" menu */
+    menu_item_filemenu = g_menu_item_new(_("File"), NULL);
+    filemenu = g_menu_new();
+
+    menu_item_open = g_menu_item_new(_("Open"), "app.open");
+    g_menu_append_item(filemenu, menu_item_open);
+    twoaccels[0] = ACCELERATORKEY "o";
+    gtk_application_set_accels_for_action(app, "app.open", twoaccels);
+    g_object_unref(menu_item_open);
+
+    act_new = g_simple_action_new("new", NULL);
+    g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(act_new));
+    g_signal_connect(act_new, "activate", G_CALLBACK(filemenu_new), NULL);
+    menu_item_new = g_menu_item_new(_("New"), "app.new");
+    g_menu_append_item(filemenu, menu_item_new);
+    g_object_unref(menu_item_new);
+    twoaccels[0] = ACCELERATORKEY "n";
+    gtk_application_set_accels_for_action(app, "app.new", twoaccels);
+
+    menu_item_save = g_menu_item_new(_("Save"), "win.zsave");
+    g_menu_append_item(filemenu, menu_item_save);
+    g_object_unref(menu_item_save);
+    twoaccels[0] = ACCELERATORKEY "s";
+    gtk_application_set_accels_for_action(app, "win.zsave", twoaccels);
+
+    menu_item_saveas = g_menu_item_new(_("Save as..."), "win.zsaveas");
+    g_menu_append_item(filemenu, menu_item_saveas);
+    g_object_unref(menu_item_saveas);
+    twoaccels[0] = ACCELERATORKEY "<shift>s";
+    gtk_application_set_accels_for_action(app, "win.zsaveas", twoaccels);
+
+    menu_item_close = g_menu_item_new(_("Close"), "win.zclose");
+    g_menu_append_item(filemenu, menu_item_close);
+    g_object_unref(menu_item_close);
+    twoaccels[0] = ACCELERATORKEY "w";
+    gtk_application_set_accels_for_action(app, "win.zclose", twoaccels);
+
+    act_quit = g_simple_action_new("quit", NULL);
+    g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(act_quit));
+    g_signal_connect(act_quit, "activate", G_CALLBACK(filemenu_quit), NULL);
+    menu_item_quit = g_menu_item_new(_("Quit"), "app.quit");
+    g_menu_append_item(filemenu, menu_item_quit);
+    g_object_unref(menu_item_quit);
+    twoaccels[0] = ACCELERATORKEY "q";
+    gtk_application_set_accels_for_action(app, "app.quit", twoaccels);
+
+    g_menu_item_set_submenu(menu_item_filemenu, G_MENU_MODEL(filemenu));
+    g_menu_append_item(menubar, menu_item_filemenu);
+    g_object_unref(menu_item_filemenu);
+    gtk_application_set_menubar(GTK_APPLICATION(app), G_MENU_MODEL(menubar));
+
+        /* handle "open" actions sent from OS - should this be here? */
+    action_open = g_simple_action_new("open", NULL);
+    g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(action_open));
+    g_signal_connect(action_open, "activate", G_CALLBACK(filemenu_open), NULL);
+}
+
 static void pdgtk_createmainwindow(GtkApplication *app, gpointer user_data)
 {
     GtkWidget *frame;
     GtkWidget *drawing_area;
-    GMenu *menubar, *filemenu;
-    GMenuItem *menu_item_filemenu, *menu_item_open;
-    GSimpleAction *action_open;
-    const char *twoaccels[2] = {0, 0};
 
     if (pdgtk_havemainwindow)
         return;
     gtk_mainwindow = gtk_application_window_new(app);
     gtk_window_set_title (GTK_WINDOW(gtk_mainwindow), "Pure Data GTK");
-    g_signal_connect(gtk_mainwindow, "destroy", G_CALLBACK (close_window),
+    g_signal_connect(gtk_mainwindow, "destroy", G_CALLBACK(close_window),
         NULL);
-
-        /* handle "open" actions sent from OS - should this be in main()? */
-    action_open = g_simple_action_new("open", NULL);
-    g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(action_open));
-    g_signal_connect(action_open, "activate", G_CALLBACK(filemenu_open), NULL);
-
-        /* set up menu - there's only one, not one per window. */
-    menubar = g_menu_new();
-    menu_item_filemenu = g_menu_item_new("File", NULL);
-    filemenu = g_menu_new();
-    menu_item_open = g_menu_item_new("open", "app.open");
-    g_menu_append_item(filemenu, menu_item_open);
-    twoaccels[0] = ACCELERATORKEY "o";
-    gtk_application_set_accels_for_action(app, "app.open", twoaccels);
-    g_object_unref(menu_item_open);
-    g_menu_item_set_submenu(menu_item_filemenu, G_MENU_MODEL(filemenu));
-    g_menu_append_item(menubar, menu_item_filemenu);
-    g_object_unref(menu_item_filemenu);
-    gtk_application_set_menubar(GTK_APPLICATION(app), G_MENU_MODEL(menubar));
-    gtk_application_window_set_show_menubar(
-         GTK_APPLICATION_WINDOW(gtk_mainwindow), TRUE);
 
         /* make drawing area */
     frame = gtk_frame_new (NULL);
@@ -129,6 +227,8 @@ static void pdgtk_createmainwindow(GtkApplication *app, gpointer user_data)
     g_signal_connect_after(drawing_area, "resize", G_CALLBACK(pdwindow_resize),
         NULL);
 
+    gtk_application_window_set_show_menubar(
+         GTK_APPLICATION_WINDOW(gtk_mainwindow), TRUE);
     gtk_window_present(GTK_WINDOW(gtk_mainwindow));
     pdgtk_havemainwindow = 1;
 }
@@ -224,6 +324,7 @@ int main(int argc, char **argv)
 
     app = pdgtk_app = gtk_application_new("org.puredata.pd.devel",
         G_APPLICATION_DEFAULT_FLAGS);
+    g_signal_connect(app, "startup", G_CALLBACK(pdgtk_startup), NULL);
     g_signal_connect(app, "activate", G_CALLBACK(pdgtk_activate), NULL);
     g_signal_connect(app, "open", G_CALLBACK(pdgtk_open), NULL);
     status = g_application_run(G_APPLICATION(app), 1, argv);

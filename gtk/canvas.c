@@ -3,6 +3,7 @@
 */
 
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #define USINGGTK
 #include "pdgtk.h"
 #include <math.h>
@@ -74,6 +75,8 @@ struct _canvas
     GtkWidget *c_drawing_area;
     cairo_surface_t *c_surface;
     char c_tag[80];
+    char c_basename[80];
+    char c_tmpstring[80];
     int c_n;
     int c_editmode;
     t_item *c_vec;
@@ -428,9 +431,47 @@ void gfx_canvas_spew(t_canvas *x)
     }
 }
 
-void gfx_canvas_settitle(t_canvas *x, char *s)
+void gfx_canvas_settitle(t_canvas *x, const char *s, const char *basename)
 {
     gtk_window_set_title(GTK_WINDOW(x->c_window), s);
+    strncpy(x->c_basename, basename, 80);
+    x->c_basename[79] = 0;
+}
+
+void gfx_canvas_menuclose_done(GObject *gob, GAsyncResult *res,
+    gpointer z)
+{
+    int button = gtk_alert_dialog_choose_finish(GTK_ALERT_DIALOG(gob), res, 0);
+    t_canvas *x = (t_canvas *)z;
+    char msg2[80];
+    fprintf(stderr, "result %d\n", button);
+    if (button == 0)
+    {
+        snprintf(msg2, 80, "%s menusave 1;\n", x->c_tag);
+        socket_send(msg2);
+    }
+    else if (button == 1)
+        socket_send(x->c_tmpstring);
+}
+
+void gfx_canvas_menuclose(t_canvas *x, const char *cmd)
+{
+    int button;
+    const char* labels[4];
+    GtkAlertDialog *dog = gtk_alert_dialog_new(
+        _("Do you want to save the changes you made in '%s'?"),
+            x->c_basename);
+    strncpy(x->c_tmpstring, cmd, 80);
+    x->c_tmpstring[79] = 0;
+    labels[0] = _("Yes");
+    labels[1] = _("No");
+    labels[2] = _("Cancel");
+    labels[3] = 0;
+    gtk_alert_dialog_set_buttons(dog, labels);
+    gtk_alert_dialog_set_cancel_button (dog, 2);
+    gtk_alert_dialog_set_default_button (dog, 0);
+    gtk_alert_dialog_choose(dog, GTK_WINDOW(x->c_window), 0,
+        gfx_canvas_menuclose_done, x);
 }
 
 static void gfx_canvas_dofree(t_canvas *x)
@@ -535,17 +576,6 @@ static gboolean dokey(GtkEventControllerKey* self, guint keyval, guint keycode,
             snprintf(event, 80, "%s editmode %d;\n", x->c_tag, x->c_editmode);
             socket_send(event);
         }
-        else if (key == 'w')
-        {
-            snprintf(event, 80, "%s menuclose;\n", x->c_tag);
-            socket_send(event);
-        }
-        else if (key == 'q')
-        {
-                /* we should do "verifyquit" but that will sometimes want
-                to open a dialog window which isn't yet written. */
-            socket_send("pd quit;\n");
-        }
     }
     else
     {
@@ -601,21 +631,49 @@ static void gfx_released(GtkGestureClick *gesture, int n_press,
 #endif
 }
 
+static void winmenu_save(GtkApplicationWindow *win, void *unused, gpointer *data)
+{
+    char cmd[80];
+    snprintf(cmd, 80, "%s menusave 0\n", ((t_canvas *)data)->c_tag);
+    socket_send(cmd);
+#ifdef DEBUGGTK
+    fprintf(stderr, "save menu item %x, %x\n", win, data);
+#endif
+}
+
+static void winmenu_saveas(GtkApplicationWindow *win, void *unused, gpointer *data)
+{
+    char cmd[80];
+    snprintf(cmd, 80, "%s menusaveas 0\n", ((t_canvas *)data)->c_tag);
+    socket_send(cmd);
+#ifdef DEBUGGTK
+    fprintf(stderr, "saveas menu item %x, %x\n", win, data);
+#endif
+}
+
+static void winmenu_close(GtkApplicationWindow *win, void *unused, gpointer *data)
+{
+    fprintf(stderr, "close menu item %x, %x\n", win, data);
+}
+
 t_canvas *gfx_canvas_new(const char *tag,
     int xloc, int yloc, int width, int height, int editmode)
 {
     GtkEventController *ctl_motion;
     GtkEventController *ctl_key;
     GtkGesture *press_left;
+    GSimpleAction *act_save, *act_saveas, *act_close;
+    GtkWidget *win;
 
     t_canvas *x = (t_canvas *)calloc(1, sizeof(*x));
+    fprintf(stderr, "canvas %x\n", x);
     x->c_n = 0;
     x->c_vec = (t_item *)calloc(0, sizeof(*x->c_vec));
     x->c_editmode = editmode;
     strncpy(x->c_tag, tag, 80);
     x->c_tag[79] = 0;
-    x->c_window =
-        gtk_application_window_new((GtkApplication *)pdgtk_thisapp());
+    x->c_window = (win = gtk_application_window_new(
+        (GtkApplication *)pdgtk_thisapp()));
     gtk_window_set_title(GTK_WINDOW(x->c_window), "Pure Data");
     gtk_application_window_set_show_menubar(GTK_APPLICATION_WINDOW(x->c_window),
         TRUE);
@@ -660,6 +718,18 @@ t_canvas *gfx_canvas_new(const char *tag,
     gtk_widget_set_focusable(x->c_drawing_area, TRUE);
     if (gtk_widget_grab_focus(x->c_drawing_area) != TRUE)
         fprintf(stderr, "grab focus failed\n");
+
+    act_save = g_simple_action_new("zsave", NULL);
+    g_action_map_add_action(G_ACTION_MAP(win), G_ACTION(act_save));
+    g_signal_connect(act_save, "activate", G_CALLBACK(winmenu_save), x);
+
+    act_saveas = g_simple_action_new("zsaveas", NULL);
+    g_action_map_add_action(G_ACTION_MAP(win), G_ACTION(act_saveas));
+    g_signal_connect(act_saveas, "activate", G_CALLBACK(winmenu_saveas), x);
+
+    act_close = g_simple_action_new("zclose", NULL);
+    g_action_map_add_action(G_ACTION_MAP(win), G_ACTION(act_close));
+    g_signal_connect(act_close, "activate", G_CALLBACK(winmenu_close), x);
 
     x->c_next = gfx_canvas_list;
     gfx_canvas_list = x;

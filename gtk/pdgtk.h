@@ -12,7 +12,8 @@ struct _canvas;
 t_canvas *gfx_canvas_new(const char *tag,
     int xloc, int yloc, int width, int height, int editmode);
 void gfx_canvas_free(t_canvas *x);
-void gfx_canvas_settitle(t_canvas *x, char *s);
+void gfx_canvas_settitle(t_canvas *x, const char *s, const char *basename);
+void gfx_canvas_menuclose(t_canvas *x, const char *s);
 
 /* paths (polygons, etc) */
 void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,

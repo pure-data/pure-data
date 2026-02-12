@@ -338,10 +338,7 @@ static int cmd_pdtk_canvas_new(ClientData cdata, Tcl_Interp *interp,
     geom = Tcl_GetString(objv[4]);
     editmode = atoi(Tcl_GetString(objv[5]));
     if (sscanf(geom, "+%d+%d", &xloc, &yloc) < 2)
-    {
-        fprintf(stderr, "geom (%s)?\n", geom);
-        return (TCL_ERROR);
-    }
+        xloc = yloc = 0;
     fprintf(stderr, "cmd_pdtk_canvas_new %s %d %d %d %d %d\n",
         tag, xloc, yloc, width, height, editmode);
 
@@ -404,12 +401,12 @@ static int cmd_pdtk_canvas_reflecttitle(ClientData cdata, Tcl_Interp *interp,
     title[BIGSTRING] = 0;
     if (objc != 6)
     {
-        fprintf(stderr, "destroy: needs 2 args, got %d\n", objc);
+        fprintf(stderr, "cmd_pdtk_canvas_reflecttitle: got %d args\n", objc);
         return (TCL_ERROR);
     }
     tag = Tcl_GetString(objv[1]);
     if (!(hash = Tcl_FindHashEntry(&tcl_windowlist, tag)))
-        fprintf(stderr, "destroy: window %s not found\n", tag);
+        fprintf(stderr, "reflecttitle: window %s not found\n", tag);
     else
     {
         t_canvas *c = (t_canvas *)Tcl_GetHashValue(hash);
@@ -420,8 +417,30 @@ static int cmd_pdtk_canvas_reflecttitle(ClientData cdata, Tcl_Interp *interp,
 #ifdef DEBUGTCL
         fprintf(stderr, "set title for %s: %s\n", tag, title);
 #endif
-        gfx_canvas_settitle(c, title);
+        gfx_canvas_settitle(c, title, Tcl_GetString(objv[3]));
     }
+    return (TCL_OK);
+}
+
+ /* pdtk_canvas_menuclose <tag> <command>
+ e.g., pdtk_canvas_menuclose .x252f5350 {.x252f5350 menuclose 3 } */
+static int cmd_pdtk_canvas_menuclose(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    char *tag;
+    Tcl_HashEntry *hash;
+    char title[BIGSTRING + 1];
+    title[BIGSTRING] = 0;
+    if (objc != 3)
+    {
+        fprintf(stderr, "cmd_pdtk_canvas_menuclose: got %d args\n", objc);
+        return (TCL_ERROR);
+    }
+    tag = Tcl_GetString(objv[1]);
+    if (!(hash = Tcl_FindHashEntry(&tcl_windowlist, tag)))
+        fprintf(stderr, "menuclose: window %s not found\n", tag);
+    else gfx_canvas_menuclose((t_canvas *)Tcl_GetHashValue(hash),
+            Tcl_GetString(objv[2]));
     return (TCL_OK);
 }
 
@@ -464,6 +483,7 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_canvas_create_oval", cmd_pdtk_canvas_create_oval},
     {"pdtk_canvas_delete", cmd_pdtk_canvas_delete},
     {"pdtk_canvas_move", cmd_pdtk_canvas_move},
+    {"pdtk_canvas_menuclose", cmd_pdtk_canvas_menuclose},
     {"pdtk_ping", cmd_pdtk_ping},
     {"pdtk_watchdog", cmd_pdtk_watchdog},
     {"set", 0},
