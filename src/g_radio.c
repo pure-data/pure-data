@@ -667,6 +667,12 @@ static void radio_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
+static void radio_gui_update(t_radio *x)
+{
+    iemgui_size((void *)x, &x->x_gui);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
+
 static void radio_orientation(t_radio *x, t_floatarg forient)
 {
     t_iem_orientation orientation = !!(int)forient;
@@ -781,6 +787,7 @@ static void radio_list(t_radio *x, t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv);
         endpost();
     }
+    if (!x->x_toggle_mode) x->x_toggle_mode = 1;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
@@ -1201,7 +1208,7 @@ static void radio_mode(t_radio *x, t_floatarg fmode)
     if (x->x_mode == mode)
         return;
     x->x_mode = mode;
-    iemgui_size((void *)x, &x->x_gui);
+    radio_gui_update(x);
 
 }
 
@@ -1211,7 +1218,7 @@ static void radio_toggle_mode(t_radio *x, t_floatarg fmode)
     if (x->x_toggle_mode == toggle_mode)
         return;
     x->x_toggle_mode = toggle_mode;
-    iemgui_size((void *)x, &x->x_gui);
+    radio_gui_update(x);
 }
 
 static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
