@@ -255,7 +255,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_rcv($vid) ne ""} {set receivename $::dialog_iemgui::var_rcv($vid)}
     if {$::dialog_iemgui::var_label($vid) ne ""} {set labelname $::dialog_iemgui::var_label($vid)}
 
-    set labelname [string map { "\\" {\\} {$} {\$} { } {\ } {,} {\,} {;} {\;}  "{" "\{" "}" "\}" } $labelname]
+    set labelname [string map { "\\" "" {$} {\$} { } {\ } {,} {\,} {;} {\;}  "{" "\{" "}" "\}" } $labelname]
 
     # make sure the offset boxes have a value
     if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
