@@ -809,7 +809,7 @@ static void radio_indices(t_radio *x, t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv);
         endpost();
     }
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+    radio_gui_update(x);
 }
 
 static void radio_get_cell(t_radio *x, t_floatarg fidx)
@@ -915,9 +915,56 @@ static void radio_hdl_output_prev(t_radio *x)
     x->x_on_old = x->x_on;
 }
 
+static void radio_dump_indices(t_radio *x, t_symbol *s)
+{
+    t_atom *av;
+    const int size = x->x_number[!(int)x->x_orientation];
+
+    ALLOCA(t_atom, av, size, IEM_RADIO_MAX + 1);
+    for(int i=0; i<size; i++) {
+        SETFLOAT(&av[i], (t_float)x->x_on_idx[i]);
+    }
+    /* send the list to the symbol if it is present */
+    if (s && s->s_thing)
+        pd_list(s->s_thing, &s_list, size, av);
+    else
+        radio_outlet_list(x, size, av);
+    FREEA(t_atom, av, size, IEM_RADIO_MAX + 1);
+}
+
+static void radio_index(t_radio *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (!argc)
+        return;
+
+    int on = clip_int(
+        (int)atom_getfloatarg(0, argc, argv),
+        0,
+        x->x_number[!(int)x->x_orientation]);
+
+    if (argc==1)
+        return radio_output_pair(x, (t_float)on, x->x_on_idx[on]);
+
+    int val = clip_int(
+        (int)atom_getfloatarg(1, argc, argv),
+        0,
+        x->x_number[(int)x->x_orientation]);
+
+    if (argc>2) {
+        post("Ignoring extra arguments");
+        postatom(argc-2, argv+2);
+        endpost();
+    }
+
+    if (val == x->x_on_idx[on])
+        return;
+
+    x->x_on_idx[on] = val;
+    radio_gui_update(x);
+}
+
 static void radio_bang(t_radio *x)
 {
-    int col, row;
     switch (x->x_output_mode)
     {
         case OUTPUT_MODE_COMPAT_DOUBLE:
@@ -930,8 +977,11 @@ static void radio_bang(t_radio *x)
         case OUTPUT_MODE_LINE:
             return radio_readline(x, 0.0, (t_floatarg)x->x_on);
         case OUTPUT_MODE_COORDS:
-            if (radio_idx2coord(x, x->x_on, &col,&row))
-                return radio_output_pair(x, (t_float)col, (t_float)row);
+            if (x->x_mode == RADIO_MODE_MULTIPLE)
+                return radio_output_pair(x,
+                                        (t_float)x->x_on,
+                                        (t_float)x->x_on_idx[x->x_on]);
+            /* fall-through if not in multiple */
         default:
         case OUTPUT_MODE_FLOAT_UNBOUND: // pd >= 46
             return radio_output_value(x, (t_float)x->x_fval);
@@ -1512,6 +1562,8 @@ void g_radio_setup(void)
         gensym("output_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_dump,
         gensym("dump"), A_DEFSYM, 0);
+    class_addmethod(radio_class, (t_method)radio_dump_indices,
+        gensym("dump_indices"), A_DEFSYM, 0);
     class_addmethod(radio_class, (t_method)radio_fill,
         gensym("fill"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_readline,
@@ -1546,6 +1598,8 @@ void g_radio_setup(void)
         gensym("toggle_mode"), A_DEFFLOAT, 0);
     class_addmethod(radio_class, (t_method)radio_indices,
         gensym("indices"), A_GIMME, 0);
+    class_addmethod(radio_class, (t_method)radio_index,
+        gensym("index"), A_GIMME, 0);
     radio_widgetbehavior.w_getrectfn = radio_getrect;
     radio_widgetbehavior.w_displacefn = iemgui_displace;
     radio_widgetbehavior.w_selectfn = iemgui_select;
