@@ -1335,6 +1335,20 @@ static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)
     iemgui_size((void *)x, &x->x_gui);
 }
 
+static void radio_matrix(t_radio *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (!argc)
+        return;
+    if (argc < 2)
+        return pd_error(x, "matrix takes at least 2 arguments for nrows and ncols");
+
+    t_floatarg nrows = atom_getfloatarg(0,argc,argv);
+    t_floatarg ncols = atom_getfloatarg(1,argc,argv);
+    radio_resize(x, ncols, nrows);
+    if (argc > 2)
+        radio_list(x, s, argc-2, argv+2);
+}
+
 static void radio_delta(t_radio *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_delta((void *)x, &x->x_gui, s, ac, av);}
 
@@ -1600,6 +1614,8 @@ void g_radio_setup(void)
         gensym("indices"), A_GIMME, 0);
     class_addmethod(radio_class, (t_method)radio_index,
         gensym("index"), A_GIMME, 0);
+    class_addmethod(radio_class, (t_method)radio_matrix,
+        gensym("matrix"), A_GIMME, 0);
     radio_widgetbehavior.w_getrectfn = radio_getrect;
     radio_widgetbehavior.w_displacefn = iemgui_displace;
     radio_widgetbehavior.w_selectfn = iemgui_select;

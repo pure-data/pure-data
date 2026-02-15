@@ -1,5 +1,5 @@
 #N canvas 108 150 545 606 12;
-#X obj 45 222 radio 20 0 0 -516 radio-test-out radio-test Radio\ Test 0 -8 0 14 #ffffff #000000 #000000 0;
+#X obj 45 222 radio 20 0 0 -259 radio-test-out radio-test Radio\ Test 0 -8 0 14 #ffffff #000000 #000000 0;
 #X text 50 76 A new IEMGUI object that belongs to the "radio" family. This object extends "hradio" and "vradio" to a second dimension \, allowing for 2d matrices., f 64;
 #X text 367 500 Example:;
 #N canvas 860 54 676 735 sequencer 0;
@@ -364,7 +364,7 @@
 #X msg 39 124 \; radio-test resize 3 3 \; radio-test orientation 0 \;;
 #X connect 0 0 2 0;
 #X restore 277 502 pd init;
-#N canvas 665 130 372 698 messages 0;
+#N canvas 665 130 372 698 messages 1;
 #N canvas 1050 168 485 390 orientation 0;
 #X text 77 130 horizontal;
 #X text 240 124 vertical;
@@ -1178,6 +1178,18 @@
 #X connect 1 0 2 0;
 #X connect 3 0 1 0;
 #X restore 37 376 pd toggle_mode;
+#N canvas 979 178 544 395 matrix 0;
+#X msg 39 135 matrix 4 4;
+#X obj 36 299 s radio-test;
+#X msg 77 188 matrix 3 4;
+#X msg 103 251 matrix 3 3 1 0 0 0 1 0 0 0 1;
+#X text 39 57 The "matrix" selector takes nrows ncols and a list of elements. This is meant to be used in conjunction with the iemmatrix library;
+#X text 253 25 MATRIX;
+#X text 131 222 this is the equivalent of an "eye" matrix;
+#X connect 0 0 1 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X restore 165 376 pd matrix;
 #X restore 190 502 pd messages;
 #X floatatom 195 438 5 0 0 0 float\ output - - 0;
 #X obj 350 465 print;
