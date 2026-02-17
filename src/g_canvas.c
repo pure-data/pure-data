@@ -1626,7 +1626,55 @@ typedef struct _declare
     t_object x_obj;
     t_canvas *x_canvas;
     int x_useme;
+    t_atom *x_argv; /* store creation arguments for re-triggering */
+    int x_argc;
 } t_declare;
+
+static void declare_loaded_paths(t_declare *z, t_canvas *x)
+{
+    t_canvasenvironment *e = canvas_getenv(x);
+    t_namelist *nl = e->ce_path;
+    for (; nl; nl = nl->nl_next)
+        logpost(z, PD_NORMAL, "loaded <path>: %s", nl->nl_string);
+}
+
+static void declare_loaded_libs(t_declare *x)
+{
+    t_loadlist *ll = sys_getloadlist();
+    for (; ll; ll = ll->ll_next)
+        logpost(x, PD_NORMAL, "loaded <lib>: %s", ll->ll_name->s_name);
+}
+
+static void declare_bang(t_declare *x)
+{
+    x->x_useme = canvas_declare_do(x, x->x_canvas, &s_list,
+                                x->x_argc, x->x_argv, PD_DEBUG);
+}
+
+/* query a canvas for information on loaded libraries or paths
+ * a t_declare object can be passed for traceable loglevel posts.
+ * LATER extend this for more patch information queries
+ */
+static void canvas_query_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int i;
+    for (i = 0; i < argc; i++)
+    {
+        const char *arg = atom_getsymbolarg(i, argc, argv)->s_name;
+        if (!strcmp(arg, "paths"))
+            declare_loaded_paths(z, x);
+        else if (!strcmp(arg, "libs"))
+            declare_loaded_libs(z);
+        else post("query <%s>: unknown arg", arg);
+    }
+}
+
+static void canvas_query(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{ canvas_query_do(NULL, x, s, argc, argv); }
+
+static void declare_query(t_declare *x, t_symbol *s, int argc, t_atom *argv)
+{ canvas_query_do(x, x->x_canvas, s, argc, argv); }
+
 
 static void *declare_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1634,12 +1682,19 @@ static void *declare_new(t_symbol *s, int argc, t_atom *argv)
     x->x_useme = 1;
     x->x_canvas = canvas_getcurrent();
         /* LATER update environment and/or load libraries */
-    if (!x->x_canvas->gl_loading)
+    x->x_argc = argc;
+    if (argc > 0)
     {
+        x->x_argv = (t_atom *)getbytes(argc * sizeof(t_atom));
+        memcpy(x->x_argv, argv, argc * sizeof(t_atom));
+    }
+    else
+        x->x_argv = NULL;
+
         /* the object is created by the user (not by loading a patch),
          * so update canvas's properties on the fly */
-        x->x_useme = canvas_declare_do(x, x->x_canvas, s, argc, argv, PD_DEBUG);
-    }
+    if (!x->x_canvas->gl_loading)
+        declare_bang(x);
     return (x);
 }
 
@@ -1647,6 +1702,8 @@ static void declare_free(t_declare *x)
 {
     x->x_useme = 0;
         /* LATER update environment */
+    if (x->x_argv)
+        freebytes(x->x_argv, x->x_argc * sizeof(t_atom));
 }
 
 void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
@@ -1911,10 +1968,7 @@ int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 { return canvas_declare_do(NULL, x, s, argc, argv, PD_DEBUG); }
 
 int canvas_declare(t_declare *z, t_symbol *s, int argc, t_atom *argv)
-{
-    t_canvas *x = z->x_canvas;
-    return canvas_declare_do(z, x, s, argc, argv, PD_DEBUG);
-}
+{ return canvas_declare_do(z, z->x_canvas, s, argc, argv, PD_DEBUG); }
 
 typedef struct _canvasopen
 {
@@ -2210,9 +2264,14 @@ void g_canvas_setup(void)
 
 /*---------------------------- declare ------------------- */
     declare_class = class_new(gensym("declare"), (t_newmethod)declare_new,
-        (t_method)declare_free, sizeof(t_declare), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)declare_free, sizeof(t_declare), CLASS_DEFAULT, A_GIMME, 0);
+    class_addbang(declare_class, (t_method)declare_bang);
     class_addmethod(canvas_class, (t_method)canvas_declare_message,
         gensym("declare"), A_GIMME, 0);
+    class_addmethod(canvas_class, (t_method)canvas_query,
+        gensym("query"), A_GIMME, 0);
+    class_addmethod(declare_class, (t_method)declare_query,
+        gensym("query"), A_GIMME, 0);
 
 /*--------------- future message to set formatting  -------------- */
     class_addmethod(canvas_class, (t_method)canvas_f,
