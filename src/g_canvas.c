@@ -54,10 +54,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 static void canvas_completepath(const char *from, char *to, int bufsize, t_canvas *x);
-typedef struct _declare t_declare;
-int canvas_declare(t_declare *z, t_symbol *s, int argc, t_atom *argv);
 int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
-int canvas_declare_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv, t_loglevel level);
 void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
@@ -1631,6 +1628,8 @@ typedef struct _declare
     int x_argc;
 } t_declare;
 
+int canvas_declare_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv, t_loglevel level);
+
 static void declare_loaded_absolute_paths(t_declare *z, t_canvas *x)
 {
     t_canvasenvironment *e = canvas_getenv(x);
@@ -1669,28 +1668,36 @@ static void declare_bang(t_declare *x)
  * a t_declare object can be passed for traceable loglevel posts.
  * LATER extend this for more patch information queries
  */
-static void canvas_query_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+static void canvas_query(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     for (i = 0; i < argc; i++)
     {
         const char *arg = atom_getsymbolarg(i, argc, argv)->s_name;
         if (!strcmp(arg, "paths"))
-            declare_loaded_paths(z, x);
+            declare_loaded_paths(NULL, x);
         else if (!strcmp(arg, "libs"))
-            declare_loaded_libs(z);
+            declare_loaded_libs(NULL);
         else if (!strcmp(arg, "absolute"))
-            declare_loaded_absolute_paths(z, x);
+            declare_loaded_absolute_paths(NULL, x);
+        else if (!strcmp(arg, "blocksize"))
+        {
+            int blocksize = canvas_getsignallength(x);
+            logpost(NULL, PD_NORMAL, "<blocksize>: %d", blocksize);
+        }
         else post("query <%s>: unknown arg", arg);
     }
 }
 
-static void canvas_query(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
-{ canvas_query_do(NULL, x, s, argc, argv); }
-
-static void declare_query(t_declare *x, t_symbol *s, int argc, t_atom *argv)
-{ canvas_query_do(x, x->x_canvas, s, argc, argv); }
-
+static void declare_print_paths(t_declare *x, t_floatarg fabsolute)
+{
+    int absflag = !!(int)fabsolute;
+    t_canvas *c = x->x_canvas;
+    if (absflag)
+        declare_loaded_absolute_paths(x, c);
+    else
+        declare_loaded_paths(x, c);
+}
 
 static void *declare_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1982,9 +1989,6 @@ int canvas_declare_do(t_declare *z, t_canvas *x,
 
 int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 { return canvas_declare_do(NULL, x, s, argc, argv, PD_DEBUG); }
-
-int canvas_declare(t_declare *z, t_symbol *s, int argc, t_atom *argv)
-{ return canvas_declare_do(z, z->x_canvas, s, argc, argv, PD_DEBUG); }
 
 typedef struct _canvasopen
 {
@@ -2286,8 +2290,10 @@ void g_canvas_setup(void)
         gensym("declare"), A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_query,
         gensym("query"), A_GIMME, 0);
-    class_addmethod(declare_class, (t_method)declare_query,
-        gensym("query"), A_GIMME, 0);
+    class_addmethod(declare_class, (t_method)declare_print_paths,
+        gensym("paths"), A_DEFFLOAT, 0);
+    class_addmethod(declare_class, (t_method)declare_loaded_libs,
+        gensym("libs"), 0);
 
 /*--------------- future message to set formatting  -------------- */
     class_addmethod(canvas_class, (t_method)canvas_f,
