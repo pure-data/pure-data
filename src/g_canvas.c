@@ -1143,7 +1143,7 @@ static void canvas_loadbangabstractions(t_canvas *x)
         else if ((pd_class(&y->g_pd) == clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -1162,7 +1162,7 @@ void canvas_loadbangsubpatches(t_canvas *x)
             (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
