@@ -53,6 +53,7 @@ static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
+static void canvas_completepath(const char *from, char *to, int bufsize, t_canvas *x);
 typedef struct _declare t_declare;
 int canvas_declare(t_declare *z, t_symbol *s, int argc, t_atom *argv);
 int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
@@ -1630,6 +1631,19 @@ typedef struct _declare
     int x_argc;
 } t_declare;
 
+static void declare_loaded_absolute_paths(t_declare *z, t_canvas *x)
+{
+    t_canvasenvironment *e = canvas_getenv(x);
+    t_namelist *nl = e->ce_path;
+        /* prefix canvas-path */
+    char strbuf[MAXPDSTRING], *path;
+    for (; nl; nl = nl->nl_next)
+    {
+        path = nl->nl_string;
+        canvas_completepath(path, strbuf, MAXPDSTRING, x);
+        logpost(z, PD_NORMAL, "loaded <path>: %s", strbuf);
+    }
+}
 static void declare_loaded_paths(t_declare *z, t_canvas *x)
 {
     t_canvasenvironment *e = canvas_getenv(x);
@@ -1665,6 +1679,8 @@ static void canvas_query_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_
             declare_loaded_paths(z, x);
         else if (!strcmp(arg, "libs"))
             declare_loaded_libs(z);
+        else if (!strcmp(arg, "absolute"))
+            declare_loaded_absolute_paths(z, x);
         else post("query <%s>: unknown arg", arg);
     }
 }
