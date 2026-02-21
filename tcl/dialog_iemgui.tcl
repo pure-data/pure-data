@@ -41,6 +41,10 @@ array set ::dialog_iemgui::var_color_foreground {} ;# var_iemgui_fcol
 array set ::dialog_iemgui::var_color_label {} ;# var_iemgui_lcol
 array set ::dialog_iemgui::var_colortype {} ;# var_iemgui_l2_f1_b0
 
+array set ::dialog_iemgui::var_color_background_default {}
+array set ::dialog_iemgui::var_color_foreground_default {}
+array set ::dialog_iemgui::var_color_label_default {}
+
 # TODO convert Init/No Init and Steady on click/Jump on click to checkbuttons
 
 proc ::dialog_iemgui::tonumber val {
@@ -120,19 +124,23 @@ proc ::dialog_iemgui::clip_fontsize {mytoplevel} {
 proc ::dialog_iemgui::set_col_example {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set fgcol $::dialog_iemgui::var_color_label($vid)
+    set display_bg $::dialog_iemgui::var_color_background($vid)
+    set display_fg $::dialog_iemgui::var_color_foreground($vid)
+    set display_lb $::dialog_iemgui::var_color_label($vid)
+
+    set fgcol $display_lb
     $mytoplevel.colors.sections.exp.lb_bk configure \
-        -background $::dialog_iemgui::var_color_background($vid) \
-        -activebackground $::dialog_iemgui::var_color_background($vid) \
+        -background $display_bg \
+        -activebackground $display_bg \
         -foreground $fgcol -activeforeground $fgcol
 
-    set fgcol $::dialog_iemgui::var_color_foreground($vid)
+    set fgcol $display_fg
     if { $fgcol eq "none" } {
-        set fgcol $::dialog_iemgui::var_color_background($vid)
+        set fgcol $display_bg
     }
     $mytoplevel.colors.sections.exp.fr_bk configure \
-        -background $::dialog_iemgui::var_color_background($vid) \
-        -activebackground $::dialog_iemgui::var_color_background($vid) \
+        -background $display_bg \
+        -activebackground $display_bg \
         -foreground $fgcol -activeforeground $fgcol
 
     # for OSX live updates
@@ -145,9 +153,18 @@ proc ::dialog_iemgui::preset_col {mytoplevel presetcol} {
     set vid [string trimleft $mytoplevel .]
 
     switch -- $::dialog_iemgui::var_colortype($vid) {
-        0 { set ::dialog_iemgui::var_color_background($vid) $presetcol }
-        1 { set ::dialog_iemgui::var_color_foreground($vid) $presetcol }
-        2 { set ::dialog_iemgui::var_color_label($vid) $presetcol }
+        0 {
+            set ::dialog_iemgui::var_color_background($vid) $presetcol
+            set ::dialog_iemgui::var_color_background_default($vid) 0
+        }
+        1 {
+            set ::dialog_iemgui::var_color_foreground($vid) $presetcol
+            set ::dialog_iemgui::var_color_foreground_default($vid) 0
+        }
+        2 {
+            set ::dialog_iemgui::var_color_label($vid) $presetcol
+            set ::dialog_iemgui::var_color_label_default($vid) 0
+        }
     }
 
     ::dialog_iemgui::set_col_example $mytoplevel
@@ -175,6 +192,31 @@ proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
     if { $color ne "" } {
         ::dialog_iemgui::preset_col $mytoplevel $color
     }
+}
+
+proc ::dialog_iemgui::update_adaptive_state {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+    set colortype $::dialog_iemgui::var_colortype($vid)
+    set default_var {}
+    switch -- $colortype {
+        0 { set default_var ::dialog_iemgui::var_color_background_default($vid) }
+        1 { set default_var ::dialog_iemgui::var_color_foreground_default($vid) }
+        2 { set default_var ::dialog_iemgui::var_color_label_default($vid) }
+    }
+    $mytoplevel.colors.adapt.tgl configure -variable $default_var
+}
+
+proc ::dialog_iemgui::toggle_color_default {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+    set colortype $::dialog_iemgui::var_colortype($vid)
+    if {$colortype == 0 && $::dialog_iemgui::var_color_background_default($vid)} {
+        set ::dialog_iemgui::var_color_background($vid) $::pd_colors::palette(background)
+    } elseif {$colortype == 1 && $::dialog_iemgui::var_color_foreground_default($vid)} {
+        set ::dialog_iemgui::var_color_foreground($vid) $::pd_colors::palette(foreground)
+    } elseif {$colortype == 2 && $::dialog_iemgui::var_color_label_default($vid)} {
+        set ::dialog_iemgui::var_color_label($vid) $::pd_colors::palette(foreground)
+    }
+    ::dialog_iemgui::set_col_example $mytoplevel
 }
 
 proc ::dialog_iemgui::popupmenu {path varname labels {command {}}} {
@@ -261,6 +303,13 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
     if {$::dialog_iemgui::var_label_dy($vid) eq ""} {set ::dialog_iemgui::var_label_dy($vid) 0}
 
+    set bcol [expr {$::dialog_iemgui::var_color_background_default($vid) ? \
+        "default" : [string tolower $::dialog_iemgui::var_color_background($vid)]}]
+    set fcol [expr {$::dialog_iemgui::var_color_foreground_default($vid) ? \
+        "default" : [string tolower $::dialog_iemgui::var_color_foreground($vid)]}]
+    set lcol [expr {$::dialog_iemgui::var_color_label_default($vid) ? \
+        "default" : [string tolower $::dialog_iemgui::var_color_label($vid)]}]
+
     pdsend [concat $mytoplevel dialog \
                 $::dialog_iemgui::var_width($vid) \
                 $::dialog_iemgui::var_height($vid) \
@@ -276,10 +325,13 @@ proc ::dialog_iemgui::apply {mytoplevel} {
                 $::dialog_iemgui::var_label_dy($vid) \
                 $::dialog_iemgui::var_label_font($vid) \
                 $::dialog_iemgui::var_label_fontsize($vid) \
-                [string tolower $::dialog_iemgui::var_color_background($vid)] \
-                [string tolower $::dialog_iemgui::var_color_foreground($vid)] \
-                [string tolower $::dialog_iemgui::var_color_label($vid)] \
+                $bcol \
+                $fcol \
+                $lcol \
                 $::dialog_iemgui::var_steady($vid) \
+                $::dialog_iemgui::var_color_background_default($vid) \
+                $::dialog_iemgui::var_color_foreground_default($vid) \
+                $::dialog_iemgui::var_color_label_default($vid) \
                ]
 }
 
@@ -303,7 +355,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
                                        snd rcv \
                                        gui_name \
                                        gn_dx gn_dy gn_f gn_fs \
-                                       bcol fcol lcol} {
+                                       bcol fcol lcol \
+                                       bcol_default fcol_default lcol_default} {
 
     set vid [string trimleft $mytoplevel .]
     set snd [::pdtk_text::unescape $snd]
@@ -334,9 +387,18 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_label_font($vid) $gn_f
     set ::dialog_iemgui::var_label_fontsize($vid) $gn_fs
 
-    set ::dialog_iemgui::var_color_background($vid) $bcol
-    set ::dialog_iemgui::var_color_foreground($vid) $fcol
-    set ::dialog_iemgui::var_color_label($vid) $lcol
+    set ::dialog_iemgui::var_color_background($vid) \
+        [expr {$bcol_default ? $::pd_colors::palette(background) : $bcol}]
+    set ::dialog_iemgui::var_color_background_default($vid) $bcol_default
+
+    set ::dialog_iemgui::var_color_foreground($vid) \
+        [expr {$fcol_default ? $::pd_colors::palette(foreground) : $fcol}]
+    set ::dialog_iemgui::var_color_foreground_default($vid) $fcol_default
+
+    set ::dialog_iemgui::var_color_label($vid) \
+        [expr {$lcol_default ? $::pd_colors::palette(foreground) : $lcol}]
+    set ::dialog_iemgui::var_color_label_default($vid) $lcol_default
+
     set ::dialog_iemgui::var_colortype($vid) 0
 
     # Override incoming values for known iem guis.
@@ -559,13 +621,16 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     pack $mytoplevel.colors.select -side top
     radiobutton $mytoplevel.colors.select.radio0 \
         -value 0 -variable ::dialog_iemgui::var_colortype($vid) \
-        -text [_ "Background"] -justify left
+        -text [_ "Background"] -justify left \
+        -command "::dialog_iemgui::update_adaptive_state $mytoplevel"
     radiobutton $mytoplevel.colors.select.radio1 \
         -value 1 -variable ::dialog_iemgui::var_colortype($vid) \
-        -text [_ "Front"] -justify left
+        -text [_ "Front"] -justify left \
+        -command "::dialog_iemgui::update_adaptive_state $mytoplevel"
     radiobutton $mytoplevel.colors.select.radio2 \
         -value 2 -variable ::dialog_iemgui::var_colortype($vid) \
-        -text [_ "Label"] -justify left
+        -text [_ "Label"] -justify left \
+        -command "::dialog_iemgui::update_adaptive_state $mytoplevel"
     if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
         pack $mytoplevel.colors.select.radio0 $mytoplevel.colors.select.radio1 \
             $mytoplevel.colors.select.radio2 -side left
@@ -574,13 +639,13 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     }
 
     frame $mytoplevel.colors.sections
-    pack $mytoplevel.colors.sections -side top
+    pack $mytoplevel.colors.sections -side top -pady 5
     button $mytoplevel.colors.sections.but -text [_ "Compose color"] \
         -command "::dialog_iemgui::choose_col_bkfrlb $mytoplevel"
-    pack $mytoplevel.colors.sections.but -side left -anchor w -pady 5 \
+    pack $mytoplevel.colors.sections.but -side left -anchor w \
         -expand yes -fill x
     frame $mytoplevel.colors.sections.exp
-    pack $mytoplevel.colors.sections.exp -side right -padx 5
+    pack $mytoplevel.colors.sections.exp -side right -padx 2
     if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
         label $mytoplevel.colors.sections.exp.fr_bk -text "o=||=o" -width 6 \
             -background $::dialog_iemgui::var_color_background($vid) \
@@ -603,7 +668,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         -activeforeground $::dialog_iemgui::var_color_label($vid) \
         -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     pack $mytoplevel.colors.sections.exp.lb_bk $mytoplevel.colors.sections.exp.fr_bk \
-        -side right -anchor e -expand yes -fill both -pady 7
+        -side right -anchor e -expand yes -fill both
+
+    frame $mytoplevel.colors.adapt
+    pack $mytoplevel.colors.adapt -side top
+    checkbutton $mytoplevel.colors.adapt.tgl -text [_ "Adapt to theme"] \
+        -command "::dialog_iemgui::toggle_color_default $mytoplevel"
+    $mytoplevel.colors.adapt.tgl configure -variable ::dialog_iemgui::var_color_background_default($vid)
+    pack $mytoplevel.colors.adapt.tgl
 
     # color scheme by Mary Ann Benedetto http://piR2.org
     foreach r {r1 r2 r3} hexcols {

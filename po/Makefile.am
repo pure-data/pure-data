@@ -43,6 +43,7 @@ TCLFILES = \
     pd_docsdir.tcl \
     pd_guiprefs.tcl \
     pd_i18n.tcl \
+    pd_iemgui_colors.tcl \
     pd_menucommands.tcl \
     pd_menus.tcl \
     pdtcl_compat.tcl \
