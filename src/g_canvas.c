@@ -1631,8 +1631,15 @@ typedef struct _declare
 
 int canvas_declare_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv, t_loglevel level);
 
-static void declare_loaded_absolute_paths(t_declare *x, t_symbol *s)
+static void declare_bang(t_declare *x)
 {
+    x->x_useme = canvas_declare_do(x, x->x_canvas, &s_list,
+                                x->x_argc, x->x_argv, PD_DEBUG);
+}
+
+static void declare_output_paths(t_declare *x, t_floatarg fabsolute)
+{
+    int absflag = !!(int)fabsolute;
     t_canvasenvironment *e = canvas_getenv(x->x_canvas);
     t_namelist *nl = e->ce_path;
         /* prefix canvas-path */
@@ -1640,43 +1647,22 @@ static void declare_loaded_absolute_paths(t_declare *x, t_symbol *s)
     for (; nl; nl = nl->nl_next)
     {
         path = nl->nl_string;
-        canvas_completepath(path, strbuf, MAXPDSTRING, x->x_canvas);
-        outlet_symbol(x->x_outlet, gensym(strbuf));
+        if (absflag)
+        {
+            canvas_completepath(path, strbuf, MAXPDSTRING, x->x_canvas);
+            outlet_symbol(x->x_outlet, gensym(strbuf));
+        }
+        else
+            outlet_symbol(x->x_outlet, gensym(path));
     }
 }
-static void declare_loaded_paths(t_declare *x, t_symbol *s)
-{
-    t_canvasenvironment *e = canvas_getenv(x->x_canvas);
-    t_namelist *nl = e->ce_path;
-    for (; nl; nl = nl->nl_next)
-        outlet_symbol(x->x_outlet, gensym(nl->nl_string));
-}
 
-static void declare_loaded_libs(t_declare *x, t_symbol *s)
+static void declare_output_libs(t_declare *x)
 {
     t_loadlist *ll = sys_getloadlist();
     for (; ll; ll = ll->ll_next)
         outlet_symbol(x->x_outlet, ll->ll_name);
 }
-
-static void declare_bang(t_declare *x)
-{
-    x->x_useme = canvas_declare_do(x, x->x_canvas, &s_list,
-                                x->x_argc, x->x_argv, PD_DEBUG);
-}
-
-static void declare_print_paths(t_declare *x, t_floatarg fabsolute)
-{
-    int absflag = !!(int)fabsolute;
-    t_canvas *c = x->x_canvas;
-    if (absflag)
-        declare_loaded_absolute_paths(x, 0);
-    else
-        declare_loaded_paths(x, 0);
-}
-
-static void declare_print_libs(t_declare *x)
-{ declare_loaded_libs(x, 0); }
 
 static void *declare_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -2272,9 +2258,9 @@ void g_canvas_setup(void)
     class_addbang(declare_class, (t_method)declare_bang);
     class_addmethod(canvas_class, (t_method)canvas_declare_message,
         gensym("declare"), A_GIMME, 0);
-    class_addmethod(declare_class, (t_method)declare_print_paths,
+    class_addmethod(declare_class, (t_method)declare_output_paths,
         gensym("paths"), A_DEFFLOAT, 0);
-    class_addmethod(declare_class, (t_method)declare_print_libs,
+    class_addmethod(declare_class, (t_method)declare_output_libs,
         gensym("libs"), 0);
 
 /*--------------- future message to set formatting  -------------- */
