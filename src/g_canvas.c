@@ -54,7 +54,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 static void canvas_completepath(const char *from, char *to, int bufsize, t_canvas *x);
-int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
+static void canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
@@ -1957,8 +1957,8 @@ int canvas_declare_do(t_declare *z, t_canvas *x,
     return success;
 }
 
-int canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
-{ return canvas_declare_do(0, x, s, argc, argv, PD_DEBUG); }
+static void canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{ canvas_declare_do(0, x, s, argc, argv, PD_DEBUG); }
 
 typedef struct _canvasopen
 {
