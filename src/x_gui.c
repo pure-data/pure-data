@@ -540,6 +540,11 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
     outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
 }
 
+static void pdcontrol_getzoom(t_pdcontrol *x)
+{
+    outlet_float(x->x_outlet, glist_getzoom(x->x_canvas));
+}
+
 static void pdcontrol_sendcanvas(t_pdcontrol *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -560,6 +565,8 @@ static void pdcontrol_setup(void)
         gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_getzoom,
+        gensym("getzoom"), 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_sendcanvas,
         gensym("sendcanvas"), A_GIMME, 0);
 }
