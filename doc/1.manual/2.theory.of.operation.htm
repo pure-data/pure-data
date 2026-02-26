@@ -2249,24 +2249,32 @@ list follows.</P>
 
 <P> In MAX, there are separate data types for integers and floating point numbers.
 You can use a '.' at the end of the number to specify it as a float, which may be
-needed as argument is some objects. Similarly MAX has a 'float' and an 'int' list
+needed as an argument in some objects. Similarly, MAX has a 'float' and an 'int'
 selector that you can use to define whether a '1' is a float or an int in a message.
 Pd only has a float type and selector, so you don't need to worry about any of this
-- all numbers are floats and there is no distinction between '1' and '1.'. This
-gives MAX a higher integer resolution, but with the double precision version of Pd
-(Pd64), this is also not a significant issue anymore.</P>
+(all numbers are floats and there is no distinction between '1' and '1.'). MAX has
+a higher integer resolution with its int type, but with the double precision
+version of Pd (Pd64), this is not a significant issue.</P>
 
-<P> MAX has a 'list' selector, but it is always implicit. In Pd it is only implicit
-if the list starts with a float. If you have a list that starts with a symbol, you
-need the 'list' selector in Pd. MAX has no 'symbol' selector and Pd explicitly needs
-it to define a symbol data type.</P>
+<P> MAX has a 'list' selector, but it is always implicit for messages with more
+than one element. In Pd it is only implicit if the list starts with a float. So
+if you have a list that starts with a symbol, you need the 'list' selector in Pd.
+MAX has no 'symbol' selector, but a one element symbol message is considered a
+symbol and not a list. Pd explicitly needs to define a symbol data type with a
+symbol selector.</P>
 
-<P> In MAX, you can put a list inside quotes to specify a symbol, so <i>"a b c"</i> or
-<i>"1 2 3"</i> are actually a single symbol. Pd has no quote mechanism but you can
-escape spaces and form a symbol with it, so <i>a\ b\ c</i> and <i>1\ 2\ 3</i> actually
-form symbols. In MAX, you can also force a float to become a symbol with <i>"1"</i>, in
-Pd this is trickier, since anything that looks like numbers are floats - but you can
-use <i>[makefilename]</i> to turn a number into a symbol.</P>
+<P> Moreover, in Pd, a one element list is effectively a float or a symbol
+(or even a pointer for that matter), while MAX can differentiate a one element
+list with a list selector and a float/int or symbol. Also, in Pd, a list
+without any elements (hence, an empty list) is treated as a bang message.</P>
+
+<P> In MAX, a list of elements inside quotes specify a symbol, so <i>"a b c"</i>
+or <i>"1 2 3"</i> are actually a single symbol. Pd has no quote mechanism but
+you can escape spaces and form a symbol with it, so <i>a\ b\ c</i> and
+<i>1\ 2\ 3</i> actually form symbols. In MAX, you can also force a float to
+become a symbol with <i>"1"</i>. In Pd, this is trickier, since anything that
+looks like numbers are floats - but you can use <i>[makefilename]</i> to turn
+a number into a symbol.</P>
 
 <P> In MAX, if an object's outlet is connected to several inlets, corresponding
 messages are always sent in right-to-left order of the inlets' positions. In Pd,
@@ -2279,12 +2287,12 @@ are regular objects, whereas in MAX they're GUI objects and work for signal
 and control data.</P>
 
 <P> MAX offers many GUI objects such as sliders, dials, VU meters, piano
-keyboards, even 'bpatchers'. Up until version 0.34, the only two GUI objects in Pd
-were number box and graphical arrays. Starting from version 0.34, Pd incorporates
-Thomas Musil's GUI objects: sliders, switches and so on (Thanks Thomas!).
-Beyond this essential collection of GUI objects, it's unlikely that you'll ever find
-any commonality between the two, unless you install externals that offer more
-GUI options in Pd.</P>
+keyboards, even 'bpatchers'. Up until version 0.34, the only two GUI objects
+in Pd were number/symbol box and graphical arrays. Starting from version 0.34,
+Pd incorporates Thomas Musil's GUI objects: sliders, switches and so on
+(Thanks Thomas!). Beyond this essential collection of GUI objects, it's unlikely
+that you'll ever find any commonality between the two, unless you install
+externals that offer more GUI options in Pd.</P>
 
 <P> Pd's correlate of MAX's <b>[poly~]</b> object is <b>[clone]</b>. In Pd, there
 is no <b>[pfft~]</b> object for managing spectral processing and you just use
@@ -2315,16 +2323,16 @@ but only inside abstractions. In Pd, you can use '$0' only as an object argument
 but it also gets expanded when not loaded in abstractions. Also, unlike Pd, MAX does
 not let you open multiple copies of the same patch document.</P>
 
-<P> MAX has a <b>[pv]</b> object that is like <b>[value]</b> and can force locality
-of variables in subpatches. In Pd, you need to set different names to <b>[value]</b>
-in each subpatch.</P>
+<P> MAX has a <b>[pv]</b> object that is similar to <b>[value]</b> and can
+force locality of variables in subpatches. In Pd, you need to set different
+names to <b>[value]</b> in each subpatch.</P>
 
-<P> In Pd, you can change the send destination of a <b>[send]</b> object, while
-in MAX, you can set the receive name in a <b>[receive]</b> object. The <b>[float]</b>,
-<b>[int]</b> and <b>[value]</b> objects in Pd have a built-in 'send' message
-that communicates to receive addresses. GUIs in Pd have built-in 'send' and
-'receive' names. The <b>[expr]</b> object in Pd can load variables defined by
-<b>[value]</b>.</P>
+<P> In Pd, you can change the send destination of a <b>[send]</b> object,
+while in MAX, you can set the receive name in a <b>[receive]</b> object.
+The <b>[float]</b>, <b>[int]</b> and <b>[value]</b> objects in Pd have a
+built-in 'send' message that communicates to receive addresses. GUIs in Pd
+have built-in 'send' and 'receive' names. The <b>[expr]</b> object in Pd
+can load variables defined by <b>[value]</b>.</P>
 
 <P> In Pd, if you select "save" while in a subpatch, the parent is saved. In
 MAX, you can only save from the parent and you can save the subpatch as a
@@ -2341,8 +2349,8 @@ ways in Pd and MAX, and block sizes are handled differently as well.</P>
 (<A href="2.theory.of.operation.htm#s2.8.2">Graph-on-parent subpatches</A>); however, Pd's version is
 quite different from the one in MAX.</P>
 
-<P> Pd's correlate of Max's <b>[itable]</b> object are arrays implemented as a high
-level data structure construct.</P>
+<P> Pd's correlate of Max's <b>[itable]</b> object are "arrays"," implemented
+as a high level data structure construct.</P>
 
 <P> In Pd, there's no <b>[preset]</b>, <b>[pattrstorage]</b> or related object.
 This is intentional, as Miller considers this to be basically a bad idea, so you
@@ -2381,18 +2389,19 @@ control (MAX) and signal (MSP) objects. This can be useful for MAX users to feel
 home and adapt MAX patches in Pd. For more details, please check
 <A href="https://github.com/porres/pd-cyclone"> https://github.com/porres/pd-cyclone</A>.</P>
 
-<P> Cyclone is an old and legacy external library for Pd. It was created and developed by
-Krzysztof Czaja from 2002 to 2005. A recent update by Alexandre Porres, Derek Kwan and Matt
-Barber has included some new objects and paired up Cyclone to MAX version 7.3.5. Currently,
-Cyclone is under maintenance mode, so don't expect updates besides bug fixes. No new objects
-are planned.</P>
+<P> Cyclone is an old and legacy external library for Pd. It was created and
+developed by Krzysztof Czaja from 2002 to 2005. A recent update by Alexandre
+Porres, Derek Kwan and Matt Barber has included some new objects and paired
+up Cyclone to MAX version 7.3.5. Currently, Cyclone is under maintenance mode,
+so don't expect updates besides bug fixes. No new objects are planned.</P>
 
-<P>Note that other external libraries may offer functionalities and alternatives to MAX objects
-though (while Cyclone's aim is to exactly imitate MAX objects - even with their flaws). For
-instance, the main current maintainer of Cyclone (Porres) develops the ELSE library, which has
-alternatives for almost all cyclone objects and many objects in ELSE are actually inspired
-by MAX/MSP objects that were not cloned in Cyclone. The 'ceammc' library also provides a
-complete and cohesive system with lots of GUIs and functions you can find in MAX.</P>
+<P>Note that other external libraries may offer functionalities and alternatives
+to MAX objects though (while Cyclone's aim is to exactly imitate MAX objects - even
+with their flaws). For instance, the main current maintainer of Cyclone (Porres)
+develops the ELSE library, which has alternatives for almost all cyclone objects
+and many objects in ELSE are actually inspired by MAX/MSP objects that were not
+cloned in Cyclone. The 'ceammc' library also provides a complete and cohesive
+system with lots of GUIs and functions you can find in MAX.</P>
 
 </div>
 <div class="nav nav-bottom">
