@@ -522,3 +522,32 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
         }
     }
 }
+
+# ------------------- convenience functions ----------------
+
+
+proc pdtk_canvas_create_line {canvas tag dashed width color args} {
+    if ($dashed) { set dashoption "-dash -"; } else {set dashoption "" }
+
+    eval [concat $canvas create line $args $dashoption \
+        -width $width -fill $color -capstyle projecting -tags $tag]
+}
+
+# special version above for patchcords, adding "cord" to tags so that
+#  the "raise cords" command in g_text.c will work.  In gtk we'll do this
+#  a better way.
+
+proc pdtk_canvas_create_patchcord {canvas tag dashed width color args} {
+
+    eval [concat $canvas create line $args \
+        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+}
+
+proc pdtk_canvas_create_rect {canvas tag width color x1 y1 x2 y2} {
+    eval [concat $canvas create rectangle $x1 $y1 $x2 $y2 \
+    -width $width -fill $color -outline $color -tags $tag]
+}
+
+proc pdtk_canvas_delete {canvas tag} {
+    $canvas delete $tag
+}

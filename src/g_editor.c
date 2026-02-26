@@ -468,7 +468,7 @@ void canvas_disconnect(t_canvas *x,
             {
                 char tag[128];
                 sprintf(tag, "l%p", oc);
-                pdgui_vmess(0, "crs", x, "delete", tag);
+                pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, tag);
             }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
@@ -2339,6 +2339,11 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     t_gobj *hitdrawtext = 0;
     t_rtext *rtext;
 
+    if(!x->gl_editor) {
+        bug("editor");
+        return;
+    }
+
     shiftmod = (mod & SHIFTMOD);
     runmode = ((mod & CTRLMOD) || (!x->gl_edit));
     altmod = (mod & ALTMOD);
@@ -2544,13 +2549,11 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground",
                             "ci", x, 0);
-                        pdgui_vmess(0, "crr iiii ri rk rs",
-                            x, "create", "line",
-                            x->gl_editor->e_xwas,x->gl_editor->e_ywas,
-                            xpix, ypix,
-                            "-width", (issignal ? 2 : 1) * x->gl_zoom,
-                            "-fill", THISGUI->i_foregroundcolor,
-                            "-tags", "x");
+                        pdgui_vmess(0, "rcr iik iiii",
+                            "pdtk_canvas_create_line", x, "x",
+                            0, x->gl_zoom, THISGUI->i_foregroundcolor,
+                            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                            xpix, ypix);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2758,7 +2761,6 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
             int y11=0, y12=0, y21=0, y22=0;
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
-            char*tags[] = {tag, "cord"};
             sprintf(tag, "l%p", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
@@ -2774,12 +2776,11 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess(0, "crr iiii ri rk rS",
-                glist_getcanvas(x), "create", "line",
-                lx1,ly1, lx2,ly2,
-                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor,
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcr ii k iiii",
+                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag,
+                    0, (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                        THISGUI->i_foregroundcolor,
+                            lx1,ly1, lx2,ly2);
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
@@ -2804,7 +2805,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #endif
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, "x");
     }
     else
         pdgui_vmess(0, "crs iiii",
@@ -3049,7 +3050,7 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, "x");
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
@@ -4603,14 +4604,12 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x) && x->gl_havewindow)
     {
         char tag[128];
-        char*tags[] = {tag, "cord"};
         sprintf(tag, "l%p", oc);
-        pdgui_vmess(0, "crr iiii ri rk rS",
-            glist_getcanvas(x), "create", "line",
-            0, 0, 0, 0,
-            "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
-            "-fill", THISGUI->i_foregroundcolor,
-            "-tags", 2, tags);
+        pdgui_vmess(0, "rcr iik iiii",
+            "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag,
+                0, (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+                    THISGUI->i_foregroundcolor,
+                        0, 0, 0, 0);
         canvas_fixlinesfor(x, objsrc);
     }
     return;
@@ -5013,6 +5012,8 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         t_gobj *g;
         t_object *ob;
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
+            /* comments only get their 'border' (really just a bar for
+            resizing) if we're in edit mode so draw the borders here */
         for (g = x->gl_list; g; g = g->g_next)
             if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
         {
@@ -5027,9 +5028,20 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
+            t_gobj *g;
+            t_object *ob;
+            t_rtext *y;
+                /* erase 'borders' on comment boxes; see above */
+            for (g = x->gl_list; g; g = g->g_next)
+                if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT
+                    && (y = glist_getrtext(x, ob, 0)))
+            {
+                char tagR[128];
+                sprintf(tagR, "%sR", rtext_gettag(y));
+                pdgui_vmess(0, "rcr",
+                    "pdtk_canvas_delete", glist_getcanvas(x), tagR);
+            }
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x), "delete", "commentbar");
         }
     }
     if (glist_isvisible(x) && x->gl_havewindow)
