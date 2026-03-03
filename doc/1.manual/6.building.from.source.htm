@@ -761,15 +761,15 @@ Tremblay):</p>
 <p>Note: Msys2 development seems to change frequently, so some of the package names below may have changed after this document was written.</p>
 <p>Open an Msys2 shell and install the compiler chain, autotools, &amp; gettext via:</p>
 
-<pre># 64 bit
-pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
-          make autoconf automake libtool \
-          mingw-w64-x86_64-gettext
 
-# 32 bit
-pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
-          make autoconf automake libtool \
-          mingw-w64-i686-gettext</pre>
+<pre>
+# The MINGW_PACKAGE_PREFIX variable is automatically set by MinGW
+# On MinGW64, it is MINGW_PACKAGE_PREFIX=mingw-w64-x86_64
+# On MinGW32, it is MINGW_PACKAGE_PREFIX=mingw-w64-i686
+pacman -S make autoconf automake libtool \
+          ${MINGW_PACKAGE_PREFIX}-toolchain ${MINGW_PACKAGE_PREFIX}-clang \
+          ${MINGW_PACKAGE_PREFIX}-gettext
+</pre>
 
 <p>Install git if you want to clone the Pd sources from Github, etc:</p>
 
