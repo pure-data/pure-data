@@ -2257,16 +2257,18 @@ a higher integer resolution with its int type, but with the double precision
 version of Pd (Pd64), this is not a significant issue.</P>
 
 <P> MAX has a 'list' selector, but it is always implicit for messages with more
-than one element. In Pd it is only implicit if the list starts with a float. So
+than one element. In Pd it is only implicit if the list starts with a float. Hence,
 if you have a list that starts with a symbol, you need the 'list' selector in Pd.
 MAX has no 'symbol' selector, but a one element symbol message is considered a
 symbol and not a list. Pd explicitly needs to define a symbol data type with a
-symbol selector.</P>
+'symbol' selector.</P>
 
-<P> Moreover, in Pd, a one element list is effectively a float or a symbol
-(or even a pointer for that matter), while MAX can differentiate a one element
-list with a list selector and a float/int or symbol. Also, in Pd, a list
-without any elements (hence, an empty list) is treated as a bang message.</P>
+<P> Moreover, even though Pd can differentiate a one element list from a float or
+symbol, it virtually never has to as a one element list is effectively considered
+either a float or a symbol (or even a pointer for that matter). In MAX you need to
+explicitly differentiate a one element list with a list selector and a float/int or
+symbol. Also, in Pd, a list without any elements (hence, an empty list) is considered
+as a bang message, unlike MAX.</P>
 
 <P> In MAX, a list of elements inside quotes specify a symbol, so <i>"a b c"</i>
 or <i>"1 2 3"</i> are actually a single symbol. Pd has no quote mechanism but
@@ -2349,7 +2351,7 @@ ways in Pd and MAX, and block sizes are handled differently as well.</P>
 (<A href="2.theory.of.operation.htm#s2.8.2">Graph-on-parent subpatches</A>); however, Pd's version is
 quite different from the one in MAX.</P>
 
-<P> Pd's correlate of Max's <b>[itable]</b> object are "arrays"," implemented
+<P> Pd's correlate of Max's <b>[itable]</b> object is an "array", implemented
 as a high level data structure construct.</P>
 
 <P> In Pd, there's no <b>[preset]</b>, <b>[pattrstorage]</b> or related object.
