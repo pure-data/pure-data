@@ -1676,7 +1676,37 @@ a list of two float atoms, they are distributed to each input. See picture below
     <figcaption><u>Fig. 2.7.1</u> Distribution of lists between inlets</figcaption>
 </figure>
 
-<H4> <A href="#s2.7.5" id="s2.7.5">2.7.5. Dollar signs</A> </H4>
+<H4> <A href="#s2.7.5" id="s2.7.5">2.7.5. Special cases for 0/1-element lists</A> </H4>
+
+<p>A zero element list, that is a list message with only the "list" selector, is
+treated as a "bang" message. If you look at it the other way around, you can also
+say that a bang is en empty or zero element list! This is better exposed in the
+help file of the <b>[list]</b> object. Take, for instance, <b>[list append]</b>,
+which appends an incomming list on the main inlet to a list sent to the secondary
+inlet or via the object's argument. A bang to the main inlet sends an empty list
+and outputs the list from the secondary inlet or arguments, while a bang into the
+secondary inlet clears the stored list.</p>
+
+<p>As mentioned in the last subsection, lists are distributed via inlets when
+there's not a list method. Hence, a "list 1" message sent to an object that
+only takes floats and not lists (such as the <b>[float]</b> object) will work
+by effectively converting the list to a float. Even though Pd can differentiate
+a list with one float and a float message, it is the common sense that both are
+actually the same and interchangeable. Therefore, you can send a float message
+to an object that handles lists, like the <b>[list]</b> object.</p>
+
+<p>One way this is better exposed in Pd is when trying to print a zero or one
+element list. The figure below shows how a "list" message is converted to a
+"bang", a "list 1" will not print as a float because the selector is also
+implicit, but you can prove it's treated as a float with the <b>[route]</b>
+object. You can also see how a "list hi" message becomes "symbol hi".</p>
+
+<figure>
+    <IMG src="resources/2.7.2.png" ALT="Special List cases">
+    <figcaption><u>Fig. 2.7.2</u> Special cases of 0/1-element lists</figcaption>
+</figure>
+
+<H4> <A href="#s2.7.6" id="s2.7.6">2.7.6. Dollar signs</A> </H4>
 
 <p>In message or object boxes, message arguments starting with a dollar sign
 and a number (like "$1" or "$3-bazoo") are variables which are substituted with
@@ -2284,7 +2314,9 @@ than one element. In Pd it is only implicit if the list starts with a float. Hen
 if you have a list that starts with a symbol, you need the 'list' selector in Pd.
 MAX has no 'symbol' selector, but a one element symbol message is considered a
 symbol and not a list. Pd explicitly needs to define a symbol data type with a
-'symbol' selector.</P>
+'symbol' selector. For more, see sections
+<A href="2.theory.of.operation.htm#s2.4">2.4.</A> and subsection
+<A href="2.theory.of.operation.htm#s2.7.5">2.7.5.</A>.</P>
 
 <P> Moreover, even though Pd can differentiate a one element list from a float or
 symbol, it virtually never has to as a one element list is effectively considered

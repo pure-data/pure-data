@@ -106,6 +106,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/resources/2.5.1.png \
      ./1.manual/resources/2.6.1.png \
      ./1.manual/resources/2.7.1.png \
+     ./1.manual/resources/2.7.2.png \
      ./1.manual/resources/2.8.1.png \
      ./1.manual/resources/2.8.2.png \
      ./1.manual/resources/2.8.3.png \
