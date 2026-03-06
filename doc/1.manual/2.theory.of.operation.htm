@@ -211,17 +211,17 @@ arguments</i>, instruct Pd how to initialize the object. For instance, you can t
 <P>Here, the "+" specifies the <I>class</I> of the object. In this case the
 object will carry out additions, and the "13" initializes the value to add.</P>
 
-<P>Atoms are either <I>numbers</I> or <I>symbols</I>. Anything that is not
-a valid number is considered a symbol. Valid numbers may or may not have a
-decimal point, such as "12", "15.6", "-0.456". Numbers in Pd may also be
-written in exponential notation and have limited display and internal precision.
-Check more details in <A href="2.theory.of.operation.htm#s2.4.1">subsection 2.4.1.</A>.</P>
+<P>Atoms are either <I>numbers</I> or <I>symbols</I> - they can also be <I>pointers</I>,
+but those are only used when dealing with data structures, hence, most of times, we're
+dealing with either floats or symbols, but how do they differentiate? In Pd, anything
+that is not a valid number is considered a symbol! Valid numbers may or may not have a
+decimal point, such as "12", "15.6", "-0.456". Numbers in Pd may also be written in
+exponential notation and have limited display and internal precision. Check more details
+in <A href="2.theory.of.operation.htm#s2.4.1">subsection 2.4.1.</A>.</P>
 
-
-<P>A number that starts with a "+" is not considered a valid number and is
-considered a symbol instead, so is "0..6" as well as words and names such as
-"Zack" or "cat". The symbols "gore", "Gore", and "GORE" are all distinct,
-reflecting case sensitivity.</P>
+<P>A number that starts with a "+" is not considered a valid number and is considered a
+symbol instead, so is "0..6" as well as words and names such as "Zack" or "cat". The
+symbols "gore", "Gore", and "GORE" are all distinct, reflecting case sensitivity.</P>
 
 <P>The text you type into an object box determines how many and what kinds of
 <i>inlets</i> and <i>outlets</i> the object will have. Certain classes, such as
@@ -946,11 +946,25 @@ opposed to audio signals, described in the next section.</P>
 <H4> <A href="#s2.4.1" id="s2.4.1">2.4.1. Message types (selectors)</A> </H4>
 
 <P>Messages contain a selector followed by any number of arguments. The selector
-is a symbol that defines the message type. The arguments are anything that follows and
-may be symbols or numbers (aka <i>atoms</i>). For instance "list a b c" has a "list"
-selector, which defines the "list" data type, and "a b c" is the actual message. This
-message is only composed of symbols but a list message can combine two or more
-symbols and/or floats.</P>
+is a symbol that defines the message type. There are common, or <i>special</i>,
+selectors that Pd defines, so that objects can be connected with maximum flexibility.
+These special types are: <i>"float"</i>, <i>"symbol"</i>, <i>"list"</i>, <i>"bang"</i>
+and <i>"pointer"</i>. These represent the special bang message, then types of atoms
+(float, symbol and pointer), and the list message (which is a list of atoms).</P>
+
+<P>The arguments of the message are any following <i>atoms</i> after the selector.
+For instance "list a b c" has a "list" selector, which defines the "list" data type,
+and "a b c" is the actual message formed by 3 symbol atoms. This message is only
+composed of symbols but a list message can combine any type of atom, a symbol, a
+float or a pointer (but usually just floats and symbols).</P>
+
+<P>The <I>pointer</I> type is only used for data structures and is relatively rare to
+use them in patches. In fact, you cannot see or type a pointer value on the patch level.
+So all you can actually see in boxes and printed in the console log are number and symbol
+atoms. When trying to print a list of pointers in the Pd console, you'll see something
+like "list (pointer) (pointer)". See more about pointers and data structures in the
+section <A href="2.theory.of.operation.htm#s2.10">2.10. Data structures.</A>.</P>
+
 
 <figure>
     <IMG src="resources/2.4.1.png" ALT="list selector">
@@ -964,13 +978,11 @@ numbers cannot be used as selectors. While a message with a number followed by o
 arguments is automatically given the "list" selector, a single number message is
 automatically given the "float" selector.</P>
 
-<P>There are common, or <i>special</i>, selectors that Pd defines, so that objects can
-be connected with maximum flexibility. These special types are: <i>"float"</i>,
-<i>"symbol"</i>, <i>"list"</i>, <i>"bang"</i> and <i>"pointer"</i> (the latter one only
-used for data structures). Other message selectors can be any other symbols. If a message
-contains only one symbol, like "stop", it is considered a selector with no actual message
-(i.e., no arguments) attached. The bang message is a special selector and takes no
-arguments. The symbol selector can only have one symbol argument. See below.</P>
+<P>Besides the special selectors, other message selectors can be defined as any other
+symbol. If a message contains only one symbol, like "stop", it is considered a selector
+with no actual message (i.e., no arguments) attached. The bang message is a special
+selector and takes no arguments. The symbol selector can only have one symbol argument.
+See below.</P>
 
 <figure>
     <IMG src="resources/2.4.2.png" ALT="Different selectors">
@@ -992,22 +1004,16 @@ corresponding action. Let's take the <b>[float]</b> object below as an example.<
 object itself, while the one on the right directs messages to an auxiliary "inlet"
 object. The <b>[float]</b> object itself (represented by the left inlet) accepts messages
 with the selectors "float", "bang", "symbol" and "send". The right inlet only accepts
-messages with the "float" selector. Out of the special selectors, only "list" is not
-accepted. The help files of objects have a "reference" subpatch with detailed
-explanations for the functions of all inlets and outlets, also specifying what kind
-of messages they take and output. See below.</P>
+messages with the "float" selector. Out of the special selectors, "list" and "pointer"
+are not accepted, and the object has only a single custom selector: "send". The help
+files of objects have a "reference" subpatch with detailed explanations for the functions
+of all inlets and outlets, also specifying what kind of messages they take and output.
+See below.</P>
 
 <figure>
     <IMG src="resources/2.4.4.png" ALT="reference">
         <figcaption><u>Fig. 2.4.4</u> The <b>[float]</b>'s reference</figcaption>
 </figure>
-
-<P>Actual messages are composed of 'atoms' (<I>numbers</I> or <I>symbols</I>). As
-mentioned above, there is an extra <I>pointer</I> type used for data structures, which
-you cannot see or type on the patch level though. So all you can actually see in boxes
-and printed in the console log are numbers and symbols. As mentioned earlier, all that
-is not considered a number is interpreted in Pd as a symbol. Hence, symbols can contain
-and start with decimal digits.</P>
 
 <H4> <A href="#s2.4.2" id="s2.4.2">2.4.2. Floats and numerical precision</A> </H4>
 
@@ -1641,18 +1647,34 @@ messages, or others in addition or instead of them.</P>
 <H4> <A href="#s2.7.4" id="s2.7.4">2.7.4. Inlets and lists</A> </H4>
 
 <P>Most objects have connection inputs at the top (represented as a dark rectangle).
-The leftmost input represents the object itself. An object may have other inputs, but
-each is a separate object called an "inlet". There are 4 different inlet classes in Pd.
-The class of the inlet determines the type of message it will accept: symbol, float or
-other; and the inlet passes the message either to the object itself or to a proxy,
-usually one created by the object for the occasion.</P>
+The leftmost one is the main input inlet and represents the object itself. An object
+may have other secondary inlet inputs, but each is a separate object called an "inlet".
+There are 4 different inlet classes in Pd for these secondary inputs. The class of the
+inlet determines the type of message it will accept: symbol, float, pointer or signal;
+and the inlet passes the message either to the object itself or to a proxy, usually
+one created by the object for the occasion. The proxy can then receive any kind of
+message (such as a bang or list) and direct it to the object. The main input can
+receive any kind of message and you can add special methods for them. This includes
+<i>signal</i>, <i>float</i>, <i>symbol</i>, <i>pointer</i>, <i>bang</i>, <i>list</i>
+and <i>anything</i>.</P>
 
-<P>Unless they are specified otherwise by defining a "list" method, objects respond to
-the "list" message by distributing the arguments of the message to the object and its
-inlets (if any). If there's just a single input for the object (that is, no inlets for
-extra inputs), the first element of the list is passed to the object as a "float" or
-"symbol" message. The extra arguments of the list is then distributed to the inlets if
-any (also as either a a "float" or "symbol").</P>
+<P>If you do not specify a "list" method for the object (the main inlet), objects
+respond to the "list" message by distributing the atoms of the list between the
+main inlet (the object) and the secondary inlets (if any). If there's just a single
+input for the object (that is, no secondary inlets for extra inputs), the first
+atom element of the list is passed to the object. Hence, a list of floats is truncated
+to the first float and is effectively a "float" message. The same happens for other atom
+types ("symbol" and "pointer").</P>
+
+<P>In the case of many inlets and a list with many atoms, each atom is passed according
+to its type to each input. Here's a simple example with the <b>[/]</b> object. The object
+has a main inlet and a secondary inlet. It has no list method, hence, if you feed it with
+a list of two float atoms, they are distributed to each input. See picture below.</P>
+
+<figure>
+    <IMG src="resources/2.7.1.png" ALT="List distribution">
+    <figcaption><u>Fig. 2.7.1</u> Distribution of lists between inlets</figcaption>
+</figure>
 
 <H4> <A href="#s2.7.5" id="s2.7.5">2.7.5. Dollar signs</A> </H4>
 
@@ -1855,7 +1877,6 @@ You can use objects to read and write arrays and manipulate them in many ways.</
 
 </figure>
 
-
 <p>Here, we see that the third point of the array (index 2) has the value '0.385'.
 To write into the array, you can use the <b>[tabwrite]</b> object:</p>
 
@@ -2049,8 +2070,7 @@ responsible for synthesizing each voice from the score.</P>
     <figcaption><u>Fig. 2.10.3</u> The subpatch that plays the graphcal score</figcaption>
 </figure>
 
-<P>Traversal of data is made possible by adding a new type of atom, "pointer",
-to the two previously defined types that make up messages (numbers and symbols).
+<P>Traversal of data is made possible by the special "pointer" atom.
 Unlike numbers and symbols, pointers have no printed form and thus can't be
 uttered in message boxes. Traversal objects such as <b>[pointer]</b> and
 <b>[get]</b>(among several others) can generate or use pointers. The pointer
