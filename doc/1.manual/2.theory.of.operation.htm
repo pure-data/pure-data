@@ -943,7 +943,7 @@ Pd messages are sporadic, like MIDI messages or Music N "Note cards".
 The management of messages in Pd corresponds to the "control" realm, as
 opposed to audio signals, described in the next section.</P>
 
-<H4> <A href="#s2.4.1" id="s2.4.1">2.4.1. Message types (selectors) and numerical precision</A> </H4>
+<H4> <A href="#s2.4.1" id="s2.4.1">2.4.1. Message types (selectors)</A> </H4>
 
 <P>Messages contain a selector followed by any number of arguments. The selector
 is a symbol that defines the message type. The arguments are anything that follows and
@@ -1009,6 +1009,8 @@ and printed in the console log are numbers and symbols. As mentioned earlier, al
 is not considered a number is interpreted in Pd as a symbol. Hence, symbols can contain
 and start with decimal digits.</P>
 
+<H4> <A href="#s2.4.2" id="s2.4.2">2.4.2. Floats and numerical precision</A> </H4>
+
 <P>Number atoms are always of type <i>float</i>, meaning that Pd does not have an
 <i>integer</i> number type. Numbers in Pd are formatted with the '%g' pattern from
 the 'sprintf' function, with a precision of '6'. This allows formatting numbers
@@ -1023,6 +1025,7 @@ or lower. This means you'll only see up to three zeros after the decimal point b
 the first non-zero digit. For instance, "0.0001". If you add another zero, Pd turns it
 into exponential notation for display, so "0.00001" becomes "1e-05". Conversely, if
 you type "1e-04", Pd converts it to "0.0001" for display.</P>
+
 
 <P>As for positive exponent numbers, the scientific notation is only used if the
 exponent value is '6' or higher. '6' is also the default numeric precision, so Pd
@@ -1104,7 +1107,7 @@ the same number.</P>
 with more precision or even with a different notation (decimal instead of exponential),
 but copying and pasting it or saving and reopening the patch forces rounding.</P>
 
-<H4> <A href="#s2.4.2" id="s2.4.2">2.4.2. Depth first message passing</A> </H4>
+<H4> <A href="#s2.4.3" id="s2.4.3">2.4.3. Depth first message passing</A> </H4>
 
 <P>Whenever a message is triggered in Pd, the receiver may then send out
 further messages in turn, and the receivers of those messages can send yet
@@ -1144,7 +1147,7 @@ in it. When <b>[delay]</b> receives a message, it schedules a message for the fu
 (even if the time delay is 0) and is then "finished"; Pd's internal scheduler will
 wake the <b>[delay]</b> back up later.</P>
 
-<H4> <A href="#s2.4.3" id="s2.4.3">2.4.3. Hot and cold inlets and right to left outlet order</A> </H4>
+<H4> <A href="#s2.4.4" id="s2.4.4">2.4.4. Hot and cold inlets and right to left outlet order</A> </H4>
 
 <P>With few exceptions (notably <b>[timer]</b>), objects treat their leftmost inlet as
 <i>hot</i> in the sense that messages to left inlets can result in output messages.
@@ -1207,7 +1210,7 @@ messages are sent to a single "cold" inlet. In this situation, since the message
 are merged, the last value to be received is the value that is used for the next
 computation.</P>
 
-<H4> <A href="#s2.4.4" id="s2.4.4">2.4.4. Message boxes</A> </H4>
+<H4> <A href="#s2.4.5" id="s2.4.5">2.4.5. Message boxes</A> </H4>
 
 <p>Message boxes are text boxes in which you type a message. When the message
 box is activated, either by clicking on it or by sending something to its inlet,
@@ -1278,7 +1281,7 @@ activate it). Dollar sign variables are either numbers or symbols depending
 on the incoming message; if they are symbols, you may even use them to specify
 variable message selectors or destinations.</P>
 
-<H4> <A href="#s2.4.5" id="s2.4.5">2.4.5. Escaping characters</A> </H4>
+<H4> <A href="#s2.4.6" id="s2.4.6">2.4.6. Escaping characters</A> </H4>
 
 <p>The "\" (backslash) character is used in Pd to escape special
 characters that are handled differently in Pd. Such characters are:
@@ -1642,7 +1645,7 @@ The leftmost input represents the object itself. An object may have other inputs
 each is a separate object called an "inlet". There are 4 different inlet classes in Pd.
 The class of the inlet determines the type of message it will accept: symbol, float or
 other; and the inlet passes the message either to the object itself or to a proxy,
-sually one created by the object for the occasion.</P>
+usually one created by the object for the occasion.</P>
 
 <P>Unless they are specified otherwise by defining a "list" method, objects respond to
 the "list" message by distributing the arguments of the message to the object and its
