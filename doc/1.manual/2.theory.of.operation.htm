@@ -1658,13 +1658,12 @@ receive any kind of message and you can add special methods for them. This inclu
 <i>signal</i>, <i>float</i>, <i>symbol</i>, <i>pointer</i>, <i>bang</i>, <i>list</i>
 and <i>anything</i>.</P>
 
-<P>If you do not specify a "list" method for the object (the main inlet), objects
-respond to the "list" message by distributing the atoms of the list between the
-main inlet (the object) and the secondary inlets (if any). If there's just a single
-input for the object (that is, no secondary inlets for extra inputs), the first
-atom element of the list is passed to the object. Hence, a list of floats is truncated
-to the first float and is effectively a "float" message. The same happens for other atom
-types ("symbol" and "pointer").</P>
+<P>Unless a "list" method is specified for the main inlet, objects respond to "list"
+messages by distributing their atoms sequentially across the main inlet and secondary
+inlets (if any). If there's just a single input for the object (that is, no secondary
+inlets for extra inputs), the first atom element of the list is passed to the object.
+Hence, a list of floats is truncated to the first float and is effectively a "float"
+message. The same happens for other atom types ("symbol" and "pointer").</P>
 
 <P>In the case of many inlets and a list with many atoms, each atom is passed according
 to its type to each input. Here's a simple example with the <b>[/]</b> object. The object
