@@ -7,6 +7,9 @@ namespace eval ::dialog_gatom:: {
     variable sizes {0 8 10 12 16 24 36}
     namespace export pdtk_gatom_dialog
 }
+array set ::dialog_gatom::init_width {}
+array set ::dialog_gatom::init_lower {}
+array set ::dialog_gatom::init_upper {}
 
 # array for communicating the position of the radiobuttons (Tk's
 # radiobutton widget requires this to be global)
@@ -39,19 +42,51 @@ proc ::dialog_gatom::unescape {sym} {
 proc ::dialog_gatom::apply {mytoplevel} {
     global gatomlabel_radio
 
-    pdsend "$mytoplevel param \
-        [$mytoplevel.width.entry get] \
-        [$mytoplevel.limits.lower.entry get] \
-        [$mytoplevel.limits.upper.entry get] \
+    set width [$mytoplevel.width.entry get]
+    if { $width eq {} || ! [string is int $width] || $width < 0 } {
+        set width $::dialog_gatom::init_width($mytoplevel)
+        $mytoplevel.width.entry delete 0 end
+        $mytoplevel.width.entry insert 0 $width
+    }
+    set ::dialog_gatom::init_width($mytoplevel) $width
+
+    set lower [$mytoplevel.limits.lower.entry get]
+    if { $lower eq {} || ! [string is double $lower] } {
+        set lower $::dialog_gatom::init_lower($mytoplevel)
+        $mytoplevel.limits.lower.entry delete 0 end
+        $mytoplevel.limits.lower.entry insert 0 $lower
+    }
+    set ::dialog_gatom::init_lower($mytoplevel) $lower
+
+    set upper [$mytoplevel.limits.upper.entry get]
+    if { $upper eq {} || ! [string is double $upper] } {
+        set upper $::dialog_gatom::init_upper($mytoplevel)
+        $mytoplevel.limits.upper.entry delete 0 end
+        $mytoplevel.limits.upper.entry insert 0 $upper
+    }
+    set ::dialog_gatom::init_upper($mytoplevel) $upper
+
+
+    pdsend [list $mytoplevel param \
+        ${width} ${lower} ${upper} \
         [::dialog_gatom::escape [$mytoplevel.gatomlabel.name.entry get]] \
         $gatomlabel_radio($mytoplevel) \
         [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]] \
         [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]] \
-        $::dialog_gatom::fontsize"
+        $::dialog_gatom::fontsize ]
 }
 
 proc ::dialog_gatom::cancel {mytoplevel} {
     pdsend "$mytoplevel cancel"
+}
+
+proc ::dialog_gatom::cleanup {mytoplevel} {
+    # remove all the stored initial values
+    # this overshoots, as it gets called for all sub-widgets of $mytoplevel
+    # luckily, this doesn't do any harm
+    array unset ::dialog_gatom::init_width $mytoplevel
+    array unset ::dialog_gatom::init_lower $mytoplevel
+    array unset ::dialog_gatom::init_upper $mytoplevel
 }
 
 proc ::dialog_gatom::ok {mytoplevel} {
@@ -62,6 +97,10 @@ proc ::dialog_gatom::ok {mytoplevel} {
 # set up the panel with the info from pd
 proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper \
     initgatomlabel_radio  initgatomlabel initreceive initsend  fontsize} {
+
+    set ::dialog_gatom::init_width($mytoplevel) $initwidth
+    set ::dialog_gatom::init_lower($mytoplevel) $initlower
+    set ::dialog_gatom::init_upper($mytoplevel) $initupper
 
     global gatomlabel_radio
     set gatomlabel_radio($mytoplevel) $initgatomlabel_radio
@@ -235,6 +274,8 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     }
 
     position_over_window $mytoplevel $::focused_window
+
+    bind $mytoplevel <Destroy> [list ::dialog_gatom::cleanup %W]
 }
 
 # for live widget updates on OSX
