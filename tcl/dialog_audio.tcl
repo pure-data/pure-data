@@ -7,6 +7,7 @@ namespace eval ::dialog_audio:: {
     variable referenceconfig ""
     variable standalone_window ""
 }
+
 set ::audio_samplerate 48000
 set ::audio_advance 25
 set ::audio_blocksize 64
@@ -35,22 +36,22 @@ set ::audio_outdevicechannels {0 0 0 0}
 # turn the current configuration into a string ready to be sent to Pd
 proc ::dialog_audio::config2string { } {
     return [string trim " \
-        [expr $::dialog_audio::indev1 + 0] \
-        [expr $::dialog_audio::indev2 + 0] \
-        [expr $::dialog_audio::indev3 + 0] \
-        [expr $::dialog_audio::indev4 + 0] \
-        [expr $::dialog_audio::inchan1 * ( $::dialog_audio::inenable1 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan2 * ( $::dialog_audio::inenable2 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan3 * ( $::dialog_audio::inenable3 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan4 * ( $::dialog_audio::inenable4 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outdev1 + 0] \
-        [expr $::dialog_audio::outdev2 + 0] \
-        [expr $::dialog_audio::outdev3 + 0] \
-        [expr $::dialog_audio::outdev4 + 0] \
-        [expr $::dialog_audio::outchan1 * ( $::dialog_audio::outenable1 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan2 * ( $::dialog_audio::outenable2 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan3 * ( $::dialog_audio::outenable3 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan4 * ( $::dialog_audio::outenable4 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::in_device1 + 0] \
+        [expr $::dialog_audio::in_device2 + 0] \
+        [expr $::dialog_audio::in_device3 + 0] \
+        [expr $::dialog_audio::in_device4 + 0] \
+        [expr $::dialog_audio::in_channels1 * ( $::dialog_audio::in_enable1 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::in_channels2 * ( $::dialog_audio::in_enable2 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::in_channels3 * ( $::dialog_audio::in_enable3 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::in_channels4 * ( $::dialog_audio::in_enable4 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::out_device1 + 0] \
+        [expr $::dialog_audio::out_device2 + 0] \
+        [expr $::dialog_audio::out_device3 + 0] \
+        [expr $::dialog_audio::out_device4 + 0] \
+        [expr $::dialog_audio::out_channels1 * ( $::dialog_audio::out_enable1 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::out_channels2 * ( $::dialog_audio::out_enable2 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::out_channels3 * ( $::dialog_audio::out_enable3 ? 1 : -1 ) ]\
+        [expr $::dialog_audio::out_channels4 * ( $::dialog_audio::out_enable4 ? 1 : -1 ) ]\
         [expr $::dialog_audio::samplerate + 0] \
         [expr $::dialog_audio::advance + 0] \
         [expr $::dialog_audio::use_callback + 0] \
@@ -63,7 +64,7 @@ proc ::dialog_audio::apply {mytoplevel {force ""}} {
     if { $force ne "" || $config ne $::dialog_audio::referenceconfig} {
         pdsend "pd audio-dialog ${config}"
     }
-    set ::dialog_audio::referenceconfig $config
+    set ::dialog_audio::referenceconfig ${config}
 }
 
 proc ::dialog_audio::cancel {mytoplevel} {
@@ -108,20 +109,20 @@ proc ::dialog_audio::state2widgets {state args} {
 proc ::dialog_audio::fill_frame_device {frame direction index} {
     ## side-effects:
     ## ro: ::audio_${direction}devlist
-    ## rw: ::dialog_audio::${direction}dev${index}
+    ## rw: ::dialog_audio::${direction}_device${index}
     ##
-    ## rW: ::dialog_audio::${direction}dev${index}
-    ## rW: ::dialog_audio::${direction}enable${index}
-    ## rW: ::dialog_audio::${direction}chan${index}
-    upvar ::dialog_audio::${direction}dev${index} x
+    ## rW: ::dialog_audio::${direction}_device${index}
+    ## rW: ::dialog_audio::${direction}_enable${index}
+    ## rW: ::dialog_audio::${direction}_channels${index}
+    upvar ::dialog_audio::${direction}_device${index} x
     upvar ::audio_${direction}devlist devlist
-    upvar ::dialog_audio::${direction}enable${index} enabled
+    upvar ::dialog_audio::${direction}_enable${index} enabled
     set device [lindex $devlist $x]
     if { "${device}" eq "" } {set device [format "(%s)" [_ "no device" ]] }
 
-    checkbutton $frame.x0 -variable ::dialog_audio::${direction}enable${index} \
+    checkbutton $frame.x0 -variable ::dialog_audio::${direction}_enable${index} \
         -text "${index}:" -anchor e \
-        -command "::dialog_audio::state2widgets \$::dialog_audio::${direction}enable${index}  $frame.x1 $frame.x2"
+        -command "::dialog_audio::state2widgets \$::dialog_audio::${direction}_enable${index}  $frame.x1 $frame.x2"
 
     if { $::audio_can_multidevice < 1 && $direction eq "out" } {
         label $frame.x1 -text [_ "(same as input device)..."]
@@ -135,13 +136,13 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
         foreach input $devlist {
             $frame.x1.menu add radiobutton \
                 -label "${input}" \
-                -value ${idx} -variable ::dialog_audio::${direction}dev${index} \
+                -value ${idx} -variable ::dialog_audio::${direction}_device${index} \
                 -command "$frame.x1 configure -text \"${input}\""
             incr idx
         }
     }
     label $frame.l2 -text [_ "Channels:"]
-    entry $frame.x2 -textvariable ::dialog_audio::${direction}chan${index} -width 3
+    entry $frame.x2 -textvariable ::dialog_audio::${direction}_channels${index} -width 3
 
     set mytoplevel [winfo toplevel $frame]
     if {[winfo exists $mytoplevel.buttonframe.ok]} {
@@ -340,9 +341,9 @@ proc ::dialog_audio::init_devicevars {} {
         upvar ::audio_${direction}devicechannels channels
         for {set i 1} {$i <= 4} {incr i} {
             # output vars
-            upvar ::dialog_audio::${direction}dev${i} dev
-            upvar ::dialog_audio::${direction}chan${i} chan
-            upvar ::dialog_audio::${direction}enable${i} enabled
+            upvar ::dialog_audio::${direction}_device${i} dev
+            upvar ::dialog_audio::${direction}_channels${i} chan
+            upvar ::dialog_audio::${direction}_enable${i} enabled
 
             if { [llength $devices] > 0 } {
                 set dev [lindex $devices ${i}-1]
