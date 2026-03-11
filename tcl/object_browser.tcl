@@ -144,13 +144,13 @@ proc category_menu::build_menu {parent_menu node x y} {
             foreach item $element {
                 $current_menu add command \
                     -label [regsub -all {^\-$} $item {−}] \
-                    -command "menu_send_else_obj \$::focused_window $x $y {$item}"
+                    -command "category_menu::send_item \$::focused_window $x $y {$item}"
             }
         } else {
             # Element is a single item
             $current_menu add command \
                 -label [regsub -all {^\-$} $element {−}] \
-                -command "menu_send_else_obj \$::focused_window $x $y {$element}"
+                -command "category_menu::send_item \$::focused_window $x $y {$element}"
         }
         incr count
     }
