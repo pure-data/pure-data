@@ -44,36 +44,69 @@ array set ::dialog_audio::out_channels {}
 
 ####################### audio dialog ##################
 
-# turn the current configuration into a string ready to be sent to Pd
-proc ::dialog_audio::config2string { } {
-    return [string trim " \
-        [expr $::dialog_audio::in_device(1) + 0] \
-        [expr $::dialog_audio::in_device(2) + 0] \
-        [expr $::dialog_audio::in_device(3) + 0] \
-        [expr $::dialog_audio::in_device(4) + 0] \
-        [expr $::dialog_audio::in_channels(1) * ( $::dialog_audio::in_enable(1) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::in_channels(2) * ( $::dialog_audio::in_enable(2) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::in_channels(3) * ( $::dialog_audio::in_enable(3) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::in_channels(4) * ( $::dialog_audio::in_enable(4) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::out_device(1) + 0] \
-        [expr $::dialog_audio::out_device(2) + 0] \
-        [expr $::dialog_audio::out_device(3) + 0] \
-        [expr $::dialog_audio::out_device(4) + 0] \
-        [expr $::dialog_audio::out_channels(1) * ( $::dialog_audio::out_enable(1) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::out_channels(2) * ( $::dialog_audio::out_enable(2) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::out_channels(3) * ( $::dialog_audio::out_enable(3) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::out_channels(4) * ( $::dialog_audio::out_enable(4) ? 1 : -1 ) ]\
-        [expr $::dialog_audio::samplerate + 0] \
-        [expr $::dialog_audio::advance + 0] \
-        [expr $::dialog_audio::use_callback + 0] \
-        [expr $::dialog_audio::blocksize] \
-        "]
+# serialize the current configuration into a list so we can compare it with a reference
+# indevice(*) inchannels(*) inenabled(*) outdevice(*) outchannels(*) outenabled(*) sr advance cb blocksize
+proc ::dialog_audio::checkedval { reference_index varname {goodexpr_v true} {normalizeexpr_v {$v} } } {
+    set fallback [lindex $::dialog_audio::referenceconfig ${reference_index}]
+    upvar 0 ::dialog_audio::${varname} v
+
+    if { $v eq {} } {
+        # empty!
+        set v ${fallback}
+    } elseif [expr ${goodexpr_v}] {
+        # all good, nothing to see here
+    } else {
+        # !good
+        set v ${fallback}
+    }
+    return [set v [expr ${normalizeexpr_v}]]
+}
+
+proc ::dialog_audio::serialize_config { } {
+    set reference $::dialog_audio::referenceconfig
+    set result {}
+    set idx -1
+
+    foreach dir {in out} {
+        for {set x 1} {$x <= 4} {incr x} {
+            # deviceD must be >= -1
+            lappend result [checkedval [incr idx] ${dir}_device($x) { [string is int $v ] && $v >= -1 }]
+        }
+        for {set x 1} {$x <= 4} {incr x} {
+            # channels must be >= 0
+            lappend result [checkedval [incr idx] ${dir}_channels($x) { [string is int $v ] && $v >= 0 }]
+        }
+        for {set x 1} {$x <= 4} {incr x} {
+            # enable must be 0 or 1
+            lappend result [checkedval [incr idx] ${dir}_enable($x) { [string is boolean $v] } { [ string is true $v ] }]
+        }
+    }
+
+    lappend result [checkedval [incr idx] samplerate   { [string is double $v] && $v > 0 }]
+    lappend result [checkedval [incr idx] advance      { [string is double $v] && $v >= 0 }]
+    lappend result [checkedval [incr idx] use_callback { [string is boolean $v] } { [ string is true $v ] }]
+    lappend result [checkedval [incr idx] blocksize    { [string is int $v] && $v > 0 }]
+
+    return $result
 }
 
 proc ::dialog_audio::apply {mytoplevel {force ""}} {
-    set config [config2string]
+    set config [serialize_config]
     if { $force ne "" || $config ne $::dialog_audio::referenceconfig} {
-        pdsend "pd audio-dialog ${config}"
+        set msg "pd audio-dialog"
+        # indevices
+        set msg [concat $msg [lrange $config 0 3]]
+        # inchannels (negative is "disabled")
+        set msg [concat $msg [lmap channels [lrange $config 4 7] enabled [lrange $config 8 11] {expr $channels * ( $enabled ? 1 : -1)}]]
+        # outdevices
+        set msg [concat $msg [lrange $config 12 15]]
+        # outchannels (negative is "disabled")
+        set msg [concat $msg [lmap channels [lrange $config 16 19] enabled [lrange $config 20 23] {expr $channels * ( $enabled ? 1 : -1)}]]
+
+        # samplerate advance callbacks blocksize
+        set msg [concat $msg [lrange $config 24 27]]
+
+        pdsend ${msg}
     }
     set ::dialog_audio::referenceconfig ${config}
 }
@@ -373,7 +406,7 @@ proc ::dialog_audio::init_devicevars {} {
         upvar ::audio_${v} invar
         foreach {var fixed} [isfixed $invar] {}
     }
-    set ::dialog_audio::referenceconfig [config2string]
+    set ::dialog_audio::referenceconfig [serialize_config]
 
 }
 
