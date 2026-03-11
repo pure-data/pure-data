@@ -41,6 +41,17 @@ array set ::dialog_iemgui::var_color_foreground {} ;# var_iemgui_fcol
 array set ::dialog_iemgui::var_color_label {} ;# var_iemgui_lcol
 array set ::dialog_iemgui::var_colortype {} ;# var_iemgui_l2_f1_b0
 
+#### original values (to fall back from invalid ones))
+array set ::dialog_iemgui::old_width {}
+array set ::dialog_iemgui::old_height {}
+array set ::dialog_iemgui::old_range_max {}
+array set ::dialog_iemgui::old_range_min {}
+array set ::dialog_iemgui::old_number {}
+array set ::dialog_iemgui::old_label_dx {}
+array set ::dialog_iemgui::old_label_dy {}
+array set ::dialog_iemgui::old_label_font {}
+array set ::dialog_iemgui::old_label_fontsize {}
+
 # TODO convert Init/No Init and Steady on click/Jump on click to checkbuttons
 
 proc ::dialog_iemgui::tonumber val {
@@ -238,6 +249,19 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
 proc ::dialog_iemgui::apply {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
+    set fallbacks {}
+    set prefix ::dialog_iemgui::old_
+    foreach v [info vars ${prefix}*] {
+        if { ! [array exists $v] } {continue}
+        lappend fallbacks [string range $v [string length $prefix] end]
+    }
+
+    foreach v ${fallbacks} {
+        if { [lindex [array get ::dialog_iemgui::var_${v} ${vid}] 1] eq {} } {
+            array set ::dialog_iemgui::var_${v} [array get ::dialog_iemgui::old_${v} ${vid}]
+        }
+    }
+
     ::dialog_iemgui::clip_dim $mytoplevel
     ::dialog_iemgui::clip_num $mytoplevel
     ::dialog_iemgui::sched_rng $mytoplevel
@@ -281,11 +305,24 @@ proc ::dialog_iemgui::apply {mytoplevel} {
                 [string tolower $::dialog_iemgui::var_color_label($vid)] \
                 $::dialog_iemgui::var_steady($vid) \
                ]
+
+    foreach v ${fallbacks} {
+        array set ::dialog_iemgui::old_${v} [array get ::dialog_iemgui::var_${v} ${vid}]
+    }
 }
 
 
 proc ::dialog_iemgui::cancel {mytoplevel} {
     pdsend [list $mytoplevel cancel]
+
+    set vid [string trimleft $mytoplevel .]
+    foreach v [info vars ::dialog_iemgui::*] {
+        if { [array exists $v] } {
+            if { [array get $v ${vid}] ne {} } {
+                array unset $v ${vid}
+            }
+        }
+    }
 }
 
 proc ::dialog_iemgui::ok {mytoplevel} {
@@ -338,6 +375,17 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_color_foreground($vid) $fcol
     set ::dialog_iemgui::var_color_label($vid) $lcol
     set ::dialog_iemgui::var_colortype($vid) 0
+
+    # fallback values (in case the user enters garbage)
+    set ::dialog_iemgui::old_width($vid) $wdt
+    set ::dialog_iemgui::old_height($vid) $hgt
+    set ::dialog_iemgui::old_range_max($vid) $max_rng
+    set ::dialog_iemgui::old_range_min($vid) $min_rng
+    set ::dialog_iemgui::old_number($vid) $num
+    set ::dialog_iemgui::old_label_dx($vid) $gn_dx
+    set ::dialog_iemgui::old_label_dy($vid) $gn_dy
+    set ::dialog_iemgui::old_label_font($vid) $gn_f
+    set ::dialog_iemgui::old_label_fontsize($vid) $gn_fs
 
     # Override incoming values for known iem guis.
     set iemgui_type [_ $mainheader]
