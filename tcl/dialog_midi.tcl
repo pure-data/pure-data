@@ -57,7 +57,7 @@ proc ::dialog_midi::config2string { } {
 proc ::dialog_midi::apply {mytoplevel {force ""}} {
     set config [config2string]
     if { $force ne "" || $config ne $::dialog_midi::referenceconfig} {
-        pdsend "pd midi-dialog ${config}"
+        pdsend [concat pd midi-dialog ${config}]
     }
     set ::dialog_midi::referenceconfig $config
 }
@@ -213,7 +213,7 @@ proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
                 $frame.backend.api.menu add radiobutton \
                     -label "${api_name}" \
                     -value ${api_id} -variable ::pd_whichmidiapi \
-                    -command {pdsend "pd midi-setapi $::pd_whichmidiapi"}
+                    -command {pdsend [list pd midi-setapi $::pd_whichmidiapi]}
                 if { ${api_id} == ${::pd_whichmidiapi} } {
                     $frame.backend.api configure -text "${api_name}"
                 }
@@ -336,7 +336,7 @@ proc ::dialog_midi::create {id} {
 
     # save all settings button
     button $id.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_midi::apply $id 1; pdsend \"pd save-preferences\""
+        -command "::dialog_midi::apply $id 1; pdsend {pd save-preferences}"
     pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons

@@ -77,7 +77,7 @@ proc ::dialog_gatom::apply {mytoplevel} {
 }
 
 proc ::dialog_gatom::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_gatom::cleanup {mytoplevel} {

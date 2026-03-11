@@ -261,7 +261,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
     if {$::dialog_iemgui::var_label_dy($vid) eq ""} {set ::dialog_iemgui::var_label_dy($vid) 0}
 
-    pdsend [concat $mytoplevel dialog \
+    pdsend [list $mytoplevel dialog \
                 $::dialog_iemgui::var_width($vid) \
                 $::dialog_iemgui::var_height($vid) \
                 $::dialog_iemgui::var_range_min($vid) \
@@ -285,7 +285,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
 
 
 proc ::dialog_iemgui::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_iemgui::ok {mytoplevel} {

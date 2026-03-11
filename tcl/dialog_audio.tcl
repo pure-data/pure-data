@@ -218,7 +218,7 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
     frame $frame.refreshbutton
     pack $frame.refreshbutton -side bottom -fill x
     button $frame.refreshbutton.b -text [_ "Rescan Devices"] \
-        -command "pdsend \"pd rescan-audio\""
+        -command {pdsend {pd rescan-audio} }
     pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
@@ -246,7 +246,7 @@ proc ::dialog_audio::fill_frame {frame {include_backends 1}} {
                 $frame.backend.api.menu add radiobutton \
                     -label "${api_name}" \
                     -value ${api_id} -variable ::pd_whichapi \
-                    -command {pdsend "pd audio-setapi $::pd_whichapi"}
+                    -command {pdsend [list pd audio-setapi $::pd_whichapi]}
                 if { ${api_id} == ${::pd_whichapi} } {
                     $frame.backend.api configure -text "${api_name}"
                 }
@@ -426,7 +426,7 @@ proc ::dialog_audio::create {mytoplevel} {
 
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_audio::apply $mytoplevel 1; pdsend \"pd save-preferences\""
+        -command "::dialog_audio::apply $mytoplevel 1; pdsend {pd save-preferences}"
     pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
