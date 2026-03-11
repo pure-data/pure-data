@@ -64,9 +64,11 @@ proc category_menu::send_item {w x y item} {
 
 proc category_menu::load_menutree {} {
     set menutree {
-        {add\ object
-            {guis
-                {Message Number\ atom\ box Symbol\ atom\ box List\ box Comment Bang Toggle Number2 Vertical\ slider Horizontal\ slider Vertical\ radio Horizontal\ radio VU\ meter Canvas Graph Array}}
+        {guis
+            {Message Number\ atom\ box Symbol\ atom\ box List\ box Comment Bang Toggle Number2 Vertical\ slider Horizontal\ slider Vertical\ radio Horizontal\ radio VU\ meter Canvas Graph Array}}
+        {patch/subpatch
+            {inlet inlet~ outlet outlet~ pd block~ switch~ clone namecanvas loadbang declare savestate pdcontrol}}
+        {control
             {general\ data\ management
                 {bang trigger route swap print float int value symbol makefilename send receive}}
             {list\ management
@@ -89,10 +91,12 @@ proc category_menu::load_menutree {} {
                 {midiin midiout notein noteout ctlin ctlout pgmin pgmout bendin bendout touchin touchout polytouchin polytouchout sysexin midirealtimein makenote stripnote poly oscparse oscformat}}
             {misc
                 {openpanel savepanel key keyup keyname netsend netreceive fudiparse fudiformat bag trace}}
+        }
+        {audio
             {general\ audio\ tools
                 {snake~\ in snake~\ out adc~ dac~ sig~ line~ vline~ threshold~ env~ snapshot~ vsnapsot~ bang~ samphold~ samplerate~ send~ receive~ throw~ catch~ readsf~ writesf~ print~}}
             {signal\ math
-                {fft~ ifft~ rfft~ irfft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ log~ pow~ abs~ sqrt~ rsqrt~ wrap~ exp~ clip~}}
+                {fft~ ifft~ rfft~ rifft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ log~ pow~ abs~ sqrt~ rsqrt~ wrap~ exp~ clip~}}
             {signal\ acoustic\ conversions
                 {mtof~ ftom~ rmstodb~ dbtorms~ powtodb~ dbtopow~}}
             {audio\ generators/tables
@@ -101,40 +105,96 @@ proc category_menu::load_menutree {} {
                 {vcf~ hip~ lop~ slop~ bp~ biquad~ rpole~ rzero~ rzero_rev~ cpole~ czero~ czero_rev~}}
             {audio\ delay
                 {delwrite~ delread~ delread4~}}
-            {patch/subpatch
-                {loadbang declare savestate clone pdcontrol pd inlet inlet~ outlet outlet~ namecanvas block~ switch~}}
-            {data\ structures
-                {struct drawpolygon filledpolygon drawcurve filledcurve drawnumber drawsymbol drawtext plot scalar pointer get set element getsize setsize append}}
-            {extra
-                {sigmund~ bonk~ choice hilbert~ complex-mod~ loop~ lrshift~ pd~ stdout rev1~ rev2~ rev3~ bob~ output~}}
         }
+        {data\ structures
+            {struct drawpolygon filledpolygon drawcurve filledcurve drawnumber drawsymbol drawtext plot scalar pointer vpointer get set element getsize setsize append}}
+        {extra
+            {sigmund~ bonk~ choice hilbert~ complex-mod~ loop~ lrshift~ pd~ stdout rev1~ rev2~ rev3~ bob~ output~}}
     }
     return $menutree
 }
 
+proc category_menu::build_menu {parent_menu node x y} {
+    set name [lindex $node 0]
+    # Create menu for this node
+    set current_menu $parent_menu.$name
+    menu $current_menu
+    $parent_menu add cascade -label $name -menu $current_menu
+    # Process each remaining element directly (these are submenus or item lists)
+    set remaining [lrange $node 1 end]
+    set count 0
+    foreach element $remaining {
+        set second [lindex $element 1]
+        # Determine if this element is a submenu or item list
+        # A submenu has: first part is a name (string), remaining parts are lists
+        set is_submenu 0
+        if {[llength $element] >= 2} {
+            set is_submenu 1
+            for {set j 1} {$j < [llength $element]} {incr j} {
+                if {[llength [lindex $element $j]] <= 1} {
+                    set is_submenu 0
+                    break
+                }
+            }
+        }    
+        if {$is_submenu} {
+            build_menu $current_menu $element $x $y
+        } elseif {[llength $element] > 1} {
+            # Element is a list of items - add each as command
+            foreach item $element {
+                $current_menu add command \
+                    -label [regsub -all {^\-$} $item {−}] \
+                    -command "menu_send_else_obj \$::focused_window $x $y {$item}"
+            }
+        } else {
+            # Element is a single item
+            $current_menu add command \
+                -label [regsub -all {^\-$} $element {−}] \
+                -command "menu_send_else_obj \$::focused_window $x $y {$element}"
+        }
+        incr count
+    }
+}
+
 proc category_menu::create {cmdstring code result op} {
+    if {!$::category_menu::enabled} { return }
     set mymenu [lindex $cmdstring 1]
     set x [lindex $cmdstring 3]
     set y [lindex $cmdstring 4]
     set menutree [load_menutree]
     $mymenu add separator
-    foreach categorylist $menutree {
-        set category [lindex $categorylist 0]
-        menu $mymenu.$category
-        $mymenu add cascade -label $category -menu $mymenu.$category
-        foreach subcategorylist [lrange $categorylist 1 end] {
-            set subcategory [lindex $subcategorylist 0]
-            menu $mymenu.$category.$subcategory
-            $mymenu.$category add cascade -label $subcategory -menu $mymenu.$category.$subcategory
-            foreach item [lindex $subcategorylist end] {
-                # replace the normal dash with a Unicode minus so that Tcl does not
-                # interpret the dash in the -label to make it a separator
-                $mymenu.$category.$subcategory add command \
-                    -label [regsub -all {^\-$} $item {−}] \
-                    -command "::category_menu::send_item \$::focused_window $x $y {$item}"
-            }
-        }
+    set category "object-browser"
+    menu $mymenu.$category
+    $mymenu add cascade -label $category -menu $mymenu.$category
+    # Process each top-level item
+    foreach item $menutree {
+        build_menu $mymenu.$category $item $x $y
     }
 }
 
+proc category_menu::read_browser_cfg {} {
+    set ::category_menu::enabled [::pd_guiprefs::read object_browser_enabled]
+    if {$::category_menu::enabled eq ""} {
+        set ::category_menu::enabled 1 
+    }
+}
+
+proc category_menu::write_config {{filename browser.cfg}} {
+    ::pd_guiprefs::write object_browser_enabled $::category_menu::enabled
+}
+
 trace add execution ::pdtk_canvas::create_popup leave category_menu::create
+
+proc category_menu::add_menu_entry {} {
+    .preferences add separator
+    .preferences add checkbutton \
+        -label [_ "Enable Object Browser"] \
+        -variable ::category_menu::enabled \
+        -command {category_menu::write_config}
+}
+
+category_menu::read_browser_cfg
+category_menu::add_menu_entry
+
+
+
