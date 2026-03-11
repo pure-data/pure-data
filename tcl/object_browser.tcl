@@ -175,7 +175,7 @@ proc category_menu::create {cmdstring code result op} {
 proc category_menu::read_browser_cfg {} {
     set ::category_menu::enabled [::pd_guiprefs::read object_browser_enabled]
     if {$::category_menu::enabled eq ""} {
-        set ::category_menu::enabled 1
+        set ::category_menu::enabled 0
     }
 }
 
@@ -185,13 +185,4 @@ proc category_menu::write_config {{filename browser.cfg}} {
 
 trace add execution ::pdtk_canvas::create_popup leave category_menu::create
 
-proc category_menu::add_menu_entry {} {
-    .preferences add separator
-    .preferences add checkbutton \
-        -label [_ "Enable Object Browser"] \
-        -variable ::category_menu::enabled \
-        -command {category_menu::write_config}
-}
-
 category_menu::read_browser_cfg
-category_menu::add_menu_entry

@@ -7,6 +7,8 @@ package require preferencewindow
 namespace eval ::dialog_preferences:: {
 }
 
+namespace eval ::category_menu {}
+
 set ::dialog_preferences::use_ttknotebook {}
 after idle ::dialog_preferences::read
 # allow updating the audio resp MIDI frame if the backend changes
@@ -80,6 +82,10 @@ proc ::dialog_preferences::fill_frame {prefs} {
     checkbutton $prefs.guiframe.patching.highlight_connections -text [_ "Highlight active cord while connecting"] \
         -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w
     pack $prefs.guiframe.patching.highlight_connections -side left -anchor w
+    checkbutton $prefs.guiframe.patching.object_browser -text [_ "Enable Object Browser"] \
+        -variable ::category_menu::enabled -anchor w \
+        -command {category_menu::write_config}
+    pack $prefs.guiframe.patching.object_browser -side left -anchor w
 }
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
