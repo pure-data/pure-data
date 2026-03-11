@@ -43,12 +43,17 @@ proc ::dialog_midi::config2string { } {
         upvar ::dialog_midi::ports${dir} ports
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             upvar ::dialog_midi::${dir}dev${i} dev
-            if { $dev < 0 || $dev > [llength $devlist] } {
+            if { ${dev} eq {} || ! [string is int ${dev}] } {
+                set dev 0
+            }
+            if { ${dev} < 0 || ${dev} > [llength ${devlist} ] } {
                 set dev 0
             }
             lappend result $dev
         }
-        set ports [expr $ports + 0]
+        if { ${ports} eq {} || ! [string is int ${ports}] || ${ports} < 0 } {
+            set ports 0
+        }
     }
     lappend result $::dialog_midi::portsin $::dialog_midi::portsout
     return $result
