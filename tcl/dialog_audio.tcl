@@ -186,7 +186,13 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
         }
     }
     label $frame.l2 -text [_ "Channels:"]
-    entry $frame.x2 -textvariable ::dialog_audio::${direction}_channels(${index}) -width 3
+    foreach {dummy v} [array get ::dialog_audio::${direction}_channels ${index}] {break}
+    spinbox $frame.x2 \
+        -width 3 \
+        -values {1 2 4 6 8 10 12 14 16 24 64 128} \
+        -textvariable ::dialog_audio::${direction}_channels(${index})
+    # spinbox's '-values' option resets the textvariable, so we need to restore it
+    array set ::dialog_audio::${direction}_channels [list ${index} ${v}]
 
     set mytoplevel [winfo toplevel $frame]
     if {[winfo exists $mytoplevel.buttonframe.ok]} {
