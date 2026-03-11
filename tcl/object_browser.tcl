@@ -136,7 +136,7 @@ proc category_menu::build_menu {parent_menu node x y} {
                     break
                 }
             }
-        }    
+        }
         if {$is_submenu} {
             build_menu $current_menu $element $x $y
         } elseif {[llength $element] > 1} {
@@ -175,7 +175,7 @@ proc category_menu::create {cmdstring code result op} {
 proc category_menu::read_browser_cfg {} {
     set ::category_menu::enabled [::pd_guiprefs::read object_browser_enabled]
     if {$::category_menu::enabled eq ""} {
-        set ::category_menu::enabled 1 
+        set ::category_menu::enabled 1
     }
 }
 
@@ -195,6 +195,3 @@ proc category_menu::add_menu_entry {} {
 
 category_menu::read_browser_cfg
 category_menu::add_menu_entry
-
-
-
