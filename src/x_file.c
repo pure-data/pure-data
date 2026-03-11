@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 #include "s_utf8.h"
 
 #include "m_private_utils.h"
@@ -312,7 +313,7 @@ static const char*do_errmsg(char*buffer, size_t bufsize) {
     s=buffer + strlen(buffer)-1;
     while(('\r' == *s || '\n' == *s) && s>buffer)
         *s--=0;
-    snprintf(errcode, sizeof(errcode), " [%ld]", err);
+    pd_snprintf(errcode, sizeof(errcode), " [%ld]", err);
     errcode[sizeof(errcode)-1] = 0;
     strcat(buffer, errcode);
     return buffer;
@@ -441,6 +442,25 @@ static int do_checkpathname(t_file_handle*x, const char*path) {
         return 1;
     return 0;
 }
+
+t_canvas*do_getparentcanvas(t_file_handle*x, int parentlevel, int*effectivelevel) {
+    t_canvas *c = x->x_canvas;
+    int i, level = 0;
+    for (i = 0; i < parentlevel; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+        {
+            c = c->gl_owner;
+            level++;
+        }
+    }
+    if(effectivelevel)
+        *effectivelevel = level;
+    return c;
+}
+
 
 static int do_parse_creationmode(t_atom*ap) {
     const char*s;
@@ -588,6 +608,7 @@ static int file_handle_checkopen(t_file_handle*x, const char*cmd) {
     if(x->x_fd<0) {
         if(!cmd)cmd=(x->x_mode)?"write":"read";
         pd_error(x, "'%s' without prior 'open'", cmd);
+        outlet_bang(x->x_infoout);
         return 0;
     }
     return 1;
@@ -1152,13 +1173,16 @@ static void file_glob_symbol(t_file_handle*x, t_symbol*spattern) {
 
     /* ================ [file which] ====================== */
 
-static void file_which_symbol(t_file_handle*x, t_symbol*s) {
+static void file_which_doit(t_file_handle*x, t_symbol*s, int depth) {
+    char pathname[MAXPDSTRING];
+    t_canvas*c = do_getparentcanvas(x, depth, 0);
+    do_expandunbash(s->s_name, pathname, MAXPDSTRING);
         /* LATER we might output directories as well,... */
     int isdir=0;
     t_atom outv[2];
     char dirresult[MAXPDSTRING], *nameresult;
-    int fd = canvas_open(x->x_canvas,
-        s->s_name, "",
+    int fd = canvas_open(c,
+        pathname, "",
         dirresult, &nameresult, MAXPDSTRING,
         1);
     if(fd>=0) {
@@ -1173,12 +1197,47 @@ static void file_which_symbol(t_file_handle*x, t_symbol*s) {
     }
 }
 
+static void file_which_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
+    const char*msg = s?s->s_name:"";
+    int parentlevel = 0;
+    t_symbol*path;
+
+    switch(argc) {
+    default: goto fail;
+    case 1:
+        switch(argv->a_type) {
+        case(A_SYMBOL):
+            path = atom_getsymbol(argv);
+            break;
+        default: goto fail;
+        }
+        break;
+    case 2:
+        if(A_SYMBOL == argv[0].a_type && A_FLOAT == argv[1].a_type) {
+            path = atom_getsymbol(argv+0);
+            parentlevel = (int)atom_getfloat(argv+1);
+            break;
+        }
+        goto fail;
+    }
+
+    if(path) {
+        file_which_doit(x, path, parentlevel);
+        return;
+    }
+
+ fail:
+    pd_error(x, "bad arguments for %s%smessage to object 'file which'", msg, *msg?" ":"");
+}
+
+
     /* ================ [file patchpath] ====================== */
 
 static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
-    t_canvas *c = x->x_canvas;
-    const char*pathname = 0;
-    int i, parentlevel = 0, effectivelevel = 0;
+    const char*msg = s?s->s_name:"";
+    t_canvas *c;
+    const char*path = 0;
+    int parentlevel = 0, effectivelevel = 0;
 
     switch(argc) {
     default: goto fail;
@@ -1186,7 +1245,7 @@ static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*ar
     case 1:
         switch(argv->a_type) {
         case(A_SYMBOL):
-            pathname = atom_getsymbol(argv)->s_name;
+            path = atom_getsymbol(argv)->s_name;
             break;
         case (A_FLOAT):
             parentlevel = (int)atom_getfloat(argv);
@@ -1196,31 +1255,24 @@ static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*ar
         break;
     case 2:
         if(A_SYMBOL == argv[0].a_type && A_FLOAT == argv[1].a_type) {
-            pathname = atom_getsymbol(argv+0)->s_name;
+            path = atom_getsymbol(argv+0)->s_name;
             parentlevel = (int)atom_getfloat(argv+1);
             break;
         }
         goto fail;
     }
 
-    for (i = 0; i < parentlevel; i++)
+    c = do_getparentcanvas(x, parentlevel, &effectivelevel);
+    if (path)
     {
-        while (!c->gl_env)  /* back up to containing canvas or abstraction */
-            c = c->gl_owner;
-        if (c->gl_owner)    /* back up one more into an owner if any */
-        {
-            c = c->gl_owner;
-            effectivelevel++;
-        }
-    }
-    if (pathname)
-    {
+        char pathname[MAXPDSTRING-1];
+        do_expandunbash(path, pathname, MAXPDSTRING-1);
         if(sys_isabsolutepath(pathname))
         {
             s = gensym(pathname);
         } else {
             char buf[MAXPDSTRING];
-            snprintf(buf, MAXPDSTRING, "%s/%s",
+            pd_snprintf(buf, MAXPDSTRING, "%s/%s",
                      canvas_getdir(c)->s_name, pathname);
             buf[MAXPDSTRING-1] = 0;
             s = gensym(buf);
@@ -1234,7 +1286,7 @@ static void file_patchpath_list(t_file_handle*x, t_symbol*s, int argc, t_atom*ar
     return;
 
  fail:
-    pd_error(x, "bad arguments for message to object 'file patchpath'");
+    pd_error(x, "bad arguments for %s%smessage to object 'file patchpath'", msg, *msg?" ":"");
 }
 
     /* ================ [file mkdir] ====================== */
@@ -1327,7 +1379,6 @@ static int file_do_delete_recursive(const char*pathname) {
 
 static void file_delete_symbol(t_file_handle*x, t_symbol*path) {
     char pathname[MAXPDSTRING];
-
     do_expandunbash(path->s_name, pathname, MAXPDSTRING);
 
     if(sys_remove(pathname)) {
@@ -1342,7 +1393,6 @@ static void file_delete_symbol(t_file_handle*x, t_symbol*path) {
 
 static void file_delete_recursive(t_file_handle*x, t_symbol*path) {
     char pathname[MAXPDSTRING];
-
     do_expandunbash(path->s_name, pathname, MAXPDSTRING);
 
     if(file_do_delete_recursive(pathname)) {
@@ -1381,7 +1431,7 @@ static int file_do_copy(const char*source, const char*destination, int mode) {
                 filename=source;
             else
                 filename++;
-            snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
+            pd_snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             dst = sys_open(destfile, O_WRONLY | O_CREAT | O_TRUNC, mode);
         }
     }
@@ -1424,7 +1474,7 @@ static int file_do_move(const char*source, const char*destination, int mode) {
                 filename=source;
             else
                 filename++;
-            snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
+            pd_snprintf(destfile, MAXPDSTRING, "%s/%s", destination, filename);
             result = sys_rename(source, destfile);
             olderrno = errno;
         }
@@ -1507,13 +1557,15 @@ static void file_cwd_bang(t_file_handle*x) {
     }
 }
 static void file_cwd_symbol(t_file_handle*x, t_symbol*path) {
-    if(!sys_chdir(path->s_name)) {
+    char pathname[MAXPDSTRING];
+    do_expandunbash(path->s_name, pathname, MAXPDSTRING);
+    if(!sys_chdir(pathname)) {
         file_cwd_bang(x);
     } else {
         if(x->x_verbose) {
             char buf[MAXPDSTRING];
             pd_error(x, "could not change the working directory to '%s': %s",
-                     path->s_name, do_errmsg(buf, MAXPDSTRING));
+                     pathname, do_errmsg(buf, MAXPDSTRING));
         }
         outlet_bang(x->x_infoout);
     }
@@ -1868,7 +1920,8 @@ void x_file_setup(void)
     class_addlist(file_handle_class, file_handle_list);
 
         /* [file which] */
-    file_which_class = file_class_new("file which", file_which_new, 0, file_which_symbol, VERBOSE);
+    file_which_class = file_class_new("file which", file_which_new, 0, 0, VERBOSE);
+    class_addlist(file_which_class, file_which_list);
 
         /* [file patchpath] */
     file_patchpath_class = file_class_new("file patchpath", file_patchpath_new, 0, 0, VERBOSE);

@@ -9,8 +9,12 @@
 #include "s_net.h"
 
 #include <string.h>
-
 #include "m_private_utils.h"
+
+#ifndef _WIN32
+#include <fcntl.h>
+#include <errno.h>
+#endif
 
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
@@ -283,11 +287,15 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         if (sockfd < 0)
             continue;
 
+#ifndef _WIN32
+        if (fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+            pd_error(x, "netsend: CLOEXEC failed: %s", strerror(errno));
+#endif
+
 #if 0
         if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_SNDBUF, 0) < 0)
             post("netsend: setsockopt (SO_RCVBUF) failed");
 #endif
-
         /* for stream (TCP) sockets, specify "nodelay" */
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -686,6 +694,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (sockfd < 0)
             continue;
+
+#ifndef _WIN32
+        if (fcntl(sockfd, F_SETFD, FD_CLOEXEC) < 0)
+            pd_error(x, "netsend: CLOEXEC failed: %s", strerror(errno));
+#endif
     #if 0
         fprintf(stderr, "receive socket %d\n", sockfd);
     #endif

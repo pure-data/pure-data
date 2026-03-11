@@ -1,6 +1,3 @@
 2 4 6 8;
 cis boom bah;
-cis boom bah;
-cis boom bah;
-cis boom bah;
-cis boom bah;
+bang

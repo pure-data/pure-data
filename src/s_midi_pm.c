@@ -123,6 +123,14 @@ void sys_close_midi(void)
     mac_nmidioutdev = 0;
 }
 
+void sys_reinit_midi()
+{
+    sys_close_midi();
+    Pm_Terminate();
+    Pm_Initialize();
+    sys_reopen_midi();
+}
+
 void sys_putmidimess(int portno, int a, int b, int c)
 {
     PmEvent buffer;
@@ -152,6 +160,8 @@ void sys_putmidibyte(int portno, int byte)
         fit into PortMidi buffers. */
     static int mess[4];
     static int nbytes = 0, sysex = 0, i;
+    if (portno < 0 || portno >= mac_nmidioutdev)
+        return;
     if (byte > MIDI_SYSEXEND)
     {
         /* realtime */

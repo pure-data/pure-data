@@ -1,4 +1,4 @@
-#N canvas 515 23 648 487 12;
+#N canvas 350 30 648 487 12;
 #X floatatom 172 255 5 0 100 0 - db - 0;
 #X obj 29 93 metro 2000;
 #X text 210 283 clear;
@@ -76,7 +76,7 @@
 #X connect 21 0 20 0;
 #X connect 22 0 23 0;
 #X restore 29 204 pd test-input;
-#X obj 30 350 output~;
+#X obj 29 350 output~;
 #X obj 156 350 output~;
 #X obj 6 44 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 552 12 <= click;

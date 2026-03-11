@@ -35,12 +35,15 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef _WIN32
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
+
 #include <stdlib.h>
+
 #ifdef _MSC_VER
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4305 )
@@ -488,9 +491,9 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
 
         /* first guess by parabolic peak fitting */
     fbestbin = bestbin + (ppt[bestbin+1].p_weight
-        - ppt[bestbin-1].p_weight) /
+        - ppt[bestbin == 0 ? 0 : bestbin-1].p_weight) /
             (ppt[bestbin+1].p_weight +  ppt[bestbin].p_weight +
-                ppt[bestbin-1].p_weight);
+                ppt[bestbin == 0 ? 0 : bestbin-1].p_weight);
 
     freq = 2*fperbin * exp((LOG2/STEPSPEROCTAVE)*fbestbin);
     for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
@@ -1165,20 +1168,23 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
 {
     if (x->x_mode == MODE_STREAM)
     {
-        if (x->x_hop % sp[0]->s_n)
-            post("sigmund~: adjusting hop size to %d",
-                (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
-        if (x->x_infill % sp[0]->s_n) {
-            if (x->x_inbuf) {
-                int i;
-                t_sample*inbuf = x->x_inbuf;
-                for(i=0; i<x->x_npts; i++)
-                    *inbuf++ = 0.;
+        if (x->x_npts % sp[0]->s_n)
+            pd_error(x, "sigmund~: npts %d must be multiple of block size %d",
+                x->x_npts, sp[0]->s_n);
+        else
+        {
+            if (x->x_hop % sp[0]->s_n)
+                post("sigmund~: adjusting hop size to %d",
+                    (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+            if ((x->x_infill % sp[0]->s_n) || (x->x_infill > x->x_npts))
+            {
+                if (x->x_inbuf)
+                    memset(x->x_inbuf, 0, x->x_npts * sizeof(*x->x_inbuf));
+                x->x_infill = 0;
             }
-            x->x_infill = 0;
+            x->x_sr = sp[0]->s_sr;
+            dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
         }
-        x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
 }
 
@@ -1283,10 +1289,13 @@ static t_int *sigmund_perform(t_int *w)
         return (w+4);
     if (x->x_countdown > 0)
         x->x_countdown -= n;
-    else if (x->x_infill != x->x_npts)
+    else
     {
         int j;
-        t_float *fp = x->x_inbuf + x->x_infill;
+        t_float *fp;
+        if (x->x_infill + n > x->x_npts)
+            bug("sigmund_perform"), x->x_infill = 0;
+        fp = x->x_inbuf + x->x_infill;
         for (j = 0; j < n; j++)
             *fp++ = *in++;
         x->x_infill += n;
@@ -1474,7 +1483,10 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "sigmund~: %s: unknown flag or argument missing",
+            if (argv->a_type == A_FLOAT)
+                pd_error(x, "sigmund~: argument '%g' ignored",
+                    atom_getfloatarg(0, argc, argv));
+            else pd_error(x, "sigmund~: %s: unknown flag or argument missing",
                 firstarg->s_name);
             argc--, argv++;
         }
@@ -1916,7 +1928,7 @@ int main()
     class_register(CLASS_BOX, c);
     sigmund_class = c;
     
-    post("sigmund~ version 0.07");
+    post("sigmund~ version 0.08");
     return (0);
 }
 

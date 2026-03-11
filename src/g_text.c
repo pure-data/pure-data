@@ -98,6 +98,7 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
         canvas_startmotion(glist_getcanvas(gl));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 
@@ -115,7 +116,12 @@ static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
     buf = resizebytes(buf, bufsize, bufsize+1);
     buf[bufsize] = 0;
     logpost(x, PD_CRITICAL, "%s", buf);
-    logpost(x, PD_ERROR, "%s", errmsg);
+    pd_error(x, "%s", errmsg);
+    if(x) {
+        t_atom*argv = binbuf_getvec(b);
+        t_symbol*s = atom_getsymbol(argv);
+        pdgui_vmess("::pdwindow::add_missingobject", "os", x, s->s_name);
+    }
     freebytes(buf, bufsize);
 }
 
@@ -134,9 +140,8 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
         if (!pd_this->pd_newest)
             x = 0;
         else if (!(x = pd_checkobject(pd_this->pd_newest)))
-        {
-            canvas_error_couldntcreate(0, b, "... didn't return a patchable object");
-        }
+            canvas_error_couldntcreate(0, b,
+                "... didn't return a patchable object");
     }
     else x = 0;
     if (!x)
@@ -155,6 +160,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
             /* this is called if we've been created from the menu. */
         glist_select(gl, &x->te_g);
         gobj_activate(&x->te_g, gl, 1);
+        canvas_dirty(gl, 1);
     }
     if (pd_class(&x->ob_pd) == vinlet_class)
         canvas_resortinlets(glist_getcanvas(gl));
@@ -166,8 +172,8 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
 extern int sys_noautopatch;
     /* utility routine to figure out where to put a new text box from menu
     and whether to connect to it automatically */
-static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
-    int *indexp, int *totalp)
+static void canvas_howputnew(t_canvas *x, int *connectp,
+    int *xpixp, int *ypixp, int *indexp, int *totalp)
 {
     float dx = 5.5 * x->gl_zoom;
     int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
@@ -482,10 +488,10 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
         /* not zooming click width for now as it gets too fat */
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -500,9 +506,9 @@ static void message_click(t_message *x,
 
 static void message_tick(t_message *x)
 {
-    if (glist_isvisible(x->m_glist))
+    t_rtext *y = glist_getrtext(x->m_glist, &x->m_text, 0);
+    if (glist_isvisible(x->m_glist) && y)
     {
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs ri",
@@ -554,6 +560,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 
@@ -628,14 +635,14 @@ static void gatom_redraw(t_gobj *client, t_glist *glist)
 {
     t_gatom *x = (t_gatom *)client;
     if (glist->gl_editor)
-        glist_retext(x->a_glist, &x->a_text);
+        glist_retext(glist, &x->a_text);
 }
 
 static void gatom_senditup(t_gatom *x)
 {
-    if (x->a_glist->gl_editor
+    if (glist_getcanvas(x->a_glist)->gl_editor
         && gobj_shouldvis(&x->a_text.te_g, x->a_glist))
-            sys_queuegui(x, x->a_glist, gatom_redraw);
+            sys_queuegui(x, glist_getcanvas(x->a_glist), gatom_redraw);
 }
 
 static t_atom *gatom_getatom(t_gatom *x)
@@ -799,9 +806,9 @@ static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 
 static void gatom_reborder(t_gatom *x)
 {
-    t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
-    text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y),
-        rtext_width(y), rtext_height(y), 0);
+    t_rtext *y = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (y)
+        text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y), 0);
 }
 
 void gatom_undarken(t_text *x)
@@ -822,20 +829,23 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     char *buf;
     t_atom *ap = gatom_getatom(x);
 
-    t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
+    t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+    if (!t)
+        return;
     if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
-        if (t == x->a_glist->gl_editor->e_textedfor)
+        if (t == glist_textedfor(x->a_glist))
             rtext_activate(t, 0);
         x->a_grabbed = 0;
         gatom_reborder(x);
-        gatom_redraw(&x->a_text.te_g, x->a_glist);
+            /* use canvas (parent) for GOP, which has the editor */
+        gatom_redraw(&x->a_text.te_g, glist_getcanvas(x->a_glist));
     }
     else if (c == '\n')
     {
         x->a_doubleclicked = 0;
-        if (t == x->a_glist->gl_editor->e_textedfor)
+        if (t == glist_textedfor(x->a_glist))
         {
             rtext_gettext(t, &buf, &bufsize);
             rtext_key(t, 0, gensym("End"));
@@ -858,7 +868,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
     else
     {
-        if (t != x->a_glist->gl_editor->e_textedfor)
+        if (t != glist_textedfor(x->a_glist))
         {
             rtext_activate(t, 1);
             rtext_key(t, '.', &s_);
@@ -880,7 +890,9 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_gatom *x = (t_gatom *)z;
     if (up != 0)
     {
-        t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
+        t_rtext *t = glist_getrtext(x->a_glist, &x->a_text, 0);
+        if (!t)
+            return;
         rtext_retext(t);
         if (x->a_doubleclicked)    /* double click - activate text on release */
             rtext_activate(t, 1);
@@ -889,12 +901,13 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     {
         t_atom *ap;
         x->a_doubleclicked = 0;
-        if (x->a_dragindex <0)
+        if (x->a_dragindex < 0)
             return;
         if (dy == 0 || x->a_dragindex < 0 ||
             x->a_dragindex >= binbuf_getnatom(x->a_text.te_binbuf)
-            || binbuf_getvec(x->a_text.te_binbuf)[x->a_dragindex].a_type != A_FLOAT)
-                return;
+            || binbuf_getvec(x->a_text.te_binbuf)[x->a_dragindex].a_type !=
+                A_FLOAT)
+                    return;
         ap = &binbuf_getvec(x->a_text.te_binbuf)[x->a_dragindex];
         if (x->a_shift)
         {
@@ -930,15 +943,9 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
 
     if (!doit)
         return (1);
-    t = glist_findrtext(x->a_glist, &x->a_text);
-    if (t == x->a_glist->gl_editor->e_textedfor)
-    {
-        rtext_mouse(t, xpos, ypos, (dbl ? RTEXT_DBL : RTEXT_DOWN));
-        x->a_glist->gl_editor->e_onmotion = MA_DRAGTEXT;
-        x->a_glist->gl_editor->e_xwas = xpos;
-        x->a_glist->gl_editor->e_ywas = ypos;
-        return (1);
-    }
+    x->a_dragindex = -1;
+    if (!(t = glist_getrtext(x->a_glist, &x->a_text, 0)))
+        return (0);
     if (x->a_flavor == A_FLOAT)
     {
         if (x->a_text.te_width == 1)
@@ -977,17 +984,10 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     x->a_grabbed = 1;
     x->a_doubleclicked = dbl;
     gatom_reborder(x);
-    glist_grab(x->a_glist, &x->a_text.te_g, gatom_motion, gatom_key,
-        xpos, ypos);
+    if (!dbl)
+        glist_grab(x->a_glist, &x->a_text.te_g, gatom_motion, gatom_key,
+            xpos, ypos);
     return (1);
-}
-
-    /* probably never used but included in case needed for compatibility */
-static void gatom_click(t_gatom *x, t_floatarg xpos, t_floatarg ypos,
-    t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
-{
-    pd_error(x, "gatom_click is obsolete and may be deleted in future");
-    gatom_doclick(&x->a_text.te_g, x->a_glist, xpos, ypos, shift, ctrl, 0, 1);
 }
 
     /* message back from dialog window */
@@ -1134,15 +1134,16 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 "text"
             };
             gatom_getwherelabel(x, glist, &x1, &y1);
-            pdgui_vmess("pdtk_text_new", "cS ff s ir",
+            pdgui_vmess("pdtk_text_new", "cS ff s ik",
                 glist_getcanvas(glist),
                 3, tags,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x) * glist_getzoom(glist), "black");
+                gatom_fontsize(x) * glist_getzoom(glist),
+                THISGUI->i_foregroundcolor);
         }
-        else
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", buf);
+        else pdgui_vmess(0, "rcr", "pdtk_canvas_delete",
+            glist_getcanvas(glist), buf);
     }
 }
 
@@ -1216,6 +1217,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
+        canvas_dirty(glist_getcanvas(gl), 1);
     }
 }
 
@@ -1264,21 +1266,26 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     int width, height, iscomment = (x->te_type == T_TEXT);
-    t_float x1, y1, x2, y2;
+    int x1, y1, x2, y2;
+    t_glist *canvas = glist_getcanvas(glist);
 
-    if (glist->gl_editor && glist->gl_editor->e_rtext)
+        /* try to get an rtext so we can learn width and height */
+    if (canvas->gl_editor && (y = glist_getrtext(glist, x, 1)))
     {
-        t_rtext *y = glist_findrtext(glist, x);
-        width = rtext_width(y);
-        height = rtext_height(y) - (iscomment << 1);
+            /* x1 and y1 might be wrong here - they're overwritten below. */
+        rtext_getrect(y, &x1, &y1, &x2, &y2);
+        width = x2 - x1;
+        height = y2 - y1 - (iscomment << 1);
     }
-        /* for number boxes, we know width and height a priori, and should
-        report them here so that graphs can get swelled to fit. */
 
+        /* for number boxes, we know width and height a priori, and should
+        report them here so that graphs can get swelled to fit, even if
+        we aren't visible yet. */
     else if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        width = (x->te_width > 0 ? x->te_width : 6) * glist_fontwidth(glist);
+        width = x->te_width * glist_fontwidth(glist);
         height = glist_fontheight(glist);
         if (glist_getzoom(glist) > 1)
         {
@@ -1316,14 +1323,13 @@ static void text_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     x->te_xpix += dx;
     x->te_ypix += dy;
-    if (glist_isvisible(glist))
+    if (glist_isvisible(glist) && (y = glist_getrtext(glist, x, 0)))
     {
-        t_rtext *y = glist_findrtext(glist, x);
         rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
-        text_drawborder(x, glist, rtext_gettag(y),
-            rtext_width(y), rtext_height(y), 0);
+        text_drawborder(x, glist, rtext_gettag(y), 0);
         canvas_fixlinesfor(glist, x);
     }
 }
@@ -1331,25 +1337,29 @@ static void text_displace(t_gobj *z, t_glist *glist,
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_findrtext(glist, x);
-    rtext_select(y, state);
-    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
     {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? "blue" : "black"));
+        rtext_select(y, state);
+        if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
+        {
+            char buf[MAXPDSTRING];
+            sprintf(buf, "%sR", rtext_gettag(y));
+            pdgui_vmess(0, "crs rk",
+                glist,
+                "itemconfigure",
+                buf,
+                "-fill", (state? THISGUI->i_selectcolor :
+                    THISGUI->i_foregroundcolor));
+        }
     }
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
-    t_rtext *y = glist_findrtext(glist, x);
-    if (z->g_pd != gatom_class)
+    t_rtext *y = glist_getrtext(glist, x, 0);
+    if (y)
         rtext_activate(y, state);
 }
 
@@ -1362,20 +1372,20 @@ static void text_delete(t_gobj *z, t_glist *glist)
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
+    t_rtext *y;
     if (vis)
     {
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
-            t_rtext *y = glist_findrtext(glist, x);
-            text_drawborder(x, glist, rtext_gettag(y),
-                rtext_width(y), rtext_height(y), 1);
+            text_drawborder(x, glist, rtext_gettag(y), 1);
             rtext_draw(y);
         }
     }
     else
     {
-        t_rtext *y = glist_findrtext(glist, x);
-        if (gobj_shouldvis(&x->te_g, glist))
+        if (gobj_shouldvis(&x->te_g, glist) &&
+            (y = glist_getrtext(glist, x, 0)))
         {
             text_eraseborder(x, glist, rtext_gettag(y));
             rtext_erase(y);
@@ -1522,14 +1532,16 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     {
         int onset = x1 + (width - iow) * i / nplus;
         sprintf(tagbuf, "%so%d", tag, i);
-        tags[0] = tagbuf;
-        tags[1] = "outlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
+            /* pdgui_vmess(0, "crr iiii rS rk rk",
                 glist_getcanvas(glist), "create", "rectangle",
                 onset, y2 - oh + glist->gl_zoom, onset + iow, y2,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "black");
+                "-fill", THISGUI->i_foregroundcolor,
+                "-outline", THISGUI->i_foregroundcolor); */
+            pdgui_vmess(0, "r crik iiii", "pdtk_canvas_create_rect",
+                glist_getcanvas(glist), tagbuf, 1, THISGUI->i_foregroundcolor,
+                onset, y2 - oh + glist->gl_zoom, onset + iow, y2);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
@@ -1541,15 +1553,17 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     {
         int onset = x1 + (width - iow) * i / nplus;
         sprintf(tagbuf, "%si%d", tag, i);
-        tags[0] = tagbuf;
-        tags[1] = "inlet";
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
+            /* pdgui_vmess(0, "crr iiii rS rk rk",
                 glist_getcanvas(glist),
                 "create", "rectangle",
                 onset, y1, onset + iow, y1 + ih - glist->gl_zoom,
                 "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "black");
+                "-fill", THISGUI->i_foregroundcolor,
+                "-outline", THISGUI->i_foregroundcolor); */
+            pdgui_vmess(0, "r crik iiii", "pdtk_canvas_create_rect",
+                glist_getcanvas(glist), tagbuf, 1, THISGUI->i_foregroundcolor,
+                onset, y1, onset + iow, y1 + ih - glist->gl_zoom);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagbuf,
@@ -1558,7 +1572,7 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 }
 
 void text_drawborder(t_text *x, t_glist *glist,
-    const char *tag, int width2, int height2, int firsttime)
+    const char *tag, int firsttime)
 {
     t_object *ob;
     int x1, y1, x2, y2, width, height, corner;
@@ -1569,24 +1583,31 @@ void text_drawborder(t_text *x, t_glist *glist,
     height = y2 - y1;
     if (x->te_type == T_OBJECT)
     {
-        char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
+        int dashed = (pd_class(&x->te_pd) == text_class);
         char *tags[] = {tagR, "obj"};
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rS",
+        {
+#if 0
+            pdgui_vmess(0, "crr iiiiiiiiii rr ri rk rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1,
                 "-dash", pattern,
                 "-width", glist->gl_zoom,
+                "-fill", THISGUI->i_foregroundcolor,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
+#else
+            pdgui_vmess(0, "rcr iik iiiiiiiiii",
+                "pdtk_canvas_create_line", glist_getcanvas(glist), tagR,
+                dashed, glist->gl_zoom, THISGUI->i_foregroundcolor,
+                x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
+#endif
+        }
         else
         {
             pdgui_vmess(0, "crs iiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
-            pdgui_vmess(0, "crs rr",
-                glist_getcanvas(glist), "itemconfigure", tagR,
-                "-dash", pattern);
         }
     }
     else if (x->te_type == T_MESSAGE)
@@ -1596,16 +1617,16 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (corner > 10*glist->gl_zoom)
             corner = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
-                glist_getcanvas(glist), "create", "line",
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,  x1, y1,
-                "-width", glist->gl_zoom,
-                "-capstyle", "projecting",
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcr iik iiiiiiii iiiiii",
+                "pdtk_canvas_create_line", glist_getcanvas(glist), tagR,
+                0, glist->gl_zoom, THISGUI->i_foregroundcolor,
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,
+                x2+corner, y2,  x1, y2,  x1, y1);
         else
             pdgui_vmess(0, "crs iiiiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,  x1, y1);
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,
+                x2+corner, y2,  x1, y2,  x1, y1);
     }
     else if (x->te_type == T_ATOM && (((t_gatom *)x)->a_flavor == A_FLOAT ||
            ((t_gatom *)x)->a_flavor == A_SYMBOL))
@@ -1616,17 +1637,17 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rS",
-                glist_getcanvas(glist), "create", "line",
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,  x1p, y2,  x1p, y1p,
-                "-width", glist->gl_zoom+grabbed,
-                "-capstyle", "projecting",
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcr iik iiiiiiii iiii",
+                "pdtk_canvas_create_line", glist_getcanvas(glist), tagR,
+                0, glist->gl_zoom, THISGUI->i_foregroundcolor,
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,
+                x1p, y2,  x1p, y1p);
         else
         {
             pdgui_vmess(0, "crs iiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,  x1p, y2,  x1p, y1p);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,
+                x1p, y2,  x1p, y1p);
             pdgui_vmess(0, "crs ri",
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);
@@ -1639,18 +1660,17 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
-                glist_getcanvas(glist),
-                "create", "line",
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2-corner,  x2-corner, y2,  x1p, y2,  x1p, y1p,
-                "-width", glist->gl_zoom+grabbed,
-                "-capstyle", "projecting",
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcr iik iiiiii iiiiiiii",
+                "pdtk_canvas_create_line", glist_getcanvas(glist), tagR,
+                0, glist->gl_zoom, THISGUI->i_foregroundcolor,
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
+                x2, y2-corner,  x2-corner, y2,  x1p, y2,  x1p, y1p);
         else
         {
             pdgui_vmess(0, "crs iiiiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
-                x1p,y1p, x2-corner,y1p, x2,y1p+corner, x2,y2-corner, x2-corner,y2, x1p,y2, x1p,y1p);
+                x1p,y1p, x2-corner,y1p, x2,y1p+corner, x2,y2-corner,
+                x2-corner,y2, x1p,y2, x1p,y1p);
             pdgui_vmess(0, "crs ri",
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);
@@ -1661,12 +1681,11 @@ void text_drawborder(t_text *x, t_glist *glist,
         locked we erase them all via the annoying "commentbar" tag. */
     else if (x->te_type == T_TEXT && glist->gl_edit)
     {
-        char *tags[] = {tagR, "commentbar"};
         if (firsttime)
-            pdgui_vmess(0, "crr iiii rS",
-                glist_getcanvas(glist), "create", "line",
-                x2, y1,  x2, y2,
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcr iik iiii",
+                "pdtk_canvas_create_line", glist_getcanvas(glist), tagR,
+                0, glist->gl_zoom, THISGUI->i_foregroundcolor,
+                x2, y1,  x2, y2);
         else
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagR,
@@ -1688,15 +1707,15 @@ void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
     for (i = 0; i < n; i++)
     {
         sprintf(tagbuf, "%so%d", tag, i);
-        pdgui_vmess(0, "crs",
-            glist_getcanvas(glist), "delete", tagbuf);
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", glist_getcanvas(glist),
+            tagbuf);
     }
     n = obj_ninlets(ob);
     for (i = 0; i < n; i++)
     {
         sprintf(tagbuf, "%si%d", tag, i);
-        pdgui_vmess(0, "crs",
-            glist_getcanvas(glist), "delete", tagbuf);
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", glist_getcanvas(glist),
+            tagbuf);
     }
 }
 
@@ -1705,8 +1724,8 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     char tagbuf[MAXPDSTRING];
     if (x->te_type == T_TEXT && !glist->gl_edit) return;
     sprintf(tagbuf, "%sR", tag);
-    pdgui_vmess(0, "crs",
-        glist_getcanvas(glist), "delete", tagbuf);
+    pdgui_vmess(0, "rcr", "pdtk_canvas_delete", glist_getcanvas(glist),
+            tagbuf);
     glist_eraseiofor(glist, x, tag);
 }
 
@@ -1769,6 +1788,12 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
             &x->te_g, pos));
         binbuf_text(x->te_binbuf, buf, bufsize);
 
+            /* retext, so we see the binbuf representation
+             * rather than the literal text.
+             * otherwise, we are in for a surprise when the
+             * patch is reloaded/copied/duplicated/...
+             */
+        glist_retext(glist, x);
     }
 }
 
@@ -1853,8 +1878,6 @@ void g_text_setup(void)
     class_addlist(gatom_class, gatom_list);
     class_addmethod(gatom_class, (t_method)gatom_set, gensym("set"),
         A_GIMME, 0);
-    class_addmethod(gatom_class, (t_method)gatom_click, gensym("click"),
-        A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);

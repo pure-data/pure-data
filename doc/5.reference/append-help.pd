@@ -1,4 +1,4 @@
-#N canvas 397 23 617 637 12;
+#N canvas 579 25 617 637 12;
 #X obj 254 319 pointer;
 #X floatatom 93 324 5 0 150 0 - - - 0;
 #X obj 197 533 pointer;
@@ -16,7 +16,7 @@
 #X obj 93 583 pointer;
 #X text 403 596 updated for Pd version 0.47;
 #X text 526 10 <= click;
-#N canvas 744 111 575 343 reference 1;
+#N canvas 744 111 575 343 reference 0;
 #X obj 8 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 7 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 8 211 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
@@ -50,7 +50,7 @@
 #X text 189 365 z;
 #X text 50 418 If there are no field arguments or just one specified field \, you can use a "set" message to set both the template and field., f 59;
 #X obj 10 571 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#N canvas 265 164 338 297 append-data 1;
+#N canvas 225 165 338 297 append-data 1;
 #X coords 0 297 1 296 0 0 0;
 #X restore 483 526 pd append-data;
 #N canvas 836 175 475 285 append-template 0;

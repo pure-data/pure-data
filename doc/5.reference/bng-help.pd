@@ -385,13 +385,16 @@
 #X connect 23 0 4 0;
 #X connect 24 0 1 0;
 #X restore 165 212 pd label;
-#N canvas 896 171 425 339 init 0;
+#N canvas 896 171 442 454 init 0;
 #X msg 174 197 init \$1;
 #X obj 174 165 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 174 240 bng 30 250 50 1 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 48 29 The 'init' message takes a float and sets to 'init mode' (if different than zero) or 'no init' (if equal to zero - the default value)., f 48;
 #X text 48 84 When in 'init mode' \, the bang GUI is activated when loading the patch \, in the same way as a loadbang object., f 48;
 #X obj 174 288 print bng-init;
+#X text 185 394 see also:;
+#X obj 263 393 loadbang;
+#X text 49 334 The init message is actually a state saving mechanism for most iemguis \, but that is not pertinent in this case., f 44;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 5 0;

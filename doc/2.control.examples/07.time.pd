@@ -9,7 +9,6 @@
 #X obj 68 395 pipe 2000;
 #X floatatom 68 368 5 0 0 0 - - - 0;
 #X floatatom 68 423 5 0 0 0 - - - 0;
-#X text 346 464 updated for Pd version 0.43;
 #X text 46 297 Note that all time calculations are idealized. They do not show the effects of computation time or OS latency. This way you can write deterministic algorithms dealing with time passage., f 63;
 #X text 34 18 Besides [metro] \, there are three objects for dealing with time:, f 69;
 #X text 154 51 The [delay] object schedules an event for a future time expressed in milliseconds. Unlike in Max \, time values need not be integers. If a delay has been scheduled and you "bang" it again \, it is rescheduled (the previously scheduled output is canceled.), f 55;
@@ -23,6 +22,6 @@
 #X connect 5 0 3 1;
 #X connect 7 0 9 0;
 #X connect 8 0 7 0;
-#X connect 14 0 2 0;
-#X connect 15 0 3 0;
-#X connect 15 0 5 0;
+#X connect 13 0 2 0;
+#X connect 14 0 3 0;
+#X connect 14 0 5 0;

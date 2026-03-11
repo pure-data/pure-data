@@ -33,13 +33,11 @@
 int sys_schedadvance;   /* scheduler advance in microseconds */
 
 static int sys_audioapiopened; /* what API is open, API_NONE if none */
-static int audio_callback_is_open;  /* true if we're open in callback mode */
 
     /* current parameters (if an API is open) or requested ones otherwise: */
 static t_audiosettings audio_nextsettings;
 
 void sched_audio_callbackfn(void);
-void sched_reopenmeplease(void);
 
 int audio_isopen(void)
 {
@@ -83,33 +81,53 @@ static int audio_getfixedblocksize(int api)
 
 void sys_setchsr(int chin, int chout, int sr)
 {
+    int oldchin = STUFF->st_inchannels;
+    int oldchout = STUFF->st_outchannels;
+    int oldinbytes = (oldchin ? oldchin : 2) *
+        (DEFDACBLKSIZE*sizeof(t_sample));
+    int oldoutbytes = (oldchout ? oldchout : 2) *
+        (DEFDACBLKSIZE*sizeof(t_sample));
     int inbytes = (chin ? chin : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample));
+        (DEFDACBLKSIZE*sizeof(t_sample));
     int outbytes = (chout ? chout : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample));
+        (DEFDACBLKSIZE*sizeof(t_sample));
+    int changed = 0;
 
-    if (STUFF->st_soundin)
-        freebytes(STUFF->st_soundin,
-            (STUFF->st_inchannels? STUFF->st_inchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample)));
-    if (STUFF->st_soundout)
-        freebytes(STUFF->st_soundout,
-            (STUFF->st_outchannels? STUFF->st_outchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(t_sample)));
-    STUFF->st_inchannels = chin;
-    STUFF->st_outchannels = chout;
-    if (!audio_isfixedsr(sys_audioapiopened))
-        STUFF->st_dacsr = sr;
-
-    STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+        /* NB: reallocating the input/output channel arrays requires a DSP
+        graph update, so we only do it if the channel count has changed! */
+    if (!STUFF->st_soundin || chin != oldchin)
+    {
+        if (STUFF->st_soundin)
+            freebytes(STUFF->st_soundin, oldinbytes);
+        STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+        STUFF->st_inchannels = chin;
+        changed = 1;
+    }
     memset(STUFF->st_soundin, 0, inbytes);
 
-    STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+    if (!STUFF->st_soundout || chout != oldchout)
+    {
+        if (STUFF->st_soundout)
+            freebytes(STUFF->st_soundout, oldoutbytes);
+        STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+        STUFF->st_outchannels = chout;
+        changed = 1;
+    }
     memset(STUFF->st_soundout, 0, outbytes);
+
+    if (!audio_isfixedsr(sys_audioapiopened))
+    {
+        if (STUFF->st_dacsr != sr)
+            changed = 1;
+        STUFF->st_dacsr = sr;
+    }
 
     logpost(NULL, PD_VERBOSE, "input channels = %d, output channels = %d",
             STUFF->st_inchannels, STUFF->st_outchannels);
-    canvas_resume_dsp(canvas_suspend_dsp());
+
+        /* prevent redundant DSP updates, particularly when toggling DSP */
+    if (changed)
+        canvas_update_dsp();
 }
 
 static void audio_make_sane(int *ndev, int *devvec,
@@ -246,6 +264,8 @@ void sys_set_audio_settings(t_audiosettings *a)
     a->a_blocksize = 1 << ilog2(a->a_blocksize);
     if (a->a_blocksize < DEFDACBLKSIZE || a->a_blocksize > MAXBLOCKSIZE)
         a->a_blocksize = DEFDACBLKSIZE;
+    if (a->a_callback && !cancallback)
+        a->a_callback = 0;
 
     audio_make_sane(&a->a_noutdev, a->a_outdevvec,
         &a->a_nchoutdev, a->a_choutdevvec, MAXAUDIOOUTDEV);
@@ -260,7 +280,9 @@ void sys_set_audio_settings(t_audiosettings *a)
     pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
 }
 
-void sys_close_audio(void)
+    /* close the audio device. Must not be called from a Pd message!
+    Always called with Pd locked. */
+void sys_do_close_audio(void)
 {
     if (sys_externalschedlib)
     {
@@ -303,6 +325,11 @@ void sys_close_audio(void)
         esd_close_audio();
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        sgi_close_audio();
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         dummy_close_audio();
@@ -311,7 +338,6 @@ void sys_close_audio(void)
         post("sys_close_audio: unknown API %d", sys_audioapiopened);
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
-    audio_callback_is_open = 0;
 
     pdgui_vmess("set", "ri", "pd_whichapi", 0);
 }
@@ -328,8 +354,10 @@ void sys_init_audio(void)
     sys_setchsr(totalinchans, totaloutchans, as.a_srate);
 }
 
-    /* open audio using currently requested parameters */
-void sys_reopen_audio(void)
+    /* open audio using currently requested parameters.
+    Must not be called from a Pd message!
+    Always called with Pd locked. */
+void sys_do_reopen_audio(void)
 {
     t_audiosettings as;
     int outcome = 0, totalinchans, totaloutchans;
@@ -351,8 +379,9 @@ void sys_reopen_audio(void)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
         int nbufs = (double)sys_schedadvance / 1000000. * as.a_srate / blksize;
-            /* make sure that the delay is not smaller than the hardware blocksize */
-        if (nbufs < 1)
+            /* make sure that the delay is not smaller than the hardware blocksize.
+            NB: nbufs has no effect if callbacks are enabled. */
+        if (nbufs < 1 && !as.a_callback)
         {
             int delay = ((double)sys_schedadvance / 1000.) + 0.5;
             int limit = ceil(blksize * 1000. / (double)as.a_srate);
@@ -362,11 +391,11 @@ void sys_reopen_audio(void)
                  delay, blksize, limit);
         }
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
-        (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
+            (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
             STUFF->st_soundin, STUFF->st_soundout, blksize, nbufs,
-             (as.a_nindev > 0 ? as.a_indevvec[0] : 0),
-              (as.a_noutdev > 0 ? as.a_outdevvec[0] : 0),
-               (as.a_callback ? sched_audio_callbackfn : 0));
+            (as.a_nindev > 0 ? as.a_indevvec[0] : 0),
+            (as.a_noutdev > 0 ? as.a_outdevvec[0] : 0),
+            (as.a_callback ? sched_audio_callbackfn : 0));
     }
     else
 #endif
@@ -410,10 +439,18 @@ void sys_reopen_audio(void)
     else
 #endif
 #ifdef USEAPI_ESD
-    if (as.a_api == API_ALSA)
+    if (as.a_api == API_ESD)
         outcome = esd_open_audio(as.a_nindev, as.a_indevvec,
             as.a_nindev, as.a_chindevvec, as.a_noutdev,
                 as.a_outdevvec, as.a_noutdev, as.a_choutdevvec, as.a_srate);
+    else
+#endif
+#ifdef USEAPI_SGI
+    if (as.a_api == API_SGI)
+        outcome = sgi_open_audio(
+            as.a_nindev, as.a_indevvec, as.a_nindev, as.a_chindevvec,
+            as.a_noutdev, as.a_outdevvec, as.a_noutdev, as.a_choutdevvec,
+            as.a_srate);
     else
 #endif
 #ifdef USEAPI_DUMMY
@@ -424,21 +461,64 @@ void sys_reopen_audio(void)
 #endif
     if (as.a_api == API_NONE)
         ;
-    else post("unknown audio API specified");
+    else {
+        post("unknown audio API specified %d", as.a_api);
+        outcome = 1;
+    }
     if (outcome)    /* failed */
     {
         sys_audioapiopened = API_NONE;
         sched_set_using_audio(SCHED_AUDIO_NONE);
-        audio_callback_is_open = 0;
     }
     else
     {
         sys_audioapiopened = as.a_api;
         sched_set_using_audio(
             (as.a_callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
-        audio_callback_is_open = as.a_callback;
     }
     pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
+}
+
+    /* called by the scheduler if the audio system appears to be stuck. */
+int sys_try_reopen_audio(void)
+{
+    int success;
+
+    sys_lock();
+
+#ifdef USEAPI_PORTAUDIO
+    if (sys_audioapiopened == API_PORTAUDIO)
+    {
+        success = pa_reopen_audio();
+        sys_unlock();
+        return success;
+    }
+#endif
+#ifdef USEAPI_JACK
+    if (sys_audioapiopened == API_JACK)
+    {
+        success = jack_reopen_audio();
+        sys_unlock();
+        return success;
+    }
+#endif
+        /* generic implementation: close audio and try to reopen it */
+    sys_do_close_audio();
+
+    pd_error(0, "trying to reopen audio device");
+
+    sys_do_reopen_audio();
+    success = audio_isopen();
+
+    if (success)
+        pd_error(0, "successfully reopened audio device");
+    else
+        pd_error(0, "audio device not responding - closing audio.\n"
+                    "please try to reconnect and reselect it in the settings (or toggle DSP)");
+
+    sys_unlock();
+
+    return success;
 }
 
 int sys_send_dacs(void)
@@ -478,6 +558,11 @@ int sys_send_dacs(void)
         return (esd_send_dacs());
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        return (sgi_send_dacs());
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         return (dummy_send_dacs());
@@ -506,7 +591,10 @@ int sys_get_inchannels(void)
 keep jack audio open but close unused audio devices for any other API */
 int audio_shouldkeepopen(void)
 {
-    return (sys_audioapiopened == API_JACK);
+    if (sys_audioapiopened == API_NONE)
+        return (audio_nextsettings.a_api == API_JACK);
+    else
+        return (sys_audioapiopened == API_JACK);
 }
 
     /* get names of available audio devices for the specified API */
@@ -520,10 +608,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     {
         pa_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
-        /* portaudio officially allows callbacks but it hangs Pd on MacOS
-        and perhaps on other platforms too - this would potentially reduce
-        latency but doesn't appear to be worth the danger. */
-        *cancallback = 0;
+        *cancallback = 1;
     }
     else
 #endif
@@ -570,6 +655,14 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     if (api == API_ESD)
     {
         esd_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
+            maxndev, devdescsize);
+    }
+    else
+#endif
+#ifdef USEAPI_SGI
+    if (api == API_SGI)
+    {
+        sgi_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
     }
     else
@@ -659,7 +752,7 @@ void sys_gui_audiopreferences(void) {
 }
 
     /* start an audio settings dialog window */
-void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
+void glob_audio_properties(t_pd *dummy)
 {
     sys_gui_audiopreferences();
     pdgui_stub_deleteforkey(0);
@@ -712,12 +805,35 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if (as.a_blocksize < DEFDACBLKSIZE || as.a_blocksize > MAXBLOCKSIZE)
             as.a_blocksize = DEFDACBLKSIZE;
 
-    if (!audio_callback_is_open && !as.a_callback)
-        sys_close_audio();
     sys_set_audio_settings(&as);
-    if (!audio_callback_is_open && !as.a_callback)
+    if (canvas_dspstate || audio_shouldkeepopen())
         sys_reopen_audio();
-    else sched_reopenmeplease();
+}
+
+    /* rescan audio devices.  This is probably only useful for portaudio API
+    for which we must deinit and reinit the library to see new devices. */
+void glob_rescanaudio(t_pd *dummy)
+{
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot refresh device list in 'callback' mode when audio is running. "
+            "Please turn off DSP and try again.");
+        return;
+    }
+#ifdef USEAPI_PORTAUDIO
+    if (audio_nextsettings.a_api == API_PORTAUDIO)
+    {
+        int was_open = audio_isopen();
+        if (was_open) sys_close_audio();
+        pa_reinitialize();
+        if (was_open) sys_reopen_audio();
+    }
+#else
+    post("Skipping rescan because it's not defined for this API");
+#endif
+    sys_gui_audiopreferences();
+        /* refresh audio dialog (if it's open) */
+    pdgui_vmess("::dialog_audio::refresh_ui", "");
 }
 
 void sys_listdevs(void)
@@ -769,14 +885,8 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     int newapi = f;
     if (newapi)
     {
-        if (newapi == audio_nextsettings.a_api)
+        if (newapi != audio_nextsettings.a_api)
         {
-            if (!audio_isopen() && audio_shouldkeepopen())
-                sys_reopen_audio();
-        }
-        else
-        {
-            sys_close_audio();
             audio_nextsettings.a_api = newapi;
                 /* bash device params back to default */
             audio_nextsettings.a_nindev = audio_nextsettings.a_nchindev =
@@ -787,28 +897,15 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
             audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-            sys_reopen_audio();
+            audio_nextsettings.a_callback = 0;
+            if (canvas_dspstate || audio_shouldkeepopen())
+                sys_reopen_audio();
         }
-        glob_audio_properties(0, 0);
+        glob_audio_properties(0);
     }
     else if (audio_isopen())
     {
         sys_close_audio();
-    }
-}
-
-    /* start or stop the audio hardware */
-void sys_set_audio_state(int onoff)
-{
-    if (onoff)  /* start */
-    {
-        if (!audio_isopen())
-            sys_reopen_audio();
-    }
-    else
-    {
-        if (audio_isopen())
-            sys_close_audio();
     }
 }
 
@@ -848,6 +945,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #ifdef USEAPI_ESD
     {"ESD",  API_ESD},
+#endif
+#ifdef USEAPI_SGI
+    {"sgi", API_SGI},
 #endif
 #ifdef USEAPI_DUMMY
     {"dummy", API_DUMMY},

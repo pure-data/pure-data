@@ -51,9 +51,13 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + offset, ypos + offset,
         xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
-        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
+
+    if(x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-outline", THISGUI->i_selectcolor);
+    else
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-outline", x->x_gui.x_bcol);
 
     sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -92,8 +96,12 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
     sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
+    if(x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
+            "-outline", THISGUI->i_selectcolor);
+    else
+        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
+            "-outline", x->x_gui.x_bcol);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
@@ -323,17 +331,10 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void my_canvas_free(t_my_canvas *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_mycanvas_setup(void)
 {
     my_canvas_class = class_new(gensym("cnv"), (t_newmethod)my_canvas_new,
-        (t_method)my_canvas_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
         gensym("dialog"), A_GIMME, 0);

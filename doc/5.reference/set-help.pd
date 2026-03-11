@@ -1,5 +1,5 @@
 #N struct set-template float x float y symbol s;
-#N canvas 609 23 568 698 12;
+#N canvas 521 23 568 698 12;
 #X text 15 648 see also:;
 #X obj 123 637 append;
 #X obj 181 637 getsize;
@@ -13,7 +13,7 @@
 #X text 285 231 Remaining args are names of fields.;
 #X obj 220 660 pointer;
 #X msg 268 139 traverse pd-set-data \, next;
-#N canvas 296 165 297 270 set-data 1;
+#N canvas 194 157 297 270 set-data 1;
 #X scalar set-template 70 32 monkey \;;
 #X scalar set-template 143 78 fish \;;
 #X coords 0 270 1 269 0 0 0;

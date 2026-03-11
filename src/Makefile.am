@@ -207,6 +207,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h
 noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
+noinst_HEADERS += m_dispatch.h d_osc.h
 
 if LIBPD
 libpdinclude_HEADERS += m_pd.h z_libpd.h
@@ -218,7 +219,8 @@ endif
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu makefile.mac makefile.mingw makefile.msvc \
-    d_soundfile.h s_audio_audiounit.c s_audio_esd.c
+    d_soundfile.h s_audio_audiounit.c s_audio_esd.c \
+    m_dispatch_gen.c
 
 # add WISH define if it's set
 WISH=@WISH@
@@ -229,8 +231,8 @@ pd_CFLAGS += $(WISHDEFINE)
 DEKEN_OS=@DEKEN_OS@
 DEKEN_CPU=@DEKEN_CPU@
 DEKEN_DEFINE=
-DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="$(DEKEN_OS)")
-DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="$(DEKEN_CPU)")
+DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="'$(DEKEN_OS)'")
+DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="'$(DEKEN_CPU)'")
 pd_CFLAGS += $(DEKEN_DEFINE)
 
 
@@ -341,6 +343,14 @@ pd_SOURCES_standalone += s_audio_paring.c
 endif PORTAUDIO
 endif !JACK
 
+
+##### IRIX #####
+if SGI
+pd_CFLAGS += -DUSEAPI_SGI
+pd_SOURCES_standalone += s_audio_sgi.c s_midi_sgi.c
+pd_LDADD_standalone += @SGI_LIBS@
+endif
+
 ##### NO API? #####
 # if no audio or midi api was detected/specified, fall back to dummy apis
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
@@ -356,6 +366,9 @@ endif
 ##### FFTW fft library #####
 if FFTW
 pd_SOURCES_core += d_fft_fftw.c
+pd_CFLAGS += $(FFTW_CFLAGS)
+pd_LDADD_core += $(FFTW_LIBS)
+libpd_la_LIBADD += $(FFTW_LIBS)
 else
 pd_SOURCES_core += d_fft_fftsg.c
 endif

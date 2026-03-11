@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
@@ -18,59 +19,192 @@
 #define SEND_UPDATE 2
 #define SEND_CHECK 0
 
+    /* An rtext object is created for each editdable text in a canvas.  This
+    can be part of a text box (x_text nonzero) or of a scalar (x_words nonzero).
+    */
+
 struct _rtext
 {
     char *x_buf;    /*-- raw byte string, assumed UTF-8 encoded (moo) --*/
     int x_bufsize;  /*-- byte length --*/
     int x_selstart; /*-- byte offset --*/
     int x_selend;   /*-- byte offset --*/
-    int x_active;       /* 1 if 'actively editing */
+    int x_active;       /* 1 if 'actively' editing */
     int x_dragfrom;     /* character onset we're dragging from */
-    int x_drawnwidth;   /* screen size, pixels */
-    int x_drawnheight;
-    t_text *x_text;     /* owner */
-    t_glist *x_glist;   /* glist owner belongs to */
-    char x_tag[50];     /* tag for gui */
+    t_text *x_text;         /* owner, if a text box */
+    t_scalar *x_scalar;     /* associated scalar, otherwise */
+    t_word *x_words;        /* ... and if so, associated data */
+    t_gobj *x_drawtext;     /* ... and the drawing instruction */
+    t_glist *x_glist;       /* glist owner belongs to */
+    unsigned int x_color;      /* (A)RGB value */
+    char x_tag[50];         /* tag for gui */
     struct _rtext *x_next;  /* next in editor list */
+    int x_xpix;           /* (x,y) origin in pixels */
+    int x_ypix;
+    int x_pixwidth;
+    int x_pixheight;
 };
 
-t_rtext *rtext_new(t_glist *glist, t_text *who)
+static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
+    int *indexp);
+
+static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
 {
     t_rtext *x = (t_rtext *)getbytes(sizeof *x);
-    int w = 0, h = 0, indx;
-    x->x_text = who;
+    x->x_text = 0;
+    x->x_scalar = 0;
+    x->x_words = 0;
+    x->x_drawtext = 0;
     x->x_glist = glist;
-    x->x_next = glist->gl_editor->e_rtext;
-    x->x_selstart = x->x_selend = x->x_active =
-        x->x_drawnwidth = x->x_drawnheight = 0;
-    binbuf_gettext(who->te_binbuf, &x->x_buf, &x->x_bufsize);
-        /* allocate extra space for hidden null terminator */
-    x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
-    x->x_buf[x->x_bufsize] = 0;
-    glist->gl_editor->e_rtext = x;
+    x->x_color = THISGUI->i_foregroundcolor;
+    x->x_selstart = x->x_selend = x->x_active = 0;
+    x->x_buf = 0;
+    x->x_bufsize = 0;
+    if (!last)  /* first in list */
+        glist_getcanvas(glist)->gl_editor->e_rtext = x;
+    else last->x_next = x;
+    x->x_next = 0;
     sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
+    x->x_xpix = x->x_ypix = 0;      /* empty rectangle */
+    x->x_pixwidth = x->x_pixheight = -1;
     return (x);
+}
+
+    /* two privat helper routines from drawtext declared here: */
+
+void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
+    t_word *words, char *buf);
+int drawtext_isvisible(t_gobj *z, t_word *words);
+
+    /* defined later: */
+static void rtext_refreshbuffer(t_rtext *x);
+
+/* find the rtext that goes with a text item.  Return zero if the
+text item is invisible, either because the glist itself is, or because
+the item is in a GOP subpatch and its (x,y) origin is outside the GOP
+area.  (Or if it's within a nested GOP which itself isn't visible).  In
+some cases, the rtext is created in order to check the bounds rectangle,
+in which case it was created even if invisible.  But since gobj_shouldvis()
+first checks the upper right corner (x,y) before creating the rtext, the
+majority of invisible 'text' objects never get rtexts created for them. */
+
+t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
+{
+    t_rtext *x, *last = 0;
+    t_glist *canvas = glist_getcanvas(gl);;
+        /* This might happen for text objs in GOPs - dunno why. */
+    if (!canvas->gl_editor)
+        canvas_create_editor(canvas);
+
+        /* if it exists, return it whether or not it should be visible. */
+    for (x = canvas->gl_editor->e_rtext; x; x = x->x_next)
+    {
+        if (x->x_text == who)
+            return (x);
+        last = x;
+    }
+        /* "really" is for when we're being called within gobj_shouldvis,
+            in which we can't just go call shouldvis back from here */
+    if (!really && !gobj_shouldvis(&who->te_g, gl))
+        return (0);
+    x = rtext_add(gl, last);
+    x->x_text = who;
+    rtext_refreshbuffer(x);
+    return (x);
+}
+
+    /* find rtext for a field of a scalar being drawn by a drawtext */
+t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
+    t_gobj *drawtext)
+{
+    t_rtext *x, *last = 0;
+    t_glist *canvas = glist_getcanvas(gl);
+    if (!canvas->gl_editor)
+        canvas_create_editor(canvas);
+    for (x = canvas->gl_editor->e_rtext; x; x = x->x_next)
+    {
+        if (x->x_words == words && x->x_drawtext == drawtext)
+            return (x);
+        last = x;
+    }
+    x = rtext_add(gl, last);
+    x->x_words = words;
+    x->x_scalar = sc;
+    x->x_drawtext = drawtext;
+    return (x);
+}
+
+    /* delete all rtexts for a scalar */
+void glist_deleteforscalar(t_glist *gl, t_scalar *sc)
+{
+    t_rtext *x1, *xprev = 0, *xnext = 0;
+    t_glist *canvas = glist_getcanvas(gl);
+    if (!canvas->gl_editor)
+        return;
+
+    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = xnext)
+    {
+        xnext = x1->x_next;
+        if (x1->x_scalar == sc)
+        {
+            if (xprev)
+                xprev->x_next = x1->x_next;
+            else canvas->gl_editor->e_rtext = x1->x_next;
+            if (x1->x_buf)
+                freebytes(x1->x_buf, x1->x_bufsize + 1); /* extra 0 byte */
+            freebytes(x1, sizeof(*x1));
+        }
+        else xprev = x1;
+    }
 }
 
 void rtext_free(t_rtext *x)
 {
-    if (x->x_glist->gl_editor->e_textedfor == x)
-        x->x_glist->gl_editor->e_textedfor = 0;
-    if (x->x_glist->gl_editor->e_rtext == x)
-        x->x_glist->gl_editor->e_rtext = x->x_next;
+    t_glist *canvas = glist_getcanvas(x->x_glist);
+    if (glist_textedfor(canvas) == x)
+        glist_settexted(canvas, 0);
+    if (!canvas->gl_editor)
+        bug("rtext_free");
+    else if (canvas->gl_editor->e_rtext == x)
+        canvas->gl_editor->e_rtext = x->x_next;
     else
     {
         t_rtext *e2;
-        for (e2 = x->x_glist->gl_editor->e_rtext; e2; e2 = e2->x_next)
-            if (e2->x_next == x)
+        for (e2 = canvas->gl_editor->e_rtext; e2;
+            e2 = e2->x_next)
+                if (e2->x_next == x)
         {
             e2->x_next = x->x_next;
             break;
         }
     }
-    freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
-    freebytes(x, sizeof *x);
+    if (x->x_buf)
+        freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
+    freebytes(x, sizeof(*x));
+}
+
+void rtext_setcolor(t_rtext *x, unsigned int color)
+{
+    x->x_color = color;
+}
+
+
+static void rtext_findscreenlocation(t_rtext *x)
+{
+    int x2, y2;
+    if (x->x_text)
+        gobj_getrect(&x->x_text->te_g, x->x_glist,
+            &x->x_xpix, &x->x_ypix, &x2, &y2);
+    else bug("rtext_findscreenlocation");
+}
+
+    /* get width in characters - zero if grow-as-needed or if not a text box */
+int rtext_charwidth(t_rtext *x)
+{
+    if (x->x_text)
+        return (x->x_text->te_width);
+    else return (0); /* LATER do we want a width field for drawtext obj? */
 }
 
 const char *rtext_gettag(t_rtext *x)
@@ -83,28 +217,91 @@ void rtext_gettext(t_rtext *x, char **buf, int *bufsize)
     *buf = x->x_buf;
     *bufsize = x->x_bufsize;
 }
+
 void rtext_getseltext(t_rtext *x, char **buf, int *bufsize)
 {
     *buf = x->x_buf + x->x_selstart;
     *bufsize = x->x_selend - x->x_selstart;
 }
 
-t_text *rtext_getowner(t_rtext *x)
+t_glist *rtext_getglist(t_rtext *x)
 {
-    return (x->x_text);
+    return (x->x_glist);
 }
 
-/* convert t_text te_type symbol for use as a Tk tag */
-static t_symbol *rtext_gettype(t_rtext *x)
+    /* deal with an activated rtext when user clicks outside it.
+    If the rtext is for a patchable object of type TE_ATOM, or if it is
+    for a number or symbol 'data' field, terminate editing and adopt
+    the new text in the rtext buffer.  Otherwise
+    it's an object/message/comment box or text 'data' field, and
+    we update the contents.  In case it's an object, we then
+    also delete and re-create the object unless it has its own method
+    to deal with text-changing. */
+void rtext_unmouse(t_rtext *x)
 {
-    switch (x->x_text->te_type)
+    int onset = 0, drawtype = (x->x_drawtext ?
+        drawtext_gettype(x->x_drawtext,
+            drawtext_gettemplate(x->x_drawtext), &onset) :
+                -1);
+    t_canvas *canvas = glist_getcanvas(x->x_glist);
+        /* if it's a scalar, deactivate; if a text box, deselect
+            (which will deactivate but first check if text is dirty and
+            possibly re-parse the text and update the object) */
+    if (x->x_drawtext)
     {
-    case T_TEXT: return gensym("text");
-    case T_OBJECT: return gensym("obj");
-    case T_MESSAGE: return gensym("msg");
-    case T_ATOM: return gensym("atom");
+        drawtext_newtext(x->x_drawtext, x->x_glist, x->x_scalar, x->x_words,
+            x->x_buf);
+        rtext_activate(glist_textedfor(canvas), 0);
+        glist_settexted(canvas, 0);
     }
-    return (&s_);
+    else if (glist_isselected(x->x_glist, &x->x_text->te_g))
+        glist_deselect(x->x_glist, &x->x_text->te_g);
+            /* atom box - just simulate an 'enter' key */
+    else if (x->x_text && x->x_text->te_type == T_ATOM)
+        rtext_key(x, '\n', &s_);
+}
+
+void rtext_untype(t_rtext *x)
+{
+    if (x->x_text)
+        rtext_retext(x);
+    else
+    {
+        gobj_vis(&x->x_scalar->sc_gobj, x->x_glist, 0);
+        gobj_vis(&x->x_scalar->sc_gobj, x->x_glist, 1);
+    }
+}
+
+    /* search for an rtext matching a mouse click, filling in
+    text/data pointers so caller can decide what to do with it */
+t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
+    t_text **text, t_scalar **scalar, t_word **words, t_gobj **drawtext)
+{
+    t_rtext *x;
+        /* this shouldn't be necessary but just in case... */
+    if (!gl->gl_editor)
+        canvas_create_editor(gl);
+    for (x = gl->gl_editor->e_rtext; x; x = x->x_next)
+    {
+        /* post("xpix %d (%d,%d) ypix %d (%d,%d)",
+            xpix, x->x_xpix, x->x_xpix + x->x_pixwidth,
+            ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
+                /* in rectangle? */
+        if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
+            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight &&
+                /* is the text visible? */
+            !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
+                || !drawtext_isvisible(x->x_drawtext, x->x_words))))
+        {
+            *text = x->x_text;
+            *scalar = x->x_scalar;
+            *words = x->x_words;
+            *drawtext = x->x_drawtext;
+            return (x);
+        }
+    }
+    return (0);
 }
 
 /* LATER deal with tcl-significant characters */
@@ -165,7 +362,7 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
     int *selend_b_p, int fontwidth, int fontheight)
 {
-    int widthspec_c = x->x_text->te_width;
+    int widthspec_c = rtext_charwidth(x);
     int widthlimit_c = (widthspec_c ? widthspec_c : DEFAULTBOXWIDTH);
     int inindex_b = 0;
     int inindex_c = 0;
@@ -175,7 +372,6 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
     int findy = *heightp / fontheight;
 
     *selstart_b_p = *selend_b_p = 0;
-
     while (x_bufsize_c - inindex_c > 0)
     {
         int inchars_b  = x->x_bufsize - inindex_b;
@@ -238,30 +434,25 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
     }
     if (!reportedindex)
         *indexp = *outchars_b_p;
-    if (nlines < 1) nlines = 1;
-    if (!widthspec_c)
-    {
-        while (ncolumns < (x->x_text->te_type == T_TEXT ? 1 : 3))
-        {
-            tempbuf[(*outchars_b_p)++] = ' ';
-            ncolumns++;
-        }
-    }
-    else ncolumns = widthspec_c;
-    *widthp = ncolumns * fontwidth;
-    *heightp = nlines * fontheight;
-    if (glist_getzoom(x->x_glist) > 1)
-    {
-        /* zoom margins */
-        *widthp += (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist);
-        *heightp += (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist);
-    }
-    else
-    {
-        *widthp += LMARGIN + RMARGIN;
-        *heightp += TMARGIN + BMARGIN;
-    }
+    if (nlines < 1)
+        nlines = 1;
 
+    if (x->x_text)
+    {
+        if (!widthspec_c)
+        {
+            while (ncolumns < (x->x_text->te_type == T_TEXT ? 1 : 3))
+            {
+                tempbuf[(*outchars_b_p)++] = ' ';
+                ncolumns++;
+            }
+        }
+        else ncolumns = widthspec_c;
+    }
+    *widthp = ncolumns * fontwidth +
+        (x->x_text? (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist) : 0);
+    *heightp = nlines * fontheight +
+        (x->x_text? (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist) : 0);
 }
 
     /* same as above, but for atom boxes, which are always on one line. */
@@ -270,15 +461,16 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
     int *selend_b_p, int fontwidth, int fontheight)
 {
     int findx = *widthp / fontwidth;  /* character index; want byte index */
+    int charwidth = rtext_charwidth(x);
     *indexp = 0;
         /* special case: for number boxes, try to pare the number down
         to the specified width of the box. */
-    if (x->x_text->te_width > 0 && binbuf_getnatom(x->x_text->te_binbuf) == 1 &&
+    if (charwidth > 0 && binbuf_getnatom(x->x_text->te_binbuf) == 1 &&
         binbuf_getvec(x->x_text->te_binbuf)->a_type == A_FLOAT &&
-        x->x_bufsize > x->x_text->te_width)
+        x->x_bufsize > charwidth)
     {
             /* try to reduce size by dropping decimal digits */
-        int wantreduce = x->x_bufsize - x->x_text->te_width;
+        int wantreduce = x->x_bufsize - charwidth;
         char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
             *s1, *s2;
         int ndecimals;
@@ -298,21 +490,21 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
             s2 < ebuf; s1++, s2++)
                 *s1 = *s2;
-        *outchars_b_p = x->x_text->te_width;
+        *outchars_b_p = charwidth;
         goto done;
     giveup:
             /* give up and bash last char to '>' */
-        tempbuf[x->x_text->te_width-1] = '>';
-        tempbuf[x->x_text->te_width] = 0;
-        *outchars_b_p = x->x_text->te_width;
+        tempbuf[charwidth-1] = '>';
+        tempbuf[charwidth] = 0;
+        *outchars_b_p = charwidth;
     done: ;
         *indexp = findx;
-        *widthp = x->x_text->te_width * fontwidth;
+        *widthp = charwidth * fontwidth;
     }
     else
     {
         int outchars_c = 0, prev_b = 0;
-        int widthlimit_c = (x->x_text->te_width > 0 ? x->x_text->te_width :
+        int widthlimit_c = (charwidth > 0 ? charwidth :
                 1000);   /* nice big fat limit since we can't wrap */
         uint32_t thischar;
         *outchars_b_p = 0;
@@ -338,8 +530,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                 tempbuf[prev_b] = '>';
             }
         }
-        if (x->x_text->te_width > 0)
-            *widthp = x->x_text->te_width * fontwidth;
+        if (charwidth > 0)
+            *widthp = charwidth * fontwidth;
         else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
         tempbuf[*outchars_b_p] = 0;
     }
@@ -379,16 +571,26 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
-        /* if we're a GOP (the new, "goprect" style) borrow the font size
-        from the inside to preserve the spacing */
 
-    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
+        /* if we're a GOP (the new, "goprect" style) borrow the font size
+        from the inside to preserve the spacing.  If we're in a data
+        struct, just grab the glist's fint info  */
+
+    if (x->x_text)
+    {
+        text_getfont(x->x_text, x->x_glist,
+            &fontwidth, &fontheight, &guifontsize);
+        x->x_xpix = text_xpix(x->x_text, x->x_glist);
+        x->x_ypix = text_ypix(x->x_text, x->x_glist);
+    }
+    else text_getfont(&x->x_glist->gl_obj, x->x_glist,
+            &fontwidth, &fontheight, &guifontsize);
     if (x->x_bufsize >= 100)
          tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
     else tempbuf = smallbuf;
     tempbuf[0] = 0;
 
-    if (x->x_text->te_type == T_ATOM)
+    if (x->x_text && x->x_text->te_type == T_ATOM)
         rtext_formatatom(x, widthp, heightp, indexp,
             tempbuf, &outchars_b, &selstart_b,  &selend_b,
             fontwidth, fontheight);
@@ -396,14 +598,16 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tempbuf, &outchars_b, &selstart_b, &selend_b,
             fontwidth, fontheight);
     tempbuf[outchars_b]=0;
-
-    if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
+        /* rtext_charwidth(x) is nonzero only for "text" rtexts so we can
+        access x->x_text in this test: */
+    if (action && rtext_charwidth(x) &&
+        x->x_text && x->x_text->te_type != T_ATOM)
     {
             /* if our width is specified but the "natural" width is the
             same as the specified width, set specified width to zero
             so future text editing will automatically change width.
             Except atoms whose content changes at runtime. */
-        int widthwas = x->x_text->te_width, newwidth = 0, newheight = 0,
+        int widthwas = rtext_charwidth(x), newwidth = 0, newheight = 0,
             newindex = 0;
         x->x_text->te_width = 0;
         rtext_senditup(x, 0, &newwidth, &newheight, &newindex);
@@ -416,8 +620,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 
     if (action == SEND_FIRST)
     {
-        const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
-        int lmargin = LMARGIN, tmargin = TMARGIN;
+        const char *tags[] = {x->x_tag, "text"};
+        int lmargin = (x->x_text ? LMARGIN : 0),
+            tmargin = (x->x_text ? TMARGIN : 0);
         if (glist_getzoom(x->x_glist) > 1)
         {
             /* zoom margins */
@@ -428,22 +633,23 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        pdgui_vmess("pdtk_text_new", "c S ii s i r",
+        pdgui_vmess("pdtk_text_new", "c S ii s i k",
             canvas,
-            3, tags,
-            text_xpix(x->x_text, x->x_glist) + lmargin, text_ypix(x->x_text, x->x_glist) + tmargin,
+            2, tags,
+            x->x_xpix + lmargin, x->x_ypix + tmargin,
             tempbuf,
             guifontsize,
-            (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
+            (x->x_text && glist_isselected(x->x_glist, &x->x_text->te_g)?
+                THISGUI->i_selectcolor : x->x_color));
     }
     else if (action == SEND_UPDATE)
     {
         pdgui_vmess("pdtk_text_set", "cs s",
                   canvas, x->x_tag,
                   tempbuf);
-        if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
-            text_drawborder(x->x_text, x->x_glist, x->x_tag,
-                *widthp, *heightp, 0);
+        if (x->x_text && (*widthp != x->x_pixwidth ||
+            *heightp != x->x_pixheight))
+                text_drawborder(x->x_text, x->x_glist, x->x_tag, 0);
         if (x->x_active)
         {
             if (selend_b > selstart_b)
@@ -459,60 +665,71 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             else
             {
                 pdgui_vmess(0, "crr", canvas, "select", "clear");
-                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag, u8_charnum(x->x_buf, selstart_b));
+                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag,
+                    u8_charnum(x->x_buf, selstart_b));
                 pdgui_vmess("focus", "c", canvas);
                 pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
             }
         }
     }
-    x->x_drawnwidth = *widthp;
-    x->x_drawnheight = *heightp;
-
+    x->x_pixwidth = *widthp;
+    x->x_pixheight = *heightp;
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
 }
 
-    /* remake text buffer from binbuf */
-void rtext_retext(t_rtext *x)
+static void rtext_refreshbuffer(t_rtext *x)
 {
     int w = 0, h = 0, indx;
-    t_text *text = x->x_text;
-    t_freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
-    binbuf_gettext(text->te_binbuf, &x->x_buf, &x->x_bufsize);
+    if (x->x_buf)
+        t_freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
+    if (!x->x_text)
+        bug("rtext_retext");
+    binbuf_gettext(x->x_text->te_binbuf, &x->x_buf, &x->x_bufsize);
         /* allocate extra space for hidden null terminator */
     x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
     x->x_buf[x->x_bufsize] = 0;
+}
+
+    /* make or remake text buffer from binbuf (text boxes only) */
+void rtext_retext(t_rtext *x)
+{
+    int w = 0, h = 0, indx;
+    rtext_refreshbuffer(x);
+    rtext_findscreenlocation(x);
+        /* force dimension recalculation after text conversion */
+    x->x_pixwidth = x->x_pixheight = -1;
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
 
-/* find the rtext that goes with a text item */
-t_rtext *glist_findrtext(t_glist *gl, t_text *who)
+    /* make text buffer for scalar's drawtext instruction and draw it */
+void rtext_retextforscalar(t_rtext *x, char *buf, int len, int xpix, int ypix)
 {
-    t_rtext *x;
-    if (!gl->gl_editor)
-        canvas_create_editor(gl);
-    for (x = gl->gl_editor->e_rtext; x && x->x_text != who; x = x->x_next)
-        ;
-    return (x);
+    int w = 0, h = 0, indx;
+    x->x_buf = resizebytes(x->x_buf, x->x_bufsize+1, len+1);
+    strncpy(x->x_buf, buf, len+1);
+    x->x_buf[len] = 0;
+    x->x_bufsize = len;
+    x->x_xpix = xpix;
+    x->x_ypix = ypix;
+    rtext_senditup(x, SEND_FIRST, &w, &h, &indx);
 }
 
-int rtext_width(t_rtext *x)
+void rtext_getrect(t_rtext *x, int *x1p, int *y1p, int *x2p, int *y2p)
 {
     int w = 0, h = 0, indx;
     rtext_senditup(x, SEND_CHECK, &w, &h, &indx);
-    return (w);
-}
-
-int rtext_height(t_rtext *x)
-{
-    int w = 0, h = 0, indx;
-    rtext_senditup(x, SEND_CHECK, &w, &h, &indx);
-    return (h);
+    *x2p = (*x1p = x->x_xpix) + w;
+    *y2p = (*y1p = x->x_ypix) + h;
 }
 
 void rtext_draw(t_rtext *x)
 {
     int w = 0, h = 0, indx;
+        /* subgraphs are displaced by simply erasing and redrawing -
+        so here we have to recheck our screen location */
+    if (x->x_text)
+        rtext_findscreenlocation(x);
     rtext_senditup(x, SEND_FIRST, &w, &h, &indx);
 }
 
@@ -523,18 +740,19 @@ void rtext_erase(t_rtext *x)
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
+    x->x_xpix += dx;
+    x->x_ypix += dy;
     pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)
 {
-    pdgui_vmess(0, "crs rr",
+    pdgui_vmess(0, "crs rk",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? "blue" : "black"));
+        "-fill", (state? THISGUI->i_selectcolor:
+            THISGUI->i_foregroundcolor));
 }
-
-void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
@@ -544,8 +762,8 @@ void rtext_activate(t_rtext *x, int state)
     if (state)
     {
         pdgui_vmess("pdtk_text_editing", "^si", canvas, x->x_tag, 1);
-        glist->gl_editor->e_textedfor = x;
-        glist->gl_editor->e_textdirty = 0;
+        glist_settexted(canvas, x);
+        canvas->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
         x->x_selend = x->x_bufsize;
         x->x_active = 1;
@@ -553,8 +771,8 @@ void rtext_activate(t_rtext *x, int state)
     else
     {
         pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
-        if (glist->gl_editor->e_textedfor == x)
-            glist->gl_editor->e_textedfor = 0;
+        if (glist_textedfor(canvas) == x)
+            glist_settexted(canvas, 0);
         x->x_active = 0;
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
@@ -591,10 +809,30 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
     int w = 0, h = 0, indx, i, newsize, ndel;
     char *s1, *s2;
         /* CR to atom boxes sends message and resets */
-    if (keynum == '\n' && x->x_text->te_type == T_ATOM)
+    if (keynum == '\n')
     {
-        gatom_key(x->x_text, keysym, keynum);
-        return;
+        if (x->x_text && x->x_text->te_type == T_ATOM)
+        {
+            gatom_key(x->x_text, keysym, keynum);
+            return;
+        }
+        else if (x->x_scalar)
+        {
+            t_atom at;
+            t_template *template =
+                template_findbyname(x->x_scalar->sc_template);
+            int onset, type = drawtext_gettype(x->x_drawtext, template, &onset);
+            if (type == DT_FLOAT || type == DT_SYMBOL)
+            {
+                if (type == DT_FLOAT)
+                    x->x_words[onset/sizeof(t_word)].w_float = atof(x->x_buf);
+                else x->x_words[onset/sizeof(t_word)].w_symbol =
+                    gensym(x->x_buf);
+                template_notifyforscalar(template, x->x_glist,
+                        x->x_scalar, gensym("change"), 1, &at);
+                scalar_redraw(x->x_scalar, x->x_glist);
+            }
+        }
     }
     if (keynum)
     {
@@ -664,7 +902,7 @@ be printable in whatever 8-bit character set we find ourselves. */
             x->x_selstart = x->x_selstart + ch_nbytes;
         }
         x->x_selend = x->x_selstart;
-        x->x_glist->gl_editor->e_textdirty = 1;
+        glist_getcanvas(x->x_glist)->gl_editor->e_textdirty = 1;
     }
     else if (!strcmp(keysym->s_name, "Home"))
     {

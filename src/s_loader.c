@@ -129,7 +129,7 @@ static char*add_deken_extension(const char*systemext, int float_agnostic, int cp
         return 0;
     ext[MAXPDSTRING-1] = 0;
 
-    if(snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
+    if(pd_snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
         add_dllextension(ext);
     else
     {
@@ -393,8 +393,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if ((fd = sys_trytoopenit(path, objectname, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -406,8 +406,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     filename[MAXPDSTRING-1] = 0;
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, filename, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if ((fd = sys_trytoopenit(path, filename, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
     }
@@ -419,8 +419,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if (libname[len-1] == '~' && len < MAXPDSTRING - 6) {
         strcpy(libname+len-1, "_tilde");
     }
-    if ((fd = sys_trytoopenone(path, libname, ".so",
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    if ((fd = sys_trytoopenit(path, libname, ".so",
+        dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
             if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
                 return 1;
 #endif
@@ -488,7 +488,11 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     data.ok = 0;
 
     if (sys_onloadlist(classname))
-        return (1); /* if lib is already loaded, dismiss. */
+    {
+         /* if lib is already loaded, dismiss. */
+        data.ok = 1;
+        goto cleanup;
+    }
 
         /* if classname is absolute, try this first */
     if (sys_isabsolutepath(classname))
@@ -498,7 +502,10 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
         int dirlen;
         if (!z)
-            return (0);
+        {
+            data.ok = 0;
+            goto cleanup;
+        }
         dirlen = (int)(z - classname);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
@@ -520,7 +527,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     if(data.ok)
       sys_putonloadlist(classname);
 
-
+ cleanup:
     canvas_resume_dsp(dspstate);
     return data.ok;
 }
@@ -535,7 +542,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         struct stat statbuf;
-        snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
+        pd_snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
             *dllextent);
         sys_bashfilename(filename, filename);
         if(!stat(filename, &statbuf))
@@ -604,7 +611,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         int fd = -1;
 
         t_pd *was = s__X.s_thing;
-        snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+        pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
         if ((fd = canvas_open(canvas, objectname, ".pd",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, objectname, ".pat",
@@ -640,13 +647,13 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
            but we have already tried all paths */
     if (!path) return (0);
 
-    snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-    if ((fd = sys_trytoopenone(path, objectname, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, objectname, ".pat",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, classslashclass, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    pd_snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+    if ((fd = sys_trytoopenit(path, objectname, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
+        (fd = sys_trytoopenit(path, objectname, ".pat",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0 ||
+        (fd = sys_trytoopenit(path, classslashclass, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1, 1)) >= 0)
     {
         t_class*c=0;
         close(fd);
@@ -668,4 +675,30 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
         return (1);
     }
     return (0);
+}
+
+t_method sys_getfunbyname(const char *name)
+{
+#ifdef _WIN32
+    HMODULE module;
+        /* Get a handle to the actual module that contains the Pd API functions.
+        For this we just have to pass *any* Pd API function to GetModuleHandleEx().
+        NB: GetModuleHandle(NULL) wouldn't work because it would return a handle
+        to the main executable and GetProcAddress(), unlike dlsym(), does not
+        reach into its dependencies. */
+    if (GetModuleHandleEx(
+        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (LPCSTR)&pd_typedmess, &module))
+            return (t_method)GetProcAddress(module, name);
+    else
+    {
+        fprintf(stderr, "GetModuleHandleEx() failed with error code %d\n",
+            GetLastError());
+        return NULL;
+    }
+#elif HAVE_LIBDL
+    return (t_method)dlsym(dlopen(NULL, RTLD_NOW), name);
+#else
+    return NULL;
+#endif
 }

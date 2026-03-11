@@ -235,7 +235,7 @@ proc ::dialog_path::add {} {
 }
 
 proc ::dialog_path::edit {currentpath} {
-    return [::dialog_path::choosePath $currentpath [format [_ "Edit existing path \[%s\]" ] $currentpath] ]
+    return [::dialog_path::choosePath $currentpath [_ "Edit existing path \[%s\]" $currentpath] ]
 }
 
 proc ::dialog_path::commit {new_path} {

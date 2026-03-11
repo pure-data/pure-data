@@ -171,7 +171,16 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
             for (last = first; last < natoms && vec[last].a_type != A_SEMI;
                 last++);
             binbuf_restore(z, last-first, vec+first);
-            binbuf_add(w[i].w_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
+                /* binbufs are initialized continaing "..." so they can be
+                clicked on.  Until there's a way to click on empty binbufs
+                we just leave the "..." in place in case the saved binbuf is
+                empty.  LATER figure out a way do allow and deal with empty
+                ones. */
+            if (binbuf_getnatom(z))
+            {
+                binbuf_clear(w[i].w_binbuf);
+                binbuf_add(w[i].w_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
+            }
             binbuf_free(z);
             last++;
             if (last > natoms) last = natoms;
@@ -189,15 +198,20 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     t_scalar *sc;
     int nextmsg = *p_nextmsg;
     int wasvis = glist_isvisible(x);
+    t_symbol *templatename;
 
-    if (nextmsg >= natoms || vec[nextmsg].a_type != A_SYMBOL)
+    if (nextmsg >= natoms ||
+        (vec[nextmsg].a_type != A_SYMBOL && vec[nextmsg].a_type != A_DOLLSYM)
+    )
     {
         if (nextmsg < natoms)
             post("stopping early: type %d", vec[nextmsg].a_type);
         *p_nextmsg = natoms;
         return (0);
     }
-    templatesym = canvas_makebindsym(vec[nextmsg].a_w.w_symbol);
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(),
+        &vec[nextmsg]);
+    templatesym = canvas_makebindsym(templatename);
     *p_nextmsg = nextmsg + 1;
 
     if (!(template = template_findbyname(templatesym)))
@@ -467,6 +481,9 @@ static void glist_writelist(t_gobj *y, t_binbuf *b);
 
 void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
 
+    /* defined in g_template.c */
+t_symbol *template_get_creation_name(t_template *x);
+
 void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     int amarrayelement)
 {
@@ -476,7 +493,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     if (!amarrayelement)
     {
         t_atom templatename;
-        SETSYMBOL(&templatename, gensym(templatesym->s_name + 3));
+        SETDOLLSYM(&templatename, template_get_creation_name(template));
         binbuf_add(b, 1, &templatename);
     }
     if (!template)
@@ -655,6 +672,58 @@ static void glist_write(t_glist *x, t_symbol *filename, t_symbol *format)
     }
 }
 
+    /* ------------ routines to write out templates themselves ------- */
+
+    /* call this recursively to collect all the template names for
+    a canvas or for the selection. */
+static void canvas_collecttemplatesfor(t_canvas *x, int *ntemplatesp,
+    t_symbol ***templatevecp, int wholething)
+{
+    t_gobj *y;
+
+    for (y = x->gl_list; y; y = y->g_next)
+    {
+        if ((pd_class(&y->g_pd) == scalar_class) &&
+            (wholething || glist_isselected(x, y)))
+                canvas_addtemplatesforscalar(((t_scalar *)y)->sc_template,
+                    ((t_scalar *)y)->sc_vec,  ntemplatesp, templatevecp);
+        else if ((pd_class(&y->g_pd) == canvas_class) &&
+            (wholething || glist_isselected(x, y)))
+                canvas_collecttemplatesfor((t_canvas *)y,
+                    ntemplatesp, templatevecp, 1);
+    }
+}
+
+    /* defined in g_template.c */
+t_binbuf *template_get_creation_binbuf(t_template *x);
+
+    /* save the templates needed by a canvas to a binbuf. */
+static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
+{
+    t_symbol **templatevec = getbytes(0);
+    int i, ntemplates = 0;
+    canvas_collecttemplatesfor(x, &ntemplates, &templatevec, wholething);
+    for (i = 0; i < ntemplates; i++)
+    {
+        t_template *template = template_findbyname(templatevec[i]);
+        int j, m;
+        if (!template)
+        {
+            bug("canvas_savetemplatesto template_findbyname");
+            continue;
+        }
+
+        t_binbuf *bb = template_get_creation_binbuf(template);
+        if (bb)
+        {
+            binbuf_addv(b, "s", &s__N);
+            binbuf_addbinbuf(b, bb);
+            binbuf_addsemi(b);
+        } else bug("canvas_savetemplatesto template_get_creation_binbuf");
+    }
+    freebytes(templatevec, ntemplates * sizeof(*templatevec));
+}
+
 /* ------ routines to save and restore canvases (patches) recursively. ----*/
 
 typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
@@ -694,6 +763,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
             (int)(x->gl_screeny2 - x->gl_screeny1),
                 (int)x->gl_font);
         canvas_savedeclarationsto(x, b);
+        canvas_savetemplatesto(x, b, 1);
     }
     for (y = x->gl_list; y; y = y->g_next)
         gobj_save(y, b);
@@ -706,6 +776,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
         binbuf_addv(b, "ssiiii;", gensym("#X"), gensym("connect"),
             srcno, t.tr_outno, sinkno, t.tr_inno);
     }
+
         /* unless everything is the default (as in ordinary subpatches)
         print out a "coords" message to set up the coordinate systems */
     if (x->gl_isgraph || x->gl_x1 || x->gl_y1 ||
@@ -728,66 +799,36 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
                 (t_float)x->gl_isgraph);
     }
-}
 
-    /* call this recursively to collect all the template names for
-    a canvas or for the selection. */
-static void canvas_collecttemplatesfor(t_canvas *x, int *ntemplatesp,
-    t_symbol ***templatevecp, int wholething)
-{
-    t_gobj *y;
-
-    for (y = x->gl_list; y; y = y->g_next)
+        /* graph ticks and labels */
+    if (x->gl_isgraph)
     {
-        if ((pd_class(&y->g_pd) == scalar_class) &&
-            (wholething || glist_isselected(x, y)))
-                canvas_addtemplatesforscalar(((t_scalar *)y)->sc_template,
-                    ((t_scalar *)y)->sc_vec,  ntemplatesp, templatevecp);
-        else if ((pd_class(&y->g_pd) == canvas_class) &&
-            (wholething || glist_isselected(x, y)))
-                canvas_collecttemplatesfor((t_canvas *)y,
-                    ntemplatesp, templatevecp, 1);
-    }
-}
-
-    /* save the templates needed by a canvas to a binbuf. */
-static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
-{
-    t_symbol **templatevec = getbytes(0);
-    int i, ntemplates = 0;
-    canvas_collecttemplatesfor(x, &ntemplates, &templatevec, wholething);
-    for (i = 0; i < ntemplates; i++)
-    {
-        t_template *template = template_findbyname(templatevec[i]);
-        int j, m;
-        if (!template)
-        {
-            bug("canvas_savetemplatesto");
-            continue;
+        if (x->gl_xtick.k_lperb) {
+            binbuf_addv(b, "ssffi;", gensym("#X"), gensym("xticks"),
+                x->gl_xtick.k_point, x->gl_xtick.k_inc, x->gl_xtick.k_lperb);
         }
-        m = template->t_n;
-            /* drop "pd-" prefix from template symbol to print */
-        binbuf_addv(b, "sss", &s__N, gensym("struct"),
-            gensym(templatevec[i]->s_name + 3));
-        for (j = 0; j < m; j++)
-        {
-            t_symbol *type;
-            switch (template->t_vec[j].ds_type)
-            {
-                case DT_FLOAT: type = &s_float; break;
-                case DT_SYMBOL: type = &s_symbol; break;
-                case DT_ARRAY: type = gensym("array"); break;
-                case DT_TEXT: type = gensym("text"); break;
-                default: type = &s_float; bug("canvas_write");
+        if (x->gl_ytick.k_lperb) {
+            binbuf_addv(b, "ssffi;", gensym("#X"), gensym("yticks"),
+                x->gl_ytick.k_point, x->gl_ytick.k_inc, x->gl_ytick.k_lperb);
+        }
+
+        if(x->gl_nxlabels>0) {
+            int i;
+            binbuf_addv(b, "ssf", gensym("#X"), gensym("xlabel"), x->gl_xlabely);
+            for(i=0; i<x->gl_nxlabels; i++) {
+                binbuf_addv(b, "s", x->gl_xlabel[i]);
             }
-            if (template->t_vec[j].ds_type == DT_ARRAY)
-                binbuf_addv(b, "sss", type, template->t_vec[j].ds_name,
-                    gensym(template->t_vec[j].ds_arraytemplate->s_name + 3));
-            else binbuf_addv(b, "ss", type, template->t_vec[j].ds_name);
+            binbuf_addv(b, ";");
         }
-        binbuf_addsemi(b);
+        if(x->gl_nylabels>0) {
+            int i;
+            binbuf_addv(b, "ssf", gensym("#X"), gensym("ylabel"), x->gl_ylabelx);
+            for(i=0; i<x->gl_nylabels; i++) {
+                binbuf_addv(b, "s", x->gl_ylabel[i]);
+            }
+            binbuf_addv(b, ";");
+        }
     }
-    freebytes(templatevec, ntemplates * sizeof(*templatevec));
 }
 
 void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except);
@@ -798,7 +839,6 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     float fdestroy)
 {
     t_binbuf *b = binbuf_new();
-    canvas_savetemplatesto(x, b, 1);
     canvas_saveto(x, b);
     errno = 0;
     if (binbuf_write(b, filename->s_name, dir->s_name, 0))
@@ -808,11 +848,11 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     {
             /* if not an abstraction, reset title bar and directory */
         if (!x->gl_owner)
-{
+        {
             canvas_rename(x, filename, dir);
             /* update window list in case Save As changed the window name */
             canvas_updatewindowlist();
-}
+        }
         post("saved to: %s/%s", dir->s_name, filename->s_name);
         canvas_dirty(x, 0);
         canvas_reload(filename, dir, x);

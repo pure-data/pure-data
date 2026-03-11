@@ -44,10 +44,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos, ypos + height + zoom - ioh,
             xpos + iow, ypos + height,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep buttons above outlet */
@@ -58,10 +59,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos, ypos,
             xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep buttons above inlet */
@@ -105,12 +107,13 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
 
     for(i = 0; i < x->x_number; i++)
     {
-        int col = (x->x_on == i) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
+        unsigned int col = (x->x_on == i) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
         sprintf(tag, "%pBASE%d", x, i);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11, yy11, xx12, yy12);
-        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-fill", x->x_gui.x_bcol);
+        pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-fill", x->x_gui.x_bcol,
+            "-outline", THISGUI->i_foregroundcolor);
 
         sprintf(tag, "%pBUT%d", x, i);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -169,12 +172,11 @@ static void radio_draw_select(t_radio* x, t_glist* glist)
 {
     int n = x->x_number, i;
     t_canvas *canvas = glist_getcanvas(glist);
-    int lcol = x->x_gui.x_lcol;
-    int col = IEM_GUI_COLOR_NORMAL;
     char tag[128];
+    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
 
     if(x->x_gui.x_fsf.x_selected)
-        lcol = col =  IEM_GUI_COLOR_SELECTED;
+        lcol = col = THISGUI->i_selectcolor;
 
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
@@ -673,17 +675,10 @@ static void *dial_new(t_symbol *s, int argc, t_atom *argv)
     return (radio_donew(s, argc, argv, 1));
 }
 
-static void radio_free(t_radio *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_radio_setup(void)
 {
     radio_class = class_new(gensym("hradio"), (t_newmethod)radio_new,
-        (t_method)radio_free, sizeof(t_radio), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_radio), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)radio_new, gensym("vradio"), A_GIMME, 0);
 
     class_addcreator((t_newmethod)radio_new, gensym("rdb"), A_GIMME, 0);

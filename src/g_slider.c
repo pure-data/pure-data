@@ -62,10 +62,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep knob above outlet */
@@ -76,10 +77,11 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
-            "-fill", "black",
+            "-fill", THISGUI->i_foregroundcolor,
+            "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
 
             /* keep knob above inlet */
@@ -140,9 +142,10 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+    pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom,
-        "-fill", x->x_gui.x_bcol);
+        "-fill", x->x_gui.x_bcol,
+        "-outline", THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%pKNOB", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -155,9 +158,12 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+    if(x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
+    else
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -188,11 +194,11 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
 static void slider_draw_select(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
     char tag[128];
+    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
 
     if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
+        col = lcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
@@ -508,6 +514,8 @@ static void slider_set(t_slider *x, t_floatarg f)
 {
     int old = x->x_val;
     double g;
+    if (PD_BADFLOAT(f))
+        f = 0;
 
     x->x_fval = f;
     if (x->x_min > x->x_max)
@@ -752,17 +760,10 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void slider_free(t_slider *x)
-{
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    pdgui_stub_deleteforkey(x);
-}
-
 void g_slider_setup(void)
 {
     slider_class = class_new(gensym("hsl"), (t_newmethod)slider_new,
-        (t_method)slider_free, sizeof(t_slider), 0, A_GIMME, 0);
+        (t_method)iemgui_free, sizeof(t_slider), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("vsl"), A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("hslider"), A_GIMME, 0);
     class_addcreator((t_newmethod)slider_new, gensym("vslider"), A_GIMME, 0);

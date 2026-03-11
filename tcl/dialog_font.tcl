@@ -72,7 +72,7 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         }
 
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
-        set ::pdwindow::font:size $myfontsize
+        set ::pdwindow::font_size $myfontsize
 
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
@@ -120,7 +120,7 @@ proc ::dialog_font::cancel {gfxstub} {
 proc ::dialog_font::update_font_dialog {mytoplevel} {
     variable canvaswindow $mytoplevel
     if {[winfo exists .font]} {
-        wm title .font [format [_ "%s Font"] [lookup_windowname $mytoplevel]]
+        wm title .font [_ "%s Font" [lookup_windowname $mytoplevel]]
     }
 }
 
@@ -160,7 +160,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
 
 proc ::dialog_font::create_dialog {gfxstub} {
     toplevel .font -class DialogWindow
-    .font configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog .font
     .font configure -padx 10 -pady 5
     wm group .font .
     wm title .font [_ "Font"]

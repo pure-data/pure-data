@@ -1,8 +1,8 @@
 /*
- *  Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
+ * Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
  *
- *  For information on usage and redistribution, and for a DISCLAIMER OF ALL
- *  WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
  *
  * See https://github.com/libpd/libpd/wiki for documentation
  *
@@ -11,13 +11,15 @@
 #ifndef __Z_RING_BUFFER_H__
 #define __Z_RING_BUFFER_H__
 
+#include "m_private_utils.h"
+
 /// simple lock-free ring buffer implementation for one writer thread
 /// and one consumer thread
 typedef struct ring_buffer {
     int size;
     char *buf_ptr;
-    int write_idx;
-    int read_idx;
+    atomic_int write_idx;
+    atomic_int read_idx;
 } ring_buffer;
 
 /// create a ring buffer, size must be a multiple of 256

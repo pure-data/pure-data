@@ -61,7 +61,7 @@ argument, a "Pd.app" is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.
 
-A pre-built universal (32/64 bit) Tk 8.6.10 Wish with patches applied is
+A pre-built universal (32/64 bit) Tk 8.6.10+ Wish with patches applied is
 included with the Pd source distribution and works across the majority of macOS
 versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
 want to use a different Wish.app (a newer version, a custom build, a system

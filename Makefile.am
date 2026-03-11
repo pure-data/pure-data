@@ -37,6 +37,11 @@ EXTRA_SUBDIRS += po
 BUILT_SOURCES += locales
 endif
 
+#### alternative GUI #####
+if GTK
+EXTRA_SUBDIRS += gtk
+endif
+
 # include libpd `here since the libpd subdirs contain their own custom Makefiles
 LIBPD_DIST = libpd/Makefile libpd/README.txt libpd/test_libpd/Makefile \
              libpd/test_libpd/test_libpd.c libpd/test_libpd/test_libpd.pd
@@ -55,7 +60,7 @@ pkgdata_DATA = \
 SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc tcl extra font
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio doc extra font linux mac man msw po portmidi portaudio src tcl
+DIST_SUBDIRS = asio doc extra font linux mac man msw po portmidi portaudio src tcl gtk
 
 #########################################
 ##### Targets #####

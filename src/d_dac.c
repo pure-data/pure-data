@@ -110,7 +110,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
         SETFLOAT(&defarg[0], 1);
         SETFLOAT(&defarg[1], 2);
     }
-    if (argc >= 2 && argv[0].a_type == A_SYMBOL &&
+    if (argc > 0 && argv[0].a_type == A_SYMBOL &&
         !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
     {       /* multichannel version: -m [nchans] [start channel] */
         x->x_multi = 1;
@@ -118,7 +118,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
             x->x_n = 2;
         if ((firstchan = atom_getfloatarg(2, argc, argv)) < 1)
             firstchan = 1;
-        x->x_vec = (int *)getbytes(argc * sizeof(*x->x_vec));
+        x->x_vec = (int *)getbytes(x->x_n * sizeof(*x->x_vec));
         for (i = 0; i < x->x_n; i++)
             x->x_vec[i] = firstchan+i;
         outlet_new(&x->x_obj, &s_signal);
@@ -202,4 +202,3 @@ void d_dac_setup(void)
     dac_setup();
     adc_setup();
 }
-

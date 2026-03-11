@@ -507,7 +507,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     }
         /* shift elements (after the deleted elements) to the left */
     memmove(x->x_alist.l_vec + index, x->x_alist.l_vec + index + n,
-        (x->x_alist.l_n - index) * sizeof(*x->x_alist.l_vec));
+        (x->x_alist.l_n - index - n) * sizeof(*x->x_alist.l_vec));
         /* shrink memory */
     if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
         (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
@@ -822,7 +822,7 @@ static void list_tosymbol_setup(void)
 
 /* ------------- list ------------------- */
 
-static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
+void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
         pd_this->pd_newest = list_append_new(s, argc, argv);

@@ -140,17 +140,6 @@ install_manually() {
     if [ -e "${BUILD}/po/es.msg" ] ; then
         mkdir -p "${DEST}/po"
         cp $verbose "${BUILD}/po"/*.msg "${DEST}/po/"
-        # add locale entries to the plist based on available .msg files
-        # commented out for 0.48-1 because it seems to misbehave - open/save dialogs
-        # are opening in a random language (and meanwhile Pd doesn't yet respect
-        # current language setting - I don't know what's going on here.  -msp
-        # LOCALES=$(find ${BUILD}/po -name "*.msg" -exec basename {} .msg \;)
-        # $PLIST_BUDDY \
-            #     -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
-        # for locale in $LOCALES ; do
-        #     $PLIST_BUDDY \
-            #         -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
-        # done
     else
         echo "No localizations found. Skipping po dir..."
     fi
@@ -205,6 +194,18 @@ install_make() {
 
     # create any needed symlinks
     ln -s tcl "${DEST}/Scripts"
+}
+
+register_l10n() {
+    # register translations in the plist file
+    # usage: register_l10n "${INFO_PLIST}" "${BUILD}/po"
+    #   adds an entry for each translation found in '${BUILD}/po' to '${INFO_PLIST}'
+    local po
+    find "$2" -maxdepth 1 -type f -name "*.msg" -exec basename {} .msg ";" | sort | while read po; do
+        "${PLIST_BUDDY}" -c "Print :CFBundleLocalizations" "$1" >/dev/null 2>&1 || \
+            "${PLIST_BUDDY}" -c "Add CFBundleLocalizations array" "$1"
+        "${PLIST_BUDDY}" -c "Add :CFBundleLocalizations: string ${po}" "$1"
+    done
 }
 
 # Parse command line arguments
@@ -440,6 +441,14 @@ case "${install_type}" in
         install_manually
         ;;
 esac
+
+# add locale entries to the plist based on available .msg files
+# commented out for 0.48-1 because it seems to misbehave - open/save dialogs
+# are opening in a random language (and meanwhile Pd doesn't yet respect
+# current language setting - I don't know what's going on here.  -msp
+# re-enabled for 0.55 -jmz
+register_l10n "${INFO_PLIST}" "${APP}/Contents/Resources/po"
+
 
 # "code signing" which also sets entitlements
 # note: "-" identity results in "ad-hoc signing" aka no signing is performed

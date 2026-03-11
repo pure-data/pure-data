@@ -59,7 +59,8 @@ static void *table_donew(t_symbol *s, int size, int save, int savesize,
     pd_this->pd_newest = &x->gl_pd;     /* mimic action of canvas_pop() */
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
-
+        /* commit ced31b51 somehow sets edit mode so (crudely) unset it: */
+    x->gl_edit = 0;
     return (x);
 }
 
@@ -440,7 +441,7 @@ static void array_size_float(t_array_size *x, t_floatarg f)
                 pd_error(x, "no such array '%s'", x->x_tc.tc_sym->s_name);
                 return;
             }
-            garray_resize(y, f);
+            garray_resize_long(y, f);
         }
         else
         {

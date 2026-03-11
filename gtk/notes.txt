@@ -1,0 +1,41 @@
+This is a test to see how ugly it would be to simply make the needed
+gtk bindings to tcl so that we can run Pd with a GTK front end. This might
+turn out to be the best way to support 'wayland' (which linux is migrating to).
+
+
+To test:
+
+make && pd -guicmd ~/pd/gtk/pdgtk -nrt -stderr test1.pd
+
+Set the DEBUG environment variable to enable debugging printout.
+
+So far, one can click on things, go into and out of edit
+mode, move boxes around and/or type into them.
+
+There are about 10 tcl commands that get parsed.  The Pd source has
+325 calls to pdgui_vmess / pdgui_vamess, of which perhaps 100 or 200
+are distinct.
+
+At the moment I'm modifying the pdgui calls, one by one, to replace things
+like
+
+   [...] create line [...] -fill #000000
+
+with
+
+   pdtk_canvas_create_line #00000 [...]
+
+and adding functions like pdtk_canvas_create_line to the tcl code, so that
+it becomes easier to parse the tcl commands from the gtk end.
+
+todo next:
+text editing for objects etc - manage and show text selection
+finish replacing "create line" with pdtk_canvas_create_line calls
+add copy, paste, delete
+put in menus and text buffer in main window
+
+ideas:
+can some or all of the many dialog windows be re-implemented as Pd patches?
+(see how Max does it... this would make it much easier to adapt to any future
+GUI implementations.)
+

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
- * Copyright (c) 2012-2019 libpd team
+ * Copyright (c) 2012-2021 libpd team
  *
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
