@@ -191,10 +191,16 @@ proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
     pack  $frame -side top -fill x -anchor n -expand 1
 
     label $frame.l1 -text [_ "In Ports:"]
-    entry $frame.x1 -textvariable $inportsvar -width 4
+    spinbox $frame.x1 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${inportsvar}
     pack $frame.l1 $frame.x1 -side left
     label $frame.l2 -text [_ "Out Ports:"]
-    entry $frame.x2 -textvariable $outportsvar -width 4
+    spinbox $frame.x2 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${outportsvar}
     pack $frame.l2 $frame.x2 -side left
 }
 
