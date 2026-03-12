@@ -59,7 +59,7 @@ proc ::pd_menus::create_menubar {} {
     $::patch_menubar add cascade -label [_ Put] \
             -underline 0 -menu $::patch_menubar.put
 
-    foreach mymenu "find media window tools help" {
+    foreach mymenu "find window media tools help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
