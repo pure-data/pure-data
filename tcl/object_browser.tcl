@@ -157,7 +157,7 @@ proc category_menu::build_menu {parent_menu node x y} {
 }
 
 proc category_menu::create {cmdstring code result op} {
-    if {!$::category_menu::enabled} { return }
+    if {!$::category_menu::enable_object_browser} { return }
     set mymenu [lindex $cmdstring 1]
     set x [lindex $cmdstring 3]
     set y [lindex $cmdstring 4]
@@ -173,14 +173,14 @@ proc category_menu::create {cmdstring code result op} {
 }
 
 proc category_menu::read_browser_cfg {} {
-    set ::category_menu::enabled [::pd_guiprefs::read object_browser_enabled]
-    if {$::category_menu::enabled eq ""} {
-        set ::category_menu::enabled 0
+    set ::category_menu::enable_object_browser [::pd_guiprefs::read object_browser_enabled]
+    if {$::category_menu::enable_object_browser eq ""} {
+        set ::category_menu::enable_object_browser 0
     }
 }
 
 proc category_menu::write_config {{filename browser.cfg}} {
-    ::pd_guiprefs::write object_browser_enabled $::category_menu::enabled
+    ::pd_guiprefs::write object_browser_enabled $::category_menu::enable_object_browser
 }
 
 trace add execution ::pdtk_canvas::create_popup leave category_menu::create

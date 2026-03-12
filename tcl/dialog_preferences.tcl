@@ -83,7 +83,7 @@ proc ::dialog_preferences::fill_frame {prefs} {
         -variable ::pdtk_canvas::enable_cords_to_foreground -anchor w
     pack $prefs.guiframe.patching.highlight_connections -side left -anchor w
     checkbutton $prefs.guiframe.patching.object_browser -text [_ "Enable Object Browser"] \
-        -variable ::category_menu::enabled -anchor w \
+        -variable ::category_menu::enable_object_browser -anchor w \
         -command {category_menu::write_config}
     pack $prefs.guiframe.patching.object_browser -side left -anchor w
 }
