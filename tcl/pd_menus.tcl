@@ -288,8 +288,6 @@ proc ::pd_menus::build_media_menu {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Test Audio and MIDI..."] \
         -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools testtone.pd}
-    $mymenu add command -label [_ "Load Meter"] \
-        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
 
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
@@ -352,6 +350,9 @@ proc ::pd_menus::build_window_menu {mymenu} {
 proc ::pd_menus::build_tools_menu {mymenu} {
     variable accelerator
 
+    $mymenu add command -label [_ "Load Meter"] \
+        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
+    $mymenu add  separator
     $mymenu add command -label [_ "Message..."] \
         -accelerator "$accelerator+Shift+M" \
         -command {::pd_menucommands::scheduleAction menu_message_dialog}
