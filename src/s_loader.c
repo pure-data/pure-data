@@ -32,6 +32,10 @@
 
 typedef void (*t_xxx)(void);
 
+/* forward declarations */
+void push_loadsym(t_symbol*s);
+t_symbol*pop_loadsym(void);
+
 /* naming convention for externs.  The names are kept distinct for those
 who wish to make "fat" externs compiled for many platforms.  Less specific
 fallbacks are provided, primarily for back-compatibility; these suffice if
@@ -480,7 +484,7 @@ int sys_loadlib_iter(const char *path, struct _loadlib_data *data)
     return (ok == 0);
 }
 
-int sys_load_lib(t_canvas *canvas, const char *classname)
+int do_load_lib(t_canvas *canvas, const char *classname)
 {
     int dspstate = canvas_suspend_dsp();
     struct _loadlib_data data;
@@ -531,6 +535,16 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     canvas_resume_dsp(dspstate);
     return data.ok;
 }
+
+int sys_load_lib(t_canvas *canvas, const char *classname)
+{
+    int result = 0;
+    push_loadsym(gensym(classname));
+    result = do_load_lib(canvas, classname);
+    pop_loadsym();
+    return result;
+}
+
 
 int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring)
