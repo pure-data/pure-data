@@ -135,8 +135,8 @@ proc ::dialog_preferences::fill_frame {prefs} {
     # Row 1: Dropdown menu and Compose button
     frame $prefs.guiframe.colors.toprow
     pack $prefs.guiframe.colors.toprow -side top -fill x -pady 5
-
-    # Dropdown on left
+    label $prefs.guiframe.colors.toprow.leftspacer -text "" -width 2
+    pack $prefs.guiframe.colors.toprow.leftspacer -side left -expand 1
     label $prefs.guiframe.colors.toprow.lab -text [_ "Presets:"]
     menubutton $prefs.guiframe.colors.toprow.mb \
         -text "Default" \
@@ -145,7 +145,6 @@ proc ::dialog_preferences::fill_frame {prefs} {
     menu $prefs.guiframe.colors.toprow.mb.menu -tearoff 0
     $prefs.guiframe.colors.toprow.mb configure \
         -menu $prefs.guiframe.colors.toprow.mb.menu
-    # Add preset options
     set presets { "Default" "Dark Mode" "Light Mode" "Pastel" "Dark Contrasted" "Purple Haze" "Misty Rose" "C64" "Strongbad" "Solarized" "Solarized Inverted"}
     foreach preset $presets {
         $prefs.guiframe.colors.toprow.mb.menu add command \
@@ -155,13 +154,13 @@ proc ::dialog_preferences::fill_frame {prefs} {
     pack $prefs.guiframe.colors.toprow.lab \
          $prefs.guiframe.colors.toprow.mb \
          -side left
-    # Spacer
     label $prefs.guiframe.colors.toprow.spacer -text "" -width 2
     pack $prefs.guiframe.colors.toprow.spacer -side left
-    # Compose button on right
     button $prefs.guiframe.colors.toprow.compose -text [_ "Compose Color"] \
         -command "::dialog_preferences::gui_compose_color $prefs"
-    pack $prefs.guiframe.colors.toprow.compose -side left -padx 5
+    pack $prefs.guiframe.colors.toprow.compose -side left
+    label $prefs.guiframe.colors.toprow.rightspacer -text "" -width 2
+    pack $prefs.guiframe.colors.toprow.rightspacer -side left -expand 1
     # Row 2: Radio buttons
     frame $prefs.guiframe.colors.radio
     pack $prefs.guiframe.colors.radio -side top -fill x -pady 2
@@ -182,10 +181,9 @@ proc ::dialog_preferences::fill_frame {prefs} {
          $prefs.guiframe.colors.radio.sel \
          $prefs.guiframe.colors.radio.gop \
          -side left
-    # Row 3: Preset color swatches (3 rows)
+    # Row 3: Preset colors
     frame $prefs.guiframe.colors.swatches
     pack $prefs.guiframe.colors.swatches -fill x
-
     foreach r {r1 r2 r3} hexcols {
         { "#FFFFFF" "#DFDFDF" "#BBBBBB" "#FFC7C6" "#FFE3C6" "#FEFFC6" "#C6FFC7" "#C6FEFF" "#C7C6FF" "#E3C6FF" }
         { "#9F9F9F" "#7C7C7C" "#606060" "#FF0400" "#FF8300" "#FAFF00" "#00FF04" "#00FAFF" "#0400FF" "#9C00FF" }
