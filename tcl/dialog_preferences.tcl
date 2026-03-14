@@ -7,12 +7,15 @@ package require preferencewindow
 namespace eval ::dialog_preferences:: {
 }
 
+namespace eval ::category_menu {}
+
 set ::dialog_preferences::use_ttknotebook {}
 after idle ::dialog_preferences::read
 # allow updating the audio resp MIDI frame if the backend changes
 set ::dialog_preferences::audio_frame {}
 set ::dialog_preferences::midi_frame {}
 set ::dialog_preferences::gui_color_radio 0
+set ::dialog_preferences::gui_colors_changed 0
 
 
 proc ::dialog_preferences::cancel {mytoplevel} {
@@ -20,17 +23,37 @@ proc ::dialog_preferences::cancel {mytoplevel} {
     set ::dialog_preferences::midi_frame {}
     destroy $mytoplevel
 }
-proc ::dialog_preferences::do_apply {mytoplevel} {
-    ::pd_guiprefs::write "gui_language" $::pd_i18n::language
-    ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
-    ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
+proc ::dialog_preferences::do_applycolors {} {
+    set saved_bg [::pd_guiprefs::read color_bg]
+    set saved_fg [::pd_guiprefs::read color_fg]
+    set saved_sel [::pd_guiprefs::read color_sel]
+    set saved_gop [::pd_guiprefs::read color_gop]
+    set changed 0
+    if {$saved_bg ne $::dialog_preferences::gui_color_bg} { set changed 1 }
+    if {$saved_fg ne $::dialog_preferences::gui_color_fg} { set changed 1 }
+    if {$saved_sel ne $::dialog_preferences::gui_color_sel} { set changed 1 }
+    if {$saved_gop ne $::dialog_preferences::gui_color_gop} { set changed 1 }
+
     ::pd_guiprefs::write "color_bg" $::dialog_preferences::gui_color_bg
     ::pd_guiprefs::write "color_fg" $::dialog_preferences::gui_color_fg
     ::pd_guiprefs::write "color_sel" $::dialog_preferences::gui_color_sel
     ::pd_guiprefs::write "color_gop" $::dialog_preferences::gui_color_gop
 
+    if {$changed} {
+        pdsend "pd colors $::dialog_preferences::gui_color_fg $::dialog_preferences::gui_color_bg $::dialog_preferences::gui_color_sel $::dialog_preferences::gui_color_gop"
+    }
+}
+proc ::dialog_preferences::do_apply {mytoplevel} {
+    ::pd_guiprefs::write "gui_language" $::pd_i18n::language
+    ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
+    ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
     pdsend "pd zoom-open $::sys_zoom_open"
-    pdsend "pd colors $::dialog_preferences::gui_color_fg $::dialog_preferences::gui_color_bg $::dialog_preferences::gui_color_sel $::dialog_preferences::gui_color_gop"
+    ::dialog_preferences::do_applycolors
+}
+proc ::dialog_preferences::apply_colors_if_mac {} {
+    if {$::windowingsystem eq "aqua"} {
+        ::dialog_preferences::do_applycolors
+    }
 }
 proc ::dialog_preferences::apply {mytoplevel} {
     ::preferencewindow::apply $mytoplevel
@@ -49,7 +72,7 @@ proc ::dialog_preferences::read {} {
     }
     set ::dialog_preferences::gui_color_sel [::pd_guiprefs::read color_sel]
     if {$::dialog_preferences::gui_color_sel eq ""} {
-        set ::dialog_preferences::gui_color_sek  "#0000FF"
+        set ::dialog_preferences::gui_color_sel  "#0000FF"
     }
     set ::dialog_preferences::gui_color_gop [::pd_guiprefs::read color_gop]
     if {$::dialog_preferences::gui_color_gop eq ""} {
@@ -109,10 +132,39 @@ proc ::dialog_preferences::fill_frame {prefs} {
         -text [_ "Colors" ]
     pack $prefs.guiframe.colors -side top -anchor w -expand 1 -fill x
 
-    # Radio buttons and Compose button
-    frame $prefs.guiframe.colors.radio
-    pack $prefs.guiframe.colors.radio -side top
+    # Row 1: Dropdown menu and Compose button
+    frame $prefs.guiframe.colors.toprow
+    pack $prefs.guiframe.colors.toprow -side top -fill x -pady 5
 
+    # Dropdown on left
+    label $prefs.guiframe.colors.toprow.lab -text [_ "Presets:"]
+    menubutton $prefs.guiframe.colors.toprow.mb \
+        -text "Default" \
+        -menu $prefs.guiframe.colors.toprow.mb.menu \
+        -width 12 -relief raised
+    menu $prefs.guiframe.colors.toprow.mb.menu -tearoff 0
+    $prefs.guiframe.colors.toprow.mb configure \
+        -menu $prefs.guiframe.colors.toprow.mb.menu
+    # Add preset options
+    set presets { "Default" "Dark Mode" "Light Mode" "Pastel" "Dark Contrasted" "Purple Haze" "Misty Rose" "C64" "Strongbad" "Solarized" "Solarized Inverted"}
+    foreach preset $presets {
+        $prefs.guiframe.colors.toprow.mb.menu add command \
+            -label $preset \
+            -command "::dialog_preferences::apply_color_preset $prefs \"$preset\""
+    }
+    pack $prefs.guiframe.colors.toprow.lab \
+         $prefs.guiframe.colors.toprow.mb \
+         -side left
+    # Spacer
+    label $prefs.guiframe.colors.toprow.spacer -text "" -width 2
+    pack $prefs.guiframe.colors.toprow.spacer -side left
+    # Compose button on right
+    button $prefs.guiframe.colors.toprow.compose -text [_ "Compose Color"] \
+        -command "::dialog_preferences::gui_compose_color $prefs"
+    pack $prefs.guiframe.colors.toprow.compose -side left -padx 5
+    # Row 2: Radio buttons
+    frame $prefs.guiframe.colors.radio
+    pack $prefs.guiframe.colors.radio -side top -fill x -pady 2
     radiobutton $prefs.guiframe.colors.radio.bg -value 0 \
         -variable ::dialog_preferences::gui_color_radio \
         -text [_ "Background"]
@@ -125,81 +177,42 @@ proc ::dialog_preferences::fill_frame {prefs} {
     radiobutton $prefs.guiframe.colors.radio.gop -value 3 \
         -variable ::dialog_preferences::gui_color_radio \
         -text [_ "GOP"]
-
-    label $prefs.guiframe.colors.radio.dummy -text "" -width 1
-    button $prefs.guiframe.colors.radio.but -text [_ "Compose"] \
-        -command "::dialog_preferences::gui_compose_color $prefs"
-
     pack $prefs.guiframe.colors.radio.bg \
          $prefs.guiframe.colors.radio.fg \
          $prefs.guiframe.colors.radio.sel \
          $prefs.guiframe.colors.radio.gop \
-         $prefs.guiframe.colors.radio.dummy \
-         $prefs.guiframe.colors.radio.but \
          -side left
-
-    # Container frame for preset-colors-rows + dropdown
-    frame $prefs.guiframe.colors.container -pady 8
-    pack $prefs.guiframe.colors.container -fill x
-
-    # Left side: Preset colors (3 rows)
-    frame $prefs.guiframe.colors.container.left
-    pack $prefs.guiframe.colors.container.left -side left -fill x -expand 1
+    # Row 3: Preset color swatches (3 rows)
+    frame $prefs.guiframe.colors.swatches
+    pack $prefs.guiframe.colors.swatches -fill x
 
     foreach r {r1 r2 r3} hexcols {
         { "#FFFFFF" "#DFDFDF" "#BBBBBB" "#FFC7C6" "#FFE3C6" "#FEFFC6" "#C6FFC7" "#C6FEFF" "#C7C6FF" "#E3C6FF" }
         { "#9F9F9F" "#7C7C7C" "#606060" "#FF0400" "#FF8300" "#FAFF00" "#00FF04" "#00FAFF" "#0400FF" "#9C00FF" }
         { "#404040" "#202020" "#000000" "#551312" "#553512" "#535512" "#0F4710" "#0E4345" "#131255" "#2F004D" }
     } {
-        frame $prefs.guiframe.colors.container.left.$r
-        pack $prefs.guiframe.colors.container.left.$r -side top
-
+        frame $prefs.guiframe.colors.swatches.$r
+        pack $prefs.guiframe.colors.swatches.$r -side top
         foreach i {0 1 2 3 4 5 6 7 8 9} hexcol $hexcols {
-            label $prefs.guiframe.colors.container.left.$r.c$i \
+            label $prefs.guiframe.colors.swatches.$r.c$i \
                 -background $hexcol \
                 -activebackground $hexcol \
                 -relief ridge -padx 7 -pady 0 -width 1
-            bind $prefs.guiframe.colors.container.left.$r.c$i <Button> \
+            bind $prefs.guiframe.colors.swatches.$r.c$i <Button> \
                 "::dialog_preferences::gui_set_color $prefs $hexcol"
         }
-
-        pack $prefs.guiframe.colors.container.left.$r.c0 \
-             $prefs.guiframe.colors.container.left.$r.c1 \
-             $prefs.guiframe.colors.container.left.$r.c2 \
-             $prefs.guiframe.colors.container.left.$r.c3 \
-             $prefs.guiframe.colors.container.left.$r.c4 \
-             $prefs.guiframe.colors.container.left.$r.c5 \
-             $prefs.guiframe.colors.container.left.$r.c6 \
-             $prefs.guiframe.colors.container.left.$r.c7 \
-             $prefs.guiframe.colors.container.left.$r.c8 \
-             $prefs.guiframe.colors.container.left.$r.c9 \
+        pack $prefs.guiframe.colors.swatches.$r.c0 \
+             $prefs.guiframe.colors.swatches.$r.c1 \
+             $prefs.guiframe.colors.swatches.$r.c2 \
+             $prefs.guiframe.colors.swatches.$r.c3 \
+             $prefs.guiframe.colors.swatches.$r.c4 \
+             $prefs.guiframe.colors.swatches.$r.c5 \
+             $prefs.guiframe.colors.swatches.$r.c6 \
+             $prefs.guiframe.colors.swatches.$r.c7 \
+             $prefs.guiframe.colors.swatches.$r.c8 \
+             $prefs.guiframe.colors.swatches.$r.c9 \
              -side left
     }
-
-    # Right side: Dropdown menu
-    frame $prefs.guiframe.colors.container.right
-    pack $prefs.guiframe.colors.container.right -side left -padx 5
-
-    label $prefs.guiframe.colors.container.right.lab -text [_ "Presets:"]
-    menubutton $prefs.guiframe.colors.container.right.mb \
-        -text "Default" \
-        -menu $prefs.guiframe.colors.container.right.mb.menu \
-        -width 12 -relief raised
-    menu $prefs.guiframe.colors.container.right.mb.menu -tearoff 0
-    $prefs.guiframe.colors.container.right.mb configure \
-        -menu $prefs.guiframe.colors.container.right.mb.menu
-
-    # Add preset options
-    set presets { "Default" "High Contrast" "Pastel" "Dark Mode" "C64" "Strongbad" "Solarized" "Solarized Inverted"}
-    foreach preset $presets {
-        $prefs.guiframe.colors.container.right.mb.menu add command \
-            -label $preset \
-            -command "::dialog_preferences::apply_color_preset $prefs \"$preset\""
-    }
-
-    pack $prefs.guiframe.colors.container.right.lab \
-         $prefs.guiframe.colors.container.right.mb \
-         -side top -anchor w
 }
 
 proc ::dialog_preferences::apply_color_preset {prefs presetname} {
@@ -210,40 +223,58 @@ proc ::dialog_preferences::apply_color_preset {prefs presetname} {
             set ::dialog_preferences::gui_color_sel "#0000FF"
             set ::dialog_preferences::gui_color_gop "#FF0000"
         }
-        "High Contrast" {
-            set ::dialog_preferences::gui_color_bg "#000000"
-            set ::dialog_preferences::gui_color_fg "#FFFFFF"
-            set ::dialog_preferences::gui_color_sel "#FFFF00"
-            set ::dialog_preferences::gui_color_gop "#FF00FF"
-        }
-        "Pastel" {
-            set ::dialog_preferences::gui_color_bg "#FFF0F0"
-            set ::dialog_preferences::gui_color_fg "#808080"
-            set ::dialog_preferences::gui_color_sel "#A0D0A0"
-            set ::dialog_preferences::gui_color_gop "#D0A0D0"
-        }
         "Dark Mode" {
             set ::dialog_preferences::gui_color_bg "#333333"
             set ::dialog_preferences::gui_color_fg "#DDDDDD"
-            set ::dialog_preferences::gui_color_sel "#88AA88"
-            set ::dialog_preferences::gui_color_gop "#AA88AA"
+            set ::dialog_preferences::gui_color_sel "#AA88AA"
+            set ::dialog_preferences::gui_color_gop "#cc5555"
+        }
+        "Light Mode" {
+            set ::dialog_preferences::gui_color_bg "#EEEEEE"
+            set ::dialog_preferences::gui_color_fg "#202020"
+            set ::dialog_preferences::gui_color_sel "#880088"
+            set ::dialog_preferences::gui_color_gop "#DD0000"
+        }
+        "Pastel" {
+            set ::dialog_preferences::gui_color_bg "#FFF0F0"
+            set ::dialog_preferences::gui_color_fg "#505050"
+            set ::dialog_preferences::gui_color_sel "#4080B0"
+            set ::dialog_preferences::gui_color_gop "#C04060"
+        }
+        "Dark Contrasted" {
+            set ::dialog_preferences::gui_color_bg "#000000"
+            set ::dialog_preferences::gui_color_fg "#FFFFFF"
+            set ::dialog_preferences::gui_color_sel "#4A8A9C"
+            set ::dialog_preferences::gui_color_gop "#B04A6B"
+        }
+        "Purple Haze" {
+            set ::dialog_preferences::gui_color_bg "#800080"
+            set ::dialog_preferences::gui_color_fg "#cccccc"
+            set ::dialog_preferences::gui_color_sel "#ff00ff"
+            set ::dialog_preferences::gui_color_gop "#ff0000"
+        }
+        "Misty Rose" {
+            set ::dialog_preferences::gui_color_bg "#FFE4E1"
+            set ::dialog_preferences::gui_color_fg "#8B7765"
+            set ::dialog_preferences::gui_color_sel "#D2691E"
+            set ::dialog_preferences::gui_color_gop "#B22222"
         }
         "C64" {
             set ::dialog_preferences::gui_color_bg "#3e32a2"
             set ::dialog_preferences::gui_color_fg "#a49aea"
-            set ::dialog_preferences::gui_color_sel "#7c71da"
+            set ::dialog_preferences::gui_color_sel "#cc9933"
             set ::dialog_preferences::gui_color_gop "#ff9933"
         }
         "Strongbad" {
             set ::dialog_preferences::gui_color_bg "#000000"
             set ::dialog_preferences::gui_color_fg "#4bd046"
-            set ::dialog_preferences::gui_color_sel "#53b83b"
+            set ::dialog_preferences::gui_color_sel "#00a0b0"
             set ::dialog_preferences::gui_color_gop "#cc0000"
         }
         "Solarized" {
             set ::dialog_preferences::gui_color_bg "#fdf6e3"
             set ::dialog_preferences::gui_color_fg "#657b83"
-            set ::dialog_preferences::gui_color_sel "#073642"
+            set ::dialog_preferences::gui_color_sel "#268bd2"
             set ::dialog_preferences::gui_color_gop "#dc322f"
         }
         "Solarized Inverted" {
@@ -253,8 +284,8 @@ proc ::dialog_preferences::apply_color_preset {prefs presetname} {
             set ::dialog_preferences::gui_color_gop "#dc322f"
         }
     }
-    # Update menubutton text
-    $prefs.guiframe.colors.container.right.mb configure -text $presetname
+    $prefs.guiframe.colors.toprow.mb configure -text $presetname
+    ::dialog_preferences::apply_colors_if_mac
 }
 
 proc ::dialog_preferences::gui_set_color {prefs presetcol} {
@@ -266,19 +297,20 @@ proc ::dialog_preferences::gui_set_color {prefs presetcol} {
             set ::dialog_preferences::gui_color_fg $presetcol
         }
         2 {
-            set ::dialog_preferences::gui_color_select $presetcol
+            set ::dialog_preferences::gui_color_sel $presetcol
         }
         3 {
             set ::dialog_preferences::gui_color_gop $presetcol
         }
     }
+    ::dialog_preferences::apply_colors_if_mac
 }
 
 proc ::dialog_preferences::gui_compose_color {prefs} {
+    # Check which color field is currently active
     switch -- $::dialog_preferences::gui_color_radio {
         0 {
             set title [_ "Background color"]
-            # We'll need variables for each color - assuming these exist
             set color $::dialog_preferences::gui_color_bg
         }
         1 {
@@ -294,11 +326,10 @@ proc ::dialog_preferences::gui_compose_color {prefs} {
             set color $::dialog_preferences::gui_color_gop
         }
     }
-
     set color [tk_chooseColor -title $title -initialcolor $color]
-
     if { $color ne "" } {
         ::dialog_preferences::gui_set_color $prefs $color
+        ::dialog_preferences::apply_colors_if_mac
     }
 }
 
