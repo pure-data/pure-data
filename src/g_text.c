@@ -1525,6 +1525,10 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     char *tags[2];
     char tagbuf[128];
 
+    /* skip drawing iolets if we're inside a GOP subpatch */
+    if (glist_isgraph(glist) && !glist->gl_havewindow)
+        return;
+
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
     for (i = 0; i < n; i++)
     {
