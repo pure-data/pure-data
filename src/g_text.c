@@ -1772,7 +1772,7 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
                 if (pd_class(pd_this->pd_newest) == canvas_class)
                     canvas_loadbang((t_canvas *)pd_this->pd_newest);
                 else if (zgetfn(pd_this->pd_newest, gensym("loadbang")))
-                    vmess(pd_this->pd_newest, gensym("loadbang"), "f", LB_LOAD);
+                    vmess(pd_this->pd_newest, gensym("loadbang"), "i", LB_LOAD);
             }
         }
             /* if we made a new "pd" or changed a window name,
