@@ -446,17 +446,16 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) -
-                glist_pixelstox(glist, 0));
+            glist_dpixtodx(glist, dx * glist_getzoom(glist));
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) -
-                glist_pixelstoy(glist, 0));
+            glist_dpixtody(glist, dy * glist_getzoom(glist));
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
-    SETFLOAT(&at[1], (t_float)dx);
-    SETFLOAT(&at[2], (t_float)dy);
+        /* report displacement in canvas coordinates (zoom-aware) */
+    SETFLOAT(&at[1], glist_dpixtodx(glist, dx * glist_getzoom(glist)));
+    SETFLOAT(&at[2], glist_dpixtody(glist, dy * glist_getzoom(glist)));
     template_notify(template, gensym("displace"), 3, at);
     scalar_redraw(x, glist);
 }
@@ -561,8 +560,8 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
             {
                 t_atom at[6];
                 SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
-                SETFLOAT(at+1, xpix - glist_xtopixels(owner, xloc));
-                SETFLOAT(at+2, ypix - glist_ytopixels(owner, yloc));
+                SETFLOAT(at+1, glist_dpixtodx(owner, xpix - glist_xtopixels(owner, xloc)));
+                SETFLOAT(at+2, glist_dpixtody(owner, ypix - glist_ytopixels(owner, yloc)));
                 SETFLOAT(at+3, shift);
                 SETFLOAT(at+4, alt);
                 SETFLOAT(at+5, dbl);
