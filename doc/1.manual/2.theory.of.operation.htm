@@ -1289,10 +1289,10 @@ variable message selectors or destinations.</P>
 
 <H4> <A href="#s2.4.6" id="s2.4.6">2.4.6. Escaping characters</A> </H4>
 
-<p>The "\" (backslash) character is used in Pd to escape special
-characters that are handled differently in Pd. Such characters are:
-"Space", "," (comma), ";" (semicolon) and "$" (dollar sign). Also,
-the backslash character itself can be escaped.</p>
+<p>The "\" (backslash) character is used in Pd to escape special characters that
+are handled differently in Pd. Such characters are: "Space", "," (comma), ";"
+(semicolon) and "$" (dollar sign) followed by numbers. Also, the backslash
+character itself can be escaped. In other cases, backslashes are simply dropped.</p>
 
 <p>This way, the "Hi\, how are you?" message in a message box does
 not interpret the comma as it normally would, splitting the message in two.
