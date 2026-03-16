@@ -726,8 +726,8 @@ int garray_getname(t_garray *x, t_symbol **namep);
 static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2,
     const char *tag)
 {
-    pdgui_vmess(0, "rcr iik iiii",
-        "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag,
+    pdgui_vmess(0, "rcrr iik iiii",
+        "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag, "-",
         0, glist_getzoom(x), THISGUI->i_foregroundcolor,
         x1, y1,  x2, y2);
 }
@@ -815,8 +815,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
-        pdgui_vmess(0, "rcr iik iiiiiiiiii",
-            "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag,
+        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
+            "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag, "-",
             0, glist_getzoom(x), THISGUI->i_foregroundcolor,
             x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
             /* if there's just one "garray" in the graph, write its name

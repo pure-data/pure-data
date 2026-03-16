@@ -74,7 +74,7 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128], tag[128];
     char *tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p", x);
 
     sprintf(tag, "%pRECT", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
