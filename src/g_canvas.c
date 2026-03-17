@@ -53,7 +53,8 @@ static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
-void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
+static void canvas_completepath(const char *from, char *to, int bufsize, t_canvas *x);
+static void canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
@@ -1623,7 +1624,45 @@ typedef struct _declare
     t_object x_obj;
     t_canvas *x_canvas;
     int x_useme;
+    t_atom *x_argv; /* store creation arguments for re-triggering */
+    int x_argc;
+    t_outlet *x_outlet;
 } t_declare;
+
+int canvas_declare_do(t_declare *z, t_canvas *x, t_symbol *s, int argc, t_atom *argv, t_loglevel level);
+
+static void declare_bang(t_declare *x)
+{
+    x->x_useme = canvas_declare_do(x, x->x_canvas, &s_list,
+                                x->x_argc, x->x_argv, PD_DEBUG);
+}
+
+static void declare_output_paths(t_declare *x, t_floatarg fabsolute)
+{
+    int absflag = !!(int)fabsolute;
+    t_canvasenvironment *e = canvas_getenv(x->x_canvas);
+    t_namelist *nl = e->ce_path;
+        /* prefix canvas-path */
+    char strbuf[MAXPDSTRING], *path;
+    for (; nl; nl = nl->nl_next)
+    {
+        path = nl->nl_string;
+        if (absflag)
+        {
+            canvas_completepath(path, strbuf, MAXPDSTRING, x->x_canvas);
+            outlet_symbol(x->x_outlet, gensym(strbuf));
+        }
+        else
+            outlet_symbol(x->x_outlet, gensym(path));
+    }
+}
+
+static void declare_output_libs(t_declare *x)
+{
+    t_loadlist *ll = sys_getloadlist();
+    for (; ll; ll = ll->ll_next)
+        outlet_symbol(x->x_outlet, ll->ll_name);
+}
 
 static void *declare_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1631,12 +1670,21 @@ static void *declare_new(t_symbol *s, int argc, t_atom *argv)
     x->x_useme = 1;
     x->x_canvas = canvas_getcurrent();
         /* LATER update environment and/or load libraries */
-    if (!x->x_canvas->gl_loading)
+    x->x_argc = argc;
+    if (argc > 0)
     {
+        x->x_argv = (t_atom *)getbytes(argc * sizeof(t_atom));
+        memcpy(x->x_argv, argv, argc * sizeof(t_atom));
+    }
+    else
+        x->x_argv = NULL;
+
         /* the object is created by the user (not by loading a patch),
          * so update canvas's properties on the fly */
-        canvas_declare(x->x_canvas, s, argc, argv);
-    }
+    if (!x->x_canvas->gl_loading)
+        declare_bang(x);
+
+    x->x_outlet = outlet_new(&x->x_obj, 0);
     return (x);
 }
 
@@ -1644,6 +1692,8 @@ static void declare_free(t_declare *x)
 {
     x->x_useme = 0;
         /* LATER update environment */
+    if (x->x_argv)
+        freebytes(x->x_argv, x->x_argc * sizeof(t_atom));
 }
 
 void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
@@ -1713,21 +1763,21 @@ static int check_exists(const char*path)
 }
 #endif
 
-static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
+static int canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(path))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
-        return;
+        return 1;
     }
 
         /* explicit relative path, starts with ./ or ../ */
     if ((strncmp("./", path, 2) == 0) || (strncmp("../", path, 3) == 0))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
-        return;
+        return 1;
     }
 
         /* check if path is a subdir of the canvas-path */
@@ -1735,7 +1785,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
     if (check_exists(strbuf))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
-        return;
+        return 1;
     }
 
         /* check whether the given subdir is in one of the user search-paths */
@@ -1746,7 +1796,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         if (check_exists(strbuf))
         {
             e->ce_path = namelist_append(e->ce_path, strbuf, 0);
-            return;
+            return 1;
         }
     }
 
@@ -1758,31 +1808,26 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         if (check_exists(strbuf))
         {
             e->ce_path = namelist_append(e->ce_path, strbuf, 0);
-            return;
+            return 1;
         }
     }
+    return 0;
 }
-static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
+static int canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(lib))
-    {
-        sys_load_lib(x, lib);
-        return;
-    }
+        return sys_load_lib(x, lib);
 
         /* explicit relative path, starts with ./ or ../ */
     if ((strncmp("./", lib, 2) == 0) || (strncmp("../", lib, 3) == 0))
-    {
-        sys_load_lib(x, lib);
-        return;
-    }
+        return sys_load_lib(x, lib);
 
         /* prefix canvas-path */
     canvas_completepath(lib, strbuf, MAXPDSTRING, x);
     if (sys_load_lib(x, lib))
-        return;
+        return 1;
 
     /* check whether the given lib is located in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
@@ -1790,18 +1835,19 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
         pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(x, strbuf))
-            return;
+            return 1;
     }
+    return 0;
 }
 
-static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
+static int canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdpath))
     {
         e->ce_path = namelist_append(e->ce_path, stdpath, 0);
-        return;
+        return 1;
     }
 
         /* strip "extra/"-prefix */
@@ -1813,7 +1859,7 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
     if (check_exists(strbuf))
     {
         e->ce_path = namelist_append(e->ce_path, strbuf, 0);
-        return;
+        return 1;
     }
 
     /* check whether the given subdir is in one of the standard-paths */
@@ -1824,19 +1870,17 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
         if (check_exists(strbuf))
         {
             e->ce_path = namelist_append(e->ce_path, strbuf, 0);
-            return;
+            return 1;
         }
     }
+    return 0;
 }
-static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
+static int canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdlib))
-    {
-        sys_load_lib(0, stdlib);
-        return;
-    }
+        return sys_load_lib(0, stdlib);
 
         /* strip    "extra/"-prefix */
     if (!strncmp("extra/", stdlib, 6))
@@ -1845,7 +1889,7 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
         /* prefix full pd-path (including extra) */
     canvas_completepath(stdlib, strbuf, MAXPDSTRING, 0);
     if (sys_load_lib(0, strbuf))
-        return;
+        return 1;
 
     /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
@@ -1853,15 +1897,20 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
         pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(0, strbuf))
-            return;
+            return 1;
     }
+    return 0;
 }
 
-
-void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+int canvas_declare_do(t_declare *z, t_canvas *x,
+                      t_symbol *s, int argc, t_atom *argv,
+                      t_loglevel level)
 {
-    int i;
+    if (!x)
+        bug("canvas_declare_do: missing canvas reference.");
+
     t_canvasenvironment *e = canvas_getenv(x);
+    int i, success = 1;
 #if 0
     startpost("declare:: %s", s->s_name);
     postatom(argc, argv);
@@ -1873,27 +1922,43 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         const char *item = (argc > i+1)?atom_getsymbolarg(i+1, argc, argv)->s_name:0;
         if ((item) && !strcmp(flag, "-path"))
         {
-            canvas_path(x, e, item);
+            if(!canvas_path(x, e, item)) {
+                logpost(z, level, "Failed to add path: %s", item);
+                success = 0;
+            }
             i++;
         }
         else if ((item) && !strcmp(flag, "-stdpath"))
         {
-            canvas_stdpath(e, item);
+            if(!canvas_stdpath(e, item)) {
+                logpost(z, level, "Failed to add stdpath: %s", item);
+                success = 0;
+            }
             i++;
         }
         else if ((item) && !strcmp(flag, "-lib"))
         {
-            canvas_lib(x, e, item);
+            if(!canvas_lib(x, e, item)) {
+                logpost(z, level, "Failed to load library: %s", item);
+                success = 0;
+            }
             i++;
         }
         else if ((item) && !strcmp(flag, "-stdlib"))
         {
-            canvas_stdlib(e, item);
+            if(!canvas_stdlib(e, item)) {
+                logpost(z, level, "Failed to load stdlib: %s", item);
+                success = 0;
+            }
             i++;
         }
         else post("declare: %s: unknown declaration", flag);
     }
+    return success;
 }
+
+static void canvas_declare_message(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{ canvas_declare_do(0, x, s, argc, argv, PD_DEBUG); }
 
 typedef struct _canvasopen
 {
@@ -2189,9 +2254,14 @@ void g_canvas_setup(void)
 
 /*---------------------------- declare ------------------- */
     declare_class = class_new(gensym("declare"), (t_newmethod)declare_new,
-        (t_method)declare_free, sizeof(t_declare), CLASS_NOINLET, A_GIMME, 0);
-    class_addmethod(canvas_class, (t_method)canvas_declare,
+        (t_method)declare_free, sizeof(t_declare), CLASS_DEFAULT, A_GIMME, 0);
+    class_addbang(declare_class, (t_method)declare_bang);
+    class_addmethod(canvas_class, (t_method)canvas_declare_message,
         gensym("declare"), A_GIMME, 0);
+    class_addmethod(declare_class, (t_method)declare_output_paths,
+        gensym("paths"), A_DEFFLOAT, 0);
+    class_addmethod(declare_class, (t_method)declare_output_libs,
+        gensym("libs"), 0);
 
 /*--------------- future message to set formatting  -------------- */
     class_addmethod(canvas_class, (t_method)canvas_f,

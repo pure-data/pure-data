@@ -465,3 +465,13 @@ EXTERN size_t pd_strnlen(const char*s, size_t maxlen);
 
 EXTERN const char *pd_extraflags;     /* a place to stick an extra startup arg */
  /* this is used by 'stdout' but could be useful elsewhere perhaps. */
+
+    /* maintain list of loaded modules to avoid repeating loads */
+typedef struct _loadedlist
+{
+    struct _loadedlist *ll_next;
+    t_symbol *ll_name;
+} t_loadlist;
+
+/* defined in loader.c but used by declare in canvas.c to get the loaded libs */
+t_loadlist *sys_getloadlist(void);
