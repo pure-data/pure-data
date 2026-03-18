@@ -618,9 +618,9 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
          */
         int xpos = (int)px1, ypos = (int)py2;
         glist_getnextxy(g, &xpos, &ypos);
-        px1 = (t_float)xpos;
+        px1 = (t_float)xpos / g->gl_zoom;
         px2 = px1 + GLIST_DEFGRAPHWIDTH;
-        py1 = (t_float)ypos;
+        py1 = (t_float)ypos / g->gl_zoom;
         py2 = py1 + GLIST_DEFGRAPHHEIGHT;
     }
 
