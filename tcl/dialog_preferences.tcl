@@ -145,7 +145,7 @@ proc ::dialog_preferences::fill_frame {prefs} {
     menu $prefs.guiframe.colors.toprow.mb.menu -tearoff 0
     $prefs.guiframe.colors.toprow.mb configure \
         -menu $prefs.guiframe.colors.toprow.mb.menu
-    set presets { "Default" "Dark Mode" "Light Mode" "Pastel" "Dark Contrasted" "Purple Haze" "Misty Rose" "C64" "Strongbad" "Solarized" "Solarized Inverted"}
+    set presets {"Default" "Light Mode" "Dark Mode" "Soft Dark" "Pastel" "Misty Rose" "Solarized" "Solarized Inverted" "Purple Haze"  "C64" "Strongbad"}
     foreach preset $presets {
         $prefs.guiframe.colors.toprow.mb.menu add command \
             -label $preset \
@@ -221,17 +221,23 @@ proc ::dialog_preferences::apply_color_preset {prefs presetname} {
             set ::dialog_preferences::gui_color_sel "#0000FF"
             set ::dialog_preferences::gui_color_gop "#FF0000"
         }
-        "Dark Mode" {
-            set ::dialog_preferences::gui_color_bg "#333333"
-            set ::dialog_preferences::gui_color_fg "#DDDDDD"
-            set ::dialog_preferences::gui_color_sel "#AA88AA"
-            set ::dialog_preferences::gui_color_gop "#cc5555"
-        }
         "Light Mode" {
             set ::dialog_preferences::gui_color_bg "#EEEEEE"
             set ::dialog_preferences::gui_color_fg "#202020"
             set ::dialog_preferences::gui_color_sel "#880088"
             set ::dialog_preferences::gui_color_gop "#DD0000"
+        }
+        "Dark Mode" {
+            set ::dialog_preferences::gui_color_bg "#000000"
+            set ::dialog_preferences::gui_color_fg "#CCCCCC"
+            set ::dialog_preferences::gui_color_sel "#2A7A9C"
+            set ::dialog_preferences::gui_color_gop "#B04A6B"
+        }
+        "Soft Dark" {
+            set ::dialog_preferences::gui_color_bg "#222429"
+            set ::dialog_preferences::gui_color_fg "#c8d4e2"
+            set ::dialog_preferences::gui_color_sel "#60b2ff"
+            set ::dialog_preferences::gui_color_gop "#ff7b7b"
         }
         "Pastel" {
             set ::dialog_preferences::gui_color_bg "#FFF0F0"
@@ -239,35 +245,11 @@ proc ::dialog_preferences::apply_color_preset {prefs presetname} {
             set ::dialog_preferences::gui_color_sel "#4080B0"
             set ::dialog_preferences::gui_color_gop "#C04060"
         }
-        "Dark Contrasted" {
-            set ::dialog_preferences::gui_color_bg "#000000"
-            set ::dialog_preferences::gui_color_fg "#FFFFFF"
-            set ::dialog_preferences::gui_color_sel "#4A8A9C"
-            set ::dialog_preferences::gui_color_gop "#B04A6B"
-        }
-        "Purple Haze" {
-            set ::dialog_preferences::gui_color_bg "#800080"
-            set ::dialog_preferences::gui_color_fg "#cccccc"
-            set ::dialog_preferences::gui_color_sel "#ff00ff"
-            set ::dialog_preferences::gui_color_gop "#ff0000"
-        }
         "Misty Rose" {
             set ::dialog_preferences::gui_color_bg "#FFE4E1"
             set ::dialog_preferences::gui_color_fg "#8B7765"
             set ::dialog_preferences::gui_color_sel "#D2691E"
             set ::dialog_preferences::gui_color_gop "#B22222"
-        }
-        "C64" {
-            set ::dialog_preferences::gui_color_bg "#3e32a2"
-            set ::dialog_preferences::gui_color_fg "#a49aea"
-            set ::dialog_preferences::gui_color_sel "#cc9933"
-            set ::dialog_preferences::gui_color_gop "#ff9933"
-        }
-        "Strongbad" {
-            set ::dialog_preferences::gui_color_bg "#000000"
-            set ::dialog_preferences::gui_color_fg "#4bd046"
-            set ::dialog_preferences::gui_color_sel "#00a0b0"
-            set ::dialog_preferences::gui_color_gop "#cc0000"
         }
         "Solarized" {
             set ::dialog_preferences::gui_color_bg "#fdf6e3"
@@ -280,6 +262,24 @@ proc ::dialog_preferences::apply_color_preset {prefs presetname} {
             set ::dialog_preferences::gui_color_fg "#839496"
             set ::dialog_preferences::gui_color_sel "#b58900"
             set ::dialog_preferences::gui_color_gop "#dc322f"
+        }
+        "Purple Haze" {
+            set ::dialog_preferences::gui_color_bg "#800080"
+            set ::dialog_preferences::gui_color_fg "#cccccc"
+            set ::dialog_preferences::gui_color_sel "#ff00ff"
+            set ::dialog_preferences::gui_color_gop "#ff0000"
+        }
+        "C64" {
+            set ::dialog_preferences::gui_color_bg "#3e32a2"
+            set ::dialog_preferences::gui_color_fg "#a49aea"
+            set ::dialog_preferences::gui_color_sel "#cc9933"
+            set ::dialog_preferences::gui_color_gop "#ff9933"
+        }
+        "Strongbad" {
+            set ::dialog_preferences::gui_color_bg "#000000"
+            set ::dialog_preferences::gui_color_fg "#4bd046"
+            set ::dialog_preferences::gui_color_sel "#00a0b0"
+            set ::dialog_preferences::gui_color_gop "#cc0000"
         }
     }
     $prefs.guiframe.colors.toprow.mb configure -text $presetname
