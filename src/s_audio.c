@@ -325,6 +325,11 @@ void sys_do_close_audio(void)
         esd_close_audio();
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        sgi_close_audio();
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         dummy_close_audio();
@@ -434,10 +439,18 @@ void sys_do_reopen_audio(void)
     else
 #endif
 #ifdef USEAPI_ESD
-    if (as.a_api == API_ALSA)
+    if (as.a_api == API_ESD)
         outcome = esd_open_audio(as.a_nindev, as.a_indevvec,
             as.a_nindev, as.a_chindevvec, as.a_noutdev,
                 as.a_outdevvec, as.a_noutdev, as.a_choutdevvec, as.a_srate);
+    else
+#endif
+#ifdef USEAPI_SGI
+    if (as.a_api == API_SGI)
+        outcome = sgi_open_audio(
+            as.a_nindev, as.a_indevvec, as.a_nindev, as.a_chindevvec,
+            as.a_noutdev, as.a_outdevvec, as.a_noutdev, as.a_choutdevvec,
+            as.a_srate);
     else
 #endif
 #ifdef USEAPI_DUMMY
@@ -545,6 +558,11 @@ int sys_send_dacs(void)
         return (esd_send_dacs());
     else
 #endif
+#ifdef USEAPI_SGI
+    if (sys_audioapiopened == API_SGI)
+        return (sgi_send_dacs());
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         return (dummy_send_dacs());
@@ -641,6 +659,14 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     }
     else
 #endif
+#ifdef USEAPI_SGI
+    if (api == API_SGI)
+    {
+        sgi_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
+            maxndev, devdescsize);
+    }
+    else
+#endif
 #ifdef USEAPI_DUMMY
     if (api == API_DUMMY)
     {
@@ -726,7 +752,7 @@ void sys_gui_audiopreferences(void) {
 }
 
     /* start an audio settings dialog window */
-void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
+void glob_audio_properties(t_pd *dummy)
 {
     sys_gui_audiopreferences();
     pdgui_stub_deleteforkey(0);
@@ -782,6 +808,32 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_set_audio_settings(&as);
     if (canvas_dspstate || audio_shouldkeepopen())
         sys_reopen_audio();
+}
+
+    /* rescan audio devices.  This is probably only useful for portaudio API
+    for which we must deinit and reinit the library to see new devices. */
+void glob_rescanaudio(t_pd *dummy)
+{
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot refresh device list in 'callback' mode when audio is running. "
+            "Please turn off DSP and try again.");
+        return;
+    }
+#ifdef USEAPI_PORTAUDIO
+    if (audio_nextsettings.a_api == API_PORTAUDIO)
+    {
+        int was_open = audio_isopen();
+        if (was_open) sys_close_audio();
+        pa_reinitialize();
+        if (was_open) sys_reopen_audio();
+    }
+#else
+    post("Skipping rescan because it's not defined for this API");
+#endif
+    sys_gui_audiopreferences();
+        /* refresh audio dialog (if it's open) */
+    pdgui_vmess("::dialog_audio::refresh_ui", "");
 }
 
 void sys_listdevs(void)
@@ -849,7 +901,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
             if (canvas_dspstate || audio_shouldkeepopen())
                 sys_reopen_audio();
         }
-        glob_audio_properties(0, 0);
+        glob_audio_properties(0);
     }
     else if (audio_isopen())
     {
@@ -893,6 +945,9 @@ static t_apientry audio_apilist[] = {
 #endif
 #ifdef USEAPI_ESD
     {"ESD",  API_ESD},
+#endif
+#ifdef USEAPI_SGI
+    {"sgi", API_SGI},
 #endif
 #ifdef USEAPI_DUMMY
     {"dummy", API_DUMMY},

@@ -31,7 +31,7 @@
   <launchable type="desktop-id">org.puredata.pd-gui.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://screenshots.debian.net/shrine/screenshot/12081/simage/large-f07fad807ae33903b32a38d2c7cedd66.png</image>
+      <image>https://screenshots.debian.net/screenshot/puredata</image>
       <caption>Pure Data with many patches open (netpd project)</caption>
     </screenshot>
   </screenshots>

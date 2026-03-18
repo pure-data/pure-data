@@ -153,24 +153,39 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     }
 }
 
-    /* a block versions of word_init is provided because
-    creating and destroying large arrays had been absurdly slowing down patch
-    loading and closing.  The first one is created as above and the rest
-    are simply copied from the first one, in a way that now appears
-    unnecessarily convoluted. */
+    /* return 1 if all dataslots are float or symbol, 0 otherwise */
+static int template_is_flat(t_template *template)
+{
+    int i, nitems = template->t_n;
+    t_dataslot *datatypes = template->t_vec;
+    for (i = 0; i < nitems; i++)
+    {
+        int type = datatypes[i].ds_type;
+        if ((type != DT_FLOAT) && (type != DT_SYMBOL))
+            return 0;
+    }
+    return 1;
+}
+
+    /* a block versions of word_init is provided because creating and
+    destroying large arrays had been absurdly slowing down patch loading
+    and closing: if the template contains only float and symbols, the first
+    one is created as above and the rest are simply copied from the first
+    one, in a way that now appears unnecessarily convoluted. */
 void word_initvec(t_word *wp, t_template *template, t_gpointer *gp, long n)
 {
+    long ndone;
     if (n > 0)
     {
-        long ndone = 1;
-        word_init(wp, template, gp);  /* init the first one */
-        while (ndone < n)
+        if (template_is_flat(template))
         {
-            long ncopy = (n-ndone > ndone ? ndone : n-ndone);
-            memcpy(wp + template->t_n*ndone, wp,
-                ncopy * template->t_n * sizeof(t_word));
-            ndone += ncopy;
+            word_init(wp, template, gp);  /* init the first one */
+            for (ndone = 1; ndone < n; ndone++)
+                memcpy(wp + template->t_n * ndone, wp,
+                    template->t_n * sizeof(t_word));
         }
+        else for (ndone = 0; ndone < n; ndone++)
+            word_init(wp + template->t_n * ndone, template, gp);
     }
 }
 
@@ -296,23 +311,25 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
 void glist_scalar(t_glist *glist,
     t_symbol *classname, int argc, t_atom *argv)
 {
-    t_symbol *templatesym =
-        canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
-    t_binbuf *b;
-    int natoms, nextmsg = 0;
-    t_atom *vec;
+    t_symbol *templatename;
+    t_symbol *templatesym;
+    t_binbuf *b = binbuf_new();
+    int nextmsg = 0;
+
+    binbuf_restore(b, argc, argv);
+    argc = binbuf_getnatom(b);
+    argv = binbuf_getvec(b);
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
+    templatesym = canvas_makebindsym(templatename);
     if (!template_findbyname(templatesym))
     {
-        pd_error(glist, "%s: no such template",
+        pd_error(glist, "glist_scalar %s: no such template",
             atom_getsymbolarg(0, argc, argv)->s_name);
+        binbuf_free(b);
         return;
     }
 
-    b = binbuf_new();
-    binbuf_restore(b, argc, argv);
-    natoms = binbuf_getnatom(b);
-    vec = binbuf_getvec(b);
-    canvas_readscalar(glist, natoms, vec, &nextmsg, 0);
+    canvas_readscalar(glist, argc, argv, &nextmsg, 0);
     binbuf_free(b);
 }
 
@@ -353,7 +370,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
             int nx1, ny1, nx2, ny2;
             if (!wb) continue;
             (*wb->w_parentgetrectfn)(y, owner,
-                x->sc_vec, template, basex, basey,
+                x->sc_vec, template, x, basex, basey,
                 &nx1, &ny1, &nx2, &ny2);
             if (nx1 < x1) x1 = nx1;
             if (ny1 < y1) y1 = ny1;
@@ -379,11 +396,11 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
         int x1, y1, x2, y2;
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
+        pdgui_vmess(0, "crr iiiiiiiiii ri rk rs",
                   glist_getcanvas(glist), "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
                   "-width", 0,
-                  "-fill", "blue",
+                  "-fill", THISGUI->i_selectcolor,
                   "-tags", tag);
     } else {
         pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
@@ -526,6 +543,12 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0, notified = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
+    if (!templatecanvas)
+    {
+        pd_error(sc, "scalar_doclick: no canvas found for template %s",
+            template->t_sym->s_name);
+        return 0;
+    }
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
@@ -562,6 +585,12 @@ int scalar_click(t_gobj *z, struct _glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    if (!template)
+    {
+        pd_error(x, "scalar_click: couldn't find template %s",
+            x->sc_template->s_name);
+        return 0;
+    }
     t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
     t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,

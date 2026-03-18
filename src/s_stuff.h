@@ -100,7 +100,7 @@ typedef struct _audiosettings
 #define API_MMIO 3
 #define API_PORTAUDIO 4
 #define API_JACK 5
-#define API_SGI 6           /* gone */
+#define API_SGI 6
 #define API_AUDIOUNIT 7
 #define API_ESD 8           /* no idea what this was, probably gone now */
 #define API_DUMMY 9
@@ -132,6 +132,9 @@ typedef struct _audiosettings
 #elif defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
 # define API_DEFSTRING "MMIO"
+#elif defined(USEAPI_SGI)
+# define API_DEFAULT API_SGI
+# define API_DEFSTRING "SGI"
 #else
 # ifndef USEAPI_DUMMY   /* we need at least one so bring in the dummy */
 # define USEAPI_DUMMY
@@ -186,6 +189,7 @@ void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
+void pa_reinitialize( void);
 
 int oss_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
@@ -249,6 +253,16 @@ void esd_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
+int sgi_open_audio(int naudioindev, int *audioindev, int nchindev,
+    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
+    int *choutdev, int rate);
+void sgi_close_audio(void);
+int sgi_send_dacs(void);
+void sgi_listdevs(void);
+void sgi_getdevs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti,
+        int maxndev, int devdescsize);
+
 int dummy_open_audio(int nin, int nout, int sr);
 int dummy_close_audio(void);
 int dummy_send_dacs(void);
@@ -284,7 +298,7 @@ EXTERN void sys_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_putmidibyte(int portno, int a);
 EXTERN void sys_poll_midi(void);
 EXTERN void sys_midibytein(int portno, int byte);
-
+EXTERN void sys_reinit_midi( void);
 void sys_listmididevs(void);
 EXTERN void sys_set_midi_api(int whichapi);
 
@@ -446,6 +460,8 @@ EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t sr
 EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
 EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
     va_list argptr);
+/* fallback for old system's that don't have strnlen() */
+EXTERN size_t pd_strnlen(const char*s, size_t maxlen);
 
 EXTERN const char *pd_extraflags;     /* a place to stick an extra startup arg */
  /* this is used by 'stdout' but could be useful elsewhere perhaps. */

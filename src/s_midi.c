@@ -683,7 +683,7 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
             sys_alsa_close_midi();
         else
 #endif
-              sys_close_midi();
+            sys_close_midi();
         sys_midiapi = newapi;
         sys_reopen_midi();
     }
@@ -707,9 +707,21 @@ void sys_gui_midipreferences(void) {
     t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
         /* query the current MIDI settings */
-    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
-    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+        /* on macOS, this causes a crash in 'callback' mode when audio is running */
+#ifdef __APPLE__
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running.");
+        nindev = noutdev = nindevs = noutdevs = 0;
+    }
+    else
+#endif
+    {
+        sys_reinit_midi();
+        sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+            MAXNDEV, DEVDESCSIZE);
+        sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+    }
 
     indevs[0] = outdevs[0] = "none";
     for (i = 0; i < nindevs; i++)

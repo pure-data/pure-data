@@ -43,12 +43,17 @@ proc ::dialog_midi::config2string { } {
         upvar ::dialog_midi::ports${dir} ports
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             upvar ::dialog_midi::${dir}dev${i} dev
-            if { $dev < 0 || $dev > [llength $devlist] } {
+            if { ${dev} eq {} || ! [string is int ${dev}] } {
+                set dev 0
+            }
+            if { ${dev} < 0 || ${dev} > [llength ${devlist} ] } {
                 set dev 0
             }
             lappend result $dev
         }
-        set ports [expr $ports + 0]
+        if { ${ports} eq {} || ! [string is int ${ports}] || ${ports} < 0 } {
+            set ports 0
+        }
     }
     lappend result $::dialog_midi::portsin $::dialog_midi::portsout
     return $result
@@ -57,7 +62,7 @@ proc ::dialog_midi::config2string { } {
 proc ::dialog_midi::apply {mytoplevel {force ""}} {
     set config [config2string]
     if { $force ne "" || $config ne $::dialog_midi::referenceconfig} {
-        pdsend "pd midi-dialog ${config}"
+        pdsend [concat pd midi-dialog ${config}]
     }
     set ::dialog_midi::referenceconfig $config
 }
@@ -186,10 +191,16 @@ proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
     pack  $frame -side top -fill x -anchor n -expand 1
 
     label $frame.l1 -text [_ "In Ports:"]
-    entry $frame.x1 -textvariable $inportsvar -width 4
+    spinbox $frame.x1 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${inportsvar}
     pack $frame.l1 $frame.x1 -side left
     label $frame.l2 -text [_ "Out Ports:"]
-    entry $frame.x2 -textvariable $outportsvar -width 4
+    spinbox $frame.x2 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${outportsvar}
     pack $frame.l2 $frame.x2 -side left
 }
 
@@ -213,7 +224,7 @@ proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
                 $frame.backend.api.menu add radiobutton \
                     -label "${api_name}" \
                     -value ${api_id} -variable ::pd_whichmidiapi \
-                    -command {pdsend "pd midi-setapi $::pd_whichmidiapi"}
+                    -command {pdsend [list pd midi-setapi $::pd_whichmidiapi]}
                 if { ${api_id} == ${::pd_whichmidiapi} } {
                     $frame.backend.api configure -text "${api_name}"
                 }
@@ -336,7 +347,7 @@ proc ::dialog_midi::create {id} {
 
     # save all settings button
     button $id.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_midi::apply $id 1; pdsend \"pd save-preferences\""
+        -command "::dialog_midi::apply $id 1; pdsend {pd save-preferences}"
     pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons

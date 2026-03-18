@@ -36,7 +36,7 @@ struct _rtext
     t_word *x_words;        /* ... and if so, associated data */
     t_gobj *x_drawtext;     /* ... and the drawing instruction */
     t_glist *x_glist;       /* glist owner belongs to */
-    t_symbol *x_color;      /* X11-style name of color to draw */
+    unsigned int x_color;      /* (A)RGB value */
     char x_tag[50];         /* tag for gui */
     struct _rtext *x_next;  /* next in editor list */
     int x_xpix;           /* (x,y) origin in pixels */
@@ -64,30 +64,53 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
         glist_getcanvas(glist)->gl_editor->e_rtext = x;
     else last->x_next = x;
     x->x_next = 0;
-    sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
+    sprintf(x->x_tag, ".x%lx.t%lxt", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
     x->x_xpix = x->x_ypix = 0;      /* empty rectangle */
     x->x_pixwidth = x->x_pixheight = -1;
     return (x);
 }
 
-/* find the rtext that goes with a text item */
-t_rtext *glist_getrtext(t_glist *gl, t_text *who)
+    /* two privat helper routines from drawtext declared here: */
+
+void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
+    t_word *words, char *buf);
+int drawtext_isvisible(t_gobj *z, t_word *words);
+
+    /* defined later: */
+static void rtext_refreshbuffer(t_rtext *x);
+
+/* find the rtext that goes with a text item.  Return zero if the
+text item is invisible, either because the glist itself is, or because
+the item is in a GOP subpatch and its (x,y) origin is outside the GOP
+area.  (Or if it's within a nested GOP which itself isn't visible).  In
+some cases, the rtext is created in order to check the bounds rectangle,
+in which case it was created even if invisible.  But since gobj_shouldvis()
+first checks the upper right corner (x,y) before creating the rtext, the
+majority of invisible 'text' objects never get rtexts created for them. */
+
+t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
 {
     t_rtext *x, *last = 0;
-        /* This happens for text objs in GOPs - dunno why. */
-    t_glist *canvas = glist_getcanvas(gl);
+    t_glist *canvas = glist_getcanvas(gl);;
+        /* This might happen for text objs in GOPs - dunno why. */
     if (!canvas->gl_editor)
         canvas_create_editor(canvas);
+
+        /* if it exists, return it whether or not it should be visible. */
     for (x = canvas->gl_editor->e_rtext; x; x = x->x_next)
     {
         if (x->x_text == who)
             return (x);
         last = x;
     }
+        /* "really" is for when we're being called within gobj_shouldvis,
+            in which we can't just go call shouldvis back from here */
+    if (!really && !gobj_shouldvis(&who->te_g, gl))
+        return (0);
     x = rtext_add(gl, last);
     x->x_text = who;
-    rtext_retext(x);
+    rtext_refreshbuffer(x);
     return (x);
 }
 
@@ -115,23 +138,24 @@ t_rtext *glist_getforscalar(t_glist *gl, t_scalar *sc, t_word *words,
     /* delete all rtexts for a scalar */
 void glist_deleteforscalar(t_glist *gl, t_scalar *sc)
 {
-    t_rtext *x1, *x2 = 0;
+    t_rtext *x1, *xprev = 0, *xnext = 0;
     t_glist *canvas = glist_getcanvas(gl);
     if (!canvas->gl_editor)
         return;
 
-    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = x1->x_next)
+    for (x1 = canvas->gl_editor->e_rtext; x1; x1 = xnext)
     {
+        xnext = x1->x_next;
         if (x1->x_scalar == sc)
         {
-            if (x2)
-                x2->x_next = x1->x_next;
+            if (xprev)
+                xprev->x_next = x1->x_next;
             else canvas->gl_editor->e_rtext = x1->x_next;
             if (x1->x_buf)
                 freebytes(x1->x_buf, x1->x_bufsize + 1); /* extra 0 byte */
             freebytes(x1, sizeof(*x1));
         }
-        else x2 = x1;
+        else xprev = x1;
     }
 }
 
@@ -140,7 +164,9 @@ void rtext_free(t_rtext *x)
     t_glist *canvas = glist_getcanvas(x->x_glist);
     if (glist_textedfor(canvas) == x)
         glist_settexted(canvas, 0);
-    if (canvas->gl_editor->e_rtext == x)
+    if (!canvas->gl_editor)
+        bug("rtext_free");
+    else if (canvas->gl_editor->e_rtext == x)
         canvas->gl_editor->e_rtext = x->x_next;
     else
     {
@@ -158,12 +184,9 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof(*x));
 }
 
-void rtext_setcolor(t_rtext *x, int color)
+void rtext_setcolor(t_rtext *x, unsigned int color)
 {
-    char buf[80];
-    pd_snprintf(buf, 80, "#%06x", color);
-    buf[79] = 0;
-    x->x_color = gensym(buf);
+    x->x_color = color;
 }
 
 
@@ -205,9 +228,6 @@ t_glist *rtext_getglist(t_rtext *x)
 {
     return (x->x_glist);
 }
-
-void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
-    t_word *words, char *buf);
 
     /* deal with an activated rtext when user clicks outside it.
     If the rtext is for a patchable object of type TE_ATOM, or if it is
@@ -266,12 +286,13 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
         /* post("xpix %d (%d,%d) ypix %d (%d,%d)",
             xpix, x->x_xpix, x->x_xpix + x->x_pixwidth,
             ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
-                /* check if the text is visible */
-        if (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
-            x->x_scalar && !gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist))
-                continue;
+                /* in rectangle? */
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
-            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight)
+            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight &&
+                /* is the text visible? */
+            !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
+                || !drawtext_isvisible(x->x_drawtext, x->x_words))))
         {
             *text = x->x_text;
             *scalar = x->x_scalar;
@@ -612,15 +633,14 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        pdgui_vmess("pdtk_text_new", "c S ii s i r",
+        pdgui_vmess("pdtk_text_new", "c S ii s i k",
             canvas,
             2, tags,
             x->x_xpix + lmargin, x->x_ypix + tmargin,
             tempbuf,
             guifontsize,
             (x->x_text && glist_isselected(x->x_glist, &x->x_text->te_g)?
-                THISGUI->i_selectcolor->s_name :
-                    x->x_color->s_name));
+                THISGUI->i_selectcolor : x->x_color));
     }
     else if (action == SEND_UPDATE)
     {
@@ -658,8 +678,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
 }
 
-    /* make or remake text buffer from binbuf (text boxes only) */
-void rtext_retext(t_rtext *x)
+static void rtext_refreshbuffer(t_rtext *x)
 {
     int w = 0, h = 0, indx;
     if (x->x_buf)
@@ -670,6 +689,13 @@ void rtext_retext(t_rtext *x)
         /* allocate extra space for hidden null terminator */
     x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
     x->x_buf[x->x_bufsize] = 0;
+}
+
+    /* make or remake text buffer from binbuf (text boxes only) */
+void rtext_retext(t_rtext *x)
+{
+    int w = 0, h = 0, indx;
+    rtext_refreshbuffer(x);
     rtext_findscreenlocation(x);
         /* force dimension recalculation after text conversion */
     x->x_pixwidth = x->x_pixheight = -1;
@@ -716,16 +742,18 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 {
     x->x_xpix += dx;
     x->x_ypix += dy;
-    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
-        dx, dy);
+    //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        //dx, dy);
+    pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", glist_getcanvas(x->x_glist),
+        x->x_tag, dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)
 {
-    pdgui_vmess(0, "crs rr",
+    pdgui_vmess(0, "crs rk",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? THISGUI->i_selectcolor->s_name:
-            THISGUI->i_foregroundcolor->s_name));
+        "-fill", (state? THISGUI->i_selectcolor:
+            THISGUI->i_foregroundcolor));
 }
 
 void rtext_activate(t_rtext *x, int state)
@@ -799,8 +827,9 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
             if (type == DT_FLOAT || type == DT_SYMBOL)
             {
                 if (type == DT_FLOAT)
-                    x->x_words[onset].w_float = atof(x->x_buf);
-                else x->x_words[onset].w_symbol = gensym(x->x_buf);
+                    x->x_words[onset/sizeof(t_word)].w_float = atof(x->x_buf);
+                else x->x_words[onset/sizeof(t_word)].w_symbol =
+                    gensym(x->x_buf);
                 template_notifyforscalar(template, x->x_glist,
                         x->x_scalar, gensym("change"), 1, &at);
                 scalar_redraw(x->x_scalar, x->x_glist);

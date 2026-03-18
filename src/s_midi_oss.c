@@ -25,6 +25,8 @@ static int oss_midiinfd[MAXMIDIINDEV+1]; /* +1 to suppress buggy GCC warning */
 static int oss_nmidiout;
 static int oss_midioutfd[MAXMIDIOUTDEV+1];
 
+void sys_reinit_midi( void) {}
+
 static void close_one_midi_fd(int fd)
 {
     int i, j;

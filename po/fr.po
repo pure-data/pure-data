@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2025-05-26 23:57+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-07-22 17:03+0000\n"
+"Last-Translator: ant1rousseau1 <ant1rousseau1@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -135,6 +135,9 @@ msgstr "Média"
 msgid "Window"
 msgstr "Fenêtre"
 
+msgid "Tools"
+msgstr "Outils"
+
 msgid "Help"
 msgstr "Aide"
 
@@ -218,6 +221,9 @@ msgstr "Périphériques de sortie"
 
 msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
+
+msgid "Rescan Devices"
+msgstr "Détecter les périphériques"
 
 msgid "Audio System"
 msgstr "Système audio"
@@ -2242,21 +2248,17 @@ msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 #~ msgid "width:"
 #~ msgstr "largeur :"
 
-#, tcl-format
 #~ msgid "couldn't create Pd documents directory: %s\n"
 #~ msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
 #~ msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
-#, tcl-format
 #~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : la famille de police '%s' n'a pas pu être trouvée, "
 #~ "utilisation de la police par défaut (%s)\n"
 
-#, tcl-format
 #~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : l'épaisseur de police '%s' n'a pas pu être trouvée, "

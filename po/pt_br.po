@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2025-06-23 23:01+0000\n"
+"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"PO-Revision-Date: 2025-08-09 18:01+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
@@ -132,6 +132,9 @@ msgstr "Mídia"
 msgid "Window"
 msgstr "Janela"
 
+msgid "Tools"
+msgstr "Ferramentas"
+
 msgid "Help"
 msgstr "Ajuda"
 
@@ -215,6 +218,9 @@ msgstr "Dispositivos de Saída"
 
 msgid "Use Multiple Devices"
 msgstr "Usar Múltiplos Dispositivos"
+
+msgid "Rescan Devices"
+msgstr "Reescanear Dispositivos"
 
 msgid "Audio System"
 msgstr "Sistema de áudio"
@@ -837,9 +843,8 @@ msgstr "Incapaz de renomear arquivo baixado de '%s'"
 msgid "Search URLs:"
 msgstr "Procurar URLs:"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "%s adicionado aos caminhos de busca"
+msgstr "URLs de busca adicionais"
 
 msgid "Ephemeral search URLs"
 msgstr "URLs temporárias de busca"
@@ -2081,9 +2086,8 @@ msgstr "Áudio ligado"
 msgid "Audio off"
 msgstr "Áudio desligado"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Encontrar Último Erro"
+msgstr "Encontrar fonte"
 
 msgid "Pd"
 msgstr "Pd"

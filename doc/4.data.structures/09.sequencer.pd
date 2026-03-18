@@ -87,7 +87,7 @@
 #X obj 161 340 route 900 990 90 909;
 #X obj 126 229 trigger pointer pointer, f 27;
 #X obj 161 305 pack float pointer, f 22;
-#X text 41 24 This example shows how one can use a different approach to route scalars to a specific voice subpatch depending on the color of the pitch array. Alternativelly \, inside a cloned abstraction \, one could use the color parameter to choose a different noise input or something., f 57;
+#X text 41 24 This example shows how one can use a different approach to route scalars to a specific voice subpatch depending on the color of the pitch array. Alternatively \, inside a cloned abstraction \, one could use the color parameter to choose a different noise input or something., f 57;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
 #X connect 2 0 9 0;

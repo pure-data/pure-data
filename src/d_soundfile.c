@@ -207,7 +207,7 @@ typedef struct _asciiargs
 
 static int ascii_hasextension(const char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len >= 5 && !strncmp(filename + (len - 4), ".txt", 4))
         return 1;
     return 0;
@@ -215,7 +215,7 @@ static int ascii_hasextension(const char *filename, size_t size)
 
 static int ascii_addextension(char *filename, size_t size)
 {
-    size_t len = strnlen(filename, size);
+    size_t len = pd_strnlen(filename, size);
     if (len + 4 >= size)
         return 0;
     strcpy(filename + len, ".txt");

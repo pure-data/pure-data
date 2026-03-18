@@ -24,7 +24,7 @@ cd pd-$pdversion
 
 
 #copy in the ASIO SDK and rename it ASIOSDK
-(cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
+(cd asio; unzip $HOME/pd/attic/asio/ASIOSDK2.3.zip;
     rm -rf __MACOSX/; mv ASIOSDK2.3 ASIOSDK)
 
 

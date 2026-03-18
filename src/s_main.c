@@ -428,7 +428,7 @@ int sys_main(int argc, const char **argv)
     sys_init_midi();
     sys_init_audio();
          /* load dynamic libraries specified with "-lib" args */
-    if (sys_oktoloadfiles(0))
+    if (sys_oktoloadfiles(0) || noprefs)
     {
         for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
             if (!sys_load_lib(0, nl->nl_string))
@@ -1556,7 +1556,10 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
+    {
+            /* not encoded; just return the symbol as is */
+        return s;
+    }
     else sp++;
     for (i = 0; i < MAXPDSTRING-1; i++, sp++)
     {

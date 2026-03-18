@@ -71,7 +71,7 @@ ARCH_CFLAGS = -DPD -DPD_INTERNAL -DWINVER=0x0502 \
      -DPA_USE_ASIO -DPA_USE_WASAPI \
      -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO \
      -mms-bitfields \
-     -DWISH='"wish85.exe"'
+     -DWISH='"wish86.exe"'
 
 CFLAGS += $(ARCH_CFLAGS) $(WARN_CFLAGS) $(OPT_CFLAGS) $(MORECFLAGS)
 

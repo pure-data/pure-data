@@ -98,7 +98,7 @@
 #X obj 38 17 cnv 5 5 25 empty empty The\ Classic\ Subtractive\ Synth\ Sound 15 13 0 16 #dfdfdf #202020 0;
 #X obj 189 255 sig~ 3;
 #X obj 108 286 bob~, f 7;
-#X text 34 437 Now that we can make reasonably high-quality classic waveforms using upsampling \, we combine an upsampled oscillator with a [bob~] filter and [adsr] envelopre generators to control the filter resonant frequency and the amplitude to make the classic subtractive synthesis sound. Send an [s \$0-note] object a pitch/duration pair to play a note \, wihch is sent to [makenote] to generate note ons/offs and the [poly] object is used here to make it a simple polyphonic synth. The velocity is set in [makenote] to an amplitude of "1" (note that classic VC synths did not have velocity sensitive keyboards!), f 71;
+#X text 34 437 Now that we can make reasonably high-quality classic waveforms using upsampling \, we combine an upsampled oscillator with a [bob~] filter and [adsr] envelopre generators to control the filter resonant frequency and the amplitude to make the classic subtractive synthesis sound. Send an [s \$0-note] object a pitch/duration pair to play a note \, which is sent to [makenote] to generate note ons/offs and the [poly] object is used here to make it a simple polyphonic synth. The velocity is set in [makenote] to an amplitude of "1" (note that classic VC synths did not have velocity sensitive keyboards!), f 71;
 #X text 34 575 You can add controls to change the parameters [adsr] and/or [bob~]'s "Q" parameter. The oscillators' waveforms and tuning relationship is controlled by other parameters set within the [pd 16x] subwindow., f 71;
 #X connect 0 0 32 0;
 #X connect 2 0 4 0;

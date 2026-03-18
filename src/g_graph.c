@@ -111,9 +111,10 @@ void glist_delete(t_glist *x, t_gobj *y)
             }
             else
             {
-                if (glist_isvisible(x))
-                    text_eraseborder(&gl->gl_obj, x,
-                        rtext_gettag(glist_getrtext(x, &gl->gl_obj)));
+                t_rtext *t;
+                if (glist_isvisible(x) &&
+                    (t = glist_getrtext(x, &gl->gl_obj, 0)))
+                        text_eraseborder(&gl->gl_obj, x, rtext_gettag(t));
             }
         }
     }
@@ -124,8 +125,18 @@ void glist_delete(t_glist *x, t_gobj *y)
     gobj_delete(y, x);
     if (glist_isvisible(canvas))
         gobj_vis(y, x, 0);
+
+        /* We will have to free the rtext, but we can't free it yet since
+        it might get searched for (and accidentally created) as a result of
+        some chain of events set off by pd_free below (for instance "y" might
+        be a canvas that has to close out a bunch of other stuff).  But we
+        can't search for the rtext after pd_free() without causing other
+        bad dereferences.  So, if the window is visible we now force the
+        rtext to be created whether or not glist_getrtext() thinks it's
+        needed.  Since this only happens in visible canvases it's not a huge
+        performance hit.  Thanks to Ben and Iohannes for spotting this. */
     if (glist_getcanvas(x)->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext = glist_getrtext(x, ob);
+        rtext = glist_getrtext(x, ob, 1);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
@@ -175,7 +186,7 @@ void glist_retext(t_glist *glist, t_text *y)
         /* check that we have built rtexts yet.  LATER need a better test. */
     if (glist->gl_editor && glist->gl_editor->e_rtext)
     {
-        t_rtext *rt = glist_getrtext(glist, y);
+        t_rtext *rt = glist_getrtext(glist, y, 0);
         if (rt)
             rtext_retext(rt);
     }
@@ -474,9 +485,15 @@ static void graph_goprect(t_glist *x, t_symbol *s, int argc, t_atom *argv)
             x->gl_pixheight = 1;
     }
     if (x->gl_havewindow)
+    {
         glist_redraw(x);
+            /* possibly fix patch cords on parent canvas */
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
+            canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
+    }
     else
-        /* glist_redraw() won't remove "ghost objects" */
+            /* we have to redraw the parent canvas because glist_redraw()
+            won't remove "ghost objects" or update patch cords */
         canvas_redraw(glist_getcanvas(x));
 }
 
@@ -706,14 +723,13 @@ void glist_redraw(t_glist *x)
 
 int garray_getname(t_garray *x, t_symbol **namep);
 
-static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2, const char**tags2)
+static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2,
+    const char *tag)
 {
-    pdgui_vmess(0, "crr iiii ri rS",
-              glist_getcanvas(x->gl_owner),
-              "create", "line",
-              x1,y1, x2,y2,
-              "-width", glist_getzoom(x),
-              "-tags", 2, tags2);
+    pdgui_vmess(0, "rcrr iik iiii",
+        "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag, "-",
+        0, glist_getzoom(x), THISGUI->i_foregroundcolor,
+        x1, y1,  x2, y2);
 }
 
 static void graph_create_text(
@@ -727,11 +743,12 @@ static void graph_create_text(
     SETSYMBOL(fontatoms+0, gensym(sys_font));
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess(0, "crr ii rs rr rA rS",
+    pdgui_vmess(0, "crr ii rs rk rr rA rS",
               glist_getcanvas(x),
               "create", "text",
               posX, posY,
               "-text", name,
+              "-fill", THISGUI->i_foregroundcolor,
               "-anchor", anchor,
               "-font", 3, fontatoms,
               "-tags", numtags, tags);
@@ -747,6 +764,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     const char *tags2[] = {tag, "graph" };
     t_gobj *g;
     int x1, y1, x2, y2;
+    t_rtext *t = glist_getrtext(parent_glist, &x->gl_obj, 0);
         /* ordinary subpatches: just act like a text object */
     if (!x->gl_isgraph)
     {
@@ -754,11 +772,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         return;
     }
 
-    if (vis && canvas_showtext(x))
-        rtext_draw(glist_getrtext(parent_glist, &x->gl_obj));
+    if (vis && canvas_showtext(x) && t)
+        rtext_draw(t);
     graph_getrect(gr, parent_glist, &x1, &y1, &x2, &y2);
-    if (!vis)
-        rtext_erase(glist_getrtext(parent_glist, &x->gl_obj));
+    if (!vis && t)
+        rtext_erase(t);
 
     sprintf(tag, "graph%lx", (t_int)x);
     if (vis)
@@ -797,13 +815,10 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
-        pdgui_vmess(0, "crr iiiiiiiiii ri rr rS",
-                  glist_getcanvas(x->gl_owner),
-                  "create", "line",
-                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-                  "-width", glist_getzoom(x),
-                  "-capstyle", "projecting",
-                  "-tags", 2, tags2);
+        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
+            "pdtk_canvas_create_line", glist_getcanvas(x->gl_owner), tag, "-",
+            0, glist_getzoom(x), THISGUI->i_foregroundcolor,
+            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -838,11 +853,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 _graph_create_line4(x,
                     ix, (int)upix,
                     ix, (int)upix - tickpix,
-                    tags2);
+                    tag);
                 _graph_create_line4(x,
                     ix, (int)lpix,
                     ix, (int)lpix + tickpix,
-                    tags2);
+                    tag);
             }
         }
 
@@ -865,11 +880,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 _graph_create_line4(x,
                     x1, iy,
                     x1 + tickpix, iy,
-                    tags2);
+                    tag);
                 _graph_create_line4(x,
                     x2, iy,
                     x2 - tickpix, iy,
-                    tags2);
+                    tag);
             }
         }
             /* draw x labels */
@@ -986,6 +1001,11 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         if (glist_isvisible(glist)) {
             glist_redraw(x);
             canvas_fixlinesfor(glist, &x->gl_obj);
+            char tag[80];
+            sprintf(tag, "graph%lx", (t_int)z);
+            pdgui_vmess(0, "crs rk",
+                glist_getcanvas(glist), "itemconfigure", tag,
+                "-fill", THISGUI->i_selectcolor);
         }
     }
 }
@@ -993,25 +1013,25 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *)z;
+    t_rtext *y;
     if (!x->gl_isgraph)
         text_widgetbehavior.w_selectfn(z, glist, state);
-    else
+    else if ((y = glist_getrtext(glist, &x->gl_obj, 0)))
     {
-        t_rtext *y = glist_getrtext(glist, &x->gl_obj);
         char tag[80];
         if (canvas_showtext(x))
             rtext_select(y, state);
 
         sprintf(tag, "%sR",  rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
+        pdgui_vmess(0, "crs rk",
                   glist, "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor->s_name :
-                      THISGUI->i_foregroundcolor->s_name));
+                  "-fill", (state? THISGUI->i_selectcolor :
+                      THISGUI->i_foregroundcolor));
         sprintf(tag, "graph%lx", (t_int)z);
-        pdgui_vmess(0, "crs rr",
+        pdgui_vmess(0, "crs rk",
                   glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor->s_name :
-                      THISGUI->i_foregroundcolor->s_name));
+                  "-fill", (state? THISGUI->i_selectcolor :
+                      THISGUI->i_foregroundcolor));
     }
 }
 
@@ -1094,17 +1114,12 @@ static int graph_click(t_gobj *z, struct _glist *glist,
         for (y = x->gl_list; y; y = y->g_next)
         {
             int x1, y1, x2, y2;
-                /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0)
-                &&  (clickreturned = gobj_click(y, x, xpix, ypix,
-                    shift, alt, dbl, doit)))
+                /* scalars handle their own hit testing, others use canvas_hitbox */
+            if ((y->g_pd == scalar_class ||
+                canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2, 0))
+                    && (clickreturned = gobj_click(y, x, xpix, ypix,
+                        shift, alt, dbl, doit)))
                         break;
-        }
-        if (!doit)
-        {
-            if (y)
-                canvas_setcursor(glist_getcanvas(x), clickreturned);
-            else canvas_setcursor(glist_getcanvas(x), CURSOR_RUNMODE_NOTHING);
         }
         return (clickreturned);
     }

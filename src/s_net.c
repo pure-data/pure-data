@@ -66,6 +66,12 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                      AI_V4MAPPED |  /* fallback to IPv4-mapped IPv6 addrs */
 #endif
                      AI_PASSIVE;    /* listen to any addr if hostname is NULL */
+
+#if DISABLE_IPV6
+    hints.ai_family = AF_INET;
+    hints.ai_flags = AI_PASSIVE;
+#endif
+
     portstr[0] = '\0';
     sprintf(portstr, "%d", port);
     result = getaddrinfo(hostname, portstr, &hints, ailist);

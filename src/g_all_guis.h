@@ -170,9 +170,9 @@ typedef struct _iemgui
     t_iem_fstyle_flags x_fsf;
     int                x_fontsize;
     t_iem_init_symargs x_isa;
-    int                x_fcol;
-    int                x_bcol;
-    int                x_lcol;
+    unsigned int       x_fcol;
+    unsigned int       x_bcol;
+    unsigned int       x_lcol;
     /* send/receive/label as used ($args expanded) */
     t_symbol           *x_snd;              /* send symbol */
     t_symbol           *x_rcv;              /* receive */

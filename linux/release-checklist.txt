@@ -62,8 +62,8 @@ wait 90 min...
 grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
 or try: https://git.iem.at/pd/pure-data/-/pipelines
 
---> pure-data_$VERSION_macOS.zip
-mv -i ~/pure-data_"$VERSION"_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
+--> pure-data_master_macOS.zip
+mv -i ~/pure-data_master_macOS.zip ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc

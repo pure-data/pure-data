@@ -38,7 +38,7 @@ libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
 # create convenience link for running locally
-all-local:
+all-local: $(LTLIBRARIES)
 	rm -f *.@EXTERNAL_EXTENSION@
 	-$(LN_S) $(wildcard .libs/*.@EXTERNAL_EXTENSION@) ./
 

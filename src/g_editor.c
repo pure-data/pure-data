@@ -61,11 +61,11 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
 
-static void _editor_selectlinecolor(t_glist *x, const char*color)
+static void _editor_selectlinecolor(t_glist *x, unsigned int color)
 {
     char tag[128];
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
-    pdgui_vmess(0, "crs rs",
+    pdgui_vmess(0, "crs rk",
         x, "itemconfigure", tag,
         "-fill", color);
 
@@ -83,7 +83,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, THISGUI->i_selectcolor->s_name);
+        _editor_selectlinecolor(x, THISGUI->i_selectcolor);
     }
 }
 
@@ -92,7 +92,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor->s_name);
+        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor);
     }
 }
 
@@ -149,8 +149,8 @@ void glist_deselect(t_glist *x, t_gobj *y)
     if (!glist_isselected(x, y)) bug("glist_deselect");
     if (glist_textedfor(x))
     {
-        t_rtext *fuddy = glist_getrtext(x, (t_text *)y);
-        if (glist_textedfor(x) == fuddy)
+        t_rtext *fuddy = glist_getrtext(x, (t_text *)y, 0);
+        if (fuddy && glist_textedfor(x) == fuddy)
         {
             if (x->gl_editor->e_textdirty)
             {
@@ -468,7 +468,7 @@ void canvas_disconnect(t_canvas *x,
             {
                 char tag[128];
                 sprintf(tag, "l%p", oc);
-                pdgui_vmess(0, "crs", x, "delete", tag);
+                pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, tag);
             }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
@@ -1916,11 +1916,12 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 pdtk_canvas_new; but if it's just white don't pass it in
                 case we're talking to an older GUI version (so that
                 pureVST can work with Pd 0.55 as its GUI) */
-            if (strcmp(THISGUI->i_backgroundcolor->s_name, "white"))
-                pdgui_vmess("pdtk_canvas_new", "^ ii si s", x,
+            if (THISGUI->i_backgroundcolor != 0xFFFFFF)
+                pdgui_vmess("pdtk_canvas_new", "^ ii si kk", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                    winpos, x->gl_edit, THISGUI->i_backgroundcolor->s_name);
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    winpos, x->gl_edit,
+                    THISGUI->i_backgroundcolor, THISGUI->i_foregroundcolor);
             else pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
                     (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1), winpos, x->gl_edit);
@@ -2002,6 +2003,11 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
     {
         if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
+                /* changing 'isgraph' might change which window some texts
+                should appear on, so the rtexts will have to move.  So we
+                nuke them; they'll be recreated in the correct glist next
+                time each one is asked for. */
+        glist_clearrtexts(x);
         x->gl_isgraph = x->gl_hidetext = 0;
         if (can_graph_on_parent)
         {
@@ -2019,6 +2025,9 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 
         if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
+            /* only clear rtexts when transitioning into GOP */
+        if (!glist_isgraph(x))
+            glist_clearrtexts(x);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
@@ -2085,14 +2094,27 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
+    glist_clearrtexts(x);
+        /* if there are extra arguments, the user has typed new text in
+        the dialog window.  Unfortunately, some old patches use this to
+        resize rectangles programmatically, and moreover send extra
+        arguments.  This will break in 0.56 and later.  At least we can
+        catch cases in which the patch isn't yet visible and in that case
+        ignore the extra args - the dialog should only send this for a
+        visible one.  (Actually, is that really true?)  Anyhow, since
+        at least one bandit call to this method contains extra arguments
+        (apparently from the object itself which is then getting deleted
+        and crashing Pd) we test that there's an extra string "text" before
+        the new object creation text.   */
 
-    if (x->gl_owner && argc > 12)
+    if (x->gl_owner && argc > 13 && glist_isvisible(x->gl_owner) &&
+        !strcmp(atom_getsymbolarg(12, argc, argv)->s_name, "text"))
     {
         t_gobj *y =  &x->gl_obj.ob_g;
         t_binbuf *b = binbuf_new();
         char *textbuf;
         int textsize;
-        binbuf_add(b, argc-12, argv+12);
+        binbuf_restore(b, argc-13, argv+13);
         binbuf_gettext(b, &textbuf, &textsize);
         binbuf_free(b);
         canvas_undo_add(x->gl_owner, UNDO_SEQUENCE_START, "typing", 0);
@@ -2106,7 +2128,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         glist_select(x->gl_owner, y);
         canvas_stowconnections(glist_getcanvas(x->gl_owner));
 
-            /* change the text (this will restore the connections we just stowed away) */
+            /* change the text (this restores the connections we just saved) */
         glist_noselect(x->gl_owner);
         t_canvas *owner = x->gl_owner;
         text_setto(&x->gl_obj, x->gl_owner, textbuf, textsize);
@@ -2190,17 +2212,13 @@ static void canvas_donecanvasdialog(t_glist *x,
         }
     }
         /* LATER avoid doing 2 redraws here (possibly one inside setgraph) */
-    canvas_setgraph(x, graphme, 0);
+    if (graphme != glist_isgraph(x))
+        canvas_setgraph(x, graphme, 0);
     canvas_dirty(x, 1);
-    if (x->gl_owner && x->gl_owner->gl_havewindow)
-        canvas_redraw(x->gl_owner);
+    if (x->gl_owner)
+        canvas_redraw(glist_getcanvas(x->gl_owner));
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
-    {
-        gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        gobj_vis(&x->gl_gobj, x->gl_owner, 1);
-    }
 }
 
     /* called from the gui when a popup menu comes back with "properties,"
@@ -2320,6 +2338,11 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     t_word *hitwords = 0;
     t_gobj *hitdrawtext = 0;
     t_rtext *rtext;
+
+    if(!x->gl_editor) {
+        bug("editor");
+        return;
+    }
 
     shiftmod = (mod & SHIFTMOD);
     runmode = ((mod & CTRLMOD) || (!x->gl_edit));
@@ -2458,7 +2481,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
             {
                 t_rtext *rt;
                 if (hitobj && (rt = glist_textedfor(x)) &&
-                    rt == glist_getrtext(x, hitobj))
+                    rt == glist_getrtext(x, hitobj, 0))
                 {
                     rtext_mouse(rt, xpix - x1, ypix - y1, RTEXT_SHIFT);
                     x->gl_editor->e_onmotion = MA_DRAGTEXT;
@@ -2526,12 +2549,11 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground",
                             "ci", x, 0);
-                        pdgui_vmess(0, "crr iiii ri rs",
-                            x, "create", "line",
-                            x->gl_editor->e_xwas,x->gl_editor->e_ywas,
-                            xpix, ypix,
-                            "-width", (issignal ? 2 : 1) * x->gl_zoom,
-                            "-tags", "x");
+                        pdgui_vmess(0, "rcrr iik iiii",
+                            "pdtk_canvas_create_line", x, "x", "-",
+                            0, x->gl_zoom, THISGUI->i_foregroundcolor,
+                            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                            xpix, ypix);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2546,7 +2568,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                     /* check if the box is being text edited */
             nooutletafterall:
                 if (hitobj && (rt = glist_textedfor(x)) &&
-                    rt == glist_getrtext(x, hitobj))
+                    rt == glist_getrtext(x, hitobj, 0))
                 {
                     rtext_mouse(rt, xpix - x1, ypix - y1,
                         (doubleclick ? RTEXT_DBL : RTEXT_DOWN));
@@ -2676,9 +2698,10 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     {
         if (!shiftmod)
             glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rs",
+        pdgui_vmess(0, "crr iiii rk rs",
             x, "create", "rectangle",
             xpix,ypix, xpix,ypix,
+            "-outline", THISGUI->i_selectcolor,
             "-tags", "x");
         x->gl_editor->e_xwas = xpix;
         x->gl_editor->e_ywas = ypix;
@@ -2738,7 +2761,6 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
             int y11=0, y12=0, y21=0, y22=0;
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
-            char*tags[] = {tag, "cord"};
             sprintf(tag, "l%p", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
@@ -2754,11 +2776,11 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess(0, "crr iiii ri rS",
-                glist_getcanvas(x), "create", "line",
-                lx1,ly1, lx2,ly2,
-                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcrr ii k iiii",
+                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+                    0, (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                        THISGUI->i_foregroundcolor,
+                            lx1,ly1, lx2,ly2);
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
@@ -2783,7 +2805,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #endif
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, "x");
     }
     else
         pdgui_vmess(0, "crs iiii",
@@ -3028,7 +3050,7 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess(0, "rcr", "pdtk_canvas_delete", x, "x");
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
@@ -3985,7 +4007,7 @@ static void glist_donewloadbangs(t_glist *x)
             if (pd_class(&sel->sel_what->g_pd) == canvas_class)
                 canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
             else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
-                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "f", LB_LOAD);
+                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "i", LB_LOAD);
     }
 }
 
@@ -4582,13 +4604,12 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x) && x->gl_havewindow)
     {
         char tag[128];
-        char*tags[] = {tag, "cord"};
         sprintf(tag, "l%p", oc);
-        pdgui_vmess(0, "crr iiii ri rS",
-            glist_getcanvas(x), "create", "line",
-            0, 0, 0, 0,
-            "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
-            "-tags", 2, tags);
+        pdgui_vmess(0, "rcrr iik iiii",
+            "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+                0, (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+                    THISGUI->i_foregroundcolor,
+                        0, 0, 0, 0);
         canvas_fixlinesfor(x, objsrc);
     }
     return;
@@ -4991,11 +5012,14 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         t_gobj *g;
         t_object *ob;
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
+            /* comments only get their 'border' (really just a bar for
+            resizing) if we're in edit mode so draw the borders here */
         for (g = x->gl_list; g; g = g->g_next)
             if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
         {
-            t_rtext *y = glist_getrtext(x, ob);
-            text_drawborder(ob, x, rtext_gettag(y), 1);
+            t_rtext *y = glist_getrtext(x, ob, 0);
+            if (y)
+                text_drawborder(ob, x, rtext_gettag(y), 1);
         }
     }
     else
@@ -5004,9 +5028,20 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
+            t_gobj *g;
+            t_object *ob;
+            t_rtext *y;
+                /* erase 'borders' on comment boxes; see above */
+            for (g = x->gl_list; g; g = g->g_next)
+                if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT
+                    && (y = glist_getrtext(x, ob, 0)))
+            {
+                char tagR[128];
+                sprintf(tagR, "%sR", rtext_gettag(y));
+                pdgui_vmess(0, "rcr",
+                    "pdtk_canvas_delete", glist_getcanvas(x), tagR);
+            }
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x), "delete", "commentbar");
         }
     }
     if (glist_isvisible(x) && x->gl_havewindow)
