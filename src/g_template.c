@@ -1000,6 +1000,7 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 #define NOMOUSEEDIT 8 /* same in edit mode */
 #define NOVERTICES 16 /* disable only vertex grabbing in run mode */
 #define DRAGGABLE 32  /* can use to drag entire scalar around */
+#define NOMOUSETEXT 64 /* for drawtext: disable text selection via mouse */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -2783,7 +2784,7 @@ typedef struct _drawtext
     t_symbol *x_label;
     t_canvas *x_canvas;
     t_template *x_template; /* saved for drawtext_gettext called from rtext */
-    int x_flags;  /* NOMOUSERUN, NOMOUSEEDIT */
+    int x_flags;  /* NOMOUSERUN, NOMOUSEEDIT, NOMOUSETEXT */
 } t_drawtext;
 
 static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
@@ -2818,6 +2819,11 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             /* disable mouse actions in edit mode */
             x->x_flags |= NOMOUSEEDIT;
+        }
+        else if (!strcmp(firstarg->s_name, "-xt"))
+        {
+            /* disable text selection and editing (double-click activation) */
+            x->x_flags |= NOMOUSETEXT;
         }
         else
             pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
@@ -2974,6 +2980,13 @@ int drawtext_interaction_disabled(t_gobj *z, t_glist *glist)
     return (0);
 }
 
+    /* return 1 if text selection/editing should be disabled (-xt flag).
+        blocks double-click activation in rtext_findhit */
+int drawtext_noselection(t_gobj *z)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    return ((x->x_flags & NOMOUSETEXT) != 0);
+}
 
 
 /* -------------------- widget behavior for drawtext ------------ */
