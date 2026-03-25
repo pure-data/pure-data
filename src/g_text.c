@@ -428,24 +428,31 @@ static void message_list(t_message *x, t_symbol *s, int argc, t_atom *argv)
     binbuf_eval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, argc, argv);
 }
 
+static void message_retext(t_gobj*z, t_glist*gl)
+{
+    t_message*x = (t_message*)z;
+    if(gl->gl_editor)
+        glist_retext(gl, &x->m_text);
+}
+
 static void message_set(t_message *x, t_symbol *s, int argc, t_atom *argv)
 {
     binbuf_clear(x->m_text.te_binbuf);
     binbuf_add(x->m_text.te_binbuf, argc, argv);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_add2(t_message *x, t_symbol *s, int argc, t_atom *argv)
 {
     binbuf_add(x->m_text.te_binbuf, argc, argv);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_add(t_message *x, t_symbol *s, int argc, t_atom *argv)
 {
     binbuf_add(x->m_text.te_binbuf, argc, argv);
     binbuf_addsemi(x->m_text.te_binbuf);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_addcomma(t_message *x)
@@ -453,7 +460,7 @@ static void message_addcomma(t_message *x)
     t_atom a;
     SETCOMMA(&a);
     binbuf_add(x->m_text.te_binbuf, 1, &a);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_addsemi(t_message *x)
@@ -469,7 +476,7 @@ static void message_adddollar(t_message *x, t_floatarg f)
         n = 0;
     SETDOLLAR(&a, n);
     binbuf_add(x->m_text.te_binbuf, 1, &a);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_adddollsym(t_message *x, t_symbol *s)
@@ -481,7 +488,7 @@ static void message_adddollsym(t_message *x, t_symbol *s)
     buf[MAXPDSTRING-1] = 0;
     SETDOLLSYM(&a, gensym(buf));
     binbuf_add(x->m_text.te_binbuf, 1, &a);
-    glist_retext(x->m_glist, &x->m_text);
+    sys_queuegui(x, x->m_glist, message_retext);
 }
 
 static void message_click(t_message *x,
@@ -522,6 +529,7 @@ static void message_tick(t_message *x)
 static void message_free(t_message *x)
 {
     clock_free(x->m_clock);
+    sys_unqueuegui(x);
 }
 
 void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
