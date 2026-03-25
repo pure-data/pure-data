@@ -287,10 +287,10 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
 
     (void)old_snd_rcv_flags;
 
-    sprintf(tag_object, "%pOBJ", x);
-    sprintf(tag_but, "%pBUT", x);
+    sprintf(tag_object, "%p_", x);
+    sprintf(tag_but, "%p_BUT", x);
 
-    sprintf(tag, "%pOUT%d", x, 0);
+    sprintf(tag, "%p_OUT%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
@@ -306,7 +306,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_but);
     }
 
-    sprintf(tag, "%pIN%d", x, 0);
+    sprintf(tag, "%p_IN%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -396,28 +396,28 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
         const int curr_color = radio_on_square(x,col,row,idx) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
         const int step_color = radio_on_toggle(x,idx) ?  x->x_gui.x_fcol : x->x_gui.x_bcol;
 
-        sprintf(tag, "%pBASE%d", x, idx);
+        sprintf(tag, "%p_BASE%d", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11, yy11, xx12, yy12);
         pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
             "-width", zoom, "-fill", x->x_gui.x_bcol,
             "-outline", x->x_gui.x_fcol);
 
-        sprintf(tag, "%pX1%d", x, idx);
+        sprintf(tag, "%p_X1%d", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11 + crossw + zoom, yy11 + crossw + zoom,
             xx11 + x->x_gui.x_w - crossw - zoom, yy11 + x->x_gui.x_h - crossw - zoom);
         pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
             "-width", crossw, "-fill", step_color);
 
-        sprintf(tag, "%pX2%d", x, idx);
+        sprintf(tag, "%p_X2%d", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11 + crossw + zoom, yy11 + x->x_gui.x_h - crossw - zoom,
             xx11 + x->x_gui.x_w - crossw - zoom, yy11 + crossw + zoom);
         pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
             "-width", crossw, "-fill", step_color);
 
-        sprintf(tag, "%pBUT%d", x, idx);
+        sprintf(tag, "%p_BUT%d", x, idx);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11 + cellw4, yy11 + cellh4, xx12 - cellw4, yy12 - cellh4);
         pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
@@ -425,7 +425,7 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
 
     }
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         x0 + x->x_gui.x_ldx * zoom, y0 + x->x_gui.x_ldy * zoom);
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
@@ -439,7 +439,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_n[128], tag[128], tag_object[128];
     char *tags[] = {tag_object, tag, tag_n, "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
     if(radio_matrix_reindex(x))
         return pd_error(x, "radio_draw_new: could not reindex matrix.");
@@ -448,38 +448,38 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     for(int i=0; i<size; i++) {
         const int idx = x->x_matrix_idx[i];
 
-        sprintf(tag, "%pBASE", x);
+        sprintf(tag, "%p_BASE", x);
         sprintf(tag_n, "%pBASE%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
             0, 0, 0, 0, "-tags", 3, tags);
 
-        sprintf(tag, "%pCROSS1", x);
+        sprintf(tag, "%p_CROSS1", x);
         sprintf(tag_n, "%pX1%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
             0, 0, 0, 0, "-tags", 3, tags);
 
-        sprintf(tag, "%pCROSS2", x);
+        sprintf(tag, "%p_CROSS2", x);
         sprintf(tag_n, "%pX2%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
             0, 0, 0, 0, "-tags", 3, tags);
 
-        sprintf(tag, "%pBUT", x);
+        sprintf(tag, "%p_BUT", x);
         sprintf(tag_n, "%pBUT%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
             0, 0, 0, 0, "-tags", 3, tags);
 
     }
     /* make sure the buttons are above the crosses and crosses above the base */
-    sprintf(tag, "%pBASE", x);
-    sprintf(tag_n, "%pCROSS1", x);
+    sprintf(tag, "%p_BASE", x);
+    sprintf(tag_n, "%p_CROSS1", x);
     pdgui_vmess(0, "crss", canvas, "raise", tag_n, tag);
-    sprintf(tag, "%pCROSS2", x);
+    sprintf(tag, "%p_CROSS2", x);
     pdgui_vmess(0, "crss", canvas, "raise", tag, tag_n);
-    sprintf(tag_n, "%pBUT", x);
+    sprintf(tag_n, "%p_BUT", x);
     pdgui_vmess(0, "crss", canvas, "raise", tag_n, tag);
 
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     sprintf(tag_n, "label");
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
@@ -497,9 +497,9 @@ static void radio_draw_select(t_radio* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         lcol = col = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -524,13 +524,13 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
         const int curr_color = button ? x->x_gui.x_fcol : x->x_gui.x_bcol;
         const int step_color = step ? x->x_gui.x_fcol : x->x_gui.x_bcol;
 
-        sprintf(tag_x1, "%pX1%d", x, idx);
+        sprintf(tag_x1, "%p_X1%d", x, idx);
         pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x1,
                     "-fill", step_color);
-        sprintf(tag_x2, "%pX2%d", x, idx);
+        sprintf(tag_x2, "%p_X2%d", x, idx);
         pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag_x2,
                     "-fill", step_color);
-        sprintf(tag_but, "%pBUT%d", x, idx);
+        sprintf(tag_but, "%p_BUT%d", x, idx);
         pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag_but,
                     "-fill", curr_color, "-outline", curr_color);
 

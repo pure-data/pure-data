@@ -496,7 +496,7 @@ static void iemgui_dolabelpos(t_object*obj, t_iemgui*iemgui) {
     int y0 = text_ypix((t_object *)obj, iemgui->x_glist);
     int dx = iemgui->x_ldx, dy = iemgui->x_ldy;
     char tag[128];
-    sprintf(tag, "%pLABEL", obj);
+    sprintf(tag, "%p_LABEL", obj);
     if(gensym("") == iemgui->x_lab) {
         /* put empty labels where they don't create scrollbars */
         dx = 0;
@@ -524,7 +524,7 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
         const char*label = s->s_name;
         int have_label = (s != empty);
         char tag[128];
-        sprintf(tag, "%pLABEL", x);
+        sprintf(tag, "%p_LABEL", x);
         pdgui_vmess("pdtk_text_set", "cs s",
             glist_getcanvas(iemgui->x_glist), tag,
             have_label?s->s_name:"");
@@ -567,7 +567,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     {
         char tag[128];
         t_atom fontatoms[3];
-        sprintf(tag, "%pLABEL", x);
+        sprintf(tag, "%p_LABEL", x);
         SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
         SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
@@ -950,11 +950,11 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 
     (void)old_snd_rcv_flags;
 
-    sprintf(tag_object, "%pOBJ", x);
-    sprintf(tag_label, "%pLABEL", x);
+    sprintf(tag_object, "%p_", x);
+    sprintf(tag_label, "%p_LABEL", x);
 
     /* re-create outlet */
-    sprintf(tag, "%pOUT%d", x, 0);
+    sprintf(tag, "%p_OUT%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_snd_able) {
         pdgui_vmess(0, "crr iiii rk rk rS",
@@ -968,7 +968,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     }
 
     /* re-create inlet */
-    sprintf(tag, "%pIN%d", x, 0);
+    sprintf(tag, "%p_IN%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_rcv_able) {
         pdgui_vmess(0, "crr iiii rk rk rS",
@@ -986,7 +986,7 @@ static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128];
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
     pdgui_vmess(0, "crs", canvas, "delete", tag_object);
 }
@@ -998,8 +998,9 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     int dy = text_ypix(&x->x_obj, glist) - x->x_private->p_prevY;
 
     char tag_object[128];
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
+    //pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", canvas, tag_object, dx, dy);
     pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
 }
 

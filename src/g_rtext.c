@@ -64,7 +64,7 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
         glist_getcanvas(glist)->gl_editor->e_rtext = x;
     else last->x_next = x;
     x->x_next = 0;
-    sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
+    sprintf(x->x_tag, ".x%lx.t%lxt", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
     x->x_xpix = x->x_ypix = 0;      /* empty rectangle */
     x->x_pixwidth = x->x_pixheight = -1;
@@ -742,8 +742,10 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 {
     x->x_xpix += dx;
     x->x_ypix += dy;
-    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
-        dx, dy);
+    //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        //dx, dy);
+    pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", glist_getcanvas(x->x_glist),
+        x->x_tag, dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)

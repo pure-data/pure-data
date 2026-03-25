@@ -488,6 +488,8 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
                 "Delete"    { set key 127 }
                 "KP_Delete" { set key 127 }
                 "KP_Enter"  { set key  10 }
+                ";"         { set key  59 }
+                ","         { set key  44 }
                 default     {             }
             }
         }

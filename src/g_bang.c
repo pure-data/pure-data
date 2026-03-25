@@ -34,22 +34,22 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom, "-fill", x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pBUT", x);
+    sprintf(tag, "%p_BUT", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + inset, ypos + inset,
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
-        "-outline", THISGUI->i_foregroundcolor);
+        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol :
+            x->x_gui.x_bcol), "-outline", THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
@@ -67,17 +67,21 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
-    sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BASE", x);
+    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pBUT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BUT", x);
+    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_oval",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -95,11 +99,11 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pBUT", x);
+    sprintf(tag, "%p_BUT", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -108,7 +112,7 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     if(glist_isvisible(glist))
     {
         char tag[128];
-        sprintf(tag, "%pBUT", x);
+        sprintf(tag, "%p_BUT", x);
         pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
             "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
     }

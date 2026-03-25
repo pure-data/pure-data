@@ -104,12 +104,11 @@ proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
             # listbox (much simpler)
             set topItem [expr [lindex [$lb yview] 0] * [$lb size]]
         }
-        set cmd "$::dialog_array::listview_id($arrayName) \
-               arrayviewlistfillpage \
-               $::dialog_array::listview_page($arrayName) \
-               $topItem"
-
-        pdsend $cmd
+        set cmd [list $::dialog_array::listview_id($arrayName) \
+                     arrayviewlistfillpage \
+                     $::dialog_array::listview_page($arrayName) \
+                     $topItem]
+        pdsend ${cmd}
     }
 }
 
@@ -225,7 +224,7 @@ proc ::dialog_array::listview_edit+paste {arrayName startIndex data} {
         lappend values $value
     }
     if { $values ne {} } {
-        pdsend "$::dialog_array::listview_id($arrayName) $offset $values"
+        pdsend [list $::dialog_array::listview_id($arrayName) $offset $values]
         pdtk_array_listview_fillpage $arrayName
     }
 }
@@ -343,23 +342,23 @@ proc ::dialog_array::pdtk_array_listview_closeWindow {arrayName} {
 
 proc ::dialog_array::listview_close {mytoplevel arrayName} {
     pdtk_array_listview_closeWindow $arrayName
-    pdsend "$mytoplevel arrayviewclose"
+    pdsend [list $mytoplevel arrayviewclose]
 }
 
 proc ::dialog_array::apply {mytoplevel} {
-    pdsend "$mytoplevel arraydialog \
-            [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
-            [$mytoplevel.array.size.entry get] \
-            [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
-            $::dialog_array::otherflag_button($mytoplevel)"
+    pdsend [list $mytoplevel arraydialog \
+                [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
+                [$mytoplevel.array.size.entry get] \
+                [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
+                $::dialog_array::otherflag_button($mytoplevel) ]
 }
 
 proc ::dialog_array::openlistview {mytoplevel} {
-    pdsend "$mytoplevel arrayviewlistnew"
+    pdsend [list $mytoplevel arrayviewlistnew]
 }
 
 proc ::dialog_array::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_array::ok {mytoplevel} {

@@ -184,7 +184,7 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p", x);
 
     sprintf(tag, "%pBASE1", x);
     pdgui_vmess(0, "crr ii rS", canvas, "create", "polygon",

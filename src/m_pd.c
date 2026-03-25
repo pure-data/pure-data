@@ -310,7 +310,7 @@ void pd_popsym(t_pd *x)
 void pd_doloadbang(void)
 {
     if (lastpopped)
-        pd_vmess(lastpopped, gensym("loadbang"), "f", LB_LOAD);
+        pd_vmess(lastpopped, gensym("loadbang"), "i", LB_LOAD);
     lastpopped = 0;
 }
 
