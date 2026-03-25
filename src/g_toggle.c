@@ -191,7 +191,7 @@ static void toggle_properties(t_gobj *z, t_glist *owner)
                       x->x_nonzero, 0,
                       1,
                       -1, "", "",
-                      1, -1, -1);
+                      1, -1, -1, -1, -1);
 }
 
 static void toggle_bang(t_toggle *x)
@@ -209,14 +209,14 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
     int a = (int)atom_getfloatarg(0, argc, argv);
     t_float nonzero = (t_float)atom_getfloatarg(2, argc, argv);
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[20];
+    iemgui_setdialogatoms(&x->x_gui, 20, undo);
     SETFLOAT (undo+1, 0);
     SETFLOAT (undo+2, x->x_nonzero);
     SETFLOAT (undo+3, 0);
 
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            20, undo,
                             argc, argv);
 
     if(nonzero == 0.0)
