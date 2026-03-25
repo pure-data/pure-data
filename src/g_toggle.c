@@ -408,6 +408,7 @@ void g_toggle_setup(void)
     toggle_widgetbehavior.w_deletefn = iemgui_delete;
     toggle_widgetbehavior.w_visfn = iemgui_vis;
     toggle_widgetbehavior.w_clickfn = toggle_newclick;
+    toggle_widgetbehavior.w_resizefn = iemgui_resize;
     class_setwidget(toggle_class, &toggle_widgetbehavior);
     class_sethelpsymbol(toggle_class, gensym("toggle"));
     class_setsavefn(toggle_class, toggle_save);

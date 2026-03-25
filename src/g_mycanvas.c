@@ -224,6 +224,26 @@ static void my_canvas_vis_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
     iemgui_size(x, &x->x_gui);
 }
 
+/* cant use iemgui_resize directly because cnv width is not the size
+ * of the visible canvas
+ */
+static void my_canvas_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
+{
+    t_my_canvas *x = (t_my_canvas *)z;
+    int shift = ((int)mod == 1);
+    int cursor = shift ? CURSOR_EDITMODE_RESIZE_SQUARE : CURSOR_EDITMODE_RESIZE_FREE;
+    canvas_setcursor(glist, cursor);
+    int w = (int)dx * IEMGUI_ZOOM(x);
+    int h = (int)dy * IEMGUI_ZOOM(x);
+    if (w < 1)
+        w = 1;
+    if (h < 1)
+        h = 1;
+    x->x_vis_w = w;
+    x->x_vis_h = shift ? w : h;
+    iemgui_size(x, &x->x_gui);
+}
+
 static void my_canvas_color(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_color((void *)x, &x->x_gui, s, ac, av);}
 
@@ -369,6 +389,7 @@ void g_mycanvas_setup(void)
     my_canvas_widgetbehavior.w_deletefn   = iemgui_delete;
     my_canvas_widgetbehavior.w_visfn      = iemgui_vis;
     my_canvas_widgetbehavior.w_clickfn    = NULL;
+    my_canvas_widgetbehavior.w_resizefn   = my_canvas_iemgui_resize;
     class_setwidget(my_canvas_class, &my_canvas_widgetbehavior);
     class_setsavefn(my_canvas_class, my_canvas_save);
     class_setpropertiesfn(my_canvas_class, my_canvas_properties);
