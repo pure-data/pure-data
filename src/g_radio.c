@@ -449,22 +449,22 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
         const int idx = x->x_matrix_idx[i];
 
         sprintf(tag, "%p_BASE", x);
-        sprintf(tag_n, "%pBASE%d", x, idx);
+        sprintf(tag_n, "%p_BASE%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
             0, 0, 0, 0, "-tags", 3, tags);
 
         sprintf(tag, "%p_CROSS1", x);
-        sprintf(tag_n, "%pX1%d", x, idx);
+        sprintf(tag_n, "%p_X1%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
             0, 0, 0, 0, "-tags", 3, tags);
 
         sprintf(tag, "%p_CROSS2", x);
-        sprintf(tag_n, "%pX2%d", x, idx);
+        sprintf(tag_n, "%p_X2%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
             0, 0, 0, 0, "-tags", 3, tags);
 
         sprintf(tag, "%p_BUT", x);
-        sprintf(tag_n, "%pBUT%d", x, idx);
+        sprintf(tag_n, "%p_BUT%d", x, idx);
         pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
             0, 0, 0, 0, "-tags", 3, tags);
 
