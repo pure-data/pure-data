@@ -4,6 +4,7 @@
 package require pd_menus
 
 namespace eval category_menu {
+    variable uid 0
 }
 
 proc category_menu::send_item {w x y item} {
@@ -69,7 +70,7 @@ proc category_menu::load_menutree {} {
         {patch/subpatch
             {inlet inlet~ outlet outlet~ pd block~ switch~ clone namecanvas loadbang declare savestate pdcontrol}}
         {control
-            {general\ data\ management
+            {{general\ data\ management
                 {bang trigger route swap print float int value symbol makefilename send receive}}
             {list\ management
                 {pack unpack list\ append list\ prepend list\ store list\ split list\ trim list\ length list\ fromsymbol list\ tosymbol}}
@@ -78,7 +79,7 @@ proc category_menu::load_menutree {} {
             {text\ management
                 {qlist textfile text\ define text\ get text\ set text\ insert text\ delete text\ size text\ tolist text\ fromlist text\ search text\ sequence}}
             {file\ management
-                {dummy dummy file\ handle file\ define file\ mkdir  file\ cwd file\ patchpath file\ which file\ glob file\ stat file\ isfile file\ isdirectory file\ size file\ copy file\ move file\ delete file\ split file\ join file\ splitex file\ splitname file\ normalize file\ isabsolute}}
+                {file\ handle file\ define file\ mkdir file\ cwd file\ patchpath file\ which file\ glob file\ stat file\ isfile file\ isdirectory file\ size file\ copy file\ move file\ delete file\ split file\ join file\ splitex file\ splitname file\ normalize file\ isabsolute}}
             {time
                 {delay pipe metro line timer cputime realtime}}
             {logic
@@ -90,10 +91,10 @@ proc category_menu::load_menutree {} {
             {midi/osc
                 {midiin midiout notein noteout ctlin ctlout pgmin pgmout bendin bendout touchin touchout polytouchin polytouchout sysexin midirealtimein makenote stripnote poly oscparse oscformat}}
             {misc
-                {openpanel savepanel key keyup keyname netsend netreceive fudiparse fudiformat bag trace}}
+                {openpanel savepanel key keyup keyname netsend netreceive fudiparse fudiformat bag trace}}}
         }
         {audio
-            {general\ audio\ tools
+            {{general\ audio\ tools
                 {snake~\ in snake~\ out adc~ dac~ sig~ line~ vline~ threshold~ env~ snapshot~ vsnapshot~ bang~ samphold~ samplerate~ send~ receive~ throw~ catch~ readsf~ writesf~ print~}}
             {signal\ math
                 {fft~ ifft~ rfft~ rifft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ log~ pow~ abs~ sqrt~ rsqrt~ wrap~ exp~ clip~}}
@@ -104,7 +105,7 @@ proc category_menu::load_menutree {} {
             {audio\ filters
                 {vcf~ hip~ lop~ slop~ bp~ biquad~ rpole~ rzero~ rzero_rev~ cpole~ czero~ czero_rev~}}
             {audio\ delay
-                {delwrite~ delread~ delread4~}}
+                {delwrite~ delread~ delread4~}}}
         }
         {data\ structures
             {struct drawpolygon filledpolygon drawcurve filledcurve drawnumber drawsymbol drawtext plot scalar pointer vpointer get set element getsize setsize append}}
@@ -115,49 +116,25 @@ proc category_menu::load_menutree {} {
 }
 
 proc category_menu::build_menu {parent_menu node x y} {
+    variable uid
     set name [lindex $node 0]
-    # Create menu for this node
-    set current_menu $parent_menu.$name
+    incr uid
+    set safe_name [string tolower [regsub -all {[^a-z0-9_]} $name {_}]]
+    set current_menu $parent_menu.m${uid}_${safe_name}
     menu $current_menu
     $parent_menu add cascade -label $name -menu $current_menu
-    # Process each remaining element directly (these are submenus or item lists)
-    set remaining [lrange $node 1 end]
-    set count 0
-    foreach element $remaining {
-        set second [lindex $element 1]
-        # Determine if this element is a submenu or item list
-        # A submenu has: first part is a name (string), remaining parts are lists
-        set is_submenu 0
-        if {[llength $element] >= 2} {
-            set is_submenu 1
-            for {set j 1} {$j < [llength $element]} {incr j} {
-                if {[llength [lindex $element $j]] <= 1} {
-                    set is_submenu 0
-                    break
-                }
-            }
-        }
-        if {$is_submenu} {
+
+    set children [lindex $node 1]
+
+    foreach element $children {
+        # submenu ONLY if second element is a list (real structured node)
+        if {[llength $element] == 2 && [llength [lindex $element 1]] > 1} {
             build_menu $current_menu $element $x $y
-        } elseif {[llength $element] > 1} {
-            # Element is a list of items - add each as command, skipping dummy items
-            foreach item $element {
-                if {[string match "*dummy*" $item]} {
-                    continue
-                }
-                $current_menu add command \
-                    -label [regsub -all {^\-$} $item {−}] \
-                    -command "category_menu::send_item \$::focused_window $x $y {$item}"
-            }
         } else {
-            # Element is a single item
-            if {![string match "*dummy*" $element]} {
-                $current_menu add command \
-                    -label [regsub -all {^\-$} $element {−}] \
-                    -command "category_menu::send_item \$::focused_window $x $y {$element}"
-            }
+            $current_menu add command \
+                -label [regsub -all {^\-$} $element {−}] \
+                -command "category_menu::send_item \$::focused_window $x $y {$element}"
         }
-        incr count
     }
 }
 
@@ -171,7 +148,6 @@ proc category_menu::create {cmdstring code result op} {
     set category "object-browser"
     menu $mymenu.$category
     $mymenu add cascade -label $category -menu $mymenu.$category
-    # Process each top-level item
     foreach item $menutree {
         build_menu $mymenu.$category $item $x $y
     }
