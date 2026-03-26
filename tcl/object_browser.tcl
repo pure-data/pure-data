@@ -78,7 +78,7 @@ proc category_menu::load_menutree {} {
             {text\ management
                 {qlist textfile text\ define text\ get text\ set text\ insert text\ delete text\ size text\ tolist text\ fromlist text\ search text\ sequence}}
             {file\ management
-                {file\ handle file\ define file\ mkdir  file\ cwd file\ patchpath file\ which file\ glob file\ stat file\ isfile file\ isdirectory file\ size file\ copy file\ move file\ delete file\ split file\ join file\ splitex file\ splitname file\ normalize file\ isabsolute}}
+                {dummy dummy file\ handle file\ define file\ mkdir  file\ cwd file\ patchpath file\ which file\ glob file\ stat file\ isfile file\ isdirectory file\ size file\ copy file\ move file\ delete file\ split file\ join file\ splitex file\ splitname file\ normalize file\ isabsolute}}
             {time
                 {delay pipe metro line timer cputime realtime}}
             {logic
@@ -94,7 +94,7 @@ proc category_menu::load_menutree {} {
         }
         {audio
             {general\ audio\ tools
-                {snake~\ in snake~\ out adc~ dac~ sig~ line~ vline~ threshold~ env~ snapshot~ vsnapsot~ bang~ samphold~ samplerate~ send~ receive~ throw~ catch~ readsf~ writesf~ print~}}
+                {snake~\ in snake~\ out adc~ dac~ sig~ line~ vline~ threshold~ env~ snapshot~ vsnapshot~ bang~ samphold~ samplerate~ send~ receive~ throw~ catch~ readsf~ writesf~ print~}}
             {signal\ math
                 {fft~ ifft~ rfft~ rifft~ expr~ fexpr~ +~ -~ *~ /~ max~ min~ log~ pow~ abs~ sqrt~ rsqrt~ wrap~ exp~ clip~}}
             {signal\ acoustic\ conversions
@@ -140,17 +140,22 @@ proc category_menu::build_menu {parent_menu node x y} {
         if {$is_submenu} {
             build_menu $current_menu $element $x $y
         } elseif {[llength $element] > 1} {
-            # Element is a list of items - add each as command
+            # Element is a list of items - add each as command, skipping dummy items
             foreach item $element {
+                if {[string match "*dummy*" $item]} {
+                    continue
+                }
                 $current_menu add command \
                     -label [regsub -all {^\-$} $item {−}] \
                     -command "category_menu::send_item \$::focused_window $x $y {$item}"
             }
         } else {
             # Element is a single item
-            $current_menu add command \
-                -label [regsub -all {^\-$} $element {−}] \
-                -command "category_menu::send_item \$::focused_window $x $y {$element}"
+            if {![string match "*dummy*" $element]} {
+                $current_menu add command \
+                    -label [regsub -all {^\-$} $element {−}] \
+                    -command "category_menu::send_item \$::focused_window $x $y {$element}"
+            }
         }
         incr count
     }
