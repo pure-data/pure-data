@@ -83,7 +83,7 @@ static void random_float(t_random *x, t_floatarg f)
     random_bang(x);
 }
 
-static void random_seed(t_random *x, t_float f, t_float glob)
+static void random_seed(t_random *x, t_float f)
 {
     x->x_state = f;
 }
