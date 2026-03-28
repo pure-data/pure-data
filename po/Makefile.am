@@ -38,6 +38,7 @@ TCLFILES = \
     opt_parser.tcl \
     pd-gui.tcl \
     pd_bindings.tcl \
+    pd_canvaszoom.tcl \
     pd_connect.tcl \
     pd_deken.tcl \
     pd_docsdir.tcl \
