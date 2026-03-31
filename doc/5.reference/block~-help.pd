@@ -1,4 +1,4 @@
-#N canvas 558 34 531 698 12;
+#N canvas 558 38 531 698 12;
 #X text 15 609 see also:;
 #X obj 135 661 fft~;
 #N canvas 603 316 560 207 block-interactions 0;
@@ -46,7 +46,6 @@
 #X connect 23 0 22 0;
 #X restore 155 501 pd switch-example;
 #N canvas 551 180 567 287 switch-bang 0;
-#X text 50 15 You can use the switch~ object to single-step dsp in a subpatch. This might be useful for block operations that don't want to be synced to the sample clock: loading a window function in a table \, or copying one table to another:, f 65;
 #X obj 139 183 noise~;
 #X obj 36 140 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 38 93 Note: DSP needs to be on;
@@ -60,9 +59,10 @@
 #A width 2;
 #X coords 0 1 4096 -1 256 140 1 0 0;
 #X restore 277 116 graph;
+#X text 50 15 You can use the [switch~] object to single-step dsp in a subpatch. This might be useful for block operations that don't want to be synced to the sample clock: loading a window function in a table \, or copying one table to another:, f 66;
+#X connect 0 0 4 0;
+#X connect 1 0 4 0;
 #X connect 1 0 5 0;
-#X connect 2 0 5 0;
-#X connect 2 0 6 0;
 #X restore 155 527 pd switch-bang;
 #X obj 87 609 ../3.audio.examples/G04.control.blocksize;
 #X obj 87 631 ../3.audio.examples/J07.oversampling;

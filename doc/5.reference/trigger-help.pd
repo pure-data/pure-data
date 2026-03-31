@@ -67,8 +67,8 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 81 161 pd open;
-#X text 105 130 <-- open first example of the 4.Data.Structure section;
 #X text 37 34 The [trigger] object can receive a pointer and sequence it. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 70;
+#X text 105 130 <-- open first example of the 4.data.structures section;
 #X connect 0 0 1 0;
 #X restore 80 325 pd pointer;
 #X text 160 325 <= about pointers, f 8;
