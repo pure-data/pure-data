@@ -551,27 +551,31 @@ proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
 
 proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} {
 
-    eval [concat $canvas create line $args \
-        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+#  old version using eval:
+#    eval [concat $canvas create line $args \
+#        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+    $canvas create line {*}$args \
+        -width $width -fill $color -capstyle projecting -tags [list $tag cord]
+
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
 
-    eval [concat $canvas itemconfigure $tag -width $width -fill $color]
+    $canvas itemconfigure $tag -width $width -fill $color
 }
 
 proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    eval [concat $canvas create rectangle $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
+    $canvas create rectangle $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
 
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    eval [concat $canvas create oval $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
+    $canvas create oval $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
 
 proc pdtk_canvas_delete {canvas tag} {
