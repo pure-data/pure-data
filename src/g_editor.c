@@ -2549,8 +2549,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground",
                             "ci", x, 0);
-                        pdgui_vmess(0, "rcr iik iiii",
-                            "pdtk_canvas_create_line", x, "x",
+                        pdgui_vmess(0, "rcrr iik iiii",
+                            "pdtk_canvas_create_line", x, "x", "-",
                             0, x->gl_zoom, THISGUI->i_foregroundcolor,
                             x->gl_editor->e_xwas, x->gl_editor->e_ywas,
                             xpix, ypix);
@@ -2776,8 +2776,8 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess(0, "rcr ii k iiii",
-                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag,
+            pdgui_vmess(0, "rcrr ii k iiii",
+                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
                     0, (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
                         THISGUI->i_foregroundcolor,
                             lx1,ly1, lx2,ly2);
@@ -4007,7 +4007,7 @@ static void glist_donewloadbangs(t_glist *x)
             if (pd_class(&sel->sel_what->g_pd) == canvas_class)
                 canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
             else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
-                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "f", LB_LOAD);
+                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "i", LB_LOAD);
     }
 }
 
@@ -4605,8 +4605,8 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     {
         char tag[128];
         sprintf(tag, "l%p", oc);
-        pdgui_vmess(0, "rcr iik iiii",
-            "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag,
+        pdgui_vmess(0, "rcrr iik iiii",
+            "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
                 0, (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
                     THISGUI->i_foregroundcolor,
                         0, 0, 0, 0);

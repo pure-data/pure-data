@@ -1556,7 +1556,10 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
+    {
+            /* not encoded; just return the symbol as is */
+        return s;
+    }
     else sp++;
     for (i = 0; i < MAXPDSTRING-1; i++, sp++)
     {

@@ -24,29 +24,30 @@ proc ::dialog_canvas::set_text {text} {
 
 proc ::dialog_canvas::apply {mytoplevel} {
     global ::dialog_canvas_text
+
+    set cmd [list $mytoplevel donecanvasdialog \
+                 [$mytoplevel.scale.x.entry get] \
+                 [$mytoplevel.scale.y.entry get] \
+                 [expr $::graphme_button($mytoplevel) + 2 * $::hidetext_button($mytoplevel)] \
+                 [$mytoplevel.range.x.from_entry get] \
+                 [$mytoplevel.range.y.from_entry get] \
+                 [$mytoplevel.range.x.to_entry get] \
+                 [$mytoplevel.range.y.to_entry get] \
+                 [$mytoplevel.range.x.size_entry get] \
+                 [$mytoplevel.range.y.size_entry get] \
+                 [$mytoplevel.range.x.margin_entry get] \
+                 [$mytoplevel.range.y.margin_entry get] 1 \
+                ]
+
     if [string compare $::dialog_canvas_text $::dialog_canvas_text_before] {
-        set appendme [concat text [string map {"$" "\\$"} $::dialog_canvas_text]]
-    } else {
-        set appendme ""
+        set cmd [concat ${cmd} text [string map {"$" "\\$"} $::dialog_canvas_text]]
     }
 
-    pdsend "$mytoplevel donecanvasdialog \
-            [$mytoplevel.scale.x.entry get] \
-            [$mytoplevel.scale.y.entry get] \
-            [expr $::graphme_button($mytoplevel) + 2 * $::hidetext_button($mytoplevel)] \
-            [$mytoplevel.range.x.from_entry get] \
-            [$mytoplevel.range.y.from_entry get] \
-            [$mytoplevel.range.x.to_entry get] \
-            [$mytoplevel.range.y.to_entry get] \
-            [$mytoplevel.range.x.size_entry get] \
-            [$mytoplevel.range.y.size_entry get] \
-            [$mytoplevel.range.x.margin_entry get] \
-            [$mytoplevel.range.y.margin_entry get] 1 \
-            $appendme"
+    pdsend ${cmd}
 }
 
 proc ::dialog_canvas::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_canvas::ok {mytoplevel} {

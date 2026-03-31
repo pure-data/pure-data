@@ -41,28 +41,31 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
         crossw = 3;
     crossw *= zoom;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom, "-fill", x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pX1", x);
+    sprintf(tag, "%p_X1", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + crossw + zoom, ypos + crossw + zoom,
-        xpos + x->x_gui.x_w - crossw - zoom, ypos + x->x_gui.x_h - crossw - zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
+        xpos + x->x_gui.x_w - crossw - zoom,
+            ypos + x->x_gui.x_h - crossw - zoom);
+    pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+        crossw, col);
 
-    sprintf(tag, "%pX2", x);
+    sprintf(tag, "%p_X2", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + crossw + zoom, ypos + x->x_gui.x_h - crossw - zoom,
         xpos + x->x_gui.x_w - crossw - zoom, ypos + crossw + zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
+    pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+        crossw, col);
+    /* pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+        "-width", crossw, "-fill", col); */
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
@@ -80,21 +83,31 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
-    sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BASE", x);
+    /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+        0, 0, 0, 0, "-tags", 2, tags); */
+    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pX1", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_X1", x);
+    /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
+        0, 0, 0, 0, "-tags", 2, tags); */
+    pdgui_vmess(0, "rcrr iik iiii",
+        "pdtk_canvas_create_line", canvas, tag, tag_object,
+        0, 1, 0,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pX2", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_X2", x);
+    pdgui_vmess(0, "rcrr iik iiii",
+        "pdtk_canvas_create_line", canvas, tag, tag_object,
+        0, 1, "#000000",
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -111,9 +124,9 @@ void toggle_draw_select(t_toggle* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -124,11 +137,14 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
         t_canvas *canvas = glist_getcanvas(glist);
         unsigned int col = (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
         char tag[128];
-
-        sprintf(tag, "%pX1", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
-        sprintf(tag, "%pX2", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
+        int width = x->x_gui.x_w / IEMGUI_ZOOM(x),
+            xwidth = (width >= 60 ? 3: (width >= 30 ? 2 : 1));
+        sprintf(tag, "%p_X1", x);
+        pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+            xwidth, col);
+        sprintf(tag, "%p_X2", x);
+        pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+            xwidth, col);
     }
 }
 
