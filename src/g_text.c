@@ -634,8 +634,11 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 static void gatom_redraw(t_gobj *client, t_glist *glist)
 {
     t_gatom *x = (t_gatom *)client;
-    if (glist->gl_editor)
-        glist_retext(glist, &x->a_text);
+        /* use the gatom's glist (subpatch) for retext, not the parent canvas
+        that was passed in. This ensures coordinate calculations use the
+        correct glist's coordinate system. */
+    if (x->a_glist->gl_editor || glist_getcanvas(x->a_glist)->gl_editor)
+        glist_retext(x->a_glist, &x->a_text);
 }
 
 static void gatom_senditup(t_gatom *x)
