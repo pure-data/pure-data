@@ -240,6 +240,8 @@ typedef struct _vline
     t_float x_inlet1;
     t_float x_inlet2;
     t_vseg *x_list;
+    t_vseg *x_list_tail;
+    int x_warned_dspoff;
 } t_vline;
 
 static t_int *vline_tilde_perform(t_int *w)
@@ -288,6 +290,8 @@ static t_int *vline_tilde_perform(t_int *w)
                 x->x_target = s->s_target;
                 x->x_targettime = s->s_targettime;
                 x->x_list = s->s_next;
+                if (!x->x_list)
+                    x->x_list_tail = 0;
                 t_freebytes(s, sizeof(*s));
                 s = x->x_list;
                 goto checknext;
@@ -309,6 +313,7 @@ static void vline_tilde_stop(t_vline *x)
     for (s1 = x->x_list; s1; s1 = s2)
         s2 = s1->s_next, t_freebytes(s1, sizeof(*s1));
     x->x_list = 0;
+    x->x_list_tail = 0;
     x->x_inc = 0;
     x->x_inlet1 = x->x_inlet2 = 0;
     x->x_target = x->x_value;
@@ -333,11 +338,27 @@ static void vline_tilde_float(t_vline *x, t_float f)
         return;
     }
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
+    if (!pd_getdspstate() && !x->x_warned_dspoff)
+    {
+        logpost(x, PD_NORMAL,
+            "vline~: warning: queued segments are only drained while DSP is running");
+        x->x_warned_dspoff = 1;
+    }
+        /* check if we append after the last segment.  We append when the new
+        segment has a later starttime, or an equal starttime if the last was
+        instantaneous and the new one isn't (in which case we'll do a jump-and-slide
+        at that time.) */
+    if (x->x_list_tail && (x->x_list_tail->s_starttime < starttime ||
+            (x->x_list_tail->s_starttime == starttime &&
+                x->x_list_tail->s_targettime <= x->x_list_tail->s_starttime && inlet1 > 0)))
+    {
+        deletefrom = 0;
+        x->x_list_tail->s_next = snew;
+    }
         /* check if we supplant the first item in the list.  We supplant
         an item by having an earlier starttime, or an equal starttime unless
-        the equal one was instantaneous and the new one isn't (in which case
-        we'll do a jump-and-slide starting at that time.) */
-    if (!x->x_list || x->x_list->s_starttime > starttime ||
+        the equal one was instantaneous and the new one isn't. */
+    else if (!x->x_list || x->x_list->s_starttime > starttime ||
         (x->x_list->s_starttime == starttime &&
             (x->x_list->s_targettime > x->x_list->s_starttime || inlet1 <= 0)))
     {
@@ -371,11 +392,13 @@ static void vline_tilde_float(t_vline *x, t_float f)
     snew->s_target = f;
     snew->s_starttime = starttime;
     snew->s_targettime = starttime + inlet1;
+    x->x_list_tail = snew;
     x->x_inlet1 = x->x_inlet2 = 0;
 }
 
 static void vline_tilde_dsp(t_vline *x, t_signal **sp)
 {
+    x->x_warned_dspoff = 0;
     dsp_add(vline_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     x->x_samppermsec = ((double)(sp[0]->s_sr)) / 1000;
     x->x_msecpersamp = ((double)1000) / sp[0]->s_sr;
@@ -392,6 +415,8 @@ static void *vline_tilde_new(void)
     x->x_referencetime = x->x_lastlogicaltime = x->x_nextblocktime =
         clock_getlogicaltime();
     x->x_list = 0;
+    x->x_list_tail = 0;
+    x->x_warned_dspoff = 0;
     x->x_samppermsec = 0;
     x->x_targettime = 1e20;
     return (x);
