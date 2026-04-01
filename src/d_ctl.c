@@ -241,6 +241,7 @@ typedef struct _vline
     t_float x_inlet2;
     t_vseg *x_list;
     t_vseg *x_list_tail;
+    int x_warned_dspoff;
 } t_vline;
 
 static t_int *vline_tilde_perform(t_int *w)
@@ -337,6 +338,12 @@ static void vline_tilde_float(t_vline *x, t_float f)
         return;
     }
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
+    if (!pd_getdspstate() && !x->x_warned_dspoff)
+    {
+        logpost(x, PD_NORMAL,
+            "vline~: warning: queued segments are only drained while DSP is running");
+        x->x_warned_dspoff = 1;
+    }
         /* check if we append after the last segment.  We append when the new
         segment has a later starttime, or an equal starttime if the last was
         instantaneous and the new one isn't (in which case we'll do a jump-and-slide
@@ -391,6 +398,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
 
 static void vline_tilde_dsp(t_vline *x, t_signal **sp)
 {
+    x->x_warned_dspoff = 0;
     dsp_add(vline_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     x->x_samppermsec = ((double)(sp[0]->s_sr)) / 1000;
     x->x_msecpersamp = ((double)1000) / sp[0]->s_sr;
@@ -408,6 +416,7 @@ static void *vline_tilde_new(void)
         clock_getlogicaltime();
     x->x_list = 0;
     x->x_list_tail = 0;
+    x->x_warned_dspoff = 0;
     x->x_samppermsec = 0;
     x->x_targettime = 1e20;
     return (x);
