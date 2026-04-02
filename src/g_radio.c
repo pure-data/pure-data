@@ -539,6 +539,35 @@ static void radio_number(t_radio *x, t_floatarg num)
     }
 }
 
+/* cant use iemgui_resize directly because radio width is tethered to the number
+ * of squares and the height is equal to its width
+ * - also if ctrl is pressed, change the number
+ */
+static void radio_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
+{
+    t_radio *x = (t_radio *)z;
+    int total_size = dx * IEMGUI_ZOOM(x);
+    if (x->x_orientation) {
+        canvas_setcursor(glist, CURSOR_RUNMODE_THICKEN);
+        total_size = dy * IEMGUI_ZOOM(x);
+    }
+    if (mod==2) {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE);
+        int size = x->x_gui.x_w;
+        if (x->x_orientation) {
+            size = x->x_gui.x_h;
+            canvas_setcursor(glist, CURSOR_RUNMODE_THICKEN);
+        }
+        int num = total_size / size;
+        radio_number(x,(t_floatarg)num);
+        return;
+    }
+    int size = total_size / x->x_number;
+    x->x_gui.x_w = iemgui_clip_size(size);
+    x->x_gui.x_h = x->x_gui.x_w;
+    iemgui_size(x, &x->x_gui);
+}
+
 static void radio_orientation(t_radio *x, t_floatarg forient)
 {
     x->x_orientation = !!(int)forient;
@@ -728,6 +757,7 @@ void g_radio_setup(void)
     radio_widgetbehavior.w_deletefn = iemgui_delete;
     radio_widgetbehavior.w_visfn = iemgui_vis;
     radio_widgetbehavior.w_clickfn = radio_newclick;
+    radio_widgetbehavior.w_resizefn = radio_iemgui_resize;
     class_setwidget(radio_class, &radio_widgetbehavior);
 
     class_sethelpsymbol(radio_class, gensym("radio"));

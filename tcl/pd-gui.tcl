@@ -329,6 +329,8 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
+            set ::cursor_editmode_resize_free "fleur"
+            set ::cursor_editmode_resize_square "bottom_right_corner"
         }
         "aqua" {
             # load tk::mac event callbacks here, this way launching pd
@@ -369,6 +371,8 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
+            set ::cursor_editmode_resize_free "fleur"
+            set ::cursor_editmode_resize_square "bottom_right_corner"
         }
         "win32" {
             set ::modifier "Control"
@@ -413,6 +417,8 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
+            set ::cursor_editmode_resize_free "fleur"
+            set ::cursor_editmode_resize_square "bottom_right_corner"
         }
     }
 }
