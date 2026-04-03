@@ -4003,11 +4003,29 @@ static void glist_donewloadbangs(t_glist *x)
     if (x->gl_editor)
     {
         t_selection *sel;
+        int nsel = 0, i;
+        t_gobj **gobjv;
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-            if (pd_class(&sel->sel_what->g_pd) == canvas_class)
-                canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
-            else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
-                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "i", LB_LOAD);
+            nsel++;
+        if (!nsel)
+            return;
+        gobjv = (t_gobj **)getbytes(nsel * sizeof(*gobjv));
+        if (!gobjv)
+            return;
+        for (sel = x->gl_editor->e_selection, i = 0; sel;
+            sel = sel->sel_next, i++)
+            gobjv[i] = sel->sel_what;
+        for (i = 0; i < nsel; i++)
+        {
+            t_gobj *g = gobjv[i];
+            if (!g)
+                continue;
+            if (pd_class(&g->g_pd) == canvas_class)
+                canvas_loadbang((t_canvas *)(&g->g_pd));
+            else if (zgetfn(&g->g_pd, gensym("loadbang")))
+                vmess(&g->g_pd, gensym("loadbang"), "i", LB_LOAD);
+        }
+        freebytes(gobjv, nsel * sizeof(*gobjv));
     }
 }
 
