@@ -17,6 +17,7 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_getscroll
     namespace export pdtk_canvas_setparents
     namespace export pdtk_canvas_reflecttitle
+    namespace export pdtk_canvas_setcolors
     namespace export pdtk_canvas_menuclose
 }
 
@@ -171,6 +172,14 @@ proc pdtk_canvas_raise {mytoplevel} {
     raise $mytoplevel
     set mycanvas $mytoplevel.c
     focus $mycanvas
+}
+
+proc ::pdtk_canvas::pdtk_canvas_setcolors {mytoplevel bgcolor fgcolor} {
+    set cv [tkcanvas_name $mytoplevel]
+    if {![winfo exists $cv]} {
+        return
+    }
+    $cv configure -background $bgcolor -insertbackground $fgcolor
 }
 
 proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
