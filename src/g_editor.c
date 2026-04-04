@@ -8,6 +8,7 @@
 #include "s_stuff.h"
 #include "g_canvas.h"
 #include "g_undo.h"
+#include "g_all_guis.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
 #include "m_private_utils.h"
@@ -449,6 +450,46 @@ void *canvas_undo_set_disconnect(t_canvas *x,
     buf->u_index2 = index2;
     buf->u_inletno = inno;
     return (buf);
+}
+
+void canvas_iemgui_set_colors(t_canvas *x, t_symbol *color_type)
+{
+    t_gobj *y;
+    t_iemgui *iemgui;
+    int is_adaptive = (color_type == gensym("adaptive"));
+    for (y = x->gl_list; y; y = y->g_next)
+    {
+        if (!y) continue;
+        t_class *obj_class = pd_class(&y->g_pd);
+        if (!obj_class) continue;
+        const char *classname = class_getname(obj_class);
+        if (!classname) continue;
+
+        if (!strcmp(classname, "bng") ||
+            !strcmp(classname, "tgl") ||
+            !strcmp(classname, "hradio") ||
+            !strcmp(classname, "vradio") ||
+            !strcmp(classname, "hsl") ||
+            !strcmp(classname, "vsl") ||
+            !strcmp(classname, "nbx") ||
+            !strcmp(classname, "cnv") ||
+            !strcmp(classname, "vu"))
+        {
+            iemgui = (t_iemgui *)y;
+            unsigned int background_color = IEM_GUI_COLOR_BACKGROUND;
+            if (!strcmp(classname, "cnv")) background_color = 0xE0E0E0;
+            else if (!strcmp(classname, "vu")) background_color = 0x404040;
+            iemgui->x_bcol = background_color;
+            iemgui->x_fcol = IEM_GUI_COLOR_FOREGROUND;
+            iemgui->x_lcol = IEM_GUI_COLOR_LABEL;
+            iemgui->x_bcol_default = is_adaptive;
+            iemgui->x_fcol_default = is_adaptive;
+            iemgui->x_lcol_default = is_adaptive;
+
+            if (glist_isvisible(x))
+                (*iemgui->x_draw)(y, x, IEM_GUI_DRAW_MODE_CONFIG);
+        }
+    }
 }
 
 void canvas_disconnect(t_canvas *x,
@@ -4003,11 +4044,29 @@ static void glist_donewloadbangs(t_glist *x)
     if (x->gl_editor)
     {
         t_selection *sel;
+        int nsel = 0, i;
+        t_gobj **gobjv;
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-            if (pd_class(&sel->sel_what->g_pd) == canvas_class)
-                canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
-            else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
-                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "i", LB_LOAD);
+            nsel++;
+        if (!nsel)
+            return;
+        gobjv = (t_gobj **)getbytes(nsel * sizeof(*gobjv));
+        if (!gobjv)
+            return;
+        for (sel = x->gl_editor->e_selection, i = 0; sel;
+            sel = sel->sel_next, i++)
+            gobjv[i] = sel->sel_what;
+        for (i = 0; i < nsel; i++)
+        {
+            t_gobj *g = gobjv[i];
+            if (!g)
+                continue;
+            if (pd_class(&g->g_pd) == canvas_class)
+                canvas_loadbang((t_canvas *)(&g->g_pd));
+            else if (zgetfn(&g->g_pd, gensym("loadbang")))
+                vmess(&g->g_pd, gensym("loadbang"), "i", LB_LOAD);
+        }
+        freebytes(gobjv, nsel * sizeof(*gobjv));
     }
 }
 
@@ -5187,6 +5246,8 @@ void g_editor_setup(void)
         gensym("triggerize"), 0);
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_iemgui_set_colors,
+        gensym("iemgui_set_colors"), A_SYMBOL, A_NULL);
 }
 
 void canvas_editor_for_class(t_class *c)
