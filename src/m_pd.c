@@ -4,6 +4,7 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "m_private_utils.h"
 #include "g_canvas.h"   /* just for LB_LOAD */
 
 #include <string.h>
@@ -54,64 +55,99 @@ void gobj_save(t_gobj *x, t_binbuf *b)
 
 /* deal with several objects bound to the same symbol.  If more than one, we
 actually bind a collection object to the symbol, which forwards messages sent
-to the symbol. */
+to the symbol.
+CHR: We make a copy of the bindlist before messaging, so we can safely unbind
+symbols while iterating over the bindlist. We only allocate on the stack up
+to a certain limit, above whiche we switch to heap allocation. */
+
+static PERTHREAD int stackcount = 0;
+
+#define MAXSTACKSIZE 1024
+
+#if DONT_USE_ALLOCA
+#define BINDLIST_ALLOCA(x, n) ((x) = (t_pd **)getbytes((n) * sizeof(t_pd *)))
+#define BINDLIST_FREEA(x, n) (freebytes((x), (n) * sizeof(t_pd *)))
+#else
+#define BINDLIST_ALLOCA(x, n) ((x) = (t_pd **)(stackcount <= MAXSTACKSIZE ?  \
+    alloca((n) * sizeof(t_pd *)) : getbytes((n) * sizeof(t_pd *))))
+#define BINDLIST_FREEA(x, n) ( \
+    (stackcount <= MAXSTACKSIZE || (freebytes((x), (n) * sizeof(t_pd *)), 0)))
+#endif
+
+#define BINDLIST_PUSH(x, vec, n) stackcount += n; \
+    BINDLIST_ALLOCA(vec, n); memcpy(vec, x->b_vec, n * sizeof(t_pd *));
+
+#define BINDLIST_POP(vec, n) BINDLIST_FREEA(vec, n); stackcount -= n
 
 static t_class *bindlist_class;
-
-typedef struct _bindelem
-{
-    t_pd *e_who;
-    struct _bindelem *e_next;
-} t_bindelem;
 
 typedef struct _bindlist
 {
     t_pd b_pd;
-    t_bindelem *b_list;
+    t_pd **b_vec;
+    int b_n;
 } t_bindlist;
 
 static void bindlist_bang(t_bindlist *x)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_bang(e->e_who);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_bang(vec[i]);
+    BINDLIST_POP(vec, n);
 }
 
 static void bindlist_float(t_bindlist *x, t_float f)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_float(e->e_who, f);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_float(vec[i], f);
+    BINDLIST_POP(vec, n);
 }
 
 static void bindlist_symbol(t_bindlist *x, t_symbol *s)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_symbol(e->e_who, s);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_symbol(vec[i], s);
+    BINDLIST_POP(vec, n);
 }
 
 static void bindlist_pointer(t_bindlist *x, t_gpointer *gp)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_pointer(e->e_who, gp);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_pointer(vec[i], gp);
+    BINDLIST_POP(vec, n);
 }
 
 static void bindlist_list(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_list(e->e_who, s, argc, argv);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_list(vec[i], s, argc, argv);
+    BINDLIST_POP(vec, n);
 }
 
 static void bindlist_anything(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_typedmess(e->e_who, s, argc, argv);
+    t_pd **vec;
+    int i, n = x->b_n;
+    BINDLIST_PUSH(x, vec, n);
+    for (i = 0; i < n; i++)
+        pd_typedmess(vec[i], s, argc, argv);
+    BINDLIST_POP(vec, n);
 }
 
 void m_pd_setup(void)
@@ -136,21 +172,19 @@ void pd_bind(t_pd *x, t_symbol *s)
         if (*s->s_thing == bindlist_class)
         {
             t_bindlist *b = (t_bindlist *)s->s_thing;
-            t_bindelem *e = (t_bindelem *)getbytes(sizeof(t_bindelem));
-            e->e_next = b->b_list;
-            e->e_who = x;
-            b->b_list = e;
+            int oldsize = b->b_n++;
+            b->b_vec = (t_pd **)resizebytes(b->b_vec,
+                oldsize * sizeof(t_pd *), b->b_n * sizeof(t_pd *));
+            memmove(b->b_vec + 1, b->b_vec, oldsize * sizeof(t_pd *));
+            b->b_vec[0] = x;
         }
         else
         {
             t_bindlist *b = (t_bindlist *)pd_new(bindlist_class);
-            t_bindelem *e1 = (t_bindelem *)getbytes(sizeof(t_bindelem));
-            t_bindelem *e2 = (t_bindelem *)getbytes(sizeof(t_bindelem));
-            b->b_list = e1;
-            e1->e_who = x;
-            e1->e_next = e2;
-            e2->e_who = s->s_thing;
-            e2->e_next = 0;
+            b->b_vec = (t_pd **)getbytes(2 * sizeof(t_pd *));
+            b->b_n = 2;
+            b->b_vec[0] = x;
+            b->b_vec[1] = s->s_thing;
             s->s_thing = &b->b_pd;
         }
     }
@@ -162,40 +196,43 @@ void pd_unbind(t_pd *x, t_symbol *s)
 #ifdef VST_CLEANSER
     vst_cleanser(&s);
 #endif
-    if (s->s_thing == x) s->s_thing = 0;
-    else if (s->s_thing && *s->s_thing == bindlist_class)
+    if (s->s_thing == x)
+    {
+        s->s_thing = 0;
+        return;
+    }
+    if (s->s_thing && *s->s_thing == bindlist_class)
     {
             /* bindlists always have at least two elements... if the number
             goes down to one, get rid of the bindlist and bind the symbol
             straight to the remaining element. */
-
         t_bindlist *b = (t_bindlist *)s->s_thing;
-        t_bindelem *e, *e2;
-        if ((e = b->b_list)->e_who == x)
+        int i, n = b->b_n;
+        for (i = 0; i < n; i++)
         {
-            b->b_list = e->e_next;
-            e->e_who = 0; e->e_next = 0;
-            freebytes(e, sizeof(t_bindelem));
-        }
-        else for (e = b->b_list; (e2 = e->e_next); e = e2)
-            if (e2->e_who == x)
-        {
-            e->e_next = e2->e_next;
-            e2->e_who = 0; e2->e_next = 0;
-            freebytes(e2, sizeof(t_bindelem));
-            break;
-        }
-        if (!b->b_list->e_next)
-        {
-
-            s->s_thing = b->b_list->e_who;
-            freebytes(b->b_list, sizeof(t_bindelem));
-            b->b_list = 0;
-            pd_free(&b->b_pd);
-            b = 0;
+            if (b->b_vec[i] == x)
+            {
+                if (n > 2)
+                {
+                    memmove(&b->b_vec[i], &b->b_vec[i + 1],
+                        (n - i - 1) * sizeof(t_pd *));
+                    b->b_vec = (t_pd **)resizebytes(b->b_vec,
+                        n * sizeof(t_pd *), (n - 1) * sizeof(t_pd *));
+                    b->b_n--;
+                }
+                else if (n == 2)
+                {
+                    s->s_thing = b->b_vec[i == 0 ? 1 : 0];
+                    freebytes(b->b_vec, n * sizeof(t_pd *));
+                    pd_free(&b->b_pd);
+                }
+                else
+                    bug("pd_unbind");
+                return;
+            }
         }
     }
-    else pd_error(x, "%s: couldn't unbind", s->s_name);
+    pd_error(x, "%s: couldn't unbind", s->s_name);
 }
 
 t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
@@ -207,17 +244,20 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
     if (*s->s_thing == bindlist_class)
     {
         t_bindlist *b = (t_bindlist *)s->s_thing;
-        t_bindelem *e, *e2;
-        int warned = 0;
-        for (e = b->b_list; e; e = e->e_next)
-            if (*e->e_who == c)
+        int warned = 0, n = b->b_n;
+        t_pd **vec = b->b_vec;
+        while (n--)
         {
-            if (x && !warned)
+            t_pd *obj = *vec++;
+            if (*obj == c)
             {
-                post("warning: %s: multiply defined", s->s_name);
-                warned = 1;
+                if (x && !warned)
+                {
+                    post("warning: %s: multiply defined", s->s_name);
+                    warned = 1;
+                }
+                x = obj;
             }
-            x = e->e_who;
         }
     }
     return x;
@@ -239,13 +279,15 @@ t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname)
     if (*s->s_thing == bindlist_class)
     {
         t_bindlist *b = (t_bindlist *)s->s_thing;
-        t_bindelem *e, *e2;
-        int warned = 0;
-        for (e = b->b_list; e; e = e->e_next)
+        int warned = 0, n = b->b_n;
+        t_pd **vec = b->b_vec;
+        while (n--)
+        {
+            t_pd *obj = *vec++;
         #ifdef PDINSTANCE /* see above */
-            if (!strcmp((*e->e_who)->c_name->s_name, classname->s_name))
+            if (!strcmp((*obj)->c_name->s_name, classname->s_name))
         #else
-            if ((*e->e_who)->c_name == classname)
+            if ((*obj)->c_name == classname)
         #endif
             {
                 if (x && !warned)
@@ -253,8 +295,9 @@ t_pd *pd_findbyclassname(t_symbol *s, const t_symbol *classname)
                     post("warning: %s: multiply defined", s->s_name);
                     warned = 1;
                 }
-                x = e->e_who;
+                x = obj;
             }
+        }
     }
     return x;
 }
