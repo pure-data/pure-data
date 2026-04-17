@@ -1,0 +1,24 @@
+#########################################
+##### Defaults & Paths #####
+AUTOMAKE_OPTIONS = foreign
+
+libpdbindir = $(pkglibdir)/bin
+libpdbin_PROGRAMS =
+EXTRA_DIST = makefile
+
+noinst_HEADERS = pdgtk.h
+
+AM_CPPFLAGS	=  -DPD @PD_CPPFLAGS@
+AM_CFLAGS = @PD_CFLAGS@
+
+#########################################
+##### Files, Binaries, & Libs #####
+if GTK
+libpdbin_PROGRAMS += pdgtk
+endif
+
+pdgtk_SOURCES = pdgtk.c canvas.c net.c tclparser.c
+pdgtk_CFLAGS = $(AM_CFLAGS) $(GTK_CFLAGS) $(TCL_CFLAGS)
+pdgtk_LDADD = $(GTK_LIBS) $(TCL_LIBS)
+
+#########################################

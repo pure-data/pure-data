@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
-"PO-Revision-Date: 2026-03-10 18:09+0000\n"
+"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/it/>\n"
@@ -1021,11 +1021,18 @@ msgstr "Installa"
 msgid "%s%% of download completed"
 msgstr "%s%% di download completato"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Inserisci il nome esatto di una libreria o di un oggetto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "ad esempio 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1073,6 +1080,9 @@ msgstr "entrambi"
 msgid "translations"
 msgstr "traduzioni"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installa solo externals caricati da persone di cui ti fidi."
 
@@ -1099,6 +1109,10 @@ msgstr "Risultati della Ricerca"
 
 msgid "Log"
 msgstr "Log"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Ricerca di \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."

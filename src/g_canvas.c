@@ -618,9 +618,9 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
          */
         int xpos = (int)px1, ypos = (int)py2;
         glist_getnextxy(g, &xpos, &ypos);
-        px1 = (t_float)xpos;
+        px1 = (t_float)xpos / g->gl_zoom;
         px2 = px1 + GLIST_DEFGRAPHWIDTH;
-        py1 = (t_float)ypos;
+        py1 = (t_float)ypos / g->gl_zoom;
         py2 = py1 + GLIST_DEFGRAPHHEIGHT;
     }
 
@@ -821,13 +821,10 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "crr iiiiiiiiii rk ri rr rr",
-            glist_getcanvas(x), "create", "line",
-            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", THISGUI->i_gopcolor,
-            "-width", x->gl_zoom,
-            "-capstyle", "projecting",
-            "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
+        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
+            "pdtk_canvas_create_line", glist_getcanvas(x), "GOP", "-",
+            0, x->gl_zoom, THISGUI->i_gopcolor,
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
         pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
@@ -893,7 +890,7 @@ void canvas_redraw(t_canvas *x)
 void glist_clearrtexts(t_glist *x)
 {
     t_glist *gl2 = glist_getcanvas(x);
-    if (glist_textedfor(gl2) == x)
+    if ((t_glist*)glist_textedfor(gl2) == x)
         glist_settexted(gl2, 0);
     if (gl2->gl_editor)
         while (gl2->gl_editor->e_rtext)
@@ -1011,19 +1008,15 @@ static void canvas_drawlines(t_canvas *x)
     t_outconnect *oc;
     {
         char tag[128];
-        const char*tags[2] = {tag, "cord"};
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rk rS",
-                glist_getcanvas(x), "create", "line",
-                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
-                    * x->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor,
-
-                "-tags", 2, tags);
+            pdgui_vmess(0, "rcrr iik iiii",
+                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+                    0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+                        * x->gl_zoom, THISGUI->i_foregroundcolor,
+                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }
     }
 }
@@ -1150,7 +1143,7 @@ static void canvas_loadbangabstractions(t_canvas *x)
         else if ((pd_class(&y->g_pd) == clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -1169,7 +1162,7 @@ void canvas_loadbangsubpatches(t_canvas *x)
             (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -2345,8 +2338,12 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        canvas_vis(glist, 0);
-        canvas_vis(glist, 1);
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+            glist,
+            (int)THISGUI->i_backgroundcolor,
+            (int)THISGUI->i_foregroundcolor);
+        glist_clearrtexts(glist);
+        canvas_redraw((t_canvas *)glist);
     }
     for (g = glist->gl_list; g; g = g->g_next)
         if (g->g_pd == canvas_class)

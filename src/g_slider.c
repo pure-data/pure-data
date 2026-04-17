@@ -47,8 +47,8 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 
     (void)old_snd_rcv_flags;
 
-    sprintf(tag_object, "%pOBJ", x);
-    sprintf(tag_knob, "%pKNOB", x);
+    sprintf(tag_object, "%p_", x);
+    sprintf(tag_knob, "%p_KNOB", x);
 
     if(x->x_orientation == horizontal)
     {
@@ -58,7 +58,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
         bmargin = BMARGIN * zoom;
     }
 
-    sprintf(tag, "%pOUT%d", x, 0);
+    sprintf(tag, "%p_OUT%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
@@ -73,7 +73,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_knob);
     }
 
-    sprintf(tag, "%pIN%d", x, 0);
+    sprintf(tag, "%p_IN%d", x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -138,7 +138,7 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     }
     slider_knob_position(x, glist, val, &a, &b, &c, &d);
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
@@ -147,14 +147,14 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
         "-fill", x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pKNOB", x);
+    sprintf(tag, "%p_KNOB", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         a, b, c, d);
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", 1 + 2 * zoom,
         "-outline", x->x_gui.x_fcol);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
 
@@ -172,18 +172,18 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
          0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%pKNOB", x);
+    sprintf(tag, "%p_KNOB", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
          0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
          0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -200,9 +200,9 @@ static void slider_draw_select(t_slider* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -218,7 +218,7 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
         int val = ((x->x_val + 50) / 100) * zoom;
         char tag[128];
-        sprintf(tag, "%pKNOB", x);
+        sprintf(tag, "%p_KNOB", x);
 
         slider_knob_position(x, glist, val, &a, &b, &c, &d);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag, a, b, c, d);
