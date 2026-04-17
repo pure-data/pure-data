@@ -6,7 +6,7 @@ dnl with or without modifications, as long as this notice is preserved.
 # enables the "--with-iphone" flag; 
 # if the iPhoneSDK is detected, this will 
 #  - set the CC & CPP to the cross-compiler ( resp preprocessor)
-#  - as well as the apropriate CFLAGS, INCLUDES and LDFLAGS
+#  - as well as the appropriate CFLAGS, INCLUDES and LDFLAGS
 #  - these values can also be found in IPHONE_CC, IPHONE_CPP, 
 #    IPHONE_INCLUDES, IPHONE_ARCH, IPHONE_CFLAGS, IPHONE_LDFLAGS
 #  it will then call ACTION_IF_FOUND

@@ -14,12 +14,14 @@ typedef struct obj1
     number.) */
 void obj1_float(t_obj1 *x, t_floatarg f)
 {
+    (void)x; /* silence unused param warning */
     post("obj1: %f", f);
 }
 
     /* this is called when obj1 gets the message, "rats". */
 void obj1_rats(t_obj1 *x)
 {
+    (void)x;
     post("obj1: rats");
 }
 

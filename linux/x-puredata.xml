@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="text/x-puredata">
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.pd"/>
+	<alias type="application/x-puredata"/>
+	<magic priority="50">
+	  <match type="string" value="#N " offset="0"/>
+	</magic>
+    <comment>Pure Data Document</comment>
+	<comment xml:lang="en">Pure Data Document</comment>
+	<comment xml:lang="de">Pure Data Dokument</comment>
+	<comment xml:lang="cy">Dogfen Pure Data</comment>
+	<comment xml:lang="nb">Pure Data-dokument</comment>
+	<comment xml:lang="nn">Pure Data-dokument</comment>
+	<comment xml:lang="fi">Pure Data-asiakirja</comment>
+	<comment xml:lang="cz">Pure Data Dokument</comment>
+	<comment xml:lang="sl">Dokument Pure Data</comment>
+	<comment xml:lang="fr">Pure Data Document</comment>
+	<comment xml:lang="es">Documento de Pure Data</comment>
+	<comment xml:lang="it">Documento Pure Data</comment>
+	<comment xml:lang="nb">Pure Data dokument</comment>
+	<comment xml:lang="da">Pure Data Dokument</comment>
+	<comment xml:lang="tr">Pure Data Belgesi</comment>
+	<comment xml:lang="ru">Документ Pure Data</comment>
+  </mime-type>
+  <mime-type type="text/x-puredata-help">
+    <sub-class-of type="text/x-puredata"/>
+    <glob pattern="*-help.pd"/>
+    <comment>Pure Data Help</comment>
+  </mime-type>
+  <mime-type type="text/x-puredata-meta">
+    <sub-class-of type="text/x-puredata"/>
+    <glob pattern="*-meta.pd"/>
+    <comment>Pure Data Meta Marker for Libraries</comment>
+  </mime-type>
+  <mime-type type="application/x-puredata-external-linux">
+    <sub-class-of type="application/octet-stream"/>
+    <glob pattern="*.pd_linux"/>
+    <comment>Pure Data External (Linux Binary)</comment>
+  </mime-type>
+  <mime-type type="application/x-puredata-external-darwin">
+    <sub-class-of type="application/octet-stream"/>
+    <glob pattern="*.pd_darwin"/>
+    <comment>Pure Data External (Mac OS X Binary)</comment>
+  </mime-type>
+  <mime-type type="text/x-maxmsp">
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.mxt"/>
+    <comment>Max/MSP Text Document</comment>
+	<magic priority="50">
+	  <match type="string" value="max v2;" offset="0"/>
+	</magic>
+  </mime-type>
+  <mime-type type="application/x-maxmsp">
+    <sub-class-of type="application/octet-stream"/>
+    <glob pattern="*.mxb"/>
+	<magic priority="50">
+	  <match type="string" value="pmax" offset="4"/>
+	</magic>
+    <comment>Max/MSP Binary Document</comment>
+  </mime-type>
+</mime-info>

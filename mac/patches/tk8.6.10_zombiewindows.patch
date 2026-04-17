@@ -1,0 +1,167 @@
+diff --git a/macosx/tkMacOSXPrivate.h b/macosx/tkMacOSXPrivate.h
+index 9417b62e6..dff6a200d 100644
+--- a/macosx/tkMacOSXPrivate.h
++++ b/macosx/tkMacOSXPrivate.h
+@@ -433,6 +433,18 @@ VISIBILITY_HIDDEN
+ - (void) setAppleMenu: (NSMenu *) menu;
+ @end
+ 
++/*
++ * These methods are exposed because they are needed to prevent zombie windows
++ * on systems with a TouchBar.  The TouchBar Key-Value observer holds a
++ * reference to the key window, which prevents deallocation of the key window
++ * when it is closed.
++ */
++
++@interface NSApplication(TkWm)
++- (id) _setKeyWindow: (NSWindow *) window;
++- (id) _setMainWindow: (NSWindow *) window;
++@end
++
+ #endif /* _TKMACPRIV */
+ 
+ int TkMacOSXGetAppPath(ClientData cd, Tcl_Interp *ip, int objc, Tcl_Obj *const objv[]);
+diff --git a/macosx/tkMacOSXWm.c b/macosx/tkMacOSXWm.c
+index ceb3f3f7e..f24f198f0 100644
+--- a/macosx/tkMacOSXWm.c
++++ b/macosx/tkMacOSXWm.c
+@@ -879,6 +879,7 @@ TkWmDeadWindow(
+     TkWindow *winPtr)		/* Top-level window that's being deleted. */
+ {
+     WmInfo *wmPtr = winPtr->wmInfoPtr, *wmPtr2;
++    NSWindow *ourNSWindow;
+ 
+     if (wmPtr == NULL) {
+ 	return;
+@@ -952,77 +953,87 @@ TkWmDeadWindow(
+     }
+ 
+     /*
+-     * Delete the Mac window and remove it from the windowTable. The window
+-     * could be nil if the window was never mapped. However, we don't do this
+-     * for embedded windows, they don't go in the window list, and they do not
+-     * own their portPtr's.
++     * Unregister the NSWindow and remove all references to it from the Tk
++     * data structures.  If the NSWindow is a child, disassociate it from
++     * the parent.  Then close and release the NSWindow.
+      */
+ 
+-    NSWindow *window = wmPtr->window;
+-
+-    if (window && !Tk_IsEmbedded(winPtr)) {
+-	NSWindow *parent = [window parentWindow];
++    ourNSWindow = wmPtr->window;
++    if (ourNSWindow && !Tk_IsEmbedded(winPtr)) {
++	NSWindow *parent = [ourNSWindow parentWindow];
++	TkMacOSXUnregisterMacWindow(ourNSWindow);
++        if (winPtr->window) {
++            ((MacDrawable *) winPtr->window)->view = nil;
++        }
++	wmPtr->window = NULL;
+ 
+ 	if (parent) {
+-	    [parent removeChildWindow:window];
++	    [parent removeChildWindow:ourNSWindow];
+ 	}
+-#if DEBUG_ZOMBIES > 0
++
++#if DEBUG_ZOMBIES > 1
+ 	{
+-	    const char *title = [[window title] UTF8String];
++	    const char *title = [[ourNSWindow title] UTF8String];
+ 	    if (title == nil) {
+ 		title = "unnamed window";
+ 	    }
+ 	    fprintf(stderr, ">>>> Closing <%s>. Count is: %lu\n", title,
+-		    [window retainCount]);
++		    [ourNSWindow retainCount]);
+ 	}
+ #endif
+-	[window close];
+-	TkMacOSXUnregisterMacWindow(window);
+-        if (winPtr->window) {
+-            ((MacDrawable *) winPtr->window)->view = nil;
+-        }
+-	wmPtr->window = NULL;
+-        [window release];
+-
+-	/* Activate the highest window left on the screen. */
+-	NSArray *windows = [NSApp orderedWindows];
+-	for (id nswindow in windows) {
+-	    TkWindow *winPtr2 = TkMacOSXGetTkWindow(nswindow);
+ 
+-	    if (winPtr2 && nswindow != window) {
+-		WmInfo *wmPtr = winPtr2->wmInfoPtr;
+-		BOOL minimized = (wmPtr->hints.initial_state == IconicState
+-			|| wmPtr->hints.initial_state == WithdrawnState);
++	/*
++	 * When a window is closed we want to move the focus to the next
++	 * highest window.  Apple's documentation says that calling the
++	 * orderOut method of the key window will accomplish this.  But
++	 * experiment shows that this is not the case.  So we have to reset the
++	 * key window ourselves.  When the window is the last one on the screen
++	 * there is no choice for a new key window.  Moreover, if the host
++	 * computer has a TouchBar then the TouchBar holds a reference to the
++	 * key window which prevents it from being deallocated until it stops
++	 * being the key window.  On these systems the only option for
++	 * preventing zombies is to set the key window to nil.
++	 */
+ 
+-		/*
+-		 * If no windows are left on the screen and the next window is
+-		 * iconified or withdrawn, we don't want to make it be the
+-		 * KeyWindow because that would cause it to be displayed on the
+-		 * screen.
+-		 */
++	for (NSWindow *w in [NSApp orderedWindows]) {
++	    TkWindow *winPtr2 = TkMacOSXGetTkWindow(w);
++	    BOOL isOnScreen;
+ 
+-		if ([nswindow canBecomeKeyWindow] && !minimized) {
+-		    [nswindow makeKeyAndOrderFront:NSApp];
+-		    break;
+-		}
++	    if (!winPtr2 || !winPtr2->wmInfoPtr) {
++		continue;
++	    }
++	    wmPtr2 = winPtr2->wmInfoPtr;
++	    isOnScreen = (wmPtr2->hints.initial_state != IconicState &&
++			  wmPtr2->hints.initial_state != WithdrawnState);
++	    if (w != ourNSWindow && isOnScreen && [w canBecomeKeyWindow]) {
++		[w makeKeyAndOrderFront:NSApp];
++		break;
+ 	    }
+ 	}
+ 
+ 	/*
+-	 * Process all window events immediately to force the closed window to
+-	 * be deallocated.  But don't do this for the root window as that is
+-	 * unnecessary and can lead to segfaults.
++	 * Prevent zombies on systems with a TouchBar.
+ 	 */
+ 
+-	if (winPtr->parentPtr) {
+-	    while (Tcl_DoOneEvent(TCL_WINDOW_EVENTS|TCL_DONT_WAIT)) {}
++	if (ourNSWindow == [NSApp keyWindow]) {
++	    [NSApp _setKeyWindow:nil];
++	    [NSApp _setMainWindow:nil];
+ 	}
++	[ourNSWindow close];
++	[ourNSWindow release];
+ 	[NSApp _resetAutoreleasePool];
+-#if DEBUG_ZOMBIES > 0
++
++#if DEBUG_ZOMBIES > 1
+ 	fprintf(stderr, "================= Pool dump ===================\n");
+ 	[NSAutoreleasePool showPools];
+ #endif
++
+     }
++
++    /*
++     * Deallocate the wmInfo and clear the wmInfoPtr.
++     */
++
+     ckfree(wmPtr);
+     winPtr->wmInfoPtr = NULL;
+ }

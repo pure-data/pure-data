@@ -11,7 +11,7 @@ if test -f pd-$1.src.tar.gz
 then
    echo -n
 else
-   echo cant find file pd-$1.src.tar.gz
+   echo can not find file pd-$1.src.tar.gz
    exit 1
 fi
 

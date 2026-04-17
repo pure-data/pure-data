@@ -1,39 +1,33 @@
-#N canvas 418 77 530 570 12;
-#X text 265 515 updated for Pd version 0.26;
-#X text 43 19 Use the "random" object to make pseudo-random integers.
-To get continuously variable random numbers \, make a random number
-in a large range and divide:;
+#N canvas 418 77 516 532 12;
 #X obj 95 122 random 5;
-#X msg 95 96 bang;
-#X floatatom 95 148 0 0 0 0 - - -;
+#X floatatom 95 148 0 0 0 0 - - - 0;
 #X text 129 148 outputs from 0 to 4;
-#X msg 329 81 bang;
-#X floatatom 328 159 0 0 0 0 - - -;
+#X floatatom 328 159 0 0 0 0 - - - 0;
 #X obj 329 107 random 1000;
 #X obj 328 135 / 1000;
 #X text 382 160 from 0 to 0.999;
 #X obj 146 369 random 5;
-#X msg 178 247 bang;
-#X floatatom 146 395 0 0 0 0 - - -;
+#X floatatom 146 398 4 0 0 0 - - - 0;
 #X obj 97 247 loadbang;
 #X obj 146 278 timer;
 #X msg 146 303 seed \$1;
-#X msg 165 333 bang;
-#X text 50 435 If you give two randoms the same seed they give the
-same sequence. If you never seed them \, you'll get different sequences
-out of each one.;
-#X text 42 197 If you don't want the same behavior every time you run
-the patch \, use the time from load to first click as a seed:;
-#X text 204 335 <= click to get random numbers;
-#X text 220 246 <= click to seed;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
-#X connect 6 0 8 0;
-#X connect 8 0 9 0;
-#X connect 9 0 7 0;
-#X connect 11 0 13 0;
-#X connect 12 0 15 1;
-#X connect 14 0 15 0;
-#X connect 15 0 16 0;
-#X connect 16 0 11 0;
-#X connect 17 0 11 0;
+#X text 50 435 If you give two randoms the same seed they give the same sequence. If you never seed them \, you'll get different sequences out of each one.;
+#X text 42 197 If you don't want the same behavior every time you run the patch \, use the time from load to first click as a seed:;
+#X text 43 19 Use the [random] object to make pseudo-random integers. To get continuously variable random numbers \, make a random number in a large range and divide:;
+#X obj 95 96 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 329 81 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 178 247 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 165 333 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 200 246 <-- click to seed;
+#X text 186 332 <-- click to get random numbers;
+#X connect 0 0 1 0;
+#X connect 4 0 5 0;
+#X connect 5 0 3 0;
+#X connect 7 0 8 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 7 0;
+#X connect 15 0 0 0;
+#X connect 16 0 4 0;
+#X connect 17 0 10 1;
+#X connect 18 0 7 0;

@@ -591,22 +591,29 @@ static t_class *atan2_class;    /* ----------- atan2 --------------- */
 typedef struct _atan2
 {
     t_object x_ob;
-    t_float x_f;
+    t_float  x_f1;
+    t_float  x_f2;
 } t_atan2;
 
 static void *atan2_new(void)
 {
     t_atan2 *x = (t_atan2 *)pd_new(atan2_class);
-    floatinlet_new(&x->x_ob, &x->x_f);
-    x->x_f = 0;
+    floatinlet_new(&x->x_ob, &x->x_f2);
+    x->x_f1 = x->x_f2 = 0;
     outlet_new(&x->x_ob, &s_float);
     return (x);
 }
 
+static void atan2_bang(t_atan2 *x)
+{
+    outlet_float(x->x_ob.ob_outlet,
+        (x->x_f1 == 0 && x->x_f2 == 0 ? 0 : ATAN2(x->x_f1, x->x_f2)));
+}
+
 static void atan2_float(t_atan2 *x, t_float f)
 {
-    t_float r = (f == 0 && x->x_f == 0 ? 0 : ATAN2(f, x->x_f));
-    outlet_float(x->x_ob.ob_outlet, r);
+    x->x_f1 = f;
+    atan2_bang(x);
 }
 
 static t_class *sqrt_class;     /* ----------- sqrt --------------- */
@@ -744,9 +751,10 @@ static void clip_setup(void)
 
 void x_arithmetic_setup(void)
 {
-    t_symbol *binop1_sym = gensym("operators");
-    t_symbol *binop23_sym = gensym("otherbinops");
-    t_symbol *math_sym = gensym("math");
+    t_symbol *binop1_sym = gensym("binops");
+    t_symbol *binop23_sym = gensym("binops-other");
+    t_symbol *trig_sym = gensym("trigonometric");
+    t_symbol *unop_sym = gensym("unops");
 
     binop1_plus_class = class_new(gensym("+"), (t_newmethod)binop1_plus_new, 0,
         sizeof(t_binop), 0, A_DEFFLOAT, 0);
@@ -801,7 +809,7 @@ void x_arithmetic_setup(void)
         sizeof(t_binop), 0, A_DEFFLOAT, 0);
     class_addbang(binop1_log_class, binop1_log_bang);
     class_addfloat(binop1_log_class, (t_method)binop1_log_float);
-    class_sethelpsymbol(binop1_log_class, math_sym);
+    class_sethelpsymbol(binop1_log_class, binop1_sym);
 
         /* ------------------ binop2 ----------------------- */
 
@@ -897,52 +905,55 @@ void x_arithmetic_setup(void)
     class_addfloat(binop3_div_class, (t_method)binop3_div_float);
     class_sethelpsymbol(binop3_div_class, binop23_sym);
 
-        /* ------------------- math functions --------------- */
+        /* ------------------- trig functions --------------- */
 
     sin_class = class_new(gensym("sin"), sin_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(sin_class, (t_method)sin_float);
-    class_sethelpsymbol(sin_class, math_sym);
+    class_sethelpsymbol(sin_class, trig_sym);
 
     cos_class = class_new(gensym("cos"), cos_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(cos_class, (t_method)cos_float);
-    class_sethelpsymbol(cos_class, math_sym);
+    class_sethelpsymbol(cos_class, trig_sym);
 
     tan_class = class_new(gensym("tan"), tan_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(tan_class, (t_method)tan_float);
-    class_sethelpsymbol(tan_class, math_sym);
+    class_sethelpsymbol(tan_class, trig_sym);
 
     atan_class = class_new(gensym("atan"), atan_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(atan_class, (t_method)atan_float);
-    class_sethelpsymbol(atan_class, math_sym);
+    class_sethelpsymbol(atan_class, trig_sym);
 
     atan2_class = class_new(gensym("atan2"), atan2_new, 0,
         sizeof(t_atan2), 0, 0);
     class_addfloat(atan2_class, (t_method)atan2_float);
-    class_sethelpsymbol(atan2_class, math_sym);
+    class_addbang(atan2_class, atan2_bang);
+    class_sethelpsymbol(atan2_class, trig_sym);
+
+    /* ------------------- trig functions --------------- */
 
     sqrt_class = class_new(gensym("sqrt"), sqrt_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(sqrt_class, (t_method)sqrt_float);
-    class_sethelpsymbol(sqrt_class, math_sym);
+    class_sethelpsymbol(sqrt_class, unop_sym);
 
     exp_class = class_new(gensym("exp"), exp_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(exp_class, (t_method)exp_float);
-    class_sethelpsymbol(exp_class, math_sym);
+    class_sethelpsymbol(exp_class, unop_sym);
 
     abs_class = class_new(gensym("abs"), abs_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(abs_class, (t_method)abs_float);
-    class_sethelpsymbol(abs_class, math_sym);
+    class_sethelpsymbol(abs_class, unop_sym);
 
     wrap_class = class_new(gensym("wrap"), wrap_new, 0,
         sizeof(t_object), 0, 0);
     class_addfloat(wrap_class, (t_method)wrap_float);
-    class_sethelpsymbol(wrap_class, math_sym);
+    class_sethelpsymbol(wrap_class, unop_sym);
 
 /* ------------------------  misc ------------------------ */
 

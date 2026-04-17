@@ -14,6 +14,7 @@ typedef struct obj5
 void obj5_rats(t_obj5 *x, t_symbol *selector, int argcount, t_atom *argvec)
 {
     int i;
+    (void)x;
     post("rats: selector %s", selector->s_name);
     for (i = 0; i < argcount; i++)
     {

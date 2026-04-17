@@ -368,24 +368,31 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
             float posSource, posSink;
             int nio;
             int _x; /* dummy variable */
+            int posSourceY, posSinkY;
+            int boxHeight;  /* height of inserted box */
             int posLeft, posRight;
 
                 /* get real x-position of the outlet */
-            gobj_getrect(src, x, &posLeft, &_x, &posRight, &_x);
+            gobj_getrect(src, x, &posLeft, &_x, &posRight, &posSourceY);
             posLeft /= x->gl_zoom;
             posRight /= x->gl_zoom;
+            posSourceY /= x->gl_zoom;
             nio = obj_noutlets(obj1);
             posSource = posLeft + (posRight - posLeft - IOWIDTH) * src_out / ((nio==1)?1.:(nio-1.));
 
                 /* get real x-position of the inlet */
-            gobj_getrect(dst, x, &posLeft, &_x, &posRight, &_x);
+            gobj_getrect(dst, x, &posLeft, &posSinkY, &posRight, &_x);
             posLeft /= x->gl_zoom;
             posRight /= x->gl_zoom;
+            posSinkY /= x->gl_zoom;
             nio = obj_ninlets(obj2);
             posSink = posLeft + (posRight - posLeft - IOWIDTH) * dst_in / ((nio==1)?1.:(nio-1.));
 
+		/* get height of the box that will be inserted */
+            boxHeight = glist_fontheight(x) / x->gl_zoom + 4; /* ATOM_BMARGIN = 4 */
+
             posx = (posSource + posSink) * 0.5;
-            posy = (obj1->te_ypix + obj2->te_ypix) >> 1;
+            posy = (posSourceY + posSinkY - boxHeight) >> 1;
         }
     }
 

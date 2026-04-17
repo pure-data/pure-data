@@ -1,6 +1,6 @@
-#N canvas 500 23 788 630 12;
+#N canvas 500 38 788 630 12;
 #X obj 119 96 inlet;
-#X floatatom 582 159 5 0 0 0 - - -;
+#X floatatom 582 159 5 0 0 0 - - - 0;
 #X obj 159 199 t f f, f 7;
 #X msg 159 151 0.667;
 #X msg 139 329 0;
@@ -23,23 +23,19 @@
 #X obj 558 533 outlet;
 #X text 558 557 imag2b;
 #X obj 431 533 outlet;
-#X text 63 557 normalizer1;
+#X text 52 557 normalizer1;
 #X obj 231 533 outlet;
-#X text 228 557 normalizer2;
+#X text 209 557 normalizer2;
 #X obj 231 482 expr (($f2-$f1)*($f2-$f1)+$f3*$f3);
 #X obj 119 458 t f f;
-#X obj 159 222 expr (1 - $f2*$f2) / (1 + $f2*$f2 + 2*$f2*cos($f1))
-;
-#X obj 221 250 expr 2*$f2*sin($f1) / (1 + $f2*$f2 + 2*$f2*cos($f1))
-;
-#X obj 139 353 expr (1 - $f2*$f2) / (1 + $f2*$f2 + 2*$f2*cos($f1))
-;
+#X obj 159 222 expr (1 - $f2*$f2) / (1 + $f2*$f2 + 2*$f2*cos($f1));
+#X obj 221 250 expr 2*$f2*sin($f1) / (1 + $f2*$f2 + 2*$f2*cos($f1));
+#X obj 139 353 expr (1 - $f2*$f2) / (1 + $f2*$f2 + 2*$f2*cos($f1));
 #X obj 582 114 clip 0 1;
 #X obj 582 136 expr tan($f1*1.57);
 #X obj 159 176 expr $f1*1.5708;
 #X text 573 297 0 to normalize at DC;
-#X text 175 23 3-pole (or zero) Butterworth filter coefficient calculator
-;
+#X text 175 23 3-pole (or zero) Butterworth filter coefficient calculator;
 #X text 203 152 "theta" in units of pi/2;
 #X text 269 183 conjugate pair of pole/zero locations:;
 #X text 255 200 real part: (1-r*r)/(1+r*r-2rcos(th));

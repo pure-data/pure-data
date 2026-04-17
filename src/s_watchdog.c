@@ -17,23 +17,23 @@ int main(int argc, char **argv)
     int happy = 1;
     while (1)
     {
-        struct timeval timout;
+        struct timeval timeout;
         fd_set readset, exceptset;
         if (happy)
         {
-            timout.tv_sec = 5;
-            timout.tv_usec = 0;
+            timeout.tv_sec = 5;
+            timeout.tv_usec = 0;
         }
         else
         {
-            timout.tv_sec = 2;
-            timout.tv_usec = 0;
+            timeout.tv_sec = 2;
+            timeout.tv_usec = 0;
         }
         FD_ZERO(&readset);
         FD_SET(0, &readset);
         FD_ZERO(&exceptset);
         FD_SET(0, &exceptset);
-        select(1, &readset, 0, &exceptset, &timout);
+        select(1, &readset, 0, &exceptset, &timeout);
         if (FD_ISSET(0, &exceptset))
             return (0);
         if (FD_ISSET(0, &readset))

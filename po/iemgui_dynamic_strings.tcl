@@ -7,28 +7,13 @@
 # If these are changed in the src/g_*.c files, then need to be
 # manually updated here.
 
-# these are headers for the tops of the Properties panel
-puts [_ "-------dimensions(digits)(pix):-------"]
-puts [_ "--------dimensions(pix)(pix):--------"]
-puts [_ "----------dimensions(pix):-----------"]
-puts [_ "--------flash-time(ms)(ms):---------"]
-puts [_ "-----------output-range:-----------"]
-puts [_ "------selectable_dimensions(pix):------"]
-puts [_ "------visible_rectangle(pix)(pix):------"]
-
 # these are labels for elements of the Properties panel
-puts [_ "bottom:"]
-puts [_ "height:"]
-puts [_ "hold:"]
-puts [_ "intrrpt:"]
-puts [_ "left:"]
-puts [_ "lin"]
-puts [_ "log"]
-puts [_ "log-height:"]
-puts [_ "max:"]
-puts [_ "min:"]
-puts [_ "right:"]
-puts [_ "size:"]
-puts [_ "top:"]
-puts [_ "value:"]
-puts [_ "width:"]
+## nbx2/slider scale
+puts [_ "linear"]
+puts [_ "logarithmic"]
+## radio (compat mode)
+puts [_ "new-only"]
+puts [_ "new&old"]
+## VU-meter
+puts [_ "no scale"]
+puts [_ "scale"]

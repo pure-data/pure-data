@@ -16,23 +16,38 @@ array set hidetext_button {}
 
 ############# pdtk_canvas_dialog -- dialog window for canvases #################
 
+proc ::dialog_canvas::set_text {text} {
+    global ::dialog_canvas_text
+    set ::dialog_canvas_text [subst -nocommands -novariables ${text}]
+    set ::dialog_canvas_text_before $::dialog_canvas_text
+}
+
 proc ::dialog_canvas::apply {mytoplevel} {
-    pdsend "$mytoplevel donecanvasdialog \
-            [$mytoplevel.scale.x.entry get] \
-            [$mytoplevel.scale.y.entry get] \
-            [expr $::graphme_button($mytoplevel) + 2 * $::hidetext_button($mytoplevel)] \
-            [$mytoplevel.range.x.from_entry get] \
-            [$mytoplevel.range.y.from_entry get] \
-            [$mytoplevel.range.x.to_entry get] \
-            [$mytoplevel.range.y.to_entry get] \
-            [$mytoplevel.range.x.size_entry get] \
-            [$mytoplevel.range.y.size_entry get] \
-            [$mytoplevel.range.x.margin_entry get] \
-            [$mytoplevel.range.y.margin_entry get] 1"
+    global ::dialog_canvas_text
+
+    set cmd [list $mytoplevel donecanvasdialog \
+                 [$mytoplevel.scale.x.entry get] \
+                 [$mytoplevel.scale.y.entry get] \
+                 [expr $::graphme_button($mytoplevel) + 2 * $::hidetext_button($mytoplevel)] \
+                 [$mytoplevel.range.x.from_entry get] \
+                 [$mytoplevel.range.y.from_entry get] \
+                 [$mytoplevel.range.x.to_entry get] \
+                 [$mytoplevel.range.y.to_entry get] \
+                 [$mytoplevel.range.x.size_entry get] \
+                 [$mytoplevel.range.y.size_entry get] \
+                 [$mytoplevel.range.x.margin_entry get] \
+                 [$mytoplevel.range.y.margin_entry get] 1 \
+                ]
+
+    if [string compare $::dialog_canvas_text $::dialog_canvas_text_before] {
+        set cmd [concat ${cmd} text [string map {"$" "\\$"} $::dialog_canvas_text]]
+    }
+
+    pdsend ${cmd}
 }
 
 proc ::dialog_canvas::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_canvas::ok {mytoplevel} {
@@ -95,7 +110,7 @@ proc ::dialog_canvas::checkcommand {mytoplevel} {
     }
 }
 
-proc ::dialog_canvas::pdtk_canvas_dialog {mytoplevel xscale yscale graphmeflags \
+proc ::dialog_canvas::pdtk_canvas_dialog  {mytoplevel xscale yscale graphmeflags \
                                              xfrom yfrom xto yto \
                                              xsize ysize xmargin ymargin} {
     if {[winfo exists $mytoplevel]} {
@@ -142,8 +157,10 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     wm title $mytoplevel [_ "Canvas Properties"]
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
-    wm transient $mytoplevel $::focused_window
-    $mytoplevel configure -menu $::dialog_menubar
+    if { [winfo exists $::focused_window] } {
+        wm transient $mytoplevel $::focused_window
+    }
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "canvas"
 
@@ -218,6 +235,12 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         -command "::dialog_canvas::ok $mytoplevel" -default active
     pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
+    if [string length $::dialog_canvas_text] {
+        labelframe $mytoplevel.text -text [_ "Object:" ]
+        pack $mytoplevel.text -side top -anchor s -fill x -padx 2m
+        entry $mytoplevel.text.entry -textvariable ::dialog_canvas_text
+        pack $mytoplevel.text.entry -side right -expand 1 -fill x
+    }
     # live checkbutton & entry Return updates on OSX
     if {$::windowingsystem eq "aqua"} {
 

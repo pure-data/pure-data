@@ -1,0 +1,28 @@
+diff --git a/macosx/tkMacOSXNotify.c b/macosx/tkMacOSXNotify.c
+index afee942c5..71fcc5a10 100644
+--- a/macosx/tkMacOSXNotify.c
++++ b/macosx/tkMacOSXNotify.c
+@@ -303,6 +303,7 @@ TkMacOSXEventsSetupProc(
+ 	 * Call this with dequeue=NO -- just checking if the queue is empty.
+ 	 */
+ 
++	while (Tcl_DoOneEvent(TCL_IDLE_EVENTS|TCL_DONT_WAIT)) {}
+ 	NSEvent *currentEvent =
+ 	        [NSApp nextEventMatchingMask:NSAnyEventMask
+ 			untilDate:[NSDate distantPast]
+@@ -372,6 +373,7 @@ TkMacOSXEventsCheckProc(
+ 
+ 	[NSApp _lockAutoreleasePool];
+ 	do {
++		while (Tcl_DoOneEvent(TCL_IDLE_EVENTS|TCL_DONT_WAIT)) {}
+ 	    modalSession = TkMacOSXGetModalSession();
+ 	    testEvent = [NSApp nextEventMatchingMask:NSAnyEventMask
+ 		    untilDate:[NSDate distantPast]
+@@ -385,6 +387,7 @@ TkMacOSXEventsCheckProc(
+ 	    if (testEvent && [[testEvent window] inLiveResize]) {
+ 		break;
+ 	    }
++	    while (Tcl_DoOneEvent(TCL_IDLE_EVENTS|TCL_DONT_WAIT)) {}
+ 	    currentEvent = [NSApp nextEventMatchingMask:NSAnyEventMask
+ 		    untilDate:[NSDate distantPast]
+ 		    inMode:GetRunLoopMode(modalSession)

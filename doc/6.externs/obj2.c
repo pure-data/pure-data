@@ -10,16 +10,19 @@ typedef struct obj2
 
 void obj2_float(t_obj2 *x, t_floatarg f)
 {
+    (void)x;
     post("obj2: %f", f);
 }
 
 void obj2_rats(t_obj2 *x)
 {
+    (void)x;
     post("obj2: rats");
 }
 
 void obj2_ft1(t_obj2 *x, t_floatarg g)
 {
+    (void)x;
     post("ft1: %f", g);
 }
 

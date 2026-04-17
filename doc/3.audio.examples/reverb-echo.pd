@@ -5,20 +5,14 @@
 #X obj 212 202 outlet~;
 #X obj 138 121 +~;
 #X obj 211 119 -~;
-#X obj 211 143 delwrite~ \$1 \$2;
-#X obj 212 172 delread~ \$1 \$2;
-#X text 45 20 This appears as an abstraction in patch G08.reverb.pd
-;
-#X text 34 256 This network makes two copies of the (stereo) input
-\, one in phase \, the other out of phase and delayed. The total frequency
-response is flat. The total signal power out is exactly twice that
-of the input \, no matter what frequencies the input contains. This
-is used to increase echo density \, by stacking several of these units
-with different delay times. Each stage doubles the echo density.;
+#X text 45 20 This appears as an abstraction in patch G08.reverb.pd;
+#X text 34 256 This network makes two copies of the (stereo) input \, one in phase \, the other out of phase and delayed. The total frequency response is flat. The total signal power out is exactly twice that of the input \, no matter what frequencies the input contains. This is used to increase echo density \, by stacking several of these units with different delay times. Each stage doubles the echo density.;
+#X obj 211 143 delwrite~ \$0-echo-del \$1;
+#X obj 212 172 delread~ \$0-echo-del \$1;
 #X connect 0 0 4 0;
 #X connect 0 0 5 0;
 #X connect 1 0 4 1;
 #X connect 1 0 5 1;
 #X connect 4 0 2 0;
-#X connect 5 0 6 0;
-#X connect 7 0 3 0;
+#X connect 5 0 8 0;
+#X connect 9 0 3 0;

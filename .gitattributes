@@ -3,3 +3,5 @@
 .git*      	export-ignore
 /.*		export-ignore
 /debian/	export-ignore
+.editorconfig	!export-ignore
+.dir-locals.el	!export-ignore

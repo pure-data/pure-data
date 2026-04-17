@@ -1,0 +1,65 @@
+From e3db95d5882e8cf0750989b7311f69c3fdabf065 Mon Sep 17 00:00:00 2001
+From: culler <culler>
+Date: Tue, 9 Nov 2021 20:34:22 +0000
+Subject: [PATCH] Fix [e699a7b606]: Fix build on macOS<10.12 - patch from
+ Christopher Chavez.
+
+---
+ macosx/tkMacOSXConstants.h | 1 +
+ macosx/tkMacOSXImage.c     | 7 ++++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/macosx/tkMacOSXConstants.h b/macosx/tkMacOSXConstants.h
+index 0b6ae2b83..9d4079c1f 100644
+--- a/macosx/tkMacOSXConstants.h
++++ b/macosx/tkMacOSXConstants.h
+@@ -96,6 +96,7 @@ typedef NSInteger NSModalResponse;
+ #define NSMiniaturizableWindowMask NSWindowStyleMaskMiniaturizable
+ #define NSBorderlessWindowMask NSWindowStyleMaskBorderless
+ #define NSFullScreenWindowMask NSWindowStyleMaskFullScreen
++#define NSAlphaFirstBitmapFormat NSBitmapFormatAlphaFirst
+ #endif
+ 
+ #if MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
+diff --git a/macosx/tkMacOSXImage.c b/macosx/tkMacOSXImage.c
+index 1ca7b6488..f256d7ab4 100644
+--- a/macosx/tkMacOSXImage.c
++++ b/macosx/tkMacOSXImage.c
+@@ -13,6 +13,7 @@
+  */
+ 
+ #include "tkMacOSXPrivate.h"
++#include "tkMacOSXConstants.h"
+ #include "xbytes.h"
+ 
+ static CGImageRef CreateCGImageFromPixmap(Drawable pixmap);
+@@ -68,7 +69,7 @@ typedef struct RGBA32pixel_t {
+ /*
+  * ARGB32 0xAARRGGBB (Byte order is ARGB on big-endian systems.)
+  * This is used by Aqua Tk for XImages and by NSBitmapImageReps whose
+- * bitmapFormat property is NSBitmapFormatAlphaFirst.
++ * bitmapFormat property is NSAlphaFirstBitmapFormat.
+  */
+ 
+ typedef struct ARGB32pixel_t {
+@@ -775,7 +776,7 @@ XGetImage(
+ 	size = [bitmapRep bytesPerPlane];
+ 	bytes_per_row = [bitmapRep bytesPerRow];
+ 	bitmap = (char *)ckalloc(size);
+-	if ((bitmap_fmt != 0 && bitmap_fmt != NSBitmapFormatAlphaFirst)
++	if ((bitmap_fmt != 0 && bitmap_fmt != NSAlphaFirstBitmapFormat)
+ 	    || [bitmapRep samplesPerPixel] != 4
+ 	    || [bitmapRep isPlanar] != 0
+ 	    || bytes_per_row < 4 * width
+@@ -802,7 +803,7 @@ XGetImage(
+ 		    flipped.rgba.blue = pixel.argb.blue;
+ 		    flipped.rgba.alpha = pixel.argb.alpha;
+ 		    *((pixel32 *)(bitmap + m)) = flipped;
+-		} else { // bitmap_fmt = NSBitmapFormatAlphaFirst
++		} else { // bitmap_fmt = NSAlphaFirstBitmapFormat
+ 		    *((pixel32 *)(bitmap + m)) = pixel;
+ 		}
+ 	    }
+-- 
+2.34.1
+

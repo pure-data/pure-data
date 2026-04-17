@@ -8,15 +8,16 @@ namespace eval ::dialog_data:: {
 ############ pdtk_data_dialog -- run a data dialog #########
 
 proc ::dialog_data::send {mytoplevel} {
+    set prefix [list $mytoplevel data]
     for {set i 1} {[$mytoplevel.text compare [concat $i.0 + 3 chars] < end]} \
         {incr i 1} {
-            pdsend "$mytoplevel data [$mytoplevel.text get $i.0 [expr $i + 1].0]"
+            pdsend [concat ${prefix} [$mytoplevel.text get $i.0 [expr $i + 1].0] ]
         }
-    pdsend "$mytoplevel end"
+    pdsend [list $mytoplevel end]
 }
 
 proc ::dialog_data::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_data::ok {mytoplevel} {
@@ -35,14 +36,16 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     wm title $mytoplevel [_ "Data Properties"]
     wm group $mytoplevel $::focused_window
     wm transient $mytoplevel $::focused_window
-    $mytoplevel configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 0 -pady 0
 
     frame $mytoplevel.buttonframe
     pack $mytoplevel.buttonframe -side bottom -pady 2m
-    button $mytoplevel.buttonframe.send -text [_ "Send ($modkeyname-S)"] \
+    set label [_ "Send"]
+    button $mytoplevel.buttonframe.send -text "$label ($modkeyname-S)" \
         -command "::dialog_data::send $mytoplevel"
-    button $mytoplevel.buttonframe.ok -text [_ "Done ($modkeyname-D)"] \
+    set label [_ "Done"]
+    button $mytoplevel.buttonframe.ok -text "$label ($modkeyname-D)" \
         -command "::dialog_data::ok $mytoplevel"
     pack $mytoplevel.buttonframe.send -side left -expand 1 -padx 15 -ipadx 10
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -padx 15 -ipadx 10

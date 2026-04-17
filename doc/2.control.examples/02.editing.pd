@@ -1,38 +1,36 @@
-#N canvas 594 23 533 668 12;
-#X msg 116 46 hello world;
-#X obj 225 82 print;
-#X floatatom 225 46 0 0 0 0 - - -;
-#X text 115 25 message;
-#X text 225 24 atom;
-#X text 274 83 object;
-#X text 44 112 When you first open a Pd document like this one \, your
-cursor will be an arrow. Select "edit mode" in the Edit menu and the
-cursor will change to the image of a hand. The patch is now in edit
-mode. You can move any object by dragging it.;
-#X text 44 185 Select "Edit mode" again in the Edit menu and you're
-back to the arrow cursor which acts on objects without moving them.
-;
-#X text 44 227 In Edit mode \, if you click on a message \, object
-\, or comment \, you can then retype the text. For objects this will
-create a new object and delete the old one. Pd will try to reconnect
-the newly created object in the same way as the old one.;
-#X text 44 305 When you're done changing the contents of the box \,
-click outside the box to deselect it. This tells Pd to incorporate
-the new text.;
-#X text 44 363 You can create new objects by duplicating existing ones
-using the "duplicate" menu item. You can also "cut" and "paste" them.
-If you duplicate several connected objects the connections will be
-replicated too.;
-#X text 44 433 Edit mode also lets you make and break connections between
-objects. Put the "hand" cursor over a line connecting two objects:
-it turns into an X. Clicking will select the connection \, which you
-can delete with the delete key \, or "Cut" from the "Edit" menu. Hold
-the cursor over an outlet and it becomes a circle (a patch point).
-Drag to any box and release--you will be connected to the nearest inlet.
-;
-#X text 45 545 The "put" menu creates new text items of any of the
-four types. You can also put a "symbol" box \, analogous to a number
-box but for showing and entering text strings., f 60;
-#X text 257 617 updated for Pd version 0.46.7;
+#N canvas 243 42 958 552 12;
+#X msg 123 24 hello world;
+#X obj 232 90 print;
+#X floatatom 232 24 5 0 0 0 - - - 0;
+#X text 62 22 message;
+#X text 281 91 object;
+#X text 29 448 In Edit mode \, if you click on a message \, object \, or comment \, you can then retype the text. For objects this will create a new object and delete the old one. Pd will try to reconnect the newly created object in the same way as the old one., f 58;
+#X text 497 18 When you're done changing the contents of the box \, click outside the box to deselect it. This tells Pd to incorporate the new text.;
+#X text 497 69 You can create new objects by duplicating existing ones using the "duplicate" menu item. You can also "cut" and "paste" them. If you duplicate several connected objects the connections will be replicated too.;
+#X text 497 136 Edit mode also lets you make and break connections between objects. Put the "hand" cursor over a line connecting two objects: it turns into an X. Clicking will select the connection \, which you can delete with the delete key \, or "Cut" from the "Edit" menu. Hold the cursor over an outlet and it becomes a circle (a patch point). Drag to any box and release--you will be connected to the nearest inlet.;
+#X text 275 23 atom number box;
+#X obj 259 53 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
+#X text 286 52 bang button;
+#X text 29 140 When you first open a Pd document like this one \, your cursor will be an arrow. This is also known as "run" mode and you can then click and interact with objects like messages \, number boxes and bang buttons. Select "edit mode" in the Edit menu to check it on and the cursor will change to the image of a hand. The patch is now in edit mode. You can move any object by clicking on it and dragging it. You can also select a set of objects and then move them all., f 58;
+#X text 29 276 Select "Edit mode" again to uncheck it in the Edit menu and you're back in run mode with the arrow cursor which acts on objects without moving them., f 58;
+#X text 29 333 Note that the Edit menu also shows you a keyboard shortcuts to alter into and out of "Edit mode". If you are predominantly editing a patch but would like to quickly get out of it just to click on a message or something \, you can just press and hold the control key (command in mac computers) and you'll note the arrow is back until you release the key so you can briefly do what you want., f 58;
+#X text 497 247 The Put menu creates new text items of any of the four types. Note that there are other GUI boxes in this menu \, like the list box than can hold one or more atoms. An atom in Pd is a message item \, usually either a float or a symbol. The put menu also offers a "symbol" atom box \, a GUI box analogous to the atom number box but for showing and entering single text strings. Other GUIs like bang \, toggle are also in this menu \, as well as arrays and graphs (which we'll see later on).;
+#X obj 556 462 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#N canvas 798 148 456 264 open-manual 0;
+#X obj 101 59 inlet;
+#X obj 101 190 pdcontrol;
+#X obj 101 130 pdcontrol;
+#X msg 101 105 dir;
+#X text 205 94 this window opens the html manual link via the [pdcontrol] object., f 25;
+#X msg 101 159 browse \$1/../1.manual/resources/chapter2.htm;
+#X connect 0 0 3 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 5 0 1 0;
+#X restore 556 496 pd open-manual;
+#X text 497 384 For more details on editing a patch as well as more advanced techniques to manage connections \, check the chapter 2 of Pd's manual \, sections '2.2. Editing Pd patches" as well as "2.3. Advanced patch editing".;
+#X text 585 461 <-- click to open Pd's manual;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
+#X connect 10 0 1 0;
+#X connect 16 0 17 0;

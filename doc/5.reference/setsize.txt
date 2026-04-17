@@ -1,14 +1,14 @@
 data;
-template help-setsize-template;
+template setsize-template;
 float x;
 float y;
-array array1 help-setsize-array1-template;
+array array4 array4-template;
 ;
-template help-setsize-array1-template;
+template array4-template;
 float y;
 ;
 ;
-help-setsize-template 31 23;
+setsize-template 31 23;
 0;
 10;
 0;

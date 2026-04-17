@@ -185,16 +185,16 @@ static void pique_list(t_pique *x, t_symbol *s, int argc, t_atom *argv)
     int n;
     t_garray *a;
     t_word *fpreal, *fpimag;
-    if (npts < 8 || npeak < 1) error("pique: bad npoints or npeak");
+    if (npts < 8 || npeak < 1) pd_error(0, "pique: bad npoints or npeak");
     if (npeak > x->x_n) npeak = x->x_n;
     if (!(a = (t_garray *)pd_findbyclass(symreal, garray_class)) ||
         !garray_getfloatwords(a, &n, &fpreal) ||
             n < npts)
-                error("%s: missing or bad array", symreal->s_name);
+                pd_error(0, "%s: missing or bad array", symreal->s_name);
     else if (!(a = (t_garray *)pd_findbyclass(symimag, garray_class)) ||
         !garray_getfloatwords(a, &n, &fpimag) ||
             n < npts)
-                error("%s: missing or bad array", symimag->s_name);
+                pd_error(0, "%s: missing or bad array", symimag->s_name);
     else
     {
         int nfound, i;
