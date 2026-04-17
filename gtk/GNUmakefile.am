@@ -17,7 +17,7 @@ if GTK
 libpdbin_PROGRAMS += pdgtk
 endif
 
-pdgtk_SOURCES = pdgtk.c canvas.c net.c tclparser.c
+pdgtk_SOURCES = pdgtk.c canvas.c net.c tclparser.c $(top_srcdir)/src/s_net.c
 pdgtk_CFLAGS = $(AM_CFLAGS) $(GTK_CFLAGS) $(TCL_CFLAGS)
 pdgtk_LDADD = $(GTK_LIBS) $(TCL_LIBS)
 
