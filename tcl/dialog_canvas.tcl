@@ -25,7 +25,7 @@ proc ::dialog_canvas::set_text {text} {
 proc ::dialog_canvas::apply {mytoplevel} {
     global ::dialog_canvas_text
 
-    set cmd [list $mytoplevel donecanvasdialog \
+    set cmd [concat $mytoplevel donecanvasdialog \
                  [$mytoplevel.scale.x.entry get] \
                  [$mytoplevel.scale.y.entry get] \
                  [expr $::graphme_button($mytoplevel) + 2 * $::hidetext_button($mytoplevel)] \
