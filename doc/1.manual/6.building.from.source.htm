@@ -4,24 +4,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <TITLE>Pd Manual - Chapter 6: Building Pd from source</TITLE>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" type="text/css" href="resources/pdmanual.css" media="screen">
+<link rel="icon" href="resources/favicon.ico">
 </HEAD>
 <BODY>
 
 <div class="nav nav-top">
-    <div class="nav-back"><A href="chapter5.htm">&lt; Chapter 5: Current status</A></div>
-    <div class="nav-home"><A href="../index.htm#s6">Table of contents</A></div>
+    <div class="nav-back"><A href="5.current.status.htm">&lt; Chapter 5: Current status</A></div>
+    <div class="nav-home"><A href="index.htm#s6">Table of contents</A></div>
     <div class="nav-forward"></div>
 </div>
 <div id="corpus">
 
-<IMG id="logo" src="icon.png" ALT="pd icon">
+<IMG id="logo" src="resources/icon.png" ALT="pd icon">
 
 <H2>Chapter 6: Building Pd from source</H2>
 
 <P>This chapter offers in depth details on how to build Pd from its source code
-and install it on different operating systems (macOS, Linux, BSD & Windows).
+and install it on different operating systems (macOS, Linux, BSD & Windows).</P>
 
 
 <H3> <A href="#s6.1" id="s6.1"> 6.1. Requirements </A> </H3>
@@ -116,12 +116,12 @@ midi APIs:            PortMidi</pre>
 ./configure --without-local-portaudio</pre>
 
 <p>If you need to run Pd through a debugger (like gdb), you can
-build Pd with debugging symbols using the "--enable-debug" flag.
+build Pd with debugging symbols using the "--enable-debug" flag.</p>
 
 <pre># build Pd with debugging information
 ./configure --enable-debug</pre>
 
-<p>An important configure option for some platforms is --enable-universal which allows you to specify the desired architecture(s) when building Pd. For Intel and AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with --enable-universal:</p>
+<p>An important configure option for some platforms is <code>--enable-universal</code> which allows you to specify the desired architecture(s) when building Pd. For Intel and AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with <code>--enable-universal</code>:</p>
 
 <pre># build 32 bit Pd
 ./configure --enable-universal=i386
@@ -147,12 +147,12 @@ in Linux, you can run Pd from the build directory without installing it:</p>
 <pre>cd bin
 ./pd</pre>
 
-<p>You need to create an app so you can use your build in macOS and Windows.
+<p>You need to create an app so you can use your build in macOS and Windows.</p>
 
 <pre>make app</pre>
 
 <p>To install to your Linux system using the configuration prefix
-(default /usr/local), do:</p>
+(default <tt>/usr/local</tt>), do:</p>
 
 <pre>sudo make install</pre>
 
@@ -168,7 +168,7 @@ in Linux, you can run Pd from the build directory without installing it:</p>
 
 <pre>sudo make uninstall</pre>
 
-<p>If you compiled Pd using the --enable-universal configure
+<p>If you compiled Pd using the <code>--enable-universal</code> configure
 option and want to double check which architectures Pd was built
 with, use the &quot;file&quot; command:</p>
 
@@ -182,7 +182,7 @@ file Pd.app/Contents/Resources/bin/pd
 ...
 Pd-0.55.0.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
-<p>More details specific to each platform follow next.
+<p>More details specific to each platform follow next.</p>
 
 <H3> <A href="#s6.3" id="s6.3"> 6.3. Building Pd for Linux </A> </H3>
 
@@ -264,10 +264,10 @@ It seems that with OpenBSD-7, there are only JACK packages available:</p>
 <pre><code>sudo pkg_add jack
 </code></pre>
 
-<p>By default, OpenBSD installs all its packages into <code>/usr/local/</code>,
+<p>By default, OpenBSD installs all its packages into <tt>/usr/local/</tt>,
 but the compiler does not look for headers resp. libraries in this directory.
 We can instruct autotools to automatically consider these directories
-by creating a file &lsquo;/usr/local/share/config.site&rsquo;:</p>
+by creating a file <tt>/usr/local/share/config.site</tt>:</p>
 
 <pre><code>cat | sudo tee /usr/local/share/config.site&gt;/dev/null &lt;&lt; EOF
 CPPFLAGS="-I/usr/local/include \$CPPFLAGS"
@@ -308,7 +308,7 @@ but the ALSA packages seem to be broken. OSS appears to be built-in.</p>
 
 <pre><code>sudo pkgin install jack</code></pre>
 
-<p>By default, NetBSD installs all its packages into <code>/usr/pkg/</code>,
+<p>By default, NetBSD installs all its packages into <tt>/usr/pkg/</tt>,
 but the compiler does not look for headers resp. libraries in this directory.
 We can instruct autotools to automatically consider these directories
 by creating a file &lsquo;/usr/pkg/share/config.site&rsquo;:</p>
@@ -334,7 +334,7 @@ sudo gmake install
 
 <p>macOS is built on top of a BSD system and the bash commandline
 can be accessed with the Terminal application in the
-/Applications/Utility directory.</p>
+<tt>/Applications/Utility</tt> directory.</p>
 
 <p>The clang compiler and associated tools are provided by Apple.
 If you are running macOS 10.9+, you <em>do not</em> need to install
@@ -364,7 +364,7 @@ using Homebrew:</p>
 <pre>brew install automake autoconf libtool pkg-config gettext
 brew link --force gettext</pre>
 
-<p>By default, Pd is built for the current system architecture, usually 64 bit. If you want to override this you can use the --enable-universal configure option which allows you to specify the desired architecture(s) when building Pd. For Intel/AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. For Apple Silicon processors (M1, M2, etc), the 64 bit architecture is called &quot;arm64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with --enable-universal: you want to override this you can use the --enable-universal configure option, as mentioned in the main Autotools Build section. On macOS, running this option without arguments will build a &quot;fat&quot; Pd for all architectures supported by the compiler:</p>
+<p>By default, Pd is built for the current system architecture, usually 64 bit. If you want to override this you can use the <code>--enable-universal</code> configure option which allows you to specify the desired architecture(s) when building Pd. For Intel/AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. For Apple Silicon processors (M1, M2, etc), the 64 bit architecture is called &quot;arm64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with <code>--enable-universal</code>: you want to override this you can use the <code>--enable-universal</code> configure option, as mentioned in the main Autotools Build section. On macOS, running this option without arguments will build a &quot;fat&quot; Pd for all architectures supported by the compiler:</p>
 
 <ul>
 <li>macOS 10.6: i386, x86_64, ppc</li>
@@ -408,11 +408,11 @@ build steps. Once built, there are two options for installation:</p>
 <pre>make app</pre>
 
 <p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked
-and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle,
-see <a href="chapter6.htm#s6.5.1"> 6.5.1. macOS app bundle</a>.
+and/or copied to <tt>/Applications</tt>. For more info &amp; options regarding the Pd .app bundle,
+see <a href="6.building.from.source.htm#s6.5.1"> 6.5.1. macOS app bundle</a>.</p>
 
 <p>If you want to have both the Pd application <em>and</em> use Pd from the commandline,
-add command aliases to the binaries inside the .app to your ~/.bash_profile:</p>
+add command aliases to the binaries inside the .app to your <tt>~/.bash_profile</tt>:</p>
 
 <pre><code>WHICHPD=&quot;Pd-0.55-0&quot;
 alias pd=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pd&quot;
@@ -428,7 +428,7 @@ alias pdreceive=&quot;/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceiv
 
 <p>To see which version the Pd GUI is using: set the log level to 4 &amp; look for the Tk version log line in the Pd window.</p>
 
-<p>Another option is to set the Tk Wish command Pd uses to launch the GUI. At start, Pd does a quick search in the &quot;usual places&quot; for Wish and chooses the first path that exists. Versions of macOS up to 10.12 also ship with Tcl/Tk 8.4 which works fine and this wish can be invoked by Pd using the full path &quot;/usr/bin/wish8.4&quot;. You can configure Pd to use this search path first with:</p>
+<p>Another option is to set the Tk Wish command Pd uses to launch the GUI. At start, Pd does a quick search in the &quot;usual places&quot; for Wish and chooses the first path that exists. Versions of macOS up to 10.12 also ship with Tcl/Tk 8.4 which works fine and this wish can be invoked by Pd using the full path <tt>/usr/bin/wish8.4</tt>. You can configure Pd to use this search path first with:</p>
 
 <pre>./configure --with-wish=/usr/bin/wish8.4</pre>
 
@@ -486,7 +486,7 @@ a macOS Pd-0.55-0.app:</p>
 mac/osx-app.sh --wish Wish-8.6.6.app 0.55-0
 </code></pre>
 
-<p>Both osx-app.sh &amp; tcltck-wish.sh have extensive help output using the &ndash;help
+<p>Both osx-app.sh &amp; tcltck-wish.sh have extensive help output using the <code>--help</code>
 commandline option:</p>
 
 <pre><code>mac/osx-app.sh --help
@@ -494,20 +494,20 @@ mac/tcltk-wish.sh --help
 </code></pre>
 
 <p>The osx-app.sh script automates building the Pd .app bundle and is used in the
-&ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
+<code>make app</code> makefile target. This default action can be invoked manually after
 Pd is built:</p>
 
 <pre><code>mac/osx-app.sh 0.55-0
 </code></pre>
 
-<p>This builds a &ldquo;Pd-0.55-0.app&rdquo; using the included Wish. If you omit the version
-argument, a &ldquo;Pd.app&rdquo; is built. The version argument is only used as a suffix to
+<p>This builds a <tt>Pd-0.55-0.app</tt> using the included Wish. If you omit the version
+argument, a <tt>Pd.app</tt> is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.</p>
 
 <p>A pre-built universal (32/64 bit) Tk 8.6.10+ Wish with patches applied is
 included with the Pd source distribution and works across the majority of macOS
-versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
+versions up to 10.15. This is the default Wish.app when using <code>osx-app.sh</code>. If you
 want to use a different Wish.app (a newer version, a custom build, a system
 version), you can specify the donor via commandline options, for example:</p>
 
@@ -555,7 +555,7 @@ when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
 your system, you can then see if there is a fix for this in the Tcl/Tk
 development version on GitHub. If so, then you can test by using the
-tcltk-wish.sh &ndash;git commandline option. Oftentimes, these kinds of issues will
+tcltk-wish.sh <code>--git</code> commandline option. Oftentimes, these kinds of issues will
 appear with a newer version of macOS before they have been fixed by the open
 source community.</p>
 
@@ -563,8 +563,8 @@ source community.</p>
 macOS. As such, small bugfixes from newer versions may need to be backported for
 the Pd GUI. Currently, this is handled in the tcltk-wish.sh script by applying
 custom patches to either the Tcl and/or Tk source trees. To skip applying
-patches, use the tcltk-wish.sh &ndash;no-patches commandline option. See
-mac/patches/README.txt for more info.</p>
+patches, use the tcltk-wish.sh <code>--no-patches</code> commandline option. See
+<tt>mac/patches/README.txt</tt> for more info.</p>
 
 <H4> <A href="#s6.5.2" id="s6.5.2"> 6.5.2. Supplementary macOS build scripts </A> </H4>
 
@@ -578,8 +578,8 @@ mac/patches/README.txt for more info.</p>
 directory.</p>
 
 <p>To build a 32 bit Pd, copy this &ldquo;mac&rdquo; directory
-somewhere like ~/mac. Also copy a source tarball there, such as
-pd-0.55-0.src.tar.gz. Then cd to ~/mac and type:</p>
+somewhere like <tt>~/mac</tt>. Also copy a source tarball there, such as
+pd-0.55-0.src.tar.gz. Then cd to <tt>~/mac</tt> and type:</p>
 
 <pre><code>./build-macosx 0.55-0
 </code></pre>
@@ -593,7 +593,7 @@ script:</p>
 </code></pre>
 
 <p>Note: The &ldquo;wish-shell.tgz&rdquo; is an archive of this app I found on my mac:
-/System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish Shell.app</p>
+<tt>/System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish Shell.app</tt></p>
 
 <p>A smarter version of the scripts ought to be able to find that file
 automatically on your system so I wouldn&rsquo;t have to include it here.</p>
@@ -604,8 +604,8 @@ automatically on your system so I wouldn&rsquo;t have to include it here.</p>
 using the following domains:</p>
 
 <ul>
-<li>org.puredata.pd: core settings (audio devices, search paths, etc)</li>
-<li>org.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)</li>
+<li><tt>org.puredata.pd</tt>: core settings (audio devices, search paths, etc)</li>
+<li><tt>org.puredata.pd.pd-gui</tt>: GUI settings (recent files, last opened location, etc)</li>
 </ul>
 
 <p>The files themselves live in your user home folder and use the .plist extension:</p>
@@ -615,7 +615,7 @@ using the following domains:</p>
 </code></pre>
 
 <p>These files use the Apple Property List XML format and shouldn&rsquo;t be edited
-directly. You can look inside, edit, and/or delete these using the &ldquo;defaults&rdquo;
+directly. You can look inside, edit, and/or delete these using the <code>defaults</code>
 commandline utility in Terminal:</p>
 
 <pre><code># print the contents of the core settings
@@ -631,15 +631,15 @@ defaults write org.puredata.pd -array-add flags '-lib Gem'
 <p>Some important per-application settings required by the GUI include:</p>
 
 <ul>
-<li>NSRecentDocuments: string array, list of recently opened files</li>
-<li>NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving</li>
-<li>ApplePressAndHoldEnabled: false, disables character compose popup,
+<li><tt>NSRecentDocuments</tt>: string array, list of recently opened files</li>
+<li><tt>NSQuitAlwaysKeepsWindows</tt>: false, disables default 10.7+ window state saving</li>
+<li><tt>ApplePressAndHoldEnabled</tt>: false, disables character compose popup,
                                  enables key repeat for all keys</li>
-<li>NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+</li>
+<li><tt>NSRequiresAquaSystemAppearance</tt>: true, disables dark mode for Pd GUI on 10.14+</li>
 </ul>
 
 <p>These are set in:</p>
-<pre><code>tcl/pd_guiprefs.tcl</code></pre>
+<pre><tt>tcl/pd_guiprefs.tcl</tt></pre>
 
 <H4> <A href="#s6.5.4" id="s6.5.4"> 6.5.4. Code signing </A> </H4>
 
@@ -672,7 +672,7 @@ application is run again in the future.</p>
 access to the Camera.</p>
 
 <p>The current permissions can be changed in Privacy panel in System Preferences.
-They can also be reset on the commandline using the &ldquo;tccutil&rdquo; command and the
+They can also be reset on the commandline using the <code>tccutil</code> command and the
 Pd .app bundle id:</p>
 
 <pre><code># reset Pd's Microphone privacy setting
@@ -708,7 +708,7 @@ This is good for security, but bad if you want to run Pd in lldb to figure out
 why your custom external is crashing.</p>
 
 <p>To make this work, the entitlement can be added to an existing Pd release .app
-bundle using the codesign command in Terminal (steps by Pierre Alexandre
+bundle using the <code>codesign</code> command in Terminal (steps by Pierre Alexandre
 Tremblay):</p>
 
 <ul>
@@ -756,20 +756,20 @@ Tremblay):</p>
 
 <p><a href="http://www.msys2.org/" target="_blank">http://www.msys2.org/</a></p>
 
-<p>Then install to the default location (C:32 or C:64) and follow the setup/update info on the Msys2 webpage.</p>
-<p>Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50, the Pd release is 64 bit for Windows, so it is recommended to set up and use the MinGW 64 bit shell. If you want to build a 32 bit Pd, similarly use the MinGW 32 bit shell. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the Pd configure --enable-universal build option has no effect in MinGW.</p>
+<p>Then install to the default location (<tt>C:\msys32</tt> or <tt>C:\msys64</tt>) and follow the setup/update info on the Msys2 webpage.</p>
+<p>Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50, the Pd release is 64 bit for Windows, so it is recommended to set up and use the MinGW 64 bit shell. If you want to build a 32 bit Pd, similarly use the MinGW 32 bit shell. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the Pd configure <code>--enable-universal</code> build option has no effect in MinGW.</p>
 <p>Note: Msys2 development seems to change frequently, so some of the package names below may have changed after this document was written.</p>
 <p>Open an Msys2 shell and install the compiler chain, autotools, &amp; gettext via:</p>
 
-<pre># 64 bit
-pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
-          make autoconf automake libtool \
-          mingw-w64-x86_64-gettext
 
-# 32 bit
-pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
-          make autoconf automake libtool \
-          mingw-w64-i686-gettext</pre>
+<pre>
+# The MINGW_PACKAGE_PREFIX variable is automatically set by MinGW
+# On MinGW64, it is MINGW_PACKAGE_PREFIX=mingw-w64-x86_64
+# On MinGW32, it is MINGW_PACKAGE_PREFIX=mingw-w64-i686
+pacman -S make autoconf automake libtool \
+          ${MINGW_PACKAGE_PREFIX}-toolchain ${MINGW_PACKAGE_PREFIX}-clang \
+          ${MINGW_PACKAGE_PREFIX}-gettext
+</pre>
 
 <p>Install git if you want to clone the Pd sources from Github, etc:</p>
 
@@ -788,19 +788,19 @@ pacman -S mingw-w64-i686-nsis</pre>
 <pre>pacman -S -s &lt;searchterm&gt;</pre>
 
 <p>Once the packages are installed, you should now be ready to build Pd by following the general autotools build steps.</p>
-<p>The following audio APIS are available on Windows and can be enabled/disabled via their configure flags:</p>
+<p>The following audio APIs are available on Windows and can be enabled/disabled via their configure flags:</p>
 
 <ul>
-<li>MMIO: --enable-mmio or --disable-mmio (default enabled)</li>
-<li>ASIO: --enable-asio or --disable-asio (default enabled, if found)</li>
-<li>JACK: --enable-jack or --disable-jack</li>
+<li>MMIO: <code>--enable-mmio</code> or <code>--disable-mmio</code> (default enabled)</li>
+<li>ASIO: <code>--enable-asio</code> or <code>--disable-asio</code> (default enabled, if found)</li>
+<li>JACK: <code>--enable-jack</code> or <code>--disable-jack</code></li>
 </ul>
 
 <p>For example, to build Pd without MMIO support:</p>
 
 <pre>./configure --disable-mmio</pre>
 
-<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="chapter6.htm#s6.6.4">6.6.4 Windows ASIO support </a> for further instructions.</p>
+<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="6.building.from.source.htm#s6.6.4">6.6.4 Windows ASIO support </a> for further instructions.</p>
 <p>Once built Pd is built, you can either:</p>
 
 <ul>
@@ -816,7 +816,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <p>To build a .msi Windows installer for Pd, see msw/build-nsi.sh.</p>
 
-<p>Note: The standard &quot;make install&quot; requires Tcl/Tk and won't work
+<p>Note: The standard <code>make install</code> requires Tcl/Tk and won't work
 outside your Cygwin/Msys2 environment (if at all).</p>
 
 <H4> <A href="#s6.6.1" id="s6.6.1"> 6.6.1. Building a Pd application </A> </H4>
@@ -825,28 +825,28 @@ outside your Cygwin/Msys2 environment (if at all).</p>
 application, as it is built for the &lsquo;vanilla&rsquo; releases on msp.ucsd.edu.</p>
 
 <p>As of Pd version 0.50, all releases are compiled using Dan Wilcox&rsquo;s scripts,
-msw-app.sh, and optionally tcltk-dir.sh (which builds a version of TCL/TK in
+<code>msw-app.sh</code>, and optionally <code>tcltk-dir.sh</code> (which builds a version of TCL/TK in
 case you don&rsquo;t already have one).</p>
 
 <p>The Pd sources aren&rsquo;t completely self-contained: Because of licensing
 restrictions, the ASIO support files are not included in the Pd source tree.
-The msw-app.sh script presumes you&rsquo;ve downloaded the ASIO SDK and can point
-msw-app.sh to it.</p>
+The <code>msw-app.sh</code> script presumes you&rsquo;ve downloaded the ASIO SDK and can point
+<code>msw-app.sh</code> to it.</p>
 
 <p>It&rsquo;s also possible to compile Pd using Visual C.  This is not managed
-automatically but you can look in &ldquo;how-to-use-msvc.sh&rdquo; to see how it can be
+automatically but you can look in <code>how-to-use-msvc.sh</code>; to see how it can be
 done.  This compiler gives different warnings which are sometimes useful, and
 refuses to compile code that has variable declarations in the middle of a
 block.  It&rsquo;s a good idea to test pull requests against MSVC if you can.  The
-file &ldquo;pdprototype.zip&rdquo; contains all the garbage that Pd needs in addition to its
+file <code>pdprototype.zip</code> contains all the garbage that Pd needs in addition to its
 own files, including tcl/tk.  MSVC compilation works in 32 bits only.</p>
 
-<p>The scripts build-msw-32.sh and build-msw-64.sh are the ones used by Miller to
+<p>The scripts <code>build-msw-32.sh</code> and <code>build-msw-64.sh</code> are the ones used by Miller to
 make Pd releases.  These files work on Linux only and will not work out of
 the box unless your file tree resembles Miller&rsquo;s in some ways (pd source is in
-~/pd for instance) but you can presumably make your own version if you need to.</p>
+<tt>~/pd</tt> for instance) but you can presumably make your own version if you need to.</p>
 
-<p>But to first get things working, it&rsquo;s best to use msw-app.sh and tcltk-dir.sh
+<p>But to first get things working, it&rsquo;s best to use <code>msw-app.sh</code> and <code>tcltk-dir.sh</code>
 directly.</p>
 
 <H4> <A href="#s6.6.2" id="s6.6.2"> 6.6.2. Pd application directory </A> </H4>
@@ -867,14 +867,14 @@ the compiled binaries, resource files, and contextual information.</p>
   /tcl      &lt;- Pd GUI scripts</pre>
 
 <p>The Pure Data GUI utilizes the Tk windowing shell aka &ldquo;wish##.exe&rdquo; at runtime
-which is included with Pd in the /bin directory. A Pure Data app directory
+which is included with Pd in the <tt>/bin</tt> directory. A Pure Data app directory
 includes both the Pd binaries and resources as well as a precompiled Tk.</p>
 
 <H5> <A href="#s6.6.2.1" id="s6.6.2.1"> 6.6.2.1. Windows app bundle helpers </A> </H5>
 
 <ul>
-<li>msw-app.sh: creates a Pd app directory for Windows using precompiled Tcl/Tk</li>
-<li>tcltk-dir.sh: downloads and builds Tcl/Tk for Windows</li>
+<li><code>msw-app.sh</code>: creates a Pd app directory for Windows using precompiled Tcl/Tk</li>
+<li><code>tcltk-dir.sh</code>: downloads and builds Tcl/Tk for Windows</li>
 </ul>
 
 <p>These scripts complement the autotools build system described in INSTALL.txt and
@@ -886,15 +886,15 @@ a Windows pd-0.48-1 directory:</p>
 msw/msw-app.sh --tk tcltk-8.6.8 0.48-1
 </pre>
 
-<p>Both msw-app.sh &amp; tcltck-dir.sh have extensive help output using the &ndash;help
+<p>Both <code>msw-app.sh</code> &amp; <code>tcltck-dir.sh</code> have extensive help output using the <code>--help</code>
 commandline option:</p>
 
 <pre>msw/msw-app.sh --help
 msw/tcltk-dir.sh --help
 </pre>
 
-<p>The msw-app.sh script automates building the Pd app directory and is used in the
-&ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
+<p>The <code>msw-app.sh</code> script automates building the Pd app directory and is used in the
+<code>make app</code> makefile target. This default action can be invoked manually after
 Pd is built:</p>
 
 <pre>msw/msw-app.sh 0.55-0
@@ -904,7 +904,7 @@ Pd is built:</p>
 the version argument, a &ldquo;pd&rdquo; directory is built. The version argument is only
 used as a suffix to the directory name.</p>
 
-<p>The &ldquo;msw/pdprototype.tgz&rdquo; archive contains the basic requirements for running Pd
+<p>The <tt>msw/pdprototype.tgz</tt> archive contains the basic requirements for running Pd
 on Windows: a precompiled copy of Tcl/Tk and various .dll library files. This is
 the default Tcl/Tk when using msw-app.</p>
 
@@ -951,11 +951,11 @@ can be reused when (re)making the Pd app directory.</p>
 when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources, you can then see if there is a fix for
 this in the Tcl/Tk development version on GitHub. If so, then you can test by
-using the tcltk-dir.sh &ndash;git commandline option.</p>
+using the tcltk-dir.sh <code>--git</code> commandline option.</p>
 
 <p>The tcltk-dir.sh script tries to detect if it&rsquo;s building in a 64 bit
 environment, ie. MinGW 64. If this detection fails, you can force 64 bit with
-the &ndash;64bit option:</p>
+the <code>--64bit</code> option:</p>
 
 <pre># force 64 bit Tcl/Tk 8.6.8 build
 tcltk-dir.sh --64bit 8.6.8
@@ -997,9 +997,9 @@ redistribute their source files.</p>
 sudo apt-get install mingw-w64 mingw-w64-tools
 sudo apt-get install nsis</pre>
 
-<p>The &quot;mingw-w64&quot; package will install the cross compilation toolchains for both 32bit (g++-mingw-w64-i686, binutils-mingw-w64-i686) and 64bit (g++-mingw-w64-x86-64, binutils-mingw-w64-x86-64).</p>
+<p>The &quot;mingw-w64&quot; package will install the cross compilation toolchains for both 32bit (<code>g++-mingw-w64-i686</code>, <code>binutils-mingw-w64-i686</code>) and 64bit (<code>g++-mingw-w64-x86-64</code>, <code>binutils-mingw-w64-x86-64</code>).</p>
 <p>The &quot;nsis&quot; package is purely optional, and only needed if you want to build the installer.</p>
-<p>You must tell configure that you want to cross-compile for a given architecture via the &quot;--host&quot; configure flag.</p>
+<p>You must tell configure that you want to cross-compile for a given architecture via the <code>--host</code> configure flag.</p>
 <p>For example, to build a 32 bit Pd:</p>
 
 <pre>./configure --host=i686-w64-mingw32</pre>
@@ -1017,10 +1017,10 @@ sudo apt-get install nsis</pre>
 <p>Alternatively, and often more simply, to the autotools build, you can use the fallback makefiles in the src directory:</p>
 
 <ul>
-<li>src/makefile.gnu: GNU/Linux</li>
-<li>src/makefile.mac: macOS</li>
-<li>src/makefile.msvc: Windows with Microsoft Visual C</li>
-<li>src/makefile.mingw: Windows with MinGW GCC</li>
+<li><tt>src/makefile.gnu</tt>: GNU/Linux</li>
+<li><tt>src/makefile.mac</tt>: macOS</li>
+<li><tt>src/makefile.msvc</tt>: Windows with Microsoft Visual C</li>
+<li><tt>src/makefile.mingw</tt>: Windows with MinGW GCC</li>
 </ul>
 
 <p>On Linux, for example, run the GNU-specific makefile in the src directory:</p>
@@ -1044,7 +1044,7 @@ cd ../choice &amp;&amp; make pd_nt
 cd ../fiddle~ &amp;&amp; make pd_nt
 ...</pre>
 
-<p>To install Pd to your system on Linux, macOS, &amp; MinGW (Windows), use the &quot;install&quot; makefile target. For Linux, this is:</p>
+<p>To install Pd to your system on Linux, macOS, &amp; MinGW (Windows), use the <code>install</code> makefile target. For Linux, this is:</p>
 
 <pre>make -f makefile.gnu install</pre>
 
@@ -1052,12 +1052,12 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <pre>pd</pre>
 
-<p>If want to uninstall, simply run the &quot;uninstall&quot; makefile target:</p>
+<p>If want to uninstall, simply run the <code>uninstall</code> makefile target:</p>
 
 <pre>make -f makefile.gnu uninstall</pre>
 
 <p>On macOS, you can build a clickable Pd .app bundle using the supplemental build
-scripts in the mac directory (see <a href="chapter6.htm#s6.5.1">6.5.1 macOS resources</a>
+scripts in the mac directory (see <a href="6.building.from.source.htm#s6.5.1">6.5.1 macOS resources</a>
 for more info).</p>
 
 
@@ -1066,7 +1066,7 @@ for more info).</p>
 <p>Let us know if you run any issues with building or installing Pd:</p>
 
 <ul>
-<li>send an email to the Pd-List: <a href="https://lists.puredata.info/listinfo/pd-list" target="_blank">https://lists.puredata.info/listinfo/pd-list</a></li>
+<li>send an email to the Pd-List: <a href="https://lists.iem.at/postorius/lists/pd-list.lists.iem.at/" target="_blank">https://lists.iem.at/postorius/lists/pd-list.lists.iem.at/</a></li>
 <li>open an issue: <a href="https://github.com/pure-data/pure-data/issues" target="_blank">https://github.com/pure-data/pure-data/issues</a></li>
 <li>post to the Pd forum: <a href="https://forum.pdpatchrepo.info" target="_blank">https://forum.pdpatchrepo.info</a></li>
 </ul>
@@ -1081,8 +1081,8 @@ for more info).</p>
 
 </div>
 <div class="nav nav-bottom">
-    <div class="nav-back"><A href="chapter5.htm">&lt; Chapter 5: Current status</A></div>
-    <div class="nav-home"><A href="../index.htm#s6">Table of contents</A></div>
+    <div class="nav-back"><A href="5.current.status.htm">&lt; Chapter 5: Current status</A></div>
+    <div class="nav-home"><A href="index.htm#s6">Table of contents</A></div>
     <div class="nav-forward"></div>
 </div>
 
