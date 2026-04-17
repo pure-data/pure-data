@@ -2338,8 +2338,12 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        canvas_vis(glist, 0);
-        canvas_vis(glist, 1);
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+            glist,
+            (int)THISGUI->i_backgroundcolor,
+            (int)THISGUI->i_foregroundcolor);
+        glist_clearrtexts(glist);
+        canvas_redraw((t_canvas *)glist);
     }
     for (g = glist->gl_list; g; g = g->g_next)
         if (g->g_pd == canvas_class)
