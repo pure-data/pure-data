@@ -777,25 +777,17 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
         oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
-    if(IS_A_SYMBOL(argv,7))
-        srl[0] = atom_getsymbolarg(7, argc, argv);
-    else if(IS_A_FLOAT(argv,7))
-    {
-        srl[0] = gensym("empty");
-    }
-    if(IS_A_SYMBOL(argv,8))
-        srl[1] = atom_getsymbolarg(8, argc, argv);
-    else if(IS_A_FLOAT(argv,8))
-    {
-        srl[1] = gensym("empty");
-    }
-    if(IS_A_SYMBOL(argv,9))
+    srl[0] = (argc > 7 && IS_A_SYMBOL(argv,7)) ? atom_getsymbolarg(7, argc, argv) : gensym("empty");
+    srl[1] = (argc > 8 && IS_A_SYMBOL(argv,8)) ? atom_getsymbolarg(8, argc, argv) : gensym("empty");
+    if(argc > 9 && IS_A_SYMBOL(argv,9))
         srl[2] = atom_getsymbolarg(9, argc, argv);
-    else if(IS_A_FLOAT(argv,9))
+    else if(argc > 9 && IS_A_FLOAT(argv,9))
     {
         sprintf(str, "%g", atom_getfloatarg(9, argc, argv));
         srl[2] = gensym(str);
     }
+    else
+        srl[2] = gensym("empty");
     if(init != 0) init = 1;
     iemgui->x_isa.x_loadinit = init;
     for(i=0; i<3; i++)
