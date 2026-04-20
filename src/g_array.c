@@ -737,6 +737,8 @@ static void garray_delete(t_gobj *z, t_glist *glist)
 static void garray_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_garray *x = (t_garray *)z;
+    if(x->x_glist && x->x_glist->gl_goprect && x->x_glist->gl_x2 == 1)
+        x->x_glist->gl_x2 = x->x_scalar->sc_vec->w_array->a_n;
     gobj_vis(&x->x_scalar->sc_gobj, glist, vis);
 }
 
