@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-04-17 17:36+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/nl/>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1022,11 +1022,18 @@ msgstr "Installeer"
 msgid "%s%% of download completed"
 msgstr "%s%% van download voltooid"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Voer een exacte bibliotheek- of objectnaam in."
 
 msgid "e.g. 'freeverb~'"
 msgstr "bijv. 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1074,6 +1081,9 @@ msgstr "beide"
 msgid "translations"
 msgstr "vertalingen"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installeer alleen externals geüpload door mensen die je vertrouwt."
 
@@ -1100,6 +1110,10 @@ msgstr "Zoekresultaten"
 
 msgid "Log"
 msgstr "Logboek"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Zoeken naar \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."

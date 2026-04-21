@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-04-17 17:36+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1053,10 +1053,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1102,6 +1108,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1129,6 +1138,10 @@ msgstr "Αναζήτηση σε"
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Απόρριψη αλλαγών σε '%s';"
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
