@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-04-17 17:36+0200\n"
-"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"PO-Revision-Date: 2026-04-23 20:12+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -1025,7 +1025,6 @@ msgstr "Instalar"
 msgid "%s%% of download completed"
 msgstr "%s%% de la descarga completada"
 
-#, fuzzy
 msgid "Enter a library or object name."
 msgstr "Ingrese un nombre exacto de librería u objeto."
 
@@ -1034,9 +1033,13 @@ msgstr "p.ej. 'freeverb~'"
 
 msgid "By default this will find anything that contains the search word(s)."
 msgstr ""
+"Por defecto, esto encontrará cualquier cosa que contenga la(s) palabra(s) de "
+"búsqueda."
 
 msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
+"Si habilitas el modo de 'búsqueda exacta', solo se consideran coincidencias "
+"exactas."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use el comodín '*' para coincidir cualquier número de caracteres."
@@ -1083,7 +1086,7 @@ msgid "translations"
 msgstr "traducciones"
 
 msgid "exact search"
-msgstr ""
+msgstr "búsqueda exacta"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr "Solo instale externos subidos por gente en la que tu confías."
@@ -1112,9 +1115,8 @@ msgstr "Resultados de búsqueda"
 msgid "Log"
 msgstr "Log"
 
-#, fuzzy
 msgid "Searching for all packages..."
-msgstr "Buscando '%s' ..."
+msgstr "Buscando todos los paquetes..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
