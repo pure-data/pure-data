@@ -1,4 +1,4 @@
-#N canvas 233 56 948 577 12;
+#N canvas 331 72 948 577 12;
 #X declare -stdpath ./;
 #X text 750 224 creation argument: name of delay line, f 18;
 #X obj 44 65 delread4~;
@@ -83,7 +83,7 @@
 #X obj 518 269 block~;
 #X text 113 280 <-- set all samples of delay line to zero.;
 #X text 750 295 [delread4~] ('vd' for 'variable delay'), f 21;
-#N canvas 136 126 450 300 Execution-order 0;
+#N canvas 927 170 450 300 Execution-order 0;
 #X obj 98 132 ../3.audio.examples/G05.execution.order;
 #X text 39 46 In case [delwrite~] runs later in the DSP loop than the [delread~] or [delread4~] objects \, the delay is constrained below by one vector length (usually 64 samples.) Open the file below as an example on how to control this to obtain very short delays., f 51;
 #X text 59 165 See also other examples in the "G" section for more fun with delays \, such as feedback delays., f 46;
