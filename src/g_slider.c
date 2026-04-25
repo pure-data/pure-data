@@ -514,6 +514,8 @@ static void slider_set(t_slider *x, t_floatarg f)
 {
     int old = x->x_val;
     double g;
+    if (f == x->x_fval)
+        return;
     if (PD_BADFLOAT(f))
         f = 0;
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-04-17 17:36+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1010,11 +1010,18 @@ msgstr "התקנה"
 msgid "%s%% of download completed"
 msgstr "%s%% מההורדה הושלמו"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "נא למלא את השם המדויק של הספרייה או העצם."
 
 msgid "e.g. 'freeverb~'"
 msgstr "למשל: ‚freeverb~‎’"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "אפשר להשתמש בתו הכוללני ‚*’ כדי לתפוס מספר כלשהו של תווים."
@@ -1058,6 +1065,9 @@ msgstr "שניהם"
 msgid "translations"
 msgstr "תרגומים"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "רצוי להתקין חיצוניות רק מאנשים מהימנים."
 
@@ -1084,6 +1094,10 @@ msgstr "תוצאות חיפוש"
 
 msgid "Log"
 msgstr "יומן"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "מתבצע חיפוש אחר „%s”…"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."

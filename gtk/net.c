@@ -188,7 +188,7 @@ int socket_startpd(int argc, char **argv)
 
         execv(pdargs[0], pdargs);
         perror("pd: exec");
-        fprintf(stderr, "can't start pd executable\n");
+        fprintf(stderr, "can't start pd executable: '%s'\n", pdargs[0]);
         _exit(1);
    }
 #else /* NOT _WIN32 */
