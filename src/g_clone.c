@@ -93,9 +93,9 @@ static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
     int phase = x->i_owner->x_phase;
     if (phase < 0 || phase >= x->i_owner->x_n)
         phase = 0;
-    if (argc <= 0 || !x->i_owner->x_nin)
+    if (!x->i_owner->x_nin)
         return;
-    if (argv->a_type == A_SYMBOL)
+    if (argc > 0 && argv->a_type == A_SYMBOL)
         obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
             argv[0].a_w.w_symbol, argc-1, argv+1);
     else obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
