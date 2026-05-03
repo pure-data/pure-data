@@ -308,6 +308,10 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
+    if(num < 1)
+        num = 1;
+    if(num > IEM_RADIO_MAX)
+        num = IEM_RADIO_MAX;
     if (num != x->x_number && glist_isvisible(x->x_gui.x_glist))
     {
         /* we need to recreate the buttons */
