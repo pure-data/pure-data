@@ -829,10 +829,11 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         if (x->x_f1 < 0)    /* negative start field for whole line */
         {
                 /* tell us what terminated the line (semi or comma) */
-            outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
+            int iscomma = (end < n && vec[end].a_type == A_COMMA);
             ALLOCA(t_atom, outv, outc, TEXT_NGETBYTE);
             for (k = 0; k < outc; k++)
                 outv[k] = vec[start+k];
+            outlet_float(x->x_out2, iscomma);
             outlet_list(x->x_out1, 0, outc, outv);
             FREEA(t_atom, outv, outc, TEXT_NGETBYTE);
         }
