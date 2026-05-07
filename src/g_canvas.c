@@ -1951,6 +1951,10 @@ int canvas_open(const t_canvas *x, const char *name, const char *ext,
 
     canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
 
+    if (co.fd < 0) {
+        co.fd = sys_trytoopenit("", name, ext, dirresult, nameresult, size, bin, 1);
+    }
+
     return (co.fd);
 }
 
