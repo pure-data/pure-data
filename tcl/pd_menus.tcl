@@ -259,6 +259,8 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window graph}
     $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window menuarray}
+    $mymenu add command -label [_ "Matrix"]   -accelerator "Shift+$accelerator+X" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window radio}
 }
 
 proc ::pd_menus::build_find_menu {mymenu {patchwindow true}} {

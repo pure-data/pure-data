@@ -331,6 +331,11 @@ void canvas_vradio(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     canvas_iemguis(gl, gensym("vradio"));
 }
 
+void canvas_radio(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
+{
+    canvas_iemguis(gl, gensym("radio"));
+}
+
 void canvas_vumeter(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 {
     canvas_iemguis(gl, gensym("vu"));

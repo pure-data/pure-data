@@ -217,11 +217,17 @@ typedef struct _radio
     int      x_on;
     int      x_on_old;  /* LATER delete this; it's used for old version */
     int      x_change;
-    int      x_number;
-    int      x_drawn;
+    int      x_number[2];
+    int      *x_matrix;
+    int      *x_matrix_idx; /* indices of the values in x_matrix */
+    int      *x_on_idx; /* indices of the on indices */
     t_float  x_fval;
     t_iem_orientation x_orientation;
     int      x_compat; /* old version */
+    int      x_output_mode;
+    int      x_border_mode;
+    int      x_toggle_mode;
+    int      x_mode;
 } t_radio;
 
 typedef struct _toggle
@@ -350,7 +356,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        t_float range_min, t_float range_max, int range_checkmode,
                        int mode, /* lin0_log1 */
                        const char* mode_label0, const char* mode_label1,
-                       int canloadbang, int steady, int number);
+                       int canloadbang, int steady, int number, int number2, int order);
 
 
 #define __g_all_guis_h_
