@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -2132,6 +2132,10 @@ msgstr ""
 
 msgid "Properties"
 msgstr ""
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Chế độ"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

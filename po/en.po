@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2026-04-18 16:09+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -2063,6 +2063,10 @@ msgstr "Do you want to save the changes you made in '%s'?"
 
 msgid "Properties"
 msgstr "Properties"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Edit Mode"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
