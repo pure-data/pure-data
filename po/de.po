@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
-"PO-Revision-Date: 2026-04-18 16:09+0000\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2026-05-12 15:36+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "linear"
 msgstr "linear"
@@ -598,10 +598,10 @@ msgstr ""
 "zu sehen)"
 
 msgid "Use tabs"
-msgstr "Verwende Tab"
+msgstr "Tabs verwenden"
 
 msgid "Single page"
-msgstr "alles auf einer Seite"
+msgstr "Alles auf einer Seite"
 
 msgid "Patching helpers"
 msgstr "Patching-Hilfen"
@@ -2088,6 +2088,9 @@ msgstr "Änderungen in '%s' speichern?"
 
 msgid "Properties"
 msgstr "Eigenschaften"
+
+msgid "edit mode"
+msgstr "wird bearbeitet"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
