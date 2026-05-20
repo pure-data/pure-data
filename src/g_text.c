@@ -1140,7 +1140,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 gatom_fontsize(x) * glist_getzoom(glist),
                 THISGUI->i_foregroundcolor);
         }
-        else pdgui_vmess("pdtk_canvas_delete", "cr",
+        else pdgui_vmess("pdtk_canvas_delete", "cs",
             glist_getcanvas(glist), buf);
     }
 }
@@ -1707,14 +1707,14 @@ void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
     for (i = 0; i < n; i++)
     {
         sprintf(tagbuf, "%so%d", tag, i);
-        pdgui_vmess("pdtk_canvas_delete", "cr", glist_getcanvas(glist),
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
             tagbuf);
     }
     n = obj_ninlets(ob);
     for (i = 0; i < n; i++)
     {
         sprintf(tagbuf, "%si%d", tag, i);
-        pdgui_vmess("pdtk_canvas_delete", "cr", glist_getcanvas(glist),
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
             tagbuf);
     }
 }
@@ -1724,7 +1724,7 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     char tagbuf[MAXPDSTRING];
     if (x->te_type == T_TEXT && !glist->gl_edit) return;
     sprintf(tagbuf, "%sR", tag);
-    pdgui_vmess("pdtk_canvas_delete", "cr", glist_getcanvas(glist),
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
             tagbuf);
     glist_eraseiofor(glist, x, tag);
 }

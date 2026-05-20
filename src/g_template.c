@@ -2308,7 +2308,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess("pdtk_canvas_delete", "cr",
+        pdgui_vmess("pdtk_canvas_delete", "cs",
             glist_getcanvas(glist), tag);
     }
 }

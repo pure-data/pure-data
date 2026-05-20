@@ -468,7 +468,7 @@ void canvas_disconnect(t_canvas *x,
             {
                 char tag[128];
                 sprintf(tag, "l%p", oc);
-                pdgui_vmess("pdtk_canvas_delete", "cr", x, tag);
+                pdgui_vmess("pdtk_canvas_delete", "cs", x, tag);
             }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
@@ -2805,7 +2805,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #endif
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess("pdtk_canvas_delete", "cr", x, "x");
+        pdgui_vmess("pdtk_canvas_delete", "cs", x, "x");
     }
     else
         pdgui_vmess(0, "crs iiii",
@@ -3050,7 +3050,7 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess("pdtk_canvas_delete", "cr", x, "x");
+        pdgui_vmess("pdtk_canvas_delete", "cs", x, "x");
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
@@ -5038,7 +5038,7 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
             {
                 char tagR[128];
                 sprintf(tagR, "%sR", rtext_gettag(y));
-                pdgui_vmess("pdtk_canvas_delete", "cr",
+                pdgui_vmess("pdtk_canvas_delete", "cs",
                     glist_getcanvas(x), tagR);
             }
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
