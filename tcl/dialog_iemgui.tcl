@@ -191,12 +191,21 @@ proc ::dialog_iemgui::popupmenu {path varname labels {command {}}} {
 
     menubutton ${path} -menu ${path}.menu -indicatoron 1 -relief raised -text [lindex $labels $var]
     menu ${path}.menu -tearoff 0
+    set maxwidth 0
+    set font [font actual [$path.menu cget -font]]
     set idx 0
     foreach l $labels {
         $path.menu add radiobutton -label "$l" -variable $varname -value $idx
         $path.menu entryconfigure last -command "\{$path\} configure -text \{$l\}; $command"
+        set width [font measure $font ${l}]
+        if { $width > $maxwidth } {set maxwidth $width}
         incr idx
     }
+    # get an estimate on how wide the button should be,
+    # so it doesn't resize the window when selecting a different option
+    # according to https://www.tcl-lang.org/man/tcl8.5/TkCmd/text.htm
+    # the base unit of the width is the character '0'
+    $path configure -width [expr $maxwidth / [font measure $font 0]]
 }
 
 proc ::dialog_iemgui::toggle_mode {mytoplevel} {
