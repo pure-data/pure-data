@@ -104,7 +104,7 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     sprintf(tag, "%p_X2", x);
     pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
         canvas, tag, tag_object,
-        0, 1, "#000000",
+        0, 1, 0,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_LABEL", x);
