@@ -998,7 +998,7 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     char tag_object[128];
     sprintf(tag_object, "%p_", x);
 
-    //pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", canvas, tag_object, dx, dy);
+    //pdgui_vmess("pdtk_canvas_move", "cs ii", canvas, tag_object, dx, dy);
     pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
 }
 

@@ -744,7 +744,7 @@ void rtext_displace(t_rtext *x, int dx, int dy)
     x->x_ypix += dy;
     //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         //dx, dy);
-    pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", glist_getcanvas(x->x_glist),
+    pdgui_vmess("pdtk_canvas_move", "cs ii", glist_getcanvas(x->x_glist),
         x->x_tag, dx, dy);
 }
 

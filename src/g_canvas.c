@@ -820,8 +820,8 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
-            "pdtk_canvas_create_line", glist_getcanvas(x), "GOP", "-",
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x), "GOP", "-",
             0, x->gl_zoom, THISGUI->i_gopcolor,
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
@@ -1011,8 +1011,8 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "rcrr iik iiii",
-                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crr iik iiii",
+                glist_getcanvas(x), tag, "-",
                     0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
                         * x->gl_zoom, THISGUI->i_foregroundcolor,
                     t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);

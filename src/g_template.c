@@ -2056,7 +2056,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
                         glist_getcanvas(glist), tag, "-", 0,
                         color, THISGUI->i_backgroundcolor,
                         ixpix , (int) glist_ytopixels(glist, basey +
@@ -2308,7 +2308,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "r cr", "pdtk_canvas_delete",
+        pdgui_vmess("pdtk_canvas_delete", "cr",
             glist_getcanvas(glist), tag);
     }
 }
