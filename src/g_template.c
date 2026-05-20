@@ -1434,7 +1434,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
     }
 }
 
@@ -3047,7 +3047,7 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
         rtext_erase(rtext);
         rtext_free(rtext);
     }

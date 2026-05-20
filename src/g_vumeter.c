@@ -98,7 +98,7 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
 
     /* re-create outlets */
     sprintf(tag, "%p_OUT", x);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!snd_able)
     {
         sprintf(tag_n, "%p_OUT%d", x, 0);
@@ -121,7 +121,7 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_IN", x);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sprintf(tag_n, "%p_IN%d", x, 0);

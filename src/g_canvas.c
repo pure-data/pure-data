@@ -826,7 +826,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -867,7 +867,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -1044,7 +1044,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */
