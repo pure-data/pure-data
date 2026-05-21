@@ -764,7 +764,6 @@ void canvas_reflecttitle(t_canvas *x)
 {
     char namebuf[MAXPDSTRING];
     t_canvasenvironment *env = canvas_getenv(x);
-    t_float states[2];
     if (!x->gl_havewindow)
     {
         bug("canvas_reflecttitle");
@@ -776,7 +775,7 @@ void canvas_reflecttitle(t_canvas *x)
         strcpy(namebuf, " (");
         for (i = 0; i < env->ce_argc; i++)
         {
-            if (strlen(namebuf) > MAXPDSTRING/2 - 5)
+            if (strlen(namebuf) > MAXPDSTRING/2 - 10)
                 break;
             if (i != 0)
                 strcat(namebuf, " ");
@@ -786,13 +785,22 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
+#if PD_VERSION_CODE < PD_VERSION(0, 57, 0)
+        if (x->gl_edit)
+            strcat(namebuf, " [edit]");
+#endif
 
-    states[0] = x->gl_edit;
-    states[1] = x->gl_dirty;
-    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss F",
+#if PD_VERSION_CODE >= PD_VERSION(0, 57, 0)
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss ii",
         x,
         canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        sizeof(states)/sizeof(*states), states);
+        (int)(x->gl_dirty), (int)(x->gl_edit));
+#else
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        (int)(x->gl_dirty));
+#endif
 }
 
     /* mark a glist dirty or clean */
