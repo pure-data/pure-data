@@ -70,13 +70,13 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
     sprintf(tag_object, "%p_", x);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
         canvas, tag, tag_object, 1,
         THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_BUT", x);
-    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_oval",
+    pdgui_vmess("pdtk_canvas_create_oval", "crri kk iiii",
         canvas, tag, tag_object, 1,
         THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
         0, 0, 0, 0);

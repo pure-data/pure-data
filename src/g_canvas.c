@@ -828,13 +828,13 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
-            "pdtk_canvas_create_line", glist_getcanvas(x), "GOP", "-",
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x), "GOP", "-",
             0, x->gl_zoom, THISGUI->i_gopcolor,
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -875,7 +875,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -1019,8 +1019,8 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "rcrr iik iiii",
-                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crr iik iiii",
+                glist_getcanvas(x), tag, "-",
                     0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
                         * x->gl_zoom, THISGUI->i_foregroundcolor,
                     t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
@@ -1052,7 +1052,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */

@@ -735,7 +735,7 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x->x_glist), x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
@@ -744,7 +744,7 @@ void rtext_displace(t_rtext *x, int dx, int dy)
     x->x_ypix += dy;
     //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         //dx, dy);
-    pdgui_vmess(0, "rcs ii", "pdtk_canvas_move", glist_getcanvas(x->x_glist),
+    pdgui_vmess("pdtk_canvas_move", "cs ii", glist_getcanvas(x->x_glist),
         x->x_tag, dx, dy);
 }
 

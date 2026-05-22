@@ -403,7 +403,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
                   "-fill", THISGUI->i_selectcolor,
                   "-tags", tag);
     } else {
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
     }
 }
 
@@ -498,7 +498,7 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
                       "-tags", tag);
         }
         else
-            pdgui_vmess(0, "crs", glist_getcanvas(owner), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(owner), tag);
         return;
     }
 

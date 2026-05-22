@@ -52,7 +52,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     sprintf(tag_but, "%p_BUT", x);
 
     sprintf(tag, "%p_OUT%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
@@ -68,7 +68,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_IN%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
