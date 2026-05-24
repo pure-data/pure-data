@@ -480,21 +480,12 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
-                                              path name arguments states} {
+                                              path name arguments dirty \
+                                              {editmode 0}} {
     set path [::pdtk_text::unescape $path]
     set name [::pdtk_text::unescape $name]
     set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
-
-    set editmode 0
-    set dirty 0
-
-    if {[llength $states] == 1 } {
-        set dirty $states
-    } else {
-        set editmode [lindex $states 0]
-        set dirty [lindex $states 1]
-    }
 
     set dirtychar {}
     if {$dirty} {
@@ -509,7 +500,6 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
     if {$editstr ne {} } {
         set editstr " \[[join $editstr {, }]\]"
     }
-
 
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"

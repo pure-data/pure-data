@@ -706,6 +706,7 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
     for (i = 0; i < ntemplates; i++)
     {
         t_template *template = template_findbyname(templatevec[i]);
+        t_binbuf *bb;
         int j, m;
         if (!template)
         {
@@ -713,13 +714,16 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
             continue;
         }
 
-        t_binbuf *bb = template_get_creation_binbuf(template);
-        if (bb)
+        if ((bb = template_get_creation_binbuf(template)))
         {
             binbuf_addv(b, "s", &s__N);
             binbuf_addbinbuf(b, bb);
             binbuf_addsemi(b);
-        } else bug("canvas_savetemplatesto template_get_creation_binbuf");
+        }
+            /* bb can be zero in case the datum asking for it is in an
+            abstraction - so we warn but don't cry 'bug' here: */
+        else post("warning: data uses template '%s' which could not be found",
+            templatevec[i]->s_name);
     }
     freebytes(templatevec, ntemplates * sizeof(*templatevec));
 }

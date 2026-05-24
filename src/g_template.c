@@ -1434,7 +1434,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
     }
 }
 
@@ -2056,7 +2056,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
                         glist_getcanvas(glist), tag, "-", 0,
                         color, THISGUI->i_backgroundcolor,
                         ixpix , (int) glist_ytopixels(glist, basey +
@@ -2308,7 +2308,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "r cr", "pdtk_canvas_delete",
+        pdgui_vmess("pdtk_canvas_delete", "cs",
             glist_getcanvas(glist), tag);
     }
 }
@@ -3047,7 +3047,7 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
         rtext_erase(rtext);
         rtext_free(rtext);
     }

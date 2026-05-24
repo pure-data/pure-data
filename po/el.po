@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -2104,6 +2104,10 @@ msgstr "Αποθήκευση αλλαγών που έγιναν στο '%s';"
 
 msgid "Properties"
 msgstr "Ιδιότητες"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Κατάσταση Επεξεργασίας"
 
 #, fuzzy, tcl-format
 msgid "Accept changes to '%s'?"

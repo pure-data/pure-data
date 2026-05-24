@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.55.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2025-06-16 02:48+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -2070,6 +2070,10 @@ msgstr "'%s' இல் நீங்கள் செய்த மாற்றங�
 
 msgid "Properties"
 msgstr "பண்புகள்"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "திருத்து பயன்முறை"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

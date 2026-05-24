@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-04-17 17:36+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2004-03-12 22:22+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
@@ -2131,6 +2131,10 @@ msgstr ""
 
 msgid "Properties"
 msgstr ""
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Təfərruatlar"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
