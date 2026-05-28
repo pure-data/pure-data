@@ -34,8 +34,10 @@ char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." \
 stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) "\
  (" stringify(PD_TEST_VERSION) ")";
 
+#ifdef COMPILEDATE
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
+#endif
 
 void pd_init(void);
 void pd_term(void);
@@ -409,8 +411,10 @@ int sys_main(int argc, const char **argv)
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
+#ifdef COMPILEDATE
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
         pd_version, pd_compiletime, pd_compiledate);
+#endif
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
