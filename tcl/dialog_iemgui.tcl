@@ -510,7 +510,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
-    pack $mytoplevel.para -side top -fill x -pady 5
+    pack $mytoplevel.para -side top -fill x -pady 5 -ipadx 5
 
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $label_number]
@@ -530,12 +530,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             "$togglecmd; $applycmd"
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10
     }
-    if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
-        ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
-            ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
-            $applycmd
-        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
-    }
     if {$::dialog_iemgui::var_number($vid) > 0} {
         pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
     }
@@ -544,6 +538,12 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             ::dialog_iemgui::var_steady($vid) [list [_ "Jump on click"] [_ "Steady on click"] ] \
             $applycmd
         pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10
+    }
+    if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
+        ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
+            ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
+            $applycmd
+        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
     }
 
     # messages
