@@ -61,6 +61,60 @@ static sys_ringbuf jack_outring;
 static char *jack_inbuf;
 static sys_ringbuf jack_inring;
 
+
+static char* escape_literal_regex(const char*input, char*output, size_t outsize, int extended)
+{
+    char*out = output;
+    size_t remain = outsize;
+    if (!input || !output || outsize == 0) return NULL;
+
+
+    for(;;) { /* start at 2, to ensure space for escaping and trailing \0 */
+        int needs_escape = 0;
+        const char c = *input++;
+
+        if(extended) {
+                /* POSIX extended regular expressions */
+            switch(c) {
+            case '.':
+            case '^': case '$':
+            case '*': case '+': case '?':
+            case '(': case ')':
+            case '[':
+            case '{': case '}':
+            case '\\':
+            case '|':
+                needs_escape = 1;
+                break;
+            }
+        } else {
+                /* POSIX basic regular expressions */
+            switch(c) {
+            case '.':
+            case '^': case '$':
+            case '*':
+            case '[':
+            case '\\':
+                needs_escape = 1;
+                break;
+            }
+        }
+        if(needs_escape) {
+            if (remain <= 2) return NULL;
+            *out++ = '\\';
+            remain--;
+        }
+
+        if (remain <= 1) return NULL;       /* need room for c (and final NUL) */
+        *out++ = c;
+        remain--;
+
+        if(!c)return output;
+    }
+        /* output buffer is too small */
+    return 0;
+}
+
     /* callback routine for non-callback client... throw samples into
         and read them out of a FIFO.  Since we don't know at compile time
         how many samples jack will treat us to, we interleave them in the
@@ -366,13 +420,13 @@ static const char **jack_get_clients(void)
 
 static int jack_connect_ports(const char* source, const char* sink)
 {
-    char  regex_pattern[1000]; /* its always the same, ... */
+    char  regex_pattern[MAXPDSTRING+4]; /* its always the same, ... */
     int i;
     const char **jack_ports;
     int ret = -1;
 
-    if (source && strlen(source) <= 996) {
-        sprintf(regex_pattern, "%s:.*", source);
+    if (escape_literal_regex(source, regex_pattern, sizeof(regex_pattern)-4, 1)) {
+        strncat(regex_pattern, ":.*", 4);
 
         jack_ports = jack_get_ports(jack_client, regex_pattern,
                                     NULL, JackPortIsOutput);
@@ -388,8 +442,8 @@ static int jack_connect_ports(const char* source, const char* sink)
             free(jack_ports);
         }
     }
-    if (sink && strlen(sink) <= 996) {
-        sprintf(regex_pattern, "%s:.*", sink);
+    if (escape_literal_regex(sink, regex_pattern, sizeof(regex_pattern)-4, 1)) {
+        strncat(regex_pattern, ":.*", 4);
 
         jack_ports = jack_get_ports(jack_client, regex_pattern,
                                     NULL, JackPortIsInput);
