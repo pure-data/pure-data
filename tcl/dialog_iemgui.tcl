@@ -530,6 +530,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             "$togglecmd; $applycmd"
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10
     }
+
+    # dummy translation call to avoid shuffling of lines in the .po files
+    if {0} {list [_ "No init"] [_ "Init"] }
+
     if {$::dialog_iemgui::var_number($vid) > 0} {
         pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
     }
