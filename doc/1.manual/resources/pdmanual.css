@@ -151,8 +151,8 @@ KBD {
 /* standard link */
 
 a:link {
-    text-decoration: none;
-    color: #006699;
+    text-decoration: underline;
+    color: #002299;
 }
 
 a:visited {
