@@ -150,9 +150,9 @@ typedef struct _audiosettings
 #if defined(_WIN32)
 #define DEFAULTADVANCE 80
 #elif defined(__APPLE__)
-#define DEFAULTADVANCE 5    /* this is in addition to their own delay */
+#define DEFAULTADVANCE 10
 #else
-#define DEFAULTADVANCE 25
+#define DEFAULTADVANCE 20
 #endif
 
 typedef void (*t_audiocallback)(void);
