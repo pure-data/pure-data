@@ -51,9 +51,11 @@ struct _instancetemplate
 {
     int curve_motion_vertex;
     t_float curve_motion_xcumulative;
+    t_float curve_motion_xfrac;  /* fractional remainder for whole-object drag */
     t_float curve_motion_xbase;
     t_float curve_motion_xper;
     t_float curve_motion_ycumulative;
+    t_float curve_motion_yfrac;
     t_float curve_motion_ybase;
     t_float curve_motion_yper;
     t_glist *curve_motion_glist;
@@ -1455,8 +1457,19 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     }
     if (THISTMPL->curve_motion_vertex < 0)   /* drag the whole object */
     {
-        gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
-            THISTMPL->curve_motion_glist, dx, dy);
+        t_glist *glist = THISTMPL->curve_motion_glist;
+        t_float zoom = (t_float)glist_getzoom(glist);
+        int idtx, idty;
+            /* accumulate fractional parts (while displace API expects ints) */
+        THISTMPL->curve_motion_xfrac += dx / zoom;
+        THISTMPL->curve_motion_yfrac += dy / zoom;
+        idtx = (int)THISTMPL->curve_motion_xfrac;
+        idty = (int)THISTMPL->curve_motion_yfrac;
+        THISTMPL->curve_motion_xfrac -= idtx;
+        THISTMPL->curve_motion_yfrac -= idty;
+        if (idtx || idty)
+            gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
+                glist, idtx, idty);
         return;
     }
     f = x->x_vec + THISTMPL->curve_motion_vertex;
@@ -1565,6 +1578,8 @@ static int curve_click(t_gobj *z, t_glist *glist,
             - glist_pixelstoy(glist, 0);
         THISTMPL->curve_motion_xcumulative = 0;
         THISTMPL->curve_motion_ycumulative = 0;
+        THISTMPL->curve_motion_xfrac = 0;
+        THISTMPL->curve_motion_yfrac = 0;
         THISTMPL->curve_motion_glist = glist;
         THISTMPL->curve_motion_scalar = sc;
         THISTMPL->curve_motion_array = ap;
