@@ -2,7 +2,6 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 /* The "file" object. */
-#define _XOPEN_SOURCE 600
 #define _DEFAULT_SOURCE
 
 #include "m_pd.h"
