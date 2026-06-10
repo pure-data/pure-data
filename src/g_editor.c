@@ -1744,7 +1744,9 @@ static const char *cursorlist[] = {
     "$cursor_editmode_nothing",
     "$cursor_editmode_connect",
     "$cursor_editmode_disconnect",
-    "$cursor_editmode_resize"
+    "$cursor_editmode_resize",
+    "$cursor_editmode_resize_free",
+    "$cursor_editmode_resize_square"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)
@@ -2326,6 +2328,20 @@ static void canvas_rightclick(t_canvas *x, int xpos, int ypos, int mod)
         x,  xpos, ypos,  canprop, canopen);
 }
 
+    /* check if the object is an iemgui with a resizefn for widget behavior */
+static int is_resizable_iemgui(t_object *x)
+{
+    return (
+        x->te_pd->c_wb == &slider_widgetbehavior ||
+        x->te_pd->c_wb == &bng_widgetbehavior ||
+        x->te_pd->c_wb == &my_numbox_widgetbehavior ||
+        x->te_pd->c_wb == &radio_widgetbehavior ||
+        x->te_pd->c_wb == &toggle_widgetbehavior ||
+        x->te_pd->c_wb == &my_canvas_widgetbehavior ||
+        x->te_pd->c_wb == &vu_widgetbehavior
+    );
+}
+
     /* mouse click or, if !doit, mouse motion (in which case we still search
     through the canvas to show the appropriate cursor) */
 static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
@@ -2509,6 +2525,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 /* resize? only for "true" text boxes or canvases */
             if (xpix >= x2-4 && ypix < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
+                    is_resizable_iemgui(hitobj) ||
                     hitobj->te_type == T_ATOM ||
                     pd_checkglist(&hitobj->te_pd)))
             {
@@ -3424,6 +3441,12 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
                 x->gl_editor->e_ynew = ypos;
                 canvas_fixlinesfor(x, ob);
                 gobj_vis(y1, x, 1);
+            }
+            else if (is_resizable_iemgui(ob))
+            {
+                /* an iemgui with a resizefn for widgetbehavior */
+                int wantheight = ypos - y11;
+                (*ob->te_pd->c_wb->w_resizefn)(y1, x, wantwidth, wantheight, mod);
             }
             else post("not resizable");
         }

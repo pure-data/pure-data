@@ -316,6 +316,8 @@ typedef void (*t_visfn)(t_gobj *x, struct _glist *glist, int flag);
         /* field a mouse click (when not in "edit" mode) */
 typedef int (*t_clickfn)(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
+        /* and this to resize a gobj: */
+typedef void (*t_resizefn)(t_gobj *x, struct _glist *glist, int dx, int dy, int mod);
         /* ... and later, resizing; getting/setting font or color... */
 
 struct _widgetbehavior
@@ -327,6 +329,7 @@ struct _widgetbehavior
     t_deletefn w_deletefn;
     t_visfn w_visfn;
     t_clickfn w_clickfn;
+    t_resizefn w_resizefn;
 };
 
 /* -------- behaviors for scalars defined by objects in template --------- */
@@ -383,6 +386,8 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_CONNECT 5
 #define CURSOR_EDITMODE_DISCONNECT 6
 #define CURSOR_EDITMODE_RESIZE 7
+#define CURSOR_EDITMODE_RESIZE_FREE 8
+#define CURSOR_EDITMODE_RESIZE_SQUARE 9
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
 extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */
@@ -468,6 +473,13 @@ EXTERN void text_eraseborder(t_text *x, t_glist *glist, const char *tag);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
 extern const t_widgetbehavior text_widgetbehavior;
+extern t_widgetbehavior slider_widgetbehavior;
+extern t_widgetbehavior bng_widgetbehavior;
+extern t_widgetbehavior my_numbox_widgetbehavior;
+extern t_widgetbehavior radio_widgetbehavior;
+extern t_widgetbehavior toggle_widgetbehavior;
+extern t_widgetbehavior my_canvas_widgetbehavior;
+extern t_widgetbehavior vu_widgetbehavior;
 
 /* -------------------- functions on rtexts ------------------------- */
 #define RTEXT_DOWN 1
