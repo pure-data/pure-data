@@ -336,6 +336,18 @@ static void vline_tilde_float(t_vline *x, t_float f)
         vline_tilde_stop(x);
         return;
     }
+        /* drain past segments to prevent unbounded queue growth when messages
+        arrive metronomically while DSP is off. */
+    while ((s1 = x->x_list) && s1->s_targettime <= timenow)
+    {
+        x->x_value = x->x_target = s1->s_target;
+        x->x_targettime = 1e20;
+        x->x_inc = 0;
+        x->x_list = s1->s_next;
+        t_freebytes(s1, sizeof(*s1));
+    }
+    if (!x->x_list)
+        x->x_list_tail = 0;
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
         /* check if we append after the last segment.  We append when the new
         segment has a later starttime, or an equal starttime if the last was
