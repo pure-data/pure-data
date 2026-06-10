@@ -680,6 +680,8 @@ EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
 EXTERN int drawtext_gettype(t_gobj *z, t_template *pdtemplate, int *onsetp);
 EXTERN t_template *drawtext_gettemplate(t_gobj *z);
+EXTERN int drawtext_interaction_disabled(t_gobj *z, t_glist *glist);
+EXTERN int drawtext_noselection(t_gobj *z);
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
 EXTERN t_guiconnect *guiconnect_new(t_pd *who, t_symbol *sym);

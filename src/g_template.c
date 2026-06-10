@@ -1000,6 +1000,7 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 #define NOMOUSEEDIT 8 /* same in edit mode */
 #define NOVERTICES 16 /* disable only vertex grabbing in run mode */
 #define DRAGGABLE 32  /* can use to drag entire scalar around */
+#define NOMOUSETEXT 64 /* for drawtext: disable text selection via mouse */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -2783,6 +2784,7 @@ typedef struct _drawtext
     t_symbol *x_label;
     t_canvas *x_canvas;
     t_template *x_template; /* saved for drawtext_gettext called from rtext */
+    int x_flags;  /* NOMOUSERUN, NOMOUSEEDIT, NOMOUSETEXT */
 } t_drawtext;
 
 static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
@@ -2791,26 +2793,42 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
-    while (1)
+    x->x_flags = 0;
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
         t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
         if (!strcmp(firstarg->s_name, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
-            argc -= 2; argv += 2;
+            argc -= 1; argv += 1;
         }
         else if (!strcmp(firstarg->s_name, "-n"))
-        {
             fielddesc_setfloat_const(&x->x_vis, 0);
-            argc--; argv++;
-        }
-        else if (*firstarg->s_name == '-')
+        else if (!strcmp(firstarg->s_name, "-x"))
         {
+            /* disable all mouse interaction */
+            x->x_flags |= (NOMOUSERUN | NOMOUSEEDIT);
+        }
+        else if (!strcmp(firstarg->s_name, "-xr"))
+        {
+            /* disable mouse actions in run mode */
+            x->x_flags |= NOMOUSERUN;
+        }
+        else if (!strcmp(firstarg->s_name, "-xe"))
+        {
+            /* disable mouse actions in edit mode */
+            x->x_flags |= NOMOUSEEDIT;
+        }
+        else if (!strcmp(firstarg->s_name, "-xt"))
+        {
+            /* disable text selection and editing (double-click activation) */
+            x->x_flags |= NOMOUSETEXT;
+        }
+        else
             pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
                 firstarg->s_name);
-            argc--; argv++;
-        }
-        else break;
+        argc--; argv++;
     }
         /* next argument is name of field to draw - we don't know its type yet
         but fielddesc_setfloatarg() will do fine here. */
@@ -2948,6 +2966,28 @@ int drawtext_isvisible(t_gobj *z, t_word *words)
     return ((fielddesc_getfloat(&x->x_vis, template, words, 0) != 0));
 }
 
+    /* return 1 if mouse interaction should be disabled for this drawtext
+        (due to -x, -xe, or -xr flags) */
+int drawtext_interaction_disabled(t_gobj *z, t_glist *glist)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    if (!(x->x_flags & (NOMOUSERUN | NOMOUSEEDIT)))
+        return (0);
+    if (glist->gl_edit && (x->x_flags & NOMOUSEEDIT))
+        return (1);
+    if (!glist->gl_edit && (x->x_flags & NOMOUSERUN))
+        return (1);
+    return (0);
+}
+
+    /* return 1 if text selection/editing should be disabled (-xt flag).
+        blocks double-click activation in rtext_findhit */
+int drawtext_noselection(t_gobj *z)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    return ((x->x_flags & NOMOUSETEXT) != 0);
+}
+
 
 /* -------------------- widget behavior for drawtext ------------ */
 
@@ -2960,6 +3000,7 @@ static void drawtext_getrect(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     if (!gobj_shouldvis(z, glist)
         || !drawtext_isvisible(z, data)
+        || drawtext_interaction_disabled(z, glist)
         || !(rtext = glist_getforscalar(glist, sc, data, z)))
     {
         *xp1 = *yp1 = 0x7fffffff;
@@ -3169,7 +3210,7 @@ static int drawtext_click(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     int x1, y1, x2, y2, type, onset;
     x->x_template = template;
-    if (!drawtext_isvisible(z, data))
+    if (!drawtext_isvisible(z, data) || drawtext_interaction_disabled(z, glist))
         return (0);
     rtext = glist_getforscalar(glist, sc, data, z);
     rtext_getrect(rtext, &x1, &y1, &x2, &y2);

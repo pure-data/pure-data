@@ -292,7 +292,9 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
                 /* is the text visible? */
             !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
             x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
-                || !drawtext_isvisible(x->x_drawtext, x->x_words))))
+                || !drawtext_isvisible(x->x_drawtext, x->x_words)
+                || (drawtext_interaction_disabled(x->x_drawtext, gl)
+                    || drawtext_noselection(x->x_drawtext)))))
         {
             *text = x->x_text;
             *scalar = x->x_scalar;
