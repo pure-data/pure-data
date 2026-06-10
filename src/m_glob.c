@@ -112,6 +112,11 @@ void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     endpost();
 }
 
+/* loading/interacting with GUI plugins */
+void glob_pluginload(t_pd *dummy, t_symbol *plugin, t_symbol *path)
+{
+    pdgui_vmess("load_plugin", "ss", plugin->s_name, path->s_name);
+}
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     pdgui_vmess("pdtk_plugin_dispatch", "a", argc, argv);
@@ -195,6 +200,8 @@ void glob_init(void)
         gensym("compatibility"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_plugindispatch,
         gensym("plugin-dispatch"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_pluginload,
+        gensym("plugin-load"), A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_helpintro,
         gensym("help-intro"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_fastforward,
