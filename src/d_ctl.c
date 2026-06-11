@@ -866,6 +866,65 @@ static void threshold_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
+/* -------------------------- siginfo~ ------------------------------ */
+
+static t_class *siginfo_tilde_class;
+
+typedef struct _siginfo_tilde
+{
+    t_object x_obj;
+    t_outlet *x_outlet;         /* bang out for high thresh */
+    t_float x_f;                /* scalar inlet */
+
+    int x_blocksize;
+    int x_numchannels;
+    int x_overlap;
+    t_float x_numsamples;
+} t_siginfo_tilde;
+
+static void siginfo_tilde_bang(t_siginfo_tilde*x) {
+    t_atom ap[4];
+    SETFLOAT(ap+0, x->x_blocksize);
+    SETFLOAT(ap+1, x->x_numchannels);
+    SETFLOAT(ap+2, x->x_overlap);
+    SETFLOAT(ap+3, x->x_numsamples);
+
+    outlet_list(x->x_outlet, gensym("list"), 4, ap);
+}
+
+static void siginfo_tilde_dsp(t_siginfo_tilde*x, t_signal **sp)
+{
+    x->x_blocksize = sp[0]->s_length;
+    x->x_numsamples = sp[0]->s_sr;
+    x->x_numchannels = sp[0]->s_nchans;
+    x->x_overlap = sp[0]->s_overlap;
+    siginfo_tilde_bang(x);
+}
+
+static t_siginfo_tilde *siginfo_tilde_new(void) {
+    t_siginfo_tilde *x = (t_siginfo_tilde *)pd_new(siginfo_tilde_class);
+
+    x->x_outlet = outlet_new(&x->x_obj, 0);
+
+    x->x_blocksize = DEFDACBLKSIZE;
+    x->x_numsamples = sys_getsr();
+    x->x_numchannels = 1;
+    x->x_overlap = 1;
+
+    return (x);
+}
+
+
+static void siginfo_tilde_setup(void)
+{
+    siginfo_tilde_class = class_new(gensym("siginfo~"),
+        (t_newmethod)siginfo_tilde_new, 0,
+        sizeof(t_siginfo_tilde), CLASS_MULTICHANNEL, 0);
+    CLASS_MAINSIGNALIN(siginfo_tilde_class, t_siginfo_tilde, x_f);
+    class_addmethod(siginfo_tilde_class, (t_method)siginfo_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_addbang(siginfo_tilde_class, (t_method)siginfo_tilde_bang);
+}
 /* ------------------------ global setup routine ------------------------- */
 
 void d_ctl_setup(void)
@@ -877,5 +936,5 @@ void d_ctl_setup(void)
     vsnapshot_tilde_setup();
     env_tilde_setup();
     threshold_tilde_setup();
+    siginfo_tilde_setup();
 }
-
