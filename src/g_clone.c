@@ -744,6 +744,10 @@ fail:
 
 static void clone_free(t_clone *x)
 {
+    t_pd *x2;
+        /* we stay bound to #A if we were created outside a file load */
+    while ((x2 = pd_findbyclass(gensym("#A"), clone_class)))
+        pd_unbind(x2, gensym("#A"));
     if (x->x_vec)
     {
         int i, voicetovis = -1;
