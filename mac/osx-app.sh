@@ -17,6 +17,7 @@ set -e
 
 verbose=
 universal=
+fix_usrlocallib=true
 included_wish=true
 EXTERNAL_EXT=d_fat
 TK=
@@ -42,6 +43,11 @@ install_type=
 
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
+
+# a scratchdir that is automatically cleaned up on exit
+scratchdir=$(mktemp -d)
+trap 'rm -rf "${scratchdir}"' EXIT INT TERM
+
 
 # echo to stderr
 error() {
@@ -86,6 +92,10 @@ Options:
                       "make" - use 'make install'
                       not setting this value, will use 'make' if you set
                       the '--builddir', and 'manually' otherwise
+
+  --dont-fix-usrlocallib   for arm64 binaries (only), ensure that dependencies
+                      are not only searched for in /usr/local/lib,
+                      but also in /opt/homebrew/lib
 
 Arguments:
 
@@ -211,6 +221,49 @@ register_l10n() {
     done
 }
 
+usrlocallib_to_opthomebrewlib() {
+    # for amd64 binaries, replace all dependencies on libs in /usr/local/lib
+    # with @rpath dependencies
+    # (and add /usr/local/lib and /opt/homebrew/lib) to RPATH
+  local infile
+  local in
+  local lipodir
+  local thinfile
+  local a
+  local locallib
+
+  infile="$1"
+  in="$(basename "${infile}")"
+  lipodir="${scratchdir}/lipo"
+
+  # check if this is a binary
+  lipo -archs "${infile}" >/dev/null 2>&1 || return
+
+  # split fat binary into thin ones
+  for a in $(lipo -archs "${infile}"); do
+    mkdir -p "${lipodir}/${a}"
+    lipo "${infile}" -extract "${a}" -output "${lipodir}/${a}/${in}"
+  done
+
+  # do we have an arm64 variant?
+  thinfile="${lipodir}/arm64/${in}"
+  test -e "${thinfile}" || return
+
+  # replace all dependencies on /usr/local/lib with @rpath
+  # add both /usr/local/lib and /opt/homebrew/lib to RPATH
+  otool -L "${thinfile}" | awk '{print $1}' | grep "/usr/local/lib/" | while read -r locallib; do
+    install_name_tool \
+      -change "${locallib}" "@rpath/$(basename "${locallib}")" \
+      -add_rpath /usr/local/lib \
+      -add_rpath /opt/homebrew/lib \
+      "${thinfile}"
+  done
+
+  # create a fat binary from the mangled thin ones
+  find "${lipodir}" -type f -print0 | xargs -0 lipo -output "${infile}" -create
+}
+
+
 # Parse command line arguments
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
@@ -279,6 +332,9 @@ while [ "$1" != "" ] ; do
                     ;;
             esac
             ;;
+        --dont-fix-userlocalib)
+            fix_usrlocallib=false
+            ;;
         -v|--verbose)
             verbose=-v
             ;;
@@ -335,6 +391,10 @@ fi
 if [ ! -e "${BUILD}/src/pd" ] ; then
     error "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
+fi
+
+if [ "${fix_usrlocallib}" = true ]; then
+    usrlocallib_to_opthomebrewlib  "${BUILD}/src/pd"
 fi
 
 if [ "$verbose" != "" ] ; then
