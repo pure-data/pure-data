@@ -45,6 +45,11 @@ install_type=
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
 
+# echo to stderr
+error() {
+    echo "$*" 1>&2
+}
+
 # Help message
 #----------------------------------------------------------
 help() {
@@ -141,7 +146,7 @@ install_manually() {
         mkdir -p "${DEST}/po"
         cp $verbose "${BUILD}/po"/*.msg "${DEST}/po/"
     else
-        echo "No localizations found. Skipping po dir..."
+        error "No localizations found. Skipping po dir..."
     fi
 
     # install headers
@@ -215,7 +220,7 @@ while [ "$1" != "" ] ; do
         --sign)
             shift 1
             if [ $# = 0 ] ; then
-                echo "--sign option requires a SIGNATURE_ID argument"
+                error "--sign option requires a SIGNATURE_ID argument"
                 exit 1
             fi
             SIGNATURE_ID=$1
@@ -223,7 +228,7 @@ while [ "$1" != "" ] ; do
         -t|--tk)
             shift 1
             if [ $# = 0 ] ; then
-                echo "-t,--tk option requires a VER argument"
+                error "-t,--tk option requires a VER argument"
                 exit 1
             fi
             TK=$1
@@ -238,7 +243,7 @@ while [ "$1" != "" ] ; do
             ;;
         -w|--wish)
             if [ $# = 0 ] ; then
-                echo "-w,--wish option requires an APP argument"
+                error "-w,--wish option requires an APP argument"
                 exit 1
             fi
             shift 1
@@ -250,7 +255,7 @@ while [ "$1" != "" ] ; do
             ;;
         --builddir)
             if [ $# = 0 ] ; then
-                echo "--builddir options requires a DIR argument"
+                error "--builddir options requires a DIR argument"
                 exit 1
             fi
             shift 1
@@ -259,7 +264,7 @@ while [ "$1" != "" ] ; do
             ;;
         --installtype)
             if [ $# = 0 ] ; then
-                echo "--installtype option requires a TYPE argument"
+                error "--installtype option requires a TYPE argument"
                 exit 1
             fi
             shift 1
@@ -271,7 +276,7 @@ while [ "$1" != "" ] ; do
                     install_type=make
                     ;;
                 *)
-                    echo "invalid installtype (must be 'manually' or 'make')"
+                    error "invalid installtype (must be 'manually' or 'make')"
                     exit 1
                     ;;
             esac
@@ -330,12 +335,12 @@ fi
 
 # check if pd is already built
 if [ ! -e "${BUILD}/src/pd" ] ; then
-    echo "Looks like pd hasn't been built yet. Maybe run make first?"
+    error "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
 
 if [ "$verbose" != "" ] ; then
-    echo "==== Creating ${APP}"
+    error "==== Creating ${APP}"
 fi
 
 # extract included Wish app
@@ -349,17 +354,17 @@ if [ "${included_wish}" = true ] ; then
 # build Wish or use the system Wish
 elif [ "${WISH}" = "" ] ; then
     if [ "${TK}" != "" ] ; then
-        echo "Using custom ${TK} Wish.app"
+        error "Using custom ${TK} Wish.app"
         ./tcltk-wish.sh ${universal} "${TK}"
         WISH="Wish-${TK}.app"
     elif [ "${SYS_TK}" != "" ] ; then
-        echo "Using system ${SYS_TK} Wish.app"
+        error "Using system ${SYS_TK} Wish.app"
         tk_path=/Library/Frameworks/Tk.framework/Versions
         # check /Library first, then fall back to /System/Library
         if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
             tk_path="/System${tk_path}"
             if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
-                echo "Wish.app not found"
+                error "Wish.app not found"
                 exit 1
             fi
         fi
@@ -378,10 +383,10 @@ else
         [ ! -e "${WISH}.app" ] || WISH="${WISH}.app"
     fi
     if [ ! -e "${WISH}" ] ; then
-        echo "${WISH} not found"
+        error "${WISH} not found"
         exit 1
     fi
-    echo "Using $(basename ${WISH})"
+    error "Using $(basename ${WISH})"
 
     # copy
     WISH_TMP=$(basename "${WISH}")-tmp
@@ -391,7 +396,7 @@ fi
 
 # sanity check
 if [ ! -e "${WISH}" ] ; then
-    echo "${WISH} not found"
+    error "${WISH} not found"
     exit 1
 fi
 
@@ -465,5 +470,5 @@ codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entit
 touch "${APP}"
 
 if [ "$verbose" != "" ] ; then
-    echo  "==== Finished ${APP}"
+    error  "==== Finished ${APP}"
 fi
