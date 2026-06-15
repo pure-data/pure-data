@@ -1,4 +1,6 @@
 #! /bin/sh
+#shellcheck disable=SC3043
+
 #
 # Creates macOS .app bundle from pd build.
 #
@@ -21,7 +23,6 @@ TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
-RUNDIR="$(pwd)"
 
 # ad hoc by default
 SIGNATURE_ID="-"
@@ -38,9 +39,6 @@ BUILD=..
 # per default we use 'make' for custom-builddirs
 # and 'manually' otherwise
 install_type=
-
-
-
 
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
@@ -156,7 +154,7 @@ install_manually() {
     # clean extra folders
     cd "${DEST}/extra"
     rm -f makefile.subdir
-    find ./* -prune -type d | while read ext; do
+    find ./* -prune -type d | while read -r ext; do
         ext_lib="${ext}.${EXTERNAL_EXT}"
         if [ -e "${ext}/.libs/${ext_lib}" ] ; then
 
@@ -206,7 +204,7 @@ register_l10n() {
     # usage: register_l10n "${INFO_PLIST}" "${BUILD}/po"
     #   adds an entry for each translation found in '${BUILD}/po' to '${INFO_PLIST}'
     local po
-    find "$2" -maxdepth 1 -type f -name "*.msg" -exec basename {} .msg ";" | sort | while read po; do
+    find "$2" -maxdepth 1 -type f -name "*.msg" -exec basename {} .msg ";" | sort | while read -r po; do
         "${PLIST_BUDDY}" -c "Print :CFBundleLocalizations" "$1" >/dev/null 2>&1 || \
             "${PLIST_BUDDY}" -c "Add CFBundleLocalizations array" "$1"
         "${PLIST_BUDDY}" -c "Add :CFBundleLocalizations: string ${po}" "$1"
@@ -270,10 +268,10 @@ while [ "$1" != "" ] ; do
             shift 1
             case "$1" in
                 manual|manually)
-                    install_type=manual
+                    install_type="manual"
                     ;;
                 make)
-                    install_type=make
+                    install_type="make"
                     ;;
                 *)
                     error "invalid installtype (must be 'manually' or 'make')"
@@ -306,11 +304,11 @@ fi
 #----------------------------------------------------------
 
 # use a default install-type if none was requested
-if [ "x${install_type}" = "x" ] ; then
+if [ "${install_type}" = "" ] ; then
    if [ "${custom_builddir}" = true ] ; then
-       install_type=make
+       install_type="make"
    else
-       install_type=manual
+       install_type="manual"
    fi
 fi
 
@@ -322,7 +320,7 @@ if [ "${custom_builddir}" = true ] ; then
 fi
 
 # change to the dir of this script
-cd $(dirname "$0")
+cd "$(dirname "$0")"
 
 # grab package version from configure --version output: line 1, word 3
 # aka "pd configure 0.47.1" -> "0.47.1"
@@ -386,7 +384,7 @@ else
         error "${WISH} not found"
         exit 1
     fi
-    error "Using $(basename ${WISH})"
+    error "Using $(basename "${WISH}")"
 
     # copy
     WISH_TMP=$(basename "${WISH}")-tmp
