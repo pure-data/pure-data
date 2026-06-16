@@ -42,6 +42,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
 libportaudio_a_SOURCES += \
     portaudio/src/os/unix/pa_unix_hostapis.c \
     portaudio/src/os/unix/pa_unix_util.c \
+    portaudio/src/os/unix/pa_pthread_util.c \
     $(empty)
 endif !WINDOWS
 
