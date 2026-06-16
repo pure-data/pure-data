@@ -230,24 +230,37 @@ usrlocallib_to_opthomebrewlib() {
   local lipodir
   local thinfile
   local a
+  local archs
   local locallib
+
+  if [ "$verbose" != "" ] ; then
+    error "Changing /usr/lcocal/lib dependencies to RPATH with /opt/homebrew/lib"
+  fi
 
   infile="$1"
   in="$(basename "${infile}")"
   lipodir="${scratchdir}/lipo"
 
   # check if this is a binary
-  lipo -archs "${infile}" >/dev/null 2>&1 || return
+  lipo -archs "${infile}" >/dev/null 2>&1 || return 1
 
   # split fat binary into thin ones
-  for a in $(lipo -archs "${infile}"); do
-    mkdir -p "${lipodir}/${a}"
-    lipo "${infile}" -extract "${a}" -output "${lipodir}/${a}/${in}"
-  done
+  archs="$(lipo -archs "${infile}")"
+  if [ "$(echo "${archs}" | grep arm64 | wc -w)" -gt 1 ]; then
+    # fat binary with multiple architectures
+    for a in ${archs}; do
+      mkdir -p "${lipodir}/${a}"
+      lipo "${infile}" -extract "${a}" -output "${lipodir}/${a}/${in}" || return 1
+    done
+  elif [ "${archs}" = "arm64" ]; then
+    # thin or fat binary, with only a single architecture
+    mkdir -p "${lipodir}/arm64/"
+    cp "${infile}" "${lipodir}/arm64/${in}"
+  fi
 
   # do we have an arm64 variant?
   thinfile="${lipodir}/arm64/${in}"
-  test -e "${thinfile}" || return
+  test -e "${thinfile}" || return 1
 
   # replace all dependencies on /usr/local/lib with @rpath
   # add both /usr/local/lib and /opt/homebrew/lib to RPATH
@@ -256,11 +269,12 @@ usrlocallib_to_opthomebrewlib() {
       -change "${locallib}" "@rpath/$(basename "${locallib}")" \
       -add_rpath /usr/local/lib \
       -add_rpath /opt/homebrew/lib \
-      "${thinfile}"
+      "${thinfile}" || return 1
   done
 
   # create a fat binary from the mangled thin ones
-  find "${lipodir}" -type f -print0 | xargs -0 lipo -output "${infile}" -create
+  find "${lipodir}" -type f -print0 | xargs -0 lipo -output "${infile}" -create || return 1
+  return 0
 }
 
 
@@ -394,7 +408,7 @@ if [ ! -e "${BUILD}/src/pd" ] ; then
 fi
 
 if [ "${fix_usrlocallib}" = true ]; then
-    usrlocallib_to_opthomebrewlib  "${BUILD}/src/pd"
+    usrlocallib_to_opthomebrewlib "${BUILD}/src/pd" || error "Couldn't fix /usr/local/lib dependencies."
 fi
 
 if [ "$verbose" != "" ] ; then
