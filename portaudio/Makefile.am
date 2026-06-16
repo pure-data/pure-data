@@ -42,6 +42,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
 libportaudio_a_SOURCES += \
     portaudio/src/os/unix/pa_unix_hostapis.c \
     portaudio/src/os/unix/pa_unix_util.c \
+    portaudio/src/os/unix/pa_pthread_util.c \
     $(empty)
 endif !WINDOWS
 
@@ -117,5 +118,6 @@ nobase_noinst_HEADERS = \
     portaudio/src/hostapi/coreaudio/pa_mac_core_internal.h \
     portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.h \
     portaudio/src/os/unix/pa_unix_util.h \
+    portaudio/src/os/unix/pa_pthread_util.h \
     portaudio/src/os/win/pa_win_coinitialize.h \
      $(empty)
