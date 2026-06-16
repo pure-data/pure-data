@@ -35,6 +35,7 @@ libportaudio_a_SOURCES += \
     portaudio/src/os/win/pa_win_hostapis.c \
     portaudio/src/os/win/pa_win_util.c \
     portaudio/src/os/win/pa_win_waveformat.c \
+    portaudio/src/os/win/pa_win_version.c \
     $(empty)
 else !WINDOWS
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
