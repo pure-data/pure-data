@@ -889,7 +889,7 @@ typedef struct _siginfo_tilde
 
     int x_globaldspstate;
     int x_blocksize;            /* t_signal.s_length */
-    int x_numchannels;          /* t_signal.s_nchans */
+    int x_channels;             /* t_signal.s_nchans */
     int x_overlap;              /* t_signal.s_overlap */
     t_float x_samplespersecond; /* t_signal.s_sr */
 } t_siginfo_tilde;
@@ -909,14 +909,14 @@ static void siginfo_tilde_bang(t_siginfo_tilde *x)
 
     t_symbol *s_dsp = gensym("dspstate");
     t_symbol *s_blocksize = gensym("blocksize");
-    t_symbol *s_numchannels = gensym("numchannels");
+    t_symbol *s_channels = gensym("channels");
     t_symbol *s_overlap = gensym("overlap");
     t_symbol *s_samplerate = gensym("samplerate");
     t_symbol *s_samplespersecond = gensym("samplespersecond");
 
     int state = x->x_globaldspstate && canvas_getswitchedon(x->x_canvas);
     int blocksize = x->x_blocksize;
-    int numchannels = x->x_numchannels;
+    int channels = x->x_channels;
     int overlap = x->x_overlap;
     t_float samplerate = canvas_getsr(x->x_canvas);
     t_float samplespersecond = x->x_samplespersecond;
@@ -925,7 +925,7 @@ static void siginfo_tilde_bang(t_siginfo_tilde *x)
     {
         siginfo_tilde_outmsg(x, s_dsp, state);
         siginfo_tilde_outmsg(x, s_blocksize, blocksize);
-        siginfo_tilde_outmsg(x, s_numchannels, numchannels);
+        siginfo_tilde_outmsg(x, s_channels, channels);
         siginfo_tilde_outmsg(x, s_overlap, overlap);
         siginfo_tilde_outmsg(x, s_samplerate, samplerate);
         siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
@@ -939,8 +939,8 @@ static void siginfo_tilde_bang(t_siginfo_tilde *x)
             value = (t_float)state;
         else if (s_blocksize == s)
             value = (t_float)blocksize;
-        else if (s_numchannels == s)
-            value = (t_float)numchannels;
+        else if (s_channels == s)
+            value = (t_float)channels;
         else if (s_overlap == s)
             value = (t_float)overlap;
         else if (s_samplerate == s)
@@ -956,7 +956,7 @@ static void siginfo_tilde_dsp(t_siginfo_tilde *x, t_signal **sp)
 {
     x->x_blocksize = sp[0]->s_length;
     x->x_samplespersecond = sp[0]->s_sr;
-    x->x_numchannels = sp[0]->s_nchans;
+    x->x_channels = sp[0]->s_nchans;
     x->x_overlap = sp[0]->s_overlap;
     x->x_globaldspstate = 1;
     siginfo_tilde_bang(x);
@@ -1022,7 +1022,7 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
         s = atom_getsymbol(argv+i);
         if ((gensym("dspstate") == s)
             || (gensym("blocksize") == s)
-            || (gensym("numchannels") == s)
+            || (gensym("channels") == s)
             || (gensym("overlap") == s)
             || (gensym("samplerate") == s)
             || (gensym("samplespersecond") == s)
@@ -1033,14 +1033,14 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
         else
         {
             if (!warned)
-                pd_error(x, "siginfo~: arguments can only be 'dspstate', 'blocksize', 'numchannels', 'overlap', 'samplerate', 'samplesspersecond'");
+                pd_error(x, "siginfo~: arguments can only be 'dspstate', 'blocksize', 'channels', 'overlap', 'samplerate', 'samplesspersecond'");
             warned = 1;
         }
         *vec++=s;
     }
 
     x->x_blocksize = DEFDACBLKSIZE;
-    x->x_numchannels = 1;
+    x->x_channels = 1;
     x->x_overlap = 1;
     x->x_samplespersecond = sys_getsr();
     x->x_globaldspstate = 0;
