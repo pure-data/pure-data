@@ -877,13 +877,12 @@ typedef struct _siginfo_proxy {
 typedef struct _siginfo_tilde
 {
     t_object x_obj;
-    t_outlet *x_outlet;         /* bang out for high thresh */
+    t_outlet **x_outlet;        /* outlets */
     t_float x_f;                /* scalar inlet */
     t_siginfo_proxy x_proxy;    /* proxy object to receive "pd-dsp-stopped" events */
     t_canvas *x_canvas;         /* canvas we live in (for the local dsp state and samplerate) */
 
     t_symbol**x_vec;            /* object arguments (or NULL) */
-    t_atom*x_argv;              /* pre-allocated atoms */
     unsigned int x_argc;
 
     int x_globaldspstate;
@@ -896,13 +895,12 @@ typedef struct _siginfo_tilde
 static void siginfo_tilde_outmsg(t_siginfo_tilde*x, t_symbol*sel, t_float f) {
     t_atom ap[1];
     SETFLOAT(ap, f);
-    outlet_anything(x->x_outlet, sel, 1, ap);
+    outlet_anything(x->x_outlet[0], sel, 1, ap);
 }
 
 int canvas_getswitchedon(t_canvas *x);
 
 static void siginfo_tilde_bang(t_siginfo_tilde*x) {
-    t_atom*ap = x->x_argv;
     t_symbol**vec = x->x_vec;
 
     t_symbol*s_dsp = gensym("dspstate");
@@ -928,27 +926,25 @@ static void siginfo_tilde_bang(t_siginfo_tilde*x) {
         siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
         return;
     }
-    for(unsigned int i=0; i<x->x_argc; i++) {
-        t_symbol*s = vec[i];
+    for(unsigned int i=x->x_argc; i>0; i--) {
+        t_symbol*s = vec[i-1];
+        t_float value = -1;
         if(0) {
         } else if(s_dsp == s) {
-            SETFLOAT(ap, state);
+            value = (t_float)state;
         } else if(s_blocksize == s) {
-            SETFLOAT(ap, blocksize);
+            value = (t_float)blocksize;
         } else if(s_numchannels == s) {
-            SETFLOAT(ap, numchannels);
+            value = (t_float)numchannels;
         } else if(s_overlap == s) {
-            SETFLOAT(ap, overlap);
+            value = (t_float)overlap;
         } else if(s_samplerate == s) {
-            SETFLOAT(ap, samplerate);
+            value = (t_float)samplerate;
         } else if(s_samplespersecond == s) {
-            SETFLOAT(ap, samplespersecond);
-        } else {
-            SETFLOAT(ap, -1);
+            value = (t_float)samplespersecond;
         }
-        ap++;
+        outlet_float(x->x_outlet[i-1], value);
     }
-    outlet_list(x->x_outlet, gensym("list"), x->x_argc, x->x_argv);
 }
 
 static void siginfo_tilde_dsp(t_siginfo_tilde*x, t_signal **sp)
@@ -981,14 +977,20 @@ static void siginfo_proxy_bang(t_siginfo_proxy*p) {
 static void siginfo_tilde_free(t_siginfo_tilde*x) {
     if(x->x_vec)
         freebytes(x->x_vec, sizeof(*x->x_vec) * (x->x_argc));
-    if(x->x_argv)
-        freebytes(x->x_argv, sizeof(*x->x_argv) * (x->x_argc));
+    if(x->x_argc) {
+        for(unsigned int i=0; i<x->x_argc; i++) {
+            outlet_free(x->x_outlet[i]);
+        }
+        freebytes(x->x_outlet, sizeof(*x->x_outlet) * x->x_argc);
+    } else {
+        outlet_free(x->x_outlet[0]);
+        freebytes(x->x_outlet, sizeof(*x->x_outlet) * 1);
+    }
     pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
 }
 
 static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
     t_siginfo_tilde *x = (t_siginfo_tilde *)pd_new(siginfo_tilde_class);
-    x->x_outlet = outlet_new(&x->x_obj, 0);
 
     x->x_proxy.x_pd = siginfo_proxy_class;
     x->x_proxy.x_parent = x;
@@ -998,11 +1000,15 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
     if(argc>0) {
         x->x_argc = argc;
         x->x_vec = (t_symbol**)getbytes(sizeof(*x->x_vec)*argc);
-        x->x_argv = (t_atom*)getbytes(sizeof(*x->x_argv)*argc);
+        x->x_outlet = (t_outlet**)getbytes(sizeof(*x->x_outlet)*argc);
+    } else {
+        x->x_outlet = (t_outlet**)getbytes(sizeof(*x->x_outlet));
+        x->x_outlet[0] = outlet_new(&x->x_obj, 0);
     }
     t_symbol**vec = x->x_vec;
     int warned = 0;
     for(int i=0; i<argc; i++) {
+        x->x_outlet[i] = outlet_new(&x->x_obj, 0);
         s = atom_getsymbol(argv+i);
         if (0
             || (gensym("dspstate") == s)
