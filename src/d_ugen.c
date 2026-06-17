@@ -221,7 +221,6 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
 
 int canvas_getswitchedon(t_canvas *x)
 {
-    t_float srate = sys_getsr();
     t_canvas *canvas;
     t_gobj *g;
     for (canvas = x; canvas; canvas = canvas->gl_owner)
