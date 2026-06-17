@@ -884,7 +884,7 @@ typedef struct _siginfo_tilde
 
     t_symbol**x_vec;            /* object arguments (or NULL) */
     t_atom*x_argv;              /* pre-allocated atoms */
-    int x_argc;
+    unsigned int x_argc;
 
     int x_globaldspstate;
     int x_blocksize;            /* t_signal.s_length */
@@ -928,7 +928,7 @@ static void siginfo_tilde_bang(t_siginfo_tilde*x) {
         siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
         return;
     }
-    for(int i=0; i<x->x_argc; i++) {
+    for(unsigned int i=0; i<x->x_argc; i++) {
         t_symbol*s = vec[i];
         if(0) {
         } else if(s_dsp == s) {
@@ -944,12 +944,11 @@ static void siginfo_tilde_bang(t_siginfo_tilde*x) {
         } else if(s_samplespersecond == s) {
             SETFLOAT(ap, samplespersecond);
         } else {
-            pd_error(x, "oops: %s", s?s->s_name:0);
-            continue;
+            SETFLOAT(ap, -1);
         }
         ap++;
     }
-    outlet_list(x->x_outlet, gensym("list"), ap - x->x_argv, x->x_argv);
+    outlet_list(x->x_outlet, gensym("list"), x->x_argc, x->x_argv);
 }
 
 static void siginfo_tilde_dsp(t_siginfo_tilde*x, t_signal **sp)
@@ -968,7 +967,7 @@ static void siginfo_proxy_bang(t_siginfo_proxy*p) {
     x->x_globaldspstate = 0;
     t_symbol*s_dsp = gensym("dspstate");
     if(x->x_vec) {
-        for(int i=0; i<x->x_argc; i++) {
+        for(unsigned int i=0; i<x->x_argc; i++) {
             if(x->x_vec[i] == s_dsp) {
                 siginfo_tilde_bang(x);
                 return;
@@ -989,11 +988,12 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
 
     x->x_canvas = canvas_getcurrent();
 
-
-    if(argc>0)
-        x->x_vec = (t_symbol**)getbytes(sizeof(*x->x_vec)*(argc+1));
+    if(argc>0) {
+        x->x_argc = argc;
+        x->x_vec = (t_symbol**)getbytes(sizeof(*x->x_vec)*argc);
+        x->x_argv = (t_atom*)getbytes(sizeof(*x->x_argv)*argc);
+    }
     t_symbol**vec = x->x_vec;
-    int vecsize=0;
     int warned = 0;
     for(int i=0; i<argc; i++) {
         s = atom_getsymbol(argv+i);
@@ -1005,17 +1005,14 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
             || (gensym("samplerate") == s)
             || (gensym("samplespersecond") == s)
             ) {
-            vecsize++;
-            *vec++=s;
         } else {
             if(!warned) {
                 pd_error(x, "siginfo~: arguments can only be 'dspstate', 'blocksize', 'numchannels', 'overlap', 'samplerate', 'samplesspersecond'");
                 warned = 1;
             }
         }
+        *vec++=s;
     }
-    x->x_argc = vecsize;
-    x->x_argv = (t_atom*)getbytes(sizeof(*x->x_argv)*x->x_argc);
 
     x->x_blocksize = DEFDACBLKSIZE;
     x->x_numchannels = 1;
