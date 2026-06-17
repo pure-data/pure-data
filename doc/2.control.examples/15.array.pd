@@ -56,7 +56,7 @@
 #X msg 477 208 \; array99 sinesum 4096 0.2 0.2 0.2 0.2;
 #X msg 749 208 \; array99 cosinesum 4096 0.2 0.2 0.2 0.2;
 #X msg 803 363 \; array99 read 15.file.txt \, resize 5, f 25;
-#X text 470 355 A simpler way to read a text file is with the 'read' message (but it lacks a -resize flag). The write message also exist for writting and both 'read'/'write' expand "~" to the home directory., f 45;
+#X text 470 355 A simpler way to read a text file is with the 'read' message (but it lacks a -resize flag). The write message also exist for writing and both 'read'/'write' expand "~" to the home directory., f 45;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X connect 22 0 23 0;

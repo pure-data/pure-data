@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -138,6 +138,9 @@ msgstr "Maxêđôni"
 msgid "Window"
 msgstr "_Cửa sổ"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Trợ giúp"
 
@@ -230,6 +233,9 @@ msgid "Output Devices"
 msgstr ""
 
 msgid "Use Multiple Devices"
+msgstr ""
+
+msgid "Rescan Devices"
 msgstr ""
 
 msgid "Audio System"
@@ -1061,10 +1067,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1110,6 +1122,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1137,6 +1152,10 @@ msgstr "Tìm kiếm trong văn bản..."
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Tìm kiếm trong văn bản..."
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2113,6 +2132,10 @@ msgstr ""
 
 msgid "Properties"
 msgstr ""
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Chế độ"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

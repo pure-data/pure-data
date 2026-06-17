@@ -6,6 +6,7 @@ src/pdreceive
 src/pdsend
 *.app
 *.exe
+pdgtk
 
 # autotools
 autom4te.cache

@@ -17,6 +17,7 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_getscroll
     namespace export pdtk_canvas_setparents
     namespace export pdtk_canvas_reflecttitle
+    namespace export pdtk_canvas_setcolors
     namespace export pdtk_canvas_menuclose
 }
 
@@ -99,7 +100,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable \
-        {bgcolor "white"} } {
+        {bgcolor "white"} {fgcolor "black"} } {
     if { "" eq $geometry } {
         # no position set: this is a new window (rather than one loaded from file)
         # we set a flag here, so we can query (and report) the actual geometry,
@@ -135,7 +136,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
         -highlightthickness 0 -scrollregion [list 0 0 $width $height] \
         -xscrollcommand "$mytoplevel.xscroll set" \
         -yscrollcommand "$mytoplevel.yscroll set" \
-        -background $bgcolor
+        -background $bgcolor -insertbackground $fgcolor
     scrollbar $mytoplevel.xscroll -orient horizontal -command "$tkcanvas xview"
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
@@ -171,6 +172,14 @@ proc pdtk_canvas_raise {mytoplevel} {
     raise $mytoplevel
     set mycanvas $mytoplevel.c
     focus $mycanvas
+}
+
+proc ::pdtk_canvas::pdtk_canvas_setcolors {mytoplevel bgcolor fgcolor} {
+    set cv [tkcanvas_name $mytoplevel]
+    if {![winfo exists $cv]} {
+        return
+    }
+    $cv configure -background $bgcolor -insertbackground $fgcolor
 }
 
 proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
@@ -471,26 +480,40 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
-                                              path name arguments dirty} {
+                                              path name arguments dirty \
+                                              {editmode 0}} {
     set path [::pdtk_text::unescape $path]
     set name [::pdtk_text::unescape $name]
     set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
+
+    set dirtychar {}
+    if {$dirty} {
+        set dirtychar "*"
+    }
+
+    set editstr {}
+    if {$editmode} {
+        lappend editstr [_ "edit mode"]
+    }
+
+    if {$editstr ne {} } {
+        set editstr " \[[join $editstr {, }]\]"
+    }
+
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
     if {$::windowingsystem eq "aqua"} {
+        # on macOS, the dirtiness is set via a window attribute
+        set dirtychar ""
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
             # for some reason -titlepath can still fail so just catch it
             if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
-                wm title $mytoplevel "$path/$name"
             }
         }
-        wm title $mytoplevel "$name$arguments"
-    } else {
-        if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
-        wm title $mytoplevel "$name$dirtychar$arguments - $path"
     }
+    wm title $mytoplevel "${dirtychar}${name}${arguments}${editstr} - ${path}"
 }
 
 #------------------------------------------------------------------------------#
@@ -521,4 +544,71 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
             }
         }
     }
+}
+
+# ------------------- convenience functions ----------------
+
+# IEM GUIs make heavy use of double-tagging (one for the graphical element,
+# one for the whole object) - but the rest of the code is single-tag.  If
+# we can ever get a rewrite of teh IEM GUIs we can drop the group tag.
+# Meanwhile, to avoid trouble with empty strings, a grouptag of "-" means
+# "no group tag".
+
+proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
+    if ($dashed) { set dashoption "-dash -"; } else {set dashoption "" }
+
+    if {$grouptag eq "-"} {
+        eval [concat $canvas create line $args $dashoption \
+            -width $width -fill $color -capstyle projecting \
+            -tags \{$tag $grouptag\}]
+    } else {
+        eval [concat $canvas create line $args $dashoption \
+            -width $width -fill $color -capstyle projecting \
+            -tags \{$tag $grouptag\}]
+    }
+}
+
+# special version above for patchcords, adding "cord" to tags so that
+#  the "raise cords" command in g_text.c will work.  In gtk we'll do this
+#  a better way.
+
+proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} {
+
+#  old version using eval:
+#    eval [concat $canvas create line $args \
+#        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+    $canvas create line {*}$args \
+        -width $width -fill $color -capstyle projecting -tags [list $tag cord]
+
+}
+
+proc pdtk_canvas_configure_line {canvas tag width color} {
+
+    $canvas itemconfigure $tag -width $width -fill $color
+}
+
+proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
+    x1 y1 x2 y2} {
+
+    $canvas create rectangle $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+}
+
+proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
+    x1 y1 x2 y2} {
+
+    $canvas create oval $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+}
+
+proc pdtk_canvas_delete {canvas tag} {
+    $canvas delete $tag
+}
+
+proc pdtk_canvas_move {canvas tag dx dy} {
+    $canvas move $tag $dx $dy
+}
+
+proc pdtk_canvas_coords {canvas tag args} {
+    $canvas coords $tag $args
 }

@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2024-08-28 18:54+0200\n"
-"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/eo/>\n"
 "Language: eo\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "lineara"
@@ -130,6 +130,9 @@ msgstr "Aŭdvidaĵo"
 msgid "Window"
 msgstr "Fenestro"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Helpo"
 
@@ -214,6 +217,10 @@ msgstr "Eligaj aparatoj"
 msgid "Use Multiple Devices"
 msgstr "Uzi plurajn aparatojn"
 
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "Enigaj aparatoj"
+
 msgid "Audio System"
 msgstr "Sonsistemo"
 
@@ -286,9 +293,8 @@ msgstr "Marĝeno:"
 msgid "Y range: from"
 msgstr "Y-gamo: de"
 
-#, fuzzy
 msgid "Object:"
-msgstr "Objekto"
+msgstr "Objekto:"
 
 msgid "Data Properties"
 msgstr "Datenaj atributoj"
@@ -1002,11 +1008,17 @@ msgstr "Instali"
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
 msgstr "ekz. «freeverb~»"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1050,6 +1062,9 @@ msgstr "ambaŭ"
 msgid "translations"
 msgstr "tradukoj"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1076,6 +1091,10 @@ msgstr "Serĉaj rezultoj"
 
 msgid "Log"
 msgstr "Protokolo"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Serĉante «%s»…"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2024,6 +2043,10 @@ msgstr ""
 
 msgid "Properties"
 msgstr "Atributoj"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Redakta reĝimo"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

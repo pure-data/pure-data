@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -129,6 +129,9 @@ msgstr "媒體"
 msgid "Window"
 msgstr "視窗"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr ""
 
@@ -213,6 +216,10 @@ msgstr "輸出設備"
 
 msgid "Use Multiple Devices"
 msgstr "使用多個 設備"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "輸入設備"
 
 msgid "Audio System"
 msgstr ""
@@ -1011,10 +1018,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1059,6 +1072,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1084,6 +1100,9 @@ msgid "Search Results"
 msgstr ""
 
 msgid "Log"
+msgstr ""
+
+msgid "Searching for all packages..."
 msgstr ""
 
 #, tcl-format
@@ -2034,6 +2053,10 @@ msgstr "要儲存已修改過的 '%s' 嗎？"
 
 msgid "Properties"
 msgstr "內容"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "編輯模式"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

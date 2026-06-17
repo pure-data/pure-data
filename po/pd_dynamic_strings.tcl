@@ -49,6 +49,7 @@ puts [_ "Put"]
 puts [_ "Find"]
 puts [_ "Media"]
 puts [_ "Window"]
+puts [_ "Tools"]
 puts [_ "Help"]
 
 # These are strings built into Tk that msgcat should know about.

@@ -12,9 +12,9 @@
 # tags: tags file
 # install: install to /usr/local (or elsewhere by setting "prefix" variable)
 #
-# You can get jack support ($ make -f makefile.gnu JACK=TRUE) or compile in
-# the portaudio library (PA=TRUE).  By default, both ALSA and OSS (BSD style)
-# audio APIs are compiled in.  You can disable them (e.g., OSS=FALSE).  In
+# You can get jack support ($ make -f makefile.gnu JACK=true) or compile in
+# the portaudio library (PA=true).  By default, both ALSA and OSS (BSD style)
+# audio APIs are compiled in.  You can disable them (e.g., OSS=false).  In
 # Gnu/linux, you can also just install "alsa-oss."
 #
 # You can add compiler flags using CODECFLAGS, MORECFLAGS and/or MORELDFLAGS.
@@ -89,7 +89,7 @@ SYSSRC += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 LIB += -lasound
 HAVEAUDIOAPI=true
 endif
-ifdef JACK
+ifeq ($(JACK), true)
 CPPFLAGS += -DUSEAPI_JACK
 SYSSRC += s_audio_jack.c
 LIB += -L/usr/lib64/pipewire-0.3/jack -ljack
@@ -101,7 +101,7 @@ CPPFLAGS += -DUSEAPI_OSS
 SYSSRC += s_audio_oss.c
 HAVEAUDIOAPI=true
 endif
-ifdef PA
+ifeq ($(PA), true)
 CPPFLAGS += -DUSEAPI_PORTAUDIO
 SYSSRC += s_audio_pa.c
 LIB += -lportaudio

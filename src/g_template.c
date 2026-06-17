@@ -101,6 +101,37 @@ static void template_conformarray(t_template *tfrom, t_template *tto,
 static void template_conformglist(t_template *tfrom, t_template *tto,
     t_glist *glist,  int *conformaction);
 
+/* ------------------- save utils ---------------------- */
+
+    /* get the unrealized creation binbuf, from the first "struct" in the list.
+    (this is used in g_readwrite.c) */
+t_binbuf *template_get_creation_binbuf(t_template *x)
+{
+    t_object *o = NULL;
+    if (x->t_list)
+    {
+        o = &x->t_list->x_obj;
+        if (o) return o->te_binbuf;
+    }
+    return NULL;
+}
+
+    /* get the unrealized creation name (e.g "$0-template"); used in g_readwrite.c */
+t_symbol *template_get_creation_name(t_template *x)
+{
+    t_symbol *name = &s_;
+    t_binbuf *bb = template_get_creation_binbuf(x);
+    if (bb)
+    {
+        t_atom *atoms = binbuf_getvec(bb);
+        int natom = binbuf_getnatom(bb);
+        if (natom > 1)
+            name = atoms[1].a_w.w_symbol;
+    }
+    return name;
+}
+
+
 /* ---------------------- storage ------------------------- */
 
 static t_class *gtemplate_class;
@@ -164,13 +195,18 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
             newtype = DT_TEXT;
         else if (newtypesym == gensym("array"))
         {
-            if (argc < 3 || argv[2].a_type != A_SYMBOL)
+            t_symbol *templatename;
+            if (argc < 3
+                || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
+            )
             {
                 pd_error(x, "array lacks element template or name");
                 goto bad;
             }
+            templatename = canvas_getsymbol_realized(canvas_getcurrent(),
+                &argv[2]);
             newtype = DT_ARRAY;
-            newarraytemplate = canvas_makebindsym(argv[2].a_w.w_symbol);
+            newarraytemplate = canvas_makebindsym(templatename);
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
@@ -579,10 +615,20 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_template *x;
-    t_symbol *templatesym =
-        canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
+    t_symbol *templatename;
+    t_symbol *templatesym;
+    t_binbuf *bb;
+
     if (!argc)
         return (0);
+
+    bb = binbuf_new();
+    binbuf_restore(bb, argc, argv);
+    argc = binbuf_getnatom(bb);
+    argv = binbuf_getvec(bb);
+
+    templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
+    templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
             /* check if there's already a template by this name. */
     if ((x = (t_template *)pd_findbyclass(templatesym, template_class)))
@@ -612,6 +658,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     }
         /* otherwise, just make one. */
     else template_new(templatesym, argc, argv);
+    binbuf_free(bb);
     return (0);
 }
 
@@ -1229,8 +1276,9 @@ void curve_float(t_curve *x, t_floatarg f)
 /* -------------------- widget behavior for curve ------------ */
 
 static void curve_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int *xp1, int *yp1, int *xp2, int *yp2)
+    t_word *data, t_template *template, t_scalar *sc,
+        t_float basex, t_float basey,
+            int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
@@ -1386,7 +1434,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
     }
 }
 
@@ -1464,7 +1512,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int besterror = 0x7fffffff;
     t_fielddesc *f;
     int x1, y1, x2, y2;
-    curve_getrect(z, glist, data, template, basex, basey,
+    curve_getrect(z, glist, data, template, sc, basex, basey,
         &x1, &y1, &x2, &y2);
     if ((x->x_flags & NOMOUSERUN)  ||
         !fielddesc_getfloat(&x->x_vis, template, data, 0))
@@ -1799,7 +1847,7 @@ int array_getfields(t_symbol *elemtemplatesym,
 }
 
 static void plot_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
+    t_word *data, t_template *template, t_scalar *sc, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_plot *x = (t_plot *)z;
@@ -1871,7 +1919,7 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
                     if (!wb) continue;
                     (*wb->w_parentgetrectfn)(y, glist,
                         (t_word *)((char *)(array->a_vec) + elemsize * i),
-                            elemtemplate, usexloc, useyloc,
+                            elemtemplate, sc, usexloc, useyloc,
                                 &xx1, &yy1, &xx2, &yy2);
                     if (xx1 < x1)
                         x1 = xx1;
@@ -2008,8 +2056,16 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
+                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
+                        glist_getcanvas(glist), tag, "-", 0,
+                        color, THISGUI->i_backgroundcolor,
+                        ixpix , (int) glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, minyval)),
+                        inextx, (int)(glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, maxyval))
+                                + linewidth));
 
-                    pdgui_vmess(0, "crr iiii rk rf rS",
+                    /* pdgui_vmess(0, "crr iiii rk rf rS",
                         glist_getcanvas(glist), "create", "rectangle",
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -2018,7 +2074,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                                 + linewidth),
                         "-fill", color,
                         "-width", 0.,
-                        "-tags", 3, tags);
+                        "-tags", 3, tags); */
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -2252,7 +2308,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess("pdtk_canvas_delete", "cs",
+            glist_getcanvas(glist), tag);
     }
 }
 
@@ -2877,15 +2934,43 @@ void drawtext_newtext(t_gobj *z, t_glist *gl, t_scalar *sc,
     scalar_redraw(sc, gl);
 }
 
+    /* called from g_rtext.c; rtext_findhit - if we're a draw command
+        in a scalar, are we visible? */
+int drawtext_isvisible(t_gobj *z, t_word *words)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    t_template *template = drawtext_gettemplate(z);
+    if (!template)
+    {
+        bug("drawtext_isvisible");
+        return (0);
+    }
+    return ((fielddesc_getfloat(&x->x_vis, template, words, 0) != 0));
+}
+
+
 /* -------------------- widget behavior for drawtext ------------ */
 
 static void drawtext_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, t_float basex, t_float basey,
-    int *xp1, int *yp1, int *xp2, int *yp2)
+    t_word *data, t_template *template, t_scalar *sc,
+        t_float basex, t_float basey,
+            int *xp1, int *yp1, int *xp2, int *yp2)
 {
-        /* just report an empty rectangle */
-    *xp1 = *yp1 = 0x7fffffff;
-    *xp2 = *yp2 = -0x7fffffff;
+    t_drawtext *x = (t_drawtext *)z;
+    t_rtext *rtext;
+    if (!gobj_shouldvis(z, glist)
+        || !drawtext_isvisible(z, data)
+        || !(rtext = glist_getforscalar(glist, sc, data, z)))
+    {
+        *xp1 = *yp1 = 0x7fffffff;
+        *xp2 = *yp2 = -0x7fffffff;
+    }
+    else
+    {
+        rtext_getrect(rtext, xp1, yp1, xp2, yp2);
+        if (*x->x_label->s_name)
+            *xp1 -= glist_fontwidth(glist) * strlen(x->x_label->s_name);
+    }
 }
 
 static void drawtext_displace(t_gobj *z, t_glist *glist,
@@ -2910,7 +2995,7 @@ static void drawtext_activate(t_gobj *z, t_glist *glist,
     post("drawtext_activate %d", state);
 }
 
-void rtext_setcolor(t_rtext *x, int color);
+void rtext_setcolor(t_rtext *x, unsigned int color);
 
 static void drawtext_vis(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_scalar *sc,
@@ -2962,8 +3047,9 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
         rtext_erase(rtext);
+        rtext_free(rtext);
     }
 }
 
@@ -3080,9 +3166,12 @@ static int drawtext_click(t_gobj *z, t_glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_drawtext *x = (t_drawtext *)z;
-    t_rtext *rtext = glist_getforscalar(glist, sc, data, z);
+    t_rtext *rtext;
     int x1, y1, x2, y2, type, onset;
     x->x_template = template;
+    if (!drawtext_isvisible(z, data))
+        return (0);
+    rtext = glist_getforscalar(glist, sc, data, z);
     rtext_getrect(rtext, &x1, &y1, &x2, &y2);
     if (xpix >= x1 && xpix <= x2 && ypix >= y1 && ypix <= y2 &&
         ((type = drawtext_gettype(z, template, &onset)) == DT_FLOAT ||

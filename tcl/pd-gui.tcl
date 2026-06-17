@@ -81,6 +81,7 @@ namespace import ::pdtk_canvas::pdtk_canvas_editmode
 namespace import ::pdtk_canvas::pdtk_canvas_getscroll
 namespace import ::pdtk_canvas::pdtk_canvas_setparents
 namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
+namespace import ::pdtk_canvas::pdtk_canvas_setcolors
 namespace import ::pdtk_canvas::pdtk_canvas_menuclose
 namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog
@@ -311,7 +312,8 @@ proc init_for_platform {} {
             # some platforms have a menubar on the top, so place below them
             set ::menubarsize 0
             # trying loading icon in the GUI directory
-            if {$::tcl_version >= 8.5} {
+            # the X-server on IRIX (and IRIX64) cannot handle this, so we exclude that platform
+            if {$::tcl_version >= 8.5 && [ string first IRIX $::tcl_platform(os) ] == -1} {
                 set icon [file join $::sys_guidir pd.gif]
                 if {[file readable $icon]} {
                     catch {

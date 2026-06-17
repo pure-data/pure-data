@@ -78,6 +78,18 @@ int pd_snprintf(char *buf, size_t size, const char *fmt, ...)
 
 #endif
 
+#ifdef HAVE_STRNLEN
+size_t pd_strnlen(const char*s, size_t maxlen) {
+    return strnlen(s, maxlen);
+}
+#else
+size_t pd_strnlen(const char*s, size_t maxlen) {
+    size_t i;
+    for(i=0; i<maxlen && *s++; i++);
+    return i;
+}
+#endif
+
 /* escape characters for tcl/tk */
 char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
 {

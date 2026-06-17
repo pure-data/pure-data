@@ -27,7 +27,7 @@
 #X obj 371 189 +;
 #X obj 371 227 expr fmod($f1 \, 10000) * 0.0002 - 1;
 #X obj 207 327 expr $f3 + $f2 * $f1;
-#X text 406 173 ('\$1' is the copy mumber \, with 20 copies it goes from 0 to 9500), f 25;
+#X text 406 173 ('\$1' is the copy number \, with 20 copies it goes from 0 to 9500), f 25;
 #X connect 0 0 5 0;
 #X connect 1 0 2 1;
 #X connect 2 0 3 0;

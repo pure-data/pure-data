@@ -34,8 +34,10 @@ char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." \
 stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) "\
  (" stringify(PD_TEST_VERSION) ")";
 
+#ifdef COMPILEDATE
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
+#endif
 
 void pd_init(void);
 void pd_term(void);
@@ -392,6 +394,8 @@ int sys_main(int argc, const char **argv)
         /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
+        if (!strcmp(argv[i], "-prefs"))
+            noprefs = 0;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
             prefsfile = argv[i+1];
         /* for external scheduler (to ignore audio api in sys_loadpreferences) */
@@ -407,8 +411,10 @@ int sys_main(int argc, const char **argv)
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
+#ifdef COMPILEDATE
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
         pd_version, pd_compiletime, pd_compiledate);
+#endif
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
@@ -426,7 +432,7 @@ int sys_main(int argc, const char **argv)
     sys_init_midi();
     sys_init_audio();
          /* load dynamic libraries specified with "-lib" args */
-    if (sys_oktoloadfiles(0))
+    if (sys_oktoloadfiles(0) || noprefs)
     {
         for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
             if (!sys_load_lib(0, nl->nl_string))
@@ -1430,6 +1436,8 @@ int sys_argparse(int argc, const char **argv)
         }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
             argc--, argv++;
+        else if (!strcmp(*argv, "-prefs")) /* did this earlier */
+            argc--, argv++;
         else if (!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
             argc -= 2, argv +=2;
         else
@@ -1552,7 +1560,10 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
+    {
+            /* not encoded; just return the symbol as is */
+        return s;
+    }
     else sp++;
     for (i = 0; i < MAXPDSTRING-1; i++, sp++)
     {

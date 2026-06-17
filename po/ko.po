@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2023-04-26 08:48+0000\n"
-"Last-Translator: simmon <simmon@nplob.com>\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ko/>\n"
 "Language: ko\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "선형"
@@ -133,6 +133,9 @@ msgstr "장치"
 msgid "Window"
 msgstr "창"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "도움말"
 
@@ -218,6 +221,10 @@ msgstr "출력 장치"
 msgid "Use Multiple Devices"
 msgstr "다수의 장치를 사용하기"
 
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "입력 장치"
+
 msgid "Audio System"
 msgstr ""
 
@@ -291,9 +298,8 @@ msgstr "여백:"
 msgid "Y range: from"
 msgstr "Y값 범위: 최소"
 
-#, fuzzy
 msgid "Object:"
-msgstr "오브젝트"
+msgstr "오브젝트:"
 
 msgid "Data Properties"
 msgstr "데이터 속성"
@@ -1028,11 +1034,18 @@ msgstr "설치"
 msgid "%s%% of download completed"
 msgstr "다운로드 %s%% 완료"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "정확한 라이브러리 혹은 오브젝트의 이름을 입력하십시오."
 
 msgid "e.g. 'freeverb~'"
 msgstr "예) 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "검색 결과와 글자를 일치시키기 위해 별표 '*'를 사용하십시오."
@@ -1079,6 +1092,9 @@ msgstr "전부"
 msgid "translations"
 msgstr "번역"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "오직 신뢰할 수 있는 사람들이 업로드한 익스터널만 설치하십시오."
 
@@ -1105,6 +1121,10 @@ msgstr "검색 결과"
 
 msgid "Log"
 msgstr "로그"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "\"%s\"을(를) 검색하고 있습니다..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2079,6 +2099,10 @@ msgstr "'%s'에서 변경된 사항을 저장 하겠습니까?"
 
 msgid "Properties"
 msgstr "속성"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "편집 모드"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

@@ -71,9 +71,13 @@ static int numAllocations_ = 0;
 #endif
 
 
-void *PaUtil_AllocateMemory( long size )
+void *PaUtil_AllocateZeroInitializedMemory( long size )
 {
+    /* use { malloc(); memset() } instead of calloc() so that we get
+       the same alignment guarantee as malloc(). */
     void *result = malloc( size );
+    if ( result )
+        memset( result, 0, size );
 
 #if PA_TRACK_MEMORY
     if( result != NULL ) numAllocations_ += 1;
@@ -160,7 +164,11 @@ PaTime PaUtil_GetTime( void )
     return mach_absolute_time() * machSecondsConversionScaler_;
 #elif defined(HAVE_CLOCK_GETTIME)
     struct timespec tp;
+#if defined(CLOCK_MONOTONIC)
+    clock_gettime(CLOCK_MONOTONIC, &tp);
+#else
     clock_gettime(CLOCK_REALTIME, &tp);
+#endif
     return (PaTime)(tp.tv_sec + tp.tv_nsec * 1e-9);
 #else
     struct timeval tv;
@@ -270,11 +278,14 @@ PaError PaUnixThread_New( PaUnixThread* self, void* (*threadFunc)( void* ), void
 {
     PaError result = paNoError;
     pthread_attr_t attr;
+    pthread_condattr_t cattr;
     int started = 0;
 
     memset( self, 0, sizeof (PaUnixThread) );
     PaUnixMutex_Initialize( &self->mtx );
-    PA_ASSERT_CALL( pthread_cond_init( &self->cond, NULL ), 0 );
+    PA_ASSERT_CALL( pthread_condattr_init( &cattr ), 0 );
+    self->condClockId = PaPthreadUtil_NegotiateCondAttrClock( &cattr );
+    PA_ASSERT_CALL( pthread_cond_init( &self->cond, &cattr), 0 );
 
     self->parentWaiting = 0 != waitForChild;
 
@@ -353,35 +364,40 @@ PaError PaUnixThread_New( PaUnixThread* self, void* (*threadFunc)( void* ), void
 
     if( self->parentWaiting )
     {
-        PaTime till;
         struct timespec ts;
+        int waitForDeadline = 0;
         int res = 0;
-        PaTime now;
+#ifdef PA_ENABLE_DEBUG_OUTPUT
+        double startTime = PaUtil_GetTime();
+#endif
 
         PA_ENSURE( PaUnixMutex_Lock( &self->mtx ) );
 
         /* Wait for stream to be started */
-        now = PaUtil_GetTime();
-        till = now + waitForChild;
+        if( waitForChild > 0.0 )
+        {
+            if( PaPthreadUtil_GetTime( self->condClockId, &ts ) == 0 )
+            {
+                PaTime now = ts.tv_sec + ts.tv_nsec * 1e-9;
+                PaTime deadline = now + waitForChild;
+                ts.tv_sec = (time_t) floor( deadline );
+                ts.tv_nsec = (long) ((deadline - floor( deadline )) * 1e9);
+                waitForDeadline = 1;
+            }
+        }
 
         while( self->parentWaiting && !res )
         {
-            if( waitForChild > 0 )
-            {
-                ts.tv_sec = (time_t) floor( till );
-                ts.tv_nsec = (long) ((till - floor( till )) * 1e9);
+            if( waitForDeadline )
                 res = pthread_cond_timedwait( &self->cond, &self->mtx.mtx, &ts );
-            }
             else
-            {
                 res = pthread_cond_wait( &self->cond, &self->mtx.mtx );
-            }
         }
 
         PA_ENSURE( PaUnixMutex_Unlock( &self->mtx ) );
 
         PA_UNLESS( !res || ETIMEDOUT == res, paInternalError );
-        PA_DEBUG(( "%s: Waited for %g seconds for stream to start\n", __FUNCTION__, PaUtil_GetTime() - now ));
+        PA_DEBUG(( "%s: Waited for %g seconds for stream to start\n", __FUNCTION__, PaUtil_GetTime() - startTime ));
         if( ETIMEDOUT == res )
         {
             PA_ENSURE( paTimedOut );

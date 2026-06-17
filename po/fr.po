@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2025-05-26 23:57+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"Last-Translator: cyrille henry <ch@chnry.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 2026.5.dev0\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -135,6 +135,9 @@ msgstr "Média"
 msgid "Window"
 msgstr "Fenêtre"
 
+msgid "Tools"
+msgstr "Outils"
+
 msgid "Help"
 msgstr "Aide"
 
@@ -218,6 +221,9 @@ msgstr "Périphériques de sortie"
 
 msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
+
+msgid "Rescan Devices"
+msgstr "Détecter les périphériques"
 
 msgid "Audio System"
 msgstr "Système audio"
@@ -1020,11 +1026,20 @@ msgstr "Installer"
 msgid "%s%% of download completed"
 msgstr "%s%% du téléchargement effectué"
 
-msgid "Enter an exact library or object name."
-msgstr "Saisissez le nom exact d'une bibliothèque ou d'un objet."
+msgid "Enter a library or object name."
+msgstr "Saisissez le nom d'une bibliothèque ou d'un objet."
 
 msgid "e.g. 'freeverb~'"
 msgstr "exemple : 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+"Par défaut, cela trouvera tout ce qui contient le(s) mot(s) recherché(s)."
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
+"Si vous activez le mode \"recherche exacte\", seules les correspondances "
+"exactes seront prises en compte."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1078,6 +1093,9 @@ msgstr "les deux"
 msgid "translations"
 msgstr "traductions"
 
+msgid "exact search"
+msgstr "recherche exacte"
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 "N'installez que des objets ou bibliothèques provenant de sources de "
@@ -1106,6 +1124,9 @@ msgstr "Résultats de la recherche"
 
 msgid "Log"
 msgstr "Journal"
+
+msgid "Searching for all packages..."
+msgstr "Recherche de tous les paquets…"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2077,6 +2098,9 @@ msgstr "Enregistrer les modifications de '%s' ?"
 msgid "Properties"
 msgstr "Propriétés"
 
+msgid "edit mode"
+msgstr "Mode d'édition"
+
 #, tcl-format
 msgid "Accept changes to '%s'?"
 msgstr "Accepter les modifications de « %s » ?"
@@ -2242,21 +2266,17 @@ msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 #~ msgid "width:"
 #~ msgstr "largeur :"
 
-#, tcl-format
 #~ msgid "couldn't create Pd documents directory: %s\n"
 #~ msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
 #~ msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
-#, tcl-format
 #~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : la famille de police '%s' n'a pas pu être trouvée, "
 #~ "utilisation de la police par défaut (%s)\n"
 
-#, tcl-format
 #~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "ATTENTION : l'épaisseur de police '%s' n'a pas pu être trouvée, "

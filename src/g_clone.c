@@ -712,7 +712,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     gensym("#A")->s_thing = (t_pd *)x;
     return (x);
 usage:
-    pd_error(0, "usage: clone [-s starting-number] <number> <name> [arguments]");
+    pd_error(0, "usage: clone [flags] <name> <number> [arguments]");
 fail:
     if (x->x_argv)
         freebytes(x->x_argv, sizeof(x->x_argc * sizeof(*x->x_argv)));

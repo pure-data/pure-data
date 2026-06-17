@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2025-05-26 23:57+0000\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2026-05-12 15:36+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "linear"
 msgstr "linear"
@@ -135,6 +135,9 @@ msgstr "Medien"
 msgid "Window"
 msgstr "Fenster"
 
+msgid "Tools"
+msgstr "Werkzeuge"
+
 msgid "Help"
 msgstr "Hilfe"
 
@@ -220,6 +223,9 @@ msgstr "Ausgabegeräte"
 
 msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
+
+msgid "Rescan Devices"
+msgstr "Geräteliste aktualisieren"
 
 msgid "Audio System"
 msgstr "Audiosystem"
@@ -592,10 +598,10 @@ msgstr ""
 "zu sehen)"
 
 msgid "Use tabs"
-msgstr "Verwende Tab"
+msgstr "Tabs verwenden"
 
 msgid "Single page"
-msgstr "alles auf einer Seite"
+msgstr "Alles auf einer Seite"
 
 msgid "Patching helpers"
 msgstr "Patching-Hilfen"
@@ -1023,11 +1029,18 @@ msgstr "Installieren"
 msgid "%s%% of download completed"
 msgstr "%s%% heruntergeladen"
 
-msgid "Enter an exact library or object name."
-msgstr "Geben Sie den vollständigen Namen einer Bibliothek/eines Objektes ein."
+msgid "Enter a library or object name."
+msgstr "Geben Sie den Namen einer Bibliothek/eines Objektes ein."
 
 msgid "e.g. 'freeverb~'"
 msgstr "z.B. 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr "Damit wird alles gefunden, das den Suchbegriff enthält."
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
+"Wenn \"exakte Suche\" aktiviert ist, werden nur genaue Treffer angezeigt."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Sie können '*' als Platzhalter verwenden."
@@ -1076,6 +1089,9 @@ msgstr "beides"
 msgid "translations"
 msgstr "Übersetzungen"
 
+msgid "exact search"
+msgstr "exakte Suche"
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installieren Sie nur Externals, deren Entwickler_innen Sie vertrauen."
 
@@ -1102,6 +1118,9 @@ msgstr "Suchergebnisse"
 
 msgid "Log"
 msgstr "Protokoll"
+
+msgid "Searching for all packages..."
+msgstr "Suche nach allen Paketen..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2070,6 +2089,9 @@ msgstr "Änderungen in '%s' speichern?"
 msgid "Properties"
 msgstr "Eigenschaften"
 
+msgid "edit mode"
+msgstr "wird bearbeitet"
+
 #, tcl-format
 msgid "Accept changes to '%s'?"
 msgstr "Änderungen an '%s' akzeptieren?"
@@ -2096,7 +2118,7 @@ msgid "Audio off"
 msgstr "Audio aus"
 
 msgid "Find source"
-msgstr "Gehe zum Ursprung"
+msgstr "Gehe zur Ursache"
 
 msgid "Pd"
 msgstr "Pd"
@@ -2245,21 +2267,17 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "width:"
 #~ msgstr "Breite:"
 
-#, tcl-format
 #~ msgid "WARNING: font family '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "WARNUNG: Schriftart '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
-#, tcl-format
 #~ msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 #~ msgstr ""
 #~ "WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
-#, tcl-format
 #~ msgid "couldn't create Pd documents directory: %s\n"
 #~ msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
-#, tcl-format
 #~ msgid "couldn't create \"externals\" directory in: %s\n"
 #~ msgstr "konnte kein \"externals\"-Verzeichnis in '%s' erstellen.\n"
 
@@ -2269,7 +2287,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Hold:"
 #~ msgstr "Haltezeit:"
 
-#, tcl-format
 #~ msgid "[deken] Start searching for externals... %s"
 #~ msgstr "[deken] starte Paketsuche... %s"
 
@@ -2282,11 +2299,9 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Install package"
 #~ msgstr "Paket installieren"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] < %2$s...overwriting!"
 #~ msgstr "überschreibe die installierte Version [%1$s] mit %2$s!"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] == %2$s...skipping!"
 #~ msgstr ""
 #~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
@@ -2354,7 +2369,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Filters"
 #~ msgstr "Filter"
 
-#, tcl-format
 #~ msgid "installed version [%1$s] > %2$s...skipping!"
 #~ msgstr ""
 #~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"

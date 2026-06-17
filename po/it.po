@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 msgid "linear"
 msgstr "lineare"
@@ -135,6 +135,9 @@ msgstr "Media"
 msgid "Window"
 msgstr "Finestra"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Aiuto"
 
@@ -218,6 +221,9 @@ msgstr "Dispositivo di uscita"
 
 msgid "Use Multiple Devices"
 msgstr "Usa Dispositivi Multipli"
+
+msgid "Rescan Devices"
+msgstr "Ricontrolla i dispositivi"
 
 msgid "Audio System"
 msgstr "Sistema audio"
@@ -1015,11 +1021,18 @@ msgstr "Installa"
 msgid "%s%% of download completed"
 msgstr "%s%% di download completato"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Inserisci il nome esatto di una libreria o di un oggetto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "ad esempio 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1067,6 +1080,9 @@ msgstr "entrambi"
 msgid "translations"
 msgstr "traduzioni"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installa solo externals caricati da persone di cui ti fidi."
 
@@ -1093,6 +1109,10 @@ msgstr "Risultati della Ricerca"
 
 msgid "Log"
 msgstr "Log"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Ricerca di \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2066,6 +2086,10 @@ msgstr "Salvare le modifiche apportate a '%s'?"
 
 msgid "Properties"
 msgstr "Proprietà"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Modalità modifica"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

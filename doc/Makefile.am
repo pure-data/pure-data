@@ -105,6 +105,8 @@ nobase_dist_libpd_DATA = \
      ./1.manual/resources/2.4.9.png \
      ./1.manual/resources/2.5.1.png \
      ./1.manual/resources/2.6.1.png \
+     ./1.manual/resources/2.7.1.png \
+     ./1.manual/resources/2.7.2.png \
      ./1.manual/resources/2.8.1.png \
      ./1.manual/resources/2.8.2.png \
      ./1.manual/resources/2.8.3.png \
@@ -137,12 +139,12 @@ nobase_dist_libpd_DATA = \
      ./1.manual/resources/4.4.2.png \
      ./1.manual/resources/4.4.3.png \
      ./1.manual/index.htm \
-     ./1.manual/resources/chapter1.htm \
-     ./1.manual/resources/chapter2.htm \
-     ./1.manual/resources/chapter3.htm \
-     ./1.manual/resources/chapter4.htm \
-     ./1.manual/resources/chapter5.htm \
-     ./1.manual/resources/chapter6.htm \
+     ./1.manual/1.introduction.htm \
+     ./1.manual/2.theory.of.operation.htm \
+     ./1.manual/3.installing.configuring.htm \
+     ./1.manual/4.externals.htm \
+     ./1.manual/5.current.status.htm \
+     ./1.manual/6.building.from.source.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \

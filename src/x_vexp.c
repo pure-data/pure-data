@@ -834,6 +834,10 @@ ex_checklval(struct expr *e, struct ex_ex *eptr)
         extmp = eptr->ex_end;
         while (eptr->ex_type && eptr != extmp) {
                 if (eptr->ex_type == ET_OP && eptr->ex_op == OP_STORE) {
+                        if (eptr[1].ex_type == ET_SI && eptr[1].ex_flags != EX_F_SI_TAB) {
+                                post_error(e, "expr: '%s' - Bad left value: a symbol inlet cannot be a left value", e->exp_string);
+                                return(1);
+                        }
                         if (eptr[1].ex_type != ET_VAR &&
                             eptr[1].ex_type != ET_SI &&
                             eptr[1].ex_type != ET_TBL) {
@@ -1241,6 +1245,18 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                  * we need to look at the previous results buffer
                  */
                 optr->ex_type = ET_FLT;
+               if (eptr->ex_int >= expr->exp_nexpr) {
+                        if (!(expr->exp_error & EE_YO_RANGE)) {
+                                expr->exp_error |= EE_YO_RANGE;
+                                post_error((fts_object_t *)expr,
+                                      "fexpr~: $y%ld: not that many expr's",
+                                                                    eptr->ex_int + 1);
+                                post_error((fts_object_t *)expr,
+                                      "fexpr~: no error report till next reset");
+                        }
+                        optr->ex_flt = 0;
+                        return(++eptr);
+                }
                 if (idx == 0)
                         optr->ex_flt =
                         expr->exp_p_res[eptr->ex_int][expr->exp_vsize - 1];
@@ -1497,7 +1513,7 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 tbl = (char *) eptr->ex_ptr;
                 break;
         case ET_SI:
-                if (eptr->ex_flags & EX_F_SI_TAB) {
+                if (!(eptr->ex_flags & EX_F_SI_TAB)) {
                         post("expr: symbol cannot be a left value '%s'",
                                 expr->exp_string);
                         retp = exNULL;
@@ -1505,14 +1521,19 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 }
                 if (!expr->exp_var[eptr->ex_int].ex_ptr) {
                         if (!(expr->exp_error & EE_NOTABLE)) {
-                                post_error(expr, "expr: '%s': syntax error: no string for inlet %ld",
+                                post_error(expr, "expr: '%s': no string for inlet %ld",
                                             expr->exp_string, eptr->ex_int + 1);
-                                post_error(expr, "expr: No more table errors will be reported");
-                                post_error(expr, "expr: till the next reset");
-                                expr->exp_error |= EE_NOTABLE;
+                                if (!IS_EXPR(expr)) {
+                                        post_error(expr,
+                                 "expr: No more table errors will be reported");
+                                        post_error(expr,
+                                                   "expr: till the next reset");
+                                        expr->exp_error |= EE_NOTABLE;
+                                }
                         }
                         badleft++;
-                        post("expr: '%s' - Bad left value", expr->exp_string);
+                        optr->ex_type = ET_INT;
+                        optr->ex_int = 0;
                         retp = exNULL;
                         return (retp);
                 } else {
@@ -1561,9 +1582,13 @@ eval_tab(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                         if (!(expr->exp_error & EE_NOTABLE)) {
                                 post_error(expr, "expr:'%s': no string for inlet %ld",
                                                                                                                         expr->exp_string, eptr->ex_int + 1);
-                                post("expr: No more table errors will be reported");
-                                post("expr: till the next reset");
-                                expr->exp_error |= EE_NOTABLE;
+                                if (!IS_EXPR(expr)) {
+                                        post_error(expr,
+                                 "expr: No more table errors will be reported");
+                                        post_error(expr,
+                                                   "expr: till the next reset");
+                                        expr->exp_error |= EE_NOTABLE;
+                                }
                         }
                         notable++;
                 } else
@@ -1704,16 +1729,24 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 if (fi >= 0) {
                         if (!(expr->exp_error & EE_BI_OUTPUT)) {
                                 expr->exp_error |= EE_BI_OUTPUT;
-                                post("fexpr~: '%s' - bad output index, (%f)",
-                                                                expr->exp_string, fi);
-                                post("fexpr~: no error report till next reset");
-                                post("fexpr~: index assumed to be = -1");
+                                post_error((fts_object_t *) expr,
+                                       "fexpr~: '%s' - bad output index, (%f)",
+                                                          expr->exp_string, fi);
+                                post_error((fts_object_t *)expr,
+                                     "fexpr~: no error report till next reset");
+                                post_error((fts_object_t *)expr,
+                                            "fexpr~: index assumed to be = -1");
                         }
                         i = -1;
                 }
                 if (eptr->ex_int >= expr->exp_nexpr) {
-                        post("fexpr~: $y%d illegal: not that many expr's",
-                                                                eptr->ex_int);
+                        if (!(expr->exp_error & EE_YO_RANGE)) {
+                                expr->exp_error |= EE_YO_RANGE;
+                                post_error((fts_object_t *)expr,
+                                     "fexpr~: $y%ld: not that many expr's",
+                                                                    eptr->ex_int + 1);
+                                post_error((fts_object_t *)expr, "fexpr~: no error report till next reset");
+                        }
                         optr->ex_flt = 0;
                         return (reteptr);
                 }

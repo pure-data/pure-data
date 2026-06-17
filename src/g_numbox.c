@@ -119,21 +119,24 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     char tag[128];
 
-    int lcol = x->x_gui.x_lcol;
-    int fcol = x->x_gui.x_fcol;
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
     SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
+    unsigned int fcol = x->x_gui.x_fcol, lcol = x->x_gui.x_lcol;
     if(x->x_gui.x_fsf.x_selected)
-        fcol = lcol = IEM_GUI_COLOR_SELECTED;
+    {
+        fcol = lcol = THISGUI->i_selectcolor;
+    }
     if(x->x_gui.x_fsf.x_change)
-        fcol =  IEM_GUI_COLOR_EDITED;
+    {
+        fcol = THISGUI->i_gopcolor;
+    }
 
     my_numbox_ftoa(x);
 
-    sprintf(tag, "%pBASE1", x);
+    sprintf(tag, "%p_BASE1", x);
     pdgui_vmess(0, "crs  ii ii ii ii ii ii", canvas, "coords", tag,
         xpos,              ypos,
         xpos + w - corner, ypos,
@@ -143,11 +146,11 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         xpos,              ypos);
     pdgui_vmess(0, "crs  ri rk rk", canvas, "itemconfigure", tag,
         "-width", zoom,
-        "-outline", IEM_GUI_COLOR_NORMAL,
+        "-outline", THISGUI->i_foregroundcolor,
         "-fill", x->x_gui.x_bcol);
 
 
-    sprintf(tag, "%pBASE2", x);
+    sprintf(tag, "%p_BASE2", x);
     pdgui_vmess(0, "crs  ii ii ii", canvas, "coords", tag,
         xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
@@ -156,7 +159,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-width", zoom,
         "-fill", x->x_gui.x_fcol);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom,
         ypos + x->x_gui.x_ldy * zoom);
@@ -165,7 +168,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-fill", lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 
-    sprintf(tag, "%pNUMBER", x);
+    sprintf(tag, "%p_NUMBER", x);
     pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + half + 2*zoom, ypos + half + d);
     pdgui_vmess(0, "crs  rs rA rk", canvas, "itemconfigure", tag,
@@ -181,21 +184,21 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
-    sprintf(tag, "%pBASE1", x);
+    sprintf(tag, "%p_BASE1", x);
     pdgui_vmess(0, "crr ii rS", canvas, "create", "polygon",
         0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%pBASE2", x);
+    sprintf(tag, "%p_BASE2", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
-    sprintf(tag, "%pNUMBER", x);
+    sprintf(tag, "%p_NUMBER", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 2, tags);
 
@@ -206,8 +209,9 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
 static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int bcol = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol, fcol = x->x_gui.x_fcol;
     char tag[128];
+    unsigned int bcol = THISGUI->i_foregroundcolor;
+    unsigned int fcol = x->x_gui.x_fcol, lcol = x->x_gui.x_lcol;
 
     if(x->x_gui.x_fsf.x_selected)
     {
@@ -217,16 +221,16 @@ static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
             x->x_buf[0] = 0;
             sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         }
-        bcol = lcol = fcol = IEM_GUI_COLOR_SELECTED;
+        bcol = lcol = fcol = THISGUI->i_selectcolor;
     }
 
-    sprintf(tag, "%pBASE1", x);
+    sprintf(tag, "%p_BASE1", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", bcol);
-    sprintf(tag, "%pBASE2", x);
+    sprintf(tag, "%p_BASE2", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
-    sprintf(tag, "%pNUMBER", x);
+    sprintf(tag, "%p_NUMBER", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
 }
 
@@ -237,7 +241,7 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     {
         t_canvas *canvas = glist_getcanvas(glist);
         char tag[128];
-        sprintf(tag, "%pNUMBER", x);
+        sprintf(tag, "%p_NUMBER", x);
         if(x->x_gui.x_fsf.x_change)
         {
             if(x->x_buf[0])
@@ -250,22 +254,27 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
                 pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", IEM_GUI_COLOR_EDITED, "-text", cp);
+                    "-fill", THISGUI->i_gopcolor, "-text", cp);
                 x->x_buf[sl] = 0;
             }
             else
             {
                 my_numbox_ftoa(x);
                 pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", IEM_GUI_COLOR_EDITED, "-text", x->x_buf);
+                    "-fill", THISGUI->i_gopcolor, "-text", x->x_buf);
                 x->x_buf[0] = 0;
             }
         }
         else
         {
             my_numbox_ftoa(x);
+            if(x->x_gui.x_fsf.x_selected)
                 pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
+                    "-fill", THISGUI->i_selectcolor,
+                    "-text", x->x_buf);
+            else
+                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
+                    "-fill", x->x_gui.x_fcol,
                     "-text", x->x_buf);
             x->x_buf[0] = 0;
         }

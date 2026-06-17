@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-06-02 09:07+0200\n"
-"PO-Revision-Date: 2024-07-08 17:20+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "線形"
@@ -132,6 +132,9 @@ msgstr "メディア"
 msgid "Window"
 msgstr "ウィンドウ"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -217,6 +220,10 @@ msgstr "出力デバイス"
 msgid "Use Multiple Devices"
 msgstr "複数のデバイスを使用する"
 
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "入力デバイス"
+
 msgid "Audio System"
 msgstr ""
 
@@ -289,9 +296,8 @@ msgstr "余白:"
 msgid "Y range: from"
 msgstr "Y範囲: はじまり"
 
-#, fuzzy
 msgid "Object:"
-msgstr "オブジェクト"
+msgstr "オブジェクト:"
 
 msgid "Data Properties"
 msgstr "データプロパティ"
@@ -1027,11 +1033,18 @@ msgstr "インストール"
 msgid "%s%% of download completed"
 msgstr "ダウンロードの %s%% が完了しました"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "正確なライブラリ名またはオブジェクト名を入力してください。"
 
 msgid "e.g. 'freeverb~'"
 msgstr "例) 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1080,6 +1093,9 @@ msgstr "ライブラリとオブジェクト"
 msgid "translations"
 msgstr "翻訳"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "信頼できる人がアップロードしたエクスターナルだけをインストールする。"
 
@@ -1106,6 +1122,10 @@ msgstr "検索結果"
 
 msgid "Log"
 msgstr "ログ"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "\"%s\" を検索しています..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2081,6 +2101,10 @@ msgstr "'%s'で行った変更を保存しますか？"
 
 msgid "Properties"
 msgstr "プロパティ"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "編集モード"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

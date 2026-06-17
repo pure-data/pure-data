@@ -18,6 +18,7 @@ proc pdtk_textwindow_open {name geometry title font} {
     } else {
         toplevel $name
         wm title $name $title
+        ::pd_menus::menubar_for_dialog $name
         wm geometry $name $geometry
         wm protocol $name WM_DELETE_WINDOW \
             [concat pdtk_textwindow_close $name 1]

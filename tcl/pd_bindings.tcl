@@ -447,8 +447,9 @@ proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift {keycode ""}
 # are local to each patch.  Therefore, key messages are not send for the
 # dialog panels, the Pd window, help browser, etc. so we need to filter those
 # events out.
+# ::pd_bindings::sendkey     %W     x     %K  %A  x     %k
 proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
-    #::pdwindow::error "::pd_bindings::sendkey .${state}. .${key}. .${iso}. .${shift}. .${keycode}.\n"
+    #::pdwindow::error "::pd_bindings::sendkey state=\{${state}\} key=\{${key}\} iso=\{${iso}\} shift=\{${shift}\} keycode=\{${keycode}\}\n"
 
     # state: 1=keypress, 0=keyrelease
     # key (%K): the keysym corresponding to the event, substituted as a textual string
@@ -472,7 +473,10 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
     set isosplit [split $iso {}]
 
     if { [llength $isosplit] == 0 && $state == 0 } {
-        catch {set iso [dict get $::pd_bindings::key2iso $keycode] }
+        catch {
+            set iso [dict get $::pd_bindings::key2iso $keycode]
+            set isosplit [split $iso {}]
+        }
     }
 
     switch -- [llength $isosplit] {
@@ -487,6 +491,8 @@ proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
                 "Delete"    { set key 127 }
                 "KP_Delete" { set key 127 }
                 "KP_Enter"  { set key  10 }
+                ";"         { set key  59 }
+                ","         { set key  44 }
                 default     {             }
             }
         }

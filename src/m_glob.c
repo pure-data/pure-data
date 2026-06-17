@@ -23,7 +23,7 @@ void glob_audiostatus(void *dummy);
 void glob_finderror(t_pd *dummy);
 void glob_findinstance(t_pd *dummy, t_symbol*s);
 void glob_start_preference_dialog(t_pd *dummy, t_symbol*s);
-void glob_audio_properties(t_pd *dummy, t_floatarg flongform);
+void glob_audio_properties(t_pd *dummy);
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_audio_setapi(t_pd *dummy, t_floatarg f);
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
@@ -47,6 +47,7 @@ void glob_vis(void *dummy, t_symbol *s);
 void glob_closesubs(void *dummy);
 void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
     t_symbol *gop);
+void glob_rescanaudio(void *dummy);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -156,7 +157,7 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_start_preference_dialog,
         gensym("start-preference-dialog"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_properties,
-        gensym("audio-properties"), A_DEFFLOAT, 0);
+        gensym("audio-properties"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_dialog,
         gensym("audio-dialog"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audio_setapi,
@@ -208,6 +209,8 @@ void glob_init(void)
         gensym("close-subwindows"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_colors,
         gensym("colors"), A_SYMBOL, A_SYMBOL, A_SYMBOL, A_DEFSYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_rescanaudio,
+        gensym("rescan-audio"), 0);
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }

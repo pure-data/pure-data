@@ -10,7 +10,7 @@ DELETE = del
 VCSDK = "C:/Program Files/Microsoft SDKs/Windows/v6.0A"
 VC9 = "C:/Program Files/Microsoft Visual Studio 9.0/VC"
 
-WISH = wish85.exe
+WISH = wish86.exe
 
 EXTRA_LIBPATH=
 EXTRA_INCLUDES=
@@ -106,6 +106,7 @@ PAOBJ = pa_stream.obj pa_trace.obj pa_process.obj \
 	pa_front.obj pa_dither.obj pa_cpuload.obj pa_converters.obj \
 	pa_allocation.obj pa_ringbuffer.obj \
 	pa_win_hostapis.obj pa_win_util.obj pa_win_waveformat.obj \
+	pa_win_version.obj \
 	pa_win_wmme.obj
 #       pa_win_wdmks.obj
 
@@ -193,6 +194,8 @@ pa_win_waveformat.obj: $(PASRC)/os/win/pa_win_waveformat.c
 	$(MSCC) /c $(PACF) $(PASRC)/os/win/pa_win_waveformat.c
 pa_win_coinitialize.obj: $(PASRC)/os/win/pa_win_coinitialize.c
 	$(MSCC) /c $(PACF) $(PASRC)/os/win/pa_win_coinitialize.c
+pa_win_version.obj: $(PASRC)/os/win/pa_win_version.c
+	$(MSCC) /c $(PACF) $(PASRC)/os/win/pa_win_version.c
 pa_win_wmme.obj: $(PASRC)/hostapi/wmme/pa_win_wmme.c
 	$(MSCC) /c $(PACF) $(PASRC)/hostapi/wmme/pa_win_wmme.c
 pa_win_wdmks.obj: $(PADIR)/a_win_wdmks/pa_win_wdmks.c
