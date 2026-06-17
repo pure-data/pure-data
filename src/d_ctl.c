@@ -978,6 +978,13 @@ static void siginfo_proxy_bang(t_siginfo_proxy*p) {
     }
 }
 
+static void siginfo_tilde_free(t_siginfo_tilde*x) {
+    if(x->x_vec)
+        freebytes(x->x_vec, sizeof(*x->x_vec) * (x->x_argc));
+    if(x->x_argv)
+        freebytes(x->x_argv, sizeof(*x->x_argv) * (x->x_argc));
+    pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
+}
 
 static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
     t_siginfo_tilde *x = (t_siginfo_tilde *)pd_new(siginfo_tilde_class);
@@ -1029,7 +1036,7 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol*s, int argc, t_atom*argv) {
 static void siginfo_tilde_setup(void)
 {
     siginfo_tilde_class = class_new(gensym("siginfo~"),
-        (t_newmethod)siginfo_tilde_new, 0,
+        (t_newmethod)siginfo_tilde_new, (t_method)siginfo_tilde_free,
         sizeof(t_siginfo_tilde), CLASS_MULTICHANNEL, A_GIMME, 0);
     CLASS_MAINSIGNALIN(siginfo_tilde_class, t_siginfo_tilde, x_f);
     class_addmethod(siginfo_tilde_class, (t_method)siginfo_tilde_dsp,
