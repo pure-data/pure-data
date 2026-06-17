@@ -773,11 +773,11 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     {
         int dev = atom_getfloatarg(i, argc, argv);
         if(dev > 0)
-            newmidiindev[nindev++] = dev;
+            newmidiindev[nindev++] = dev - 1;
 
         dev = atom_getfloatarg(i+MIDI_DIALOG_DEVS, argc, argv);
         if(dev > 0)
-            newmidioutdev[noutdev++] = dev;
+            newmidioutdev[noutdev++] = dev - 1;
     }
 
     alsadevin = atom_getfloatarg(MIDI_DIALOG_DEVS + MIDI_DIALOG_DEVS + 0, argc, argv);
