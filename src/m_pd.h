@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 56
-#define PD_BUGFIX_VERSION 5
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 57
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "-WIP"
 
 /* compile-time version check:
    #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
