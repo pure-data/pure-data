@@ -40,7 +40,7 @@ CPPFLAGS = -DINSTALL_PREFIX=\"$(prefix)\" \
     -D_DARWIN_UNLIMITED_SELECT -DFD_SETSIZE=10240 \
     -I$(PADIR)/include -I$(PADIR)/src/common  \
     -I$(PADIR)/src/os/mac_osx/ -I$(PMDIR)/pm_common \
-    -I$(PMDIR)/pm_mac -I$(PMDIR)/porttime \
+    -I$(PMDIR)/pm_mac -I$(PMDIR)/porttime -DLIMIT_RATE=0 \
     -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
 ARCH_CFLAGS = $(ARCH)
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
