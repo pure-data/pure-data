@@ -899,6 +899,8 @@ static void siginfo_tilde_outmsg(t_siginfo_tilde*x, t_symbol*sel, t_float f) {
     outlet_anything(x->x_outlet, sel, 1, ap);
 }
 
+int canvas_getswitchedon(t_canvas *x);
+
 static void siginfo_tilde_bang(t_siginfo_tilde*x) {
     t_atom*ap = x->x_argv;
     t_symbol**vec = x->x_vec;
@@ -910,7 +912,7 @@ static void siginfo_tilde_bang(t_siginfo_tilde*x) {
     t_symbol*s_samplerate = gensym("samplerate");
     t_symbol*s_samplespersecond = gensym("samplespersecond");
 
-    int state = x->x_globaldspstate;
+    int state = x->x_globaldspstate && canvas_getswitchedon(x->x_canvas);
     int blocksize = x->x_blocksize;
     int numchannels = x->x_numchannels;
     int overlap = x->x_overlap;
@@ -973,7 +975,7 @@ static void siginfo_proxy_bang(t_siginfo_proxy*p) {
             }
         }
     } else {
-        siginfo_tilde_outmsg(x, s_dsp, x->x_globaldspstate);
+        siginfo_tilde_outmsg(x, s_dsp, x->x_globaldspstate && canvas_getswitchedon(x->x_canvas));
     }
 }
 
