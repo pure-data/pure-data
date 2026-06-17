@@ -25,10 +25,12 @@ VERSION=""
 ##### FUNCTIONS
 
 # copy .h & .c files from $SRC to $DEST, ignore missing file errors
+# remove executable bits which may be set in some original repo files
 function copysrc {
     mkdir -p "${DEST}/${1}"
     cp -v "${SRC}/${1}"/*.h "${DEST}/${1}" 2>/dev/null || :
     cp -v "${SRC}/${1}"/*.c "${DEST}/${1}" 2>/dev/null || :
+    find "${DEST}/${1}" -type f -exec chmod -x {} \;.
 }
 
 usage() {
