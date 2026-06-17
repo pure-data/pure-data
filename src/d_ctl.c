@@ -931,7 +931,7 @@ static void siginfo_tilde_bang(t_siginfo_tilde *x)
         siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
         return;
     }
-    for(unsigned int i = x->x_argc; i > 0; i--)
+    for (unsigned int i = x->x_argc; i > 0; i--)
     {
         t_symbol *s = vec[i-1];
         t_float value = -1;
@@ -970,7 +970,7 @@ static void siginfo_proxy_bang(t_siginfo_proxy *p)
     t_symbol *s_dsp = gensym("dspstate");
     if (x->x_vec)
     {
-        for(unsigned int i = 0; i < x->x_argc; i++)
+        for (unsigned int i = 0; i < x->x_argc; i++)
         {
             if (x->x_vec[i] == s_dsp)
             {
@@ -988,7 +988,7 @@ static void siginfo_tilde_free(t_siginfo_tilde *x)
     if (x->x_vec)
         freebytes(x->x_vec, sizeof(*x->x_vec) * (x->x_argc));
     int num = (x->x_argc>1)?x->x_argc:1;
-    for(unsigned int i = 0; i < num; i++)
+    for (unsigned int i = 0; i < num; i++)
         outlet_free(x->x_outlet[i]);
     freebytes(x->x_outlet, sizeof(*x->x_outlet) * num);
     pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
@@ -1016,7 +1016,7 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
     t_symbol **vec = x->x_vec;
     int warned = 0;
-    for(int i = 0; i < argc; i++)
+    for (int i = 0; i < argc; i++)
     {
         x->x_outlet[i] = outlet_new(&x->x_obj, 0);
         s = atom_getsymbol(argv+i);
