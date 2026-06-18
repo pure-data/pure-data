@@ -594,6 +594,12 @@ proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
         -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
 
+# this can configure rectangles or ovals:
+proc pdtk_canvas_configure_rect {canvas tag width fill outline} {
+
+    $canvas itemconfigure $tag -width $width -fill $fill -outline $outline
+}
+
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
