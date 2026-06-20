@@ -607,6 +607,13 @@ proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
         -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
 
+proc pdtk_text_select {canvas tag start end} {
+
+    $canvas select from $tag $start
+    $canvas select to $tag $end
+}
+
+
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag
 }

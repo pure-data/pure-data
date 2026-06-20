@@ -2698,11 +2698,16 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     {
         if (!shiftmod)
             glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rk rs",
+        /*pdgui_vmess(0, "crr iiii rk rs",
             x, "create", "rectangle",
             xpix,ypix, xpix,ypix,
             "-outline", THISGUI->i_selectcolor,
-            "-tags", "x");
+            "-tags", "x"); */
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            x, "x", "-",
+            1, 1, THISGUI->i_foregroundcolor,
+            xpix, ypix, xpix, ypix, xpix, ypix, xpix, ypix, xpix, ypix);
+
         x->gl_editor->e_xwas = xpix;
         x->gl_editor->e_ywas = ypix;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -3054,9 +3059,13 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
-        pdgui_vmess(0, "crs iiii",
+        pdgui_vmess(0, "crs ii ii ii ii ii",
             x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
+            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+            x->gl_editor->e_xwas, ypos,
+            xpos, ypos,
+            xpos, x->gl_editor->e_ywas,
+            x->gl_editor->e_xwas, x->gl_editor->e_ywas);
 }
 
 void canvas_mouseup(t_canvas *x,

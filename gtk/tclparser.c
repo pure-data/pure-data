@@ -23,7 +23,13 @@ static int cmd_window(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
     t_canvas *x = (t_canvas *)cdata;
-    return (TCL_OK);
+    if (objc == 4 && !strcmp(Tcl_GetString(objv[1]), "configure") &&
+        !strcmp(Tcl_GetString(objv[2]), "-cursor"))
+    {
+        fprintf(stderr, "cursor %s\n", Tcl_GetString(objv[3]));
+        return (TCL_OK);
+    }
+    else return (TCL_ERROR);
 }
 
     /* get a {}-contained tag out of a string of them. */
@@ -85,13 +91,43 @@ static int cmd_canvas(ClientData cdata, Tcl_Interp *interp,
     {
         gfx_canvas_delete(x, Tcl_GetString(objv[2]));
     }
+        /* itemconfigure - this one appears all through the IEMGUI code and
+        elsewhere, so here we give up and parse a keyword-argument style
+        call rather than change all the calls in Pd. */
+    else if (objc >= 2 && !strcmp(Tcl_GetString(objv[1]), "itemconfigure"))
+    {
+        int n;
+        for (n = 3; n < objc-1; n += 2)
+        {
+            if (!strcmp(Tcl_GetString(objv[n]), "-width"))
+            {
+                double d = -1;
+                Tcl_GetDouble(interp, Tcl_GetString(objv[n+1]), &d);
+                gfx_canvas_configure_whatev(x, Tcl_GetString(objv[2]),
+                    (int)d, 0, 0);
+            }
+            else if (!strcmp(Tcl_GetString(objv[n]), "-fill"))
+                gfx_canvas_configure_whatev(x, Tcl_GetString(objv[2]), -1,
+                    Tcl_GetString(objv[n+1]), 0);
+            else if (!strcmp(Tcl_GetString(objv[n]), "-outline"))
+                gfx_canvas_configure_whatev(x, Tcl_GetString(objv[2]), -1,
+                    0, Tcl_GetString(objv[n+1]));
+            else return (TCL_ERROR);
+        }
+        return (TCL_OK);
+    }
         /* debugging - print out the list of canvas items */
     else if (objc >= 2 && !strcmp(Tcl_GetString(objv[1]), "spew"))
         gfx_canvas_spew(x);
+    else if (objc >= 2 && !strcmp(Tcl_GetString(objv[1]), "configure"))
+    {
+        fprintf(stderr, "---- configure ------\n");
+        return (TCL_OK);
+    }
     else if (objc >= 2)
     {
-        fprintf(stderr, "%s: unknown canvas cmd\n", Tcl_GetString(objv[1]));
-        return (TCL_OK);
+        fprintf(stderr, "unknown canvas cmd '%s'\n", Tcl_GetString(objv[1]));
+        return (TCL_ERROR);
     }
     return (TCL_OK);
 }
@@ -217,15 +253,39 @@ static int cmd_pdtk_canvas_configure_line(ClientData cdata, Tcl_Interp *interp,
         t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
         double width;
         Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &width);
-        gfx_canvas_configurepath(canvas, Tcl_GetString(objv[2]),
-            (int)width, Tcl_GetString(objv[4]));
+        gfx_canvas_configure_whatev(canvas, Tcl_GetString(objv[2]),
+            (int)width, Tcl_GetString(objv[4]), 0);
+    }
+    return (TCL_OK);
+}
+
+    /* configure_line <canvas> <tag> <width> <fill color> <outline color> */
+static int cmd_pdtk_canvas_configure_rect(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    Tcl_HashEntry *hash;
+    if (objc != 6)
+        fprintf(stderr,
+            "cmd_pdtk_canvas_configure_rect: bad #args = %d\n", objc);
+    else if (!(hash = Tcl_FindHashEntry(&tcl_canvaslist,
+        Tcl_GetString(objv[1]))))
+            fprintf(stderr,
+                "cmd_pdtk_canvas_configure_rect: canvas %s not found\n",
+                    Tcl_GetString(objv[1]));
+    else
+    {
+        t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
+        double width;
+        Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &width);
+        gfx_canvas_configure_whatev(canvas, Tcl_GetString(objv[2]),
+            (int)width, Tcl_GetString(objv[4]), Tcl_GetString(objv[5]));
     }
     return (TCL_OK);
 }
 
 
  /* cmd_pdtk_canvas_create_rect
-    <canvas> <tag> <grouptag> <width> <color> <color> x1 y1 x2 y2 */
+    <canvas> <tag> <grouptag> <width> <fillcolor> <outlinecolor> x1 y1 x2 y2 */
 static int cmd_pdtk_canvas_do_create_rect(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[], int oval)
 {
@@ -355,12 +415,12 @@ static int cmd_pdtk_canvas_new(ClientData cdata, Tcl_Interp *interp,
     Tcl_SetHashValue(windowhash, (ClientData)c);
     Tcl_SetHashValue(canvashash, (ClientData)c);
 
-    fprintf(stderr, "create commmands %s ... %s\n", tag, canvasname);
-     Tcl_CreateObjCommand(tcl_interp, tag, cmd_window,
+    Tcl_CreateObjCommand(tcl_interp, tag, cmd_window,
         (ClientData)c, NULL);
     Tcl_CreateObjCommand(tcl_interp, canvasname, cmd_canvas,
         (ClientData)c, NULL);
 
+    fprintf(stderr, "canvas %s, tag %s\n", canvasname, tag);
     sprintf(returnmsg, "%s map 1;\n", tag);
     socket_send(returnmsg);
 
@@ -370,8 +430,12 @@ static int cmd_pdtk_canvas_new(ClientData cdata, Tcl_Interp *interp,
 static int cmd_destroy(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    char *tag;
+    char *tag, canvasname[80];
     Tcl_HashEntry *hash;
+    tag = Tcl_GetString(objv[1]);
+    snprintf(canvasname, 80, "%s.c", tag);
+    canvasname[79] = 0;
+
     if (objc != 2)
     {
         fprintf(stderr, "destroy: needs 2 args, got %d\n", objc);
@@ -386,6 +450,8 @@ static int cmd_destroy(ClientData cdata, Tcl_Interp *interp,
         fprintf(stderr, "destroying %s\n", tag);
         gfx_canvas_free(c);
         Tcl_DeleteHashEntry(hash);
+        Tcl_DeleteCommand(interp, tag);
+        Tcl_DeleteCommand(interp, canvasname);
     }
     return (TCL_OK);
 }
@@ -398,31 +464,24 @@ static int cmd_pdtk_canvas_reflecttitle(ClientData cdata, Tcl_Interp *interp,
     char *tag;
     Tcl_HashEntry *hash;
     Tcl_Obj **obj2v;
-    int obj2c;
+    Tcl_Size obj2c;
     char title[BIGSTRING + 1];
 
-    int dirty = 0;
-    int editmode = 0;
+    int dirty = 0, editmode = 0;
 
 
     title[BIGSTRING] = 0;
-    if (objc != 6)
+    if (objc >= 7)
     {
-        fprintf(stderr, "cmd_pdtk_canvas_reflecttitle: got %d args\n", objc);
-        return (TCL_ERROR);
+        double d;
+        Tcl_GetDouble(interp, Tcl_GetString(objv[6]), &d);
+        editmode = d;
     }
-    if(TCL_OK == Tcl_ListObjGetElements(interp, objv[5], &obj2c, &obj2v)) {
-        int v;
-        switch(obj2c) {
-        case 0: break;
-        case 1:
-            dirty = atoi(Tcl_GetString(obj2v[0]));
-            break;
-        default:
-            editmode = atoi(Tcl_GetString(obj2v[0]));
-            dirty = atoi(Tcl_GetString(obj2v[1]));
-            break;
-        }
+    if (objc >= 6)
+    {
+        double d;
+        Tcl_GetDouble(interp, Tcl_GetString(objv[5]), &d);
+        dirty = d;
     }
     tag = Tcl_GetString(objv[1]);
     if (!(hash = Tcl_FindHashEntry(&tcl_windowlist, tag)))
@@ -435,7 +494,7 @@ static int cmd_pdtk_canvas_reflecttitle(ClientData cdata, Tcl_Interp *interp,
             Tcl_GetString(objv[3]),
             (editmode ? " [edit mode]":""),
             Tcl_GetString(objv[4]), Tcl_GetString(objv[2]));
-#ifdef DEBUGTCL
+#if 1
         fprintf(stderr, "set title for %s: %s\n", tag, title);
 #endif
         gfx_canvas_settitle(c, title, Tcl_GetString(objv[3]));
@@ -481,6 +540,53 @@ static int cmd_pdtk_watchdog(ClientData cdata, Tcl_Interp *interp,
     pdgtk_start_watchdog();
 }
 
+ /* cmd_pdtk_text_editing - turn 'text editing' on and off */
+static int cmd_pdtk_text_editing(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    char *tag;
+    Tcl_HashEntry *hash;
+    double d = 0;
+    if (objc != 4)
+    {
+        fprintf(stderr, "cmd_pdtk_text_editing: got %d args\n", objc);
+        return (TCL_ERROR);
+    }
+    if (!(hash = Tcl_FindHashEntry(&tcl_windowlist, Tcl_GetString(objv[1]))))
+        fprintf(stderr, "cmd_pdtk_text_editing: window %s not found\n",
+            Tcl_GetString(objv[1]));
+    else fprintf(stderr, "text editing\n");
+    Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &d);
+    if (!d)
+        gfx_canvas_text_select((t_canvas *)Tcl_GetHashValue(hash), 0, 0, 0);
+    return (TCL_OK);
+}
+
+ /* cmd_pdtk_text_editing - turn 'text editing' on and off */
+static int cmd_pdtk_text_select(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    char *tag;
+    Tcl_HashEntry *hash;
+    double start = 0, end = 0;
+    if (objc != 5)
+    {
+        fprintf(stderr, "cmd_pdtk_text_editing: got %d args\n", objc);
+        return (TCL_ERROR);
+    }
+    if (!(hash = Tcl_FindHashEntry(&tcl_canvaslist, Tcl_GetString(objv[1]))))
+    {
+        fprintf(stderr, "cmd_pdtk_text_select: window %s not found\n",
+            Tcl_GetString(objv[1]));
+        return (TCL_ERROR);
+    }
+    Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &start);
+    Tcl_GetDouble(interp, Tcl_GetString(objv[4]), &end);
+    gfx_canvas_text_select((t_canvas *)Tcl_GetHashValue(hash),
+        Tcl_GetString(objv[2]), (int)start, (int)end);
+    return (TCL_OK);
+}
+
 
 typedef int (*t_tcl_creatorfn)(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[]);
@@ -502,11 +608,14 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_canvas_create_patchcord", cmd_pdtk_canvas_create_patchcord},
     {"pdtk_canvas_create_rect", cmd_pdtk_canvas_create_rect},
     {"pdtk_canvas_create_oval", cmd_pdtk_canvas_create_oval},
+    {"pdtk_canvas_configure_rect", cmd_pdtk_canvas_configure_rect},
     {"pdtk_canvas_delete", cmd_pdtk_canvas_delete},
     {"pdtk_canvas_move", cmd_pdtk_canvas_move},
     {"pdtk_canvas_menuclose", cmd_pdtk_canvas_menuclose},
     {"pdtk_ping", cmd_pdtk_ping},
     {"pdtk_watchdog", cmd_pdtk_watchdog},
+    {"pdtk_text_editing", cmd_pdtk_text_editing},
+    {"pdtk_text_select", cmd_pdtk_text_select},
     {"set", 0},
 };
 
@@ -545,8 +654,8 @@ void tcl_runcommand(char *s)
                 fprintf(stderr, "\n");
         }
         rc = Tcl_Eval(tcl_interp, s);
-        /* if (rc != TCL_OK)
-            fprintf(stderr, "tcl eval error\n"); */
+        if (rc != TCL_OK)
+            fprintf(stderr, "tcl eval error: %s\n", s);
     }
     else
     {
@@ -583,7 +692,10 @@ int tcl_init(void)
             Tcl_CreateObjCommand(tcl_interp, tcl_knowncommands[i].e_name,
                 tcl_knowncommands[i].e_fn,  (ClientData)NULL, NULL);
 
-    rc = Tcl_Eval(tcl_interp, "puts stderr \"started tcl interpreter\"\n");
+    rc = Tcl_Eval(tcl_interp, "puts stderr \"started tcl interpreter\"\n\
+    set cursor_editmode_nothing nothing\n\
+    set cursor_runmode_nothing nothing\n\
+    set cursor_runmode_clickme clickme\n");
     if (rc != TCL_OK)
     {
         fprintf(stderr, "Error 1\n");

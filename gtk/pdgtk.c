@@ -131,71 +131,129 @@ static void filemenu_quit(GApplication *app, gpointer *data)
 
 static int pdgtk_havemainwindow;
 #ifdef __APPLE__
-#define ACCELERATORKEY "<Meta>"
+#define ACCELKEY "<Meta>"
 #else
-#define ACCELERATORKEY "<Control>"
+#define ACCELKEY "<Control>"
 #endif
+
+static void pdgtk_menuitem(GtkApplication *app, GMenu *menu, char *name,
+    char *action, char *accel)
+{
+    const char *twoaccels[2] = {0, 0};
+    GMenuItem *menu_item = g_menu_item_new(name, action);
+    g_menu_append_item(menu, menu_item);
+    g_object_unref(menu_item);
+    twoaccels[0] = accel;
+    gtk_application_set_accels_for_action(app, action, twoaccels);
+}
 
 static void pdgtk_startup(GtkApplication *app, gpointer user_data)
 {
     const char *twoaccels[2] = {0, 0};
-    GMenu *menubar, *filemenu;
-    GMenuItem *menu_item_filemenu, *menu_item_new, *menu_item_open,
+    GMenu *menubar, *filemenu, *editmenu, *putmenu, *section;
+    GMenuItem *menu_item_thismenu, *menu_item,
+        *menu_item_new, *menu_item_open,
         *menu_item_save, *menu_item_saveas, *menu_item_close, *menu_item_quit;
     GSimpleAction *act_new, *act_save, *act_quit;
-    GSimpleAction *action_open;
+    GSimpleAction *action_open, *action;
 
         /* set up menu - there's only one, not one per window. */
     menubar = g_menu_new();
-        /* "file" menu */
-    menu_item_filemenu = g_menu_item_new(_("File"), NULL);
+
+        /* ---------------- "file" menu --------------- */
+    menu_item_thismenu = g_menu_item_new(_("File"), NULL);
     filemenu = g_menu_new();
 
-    menu_item_open = g_menu_item_new(_("Open"), "app.open");
-    g_menu_append_item(filemenu, menu_item_open);
-    twoaccels[0] = ACCELERATORKEY "o";
-    gtk_application_set_accels_for_action(app, "app.open", twoaccels);
-    g_object_unref(menu_item_open);
+    section = g_menu_new();
+
+    pdgtk_menuitem(app, section, _("Open"), "app.open", ACCELKEY "o");
 
     act_new = g_simple_action_new("new", NULL);
     g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(act_new));
     g_signal_connect(act_new, "activate", G_CALLBACK(filemenu_new), NULL);
-    menu_item_new = g_menu_item_new(_("New"), "app.new");
-    g_menu_append_item(filemenu, menu_item_new);
-    g_object_unref(menu_item_new);
-    twoaccels[0] = ACCELERATORKEY "n";
-    gtk_application_set_accels_for_action(app, "app.new", twoaccels);
+    pdgtk_menuitem(app, section, _("New"), "app.new", ACCELKEY "n");
 
-    menu_item_save = g_menu_item_new(_("Save"), "win.zsave");
-    g_menu_append_item(filemenu, menu_item_save);
-    g_object_unref(menu_item_save);
-    twoaccels[0] = ACCELERATORKEY "s";
-    gtk_application_set_accels_for_action(app, "win.zsave", twoaccels);
+    g_menu_append_section(filemenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
 
-    menu_item_saveas = g_menu_item_new(_("Save as..."), "win.zsaveas");
-    g_menu_append_item(filemenu, menu_item_saveas);
-    g_object_unref(menu_item_saveas);
-    twoaccels[0] = ACCELERATORKEY "<shift>s";
-    gtk_application_set_accels_for_action(app, "win.zsaveas", twoaccels);
+    section = g_menu_new();
 
-    menu_item_close = g_menu_item_new(_("Close"), "win.zclose");
-    g_menu_append_item(filemenu, menu_item_close);
-    g_object_unref(menu_item_close);
-    twoaccels[0] = ACCELERATORKEY "w";
-    gtk_application_set_accels_for_action(app, "win.zclose", twoaccels);
+    pdgtk_menuitem(app, section, _("Save"), "win.zsave", ACCELKEY "s");
+    pdgtk_menuitem(app, section, _("Save as"), "win.zsaveas", ACCELKEY "S");
+    pdgtk_menuitem(app, section, _("Close"), "win.zclose", ACCELKEY "w");
 
     act_quit = g_simple_action_new("quit", NULL);
     g_action_map_add_action(G_ACTION_MAP(app), G_ACTION(act_quit));
     g_signal_connect(act_quit, "activate", G_CALLBACK(filemenu_quit), NULL);
-    menu_item_quit = g_menu_item_new(_("Quit"), "app.quit");
-    g_menu_append_item(filemenu, menu_item_quit);
-    g_object_unref(menu_item_quit);
-    twoaccels[0] = ACCELERATORKEY "q";
-    gtk_application_set_accels_for_action(app, "app.quit", twoaccels);
+    pdgtk_menuitem(app, section, _("Quit"), "app.quit", ACCELKEY "q");
 
-    g_menu_item_set_submenu(menu_item_filemenu, G_MENU_MODEL(filemenu));
-    g_menu_append_item(menubar, menu_item_filemenu);
-    g_object_unref(menu_item_filemenu);
+    g_menu_append_section(filemenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    g_menu_item_set_submenu(menu_item_thismenu, G_MENU_MODEL(filemenu));
+    g_menu_append_item(menubar, menu_item_thismenu);
+    g_object_unref(menu_item_thismenu);
+
+        /* ---------------- "edit" menu --------------- */
+    menu_item_thismenu = g_menu_item_new(_("Edit"), NULL);
+    editmenu = g_menu_new();
+
+    section = g_menu_new();
+    pdgtk_menuitem(app, section, _("Undo"), "win.zundo", ACCELKEY "z");
+    pdgtk_menuitem(app, section, _("Redo"), "win.zredo", ACCELKEY "Z");
+    g_menu_append_section(editmenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    section = g_menu_new();
+    pdgtk_menuitem(app, section, _("Cut"), "win.zcut", ACCELKEY "x");
+    pdgtk_menuitem(app, section, _("Copy"), "win.zcopy", ACCELKEY "c");
+    pdgtk_menuitem(app, section, _("Paste"), "win.zpaste", ACCELKEY "v");
+    pdgtk_menuitem(app, section, _("Duplicate"), "win.zduplicate",
+        ACCELKEY "d");
+    pdgtk_menuitem(app, section, _("Edit"), "win.zedit", ACCELKEY "e");
+    g_menu_append_section(editmenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    g_menu_item_set_submenu(menu_item_thismenu, G_MENU_MODEL(editmenu));
+    g_menu_append_item(menubar, menu_item_thismenu);
+    g_object_unref(menu_item_thismenu);
+
+        /* ---------------- "put" menu --------------- */
+    menu_item_thismenu = g_menu_item_new(_("Put"), NULL);
+    putmenu = g_menu_new();
+
+    section = g_menu_new();
+    pdgtk_menuitem(app, section, _("Object"), "win.zputobj", ACCELKEY "1");
+    pdgtk_menuitem(app, section, _("Message"), "win.zputmsg", ACCELKEY "2");
+    pdgtk_menuitem(app, section, _("Number"), "win.zputnum", ACCELKEY "3");
+    pdgtk_menuitem(app, section, _("List"), "win.zputlist", ACCELKEY "4");
+    pdgtk_menuitem(app, section, _("Comment"), "win.zputtext", ACCELKEY "5");
+    g_menu_append_section(putmenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    section = g_menu_new();
+    pdgtk_menuitem(app, section, _("Bang"), "win.zputbang", ACCELKEY "B");
+    pdgtk_menuitem(app, section, _("Toggle"), "win.zputtgl", ACCELKEY "B");
+    pdgtk_menuitem(app, section, _("Number2"), "win.zputn2", ACCELKEY "N");
+    pdgtk_menuitem(app, section, _("Vslider"), "win.zputvsl", ACCELKEY "V");
+    pdgtk_menuitem(app, section, _("Hslider"), "win.zputhsl", ACCELKEY "J");
+    pdgtk_menuitem(app, section, _("Vradio"), "win.zputvrad", ACCELKEY "D");
+    pdgtk_menuitem(app, section, _("Hradio"), "win.zputhrad", ACCELKEY "I");
+    g_menu_append_section(putmenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    section = g_menu_new();
+    pdgtk_menuitem(app, section, _("Graph"), "win.zputgraph", ACCELKEY "G");
+    pdgtk_menuitem(app, section, _("Array"), "win.zputarray", ACCELKEY "A");
+    g_menu_append_section(putmenu, 0, G_MENU_MODEL(section));
+    g_object_unref(section);
+
+    g_menu_item_set_submenu(menu_item_thismenu, G_MENU_MODEL(putmenu));
+    g_menu_append_item(menubar, menu_item_thismenu);
+    g_object_unref(menu_item_thismenu);
+
+
+
     gtk_application_set_menubar(GTK_APPLICATION(app), G_MENU_MODEL(menubar));
 
         /* handle "open" actions sent from OS - should this be here? */
