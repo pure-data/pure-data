@@ -609,8 +609,16 @@ proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
 
 proc pdtk_text_select {canvas tag start end} {
 
-    $canvas select from $tag $start
-    $canvas select to $tag $end
+    if [expr $end > $start] {
+        $canvas select from $tag $start
+        $canvas select to $tag [expr $end - 1]
+        $canvas focus ""
+    } else {
+        $canvas select clear
+        $canvas icursor $tag $start
+        focus $canvas
+        $canvas focus $tag
+    }
 }
 
 
