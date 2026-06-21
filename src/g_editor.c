@@ -2422,21 +2422,19 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         return;
     }
         /* did we click in run mode inside a text which is not active? */
-    if (doit && runmode && rtext && rtext != x->gl_editor->e_textedfor)
+    if (doit && rtext && rtext != x->gl_editor->e_textedfor)
     {
             /* double clicking on an atom activates the text */
-        if (hitobj && hitobj->te_type == T_ATOM && doubleclick)
+        if (runmode && hitobj && hitobj->te_type == T_ATOM && doubleclick)
         {
             undarken_if_gatom(&hitobj->te_g);
             /* gobj_activate(&hitobj->te_g, x, 1); */
             rtext_activate(rtext, 1);
             return;
         }
-        if (hitscalar)   /* hit a scalar */
+        if (hitscalar)   /* hit a scalar - ask it if we should activate */
         {
-            t_template *template =
-                template_findbyname(hitscalar->sc_template);
-            if (doubleclick)
+            if (drawtext_shouldactivate(hitdrawtext, runmode, doubleclick))
             {
                 rtext_activate(rtext, 1);
                 return;
