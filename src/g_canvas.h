@@ -132,6 +132,8 @@ typedef struct _editor
     unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
     int e_xnew;                     /* xpos for next move event */
     int e_ynew;                     /* ypos, similarly */
+    unsigned char *e_pastebuffer;   /* array of characters to paste */
+    int e_npaste;                   /* number of chars to paste */
 } t_editor;
 
 #define MA_NONE    0    /* e_onmotion: do nothing on mouse motion */
