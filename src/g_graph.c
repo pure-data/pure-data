@@ -183,8 +183,11 @@ void glist_clear(t_glist *x)
 void glist_retext(t_glist *glist, t_text *y)
 {
     t_canvas *c = glist_getcanvas(glist);
-        /* check that we have built rtexts yet.  LATER need a better test. */
-    if (glist->gl_editor && glist->gl_editor->e_rtext)
+        /* check that we have built rtexts yet.  LATER need a better test.
+        For GOP subpatches, the editor is on the parent canvas, so check c->gl_editor
+        instead of glist->gl_editor. But still use glist (subpatch) for glist_getrtext
+        to ensure rtext's x->x_glist is set correctly. */
+    if (c->gl_editor && c->gl_editor->e_rtext)
     {
         t_rtext *rt = glist_getrtext(glist, y, 0);
         if (rt)
