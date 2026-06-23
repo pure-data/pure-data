@@ -15,6 +15,56 @@ void pdnoteon(int ch, int pitch, int vel) {
   printf("noteon: %d %d %d\n", ch, pitch, vel);
 }
 
+t_class *test_class;
+
+typedef struct _test
+{
+    t_object x_obj;
+} t_test;
+
+typedef struct _test_data
+{
+    int x_count;
+} t_test_data;
+
+void test_data_free(t_test_data *data)
+{
+    post("free data for 'test' class");
+    freebytes(data, sizeof(*data));
+}
+
+void *test_new(void)
+{
+    t_test *x = (t_test *)pd_new(test_class);
+
+        /* lazily create per-instance data */
+    t_test_data *data = class_getinstancedata(test_class);
+    if (!data)
+    {
+        data = (t_test_data*)getbytes(sizeof(*data));
+        data->x_count = 0;
+        class_setinstancedata(test_class, data,
+            (t_classdatafn)test_data_free);
+    }
+    data->x_count++;
+    post("test new: %d objects", data->x_count);
+
+    return x;
+}
+
+void test_free(t_test *x)
+{
+    t_test_data *data = class_getinstancedata(test_class);
+    data->x_count--;
+    post("test free: %d remaining objects", data->x_count);
+}
+
+void setup_test(void)
+{
+    test_class = class_new(gensym("test"),
+        (t_newmethod)test_new, (t_method)test_free, sizeof(t_test), 0, 0);
+}
+
 int main(int argc, char **argv) {
     t_pdinstance *pd1, *pd2;
     int srate = 48000;
@@ -34,6 +84,8 @@ int main(int argc, char **argv) {
     libpd_set_printhook(pdprint);
 
     libpd_init();
+
+    setup_test();
 
     pd1 = libpd_new_instance();
     pd2 = libpd_new_instance();
