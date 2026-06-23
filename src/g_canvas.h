@@ -682,7 +682,10 @@ EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
 EXTERN int drawtext_gettype(t_gobj *z, t_template *pdtemplate, int *onsetp);
 EXTERN t_template *drawtext_gettemplate(t_gobj *z);
-EXTERN int drawtext_shouldactivate(t_gobj *z, int editmode, int doubleclick);
+EXTERN void drawtext_doclick(t_gobj *z, int xpix, int ypix, int shiftmod,
+    int altmod, int doubleclick, t_rtext *rtext, t_scalar *hitscalar,
+        int runmode);
+
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
 EXTERN t_guiconnect *guiconnect_new(t_pd *who, t_symbol *sym);

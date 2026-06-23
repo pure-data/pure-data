@@ -339,11 +339,12 @@ static void vline_tilde_float(t_vline *x, t_float f)
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
         /* check if we append after the last segment.  We append when the new
         segment has a later starttime, or an equal starttime if the last was
-        instantaneous and the new one isn't (in which case we'll do a jump-and-slide
-        at that time.) */
+        instantaneous and the new one isn't (in which case we'll do a
+        jump-and-slide at that time.) */
     if (x->x_list_tail && (x->x_list_tail->s_starttime < starttime ||
             (x->x_list_tail->s_starttime == starttime &&
-                x->x_list_tail->s_targettime <= x->x_list_tail->s_starttime && inlet1 > 0)))
+                x->x_list_tail->s_targettime <= x->x_list_tail->s_starttime
+                    && inlet1 > 0)))
     {
         deletefrom = 0;
         x->x_list_tail->s_next = snew;

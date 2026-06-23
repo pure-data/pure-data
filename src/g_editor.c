@@ -2444,13 +2444,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         }
         if (hitscalar)   /* hit a scalar - ask it if we should activate */
         {
-            if (drawtext_shouldactivate(hitdrawtext, runmode, doubleclick))
-            {
-                rtext_activate(rtext, 1);
-                return;
-            }
-            scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
-                xpix, ypix, shiftmod, altmod, doubleclick, 1);
+            drawtext_doclick(hitdrawtext, xpix, ypix, shiftmod, altmod,
+                doubleclick, rtext, hitscalar, runmode);
             return;
         }
     }

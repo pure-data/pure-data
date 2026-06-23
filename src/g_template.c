@@ -2873,18 +2873,21 @@ t_template *drawtext_gettemplate(t_gobj *z)
     return (0);     /* shouldn't happen - we got here through the template */
 }
 
-    /* decide whether clicking on the text region should activate and select
-    the contained text */
-int drawtext_shouldactivate(t_gobj *z, int runmode, int doubleclick)
+void drawtext_doclick(t_gobj *z, int xpix, int ypix, int shiftmod,
+    int altmod, int doubleclick, t_rtext *rtext, t_scalar *hitscalar,
+        int runmode)
 {
     t_drawtext *x = (t_drawtext *)z;
     if (z->g_pd != drawtext_class)
-    {
-        bug("drawtext_shouldactivate");
-        return (0);
-    }
-    return ((x->x_flags & ALWAYSEDIT) ||
-        (!(x->x_flags & NEVEREDIT) && runmode && doubleclick));
+        bug("drawtext_doclick");
+                /* possibly activate the rtext for editing? */
+    else if ((x->x_flags & ALWAYSEDIT) ||
+        (!(x->x_flags & NEVEREDIT) && runmode && doubleclick))
+            rtext_activate(rtext, 1);
+                /* or possibly call the parent widget routine */
+    else if (runmode || !NOMOUSEEDIT)
+        scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
+            xpix, ypix, shiftmod, altmod, doubleclick, 1);
 }
 
     /* get the text to draw or edit.  "length" is number of nonzero chars.
