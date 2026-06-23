@@ -953,7 +953,7 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
         post("sigmund~: maximum points %d", NPOINTS_MAX),
             npts = NPOINTS_MAX;
 
-    if (npts != (1 << sigmund_ilog2(npts)))
+    if (npts & (npts - 1))
         post("sigmund~: adjusting analysis size to %d points",
             (npts = (1 << sigmund_ilog2(npts))));
     if (npts != nwas)
@@ -997,7 +997,7 @@ static void sigmund_hop(t_sigmund *x, t_floatarg f)
     x->x_hop = hop;
     if (0 == hop) return;
         /* check parameter ranges */
-    if (x->x_hop != (1 << sigmund_ilog2(x->x_hop)))
+    if (x->x_hop & (x->x_hop - 1))
         post("sigmund~: adjusting analysis size to %d points",
             (x->x_hop = (1 << sigmund_ilog2(x->x_hop))));
 }
@@ -1534,7 +1534,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
 "sigmund~: array-name, npts, array-onset, samplerate, [optional debug flag]");
         return;
     }
-    if (npts < 64 || npts != (1 << ilog2(npts))) 
+    if (npts < 64 || npts & (npts - 1))
     {
         pd_error(0, "sigmund~: bad npoints");
         return;
