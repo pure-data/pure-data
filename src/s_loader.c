@@ -606,8 +606,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
     {
         const char *objectname = s->s_name;
         char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
-        t_glist *glist = (t_glist *)canvas_getcurrent();
-        t_canvas *canvas = (t_canvas*)glist_getcanvas(glist);
+        t_canvas *canvas = (t_canvas *)canvas_getcurrent();
         int fd = -1;
 
         t_pd *was = s__X.s_thing;
