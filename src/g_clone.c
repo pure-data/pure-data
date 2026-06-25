@@ -402,6 +402,8 @@ static void clone_setn(t_clone *x, t_floatarg f)
         x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(t_copy),
             wantn * sizeof(t_copy));
         x->x_n = wantn;
+        if (x->x_phase >= wantn)
+            x->x_phase = wantn - 1;
     }
 }
 
