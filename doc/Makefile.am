@@ -441,6 +441,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sig~-help.pd \
+     ./5.reference/siginfo~-help.pd \
      ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
      ./5.reference/snake-tilde-help.pd \
