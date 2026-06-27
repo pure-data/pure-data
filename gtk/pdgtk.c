@@ -337,6 +337,11 @@ void *pdgtk_thisapp( void)
     return (pdgtk_app);
 }
 
+void pdgtk_setclipboard(const char *s)
+{
+    gdk_clipboard_set_text(gtk_widget_get_clipboard(gtk_mainwindow), s);
+}
+
 int main(int argc, char **argv)
 {
     int portno = -1;

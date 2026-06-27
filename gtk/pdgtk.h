@@ -58,6 +58,8 @@ int socket_startpd(int argc, char **argv);
 
 void pdgtk_start_watchdog( void);
 
+void pdgtk_setclipboard(const char *s);
+
 extern int tcl_debug;
 
 /* pass "app" from pdgtk.c to canvas.c without bothering tclparser about it */

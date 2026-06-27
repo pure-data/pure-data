@@ -587,6 +587,22 @@ static int cmd_pdtk_text_select(ClientData cdata, Tcl_Interp *interp,
     return (TCL_OK);
 }
 
+ /* clipboard - imitate tcl "clipboard clear" and "clipboard append" */
+static int cmd_clipboard(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    char *tag;
+    Tcl_HashEntry *hash;
+    double start = 0, end = 0;
+    if (objc == 2 && !strcmp(Tcl_GetString(objv[1]), "clear"))
+        ;  /* nothing to do - since 'append' always follows 'clear', we
+            just set the clipboard in 'append'. */
+    else if (objc == 3 && !strcmp(Tcl_GetString(objv[1]), "append"))
+        pdgtk_setclipboard(Tcl_GetString(objv[2]));
+    else return (TCL_ERROR);
+    return (TCL_OK);
+}
+
 
 typedef int (*t_tcl_creatorfn)(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[]);
@@ -616,6 +632,7 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_watchdog", cmd_pdtk_watchdog},
     {"pdtk_text_editing", cmd_pdtk_text_editing},
     {"pdtk_text_select", cmd_pdtk_text_select},
+    {"clipboard", cmd_clipboard},
     {"set", 0},
 };
 

@@ -767,10 +767,35 @@ static void editmenu_cut(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "cut"); }
 static void editmenu_copy(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "copy"); }
-static void editmenu_paste(GtkApplicationWindow *win, void *zz, gpointer *data)
-    { winmenu_simpleitem(win, data, "paste"); }
 static void editmenu_dup(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "duplicate"); }
+
+static void editmenu_paste(GtkApplicationWindow *win, void *zz, gpointer *data)
+{
+    // Initialize a GValue to receive text
+    GValue value = G_VALUE_INIT;
+    g_value_init (&value, G_TYPE_STRING);
+
+    // Get the content provider for the clipboard, and ask it for text
+    GdkClipboard *clipboard =
+        gtk_widget_get_clipboard (((t_canvas *)data)->c_window);
+    GdkContentProvider *provider = gdk_clipboard_get_content (clipboard);
+
+    // If the content provider does not contain text, we are not interested
+    if (gdk_content_provider_get_value (provider, &value, NULL))
+    {
+        const char *str = g_value_get_string (&value);
+        fprintf(stderr, "paste ... %s\n", str);
+
+    }
+    return;
+
+
+    g_value_unset (&value);
+
+    winmenu_simpleitem(win, data, "paste");
+
+}
 
 static void editmenu_edit(GtkApplicationWindow *win, void *unused,
     gpointer *data)
@@ -905,6 +930,7 @@ t_canvas *gfx_canvas_new(const char *tag,
     gfx_canvas_addaction(x, win, "zundo", G_CALLBACK(editmenu_undo));
     gfx_canvas_addaction(x, win, "zredo", G_CALLBACK(editmenu_redo));
     gfx_canvas_addaction(x, win, "zcut", G_CALLBACK(editmenu_cut));
+    gfx_canvas_addaction(x, win, "zcopy", G_CALLBACK(editmenu_copy));
     gfx_canvas_addaction(x, win, "zpaste", G_CALLBACK(editmenu_paste));
     gfx_canvas_addaction(x, win, "zduplicate", G_CALLBACK(editmenu_dup));
     gfx_canvas_addaction(x, win, "zedit", G_CALLBACK(editmenu_edit));

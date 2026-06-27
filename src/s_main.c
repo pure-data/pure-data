@@ -411,9 +411,12 @@ int sys_main(int argc, const char **argv)
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
+    if (sys_verbose || sys_version)
 #ifdef COMPILEDATE
-    if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
-        pd_version, pd_compiletime, pd_compiledate);
+        fprintf(stderr, "%s compiled %s %s\n",
+            pd_version, pd_compiletime, pd_compiledate);
+#else
+        fprintf(stderr, "%s\n", pd_version);
 #endif
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
