@@ -482,7 +482,6 @@ void gfx_canvas_menuclose_done(GObject *gob, GAsyncResult *res,
     int button = gtk_alert_dialog_choose_finish(GTK_ALERT_DIALOG(gob), res, 0);
     t_canvas *x = (t_canvas *)z;
     char msg2[80];
-    fprintf(stderr, "result %d\n", button);
     if (button == 0)
     {
         snprintf(msg2, 80, "%s menusave 1;\n", x->c_tag);
@@ -584,8 +583,6 @@ void gfx_canvas_drawsel(t_canvas *x, cairo_t *cr)
         if (i >= n)
             break;
     }
-    fprintf(stderr, "rows (%d, %d, %d) cols (%d %d %d)\n",
-        row, row1, row2, col, col1, col2);
 
     cairo_set_source_rgb(cr, 0.0, 0.0, 1.);
     cairo_set_line_width(cr, 1.);
@@ -626,7 +623,6 @@ static void gfx_window_draw(GtkDrawingArea *drawing_area, cairo_t *cr,
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_paint(cr);
 
-    fprintf(stderr, "------------- %d\n", x->c_seltextindex);
     if (x->c_seltextindex >= 0)
         gfx_canvas_drawsel(x, cr);
     for (i = 0; i < x->c_n; i++)
@@ -672,7 +668,7 @@ static gboolean dokey(GtkEventControllerKey* self, guint keyval, guint keycode,
     char event[81], *keysym = 0;
     int ascii = 0;
     event[80] = 0;
-#if 1
+#ifdef DBUGGTK
     fprintf(stderr, "key %d %d %d %d\n", keyval, keycode, state, down);
 #endif
     /*if (((state & GDK_CONTROL_MASK) || (state & GDK_META_MASK))
@@ -770,43 +766,61 @@ static void editmenu_copy(GtkApplicationWindow *win, void *zz, gpointer *data)
 static void editmenu_dup(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "duplicate"); }
 
-static void editmenu_paste(GtkApplicationWindow *win, void *zz, gpointer *data)
+void wombat( void);
+
+static void paste_callback(GObject *source_object, GAsyncResult* res,
+    gpointer data)
 {
-    // Initialize a GValue to receive text
-    GValue value = G_VALUE_INIT;
-    g_value_init (&value, G_TYPE_STRING);
-
-    // Get the content provider for the clipboard, and ask it for text
-    GdkClipboard *clipboard =
-        gtk_widget_get_clipboard (((t_canvas *)data)->c_window);
-    GdkContentProvider *provider = gdk_clipboard_get_content (clipboard);
-
-    // If the content provider does not contain text, we are not interested
-    if (gdk_content_provider_get_value (provider, &value, NULL))
+    GdkClipboard *clipboard = GDK_CLIPBOARD(source_object);
+    char *str = gdk_clipboard_read_text_finish(clipboard, res, 0), msg[80];
+    int i, n = strlen(str), outlen, havechars;
+    t_canvas *x = (t_canvas *)data;
+    snprintf(msg, 80, "%s pastechars -1;\n", x->c_tag);
+    socket_send(msg);
+    snprintf(msg, 80, "%s pastechars", x->c_tag);
+    outlen = strlen(msg);
+    havechars = 0;
+    for (i = 0; i < n; i++)
     {
-        const char *str = g_value_get_string (&value);
-        fprintf(stderr, "paste ... %s\n", str);
-
+        snprintf(msg + outlen, 80-outlen, " %d", 0xff & str[i]);
+        havechars = 1;
+        outlen += strlen(msg+outlen);
+        if (outlen > 70)
+        {
+            strncat(msg + outlen, ";\n", 80-outlen);
+            socket_send(msg);
+            snprintf(msg, 80, "%s pastechars", x->c_tag);
+            outlen = strlen(msg);
+            havechars = 0;
+        }
     }
-    return;
+    if (havechars)
+    {
+        strncat(msg + outlen, ";\n", 80-outlen);
+        socket_send(msg);
+    }
+    snprintf(msg, 80, "%s pastechars -2;\n", x->c_tag);
+    socket_send(msg);
+}
 
-
-    g_value_unset (&value);
-
-    winmenu_simpleitem(win, data, "paste");
-
+static void editmenu_paste(GtkWindow *win, void *zz, gpointer *data)
+{
+    t_canvas *x = (t_canvas *)data;
+    GtkWidget *zwidget;
+    GdkClipboard *zclipboard;
+    zwidget = GTK_WIDGET(x->c_window);
+    zclipboard = gtk_widget_get_clipboard(zwidget);
+    gdk_clipboard_read_text_async(zclipboard, 0, paste_callback, x);
 }
 
 static void editmenu_edit(GtkApplicationWindow *win, void *unused,
     gpointer *data)
 {
     t_canvas *x = (t_canvas *)data;
-    fprintf(stderr, "edit menu item\n", win, data);
     x->c_editmode = !x->c_editmode;
     char cmd[80];
     snprintf(cmd, 80, "%s editmode %d\n", x->c_tag, x->c_editmode);
     socket_send(cmd);
-    fprintf(stderr, "%x\n", unused);
 }
 
 static void putmenu_obj(GtkApplicationWindow *win, void *zz, gpointer *data)
@@ -839,9 +853,6 @@ static void putmenu_array(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "array"); }
 
 
-
-
-
 static void gfx_canvas_addaction(t_canvas *x, GtkWidget *win, const char *name,
     GCallback fn)
 {
@@ -860,7 +871,6 @@ t_canvas *gfx_canvas_new(const char *tag,
     GtkWidget *win;
 
     t_canvas *x = (t_canvas *)calloc(1, sizeof(*x));
-    fprintf(stderr, "canvas %x\n", x);
     x->c_n = 0;
     x->c_vec = (t_item *)calloc(0, sizeof(*x->c_vec));
     x->c_editmode = editmode;
