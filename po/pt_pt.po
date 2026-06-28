@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-05-12 15:31+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_PT/>\n"
 "Language: pt_pt\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 msgid "linear"
 msgstr "linear"
@@ -811,11 +811,11 @@ msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Ficheiro de checksum parece inválido: '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Checksum de referência parece inválido: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -841,14 +841,13 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear ficheiro descarregado de '%s'"
 
 msgid "Search URLs:"
-msgstr ""
+msgstr "Procurar URLs:"
 
-#, fuzzy
 msgid "Additional search URLs"
-msgstr "%s adicionado aos caminhos de busca"
+msgstr "URLs de pesquisa adicionais"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "URLs temporárias de pesquisa"
 
 msgid "Create"
 msgstr "Criar"
@@ -856,9 +855,8 @@ msgstr "Criar"
 msgid "Check"
 msgstr "Checar"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "Instalação falhou!"
+msgstr "Destino de Instalação do Deken"
 
 msgid "Installation options:"
 msgstr "Opções de instalação:"
@@ -931,16 +929,18 @@ msgstr "Todos os Ficheiros"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "A instalar a arquitetura incompatível '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "A substituir biblioteca por uma arquitetura incompatível!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Quer substituir a biblioteca '%1$s' em '%2$s' por uma versão que é "
+"incompatível com o seu computador?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1015,18 +1015,21 @@ msgstr "Instalar"
 msgid "%s%% of download completed"
 msgstr "download de %s%% concluído"
 
-#, fuzzy
 msgid "Enter a library or object name."
-msgstr "Digite o nome exato de um objeto ou biblioteca."
+msgstr "Digite o nome de uma biblioteca ou objeto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "p. ex., 'freeverb~'"
 
 msgid "By default this will find anything that contains the search word(s)."
 msgstr ""
+"Por padrão, isto encontrará qualquer coisa que contenha a(s) palavrava(s) de "
+"pesquisa."
 
 msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
+"Se ativar o modo \"pesquisa exata\", apenas correspondências exatas são "
+"consideradas."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use o curinga '*' para combinar com qualquer quantidade de caracteres."
@@ -1073,7 +1076,7 @@ msgid "translations"
 msgstr "traduções"
 
 msgid "exact search"
-msgstr ""
+msgstr "pesquisa exata"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr "Apenas instale externals enviados por quem confia."
@@ -1102,9 +1105,8 @@ msgstr "Resultados de Busca"
 msgid "Log"
 msgstr "Log"
 
-#, fuzzy
 msgid "Searching for all packages..."
-msgstr "À procura de \"%s\"..."
+msgstr "A procurar por todos pacotes..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1181,9 +1183,8 @@ msgstr "Download completo! Verificando..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorando mismatch de checksum"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Ignorando mismatch de checksum"
+msgstr "A ignorar erros de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1195,7 +1196,7 @@ msgstr "[deken] platforma detectada: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "Não foi possível encontrar um menu para adicionar '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1306,7 +1307,7 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Não foi possível criar preferências \"%1$s\" em %2$s"
 
 msgid "The language can only be set during startup."
-msgstr ""
+msgstr "O idioma só pode ser setada durante a inicialização."
 
 msgid "Afar"
 msgstr "Afar"
@@ -1865,15 +1866,14 @@ msgid "Print..."
 msgstr "Imprimir…"
 
 msgid "single precision"
-msgstr ""
+msgstr "precisão simples"
 
-#, fuzzy
 msgid "double precision"
-msgstr "EXPERIMENTAL precisão double (64bit)"
+msgstr "precisão double"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats"
-msgstr "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-floats"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -2006,9 +2006,8 @@ msgstr "Próxima Janela"
 msgid "Previous Window"
 msgstr "Janela Anterior"
 
-#, fuzzy
 msgid "Close subwindows"
-msgstr "Fechar esta janela?"
+msgstr "Fechar subjanelas"
 
 msgid "Parent Window"
 msgstr "Janela superior"
@@ -2075,9 +2074,8 @@ msgstr "Quer gravar as modificações feitas em '%s'?"
 msgid "Properties"
 msgstr "Propriedades"
 
-#, fuzzy
 msgid "edit mode"
-msgstr "Modo de edição"
+msgstr "modo de edição"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2104,9 +2102,8 @@ msgstr "Áudio ligado"
 msgid "Audio off"
 msgstr "Áudio desligado"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Localizar último erro"
+msgstr "Encontrar fonte"
 
 msgid "Pd"
 msgstr "Pd"
