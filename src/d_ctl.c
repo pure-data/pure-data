@@ -219,8 +219,8 @@ static t_class *vline_tilde_class;
 #include "s_stuff.h"    /* for DEFDACBLKSIZE; this should be in m_pd.h */
 typedef struct _vseg
 {
-    double s_targettime;
     double s_starttime;
+    double s_stoptime;
     t_sample s_target;
     struct _vseg *s_next;
 } t_vseg;
@@ -235,12 +235,12 @@ typedef struct _vline
     double x_nextblocktime;
     double x_samppermsec;
     double x_msecpersamp;
-    double x_targettime;
+    double x_stoptime;
     t_sample x_target;
     t_float x_inlet1;
     t_float x_inlet2;
     t_vseg *x_list;
-    t_vseg *x_list_tail;
+    t_vseg *x_tail;
 } t_vline;
 
 static t_int *vline_tilde_perform(t_int *w)
@@ -270,10 +270,10 @@ static t_int *vline_tilde_perform(t_int *w)
             /* has starttime elapsed?  If so update value and increment */
             if (s->s_starttime < timenext)
             {
-                if (x->x_targettime <= timenext)
+                if (x->x_stoptime <= timenext)
                     f = x->x_target, inc = 0;
                     /* if zero-length segment bash output value */
-                if (s->s_targettime <= s->s_starttime)
+                if (s->s_stoptime <= s->s_starttime)
                 {
                     f = s->s_target;
                     inc = 0;
@@ -281,23 +281,23 @@ static t_int *vline_tilde_perform(t_int *w)
                 else
                 {
                     double incpermsec = (s->s_target - f)/
-                        (s->s_targettime - s->s_starttime);
+                        (s->s_stoptime - s->s_starttime);
                     f = f + incpermsec * (timenext - s->s_starttime);
                     inc = incpermsec * msecpersamp;
                 }
                 x->x_inc = inc;
                 x->x_target = s->s_target;
-                x->x_targettime = s->s_targettime;
+                x->x_stoptime = s->s_stoptime;
                 x->x_list = s->s_next;
                 if (!x->x_list)
-                    x->x_list_tail = 0;
+                    x->x_tail = 0;
                 t_freebytes(s, sizeof(*s));
                 s = x->x_list;
                 goto checknext;
             }
         }
-        if (x->x_targettime <= timenext)
-            f = x->x_target, inc = x->x_inc = 0, x->x_targettime = 1e20;
+        if (x->x_stoptime <= timenext)
+            f = x->x_target, inc = x->x_inc = 0, x->x_stoptime = 1e20;
         *out++ = f;
         f = f + inc;
         timenow = timenext;
@@ -312,11 +312,11 @@ static void vline_tilde_stop(t_vline *x)
     for (s1 = x->x_list; s1; s1 = s2)
         s2 = s1->s_next, t_freebytes(s1, sizeof(*s1));
     x->x_list = 0;
-    x->x_list_tail = 0;
+    x->x_tail = 0;
     x->x_inc = 0;
     x->x_inlet1 = x->x_inlet2 = 0;
     x->x_target = x->x_value;
-    x->x_targettime = 1e20;
+    x->x_stoptime = 1e20;
 }
 
 static void vline_tilde_float(t_vline *x, t_float f)
@@ -329,6 +329,22 @@ static void vline_tilde_float(t_vline *x, t_float f)
     if (PD_BIGORSMALL(f))
         f = 0;
 
+        /* drop any segments whose stop time has passed, as can happen when
+        we got sent segments while DSP was off.  This is to avoid situations
+        where lots of them get added while DSP isn't running. We add 0.1 msec
+        to the stop time limit just in case of truncation error in case it and
+        the current time are logically, but not numerically, equal. */
+    while (x->x_list && timenow > x->x_list->s_stoptime + 0.1)
+    {
+        t_vseg *was = x->x_list;
+        x->x_list = x->x_list->s_next;
+        freebytes(was, sizeof(*was));
+        if (!x->x_list)
+        {
+            vline_tilde_stop(x);
+            return;
+        }
+    }
         /* negative delay input means stop and jump immediately to new value */
     if (inlet2 < 0)
     {
@@ -339,21 +355,22 @@ static void vline_tilde_float(t_vline *x, t_float f)
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
         /* check if we append after the last segment.  We append when the new
         segment has a later starttime, or an equal starttime if the last was
-        instantaneous and the new one isn't (in which case we'll do a jump-and-slide
-        at that time.) */
-    if (x->x_list_tail && (x->x_list_tail->s_starttime < starttime ||
-            (x->x_list_tail->s_starttime == starttime &&
-                x->x_list_tail->s_targettime <= x->x_list_tail->s_starttime && inlet1 > 0)))
+        instantaneous and the new one isn't (in which case we'll do a
+        jump-and-slide at that time.) */
+    if (x->x_tail && (x->x_tail->s_starttime < starttime ||
+            (x->x_tail->s_starttime == starttime &&
+                x->x_tail->s_stoptime <= x->x_tail->s_starttime
+                    && inlet1 > 0)))
     {
         deletefrom = 0;
-        x->x_list_tail->s_next = snew;
+        x->x_tail->s_next = snew;
     }
         /* check if we supplant the first item in the list.  We supplant
         an item by having an earlier starttime, or an equal starttime unless
         the equal one was instantaneous and the new one isn't. */
     else if (!x->x_list || x->x_list->s_starttime > starttime ||
         (x->x_list->s_starttime == starttime &&
-            (x->x_list->s_targettime > x->x_list->s_starttime || inlet1 <= 0)))
+            (x->x_list->s_stoptime > x->x_list->s_starttime || inlet1 <= 0)))
     {
         deletefrom = x->x_list;
         x->x_list = snew;
@@ -364,7 +381,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
         {
             if (s2->s_starttime > starttime ||
                 (s2->s_starttime == starttime &&
-                    (s2->s_targettime > s2->s_starttime || inlet1 <= 0)))
+                    (s2->s_stoptime > s2->s_starttime || inlet1 <= 0)))
             {
                 deletefrom = s2;
                 s1->s_next = snew;
@@ -384,8 +401,8 @@ static void vline_tilde_float(t_vline *x, t_float f)
     snew->s_next = 0;
     snew->s_target = f;
     snew->s_starttime = starttime;
-    snew->s_targettime = starttime + inlet1;
-    x->x_list_tail = snew;
+    snew->s_stoptime = starttime + inlet1;
+    x->x_tail = snew;
     x->x_inlet1 = x->x_inlet2 = 0;
 }
 
@@ -407,9 +424,9 @@ static void *vline_tilde_new(void)
     x->x_referencetime = x->x_lastlogicaltime = x->x_nextblocktime =
         clock_getlogicaltime();
     x->x_list = 0;
-    x->x_list_tail = 0;
+    x->x_tail = 0;
     x->x_samppermsec = 0;
-    x->x_targettime = 1e20;
+    x->x_stoptime = 1e20;
     return (x);
 }
 

@@ -18,8 +18,9 @@ void gfx_canvas_menuclose(t_canvas *x, const char *s);
 /* paths (polygons, etc) */
 void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
     double width, int npoints, double *coords, int patchline);
-void gfx_canvas_configurepath(t_canvas *x, char *tag, int width,
-    const char *color);
+
+void gfx_canvas_configure_whatev(t_canvas *x, char *tag, int width,
+    const char *fillcolor, const char *outlinelcolor);
 
 /* add text */
 void gfx_canvas_addtext(t_canvas *x, char *tag, char *grouptag, char *text,
@@ -46,6 +47,8 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords);
 void gfx_canvas_reflecttitle(t_canvas *x, const char *path, const char *name,
     const char *arguments, int dirty);
 
+void gfx_canvas_text_select(t_canvas *x, char *tag, int start, int end);
+
 /* debugging printout to stderr */
 void gfx_canvas_spew(t_canvas *x);
 
@@ -54,6 +57,8 @@ int socket_send(char *msg);
 int socket_startpd(int argc, char **argv);
 
 void pdgtk_start_watchdog( void);
+
+void pdgtk_setclipboard(const char *s);
 
 extern int tcl_debug;
 

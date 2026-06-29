@@ -68,7 +68,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Key r {menu_raise_pdwindow}
     bind_capslock all $::modifier-Key s {menu_send %W menusave}
     bind_capslock all $::modifier-Key t {menu_send %W triggerize}
-    bind_capslock all $::modifier-Key v {menu_send %W paste}
+    bind_capslock all $::modifier-Key v {pdtk_pastetext %W}
     bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
     bind_capslock all $::modifier-Key x {menu_send %W cut}
     bind_capslock all $::modifier-Key z {menu_undo}

@@ -652,24 +652,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 text_drawborder(x->x_text, x->x_glist, x->x_tag, 0);
         if (x->x_active)
         {
-            if (selend_b > selstart_b)
-            {
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "from",
-                    x->x_tag, u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "to",
-                    x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
-                pdgui_vmess(0, "crs", canvas, "focus", "");
-            }
-            else
-            {
-                pdgui_vmess(0, "crr", canvas, "select", "clear");
-                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag,
-                    u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess("focus", "c", canvas);
-                pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
-            }
+            pdgui_vmess("pdtk_text_select", "cs i i", canvas, x->x_tag,
+                u8_charnum(x->x_buf, selstart_b),
+                u8_charnum(x->x_buf, selend_b));
         }
     }
     x->x_pixwidth = *widthp;
