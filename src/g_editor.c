@@ -524,6 +524,16 @@ typedef struct _undo_cut
                       it later */
 } t_undo_cut;
 
+static void *binbuf_toclipboard(t_binbuf *b)
+{
+    char *copytext;
+    int copytextsize;
+    binbuf_gettext(b, &copytext, &copytextsize);
+    pdgui_vmess("clipboard", "r", "clear");
+    pdgui_vmess("clipboard", "rp",  "append", copytextsize, copytext);
+    freebytes(copytext, copytextsize);
+}
+
 void *canvas_undo_set_cut(t_canvas *x, int mode)
 {
     t_undo_cut *buf;
@@ -2422,27 +2432,20 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         return;
     }
         /* did we click in run mode inside a text which is not active? */
-    if (doit && runmode && rtext && rtext != x->gl_editor->e_textedfor)
+    if (doit && rtext && rtext != x->gl_editor->e_textedfor)
     {
             /* double clicking on an atom activates the text */
-        if (hitobj && hitobj->te_type == T_ATOM && doubleclick)
+        if (runmode && hitobj && hitobj->te_type == T_ATOM && doubleclick)
         {
             undarken_if_gatom(&hitobj->te_g);
             /* gobj_activate(&hitobj->te_g, x, 1); */
             rtext_activate(rtext, 1);
             return;
         }
-        if (hitscalar)   /* hit a scalar */
+        if (hitscalar)   /* hit a scalar - ask it if we should activate */
         {
-            t_template *template =
-                template_findbyname(hitscalar->sc_template);
-            if (doubleclick)
-            {
-                rtext_activate(rtext, 1);
-                return;
-            }
-            scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
-                xpix, ypix, shiftmod, altmod, doubleclick, 1);
+            drawtext_doclick(hitdrawtext, xpix, ypix, shiftmod, altmod,
+                doubleclick, rtext, hitscalar, runmode);
             return;
         }
     }
@@ -2698,11 +2701,16 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
     {
         if (!shiftmod)
             glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rk rs",
+        /*pdgui_vmess(0, "crr iiii rk rs",
             x, "create", "rectangle",
             xpix,ypix, xpix,ypix,
             "-outline", THISGUI->i_selectcolor,
-            "-tags", "x");
+            "-tags", "x"); */
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            x, "x", "-",
+            1, 1, THISGUI->i_foregroundcolor,
+            xpix, ypix, xpix, ypix, xpix, ypix, xpix, ypix, xpix, ypix);
+
         x->gl_editor->e_xwas = xpix;
         x->gl_editor->e_ywas = ypix;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -3054,9 +3062,13 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
-        pdgui_vmess(0, "crs iiii",
+        pdgui_vmess(0, "crs ii ii ii ii ii",
             x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
+            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+            x->gl_editor->e_xwas, ypos,
+            xpos, ypos,
+            xpos, x->gl_editor->e_ywas,
+            x->gl_editor->e_xwas, x->gl_editor->e_ywas);
 }
 
 void canvas_mouseup(t_canvas *x,
@@ -3891,6 +3903,8 @@ static void canvas_copy(t_canvas *x)
     {
         binbuf_free(THISED->copy_binbuf);
         THISED->copy_binbuf = canvas_docopy(x);
+        if (!glist_textedfor(x))
+            binbuf_toclipboard(THISED->copy_binbuf);
     }
     if (glist_textedfor(x))
     {
@@ -4265,16 +4279,63 @@ static void canvas_paste_replace(t_canvas *x)
     }
 }
 
+    /* collect text in order to paste */
+void canvas_pastechars(t_canvas *x, t_symbol *s, int ac, t_atom *av)
+{
+    if (ac >= 1 && av->a_type == A_FLOAT && x->gl_editor)
+    {
+        int keynum = av->a_w.w_float, np = x->gl_editor->e_npaste, i;
+        char *str = x->gl_editor->e_pastebuffer;
+        if (keynum == -1)
+        {
+            if (str)
+                freebytes(str, np);
+            x->gl_editor->e_pastebuffer = getbytes(0);
+            x->gl_editor->e_npaste = 0;
+        }
+        else if (keynum == -2)
+        {
+            int i;
+            if (!str)
+                bug("canvas_pastechars");
+
+            else if (np > 3 && str[0] == '#' && str[1] == 'X' && str[2] == ' ')
+            {
+                if (THISED->copy_binbuf)
+                    binbuf_free(THISED->copy_binbuf);
+                THISED->copy_binbuf = binbuf_new();
+                binbuf_text(THISED->copy_binbuf, str, np);
+                canvas_paste(x);
+            }
+            else if (glist_textedfor(x))
+            {
+                for (i = 0; i < np; i++)
+                    vmess(&x->gl_pd, gensym("key"), "fff", 1.,
+                        (float)(0xff & str[i]), 0.);
+            }
+            freebytes(str, np);
+            x->gl_editor->e_pastebuffer = 0;
+            x->gl_editor->e_npaste = 0;
+        }
+        else
+        {
+            for (i = 0; i < ac; i++)
+            {
+                x->gl_editor->e_pastebuffer =
+                    resizebytes(x->gl_editor->e_pastebuffer, np, np + 1);
+                x->gl_editor->e_pastebuffer[np] = atom_getfloatarg(i, ac, av);
+                np = np + 1;
+            }
+            x->gl_editor->e_npaste = np;
+        }
+    }
+    else bug("canvas_pastechars");
+}
 
 static void canvas_paste(t_canvas *x)
 {
-    if (!x->gl_editor)
+    if (!x->gl_editor || glist_textedfor(x))
         return;
-    if (glist_textedfor(x))
-    {
-            /* simulate keystrokes as if the copy buffer were typed in. */
-        pdgui_vmess("pdtk_pastetext", "^", x);
-    }
     else
     {
         int offset = 0;
@@ -5187,6 +5248,8 @@ void g_editor_setup(void)
         gensym("triggerize"), 0);
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_pastechars,
+        gensym("pastechars"), A_GIMME, A_NULL);
 }
 
 void canvas_editor_for_class(t_class *c)

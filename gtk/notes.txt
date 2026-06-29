@@ -7,7 +7,9 @@ To test:
 
 make && pd -guicmd ./pdgtk -nrt -stderr test1.pd
 
-Set the DEBUG environment variable to enable debugging printout.
+Set the PDDEBUG environment variable to enable debugging printout.
+
+or compile with DEBUGGTK or DEBUGTCL for various ad-hoc printout.
 
 So far, one can click on things, go into and out of edit
 mode, move boxes around and/or type into them.
@@ -29,11 +31,11 @@ and adding functions like pdtk_canvas_create_line to the tcl code, so that
 it becomes easier to parse the tcl commands from the gtk end.
 
 todo next:
-fill out menus: copy/paste/delete, close/quit, 'put' menu
-text editing for objects etc - manage and show text selection
+integrate copy and paste
+dialog windows
 finish replacing "create line" with pdtk_canvas_create_line calls
 put in text buffer in main window
-string translations
+fill out menus
 
 
 ideas:

@@ -594,12 +594,33 @@ proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
         -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
 
+# this can configure rectangles or ovals:
+proc pdtk_canvas_configure_rect {canvas tag width fill outline} {
+
+    $canvas itemconfigure $tag -width $width -fill $fill -outline $outline
+}
+
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
     $canvas create oval $x1 $y1 $x2 $y2 \
         -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
+
+proc pdtk_text_select {canvas tag start end} {
+
+    if [expr $end > $start] {
+        $canvas select from $tag $start
+        $canvas select to $tag [expr $end - 1]
+        $canvas focus ""
+    } else {
+        $canvas select clear
+        $canvas icursor $tag $start
+        focus $canvas
+        $canvas focus $tag
+    }
+}
+
 
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag

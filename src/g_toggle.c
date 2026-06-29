@@ -90,7 +90,7 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
         0, 0, 0, 0, "-tags", 2, tags); */
     pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
         canvas, tag, tag_object, 1,
-        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        x->x_gui.x_bcol, THISGUI->i_foregroundcolor,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_X1", x);

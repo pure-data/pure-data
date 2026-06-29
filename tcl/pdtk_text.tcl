@@ -46,12 +46,19 @@ proc pdtk_pastetext {tkcanvas} {
         # turn unicode-encoded stuff (\u...) into unicode characters
         # 'unescape' needs a trailing space...
         set buf [::pdtk_text::unescape "${buf} " ]
+        pdsend "[winfo toplevel $tkcanvas] pastechars -1"
+        set command "[winfo toplevel $tkcanvas] pastechars"
         for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
-            set cha [string index $buf $i]
-            scan $cha %c keynum
-            pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"
+            scan [string index $buf $i] %c keynum
+            set command [concat $command " " $keynum]
+            if { [string length $command] > 75 } {
+                pdsend $command
+                set command "[winfo toplevel $tkcanvas] pastechars"
+            }
         }
+        pdsend $command
     }
+    pdsend "[winfo toplevel $tkcanvas] pastechars -2"
 }
 
 # select all of the text in an existing text box

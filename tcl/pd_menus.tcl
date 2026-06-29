@@ -166,7 +166,7 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
     $mymenu add command -label [_ "Copy"]       -accelerator "$accelerator+C" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
+        -command {::pd_menucommands::scheduleAction pdtk_pastetext $::focused_window}
     $mymenu add command -label [_ "Paste Replace" ]  \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste-replace}
     $mymenu add  separator
@@ -205,7 +205,7 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window copy}
     $mymenu add command -label [_ "Paste"]      -accelerator "$accelerator+V" \
         -state disabled \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window paste}
+        -command {::pd_menucommands::scheduleAction menu_send_paste $::focused_window paste}
     $mymenu add  separator
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window selectall}

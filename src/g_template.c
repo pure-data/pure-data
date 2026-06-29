@@ -994,12 +994,15 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
 }
 
-#define CLOSED 1      /* polygon */
-#define BEZ 2         /* bezier shape */
-#define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
-#define NOMOUSEEDIT 8 /* same in edit mode */
-#define NOVERTICES 16 /* disable only vertex grabbing in run mode */
-#define DRAGGABLE 32  /* can use to drag entire scalar around */
+#define CLOSED 1        /* polygon */
+#define BEZ 2           /* bezier shape */
+#define NOMOUSERUN 4    /* disable mouse interaction when in run mode  */
+#define NOMOUSEEDIT 8   /* same in edit mode */
+#define NOVERTICES 16   /* disable only vertex grabbing in run mode */
+#define DRAGGABLE 32    /* can use to drag entire scalar around */
+#define NEVEREDIT 64    /* (drawtext) never activate for editing */
+#define ALWAYSEDIT 128  /* (drawtext) edit or run mode click activates */
+
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -1329,16 +1332,6 @@ static void curve_activate(t_gobj *z, t_glist *glist,
 {
     /* fill in later */
 }
-
-#if 0
-static int rangecolor(int n)    /* 0 to 9 in 5 steps */
-{
-    int n2 = n/2;               /* 0 to 4 */
-    int ret = (n2 << 6);        /* 0 to 256 in 5 steps */
-    if (ret > 255) ret = 255;
-    return (ret);
-}
-#endif
 
 static int rangecolor(int n)    /* 0 to 9 in 5 steps */
 {
@@ -2775,6 +2768,7 @@ t_class *drawtext_class;
 typedef struct _drawtext
 {
     t_object x_obj;
+    int x_flags;    /* NOMOUSERUN, NOMOUSEEDIT, ALWAYSEDIT, NEVEREDIT */
     t_symbol *x_fieldname;
     t_fielddesc x_xloc;
     t_fielddesc x_yloc;
@@ -2788,30 +2782,36 @@ typedef struct _drawtext
 static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawtext *x = (t_drawtext *)pd_new(drawtext_class);
+    int flags = 0;
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
-    while (1)
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
-        if (!strcmp(firstarg->s_name, "-v") && argc > 1)
+        const char *flag = argv->a_w.w_symbol->s_name;
+        if (!strcmp(flag, "-n"))
+            fielddesc_setfloat_const(&x->x_vis, 0);
+        else if (!strcmp(flag, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
-            argc -= 2; argv += 2;
+            argc -= 1; argv += 1;
         }
-        else if (!strcmp(firstarg->s_name, "-n"))
-        {
-            fielddesc_setfloat_const(&x->x_vis, 0);
-            argc--; argv++;
-        }
-        else if (*firstarg->s_name == '-')
-        {
-            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
-                firstarg->s_name);
-            argc--; argv++;
-        }
-        else break;
+        else if (!strcmp(flag, "-x"))
+            flags |= (NOMOUSERUN | NOMOUSEEDIT); /* disable all mouse actions */
+        else if (!strcmp(flag, "-xr"))
+            flags |= NOMOUSERUN; /* disable mouse actions in run mode */
+        else if (!strcmp(flag, "-xe"))
+            flags |= NOMOUSEEDIT; /* disable mouse actions in edit mode */
+        else if (!strcmp(flag, "-e"))
+            flags |= ALWAYSEDIT; /* single click activates text */
+        else if (!strcmp(flag, "-ne"))
+            flags |= NEVEREDIT; /* never activate text */
+        else pd_error(x, "%s: unknown flag '%s'...", classsym->s_name, flag);
+
+        argc--; argv++;
     }
+    x->x_flags = flags;
         /* next argument is name of field to draw - we don't know its type yet
         but fielddesc_setfloatarg() will do fine here. */
     x->x_fieldname = atom_getsymbolarg(0, argc, argv);
@@ -2871,6 +2871,23 @@ t_template *drawtext_gettemplate(t_gobj *z)
         if (g->g_pd == gtemplate_class)
             return (((t_pdstruct *)g)->x_template);
     return (0);     /* shouldn't happen - we got here through the template */
+}
+
+void drawtext_doclick(t_gobj *z, int xpix, int ypix, int shiftmod,
+    int altmod, int doubleclick, t_rtext *rtext, t_scalar *hitscalar,
+        int runmode)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    if (z->g_pd != drawtext_class)
+        bug("drawtext_doclick");
+                /* possibly activate the rtext for editing? */
+    else if ((x->x_flags & ALWAYSEDIT) ||
+        (!(x->x_flags & NEVEREDIT) && runmode && doubleclick))
+            rtext_activate(rtext, 1);
+                /* or possibly call the parent widget routine */
+    else if (runmode || !NOMOUSEEDIT)
+        scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
+            xpix, ypix, shiftmod, altmod, doubleclick, 1);
 }
 
     /* get the text to draw or edit.  "length" is number of nonzero chars.
@@ -2960,7 +2977,9 @@ static void drawtext_getrect(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     if (!gobj_shouldvis(z, glist)
         || !drawtext_isvisible(z, data)
-        || !(rtext = glist_getforscalar(glist, sc, data, z)))
+        || !(rtext = glist_getforscalar(glist, sc, data, z)) ||
+        (glist->gl_edit && x->x_flags & NOMOUSEEDIT) ||
+        (!glist->gl_edit && x->x_flags & NOMOUSERUN))
     {
         *xp1 = *yp1 = 0x7fffffff;
         *xp2 = *yp2 = -0x7fffffff;
@@ -3169,7 +3188,7 @@ static int drawtext_click(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     int x1, y1, x2, y2, type, onset;
     x->x_template = template;
-    if (!drawtext_isvisible(z, data))
+    if (!drawtext_isvisible(z, data) || (x->x_flags & NOMOUSERUN))
         return (0);
     rtext = glist_getforscalar(glist, sc, data, z);
     rtext_getrect(rtext, &x1, &y1, &x2, &y2);
