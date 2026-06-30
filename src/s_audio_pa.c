@@ -71,6 +71,20 @@ static double pa_lastdactime;
 
 static int pa_initialized;
 
+PD_INLINE int pa_ensure_pdinstance(void *arg) {
+#ifdef PDINSTANCE
+    t_pdinstance *pd = (t_pdinstance *)arg;
+    if (!pd_this)
+    {
+        pd_setinstance((t_pdinstance *)pd);
+    }
+#else
+    (void)arg;
+#endif
+
+    return (0 != pd_this);
+}
+
 static void pa_init(void)        /* Initialize PortAudio  */
 {
     if (!pa_initialized)
@@ -126,6 +140,10 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     unsigned int n, j;
     float *fbuf, *fp2, *fp3;
     t_sample *soundiop;
+
+    if (!pa_ensure_pdinstance(userData))
+        return 1;
+
     if (nframes % DEFDACBLKSIZE)
     {
         post("warning: audio nframes %ld not a multiple of blocksize %d",
@@ -182,6 +200,9 @@ static int pa_fifo_callback(const void *inputBuffer,
         outfiforoom = sys_ringbuf_getreadavailable(&pa_outring);
     int ch;
 
+    if (!pa_ensure_pdinstance(userData))
+        return 1;
+
 #if CHECKFIFOS
     if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=
         pa_outchans * sys_ringbuf_getwriteavailable(&pa_inring))
@@ -235,6 +256,8 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
 #ifdef _WIN32
     PaWasapiStreamInfo wasapiinfo;
 #endif
+
+        //fprintf(stderr, "%s(%g, %d, %d, %d, %d, %d, %p)\n", __FUNCTION__, samplerate, inchannels, outchannels, framesperbuf, indeviceno, outdeviceno, callbackfn);
 
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
             nchannels, flags, nbuffers, framesperbuf); */
@@ -319,7 +342,7 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
             goto error;
     }
     err = Pa_OpenStream(&pa_stream, p_instreamparams, p_outstreamparams,
-        samplerate, framesperbuf, paNoFlag, callbackfn, 0);
+        samplerate, framesperbuf, paNoFlag, callbackfn, pd_this);
     if (err != paNoError)
         goto error;
 
