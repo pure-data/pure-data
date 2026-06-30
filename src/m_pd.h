@@ -1056,7 +1056,7 @@ EXTERN t_pdinstance *pd_getinstance(void);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
-#if defined(PDTHREADS) && defined(PDINSTANCE)
+#if PDTHREADS && defined(PDINSTANCE)
 #ifdef _MSC_VER
 #define PERTHREAD __declspec(thread)
 #else
