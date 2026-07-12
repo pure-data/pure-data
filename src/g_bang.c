@@ -121,7 +121,8 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     {
         char tag[128];
         sprintf(tag, "%p_BUT", x);
-        pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect", glist, tag,
+        pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect",
+            glist_getcanvas(glist), tag,
             IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
             THISGUI->i_foregroundcolor);
     }

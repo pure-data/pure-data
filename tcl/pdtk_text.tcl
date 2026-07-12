@@ -46,6 +46,24 @@ proc pdtk_pastetext {tkcanvas} {
         # turn unicode-encoded stuff (\u...) into unicode characters
         # 'unescape' needs a trailing space...
         set buf [::pdtk_text::unescape "${buf} " ]
+        for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
+            set cha [string index $buf $i]
+            scan $cha %c keynum
+            pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"
+        }
+    }
+}
+
+# send "pastetext" messages to send the clipboard contents to the patch.
+# follow the text with a terminating "-2" at which point the patch carries
+# out the paste.
+proc pdtk_pasteany {tkcanvas} {
+    if { [catch {set buf [clipboard get]}] } {
+        # no selection... do nothing
+    } else {
+        # turn unicode-encoded stuff (\u...) into unicode characters
+        # 'unescape' needs a trailing space...
+        set buf [::pdtk_text::unescape "${buf} " ]
         pdsend "[winfo toplevel $tkcanvas] pastechars -1"
         set command "[winfo toplevel $tkcanvas] pastechars"
         for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {

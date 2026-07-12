@@ -51,7 +51,6 @@ static void glist_setlastxy(t_glist *gl, int xval, int yval);
 static void glist_donewloadbangs(t_glist *x);
 static t_binbuf *canvas_docopy(t_canvas *x);
 static void canvas_dopaste(t_canvas *x, t_binbuf *b);
-static void canvas_paste(t_canvas *x);
 static void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
 static void canvas_zoom(t_canvas *x, t_floatarg zoom);
@@ -4279,60 +4278,10 @@ static void canvas_paste_replace(t_canvas *x)
     }
 }
 
-    /* collect text in order to paste */
-void canvas_pastechars(t_canvas *x, t_symbol *s, int ac, t_atom *av)
-{
-    if (ac >= 1 && av->a_type == A_FLOAT && x->gl_editor)
-    {
-        int keynum = av->a_w.w_float, np = x->gl_editor->e_npaste, i;
-        char *str = x->gl_editor->e_pastebuffer;
-        if (keynum == -1)
-        {
-            if (str)
-                freebytes(str, np);
-            x->gl_editor->e_pastebuffer = getbytes(0);
-            x->gl_editor->e_npaste = 0;
-        }
-        else if (keynum == -2)
-        {
-            int i;
-            if (!str)
-                bug("canvas_pastechars");
-
-            else if (np > 3 && str[0] == '#' && str[1] == 'X' && str[2] == ' ')
-            {
-                if (THISED->copy_binbuf)
-                    binbuf_free(THISED->copy_binbuf);
-                THISED->copy_binbuf = binbuf_new();
-                binbuf_text(THISED->copy_binbuf, str, np);
-                canvas_paste(x);
-            }
-            else if (glist_textedfor(x))
-            {
-                for (i = 0; i < np; i++)
-                    vmess(&x->gl_pd, gensym("key"), "fff", 1.,
-                        (float)(0xff & str[i]), 0.);
-            }
-            freebytes(str, np);
-            x->gl_editor->e_pastebuffer = 0;
-            x->gl_editor->e_npaste = 0;
-        }
-        else
-        {
-            for (i = 0; i < ac; i++)
-            {
-                x->gl_editor->e_pastebuffer =
-                    resizebytes(x->gl_editor->e_pastebuffer, np, np + 1);
-                x->gl_editor->e_pastebuffer[np] = atom_getfloatarg(i, ac, av);
-                np = np + 1;
-            }
-            x->gl_editor->e_npaste = np;
-        }
-    }
-    else bug("canvas_pastechars");
-}
-
-static void canvas_paste(t_canvas *x)
+    /* paste from locally available paste buffer which may have been
+    sent to us (0.57 and after) from teh GUI or might (0.56 and before)
+    just be the locally maintained copy buffer */
+static void canvas_localpaste(t_canvas *x)
 {
     if (!x->gl_editor || glist_textedfor(x))
         return;
@@ -4371,6 +4320,78 @@ static void canvas_paste(t_canvas *x)
                     offset, offset);
         }
     }
+}
+
+    /* collect text from teh GUI in order to paste.  When the first arg is -2,
+    this is the end of the text and then we carry the paste action out. */
+void canvas_pastechars(t_canvas *x, t_symbol *s, int ac, t_atom *av)
+{
+    if (ac >= 1 && av->a_type == A_FLOAT && x->gl_editor)
+    {
+        int keynum = av->a_w.w_float, np = x->gl_editor->e_npaste, i;
+        char *str = x->gl_editor->e_pastebuffer;
+        if (keynum == -1)
+        {
+            if (str)
+                freebytes(str, np);
+            x->gl_editor->e_pastebuffer = getbytes(0);
+            x->gl_editor->e_npaste = 0;
+        }
+        else if (keynum == -2)
+        {
+            int i;
+            if (!str)
+                bug("canvas_pastechars");
+
+            else if (np > 3 && (!strncmp(str, "#X ", 3) ||
+                !strncmp(str, "#N ", 3)))
+            {
+                if (THISED->copy_binbuf)
+                    binbuf_free(THISED->copy_binbuf);
+                THISED->copy_binbuf = binbuf_new();
+                binbuf_text(THISED->copy_binbuf, str, np);
+                canvas_localpaste(x);
+            }
+            else if (glist_textedfor(x))
+            {
+                for (i = 0; i < np; i++)
+                    vmess(&x->gl_pd, gensym("key"), "fff", 1.,
+                        (float)(0xff & str[i]), 0.);
+            }
+            freebytes(str, np);
+            x->gl_editor->e_pastebuffer = 0;
+            x->gl_editor->e_npaste = 0;
+        }
+        else
+        {
+            for (i = 0; i < ac; i++)
+            {
+                x->gl_editor->e_pastebuffer =
+                    resizebytes(x->gl_editor->e_pastebuffer, np, np + 1);
+                x->gl_editor->e_pastebuffer[np] = atom_getfloatarg(i, ac, av);
+                np = np + 1;
+            }
+            x->gl_editor->e_npaste = np;
+        }
+    }
+    else bug("canvas_pastechars");
+}
+
+    /* originally the "paste" message caused the actual paste to happen.
+    Starting 0.57, we instead ask the GUI to send us "pastechars" messages so
+    that we can paste patch fragments from the window system clipboard */
+static void canvas_paste(t_canvas *x)
+{
+    if (!x->gl_editor)
+        return;
+    if (glist_textedfor(x))
+    {
+            /* simulate keystrokes as if the copy buffer were typed in. */
+        pdgui_vmess("pdtk_pastetext", "^", x);
+    }
+    else pdgui_vmess("pdtk_pasteany", "^", x);
+
+
 }
 
 static void canvas_duplicate(t_canvas *x)
