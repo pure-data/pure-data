@@ -81,6 +81,9 @@
 
 #define IEM_MAX_SYM_LEN 127
 
+#define IEM_NBX_MINDIGITS 1
+#define IEM_NBX_FS_FACTOR 36
+
 #define IEM_GUI_DRAW_MODE_UPDATE 0
 #define IEM_GUI_DRAW_MODE_MOVE   1
 #define IEM_GUI_DRAW_MODE_NEW    2
@@ -295,6 +298,7 @@ EXTERN void iemgui_size(void *x, t_iemgui *iemgui);
 EXTERN void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
 EXTERN void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
 EXTERN void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
+EXTERN void iemgui_resize(t_gobj *z, t_glist *glist, int dx, int dy, int mod);
 EXTERN void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy);
 EXTERN void iemgui_select(t_gobj *z, t_glist *glist, int selected);
 EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
