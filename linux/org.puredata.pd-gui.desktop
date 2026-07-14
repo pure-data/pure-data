@@ -15,3 +15,4 @@ GenericName=Dataflow IDE
 Type=Application
 Terminal=false
 Icon=puredata
+StartupWMClass=PdWindow
