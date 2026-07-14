@@ -219,6 +219,23 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     canvas_resume_dsp(dspstate);
 }
 
+int canvas_getswitchedon(t_canvas *x)
+{
+    t_canvas *canvas;
+    t_gobj *g;
+    for (canvas = x; canvas; canvas = canvas->gl_owner)
+    {
+        for (g = canvas->gl_list; g; g = g->g_next)
+        {
+            if (g->g_pd == block_class)
+            {
+                return ((t_block *)g)->x_switchon;
+            }
+        }
+    }
+    return 1;
+}
+
 t_float canvas_getsr(t_canvas *x)
 {
     t_float srate = sys_getsr();

@@ -883,6 +883,217 @@ static void threshold_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
+/* -------------------------- siginfo~ ------------------------------ */
+
+static t_class *siginfo_tilde_class, *siginfo_proxy_class;
+
+typedef struct _siginfo_proxy
+{
+    t_pd x_pd;
+    struct _siginfo_tilde *x_parent;
+} t_siginfo_proxy;
+
+typedef struct _siginfo_tilde
+{
+    t_object x_obj;
+    t_outlet **x_outlet;        /* outlets */
+    t_float x_f;                /* scalar inlet */
+    t_siginfo_proxy x_proxy;    /* proxy to receive "pd-dsp-stopped" events */
+    t_canvas *x_canvas;         /* canvas we live in (for canvas-local info) */
+
+    t_symbol **x_vec;           /* object arguments (or NULL) */
+    unsigned int x_argc;
+
+    int x_globaldspstate;
+    int x_blocksize;            /* t_signal.s_length */
+    int x_channels;             /* t_signal.s_nchans */
+    int x_overlap;              /* t_signal.s_overlap */
+    t_float x_samplespersecond; /* t_signal.s_sr */
+} t_siginfo_tilde;
+
+static void siginfo_tilde_outmsg(t_siginfo_tilde*x, t_symbol *sel, t_float f)
+{
+    t_atom ap[1];
+    SETFLOAT(ap, f);
+    outlet_anything(x->x_outlet[0], sel, 1, ap);
+}
+
+int canvas_getswitchedon(t_canvas *x);
+
+static void siginfo_tilde_bang(t_siginfo_tilde *x)
+{
+    t_symbol **vec = x->x_vec;
+
+    t_symbol *s_dsp = gensym("dspstate");
+    t_symbol *s_blocksize = gensym("blocksize");
+    t_symbol *s_channels = gensym("channels");
+    t_symbol *s_overlap = gensym("overlap");
+    t_symbol *s_samplerate = gensym("samplerate");
+    t_symbol *s_samplespersecond = gensym("samplespersecond");
+
+    int state = x->x_globaldspstate && canvas_getswitchedon(x->x_canvas);
+    int blocksize = x->x_blocksize;
+    int channels = x->x_channels;
+    int overlap = x->x_overlap;
+    t_float samplerate = canvas_getsr(x->x_canvas);
+    t_float samplespersecond = x->x_samplespersecond;
+
+    unsigned int i;
+
+    if (!vec)
+    {
+        siginfo_tilde_outmsg(x, s_dsp, state);
+        siginfo_tilde_outmsg(x, s_blocksize, blocksize);
+        siginfo_tilde_outmsg(x, s_channels, channels);
+        siginfo_tilde_outmsg(x, s_overlap, overlap);
+        siginfo_tilde_outmsg(x, s_samplerate, samplerate);
+        siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
+        return;
+    }
+    for (i = x->x_argc; i > 0; i--)
+    {
+        t_symbol *s = vec[i-1];
+        t_float value = -1;
+        if (s_dsp == s)
+            value = (t_float)state;
+        else if (s_blocksize == s)
+            value = (t_float)blocksize;
+        else if (s_channels == s)
+            value = (t_float)channels;
+        else if (s_overlap == s)
+            value = (t_float)overlap;
+        else if (s_samplerate == s)
+            value = (t_float)samplerate;
+        else if (s_samplespersecond == s)
+            value = (t_float)samplespersecond;
+
+        outlet_float(x->x_outlet[i-1], value);
+    }
+}
+
+static void siginfo_tilde_dsp(t_siginfo_tilde *x, t_signal **sp)
+{
+    x->x_blocksize = sp[0]->s_length;
+    x->x_samplespersecond = sp[0]->s_sr;
+    x->x_channels = sp[0]->s_nchans;
+    x->x_overlap = sp[0]->s_overlap;
+    x->x_globaldspstate = 1;
+    siginfo_tilde_bang(x);
+}
+
+static void siginfo_proxy_bang(t_siginfo_proxy *p)
+{
+    t_siginfo_tilde *x = p->x_parent;
+        /* pd-dsp-stopped */
+    x->x_globaldspstate = 0;
+    t_symbol *s_dsp = gensym("dspstate");
+    if (x->x_vec)
+    {
+        unsigned int i;
+        for (i = 0; i < x->x_argc; i++)
+        {
+            if (x->x_vec[i] == s_dsp)
+            {
+                siginfo_tilde_bang(x);
+                return;
+            }
+        }
+    }
+    else
+        siginfo_tilde_outmsg(x, s_dsp,
+            x->x_globaldspstate && canvas_getswitchedon(x->x_canvas));
+}
+
+static void siginfo_tilde_free(t_siginfo_tilde *x)
+{
+    int i, num = (x->x_argc>1)?x->x_argc:1;
+
+    if (x->x_vec)
+        freebytes(x->x_vec, sizeof(*x->x_vec) * (x->x_argc));
+    for (i = 0; i < num; i++)
+        outlet_free(x->x_outlet[i]);
+    freebytes(x->x_outlet, sizeof(*x->x_outlet) * num);
+    pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
+}
+
+static char *siginfo_warning = "siginfo~: arguments can only be 'dspstate', \
+'blocksize', 'channels', 'overlap', 'samplerate', 'samplesspersecond'";
+
+static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_siginfo_tilde *x = (t_siginfo_tilde *)pd_new(siginfo_tilde_class);
+    t_symbol **vec;
+    int warned = 0;
+    int i;
+
+    x->x_proxy.x_pd = siginfo_proxy_class;
+    x->x_proxy.x_parent = x;
+
+    x->x_canvas = canvas_getcurrent();
+
+    if (argc>0)
+    {
+        x->x_argc = argc;
+        x->x_vec = (t_symbol **)getbytes(sizeof(*x->x_vec)*argc);
+        x->x_outlet = (t_outlet **)getbytes(sizeof(*x->x_outlet)*argc);
+    }
+    else
+    {
+        x->x_outlet = (t_outlet **)getbytes(sizeof(*x->x_outlet));
+        x->x_outlet[0] = outlet_new(&x->x_obj, 0);
+    }
+    vec = x->x_vec;
+    for (i = 0; i < argc; i++)
+    {
+        x->x_outlet[i] = outlet_new(&x->x_obj, 0);
+        s = atom_getsymbol(argv+i);
+        if ((gensym("dspstate") == s)
+            || (gensym("blocksize") == s)
+            || (gensym("channels") == s)
+            || (gensym("overlap") == s)
+            || (gensym("samplerate") == s)
+            || (gensym("samplespersecond") == s)
+            )
+        {
+                /* all good */
+        }
+        else if (gensym("help") == s)
+            post(siginfo_warning); /* I asked for help so it's not an error */
+        else
+        {
+            if (!warned)
+                pd_error(x, siginfo_warning);
+            warned = 1;
+        }
+        *vec++=s;
+    }
+
+    x->x_blocksize = DEFDACBLKSIZE;
+    x->x_channels = 1;
+    x->x_overlap = 1;
+    x->x_samplespersecond = sys_getsr();
+    x->x_globaldspstate = 0;
+
+    pd_bind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
+
+    return (x);
+}
+
+
+static void siginfo_tilde_setup(void)
+{
+    siginfo_tilde_class = class_new(gensym("siginfo~"),
+        (t_newmethod)siginfo_tilde_new, (t_method)siginfo_tilde_free,
+        sizeof(t_siginfo_tilde), CLASS_MULTICHANNEL, A_GIMME, 0);
+    CLASS_MAINSIGNALIN(siginfo_tilde_class, t_siginfo_tilde, x_f);
+    class_addmethod(siginfo_tilde_class, (t_method)siginfo_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_addbang(siginfo_tilde_class, (t_method)siginfo_tilde_bang);
+
+    siginfo_proxy_class = class_new(gensym("siginfo~ proxy"),
+        0, 0, sizeof(t_siginfo_proxy), 0, 0, 0);
+    class_addbang(siginfo_proxy_class, (t_method)siginfo_proxy_bang);
+}
 /* ------------------------ global setup routine ------------------------- */
 
 void d_ctl_setup(void)
@@ -894,5 +1105,5 @@ void d_ctl_setup(void)
     vsnapshot_tilde_setup();
     env_tilde_setup();
     threshold_tilde_setup();
+    siginfo_tilde_setup();
 }
-
