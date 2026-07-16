@@ -417,6 +417,8 @@ int open_soundfile_via_namelist(const char *dirname, const char *filename,
     fd = do_open_via_path(dirname, filename, "", buf, &dummy, MAXPDSTRING,
         1, nl, 0);
     if (fd < 0)
+        fd = sys_trytoopenit("", filename, "", buf, &dummy, MAXPDSTRING, 1, 0);
+    if (fd < 0)
         return -1;
     sf_fd = open_soundfile_via_fd(fd, sf, skipframes);
     return sf_fd;
@@ -430,6 +432,9 @@ int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
     char buf[MAXPDSTRING], *dummy;
     int fd, sf_fd;
     fd = canvas_open(canvas, filename, "", buf, &dummy, MAXPDSTRING, 1);
+    if (fd < 0) {
+        fd = sys_trytoopenit("", filename, "", buf, &dummy, MAXPDSTRING, 1, 1);
+    }
     if (fd < 0)
         return -1;
     sf_fd = open_soundfile_via_fd(fd, sf, skipframes);
@@ -2319,6 +2324,8 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
         int fd;
         fd = do_open_via_path(canvas_getdir(x->x_canvas)->s_name,
             filesym->s_name, "", buf, &dummy, MAXPDSTRING, 1, x->x_namelist, 1);
+        if (fd < 0)
+            fd = sys_trytoopenit("", filesym->s_name, "", buf, &dummy, MAXPDSTRING, 1, 1);
         if (fd >= 0)
             close(fd);
     }
