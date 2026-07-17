@@ -17,6 +17,7 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_getscroll
     namespace export pdtk_canvas_setparents
     namespace export pdtk_canvas_reflecttitle
+    namespace export pdtk_canvas_setcolors
     namespace export pdtk_canvas_menuclose
 }
 
@@ -171,6 +172,14 @@ proc pdtk_canvas_raise {mytoplevel} {
     raise $mytoplevel
     set mycanvas $mytoplevel.c
     focus $mycanvas
+}
+
+proc ::pdtk_canvas::pdtk_canvas_setcolors {mytoplevel bgcolor fgcolor} {
+    set cv [tkcanvas_name $mytoplevel]
+    if {![winfo exists $cv]} {
+        return
+    }
+    $cv configure -background $bgcolor -insertbackground $fgcolor
 }
 
 proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
@@ -471,26 +480,40 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
-                                              path name arguments dirty} {
+                                              path name arguments dirty \
+                                              {editmode 0}} {
     set path [::pdtk_text::unescape $path]
     set name [::pdtk_text::unescape $name]
     set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
+
+    set dirtychar {}
+    if {$dirty} {
+        set dirtychar "*"
+    }
+
+    set editstr {}
+    if {$editmode} {
+        lappend editstr [_ "edit mode"]
+    }
+
+    if {$editstr ne {} } {
+        set editstr " \[[join $editstr {, }]\]"
+    }
+
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
     if {$::windowingsystem eq "aqua"} {
+        # on macOS, the dirtiness is set via a window attribute
+        set dirtychar ""
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
             # for some reason -titlepath can still fail so just catch it
             if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
-                wm title $mytoplevel "$path/$name"
             }
         }
-        wm title $mytoplevel "$name$arguments"
-    } else {
-        if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
-        wm title $mytoplevel "$name$dirtychar$arguments - $path"
     }
+    wm title $mytoplevel "${dirtychar}${name}${arguments}${editstr} - ${path}"
 }
 
 #------------------------------------------------------------------------------#
@@ -551,28 +574,53 @@ proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
 
 proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} {
 
-    eval [concat $canvas create line $args \
-        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+#  old version using eval:
+#    eval [concat $canvas create line $args \
+#        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+    $canvas create line {*}$args \
+        -width $width -fill $color -capstyle projecting -tags [list $tag cord]
+
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
 
-    eval [concat $canvas itemconfigure $tag -width $width -fill $color]
+    $canvas itemconfigure $tag -width $width -fill $color
 }
 
 proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    eval [concat $canvas create rectangle $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
+    $canvas create rectangle $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+}
+
+# this can configure rectangles or ovals:
+proc pdtk_canvas_configure_rect {canvas tag width fill outline} {
+
+    $canvas itemconfigure $tag -width $width -fill $fill -outline $outline
 }
 
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    eval [concat $canvas create oval $x1 $y1 $x2 $y2 \
-    -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\}]
+    $canvas create oval $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
 }
+
+proc pdtk_text_select {canvas tag start end} {
+
+    if [expr $end > $start] {
+        $canvas select from $tag $start
+        $canvas select to $tag [expr $end - 1]
+        $canvas focus ""
+    } else {
+        $canvas select clear
+        $canvas icursor $tag $start
+        focus $canvas
+        $canvas focus $tag
+    }
+}
+
 
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag

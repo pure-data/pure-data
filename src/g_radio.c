@@ -21,6 +21,18 @@ static t_class *radio_class;
 
 /* widget helper functions */
 
+PD_INLINE int clamp_radio(void*x, int num) {
+    if (num<1) {
+        pd_error(x, "radio: invalid number of cells: %d", num);
+        return 1;
+    }
+    if (num>IEM_RADIO_MAX) {
+        pd_error(x, "radio: maximum number of cells exceeded: %d>%d", num, IEM_RADIO_MAX);
+        return IEM_RADIO_MAX;
+    }
+    return num;
+}
+
 /* cannot use iemgui's default draw_iolets, because
  * - vradio would use show the outlet at the 0th button rather than the last...
  */
@@ -40,7 +52,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     sprintf(tag_but, "%p_BUT", x);
 
     sprintf(tag, "%p_OUT%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
@@ -56,7 +68,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_IN%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
@@ -308,6 +320,7 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
+    num = clamp_radio(x, num);
     if (num != x->x_number && glist_isvisible(x->x_gui.x_glist))
     {
         /* we need to recreate the buttons */
@@ -516,12 +529,7 @@ static void radio_loadbang(t_radio *x, t_floatarg action)
 
 static void radio_number(t_radio *x, t_floatarg num)
 {
-    int n = (int)num;
-
-    if(n < 1)
-        n = 1;
-    if(n > IEM_RADIO_MAX)
-        n = IEM_RADIO_MAX;
+    int n = clamp_radio(x, (int)num);
     if(n != x->x_number)
     {
         int vis = glist_isvisible(x->x_gui.x_glist);
@@ -619,7 +627,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         a = (int)atom_getfloatarg(0, argc, argv);
         chg = (int)atom_getfloatarg(1, argc, argv);
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(2, argc, argv));
-        num = (int)atom_getfloatarg(3, argc, argv);
+        num = clamp_radio(x, (int)atom_getfloatarg(3, argc, argv));
         iemgui_new_getnames(&x->x_gui, 4, argv);
         ldx = (int)atom_getfloatarg(7, argc, argv);
         ldy = (int)atom_getfloatarg(8, argc, argv);
@@ -635,10 +643,6 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     else if(x->x_gui.x_fsf.x_font_style == 2) strcpy(x->x_gui.x_font, "times");
     else { x->x_gui.x_fsf.x_font_style = 0;
         strcpy(x->x_gui.x_font, sys_font); }
-    if(num < 1)
-        num = 1;
-    if(num > IEM_RADIO_MAX)
-        num = IEM_RADIO_MAX;
     x->x_number = num;
     x->x_fval = fval;
     on = fval;

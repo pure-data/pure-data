@@ -81,6 +81,7 @@ namespace import ::pdtk_canvas::pdtk_canvas_editmode
 namespace import ::pdtk_canvas::pdtk_canvas_getscroll
 namespace import ::pdtk_canvas::pdtk_canvas_setparents
 namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
+namespace import ::pdtk_canvas::pdtk_canvas_setcolors
 namespace import ::pdtk_canvas::pdtk_canvas_menuclose
 namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog

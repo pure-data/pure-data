@@ -11,8 +11,7 @@ BODY {
     font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
     line-height: 1.6;
     max-width:      8.5in;
-    margin-left: 0.8in;
-    margin-right: 0.8in;
+    margin: 0 auto;
 }
 #toc ol {
     counter-reset: item;
@@ -101,9 +100,6 @@ H6 {
     margin-left: 3em;
 }
 
-H1, H2, H3, H4, H5, H6, ol, ul, mark, PRE {
-}
-
 PRE {
     font-size: 90%;
     background-color:#f0f0f0;
@@ -155,8 +151,8 @@ KBD {
 /* standard link */
 
 a:link {
-    text-decoration: none;
-    color: #006699;
+    text-decoration: underline;
+    color: #002299;
 }
 
 a:visited {

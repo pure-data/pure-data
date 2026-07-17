@@ -59,7 +59,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_OUT%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
@@ -74,7 +74,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_IN%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
@@ -514,6 +514,8 @@ static void slider_set(t_slider *x, t_floatarg f)
 {
     int old = x->x_val;
     double g;
+    if (f == x->x_fval)
+        return;
     if (PD_BADFLOAT(f))
         f = 0;
 

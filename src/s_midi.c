@@ -528,7 +528,7 @@ static int midi_midiindev[MAXMIDIINDEV];
 static char midi_indevnames[MAXMIDIINDEV * DEVDESCSIZE];
 static int midi_nmidioutdev;
 static int midi_midioutdev[MAXMIDIOUTDEV];
-static char midi_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
+static char midi_outdevnames[MAXMIDIOUTDEV * DEVDESCSIZE];
 
 void sys_get_midi_apis(char *buf)
 {
@@ -577,6 +577,14 @@ static void sys_save_midi_params(
 {
     int i;
     midi_nmidiindev = nmidiindev;
+    if(nmidiindev > MAXMIDIINDEV) {
+        bug("requesting %d/%d MIDIin devices", nmidiindev, MAXMIDIINDEV);
+        nmidiindev = MAXMIDIINDEV-1;
+    }
+    if(nmidioutdev > MAXMIDIOUTDEV) {
+        bug("requesting %d/%d MIDIout devices", nmidioutdev, MAXMIDIOUTDEV);
+        nmidioutdev = MAXMIDIOUTDEV-1;
+    }
     for (i = 0; i < nmidiindev; i++)
     {
         midi_midiindev[i] = midiindev[i];
@@ -711,13 +719,13 @@ void sys_gui_midipreferences(void) {
 #ifdef __APPLE__
     if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
     {
-        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running.");
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running. "
+            "Please turn off DSP and rescan devices.");
         nindev = noutdev = nindevs = noutdevs = 0;
     }
     else
 #endif
     {
-        sys_reinit_midi();
         sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
             MAXNDEV, DEVDESCSIZE);
         sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
@@ -750,39 +758,40 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         (void *)glob_midi_properties, "");
 }
 
+    /* rescan MIDI devices */
+void glob_rescanmidi(void *dummy)
+{
+    sys_reinit_midi();
+    sys_gui_midipreferences();
+        /* refresh midi dialog (if it's open) */
+    pdgui_vmess("::dialog_midi::refresh_ui", "");
+}
+
+#define MIDI_DIALOG_DEVS 9
+
     /* new values from dialog window */
 void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, nindev, noutdev;
-    int newmidiindev[9], newmidioutdev[9];
+    int i, nindev=0, noutdev=0;
+    int newmidiindev[MIDI_DIALOG_DEVS], newmidioutdev[MIDI_DIALOG_DEVS];
     int alsadevin, alsadevout;
 
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < MIDI_DIALOG_DEVS; i++)
     {
-        newmidiindev[i] = atom_getfloatarg(i, argc, argv);
-        newmidioutdev[i] = atom_getfloatarg(i+9, argc, argv);
+        int dev = atom_getfloatarg(i, argc, argv);
+        if(dev > 0)
+            newmidiindev[nindev++] = dev - 1;
+
+        dev = atom_getfloatarg(i+MIDI_DIALOG_DEVS, argc, argv);
+        if(dev > 0)
+            newmidioutdev[noutdev++] = dev - 1;
     }
 
-    for (i = 0, nindev = 0; i < 9; i++)
-    {
-        if (newmidiindev[i] > 0)
-        {
-            newmidiindev[nindev] = newmidiindev[i]-1;
-            nindev++;
-        }
-    }
-    for (i = 0, noutdev = 0; i < 9; i++)
-    {
-        if (newmidioutdev[i] > 0)
-        {
-            newmidioutdev[noutdev] = newmidioutdev[i]-1;
-            noutdev++;
-        }
-    }
-    alsadevin = atom_getfloatarg(18, argc, argv);
-    alsadevout = atom_getfloatarg(19, argc, argv);
+    alsadevin = atom_getfloatarg(MIDI_DIALOG_DEVS + MIDI_DIALOG_DEVS + 0, argc, argv);
+    alsadevout = atom_getfloatarg(MIDI_DIALOG_DEVS + MIDI_DIALOG_DEVS + 1, argc, argv);
+
 #ifdef USEAPI_ALSA
             /* invent a story so that saving/recalling "settings" will
             be able to restore the number of devices.  ALSA MIDI handling
@@ -790,6 +799,15 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             this to work coherently */
     if (sys_midiapi == API_ALSA)
     {
+        if(alsadevin > MAXMIDIINDEV) {
+            alsadevin = MAXMIDIINDEV;
+            pd_error(0, "number of alsa MIDI-in devices limited to %d", alsadevin);
+        }
+        if(alsadevout > MAXMIDIOUTDEV) {
+            alsadevout = MAXMIDIOUTDEV;
+            pd_error(0, "number of alsa MIDI-out devices limited to %d", alsadevout);
+        }
+
         nindev = alsadevin;
         noutdev = alsadevout;
         for (i = 0; i < nindev; i++)

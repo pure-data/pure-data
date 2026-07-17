@@ -61,21 +61,95 @@ static sys_ringbuf jack_outring;
 static char *jack_inbuf;
 static sys_ringbuf jack_inring;
 
+
+PD_INLINE int jack_ensure_pdinstance(void *arg) {
+#ifdef PDINSTANCE
+    t_pdinstance *pd = (t_pdinstance *)arg;
+    if (!pd_this)
+    {
+        pd_setinstance((t_pdinstance *)pd);
+    }
+#else
+    (void)arg;
+#endif
+
+    return (0 != pd_this);
+}
+
+static char* escape_literal_regex(const char*input, char*output, size_t outsize, int extended)
+{
+    char*out = output;
+    size_t remain = outsize;
+    if (!input || !output || outsize == 0) return NULL;
+
+
+    for(;;) { /* start at 2, to ensure space for escaping and trailing \0 */
+        int needs_escape = 0;
+        const char c = *input++;
+
+        if(extended) {
+                /* POSIX extended regular expressions */
+            switch(c) {
+            case '.':
+            case '^': case '$':
+            case '*': case '+': case '?':
+            case '(': case ')':
+            case '[':
+            case '{': case '}':
+            case '\\':
+            case '|':
+                needs_escape = 1;
+                break;
+            }
+        } else {
+                /* POSIX basic regular expressions */
+            switch(c) {
+            case '.':
+            case '^': case '$':
+            case '*':
+            case '[':
+            case '\\':
+                needs_escape = 1;
+                break;
+            }
+        }
+        if(needs_escape) {
+            if (remain <= 2) return NULL;
+            *out++ = '\\';
+            remain--;
+        }
+
+        if (remain <= 1) return NULL;       /* need room for c (and final NUL) */
+        *out++ = c;
+        remain--;
+
+        if(!c)return output;
+    }
+        /* output buffer is too small */
+    return 0;
+}
+
     /* callback routine for non-callback client... throw samples into
         and read them out of a FIFO.  Since we don't know at compile time
         how many samples jack will treat us to, we interleave them in the
         two FIFOs.  So we have to mux/demux them both here and up at the
         user level in jack_send_dacs(). */
-static int jack_polling_callback(jack_nframes_t nframes, void *unused)
+static int jack_polling_callback(jack_nframes_t nframes, void *arg)
 {
     unsigned long infiforoom = sys_ringbuf_getwriteavailable(&jack_inring),
         outfiforoom = sys_ringbuf_getreadavailable(&jack_outring);
-    const size_t muxbufsize = nframes *
-        (STUFF->st_inchannels > STUFF->st_outchannels ?
-            STUFF->st_inchannels : STUFF->st_outchannels);
+    size_t muxbufsize;
     t_sample *muxbuffer;
     int j;
     jack_default_audio_sample_t *jp;
+
+    if (!jack_ensure_pdinstance(arg))
+        return 1;
+
+    muxbufsize = nframes *
+        (STUFF->st_inchannels > STUFF->st_outchannels ?
+            STUFF->st_inchannels : STUFF->st_outchannels);
+
     ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
 
     if (infiforoom < nframes * STUFF->st_inchannels * sizeof(t_sample) ||
@@ -128,11 +202,15 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
     return 0;
 }
 
-static int callbackprocess(jack_nframes_t nframes, void *arg)
+static int jack_process_callback(jack_nframes_t nframes, void *arg)
 {
     int chan, j, k;
     unsigned int n;
     jack_default_audio_sample_t *out[MAX_JACK_PORTS], *in[MAX_JACK_PORTS], *jp;
+
+    if (!jack_ensure_pdinstance(arg))
+        return 1;
+
     if (nframes % DEFDACBLKSIZE)
     {
         fprintf(stderr, "jack: nframes %d not a multiple of blocksize %d\n",
@@ -173,6 +251,9 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 
 static int jack_srate(jack_nframes_t srate, void *arg)
 {
+    if (!jack_ensure_pdinstance(arg))
+        return 1;
+
         /* prevent recursion/deadlock in jack_open_audio()! */
     if (!jack_isopening)
     {
@@ -189,6 +270,9 @@ static int jack_srate(jack_nframes_t srate, void *arg)
 
 static int jack_bsize(jack_nframes_t bufsize, void *arg)
 {
+    if (!jack_ensure_pdinstance(arg))
+        return 1;
+
     jack_blocksize = bufsize;
     return 0;
 }
@@ -200,6 +284,8 @@ static int jack_bsize(jack_nframes_t bufsize, void *arg)
     audio processing has halted. */
 static void jack_shutdown(void *arg)
 {
+    jack_ensure_pdinstance(arg);
+
     jack_didshutdown = 1;
 #ifdef THREADSIGNAL
         /* sem_post() is async-signal-safe */
@@ -209,6 +295,9 @@ static void jack_shutdown(void *arg)
 
 static int jack_xrun(void* arg)
 {
+    if (!jack_ensure_pdinstance(arg))
+        return 1;
+
     jack_dio_error = 1;
     return 0;
 }
@@ -366,13 +455,13 @@ static const char **jack_get_clients(void)
 
 static int jack_connect_ports(const char* source, const char* sink)
 {
-    char  regex_pattern[100]; /* its always the same, ... */
+    char  regex_pattern[MAXPDSTRING+4]; /* its always the same, ... */
     int i;
     const char **jack_ports;
     int ret = -1;
 
-    if (source && strlen(source) <= 96) {
-        sprintf(regex_pattern, "%s:.*", source);
+    if (escape_literal_regex(source, regex_pattern, sizeof(regex_pattern)-4, 1)) {
+        strncat(regex_pattern, ":.*", 4);
 
         jack_ports = jack_get_ports(jack_client, regex_pattern,
                                     NULL, JackPortIsOutput);
@@ -388,8 +477,8 @@ static int jack_connect_ports(const char* source, const char* sink)
             free(jack_ports);
         }
     }
-    if (sink && strlen(sink) <= 96) {
-        sprintf(regex_pattern, "%s:.*", sink);
+    if (escape_literal_regex(sink, regex_pattern, sizeof(regex_pattern)-4, 1)) {
+        strncat(regex_pattern, ":.*", 4);
 
         jack_ports = jack_get_ports(jack_client, regex_pattern,
                                     NULL, JackPortIsInput);
@@ -426,6 +515,7 @@ static void pd_jack_error_callback(const char *desc)
 
 int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 {
+    t_pdinstance *thispd = pd_this;
     int j, advance_samples;
     char port_name[80] = "";
     char client_name[80] = "";
@@ -464,7 +554,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     /* try to become a client of the JACK server.  (If no JACK server exists,
         jack_client_open() don't start one up by default.  It's not clear
         whether or not this is desirable; see long Pd list thread started by
-        yvan volochine, June 2013) */    
+        yvan volochine, June 2013) */
     jack_client = jack_client_open(sys_devicename, JackNoStartServer,
       &status, NULL);
     if (status & JackFailure) {
@@ -474,7 +564,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
         /* jack spits out enough messages already, do not warn */
         STUFF->st_inchannels = STUFF->st_outchannels = 0;
         return 1;
-    } 
+    }
     logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", jack_get_client_name(jack_client));
 
     STUFF->st_inchannels = inchans;
@@ -486,41 +576,41 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     jack_callback = callback;
     jack_set_process_callback(jack_client,
-        (callback? callbackprocess : jack_polling_callback), 0);
+        (callback? jack_process_callback : jack_polling_callback), thispd);
 
     jack_set_error_function (pd_jack_error_callback);
 
 #ifdef JACK_XRUN
-    jack_set_xrun_callback (jack_client, jack_xrun, NULL);
+    jack_set_xrun_callback (jack_client, jack_xrun, thispd);
 #endif
 
         /* tell the JACK server to call `jack_srate()' whenever the
         sample rate of the system changes. Curiously, this immediately
         fires the callback, so we need to guard it. See jack_srate() */
     jack_isopening = 1;
-    jack_set_sample_rate_callback (jack_client, jack_srate, 0);
+    jack_set_sample_rate_callback (jack_client, jack_srate, thispd);
     jack_isopening = 0;
 
     /* tell the JACK server to call `jack_bsize()' whenever
        the buffer size of the system changes.
     */
 
-    jack_set_buffer_size_callback (jack_client, jack_bsize, 0);
+    jack_set_buffer_size_callback (jack_client, jack_bsize, thispd);
 
     /* tell the JACK server to call `jack_shutdown()' if
        it ever shuts down, either entirely, or if it
        just decides to stop calling us.
     */
 
-    jack_on_shutdown (jack_client, jack_shutdown, 0);
+    jack_on_shutdown (jack_client, jack_shutdown, thispd);
 
     for (j=0; j<STUFF->st_inchannels; j++)
          input_port[j]=NULL;
     for (j=0; j<STUFF->st_outchannels; j++)
          output_port[j] = NULL;
 
-    /* display the current sample rate & block size. once the client is activated
-       (see below), you should rely on your own sample rate
+    /* display the current sample rate & block size. once the client is
+        activated (see below), you should rely on your own sample rate
        callback (see above) for this value.
     */
 
@@ -548,7 +638,8 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         if (!input_port[j])
         {
-          pd_error(0, "JACK: can only register %d input ports (of %d requested)",
+          pd_error(0,
+            "JACK: can only register %d input ports (of %d requested)",
             j, inchans);
           STUFF->st_inchannels = inchans = j;
           break;
@@ -562,7 +653,8 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])
         {
-            pd_error(0, "JACK: can only register %d output ports (of %d requested)",
+            pd_error(0,
+                "JACK: can only register %d output ports (of %d requested)",
                 j, outchans);
             STUFF->st_outchannels = outchans = j;
             break;
@@ -600,7 +692,8 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
 
     if (jack_client_names[0] && jack_should_autoconnect)
-        jack_connect_ports(jack_client_names[jack_defaultsource], jack_client_names[jack_defaultsink]);
+        jack_connect_ports(jack_client_names[jack_defaultsource],
+            jack_client_names[jack_defaultsink]);
     return 0;
 }
 
@@ -679,15 +772,16 @@ int jack_send_dacs(void)
 #ifdef THREADSIGNAL
         if (sched_idletask())
         {
-                /* we might have received a "dsp" message or audio dialog message! */
+            /* we might have received a "dsp" or audio dialog message! */
             if (!jack_client || sched_get_using_audio() != SCHED_AUDIO_POLL)
                 return SENDDACS_NO;
                 /* otherwise check the ringbuffer again */
             continue;
         }
             /* only go to sleep if there is nothing else to do. */
-        sys_semaphore_wait(jack_sem);
-        retval = SENDDACS_SLEPT;
+        if (sys_semaphore_waitfor(jack_sem, 0.01))
+            retval = SENDDACS_SLEPT;
+        else return (SENDDACS_NO); /* slept more than 10 msec: we're stuck. */
 #else
         return (SENDDACS_NO);
 #endif

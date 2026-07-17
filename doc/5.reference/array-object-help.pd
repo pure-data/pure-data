@@ -1,8 +1,8 @@
-#N struct array-struct float x float y array z float 1;
-#N struct float float y;
-#N struct array-struct2 float x float y array z element-struct2 1;
-#N struct element-struct2 float x float y float w;
 #N canvas 485 54 589 533 12;
+#N struct array-struct float x float y array z float;
+#N struct float float y;
+#N struct array-struct2 float x float y array z element-struct2;
+#N struct element-struct2 float x float y float w;
 #N canvas 582 123 760 611 define 0;
 #X text 321 388 creation arguments:;
 #X text 351 459 optional name;
@@ -685,7 +685,6 @@
 #X text 166 583 sum of all the 'w' values in the array;
 #X obj 117 497 trigger bang bang;
 #X obj 117 190 t b b;
-#X text 37 627 To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 50;
 #N canvas 491 316 412 249 open 0;
 #X obj 47 59 inlet;
 #X obj 47 115 pdcontrol;
@@ -710,6 +709,7 @@
 #X text 422 384 <-- click for the array;
 #X text 422 406 <-- main structure;
 #X text 422 428 <-- element structure;
+#X text 37 627 To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.data.Structures section of the Pd tutorials., f 50;
 #X connect 0 0 5 2;
 #X connect 3 0 0 0;
 #X connect 4 0 16 0;
@@ -721,8 +721,8 @@
 #X connect 15 1 11 0;
 #X connect 16 0 5 0;
 #X connect 16 1 3 0;
-#X connect 20 0 15 0;
-#X connect 21 0 18 0;
+#X connect 19 0 15 0;
+#X connect 20 0 17 0;
 #X restore 359 423 pd data-structures;
 #X text 68 12 - manage arrays (defaults to [array define]);
 #X text 34 58 In Pd an array may be part of a "garray" (a graphical array of numbers) or appear as a slot in a data structure (in which case the elements may be arbitrary data \, not necessarily just numbers). The [array] object can define an array (so far just of numbers but maybe later arbitrary data structures) or access an array defined elsewhere to get or change its size \, set or read its elements \, and more (see details below)., f 72;

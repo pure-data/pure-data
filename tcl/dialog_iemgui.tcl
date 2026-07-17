@@ -79,7 +79,7 @@ proc ::dialog_iemgui::clip_dim {mytoplevel} {
 proc ::dialog_iemgui::clip_num {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set ::dialog_iemgui::var_number($vid) [clip $::dialog_iemgui::var_number($vid) 1 2000]
+    set ::dialog_iemgui::var_number($vid) [clip $::dialog_iemgui::var_number($vid) 1 2048]
 }
 
 proc ::dialog_iemgui::sched_rng {mytoplevel} {
@@ -147,9 +147,7 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
         -foreground $fgcol -activeforeground $fgcol
 
     # for OSX live updates
-    if {$::windowingsystem eq "aqua"} {
-        ::dialog_iemgui::apply_and_rebind_return $mytoplevel
-    }
+    ::dialog_iemgui::auto_apply_return $mytoplevel
 }
 
 proc ::dialog_iemgui::preset_col {mytoplevel presetcol} {
@@ -193,12 +191,21 @@ proc ::dialog_iemgui::popupmenu {path varname labels {command {}}} {
 
     menubutton ${path} -menu ${path}.menu -indicatoron 1 -relief raised -text [lindex $labels $var]
     menu ${path}.menu -tearoff 0
+    set maxwidth 0
+    set font [font actual [$path.menu cget -font]]
     set idx 0
     foreach l $labels {
         $path.menu add radiobutton -label "$l" -variable $varname -value $idx
         $path.menu entryconfigure last -command "\{$path\} configure -text \{$l\}; $command"
+        set width [font measure $font ${l}]
+        if { $width > $maxwidth } {set maxwidth $width}
         incr idx
     }
+    # get an estimate on how wide the button should be,
+    # so it doesn't resize the window when selecting a different option
+    # according to https://www.tcl-lang.org/man/tcl8.5/TkCmd/text.htm
+    # the base unit of the width is the character '0'
+    $path configure -width [expr $maxwidth / [font measure $font 0]]
 }
 
 proc ::dialog_iemgui::toggle_mode {mytoplevel} {
@@ -244,6 +251,8 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     $mytoplevel.label.name_entry configure -font $current_font_spec
     $mytoplevel.colors.sections.exp.fr_bk configure -font $current_font_spec
     $mytoplevel.colors.sections.exp.lb_bk configure -font $current_font_spec
+
+    ::dialog_iemgui::auto_apply_return $mytoplevel
 }
 
 proc ::dialog_iemgui::apply {mytoplevel} {
@@ -279,13 +288,13 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_rcv($vid) ne ""} {set receivename $::dialog_iemgui::var_rcv($vid)}
     if {$::dialog_iemgui::var_label($vid) ne ""} {set labelname $::dialog_iemgui::var_label($vid)}
 
-    set labelname [string map { "\\" {\\} {$} {\$} { } {\ } {,} {\,} {;} {\;}  "{" "\{" "}" "\}" } $labelname]
+    set labelname [string map { "\\" "" {$} {\$} { } {\ } {,} {\,} {;} {\;}  "{" "\{" "}" "\}" } $labelname]
 
     # make sure the offset boxes have a value
     if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
     if {$::dialog_iemgui::var_label_dy($vid) eq ""} {set ::dialog_iemgui::var_label_dy($vid) 0}
 
-    pdsend [list $mytoplevel dialog \
+    pdsend [concat $mytoplevel dialog \
                 $::dialog_iemgui::var_width($vid) \
                 $::dialog_iemgui::var_height($vid) \
                 $::dialog_iemgui::var_range_min($vid) \
@@ -341,6 +350,18 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
                                        gui_name \
                                        gn_dx gn_dy gn_f gn_fs \
                                        bcol fcol lcol} {
+    # on macOS, we want live widget updates
+    if {$::windowingsystem eq "aqua"} {
+        proc ::dialog_iemgui::auto_apply {mytoplevel} {
+            return [::dialog_iemgui::apply ${mytoplevel}]
+        }
+        proc ::dialog_iemgui::auto_apply_return {mytoplevel} {
+            return [::dialog_iemgui::apply_and_rebind_return ${mytoplevel}]
+        }
+        proc ::dialog_iemgui::auto_apply_noreturn {mytoplevel} {
+            return [::dialog_iemgui::unbind_return ${mytoplevel}]
+        }
+    }
 
     set vid [string trimleft $mytoplevel .]
     set snd [::pdtk_text::unescape $snd]
@@ -489,18 +510,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
-    pack $mytoplevel.para -side top -fill x -pady 5
+    pack $mytoplevel.para -side top -fill x -pady 5 -ipadx 5
 
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $label_number]
     entry $mytoplevel.para.num.ent -textvariable ::dialog_iemgui::var_number($vid) -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
-    set applycmd ""
-    if {$::windowingsystem eq "aqua"} {
-        set applycmd "::dialog_iemgui::apply $mytoplevel"
-    }
-
+    set applycmd [list ::dialog_iemgui::auto_apply ${mytoplevel}]
 
     if {$::dialog_iemgui::var_mode($vid) >= 0} {
         if {$mainheader == "|nbx|" } {
@@ -513,12 +530,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             "$togglecmd; $applycmd"
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10
     }
-    if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
-        ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
-            ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
-            $applycmd
-        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
-    }
+
+    # dummy translation call to avoid shuffling of lines in the .po files
+    if {0} {list [_ "No init"] [_ "Init"] }
+
     if {$::dialog_iemgui::var_number($vid) > 0} {
         pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
     }
@@ -527,6 +542,12 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             ::dialog_iemgui::var_steady($vid) [list [_ "Jump on click"] [_ "Steady on click"] ] \
             $applycmd
         pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10
+    }
+    if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
+        ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
+            ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
+            $applycmd
+        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
     }
 
     # messages
@@ -690,34 +711,19 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     $mytoplevel.dim.w_ent select adjust end
     focus $mytoplevel.dim.w_ent
 
+    foreach w { \
+                    dim.w_ent dim.h_ent rng.min.ent rng.max_ent para.num.ent \
+                    s_r.send.ent s_r.receive.ent \
+                    label.name_entry label.xy.x_entry label.xy.y_entry label.fontsize.entry \
+                } {
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind ${mytoplevel}.${w} <KeyPress-Return> [list ::dialog_iemgui::auto_apply_return ${mytoplevel}]
+        # unbind Return from ok button when an entry takes focus
+        ${mytoplevel}.${w} config -validate focusin -vcmd [list ::dialog_iemgui::auto_apply_noreturn ${mytoplevel}]
+    }
+
     # live widget updates on OSX in lieu of Apply button
     if {$::windowingsystem eq "aqua"} {
-
-        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
-        bind $mytoplevel.dim.w_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.dim.h_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.rng.min.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.rng.max_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.para.num.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.label.name_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.s_r.send.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.s_r.receive.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.label.xy.x_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.label.xy.y_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.label.fontsize.entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-
-        # unbind Return from ok button when an entry takes focus
-        $mytoplevel.dim.w_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.dim.h_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.rng.min.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.rng.max_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.para.num.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.label.name_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.s_r.send.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.s_r.receive.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.label.xy.x_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.label.xy.y_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.label.fontsize.entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
 
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.cao.cancel config -takefocus 0
@@ -746,9 +752,10 @@ proc ::dialog_iemgui::apply_and_rebind_return {mytoplevel} {
     focus $mytoplevel.cao.ok
     return 0
 }
-
-# for live widget updates on OSX
-proc ::dialog_iemgui::unbind_return {mytoplevel} {
+proc ::dialog_iemgui::unbind_return {mytoplevel args} {
     bind $mytoplevel <KeyPress-Return> break
     return 1
 }
+proc ::dialog_iemgui::auto_apply          {mytoplevel} { return 1 }
+proc ::dialog_iemgui::auto_apply_return   {mytoplevel} { return 1 }
+proc ::dialog_iemgui::auto_apply_noreturn {mytoplevel} { return 1 }

@@ -67,7 +67,7 @@ proc ::dialog_gatom::apply {mytoplevel} {
     set ::dialog_gatom::init_upper($mytoplevel) $upper
 
 
-    pdsend [list $mytoplevel param \
+    pdsend [concat $mytoplevel param \
         ${width} ${lower} ${upper} \
         [::dialog_gatom::escape [$mytoplevel.gatomlabel.name.entry get]] \
         $gatomlabel_radio($mytoplevel) \

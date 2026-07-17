@@ -224,7 +224,7 @@ proc ::dialog_array::listview_edit+paste {arrayName startIndex data} {
         lappend values $value
     }
     if { $values ne {} } {
-        pdsend [list $::dialog_array::listview_id($arrayName) $offset $values]
+        pdsend [concat $::dialog_array::listview_id($arrayName) $offset $values]
         pdtk_array_listview_fillpage $arrayName
     }
 }
@@ -346,7 +346,7 @@ proc ::dialog_array::listview_close {mytoplevel arrayName} {
 }
 
 proc ::dialog_array::apply {mytoplevel} {
-    pdsend [list $mytoplevel arraydialog \
+    pdsend [concat $mytoplevel arraydialog \
                 [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
                 [$mytoplevel.array.size.entry get] \
                 [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \

@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.56.2])
+AC_INIT([pd], [0.57.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -516,8 +516,8 @@ AS_IF([test x$jack_framework = xyes],[
 
 ##### JACK #####
 AC_ARG_ENABLE([jack],
-    [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
-    [jack=$enableval], [jack=no])
+    [AS_HELP_STRING([--disable-jack], [use JACK audio server])],
+    [jack=$enableval], [jack=yes])
 AS_IF([test x$jack_framework != xyes -a x$jack = xyes],[
     PKG_CHECK_MODULES([JACK], [jack],[
         AC_MSG_NOTICE([Using JACK as specified by pkg-config])

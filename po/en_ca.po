@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
-"PO-Revision-Date: 2025-08-01 09:02+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/en_CA/>\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"Last-Translator: porres <porres@gmail.com>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 2026.5.dev0\n"
 
 msgid "linear"
 msgstr "linear"
@@ -1012,11 +1012,17 @@ msgstr "Install"
 msgid "%s%% of download completed"
 msgstr "%s%% of download completed"
 
-msgid "Enter an exact library or object name."
-msgstr "Enter an exact library or object name."
+msgid "Enter a library or object name."
+msgstr "Enter a library or object name."
 
 msgid "e.g. 'freeverb~'"
 msgstr "e.g., 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr "By default this will find anything that contains the search word(s)."
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr "If you enable 'exact search' mode, only exact matches are considered."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use the '*' wildcard to match any number of characters."
@@ -1060,6 +1066,9 @@ msgstr "both"
 msgid "translations"
 msgstr "translations"
 
+msgid "exact search"
+msgstr "exact search"
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Only install externals uploaded by people you trust."
 
@@ -1086,6 +1095,9 @@ msgstr "Search Results"
 
 msgid "Log"
 msgstr "Log"
+
+msgid "Searching for all packages..."
+msgstr "Searching for all packages..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2052,6 +2064,9 @@ msgstr "Do you want to save the changes you made in '%s'?"
 
 msgid "Properties"
 msgstr "Properties"
+
+msgid "edit mode"
+msgstr "edit mode"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

@@ -53,14 +53,14 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
         xpos + crossw + zoom, ypos + crossw + zoom,
         xpos + x->x_gui.x_w - crossw - zoom,
             ypos + x->x_gui.x_h - crossw - zoom);
-    pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+    pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
         crossw, col);
 
     sprintf(tag, "%p_X2", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + crossw + zoom, ypos + x->x_gui.x_h - crossw - zoom,
         xpos + x->x_gui.x_w - crossw - zoom, ypos + crossw + zoom);
-    pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+    pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
         crossw, col);
     /* pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", crossw, "-fill", col); */
@@ -88,23 +88,23 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     sprintf(tag, "%p_BASE", x);
     /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
         0, 0, 0, 0, "-tags", 2, tags); */
-    pdgui_vmess(0, "r crri kk iiii", "pdtk_canvas_create_rect",
+    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
         canvas, tag, tag_object, 1,
-        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        x->x_gui.x_bcol, THISGUI->i_foregroundcolor,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_X1", x);
     /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
         0, 0, 0, 0, "-tags", 2, tags); */
-    pdgui_vmess(0, "rcrr iik iiii",
-        "pdtk_canvas_create_line", canvas, tag, tag_object,
+    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+        canvas, tag, tag_object,
         0, 1, 0,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_X2", x);
-    pdgui_vmess(0, "rcrr iik iiii",
-        "pdtk_canvas_create_line", canvas, tag, tag_object,
-        0, 1, "#000000",
+    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+        canvas, tag, tag_object,
+        0, 1, 0,
         0, 0, 0, 0);
 
     sprintf(tag, "%p_LABEL", x);
@@ -140,10 +140,10 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
         int width = x->x_gui.x_w / IEMGUI_ZOOM(x),
             xwidth = (width >= 60 ? 3: (width >= 30 ? 2 : 1));
         sprintf(tag, "%p_X1", x);
-        pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+        pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
             xwidth, col);
         sprintf(tag, "%p_X2", x);
-        pdgui_vmess(0, "rcs ik", "pdtk_canvas_configure_line", canvas, tag,
+        pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
             xwidth, col);
     }
 }

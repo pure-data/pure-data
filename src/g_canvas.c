@@ -618,9 +618,9 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
          */
         int xpos = (int)px1, ypos = (int)py2;
         glist_getnextxy(g, &xpos, &ypos);
-        px1 = (t_float)xpos;
+        px1 = (t_float)xpos / g->gl_zoom;
         px2 = px1 + GLIST_DEFGRAPHWIDTH;
-        py1 = (t_float)ypos;
+        py1 = (t_float)ypos / g->gl_zoom;
         py2 = py1 + GLIST_DEFGRAPHHEIGHT;
     }
 
@@ -775,7 +775,7 @@ void canvas_reflecttitle(t_canvas *x)
         strcpy(namebuf, " (");
         for (i = 0; i < env->ce_argc; i++)
         {
-            if (strlen(namebuf) > MAXPDSTRING/2 - 5)
+            if (strlen(namebuf) > MAXPDSTRING/2 - 10)
                 break;
             if (i != 0)
                 strcat(namebuf, " ");
@@ -785,15 +785,22 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
-    if (x->gl_edit)
-    {
-        strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
-        namebuf[MAXPDSTRING-1] = 0;
-    }
+#if PD_VERSION_CODE < PD_VERSION(0, 57, 0)
+        if (x->gl_edit)
+            strcat(namebuf, " [edit]");
+#endif
+
+#if PD_VERSION_CODE >= PD_VERSION(0, 57, 0)
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss ii",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        (int)(x->gl_dirty), (int)(x->gl_edit));
+#else
     pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
         x,
         canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        x->gl_dirty);
+        (int)(x->gl_dirty));
+#endif
 }
 
     /* mark a glist dirty or clean */
@@ -821,13 +828,13 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "rcrr iik iiiiiiiiii",
-            "pdtk_canvas_create_line", glist_getcanvas(x), "GOP", "-",
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x), "GOP", "-",
             0, x->gl_zoom, THISGUI->i_gopcolor,
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -868,7 +875,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -1012,8 +1019,8 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "rcrr iik iiii",
-                "pdtk_canvas_create_patchcord", glist_getcanvas(x), tag, "-",
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crr iik iiii",
+                glist_getcanvas(x), tag, "-",
                     0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
                         * x->gl_zoom, THISGUI->i_foregroundcolor,
                     t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
@@ -1045,7 +1052,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */
@@ -2338,8 +2345,12 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        canvas_vis(glist, 0);
-        canvas_vis(glist, 1);
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+            glist,
+            (int)THISGUI->i_backgroundcolor,
+            (int)THISGUI->i_foregroundcolor);
+        glist_clearrtexts(glist);
+        canvas_redraw((t_canvas *)glist);
     }
     for (g = glist->gl_list; g; g = g->g_next)
         if (g->g_pd == canvas_class)
