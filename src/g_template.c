@@ -8,6 +8,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 
     /* pointer to "globals" for templates in this pd instance */
 #define THISTMPL (pd_this->pd_gui->i_template)
@@ -51,7 +52,7 @@ struct _instancetemplate
 {
     int curve_motion_vertex;
     t_float curve_motion_xcumulative;
-    t_float curve_motion_xfrac;  /* fractional remainder for whole-object drag */
+    t_float curve_motion_xfrac; /* fractional remainder for whole-object drag */
     t_float curve_motion_xbase;
     t_float curve_motion_xper;
     t_float curve_motion_ycumulative;
@@ -118,7 +119,8 @@ t_binbuf *template_get_creation_binbuf(t_template *x)
     return NULL;
 }
 
-    /* get the unrealized creation name (e.g "$0-template"); used in g_readwrite.c */
+    /* get the unrealized creation name (e.g "$0-template"); used in
+         g_readwrite.c */
 t_symbol *template_get_creation_name(t_template *x)
 {
     t_symbol *name = &s_;
@@ -127,8 +129,13 @@ t_symbol *template_get_creation_name(t_template *x)
     {
         t_atom *atoms = binbuf_getvec(bb);
         int natom = binbuf_getnatom(bb);
-        if (natom > 1)
-            name = atoms[1].a_w.w_symbol;
+        if (natom > 1 && atoms[1].a_type == A_SYMBOL)
+        {
+            if (natom > 2 && atoms[2].a_type == A_SYMBOL &&
+                !strcmp(atoms[1].a_w.w_symbol->s_name, "-m"))
+                    name = atoms[2].a_w.w_symbol;
+            else name = atoms[1].a_w.w_symbol;
+        }
     }
     return name;
 }
@@ -152,11 +159,23 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
 
 /* -- templates, the active ingredient in "struct" objects defined below. -- */
 
+    /* send list of templates to GUI */
+static void template_listtogui(t_gobj *dummy, t_glist *gl_dummy)
+{
+    t_template *x;
+    pdgui_vmess("pdtk_newstructs", 0);
+    for (x = pd_this->pd_templatelist; x; x = x->t_next)
+        if (x->t_inmenu)
+            pdgui_vmess("pdtk_addstruct", "r", x->t_sym->s_name);
+}
     /* add a template to the list */
 static void template_addtolist(t_template *x)
 {
     x->t_next = pd_this->pd_templatelist;
     pd_this->pd_templatelist = x;
+    if (sys_havetkproc())
+         sys_queuegui((t_gobj *)(&THISTMPL->curve_motion_vertex), 0,
+             template_listtogui);
 }
 
 static void template_takeofflist(t_template *x)
@@ -178,6 +197,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     x->t_n = 0;
     x->t_vec = (t_dataslot *)t_getbytes(0);
     x->t_next = 0;
+    x->t_inmenu = 0;
     template_addtolist(x);
     while (argc > 0)
     {
@@ -629,6 +649,9 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     argc = binbuf_getnatom(bb);
     argv = binbuf_getvec(bb);
 
+    if (argc > 1 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+            argc--, argv++;
     templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
     templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
@@ -689,7 +712,7 @@ instructions for the template.  The template doesn't go away when the
 "struct" is deleted, so that you can replace it with
 another one to add new fields, for example. */
 
-static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
+static void *gtemplate_donew(t_symbol *sym, int inmenu, int argc, t_atom *argv)
 {
     t_pdstruct *x = (t_pdstruct *)pd_new(gtemplate_class);
     t_template *t = template_findbyname(sym);
@@ -700,6 +723,7 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
     x->x_sym = sym;
     x->x_argc = argc;
     x->x_argv = (t_atom *)getbytes(argc * sizeof(t_atom));
+
     for (i = 0; i < argc; i++)
         x->x_argv[i] = argv[i];
 
@@ -744,19 +768,28 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
         x->x_template = t = template_new(sym, argc, argv);
         t->t_list = x;
     }
+    if (inmenu)
+        t->t_inmenu = 1;
     outlet_new(&x->x_obj, 0);
     return (x);
 }
 
 static void *gtemplate_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_symbol *sym = atom_getsymbolarg(0, argc, argv);
+    t_symbol *sym;
+    int inmenu = 0;
+        /* check for "-m" menu flag */
+    if (argc > 0 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+    {
+        inmenu = 1;
+        argc--;
+        argv++;
+    }
+    sym = atom_getsymbolarg(0, argc, argv);
     if (argc >= 1)
         argc--, argv++;
-    if (sym->s_name[0] == '-')
-        post("warning: struct '%s' initial '-' may confuse get/set, etc.",
-            sym->s_name);
-    return (gtemplate_donew(canvas_makebindsym(sym), argc, argv));
+    return (gtemplate_donew(canvas_makebindsym(sym), inmenu, argc, argv));
 }
 
     /* old version (0.34) -- delete 2003 or so */
@@ -770,7 +803,7 @@ static void *gtemplate_new_old(t_symbol *s, int argc, t_atom *argv)
             sym->s_name);
         warned = 1;
     }
-    return (gtemplate_donew(sym, argc, argv));
+    return (gtemplate_donew(sym, 0, argc, argv));
 }
 
 t_template *gtemplate_get(t_pdstruct *x)

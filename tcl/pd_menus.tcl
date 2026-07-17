@@ -235,6 +235,8 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window symbolatom 0}
     $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
         -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window text 0}
+    $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
+        -command {::pd_menucommands::scheduleAction menu_send $::focused_window menuarray}
     $mymenu add  separator
     $mymenu add command -label [_ "Bang"]     -accelerator "Shift+$accelerator+B" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window bng}
@@ -255,10 +257,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
     $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window mycnv}
     $mymenu add  separator
-    $mymenu add command -label [_ "Graph"]    -accelerator "Shift+$accelerator+G" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window graph}
-    $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
-        -command {::pd_menucommands::scheduleAction menu_send $::focused_window menuarray}
+    $mymenu add cascade -label [_ "Scalar..."] -menu .structmenu
 }
 
 proc ::pd_menus::build_find_menu {mymenu {patchwindow true}} {
@@ -610,4 +609,34 @@ proc ::pd_menus::create_system_menu {mymenubar} {
     # that is on the top left corner of the window frame
     # http://wiki.tcl.tk/1006
     # TODO add Edit Mode here
+}
+
+# ------------------ submenu to add scalar objects ---------
+
+set pdtk_nscalar 0
+
+proc pdtk_newstructs {} {
+    global pdtk_nscalar
+    if {! [winfo exists .structmenu]} {
+        menu .structmenu
+    }
+    .structmenu delete  0 end
+    set pdtk_nscalar 0
+}
+
+proc pdtk_putstruct {name} {
+    pdsend "$::focused_window add-scalar $name"
+}
+
+proc pdtk_addstruct {name} {
+    global pdtk_nscalar
+    incr pdtk_nscalar
+    set label $name
+    if {$::windowingsystem ne "aqua"} {
+        set label "$pdtk_nscalar. $label"
+    }
+    .structmenu add command \
+        -label $label -underline 0 \
+        -command [concat ::pd_menucommands::scheduleAction pdtk_putstruct \
+            $name]
 }

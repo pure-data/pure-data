@@ -242,6 +242,7 @@ typedef struct _template
     int t_n;                    /* number of dataslots (fields) */
     t_dataslot *t_vec;          /* array of dataslots */
     struct _template *t_next;   /* next in a list of all templates */
+    int t_inmenu;               /* add me to "put" menu */
 } t_template;
 
 struct _array

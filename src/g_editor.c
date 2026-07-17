@@ -5197,8 +5197,45 @@ static void glist_setlastxy(t_glist *gl, int xval, int yval)
     THISED->canvas_last_glist_y = yval;
 }
 
-
 void canvas_triggerize(t_glist*cnv);
+void glist_nograb(t_glist *x);
+
+
+void canvas_addscalar(t_canvas *x, t_symbol *templatesym)
+{
+    int xpix, ypix, indx, nobj;
+    t_scalar *sc;
+    t_template *scalartemplate = template_findbyname(templatesym);
+
+    glist_nograb(x);
+
+
+    pd_vmess(&x->gl_pd, gensym("editmode"), "i", 1);
+
+    sc = scalar_new(x, templatesym);
+    if (!scalartemplate || !sc)
+        return; /* in case the template disappeared; shoudn't happen */
+
+    /* initially place the scalar under mouse; cf.  canvas_howputnew() : */
+
+    glist_getnextxy(x, &xpix, &ypix);
+    xpix = xpix/x->gl_zoom - 3;
+    ypix = ypix/x->gl_zoom - 3;
+    template_setfloat(scalartemplate, gensym("x"), sc->sc_vec,
+        glist_pixelstox(x, (float)xpix), 0);
+    template_setfloat(scalartemplate, gensym("y"), sc->sc_vec,
+        glist_pixelstoy(x, (float)ypix), 0);
+
+
+    glist_add(x, &sc->sc_gobj);
+    glist_noselect(x);
+    glist_select(x, &sc->sc_gobj);
+    canvas_startmotion(glist_getcanvas(x));
+    canvas_undo_add(glist_getcanvas(x), UNDO_CREATE, "create",
+        (void *)canvas_undo_set_create(glist_getcanvas(x)));
+    canvas_dirty(glist_getcanvas(x), 1);
+}
+
 
 void g_editor_setup(void)
 {
@@ -5271,6 +5308,8 @@ void g_editor_setup(void)
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_pastechars,
         gensym("pastechars"), A_GIMME, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_addscalar,
+        gensym("add-scalar"), A_SYMBOL, A_NULL);
 }
 
 void canvas_editor_for_class(t_class *c)

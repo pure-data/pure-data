@@ -36,7 +36,7 @@ void canvas_startmotion(t_canvas *x);
 int glist_getindex(t_glist *x, t_gobj *y);
 void gatom_undarken(t_text *x);
 
-static void glist_nograb(t_glist *x)
+void glist_nograb(t_glist *x)
 {
     if (x->gl_editor)
     {
