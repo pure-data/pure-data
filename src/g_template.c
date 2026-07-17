@@ -2914,17 +2914,14 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
     int hex = 0;
-    while (1)
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
         const char *flag = argv->a_w.w_symbol->s_name;
         if (!strcmp(flag, "-n"))
             fielddesc_setfloat_const(&x->x_vis, 0);
-        else if (!strcmp(firstarg->s_name, "-h"))
-        {
+        else if (!strcmp(flag, "-h"))
             hex = 1;
-        }
         else if (!strcmp(flag, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
