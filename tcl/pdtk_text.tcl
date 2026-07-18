@@ -54,6 +54,31 @@ proc pdtk_pastetext {tkcanvas} {
     }
 }
 
+# send "pastetext" messages to send the clipboard contents to the patch.
+# follow the text with a terminating "-2" at which point the patch carries
+# out the paste.
+proc pdtk_pasteany {tkcanvas} {
+    if { [catch {set buf [clipboard get]}] } {
+        # no selection... do nothing
+    } else {
+        # turn unicode-encoded stuff (\u...) into unicode characters
+        # 'unescape' needs a trailing space...
+        set buf [::pdtk_text::unescape "${buf} " ]
+        pdsend "[winfo toplevel $tkcanvas] pastechars -1"
+        set command "[winfo toplevel $tkcanvas] pastechars"
+        for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
+            scan [string index $buf $i] %c keynum
+            set command [concat $command " " $keynum]
+            if { [string length $command] > 75 } {
+                pdsend $command
+                set command "[winfo toplevel $tkcanvas] pastechars"
+            }
+        }
+        pdsend $command
+    }
+    pdsend "[winfo toplevel $tkcanvas] pastechars -2"
+}
+
 # select all of the text in an existing text box
 proc pdtk_text_selectall {tkcanvas mytag} {
     if {$::editmode([winfo toplevel $tkcanvas])} {

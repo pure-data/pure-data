@@ -132,6 +132,8 @@ typedef struct _editor
     unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
     int e_xnew;                     /* xpos for next move event */
     int e_ynew;                     /* ypos, similarly */
+    unsigned char *e_pastebuffer;   /* array of characters to paste */
+    int e_npaste;                   /* number of chars to paste */
 } t_editor;
 
 #define MA_NONE    0    /* e_onmotion: do nothing on mouse motion */
@@ -240,6 +242,7 @@ typedef struct _template
     int t_n;                    /* number of dataslots (fields) */
     t_dataslot *t_vec;          /* array of dataslots */
     struct _template *t_next;   /* next in a list of all templates */
+    int t_inmenu;               /* add me to "put" menu */
 } t_template;
 
 struct _array
@@ -680,6 +683,10 @@ EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
 EXTERN int drawtext_gettype(t_gobj *z, t_template *pdtemplate, int *onsetp);
 EXTERN t_template *drawtext_gettemplate(t_gobj *z);
+EXTERN void drawtext_doclick(t_gobj *z, int xpix, int ypix, int shiftmod,
+    int altmod, int doubleclick, t_rtext *rtext, t_scalar *hitscalar,
+        int runmode);
+
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */
 EXTERN t_guiconnect *guiconnect_new(t_pd *who, t_symbol *sym);

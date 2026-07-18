@@ -26,44 +26,89 @@ set ::audio_outdevlist {}
 set ::audio_outdevices {-1 -1 -1 -1}
 set ::audio_outdevicechannels {0 0 0 0}
 
+# dialog vars
+set ::dialog_audio::samplerate $::audio_samplerate
+set ::dialog_audio::advance $::audio_advance
+set ::dialog_audio::blocksize $::audio_blocksize
+set ::dialog_audio::use_callback $::audio_use_callback
+array set ::dialog_audio::in_enable {}
+array set ::dialog_audio::in_device {}
+array set ::dialog_audio::in_channels {}
+array set ::dialog_audio::out_enable {}
+array set ::dialog_audio::out_device {}
+array set ::dialog_audio::out_channels {}
+
 # TODO this panel really needs some reworking, it works but the code is very
 # unreadable.  The panel could look a lot better too, like using menubuttons
 # instead of regular buttons with tk_popup for pulldown menus.
 
 ####################### audio dialog ##################
 
-# turn the current configuration into a string ready to be sent to Pd
-proc ::dialog_audio::config2string { } {
-    return [string trim " \
-        [expr $::dialog_audio::indev1 + 0] \
-        [expr $::dialog_audio::indev2 + 0] \
-        [expr $::dialog_audio::indev3 + 0] \
-        [expr $::dialog_audio::indev4 + 0] \
-        [expr $::dialog_audio::inchan1 * ( $::dialog_audio::inenable1 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan2 * ( $::dialog_audio::inenable2 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan3 * ( $::dialog_audio::inenable3 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::inchan4 * ( $::dialog_audio::inenable4 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outdev1 + 0] \
-        [expr $::dialog_audio::outdev2 + 0] \
-        [expr $::dialog_audio::outdev3 + 0] \
-        [expr $::dialog_audio::outdev4 + 0] \
-        [expr $::dialog_audio::outchan1 * ( $::dialog_audio::outenable1 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan2 * ( $::dialog_audio::outenable2 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan3 * ( $::dialog_audio::outenable3 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::outchan4 * ( $::dialog_audio::outenable4 ? 1 : -1 ) ]\
-        [expr $::dialog_audio::samplerate + 0] \
-        [expr $::dialog_audio::advance + 0] \
-        [expr $::dialog_audio::use_callback + 0] \
-        [expr $::dialog_audio::blocksize] \
-        "]
+# serialize the current configuration into a list so we can compare it with a reference
+# indevice(*) inchannels(*) inenabled(*) outdevice(*) outchannels(*) outenabled(*) sr advance cb blocksize
+proc ::dialog_audio::checkedval { reference_index varname {goodexpr_v true} {normalizeexpr_v {$v} } } {
+    set fallback [lindex $::dialog_audio::referenceconfig ${reference_index}]
+    upvar 0 ::dialog_audio::${varname} v
+
+    if { $v eq {} } {
+        # empty!
+        set v ${fallback}
+    } elseif [expr ${goodexpr_v}] {
+        # all good, nothing to see here
+    } else {
+        # !good
+        set v ${fallback}
+    }
+    return [set v [expr ${normalizeexpr_v}]]
+}
+
+proc ::dialog_audio::serialize_config { } {
+    set reference $::dialog_audio::referenceconfig
+    set result {}
+    set idx -1
+
+    foreach dir {in out} {
+        for {set x 1} {$x <= 4} {incr x} {
+            # deviceD must be >= -1
+            lappend result [checkedval [incr idx] ${dir}_device($x) { [string is int $v ] && $v >= -1 }]
+        }
+        for {set x 1} {$x <= 4} {incr x} {
+            # channels must be >= 0
+            lappend result [checkedval [incr idx] ${dir}_channels($x) { [string is int $v ] && $v >= 0 }]
+        }
+        for {set x 1} {$x <= 4} {incr x} {
+            # enable must be 0 or 1
+            lappend result [checkedval [incr idx] ${dir}_enable($x) { [string is boolean $v] } { [ string is true $v ] }]
+        }
+    }
+
+    lappend result [checkedval [incr idx] samplerate   { [string is double $v] && $v > 0 }]
+    lappend result [checkedval [incr idx] advance      { [string is double $v] && $v >= 0 }]
+    lappend result [checkedval [incr idx] use_callback { [string is boolean $v] } { [ string is true $v ] }]
+    lappend result [checkedval [incr idx] blocksize    { [string is int $v] && $v > 0 }]
+
+    return $result
 }
 
 proc ::dialog_audio::apply {mytoplevel {force ""}} {
-    set config [config2string]
+    set config [serialize_config]
     if { $force ne "" || $config ne $::dialog_audio::referenceconfig} {
-        pdsend "pd audio-dialog ${config}"
+        set msg "pd audio-dialog"
+        # indevices
+        set msg [concat $msg [lrange $config 0 3]]
+        # inchannels (negative is "disabled")
+        set msg [concat $msg [lmap channels [lrange $config 4 7] enabled [lrange $config 8 11] {expr $channels * ( $enabled ? 1 : -1)}]]
+        # outdevices
+        set msg [concat $msg [lrange $config 12 15]]
+        # outchannels (negative is "disabled")
+        set msg [concat $msg [lmap channels [lrange $config 16 19] enabled [lrange $config 20 23] {expr $channels * ( $enabled ? 1 : -1)}]]
+
+        # samplerate advance callbacks blocksize
+        set msg [concat $msg [lrange $config 24 27]]
+
+        pdsend ${msg}
     }
-    set ::dialog_audio::referenceconfig $config
+    set ::dialog_audio::referenceconfig ${config}
 }
 
 proc ::dialog_audio::cancel {mytoplevel} {
@@ -108,20 +153,20 @@ proc ::dialog_audio::state2widgets {state args} {
 proc ::dialog_audio::fill_frame_device {frame direction index} {
     ## side-effects:
     ## ro: ::audio_${direction}devlist
-    ## rw: ::dialog_audio::${direction}dev${index}
+    ## rw: ::dialog_audio::${direction}_device(${index})
     ##
-    ## rW: ::dialog_audio::${direction}dev${index}
-    ## rW: ::dialog_audio::${direction}enable${index}
-    ## rW: ::dialog_audio::${direction}chan${index}
-    upvar ::dialog_audio::${direction}dev${index} x
+    ## rW: ::dialog_audio::${direction}_device(${index})
+    ## rW: ::dialog_audio::${direction}_enable(${index})
+    ## rW: ::dialog_audio::${direction}_channels(${index})
+    upvar ::dialog_audio::${direction}_device(${index}) x
     upvar ::audio_${direction}devlist devlist
-    upvar ::dialog_audio::${direction}enable${index} enabled
+    upvar ::dialog_audio::${direction}_enable(${index}) enabled
     set device [lindex $devlist $x]
     if { "${device}" eq "" } {set device [format "(%s)" [_ "no device" ]] }
 
-    checkbutton $frame.x0 -variable ::dialog_audio::${direction}enable${index} \
+    checkbutton $frame.x0 -variable ::dialog_audio::${direction}_enable(${index}) \
         -text "${index}:" -anchor e \
-        -command "::dialog_audio::state2widgets \$::dialog_audio::${direction}enable${index}  $frame.x1 $frame.x2"
+        -command "::dialog_audio::state2widgets \$::dialog_audio::${direction}_enable(${index})  $frame.x1 $frame.x2"
 
     if { $::audio_can_multidevice < 1 && $direction eq "out" } {
         label $frame.x1 -text [_ "(same as input device)..."]
@@ -135,13 +180,19 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
         foreach input $devlist {
             $frame.x1.menu add radiobutton \
                 -label "${input}" \
-                -value ${idx} -variable ::dialog_audio::${direction}dev${index} \
+                -value ${idx} -variable ::dialog_audio::${direction}_device(${index}) \
                 -command "$frame.x1 configure -text \"${input}\""
             incr idx
         }
     }
     label $frame.l2 -text [_ "Channels:"]
-    entry $frame.x2 -textvariable ::dialog_audio::${direction}chan${index} -width 3
+    foreach {dummy v} [array get ::dialog_audio::${direction}_channels ${index}] {break}
+    spinbox $frame.x2 \
+        -width 3 \
+        -values {1 2 4 6 8 10 12 14 16 24 64 128} \
+        -textvariable ::dialog_audio::${direction}_channels(${index})
+    # spinbox's '-values' option resets the textvariable, so we need to restore it
+    array set ::dialog_audio::${direction}_channels [list ${index} ${v}]
 
     set mytoplevel [winfo toplevel $frame]
     if {[winfo exists $mytoplevel.buttonframe.ok]} {
@@ -218,7 +269,7 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
     frame $frame.refreshbutton
     pack $frame.refreshbutton -side bottom -fill x
     button $frame.refreshbutton.b -text [_ "Rescan Devices"] \
-        -command "pdsend \"pd rescan-audio\""
+        -command {pdsend {pd rescan-audio} }
     pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
@@ -246,7 +297,7 @@ proc ::dialog_audio::fill_frame {frame {include_backends 1}} {
                 $frame.backend.api.menu add radiobutton \
                     -label "${api_name}" \
                     -value ${api_id} -variable ::pd_whichapi \
-                    -command {pdsend "pd audio-setapi $::pd_whichapi"}
+                    -command {pdsend [list pd audio-setapi $::pd_whichapi]}
                 if { ${api_id} == ${::pd_whichapi} } {
                     $frame.backend.api configure -text "${api_name}"
                 }
@@ -340,9 +391,9 @@ proc ::dialog_audio::init_devicevars {} {
         upvar ::audio_${direction}devicechannels channels
         for {set i 1} {$i <= 4} {incr i} {
             # output vars
-            upvar ::dialog_audio::${direction}dev${i} dev
-            upvar ::dialog_audio::${direction}chan${i} chan
-            upvar ::dialog_audio::${direction}enable${i} enabled
+            upvar ::dialog_audio::${direction}_device(${i}) dev
+            upvar ::dialog_audio::${direction}_channels(${i}) chan
+            upvar ::dialog_audio::${direction}_enable(${i}) enabled
 
             if { [llength $devices] > 0 } {
                 set dev [lindex $devices ${i}-1]
@@ -361,7 +412,7 @@ proc ::dialog_audio::init_devicevars {} {
         upvar ::audio_${v} invar
         foreach {var fixed} [isfixed $invar] {}
     }
-    set ::dialog_audio::referenceconfig [config2string]
+    set ::dialog_audio::referenceconfig [serialize_config]
 
 }
 
@@ -426,7 +477,7 @@ proc ::dialog_audio::create {mytoplevel} {
 
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_audio::apply $mytoplevel 1; pdsend \"pd save-preferences\""
+        -command "::dialog_audio::apply $mytoplevel 1; pdsend {pd save-preferences}"
     pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons

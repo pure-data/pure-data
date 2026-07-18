@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 56
-#define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 57
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "-WIP"
 
 /* compile-time version check:
    #if PD_VERSION_CODE < PD_VERSION(0, 56, 0)
@@ -1056,7 +1056,7 @@ EXTERN t_pdinstance *pd_getinstance(void);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
-#if defined(PDTHREADS) && defined(PDINSTANCE)
+#if PDTHREADS && defined(PDINSTANCE)
 #ifdef _MSC_VER
 #define PERTHREAD __declspec(thread)
 #else

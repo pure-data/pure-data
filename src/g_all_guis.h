@@ -71,7 +71,7 @@
 #define IEM_VU_MAXDB  12.0
 #define IEM_VU_OFFSET 100.0
 
-#define IEM_RADIO_MAX 128
+#define IEM_RADIO_MAX 2048
 
 #define IEM_SYM_UNIQUE_SND  256
 #define IEM_SYM_UNIQUE_RCV  512

@@ -64,7 +64,7 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
         glist_getcanvas(glist)->gl_editor->e_rtext = x;
     else last->x_next = x;
     x->x_next = 0;
-    sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
+    sprintf(x->x_tag, ".x%lx.t%lxt", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
     x->x_xpix = x->x_ypix = 0;      /* empty rectangle */
     x->x_pixwidth = x->x_pixheight = -1;
@@ -652,24 +652,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 text_drawborder(x->x_text, x->x_glist, x->x_tag, 0);
         if (x->x_active)
         {
-            if (selend_b > selstart_b)
-            {
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "from",
-                    x->x_tag, u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "to",
-                    x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
-                pdgui_vmess(0, "crs", canvas, "focus", "");
-            }
-            else
-            {
-                pdgui_vmess(0, "crr", canvas, "select", "clear");
-                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag,
-                    u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess("focus", "c", canvas);
-                pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
-            }
+            pdgui_vmess("pdtk_text_select", "cs i i", canvas, x->x_tag,
+                u8_charnum(x->x_buf, selstart_b),
+                u8_charnum(x->x_buf, selend_b));
         }
     }
     x->x_pixwidth = *widthp;
@@ -735,15 +720,17 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x->x_glist), x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
     x->x_xpix += dx;
     x->x_ypix += dy;
-    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
-        dx, dy);
+    //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        //dx, dy);
+    pdgui_vmess("pdtk_canvas_move", "cs ii", glist_getcanvas(x->x_glist),
+        x->x_tag, dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.55.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2025-06-16 02:48+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1014,11 +1014,18 @@ msgstr "நிறுவவும்"
 msgid "%s%% of download completed"
 msgstr "பதிவிறக்கத்தின்%s %% முடிந்தது"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "சரியான நூலகம் அல்லது பொருள் பெயரை உள்ளிடவும்."
 
 msgid "e.g. 'freeverb~'"
 msgstr "எ.கா. 'ஃப்ரீவெர்ப் ~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "எந்தவொரு எழுத்துக்களையும் பொருத்த '*' வைல்டு கார்டைப் பயன்படுத்தவும்."
@@ -1064,6 +1071,9 @@ msgstr "இரண்டும்"
 msgid "translations"
 msgstr "மொழிபெயர்ப்புகள்"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "நீங்கள் நம்பும் நபர்களால் பதிவேற்றிய வெளிப்புறங்களை மட்டுமே நிறுவவும்."
 
@@ -1090,6 +1100,10 @@ msgstr "தேடல் முடிவுகள்"
 
 msgid "Log"
 msgstr "பதிவு"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "\"%s\" ஐத் தேடுகிறது ..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -2056,6 +2070,10 @@ msgstr "'%s' இல் நீங்கள் செய்த மாற்றங�
 
 msgid "Properties"
 msgstr "பண்புகள்"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "திருத்து பயன்முறை"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"

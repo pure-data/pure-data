@@ -93,6 +93,7 @@ PASRC = s_audio_pa.c s_audio_paring.c \
     $(PADIR)/src/os/win/pa_win_coinitialize.c \
     $(PADIR)/src/os/win/pa_win_hostapis.c \
     $(PADIR)/src/os/win/pa_win_util.c \
+    $(PADIR)/src/os/win/pa_win_version.c \
     $(PADIR)/src/os/win/pa_win_waveformat.c \
     $(PADIR)/src/hostapi/wasapi/pa_win_wasapi.c
 

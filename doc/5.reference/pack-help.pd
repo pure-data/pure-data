@@ -1,4 +1,4 @@
-#N canvas 487 35 590 612 12;
+#N canvas 487 38 590 612 12;
 #X floatatom 69 168 6 0 0 0 - - - 0;
 #X floatatom 124 253 5 0 0 0 - - - 0;
 #X floatatom 234 280 5 0 0 0 - - - 0;
@@ -25,7 +25,6 @@
 #X obj 69 306 pack 10 100 symbol float;
 #X obj 149 583 trigger;
 #N canvas 545 128 559 219 pointer 0;
-#X text 55 22 The [pack] object can pack a pointer into a list. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 65;
 #X obj 93 124 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
@@ -37,7 +36,8 @@
 #X connect 2 0 1 0;
 #X restore 93 154 pd open;
 #X text 118 124 <-- open first example of the 4.Data.Structure section;
-#X connect 1 0 2 0;
+#X text 55 22 The [pack] object can pack a pointer into a list. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.data.Structures section of the Pd tutorials., f 65;
+#X connect 0 0 1 0;
 #X restore 360 135 pd pointer;
 #X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 660 81 569 367 reference 0;

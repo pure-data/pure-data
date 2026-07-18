@@ -1,4 +1,4 @@
-OBJ = pdgtk.o tclparser.o canvas.o net.o
+OBJ = pdgtk.o tclparser.o canvas.o net.o ../../pd/src/s_net.o
 
 PKG_CONFIG ?= pkg-config
 gtk.cflags := $(shell $(PKG_CONFIG) --cflags gtk4)

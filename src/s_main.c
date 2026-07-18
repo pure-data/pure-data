@@ -34,8 +34,10 @@ char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." \
 stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) "\
  (" stringify(PD_TEST_VERSION) ")";
 
+#ifdef COMPILEDATE
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
+#endif
 
 void pd_init(void);
 void pd_term(void);
@@ -409,8 +411,13 @@ int sys_main(int argc, const char **argv)
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
-    if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
-        pd_version, pd_compiletime, pd_compiledate);
+    if (sys_verbose || sys_version)
+#ifdef COMPILEDATE
+        fprintf(stderr, "%s compiled %s %s\n",
+            pd_version, pd_compiletime, pd_compiledate);
+#else
+        fprintf(stderr, "%s\n", pd_version);
+#endif
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
@@ -1556,7 +1563,10 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
+    {
+            /* not encoded; just return the symbol as is */
+        return s;
+    }
     else sp++;
     for (i = 0; i < MAXPDSTRING-1; i++, sp++)
     {
