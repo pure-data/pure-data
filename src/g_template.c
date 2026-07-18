@@ -3104,7 +3104,6 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
             fielddesc_getfloat(&x->x_color, template, data, 1));
         char *textbuf;
         int textlen;
-        drawnumber_getbuf(x, data, template, buf);
         /* draw label */
         SETSYMBOL(fontatoms+0, gensym(sys_font));
         int size = fielddesc_getfloat(&x->x_size, template, data, 1);
