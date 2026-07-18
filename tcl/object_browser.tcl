@@ -352,11 +352,15 @@ proc category_menu::load_menutree {} {
                 {
                     general\ tools
                     {
-                        snake~\ in
-                        snake~\ out
                         adc~
                         dac~
                         sig~
+                        snake~\ in
+                        snake~\ out
+                        snake~\ sum
+                        snake~\ pick
+                        snake~\ split
+                        siginfo~
                         line~
                         vline~
                         threshold~
