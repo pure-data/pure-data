@@ -1,5 +1,5 @@
-#N canvas 541 186 584 380 12;
-#X text 9 337 see also:;
+#N canvas 514 132 588 397 12;
+#X text 9 363 see also:;
 #N canvas 693 101 575 231 reference 0;
 #X obj 7 143 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 8 75 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
@@ -11,14 +11,14 @@
 #X text 160 86 sets the function of [snake~] \, possible values: in \, out \, sum \, pick \, split. The default value is "in"., f 51;
 #X restore 406 16 pd reference;
 #X text 503 17 <= click;
-#X obj 235 338 send~;
-#X obj 81 338 inlet~;
-#X obj 137 338 clone;
+#X obj 231 364 send~;
+#X obj 81 364 inlet~;
+#X obj 133 364 clone;
 #X obj 30 15 snake~;
-#X obj 183 338 throw~;
-#X text 368 337 updated for Pd version 0.57;
+#X obj 179 364 throw~;
+#X text 368 363 updated for Pd version 0.57;
 #X obj 4 50 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X obj 4 323 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 4 349 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 336 179 588 441 in/out 0;
 #X text 501 17 <= click;
 #N canvas 555 101 570 521 reference 0;
@@ -277,3 +277,5 @@
 #X text 147 217 - sum channels into mono signal;
 #X text 88 8 - manage multichannel signals (defaults to [snake~ in]), f 29;
 #X text 40 67 Sound engineers call multichannel audio cables "snakes". The [snake~] object provides several options to create and manipulate multi-channel signals (see details below)., f 58;
+#X obj 359 309 siginfo~;
+#X text 88 309 For counting number of channels \, see:;

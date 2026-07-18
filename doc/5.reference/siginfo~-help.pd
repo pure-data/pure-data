@@ -113,6 +113,7 @@
 #X obj 181 674 bng 20 250 50 0 empty empty empty 0 -10 0 12 #fcfcfc #000000 #000000;
 #X obj 27 460 siginfo~ help;
 #X text 128 454 unknown keywords (like "help" here) are reported as "-1", f 32;
+#X obj 233 755 snake~;
 #X connect 7 0 6 0;
 #X connect 18 0 45 0;
 #X connect 18 1 46 0;
