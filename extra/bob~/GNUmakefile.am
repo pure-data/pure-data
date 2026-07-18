@@ -6,7 +6,7 @@ NAME=bob~
 external_LTLIBRARIES = bob~.la
 SOURCES = bob~.c
 PATCHES = bob~-help.pd
-OTHERDATA =
+OTHERDATA = README.txt
 
 EXTRA_DIST = makefile
 
@@ -32,7 +32,7 @@ libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
 # create convenience link for running locally
-all-local:
+all-local: $(LTLIBRARIES)
 	rm -f *.@EXTERNAL_EXTENSION@
 	-$(LN_S) $(wildcard .libs/*.@EXTERNAL_EXTENSION@) ./
 

@@ -8,19 +8,17 @@ behavior for "gobjs" appears at the end of this file.  */
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "s_stuff.h"
 #include <string.h>
 
-#ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
-#endif
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
+#if defined(_MSC_VER)
+#define INLINE __forceinline
+#elif defined(__GNUC__)
+#define INLINE inline __attribute__((always_inline))
+#else
+#define INLINE inline
 #endif
 
 union inletunion
@@ -87,6 +85,12 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
 {
     pd_error(x->i_owner, "inlet: expected '%s' but got '%s'",
         x->i_symfrom->s_name, s->s_name);
+}
+static void _inlet_wrong(t_inlet *x, t_symbol *s, int argc, t_atom*argv)
+{
+    (void)argc;
+    (void)argv;
+    inlet_wrong(x, s);
 }
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
@@ -178,7 +182,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
       inlet_symbol(x, atom_getsymbol(argv));
     else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
         inlet_fwd(x, &s_list, argc, argv);
-    else post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
+    else inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -351,6 +355,7 @@ int backtracer_tracing;
 t_class *backtracer_class;
 
 static PERTHREAD int stackcount = 0; /* iteration counter */
+static PERTHREAD int overflow = 0;
 #define STACKITER 1000 /* maximum iterations allowed */
 
 static PERTHREAD int outlet_eventno;
@@ -358,6 +363,21 @@ static PERTHREAD int outlet_eventno;
     /* initialize stack depth count on each incoming event that can set off
     messages so that  the outlet functions can check to prevent stack overflow]
     from message recursion.  Also count message initiations. */
+
+static INLINE int stackcount_add(void)
+{
+        /* set overflow flag to prevent any further messaging */
+    if (++stackcount >= STACKITER)
+        overflow = 1;
+    return !overflow;
+}
+
+static INLINE void stackcount_release(void)
+{
+        /* once the stack is completely unwound, we can clear the overflow flag */
+    if (--stackcount == 0)
+        overflow = 0;
+}
 
 void outlet_setstacklim(void)
 {
@@ -387,20 +407,20 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s,
 {
     char msgbuf[104];
     int nprint = (argc > NARGS ? NARGS : argc), nchar, i;
-    snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
+    pd_snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
     nchar = strlen(msgbuf);
     for (i = 0; i < nprint && nchar < 100; i++)
         if (nchar < 100)
     {
         char buf[100];
         atom_string(&argv[i], buf, 100);
-        snprintf(msgbuf + nchar, 100-nchar, " %s", buf);
+        pd_snprintf(msgbuf + nchar, 100-nchar, " %s", buf);
         nchar = strlen(msgbuf);
     }
     if (argc > nprint && nchar < 100)
         sprintf(msgbuf + nchar, "...");
     else memcpy(msgbuf+100, "...", 4); /* in case we didn't finish */
-    logpost(who, 2, "%s", msgbuf);
+    logpost(who, PD_NORMAL, "%s", msgbuf);
 }
 
 static void backtracer_anything(t_backtracer *x, t_symbol *s,
@@ -555,19 +575,19 @@ static void outlet_stackerror(t_outlet *x)
 void outlet_bang(t_outlet *x)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
-    for (oc = x->o_connections; oc; oc = oc->oc_next)
-        pd_bang(oc->oc_to);
-    --stackcount;
+        for (oc = x->o_connections; oc; oc = oc->oc_next)
+            pd_bang(oc->oc_to);
+    stackcount_release();
 }
 
 void outlet_pointer(t_outlet *x, t_gpointer *gp)
 {
     t_outconnect *oc;
     t_gpointer gpointer;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
     {
@@ -575,51 +595,51 @@ void outlet_pointer(t_outlet *x, t_gpointer *gp)
         for (oc = x->o_connections; oc; oc = oc->oc_next)
             pd_pointer(oc->oc_to, &gpointer);
     }
-    --stackcount;
+    stackcount_release();
 }
 
 void outlet_float(t_outlet *x, t_float f)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
-    for (oc = x->o_connections; oc; oc = oc->oc_next)
-        pd_float(oc->oc_to, f);
-    --stackcount;
+        for (oc = x->o_connections; oc; oc = oc->oc_next)
+            pd_float(oc->oc_to, f);
+    stackcount_release();
 }
 
 void outlet_symbol(t_outlet *x, t_symbol *s)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
-    for (oc = x->o_connections; oc; oc = oc->oc_next)
-        pd_symbol(oc->oc_to, s);
-    --stackcount;
+        for (oc = x->o_connections; oc; oc = oc->oc_next)
+            pd_symbol(oc->oc_to, s);
+    stackcount_release();
 }
 
 void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
-    for (oc = x->o_connections; oc; oc = oc->oc_next)
-        pd_list(oc->oc_to, s, argc, argv);
-    --stackcount;
+        for (oc = x->o_connections; oc; oc = oc->oc_next)
+            pd_list(oc->oc_to, s, argc, argv);
+    stackcount_release();
 }
 
 void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(!stackcount_add())
         outlet_stackerror(x);
     else
-    for (oc = x->o_connections; oc; oc = oc->oc_next)
-        typedmess(oc->oc_to, s, argc, argv);
-    --stackcount;
+        for (oc = x->o_connections; oc; oc = oc->oc_next)
+            typedmess(oc->oc_to, s, argc, argv);
+    stackcount_release();
 }
 
     /* get the outlet's declared symbol */
@@ -909,7 +929,7 @@ int obj_issignaloutlet(const t_object *x, int m)
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;
-    static float obj_scalarzero = 0;
+    static t_float obj_scalarzero = 0;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)
@@ -998,5 +1018,3 @@ void obj_init(void)
     class_addanything(backtracer_class, backtracer_anything);
 
 }
-
-

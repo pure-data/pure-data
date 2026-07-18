@@ -1,0 +1,16 @@
+#N canvas 176 159 527 425 12;
+#X obj 212 332 outlet~;
+#X obj 122 138 savestate;
+#X obj 182 168 f;
+#X obj 212 292 sig~;
+#X obj 212 87 inlet;
+#X floatatom 212 253 5 0 0 0 - - - 0;
+#X text 261 152 A simple patch to show how each copy of the abstraction saves its own state with the [savestate] object., f 29;
+#X connect 1 0 5 0;
+#X connect 1 1 2 0;
+#X connect 2 0 1 0;
+#X connect 2 0 5 0;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 4 0 2 1;
+#X connect 5 0 3 0;

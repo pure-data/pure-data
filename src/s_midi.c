@@ -98,7 +98,10 @@ static double sys_whenupdate;
 void sys_initmidiqueue(void)
 {
     sys_midiinittime = clock_getlogicaltime();
+        /* force update in sys_setmiditimediff() */
     sys_dactimeminusrealtime = sys_adctimeminusrealtime = 0;
+    sys_newdactimeminusrealtime = sys_newadctimeminusrealtime = -1e20;
+    sys_whenupdate = 0;
 }
 
     /* this is called from the OS dependent code from time to time when we
@@ -165,7 +168,7 @@ static void sys_putnext(void)
 
 /*  #define TEST_DEJITTER */
 
-void sys_pollmidioutqueue(void)
+static void sys_pollmidioutqueue(void)
 {
 #ifdef TEST_DEJITTER
     static int db = 0;
@@ -180,8 +183,8 @@ void sys_pollmidioutqueue(void)
 #ifdef TEST_DEJITTER
         if (!db)
         {
-            post("out: del %f, midiRT %f logicaltime %f, RT %f dacminusRT %f",
-                (midi_outqueue[midi_outtail].q_time - midirealtime),
+            post("out: del %f, midiRT %f, logicaltime %f, RT %f, dacminusRT %f",
+                (midirealtime - midi_outqueue[midi_outtail].q_time),
                     midirealtime, .001 * clock_gettimesince(sys_midiinittime),
                         sys_getrealtime(), sys_dactimeminusrealtime);
             db = 1;
@@ -439,7 +442,7 @@ void sys_pollmidiinqueue(void)
         if (!db)
         {
             post("in del %f, logicaltime %f, RT %f adcminusRT %f",
-                (midi_inqueue[midi_intail].q_time - logicaltime),
+                (logicaltime - midi_inqueue[midi_intail].q_time),
                     logicaltime, sys_getrealtime(), sys_adctimeminusrealtime);
             db = 1;
         }
@@ -491,7 +494,9 @@ void sys_midibytein(int portno, int byte)
 
 void sys_pollmidiqueue(void)
 {
-    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
+    double outbuftime = sched_get_using_audio() == SCHED_AUDIO_POLL ?
+        (sys_schedadvance * 1e-6) : 0;
+    sys_setmiditimediff(0, outbuftime);
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
         sys_alsa_poll_midi();
@@ -523,10 +528,13 @@ static int midi_midiindev[MAXMIDIINDEV];
 static char midi_indevnames[MAXMIDIINDEV * DEVDESCSIZE];
 static int midi_nmidioutdev;
 static int midi_midioutdev[MAXMIDIOUTDEV];
-static char midi_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
+static char midi_outdevnames[MAXMIDIOUTDEV * DEVDESCSIZE];
 
 void sys_get_midi_apis(char *buf)
 {
+        /* FIXXME: this returns a raw Tcl-list!
+         *  instead it should return something we can use with pdgui_vmess()
+         */
     int n = 0;
     strcpy(buf, "{ ");
 #ifdef USEAPI_OSS
@@ -569,6 +577,14 @@ static void sys_save_midi_params(
 {
     int i;
     midi_nmidiindev = nmidiindev;
+    if(nmidiindev > MAXMIDIINDEV) {
+        bug("requesting %d/%d MIDIin devices", nmidiindev, MAXMIDIINDEV);
+        nmidiindev = MAXMIDIINDEV-1;
+    }
+    if(nmidioutdev > MAXMIDIOUTDEV) {
+        bug("requesting %d/%d MIDIout devices", nmidioutdev, MAXMIDIOUTDEV);
+        nmidioutdev = MAXMIDIOUTDEV-1;
+    }
     for (i = 0; i < nmidiindev; i++)
     {
         midi_midiindev[i] = midiindev[i];
@@ -675,7 +691,7 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
             sys_alsa_close_midi();
         else
 #endif
-              sys_close_midi();
+            sys_close_midi();
         sys_midiapi = newapi;
         sys_reopen_midi();
     }
@@ -687,115 +703,95 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
 
 extern t_class *glob_pdobject;
 
-    /* start an midi settings dialog window */
-void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
-{
-        /* these are the devices you're using: */
-    int nindev, midiindev[MAXMIDIINDEV];
-    int noutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9;
-
+void sys_gui_midipreferences(void) {
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char *indevs[1+MAXNDEV], *outdevs[1+MAXNDEV];
     int nindevs = 0, noutdevs = 0, i;
-    char device[MAXPDSTRING];
+
+        /* these are the devices you're using: */
+    int nindev, midiindev[MAXMIDIINDEV];
+    int noutdev, midioutdev[MAXMIDIOUTDEV];
+    t_float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
+
+        /* query the current MIDI settings */
+        /* on macOS, this causes a crash in 'callback' mode when audio is running */
+#ifdef __APPLE__
+    if (sched_get_using_audio() == SCHED_AUDIO_CALLBACK)
+    {
+        pd_error(0, "Cannot load MIDI settings in 'callback' mode when audio is running. "
+            "Please turn off DSP and rescan devices.");
+        nindev = noutdev = nindevs = noutdevs = 0;
+    }
+    else
+#endif
+    {
+        sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+            MAXNDEV, DEVDESCSIZE);
+        sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+    }
 
     indevs[0] = outdevs[0] = "none";
-
-    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
     for (i = 0; i < nindevs; i++)
         indevs[i+1] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
         outdevs[i+1] = outdevlist + i * DEVDESCSIZE;
 
-    pdgui_vmess("set", "rS", "::midi_indevlist",
-        nindevs+1, indevs); /* +1 for the leading 'none' */
+        /* notify GUI of used input/output devices */
+    for (i=0; i<nindev; i++)
+        midiindevf[i] = (t_float)midiindev[i] + 1;
+    for (i=0; i<noutdev; i++)
+        midioutdevf[i] = (t_float)midioutdev[i] + 1;
 
-    pdgui_vmess("set", "rS", "::midi_outdevlist",
-        noutdevs+1, outdevs); /* +1 for the leading 'none' */
-
-    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
-
-    if (nindev > 1 || noutdev > 1)
-        flongform = 1;
-
-    midiindev1 = (nindev > 0 &&  midiindev[0]>= 0 ? midiindev[0]+1 : 0);
-    midiindev2 = (nindev > 1 &&  midiindev[1]>= 0 ? midiindev[1]+1 : 0);
-    midiindev3 = (nindev > 2 &&  midiindev[2]>= 0 ? midiindev[2]+1 : 0);
-    midiindev4 = (nindev > 3 &&  midiindev[3]>= 0 ? midiindev[3]+1 : 0);
-    midiindev5 = (nindev > 4 &&  midiindev[4]>= 0 ? midiindev[4]+1 : 0);
-    midiindev6 = (nindev > 5 &&  midiindev[5]>= 0 ? midiindev[5]+1 : 0);
-    midiindev7 = (nindev > 6 &&  midiindev[6]>= 0 ? midiindev[6]+1 : 0);
-    midiindev8 = (nindev > 7 &&  midiindev[7]>= 0 ? midiindev[7]+1 : 0);
-    midiindev9 = (nindev > 8 &&  midiindev[8]>= 0 ? midiindev[8]+1 : 0);
-    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0);
-    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0);
-    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0);
-    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0);
-    midioutdev5 = (noutdev > 4 && midioutdev[4]>= 0 ? midioutdev[4]+1 : 0);
-    midioutdev6 = (noutdev > 5 && midioutdev[5]>= 0 ? midioutdev[5]+1 : 0);
-    midioutdev7 = (noutdev > 6 && midioutdev[6]>= 0 ? midioutdev[6]+1 : 0);
-    midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
-    midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
-
-    pdgui_stub_deleteforkey(0);
-#ifdef USEAPI_ALSA
-    if (sys_midiapi == API_ALSA)
-        pdgui_stub_vnew(&glob_pdobject,
-            "pdtk_alsa_midi_dialog", (void *)glob_midi_properties,
-            "iiii iiii ii",
-            midiindev1 , midiindev2 , midiindev3 , midiindev4 ,
-            midioutdev1, midioutdev2, midioutdev3, midioutdev4,
-            (flongform != 0), 1);
-    else
-#endif
-    pdgui_stub_vnew(
-        &glob_pdobject,
-        "pdtk_midi_dialog", (void *)glob_midi_properties,
-        "iiiiiiiii iiiiiiiii i",
-        midiindev1 , midiindev2 , midiindev3 , midiindev4 , midiindev5 , midiindev6 , midiindev7 , midiindev8 , midiindev9 ,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5, midioutdev6, midioutdev7, midioutdev8, midioutdev9,
-        (flongform != 0));
+    pdgui_vmess("::dialog_midi::set_configuration", "i SF SF",
+                sys_midiapi,
+                nindevs+1, indevs, nindev, midiindevf,
+                noutdevs+1, outdevs, noutdev, midioutdevf);
 }
+
+    /* start an midi settings dialog window */
+void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
+{
+    sys_gui_midipreferences();
+    pdgui_stub_deleteforkey(0);
+    pdgui_stub_vnew(&glob_pdobject, "::dialog_midi::create",
+        (void *)glob_midi_properties, "");
+}
+
+    /* rescan MIDI devices */
+void glob_rescanmidi(void *dummy)
+{
+    sys_reinit_midi();
+    sys_gui_midipreferences();
+        /* refresh midi dialog (if it's open) */
+    pdgui_vmess("::dialog_midi::refresh_ui", "");
+}
+
+#define MIDI_DIALOG_DEVS 9
 
     /* new values from dialog window */
 void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, nindev, noutdev;
-    int newmidiindev[9], newmidioutdev[9];
+    int i, nindev=0, noutdev=0;
+    int newmidiindev[MIDI_DIALOG_DEVS], newmidioutdev[MIDI_DIALOG_DEVS];
     int alsadevin, alsadevout;
 
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < MIDI_DIALOG_DEVS; i++)
     {
-        newmidiindev[i] = atom_getfloatarg(i, argc, argv);
-        newmidioutdev[i] = atom_getfloatarg(i+9, argc, argv);
+        int dev = atom_getfloatarg(i, argc, argv);
+        if(dev > 0)
+            newmidiindev[nindev++] = dev - 1;
+
+        dev = atom_getfloatarg(i+MIDI_DIALOG_DEVS, argc, argv);
+        if(dev > 0)
+            newmidioutdev[noutdev++] = dev - 1;
     }
 
-    for (i = 0, nindev = 0; i < 9; i++)
-    {
-        if (newmidiindev[i] > 0)
-        {
-            newmidiindev[nindev] = newmidiindev[i]-1;
-            nindev++;
-        }
-    }
-    for (i = 0, noutdev = 0; i < 9; i++)
-    {
-        if (newmidioutdev[i] > 0)
-        {
-            newmidioutdev[noutdev] = newmidioutdev[i]-1;
-            noutdev++;
-        }
-    }
-    alsadevin = atom_getfloatarg(18, argc, argv);
-    alsadevout = atom_getfloatarg(19, argc, argv);
+    alsadevin = atom_getfloatarg(MIDI_DIALOG_DEVS + MIDI_DIALOG_DEVS + 0, argc, argv);
+    alsadevout = atom_getfloatarg(MIDI_DIALOG_DEVS + MIDI_DIALOG_DEVS + 1, argc, argv);
+
 #ifdef USEAPI_ALSA
             /* invent a story so that saving/recalling "settings" will
             be able to restore the number of devices.  ALSA MIDI handling
@@ -803,6 +799,15 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             this to work coherently */
     if (sys_midiapi == API_ALSA)
     {
+        if(alsadevin > MAXMIDIINDEV) {
+            alsadevin = MAXMIDIINDEV;
+            pd_error(0, "number of alsa MIDI-in devices limited to %d", alsadevin);
+        }
+        if(alsadevout > MAXMIDIOUTDEV) {
+            alsadevout = MAXMIDIOUTDEV;
+            pd_error(0, "number of alsa MIDI-out devices limited to %d", alsadevout);
+        }
+
         nindev = alsadevin;
         noutdev = alsadevout;
         for (i = 0; i < nindev; i++)

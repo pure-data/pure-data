@@ -6,15 +6,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2009-08-22 11:20+0100\n"
-"Last-Translator: Johannes Burström <johannes@ljud.org>\n"
-"Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/sv/>\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13-dev\n"
 "X-Poedit-Language: Swedish\n"
 "X-Poedit-Country: Sweden\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -138,6 +140,9 @@ msgstr "Media"
 msgid "Window"
 msgstr "Fönster"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Hjälp"
 
@@ -209,7 +214,29 @@ msgstr "Verkställ"
 msgid "OK"
 msgstr "Ok"
 
-msgid "Audio Settings"
+msgid "no device"
+msgstr ""
+
+msgid "(same as input device)..."
+msgstr ""
+
+#, fuzzy
+msgid "Channels:"
+msgstr "Ångra"
+
+msgid "Input Devices"
+msgstr ""
+
+msgid "Output Devices"
+msgstr ""
+
+msgid "Use Multiple Devices"
+msgstr ""
+
+msgid "Rescan Devices"
+msgstr ""
+
+msgid "Audio System"
 msgstr ""
 
 msgid "Settings"
@@ -236,20 +263,7 @@ msgstr ""
 msgid "Use callbacks"
 msgstr ""
 
-msgid "Input Devices"
-msgstr ""
-
-#, fuzzy
-msgid "Channels:"
-msgstr "Ångra"
-
-msgid "Output Devices"
-msgstr ""
-
-msgid "(same as input device)..."
-msgstr ""
-
-msgid "Use Multiple Devices"
+msgid "Audio Settings"
 msgstr ""
 
 msgid "Save All Settings"
@@ -300,6 +314,9 @@ msgstr "Marginal:"
 #, fuzzy
 msgid "Y range: from"
 msgstr "Omfång (y), från:"
+
+msgid "Object:"
+msgstr "Objekt:"
 
 #, fuzzy
 msgid "Data Properties"
@@ -377,6 +394,9 @@ msgstr "Sändsymbol:"
 
 msgid "Receive symbol:"
 msgstr "Mottagarsymbol:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Bredd:"
@@ -527,16 +547,22 @@ msgstr "Sänd meddelande"
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr ""
-
-msgid "ALSA MIDI Settings"
+msgid "no input devices"
 msgstr ""
 
 msgid "In Ports:"
 msgstr ""
 
 msgid "Out Ports:"
+msgstr ""
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr ""
+
+msgid "ALSA MIDI Settings"
 msgstr ""
 
 msgid "Pd search path for objects, help, audio, text and other files"
@@ -567,6 +593,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Rensa konsoll"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Inställningar"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -580,19 +610,99 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch Windows"
+msgstr "Huvudfönster"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Föräldrafönster"
+
+msgid "GUI Settings"
+msgstr ""
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "Use tabs"
+msgstr ""
+
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Inställningar"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Inställningar"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI Options"
+msgstr "Egenskaper för Atom"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup Flags:"
 msgstr ""
 
 #, fuzzy
@@ -657,6 +767,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -738,6 +854,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -760,10 +884,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Sök i"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -810,6 +947,17 @@ msgstr "Inställningar"
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -826,14 +974,16 @@ msgid "All Files"
 msgstr "Alla filer"
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
 msgstr ""
 
 #, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
 msgstr ""
 
 #, tcl-format
@@ -908,10 +1058,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -958,6 +1114,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -985,6 +1144,10 @@ msgstr "Sök i"
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Förkasta ändringar i '%s'?"
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1024,14 +1187,14 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
+msgstr ""
+
+msgid "Directory does not exist!"
 msgstr ""
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
-
-msgid "Directory does not exist!"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1061,12 +1224,19 @@ msgstr ""
 msgid "Ignoring checksum mismatch"
 msgstr ""
 
+msgid "Ignoring checksum errors"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1162,6 +1332,575 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "The language can only be set during startup."
+msgstr ""
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abchaziska"
+
+msgid "Avestan"
+msgstr "Avestiska"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amhariska"
+
+msgid "Aragonese"
+msgstr "Aragonska"
+
+msgid "Arabic"
+msgstr "Arabiska"
+
+msgid "Assamese"
+msgstr "Assamesiska"
+
+msgid "Avaric"
+msgstr "Avariska"
+
+msgid "Aymara"
+msgstr "Aymara"
+
+msgid "Azerbaijani"
+msgstr "Azerbajdzjanska"
+
+msgid "Bashkir"
+msgstr "Basjkiriska"
+
+msgid "Belarusian"
+msgstr "Vitryska"
+
+msgid "Bulgarian"
+msgstr "Bulgariska"
+
+msgid "Bihari"
+msgstr "Bihariska"
+
+msgid "Bislama"
+msgstr "Bislama"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengaliska"
+
+msgid "Tibetan"
+msgstr "Tibetanska"
+
+msgid "Breton"
+msgstr "Bretonska"
+
+msgid "Bosnian"
+msgstr "Bosniska"
+
+msgid "Catalan"
+msgstr "Katalanska"
+
+msgid "Chechen"
+msgstr "Tjetjenska"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Korsikanska"
+
+msgid "Cree"
+msgstr "Cree"
+
+msgid "Czech"
+msgstr "Tjeckiska"
+
+msgid "Chuvash"
+msgstr "Tjuvasjiska"
+
+msgid "Welsh"
+msgstr "Walesiska"
+
+msgid "Danish"
+msgstr "Danska"
+
+msgid "German"
+msgstr "Tyska"
+
+msgid "German (Austria)"
+msgstr "Tyska (Österrike)"
+
+msgid "Dhivehi"
+msgstr "Dhivehiska"
+
+msgid "Dzongkha"
+msgstr "Bhutanesiska (Dzongkha)"
+
+msgid "Ewe"
+msgstr "Ewe"
+
+msgid "Greek"
+msgstr "Grekiska"
+
+msgid "English"
+msgstr "Engelska"
+
+msgid "English (Canada)"
+msgstr "Engelska (Kanada)"
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Esperanto"
+msgstr "Esperanto"
+
+msgid "Spanish"
+msgstr "Spanska"
+
+msgid "Estonian"
+msgstr "Estniska"
+
+msgid "Basque"
+msgstr "Baskiska"
+
+msgid "Persian"
+msgstr "Persiska"
+
+msgid "Fulah"
+msgstr "Fula"
+
+msgid "Finnish"
+msgstr "Finska"
+
+msgid "Fijian"
+msgstr "Fijianska"
+
+msgid "Faroese"
+msgstr "Färöiska"
+
+msgid "French"
+msgstr "Franska"
+
+msgid "Frisian"
+msgstr "Frisiska"
+
+msgid "Irish"
+msgstr "Irländska"
+
+msgid "Gaelic"
+msgstr "Gaeliska"
+
+msgid "Galician"
+msgstr "Galiciska"
+
+msgid "Guarani"
+msgstr "Guaraní"
+
+msgid "Gujarati"
+msgstr "Gujarati"
+
+msgid "Manx"
+msgstr "Manx"
+
+msgid "Hausa"
+msgstr "Haussa"
+
+msgid "Hebrew"
+msgstr "Hebreiska"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hiri Motu"
+msgstr "Hiri motu"
+
+msgid "Croatian"
+msgstr "Kroatiska"
+
+msgid "Haitian"
+msgstr "Haitiska"
+
+msgid "Hungarian"
+msgstr "Ungerska"
+
+msgid "Armenian"
+msgstr "Armeniska"
+
+msgid "Herero"
+msgstr "Herero"
+
+msgid "Interlingua"
+msgstr "Interlingua"
+
+msgid "Indonesian"
+msgstr "Indonesiska"
+
+msgid "Occidental"
+msgstr "Occidental"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Nosu"
+
+msgid "Inupiaq"
+msgstr "Inupiak"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "Isländska"
+
+msgid "Italian"
+msgstr "Italienska"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
+
+msgid "Japanese"
+msgstr "Japanska"
+
+msgid "Javanese"
+msgstr "Javanesiska"
+
+msgid "Georgian"
+msgstr "Georgiska"
+
+msgid "Kongo"
+msgstr "Kikongo"
+
+msgid "Gikuyu"
+msgstr "Kikuyu"
+
+msgid "Kwanyama"
+msgstr "Kwanyama"
+
+msgid "Kazakh"
+msgstr "Kazakiska"
+
+msgid "Greenlandic"
+msgstr "Grönländska"
+
+msgid "Kannada"
+msgstr "Kannada"
+
+msgid "Korean"
+msgstr "Koreanska"
+
+msgid "Kanuri"
+msgstr "Kanuri"
+
+msgid "Kashmiri"
+msgstr "Kashmiriska"
+
+msgid "Kurdish"
+msgstr "Kurdiska"
+
+msgid "Komi"
+msgstr "Komi"
+
+msgid "Cornish"
+msgstr "Korniska"
+
+msgid "Kyrgyz"
+msgstr "Kirgiziska"
+
+msgid "Latin"
+msgstr "Latin"
+
+msgid "Luxembourgish"
+msgstr "Luxemburgiska"
+
+msgid "Luganda"
+msgstr "Luganda"
+
+msgid "Limburgish"
+msgstr "Limburgiska"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Laotiska"
+
+msgid "Lithuanian"
+msgstr "Litauiska"
+
+msgid "Luba-Katanga"
+msgstr "Luba-Katanga"
+
+msgid "Latvian"
+msgstr "Lettiska"
+
+msgid "Malagasy"
+msgstr "Malagassiska"
+
+msgid "Marshallese"
+msgstr "Marshallesiska"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Makedonska"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongoliska"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Malajiska"
+
+msgid "Maltese"
+msgstr "Maltesiska"
+
+msgid "Burmese"
+msgstr "Burmesiska"
+
+msgid "Nauru"
+msgstr "Nauriska"
+
+msgid "Nepali"
+msgstr "Nepalesiska"
+
+msgid "Ndonga"
+msgstr "Ndonga"
+
+msgid "Dutch"
+msgstr "Nederländska"
+
+msgid "Norwegian Nynorsk"
+msgstr "Nynorska"
+
+msgid "Navaho"
+msgstr "Navajo"
+
+msgid "Nyanja"
+msgstr "Nyanja"
+
+msgid "Occitan"
+msgstr "Occitanska"
+
+msgid "Ojibwe"
+msgstr "Ojibwe"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Oriya"
+
+msgid "Ossetian"
+msgstr "Ossetiska"
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Pali"
+msgstr "Pali"
+
+msgid "Polish"
+msgstr "Polska"
+
+msgid "Pashto"
+msgstr "Pashto"
+
+msgid "Portuguese"
+msgstr "Portugisiska"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugisiska (Brasilien)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portugisiska (Portugal)"
+
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Rätoromanska"
+
+msgid "Rundi"
+msgstr "Rundi"
+
+msgid "Romanian"
+msgstr "Rumänska"
+
+msgid "Russian"
+msgstr "Ryska"
+
+msgid "Kinyarwanda"
+msgstr "Kinjarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskrit"
+
+msgid "Sardinian"
+msgstr "Sardiska"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Singalesiska"
+
+msgid "Slovak"
+msgstr "Slovakiska"
+
+msgid "Slovenian"
+msgstr "Slovenska"
+
+msgid "Samoan"
+msgstr "Samoanska"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somaliska"
+
+msgid "Albanian"
+msgstr "Albanska"
+
+msgid "Serbian"
+msgstr "Serbiska"
+
+msgid "Swati"
+msgstr "Swati"
+
+msgid "Sundanese"
+msgstr "Sundanesiska"
+
+msgid "Swedish"
+msgstr "Svenska"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamilska"
+
+msgid "Telugu"
+msgstr "Telugu"
+
+msgid "Tajik"
+msgstr "Tadzjikiska"
+
+msgid "Thai"
+msgstr "Thailändska"
+
+msgid "Tigrinya"
+msgstr "Tigrinja"
+
+msgid "Turkmen"
+msgstr "Turkmeniska"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tonganska"
+
+msgid "Turkish"
+msgstr "Turkiska"
+
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tatariska"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahitiska"
+
+msgid "Uyghur"
+msgstr "Uiguriska"
+
+msgid "Ukrainian"
+msgstr "Ukrainska"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Uzbekiska"
+
+msgid "Venda"
+msgstr "Venda"
+
+msgid "Vietnamese"
+msgstr "Vietnamesiska"
+
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Vallonska"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Jiddisch"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+msgid "Zulu"
+msgstr "Zulu"
+
+msgid "(no translation)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "Print..."
+msgstr "Skriv ut..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1173,28 +1912,41 @@ msgstr "Om Pd"
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Ny"
+
+msgid "Open"
+msgstr "Öppna"
+
+msgid "Open Recent"
+msgstr "Öppna senaste"
+
 msgid "Save"
 msgstr "Spara"
 
 msgid "Save As..."
 msgstr "Spara som..."
 
-msgid "Print..."
-msgstr "Skriv ut..."
+msgid "Quit"
+msgstr "Avsluta"
+
+msgid "Undo"
+msgstr "Ångra"
+
+msgid "Redo"
+msgstr "Gör om"
+
+msgid "Cut"
+msgstr "Klipp ut"
 
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Markera allt"
+
 msgid "Duplicate"
 msgstr "Duplicera"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Zooma"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Zooma"
 
 msgid "Tidy Up"
 msgstr "Städa upp"
@@ -1205,34 +1957,20 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Redigeringsläge"
-
-msgid "Undo"
-msgstr "Ångra"
-
-msgid "Redo"
-msgstr "Gör om"
-
-msgid "New"
-msgstr "Ny"
-
-msgid "Open"
-msgstr "Öppna"
+#, fuzzy
+msgid "Zoom In"
+msgstr "Zooma"
 
 #, fuzzy
-msgid "Message..."
-msgstr "Meddelande"
-
-msgid "Cut"
-msgstr "Klipp ut"
-
-msgid "Select All"
-msgstr "Markera allt"
+msgid "Zoom Out"
+msgstr "Zooma"
 
 #, fuzzy
 msgid "Clear Console"
 msgstr "Rensa konsoll"
+
+msgid "Edit Mode"
+msgstr "Redigeringsläge"
 
 msgid "Object"
 msgstr "Objekt"
@@ -1301,8 +2039,16 @@ msgstr "Föräldrafönster"
 msgid "Previous Window"
 msgstr "Föräldrafönster"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Stäng fönstret?"
+
 msgid "Parent Window"
 msgstr "Föräldrafönster"
+
+#, fuzzy
+msgid "Message..."
+msgstr "Meddelande"
 
 msgid "HTML Manual..."
 msgstr "HTML-manual..."
@@ -1337,21 +2083,9 @@ msgstr ""
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr ""
-
-msgid "MIDI..."
-msgstr ""
-
 #, fuzzy
-msgid "Zoom New Windows"
-msgstr "Föräldrafönster"
+msgid "Edit Preferences..."
+msgstr "Inställningar..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1367,14 +2101,9 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Inställningar"
-
-msgid "Open Recent"
-msgstr "Öppna senaste"
-
-msgid "Quit"
-msgstr "Avsluta"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -1382,6 +2111,19 @@ msgstr "Vill du spara dina ändringar i '%s'?"
 
 msgid "Properties"
 msgstr "Egenskaper"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Redigeringsläge"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Förkasta ändringar i '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1397,13 +2139,18 @@ msgstr ""
 msgid "Audio off"
 msgstr ""
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
-msgstr ""
+#, fuzzy
+msgid "Find source"
+msgstr "Sök senaste fel"
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 #, fuzzy
@@ -1429,6 +2176,9 @@ msgid "debug"
 msgstr ""
 
 msgid "all"
+msgstr ""
+
+msgid "y1"
 msgstr ""
 
 msgid "New..."
@@ -1497,6 +2247,3 @@ msgstr ""
 #, fuzzy
 #~ msgid "Filters"
 #~ msgstr "Fil"
-
-#~ msgid "Close this window??"
-#~ msgstr "Stäng fönstret?"

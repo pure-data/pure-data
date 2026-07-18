@@ -1,47 +1,34 @@
-#N canvas 603 64 616 593 12;
+#N canvas 487 47 651 515 12;
 #X declare -stdpath ./;
-#X obj 65 205 +~;
-#X obj 65 315 output~;
-#X text 39 24 NONLINEAR DISTORTION AND DIFFERENCE TONES;
-#X obj 181 236 / 100;
-#X floatatom 181 213 5 0 500 0 - - - 0;
-#X obj 65 268 clip~ -1 1;
-#X floatatom 83 138 5 0 0 0 - - - 0;
-#X obj 65 242 *~;
-#X obj 83 92 loadbang;
-#X msg 181 189 50;
-#X obj 181 165 loadbang;
-#X text 375 532 updated for Pd version 0.37;
-#X text 244 196 amplitude of sum;
-#X obj 65 66 osc~ 300;
-#X msg 83 115 225;
-#X text 171 279 This patch demonstrates how nonlinear distortion (also
-known as "waveshaping") can create difference tones from a pair of
-sinusoids. The sinusoids are initially tuned to 225 and 300 Hz \, a
-musical fourth \, and have amplitude of 50 percent (0.5) so that the
-sum is always less than 1 in absolute value. At these settings the
-"clip~" object passes its input through unchanged., f 55;
-#X text 172 389 If the amplitude rises above 50 percent \, the clip~
-object starts altering the signal nonlinearly \, and the result is
-no longer as if the two sinusoids had been processed separately. Instead
-\, they "intermodulate" \, finding a common subharmonic if one exists.
-At 300 and 225 Hz \, the subharmonic is at 75 \, two octaves below
-the upper tone and a twelfth below the lower one. Change the frequency
-of the second tone and you will hear a variety of effects., f 55;
-#X obj 83 168 osc~;
-#X text 126 137 <= frequency of second tone;
-#X text 229 213 <= before clipping;
-#X obj 439 31 declare -stdpath ./;
-#X connect 0 0 7 0;
-#X connect 3 0 7 1;
-#X connect 4 0 3 0;
-#X connect 5 0 1 0;
-#X connect 5 0 1 1;
-#X connect 6 0 17 0;
-#X connect 7 0 5 0;
-#X connect 8 0 14 0;
-#X connect 9 0 4 0;
-#X connect 10 0 9 0;
-#X connect 13 0 0 0;
-#X connect 14 0 6 0;
-#X connect 17 0 0 1;
+#X obj 59 170 +~;
+#X obj 59 370 output~;
+#X obj 145 213 / 100;
+#X floatatom 145 188 5 0 500 0 - - - 0;
+#X obj 59 323 clip~ -1 1;
+#X floatatom 77 103 5 0 0 0 - - - 0;
+#X obj 59 277 *~;
+#X obj 77 57 loadbang;
+#X msg 145 163 50;
+#X obj 145 139 loadbang;
+#X obj 59 21 osc~ 300;
+#X msg 77 80 225;
+#X obj 77 133 osc~;
+#X obj 401 134 declare -stdpath ./;
+#X text 120 102 <-- frequency of second tone;
+#X text 193 188 <--;
+#X text 222 188 amplitude of sum before clipping, f 16;
+#X text 212 240 This patch demonstrates how nonlinear distortion (also known as "waveshaping") can create difference tones from a pair of sinusoids. The sinusoids are initially tuned to 225 and 300 Hz \, a musical fourth \, and have amplitude of 50 percent (0.5) so that the sum is always less than 1 in absolute value. At these settings the [clip~] object passes its input through unchanged., f 55;
+#X text 213 350 If the amplitude rises above 50 percent \, the [clip~] object starts altering the signal nonlinearly \, and the result is no longer as if the two sinusoids had been processed separately. Instead \, they "intermodulate" \, finding a common subharmonic if one exists. At 300 and 225 Hz \, the subharmonic is at 75 \, two octaves below the upper tone and a twelfth below the lower one. Change the frequency of the second tone and you will hear a variety of effects., f 55;
+#X obj 167 42 cnv 5 5 25 empty empty Nonlinear\ Distortion\ and\ Difference\ Tones 15 13 0 16 #dfdfdf #202020 0;
+#X connect 0 0 6 0;
+#X connect 2 0 6 1;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 5 0 12 0;
+#X connect 6 0 4 0;
+#X connect 7 0 11 0;
+#X connect 8 0 3 0;
+#X connect 9 0 8 0;
+#X connect 10 0 0 0;
+#X connect 11 0 5 0;
+#X connect 12 0 0 1;

@@ -1,4 +1,4 @@
-#N canvas 379 75 912 528 12;
+#N canvas 334 52 911 558 12;
 #X declare -stdpath ./;
 #X floatatom 544 155 7 0 0 1 - \$0-transpo-set \$0-transpo 16;
 #X floatatom 544 187 7 0 0 0 - \$0-speed-set \$0-speed 16;
@@ -78,7 +78,6 @@
 #X obj 447 300 * 0.01;
 #X obj 447 327 + 69;
 #X obj 447 353 mtof;
-#X obj 447 382 / 440;
 #X obj 291 427 t b f;
 #X obj 257 192 t b f;
 #X obj 121 474 pack f f f;
@@ -108,44 +107,45 @@
 #X connect 4 0 6 0;
 #X connect 5 0 2 0;
 #X restore 208 306 pd loop;
-#X connect 0 0 37 0;
+#X obj 447 382 / 440;
+#X connect 0 0 36 0;
 #X connect 1 0 2 0;
 #X connect 1 1 2 1;
 #X connect 2 0 4 0;
 #X connect 3 0 0 0;
 #X connect 4 0 7 0;
-#X connect 4 0 26 2;
+#X connect 4 0 25 2;
 #X connect 6 0 0 1;
 #X connect 7 0 6 1;
-#X connect 8 0 26 1;
-#X connect 9 0 26 0;
+#X connect 8 0 25 1;
+#X connect 9 0 25 0;
 #X connect 9 1 8 0;
-#X connect 10 0 34 0;
+#X connect 10 0 33 0;
 #X connect 11 0 12 1;
 #X connect 12 0 9 0;
-#X connect 14 0 35 0;
-#X connect 18 0 25 0;
+#X connect 14 0 34 0;
+#X connect 18 0 24 0;
 #X connect 19 0 8 1;
 #X connect 19 0 14 0;
 #X connect 20 0 21 0;
 #X connect 21 0 22 0;
-#X connect 22 0 23 0;
-#X connect 23 0 24 0;
-#X connect 24 0 19 0;
-#X connect 24 1 19 1;
-#X connect 25 0 7 0;
-#X connect 25 1 7 1;
-#X connect 26 0 10 0;
-#X connect 27 0 20 0;
-#X connect 28 0 18 0;
-#X connect 29 0 0 1;
-#X connect 30 0 11 0;
-#X connect 31 0 36 0;
-#X connect 32 0 19 0;
-#X connect 33 0 2 0;
-#X connect 36 0 1 0;
-#X connect 37 0 12 0;
-#X connect 37 0 6 0;
+#X connect 22 0 37 0;
+#X connect 23 0 19 0;
+#X connect 23 1 19 1;
+#X connect 24 0 7 0;
+#X connect 24 1 7 1;
+#X connect 25 0 10 0;
+#X connect 26 0 20 0;
+#X connect 27 0 18 0;
+#X connect 28 0 0 1;
+#X connect 29 0 11 0;
+#X connect 30 0 35 0;
+#X connect 31 0 19 0;
+#X connect 32 0 2 0;
+#X connect 35 0 1 0;
+#X connect 36 0 12 0;
+#X connect 36 0 6 0;
+#X connect 37 0 23 0;
 #X restore 392 44 pd control;
 #X obj 165 705 tabreceive~ \$0-hanning;
 #X connect 0 0 2 1;
@@ -247,8 +247,7 @@
 #X obj 40 202 sel 1;
 #X msg 222 149 1;
 #X msg 208 118 0;
-#X obj 84 174 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
+#X obj 84 174 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000 0 1;
 #X obj 40 173 int 1;
 #X obj 73 58 r \$0-location;
 #X obj 87 93 r \$0-see-location;
@@ -294,6 +293,8 @@
 #X msg 63 238 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hanning 2048 float 0;
+#A color 0;
+#A width 1;
 #X coords 0 1 2047 0 400 150 1 0 0;
 #X restore 212 221 graph;
 #X obj 105 149 samplerate~;
@@ -321,8 +322,7 @@
 #X obj 224 118 table \$0-phase-imag 1024;
 #X obj 58 35 loadbang;
 #X obj 58 59 f \$0;
-#X msg 58 95 \; \$1-window-size 2048 \; \$1-length-set 10 \; \$1-transpo-set
--300 \; \$1-speed-set 20;
+#X msg 58 95 \; \$1-window-size 2048 \; \$1-length-set 10 \; \$1-transpo-set -300 \; \$1-speed-set 20;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
 #X restore 500 62 pd init \; tables;
@@ -330,17 +330,14 @@
 #X obj 372 190 samplerate~;
 #X obj 90 400 delay;
 #X obj 379 341 timer;
-#X obj 379 371 * 44.1;
 #X obj 411 312 sel 1;
 #X obj 379 450 moses;
-#X obj 122 369 / 44.1;
 #X obj 379 135 f;
 #X obj 379 75 r \$0-start-loc;
 #X obj 411 253 r \$0-stop;
 #X obj 90 428 s \$0-stop;
 #X obj 185 367 pack \$0 f;
-#X msg 185 395 \; \$1-running 1 \; \$1-output resize \$2 \; pd dsp
-1;
+#X msg 185 395 \; \$1-running 1 \; \$1-output resize \$2 \; pd dsp 1;
 #X obj 411 284 v \$0-running;
 #X obj 379 501 send \$0-output;
 #X msg 379 475 resize \$1;
@@ -353,31 +350,33 @@
 #X obj 372 216 s \$0-sample-rate;
 #X obj 379 106 *;
 #X obj 412 103 r \$0-length-ms;
-#X connect 0 0 22 0;
-#X connect 1 0 10 0;
-#X connect 2 0 3 0;
-#X connect 3 0 5 0;
-#X connect 3 0 17 0;
-#X connect 4 0 2 1;
-#X connect 5 0 15 0;
-#X connect 6 0 1 1;
-#X connect 7 0 21 0;
-#X connect 8 0 23 0;
-#X connect 9 0 13 0;
-#X connect 11 0 12 0;
-#X connect 13 0 4 0;
+#X obj 122 369 / 48;
+#X obj 379 371 * 48;
+#X connect 0 0 20 0;
+#X connect 1 0 8 0;
+#X connect 2 0 24 0;
+#X connect 3 0 2 1;
+#X connect 4 0 13 0;
+#X connect 5 0 19 0;
+#X connect 6 0 21 0;
+#X connect 7 0 11 0;
+#X connect 9 0 10 0;
+#X connect 11 0 3 0;
+#X connect 13 0 12 0;
 #X connect 15 0 14 0;
-#X connect 17 0 16 0;
-#X connect 18 0 2 0;
-#X connect 18 0 7 0;
-#X connect 18 0 11 0;
-#X connect 18 0 0 0;
-#X connect 18 0 1 0;
-#X connect 19 0 6 0;
-#X connect 19 0 11 1;
-#X connect 20 0 5 1;
-#X connect 23 0 7 0;
-#X connect 24 0 23 1;
+#X connect 16 0 2 0;
+#X connect 16 0 5 0;
+#X connect 16 0 9 0;
+#X connect 16 0 0 0;
+#X connect 16 0 1 0;
+#X connect 17 0 9 1;
+#X connect 17 0 23 0;
+#X connect 18 0 4 1;
+#X connect 21 0 5 0;
+#X connect 22 0 21 1;
+#X connect 23 0 1 1;
+#X connect 24 0 4 0;
+#X connect 24 0 15 0;
 #X restore 126 243 pd run;
 #X obj 25 26 r \$0-transpo;
 #X obj 79 72 r \$0-speed;
@@ -423,55 +422,38 @@
 #X connect 40 0 1 0;
 #X connect 41 0 1 0;
 #X connect 42 0 1 0;
-#X restore 363 394 pd guts;
-#X obj 305 443 output~;
+#X restore 337 381 pd guts;
+#X obj 337 472 output~;
 #X floatatom 545 219 7 0 1 0 - \$0-start-loc-set \$0-start-loc 16;
 #X text 625 157 Transposition in cents;
 #X text 625 190 Speed in hundredths;
-#X obj 412 455 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #dfdfdf
-#000000 #000000 0 1;
-#X obj 412 424 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #dfdfdf
-#000000 #000000 0 1;
+#X obj 386 442 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 386 411 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 63 146 click below to:;
-#X obj 151 183 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 151 207 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 151 232 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 151 279 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 151 303 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 151 328 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X obj 151 183 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf #000000 #202020;
+#X obj 151 207 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 151 232 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf #000000 #000000;
+#X obj 151 279 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 151 303 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 151 328 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 180 182 (read an input file);
 #X text 180 206 (run the transformation);
 #X text 180 278 (hear the output sample);
 #X text 180 302 (save the output sample);
 #X text 180 327 (save the output sample normalized to 1);
 #X text 180 231 (start transformation when I change controls);
-#X obj 151 255 bng 18 250 50 0 \$0-stop dummy Stop -40 9 0 13 #dfdfdf
-#000000 #000000;
+#X obj 151 255 bng 18 250 50 0 \$0-stop dummy Stop -40 9 0 13 #dfdfdf #000000 #000000;
 #X text 180 254 (stop the transformation);
 #X obj 572 301 table \$0-input;
 #X obj 566 329 table \$0-output;
 #X text 682 302 input sample;
 #X text 682 328 output sample;
-#X text 548 422 current read location;
-#X text 551 454 current buffer recording;
+#X text 522 409 current read location;
+#X text 525 441 current buffer recording;
 #X obj 690 16 declare -stdpath ./;
 #X text 625 222 Set location in sample (0-1);
-#X text 48 55 This is a Fourier-based analysis/resynthesis tool. You
-can perform pitch shift in cents and perform a time stretch or compress
-with a speed parameter. The sample can move forward (positive speed)
-\, backwards (negatie speed) or "freeze" at any point (0 speed). The
-location control sets the start location but also sets the location
-while running the transformation. The length is a maximum recording
-length \, you can stop before and it'll resize the buffer so you can
-export a .wav file., f 113;
 #X text 625 255 Set buffer length in seconds (1-60);
+#X text 48 55 This is a Fourier-based analysis/resynthesis tool. You can perform pitch shift in cents and perform a time stretch or compress with a speed parameter. The sample can move forward (positive speed) \, backwards (negative speed) or "freeze" at any point (0 speed). The location control sets the start location but also sets the location while running the transformation. The length is a maximum recording length \, you can stop before and it'll resize the buffer so you can export a .wav file., f 113;
 #X connect 4 0 5 0;
-#X connect 4 0 5 1;
 #X connect 4 1 9 0;
 #X connect 4 2 10 0;

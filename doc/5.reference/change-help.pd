@@ -1,4 +1,4 @@
-#N canvas 641 53 509 382 12;
+#N canvas 580 53 509 382 12;
 #X floatatom 68 279 5 0 0 0 - - - 0;
 #X text 284 351 updated for Pd version 0.27;
 #X text 154 253 creation argument initializes first value;

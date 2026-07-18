@@ -21,7 +21,7 @@
 #X obj 17 136 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 17 164 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000 0;
 #X obj 17 196 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
-#X text 111 170 '-n': supresses the default 'print:' prefix.;
+#X text 111 170 '-n': suppresses the default 'print:' prefix.;
 #X text 187 206 message to distinct one [print] from another (default 'print:')., f 44;
 #X restore 354 12 pd reference;
 #X text 452 13 <= click;

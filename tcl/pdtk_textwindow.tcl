@@ -18,6 +18,7 @@ proc pdtk_textwindow_open {name geometry title font} {
     } else {
         toplevel $name
         wm title $name $title
+        ::pd_menus::menubar_for_dialog $name
         wm geometry $name $geometry
         wm protocol $name WM_DELETE_WINDOW \
             [concat pdtk_textwindow_close $name 1]
@@ -121,7 +122,7 @@ proc pdtk_textwindow_close {name ask} {
             if {[string equal -length 1 $title "*"]} {
                 set title [string range $title 1 end]
             }
-            set msg [format [_ "Accept changes to '%s'?"] $title]
+            set msg [_ "Accept changes to '%s'?" $title]
             set answer [tk_messageBox -type yesnocancel \
              -icon question \
              -message $msg \

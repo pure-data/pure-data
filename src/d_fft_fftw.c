@@ -7,6 +7,7 @@
 /* changes and additions for FFTW3 by Thomas Grill                      */
 
 #include "m_pd.h"
+#include "m_imp.h"
 #include <fftw3.h>
 
 int ilog2(int n);
@@ -167,7 +168,7 @@ void mayer_term(void)
 }
 
 
-EXTERN void mayer_fht(t_sample *fz, int n)
+void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");
 }
@@ -189,12 +190,12 @@ static void mayer_do_cfft(int n, t_sample *fz1, t_sample *fz2, int fwd)
         fz1[i] = fz[i*2], fz2[i] = fz[i*2+1];
 }
 
-EXTERN void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
+void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_do_cfft(n, fz1, fz2, 1);
 }
 
-EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
+void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_do_cfft(n, fz1, fz2, 0);
 }
@@ -205,7 +206,7 @@ EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
     but it's probably the mayer_fft that should be corrected...
 */
 
-EXTERN void mayer_realfft(int n, t_sample *fz)
+void mayer_realfft(int n, t_sample *fz)
 {
     int i;
     rfftw_info *p = rfftw_getplan(n, 1);
@@ -221,7 +222,7 @@ EXTERN void mayer_realfft(int n, t_sample *fz)
         fz[i] = -p->out[i];
 }
 
-EXTERN void mayer_realifft(int n, t_sample *fz)
+void mayer_realifft(int n, t_sample *fz)
 {
     int i;
     rfftw_info *p = rfftw_getplan(n, 0);

@@ -151,7 +151,7 @@ proc ::pd_connect::set_pid {pid} {
 proc ::pd_connect::nuke_pd {} {
     if {$::connect_pid ne ""} {
         if {$::windowingsystem eq "win32"} {
-            exec taskkill /pid $::connect_pid
+            exec taskkill /f /pid $::connect_pid
         } else {
             exec kill $::connect_pid
         }

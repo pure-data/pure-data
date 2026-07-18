@@ -12,13 +12,12 @@ if { [catch {wm withdraw .} fid] } { exit 2 }
 
 # This is mainly for OSX as older versions only
 # have 8.4 while newer versions have 8.5.
-if { [catch {package provide Tcl 8.5}] } {
+if { [catch {package require Tcl 8.5 9}] } {
     # Tcl 8.5 not available
     package require Tcl 8.4
     package require Tk
 } else {
-    # Tcl 8.5 is available
-    package require Tcl 8.5
+    # Tcl >=8.5,>=9 is available
     package require Tk
 
     # replace Tk widgets with Ttk widgets on 8.5
@@ -47,6 +46,7 @@ package require dialog_message
 package require dialog_midi
 package require dialog_path
 package require dialog_startup
+package require dialog_preferences
 package require helpbrowser
 package require pd_menucommands
 package require opt_parser
@@ -54,6 +54,7 @@ package require pdtk_canvas
 package require pdtk_text
 package require pdtk_textwindow
 package require pd_guiprefs
+package require pd_i18n
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
@@ -80,6 +81,7 @@ namespace import ::pdtk_canvas::pdtk_canvas_editmode
 namespace import ::pdtk_canvas::pdtk_canvas_getscroll
 namespace import ::pdtk_canvas::pdtk_canvas_setparents
 namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
+namespace import ::pdtk_canvas::pdtk_canvas_setcolors
 namespace import ::pdtk_canvas::pdtk_canvas_menuclose
 namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog
@@ -93,6 +95,7 @@ namespace import ::dialog_midi::pdtk_midi_dialog
 namespace import ::dialog_midi::pdtk_alsa_midi_dialog
 namespace import ::dialog_path::pdtk_path_dialog
 namespace import ::dialog_startup::pdtk_startup_dialog
+namespace import ::pd_i18n::_
 
 # hack - these should be better handled in the C code
 namespace import ::dialog_array::pdtk_array_listview_new
@@ -108,6 +111,7 @@ namespace import ::dialog_array::pdtk_array_listview_closeWindow
 # should all have been properly initialized by the time startup plugins are
 # loaded.
 
+set PD_APPLICATION_NAME "Pd"
 set PD_MAJOR_VERSION 0
 set PD_MINOR_VERSION 0
 set PD_BUGFIX_VERSION 0
@@ -169,7 +173,7 @@ set current_plugin_loadpath {}
 # a list of plugins that were loaded
 set loaded_plugins {}
 # list of command line flags set at startup
-set startup_flags {}
+set sys_flags {}
 # list of libraries loaded on startup
 set startup_libraries {}
 # start dirs for new files and open panels
@@ -218,7 +222,7 @@ array set childwindows {}  ;# all child windows based on mytoplevel IDs
 array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
 
 # variables for holding the menubar to allow for configuration by plugins
-set ::pdwindow_menubar ".menubar"
+set ::pdwindow_menubar ".pdmenu"
 set ::patch_menubar   ".menubar"
 set ::dialog_menubar   ""
 
@@ -308,7 +312,8 @@ proc init_for_platform {} {
             # some platforms have a menubar on the top, so place below them
             set ::menubarsize 0
             # trying loading icon in the GUI directory
-            if {$::tcl_version >= 8.5} {
+            # the X-server on IRIX (and IRIX64) cannot handle this, so we exclude that platform
+            if {$::tcl_version >= 8.5 && [ string first IRIX $::tcl_platform(os) ] == -1} {
                 set icon [file join $::sys_guidir pd.gif]
                 if {[file readable $icon]} {
                     catch {
@@ -416,34 +421,8 @@ proc init_for_platform {} {
 # ------------------------------------------------------------------------------
 # locale handling
 
-# official GNU gettext msgcat shortcut
-proc _ {s} {return [::msgcat::mc $s]}
-
 proc load_locale {} {
-    # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
-    # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
-    # the Terminal, and Windows doesn't have LANG, etc unless you manually set
-    # it up yourself.  Windows apps don't use the locale env vars usually.
-    if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
-        if {![catch "exec defaults read com.apple.dock loc" lang]} {
-            ::msgcat::mclocale $lang
-        } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
-            ::msgcat::mclocale $lang
-        }
-    } elseif {$::tcl_platform(platform) eq "windows"} {
-        # using LANG on Windows is useful for easy debugging
-        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-            ::msgcat::mclocale $::env(LANG)
-        } elseif {![catch {package require registry}]} {
-            ::msgcat::mclocale [string tolower \
-                                    [string range \
-                                         [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-        }
-    }
-    ::msgcat::mcload [file join [file dirname [info script]] .. po]
-
+    ::pd_i18n::load_locale
     ##--moo: force default system and stdio encoding to UTF-8
     encoding system utf-8
     fconfigure stderr -encoding utf-8
@@ -555,9 +534,6 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    ::pd_guiprefs::init
-    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
-        $::font_measured $::font_zoom2_measured"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
@@ -566,6 +542,8 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
     load_startup_plugins
+    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
+        $::font_measured $::font_zoom2_measured"
     open_filestoopen
     set ::done_init 1
 }
@@ -598,12 +576,13 @@ proc pdtk_yesnodialog {mytoplevel message default} {
 ## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
     # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+
     if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
         set message [ list $message ]
     }
 
     if {[ catch {
-              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+              set msg [_ {*}$message]
           } ]} {
            set msg [_ $message]
        }
@@ -825,14 +804,17 @@ proc load_startup_plugins {} {
 # ------------------------------------------------------------------------------
 # main
 proc main {argc argv} {
+    tk appname pd-gui
+
     set ::windowingsystem [tk windowingsystem]
     set ::platform $::tcl_platform(os)
     if { $::tcl_platform(platform) eq "windows"} {
        set ::platform W32
     }
 
-    tk appname pd-gui
-    load_locale
+    ::pd_guiprefs::init
+    ::pd_i18n::init
+
     parse_args $argc $argv
     check_for_running_instances
     set_pd_paths
@@ -851,11 +833,57 @@ proc main {argc argv} {
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
         set ::port [::pd_connect::create_socket 0]
-        set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
-        [string map {\{ "" \} ""} $::pd_startup_args]
-        ::pd_connect::set_pid \
-            [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
+            [string map {\{ "" \} ""} $::pd_startup_args]
+
+        set basedir [file normalize [file join [file dirname [info script]] ..] ]
+        set exe_floatsize [::pd_guiprefs::read "pdcore_precision_binary" ]
+        set pid ""
+        set stderr ""
+
+        # the second-from-last and next-to-last entries are just fallbacks
+        # in case there's no 'pd'
+        # the very last entry is repeating a previous one,
+        # in order to have 'catch' emit a less confusing error message into $stderr
+        foreach {bindir              exe} [list \
+                 bin${exe_floatsize} pd${exe_floatsize} \
+                 bin${exe_floatsize} pd \
+                 bin                 pd${exe_floatsize} \
+                 bin                 pd \
+                 bin                 pd32 \
+                 bin                 pd64 \
+                 bin                 pd \
+                ] {
+            set pd_exec [file join $basedir $bindir $exe]
+            catch {
+                set pid ""
+                set pid [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
+                break
+            } stderr
+            if { $pid != "" } {
+                break
+            }
+        }
+        if { $pid eq "" } {
+            # Pd failed to start
+            # give a nice error dialog and quit
+            if {$::tcl_version >= 8.5} {
+                tk_messageBox \
+                    -title [_ "Pd startup failure" ] \
+                    -message [_ "Failed to start Pd-core" ] \
+                    -detail "$stderr" \
+                    -icon error \
+                    -type ok
+            } else {
+                tk_messageBox \
+                    -title [_ "Pd startup failure" ] \
+                    -message [_ "Failed to start Pd-core" ] \
+                    -icon error \
+                    -type ok
+            }
+            exit 1
+        }
+        ::pd_connect::set_pid $pid
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)

@@ -43,17 +43,21 @@ static t_int *rightshift_perform(t_int *w)
 
 static void lrshift_tilde_dsp(t_lrshift_tilde *x, t_signal **sp)
 {
-    int n = sp[0]->s_n;
+    int n = sp[0]->s_length, i;
     int shift = x->x_n;
     if (shift > n)
         shift = n;
     if (shift < -n)
         shift = -n;
-    if (shift < 0)
-        dsp_add(rightshift_perform, 4,
-            sp[0]->s_vec + n, sp[1]->s_vec + n, (t_int)n, (t_int)(-shift));
-    else dsp_add(leftshift_perform, 4,
-            sp[0]->s_vec, sp[1]->s_vec, (t_int)n, (t_int)shift);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+    for (i = 0; i < sp[0]->s_nchans; i++)
+    {
+        if (shift < 0)
+            dsp_add(rightshift_perform, 4,  sp[0]->s_vec + i*n + n,
+                sp[1]->s_vec + i*n + n, (t_int)n, (t_int)(-shift));
+        else dsp_add(leftshift_perform, 4, sp[0]->s_vec + i*n,
+            sp[1]->s_vec + i*n, (t_int)n, (t_int)shift);
+    }
 }
 
 static void *lrshift_tilde_new(t_floatarg f)
@@ -68,8 +72,8 @@ static void *lrshift_tilde_new(t_floatarg f)
 void lrshift_tilde_setup(void)
 {
     lrshift_tilde_class = class_new(gensym("lrshift~"),
-        (t_newmethod)lrshift_tilde_new, 0, sizeof(t_lrshift_tilde), 0, 
-            A_DEFFLOAT, 0);
+        (t_newmethod)lrshift_tilde_new, 0, sizeof(t_lrshift_tilde),
+            CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(lrshift_tilde_class, t_lrshift_tilde, x_f);
     class_addmethod(lrshift_tilde_class, (t_method)lrshift_tilde_dsp,
         gensym("dsp"), 0);

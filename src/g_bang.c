@@ -10,6 +10,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
+#include "m_private_utils.h"
 
 /* --------------- bng     gui-bang ------------------------- */
 
@@ -33,25 +34,36 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol);
+    /* pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
+        "-width", zoom, "-fill", x->x_gui.x_bcol,
+        "-outline", THISGUI->i_foregroundcolor); */
+    pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
+        IEMGUI_ZOOM(x), x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pBUT", x);
+    sprintf(tag, "%p_BUT", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + inset, ypos + inset,
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
+            /* here we use "configure_rect" to act on an oval.  This is
+            the only goddam oval in the whole of Pd so let's not add a
+            whole other TK proc for it */
+    pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect", canvas, tag,
+        IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+        THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+
+    if (x->x_gui.x_fsf.x_selected)
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+        "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
+    else
+        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+        "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -60,17 +72,21 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
-    sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BASE", x);
+    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pBUT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BUT", x);
+    pdgui_vmess("pdtk_canvas_create_oval", "crri kk iiii",
+        canvas, tag, tag_object, 1,
+        THISGUI->i_foregroundcolor, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -81,17 +97,21 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
 static void bng_draw_select(t_bng* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
     char tag[128];
+    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
+
 
     if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
+        col = lcol = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pBUT", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_BASE", x);
+    pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
+        IEMGUI_ZOOM(x), x->x_gui.x_bcol, col);
+    sprintf(tag, "%p_BUT", x);
+    pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect", canvas, tag,
+        IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+        col);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -100,9 +120,11 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     if(glist_isvisible(glist))
     {
         char tag[128];
-        sprintf(tag, "%pBUT", x);
-        pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
-            "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
+        sprintf(tag, "%p_BUT", x);
+        pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect",
+            glist_getcanvas(glist), tag,
+            IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+            THISGUI->i_foregroundcolor);
     }
 }
 
@@ -172,7 +194,7 @@ static void bng_set(t_bng *x)
 {
     int holdtime = x->x_flashtime_hold;
     int sincelast = clock_gettimesince(x->x_lastflashtime);
-    x->x_lastflashtime = clock_getsystime();
+    x->x_lastflashtime = clock_getlogicaltime();
     if (sincelast < x->x_flashtime_hold*2)
         holdtime = sincelast/2;
     if (holdtime < x->x_flashtime_break)
@@ -391,7 +413,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     bng_check_minmax(x, ftbreak, fthold);
     x->x_gui.x_isa.x_locked = 0;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    x->x_lastflashtime = clock_getsystime();
+    x->x_lastflashtime = clock_getlogicaltime();
     x->x_clock_hld = clock_new(x, (t_method)bng_tick_hld);
     x->x_clock_lck = clock_new(x, (t_method)bng_tick_lck);
     iemgui_newzoom(&x->x_gui);
@@ -401,11 +423,9 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 
 static void bng_free(t_bng *x)
 {
-    if(x->x_gui.x_fsf.x_rcv_able)
-        pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     clock_free(x->x_clock_lck);
     clock_free(x->x_clock_hld);
-    pdgui_stub_deleteforkey(x);
+    iemgui_free(&x->x_gui);
 }
 
 void g_bang_setup(void)

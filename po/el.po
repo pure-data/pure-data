@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
-"Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/el/>\n"
+"Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/el/>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -136,6 +136,9 @@ msgstr "Μέσα"
 msgid "Window"
 msgstr "Παράθυρο"
 
+msgid "Tools"
+msgstr ""
+
 msgid "Help"
 msgstr "Βοήθεια"
 
@@ -202,8 +205,33 @@ msgstr "Εφαρμογή"
 msgid "OK"
 msgstr "ΟΚ"
 
-msgid "Audio Settings"
-msgstr "Ρυθμίσεις Ήχου"
+#, fuzzy
+msgid "no device"
+msgstr "Συσκευή εισόδου 2:"
+
+#, fuzzy
+msgid "(same as input device)..."
+msgstr "(ομοίως με συσκευή εισόδου) .............."
+
+msgid "Channels:"
+msgstr "Κανάλια:"
+
+msgid "Input Devices"
+msgstr "Συσκευή εισόδου"
+
+msgid "Output Devices"
+msgstr "Συσκευή εξόδου"
+
+#, fuzzy
+msgid "Use Multiple Devices"
+msgstr "Χρήση πολλαπλών συσκευών"
+
+#, fuzzy
+msgid "Rescan Devices"
+msgstr "Συσκευή εισόδου"
+
+msgid "Audio System"
+msgstr ""
 
 #, fuzzy
 msgid "Settings"
@@ -231,22 +259,8 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Χρήση επανακλήσεων"
 
-msgid "Input Devices"
-msgstr "Συσκευή εισόδου"
-
-msgid "Channels:"
-msgstr "Κανάλια:"
-
-msgid "Output Devices"
-msgstr "Συσκευή εξόδου"
-
-#, fuzzy
-msgid "(same as input device)..."
-msgstr "(ομοίως με συσκευή εισόδου) .............."
-
-#, fuzzy
-msgid "Use Multiple Devices"
-msgstr "Χρήση πολλαπλών συσκευών"
+msgid "Audio Settings"
+msgstr "Ρυθμίσεις Ήχου"
 
 msgid "Save All Settings"
 msgstr "Αποθήκευση όλων των ρυθμίσεων"
@@ -291,6 +305,9 @@ msgstr "Περιθώριο:"
 #, fuzzy
 msgid "Y range: from"
 msgstr "περιοχή Y, από"
+
+msgid "Object:"
+msgstr ""
 
 #, fuzzy
 msgid "Data Properties"
@@ -365,6 +382,9 @@ msgstr "Αποστολή symbol:"
 
 msgid "Receive symbol:"
 msgstr "Λήψη συμβόλου:"
+
+msgid "auto"
+msgstr ""
 
 msgid "Width:"
 msgstr "Εύρος:"
@@ -518,17 +538,24 @@ msgstr "Αποστολή Μηνύματος..."
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr "Ρυθμίσεις MIDI"
-
-msgid "ALSA MIDI Settings"
-msgstr "Ρυθμίσεις ALSA MIDI"
+#, fuzzy
+msgid "no input devices"
+msgstr "Συσκευή εισόδου"
 
 msgid "In Ports:"
 msgstr "Θύρες Εισόδου:"
 
 msgid "Out Ports:"
 msgstr "Θύρες Εξόδου:"
+
+msgid "MIDI system"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "Ρυθμίσεις MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Ρυθμίσεις ALSA MIDI"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -558,6 +585,10 @@ msgstr ""
 msgid "Clear"
 msgstr "Καθαρισμός Μενού"
 
+#, fuzzy
+msgid "path preferences"
+msgstr "Προτιμήσεις"
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -571,19 +602,100 @@ msgstr ""
 msgid "Edit existing path [%s]"
 msgstr ""
 
+#, fuzzy
+msgid "Patch Windows"
+msgstr "Παράθυρο Pd"
+
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Γονεϊκό Παράθυρο"
+
+#, fuzzy
+msgid "GUI Settings"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr ""
+
+msgid "Use tabs"
+msgstr "Χρήση επανακλήσεων"
+
+msgid "Single page"
+msgstr ""
+
+msgid "Patching helpers"
+msgstr ""
+
+msgid "Highlight active cord while connecting"
+msgstr ""
+
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "startup preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "audio preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "MIDI preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "deken preferences"
+msgstr "Προτιμήσεις"
+
+#, fuzzy
+msgid "misc preferences"
+msgstr "Προτιμήσεις"
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+#, fuzzy
+msgid "GUI Options"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "float (32bit)"
+msgstr ""
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr ""
+
+msgid "double (64bit)"
+msgstr ""
+
+msgid "float size"
+msgstr ""
+
+msgid "Numeric precision of Pd-core"
+msgstr ""
+
+msgid "Startup Options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Startup Flags:"
 msgstr ""
 
 #, fuzzy
@@ -650,6 +762,12 @@ msgstr ""
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "Pd startup failure"
+msgstr ""
+
+msgid "Failed to start Pd-core"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -731,6 +849,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr ""
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
@@ -753,10 +879,23 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+#, fuzzy
+msgid "Search URLs:"
+msgstr "Αναζήτηση σε"
+
+msgid "Additional search URLs"
+msgstr ""
+
+msgid "Ephemeral search URLs"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
 msgid "Check"
+msgstr ""
+
+msgid "Deken Installation Target"
 msgstr ""
 
 msgid "Installation options:"
@@ -803,6 +942,17 @@ msgstr "Προτιμήσεις"
 msgid "Platform re-detected: %s"
 msgstr ""
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
 msgid "Deken Packages"
 msgstr ""
 
@@ -819,14 +969,16 @@ msgid "All Files"
 msgstr "Ολα τα αρχεία"
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
+msgid "Installing incompatible architecture of '%s'."
+msgstr ""
+
+msgid "Replacing library with incompatible architecture!"
 msgstr ""
 
 #, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr ""
-
-msgid "SHA256 verification failed"
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
 msgstr ""
 
 #, tcl-format
@@ -901,10 +1053,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -950,6 +1108,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -977,6 +1138,10 @@ msgstr "Αναζήτηση σε"
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Απόρριψη αλλαγών σε '%s';"
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1016,14 +1181,14 @@ msgstr ""
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
+msgstr ""
+
+msgid "Directory does not exist!"
 msgstr ""
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
-
-msgid "Directory does not exist!"
 msgstr ""
 
 msgid "Directory is not writable!"
@@ -1054,12 +1219,19 @@ msgstr ""
 msgid "Ignoring checksum mismatch"
 msgstr ""
 
+msgid "Ignoring checksum errors"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1155,6 +1327,575 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "The language can only be set during startup."
+msgstr ""
+
+msgid "Afar"
+msgstr "Αφάρ"
+
+msgid "Abkhazian"
+msgstr "Αμπχαζιανά"
+
+msgid "Avestan"
+msgstr "Αβεστικά"
+
+msgid "Afrikaans"
+msgstr "Αφρικάνικα"
+
+msgid "Akan"
+msgstr "Ακανικά"
+
+msgid "Amharic"
+msgstr "Αμχαρικά"
+
+msgid "Aragonese"
+msgstr "Αραγονικά"
+
+msgid "Arabic"
+msgstr "Αραβικά"
+
+msgid "Assamese"
+msgstr "Ασσαμέζικα"
+
+msgid "Avaric"
+msgstr "Αβάρικα"
+
+msgid "Aymara"
+msgstr "Αϊμάρα"
+
+msgid "Azerbaijani"
+msgstr "Αζέρικα"
+
+msgid "Bashkir"
+msgstr "Βασκιρικά"
+
+msgid "Belarusian"
+msgstr "Λευκορωσικά"
+
+msgid "Bulgarian"
+msgstr "Βουλγαρικά"
+
+msgid "Bihari"
+msgstr "Μπιχαριανός"
+
+msgid "Bislama"
+msgstr "Μπισλάμα"
+
+msgid "Bambara"
+msgstr "Μπαμπαρικά"
+
+msgid "Bengali"
+msgstr "Βεγγαλικά"
+
+msgid "Tibetan"
+msgstr "Θιβετιανά"
+
+msgid "Breton"
+msgstr "Βρετονικά"
+
+msgid "Bosnian"
+msgstr "Βοσνιακά"
+
+msgid "Catalan"
+msgstr "Καταλανικά"
+
+msgid "Chechen"
+msgstr "Τσετσενικά"
+
+msgid "Chamorro"
+msgstr "Καμόρρο"
+
+msgid "Corsican"
+msgstr "Κορσικανικά"
+
+msgid "Cree"
+msgstr "Κρεεϊκά"
+
+msgid "Czech"
+msgstr "Τσέχικα"
+
+msgid "Chuvash"
+msgstr "Τσουβασικά"
+
+msgid "Welsh"
+msgstr "Ουαλικά"
+
+msgid "Danish"
+msgstr "Δανέζικα"
+
+msgid "German"
+msgstr "Γερμανικά"
+
+msgid "German (Austria)"
+msgstr "Γερμανικά (Αυστρίας)"
+
+msgid "Dhivehi"
+msgstr "Ντιβέχι"
+
+msgid "Dzongkha"
+msgstr "Ντζονγκικά"
+
+msgid "Ewe"
+msgstr "Έουε"
+
+msgid "Greek"
+msgstr "Ελληνικά"
+
+msgid "English"
+msgstr "Αγγλικά"
+
+msgid "English (Canada)"
+msgstr "Αγγλικά (Καναδά)"
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Esperanto"
+msgstr "Εσπεράντο"
+
+msgid "Spanish"
+msgstr "Ισπανικά"
+
+msgid "Estonian"
+msgstr "Εσθονικά"
+
+msgid "Basque"
+msgstr "Βάσκικα"
+
+msgid "Persian"
+msgstr "Περσικά"
+
+msgid "Fulah"
+msgstr "Φούλα"
+
+msgid "Finnish"
+msgstr "Φινλανδικά"
+
+msgid "Fijian"
+msgstr "Φιτζιανά"
+
+msgid "Faroese"
+msgstr "Φαροϊκά"
+
+msgid "French"
+msgstr "Γαλλικά"
+
+msgid "Frisian"
+msgstr "Φριζική"
+
+msgid "Irish"
+msgstr "Ιρλανδικά"
+
+msgid "Gaelic"
+msgstr "Γαελικά"
+
+msgid "Galician"
+msgstr "Γαλικιανά"
+
+msgid "Guarani"
+msgstr "Γκουαράνι"
+
+msgid "Gujarati"
+msgstr "Γκουτζαράτ"
+
+msgid "Manx"
+msgstr "Μανξ"
+
+msgid "Hausa"
+msgstr "Χαουσανικά"
+
+msgid "Hebrew"
+msgstr "Εβραϊκά"
+
+msgid "Hindi"
+msgstr "Χίντι"
+
+msgid "Hiri Motu"
+msgstr "Χίρι Μότου"
+
+msgid "Croatian"
+msgstr "Κροατικά"
+
+msgid "Haitian"
+msgstr "Αϊτικά"
+
+msgid "Hungarian"
+msgstr "Ουγγρικά"
+
+msgid "Armenian"
+msgstr "Αρμένικα"
+
+msgid "Herero"
+msgstr "Χερέρο"
+
+msgid "Interlingua"
+msgstr "Ιντερλίνγκουα"
+
+msgid "Indonesian"
+msgstr "Ινδονησιακά"
+
+msgid "Occidental"
+msgstr "Οξιντένταλ"
+
+msgid "Igbo"
+msgstr "Ίγκμπο"
+
+msgid "Nuosu"
+msgstr "Νουοσού"
+
+msgid "Inupiaq"
+msgstr "Ινουπιάκ"
+
+msgid "Ido"
+msgstr "Ίντο"
+
+msgid "Icelandic"
+msgstr "Ισλανδικά"
+
+msgid "Italian"
+msgstr "Ιταλικά"
+
+msgid "Inuktitut"
+msgstr "Ινούκτιτουτ"
+
+msgid "Japanese"
+msgstr "Ιαπωνικά"
+
+msgid "Javanese"
+msgstr "Ιαβανέζικα"
+
+msgid "Georgian"
+msgstr "Γεωργιανά"
+
+msgid "Kongo"
+msgstr "Κονγκό"
+
+msgid "Gikuyu"
+msgstr "Κικούγιου"
+
+msgid "Kwanyama"
+msgstr "Κουανγιάμα"
+
+msgid "Kazakh"
+msgstr "Καζακικά"
+
+msgid "Greenlandic"
+msgstr "Γροιλανδικά"
+
+msgid "Kannada"
+msgstr "Κανάντα"
+
+msgid "Korean"
+msgstr "Κορεάτικα"
+
+msgid "Kanuri"
+msgstr "Κανούρι"
+
+msgid "Kashmiri"
+msgstr "Κασμιρικά"
+
+msgid "Kurdish"
+msgstr "Κουρδικά"
+
+msgid "Komi"
+msgstr "Κόμι"
+
+msgid "Cornish"
+msgstr "Κορνουαλικά"
+
+msgid "Kyrgyz"
+msgstr "Κυργκιζικά"
+
+msgid "Latin"
+msgstr "Λατινικά"
+
+msgid "Luxembourgish"
+msgstr "Λουξεμβρουργικά"
+
+msgid "Luganda"
+msgstr "Λουγκάντα"
+
+msgid "Limburgish"
+msgstr "Λιμβουργικά"
+
+msgid "Lingala"
+msgstr "Λινγκαλανικά"
+
+msgid "Lao"
+msgstr "Λαοτινά"
+
+msgid "Lithuanian"
+msgstr "Λιθουανικά"
+
+msgid "Luba-Katanga"
+msgstr "Λούμπα-Κατάνγκα"
+
+msgid "Latvian"
+msgstr "Λεττονικά"
+
+msgid "Malagasy"
+msgstr "Μαλαγασικά"
+
+msgid "Marshallese"
+msgstr "Μαρσαλέζικα"
+
+msgid "Maori"
+msgstr "Μαορικά"
+
+msgid "Macedonian"
+msgstr "Σλαβομακεδονικά"
+
+msgid "Malayalam"
+msgstr "Μαλαγιάλαμ"
+
+msgid "Mongolian"
+msgstr "Μογγολικά"
+
+msgid "Marathi"
+msgstr "Μαραθικά"
+
+msgid "Malay"
+msgstr "Μαλαϊκά"
+
+msgid "Maltese"
+msgstr "Μαλτέζικα"
+
+msgid "Burmese"
+msgstr "Μπουρμεσεϊκά"
+
+msgid "Nauru"
+msgstr "Ναούρου"
+
+msgid "Nepali"
+msgstr "Νεπαλέζικα"
+
+msgid "Ndonga"
+msgstr "Νντόγκα"
+
+msgid "Dutch"
+msgstr "Ολλανδικά"
+
+msgid "Norwegian Nynorsk"
+msgstr "Νορβηγικά Nynorsk"
+
+msgid "Navaho"
+msgstr "Ναβάχο"
+
+msgid "Nyanja"
+msgstr "Νιανιανικά"
+
+msgid "Occitan"
+msgstr "Οτσιτανικά"
+
+msgid "Ojibwe"
+msgstr "Οτζιβουεϊκά"
+
+msgid "Oromo"
+msgstr "Ορόμο"
+
+msgid "Odia"
+msgstr "Όντια"
+
+msgid "Ossetian"
+msgstr "Οσσετικά"
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Pali"
+msgstr "Πάλι"
+
+msgid "Polish"
+msgstr "Πολωνικά"
+
+msgid "Pashto"
+msgstr "Παστού"
+
+msgid "Portuguese"
+msgstr "Πορτογαλικά"
+
+msgid "Portuguese (Brazil)"
+msgstr "Πορτογαλικά (Βραζιλία)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Πορτογαλικά (Πορτογαλία)"
+
+msgid "Quechua"
+msgstr "Κέτσουα"
+
+msgid "Romansh"
+msgstr "Ρομανσικά"
+
+msgid "Rundi"
+msgstr "Ρούντι"
+
+msgid "Romanian"
+msgstr "Ρουμανικά"
+
+msgid "Russian"
+msgstr "Ρωσικά"
+
+msgid "Kinyarwanda"
+msgstr "Κινυαργανταϊκά"
+
+msgid "Sanskrit"
+msgstr "Σανσκριτικά"
+
+msgid "Sardinian"
+msgstr "Σαρδινικά"
+
+msgid "Sindhi"
+msgstr "Σιντχικά"
+
+msgid "Sango"
+msgstr "Σάνγκο"
+
+msgid "Sinhala"
+msgstr "Σιναλεζικά"
+
+msgid "Slovak"
+msgstr "Σλοβακικά"
+
+msgid "Slovenian"
+msgstr "Σλοβενικά"
+
+msgid "Samoan"
+msgstr "Σαμοανά"
+
+msgid "Shona"
+msgstr "Σόνα"
+
+msgid "Somali"
+msgstr "Σομαλέζικα"
+
+msgid "Albanian"
+msgstr "Αλβανικά"
+
+msgid "Serbian"
+msgstr "Σερβικά"
+
+msgid "Swati"
+msgstr "Σουάτι"
+
+msgid "Sundanese"
+msgstr "Σουντικά"
+
+msgid "Swedish"
+msgstr "Σουηδικά"
+
+msgid "Swahili"
+msgstr "Σουαχίλι"
+
+msgid "Tamil"
+msgstr "Ταμίλ"
+
+msgid "Telugu"
+msgstr "Τελούγκου"
+
+msgid "Tajik"
+msgstr "Τατζικικά"
+
+msgid "Thai"
+msgstr "Ταϊλανδικά"
+
+msgid "Tigrinya"
+msgstr "Τιγκρινιανικά"
+
+msgid "Turkmen"
+msgstr "Τουρκμενικά"
+
+msgid "Tagalog"
+msgstr "Ταγκαλογικά"
+
+msgid "Tswana"
+msgstr "Τσουάνα"
+
+msgid "Tongan"
+msgstr "Τόγκα"
+
+msgid "Turkish"
+msgstr "Τουρκικά"
+
+msgid "Tsonga"
+msgstr "Τσονγκαϊκά"
+
+msgid "Tatar"
+msgstr "Ταταρικά"
+
+msgid "Twi"
+msgstr "Τούι"
+
+msgid "Tahitian"
+msgstr "Ταϊτιανά"
+
+msgid "Uyghur"
+msgstr "Ουιγούρ"
+
+msgid "Ukrainian"
+msgstr "Ουκρανικά"
+
+msgid "Urdu"
+msgstr "Ούρντου"
+
+msgid "Uzbek"
+msgstr "Ουζμπεκικά"
+
+msgid "Venda"
+msgstr "Βέντακικά"
+
+msgid "Vietnamese"
+msgstr "Βιετναμέζικα"
+
+msgid "Volapük"
+msgstr "Βολαπιούκ"
+
+msgid "Walloon"
+msgstr "Βαλλωνικά"
+
+msgid "Wolof"
+msgstr "Γουολοφικά"
+
+msgid "Xhosa"
+msgstr "Κόσα"
+
+msgid "Yiddish"
+msgstr "Γίντις"
+
+msgid "Yoruba"
+msgstr "Γιορούμπα"
+
+msgid "Zhuang"
+msgstr "Ζουάνγκ"
+
+msgid "Chinese (Traditional)"
+msgstr ""
+
+msgid "Zulu"
+msgstr "Ζουλού"
+
+msgid "(no translation)"
+msgstr ""
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr ""
+
+msgid "Print..."
+msgstr "Εκτύπωση..."
+
+msgid "single precision"
+msgstr ""
+
+msgid "double precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr ""
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
@@ -1166,28 +1907,41 @@ msgstr "Περί..."
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
+msgid "New"
+msgstr "Νέο"
+
+msgid "Open"
+msgstr "Άνοιγμα"
+
+msgid "Open Recent"
+msgstr "Άνοιγμα Πρόσφατου"
+
 msgid "Save"
 msgstr "Αποθήκευση"
 
 msgid "Save As..."
 msgstr "Αποθήκευση Ως..."
 
-msgid "Print..."
-msgstr "Εκτύπωση..."
+msgid "Quit"
+msgstr "Έξοδος"
+
+msgid "Undo"
+msgstr "Αναίρεση"
+
+msgid "Redo"
+msgstr "Ακύρωση Αναίρεσης"
+
+msgid "Cut"
+msgstr "Αποκοπή"
 
 msgid "Paste Replace"
 msgstr ""
 
+msgid "Select All"
+msgstr "Επιλογή Όλων"
+
 msgid "Duplicate"
 msgstr "Αντίγραφο"
-
-#, fuzzy
-msgid "Zoom In"
-msgstr "Εστίαση"
-
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Εστίαση"
 
 msgid "Tidy Up"
 msgstr "Τακτοποίηση"
@@ -1198,33 +1952,19 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-msgid "Edit Mode"
-msgstr "Κατάσταση Επεξεργασίας"
-
-msgid "Undo"
-msgstr "Αναίρεση"
-
-msgid "Redo"
-msgstr "Ακύρωση Αναίρεσης"
-
-msgid "New"
-msgstr "Νέο"
-
-msgid "Open"
-msgstr "Άνοιγμα"
+#, fuzzy
+msgid "Zoom In"
+msgstr "Εστίαση"
 
 #, fuzzy
-msgid "Message..."
-msgstr "Μήνυμα"
-
-msgid "Cut"
-msgstr "Αποκοπή"
-
-msgid "Select All"
-msgstr "Επιλογή Όλων"
+msgid "Zoom Out"
+msgstr "Εστίαση"
 
 msgid "Clear Console"
 msgstr "Καθαρισμός Κονσόλας"
+
+msgid "Edit Mode"
+msgstr "Κατάσταση Επεξεργασίας"
 
 msgid "Object"
 msgstr ""
@@ -1291,8 +2031,16 @@ msgstr "Γονεϊκό Παράθυρο"
 msgid "Previous Window"
 msgstr "Γονεϊκό Παράθυρο"
 
+#, fuzzy
+msgid "Close subwindows"
+msgstr "Κλείσιμο αυτού του παραθύρου;;"
+
 msgid "Parent Window"
 msgstr "Γονεϊκό Παράθυρο"
+
+#, fuzzy
+msgid "Message..."
+msgstr "Μήνυμα"
 
 msgid "HTML Manual..."
 msgstr "Εγχειρίδιο HTML..."
@@ -1328,23 +2076,9 @@ msgstr "Αποθήκευση όλων των ρυθμίσεων"
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
 #, fuzzy
-msgid "Audio..."
-msgstr "Ρυθμίσεις Ήχου..."
-
-#, fuzzy
-msgid "MIDI..."
-msgstr "Ρυθμίσεις MIDI..."
-
-#, fuzzy
-msgid "Zoom New Windows"
-msgstr "Γονεϊκό Παράθυρο"
+msgid "Edit Preferences..."
+msgstr "Προτιμήσεις..."
 
 #, fuzzy
 msgid "Save All Preferences"
@@ -1360,14 +2094,9 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-msgid "Preferences"
+#, fuzzy
+msgid "Tabbed preferences"
 msgstr "Προτιμήσεις"
-
-msgid "Open Recent"
-msgstr "Άνοιγμα Πρόσφατου"
-
-msgid "Quit"
-msgstr "Έξοδος"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -1375,6 +2104,19 @@ msgstr "Αποθήκευση αλλαγών που έγιναν στο '%s';"
 
 msgid "Properties"
 msgstr "Ιδιότητες"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Κατάσταση Επεξεργασίας"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Απόρριψη αλλαγών σε '%s';"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1391,13 +2133,18 @@ msgstr "Ρυθμίσεις Ήχου"
 msgid "Audio off"
 msgstr ""
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-msgid "Tcl:"
-msgstr ""
+#, fuzzy
+msgid "Find source"
+msgstr "Εύρεση Τελευταίου Σφάλματος"
 
 msgid "Pd"
+msgstr ""
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr ""
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
 msgstr ""
 
 msgid "DSP"
@@ -1424,6 +2171,9 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "y1"
+msgstr ""
+
 msgid "New..."
 msgstr ""
 
@@ -1438,6 +2188,18 @@ msgstr "Διαγραφή πίνακα"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "(no device)"
+#~ msgstr "Συσκευή εισόδου 2:"
+
+#, fuzzy
+#~ msgid "Audio..."
+#~ msgstr "Ρυθμίσεις Ήχου..."
+
+#, fuzzy
+#~ msgid "MIDI..."
+#~ msgstr "Ρυθμίσεις MIDI..."
 
 #, fuzzy
 #~ msgid "bottom:"
@@ -1468,9 +2230,6 @@ msgstr ""
 
 #~ msgid "Output device 3:"
 #~ msgstr "Συσκευή εξόδου 3:"
-
-#~ msgid "Input device 2:"
-#~ msgstr "Συσκευή εισόδου 2:"
 
 #, fuzzy
 #~ msgid "really quit?"
@@ -1515,9 +2274,6 @@ msgstr ""
 
 #~ msgid "Input device 3:"
 #~ msgstr "Συσκευή εισόδου 3:"
-
-#~ msgid "Close this window??"
-#~ msgstr "Κλείσιμο αυτού του παραθύρου;;"
 
 #~ msgid "Signal"
 #~ msgstr "Σήμα"

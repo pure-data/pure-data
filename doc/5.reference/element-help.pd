@@ -1,26 +1,21 @@
-#N struct element-template float x float y array array6 array6-template
-;
+#N struct element-template float x float y array array6 array6-template;
 #N struct array6-template float y;
 #N canvas 584 23 649 537 12;
 #X text 21 500 see also:;
 #N canvas 581 221 518 208 element-template 0;
 #X obj 99 146 plot array6 500 1 10 15 20;
-#X obj 90 76 struct element-template float x float y array array6 array6-template
-, f 44;
+#X obj 90 76 struct element-template float x float y array array6 array6-template, f 44;
 #X text 292 145 plot array6;
-#X text 51 19 struct with x/y fields and an array field named "array6"
-whose template is specified in "array6-template".;
+#X text 51 19 struct with x/y fields and an array field named "array6" whose template is specified in "array6-template".;
 #X restore 470 425 pd element-template;
 #N canvas 267 157 292 163 element-data 1;
-#X scalar element-template 35 24 \; 20 \; 10 \; 26 \; 10 \; 32 \; 10
-\; 43 \; -2 \; 33 \; \;;
+#X scalar element-template 35 24 \; 20 \; 10 \; 26 \; 10 \; 32 \; 10 \; 43 \; -2 \; 33 \; \;;
 #X coords 0 163 1 162 0 0 0;
 #X restore 328 439 pd element-data;
 #N canvas 786 392 450 249 array6-template 0;
 #X obj 99 179 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 102 88 struct array6-template float y;
-#X text 117 136 This adds a diamond shape to each element in the array
-, f 28;
+#X text 117 136 This adds a diamond shape to each element in the array, f 28;
 #X text 100 60 template for the array element;
 #X restore 477 449 pd array6-template;
 #X obj 26 17 element;
@@ -35,48 +30,32 @@ whose template is specified in "array6-template".;
 #X text 102 272 index;
 #X text 274 237 click here first;
 #X text 426 502 updated for Pd version 0.47;
-#X text 23 188 If you don't know the template name you may specify
-"-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiency and clarity., f 85;
-#X text 88 16 - get pointer to an element of an array, f 40;
+#X text 23 188 If you don't know the template name you may specify "-" \, in which case the object will figure out the template name itself \, at some possible cost in efficiency and clarity., f 85;
 #X obj 304 500 plot;
-#X obj 8 45 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 45 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 756 185 576 275 reference 0;
-#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 162 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 198 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 248 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 9 162 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 198 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 248 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 135 82 float -;
 #X obj 30 13 element;
-#X text 92 12 - get pointer to an element of an array, f 40;
 #X text 149 206 1) symbol - template name.;
-#X obj 9 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 9 128 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
-0;
+#X obj 9 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 9 128 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000 0;
 #X text 191 82 set element's index and output its pointer., f 46;
-#X text 121 135 pointer - pointer to a template containing an array
-field.;
+#X text 121 135 pointer - pointer to a template containing an array field.;
 #X text 121 171 pointer - pointer to an element in an array.;
-#X text 149 225 2) symbol - field name (should be an array field).
-;
-#X text 30 101 set <symbol \, symbol> - set template and array field
-name., f 69;
+#X text 149 225 2) symbol - field name (should be an array field).;
+#X text 30 101 set <symbol \, symbol> - set template and array field name., f 69;
+#X text 92 12 - get pointer to a Data Structure's array element.;
 #X restore 467 17 pd reference;
 #X text 565 18 <= click;
-#X obj 8 486 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 8 486 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 61 349 element element-template array6;
 #X obj 342 500 array;
 #X obj 95 500 get;
-#X text 23 153 Indices range from 0 to the number of elements minus
-one (indices out of range are quietly replaced by the nearest endpoint.)
-, f 85;
+#X text 23 153 Indices range from 0 to the number of elements minus one (indices out of range are quietly replaced by the nearest endpoint.), f 85;
 #X text 399 289 set template and field name;
 #X text 105 453 value of y;
 #X msg 397 313 set element-template array6;
@@ -88,23 +67,18 @@ one (indices out of range are quietly replaced by the nearest endpoint.)
 #X text 68 377 <- pointer to a single element;
 #X floatatom 301 354 5 -5 15 0 - - - 0;
 #X floatatom 353 313 5 -5 15 0 - - - 0;
-#X text 23 63 [element] takes a pointer at right and an index number
-at left. It looks up a field from the pointer \, which should be an
-array \, and outputs the pointer to an element of the array specified
-by the index number. (There are no pointers to arrays themselves \,
-just to individual elements.) The template and field name are specified
-as creation arguments. Note that [array] can also access Data Structure's
-arrays and perform operations on its elements as well., f 85;
-#X connect 8 0 23 1;
+#X text 23 63 [element] takes a pointer at right and an index number at left. It looks up a field from the pointer \, which should be an array \, and outputs the pointer to an element of the array specified by the index number. (There are no pointers to arrays themselves \, just to individual elements.) The template and field name are specified as creation arguments. Note that [array] can also access Data Structure's arrays and perform operations on its elements as well., f 85;
+#X text 88 16 - get pointer to a Data Structure's array element;
+#X connect 8 0 22 1;
+#X connect 8 0 30 1;
 #X connect 8 0 31 1;
-#X connect 8 0 32 1;
 #X connect 9 0 8 0;
-#X connect 10 0 23 0;
+#X connect 10 0 22 0;
 #X connect 11 0 12 0;
-#X connect 23 0 11 0;
-#X connect 29 0 31 0;
-#X connect 30 0 31 0;
+#X connect 22 0 11 0;
+#X connect 28 0 30 0;
+#X connect 29 0 30 0;
+#X connect 30 0 11 0;
 #X connect 31 0 11 0;
-#X connect 32 0 11 0;
-#X connect 36 0 32 0;
-#X connect 37 0 31 0;
+#X connect 35 0 31 0;
+#X connect 36 0 30 0;

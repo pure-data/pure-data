@@ -12,6 +12,7 @@ namespace eval ::dialog_array:: {
 array set ::dialog_array::listview_entry {}
 array set ::dialog_array::listview_id {}
 array set ::dialog_array::listview_page {}
+array set ::dialog_array::listview_numpages {}
 set ::dialog_array::listview_pagesize 1000
 # this stores the state of the "save me" check button
 array set ::dialog_array::saveme_button {}
@@ -33,6 +34,7 @@ proc ::dialog_array::listview_lbname {arrayName} {
 
 proc ::dialog_array::listview_setpage {arrayName page {numpages {}} {pagesize {}}} {
     set ::dialog_array::listview_page($arrayName) $page
+    set ::dialog_array::listview_numpages($arrayName) $numpages
     if {$pagesize ne {} && [string is double $pagesize]} {
         set ::dialog_array::listview_pagesize $pagesize
     }
@@ -102,12 +104,11 @@ proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
             # listbox (much simpler)
             set topItem [expr [lindex [$lb yview] 0] * [$lb size]]
         }
-        set cmd "$::dialog_array::listview_id($arrayName) \
-               arrayviewlistfillpage \
-               $::dialog_array::listview_page($arrayName) \
-               $topItem"
-
-        pdsend $cmd
+        set cmd [list $::dialog_array::listview_id($arrayName) \
+                     arrayviewlistfillpage \
+                     $::dialog_array::listview_page($arrayName) \
+                     $topItem]
+        pdsend ${cmd}
     }
 }
 
@@ -125,7 +126,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 
 
     frame $windowName.data
-    pack $windowName.data -fill "both" -side top
+    pack $windowName.data -fill "both" -side top -expand 1
     frame $windowName.buttons
     pack $windowName.buttons -fill "x" -side bottom
 
@@ -173,11 +174,19 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     button $windowName.buttons.next -text "\u2192" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
 
-    entry $windowName.buttons.page -textvariable ::dialog_array::listview_page($arrayName) \
+    frame $windowName.buttons.page
+
+    entry $windowName.buttons.page.current -textvariable ::dialog_array::listview_page($arrayName) \
         -validate key -validatecommand "string is double %P" \
         -justify "right" -width 5
-    bind $windowName.buttons.page <Return> \
+    bind $windowName.buttons.page.current <Return> \
         "::dialog_array::listview_changepage \{$arrayName\} 0"
+    label $windowName.buttons.page.slash -text "/"
+    label $windowName.buttons.page.total -text 0 -textvariable ::dialog_array::listview_numpages($arrayName)
+    pack $windowName.buttons.page.current -side left
+    pack $windowName.buttons.page.slash -side left
+    pack $windowName.buttons.page.total -side left
+
 
     pack $windowName.buttons.prev -side left -ipadx 20 -pady 10 -anchor s
     pack $windowName.buttons.page -side left -padx 20 -pady 10 -anchor s
@@ -215,7 +224,7 @@ proc ::dialog_array::listview_edit+paste {arrayName startIndex data} {
         lappend values $value
     }
     if { $values ne {} } {
-        pdsend "$::dialog_array::listview_id($arrayName) $offset $values"
+        pdsend [concat $::dialog_array::listview_id($arrayName) $offset $values]
         pdtk_array_listview_fillpage $arrayName
     }
 }
@@ -333,23 +342,23 @@ proc ::dialog_array::pdtk_array_listview_closeWindow {arrayName} {
 
 proc ::dialog_array::listview_close {mytoplevel arrayName} {
     pdtk_array_listview_closeWindow $arrayName
-    pdsend "$mytoplevel arrayviewclose"
+    pdsend [list $mytoplevel arrayviewclose]
 }
 
 proc ::dialog_array::apply {mytoplevel} {
-    pdsend "$mytoplevel arraydialog \
-            [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
-            [$mytoplevel.array.size.entry get] \
-            [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
-            $::dialog_array::otherflag_button($mytoplevel)"
+    pdsend [concat $mytoplevel arraydialog \
+                [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
+                [$mytoplevel.array.size.entry get] \
+                [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
+                $::dialog_array::otherflag_button($mytoplevel) ]
 }
 
 proc ::dialog_array::openlistview {mytoplevel} {
-    pdsend "$mytoplevel arrayviewlistnew"
+    pdsend [list $mytoplevel arrayviewlistnew]
 }
 
 proc ::dialog_array::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    pdsend [list $mytoplevel cancel]
 }
 
 proc ::dialog_array::ok {mytoplevel} {
@@ -384,7 +393,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
     wm transient $mytoplevel $::focused_window
-    $mytoplevel configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog $mytoplevel
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "array"
 

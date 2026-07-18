@@ -83,10 +83,10 @@ void *bonk_class;
 static t_class *bonk_class;
 #endif
 
-#ifdef _WIN32
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
 #endif
@@ -453,7 +453,7 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
     x->x_masktime = DEFMASKTIME;
     x->x_maskdecay = DEFMASKDECAY;
     x->x_learn = 0;
-    x->x_learndebounce = clock_getsystime();
+    x->x_learndebounce = clock_getlogicaltime();
     x->x_learncount = 0;
     x->x_debouncedecay = DEFDEBOUNCEDECAY;
     x->x_minvel = DEFMINVEL;
@@ -574,7 +574,7 @@ static void bonk_tick(t_bonk *x)
             }
             else return;
         }
-        x->x_learndebounce = clock_getsystime();
+        x->x_learndebounce = clock_getlogicaltime();
         if (ntemplate)
         {
             t_float bestfit = -1e30;

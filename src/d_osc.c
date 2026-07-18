@@ -8,33 +8,14 @@
 #include "m_pd.h"
 #include "math.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #define BIGFLOAT 1.0e+19
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
-
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
-    || defined(__OpenBSD__)
-#include <machine/endian.h>
-#endif
-
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || \
-    defined(ANDROID)
-#include <endian.h>
-#endif
-
-#ifdef __MINGW32__
-#include <sys/param.h>
-#endif
-
-#ifdef _MSC_VER
-/* _MSVC lacks BYTE_ORDER and LITTLE_ENDIAN */
-#define LITTLE_ENDIAN 0x0001
-#define BYTE_ORDER LITTLE_ENDIAN
-#endif
-
-#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-#include <endian.h>
-#endif
+#include "m_private_utils.h"
 
 #if BYTE_ORDER == LITTLE_ENDIAN
 # define HIOFFSET 1
@@ -44,11 +25,40 @@
 # define LOWOFFSET 1    /* word offset to find LSB */
 #endif
 
+
 union tabfudge
 {
     double tf_d;
     int32_t tf_i[2];
 };
+
+/* the table size before 0.55 was hard-coded to 512 points.  Now we let it
+default to 2048, but we can compile with COSTABSIZE defined to choose another
+table size.  For the Pd application we also include a 512-point version for
+back compatibility.  Since the code (on Intel arch at least) runs 10% faster
+with COSTABSIE hard-coded, we have to make the choices at compile time.  If
+the compatiblity version is needed, we end up compiling two version of the
+same code.  This is done by including d_osc.h, twice if two table sizes must
+be defined, to define the performance routines for cos~, osc~, and vcf~.  The
+inclusions are done at the end of the file (after the instance structs are
+defined) but are declared here. */
+
+struct _cos;
+struct _osc;
+struct _vcfctl;
+
+#ifndef COSTABLESIZE
+#define COSTABLESIZE 2048
+#define OLDTABSIZE 512  /* size of pre-0.55 compatibility table */
+static t_int *cos_perform_old(t_int *w);
+static t_int *osc_perform_old(t_int *w);
+static t_int *sigvcf_perform_old(t_int *w);
+#endif
+static t_int *cos_perform(t_int *w);
+static t_int *osc_perform(t_int *w);
+static t_int *sigvcf_perform(t_int *w);
+#define COSTABLENAME cos_newtable   /* keep cos_table back-compatibile */
+
 
 /* -------------------------- phasor~ ------------------------------ */
 static t_class *phasor_class;
@@ -128,6 +138,7 @@ static void phasor_setup(void)
 /* ------------------------ cos~ ----------------------------- */
 
 float *cos_table;
+static float *cos_newtable;
 
 static t_class *cos_class;
 
@@ -145,92 +156,70 @@ static void *cos_new(t_floatarg f)
     return (x);
 }
 
-static t_int *cos_perform(t_int *w)
-{
-    t_sample *in = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    float *tab = cos_table, *addr;
-    t_float f1, f2, frac;
-    double dphase;
-    int normhipart;
-    union tabfudge tf;
-
-    tf.tf_d = UNITBIT32;
-    normhipart = tf.tf_i[HIOFFSET];
-
-#if 0           /* this is the readable version of the code. */
-    while (n--)
-    {
-        dphase = (double)(*in++ * (float)(COSTABSIZE)) + UNITBIT32;
-        tf.tf_d = dphase;
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-        tf.tf_i[HIOFFSET] = normhipart;
-        frac = tf.tf_d - UNITBIT32;
-        f1 = addr[0];
-        f2 = addr[1];
-        *out++ = f1 + frac * (f2 - f1);
-    }
-#endif
-#if 1           /* this is the same, unwrapped by hand. */
-        dphase = (double)(*in++ * (float)(COSTABSIZE)) + UNITBIT32;
-        tf.tf_d = dphase;
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-        tf.tf_i[HIOFFSET] = normhipart;
-    while (--n)
-    {
-        dphase = (double)(*in++ * (float)(COSTABSIZE)) + UNITBIT32;
-            frac = tf.tf_d - UNITBIT32;
-        tf.tf_d = dphase;
-            f1 = addr[0];
-            f2 = addr[1];
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-            *out++ = f1 + frac * (f2 - f1);
-        tf.tf_i[HIOFFSET] = normhipart;
-    }
-            frac = tf.tf_d - UNITBIT32;
-            f1 = addr[0];
-            f2 = addr[1];
-            *out++ = f1 + frac * (f2 - f1);
-#endif
-    return (w+4);
-}
-
 static void cos_dsp(t_cos *x, t_signal **sp)
 {
-    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
+#ifdef OLDTABSIZE
+    if (pd_compatibilitylevel < 55)
+        dsp_add(cos_perform_old, 3, sp[0]->s_vec, sp[1]->s_vec,
+            (t_int)(sp[0]->s_length * sp[0]->s_nchans));
+    else
+#endif
+    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec,
+        (t_int)(sp[0]->s_length * sp[0]->s_nchans));
 }
 
 static void cos_maketable(void)
 {
-    int i;
-    float *fp, phase, phsinc = (2. * 3.14159) / COSTABSIZE;
     union tabfudge tf;
-
-    if (cos_table) return;
-    cos_table = (float *)getbytes(sizeof(float) * (COSTABSIZE+1));
-    for (i = COSTABSIZE + 1, fp = cos_table, phase = 0; i--;
-        fp++, phase += phsinc)
-            *fp = cos(phase);
-
-        /* here we check at startup whether the byte alignment
+    int i;
+       /* here we check at startup whether the byte alignment
             is as we declared it.  If not, the code has to be
             recompiled the other way. */
     tf.tf_d = UNITBIT32 + 0.5;
     if ((unsigned)tf.tf_i[LOWOFFSET] != 0x80000000)
         bug("cos~: unexpected machine alignment");
+    if (!cos_newtable)
+    {
+        cos_newtable = (float *)getbytes(sizeof(float) * (COSTABLESIZE+1));
+        for (i = 0; i < COSTABLESIZE + 1; i++)
+            cos_newtable[i] = cos(2*M_PI*i / (double)COSTABLESIZE);
+            /* fill in true 1s and 0s for 1/4-cycle points.  These should
+            be possible to address exactly in cos~ object.  The rest are
+            irrational anyway and hence will never be exact so we leave them
+            as computed by the lobrary cosine function. */
+        cos_newtable[0] = cos_newtable[COSTABLESIZE] = 1;
+        cos_newtable[COSTABLESIZE/4] = cos_newtable[3*COSTABLESIZE/4] = 0;
+        cos_newtable[COSTABLESIZE/2] = -1;
+    }
+#ifdef OLDTABSIZE
+    if (!cos_table)
+    {
+        float *fp, phase, phsinc = (2. * 3.14159) / OLDTABSIZE;
+        cos_table = (float *)getbytes(sizeof(float) * (OLDTABSIZE+1));
+        for (i = OLDTABSIZE + 1, fp = cos_table, phase = 0; i--;
+            fp++, phase += phsinc)
+                *fp = cos(phase);
+    }
+#endif
 }
 
 static void cos_cleanup(t_class *c)
 {
-    freebytes(cos_table, sizeof(float) * (COSTABSIZE+1));
+#ifdef OLDTABSIZE
+    if (cos_table)
+        freebytes(cos_table, sizeof(float) * (OLDTABSIZE+1));
     cos_table = 0;
+#endif
+    if (cos_newtable)
+        freebytes(cos_newtable, sizeof(float) * (COSTABLESIZE+1));
+    cos_newtable = 0;
 }
 
 static void cos_setup(void)
 {
     cos_class = class_new(gensym("cos~"), (t_newmethod)cos_new, 0,
-        sizeof(t_cos), 0, A_DEFFLOAT, 0);
+        sizeof(t_cos), CLASS_MULTICHANNEL, A_DEFFLOAT, 0);
     class_setfreefn(cos_class, cos_cleanup);
     CLASS_MAINSIGNALIN(cos_class, t_cos, x_f);
     class_addmethod(cos_class, (t_method)cos_dsp, gensym("dsp"), A_CANT, 0);
@@ -260,73 +249,30 @@ static void *osc_new(t_floatarg f)
     return (x);
 }
 
-static t_int *osc_perform(t_int *w)
-{
-    t_osc *x = (t_osc *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
-    float *tab = cos_table, *addr;
-    t_float f1, f2, frac;
-    double dphase = x->x_phase + UNITBIT32;
-    int normhipart;
-    union tabfudge tf;
-    float conv = x->x_conv;
-
-    tf.tf_d = UNITBIT32;
-    normhipart = tf.tf_i[HIOFFSET];
-#if 0
-    while (n--)
-    {
-        tf.tf_d = dphase;
-        dphase += *in++ * conv;
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-        tf.tf_i[HIOFFSET] = normhipart;
-        frac = tf.tf_d - UNITBIT32;
-        f1 = addr[0];
-        f2 = addr[1];
-        *out++ = f1 + frac * (f2 - f1);
-    }
-#endif
-#if 1
-        tf.tf_d = dphase;
-        dphase += *in++ * conv;
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-        tf.tf_i[HIOFFSET] = normhipart;
-        frac = tf.tf_d - UNITBIT32;
-    while (--n)
-    {
-        tf.tf_d = dphase;
-            f1 = addr[0];
-        dphase += *in++ * conv;
-            f2 = addr[1];
-        addr = tab + (tf.tf_i[HIOFFSET] & (COSTABSIZE-1));
-        tf.tf_i[HIOFFSET] = normhipart;
-            *out++ = f1 + frac * (f2 - f1);
-        frac = tf.tf_d - UNITBIT32;
-    }
-            f1 = addr[0];
-            f2 = addr[1];
-            *out++ = f1 + frac * (f2 - f1);
-#endif
-
-    tf.tf_d = UNITBIT32 * COSTABSIZE;
-    normhipart = tf.tf_i[HIOFFSET];
-    tf.tf_d = dphase + (UNITBIT32 * COSTABSIZE - UNITBIT32);
-    tf.tf_i[HIOFFSET] = normhipart;
-    x->x_phase = tf.tf_d - UNITBIT32 * COSTABSIZE;
-    return (w+5);
-}
-
 static void osc_dsp(t_osc *x, t_signal **sp)
 {
-    x->x_conv = COSTABSIZE/sp[0]->s_sr;
-    dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    x->x_conv = COSTABLESIZE/sp[0]->s_sr;
+#ifdef OLDTABSIZE
+    if (pd_compatibilitylevel < 55)
+    {
+        x->x_conv = OLDTABSIZE/sp[0]->s_sr;
+        dsp_add(osc_perform_old, 4, x, sp[0]->s_vec, sp[1]->s_vec,
+            (t_int)sp[0]->s_n);
+    }
+    else
+#endif
+        dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec,
+            (t_int)sp[0]->s_n);
 }
 
 static void osc_ft1(t_osc *x, t_float f)
 {
-    x->x_phase = COSTABSIZE * f;
+#ifdef OLDTABSIZE
+    if (pd_compatibilitylevel < 55)
+        x->x_phase = OLDTABSIZE * f;
+    else
+#endif
+        x->x_phase = COSTABLESIZE * f;
 }
 
 static void osc_setup(void)
@@ -342,7 +288,7 @@ static void osc_setup(void)
 
 /* ---- vcf~ - resonant filter with audio-rate center frequency input ----- */
 
-typedef struct vcfctl
+typedef struct _vcfctl
 {
     t_float c_re;
     t_float c_im;
@@ -381,75 +327,25 @@ static void sigvcf_ft1(t_sigvcf *x, t_float f)
     x->x_cspace.c_q = f;
 }
 
-static t_int *sigvcf_perform(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    t_sample *out1 = (t_sample *)(w[3]);
-    t_sample *out2 = (t_sample *)(w[4]);
-    t_vcfctl *c = (t_vcfctl *)(w[5]);
-    int n = (int)w[6];
-    int i;
-    t_float re = c->c_re, re2;
-    t_float im = c->c_im;
-    t_float q = c->c_q;
-    t_float isr = c->c_isr;
-    t_float qinv = (q > 0? 1.0f/q : 0);
-    t_float ampcorrect = 2. - 2. / (q + 2.);
-    t_float coefr, coefi;
-    float *tab = cos_table, *addr, f1, f2, frac;
-    double dphase;
-    int normhipart, tabindex;
-    union tabfudge tf;
-
-    tf.tf_d = UNITBIT32;
-    normhipart = tf.tf_i[HIOFFSET];
-
-    for (i = 0; i < n; i++)
-    {
-        float cf, cfindx, r, oneminusr;
-        cf = *in2++ * isr;
-        if (cf < 0) cf = 0;
-        cfindx = cf * (float)(COSTABSIZE/6.28318f);
-        r = (qinv > 0 ? 1 - cf * qinv : 0);
-        if (r < 0) r = 0;
-        oneminusr = 1.0f - r;
-        dphase = ((double)(cfindx)) + UNITBIT32;
-        tf.tf_d = dphase;
-        tabindex = tf.tf_i[HIOFFSET] & (COSTABSIZE-1);
-        addr = tab + tabindex;
-        tf.tf_i[HIOFFSET] = normhipart;
-        frac = tf.tf_d - UNITBIT32;
-        f1 = addr[0];
-        f2 = addr[1];
-        coefr = r * (f1 + frac * (f2 - f1));
-
-        addr = tab + ((tabindex - (COSTABSIZE/4)) & (COSTABSIZE-1));
-        f1 = addr[0];
-        f2 = addr[1];
-        coefi = r * (f1 + frac * (f2 - f1));
-
-        f1 = *in1++;
-        re2 = re;
-        *out1++ = re = ampcorrect * oneminusr * f1
-            + coefr * re2 - coefi * im;
-        *out2++ = im = coefi * re2 + coefr * im;
-    }
-    if (PD_BIGORSMALL(re))
-        re = 0;
-    if (PD_BIGORSMALL(im))
-        im = 0;
-    c->c_re = re;
-    c->c_im = im;
-    return (w+7);
-}
-
 static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
 {
     x->x_cspace.c_isr = 6.28318f/sp[0]->s_sr;
-    dsp_add(sigvcf_perform, 6,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-            &x->x_cspace, (t_int)sp[0]->s_n);
+#ifdef OLDTABSIZE
+    if (pd_compatibilitylevel < 55)
+        dsp_add(sigvcf_perform_old, 6,
+            sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
+                &x->x_cspace, (t_int)sp[0]->s_n);
+    else
+#endif
+        dsp_add(sigvcf_perform, 6,
+            sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
+                &x->x_cspace, (t_int)sp[0]->s_n);
+}
+
+static void sigvcf_clear(t_sigvcf *x)
+{
+    x->x_cspace.c_re = 0;
+    x->x_cspace.c_im = 0;
 }
 
 static
@@ -458,6 +354,8 @@ void sigvcf_setup(void)
     sigvcf_class = class_new(gensym("vcf~"), (t_newmethod)sigvcf_new, 0,
         sizeof(t_sigvcf), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(sigvcf_class, t_sigvcf, x_f);
+    class_addmethod(sigvcf_class, (t_method)sigvcf_clear,
+        gensym("clear"), 0);
     class_addmethod(sigvcf_class, (t_method)sigvcf_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigvcf_class, (t_method)sigvcf_ft1,
@@ -514,12 +412,174 @@ static void noise_float(t_noise *x, t_float f)
 static void noise_setup(void)
 {
     noise_class = class_new(gensym("noise~"), (t_newmethod)noise_new, 0,
-        sizeof(t_noise), 0, A_DEFFLOAT, 0);
+        sizeof(t_noise), 0, 0);
     class_addmethod(noise_class, (t_method)noise_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(noise_class, (t_method)noise_float,
         gensym("seed"), A_FLOAT, 0);
 }
+
+
+/******************** tabosc4~ ***********************/
+
+static t_class *tabosc4_tilde_class;
+
+typedef struct _tabosc4_tilde
+{
+    t_object x_obj;
+    t_float x_fnpoints;
+    t_float x_finvnpoints;
+    t_word *x_vec;
+    t_symbol *x_arrayname;
+    t_float x_f;
+    double x_phase;
+    t_float x_conv;
+} t_tabosc4_tilde;
+
+static void *tabosc4_tilde_new(t_symbol *s)
+{
+    t_tabosc4_tilde *x = (t_tabosc4_tilde *)pd_new(tabosc4_tilde_class);
+    x->x_arrayname = s;
+    x->x_vec = 0;
+    x->x_fnpoints = 512.;
+    x->x_finvnpoints = (1./512.);
+    outlet_new(&x->x_obj, gensym("signal"));
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_float, gensym("ft1"));
+    x->x_f = 0;
+    return (x);
+}
+
+static t_int *tabosc4_tilde_perform(t_int *w)
+{
+    t_tabosc4_tilde *x = (t_tabosc4_tilde *)(w[1]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    int normhipart;
+    union tabfudge tf;
+    t_float fnpoints = x->x_fnpoints;
+    int mask = fnpoints - 1;
+    t_float conv = fnpoints * x->x_conv;
+    t_word *tab = x->x_vec, *addr;
+    double dphase = fnpoints * x->x_phase + UNITBIT32;
+
+    if (!tab) goto zero;
+    tf.tf_d = UNITBIT32;
+    normhipart = tf.tf_i[HIOFFSET];
+
+#if 1
+    while (n--)
+    {
+        t_sample frac,  a,  b,  c,  d, cminusb;
+        tf.tf_d = dphase;
+        dphase += *in++ * conv;
+        addr = tab + (tf.tf_i[HIOFFSET] & mask);
+        tf.tf_i[HIOFFSET] = normhipart;
+        frac = tf.tf_d - UNITBIT32;
+        a = addr[0].w_float;
+        b = addr[1].w_float;
+        c = addr[2].w_float;
+        d = addr[3].w_float;
+        cminusb = c-b;
+        *out++ = b + frac * (
+            cminusb - 0.1666667f * (1.-frac) * (
+                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
+            )
+        );
+    }
+#endif
+
+    tf.tf_d = UNITBIT32 * fnpoints;
+    normhipart = tf.tf_i[HIOFFSET];
+    tf.tf_d = dphase + (UNITBIT32 * fnpoints - UNITBIT32);
+    tf.tf_i[HIOFFSET] = normhipart;
+    x->x_phase = (tf.tf_d - UNITBIT32 * fnpoints)  * x->x_finvnpoints;
+    return (w+5);
+ zero:
+    while (n--) *out++ = 0;
+
+    return (w+5);
+}
+
+static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
+{
+    t_garray *a;
+    int npoints, pointsinarray;
+
+    x->x_arrayname = s;
+    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    {
+        if (*s->s_name)
+            pd_error(x, "tabosc4~: %s: no such array", x->x_arrayname->s_name);
+        x->x_vec = 0;
+    }
+    else if (!garray_getfloatwords(a, &pointsinarray, &x->x_vec))
+    {
+        pd_error(x, "%s: bad template for tabosc4~", x->x_arrayname->s_name);
+        x->x_vec = 0;
+    }
+    else if ((npoints = pointsinarray - 3) != (1 << ilog2(pointsinarray - 3)))
+    {
+        pd_error(x, "%s: number of points (%d) not a power of 2 plus three",
+            x->x_arrayname->s_name, pointsinarray);
+        x->x_vec = 0;
+    }
+    else
+    {
+        x->x_fnpoints = npoints;
+        x->x_finvnpoints = 1./npoints;
+        garray_usedindsp(a);
+    }
+}
+
+static void tabosc4_tilde_ft1(t_tabosc4_tilde *x, t_float f)
+{
+    x->x_phase = f;
+}
+
+static void tabosc4_tilde_dsp(t_tabosc4_tilde *x, t_signal **sp)
+{
+    x->x_conv = 1. / sp[0]->s_sr;
+    tabosc4_tilde_set(x, x->x_arrayname);
+
+    dsp_add(tabosc4_tilde_perform, 4, x,
+        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+}
+
+static void tabosc4_tilde_setup(void)
+{
+    tabosc4_tilde_class = class_new(gensym("tabosc4~"),
+        (t_newmethod)tabosc4_tilde_new, 0,
+        sizeof(t_tabosc4_tilde), 0, A_DEFSYM, 0);
+    CLASS_MAINSIGNALIN(tabosc4_tilde_class, t_tabosc4_tilde, x_f);
+    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_set,
+        gensym("set"), A_SYMBOL, 0);
+    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_ft1,
+        gensym("ft1"), A_FLOAT, 0);
+}
+
+#define TABSIZE COSTABSIZE
+#define COSPERF cos_perform
+#define OSCPERF osc_perform
+#define SIGVCFPERF sigvcf_perform
+
+#include "d_osc.h"    /* include normal perf routines */
+
+#ifdef OLDTABSIZE
+#undef COSTABLESIZE
+#define COSTABLESIZE OLDTABSIZE
+#undef COSTABLENAME
+#define COSTABLENAME cos_table
+#undef COSPERF
+#define COSPERF cos_perform_old
+#undef OSCPERF
+#define OSCPERF osc_perform_old
+#undef SIGVCFPERF
+#define SIGVCFPERF sigvcf_perform_old
+#include "d_osc.h"    /* include 512-point compatibility perf routines */
+#endif
 
 /* ----------------------- global setup routine ---------------- */
 void d_osc_setup(void)
@@ -529,4 +589,5 @@ void d_osc_setup(void)
     osc_setup();
     sigvcf_setup();
     noise_setup();
+    tabosc4_tilde_setup();
 }

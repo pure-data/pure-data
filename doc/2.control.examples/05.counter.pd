@@ -1,4 +1,4 @@
-#N canvas 531 23 423 672 12;
+#N canvas 531 38 423 657 12;
 #X floatatom 107 605 4 0 0 0 - - - 0;
 #X obj 107 580 + 1;
 #X obj 177 351 + 1;
@@ -26,7 +26,6 @@
 #X obj 53 486 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 40 433 Here's a timed counter. Hit the "toggle" GUI object to start and stop it..., f 41;
 #X text 76 485 <-- click toggle to turn on/off;
-#X text 205 641 updated for Pd version 0.52;
 #X floatatom 53 513 3 0 0 0 - - - 0;
 #X text 77 513 (toggle outputs "1" when on and "0" when off);
 #X text 132 542 <-- new object: a "metronome".;
@@ -45,5 +44,5 @@
 #X connect 14 0 18 0;
 #X connect 20 0 9 0;
 #X connect 21 0 14 0;
-#X connect 24 0 28 0;
-#X connect 28 0 7 0;
+#X connect 24 0 27 0;
+#X connect 27 0 7 0;

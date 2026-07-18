@@ -32,6 +32,7 @@ TCLFILES = \
     dialog_message.tcl \
     dialog_midi.tcl \
     dialog_path.tcl \
+    dialog_preferences.tcl \
     dialog_startup.tcl \
     helpbrowser.tcl \
     opt_parser.tcl \
@@ -41,14 +42,17 @@ TCLFILES = \
     pd_deken.tcl \
     pd_docsdir.tcl \
     pd_guiprefs.tcl \
+    pd_i18n.tcl \
     pd_menucommands.tcl \
     pd_menus.tcl \
+    pdtcl_compat.tcl \
     pdtk_canvas.tcl \
     pdtk_text.tcl \
     pdtk_textwindow.tcl \
     pdwindow.tcl \
     pkgIndex.tcl \
     pkg_mkIndex.tcl \
+    preferencewindow.tcl \
     scrollbox.tcl \
     scrollboxwindow.tcl \
     wheredoesthisgo.tcl \
@@ -74,24 +78,25 @@ ALL_LINGUAS = \
 	az \
 	bg \
 	de \
-	el en_ca es eu \
+	el en en_ca eo es eu \
 	fr \
 	gu \
-	hi hu \
-	it \
+	he hi hu hy \
+	id it \
 	ja \
 	ko \
 	nl \
 	pa pl pt_br pt_pt \
 	ru \
 	sq sv \
+	ta tr \
 	uk \
 	vi \
 	zh_tw \
 	$(empty)
 
-POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
-MSGFILES = $(ALL_LINGUAS:=.msg)
+POFILES = $(addprefix $(top_srcdir)/po/, $(filter-out .po,$(ALL_LINGUAS:=.po)))
+MSGFILES = $(patsubst %.po,%.msg,$(notdir $(POFILES)))
 
 TEMPLATE = $(top_srcdir)/po/template.pot
 
@@ -109,14 +114,13 @@ EXTRA_DIST = \
 #########################################
 ##### Targets #####
 
-.PHONY: locations
-
 all-local: template po msg
 
 clean-local:
 	rm -f $(MSGFILES)
 
 # refresh template.pot from the source code
+.PHONY: template
 template: $(TEMPLATE)
 
 # remove string file locations and header "POT-Creation-Date" to suppress
@@ -140,6 +144,7 @@ $(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
+.PHONY: locations
 locations:
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
@@ -147,6 +152,7 @@ locations:
 		$(FILES)
 
 # refresh .po files from the template
+.PHONY: po
 po: $(POFILES)
 
 # the .po files depend on template.pot, suppress line location changes to
@@ -158,11 +164,19 @@ $(POFILES): %.po: $(TEMPLATE)
 
 # generate .msg files from the .po files,
 # these are installed and loaded by the GUI at runtime
+.PHONY: msg
 msg: $(MSGFILES)
 
 # each .msg file depends on updates to the corresponding .po file
 $(MSGFILES): %.msg: %.po
 	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
+.PHONY: etags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
+
+
+allpofiles=$(wildcard $(srcdir)/*.po)
+.PHONY: unused
+unused:
+	@echo "UNUSED TRANSLATIONS: $(patsubst $(srcdir)/%.po,%,$(filter-out $(POFILES), $(allpofiles)))"

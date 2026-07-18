@@ -178,31 +178,23 @@
 #X connect 32 0 4 0;
 #X connect 32 0 33 0;
 #X connect 34 0 0 1;
-#X restore 152 340 pd guts;
+#X restore 132 340 pd guts;
 #X text 90 23 (old-fashioned) VOCODER;
-#X text 85 61 This takes in two soundfiles and uses the first to "vocode"
-the second. The resulting sound is as long as the shorter of the two
-inputs., f 71;
+#X text 85 61 This takes in two soundfiles and uses the first to "vocode" the second. The resulting sound is as long as the shorter of the two inputs., f 71;
 #X obj 499 278 s squelch;
 #X text 544 247 1-100 or so;
-#X obj 152 388 output~;
+#X obj 132 388 output~;
 #X text 94 119 click below to:;
-#X obj 122 148 bng 18 250 50 0 \$0-read dummy Input -45 9 0 13 #dfdfdf
-#000000 #202020;
-#X obj 122 199 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 122 227 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 122 251 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
-#000000 #000000;
-#X obj 122 276 bng 18 250 50 0 \$0-save-normalized dummy Normalized
--87 9 0 13 #dfdfdf #000000 #000000;
+#X obj 122 148 bng 18 250 50 0 \$0-read dummy Input -45 9 0 13 #dfdfdf #000000 #202020;
+#X obj 122 199 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf #000000 #000000;
+#X obj 122 227 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 122 251 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf #000000 #000000;
+#X obj 122 276 bng 18 250 50 0 \$0-save-normalized dummy Normalized -87 9 0 13 #dfdfdf #000000 #000000;
 #X text 151 198 (run the transformation);
 #X text 151 226 (hear the output sample);
 #X text 151 250 (save the output sample);
 #X text 151 275 (save the output sample normalized to 1);
-#X obj 122 166 bng 18 250 50 0 \$0-read-2 dummy Anal -38 9 0 13 #dfdfdf
-#000000 #202020;
+#X obj 122 166 bng 18 250 50 0 \$0-read-2 dummy Anal -38 9 0 13 #dfdfdf #000000 #202020;
 #X obj 306 349 table \$0-input;
 #X obj 299 405 table \$0-output;
 #X text 416 350 input sample;
@@ -211,12 +203,10 @@ inputs., f 71;
 #X text 416 369 analysis sample;
 #X msg 499 228 70;
 #X obj 499 203 loadbang;
-#X text 151 146 (load sound file to be processed \, like a speech)
-;
+#X text 151 146 (load sound file to be processed \, like a speech);
 #X text 151 166 (load analysis sound file \, like a tonal);
 #X obj 473 20 declare -stdpath ./;
 #X connect 0 0 4 0;
 #X connect 1 0 6 0;
-#X connect 1 0 6 1;
 #X connect 24 0 0 0;
 #X connect 25 0 24 0;

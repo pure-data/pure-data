@@ -18,9 +18,7 @@ to be different but are now unified except for some fossilized names.) */
 #ifdef _WIN32
 #include <io.h>
 #endif
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
     /* LATER consider adding font size to this struct (see glist_getfont()) */
 struct _canvasenvironment
@@ -56,6 +54,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
+void sys_expandpath(const char *from, char *to, int bufsize);
 
 /* ---------------- generic widget behavior ------------------------- */
 
@@ -97,7 +96,7 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
-    t_object *ob;
+    t_object *ob = pd_checkobject(&x->g_pd);
     int has_parent = !glist->gl_havewindow && glist->gl_isgraph
         && glist->gl_owner && !glist->gl_isclone;
         /* if our parent is a graph, and if that graph itself isn't
@@ -112,15 +111,26 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
             /* for some reason the bounds check on arrays and scalars
                don't seem to apply here.  Perhaps this was in order to allow
                arrays to reach outside their containers?  I no longer understand
-               this. */
+               this - LATER try to get the real bounds rectangle because this
+               could cause trouble for GOPs with losts of scalars inside. */
         if (pd_class(&x->g_pd) == scalar_class
             || pd_class(&x->g_pd) == garray_class)
                 return (1);
+            /* get bounds rectangle of GOP area */
         gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
         if (x1 > x2)
             m = x1, x1 = x2, x2 = m;
         if (y1 > y2)
             m = y1, y1 = y2, y2 = m;
+            /* if it's a text box, try to skip getting the bounds rectangle
+            because that will cause an rtext to be created for us.  Most of the
+            time an invisible text box will have (x,y) outside of the rectangle
+            and we can just check that. */
+        if (ob && ((gx1 = text_xpix(ob, glist)) < x1 || gx1 > x2))
+            return (0);
+        if (ob && ((gy1 = text_ypix(ob, glist)) < y1) || gy1 > y2)
+            return (0);
+            /* If that passed, get the entire rectangle and test again. */
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
 #if 0
         post("graph %d %d %d %d, %s %d %d %d %d",
@@ -292,6 +302,17 @@ t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
     return (ret);
 }
 
+t_symbol *canvas_getsymbol_realized(t_canvas *canvas, const t_atom *a)
+{
+    t_symbol *s;
+    if ((a->a_type != A_SYMBOL) && (a->a_type != A_DOLLSYM))
+        return &s_symbol;
+    s = a->a_w.w_symbol;
+    if (a->a_type == A_DOLLSYM && canvas != NULL)
+        s = canvas_realizedollar(canvas, s);
+    return s;
+}
+
 t_symbol *canvas_getcurrentdir(void)
 {
     t_canvasenvironment *e = canvas_getenv(canvas_getcurrent());
@@ -307,9 +328,9 @@ t_symbol *canvas_getdir(const t_canvas *x)
 void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
     const char *dir = canvas_getenv(x)->ce_dir->s_name;
-    if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
+    if (sys_isabsolutepath(file) || !*dir)
     {
-        strncpy(result, file, resultsize);
+        sys_expandpath(file, result, resultsize);
         result[resultsize-1] = 0;
     }
     else
@@ -377,7 +398,7 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
             t->tr_ob = ob;
             t->tr_nout = obj_noutlets(ob);
             outno = 0;
-            if (glist_isvisible(t->tr_x))
+            if (glist_isvisible(t->tr_x) && gobj_shouldvis(y, t->tr_x))
                 gobj_getrect(y, t->tr_x,
                     &t->tr_x11, &t->tr_y11, &t->tr_x12, &t->tr_y12);
             else t->tr_x11 = t->tr_y11 = t->tr_x12 = t->tr_y12 = 0;
@@ -549,6 +570,7 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 
+void canvas_startmotion(t_canvas *x);
     /* make a new glist and add it to this glist.  It will appear as
     a "graph", not a text object.  */
 t_glist *glist_addglist(t_glist *g, t_symbol *sym,
@@ -588,6 +610,20 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     }
     if (x1 == x2 || y1 == y2)
         x1 = 0, x2 = 100, y1 = 1, y2 = -1;
+
+    if (menu && px1 >= px2 && py1 >= py2)
+    {
+        /* when creating the graph from menu (even indirectly via garray)
+           position it near the mouse.
+         */
+        int xpos = (int)px1, ypos = (int)py2;
+        glist_getnextxy(g, &xpos, &ypos);
+        px1 = (t_float)xpos / g->gl_zoom;
+        px2 = px1 + GLIST_DEFGRAPHWIDTH;
+        py1 = (t_float)ypos / g->gl_zoom;
+        py2 = py1 + GLIST_DEFGRAPHHEIGHT;
+    }
+
     if (px1 >= px2 || py1 >= py2)
         px1 = 100, py1 = 20, px2 = 100 + GLIST_DEFGRAPHWIDTH,
             py2 = 20 + GLIST_DEFGRAPHHEIGHT;
@@ -619,6 +655,21 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     if (!menu)
         pd_pushsym(&x->gl_pd);
     glist_add(g, &x->gl_gobj);
+
+        /* when creating the graph from menu (even indirectly via garray)
+           switch to edit-mode and stick it to the mouse-pointer
+           so user can position it whereever they want
+         */
+    if(menu) {
+        pd_vmess((t_pd*)g, gensym("editmode"), "i", 1);
+        glist_noselect(g);
+        glist_select(g, (t_gobj*)x);
+        if(x->gl_editor) {
+            /* poor man's replacement for glist_nograb() */
+            x->gl_editor->e_grab = 0;
+        }
+        canvas_startmotion(g);
+    }
     return (x);
 }
 
@@ -689,7 +740,7 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
 t_symbol *canvas_makebindsym(t_symbol *s)
 {
     char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
+    pd_snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
     buf[MAXPDSTRING-1] = 0;
     return (gensym(buf));
 }
@@ -724,7 +775,7 @@ void canvas_reflecttitle(t_canvas *x)
         strcpy(namebuf, " (");
         for (i = 0; i < env->ce_argc; i++)
         {
-            if (strlen(namebuf) > MAXPDSTRING/2 - 5)
+            if (strlen(namebuf) > MAXPDSTRING/2 - 10)
                 break;
             if (i != 0)
                 strcat(namebuf, " ");
@@ -734,15 +785,22 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
-    if (x->gl_edit)
-    {
-        strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
-        namebuf[MAXPDSTRING-1] = 0;
-    }
+#if PD_VERSION_CODE < PD_VERSION(0, 57, 0)
+        if (x->gl_edit)
+            strcat(namebuf, " [edit]");
+#endif
+
+#if PD_VERSION_CODE >= PD_VERSION(0, 57, 0)
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss ii",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        (int)(x->gl_dirty), (int)(x->gl_edit));
+#else
     pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
         x,
         canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        x->gl_dirty);
+        (int)(x->gl_dirty));
+#endif
 }
 
     /* mark a glist dirty or clean */
@@ -770,16 +828,13 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
-            glist_getcanvas(x), "create", "line",
-            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", "#ff8080",
-            "-width", x->gl_zoom,
-            "-capstyle", "projecting",
-            "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x), "GOP", "-",
+            0, x->gl_zoom, THISGUI->i_gopcolor,
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -820,7 +875,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -835,6 +890,19 @@ void canvas_redraw(t_canvas *x)
     }
 }
 
+    /* if anyone resizes a canvas GOP area (via canvas_donecanvasdialog()
+    or graph_goprect(), for example) some rtexts might find themselves
+    belonging to a different canvas than before and hell will break loose.
+    So we just nuke all rtexts.  (They're re-created laster as needed).*/
+void glist_clearrtexts(t_glist *x)
+{
+    t_glist *gl2 = glist_getcanvas(x);
+    if ((t_glist*)glist_textedfor(gl2) == x)
+        glist_settexted(gl2, 0);
+    if (gl2->gl_editor)
+        while (gl2->gl_editor->e_rtext)
+            rtext_free(gl2->gl_editor->e_rtext);
+}
 
     /* we call this on a non-toplevel glist to "open" it into its
     own window. */
@@ -842,19 +910,26 @@ void glist_menu_open(t_glist *x)
 {
     if (glist_isvisible(x) && !glist_istoplevel(x))
     {
-        t_glist *gl2 = x->gl_owner;
+        t_glist *gl2 = glist_getcanvas(x);
         if (!gl2)
             bug("glist_menu_open");  /* shouldn't happen but not dangerous */
         else
         {
                 /* erase ourself in parent window */
             gobj_vis(&x->gl_gobj, gl2, 0);
+                /* and blow away all rtexts in parent window -- we can do
+                this because rtexts that are still needed will be recreated
+                on demand by glist_getrtext() */
+            glist_clearrtexts(gl2);
                     /* get rid of our editor (and subeditors) */
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             x->gl_havewindow = 1;
-                    /* redraw ourself in parent window (blanked out this time) */
-            gobj_vis(&x->gl_gobj, gl2, 1);
+                    /* redraw entire parent window because new rtexts when
+                    they reappear need to recreate the texts with their new
+                    tags.  Also the GOP itseld will now appear as a blank
+                     rectangle.  */
+            canvas_redraw(gl2);
         }
     }
     canvas_vis(x, 1);
@@ -940,16 +1015,15 @@ static void canvas_drawlines(t_canvas *x)
     t_outconnect *oc;
     {
         char tag[128];
-        const char*tags[2] = {tag, "cord"};
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rS",
-                glist_getcanvas(x), "create", "line",
-                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
-                "-tags", 2, tags);
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crr iik iiii",
+                glist_getcanvas(x), tag, "-",
+                    0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+                        * x->gl_zoom, THISGUI->i_foregroundcolor,
+                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }
     }
 }
@@ -978,7 +1052,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */
@@ -1076,7 +1150,7 @@ static void canvas_loadbangabstractions(t_canvas *x)
         else if ((pd_class(&y->g_pd) == clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -1095,7 +1169,7 @@ void canvas_loadbangsubpatches(t_canvas *x)
             (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -1201,7 +1275,7 @@ static void *subcanvas_new(t_symbol *s)
         /* check if subpatch is supposed to be connected (on the 1st inlet) */
     if(z && z->gl_editor && z->gl_editor->e_connectbuf)
     {
-        t_atom*argv = binbuf_getvec(z->gl_editor->e_connectbuf);
+        t_atom *argv = binbuf_getvec(z->gl_editor->e_connectbuf);
         int argc = binbuf_getnatom(z->gl_editor->e_connectbuf);
         t_symbol *sob = 0;
         if ((argc == 7)
@@ -1216,18 +1290,18 @@ static void *subcanvas_new(t_symbol *s)
                     int outno = (int)atom_getfloat(argv+3);
                     t_gobj*outobj=z->gl_list;
                         /* get handle to object */
-                    while(index1-->0 && outobj)
+                    while (index1-->0 && outobj)
                         outobj=outobj->g_next;
-                    if(outobj && pd_checkobject(&outobj->g_pd))
+                    if (outobj && pd_checkobject(&outobj->g_pd))
                     {
-                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
-                            sob = gensym("inlet~");
-                        else
-                            sob = gensym("inlet");
+                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd),
+                            outno))
+                               sob = gensym("inlet~");
+                        else sob = gensym("inlet");
                     }
                 }
         }
-        if(sob)
+        if (sob)
         {
                 /* JMZ: weirdo hardcoded numbers, taken from
                  * glist_getnextxy(): 40
@@ -1436,34 +1510,41 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (THISGUI->i_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate)
+    {
+        canvas_stop_dsp();
+        canvas_start_dsp();
+    }
 }
 
 /* the "dsp" message to pd starts and stops DSP computation, and, if
-appropriate, also opens and closes the audio device.  On exclusive-access
+appropriate, also opens and closes the audio device. On exclusive-access
 APIs such as ALSA, MMIO, and ASIO (I think) it's appropriate to close the
 audio devices when not using them; but jack behaves better if audio I/O
-simply keeps running.  This is wasteful of CPU cycles but we do it anyway
+simply keeps running. Also, we want to preserve any connections made between
+Pd and other Jack clients. This is wasteful of CPU cycles but we do it anyway
 and can perhaps regard this is a design flaw in jack that we're working around
-here.  The function audio_shouldkeepopen() is provided by s_audio.c to tell
-us that we should elide the step of closing audio when DSP is turned off.*/
+here. The function audio_shouldkeepopen() is provided by s_audio.c to tell us
+that we should elide the step of closing audio when DSP is turned off.*/
 
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int newstate;
     if (argc)
     {
-        newstate = atom_getfloatarg(0, argc, argv);
+        int newstate = atom_getfloat(argv);
         if (newstate && !THISGUI->i_dspstate)
         {
-            sys_set_audio_state(1);
+                /* if audio should be kept open, we don't reopen the device,
+                unless it really has been closed (for whatever reason) */
+            if (!audio_shouldkeepopen() || !audio_isopen())
+                sys_reopen_audio();
             canvas_start_dsp();
         }
         else if (!newstate && THISGUI->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
-                sys_set_audio_state(0);
+                sys_close_audio();
         }
     }
     else post("dsp state %d", THISGUI->i_dspstate);
@@ -1471,16 +1552,32 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 /******************* redrawing  data *********************/
 
-    /* redraw all "scalars" (do this if a drawing command is changed.)
-    LATER we'll use the "template" information to select which ones we
-    redraw.   Action = 0 for redraw, 1 for draw only, 2 for erase. */
-static void glist_redrawall(t_glist *gl, int action)
+static int template_usestemplate(t_symbol *usersym, t_template *used)
+{
+    int i;
+    t_template *user = template_findbyname(usersym);
+    if (!user)
+        return (0);
+    if (user == used)
+        return (1);
+    for (i = 0; i < user->t_n; i++)
+        if (user->t_vec[i].ds_type == DT_ARRAY &&
+            template_usestemplate(user->t_vec[i].ds_arraytemplate, used))
+                return (1);
+    return (0);
+}
+
+    /* redraw all "scalars" that depend on a template, e.g., if a drawing
+     command is changed. Action = 0 to redraw, 1 to draw only, 2 to erase. */
+static void glist_doredrawfortemplate(t_glist *gl,
+    t_template *template, int action)
 {
     t_gobj *g;
     int vis = glist_isvisible(gl);
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if (vis && g->g_pd == scalar_class)
+        if (vis && g->g_pd == scalar_class &&
+            template_usestemplate(((t_scalar *)g)->sc_template, template))
         {
             if (action == 1)
             {
@@ -1495,7 +1592,7 @@ static void glist_redrawall(t_glist *gl, int action)
             else scalar_redraw((t_scalar *)g, gl);
         }
         else if (g->g_pd == canvas_class)
-            glist_redrawall((t_glist *)g, action);
+            glist_doredrawfortemplate((t_glist *)g, template, action);
     }
 }
 
@@ -1505,31 +1602,15 @@ void canvas_redrawallfortemplate(t_template *template, int action)
     t_canvas *x;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_redrawall(x, action);
+        glist_doredrawfortemplate(x, template, action);
 }
 
-    /* find the template defined by a canvas, and redraw all elements
-    for that */
+    /* find the template defined by a canvas, and redraw all affected scalars */
 void canvas_redrawallfortemplatecanvas(t_canvas *x, int action)
 {
-    t_gobj *g;
-    t_template *tmpl;
-    t_symbol *s1 = gensym("struct");
-    for (g = x->gl_list; g; g = g->g_next)
-    {
-        t_object *ob = pd_checkobject(&g->g_pd);
-        t_atom *argv;
-        if (!ob || ob->te_type != T_OBJECT ||
-            binbuf_getnatom(ob->te_binbuf) < 2)
-            continue;
-        argv = binbuf_getvec(ob->te_binbuf);
-        if (argv[0].a_type != A_SYMBOL || argv[1].a_type != A_SYMBOL
-            || argv[0].a_w.w_symbol != s1)
-                continue;
-        tmpl = template_findbyname(argv[1].a_w.w_symbol);
-        canvas_redrawallfortemplate(tmpl, action);
-    }
-    canvas_redrawallfortemplate(0, action);
+    t_template *template = template_findbyname(canvas_makebindsym(x->gl_name));
+    if (template)
+        canvas_redrawallfortemplate(template, action);
 }
 
 /* ------------------------------- declare ------------------------ */
@@ -1667,7 +1748,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1679,7 +1760,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1713,7 +1794,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     /* check whether the given lib is located in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(x, strbuf))
             return;
@@ -1745,7 +1826,7 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
     /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1776,7 +1857,7 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
     /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
+        pd_snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
         if (sys_load_lib(0, strbuf))
             return;
@@ -1835,8 +1916,8 @@ typedef struct _canvasopen
 static int canvas_open_iter(const char *path, t_canvasopen *co)
 {
     int fd;
-    if ((fd = sys_trytoopenone(path, co->name, co->ext,
-        co->dirresult, co->nameresult, co->size, co->bin)) >= 0)
+    if ((fd = sys_trytoopenit(path, co->name, co->ext,
+        co->dirresult, co->nameresult, co->size, co->bin, 1)) >= 0)
     {
         co->fd = fd;
         return 0;
@@ -1863,7 +1944,7 @@ int canvas_open(const t_canvas *x, const char *name, const char *ext,
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
-    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd, 1))
         return (fd);
 
         /* otherwise "name" is relative; iterate over all the search-paths */
@@ -1960,6 +2041,7 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (!x->gl_list)
         return;
+        /* apply the format to the most recently created object */
     for (g = x->gl_list; (g2 = g->g_next); g = g2)
         ;
     if ((ob = pd_checkobject(&g->g_pd)))
@@ -2159,6 +2241,10 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
     THISGUI->i_dollarzero = 1000;
+    THISGUI->i_foregroundcolor = 0x000000;
+    THISGUI->i_backgroundcolor = 0xFFFFFF;
+    THISGUI->i_selectcolor = 0x0000FF;
+    THISGUI->i_gopcolor = 0xFF0000;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
@@ -2170,7 +2256,7 @@ void g_canvas_freepdinstance(void)
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
-EXTERN int pd_getdspstate(void)
+int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
 }
@@ -2222,4 +2308,88 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
     }
     if (!glob_evalfile(ignore, name, dir))
         pdgui_vmess("::pdwindow::busyrelease", 0);
+}
+
+/* close visible subwindows */
+static void glist_closesubsfor(t_glist *glist)
+{
+    t_gobj *g;
+    for (g = glist->gl_list; g; g = g->g_next)
+    {
+        if (g->g_pd == canvas_class)
+        {
+            t_glist *gl2 = (t_glist *)g;
+            if (gl2->gl_havewindow)
+                canvas_vis(gl2, 0);
+            glist_closesubsfor(gl2);
+        }
+    }
+}
+
+/* close all visible non-root windows */
+void glob_closesubs(t_pd *ignore)
+{
+    t_glist *gl;
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_closesubsfor(gl);
+            /* if there's anyone open, move it to front */
+    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        if (strcmp(gl->gl_name->s_name, "_float_template") &&
+            strcmp(gl->gl_name->s_name, "_float_array_template") &&
+                strcmp(gl->gl_name->s_name, "_text_template"))
+                    canvas_vis(gl, 1);
+}
+
+static void glist_dorevis(t_glist *glist)
+{
+    t_gobj *g;
+    if (glist->gl_havewindow)
+    {
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+            glist,
+            (int)THISGUI->i_backgroundcolor,
+            (int)THISGUI->i_foregroundcolor);
+        glist_clearrtexts(glist);
+        canvas_redraw((t_canvas *)glist);
+    }
+    for (g = glist->gl_list; g; g = g->g_next)
+        if (g->g_pd == canvas_class)
+            glist_dorevis((t_glist *)g);
+}
+
+    /* normalize a color symbol to a hex color string */
+static unsigned int normalize_color(t_symbol *s)
+{
+    if ('#' == s->s_name[0])
+    {
+        char colname[MAXPDSTRING];
+        int col = (int)strtol(s->s_name+1, 0, 16);
+        return col & 0xFFFFFF;
+    }
+    pd_error(0,
+ "'pd colors' message: non-hexadecimal '%s' (should be as in '#0000ff')",
+       s->s_name);
+    return (-1);
+}
+
+void glob_colors(void *dummy, t_symbol *fg, t_symbol *bg, t_symbol *sel,
+    t_symbol *gop)
+{
+    t_glist *gl;
+    unsigned int c_fg = normalize_color(fg);
+    unsigned int c_bg = normalize_color(bg);
+    unsigned int c_sel = normalize_color(sel);
+    unsigned int c_gop =
+        (gop && gop->s_name[0]) ? normalize_color(gop) : THISGUI->i_gopcolor;
+
+    if ((-1 == c_fg) || (-1 == c_bg) || (-1 == c_sel) || (-1 == c_gop)) {
+        pd_error(0, "skipping color update");
+        return;
+    }
+    THISGUI->i_foregroundcolor = c_fg;
+    THISGUI->i_backgroundcolor = c_bg;
+    THISGUI->i_selectcolor = c_sel;
+    THISGUI->i_gopcolor = c_gop;
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        glist_dorevis(gl);
 }

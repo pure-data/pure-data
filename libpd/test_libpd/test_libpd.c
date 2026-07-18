@@ -28,9 +28,10 @@ int main(int argc, char **argv) {
     if (argc > 1) filename = argv[1];
     if (argc > 2) dirname = argv[2];
 
-        /* maybe these two calls should be available per-instance somehow: */
+        /* If called *before* libpd_init(), this will set
+           the global printhook. It can also be set per
+           instance, see libpd_set_noteonhook() below. */
     libpd_set_printhook(pdprint);
-    libpd_set_noteonhook(pdnoteon);
 
     libpd_init();
 
@@ -38,6 +39,8 @@ int main(int argc, char **argv) {
     pd2 = libpd_new_instance();
 
     libpd_set_instance(pd1); /* talk to first pd instance */
+
+    libpd_set_noteonhook(pdnoteon); /* set note-on-hook (per instance) */
 
     libpd_init_audio(1, 2, srate);
         /* send message:  [; pd dsp 1(   */
@@ -50,6 +53,7 @@ int main(int argc, char **argv) {
 
         /* repeat this all for the second instance */
     libpd_set_instance(pd2);
+    libpd_set_noteonhook(pdnoteon);
     libpd_init_audio(1, 2, srate);
     libpd_start_message(1);
     libpd_add_float(1.0f);

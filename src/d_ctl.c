@@ -15,31 +15,57 @@ static t_class *sig_tilde_class;
 typedef struct _sig
 {
     t_object x_obj;
-    t_float x_f;
+    t_atom *x_vec;
+    int x_n;
 } t_sig;
 
-static void sig_tilde_float(t_sig *x, t_float f)
+static void sig_tilde_float(t_sig *x, t_floatarg f)
 {
-    x->x_f = f;
+    x->x_vec[0].a_w.w_float = f;
 }
 
 static void sig_tilde_dsp(t_sig *x, t_signal **sp)
 {
-    dsp_add_scalarcopy(&x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    int i;
+    signal_setmultiout(sp, x->x_n);
+    for (i = 0; i < x->x_n; i++)
+        dsp_add_scalarcopy(&x->x_vec[i].a_w.w_float,
+            sp[0]->s_vec + i * sp[0]->s_n, (t_int)sp[0]->s_n);
 }
 
-static void *sig_tilde_new(t_floatarg f)
+static void *sig_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
+    int i;
     t_sig *x = (t_sig *)pd_new(sig_tilde_class);
-    x->x_f = f;
+    if (argc > 0)
+    {
+        x->x_vec = (t_atom *)getbytes(argc * sizeof(*x->x_vec));
+        for (i = 0; i < argc; i++)
+            SETFLOAT(x->x_vec + i, atom_getfloat(argv + i));
+        x->x_n = argc;
+    }
+    else
+    {
+        x->x_vec = (t_atom *)getbytes(sizeof(*x->x_vec));
+        SETFLOAT(x->x_vec, 0);
+        x->x_n = 1;
+    }
+    for (i = 1; i < x->x_n; i++)
+        floatinlet_new(&x->x_obj, &x->x_vec[i].a_w.w_float);
     outlet_new(&x->x_obj, gensym("signal"));
     return (x);
 }
 
+static void sig_tilde_free(t_sig *x)
+{
+    freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+}
+
 static void sig_tilde_setup(void)
 {
-    sig_tilde_class = class_new(gensym("sig~"), (t_newmethod)sig_tilde_new, 0,
-        sizeof(t_sig), 0, A_DEFFLOAT, 0);
+    sig_tilde_class = class_new(gensym("sig~"),
+        (t_newmethod)sig_tilde_new, (t_method)sig_tilde_free,
+            sizeof(t_sig), CLASS_MULTICHANNEL, A_GIMME, 0);
     class_addfloat(sig_tilde_class, (t_method)sig_tilde_float);
     class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -193,8 +219,8 @@ static t_class *vline_tilde_class;
 #include "s_stuff.h"    /* for DEFDACBLKSIZE; this should be in m_pd.h */
 typedef struct _vseg
 {
-    double s_targettime;
     double s_starttime;
+    double s_stoptime;
     t_sample s_target;
     struct _vseg *s_next;
 } t_vseg;
@@ -209,11 +235,12 @@ typedef struct _vline
     double x_nextblocktime;
     double x_samppermsec;
     double x_msecpersamp;
-    double x_targettime;
+    double x_stoptime;
     t_sample x_target;
     t_float x_inlet1;
     t_float x_inlet2;
     t_vseg *x_list;
+    t_vseg *x_tail;
 } t_vline;
 
 static t_int *vline_tilde_perform(t_int *w)
@@ -243,10 +270,10 @@ static t_int *vline_tilde_perform(t_int *w)
             /* has starttime elapsed?  If so update value and increment */
             if (s->s_starttime < timenext)
             {
-                if (x->x_targettime <= timenext)
+                if (x->x_stoptime <= timenext)
                     f = x->x_target, inc = 0;
                     /* if zero-length segment bash output value */
-                if (s->s_targettime <= s->s_starttime)
+                if (s->s_stoptime <= s->s_starttime)
                 {
                     f = s->s_target;
                     inc = 0;
@@ -254,21 +281,23 @@ static t_int *vline_tilde_perform(t_int *w)
                 else
                 {
                     double incpermsec = (s->s_target - f)/
-                        (s->s_targettime - s->s_starttime);
+                        (s->s_stoptime - s->s_starttime);
                     f = f + incpermsec * (timenext - s->s_starttime);
                     inc = incpermsec * msecpersamp;
                 }
                 x->x_inc = inc;
                 x->x_target = s->s_target;
-                x->x_targettime = s->s_targettime;
+                x->x_stoptime = s->s_stoptime;
                 x->x_list = s->s_next;
+                if (!x->x_list)
+                    x->x_tail = 0;
                 t_freebytes(s, sizeof(*s));
                 s = x->x_list;
                 goto checknext;
             }
         }
-        if (x->x_targettime <= timenext)
-            f = x->x_target, inc = x->x_inc = 0, x->x_targettime = 1e20;
+        if (x->x_stoptime <= timenext)
+            f = x->x_target, inc = x->x_inc = 0, x->x_stoptime = 1e20;
         *out++ = f;
         f = f + inc;
         timenow = timenext;
@@ -283,10 +312,11 @@ static void vline_tilde_stop(t_vline *x)
     for (s1 = x->x_list; s1; s1 = s2)
         s2 = s1->s_next, t_freebytes(s1, sizeof(*s1));
     x->x_list = 0;
+    x->x_tail = 0;
     x->x_inc = 0;
     x->x_inlet1 = x->x_inlet2 = 0;
     x->x_target = x->x_value;
-    x->x_targettime = 1e20;
+    x->x_stoptime = 1e20;
 }
 
 static void vline_tilde_float(t_vline *x, t_float f)
@@ -299,6 +329,22 @@ static void vline_tilde_float(t_vline *x, t_float f)
     if (PD_BIGORSMALL(f))
         f = 0;
 
+        /* drop any segments whose stop time has passed, as can happen when
+        we got sent segments while DSP was off.  This is to avoid situations
+        where lots of them get added while DSP isn't running. We add 0.1 msec
+        to the stop time limit just in case of truncation error in case it and
+        the current time are logically, but not numerically, equal. */
+    while (x->x_list && timenow > x->x_list->s_stoptime + 0.1)
+    {
+        t_vseg *was = x->x_list;
+        x->x_list = x->x_list->s_next;
+        freebytes(was, sizeof(*was));
+        if (!x->x_list)
+        {
+            vline_tilde_stop(x);
+            return;
+        }
+    }
         /* negative delay input means stop and jump immediately to new value */
     if (inlet2 < 0)
     {
@@ -307,13 +353,24 @@ static void vline_tilde_float(t_vline *x, t_float f)
         return;
     }
     snew = (t_vseg *)t_getbytes(sizeof(*snew));
+        /* check if we append after the last segment.  We append when the new
+        segment has a later starttime, or an equal starttime if the last was
+        instantaneous and the new one isn't (in which case we'll do a
+        jump-and-slide at that time.) */
+    if (x->x_tail && (x->x_tail->s_starttime < starttime ||
+            (x->x_tail->s_starttime == starttime &&
+                x->x_tail->s_stoptime <= x->x_tail->s_starttime
+                    && inlet1 > 0)))
+    {
+        deletefrom = 0;
+        x->x_tail->s_next = snew;
+    }
         /* check if we supplant the first item in the list.  We supplant
         an item by having an earlier starttime, or an equal starttime unless
-        the equal one was instantaneous and the new one isn't (in which case
-        we'll do a jump-and-slide starting at that time.) */
-    if (!x->x_list || x->x_list->s_starttime > starttime ||
+        the equal one was instantaneous and the new one isn't. */
+    else if (!x->x_list || x->x_list->s_starttime > starttime ||
         (x->x_list->s_starttime == starttime &&
-            (x->x_list->s_targettime > x->x_list->s_starttime || inlet1 <= 0)))
+            (x->x_list->s_stoptime > x->x_list->s_starttime || inlet1 <= 0)))
     {
         deletefrom = x->x_list;
         x->x_list = snew;
@@ -324,7 +381,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
         {
             if (s2->s_starttime > starttime ||
                 (s2->s_starttime == starttime &&
-                    (s2->s_targettime > s2->s_starttime || inlet1 <= 0)))
+                    (s2->s_stoptime > s2->s_starttime || inlet1 <= 0)))
             {
                 deletefrom = s2;
                 s1->s_next = snew;
@@ -344,7 +401,8 @@ static void vline_tilde_float(t_vline *x, t_float f)
     snew->s_next = 0;
     snew->s_target = f;
     snew->s_starttime = starttime;
-    snew->s_targettime = starttime + inlet1;
+    snew->s_stoptime = starttime + inlet1;
+    x->x_tail = snew;
     x->x_inlet1 = x->x_inlet2 = 0;
 }
 
@@ -366,8 +424,9 @@ static void *vline_tilde_new(void)
     x->x_referencetime = x->x_lastlogicaltime = x->x_nextblocktime =
         clock_getlogicaltime();
     x->x_list = 0;
+    x->x_tail = 0;
     x->x_samppermsec = 0;
-    x->x_targettime = 1e20;
+    x->x_stoptime = 1e20;
     return (x);
 }
 
@@ -388,52 +447,80 @@ static t_class *snapshot_tilde_class;
 typedef struct _snapshot
 {
     t_object x_obj;
-    t_sample x_value;
     t_float x_f;
+    int x_n;
+    t_atom *x_vec;
 } t_snapshot;
 
 static void *snapshot_tilde_new(void)
 {
     t_snapshot *x = (t_snapshot *)pd_new(snapshot_tilde_class);
-    x->x_value = 0;
-    outlet_new(&x->x_obj, &s_float);
+    x->x_vec = getbytes(sizeof(t_atom));
+    SETFLOAT(x->x_vec, 0);
+    x->x_n = 1;
     x->x_f = 0;
+    outlet_new(&x->x_obj, &s_float);
     return (x);
+}
+
+static void snapshot_tilde_free(t_snapshot *x)
+{
+    freebytes(x->x_vec, x->x_n * sizeof(t_atom));
 }
 
 static t_int *snapshot_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    *out = *in;
-    return (w+3);
+    t_atom *out = (t_atom *)(w[2]);
+    int nchans = (int)(w[3]);
+    int n = (int)(w[4]), i;
+    for (i = 0; i < nchans; i++)
+        SETFLOAT(out + i, in[i * n]);
+    return (w+5);
 }
 
 static void snapshot_tilde_dsp(t_snapshot *x, t_signal **sp)
 {
-    dsp_add(snapshot_tilde_perform, 2, sp[0]->s_vec + (sp[0]->s_n-1),
-        &x->x_value);
+    int i, nchans = sp[0]->s_nchans;
+    if (nchans != x->x_n)
+    {
+        x->x_vec = (t_atom *)resizebytes(x->x_vec,
+            x->x_n * sizeof(t_atom), nchans * sizeof(t_atom));
+        for (i = x->x_n; i < nchans; i++)
+            SETFLOAT(x->x_vec + i, 0);
+        x->x_n = nchans;
+    }
+    dsp_add(snapshot_tilde_perform, 4, sp[0]->s_vec + (sp[0]->s_n-1),
+        x->x_vec, (t_int)nchans, (t_int)sp[0]->s_n);
 }
 
 static void snapshot_tilde_bang(t_snapshot *x)
 {
-    outlet_float(x->x_obj.ob_outlet, x->x_value);
+    outlet_list(x->x_obj.ob_outlet, &s_list, x->x_n, x->x_vec);
 }
 
-static void snapshot_tilde_set(t_snapshot *x, t_floatarg f)
+static void snapshot_tilde_set(t_snapshot *x, t_symbol *s, int argc, t_atom *argv)
 {
-    x->x_value = f;
+    int i;
+    if (argc > 0)
+    {
+        for (i = 0; i < argc && i < x->x_n; i++)
+            SETFLOAT(x->x_vec + i, atom_getfloat(argv + i));
+    }
+    else /* emulate previous A_DEFFLOAT behavior */
+        SETFLOAT(x->x_vec, 0);
 }
 
 static void snapshot_tilde_setup(void)
 {
-    snapshot_tilde_class = class_new(gensym("snapshot~"), snapshot_tilde_new, 0,
-        sizeof(t_snapshot), 0, 0);
+    snapshot_tilde_class = class_new(gensym("snapshot~"),
+        snapshot_tilde_new, (t_method)snapshot_tilde_free,
+            sizeof(t_snapshot), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(snapshot_tilde_class, t_snapshot, x_f);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_set,
-        gensym("set"), A_DEFFLOAT, 0);
+        gensym("set"), A_GIMME, 0);
     class_addbang(snapshot_tilde_class, snapshot_tilde_bang);
 }
 
@@ -796,6 +883,217 @@ static void threshold_tilde_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
+/* -------------------------- siginfo~ ------------------------------ */
+
+static t_class *siginfo_tilde_class, *siginfo_proxy_class;
+
+typedef struct _siginfo_proxy
+{
+    t_pd x_pd;
+    struct _siginfo_tilde *x_parent;
+} t_siginfo_proxy;
+
+typedef struct _siginfo_tilde
+{
+    t_object x_obj;
+    t_outlet **x_outlet;        /* outlets */
+    t_float x_f;                /* scalar inlet */
+    t_siginfo_proxy x_proxy;    /* proxy to receive "pd-dsp-stopped" events */
+    t_canvas *x_canvas;         /* canvas we live in (for canvas-local info) */
+
+    t_symbol **x_vec;           /* object arguments (or NULL) */
+    unsigned int x_argc;
+
+    int x_globaldspstate;
+    int x_blocksize;            /* t_signal.s_length */
+    int x_channels;             /* t_signal.s_nchans */
+    int x_overlap;              /* t_signal.s_overlap */
+    t_float x_samplespersecond; /* t_signal.s_sr */
+} t_siginfo_tilde;
+
+static void siginfo_tilde_outmsg(t_siginfo_tilde*x, t_symbol *sel, t_float f)
+{
+    t_atom ap[1];
+    SETFLOAT(ap, f);
+    outlet_anything(x->x_outlet[0], sel, 1, ap);
+}
+
+int canvas_getswitchedon(t_canvas *x);
+
+static void siginfo_tilde_bang(t_siginfo_tilde *x)
+{
+    t_symbol **vec = x->x_vec;
+
+    t_symbol *s_dsp = gensym("dspstate");
+    t_symbol *s_blocksize = gensym("blocksize");
+    t_symbol *s_channels = gensym("channels");
+    t_symbol *s_overlap = gensym("overlap");
+    t_symbol *s_samplerate = gensym("samplerate");
+    t_symbol *s_samplespersecond = gensym("samplespersecond");
+
+    int state = x->x_globaldspstate && canvas_getswitchedon(x->x_canvas);
+    int blocksize = x->x_blocksize;
+    int channels = x->x_channels;
+    int overlap = x->x_overlap;
+    t_float samplerate = canvas_getsr(x->x_canvas);
+    t_float samplespersecond = x->x_samplespersecond;
+
+    unsigned int i;
+
+    if (!vec)
+    {
+        siginfo_tilde_outmsg(x, s_dsp, state);
+        siginfo_tilde_outmsg(x, s_blocksize, blocksize);
+        siginfo_tilde_outmsg(x, s_channels, channels);
+        siginfo_tilde_outmsg(x, s_overlap, overlap);
+        siginfo_tilde_outmsg(x, s_samplerate, samplerate);
+        siginfo_tilde_outmsg(x, s_samplespersecond, samplespersecond);
+        return;
+    }
+    for (i = x->x_argc; i > 0; i--)
+    {
+        t_symbol *s = vec[i-1];
+        t_float value = -1;
+        if (s_dsp == s)
+            value = (t_float)state;
+        else if (s_blocksize == s)
+            value = (t_float)blocksize;
+        else if (s_channels == s)
+            value = (t_float)channels;
+        else if (s_overlap == s)
+            value = (t_float)overlap;
+        else if (s_samplerate == s)
+            value = (t_float)samplerate;
+        else if (s_samplespersecond == s)
+            value = (t_float)samplespersecond;
+
+        outlet_float(x->x_outlet[i-1], value);
+    }
+}
+
+static void siginfo_tilde_dsp(t_siginfo_tilde *x, t_signal **sp)
+{
+    x->x_blocksize = sp[0]->s_length;
+    x->x_samplespersecond = sp[0]->s_sr;
+    x->x_channels = sp[0]->s_nchans;
+    x->x_overlap = sp[0]->s_overlap;
+    x->x_globaldspstate = 1;
+    siginfo_tilde_bang(x);
+}
+
+static void siginfo_proxy_bang(t_siginfo_proxy *p)
+{
+    t_siginfo_tilde *x = p->x_parent;
+        /* pd-dsp-stopped */
+    x->x_globaldspstate = 0;
+    t_symbol *s_dsp = gensym("dspstate");
+    if (x->x_vec)
+    {
+        unsigned int i;
+        for (i = 0; i < x->x_argc; i++)
+        {
+            if (x->x_vec[i] == s_dsp)
+            {
+                siginfo_tilde_bang(x);
+                return;
+            }
+        }
+    }
+    else
+        siginfo_tilde_outmsg(x, s_dsp,
+            x->x_globaldspstate && canvas_getswitchedon(x->x_canvas));
+}
+
+static void siginfo_tilde_free(t_siginfo_tilde *x)
+{
+    int i, num = (x->x_argc>1)?x->x_argc:1;
+
+    if (x->x_vec)
+        freebytes(x->x_vec, sizeof(*x->x_vec) * (x->x_argc));
+    for (i = 0; i < num; i++)
+        outlet_free(x->x_outlet[i]);
+    freebytes(x->x_outlet, sizeof(*x->x_outlet) * num);
+    pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
+}
+
+static char *siginfo_warning = "siginfo~: arguments can only be 'dspstate', \
+'blocksize', 'channels', 'overlap', 'samplerate', 'samplesspersecond'";
+
+static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_siginfo_tilde *x = (t_siginfo_tilde *)pd_new(siginfo_tilde_class);
+    t_symbol **vec;
+    int warned = 0;
+    int i;
+
+    x->x_proxy.x_pd = siginfo_proxy_class;
+    x->x_proxy.x_parent = x;
+
+    x->x_canvas = canvas_getcurrent();
+
+    if (argc>0)
+    {
+        x->x_argc = argc;
+        x->x_vec = (t_symbol **)getbytes(sizeof(*x->x_vec)*argc);
+        x->x_outlet = (t_outlet **)getbytes(sizeof(*x->x_outlet)*argc);
+    }
+    else
+    {
+        x->x_outlet = (t_outlet **)getbytes(sizeof(*x->x_outlet));
+        x->x_outlet[0] = outlet_new(&x->x_obj, 0);
+    }
+    vec = x->x_vec;
+    for (i = 0; i < argc; i++)
+    {
+        x->x_outlet[i] = outlet_new(&x->x_obj, 0);
+        s = atom_getsymbol(argv+i);
+        if ((gensym("dspstate") == s)
+            || (gensym("blocksize") == s)
+            || (gensym("channels") == s)
+            || (gensym("overlap") == s)
+            || (gensym("samplerate") == s)
+            || (gensym("samplespersecond") == s)
+            )
+        {
+                /* all good */
+        }
+        else if (gensym("help") == s)
+            post(siginfo_warning); /* I asked for help so it's not an error */
+        else
+        {
+            if (!warned)
+                pd_error(x, siginfo_warning);
+            warned = 1;
+        }
+        *vec++=s;
+    }
+
+    x->x_blocksize = DEFDACBLKSIZE;
+    x->x_channels = 1;
+    x->x_overlap = 1;
+    x->x_samplespersecond = sys_getsr();
+    x->x_globaldspstate = 0;
+
+    pd_bind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
+
+    return (x);
+}
+
+
+static void siginfo_tilde_setup(void)
+{
+    siginfo_tilde_class = class_new(gensym("siginfo~"),
+        (t_newmethod)siginfo_tilde_new, (t_method)siginfo_tilde_free,
+        sizeof(t_siginfo_tilde), CLASS_MULTICHANNEL, A_GIMME, 0);
+    CLASS_MAINSIGNALIN(siginfo_tilde_class, t_siginfo_tilde, x_f);
+    class_addmethod(siginfo_tilde_class, (t_method)siginfo_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
+    class_addbang(siginfo_tilde_class, (t_method)siginfo_tilde_bang);
+
+    siginfo_proxy_class = class_new(gensym("siginfo~ proxy"),
+        0, 0, sizeof(t_siginfo_proxy), 0, 0, 0);
+    class_addbang(siginfo_proxy_class, (t_method)siginfo_proxy_bang);
+}
 /* ------------------------ global setup routine ------------------------- */
 
 void d_ctl_setup(void)
@@ -807,5 +1105,5 @@ void d_ctl_setup(void)
     vsnapshot_tilde_setup();
     env_tilde_setup();
     threshold_tilde_setup();
+    siginfo_tilde_setup();
 }
-

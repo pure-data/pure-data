@@ -38,7 +38,9 @@ all: $(TARGET)
 
 ##### libs
 
+# build libpd and move a copy here
 $(LIBPD):
+	make -C $(LIBPD_DIR)
 	cp $(LIBPD_DIR)/$(LIBPD) .
 
 # on windows, copy libpd and MinGW winpthread dll to here

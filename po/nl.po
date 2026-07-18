@@ -2,22 +2,22 @@
 # This file is put in the public domain.
 # Timothy Schoen <timschoen123@gmail.com>, 2022.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
-#
+# umläute <dev@umlaeute.mur.at>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/nl/>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 msgid "linear"
 msgstr "lineair"
@@ -132,6 +132,10 @@ msgstr "Media"
 msgid "Window"
 msgstr "Venster"
 
+#, fuzzy
+msgid "Tools"
+msgstr "Gereedschap"
+
 msgid "Help"
 msgstr "Help"
 
@@ -198,8 +202,29 @@ msgstr "Toepassen"
 msgid "OK"
 msgstr "OK"
 
-msgid "Audio Settings"
-msgstr "Audio-instellingen"
+msgid "no device"
+msgstr "geen apparaat"
+
+msgid "(same as input device)..."
+msgstr "(zelfde als invoerapparaat)..."
+
+msgid "Channels:"
+msgstr "Kanalen:"
+
+msgid "Input Devices"
+msgstr "Invoerapparaten"
+
+msgid "Output Devices"
+msgstr "Uitvoerapparaten"
+
+msgid "Use Multiple Devices"
+msgstr "Meerdere apparaten gebruiken"
+
+msgid "Rescan Devices"
+msgstr "Ververs Invoerapparaten"
+
+msgid "Audio System"
+msgstr "Geluidssysteem"
 
 msgid "Settings"
 msgstr "Instellingen"
@@ -225,26 +250,15 @@ msgstr "Blokgrootte:"
 msgid "Use callbacks"
 msgstr "Gebruik callbacks"
 
-msgid "Input Devices"
-msgstr "Invoerapparaten"
-
-msgid "Channels:"
-msgstr "Kanalen:"
-
-msgid "Output Devices"
-msgstr "Uitvoerapparaten"
-
-msgid "(same as input device)..."
-msgstr "(zelfde als invoerapparaat)..."
-
-msgid "Use Multiple Devices"
-msgstr "Meerdere apparaten gebruiken"
+msgid "Audio Settings"
+msgstr "Audio-instellingen"
 
 msgid "Save All Settings"
 msgstr "Alle instellingen opslaan"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
+msgstr ""
+"WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Canvas-eigenschappen"
@@ -281,6 +295,9 @@ msgstr "Marge:"
 
 msgid "Y range: from"
 msgstr "Y bereik: van"
+
+msgid "Object:"
+msgstr "Object:"
 
 msgid "Data Properties"
 msgstr "Gegevenseigenschappen"
@@ -353,6 +370,9 @@ msgstr "Verzendsymbool:"
 
 msgid "Receive symbol:"
 msgstr "Ontvangstsymbool:"
+
+msgid "auto"
+msgstr "auto"
 
 msgid "Width:"
 msgstr "Breedte:"
@@ -496,17 +516,23 @@ msgstr "Stuur een Pd-bericht"
 msgid "(use arrow keys for history)"
 msgstr "(gebruik de pijltjestoetsen voor geschiedenis)"
 
-msgid "MIDI Settings"
-msgstr "MIDI-instellingen"
-
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI-instellingen"
+msgid "no input devices"
+msgstr "geen invoerapparaten"
 
 msgid "In Ports:"
 msgstr "Ingangen:"
 
 msgid "Out Ports:"
 msgstr "Uitgangen:"
+
+msgid "MIDI system"
+msgstr "MIDI systeem"
+
+msgid "MIDI Settings"
+msgstr "MIDI-instellingen"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI-instellingen"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Pd-zoekpad voor objecten, help, audio, tekst en andere bestanden"
@@ -535,6 +561,9 @@ msgstr "Installatiemap externals"
 msgid "Clear"
 msgstr "Wissen"
 
+msgid "path preferences"
+msgstr "pad"
+
 msgid "Choose Pd documents directory:"
 msgstr "Kies Pd-documentenmap:"
 
@@ -548,20 +577,92 @@ msgstr "Een nieuw pad toevoegen"
 msgid "Edit existing path [%s]"
 msgstr "Bestaand pad bewerken [%s]"
 
+msgid "Patch Windows"
+msgstr "Patch vensters"
+
+msgid "Zoom New Windows"
+msgstr "Nieuwe vensters inzoomen"
+
+msgid "GUI Settings"
+msgstr "GUI-instellingen"
+
+msgid "Preference layout (reopen the preferences to see the effect)"
+msgstr "Configuratie uiterlijk (heropen de configuratie om het effect te zien)"
+
+msgid "Use tabs"
+msgstr "Gebruik tabs"
+
+msgid "Single page"
+msgstr "Enkele pagina"
+
+msgid "Patching helpers"
+msgstr "Patching helpers"
+
+msgid "Highlight active cord while connecting"
+msgstr "Verlicht actief koord tijdens verbinden"
+
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+msgid "startup preferences"
+msgstr "opstart"
+
+msgid "audio preferences"
+msgstr "audio"
+
+msgid "MIDI preferences"
+msgstr "MIDI"
+
+msgid "deken preferences"
+msgstr "deken"
+
+msgid "misc preferences"
+msgstr "diverse"
+
 msgid "Add new library"
 msgstr "Nieuwe bibliotheek toevoegen"
 
 msgid "Edit library"
 msgstr "Bibliotheek bewerken"
 
+msgid "Settings below require a restart of Pd!"
+msgstr "Wijzigingen hieronder vereisen een herstart van Pd!"
+
 msgid "Pd libraries to load on startup"
 msgstr "Pd bibliotheken te laden bij het opstarten"
 
-msgid "Startup flags:"
-msgstr "Opstartvlaggen:"
+msgid "GUI Options"
+msgstr "GUI instellingen"
+
+msgid "language"
+msgstr "taal"
+
+msgid "Menu language"
+msgstr "Menu taal"
+
+msgid "float (32bit)"
+msgstr "float (32bit)"
+
+msgid "double (64bit) EXPERIMENTAL"
+msgstr "double (64bit) EXPERIMENTEEL"
+
+msgid "double (64bit)"
+msgstr "double (64bit)"
+
+msgid "float size"
+msgstr "blokgrootte"
+
+msgid "Numeric precision of Pd-core"
+msgstr "Numerische precissie van Pd-core"
+
+msgid "Startup Options"
+msgstr "Opstart opties"
 
 msgid "Defeat real-time scheduling"
 msgstr "Versla real-time planning"
+
+msgid "Startup Flags:"
+msgstr "Opstartvlaggen:"
 
 msgid "Help Browser"
 msgstr "Help Browser"
@@ -627,6 +728,12 @@ msgstr "Niet gelukt om plugin %s te lezen ... wordt overgeslagen!"
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Niet gelukt om plugin %s te vinden ... wordt overgeslagen!"
+
+msgid "Pd startup failure"
+msgstr "Pd opstartfout"
+
+msgid "Failed to start Pd-core"
+msgstr "Gefaald om Pd-core te starten"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ONTBREKENDE CLOSE-BRACE '}': "
@@ -707,6 +814,14 @@ msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr "Kan referentie SHA256 niet ophalen voor '%s'."
 
 #, tcl-format
+msgid "File checksum looks invalid: '%s'."
+msgstr "Bestand checksum lijkt ongeldig: '%s'."
+
+#, tcl-format
+msgid "Reference checksum looks invalid: '%s'."
+msgstr "Referentie checksum lijkt ongeldig: '%s'."
+
+#, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
 msgstr "Kan SHA256-verificatie voor '%s' niet uitvoeren."
 
@@ -729,19 +844,32 @@ msgstr "Kan verdwaald bestand '%s' niet verwijderen"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Kan gedownload bestand niet hernoemen naar '%s'"
 
+msgid "Search URLs:"
+msgstr "Zoekresultaat URLs:"
+
+msgid "Additional search URLs"
+msgstr "Additionele zoekresultaat URLs"
+
+#, fuzzy
+msgid "Ephemeral search URLs"
+msgstr "Tijdelijke zoek-URL's"
+
 msgid "Create"
 msgstr "Aanmaken"
 
 msgid "Check"
 msgstr "Controleren"
 
+msgid "Deken Installation Target"
+msgstr "Deken installatie Doel"
+
 msgid "Installation options:"
 msgstr "Installatie opties:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
-"Probeer de checksum van de bibliotheken te controleren voordat u ze (opnieuw)"
-" installeert"
+"Probeer de checksum van de bibliotheken te controleren voordat u ze "
+"(opnieuw) installeert"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Probeer bibliotheken te verwijderen voordat u ze (opnieuw) installeert"
@@ -783,6 +911,17 @@ msgstr "Deken %s Voorkeuren"
 msgid "Platform re-detected: %s"
 msgstr "Platform opnieuw gedetecteerd: %s"
 
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256-verificatie van '%s' mislukt!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 verificatie mislukt"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum komt niet overeen voor '%s'"
+
 msgid "Deken Packages"
 msgstr "Deken Pakketten"
 
@@ -796,15 +935,19 @@ msgid "All Files"
 msgstr "Alle bestanden"
 
 #, tcl-format
-msgid "Checksum mismatch for '%s'"
-msgstr "Checksum komt niet overeen voor '%s'"
+msgid "Installing incompatible architecture of '%s'."
+msgstr "Installeer onverenigbare architectuur van '%s'."
+
+msgid "Replacing library with incompatible architecture!"
+msgstr "Bibliotheek vervangende met onverenigbare architectuur!"
 
 #, tcl-format
-msgid "SHA256 verification of '%s' failed!"
-msgstr "SHA256-verificatie van '%s' mislukt!"
-
-msgid "SHA256 verification failed"
-msgstr "SHA256 verificatie mislukt"
+msgid ""
+"Do you want to replace the library '%1$s' in '%2$s' with a version that is "
+"incompatible with your computer?"
+msgstr ""
+"Wilt u de bibliotheek '%1$s' in '%2$s' vervangen met een versie die "
+"onverenigbaar is met uw computer?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -879,11 +1022,18 @@ msgstr "Installeer"
 msgid "%s%% of download completed"
 msgstr "%s%% van download voltooid"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Voer een exacte bibliotheek- of objectnaam in."
 
 msgid "e.g. 'freeverb~'"
 msgstr "bijv. 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -931,6 +1081,9 @@ msgstr "beide"
 msgid "translations"
 msgstr "vertalingen"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installeer alleen externals geüpload door mensen die je vertrouwt."
 
@@ -957,6 +1110,10 @@ msgstr "Zoekresultaten"
 
 msgid "Log"
 msgstr "Logboek"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Zoeken naar \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -997,15 +1154,15 @@ msgstr "Installeer %1$s naar %2$s?"
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Download van '%s' geannulleerd: Geen installatiemap gegeven."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "Installeren naar niet-bestaande directory mislukt"
+
+msgid "Directory does not exist!"
+msgstr "Map bestaat niet!"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
 msgstr "Kan niet installeren naar '%s'"
-
-msgid "Directory does not exist!"
-msgstr "Map bestaat niet!"
 
 msgid "Directory is not writable!"
 msgstr "Map is niet schrijfbaar!"
@@ -1034,6 +1191,9 @@ msgstr "Download compleet! Verifiëren..."
 msgid "Ignoring checksum mismatch"
 msgstr "Checksum-mismatch negeren"
 
+msgid "Ignoring checksum errors"
+msgstr "Checksum fouten negeren"
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr "[deken] deken-plugin.tcl (Pd externals search) geladen van %s."
@@ -1041,6 +1201,10 @@ msgstr "[deken] deken-plugin.tcl (Pd externals search) geladen van %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platform gedetecteerd: %s"
+
+#, tcl-format
+msgid "Could not find a menu for adding '%s'"
+msgstr "Kan geen menu vinden om '%s' toe te voegen"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1150,6 +1314,575 @@ msgstr "weigeren leeg domein te verwijderen"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Kon voorkeuren \"%1$s\" niet aanmaken in %2$s"
 
+msgid "The language can only be set during startup."
+msgstr "De taal kan alleen ingesteld worden tijdens opstarten."
+
+msgid "Afar"
+msgstr "Afar"
+
+msgid "Abkhazian"
+msgstr "Abchazisch"
+
+msgid "Avestan"
+msgstr "Avestaans"
+
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+msgid "Akan"
+msgstr "Akan"
+
+msgid "Amharic"
+msgstr "Amhaars"
+
+msgid "Aragonese"
+msgstr "Aragonesisch"
+
+msgid "Arabic"
+msgstr "Arabisch"
+
+msgid "Assamese"
+msgstr "Assamees"
+
+msgid "Avaric"
+msgstr "Amhaars"
+
+msgid "Aymara"
+msgstr "Aymara"
+
+msgid "Azerbaijani"
+msgstr "Azerbeijaans"
+
+msgid "Bashkir"
+msgstr "Bashkir"
+
+msgid "Belarusian"
+msgstr "Witrussisch"
+
+msgid "Bulgarian"
+msgstr "Bulgaars"
+
+msgid "Bihari"
+msgstr "Bihari"
+
+msgid "Bislama"
+msgstr "Bislama"
+
+msgid "Bambara"
+msgstr "Bambara"
+
+msgid "Bengali"
+msgstr "Bengaals"
+
+msgid "Tibetan"
+msgstr "Tibetaans"
+
+msgid "Breton"
+msgstr "Bretoens"
+
+msgid "Bosnian"
+msgstr "Bosnisch"
+
+msgid "Catalan"
+msgstr "Catalaans"
+
+msgid "Chechen"
+msgstr "Tsjetsjeens"
+
+msgid "Chamorro"
+msgstr "Chamorro"
+
+msgid "Corsican"
+msgstr "Corsicaans"
+
+msgid "Cree"
+msgstr "Cree"
+
+msgid "Czech"
+msgstr "Tsjechisch"
+
+msgid "Chuvash"
+msgstr "Tsjoevasjisch"
+
+msgid "Welsh"
+msgstr "Welsh"
+
+msgid "Danish"
+msgstr "Deens"
+
+msgid "German"
+msgstr "Duits"
+
+msgid "German (Austria)"
+msgstr "Duits (Oostenrijks)"
+
+msgid "Dhivehi"
+msgstr "Divehi"
+
+msgid "Dzongkha"
+msgstr "Dzongkha"
+
+msgid "Ewe"
+msgstr "Ewe"
+
+msgid "Greek"
+msgstr "Grieks"
+
+msgid "English"
+msgstr "Engels"
+
+msgid "English (Canada)"
+msgstr "Engels (Canada)"
+
+msgid "English (UK)"
+msgstr "Engels (UK)"
+
+msgid "English (USA)"
+msgstr "Engels (Simplified)"
+
+msgid "Esperanto"
+msgstr "Esperanto"
+
+msgid "Spanish"
+msgstr "Spaans"
+
+msgid "Estonian"
+msgstr "Ests"
+
+msgid "Basque"
+msgstr "Baskisch"
+
+msgid "Persian"
+msgstr "Perzisch"
+
+msgid "Fulah"
+msgstr "Fula"
+
+msgid "Finnish"
+msgstr "Fins"
+
+msgid "Fijian"
+msgstr "Fijisch"
+
+msgid "Faroese"
+msgstr "Faeröers"
+
+msgid "French"
+msgstr "Frans"
+
+msgid "Frisian"
+msgstr "Fries"
+
+msgid "Irish"
+msgstr "Iers"
+
+msgid "Gaelic"
+msgstr "Keltisch"
+
+msgid "Galician"
+msgstr "Galicisch"
+
+msgid "Guarani"
+msgstr "Guaraní"
+
+msgid "Gujarati"
+msgstr "Gujaratisch"
+
+msgid "Manx"
+msgstr "Manx"
+
+msgid "Hausa"
+msgstr "Hausa"
+
+msgid "Hebrew"
+msgstr "Hebreews"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Hiri Motu"
+msgstr "Hiri Motu"
+
+msgid "Croatian"
+msgstr "Kroatisch"
+
+msgid "Haitian"
+msgstr "Haïtiaans"
+
+msgid "Hungarian"
+msgstr "Hongaars"
+
+msgid "Armenian"
+msgstr "Armeens"
+
+msgid "Herero"
+msgstr "Herero"
+
+msgid "Interlingua"
+msgstr "Interlingua"
+
+msgid "Indonesian"
+msgstr "Indonesisch"
+
+msgid "Occidental"
+msgstr "Occitaans"
+
+msgid "Igbo"
+msgstr "Igbo"
+
+msgid "Nuosu"
+msgstr "Yi / Nuosu"
+
+msgid "Inupiaq"
+msgstr "Inupiak"
+
+msgid "Ido"
+msgstr "Ido"
+
+msgid "Icelandic"
+msgstr "IJslands"
+
+msgid "Italian"
+msgstr "Italiaans"
+
+msgid "Inuktitut"
+msgstr "Inuktitut"
+
+msgid "Japanese"
+msgstr "Japans"
+
+msgid "Javanese"
+msgstr "Javaans"
+
+msgid "Georgian"
+msgstr "Georgisch"
+
+msgid "Kongo"
+msgstr "Kongo"
+
+msgid "Gikuyu"
+msgstr "Gikuyu"
+
+msgid "Kwanyama"
+msgstr "Kwanyama"
+
+msgid "Kazakh"
+msgstr "Kazachs"
+
+msgid "Greenlandic"
+msgstr "Groenlands"
+
+msgid "Kannada"
+msgstr "Kannada"
+
+msgid "Korean"
+msgstr "Koreaans"
+
+msgid "Kanuri"
+msgstr "Kanuri"
+
+msgid "Kashmiri"
+msgstr "Kasjmiri"
+
+msgid "Kurdish"
+msgstr "Koerdisch"
+
+msgid "Komi"
+msgstr "Zurjeens"
+
+msgid "Cornish"
+msgstr "Cornisch"
+
+msgid "Kyrgyz"
+msgstr "Kirgizisch"
+
+msgid "Latin"
+msgstr "Latijn"
+
+msgid "Luxembourgish"
+msgstr "Luxemburgs"
+
+msgid "Luganda"
+msgstr "Luganda"
+
+msgid "Limburgish"
+msgstr "Limburgs"
+
+msgid "Lingala"
+msgstr "Lingala"
+
+msgid "Lao"
+msgstr "Lao"
+
+msgid "Lithuanian"
+msgstr "Litouws"
+
+msgid "Luba-Katanga"
+msgstr "Luba-Katanga"
+
+msgid "Latvian"
+msgstr "Lets"
+
+msgid "Malagasy"
+msgstr "Malagasi"
+
+msgid "Marshallese"
+msgstr "Marshallees"
+
+msgid "Maori"
+msgstr "Maori"
+
+msgid "Macedonian"
+msgstr "Macedonisch"
+
+msgid "Malayalam"
+msgstr "Malayalam"
+
+msgid "Mongolian"
+msgstr "Mongolees"
+
+msgid "Marathi"
+msgstr "Marathi"
+
+msgid "Malay"
+msgstr "Malay"
+
+msgid "Maltese"
+msgstr "Maltees"
+
+msgid "Burmese"
+msgstr "Birmaans"
+
+msgid "Nauru"
+msgstr "Nauruaans"
+
+msgid "Nepali"
+msgstr "Nepalees"
+
+msgid "Ndonga"
+msgstr "Ndonga"
+
+msgid "Dutch"
+msgstr "Nederlands"
+
+msgid "Norwegian Nynorsk"
+msgstr "Noors (Nynorsk)"
+
+msgid "Navaho"
+msgstr "Navajo"
+
+msgid "Nyanja"
+msgstr "Nyanja"
+
+msgid "Occitan"
+msgstr "Occitaans"
+
+msgid "Ojibwe"
+msgstr "Ojibwe"
+
+msgid "Oromo"
+msgstr "Oromo"
+
+msgid "Odia"
+msgstr "Oḍiā"
+
+msgid "Ossetian"
+msgstr "Ossetisch"
+
+msgid "Panjabi"
+msgstr "Panjabi"
+
+msgid "Pali"
+msgstr "Pali"
+
+msgid "Polish"
+msgstr "Pools"
+
+msgid "Pashto"
+msgstr "Pasjtoe"
+
+msgid "Portuguese"
+msgstr "Portugees"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugees (Brazilië)"
+
+msgid "Portuguese (Portugal)"
+msgstr "Portugees (Portugal)"
+
+msgid "Quechua"
+msgstr "Quechua"
+
+msgid "Romansh"
+msgstr "Reto-Romaans"
+
+msgid "Rundi"
+msgstr "Kirundi"
+
+msgid "Romanian"
+msgstr "Roemeens"
+
+msgid "Russian"
+msgstr "Russisch"
+
+msgid "Kinyarwanda"
+msgstr "Kinyarwanda"
+
+msgid "Sanskrit"
+msgstr "Sanskriet"
+
+msgid "Sardinian"
+msgstr "Sardijns"
+
+msgid "Sindhi"
+msgstr "Sindhi"
+
+msgid "Sango"
+msgstr "Sango"
+
+msgid "Sinhala"
+msgstr "Sinhala"
+
+msgid "Slovak"
+msgstr "Slovaaks"
+
+msgid "Slovenian"
+msgstr "Sloveens"
+
+msgid "Samoan"
+msgstr "Samoaans"
+
+msgid "Shona"
+msgstr "Shona"
+
+msgid "Somali"
+msgstr "Somali"
+
+msgid "Albanian"
+msgstr "Albanees"
+
+msgid "Serbian"
+msgstr "Servisch"
+
+msgid "Swati"
+msgstr "Swazi"
+
+msgid "Sundanese"
+msgstr "Sundanees"
+
+msgid "Swedish"
+msgstr "Zweeds"
+
+msgid "Swahili"
+msgstr "Swahili"
+
+msgid "Tamil"
+msgstr "Tamil"
+
+msgid "Telugu"
+msgstr "Telegu"
+
+msgid "Tajik"
+msgstr "Tadzjieks"
+
+msgid "Thai"
+msgstr "Thais"
+
+msgid "Tigrinya"
+msgstr "Tigrinya"
+
+msgid "Turkmen"
+msgstr "Turkmeens"
+
+msgid "Tagalog"
+msgstr "Tagalog"
+
+msgid "Tswana"
+msgstr "Tswana"
+
+msgid "Tongan"
+msgstr "Tongaans"
+
+msgid "Turkish"
+msgstr "Turks"
+
+msgid "Tsonga"
+msgstr "Tsonga"
+
+msgid "Tatar"
+msgstr "Tataars"
+
+msgid "Twi"
+msgstr "Twi"
+
+msgid "Tahitian"
+msgstr "Tahitiaans"
+
+msgid "Uyghur"
+msgstr "Oeigoers"
+
+msgid "Ukrainian"
+msgstr "Oekraïens"
+
+msgid "Urdu"
+msgstr "Urdu"
+
+msgid "Uzbek"
+msgstr "Oezbeeks"
+
+msgid "Venda"
+msgstr "Venda"
+
+msgid "Vietnamese"
+msgstr "Vietnamees"
+
+msgid "Volapük"
+msgstr "Volapük"
+
+msgid "Walloon"
+msgstr "Waals"
+
+msgid "Wolof"
+msgstr "Wolof"
+
+msgid "Xhosa"
+msgstr "Xhosa"
+
+msgid "Yiddish"
+msgstr "Jiddisch"
+
+msgid "Yoruba"
+msgstr "Yoruba"
+
+msgid "Zhuang"
+msgstr "Zhuang"
+
+msgid "Chinese (Traditional)"
+msgstr "Chinees (Traditioneel)"
+
+msgid "Zulu"
+msgstr "Zulu"
+
+msgid "(no translation)"
+msgstr "(geen vertaling)"
+
+#, tcl-format
+msgid "(default language: %s)"
+msgstr "(standaardtaal: %s)"
+
+msgid "Print..."
+msgstr "Afdrukken..."
+
+msgid "single precision"
+msgstr "enkele nauwkeurigheid"
+
+msgid "double precision"
+msgstr "dubbele nauwkeurigheid"
+
+#, tcl-format
+msgid "%dbit-floats"
+msgstr "%dbit nauwkeurigheid getal"
+
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
 msgstr "'%s' wordt genegeerd: bestaat niet"
@@ -1161,26 +1894,41 @@ msgstr "Over Pd"
 msgid "couldn't read \"%s\" document"
 msgstr "kon \"%s\" document niet lezen"
 
+msgid "New"
+msgstr "Nieuw"
+
+msgid "Open"
+msgstr "Openen"
+
+msgid "Open Recent"
+msgstr "Recentelijk geopend"
+
 msgid "Save"
 msgstr "Opslaan"
 
 msgid "Save As..."
 msgstr "Opslaan als..."
 
-msgid "Print..."
-msgstr "Afdrukken..."
+msgid "Quit"
+msgstr "Afsluiten"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Redo"
+msgstr "Opnieuw doen"
+
+msgid "Cut"
+msgstr "Knippen"
 
 msgid "Paste Replace"
 msgstr "Plakken Vervangen"
 
+msgid "Select All"
+msgstr "Alles selecteren"
+
 msgid "Duplicate"
 msgstr "Dupliceren"
-
-msgid "Zoom In"
-msgstr "Inzoomen"
-
-msgid "Zoom Out"
-msgstr "Uitzoomen"
 
 msgid "Tidy Up"
 msgstr "Opruimen"
@@ -1191,32 +1939,17 @@ msgstr "Selectie (ont)verbinden"
 msgid "Triggerize"
 msgstr "Triggerize"
 
-msgid "Edit Mode"
-msgstr "Bewerkingsmodus"
+msgid "Zoom In"
+msgstr "Inzoomen"
 
-msgid "Undo"
-msgstr "Ongedaan maken"
-
-msgid "Redo"
-msgstr "Opnieuw doen"
-
-msgid "New"
-msgstr "Nieuw"
-
-msgid "Open"
-msgstr "Openen"
-
-msgid "Message..."
-msgstr "Bericht..."
-
-msgid "Cut"
-msgstr "Knippen"
-
-msgid "Select All"
-msgstr "Alles selecteren"
+msgid "Zoom Out"
+msgstr "Uitzoomen"
 
 msgid "Clear Console"
 msgstr "Console wissen"
+
+msgid "Edit Mode"
+msgstr "Bewerkingsmodus"
 
 msgid "Object"
 msgstr "Object"
@@ -1281,8 +2014,14 @@ msgstr "Volgend venster"
 msgid "Previous Window"
 msgstr "Vorig venster"
 
+msgid "Close subwindows"
+msgstr "Sluit subvensters"
+
 msgid "Parent Window"
 msgstr "Bovenliggend venster"
+
+msgid "Message..."
+msgstr "Bericht..."
 
 msgid "HTML Manual..."
 msgstr "HTML-handleiding..."
@@ -1318,20 +2057,8 @@ msgstr "verwijderde GUI-instellingen"
 msgid "no Pd-GUI settings to clear"
 msgstr "geen Pd-GUI instellingen te wissen"
 
-msgid "Path..."
-msgstr "Pad..."
-
-msgid "Startup..."
-msgstr "Opstarten..."
-
-msgid "Audio..."
-msgstr "Audio..."
-
-msgid "MIDI..."
-msgstr "MIDI..."
-
-msgid "Zoom New Windows"
-msgstr "Nieuwe vensters inzoomen"
+msgid "Edit Preferences..."
+msgstr "Voorkeuren bewerken..."
 
 msgid "Save All Preferences"
 msgstr "Alle voorkeuren opslaan"
@@ -1345,14 +2072,8 @@ msgstr "Laden van..."
 msgid "Forget All..."
 msgstr "Vergeet alles..."
 
-msgid "Preferences"
-msgstr "Voorkeuren"
-
-msgid "Open Recent"
-msgstr "Recentelijk geopend"
-
-msgid "Quit"
-msgstr "Afsluiten"
+msgid "Tabbed preferences"
+msgstr "Vertabuleerde voorkeuren"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -1360,6 +2081,21 @@ msgstr "Wilt u de wijzigingen die u in '%s' heeft aangebracht opslaan?"
 
 msgid "Properties"
 msgstr "Eigenschappen"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Bewerkingsmodus"
+
+#, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Wijzigingen aan '%s' accepteren?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
+"Accepteren zal de inhoud van het geassocieerde object vernieuwen. U zal nog "
+"steeds de patch moeten bewaren om de wijzigingen permanent te maken."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1375,14 +2111,18 @@ msgstr "Audio aan"
 msgid "Audio off"
 msgstr "Audio uit"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
-
-msgid "Tcl:"
-msgstr "Tcl:"
+msgid "Find source"
+msgstr "Zoek bron"
 
 msgid "Pd"
 msgstr "Pd"
+
+msgid "EXPERIMENTAL double (64bit) precision"
+msgstr "EXPERIMENTEEL dubbele (64bit) nauwkeurigheid"
+
+#, tcl-format
+msgid "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit nauwkeurigheid EXPERIMENTEEL"
 
 msgid "DSP"
 msgstr "DSP"
@@ -1408,6 +2148,9 @@ msgstr "debug"
 msgid "all"
 msgstr "alle"
 
+msgid "y1"
+msgstr "y1"
+
 msgid "New..."
 msgstr "Nieuw..."
 
@@ -1420,3 +2163,21 @@ msgstr "Verwijderen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"
+
+#~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+#~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+#~ msgid "Tcl:"
+#~ msgstr "Tcl:"
+
+#~ msgid "Path..."
+#~ msgstr "Pad..."
+
+#~ msgid "Startup..."
+#~ msgstr "Opstarten..."
+
+#~ msgid "Audio..."
+#~ msgstr "Audio..."
+
+#~ msgid "MIDI..."
+#~ msgstr "MIDI..."

@@ -5,6 +5,7 @@
 /* ref: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html */
 
 #include "d_soundfile.h"
+#include "s_stuff.h"
 
 /* WAVE (Waveform Audio File Format)
 
@@ -30,14 +31,16 @@
   this implementation:
 
   * supports basic and extended format chunks (WAVE Rev. 3)
-  * implicitly writes extended format for 32 bit float (see below)
+  * implicitly writes extended format for 32 or 64 bit float (see below)
   * implements chunks: format, fact, sound data
   * ignores chunks: info, cset, cue, playlist, associated data, instrument,
                     sample, display, junk, pad, time code, digitization time
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
-  * does not support 64-bit variants or BWF file-splitting
-  * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
+  * does not support 64-bit size variants or BWF file-splitting
+  * sample format: 16 and 24 bit lpcm, 32 and 64 bit float, no 32 bit lpcm
+
+  Pd versions < 0.55 did not read or write 64 bit float.
 
   Pd versions < 0.51 did *not* read or write extended format explicitly, but
   ignored the format chunk format tag and interpreted the sample type based on
@@ -111,7 +114,7 @@ typedef struct _factchunk
     /** returns 1 if format requires extended format and fact chunk */
 static int wave_isextended(const t_soundfile *sf)
 {
-    return sf->sf_bytespersample == 4;
+    return sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8;
 }
 
     /** read first chunk, returns filled chunk and offset on success or -1 */
@@ -124,7 +127,7 @@ static off_t wave_firstchunk(const t_soundfile *sf, t_chunk *chunk)
 }
 
     /** read next chunk, chunk should be filled when calling
-        returns fills chunk offset on success or -1 */
+        returns filled chunk offset on success or -1 */
 static off_t wave_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
 {
     uint32_t chunksize = swap4(chunk->c_size, sys_isbigendian());
@@ -218,8 +221,8 @@ static int wave_isheader(const char *buf, size_t size)
 
 static int wave_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
-        swap = (bigendian != sys_isbigendian()), formatfound = 1;
+    int nchannels = 1, bytespersample = 2, samplerate = DEFAULTSRATE,
+        bigendian = 0, swap = (bigendian != sys_isbigendian()), formatfound = 1;
     off_t headersize = WAVEHEADSIZE;
     size_t bytelimit = WAVEMAXBYTES;
     union
@@ -285,7 +288,7 @@ static int wave_readheader(t_soundfile *sf)
             switch (bytespersample)
             {
                 case 2: case 3: break;
-                case 4:
+                case 4: case 8:
                     if (formattag == WAVE_FORMAT_FLOAT) /* 32 bit int? */
                         break;
                 default:
@@ -360,7 +363,7 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
     t_head head = {"RIFF", 0, "WAVE"};
     t_formatchunk format = {
         "fmt ", swap4(16, swap),
-        WAVE_FORMAT_PCM,                                  /* format tag      */
+        swap2(WAVE_FORMAT_PCM, swap),                     /* format tag      */
         swap2((uint16_t)sf->sf_nchannels, swap),          /* channels        */
         swap4((uint32_t)sf->sf_samplerate, swap),         /* sample rate     */
         swap4((uint32_t)(sf->sf_samplerate *              /* bytes per sec   */
@@ -376,7 +379,7 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
     headersize += WAVEHEADSIZE;
 
         /* format chunk */
-    if (sf->sf_bytespersample == 4)
+    if (sf->sf_bytespersample == 4 || sf->sf_bytespersample == 8)
         format.fc_fmttag = swap2(WAVE_FORMAT_FLOAT, swap);
     if (isextended)
     {
@@ -479,7 +482,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
 
 static int wave_hasextension(const char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len >= 5 &&
         (!strncmp(filename + (len - 4), ".wav", 4) ||
          !strncmp(filename + (len - 4), ".WAV", 4)))
@@ -493,7 +496,7 @@ static int wave_hasextension(const char *filename, size_t size)
 
 static int wave_addextension(char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len + 4 >= size)
         return 0;
     strcpy(filename + len, ".wav");
@@ -501,7 +504,7 @@ static int wave_addextension(char *filename, size_t size)
 }
 
     /* force little endian */
-static int wave_endianness(int endianness)
+static int wave_endianness(int endianness, int bytespersample)
 {
     return 0;
 }

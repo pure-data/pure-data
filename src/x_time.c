@@ -240,7 +240,7 @@ typedef struct _line
 
 static void line_tick(t_line *x)
 {
-    double timenow = clock_getsystime();
+    double timenow = clock_getlogicaltime();
     double msectogo = - clock_gettimesince(x->x_targettime);
     if (msectogo < 1E-9)
     {
@@ -260,7 +260,7 @@ static void line_tick(t_line *x)
 
 static void line_float(t_line *x, t_float f)
 {
-    double timenow = clock_getsystime();
+    double timenow = clock_getlogicaltime();
     if (x->x_gotinlet && x->x_in1val > 0)
     {
         if (timenow > x->x_targettime) x->x_setval = x->x_targetval;
@@ -298,10 +298,10 @@ static void line_stop(t_line *x)
 {
     if (pd_compatibilitylevel >= 48)
     {
-        if (clock_getsystime() >= x->x_targettime)
+        if (clock_getlogicaltime() >= x->x_targettime)
             x->x_setval = x->x_targetval;
         else x->x_setval += x->x_1overtimediff *
-            (clock_getsystime() - x->x_prevtime) *
+            (clock_getlogicaltime() - x->x_prevtime) *
                 (x->x_targetval - x->x_setval);
     }
     x->x_targetval = x->x_setval;
@@ -326,7 +326,7 @@ static void *line_new(t_floatarg f, t_floatarg grain)
     x->x_gotinlet = 0;
     x->x_1overtimediff = 1;
     x->x_clock = clock_new(x, (t_method)line_tick);
-    x->x_targettime = x->x_prevtime = clock_getsystime();
+    x->x_targettime = x->x_prevtime = clock_getlogicaltime();
     x->x_grain = grain;
     outlet_new(&x->x_obj, gensym("float"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
@@ -361,7 +361,7 @@ typedef struct _timer
 
 static void timer_bang(t_timer *x)
 {
-    x->x_settime = clock_getsystime();
+    x->x_settime = clock_getlogicaltime();
     x->x_moreelapsed = 0;
 }
 
@@ -376,7 +376,7 @@ static void timer_tempo(t_timer *x, t_symbol *unitname, t_floatarg tempo)
 {
     x->x_moreelapsed +=  clock_gettimesincewithunits(x->x_settime,
         x->x_unit, x->x_samps);
-    x->x_settime = clock_getsystime();
+    x->x_settime = clock_getlogicaltime();
     parsetimeunits(x, tempo, unitname, &x->x_unit, &x->x_samps);
 }
 

@@ -44,7 +44,7 @@ menu.
 
 Except as otherwise noted, all files in the Pd distribution are
 
-    Copyright (c) 1997-2021 Miller Puckette and others.
+    Copyright (c) 1997-2024 Miller Puckette and others.
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see LICENSE.txt included in the Pd distribution.
@@ -56,6 +56,8 @@ Thanks to Harry Castle, Krzysztof Czaja, Mark Danks, Christian Feldbauer,
 Guenter Geiger, Kerry Hagan, Trevor Johnson, Fernando Lopez-Lezcano, Adam
 Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
 Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
-Wilcox, David Zicarelli, IOhannes m zmoelnig, and probably many others for
-contributions of code, documentation, ideas, and expertise. This work has
-received support from Intel, Keith McMillen Instruments, ZKM, IEM, and UCSD.
+Wilcox, David Zicarelli, IOhannes m zmoelnig, Christof Ressi, Antoine Rousseau,
+Alexandre Torres Porres, Claude Heiland-Allen, Roman Haefeli, Lucarda, Chris
+McCormick, Seb Shader and probably many others for contributions of code,
+documentation, ideas, and expertise. This work has received support from Intel,
+Keith McMillen Instruments, ZKM, IEM, and UCSD.

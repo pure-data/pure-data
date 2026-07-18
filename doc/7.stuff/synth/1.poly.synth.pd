@@ -49,8 +49,7 @@
 #X obj 69 183 metro 500;
 #X floatatom 111 244 5 0 0 0 - - - 0;
 #X obj 69 269 makenote 64 250;
-#X obj 69 158 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000
-0 1;
+#X obj 69 158 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 382 267 numset fil x;
 #A saved 50;
 #X obj 382 296 numset fb x;
@@ -80,8 +79,7 @@
 #X obj 383 499 numset 2pc x;
 #A saved 0;
 #X obj 263 624 s flush;
-#X obj 263 591 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 263 591 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 69 611 output~;
 #X text 466 125 amplitude;
 #X text 466 154 amp attack time;
@@ -111,7 +109,6 @@
 #X connect 6 0 48 4;
 #X connect 7 0 48 5;
 #X connect 8 0 34 0;
-#X connect 8 0 34 1;
 #X connect 9 0 24 0;
 #X connect 10 0 23 1;
 #X connect 11 0 50 0;

@@ -2,7 +2,8 @@
 package provide dialog_font 0.1
 
 namespace eval ::dialog_font:: {
-    variable fontsize 10
+    # fontsize is for detecting whether the user actually requested a change
+    variable fontsize 0
     variable stretchval 100
     variable whichstretch 1
     variable canvaswindow
@@ -33,6 +34,33 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
                 set font $::font_family
             }
             ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
+
+            # try to adjust the width of the Pd-console to 80 chars
+            catch {
+                set str80 "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                set fnt [${mytoplevel}.text.internal cget -font]
+                # how much space do we need for 80 chars (need an extra char for whatever reasons...)?
+                set w [expr [winfo width ${mytoplevel}] - \
+                           [winfo width ${mytoplevel}.text] + \
+                           [font measure $fnt -displayof ${mytoplevel} "${str80} "] \
+                          ]
+                # make sure it's within reasonable bounds
+                foreach {maxw maxh} [wm maxsize .] {break}
+                if { $w < 400 } {set w 400}
+                if { $w > $maxw } {set w $maxw}
+                # get the current geometry of the .pdwindow
+                scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                if { "+$x+$y" eq "+0+0" } {
+                    scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+                }
+                # and fix it
+                if { $w > $width } {
+                    wm geometry $mytoplevel "${w}x${height}+$x+$y"
+                }
+                # scroll down
+                ${mytoplevel}.text.internal yview moveto 1.0
+            }
+            #::pdwindow::post "This string is exactly 80 characters long...ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
         }
         catch {
             ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
@@ -44,10 +72,11 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         }
 
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
+        set ::pdwindow::font_size $myfontsize
 
     } else {
-        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
-        pdsend "$mytoplevel dirty 1"
+        pdsend [list $mytoplevel font $myfontsize $stretchval $whichstretch]
+        pdsend [list $mytoplevel dirty 1]
     }
 }
 
@@ -70,8 +99,8 @@ proc ::dialog_font::stretch_apply {gfxstub} {
         if {$stretchval == 100} {
             return
         }
-        pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
-        pdsend "$gfxstub dirty 1"
+        pdsend [list $gfxstub font $fontsize $stretchval $whichstretch]
+        pdsend [list $gfxstub dirty 1]
     }
 }
 
@@ -83,7 +112,7 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
 
 proc ::dialog_font::cancel {gfxstub} {
     if {$gfxstub ne ".pdwindow"} {
-        pdsend "$gfxstub cancel"
+        pdsend [list $gfxstub cancel]
     }
     destroy .font
 }
@@ -91,7 +120,7 @@ proc ::dialog_font::cancel {gfxstub} {
 proc ::dialog_font::update_font_dialog {mytoplevel} {
     variable canvaswindow $mytoplevel
     if {[winfo exists .font]} {
-        wm title .font [format [_ "%s Font"] [lookup_windowname $mytoplevel]]
+        wm title .font [_ "%s Font" [lookup_windowname $mytoplevel]]
     }
 }
 
@@ -122,7 +151,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
         # the gfxstub stuff expects multiple font windows, we only have one,
         # so kill the new gfxstub requests as the come in.  We'll save the
         # original gfxstub for when the font panel gets closed
-        pdsend "$gfxstub cancel"
+        pdsend [list $gfxstub cancel]
     } else {
         create_dialog $gfxstub
     }
@@ -131,7 +160,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
 
 proc ::dialog_font::create_dialog {gfxstub} {
     toplevel .font -class DialogWindow
-    .font configure -menu $::dialog_menubar
+    ::pd_menus::menubar_for_dialog .font
     .font configure -padx 10 -pady 5
     wm group .font .
     wm title .font [_ "Font"]

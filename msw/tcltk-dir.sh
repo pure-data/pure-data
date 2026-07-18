@@ -26,7 +26,7 @@ GIT=false
 FORCE64BIT=false
 
 # configure options
-if [ "x${OPTIONS}" = "x" ] ; then
+if [ -z "${OPTIONS}" ] ; then
     OPTIONS="--enable-threads"
 fi
 
@@ -76,7 +76,7 @@ EOF
 # Parse command line arguments
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
-    case $1 in
+    case "$1" in
         -h|--help)
             help
             exit 0
@@ -98,72 +98,86 @@ if [ "$1" = "" ] ; then
     echo "Usage: $0 [OPTIONS] VERSION" 1>&2
     exit 1
 fi
-TCLTK=$1
+TCLTK="$1"
 shift 1
 
 # Go
 #----------------------------------------------------------
 
-DEST=$(pwd)/tcltk-${TCLTK}
+DEST="$(pwd)/tcltk-${TCLTK}"
 
 # change to the dir of this script
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 # remove old dir if found
-if [ -d "$DEST" ] ; then
-    rm -rf $DEST
+if [ -d "${DEST}" ] ; then
+    rm -rf "${DEST}"
 fi
-mkdir -p $DEST
+mkdir -p "${DEST}"
 
-echo "==== Creating tcltk-$TCLTK"
 
-if [ "x$GIT" = xtrue ] ; then
+# 64 bit support
+if [ "${FORCE64BIT}" = true ] ; then
+    echo "==== Forcing 64 bit"
+    OPTIONS="${OPTIONS} --enable-64bit"
+else
+    # try to detect 64 bit MinGW using MSYSTEM env var
+    case "${MSYSTEM}" in
+        MINGW64 | UCRT64 | CLANG64)
+            echo "==== Detected 64 bit"
+            OPTIONS="${OPTIONS} --enable-64bit"
+            ;;
+        CLANGARM64)
+            echo "==== Detected 64 bit (arm)"
+            OPTIONS="${OPTIONS} --enable-64bit=arm64"
+            ;;
+    esac
+fi
+
+
+echo "==== Creating tcltk-${TCLTK}"
+
+# fetch Tcl and Tk
+if [ "${GIT}" = true ] ; then
+    echo "---- Cloning TclTk"
 
     # shallow clone sources, pass remaining args to git
-    git clone --depth 1 https://github.com/tcltk/tcl.git $@
-    git clone --depth 1 https://github.com/tcltk/tk.git $@
+    git clone --depth 1 https://github.com/tcltk/tcl.git "$@"
+    git clone --depth 1 https://github.com/tcltk/tk.git "$@"
 
     tcldir=tcl
     tkdir=tk
 else
+    echo "---- Downloading TclTk-${TCLTK}"
 
     # download source packages
-    curl -LO http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz
-    curl -LO http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz
+    curl -LO "http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz"
+    curl -LO "http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz"
 
     # unpack
-    tar -xzf tcl${TCLTK}-src.tar.gz
-    tar -xzf tk${TCLTK}-src.tar.gz
+    tar -xzf "tcl${TCLTK}-src.tar.gz"
+    tar -xzf "tk${TCLTK}-src.tar.gz"
 
-    tcldir=tcl${TCLTK}
-    tkdir=tk${TCLTK}
-fi
-
-# 64 bit support
-if [ "x${FORCE64BIT}" = xtrue ] ; then
-    echo "==== Forcing 64 bit"
-    OPTIONS="$OPTIONS --enable-64bit"
-else
-    # try to detect 64 bit MinGW using MSYSTEM env var
-    if [ "x${MSYSTEM}" = "xMINGW64" ] ; then
-        echo "==== Detected 64 bit"
-        OPTIONS="$OPTIONS --enable-64bit"
-    fi
+    tcldir="tcl${TCLTK}"
+    tkdir="tk${TCLTK}"
 fi
 
 # build Tcl and Tk
-cd ${tcldir}/win
-./configure $OPTIONS --prefix=$DEST
+echo "---- Building Tcl-${TCLTK}"
+cd "${tcldir}/win"
+./configure ${OPTIONS} --prefix="${DEST}"
 make
 make install
 cd -
-cd ${tkdir}/win
-./configure $OPTIONS --prefix=$DEST
+echo "---- Building Tk-${TCLTK}"
+cd "${tkdir}/win"
+./configure ${OPTIONS} --prefix="${DEST}"
 make
 make install
 cd -
 
 # finish up
-rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
+echo "---- Cleaning up TclTk-${TCLTK}"
+rm -rf "${tcldir}" "${tkdir}" "${tcldir}-src.tar.gz" "${tkdir}-src.tar.gz"
 
-echo  "==== Finished tcltk-$TCLTK"
+echo  "==== Finished tcltk-${TCLTK}"

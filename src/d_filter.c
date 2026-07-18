@@ -31,7 +31,7 @@ static void *sighip_new(t_floatarg f)
     t_sighip *x = (t_sighip *)pd_new(sighip_class);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
     outlet_new(&x->x_obj, &s_signal);
-    x->x_sr = 44100;
+    x->x_sr = DEFAULTSRATE;
     x->x_cspace.c_x = 0;
     sighip_ft1(x, f);
     x->x_f = 0;
@@ -232,8 +232,7 @@ static void siglop_dsp(t_siglop *x, t_signal **sp)
 void siglop_setup(void)
 {
     siglop_class = class_new(gensym("lop~"), (t_newmethod)siglop_new, 0,
-        sizeof(t_siglop), 0, A_DEFFLOAT, 0);
-    class_setdspflags(siglop_class, CLASS_NOPROMOTESIG);
+        sizeof(t_siglop), CLASS_NOPROMOTESIG, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(siglop_class, t_siglop, x_f);
     class_addmethod(siglop_class, (t_method)siglop_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -271,7 +270,7 @@ static void *sigbp_new(t_floatarg f, t_floatarg q)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft2"));
     outlet_new(&x->x_obj, &s_signal);
-    x->x_sr = 44100;
+    x->x_sr = DEFAULTSRATE;
     x->x_cspace.c_x1 = 0;
     x->x_cspace.c_x2 = 0;
     sigbp_docoef(x, f, q);
