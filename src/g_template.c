@@ -2821,6 +2821,7 @@ typedef struct _drawtext
     t_fielddesc x_xloc;
     t_fielddesc x_yloc;
     t_fielddesc x_color;
+    t_fielddesc x_size;
     t_fielddesc x_vis;
     t_symbol *x_label;
     t_canvas *x_canvas;
@@ -2832,6 +2833,8 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
     t_drawtext *x = (t_drawtext *)pd_new(drawtext_class);
     int flags = 0;
 
+    x->x_label = &s_;
+    fielddesc_setfloat_const(&x->x_size, 0);
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
     while (argc && argv->a_type == A_SYMBOL &&
@@ -2872,7 +2875,19 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
-        x->x_label = atom_getsymbolarg(0, argc, argv);
+    {
+        if(argv->a_type == A_SYMBOL)
+        {
+            x->x_label = atom_getsymbolarg(0, argc, argv);
+        }
+        else
+        {
+            fielddesc_setfloatarg(&x->x_size, argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc)
+        fielddesc_setfloatarg(&x->x_size, argc--, argv++);
     else x->x_label = &s_;
     x->x_canvas = canvas_getcurrent();
 
@@ -3089,8 +3104,12 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
             fielddesc_getfloat(&x->x_color, template, data, 1));
         char *textbuf;
         int textlen;
-            /* draw label */
+        /* draw label */
         SETSYMBOL(fontatoms+0, gensym(sys_font));
+        int size = fielddesc_getfloat(&x->x_size, template, data, 1);
+            if (size <= 0)
+                size = -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist));
+        SETFLOAT (fontatoms+1, size);
         SETFLOAT (fontatoms+1,
             -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
