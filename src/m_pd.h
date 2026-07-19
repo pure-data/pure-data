@@ -695,6 +695,24 @@ EXTERN void pd_queue_mess(struct _pdinstance *instance, t_pd *obj, void *data, t
  * typically called in the object destructor AFTER joining the helper thread. */
 EXTERN void pd_queue_cancel(t_pd *obj);
 
+/* ------------- asynchronous tasks ---------- */
+
+EXTERN_STRUCT _task;
+#define t_task struct _task
+
+typedef void (*t_task_workfn)(t_task *task, void *data);
+typedef void (*t_task_callback)(t_pd *owner, void *data);
+
+/* see s_task.c for documentation */
+EXTERN t_task *task_start(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
+EXTERN t_task *task_spawn(t_pd *owner, void *data, t_task_workfn workfn, t_task_callback cb);
+EXTERN int task_stop(t_task *task, int sync);
+EXTERN int task_check(t_task *task);
+EXTERN void task_yield(t_task *task, t_task_workfn workfn);
+EXTERN void task_suspend(t_task *task);
+EXTERN void task_resume(t_task *task, t_task_workfn);
+EXTERN void task_notify(t_task *task, void *data, t_task_callback fn);
+
 /* --------------- signals ----------------------------------- */
 
 typedef PD_FLOATTYPE t_sample;
