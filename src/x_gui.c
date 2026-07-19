@@ -77,7 +77,7 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
             gfxstub_deleteforkey(key);
     if (strlen(cmd) + 50 > 4*MAXPDSTRING)
     {
-        bug("audio dialog too long");
+        bug("dialog too long");
         bug("%s", cmd);
         return;
     }
@@ -203,6 +203,7 @@ static void gfxstub_setup(void)
 
 #include <stdarg.h>
 /* pdgui_*mess() are from s_inter_gui.c */
+void pdgui_startmess(void);
 void pdgui_vamess(const char* message, const char* format, va_list args);
 void pdgui_endmess(void);
 
@@ -232,6 +233,7 @@ void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char
     x->x_next = gfxstub_list;
     gfxstub_list = x;
 
+    pdgui_startmess();
     _pdguistub_vamess(destination, "s", s->s_name);
     va_start(args, fmt);
     pdgui_vamess(0, fmt, args);
