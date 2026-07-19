@@ -262,11 +262,16 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <$::modifier-$alt-Shift-ButtonRelease-1> \
         "pdtk_canvas_mouseup %W %x %y %b 7"
 
-    bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
-    bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
+    bind $tkcanvas <MouseWheel>                   {::pdtk_canvas::handle_wheel %W %x %y y %D 0}
+    bind $tkcanvas <Shift-MouseWheel>             {::pdtk_canvas::handle_wheel %W %x %y y %D 1}
+    bind $tkcanvas <$::modifier-MouseWheel>       {::pdtk_canvas::handle_wheel %W %x %y y %D 2}
+    bind $tkcanvas <$::modifier-Shift-MouseWheel> {::pdtk_canvas::handle_wheel %W %x %y y %D 3}
     catch {
         # TclTk-9.0 has a new event for touchpad gestures
-        bind $tkcanvas <TouchpadScroll> {::pdtk_canvas::scroll %W xy %D}
+        bind $tkcanvas <TouchpadScroll>                   {::pdtk_canvas::handle_wheel %W %x %y xy %D 0}
+        bind $tkcanvas <Shift-TouchpadScroll>             {::pdtk_canvas::handle_wheel %W %x %y xy %D 1}
+        bind $tkcanvas <$::modifier-TouchpadScroll>       {::pdtk_canvas::handle_wheel %W %x %y xy %D 2}
+        bind $tkcanvas <$::modifier-Shift-TouchpadScroll> {::pdtk_canvas::handle_wheel %W %x %y xy %D 3}
     }
 
     # clear interim compose character by sending a virtual BackSpace,
