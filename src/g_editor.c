@@ -5229,6 +5229,7 @@ void canvas_addscalar(t_canvas *x, t_symbol *templatesym)
     canvas_undo_add(glist_getcanvas(x), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(x)));
     canvas_dirty(glist_getcanvas(x), 1);
+    scalar_notifynew(sc, x, 0);
 }
 
 

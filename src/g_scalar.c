@@ -333,7 +333,17 @@ void glist_scalar(t_glist *glist,
     binbuf_free(b);
 }
 
-extern t_class *drawnumber_class;
+void scalar_notifynew(t_scalar *x, t_glist *gl, int loadbang)
+{
+    t_template *template = template_findbyname(x->sc_template);
+    if (template)
+    {
+        t_atom at[2];
+        SETFLOAT(&at[1], loadbang);
+        template_notifyforscalar(template, gl, x, gensym("new"), 2, at);
+    }
+    else bug("scalar_notifynew");
+}
 
 
 /* -------------------- widget behavior for scalar ------------ */
@@ -638,8 +648,6 @@ static const t_widgetbehavior scalar_widgetbehavior =
 
 static void scalar_free(t_scalar *x)
 {
-    int i;
-    t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     sys_unqueuegui(x);

@@ -614,11 +614,18 @@ void template_notify(t_template *template, t_symbol *s, int argc, t_atom *argv)
 }
 
     /* bash the first of (argv) with a pointer to a scalar, and send on
-    to template as a notification message */
+    to template as a notification message.  This is called from hither and
+    yon, without always checking that the template was found correctly.
+    The template _should_ always be nonzero. */
 void template_notifyforscalar(t_template *template, t_glist *owner,
     t_scalar *sc, t_symbol *s, int argc, t_atom *argv)
 {
     t_gpointer gp;
+    if (!template)
+    {
+        bug("template_notifyforscalar");
+        return;
+    }
     gpointer_init(&gp);
     gpointer_setglist(&gp, owner, sc);
     SETPOINTER(argv, &gp);

@@ -131,7 +131,7 @@ static void ptrobj_setandoutput(t_ptrobj *x, t_gobj *gobj)
     }
 }
 
-/* get the template for the object pointer to.  Assumes we've already checked
+/* get the template for the object pointed to.  Assumes we've already checked
 freshness. */
 
 static t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
@@ -1599,8 +1599,8 @@ static void append_float(t_append *x, t_float f)
 
     if (glist_isvisible(glist_getcanvas(glist)))
         gobj_vis(&sc->sc_gobj, glist, 1);
-    /*  scalar_redraw(sc, glist);  ... have to do 'vis' instead here because
-    redraw assumes we're already visible??? ... */
+
+    scalar_notifynew(sc, glist, 2);
 
     outlet_pointer(x->x_obj.ob_outlet, gp);
 }

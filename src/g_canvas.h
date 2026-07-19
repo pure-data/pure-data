@@ -631,7 +631,7 @@ EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     int *p_nextmsg, int selectit);
 EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
-
+EXTERN void scalar_notifynew(t_scalar *x, t_glist *gl, int loadbang);
 int scalar_doclick(t_word *data, t_template *pdtemplate, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,

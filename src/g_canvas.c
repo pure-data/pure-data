@@ -1171,6 +1171,8 @@ void canvas_loadbangsubpatches(t_canvas *x)
         {
             pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
+        else if (pd_class(&y->g_pd) == scalar_class)
+            scalar_notifynew((t_scalar *)y, x, 1);
 }
 
 void canvas_loadbang(t_canvas *x)

@@ -146,6 +146,10 @@ void glist_delete(t_glist *x, t_gobj *y)
     }
     if (y->g_pd == scalar_class)
     {
+        t_atom at;
+        template_notifyforscalar(
+            template_findbyname(((t_scalar *)y)->sc_template),
+                x, (t_scalar *)y, gensym("delete"), 1, &at);
         x->gl_valid = ++glist_valid;
         glist_deleteforscalar(x, (t_scalar *)y);
     }
