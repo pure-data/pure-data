@@ -57,6 +57,7 @@ typedef struct _clone
     unsigned int x_suppressvoice:1; /* suppress voice number as $1 arg */
     unsigned int x_distributein:1;  /* distribute input signals across clones */
     unsigned int x_packout:1;       /* pack output signals */
+    unsigned int x_dynamicvoices:1; /* resize according to multichannel signals */
 } t_clone;
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
@@ -436,15 +437,28 @@ void signal_makereusable(t_signal *sig);
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
     int i, j, nin, nout, *noutchans;
+    int maxinchans = 1;
     t_signal **tempio;
     if (!x->x_n)
         return;
     for (i = nin = 0; i < x->x_nin; i++)
         if (x->x_invec[i].i_signal)
+        {
+            if (sp[nin]->s_nchans > maxinchans)
+                maxinchans = sp[nin]->s_nchans;
             nin++;
+        }
     for (i = nout = 0; i < x->x_nout; i++)
         if (x->x_outvec[i].o_signal)
             nout++;
+
+    if(x->x_dynamicvoices) {
+        if (!maxinchans)
+            return;
+        if (maxinchans != x->x_n)
+            clone_in_resize(x->x_invec, (t_floatarg)maxinchans);
+    }
+
     for (j = 0; j < x->x_n; j++)
     {
         if (obj_ninlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nin ||
@@ -619,6 +633,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_suppressvoice = 0;
     x->x_distributein = 0;
     x->x_packout = 0;
+    x->x_dynamicvoices = 0;
     clone_voicetovis = -1;
     if (argc == 0)
     {
@@ -703,6 +718,10 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = 1;
     clone_initinstance(x, 0, c);
         /* remaining copies */
+    if(!wantn && x->x_distributein) {
+        x->x_dynamicvoices = 1;
+        wantn = 1;
+    }
     clone_setn(x, (t_floatarg)(wantn));
     x->x_phase = wantn-1;
     canvas_resume_dsp(dspstate);
@@ -807,4 +826,3 @@ t_glist *clone_get_instance(t_gobj *x, int n)
         n = c->x_n - 1;
     return  c->x_vec[n].c_gl;
 }
-
