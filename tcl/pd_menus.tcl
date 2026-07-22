@@ -258,6 +258,9 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window mycnv}
     $mymenu add  separator
     $mymenu add cascade -label [_ "Scalar..."] -menu .structmenu
+
+    # keep the translatable around
+    set dummy [_ "Graph"]
 }
 
 proc ::pd_menus::build_find_menu {mymenu {patchwindow true}} {
