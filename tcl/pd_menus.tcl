@@ -28,6 +28,8 @@ namespace eval ::pd_menus:: {
     option add *tearOff 0
 }
 
+set ::pd_menus::putmenu_struct {{} {}}
+
 # ------------------------------------------------------------------------------
 #
 proc ::pd_menus::create_menubar {} {
@@ -59,7 +61,7 @@ proc ::pd_menus::create_menubar {} {
     $::patch_menubar add cascade -label [_ Put] \
             -underline 0 -menu $::patch_menubar.put
 
-    foreach mymenu "find media window tools help" {
+    foreach mymenu "find window media tools help" {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
@@ -257,7 +259,11 @@ proc ::pd_menus::build_put_menu {mymenu} {
     $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
         -command {::pd_menucommands::scheduleAction menu_send $::focused_window mycnv}
     $mymenu add  separator
-    $mymenu add cascade -label [_ "Scalar..."] -menu .structmenu
+    $mymenu add cascade -label [_ "Scalar"] -menu [pdtk_newstructs] -state disabled
+    set ::pd_menus::putmenu_struct [list $mymenu [$mymenu index last]]
+
+    # keep the translatable around
+    set dummy [_ "Graph"]
 }
 
 proc ::pd_menus::build_find_menu {mymenu {patchwindow true}} {
@@ -282,8 +288,6 @@ proc ::pd_menus::build_media_menu {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Test Audio and MIDI..."] \
         -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools testtone.pd}
-    $mymenu add command -label [_ "Load Meter"] \
-        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
 
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
@@ -346,6 +350,9 @@ proc ::pd_menus::build_window_menu {mymenu} {
 proc ::pd_menus::build_tools_menu {mymenu} {
     variable accelerator
 
+    $mymenu add command -label [_ "Load Meter"] \
+        -command {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
+    $mymenu add  separator
     $mymenu add command -label [_ "Message..."] \
         -accelerator "$accelerator+Shift+M" \
         -command {::pd_menucommands::scheduleAction menu_message_dialog}
@@ -622,6 +629,8 @@ proc pdtk_newstructs {} {
     }
     .structmenu delete  0 end
     set pdtk_nscalar 0
+
+    return .structmenu
 }
 
 proc pdtk_putstruct {name} {
@@ -639,4 +648,11 @@ proc pdtk_addstruct {name} {
         -label $label -underline 0 \
         -command [concat ::pd_menucommands::scheduleAction pdtk_putstruct \
             $name]
+
+    foreach {m idx} $::pd_menus::putmenu_struct {
+        if [winfo exists $m] {
+            $m entryconfigure $idx -state normal
+        }
+        break
+    }
 }
