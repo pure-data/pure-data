@@ -28,10 +28,10 @@ package require Tcl 8.4 9
 
 package require http 2
 # try enabling https if possible
-if { [catch {package require tls 1.7} ] } {} else {
+if { [catch {package require tls 1.7-} ] } {} else {
     ::tls::init \
         -autoservername 1 \
-        -ssl2 false -ssl3 false -tls1 true
+        -tls1 false -tls1.1 false
     ::http::register https 443 ::tls::socket
 }
 # try enabling PROXY support if possible
@@ -108,7 +108,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.10.10] } {
+if { [::deken::versioncheck 0.10.14] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -956,6 +956,8 @@ proc ::deken::utilities::parse_filename {filename} {
             }
         }
     }
+    # normalize version
+    set version [string map {_ ~} ${version}]
     return [list ${pkgname} ${version} ${archs}]
 }
 
@@ -1338,7 +1340,10 @@ proc ::deken::preferences::create {winid} {
                 -command {set ::deken::preferences::add_to_path \
                               [set ::deken::preferences::add_to_path_temp \
                                    [::deken::utilities::tristate ${::deken::preferences::add_to_path_temp} 1 0]]}
-        set msg "- Always add to search path\n- Never add to search path\n- Prompt before adding"
+        set msg0 [_ "- Always add to search path" ]
+        set msg1 [_ "- Never add to search path" ]
+        set msg2 [_ "- Prompt before adding" ]
+        set msg [string cat $msg0 "\n" $msg1 "\n" $msg2]
         bind ${winid}.install.add_to_path <Enter> "::deken::balloon::show ${winid}.install_balloon %X \[winfo rooty %W\] \{${msg}\} 0 30"
         bind ${winid}.install.add_to_path <Leave> [list ::deken::balloon::hide ${winid}.install_balloon]
 
