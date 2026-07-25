@@ -1695,7 +1695,12 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         /* cut all selected (matched) objects and undo, to reinstantiate them */
     if (found)
     {
-        canvas_cut(gl);
+            /* fake a "clear" command followed by "undo" */
+        canvas_undo_add(gl, UNDO_SEQUENCE_START, "clear", 0);
+        canvas_undo_add(gl, UNDO_CUT, "clear",
+            canvas_undo_set_cut(gl, UCUT_CLEAR));
+        canvas_doclear(gl);
+        canvas_undo_add(gl, UNDO_SEQUENCE_END, "clear", 0);
         canvas_undo_undo(gl);
         canvas_undo_rebranch(gl);
         glist_noselect(gl);
