@@ -215,13 +215,7 @@ const char**sys_get_dllextensions(void)
     return sys_dllextent;
 }
 
-    /* maintain list of loaded modules to avoid repeating loads */
-typedef struct _loadedlist
-{
-    struct _loadedlist *ll_next;
-    t_symbol *ll_name;
-} t_loadlist;
-
+    /* moved t_loadlist to stuff.h to be used by canvas.c */
 static t_loadlist *sys_loaded;
 int sys_onloadlist(const char *classname) /* return true if already loaded */
 {
@@ -241,6 +235,12 @@ void sys_putonloadlist(const char *classname)
     ll->ll_next = sys_loaded;
     sys_loaded = ll;
     /* post("put on list %s", classname); */
+}
+
+    /* get a pointer to the list of loaded modules */
+t_loadlist *sys_getloadlist(void)
+{
+    return sys_loaded;
 }
 
 void class_set_extern_dir(t_symbol *s);
