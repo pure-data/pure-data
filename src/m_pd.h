@@ -533,9 +533,9 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
     deal with multichannel inputs.  In this case the channel counts of
     the inputs might not match; it's up to the dsp method to figure out what
     to do.  Also, the output signal vectors aren't allocated.  The output
-    channel counts have to be specified by the object at DSP time.  If
-    the object can't put itself on the DSP chain it then has to create
-    outputs anyway and arrange to zero them.
+    channel counts have to be specified by the object at DSP time with the
+    signal_setmultiout() function.  If the object can't put itself on the DSP
+    chain it then has to create outputs anyway and arrange to zero them.
 
     By default, if a tilde object's inputs are unconnected, Pd fills them
     in by adding scalar-to-vector conversions to the DSP chain as needed before
@@ -729,6 +729,10 @@ typedef t_int *(*t_perfroutine)(t_int *args);
 
 EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
     t_sample *scalarptr);
+    /* a multichannel class (see CLASS_MULTICHANNEL) must call this function
+    on every output to replace the dummy signal with a real signal with the
+    appropriate channel count. NOTE: 'nchans' cannot be less than one, i.e.
+    empty signals are not allowed! */
 EXTERN void signal_setmultiout(t_signal **sig, int nchans);
 
 EXTERN t_int *plus_perform(t_int *args);
