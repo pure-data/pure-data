@@ -432,6 +432,27 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     iemgui_size(x, &x->x_gui);
 }
 
+static void my_numbox_wheel(t_my_numbox *x, t_symbol *s, int argc, t_atom *argv)
+{
+    float dy = atom_getfloat(argv+1);
+    if (dy == 0) return;
+    int mod = atom_getint(argv+2);
+    double k2 = (mod & 1) ? 0.01 : 1.0;
+        /* for numboxes, use fixed steps since they're typically unlimited range */
+    if (x->x_lin0_log1) {
+            /* logarithmic mode - use exponential steps based on log range */
+        double log_ratio = log(x->x_max / x->x_min);
+        double log_step = log_ratio / 127.0 * k2;
+        x->x_val *= exp(-dy * log_step);
+    } else {
+            /* linear mode - use fixed steps */
+        x->x_val -= dy * k2;
+    }
+    my_numbox_clip(x);
+    sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    my_numbox_bang(x);
+}
+
 static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
@@ -766,6 +787,8 @@ void g_numbox_setup(void)
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_motion,
         gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
+    class_addmethod(my_numbox_class, (t_method)my_numbox_wheel,
+        gensym("wheel"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,
