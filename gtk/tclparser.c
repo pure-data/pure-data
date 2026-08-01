@@ -9,6 +9,12 @@
 #include <tcl.h>
 #include "pdgtk.h"
 
+#if (TCL_MAJOR_VERSION < 9)
+/* Tcl_Size was introduced with Tcl-9.0 */
+#include <stddef.h>
+typedef ptrdiff_t Tcl_Size;
+#endif
+
 /******************** tcl stuff ***********************/
 
 static Tcl_Interp *tcl_interp;

@@ -353,21 +353,21 @@ AS_CASE([${ac_cv_libctf_qsort_r_signature}],
   ])
 
 # sometimes isnan()/isinf()/isifinite() just don't work
-AC_CACHE_CHECK([whether isnan() is usable], tcl_cv_isnan, [
+AC_CACHE_CHECK([whether isnan() is usable], have_isnan, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isnan(0.0);                     /* Generates an error if isnan is missing */
-]])],[tcl_cv_isnan=yes],[tcl_cv_isnan=no])])
-AS_IF([test "${tcl_cv_isnan}" = no], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
-AC_CACHE_CHECK([whether isinf() is usable], tcl_cv_isinf, [
+]])],[have_isnan=yes],[have_isnan=no])])
+AS_IF([test "${have_isnan}" = no], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
+AC_CACHE_CHECK([whether isinf() is usable], have_isinf, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isinf(0.0);                     /* Generates an error if isinf is missing */
-]])],[tcl_cv_isinf=yes],[tcl_cv_isinf=no])])
-AS_IF([test "${tcl_cv_isinf}" = no], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
-AC_CACHE_CHECK([whether isfinite() is usable], tcl_cv_isfinite, [
+]])],[have_isinf=yes],[have_isinf=no])])
+AS_IF([test "${have_isinf}" = no], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
+AC_CACHE_CHECK([whether isfinite() is usable], have_isfinite, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isfinite(0.0);                     /* Generates an error if isfinite is missing */
-]])],[tcl_cv_isfinite=yes],[tcl_cv_isfinite=no])])
-AS_IF([test "${tcl_cv_isfinite}" = no], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
+]])],[have_isfinite=yes],[have_isfinite=no])])
+AS_IF([test "${have_isfinite}" = no], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
 
 # Checks for libraries.
 have_dl=yes
