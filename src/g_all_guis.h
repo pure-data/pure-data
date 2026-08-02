@@ -63,7 +63,7 @@
 
 #define IEM_VU_DEFAULTSIZE 4
 #define IEM_VU_LARGESMALL  2
-#define IEM_VU_MINSIZE     2
+#define IEM_VU_MINSIZE     1
 #define IEM_VU_MAXSIZE     25
 #define IEM_VU_STEPS       40
 
