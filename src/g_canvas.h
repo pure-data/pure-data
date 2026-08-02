@@ -118,8 +118,8 @@ typedef struct _editor
     t_binbuf *e_deleted;            /* last stuff we deleted */
     t_guiconnect *e_guiconnect;     /* GUI connection for filtering messages */
     struct _glist *e_glist;         /* glist which owns this */
-    int e_xwas;                     /* xpos on last mousedown or motion event */
-    int e_ywas;                     /* ypos, similarly */
+    float e_xwas;                   /* xpos on last mousedown or motion event */
+    float e_ywas;                   /* ypos, similarly */
     int e_selectline_index1;        /* indices for the selected line if any */
     int e_selectline_outno;         /* (only valid if e_selectedline is set) */
     int e_selectline_index2;
@@ -130,8 +130,8 @@ typedef struct _editor
     unsigned int e_textdirty: 1;    /* one if e_textedfor has changed */
     unsigned int e_selectedline: 1; /* one if a line is selected */
     unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
-    int e_xnew;                     /* xpos for next move event */
-    int e_ynew;                     /* ypos, similarly */
+    float e_xnew;                   /* xpos for next move event */
+    float e_ynew;                   /* ypos, similarly */
     unsigned char *e_pastebuffer;   /* array of characters to paste */
     int e_npaste;                   /* number of chars to paste */
 } t_editor;

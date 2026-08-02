@@ -536,6 +536,7 @@ static int cmd_pdtk_ping(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
     socket_send("pd ping;\n");
+    return (TCL_OK);
 }
 
  /* pdtk_watchdog - start a watchdog process */
@@ -544,6 +545,7 @@ static int cmd_pdtk_watchdog(ClientData cdata, Tcl_Interp *interp,
 {
     fprintf(stderr, "start watchdog\n");
     pdgtk_start_watchdog();
+    return (TCL_OK);
 }
 
  /* cmd_pdtk_text_editing - turn 'text editing' on and off */

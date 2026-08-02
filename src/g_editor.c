@@ -3068,11 +3068,11 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
     else
         pdgui_vmess(0, "crs ii ii ii ii ii",
             x, "coords", "x",
-            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
-            x->gl_editor->e_xwas, ypos,
-            xpos, ypos,
-            xpos, x->gl_editor->e_ywas,
-            x->gl_editor->e_xwas, x->gl_editor->e_ywas);
+            (int)x->gl_editor->e_xwas, (int)x->gl_editor->e_ywas,
+            (int)x->gl_editor->e_xwas, (int)ypos,
+            (int)xpos, (int)ypos,
+            (int)xpos, (int)x->gl_editor->e_ywas,
+            (int)x->gl_editor->e_xwas, (int)x->gl_editor->e_ywas);
 }
 
 void canvas_mouseup(t_canvas *x,
