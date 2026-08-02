@@ -214,6 +214,8 @@ static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
         char *tag, *color;
         dashed = *Tcl_GetString(objv[4]);   /* nonempty -> dashed */
         Tcl_GetDouble(interp, Tcl_GetString(objv[5]), &width);
+        if (width <= 0)
+            width = 1;
         color = Tcl_GetString(objv[6]);
         tag = Tcl_GetString(objv[2]);
         for (i = 0; i < 2 * npoints; i++)
@@ -259,8 +261,10 @@ static int cmd_pdtk_canvas_configure_line(ClientData cdata, Tcl_Interp *interp,
         t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
         double width;
         Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &width);
+        if (width <= 0)
+            width = 1;
         gfx_canvas_configure_whatev(canvas, Tcl_GetString(objv[2]),
-            (int)width, Tcl_GetString(objv[4]), 0);
+            (int)width, Tcl_GetString(objv[4]), Tcl_GetString(objv[4]));
     }
     return (TCL_OK);
 }

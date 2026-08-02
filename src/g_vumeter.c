@@ -61,7 +61,9 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
 
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 xpos, j, xpos + x->x_gui.x_w + zoom, j);
-            pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill",
+            pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
+                canvas, tag,
+                x->x_led_size * zoom + zoom,  /* peak LED is slightly fatter */
                 iemgui_color_hex[i]);
         }
         else
@@ -69,7 +71,9 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
             int mid = xpos + x->x_gui.x_w/2;
             int pkh = PEAKHEIGHT * zoom;
 
-            pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill",
+            pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
+                canvas, tag,
+                0,  /* peak LED is slightly fatter */
                 x->x_gui.x_bcol);
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 mid, ypos + pkh, mid, ypos + pkh);
@@ -172,9 +176,8 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos - hmargin, ypos - vmargin,
         xpos+x->x_gui.x_w + hmargin, ypos+x->x_gui.x_h + vmargin);
-    pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol,
-        "-outline", THISGUI->i_foregroundcolor);
+    pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
+        zoom, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_SCALE", x);
     if(x->x_gui.x_fsf.x_selected)
@@ -183,8 +186,6 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     else
         pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
             "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
-    sprintf(tag, "%p_RLED", x);
-    pdgui_vmess(0, "crs ri", canvas, "itemconfigure", tag, "-width", ledw);
 
     for(i = 1; i <= IEM_VU_STEPS + 1; i++)
     {
@@ -193,8 +194,10 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         yyy = k4 + k1*(k2-i);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             quad1, yyy, quad3, yyy);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-            "-fill", iemgui_color_hex[led_col]);
+        pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
+        canvas, tag,
+        ledw,
+        iemgui_color_hex[led_col]);
 
         sprintf(tag, "%p_SCALE%d", x, i);
         pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -219,16 +222,17 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         quad1 - zoom, ypos - zoom,
         quad3 + zoom, ypos - zoom + k1*IEM_VU_STEPS);
-    pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-        "-fill", x->x_gui.x_bcol, "-outline", x->x_gui.x_bcol);
+    pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
+        1, x->x_gui.x_bcol, x->x_gui.x_bcol);
 
     sprintf(tag, "%p_PLED", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         mid, ypos + PEAKHEIGHT * zoom,
         mid, ypos + PEAKHEIGHT * zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", ledw+zoom, /* peak LED is slightly fatter */
-        "-fill", x->x_gui.x_bcol);
+    pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
+        canvas, tag,
+        ledw+zoom,  /* peak LED is slightly fatter */
+        x->x_gui.x_bcol);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -254,15 +258,21 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
     sprintf(tag_object, "%p_", x);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
+        canvas, tag, tag_object, 0,
+        x->x_gui.x_bcol, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
     for(i = 1; i < IEM_VU_STEPS+1; i++)
     {
+        /* original form - note the use of the third tag "_RLED"
+        which I think is unused...? */
         sprintf(tag, "%p_RLED", x);
         sprintf(tag_n, "%p_RLED%d", x, i);
-        pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-            0, 0, 0, 0, "-tags", 3, tags);
+        pdgui_vmess("pdtk_canvas_create_line", "crrii k iiii",
+        canvas, tag_n, tag, 0, 0,
+        x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
         sprintf(tag, "%p_SCALE", x);
         sprintf(tag_n, "%p_SCALE%d", x, i);
@@ -276,12 +286,16 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
         0, 0, "-anchor", "w", "-tags", 3, tags);
 
     sprintf(tag, "%p_RCOVER", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_vmess("pdtk_canvas_create_rect", "crr ikk iiii",
+        canvas, tag, tag_object,
+        1, x->x_gui.x_bcol, x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
     sprintf(tag, "%p_PLED", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_vmess("pdtk_canvas_create_line", "crrii k iiii",
+        canvas, tag, tag_object, 0, 0,
+        x->x_gui.x_bcol,
+        0, 0, 0, 0);
 
     sprintf(tag, "%p_LABEL", x);
     sprintf(tag_n, "label");
@@ -303,7 +317,8 @@ static void vu_draw_select(t_vu* x,t_glist* glist)
         col = lcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
+        IEMGUI_ZOOM(x), x->x_gui.x_bcol, col);
     sprintf(tag, "%p_SCALE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
     sprintf(tag, "%p_LABEL", x);

@@ -559,11 +559,11 @@ proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
 
     if {$grouptag eq "-"} {
         eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color -capstyle projecting \
+            -width $width -fill $color  \
             -tags \{$tag $grouptag\}]
     } else {
         eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color -capstyle projecting \
+            -width $width -fill $color  \
             -tags \{$tag $grouptag\}]
     }
 }
