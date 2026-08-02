@@ -2559,7 +2559,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                         pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
                             x, "x", "-",
                             0, x->gl_zoom, THISGUI->i_foregroundcolor,
-                            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                            (int)x->gl_editor->e_xwas,
+                            (int)x->gl_editor->e_ywas,
                             xpix, ypix);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
@@ -2810,7 +2811,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
     t_gobj *y1;
     int x21=0, y21=0, x22=0, y22=0;
     t_gobj *y2;
-    int xwas = x->gl_editor->e_xwas,
+    float xwas = x->gl_editor->e_xwas,
         ywas = x->gl_editor->e_ywas;
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
@@ -2819,10 +2820,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
         pdgui_vmess("pdtk_canvas_delete", "cs", x, "x");
     }
-    else
-        pdgui_vmess(0, "crs iiii",
+    else pdgui_vmess(0, "crs ii ii",
             x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
+            (int)x->gl_editor->e_xwas, (int)x->gl_editor->e_ywas,
+                (int)xpos, (int)ypos);
 
     if ((y1 = canvas_findhitbox(x, xwas, ywas, &x11, &y11, &x12, &y12))
         && (y2 = canvas_findhitbox(x, xpos, ypos, &x21, &y21, &x22, &y22)))
