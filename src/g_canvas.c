@@ -1019,9 +1019,9 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess("pdtk_canvas_create_patchcord", "crr iik iiii",
-                glist_getcanvas(x), tag, "-",
-                    0, (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crrr ik iiii",
+                glist_getcanvas(x), tag, "-", "-",
+                    (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
                         * x->gl_zoom, THISGUI->i_foregroundcolor,
                     t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }

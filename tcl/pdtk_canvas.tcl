@@ -572,7 +572,7 @@ proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
 #  the "raise cords" command in g_text.c will work.  In gtk we'll do this
 #  a better way.
 
-proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} {
+proc pdtk_canvas_create_patchcord {canvas tag grouptag unused width color args} {
 
 #  old version using eval:
 #    eval [concat $canvas create line $args \
@@ -580,6 +580,18 @@ proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} 
     $canvas create line {*}$args \
         -width $width -fill $color -capstyle projecting -tags [list $tag cord]
 
+}
+
+proc pdtk_canvas_create_poly {canvas tag filled bezier \
+    width fillcolor outlinecolor args} {
+    if ($filled) {
+        $canvas create polygon {*}$args \
+        -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
+            -tags $tag
+    } else {
+        $canvas create line {*}$args \
+            -width $width -smooth $bezier -fill $outlinecolor -tags $tag
+    }
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
@@ -620,7 +632,6 @@ proc pdtk_text_select {canvas tag start end} {
         $canvas focus $tag
     }
 }
-
 
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag

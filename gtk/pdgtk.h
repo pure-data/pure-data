@@ -17,7 +17,8 @@ void gfx_canvas_menuclose(t_canvas *x, const char *s);
 
 /* paths (polygons, etc) */
 void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
-    double width, int npoints, double *coords, int patchline);
+    double width, int npoints, double *coords, int patchline,
+        char *strokecolor, char *fillcolor);
 
 void gfx_canvas_configure_whatev(t_canvas *x, char *tag, int width,
     const char *fillcolor, const char *outlinelcolor);

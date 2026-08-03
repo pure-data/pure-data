@@ -1,7 +1,12 @@
-This is a test to see how ugly it would be to simply make the needed
-gtk bindings to tcl so that we can run Pd with a GTK front end. This might
-turn out to be the best way to support 'wayland' (which linux is migrating to).
+This is a test to see how ugly it would be to simply make the needed gtk
+bindings to tcl so that we can run Pd with a GTK4 front end. This might turn out
+to be the best way to support 'wayland' (which linux is migrating to). As of Pd
+0.57 this is looking clearly workable, but with a major inconvenience: GTK
+itself seems to change its APIs every few years.
 
+the GTK front end is vector based so printing and zooming will now work
+much, much better than before.  OTOH on-screen lines are antialiased and appear
+blurry.
 
 To test:
 
@@ -11,32 +16,23 @@ Set the PDDEBUG environment variable to enable debugging printout.
 
 or compile with DEBUGGTK or DEBUGTCL for various ad-hoc printout.
 
-So far, one can click on things, go into and out of edit
-mode, move boxes around and/or type into them.
+It's possible to run and edit patches; the four text boxes plus the bang,
+toggle, and VU IEMGUIs work (except for text labels!) are implemented, and a few
+classic repertory patches are working.
 
-There are about 10 tcl commands that get parsed.  The Pd source has
-325 calls to pdgui_vmess / pdgui_vamess, of which perhaps 100 or 200
-are distinct.
-
-At the moment I'm modifying the pdgui calls, one by one, to replace things
-like
-
+About 20 of the perhaps 100 or 200 distinct tcl commands used by Pd are
+implemented.  Calls with optional flag-like arguemnts, like
    [...] create line [...] -fill #000000
+are gradually being replaced by fixed-argument-list versions in the Pd sources
+to make front-end parsing simpler, e.g., pdtk_canvas_create_line  .
 
-with
-
-   pdtk_canvas_create_line #00000 [...]
-
-and adding functions like pdtk_canvas_create_line to the tcl code, so that
-it becomes easier to parse the tcl commands from the gtk end.
 
 todo next:
-integrate copy and paste
 dialog windows
 finish replacing "create line" with pdtk_canvas_create_line calls
 put in text buffer in main window
 fill out menus
-
+scroll and zoom - hijack zoom and handle it on GTK end
 
 ideas:
 can some or all of the many dialog windows be re-implemented as Pd patches?

@@ -194,10 +194,11 @@ static int cmd_pdtk_text_set(ClientData cdata, Tcl_Interp *interp,
  /* cmd_pdtk_canvas_create_line
     <canvas> <tag> <grouptag> <dashed> <width> <color> <coords...> */
 static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
-    int objc, Tcl_Obj *const objv[], int patchline)
+    int objc, Tcl_Obj *const objv[], int patchline, int poly)
 {
     Tcl_HashEntry *hash;
-    if (objc < 11 || !(objc & 1))
+    int fixedargs = 7 + poly;   /* polygons get extra fill-color arg */
+    if (objc < fixedargs+4 || ((objc+fixedargs) & 1))
     {
         fprintf(stderr, "pdtk_canvas_do_create_line: bad #args = %d\n", objc);
         return (TCL_ERROR);
@@ -209,20 +210,21 @@ static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
     else
     {
         t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
-        int npoints = (objc - 7)/2, dashed, i;
+        int npoints = (objc - fixedargs)/2, dashed, i;
         double *coords = (double *)alloca(2 * npoints * sizeof(*coords)), width;
-        char *tag, *color;
+        char *tag, *strokecolor, *fillcolor;
         dashed = *Tcl_GetString(objv[4]);   /* nonempty -> dashed */
         Tcl_GetDouble(interp, Tcl_GetString(objv[5]), &width);
         if (width <= 0)
             width = 1;
-        color = Tcl_GetString(objv[6]);
+        fillcolor = (poly ? Tcl_GetString(objv[6]) : 0);
+        strokecolor = Tcl_GetString(objv[6+poly]);
         tag = Tcl_GetString(objv[2]);
         for (i = 0; i < 2 * npoints; i++)
-            Tcl_GetDouble(interp, Tcl_GetString(objv[7+i]), &coords[i]);
+            Tcl_GetDouble(interp, Tcl_GetString(objv[fixedargs+i]), &coords[i]);
         dashed = strcmp(Tcl_GetString(objv[1]), "");
         gfx_canvas_addpath(canvas, tag, "", dashed, width, npoints, coords,
-            patchline);
+            patchline, strokecolor, fillcolor);
     }
     return (TCL_OK);
 }
@@ -232,15 +234,23 @@ static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
 static int cmd_pdtk_canvas_create_line(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0);
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0, 0));
 }
 
  /* cmd_pdtk_canvas_create_patchcord
     <canvas> <tag> <dashed> <width> <color> <coords...> */
-static int cmd_pdtk_canvas_create_patchcord(ClientData cdata, Tcl_Interp *interp,
+static int cmd_pdtk_canvas_create_patchcord(ClientData cdata,
+    Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
+{
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 1, 0));
+}
+
+ /* cmd_pdtk_canvas_create_poly
+    <canvas> <tag> <bez> <width> <color> <coords...> */
+static int cmd_pdtk_canvas_create_poly(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 1);
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0, 1));
 }
 
     /* configure_line <canvas> <tag> <width> <color> */
@@ -632,6 +642,7 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_text_set", cmd_pdtk_text_set},
     {"pdtk_canvas_reflecttitle", cmd_pdtk_canvas_reflecttitle},
     {"pdtk_canvas_create_line", cmd_pdtk_canvas_create_line},
+    {"pdtk_canvas_create_poly", cmd_pdtk_canvas_create_poly},
     {"pdtk_canvas_configure_line", cmd_pdtk_canvas_configure_line},
     {"pdtk_canvas_create_patchcord", cmd_pdtk_canvas_create_patchcord},
     {"pdtk_canvas_create_rect", cmd_pdtk_canvas_create_rect},

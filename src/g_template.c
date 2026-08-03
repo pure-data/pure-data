@@ -1403,20 +1403,18 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-    char tag0[80], tag[80];
-    const char*tags[] = {tag, tag0, "curve"};
+    char tag[80];
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag0, "curve%p", x);
-    sprintf(tag , "curve%p_data%p", x, data);
+    sprintf(tag, "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            int outline;
+            int fill, outline;
             t_word pix[200];
 
             if (n > 100)
@@ -1437,31 +1435,18 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 width *= glist_getzoom(glist);
             outline = numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
-
-            pdgui_vmess(0, "crr iiii rf ri rS",
-                glist_getcanvas(glist), "create",
-                (flags & CLOSED)?"polygon":"line",
-                0, 0, 0, 0,
-                "-width", width,
-                "-smooth", !!(flags & BEZ),
-                "-tags", 3, tags);
+            if (flags & CLOSED)
+                fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+            else fill = -1;
+            pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                glist_getcanvas(glist), tag,
+                (fill >= 0), !!(flags & BEZ), width,
+                (fill >= 0 ? fill : 0), outline,
+                0, 0, 0, 0);
 
             pdgui_vmess(0, "crs w",
-                glist_getcanvas(glist), "coords", tag,
-                2*n, pix);
-
-            if (flags & CLOSED)
-            {
-                int fill = numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
-                pdgui_vmess(0, "crs rk rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", fill,
-                    "-outline", outline);
-            } else
-                pdgui_vmess(0, "crs rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", outline);
+                glist_getcanvas(glist), "coords", tag, 2*n, pix);
         }
         else post(
             "warning: drawing shapes need at least two points to be graphed");
@@ -1469,7 +1454,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
+                tag);
     }
 }
 
@@ -2105,7 +2091,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if (i == nelem-1 || inextx != ixpix)
                 {
                     pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                        glist_getcanvas(glist), tag, "-", 0,
+                        glist_getcanvas(glist), tag0, "-", 0,
                         color, THISGUI->i_backgroundcolor,
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -2233,13 +2219,19 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                pdgui_vmess(0, "crr ri rk rk ri rS",
+                /* pdgui_vmess(0, "crr ri rk rk ri rS",
                     glist_getcanvas(glist), "create", "polygon",
                     "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
                     "-fill", outline,
                     "-outline", outline,
                     "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags);
+                    "-tags", 3, tags); */
+                pdgui_vmess("pdtk_canvas_create_poly", "cr ii i kk iiii",
+                    glist_getcanvas(glist), tag0,
+                    1, (style == PLOTSTYLE_BEZ),
+                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    outline, outline,
+                    0, 0, 0, 0);
 
                 pdgui_vmess(0, "crs w",
                     glist_getcanvas(glist), "coords", tag0,
@@ -2290,15 +2282,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ndrawn = 2;
                 }
 
-                if(ndrawn)
+                if (ndrawn)
                 {
-                    pdgui_vmess(0, "crr iiii rf rk ri rS",
-                        glist_getcanvas(glist), "create", "line",
-                        0, 0, 0, 0,
-                        "-width", linewidth,
-                        "-fill", outline,
-                        "-smooth", (style == PLOTSTYLE_BEZ),
-                        "-tags", 3, tags);
+                    pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                        glist_getcanvas(glist), tag0,
+                        0, (style == PLOTSTYLE_BEZ), linewidth,
+                        outline, outline,
+                        0, 0, 0, 0);
                     pdgui_vmess(0, "crs w",
                         glist_getcanvas(glist), "coords", tag0,
                         ndrawn*2, coordinates);
@@ -2357,7 +2347,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         }
             /* and then the trace */
         pdgui_vmess("pdtk_canvas_delete", "cs",
-            glist_getcanvas(glist), tag);
+            glist_getcanvas(glist), tag0);
     }
 }
 
@@ -3097,20 +3087,26 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
         char *textbuf;
         int textlen;
             /* draw label */
-        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        /* SETSYMBOL(fontatoms+0, gensym(sys_font));
         SETFLOAT (fontatoms+1,
             -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight)); */
             /* display label */
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            pdgui_vmess("pdtk_text_new", "cS iis i k",
+                glist_getcanvas(glist), 2, tags,
+                xloc, yloc, x->x_label->s_name,
+                sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
+                color);
+            /* pdgui_vmess(0, "crr ii rs rk rs rA rS",
                 glist_getcanvas(glist), "create", "text",
-                xloc, yloc,
+                xloc, yloc, x->x_label->s_name,
+
                 "-anchor", "nw",
                 "-fill", color,
                 "-text", x->x_label->s_name,
                 "-font", 3, fontatoms,
-                "-tags", 2, tags);
+                "-tags", 2, tags); */
             /* draw text */
         rtext_setcolor(rtext, color);
         drawtext_gettext(z, data, &textbuf, &textlen);
