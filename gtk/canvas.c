@@ -185,6 +185,30 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
     fprintf(stderr, "canvas_coords: unknown tag %s\n", tag);
 }
 
+void gfx_canvas_setcursor(t_canvas *x, char *cursor)
+{
+    static GdkCursor *nothingcursor, *clickmecursor, *resizecursor,
+        *connectcursor;
+    if (!nothingcursor)
+    {
+        nothingcursor = gdk_cursor_new_from_name("default", 0);
+        clickmecursor = gdk_cursor_new_from_name("pointer", 0);
+        resizecursor = gdk_cursor_new_from_name("all-resize", 0);
+        connectcursor = gdk_cursor_new_from_name("alias", 0);
+    }
+    if (!strcmp(cursor, "nothing"))
+        gtk_widget_set_cursor(x->c_drawing_area, nothingcursor);
+    else if (!strcmp(cursor, "clickme"))
+        gtk_widget_set_cursor(x->c_drawing_area, clickmecursor);
+    else if (!strcmp(cursor, "clickme"))
+        gtk_widget_set_cursor(x->c_drawing_area, clickmecursor);
+    else if (!strcmp(cursor, "resize"))
+        gtk_widget_set_cursor(x->c_drawing_area, resizecursor);
+    else if (!strcmp(cursor, "connect"))
+        gtk_widget_set_cursor(x->c_drawing_area, connectcursor);
+}
+
+
 static void gfx_text_draw(t_text *x, t_item *it, t_canvas *c, cairo_t *cr)
 {
     cairo_font_extents_t extents;

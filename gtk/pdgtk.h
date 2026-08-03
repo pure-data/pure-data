@@ -49,6 +49,10 @@ void gfx_canvas_reflecttitle(t_canvas *x, const char *path, const char *name,
 
 void gfx_canvas_text_select(t_canvas *x, char *tag, int start, int end);
 
+    /* set teh cursor */
+void gfx_canvas_setcursor(t_canvas *x, char *cursor);
+
+
 /* debugging printout to stderr */
 void gfx_canvas_spew(t_canvas *x);
 

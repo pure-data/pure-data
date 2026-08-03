@@ -32,7 +32,7 @@ static int cmd_window(ClientData cdata, Tcl_Interp *interp,
     if (objc == 4 && !strcmp(Tcl_GetString(objv[1]), "configure") &&
         !strcmp(Tcl_GetString(objv[2]), "-cursor"))
     {
-        fprintf(stderr, "cursor %s\n", Tcl_GetString(objv[3]));
+        gfx_canvas_setcursor(x, Tcl_GetString(objv[3]));
         return (TCL_OK);
     }
     else return (TCL_ERROR);
@@ -722,9 +722,14 @@ int tcl_init(void)
                 tcl_knowncommands[i].e_fn,  (ClientData)NULL, NULL);
 
     rc = Tcl_Eval(tcl_interp, "puts stderr \"started tcl interpreter\"\n\
-    set cursor_editmode_nothing nothing\n\
     set cursor_runmode_nothing nothing\n\
-    set cursor_runmode_clickme clickme\n");
+    set cursor_runmode_clickme clickme\n\
+    set cursor_runmode_thicken resize\n\
+    set cursor_runmode_addpoint connect\n\
+    set cursor_editmode_nothing nothing\n\
+    set cursor_editmode_connect connect\n\
+    set cursor_editmode_disconnect clickme\n\
+    set cursor_editmode_resize resize\n");
     if (rc != TCL_OK)
     {
         fprintf(stderr, "Error 1\n");
