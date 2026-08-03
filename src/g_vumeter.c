@@ -265,12 +265,11 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
 
     for(i = 1; i < IEM_VU_STEPS+1; i++)
     {
-        /* original form - note the use of the third tag "_RLED"
-        which I think is unused...? */
-        sprintf(tag, "%p_RLED", x);
+        /* note we're not adding the third tag "_RLED"
+            which I think is unused...? */
         sprintf(tag_n, "%p_RLED%d", x, i);
         pdgui_vmess("pdtk_canvas_create_line", "crrii k iiii",
-        canvas, tag_n, tag, 0, 0,
+        canvas, tag_n, tag_object, 0, 0,
         x->x_gui.x_bcol,
         0, 0, 0, 0);
 
