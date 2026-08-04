@@ -653,8 +653,7 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     outlet_pointer(x->x_otherout, x->x_gpp);
 }
 
-    /* send a message to the window containing the object pointed to */
-static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+static t_glist *ptrobj_getwindow(t_ptrobj *x, const char *invokedas)
 {
     t_scalar *sc;
     t_symbol *templatesym;
@@ -667,8 +666,8 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     {
         if (x->x_name)
             outlet_bang(x->x_bangout);
-        else pd_error(x, "pointer send-window: empty pointer");
-        return;
+        else pd_error(x, "pointer %s: empty pointer", invokedas);
+        return (0);
     }
     gs = x->x_gpp->gp_stub;
     if (gs->gs_which == GP_GLIST)
@@ -680,12 +679,28 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
             owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
         glist = owner_array->a_gp.gp_stub->gs_un.gs_glist;
     }
-    canvas = (t_pd *)glist_getcanvas(glist);
+    return (glist_getcanvas(glist));
+}
+
+    /* send a message to the window containing the object pointed to */
+static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_pd *zz = &ptrobj_getwindow(x, s->s_name)->gl_pd;
+    if (!zz)
+        return;
     if (argc && argv->a_type == A_SYMBOL)
-        pd_typedmess(canvas, argv->a_w.w_symbol, argc-1, argv+1);
+        pd_typedmess(zz, argv->a_w.w_symbol, argc-1, argv+1);
     else pd_error(x, "pointer send-window: no message?");
 }
 
+    /* report window name */
+static void ptrobj_getwindowname(t_ptrobj *x)
+{
+    t_glist *canvas = ptrobj_getwindow(x, "get-window-name");
+    if (!canvas)
+        return;
+    outlet_symbol(x->x_bangout, canvas->gl_name);
+}
 
     /* send the pointer to the named object */
 static void ptrobj_send(t_ptrobj *x, t_symbol *s)
@@ -732,7 +747,6 @@ static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
     gpointer_copy(gp, x->x_gpp);
     ptrobj_bang(x);
 }
-
 
 static void ptrobj_rewind(t_ptrobj *x)
 {
@@ -793,6 +807,8 @@ static void ptrobj_setup(void)
         A_POINTER, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_getwindowname,
+        gensym("window-name"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,
         gensym("rewind"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_nearest,
