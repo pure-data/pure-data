@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -108,7 +109,17 @@ static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
     char *str_end = NULL;
     f = strtod(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
-        pd_error(x, "couldn't convert %s to float", s->s_name);
+    {
+        /* OK, try to find an internal number, which must start with a
+        digit.  (numbers starting with '-' or '.' aren't matched correctly.) */
+        int i, len = strlen(s->s_name);
+        for (i = 0; i < len && !isdigit(s->s_name[i]); i++)
+            ;
+        if (i >= len || ((f = strtod(s->s_name+i, &str_end)) != 0) &&
+            str_end == s->s_name+i)
+                pd_error(x, "couldn't convert %s to float", s->s_name);
+        else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
+    }
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
