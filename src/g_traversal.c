@@ -723,9 +723,7 @@ static void ptrobj_bang(t_ptrobj *x)
     t_typedout *to;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        if (x->x_name)
-            outlet_bang(x->x_bangout);
-        else pd_error(x, "pointer bang: empty pointer");
+        outlet_bang(x->x_bangout);
         return;
     }
     templatesym = gpointer_gettemplatesym(x->x_gpp);

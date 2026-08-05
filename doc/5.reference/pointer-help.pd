@@ -1,8 +1,8 @@
-#N canvas 306 46 905 793 12;
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N struct pointer-template3 float x float y float z array array1 pointer-template3-element list list1;
-#N struct pointer-template3-element float x float y list list2;
+#N struct pointer-template3 float x float y float z array array1 pointer-template3-element 1 text list1;
+#N struct pointer-template3-element float x float y text list2;
+#N canvas 412 71 905 793 12;
 #X text 11 735 see also:;
 #X obj 31 11 pointer;
 #N canvas 489 160 422 137 pointer-template1 0;
@@ -235,7 +235,6 @@
 #X connect 16 0 6 0;
 #X connect 18 0 6 0;
 #X restore 760 567 pd next_message;
-#X text 163 636 output of "get" message or bang on end-of-list;
 #X obj 83 736 struct;
 #X msg 124 457 get x y;
 #X text 184 454 get fields of a scalar;
@@ -298,6 +297,7 @@
 #X text 311 489 send pointer to a receive name:, f 18;
 #X msg 145 610 window-name;
 #X text 230 611 send name of containing canvas to right outlet;
+#X text 161 632 output of "get" message or bang on empty pointer or end-of-list, f 33;
 #X connect 11 0 14 0;
 #X connect 11 1 31 0;
 #X connect 11 1 15 0;
@@ -318,7 +318,7 @@
 #X connect 40 0 11 0;
 #X connect 45 0 11 0;
 #X connect 49 0 11 0;
-#X connect 55 0 11 0;
-#X connect 57 0 59 0;
-#X connect 59 0 11 0;
-#X connect 73 0 11 0;
+#X connect 54 0 11 0;
+#X connect 56 0 58 0;
+#X connect 58 0 11 0;
+#X connect 72 0 11 0;
