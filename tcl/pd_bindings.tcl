@@ -77,6 +77,11 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-3>        {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
     bind all <$::modifier-Key-4>        {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
     bind all <$::modifier-Key-5>        {::pd_menucommands::scheduleAction menu_send_float %W text 0}
+    bind all <$::modifier-Key-KP_1>     {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
+    bind all <$::modifier-Key-KP_2>     {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
+    bind all <$::modifier-Key-KP_3>     {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
+    bind all <$::modifier-Key-KP_4>     {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
+    bind all <$::modifier-Key-KP_5>     {::pd_menucommands::scheduleAction menu_send_float %W text 0}
     bind all <$::modifier-Key-slash>    {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
     bind all <$::modifier-Key-period>   {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
 
