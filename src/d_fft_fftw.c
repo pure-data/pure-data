@@ -46,7 +46,17 @@ typedef struct {
     fftwf_complex *in,*out;
 } cfftw_info;
 
-static cfftw_info cfftw_fwd[MAXFFT+1 - MINFFT],cfftw_bwd[MAXFFT+1 - MINFFT];
+typedef struct {
+    cfftw_info info[MAXFFT+1 - MINFFT];
+} cfftw_plans;
+
+#ifndef PDINSTANCE
+static cfftw_plans* cfftw_fwd_inst, cfftw_bwd_inst;
+static cfftw_plans* cfftw_fwd = &cfftw_fwd_inst, *cfftw_bwd = &cfftw_bwd_inst;
+#else
+static int cfftw_ninstances = 0;
+static cfftw_plans* cfftw_fwd, *cfftw_bwd;
+#endif
 
 static cfftw_info *cfftw_getplan(int n,int fwd)
 {
@@ -54,21 +64,41 @@ static cfftw_info *cfftw_getplan(int n,int fwd)
     int logn = ilog2(n);
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
-    info = (fwd?cfftw_fwd:cfftw_bwd)+(logn-MINFFT);
-    if (!info->plan)
+#ifndef PDINSTANCE
+    info = (fwd?cfftw_fwd->info:cfftw_bwd->info)+(logn-MINFFT);
+#else
+    pd_globallock();
+    if(pd_ninstances > cfftw_ninstances)
     {
-        pd_globallock();
-        if (!info->plan)    /* recheck in case it got set while we waited */
-        {
-            info->in =
-                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-            info->out =
-                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-            info->plan = fftwf_plan_dft_1d(n, info->in, info->out,
-                fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
+      cfftw_fwd = (cfftw_plans*)resizebytes(cfftw_fwd, cfftw_ninstances * sizeof(cfftw_plans), pd_ninstances * sizeof(cfftw_plans));
+      cfftw_bwd = (cfftw_plans*)resizebytes(cfftw_bwd, cfftw_ninstances * sizeof(cfftw_plans), pd_ninstances * sizeof(cfftw_plans));
+      for (int i = cfftw_ninstances; i < pd_ninstances; ++i) {
+        for (int j = 0; j < MAXFFT + 1 - MINFFT; ++j) {
+          cfftw_fwd[i].info[j].plan = NULL;
+          cfftw_bwd[i].info[j].plan = NULL;
         }
+      }
+
+      cfftw_ninstances = pd_ninstances;
+    }
+    pd_globalunlock();
+
+    info = (fwd?cfftw_fwd[pd_this->pd_instanceno].info:cfftw_bwd[pd_this->pd_instanceno].info)+(logn-MINFFT);
+#endif
+
+    if (!info->plan)    /* recheck in case it got set while we waited */
+    {
+        info->in =
+            (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+        info->out =
+            (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+
+        pd_globallock(); /* concurrent fftw plan creation is not thread safe, only fftw_execute is */
+        info->plan = fftwf_plan_dft_1d(n, info->in, info->out,
+            fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
         pd_globalunlock();
     }
+
     return info;
 }
 
@@ -79,8 +109,13 @@ static void cfftw_term(void)
 
     for (i = 0; i < MAXFFT+1 - MINFFT; i++)
     {
-      cinfo[0] = &cfftw_fwd[i];
-      cinfo[1] = &cfftw_bwd[i];
+#ifndef PDINSTANCE
+      cinfo[0] = &cfftw_fwd->info[i];
+      cinfo[1] = &cfftw_bwd->info[i];
+#else
+      cinfo[0] = &cfftw_fwd[pd_this->pd_instanceno].info[i];
+      cinfo[1] = &cfftw_bwd[pd_this->pd_instanceno].info[i];
+#endif
 
       for (j = 0; j < 2; j++)
       {
@@ -105,7 +140,17 @@ typedef struct {
     float *in,*out;
 } rfftw_info;
 
-static rfftw_info rfftw_fwd[MAXFFT+1 - MINFFT],rfftw_bwd[MAXFFT+1 - MINFFT];
+typedef struct {
+    rfftw_info info[MAXFFT+1 - MINFFT];
+} rfftw_plans;
+
+#ifndef PDINSTANCE
+static rfftw_plans* rfftw_fwd_inst, rfftw_bwd_inst;
+static rfftw_plans* rfftw_fwd = &rfftw_fwd_inst, *rfftw_bwd = &rfftw_bwd_inst;
+#else
+static int rfftw_ninstances = 0;
+static rfftw_plans* rfftw_fwd = NULL, *rfftw_bwd = NULL;
+#endif
 
 static rfftw_info *rfftw_getplan(int n,int fwd)
 {
@@ -113,12 +158,42 @@ static rfftw_info *rfftw_getplan(int n,int fwd)
     int logn = ilog2(n);
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
-    info = (fwd?rfftw_fwd:rfftw_bwd)+(logn-MINFFT);
+
+#ifndef PDINSTANCE
+    info = (fwd?rfftw_fwd->info:rfftw_bwd->info)+(logn-MINFFT);
+#else
+    pd_globallock();
+    if(pd_ninstances > rfftw_ninstances)
+    {
+        if(!rfftw_fwd)
+        {
+            rfftw_fwd = getbytes(0);
+            rfftw_bwd = getbytes(0);
+        }
+        rfftw_fwd = (rfftw_plans*)resizebytes(rfftw_fwd, rfftw_ninstances * sizeof(rfftw_plans), pd_ninstances * sizeof(rfftw_plans));
+        rfftw_bwd = (rfftw_plans*)resizebytes(rfftw_bwd, rfftw_ninstances * sizeof(rfftw_plans), pd_ninstances * sizeof(rfftw_plans));
+        for (int i = rfftw_ninstances; i < pd_ninstances; ++i) {
+            for (int j = 0; j < MAXFFT + 1 - MINFFT; ++j) {
+                rfftw_fwd[i].info[j].plan = NULL;
+                rfftw_bwd[i].info[j].plan = NULL;
+            }
+        }
+
+        rfftw_ninstances = pd_ninstances;
+    }
+    pd_globalunlock();
+
+    info = (fwd?rfftw_fwd[pd_this->pd_instanceno].info:rfftw_bwd[pd_this->pd_instanceno].info)+(logn-MINFFT);
+#endif
+
     if (!info->plan)
     {
         info->in = (float*) fftwf_malloc(sizeof(float) * n);
         info->out = (float*) fftwf_malloc(sizeof(float) * n);
+
+        pd_globallock(); /* concurrent fftw plan creation is not thread safe, only fftw_execute is */
         info->plan = fftwf_plan_r2r_1d(n, info->in, info->out, fwd?FFTW_R2HC:FFTW_HC2R, FFTW_MEASURE);
+        pd_globalunlock();
     }
     return info;
 }
@@ -130,8 +205,13 @@ static void rfftw_term(void)
 
     for (i = 0; i < MAXFFT+1 - MINFFT; i++)
     {
-      rinfo[0] = &rfftw_fwd[i];
-      rinfo[1] = &rfftw_bwd[i];
+#ifndef PDINSTANCE
+      rinfo[0] = &rfftw_fwd->info[i];
+      rinfo[1] = &rfftw_bwd->info[i];
+#else
+      rinfo[0] = &rfftw_fwd[pd_this->pd_instanceno].info[i];
+      rinfo[1] = &rfftw_bwd[pd_this->pd_instanceno].info[i];
+#endif
 
       for (j = 0; j < 2; j++)
       {
@@ -251,4 +331,3 @@ void pd_fft(t_float *buf, int npoints, int inverse)
     for (i = 0, fz = (float *)(p->out); i < 2 * npoints; i++)
         buf[i] = *fz++;
 }
-
