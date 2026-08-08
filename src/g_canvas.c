@@ -11,6 +11,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 #include "s_utf8.h"
 #include <string.h>
 #include "g_undo.h"
@@ -174,7 +175,7 @@ void canvas_updatewindowlist(void)
 {
             /* not if we're in a reload */
     if (!THISGUI->i_reloadingabstraction)
-        pdgui_vmess("::pd_menus::update_window_menu", 0);
+        pdgui_window_menu_update();
 }
 
     /* add a glist the list of "root" canvases (toplevels without parents.) */
@@ -791,15 +792,11 @@ void canvas_reflecttitle(t_canvas *x)
 #endif
 
 #if PD_VERSION_CODE >= PD_VERSION(0, 57, 0)
-    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss ii",
-        x,
-        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        (int)(x->gl_dirty), (int)(x->gl_edit));
+    pdgui_canvas_set_title(x, canvas_getdir(x)->s_name,
+        x->gl_name->s_name, namebuf, (int)x->gl_dirty, (int)x->gl_edit);
 #else
-    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
-        x,
-        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        (int)(x->gl_dirty));
+    pdgui_canvas_set_title(x, canvas_getdir(x)->s_name,
+        x->gl_name->s_name, namebuf, (int)x->gl_dirty, 0);
 #endif
 }
 
@@ -824,17 +821,21 @@ void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
     {
+        int coords[10];
         int x1 = x->gl_zoom * x->gl_xmargin,
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
-            glist_getcanvas(x), "GOP", "-",
-            0, x->gl_zoom, THISGUI->i_gopcolor,
-            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
+        coords[0] = x1; coords[1] = y1;
+        coords[2] = x1; coords[3] = y2;
+        coords[4] = x2; coords[5] = y2;
+        coords[6] = x2; coords[7] = y1;
+        coords[8] = x1; coords[9] = y1;
+        pdgui_polyline_create(glist_getcanvas(x), "GOP", "-", coords, 10,
+            x->gl_zoom, THISGUI->i_gopcolor);
     }
     else
-        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
+        pdgui_item_destroy(glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -862,7 +863,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
             canvas_drawlines(x);
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);
-            pdgui_vmess("pdtk_canvas_getscroll", "c", x);
+            pdgui_canvas_update_scrollbars(x);
         }
     }
     else
@@ -875,7 +876,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
+            pdgui_canvas_clear(x);
             x->gl_mapped = 0;
         }
     }
@@ -1019,11 +1020,10 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess("pdtk_canvas_create_patchcord", "crrr ik iiii",
-                glist_getcanvas(x), tag, "-", "-",
-                    (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
-                        * x->gl_zoom, THISGUI->i_foregroundcolor,
-                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            pdgui_patchcord_create(glist_getcanvas(x), tag,
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
+                (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
+                    * x->gl_zoom, THISGUI->i_foregroundcolor);
         }
     }
 }
@@ -1039,8 +1039,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         {
             char tag[128];
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crs iiii",
-                glist_getcanvas(x), "coords", tag,
+            pdgui_patchcord_set_position(glist_getcanvas(x), tag,
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2);
         }
     }
@@ -1052,7 +1051,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
+    pdgui_item_destroy(glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */
@@ -1469,7 +1468,7 @@ static void canvas_start_dsp(void)
 {
     t_canvas *x;
     if (THISGUI->i_dspstate) ugen_stop();
-    else pdgui_vmess("pdtk_pd_dsp", "s", "ON");
+    else pdgui_set_dsp_state(1);
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1485,7 +1484,7 @@ static void canvas_stop_dsp(void)
     if (THISGUI->i_dspstate)
     {
         ugen_stop();
-        pdgui_vmess("pdtk_pd_dsp", "s", "OFF");
+        pdgui_set_dsp_state(0);
         canvas_dspstate = THISGUI->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
@@ -2309,7 +2308,7 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
         return;
     }
     if (!glob_evalfile(ignore, name, dir))
-        pdgui_vmess("::pdwindow::busyrelease", 0);
+        pdgui_busy_release();
 }
 
 /* close visible subwindows */
@@ -2347,10 +2346,8 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
-            glist,
-            (int)THISGUI->i_backgroundcolor,
-            (int)THISGUI->i_foregroundcolor);
+        pdgui_canvas_set_colors(glist, THISGUI->i_backgroundcolor,
+            THISGUI->i_foregroundcolor);
         glist_clearrtexts(glist);
         canvas_redraw((t_canvas *)glist);
     }

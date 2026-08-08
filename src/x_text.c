@@ -7,6 +7,7 @@ moment it also defines "text" but it may later be better to split this off. */
 
 #include "m_pd.h"
 #include "g_canvas.h"    /* just for glist_getfont, bother */
+#include "g_gui.h"
 #include <string.h>
 #include <stdio.h>
 #define __USE_GNU     /* needed so stdlib will define qsort_r */
@@ -79,38 +80,34 @@ static void textbuf_senditup(t_textbuf *x)
         /* append a trailing newline, but only if there isn't one there already */
     if ('\n' != buf[ntxt-1]) buf[ntxt] = '\n';
 
-    pdgui_vmess("pdtk_textwindow_clear", "^", x);
-    pdgui_vmess("pdtk_textwindow_append", "^s", x, buf);
+    pdgui_textwindow_clear(x);
+    pdgui_textwindow_append(x, buf);
 
     freebytes(txt, ntxt);
     freebytes(buf, ntxt+2);
 #else
         /* send the binbuf directly and let the GUI figure out when to do
          * linebreaks and how to escape special character $1*/
-    pdgui_vmess("pdtk_textwindow_clear", "^", x);
-    pdgui_vmess("pdtk_textwindow_appendatoms", "^A",
-        x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
+    pdgui_textwindow_clear(x);
+    pdgui_textwindow_append_atoms(x, binbuf_getnatom(x->b_binbuf),
+        binbuf_getvec(x->b_binbuf));
 #endif
 
-    pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
+    pdgui_textwindow_set_dirty(x, 0);
 }
 
 static void textbuf_open(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        char textid[128];
-        sprintf(textid, ".x%lx.text", x);
-        pdgui_vmess("wm", "r^", "deiconify", x);
-        pdgui_vmess("raise", "^", x);
-        pdgui_vmess("focus", "s", textid);
+        pdgui_textwindow_raise(x);
     }
     else
     {
         char buf[40];
         sprintf(buf, "%dx%d", 600, 340);
-        pdgui_vmess("pdtk_textwindow_open", "^r si", x, buf,
-            x->b_sym->s_name, sys_hostfontsize(glist_getfont(x->b_canvas),
+        pdgui_textwindow_open(x, buf, x->b_sym->s_name,
+            sys_hostfontsize(glist_getfont(x->b_canvas),
                 glist_getzoom(x->b_canvas)));
         sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
@@ -122,7 +119,7 @@ static void textbuf_close(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        pdgui_vmess("pdtk_textwindow_doclose", "^", x);
+        pdgui_textwindow_close(x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -217,7 +214,7 @@ static void textbuf_free(t_textbuf *x)
         binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
-        pdgui_vmess("destroy", "^", x);
+        pdgui_window_destroy(x);
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */

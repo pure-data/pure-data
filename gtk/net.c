@@ -14,7 +14,7 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #endif
-#include "../../pd/src/s_net.h"
+#include "../src/s_net.h"
 
 #include "pdgtk.h"
 static int socket_fd = -1;

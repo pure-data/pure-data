@@ -12,6 +12,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
+#include "g_gui.h"
 #include <math.h>
 
 #define LMARGIN 3
@@ -43,7 +44,6 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int lmargin = 0, tmargin=0, bmargin = 0;
     char tag_object[128], tag_knob[128], tag[128];
-    char *tags[] = {tag_object, tag};
 
     (void)old_snd_rcv_flags;
 
@@ -59,33 +59,29 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     }
 
     sprintf(tag, "%p_OUT%d", x, 0);
-    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
+    pdgui_item_destroy(canvas, tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
-        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
+        pdgui_rect_create(canvas, tag, tag_object,
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            "-fill", THISGUI->i_foregroundcolor,
-            "-outline", THISGUI->i_foregroundcolor,
-            "-tags", 2, tags);
+            1, THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor);
 
             /* keep knob above outlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_knob);
+        pdgui_item_lower(canvas, tag, tag_knob);
     }
 
     sprintf(tag, "%p_IN%d", x, 0);
-    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
+    pdgui_item_destroy(canvas, tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
+        pdgui_rect_create(canvas, tag, tag_object,
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
-            "-fill", THISGUI->i_foregroundcolor,
-            "-outline", THISGUI->i_foregroundcolor,
-            "-tags", 2, tags);
+            1, THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor);
 
             /* keep knob above inlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_knob);
+        pdgui_item_lower(canvas, tag, tag_knob);
     }
 }
 
@@ -123,10 +119,6 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     int lmargin = 0, rmargin = 0, tmargin = 0, bmargin = 0;
     int a, b, c, d;
     char tag[128];
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     if(x->x_orientation == horizontal)
     {
@@ -139,31 +131,21 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     slider_knob_position(x, glist, val, &a, &b, &c, &d);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+    pdgui_rect_configure(canvas, tag,
         xpos - lmargin, ypos - tmargin,
-        xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
-    pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
-        "-fill", x->x_gui.x_bcol,
-        "-outline", THISGUI->i_foregroundcolor);
+        xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin,
+        zoom, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_KNOB", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        a, b, c, d);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", 1 + 2 * zoom,
-        "-outline", x->x_gui.x_fcol);
+    pdgui_rect_configure(canvas, tag, a, b, c, d, 1 + 2 * zoom,
+        PDGUI_COLOR_NONE, x->x_gui.x_fcol);
 
     sprintf(tag, "%p_LABEL", x);
-    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
-
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
+    pdgui_text_configure(canvas, tag, xpos + x->x_gui.x_ldx * zoom,
+        ypos + x->x_gui.x_ldy * zoom, iemgui->x_font,
+        iemgui->x_fontsize * zoom, sys_fontweight,
+        (x->x_gui.x_fsf.x_selected ? THISGUI->i_selectcolor :
+            x->x_gui.x_lcol));
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -171,21 +153,19 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
-    char*tags[] = {tag_object, tag, "label", "text"};
     sprintf(tag_object, "%p_", x);
 
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-         0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_rect_create(canvas, tag, tag_object, 0, 0, 0, 0, 1,
+        PDGUI_COLOR_NONE, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_KNOB", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-         0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_rect_create(canvas, tag, tag_object, 0, 0, 0, 0, 1,
+        PDGUI_COLOR_NONE, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_LABEL", x);
-    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
-         0, 0, "-anchor", "w", "-tags", 4, tags);
+    pdgui_text_create(canvas, tag, tag_object, 0, 0);
 
     slider_draw_config(x, glist);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
@@ -201,9 +181,9 @@ static void slider_draw_select(t_slider* x, t_glist* glist)
         col = lcol = THISGUI->i_selectcolor;
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    pdgui_rect_set_outline(canvas, tag, col);
     sprintf(tag, "%p_LABEL", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    pdgui_text_set_color(canvas, tag, lcol);
 }
 
 static void slider_draw_update(t_gobj *client, t_glist *glist)
@@ -221,7 +201,7 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
         sprintf(tag, "%p_KNOB", x);
 
         slider_knob_position(x, glist, val, &a, &b, &c, &d);
-        pdgui_vmess(0, "crs iiii", canvas, "coords", tag, a, b, c, d);
+        pdgui_rect_set_bounds(canvas, tag, a, b, c, d);
     }
 }
 

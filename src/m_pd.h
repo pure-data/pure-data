@@ -850,8 +850,8 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-PD_DEPRECATED EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
-PD_DEPRECATED EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+PD_DEPRECATED EXTERN void sys_vgui(const char *fmt, ...); /* avoid direct GUI transport */
+PD_DEPRECATED EXTERN void sys_gui(const char *s); /* avoid direct GUI transport */
 
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
@@ -892,15 +892,12 @@ PD_DEPRECATED EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pd
  * the use of the specifiers 'x^' is discouraged
  * raw-strings ('rR') should only be used for constant, well-known strings
  */
-EXTERN void pdgui_vmess(const char* destination, const char* fmt, ...);
-
-
 /* improved dialog window creation
  * this will insert a first argument to <destination> based on <key>
  * which the GUI can then use to callback.
  * gfxstub_new() ensures that the given receiver will be available,
  * even if the <owner> has been removed in the meantime.
- * see pdgui_vmess() for a description of <fmt> and the varargs
+ * see the formatting syntax above for <fmt> and the varargs
  */
 
 EXTERN void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...);

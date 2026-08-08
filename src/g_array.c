@@ -6,6 +6,7 @@
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 #include "g_undo.h"
 #include <math.h>
 
@@ -364,9 +365,7 @@ void canvas_menuarray(t_glist *canvas)
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    pdgui_stub_vnew(&x->gl_pd,
-        "pdtk_array_dialog", x, "siii",
-        arraybuf, 100, 3, 1);
+    pdgui_array_dialog(&x->gl_pd, x, arraybuf, 100, 3, 1);
 }
 
     /* called from graph_dialog to set properties */
@@ -382,10 +381,7 @@ void garray_properties(t_garray *x)
     if (!a)
         return;
     pdgui_stub_deleteforkey(x);
-    pdgui_stub_vnew(&x->x_gobj.g_pd,
-        "pdtk_array_dialog", x,
-        "siii",
-        x->x_name->s_name,
+    pdgui_array_dialog(&x->x_gobj.g_pd, x, x->x_name->s_name,
         a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
@@ -558,21 +554,15 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
     if(page < 0)
         page = 0;
 
-    pdgui_vmess("::dialog_array::listview_setpage", "s iii",
-        x->x_realname->s_name,
-        page, maxpage+1, pagesize);
+    pdgui_array_set_page(x->x_realname->s_name, page, maxpage+1, pagesize);
 
     offset = page*pagesize;
     length = ((offset+pagesize) > size)?size-offset:pagesize;
 
-    pdgui_vmess("::dialog_array::listview_setdata", "siw",
-             x->x_realname->s_name,
-             offset,
-             length, data + offset);
+    pdgui_array_set_data(x->x_realname->s_name, offset, length,
+        data + offset);
 
-    pdgui_vmess("::dialog_array::listview_focus", "si",
-             x->x_realname->s_name,
-             topItem);
+    pdgui_array_set_focus(x->x_realname->s_name, topItem);
 }
 
 static void garray_arrayviewlist_new(t_garray *x)
@@ -586,9 +576,7 @@ static void garray_arrayviewlist_new(t_garray *x)
     }
     x->x_listviewing = 1;
 
-    pdgui_stub_vnew(&x->x_gobj.g_pd,
-        "pdtk_array_listview_new", x,
-        "si",
+    pdgui_array_listview_open(&x->x_gobj.g_pd, x,
         x->x_realname->s_name, 0);
 
     garray_arrayviewlist_fillpage(x, 0, 0);
@@ -597,8 +585,7 @@ static void garray_arrayviewlist_new(t_garray *x)
 static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    pdgui_vmess("pdtk_array_listview_closeWindow", "s",
-             x->x_realname->s_name);
+    pdgui_array_close(x->x_realname->s_name);
 }
 /* } jsarlo */
 
@@ -855,8 +842,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-          pdgui_vmess("pdtk_array_listview_fillpage", "s",
-                 x->x_realname->s_name);
+          pdgui_array_refresh(x->x_realname->s_name);
     }
     /* } jsarlo */
 }

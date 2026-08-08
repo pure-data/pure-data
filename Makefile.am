@@ -37,11 +37,6 @@ EXTRA_SUBDIRS += po
 BUILT_SOURCES += locales
 endif
 
-#### alternative GUI #####
-if GTK
-EXTRA_SUBDIRS += gtk
-endif
-
 # include libpd `here since the libpd subdirs contain their own custom Makefiles
 LIBPD_DIST = libpd/Makefile libpd/README.txt libpd/test_libpd/Makefile \
              libpd/test_libpd/test_libpd.c libpd/test_libpd/test_libpd.pd
@@ -55,9 +50,13 @@ pkgdata_DATA = \
     $(empty)
 
 
-# subdirs that are built,
+# subdirs that are built; the integrated GTK backend replaces the Tcl/Tk GUI.
 # mac before src due to uninstall target order kludge (see mac/Makefile.am)
+if GTK
+SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc extra font
+else
 SUBDIRS = $(EXTRA_SUBDIRS) linux mac msw src man doc tcl extra font
+endif
 
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio doc extra font linux mac man msw po portmidi portaudio src tcl gtk

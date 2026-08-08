@@ -658,16 +658,14 @@ AC_SUBST([WISH])
 
 ##### GTK ####
 AC_ARG_WITH([gtk],
-    [AS_HELP_STRING([--with-gtk], [build the GTK4 interface])],
+    [AS_HELP_STRING([--with-gtk],
+        [build Pd with the integrated GTK4 backend instead of Tcl/Tk])],
     [gtk=$withval], [gtk=no])
+AS_CASE([$gtk],
+    [yes|no], [],
+    [AC_MSG_ERROR([invalid value '$gtk' for --with-gtk (use yes or no)])])
 AS_IF([test "$gtk" = yes],[
-  PKG_CHECK_MODULES([GTK], [gtk4], [], [gtk = no])
-])
-AS_IF([test "$gtk" = yes],[
-  PKG_CHECK_MODULES([TCL], [tcl], [], [
-    AC_MSG_WARN([The GTK4 requires Tcl-headers to be installed])
-    gtk = no
-  ])
+  PKG_CHECK_MODULES([GTK], [gtk4])
 ])
 AM_CONDITIONAL(GTK, test x$gtk = xyes)
 

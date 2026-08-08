@@ -10,6 +10,7 @@ to this file... */
 #include "m_pd.h"
 
 #include "g_canvas.h"
+#include "g_gui.h"
 #include <stdio.h>
 
 /* ---------------------- forward definitions ----------------- */
@@ -706,11 +707,8 @@ void glist_redraw(t_glist *x)
             {
                 char tagbuf[128];
                 sprintf(tagbuf, "l%p", oc);
-                pdgui_vmess(0, "crs iiii",
-                          glist_getcanvas(x),
-                          "coords",
-                          tagbuf,
-                          t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+                pdgui_patchcord_set_position(glist_getcanvas(x), tagbuf,
+                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
             }
             canvas_drawredrect(x, 0);
             if (x->gl_goprect)
@@ -733,32 +731,21 @@ int garray_getname(t_garray *x, t_symbol **namep);
 static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2,
     const char *tag)
 {
-    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
-        glist_getcanvas(x->gl_owner), tag, "-",
-        0, glist_getzoom(x), THISGUI->i_foregroundcolor,
-        x1, y1,  x2, y2);
+    pdgui_line_create(glist_getcanvas(x->gl_owner), tag, "-",
+        x1, y1, x2, y2, glist_getzoom(x), THISGUI->i_foregroundcolor);
 }
 
 static void graph_create_text(
     t_glist *x, int posX, int posY,
     const char*name,
-    const char*anchor,
+    t_pdgui_anchor anchor,
     int fontsize,
     int numtags, const char**tags)
 {
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(sys_font));
-    SETFLOAT (fontatoms+1, fontsize);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess(0, "crr ii rs rk rr rA rS",
-              glist_getcanvas(x),
-              "create", "text",
-              posX, posY,
-              "-text", name,
-              "-fill", THISGUI->i_foregroundcolor,
-              "-anchor", anchor,
-              "-font", 3, fontatoms,
-              "-tags", numtags, tags);
+    pdgui_text_create_anchored(glist_getcanvas(x), tags[0], tags[1],
+        tags[2], posX, posY, name, anchor, sys_font, fontsize,
+        sys_fontweight, THISGUI->i_foregroundcolor);
+    (void)numtags;
 }
 
 
@@ -768,7 +755,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 {
     t_glist *x = (t_glist *)gr;
     char tag[50];
-    const char *tags2[] = {tag, "graph" };
     t_gobj *g;
     int x1, y1, x2, y2;
     t_rtext *t = glist_getrtext(parent_glist, &x->gl_obj, 0);
@@ -795,16 +781,18 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (x->gl_havewindow)
     {
         if (vis)
-            pdgui_vmess(0, "crr iiiiiiiiii ri rr rr rS",
-                glist_getcanvas(x->gl_owner), "create", "polygon",
-                x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-                "-width", glist_getzoom(x),
-                "-fill", "#c0c0c0",
-                "-joinstyle", "miter",
-                "-tags", 2, tags2);
+        {
+            int coords[10];
+            coords[0] = x1; coords[1] = y1;
+            coords[2] = x1; coords[3] = y2;
+            coords[4] = x2; coords[5] = y2;
+            coords[6] = x2; coords[7] = y1;
+            coords[8] = x1; coords[9] = y1;
+            pdgui_polygon_create_miter(glist_getcanvas(x->gl_owner), tag,
+                "graph", coords, 10, glist_getzoom(x), 0xc0c0c0, 0);
+        }
         else
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x->gl_owner), "delete", tag);
+            pdgui_item_destroy(glist_getcanvas(x->gl_owner), tag);
         return;
     }
         /* otherwise draw (or erase) us as a graph inside another glist. */
@@ -814,18 +802,26 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_float f;
         t_gobj *g;
         t_symbol *arrayname;
-        char *ylabelanchor =
-            (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
-        char *xlabelanchor =
-            (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ? "s" : "n");
+        t_pdgui_anchor ylabelanchor =
+            (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ?
+                PDGUI_ANCHOR_WEST : PDGUI_ANCHOR_EAST);
+        t_pdgui_anchor xlabelanchor =
+            (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ?
+                PDGUI_ANCHOR_SOUTH : PDGUI_ANCHOR_NORTH);
         int fs = sys_hostfontsize(glist_getfont(x), glist_getzoom(x));
         const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
-        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
-            glist_getcanvas(x->gl_owner), tag, "-",
-            0, glist_getzoom(x), THISGUI->i_foregroundcolor,
-            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
+        {
+            int coords[10];
+            coords[0] = x1; coords[1] = y1;
+            coords[2] = x2; coords[3] = y1;
+            coords[4] = x2; coords[5] = y2;
+            coords[6] = x1; coords[7] = y2;
+            coords[8] = x1; coords[9] = y1;
+            pdgui_polyline_create(glist_getcanvas(x->gl_owner), tag, "-",
+                coords, 10, glist_getzoom(x), THISGUI->i_foregroundcolor);
+        }
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -836,7 +832,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             graph_create_text(x,
                 x1, i,
                 arrayname->s_name,
-                "nw", -fs,
+                PDGUI_ANCHOR_NORTH_WEST, fs,
                 3, tags3);
         }
 
@@ -900,7 +896,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 (int)glist_xtopixels(x, atof(x->gl_xlabel[i]->s_name)),
                 (int)glist_ytopixels(x, x->gl_xlabely),
                 x->gl_xlabel[i]->s_name,
-                xlabelanchor, -fs,
+                xlabelanchor, fs,
                 3, tags3);
             /* draw y labels */
         for (i = 0; i < x->gl_nylabels; i++)
@@ -908,7 +904,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 (int)glist_xtopixels(x, x->gl_ylabelx),
                 (int)glist_ytopixels(x, atof(x->gl_ylabel[i]->s_name)),
                 x->gl_ylabel[i]->s_name,
-                ylabelanchor, -fs,
+                ylabelanchor, fs,
                 3, tags3);
 
             /* draw contents of graph as glist */
@@ -917,7 +913,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     }
     else
     {
-        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x->gl_owner), tag);
+        pdgui_item_destroy(glist_getcanvas(x->gl_owner), tag);
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 0);
     }
@@ -999,6 +995,7 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
 static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_glist *x = (t_glist *)z;
+    char tag[80];
     if (!x->gl_isgraph)
         text_widgetbehavior.w_displacefn(z, glist, dx, dy);
     else
@@ -1008,11 +1005,9 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         if (glist_isvisible(glist)) {
             glist_redraw(x);
             canvas_fixlinesfor(glist, &x->gl_obj);
-            char tag[80];
             sprintf(tag, "graph%lx", (t_int)z);
-            pdgui_vmess(0, "crs rk",
-                glist_getcanvas(glist), "itemconfigure", tag,
-                "-fill", THISGUI->i_selectcolor);
+            pdgui_item_set_fill(glist_getcanvas(glist), tag,
+                THISGUI->i_selectcolor);
         }
     }
 }
@@ -1030,15 +1025,12 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
             rtext_select(y, state);
 
         sprintf(tag, "%sR",  rtext_gettag(y));
-        pdgui_vmess(0, "crs rk",
-                  glist, "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
+        pdgui_item_set_fill(glist, tag, (state ? THISGUI->i_selectcolor :
+            THISGUI->i_foregroundcolor));
         sprintf(tag, "graph%lx", (t_int)z);
-        pdgui_vmess(0, "crs rk",
-                  glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
+        pdgui_item_set_fill(glist_getcanvas(glist), tag,
+            (state ? THISGUI->i_selectcolor :
+                THISGUI->i_foregroundcolor));
     }
 }
 

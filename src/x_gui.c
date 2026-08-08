@@ -7,7 +7,9 @@ away before the panel does... */
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 #include "s_stuff.h"
+#include "s_inter_gui.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_UNISTD_H
@@ -51,10 +53,9 @@ static t_gfxstub *gfxstub_list;
 
     /* create a new one.  the "key" is an address by which the owner
     will identify it later; if the owner only wants one dialog, this
-    could just be a pointer to the owner itself.  The string "cmd"
-    is a TK command to create the dialog, with "%s" embedded in
-    it so we can provide a name by which the GUI can send us back
-    messages; e.g., "pdtk_canvas_dofont %s 10". */
+    could just be a pointer to the owner itself.  The legacy string
+    interface embeds "%s" in "cmd" so the GUI has a name by which
+    it can send messages back. */
 
 static t_symbol*gfxstub_symbol(t_gfxstub *x)
 {
@@ -105,7 +106,7 @@ static void gfxstub_offlist(t_gfxstub *x)
     t_gfxstub *y1, *y2;
     if (gfxstub_list == x)
         gfxstub_list = x->x_next;
-    else for (y1 = gfxstub_list; (y2 = y1->x_next); y1 = y2)
+    else for (y1 = gfxstub_list; y1 && (y2 = y1->x_next); y1 = y2)
         if (y2 == x)
     {
         y1->x_next = y2->x_next;
@@ -128,9 +129,9 @@ void gfxstub_deleteforkey(void *key)
             if (y->x_key == key)
             {
                 t_symbol *s = gfxstub_symbol(y);
-                pdgui_vmess("destroy", "s", s->s_name);
                 y->x_owner = 0;
                 gfxstub_offlist(y);
+                pdgui_named_window_destroy(s->s_name);
                 didit = 1;
                 break;
             }
@@ -203,10 +204,6 @@ static void gfxstub_setup(void)
 
 #include <stdarg.h>
 /* pdgui_*mess() are from s_inter_gui.c */
-void pdgui_startmess(void);
-void pdgui_vamess(const char* message, const char* format, va_list args);
-void pdgui_endmess(void);
-
 static void _pdguistub_vamess(const char*dest, const char*fmt, ...)
 {
     va_list args;
@@ -214,13 +211,10 @@ static void _pdguistub_vamess(const char*dest, const char*fmt, ...)
     pdgui_vamess(dest, fmt, args);
     va_end(args);
 }
-void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...)
+t_pdgui_stub *pdgui_dialog_stub_new(t_pd *owner, void *key)
 {
-    t_symbol*s;
     t_gfxstub *x;
-    va_list args;
-
-        /* if any exists with matching key, burn it. */
+    t_symbol *s;
     for (x = gfxstub_list; x; x = x->x_next)
         if (x->x_key == key)
             gfxstub_deleteforkey(key);
@@ -232,6 +226,41 @@ void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char
     x->x_key = key;
     x->x_next = gfxstub_list;
     gfxstub_list = x;
+    return ((t_pdgui_stub *)x);
+}
+
+void pdgui_dialog_stub_send(t_pdgui_stub *stub, const char *selector,
+    int argc, const t_atom *argv)
+{
+    t_gfxstub *x = (t_gfxstub *)stub;
+    if (x && x->x_owner)
+        pd_typedmess(x->x_owner, gensym(selector), argc, (t_atom *)argv);
+}
+
+const char *pdgui_dialog_stub_name(t_pdgui_stub *stub)
+{
+    t_gfxstub *x = (t_gfxstub *)stub;
+    return (x && x->x_sym ? x->x_sym->s_name : "");
+}
+
+void pdgui_dialog_stub_close(t_pdgui_stub *stub)
+{
+    t_gfxstub *x = (t_gfxstub *)stub;
+    if (x)
+    {
+        gfxstub_offlist(x);
+        pd_free(&x->x_pd);
+    }
+}
+
+void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...)
+{
+    t_symbol*s;
+    t_gfxstub *x;
+    va_list args;
+
+    x = (t_gfxstub *)pdgui_dialog_stub_new(owner, key);
+    s = x->x_sym;
 
     pdgui_startmess();
     _pdguistub_vamess(destination, "s", s->s_name);
@@ -276,8 +305,8 @@ static void *openpanel_new(t_floatarg mode)
 static void openpanel_symbol(t_openpanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    pdgui_vmess("pdtk_openpanel", "ssic",
-        x->x_s->s_name, path, x->x_mode, glist_getcanvas(x->x_canvas));
+    pdgui_open_panel(x->x_s->s_name, path, x->x_mode,
+        glist_getcanvas(x->x_canvas));
 }
 
 static void openpanel_bang(t_openpanel *x)
@@ -340,8 +369,7 @@ static void *savepanel_new(void)
 static void savepanel_symbol(t_savepanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    pdgui_vmess("pdtk_savepanel", "ssc",
-        x->x_s->s_name, path, glist_getcanvas(x->x_canvas));
+    pdgui_save_panel(x->x_s->s_name, path, glist_getcanvas(x->x_canvas));
 }
 
 static void savepanel_bang(t_savepanel *x)
@@ -534,7 +562,7 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 
 static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
 {
-    pdgui_vmess("::pd_menucommands::menu_openfile", "s", s->s_name);
+    pdgui_open_file(s->s_name);
 }
 
 static void pdcontrol_isvisible(t_pdcontrol *x)

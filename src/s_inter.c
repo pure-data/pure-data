@@ -9,6 +9,7 @@ that didn't really belong anywhere. */
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_canvas.h"   /* for GUI queueing stuff */
+#include "g_gui.h"
 #include "s_net.h"
 #include <errno.h>
 #ifndef _WIN32
@@ -937,9 +938,9 @@ void pdgui_lock(void);
 void pdgui_unlock(void);
 static int sys_flushtogui(void)
 {
+    int writesize, nwrote = 0;
     pdgui_lock();
-    int writesize = INTER->i_guihead - INTER->i_guitail,
-        nwrote = 0;
+    writesize = INTER->i_guihead - INTER->i_guitail;
     if (writesize > 0)
         nwrote = (int)send(
             INTER->i_guisock,
@@ -985,6 +986,18 @@ void glob_ping(t_pd *dummy)
 static int sys_flushqueue(void)
 {
     int wherestop = INTER->i_bytessincelastping + GUI_UPDATESLICE;
+    if (!INTER->i_havetkproc)
+    {
+        int didsomething = (INTER->i_guiqueuehead != 0);
+        while (INTER->i_guiqueuehead)
+        {
+            t_guiqueue *headwas = INTER->i_guiqueuehead;
+            INTER->i_guiqueuehead = headwas->gq_next;
+            (*headwas->gq_fn)(headwas->gq_client, headwas->gq_glist);
+            t_freebytes(headwas, sizeof(*headwas));
+        }
+        return (didsomething);
+    }
     if (wherestop + (GUI_UPDATESLICE >> 1) > GUI_BYTESPERPING)
         wherestop = 0x7fffffff;
     if (INTER->i_waitingforping)
@@ -995,7 +1008,7 @@ static int sys_flushqueue(void)
     {
         if (INTER->i_bytessincelastping >= GUI_BYTESPERPING)
         {
-            pdgui_vmess("pdtk_ping", 0);
+            pdgui_ping();
             INTER->i_bytessincelastping = 0;
             INTER->i_waitingforping = 1;
             return (1);
@@ -1018,8 +1031,10 @@ static int sys_flushqueue(void)
     /* flush output buffer and update queue to gui in small time slices */
 static int sys_poll_togui(void) /* returns 1 if did anything */
 {
-    if (!INTER->i_havetkproc)
+    if (!INTER->i_havegui && !INTER->i_havetkproc)
         return (0);
+    if (!INTER->i_havetkproc)
+        return (sys_flushqueue());
         /* in case there is stuff still in the buffer, try to flush it. */
     sys_flushtogui();
         /* if the flush wasn't complete, wait. */
@@ -1090,7 +1105,8 @@ int sys_pollgui(void)
 {
     static double lasttime = 0;
     double now = 0;
-    int didsomething = sys_domicrosleep(0);
+    int didsomething = pdgui_poll();
+    didsomething |= sys_domicrosleep(0);
     if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
     {
         didsomething |= sys_poll_togui();
@@ -1117,27 +1133,11 @@ void sys_gui_preferences(void)
     const char**temppath = namelist2strings(STUFF->st_temppath, &ntemp);
     const char**staticpath = namelist2strings(STUFF->st_staticpath, &nstatic);
     const char**startuplibs = namelist2strings(STUFF->st_externlist, &nlibs);
-    pdgui_vmess("::dialog_path::set_paths", "SSS"
-                , nsearch, searchpath
-                , ntemp, temppath
-                , nstatic, staticpath
-                );
-
-        /* send the list of loaded libraries ... */
-    pdgui_vmess("::dialog_startup::set_libraries", "S"
-                , nlibs, startuplibs
-                );
-
-        /* FIXME: 'set_escaped' is really low-level Tcl code,
-           we want something more highlevel
-        */
-    pdgui_vmess("set_escaped", "ri", "::sys_verbose", sys_verbose);
-    pdgui_vmess("set_escaped", "ri", "::sys_use_stdpath", sys_usestdpath);
-    pdgui_vmess("set_escaped", "ri", "::sys_defeatrt", sys_defeatrt);
-    pdgui_vmess("set_escaped", "ri", "::sys_zoom_open", (sys_zoom_open == 2));
-
-    pdgui_vmess("::dialog_startup::set_flags", "s",
-                (sys_flags? sys_flags->s_name : ""));
+    pdgui_preferences_set_paths(nsearch, searchpath, ntemp, temppath,
+        nstatic, staticpath);
+    pdgui_preferences_set_startup(nlibs, startuplibs, sys_verbose,
+        sys_usestdpath, sys_defeatrt, (sys_zoom_open == 2),
+        (sys_flags ? sys_flags->s_name : ""));
 
     freebytes(searchpath, nsearch * sizeof(*searchpath));
     freebytes(temppath, ntemp * sizeof(*temppath));
@@ -1327,16 +1327,16 @@ static void sys_init_deken(void)
     init_deken_arch();
         /* only send the arch info, if we are sure about it... */
     if (deken_OS && deken_CPU && deken_CPU[0])
-        pdgui_vmess("::deken::set_platform", "ssff",
-                 deken_OS, deken_CPU[0],
-                 8. * sizeof(char*),
-                 8. * sizeof(t_float));
+        pdgui_deken_set_platform(deken_OS, deken_CPU[0],
+            8. * sizeof(char *), 8. * sizeof(t_float));
 }
 
-static int sys_do_startgui(const char *libdir)
+static int pdgui_tk_transport_start(const char *libdir)
 {
     char quotebuf[MAXPDSTRING];
-    char apibuf[256], apibuf2[256];
+    const char *audio_api_names[16], *midi_api_names[16];
+    int audio_api_ids[16], midi_api_ids[16];
+    int naudio_apis, nmidi_apis;
     struct addrinfo *ailist = NULL, *ai;
     int sockfd = -1;
     int portno = -1;
@@ -1656,34 +1656,37 @@ static int sys_do_startgui(const char *libdir)
             /* here is where we start the pinging. */
 #if PD_WATCHDOG
     if (sys_hipriority)
-        pdgui_vmess("pdtk_watchdog", 0);
+        pdgui_watchdog_start();
 #endif
-    sys_get_audio_apis(apibuf);
-    sys_get_midi_apis(apibuf2);
+    naudio_apis = sys_get_audio_apis(16, audio_api_names, audio_api_ids);
+    nmidi_apis = sys_get_midi_apis(16, midi_api_names, midi_api_ids);
 
     sys_gui_preferences();     /* tell GUI about path and startup flags */
 
         /* ... and about font, media APIS, etc */
-    pdgui_vmess("pdtk_pd_startup", "iiis rr ss"
-                , PD_MAJOR_VERSION, PD_MINOR_VERSION
-                , PD_BUGFIX_VERSION, PD_TEST_VERSION
-
-                , apibuf, apibuf2
-                , sys_font, sys_fontweight
-        );
+    pdgui_startup(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
+        PD_TEST_VERSION, naudio_apis, audio_api_names, audio_api_ids,
+        nmidi_apis, midi_api_names, midi_api_ids, sys_font, sys_fontweight);
     sys_init_deken();
 
     {
         t_audiosettings as;
         sys_get_audio_settings(&as);
-        pdgui_vmess("set", "ri"
-                    , "pd_whichapi", as.a_api
-            );
-
-        pdgui_vmess("pdtk_pd_dsp", "s",
-            THISGUI->i_dspstate ? "ON" : "OFF");
+        pdgui_set_audio_api(as.a_api);
+        pdgui_set_dsp_state(THISGUI->i_dspstate);
     }
 
+    return (0);
+}
+
+int pdgui_tk_transport_init(const char *libdir)
+{
+    INTER->i_havetkproc = 1;
+    if (pdgui_tk_transport_start(libdir))
+    {
+        INTER->i_havetkproc = 0;
+        return (-1);
+    }
     return (0);
 }
 
@@ -1866,28 +1869,22 @@ void sys_doneglobinit( void)
     }
 }
 
-    /* start the GUI up.  Before we actually draw our "visible" windows
-    we have to wait for the GUI to give us our font metrics, see
-    glob_initfromgui().  LATER it would be cool to figure out what metrics
-    we really need and tell the GUI - that way we can support arbitrary
-    zoom with appropriate font sizes.   And/or: if we ever move definitively
-    to a vector-based GUI lib we might be able to skip this step altogether. */
-int sys_startgui(const char *libdir)
+    /* Reset the core-side state before the selected backend starts.  The Tk
+    backend later completes initialization through glob_initfromgui(); native
+    backends can call sys_doneglobinit() once they are ready to draw. */
+void sys_guiinit(void)
 {
-    t_canvas *x;
     stderr_isatty = isatty(2);
-    for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        canvas_vis(x, 0);
     INTER->i_havegui = 0;
-    INTER->i_havetkproc = 1;
+    INTER->i_havetkproc = 0;
     INTER->i_guihead = INTER->i_guitail = 0;
     INTER->i_waitingforping = 0;
-    if (sys_do_startgui(libdir))
-    {
-        INTER->i_havetkproc = 0;
-        return (-1);
-    }
-    return (0);
+}
+
+/* Compatibility entry point for libpd and older internal callers. */
+int sys_startgui(const char *libdir)
+{
+    return (pdgui_init(libdir));
 }
 
     /* Shut the GUI down. */
@@ -1896,7 +1893,7 @@ void sys_stopgui(void)
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-    sys_vgui("%s", "exit\n");
+    pdgui_exit();
         /* flush twice just in case contents in FIFO wrapped around: */
     sys_flushtogui();
     sys_flushtogui();
@@ -1915,9 +1912,9 @@ void sys_stopgui(void)
     if it's just "" we stop whatever gui might be running. */
 void glob_vis(void *dummy, t_symbol *s)
 {
-    if (*s->s_name && !INTER->i_havetkproc)
-        sys_startgui(s->s_name);
-    else if (!*s->s_name && INTER->i_havetkproc)
+    if (*s->s_name && !INTER->i_havegui)
+        pdgui_init(s->s_name);
+    else if (!*s->s_name && (INTER->i_havegui || INTER->i_havetkproc))
         sys_stopgui();
 }
 

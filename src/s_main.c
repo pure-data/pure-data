@@ -3,6 +3,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include "m_imp.h"
 #include "s_stuff.h"
 #include "s_net.h"
@@ -44,7 +45,6 @@ void pd_term(void);
 int sys_argparse(int argc, const char **argv);
 void sys_findprogdir(const char *progname);
 void sys_setsignalhandlers(void);
-int sys_startgui(const char *guipath);
 void sys_stopgui(void);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
@@ -429,7 +429,7 @@ int sys_main(int argc, const char **argv)
     sys_setsignalhandlers();
     sys_init_paths();   /* set paths before starting GUI which wants them */
     if (!sys_dontstartgui &&
-        sys_startgui(sys_libdir->s_name))  /* start the gui */
+        pdgui_init(sys_libdir->s_name))  /* start the selected GUI backend */
             return (1);
     if (sys_listplease)
         sys_listdevs();
@@ -464,8 +464,17 @@ int sys_main(int argc, const char **argv)
     }
     namelist_free(sys_messagelist);
     sys_messagelist = 0;
-   if (sys_hipriority)
+    if (sys_hipriority)
+    {
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
+#if PD_WATCHDOG
+        /* Native GUI backends initialize before sys_setrealtime() creates the
+           watchdog pipe.  Start their heartbeat now that the pipe exists.
+           Tcl/Tk starts its heartbeat after its GUI connection is ready. */
+        if (sys_havegui() && !sys_havetkproc())
+            pdgui_watchdog_start();
+#endif
+    }
     if (sys_externalschedlib)
         ret = (sys_run_scheduler(sys_externalschedlibname, pd_extraflags));
     else if (sys_batch)
@@ -1609,7 +1618,7 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
     sys_gui_preferences();
     sys_gui_audiopreferences();
     sys_gui_midipreferences();
-    pdgui_vmess("::dialog_preferences::create", "");
+    pdgui_preferences_open();
 }
 
 
@@ -1617,10 +1626,8 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
 void glob_start_path_dialog(t_pd *dummy)
 {
     sys_gui_preferences();
-    pdgui_stub_vnew(
-        &glob_pdobject,
-        "pdtk_path_dialog", (void *)glob_start_path_dialog,
-        "ii", sys_usestdpath, sys_verbose);
+    pdgui_path_dialog_open(&glob_pdobject, (void *)glob_start_path_dialog,
+        sys_usestdpath, sys_verbose);
 }
 
     /* new values from dialog window */
@@ -1664,10 +1671,9 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 void glob_start_startup_dialog(t_pd *dummy)
 {
     sys_gui_preferences();
-    pdgui_stub_vnew(
-        &glob_pdobject,
-        "pdtk_startup_dialog", (void *)glob_start_path_dialog,
-        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
+    pdgui_startup_dialog_open(&glob_pdobject,
+        (void *)glob_start_path_dialog, sys_defeatrt,
+        sys_flags ? sys_flags->s_name : "");
 }
 
     /* new values from dialog window */

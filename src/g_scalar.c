@@ -12,6 +12,7 @@ can contain numbers, sublists, and arrays.
 #include <string.h>
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 
 /* ------------- gstubs and gpointers - safe pointing --------------- */
 
@@ -359,10 +360,10 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex, basey;
     t_canvas *templatecanvas = template_findcanvas(template);
     int x1 = 0x7fffffff, x2 = -0x7fffffff, y1 = 0x7fffffff, y2 = -0x7fffffff;
     t_gobj *y;
-    t_float basex, basey;
     scalar_getbasexy(x, &basex, &basey);
         /* if someone deleted the template canvas, we're just a point */
     if (!templatecanvas)
@@ -404,16 +405,18 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
     if (state)
     {
         int x1, y1, x2, y2;
+        int coords[10];
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        pdgui_vmess(0, "crr iiiiiiiiii ri rk rs",
-                  glist_getcanvas(glist), "create", "line",
-                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-                  "-width", 0,
-                  "-fill", THISGUI->i_selectcolor,
-                  "-tags", tag);
+        coords[0] = x1; coords[1] = y1;
+        coords[2] = x1; coords[3] = y2;
+        coords[4] = x2; coords[5] = y2;
+        coords[6] = x2; coords[7] = y1;
+        coords[8] = x1; coords[9] = y1;
+        pdgui_polyline_create(glist_getcanvas(glist), tag, tag, coords, 10,
+            0, THISGUI->i_selectcolor);
     } else {
-        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
+        pdgui_item_destroy(glist_getcanvas(glist), tag);
     }
 }
 
@@ -485,9 +488,9 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex, basey;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_float basex, basey;
     scalar_getbasexy(x, &basex, &basey);
         /* if we don't know how to draw it, make a small rectangle */
     if (!templatecanvas)
@@ -500,14 +503,11 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
         {
             int x1 = glist_xtopixels(owner, basex);
             int y1 = glist_ytopixels(owner, basey);
-            pdgui_vmess(0, "crr iiii rs",
-                      glist_getcanvas(owner),
-                      "create", "rectangle",
-                      x1-1,y1-1, x1+1,y1+1,
-                      "-tags", tag);
+            pdgui_rect_create(glist_getcanvas(owner), tag, tag,
+                x1-1, y1-1, x1+1, y1+1, 1, PDGUI_COLOR_NONE, 0);
         }
         else
-            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(owner), tag);
+            pdgui_item_destroy(glist_getcanvas(owner), tag);
         return;
     }
 
@@ -594,14 +594,15 @@ int scalar_click(t_gobj *z, struct _glist *owner,
 {
     t_scalar *x = (t_scalar *)z;
     t_template *template = template_findbyname(x->sc_template);
+    t_float basex, basey;
     if (!template)
     {
         pd_error(x, "scalar_click: couldn't find template %s",
             x->sc_template->s_name);
         return 0;
     }
-    t_float basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
-    t_float basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
+    basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
+    basey = template_getfloat(template, gensym("y"), x->sc_vec, 0);
     return (scalar_doclick(x->sc_vec, template, x, 0,
         owner, basex, basey, xpix, ypix, shift, alt, dbl, doit));
 }
@@ -630,8 +631,7 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     b = glist_writetobinbuf(owner, 0);
     binbuf_gettext(b, &buf, &bufsize);
     binbuf_free(b);
-    pdgui_stub_vnew((t_pd*)owner, "pdtk_data_dialog", x,
-        "p", bufsize, buf);
+    pdgui_data_dialog((t_pd *)owner, x, buf, bufsize);
     t_freebytes(buf, bufsize);
 }
 

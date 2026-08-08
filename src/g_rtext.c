@@ -8,6 +8,7 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 #include "s_utf8.h"
 
 #define LMARGIN 2
@@ -620,7 +621,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 
     if (action == SEND_FIRST)
     {
-        const char *tags[] = {x->x_tag, "text"};
         int lmargin = (x->x_text ? LMARGIN : 0),
             tmargin = (x->x_text ? TMARGIN : 0);
         if (glist_getzoom(x->x_glist) > 1)
@@ -630,29 +630,23 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tmargin *= glist_getzoom(x->x_glist);
         }
             /* we add an extra space to the string just in case the last
-            character is an unescaped backslash ('\') which would have confused
-            tcl/tk by escaping the close brace otherwise.  The GUI code
-            drops the last character in the string. */
-        pdgui_vmess("pdtk_text_new", "c S ii s i k",
-            canvas,
-            2, tags,
+            character is a trailing escape.  The backend drops this guard
+            character after safely transferring the string. */
+        pdgui_canvas_text_create(canvas, x->x_tag,
             x->x_xpix + lmargin, x->x_ypix + tmargin,
-            tempbuf,
-            guifontsize,
+            tempbuf, guifontsize,
             (x->x_text && glist_isselected(x->x_glist, &x->x_text->te_g)?
                 THISGUI->i_selectcolor : x->x_color));
     }
     else if (action == SEND_UPDATE)
     {
-        pdgui_vmess("pdtk_text_set", "cs s",
-                  canvas, x->x_tag,
-                  tempbuf);
+        pdgui_text_set_content(canvas, x->x_tag, tempbuf);
         if (x->x_text && (*widthp != x->x_pixwidth ||
             *heightp != x->x_pixheight))
                 text_drawborder(x->x_text, x->x_glist, x->x_tag, 0);
         if (x->x_active)
         {
-            pdgui_vmess("pdtk_text_select", "cs i i", canvas, x->x_tag,
+            pdgui_text_set_selection(canvas, x->x_tag,
                 u8_charnum(x->x_buf, selstart_b),
                 u8_charnum(x->x_buf, selend_b));
         }
@@ -720,25 +714,20 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x->x_glist), x->x_tag);
+    pdgui_item_destroy(glist_getcanvas(x->x_glist), x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
     x->x_xpix += dx;
     x->x_ypix += dy;
-    //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
-        //dx, dy);
-    pdgui_vmess("pdtk_canvas_move", "cs ii", glist_getcanvas(x->x_glist),
-        x->x_tag, dx, dy);
+    pdgui_item_move(glist_getcanvas(x->x_glist), x->x_tag, dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)
 {
-    pdgui_vmess(0, "crs rk",
-        glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
-        "-fill", (state? THISGUI->i_selectcolor:
-            THISGUI->i_foregroundcolor));
+    pdgui_text_set_color(glist_getcanvas(x->x_glist), x->x_tag,
+        (state ? THISGUI->i_selectcolor : THISGUI->i_foregroundcolor));
 }
 
 void rtext_activate(t_rtext *x, int state)
@@ -748,7 +737,7 @@ void rtext_activate(t_rtext *x, int state)
     t_canvas *canvas = glist_getcanvas(glist);
     if (state)
     {
-        pdgui_vmess("pdtk_text_editing", "^si", canvas, x->x_tag, 1);
+        pdgui_text_set_editing(canvas, x->x_tag, 1);
         glist_settexted(canvas, x);
         canvas->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
@@ -757,7 +746,7 @@ void rtext_activate(t_rtext *x, int state)
     }
     else
     {
-        pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
+        pdgui_text_set_editing(canvas, "", 0);
         if (glist_textedfor(canvas) == x)
             glist_settexted(canvas, 0);
         x->x_active = 0;

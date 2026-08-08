@@ -139,6 +139,7 @@ pd_SOURCES_core = \
     g_editor.c \
     g_editor_extras.c \
     g_graph.c \
+    g_gui.c \
     g_guiconnect.c \
     g_io.c \
     g_mycanvas.c \
@@ -200,12 +201,13 @@ pd_SOURCES_standalone = \
 libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
-pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
+pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_gui.h g_undo.h g_all_guis.h s_stuff.h \
     s_net.h x_vexp.h
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h
+noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h m_private_utils.h \
+    s_inter_gui.h
 noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
 noinst_HEADERS += m_dispatch.h d_osc.h
 
@@ -460,6 +462,15 @@ else
 pd_SOURCES += $(pd_SOURCES_core) $(pd_SOURCES_standalone)
 pd_LDADD += $(pd_LDADD_core) $(pd_LDADD_standalone)
 pd_LDFLAGS += $(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone)
+endif
+
+if GTK
+pd_SOURCES += g_gui_gtk.c
+pd_CFLAGS += $(GTK_CFLAGS) -DPDGUI_DEFAULT_GTK
+pd_LDADD += $(GTK_LIBS)
+libpd_la_SOURCES += g_gui_tk.c
+else
+pd_SOURCES_core += g_gui_tk.c
 endif
 
 libpd_la_SOURCES += $(pd_SOURCES_core)
