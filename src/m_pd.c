@@ -157,6 +157,21 @@ void pd_bind(t_pd *x, t_symbol *s)
     else s->s_thing = x;
 }
 
+int pd_isbound(t_pd *x, t_symbol *s)
+{
+    if (s->s_thing == x)
+        return (1);
+    else if (s->s_thing && *s->s_thing == bindlist_class)
+    {
+        t_bindlist *b = (t_bindlist *)s->s_thing;
+        t_bindelem *e;
+        for (e = b->b_list; e; e = e->e_next)
+            if (e->e_who == x)
+                return (1);
+    }
+    return (0);
+}
+
 void pd_unbind(t_pd *x, t_symbol *s)
 {
 #ifdef VST_CLEANSER

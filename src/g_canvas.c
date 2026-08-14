@@ -758,6 +758,8 @@ static void canvas_unbind(t_canvas *x)
 {
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+    if (pd_isbound(&x->gl_pd, gensym("#A")))
+        pd_unbind(&x->gl_pd, gensym("#A"));
 }
 
 void canvas_reflecttitle(t_canvas *x)
