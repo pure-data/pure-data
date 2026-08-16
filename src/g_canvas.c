@@ -756,8 +756,17 @@ static void canvas_bind(t_canvas *x)
 
 static void canvas_unbind(t_canvas *x)
 {
+    t_pd *x2;
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+
+        /* Bug fix adapted from github pull request 2962 by Jamie Bullock :
+        in order to catch #A messages saved by the [savestate] object,
+        abstractions bind themselves to #A as part of canvas_popabstraction().
+        But there's no message in the patch file to unbind #A later so do it
+        here in a rather brute-force way. */
+    while ((x2 = pd_findbyclass(gensym("#A"), canvas_class)))
+        pd_unbind(x2, gensym("#A"));
 }
 
 void canvas_reflecttitle(t_canvas *x)
