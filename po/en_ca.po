@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-08-05 20:23+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"PO-Revision-Date: 2026-08-18 15:51+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 msgid "linear"
 msgstr "linear"
@@ -838,7 +838,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Unable to rename downloaded file to '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "Search URLs:"
@@ -876,16 +876,14 @@ msgstr "Keep package files after installation"
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Add newly installed libraries to Pd's search path"
 
-#, fuzzy
 msgid "- Always add to search path"
-msgstr "Added %s to search paths"
+msgstr "- Always add to search path"
 
-#, fuzzy
 msgid "- Never add to search path"
-msgstr "Unable to add %s to search paths"
+msgstr "- Never add to search path"
 
 msgid "- Prompt before adding"
-msgstr ""
+msgstr "- Prompt before adding"
 
 msgid "Platform settings:"
 msgstr "Platform settings:"
@@ -1203,9 +1201,9 @@ msgstr "[deken] Platform detected: %s"
 msgid "Could not find a menu for adding '%s'"
 msgstr "Could not find a menu for adding '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Downgrading %s to %s"
-msgstr "Downloading '%s'"
+msgstr "Downgrading %s to %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1970,9 +1968,8 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Comment"
 
-#, fuzzy
 msgid "Scalar"
-msgstr "Scale"
+msgstr "Scalar"
 
 msgid "Graph"
 msgstr "Graph"
