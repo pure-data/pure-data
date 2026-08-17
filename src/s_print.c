@@ -3,6 +3,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -90,42 +91,11 @@ size_t pd_strnlen(const char*s, size_t maxlen) {
 }
 #endif
 
-/* escape characters for tcl/tk */
-char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
-{
-    unsigned ptin = 0, ptout = 0;
-    if(!dst || !src)return 0;
-    while(1)
-    {
-        int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']') {
-            dst[ptout++] = '\\';
-            if (dstlen && ptout >= dstlen){
-                dst[ptout-1] = 0;
-                break;
-            }
-        }
-        dst[ptout] = c;
-        ptin++;
-        ptout++;
-        if (c==0) break;
-        if (srclen && ptin  >= srclen) break;
-        if (dstlen && ptout >= dstlen) break;
-    }
-
-    if(!dstlen || ptout < dstlen)
-        dst[ptout]=0;
-    else
-        dst[dstlen-1]=0;
-
-    return dst;
-}
-
 static void dopost(const char *s)
 {
     if (STUFF->st_printhook)
         (*STUFF->st_printhook)(s);
-    else if (sys_printtostderr || !sys_havetkproc())
+    else if (sys_printtostderr || (!sys_havegui() && !sys_havetkproc()))
     {
 #ifdef _WIN32
         fwprintf(stderr, PD_FWPRINTF_NARROW_FORMATTER, s);
@@ -136,7 +106,7 @@ static void dopost(const char *s)
     }
     else
     {
-        pdgui_vmess("::pdwindow::post", "s", s);
+        pdgui_console_post(s);
     }
 }
 
@@ -151,7 +121,7 @@ static void doerror(const void *object, const char *s)
         pd_snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr || !sys_havetkproc())
+    else if (sys_printtostderr || (!sys_havegui() && !sys_havetkproc()))
     {
 #ifdef _WIN32
         fwprintf(stderr, L"error: " PD_FWPRINTF_NARROW_FORMATTER, s);
@@ -161,8 +131,7 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
-        pdgui_vmess("::pdwindow::logpost", "ois",
-                  object, PD_ERROR, s);
+        pdgui_console_log(object, PD_ERROR, s);
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -179,7 +148,7 @@ static void dologpost(const void *object, const int level, const char *s)
         pd_snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr || !sys_havetkproc())
+    else if (sys_printtostderr || (!sys_havegui() && !sys_havetkproc()))
     {
 #ifdef _WIN32
         fwprintf(stderr, L"verbose(%d): " PD_FWPRINTF_NARROW_FORMATTER, level, s);
@@ -189,8 +158,7 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
-        pdgui_vmess("::pdwindow::logpost", "ois",
-                  object, level, s);
+        pdgui_console_log(object, level, s);
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
@@ -366,7 +334,7 @@ void pd_error(const void *object, const char *fmt, ...)
 
     if (object && !saidit)
     {
-        if (sys_havetkproc())
+        if (sys_havegui() || sys_havetkproc())
             logpost(NULL, PD_VERBOSE,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;

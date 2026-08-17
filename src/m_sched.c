@@ -5,6 +5,7 @@
 /*  scheduling stuff  */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include "m_imp.h"
 #include "m_private_utils.h"
 #include "s_stuff.h"
@@ -205,7 +206,7 @@ void sys_log_error(int type)
     if (type != ERR_NOTHING && !sched_diored &&
         (sched_counter >= sched_dioredtime))
     {
-        pdgui_vmess("pdtk_pd_dio", "i", 1);
+        pdgui_set_dio_state(1);
         sched_diored = 1;
     }
     sched_dioredtime = sched_counter + APPROXTICKSPERSEC;
@@ -358,7 +359,7 @@ void sched_set_using_audio(int flag)
         sched_referencelogicaltime = clock_getlogicaltime();
     }
 
-    pdgui_vmess("pdtk_pd_audio", "r", flag ? "on" : "off");
+    pdgui_set_audio_running(flag);
 }
 
 int sched_get_using_audio(void)
@@ -476,7 +477,7 @@ int sched_idletask(void)
     {
         if (sched_diored && (sched_counter - sched_dioredtime > 0))
         {
-            pdgui_vmess("pdtk_pd_dio", "i", 0);
+            pdgui_set_dio_state(0);
             sched_diored = 0;
         }
         sched_nextmeterpolltime = sched_counter + APPROXTICKSPERSEC;

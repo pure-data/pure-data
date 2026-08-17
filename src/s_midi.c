@@ -5,6 +5,7 @@
 /* Clock functions (which should move, but where?) and MIDI queueing */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include "s_stuff.h"
 #include "m_imp.h"
 #ifdef HAVE_UNISTD_H
@@ -530,23 +531,25 @@ static int midi_nmidioutdev;
 static int midi_midioutdev[MAXMIDIOUTDEV];
 static char midi_outdevnames[MAXMIDIOUTDEV * DEVDESCSIZE];
 
-void sys_get_midi_apis(char *buf)
+int sys_get_midi_apis(int maxapis, const char **names, int *ids)
 {
-        /* FIXXME: this returns a raw Tcl-list!
-         *  instead it should return something we can use with pdgui_vmess()
-         */
     int n = 0;
-    strcpy(buf, "{ ");
 #ifdef USEAPI_OSS
-    sprintf(buf + strlen(buf), "{OSS-MIDI %d} ", API_DEFAULTMIDI); n++;
+    if (n < maxapis)
+    {
+        names[n] = "OSS-MIDI";
+        ids[n++] = API_DEFAULTMIDI;
+    }
 #endif
 #ifdef USEAPI_ALSA
-    sprintf(buf + strlen(buf), "{ALSA-MIDI %d} ", API_ALSA); n++;
+    if (n < maxapis)
+    {
+        names[n] = "ALSA-MIDI";
+        ids[n++] = API_ALSA;
+    }
 #endif
-    strcat(buf, "}");
         /* then again, if only one API (or none) we don't offer any choice. */
-    if (n < 2)
-        strcpy(buf, "{}");
+    return (n < 2 ? 0 : n);
 }
 
 void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
@@ -621,7 +624,7 @@ void sys_open_midi(int nmidiindev, int *midiindev,
     sys_save_midi_params(nmidiindev, midiindev,
         nmidioutdev, midioutdev);
 
-    pdgui_vmess("set", "ri", "pd_whichmidiapi", sys_midiapi);
+    pdgui_set_midi_api(sys_midiapi);
 
 }
 
@@ -743,10 +746,9 @@ void sys_gui_midipreferences(void) {
     for (i=0; i<noutdev; i++)
         midioutdevf[i] = (t_float)midioutdev[i] + 1;
 
-    pdgui_vmess("::dialog_midi::set_configuration", "i SF SF",
-                sys_midiapi,
-                nindevs+1, indevs, nindev, midiindevf,
-                noutdevs+1, outdevs, noutdev, midioutdevf);
+    pdgui_midi_set_configuration(sys_midiapi,
+        nindevs+1, (const char **)indevs, nindev, midiindevf,
+        noutdevs+1, (const char **)outdevs, noutdev, midioutdevf);
 }
 
     /* start an midi settings dialog window */
@@ -754,8 +756,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
     sys_gui_midipreferences();
     pdgui_stub_deleteforkey(0);
-    pdgui_stub_vnew(&glob_pdobject, "::dialog_midi::create",
-        (void *)glob_midi_properties, "");
+    pdgui_midi_dialog_open(&glob_pdobject, (void *)glob_midi_properties);
 }
 
     /* rescan MIDI devices */
@@ -764,7 +765,7 @@ void glob_rescanmidi(void *dummy)
     sys_reinit_midi();
     sys_gui_midipreferences();
         /* refresh midi dialog (if it's open) */
-    pdgui_vmess("::dialog_midi::refresh_ui", "");
+    pdgui_midi_refresh();
 }
 
 #define MIDI_DIALOG_DEVS 9

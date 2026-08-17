@@ -5,6 +5,7 @@
 /* Pd side of the Pd/Pd-gui interface. */
 
 #include "m_pd.h"
+#include "s_inter_gui.h"
 #include "s_stuff.h"
 #include <stdarg.h>
 #include <string.h>
@@ -81,6 +82,38 @@ static PERTHREAD size_t s_esclength = 0;
 #ifndef GUI_ALLOCCHUNK
 # define GUI_ALLOCCHUNK 8192
 #endif
+char *pdgui_strnescape(char *dst, size_t dstlen, const char *src,
+    size_t srclen)
+{
+    unsigned int ptin = 0, ptout = 0;
+    if (!dst || !src)
+        return (0);
+    while (1)
+    {
+        int c = src[ptin];
+        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']')
+        {
+            dst[ptout++] = '\\';
+            if (dstlen && ptout >= dstlen)
+            {
+                dst[ptout-1] = 0;
+                break;
+            }
+        }
+        dst[ptout] = c;
+        ptin++;
+        ptout++;
+        if (c == 0 || (srclen && ptin >= srclen) ||
+            (dstlen && ptout >= dstlen))
+                break;
+    }
+    if (!dstlen || ptout < dstlen)
+        dst[ptout] = 0;
+    else
+        dst[dstlen-1] = 0;
+    return (dst);
+}
+
 static char*get_escapebuffer(const char*s, int size)
 {
     size_t len = (size>0)?size:strlen(s);

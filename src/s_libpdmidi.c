@@ -58,8 +58,7 @@ void outmidi_byte(int port, int value) {
 }
 
 /* tell Pd GUI that our list of MIDI APIs is empty */
-#include <string.h>
-void sys_get_midi_apis(char *buf) {strcpy(buf, "{}");}
+int sys_get_midi_apis(int maxapis, const char **names, int *ids) {return (0);}
 
 // the rest is not relevant to libpd
 void sys_listmididevs(void) {}

@@ -48,6 +48,7 @@ extern int sys_verbose;
 EXTERN int sys_noloadbang;
 EXTERN int sys_havetkproc(void);    /* TK is up; we can post to Pd window */
 EXTERN int sys_havegui(void);       /* also have font metrics and can draw */
+EXTERN void sys_guiinit(void);      /* reset backend-neutral GUI state */
 extern const char *sys_guicmd;
 extern int sys_batch;
 extern char sys_devicename[];
@@ -176,7 +177,7 @@ EXTERN void sys_audiodevnumbertoname(int output, int devno, char *name,
 EXTERN void sys_get_audio_devs(char *indevlist, int *nindevs,
                           char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
                           int maxndev, int devdescsize, int api);
-EXTERN void sys_get_audio_apis(char *buf);
+EXTERN int sys_get_audio_apis(int maxapis, const char **names, int *ids);
 
 
         /* audio API specific functions */
@@ -283,7 +284,7 @@ extern int sys_midioutdevlist[];
 EXTERN void sys_open_midi(int nmidiin, int *midiinvec,
     int nmidiout, int *midioutvec, int enable);
 
-EXTERN void sys_get_midi_apis(char *buf);
+EXTERN int sys_get_midi_apis(int maxapis, const char **names, int *ids);
 EXTERN void sys_get_midi_devs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs,
    int maxndev, int devdescsize);
@@ -439,16 +440,6 @@ struct _instancestuff
 };
 
 #define STUFF (pd_this->pd_stuff)
-
-/* escape characters for tcl/tk
- * escapes special characters ("{}\") in the string 'src', which
- * has a maximum length of 'srclen' and might be 0-terminated,
- * and writes them into the 'dstlen' sized output buffer 'dst'
- * the result is zero-terminated; if the 'dst' buffer cannot hold the
- * fully escaped 'src' string, the result might be incomplete.
- * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
- */
-EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
 
 /* format non-trivial data when sending it from core->gui (and vice versa)
  */

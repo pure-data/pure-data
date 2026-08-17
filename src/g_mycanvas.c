@@ -10,6 +10,7 @@
 #include "m_pd.h"
 
 #include "g_all_guis.h"
+#include "g_gui.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -35,37 +36,24 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int offset = (zoom > 1 ? zoom : 0); /* keep zoomed border inside visible area */
     char tag[128];
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(x->x_gui.x_font));
-    SETFLOAT (fontatoms+1, -(x->x_gui.x_fontsize)*zoom);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-
     sprintf(tag, "%p_RECT", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos, ypos, xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom);
-    pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-        "-fill", x->x_gui.x_bcol,
-        "-outline", x->x_gui.x_bcol);
+    pdgui_rect_configure(canvas, tag, xpos, ypos,
+        xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom, 1,
+        x->x_gui.x_bcol, x->x_gui.x_bcol);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
+    pdgui_rect_configure(canvas, tag,
         xpos + offset, ypos + offset,
-        xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", x->x_gui.x_bcol);
+        xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h,
+        zoom, PDGUI_COLOR_NONE,
+        (x->x_gui.x_fsf.x_selected ? THISGUI->i_selectcolor :
+            x->x_gui.x_bcol));
 
     sprintf(tag, "%p_LABEL", x);
-    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
+    pdgui_text_configure(canvas, tag,
         xpos + x->x_gui.x_ldx * zoom,
-        ypos + x->x_gui.x_ldy * zoom);
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", x->x_gui.x_lcol);
+        ypos + x->x_gui.x_ldy * zoom, x->x_gui.x_font,
+        x->x_gui.x_fontsize * zoom, sys_fontweight, x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -73,20 +61,18 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128], tag[128];
-    char *tags[] = {tag_object, tag, "label", "text"};
     sprintf(tag_object, "%p_", x);
 
     sprintf(tag, "%p_RECT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_rect_create(canvas, tag, tag_object, 0, 0, 0, 0, 1,
+        PDGUI_COLOR_NONE, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_BASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    pdgui_rect_create(canvas, tag, tag_object, 0, 0, 0, 0, 1,
+        PDGUI_COLOR_NONE, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_LABEL", x);
-    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
-        0, 0, "-anchor", "w", "-tags", 4, tags);
+    pdgui_text_create(canvas, tag, tag_object, 0, 0);
 
     my_canvas_draw_config(x, glist);
 }
@@ -97,11 +83,9 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     char tag[128];
     sprintf(tag, "%p_BASE", x);
     if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-            "-outline", THISGUI->i_selectcolor);
+        pdgui_rect_set_outline(canvas, tag, THISGUI->i_selectcolor);
     else
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-            "-outline", x->x_gui.x_bcol);
+        pdgui_rect_set_outline(canvas, tag, x->x_gui.x_bcol);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */

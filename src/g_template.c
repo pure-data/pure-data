@@ -8,6 +8,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "g_gui.h"
 #include "s_stuff.h"
 
     /* pointer to "globals" for templates in this pd instance */
@@ -163,17 +164,17 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
 static void template_listtogui(t_gobj *dummy, t_glist *gl_dummy)
 {
     t_template *x;
-    pdgui_vmess("pdtk_newstructs", 0);
+    pdgui_struct_menu_clear();
     for (x = pd_this->pd_templatelist; x; x = x->t_next)
         if (x->t_inmenu)
-            pdgui_vmess("pdtk_addstruct", "r", x->t_sym->s_name);
+            pdgui_struct_menu_add(x->t_sym->s_name);
 }
     /* add a template to the list */
 static void template_addtolist(t_template *x)
 {
     x->t_next = pd_this->pd_templatelist;
     pd_this->pd_templatelist = x;
-    if (sys_havetkproc())
+    if (sys_havegui() || sys_havetkproc())
          sys_queuegui((t_gobj *)(&THISTMPL->curve_motion_vertex), 0,
              template_listtogui);
 }
@@ -1439,14 +1440,9 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 fill = numbertocolor(
                     fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
             else fill = -1;
-            pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
-                glist_getcanvas(glist), tag,
+            pdgui_path_create(glist_getcanvas(glist), tag, pix, 2*n,
                 (fill >= 0), !!(flags & BEZ), width,
-                (fill >= 0 ? fill : 0), outline,
-                0, 0, 0, 0);
-
-            pdgui_vmess(0, "crs w",
-                glist_getcanvas(glist), "coords", tag, 2*n, pix);
+                (fill >= 0 ? fill : 0), outline);
         }
         else post(
             "warning: drawing shapes need at least two points to be graphed");
@@ -1454,8 +1450,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
-                tag);
+            pdgui_item_destroy(glist_getcanvas(glist), tag);
     }
 }
 
@@ -2045,9 +2040,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
     if (tovis)
     {
-         /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
-            type.  FLOATARRAY is impractical (as it sends a list, and the GUI
-            expects arguments) */
+         /* t_word preserves the scalar path coordinates without an
+            intermediate integer conversion */
         t_word coordinates[1024*2];
 
         if (style == PLOTSTYLE_POINTS)
@@ -2090,25 +2084,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                        glist_getcanvas(glist), tag0, "-", 0,
-                        color, THISGUI->i_backgroundcolor,
+                    pdgui_rect_create(glist_getcanvas(glist), tag0, "-",
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
                         inextx, (int)(glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth));
-
-                    /* pdgui_vmess(0, "crr iiii rk rf rS",
-                        glist_getcanvas(glist), "create", "rectangle",
-                        ixpix , (int) glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth),
-                        "-fill", color,
-                        "-width", 0.,
-                        "-tags", 3, tags); */
+                                + linewidth), 0, color,
+                        THISGUI->i_backgroundcolor);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -2219,23 +2201,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                /* pdgui_vmess(0, "crr ri rk rk ri rS",
-                    glist_getcanvas(glist), "create", "polygon",
-                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    "-fill", outline,
-                    "-outline", outline,
-                    "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags); */
-                pdgui_vmess("pdtk_canvas_create_poly", "cr ii i kk iiii",
-                    glist_getcanvas(glist), tag0,
-                    1, (style == PLOTSTYLE_BEZ),
+                pdgui_path_create(glist_getcanvas(glist), tag0, coordinates,
+                    ndrawn*2, 1, (style == PLOTSTYLE_BEZ),
                     (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    outline, outline,
-                    0, 0, 0, 0);
-
-                pdgui_vmess(0, "crs w",
-                    glist_getcanvas(glist), "coords", tag0,
-                    ndrawn*2, coordinates);
+                    outline, outline);
             }
             else if (linewidth > 0)
             {
@@ -2284,14 +2253,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
                 if (ndrawn)
                 {
-                    pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
-                        glist_getcanvas(glist), tag0,
-                        0, (style == PLOTSTYLE_BEZ), linewidth,
-                        outline, outline,
-                        0, 0, 0, 0);
-                    pdgui_vmess(0, "crs w",
-                        glist_getcanvas(glist), "coords", tag0,
-                        ndrawn*2, coordinates);
+                    pdgui_path_create(glist_getcanvas(glist), tag0,
+                        coordinates, ndrawn*2, 0,
+                        (style == PLOTSTYLE_BEZ), linewidth,
+                        outline, outline);
                 }
             }
         }
@@ -2346,8 +2311,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess("pdtk_canvas_delete", "cs",
-            glist_getcanvas(glist), tag0);
+        pdgui_item_destroy(glist_getcanvas(glist), tag0);
     }
 }
 
@@ -3076,7 +3040,6 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     sprintf(tag, "drawtext%p", data);
     if (vis)
     {
-        t_atom fontatoms[3];
         t_atom at;
         int xloc = glist_xtopixels(glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
@@ -3087,26 +3050,13 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
         char *textbuf;
         int textlen;
             /* draw label */
-        /* SETSYMBOL(fontatoms+0, gensym(sys_font));
-        SETFLOAT (fontatoms+1,
-            -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight)); */
             /* display label */
         if (*x->x_label->s_name)
-            pdgui_vmess("pdtk_text_new", "cS iis i k",
-                glist_getcanvas(glist), 2, tags,
+            pdgui_canvas_text_create_grouped(glist_getcanvas(glist), tag,
+                "label",
                 xloc, yloc, x->x_label->s_name,
                 sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
                 color);
-            /* pdgui_vmess(0, "crr ii rs rk rs rA rS",
-                glist_getcanvas(glist), "create", "text",
-                xloc, yloc, x->x_label->s_name,
-
-                "-anchor", "nw",
-                "-fill", color,
-                "-text", x->x_label->s_name,
-                "-font", 3, fontatoms,
-                "-tags", 2, tags); */
             /* draw text */
         rtext_setcolor(rtext, color);
         drawtext_gettext(z, data, &textbuf, &textlen);
@@ -3117,7 +3067,7 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (*x->x_label->s_name)
-            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
+            pdgui_item_destroy(glist_getcanvas(glist), tag);
         rtext_erase(rtext);
         rtext_free(rtext);
     }

@@ -10,6 +10,7 @@
 */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include "s_stuff.h"
 #include <stdio.h>
 #ifdef _WIN32
@@ -277,7 +278,7 @@ void sys_set_audio_settings(t_audiosettings *a)
     initted = 1;
 
     sys_log_error(ERR_NOTHING);
-    pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
+    pdgui_set_audio_api(audio_nextsettings.a_api);
 }
 
     /* close the audio device. Must not be called from a Pd message!
@@ -339,7 +340,7 @@ void sys_do_close_audio(void)
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
 
-    pdgui_vmess("set", "ri", "pd_whichapi", 0);
+    pdgui_set_audio_api(0);
 }
 
 void sys_init_audio(void)
@@ -476,7 +477,7 @@ void sys_do_reopen_audio(void)
         sched_set_using_audio(
             (as.a_callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
     }
-    pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
+    pdgui_set_audio_api(sys_audioapiopened);
 }
 
     /* called by the scheduler if the audio system appears to be stuck. */
@@ -744,7 +745,7 @@ void sys_gui_audiopreferences(void) {
     sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
 
         /* and send it over to the GUI */
-    pdgui_vmess("::dialog_audio::set_configuration", "SFF SFF ssi si",
+    pdgui_audio_set_configuration(
         num_devicesI, devicesI, num_usedevsI, usedevsI, num_devchansI, devchansI,
         num_devicesO, devicesO, num_usedevsO, usedevsO, num_devchansO, devchansO,
         srate, blocksize, as.a_advance,
@@ -756,8 +757,7 @@ void glob_audio_properties(t_pd *dummy)
 {
     sys_gui_audiopreferences();
     pdgui_stub_deleteforkey(0);
-    pdgui_stub_vnew(&glob_pdobject, "::dialog_audio::create",
-        (void *)glob_audio_properties, "");
+    pdgui_audio_dialog_open(&glob_pdobject, (void *)glob_audio_properties);
 }
 
     /* new values from dialog window */
@@ -833,7 +833,7 @@ void glob_rescanaudio(t_pd *dummy)
 #endif
     sys_gui_audiopreferences();
         /* refresh audio dialog (if it's open) */
-    pdgui_vmess("::dialog_audio::refresh_ui", "");
+    pdgui_audio_refresh();
 }
 
 void sys_listdevs(void)
@@ -925,17 +925,17 @@ static t_apientry audio_apilist[] = {
 #endif
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-    {"\"standard (portaudio)\"", API_PORTAUDIO},
+    {"standard (portaudio)", API_PORTAUDIO},
 #else
 #ifdef __APPLE__
-    {"\"standard (portaudio)\"", API_PORTAUDIO},
+    {"standard (portaudio)", API_PORTAUDIO},
 #else
     {"portaudio", API_PORTAUDIO},
 #endif
 #endif
 #endif  /* USEAPI_PORTAUDIO */
 #ifdef USEAPI_MMIO
-    {"\"old MMIO system\"", API_MMIO},
+    {"old MMIO system", API_MMIO},
 #endif
 #ifdef USEAPI_JACK
     {"jack", API_JACK},
@@ -954,22 +954,19 @@ static t_apientry audio_apilist[] = {
 #endif
 };
 
-void sys_get_audio_apis(char *buf)
+int sys_get_audio_apis(int maxapis, const char **names, int *ids)
 {
-        /* FIXXME: this returns a raw Tcl-list!
-         *  instead it should return something we can use with pdgui_vmess()
-         */
-    unsigned int n;
-    if (sizeof(audio_apilist)/sizeof(t_apientry) < 2)
-        strcpy(buf, "{}");
-    else
+    int i, count = (int)(sizeof(audio_apilist)/sizeof(t_apientry));
+    if (count < 2)
+        return (0);
+    if (count > maxapis)
+        count = maxapis;
+    for (i = 0; i < count; i++)
     {
-        strcpy(buf, "{ ");
-        for (n = 0; n < sizeof(audio_apilist)/sizeof(t_apientry); n++)
-            sprintf(buf + strlen(buf), "{%s %d} ",
-                audio_apilist[n].a_name, audio_apilist[n].a_id);
-        strcat(buf, "}");
+        names[i] = audio_apilist[i].a_name;
+        ids[i] = audio_apilist[i].a_id;
     }
+    return (count);
 }
 
 /* convert a device name to a (1-based) device number.  (Output device if

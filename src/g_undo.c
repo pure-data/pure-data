@@ -1,6 +1,7 @@
 #include "m_pd.h"
 #include "g_canvas.h"
 #include "g_undo.h"
+#include "g_gui.h"
 
 #if 0
 # define DEBUG_UNDO(x) startpost("[%s:%d] ", __FILE__, __LINE__), x
@@ -108,7 +109,7 @@ int canvas_undo_objectstate(t_canvas *cnv, void *z, int action) {
 static void canvas_show_undomenu(t_canvas*x, const char* undo_action, const char* redo_action)
 {
     if (glist_isvisible(x) && glist_istoplevel(x))
-        pdgui_vmess("pdtk_undomenu", "^ ss", x, undo_action, redo_action);
+        pdgui_undo_menu(x, undo_action, redo_action);
 }
 
 static void canvas_undo_docleardirty(t_canvas *x)

@@ -14,6 +14,7 @@
 #include "s_stuff.h"
 
 #include "g_all_guis.h"
+#include "g_gui.h"
 
 #include "m_private_utils.h"
 
@@ -502,9 +503,8 @@ static void iemgui_dolabelpos(t_object*obj, t_iemgui*iemgui) {
         dx = 0;
         dy = 7;
     }
-    pdgui_vmess(0, "crs ii",
-        glist_getcanvas(iemgui->x_glist), "coords", tag,
-        x0  + dx*zoom, y0 + dy*zoom);
+    pdgui_text_set_position(glist_getcanvas(iemgui->x_glist), tag,
+        x0 + dx*zoom, y0 + dy*zoom);
 }
 void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 {
@@ -521,13 +521,11 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 
     if(senditup)
     {
-        const char*label = s->s_name;
         int have_label = (s != empty);
         char tag[128];
         sprintf(tag, "%p_LABEL", x);
-        pdgui_vmess("pdtk_text_set", "cs s",
-            glist_getcanvas(iemgui->x_glist), tag,
-            have_label?s->s_name:"");
+        pdgui_text_set_content(glist_getcanvas(iemgui->x_glist), tag,
+            have_label ? s->s_name : "");
         iemgui_dolabelpos(x, iemgui);
     }
 }
@@ -566,14 +564,9 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(glist_isvisible(iemgui->x_glist))
     {
         char tag[128];
-        t_atom fontatoms[3];
         sprintf(tag, "%p_LABEL", x);
-        SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-        pdgui_vmess(0, "crs rA",
-            glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
-            "-font", 3, fontatoms);
+        pdgui_text_set_font(glist_getcanvas(iemgui->x_glist), tag,
+            iemgui->x_font, iemgui->x_fontsize * zoom, sys_fontweight);
     }
 }
 
@@ -712,18 +705,11 @@ void iemgui_newzoom(t_iemgui *iemgui)
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
-    char label[MAXPDSTRING];
-    int i;
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
     srl[2] = iemgui->x_lab;
 
     iemgui_all_sym2dollararg(iemgui, srl);
-
-    for(i=0; i<3; i++) {
-        if(srl[i])
-            srl[i] = gensym(pdgui_strnescape(label, sizeof(label), srl[i]->s_name, strlen(srl[i]->s_name)));
-    }
 }
 
 void iemgui_new_dialog(void*x, t_iemgui*iemgui,
@@ -742,21 +728,14 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
     iemgui_properties(iemgui, srl);
     sprintf(objname_, "|%s|", objname);
 
-    pdgui_stub_vnew(&iemgui->x_obj.ob_pd, "pdtk_iemgui_dialog", x,
-        "r s ffs ffs sfsfs i iss ii si sss ii ii kkk",
-        objname_,
-        "",
-        width, width_min, "",
-        height, height_min, "",
-        "", range_min, "", range_max, "",
-        schedule,
-        mode, label_mode0, label_mode1,
-        canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
-        "", number,
-        srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
-        iemgui->x_ldx, iemgui->x_ldy,
-        iemgui->x_fsf.x_font_style, iemgui->x_fontsize,
-        iemgui->x_bcol, iemgui->x_fcol, iemgui->x_lcol);
+    pdgui_iemgui_dialog(&iemgui->x_obj.ob_pd, x, objname_, width,
+        width_min, height, height_min, range_min, range_max, schedule, mode,
+        label_mode0, label_mode1,
+        canloadbang ? iemgui->x_isa.x_loadinit : -1, steady, number,
+        srl[0] ? srl[0]->s_name : "", srl[1] ? srl[1]->s_name : "",
+        srl[2] ? srl[2]->s_name : "", iemgui->x_ldx, iemgui->x_ldy,
+        iemgui->x_fsf.x_font_style, iemgui->x_fontsize, iemgui->x_bcol,
+        iemgui->x_fcol, iemgui->x_lcol);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
@@ -944,7 +923,6 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128], tag_label[128], tag[128];
-    char *tags[] = {tag_object, tag};
 
     (void)old_snd_rcv_flags;
 
@@ -953,30 +931,24 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 
     /* re-create outlet */
     sprintf(tag, "%p_OUT%d", x, 0);
-    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
+    pdgui_item_destroy(canvas, tag);
     if(!x->x_fsf.x_snd_able) {
-        pdgui_vmess(0, "crr iiii rk rk rS",
-            canvas, "create", "rectangle",
+        pdgui_rect_create(canvas, tag, tag_object,
             xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", THISGUI->i_foregroundcolor,
-            "-outline", THISGUI->i_foregroundcolor,
-            "-tags", 2, tags);
+            1, THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor);
         /* keep label above outlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
+        pdgui_item_lower(canvas, tag, tag_label);
     }
 
     /* re-create inlet */
     sprintf(tag, "%p_IN%d", x, 0);
-    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag);
+    pdgui_item_destroy(canvas, tag);
     if(!x->x_fsf.x_rcv_able) {
-        pdgui_vmess(0, "crr iiii rk rk rS",
-            canvas, "create", "rectangle",
+        pdgui_rect_create(canvas, tag, tag_object,
             xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", THISGUI->i_foregroundcolor,
-            "-outline", THISGUI->i_foregroundcolor,
-            "-tags", 2, tags);
+            1, THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor);
         /* keep label above inlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
+        pdgui_item_lower(canvas, tag, tag_label);
     }
 }
 
@@ -986,7 +958,7 @@ static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
     char tag_object[128];
     sprintf(tag_object, "%p_", x);
 
-    pdgui_vmess("pdtk_canvas_delete", "cs", canvas, tag_object);
+    pdgui_item_destroy(canvas, tag_object);
 }
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
@@ -998,8 +970,7 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     char tag_object[128];
     sprintf(tag_object, "%p_", x);
 
-    //pdgui_vmess("pdtk_canvas_move", "cs ii", canvas, tag_object, dx, dy);
-    pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
+    pdgui_item_move(canvas, tag_object, dx, dy);
 }
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)

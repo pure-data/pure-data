@@ -3,6 +3,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
+#include "g_gui.h"
 #include "m_imp.h"
 
 t_class *glob_pdobject;
@@ -115,7 +116,7 @@ void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    pdgui_vmess("pdtk_plugin_dispatch", "a", argc, argv);
+    pdgui_plugin_dispatch(argc, argv);
 }
 
 int sys_zoom_open = 1;
