@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
@@ -837,6 +837,9 @@ msgstr "Unable to remove stray file '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Unable to rename downloaded file to '%s'"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "Search URLs:"
 
@@ -872,6 +875,17 @@ msgstr "Keep package files after installation"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Add newly installed libraries to Pd's search path"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "Added %s to search paths"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Unable to add %s to search paths"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Platform settings:"
@@ -1188,6 +1202,10 @@ msgstr "[deken] Platform detected: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Could not find a menu for adding '%s'"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Downloading '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1952,6 +1970,10 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Comment"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Scale"
+
 msgid "Graph"
 msgstr "Graph"
 
@@ -1972,9 +1994,6 @@ msgstr "DSP Off"
 
 msgid "Test Audio and MIDI..."
 msgstr "Test Audio and MIDI..."
-
-msgid "Load Meter"
-msgstr "Load Meter"
 
 msgid "Audio Settings..."
 msgstr "Audio Settings..."
@@ -2002,6 +2021,9 @@ msgstr "Close subwindows"
 
 msgid "Parent Window"
 msgstr "Parent Window"
+
+msgid "Load Meter"
+msgstr "Load Meter"
 
 msgid "Message..."
 msgstr "Message..."

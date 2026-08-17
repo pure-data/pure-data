@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -837,6 +837,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Serĉaj rezultoj"
@@ -873,6 +876,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1185,6 +1197,10 @@ msgstr ""
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Elŝutante «%s»"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1933,6 +1949,10 @@ msgstr "Simbolo"
 msgid "Comment"
 msgstr "Komento"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Skalo"
+
 msgid "Graph"
 msgstr "Grafo"
 
@@ -1952,9 +1972,6 @@ msgid "DSP Off"
 msgstr ""
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -1983,6 +2000,9 @@ msgstr ""
 
 msgid "Parent Window"
 msgstr "Patra fenestro"
+
+msgid "Load Meter"
+msgstr ""
 
 msgid "Message..."
 msgstr "Mesaĝo…"

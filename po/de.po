@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2026-05-12 15:36+0200\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -854,6 +854,9 @@ msgstr "Konnte überschüssige Datei '%s' nicht entfernen"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Konnte heruntergeladene Datei nicht in '%s' umbenennen"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "Such-URLs:"
 
@@ -889,6 +892,17 @@ msgstr "Paketarchive nach der Installationen behalten"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Neu installierte Externals zu Pds Suchpfad hinzufügen"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s wurde zum Suchpfad hinzugefügt"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Konnte %s nicht zu Pds Suchpfad hinzufügen"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Kompatibilitätseinstellungen:"
@@ -1212,6 +1226,10 @@ msgstr "[deken] Paketarchitektur erkannt: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Konnte kein Menü finden, um '%s' hinzuzufügen"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Herunterladen von '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1976,6 +1994,10 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Kommentar"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Skalierung"
+
 msgid "Graph"
 msgstr "Graph"
 
@@ -1996,9 +2018,6 @@ msgstr "DSP aus"
 
 msgid "Test Audio and MIDI..."
 msgstr "Audio und MIDI testen..."
-
-msgid "Load Meter"
-msgstr "Auslastungsanzeige"
 
 msgid "Audio Settings..."
 msgstr "Audioeinstellungen..."
@@ -2026,6 +2045,9 @@ msgstr "Unterfenster schließen"
 
 msgid "Parent Window"
 msgstr "Übergeordnetes Fenster"
+
+msgid "Load Meter"
+msgstr "Auslastungsanzeige"
 
 msgid "Message..."
 msgstr "Message..."

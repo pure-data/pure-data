@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -844,6 +844,9 @@ msgstr "Kan verdwaald bestand '%s' niet verwijderen"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Kan gedownload bestand niet hernoemen naar '%s'"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "Zoekresultaat URLs:"
 
@@ -882,6 +885,17 @@ msgstr "Pakketbestanden bewaren na installatie"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Nieuw geïnstalleerde bibliotheken toevoegen aan het zoekpad van Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s toegevoegd aan zoekpaden"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Kan %s niet toevoegen aan zoekpaden"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Platforminstellingen:"
@@ -1205,6 +1219,10 @@ msgstr "[deken] Platform gedetecteerd: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Kan geen menu vinden om '%s' toe te voegen"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "'%s' downloaden"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1969,6 +1987,10 @@ msgstr "Symbool"
 msgid "Comment"
 msgstr "Opmerking"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Schaal"
+
 msgid "Graph"
 msgstr "Grafiek"
 
@@ -1989,9 +2011,6 @@ msgstr "DSP Uit"
 
 msgid "Test Audio and MIDI..."
 msgstr "Audio en MIDI testen..."
-
-msgid "Load Meter"
-msgstr "Lastmeter"
 
 msgid "Audio Settings..."
 msgstr "Audio-instellingen..."
@@ -2019,6 +2038,9 @@ msgstr "Sluit subvensters"
 
 msgid "Parent Window"
 msgstr "Bovenliggend venster"
+
+msgid "Load Meter"
+msgstr "Lastmeter"
 
 msgid "Message..."
 msgstr "Bericht..."

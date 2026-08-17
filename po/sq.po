@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2024-07-08 17:37+0200\n"
 "Last-Translator: Besnik Bleta <besnik@spymac.com>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -894,6 +894,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Kërko Tekst..."
@@ -929,6 +932,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1246,6 +1258,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -2008,6 +2024,10 @@ msgstr ""
 msgid "Comment"
 msgstr "Urdhër"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Ruaj"
+
 msgid "Graph"
 msgstr "Grafik"
 
@@ -2030,10 +2050,6 @@ msgstr "Asnjë"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Matës vonese:"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2066,6 +2082,10 @@ msgstr "Mbyll këtë skedë/dritare"
 #, fuzzy
 msgid "Parent Window"
 msgstr "Dritare dërgimesh"
+
+#, fuzzy
+msgid "Load Meter"
+msgstr "Matës vonese:"
 
 #, fuzzy
 msgid "Message..."

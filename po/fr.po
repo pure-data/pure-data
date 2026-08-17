@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: cyrille henry <ch@chnry.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -846,6 +846,9 @@ msgstr "Impossible d'effacer le ficher temporaire '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "URL de recherche :"
 
@@ -886,6 +889,17 @@ msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 "Ajouter les bibliothèques nouvellement installées aux chemins de recherche "
 "de Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s a été ajouté aux chemins de recherche"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Impossible d'ajouter %s aux chemins de recherche"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -1220,6 +1234,10 @@ msgstr "[deken] Plateforme détectée : %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Impossible de trouver un menu où ajouter '%s'"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Téléchargement de '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1985,6 +2003,10 @@ msgstr "Symbole"
 msgid "Comment"
 msgstr "Commentaire"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Échelle"
+
 msgid "Graph"
 msgstr "Graphique"
 
@@ -2005,9 +2027,6 @@ msgstr "DSP désactivé"
 
 msgid "Test Audio and MIDI..."
 msgstr "Tester l'audio et le MIDI..."
-
-msgid "Load Meter"
-msgstr "CPU-mètre"
 
 msgid "Audio Settings..."
 msgstr "Paramètres audio..."
@@ -2035,6 +2054,9 @@ msgstr "Fermer les sous-patchs"
 
 msgid "Parent Window"
 msgstr "Fenêtre parente"
+
+msgid "Load Meter"
+msgstr "CPU-mètre"
 
 msgid "Message..."
 msgstr "Message..."

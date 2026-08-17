@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -858,6 +858,9 @@ msgstr "잔여 파일 '%s'을(를) 제거하지 못했습니다"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "다운로드 된 파일의 이름을 '%s'로 수정하지 못했습니다"
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "검색 결과"
@@ -896,6 +899,17 @@ msgstr "설치 후에도 패키지 파일을 유지"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Pd의 검색 경로에 새로 설치된 라이브러리를 추가"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "검색경로에 %s을(를) 추가했습니다"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "저장경로에 %s를 추가하지 못했습니다"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "플랫폼 설정:"
@@ -1216,6 +1230,10 @@ msgstr "[deken] 플랫폼이 감지되었습니다: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "'%s'을(를) 다운로드 하고 있습니다"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1985,6 +2003,10 @@ msgstr "심볼"
 msgid "Comment"
 msgstr "코멘트"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "크기"
+
 msgid "Graph"
 msgstr "그래프"
 
@@ -2005,9 +2027,6 @@ msgstr "DSP 끄기"
 
 msgid "Test Audio and MIDI..."
 msgstr "오디오와 MIDI 테스트..."
-
-msgid "Load Meter"
-msgstr "미터 로드"
 
 msgid "Audio Settings..."
 msgstr "오디오 설정..."
@@ -2035,6 +2054,9 @@ msgstr ""
 
 msgid "Parent Window"
 msgstr "부모 창"
+
+msgid "Load Meter"
+msgstr "미터 로드"
 
 msgid "Message..."
 msgstr "메시지..."
