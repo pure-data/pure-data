@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.55.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-06-16 02:48+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -839,6 +839,9 @@ msgstr "தவறான கோப்பை '%s' அகற்ற முடிய�
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "பதிவிறக்கம் செய்யப்பட்ட கோப்பை '%s' என்று மறுபெயரிட முடியவில்லை"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "URLS ஐத் தேடுங்கள்:"
 
@@ -874,6 +877,17 @@ msgstr "நிறுவலுக்குப் பிறகு தொகுப�
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "பி.டி.யின் தேடல் பாதையில் புதிதாக நிறுவப்பட்ட நூலகங்களைச் சேர்க்கவும்"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "தேடல் பாதைகளுக்கு %s சேர்க்கப்பட்டது"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "தேடல் பாதைகளுக்கு %s ஐ சேர்க்க முடியவில்லை"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "இயங்குதள அமைப்புகள்:"
@@ -1194,6 +1208,10 @@ msgstr "[டெக்கன்] இயங்குதளம் கண்டற�
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "'%s' சேர்ப்பதற்கான மெனுவைக் கண்டுபிடிக்க முடியவில்லை"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "'%s' பதிவிறக்குதல்"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1958,6 +1976,10 @@ msgstr "அடையாளம்"
 msgid "Comment"
 msgstr "கருத்து"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "அளவு"
+
 msgid "Graph"
 msgstr "வரைபடம்"
 
@@ -1978,9 +2000,6 @@ msgstr "டி.எச்.பி ஆஃப்"
 
 msgid "Test Audio and MIDI..."
 msgstr "ஆடியோ மற்றும் மிடி சோதனை ..."
-
-msgid "Load Meter"
-msgstr "சுமை மீட்டர்"
 
 msgid "Audio Settings..."
 msgstr "ஆடியோ அமைப்புகள் ..."
@@ -2008,6 +2027,9 @@ msgstr "துணைப்பிரிவை மூடு"
 
 msgid "Parent Window"
 msgstr "பெற்றோர் சாளரம்"
+
+msgid "Load Meter"
+msgstr "சுமை மீட்டர்"
 
 msgid "Message..."
 msgstr "செய்தி ..."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data-0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2005-09-14 12:49+0530\n"
 "Last-Translator: Ankit Patel <ankit644@yahoo.com>\n"
 "Language-Team: Gujarati <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -895,6 +895,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "લખાણ શોધો..."
@@ -930,6 +933,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1247,6 +1259,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -2009,6 +2025,10 @@ msgstr ""
 msgid "Comment"
 msgstr "આદેશ"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "સંગ્રહ કરો"
+
 msgid "Graph"
 msgstr "ગ્રાફ"
 
@@ -2031,10 +2051,6 @@ msgstr "બંધ"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "લેગ મીટર:"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2067,6 +2083,10 @@ msgstr "આ ટેબ/વિન્ડો બંધ કરો"
 #, fuzzy
 msgid "Parent Window"
 msgstr "મોકલો વિન્ડો"
+
+#, fuzzy
+msgid "Load Meter"
+msgstr "લેગ મીટર:"
 
 #, fuzzy
 msgid "Message..."

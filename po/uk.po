@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -875,6 +875,9 @@ msgstr "Неможливо видалити тимчасовий файл '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Неможливо перейменувати завантажений файл на '%s'"
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Результати пошуку"
@@ -914,6 +917,17 @@ msgstr "Зберігати файли пакета після інсталяці
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Додати нові бібліотеки в шлях пошуку Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "Додано %s у шляху для пошуку"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Неможливо додати %s до шляхів пошуку"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Налаштування платформи:"
@@ -1237,6 +1251,10 @@ msgstr "[deken] Виявлено платформу: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Завантаження '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -2004,6 +2022,10 @@ msgstr "Символ"
 msgid "Comment"
 msgstr "Коментар"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Масштаб"
+
 msgid "Graph"
 msgstr "Граф (субпатч)"
 
@@ -2024,10 +2046,6 @@ msgstr "DSP вимкнено"
 
 msgid "Test Audio and MIDI..."
 msgstr "тест аудіо i MIDI..."
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Вимірник завантаження"
 
 msgid "Audio Settings..."
 msgstr "Налаштування звуку..."
@@ -2056,6 +2074,10 @@ msgstr "Закрити підвікна"
 
 msgid "Parent Window"
 msgstr "Батьківське вікно"
+
+#, fuzzy
+msgid "Load Meter"
+msgstr "Вимірник завантаження"
 
 msgid "Message..."
 msgstr "Повідомлення..."

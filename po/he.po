@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -837,6 +837,9 @@ msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "כתובות חיפוש:"
 
@@ -872,6 +875,17 @@ msgstr "לשמור על קובצי החבילה לאחר ההתקנה"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "להוסיף ספריות חדשות שהותקנו לנתיב החיפוש של Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s נוסף לנתיבי החיפוש"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "לא ניתן להוסיף את %s לנתיבי החיפוש"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "הגדרות פלטפורמה:"
@@ -1188,6 +1202,10 @@ msgstr "[deken] התגלתה פלטפורמה: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "לא ניתן למצוא תפריט להוספת ‚%s’"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "‚%s’ בהורדה"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1950,6 +1968,10 @@ msgstr "סמל"
 msgid "Comment"
 msgstr "הערה"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "קנ״מ"
+
 msgid "Graph"
 msgstr "תרשים"
 
@@ -1970,9 +1992,6 @@ msgstr "DSP כבוי"
 
 msgid "Test Audio and MIDI..."
 msgstr "בדיקת שמע ו־MIDI…"
-
-msgid "Load Meter"
-msgstr "מד עומס"
 
 msgid "Audio Settings..."
 msgstr "הגדרות שמע…"
@@ -2000,6 +2019,9 @@ msgstr "סגירת תת־חלונות"
 
 msgid "Parent Window"
 msgstr "חלון ההורה"
+
+msgid "Load Meter"
+msgstr "מד עומס"
 
 msgid "Message..."
 msgstr "הודעה…"

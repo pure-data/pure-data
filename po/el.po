@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -879,6 +879,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Αναζήτηση σε"
@@ -914,6 +917,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1232,6 +1244,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1984,6 +2000,10 @@ msgstr ""
 msgid "Comment"
 msgstr "Σχόλιο"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Κλίμακα"
+
 msgid "Graph"
 msgstr "Γράφημα"
 
@@ -2004,9 +2024,6 @@ msgstr "Απενεργοποίση DSP"
 
 msgid "Test Audio and MIDI..."
 msgstr "Έλεγχος 'Ηχου και MIDI..."
-
-msgid "Load Meter"
-msgstr "Φόρτωση Μετρητή"
 
 msgid "Audio Settings..."
 msgstr "Ρυθμίσεις Ήχου..."
@@ -2037,6 +2054,9 @@ msgstr "Κλείσιμο αυτού του παραθύρου;;"
 
 msgid "Parent Window"
 msgstr "Γονεϊκό Παράθυρο"
+
+msgid "Load Meter"
+msgstr "Φόρτωση Μετρητή"
 
 #, fuzzy
 msgid "Message..."
