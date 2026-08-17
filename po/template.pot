@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.56.3\n"
+"Project-Id-Version: Pure Data 0.57.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-05 20:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -834,6 +834,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr ""
 
@@ -868,6 +871,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1178,6 +1190,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, tcl-format
@@ -1926,6 +1942,9 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+msgid "Scalar"
+msgstr ""
+
 msgid "Graph"
 msgstr ""
 
@@ -1945,9 +1964,6 @@ msgid "DSP Off"
 msgstr ""
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -1975,6 +1991,9 @@ msgid "Close subwindows"
 msgstr ""
 
 msgid "Parent Window"
+msgstr ""
+
+msgid "Load Meter"
 msgstr ""
 
 msgid "Message..."
