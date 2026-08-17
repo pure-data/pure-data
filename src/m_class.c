@@ -24,29 +24,34 @@
 void push_loadsym(t_symbol*s);
 t_symbol*pop_loadsym(void);
 
-typedef struct _symbolstack {
-    t_symbol*s_symbol;
-    struct _symbolstack*s_previous;
+typedef struct _symbolstack
+{
+    t_symbol *s_loadsymbol;
+    struct _symbolstack *s_previous;
 } t_symbolstack;
-static t_symbolstack *class_loadsymbol = 0;     /* name under which an extern is invoked */
+
+static t_symbolstack *class_loadsymbol = 0;  /* name extern is invoked as */
+
 void push_loadsym(t_symbol*s) {
     t_symbolstack*stack = (t_symbolstack*)getbytes(sizeof(t_symbolstack));
     if(!stack) return;
-    stack->s_symbol = s;
+    stack->s_loadsymbol = s;
     stack->s_previous = class_loadsymbol;
     class_loadsymbol = stack;
 }
+
 t_symbol*pop_loadsym(void) {
     t_symbol*s = 0;
     t_symbolstack*stack = class_loadsymbol;
     if(!stack) return 0;
-    s = stack->s_symbol;
+    s = stack->s_loadsymbol;
     class_loadsymbol = stack->s_previous;
     freebytes(stack, sizeof(*stack));
     return s;
 }
+
 t_symbol*peek_loadsym(void) {
-    return class_loadsymbol?class_loadsymbol->s_symbol:0;
+    return class_loadsymbol?class_loadsymbol->s_loadsymbol:0;
 }
 
 static void pd_defaultfloat(t_pd *x, t_float f);
