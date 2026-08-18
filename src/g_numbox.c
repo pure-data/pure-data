@@ -12,9 +12,6 @@
 #include "g_all_guis.h"
 #include <math.h>
 
-#define MINDIGITS 1
-#define MINFONT   4
-
 /*------------------ global functions -------------------------*/
 
 static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey);
@@ -28,18 +25,36 @@ static void my_numbox_clip(t_my_numbox *x)
         x->x_val = x->x_max;
 }
 
-static void my_numbox_calc_fontwidth(t_my_numbox *x)
+static int my_numbox_fontsize_increment(t_my_numbox *x)
 {
-    int w, f = 31;
+    int f = 31;
 
     if(x->x_gui.x_fsf.x_font_style == 1)
         f = 27;
     else if(x->x_gui.x_fsf.x_font_style == 2)
         f = 25;
 
-    w = x->x_gui.x_fontsize * f * x->x_numwidth;
-    w /= 36;
-    x->x_gui.x_w = (w + (x->x_gui.x_h/2)/IEMGUI_ZOOM(x) + 4) * IEMGUI_ZOOM(x);
+    return (f);
+}
+
+static void my_numbox_calc_numwidth(t_my_numbox *x)
+{
+    const int fi = my_numbox_fontsize_increment(x);
+    const int zoom = IEMGUI_ZOOM(x);
+    int nw = x->x_gui.x_w / zoom - 4 - (x->x_gui.x_h/2)/zoom;
+    nw *= IEM_NBX_FS_FACTOR;
+    nw /= (x->x_gui.x_fontsize * fi);
+    x->x_numwidth = (nw < IEM_NBX_MINDIGITS) ? IEM_NBX_MINDIGITS : nw;
+}
+
+static void my_numbox_calc_fontwidth(t_my_numbox *x)
+{
+    const int fi = my_numbox_fontsize_increment(x);
+    const int zoom = IEMGUI_ZOOM(x);
+    int w = x->x_gui.x_fontsize * fi * x->x_numwidth;
+    w /= IEM_NBX_FS_FACTOR;
+    w += (x->x_gui.x_h/2)/zoom + 4;
+    x->x_gui.x_w = w * zoom;
 }
 
 static void my_numbox_ftoa(t_my_numbox *x)
@@ -374,7 +389,7 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
     iemgui_new_dialog(x, &x->x_gui, "nbx",
-                      x->x_numwidth, MINDIGITS,
+                      x->x_numwidth, IEM_NBX_MINDIGITS,
                       x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
                       x->x_min, x->x_max,
                       0,
@@ -415,8 +430,8 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    if(w < MINDIGITS)
-        w = MINDIGITS;
+    if(w < IEM_NBX_MINDIGITS)
+        w = IEM_NBX_MINDIGITS;
     x->x_numwidth = w;
     if(h < IEM_GUI_MINSIZE)
         h = IEM_GUI_MINSIZE;
@@ -523,8 +538,8 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
     int h, w;
 
     w = (int)atom_getfloatarg(0, ac, av);
-    if(w < MINDIGITS)
-        w = MINDIGITS;
+    if(w < IEM_NBX_MINDIGITS)
+        w = IEM_NBX_MINDIGITS;
     x->x_numwidth = w;
     if(ac > 1)
     {
@@ -534,6 +549,51 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
         x->x_gui.x_h = h * IEMGUI_ZOOM(x);
     }
     my_numbox_calc_fontwidth(x);
+    iemgui_size((void *)x, &x->x_gui);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
+
+/* cant use iemgui_resize directly because number2's width is linked to number
+ * of digits:
+ * - shift: modify height and fontsize (lock number of digits)
+ * - ctrl: modify height, fontsize, and number of digits
+ * - otherwise, modify width (clamped to number od digits)
+ */
+static void my_numbox_iemgui_resize(t_gobj *z, struct _glist *glist, int dx, int dy, int mod)
+{
+    t_my_numbox *x = (t_my_numbox *)z;
+    const int zoom = IEMGUI_ZOOM(x);
+    const int pad = 4;
+    const int minh = x->x_gui.x_fontsize * zoom + pad;
+    const int h = iemgui_clip_size((int)dy) * zoom;
+    const int minw = x->x_numwidth * x->x_gui.x_fontsize + h/2 + 2*zoom;
+
+    x->x_gui.x_w = iemgui_clip_size((int)dx) * zoom;
+
+    if (mod==1)
+    {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_SQUARE);
+        x->x_gui.x_h = (h < minh) ? minh : h;
+        x->x_gui.x_fontsize = h;
+    }
+    else if (mod==2)
+    {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_FREE);
+        x->x_gui.x_h = (h < minh) ? minh : h;
+        x->x_gui.x_fontsize = h;
+        my_numbox_calc_numwidth(x);
+    }
+    else {
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE);
+        my_numbox_calc_numwidth(x);
+    }
+
+    if (x->x_gui.x_w < minw)
+        x->x_gui.x_w =  minw;
+
+    /* clamp width to number of digits */
+    my_numbox_calc_fontwidth(x);
+
     iemgui_size((void *)x, &x->x_gui);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
@@ -574,9 +634,7 @@ static void my_numbox_label_font(t_my_numbox *x,
 {
     int f = (int)atom_getfloatarg(1, ac, av);
 
-    if(f < 4)
-        f = 4;
-    x->x_gui.x_fontsize = f;
+    x->x_gui.x_fontsize = (f < IEM_FONT_MINSIZE) ? IEM_FONT_MINSIZE : f;
     f = (int)atom_getfloatarg(0, ac, av);
     if((f < 0) || (f > 2))
         f = 0;
@@ -730,9 +788,9 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    x->x_gui.x_fontsize = (fs < MINFONT)?MINFONT:fs;
-    if(w < MINDIGITS)
-        w = MINDIGITS;
+    x->x_gui.x_fontsize = (fs < IEM_FONT_MINSIZE) ? IEM_FONT_MINSIZE : fs;
+    if(w < IEM_NBX_MINDIGITS)
+        w = IEM_NBX_MINDIGITS;
     x->x_numwidth = w;
     if(h < IEM_GUI_MINSIZE)
         h = IEM_GUI_MINSIZE;
@@ -809,6 +867,7 @@ void g_numbox_setup(void)
     my_numbox_widgetbehavior.w_deletefn =     iemgui_delete;
     my_numbox_widgetbehavior.w_visfn =        iemgui_vis;
     my_numbox_widgetbehavior.w_clickfn =      my_numbox_newclick;
+    my_numbox_widgetbehavior.w_resizefn =     my_numbox_iemgui_resize;
     class_setwidget(my_numbox_class, &my_numbox_widgetbehavior);
     class_setsavefn(my_numbox_class, my_numbox_save);
     class_setpropertiesfn(my_numbox_class, my_numbox_properties);
