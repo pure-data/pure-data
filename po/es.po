@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-08-05 20:23+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"PO-Revision-Date: 2026-08-21 11:51+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -850,7 +850,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "No se pudo renombrar el archivo descargado a '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "Buscar URLs"
@@ -889,16 +889,14 @@ msgstr "Mantener archivo(s) de paquete después de la instalación"
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Agregar librerías recién instaladas a las rutas de búsqueda de Pd"
 
-#, fuzzy
 msgid "- Always add to search path"
-msgstr "Se ha agregado %s a las rutas de búsqueda"
+msgstr "- Añadir siempre a la ruta de búsqueda"
 
-#, fuzzy
 msgid "- Never add to search path"
-msgstr "No se pudo agregar %s a las rutas de búsqueda"
+msgstr "- Nunca añadir a la ruta de búsqueda"
 
 msgid "- Prompt before adding"
-msgstr ""
+msgstr "- Preguntar antes de añadir"
 
 msgid "Platform settings:"
 msgstr "Configuraciones de plataforma:"
@@ -1225,9 +1223,9 @@ msgstr "[deken] plataforma detectada: %s"
 msgid "Could not find a menu for adding '%s'"
 msgstr "No se pudo encontrar un menú para agregar '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Downgrading %s to %s"
-msgstr "Descargando '%s'"
+msgstr "Rebajando %s a %s"
 
 #, tcl-format
 msgid "Searching on %s..."
