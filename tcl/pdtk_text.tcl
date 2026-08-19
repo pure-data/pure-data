@@ -37,12 +37,35 @@ proc pdtk_text_set {tkcanvas tag text} {
     $tkcanvas itemconfig $tag -text [::pdtk_text::unescape $text]
 }
 
+
+# send "pastetext" messages to send a properly escaped (UTF-8 encoded)
+# text to the patch.
+# follow the text with a terminating "-2" at which point the patch carries
+# out the paste.
+proc ::pdtk_text::pasteutf8chars {w buf} {
+    set command "$w pastechars"
+    pdsend "${command} -1"
+    set maxlen [expr 75 - [string length $command] - 1]
+    set chars {}
+    for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
+        scan [string index $buf $i] %c keynum
+        lappend chars ${keynum}
+        if { [string length ${chars}] > 75 } {
+            pdsend "$command ${chars}"
+            set chars {}
+        }
+    }
+    if [llength $chars] {
+        pdsend "${command} ${chars}"
+    }
+    pdsend "$w pastechars -2"
+}
+
 # paste into an existing text box by literally "typing" the contents of the
 # clipboard, i.e. send the contents one character at a time via 'pd key'
 proc pdtk_pastetext {tkcanvas} {
-    if { [catch {set buf [clipboard get]}] } {
-        # no selection... do nothing
-    } else {
+    set buf [::pdtk_clipboard_get]
+    if { ${buf} ne {} }  {
         # turn unicode-encoded stuff (\u...) into unicode characters
         # 'unescape' needs a trailing space...
         set buf [::pdtk_text::unescape "${buf} " ]
@@ -54,29 +77,41 @@ proc pdtk_pastetext {tkcanvas} {
     }
 }
 
-# send "pastetext" messages to send the clipboard contents to the patch.
-# follow the text with a terminating "-2" at which point the patch carries
-# out the paste.
+# fetch the clipboard and send it to the patch
 proc pdtk_pasteany {tkcanvas} {
-    if { [catch {set buf [clipboard get]}] } {
-        # no selection... do nothing
-    } else {
-        # turn unicode-encoded stuff (\u...) into unicode characters
-        # 'unescape' needs a trailing space...
-        set buf [::pdtk_text::unescape "${buf} " ]
-        pdsend "[winfo toplevel $tkcanvas] pastechars -1"
-        set command "[winfo toplevel $tkcanvas] pastechars"
-        for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
-            scan [string index $buf $i] %c keynum
-            set command [concat $command " " $keynum]
-            if { [string length $command] > 75 } {
-                pdsend $command
-                set command "[winfo toplevel $tkcanvas] pastechars"
-            }
-        }
-        pdsend $command
+    set buf [::pdtk_clipboard_get]
+    if { ${buf} ne {} }  {
+        # the clipboard is unicode-encoded; we need the raw utf-8 bytes
+        set utf8buf [encoding convertto utf-8 ${buf}]
+        ::pdtk_text::pasteutf8chars [winfo toplevel $tkcanvas] ${utf8buf}
     }
-    pdsend "[winfo toplevel $tkcanvas] pastechars -2"
+}
+
+## receive a text from Pd and put it into the clipboard
+proc pdtk_clipboard_set {text} {
+    set escaped [::pdtk_text::unescape ${text}]
+    clipboard clear
+    clipboard append $escaped
+}
+## get the current text in the clipboard
+proc pdtk_clipboard_get {} {
+    # 1st try to get the text as an UTF-8 string
+    set buf {}
+
+    if { ${buf} eq {} } {
+        catch {
+            set buf [clipboard get -type UTF8_STRING]
+        }
+    }
+    # if that failed (e.g. on Windows),
+    # try to get the text as an ordinary string
+    if { ${buf} eq {} } {
+        catch {
+            set buf [clipboard get]
+        }
+    }
+
+    return ${buf}
 }
 
 # select all of the text in an existing text box
