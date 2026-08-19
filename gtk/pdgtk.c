@@ -233,7 +233,7 @@ static void pdgtk_startup(GtkApplication *app, gpointer user_data)
 
     section = g_menu_new();
     pdgtk_menuitem(app, section, _("Bang"), "win.zputbang", ACCELKEY "B");
-    pdgtk_menuitem(app, section, _("Toggle"), "win.zputtgl", ACCELKEY "B");
+    pdgtk_menuitem(app, section, _("Toggle"), "win.zputtgl", ACCELKEY "T");
     pdgtk_menuitem(app, section, _("Number2"), "win.zputn2", ACCELKEY "N");
     pdgtk_menuitem(app, section, _("Vslider"), "win.zputvsl", ACCELKEY "V");
     pdgtk_menuitem(app, section, _("Hslider"), "win.zputhsl", ACCELKEY "J");

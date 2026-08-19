@@ -870,7 +870,7 @@ static void putmenu_text(GtkApplicationWindow *win, void *zz, gpointer *data)
 static void putmenu_bng(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "bng"); }
 static void putmenu_tgl(GtkApplicationWindow *win, void *zz, gpointer *data)
-    { winmenu_simpleitem(win, data, "tgl"); }
+    { winmenu_simpleitem(win, data, "toggle"); }
 static void putmenu_n2(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "numbox"); }
 static void putmenu_vsl(GtkApplicationWindow *win, void *zz, gpointer *data)
