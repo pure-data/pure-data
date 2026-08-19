@@ -210,6 +210,7 @@ static void pdgtk_startup(GtkApplication *app, gpointer user_data)
     pdgtk_menuitem(app, section, _("Paste"), "win.zpaste", ACCELKEY "v");
     pdgtk_menuitem(app, section, _("Duplicate"), "win.zduplicate",
         ACCELKEY "d");
+    pdgtk_menuitem(app, section, _("Select All"), "win.zselectall", ACCELKEY "a");
     pdgtk_menuitem(app, section, _("Edit"), "win.zedit", ACCELKEY "e");
     g_menu_append_section(editmenu, 0, G_MENU_MODEL(section));
     g_object_unref(section);
