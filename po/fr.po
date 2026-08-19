@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-08-05 20:23+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
-"Last-Translator: cyrille henry <ch@chnry.net>\n"
+"PO-Revision-Date: 2026-08-21 11:51+0000\n"
+"Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -847,7 +847,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "URL de recherche :"
@@ -890,16 +890,14 @@ msgstr ""
 "Ajouter les bibliothèques nouvellement installées aux chemins de recherche "
 "de Pd"
 
-#, fuzzy
 msgid "- Always add to search path"
-msgstr "%s a été ajouté aux chemins de recherche"
+msgstr "- Toujours ajouter aux chemins de recherche"
 
-#, fuzzy
 msgid "- Never add to search path"
-msgstr "Impossible d'ajouter %s aux chemins de recherche"
+msgstr "- Ne jamais ajouter aux chemins de recherche"
 
 msgid "- Prompt before adding"
-msgstr ""
+msgstr "- Demander avant d'ajouter"
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -1235,9 +1233,9 @@ msgstr "[deken] Plateforme détectée : %s"
 msgid "Could not find a menu for adding '%s'"
 msgstr "Impossible de trouver un menu où ajouter '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Downgrading %s to %s"
-msgstr "Téléchargement de '%s'"
+msgstr "Rétrogradation de %s vers %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -2003,9 +2001,8 @@ msgstr "Symbole"
 msgid "Comment"
 msgstr "Commentaire"
 
-#, fuzzy
 msgid "Scalar"
-msgstr "Échelle"
+msgstr "Scalaire"
 
 msgid "Graph"
 msgstr "Graphique"
