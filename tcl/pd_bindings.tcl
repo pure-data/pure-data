@@ -126,7 +126,7 @@ namespace eval ::pd_bindings:: {
     setshortcuts "Help|CheckUpdates"
     setshortcuts "Help|ReportBug"
 
-    setshortcuts "Pd|Message"             "${control} Shift M"
+    setshortcuts "Tools|Message"          "${control} Shift M"
     setshortcuts "Pd|ClearConsole"        "${control} Shift L"
 
     setshortcuts "Preferences|Audio"
@@ -217,7 +217,6 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<File|Open>>              {::pd_menucommands::scheduleAction menu_open}
     bind  all  <<File|Save>>              {::pd_menucommands::scheduleAction menu_send %W menusave}
     bind  all  <<File|SaveAs>>            {::pd_menucommands::scheduleAction menu_send %W menusaveas}
-    bind  all  <<Pd|Message>>             {::pd_menucommands::scheduleAction menu_message_dialog}
     bind  all  <<File|Print>>             {::pd_menucommands::scheduleAction menu_print %W}
     bind  all  <<File|ClearRecentFiles>>  {::pd_menucommands::scheduleAction ::pd_menus::clear_recentfiles_menu}
     bind  all  <<File|Close>>             {::pd_menucommands::scheduleAction ::pd_bindings::window_close %W}
@@ -278,6 +277,8 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Media|LoadMeter>>        {::pd_menucommands::scheduleAction menu_doc_open doc/7.stuff/tools load-meter.pd}
     bind  all  <<Preferences|Audio>>      {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
     bind  all  <<Preferences|MIDI>>       {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
+
+    bind  all  <<Tools|Message>>          {::pd_menucommands::scheduleAction menu_message_dialog}
 
     bind  all  <<Window|Minimize>>        {::pd_menucommands::scheduleAction menu_minimize %W}
     bind  all  <<Window|Maximize>>        {::pd_menucommands::scheduleAction menu_maximize %W}

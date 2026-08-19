@@ -470,7 +470,7 @@ proc ::pd_menus::build_tools_menu {mymenu} {
     variable accelerator
     add_menu $mymenu command [_ "Load Meter"] "<<Media|LoadMeter>>"
     $mymenu add  separator
-    add_menu $mymenu command [_ "Message..."] <<Pd|Message>>
+    add_menu $mymenu command [_ "Message..."] "<<Tools|Message>>"
 }
 
 proc ::pd_menus::build_help_menu {mymenu} {
