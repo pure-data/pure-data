@@ -338,13 +338,13 @@ static int cmd_pdtk_canvas_do_create_rect(ClientData cdata, Tcl_Interp *interp,
 static int cmd_pdtk_canvas_create_rect(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
 }
 
 static int cmd_pdtk_canvas_create_oval(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
 }
 
  /* cmd_pdtk_canvas_move <canvas> <tag> <dx> <dy> */
