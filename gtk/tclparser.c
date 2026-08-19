@@ -622,6 +622,42 @@ static int cmd_clipboard(ClientData cdata, Tcl_Interp *interp,
     return (TCL_OK);
 }
 
+static void do_logpost(const char*tag, int level, const char*msg) {
+    (void)tag;
+    (void)level;
+    fprintf(stderr, "%s", msg);
+}
+
+static int cmd_logpost(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    if(objc == 4)
+    {
+        const char*obj = Tcl_GetString(objv[1]);
+        double level;
+        const char*msg = Tcl_GetString(objv[3]);
+        Tcl_GetDouble(interp, Tcl_GetString(objv[2]), &level);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
+
+static int cmd_post(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+   if(objc == 2)
+    {
+        const char*obj = "";
+        int level = 2;
+        const char*msg = Tcl_GetString(objv[1]);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
 
 typedef int (*t_tcl_creatorfn)(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[]);
@@ -653,6 +689,8 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_text_editing", cmd_pdtk_text_editing},
     {"pdtk_text_select", cmd_pdtk_text_select},
     {"pdtk_clipboard_set", cmd_clipboard},
+    {"::pdwindow::logpost", cmd_logpost},
+    {"::pdwindow::post", cmd_post},
     {"set", 0},
 };
 
