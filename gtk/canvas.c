@@ -853,7 +853,7 @@ static void editmenu_edit(GtkApplicationWindow *win, void *unused,
     t_canvas *x = (t_canvas *)data;
     x->c_editmode = !x->c_editmode;
     char cmd[80];
-    snprintf(cmd, 80, "%s editmode %d\n", x->c_tag, x->c_editmode);
+    snprintf(cmd, 80, "%s editmode %d;\n", x->c_tag, x->c_editmode);
     socket_send(cmd);
 }
 
