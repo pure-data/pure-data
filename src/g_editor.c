@@ -528,8 +528,7 @@ static void *binbuf_toclipboard(t_binbuf *b)
     char *copytext;
     int copytextsize;
     binbuf_gettext(b, &copytext, &copytextsize);
-    pdgui_vmess("clipboard", "r", "clear");
-    pdgui_vmess("clipboard", "rp",  "append", copytextsize, copytext);
+    pdgui_vmess("pdtk_clipboard_set", "p", copytextsize, copytext);
     freebytes(copytext, copytextsize);
 }
 

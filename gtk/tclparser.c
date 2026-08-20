@@ -338,13 +338,13 @@ static int cmd_pdtk_canvas_do_create_rect(ClientData cdata, Tcl_Interp *interp,
 static int cmd_pdtk_canvas_create_rect(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
 }
 
 static int cmd_pdtk_canvas_create_oval(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
 }
 
  /* cmd_pdtk_canvas_move <canvas> <tag> <dx> <dy> */
@@ -616,15 +616,48 @@ static int cmd_clipboard(ClientData cdata, Tcl_Interp *interp,
     char *tag;
     Tcl_HashEntry *hash;
     double start = 0, end = 0;
-    if (objc == 2 && !strcmp(Tcl_GetString(objv[1]), "clear"))
-        ;  /* nothing to do - since 'append' always follows 'clear', we
-            just set the clipboard in 'append'. */
-    else if (objc == 3 && !strcmp(Tcl_GetString(objv[1]), "append"))
-        pdgtk_setclipboard(Tcl_GetString(objv[2]));
+    if (objc == 2)
+        pdgtk_setclipboard(Tcl_GetString(objv[1]));
     else return (TCL_ERROR);
     return (TCL_OK);
 }
 
+static void do_logpost(const char*tag, int level, const char*msg) {
+    (void)tag;
+    (void)level;
+    fprintf(stderr, "%s", msg);
+}
+
+static int cmd_logpost(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    if(objc == 4)
+    {
+        const char*obj = Tcl_GetString(objv[1]);
+        double level;
+        const char*msg = Tcl_GetString(objv[3]);
+        Tcl_GetDouble(interp, Tcl_GetString(objv[2]), &level);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
+
+static int cmd_post(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+   if(objc == 2)
+    {
+        const char*obj = "";
+        int level = 2;
+        const char*msg = Tcl_GetString(objv[1]);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
 
 typedef int (*t_tcl_creatorfn)(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[]);
@@ -655,7 +688,9 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_watchdog", cmd_pdtk_watchdog},
     {"pdtk_text_editing", cmd_pdtk_text_editing},
     {"pdtk_text_select", cmd_pdtk_text_select},
-    {"clipboard", cmd_clipboard},
+    {"pdtk_clipboard_set", cmd_clipboard},
+    {"::pdwindow::logpost", cmd_logpost},
+    {"::pdwindow::post", cmd_post},
     {"set", 0},
 };
 

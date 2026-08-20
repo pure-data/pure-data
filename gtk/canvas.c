@@ -853,7 +853,15 @@ static void editmenu_edit(GtkApplicationWindow *win, void *unused,
     t_canvas *x = (t_canvas *)data;
     x->c_editmode = !x->c_editmode;
     char cmd[80];
-    snprintf(cmd, 80, "%s editmode %d\n", x->c_tag, x->c_editmode);
+    snprintf(cmd, 80, "%s editmode %d;\n", x->c_tag, x->c_editmode);
+    socket_send(cmd);
+}
+static void editmenu_selectall(GtkApplicationWindow *win, void *unused,
+    gpointer *data)
+{
+    t_canvas *x = (t_canvas *)data;
+    char cmd[80];
+    snprintf(cmd, 80, "%s selectall;\n", x->c_tag);
     socket_send(cmd);
 }
 
@@ -870,7 +878,7 @@ static void putmenu_text(GtkApplicationWindow *win, void *zz, gpointer *data)
 static void putmenu_bng(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "bng"); }
 static void putmenu_tgl(GtkApplicationWindow *win, void *zz, gpointer *data)
-    { winmenu_simpleitem(win, data, "tgl"); }
+    { winmenu_simpleitem(win, data, "toggle"); }
 static void putmenu_n2(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "numbox"); }
 static void putmenu_vsl(GtkApplicationWindow *win, void *zz, gpointer *data)
@@ -977,6 +985,7 @@ t_canvas *gfx_canvas_new(const char *tag,
     gfx_canvas_addaction(x, win, "zcopy", G_CALLBACK(editmenu_copy));
     gfx_canvas_addaction(x, win, "zpaste", G_CALLBACK(editmenu_paste));
     gfx_canvas_addaction(x, win, "zduplicate", G_CALLBACK(editmenu_dup));
+    gfx_canvas_addaction(x, win, "zselectall", G_CALLBACK(editmenu_selectall));
     gfx_canvas_addaction(x, win, "zedit", G_CALLBACK(editmenu_edit));
 
         /* -------------- put menu ---------------- */
@@ -1001,4 +1010,3 @@ t_canvas *gfx_canvas_new(const char *tag,
 
     return (x);
 }
-
