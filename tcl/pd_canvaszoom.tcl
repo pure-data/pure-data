@@ -5,6 +5,7 @@ namespace eval ::pd_canvaszoom:: {
     namespace export zoominit
     namespace export canvasxy
     namespace export scalescript
+    namespace export scale_canvas_command
     namespace export getzdepth
     namespace export setzdepth
 
@@ -324,42 +325,7 @@ proc ::pd_canvaszoom::getzdepth tkcanvas {
     }
 }
 
-proc ::pd_canvaszoom::scale_command {cmd} {
-    set cmd [regsub -all "\}" $cmd "\} "]
-    set cmd [regsub -all "\"\]" $cmd "\" \]"]
-    set cmd [regsub -all {\\\n} $cmd " "]
-    switch [lindex $cmd 0] {
-        "image" {return $cmd}
-        "pdtk_text_new" {
-            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
-            set font [get_font_for_size [lindex $cmd 6]]
-            set fontsize [lindex $font 1]
-            # scale position
-            set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
-            # scale font
-            set displayed_fontsize [lindex [scalefont $font $fontsize $zdepth] 1]
-            set cmd [string_lset $cmd 6 [expr abs($displayed_fontsize)]]
-            # init tags
-            set text [unescape [lindex $cmd 5]]
-            set cmd [string_lset $cmd 2 [concat "\{ " [lindex $cmd 2] _f$fontsize [list _t$text] " \}"]]
-            return $cmd
-        }
-        "pdtk_text_set" {
-            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
-            # remove text tag
-            set c [lindex $cmd 1]
-            set i [lindex $cmd 2]
-            set str {foreach {tag} [$c gettags $i] {if {"_t" in [string range $tag 0 1]} {$c dtag $i $tag}}}
-            set str [string map [list {$c} $c {$i} $i] $str]
-            append cmd $str
-            return $cmd
-        }
-    }
-
-    # remove ';' at the end of the line.
-    # Don't do it sooner, as it would hide the ';' in pdtk_text, e.g in [;pd dsp 1(
-    set cmd [regsub -lineanchor ";$" $cmd ""]
-
+proc ::pd_canvaszoom::scale_canvas_command {cmd} {
     switch [lindex $cmd 1] {
         "create" {
             if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
@@ -401,6 +367,8 @@ proc ::pd_canvaszoom::scale_command {cmd} {
             return [scale_consecutive_numbers $cmd 3 $zdepth]
         }
         "itemconfigure" {
+            # remove ';' at the end of the line.
+            set cmd [regsub -lineanchor ";$" $cmd ""]
             if {[set zdepth [getzdepth [lindex $cmd 0]]] == 1.0} {return $cmd}
             set widthindex [lsearch -start 3 $cmd "-width"]
             if {$widthindex != -1} {
@@ -433,6 +401,40 @@ proc ::pd_canvaszoom::scale_command {cmd} {
         }
     }
     return $cmd
+}
+
+proc ::pd_canvaszoom::scale_command {cmd} {
+    set cmd [regsub -all "\}" $cmd "\} "]
+    set cmd [regsub -all "\"\]" $cmd "\" \]"]
+    set cmd [regsub -all {\\\n} $cmd " "]
+    switch [lindex $cmd 0] {
+        "image" {return $cmd}
+        "pdtk_text_new" {
+            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
+            set font [get_font_for_size [lindex $cmd 6]]
+            set fontsize [lindex $font 1]
+            # scale position
+            set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
+            # scale font
+            set displayed_fontsize [lindex [scalefont $font $fontsize $zdepth] 1]
+            set cmd [string_lset $cmd 6 [expr abs($displayed_fontsize)]]
+            # init tags
+            set text [unescape [lindex $cmd 5]]
+            set cmd [string_lset $cmd 2 [concat "\{ " [lindex $cmd 2] _f$fontsize [list _t$text] " \}"]]
+            return $cmd
+        }
+        "pdtk_text_set" {
+            if {[set zdepth [getzdepth [lindex $cmd 1]]] == 1.0} {return $cmd}
+            # remove text tag
+            set c [lindex $cmd 1]
+            set i [lindex $cmd 2]
+            set str {foreach {tag} [$c gettags $i] {if {"_t" in [string range $tag 0 1]} {$c dtag $i $tag}}}
+            set str [string map [list {$c} $c {$i} $i] $str]
+            append cmd $str
+            return $cmd
+        }
+    }
+    return [scale_canvas_command $cmd]
 }
 
 proc ::pd_canvaszoom::scalescript {incmds} {

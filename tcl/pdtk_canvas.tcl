@@ -569,15 +569,11 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
 proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
     if ($dashed) { set dashoption "-dash -"; } else {set dashoption "" }
 
-    if {$grouptag eq "-"} {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color  \
-            -tags \{$tag $grouptag\}]
-    } else {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color  \
-            -tags \{$tag $grouptag\}]
-    }
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create line $args $dashoption \
+            -width $width -fill $color \
+            -tags \{$tag $grouptag\} \
+    "]
 }
 
 # special version above for patchcords, adding "cord" to tags so that
@@ -589,46 +585,60 @@ proc pdtk_canvas_create_patchcord {canvas tag grouptag unused width color args} 
 #  old version using eval:
 #    eval [concat $canvas create line $args \
 #        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
-    $canvas create line {*}$args \
-        -width $width -fill $color -capstyle projecting -tags [list $tag cord]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create line $args \
+            -width $width -fill $color -capstyle projecting -tags \{$tag cord\} \
+    "]
 
 }
 
 proc pdtk_canvas_create_poly {canvas tag filled bezier \
     width fillcolor outlinecolor args} {
     if ($filled) {
-        $canvas create polygon {*}$args \
-        -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
-            -tags $tag
+        {*}[::pd_canvaszoom::scale_canvas_command "\
+            $canvas create polygon $args \
+                -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
+                -tags $tag \
+        "]
     } else {
-        $canvas create line {*}$args \
-            -width $width -smooth $bezier -fill $outlinecolor -tags $tag
+        {*}[::pd_canvaszoom::scale_canvas_command "\
+            $canvas create line $args \
+                -width $width -smooth $bezier -fill $outlinecolor -tags $tag \
+        "]
     }
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
 
-    $canvas itemconfigure $tag -width $width -fill $color
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas itemconfigure $tag -width $width -fill $color \
+    "]
 }
 
 proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    $canvas create rectangle $x1 $y1 $x2 $y2 \
-        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create rectangle $x1 $y1 $x2 $y2 \
+            -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\} \
+    "]
 }
 
 # this can configure rectangles or ovals:
 proc pdtk_canvas_configure_rect {canvas tag width fill outline} {
 
-    $canvas itemconfigure $tag -width $width -fill $fill -outline $outline
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas itemconfigure $tag -width $width -fill $fill -outline $outline \
+    "]
 }
 
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    $canvas create oval $x1 $y1 $x2 $y2 \
-        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create oval $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\} \
+    "]
 }
 
 proc pdtk_text_select {canvas tag start end} {
@@ -650,9 +660,13 @@ proc pdtk_canvas_delete {canvas tag} {
 }
 
 proc pdtk_canvas_move {canvas tag dx dy} {
-    $canvas move $tag $dx $dy
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas move $tag $dx $dy \
+    "]
 }
 
 proc pdtk_canvas_coords {canvas tag args} {
-    $canvas coords $tag $args
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas coords $tag $args \
+    "]
 }
