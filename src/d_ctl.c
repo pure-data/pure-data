@@ -334,17 +334,15 @@ static void vline_tilde_float(t_vline *x, t_float f)
         where lots of them get added while DSP isn't running. We add 0.1 msec
         to the stop time limit just in case of truncation error in case it and
         the current time are logically, but not numerically, equal. */
-    while (x->x_list && timenow > x->x_list->s_stoptime + 0.1)
+    while (!pd_getdspstate() && x->x_list &&
+        timenow > x->x_list->s_stoptime + 0.1)
     {
         t_vseg *was = x->x_list;
         x->x_list = x->x_list->s_next;
         freebytes(was, sizeof(*was));
-        if (!x->x_list)
-        {
-            vline_tilde_stop(x);
-            return;
-        }
     }
+    if (!x->x_list)
+        x->x_tail = 0;
         /* negative delay input means stop and jump immediately to new value */
     if (inlet2 < 0)
     {
