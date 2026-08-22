@@ -2,6 +2,7 @@
 package provide pdtk_canvas 0.1
 
 package require pd_bindings
+package require pd_canvaszoom
 
 namespace eval ::pdtk_canvas:: {
 
@@ -149,6 +150,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
     }
 
     ::pd_bindings::patch_bindings $mytoplevel
+    ::pd_canvaszoom::zoominit $mytoplevel
 
     # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
@@ -232,22 +234,22 @@ proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
 # TODO put these procs into the pdtk_canvas namespace
 proc pdtk_canvas_motion {tkcanvas x y mods} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel motion [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $mods"
+    pdsend "$mytoplevel motion [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $mods"
 }
 
 proc pdtk_canvas_mouse {tkcanvas x y b f} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
+    pdsend "$mytoplevel mouse [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b $f"
 }
 
 proc pdtk_canvas_mouseup {tkcanvas x y b {f 0}} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
+    pdsend "$mytoplevel mouseup [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b $f"
 }
 
 proc pdtk_canvas_rightclick {tkcanvas x y b} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b 8"
+    pdsend "$mytoplevel mouse [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b 8"
 }
 
 # on X11, button 2 pastes from X11 clipboard, so simulate normal paste actions
@@ -307,14 +309,16 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     } else {
         ${popup} entryconfigure [_ "Open"] -state disabled
     }
+    set tkcanvas [tkcanvas_name $mytoplevel]
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
     set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
     set top_yview_pix [expr [lindex [$tkcanvas yview] 0] * [lindex $scrollregion 3]]
-    # take the mouse clicks in canvas coords, add the root of the canvas
+    # take the mouse clicks in canvas coords, scale to zoom factor, add the root of the canvas
     # window, and subtract the area that is obscured by scrolling
-    set xpopup [expr int($xcanvas + [winfo rootx $tkcanvas] - $left_xview_pix)]
-    set ypopup [expr int($ycanvas + [winfo rooty $tkcanvas] - $top_yview_pix)]
+    set xpopup [expr int(($xcanvas * $zdepth) + [winfo rootx $tkcanvas] - $left_xview_pix)]
+    set ypopup [expr int(($ycanvas * $zdepth) + [winfo rooty $tkcanvas] - $top_yview_pix)]
     tk_popup ${popup} ${xpopup} ${ypopup} 0
 }
 
@@ -389,17 +393,25 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
-proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+# If the optional second parameter is 1, the operation is executed immediately.
+# Otherwise, it is deferred after 'idle'.
+proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas {immediate 0}} {
     # delay until we are ready
-    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    if {$immediate} {
+        ::pdtk_canvas::do_getscroll $tkcanvas
+    } else {
+        after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    }
 }
+
 proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
     }
     set mytoplevel [winfo toplevel $tkcanvas]
-    set height [winfo height $tkcanvas]
-    set width [winfo width $tkcanvas]
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
+    set height [expr [winfo height $tkcanvas] * $zdepth]
+    set width [expr [winfo width $tkcanvas] * $zdepth]
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
@@ -557,15 +569,11 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
 proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
     if ($dashed) { set dashoption "-dash -"; } else {set dashoption "" }
 
-    if {$grouptag eq "-"} {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color  \
-            -tags \{$tag $grouptag\}]
-    } else {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color  \
-            -tags \{$tag $grouptag\}]
-    }
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create line $args $dashoption \
+            -width $width -fill $color \
+            -tags \{$tag $grouptag\} \
+    "]
 }
 
 # special version above for patchcords, adding "cord" to tags so that
@@ -577,46 +585,60 @@ proc pdtk_canvas_create_patchcord {canvas tag grouptag unused width color args} 
 #  old version using eval:
 #    eval [concat $canvas create line $args \
 #        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
-    $canvas create line {*}$args \
-        -width $width -fill $color -capstyle projecting -tags [list $tag cord]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create line $args \
+            -width $width -fill $color -capstyle projecting -tags \{$tag cord\} \
+    "]
 
 }
 
 proc pdtk_canvas_create_poly {canvas tag filled bezier \
     width fillcolor outlinecolor args} {
     if ($filled) {
-        $canvas create polygon {*}$args \
-        -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
-            -tags $tag
+        {*}[::pd_canvaszoom::scale_canvas_command "\
+            $canvas create polygon $args \
+                -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
+                -tags $tag \
+        "]
     } else {
-        $canvas create line {*}$args \
-            -width $width -smooth $bezier -fill $outlinecolor -tags $tag
+        {*}[::pd_canvaszoom::scale_canvas_command "\
+            $canvas create line $args \
+                -width $width -smooth $bezier -fill $outlinecolor -tags $tag \
+        "]
     }
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
 
-    $canvas itemconfigure $tag -width $width -fill $color
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas itemconfigure $tag -width $width -fill $color \
+    "]
 }
 
 proc pdtk_canvas_create_rect {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    $canvas create rectangle $x1 $y1 $x2 $y2 \
-        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create rectangle $x1 $y1 $x2 $y2 \
+            -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\} \
+    "]
 }
 
 # this can configure rectangles or ovals:
 proc pdtk_canvas_configure_rect {canvas tag width fill outline} {
 
-    $canvas itemconfigure $tag -width $width -fill $fill -outline $outline
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas itemconfigure $tag -width $width -fill $fill -outline $outline \
+    "]
 }
 
 proc pdtk_canvas_create_oval {canvas tag grouptag width fill outline \
     x1 y1 x2 y2} {
 
-    $canvas create oval $x1 $y1 $x2 $y2 \
-        -width $width -fill $fill -outline $outline -tags [list $tag $grouptag]
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas create oval $x1 $y1 $x2 $y2 \
+        -width $width -fill $fill -outline $outline -tags \{$tag $grouptag\} \
+    "]
 }
 
 proc pdtk_text_select {canvas tag start end} {
@@ -638,9 +660,13 @@ proc pdtk_canvas_delete {canvas tag} {
 }
 
 proc pdtk_canvas_move {canvas tag dx dy} {
-    $canvas move $tag $dx $dy
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas move $tag $dx $dy \
+    "]
 }
 
 proc pdtk_canvas_coords {canvas tag args} {
-    $canvas coords $tag $args
+    {*}[::pd_canvaszoom::scale_canvas_command "\
+        $canvas coords $tag $args \
+    "]
 }
