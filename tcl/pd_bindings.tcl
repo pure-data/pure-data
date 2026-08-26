@@ -357,7 +357,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     if {[winfo exists .font]} {wm transient .font $mytoplevel}
     # if we regain focus from another app, make sure to editmode cursor is right
     if {$::editmode($mytoplevel)} {
-        $mytoplevel configure -cursor hand2
+        $mytoplevel configure -cursor ${::cursor_editmode_nothing}
     }
 }
 
