@@ -355,6 +355,10 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
         }
         "PatchWindow" {
             ::pd_menus::configure_for_canvas $mytoplevel
+            set c [tkcanvas_name ${mytoplevel}]
+            if {[winfo exists ${c}]} {
+                focus ${c}
+            }
         }
     }
     if {[winfo exists .font]} {wm transient .font $mytoplevel}
