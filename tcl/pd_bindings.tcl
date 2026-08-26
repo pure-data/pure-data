@@ -349,10 +349,13 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     set ::focused_window $mytoplevel
     ::pd_menucommands::set_filenewdir $mytoplevel
     ::dialog_font::update_font_dialog $mytoplevel
-    if {$mytoplevel eq ".pdwindow"} {
-        ::pd_menus::configure_for_pdwindow
-    } else {
-        ::pd_menus::configure_for_canvas $mytoplevel
+    switch -exact -- [winfo class ${mytoplevel}] {
+        "PdWindow" {
+            ::pd_menus::configure_for_pdwindow
+        }
+        "PatchWindow" {
+            ::pd_menus::configure_for_canvas $mytoplevel
+        }
     }
     if {[winfo exists .font]} {wm transient .font $mytoplevel}
     # if we regain focus from another app, make sure to editmode cursor is right
