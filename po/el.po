@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -648,6 +648,9 @@ msgstr "Προτιμήσεις"
 msgid "deken preferences"
 msgstr "Προτιμήσεις"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Προτιμήσεις"
@@ -738,6 +741,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -2081,8 +2088,9 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-msgid "Clear Menu"
-msgstr "Καθαρισμός Μενού"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Αρχεία Κειμένου από MAX"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2208,6 +2216,9 @@ msgstr "Διαγραφή πίνακα"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Clear Menu"
+#~ msgstr "Καθαρισμός Μενού"
 
 #, fuzzy
 #~ msgid "(no device)"

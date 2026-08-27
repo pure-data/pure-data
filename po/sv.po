@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -655,6 +655,9 @@ msgstr "Inställningar"
 msgid "deken preferences"
 msgstr "Inställningar"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Inställningar"
@@ -743,6 +746,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -2089,8 +2096,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "Rensa konsoll"
+msgid "Clear Recent Files"
+msgstr "Fil"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2215,6 +2222,10 @@ msgstr "Radera array"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "Rensa konsoll"
 
 #, fuzzy
 #~ msgid "bottom:"

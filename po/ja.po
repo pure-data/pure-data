@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -625,6 +625,9 @@ msgstr "環境設定"
 msgid "deken preferences"
 msgstr "Deken %s 設定"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "環境設定"
@@ -716,6 +719,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "使用フォント: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2081,8 +2088,9 @@ msgstr "アップデートを確認"
 msgid "Report a bug"
 msgstr "バグを報告する"
 
-msgid "Clear Menu"
-msgstr "メニュークリア"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Maxテキストファイル"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2204,6 +2212,9 @@ msgstr "削除"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s'を無視: Pd ファイルではないようです"
+
+#~ msgid "Clear Menu"
+#~ msgstr "メニュークリア"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) 閉じ括弧 ']' がありません: "

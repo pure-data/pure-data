@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2005-05-04 12:50+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -664,6 +664,9 @@ msgstr "प्राथमिकताएं..."
 msgid "deken preferences"
 msgstr "प्राथमिकताएं..."
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "प्राथमिकताएं..."
@@ -751,6 +754,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -2109,8 +2116,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "सूची साफ करें"
+msgid "Clear Recent Files"
+msgstr "फाइल"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2234,6 +2241,10 @@ msgstr "मिटाओ"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "सूची साफ करें"
 
 #, fuzzy
 #~ msgid "bottom:"

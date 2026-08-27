@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -613,6 +613,9 @@ msgstr "Preferoj pri MIDI"
 msgid "deken preferences"
 msgstr "Preferoj pri deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr ""
 
@@ -697,6 +700,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "uzante la tiparon %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2025,8 +2032,8 @@ msgstr "Kontroli ĝisdatigojn"
 msgid "Report a bug"
 msgstr "Raporti cimon"
 
-msgid "Clear Menu"
-msgstr "Forviŝi menuon"
+msgid "Clear Recent Files"
+msgstr ""
 
 msgid ""
 "Delete all preferences?\n"
@@ -2144,3 +2151,6 @@ msgstr "Forigi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Clear Menu"
+#~ msgstr "Forviŝi menuon"

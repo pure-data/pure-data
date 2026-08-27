@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -637,6 +637,9 @@ msgstr "Налаштування MIDI"
 msgid "deken preferences"
 msgstr "Налаштування %s Deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Налаштування"
@@ -731,6 +734,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "використовується шрифт: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2100,8 +2107,9 @@ msgstr "Перевірити оновлення"
 msgid "Report a bug"
 msgstr "Сповістити про помилку"
 
-msgid "Clear Menu"
-msgstr "Очистити меню"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Текстові файли Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2226,6 +2234,9 @@ msgstr "Видалити"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ігнорується '%s': неможливо розпізнати файл Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Очистити меню"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr ""

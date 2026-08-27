@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2024-07-08 17:32+0200\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -622,6 +622,9 @@ msgstr ""
 msgid "deken preferences"
 msgstr ""
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr ""
 
@@ -707,6 +710,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -2035,7 +2042,7 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-msgid "Clear Menu"
+msgid "Clear Recent Files"
 msgstr ""
 
 msgid ""

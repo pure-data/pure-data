@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2026-08-21 11:51+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -621,6 +621,9 @@ msgstr "Preferencias de MIDI"
 msgid "deken preferences"
 msgstr "Preferencias de deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr "Otras preferencias"
 
@@ -709,6 +712,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "Utilizando fuente: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2065,8 +2072,9 @@ msgstr "Buscar actualizaciones"
 msgid "Report a bug"
 msgstr "Reportar un error"
 
-msgid "Clear Menu"
-msgstr "Borrar menú"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Archivos de texto de Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2186,6 +2194,9 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Borrar menú"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) CORCHETE DE CIERRE FALTANTE ']': "

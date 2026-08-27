@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -613,6 +613,9 @@ msgstr "העדפות MIDI"
 msgid "deken preferences"
 msgstr "העדפות Deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr "העדפות שונות"
 
@@ -697,6 +700,10 @@ msgstr "אזהרה: משקל הגופן ‚%1$s’ לא נמצא, נסוגים �
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "שימוש בגופן: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2044,8 +2051,9 @@ msgstr "חיפוש עדכונים"
 msgid "Report a bug"
 msgstr "דיווח על תקלה"
 
-msgid "Clear Menu"
-msgstr "מחיקת פריטי התפריט"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "קובצי טקסט של Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2166,6 +2174,9 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "מחיקת פריטי התפריט"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-05 20:23+0200\n"
+"POT-Creation-Date: 2026-08-19 18:30+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -616,6 +616,9 @@ msgstr "MIDI"
 msgid "deken preferences"
 msgstr "preferências do deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr "diversas"
 
@@ -700,6 +703,10 @@ msgstr "AVISO: peso de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "usando fonte: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2058,8 +2065,9 @@ msgstr "Procurar por atualizações"
 msgid "Report a bug"
 msgstr "Reportar problemas (bugs)"
 
-msgid "Clear Menu"
-msgstr "Limpar Menu"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Arquivos de texto de Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2179,6 +2187,9 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um arquivo de Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Limpar Menu"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
