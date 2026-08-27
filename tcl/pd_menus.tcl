@@ -357,6 +357,7 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
     add_menu $mymenu command [_ "Font" ] "<<Edit|Font>>"
     add_menu $mymenu command [_ "Zoom In" ] "<<Edit|ZoomIn>>"
     add_menu $mymenu command [_ "Zoom Out" ] "<<Edit|ZoomOut>>"
+    add_menu $mymenu command [_ "Reset Zoom" ] "<<Edit|ZoomReset>>"
     $mymenu add  separator
     add_menu $mymenu command [_ "Clear Console" ] "<<Pd|ClearConsole>>"
     $mymenu add  separator
