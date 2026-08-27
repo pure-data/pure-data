@@ -228,10 +228,10 @@ struct _glist
 
 typedef struct _dataslot
 {
-    int ds_type;                    /* one of DT_FLOAT, etc. */
-    t_symbol *ds_name;              /* name of the data slot */
-    t_symbol *ds_arraytemplate;     /* arrays only: template for elements */
-    int ds_arraydeflength;          /* arrays only: default # of elements */
+    int ds_type;                /* one of DT_FLOAT, etc. */
+    t_symbol *ds_name;          /* name of the data slot */
+    t_symbol *ds_arraytemplate; /* arrays only: template for elements */
+    t_float ds_default;         /* init value for floats or size for arrays */
 } t_dataslot;
 
 typedef struct _template

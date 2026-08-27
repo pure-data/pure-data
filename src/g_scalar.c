@@ -144,7 +144,7 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
             wp->w_array = array_new(datatypes->ds_arraytemplate,
-                datatypes->ds_arraydeflength, gp);
+                datatypes->ds_default, gp);
         else if (type == DT_TEXT)
         {
             wp->w_binbuf = binbuf_new();

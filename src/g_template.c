@@ -154,7 +154,7 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
         ds1->ds_type == ds2->ds_type &&
             (ds1->ds_type != DT_ARRAY ||
                 (ds1->ds_arraytemplate == ds2->ds_arraytemplate &&
-                    ds1->ds_arraydeflength == ds2->ds_arraydeflength)));
+                    ds1->ds_default == ds2->ds_default)));
 }
 
 /* -- templates, the active ingredient in "struct" objects defined below. -- */
@@ -251,7 +251,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
-        x->t_vec[oldn].ds_arraydeflength = newarraydeflength;
+        x->t_vec[oldn].ds_default = newarraydeflength;
     bad:
         argc -= 2; argv += 2;
     }
