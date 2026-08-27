@@ -68,6 +68,7 @@ namespace eval ::pd_bindings:: {
     # expected it... go figure.
     setshortcuts "Edit|ZoomIn"            "${control} plus" "${control} KP_Add" "${control} equal"
     setshortcuts "Edit|ZoomOut"           "${control} minus" "${control} KP_Subtract"
+    setshortcuts "Edit|ZoomReset"         "${control} 0" "${control} KP_0"
     setshortcuts "Edit|TidyUp"            "${control} Shift R"
     setshortcuts "Edit|ConnectSelection"  "${control} K"
     setshortcuts "Edit|Triggerize"        "${control} T"
@@ -240,8 +241,9 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Edit|SelectAll>>         {::pd_menucommands::scheduleAction menu_send %W selectall}
 
     bind  all  <<Edit|Font>>              {::pd_menucommands::scheduleAction menu_font_dialog}
-    bind  all  <<Edit|ZoomIn>>            {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind  all  <<Edit|ZoomOut>>           {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind  all  <<Edit|ZoomIn>>            {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom %W 120}
+    bind  all  <<Edit|ZoomOut>>           {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom %W -120}
+    bind  all  <<Edit|ZoomReset>>         {::pd_menucommands::scheduleAction ::pd_canvaszoom::setzoom %W 0}
     bind  all  <<Edit|TidyUp>>            {::pd_menucommands::scheduleAction menu_send %W tidy}
     bind  all  <<Edit|ConnectSelection>>  {::pd_menucommands::scheduleAction menu_send %W connect_selection}
     bind  all  <<Edit|Triggerize>>        {::pd_menucommands::scheduleAction menu_send %W triggerize}
