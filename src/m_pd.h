@@ -495,6 +495,7 @@ EXTERN void canvas_makefilename(const t_glist *c, const char *file,
 EXTERN t_symbol *canvas_getdir(const t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
+/* in the following functions, 'zoom' argument is not used */
 EXTERN int sys_hostfontsize(int fontsize, int zoom);
 EXTERN int sys_zoomfontwidth(int fontsize, int zoom, int worstcase);
 EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
