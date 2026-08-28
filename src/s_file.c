@@ -861,8 +861,6 @@ void sys_savepreferences(const char *filename)
     sys_putpreference("flags",
         (sys_flags ? sys_flags->s_name : ""));
         /* misc */
-    sprintf(buf1, "%d", sys_zoom_open);
-    sys_putpreference("zoom", buf1);
     sys_putpreference("loading", "no");
 
     sys_donesavepreferences();

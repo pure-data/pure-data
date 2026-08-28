@@ -24,7 +24,6 @@ proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
     ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
-    pdsend "pd zoom-open $::sys_zoom_open"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
     ::preferencewindow::apply $mytoplevel
