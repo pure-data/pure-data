@@ -1134,7 +1134,6 @@ void sys_gui_preferences(void)
     pdgui_vmess("set_escaped", "ri", "::sys_verbose", sys_verbose);
     pdgui_vmess("set_escaped", "ri", "::sys_use_stdpath", sys_usestdpath);
     pdgui_vmess("set_escaped", "ri", "::sys_defeatrt", sys_defeatrt);
-    pdgui_vmess("set_escaped", "ri", "::sys_zoom_open", (sys_zoom_open == 2));
 
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));
