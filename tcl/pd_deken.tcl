@@ -107,7 +107,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.10.20] } {
+if { [::deken::versioncheck 0.10.22] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -3285,7 +3285,14 @@ proc ::deken::initialize {} {
             if { ${mymenu} eq ".menubar.help" } {
                 ${mymenu} add separator
             }
-            ${mymenu} add command -label ${label} -command {event generate [focus] <<Tools|Deken>>}
+            if { [catch {
+                # ::pd_menus::add_menu makes sure to display any keyboard shortcuts
+                ::pd_menus::add_menu ${mymenu} command  ${label} "<<Tools|Deken>>"
+            } ] } {
+                # fallback for older Pd versions
+                ${mymenu} add command -label ${label} -command {event generate [focus] <<Tools|Deken>>}
+            }
+
         }
     } else {
         set msg [_ "Could not find a menu for adding '%s'" ${label}]
