@@ -212,7 +212,7 @@ struct _glist
     unsigned int gl_hidetext:1;     /* hide object-name + args when GO */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
-    int gl_zoom;                    /* zoom factor (integer zoom-in only) */
+    int gl_zoom;                    /* old-style zoom factor, kept for compatibility; always 1*/
     void *gl_privatedata;           /* private data */
 };
 
@@ -430,7 +430,7 @@ EXTERN t_glist *glist_findgraph(t_glist *x);
 EXTERN int glist_getfont(t_glist *x);
 EXTERN int glist_fontwidth(t_glist *x);
 EXTERN int glist_fontheight(t_glist *x);
-EXTERN int glist_getzoom(t_glist *x);
+EXTERN int glist_getzoom(t_glist *x);  /* useless: zoom is now handled by GUI side */
 EXTERN void glist_sort(t_glist *canvas);
 EXTERN void glist_read(t_glist *x, t_symbol *filename, t_symbol *format);
 EXTERN void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format);

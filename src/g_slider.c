@@ -36,11 +36,9 @@ static void slider_set(t_slider *x, t_floatarg f);
  */
 static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int lmargin = 0, tmargin=0, bmargin = 0;
     char tag_object[128], tag_knob[128], tag[128];
     char *tags[] = {tag_object, tag};
@@ -52,10 +50,10 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 
     if(x->x_orientation == horizontal)
     {
-        lmargin = LMARGIN * zoom;
+        lmargin = LMARGIN;
     } else {
-        tmargin = TMARGIN * zoom;
-        bmargin = BMARGIN * zoom;
+        tmargin = TMARGIN;
+        bmargin = BMARGIN;
     }
 
     sprintf(tag, "%p_OUT%d", x, 0);
@@ -63,8 +61,8 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
-            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
-            xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
+            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + 1 - IEM_GUI_IOHEIGHT,
+            xpos - lmargin + IOWIDTH, ypos + x->x_gui.x_h + bmargin,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
@@ -79,7 +77,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     {
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
             xpos - lmargin, ypos - tmargin,
-            xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
+            xpos - lmargin + IOWIDTH, ypos - tmargin - 1 + IEM_GUI_IOHEIGHT,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
@@ -91,21 +89,20 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 
 static void slider_knob_position(t_slider*x, t_glist *glist, int val, int *x0, int *y0, int *x1, int *y1)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     if(x->x_orientation == horizontal)
     {
         int r = xpos + val;
         *x0 = r;
-        *y0 = ypos + (zoom + 1);
+        *y0 = ypos + 2;
         *x1 = r;
-        *y1 = ypos + x->x_gui.x_h - (zoom * 2);
+        *y1 = ypos + x->x_gui.x_h - 2;
     } else {
         int r = ypos + x->x_gui.x_h - val;
-        *x0 = xpos + (zoom + 1);
+        *x0 = xpos + 2;
         *y0 = r;
-        *x1 = xpos + x->x_gui.x_w - (zoom * 2);
+        *x1 = xpos + x->x_gui.x_w - 2;
         *y1 = r;
     }
 
@@ -113,28 +110,26 @@ static void slider_knob_position(t_slider*x, t_glist *glist, int val, int *x0, i
 
 static void slider_draw_config(t_slider* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     t_iemgui *iemgui = &x->x_gui;
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int val = ((x->x_val + 50)/100);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int lmargin = 0, rmargin = 0, tmargin = 0, bmargin = 0;
     int a, b, c, d;
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     if(x->x_orientation == horizontal)
     {
-        lmargin = LMARGIN * zoom;
-        rmargin = RMARGIN * zoom;
+        lmargin = LMARGIN;
+        rmargin = RMARGIN;
     } else {
-        tmargin = TMARGIN * zoom;
-        bmargin = BMARGIN * zoom;
+        tmargin = TMARGIN;
+        bmargin = BMARGIN;
     }
     slider_knob_position(x, glist, val, &a, &b, &c, &d);
 
@@ -143,7 +138,7 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
+        "-width", 1,
         "-fill", x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
@@ -151,12 +146,12 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         a, b, c, d);
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", 1 + 2 * zoom,
+        "-width", 3,
         "-outline", x->x_gui.x_fcol);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
+        xpos + x->x_gui.x_ldx, ypos + x->x_gui.x_ldy);
 
     if(x->x_gui.x_fsf.x_selected)
         pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
@@ -212,11 +207,10 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
     int a, b, c, d;
     if (glist_isvisible(glist))
     {
-        const int zoom = IEMGUI_ZOOM(x);
         t_canvas *canvas = glist_getcanvas(glist);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
-        int val = ((x->x_val + 50) / 100) * zoom;
+        int val = (x->x_val + 50) / 100;
         char tag[128];
         sprintf(tag, "%p_KNOB", x);
 
@@ -233,15 +227,14 @@ static void slider_getrect(t_gobj *z, t_glist *glist,
                             int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_slider* x = (t_slider*)z;
-    int zoom = glist_getzoom(glist);
     int dx1=0, dx2=0, dy1=0, dy2=0;
     if(x->x_orientation == horizontal)
     {
-        dx1 = LMARGIN*zoom;
-        dx2 = (LMARGIN + RMARGIN)*zoom;
+        dx1 = LMARGIN;
+        dx2 = LMARGIN + RMARGIN;
     } else {
-        dy1 = TMARGIN*zoom;
-        dy2 = (TMARGIN + BMARGIN)*zoom;
+        dy1 = TMARGIN;
+        dy2 = TMARGIN + BMARGIN;
     }
 
 
@@ -262,7 +255,7 @@ static void slider_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, "ssiisiiffiisssiiiisssii", gensym("#X"), gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
                 gensym((x->x_orientation==horizontal)?"hsl":"vsl"),
-                x->x_gui.x_w/IEMGUI_ZOOM(x), x->x_gui.x_h/IEMGUI_ZOOM(x),
+                x->x_gui.x_w, x->x_gui.x_h,
                 (t_float)x->x_min, (t_float)x->x_max,
                 x->x_lin0_log1, iem_symargstoint(&x->x_gui.x_isa),
                 srl[0], srl[1], srl[2],
@@ -275,16 +268,16 @@ static void slider_save(t_gobj *z, t_binbuf *b)
 
 static int slider_check_range(t_slider *x, int v)
 {
-    if(v < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
-        v = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
+    if(v < IEM_SL_MINSIZE)
+        v = IEM_SL_MINSIZE;
     if(x->x_val > (v * 100 - 100))
     {
         x->x_val = v * 100 - 100;
     }
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max / x->x_min) / (double)(v/IEMGUI_ZOOM(x) - 1);
+        x->x_k = log(x->x_max / x->x_min) / (double)(v - 1);
     else
-        x->x_k = (x->x_max - x->x_min) / (double)(v/IEMGUI_ZOOM(x) - 1);
+        x->x_k = (x->x_max - x->x_min) / (double)(v - 1);
 
     return v;
 }
@@ -309,9 +302,9 @@ static void slider_check_minmax(t_slider *x, double min, double max, t_float val
     x->x_min = min;
     x->x_max = max;
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min) / (double)(value/IEMGUI_ZOOM(x) - 1);
+        x->x_k = log(x->x_max/x->x_min) / (double)(value - 1);
     else
-        x->x_k = (x->x_max - x->x_min) / (double)(value/IEMGUI_ZOOM(x) - 1);
+        x->x_k = (x->x_max - x->x_min) / (double)(value - 1);
 }
 
 static void slider_properties(t_gobj *z, t_glist *owner)
@@ -333,8 +326,8 @@ static void slider_properties(t_gobj *z, t_glist *owner)
 
 
     iemgui_new_dialog(x, &x->x_gui, objname,
-                      x->x_gui.x_w/IEMGUI_ZOOM(x), minWidth,
-                      x->x_gui.x_h/IEMGUI_ZOOM(x), minHeight,
+                      x->x_gui.x_w, minWidth,
+                      x->x_gui.x_h, minHeight,
                       x->x_min, x->x_max,
                       0,
                       x->x_lin0_log1, "linear", "logarithmic",
@@ -347,7 +340,7 @@ static t_float slider_getfval(t_slider *x)
     t_float fval;
     int rounded_val = (x->x_gui.x_fsf.x_finemoved) ? x->x_val : (x->x_val / 100) * 100;
 
-    /* if rcv==snd, don't round the value to prevent bad dragging when zoomed-in */
+    /* if rcv==snd, don't round the value to prevent bad dragging */
     if(x->x_gui.x_fsf.x_snd_able && (x->x_gui.x_snd == x->x_gui.x_rcv))
         rounded_val = x->x_val;
 
@@ -383,11 +376,6 @@ static void slider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
     int sr_flags;
     t_atom undo[18];
 
-    if(x->x_orientation == horizontal)
-        w *= IEMGUI_ZOOM(x);
-    else
-        h *= IEMGUI_ZOOM(x);
-
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
     SETFLOAT(undo+2, x->x_min);
     SETFLOAT(undo+3, x->x_max);
@@ -405,12 +393,12 @@ static void slider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
 
     if(x->x_orientation == horizontal)
     {
-        x->x_gui.x_h = iemgui_clip_size(h) * IEMGUI_ZOOM(x);
+        x->x_gui.x_h = iemgui_clip_size(h);
         x->x_gui.x_w = slider_check_range(x, w);
         slider_check_minmax(x, min, max, x->x_gui.x_w);
     } else {
         x->x_gui.x_h = slider_check_range(x, h);
-        x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
+        x->x_gui.x_w = iemgui_clip_size(w);
         slider_check_minmax(x, min, max, x->x_gui.x_h);
     }
 
@@ -430,15 +418,15 @@ static void slider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
 
     if(x->x_orientation == horizontal)
     {
-        pos = x->x_gui.x_w / IEMGUI_ZOOM(x);
+        pos = x->x_gui.x_w;
         delta = dx;
     } else {
-        pos = x->x_gui.x_h / IEMGUI_ZOOM(x);
+        pos = x->x_gui.x_h;
         delta = -dy;
     }
 
     if(!x->x_gui.x_fsf.x_finemoved)
-        delta = (100 * delta) / IEMGUI_ZOOM(x);
+        delta = 100 * delta;
 
     x->x_pos += (int)delta;
     x->x_val = x->x_pos;
@@ -446,14 +434,14 @@ static void slider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
     if(x->x_val > (100 * pos - 100))
     {
         x->x_val = 100 * pos - 100;
-        x->x_pos += 50 / IEMGUI_ZOOM(x);
-        x->x_pos -= x->x_pos % (100 / IEMGUI_ZOOM(x));
+        x->x_pos += 50;
+        x->x_pos -= x->x_pos % 100;
     }
     if(x->x_val < 0)
     {
         x->x_val = 0;
-        x->x_pos -= 50 / IEMGUI_ZOOM(x);
-        x->x_pos -= x->x_pos % (100 / IEMGUI_ZOOM(x));
+        x->x_pos -= 50;
+        x->x_pos -= x->x_pos % 100;
     }
     x->x_fval = slider_getfval(x);
     if (old != x->x_val)
@@ -471,15 +459,15 @@ static void slider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
     if(x->x_orientation == horizontal)
     {
         val = (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist));
-        maxval = x->x_gui.x_w / IEMGUI_ZOOM(x);
+        maxval = x->x_gui.x_w;
     } else {
         val = (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos);
-        maxval = x->x_gui.x_h / IEMGUI_ZOOM(x);
+        maxval = x->x_gui.x_h;
     }
     maxval = 100 * maxval - 100;
 
     if(!x->x_steady)
-        x->x_val = (int)((100.0 * val) / IEMGUI_ZOOM(x));
+        x->x_val = (int)(100.0 * val);
     if(x->x_val > maxval)
         x->x_val = maxval;
 
@@ -558,13 +546,13 @@ static void slider_size(t_slider *x, t_symbol *s, int ac, t_atom *av)
     int h = (int)atom_getfloatarg(1, ac, av);
     if(x->x_orientation == horizontal)
     {
-        x->x_gui.x_w = slider_check_range(x, w*IEMGUI_ZOOM(x));
+        x->x_gui.x_w = slider_check_range(x, w);
         if(ac > 1)
-            x->x_gui.x_h = iemgui_clip_size(h) * IEMGUI_ZOOM(x);
+            x->x_gui.x_h = iemgui_clip_size(h);
     } else {
-        x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
+        x->x_gui.x_w = iemgui_clip_size(w);
         if(ac > 1)
-            x->x_gui.x_h = slider_check_range(x, h*IEMGUI_ZOOM(x));
+            x->x_gui.x_h = slider_check_range(x, h);
     }
     iemgui_size((void *)x, &x->x_gui);
     slider_set(x, x->x_fval);
@@ -615,7 +603,7 @@ static void slider_lin(t_slider *x)
 {
     double v = (x->x_orientation==horizontal)?x->x_gui.x_w:x->x_gui.x_h;
     x->x_lin0_log1 = 0;
-    x->x_k = (x->x_max - x->x_min) / (v/IEMGUI_ZOOM(x) - 1);
+    x->x_k = (x->x_max - x->x_min) / (v - 1);
     slider_set(x, x->x_fval);
 }
 
@@ -651,12 +639,6 @@ static void slider_orientation(t_slider *x, t_floatarg forient)
     x->x_orientation = orient;
 
     iemgui_size(x, &x->x_gui);
-}
-
-static void slider_zoom(t_slider *x, t_floatarg f)
-{
-    iemgui_zoom(&x->x_gui, f);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void slider_loadbang(t_slider *x, t_floatarg action)
@@ -753,7 +735,6 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     }
 
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    iemgui_newzoom(&x->x_gui);
     slider_check_minmax(x, min, max,
         (x->x_orientation==horizontal)?x->x_gui.x_w:x->x_gui.x_h);
 
@@ -812,8 +793,6 @@ void g_slider_setup(void)
         gensym("steady"), A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_orientation,
         gensym("orientation"), A_FLOAT, 0);
-    class_addmethod(slider_class, (t_method)slider_zoom,
-        gensym("zoom"), A_CANT, 0);
     slider_widgetbehavior.w_getrectfn =    slider_getrect;
     slider_widgetbehavior.w_displacefn =   iemgui_displace;
     slider_widgetbehavior.w_selectfn =     iemgui_select;

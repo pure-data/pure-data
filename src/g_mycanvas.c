@@ -29,40 +29,38 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int offset = (zoom > 1 ? zoom : 0); /* keep zoomed border inside visible area */
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(x->x_gui.x_font));
-    SETFLOAT (fontatoms+1, -(x->x_gui.x_fontsize)*zoom);
+    SETFLOAT (fontatoms+1, -x->x_gui.x_fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     sprintf(tag, "%p_RECT", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos, ypos, xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom);
+        xpos, ypos, xpos + x->x_vis_w, ypos + x->x_vis_h);
     pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
         "-fill", x->x_gui.x_bcol,
         "-outline", x->x_gui.x_bcol);
 
     sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + offset, ypos + offset,
-        xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
+        xpos, ypos,
+        xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
 
     if(x->x_gui.x_fsf.x_selected)
         pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", THISGUI->i_selectcolor);
+            "-width", 1, "-outline", THISGUI->i_selectcolor);
     else
         pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-            "-width", zoom, "-outline", x->x_gui.x_bcol);
+            "-width", 1, "-outline", x->x_gui.x_bcol);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom,
-        ypos + x->x_gui.x_ldy * zoom);
+        xpos + x->x_gui.x_ldx,
+        ypos + x->x_gui.x_ldy);
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
         "-font", 3, fontatoms,
         "-fill", x->x_gui.x_lcol);
@@ -125,7 +123,7 @@ static void my_canvas_save(t_gobj *z, t_binbuf *b)
     iemgui_save(&x->x_gui, srl, bflcol);
     binbuf_addv(b, "ssiisiiisssiiiissi", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
-                gensym("cnv"), x->x_gui.x_w/IEMGUI_ZOOM(x), x->x_vis_w, x->x_vis_h,
+                gensym("cnv"), x->x_gui.x_w, x->x_vis_w, x->x_vis_h,
                 srl[0], srl[1], srl[2], x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[2], iem_symargstoint(&x->x_gui.x_isa));
@@ -136,7 +134,7 @@ static void my_canvas_properties(t_gobj *z, t_glist *owner)
 {
     t_my_canvas *x = (t_my_canvas *)z;
     iemgui_new_dialog(x, &x->x_gui, "cnv",
-                      x->x_gui.x_w/IEMGUI_ZOOM(x), 1,
+                      x->x_gui.x_w, 1,
                       0, 0,
                       x->x_vis_w, x->x_vis_h,
                       0,
@@ -149,8 +147,8 @@ static void my_canvas_get_pos(t_my_canvas *x)
 {
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
     {
-        x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
-        x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
+        x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
+        x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
         pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, x->x_at);
     }
 }
@@ -178,7 +176,7 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     x->x_gui.x_isa.x_loadinit = 0;
     if(a < 1)
         a = 1;
-    x->x_gui.x_w = a * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = a;
     x->x_gui.x_h = x->x_gui.x_w;
     if(w < 1)
         w = 1;
@@ -195,7 +193,7 @@ static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 
     if(i < 1)
         i = 1;
-    x->x_gui.x_w = i*IEMGUI_ZOOM(x);
+    x->x_gui.x_w = i;
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -327,7 +325,6 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     x->x_at[0].a_type = A_FLOAT;
     x->x_at[1].a_type = A_FLOAT;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    iemgui_newzoom(&x->x_gui);
     return (x);
 }
 
@@ -360,8 +357,6 @@ void g_mycanvas_setup(void)
         gensym("label_font"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_get_pos,
         gensym("get_pos"), 0);
-    class_addmethod(my_canvas_class, (t_method)iemgui_zoom,
-        gensym("zoom"), A_CANT, 0);
     my_canvas_widgetbehavior.w_getrectfn  = my_canvas_getrect;
     my_canvas_widgetbehavior.w_displacefn = iemgui_displace;
     my_canvas_widgetbehavior.w_selectfn   = iemgui_select;
