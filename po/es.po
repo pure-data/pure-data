@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-08-19 18:30+0200\n"
-"PO-Revision-Date: 2026-08-21 11:51+0000\n"
+"PO-Revision-Date: 2026-08-28 08:07+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
@@ -622,7 +622,7 @@ msgid "deken preferences"
 msgstr "Preferencias de deken"
 
 msgid "keyboard shortcuts"
-msgstr ""
+msgstr "atajos de teclado"
 
 msgid "misc preferences"
 msgstr "Otras preferencias"
@@ -715,7 +715,7 @@ msgstr "Utilizando fuente: %1$s %2$s"
 
 #, tcl-format
 msgid "Ignoring non-existant plugin '%s'"
-msgstr ""
+msgstr "Ignorando el plugin inexistente '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -2072,9 +2072,8 @@ msgstr "Buscar actualizaciones"
 msgid "Report a bug"
 msgstr "Reportar un error"
 
-#, fuzzy
 msgid "Clear Recent Files"
-msgstr "Archivos de texto de Max"
+msgstr "Limpiar Archivos Recientes"
 
 msgid ""
 "Delete all preferences?\n"
