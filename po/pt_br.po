@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-19 18:30+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -1964,6 +1964,10 @@ msgstr "Ampliar Zoom"
 
 msgid "Zoom Out"
 msgstr "Reduzir Zoom"
+
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Resetar"
 
 msgid "Clear Console"
 msgstr "Limpar Console"

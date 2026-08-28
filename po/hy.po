@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-19 18:30+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1928,6 +1928,9 @@ msgid "Zoom In"
 msgstr ""
 
 msgid "Zoom Out"
+msgstr ""
+
+msgid "Reset Zoom"
 msgstr ""
 
 msgid "Clear Console"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-19 18:30+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2026-08-21 11:51+0000\n"
 "Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1983,6 +1983,10 @@ msgstr "Zoomer"
 
 msgid "Zoom Out"
 msgstr "Dézoomer"
+
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Réinitialiser"
 
 msgid "Clear Console"
 msgstr "Effacer la console"

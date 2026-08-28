@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-19 18:30+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2026-08-28 08:07+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1971,6 +1971,10 @@ msgstr "Acercar"
 
 msgid "Zoom Out"
 msgstr "Alejar"
+
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Resetear"
 
 msgid "Clear Console"
 msgstr "Limpiar consola"
