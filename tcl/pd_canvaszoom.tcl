@@ -144,6 +144,8 @@ proc ::pd_canvaszoom::cleanup {canvas} {
     foreach c [list ::${canvas} ::pd_canvaszoom::canvas::${canvas}] {
         catch {
             rename ${c} {}
+            unset ::pd_canvaszoom::zsteps($c)
+            unset ::pd_canvaszoom::zdepth($c)
         }
     }
 }
@@ -163,13 +165,9 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
         return [::pd_canvaszoom::canvas_command $c $method {*}$args]
     }
 
-    # init zoom state for this canvas, if it didn't exist
-    if { ! [info exists ::pd_canvaszoom::zsteps($c)]} {
-        # NOTE: these arrays don't get cleaned up when the canvas is destroyed
-        #       so the zoom-level is persistent when a window is closed & re-opened
-        set ::pd_canvaszoom::zsteps($c) $::pd_canvaszoom::default_zoom
-        set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
-    }
+    # init zoom state to the default zoom level
+    set ::pd_canvaszoom::zsteps($c) $::pd_canvaszoom::default_zoom
+    set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
 
     # canvas bindings for mousewheel and mousewheel-button are OS dependent
     # LATER: probably move this to pd_bindings.tcl
