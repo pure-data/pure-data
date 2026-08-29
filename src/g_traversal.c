@@ -716,6 +716,64 @@ static void ptrobj_send(t_ptrobj *x, t_symbol *s)
     else pd_pointer(s->s_thing, x->x_gpp);
 }
 
+
+static void ptrobj_append(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_scalar *sc, *oldsc;
+    t_glist *glist;
+    t_symbol *templatesym;
+
+    if (argc < 1 || argv[0].a_type != A_SYMBOL)
+    {
+        pd_error(x, "pointer_append: no structure name specified");;
+        return;
+    }
+    templatesym = template_getbindsym(argv[0].a_w.w_symbol);
+
+    if (!gpointer_check(x->x_gpp, 1))
+    {
+        pd_error(x, "pointer_append: unset or stale pointer");;
+        return;
+    }
+    if (x->x_gpp->gp_stub->gs_which != GP_GLIST)
+    {
+        pd_error(x, "append: lists only, not arrays");
+        return;
+    }
+    glist = x->x_gpp->gp_stub->gs_un.gs_glist;
+
+    sc = scalar_new(glist,  templatesym);
+    if (!sc)
+    {
+        pd_error(x, "%s: couldn't create scalar", templatesym);
+        return;
+    }
+    oldsc = x->x_gpp->gp_un.gp_scalar;
+
+    if (oldsc)
+    {
+        sc->sc_gobj.g_next = oldsc->sc_gobj.g_next;
+        oldsc->sc_gobj.g_next = &sc->sc_gobj;
+    }
+    else
+    {
+        sc->sc_gobj.g_next = glist->gl_list;
+        glist->gl_list = &sc->sc_gobj;
+    }
+
+    x->x_gpp->gp_un.gp_scalar = sc;
+
+    if (glist_isvisible(glist_getcanvas(glist)))
+        gobj_vis(&sc->sc_gobj, glist, 1);
+
+    if (argc > 1)
+        ptrobj_set(x, 0, argc-1, argv+1);
+
+    scalar_notifynew(sc, glist, 2);
+
+    outlet_pointer(x->x_obj.ob_outlet, x->x_gpp);
+}
+
 static void ptrobj_bang(t_ptrobj *x)
 {
     t_symbol *templatesym;
@@ -811,6 +869,8 @@ static void ptrobj_setup(void)
         gensym("rewind"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_nearest,
         gensym("nearest"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_append, gensym("append"),
+        A_GIMME, 0);
     class_addpointer(ptrobj_class, ptrobj_pointer);
     class_addbang(ptrobj_class, ptrobj_bang);
 

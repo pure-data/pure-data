@@ -4019,6 +4019,8 @@ static void glist_donewloadbangs(t_glist *x)
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
             if (pd_class(&sel->sel_what->g_pd) == canvas_class)
                 canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
+            else if (pd_class(&sel->sel_what->g_pd) == scalar_class)
+                scalar_notifynew((t_scalar *)(&sel->sel_what->g_pd), x, 1);
             else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
                 vmess(&sel->sel_what->g_pd, gensym("loadbang"), "i", LB_LOAD);
     }

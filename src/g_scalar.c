@@ -139,7 +139,7 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     {
         int type = datatypes->ds_type;
         if (type == DT_FLOAT)
-            wp->w_float = 0;
+            wp->w_float = datatypes->ds_default;
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)

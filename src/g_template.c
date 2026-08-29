@@ -201,15 +201,24 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     template_addtolist(x);
     while (argc > 0)
     {
-        int newtype, oldn, newn, newarraydeflength= 1;
+        int newtype, oldn, newn;
         t_symbol *newname, *newarraytemplate = &s_, *newtypesym;
+        t_float defaultval = 0;
         if (argc < 2 || argv[0].a_type != A_SYMBOL ||
             argv[1].a_type != A_SYMBOL)
                 goto bad;
         newtypesym = argv[0].a_w.w_symbol;
         newname = argv[1].a_w.w_symbol;
         if (newtypesym == &s_float)
+        {
             newtype = DT_FLOAT;
+                /* if next arg is float it's the default value for the field */
+            if (argc >= 3 && argv[2].a_type == A_FLOAT)
+            {
+                defaultval = argv[2].a_w.w_float;
+                argc--; argv++;
+            }
+        }
         else if (newtypesym == &s_symbol)
             newtype = DT_SYMBOL;
                 /* "list" is old name.. accepted here but never saved as such */
@@ -218,6 +227,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         else if (newtypesym == gensym("array"))
         {
             t_symbol *templatename;
+            defaultval = 1; /* default length of array */
             if (argc < 3
                 || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
             )
@@ -232,8 +242,8 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
-                if ((newarraydeflength = argv[3].a_w.w_float) < 1)
-                    newarraydeflength = 1;
+                if ((defaultval = argv[3].a_w.w_float) < 1)
+                    defaultval = 1;
                 argc -= 2;
                 argv += 2;
             }
@@ -251,7 +261,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
-        x->t_vec[oldn].ds_default = newarraydeflength;
+        x->t_vec[oldn].ds_default = defaultval;
     bad:
         argc -= 2; argv += 2;
     }
