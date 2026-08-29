@@ -849,7 +849,7 @@ static void text_get_float(t_text_get *x, t_floatarg f)
             FREEA(t_atom, outv, nfield, TEXT_NGETBYTE);
         }
     }
-    else if (x->x_f1 < 0)   /* whole line but out of range: empty list and 2 */
+    else /* line number out of range: empty list and 2 */
     {
         outlet_float(x->x_out2, 2);         /* 2 for out of range */
         outlet_list(x->x_out1, 0, 0, 0);    /* ... and empty list */
