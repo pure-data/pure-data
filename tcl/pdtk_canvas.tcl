@@ -109,6 +109,11 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
         set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
     }
 
+    # scale window size to default zoom level
+    set zoom [::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom]
+    set width [expr int($width * $zoom)]
+    set height [expr int($height * $zoom)]
+
     foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
@@ -118,6 +123,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
     ::pdwindow::busyrelease
     # set the loaded array for this new window so things can track state
     set ::loaded($mytoplevel) 0
+
     toplevel $mytoplevel -width $width -height $height -class PatchWindow
     wm group $mytoplevel .
     $mytoplevel configure -menu $::patch_menubar
@@ -410,8 +416,8 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     }
     set mytoplevel [winfo toplevel $tkcanvas]
     set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
-    set height [expr [winfo height $tkcanvas] * $zdepth]
-    set width [expr [winfo width $tkcanvas] * $zdepth]
+    set height [expr [winfo height $tkcanvas] / $zdepth]
+    set width [expr [winfo width $tkcanvas] / $zdepth]
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
