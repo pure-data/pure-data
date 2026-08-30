@@ -2047,9 +2047,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset,
         yonset);
 
-    if (glist->gl_isgraph)
-        linewidth *= glist_getzoom(glist);
-
     if (tovis)
     {
          /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS

@@ -430,7 +430,7 @@ EXTERN t_glist *glist_findgraph(t_glist *x);
 EXTERN int glist_getfont(t_glist *x);
 EXTERN int glist_fontwidth(t_glist *x);
 EXTERN int glist_fontheight(t_glist *x);
-EXTERN int glist_getzoom(t_glist *x);  /* useless: zoom is now handled by GUI side */
+EXTERN int glist_getzoom(t_glist *x);  /* useless: zoom is now managed by GUI */
 EXTERN void glist_sort(t_glist *canvas);
 EXTERN void glist_read(t_glist *x, t_symbol *filename, t_symbol *format);
 EXTERN void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format);
