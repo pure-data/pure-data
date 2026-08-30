@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"PO-Revision-Date: 2026-08-29 08:51+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/en_CA/>\n"
 "Language: en_ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 msgid "linear"
 msgstr "linear"
@@ -613,6 +613,9 @@ msgstr "MIDI"
 msgid "deken preferences"
 msgstr "Packages"
 
+msgid "keyboard shortcuts"
+msgstr "Keyboard"
+
 msgid "misc preferences"
 msgstr "Misc"
 
@@ -697,6 +700,10 @@ msgstr "WARNING: font weight '%1$s' not found, using default (%2$s)"
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "using font: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr "Ignoring non-existant plugin '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -837,6 +844,9 @@ msgstr "Unable to remove stray file '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Unable to rename downloaded file to '%s'"
 
+msgid "~"
+msgstr "~"
+
 msgid "Search URLs:"
 msgstr "Search URLs:"
 
@@ -872,6 +882,15 @@ msgstr "Keep package files after installation"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Add newly installed libraries to Pd's search path"
+
+msgid "- Always add to search path"
+msgstr "- Always add to search path"
+
+msgid "- Never add to search path"
+msgstr "- Never add to search path"
+
+msgid "- Prompt before adding"
+msgstr "- Prompt before adding"
 
 msgid "Platform settings:"
 msgstr "Platform settings:"
@@ -1188,6 +1207,10 @@ msgstr "[deken] Platform detected: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Could not find a menu for adding '%s'"
+
+#, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Downgrading %s to %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1928,6 +1951,9 @@ msgstr "Zoom In"
 msgid "Zoom Out"
 msgstr "Zoom Out"
 
+msgid "Reset Zoom"
+msgstr "Reset Zoom"
+
 msgid "Clear Console"
 msgstr "Clear Console"
 
@@ -1952,6 +1978,9 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Comment"
 
+msgid "Scalar"
+msgstr "Scalar"
+
 msgid "Graph"
 msgstr "Graph"
 
@@ -1972,9 +2001,6 @@ msgstr "DSP Off"
 
 msgid "Test Audio and MIDI..."
 msgstr "Test Audio and MIDI..."
-
-msgid "Load Meter"
-msgstr "Load Meter"
 
 msgid "Audio Settings..."
 msgstr "Audio Settings..."
@@ -2003,6 +2029,9 @@ msgstr "Close subwindows"
 msgid "Parent Window"
 msgstr "Parent Window"
 
+msgid "Load Meter"
+msgstr "Load Meter"
+
 msgid "Message..."
 msgstr "Message..."
 
@@ -2024,8 +2053,8 @@ msgstr "Check for updates"
 msgid "Report a bug"
 msgstr "Report a bug"
 
-msgid "Clear Menu"
-msgstr "Clear Menu"
+msgid "Clear Recent Files"
+msgstr "Clear Recent Files"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2145,6 +2174,9 @@ msgstr "Delete"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoring '%s': doesn't look like a Pd file"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Clear Menu"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "

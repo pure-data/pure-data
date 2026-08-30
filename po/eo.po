@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -613,6 +613,9 @@ msgstr "Preferoj pri MIDI"
 msgid "deken preferences"
 msgstr "Preferoj pri deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr ""
 
@@ -697,6 +700,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "uzante la tiparon %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -837,6 +844,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Serĉaj rezultoj"
@@ -873,6 +883,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1185,6 +1204,10 @@ msgstr ""
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Elŝutante «%s»"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1909,6 +1932,9 @@ msgstr "Enzomi"
 msgid "Zoom Out"
 msgstr "Elzomi"
 
+msgid "Reset Zoom"
+msgstr ""
+
 msgid "Clear Console"
 msgstr "Forviŝi konzolon"
 
@@ -1933,6 +1959,10 @@ msgstr "Simbolo"
 msgid "Comment"
 msgstr "Komento"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Skalo"
+
 msgid "Graph"
 msgstr "Grafo"
 
@@ -1952,9 +1982,6 @@ msgid "DSP Off"
 msgstr ""
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -1984,6 +2011,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "Patra fenestro"
 
+msgid "Load Meter"
+msgstr ""
+
 msgid "Message..."
 msgstr "Mesaĝo…"
 
@@ -2005,8 +2035,8 @@ msgstr "Kontroli ĝisdatigojn"
 msgid "Report a bug"
 msgstr "Raporti cimon"
 
-msgid "Clear Menu"
-msgstr "Forviŝi menuon"
+msgid "Clear Recent Files"
+msgstr ""
 
 msgid ""
 "Delete all preferences?\n"
@@ -2124,3 +2154,6 @@ msgstr "Forigi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Clear Menu"
+#~ msgstr "Forviŝi menuon"

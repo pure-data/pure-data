@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -665,6 +665,9 @@ msgstr "Sở thích..."
 msgid "deken preferences"
 msgstr "Sở thích..."
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Sở thích..."
@@ -752,6 +755,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -893,6 +900,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Tìm kiếm trong văn bản..."
@@ -928,6 +938,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1245,6 +1264,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1979,6 +2002,9 @@ msgstr "Đáy"
 msgid "Zoom Out"
 msgstr "Đáy"
 
+msgid "Reset Zoom"
+msgstr ""
+
 #, fuzzy
 msgid "Clear Console"
 msgstr "Xóa danh sách"
@@ -2007,6 +2033,10 @@ msgstr ""
 msgid "Comment"
 msgstr "Lệnh"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Lưu"
+
 msgid "Graph"
 msgstr "Đồ thị"
 
@@ -2029,10 +2059,6 @@ msgstr "Tất"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Bộ đo trễ:"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2067,6 +2093,10 @@ msgid "Parent Window"
 msgstr "Cửa sô Gởi"
 
 #, fuzzy
+msgid "Load Meter"
+msgstr "Bộ đo trễ:"
+
+#, fuzzy
 msgid "Message..."
 msgstr "Tin nhẳn"
 
@@ -2090,8 +2120,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "Xóa danh sách"
+msgid "Clear Recent Files"
+msgstr "Tập tin"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2215,6 +2245,10 @@ msgstr "Xóa bỏ"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "Xóa danh sách"
 
 #, fuzzy
 #~ msgid "bottom:"

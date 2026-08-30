@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -655,6 +655,9 @@ msgstr "Inställningar"
 msgid "deken preferences"
 msgstr "Inställningar"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Inställningar"
@@ -743,6 +746,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -884,6 +891,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Sök i"
@@ -919,6 +929,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1237,6 +1256,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1965,6 +1988,9 @@ msgstr "Zooma"
 msgid "Zoom Out"
 msgstr "Zooma"
 
+msgid "Reset Zoom"
+msgstr ""
+
 #, fuzzy
 msgid "Clear Console"
 msgstr "Rensa konsoll"
@@ -1990,6 +2016,10 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Kommentar"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Skala"
+
 msgid "Graph"
 msgstr "Graf"
 
@@ -2010,10 +2040,6 @@ msgstr "DSP av"
 
 msgid "Test Audio and MIDI..."
 msgstr "Testa ljud och MIDI..."
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Belastningsmätare"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2047,6 +2073,10 @@ msgid "Parent Window"
 msgstr "Föräldrafönster"
 
 #, fuzzy
+msgid "Load Meter"
+msgstr "Belastningsmätare"
+
+#, fuzzy
 msgid "Message..."
 msgstr "Meddelande"
 
@@ -2069,8 +2099,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "Rensa konsoll"
+msgid "Clear Recent Files"
+msgstr "Fil"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2195,6 +2225,10 @@ msgstr "Radera array"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "Rensa konsoll"
 
 #, fuzzy
 #~ msgid "bottom:"

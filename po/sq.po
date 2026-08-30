@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2024-07-08 17:37+0200\n"
 "Last-Translator: Besnik Bleta <besnik@spymac.com>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -666,6 +666,9 @@ msgstr "Parapëlqime..."
 msgid "deken preferences"
 msgstr "Parapëlqime..."
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Parapëlqime..."
@@ -753,6 +756,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -894,6 +901,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Kërko Tekst..."
@@ -929,6 +939,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1246,6 +1265,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1980,6 +2003,9 @@ msgstr "Poshtë"
 msgid "Zoom Out"
 msgstr "Poshtë"
 
+msgid "Reset Zoom"
+msgstr ""
+
 #, fuzzy
 msgid "Clear Console"
 msgstr "Fshij listë"
@@ -2008,6 +2034,10 @@ msgstr ""
 msgid "Comment"
 msgstr "Urdhër"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Ruaj"
+
 msgid "Graph"
 msgstr "Grafik"
 
@@ -2030,10 +2060,6 @@ msgstr "Asnjë"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Matës vonese:"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2068,6 +2094,10 @@ msgid "Parent Window"
 msgstr "Dritare dërgimesh"
 
 #, fuzzy
+msgid "Load Meter"
+msgstr "Matës vonese:"
+
+#, fuzzy
 msgid "Message..."
 msgstr "Mesazh"
 
@@ -2091,8 +2121,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "Fshij listë"
+msgid "Clear Recent Files"
+msgstr "Kartelë"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2216,6 +2246,10 @@ msgstr "Fshij"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "Fshij listë"
 
 #, fuzzy
 #~ msgid "bottom:"
