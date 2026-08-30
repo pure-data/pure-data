@@ -568,7 +568,11 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     # however, we need position including the border decoration
     # as this is how we restore the position
     scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
-    pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
+    set tkcanvas [tkcanvas_name $mytoplevel]
+    pdtk_canvas_getscroll $tkcanvas
+    set zoom [::pd_canvaszoom::getzdepth $tkcanvas]
+    set width [expr int($width / $zoom)]
+    set height [expr int($height / $zoom)]
     # send the size/location of the window and canvas to 'pd' in the form of:
     #    left top right bottom
     pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"

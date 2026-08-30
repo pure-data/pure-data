@@ -33,14 +33,24 @@ proc ::pd_canvaszoom::init_default_zoom {} {
 
     set default_zoom [::pd_guiprefs::read default_zoom]
     if { $default_zoom == {}} { set default_zoom 0 }
-
-    # update "File/Preferences/Zoom New Windows" menu entry
-    # for now, "Zoom New Windows" is a checkbox;
-    # LATER: allow other default_zoom values than 0(100%) or 100(200%)
-    set ::dialog_preferences::zoom_open [expr $default_zoom >= 100]
 }
 
 after idle ::pd_canvaszoom::init_default_zoom
+
+proc ::pd_canvaszoom::defaut_zoom_callback {widget value} {
+    ::pd_canvaszoom::set_default_zoom $value
+    set zdepth [expr int([::pd_canvaszoom::steps2depth $value] * 100)]
+    $widget configure -label [_ "Default zoom level: ${zdepth}%"]
+}
+
+proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
+    set zdepth [expr int([::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom] * 100)]
+    scale $widget -label [_ "Default zoom level: ${zdepth}%"] \
+        -from -100 -to 100 -resolution 20 -orient horizontal \
+        -length 200 -showvalue false \
+        -command "::pd_menucommands::scheduleAction ::pd_canvaszoom::defaut_zoom_callback $widget"
+    $widget set $::pd_canvaszoom::default_zoom
+}
 
 # multiplies by "zdepth" all consecutive numbers from the "from"th element.
 # process maximum "max_elements" elements, and round the result if "int" is not null.
@@ -92,8 +102,14 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             if {[set fontindex [lsearch -start 2 $args "-font"]] != -1} {
                 incr fontindex
                 set font [lindex $args $fontindex]
+                set fontsize [lindex $font 1]
                 set font [scalefont $font [lindex $font 1] $zdepth]
                 lset args $fontindex $font
+                # add fontsize tag
+                set tagsindex [lsearch -start 2 $args "-tags"]
+                incr tagsindex
+                set tags [concat {*}[lindex $args $tagsindex] _f$fontsize]
+                lset args $tagsindex $tags
             }
         }
         "move" {
@@ -144,6 +160,8 @@ proc ::pd_canvaszoom::cleanup {canvas} {
     foreach c [list ::${canvas} ::pd_canvaszoom::canvas::${canvas}] {
         catch {
             rename ${c} {}
+            unset ::pd_canvaszoom::zsteps($c)
+            unset ::pd_canvaszoom::zdepth($c)
         }
     }
 }
@@ -163,13 +181,9 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
         return [::pd_canvaszoom::canvas_command $c $method {*}$args]
     }
 
-    # init zoom state for this canvas, if it didn't exist
-    if { ! [info exists ::pd_canvaszoom::zsteps($c)]} {
-        # NOTE: these arrays don't get cleaned up when the canvas is destroyed
-        #       so the zoom-level is persistent when a window is closed & re-opened
-        set ::pd_canvaszoom::zsteps($c) $::pd_canvaszoom::default_zoom
-        set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
-    }
+    # init zoom state to the default zoom level
+    set ::pd_canvaszoom::zsteps($c) $::pd_canvaszoom::default_zoom
+    set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
 
     # canvas bindings for mousewheel and mousewheel-button are OS dependent
     # LATER: probably move this to pd_bindings.tcl
