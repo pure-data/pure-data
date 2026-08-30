@@ -2042,7 +2042,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
-
     if (tovis)
     {
          /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
@@ -2090,25 +2089,14 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                        glist_getcanvas(glist), tag0, "-", 0,
-                        color, THISGUI->i_backgroundcolor,
+                    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+                        glist_getcanvas(glist), tag0, "-",
+                        0, (int)linewidth, color,
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey +
+                        inextx, (int)glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth));
-
-                    /* pdgui_vmess(0, "crr iiii rk rf rS",
-                        glist_getcanvas(glist), "create", "rectangle",
-                        ixpix , (int) glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth),
-                        "-fill", color,
-                        "-width", 0.,
-                        "-tags", 3, tags); */
+                    );
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
