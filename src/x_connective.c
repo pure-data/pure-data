@@ -316,15 +316,37 @@ static void send_setup(void)
     class_addanything(send_class, send_anything);
     class_sethelpsymbol(send_class, gensym("send-receive"));
 }
+
 /* -------------------- receive ------------------------------ */
 
 static t_class *receive_class;
+static t_class *receive_proxy_class;
+
+typedef struct _receive_proxy
+{
+    t_pd              p_pd;
+    struct _receive  *p_owner;
+} t_receive_proxy;
 
 typedef struct _receive
 {
-    t_object x_obj;
-    t_symbol *x_sym;
+    t_object         x_obj;
+    t_receive_proxy  x_proxy;
+    t_symbol        *x_sym;
 } t_receive;
+
+static void receive_proxy_init(t_receive_proxy * p, t_receive *x)
+{
+    p->p_pd = receive_proxy_class;
+    p->p_owner = x;
+}
+
+static void receive_proxy_symbol(t_receive_proxy *p, t_symbol* s)
+{
+    t_receive *x = p->p_owner;
+    pd_unbind(&x->x_obj.ob_pd, x->x_sym);
+    pd_bind(&x->x_obj.ob_pd, x->x_sym = s);
+}
 
 static void receive_bang(t_receive *x)
 {
@@ -361,6 +383,11 @@ static void *receive_new(t_symbol *s)
     t_receive *x = (t_receive *)pd_new(receive_class);
     x->x_sym = s;
     pd_bind(&x->x_obj.ob_pd, s);
+    if (!*x->x_sym->s_name)
+    {
+        receive_proxy_init(&x->x_proxy, x);
+        inlet_new(&x->x_obj, &x->x_proxy.p_pd, 0, 0);
+    }
     outlet_new(&x->x_obj, 0);
     return (x);
 }
@@ -382,6 +409,9 @@ static void receive_setup(void)
     class_addlist(receive_class, receive_list);
     class_addanything(receive_class, receive_anything);
     class_sethelpsymbol(receive_class, gensym("send-receive"));
+    receive_proxy_class = (t_class *)class_new(gensym("receive proxy"),
+                0, 0, sizeof(t_receive_proxy), 0, 0);
+    class_addsymbol(receive_proxy_class, receive_proxy_symbol);
 }
 
 /* -------------------------- select ------------------------------ */
