@@ -230,6 +230,7 @@ proc ::pd_canvaszoom::toastzoom {c} {
     variable zdepth
     if { ! [info exists zdepth($c)] } {return}
     set zoom [expr int($zdepth($c) * 100)]
+    set c ::pd_canvaszoom::canvas::$c
     set scrollregion [$c cget -scrollregion]
     set x0 [lindex $scrollregion 0]
     set y0 [lindex $scrollregion 1]
@@ -239,8 +240,8 @@ proc ::pd_canvaszoom::toastzoom {c} {
     set yT [expr $y0 + $H * [lindex [$c yview] 0] + 3]
     after cancel ::pd_canvaszoom::delete_toastzoom $c
     delete_toastzoom $c
-    ::pd_canvaszoom::canvas::$c create rectangle $xT $yT [expr $xT + 50] [expr $yT + 16] -tags _zoomtoast_ -fill "#E7E7E7"
-    ::pd_canvaszoom::canvas::$c create text [expr $xT + 5] $yT -tags _zoomtoast_ \
+    $c create rectangle $xT $yT [expr $xT + 50] [expr $yT + 16] -tags _zoomtoast_ -fill "#E7E7E7"
+    $c create text [expr $xT + 5] $yT -tags _zoomtoast_ \
         -text "$zoom% " \
         -fill black -anchor nw -font [get_font_for_size 14]
     after 1200 ::pd_canvaszoom::delete_toastzoom $c
