@@ -456,16 +456,16 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist_dpixtodx(glist, dx * glist_getzoom(glist));
+            glist_dpixtodx(glist, dx);
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist_dpixtody(glist, dy * glist_getzoom(glist));
+            glist_dpixtody(glist, dy);
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
-        /* report displacement in canvas coordinates (zoom-aware) */
-    SETFLOAT(&at[1], glist_dpixtodx(glist, dx * glist_getzoom(glist)));
-    SETFLOAT(&at[2], glist_dpixtody(glist, dy * glist_getzoom(glist)));
+        /* report displacement in canvas coordinates */
+    SETFLOAT(&at[1], glist_dpixtodx(glist, dx));
+    SETFLOAT(&at[2], glist_dpixtody(glist, dy));
     template_notify(template, gensym("displace"), 3, at);
     scalar_redraw(x, glist);
 }

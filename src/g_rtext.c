@@ -450,9 +450,9 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         else ncolumns = widthspec_c;
     }
     *widthp = ncolumns * fontwidth +
-        (x->x_text? (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? LMARGIN + RMARGIN : 0);
     *heightp = nlines * fontheight +
-        (x->x_text? (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? TMARGIN + BMARGIN : 0);
 }
 
 /* reduce a formatted number (in <buf>) to not exceed <maxsize> chars
@@ -551,8 +551,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
-    *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
-    *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
+    *widthp += LMARGIN + RMARGIN - 2;
+    *heightp = fontheight + TMARGIN + BMARGIN - 1;
 }
 
     /* the following routine computes line breaks and carries out
@@ -633,12 +633,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         const char *tags[] = {x->x_tag, "text"};
         int lmargin = (x->x_text ? LMARGIN : 0),
             tmargin = (x->x_text ? TMARGIN : 0);
-        if (glist_getzoom(x->x_glist) > 1)
-        {
-            /* zoom margins */
-            lmargin *= glist_getzoom(x->x_glist);
-            tmargin *= glist_getzoom(x->x_glist);
-        }
             /* we add an extra space to the string just in case the last
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code

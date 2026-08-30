@@ -53,7 +53,6 @@ static t_binbuf *canvas_docopy(t_canvas *x);
 static void canvas_dopaste(t_canvas *x, t_binbuf *b);
 static void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
-static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
@@ -773,8 +772,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             {
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 buf->u_vec[i].e_index = indx;
-                buf->u_vec[i].e_xpix = x1 / x->gl_zoom;
-                buf->u_vec[i].e_ypix = y1 / x->gl_zoom;
+                buf->u_vec[i].e_xpix = x1;
+                buf->u_vec[i].e_ypix = y1;
                 i++;
             }
     }
@@ -784,8 +783,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         {
             gobj_getrect(y, x, &x1, &y1, &x2, &y2);
             buf->u_vec[indx].e_index = indx;
-            buf->u_vec[indx].e_xpix = x1 / x->gl_zoom;
-            buf->u_vec[indx].e_ypix = y1 / x->gl_zoom;
+            buf->u_vec[indx].e_xpix = x1;
+            buf->u_vec[indx].e_ypix = y1;
         }
     }
     THISED->canvas_undo_already_set_move = 1;
@@ -801,8 +800,8 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
         int i;
         for (i = 0; i < buf->u_n; i++)
         {
-            float newx = (buf->u_vec[i].e_xpix)*x->gl_zoom;
-            float newy = (buf->u_vec[i].e_ypix)*x->gl_zoom;
+            float newx = buf->u_vec[i].e_xpix;
+            float newy = buf->u_vec[i].e_ypix;
             t_gobj*y = glist_nth(x, buf->u_vec[i].e_index);
             if (y)
             {
@@ -813,10 +812,10 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 THISED->canvas_undo_already_set_move = 1;
-                canvas_displaceselection(x, (newx - x1)/(x->gl_zoom), (newy - y1)/(x->gl_zoom));
+                canvas_displaceselection(x, newx - x1, newy - y1);
                 THISED->canvas_undo_already_set_move = doing;
-                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
-                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
+                buf->u_vec[i].e_xpix = x1;
+                buf->u_vec[i].e_ypix = y1;
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
@@ -1994,10 +1993,6 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             x->gl_havewindow = 0;
             if (glist_isvisible(gl2) && !gl2->gl_isdeleting)
             {
-                    /* make sure zoom level matches parent, ie. after an open
-                       subpatch's zoom level was changed before being closed */
-                if(x->gl_zoom != gl2->gl_zoom)
-                    canvas_zoom(x, gl2->gl_zoom);
                 gobj_vis(&x->gl_gobj, gl2, 1);
             }
         }
@@ -2505,13 +2500,12 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         else
         {
             int noutlet;
-            int out_activeminh = OHEIGHT  * x->gl_zoom;
             int out_activemaxh = (y2 - y1) / 8;
-            int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
+            int out_activeheight = OHEIGHT * 2;
             if (out_activeheight > out_activemaxh)
                 out_activeheight = out_activemaxh;
-            if (out_activeheight < out_activeminh)
-                out_activeheight = out_activeminh;
+            if (out_activeheight < OHEIGHT)
+                out_activeheight = OHEIGHT;
                 /* resize? only for "true" text boxes or canvases */
             if (xpix >= x2-4 && ypix < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
@@ -2540,16 +2534,15 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 ypix >= y2 - out_activeheight)
             {
                 int width = x2 - x1;
-                int iow = IOWIDTH * x->gl_zoom;
-                int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
+                int nout1 = noutlet > 1 ? noutlet - 1 : 1;
                 int closest = ((xpix-x1) * (nout1) + width/2)/width;
                 if (noutlet == 1 || closest < noutlet)
                 {
                     if (doit)
                     {
                         int issignal = obj_issignaloutlet(hitobj, closest);
-                        int xout = x1 + IOMIDDLE * x->gl_zoom +
-                            (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
+                        int xout = x1 + IOMIDDLE +
+                            (noutlet > 1 ? ((width - IOWIDTH) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
                         x->gl_editor->e_xwas = xout;
                         x->gl_editor->e_ywas = y2;
@@ -2557,7 +2550,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                             "ci", x, 0);
                         pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
                             x, "x", "-",
-                            0, x->gl_zoom, THISGUI->i_foregroundcolor,
+                            0, 1, THISGUI->i_foregroundcolor,
                             (int)x->gl_editor->e_xwas,
                             (int)x->gl_editor->e_ywas,
                             xpix, ypix);
@@ -2767,8 +2760,6 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         if(oc)
         {
-            int iow = IOWIDTH * x->gl_zoom;
-            int iom = IOMIDDLE * x->gl_zoom;
             int x11=0, x12=0, x21=0, x22=0;
             int y11=0, y12=0, y21=0, y22=0;
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
@@ -2781,18 +2772,18 @@ static int tryconnect(t_canvas*x, t_object *src, int nout,
             ninlets = obj_ninlets(sink);
 
             lx1 = x11 + (noutlets1 > 1 ?
-                             ((x12-x11-iow) * nout)/(noutlets1-1) : 0)
-                + iom;
+                             ((x12 - x11 - IOWIDTH) * nout) / (noutlets1-1) : 0)
+                + IOMIDDLE;
             ly1 = y12;
             lx2 = x21 + (ninlets > 1 ?
-                             ((x22-x21-iow) * nin)/(ninlets-1) : 0)
-                + iom;
+                             ((x22 - x21 - IOWIDTH) * nin) / (ninlets-1) : 0)
+                + IOMIDDLE;
             ly2 = y21;
             pdgui_vmess("pdtk_canvas_create_patchcord", "crrr i k iiii",
                 glist_getcanvas(x), tag, "-", "-",
-                    (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
-                        THISGUI->i_foregroundcolor,
-                            lx1,ly1, lx2,ly2);
+                    obj_issignaloutlet(src, nout) ? 2 : 1,
+                    THISGUI->i_foregroundcolor,
+                    lx1,ly1, lx2,ly2);
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
@@ -3344,14 +3335,12 @@ static void delay_move(t_gobj *client, t_glist *glist)
     if (x->gl_editor->e_waittodrag &&
         incx > -2 && incx < 2 && incy > -2 && incy < 2)
             return;
-    incx /= x->gl_zoom;
-    incy /= x->gl_zoom;
 
     x->gl_editor->e_waittodrag = 0;
     if (incx || incy)
         canvas_displaceselection(x, incx, incy);
-    x->gl_editor->e_xwas += incx * x->gl_zoom;
-    x->gl_editor->e_ywas += incy * x->gl_zoom;
+    x->gl_editor->e_xwas += incx;
+    x->gl_editor->e_ywas += incy;
 }
 
     /* defined in g_text.c: */
@@ -3594,41 +3583,6 @@ static void canvas_menufont(t_canvas *x)
         "i", x2->gl_font);
 }
 
-typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
-
-/* LATER, if canvas is flipped, re-scroll to preserve bottom left corner */
-static void canvas_zoom(t_canvas *x, t_floatarg zoom)
-{
-    if (zoom != x->gl_zoom && (zoom == 1 || zoom == 2))
-    {
-        t_gobj *g;
-        t_object *obj;
-        for (g = x->gl_list; g; g = g->g_next)
-            if ((obj = pd_checkobject(&g->g_pd)))
-        {
-                /* pass zoom message on to all objects, except canvases
-                   that aren't GOP */
-            t_gotfn zoommethod;
-            if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
-                (!(pd_class(&obj->te_pd) == canvas_class) ||
-                 (((t_glist *)obj)->gl_isgraph)))
-                    (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
-        }
-        x->gl_zoom = zoom;
-        if (x->gl_havewindow)
-        {
-            if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1))
-            {
-                /* if it's flipped so that y grows upward,
-                fix so that zero is bottom edge as in canvas_dosetbounds() */
-                t_float diff = x->gl_y1 - x->gl_y2;
-                x->gl_y1 = (x->gl_screeny2 - x->gl_screeny1) * diff/x->gl_zoom;
-                x->gl_y2 = x->gl_y1 - diff;
-            }
-            canvas_redraw(x);
-        }
-    }
-}
 
     /* function to support searching */
 static int atoms_match(int inargc, t_atom *inargv, int searchargc,
@@ -4691,7 +4645,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
         sprintf(tag, "l%p", oc);
         pdgui_vmess("pdtk_canvas_create_patchcord", "crrr i k iiii",
             glist_getcanvas(x), tag, "-", "-",
-                (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+                obj_issignaloutlet(objsrc, outno) ? 2 : 1,
                     THISGUI->i_foregroundcolor,
                         0, 0, 0, 0);
         canvas_fixlinesfor(x, objsrc);
@@ -5221,8 +5175,8 @@ void canvas_addscalar(t_canvas *x, t_symbol *templatesym)
     /* initially place the scalar under mouse; cf.  canvas_howputnew() : */
 
     glist_getnextxy(x, &xpix, &ypix);
-    xpix = xpix/x->gl_zoom - 3;
-    ypix = ypix/x->gl_zoom - 3;
+    xpix -= 3;
+    ypix -= 3;
     template_setfloat(scalartemplate, gensym("x"), sc->sc_vec,
         glist_pixelstox(x, (float)xpix), 0);
     template_setfloat(scalartemplate, gensym("y"), sc->sc_vec,
@@ -5291,8 +5245,6 @@ void g_editor_setup(void)
         gensym("menufont"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_font,
         gensym("font"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_zoom,
-        gensym("zoom"), A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find,
         gensym("find"), A_SYMBOL, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find_again,

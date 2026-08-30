@@ -1134,7 +1134,6 @@ void sys_gui_preferences(void)
     pdgui_vmess("set_escaped", "ri", "::sys_verbose", sys_verbose);
     pdgui_vmess("set_escaped", "ri", "::sys_use_stdpath", sys_usestdpath);
     pdgui_vmess("set_escaped", "ri", "::sys_defeatrt", sys_defeatrt);
-    pdgui_vmess("set_escaped", "ri", "::sys_zoom_open", (sys_zoom_open == 2));
 
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));
@@ -1868,10 +1867,7 @@ void sys_doneglobinit( void)
 
     /* start the GUI up.  Before we actually draw our "visible" windows
     we have to wait for the GUI to give us our font metrics, see
-    glob_initfromgui().  LATER it would be cool to figure out what metrics
-    we really need and tell the GUI - that way we can support arbitrary
-    zoom with appropriate font sizes.   And/or: if we ever move definitively
-    to a vector-based GUI lib we might be able to skip this step altogether. */
+    glob_initfromgui(). */
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;

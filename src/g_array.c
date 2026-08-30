@@ -1350,11 +1350,6 @@ void garray_resize(t_garray *x, t_floatarg f)
     garray_resize_long(x, f);
 }
 
-/* ignore zoom for now */
-static void garray_zoom(t_garray *x, t_floatarg f)
-{
-}
-
 static void garray_edit(t_garray *x, t_floatarg f)
 {
     x->x_edit = (int)f;
@@ -1412,8 +1407,6 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_doresize, gensym("resize"),
         A_FLOAT, A_NULL);
-    class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
-        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_edit, gensym("edit"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),

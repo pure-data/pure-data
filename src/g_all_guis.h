@@ -110,7 +110,7 @@ typedef enum {
     vertical = 1,
 } t_iem_orientation;
 
-#define IEMGUI_ZOOM(x) ((x)->x_gui.x_glist->gl_zoom)
+#define IEMGUI_ZOOM(x) (1)
 
 typedef struct _iem_fstyle_flags
 {
@@ -300,8 +300,8 @@ EXTERN void iemgui_select(t_gobj *z, t_glist *glist, int selected);
 EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
 EXTERN void iemgui_vis(t_gobj *z, t_glist *glist, int vis);
 EXTERN void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol **bflcol);
-EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
-EXTERN void iemgui_newzoom(t_iemgui *iemgui);
+PD_DEPRECATED EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom); /* useless: zoom is now handled by GUI side */
+PD_DEPRECATED EXTERN void iemgui_newzoom(t_iemgui *iemgui); /* useless: zoom is now handled by GUI side */
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 EXTERN void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv);

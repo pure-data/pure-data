@@ -1441,8 +1441,6 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
-            if (glist->gl_isgraph)
-                width *= glist_getzoom(glist);
             outline = numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
             if (flags & CLOSED)
@@ -1487,11 +1485,10 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     if (THISTMPL->curve_motion_vertex < 0)   /* drag the whole object */
     {
         t_glist *glist = THISTMPL->curve_motion_glist;
-        t_float zoom = (t_float)glist_getzoom(glist);
         int idtx, idty;
             /* accumulate fractional parts (while displace API expects ints) */
-        THISTMPL->curve_motion_xfrac += dx / zoom;
-        THISTMPL->curve_motion_yfrac += dy / zoom;
+        THISTMPL->curve_motion_xfrac += dx;
+        THISTMPL->curve_motion_yfrac += dy;
         idtx = (int)THISTMPL->curve_motion_xfrac;
         idty = (int)THISTMPL->curve_motion_yfrac;
         THISTMPL->curve_motion_xfrac -= idtx;
@@ -2050,9 +2047,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset,
         yonset);
 
-    if (glist->gl_isgraph)
-        linewidth *= glist_getzoom(glist);
-
     if (tovis)
     {
          /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
@@ -2229,17 +2223,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                /* pdgui_vmess(0, "crr ri rk rk ri rS",
-                    glist_getcanvas(glist), "create", "polygon",
-                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    "-fill", outline,
-                    "-outline", outline,
-                    "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags); */
                 pdgui_vmess("pdtk_canvas_create_poly", "cr ii i kk iiii",
                     glist_getcanvas(glist), tag0,
                     1, (style == PLOTSTYLE_BEZ),
-                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    1,
                     outline, outline,
                     0, 0, 0, 0);
 
@@ -3099,14 +3086,14 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
             /* draw label */
         /* SETSYMBOL(fontatoms+0, gensym(sys_font));
         SETFLOAT (fontatoms+1,
-            -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+            -sys_hostfontsize(glist_getfont(glist), 1));
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight)); */
             /* display label */
         if (*x->x_label->s_name)
             pdgui_vmess("pdtk_text_new", "cS iis i k",
                 glist_getcanvas(glist), 2, tags,
                 xloc, yloc, x->x_label->s_name,
-                sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
+                sys_hostfontsize(glist_getfont(glist), 1),
                 color);
             /* pdgui_vmess(0, "crr ii rs rk rs rA rS",
                 glist_getcanvas(glist), "create", "text",

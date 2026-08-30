@@ -730,8 +730,6 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
 
 /* ------ routines to save and restore canvases (patches) recursively. ----*/
 
-typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
-
     /* save to a binbuf, called recursively; cf. canvas_savetofile() which
     saves the document, and is only called on root canvases. */
 static void canvas_saveto(t_canvas *x, t_binbuf *b)

@@ -27,16 +27,15 @@ static void vu_update_rms(t_vu *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        const int zoom = IEMGUI_ZOOM(x);
-        int w4 = x->x_gui.x_w / 4, off = text_ypix(&x->x_gui.x_obj, glist) - zoom;
+        int w4 = x->x_gui.x_w / 4, off = text_ypix(&x->x_gui.x_obj, glist) - 1;
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
-        int quad1 = xpos + w4 - zoom, quad3 = xpos + x->x_gui.x_w - w4 + zoom;
+        int quad1 = xpos + w4 - 1, quad3 = xpos + x->x_gui.x_w - w4 + 1;
         char tag[128];
 
         sprintf(tag, "%p_RCOVER", x);
         pdgui_vmess(0, "crs iiii", glist_getcanvas(glist), "coords", tag,
              quad1, off, quad3,
-             off + (x->x_led_size+1)*zoom*(IEM_VU_STEPS-x->x_rms));
+             off + (x->x_led_size+1) * (IEM_VU_STEPS-x->x_rms));
     }
 }
 
@@ -46,7 +45,6 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
 
     if(glist_isvisible(glist))
     {
-        const int zoom = IEMGUI_ZOOM(x);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
         char tag[128];
@@ -56,20 +54,20 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
         {
             int i = iemgui_vu_col[x->x_peak];
             int j = ypos +
-                   (x->x_led_size+1)*zoom*(IEM_VU_STEPS+1-x->x_peak) -
-                   (x->x_led_size+1)*zoom/2;
+                   (x->x_led_size+1) * (IEM_VU_STEPS+1-x->x_peak) -
+                   (x->x_led_size+1) / 2;
 
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-                xpos, j, xpos + x->x_gui.x_w + zoom, j);
+                xpos, j, xpos + x->x_gui.x_w + 1, j);
             pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
                 canvas, tag,
-                x->x_led_size * zoom + zoom,  /* peak LED is slightly fatter */
+                x->x_led_size + 1,  /* peak LED is slightly fatter */
                 iemgui_color_hex[i]);
         }
         else
         {
             int mid = xpos + x->x_gui.x_w/2;
-            int pkh = PEAKHEIGHT * zoom;
+            int pkh = PEAKHEIGHT;
 
             pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
                 canvas, tag,
@@ -85,12 +83,9 @@ static void vu_draw_update(t_gobj *client, t_glist *glist);
 
 static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int hmargin = HMARGIN * zoom, vmargin = VMARGIN * zoom;
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int snd_able = x->x_gui.x_fsf.x_snd_able || x->x_gui.x_fsf.x_rcv_able;
     char tag_object[128], tag_label[128], tag[128], tag_n[128];
     char *tags[] = {tag_object, tag_n, tag};
@@ -107,16 +102,16 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     {
         sprintf(tag_n, "%p_OUT%d", x, 0);
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
-            xpos - hmargin, ypos + x->x_gui.x_h + vmargin + zoom - ioh,
-            xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
+            xpos - HMARGIN, ypos + x->x_gui.x_h + VMARGIN + 1 - IEM_GUI_IOHEIGHT,
+            xpos - HMARGIN + IOWIDTH, ypos + x->x_gui.x_h + VMARGIN,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 3, tags);
 
         sprintf(tag_n, "%p_OUT%d", x, 1);
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
-            xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + zoom - ioh,
-            xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
+            xpos + x->x_gui.x_w + HMARGIN - IOWIDTH, ypos + x->x_gui.x_h + VMARGIN + 1 - IEM_GUI_IOHEIGHT,
+            xpos + x->x_gui.x_w + HMARGIN, ypos + x->x_gui.x_h + VMARGIN,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 3, tags);
@@ -130,16 +125,16 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     {
         sprintf(tag_n, "%p_IN%d", x, 0);
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
-            xpos - hmargin, ypos - vmargin,
-            xpos - hmargin + iow, ypos - vmargin - zoom + ioh,
+            xpos - HMARGIN, ypos - VMARGIN,
+            xpos - HMARGIN + IOWIDTH, ypos - VMARGIN - 1 + IEM_GUI_IOHEIGHT,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 3, tags);
 
         sprintf(tag_n, "%p_IN%d", x, 1);
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "rectangle",
-            xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
-            xpos + x->x_gui.x_w + hmargin, ypos - vmargin - zoom + ioh,
+            xpos + x->x_gui.x_w + HMARGIN - IOWIDTH, ypos - VMARGIN,
+            xpos + x->x_gui.x_w + HMARGIN, ypos - VMARGIN - 1 + IEM_GUI_IOHEIGHT,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 3, tags);
@@ -150,34 +145,31 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
 
 static void vu_draw_config(t_vu* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_iemgui *iemgui = &x->x_gui;
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int hmargin = HMARGIN * zoom, vmargin = VMARGIN * zoom;
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    int ledw = x->x_led_size * zoom;
-    int fs = x->x_gui.x_fontsize * zoom;
+    int ledw = x->x_led_size;
+    int fs = x->x_gui.x_fontsize;
     int w4 = x->x_gui.x_w/4, mid = xpos + x->x_gui.x_w/2,
-        quad1 = xpos + w4 + zoom;
+        quad1 = xpos + w4 + 1;
     int quad3 = xpos + x->x_gui.x_w - w4,
-        end = xpos + x->x_gui.x_w + 4*zoom;
-    int k1 = (x->x_led_size+1)*zoom, k2 = IEM_VU_STEPS+1, k3 = k1/2;
+        end = xpos + x->x_gui.x_w + 4;
+    int k1 = x->x_led_size + 1, k2 = IEM_VU_STEPS + 1, k3 = k1 / 2;
     int led_col, yyy, k4 = ypos - k3;
     int i;
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos - hmargin, ypos - vmargin,
-        xpos+x->x_gui.x_w + hmargin, ypos+x->x_gui.x_h + vmargin);
+        xpos - HMARGIN, ypos - VMARGIN,
+        xpos+x->x_gui.x_w + HMARGIN, ypos+x->x_gui.x_h + VMARGIN);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        zoom, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
+        1, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_SCALE", x);
     if(x->x_gui.x_fsf.x_selected)
@@ -220,23 +212,23 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
 
     sprintf(tag, "%p_RCOVER", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        quad1 - zoom, ypos - zoom,
-        quad3 + zoom, ypos - zoom + k1*IEM_VU_STEPS);
+        quad1 - 1, ypos - 1,
+        quad3 + 1, ypos - 1 + k1*IEM_VU_STEPS);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
         1, x->x_gui.x_bcol, x->x_gui.x_bcol);
 
     sprintf(tag, "%p_PLED", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        mid, ypos + PEAKHEIGHT * zoom,
-        mid, ypos + PEAKHEIGHT * zoom);
+        mid, ypos + PEAKHEIGHT,
+        mid, ypos + PEAKHEIGHT);
     pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
         canvas, tag,
-        ledw+zoom,  /* peak LED is slightly fatter */
+        ledw + 1,  /* peak LED is slightly fatter */
         x->x_gui.x_bcol);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos+x->x_gui.x_ldx * zoom, ypos+x->x_gui.x_ldy * zoom);
+        xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy);
     if(x->x_gui.x_fsf.x_selected)
         pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
             "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
@@ -317,7 +309,7 @@ static void vu_draw_select(t_vu* x,t_glist* glist)
 
     sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        IEMGUI_ZOOM(x), x->x_gui.x_bcol, col);
+        1, x->x_gui.x_bcol, col);
     sprintf(tag, "%p_SCALE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
     sprintf(tag, "%p_LABEL", x);
@@ -345,12 +337,11 @@ static void vu_getrect(t_gobj *z, t_glist *glist,
                        int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_vu* x = (t_vu*)z;
-    int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
 
-    *xp1 = text_xpix(&x->x_gui.x_obj, glist) - hmargin;
-    *yp1 = text_ypix(&x->x_gui.x_obj, glist) - vmargin;
-    *xp2 = *xp1 + x->x_gui.x_w + hmargin*2;
-    *yp2 = *yp1 + x->x_gui.x_h + vmargin*2;
+    *xp1 = text_xpix(&x->x_gui.x_obj, glist) - HMARGIN;
+    *yp1 = text_ypix(&x->x_gui.x_obj, glist) - VMARGIN;
+    *xp2 = *xp1 + x->x_gui.x_w + HMARGIN * 2;
+    *yp2 = *yp1 + x->x_gui.x_h + VMARGIN * 2;
 }
 
 static void vu_save(t_gobj *z, t_binbuf *b)
@@ -362,7 +353,7 @@ static void vu_save(t_gobj *z, t_binbuf *b)
     iemgui_save(&x->x_gui, srl, bflcol);
     binbuf_addv(b, "ssiisiissiiiissii", gensym("#X"), gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
-                gensym("vu"), x->x_gui.x_w/IEMGUI_ZOOM(x), x->x_gui.x_h/IEMGUI_ZOOM(x),
+                gensym("vu"), x->x_gui.x_w, x->x_gui.x_h,
                 srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
@@ -379,7 +370,7 @@ void vu_check_height(t_vu *x, int h)
     if(n < IEM_VU_MINSIZE)
         n = IEM_VU_MINSIZE;
     x->x_led_size = n - 1;
-    x->x_gui.x_h = (IEM_VU_STEPS * n) * IEMGUI_ZOOM(x);
+    x->x_gui.x_h = IEM_VU_STEPS * n;
 }
 
 static void vu_scale(t_vu *x, t_floatarg fscale)
@@ -394,8 +385,8 @@ static void vu_properties(t_gobj *z, t_glist *owner)
     t_vu *x = (t_vu *)z;
 
     iemgui_new_dialog(x, &x->x_gui, "vu",
-                      x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE,
-                      x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
+                      x->x_gui.x_w, IEM_SL_MINSIZE,
+                      x->x_gui.x_h, IEM_GUI_MINSIZE,
                       0, 0,
                       0,
                       x->x_scale, "no scale", "scale",
@@ -423,7 +414,7 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_fsf.x_snd_able = 0;
     x->x_gui.x_isa.x_loadinit = 0;
-    x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size(w);
     vu_check_height(x, h);
     if(scale != 0)
         scale = 1;
@@ -433,7 +424,7 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
 
 static void vu_size(t_vu *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av));
     if(ac > 1)
         vu_check_height(x, (int)atom_getfloatarg(1, ac, av));
     iemgui_size((void *)x, &x->x_gui);
@@ -580,8 +571,6 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     inlet_new(&x->x_gui.x_obj, &x->x_gui.x_obj.ob_pd, &s_float, gensym("ft1"));
     x->x_out_rms = outlet_new(&x->x_gui.x_obj, &s_float);
     x->x_out_peak = outlet_new(&x->x_gui.x_obj, &s_float);
-    x->x_gui.x_h /= IEMGUI_ZOOM(x); /* unzoom, to prevent double-application in iemgui_newzoom */
-    iemgui_newzoom(&x->x_gui);
     return (x);
 }
 
@@ -613,8 +602,6 @@ void g_vumeter_setup(void)
         gensym("label_pos"), A_GIMME, 0);
     class_addmethod(vu_class, (t_method)vu_label_font,
         gensym("label_font"), A_GIMME, 0);
-    class_addmethod(vu_class, (t_method)iemgui_zoom,
-        gensym("zoom"), A_CANT, 0);
     vu_widgetbehavior.w_getrectfn =    vu_getrect;
     vu_widgetbehavior.w_displacefn =   iemgui_displace;
     vu_widgetbehavior.w_selectfn =     iemgui_select;

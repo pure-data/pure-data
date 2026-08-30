@@ -563,7 +563,7 @@ t_float glist_pixelstox(t_glist *x, t_float xpix)
         coordinates (x1, etc.) specifies the coordinate range
         of a one-pixel square at top left of the window. */
     if (!x->gl_isgraph)
-        return (x->gl_x1 + (x->gl_x2 - x->gl_x1) * xpix / x->gl_zoom);
+        return x->gl_x1 + (x->gl_x2 - x->gl_x1) * xpix;
 
         /* if we're a graph when shown on parent, but own our own
         window right now, our range in our coordinates (x1, etc.) is spread
@@ -588,7 +588,7 @@ t_float glist_pixelstox(t_glist *x, t_float xpix)
 t_float glist_pixelstoy(t_glist *x, t_float ypix)
 {
     if (!x->gl_isgraph)
-        return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * ypix / x->gl_zoom);
+        return x->gl_y1 + (x->gl_y2 - x->gl_y1) * ypix;
     else if (x->gl_isgraph && x->gl_havewindow)
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) *
                 (ypix) / (x->gl_screeny2 - x->gl_screeny1));
@@ -607,7 +607,7 @@ t_float glist_pixelstoy(t_glist *x, t_float ypix)
 t_float glist_xtopixels(t_glist *x, t_float xval)
 {
     if (!x->gl_isgraph)
-        return (((xval - x->gl_x1) * x->gl_zoom) / (x->gl_x2 - x->gl_x1));
+        return (xval - x->gl_x1) / (x->gl_x2 - x->gl_x1);
     else if (x->gl_isgraph && x->gl_havewindow)
         return (x->gl_screenx2 - x->gl_screenx1) *
             (xval - x->gl_x1) / (x->gl_x2 - x->gl_x1);
@@ -624,7 +624,7 @@ t_float glist_xtopixels(t_glist *x, t_float xval)
 t_float glist_ytopixels(t_glist *x, t_float yval)
 {
     if (!x->gl_isgraph)
-        return (((yval - x->gl_y1) * x->gl_zoom) / (x->gl_y2 - x->gl_y1));
+        return (yval - x->gl_y1) / (x->gl_y2 - x->gl_y1);
     else if (x->gl_isgraph && x->gl_havewindow)
         return (x->gl_screeny2 - x->gl_screeny1) *
                 (yval - x->gl_y1) / (x->gl_y2 - x->gl_y1);
@@ -660,10 +660,10 @@ t_float glist_dpixtody(t_glist *x, t_float dypix)
 int text_xpix(t_text *x, t_glist *glist)
 {
     if (glist->gl_havewindow || !glist->gl_isgraph)
-        return (x->te_xpix * glist->gl_zoom);
+        return x->te_xpix;
     else if (glist->gl_goprect)
         return (glist_xtopixels(glist, glist->gl_x1) +
-            glist->gl_zoom * (x->te_xpix - glist->gl_xmargin));
+            x->te_xpix - glist->gl_xmargin);
     else return (glist_xtopixels(glist,
             glist->gl_x1 + (glist->gl_x2 - glist->gl_x1) *
                 x->te_xpix / (glist->gl_screenx2 - glist->gl_screenx1)));
@@ -672,10 +672,10 @@ int text_xpix(t_text *x, t_glist *glist)
 int text_ypix(t_text *x, t_glist *glist)
 {
     if (glist->gl_havewindow || !glist->gl_isgraph)
-        return (x->te_ypix * glist->gl_zoom);
+        return x->te_ypix;
     else if (glist->gl_goprect)
         return (glist_ytopixels(glist, glist->gl_y1) +
-            glist->gl_zoom * (x->te_ypix - glist->gl_ymargin));
+            x->te_ypix - glist->gl_ymargin);
     else return (glist_ytopixels(glist,
             glist->gl_y1 + (glist->gl_y2 - glist->gl_y1) *
                 x->te_ypix / (glist->gl_screeny2 - glist->gl_screeny1)));
@@ -735,7 +735,7 @@ static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2,
 {
     pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
         glist_getcanvas(x->gl_owner), tag, "-",
-        0, glist_getzoom(x), THISGUI->i_foregroundcolor,
+        0, 1, THISGUI->i_foregroundcolor,
         x1, y1,  x2, y2);
 }
 
@@ -798,7 +798,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             pdgui_vmess(0, "crr iiiiiiiiii ri rr rr rS",
                 glist_getcanvas(x->gl_owner), "create", "polygon",
                 x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-                "-width", glist_getzoom(x),
+                "-width", 1,
                 "-fill", "#c0c0c0",
                 "-joinstyle", "miter",
                 "-tags", 2, tags2);
@@ -818,13 +818,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
             (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ? "s" : "n");
-        int fs = sys_hostfontsize(glist_getfont(x), glist_getzoom(x));
+        int fs = sys_hostfontsize(glist_getfont(x), 1);
         const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
         pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
             glist_getcanvas(x->gl_owner), tag, "-",
-            0, glist_getzoom(x), THISGUI->i_foregroundcolor,
+            0, 1, THISGUI->i_foregroundcolor,
             x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
@@ -933,8 +933,8 @@ static void graph_graphrect(t_gobj *z, t_glist *glist,
     int x1 = text_xpix(&x->gl_obj, glist);
     int y1 = text_ypix(&x->gl_obj, glist);
     int x2, y2;
-    x2 = x1 + x->gl_zoom * x->gl_pixwidth;
-    y2 = y1 + x->gl_zoom * x->gl_pixheight;
+    x2 = x1 + x->gl_pixwidth;
+    y2 = y1 + x->gl_pixheight;
 
     *xp1 = x1;
     *yp1 = y1;

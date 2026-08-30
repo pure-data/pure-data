@@ -129,16 +129,12 @@ static t_fontinfo sys_fontspec[] = {
     {8, 5, 11}, {10, 6, 13}, {12, 7, 16},
     {16, 10, 19}, {24, 14, 29}, {36, 22, 44}};
 #define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
-#define NZOOM 2
 
     /* here are actual measured font sizes; they are overwritten from the
     GUI if/when the GUI starts up. */
-static t_fontinfo sys_gotfonts[NZOOM][NFONT]  = {
-  {{8,  5, 11},  {10,  6, 13},  {12,  7, 16},  {16, 10, 19},  {24, 14, 29},
-    {36, 22, 44}},
-  {{16, 10, 22},  {20, 12, 26},  {24, 14, 32},  {32, 20, 38},  {48, 28, 58},
-    {72, 44, 88}}
-};
+static t_fontinfo sys_gotfonts[NFONT]  = {
+  {8,  5, 11},  {10,  6, 13},  {12,  7, 16},  {16, 10, 19},  {24, 14, 29},
+    {36, 22, 44}};
 
 /* here are some measured font size structs for example:
 MSW:
@@ -172,27 +168,29 @@ int sys_nearestfontsize(int fontsize)
     return (sys_fontspec[sys_findfont(fontsize)].fi_pointsize);
 }
 
+/* in the following functions, 'zoom' or 'zoomarg' arguments aren't used anymore,
+but are kept for compatibility */
+
 int sys_hostfontsize(int fontsize, int zoom)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
-    return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
+    return (sys_gotfonts[sys_findfont(fontsize)].fi_pointsize);
 }
 
 int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 {
-    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
+    int ret;
     if (worstcase)
-        ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
-    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width;
+        ret = sys_fontspec[sys_findfont(fontsize)].fi_width;
+    else ret = sys_gotfonts[sys_findfont(fontsize)].fi_width;
     return (ret < 1 ? 1 : ret);
 }
 
 int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
 {
-    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
+    int ret;
     if (worstcase)
-        ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
-    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height;
+        ret = sys_fontspec[sys_findfont(fontsize)].fi_height;
+    else ret = sys_gotfonts[sys_findfont(fontsize)].fi_height;
     return (ret < 1 ? 1 : ret);
 }
 
@@ -290,19 +288,18 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int did_fontwarning = 0;
     int j;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
-    if (argc != 2 + 3 * NZOOM * NFONT)
+    if (argc != 2 + 3 * NFONT)
         bug("glob_initfromgui");
-    for (j = 0; j < NZOOM; j++)
-        for (i = 0; i < NFONT; i++)
+    for (i = 0; i < NFONT; i++)
     {
-        int size   = atom_getfloatarg(3 * (i + j * NFONT) + 2, argc, argv);
-        int width  = atom_getfloatarg(3 * (i + j * NFONT) + 3, argc, argv);
-        int height = atom_getfloatarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = atom_getfloatarg(3 * i + 2, argc, argv);
+        int width  = atom_getfloatarg(3 * i + 3, argc, argv);
+        int height = atom_getfloatarg(3 * i + 4, argc, argv);
         if (!(size && width && height))
         {
-            size   = (j+1)*sys_fontspec[i].fi_pointsize;
-            width  = (j+1)*sys_fontspec[i].fi_width;
-            height = (j+1)*sys_fontspec[i].fi_height;
+            size   = sys_fontspec[i].fi_pointsize;
+            width  = sys_fontspec[i].fi_width;
+            height = sys_fontspec[i].fi_height;
             if (!did_fontwarning)
             {
                 logpost(NULL,
@@ -310,13 +307,13 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
                 did_fontwarning = 1;
             }
         }
-        sys_gotfonts[j][i].fi_pointsize = size;
-        sys_gotfonts[j][i].fi_width = width;
-        sys_gotfonts[j][i].fi_height = height;
+        sys_gotfonts[i].fi_pointsize = size;
+        sys_gotfonts[i].fi_width = width;
+        sys_gotfonts[i].fi_height = height;
 #if 0
             fprintf(stderr, "font (%d %d %d)\n",
-                sys_gotfonts[j][i].fi_pointsize, sys_gotfonts[j][i].fi_width,
-                    sys_gotfonts[j][i].fi_height);
+                sys_gotfonts[i].fi_pointsize, sys_gotfonts[i].fi_width,
+                    sys_gotfonts[i].fi_height);
 #endif
     }
     sys_doneglobinit();  /* tell s_inter.c to vis our canvases now that

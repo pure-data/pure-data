@@ -123,12 +123,6 @@ void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     pdgui_vmess("pdtk_plugin_dispatch", "a", argc, argv);
 }
 
-int sys_zoom_open = 1;
-void glob_zoom_open(t_pd *dummy, t_floatarg f)
-{
-    sys_zoom_open = (f != 0 ? 2 : 1);
-}
-
 void glob_init(void)
 {
     maxclass = class_new(gensym("max"), 0, 0, sizeof(t_pd),
@@ -191,8 +185,6 @@ void glob_init(void)
         gensym("save-preferences"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_forgetpreferences,
         gensym("forget-preferences"), A_DEFSYM, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_zoom_open,
-        gensym("zoom-open"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_version,
         gensym("version"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_perf,
