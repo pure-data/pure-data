@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-08-30 19:31+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -596,9 +596,6 @@ msgstr "Редагувати існуючий шлях [%s]"
 #, fuzzy
 msgid "Patch Windows"
 msgstr "Вікно Pd"
-
-msgid "Zoom New Windows"
-msgstr "Розгорнути нові вікна"
 
 #, fuzzy
 msgid "GUI Settings"
@@ -2238,6 +2235,9 @@ msgstr "Видалити"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ігнорується '%s': неможливо розпізнати файл Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Розгорнути нові вікна"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Очистити меню"

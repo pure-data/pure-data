@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-08-30 19:31+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -579,9 +579,6 @@ msgstr "Bestaand pad bewerken [%s]"
 
 msgid "Patch Windows"
 msgstr "Patch vensters"
-
-msgid "Zoom New Windows"
-msgstr "Nieuwe vensters inzoomen"
 
 msgid "GUI Settings"
 msgstr "GUI-instellingen"
@@ -2197,6 +2194,9 @@ msgstr "Verwijderen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Nieuwe vensters inzoomen"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Menu wissen"

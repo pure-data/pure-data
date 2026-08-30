@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-08-30 19:31+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -579,9 +579,6 @@ msgstr "Editar caminho existente [%s]"
 
 msgid "Patch Windows"
 msgstr "Janelas do Patch"
-
-msgid "Zoom New Windows"
-msgstr "Ampliar Zoom em Novas Janelas"
 
 msgid "GUI Settings"
 msgstr "Configurações de GUI"
@@ -2191,6 +2188,9 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um arquivo de Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Ampliar Zoom em Novas Janelas"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Limpar Menu"

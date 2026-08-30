@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-08-30 19:31+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -580,9 +580,6 @@ msgstr ""
 #, fuzzy
 msgid "Patch Windows"
 msgstr "Pd 主視窗"
-
-msgid "Zoom New Windows"
-msgstr ""
 
 #, fuzzy
 msgid "GUI Settings"

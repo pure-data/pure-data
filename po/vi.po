@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-08-30 19:31+0200\n"
 "PO-Revision-Date: 2005-07-28 17:29+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <https://hosted.weblate.org/projects/pure-data/"
@@ -621,10 +621,6 @@ msgstr ""
 
 #, fuzzy
 msgid "Patch Windows"
-msgstr "Cửa sô Gởi"
-
-#, fuzzy
-msgid "Zoom New Windows"
 msgstr "Cửa sô Gởi"
 
 msgid "GUI Settings"
@@ -2245,6 +2241,10 @@ msgstr "Xóa bỏ"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Zoom New Windows"
+#~ msgstr "Cửa sô Gởi"
 
 #, fuzzy
 #~ msgid "Clear Menu"
