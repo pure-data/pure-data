@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-08-28 01:37+0200\n"
-"PO-Revision-Date: 2026-08-21 11:51+0000\n"
+"PO-Revision-Date: 2026-08-30 20:51+0000\n"
 "Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
@@ -619,7 +619,7 @@ msgid "deken preferences"
 msgstr "deken"
 
 msgid "keyboard shortcuts"
-msgstr ""
+msgstr "raccourcis clavier"
 
 msgid "misc preferences"
 msgstr "divers"
@@ -712,7 +712,7 @@ msgstr "police utilisée : %1$s %2$s"
 
 #, tcl-format
 msgid "Ignoring non-existant plugin '%s'"
-msgstr ""
+msgstr "Ignorer le plugin inexistant '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -1940,7 +1940,7 @@ msgid "Open"
 msgstr "Ouvrir"
 
 msgid "Open Recent"
-msgstr "Ouvrir un élément récent"
+msgstr "Ouvrir un document récent"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -1984,9 +1984,8 @@ msgstr "Zoomer"
 msgid "Zoom Out"
 msgstr "Dézoomer"
 
-#, fuzzy
 msgid "Reset Zoom"
-msgstr "Réinitialiser"
+msgstr "Réinitialiser le zoom"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
@@ -2087,9 +2086,8 @@ msgstr "Rechercher des mises à jour"
 msgid "Report a bug"
 msgstr "Signaler un problème"
 
-#, fuzzy
 msgid "Clear Recent Files"
-msgstr "Fichiers texte Max"
+msgstr "Oublier les documents récents"
 
 msgid ""
 "Delete all preferences?\n"
