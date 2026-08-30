@@ -63,8 +63,46 @@ proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth int max_elements ar
 proc ::pd_canvaszoom::canvas_command {c method args} {
     set zdepth [getzdepth $c]
     # puts "canvas_command: $c $method $args"
+
+    # itemconfig[ure] always needs to be filtered (even when zdepth==1.0),
+    # otherwise outdated _f or _t tags could be left untouched
+    if {[string first "itemconfig" $method] == 0} {
+        # scale width
+        set widthindex [lsearch -start 1 $args "-width"]
+        if {$widthindex != -1} {
+            incr widthindex
+            set args [scale_consecutive_numbers $widthindex $zdepth 0 1 {*}$args]
+        }
+        # scale font
+        set fontindex [lsearch -start 1 $args "-font"]
+        if {$fontindex != -1} {
+            incr fontindex
+            set item [lindex $args 0]
+            set font [lindex $args $fontindex]
+            set newfont [scalefont $font [lindex $font 1] $zdepth]
+            lset args $fontindex $newfont
+            # remove font tag
+            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
+                if {"_f" in [string range $tag 0 1]} {
+                    ::pd_canvaszoom::canvas::$c dtag $item $tag
+                }
+            }
+            # add the new font tag
+            ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item"
+        }
+        # if changing the text content, remove text tag
+        if {[lsearch -start 1 $args "-text"] != -1} {
+            set item [lindex $args 0]
+            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
+                if {"_t" in [string range $tag 0 1]} {
+                    ::pd_canvaszoom::canvas::$c dtag $item $tag
+                }
+            }
+        }
+    }
+
     if { $zdepth == 1.0 } { return [::pd_canvaszoom::canvas::$c $method {*}$args] }
-    switch -glob $method {
+    switch $method {
         "create" {
             # scale coordinates
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
@@ -77,7 +115,6 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 set tags [lindex $args $tagsindex]
                 # don't scale rect selection outline width (tagged "x")
                 if {{x} ni $tags} {
-                    lset args $tagsindex $tags
                     set args [linsert $args $tagsindex+1 -width 1.0]
                     set widthindex [lsearch -start 2 $args "-width"]
                 }
@@ -101,40 +138,6 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         }
         "coords" {
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
-        }
-        "itemconfig*" {
-            # scale width
-            set widthindex [lsearch -start 1 $args "-width"]
-            if {$widthindex != -1} {
-                incr widthindex
-                set args [scale_consecutive_numbers $widthindex $zdepth 0 1 {*}$args]
-            }
-            # scale font
-            set fontindex [lsearch -start 1 $args "-font"]
-            if {$fontindex != -1} {
-                incr fontindex
-                set item [lindex $args 0]
-                set font [lindex $args $fontindex]
-                set newfont [scalefont $font [lindex $font 1] $zdepth]
-                lset args $fontindex $newfont
-                # remove font tag
-                foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
-                    if {"_f" in [string range $tag 0 1]} {
-                        ::pd_canvaszoom::canvas::$c dtag $item $tag
-                    }
-                }
-                # add the new font tag
-                ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item"
-            }
-            # if changing the text content, remove text tag
-            if {[lsearch -start 1 $args "-text"] != -1} {
-                set item [lindex $args 0]
-                foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
-                    if {"_t" in [string range $tag 0 1]} {
-                        ::pd_canvaszoom::canvas::$c dtag $item $tag
-                    }
-                }
-            }
         }
     }
     return [::pd_canvaszoom::canvas::$c $method {*}$args]
