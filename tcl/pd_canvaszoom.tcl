@@ -129,8 +129,14 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             if {[set fontindex [lsearch -start 2 $args "-font"]] != -1} {
                 incr fontindex
                 set font [lindex $args $fontindex]
-                set font [scalefont $font [lindex $font 1] $zdepth]
+                set realfontsize [lindex $font 1]
+                set font [scalefont $font $realfontsize $zdepth]
                 lset args $fontindex $font
+                # add font tag
+                set tagsindex [lsearch -start 2 $args "-tags"]
+                incr tagsindex
+                set tags [lindex $args $tagsindex]
+                lset args $tagsindex [list {*}$tags _f$realfontsize]
             }
         }
         "move" {
