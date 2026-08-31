@@ -9,31 +9,42 @@ namespace eval ::dialog_bindings:: {
     variable currentshortcut
     # the treeview cell ({<treeid> <item> <column>}, e.g. {.editor.f.tree File|New #1}
     # or empty
-    variable currentID
+    variable currentID {}
 
     # whether we allow single-char shortcuts, like 'a' or 'Shift-A'
     variable allow1char 0
 
+    # a sorted list of events
+    variable events {}
+    # an array that maps events to a list of keyboard shortcuts
+    # e.g. events(Edit|ZoomIn) == {{Ctrl plus} {Ctrl KP_Add} {Control equal}}
+    array set bindlist {}
+    # an array that maps keyboard shortcuts back to events
+    # e.g. usedshortcuts(Control+plus) == Edit|ZoomIn
+    # useful for finding already used bindings
     array set usedshortcuts {}
+
+    # tree structure maps events to their position in the tree
+    # e.g. treeleaves(Edit|ZoomIn) == {Edit 15}
+    # this stays persistent even when items are detached
+    array set treeleaves {}
+    # and vice versa: mapping a tree node to all it's children
+    # e.g. treechildren(Edit) == {Edit|Undo Edit|Redo Edit|Cut ...}
+    array set treechildren {}
+
+    # the search field
+    variable searchtext {}
 }
 
-proc ::dialog_bindings::getleaveitems {treeid {root {}}} {
-    set items {}
-    foreach item [$treeid children $root] {
-        if { [$treeid children $item] == {} } {
-            set values {}
-            foreach v [$treeid item $item -values] {
-                if { $v != {} } {
-                    dict set values $v 1
-                }
-            }
-            lappend items $item
-            lappend items [dict keys $values]
-        } else {
-            set items [concat $items [getleaveitems $treeid $item]]
+
+proc ::dialog_bindings::reattach2tree {treeid item} {
+    catch {
+        foreach {parent index} $::dialog_bindings::treeleaves(${item}) {break}
+        ${treeid} move ${item} ${parent} ${index}
+        if { ${parent} ne {} } {
+            ::dialog_bindings::reattach2tree ${treeid} ${parent}
         }
     }
-    return $items
 }
 
 # https://wiki.tcl-lang.org/page/Combinatorial%20mathematics%20functions
@@ -54,17 +65,22 @@ proc ::dialog_bindings::combinations {myList size {prefix {}}} {
 proc ::dialog_bindings::getshortcuts {treeid} {
     # get a list of <event> <shortcuts> tuples, as stored in the current treeview
     # as a side-effect, this updates the 'usedshortcuts' array
-    set result {}
     array unset ::dialog_bindings::usedshortcuts
-    foreach {ev keys} [getleaveitems $treeid] {
+
+    set result {}
+    foreach ev $::dialog_bindings::events {
+        set keys [${treeid} item ${ev} -values]
         set shortcuts {}
-        foreach k $keys {
-            lappend shortcuts [split $k +]
-            set ::dialog_bindings::usedshortcuts($k) $ev
+        foreach k ${keys} {
+            lappend shortcuts [split ${k} +]
+            set ::dialog_bindings::usedshortcuts(${k}) ${ev}
         }
-        lappend result $ev $shortcuts
+        set ::dialog_bindings::bindlist(${ev}) ${shortcuts}
+
+        lappend result ${ev}
+        lappend result ${shortcuts}
     }
-    return $result
+    return ${result}
 }
 
 
@@ -80,36 +96,46 @@ proc ::dialog_bindings::make_treecolumns {treeid numcolumns} {
 }
 
 proc ::dialog_bindings::filltree {treeid bindlist {labelroot {}}} {
+    variable treeleaves
+    variable treechildren
+    variable events
     array set labels {}
-    if { $labelroot != {} } {
-        array set labels [::pd_menus::get_events $labelroot label]
+    set events {}
+    foreach {event _} ${bindlist} {lappend events ${event}}
+    array set ::dialog_bindings::bindlist ${bindlist}
+    if { ${labelroot} != {} } {
+        array set labels [::pd_menus::get_events ${labelroot} label]
     }
     set numshortcuts 0
-    foreach {event shortcuts} $bindlist {
+    foreach event ${events} {
+        set shortcuts $::dialog_bindings::bindlist(${event})
         set evs {}
-        foreach e [split $event "|"] {
-            set evs2 [concat $evs $e]
-            set ev [join $evs2 "|"]
-            if { ![$treeid exists $ev] } {
-                set name $e
+        foreach e [split ${event} "|"] {
+            set evs2 [concat ${evs} ${e}]
+            set ev [join ${evs2} "|"]
+            if { ![${treeid} exists ${ev}] } {
+                set name [_ ${e}]
                 if { [info exists labels(<<${ev}>>)] } {
                     foreach name $labels(<<${ev}>>) {break}
                 }
-                ${treeid} insert [join $evs "|"] end -id ${ev} -text ${name} -open 1
+                set parent [join ${evs} "|"]
+                ${treeid} insert ${parent} end -id ${ev} -text ${name} -open 1
+                set treeleaves(${ev}) [list ${parent} [${treeid} index ${ev}]]
+                set treechildren(${parent}) [${treeid} children ${parent}]
             }
-            set evs $evs2
+            set evs ${evs2}
         }
-        if { [llength $shortcuts] > $numshortcuts } {
-            set numshortcuts [llength $shortcuts]
+        if { [llength ${shortcuts}] > ${numshortcuts} } {
+            set numshortcuts [llength ${shortcuts}]
         }
         set values {}
-        foreach shortcut $shortcuts {
-            lappend values [join $shortcut +]
+        foreach shortcut ${shortcuts} {
+            lappend values [join ${shortcut} +]
         }
-        $treeid item ${event} -values ${values}
+        ${treeid} item ${event} -values ${values}
     }
-    make_treecolumns $treeid $numshortcuts
-    getshortcuts $treeid
+    make_treecolumns ${treeid} ${numshortcuts}
+    getshortcuts ${treeid}
 }
 
 #.menubar add cascade -label Tools -underline 0 -menu [set m [menu .menubar.tools]]
@@ -143,18 +169,26 @@ proc ::dialog_bindings::create {winid} {
     label ${winid}.help -justify left \
         -text [_ "To edit a keyboard shortcut, double-click on the corresponding event (or shortcut) and type a new accelerator.\nUse right-click for a context-menu to remove shortcuts." ]
 
-    checkbutton ${winid}.allow1char \
+    frame ${winid}.interact
+    checkbutton ${winid}.interact.allow1char \
         -variable ::dialog_bindings::allow1char \
         -justify left \
         -text [_ "Allow single-character shortcuts.\nDANGER: this can seriously impact the patching workflow." ]
+
+    frame ${winid}.interact.search -borderwidth 10
+    label ${winid}.interact.search.label -text [_ "Search shortcuts:" ]
+    entry ${winid}.interact.search.entry -textvariable ::dialog_bindings::searchtext
+    bind ${winid}.interact.search.entry <KeyRelease> [list ::dialog_bindings::typeinsearch ${winid}.tree ::dialog_bindings::searchtext]
+    pack ${winid}.interact.search.label ${winid}.interact.search.entry -anchor w
 
     set treeid ${winid}.tree
     ::ttk::treeview ${treeid} -selectmode browse
     $treeid column #0 -stretch
     $treeid heading #0 -text [_ "Event" ]
 
-    pack ${winid}.help -anchor w -padx 5 -pady 5
-    pack ${winid}.allow1char -anchor w -padx 5 -pady 5
+    pack ${winid}.help ${winid}.interact -anchor w
+    pack ${winid}.interact.allow1char -anchor w -padx 5 -pady 5 -side left
+    pack ${winid}.interact.search -anchor e -padx 5 -pady 5 -side right
     pack ${treeid} -expand 1 -fill both
 
     set ::pd_bindings::bindlist [get_extra_bindings $::pd_bindings::bindlist]
@@ -395,6 +429,37 @@ proc ::dialog_bindings::shortcut1 {popid key modifier state} {
     }
 }
 
+proc ::dialog_bindings::filter {treeid needle} {
+    set filtered {}
+    set needle [string tolower [string trim ${needle}]]
+    if { ${needle} eq {} } {
+        set filtered [array names ::dialog_bindings::treeleaves]
+    } else {
+        foreach item [array names ::dialog_bindings::treeleaves] {
+            foreach txt [list ${item} [${treeid} item ${item} -text]] {
+                set txt [string tolower [string trim ${txt}]]
+                if {[string first ${needle} ${txt}] >= 0} {
+                    lappend filtered ${item}
+                    break
+                }
+            }
+            ${treeid} detach ${item}
+        }
+    }
+
+    foreach item ${filtered} {
+        ::dialog_bindings::reattach2tree ${treeid} ${item}
+        foreach {_ children} [array get ::dialog_bindings::treechildren ${item}] {
+            foreach child ${children} {
+                ::dialog_bindings::reattach2tree ${treeid} ${child}
+            }
+        }
+    }
+}
+proc ::dialog_bindings::typeinsearch {treeid varname} {
+    upvar ${varname} x
+    ::dialog_bindings::filter ${treeid} ${x}
+}
 
 proc ::dialog_bindings::reset {winid} {
     set treeid ${winid}.tree
