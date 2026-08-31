@@ -4608,20 +4608,20 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_object *objsrc, *objsink;
     t_outconnect *oc;
     int nin = whoin, nout = whoout;
+    if (whoout < 0 || whoin < 0 || outno < 0 || inno < 0) {
+        logpost(x, PD_DEBUG, "cannot connect: negative index");
+        goto bad;
+    }
     if (THISED->paste_canvas == x) whoout += THISED->paste_onset,
         whoin += THISED->paste_onset;
-    for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) {
-            src = NULL;
-            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
-            goto bad; /* bug fix thanks to Hannes */
-        }
-    for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) {
-            sink = NULL;
-            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
-            goto bad;
-        }
+    for (src = x->gl_list; src && whoout; src = src->g_next, whoout--)
+        ;
+    for (sink = x->gl_list; sink && whoin; sink = sink->g_next, whoin--)
+        ;
+    if (!src || !sink) {
+        logpost(x, PD_DEBUG, "cannot connect non-existing object");
+        goto bad;
+    }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
