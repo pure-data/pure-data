@@ -38,18 +38,27 @@ proc ::pd_canvaszoom::init_default_zoom {} {
 after idle ::pd_canvaszoom::init_default_zoom
 
 proc ::pd_canvaszoom::default_zoom_callback {widget value} {
+    set value [expr 20 * int($value / 20.)]
     ::pd_canvaszoom::set_default_zoom $value
     set zdepth [expr int([::pd_canvaszoom::steps2depth $value] * 100)]
-    $widget configure -label [_ "Default zoom level: %d%%" ${zdepth}]
+    ${widget}.l configure -text [_ "Default zoom level: %d%%" ${zdepth}]
 }
 
 proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
-    set zdepth [expr int([::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom] * 100)]
-    scale $widget -label [_ "Default zoom level: %d%%" ${zdepth}] \
-        -from -100 -to 100 -resolution 20 -orient horizontal \
-        -length 200 -showvalue false \
+    frame $widget
+    label ${widget}.l
+
+    if [catch {::ttk::scale ${widget}.z} ] {
+        scale ${widget}.z -showvalue false
+    }
+    ${widget}.z configure \
+        -from -100 -to 100 -orient horizontal \
+        -length 200 \
+        -variable ::pd_canvaszoom::default_zoom \
         -command [list ::pd_menucommands::scheduleAction ::pd_canvaszoom::default_zoom_callback ${widget}]
-    $widget set $::pd_canvaszoom::default_zoom
+
+    pack ${widget}.l ${widget}.z -anchor w
+    ::pd_canvaszoom::default_zoom_callback ${widget} ${::pd_canvaszoom::default_zoom}
 }
 
 # multiplies by "zdepth" all consecutive numbers from the "from"th element.
