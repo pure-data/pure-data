@@ -263,11 +263,21 @@ void canvas_unsetcurrent(t_canvas *x)
 
 t_canvasenvironment *canvas_getenv(const t_canvas *x)
 {
+        /* corrupted patch files (e.g. a stray "#X restore" popping the
+        toplevel canvas) can leave a canvas with no environment anywhere in
+        its owner chain; hand back an empty environment instead of crashing */
+    static t_canvasenvironment dummy_env;
     if (!x) bug("canvas_getenv");
-    while (!x->gl_env)
-        if (!(x = x->gl_owner))
-            bug("t_canvasenvironment");
-    return (x->gl_env);
+    while (x && !x->gl_env)
+        x = x->gl_owner;
+    if (x)
+        return (x->gl_env);
+    bug("t_canvasenvironment");
+    dummy_env.ce_dir = &s_;
+    dummy_env.ce_argc = 0;
+    dummy_env.ce_argv = 0;
+    dummy_env.ce_path = 0;
+    return (&dummy_env);
 }
 
 int canvas_getdollarzero(void)
@@ -954,9 +964,8 @@ int glist_istoplevel(t_glist *x)
 
 int glist_getfont(t_glist *x)
 {
-    while (!x->gl_env)
-        if (!(x = x->gl_owner))
-            bug("t_canvasenvironment");
+    while (x->gl_env == 0 && x->gl_owner)
+        x = x->gl_owner;
     return (x->gl_font);
 }
 
