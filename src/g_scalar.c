@@ -139,12 +139,12 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     {
         int type = datatypes->ds_type;
         if (type == DT_FLOAT)
-            wp->w_float = 0;
+            wp->w_float = datatypes->ds_default;
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
             wp->w_array = array_new(datatypes->ds_arraytemplate,
-                datatypes->ds_arraydeflength, gp);
+                datatypes->ds_default, gp);
         else if (type == DT_TEXT)
         {
             wp->w_binbuf = binbuf_new();
@@ -333,7 +333,17 @@ void glist_scalar(t_glist *glist,
     binbuf_free(b);
 }
 
-extern t_class *drawnumber_class;
+void scalar_notifynew(t_scalar *x, t_glist *gl, int loadbang)
+{
+    t_template *template = template_findbyname(x->sc_template);
+    if (template)
+    {
+        t_atom at[2];
+        SETFLOAT(&at[1], loadbang);
+        template_notifyforscalar(template, gl, x, gensym("new"), 2, at);
+    }
+    else bug("scalar_notifynew");
+}
 
 
 /* -------------------- widget behavior for scalar ------------ */
@@ -446,16 +456,16 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist_dpixtodx(glist, dx * glist_getzoom(glist));
+            glist_dpixtodx(glist, dx);
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist_dpixtody(glist, dy * glist_getzoom(glist));
+            glist_dpixtody(glist, dy);
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
-        /* report displacement in canvas coordinates (zoom-aware) */
-    SETFLOAT(&at[1], glist_dpixtodx(glist, dx * glist_getzoom(glist)));
-    SETFLOAT(&at[2], glist_dpixtody(glist, dy * glist_getzoom(glist)));
+        /* report displacement in canvas coordinates */
+    SETFLOAT(&at[1], glist_dpixtodx(glist, dx));
+    SETFLOAT(&at[2], glist_dpixtody(glist, dy));
     template_notify(template, gensym("displace"), 3, at);
     scalar_redraw(x, glist);
 }
@@ -638,8 +648,6 @@ static const t_widgetbehavior scalar_widgetbehavior =
 
 static void scalar_free(t_scalar *x)
 {
-    int i;
-    t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     sys_unqueuegui(x);

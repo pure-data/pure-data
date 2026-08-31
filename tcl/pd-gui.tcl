@@ -47,6 +47,7 @@ package require dialog_midi
 package require dialog_path
 package require dialog_startup
 package require dialog_preferences
+package require dialog_bindings
 package require helpbrowser
 package require pd_menucommands
 package require opt_parser
@@ -335,7 +336,7 @@ proc init_for_platform {} {
             # load tk::mac event callbacks here, this way launching pd
             # from the commandline incorporates the special mac event handling
             package require apple_events
-            set ::modifier "Mod1"
+            set ::modifier "Command"
             if {$::tcl_version < 8.5} {
                 # old default font for Tk 8.4 on macOS
                 # since font detection requires 8.5+
@@ -533,9 +534,7 @@ proc pdtk_pd_startup {major minor bugfix test
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
-    set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    ::pd_bindings::class_bindings
-    ::pd_bindings::global_bindings
+    ::pd_bindings::setup
     ::pd_menus::create_menubar
     ::pdwindow::create_window
     ::pdwindow::configure_menubar
@@ -543,7 +542,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::create_window_finalize
     load_startup_plugins
     pdsend "pd init [enquote_path [pwd]] $oldtclversion \
-        $::font_measured $::font_zoom2_measured"
+        $::font_measured"
     open_filestoopen
     set ::done_init 1
 }
@@ -741,14 +740,38 @@ proc check_for_running_instances { } {
 # ------------------------------------------------------------------------------
 # load plugins on startup
 
-proc load_plugin_script {filename} {
+proc load_plugin_script {filename {duplicate basename} {warn 1}} {
+    # read $filename and evaluate it (for loading plugins)
+    # $duplicate: specifies how to check for duplicates; possible values are
+    # - ignore: do not do any duplicate checking (might load scripts multiple times)
+    # - basename: only check the base filename (without path) [ DEFAULT ]
+    # - filename: check the full $filename
+    # $warn: whether an attempt to load a script multiple times leads to a warning or not
+    # - 1 : warn if duplicate [ DEFAULT ]
+    # - 0 : silently ignore duplicates
     global errorInfo
 
-    set basename [file tail $filename]
-    if {[lsearch $::loaded_plugins $basename] > -1} {
-        ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+    if {[ file exists $filename ]} {} else {
+        ::pdwindow::post [_ "Ignoring non-existant plugin '%s'" $filename]
         ::pdwindow::post "\n"
         return
+    }
+
+    set basename [ file tail $filename ]
+    if { $duplicate eq "filename" } {
+        set dupe $filename
+    } else {
+        set dupe $basename
+    }
+
+    if { $duplicate ne "ignore" } {
+        if {[lsearch $::loaded_plugins $dupe] > -1} {
+            if { $warn } {
+                ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+                ::pdwindow::post "\n"
+            }
+            return
+        }
     }
 
     ::pdwindow::debug [ format [_ "Loading plugin: %s"] $filename ]
@@ -764,9 +787,18 @@ proc load_plugin_script {filename} {
         ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
+        if { $basename ne $filename } {
+               lappend ::loaded_plugins $filename
+        }
     }
 }
 
+proc load_plugin {name {path {}}} {
+    # load a GUI plugin $name (without extension) found in $path
+    # so the actual filename is "${path}/${name}.tcl"
+    set filename [ file join ${path} ${name} ]
+    load_plugin_script "${filename}.tcl" filename 0
+}
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]

@@ -11,6 +11,7 @@
 package ifneeded apple_events 0.1 [list source [file join $dir apple_events.tcl]]
 package ifneeded dialog_array 0.1 [list source [file join $dir dialog_array.tcl]]
 package ifneeded dialog_audio 0.1 [list source [file join $dir dialog_audio.tcl]]
+package ifneeded dialog_bindings 0.1 [list source [file join $dir dialog_bindings.tcl]]
 package ifneeded dialog_canvas 0.1 [list source [file join $dir dialog_canvas.tcl]]
 package ifneeded dialog_data 0.1 [list source [file join $dir dialog_data.tcl]]
 package ifneeded dialog_find 0.1 [list source [file join $dir dialog_find.tcl]]
@@ -39,3 +40,4 @@ package ifneeded preferencewindow 0.1 [list source [file join $dir preferencewin
 package ifneeded scrollbox 0.1 [list source [file join $dir scrollbox.tcl]]
 package ifneeded scrollboxwindow 0.1 [list source [file join $dir scrollboxwindow.tcl]]
 package ifneeded wheredoesthisgo 0.1 [list source [file join $dir wheredoesthisgo.tcl]]
+package ifneeded pd_canvaszoom 0.1 [list source [file join $dir pd_canvaszoom.tcl]]

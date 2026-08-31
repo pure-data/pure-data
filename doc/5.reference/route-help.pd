@@ -96,7 +96,7 @@
 #X obj 58 49 inlet;
 #X obj 58 105 pdcontrol;
 #X msg 58 78 dir;
-#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X msg 58 132 \; pd open 01.introduction.pd \$1/../4.data.structures;
 #X connect 0 0 2 0;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;

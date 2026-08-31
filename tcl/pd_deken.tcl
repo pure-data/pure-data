@@ -17,10 +17,6 @@
 ## - redirect ::deken::post to ::pdwindow::post (that is: use the results pane only for results)
 ## + make the "add to path" thingy configurable
 
-# The minimum version of TCL that allows the plugin to run
-package require Tcl 8.4 9
-# If Tk or Ttk is needed
-#package require Ttk
 # Any elements of the Pd GUI that are required
 # + require everything and all your script needs.
 #   If a requirement is missing,
@@ -28,17 +24,20 @@ package require Tcl 8.4 9
 
 package require http 2
 # try enabling https if possible
-if { [catch {package require tls 1.7} ] } {} else {
+if { [catch {package require tls 1.7-} ] } {} else {
     ::tls::init \
         -autoservername 1 \
-        -ssl2 false -ssl3 false -tls1 true
+        -tls1 false -tls1.1 false
     ::http::register https 443 ::tls::socket
 }
 # try enabling PROXY support if possible
 if { [catch {package require autoproxy} ] } {} else {
     ::autoproxy::init
-    if { ! [catch {package present tls} stdout] } {
+    # autoproxy is currently broken with Tcl-9.x
+    if { [package vcompare $::tcl_version 9] < 0 } {
+      if { ! [catch {package present tls} stdout] } {
         ::http::register https 443 ::autoproxy::tls_socket
+      }
     }
 }
 
@@ -108,7 +107,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.10.10] } {
+if { [::deken::versioncheck 0.10.22] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -831,6 +830,41 @@ proc ::deken::utilities::httpuseragent {} {
     return ${httpagent}
 }
 
+# poor man's ::uri::resolve : resolves the specified url relative to base.
+#
+# A non-relative url is returned unchanged, whereas for a relative url the
+# missing parts are taken from base and prepended to it.
+# The result of this operation is returned. For an empty url the result is base.
+proc ::deken::utilities::resolveurl {base url} {
+    set urlex {^([A-Za-z][A-Za-z0-9+.-]*://[^/?#]+)(/.*|[?#].*)?$}
+
+    if { ${url} eq {} } {
+        return ${base}
+    }
+
+    if { ! [regexp ${urlex} ${base} -> schemeAuth0 path0]} {
+        set schemeAuth0 ""
+        set path0 ${base}
+    }
+    if { ! [regexp ${urlex} ${url} -> schemeAuth1 path1]} {
+        set schemeAuth1 ""
+        set path1 ${url}
+    }
+
+    if { ${schemeAuth1} eq {} } {
+        # relative URL
+        if {[string index $path1 0] eq "/"} {
+            set location "${schemeAuth0}${path1}"
+        } else {
+            set location "${schemeAuth0}/${path1}"
+        }
+    } else {
+        set location ${url}
+    }
+
+    return ${location}
+}
+
 # wrapper around ::http::geturl that follows redirects
 proc ::deken::utilities::geturl {url args} {
     set token [::http::geturl ${url} {*}$args]
@@ -840,6 +874,8 @@ proc ::deken::utilities::geturl {url args} {
         array set meta $state(meta)
         foreach {k location} [array get meta Location] {
             ::http::cleanup ${token}
+
+            set location [::deken::utilities::resolveurl ${url} ${location}]
             return [::deken::utilities::geturl ${location} {*}$args]
         }
     }
@@ -956,6 +992,8 @@ proc ::deken::utilities::parse_filename {filename} {
             }
         }
     }
+    # normalize version
+    set version [string map {_ ~} ${version}]
     return [list ${pkgname} ${version} ${archs}]
 }
 
@@ -1054,7 +1092,7 @@ proc ::deken::preferences::urls2_frame_create {toplevel} {
     ::deken::preferences::make_applybutton_frame ${win} \
         "${cmd}; destroy ${win}"
 
-    bind ${win} <Escape> [list after idle [list ::deken::preferences::cancel $win]]
+    bind ${win} <Escape> [join [list after idle [list ::deken::preferences::cancel $win] {;} break]]
 
 }
 proc ::deken::preferences::set_urls_secondary {urls} {
@@ -1223,7 +1261,8 @@ proc ::deken::preferences::create_pathwindow {parentwin} {
         raise ${winid}
     } else {
         toplevel ${winid} -class DialogWindow
-        bind ${winid} <Escape> {after idle {::deken::preferences::cancel %W}}
+        bind ${winid} <Escape> [join {after idle {::deken::preferences::cancel %W} {;} break}]
+
         wm title ${winid} [_ "Deken Installation Target"]
 
         frame ${winid}.frame
@@ -1338,7 +1377,10 @@ proc ::deken::preferences::create {winid} {
                 -command {set ::deken::preferences::add_to_path \
                               [set ::deken::preferences::add_to_path_temp \
                                    [::deken::utilities::tristate ${::deken::preferences::add_to_path_temp} 1 0]]}
-        set msg "- Always add to search path\n- Never add to search path\n- Prompt before adding"
+        set msg0 [_ "- Always add to search path" ]
+        set msg1 [_ "- Never add to search path" ]
+        set msg2 [_ "- Prompt before adding" ]
+        set msg [string cat $msg0 "\n" $msg1 "\n" $msg2]
         bind ${winid}.install.add_to_path <Enter> "::deken::balloon::show ${winid}.install_balloon %X \[winfo rooty %W\] \{${msg}\} 0 30"
         bind ${winid}.install.add_to_path <Leave> [list ::deken::balloon::hide ${winid}.install_balloon]
 
@@ -1444,7 +1486,7 @@ proc ::deken::preferences::show {{winid .deken_preferences}} {
         frame ${winid}.frame
         pack ${winid}.frame -side top -padx 6 -pady 3 -fill both -expand true
 
-        bind ${winid} <Escape> {after idle {::deken::preferences::cancel %W}}
+        bind ${winid} <Escape> [join {after idle {::deken::preferences::cancel %W} {;} break}]
         ::deken::preferences::create ${winid}.frame
 
 
@@ -1947,8 +1989,9 @@ proc ::deken::install_package {fullpkgfile {filename ""} {installdir ""} {keep 1
 proc ::deken::bind_globalshortcuts {toplevel} {
     # this should probably only be called if toplevel is indeed a toplevel
     if { ${toplevel} eq [winfo toplevel ${toplevel}] } {
-        bind ${toplevel} <${::modifier}-Key-w> [list destroy ${toplevel}]
-        bind ${toplevel} <Escape> [list after idle [list destroy ${toplevel}]]
+        set cmd [join [list after idle [list destroy ${toplevel}] {;} break]]
+        bind ${toplevel} <${::modifier}-Key-w> ${cmd}
+        bind ${toplevel} <Escape> ${cmd}
     }
 }
 
@@ -3192,6 +3235,8 @@ proc ::deken::search_for {term} {
 
 
 proc ::deken::initialize {} {
+    bind all <<Tools|Deken>> {::deken::open_searchui ${::deken::winid}}
+
     set label [_ "Find externals"]
     # console message to let them know we're loaded
     ## but only if we are being called as a plugin (not as built-in)
@@ -3234,19 +3279,25 @@ proc ::deken::initialize {} {
     if { [winfo exists ${mymenu}] } {
         if { [catch {
             # if there's already an entry, make sure to use our 'open_searchui' rather than the built-in
-            ${mymenu} entryconfigure ${label} -command {::deken::open_searchui ${::deken::winid}}
+            ${mymenu} entryconfigure ${label} -command {event generate [focus] <<Tools|Deken>>}
         } _ ] } {
             # otherwise create a new menu entry
             if { ${mymenu} eq ".menubar.help" } {
                 ${mymenu} add separator
             }
-            ${mymenu} add command -label ${label} -command {::deken::open_searchui ${::deken::winid}}
+            if { [catch {
+                # ::pd_menus::add_menu makes sure to display any keyboard shortcuts
+                ::pd_menus::add_menu ${mymenu} command  ${label} "<<Tools|Deken>>"
+            } ] } {
+                # fallback for older Pd versions
+                ${mymenu} add command -label ${label} -command {event generate [focus] <<Tools|Deken>>}
+            }
+
         }
     } else {
         set msg [_ "Could not find a menu for adding '%s'" ${label}]
         ::pdwindow::fatal "\[deken\] ${msg}\n"
     }
-    # bind all <${::modifier}-Key-s> {::deken::open_helpbrowser .helpbrowser2}
 }
 
 
@@ -3352,8 +3403,10 @@ proc ::deken::search::dekenserver::search {term} {
     foreach {k v} [array get ::deken::search::dekenserver::urls_ephemeral_existing] {
         lappend tmpurls ${v}
     }
+    # deken-specific socket config
+
+    # check if https is usable for the primary URL
     if {$::deken::search::dekenserver::use_url_primary} {
-        #::http::unregister https
         if { [info exists ::deken::search::dekenserver::url_primary ]} {
             if { $::deken::search::dekenserver::url_primary eq {}} {
                 unset ::deken::search::dekenserver::url_primary
@@ -3363,6 +3416,8 @@ proc ::deken::search::dekenserver::search {term} {
         if { ![info exists ::deken::search::dekenserver::url_primary ]} {
             # check default URL for usability (first https://, then http://)
             set url ${::deken::search::dekenserver::url_primary_default}
+            # set deken useragent
+            set httpagent [::deken::utilities::httpuseragent]
             if {[catch {
                 set httpresult [::deken::utilities::geturl ${url}]
                 ::http::cleanup ${httpresult}
@@ -3371,7 +3426,10 @@ proc ::deken::search::dekenserver::search {term} {
                     # does NOT start with http://
                     set protoend [string first "://" $url]
                     if { $protoend > 0 } {
-                        set url "http[string range $url $protoend end]"
+                        set url2 "http[string range $url $protoend end]"
+                        set msg [_ "Downgrading %s to %s" ${url} ${url2}]
+                        ::deken::post ${msg} warn
+                        set url ${url2}
                     } else {
                         set url ""
                     }
@@ -3379,6 +3437,9 @@ proc ::deken::search::dekenserver::search {term} {
                     set url ""
                 }
             }
+            # restore http settings
+            ::http::config -useragent ${httpagent}
+
             set ::deken::search::dekenserver::url_primary ${url}
             # set the ..._default for the deken prefs textvariable
             if { $url ne {}} {
@@ -3387,6 +3448,7 @@ proc ::deken::search::dekenserver::search {term} {
             unset url
         }
     }
+
     # all the search URLs
     set urls {}
     if { ${::deken::search::dekenserver::use_url_primary} } {
@@ -3565,7 +3627,14 @@ proc ::deken::search::dekenserver::search_server {term dekenurl} {
     set contents [::http::data ${token}]
     ::http::cleanup ${token}
 
-    return [split ${contents} "\n"]
+    set results {}
+    foreach line [split ${contents} "\n"] {
+        if {[llength [split ${line} "\t"]] > 1} {
+            lappend results $line
+        }
+    }
+
+    return $results
 }
 
 proc ::deken::search::dekenserver::contextmenu {widget theX theY pkgname URL} {

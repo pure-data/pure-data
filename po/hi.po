@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2005-05-04 12:50+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -664,6 +664,9 @@ msgstr "प्राथमिकताएं..."
 msgid "deken preferences"
 msgstr "प्राथमिकताएं..."
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "प्राथमिकताएं..."
@@ -751,6 +754,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -892,6 +899,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "पाठ खोजें..."
@@ -927,6 +937,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1244,6 +1263,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1978,6 +2001,9 @@ msgstr "नीचे"
 msgid "Zoom Out"
 msgstr "नीचे"
 
+msgid "Reset Zoom"
+msgstr ""
+
 #, fuzzy
 msgid "Clear Console"
 msgstr "सूची साफ करें"
@@ -2006,6 +2032,10 @@ msgstr ""
 msgid "Comment"
 msgstr "कमांड"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "सहेजें"
+
 msgid "Graph"
 msgstr "ग्राफ"
 
@@ -2028,10 +2058,6 @@ msgstr "बंद"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "लैग मीटर:"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -2066,6 +2092,10 @@ msgid "Parent Window"
 msgstr "भेजें विंडो"
 
 #, fuzzy
+msgid "Load Meter"
+msgstr "लैग मीटर:"
+
+#, fuzzy
 msgid "Message..."
 msgstr "संदेश"
 
@@ -2089,8 +2119,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "सूची साफ करें"
+msgid "Clear Recent Files"
+msgstr "फाइल"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2214,6 +2244,10 @@ msgstr "मिटाओ"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "सूची साफ करें"
 
 #, fuzzy
 #~ msgid "bottom:"

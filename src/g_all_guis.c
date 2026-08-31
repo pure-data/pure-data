@@ -491,7 +491,6 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 }
 
 static void iemgui_dolabelpos(t_object*obj, t_iemgui*iemgui) {
-    int zoom = glist_getzoom(iemgui->x_glist);
     int x0 = text_xpix((t_object *)obj, iemgui->x_glist);
     int y0 = text_ypix((t_object *)obj, iemgui->x_glist);
     int dx = iemgui->x_ldx, dy = iemgui->x_ldy;
@@ -504,7 +503,7 @@ static void iemgui_dolabelpos(t_object*obj, t_iemgui*iemgui) {
     }
     pdgui_vmess(0, "crs ii",
         glist_getcanvas(iemgui->x_glist), "coords", tag,
-        x0  + dx*zoom, y0 + dy*zoom);
+        x0  + dx, y0 + dy);
 }
 void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 {
@@ -548,7 +547,6 @@ void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
     int f = (int)atom_getfloatarg(0, ac, av);
 
     if(f == 1) strcpy(iemgui->x_font, "helvetica");
@@ -569,7 +567,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         t_atom fontatoms[3];
         sprintf(tag, "%p_LABEL", x);
         SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+        SETFLOAT (fontatoms+1, -iemgui->x_fontsize);
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
         pdgui_vmess(0, "crs rA",
             glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
@@ -602,7 +600,6 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
     iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av);
     iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av);
     iemgui_do_drawmove(x, iemgui);
@@ -610,7 +607,6 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
     iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av);
     iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av);
     iemgui_do_drawmove(x, iemgui);
@@ -686,29 +682,13 @@ void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
     iemgui_all_col2save(iemgui, bflcol);
 }
 
-    /* inform GUIs that glist's zoom is about to change.  The glist will
-    take care of x,y locations but we have to adjust width and height */
+    /* do nothing, kept for compatibility */
 void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom)
-{
-    int oldzoom = iemgui->x_glist->gl_zoom;
-    if (oldzoom < 1)
-        oldzoom = 1;
-    iemgui->x_w = (int)(iemgui->x_w)/oldzoom*(int)zoom;
-    iemgui->x_h = (int)(iemgui->x_h)/oldzoom*(int)zoom;
-}
+{}
 
-    /* when creating a new GUI from menu onto a zoomed canvas, pretend to
-    change the canvas's zoom so we'll get properly sized */
+    /* do nothing, kept for compatibility */
 void iemgui_newzoom(t_iemgui *iemgui)
-{
-    if (iemgui->x_glist->gl_zoom != 1)
-    {
-        int newzoom = iemgui->x_glist->gl_zoom;
-        iemgui->x_glist->gl_zoom = 1;
-        iemgui_zoom(iemgui, (t_floatarg)newzoom);
-        iemgui->x_glist->gl_zoom = newzoom;
-    }
-}
+{}
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
@@ -852,7 +832,6 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
 void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
 {
 #define SETCOLOR(a, col) do {char color[MAXPDSTRING]; pd_snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
-    t_float zoom = iemgui->x_glist->gl_zoom;
     t_symbol *srl[3];
     int for_undo = 1;
     int i;
@@ -873,8 +852,8 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
         iemgui_properties(iemgui, srl);
     }
 
-    if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
-    if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
+    if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w);
+    if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h);
     if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
     if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
     if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
@@ -938,10 +917,8 @@ static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_select(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 {
-    const int zoom = x->x_glist->gl_zoom;
     int xpos = text_xpix(&x->x_obj, glist);
     int ypos = text_ypix(&x->x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128], tag_label[128], tag[128];
     char *tags[] = {tag_object, tag};
@@ -957,7 +934,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     if(!x->x_fsf.x_snd_able) {
         pdgui_vmess(0, "crr iiii rk rk rS",
             canvas, "create", "rectangle",
-            xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
+            xpos, ypos + x->x_h + 1 - IEM_GUI_IOHEIGHT, xpos + IOWIDTH, ypos + x->x_h,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
@@ -971,7 +948,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     if(!x->x_fsf.x_rcv_able) {
         pdgui_vmess(0, "crr iiii rk rk rS",
             canvas, "create", "rectangle",
-            xpos, ypos, xpos + iow, ypos - zoom + ioh,
+            xpos, ypos, xpos + IOWIDTH, ypos - 1 + IEM_GUI_IOHEIGHT,
             "-fill", THISGUI->i_foregroundcolor,
             "-outline", THISGUI->i_foregroundcolor,
             "-tags", 2, tags);
@@ -1035,6 +1012,9 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         DRAW_FUN(config, x, glist);
         break;
     default:
+        /* skip drawing iolets if we're inside a GOP subpatch */
+        if (glist_isgraph(glist) && !glist->gl_havewindow)
+            return;
         if(x->x_private->p_widget.draw_iolets)
             x->x_private->p_widget.draw_iolets(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
         else

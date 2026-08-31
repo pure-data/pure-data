@@ -21,27 +21,23 @@ static t_class *bng_class;
 #define bng_draw_io 0
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_iemgui *iemgui = &x->x_gui;
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    int inset = zoom;
+    int iow = IOWIDTH, ioh = IEM_GUI_IOHEIGHT;
+    int inset = 1;
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
-    /* pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol,
-        "-outline", THISGUI->i_foregroundcolor); */
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        IEMGUI_ZOOM(x), x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
+        1, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_BUT", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -51,12 +47,12 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
             the only goddam oval in the whole of Pd so let's not add a
             whole other TK proc for it */
     pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect", canvas, tag,
-        IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+        1, (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
         THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
+        xpos + x->x_gui.x_ldx, ypos + x->x_gui.x_ldy);
 
     if (x->x_gui.x_fsf.x_selected)
         pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
@@ -106,10 +102,10 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
 
     sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        IEMGUI_ZOOM(x), x->x_gui.x_bcol, col);
+        1, x->x_gui.x_bcol, col);
     sprintf(tag, "%p_BUT", x);
     pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect", canvas, tag,
-        IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+        1, (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
         col);
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
@@ -123,7 +119,7 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
         sprintf(tag, "%p_BUT", x);
         pdgui_vmess(0, "rcs ik k", "pdtk_canvas_configure_rect",
             glist_getcanvas(glist), tag,
-            IEMGUI_ZOOM(x), (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
+            1, (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol),
             THISGUI->i_foregroundcolor);
     }
 }
@@ -150,7 +146,7 @@ static void bng_save(t_gobj *z, t_binbuf *b)
     iemgui_save(&x->x_gui, srl, bflcol);
     binbuf_addv(b, "ssiisiiiisssiiiisss", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
-                gensym("bng"), x->x_gui.x_w/IEMGUI_ZOOM(x),
+                gensym("bng"), x->x_gui.x_w,
                 x->x_flashtime_hold, x->x_flashtime_break,
                 iem_symargstoint(&x->x_gui.x_isa),
                 srl[0], srl[1], srl[2],
@@ -182,7 +178,7 @@ static void bng_properties(t_gobj *z, t_glist *owner)
 {
     t_bng *x = (t_bng *)z;
     iemgui_new_dialog(x, &x->x_gui, "bang",
-                      x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
+                      x->x_gui.x_w, IEM_GUI_MINSIZE,
                       0, 0,
                       x->x_flashtime_break, x->x_flashtime_hold,
                       2,
@@ -264,7 +260,7 @@ static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
                             argc, argv);
 
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     bng_check_minmax(x, ftbreak, fthold);
 
@@ -310,7 +306,7 @@ static void bng_loadbang(t_bng *x, t_floatarg action)
 
 static void bng_size(t_bng *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av));
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -416,7 +412,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     x->x_lastflashtime = clock_getlogicaltime();
     x->x_clock_hld = clock_new(x, (t_method)bng_tick_hld);
     x->x_clock_lck = clock_new(x, (t_method)bng_tick_lck);
-    iemgui_newzoom(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_bang);
     return (x);
 }
@@ -466,8 +461,6 @@ void g_bang_setup(void)
         gensym("label_font"), A_GIMME, 0);
     class_addmethod(bng_class, (t_method)bng_init,
         gensym("init"), A_FLOAT, 0);
-    class_addmethod(bng_class, (t_method)iemgui_zoom,
-        gensym("zoom"), A_CANT, 0);
     bng_widgetbehavior.w_getrectfn = bng_getrect;
     bng_widgetbehavior.w_displacefn = iemgui_displace;
     bng_widgetbehavior.w_selectfn = iemgui_select;

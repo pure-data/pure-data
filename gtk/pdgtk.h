@@ -17,7 +17,8 @@ void gfx_canvas_menuclose(t_canvas *x, const char *s);
 
 /* paths (polygons, etc) */
 void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
-    double width, int npoints, double *coords, int patchline);
+    double width, int npoints, double *coords, int patchline,
+        char *strokecolor, char *fillcolor);
 
 void gfx_canvas_configure_whatev(t_canvas *x, char *tag, int width,
     const char *fillcolor, const char *outlinelcolor);
@@ -48,6 +49,10 @@ void gfx_canvas_reflecttitle(t_canvas *x, const char *path, const char *name,
     const char *arguments, int dirty);
 
 void gfx_canvas_text_select(t_canvas *x, char *tag, int start, int end);
+
+    /* set teh cursor */
+void gfx_canvas_setcursor(t_canvas *x, char *cursor);
+
 
 /* debugging printout to stderr */
 void gfx_canvas_spew(t_canvas *x);

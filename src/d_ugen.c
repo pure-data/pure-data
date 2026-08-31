@@ -530,7 +530,9 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     int allocsize = 0;
     t_signal *ret, **whichlist;
     if (sr < 1)
-        bug("signal_new");
+        bug("signal_new: 'sr' cannot be less than 1");
+    if (nchans < 1)
+        bug("signal_new: 'nchans' cannot be less than 1");
     if (length && !scalarptr)
     {
             /* figure out which free list to use, depending on size of vector */
@@ -613,7 +615,15 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
 void signal_setmultiout(t_signal **sig, int nchans)
 {
     int overlap = (*sig)->s_overlap;
-    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    if (nchans > 0)
+        *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    else
+    {
+            /* replace with empty single-channel signal */
+        bug("signal_setmultiout: 'nchans' cannot be less than 1");
+        *sig = signal_new((*sig)->s_length, 1, (*sig)->s_sr, 0);
+        dsp_add_zero((*sig)->s_vec, (*sig)->s_length);
+    }
     (*sig)->s_overlap = overlap;
 }
 

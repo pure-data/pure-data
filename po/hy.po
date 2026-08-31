@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Armenian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -613,6 +613,9 @@ msgstr ""
 msgid "deken preferences"
 msgstr ""
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr ""
 
@@ -696,6 +699,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -837,6 +844,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr ""
 
@@ -871,6 +881,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1182,6 +1201,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, tcl-format
@@ -1907,6 +1930,9 @@ msgstr ""
 msgid "Zoom Out"
 msgstr ""
 
+msgid "Reset Zoom"
+msgstr ""
+
 msgid "Clear Console"
 msgstr ""
 
@@ -1931,6 +1957,9 @@ msgstr "Սիմվոլ"
 msgid "Comment"
 msgstr "Մեկնաբանություն"
 
+msgid "Scalar"
+msgstr ""
+
 msgid "Graph"
 msgstr ""
 
@@ -1950,9 +1979,6 @@ msgid "DSP Off"
 msgstr "DSP-ն անջատված է"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -1982,6 +2008,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr ""
 
+msgid "Load Meter"
+msgstr ""
+
 msgid "Message..."
 msgstr "Հաղորդագրություն..."
 
@@ -2003,8 +2032,8 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-msgid "Clear Menu"
-msgstr "Մաքրել ցանկը"
+msgid "Clear Recent Files"
+msgstr ""
 
 msgid ""
 "Delete all preferences?\n"
@@ -2120,3 +2149,6 @@ msgstr "Ջնջել"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Clear Menu"
+#~ msgstr "Մաքրել ցանկը"

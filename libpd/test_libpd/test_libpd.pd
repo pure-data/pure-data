@@ -1,4 +1,4 @@
-#N canvas 404 288 429 236 10;
+#N canvas 404 288 536 236 10;
 #X obj 88 107 print;
 #X obj 185 175 dac~;
 #X obj 88 83 f 0;
@@ -13,6 +13,9 @@
 #X obj 42 139 makenote 64 1;
 #X obj 42 107 + 60;
 #X msg 206 114 -0.25;
+#X obj 405 58 test;
+#X obj 405 88 test;
+#X obj 405 118 test;
 #X connect 2 0 0 0;
 #X connect 2 0 3 0;
 #X connect 2 0 12 0;

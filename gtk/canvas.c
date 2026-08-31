@@ -27,6 +27,7 @@ typedef struct _path
     t_dpoint *p_vec;
     double p_width;
     int p_dashed;
+    int p_fill;
     int p_patchline;    /* LATER make sure these are drawn in front. */
 } t_path;
 
@@ -106,6 +107,15 @@ static void gfx_path_draw(t_path *x, t_item *it, t_canvas *c, cairo_t *cr)
     int i;
     if (x->p_n < 1)
         return;
+    if (x->p_fill)
+    {
+        cairo_set_line_width(cr, 1.5*x->p_width);
+        cairo_move_to(cr, x->p_vec[0].p_x, x->p_vec[0].p_y);
+        for (i = 1; i < x->p_n; i++)
+            cairo_line_to(cr, x->p_vec[i].p_x, x->p_vec[i].p_y);
+        gfx_set_color(cr, &it->i_fill);
+        cairo_fill(cr);
+    }
     gfx_set_color(cr, &it->i_outline);
     cairo_set_line_width(cr, 1.5*x->p_width);
     cairo_move_to(cr, x->p_vec[0].p_x, x->p_vec[0].p_y);
@@ -115,7 +125,8 @@ static void gfx_path_draw(t_path *x, t_item *it, t_canvas *c, cairo_t *cr)
 }
 
 void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
-    double width, int npoints, double *coords, int patchline)
+    double width, int npoints, double *coords, int patchline,
+        char *strokecolor, char *fillcolor)
 {
     t_path *p;
     t_item *it;
@@ -132,9 +143,10 @@ void gfx_canvas_addpath(t_canvas *x, char *tag, char *grouptag, int dashed,
         p->p_vec[i].p_x = coords[2*i], p->p_vec[i].p_y = coords[2*i+1];
     p->p_width = width;
     p->p_dashed = dashed;
+    p->p_fill = (fillcolor != 0);
     p->p_patchline = patchline;
-    gfx_parse_color("#000000", &it->i_outline);
-    gfx_parse_color("#000000", &it->i_fill);
+    gfx_parse_color(strokecolor, &it->i_outline);
+    gfx_parse_color((fillcolor ? fillcolor :"#000000"), &it->i_fill);
     strncpy(it->i_tag, tag, 80);
     it->i_tag[79] = 0;
     strncpy(it->i_grouptag, grouptag, 80);
@@ -158,6 +170,7 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
         if (x->c_vec[indx].i_type == I_PATH)
         {
             t_path *y = x->c_vec[indx].i_w.i_path;
+            y->p_n = npoints;
             y->p_vec = (t_dpoint *)realloc(y->p_vec,
                 npoints * sizeof(*y->p_vec));
             for (i = 0; i < npoints; i++)
@@ -184,6 +197,28 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
     }
     fprintf(stderr, "canvas_coords: unknown tag %s\n", tag);
 }
+
+void gfx_canvas_setcursor(t_canvas *x, char *cursor)
+{
+    static GdkCursor *nothingcursor, *clickmecursor, *resizecursor,
+        *connectcursor;
+    if (!nothingcursor)
+    {
+        nothingcursor = gdk_cursor_new_from_name("pointer", 0);
+        clickmecursor = gdk_cursor_new_from_name("default", 0);
+        resizecursor = gdk_cursor_new_from_name("all-resize", 0);
+        connectcursor = gdk_cursor_new_from_name("alias", 0);
+    }
+    if (!strcmp(cursor, "nothing"))
+        gtk_widget_set_cursor(x->c_drawing_area, nothingcursor);
+    else if (!strcmp(cursor, "clickme"))
+        gtk_widget_set_cursor(x->c_drawing_area, clickmecursor);
+    else if (!strcmp(cursor, "resize"))
+        gtk_widget_set_cursor(x->c_drawing_area, resizecursor);
+    else if (!strcmp(cursor, "connect"))
+        gtk_widget_set_cursor(x->c_drawing_area, connectcursor);
+}
+
 
 static void gfx_text_draw(t_text *x, t_item *it, t_canvas *c, cairo_t *cr)
 {
@@ -286,7 +321,6 @@ void gfx_canvas_text_select(t_canvas *x, char *tag, int start, int end)
             x->c_seltextindex = i;
             x->c_selstart = start;
             x->c_selend = end;
-            fprintf(stderr, "index %d\n", x->c_seltextindex);
             return;
         }
     }
@@ -819,7 +853,15 @@ static void editmenu_edit(GtkApplicationWindow *win, void *unused,
     t_canvas *x = (t_canvas *)data;
     x->c_editmode = !x->c_editmode;
     char cmd[80];
-    snprintf(cmd, 80, "%s editmode %d\n", x->c_tag, x->c_editmode);
+    snprintf(cmd, 80, "%s editmode %d;\n", x->c_tag, x->c_editmode);
+    socket_send(cmd);
+}
+static void editmenu_selectall(GtkApplicationWindow *win, void *unused,
+    gpointer *data)
+{
+    t_canvas *x = (t_canvas *)data;
+    char cmd[80];
+    snprintf(cmd, 80, "%s selectall;\n", x->c_tag);
     socket_send(cmd);
 }
 
@@ -836,7 +878,7 @@ static void putmenu_text(GtkApplicationWindow *win, void *zz, gpointer *data)
 static void putmenu_bng(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "bng"); }
 static void putmenu_tgl(GtkApplicationWindow *win, void *zz, gpointer *data)
-    { winmenu_simpleitem(win, data, "tgl"); }
+    { winmenu_simpleitem(win, data, "toggle"); }
 static void putmenu_n2(GtkApplicationWindow *win, void *zz, gpointer *data)
     { winmenu_simpleitem(win, data, "numbox"); }
 static void putmenu_vsl(GtkApplicationWindow *win, void *zz, gpointer *data)
@@ -943,6 +985,7 @@ t_canvas *gfx_canvas_new(const char *tag,
     gfx_canvas_addaction(x, win, "zcopy", G_CALLBACK(editmenu_copy));
     gfx_canvas_addaction(x, win, "zpaste", G_CALLBACK(editmenu_paste));
     gfx_canvas_addaction(x, win, "zduplicate", G_CALLBACK(editmenu_dup));
+    gfx_canvas_addaction(x, win, "zselectall", G_CALLBACK(editmenu_selectall));
     gfx_canvas_addaction(x, win, "zedit", G_CALLBACK(editmenu_edit));
 
         /* -------------- put menu ---------------- */
@@ -967,4 +1010,3 @@ t_canvas *gfx_canvas_new(const char *tag,
 
     return (x);
 }
-

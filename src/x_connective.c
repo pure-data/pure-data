@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -108,7 +109,17 @@ static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
     char *str_end = NULL;
     f = strtod(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
-        pd_error(x, "couldn't convert %s to float", s->s_name);
+    {
+        /* OK, try to find an internal number, which must start with a
+        digit.  (numbers starting with '-' or '.' aren't matched correctly.) */
+        int i, len = strlen(s->s_name);
+        for (i = 0; i < len && !isdigit(s->s_name[i]); i++)
+            ;
+        if (i >= len || ((f = strtod(s->s_name+i, &str_end)) != 0) &&
+            str_end == s->s_name+i)
+                pd_error(x, "couldn't convert %s to float", s->s_name);
+        else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
+    }
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
@@ -305,15 +316,37 @@ static void send_setup(void)
     class_addanything(send_class, send_anything);
     class_sethelpsymbol(send_class, gensym("send-receive"));
 }
+
 /* -------------------- receive ------------------------------ */
 
 static t_class *receive_class;
+static t_class *receive_proxy_class;
+
+typedef struct _receive_proxy
+{
+    t_pd              p_pd;
+    struct _receive  *p_owner;
+} t_receive_proxy;
 
 typedef struct _receive
 {
-    t_object x_obj;
-    t_symbol *x_sym;
+    t_object         x_obj;
+    t_receive_proxy  x_proxy;
+    t_symbol        *x_sym;
 } t_receive;
+
+static void receive_proxy_init(t_receive_proxy * p, t_receive *x)
+{
+    p->p_pd = receive_proxy_class;
+    p->p_owner = x;
+}
+
+static void receive_proxy_symbol(t_receive_proxy *p, t_symbol* s)
+{
+    t_receive *x = p->p_owner;
+    pd_unbind(&x->x_obj.ob_pd, x->x_sym);
+    pd_bind(&x->x_obj.ob_pd, x->x_sym = s);
+}
 
 static void receive_bang(t_receive *x)
 {
@@ -350,6 +383,11 @@ static void *receive_new(t_symbol *s)
     t_receive *x = (t_receive *)pd_new(receive_class);
     x->x_sym = s;
     pd_bind(&x->x_obj.ob_pd, s);
+    if (!*x->x_sym->s_name)
+    {
+        receive_proxy_init(&x->x_proxy, x);
+        inlet_new(&x->x_obj, &x->x_proxy.p_pd, 0, 0);
+    }
     outlet_new(&x->x_obj, 0);
     return (x);
 }
@@ -371,6 +409,9 @@ static void receive_setup(void)
     class_addlist(receive_class, receive_list);
     class_addanything(receive_class, receive_anything);
     class_sethelpsymbol(receive_class, gensym("send-receive"));
+    receive_proxy_class = (t_class *)class_new(gensym("receive proxy"),
+                0, 0, sizeof(t_receive_proxy), 0, 0);
+    class_addsymbol(receive_proxy_class, receive_proxy_symbol);
 }
 
 /* -------------------------- select ------------------------------ */
@@ -1645,16 +1686,18 @@ int value_setfloat(t_symbol *s, t_float f)
     return (0);
 }
 
-static void vcommon_float(t_vcommon *x, t_float f)
+static void vcommon_list(t_vcommon *x, t_symbol *s, int argc, t_atom *argv)
 {
-    x->c_f = f;
+    if (argc && argv->a_type == A_FLOAT)
+        x->c_f = argv->a_w.w_float;
 }
 
 static void *value_new(t_symbol *s)
 {
     t_value *x = (t_value *)pd_new(value_class);
     if (!*s->s_name)
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"),
+            gensym("symbol2"));
     x->x_sym = s;
     x->x_floatstar = value_get(s);
     outlet_new(&x->x_obj, &s_float);
@@ -1701,10 +1744,12 @@ static void value_setup(void)
     class_addfloat(value_class, value_float);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
-    class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
+    class_addmethod(value_class, (t_method)value_send, gensym("send"),
+        A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
-    class_addfloat(vcommon_class, vcommon_float);
+    class_addlist(vcommon_class, vcommon_list);
+    class_addanything(vcommon_class, nullfn);
 }
 
 /* -------------- overall setup routine for this file ----------------- */

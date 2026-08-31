@@ -9,6 +9,12 @@
 #include <tcl.h>
 #include "pdgtk.h"
 
+#if (TCL_MAJOR_VERSION < 9)
+/* Tcl_Size was introduced with Tcl-9.0 */
+#include <stddef.h>
+typedef ptrdiff_t Tcl_Size;
+#endif
+
 /******************** tcl stuff ***********************/
 
 static Tcl_Interp *tcl_interp;
@@ -26,7 +32,7 @@ static int cmd_window(ClientData cdata, Tcl_Interp *interp,
     if (objc == 4 && !strcmp(Tcl_GetString(objv[1]), "configure") &&
         !strcmp(Tcl_GetString(objv[2]), "-cursor"))
     {
-        fprintf(stderr, "cursor %s\n", Tcl_GetString(objv[3]));
+        gfx_canvas_setcursor(x, Tcl_GetString(objv[3]));
         return (TCL_OK);
     }
     else return (TCL_ERROR);
@@ -188,10 +194,11 @@ static int cmd_pdtk_text_set(ClientData cdata, Tcl_Interp *interp,
  /* cmd_pdtk_canvas_create_line
     <canvas> <tag> <grouptag> <dashed> <width> <color> <coords...> */
 static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
-    int objc, Tcl_Obj *const objv[], int patchline)
+    int objc, Tcl_Obj *const objv[], int patchline, int poly)
 {
     Tcl_HashEntry *hash;
-    if (objc < 11 || !(objc & 1))
+    int fixedargs = 7 + poly;   /* polygons get extra fill-color arg */
+    if (objc < fixedargs+4 || ((objc+fixedargs) & 1))
     {
         fprintf(stderr, "pdtk_canvas_do_create_line: bad #args = %d\n", objc);
         return (TCL_ERROR);
@@ -203,18 +210,21 @@ static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
     else
     {
         t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
-        int npoints = (objc - 7)/2, dashed, i;
+        int npoints = (objc - fixedargs)/2, dashed, i;
         double *coords = (double *)alloca(2 * npoints * sizeof(*coords)), width;
-        char *tag, *color;
+        char *tag, *strokecolor, *fillcolor;
         dashed = *Tcl_GetString(objv[4]);   /* nonempty -> dashed */
         Tcl_GetDouble(interp, Tcl_GetString(objv[5]), &width);
-        color = Tcl_GetString(objv[6]);
+        if (width <= 0)
+            width = 1;
+        fillcolor = (poly ? Tcl_GetString(objv[6]) : 0);
+        strokecolor = Tcl_GetString(objv[6+poly]);
         tag = Tcl_GetString(objv[2]);
         for (i = 0; i < 2 * npoints; i++)
-            Tcl_GetDouble(interp, Tcl_GetString(objv[7+i]), &coords[i]);
+            Tcl_GetDouble(interp, Tcl_GetString(objv[fixedargs+i]), &coords[i]);
         dashed = strcmp(Tcl_GetString(objv[1]), "");
         gfx_canvas_addpath(canvas, tag, "", dashed, width, npoints, coords,
-            patchline);
+            patchline, strokecolor, fillcolor);
     }
     return (TCL_OK);
 }
@@ -224,15 +234,23 @@ static int cmd_pdtk_canvas_do_create_line(ClientData cdata, Tcl_Interp *interp,
 static int cmd_pdtk_canvas_create_line(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0);
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0, 0));
 }
 
  /* cmd_pdtk_canvas_create_patchcord
     <canvas> <tag> <dashed> <width> <color> <coords...> */
-static int cmd_pdtk_canvas_create_patchcord(ClientData cdata, Tcl_Interp *interp,
+static int cmd_pdtk_canvas_create_patchcord(ClientData cdata,
+    Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
+{
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 1, 0));
+}
+
+ /* cmd_pdtk_canvas_create_poly
+    <canvas> <tag> <bez> <width> <color> <coords...> */
+static int cmd_pdtk_canvas_create_poly(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 1);
+    return (cmd_pdtk_canvas_do_create_line(cdata, interp, objc, objv, 0, 1));
 }
 
     /* configure_line <canvas> <tag> <width> <color> */
@@ -253,8 +271,10 @@ static int cmd_pdtk_canvas_configure_line(ClientData cdata, Tcl_Interp *interp,
         t_canvas *canvas = (t_canvas *)Tcl_GetHashValue(hash);
         double width;
         Tcl_GetDouble(interp, Tcl_GetString(objv[3]), &width);
+        if (width <= 0)
+            width = 1;
         gfx_canvas_configure_whatev(canvas, Tcl_GetString(objv[2]),
-            (int)width, Tcl_GetString(objv[4]), 0);
+            (int)width, Tcl_GetString(objv[4]), Tcl_GetString(objv[4]));
     }
     return (TCL_OK);
 }
@@ -318,13 +338,13 @@ static int cmd_pdtk_canvas_do_create_rect(ClientData cdata, Tcl_Interp *interp,
 static int cmd_pdtk_canvas_create_rect(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 0);
 }
 
 static int cmd_pdtk_canvas_create_oval(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
-    cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
+    return cmd_pdtk_canvas_do_create_rect(cdata, interp, objc, objv, 1);
 }
 
  /* cmd_pdtk_canvas_move <canvas> <tag> <dx> <dy> */
@@ -530,6 +550,7 @@ static int cmd_pdtk_ping(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[])
 {
     socket_send("pd ping;\n");
+    return (TCL_OK);
 }
 
  /* pdtk_watchdog - start a watchdog process */
@@ -538,6 +559,7 @@ static int cmd_pdtk_watchdog(ClientData cdata, Tcl_Interp *interp,
 {
     fprintf(stderr, "start watchdog\n");
     pdgtk_start_watchdog();
+    return (TCL_OK);
 }
 
  /* cmd_pdtk_text_editing - turn 'text editing' on and off */
@@ -594,15 +616,48 @@ static int cmd_clipboard(ClientData cdata, Tcl_Interp *interp,
     char *tag;
     Tcl_HashEntry *hash;
     double start = 0, end = 0;
-    if (objc == 2 && !strcmp(Tcl_GetString(objv[1]), "clear"))
-        ;  /* nothing to do - since 'append' always follows 'clear', we
-            just set the clipboard in 'append'. */
-    else if (objc == 3 && !strcmp(Tcl_GetString(objv[1]), "append"))
-        pdgtk_setclipboard(Tcl_GetString(objv[2]));
+    if (objc == 2)
+        pdgtk_setclipboard(Tcl_GetString(objv[1]));
     else return (TCL_ERROR);
     return (TCL_OK);
 }
 
+static void do_logpost(const char*tag, int level, const char*msg) {
+    (void)tag;
+    (void)level;
+    fprintf(stderr, "%s", msg);
+}
+
+static int cmd_logpost(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+    if(objc == 4)
+    {
+        const char*obj = Tcl_GetString(objv[1]);
+        double level;
+        const char*msg = Tcl_GetString(objv[3]);
+        Tcl_GetDouble(interp, Tcl_GetString(objv[2]), &level);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
+
+static int cmd_post(ClientData cdata, Tcl_Interp *interp,
+    int objc, Tcl_Obj *const objv[])
+{
+   if(objc == 2)
+    {
+        const char*obj = "";
+        int level = 2;
+        const char*msg = Tcl_GetString(objv[1]);
+        do_logpost(obj, (int)level, msg);
+    } else {
+        return (TCL_ERROR);
+    }
+    return (TCL_OK);
+}
 
 typedef int (*t_tcl_creatorfn)(ClientData cdata, Tcl_Interp *interp,
     int objc, Tcl_Obj *const objv[]);
@@ -620,6 +675,7 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_text_set", cmd_pdtk_text_set},
     {"pdtk_canvas_reflecttitle", cmd_pdtk_canvas_reflecttitle},
     {"pdtk_canvas_create_line", cmd_pdtk_canvas_create_line},
+    {"pdtk_canvas_create_poly", cmd_pdtk_canvas_create_poly},
     {"pdtk_canvas_configure_line", cmd_pdtk_canvas_configure_line},
     {"pdtk_canvas_create_patchcord", cmd_pdtk_canvas_create_patchcord},
     {"pdtk_canvas_create_rect", cmd_pdtk_canvas_create_rect},
@@ -632,7 +688,9 @@ static t_tcl_entry tcl_knowncommands[] = {
     {"pdtk_watchdog", cmd_pdtk_watchdog},
     {"pdtk_text_editing", cmd_pdtk_text_editing},
     {"pdtk_text_select", cmd_pdtk_text_select},
-    {"clipboard", cmd_clipboard},
+    {"pdtk_clipboard_set", cmd_clipboard},
+    {"::pdwindow::logpost", cmd_logpost},
+    {"::pdwindow::post", cmd_post},
     {"set", 0},
 };
 
@@ -710,9 +768,14 @@ int tcl_init(void)
                 tcl_knowncommands[i].e_fn,  (ClientData)NULL, NULL);
 
     rc = Tcl_Eval(tcl_interp, "puts stderr \"started tcl interpreter\"\n\
-    set cursor_editmode_nothing nothing\n\
     set cursor_runmode_nothing nothing\n\
-    set cursor_runmode_clickme clickme\n");
+    set cursor_runmode_clickme clickme\n\
+    set cursor_runmode_thicken resize\n\
+    set cursor_runmode_addpoint connect\n\
+    set cursor_editmode_nothing nothing\n\
+    set cursor_editmode_connect connect\n\
+    set cursor_editmode_disconnect clickme\n\
+    set cursor_editmode_resize resize\n");
     if (rc != TCL_OK)
     {
         fprintf(stderr, "Error 1\n");

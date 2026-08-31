@@ -210,6 +210,7 @@ static void pdgtk_startup(GtkApplication *app, gpointer user_data)
     pdgtk_menuitem(app, section, _("Paste"), "win.zpaste", ACCELKEY "v");
     pdgtk_menuitem(app, section, _("Duplicate"), "win.zduplicate",
         ACCELKEY "d");
+    pdgtk_menuitem(app, section, _("Select All"), "win.zselectall", ACCELKEY "a");
     pdgtk_menuitem(app, section, _("Edit"), "win.zedit", ACCELKEY "e");
     g_menu_append_section(editmenu, 0, G_MENU_MODEL(section));
     g_object_unref(section);
@@ -233,7 +234,7 @@ static void pdgtk_startup(GtkApplication *app, gpointer user_data)
 
     section = g_menu_new();
     pdgtk_menuitem(app, section, _("Bang"), "win.zputbang", ACCELKEY "B");
-    pdgtk_menuitem(app, section, _("Toggle"), "win.zputtgl", ACCELKEY "B");
+    pdgtk_menuitem(app, section, _("Toggle"), "win.zputtgl", ACCELKEY "T");
     pdgtk_menuitem(app, section, _("Number2"), "win.zputn2", ACCELKEY "N");
     pdgtk_menuitem(app, section, _("Vslider"), "win.zputvsl", ACCELKEY "V");
     pdgtk_menuitem(app, section, _("Hslider"), "win.zputhsl", ACCELKEY "J");

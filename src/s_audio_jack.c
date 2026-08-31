@@ -46,7 +46,6 @@ static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
 const char *jack_client_names[MAX_CLIENTS];
-static volatile int jack_dio_error;
 static volatile int jack_didshutdown;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
@@ -157,7 +156,7 @@ static int jack_polling_callback(jack_nframes_t nframes, void *arg)
     {
         /* data late: output zeros, drop inputs, and leave FIFOs untouched */
         if (jack_started)
-            jack_dio_error = 1;
+            sys_reportxrun(nframes);
         for (j = 0; j < STUFF->st_outchannels; j++)
         {
             if ((jp = jack_port_get_buffer(output_port[j], nframes)))
@@ -298,7 +297,7 @@ static int jack_xrun(void* arg)
     if (!jack_ensure_pdinstance(arg))
         return 1;
 
-    jack_dio_error = 1;
+    sys_reportxrun(jack_blocksize);
     return 0;
 }
 
@@ -535,7 +534,6 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     jack_sem = sys_semaphore_create();
 #endif
     jack_didshutdown = 0;
-    jack_dio_error = 0;
 
     if ((inchans == 0) && (outchans == 0)) return 1;
 
@@ -578,7 +576,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     jack_set_process_callback(jack_client,
         (callback? jack_process_callback : jack_polling_callback), thispd);
 
-    jack_set_error_function (pd_jack_error_callback);
+    jack_set_error_function(pd_jack_error_callback);
 
 #ifdef JACK_XRUN
     jack_set_xrun_callback (jack_client, jack_xrun, thispd);
@@ -786,11 +784,7 @@ int jack_send_dacs(void)
         return (SENDDACS_NO);
 #endif
     }
-    if (jack_dio_error)
-    {
-        sys_log_error(ERR_RESYNC);
-        jack_dio_error = 0;
-    }
+
     jack_started = 1;
         /* only setup the muxbuffer after the ringbuffer is ready! */
     muxbufsize = DEFDACBLKSIZE *

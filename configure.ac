@@ -29,6 +29,11 @@ AS_CASE([$ac_configure_args],
         [*\'--program-suffix*], [have_program_transform_name=yes],
         [have_program_transform_name=no])
 
+
+# remember CFLAGS passed by the user
+# (so we can later check if autoconf added some default flags)
+user_cflags=${CFLAGS}
+
 #########################################
 ##### Default values #####
 
@@ -59,8 +64,8 @@ deken_ext="so"
 floatsize=""
 
 # debug/release defaults
-DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
+DEBUG_CFLAGS="-g -O0"
+OPTIMIZE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
 
 # common flags applied to all pd binaries
 PD_CPPFLAGS=""
@@ -353,21 +358,21 @@ AS_CASE([${ac_cv_libctf_qsort_r_signature}],
   ])
 
 # sometimes isnan()/isinf()/isifinite() just don't work
-AC_CACHE_CHECK([whether isnan() is usable], tcl_cv_isnan, [
+AC_CACHE_CHECK([whether isnan() is usable], have_isnan, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isnan(0.0);                     /* Generates an error if isnan is missing */
-]])],[tcl_cv_isnan=yes],[tcl_cv_isnan=no])])
-AS_IF([test "${tcl_cv_isnan}" = no], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
-AC_CACHE_CHECK([whether isinf() is usable], tcl_cv_isinf, [
+]])],[have_isnan=yes],[have_isnan=no])])
+AS_IF([test "${have_isnan}" = no], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
+AC_CACHE_CHECK([whether isinf() is usable], have_isinf, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isinf(0.0);                     /* Generates an error if isinf is missing */
-]])],[tcl_cv_isinf=yes],[tcl_cv_isinf=no])])
-AS_IF([test "${tcl_cv_isinf}" = no], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
-AC_CACHE_CHECK([whether isfinite() is usable], tcl_cv_isfinite, [
+]])],[have_isinf=yes],[have_isinf=no])])
+AS_IF([test "${have_isinf}" = no], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
+AC_CACHE_CHECK([whether isfinite() is usable], have_isfinite, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isfinite(0.0);                     /* Generates an error if isfinite is missing */
-]])],[tcl_cv_isfinite=yes],[tcl_cv_isfinite=no])])
-AS_IF([test "${tcl_cv_isfinite}" = no], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
+]])],[have_isfinite=yes],[have_isfinite=no])])
+AS_IF([test "${have_isfinite}" = no], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
 
 # Checks for libraries.
 have_dl=yes
@@ -405,26 +410,46 @@ AC_SUBST([msw_strip])
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
+# CFLAGS added by the configure script
+extra_cflags=""
+
 ##### Build with debug flags? #####
 AC_ARG_ENABLE([debug],
-    [AS_HELP_STRING([--enable-debug], [use debugging support])],
-    [debug=$enableval], [debug=no])
-AS_IF([test x$debug = xyes],[
-    PD_CFLAGS="$DEBUG_CFLAGS $PD_CFLAGS"
+    [AS_HELP_STRING([--enable-debug], [build with debugging information])])
+
+msw_strip=""
+AS_IF([test x${enable_debug} = xyes],[
+    extra_cflags="${extra_cflags} ${DEBUG_CFLAGS}"
+    AS_IF([test "${WINDOWS}" = yes], [msw_strip="-n"])
 ],[
-    PD_CFLAGS="$RELEASE_CFLAGS $PD_CFLAGS"
     PD_CPPFLAGS="-DNDEBUG $PD_CPPFLAGS"
 ])
 
-AS_IF([test "x${debug}" = "xyes" -a "x${WINDOWS}" = "xyes" ],[
-    msw_strip="-n"
-    ],[
-    msw_strip=""
-    ])
+##### Build with optimization flags? #####
+AC_ARG_ENABLE([optimizations],
+    [AS_HELP_STRING([--enable-optimizations], [build with speed optimizations])])
+
+AS_IF([test x${enable_optimizations} = xyes],[
+    extra_cflags="${extra_cflags} ${OPTIMIZE_CFLAGS}"
+])
+
 
 ##### macOS version min #####
+# i'm not sure whether this should go into the ephemeral CFLAGS (via extra_cflags)
+# or the more persistent PD_CFLAGS
 AS_IF([test "x$macos_version_min" != "x"],[
     PD_CFLAGS="-mmacosx-version-min=$macos_version_min $PD_CFLAGS"
+])
+
+
+# default CFLAGS by autoconf are prepended, so the debug/optimization
+# flags can override them.
+# user provided CFLAGS are appended, so they can override the
+# debug/optimization flags
+AS_IF([test "x${user_cflags}" = x],[
+  CFLAGS="${CFLAGS} ${extra_cflags}"
+],[
+  CFLAGS="${extra_cflags} ${user_cflags}"
 ])
 
 #########################################
@@ -910,7 +935,7 @@ AC_MSG_NOTICE([
 
     Platform:             ${platform}
     Float size:           ${floatsize:-default}
-    Debug build:          ${debug}
+    Debug build:          ${enable_debug}
     Universal build:      ${universal}
     Localizations:        ${locales}
     Source directory:     ${srcdir}
@@ -918,9 +943,9 @@ AC_MSG_NOTICE([
 
     Compiler:             ${CC}
     CPPFLAGS:             ${PD_CPPFLAGS} ${CPPFLAGS}
+    INCLUDES:             ${AM_CPPFLAGS}
     CFLAGS:               ${PD_CFLAGS} ${CFLAGS}
     LDFLAGS:              ${PD_LDFLAGS} ${LDFLAGS}
-    INCLUDES:             ${AM_CPPFLAGS}
     LIBS:                 ${LIBS}
 
     External extension:   ${EXTERNAL_EXTENSION}

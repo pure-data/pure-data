@@ -495,6 +495,7 @@ EXTERN void canvas_makefilename(const t_glist *c, const char *file,
 EXTERN t_symbol *canvas_getdir(const t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
+/* in the following functions, 'zoom' argument is not used */
 EXTERN int sys_hostfontsize(int fontsize, int zoom);
 EXTERN int sys_zoomfontwidth(int fontsize, int zoom, int worstcase);
 EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
@@ -533,9 +534,9 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
     deal with multichannel inputs.  In this case the channel counts of
     the inputs might not match; it's up to the dsp method to figure out what
     to do.  Also, the output signal vectors aren't allocated.  The output
-    channel counts have to be specified by the object at DSP time.  If
-    the object can't put itself on the DSP chain it then has to create
-    outputs anyway and arrange to zero them.
+    channel counts have to be specified by the object at DSP time with the
+    signal_setmultiout() function.  If the object can't put itself on the DSP
+    chain it then has to create outputs anyway and arrange to zero them.
 
     By default, if a tilde object's inputs are unconnected, Pd fills them
     in by adding scalar-to-vector conversions to the DSP chain as needed before
@@ -613,8 +614,20 @@ typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
 EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
 
+/* set a function to be called when the class object is freed. Use this to free
+global resources (e.g. lookup tables) allocated in the class setup function. */
 typedef void (*t_classfreefn)(t_class *);
 EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
+
+/* set per-instance user data for a given class. 'freefn', if not NULL, will be
+called when a Pd instance is about to be destroyed, so you can release the data.
+If you unset/replace existing instance data, it is your responsibility to free it.
+HINT: you can create and set the per-instance data lazily in the object constructor.
+See libpd/test_libpd/test_libpd.c for an example. */
+typedef void (*t_classdatafn)(void *);
+EXTERN void class_setinstancedata(t_class *c, void *data, t_classdatafn freefn);
+/* get the per-instance user data of a given class */
+EXTERN void *class_getinstancedata(t_class *c);
 
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))
@@ -729,6 +742,10 @@ typedef t_int *(*t_perfroutine)(t_int *args);
 
 EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
     t_sample *scalarptr);
+    /* a multichannel class (see CLASS_MULTICHANNEL) must call this function
+    on every output to replace the dummy signal with a real signal with the
+    appropriate channel count. NOTE: 'nchans' cannot be less than one, i.e.
+    empty signals are not allowed! */
 EXTERN void signal_setmultiout(t_signal **sig, int nchans);
 
 EXTERN t_int *plus_perform(t_int *args);

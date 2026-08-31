@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -620,6 +620,9 @@ msgstr "Preferensi"
 msgid "deken preferences"
 msgstr "Preferensi"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 #, fuzzy
 msgid "misc preferences"
 msgstr "Preferensi"
@@ -706,6 +709,10 @@ msgstr ""
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
 msgstr ""
 
 #, tcl-format
@@ -847,6 +854,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr ""
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Mencari ini di %s:"
@@ -882,6 +892,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1192,6 +1211,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %s to %s"
 msgstr ""
 
 #, tcl-format
@@ -1916,6 +1939,10 @@ msgstr ""
 msgid "Zoom Out"
 msgstr ""
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Setel ulang"
+
 msgid "Clear Console"
 msgstr ""
 
@@ -1940,6 +1967,10 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Sisik"
+
 msgid "Graph"
 msgstr ""
 
@@ -1959,9 +1990,6 @@ msgid "DSP Off"
 msgstr ""
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -1991,6 +2019,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr ""
 
+msgid "Load Meter"
+msgstr ""
+
 msgid "Message..."
 msgstr ""
 
@@ -2012,7 +2043,7 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-msgid "Clear Menu"
+msgid "Clear Recent Files"
 msgstr ""
 
 msgid ""

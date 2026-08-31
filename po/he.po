@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -613,6 +613,9 @@ msgstr "העדפות MIDI"
 msgid "deken preferences"
 msgstr "העדפות Deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr "העדפות שונות"
 
@@ -697,6 +700,10 @@ msgstr "אזהרה: משקל הגופן ‚%1$s’ לא נמצא, נסוגים �
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "שימוש בגופן: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -837,6 +844,9 @@ msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "כתובות חיפוש:"
 
@@ -872,6 +882,17 @@ msgstr "לשמור על קובצי החבילה לאחר ההתקנה"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "להוסיף ספריות חדשות שהותקנו לנתיב החיפוש של Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s נוסף לנתיבי החיפוש"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "לא ניתן להוסיף את %s לנתיבי החיפוש"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "הגדרות פלטפורמה:"
@@ -1188,6 +1209,10 @@ msgstr "[deken] התגלתה פלטפורמה: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "לא ניתן למצוא תפריט להוספת ‚%s’"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "‚%s’ בהורדה"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1926,6 +1951,10 @@ msgstr "התקרבות"
 msgid "Zoom Out"
 msgstr "התרחקות"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "איפוס"
+
 msgid "Clear Console"
 msgstr "מחיקת מסוף"
 
@@ -1950,6 +1979,10 @@ msgstr "סמל"
 msgid "Comment"
 msgstr "הערה"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "קנ״מ"
+
 msgid "Graph"
 msgstr "תרשים"
 
@@ -1970,9 +2003,6 @@ msgstr "DSP כבוי"
 
 msgid "Test Audio and MIDI..."
 msgstr "בדיקת שמע ו־MIDI…"
-
-msgid "Load Meter"
-msgstr "מד עומס"
 
 msgid "Audio Settings..."
 msgstr "הגדרות שמע…"
@@ -2001,6 +2031,9 @@ msgstr "סגירת תת־חלונות"
 msgid "Parent Window"
 msgstr "חלון ההורה"
 
+msgid "Load Meter"
+msgstr "מד עומס"
+
 msgid "Message..."
 msgstr "הודעה…"
 
@@ -2022,8 +2055,9 @@ msgstr "חיפוש עדכונים"
 msgid "Report a bug"
 msgstr "דיווח על תקלה"
 
-msgid "Clear Menu"
-msgstr "מחיקת פריטי התפריט"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "קובצי טקסט של Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2144,6 +2178,9 @@ msgstr "מחיקה"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "מחיקת פריטי התפריט"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "

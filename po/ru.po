@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -615,6 +615,9 @@ msgstr "настройки MIDI"
 msgid "deken preferences"
 msgstr "настройки Deken"
 
+msgid "keyboard shortcuts"
+msgstr ""
+
 msgid "misc preferences"
 msgstr "другие настройки"
 
@@ -703,6 +706,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "используется шрифт: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -845,6 +852,9 @@ msgstr "Невозможно удалить временный файл '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Невозможно переименовать скачанный файл в '%s'"
 
+msgid "~"
+msgstr ""
+
 msgid "Search URLs:"
 msgstr "URL для поиска:"
 
@@ -883,6 +893,17 @@ msgstr "Сохранять файлы пакета после установки
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Добавить вновь установленные библиотеки в путь поиска Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "Добавлено %s в пути для поиска"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Невозможно добавить %s к путям для поиска"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Настройки платформы:"
@@ -1208,6 +1229,10 @@ msgstr "[deken] Обнаружена платформа: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Невозможно найти меню для добавления '%s'"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Скачивание '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1950,6 +1975,10 @@ msgstr "Масштаб: приблизить"
 msgid "Zoom Out"
 msgstr "Масштаб: удалиться"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Сброс"
+
 msgid "Clear Console"
 msgstr "Очистить консоль"
 
@@ -1974,6 +2003,10 @@ msgstr "Символ"
 msgid "Comment"
 msgstr "Комментарий"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Масштаб"
+
 msgid "Graph"
 msgstr "Граф (субпатч)"
 
@@ -1994,9 +2027,6 @@ msgstr "DSP выключено"
 
 msgid "Test Audio and MIDI..."
 msgstr "Проверка аудио и MIDI..."
-
-msgid "Load Meter"
-msgstr "Измеритель загрузки"
 
 msgid "Audio Settings..."
 msgstr "Настройки аудио..."
@@ -2025,6 +2055,9 @@ msgstr "Закрыть подокна"
 msgid "Parent Window"
 msgstr "Родительское окно"
 
+msgid "Load Meter"
+msgstr "Измеритель загрузки"
+
 msgid "Message..."
 msgstr "Сообщение..."
 
@@ -2046,8 +2079,9 @@ msgstr "Проверить обновления"
 msgid "Report a bug"
 msgstr "Сообщить об ошибке"
 
-msgid "Clear Menu"
-msgstr "Очистить меню"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Текстовые файлы Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2168,6 +2202,9 @@ msgstr "Удалить"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "игнорируется '%s': невозможно распознать файл Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Очистить меню"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr ""

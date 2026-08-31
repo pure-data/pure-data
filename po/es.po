@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-05-12 15:31+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"PO-Revision-Date: 2026-08-29 08:51+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -621,6 +621,9 @@ msgstr "Preferencias de MIDI"
 msgid "deken preferences"
 msgstr "Preferencias de deken"
 
+msgid "keyboard shortcuts"
+msgstr "atajos de teclado"
+
 msgid "misc preferences"
 msgstr "Otras preferencias"
 
@@ -709,6 +712,10 @@ msgstr ""
 #, tcl-format
 msgid "using font: %1$s %2$s"
 msgstr "Utilizando fuente: %1$s %2$s"
+
+#, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr "Ignorando el plugin inexistente '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -849,6 +856,9 @@ msgstr "No se pudo eliminar el archivo suelto '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "No se pudo renombrar el archivo descargado a '%s'"
 
+msgid "~"
+msgstr "~"
+
 msgid "Search URLs:"
 msgstr "Buscar URLs"
 
@@ -885,6 +895,15 @@ msgstr "Mantener archivo(s) de paquete después de la instalación"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Agregar librerías recién instaladas a las rutas de búsqueda de Pd"
+
+msgid "- Always add to search path"
+msgstr "- Añadir siempre a la ruta de búsqueda"
+
+msgid "- Never add to search path"
+msgstr "- Nunca añadir a la ruta de búsqueda"
+
+msgid "- Prompt before adding"
+msgstr "- Preguntar antes de añadir"
 
 msgid "Platform settings:"
 msgstr "Configuraciones de plataforma:"
@@ -1210,6 +1229,10 @@ msgstr "[deken] plataforma detectada: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "No se pudo encontrar un menú para agregar '%s'"
+
+#, tcl-format
+msgid "Downgrading %s to %s"
+msgstr "Rebajando %s a %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1949,6 +1972,9 @@ msgstr "Acercar"
 msgid "Zoom Out"
 msgstr "Alejar"
 
+msgid "Reset Zoom"
+msgstr "Restablecer Zoom"
+
 msgid "Clear Console"
 msgstr "Limpiar consola"
 
@@ -1973,6 +1999,10 @@ msgstr "Símbolo"
 msgid "Comment"
 msgstr "Comentario"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Escala"
+
 msgid "Graph"
 msgstr "Gráfico"
 
@@ -1993,9 +2023,6 @@ msgstr "Apagar DSP"
 
 msgid "Test Audio and MIDI..."
 msgstr "Prueba de audio y MIDI..."
-
-msgid "Load Meter"
-msgstr "Carga de CPU"
 
 msgid "Audio Settings..."
 msgstr "Configuraciones de audio..."
@@ -2024,6 +2051,9 @@ msgstr "Cerrar sub-ventanas"
 msgid "Parent Window"
 msgstr "Ventana contenedora"
 
+msgid "Load Meter"
+msgstr "Carga de CPU"
+
 msgid "Message..."
 msgstr "Mensaje..."
 
@@ -2045,8 +2075,8 @@ msgstr "Buscar actualizaciones"
 msgid "Report a bug"
 msgstr "Reportar un error"
 
-msgid "Clear Menu"
-msgstr "Borrar menú"
+msgid "Clear Recent Files"
+msgstr "Limpiar Archivos Recientes"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2166,6 +2196,9 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Borrar menú"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) CORCHETE DE CIERRE FALTANTE ']': "

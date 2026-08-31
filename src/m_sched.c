@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "m_private_utils.h"
 #include "s_stuff.h"
 #ifdef _WIN32
 #include <windows.h>
@@ -190,6 +191,7 @@ void glob_audiostatus(void)
     /* rewrite me */
 }
 
+static atomic_int sched_xrunsamples;
 static int sched_diored;
 static int sched_dioredtime;
 static int sched_meterson;
@@ -207,6 +209,11 @@ void sys_log_error(int type)
         sched_diored = 1;
     }
     sched_dioredtime = sched_counter + APPROXTICKSPERSEC;
+}
+
+void sys_reportxrun(int nsamples)
+{
+    atomic_int_fetch_add(&sched_xrunsamples, nsamples);
 }
 
 static int sched_lastinclip, sched_lastoutclip,
@@ -434,7 +441,7 @@ int (*sys_idlehook)(void);
 int sched_idletask(void)
 {
     static int sched_nextmeterpolltime, sched_nextpingtime;
-    int rtn = 0;
+    int rtn = 0, xrunsamples;
     sys_lock();
     if (sys_pollgui())
         rtn = 1;
@@ -449,6 +456,19 @@ int sched_idletask(void)
         glob_watchdog(0);
             /* ping every 2 seconds */
         sched_nextpingtime = sched_counter + 2 * APPROXTICKSPERSEC;
+    }
+
+        /* check for xruns */
+    xrunsamples = atomic_int_exchange(&sched_xrunsamples, 0);
+    if (xrunsamples > 0)
+    {
+        t_pd *x;
+        sys_lock();
+        sys_log_error(ERR_DATALATE);
+        x = gensym("pd-xrun")->s_thing;
+        if (x)
+            pd_float(x, xrunsamples);
+        sys_unlock();
     }
 
         /* clear the "DIO error" warning 1 sec after it flashes */

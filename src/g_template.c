@@ -154,7 +154,7 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
         ds1->ds_type == ds2->ds_type &&
             (ds1->ds_type != DT_ARRAY ||
                 (ds1->ds_arraytemplate == ds2->ds_arraytemplate &&
-                    ds1->ds_arraydeflength == ds2->ds_arraydeflength)));
+                    ds1->ds_default == ds2->ds_default)));
 }
 
 /* -- templates, the active ingredient in "struct" objects defined below. -- */
@@ -201,15 +201,24 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     template_addtolist(x);
     while (argc > 0)
     {
-        int newtype, oldn, newn, newarraydeflength= 1;
+        int newtype, oldn, newn;
         t_symbol *newname, *newarraytemplate = &s_, *newtypesym;
+        t_float defaultval = 0;
         if (argc < 2 || argv[0].a_type != A_SYMBOL ||
             argv[1].a_type != A_SYMBOL)
                 goto bad;
         newtypesym = argv[0].a_w.w_symbol;
         newname = argv[1].a_w.w_symbol;
         if (newtypesym == &s_float)
+        {
             newtype = DT_FLOAT;
+                /* if next arg is float it's the default value for the field */
+            if (argc >= 3 && argv[2].a_type == A_FLOAT)
+            {
+                defaultval = argv[2].a_w.w_float;
+                argc--; argv++;
+            }
+        }
         else if (newtypesym == &s_symbol)
             newtype = DT_SYMBOL;
                 /* "list" is old name.. accepted here but never saved as such */
@@ -218,6 +227,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         else if (newtypesym == gensym("array"))
         {
             t_symbol *templatename;
+            defaultval = 1; /* default length of array */
             if (argc < 3
                 || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
             )
@@ -232,8 +242,8 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
-                if ((newarraydeflength = argv[3].a_w.w_float) < 1)
-                    newarraydeflength = 1;
+                if ((defaultval = argv[3].a_w.w_float) < 1)
+                    defaultval = 1;
                 argc -= 2;
                 argv += 2;
             }
@@ -251,7 +261,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
-        x->t_vec[oldn].ds_arraydeflength = newarraydeflength;
+        x->t_vec[oldn].ds_default = defaultval;
     bad:
         argc -= 2; argv += 2;
     }
@@ -614,11 +624,18 @@ void template_notify(t_template *template, t_symbol *s, int argc, t_atom *argv)
 }
 
     /* bash the first of (argv) with a pointer to a scalar, and send on
-    to template as a notification message */
+    to template as a notification message.  This is called from hither and
+    yon, without always checking that the template was found correctly.
+    The template _should_ always be nonzero. */
 void template_notifyforscalar(t_template *template, t_glist *owner,
     t_scalar *sc, t_symbol *s, int argc, t_atom *argv)
 {
     t_gpointer gp;
+    if (!template)
+    {
+        bug("template_notifyforscalar");
+        return;
+    }
     gpointer_init(&gp);
     gpointer_setglist(&gp, owner, sc);
     SETPOINTER(argv, &gp);
@@ -1396,20 +1413,18 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-    char tag0[80], tag[80];
-    const char*tags[] = {tag, tag0, "curve"};
+    char tag[80];
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag0, "curve%p", x);
-    sprintf(tag , "curve%p_data%p", x, data);
+    sprintf(tag, "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            int outline;
+            int fill, outline;
             t_word pix[200];
 
             if (n > 100)
@@ -1426,35 +1441,20 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
-            if (glist->gl_isgraph)
-                width *= glist_getzoom(glist);
             outline = numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
-
-            pdgui_vmess(0, "crr iiii rf ri rS",
-                glist_getcanvas(glist), "create",
-                (flags & CLOSED)?"polygon":"line",
-                0, 0, 0, 0,
-                "-width", width,
-                "-smooth", !!(flags & BEZ),
-                "-tags", 3, tags);
+            if (flags & CLOSED)
+                fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+            else fill = -1;
+            pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                glist_getcanvas(glist), tag,
+                (fill >= 0), !!(flags & BEZ), width,
+                (fill >= 0 ? fill : 0), outline,
+                0, 0, 0, 0);
 
             pdgui_vmess(0, "crs w",
-                glist_getcanvas(glist), "coords", tag,
-                2*n, pix);
-
-            if (flags & CLOSED)
-            {
-                int fill = numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
-                pdgui_vmess(0, "crs rk rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", fill,
-                    "-outline", outline);
-            } else
-                pdgui_vmess(0, "crs rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", outline);
+                glist_getcanvas(glist), "coords", tag, 2*n, pix);
         }
         else post(
             "warning: drawing shapes need at least two points to be graphed");
@@ -1462,7 +1462,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
+                tag);
     }
 }
 
@@ -1484,11 +1485,10 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     if (THISTMPL->curve_motion_vertex < 0)   /* drag the whole object */
     {
         t_glist *glist = THISTMPL->curve_motion_glist;
-        t_float zoom = (t_float)glist_getzoom(glist);
         int idtx, idty;
             /* accumulate fractional parts (while displace API expects ints) */
-        THISTMPL->curve_motion_xfrac += dx / zoom;
-        THISTMPL->curve_motion_yfrac += dy / zoom;
+        THISTMPL->curve_motion_xfrac += dx;
+        THISTMPL->curve_motion_yfrac += dy;
         idtx = (int)THISTMPL->curve_motion_xfrac;
         idty = (int)THISTMPL->curve_motion_yfrac;
         THISTMPL->curve_motion_xfrac -= idtx;
@@ -2047,9 +2047,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset,
         yonset);
 
-    if (glist->gl_isgraph)
-        linewidth *= glist_getzoom(glist);
-
     if (tovis)
     {
          /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
@@ -2097,25 +2094,14 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                        glist_getcanvas(glist), tag, "-", 0,
-                        color, THISGUI->i_backgroundcolor,
+                    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+                        glist_getcanvas(glist), tag0, "-",
+                        0, (int)linewidth, color,
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey +
+                        inextx, (int)glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth));
-
-                    /* pdgui_vmess(0, "crr iiii rk rf rS",
-                        glist_getcanvas(glist), "create", "rectangle",
-                        ixpix , (int) glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist, basey +
-                            fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth),
-                        "-fill", color,
-                        "-width", 0.,
-                        "-tags", 3, tags); */
+                    );
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -2226,13 +2212,12 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                pdgui_vmess(0, "crr ri rk rk ri rS",
-                    glist_getcanvas(glist), "create", "polygon",
-                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    "-fill", outline,
-                    "-outline", outline,
-                    "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags);
+                pdgui_vmess("pdtk_canvas_create_poly", "cr ii i kk iiii",
+                    glist_getcanvas(glist), tag0,
+                    1, (style == PLOTSTYLE_BEZ),
+                    1,
+                    outline, outline,
+                    0, 0, 0, 0);
 
                 pdgui_vmess(0, "crs w",
                     glist_getcanvas(glist), "coords", tag0,
@@ -2283,15 +2268,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ndrawn = 2;
                 }
 
-                if(ndrawn)
+                if (ndrawn)
                 {
-                    pdgui_vmess(0, "crr iiii rf rk ri rS",
-                        glist_getcanvas(glist), "create", "line",
-                        0, 0, 0, 0,
-                        "-width", linewidth,
-                        "-fill", outline,
-                        "-smooth", (style == PLOTSTYLE_BEZ),
-                        "-tags", 3, tags);
+                    pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                        glist_getcanvas(glist), tag0,
+                        0, (style == PLOTSTYLE_BEZ), linewidth,
+                        outline, outline,
+                        0, 0, 0, 0);
                     pdgui_vmess(0, "crs w",
                         glist_getcanvas(glist), "coords", tag0,
                         ndrawn*2, coordinates);
@@ -2350,7 +2333,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         }
             /* and then the trace */
         pdgui_vmess("pdtk_canvas_delete", "cs",
-            glist_getcanvas(glist), tag);
+            glist_getcanvas(glist), tag0);
     }
 }
 
@@ -3090,20 +3073,26 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
         char *textbuf;
         int textlen;
             /* draw label */
-        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        /* SETSYMBOL(fontatoms+0, gensym(sys_font));
         SETFLOAT (fontatoms+1,
-            -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+            -sys_hostfontsize(glist_getfont(glist), 1));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight)); */
             /* display label */
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            pdgui_vmess("pdtk_text_new", "cS iis i k",
+                glist_getcanvas(glist), 2, tags,
+                xloc, yloc, x->x_label->s_name,
+                sys_hostfontsize(glist_getfont(glist), 1),
+                color);
+            /* pdgui_vmess(0, "crr ii rs rk rs rA rS",
                 glist_getcanvas(glist), "create", "text",
-                xloc, yloc,
+                xloc, yloc, x->x_label->s_name,
+
                 "-anchor", "nw",
                 "-fill", color,
                 "-text", x->x_label->s_name,
                 "-font", 3, fontatoms,
-                "-tags", 2, tags);
+                "-tags", 2, tags); */
             /* draw text */
         rtext_setcolor(rtext, color);
         drawtext_gettext(z, data, &textbuf, &textlen);

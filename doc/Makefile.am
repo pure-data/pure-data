@@ -308,10 +308,10 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
-     ./4.data.structures/01.scalars.pd \
+     ./4.data.structures/01.introduction.pd \
      ./4.data.structures/02.getting.data.pd \
-     ./4.data.structures/03.setting.data.pd \
-     ./4.data.structures/04.append.pd \
+     ./4.data.structures/03.appending.and.changing.pd \
+     ./4.data.structures/04.editing.pd \
      ./4.data.structures/05.symbol.text.pd \
      ./4.data.structures/06.array.pd \
      ./4.data.structures/07.graph.on.parent.pd \

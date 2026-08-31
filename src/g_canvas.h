@@ -118,8 +118,8 @@ typedef struct _editor
     t_binbuf *e_deleted;            /* last stuff we deleted */
     t_guiconnect *e_guiconnect;     /* GUI connection for filtering messages */
     struct _glist *e_glist;         /* glist which owns this */
-    int e_xwas;                     /* xpos on last mousedown or motion event */
-    int e_ywas;                     /* ypos, similarly */
+    float e_xwas;                   /* xpos on last mousedown or motion event */
+    float e_ywas;                   /* ypos, similarly */
     int e_selectline_index1;        /* indices for the selected line if any */
     int e_selectline_outno;         /* (only valid if e_selectedline is set) */
     int e_selectline_index2;
@@ -130,8 +130,8 @@ typedef struct _editor
     unsigned int e_textdirty: 1;    /* one if e_textedfor has changed */
     unsigned int e_selectedline: 1; /* one if a line is selected */
     unsigned int e_waittodrag: 1;   /* one if first move for a mouse drag */
-    int e_xnew;                     /* xpos for next move event */
-    int e_ynew;                     /* ypos, similarly */
+    float e_xnew;                   /* xpos for next move event */
+    float e_ynew;                   /* ypos, similarly */
     unsigned char *e_pastebuffer;   /* array of characters to paste */
     int e_npaste;                   /* number of chars to paste */
 } t_editor;
@@ -212,7 +212,7 @@ struct _glist
     unsigned int gl_hidetext:1;     /* hide object-name + args when GO */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
-    int gl_zoom;                    /* zoom factor (integer zoom-in only) */
+    int gl_zoom;                    /* old-style zoom factor, kept for compatibility; always 1*/
     void *gl_privatedata;           /* private data */
 };
 
@@ -228,10 +228,10 @@ struct _glist
 
 typedef struct _dataslot
 {
-    int ds_type;                    /* one of DT_FLOAT, etc. */
-    t_symbol *ds_name;              /* name of the data slot */
-    t_symbol *ds_arraytemplate;     /* arrays only: template for elements */
-    int ds_arraydeflength;          /* arrays only: default # of elements */
+    int ds_type;                /* one of DT_FLOAT, etc. */
+    t_symbol *ds_name;          /* name of the data slot */
+    t_symbol *ds_arraytemplate; /* arrays only: template for elements */
+    t_float ds_default;         /* init value for floats or size for arrays */
 } t_dataslot;
 
 typedef struct _template
@@ -430,7 +430,7 @@ EXTERN t_glist *glist_findgraph(t_glist *x);
 EXTERN int glist_getfont(t_glist *x);
 EXTERN int glist_fontwidth(t_glist *x);
 EXTERN int glist_fontheight(t_glist *x);
-EXTERN int glist_getzoom(t_glist *x);
+EXTERN int glist_getzoom(t_glist *x);  /* useless: zoom is now managed by GUI */
 EXTERN void glist_sort(t_glist *canvas);
 EXTERN void glist_read(t_glist *x, t_symbol *filename, t_symbol *format);
 EXTERN void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format);
@@ -631,7 +631,7 @@ EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     int *p_nextmsg, int selectit);
 EXTERN int scalar_click(t_gobj *z, struct _glist *owner,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
-
+EXTERN void scalar_notifynew(t_scalar *x, t_glist *gl, int loadbang);
 int scalar_doclick(t_word *data, t_template *pdtemplate, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,

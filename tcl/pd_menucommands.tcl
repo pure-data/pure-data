@@ -35,6 +35,9 @@ proc ::pd_menucommands::menu_open {} {
 # TODO set the current font family & size via the -fontmap option:
 # http://wiki.tcl.tk/41871
 proc ::pd_menucommands::menu_print {mytoplevel} {
+    if { [winfo exists ${mytoplevel}] } {
+        set mytoplevel [winfo toplevel ${mytoplevel}]
+    }
     set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
     set filename [tk_getSaveFile -initialfile $initialfile \
                       -title [_ "Print..." ] \

@@ -2,6 +2,7 @@
 package provide pdtk_canvas 0.1
 
 package require pd_bindings
+package require pd_canvaszoom
 
 namespace eval ::pdtk_canvas:: {
 
@@ -108,6 +109,11 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
         set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
     }
 
+    # scale window size to default zoom level
+    set zoom [::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom]
+    set width [expr int($width * $zoom)]
+    set height [expr int($height * $zoom)]
+
     foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
@@ -117,6 +123,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
     ::pdwindow::busyrelease
     # set the loaded array for this new window so things can track state
     set ::loaded($mytoplevel) 0
+
     toplevel $mytoplevel -width $width -height $height -class PatchWindow
     wm group $mytoplevel .
     $mytoplevel configure -menu $::patch_menubar
@@ -149,6 +156,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
     }
 
     ::pd_bindings::patch_bindings $mytoplevel
+    ::pd_canvaszoom::zoominit $mytoplevel
 
     # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
@@ -232,22 +240,22 @@ proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
 # TODO put these procs into the pdtk_canvas namespace
 proc pdtk_canvas_motion {tkcanvas x y mods} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel motion [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $mods"
+    pdsend "$mytoplevel motion [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $mods"
 }
 
 proc pdtk_canvas_mouse {tkcanvas x y b f} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
+    pdsend "$mytoplevel mouse [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b $f"
 }
 
 proc pdtk_canvas_mouseup {tkcanvas x y b {f 0}} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
+    pdsend "$mytoplevel mouseup [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b $f"
 }
 
 proc pdtk_canvas_rightclick {tkcanvas x y b} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b 8"
+    pdsend "$mytoplevel mouse [::pd_canvaszoom::canvasxy $tkcanvas $x $y] $b 8"
 }
 
 # on X11, button 2 pastes from X11 clipboard, so simulate normal paste actions
@@ -307,14 +315,16 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     } else {
         ${popup} entryconfigure [_ "Open"] -state disabled
     }
+    set tkcanvas [tkcanvas_name $mytoplevel]
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
     set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
     set top_yview_pix [expr [lindex [$tkcanvas yview] 0] * [lindex $scrollregion 3]]
-    # take the mouse clicks in canvas coords, add the root of the canvas
+    # take the mouse clicks in canvas coords, scale to zoom factor, add the root of the canvas
     # window, and subtract the area that is obscured by scrolling
-    set xpopup [expr int($xcanvas + [winfo rootx $tkcanvas] - $left_xview_pix)]
-    set ypopup [expr int($ycanvas + [winfo rooty $tkcanvas] - $top_yview_pix)]
+    set xpopup [expr int(($xcanvas * $zdepth) + [winfo rootx $tkcanvas] - $left_xview_pix)]
+    set ypopup [expr int(($ycanvas * $zdepth) + [winfo rooty $tkcanvas] - $top_yview_pix)]
     tk_popup ${popup} ${xpopup} ${ypopup} 0
 }
 
@@ -389,17 +399,25 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
-proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+# If the optional second parameter is 1, the operation is executed immediately.
+# Otherwise, it is deferred after 'idle'.
+proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas {immediate 0}} {
     # delay until we are ready
-    after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    if {$immediate} {
+        ::pdtk_canvas::do_getscroll $tkcanvas
+    } else {
+        after idle [list ::pdtk_canvas::do_getscroll $tkcanvas]
+    }
 }
+
 proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
         return
     }
     set mytoplevel [winfo toplevel $tkcanvas]
-    set height [winfo height $tkcanvas]
-    set width [winfo width $tkcanvas]
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
+    set height [expr [winfo height $tkcanvas] / $zdepth]
+    set width [expr [winfo width $tkcanvas] / $zdepth]
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
@@ -557,29 +575,31 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
 proc pdtk_canvas_create_line {canvas tag grouptag dashed width color args} {
     if ($dashed) { set dashoption "-dash -"; } else {set dashoption "" }
 
-    if {$grouptag eq "-"} {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color -capstyle projecting \
-            -tags \{$tag $grouptag\}]
-    } else {
-        eval [concat $canvas create line $args $dashoption \
-            -width $width -fill $color -capstyle projecting \
-            -tags \{$tag $grouptag\}]
-    }
+    $canvas create line {*}[concat $args $dashoption] \
+        -width $width -fill $color \
+        -tags [concat $tag $grouptag]
 }
 
 # special version above for patchcords, adding "cord" to tags so that
 #  the "raise cords" command in g_text.c will work.  In gtk we'll do this
 #  a better way.
 
-proc pdtk_canvas_create_patchcord {canvas tag grouptag dashed width color args} {
-
-#  old version using eval:
-#    eval [concat $canvas create line $args \
-#        -width $width -fill $color -capstyle projecting -tags \{$tag cord\}]
+proc pdtk_canvas_create_patchcord {canvas tag grouptag unused width color args} {
     $canvas create line {*}$args \
         -width $width -fill $color -capstyle projecting -tags [list $tag cord]
 
+}
+
+proc pdtk_canvas_create_poly {canvas tag filled bezier \
+    width fillcolor outlinecolor args} {
+    if ($filled) {
+        $canvas create polygon {*}$args \
+        -width $width -smooth $bezier -fill $fillcolor -outline $outlinecolor \
+            -tags $tag
+    } else {
+        $canvas create line {*}$args \
+            -width $width -smooth $bezier -fill $outlinecolor -tags $tag
+    }
 }
 
 proc pdtk_canvas_configure_line {canvas tag width color} {
@@ -620,7 +640,6 @@ proc pdtk_text_select {canvas tag start end} {
         $canvas focus $tag
     }
 }
-
 
 proc pdtk_canvas_delete {canvas tag} {
     $canvas delete $tag

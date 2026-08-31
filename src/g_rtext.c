@@ -450,9 +450,42 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         else ncolumns = widthspec_c;
     }
     *widthp = ncolumns * fontwidth +
-        (x->x_text? (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? LMARGIN + RMARGIN : 0);
     *heightp = nlines * fontheight +
-        (x->x_text? (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? TMARGIN + BMARGIN : 0);
+}
+
+/* reduce a formatted number (in <buf>) to not exceed <maxsize> chars
+ * the result in <buf> is 0-terminated
+ */
+const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize) {
+    int wantreduce = bufsize - maxsize;
+    char *decimal = 0, *nextchar, *ebuf = buf + bufsize,
+        *s1, *s2;
+    int ndecimals;
+    if(maxsize >= bufsize)
+        return buf;
+    buf[bufsize] = 0;
+    for (decimal = buf; decimal < ebuf; decimal++)
+        if (*decimal == '.')
+            break;
+    if (decimal >= ebuf)
+        goto giveup;
+    for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
+        if (*nextchar < '0' || *nextchar > '9')
+            break;
+    if (nextchar - decimal - 1 < wantreduce)
+        goto giveup;
+    for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
+         s2 < ebuf; s1++, s2++)
+        *s1 = *s2;
+    buf[maxsize-0] = 0;
+    return buf;
+ giveup:
+        /* give up and bash last char to '>' */
+    buf[maxsize-1] = '>';
+    buf[maxsize-0] = 0;
+    return buf;
 }
 
     /* same as above, but for atom boxes, which are always on one line. */
@@ -469,35 +502,12 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         binbuf_getvec(x->x_text->te_binbuf)->a_type == A_FLOAT &&
         x->x_bufsize > charwidth)
     {
-            /* try to reduce size by dropping decimal digits */
-        int wantreduce = x->x_bufsize - charwidth;
-        char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
-            *s1, *s2;
-        int ndecimals;
+        t_float f = atom_getfloat(binbuf_getvec(x->x_text->te_binbuf));
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
-        tempbuf[x->x_bufsize] = 0;
-        ebuf = tempbuf + x->x_bufsize;
-        for (decimal = tempbuf; decimal < ebuf; decimal++)
-            if (*decimal == '.')
-                break;
-        if (decimal >= ebuf)
-            goto giveup;
-        for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
-            if (*nextchar < '0' || *nextchar > '9')
-                break;
-        if (nextchar - decimal - 1 < wantreduce)
-            goto giveup;
-        for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
-            s2 < ebuf; s1++, s2++)
-                *s1 = *s2;
+            // 3rd argument should be charwidth
+        gatom_float_sizelimit(tempbuf, x->x_bufsize, charwidth);
+
         *outchars_b_p = charwidth;
-        goto done;
-    giveup:
-            /* give up and bash last char to '>' */
-        tempbuf[charwidth-1] = '>';
-        tempbuf[charwidth] = 0;
-        *outchars_b_p = charwidth;
-    done: ;
         *indexp = findx;
         *widthp = charwidth * fontwidth;
     }
@@ -541,8 +551,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
-    *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
-    *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
+    *widthp += LMARGIN + RMARGIN - 2;
+    *heightp = fontheight + TMARGIN + BMARGIN - 1;
 }
 
     /* the following routine computes line breaks and carries out
@@ -623,12 +633,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         const char *tags[] = {x->x_tag, "text"};
         int lmargin = (x->x_text ? LMARGIN : 0),
             tmargin = (x->x_text ? TMARGIN : 0);
-        if (glist_getzoom(x->x_glist) > 1)
-        {
-            /* zoom margins */
-            lmargin *= glist_getzoom(x->x_glist);
-            tmargin *= glist_getzoom(x->x_glist);
-        }
             /* we add an extra space to the string just in case the last
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
