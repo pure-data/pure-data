@@ -302,6 +302,7 @@ proc ::pdtk_canvas::done_popup {mytoplevel action x y} {
 proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties hasopen} {
     set toplevel [winfo toplevel $mytoplevel]
     set tkcanvas [tkcanvas_name $toplevel]
+
     set popup ${toplevel}.popup
     destroy $popup
     ::pdtk_canvas::create_popup ${popup} ${toplevel} ${xcanvas} ${ycanvas}
@@ -315,16 +316,21 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     } else {
         ${popup} entryconfigure [_ "Open"] -state disabled
     }
-    set tkcanvas [tkcanvas_name $mytoplevel]
+
     set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
-    set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
-    set top_yview_pix [expr [lindex [$tkcanvas yview] 0] * [lindex $scrollregion 3]]
+    foreach {scrollL scrollT scrollR scrollB} [$tkcanvas cget -scrollregion] {break}
+    foreach {viewL viewR} [$tkcanvas xview] {break}
+    foreach {viewT viewB} [$tkcanvas yview] {break}
+    set viewX [expr (${scrollR}-${scrollL})*${viewL}+${scrollL}]
+    set viewY [expr (${scrollB}-${scrollT})*${viewT}+${scrollT}]
+
     # take the mouse clicks in canvas coords, scale to zoom factor, add the root of the canvas
     # window, and subtract the area that is obscured by scrolling
-    set xpopup [expr int(($xcanvas * $zdepth) + [winfo rootx $tkcanvas] - $left_xview_pix)]
-    set ypopup [expr int(($ycanvas * $zdepth) + [winfo rooty $tkcanvas] - $top_yview_pix)]
+    set xpopup [expr int(($xcanvas * $zdepth) + [winfo rootx $tkcanvas] - $viewX)]
+    set ypopup [expr int(($ycanvas * $zdepth) + [winfo rooty $tkcanvas] - $viewY)]
+
     tk_popup ${popup} ${xpopup} ${ypopup} 0
 }
 
