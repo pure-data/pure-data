@@ -14,8 +14,8 @@ namespace eval ::pd_canvaszoom:: {
     variable default_zoom
 }
 
-set ::pd_canvaszoom::steps_by_octave 100
-set ::pd_canvaszoom::steps_increment 20
+set ::pd_canvaszoom::steps_by_octave 120
+set ::pd_canvaszoom::steps_increment 10
 
 namespace eval ::pd_canvaszoom::canvas:: {
     # a namespace for the renamed canvas-procs
