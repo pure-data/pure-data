@@ -14,17 +14,26 @@ namespace eval ::pd_canvaszoom:: {
     variable default_zoom
 }
 
+set ::pd_canvaszoom::steps_by_octave 100
+set ::pd_canvaszoom::steps_increment 20
+
 namespace eval ::pd_canvaszoom::canvas:: {
     # a namespace for the renamed canvas-procs
 }
 
 proc ::pd_canvaszoom::steps2depth {steps} {
-    return [expr pow(2, $steps/100.0)]
+    return [expr pow(2, $steps/double($::pd_canvaszoom::steps_by_octave))]
+}
+
+proc ::pd_canvaszoom::depth2steps {depth} {
+    return [expr int((log($depth) / log(2.0)) * $::pd_canvaszoom::steps_by_octave)]
 }
 
 proc ::pd_canvaszoom::set_default_zoom {steps} {
     set ::pd_canvaszoom::default_zoom $steps
-    ::pd_guiprefs::write default_zoom $::pd_canvaszoom::default_zoom
+    set newpref [::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom]
+    set newpref [expr int(100.0 * $newpref)]%
+    ::pd_guiprefs::write default_zoom $newpref
 }
 
 proc ::pd_canvaszoom::init_default_zoom {} {
@@ -33,12 +42,20 @@ proc ::pd_canvaszoom::init_default_zoom {} {
 
     set default_zoom [::pd_guiprefs::read default_zoom]
     if { $default_zoom == {}} { set default_zoom 0 }
+    if {[string index $default_zoom end] == {%} } {
+        set default_zoom [string range $default_zoom 0 end-1]
+        set default_zoom [::pd_canvaszoom::depth2steps [expr $default_zoom / 100.0]]
+    }
+    # round to the nearest steps_increment
+    set incrs $::pd_canvaszoom::steps_increment
+    set default_zoom [expr int(double($default_zoom) / $incrs + 0.5) * $incrs]
 }
 
 after idle ::pd_canvaszoom::init_default_zoom
 
 proc ::pd_canvaszoom::default_zoom_callback {widget value} {
-    set value [expr 20 * int($value / 20.)]
+    set incrs $::pd_canvaszoom::steps_increment
+    set value [expr $incrs * int($value / double($incrs))]
     ::pd_canvaszoom::set_default_zoom $value
     set zdepth [expr int([::pd_canvaszoom::steps2depth $value] * 100)]
     ${widget}.l configure -text [_ "Default zoom level: %d%%" ${zdepth}]
@@ -51,8 +68,9 @@ proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
     if [catch {::ttk::scale ${widget}.z} ] {
         scale ${widget}.z -showvalue false
     }
+    set spo $::pd_canvaszoom::steps_by_octave
     ${widget}.z configure \
-        -from -100 -to 200 -orient horizontal \
+        -from [expr -1 * $spo] -to [expr 2 * $spo] -orient horizontal \
         -length 300 \
         -variable ::pd_canvaszoom::default_zoom \
         -command [list ::pd_menucommands::scheduleAction ::pd_canvaszoom::default_zoom_callback ${widget}]
@@ -287,8 +305,9 @@ proc ::pd_canvaszoom::stepzoom {c steps} {
     variable zsteps
     # don't zoom if not initialized
     if { ! [info exists zsteps($c)] } { return  }
-    set newsteps [expr $zsteps($c) + $steps / 6.]
-    set newsteps [expr min(max($newsteps, -400), 400)]
+    set newsteps [expr $zsteps($c) + $steps / [expr 120 / $::pd_canvaszoom::steps_increment]]
+    set spo $::pd_canvaszoom::steps_by_octave
+    set newsteps [expr min(max($newsteps, [expr -4 * $spo]), [expr 4 * $spo])]
     ::pd_canvaszoom::setzoom $c $newsteps
 }
 
