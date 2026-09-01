@@ -238,30 +238,36 @@ proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     $c yview moveto $scrolly
 }
 
-proc ::pd_canvaszoom::delete_toastzoom {c} {
-    if {[info commands $c] == {}} return
-    $c delete _zoomtoast_
+proc ::pd_canvaszoom::delete_toastzoom {w} {
+    if [winfo exists $w] {
+        wm withdraw $w
+    }
 }
 
 proc ::pd_canvaszoom::toastzoom {c} {
     variable zdepth
     if { ! [info exists zdepth($c)] } {return}
-    set zoom [expr int($zdepth($c) * 100)]
-    set c ::pd_canvaszoom::canvas::$c
-    set scrollregion [$c cget -scrollregion]
-    set x0 [lindex $scrollregion 0]
-    set y0 [lindex $scrollregion 1]
-    set W [expr [lindex $scrollregion 2] - [lindex $scrollregion 0]]
-    set H [expr [lindex $scrollregion 3] - [lindex $scrollregion 1]]
-    set xT [expr $x0 + $W * [lindex [$c xview] 0] + 3]
-    set yT [expr $y0 + $H * [lindex [$c yview] 0] + 3]
-    after cancel ::pd_canvaszoom::delete_toastzoom $c
-    delete_toastzoom $c
-    $c create rectangle $xT $yT [expr $xT + 50] [expr $yT + 16] -tags _zoomtoast_ -fill "#E7E7E7"
-    $c create text [expr $xT + 5] $yT -tags _zoomtoast_ \
-        -text "$zoom% " \
-        -fill black -anchor nw -font [get_font_for_size 14]
-    after 1200 ::pd_canvaszoom::delete_toastzoom $c
+    set ::pd_canvaszoom::zoomtext($c) "[expr int($zdepth($c) * 100)]%"
+
+    set zwindow "${c}.canvaszoom"
+    if {![winfo exists ${zwindow} ]} {
+        toplevel ${zwindow}
+        wm overrideredirect ${zwindow} 1
+        label ${zwindow}.label \
+            -highlightthick 0 -relief solid -borderwidth 1 \
+            -textvariable ::pd_canvaszoom::zoomtext($c)
+        pack ${zwindow}.label -expand 1 -fill x
+    }
+    wm deiconify ${zwindow}
+
+    set geometry [format +%d+%d [expr [winfo rootx ${c}] + 3] [expr [winfo rooty ${c}] + 3]]
+    wm geometry ${zwindow} ${geometry}
+    after idle "[list wm geometry ${zwindow} ${geometry}]; raise ${zwindow}"
+
+    raise ${zwindow}
+
+    after cancel ::pd_canvaszoom::delete_toastzoom ${zwindow}
+    after 1200   ::pd_canvaszoom::delete_toastzoom ${zwindow}
 }
 
 set ::pd_canvaszoom::stepzoom_task {}
