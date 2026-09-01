@@ -255,6 +255,7 @@ proc ::pd_canvaszoom::toastzoom {c} {
         wm overrideredirect ${zwindow} 1
         label ${zwindow}.label \
             -highlightthick 0 -relief solid -borderwidth 1 \
+            -font TkFixedFont \
             -textvariable ::pd_canvaszoom::zoomtext($c)
         pack ${zwindow}.label -expand 1 -fill x
     }
