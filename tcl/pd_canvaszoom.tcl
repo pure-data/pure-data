@@ -72,7 +72,6 @@ proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
     ${widget}.z configure \
         -from [expr -1 * $spo] -to [expr 2 * $spo] -orient horizontal \
         -length 300 \
-        -variable ::pd_canvaszoom::default_zoom \
         -command [list ::pd_menucommands::scheduleAction ::pd_canvaszoom::default_zoom_callback ${widget}]
 
     pack ${widget}.l ${widget}.z -anchor w
