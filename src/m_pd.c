@@ -34,6 +34,7 @@ void pd_free(t_pd *x)
 {
     t_class *c = *x;
     if (c->c_freemethod) (*(t_freemethod)(c->c_freemethod))(x);
+    if (!c->c_size) return;
     if (c->c_patchable)
     {
         while (((t_object *)x)->ob_outlet)
@@ -43,7 +44,7 @@ void pd_free(t_pd *x)
         if (((t_object *)x)->ob_binbuf)
             binbuf_free(((t_object *)x)->ob_binbuf);
     }
-    if (c->c_size) t_freebytes(x, c->c_size);
+    t_freebytes(x, c->c_size);
 }
 
 void gobj_save(t_gobj *x, t_binbuf *b)
