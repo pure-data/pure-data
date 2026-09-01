@@ -520,7 +520,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
         "PatchWindow" {
             ::pd_menus::configure_for_canvas $mytoplevel
             set c [tkcanvas_name ${mytoplevel}]
-            if {[winfo exists ${c}]} {
+            if {[winfo exists ${c}] && [focus] eq [winfo toplevel ${c}]} {
                 focus ${c}
             }
         }
