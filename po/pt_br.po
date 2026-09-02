@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-30 19:31+0200\n"
+"POT-Creation-Date: 2026-09-01 15:30+0200\n"
 "PO-Revision-Date: 2026-05-13 20:11+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
@@ -735,6 +735,10 @@ msgstr "falha de inicialização do Pd"
 msgid "Failed to start Pd-core"
 msgstr "Falha ao iniciar o núcleo do Pd"
 
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
 
@@ -1218,7 +1222,7 @@ msgid "Could not find a menu for adding '%s'"
 msgstr "Não foi possível encontrar um menu para adicionar '%s'"
 
 #, fuzzy, tcl-format
-msgid "Downgrading %s to %s"
+msgid "Downgrading %1$s to %2$s"
 msgstr "Baixando '%s'"
 
 #, tcl-format
