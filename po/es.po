@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-01 15:30+0200\n"
-"PO-Revision-Date: 2026-08-29 08:51+0000\n"
+"PO-Revision-Date: 2026-09-02 13:30+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
@@ -746,7 +746,7 @@ msgstr "Falla al iniciar el núcleo-Pd"
 
 #, tcl-format
 msgid "Default zoom level: %d%%"
-msgstr ""
+msgstr "Nivel de zoom predeterminado: %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) LLAVE DE CIERRE FALTANTE '}': "
