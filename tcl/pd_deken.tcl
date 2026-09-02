@@ -3427,7 +3427,7 @@ proc ::deken::search::dekenserver::search {term} {
                     set protoend [string first "://" $url]
                     if { $protoend > 0 } {
                         set url2 "http[string range $url $protoend end]"
-                        set msg [_ "Downgrading %s to %s" ${url} ${url2}]
+                        set msg [_ "Downgrading %1\$s to %2\$s" ${url} ${url2}]
                         ::deken::post ${msg} warn
                         set url ${url2}
                     } else {

@@ -14,17 +14,26 @@ namespace eval ::pd_canvaszoom:: {
     variable default_zoom
 }
 
+set ::pd_canvaszoom::steps_by_octave 120
+set ::pd_canvaszoom::steps_increment 10
+
 namespace eval ::pd_canvaszoom::canvas:: {
     # a namespace for the renamed canvas-procs
 }
 
 proc ::pd_canvaszoom::steps2depth {steps} {
-    return [expr pow(2, $steps/100.0)]
+    return [expr pow(2, $steps/double($::pd_canvaszoom::steps_by_octave))]
+}
+
+proc ::pd_canvaszoom::depth2steps {depth} {
+    return [expr int((log($depth) / log(2.0)) * $::pd_canvaszoom::steps_by_octave)]
 }
 
 proc ::pd_canvaszoom::set_default_zoom {steps} {
     set ::pd_canvaszoom::default_zoom $steps
-    ::pd_guiprefs::write default_zoom $::pd_canvaszoom::default_zoom
+    set newpref [::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom]
+    set newpref [expr int(100.0 * $newpref)]%
+    ::pd_guiprefs::write default_zoom $newpref
 }
 
 proc ::pd_canvaszoom::init_default_zoom {} {
@@ -33,12 +42,20 @@ proc ::pd_canvaszoom::init_default_zoom {} {
 
     set default_zoom [::pd_guiprefs::read default_zoom]
     if { $default_zoom == {}} { set default_zoom 0 }
+    if {[string index $default_zoom end] == {%} } {
+        set default_zoom [string range $default_zoom 0 end-1]
+        set default_zoom [::pd_canvaszoom::depth2steps [expr $default_zoom / 100.0]]
+    }
+    # round to the nearest steps_increment
+    set incrs $::pd_canvaszoom::steps_increment
+    set default_zoom [expr int(double($default_zoom) / $incrs + 0.5) * $incrs]
 }
 
 after idle ::pd_canvaszoom::init_default_zoom
 
 proc ::pd_canvaszoom::default_zoom_callback {widget value} {
-    set value [expr 20 * int($value / 20.)]
+    set incrs $::pd_canvaszoom::steps_increment
+    set value [expr $incrs * int($value / double($incrs))]
     ::pd_canvaszoom::set_default_zoom $value
     set zdepth [expr int([::pd_canvaszoom::steps2depth $value] * 100)]
     ${widget}.l configure -text [_ "Default zoom level: %d%%" ${zdepth}]
@@ -51,10 +68,10 @@ proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
     if [catch {::ttk::scale ${widget}.z} ] {
         scale ${widget}.z -showvalue false
     }
+    set spo $::pd_canvaszoom::steps_by_octave
     ${widget}.z configure \
-        -from -100 -to 100 -orient horizontal \
-        -length 200 \
-        -variable ::pd_canvaszoom::default_zoom \
+        -from [expr -1 * $spo] -to [expr 2 * $spo] -orient horizontal \
+        -length 300 \
         -command [list ::pd_menucommands::scheduleAction ::pd_canvaszoom::default_zoom_callback ${widget}]
 
     pack ${widget}.l ${widget}.z -anchor w
@@ -238,30 +255,37 @@ proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     $c yview moveto $scrolly
 }
 
-proc ::pd_canvaszoom::delete_toastzoom {c} {
-    if {[info commands $c] == {}} return
-    $c delete _zoomtoast_
+proc ::pd_canvaszoom::delete_toastzoom {w} {
+    if [winfo exists $w] {
+        wm withdraw $w
+    }
 }
 
 proc ::pd_canvaszoom::toastzoom {c} {
     variable zdepth
     if { ! [info exists zdepth($c)] } {return}
-    set zoom [expr int($zdepth($c) * 100)]
-    set c ::pd_canvaszoom::canvas::$c
-    set scrollregion [$c cget -scrollregion]
-    set x0 [lindex $scrollregion 0]
-    set y0 [lindex $scrollregion 1]
-    set W [expr [lindex $scrollregion 2] - [lindex $scrollregion 0]]
-    set H [expr [lindex $scrollregion 3] - [lindex $scrollregion 1]]
-    set xT [expr $x0 + $W * [lindex [$c xview] 0] + 3]
-    set yT [expr $y0 + $H * [lindex [$c yview] 0] + 3]
-    after cancel ::pd_canvaszoom::delete_toastzoom $c
-    delete_toastzoom $c
-    $c create rectangle $xT $yT [expr $xT + 50] [expr $yT + 16] -tags _zoomtoast_ -fill "#E7E7E7"
-    $c create text [expr $xT + 5] $yT -tags _zoomtoast_ \
-        -text "$zoom% " \
-        -fill black -anchor nw -font [get_font_for_size 14]
-    after 1200 ::pd_canvaszoom::delete_toastzoom $c
+    set ::pd_canvaszoom::zoomtext($c) "[expr int($zdepth($c) * 100)]%"
+
+    set zwindow "${c}.canvaszoom"
+    if {![winfo exists ${zwindow} ]} {
+        toplevel ${zwindow}
+        wm overrideredirect ${zwindow} 1
+        label ${zwindow}.label \
+            -highlightthick 0 -relief solid -borderwidth 1 \
+            -font TkFixedFont \
+            -textvariable ::pd_canvaszoom::zoomtext($c)
+        pack ${zwindow}.label -expand 1 -fill x
+    }
+    wm deiconify ${zwindow}
+
+    set geometry [format +%d+%d [expr [winfo rootx ${c}] + 3] [expr [winfo rooty ${c}] + 3]]
+    wm geometry ${zwindow} ${geometry}
+    after idle "[list wm geometry ${zwindow} ${geometry}]; raise ${zwindow}"
+
+    raise ${zwindow}
+
+    after cancel ::pd_canvaszoom::delete_toastzoom ${zwindow}
+    after 1200   ::pd_canvaszoom::delete_toastzoom ${zwindow}
 }
 
 set ::pd_canvaszoom::stepzoom_task {}
@@ -280,8 +304,9 @@ proc ::pd_canvaszoom::stepzoom {c steps} {
     variable zsteps
     # don't zoom if not initialized
     if { ! [info exists zsteps($c)] } { return  }
-    set newsteps [expr $zsteps($c) + $steps / 6.]
-    set newsteps [expr min(max($newsteps, -400), 400)]
+    set newsteps [expr $zsteps($c) + $steps / [expr 120 / $::pd_canvaszoom::steps_increment]]
+    set spo $::pd_canvaszoom::steps_by_octave
+    set newsteps [expr min(max($newsteps, [expr -4 * $spo]), [expr 4 * $spo])]
     ::pd_canvaszoom::setzoom $c $newsteps
 }
 
