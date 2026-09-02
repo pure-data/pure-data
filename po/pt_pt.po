@@ -849,7 +849,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear ficheiro descarregado de '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "Procurar URLs:"

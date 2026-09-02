@@ -866,7 +866,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "ダウンロードしたファイルの名前を '%s' に変更できません"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"

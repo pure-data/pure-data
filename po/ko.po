@@ -867,7 +867,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "다운로드 된 파일의 이름을 '%s'로 수정하지 못했습니다"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"

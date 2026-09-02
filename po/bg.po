@@ -891,7 +891,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"

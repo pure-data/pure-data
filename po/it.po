@@ -853,7 +853,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossibile rinominare il file scaricato in '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"

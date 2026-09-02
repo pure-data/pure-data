@@ -854,7 +854,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Невозможно переименовать скачанный файл в '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "URL для поиска:"

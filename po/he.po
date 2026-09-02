@@ -846,7 +846,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "כתובות חיפוש:"
