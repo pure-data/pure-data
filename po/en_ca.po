@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-01 15:30+0200\n"
-"PO-Revision-Date: 2026-08-29 08:51+0000\n"
+"PO-Revision-Date: 2026-09-02 13:30+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/en_CA/>\n"
@@ -734,7 +734,7 @@ msgstr "Failed to start Pd-core"
 
 #, tcl-format
 msgid "Default zoom level: %d%%"
-msgstr ""
+msgstr "Default zoom level: %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
