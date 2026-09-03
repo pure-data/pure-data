@@ -226,15 +226,15 @@ static void snake_out_tilde_dsp(t_snake_out *x, t_signal **sp)
 {
     int i, usenchans = (x->x_nchans < sp[0]->s_nchans ?
         x->x_nchans : sp[0]->s_nchans);
+    int length = sp[0]->s_length;
         /* create n one-channel output signals and add a copy operation
-        for each one tothe DSP chain */
+        for each one to the DSP chain. */
     for (i = 0; i < x->x_nchans; i++)
     {
         signal_setmultiout(&sp[i+1], 1);
         if (i < usenchans)
-            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
-                sp[i+1]->s_vec, sp[0]->s_length);
-        else dsp_add_zero(sp[i+1]->s_vec, sp[0]->s_length);
+            dsp_add_copy(sp[0]->s_vec + i * length, sp[i+1]->s_vec, length);
+        else dsp_add_zero(sp[i+1]->s_vec, length);
     }
 }
 
@@ -261,16 +261,15 @@ typedef struct _snake_sum
 
 static void snake_sum_tilde_dsp(t_snake_sum *x, t_signal **sp)
 {
-    int i;
+    int i, length = sp[0]->s_length;
         /* create single channel output signal */
     signal_setmultiout(&sp[1], 1);
         /* copy first channel to output */
-    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_length);
+    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, length);
         /* add remaining channels */
     for (i = 1; i < sp[0]->s_nchans; i++)
-        dsp_add_plus(sp[1]->s_vec,
-            sp[0]->s_vec + i * sp[0]->s_length,
-            sp[1]->s_vec, sp[0]->s_length);
+        dsp_add_plus(sp[1]->s_vec, sp[0]->s_vec + i * length,
+            sp[1]->s_vec, length);
 }
 
 static void *snake_sum_tilde_new(void)
