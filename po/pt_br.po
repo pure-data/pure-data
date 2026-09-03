@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-01 15:30+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"PO-Revision-Date: 2026-09-03 14:55+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/pt_BR/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 msgid "linear"
 msgstr "linear"
@@ -614,7 +614,7 @@ msgid "deken preferences"
 msgstr "preferências do deken"
 
 msgid "keyboard shortcuts"
-msgstr ""
+msgstr "atalhos de teclado"
 
 msgid "misc preferences"
 msgstr "diversas"
@@ -703,7 +703,7 @@ msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "Ignoring non-existant plugin '%s'"
-msgstr ""
+msgstr "Ignorando plugin inexistente '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -737,7 +737,7 @@ msgstr "Falha ao iniciar o núcleo do Pd"
 
 #, tcl-format
 msgid "Default zoom level: %d%%"
-msgstr ""
+msgstr "Nível de zoom padrão: %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -887,16 +887,14 @@ msgstr "Manter arquivos do pacote depois da instalação"
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém-instaladas ao caminho de busca do Pd"
 
-#, fuzzy
 msgid "- Always add to search path"
-msgstr "%s adicionado aos caminhos de busca"
+msgstr "- Sempre adicionar ao caminho de busca"
 
-#, fuzzy
 msgid "- Never add to search path"
-msgstr "Incapaz de adicionar %s aos caminhos de busca"
+msgstr "- Nunca adicionar ao caminho de busca"
 
 msgid "- Prompt before adding"
-msgstr ""
+msgstr "- Perguntar antes de adicionar"
 
 msgid "Platform settings:"
 msgstr "Configurações da plataforma:"
@@ -1221,9 +1219,9 @@ msgstr "[deken] platforma detectada: %s"
 msgid "Could not find a menu for adding '%s'"
 msgstr "Não foi possível encontrar um menu para adicionar '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Downgrading %1$s to %2$s"
-msgstr "Baixando '%s'"
+msgstr "Instalando a versão anterior de %1$s para %2$s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1966,9 +1964,8 @@ msgstr "Ampliar Zoom"
 msgid "Zoom Out"
 msgstr "Reduzir Zoom"
 
-#, fuzzy
 msgid "Reset Zoom"
-msgstr "Resetar"
+msgstr "Resetar Zoom"
 
 msgid "Clear Console"
 msgstr "Limpar Console"
@@ -1994,9 +1991,8 @@ msgstr "Símbolo"
 msgid "Comment"
 msgstr "Comentário"
 
-#, fuzzy
 msgid "Scalar"
-msgstr "Escala"
+msgstr "Scalar"
 
 msgid "Graph"
 msgstr "Gráfico"
@@ -2070,9 +2066,8 @@ msgstr "Procurar por atualizações"
 msgid "Report a bug"
 msgstr "Reportar problemas (bugs)"
 
-#, fuzzy
 msgid "Clear Recent Files"
-msgstr "Arquivos de texto de Max"
+msgstr "Limpar Arquivos Recentes"
 
 msgid ""
 "Delete all preferences?\n"
