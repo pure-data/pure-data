@@ -142,8 +142,8 @@ typedef struct _snake_in
     t_object x_obj;
     t_sample x_f;
     int x_nin;
-    t_sample *x_copybuf;
     int x_copysize;
+    t_sample *x_copybuf;
 } t_snake_in;
 
 static void snake_in_tilde_free(t_snake_in *x)
@@ -154,19 +154,47 @@ static void snake_in_tilde_free(t_snake_in *x)
 
 static void snake_in_tilde_dsp(t_snake_in *x, t_signal **sp)
 {
-    int i, nchans = 0, offset, copysize;
+    int i, nchans = 0, length = sp[0]->s_length;
     for (i = 0; i < x->x_nin; i++)
         nchans += sp[i]->s_nchans;
-    copysize = nchans * sp[0]->s_length;
-    x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
-        x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
-    x->x_copysize = copysize;
-        /* snapshot inputs before allocating output */
-    for (offset = 0, i = 0; i < x->x_nin; offset += sp[i]->s_nchans, i++)
-        dsp_add_copy(sp[i]->s_vec, x->x_copybuf + offset * sp[0]->s_length,
-            sp[i]->s_nchans * sp[0]->s_length);
+
     signal_setmultiout(&sp[x->x_nin], nchans);
-    dsp_add_copy(x->x_copybuf, sp[x->x_nin]->s_vec, copysize);
+
+    if (nchans == x->x_nin)
+    {
+            /* This is an optimized version for the (common) case where all
+            inputs only have a single channel. Since single-channel signals
+            never alias multi-channel signals, we do not have to make a
+            temporary copy. */
+        t_sample *out = sp[x->x_nin]->s_vec;
+        for (i = 0; i < x->x_nin; i++)
+            dsp_add_copy(sp[i]->s_vec, out + i * length, length);
+        if (x->x_copysize)
+        {
+            freebytes(x->x_copybuf, x->x_copysize * sizeof(t_sample));
+            x->x_copybuf = 0;
+            x->x_copysize = 0;
+        }
+    }
+    else
+    {
+            /* We must copy the input signals to a temporary buffer because of
+            potential signal aliasing! Consider the following scenario:
+            'in1' w/ 2 channels, 'in2' w/ 5 channels and 'out' w/ 7 channels.
+            'in2' and 'out' may fall into the same size category and therefore
+            may alias each other. If we just copied 'in1' directly to 'out',
+            we would accidentally overwrite 'in2' before we get to read it! */
+        int offset, copysize = nchans * length;
+        x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
+            x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
+        x->x_copysize = copysize;
+
+        for (offset = 0, i = 0; i < x->x_nin; offset += sp[i]->s_nchans, i++)
+            dsp_add_copy(sp[i]->s_vec, x->x_copybuf + offset * length,
+                sp[i]->s_nchans * length);
+
+        dsp_add_copy(x->x_copybuf, sp[x->x_nin]->s_vec, copysize);
+    }
 }
 
 static void *snake_in_tilde_new(t_floatarg fnchans)
