@@ -449,7 +449,7 @@ proc ::dialog_bindings::filter {treeid needle} {
 
     foreach item ${filtered} {
         ::dialog_bindings::reattach2tree ${treeid} ${item}
-        foreach {_ children} [array get ::dialog_bindings::treechildren ${item}] {
+        foreach {parent children} [array get ::dialog_bindings::treechildren ${item}] {
             foreach child ${children} {
                 ::dialog_bindings::reattach2tree ${treeid} ${child}
             }
