@@ -266,6 +266,7 @@ typedef struct _snake_split
 static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
 {
     int i, nchans = sp[0]->s_nchans;
+    int length = sp[0]->s_length;
     int left_chans, right_chans;
 
         /* calculate output channel counts */
@@ -287,20 +288,17 @@ static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
         /* route channels to outputs */
     if (x->x_index <= 0) {
             /* left output: zeros, right output: all channels */
-        dsp_add_zero(sp[1]->s_vec, sp[1]->s_length);
-        dsp_add_copy(sp[0]->s_vec, sp[2]->s_vec, nchans * sp[0]->s_length);
+        dsp_add_zero(sp[1]->s_vec, length);
+        dsp_add_copy(sp[0]->s_vec, sp[2]->s_vec, nchans * length);
     } else if (x->x_index >= nchans) {
             /* left output: all channels, right output: zeros */
-        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * sp[0]->s_length);
-        dsp_add_zero(sp[2]->s_vec, sp[2]->s_length);
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * length);
+        dsp_add_zero(sp[2]->s_vec, length);
     } else {
             /* normal split */
-        for (i = 0; i < left_chans; i++)
-            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
-                sp[1]->s_vec + i * sp[1]->s_length, sp[0]->s_length);
-        for (i = 0; i < right_chans; i++)
-            dsp_add_copy(sp[0]->s_vec + (x->x_index + i) * sp[0]->s_length,
-                sp[2]->s_vec + i * sp[2]->s_length, sp[0]->s_length);
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, length * left_chans);
+        dsp_add_copy(sp[0]->s_vec + left_chans * length, sp[2]->s_vec,
+            right_chans * length);
     }
 }
 
