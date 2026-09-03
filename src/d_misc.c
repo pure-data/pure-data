@@ -321,7 +321,14 @@ static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
         dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * sp[0]->s_length);
         dsp_add_zero(sp[2]->s_vec, sp[2]->s_length);
     } else {
-            /* normal split */
+            /* normal split.
+            NOTE: one of the output signals might actually alias the input
+            signal, but it doesn't matter as long as we first copy the
+            left slice. If the left output aliases the input, we effectively
+            copy the first N samples to itself. If the right output aliases
+            the input, we copy to the left, so we never write to a location
+            we haven't read yet. (This assumes that dsp_add_copy() does a
+            forward copy, which is indeed the case.) */
         for (i = 0; i < left_chans; i++)
             dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
                 sp[1]->s_vec + i * sp[1]->s_length, sp[0]->s_length);
@@ -333,8 +340,12 @@ static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
 
 static void snake_split_tilde_index(t_snake_split *x, t_floatarg f)
 {
-    x->x_index = (int)f;
-    canvas_update_dsp();
+    int index = (int)f;
+    if (index != x->x_index)
+    {
+        x->x_index = index;
+        canvas_update_dsp();
+    }
 }
 
 static void *snake_split_tilde_new(t_floatarg f)
