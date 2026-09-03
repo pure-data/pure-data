@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-02 12:31+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -302,9 +302,6 @@ msgid "The shortcut '%1$s' is already used for the '%2$s' event."
 msgstr ""
 
 msgid "Please remove the old shortcut before assigning it to a new event."
-msgstr ""
-
-msgid "children"
 msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
