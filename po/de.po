@@ -262,57 +262,59 @@ msgstr "Alle Einstellungen speichern"
 
 #, tcl-format
 msgid "Shortcut#%d"
-msgstr ""
+msgstr "Tastaturkombination#%d"
 
 msgid ""
 "To edit a keyboard shortcut, double-click on the corresponding event (or "
 "shortcut) and type a new accelerator.\n"
 "Use right-click for a context-menu to remove shortcuts."
 msgstr ""
+"Um eine Tastaturkürzel zu bearbeiten, doppelklicken Sie auf das "
+"entsprechende Ereignis (oder ein Tastaturkombination) und geben Sie eine "
+"neue Tastenkombination ein.\n"
+"Zum Entfernen von Tastaturkürzeln, verwenden Sie das Kontextmenü mit der "
+"rechten Maustaste über dem Kürzel."
 
 msgid ""
 "Allow single-character shortcuts.\n"
 "DANGER: this can seriously impact the patching workflow."
 msgstr ""
+"Erlaube, Tastaturkombinationen mit nur einer Taste aufzunehmen.\n"
+"ACHTUNG: Dies kann die Interaktion beim Patchen ernsthaft beeinflussen."
 
-#, fuzzy
 msgid "Search shortcuts:"
-msgstr "Tastenkürzel"
+msgstr "Tastaturkombinationen suchen:"
 
 msgid "Event"
-msgstr ""
+msgstr "Ereignis"
 
 msgid "Reset to previous state"
-msgstr ""
+msgstr "Auf vorherigen Zustand zurücksetzen"
 
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Standarbelegung wiederherstellen"
 
-#, fuzzy
 msgid "Edit shortcut"
-msgstr "Tastenkürzel"
+msgstr "Tastaturkombination bearbeiten"
 
-#, fuzzy
 msgid "Delete shortcut"
-msgstr "Tastenkürzel"
+msgstr "Tastaturkombination löschen"
 
-#, fuzzy
 msgid "Add shortcut"
-msgstr "Tastenkürzel"
+msgstr "Tastaturkombination hinzufügen"
 
-#, fuzzy
 msgid "Delete shortcuts"
-msgstr "Tastenkürzel"
+msgstr "Tastaturkombinationen löschen"
 
 msgid "Shortcut in use!"
-msgstr ""
+msgstr "Kollidierende Tastenkombination!"
 
 #, tcl-format
 msgid "The shortcut '%1$s' is already used for the '%2$s' event."
-msgstr ""
+msgstr "Die Tastenkombination '%1$s' wird bereits für '%2$s' verwendet."
 
 msgid "Please remove the old shortcut before assigning it to a new event."
-msgstr ""
+msgstr "Entfernen Sie die alte Tastenbelegung, bevor Sie sie erneut zuweisen."
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
