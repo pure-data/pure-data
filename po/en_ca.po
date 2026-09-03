@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-03 18:02+0200\n"
-"PO-Revision-Date: 2026-09-02 13:30+0000\n"
+"PO-Revision-Date: 2026-09-04 02:51+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/en_CA/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 msgid "linear"
 msgstr "linear"
@@ -256,57 +256,57 @@ msgstr "Save All Settings"
 
 #, tcl-format
 msgid "Shortcut#%d"
-msgstr ""
+msgstr "Shortcut#%d"
 
 msgid ""
 "To edit a keyboard shortcut, double-click on the corresponding event (or "
 "shortcut) and type a new accelerator.\n"
 "Use right-click for a context-menu to remove shortcuts."
 msgstr ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
 
 msgid ""
 "Allow single-character shortcuts.\n"
 "DANGER: this can seriously impact the patching workflow."
 msgstr ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
 
-#, fuzzy
 msgid "Search shortcuts:"
-msgstr "Keyboard"
+msgstr "Search shortcuts:"
 
 msgid "Event"
-msgstr ""
+msgstr "Event"
 
 msgid "Reset to previous state"
-msgstr ""
+msgstr "Reset to previous state"
 
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Reset to defaults"
 
-#, fuzzy
 msgid "Edit shortcut"
-msgstr "Keyboard"
+msgstr "Edit shortcut"
 
-#, fuzzy
 msgid "Delete shortcut"
-msgstr "Keyboard"
+msgstr "Delete shortcut"
 
-#, fuzzy
 msgid "Add shortcut"
-msgstr "Keyboard"
+msgstr "Add shortcut"
 
-#, fuzzy
 msgid "Delete shortcuts"
-msgstr "Keyboard"
+msgstr "Delete shortcuts"
 
 msgid "Shortcut in use!"
-msgstr ""
+msgstr "Shortcut in use!"
 
 #, tcl-format
 msgid "The shortcut '%1$s' is already used for the '%2$s' event."
-msgstr ""
+msgstr "The shortcut '%1$s' is already used for the '%2$s' event."
 
 msgid "Please remove the old shortcut before assigning it to a new event."
-msgstr ""
+msgstr "Please remove the old shortcut before assigning it to a new event."
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
