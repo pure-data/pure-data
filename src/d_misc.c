@@ -34,7 +34,7 @@ static t_int *print_perform(t_int *w)
             if (nchans > 1)
             {
                 endpost();
-                startpost("channel %d:", j + 1);
+                startpost("channel %d:", j);
             }
             for (i = 0; i < n; i++) {
                 if (i % 8 == 0)
