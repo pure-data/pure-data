@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-03 18:02+0200\n"
-"PO-Revision-Date: 2026-09-03 14:55+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"PO-Revision-Date: 2026-09-04 06:51+0000\n"
+"Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/es/>\n"
 "Language: es\n"
@@ -263,57 +263,59 @@ msgstr "Guardar configuración"
 
 #, tcl-format
 msgid "Shortcut#%d"
-msgstr ""
+msgstr "Atajo#%d"
 
 msgid ""
 "To edit a keyboard shortcut, double-click on the corresponding event (or "
 "shortcut) and type a new accelerator.\n"
 "Use right-click for a context-menu to remove shortcuts."
 msgstr ""
+"Para editar un atajo de teclado, haga doble clic en el evento (o atajo) "
+"correspondiente e introduzca una nueva combinación de teclas.\n"
+"Utilice el botón derecho del ratón para abrir un menú contextual y eliminar "
+"atajos."
 
 msgid ""
 "Allow single-character shortcuts.\n"
 "DANGER: this can seriously impact the patching workflow."
 msgstr ""
+"Permitir atajos de un solo carácter.\n"
+"PELIGRO: esto puede afectar gravemente al flujo de trabajo en los patches."
 
-#, fuzzy
 msgid "Search shortcuts:"
-msgstr "atajos de teclado"
+msgstr "Buscar atajos:"
 
 msgid "Event"
-msgstr ""
+msgstr "Evento"
 
 msgid "Reset to previous state"
-msgstr ""
+msgstr "Restablecer al estado anterior"
 
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Restablecer valores predeterminados"
 
-#, fuzzy
 msgid "Edit shortcut"
-msgstr "atajos de teclado"
+msgstr "Editar atajo"
 
-#, fuzzy
 msgid "Delete shortcut"
-msgstr "atajos de teclado"
+msgstr "Eliminar atajo"
 
-#, fuzzy
 msgid "Add shortcut"
-msgstr "atajos de teclado"
+msgstr "Agregar atajo"
 
-#, fuzzy
 msgid "Delete shortcuts"
-msgstr "atajos de teclado"
+msgstr "Eliminar atajos"
 
 msgid "Shortcut in use!"
-msgstr ""
+msgstr "¡Atajo en uso!"
 
 #, tcl-format
 msgid "The shortcut '%1$s' is already used for the '%2$s' event."
-msgstr ""
+msgstr "El atajo '%1$s' ya se utiliza para el evento '%2$s'."
 
 msgid "Please remove the old shortcut before assigning it to a new event."
 msgstr ""
+"Por favor, elimina el atajo antiguo antes de asignarlo a un nuevo evento."
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
