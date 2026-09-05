@@ -129,7 +129,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     int selected, t_binbuf *b)
 {
     t_text *x;
-    int argc;
+    int argc, fixdsp = 0;
     t_atom *argv;
     pd_this->pd_newest = 0;
     canvas_setcurrent((t_canvas *)gl);
@@ -162,11 +162,18 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
         gobj_activate(&x->te_g, gl, 1);
         canvas_dirty(gl, 1);
     }
+        /* we might have just typed in a tilde object in which case we should
+        re-sort DSP, particularly if it's a switch~ */
+    else if (x && zgetfn(&x->te_pd, gensym("dsp")))
+        fixdsp = canvas_suspend_dsp();
+
     if (pd_class(&x->ob_pd) == vinlet_class)
         canvas_resortinlets(glist_getcanvas(gl));
     if (pd_class(&x->ob_pd) == voutlet_class)
         canvas_resortoutlets(glist_getcanvas(gl));
     canvas_unsetcurrent((t_canvas *)gl);
+    if (fixdsp)
+        canvas_resume_dsp(1);
 }
 
 extern int sys_noautopatch;

@@ -271,9 +271,11 @@ int canvas_getsignallength(t_canvas *x)
 static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
                         t_floatarg fupsample, t_floatarg foffset)
 {
+    int oldstate = canvas_suspend_dsp();
     t_block *x = (t_block *)block_new(fvecsize, foverlap, fupsample, foffset);
     x->x_switched = 1;
     x->x_switchon = 0;
+    canvas_resume_dsp(oldstate);
     return (x);
 }
 
