@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2026-09-03 18:02+0200\n"
-"PO-Revision-Date: 2026-09-03 14:55+0000\n"
+"PO-Revision-Date: 2026-09-04 06:51+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/pt_BR/>\n"
@@ -257,7 +257,7 @@ msgstr "Salvar Todas as Configurações"
 
 #, tcl-format
 msgid "Shortcut#%d"
-msgstr ""
+msgstr "Atalho#%d"
 
 msgid ""
 "To edit a keyboard shortcut, double-click on the corresponding event (or "
@@ -278,29 +278,25 @@ msgid "Event"
 msgstr ""
 
 msgid "Reset to previous state"
-msgstr ""
+msgstr "Restaurar ao estado anterior"
 
 msgid "Reset to defaults"
 msgstr ""
 
-#, fuzzy
 msgid "Edit shortcut"
-msgstr "atalhos de teclado"
+msgstr "Editar atalho"
 
-#, fuzzy
 msgid "Delete shortcut"
-msgstr "atalhos de teclado"
+msgstr "Deletar atalho"
 
-#, fuzzy
 msgid "Add shortcut"
-msgstr "atalhos de teclado"
+msgstr "Adicionar atalho"
 
-#, fuzzy
 msgid "Delete shortcuts"
-msgstr "atalhos de teclado"
+msgstr "Deletar atalhos"
 
 msgid "Shortcut in use!"
-msgstr ""
+msgstr "Atalho em uso!"
 
 #, tcl-format
 msgid "The shortcut '%1$s' is already used for the '%2$s' event."
