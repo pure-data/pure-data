@@ -409,6 +409,9 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
                 # suppress text if too small
                 ::pd_canvaszoom::canvas::$c itemconfigure $i -text {}
             }
+            # refresh text width
+            set width [expr [$c itemcget $i -width] / $oldzdepth]
+            $c itemconfigure $i -width $width
         } else { # adjust linewidth of non-text items
             set linewidth 0
             # get original linewidth from tags if it was previously recorded
