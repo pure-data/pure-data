@@ -101,19 +101,28 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
     # puts "canvas_command: $c $method $args"
 
     # itemconfig[ure] always needs to be filtered (even when zdepth==1.0),
-    # otherwise outdated _f or _t tags could be left untouched
+    # otherwise outdated _w, _f or _t tags could be left untouched
     if {[string first "itemconfig" $method] == 0} {
+        set item [lindex $args 0]
         # scale width
         set widthindex [lsearch -start 1 $args "-width"]
         if {$widthindex != -1} {
             incr widthindex
-            set args [scale_consecutive_numbers $widthindex $zdepth 0 1 {*}$args]
+            set width [lindex $args $widthindex]
+            lset args $widthindex [expr $width * $zdepth]
+            # remove width tag
+            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
+                if {"_w" in [string range $tag 0 1]} {
+                    ::pd_canvaszoom::canvas::$c dtag $item $tag
+                }
+            }
+            # add the new width tag
+            ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item"
         }
         # scale font
         set fontindex [lsearch -start 1 $args "-font"]
         if {$fontindex != -1} {
             incr fontindex
-            set item [lindex $args 0]
             set font [lindex $args $fontindex]
             set newfont [scalefont $font [lindex $font 1] $zdepth]
             lset args $fontindex $newfont
@@ -128,7 +137,6 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         }
         # if changing the text content, remove text tag
         if {[lsearch -start 1 $args "-text"] != -1} {
-            set item [lindex $args 0]
             foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
                 if {"_t" in [string range $tag 0 1]} {
                     ::pd_canvaszoom::canvas::$c dtag $item $tag
@@ -140,25 +148,26 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
     if { $zdepth == 1.0 } { return [::pd_canvaszoom::canvas::$c $method {*}$args] }
     switch $method {
         "create" {
+            # get tags index
+            set tagsindex [lsearch -start 2 $args "-tags"]
+            if {$tagsindex == -1} {
+                # "-tag" is also valid!
+                set tagsindex [lsearch -start 2 $args "-tag"]
+            }
+            incr tagsindex
+
             # scale coordinates
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
 
+            # scale 'width' option, if any
             set widthindex [lsearch -start 2 $args "-width"]
-            # for non-text, default linewidth to 1.0
-            if {$widthindex == -1 && [lindex $args 0] != "text"} {
-                set tagsindex [lsearch -start 2 $args "-tags"]
-                incr tagsindex
-                set tags [lindex $args $tagsindex]
-                # don't scale rect selection outline width (tagged "x")
-                if {{x} ni $tags} {
-                    set args [linsert $args $tagsindex+1 -width 1.0]
-                    set widthindex [lsearch -start 2 $args "-width"]
-                }
-            }
-            # now scale 'width' value, if any
             if {$widthindex != -1} {
                 incr widthindex
-                set args [scale_consecutive_numbers $widthindex $zdepth 0 1e6 {*}$args]
+                set width [lindex $args $widthindex]
+                lset args $widthindex [expr $width * $zdepth]
+                # add width tag
+                set tags [lindex $args $tagsindex]
+                lset args $tagsindex [concat $tags _w$width]
             }
 
             # scale font if any
@@ -169,8 +178,6 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 set font [scalefont $font $realfontsize $zdepth]
                 lset args $fontindex $font
                 # add font tag
-                set tagsindex [lsearch -start 2 $args "-tags"]
-                incr tagsindex
                 set tags [lindex $args $tagsindex]
                 lset args $tagsindex [list {*}$tags _f$realfontsize]
             }
@@ -182,6 +189,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
         }
     }
+
     return [::pd_canvaszoom::canvas::$c $method {*}$args]
 }
 
@@ -409,26 +417,23 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
                 # suppress text if too small
                 ::pd_canvaszoom::canvas::$c itemconfigure $i -text {}
             }
-            # refresh text width
-            set width [expr [$c itemcget $i -width] / $oldzdepth]
-            $c itemconfigure $i -width $width
-        } else { # adjust linewidth of non-text items
-            set linewidth 0
-            # get original linewidth from tags if it was previously recorded
-            foreach {tag} [$c gettags $i] {
-                scan $tag {_lw%d} linewidth
+        }
+
+        # scale width option
+        set width 0
+        # get original width from tags if it was previously recorded
+        foreach {tag} [$c gettags $i] {
+            scan $tag {_w%d} width
+        }
+        # if not, then record current width and use it
+        catch { # protect the case the item doesn't have "-width"
+            if {!$width} {
+                set width [expr ([$c itemcget $i -width] / $oldzdepth)]
+                $c addtag _w$width withtag $i
             }
-            # if not, then record current linewidth and use it
-            catch { # protect the case the item doesn't have "-width"
-                if {!$linewidth} {
-                    set linewidth [expr ([$c itemcget $i -width] / $oldzdepth)]
-                    $c addtag _lw$linewidth withtag $i
-                }
-                # scale
-                set newwidth [expr {$linewidth * $zdepth}]
-                if {$newwidth < 1} {set newwidth 1}
-                ::pd_canvaszoom::canvas::$c itemconfigure $i -width $newwidth
-            }
+            # scale
+            set newwidth [expr {$width * $zdepth}]
+            ::pd_canvaszoom::canvas::$c itemconfigure $i -width $newwidth
         }
     }
 }
