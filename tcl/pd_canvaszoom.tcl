@@ -402,7 +402,7 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
                 $c addtag _t$text withtag $i
             }
             # scale font
-            if {[expr {abs($fontsize * $zdepth)}] >= 4} {
+            if {[expr {abs($fontsize * $zdepth)}] >= 2} {
                 set font [scalefont $font $fontsize $zdepth];
                 ::pd_canvaszoom::canvas::$c itemconfigure $i -font $font -text $text
             } {
