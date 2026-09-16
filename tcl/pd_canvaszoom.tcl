@@ -48,7 +48,7 @@ proc ::pd_canvaszoom::init_default_zoom {} {
     }
     # round to the nearest steps_increment
     set incrs $::pd_canvaszoom::steps_increment
-    set default_zoom [expr int(double($default_zoom) / $incrs + 0.5) * $incrs]
+    set default_zoom [expr round(double($default_zoom) / $incrs) * $incrs]
 }
 
 after idle ::pd_canvaszoom::init_default_zoom
