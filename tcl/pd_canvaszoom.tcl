@@ -95,6 +95,13 @@ proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth int max_elements ar
     return $args
 }
 
+# multiply width by zdepth, round to nearest int, minimum 1 if not initially zero
+proc ::pd_canvaszoom::scale_width {width zdepth} {
+    set newwidth [expr int($width * $zdepth + 0.5)]
+    if {$newwidth == 0 && $width != 0} {set newwidth 1}
+    return $newwidth
+}
+
 # substituted commands for hijacking canvas
 proc ::pd_canvaszoom::canvas_command {c method args} {
     set zdepth [getzdepth $c]
@@ -109,7 +116,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         if {$widthindex != -1} {
             incr widthindex
             set width [lindex $args $widthindex]
-            lset args $widthindex [expr $width * $zdepth]
+            lset args $widthindex [scale_width $width $zdepth]
             # remove width tag
             foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
                 if {"_w" in [string range $tag 0 1]} {
@@ -164,7 +171,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             if {$widthindex != -1} {
                 incr widthindex
                 set width [lindex $args $widthindex]
-                lset args $widthindex [expr $width * $zdepth]
+                lset args $widthindex [scale_width $width $zdepth]
                 # add width tag
                 set tags [lindex $args $tagsindex]
                 lset args $tagsindex [concat $tags _w$width]
@@ -432,8 +439,7 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
                 $c addtag _w$width withtag $i
             }
             # scale
-            set newwidth [expr {$width * $zdepth}]
-            ::pd_canvaszoom::canvas::$c itemconfigure $i -width $newwidth
+            ::pd_canvaszoom::canvas::$c itemconfigure $i -width [scale_width $width $zdepth]
         }
     }
 }
