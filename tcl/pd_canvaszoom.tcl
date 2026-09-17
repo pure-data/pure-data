@@ -391,6 +391,7 @@ proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
     while {[lindex $font_measure($fontname) $new_fontsize] > $target_width} {
         incr new_fontsize -1
     }
+    if {$new_fontsize == 0} {set new_fontsize 1}
     return [lreplace $font 1 1 -$new_fontsize];
 }
 
