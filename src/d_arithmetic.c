@@ -76,7 +76,7 @@ static void any_binop_dsp(t_signal **sp,
     {
         if (bign1 > 1)
                 /* second input is a vector: use reverse scalar version */
-            dsp_add(((bign0 & 7) || !perf_vs8_reverse ?
+            dsp_add(((bign1 & 7) || !perf_vs8_reverse ?
                 perf_vs_reverse : perf_vs8_reverse),
                     4, sp[1]->s_vec, sp[0]->s_vec, sp[2]->s_vec, (t_int)bign1);
         else
