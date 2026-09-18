@@ -228,6 +228,8 @@ static void textbuf_free(t_textbuf *x)
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
     int i, cnt = 0;
+    if (line > n)   /* skip search if line number is huge */
+        return (0);
     for (i = 0; i < n; i++)
     {
         if (cnt == line)
