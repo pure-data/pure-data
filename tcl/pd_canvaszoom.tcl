@@ -108,7 +108,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
     # puts "canvas_command: $c $method $args"
 
     # itemconfig[ure] always needs to be filtered (even when zdepth==1.0),
-    # otherwise outdated _w, _f or _t tags could be left untouched
+    # otherwise outdated _w or _f tags could be left untouched
     if {[string first "itemconfig" $method] == 0} {
         set item [lindex $args 0]
         # scale width
@@ -141,14 +141,6 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             }
             # add the new font tag
             ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item"
-        }
-        # if changing the text content, remove text tag
-        if {[lsearch -start 1 $args "-text"] != -1} {
-            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
-                if {"_t" in [string range $tag 0 1]} {
-                    ::pd_canvaszoom::canvas::$c dtag $item $tag
-                }
-            }
         }
     }
 
@@ -399,32 +391,20 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
     foreach {i} [$c find all] {
         if {[string equal [$c type $i] text]} { # adjust fonts of text items
             set fontsize 0
-            set text {}
-            # get original fontsize and text from tags
-            #   if they were previously recorded
+            # get original fontsize from tags if it was already recorded
             foreach {tag} [$c gettags $i] {
                 scan $tag {_f%d} fontsize
-                scan $tag "_t%\[^\0\]" text
             }
-            # if not, then record current fontsize and text
-            #   and use them
+            # if not, then record current fontsize
             set font [$c itemcget $i -font]
             if {!$fontsize} {
                 set fontsize [expr int([lindex $font 1] / $oldzdepth)]
                 $c addtag _f$fontsize withtag $i
             }
-            if {[string length $text] == 0} {
-                set text [$c itemcget $i -text]
-                $c addtag _t$text withtag $i
-            }
             # scale font
-            if {[expr {abs($fontsize * $zdepth)}] >= 2} {
-                set font [scalefont $font $fontsize $zdepth];
-                ::pd_canvaszoom::canvas::$c itemconfigure $i -font $font -text $text
-            } {
-                # suppress text if too small
-                ::pd_canvaszoom::canvas::$c itemconfigure $i -text {}
-            }
+            set font [scalefont $font $fontsize $zdepth];
+            # re-configure
+            ::pd_canvaszoom::canvas::$c itemconfigure $i -font $font
         }
 
         # scale width option
