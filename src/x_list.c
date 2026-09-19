@@ -948,7 +948,7 @@ typedef struct _list_join
 } t_list_join;
 
     /* get the delimiter from the creation args */
-static t_symbol * list_join_getdelim(int argc, t_atom *argv)
+static t_symbol *list_join_getdelim(int argc, t_atom *argv)
 {
     char tbuf[30];
     if (argc)
@@ -977,10 +977,11 @@ static void *list_join_new(t_symbol *s, int argc, t_atom *argv)
 }
 
     /* returns the number of written characters (exluding the null-terminator) or -1
-       if the string (including the null-terminator) couldn't fit into the buffer */
+    if the string (including the null-terminator) couldn't fit into the buffer */
 static int list_join_addatom(const t_atom *a, char *buf, int size)
 {
     char tbuf[30];
+    const char* str;
     int n;
     if (size < 0)
         return -1;
@@ -989,30 +990,26 @@ static int list_join_addatom(const t_atom *a, char *buf, int size)
     {
     case A_FLOAT: /* see atom_string() */
         sprintf(tbuf, "%g", a->a_w.w_float);
-        n = strlen(tbuf);
-        if (n < size)
-            memcpy(buf, tbuf, n + 1);
-        else
-            return -1;
+        str = tbuf;
         break;
     case A_SYMBOL:
-        n = strlen(a->a_w.w_symbol->s_name);
-        if (n < size)
-            memcpy(buf, a->a_w.w_symbol->s_name, n + 1);
-        else
-            return -1;
+        str = a->a_w.w_symbol->s_name;
         break;
     case A_POINTER:
-        n = strlen("(pointer)");
-        if (n < size)
-            strcpy(buf, "(pointer)");
-        else
-            return -1;
+        str = "(pointer)";
         break;
     default:
         return 0; /* shouldn't happen */
     }
-    return n;
+
+    n = strlen(str);
+    if (n < size)
+    {
+        memcpy(buf, str, n + 1);
+        return n;
+    }
+    else
+        return -1;
 }
 
 static void list_join_list(t_list_join *x, t_symbol *s, int argc, t_atom *argv)
@@ -1021,21 +1018,21 @@ static void list_join_list(t_list_join *x, t_symbol *s, int argc, t_atom *argv)
     char stackbuf[MAXPDSTRING], *buf = stackbuf;
     const char *delim = x->x_delim->s_name;
     int i, n, capacity = MAXPDSTRING, delimsize = strlen(delim);
-    *buf = 0; /* for bang messages */
+    *buf = 0; /* for empty lists */
 
     for (i = 0, n = 0; i < argc; i++)
     {
         int advance;
             /* make sure there is enough space for the atom + the seperator */
         while ((advance = list_join_addatom(
-                    &argv[i], buf + n, capacity - n - delimsize)) < 0)
+            &argv[i], buf + n, capacity - n - delimsize)) < 0)
         {
             int old = capacity;
             capacity *= 2; /* grow by factor of 2 */
                 /* post("grow from %d to %d", old, capacity); */
             if (buf == stackbuf)
             {
-                /* switch to heap allocation */
+                    /* switch to heap allocation */
                 if (!(buf = getbytes(capacity)))
                     return;
                 memcpy(buf, stackbuf, n);
@@ -1096,15 +1093,17 @@ static void *list_unjoin_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-    /* returns a pointer to the next substring or the end of the string */
-static const char * list_unjoin_parse(const char *s, t_atom *a,
-                                      const char *delim, int delimsize, int *ssize)
+    /* returns a pointer to the next substring or the end of the string.
+    ssize will contain the size of the current substring, excluding the
+    delimiter. */
+static const char *list_unjoin_parse(const char *s, t_atom *a,
+    const char *delim, int delimsize, int *ssize)
 {
-    const char c = *s, *end = s, *next;
-    int size;
-        /* find delimiter */
-    if (delimsize)
+    const char c = *s, *next, *end;
+    size_t size;
+    if (delimsize) /* find delimiter */
     {
+        end = s;
         while (*end)
         {
             if (!strncmp(end, delim, delimsize))
@@ -1112,20 +1111,26 @@ static const char * list_unjoin_parse(const char *s, t_atom *a,
             end++;
         }
         next = *end ? end + delimsize : end;
+        size = end - s;
     }
-    else
-        next = end = s + 1; /* break into characters */
-    size = (int)(end - s);
+    else /* break into characters */
+    {
+        next = end = s + 1;
+        size = 1;
+    }
         /* according to binbuf_text(), a Pd float
-           must start with a digit, dot, plus or minus */
+        must start with a digit, dot, plus or minus */
     if ((c >= '0' && c <= '9')
         || c == '.' || c == '+' || c == '-')
     {
         char *p;
-        float f = strtod(s, &p);
-        if (p == end) /* got a valid floating point number */
+        t_float f = strtod(s, &p);
+            /* we only consider it a float atom if there are no trailing
+            characters. This is in line with the FUDI message parsing rules. */
+        if (p == end)
         {
             SETFLOAT(a, f);
+            *ssize = size;
             return next;
         }
     }
@@ -1157,10 +1162,11 @@ static const char * list_unjoin_parse(const char *s, t_atom *a,
 static void list_unjoin_symbol(t_list_unjoin *x, t_symbol *s)
 {
         /* initially use buffer on the stack, grow to the heap if needed */
-    t_atom stackatoms[LIST_NGETBYTE], *outvec = stackatoms, atom;
+    t_atom stackatoms[LIST_NGETBYTE], *outvec = stackatoms;
     const char *substr = s->s_name, *delim = x->x_delim->s_name;
     int outc = 0, capacity = LIST_NGETBYTE, delimsize = strlen(delim);
 
+        /* special case for empty symbol */
     if (!(*substr))
     {
         outlet_list(x->x_obj.ob_outlet, &s_list, 0, 0);
@@ -1169,7 +1175,8 @@ static void list_unjoin_symbol(t_list_unjoin *x, t_symbol *s)
 
     while (1)
     {
-        int ssize;
+        t_atom atom;
+        int ssize = 0;
         substr = list_unjoin_parse(substr, &atom, delim, delimsize, &ssize);
         if (outc >= capacity)
         {
@@ -1185,11 +1192,12 @@ static void list_unjoin_symbol(t_list_unjoin *x, t_symbol *s)
             }
             else
             {
-                if (!(outvec = resizebytes(outvec,
-                    old * sizeof(t_atom), capacity * sizeof(t_atom))))
+                if (!(outvec = resizebytes(outvec, old * sizeof(t_atom),
+                    capacity * sizeof(t_atom))))
                     return;
             }
         }
+            /* skip empty tokens */
         if (ssize)
             outvec[outc++] = atom;
         if (*substr == '\0')
@@ -1219,8 +1227,6 @@ static void list_unjoin_setup(void)
         (t_newmethod)list_unjoin_new, 0,
         sizeof(t_list_foreach), 0, A_GIMME, 0);
     class_addsymbol(list_unjoin_class, list_unjoin_symbol);
-    class_addlist(list_unjoin_class, list_unjoin_list);
-    class_addanything(list_unjoin_class, list_unjoin_anything);
     class_sethelpsymbol(list_unjoin_class, &s_list);
 }
 
