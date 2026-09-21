@@ -142,7 +142,7 @@ typedef void (*t_binop_dspmethod)(t_binop *, t_signal **);
 typedef void (*t_scalarbinop_dspmethod)(t_scalarbinop *, t_signal **);
 
 static t_class *any_binop_class(t_symbol *name, t_binop_newmethod newmethod,
-    t_binop_dspmethod dspmethod, otherflag)
+    t_binop_dspmethod dspmethod, int otherflag)
 {
     t_class *class = class_new(name, (t_newmethod)newmethod, 0, sizeof(t_binop),
         CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
@@ -157,7 +157,7 @@ static t_class *any_binop_class(t_symbol *name, t_binop_newmethod newmethod,
 }
 
 static t_class *any_scalarbinop_class(t_symbol *name,
-    t_scalarbinop_dspmethod dspmethod, otherflag)
+    t_scalarbinop_dspmethod dspmethod, int otherflag)
 {
     t_class *class = class_new(name, 0, 0, sizeof(t_scalarbinop),
         CLASS_MULTICHANNEL, 0);
