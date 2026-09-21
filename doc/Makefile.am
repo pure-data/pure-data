@@ -344,6 +344,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/bang~-help.pd \
      ./5.reference/binops-help.pd \
      ./5.reference/binops-other-help.pd \
+     ./5.reference/binops-other-tilde-help.pd \
      ./5.reference/binops-tilde-help.pd \
      ./5.reference/biquad~-help.pd \
      ./5.reference/block~-help.pd \
