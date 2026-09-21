@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.54.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -253,6 +253,56 @@ msgstr "Agordoj pri sono"
 
 msgid "Save All Settings"
 msgstr "Konservi ĉiujn agordojn"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Serĉaj rezultoj"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -577,9 +627,6 @@ msgstr ""
 msgid "Patch Windows"
 msgstr "Fliki fenestrojn"
 
-msgid "Zoom New Windows"
-msgstr "Zomi novajn fenestrojn"
-
 msgid "GUI Settings"
 msgstr "Agordoj pri grafika fasado"
 
@@ -735,6 +782,10 @@ msgstr "Malsukcesis lanĉi Pd"
 msgid "Failed to start Pd-core"
 msgstr "Malsukcesis lanĉi Pd-core"
 
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MANKAS FERMA KUNIGA KRAMPO «}»: "
 
@@ -845,7 +896,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"
@@ -1206,7 +1257,7 @@ msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
-msgid "Downgrading %s to %s"
+msgid "Downgrading %1$s to %2$s"
 msgstr "Elŝutante «%s»"
 
 #, tcl-format
@@ -2154,6 +2205,9 @@ msgstr "Forigi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Zomi novajn fenestrojn"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Forviŝi menuon"

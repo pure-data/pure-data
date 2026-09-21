@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -257,6 +257,56 @@ msgstr "오디오 설정"
 
 msgid "Save All Settings"
 msgstr "모든 설정을 저장"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "검색 결과"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -585,9 +635,6 @@ msgstr "경로 [%s]를 수정하기"
 msgid "Patch Windows"
 msgstr "Pd 창"
 
-msgid "Zoom New Windows"
-msgstr "새 창을 확대"
-
 #, fuzzy
 msgid "GUI Settings"
 msgstr "GUI 설정을 제거하였습니다"
@@ -756,6 +803,10 @@ msgstr ""
 msgid "Failed to start Pd-core"
 msgstr "'%s'을(를) 설치하는 데 실패했습니다!"
 
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
 
@@ -866,7 +917,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "다운로드 된 파일의 이름을 '%s'로 수정하지 못했습니다"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 #, fuzzy
 msgid "Search URLs:"
@@ -1239,7 +1290,7 @@ msgid "Could not find a menu for adding '%s'"
 msgstr ""
 
 #, fuzzy, tcl-format
-msgid "Downgrading %s to %s"
+msgid "Downgrading %1$s to %2$s"
 msgstr "'%s'을(를) 다운로드 하고 있습니다"
 
 #, tcl-format
@@ -2216,6 +2267,9 @@ msgstr "삭제"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' 무시: Pd 파일이 아닌 것 같습니다"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "새 창을 확대"
 
 #~ msgid "Clear Menu"
 #~ msgstr "메뉴 초기화"

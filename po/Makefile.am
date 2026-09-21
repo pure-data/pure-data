@@ -23,6 +23,7 @@ TCLFILES = \
     apple_events.tcl \
     dialog_array.tcl \
     dialog_audio.tcl \
+    dialog_bindings.tcl \
     dialog_canvas.tcl \
     dialog_data.tcl \
     dialog_find.tcl \
@@ -178,6 +179,8 @@ etags: TAGS
 
 
 allpofiles=$(wildcard $(srcdir)/*.po)
+alltclfiles=$(wildcard $(top_srcdir)/tcl/*.tcl $(top_srcdir)/po/*.tcl)
 .PHONY: unused
 unused:
 	@echo "UNUSED TRANSLATIONS: $(patsubst $(srcdir)/%.po,%,$(filter-out $(POFILES), $(allpofiles)))"
+	@echo "IGNORED Tcl files  : $(filter-out $(FILES), $(alltclfiles))"
