@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
-"PO-Revision-Date: 2026-08-21 11:51+0000\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"PO-Revision-Date: 2026-09-05 03:11+0000\n"
 "Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9.1.dev0\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -257,6 +257,61 @@ msgstr "Paramètres audio"
 
 msgid "Save All Settings"
 msgstr "Enregistrer tous les réglages"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr "Raccourci#%d"
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+"Pour modifier un raccourci clavier, double-cliquer sur l'événement (ou "
+"raccourci) correspondant et entrer une nouvelle séquence de touches.\n"
+"Pour supprimer un raccourci, utiliser le menu contextuel (clic droit)."
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+"Autoriser les raccourcis à une seule touche.\n"
+"DANGER : peut causer des problèmes lors de l'édition des patchs."
+
+msgid "Search shortcuts:"
+msgstr "Rechercher les raccourcis :"
+
+msgid "Event"
+msgstr "Événement"
+
+msgid "Reset to previous state"
+msgstr "Revenir à l'état précédent"
+
+msgid "Reset to defaults"
+msgstr "Rétablir les raccourcis par défaut"
+
+msgid "Edit shortcut"
+msgstr "Modifier le raccourci"
+
+msgid "Delete shortcut"
+msgstr "Supprimer le raccourci"
+
+msgid "Add shortcut"
+msgstr "Ajouter un raccourci"
+
+msgid "Delete shortcuts"
+msgstr "Supprimer les raccourcis"
+
+msgid "Shortcut in use!"
+msgstr "Raccourci déjà utilisé !"
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr "Le raccourci '%1$s' est déjà utilisé pour l'événement '%2$s'."
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
+"Supprimez l'ancien raccourci avant de le réutiliser pour un autre événement."
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "ATTENTION : pdtk_canvas_dialog a reçu des paramètres inconnus"
@@ -582,9 +637,6 @@ msgstr "Modifier le chemin d'accès existant [%s]"
 msgid "Patch Windows"
 msgstr "Fenêtres de patch"
 
-msgid "Zoom New Windows"
-msgstr "Zoomer les nouvelles fenêtres"
-
 msgid "GUI Settings"
 msgstr "Paramètres de l'interface graphique"
 
@@ -619,7 +671,7 @@ msgid "deken preferences"
 msgstr "deken"
 
 msgid "keyboard shortcuts"
-msgstr ""
+msgstr "raccourcis clavier"
 
 msgid "misc preferences"
 msgstr "divers"
@@ -712,7 +764,7 @@ msgstr "police utilisée : %1$s %2$s"
 
 #, tcl-format
 msgid "Ignoring non-existant plugin '%s'"
-msgstr ""
+msgstr "Ignorer le plugin inexistant '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -743,6 +795,10 @@ msgstr "Échec du démarrage de Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Échec au démarrage de Pd-core"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr "Zoom par défaut : %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
@@ -1241,8 +1297,8 @@ msgid "Could not find a menu for adding '%s'"
 msgstr "Impossible de trouver un menu où ajouter '%s'"
 
 #, tcl-format
-msgid "Downgrading %s to %s"
-msgstr "Rétrogradation de %s vers %s"
+msgid "Downgrading %1$s to %2$s"
+msgstr "Rétrogradation de %1$s vers %2$s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1940,7 +1996,7 @@ msgid "Open"
 msgstr "Ouvrir"
 
 msgid "Open Recent"
-msgstr "Ouvrir un élément récent"
+msgstr "Ouvrir un document récent"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -1984,9 +2040,8 @@ msgstr "Zoomer"
 msgid "Zoom Out"
 msgstr "Dézoomer"
 
-#, fuzzy
 msgid "Reset Zoom"
-msgstr "Réinitialiser"
+msgstr "Réinitialiser le zoom"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
@@ -2087,9 +2142,8 @@ msgstr "Rechercher des mises à jour"
 msgid "Report a bug"
 msgstr "Signaler un problème"
 
-#, fuzzy
 msgid "Clear Recent Files"
-msgstr "Fichiers texte Max"
+msgstr "Oublier les documents récents"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2209,6 +2263,9 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Zoomer les nouvelles fenêtres"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Effacer le menu"

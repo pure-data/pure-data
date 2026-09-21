@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -255,6 +255,56 @@ msgstr "Audio-instellingen"
 
 msgid "Save All Settings"
 msgstr "Alle instellingen opslaan"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Zoekresultaten"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -580,9 +630,6 @@ msgstr "Bestaand pad bewerken [%s]"
 msgid "Patch Windows"
 msgstr "Patch vensters"
 
-msgid "Zoom New Windows"
-msgstr "Nieuwe vensters inzoomen"
-
 msgid "GUI Settings"
 msgstr "GUI-instellingen"
 
@@ -742,6 +789,10 @@ msgstr "Pd opstartfout"
 msgid "Failed to start Pd-core"
 msgstr "Gefaald om Pd-core te starten"
 
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ONTBREKENDE CLOSE-BRACE '}': "
 
@@ -852,7 +903,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Kan gedownload bestand niet hernoemen naar '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "Zoekresultaat URLs:"
@@ -1228,7 +1279,7 @@ msgid "Could not find a menu for adding '%s'"
 msgstr "Kan geen menu vinden om '%s' toe te voegen"
 
 #, fuzzy, tcl-format
-msgid "Downgrading %s to %s"
+msgid "Downgrading %1$s to %2$s"
 msgstr "'%s' downloaden"
 
 #, tcl-format
@@ -2197,6 +2248,9 @@ msgstr "Verwijderen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Nieuwe vensters inzoomen"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Menu wissen"

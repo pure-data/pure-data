@@ -34,7 +34,7 @@ static t_int *print_perform(t_int *w)
             if (nchans > 1)
             {
                 endpost();
-                startpost("channel %d:", j + 1);
+                startpost("channel %d:", j);
             }
             for (i = 0; i < n; i++) {
                 if (i % 8 == 0)
@@ -142,8 +142,8 @@ typedef struct _snake_in
     t_object x_obj;
     t_sample x_f;
     int x_nin;
-    t_sample *x_copybuf;
     int x_copysize;
+    t_sample *x_copybuf;
 } t_snake_in;
 
 static void snake_in_tilde_free(t_snake_in *x)
@@ -154,19 +154,47 @@ static void snake_in_tilde_free(t_snake_in *x)
 
 static void snake_in_tilde_dsp(t_snake_in *x, t_signal **sp)
 {
-    int i, nchans = 0, offset, copysize;
+    int i, nchans = 0, length = sp[0]->s_length;
     for (i = 0; i < x->x_nin; i++)
         nchans += sp[i]->s_nchans;
-    copysize = nchans * sp[0]->s_length;
-    x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
-        x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
-    x->x_copysize = copysize;
-        /* snapshot inputs before allocating output */
-    for (offset = 0, i = 0; i < x->x_nin; offset += sp[i]->s_nchans, i++)
-        dsp_add_copy(sp[i]->s_vec, x->x_copybuf + offset * sp[0]->s_length,
-            sp[i]->s_nchans * sp[0]->s_length);
+
     signal_setmultiout(&sp[x->x_nin], nchans);
-    dsp_add_copy(x->x_copybuf, sp[x->x_nin]->s_vec, copysize);
+
+    if (nchans == x->x_nin)
+    {
+            /* This is an optimized version for the (common) case where all
+            inputs only have a single channel. Since single-channel signals
+            never alias multi-channel signals, we do not have to make a
+            temporary copy. */
+        t_sample *out = sp[x->x_nin]->s_vec;
+        for (i = 0; i < x->x_nin; i++)
+            dsp_add_copy(sp[i]->s_vec, out + i * length, length);
+        if (x->x_copysize)
+        {
+            freebytes(x->x_copybuf, x->x_copysize * sizeof(t_sample));
+            x->x_copybuf = 0;
+            x->x_copysize = 0;
+        }
+    }
+    else
+    {
+            /* We must copy the input signals to a temporary buffer because of
+            potential signal aliasing! Consider the following scenario:
+            'in1' w/ 2 channels, 'in2' w/ 5 channels and 'out' w/ 7 channels.
+            'in2' and 'out' may fall into the same size category and therefore
+            may alias each other. If we just copied 'in1' directly to 'out',
+            we would accidentally overwrite 'in2' before we get to read it! */
+        int offset, copysize = nchans * length;
+        x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
+            x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
+        x->x_copysize = copysize;
+
+        for (offset = 0, i = 0; i < x->x_nin; offset += sp[i]->s_nchans, i++)
+            dsp_add_copy(sp[i]->s_vec, x->x_copybuf + offset * length,
+                sp[i]->s_nchans * length);
+
+        dsp_add_copy(x->x_copybuf, sp[x->x_nin]->s_vec, copysize);
+    }
 }
 
 static void *snake_in_tilde_new(t_floatarg fnchans)
@@ -198,15 +226,15 @@ static void snake_out_tilde_dsp(t_snake_out *x, t_signal **sp)
 {
     int i, usenchans = (x->x_nchans < sp[0]->s_nchans ?
         x->x_nchans : sp[0]->s_nchans);
+    int length = sp[0]->s_length;
         /* create n one-channel output signals and add a copy operation
-        for each one tothe DSP chain */
+        for each one to the DSP chain. */
     for (i = 0; i < x->x_nchans; i++)
     {
         signal_setmultiout(&sp[i+1], 1);
         if (i < usenchans)
-            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
-                sp[i+1]->s_vec, sp[0]->s_length);
-        else dsp_add_zero(sp[i+1]->s_vec, sp[0]->s_length);
+            dsp_add_copy(sp[0]->s_vec + i * length, sp[i+1]->s_vec, length);
+        else dsp_add_zero(sp[i+1]->s_vec, length);
     }
 }
 
@@ -233,16 +261,15 @@ typedef struct _snake_sum
 
 static void snake_sum_tilde_dsp(t_snake_sum *x, t_signal **sp)
 {
-    int i;
+    int i, length = sp[0]->s_length;
         /* create single channel output signal */
     signal_setmultiout(&sp[1], 1);
         /* copy first channel to output */
-    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_length);
+    dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, length);
         /* add remaining channels */
     for (i = 1; i < sp[0]->s_nchans; i++)
-        dsp_add_plus(sp[1]->s_vec,
-            sp[0]->s_vec + i * sp[0]->s_length,
-            sp[1]->s_vec, sp[0]->s_length);
+        dsp_add_plus(sp[1]->s_vec, sp[0]->s_vec + i * length,
+            sp[1]->s_vec, length);
 }
 
 static void *snake_sum_tilde_new(void)
@@ -294,7 +321,14 @@ static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
         dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * sp[0]->s_length);
         dsp_add_zero(sp[2]->s_vec, sp[2]->s_length);
     } else {
-            /* normal split */
+            /* normal split.
+            NOTE: one of the output signals might actually alias the input
+            signal, but it doesn't matter as long as we first copy the
+            left slice. If the left output aliases the input, we effectively
+            copy the first N samples to itself. If the right output aliases
+            the input, we copy to the left, so we never write to a location
+            we haven't read yet. (This assumes that dsp_add_copy() does a
+            forward copy, which is indeed the case.) */
         for (i = 0; i < left_chans; i++)
             dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
                 sp[1]->s_vec + i * sp[1]->s_length, sp[0]->s_length);
@@ -306,8 +340,12 @@ static void snake_split_tilde_dsp(t_snake_split *x, t_signal **sp)
 
 static void snake_split_tilde_index(t_snake_split *x, t_floatarg f)
 {
-    x->x_index = (int)f;
-    canvas_update_dsp();
+    int index = (int)f;
+    if (index != x->x_index)
+    {
+        x->x_index = index;
+        canvas_update_dsp();
+    }
 }
 
 static void *snake_split_tilde_new(t_floatarg f)
@@ -328,75 +366,122 @@ typedef struct _snake_pick
 {
     t_object x_obj;
     t_sample x_f;
+    t_sample *x_copybuf;
+    int x_copysize;
     int x_npick;        /* number of channels to pick */
     int *x_indices;     /* array of channel indices */
 } t_snake_pick;
 
+static t_int *snake_pick_tilde_perform(t_int *w)
+{
+    t_snake_pick *x = (t_snake_pick *)w[1];
+    t_sample *in = (t_sample *)w[2];
+    t_sample *out = (t_sample *)w[3];
+    int nchans = (int)w[4];
+    int n = (int)w[5];
+    t_sample *copy = x->x_copybuf;
+    int i, npick = x->x_npick, total = nchans * n;
+
+        /* make a temporary copy because input and output may alias! */
+    for (i = 0; i < total; i++)
+        copy[i] = in[i];
+
+    for (i = 0; i < npick; i++)
+    {
+        t_sample *dst = out + i * n;
+        int index = x->x_indices[i];
+        if (index >= 0 && index < nchans)
+        {
+            t_sample *src = copy + index * n;
+            int k = n;
+            while (k--)
+                *dst++ = *src++;
+        }
+        else /* output zeros for invalid or missing input channels */
+        {
+            int k = n;
+            while (k--)
+                *dst++ = 0;
+        }
+    }
+
+    return w + 6;
+}
+
 static void snake_pick_tilde_dsp(t_snake_pick *x, t_signal **sp)
 {
-    int i, srcindex;
-    t_signal *inputcopy;
+    int copysize, length = sp[0]->s_length, nchans = sp[0]->s_nchans;
 
         /* if no indices set, default to pass-through */
     if (x->x_npick == 0)
     {
-        signal_setmultiout(&sp[1], sp[0]->s_nchans);
-        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_nchans * sp[0]->s_length);
+        signal_setmultiout(&sp[1], nchans);
+        dsp_add_copy(sp[0]->s_vec, sp[1]->s_vec, nchans * length);
+        if (x->x_copysize)
+        {
+            freebytes(x->x_copybuf, x->x_copysize * sizeof(t_sample));
+            x->x_copybuf = 0;
+            x->x_copysize = 0;
+        }
         return;
     }
 
-    signal_setmultiout(&sp[1], x->x_npick);
         /* use temporary buffer to avoid overwriting input during reordering */
-    inputcopy = signal_new(sp[0]->s_length, sp[0]->s_nchans, sp[0]->s_sr, 0);
-    for (i = 0; i < sp[0]->s_nchans; i++)
-        dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
-            inputcopy->s_vec + i * sp[0]->s_length, sp[0]->s_length);
-    for (i = 0; i < x->x_npick; i++)
-    {
-        if ((srcindex = x->x_indices[i]) >= 0 && srcindex < sp[0]->s_nchans)
-            dsp_add_copy(inputcopy->s_vec + srcindex * sp[0]->s_length,
-                sp[1]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
-        else
-                /* output zeros for invalid or missing input channels */
-            dsp_add_zero(sp[1]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
-    }
+    copysize = x->x_npick * length * nchans;
+    x->x_copybuf = (t_sample *)resizebytes(x->x_copybuf,
+        x->x_copysize * sizeof(t_sample), copysize * sizeof(t_sample));
+    x->x_copysize = copysize;
+
+    signal_setmultiout(&sp[1], x->x_npick);
+
+    dsp_add(snake_pick_tilde_perform, 5, x, sp[0]->s_vec, sp[1]->s_vec,
+        (t_int)nchans, (t_int)length);
 }
 
 static void snake_pick_tilde_channels(t_snake_pick *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
+    int i, update = 0;
 
         /* (re)allocate indices array if channel count changed */
     if (argc != x->x_npick)
     {
-        if (x->x_indices)
-            freebytes(x->x_indices, x->x_npick * sizeof(int));
-        x->x_indices = argc ? (int *)getbytes(argc * sizeof(int)) : NULL;
+        x->x_indices = (int *)resizebytes(x->x_indices,
+            x->x_npick * sizeof(int), argc * sizeof(int));
         x->x_npick = argc;
+        update = 1;
     }
 
-        /* update indices (convert from 1-based to 0-based) */
     for (i = 0; i < argc; i++)
-        x->x_indices[i] = (int)atom_getfloatarg(i, argc, argv) - 1;
-    canvas_update_dsp();
+        x->x_indices[i] = (int)atom_getfloatarg(i, argc, argv);
+
+        /* we only have to update DSP if the number of output channels
+        has changed! */
+    if (update)
+        canvas_update_dsp();
 }
 
 static void snake_pick_tilde_free(t_snake_pick *x)
 {
     if (x->x_indices)
         freebytes(x->x_indices, x->x_npick * sizeof(int));
+    if (x->x_copybuf)
+        freebytes(x->x_copybuf, x->x_copysize * sizeof(t_sample));
 }
 
 static void *snake_pick_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_snake_pick *x = (t_snake_pick *)pd_new(snake_pick_tilde_class);
 
+    x->x_copybuf = 0;
+    x->x_copysize = 0;
     x->x_npick = 0;
-    x->x_indices = NULL;
-    snake_pick_tilde_channels(x, s, argc, argv);
+    x->x_indices = 0;
 
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_list, gensym("channels"));
     outlet_new(&x->x_obj, &s_signal);
+
+    snake_pick_tilde_channels(x, s, argc, argv);
+
     return (x);
 }
 

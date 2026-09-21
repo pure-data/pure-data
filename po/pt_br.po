@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-08-28 01:37+0200\n"
-"PO-Revision-Date: 2026-05-13 20:11+0000\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"PO-Revision-Date: 2026-09-04 06:51+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
 "data/pure-data/pt_BR/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 msgid "linear"
 msgstr "linear"
@@ -254,6 +254,56 @@ msgstr "Configurações de Áudio"
 
 msgid "Save All Settings"
 msgstr "Salvar Todas as Configurações"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr "Atalho#%d"
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "atalhos de teclado"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr "Restaurar ao estado anterior"
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr "Editar atalho"
+
+msgid "Delete shortcut"
+msgstr "Deletar atalho"
+
+msgid "Add shortcut"
+msgstr "Adicionar atalho"
+
+msgid "Delete shortcuts"
+msgstr "Deletar atalhos"
+
+msgid "Shortcut in use!"
+msgstr "Atalho em uso!"
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -580,9 +630,6 @@ msgstr "Editar caminho existente [%s]"
 msgid "Patch Windows"
 msgstr "Janelas do Patch"
 
-msgid "Zoom New Windows"
-msgstr "Ampliar Zoom em Novas Janelas"
-
 msgid "GUI Settings"
 msgstr "Configurações de GUI"
 
@@ -617,7 +664,7 @@ msgid "deken preferences"
 msgstr "preferências do deken"
 
 msgid "keyboard shortcuts"
-msgstr ""
+msgstr "atalhos de teclado"
 
 msgid "misc preferences"
 msgstr "diversas"
@@ -706,7 +753,7 @@ msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "Ignoring non-existant plugin '%s'"
-msgstr ""
+msgstr "Ignorando plugin inexistente '%s'"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -737,6 +784,10 @@ msgstr "falha de inicialização do Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Falha ao iniciar o núcleo do Pd"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr "Nível de zoom padrão: %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -848,7 +899,7 @@ msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear arquivo baixado de '%s'"
 
 msgid "~"
-msgstr ""
+msgstr "~"
 
 msgid "Search URLs:"
 msgstr "Procurar URLs:"
@@ -886,16 +937,14 @@ msgstr "Manter arquivos do pacote depois da instalação"
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém-instaladas ao caminho de busca do Pd"
 
-#, fuzzy
 msgid "- Always add to search path"
-msgstr "%s adicionado aos caminhos de busca"
+msgstr "- Sempre adicionar ao caminho de busca"
 
-#, fuzzy
 msgid "- Never add to search path"
-msgstr "Incapaz de adicionar %s aos caminhos de busca"
+msgstr "- Nunca adicionar ao caminho de busca"
 
 msgid "- Prompt before adding"
-msgstr ""
+msgstr "- Perguntar antes de adicionar"
 
 msgid "Platform settings:"
 msgstr "Configurações da plataforma:"
@@ -1220,9 +1269,9 @@ msgstr "[deken] platforma detectada: %s"
 msgid "Could not find a menu for adding '%s'"
 msgstr "Não foi possível encontrar um menu para adicionar '%s'"
 
-#, fuzzy, tcl-format
-msgid "Downgrading %s to %s"
-msgstr "Baixando '%s'"
+#, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "Instalando a versão anterior de %1$s para %2$s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1965,9 +2014,8 @@ msgstr "Ampliar Zoom"
 msgid "Zoom Out"
 msgstr "Reduzir Zoom"
 
-#, fuzzy
 msgid "Reset Zoom"
-msgstr "Resetar"
+msgstr "Resetar Zoom"
 
 msgid "Clear Console"
 msgstr "Limpar Console"
@@ -1993,9 +2041,8 @@ msgstr "Símbolo"
 msgid "Comment"
 msgstr "Comentário"
 
-#, fuzzy
 msgid "Scalar"
-msgstr "Escala"
+msgstr "Scalar"
 
 msgid "Graph"
 msgstr "Gráfico"
@@ -2069,9 +2116,8 @@ msgstr "Procurar por atualizações"
 msgid "Report a bug"
 msgstr "Reportar problemas (bugs)"
 
-#, fuzzy
 msgid "Clear Recent Files"
-msgstr "Arquivos de texto de Max"
+msgstr "Limpar Arquivos Recentes"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2191,6 +2237,9 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um arquivo de Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Ampliar Zoom em Novas Janelas"
 
 #~ msgid "Clear Menu"
 #~ msgstr "Limpar Menu"

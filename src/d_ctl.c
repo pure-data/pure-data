@@ -900,6 +900,7 @@ typedef struct _siginfo_tilde
     t_float x_f;                /* scalar inlet */
     t_siginfo_proxy x_proxy;    /* proxy to receive "pd-dsp-stopped" events */
     t_canvas *x_canvas;         /* canvas we live in (for canvas-local info) */
+    t_clock *x_clock;           /* clock for scheduling messages */
 
     t_symbol **x_vec;           /* object arguments (or NULL) */
     unsigned int x_argc;
@@ -978,7 +979,8 @@ static void siginfo_tilde_dsp(t_siginfo_tilde *x, t_signal **sp)
     x->x_channels = sp[0]->s_nchans;
     x->x_overlap = sp[0]->s_overlap;
     x->x_globaldspstate = 1;
-    siginfo_tilde_bang(x);
+
+    clock_delay(x->x_clock, 0);
 }
 
 static void siginfo_proxy_bang(t_siginfo_proxy *p)
@@ -1004,6 +1006,11 @@ static void siginfo_proxy_bang(t_siginfo_proxy *p)
             x->x_globaldspstate && canvas_getswitchedon(x->x_canvas));
 }
 
+static void siginfo_tick(t_siginfo_tilde *x)
+{
+    siginfo_tilde_bang(x);
+}
+
 static void siginfo_tilde_free(t_siginfo_tilde *x)
 {
     int i, num = (x->x_argc>1)?x->x_argc:1;
@@ -1013,6 +1020,7 @@ static void siginfo_tilde_free(t_siginfo_tilde *x)
     for (i = 0; i < num; i++)
         outlet_free(x->x_outlet[i]);
     freebytes(x->x_outlet, sizeof(*x->x_outlet) * num);
+    clock_free(x->x_clock);
     pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
 }
 
@@ -1030,6 +1038,8 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_proxy.x_parent = x;
 
     x->x_canvas = canvas_getcurrent();
+
+    x->x_clock = clock_new(x, (t_method)siginfo_tick);
 
     if (argc>0)
     {
