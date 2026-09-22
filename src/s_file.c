@@ -134,6 +134,73 @@ static void sys_donesavepreferences_file(void)
 
 static PERTHREAD CFMutableDictionaryRef sys_prefdict = NULL;
 
+// migrate legacy preferences to the new domain
+static int preferences_migrate(void)
+{
+    struct stat statbuf;
+    mode_t legacy_mode;
+    char legacy_prefs[MAXPDSTRING], modern_prefs[MAXPDSTRING];
+    char *homedir = getenv("HOME");
+    const int copyprefs = 1;
+
+    pd_snprintf(legacy_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+    pd_snprintf(modern_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/info.puredata.pd.plist", homedir);
+
+    if (0 == stat(modern_prefs, &statbuf))
+    {
+            /* already migrated: skip */
+        return 0;
+    }
+    if (0 != stat(legacy_prefs, &statbuf))
+    {
+            /* no legacy preferences: skip */
+        return 0;
+    }
+    legacy_mode = statbuf.st_mode;
+
+    if (copyprefs)
+    {
+            /* copy the preferences (so the legacy ones can still be used by older Pd installations */
+        int result = 1;
+        char buf[1024];
+        ssize_t len;
+        int oldfd = sys_open(legacy_prefs, O_RDONLY);
+        int newfd = sys_open(modern_prefs, O_WRONLY | O_CREAT | O_TRUNC, legacy_mode);
+
+        if(oldfd < 0 || newfd < 0)
+            goto cleanup;
+
+        while((len=read(oldfd, buf, sizeof(buf)))>0) {
+            ssize_t wlen=write(newfd, buf, len);
+                /* TODO: cater for partial writes */
+            if (wlen<1) {
+                result = -1 ;
+            }
+        }
+
+    cleanup:
+        if(oldfd >= 0)
+            sys_close(oldfd);
+        if(newfd >= 0)
+            sys_close(newfd);
+
+        return result;
+    }
+    else
+    {
+            /* rename the preferences */
+        if (rename(legacy_prefs, modern_prefs))
+        {
+                /* migration failed */
+            return -1;
+        }
+    }
+        /* successfully migrated */
+    return 1;
+}
+
 // get preferences file load path into dst, returns 1 if embedded
 static int preferences_getloadpath(char *dst, size_t size)
 {
@@ -381,6 +448,11 @@ static void sys_putpreference(const char *key, const char *value)
 
 #elif defined(_WIN32)
 /*****  windows: read and write to registry ******/
+static int preferences_migrate(void)
+{
+        /* nothing to migrate yet */
+    return 0;
+}
 
 static void sys_initloadpreferences(void)
 {
@@ -505,6 +577,11 @@ static int sys_deletepreference(const char *key)
 
 #else
 /*****  linux/android/BSD etc: read and write to ~/.pdsettings file ******/
+static int preferences_migrate(void)
+{
+        /* nothing to migrate yet */
+    return 0;
+}
 
 static void sys_initloadpreferences(void)
 {
@@ -574,7 +651,18 @@ void sys_loadpreferences(const char *filename, int startingup)
 
     if (*filename)
         sys_initloadpreferences_file(filename);
-    else sys_initloadpreferences();
+    else
+    {
+        int migration_status = preferences_migrate();
+        if(migration_status)
+        {
+            if(migration_status < 0)
+                pd_error(0, "failed to migrate Pd preferences");
+            else
+                logpost(NULL, PD_VERBOSE, "successfully migrated Pd preferences");
+        }
+        sys_initloadpreferences();
+    }
         /* load audio preferences */
     if (!sys_externalschedlib
         && sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
