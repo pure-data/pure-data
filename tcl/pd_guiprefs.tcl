@@ -40,21 +40,21 @@ namespace eval ::pd_guiprefs:: {
 # new
 #   plist
 #    info.puredata.pd.pd-gui <key> <value>
-#    domain: info.puredata.pd-gui
+#    domain: info.puredata.pd.pd-gui
 #   registry
 #    HKEY_CURRENT_USER\Software\Pure-Data\info.puredata <key>:<value>
-#    domain: info.puredata.pd-gui
+#    domain: info.puredata.pd.pd-gui
 #   file
-#    Linux: ~/.config/pd/info.puredata/<key>.conf
+#    Linux: ~/.config/Pd/info.puredata.pd.pd-gui/<key>.conf
 #       - env(XDG_CONFIG_HOME)=~/.config/
-#       - env(PD_CONFIG_DIR)=~/.config/pd/
-#       - domain=info.puredata.pd-gui
+#       - env(PD_CONFIG_DIR)=~/.config/Pd/
+#       - domain=info.puredata.pd.pd-gui
 #    OSX  : ~/Library/Preferences/Pd/info.puredata/<key>.conf
 #       - env(PD_CONFIG_DIR)=~/Library/Preferences/Pd/
-#       - domain=info.puredata.pd-gui
+#       - domain=info.puredata.pd.pd-gui
 #    W32  : %AppData%\Pd\.config\info.puredata\<key>.conf
 #       - env(PD_CONFIG_DIR)=%AppData%\Pd\.config
-#       - domain=info.puredata.pd-gui
+#       - domain=info.puredata.pd.pd-gui
 #
 #################################################################
 
@@ -85,8 +85,23 @@ proc ::pd_guiprefs::init {} {
         set backend "file"
     }
 
+    set olddomain "org.puredata.pd.pd-gui"
+    # LATER translate these:
+    set migration_failure_msg [format "failed to migrate Pd-GUI preferences from \"%1\$s\" to \"%2\$s\"" ${olddomain} ${::pd_guiprefs::domain}]
+    set migration_success_msg [format "successfully migrated Pd-GUI preferences from \"%1\$s\" to \"%2\$s\"" ${olddomain} ${::pd_guiprefs::domain}]
+
     switch -- $backend {
         "plist" {
+            # migrate legacy preference domain to new one
+            if { [catch {exec defaults read ${::pd_guiprefs::domain}}] && ![catch {exec defaults read ${olddomain} }] } {
+                # olddomain exists, newdomain does not, so copy prefs
+                if { [catch {exec defaults export ${olddomain} - | defaults import ${::pd_guiprefs::domain} -}]} {
+                    ::pdwindow::error "${migration_failure_msg}\n"
+                } else {
+                    ::pdwindow::debug "${migration_success_msg}\n"
+                }
+            }
+
             # macOS has a "Open Recent" menu with 10 recent files (others have 5 inlined)
             set ::pd_guiprefs::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
@@ -177,6 +192,23 @@ proc ::pd_guiprefs::init {} {
             set ::pd_guiprefs::registrypath "HKEY_CURRENT_USER\\Software\\Pure-Data"
             set ::pd_guiprefs::recentfiles_key "RecentDocs"
 
+            # migrate legacy preference domain to new one
+            set oldregpath [join [list ${::pd_guiprefs::registrypath} ${olddomain}] "\\"]
+            set newregpath [join [list ${::pd_guiprefs::registrypath} ${::pd_guiprefs::domain}] "\\"]
+            package require registry
+            if { [catch {registry values ${newregpath} }] && ![catch {registry values ${oldregpath} }] } {
+                # olddomain exists, newdomain does not, so copy prefs
+                if { [catch {
+                    foreach key [registry values ${oldregpath}] {
+                        registry set ${newregpath} ${key} [registry get ${oldregpath} ${key}] [registry type ${oldregpath} ${key}]
+                    }
+                } ] } {
+                    ::pdwindow::error "${migration_failure_msg}\n"
+                } else {
+                    ::pdwindow::debug "${migration_success_msg}\n"
+                }
+            }
+
             # ------------------------------------------------------------------------------
             # w32: read in the registry
             #
@@ -232,7 +264,22 @@ proc ::pd_guiprefs::init {} {
         }
         "file" {
             set ::pd_guiprefs::recentfiles_key "recentfiles"
+
+            # migrate legacy preference domain to new one
+            set confdir [::pd_guiprefs::get_fileconfigdir]
+            set olddir [file join ${confdir} "org.puredata.pd.pd-gui"]
+            set newdir [file join ${confdir} ${::pd_guiprefs::domain}]
+            if { ![file isdir ${newdir}] && [file isdir ${olddir}] } {
+                # olddomain exists, newdomain does not, so copy prefs
+                if { [catch {file copy ${olddir} ${newdir}} ] } {
+                    ::pdwindow::error "${migration_failure_msg}\n"
+                } else {
+                    ::pdwindow::debug "${migration_success_msg}\n"
+                }
+            }
+
             prepare_configdir ${::pd_guiprefs::domain}
+
 
             # ------------------------------------------------------------------------------
             # linux: read a config file and return its lines split.
@@ -359,8 +406,8 @@ proc ::pd_guiprefs::read {key {islist false} {domain {}}} {
 # ------------------------------------------------------------------------------
 # file-backend only! : look for pd config directory and create it if needed
 #
-proc ::pd_guiprefs::prepare_configdir {domain} {
-    set confdir ""
+proc ::pd_guiprefs::get_fileconfigdir {} {
+   set confdir ""
     switch -- $::platform {
         "W32" {
             # W32 uses %AppData%/Pd/.config dir
@@ -385,7 +432,13 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
         }
     }
 
-    catch { set confdir [file tildeexpand $confdir] }
+    catch { set confdir [file tildeexpand ${confdir}] }
+
+    return ${confdir}
+}
+
+proc ::pd_guiprefs::prepare_configdir {domain} {
+    set confdir [::pd_guiprefs::get_fileconfigdir]
 
     set ::pd_guiprefs::configdir $confdir
     set ::pd_guiprefs::domain $domain
