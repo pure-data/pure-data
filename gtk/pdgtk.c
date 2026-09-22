@@ -387,7 +387,7 @@ int main(int argc, char **argv)
     giochan = g_io_channel_unix_new(pdsockfd);
     g_io_add_watch(giochan, G_IO_IN, gtk_socket_callback, NULL);
 
-    app = pdgtk_app = gtk_application_new("org.puredata.pd.devel",
+    app = pdgtk_app = gtk_application_new("info.puredata.pd.gui",
         G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "startup", G_CALLBACK(pdgtk_startup), NULL);
     g_signal_connect(app, "activate", G_CALLBACK(pdgtk_activate), NULL);

@@ -34,7 +34,7 @@
 	<key>CFBundleIconFile</key>
 	<string>pd.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.puredata.pd.pd-gui</string>
+	<string>info.puredata.pd.pd-gui</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -69,7 +69,7 @@
 			<key>UTTypeIconFile</key>
 			<string>pd-file.icns</string>
 			<key>UTTypeIdentifier</key>
-			<string>org.puredata.pd-patch</string>
+			<string>info.puredata.pd-patch</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

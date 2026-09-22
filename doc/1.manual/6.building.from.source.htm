@@ -604,14 +604,14 @@ automatically on your system so I wouldn&rsquo;t have to include it here.</p>
 using the following domains:</p>
 
 <ul>
-<li><code>org.puredata.pd</code>: core settings (audio devices, search paths, etc)</li>
-<li><code>org.puredata.pd.pd-gui</code>: GUI settings (recent files, last opened location, etc)</li>
+<li><code>info.puredata.pd</code>: core settings (audio devices, search paths, etc)</li>
+<li><code>info.puredata.pd.pd-gui</code>: GUI settings (recent files, last opened location, etc)</li>
 </ul>
 
 <p>The files themselves live in your user home folder and use the .plist extension:</p>
 
-<pre><code>~/Library/Preferences/org.puredata.pd.plist
-~/Library/Preferences/org.puredata.pd.pd-gui.plist
+<pre><code>~/Library/Preferences/info.puredata.pd.plist
+~/Library/Preferences/info.puredata.pd.pd-gui.plist
 </code></pre>
 
 <p>These files use the Apple Property List XML format and shouldn&rsquo;t be edited
@@ -619,13 +619,13 @@ directly. You can look inside, edit, and/or delete these using the <code>default
 commandline utility in Terminal:</p>
 
 <pre><code># print the contents of the core settings
-defaults read org.puredata.pd
+defaults read info.puredata.pd
 
 # delete the current GUI settings
-defaults delete org.puredata.pd.pd-gui
+defaults delete info.puredata.pd.pd-gui
 
 # set the startup flag in the core settings
-defaults write org.puredata.pd -array-add flags '-lib Gem'
+defaults write info.puredata.pd -array-add flags '-lib Gem'
 </code></pre>
 
 <p>Some important per-application settings required by the GUI include:</p>
@@ -676,10 +676,10 @@ They can also be reset on the commandline using the <code>tccutil</code> command
 Pd .app bundle id:</p>
 
 <pre><code># reset Pd's Microphone privacy setting
-tccutil reset Microphone org.puredata.pd.pd-gui
+tccutil reset Microphone info.puredata.pd.pd-gui
 
 # reset all of Pd's privacy settings
-tccutil reset All org.puredata.pd.pd-gui
+tccutil reset All info.puredata.pd.pd-gui
 </code></pre>
 
 <H4> <A href="#s6.5.6" id="s6.5.6"> 6.5.6. Font issues with macOS 10.15+ </A> </H4>

@@ -141,10 +141,10 @@ static int preferences_getloadpath(char *dst, size_t size)
     char user_prefs[MAXPDSTRING];
     char *homedir = getenv("HOME");
     struct stat statbuf;
-    pd_snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
+    pd_snprintf(embedded_prefs, MAXPDSTRING, "%s/../info.puredata.pd",
         sys_libdir->s_name);
     pd_snprintf(user_prefs, MAXPDSTRING,
-        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+        "%s/Library/Preferences/info.puredata.pd.plist", homedir);
     if (stat(user_prefs, &statbuf) == 0)
     {
         strncpy(dst, user_prefs, size);
@@ -162,7 +162,7 @@ static void preferences_getsavepath(char *dst, size_t size)
 {
     char user_prefs[MAXPDSTRING];
     pd_snprintf(user_prefs, MAXPDSTRING,
-        "%s/Library/Preferences/org.puredata.pd.plist", getenv("HOME"));
+        "%s/Library/Preferences/info.puredata.pd.plist", getenv("HOME"));
     strncpy(dst, user_prefs, size);
 }
 
@@ -329,7 +329,7 @@ static int sys_getpreference(const char *key, char *value, int size)
             pd_snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
                 path, key);
         else
-            pd_snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
+            pd_snprintf(cmdbuf, 256, "defaults read info.puredata.pd %s 2> /dev/null\n",
                 key);
         FILE *fp = popen(cmdbuf, "r");
         while (nread < size)
@@ -374,7 +374,7 @@ static void sys_putpreference(const char *key, const char *value)
         /* fallback to defaults command */
         char cmdbuf[MAXPDSTRING];
         pd_snprintf(cmdbuf, MAXPDSTRING,
-            "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
+            "defaults write info.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
         system(cmdbuf);
     }
 }
@@ -904,7 +904,7 @@ void glob_forgetpreferences(t_pd *dummy)
         post("no Pd settings to clear"), warn = 0;
             /* do it anyhow, why not... */
     pd_snprintf(cmdbuf, MAXPDSTRING,
-        "defaults delete org.puredata.pd 2> /dev/null\n");
+        "defaults delete info.puredata.pd 2> /dev/null\n");
     if (system(cmdbuf) && warn)
         post("failed to erase Pd settings");
     else if(warn) post("erased Pd settings");

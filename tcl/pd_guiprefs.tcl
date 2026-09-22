@@ -18,7 +18,7 @@ namespace eval ::pd_guiprefs:: {
     variable loglevel_key "loglevel"
 
     # platform specific
-    variable domain org.puredata.pd.pd-gui
+    variable domain info.puredata.pd.pd-gui
     variable configdir ""
     variable recentfiles_is_array false
 }
@@ -31,30 +31,30 @@ namespace eval ::pd_guiprefs:: {
 #    HKEY_CURRENT_USER\Software\Pure-Data <key>:<value>
 #    domain: HKEY_CURRENT_USER\Software\Pure-Data
 #   plist
-#    org.puredata <key> <value>
-#    domain: org.puredata
+#    info.puredata <key> <value>
+#    domain: info.puredata
 #   linux:
 #    ~/.config/pure-data/<key>.conf
 #    domain: ~/.config/pure-data/
 #
 # new
 #   plist
-#    org.puredata.pd.pd-gui <key> <value>
-#    domain: org.puredata.pd-gui
+#    info.puredata.pd.pd-gui <key> <value>
+#    domain: info.puredata.pd-gui
 #   registry
-#    HKEY_CURRENT_USER\Software\Pure-Data\org.puredata <key>:<value>
-#    domain: org.puredata.pd-gui
+#    HKEY_CURRENT_USER\Software\Pure-Data\info.puredata <key>:<value>
+#    domain: info.puredata.pd-gui
 #   file
-#    Linux: ~/.config/pd/org.puredata/<key>.conf
+#    Linux: ~/.config/pd/info.puredata/<key>.conf
 #       - env(XDG_CONFIG_HOME)=~/.config/
 #       - env(PD_CONFIG_DIR)=~/.config/pd/
-#       - domain=org.puredata.pd-gui
-#    OSX  : ~/Library/Preferences/Pd/org.puredata/<key>.conf
+#       - domain=info.puredata.pd-gui
+#    OSX  : ~/Library/Preferences/Pd/info.puredata/<key>.conf
 #       - env(PD_CONFIG_DIR)=~/Library/Preferences/Pd/
-#       - domain=org.puredata.pd-gui
-#    W32  : %AppData%\Pd\.config\org.puredata\<key>.conf
+#       - domain=info.puredata.pd-gui
+#    W32  : %AppData%\Pd\.config\info.puredata\<key>.conf
 #       - env(PD_CONFIG_DIR)=%AppData%\Pd\.config
-#       - domain=org.puredata.pd-gui
+#       - domain=info.puredata.pd-gui
 #
 #################################################################
 

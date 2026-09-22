@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.puredata.pd-gui</id>
+  <id>info.puredata.pd-gui</id>
   <name>Pure Data (Pd)</name>
   <developer_name>Miller S. Puckette et al.</developer_name>
 
@@ -28,7 +28,7 @@
   <url type="vcs-browser">https://github.com/pure-data/pure-data</url>
   <url type="translate">https://hosted.weblate.org/projects/pure-data/pure-data/</url>
 
-  <launchable type="desktop-id">org.puredata.pd-gui.desktop</launchable>
+  <launchable type="desktop-id">info.puredata.pd-gui.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://screenshots.debian.net/screenshot/puredata</image>
