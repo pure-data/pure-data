@@ -657,8 +657,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         if (x->x_active)
         {
             pdgui_vmess("pdtk_text_select", "cs i i", canvas, x->x_tag,
-                u8_charnum(x->x_buf, selstart_b),
-                u8_charnum(x->x_buf, selend_b));
+                u8_charnum(tempbuf, selstart_b),
+                u8_charnum(tempbuf, selend_b));
         }
     }
     x->x_pixwidth = *widthp;
