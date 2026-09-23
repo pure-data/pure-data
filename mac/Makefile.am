@@ -25,9 +25,9 @@ pkgdata_DATA += \
 
 # build an app bundle on OSX
 app:
-	rm -rf $(abs_top_builddir)/Pd-$(VERSION).app
-	$(SH) $(top_srcdir)/mac/osx-app.sh --builddir $(abs_top_builddir) $(VERSION)
-	mv $(abs_top_builddir)/mac/Pd-$(VERSION).app $(abs_top_builddir)
+	rm -rf "$(abs_top_builddir)/Pd-$(VERSION).app"
+	$(SH) "$(top_srcdir)/mac/osx-app.sh" --builddir "$(abs_top_builddir)" $(VERSION)
+	mv "$(abs_top_builddir)/mac/Pd-$(VERSION).app" "$(abs_top_builddir)"
 
 else
 

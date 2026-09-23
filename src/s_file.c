@@ -134,6 +134,73 @@ static void sys_donesavepreferences_file(void)
 
 static PERTHREAD CFMutableDictionaryRef sys_prefdict = NULL;
 
+// migrate legacy preferences to the new domain
+static int preferences_migrate(void)
+{
+    struct stat statbuf;
+    mode_t legacy_mode;
+    char legacy_prefs[MAXPDSTRING], modern_prefs[MAXPDSTRING];
+    char *homedir = getenv("HOME");
+    const int copyprefs = 1;
+
+    pd_snprintf(legacy_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+    pd_snprintf(modern_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/info.puredata.pd.plist", homedir);
+
+    if (0 == stat(modern_prefs, &statbuf))
+    {
+            /* already migrated: skip */
+        return 0;
+    }
+    if (0 != stat(legacy_prefs, &statbuf))
+    {
+            /* no legacy preferences: skip */
+        return 0;
+    }
+    legacy_mode = statbuf.st_mode;
+
+    if (copyprefs)
+    {
+            /* copy the preferences (so the legacy ones can still be used by older Pd installations */
+        int result = 1;
+        char buf[1024];
+        ssize_t len;
+        int oldfd = sys_open(legacy_prefs, O_RDONLY);
+        int newfd = sys_open(modern_prefs, O_WRONLY | O_CREAT | O_TRUNC, legacy_mode);
+
+        if(oldfd < 0 || newfd < 0)
+            goto cleanup;
+
+        while((len=read(oldfd, buf, sizeof(buf)))>0) {
+            ssize_t wlen=write(newfd, buf, len);
+                /* TODO: cater for partial writes */
+            if (wlen<1) {
+                result = -1 ;
+            }
+        }
+
+    cleanup:
+        if(oldfd >= 0)
+            sys_close(oldfd);
+        if(newfd >= 0)
+            sys_close(newfd);
+
+        return result;
+    }
+    else
+    {
+            /* rename the preferences */
+        if (rename(legacy_prefs, modern_prefs))
+        {
+                /* migration failed */
+            return -1;
+        }
+    }
+        /* successfully migrated */
+    return 1;
+}
+
 // get preferences file load path into dst, returns 1 if embedded
 static int preferences_getloadpath(char *dst, size_t size)
 {
@@ -141,10 +208,10 @@ static int preferences_getloadpath(char *dst, size_t size)
     char user_prefs[MAXPDSTRING];
     char *homedir = getenv("HOME");
     struct stat statbuf;
-    pd_snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
+    pd_snprintf(embedded_prefs, MAXPDSTRING, "%s/../info.puredata.pd",
         sys_libdir->s_name);
     pd_snprintf(user_prefs, MAXPDSTRING,
-        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+        "%s/Library/Preferences/info.puredata.pd.plist", homedir);
     if (stat(user_prefs, &statbuf) == 0)
     {
         strncpy(dst, user_prefs, size);
@@ -162,7 +229,7 @@ static void preferences_getsavepath(char *dst, size_t size)
 {
     char user_prefs[MAXPDSTRING];
     pd_snprintf(user_prefs, MAXPDSTRING,
-        "%s/Library/Preferences/org.puredata.pd.plist", getenv("HOME"));
+        "%s/Library/Preferences/info.puredata.pd.plist", getenv("HOME"));
     strncpy(dst, user_prefs, size);
 }
 
@@ -329,7 +396,7 @@ static int sys_getpreference(const char *key, char *value, int size)
             pd_snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
                 path, key);
         else
-            pd_snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
+            pd_snprintf(cmdbuf, 256, "defaults read info.puredata.pd %s 2> /dev/null\n",
                 key);
         FILE *fp = popen(cmdbuf, "r");
         while (nread < size)
@@ -374,13 +441,18 @@ static void sys_putpreference(const char *key, const char *value)
         /* fallback to defaults command */
         char cmdbuf[MAXPDSTRING];
         pd_snprintf(cmdbuf, MAXPDSTRING,
-            "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
+            "defaults write info.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
         system(cmdbuf);
     }
 }
 
 #elif defined(_WIN32)
 /*****  windows: read and write to registry ******/
+static int preferences_migrate(void)
+{
+        /* nothing to migrate yet */
+    return 0;
+}
 
 static void sys_initloadpreferences(void)
 {
@@ -505,6 +577,11 @@ static int sys_deletepreference(const char *key)
 
 #else
 /*****  linux/android/BSD etc: read and write to ~/.pdsettings file ******/
+static int preferences_migrate(void)
+{
+        /* nothing to migrate yet */
+    return 0;
+}
 
 static void sys_initloadpreferences(void)
 {
@@ -574,7 +651,18 @@ void sys_loadpreferences(const char *filename, int startingup)
 
     if (*filename)
         sys_initloadpreferences_file(filename);
-    else sys_initloadpreferences();
+    else
+    {
+        int migration_status = preferences_migrate();
+        if(migration_status)
+        {
+            if(migration_status < 0)
+                pd_error(0, "failed to migrate Pd preferences");
+            else
+                logpost(NULL, PD_VERBOSE, "successfully migrated Pd preferences");
+        }
+        sys_initloadpreferences();
+    }
         /* load audio preferences */
     if (!sys_externalschedlib
         && sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
@@ -742,8 +830,6 @@ void sys_loadpreferences(const char *filename, int startingup)
 #else
         sys_hipriority = 1;
 #endif
-    if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &sys_zoom_open);
 
     sys_doneloadpreferences();
 }
@@ -863,8 +949,6 @@ void sys_savepreferences(const char *filename)
     sys_putpreference("flags",
         (sys_flags ? sys_flags->s_name : ""));
         /* misc */
-    sprintf(buf1, "%d", sys_zoom_open);
-    sys_putpreference("zoom", buf1);
     sys_putpreference("loading", "no");
 
     sys_donesavepreferences();
@@ -908,7 +992,7 @@ void glob_forgetpreferences(t_pd *dummy)
         post("no Pd settings to clear"), warn = 0;
             /* do it anyhow, why not... */
     pd_snprintf(cmdbuf, MAXPDSTRING,
-        "defaults delete org.puredata.pd 2> /dev/null\n");
+        "defaults delete info.puredata.pd 2> /dev/null\n");
     if (system(cmdbuf) && warn)
         post("failed to erase Pd settings");
     else if(warn) post("erased Pd settings");

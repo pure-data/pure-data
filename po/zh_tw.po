@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -252,6 +252,56 @@ msgid "Audio Settings"
 msgstr "音效設定"
 
 msgid "Save All Settings"
+msgstr ""
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "於 "
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
 msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
@@ -581,9 +631,6 @@ msgstr ""
 msgid "Patch Windows"
 msgstr "Pd 主視窗"
 
-msgid "Zoom New Windows"
-msgstr ""
-
 #, fuzzy
 msgid "GUI Settings"
 msgstr "MIDI 設定"
@@ -621,6 +668,9 @@ msgstr "偏好設定"
 #, fuzzy
 msgid "deken preferences"
 msgstr "偏好設定"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 #, fuzzy
 msgid "misc preferences"
@@ -710,6 +760,10 @@ msgid "using font: %1$s %2$s"
 msgstr ""
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr ""
 
@@ -737,6 +791,10 @@ msgid "Pd startup failure"
 msgstr ""
 
 msgid "Failed to start Pd-core"
+msgstr ""
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -848,6 +906,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr "~"
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "於 "
@@ -883,6 +944,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1018,10 +1088,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1066,6 +1142,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1091,6 +1170,9 @@ msgid "Search Results"
 msgstr ""
 
 msgid "Log"
+msgstr ""
+
+msgid "Searching for all packages..."
 msgstr ""
 
 #, tcl-format
@@ -1181,6 +1263,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %1$s to %2$s"
 msgstr ""
 
 #, tcl-format
@@ -1905,6 +1991,9 @@ msgstr ""
 msgid "Zoom Out"
 msgstr ""
 
+msgid "Reset Zoom"
+msgstr ""
+
 msgid "Clear Console"
 msgstr "清除控制台"
 
@@ -1929,6 +2018,10 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+#, fuzzy
+msgid "Scalar"
+msgstr "縮放"
+
 msgid "Graph"
 msgstr ""
 
@@ -1949,9 +2042,6 @@ msgstr "關閉 DSP"
 
 msgid "Test Audio and MIDI..."
 msgstr "聲音和 MIDI 測試..."
-
-msgid "Load Meter"
-msgstr ""
 
 msgid "Audio Settings..."
 msgstr "音效設定..."
@@ -1980,6 +2070,9 @@ msgstr ""
 msgid "Parent Window"
 msgstr "上層視窗"
 
+msgid "Load Meter"
+msgstr ""
+
 msgid "Message..."
 msgstr ""
 
@@ -2001,8 +2094,8 @@ msgstr ""
 msgid "Report a bug"
 msgstr "回報錯誤"
 
-msgid "Clear Menu"
-msgstr "清除選單"
+msgid "Clear Recent Files"
+msgstr ""
 
 msgid ""
 "Delete all preferences?\n"
@@ -2041,6 +2134,10 @@ msgstr "要儲存已修改過的 '%s' 嗎？"
 
 msgid "Properties"
 msgstr "內容"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "編輯模式"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2118,3 +2215,6 @@ msgstr ""
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "忽略 '%s': 這不像是Pd檔案"
+
+#~ msgid "Clear Menu"
+#~ msgstr "清除選單"

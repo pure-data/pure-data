@@ -23,7 +23,6 @@ proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
     ::pd_guiprefs::write "cords_to_foreground" $::pdtk_canvas::enable_cords_to_foreground
-    pdsend "pd zoom-open $::sys_zoom_open"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
     ::preferencewindow::apply $mytoplevel
@@ -54,10 +53,9 @@ proc ::dialog_preferences::tab_changed {mytoplevel} {
 proc ::dialog_preferences::fill_frame {prefs} {
     # patch-window settings
     labelframe $prefs.extraframe -text [_ "Patch Windows" ] -padx 5 -pady 5 -borderwidth 1
-    checkbutton $prefs.extraframe.zoom -text [_ "Zoom New Windows"] \
-        -variable ::sys_zoom_open -anchor w
-    pack $prefs.extraframe.zoom -side left -expand 1
-    pack $prefs.extraframe -side top -anchor n -fill x
+    ::pd_canvaszoom::default_zoom_pref_widget $prefs.extraframe.zoom
+    pack $prefs.extraframe.zoom -anchor w -expand 1
+    pack $prefs.extraframe -side top -anchor w -fill x
 
     labelframe $prefs.guiframe -text [_ "GUI Settings" ] -padx 5 -pady 5 -borderwidth 1
     pack $prefs.guiframe -side top -anchor n -fill x
@@ -127,6 +125,10 @@ proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
         ::preferencewindow::add_apply ${mytoplevel} "::deken::preferences::apply ${prefs}"
     }
 
+    # shortcut options
+    set prefs [::preferencewindow::add_frame $mytoplevel [_ "keyboard shortcuts"]]
+    ::dialog_bindings::create $prefs
+    ::preferencewindow::add_apply ${mytoplevel} "::dialog_bindings::apply ${prefs}"
 
     # misc options
     set prefs [::preferencewindow::add_frame $mytoplevel [_ "misc preferences"]]

@@ -24,7 +24,10 @@ for another, more permissive-sounding copyright notice.  -MSP
 
 #include "m_private_utils.h"
 
+#ifndef FFTFLT
 #define FFTFLT double
+#endif
+
 static void cdft(int, int, FFTFLT *, int *, FFTFLT *);
 static void rdft(int, int, FFTFLT *, int *, FFTFLT *);
 

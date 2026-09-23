@@ -149,26 +149,26 @@ automatically on your system so I wouldn't have to include it here.
 The Pure Data preferences are saved in the macOS "defaults" preference system
 using the following domains:
 
-* org.puredata.pd: core settings (audio devices, search paths, etc)
-* org.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)
+* info.puredata.pd: core settings (audio devices, search paths, etc)
+* info.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)
 
 The files themselves live in your user home folder and use the .plist extension:
 
-    ~/Library/Preferences/org.puredata.pd.plist
-    ~/Library/Preferences/org.puredata.pd.pd-gui.plist
+    ~/Library/Preferences/info.puredata.pd.plist
+    ~/Library/Preferences/info.puredata.pd.pd-gui.plist
 
 These files use the Apple Property List XML format and shouldn't be edited
 directly. You can look inside, edit, and/or delete these using the "defaults"
 commandline utility in Terminal:
 
     # print the contents of the core settings
-    defaults read org.puredata.pd
+    defaults read info.puredata.pd
 
     # delete the current GUI settings
-    defaults delete org.puredata.pd.pd-gui
+    defaults delete info.puredata.pd.pd-gui
 
     # set the startup flag in the core settings
-    defaults write org.puredata.pd -array-add flags '-lib Gem'
+    defaults write info.puredata.pd -array-add flags '-lib Gem'
 
 Some important per-application settings required by the GUI include:
 
@@ -213,10 +213,10 @@ They can also be reset on the commandline using the "tccutil" command and the
 Pd .app bundle id:
 
     # reset Pd's Microphone privacy setting
-    tccutil reset Microphone org.puredata.pd.pd-gui
+    tccutil reset Microphone info.puredata.pd.pd-gui
 
     # reset all of Pd's privacy settings
-    tccutil reset All org.puredata.pd.pd-gui
+    tccutil reset All info.puredata.pd.pd-gui
 
 ## Font Issues with macOS 10.15+
 

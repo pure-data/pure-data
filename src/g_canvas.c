@@ -415,17 +415,15 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
     {
         int inplus = (t->tr_nin == 1 ? 1 : t->tr_nin - 1);
         int outplus = (t->tr_nout == 1 ? 1 : t->tr_nout - 1);
-        int iow = IOWIDTH * t->tr_x->gl_zoom;
-        int iom = IOMIDDLE * t->tr_x->gl_zoom;
         gobj_getrect(&t->tr_ob2->ob_g, t->tr_x,
             &t->tr_x21, &t->tr_y21, &t->tr_x22, &t->tr_y22);
         t->tr_lx1 = t->tr_x11 +
-            ((t->tr_x12 - t->tr_x11 - iow) * t->tr_outno) /
-                outplus + iom;
+            ((t->tr_x12 - t->tr_x11 - IOWIDTH) * t->tr_outno) /
+                outplus + IOMIDDLE;
         t->tr_ly1 = t->tr_y12;
         t->tr_lx2 = t->tr_x21 +
-            ((t->tr_x22 - t->tr_x21 - iow) * t->tr_inno)/inplus +
-                iom;
+            ((t->tr_x22 - t->tr_x21 - IOWIDTH) * t->tr_inno)/inplus +
+                IOMIDDLE;
         t->tr_ly2 = t->tr_y21;
     }
     else
@@ -541,7 +539,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_willvis = vis;
     x->gl_edit = !UNTITLED_STRNCMP(x->gl_name->s_name);
     x->gl_font = sys_nearestfontsize(font);
-    x->gl_zoom = (owner ? owner->gl_zoom : 1);
+    x->gl_zoom = 1;
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -550,9 +548,6 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
-          /* FIXME: this is a stopgap - we should always be using
-            glist_getzoom() and never gl_zoom in rest of code. */
-    x->gl_zoom = glist_getzoom(x);
     x->gl_x1 = atom_getfloatarg(0, argc, argv);
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
@@ -638,7 +633,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
-    x->gl_zoom = g->gl_zoom;
+    x->gl_zoom = 1;
     x->gl_screenx1 = GLIST_DEFCANVASXLOC;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = GLIST_DEFCANVASWIDTH;
@@ -726,13 +721,13 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
             parent. */
         t_float diff = x->gl_y1 - x->gl_y2;
         t_gobj *y;
-        x->gl_y1 = heightwas * diff/x->gl_zoom;
+        x->gl_y1 = heightwas * diff;
         x->gl_y2 = x->gl_y1 - diff;
             /* and move text objects accordingly; they should stick
             to the bottom, not the top. */
         for (y = x->gl_list; y; y = y->g_next)
             if (pd_checkobject(&y->g_pd))
-                gobj_displace(y, x, 0, heightchange/x->gl_zoom);
+                gobj_displace(y, x, 0, heightchange);
         canvas_redraw(x);
     }
 }
@@ -756,8 +751,17 @@ static void canvas_bind(t_canvas *x)
 
 static void canvas_unbind(t_canvas *x)
 {
+    t_pd *x2;
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+
+        /* Bug fix adapted from github pull request 2962 by Jamie Bullock :
+        in order to catch #A messages saved by the [savestate] object,
+        abstractions bind themselves to #A as part of canvas_popabstraction().
+        But there's no message in the patch file to unbind #A later so do it
+        here in a rather brute-force way. */
+    while ((x2 = pd_findbyclass(gensym("#A"), canvas_class)))
+        pd_unbind(x2, gensym("#A"));
 }
 
 void canvas_reflecttitle(t_canvas *x)
@@ -775,7 +779,7 @@ void canvas_reflecttitle(t_canvas *x)
         strcpy(namebuf, " (");
         for (i = 0; i < env->ce_argc; i++)
         {
-            if (strlen(namebuf) > MAXPDSTRING/2 - 5)
+            if (strlen(namebuf) > MAXPDSTRING/2 - 10)
                 break;
             if (i != 0)
                 strcat(namebuf, " ");
@@ -785,15 +789,22 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
-    if (x->gl_edit)
-    {
-        strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
-        namebuf[MAXPDSTRING-1] = 0;
-    }
+#if PD_VERSION_CODE < PD_VERSION(0, 57, 0)
+        if (x->gl_edit)
+            strcat(namebuf, " [edit]");
+#endif
+
+#if PD_VERSION_CODE >= PD_VERSION(0, 57, 0)
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss ii",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        (int)(x->gl_dirty), (int)(x->gl_edit));
+#else
     pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
         x,
         canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
-        x->gl_dirty);
+        (int)(x->gl_dirty));
+#endif
 }
 
     /* mark a glist dirty or clean */
@@ -817,20 +828,17 @@ void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
     {
-        int x1 = x->gl_zoom * x->gl_xmargin,
-            x2 = x1 + x->gl_zoom * x->gl_pixwidth,
-            y1 = x->gl_zoom * x->gl_ymargin,
-            y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess(0, "crr iiiiiiiiii rk ri rr rr",
-            glist_getcanvas(x), "create", "line",
-            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
-            "-fill", THISGUI->i_gopcolor,
-            "-width", x->gl_zoom,
-            "-capstyle", "projecting",
-            "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
+        int x1 = x->gl_xmargin,
+            x2 = x1 + x->gl_pixwidth,
+            y1 = x->gl_ymargin,
+            y2 = y1 + x->gl_pixheight;
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x), "GOP", "-",
+            0, 1, THISGUI->i_gopcolor,
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -871,7 +879,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            pdgui_vmess("pdtk_canvas_delete", "cs", x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -893,7 +901,7 @@ void canvas_redraw(t_canvas *x)
 void glist_clearrtexts(t_glist *x)
 {
     t_glist *gl2 = glist_getcanvas(x);
-    if (glist_textedfor(gl2) == x)
+    if ((t_glist*)glist_textedfor(gl2) == x)
         glist_settexted(gl2, 0);
     if (gl2->gl_editor)
         while (gl2->gl_editor->e_rtext)
@@ -954,20 +962,17 @@ int glist_getfont(t_glist *x)
 
 int glist_getzoom(t_glist *x)
 {
-    t_glist *gl2 = x;
-    while (!glist_istoplevel(gl2) && gl2->gl_owner)
-        gl2 = gl2->gl_owner;
-    return (gl2->gl_zoom);
+    return 1;
 }
 
 int glist_fontwidth(t_glist *x)
 {
-    return (sys_zoomfontwidth(glist_getfont(x), glist_getzoom(x), 0));
+    return (sys_zoomfontwidth(glist_getfont(x), 1, 0));
 }
 
 int glist_fontheight(t_glist *x)
 {
-    return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
+    return (sys_zoomfontheight(glist_getfont(x), 1, 0));
 }
 
 void canvas_free(t_canvas *x)
@@ -1011,19 +1016,15 @@ static void canvas_drawlines(t_canvas *x)
     t_outconnect *oc;
     {
         char tag[128];
-        const char*tags[2] = {tag, "cord"};
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
             sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crr iiii ri rk rS",
-                glist_getcanvas(x), "create", "line",
-                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1)
-                    * x->gl_zoom,
-                "-fill", THISGUI->i_foregroundcolor,
-
-                "-tags", 2, tags);
+            pdgui_vmess("pdtk_canvas_create_patchcord", "crrr ik iiii",
+                glist_getcanvas(x), tag, "-", "-",
+                    outlet_getsymbol(t.tr_outlet) == &s_signal ? 2 : 1,
+                    THISGUI->i_foregroundcolor,
+                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }
     }
 }
@@ -1052,7 +1053,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%p", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */
@@ -1089,16 +1090,8 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
     }
 }
 
-typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
-
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
-    if (glist_istoplevel(x) && (sys_zoom_open == 2))
-    {
-        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
-        if (zoommethod)
-            (*zoommethod)(&x->gl_pd, (t_floatarg)2);
-    }
     if (fvis != 0)
         canvas_vis(x, 1);
     pd_popsym(&x->gl_pd);
@@ -1150,7 +1143,7 @@ static void canvas_loadbangabstractions(t_canvas *x)
         else if ((pd_class(&y->g_pd) == clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
 }
 
@@ -1169,8 +1162,10 @@ void canvas_loadbangsubpatches(t_canvas *x)
             (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
         {
-            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+            pd_vmess(&y->g_pd, s, "i", LB_LOAD);
         }
+        else if (pd_class(&y->g_pd) == scalar_class)
+            scalar_notifynew((t_scalar *)y, x, 1);
 }
 
 void canvas_loadbang(t_canvas *x)
@@ -2345,8 +2340,12 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        canvas_vis(glist, 0);
-        canvas_vis(glist, 1);
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+            glist,
+            (int)THISGUI->i_backgroundcolor,
+            (int)THISGUI->i_foregroundcolor);
+        glist_clearrtexts(glist);
+        canvas_redraw((t_canvas *)glist);
     }
     for (g = glist->gl_list; g; g = g->g_next)
         if (g->g_pd == canvas_class)

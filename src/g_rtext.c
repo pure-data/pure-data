@@ -64,7 +64,7 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
         glist_getcanvas(glist)->gl_editor->e_rtext = x;
     else last->x_next = x;
     x->x_next = 0;
-    sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
+    sprintf(x->x_tag, ".x%lx.t%lxt", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
     x->x_xpix = x->x_ypix = 0;      /* empty rectangle */
     x->x_pixwidth = x->x_pixheight = -1;
@@ -76,6 +76,9 @@ static t_rtext *rtext_add(t_glist *glist, t_rtext *last)
 void drawtext_newtext(t_gobj *drawtext, t_glist *gl, t_scalar *sc,
     t_word *words, char *buf);
 int drawtext_isvisible(t_gobj *z, t_word *words);
+
+    /* defined later: */
+static void rtext_refreshbuffer(t_rtext *x);
 
 /* find the rtext that goes with a text item.  Return zero if the
 text item is invisible, either because the glist itself is, or because
@@ -107,7 +110,7 @@ t_rtext *glist_getrtext(t_glist *gl, t_text *who, int really)
         return (0);
     x = rtext_add(gl, last);
     x->x_text = who;
-    rtext_retext(x);
+    rtext_refreshbuffer(x);
     return (x);
 }
 
@@ -283,13 +286,13 @@ t_rtext *rtext_findhit(t_glist *gl, int xpix, int ypix,
         /* post("xpix %d (%d,%d) ypix %d (%d,%d)",
             xpix, x->x_xpix, x->x_xpix + x->x_pixwidth,
             ypix, x->x_ypix, x->x_ypix + x->x_pixheight); */
-                /* check if the text is visible */
-        if (x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
-            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
-                || !drawtext_isvisible(x->x_drawtext, x->x_words)))
-                    continue;
+                /* in rectangle? */
         if (xpix >= x->x_xpix && xpix <= x->x_xpix + x->x_pixwidth &&
-            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight)
+            ypix >= x->x_ypix && ypix <= x->x_ypix + x->x_pixheight &&
+                /* is the text visible? */
+            !(x->x_text && !gobj_shouldvis(&x->x_text->te_g, x->x_glist) ||
+            x->x_scalar && (!gobj_shouldvis(&x->x_scalar->sc_gobj, x->x_glist)
+                || !drawtext_isvisible(x->x_drawtext, x->x_words))))
         {
             *text = x->x_text;
             *scalar = x->x_scalar;
@@ -447,9 +450,42 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         else ncolumns = widthspec_c;
     }
     *widthp = ncolumns * fontwidth +
-        (x->x_text? (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? LMARGIN + RMARGIN : 0);
     *heightp = nlines * fontheight +
-        (x->x_text? (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist) : 0);
+        (x->x_text? TMARGIN + BMARGIN : 0);
+}
+
+/* reduce a formatted number (in <buf>) to not exceed <maxsize> chars
+ * the result in <buf> is 0-terminated
+ */
+const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize) {
+    int wantreduce = bufsize - maxsize;
+    char *decimal = 0, *nextchar, *ebuf = buf + bufsize,
+        *s1, *s2;
+    int ndecimals;
+    if(maxsize >= bufsize)
+        return buf;
+    buf[bufsize] = 0;
+    for (decimal = buf; decimal < ebuf; decimal++)
+        if (*decimal == '.')
+            break;
+    if (decimal >= ebuf)
+        goto giveup;
+    for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
+        if (*nextchar < '0' || *nextchar > '9')
+            break;
+    if (nextchar - decimal - 1 < wantreduce)
+        goto giveup;
+    for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
+         s2 < ebuf; s1++, s2++)
+        *s1 = *s2;
+    buf[maxsize-0] = 0;
+    return buf;
+ giveup:
+        /* give up and bash last char to '>' */
+    buf[maxsize-1] = '>';
+    buf[maxsize-0] = 0;
+    return buf;
 }
 
     /* same as above, but for atom boxes, which are always on one line. */
@@ -466,35 +502,12 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         binbuf_getvec(x->x_text->te_binbuf)->a_type == A_FLOAT &&
         x->x_bufsize > charwidth)
     {
-            /* try to reduce size by dropping decimal digits */
-        int wantreduce = x->x_bufsize - charwidth;
-        char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
-            *s1, *s2;
-        int ndecimals;
+        t_float f = atom_getfloat(binbuf_getvec(x->x_text->te_binbuf));
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
-        tempbuf[x->x_bufsize] = 0;
-        ebuf = tempbuf + x->x_bufsize;
-        for (decimal = tempbuf; decimal < ebuf; decimal++)
-            if (*decimal == '.')
-                break;
-        if (decimal >= ebuf)
-            goto giveup;
-        for (nextchar = decimal + 1; nextchar < ebuf; nextchar++)
-            if (*nextchar < '0' || *nextchar > '9')
-                break;
-        if (nextchar - decimal - 1 < wantreduce)
-            goto giveup;
-        for (s1 = nextchar - wantreduce, s2 = s1 + wantreduce;
-            s2 < ebuf; s1++, s2++)
-                *s1 = *s2;
+            // 3rd argument should be charwidth
+        gatom_float_sizelimit(tempbuf, x->x_bufsize, charwidth);
+
         *outchars_b_p = charwidth;
-        goto done;
-    giveup:
-            /* give up and bash last char to '>' */
-        tempbuf[charwidth-1] = '>';
-        tempbuf[charwidth] = 0;
-        *outchars_b_p = charwidth;
-    done: ;
         *indexp = findx;
         *widthp = charwidth * fontwidth;
     }
@@ -538,8 +551,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
-    *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
-    *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
+    *widthp += LMARGIN + RMARGIN - 2;
+    *heightp = fontheight + TMARGIN + BMARGIN - 1;
 }
 
     /* the following routine computes line breaks and carries out
@@ -620,12 +633,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         const char *tags[] = {x->x_tag, "text"};
         int lmargin = (x->x_text ? LMARGIN : 0),
             tmargin = (x->x_text ? TMARGIN : 0);
-        if (glist_getzoom(x->x_glist) > 1)
-        {
-            /* zoom margins */
-            lmargin *= glist_getzoom(x->x_glist);
-            tmargin *= glist_getzoom(x->x_glist);
-        }
             /* we add an extra space to the string just in case the last
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
@@ -649,24 +656,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 text_drawborder(x->x_text, x->x_glist, x->x_tag, 0);
         if (x->x_active)
         {
-            if (selend_b > selstart_b)
-            {
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "from",
-                    x->x_tag, u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess(0, "crr si",
-                    canvas, "select", "to",
-                    x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
-                pdgui_vmess(0, "crs", canvas, "focus", "");
-            }
-            else
-            {
-                pdgui_vmess(0, "crr", canvas, "select", "clear");
-                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag,
-                    u8_charnum(x->x_buf, selstart_b));
-                pdgui_vmess("focus", "c", canvas);
-                pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
-            }
+            pdgui_vmess("pdtk_text_select", "cs i i", canvas, x->x_tag,
+                u8_charnum(tempbuf, selstart_b),
+                u8_charnum(tempbuf, selend_b));
         }
     }
     x->x_pixwidth = *widthp;
@@ -675,8 +667,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
 }
 
-    /* make or remake text buffer from binbuf (text boxes only) */
-void rtext_retext(t_rtext *x)
+static void rtext_refreshbuffer(t_rtext *x)
 {
     int w = 0, h = 0, indx;
     if (x->x_buf)
@@ -687,6 +678,13 @@ void rtext_retext(t_rtext *x)
         /* allocate extra space for hidden null terminator */
     x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
     x->x_buf[x->x_bufsize] = 0;
+}
+
+    /* make or remake text buffer from binbuf (text boxes only) */
+void rtext_retext(t_rtext *x)
+{
+    int w = 0, h = 0, indx;
+    rtext_refreshbuffer(x);
     rtext_findscreenlocation(x);
         /* force dimension recalculation after text conversion */
     x->x_pixwidth = x->x_pixheight = -1;
@@ -726,15 +724,17 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+    pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(x->x_glist), x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
     x->x_xpix += dx;
     x->x_ypix += dy;
-    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
-        dx, dy);
+    //pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        //dx, dy);
+    pdgui_vmess("pdtk_canvas_move", "cs ii", glist_getcanvas(x->x_glist),
+        x->x_tag, dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)

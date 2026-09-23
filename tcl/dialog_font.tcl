@@ -75,8 +75,8 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         set ::pdwindow::font_size $myfontsize
 
     } else {
-        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
-        pdsend "$mytoplevel dirty 1"
+        pdsend [list $mytoplevel font $myfontsize $stretchval $whichstretch]
+        pdsend [list $mytoplevel dirty 1]
     }
 }
 
@@ -99,8 +99,8 @@ proc ::dialog_font::stretch_apply {gfxstub} {
         if {$stretchval == 100} {
             return
         }
-        pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
-        pdsend "$gfxstub dirty 1"
+        pdsend [list $gfxstub font $fontsize $stretchval $whichstretch]
+        pdsend [list $gfxstub dirty 1]
     }
 }
 
@@ -112,7 +112,7 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
 
 proc ::dialog_font::cancel {gfxstub} {
     if {$gfxstub ne ".pdwindow"} {
-        pdsend "$gfxstub cancel"
+        pdsend [list $gfxstub cancel]
     }
     destroy .font
 }
@@ -151,7 +151,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
         # the gfxstub stuff expects multiple font windows, we only have one,
         # so kill the new gfxstub requests as the come in.  We'll save the
         # original gfxstub for when the font panel gets closed
-        pdsend "$gfxstub cancel"
+        pdsend [list $gfxstub cancel]
     } else {
         create_dialog $gfxstub
     }

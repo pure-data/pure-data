@@ -395,7 +395,8 @@ int sys_semaphore_waitfor(t_semaphore *sem, double seconds)
     pthread_mutex_lock(&sem->mutex);
     while (sem->count == 0)
     {
-        if (pthread_cond_timedwait(&sem->condvar, &sem->mutex, &ts) == ETIMEDOUT)
+        if (pthread_cond_timedwait(&sem->condvar, &sem->mutex, &ts) ==
+            ETIMEDOUT)
         {
             pthread_mutex_unlock(&sem->mutex);
             return 0;

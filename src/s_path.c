@@ -111,8 +111,14 @@ void sys_expandpath(const char *from, char *to, int bufsize)
     }
 #ifdef _WIN32
     {
+        /* Match the wide-char handling of sys_open()/sys_fopen() below,
+           so non-ASCII paths survive environment-variable expansion. */
+        wchar_t ucs2in[MAXPDSTRING];
+        wchar_t ucs2out[MAXPDSTRING];
         char *buf = alloca(bufsize);
-        ExpandEnvironmentStrings(to, buf, bufsize-1);
+        u8_utf8toucs2(ucs2in, MAXPDSTRING, to, MAXPDSTRING-1);
+        ExpandEnvironmentStringsW(ucs2in, ucs2out, MAXPDSTRING-1);
+        u8_ucs2toutf8(buf, bufsize-1, ucs2out, -1);
         buf[bufsize-1] = 0;
         strncpy(to, buf, bufsize);
         to[bufsize-1] = 0;

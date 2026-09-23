@@ -51,7 +51,6 @@
 #X text 49 71 tempo <float> - set relative tempo., f 70;
 #X text 98 90 rewind - go to beginning (and stop)., f 63;
 #X text 48 108 next <float> -;
-#X text 161 108 single-step forward \, optional floar suppresses message sending., f 54;
 #X text 105 140 print - print contents to Pd window., f 62;
 #X text 105 158 clear - empty the qlist., f 62;
 #X text 42 176 add <anything> - add a message to a qlist., f 71;
@@ -61,6 +60,7 @@
 #X text 107 291 list - list of leading numbers for the next message.;
 #X text 107 324 bang - when reaching the end of sequence.;
 #X text 140 366 NONE;
+#X text 161 108 single-step forward \, optional float suppresses message sending.;
 #X restore 807 14 pd reference;
 #X text 901 14 <= click;
 #X obj 9 501 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000 0;

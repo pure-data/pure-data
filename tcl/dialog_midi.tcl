@@ -7,6 +7,7 @@ namespace eval ::dialog_midi:: {
     namespace export pdtk_alsa_midi_dialog
 
     variable referenceconfig ""
+    variable standalone_window ""
 }
 
 # reference configuration string (to detect whether the config has changed)
@@ -43,12 +44,17 @@ proc ::dialog_midi::config2string { } {
         upvar ::dialog_midi::ports${dir} ports
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             upvar ::dialog_midi::${dir}dev${i} dev
-            if { $dev < 0 || $dev > [llength $devlist] } {
+            if { ${dev} eq {} || ! [string is int ${dev}] } {
+                set dev 0
+            }
+            if { ${dev} < 0 || ${dev} > [llength ${devlist} ] } {
                 set dev 0
             }
             lappend result $dev
         }
-        set ports [expr $ports + 0]
+        if { ${ports} eq {} || ! [string is int ${ports}] || ${ports} < 0 } {
+            set ports 0
+        }
     }
     lappend result $::dialog_midi::portsin $::dialog_midi::portsout
     return $result
@@ -57,7 +63,7 @@ proc ::dialog_midi::config2string { } {
 proc ::dialog_midi::apply {mytoplevel {force ""}} {
     set config [config2string]
     if { $force ne "" || $config ne $::dialog_midi::referenceconfig} {
-        pdsend "pd midi-dialog ${config}"
+        pdsend [concat pd midi-dialog ${config}]
     }
     set ::dialog_midi::referenceconfig $config
 }
@@ -173,6 +179,12 @@ proc ::dialog_midi::make_frame_iodevices {frame maxdevs longform} {
             -command  "::dialog_midi::make_frame_iodevices $frame $maxdevs 1"
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
+
+    frame $frame.refreshbutton
+    pack $frame.refreshbutton -side bottom -fill x
+    button $frame.refreshbutton.b -text [_ "Rescan Devices"] \
+        -command "pdsend \"pd rescan-midi\""
+    pack $frame.refreshbutton.b -expand 1 -ipadx 10 -pady 5
 }
 
 proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
@@ -186,10 +198,16 @@ proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
     pack  $frame -side top -fill x -anchor n -expand 1
 
     label $frame.l1 -text [_ "In Ports:"]
-    entry $frame.x1 -textvariable $inportsvar -width 4
+    spinbox $frame.x1 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${inportsvar}
     pack $frame.l1 $frame.x1 -side left
     label $frame.l2 -text [_ "Out Ports:"]
-    entry $frame.x2 -textvariable $outportsvar -width 4
+    spinbox $frame.x2 \
+        -from 0 -to 16 -increment 1 \
+        -width 4 \
+        -textvariable ${outportsvar}
     pack $frame.l2 $frame.x2 -side left
 }
 
@@ -213,7 +231,7 @@ proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
                 $frame.backend.api.menu add radiobutton \
                     -label "${api_name}" \
                     -value ${api_id} -variable ::pd_whichmidiapi \
-                    -command {pdsend "pd midi-setapi $::pd_whichmidiapi"}
+                    -command {pdsend [list pd midi-setapi $::pd_whichmidiapi]}
                 if { ${api_id} == ${::pd_whichmidiapi} } {
                     $frame.backend.api configure -text "${api_name}"
                 }
@@ -288,6 +306,19 @@ proc ::dialog_midi::set_configuration {API inputdevices indevs outputdevices  ou
     set ::midi_outdevices [lmap _ $outdevs {set _ [expr int($_) ]; if {$_ < 0} continue; set _}]
 }
 
+proc ::dialog_midi::refresh_ui {} {
+    # check if we're in the tabbed preferences
+    if {[winfo exists ${::dialog_preferences::midi_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::midi_frame}
+        ::dialog_midi::fill_frame ${::dialog_preferences::midi_frame}
+    }
+    # or in the standalone midi dialog
+    if {[winfo exists $::dialog_midi::standalone_window]} {
+        destroy $::dialog_midi::standalone_window
+        ::dialog_midi::create $::dialog_midi::standalone_window
+    }
+}
+
 # start a dialog window to select midi devices.  "longform" asks us to make
 # controls for opening several devices; if not, we get an extra button to
 # turn longform on and restart the dialog.
@@ -336,7 +367,7 @@ proc ::dialog_midi::create {id} {
 
     # save all settings button
     button $id.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_midi::apply $id 1; pdsend \"pd save-preferences\""
+        -command "::dialog_midi::apply $id 1; pdsend {pd save-preferences}"
     pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
@@ -393,6 +424,7 @@ proc ::dialog_midi::create {id} {
     wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
     raise $id
+    set ::dialog_midi::standalone_window $id
 }
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id \

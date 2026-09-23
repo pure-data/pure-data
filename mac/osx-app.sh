@@ -1,4 +1,6 @@
 #! /bin/sh
+#shellcheck disable=SC3043
+
 #
 # Creates macOS .app bundle from pd build.
 #
@@ -15,13 +17,13 @@ set -e
 
 verbose=
 universal=
+fix_usrlocallib=true
 included_wish=true
 EXTERNAL_EXT=d_fat
 TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
-RUNDIR="$(pwd)"
 
 # ad hoc by default
 SIGNATURE_ID="-"
@@ -39,11 +41,18 @@ BUILD=..
 # and 'manually' otherwise
 install_type=
 
-
-
-
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
+
+# a scratchdir that is automatically cleaned up on exit
+scratchdir=$(mktemp -d)
+trap 'rm -rf "${scratchdir}"' EXIT INT TERM
+
+
+# echo to stderr
+error() {
+    echo "$*" 1>&2
+}
 
 # Help message
 #----------------------------------------------------------
@@ -83,6 +92,10 @@ Options:
                       "make" - use 'make install'
                       not setting this value, will use 'make' if you set
                       the '--builddir', and 'manually' otherwise
+
+  --dont-fix-usrlocallib   for arm64 binaries (only), ensure that dependencies
+                      are not only searched for in /usr/local/lib,
+                      but also in /opt/homebrew/lib
 
 Arguments:
 
@@ -141,7 +154,7 @@ install_manually() {
         mkdir -p "${DEST}/po"
         cp $verbose "${BUILD}/po"/*.msg "${DEST}/po/"
     else
-        echo "No localizations found. Skipping po dir..."
+        error "No localizations found. Skipping po dir..."
     fi
 
     # install headers
@@ -151,7 +164,7 @@ install_manually() {
     # clean extra folders
     cd "${DEST}/extra"
     rm -f makefile.subdir
-    find ./* -prune -type d | while read ext; do
+    find ./* -prune -type d | while read -r ext; do
         ext_lib="${ext}.${EXTERNAL_EXT}"
         if [ -e "${ext}/.libs/${ext_lib}" ] ; then
 
@@ -201,12 +214,69 @@ register_l10n() {
     # usage: register_l10n "${INFO_PLIST}" "${BUILD}/po"
     #   adds an entry for each translation found in '${BUILD}/po' to '${INFO_PLIST}'
     local po
-    find "$2" -maxdepth 1 -type f -name "*.msg" -exec basename {} .msg ";" | sort | while read po; do
+    find "$2" -maxdepth 1 -type f -name "*.msg" -exec basename {} .msg ";" | sort | while read -r po; do
         "${PLIST_BUDDY}" -c "Print :CFBundleLocalizations" "$1" >/dev/null 2>&1 || \
             "${PLIST_BUDDY}" -c "Add CFBundleLocalizations array" "$1"
         "${PLIST_BUDDY}" -c "Add :CFBundleLocalizations: string ${po}" "$1"
     done
 }
+
+usrlocallib_to_opthomebrewlib() {
+    # for amd64 binaries, replace all dependencies on libs in /usr/local/lib
+    # with @rpath dependencies
+    # (and add /usr/local/lib and /opt/homebrew/lib) to RPATH
+  local infile
+  local in
+  local lipodir
+  local thinfile
+  local a
+  local archs
+  local locallib
+
+  if [ "$verbose" != "" ] ; then
+    error "Changing /usr/lcocal/lib dependencies to RPATH with /opt/homebrew/lib"
+  fi
+
+  infile="$1"
+  in="$(basename "${infile}")"
+  lipodir="${scratchdir}/lipo"
+
+  # check if this is a binary
+  lipo -archs "${infile}" >/dev/null 2>&1 || return 1
+
+  # split fat binary into thin ones
+  archs="$(lipo -archs "${infile}")"
+  if [ "$(echo "${archs}" | grep arm64 | wc -w)" -gt 1 ]; then
+    # fat binary with multiple architectures
+    for a in ${archs}; do
+      mkdir -p "${lipodir}/${a}"
+      lipo "${infile}" -extract "${a}" -output "${lipodir}/${a}/${in}" || return 1
+    done
+  elif [ "${archs}" = "arm64" ]; then
+    # thin or fat binary, with only a single architecture
+    mkdir -p "${lipodir}/arm64/"
+    cp "${infile}" "${lipodir}/arm64/${in}"
+  fi
+
+  # do we have an arm64 variant?
+  thinfile="${lipodir}/arm64/${in}"
+  test -e "${thinfile}" || return 1
+
+  # replace all dependencies on /usr/local/lib with @rpath
+  # add both /usr/local/lib and /opt/homebrew/lib to RPATH
+  otool -L "${thinfile}" | awk '{print $1}' | grep "/usr/local/lib/" | while read -r locallib; do
+    install_name_tool \
+      -change "${locallib}" "@rpath/$(basename "${locallib}")" \
+      -add_rpath /usr/local/lib \
+      -add_rpath /opt/homebrew/lib \
+      "${thinfile}" || return 1
+  done
+
+  # create a fat binary from the mangled thin ones
+  find "${lipodir}" -type f -print0 | xargs -0 lipo -output "${infile}" -create || return 1
+  return 0
+}
+
 
 # Parse command line arguments
 #----------------------------------------------------------
@@ -215,7 +285,7 @@ while [ "$1" != "" ] ; do
         --sign)
             shift 1
             if [ $# = 0 ] ; then
-                echo "--sign option requires a SIGNATURE_ID argument"
+                error "--sign option requires a SIGNATURE_ID argument"
                 exit 1
             fi
             SIGNATURE_ID=$1
@@ -223,7 +293,7 @@ while [ "$1" != "" ] ; do
         -t|--tk)
             shift 1
             if [ $# = 0 ] ; then
-                echo "-t,--tk option requires a VER argument"
+                error "-t,--tk option requires a VER argument"
                 exit 1
             fi
             TK=$1
@@ -238,7 +308,7 @@ while [ "$1" != "" ] ; do
             ;;
         -w|--wish)
             if [ $# = 0 ] ; then
-                echo "-w,--wish option requires an APP argument"
+                error "-w,--wish option requires an APP argument"
                 exit 1
             fi
             shift 1
@@ -250,7 +320,7 @@ while [ "$1" != "" ] ; do
             ;;
         --builddir)
             if [ $# = 0 ] ; then
-                echo "--builddir options requires a DIR argument"
+                error "--builddir options requires a DIR argument"
                 exit 1
             fi
             shift 1
@@ -259,22 +329,25 @@ while [ "$1" != "" ] ; do
             ;;
         --installtype)
             if [ $# = 0 ] ; then
-                echo "--installtype option requires a TYPE argument"
+                error "--installtype option requires a TYPE argument"
                 exit 1
             fi
             shift 1
             case "$1" in
                 manual|manually)
-                    install_type=manual
+                    install_type="manual"
                     ;;
                 make)
-                    install_type=make
+                    install_type="make"
                     ;;
                 *)
-                    echo "invalid installtype (must be 'manually' or 'make')"
+                    error "invalid installtype (must be 'manually' or 'make')"
                     exit 1
                     ;;
             esac
+            ;;
+        --dont-fix-userlocalib)
+            fix_usrlocallib=false
             ;;
         -v|--verbose)
             verbose=-v
@@ -301,11 +374,11 @@ fi
 #----------------------------------------------------------
 
 # use a default install-type if none was requested
-if [ "x${install_type}" = "x" ] ; then
+if [ "${install_type}" = "" ] ; then
    if [ "${custom_builddir}" = true ] ; then
-       install_type=make
+       install_type="make"
    else
-       install_type=manual
+       install_type="manual"
    fi
 fi
 
@@ -317,7 +390,7 @@ if [ "${custom_builddir}" = true ] ; then
 fi
 
 # change to the dir of this script
-cd $(dirname "$0")
+cd "$(dirname "$0")"
 
 # grab package version from configure --version output: line 1, word 3
 # aka "pd configure 0.47.1" -> "0.47.1"
@@ -330,12 +403,16 @@ fi
 
 # check if pd is already built
 if [ ! -e "${BUILD}/src/pd" ] ; then
-    echo "Looks like pd hasn't been built yet. Maybe run make first?"
+    error "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
 
+if [ "${fix_usrlocallib}" = true ]; then
+    usrlocallib_to_opthomebrewlib "${BUILD}/src/pd" || error "Couldn't fix /usr/local/lib dependencies."
+fi
+
 if [ "$verbose" != "" ] ; then
-    echo "==== Creating ${APP}"
+    error "==== Creating ${APP}"
 fi
 
 # extract included Wish app
@@ -349,17 +426,17 @@ if [ "${included_wish}" = true ] ; then
 # build Wish or use the system Wish
 elif [ "${WISH}" = "" ] ; then
     if [ "${TK}" != "" ] ; then
-        echo "Using custom ${TK} Wish.app"
+        error "Using custom ${TK} Wish.app"
         ./tcltk-wish.sh ${universal} "${TK}"
         WISH="Wish-${TK}.app"
     elif [ "${SYS_TK}" != "" ] ; then
-        echo "Using system ${SYS_TK} Wish.app"
+        error "Using system ${SYS_TK} Wish.app"
         tk_path=/Library/Frameworks/Tk.framework/Versions
         # check /Library first, then fall back to /System/Library
         if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
             tk_path="/System${tk_path}"
             if [ ! -e "${tk_path}/${SYS_TK}/Resources/Wish.app" ] ; then
-                echo "Wish.app not found"
+                error "Wish.app not found"
                 exit 1
             fi
         fi
@@ -378,10 +455,10 @@ else
         [ ! -e "${WISH}.app" ] || WISH="${WISH}.app"
     fi
     if [ ! -e "${WISH}" ] ; then
-        echo "${WISH} not found"
+        error "${WISH} not found"
         exit 1
     fi
-    echo "Using $(basename ${WISH})"
+    error "Using $(basename "${WISH}")"
 
     # copy
     WISH_TMP=$(basename "${WISH}")-tmp
@@ -391,7 +468,7 @@ fi
 
 # sanity check
 if [ ! -e "${WISH}" ] ; then
-    echo "${WISH} not found"
+    error "${WISH} not found"
     exit 1
 fi
 
@@ -465,5 +542,5 @@ codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entit
 touch "${APP}"
 
 if [ "$verbose" != "" ] ; then
-    echo  "==== Finished ${APP}"
+    error  "==== Finished ${APP}"
 fi

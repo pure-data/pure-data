@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -257,6 +257,56 @@ msgstr "Аудіо налаштування"
 
 msgid "Save All Settings"
 msgstr "Зберегти всі налаштування"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Результати пошуку"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 #, fuzzy
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
@@ -597,9 +647,6 @@ msgstr "Редагувати існуючий шлях [%s]"
 msgid "Patch Windows"
 msgstr "Вікно Pd"
 
-msgid "Zoom New Windows"
-msgstr "Розгорнути нові вікна"
-
 #, fuzzy
 msgid "GUI Settings"
 msgstr "віддалені налаштування GUI"
@@ -636,6 +683,9 @@ msgstr "Налаштування MIDI"
 #, fuzzy
 msgid "deken preferences"
 msgstr "Налаштування %s Deken"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 #, fuzzy
 msgid "misc preferences"
@@ -733,6 +783,10 @@ msgid "using font: %1$s %2$s"
 msgstr "використовується шрифт: %1$s %2$s"
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr "%1$s' вже завантажено, ігнорується: '%2$s'"
 
@@ -762,6 +816,10 @@ msgstr "Збій запуску Pd"
 #, fuzzy
 msgid "Failed to start Pd-core"
 msgstr "Неможливо встановити %s!"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
@@ -875,6 +933,9 @@ msgstr "Неможливо видалити тимчасовий файл '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Неможливо перейменувати завантажений файл на '%s'"
 
+msgid "~"
+msgstr "~"
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Результати пошуку"
@@ -914,6 +975,17 @@ msgstr "Зберігати файли пакета після інсталяці
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Додати нові бібліотеки в шлях пошуку Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "Додано %s у шляху для пошуку"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Неможливо додати %s до шляхів пошуку"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Налаштування платформи:"
@@ -1052,11 +1124,18 @@ msgstr "Встановлення"
 msgid "%s%% of download completed"
 msgstr "завершено %s%% завантаження"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Введіть точну назву бібліотеки або об'єкта."
 
 msgid "e.g. 'freeverb~'"
 msgstr "наприклад, 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Використовуйте '*' для позначення будь-якої кількості символів."
@@ -1104,6 +1183,9 @@ msgstr "і те і інше"
 msgid "translations"
 msgstr "переклади"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 "Встановлюйте зовнішні об'єкти лише тоді, коли ви довіряєте людям, які їх "
@@ -1132,6 +1214,10 @@ msgstr "Результати пошуку"
 
 msgid "Log"
 msgstr "Журнал"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Пошук \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1223,6 +1309,10 @@ msgstr "[deken] Виявлено платформу: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "Завантаження '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1966,6 +2056,10 @@ msgstr "Масштаб: наблизити"
 msgid "Zoom Out"
 msgstr "Масштаб: видалитись"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Скидання"
+
 msgid "Clear Console"
 msgstr "Очистити консоль"
 
@@ -1990,6 +2084,10 @@ msgstr "Символ"
 msgid "Comment"
 msgstr "Коментар"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Масштаб"
+
 msgid "Graph"
 msgstr "Граф (субпатч)"
 
@@ -2010,10 +2108,6 @@ msgstr "DSP вимкнено"
 
 msgid "Test Audio and MIDI..."
 msgstr "тест аудіо i MIDI..."
-
-#, fuzzy
-msgid "Load Meter"
-msgstr "Вимірник завантаження"
 
 msgid "Audio Settings..."
 msgstr "Налаштування звуку..."
@@ -2043,6 +2137,10 @@ msgstr "Закрити підвікна"
 msgid "Parent Window"
 msgstr "Батьківське вікно"
 
+#, fuzzy
+msgid "Load Meter"
+msgstr "Вимірник завантаження"
+
 msgid "Message..."
 msgstr "Повідомлення..."
 
@@ -2064,8 +2162,9 @@ msgstr "Перевірити оновлення"
 msgid "Report a bug"
 msgstr "Сповістити про помилку"
 
-msgid "Clear Menu"
-msgstr "Очистити меню"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Текстові файли Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2106,6 +2205,10 @@ msgstr "Ви хочете зберегти зміни в %s?"
 
 msgid "Properties"
 msgstr "Властивості"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Режим редагування"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2186,6 +2289,12 @@ msgstr "Видалити"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ігнорується '%s': неможливо розпізнати файл Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Розгорнути нові вікна"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Очистити меню"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr ""

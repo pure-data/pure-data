@@ -139,12 +139,12 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     {
         int type = datatypes->ds_type;
         if (type == DT_FLOAT)
-            wp->w_float = 0;
+            wp->w_float = datatypes->ds_default;
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
             wp->w_array = array_new(datatypes->ds_arraytemplate,
-                datatypes->ds_arraydeflength, gp);
+                datatypes->ds_default, gp);
         else if (type == DT_TEXT)
         {
             wp->w_binbuf = binbuf_new();
@@ -333,7 +333,17 @@ void glist_scalar(t_glist *glist,
     binbuf_free(b);
 }
 
-extern t_class *drawnumber_class;
+void scalar_notifynew(t_scalar *x, t_glist *gl, int loadbang)
+{
+    t_template *template = template_findbyname(x->sc_template);
+    if (template)
+    {
+        t_atom at[2];
+        SETFLOAT(&at[1], loadbang);
+        template_notifyforscalar(template, gl, x, gensym("new"), 2, at);
+    }
+    else bug("scalar_notifynew");
+}
 
 
 /* -------------------- widget behavior for scalar ------------ */
@@ -403,7 +413,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
                   "-fill", THISGUI->i_selectcolor,
                   "-tags", tag);
     } else {
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
     }
 }
 
@@ -446,17 +456,16 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) -
-                glist_pixelstox(glist, 0));
+            glist_dpixtodx(glist, dx);
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) -
-                glist_pixelstoy(glist, 0));
+            glist_dpixtody(glist, dy);
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
-    SETFLOAT(&at[1], (t_float)dx);
-    SETFLOAT(&at[2], (t_float)dy);
+        /* report displacement in canvas coordinates */
+    SETFLOAT(&at[1], glist_dpixtodx(glist, dx));
+    SETFLOAT(&at[2], glist_dpixtody(glist, dy));
     template_notify(template, gensym("displace"), 3, at);
     scalar_redraw(x, glist);
 }
@@ -498,7 +507,7 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
                       "-tags", tag);
         }
         else
-            pdgui_vmess(0, "crs", glist_getcanvas(owner), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(owner), tag);
         return;
     }
 
@@ -561,8 +570,8 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
             {
                 t_atom at[6];
                 SETFLOAT(at, 0); /* unused - later bashed to the gpointer */
-                SETFLOAT(at+1, xpix - glist_xtopixels(owner, xloc));
-                SETFLOAT(at+2, ypix - glist_ytopixels(owner, yloc));
+                SETFLOAT(at+1, glist_dpixtodx(owner, xpix - glist_xtopixels(owner, xloc)));
+                SETFLOAT(at+2, glist_dpixtody(owner, ypix - glist_ytopixels(owner, yloc)));
                 SETFLOAT(at+3, shift);
                 SETFLOAT(at+4, alt);
                 SETFLOAT(at+5, dbl);
@@ -639,8 +648,6 @@ static const t_widgetbehavior scalar_widgetbehavior =
 
 static void scalar_free(t_scalar *x)
 {
-    int i;
-    t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     sys_unqueuegui(x);

@@ -97,7 +97,6 @@ void pcommon_release(t_symbol *s)
             pd_unbind(&c->c_pd, s);
             gpointer_unset(&c->c_gp);
             pd_free(&c->c_pd);
-            post("free pcommon");
         }
     }
     else bug("pointer_release");
@@ -132,7 +131,7 @@ static void ptrobj_setandoutput(t_ptrobj *x, t_gobj *gobj)
     }
 }
 
-/* get the template for the object pointer to.  Assumes we've already checked
+/* get the template for the object pointed to.  Assumes we've already checked
 freshness. */
 
 static t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
@@ -169,8 +168,8 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
         if (argc)
             argc--, argv++;
     }
-    else x->x_name = &s_;
-    if (*x->x_name->s_name)
+    else x->x_name = 0;
+    if (x->x_name && *x->x_name->s_name)
         x->x_gpp = pcommon_get(x->x_name);
     else gpointer_init((x->x_gpp = &x->x_privategp));
     x->x_typedout = to = (t_typedout *)getbytes(argc * sizeof (*to));
@@ -233,9 +232,15 @@ static void ptrobj_get(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 
     if (!argc)
         return;
+
+        /* for backward compatibility, unnamed pointers just complain to the
+        Pd window.  Vpointers, being new in 0.56, can be more helpful:
+        if the pointer is unset or invalid, send a "bang" out last outlet. */
     if (!gpointer_check(x->x_gpp, 0))
     {
-        pd_error(x, "pointer_set: stale or empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer_set: stale or empty pointer");
         return;
     }
     if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
@@ -347,7 +352,9 @@ static void ptrobj_set(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 
     if (!gpointer_check(x->x_gpp, 0))
     {
-        pd_error(x, "pointer_set: stale or empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer_set: stale or empty pointer");
         return;
     }
     if (!(template = template_findbyname(gpointer_gettemplatesym(x->x_gpp))))
@@ -475,7 +482,9 @@ static void ptrobj_donext(t_ptrobj *x, int skip, t_symbol *templatesym,
         templatesym = gensym("");
     if (!gs)
     {
-        pd_error(x, "pointer next: no current pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer next: no current pointer");
         return;
     }
     if (gs->gs_which != GP_GLIST)
@@ -618,7 +627,9 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     t_typedout *to;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer equal: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer equal: empty pointer");
         return;
     }
     /* we can compare any union element because they are all pointers */
@@ -642,8 +653,7 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     outlet_pointer(x->x_otherout, x->x_gpp);
 }
 
-    /* send a message to the window containing the object pointed to */
-static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+static t_glist *ptrobj_getwindow(t_ptrobj *x, const char *invokedas)
 {
     t_scalar *sc;
     t_symbol *templatesym;
@@ -654,8 +664,10 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     t_gstub *gs;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer send-window: empty pointer");
-        return;
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer %s: empty pointer", invokedas);
+        return (0);
     }
     gs = x->x_gpp->gp_stub;
     if (gs->gs_which == GP_GLIST)
@@ -667,12 +679,28 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
             owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
         glist = owner_array->a_gp.gp_stub->gs_un.gs_glist;
     }
-    canvas = (t_pd *)glist_getcanvas(glist);
+    return (glist_getcanvas(glist));
+}
+
+    /* send a message to the window containing the object pointed to */
+static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_pd *zz = &ptrobj_getwindow(x, s->s_name)->gl_pd;
+    if (!zz)
+        return;
     if (argc && argv->a_type == A_SYMBOL)
-        pd_typedmess(canvas, argv->a_w.w_symbol, argc-1, argv+1);
+        pd_typedmess(zz, argv->a_w.w_symbol, argc-1, argv+1);
     else pd_error(x, "pointer send-window: no message?");
 }
 
+    /* report window name */
+static void ptrobj_getwindowname(t_ptrobj *x)
+{
+    t_glist *canvas = ptrobj_getwindow(x, "get-window-name");
+    if (!canvas)
+        return;
+    outlet_symbol(x->x_bangout, canvas->gl_name);
+}
 
     /* send the pointer to the named object */
 static void ptrobj_send(t_ptrobj *x, t_symbol *s)
@@ -680,8 +708,70 @@ static void ptrobj_send(t_ptrobj *x, t_symbol *s)
     if (!s->s_thing)
         pd_error(x, "%s: no such object", s->s_name);
     else if (!gpointer_check(x->x_gpp, 1))
-        pd_error(x, "pointer send: empty pointer");
+    {
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer send: empty pointer");
+    }
     else pd_pointer(s->s_thing, x->x_gpp);
+}
+
+
+static void ptrobj_append(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_scalar *sc, *oldsc;
+    t_glist *glist;
+    t_symbol *templatesym;
+
+    if (argc < 1 || argv[0].a_type != A_SYMBOL)
+    {
+        pd_error(x, "pointer_append: no structure name specified");;
+        return;
+    }
+    templatesym = template_getbindsym(argv[0].a_w.w_symbol);
+
+    if (!gpointer_check(x->x_gpp, 1))
+    {
+        pd_error(x, "pointer_append: unset or stale pointer");;
+        return;
+    }
+    if (x->x_gpp->gp_stub->gs_which != GP_GLIST)
+    {
+        pd_error(x, "append: lists only, not arrays");
+        return;
+    }
+    glist = x->x_gpp->gp_stub->gs_un.gs_glist;
+
+    sc = scalar_new(glist,  templatesym);
+    if (!sc)
+    {
+        pd_error(x, "%s: couldn't create scalar", templatesym);
+        return;
+    }
+    oldsc = x->x_gpp->gp_un.gp_scalar;
+
+    if (oldsc)
+    {
+        sc->sc_gobj.g_next = oldsc->sc_gobj.g_next;
+        oldsc->sc_gobj.g_next = &sc->sc_gobj;
+    }
+    else
+    {
+        sc->sc_gobj.g_next = glist->gl_list;
+        glist->gl_list = &sc->sc_gobj;
+    }
+
+    x->x_gpp->gp_un.gp_scalar = sc;
+
+    if (glist_isvisible(glist_getcanvas(glist)))
+        gobj_vis(&sc->sc_gobj, glist, 1);
+
+    if (argc > 1)
+        ptrobj_set(x, 0, argc-1, argv+1);
+
+    scalar_notifynew(sc, glist, 2);
+
+    outlet_pointer(x->x_obj.ob_outlet, x->x_gpp);
 }
 
 static void ptrobj_bang(t_ptrobj *x)
@@ -691,7 +781,7 @@ static void ptrobj_bang(t_ptrobj *x)
     t_typedout *to;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer bang: empty pointer");
+        outlet_bang(x->x_bangout);
         return;
     }
     templatesym = gpointer_gettemplatesym(x->x_gpp);
@@ -714,7 +804,6 @@ static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
     ptrobj_bang(x);
 }
 
-
 static void ptrobj_rewind(t_ptrobj *x)
 {
     t_scalar *sc;
@@ -726,7 +815,9 @@ static void ptrobj_rewind(t_ptrobj *x)
     t_gstub *gs;
     if (!gpointer_check(x->x_gpp, 1))
     {
-        pd_error(x, "pointer rewind: empty pointer");
+        if (x->x_name)
+            outlet_bang(x->x_bangout);
+        else pd_error(x, "pointer rewind: empty pointer");
         return;
     }
     gs = x->x_gpp->gp_stub;
@@ -743,7 +834,7 @@ static void ptrobj_rewind(t_ptrobj *x)
 static void ptrobj_free(t_ptrobj *x)
 {
     freebytes(x->x_typedout, x->x_ntypedout * sizeof (*x->x_typedout));
-    if (*x->x_name->s_name)
+    if (x->x_name && *x->x_name->s_name)
         pcommon_release(x->x_name);
     else gpointer_unset(&x->x_privategp);
 }
@@ -772,10 +863,14 @@ static void ptrobj_setup(void)
         A_POINTER, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_getwindowname,
+        gensym("window-name"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,
         gensym("rewind"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_nearest,
         gensym("nearest"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_append, gensym("append"),
+        A_GIMME, 0);
     class_addpointer(ptrobj_class, ptrobj_pointer);
     class_addbang(ptrobj_class, ptrobj_bang);
 
@@ -1578,8 +1673,8 @@ static void append_float(t_append *x, t_float f)
 
     if (glist_isvisible(glist_getcanvas(glist)))
         gobj_vis(&sc->sc_gobj, glist, 1);
-    /*  scalar_redraw(sc, glist);  ... have to do 'vis' instead here because
-    redraw assumes we're already visible??? ... */
+
+    scalar_notifynew(sc, glist, 2);
 
     outlet_pointer(x->x_obj.ob_outlet, gp);
 }

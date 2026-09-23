@@ -21,7 +21,7 @@ cd /tmp/
 rm -rf pd-$pdversion
 git clone $HOME/pd pd-$pdversion
 cd pd-$pdversion
-(cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
+(cd asio; unzip $HOME/pd/attic/asio/ASIOSDK2.3.zip;
     rm -rf _MACOSX/; mv ASIOSDK2.3 ASIOSDK)
 ./autogen.sh
 if ./configure --host=i686-w64-mingw32 --with-wish=wish85.exe \
@@ -36,9 +36,9 @@ cp -a $HOME/bis/work/pd-versions/tcltk-$tkversion .
 /home/msp/pd/msw/msw-app.sh \
    --builddir ..  --tk tcltk-$tkversion $pdversion
 
-# 0.56 and onward - separately copy in thread lib which was thrown out of
-# the prototype because it conflicted with something else
-cp -p ~/pd/msw/libwinpthread-1.dll32 pd-$pdversion/bin/libwinpthread-1.dll
+# 0.56-3 and onward - separately copy in pthreads lib, no longer clear why.
+cp -p /usr/i686-w64-mingw32/sys-root/mingw/bin/libwinpthread-1.dll \
+    pd-$pdversion/bin/libwinpthread-1.dll
 
 # also pdfontloader.dll for wish85 and 32bit (was removed from prototype)
 cp -p ~/pd/msw/pdfontloader.dll-wish86-32bit pd-$pdversion/bin/pdfontloader.dll

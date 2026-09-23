@@ -8,6 +8,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 
     /* pointer to "globals" for templates in this pd instance */
 #define THISTMPL (pd_this->pd_gui->i_template)
@@ -51,9 +52,11 @@ struct _instancetemplate
 {
     int curve_motion_vertex;
     t_float curve_motion_xcumulative;
+    t_float curve_motion_xfrac; /* fractional remainder for whole-object drag */
     t_float curve_motion_xbase;
     t_float curve_motion_xper;
     t_float curve_motion_ycumulative;
+    t_float curve_motion_yfrac;
     t_float curve_motion_ybase;
     t_float curve_motion_yper;
     t_glist *curve_motion_glist;
@@ -116,7 +119,8 @@ t_binbuf *template_get_creation_binbuf(t_template *x)
     return NULL;
 }
 
-    /* get the unrealized creation name (e.g "$0-template"); used in g_readwrite.c */
+    /* get the unrealized creation name (e.g "$0-template"); used in
+         g_readwrite.c */
 t_symbol *template_get_creation_name(t_template *x)
 {
     t_symbol *name = &s_;
@@ -125,8 +129,13 @@ t_symbol *template_get_creation_name(t_template *x)
     {
         t_atom *atoms = binbuf_getvec(bb);
         int natom = binbuf_getnatom(bb);
-        if (natom > 1)
-            name = atoms[1].a_w.w_symbol;
+        if (natom > 1 && atoms[1].a_type == A_SYMBOL)
+        {
+            if (natom > 2 && atoms[2].a_type == A_SYMBOL &&
+                !strcmp(atoms[1].a_w.w_symbol->s_name, "-m"))
+                    name = atoms[2].a_w.w_symbol;
+            else name = atoms[1].a_w.w_symbol;
+        }
     }
     return name;
 }
@@ -145,16 +154,28 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
         ds1->ds_type == ds2->ds_type &&
             (ds1->ds_type != DT_ARRAY ||
                 (ds1->ds_arraytemplate == ds2->ds_arraytemplate &&
-                    ds1->ds_arraydeflength == ds2->ds_arraydeflength)));
+                    ds1->ds_default == ds2->ds_default)));
 }
 
 /* -- templates, the active ingredient in "struct" objects defined below. -- */
 
+    /* send list of templates to GUI */
+static void template_listtogui(t_gobj *dummy, t_glist *gl_dummy)
+{
+    t_template *x;
+    pdgui_vmess("pdtk_newstructs", 0);
+    for (x = pd_this->pd_templatelist; x; x = x->t_next)
+        if (x->t_inmenu)
+            pdgui_vmess("pdtk_addstruct", "r", x->t_sym->s_name);
+}
     /* add a template to the list */
 static void template_addtolist(t_template *x)
 {
     x->t_next = pd_this->pd_templatelist;
     pd_this->pd_templatelist = x;
+    if (sys_havetkproc())
+         sys_queuegui((t_gobj *)(&THISTMPL->curve_motion_vertex), 0,
+             template_listtogui);
 }
 
 static void template_takeofflist(t_template *x)
@@ -176,18 +197,28 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     x->t_n = 0;
     x->t_vec = (t_dataslot *)t_getbytes(0);
     x->t_next = 0;
+    x->t_inmenu = 0;
     template_addtolist(x);
     while (argc > 0)
     {
-        int newtype, oldn, newn, newarraydeflength= 1;
+        int newtype, oldn, newn;
         t_symbol *newname, *newarraytemplate = &s_, *newtypesym;
+        t_float defaultval = 0;
         if (argc < 2 || argv[0].a_type != A_SYMBOL ||
             argv[1].a_type != A_SYMBOL)
                 goto bad;
         newtypesym = argv[0].a_w.w_symbol;
         newname = argv[1].a_w.w_symbol;
         if (newtypesym == &s_float)
+        {
             newtype = DT_FLOAT;
+                /* if next arg is float it's the default value for the field */
+            if (argc >= 3 && argv[2].a_type == A_FLOAT)
+            {
+                defaultval = argv[2].a_w.w_float;
+                argc--; argv++;
+            }
+        }
         else if (newtypesym == &s_symbol)
             newtype = DT_SYMBOL;
                 /* "list" is old name.. accepted here but never saved as such */
@@ -196,6 +227,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         else if (newtypesym == gensym("array"))
         {
             t_symbol *templatename;
+            defaultval = 1; /* default length of array */
             if (argc < 3
                 || (argv[2].a_type != A_SYMBOL && argv[2].a_type != A_DOLLSYM)
             )
@@ -210,8 +242,8 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
                 /* optional third float arg sets initial array length */
             if (argc > 3 && argv[3].a_type == A_FLOAT)
             {
-                if ((newarraydeflength = argv[3].a_w.w_float) < 1)
-                    newarraydeflength = 1;
+                if ((defaultval = argv[3].a_w.w_float) < 1)
+                    defaultval = 1;
                 argc -= 2;
                 argv += 2;
             }
@@ -229,7 +261,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         x->t_vec[oldn].ds_type = newtype;
         x->t_vec[oldn].ds_name = newname;
         x->t_vec[oldn].ds_arraytemplate = newarraytemplate;
-        x->t_vec[oldn].ds_arraydeflength = newarraydeflength;
+        x->t_vec[oldn].ds_default = defaultval;
     bad:
         argc -= 2; argv += 2;
     }
@@ -592,11 +624,18 @@ void template_notify(t_template *template, t_symbol *s, int argc, t_atom *argv)
 }
 
     /* bash the first of (argv) with a pointer to a scalar, and send on
-    to template as a notification message */
+    to template as a notification message.  This is called from hither and
+    yon, without always checking that the template was found correctly.
+    The template _should_ always be nonzero. */
 void template_notifyforscalar(t_template *template, t_glist *owner,
     t_scalar *sc, t_symbol *s, int argc, t_atom *argv)
 {
     t_gpointer gp;
+    if (!template)
+    {
+        bug("template_notifyforscalar");
+        return;
+    }
     gpointer_init(&gp);
     gpointer_setglist(&gp, owner, sc);
     SETPOINTER(argv, &gp);
@@ -627,6 +666,9 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
     argc = binbuf_getnatom(bb);
     argv = binbuf_getvec(bb);
 
+    if (argc > 1 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+            argc--, argv++;
     templatename = canvas_getsymbol_realized(canvas_getcurrent(), &argv[0]);
     templatesym = canvas_makebindsym(templatename);
     argc--; argv++;
@@ -687,7 +729,7 @@ instructions for the template.  The template doesn't go away when the
 "struct" is deleted, so that you can replace it with
 another one to add new fields, for example. */
 
-static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
+static void *gtemplate_donew(t_symbol *sym, int inmenu, int argc, t_atom *argv)
 {
     t_pdstruct *x = (t_pdstruct *)pd_new(gtemplate_class);
     t_template *t = template_findbyname(sym);
@@ -698,6 +740,7 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
     x->x_sym = sym;
     x->x_argc = argc;
     x->x_argv = (t_atom *)getbytes(argc * sizeof(t_atom));
+
     for (i = 0; i < argc; i++)
         x->x_argv[i] = argv[i];
 
@@ -742,19 +785,28 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
         x->x_template = t = template_new(sym, argc, argv);
         t->t_list = x;
     }
+    if (inmenu)
+        t->t_inmenu = 1;
     outlet_new(&x->x_obj, 0);
     return (x);
 }
 
 static void *gtemplate_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_symbol *sym = atom_getsymbolarg(0, argc, argv);
+    t_symbol *sym;
+    int inmenu = 0;
+        /* check for "-m" menu flag */
+    if (argc > 0 && argv[0].a_type == A_SYMBOL &&
+        !strcmp(argv[0].a_w.w_symbol->s_name, "-m"))
+    {
+        inmenu = 1;
+        argc--;
+        argv++;
+    }
+    sym = atom_getsymbolarg(0, argc, argv);
     if (argc >= 1)
         argc--, argv++;
-    if (sym->s_name[0] == '-')
-        post("warning: struct '%s' initial '-' may confuse get/set, etc.",
-            sym->s_name);
-    return (gtemplate_donew(canvas_makebindsym(sym), argc, argv));
+    return (gtemplate_donew(canvas_makebindsym(sym), inmenu, argc, argv));
 }
 
     /* old version (0.34) -- delete 2003 or so */
@@ -768,7 +820,7 @@ static void *gtemplate_new_old(t_symbol *s, int argc, t_atom *argv)
             sym->s_name);
         warned = 1;
     }
-    return (gtemplate_donew(sym, argc, argv));
+    return (gtemplate_donew(sym, 0, argc, argv));
 }
 
 t_template *gtemplate_get(t_pdstruct *x)
@@ -994,12 +1046,15 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
 }
 
-#define CLOSED 1      /* polygon */
-#define BEZ 2         /* bezier shape */
-#define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
-#define NOMOUSEEDIT 8 /* same in edit mode */
-#define NOVERTICES 16 /* disable only vertex grabbing in run mode */
-#define DRAGGABLE 32  /* can use to drag entire scalar around */
+#define CLOSED 1        /* polygon */
+#define BEZ 2           /* bezier shape */
+#define NOMOUSERUN 4    /* disable mouse interaction when in run mode  */
+#define NOMOUSEEDIT 8   /* same in edit mode */
+#define NOVERTICES 16   /* disable only vertex grabbing in run mode */
+#define DRAGGABLE 32    /* can use to drag entire scalar around */
+#define NEVEREDIT 64    /* (drawtext) never activate for editing */
+#define ALWAYSEDIT 128  /* (drawtext) edit or run mode click activates */
+
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -1330,16 +1385,6 @@ static void curve_activate(t_gobj *z, t_glist *glist,
     /* fill in later */
 }
 
-#if 0
-static int rangecolor(int n)    /* 0 to 9 in 5 steps */
-{
-    int n2 = n/2;               /* 0 to 4 */
-    int ret = (n2 << 6);        /* 0 to 256 in 5 steps */
-    if (ret > 255) ret = 255;
-    return (ret);
-}
-#endif
-
 static int rangecolor(int n)    /* 0 to 9 in 5 steps */
 {
     int n2 = (n == 9 ? 8 : n);               /* 0 to 8 */
@@ -1368,20 +1413,18 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-    char tag0[80], tag[80];
-    const char*tags[] = {tag, tag0, "curve"};
+    char tag[80];
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag0, "curve%p", x);
-    sprintf(tag , "curve%p_data%p", x, data);
+    sprintf(tag, "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            int outline;
+            int fill, outline;
             t_word pix[200];
 
             if (n > 100)
@@ -1398,35 +1441,20 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
-            if (glist->gl_isgraph)
-                width *= glist_getzoom(glist);
             outline = numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
-
-            pdgui_vmess(0, "crr iiii rf ri rS",
-                glist_getcanvas(glist), "create",
-                (flags & CLOSED)?"polygon":"line",
-                0, 0, 0, 0,
-                "-width", width,
-                "-smooth", !!(flags & BEZ),
-                "-tags", 3, tags);
+            if (flags & CLOSED)
+                fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+            else fill = -1;
+            pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                glist_getcanvas(glist), tag,
+                (fill >= 0), !!(flags & BEZ), width,
+                (fill >= 0 ? fill : 0), outline,
+                0, 0, 0, 0);
 
             pdgui_vmess(0, "crs w",
-                glist_getcanvas(glist), "coords", tag,
-                2*n, pix);
-
-            if (flags & CLOSED)
-            {
-                int fill = numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
-                pdgui_vmess(0, "crs rk rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", fill,
-                    "-outline", outline);
-            } else
-                pdgui_vmess(0, "crs rk",
-                    glist_getcanvas(glist), "itemconfigure", tag,
-                    "-fill", outline);
+                glist_getcanvas(glist), "coords", tag, 2*n, pix);
         }
         else post(
             "warning: drawing shapes need at least two points to be graphed");
@@ -1434,7 +1462,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist),
+                tag);
     }
 }
 
@@ -1455,8 +1484,18 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     }
     if (THISTMPL->curve_motion_vertex < 0)   /* drag the whole object */
     {
-        gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
-            THISTMPL->curve_motion_glist, dx, dy);
+        t_glist *glist = THISTMPL->curve_motion_glist;
+        int idtx, idty;
+            /* accumulate fractional parts (while displace API expects ints) */
+        THISTMPL->curve_motion_xfrac += dx;
+        THISTMPL->curve_motion_yfrac += dy;
+        idtx = (int)THISTMPL->curve_motion_xfrac;
+        idty = (int)THISTMPL->curve_motion_yfrac;
+        THISTMPL->curve_motion_xfrac -= idtx;
+        THISTMPL->curve_motion_yfrac -= idty;
+        if (idtx || idty)
+            gobj_displace(&THISTMPL->curve_motion_scalar->sc_gobj,
+                glist, idtx, idty);
         return;
     }
     f = x->x_vec + THISTMPL->curve_motion_vertex;
@@ -1565,6 +1604,8 @@ static int curve_click(t_gobj *z, t_glist *glist,
             - glist_pixelstoy(glist, 0);
         THISTMPL->curve_motion_xcumulative = 0;
         THISTMPL->curve_motion_ycumulative = 0;
+        THISTMPL->curve_motion_xfrac = 0;
+        THISTMPL->curve_motion_yfrac = 0;
         THISTMPL->curve_motion_glist = glist;
         THISTMPL->curve_motion_scalar = sc;
         THISTMPL->curve_motion_array = ap;
@@ -2006,9 +2047,6 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset,
         yonset);
 
-    if (glist->gl_isgraph)
-        linewidth *= glist_getzoom(glist);
-
     if (tovis)
     {
          /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS
@@ -2056,8 +2094,16 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
+                    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
+                        glist_getcanvas(glist), tag0, "-", 0,
+                        color, 0,
+                        ixpix , (int) glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, minyval)),
+                        inextx, (int)(glist_ytopixels(glist, basey +
+                            fielddesc_cvttocoord(yfielddesc, maxyval))
+                                + linewidth));
 
-                    pdgui_vmess(0, "crr iiii rk rf rS",
+                    /* pdgui_vmess(0, "crr iiii rk rf rS",
                         glist_getcanvas(glist), "create", "rectangle",
                         ixpix , (int) glist_ytopixels(glist, basey +
                             fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -2066,7 +2112,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                                 + linewidth),
                         "-fill", color,
                         "-width", 0.,
-                        "-tags", 3, tags);
+                        "-tags", 3, tags); */
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -2177,13 +2223,12 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
 
-                pdgui_vmess(0, "crr ri rk rk ri rS",
-                    glist_getcanvas(glist), "create", "polygon",
-                    "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    "-fill", outline,
-                    "-outline", outline,
-                    "-smooth", (style == PLOTSTYLE_BEZ),
-                    "-tags", 3, tags);
+                pdgui_vmess("pdtk_canvas_create_poly", "cr ii i kk iiii",
+                    glist_getcanvas(glist), tag0,
+                    1, (style == PLOTSTYLE_BEZ),
+                    1,
+                    outline, outline,
+                    0, 0, 0, 0);
 
                 pdgui_vmess(0, "crs w",
                     glist_getcanvas(glist), "coords", tag0,
@@ -2234,15 +2279,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ndrawn = 2;
                 }
 
-                if(ndrawn)
+                if (ndrawn)
                 {
-                    pdgui_vmess(0, "crr iiii rf rk ri rS",
-                        glist_getcanvas(glist), "create", "line",
-                        0, 0, 0, 0,
-                        "-width", linewidth,
-                        "-fill", outline,
-                        "-smooth", (style == PLOTSTYLE_BEZ),
-                        "-tags", 3, tags);
+                    pdgui_vmess("pdtk_canvas_create_poly", "cr iif kk iiii",
+                        glist_getcanvas(glist), tag0,
+                        0, (style == PLOTSTYLE_BEZ), linewidth,
+                        outline, outline,
+                        0, 0, 0, 0);
                     pdgui_vmess(0, "crs w",
                         glist_getcanvas(glist), "coords", tag0,
                         ndrawn*2, coordinates);
@@ -2300,7 +2343,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        pdgui_vmess("pdtk_canvas_delete", "cs",
+            glist_getcanvas(glist), tag0);
     }
 }
 
@@ -2766,6 +2810,7 @@ t_class *drawtext_class;
 typedef struct _drawtext
 {
     t_object x_obj;
+    int x_flags;    /* NOMOUSERUN, NOMOUSEEDIT, ALWAYSEDIT, NEVEREDIT */
     t_symbol *x_fieldname;
     t_fielddesc x_xloc;
     t_fielddesc x_yloc;
@@ -2779,30 +2824,36 @@ typedef struct _drawtext
 static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawtext *x = (t_drawtext *)pd_new(drawtext_class);
+    int flags = 0;
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
-    while (1)
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
-        if (!strcmp(firstarg->s_name, "-v") && argc > 1)
+        const char *flag = argv->a_w.w_symbol->s_name;
+        if (!strcmp(flag, "-n"))
+            fielddesc_setfloat_const(&x->x_vis, 0);
+        else if (!strcmp(flag, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
-            argc -= 2; argv += 2;
+            argc -= 1; argv += 1;
         }
-        else if (!strcmp(firstarg->s_name, "-n"))
-        {
-            fielddesc_setfloat_const(&x->x_vis, 0);
-            argc--; argv++;
-        }
-        else if (*firstarg->s_name == '-')
-        {
-            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
-                firstarg->s_name);
-            argc--; argv++;
-        }
-        else break;
+        else if (!strcmp(flag, "-x"))
+            flags |= (NOMOUSERUN | NOMOUSEEDIT); /* disable all mouse actions */
+        else if (!strcmp(flag, "-xr"))
+            flags |= NOMOUSERUN; /* disable mouse actions in run mode */
+        else if (!strcmp(flag, "-xe"))
+            flags |= NOMOUSEEDIT; /* disable mouse actions in edit mode */
+        else if (!strcmp(flag, "-e"))
+            flags |= ALWAYSEDIT; /* single click activates text */
+        else if (!strcmp(flag, "-ne"))
+            flags |= NEVEREDIT; /* never activate text */
+        else pd_error(x, "%s: unknown flag '%s'...", classsym->s_name, flag);
+
+        argc--; argv++;
     }
+    x->x_flags = flags;
         /* next argument is name of field to draw - we don't know its type yet
         but fielddesc_setfloatarg() will do fine here. */
     x->x_fieldname = atom_getsymbolarg(0, argc, argv);
@@ -2862,6 +2913,23 @@ t_template *drawtext_gettemplate(t_gobj *z)
         if (g->g_pd == gtemplate_class)
             return (((t_pdstruct *)g)->x_template);
     return (0);     /* shouldn't happen - we got here through the template */
+}
+
+void drawtext_doclick(t_gobj *z, int xpix, int ypix, int shiftmod,
+    int altmod, int doubleclick, t_rtext *rtext, t_scalar *hitscalar,
+        int runmode)
+{
+    t_drawtext *x = (t_drawtext *)z;
+    if (z->g_pd != drawtext_class)
+        bug("drawtext_doclick");
+                /* possibly activate the rtext for editing? */
+    else if ((x->x_flags & ALWAYSEDIT) ||
+        (!(x->x_flags & NEVEREDIT) && runmode && doubleclick))
+            rtext_activate(rtext, 1);
+                /* or possibly call the parent widget routine */
+    else if (runmode || !NOMOUSEEDIT)
+        scalar_click(&hitscalar->sc_gobj, rtext_getglist(rtext),
+            xpix, ypix, shiftmod, altmod, doubleclick, 1);
 }
 
     /* get the text to draw or edit.  "length" is number of nonzero chars.
@@ -2951,7 +3019,9 @@ static void drawtext_getrect(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     if (!gobj_shouldvis(z, glist)
         || !drawtext_isvisible(z, data)
-        || !(rtext = glist_getforscalar(glist, sc, data, z)))
+        || !(rtext = glist_getforscalar(glist, sc, data, z)) ||
+        (glist->gl_edit && x->x_flags & NOMOUSEEDIT) ||
+        (!glist->gl_edit && x->x_flags & NOMOUSERUN))
     {
         *xp1 = *yp1 = 0x7fffffff;
         *xp2 = *yp2 = -0x7fffffff;
@@ -3014,20 +3084,26 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
         char *textbuf;
         int textlen;
             /* draw label */
-        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        /* SETSYMBOL(fontatoms+0, gensym(sys_font));
         SETFLOAT (fontatoms+1,
-            -sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+            -sys_hostfontsize(glist_getfont(glist), 1));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight)); */
             /* display label */
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            pdgui_vmess("pdtk_text_new", "cS iis i k",
+                glist_getcanvas(glist), 2, tags,
+                xloc, yloc, x->x_label->s_name,
+                sys_hostfontsize(glist_getfont(glist), 1),
+                color);
+            /* pdgui_vmess(0, "crr ii rs rk rs rA rS",
                 glist_getcanvas(glist), "create", "text",
-                xloc, yloc,
+                xloc, yloc, x->x_label->s_name,
+
                 "-anchor", "nw",
                 "-fill", color,
                 "-text", x->x_label->s_name,
                 "-font", 3, fontatoms,
-                "-tags", 2, tags);
+                "-tags", 2, tags); */
             /* draw text */
         rtext_setcolor(rtext, color);
         drawtext_gettext(z, data, &textbuf, &textlen);
@@ -3038,7 +3114,7 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            pdgui_vmess("pdtk_canvas_delete", "cs", glist_getcanvas(glist), tag);
         rtext_erase(rtext);
         rtext_free(rtext);
     }
@@ -3160,7 +3236,7 @@ static int drawtext_click(t_gobj *z, t_glist *glist,
     t_rtext *rtext;
     int x1, y1, x2, y2, type, onset;
     x->x_template = template;
-    if (!drawtext_isvisible(z, data))
+    if (!drawtext_isvisible(z, data) || (x->x_flags & NOMOUSERUN))
         return (0);
     rtext = glist_getforscalar(glist, sc, data, z);
     rtext_getrect(rtext, &x1, &y1, &x2, &y2);

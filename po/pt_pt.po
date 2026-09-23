@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
-"PO-Revision-Date: 2025-08-01 09:02+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese (Portugal) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_PT/>\n"
 "Language: pt_pt\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 msgid "linear"
 msgstr "linear"
@@ -133,7 +133,7 @@ msgid "Window"
 msgstr "Janela"
 
 msgid "Tools"
-msgstr ""
+msgstr "Ferramentas"
 
 msgid "Help"
 msgstr "Ajuda"
@@ -219,9 +219,8 @@ msgstr "Dispositivo de saída"
 msgid "Use Multiple Devices"
 msgstr "Usar Múltiplos Dispositivos"
 
-#, fuzzy
 msgid "Rescan Devices"
-msgstr "Dispositivo de entrada"
+msgstr "Detetar Dispositivos Novamente"
 
 msgid "Audio System"
 msgstr "Sistema de áudio"
@@ -255,6 +254,56 @@ msgstr "Configuração audio"
 
 msgid "Save All Settings"
 msgstr "Gravar a configuração"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Resultados de Busca"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -581,9 +630,6 @@ msgstr "Editar caminho existente [%s]"
 msgid "Patch Windows"
 msgstr "Janelas do Patch"
 
-msgid "Zoom New Windows"
-msgstr "Ampliar Zoom em Novas Janelas"
-
 msgid "GUI Settings"
 msgstr "Configurações de GUI"
 
@@ -597,10 +643,10 @@ msgid "Single page"
 msgstr "Página única"
 
 msgid "Patching helpers"
-msgstr ""
+msgstr "Auxiliares de patching"
 
 msgid "Highlight active cord while connecting"
-msgstr ""
+msgstr "Destacar ligação ativa durante a conexão"
 
 msgid "Preferences"
 msgstr "Preferências"
@@ -616,6 +662,9 @@ msgstr "MIDI"
 
 msgid "deken preferences"
 msgstr "preferências do deken"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 msgid "misc preferences"
 msgstr "diversas"
@@ -703,6 +752,10 @@ msgid "using font: %1$s %2$s"
 msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr "'%1$s' já carregado, ignorando: '%2$s'"
 
@@ -731,6 +784,10 @@ msgstr "falha de inicialização do Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Falha ao iniciar o núcleo do Pd"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -812,11 +869,11 @@ msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
 msgid "File checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Ficheiro de checksum parece inválido: '%s'."
 
 #, tcl-format
 msgid "Reference checksum looks invalid: '%s'."
-msgstr ""
+msgstr "Checksum de referência parece inválido: '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
@@ -841,16 +898,17 @@ msgstr "Incapaz de remover ficheiro 'stray' '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Incapaz de renomear ficheiro descarregado de '%s'"
 
-#, fuzzy
-msgid "Search URLs:"
-msgstr "Resultados de Busca"
+msgid "~"
+msgstr "~"
 
-#, fuzzy
+msgid "Search URLs:"
+msgstr "Procurar URLs:"
+
 msgid "Additional search URLs"
-msgstr "%s adicionado aos caminhos de busca"
+msgstr "URLs de pesquisa adicionais"
 
 msgid "Ephemeral search URLs"
-msgstr ""
+msgstr "URLs temporárias de pesquisa"
 
 msgid "Create"
 msgstr "Criar"
@@ -858,9 +916,8 @@ msgstr "Criar"
 msgid "Check"
 msgstr "Checar"
 
-#, fuzzy
 msgid "Deken Installation Target"
-msgstr "Instalação falhou!"
+msgstr "Destino de Instalação do Deken"
 
 msgid "Installation options:"
 msgstr "Opções de instalação:"
@@ -879,6 +936,17 @@ msgstr "Manter ficheiros do pacote depois da instalação"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém-instaladas ao caminho de busca do Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s adicionado aos caminhos de busca"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Incapaz de adicionar %s aos caminhos de busca"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Configurações da plataforma:"
@@ -933,16 +1001,18 @@ msgstr "Todos os Ficheiros"
 
 #, tcl-format
 msgid "Installing incompatible architecture of '%s'."
-msgstr ""
+msgstr "A instalar a arquitetura incompatível '%s'."
 
 msgid "Replacing library with incompatible architecture!"
-msgstr ""
+msgstr "A substituir biblioteca por uma arquitetura incompatível!"
 
 #, tcl-format
 msgid ""
 "Do you want to replace the library '%1$s' in '%2$s' with a version that is "
 "incompatible with your computer?"
 msgstr ""
+"Quer substituir a biblioteca '%1$s' em '%2$s' por uma versão que é "
+"incompatível com o seu computador?"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
@@ -1017,11 +1087,21 @@ msgstr "Instalar"
 msgid "%s%% of download completed"
 msgstr "download de %s%% concluído"
 
-msgid "Enter an exact library or object name."
-msgstr "Digite o nome exato de um objeto ou biblioteca."
+msgid "Enter a library or object name."
+msgstr "Digite o nome de uma biblioteca ou objeto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "p. ex., 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+"Por padrão, isto encontrará qualquer coisa que contenha a(s) palavrava(s) de "
+"pesquisa."
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
+"Se ativar o modo \"pesquisa exata\", apenas correspondências exatas são "
+"consideradas."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use o curinga '*' para combinar com qualquer quantidade de caracteres."
@@ -1067,6 +1147,9 @@ msgstr "ambos"
 msgid "translations"
 msgstr "traduções"
 
+msgid "exact search"
+msgstr "pesquisa exata"
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Apenas instale externals enviados por quem confia."
 
@@ -1093,6 +1176,9 @@ msgstr "Resultados de Busca"
 
 msgid "Log"
 msgstr "Log"
+
+msgid "Searching for all packages..."
+msgstr "A procurar por todos pacotes..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1169,9 +1255,8 @@ msgstr "Download completo! Verificando..."
 msgid "Ignoring checksum mismatch"
 msgstr "Ignorando mismatch de checksum"
 
-#, fuzzy
 msgid "Ignoring checksum errors"
-msgstr "Ignorando mismatch de checksum"
+msgstr "A ignorar erros de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -1183,7 +1268,11 @@ msgstr "[deken] platforma detectada: %s"
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
-msgstr ""
+msgstr "Não foi possível encontrar um menu para adicionar '%s'"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "A descarregar '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1294,7 +1383,7 @@ msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Não foi possível criar preferências \"%1$s\" em %2$s"
 
 msgid "The language can only be set during startup."
-msgstr ""
+msgstr "O idioma só pode ser setada durante a inicialização."
 
 msgid "Afar"
 msgstr "Afar"
@@ -1853,15 +1942,14 @@ msgid "Print..."
 msgstr "Imprimir…"
 
 msgid "single precision"
-msgstr ""
+msgstr "precisão simples"
 
-#, fuzzy
 msgid "double precision"
-msgstr "EXPERIMENTAL precisão double (64bit)"
+msgstr "precisão double"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%dbit-floats"
-msgstr "%dbit-floats EXPERIMENTAL"
+msgstr "%dbit-floats"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
@@ -1925,6 +2013,10 @@ msgstr "Ampliar Zoom"
 msgid "Zoom Out"
 msgstr "Reduzir Zoom"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Resetar"
+
 msgid "Clear Console"
 msgstr "Limpar consola"
 
@@ -1949,6 +2041,10 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Comment"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Escala"
+
 msgid "Graph"
 msgstr "Graph"
 
@@ -1969,9 +2065,6 @@ msgstr "DSP Desligado"
 
 msgid "Test Audio and MIDI..."
 msgstr "Testar audio e MIDI..."
-
-msgid "Load Meter"
-msgstr "Carregar medidor"
 
 msgid "Audio Settings..."
 msgstr "Configuração audio..."
@@ -1994,12 +2087,14 @@ msgstr "Próxima Janela"
 msgid "Previous Window"
 msgstr "Janela Anterior"
 
-#, fuzzy
 msgid "Close subwindows"
-msgstr "Fechar esta janela?"
+msgstr "Fechar subjanelas"
 
 msgid "Parent Window"
 msgstr "Janela superior"
+
+msgid "Load Meter"
+msgstr "Carregar medidor"
 
 msgid "Message..."
 msgstr "Mensagem..."
@@ -2022,8 +2117,9 @@ msgstr "Procurar por atualizações"
 msgid "Report a bug"
 msgstr "Reportar problemas (bugs)"
 
-msgid "Clear Menu"
-msgstr "Limpar menu"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Ficheiros Max-Texto"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2063,6 +2159,9 @@ msgstr "Quer gravar as modificações feitas em '%s'?"
 msgid "Properties"
 msgstr "Propriedades"
 
+msgid "edit mode"
+msgstr "modo de edição"
+
 #, tcl-format
 msgid "Accept changes to '%s'?"
 msgstr "Aceitar modificações em '%s'?"
@@ -2088,9 +2187,8 @@ msgstr "Áudio ligado"
 msgid "Audio off"
 msgstr "Áudio desligado"
 
-#, fuzzy
 msgid "Find source"
-msgstr "Localizar último erro"
+msgstr "Encontrar fonte"
 
 msgid "Pd"
 msgstr "Pd"
@@ -2141,6 +2239,12 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece ser um ficheiro de Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Ampliar Zoom em Novas Janelas"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Limpar menu"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "

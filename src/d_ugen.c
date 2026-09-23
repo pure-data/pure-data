@@ -219,6 +219,23 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     canvas_resume_dsp(dspstate);
 }
 
+int canvas_getswitchedon(t_canvas *x)
+{
+    t_canvas *canvas;
+    t_gobj *g;
+    for (canvas = x; canvas; canvas = canvas->gl_owner)
+    {
+        for (g = canvas->gl_list; g; g = g->g_next)
+        {
+            if (g->g_pd == block_class)
+            {
+                return ((t_block *)g)->x_switchon;
+            }
+        }
+    }
+    return 1;
+}
+
 t_float canvas_getsr(t_canvas *x)
 {
     t_float srate = sys_getsr();
@@ -254,9 +271,11 @@ int canvas_getsignallength(t_canvas *x)
 static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
                         t_floatarg fupsample, t_floatarg foffset)
 {
+    int oldstate = canvas_suspend_dsp();
     t_block *x = (t_block *)block_new(fvecsize, foverlap, fupsample, foffset);
     x->x_switched = 1;
     x->x_switchon = 0;
+    canvas_resume_dsp(oldstate);
     return (x);
 }
 
@@ -513,7 +532,9 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     int allocsize = 0;
     t_signal *ret, **whichlist;
     if (sr < 1)
-        bug("signal_new");
+        bug("signal_new: 'sr' cannot be less than 1");
+    if (nchans < 1)
+        bug("signal_new: 'nchans' cannot be less than 1");
     if (length && !scalarptr)
     {
             /* figure out which free list to use, depending on size of vector */
@@ -596,7 +617,15 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
 void signal_setmultiout(t_signal **sig, int nchans)
 {
     int overlap = (*sig)->s_overlap;
-    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    if (nchans > 0)
+        *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    else
+    {
+            /* replace with empty single-channel signal */
+        bug("signal_setmultiout: 'nchans' cannot be less than 1");
+        *sig = signal_new((*sig)->s_length, 1, (*sig)->s_sr, 0);
+        dsp_add_zero((*sig)->s_vec, (*sig)->s_length);
+    }
     (*sig)->s_overlap = overlap;
 }
 
@@ -1206,6 +1235,45 @@ void ugen_done_graph(t_dspcontext *dc)
         }
     }
 
+        /* JMZ
+           Pd allows for arbitrary block-sizes,
+           but the reblocking fails catastrophically if the parent vectorsize
+           and the child vectorsize do not align (that is: one is not an integer
+           multiple of the other)
+           since we only need to reblock if there are inlet~s or outlet~s,
+           we just unschedule patches with a bad blocksize AND iolet~s.
+         */
+    if (blk
+       && (dc->dc_ninlets || dc->dc_noutlets)
+       && ((parent_vecsize > calcsize)?(parent_vecsize % calcsize):(calcsize % parent_vecsize))
+       )
+    {
+        pd_error(blk, "%s: invalid reblocking from %d to %d detected (canvas was not scheduled)",
+                 switched?"switch~":"block~",
+                 parent_vecsize, calcsize);
+        for (u = dc->dc_ugenlist; u; u = u->u_next)
+        {
+            t_pd *zz = &u->u_obj->ob_pd;
+            if (pd_class(zz) == voutlet_class)
+            {
+                struct _voutlet *zz_out = (struct _voutlet *)zz;
+                t_signal **outsigs = dc->dc_iosigs;
+                if (outsigs) {
+                    outsigs += dc->dc_ninlets;
+                    voutlet_dspprolog(zz_out,
+                                      outsigs, calcsize,
+                                      THIS->u_phase + offset, period, frequency,
+                                      1, 1, 0, 1);
+                    voutlet_dspepilog(zz_out,
+                                      outsigs, calcsize,
+                                      THIS->u_phase + offset, period, frequency,
+                                      1, 1, 0, 1);
+                }
+            }
+        }
+        goto cleanup;
+    }
+
     if (THIS->u_loud)
         post("reblock %d, switched %d", reblock, switched);
 
@@ -1328,6 +1396,7 @@ void ugen_done_graph(t_dspcontext *dc)
         post("... ugen_done_graph done.");
     }
         /* now delete everything. */
+ cleanup:
     while (dc->dc_ugenlist)
     {
         for (uout = dc->dc_ugenlist->u_out, n = dc->dc_ugenlist->u_nout;

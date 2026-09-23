@@ -243,7 +243,7 @@ proc ::dialog_path::commit {new_path} {
     set changed false
     if {"$new_path" ne "$::sys_searchpath"} {set changed true}
     set ::sys_searchpath $new_path
-    pdsend "pd path-dialog $::sys_use_stdpath $::sys_verbose [pdtk_encode $::sys_searchpath]"
+    pdsend [concat pd path-dialog $::sys_use_stdpath $::sys_verbose [pdtk_encode $::sys_searchpath]]
     if {$changed} {::helpbrowser::refresh}
 
     # save installpath

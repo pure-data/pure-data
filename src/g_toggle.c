@@ -21,50 +21,50 @@ static t_class *toggle_class;
 #define toggle_draw_io 0
 void toggle_draw_config(t_toggle* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
     t_iemgui *iemgui = &x->x_gui;
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    int crossw = 1, w = x->x_gui.x_w / zoom;
+    int crossw = 1, w = x->x_gui.x_w;
     unsigned int col = x->x_on ? x->x_gui.x_fcol : x->x_gui.x_bcol;
     char tag[128];
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     if(w >= 30)
         crossw = 2;
     if(w >= 60)
         crossw = 3;
-    crossw *= zoom;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     pdgui_vmess(0, "crs ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol,
+        "-width", 1, "-fill", x->x_gui.x_bcol,
         "-outline", THISGUI->i_foregroundcolor);
 
-    sprintf(tag, "%pX1", x);
+    sprintf(tag, "%p_X1", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + crossw + zoom, ypos + crossw + zoom,
-        xpos + x->x_gui.x_w - crossw - zoom, ypos + x->x_gui.x_h - crossw - zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
+        xpos + crossw + 1, ypos + crossw + 1,
+        xpos + x->x_gui.x_w - crossw - 1,
+            ypos + x->x_gui.x_h - crossw - 1);
+    pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
+        crossw, col);
 
-    sprintf(tag, "%pX2", x);
+    sprintf(tag, "%p_X2", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + crossw + zoom, ypos + x->x_gui.x_h - crossw - zoom,
-        xpos + x->x_gui.x_w - crossw - zoom, ypos + crossw + zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
+        xpos + crossw + 1, ypos + x->x_gui.x_h - crossw - 1,
+        xpos + x->x_gui.x_w - crossw - 1, ypos + crossw + 1);
+    pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
+        crossw, col);
+    /* pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+        "-width", crossw, "-fill", col); */
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
+        xpos + x->x_gui.x_ldx, ypos + x->x_gui.x_ldy);
 
     if(x->x_gui.x_fsf.x_selected)
         pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
@@ -80,21 +80,31 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%pOBJ", x);
+    sprintf(tag_object, "%p_", x);
 
-    sprintf(tag, "%pBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_BASE", x);
+    /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+        0, 0, 0, 0, "-tags", 2, tags); */
+    pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
+        canvas, tag, tag_object, 1,
+        x->x_gui.x_bcol, THISGUI->i_foregroundcolor,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pX1", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_X1", x);
+    /* pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
+        0, 0, 0, 0, "-tags", 2, tags); */
+    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+        canvas, tag, tag_object,
+        0, 1, 0,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pX2", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
+    sprintf(tag, "%p_X2", x);
+    pdgui_vmess("pdtk_canvas_create_line", "crr iik iiii",
+        canvas, tag, tag_object,
+        0, 1, 0,
+        0, 0, 0, 0);
 
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -111,9 +121,9 @@ void toggle_draw_select(t_toggle* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
 
-    sprintf(tag, "%pBASE", x);
+    sprintf(tag, "%p_BASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%pLABEL", x);
+    sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -124,11 +134,14 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
         t_canvas *canvas = glist_getcanvas(glist);
         unsigned int col = (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
         char tag[128];
-
-        sprintf(tag, "%pX1", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
-        sprintf(tag, "%pX2", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
+        int width = x->x_gui.x_w,
+            xwidth = (width >= 60 ? 3: (width >= 30 ? 2 : 1));
+        sprintf(tag, "%p_X1", x);
+        pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
+            xwidth, col);
+        sprintf(tag, "%p_X2", x);
+        pdgui_vmess("pdtk_canvas_configure_line", "cs ik", canvas, tag,
+            xwidth, col);
     }
 }
 
@@ -155,7 +168,7 @@ static void toggle_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, "ssiisiisssiiiisssff", gensym("#X"), gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix,
                 (int)x->x_gui.x_obj.te_ypix,
-                gensym("tgl"), x->x_gui.x_w/IEMGUI_ZOOM(x),
+                gensym("tgl"), x->x_gui.x_w,
                 iem_symargstoint(&x->x_gui.x_isa),
                 srl[0], srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
@@ -170,7 +183,7 @@ static void toggle_properties(t_gobj *z, t_glist *owner)
 {
     t_toggle *x = (t_toggle *)z;
     iemgui_new_dialog(x, &x->x_gui, "tgl",
-                      x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
+                      x->x_gui.x_w, IEM_GUI_MINSIZE,
                       0, 0,
                       x->x_nonzero, 0,
                       1,
@@ -209,7 +222,7 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
     if(x->x_on != 0.0)
         x->x_on = x->x_nonzero;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size(x, &x->x_gui);
 }
@@ -261,7 +274,7 @@ static void toggle_loadbang(t_toggle *x, t_floatarg action)
 
 static void toggle_size(t_toggle *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av));
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -353,7 +366,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    iemgui_newzoom(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);
 }
@@ -383,8 +395,6 @@ void g_toggle_setup(void)
     class_addmethod(toggle_class, (t_method)toggle_label_font, gensym("label_font"), A_GIMME, 0);
     class_addmethod(toggle_class, (t_method)toggle_init, gensym("init"), A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_nonzero, gensym("nonzero"), A_FLOAT, 0);
-    class_addmethod(toggle_class, (t_method)iemgui_zoom, gensym("zoom"),
-        A_CANT, 0);
     toggle_widgetbehavior.w_getrectfn = toggle_getrect;
     toggle_widgetbehavior.w_displacefn = iemgui_displace;
     toggle_widgetbehavior.w_selectfn = iemgui_select;
