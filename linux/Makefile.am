@@ -7,8 +7,8 @@ EXTRA_DIST = \
 	     icons/48x48/puredata.png \
 	     icons/512x512/puredata.png \
 	     icons/puredata.svg \
-	     info.puredata.pd-gui.desktop \
-	     info.puredata.pd-gui.metainfo.xml \
+	     info.puredata.Pd.desktop \
+	     info.puredata.Pd.metainfo.xml \
 	     $(empty)
 
 iconsdatadir = $(datadir)/icons/hicolor
@@ -26,8 +26,8 @@ dist_icons512_DATA = icons/512x512/puredata.png
 dist_iconssvg_DATA = icons/puredata.svg
 dist_pixmaps_DATA = puredata.xpm
 
-desktop_DATA = info.puredata.pd-gui.desktop
-appdata_DATA = info.puredata.pd-gui.metainfo.xml
+desktop_DATA = info.puredata.Pd.desktop
+appdata_DATA = info.puredata.Pd.metainfo.xml
 endif
 
 puredata.xpm: ../tcl/pd.xpm
