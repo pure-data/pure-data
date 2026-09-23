@@ -29,11 +29,6 @@ AS_CASE([$ac_configure_args],
         [*\'--program-suffix*], [have_program_transform_name=yes],
         [have_program_transform_name=no])
 
-
-# remember CFLAGS passed by the user
-# (so we can later check if autoconf added some default flags)
-user_cflags=${CFLAGS}
-
 #########################################
 ##### Default values #####
 
@@ -64,8 +59,10 @@ deken_ext="so"
 floatsize=""
 
 # debug/release defaults
-DEBUG_CFLAGS="-g -O0"
-OPTIMIZE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
+# no generic optimization (-O0, -O3) flags here,
+# because they will be overridden by autoconfs default (-O2)
+DEBUG_CFLAGS=""
+RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer"
 
 # common flags applied to all pd binaries
 PD_CPPFLAGS=""
@@ -410,46 +407,26 @@ AC_SUBST([msw_strip])
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
-# CFLAGS added by the configure script
-extra_cflags=""
-
 ##### Build with debug flags? #####
 AC_ARG_ENABLE([debug],
-    [AS_HELP_STRING([--enable-debug], [build with debugging information])])
-
-msw_strip=""
-AS_IF([test x${enable_debug} = xyes],[
-    extra_cflags="${extra_cflags} ${DEBUG_CFLAGS}"
-    AS_IF([test "${WINDOWS}" = yes], [msw_strip="-n"])
+    [AS_HELP_STRING([--enable-debug], [use debugging support])],
+    [debug=$enableval], [debug=no])
+AS_IF([test x$debug = xyes],[
+    PD_CFLAGS="$DEBUG_CFLAGS $PD_CFLAGS"
 ],[
+    PD_CFLAGS="$RELEASE_CFLAGS $PD_CFLAGS"
     PD_CPPFLAGS="-DNDEBUG $PD_CPPFLAGS"
 ])
 
-##### Build with optimization flags? #####
-AC_ARG_ENABLE([optimizations],
-    [AS_HELP_STRING([--enable-optimizations], [build with speed optimizations])])
-
-AS_IF([test x${enable_optimizations} = xyes],[
-    extra_cflags="${extra_cflags} ${OPTIMIZE_CFLAGS}"
-])
-
+AS_IF([test "x${debug}" = "xyes" -a "x${WINDOWS}" = "xyes" ],[
+    msw_strip="-n"
+    ],[
+    msw_strip=""
+    ])
 
 ##### macOS version min #####
-# i'm not sure whether this should go into the ephemeral CFLAGS (via extra_cflags)
-# or the more persistent PD_CFLAGS
 AS_IF([test "x$macos_version_min" != "x"],[
     PD_CFLAGS="-mmacosx-version-min=$macos_version_min $PD_CFLAGS"
-])
-
-
-# default CFLAGS by autoconf are prepended, so the debug/optimization
-# flags can override them.
-# user provided CFLAGS are appended, so they can override the
-# debug/optimization flags
-AS_IF([test "x${user_cflags}" = x],[
-  CFLAGS="${CFLAGS} ${extra_cflags}"
-],[
-  CFLAGS="${extra_cflags} ${user_cflags}"
 ])
 
 #########################################
@@ -935,7 +912,7 @@ AC_MSG_NOTICE([
 
     Platform:             ${platform}
     Float size:           ${floatsize:-default}
-    Debug build:          ${enable_debug}
+    Debug build:          ${debug}
     Universal build:      ${universal}
     Localizations:        ${locales}
     Source directory:     ${srcdir}
@@ -943,9 +920,9 @@ AC_MSG_NOTICE([
 
     Compiler:             ${CC}
     CPPFLAGS:             ${PD_CPPFLAGS} ${CPPFLAGS}
-    INCLUDES:             ${AM_CPPFLAGS}
     CFLAGS:               ${PD_CFLAGS} ${CFLAGS}
     LDFLAGS:              ${PD_LDFLAGS} ${LDFLAGS}
+    INCLUDES:             ${AM_CPPFLAGS}
     LIBS:                 ${LIBS}
 
     External extension:   ${EXTERNAL_EXTENSION}

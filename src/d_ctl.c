@@ -1025,7 +1025,7 @@ static void siginfo_tilde_free(t_siginfo_tilde *x)
 }
 
 static char *siginfo_warning = "siginfo~: arguments can only be 'dspstate', \
-'blocksize', 'channels', 'overlap', 'samplerate', 'samplesspersecond'";
+'blocksize', 'channels', 'overlap', 'samplerate', 'samplespersecond'";
 
 static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
