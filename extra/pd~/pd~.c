@@ -1028,6 +1028,7 @@ static void pd_tilde_free(t_pd_tilde *x)
 {
     pd_tilde_close(x);
     clock_free(x->x_clock);
+    binbuf_free(x->x_binbuf);
     t_freebytes(x->x_insig, x->x_ninsig * sizeof(*x->x_insig));
     t_freebytes(x->x_outsig, x->x_noutsig * sizeof(*x->x_outsig));
 #ifdef MSP

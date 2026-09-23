@@ -88,7 +88,7 @@ proc ::dialog_startup::commit { new_startup } {
 
     # libraries
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
+    pdsend [concat pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]]
 }
 
 # set up the panel with the info from pd

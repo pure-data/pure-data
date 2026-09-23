@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +11,12 @@ HTML {
 	background:  #ffffff;
 	color: 	     #000000;
 	font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
+	font-family: Helvetica, Arial, sans-serif;
 	line-height: 1.6;
 }
 BODY {
 	width: 	    6.5in;
 	margin-left: 0.8in;
-	font-family: Helvetica, Arial, sans-serif;
-	/*font-family: Times, Times New Roman, serif;*/
 	}
 H1 {
 	font-size:   32.7pt;
@@ -63,6 +63,37 @@ p{
 	line-height: 1.6;
 }
 
+hr {
+    border:2px solid;
+}
+
+table {
+    border: 1px solid black; /* Replaces border="1" */
+    border-collapse: collapse; /* Ensures borders between cells are merged */
+}
+
+td, th {
+    padding: 10px; /* Replaces cellpadding="10" */
+    border: 1px solid black; /* Optional: adds border to cells */
+}
+tr td:nth-child(3) {
+    text-align: left;
+    vertical-align:top;
+}
+
+tbody tr {
+    vertical-align: top;
+}
+
+
+dl {
+   display: grid;
+   grid-template-columns: auto auto;
+}
+
+dd {
+  margin: 0
+}
 
 /* standard link */
 
@@ -157,15 +188,14 @@ text-align: center;
 <body>
 
 <h2>
-<br>
-<font face="Helvetica, Arial, sans-serif">Expr family of objects
-by <a href="https://yadegari.org">Shahrokh Yadegari</a></font></h2>
+Expr family of objects<br>
+by <a href="https://yadegari.org">Shahrokh Yadegari</a></h2>
 
 <br> Back to the <a href="https://yadegari.org/software/">Software Page</a>
 <br>
 <br>
 
-<hr width="100%" size="2" align="left">
+<hr/>
 
 <h2 id="Expr..Expr...Fexpr.">[expr], [expr~], [fexpr~]</h2>
 
@@ -218,127 +248,39 @@ Released under BSD License.</p>
 <li><strong>$s4</strong> - means the fourth inlet is a symbol input</li>
 </ul>
 
-<hr width="100%" size="2" align="left">
+<hr/>
 
 <h3 id="operators">The operators [expr], [expr~] and [fexpr~] support (listed from highest precedence to lowest) are as follows:</h3>
 
-<table>
-<thead>
-<tr>
-<th>  </th>
-<th>  </th>
-<th>  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>~ </td>
-<td> One&rsquo;s complement</td>
-<td> </td>
-</tr>
-<tr>
-<td>*</td>
-<td> Multiply</td>
-<td> </td>
-</tr>
-<tr>
-<td>/ </td>
-<td>Divide</td>
-<td> </td>
-</tr>
-<tr>
-<td>%</td>
-<td> Modulo</td>
-<td> </td>
-</tr>
-<tr>
-<td>+ </td>
-<td>Add</td>
-<td> </td>
-</tr>
-<tr>
-<td>- </td>
-<td>Subtract</td>
-<td> </td>
-</tr>
-<tr>
-<td>&lt;&lt;</td>
-<td> Shift Left</td>
-<td> </td>
-</tr>
-<tr>
-<td> >></td>
-<td> Shift Right</td>
-<td> </td>
-</tr>
-<tr>
-<td>&lt; </td>
-<td>Less than (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>&lt;=</td>
-<td> Less than or equal (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>> </td>
-<td>Greater than (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td> >= </td>
-<td>Greater than or equal (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td> == </td>
-<td>Equal (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>!= </td>
-<td>Not equal (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>&amp; </td>
-<td>Bitwise And</td>
-<td> </td>
-</tr>
-<tr>
-<td>^</td>
-<td> Exclusive Or</td>
-<td> </td>
-</tr>
-<tr>
-<td>| </td>
-<td>Bitwise Or</td>
-<td> </td>
-</tr>
-<tr>
-<td> &amp;&amp;</td>
-<td> Logical And (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>|| </td>
-<td>Logical Or (boolean)</td>
-<td> </td>
-</tr>
-<tr>
-<td>! </td>
-<td>Logical Not (boolean)</td>
-<td> </td>
-</tr>
-</tbody>
-</table>
+<dl>
+<dt><code>~</code></dt><dd>One&rsquo;s complement</dd>
+<dt><code>*</code></dt><dd>Multiply</dd>
+<dt><code>/</code></dt><dd>Divide</dd>
+<dt><code>%</code></dt><dd>Modulo</dd>
+<dt><code>+</code></dt><dd>Add</dd>
+<dt><code>-</code></dt><dd>Subtract</dd>
+<dt><code>&lt;&lt;</code></dt><dd>Shift Left</dd>
+<dt><code>&gt;&gt;</code></dt><dd>Shift Right</dd>
+<dt><code>&lt;</code></dt><dd>Less than (boolean)</dd>
+<dt><code>&lt;=</code></dt><dd>Less than or equal (boolean)</dd>
+<dt><code>&gt;</code></dt><dd>Greater than (boolean)</dd>
+<dt><code>&gt;=</code></dt><dd>Greater than or equal (boolean)</dd>
+<dt><code>==</code></dt><dd>Equal (boolean)</dd>
+<dt><code>!= </code></dt><dd>Not equal (boolean)</dd>
+<dt><code>&amp; </code></dt><dd>Bitwise And</dd>
+<dt><code>^</code></dt><dd>Exclusive Or</dd>
+<dt><code>|</code></dt><dd>Bitwise Or</dd>
+<dt><code>&amp;&amp;</code></dt><dd>Logical And (boolean)</dd>
+<dt><code>||</code></dt><dd>Logical Or (boolean)</dd>
+<dt><code>!</code></dt><dd>Logical Not (boolean)</dd>
+</dl>
+
 
 <h3 id="functions">The supported functions for [expr], [expr~] and [fexpr~] are:</h3>
 
 <B>General Functions</B>
 
-<table border="1" cellpadding ="10">
+<table>
 <thead>
 <tr>
 <th> Function <BR>Name </th>
@@ -415,7 +357,7 @@ Released under BSD License.</p>
 </tr>
 <tr>
 <td>copysign()</td>
-<td>1</td>
+<td>2</td>
 <td>copy sign of a number(added in version 0.4)</td>
 </tr>
 <tr>
@@ -429,7 +371,7 @@ Released under BSD License.</p>
 <td>get signed fractional value from floating-point number(added in version 0.4)</td>
 </tr>
 <tr>
-<td>drem()</td>
+<td>remainder()</td>
 <td>2</td>
 <td>floating-point remainder function (added in version 0.4)</td>
 </tr>
@@ -445,7 +387,7 @@ Released under BSD License.</p>
 <!-- Power Functions -->
 <B>Power Functions</B>
 
-<table border="1" cellpadding ="10">
+<table>
 <thead>
 <tr>
 <th> Function <BR>Name </th>
@@ -512,7 +454,7 @@ Released under BSD License.</p>
 </tr>
 <tr>
 <td>ldexp()</td>
-<td>1</td>
+<td>2</td>
 <td>multiply floating-point number by integral power of 2 (added in version 0.4)</td>
 </tr>
 </tbody>
@@ -521,7 +463,7 @@ Released under BSD License.</p>
 <p>
 <!-- Trigonometric Functions -->
 <B>Trigonometric (all trigonometric functions here expect radian values)</B>
-<table border="1" cellpadding ="10">
+<table>
 <thead>
 <tr>
 <th> Function <BR>Name </th>
@@ -609,7 +551,7 @@ Released under BSD License.</p>
 <!-- Table Functions -->
 <B> Table Functions </B>
 </p>
-<table border="1" cellpadding ="10">
+<table>
 <thead>
 <tr>
 		<th> Function <BR> Name </th>
@@ -621,27 +563,27 @@ Released under BSD License.</p>
 <tr>
 		<td>size()</td>
 		<td>1</td>
-		<td style="text-align:left;">size of a table</td>
+		<td>size of a table</td>
 </tr>
 <tr>
 		<td>sum()</td>
 		<td>1</td>
-		<td style="text-align:left;">sum of all elements of a table</td>
+		<td>sum of all elements of a table</td>
 </tr>
 <tr>
 		<td>Sum()</td>
 		<td>3</td>
-		<td style="text-align:left;">sum of elements of a specified boundary of a table</td>
+		<td>sum of elements of a specified boundary of a table</td>
 </tr>
 <tr>
 		<td>avg()</td>
 		<td>1</td>
-		<td style="text-align:left;">averages all elements of a table</td>
+		<td>averages all elements of a table</td>
 </tr>
 <tr>
 		<td>Avg()</td>
 		<td>3</td>
-		<td style="text-align:left;">averages elements of a specified boundary of a table</td>
+		<td>averages elements of a specified boundary of a table</td>
 </tr>
 </tbody>
 </table>
@@ -652,7 +594,7 @@ Released under BSD License.</p>
 Acoustics Functions
 </strong>
 </p>
-<table border="1" cellpadding ="10">
+<table>
 <thead>
 <tr>
 		<th> Function <BR> Name </th>
@@ -662,55 +604,55 @@ Acoustics Functions
 </thead>
 <tbody>
 <tr>
-<td> mtof()    </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert MIDI pitch to frequency in hertz </td>
+<td> mtof() </td>
+<td> 1 </td>
+<td> convert MIDI pitch to frequency in hertz </td>
 </tr>
 <tr>
-<td> ftom()    </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert frequency in hertz to MIDI pitch </td>
+<td> ftom() </td>
+<td> 1 </td>
+<td> convert frequency in hertz to MIDI pitch </td>
 </tr>
 <tr>
 <td> dbtorms() </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert db to rms                        </td>
+<td> 1 </td>
+<td> convert db to rms </td>
 </tr>
 <tr>
 <td> rmstodb() </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert rms to db                        </td>
+<td> 1 </td>
+<td> convert rms to db </td>
 </tr>
 <tr>
 <td> powtodb() </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert power to db                      </td>
+<td> 1 </td>
+<td> convert power to db </td>
 </tr>
 <tr>
 <td> dbtopow() </td>
-<td> 1         </td>
-<td style="text-align:left;"> convert db to power                      </td>
+<td> 1 </td>
+<td> convert db to power </td>
 </tr>
 </tbody>
 </table>
 
 <p>
-<B> String Manipulation Functions (the ones that return a symbol only work for [expr])</b>
-<table border="1" cellpadding ="10">
+<b> String Manipulation Functions (the ones that return a symbol only work for [expr])</b>
+<table>
 <thead>
 <tr>
-<th style="width:50%" align="left">Function <BR> Name  </th>
+<th style="width:50%;text-align:left;">Function <BR> Name </th>
 <th> # of <BR> Args </th>
 <th> returns </th>
-<th style="text-align:left;width:30%"> Description  </th>
+<th style="text-align:left;width:30%"> Description </th>
 </tr>
 </thead>
 <tbody>
-<tr style="vertical-align:top">
+<tr>
 	<td> symbol(int/float/symbol [, int X, int Y])<BR>sym(int/float/symbol) </td>
-<td> 0, 1, 2, or 3         </td>
-<td> symbol         </td>
-<td style="text-align:left;"> symbol formatted based on the type of the input
+<td> 0, 1, 2, or 3 </td>
+<td> symbol </td>
+<td> symbol formatted based on the type of the input
 <BR>
 <BR>
 0 argument will result in an empty symbol
@@ -727,112 +669,112 @@ Acoustics Functions
 
 3 arguments (sym, X, Y) will produce a symbol from string/symbol, int, float, according to the %Y.Xs, %Y.Xd, %Y.Xf syntax in sprintf() respectively
 </tr>
-<tr style="vertical-align:top">
+<tr>
 	<td> var(symbol)</td>
-	<td> 1         </td>
-	<td> float         </td>
-	<td style="text-align:left;"> var() will treat the value of the symbol argument as a variable name and returns the value of the variable
+	<td> 1 </td>
+	<td> float </td>
+	<td> var() will treat the value of the symbol argument as a variable name and returns the value of the variable
 </tr>
 <tr>
 <td> strlen(symbol) </td>
-<td> 1         </td>
-<td> int         </td>
-<td style="text-align:left;"> length of symbol
+<td> 1 </td>
+<td> int </td>
+<td> length of symbol
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> tolower(symbol)</td>
 <td> 1</td>
-<td> symbol         </td>
-<td stype="text-align:left;" valign="top"> convert all upper-case letters of the string to the corresponding lower-case letters
+<td> symbol </td>
+<td> convert all upper-case letters of the string to the corresponding lower-case letters
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> tonlower(symbol, int)</td>
 <td> 2</td>
-<td> symbol         </td>
-<td stype="text-align:left;" valign="top"> convert n'th character of the string from upper-case letter to the corresponding lower-case letter
+<td> symbol </td>
+<td> convert n'th character of the string from upper-case letter to the corresponding lower-case letter
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td>
 toupper(symbol)</td>
 <td> 1</td>
-<td> symbol         </td>
-<td stype="text-align:left;"> convert all lower-case letters of the string to the corresponding upper-case letters
+<td> symbol </td>
+<td> convert all lower-case letters of the string to the corresponding upper-case letters
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> tonupper(symbol, int)</td>
 <td> 2</td>
-<td> symbol         </td>
-<td stype="text-align:left;"> convert n'th character of the string from lower-case letter to the corresponding upper-case letter
+<td> symbol </td>
+<td> convert n'th character of the string from lower-case letter to the corresponding upper-case letter
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strcat(symbol, symbol, ...)</td>
 <td> var</td>
-<td> symbol         </td>
-<td stype="text-align:left;">  Concatenate two or more strings
+<td> symbol </td>
+<td>  Concatenate two or more strings
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strncat(symbol, symbol, int)</td>
 <td> 3</td>
-<td> symbol         </td>
-<td stype="text-align:left;">  Contatenate the first string, by no more than n characters of the second string
+<td> symbol </td>
+<td>  Concatenate the first string, by no more than n characters of the second string
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strcmp(symbol, symbol)</td>
 <td> 2</td>
-<td> int         </td>
-<td stype="text-align:left;"> Compare two strings; return an integer greater than, equal to, or less than 0, according as the first string is greater than,
+<td> int </td>
+<td> Compare two strings; return an integer greater than, equal to, or less than 0, according as the first string is greater than,
      equal to, or less than the second string.
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strncmp(symbol, symbol, int)</td>
 <td> 3</td>
-<td> int         </td>
-<td stype="text-align:left;"> Compare no more than n characters of two strings; return an integer greater than, equal to, or less than 0, according as the first string is greater than,
+<td> int </td>
+<td> Compare no more than n characters of two strings; return an integer greater than, equal to, or less than 0, according as the first string is greater than,
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strcasecmp(symbol, symbol)</td>
 <td> 2</td>
-<td> int         </td>
-<td stype="text-align:left;"> similar to strcmp() but ignore case of the letters
+<td> int </td>
+<td> similar to strcmp() but ignore case of the letters
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strncasecmp(symbol, symbol, int)</td>
 <td> 3</td>
-<td> int         </td>
-<td stype="text-align:left;"> similar to strncmp() but ignore case of the letters
+<td> int </td>
+<td> similar to strncmp() but ignore case of the letters
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strpbrk(symbol, symbol)</td>
 <td> 2</td>
-<td> symbol         </td>
-<td stype="text-align:left;"> In the first string locate the first
+<td> symbol </td>
+<td> In the first string locate the first
      occurrence of any character in the second (character set) string and
 	 return a substring of the first string starting with the found character.
      If no characters from  second string is found return 0;
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strspn(symbol, symbol)</td>
 <td> 2</td>
-<td> int         </td>
-<td stype="text-align:left;"> return the string array index of the first character of the first string which is not in the
+<td> int </td>
+<td> return the string array index of the first character of the first string which is not in the
         second (charset) string, else return the index of the first null character.
 </td>
 </tr>
-<tr style="vertical-align:top">
+<tr>
 <td> strcspn(symbol, symbol)</td>
 <td> 2</td>
-<td> int         </td>
-<td stype="text-align:left;"> return the string array index of the first character of the
+<td> int </td>
+<td> return the string array index of the first character of the
         first string  which is also in charset, else return the index of the first null character.
 </td>
 </tr>
@@ -842,7 +784,7 @@ toupper(symbol)</td>
 
 <BR>
 <p>
-<hr width="100%" size="2" align="left">
+<hr/>
 
 <h3 id="CHANGELOG:">CHANGELOG:</h3>
 

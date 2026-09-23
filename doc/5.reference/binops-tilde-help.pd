@@ -1,4 +1,4 @@
-#N canvas 311 34 841 580 12;
+#N canvas 311 38 841 580 12;
 #X obj 22 164 +~;
 #X obj 102 164 -~;
 #X obj 22 18 +~;
@@ -24,12 +24,6 @@
 #X obj 16 488 cnv 5 570 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 17 323 cnv 1 570 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 110 446 1) float -;
-#X obj 39 46 +;
-#X obj 39 69 -;
-#X obj 39 92 *;
-#X obj 39 115 /;
-#X obj 39 161 min;
-#X obj 39 138 max;
 #X text 85 45 - add two numbers., f 68;
 #X text 85 91 - multiply two numbers., f 68;
 #X text 85 138 - maximum (highest) value of two numbers., f 68;
@@ -47,6 +41,12 @@
 #X text 124 352 float -;
 #X text 180 352 sets right side value (only floats are possible if an argument is given).;
 #X text 32 14 Audio rate binary (two-input) operators:;
+#X obj 39 46 +~;
+#X obj 39 69 -~;
+#X obj 39 92 *~;
+#X obj 39 115 /~;
+#X obj 39 138 max~;
+#X obj 39 161 min~;
 #X restore 738 17 pd reference;
 #X text 675 17 click =>;
 #X obj 10 51 cnv 1 830 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -151,6 +151,8 @@
 #X text 422 525 (etc.) - signal unary operators;
 #X text 35 358 [log~] computes the logarithm of the left inlet to the base 'e' (about 2.718) or to another base specified by the right inlet or a creation argument. A 0 or negative left input gives -1000 as the result., f 62;
 #X obj 204 551 clip~;
+#X obj 382 551 >~;
+#X text 422 552 (etc.) - other binops;
 #X connect 0 0 30 0;
 #X connect 1 0 26 0;
 #X connect 11 0 8 1;

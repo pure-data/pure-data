@@ -23,6 +23,7 @@ TCLFILES = \
     apple_events.tcl \
     dialog_array.tcl \
     dialog_audio.tcl \
+    dialog_bindings.tcl \
     dialog_canvas.tcl \
     dialog_data.tcl \
     dialog_find.tcl \
@@ -38,6 +39,7 @@ TCLFILES = \
     opt_parser.tcl \
     pd-gui.tcl \
     pd_bindings.tcl \
+    pd_canvaszoom.tcl \
     pd_connect.tcl \
     pd_deken.tcl \
     pd_docsdir.tcl \
@@ -95,8 +97,8 @@ ALL_LINGUAS = \
 	zh_tw \
 	$(empty)
 
-POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
-MSGFILES = $(ALL_LINGUAS:=.msg)
+POFILES = $(addprefix $(top_srcdir)/po/, $(filter-out .po,$(ALL_LINGUAS:=.po)))
+MSGFILES = $(patsubst %.po,%.msg,$(notdir $(POFILES)))
 
 TEMPLATE = $(top_srcdir)/po/template.pot
 
@@ -177,6 +179,8 @@ etags: TAGS
 
 
 allpofiles=$(wildcard $(srcdir)/*.po)
+alltclfiles=$(wildcard $(top_srcdir)/tcl/*.tcl $(top_srcdir)/po/*.tcl)
 .PHONY: unused
 unused:
 	@echo "UNUSED TRANSLATIONS: $(patsubst $(srcdir)/%.po,%,$(filter-out $(POFILES), $(allpofiles)))"
+	@echo "IGNORED Tcl files  : $(filter-out $(FILES), $(alltclfiles))"

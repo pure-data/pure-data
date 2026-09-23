@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-05-26 23:57+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 msgid "linear"
 msgstr "lineare"
@@ -222,9 +222,8 @@ msgstr "Dispositivo di uscita"
 msgid "Use Multiple Devices"
 msgstr "Usa Dispositivi Multipli"
 
-#, fuzzy
 msgid "Rescan Devices"
-msgstr "Dispositivo di ingresso"
+msgstr "Ricontrolla i dispositivi"
 
 msgid "Audio System"
 msgstr "Sistema audio"
@@ -258,6 +257,56 @@ msgstr "Settaggi Audio"
 
 msgid "Save All Settings"
 msgstr "Salva tutti i settaggi"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Risultati della Ricerca"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "ATTENZIONE: flag graphme sconosciute ricevute da pdtk_canvas_dialog"
@@ -582,9 +631,6 @@ msgstr "Modifica percorso esistente [%s]"
 msgid "Patch Windows"
 msgstr "Finestre Patch"
 
-msgid "Zoom New Windows"
-msgstr "Zoom delle Nuove Finestre"
-
 msgid "GUI Settings"
 msgstr "Impostazioni GUI"
 
@@ -617,6 +663,9 @@ msgstr "Preferenze MIDI"
 
 msgid "deken preferences"
 msgstr "Preferenze deken"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 msgid "misc preferences"
 msgstr "Preferenze - Altro"
@@ -707,6 +756,10 @@ msgid "using font: %1$s %2$s"
 msgstr "uso il font: %1$s %2$s"
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr "'%1$s' già caricato, ignoro: '%2$s'"
 
@@ -735,6 +788,10 @@ msgstr "Errore nella partenza di Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Errore nella partenza del core Pd"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) MANCA LA PARENTESI GRAFFA DI CHIUSURA'}': "
@@ -845,6 +902,9 @@ msgstr "Impossibile rimuovere il file randagio '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossibile rinominare il file scaricato in '%s'"
 
+msgid "~"
+msgstr "~"
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Risultati della Ricerca"
@@ -884,6 +944,17 @@ msgstr "Mantieni i file del pacchetto dopo l'installazione"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "Aggiungi le librerie appena installate nel percorso di ricerca di Pd"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "%s aggiunto ai percorsi di ricerca"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "Impossibile aggiungere %s ai percorsi di ricerca"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "Impostazioni della piattaforma:"
@@ -1022,11 +1093,18 @@ msgstr "Installa"
 msgid "%s%% of download completed"
 msgstr "%s%% di download completato"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "Inserisci il nome esatto di una libreria o di un oggetto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "ad esempio 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1074,6 +1152,9 @@ msgstr "entrambi"
 msgid "translations"
 msgstr "traduzioni"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installa solo externals caricati da persone di cui ti fidi."
 
@@ -1100,6 +1181,10 @@ msgstr "Risultati della Ricerca"
 
 msgid "Log"
 msgstr "Log"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Ricerca di \"%s\"..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1195,6 +1280,10 @@ msgstr "[deken] Piattaforma identificata: %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "Scaricamento di '%s'"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1936,6 +2025,10 @@ msgstr "Zoom Avanti"
 msgid "Zoom Out"
 msgstr "Zoom Indietro"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "Reset"
+
 msgid "Clear Console"
 msgstr "Pulisci console"
 
@@ -1960,6 +2053,10 @@ msgstr "Simbolo"
 msgid "Comment"
 msgstr "Commento"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Scala"
+
 msgid "Graph"
 msgstr "Grafico"
 
@@ -1980,9 +2077,6 @@ msgstr "DSP Inattivo"
 
 msgid "Test Audio and MIDI..."
 msgstr "Test Audio e MIDI..."
-
-msgid "Load Meter"
-msgstr "Misura carico CPU"
 
 msgid "Audio Settings..."
 msgstr "Settaggi audio..."
@@ -2012,6 +2106,9 @@ msgstr "Chiudere questa finestra??"
 msgid "Parent Window"
 msgstr "Finestra parent"
 
+msgid "Load Meter"
+msgstr "Misura carico CPU"
+
 msgid "Message..."
 msgstr "Messaggio..."
 
@@ -2033,8 +2130,9 @@ msgstr "Controlla aggiornamenti"
 msgid "Report a bug"
 msgstr "Segnala un bug"
 
-msgid "Clear Menu"
-msgstr "Pulisci menu"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "File di testo Max"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2073,6 +2171,10 @@ msgstr "Salvare le modifiche apportate a '%s'?"
 
 msgid "Properties"
 msgstr "Proprietà"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Modalità modifica"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2152,6 +2254,12 @@ msgstr "Rimuovi"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignoro '%s': non sembra un file Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Zoom delle Nuove Finestre"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Pulisci menu"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "

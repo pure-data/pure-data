@@ -22,6 +22,8 @@
 #X msg 200 145;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array 100 float 2;
+#A color 0;
+#A width 2;
 #X coords 0 1 100 -1 200 140 1 0 0;
 #X restore 286 77 graph;
 #N canvas 257 74 450 278 (subpatch) 0;
@@ -29,7 +31,7 @@
 #X coords 0 1 100 -1 200 140 1 0 0;
 #X restore 39 199 graph;
 #X text 545 26 "iemGUIs" (objects from the "iemguis" external library \, natively included in Pd version 0.34):, f 48;
-#X text 49 51 GUI boxes:, f 10;
+#X text 49 51 GUI boxes:;
 #X text 45 144 Clickabe message box;
 #X text 293 12 you can click and change values of arrays., f 24;
-#X text 279 231 Arrays are actually 'Data Structures' \, and you can use Pd's Data Structures facilities to implement GUIs as well. For more details please refer to the 4.Data.Structure section of the Pd's tutorials., f 32;
+#X text 279 231 Arrays are actually 'Data Structures' \, and you can use Pd's Data Structures facilities to implement GUIs as well. For more details please refer to the 4.data.structures section of the Pd tutorials., f 32;

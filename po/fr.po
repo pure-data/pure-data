@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
-"PO-Revision-Date: 2025-07-22 17:03+0000\n"
-"Last-Translator: ant1rousseau1 <ant1rousseau1@gmail.com>\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"PO-Revision-Date: 2026-09-05 03:11+0000\n"
+"Last-Translator: Antoine Rousseau <antoine@metalu.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
 "data/fr/>\n"
 "Language: fr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 2026.9.1.dev0\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -257,6 +257,61 @@ msgstr "Paramètres audio"
 
 msgid "Save All Settings"
 msgstr "Enregistrer tous les réglages"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr "Raccourci#%d"
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+"Pour modifier un raccourci clavier, double-cliquer sur l'événement (ou "
+"raccourci) correspondant et entrer une nouvelle séquence de touches.\n"
+"Pour supprimer un raccourci, utiliser le menu contextuel (clic droit)."
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+"Autoriser les raccourcis à une seule touche.\n"
+"DANGER : peut causer des problèmes lors de l'édition des patchs."
+
+msgid "Search shortcuts:"
+msgstr "Rechercher les raccourcis :"
+
+msgid "Event"
+msgstr "Événement"
+
+msgid "Reset to previous state"
+msgstr "Revenir à l'état précédent"
+
+msgid "Reset to defaults"
+msgstr "Rétablir les raccourcis par défaut"
+
+msgid "Edit shortcut"
+msgstr "Modifier le raccourci"
+
+msgid "Delete shortcut"
+msgstr "Supprimer le raccourci"
+
+msgid "Add shortcut"
+msgstr "Ajouter un raccourci"
+
+msgid "Delete shortcuts"
+msgstr "Supprimer les raccourcis"
+
+msgid "Shortcut in use!"
+msgstr "Raccourci déjà utilisé !"
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr "Le raccourci '%1$s' est déjà utilisé pour l'événement '%2$s'."
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
+"Supprimez l'ancien raccourci avant de le réutiliser pour un autre événement."
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "ATTENTION : pdtk_canvas_dialog a reçu des paramètres inconnus"
@@ -582,9 +637,6 @@ msgstr "Modifier le chemin d'accès existant [%s]"
 msgid "Patch Windows"
 msgstr "Fenêtres de patch"
 
-msgid "Zoom New Windows"
-msgstr "Zoomer les nouvelles fenêtres"
-
 msgid "GUI Settings"
 msgstr "Paramètres de l'interface graphique"
 
@@ -617,6 +669,9 @@ msgstr "MIDI"
 
 msgid "deken preferences"
 msgstr "deken"
+
+msgid "keyboard shortcuts"
+msgstr "raccourcis clavier"
 
 msgid "misc preferences"
 msgstr "divers"
@@ -708,6 +763,10 @@ msgid "using font: %1$s %2$s"
 msgstr "police utilisée : %1$s %2$s"
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr "Ignorer le plugin inexistant '%s'"
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr "'%1$s' déjà chargé, ignorer : '%2$s'"
 
@@ -736,6 +795,10 @@ msgstr "Échec du démarrage de Pd"
 
 msgid "Failed to start Pd-core"
 msgstr "Échec au démarrage de Pd-core"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr "Zoom par défaut : %d%%"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) ACCOLADE FERMANTE MANQUANTE '}' : "
@@ -846,6 +909,9 @@ msgstr "Impossible d'effacer le ficher temporaire '%s'"
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "Impossible de donner au fichier téléchargé le nom '%s'"
 
+msgid "~"
+msgstr "~"
+
 msgid "Search URLs:"
 msgstr "URL de recherche :"
 
@@ -886,6 +952,15 @@ msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 "Ajouter les bibliothèques nouvellement installées aux chemins de recherche "
 "de Pd"
+
+msgid "- Always add to search path"
+msgstr "- Toujours ajouter aux chemins de recherche"
+
+msgid "- Never add to search path"
+msgstr "- Ne jamais ajouter aux chemins de recherche"
+
+msgid "- Prompt before adding"
+msgstr "- Demander avant d'ajouter"
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -1026,11 +1101,20 @@ msgstr "Installer"
 msgid "%s%% of download completed"
 msgstr "%s%% du téléchargement effectué"
 
-msgid "Enter an exact library or object name."
-msgstr "Saisissez le nom exact d'une bibliothèque ou d'un objet."
+msgid "Enter a library or object name."
+msgstr "Saisissez le nom d'une bibliothèque ou d'un objet."
 
 msgid "e.g. 'freeverb~'"
 msgstr "exemple : 'freeverb~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+"Par défaut, cela trouvera tout ce qui contient le(s) mot(s) recherché(s)."
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
+"Si vous activez le mode \"recherche exacte\", seules les correspondances "
+"exactes seront prises en compte."
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr ""
@@ -1084,6 +1168,9 @@ msgstr "les deux"
 msgid "translations"
 msgstr "traductions"
 
+msgid "exact search"
+msgstr "recherche exacte"
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 "N'installez que des objets ou bibliothèques provenant de sources de "
@@ -1112,6 +1199,9 @@ msgstr "Résultats de la recherche"
 
 msgid "Log"
 msgstr "Journal"
+
+msgid "Searching for all packages..."
+msgstr "Recherche de tous les paquets…"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1205,6 +1295,10 @@ msgstr "[deken] Plateforme détectée : %s"
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "Impossible de trouver un menu où ajouter '%s'"
+
+#, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "Rétrogradation de %1$s vers %2$s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1902,7 +1996,7 @@ msgid "Open"
 msgstr "Ouvrir"
 
 msgid "Open Recent"
-msgstr "Ouvrir un élément récent"
+msgstr "Ouvrir un document récent"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -1946,6 +2040,9 @@ msgstr "Zoomer"
 msgid "Zoom Out"
 msgstr "Dézoomer"
 
+msgid "Reset Zoom"
+msgstr "Réinitialiser le zoom"
+
 msgid "Clear Console"
 msgstr "Effacer la console"
 
@@ -1970,6 +2067,9 @@ msgstr "Symbole"
 msgid "Comment"
 msgstr "Commentaire"
 
+msgid "Scalar"
+msgstr "Scalaire"
+
 msgid "Graph"
 msgstr "Graphique"
 
@@ -1990,9 +2090,6 @@ msgstr "DSP désactivé"
 
 msgid "Test Audio and MIDI..."
 msgstr "Tester l'audio et le MIDI..."
-
-msgid "Load Meter"
-msgstr "CPU-mètre"
 
 msgid "Audio Settings..."
 msgstr "Paramètres audio..."
@@ -2021,6 +2118,9 @@ msgstr "Fermer les sous-patchs"
 msgid "Parent Window"
 msgstr "Fenêtre parente"
 
+msgid "Load Meter"
+msgstr "CPU-mètre"
+
 msgid "Message..."
 msgstr "Message..."
 
@@ -2042,8 +2142,8 @@ msgstr "Rechercher des mises à jour"
 msgid "Report a bug"
 msgstr "Signaler un problème"
 
-msgid "Clear Menu"
-msgstr "Effacer le menu"
+msgid "Clear Recent Files"
+msgstr "Oublier les documents récents"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2082,6 +2182,9 @@ msgstr "Enregistrer les modifications de '%s' ?"
 
 msgid "Properties"
 msgstr "Propriétés"
+
+msgid "edit mode"
+msgstr "Mode d'édition"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2160,6 +2263,12 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "Zoomer les nouvelles fenêtres"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Effacer le menu"
 
 #~ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 #~ msgstr "(Tcl) CROCHET FERMANT MANQUANT ']' : "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.55.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-06-16 02:48+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -253,6 +253,56 @@ msgstr "ஆடியோ அமைப்புகள்"
 
 msgid "Save All Settings"
 msgstr "எல்லா அமைப்புகளையும் சேமிக்கவும்"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "தேடல் முடிவுகள்"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "எச்சரிக்கை: PDTK_CANVAS_DIALOG இல் பெறப்பட்ட அறியப்படாத வரைபடக் கொடிகள்"
@@ -577,9 +627,6 @@ msgstr "இருக்கும் பாதையைத் திருத்�
 msgid "Patch Windows"
 msgstr "இணைப்பு சன்னல்கள்"
 
-msgid "Zoom New Windows"
-msgstr "புதிய சாளரங்களை பெரிதாக்கவும்"
-
 msgid "GUI Settings"
 msgstr "GUI அமைப்புகள்"
 
@@ -612,6 +659,9 @@ msgstr "மிடி விருப்பத்தேர்வுகள்"
 
 msgid "deken preferences"
 msgstr "போர்வை விருப்பத்தேர்வுகள்"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 msgid "misc preferences"
 msgstr "தவறான விருப்பத்தேர்வுகள்"
@@ -701,6 +751,10 @@ msgid "using font: %1$s %2$s"
 msgstr "எழுத்துருவைப் பயன்படுத்துதல்: %1$s %2$s"
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr "'%1$s' ஏற்கனவே ஏற்றப்பட்டுள்ளது, புறக்கணிக்கிறது: '%2$s'"
 
@@ -729,6 +783,10 @@ msgstr "பி.டி தொடக்க தோல்வி"
 
 msgid "Failed to start Pd-core"
 msgstr "பி.டி.கரு தொடங்க முடியவில்லை"
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
+msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(டி.சி.எல்) நெருங்கிய அடைப்புக்குறி '}' ஐக் காணவில்லை: "
@@ -839,6 +897,9 @@ msgstr "தவறான கோப்பை '%s' அகற்ற முடிய�
 msgid "Unable to rename downloaded file to '%s'"
 msgstr "பதிவிறக்கம் செய்யப்பட்ட கோப்பை '%s' என்று மறுபெயரிட முடியவில்லை"
 
+msgid "~"
+msgstr "~"
+
 msgid "Search URLs:"
 msgstr "URLS ஐத் தேடுங்கள்:"
 
@@ -874,6 +935,17 @@ msgstr "நிறுவலுக்குப் பிறகு தொகுப�
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr "பி.டி.யின் தேடல் பாதையில் புதிதாக நிறுவப்பட்ட நூலகங்களைச் சேர்க்கவும்"
+
+#, fuzzy
+msgid "- Always add to search path"
+msgstr "தேடல் பாதைகளுக்கு %s சேர்க்கப்பட்டது"
+
+#, fuzzy
+msgid "- Never add to search path"
+msgstr "தேடல் பாதைகளுக்கு %s ஐ சேர்க்க முடியவில்லை"
+
+msgid "- Prompt before adding"
+msgstr ""
 
 msgid "Platform settings:"
 msgstr "இயங்குதள அமைப்புகள்:"
@@ -1014,11 +1086,18 @@ msgstr "நிறுவவும்"
 msgid "%s%% of download completed"
 msgstr "பதிவிறக்கத்தின்%s %% முடிந்தது"
 
-msgid "Enter an exact library or object name."
+#, fuzzy
+msgid "Enter a library or object name."
 msgstr "சரியான நூலகம் அல்லது பொருள் பெயரை உள்ளிடவும்."
 
 msgid "e.g. 'freeverb~'"
 msgstr "எ.கா. 'ஃப்ரீவெர்ப் ~'"
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
+msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "எந்தவொரு எழுத்துக்களையும் பொருத்த '*' வைல்டு கார்டைப் பயன்படுத்தவும்."
@@ -1064,6 +1143,9 @@ msgstr "இரண்டும்"
 msgid "translations"
 msgstr "மொழிபெயர்ப்புகள்"
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr "நீங்கள் நம்பும் நபர்களால் பதிவேற்றிய வெளிப்புறங்களை மட்டுமே நிறுவவும்."
 
@@ -1090,6 +1172,10 @@ msgstr "தேடல் முடிவுகள்"
 
 msgid "Log"
 msgstr "பதிவு"
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "\"%s\" ஐத் தேடுகிறது ..."
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1180,6 +1266,10 @@ msgstr "[டெக்கன்] இயங்குதளம் கண்டற�
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
 msgstr "'%s' சேர்ப்பதற்கான மெனுவைக் கண்டுபிடிக்க முடியவில்லை"
+
+#, fuzzy, tcl-format
+msgid "Downgrading %1$s to %2$s"
+msgstr "'%s' பதிவிறக்குதல்"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1920,6 +2010,10 @@ msgstr "பெரிதாக்கு"
 msgid "Zoom Out"
 msgstr "சிறிதாக்கு"
 
+#, fuzzy
+msgid "Reset Zoom"
+msgstr "மீட்டமை"
+
 msgid "Clear Console"
 msgstr "தெளிவான கன்சோல்"
 
@@ -1944,6 +2038,10 @@ msgstr "அடையாளம்"
 msgid "Comment"
 msgstr "கருத்து"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "அளவு"
+
 msgid "Graph"
 msgstr "வரைபடம்"
 
@@ -1964,9 +2062,6 @@ msgstr "டி.எச்.பி ஆஃப்"
 
 msgid "Test Audio and MIDI..."
 msgstr "ஆடியோ மற்றும் மிடி சோதனை ..."
-
-msgid "Load Meter"
-msgstr "சுமை மீட்டர்"
 
 msgid "Audio Settings..."
 msgstr "ஆடியோ அமைப்புகள் ..."
@@ -1995,6 +2090,9 @@ msgstr "துணைப்பிரிவை மூடு"
 msgid "Parent Window"
 msgstr "பெற்றோர் சாளரம்"
 
+msgid "Load Meter"
+msgstr "சுமை மீட்டர்"
+
 msgid "Message..."
 msgstr "செய்தி ..."
 
@@ -2016,8 +2114,9 @@ msgstr "புதுப்பிப்புகளை சரிபார்க�
 msgid "Report a bug"
 msgstr "ஒரு பிழையைப் புகாரளிக்கவும்"
 
-msgid "Clear Menu"
-msgstr "தெளிவான பட்டியல்"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "அதிகபட்ச உரை கோப்புகள்"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2056,6 +2155,10 @@ msgstr "'%s' இல் நீங்கள் செய்த மாற்றங�
 
 msgid "Properties"
 msgstr "பண்புகள்"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "திருத்து பயன்முறை"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2134,3 +2237,9 @@ msgstr "நீக்கு"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' ஐ புறக்கணித்து: PD கோப்பு போல் தெரியவில்லை"
+
+#~ msgid "Zoom New Windows"
+#~ msgstr "புதிய சாளரங்களை பெரிதாக்கவும்"
+
+#~ msgid "Clear Menu"
+#~ msgstr "தெளிவான பட்டியல்"

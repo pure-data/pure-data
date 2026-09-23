@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-30 15:04+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2005-11-04 08:04+0530\n"
 "Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
 "Language-Team: Punjabi <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -270,6 +270,56 @@ msgid "Audio Settings"
 msgstr ""
 
 msgid "Save All Settings"
+msgstr ""
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "ਪਾਠ ਖੋਜ..."
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
 msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
@@ -624,10 +674,6 @@ msgstr ""
 msgid "Patch Windows"
 msgstr "ਭੇਜਣ ਝਰੋਖਾ"
 
-#, fuzzy
-msgid "Zoom New Windows"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
-
 msgid "GUI Settings"
 msgstr ""
 
@@ -665,6 +711,9 @@ msgstr "ਮੇਰੀ ਪਸੰਦ..."
 #, fuzzy
 msgid "deken preferences"
 msgstr "ਮੇਰੀ ਪਸੰਦ..."
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 #, fuzzy
 msgid "misc preferences"
@@ -756,6 +805,10 @@ msgid "using font: %1$s %2$s"
 msgstr ""
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr ""
 
@@ -783,6 +836,10 @@ msgid "Pd startup failure"
 msgstr ""
 
 msgid "Failed to start Pd-core"
+msgstr ""
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -894,6 +951,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr "~"
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "ਪਾਠ ਖੋਜ..."
@@ -929,6 +989,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1068,10 +1137,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1117,6 +1192,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1144,6 +1222,10 @@ msgstr "ਪਾਠ ਖੋਜ..."
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "ਪਾਠ ਖੋਜ..."
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1233,6 +1315,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %1$s to %2$s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1968,6 +2054,9 @@ msgstr "ਹੇਠਾਂ"
 msgid "Zoom Out"
 msgstr "ਹੇਠਾਂ"
 
+msgid "Reset Zoom"
+msgstr ""
+
 #, fuzzy
 msgid "Clear Console"
 msgstr "ਸੂਚੀ ਸਾਫ਼"
@@ -1996,6 +2085,10 @@ msgstr ""
 msgid "Comment"
 msgstr "ਕਮਾਂਡ"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "ਸੰਭਾਲੋ"
+
 msgid "Graph"
 msgstr "ਗਰਾਫ਼"
 
@@ -2017,9 +2110,6 @@ msgid "DSP Off"
 msgstr "ਬੰਦ"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
-
-msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
@@ -2054,6 +2144,9 @@ msgstr "ਝਰੋਖਾ ਬੰਦ(_C)"
 msgid "Parent Window"
 msgstr "ਭੇਜਣ ਝਰੋਖਾ"
 
+msgid "Load Meter"
+msgstr ""
+
 #, fuzzy
 msgid "Message..."
 msgstr "ਸੁਨੇਹਾ"
@@ -2078,8 +2171,8 @@ msgid "Report a bug"
 msgstr ""
 
 #, fuzzy
-msgid "Clear Menu"
-msgstr "ਸੂਚੀ ਸਾਫ਼"
+msgid "Clear Recent Files"
+msgstr "ਫਾਇਲ"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2120,6 +2213,10 @@ msgstr ""
 
 msgid "Properties"
 msgstr ""
+
+#, fuzzy
+msgid "edit mode"
+msgstr "ਮੋਡ"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2199,6 +2296,14 @@ msgstr "ਹਟਾਓ"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Zoom New Windows"
+#~ msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+
+#, fuzzy
+#~ msgid "Clear Menu"
+#~ msgstr "ਸੂਚੀ ਸਾਫ਼"
 
 #, fuzzy
 #~ msgid "bottom:"

@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2025-07-17 14:59+0200\n"
+"POT-Creation-Date: 2026-09-03 18:02+0200\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/hu/>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -271,6 +271,56 @@ msgstr "Hang beállítások"
 
 msgid "Save All Settings"
 msgstr "Minden bellítást ment"
+
+#, tcl-format
+msgid "Shortcut#%d"
+msgstr ""
+
+msgid ""
+"To edit a keyboard shortcut, double-click on the corresponding event (or "
+"shortcut) and type a new accelerator.\n"
+"Use right-click for a context-menu to remove shortcuts."
+msgstr ""
+
+msgid ""
+"Allow single-character shortcuts.\n"
+"DANGER: this can seriously impact the patching workflow."
+msgstr ""
+
+#, fuzzy
+msgid "Search shortcuts:"
+msgstr "Keresés itt:"
+
+msgid "Event"
+msgstr ""
+
+msgid "Reset to previous state"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Edit shortcut"
+msgstr ""
+
+msgid "Delete shortcut"
+msgstr ""
+
+msgid "Add shortcut"
+msgstr ""
+
+msgid "Delete shortcuts"
+msgstr ""
+
+msgid "Shortcut in use!"
+msgstr ""
+
+#, tcl-format
+msgid "The shortcut '%1$s' is already used for the '%2$s' event."
+msgstr ""
+
+msgid "Please remove the old shortcut before assigning it to a new event."
+msgstr ""
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -610,10 +660,6 @@ msgid "Patch Windows"
 msgstr "Pd ablak"
 
 #, fuzzy
-msgid "Zoom New Windows"
-msgstr "Szülő ablak"
-
-#, fuzzy
 msgid "GUI Settings"
 msgstr "Minden bellítást ment"
 
@@ -650,6 +696,9 @@ msgstr "Beállítások"
 #, fuzzy
 msgid "deken preferences"
 msgstr "Beállítások"
+
+msgid "keyboard shortcuts"
+msgstr ""
 
 #, fuzzy
 msgid "misc preferences"
@@ -743,6 +792,10 @@ msgid "using font: %1$s %2$s"
 msgstr ""
 
 #, tcl-format
+msgid "Ignoring non-existant plugin '%s'"
+msgstr ""
+
+#, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
 msgstr ""
 
@@ -770,6 +823,10 @@ msgid "Pd startup failure"
 msgstr ""
 
 msgid "Failed to start Pd-core"
+msgstr ""
+
+#, tcl-format
+msgid "Default zoom level: %d%%"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -881,6 +938,9 @@ msgstr ""
 msgid "Unable to rename downloaded file to '%s'"
 msgstr ""
 
+msgid "~"
+msgstr "~"
+
 #, fuzzy
 msgid "Search URLs:"
 msgstr "Keresés itt:"
@@ -916,6 +976,15 @@ msgid "Keep package files after installation"
 msgstr ""
 
 msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "- Always add to search path"
+msgstr ""
+
+msgid "- Never add to search path"
+msgstr ""
+
+msgid "- Prompt before adding"
 msgstr ""
 
 msgid "Platform settings:"
@@ -1055,10 +1124,16 @@ msgstr ""
 msgid "%s%% of download completed"
 msgstr ""
 
-msgid "Enter an exact library or object name."
+msgid "Enter a library or object name."
 msgstr ""
 
 msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "By default this will find anything that contains the search word(s)."
+msgstr ""
+
+msgid "If you enable 'exact search' mode, only exact matches are considered."
 msgstr ""
 
 msgid "Use the '*' wildcard to match any number of characters."
@@ -1105,6 +1180,9 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
+msgid "exact search"
+msgstr ""
+
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
@@ -1132,6 +1210,10 @@ msgstr "Keresés itt:"
 
 msgid "Log"
 msgstr ""
+
+#, fuzzy
+msgid "Searching for all packages..."
+msgstr "Elveti '%s' változtatásait?"
 
 #, fuzzy, tcl-format
 msgid "Searching for \"%s\"..."
@@ -1221,6 +1303,10 @@ msgstr ""
 
 #, tcl-format
 msgid "Could not find a menu for adding '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Downgrading %1$s to %2$s"
 msgstr ""
 
 #, fuzzy, tcl-format
@@ -1949,6 +2035,9 @@ msgstr "Nagyító"
 msgid "Zoom Out"
 msgstr "Nagyító"
 
+msgid "Reset Zoom"
+msgstr ""
+
 msgid "Clear Console"
 msgstr "Konzolt ürít"
 
@@ -1973,6 +2062,10 @@ msgstr "Symbol"
 msgid "Comment"
 msgstr "Comment"
 
+#, fuzzy
+msgid "Scalar"
+msgstr "Méretarány"
+
 msgid "Graph"
 msgstr "Graph"
 
@@ -1993,9 +2086,6 @@ msgstr "DSP ki"
 
 msgid "Test Audio and MIDI..."
 msgstr "Hang és MIDI tesztelése..."
-
-msgid "Load Meter"
-msgstr "Terhelésmérő"
 
 msgid "Audio Settings..."
 msgstr "Hang beállítások..."
@@ -2027,6 +2117,9 @@ msgstr "Bezárja ezt az ablakot?"
 msgid "Parent Window"
 msgstr "Szülő ablak"
 
+msgid "Load Meter"
+msgstr "Terhelésmérő"
+
 #, fuzzy
 msgid "Message..."
 msgstr "Üzenet"
@@ -2049,8 +2142,9 @@ msgstr ""
 msgid "Report a bug"
 msgstr ""
 
-msgid "Clear Menu"
-msgstr "Menüt ürít"
+#, fuzzy
+msgid "Clear Recent Files"
+msgstr "Max szövegfájlok"
 
 msgid ""
 "Delete all preferences?\n"
@@ -2092,6 +2186,10 @@ msgstr "El akarja menteni '%s' változásait?"
 
 msgid "Properties"
 msgstr "Tulajdonságok"
+
+#, fuzzy
+msgid "edit mode"
+msgstr "Szerkesztő üzemmód"
 
 #, fuzzy, tcl-format
 msgid "Accept changes to '%s'?"
@@ -2172,6 +2270,13 @@ msgstr "Array-t töröl"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Zoom New Windows"
+#~ msgstr "Szülő ablak"
+
+#~ msgid "Clear Menu"
+#~ msgstr "Menüt ürít"
 
 #, fuzzy
 #~ msgid "(no device)"

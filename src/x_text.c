@@ -110,8 +110,7 @@ static void textbuf_open(t_textbuf *x)
         char buf[40];
         sprintf(buf, "%dx%d", 600, 340);
         pdgui_vmess("pdtk_textwindow_open", "^r si", x, buf,
-            x->b_sym->s_name, sys_hostfontsize(glist_getfont(x->b_canvas),
-                glist_getzoom(x->b_canvas)));
+            x->b_sym->s_name, sys_hostfontsize(glist_getfont(x->b_canvas), 1));
         sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
@@ -229,6 +228,8 @@ static void textbuf_free(t_textbuf *x)
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
     int i, cnt = 0;
+    if (line > n)   /* skip search if line number is huge */
+        return (0);
     for (i = 0; i < n; i++)
     {
         if (cnt == line)

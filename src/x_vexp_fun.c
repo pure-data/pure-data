@@ -92,6 +92,40 @@
 # define strncasecmp _strnicmp
 #endif
 
+#ifndef PD_INLINE
+/* for the Max case */
+# if defined(__cplusplus)
+#  define PD_INLINE inline
+# else
+#  if (__STDC_VERSION__ >= 199901L)
+#   define PD_INLINE static inline
+#  else
+#   define PD_INLINE static
+#  endif
+# endif
+#endif
+
+#if NO_ISNAN
+PD_INLINE int my_isnan(t_float f) { return ((f) != (f)); }
+# undef isnan
+# define isnan my_isnan
+#endif
+
+#if NO_ISINF
+# ifndef INFINITY
+#  define INFINITY (1.0/0.0)
+# endif
+PD_INLINE int my_isinf(t_float f) { return f == INFINITY || f == -INFINITY; }
+# undef isinf
+# define isinf my_isinf
+#endif
+
+#if NO_ISFINITE
+PD_INLINE int my_isfinite(t_float f) { return !isinf(f) && !isnan(f); }
+# undef isfinite
+# define isfinite my_isfinite
+#endif
+
 struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int i);
 

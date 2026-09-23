@@ -219,6 +219,23 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
     canvas_resume_dsp(dspstate);
 }
 
+int canvas_getswitchedon(t_canvas *x)
+{
+    t_canvas *canvas;
+    t_gobj *g;
+    for (canvas = x; canvas; canvas = canvas->gl_owner)
+    {
+        for (g = canvas->gl_list; g; g = g->g_next)
+        {
+            if (g->g_pd == block_class)
+            {
+                return ((t_block *)g)->x_switchon;
+            }
+        }
+    }
+    return 1;
+}
+
 t_float canvas_getsr(t_canvas *x)
 {
     t_float srate = sys_getsr();
@@ -254,9 +271,11 @@ int canvas_getsignallength(t_canvas *x)
 static void *switch_new(t_floatarg fvecsize, t_floatarg foverlap,
                         t_floatarg fupsample, t_floatarg foffset)
 {
+    int oldstate = canvas_suspend_dsp();
     t_block *x = (t_block *)block_new(fvecsize, foverlap, fupsample, foffset);
     x->x_switched = 1;
     x->x_switchon = 0;
+    canvas_resume_dsp(oldstate);
     return (x);
 }
 
@@ -513,7 +532,9 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     int allocsize = 0;
     t_signal *ret, **whichlist;
     if (sr < 1)
-        bug("signal_new");
+        bug("signal_new: 'sr' cannot be less than 1");
+    if (nchans < 1)
+        bug("signal_new: 'nchans' cannot be less than 1");
     if (length && !scalarptr)
     {
             /* figure out which free list to use, depending on size of vector */
@@ -596,7 +617,15 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
 void signal_setmultiout(t_signal **sig, int nchans)
 {
     int overlap = (*sig)->s_overlap;
-    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    if (nchans > 0)
+        *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    else
+    {
+            /* replace with empty single-channel signal */
+        bug("signal_setmultiout: 'nchans' cannot be less than 1");
+        *sig = signal_new((*sig)->s_length, 1, (*sig)->s_sr, 0);
+        dsp_add_zero((*sig)->s_vec, (*sig)->s_length);
+    }
     (*sig)->s_overlap = overlap;
 }
 

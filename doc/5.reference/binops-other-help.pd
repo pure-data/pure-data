@@ -1,4 +1,4 @@
-#N canvas 431 23 635 705 12;
+#N canvas 431 38 638 711 12;
 #X obj 198 489 <;
 #X obj 166 131 &&;
 #X obj 207 130 ||;
@@ -30,7 +30,7 @@
 #X obj 49 210 div;
 #X obj 91 177 t b f;
 #X obj 91 211 mod;
-#X obj 95 645 +;
+#X obj 285 645 +;
 #X text 16 643 see also:;
 #X floatatom 121 394 5 0 0 0 - - - 0;
 #X obj 22 34 &&;
@@ -42,7 +42,7 @@
 #X floatatom 49 150 4 0 0 0 - - - 0;
 #X obj 514 575 div 3;
 #X obj 545 644 expr;
-#X obj 18 674 sin;
+#X obj 223 675 sin;
 #X obj 166 73 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 207 98 t b f;
 #X text 241 137 note these expect integer input \, so 0.5 or -0.5 are truncated to '0' and not considered 'nonzero'.;
@@ -104,7 +104,7 @@
 #X obj 6 63 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 6 634 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 17 72 Logical operators ->;
-#X text 414 675 updated for Pd version 0.47;
+#X text 434 675 updated for Pd version 0.47;
 #X text 260 77 [&&] ('and') outputs 1 if both inputs are nonzero and 0 otherwise., f 47;
 #X text 260 110 [||] ('or') outputs 1 if either one is nonzero.;
 #X text 141 184 [div] and [mod] do integer division \, where [div] outputs the integer quotient and [mod] outputs the remainder (modulus). In addition the [%] operator (provided for back compatibility) is like [mod] but acts differently for negative inputs (and might act variously depending on CPU design)., f 62;
@@ -122,10 +122,12 @@
 #X obj 469 602 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 31 278 Relational operators [>] (greater than) \, [==] (equals) \, [!=] (not equals) etc. output 1 or 0 depending on whether the relation is true or false. Unlike the others \, these can deal with float input!, f 82;
 #X text 31 328 The bitwise operators [&] and [|] perform "and" and "or" on each bit of the inputs considered as binary integer numbers. the [>>] and [<<] objects perform left and right signed bit shifts. They also expect integer input and truncate float values., f 82;
-#X text 54 675 (etc) - trigonometric functions;
-#X obj 322 645 abs;
-#X text 130 644 (etc.) - binary operators;
-#X text 354 644 (etc.) - unary operators;
+#X obj 11 676 abs;
+#X text 320 644 (etc.) - binary operators;
+#X text 43 675 (etc.) - unary operators;
+#X obj 95 644 >~;
+#X text 253 676 (etc) - trig functions;
+#X text 130 644 - signal versions;
 #X connect 0 0 73 0;
 #X connect 1 0 70 0;
 #X connect 2 0 71 0;

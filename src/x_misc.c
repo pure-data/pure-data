@@ -83,7 +83,7 @@ static void random_float(t_random *x, t_floatarg f)
     random_bang(x);
 }
 
-static void random_seed(t_random *x, t_float f, t_float glob)
+static void random_seed(t_random *x, t_float f)
 {
     x->x_state = f;
 }
@@ -331,6 +331,22 @@ typedef struct _oscparse
                     ((((int)(((x)+2)->a_w.w_float)) & 0xff) << 8) | \
                     ((((int)(((x)+3)->a_w.w_float)) & 0xff) << 0)
 
+PD_INLINE double readdouble(t_atom *x)
+{
+    uint32_t hi = READINT(x);
+    uint32_t lo = READINT((x)+4);
+    union {
+        double d;
+        struct {
+            uint32_t lo;
+            uint32_t hi;
+        } i;
+    } u;
+    u.i.lo = lo;
+    u.i.hi = hi;
+    return u.d;
+}
+
 static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
 {
     char buf[MAXPDSTRING];
@@ -498,6 +514,24 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             for (j2 = 0; j2 < blobsize; j++, j2++, k++)
                 SETFLOAT(outv+j, argv[k].a_w.w_float);
             k = ROUNDUPTO4(k);
+            break;
+        case 'd':
+            if (k > argc - 8)
+                goto tooshort;
+            {
+                double d = readdouble(argv+k);
+                /* lossy conversion from double to float */
+                t_float f = (t_float)d;
+                if (PD_BADFLOAT(f))
+                    f = 0;
+                if (j >= outc)
+                {
+                    bug("oscparse double");
+                    return;
+                }
+                SETFLOAT(outv+j, f);
+                j++; k += 8;
+            }
             break;
         default:
             pd_error(x, "oscparse: unknown tag '%c' (%d)",

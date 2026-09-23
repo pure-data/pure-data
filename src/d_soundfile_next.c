@@ -8,6 +8,7 @@
          http://soundfile.sapp.org/doc/NextFormat */
 
 #include "d_soundfile.h"
+#include "s_stuff.h"
 
 /* NeXTStep/Sun sound
 
@@ -248,7 +249,7 @@ static int next_updateheader(t_soundfile *sf, size_t nframes)
 
 static int next_hasextension(const char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len >= 4 &&
         (!strncmp(filename + (len - 3), ".au", 3) ||
          !strncmp(filename + (len - 3), ".AU", 3)))
@@ -262,7 +263,7 @@ static int next_hasextension(const char *filename, size_t size)
 
 static int next_addextension(char *filename, size_t size)
 {
-    int len = strnlen(filename, size);
+    int len = pd_strnlen(filename, size);
     if (len + 4 >= size)
         return 0;
     strcpy(filename + len, ".snd");

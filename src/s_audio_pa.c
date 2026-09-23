@@ -53,7 +53,6 @@ static t_sample *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
 
 static int pa_started;
-static volatile int pa_dio_error;
 
 static char *pa_outbuf;
 static sys_ringbuf pa_outring;
@@ -70,6 +69,20 @@ t_semaphore *pa_sem;
 static double pa_lastdactime;
 
 static int pa_initialized;
+
+PD_INLINE int pa_ensure_pdinstance(void *arg) {
+#ifdef PDINSTANCE
+    t_pdinstance *pd = (t_pdinstance *)arg;
+    if (!pd_this)
+    {
+        pd_setinstance((t_pdinstance *)pd);
+    }
+#else
+    (void)arg;
+#endif
+
+    return (0 != pd_this);
+}
 
 static void pa_init(void)        /* Initialize PortAudio  */
 {
@@ -126,6 +139,10 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     unsigned int n, j;
     float *fbuf, *fp2, *fp3;
     t_sample *soundiop;
+
+    if (!pa_ensure_pdinstance(userData))
+        return 1;
+
     if (nframes % DEFDACBLKSIZE)
     {
         post("warning: audio nframes %ld not a multiple of blocksize %d",
@@ -182,6 +199,9 @@ static int pa_fifo_callback(const void *inputBuffer,
         outfiforoom = sys_ringbuf_getreadavailable(&pa_outring);
     int ch;
 
+    if (!pa_ensure_pdinstance(userData))
+        return 1;
+
 #if CHECKFIFOS
     if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=
         pa_outchans * sys_ringbuf_getwriteavailable(&pa_inring))
@@ -194,7 +214,7 @@ static int pa_fifo_callback(const void *inputBuffer,
     {
         /* data late: output zeros, drop inputs, and leave FIFos untouched */
         if (pa_started)
-            pa_dio_error = 1;
+            sys_reportxrun(nframes);
         if (outputBuffer)
         {
             for (ch = 0; ch < pa_outchans; ch++)
@@ -235,6 +255,8 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
 #ifdef _WIN32
     PaWasapiStreamInfo wasapiinfo;
 #endif
+
+        //fprintf(stderr, "%s(%g, %d, %d, %d, %d, %d, %p)\n", __FUNCTION__, samplerate, inchannels, outchannels, framesperbuf, indeviceno, outdeviceno, callbackfn);
 
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
             nchannels, flags, nbuffers, framesperbuf); */
@@ -319,7 +341,7 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
             goto error;
     }
     err = Pa_OpenStream(&pa_stream, p_instreamparams, p_outstreamparams,
-        samplerate, framesperbuf, paNoFlag, callbackfn, 0);
+        samplerate, framesperbuf, paNoFlag, callbackfn, pd_this);
     if (err != paNoError)
         goto error;
 
@@ -452,7 +474,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
             framesperbuf, pa_indev, pa_outdev, pa_fifo_callback);
     }
     pa_started = 0;
-    pa_dio_error = 0;
     if (err != paNoError)
     {
         pd_error(0, "error opening audio: %s", Pa_GetErrorText(err));
@@ -596,11 +617,6 @@ int pa_send_dacs(void)
                         *fp = *fp3;
     }
 
-    if (pa_dio_error)
-    {
-        sys_log_error(ERR_RESYNC);
-        pa_dio_error = 0;
-    }
     pa_started = 1;
 
     memset(STUFF->st_soundout, 0,
