@@ -917,6 +917,7 @@ void x_misc_setup(void)
 {
     random_setup();
     loadbang_setup();
+    closebang_setup();
     namecanvas_setup();
 #ifdef CLOCKHZ
     cputime_setup();
