@@ -148,7 +148,10 @@ proc category_menu::load_menutree {} {
                         list\ append
                         list\ prepend
                         list\ store
+                        list\ foreach
                         list\ split
+                        list\ join
+                        list\ unjoin
                         list\ trim
                         list\ length
                         list\ fromsymbol
@@ -403,6 +406,17 @@ proc category_menu::load_menutree {} {
                                 min~
                                 log~
                                 pow~
+                            }
+                            other\ binops
+                            {
+                                >~
+                                <~
+                                >=~
+                                <=~
+                                ==~
+                                !=~
+                                ||~
+                                &&~
                             }
                         }
                         {
