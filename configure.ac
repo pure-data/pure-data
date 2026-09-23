@@ -59,8 +59,10 @@ deken_ext="so"
 floatsize=""
 
 # debug/release defaults
-DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
+# no generic optimization (-O0, -O3) flags here,
+# because they will be overridden by autoconfs default (-O2)
+DEBUG_CFLAGS=""
+RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer"
 
 # common flags applied to all pd binaries
 PD_CPPFLAGS=""
