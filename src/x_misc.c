@@ -917,6 +917,7 @@ static void fudiformat_setup(void) {
 void x_misc_setup(void)
 {
     random_setup();
+    initbang_setup();
     loadbang_setup();
     namecanvas_setup();
 #ifdef CLOCKHZ
