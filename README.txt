@@ -58,6 +58,6 @@ Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
 Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
 Wilcox, David Zicarelli, IOhannes m zmoelnig, Christof Ressi, Antoine Rousseau,
 Alexandre Torres Porres, Claude Heiland-Allen, Roman Haefeli, Lucarda, Chris
-McCormick, Seb Shader and probably many others for contributions of code,
-documentation, ideas, and expertise. This work has received support from Intel,
-Keith McMillen Instruments, ZKM, IEM, and UCSD.
+McCormick, Seb Shader, Ben Wesch, and doubtless many others for contributions of
+code, documentation, ideas, and expertise. This work has received support from
+Intel, Keith McMillen Instruments, ZKM, IEM, and UCSD.
