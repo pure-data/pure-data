@@ -3,9 +3,7 @@ package provide pd_canvaszoom 0.1
 namespace eval ::pd_canvaszoom:: {
     # exported procedures
     namespace export zoominit
-    namespace export canvasxy
     namespace export getzdepth
-    namespace export setzdepth
 
     # exported variables
     variable zsteps
@@ -212,6 +210,12 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         }
         "coords" {
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
+        }
+        "canvasx" {
+            return [expr int([::pd_canvaszoom::canvas::$c canvasx [lindex $args 0]] / $zdepth)]
+        }
+        "canvasy" {
+            return [expr int([::pd_canvaszoom::canvas::$c canvasy [lindex $args 0]] / $zdepth)]
         }
     }
 
@@ -465,11 +469,6 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
             ::pd_canvaszoom::canvas::$c itemconfigure $i -height [scale_width $height $zdepth]
         }
     }
-}
-
-proc ::pd_canvaszoom::canvasxy {c x y} {
-    set zdepth $::pd_canvaszoom::zdepth($c)
-    return [list [expr int([$c canvasx $x] / $zdepth)] [expr int([$c canvasy $y] / $zdepth)]]
 }
 
 proc ::pd_canvaszoom::getzdepth c {
