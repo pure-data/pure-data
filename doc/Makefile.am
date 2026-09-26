@@ -445,7 +445,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/siginfo~-help.pd \
      ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
-     ./5.reference/snake-tilde-help.pd \
+     ./5.reference/snake~-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
      ./5.reference/spigot-help.pd \

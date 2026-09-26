@@ -525,7 +525,7 @@ static void snake_tilde_setup(void)
     CLASS_MAINSIGNALIN(snake_in_tilde_class, t_snake_in, x_f);
     class_addmethod(snake_in_tilde_class, (t_method)snake_in_tilde_dsp,
         gensym("dsp"), 0);
-    class_sethelpsymbol(snake_in_tilde_class, gensym("snake-tilde"));
+    class_sethelpsymbol(snake_in_tilde_class, gensym("snake~"));
 
     snake_out_tilde_class = class_new(gensym("snake_out~"),
         (t_newmethod)snake_out_tilde_new, 0, sizeof(t_snake_out),
@@ -533,7 +533,7 @@ static void snake_tilde_setup(void)
     CLASS_MAINSIGNALIN(snake_out_tilde_class, t_snake_out, x_f);
     class_addmethod(snake_out_tilde_class, (t_method)snake_out_tilde_dsp,
         gensym("dsp"), 0);
-    class_sethelpsymbol(snake_out_tilde_class, gensym("snake-tilde"));
+    class_sethelpsymbol(snake_out_tilde_class, gensym("snake~"));
 
     snake_sum_tilde_class = class_new(gensym("snake_sum~"),
         (t_newmethod)snake_sum_tilde_new, 0, sizeof(t_snake_sum),
@@ -541,7 +541,7 @@ static void snake_tilde_setup(void)
     CLASS_MAINSIGNALIN(snake_sum_tilde_class, t_snake_sum, x_f);
     class_addmethod(snake_sum_tilde_class, (t_method)snake_sum_tilde_dsp,
         gensym("dsp"), 0);
-    class_sethelpsymbol(snake_sum_tilde_class, gensym("snake-tilde"));
+    class_sethelpsymbol(snake_sum_tilde_class, gensym("snake~"));
 
     snake_split_tilde_class = class_new(gensym("snake_split~"),
         (t_newmethod)snake_split_tilde_new, 0, sizeof(t_snake_split),
@@ -551,7 +551,7 @@ static void snake_tilde_setup(void)
         gensym("dsp"), 0);
     class_addmethod(snake_split_tilde_class, (t_method)snake_split_tilde_index,
         gensym("index"), A_FLOAT, 0);
-    class_sethelpsymbol(snake_split_tilde_class, gensym("snake-tilde"));
+    class_sethelpsymbol(snake_split_tilde_class, gensym("snake~"));
 
     snake_pick_tilde_class = class_new(gensym("snake_pick~"),
         (t_newmethod)snake_pick_tilde_new, (t_method)snake_pick_tilde_free,
@@ -561,7 +561,7 @@ static void snake_tilde_setup(void)
         gensym("dsp"), 0);
     class_addmethod(snake_pick_tilde_class, (t_method)snake_pick_tilde_channels,
         gensym("channels"), A_GIMME, 0);
-    class_sethelpsymbol(snake_pick_tilde_class, gensym("snake-tilde"));
+    class_sethelpsymbol(snake_pick_tilde_class, gensym("snake~"));
 
     class_addcreator((t_newmethod)snake_tilde_new, gensym("snake~"),
         A_GIMME, 0);
