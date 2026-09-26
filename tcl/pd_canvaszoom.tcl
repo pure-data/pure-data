@@ -126,6 +126,21 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             # add the new width tag
             ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item"
         }
+        # scale height
+        set heightindex [lsearch -start 1 $args "-height"]
+        if {$heightindex != -1} {
+            incr heightindex
+            set height [lindex $args $heightindex]
+            lset args $heightindex [scale_width $height $zdepth]
+            # remove height tag
+            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
+                if {"_h" in [string range $tag 0 1]} {
+                    ::pd_canvaszoom::canvas::$c dtag $item $tag
+                }
+            }
+            # add the new height tag
+            ::pd_canvaszoom::canvas::$c addtag _h$height withtag $item"
+        }
         # scale font
         set fontindex [lsearch -start 1 $args "-font"]
         if {$fontindex != -1} {
@@ -167,6 +182,17 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 # add width tag
                 set tags [lindex $args $tagsindex]
                 lset args $tagsindex [concat $tags _w$width]
+            }
+
+            # scale 'height' option, if any
+            set heightindex [lsearch -start 2 $args "-height"]
+            if {$heightindex != -1} {
+                incr heightindex
+                set height [lindex $args $heightindex]
+                lset args $heightindex [scale_width $height $zdepth]
+                # add height tag
+                set tags [lindex $args $tagsindex]
+                lset args $tagsindex [concat $tags _h$height]
             }
 
             # scale font if any
@@ -421,6 +447,22 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
             }
             # scale
             ::pd_canvaszoom::canvas::$c itemconfigure $i -width [scale_width $width $zdepth]
+        }
+
+        # scale height option
+        set height 0
+        # get original height from tags if it was previously recorded
+        foreach {tag} [$c gettags $i] {
+            scan $tag {_h%d} height
+        }
+        # if not, then record current height and use it
+        catch { # protect the case the item doesn't have "-height"
+            if {!$height} {
+                set height [expr ([$c itemcget $i -height] / $oldzdepth)]
+                $c addtag _h$height withtag $i
+            }
+            # scale
+            ::pd_canvaszoom::canvas::$c itemconfigure $i -height [scale_width $height $zdepth]
         }
     }
 }
