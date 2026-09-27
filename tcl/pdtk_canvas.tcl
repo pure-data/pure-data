@@ -424,7 +424,7 @@ proc ::pdtk_canvas::do_getscroll {tkcanvas} {
     set height [winfo height $tkcanvas]
     set width [winfo width $tkcanvas]
 
-    set bbox [$tkcanvas bbox all]
+    set bbox [::pd_canvaszoom::canvas::$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
     set xupperleft [lindex $bbox 0]
     set yupperleft [lindex $bbox 1]

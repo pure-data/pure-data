@@ -208,6 +208,9 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         "move" {
             set args [scale_consecutive_numbers 1 $zdepth 0 2 {*}$args]
         }
+        "moveto" {
+            set args [scale_consecutive_numbers 1 $zdepth 0 2 {*}$args]
+        }
         "coords" {
             set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
         }
@@ -216,6 +219,13 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
         }
         "canvasy" {
             return [expr int([::pd_canvaszoom::canvas::$c canvasy [lindex $args 0]] / $zdepth)]
+        }
+        "bbox" {
+            set bbox [::pd_canvaszoom::canvas::$c bbox $args]
+            return [concat [expr int([lindex $bbox 0] / $zdepth)] \
+                [expr int([lindex $bbox 1] / $zdepth)] \
+                [expr int([lindex $bbox 2] / $zdepth)] \
+                [expr int([lindex $bbox 3] / $zdepth)]]
         }
     }
 
