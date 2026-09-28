@@ -77,25 +77,35 @@ proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
 }
 
 # multiplies by "zdepth" all consecutive numbers from the "from"th element.
-# process maximum "max_elements" elements, and round the result if "int" is not null.
-proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth int max_elements args} {
+# process maximum "max_elements" elements.
+proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth max_elements args} {
     set i $from
     set result {}
     set maxi [expr min([llength $args], [expr $from + $max_elements])]
     while {$i < $maxi && [string is double -strict [lindex $args $i]]} {
-        if {$int} {
-            lset args $i [expr int([lindex $args $i] * $zdepth)]
-        } else {
-            lset args $i [expr [lindex $args $i] * $zdepth]
-        }
+        lset args $i [expr [lindex $args $i] * $zdepth]
         incr i
     }
     return $args
 }
 
-# multiply width by zdepth, round to nearest int, minimum 1 if not initially zero
+# integer version
+proc ::pd_canvaszoom::scale_consecutive_numbers_int {from zdepth max_elements args} {
+    set i $from
+    set result {}
+    set maxi [expr min([llength $args], [expr $from + $max_elements])]
+    while {$i < $maxi && [string is double -strict [lindex $args $i]]} {
+        lset args $i [expr int([lindex $args $i] * $zdepth)]
+        incr i
+    }
+    return $args
+}
+
+# multiply width by zdepth, round to nearest int, minimum 1 if not initially zero;
+# 'width' needs to be rounded to avoid strange graphic glitches, visible for example
+# with hslider at 94% zoom
 proc ::pd_canvaszoom::scale_width {width zdepth} {
-    set newwidth [expr int($width * $zdepth + 0.5)]
+    set newwidth [expr round($width * $zdepth)]
     if {$newwidth == 0 && $width != 0} {set newwidth 1}
     return $newwidth
 }
@@ -169,7 +179,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             incr tagsindex
 
             # scale coordinates
-            set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 1e6 {*}$args]
 
             # scale 'width' option, if any
             set widthindex [lsearch -start 2 $args "-width"]
@@ -206,26 +216,27 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             }
         }
         "move" {
-            set args [scale_consecutive_numbers 1 $zdepth 0 2 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 2 {*}$args]
         }
         "moveto" {
-            set args [scale_consecutive_numbers 1 $zdepth 0 2 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 2 {*}$args]
         }
         "coords" {
-            set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 1e6 {*}$args]
         }
         "canvasx" {
-            return [expr int([::pd_canvaszoom::canvas::$c canvasx [lindex $args 0]] / $zdepth)]
+            # 'canvasy' and 'canvasy' need to be rounded, since they can be returned to Pd,
+            # which assumes that things like mouse coordinates are always integer;
+            # if we return floats, accumulating errors can sometimes occur (mostly visible in externals like pdlua)
+            return [expr round([::pd_canvaszoom::canvas::$c canvasx [lindex $args 0]] / $zdepth)]
         }
         "canvasy" {
-            return [expr int([::pd_canvaszoom::canvas::$c canvasy [lindex $args 0]] / $zdepth)]
+            return [expr round([::pd_canvaszoom::canvas::$c canvasy [lindex $args 0]] / $zdepth)]
         }
         "bbox" {
             set bbox [::pd_canvaszoom::canvas::$c bbox $args]
-            return [concat [expr int([lindex $bbox 0] / $zdepth)] \
-                [expr int([lindex $bbox 1] / $zdepth)] \
-                [expr int([lindex $bbox 2] / $zdepth)] \
-                [expr int([lindex $bbox 3] / $zdepth)]]
+            # 'bbox' can be requested by externals (e.g cyclone) and returned to Pd, which assumes integer coordinates
+            return [scale_consecutive_numbers_int 0 [expr 1.0 / $zdepth] 4 {*}$bbox]
         }
     }
 
