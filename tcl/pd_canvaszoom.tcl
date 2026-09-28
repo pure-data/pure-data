@@ -122,7 +122,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 }
             }
             # add the new width tag
-            ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item"
+            ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item
         }
         # scale height
         set heightindex [lsearch -start 1 $args "-height"]
@@ -137,7 +137,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 }
             }
             # add the new height tag
-            ::pd_canvaszoom::canvas::$c addtag _h$height withtag $item"
+            ::pd_canvaszoom::canvas::$c addtag _h$height withtag $item
         }
         # scale font
         set fontindex [lsearch -start 1 $args "-font"]
@@ -153,7 +153,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 }
             }
             # add the new font tag
-            ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item"
+            ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item
         }
     }
 
