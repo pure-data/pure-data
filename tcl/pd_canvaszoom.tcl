@@ -404,34 +404,29 @@ proc ::pd_canvaszoom::setzoom {c steps} {
 }
 
 
-# compute the width of "M" for every size of the font.
-# "fontname" here is [list $family $weight]
-proc ::pd_canvaszoom::measure_font {fontname {maxfsize 120}} {
+# return the width of "M" for the given size of the font.
+# "fontname" here is [list $family $weight].
+# the result is cached because calculation takes time.
+proc ::pd_canvaszoom::measure_font {fontname fontsize} {
+    # the global array that caches the already computed fonts:
     variable font_measure
-    set family [lindex $fontname 0]
-    set weight [lindex $fontname 1]
-    set font_measure($fontname) 0
-    for {set fsize 1} {$fsize <= $maxfsize} {incr fsize} {
-        set foo [list $family -$fsize $weight]
-        set width [font measure $foo M]
-        lappend font_measure($fontname) $width
+    # if 'fontname' hasn't been measured for this fontsize yet, measure and store it
+    if {! [info exist font_measure($fontname,$fontsize)]} {
+        set family [lindex $fontname 0]
+        set weight [lindex $fontname 1]
+        set width [font measure [list $family -$fontsize $weight] M]
+        set font_measure($fontname,$fontsize) $width
     }
+    return $font_measure($fontname,$fontsize)
 }
 
 # scale a font so that it's not wider than the original one scaled by zdepth
 proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
-    variable font_measure
     set fontsize [expr int(abs($fontsize))]
     set fontname [list [lindex $font 0] [lindex $font 2]]
-    if {! [info exist font_measure($fontname)]} {
-        measure_font $fontname
-    }
-    if {$fontsize >= [llength $font_measure($fontname)]} {
-        measure_font $fontname $fontsize
-    }
-    set target_width [expr [lindex $font_measure($fontname) $fontsize] * $zdepth]
-    set new_fontsize [expr {int($fontsize * $zdepth)}]
-    while {[lindex $font_measure($fontname) $new_fontsize] > $target_width} {
+    set target_width [expr [measure_font $fontname $fontsize] * $zdepth]
+    set new_fontsize [expr int($fontsize * $zdepth)]
+    while {$new_fontsize > 0 && [measure_font $fontname $new_fontsize] > $target_width} {
         incr new_fontsize -1
     }
     if {$new_fontsize == 0} {set new_fontsize 1}
