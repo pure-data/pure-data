@@ -1024,7 +1024,7 @@ static void siginfo_tilde_free(t_siginfo_tilde *x)
     pd_unbind(&x->x_proxy.x_pd, gensym("pd-dsp-stopped"));
 }
 
-static char *siginfo_warning = "siginfo~: arguments can only be 'dspstate', \
+static const char *siginfo_warning = "siginfo~: arguments can only be 'dspstate', \
 'blocksize', 'channels', 'overlap', 'samplerate', 'samplespersecond'";
 
 static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
@@ -1068,11 +1068,11 @@ static t_siginfo_tilde *siginfo_tilde_new(t_symbol *s, int argc, t_atom *argv)
                 /* all good */
         }
         else if (gensym("help") == s)
-            post(siginfo_warning); /* I asked for help so it's not an error */
+            post("%s", siginfo_warning); /* I asked for help so it's not an error */
         else
         {
             if (!warned)
-                pd_error(x, siginfo_warning);
+                pd_error(x, "%s", siginfo_warning);
             warned = 1;
         }
         *vec++=s;
