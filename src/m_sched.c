@@ -512,9 +512,12 @@ static void m_pollingscheduler(void)
         sys_addhist(2);
         while (!sys_quit)   /* inner loop runs until it can transfer audio */
         {
-            int timeforward; /* SENDDACS_YES if audio was transferred, SENDDACS_NO if not,
-                                or SENDDACS_SLEPT if yes but time elapsed during xfer */
+            int timeforward; /* SENDDACS_YES if audio was transferred,
+                               SENDDACS_NO if not, or SENDDACS_SLEPT if yes
+                               but time elapsed during xfer */
             sys_unlock();
+            static int was_senddacs_no;  /* got SENDDACS_NO on previous pass */
+            static int warnedstuckaudio; /* already printed a warning */
             if (sched_useaudio == SCHED_AUDIO_NONE)
             {
                     /* no audio; use system clock */
@@ -530,6 +533,39 @@ static void m_pollingscheduler(void)
             }
             else
                 timeforward = sys_send_dacs();
+
+                /* 0.57 - sometimes s_audio_jack hangs, always returning
+                SENDDACS_NO so that Pd itself hangs.  I don't know how to
+                reproduce the problem reliably.  Here we check if
+                audio has been hung for longer than a second and if so,
+                just start lying that audio is in fact running through.
+                If at anytime the audio restarts revert to normal */
+            if (timeforward == SENDDACS_NO)
+            {
+                static double unblocktime;
+                if (was_senddacs_no)
+                {
+                        /* previously got NO, so unblocktime is set */
+                    if (sys_getrealtime() > unblocktime)
+                    {
+                        if (!warnedstuckaudio)
+                        {
+                            post("proceeding despite stuck audio....");
+                            warnedstuckaudio = 1;
+                        }
+                        timeforward = SENDDACS_YES;  /* just lie about it */
+                        unblocktime = sys_getrealtime() +
+                            (STUFF->st_schedblocksize/STUFF->st_dacsr);
+                    }
+                }
+                else
+                {
+                        /* first time NO: will unblock after 1 second */
+                    unblocktime = sys_getrealtime() + 1.;
+                }
+                was_senddacs_no = 1;
+            }
+            else was_senddacs_no = warnedstuckaudio = 0;
             sys_addhist(3);
                 /* test for idle; if so, do graphics updates. */
             if (timeforward != SENDDACS_YES && !sched_idletask())

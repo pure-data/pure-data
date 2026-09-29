@@ -29,6 +29,13 @@
 #define DEVDESCSIZE 128
 #define MAXBLOCKSIZE 2048
 
+static int lie_dacs_busy;
+
+void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+{
+    lie_dacs_busy = argc;
+}
+
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
 
@@ -523,6 +530,8 @@ int sys_try_reopen_audio(void)
 
 int sys_send_dacs(void)
 {
+    if (lie_dacs_busy)  /* stress test - LATER get rid of this */
+        return (SENDDACS_NO);
 #ifdef USEAPI_PORTAUDIO
     if (sys_audioapiopened == API_PORTAUDIO)
         return (pa_send_dacs());
