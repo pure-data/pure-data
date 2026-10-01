@@ -3,9 +3,7 @@ package provide pd_canvaszoom 0.1
 namespace eval ::pd_canvaszoom:: {
     # exported procedures
     namespace export zoominit
-    namespace export canvasxy
     namespace export getzdepth
-    namespace export setzdepth
 
     # exported variables
     variable zsteps
@@ -79,25 +77,35 @@ proc ::pd_canvaszoom::default_zoom_pref_widget {widget} {
 }
 
 # multiplies by "zdepth" all consecutive numbers from the "from"th element.
-# process maximum "max_elements" elements, and round the result if "int" is not null.
-proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth int max_elements args} {
+# process maximum "max_elements" elements.
+proc ::pd_canvaszoom::scale_consecutive_numbers {from zdepth max_elements args} {
     set i $from
     set result {}
     set maxi [expr min([llength $args], [expr $from + $max_elements])]
     while {$i < $maxi && [string is double -strict [lindex $args $i]]} {
-        if {$int} {
-            lset args $i [expr int([lindex $args $i] * $zdepth)]
-        } else {
-            lset args $i [expr [lindex $args $i] * $zdepth]
-        }
+        lset args $i [expr [lindex $args $i] * $zdepth]
         incr i
     }
     return $args
 }
 
-# multiply width by zdepth, round to nearest int, minimum 1 if not initially zero
+# integer version
+proc ::pd_canvaszoom::scale_consecutive_numbers_int {from zdepth max_elements args} {
+    set i $from
+    set result {}
+    set maxi [expr min([llength $args], [expr $from + $max_elements])]
+    while {$i < $maxi && [string is double -strict [lindex $args $i]]} {
+        lset args $i [expr int([lindex $args $i] * $zdepth)]
+        incr i
+    }
+    return $args
+}
+
+# multiply width by zdepth, round to nearest int, minimum 1 if not initially zero;
+# 'width' needs to be rounded to avoid strange graphic glitches, visible for example
+# with hslider at 94% zoom
 proc ::pd_canvaszoom::scale_width {width zdepth} {
-    set newwidth [expr int($width * $zdepth + 0.5)]
+    set newwidth [expr round($width * $zdepth)]
     if {$newwidth == 0 && $width != 0} {set newwidth 1}
     return $newwidth
 }
@@ -124,7 +132,22 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 }
             }
             # add the new width tag
-            ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item"
+            ::pd_canvaszoom::canvas::$c addtag _w$width withtag $item
+        }
+        # scale height
+        set heightindex [lsearch -start 1 $args "-height"]
+        if {$heightindex != -1} {
+            incr heightindex
+            set height [lindex $args $heightindex]
+            lset args $heightindex [scale_width $height $zdepth]
+            # remove height tag
+            foreach {tag} [::pd_canvaszoom::canvas::$c gettags $item] {
+                if {"_h" in [string range $tag 0 1]} {
+                    ::pd_canvaszoom::canvas::$c dtag $item $tag
+                }
+            }
+            # add the new height tag
+            ::pd_canvaszoom::canvas::$c addtag _h$height withtag $item
         }
         # scale font
         set fontindex [lsearch -start 1 $args "-font"]
@@ -140,7 +163,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 }
             }
             # add the new font tag
-            ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item"
+            ::pd_canvaszoom::canvas::$c addtag _f[lindex $font 1] withtag $item
         }
     }
 
@@ -156,7 +179,7 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             incr tagsindex
 
             # scale coordinates
-            set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 1e6 {*}$args]
 
             # scale 'width' option, if any
             set widthindex [lsearch -start 2 $args "-width"]
@@ -167,6 +190,17 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
                 # add width tag
                 set tags [lindex $args $tagsindex]
                 lset args $tagsindex [concat $tags _w$width]
+            }
+
+            # scale 'height' option, if any
+            set heightindex [lsearch -start 2 $args "-height"]
+            if {$heightindex != -1} {
+                incr heightindex
+                set height [lindex $args $heightindex]
+                lset args $heightindex [scale_width $height $zdepth]
+                # add height tag
+                set tags [lindex $args $tagsindex]
+                lset args $tagsindex [concat $tags _h$height]
             }
 
             # scale font if any
@@ -182,10 +216,27 @@ proc ::pd_canvaszoom::canvas_command {c method args} {
             }
         }
         "move" {
-            set args [scale_consecutive_numbers 1 $zdepth 0 2 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 2 {*}$args]
+        }
+        "moveto" {
+            set args [scale_consecutive_numbers 1 $zdepth 2 {*}$args]
         }
         "coords" {
-            set args [scale_consecutive_numbers 1 $zdepth 0 1e6 {*}$args]
+            set args [scale_consecutive_numbers 1 $zdepth 1e6 {*}$args]
+        }
+        "canvasx" {
+            # 'canvasy' and 'canvasy' need to be rounded, since they can be returned to Pd,
+            # which assumes that things like mouse coordinates are always integer;
+            # if we return floats, accumulating errors can sometimes occur (mostly visible in externals like pdlua)
+            return [expr round([::pd_canvaszoom::canvas::$c canvasx [lindex $args 0]] / $zdepth)]
+        }
+        "canvasy" {
+            return [expr round([::pd_canvaszoom::canvas::$c canvasy [lindex $args 0]] / $zdepth)]
+        }
+        "bbox" {
+            set bbox [::pd_canvaszoom::canvas::$c bbox $args]
+            # 'bbox' can be requested by externals (e.g cyclone) and returned to Pd, which assumes integer coordinates
+            return [scale_consecutive_numbers_int 0 [expr 1.0 / $zdepth] 4 {*}$bbox]
         }
     }
 
@@ -353,34 +404,29 @@ proc ::pd_canvaszoom::setzoom {c steps} {
 }
 
 
-# compute the width of "M" for every size of the font.
-# "fontname" here is [list $family $weight]
-proc ::pd_canvaszoom::measure_font {fontname} {
+# return the width of "M" for the given size of the font.
+# "fontname" here is [list $family $weight].
+# the result is cached because calculation takes time.
+proc ::pd_canvaszoom::measure_font {fontname fontsize} {
+    # the global array that caches the already computed fonts:
     variable font_measure
-    set family [lindex $fontname 0]
-    set weight [lindex $fontname 1]
-    set font_measure($fontname) 0
-    for {set fsize 1} {$fsize < 120} {incr fsize} {
-        set foo [list $family -$fsize $weight]
-        set width [font measure $foo M]
-        lappend font_measure($fontname) $width
+    # if 'fontname' hasn't been measured for this fontsize yet, measure and store it
+    if {! [info exist font_measure($fontname,$fontsize)]} {
+        set family [lindex $fontname 0]
+        set weight [lindex $fontname 1]
+        set width [font measure [list $family -$fontsize $weight] M]
+        set font_measure($fontname,$fontsize) $width
     }
+    return $font_measure($fontname,$fontsize)
 }
 
 # scale a font so that it's not wider than the original one scaled by zdepth
 proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
-    variable font_measure
     set fontsize [expr int(abs($fontsize))]
     set fontname [list [lindex $font 0] [lindex $font 2]]
-    if {! [info exist font_measure($fontname)]} {
-        measure_font $fontname
-    }
-    if {$fontsize >= [llength $font_measure($fontname)]} {
-        set fontsize [expr [llength $font_measure($fontname)] - 1]
-    }
-    set target_width [expr [lindex $font_measure($fontname) $fontsize] * $zdepth]
-    set new_fontsize [expr {int($fontsize * $zdepth)}]
-    while {[lindex $font_measure($fontname) $new_fontsize] > $target_width} {
+    set target_width [expr [measure_font $fontname $fontsize] * $zdepth]
+    set new_fontsize [expr int($fontsize * $zdepth)]
+    while {$new_fontsize > 0 && [measure_font $fontname $new_fontsize] > $target_width} {
         incr new_fontsize -1
     }
     if {$new_fontsize == 0} {set new_fontsize 1}
@@ -422,12 +468,23 @@ proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
             # scale
             ::pd_canvaszoom::canvas::$c itemconfigure $i -width [scale_width $width $zdepth]
         }
-    }
-}
 
-proc ::pd_canvaszoom::canvasxy {c x y} {
-    set zdepth $::pd_canvaszoom::zdepth($c)
-    return [list [expr int([$c canvasx $x] / $zdepth)] [expr int([$c canvasy $y] / $zdepth)]]
+        # scale height option
+        set height 0
+        # get original height from tags if it was previously recorded
+        foreach {tag} [$c gettags $i] {
+            scan $tag {_h%d} height
+        }
+        # if not, then record current height and use it
+        catch { # protect the case the item doesn't have "-height"
+            if {!$height} {
+                set height [expr ([$c itemcget $i -height] / $oldzdepth)]
+                $c addtag _h$height withtag $i
+            }
+            # scale
+            ::pd_canvaszoom::canvas::$c itemconfigure $i -height [scale_width $height $zdepth]
+        }
+    }
 }
 
 proc ::pd_canvaszoom::getzdepth c {
