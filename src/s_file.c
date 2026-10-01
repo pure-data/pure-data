@@ -40,6 +40,10 @@ static PERTHREAD char *sys_prefbuf;
 static PERTHREAD int sys_prefbufsize;
 static PERTHREAD FILE *sys_prefsavefp;
 
+/* from s_audio.c */
+int sys_audioapidevnametonumber(int output, int api, const char *name);
+
+
 static void sys_initloadpreferences_file(const char *filename)
 {
     int fd;
@@ -690,7 +694,7 @@ void sys_loadpreferences(const char *filename, int startingup)
                 also saved and if it matches one we have now */
             sprintf(keybuf, "audioindevname%d", as.a_nindev+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
-                && (devn = sys_audiodevnametonumber(0, prefbuf)) >= 0)
+                && (devn = sys_audioapidevnametonumber(0, as.a_api, prefbuf)) >= 0)
                     as.a_indevvec[as.a_nindev] = devn;
             as.a_nindev++;
         }
@@ -716,7 +720,7 @@ void sys_loadpreferences(const char *filename, int startingup)
                         break;
             sprintf(keybuf, "audiooutdevname%d", as.a_noutdev+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
-                && (devn = sys_audiodevnametonumber(1, prefbuf)) >= 0)
+                && (devn = sys_audioapidevnametonumber(1, as.a_api, prefbuf)) >= 0)
                     as.a_outdevvec[as.a_noutdev] = devn;
             as.a_noutdev++;
         }

@@ -984,14 +984,14 @@ void sys_get_audio_apis(char *buf)
 /* convert a device name to a (1-based) device number.  (Output device if
 'output' parameter is true, otherwise input device).  Negative on failure. */
 
-int sys_audiodevnametonumber(int output, const char *name)
+int sys_audioapidevnametonumber(int output, int api, const char *name)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i, canmulti, cancallback;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE,
-            audio_nextsettings.a_api);
+            api);
 
     if (output)
     {
@@ -1026,11 +1026,16 @@ int sys_audiodevnametonumber(int output, const char *name)
     return (-1);
 }
 
+int sys_audiodevnametonumber(int output, const char *name)
+{
+    return sys_audioapidevnametonumber(output, audio_nextsettings.a_api, name);
+}
+
 /* convert a (1-based) device number to a device name.  (Output device if
 'output' parameter is true, otherwise input device).  Empty string on failure.
 */
 
-void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
+void sys_audioapidevnumbertoname(int output, int api, int devno, char *name, int namesize)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, canmulti, cancallback;
@@ -1041,11 +1046,15 @@ void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
     }
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE,
-            audio_nextsettings.a_api);
+            api);
     if (output && (devno < noutdevs))
         strncpy(name, outdevlist + devno * DEVDESCSIZE, namesize);
     else if (!output && (devno < nindevs))
         strncpy(name, indevlist + devno * DEVDESCSIZE, namesize);
     else *name = 0;
     name[namesize-1] = 0;
+}
+void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
+{
+    sys_audioapidevnumbertoname(output, audio_nextsettings.a_api, devno, name, namesize);
 }
