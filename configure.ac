@@ -504,34 +504,54 @@ AS_IF([test "${alsa}" = "yes"],[
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 ])
 
-##### JACK FRAMEWORK #####
+##### JACK #####
+AC_ARG_ENABLE([jack],
+    [AS_HELP_STRING([--disable-jack], [(do not) use JACK audio server])],
+    [jack=$enableval], [jack=yes])
 # on macOS, use the JackOSX.com Jackmp.framework not the jack lib by default
 # this is set in src/Makefile.am based on the JACK & JACK_FRAMEWORK vars
 AC_ARG_ENABLE([jack-framework],
     [AS_HELP_STRING([--disable-jack-framework],
         [do not weak link to Jackmp.framework on macOS])],
     [jack_framework=$enableval])
-test "${MACOSX}" = "yes" || jack_framework=no
-AS_IF([test "${jack_framework}" = "yes"],[
-    AC_MSG_NOTICE([Weak linking to Jackmp.framework])
-])
+# frameworks are only for macOS...
+AS_IF([test "${MACOSX}" != yes], [jack_framework=no])
 
-##### JACK #####
-AC_ARG_ENABLE([jack],
-    [AS_HELP_STRING([--disable-jack], [use JACK audio server])],
-    [jack=$enableval], [jack=yes])
-AS_IF([test "${jack_framework}" != "yes" -a "${jack}" = "yes"],[
+AS_IF([test "${jack}" = "yes" ], [
+  AS_IF([test "${jack_framework}" != "yes" ],[
     PKG_CHECK_MODULES([JACK], [jack],[
         AC_MSG_NOTICE([Using JACK as specified by pkg-config])
-        jack=yes
+        have_jack=yes
     ],[
-        AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
-        AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
-        AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
-            [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
-            jack=no])
+        # no pkg-config, do it manually
+        AC_CHECK_HEADERS([jack/jack.h], [
+          AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
+          AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; have_jack=xrun])
+          AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; have_jack=yes],[
+            have_jack=no])
+        ],[
+          have_jack=no
         ])
+    ])
+  ],[
+    # can we use the framework?
+    AC_CHECK_HEADERS([jack/jack.h],[],[
+      have_jack=no
+    ])
+    AC_CHECK_HEADERS([jack/weakjack.h])
+  ])
 ])
+
+AS_IF([test "${have_jack}" = "no"], [
+  AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
+  jack=no
+  # no jack-framework if JACK is disabled
+  jack_framework=no
+])
+AS_IF([test "${jack_framework}" = "yes"],[
+  AC_MSG_NOTICE([Weak linking to Jackmp.framework])
+])
+
 
 ##### MMIO #####
 AC_ARG_ENABLE([mmio],

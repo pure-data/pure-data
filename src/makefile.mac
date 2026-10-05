@@ -54,7 +54,7 @@ LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
 LIB = -ldl -lm -lpthread
 
 ifdef JACK
-CPPFLAGS += -DUSEAPI_JACK
+CPPFLAGS += -DUSEAPI_JACK -DHAVE_JACK_WEAKJACK_H
 SYSSRC += s_audio_jack.c
 LIB += -weak_framework Jackmp
 endif
