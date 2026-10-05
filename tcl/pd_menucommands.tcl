@@ -145,10 +145,10 @@ proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
         raise .font
         focus .font
-    } elseif {$::focused_window eq ".pdwindow"} {
-        pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
-    } else {
+    } elseif {[winfo exists $::focused_window] && [winfo class $::focused_window] eq "PatchWindow"} {
         pdsend "$::focused_window menufont"
+    } else {
+        pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
     }
 }
 
