@@ -402,7 +402,7 @@ int sys_main(int argc, const char **argv)
         else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
         {
             sys_printusage();
-            return (1);
+            return (0);
         }
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
