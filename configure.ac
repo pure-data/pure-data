@@ -538,9 +538,9 @@ AS_IF([test "${jack}" = "yes" ], [
     AC_CHECK_HEADERS([jack/jack.h],[],[
       have_jack=no
     ])
-    AC_CHECK_HEADERS([jack/weakjack.h])
   ])
 ])
+AC_CHECK_HEADERS([jack/weakjack.h])
 
 AS_IF([test "${have_jack}" = "no"], [
   AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])

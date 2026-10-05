@@ -14,7 +14,7 @@
 #include "m_private_utils.h"
 #include "s_stuff.h"
 #include "s_audio_paring.h"
-#if HAVE_JACK_WEAKJACK_H
+#if HAVE_JACK_WEAKJACK_H && (defined __APPLE__)
 # include <jack/weakjack.h>
 #endif
 #if defined _MSC_VER
