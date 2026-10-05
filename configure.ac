@@ -79,7 +79,7 @@ PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not availabl
 
 AS_CASE([$host],
 [*darwin*],[
-    AS_IF([test "x${IPHONEOS}" = "xno"],[
+    AS_IF([test "${IPHONEOS}" = "no"],[
         MACOSX=yes
         platform="Mac OSX"
         deken_os=darwin
@@ -129,7 +129,7 @@ AS_CASE([$host],
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
 ],[*linux*|*kfreebsd*gnu*],[
     # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
-    AS_IF([test "x${ANDROID}" = "xno"],[
+    AS_IF([test "${ANDROID}" = "no"],[
         LINUX=yes
         platform=Linux
         deken_os=linux
@@ -203,7 +203,7 @@ AS_CASE([$host],
     EXTERNAL_EXTENSION=so
 ])
 
-AS_IF([test "x${deken_os}" = "xwindows"],[deken_ext=dll])
+AS_IF([test "${deken_os}" = "windows"],[deken_ext=dll])
 
 
 AS_CASE([$host_cpu],
@@ -217,16 +217,16 @@ AS_CASE([$host_cpu],
     [])
 
 
-AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
-AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
-AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
-AM_CONDITIONAL(HURD, test x$HURD = xyes)
-AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
-AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
-AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
-AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-AM_CONDITIONAL(BSD, test x$BSD = xyes)
-AM_CONDITIONAL(IRIX, test x$IRIX = xyes)
+AM_CONDITIONAL(ANDROID, test "${ANDROID}" = "yes")
+AM_CONDITIONAL(IPHONEOS, test "${IPHONEOS}" = "yes")
+AM_CONDITIONAL(LINUX, test "${LINUX}" = "yes")
+AM_CONDITIONAL(HURD, test "${HURD}" = "yes")
+AM_CONDITIONAL(MACOSX, test "${MACOSX}" = "yes")
+AM_CONDITIONAL(WINDOWS, test "${WINDOWS}" = "yes")
+AM_CONDITIONAL(CYGWIN, test "${CYGWIN}" = "yes")
+AM_CONDITIONAL(MINGW, test "${MINGW}" = "yes")
+AM_CONDITIONAL(BSD, test "${BSD}" = "yes")
+AM_CONDITIONAL(IRIX, test "${IRIX}" = "yes")
 
 
 
@@ -317,7 +317,7 @@ AC_CHECK_FUNCS([dup2 \
 
 dnl qsort_r: do we have it, and if so, which variant?
 AC_CHECK_FUNCS_ONCE([qsort_r], [], [AC_DEFINE([STUPID_SORT], 1)])
-AS_IF([test "${ac_cv_func_qsort_r}" = yes],[
+AS_IF([test "${ac_cv_func_qsort_r}" = "yes"],[
   AC_CACHE_CHECK([for qsort_r signature], [ac_cv_libctf_qsort_r_signature],
     [AC_LINK_IFELSE(
        [AC_LANG_PROGRAM([[#undef qsort_r
@@ -359,22 +359,22 @@ AC_CACHE_CHECK([whether isnan() is usable], have_isnan, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isnan(0.0);                     /* Generates an error if isnan is missing */
 ]])],[have_isnan=yes],[have_isnan=no])])
-AS_IF([test "${have_isnan}" = no], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
+AS_IF([test "${have_isnan}" = "no"], AC_DEFINE([NO_ISNAN], 1, [Do we have no usable 'isnan'?]))
 AC_CACHE_CHECK([whether isinf() is usable], have_isinf, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isinf(0.0);                     /* Generates an error if isinf is missing */
 ]])],[have_isinf=yes],[have_isinf=no])])
-AS_IF([test "${have_isinf}" = no], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
+AS_IF([test "${have_isinf}" = "no"], AC_DEFINE([NO_ISINF], 1, [Do we have no usable 'isinf'?]))
 AC_CACHE_CHECK([whether isfinite() is usable], have_isfinite, [
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]], [[
 isfinite(0.0);                     /* Generates an error if isfinite is missing */
 ]])],[have_isfinite=yes],[have_isfinite=no])])
-AS_IF([test "${have_isfinite}" = no], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
+AS_IF([test "${have_isfinite}" = "no"], AC_DEFINE([NO_ISFINITE], 1, [Do we have no usable 'isfinite'?]))
 
 # Checks for libraries.
 have_dl=yes
 AC_SEARCH_LIBS([dlopen], [dl dld], [], [have_dl=no])
-AS_IF([test "x${have_dl}" = "xyes"], AC_DEFINE([HAVE_DLOPEN], 1))
+AS_IF([test "${have_dl}" = "yes"], AC_DEFINE([HAVE_DLOPEN], 1))
 
 AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
@@ -411,21 +411,21 @@ AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
     [debug=$enableval], [debug=no])
-AS_IF([test x$debug = xyes],[
+AS_IF([test "${debug}" = "yes"],[
     PD_CFLAGS="$DEBUG_CFLAGS $PD_CFLAGS"
 ],[
     PD_CFLAGS="$RELEASE_CFLAGS $PD_CFLAGS"
     PD_CPPFLAGS="-DNDEBUG $PD_CPPFLAGS"
 ])
 
-AS_IF([test "x${debug}" = "xyes" -a "x${WINDOWS}" = "xyes" ],[
+AS_IF([test "${debug}" = "yes" -a "${WINDOWS}" = "yes" ],[
     msw_strip="-n"
     ],[
     msw_strip=""
     ])
 
 ##### macOS version min #####
-AS_IF([test "x$macos_version_min" != "x"],[
+AS_IF([test -n "$macos_version_min"],[
     PD_CFLAGS="-mmacosx-version-min=$macos_version_min $PD_CFLAGS"
 ])
 
@@ -438,8 +438,8 @@ PKG_PROG_PKG_CONFIG
 ##### realtime watchdog #####
 AC_ARG_ENABLE([watchdog],
     [AS_HELP_STRING([--enable-watchdog], [additionally build watchdog])],,enable_watchdog="$watchdog")
-AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
-AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
+AS_IF([test "${enable_watchdog}" != "yes"],[enable_watchdog=no])
+AM_CONDITIONAL(PD_WATCHDOG, test "${enable_watchdog}" = "yes")
 
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
@@ -453,16 +453,16 @@ AC_ARG_ENABLE([libpd-extra],
 AC_ARG_ENABLE([libpd-setlocale],
     [AS_HELP_STRING([--disable-libpd-setlocale], [prevent libpd from calling setlocale() - if you need to control LC_NUMERIC manually ])])
 
-AM_CONDITIONAL(LIBPD, test x$enable_libpd = xyes)
-AM_CONDITIONAL(LIBPD_UTILS, test x$enable_libpd_utils = xyes)
-AM_CONDITIONAL(LIBPD_EXTRA, test x$enable_libpd_extra = xyes)
-AM_CONDITIONAL(LIBPD_MULTIINSTANCE, test x$enable_libpd_instance = xyes)
-AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
+AM_CONDITIONAL(LIBPD, test "${enable_libpd}" = "yes")
+AM_CONDITIONAL(LIBPD_UTILS, test "${enable_libpd_utils}" = "yes")
+AM_CONDITIONAL(LIBPD_EXTRA, test "${enable_libpd_extra}" = "yes")
+AM_CONDITIONAL(LIBPD_MULTIINSTANCE, test "${enable_libpd_instance}" = "yes")
+AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test "${enable_libpd_setlocale}" = "no")
 
 ##### Universal/multi architecture build on macOS #####
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
-AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
-AS_IF([test x$universal = xyes],[
+AM_CONDITIONAL(UNIVERSAL, test "${universal}" = "yes")
+AS_IF([test "${universal}" = "yes"],[
     PD_CFLAGS="$ARCH_CFLAGS $PD_CFLAGS"
     PD_LDFLAGS="$ARCH_LDFLAGS $PD_LDFLAGS"
 ])
@@ -473,14 +473,14 @@ AC_ARG_ENABLE([locales],
     [AS_HELP_STRING([--disable-locales],
         [do not compile localizations (requires gettext)])],
     [locales=$enableval])
-AS_IF([test x$locales = xyes],[
+AS_IF([test "${locales}" = "yes"],[
     AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
-    AS_IF([test x$HAVE_MSGFMT = xno],[
+    AS_IF([test "${HAVE_MSGFMT}" = "no"],[
         AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
         locales=no
     ])
 ])
-AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
+AM_CONDITIONAL(MSGFMT, test "${HAVE_MSGFMT}" = "yes")
 
 ##### OSS #####
 # Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
@@ -488,7 +488,7 @@ AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 AC_ARG_ENABLE([oss],
     [AS_HELP_STRING([--disable-oss], [do not use OSS driver])],
     [oss=$enableval], [oss=yes])
-AS_IF([test x$oss = xyes],[
+AS_IF([test "${oss}" = "yes"],[
     oss=no
     AC_CHECK_HEADERS([sys/soundcard.h soundcard.h], [oss=yes; break])
     AC_CHECK_LIB([ossaudio], [_oss_ioctl], [OSS_LIBS="-lossaudio"])
@@ -500,7 +500,7 @@ AS_IF([test x$oss = xyes],[
 AC_ARG_ENABLE([alsa],
     [AS_HELP_STRING([--disable-alsa], [do not use ALSA audio driver])],
     [alsa=$enableval], [alsa=yes])
-AS_IF([test x$alsa = xyes],[
+AS_IF([test "${alsa}" = "yes"],[
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 ])
 
@@ -511,8 +511,8 @@ AC_ARG_ENABLE([jack-framework],
     [AS_HELP_STRING([--disable-jack-framework],
         [do not weak link to Jackmp.framework on macOS])],
     [jack_framework=$enableval])
-test x$MACOSX = xyes || jack_framework=no
-AS_IF([test x$jack_framework = xyes],[
+test "${MACOSX}" = "yes" || jack_framework=no
+AS_IF([test "${jack_framework}" = "yes"],[
     AC_MSG_NOTICE([Weak linking to Jackmp.framework])
 ])
 
@@ -520,7 +520,7 @@ AS_IF([test x$jack_framework = xyes],[
 AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--disable-jack], [use JACK audio server])],
     [jack=$enableval], [jack=yes])
-AS_IF([test x$jack_framework != xyes -a x$jack = xyes],[
+AS_IF([test "${jack_framework}" != "yes" -a "${jack}" = "yes"],[
     PKG_CHECK_MODULES([JACK], [jack],[
         AC_MSG_NOTICE([Using JACK as specified by pkg-config])
         jack=yes
@@ -537,16 +537,16 @@ AS_IF([test x$jack_framework != xyes -a x$jack = xyes],[
 AC_ARG_ENABLE([mmio],
     [AS_HELP_STRING([--disable-mmio], [do not use MMIO driver])],
     [mmio=$enableval])
-test x$WINDOWS = xyes || mmio=no
+test "${WINDOWS}" = "yes" || mmio=no
 
 ##### ASIO #####
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
     [asio=$enableval])
-test x$WINDOWS = xyes || asio=no
-AS_IF([test x$asio = xyes],
+test "${WINDOWS}" = "yes" || asio=no
+AS_IF([test "${asio}" = "yes"],
     test -f "${srcdir}"/asio/ASIOSDK/common/asio.h || asio=no
-    AS_IF([test x$asio = xno],
+    AS_IF([test "${asio}" = "no"],
         AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
 
@@ -554,7 +554,7 @@ AS_IF([test x$asio = xyes],
 AC_ARG_ENABLE([wasapi],
     [AS_HELP_STRING([--disable-wasapi], [do not use WASAPI backend])],
     [wasapi=$enableval])
-test x$WINDOWS = xyes || wasapi=no
+test "${WINDOWS}" = "yes" || wasapi=no
 
 ##### Apple's CoreAudio #####
 # not used directly, implicitly needed when using PortAudio on OSX
@@ -568,13 +568,13 @@ AC_ARG_WITH([local-portaudio],
     [AS_HELP_STRING([--without-local-portaudio],
         [do not use the portaudio included with Pd])],
     [local_portaudio=$withval])
-AS_IF([test x$portaudio = xyes],[
-    AS_IF([test x$local_portaudio = xno],[
+AS_IF([test "${portaudio}" = "yes"],[
+    AS_IF([test "${local_portaudio}" = "no"],[
         # fall back to local portaudio if not foud
         AC_CHECK_LIB([portaudio], [Pa_Initialize],
             [AC_MSG_NOTICE([Using system PortAudio])], [local_portaudio=yes])
     ])
-    AS_IF([test x$local_portaudio = xyes],[
+    AS_IF([test "${local_portaudio}" = "yes"],[
         AS_IF([test -d "$srcdir/portaudio"],[
             AC_MSG_NOTICE([Using included PortAudio])
         ],[
@@ -593,17 +593,17 @@ AC_ARG_WITH([local-portmidi],
         [do not use the portmidi included with Pd])],
     [local_portmidi=$withval])
 # don't allow portmidi if already using oss
-AS_IF([test x$oss = xyes -a x$portmidi != xno],
+AS_IF([test "${oss}" = "yes" -a "${portmidi}" != "no"],
   [AC_MSG_WARN([Cannot enable both OSS-midi and PortMidi... preferring OSS])
   portmidi=no])
-AS_IF([test x$portmidi = xyes],[
-    AS_IF([test x$local_portmidi = xno],[
+AS_IF([test "${portmidi}" = "yes"],[
+    AS_IF([test "${local_portmidi}" = "no"],[
         # fall back to local portmidi if not foud
         AC_CHECK_LIB([portmidi], [Pm_Initialize],
             [AC_MSG_NOTICE([Using system PortMidi])], [local_portmidi=yes])
     ])
-    AS_IF([test x$local_portmidi = xyes],[
-        AS_IF([test -d "$srcdir/portmidi"],[
+    AS_IF([test "${local_portmidi}" = "yes"],[
+        AS_IF([test -d "${srcdir}/portmidi"],[
             AC_MSG_NOTICE([Using included PortMidi])
         ],[
             AC_MSG_WARN([PortMidi not found in Pd source directory])
@@ -616,7 +616,7 @@ AS_IF([test x$portmidi = xyes],[
 AC_ARG_ENABLE([sgi],
     [AS_HELP_STRING([--disable-sgi], [do not use SGI audio driver])],
     [sgi=$enableval], [sgi=yes])
-AS_IF([test x$sgi = xyes],[
+AS_IF([test "${sgi}" = "yes"],[
     AC_CHECK_HEADERS([dmedia/audio.h], [
         AC_CHECK_LIB([audio], [alNewConfig], [SGI_LIBS="-laudio ${SGI_LIBS}"], [sgi=no])
     ], [sgi=no])
@@ -629,7 +629,7 @@ AS_IF([test x$sgi = xyes],[
 AC_ARG_ENABLE([fftw],
     [AS_HELP_STRING([--enable-fftw], [use FFTW package])],
     [fftw=$enableval], [fftw=no])
-AS_IF([test x$fftw = xyes],[
+AS_IF([test "${fftw}" = "yes"],[
     PKG_CHECK_MODULES([FFTW], [fftw3f],[],[
     AC_CHECK_LIB([fftw3f], [fftwf_execute],
         [FFTW_LIBS="-lfftw3f"],
@@ -637,7 +637,7 @@ AS_IF([test x$fftw = xyes],[
         fftw=no])
     ])
 ])
-AM_CONDITIONAL(FFTW, test x$fftw = xyes)
+AM_CONDITIONAL(FFTW, test "${fftw}" = "yes")
 
 
 ###### IPv6 #####
@@ -645,7 +645,7 @@ AC_MSG_CHECKING([whether to enable IPv6])
 AC_ARG_ENABLE([ipv6],
     [AS_HELP_STRING([--disable-ipv6], [(don't) use IPv6])],
     [enable_ipv6=$enableval], [enable_ipv6=yes])
-AS_IF([test "${enable_ipv6}" = no], AC_DEFINE([DISABLE_IPV6], 1, [Disable IPv6 networking]))
+AS_IF([test "${enable_ipv6}" = "no"], AC_DEFINE([DISABLE_IPV6], 1, [Disable IPv6 networking]))
 AC_MSG_RESULT([${enable_ipv6}])
 
 ##### Wish #####
@@ -653,7 +653,7 @@ AC_ARG_WITH([wish],
     [AS_HELP_STRING([--with-wish=WISH],
         [which Tk Wish application to use for the Pd GUI])],
     [WISH=$withval])
-AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
+AS_IF([test "${WISH}" = "yes" -o "${WISH}" = "no"],
     [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
     WISH=""])
 AC_SUBST([WISH])
@@ -662,37 +662,37 @@ AC_SUBST([WISH])
 AC_ARG_WITH([gtk],
     [AS_HELP_STRING([--with-gtk], [build the GTK4 interface])],
     [gtk=$withval], [gtk=no])
-AS_IF([test "$gtk" = yes],[
-  PKG_CHECK_MODULES([GTK], [gtk4], [], [gtk = no])
+AS_IF([test "$gtk" = "yes"],[
+  PKG_CHECK_MODULES([GTK], [gtk4], [], [gtk=no])
 ])
-AS_IF([test "$gtk" = yes],[
+AS_IF([test "$gtk" = "yes"],[
   PKG_CHECK_MODULES([TCL], [tcl], [], [
     AC_MSG_WARN([The GTK4 requires Tcl-headers to be installed])
-    gtk = no
+    gtk=no
   ])
 ])
-AM_CONDITIONAL(GTK, test x$gtk = xyes)
+AM_CONDITIONAL(GTK, test "${gtk}" = "yes")
 
 ##### Deken OS and CPU #####
 AC_ARG_WITH([deken-os],
     [AS_HELP_STRING([--with-deken-os=<OS>],
         [Operating System string to use for externals (e.g. Linux, Windows, Darwin,...)])],
     [DEKEN_OS=$withval])
-AS_IF([test "x${DEKEN_OS}" = "xyes" -o "x${DEKEN_OS}" = "xno"],
+AS_IF([test "${DEKEN_OS}" = "yes" -o "${DEKEN_OS}" = "no"],
     [AC_MSG_NOTICE([--with-deken-os requires an Operating System, ignoring '${DEKEN_OS}'])
     DEKEN_OS=""])
 AC_SUBST([DEKEN_OS])
-AS_IF([test "x${DEKEN_OS}" != "x"], [deken_os="${DEKEN_OS}"])
+AS_IF([test -n "${DEKEN_OS}"], [deken_os="${DEKEN_OS}"])
 
 AC_ARG_WITH([deken-cpu],
     [AS_HELP_STRING([--with-deken-cpu=<CPU>],
         [CPU architecture string to use for externals (e.g. amd64, i386, arm64,...)])],
     [DEKEN_CPU=$withval])
-AS_IF([test "x${DEKEN_CPU}" = "xyes" -o "x${DEKEN_CPU}" = "xno"],
+AS_IF([test "${DEKEN_CPU}" = "yes" -o "${DEKEN_CPU}" = "no"],
     [AC_MSG_NOTICE([--with-deken-cpu requires a CPU, ignoring '${DEKEN_CPU}'])
     DEKEN_CPU=""])
 AC_SUBST([DEKEN_CPU])
-AS_IF([test "x${DEKEN_CPU}" != "x"], [deken_cpu="${DEKEN_CPU}"])
+AS_IF([test -n "${DEKEN_CPU}"], [deken_cpu="${DEKEN_CPU}"])
 
 
 ###### floatsize ########
@@ -713,7 +713,7 @@ AS_CASE([${floatsize}],
         AC_MSG_WARN([${floatsize}bit floats not supported...use fallback])
         floatsize=""
     ])
-AS_IF([test "x${floatsize}" != "x" ],
+AS_IF([test -n "${floatsize}" ],
    [
     PD_CPPFLAGS="-DPD_FLOATSIZE=${floatsize} $PD_CPPFLAGS"
     AC_MSG_RESULT([${floatsize}])
@@ -743,7 +743,7 @@ AS_CASE([${floatsize}],
       ])])
 
 # on Windows, we need to link against a (floatsize-decorated) pd.dll
-AS_IF([test "x${WINDOWS}" = "xyes" ],[
+AS_IF([test "${WINDOWS}" = "yes" ],[
    EXTERNAL_LDFLAGS="${EXTERNAL_LDFLAGS} -l${pd_transformed}"
 ])
 
@@ -754,10 +754,10 @@ AC_ARG_WITH([external-extension],
     [AS_HELP_STRING([--with-external-extension=<EXT>],
         [Extension to use for externals in extra/ (e.g. pd_linux, dll, d_fat,...)])],
     [ext="${withval#.}"])
-AS_IF([test "x${ext}" = "xyes" -o "x${ext}" = "xno"],
+AS_IF([test "${ext}" = "yes" -o "${ext}" = "no"],
     [AC_MSG_NOTICE([--with-external-extension requires an extension, ignoring '${ext}'])
     ext=""])
-AS_IF([test "x${ext}" != "x"], [EXTERNAL_EXTENSION="${ext}"])
+AS_IF([test -n "${ext}"], [EXTERNAL_EXTENSION="${ext}"])
 
 
 
@@ -767,63 +767,63 @@ AS_IF([test "x${ext}" != "x"], [EXTERNAL_EXTENSION="${ext}"])
 ##### OSS #####
 # Cygwin has a function OSS /dev/dsp, but not MIDI,
 # and Pd is only set up to handle a single MIDI API
-AS_IF([test x$WINDOW = xyes -a x$oss != xno],
+AS_IF([test "${WINDOW}" = "yes" -a "${oss}" != "no"],
   [AC_MSG_WARN([OSS not working on W32... disabling]) ; oss=no])
-AM_CONDITIONAL(OSS, test x$oss = xyes)
-AS_IF([test x$oss = xyes], [audio_backends="OSS ${audio_backends}"])
-AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
+AM_CONDITIONAL(OSS, test "${oss}" = "yes")
+AS_IF([test "${oss}" = "yes"], [audio_backends="OSS ${audio_backends}"])
+AS_IF([test "${oss}" = "yes"], [midi_backends="OSS ${midi_backends}"])
 
 ##### ALSA #####
-AM_CONDITIONAL(ALSA, test x$alsa = xyes)
-AS_IF([test x$alsa = xyes], [audio_backends="ALSA ${audio_backends}"])
-AS_IF([test x$alsa = xyes], [midi_backends="ALSA ${midi_backends}"])
+AM_CONDITIONAL(ALSA, test "${alsa}" = "yes")
+AS_IF([test "${alsa}" = "yes"], [audio_backends="ALSA ${audio_backends}"])
+AS_IF([test "${alsa}" = "yes"], [midi_backends="ALSA ${midi_backends}"])
 
 ##### JACK #####
-AM_CONDITIONAL(JACK, test x$jack = xyes)
-AM_CONDITIONAL(JACK_FRAMEWORK, test x$jack_framework = xyes)
-AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
+AM_CONDITIONAL(JACK, test "${jack}" = "yes")
+AM_CONDITIONAL(JACK_FRAMEWORK, test "${jack_framework}" = "yes")
+AS_IF([test "${jack}" = "yes"], [audio_backends="JACK ${audio_backends}"])
 
 ##### MMIO #####
-AM_CONDITIONAL(MMIO, test x$mmio = xyes)
-AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
-dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
+AM_CONDITIONAL(MMIO, test "${mmio}" = "yes")
+AS_IF([test "${mmio}" = "yes"], [audio_backends="MMIO ${audio_backends}"])
+dnl AS_IF([test "${mmio}" = "yes"], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
-AM_CONDITIONAL(ASIO, test x$asio = xyes)
-AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
+AM_CONDITIONAL(ASIO, test "${asio}" = "yes")
+AS_IF([test "${asio}" = "yes"], [audio_backends="ASIO ${audio_backends}"])
 
 ##### WASAPI #####
-AM_CONDITIONAL(WASAPI, test x$wasapi = xyes)
-AS_IF([test x$wasapi = xyes], [audio_backends="WASAPI ${audio_backends}"])
+AM_CONDITIONAL(WASAPI, test "${wasapi}" = "yes")
+AS_IF([test "${wasapi}" = "yes"], [audio_backends="WASAPI ${audio_backends}"])
 
 ##### CoreAudio #####
 # portaudio doesn't work with iOS, so don't bother with CoreAudio
-AS_IF([test x$IPHONEOS = xyes -a x$coreaudio != xno],
+AS_IF([test "${IPHONEOS}" = "yes" -a "${coreaudio}" != "no"],
   [AC_MSG_WARN([PortAudio not working on iOS... disabling CoreAudio])
   coreaudio=no])
-AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
+AM_CONDITIONAL(COREAUDIO, test "${coreaudio}" = "yes")
 
 ##### PortAudio #####
-AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
-AM_CONDITIONAL(LOCAL_PORTAUDIO, test x$local_portaudio = xyes)
-AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
+AM_CONDITIONAL(PORTAUDIO, test "${portaudio}" = "yes")
+AM_CONDITIONAL(LOCAL_PORTAUDIO, test "${local_portaudio}" = "yes")
+AS_IF([test "${portaudio}" = "yes"], [audio_backends="PortAudio ${audio_backends}"])
 
 ##### PortMidi #####
-AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-AM_CONDITIONAL(LOCAL_PORTMIDI, test x$local_portmidi = xyes)
-AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
+AM_CONDITIONAL(PORTMIDI, test "${portmidi}" = "yes")
+AM_CONDITIONAL(LOCAL_PORTMIDI, test "${local_portmidi}" = "yes")
+AS_IF([test "${portmidi}" = "yes"], [midi_backends="PortMidi ${midi_backends}"])
 
 ##### SGI #####
-AM_CONDITIONAL(SGI, test "x$sgi" = "xyes")
-AS_IF([test x$sgi = xyes], [audio_backends="SGI ${audio_backends}"])
-AM_CONDITIONAL(SGI, test "x$sgi" = "xyes")
-AS_IF([test "x$sgi" = "xyes"], [midi_backends="SGI ${midi_backends}"])
+AM_CONDITIONAL(SGI, test "${sgi}" = "yes")
+AS_IF([test "${sgi}" = "yes"], [audio_backends="SGI ${audio_backends}"])
+AM_CONDITIONAL(SGI, test "${sgi}" = "yes")
+AS_IF([test "${sgi}" = "yes"], [midi_backends="SGI ${midi_backends}"])
 
 
 ##### DUMMY #####
 # warn if we end up trying to build without an audio or midi api
-AM_CONDITIONAL(AUDIO_DUMMY, test "x$audio_backends" = "x")
-AS_IF([test "x$audio_backends" = "x"],[
+AM_CONDITIONAL(AUDIO_DUMMY, test -z "${audio_backends}")
+AS_IF([test -z "${audio_backends}"],[
     AC_MSG_WARN([No audio API specified or detected])
     audio_backends="NONE!"
 ])
@@ -834,8 +834,8 @@ AS_IF([echo "${midi_backends}" | grep -i "\<OSS\>" >/dev/null],[needs_midi_dummy
 AS_IF([echo "${midi_backends}" | grep -i "\<PortMidi\>" >/dev/null],[needs_midi_dummy="no"])
 AS_IF([echo "${midi_backends}" | grep -i "\<SGI\>" >/dev/null],[needs_midi_dummy="no"])
 
-AM_CONDITIONAL(MIDI_DUMMY, test "x${needs_midi_dummy}" = "xyes")
-AS_IF([test "x$midi_backends" = "x"],[
+AM_CONDITIONAL(MIDI_DUMMY, test "${needs_midi_dummy}" = "yes")
+AS_IF([test -z "${midi_backends}"],[
     AC_MSG_WARN([No MIDI API specified or detected])
     midi_backends="NONE!"
 ])
@@ -843,8 +843,8 @@ AS_IF([test "x$midi_backends" = "x"],[
 ##### Wish #####
 # add contextual info when adding a custom WISH path on macOS,
 # other platforms use a single path so it's enough to print $wish as it is
-AS_IF([test ! "x${WISH}" = "x"],[
-    AS_IF([test x"$MACOSX" = x"yes"], [
+AS_IF([test "-n ${WISH}" ],[
+    AS_IF([test "${MACOSX}" = "yes"], [
         wish="prepending ${WISH} to search paths"
     ],[
         wish="${WISH}"
@@ -852,14 +852,14 @@ AS_IF([test ! "x${WISH}" = "x"],[
 ])
 
 ##### libpd #####
-AS_IF([test "x${enable_libpd}" = "xyes"],[
+AS_IF([test "${enable_libpd}" = "yes"],[
     libpd="yes"
     libpd_=""
-    AS_IF([test "x${enable_libpd_instance}" = "xyes"],[ libpd_="${libpd_}+multi "])
-    AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
-    AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
-    AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
-    AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd} ( ${libpd_})"])
+    AS_IF([test "${enable_libpd_instance}" = "yes"],[ libpd_="${libpd_}+multi "])
+    AS_IF([test "${enable_libpd_utils}" = "yes"],[ libpd_="${libpd_}+utils "])
+    AS_IF([test "${enable_libpd_extra}" = "yes"],[ libpd_="${libpd_}+extra "])
+    AS_IF([test "${enable_libpd_setlocale}" = "no"],[ libpd_="${libpd_}-setlocale "])
+    AS_IF([test -n "${libpd_}"],[ libpd="${libpd} ( ${libpd_})"])
 ],[
     libpd="no"
 ])
@@ -939,24 +939,24 @@ AC_MSG_NOTICE([
     libpd:                ${libpd}
 ])
 
-AS_IF([test "x${enable_locales}" = xyes -a "x${locales}" = xno ],
+AS_IF([test "${enable_locales}" = "yes" -a "${locales}" = "no" ],
  AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))
-AS_IF([test "x${enable_oss}" = xyes -a "x${oss}" = xno ],
+AS_IF([test "${enable_oss}" = "yes" -a "${oss}" = "no" ],
  AC_MSG_WARN([OSS requested but no development files found... disabled]))
-AS_IF([test "x${enable_alsa}" = xyes -a "x${alsa}" = xno ],
+AS_IF([test "${enable_alsa}" = "yes" -a "${alsa}" = "no" ],
  AC_MSG_WARN([ALSA requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test "x${enable_jack}" = xyes -a "x${jack}" = xno ],
+AS_IF([test "${enable_jack}" = "yes" -a "${jack}" = "no" ],
  AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test "x${enable_jack_framework}" = xyes -a "x${jack_jack}" != xyes ],
+AS_IF([test "${enable_jack_framework}" = "yes" -a "${jack_jack}" != "yes" ],
  AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
-AS_IF([test "x${enable_mmio}" = xyes -a "x${mmio}" = xno ],
+AS_IF([test "${enable_mmio}" = "yes" -a "${mmio}" = "no" ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
-AS_IF([test "x${enable_asio}" = xyes -a "x${asio}" = xno ],
+AS_IF([test "${enable_asio}" = "yes" -a "${asio}" = "no" ],
  AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
 
 # TODO portaudio
 
-AS_IF([test "x${enable_fftw}" = xyes -a "x${fftw}" = xno ],
+AS_IF([test "${enable_fftw}" = "yes" -a "${fftw}" = "no" ],
  AC_MSG_WARN([FFTW requested but no development files found... disabled]))
 
 AS_CASE([${floatsize}],
