@@ -8,6 +8,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 PATCHES = \
     complex-mod~.pd \
     hilbert~.pd \
+    filtercoeff.pd \
     rev1-final.pd \
     rev1~.pd \
     rev1-stage.pd \
@@ -17,6 +18,7 @@ PATCHES = \
 
 HELPPATCHES = \
     complex-mod~-help.pd \
+    filtercoeff-help.pd \
     hilbert~-help.pd \
     rev1~-help.pd \
     rev2~-help.pd \
