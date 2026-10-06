@@ -739,10 +739,12 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 
 void rtext_select(t_rtext *x, int state)
 {
+    t_canvas *c = glist_getcanvas(x->x_glist);
     pdgui_vmess(0, "crs rk",
-        glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
+        c, "itemconfigure", x->x_tag,
         "-fill", (state? THISGUI->i_selectcolor:
             THISGUI->i_foregroundcolor));
+    glist_update_selection(c, x->x_tag, state);
 }
 
 void rtext_activate(t_rtext *x, int state)

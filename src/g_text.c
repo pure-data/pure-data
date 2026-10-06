@@ -1355,6 +1355,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
                 buf,
                 "-fill", (state? THISGUI->i_selectcolor :
                     THISGUI->i_foregroundcolor));
+            glist_update_selection(glist, buf, state);
         }
     }
 }

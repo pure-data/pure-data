@@ -569,6 +569,21 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     }
 }
 
+proc ::pdtk_canvas::update_selection {c state tags} {
+    if {![winfo exists ${c}]} {
+        return
+    }
+    if { ${state} } {
+        foreach t ${tags} {
+            ${c} addtag "selected" withtag ${t}
+        }
+    } else {
+        foreach t ${tags} {
+            ${c} dtag ${t} "selected"
+        }
+    }
+}
+
 # ------------------- convenience functions ----------------
 
 # IEM GUIs make heavy use of double-tagging (one for the graphical element,
