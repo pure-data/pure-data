@@ -80,7 +80,6 @@ typedef struct _patchlist
 static t_namelist *tmp_externlist = 0;
 static t_patchlist *sys_openlist = 0;
 static t_namelist *sys_messagelist = 0;
-static int sys_version;
 int sys_oldtclversion;      /* hack to warn g_rtext.c about old text sel */
 
 int sys_nmidiout = -1;
@@ -325,12 +324,24 @@ static void sys_init_paths(void);
 static void sys_printusage(void);
 void sys_init_audio(void);  /* bad that init_midi is here but init_audio not */
 
+static void print_info(int verbose, int version)
+{
+    if (verbose || version)
+#ifdef COMPILEDATE
+        fprintf(stderr, "%s compiled %s %s\n",
+            pd_version, pd_compiletime, pd_compiledate);
+#else
+        fprintf(stderr, "%s\n", pd_version);
+#endif
 
+    if (verbose)
+        fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
+}
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
 {
-    int i, noprefs, ret;
+    int i, noprefs, ret, do_version=0, do_verbose=0;
     const char *prefsfile = "";
     char cwd[MAXPDSTRING];
     t_namelist *nl;
@@ -392,37 +403,42 @@ int sys_main(int argc, const char **argv)
         /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
-        if (!strcmp(argv[i], "-prefs"))
+        else if (!strcmp(argv[i], "-prefs"))
             noprefs = 0;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
+        {
             prefsfile = argv[i+1];
+            i++;
+        }
         /* for external scheduler (to ignore audio api in sys_loadpreferences) */
         else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
+        {
             sys_externalschedlib = 1;
+            i++;
+        }
+        else if (!strcmp(argv[i], "-verbose"))
+            do_verbose++;
+        else if (!strcmp(argv[i], "-noverbose"))
+            do_verbose--;
+        else if (!strcmp(argv[i], "-version"))
+            do_version = 1;
         else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
         {
             sys_printusage();
             return (0);
         }
     }
-    if (!noprefs)       /* load preferences before parsing args to allow ... */
-        sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
-    if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
-        return (1);
-    if (sys_verbose || sys_version)
-#ifdef COMPILEDATE
-        fprintf(stderr, "%s compiled %s %s\n",
-            pd_version, pd_compiletime, pd_compiledate);
-#else
-        fprintf(stderr, "%s\n", pd_version);
-#endif
-    if (sys_verbose)
-        fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
-    if (sys_version)    /* if we were just asked our version, exit here. */
+    print_info(do_verbose, do_version);
+    if(do_version)    /* if we were just asked for our version, exit here. */
     {
         fflush(stderr);
         return (0);
     }
+    if (!noprefs)       /* load preferences before parsing args to allow ... */
+        sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
+    if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
+        return (1);
+
     sys_setsignalhandlers();
     sys_init_paths();   /* set paths before starting GUI which wants them */
     if (!sys_dontstartgui &&
@@ -1289,7 +1305,7 @@ int sys_argparse(int argc, const char **argv)
         }
         else if (!strcmp(*argv, "-version"))
         {
-            sys_version = 1;
+                /* handled in the pre-scan */
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-d") && argc > 1 &&
