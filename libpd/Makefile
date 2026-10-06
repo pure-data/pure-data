@@ -93,7 +93,7 @@ PDSRC = d_arithmetic.c d_array.c d_ctl.c d_dac.c d_delay.c d_fft.c \
         m_atom.c m_binbuf.c m_class.c m_conf.c m_glob.c m_memory.c m_obj.c \
         m_pd.c m_sched.c \
         s_audio.c s_audio_dummy.c s_inter.c s_inter_gui.c s_loader.c s_main.c \
-        s_net.c s_path.c  s_print.c s_utf8.c \
+        s_net.c s_path.c  s_print.c s_task.c s_utf8.c \
         x_acoustics.c x_arithmetic.c x_array.c x_connective.c x_file.c x_gui.c \
         x_interface.c x_list.c x_midi.c x_misc.c x_net.c x_scalar.c x_text.c \
         x_time.c x_vexp.c x_vexp_if.c x_vexp_fun.c

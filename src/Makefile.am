@@ -171,6 +171,7 @@ pd_SOURCES_core = \
     s_net.c \
     s_path.c \
     s_print.c \
+    s_task.c \
     s_utf8.c \
     x_acoustics.c \
     x_arithmetic.c \
