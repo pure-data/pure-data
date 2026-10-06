@@ -28,6 +28,14 @@ array set ::pdtk_canvas::::window_fullname {}
 
 array set ::pdtk_canvas::geometry_needs_init {}
 
+
+array set ::pdtk_canvas::colors {
+    foreground #000000
+    background #ffffff
+    selection  #0000ff
+    gop        #ff0000
+}
+
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
 # but not the same thing.  In Pd code, a 'canvas' is basically a patch, while
@@ -109,6 +117,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
         set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
     }
 
+    set ::pdtk_canvas::colors(foreground) ${fgcolor}
+    set ::pdtk_canvas::colors(background) ${bgcolor}
+
     # scale window size to default zoom level
     set zoom [::pd_canvaszoom::steps2depth $::pd_canvaszoom::default_zoom]
     set width [expr int($width * $zoom)]
@@ -169,6 +180,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
     set ::editingtext($mytoplevel) 0
     set ::childwindows($mytoplevel) {}
 
+    set ::pdtk_canvas::colors(foreground,${tkcanvas}) ${fgcolor}
+    set ::pdtk_canvas::colors(background,${tkcanvas}) ${bgcolor}
+
     # this should be at the end so that the window and canvas are all ready
     # before this variable changes.
     set ::editmode($mytoplevel) $editable
@@ -182,11 +196,32 @@ proc pdtk_canvas_raise {mytoplevel} {
     focus $mycanvas
 }
 
-proc ::pdtk_canvas::pdtk_canvas_setcolors {mytoplevel bgcolor fgcolor} {
+proc ::pdtk_canvas::getcolor {cnv type} {
+    if {[info exists ::pdtk_canvas::colors(${type},${cnv})]} {
+        return $::pdtk_canvas::colors(${type},${cnv})
+    }
+    return $::pdtk_canvas::colors(${type})
+}
+
+proc ::pdtk_canvas::pdtk_canvas_setcolors {mytoplevel bgcolor fgcolor {selcolor {}} {gopcolor {}} } {
+
+    if { ${selcolor} eq {} } {set selcolor [array get ::pdtk_canvas::colors(selection)]}
+    if { ${gopcolor} eq {} } {set gopcolor [array get ::pdtk_canvas::colors(gop)]}
+    set ::pdtk_canvas::colors(foreground) ${fgcolor}
+    set ::pdtk_canvas::colors(background) ${bgcolor}
+    set ::pdtk_canvas::colors(selection) ${selcolor}
+    set ::pdtk_canvas::colors(gop) ${gopcolor}
+
     set cv [tkcanvas_name $mytoplevel]
     if {![winfo exists $cv]} {
         return
     }
+
+    set ::pdtk_canvas::colors(foreground,$cv) ${fgcolor}
+    set ::pdtk_canvas::colors(background,$cv) ${bgcolor}
+    set ::pdtk_canvas::colors(selection,$cv) ${selcolor}
+    set ::pdtk_canvas::colors(gop,$cv) ${gopcolor}
+
     $cv configure -background $bgcolor -insertbackground $fgcolor
 }
 
