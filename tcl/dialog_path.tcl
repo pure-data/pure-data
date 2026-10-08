@@ -27,8 +27,7 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
     set ::sys_verbose $verbose
     if {[winfo exists $mytoplevel]} {
         # this doesn't seem to be called...
-        wm deiconify $mytoplevel
-        raise $mytoplevel
+        ::pdgui::raisewindow ${mytoplevel}
         focus $mytoplevel
     } else {
         create_dialog $mytoplevel

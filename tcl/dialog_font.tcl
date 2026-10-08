@@ -145,8 +145,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     if {$fontsize < 0} {set fontsize [expr -$fontsize]}
     if {$fontsize < 8} {set fontsize 12}
     if {[winfo exists .font]} {
-        wm deiconify .font
-        raise .font
+        ::pdgui::raisewindow .font
         focus .font
         # the gfxstub stuff expects multiple font windows, we only have one,
         # so kill the new gfxstub requests as the come in.  We'll save the

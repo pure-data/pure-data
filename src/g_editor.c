@@ -59,14 +59,21 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
 
-static void _editor_selectlinecolor(t_glist *x, unsigned int color)
+void glist_update_selection(t_glist *x, const char*tag, int state)
+{
+    pdgui_vmess("::pdtk_canvas::update_selection", "ciS", x, state, 1, &tag);
+}
+
+static void _editor_selectlinecolor(t_glist *x, unsigned int color, int state)
 {
     char tag[128];
+    if(!x || !x->gl_editor || !x->gl_editor->e_selectline_tag)
+        return;
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
     pdgui_vmess(0, "crs rk",
         x, "itemconfigure", tag,
         "-fill", color);
-
+    glist_update_selection(x, tag, state);
 }
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
     int outno, int index2, int inno)
@@ -81,7 +88,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, THISGUI->i_selectcolor);
+        _editor_selectlinecolor(x, THISGUI->i_selectcolor, 1);
     }
 }
 
@@ -89,8 +96,8 @@ void glist_deselectline(t_glist *x)
 {
     if (x->gl_editor)
     {
+        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor, 0);
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, THISGUI->i_foregroundcolor);
     }
 }
 

@@ -4,7 +4,6 @@
 
 /*  Audio back-end for connecting with the JACK audio interconnect system.
 */
-
 #ifdef USEAPI_JACK
 
 #include <stdio.h>
@@ -15,9 +14,10 @@
 #include "m_private_utils.h"
 #include "s_stuff.h"
 #include "s_audio_paring.h"
-#ifdef __APPLE__
+#if HAVE_JACK_WEAKJACK_H && (defined __APPLE__)
 # include <jack/weakjack.h>
-#elif defined _MSC_VER
+#endif
+#if defined _MSC_VER
 # define strdup _strdup
 #endif
 #include <jack/jack.h>

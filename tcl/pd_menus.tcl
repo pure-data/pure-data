@@ -574,8 +574,10 @@ proc ::pd_menus::insert_into_menu {mymenu entry parent} {
     for {set i 0} {$i <= [$mymenu index end]} {incr i} {
         if {[$mymenu type $i] ne "command"} {continue}
         set currentcommand [$mymenu entrycget $i -command]
-        if {$currentcommand eq "::pd_menucommands::scheduleAction raise $entry"} {return} ;# it exists already
-        if {$currentcommand eq "raise $parent"} {
+        # skip if the window is already in the menu
+        if {$currentcommand eq "::pd_menucommands::scheduleAction ::pdgui::raisewindow $entry"} {return}
+        # if the parent is already in the menu, file it there
+        if {$currentcommand eq "::pd_menucommands::scheduleAction ::pdgui::raisewindow $parent"} {
             set insertat $i
         }
     }
@@ -585,8 +587,9 @@ proc ::pd_menus::insert_into_menu {mymenu entry parent} {
         append label " "
     }
     append label $::windowname($entry)
+
     $mymenu insert $insertat command -label $label \
-        -command "::pd_menucommands::scheduleAction raise $entry"
+        -command "::pd_menucommands::scheduleAction ::pdgui::raisewindow $entry"
 }
 
 # recurse through a list of parent windows and add to the menu

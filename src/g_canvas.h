@@ -420,6 +420,7 @@ EXTERN void glist_select(t_glist *x, t_gobj *y);
 EXTERN void glist_deselect(t_glist *x, t_gobj *y);
 EXTERN void glist_noselect(t_glist *x);
 EXTERN void glist_selectall(t_glist *x);
+EXTERN void glist_update_selection(t_glist *x, const char *tag, int state);
 EXTERN void glist_delete(t_glist *x, t_gobj *y);
 EXTERN void glist_retext(t_glist *x, t_text *y);
 EXTERN void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,

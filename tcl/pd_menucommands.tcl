@@ -143,18 +143,18 @@ proc ::pd_menucommands::menu_find_dialog {} {
 
 proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
-        raise .font
+        ::pdgui::raisewindow .font
         focus .font
-    } elseif {$::focused_window eq ".pdwindow"} {
-        pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
-    } else {
+    } elseif {[winfo exists $::focused_window] && [winfo class $::focused_window] eq "PatchWindow"} {
         pdsend "$::focused_window menufont"
+    } else {
+        pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
     }
 }
 
 proc ::pd_menucommands::menu_path_dialog {} {
     if {[winfo exists .path]} {
-        raise .path
+        ::pdgui::raisewindow .path
         focus .path
     } else {
         pdsend "pd start-path-dialog"
@@ -163,7 +163,7 @@ proc ::pd_menucommands::menu_path_dialog {} {
 
 proc ::pd_menucommands::menu_startup_dialog {} {
     if {[winfo exists .startup]} {
-        raise .startup
+        ::pdgui::raisewindow .startup
         focus .startup
     } else {
         pdsend "pd start-startup-dialog"
@@ -195,27 +195,31 @@ proc ::pd_menucommands::menu_maximize {window} {
 
 proc ::pd_menucommands::menu_raise_pdwindow {} {
     # explicitly raise/lower & focus relative to the current window stack for Tk Cocoa
-    if {$::focused_window eq ".pdwindow" && [winfo viewable .pdwindow]} {
-        lower .pdwindow [lindex [wm stackorder .] 0]
-        focus [lindex [wm stackorder .] end]
+    set w .pdwindow
+    set windowstack [wm stackorder .]
+    if {${::focused_window} eq ${w} && [winfo viewable ${w}]} {
+        lower ${w} [lindex ${windowstack} 0]
+        focus [lindex ${windowstack} end]
     } else {
-        wm deiconify .pdwindow
-        raise .pdwindow [lindex [wm stackorder .] end]
-        focus .pdwindow
+        wm deiconify ${w}
+        raise ${w} [lindex ${windowstack} end]
+        focus ${w}
     }
 }
 
 # used for cycling thru windows of an app
 proc ::pd_menucommands::menu_raisepreviouswindow {} {
-    set mytoplevel [lindex [wm stackorder .] end]
-    lower $mytoplevel [lindex [wm stackorder .] 0]
+    set windowstack [wm stackorder .]
+    set mytoplevel [lindex ${windowstack} end]
+    lower $mytoplevel [lindex ${windowstack} 0]
     focus $mytoplevel
 }
 
 # used for cycling thru windows of an app the other direction
 proc ::pd_menucommands::menu_raisenextwindow {} {
-    set mytoplevel [lindex [wm stackorder .] 0]
-    raise $mytoplevel [lindex [wm stackorder .] end]
+    set windowstack [wm stackorder .]
+    set mytoplevel [lindex ${windowstack} 0]
+    raise $mytoplevel [lindex ${windowstack} end]
     focus $mytoplevel
 }
 
@@ -267,8 +271,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         #return
     }
     if {[winfo exists .aboutpd]} {
-        wm deiconify .aboutpd
-        raise .aboutpd
+        ::pdgui::raisewindow .aboutpd
         focus .aboutpd
     } else {
         toplevel .aboutpd -class TextWindow
@@ -349,8 +352,8 @@ proc ::pd_menucommands::menu_bringalltofront {} {
     # use [winfo children .] here to include windows that are minimized
     foreach item [winfo children .] {
         # get all toplevel windows, exclude menubar windows
-        if { [string equal [winfo toplevel $item] $item] && \
-                 [catch {$item cget -tearoff}]} {
+        if { [string equal [winfo toplevel $item] $item] \
+                 && ! [string equal [winfo class $item] Menu ]} {
             wm deiconify $item
         }
     }

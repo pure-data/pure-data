@@ -2340,10 +2340,12 @@ static void glist_dorevis(t_glist *glist)
     t_gobj *g;
     if (glist->gl_havewindow)
     {
-        pdgui_vmess("pdtk_canvas_setcolors", "^ kk",
+        pdgui_vmess("pdtk_canvas_setcolors", "^ kkkk",
             glist,
             (int)THISGUI->i_backgroundcolor,
-            (int)THISGUI->i_foregroundcolor);
+            (int)THISGUI->i_foregroundcolor,
+            (int)THISGUI->i_selectcolor,
+            (int)THISGUI->i_gopcolor);
         glist_clearrtexts(glist);
         canvas_redraw((t_canvas *)glist);
     }

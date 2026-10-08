@@ -97,8 +97,7 @@ proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     if {$flags ne ""} {variable ::sys_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
-        wm deiconify $mytoplevel
-        raise $mytoplevel
+        ::pdgui::raisewindow ${mytoplevel}
         focus $mytoplevel
     } else {
         create_dialog $mytoplevel
