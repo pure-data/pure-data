@@ -547,11 +547,17 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::done_init 1
 }
 
+proc ::pdgui::raisewindow {mytoplevel} {
+    if { [ winfo exists ${mytoplevel} ] } {
+           wm deiconify ${mytoplevel}
+           raise ${mytoplevel}
+       }
+}
+
 ##### routine to ask user if OK and, if so return '1' (or else '0')
 # (this really should be in some other file)
 proc pdtk_yesnodialog {mytoplevel message default} {
-    wm deiconify $mytoplevel
-    raise $mytoplevel
+    ::pdgui::raisewindow ${mytoplevel}
     if {$::windowingsystem eq "win32"} {
            set answer [tk_messageBox -message [_ $message] -type yesno \
                                      -default $default -icon question \
@@ -654,9 +660,9 @@ proc singleton {key} {
 }
 
 proc singleton_request {offset maxbytes} {
-## the next 2 lines raise the focus to the given window (and change desktop)
-#    wm deiconify .pdwindow
-#    raise .pdwindow
+    ## the next line raises the focus to the given window
+    ## (and might change desktop)
+    # ::pdgui::raisewindow .pdwindow
     return [tk appname]
 }
 

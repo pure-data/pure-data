@@ -143,7 +143,7 @@ proc ::pd_menucommands::menu_find_dialog {} {
 
 proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
-        raise .font
+        ::pdgui::raisewindow .font
         focus .font
     } elseif {[winfo exists $::focused_window] && [winfo class $::focused_window] eq "PatchWindow"} {
         pdsend "$::focused_window menufont"
@@ -154,7 +154,7 @@ proc ::pd_menucommands::menu_font_dialog {} {
 
 proc ::pd_menucommands::menu_path_dialog {} {
     if {[winfo exists .path]} {
-        raise .path
+        ::pdgui::raisewindow .path
         focus .path
     } else {
         pdsend "pd start-path-dialog"
@@ -163,7 +163,7 @@ proc ::pd_menucommands::menu_path_dialog {} {
 
 proc ::pd_menucommands::menu_startup_dialog {} {
     if {[winfo exists .startup]} {
-        raise .startup
+        ::pdgui::raisewindow .startup
         focus .startup
     } else {
         pdsend "pd start-startup-dialog"
@@ -271,8 +271,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         #return
     }
     if {[winfo exists .aboutpd]} {
-        wm deiconify .aboutpd
-        raise .aboutpd
+        ::pdgui::raisewindow .aboutpd
         focus .aboutpd
     } else {
         toplevel .aboutpd -class TextWindow

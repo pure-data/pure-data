@@ -76,8 +76,7 @@ proc ::preferencewindow::fail {args} {
 # title -- top-level title for the dialog
 # width, height -- initial width and height dimensions for the window, also minimum size
 proc ::preferencewindow::create {winid title {dimen {0 0}}} {
-    wm deiconify .pdwindow
-    raise .pdwindow
+    ::pdgui::raisewindow .pdwindow
 
     toplevel $winid -class DialogWindow
 

@@ -182,12 +182,11 @@ proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
 # the find panel is opened from the menu and key bindings
 proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
-        wm deiconify .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
-    raise .find
+    ::pdgui::raisewindow .find
     focus .find
     focus_find
 }

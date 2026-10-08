@@ -47,8 +47,7 @@ proc ::dialog_message::cancel {mytoplevel} {
 # the message panel is opened from the menu and key bindings
 proc ::dialog_message::open_message_dialog {mytoplevel} {
     if {[winfo exists .message]} {
-        wm deiconify .message
-        raise .message
+        ::pdgui::raisewindow .message
         focus .message.f.entry
     } else {
         create_dialog $mytoplevel

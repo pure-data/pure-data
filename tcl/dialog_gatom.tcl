@@ -106,8 +106,7 @@ proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper
     set gatomlabel_radio($mytoplevel) $initgatomlabel_radio
     set ::dialog_gatom::fontsize $fontsize
     if {[winfo exists $mytoplevel]} {
-        wm deiconify $mytoplevel
-        raise $mytoplevel
+        ::pdgui::raisewindow ${mytoplevel}
         focus $mytoplevel
     } else {
         create_dialog $mytoplevel

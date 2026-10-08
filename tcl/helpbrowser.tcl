@@ -16,10 +16,7 @@ namespace eval ::helpbrowser:: {
 ################## help browser and support functions #########################
 
 proc ::helpbrowser::open_helpbrowser {} {
-    if {[winfo exists .helpbrowser.c.f]} {
-        wm deiconify .helpbrowser
-        raise .helpbrowser
-    } else {
+    if { ! [winfo exists .helpbrowser.c.f]} {
         toplevel .helpbrowser -class HelpBrowser
         wm group .helpbrowser .
         wm transient .helpbrowser
@@ -50,8 +47,8 @@ proc ::helpbrowser::open_helpbrowser {} {
         # re-adjust size based on backing canvas
         wm minsize .helpbrowser [winfo reqwidth .helpbrowser.c] [winfo reqheight .helpbrowser.c]
         position_over_window .helpbrowser .pdwindow
-        raise .helpbrowser
     }
+    ::pdgui::raisewindow .helpbrowser
 }
 
 # check for deleting old listboxes

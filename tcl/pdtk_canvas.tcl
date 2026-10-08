@@ -190,8 +190,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable \
 
 # if the patch canvas window already exists, then make it come to the front
 proc pdtk_canvas_raise {mytoplevel} {
-    wm deiconify $mytoplevel
-    raise $mytoplevel
+    ::pdgui::raisewindow ${mytoplevel}
     set mycanvas $mytoplevel.c
     focus $mycanvas
 }
