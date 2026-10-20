@@ -114,7 +114,7 @@ static void my_numbox_calc_fontwidth(t_my_numbox *x)
     }
 
         /* make sure to not exceed the legacy font-size */
-    if ((f < fontwidth) || (pd_compatibilitylevel < 53))
+    if ((f < fontwidth) || (pd_compatibilitylevel < 56))
         fontwidth = f;
 
     w = (int)(fontwidth * x->x_numwidth);
@@ -535,7 +535,7 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
     if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
         x->x_val = ftocompare;
-        if (pd_compatibilitylevel < 56)
+        if (pd_compatibilitylevel < 53)
             my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
