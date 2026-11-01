@@ -1044,9 +1044,9 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                 if (s1->s_nchans != s2->s_nchans ||
                     s1->s_length != s2->s_length)
                 {
-                    pd_error(u->u_obj,
+                    pd_error(u2->u_obj,
                         "%s: incompatible signal inputs (%dx%d vs. %dx%d)",
-                        class_getname(u->u_obj->ob_pd),
+                        class_getname(u2->u_obj->ob_pd),
                             s1->s_nchans, s1->s_length,
                             s2->s_nchans, s2->s_length);
                     dsp_add_copy(s1->s_vec, s3->s_vec,
