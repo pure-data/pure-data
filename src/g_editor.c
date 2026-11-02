@@ -2380,6 +2380,13 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
             undarken_if_gatom(x->gl_editor->e_grab);
             glist_grab(x, 0, 0, 0, 0, 0);
         }
+        /* if mouse were grabbed, send mouse_up to the object */
+        if (x->gl_editor->e_onmotion == MA_PASSOUT && x->gl_editor->e_grab)
+        {
+            if (!x->gl_editor->e_motionfn)
+                bug("e_motionfn");
+            (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd, 0, 0, 1);
+        }
         x->gl_editor->e_grab = 0;
         x->gl_editor->e_onmotion = MA_NONE;
     }
