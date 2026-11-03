@@ -2385,7 +2385,8 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
         {
             if (!x->gl_editor->e_motionfn)
                 bug("e_motionfn");
-            (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd, 0, 0, 1);
+            else
+                (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd, 0, 0, 1);
         }
         x->gl_editor->e_grab = 0;
         x->gl_editor->e_onmotion = MA_NONE;
