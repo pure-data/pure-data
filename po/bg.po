@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-03 13:45+0100\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -566,6 +566,12 @@ msgid "Jump on click"
 msgstr ""
 
 msgid "Steady on click"
+msgstr ""
+
+msgid "Don't intercept mouse events"
+msgstr ""
+
+msgid "Intercept mouse events"
 msgstr ""
 
 msgid "X offset:"

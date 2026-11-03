@@ -237,6 +237,8 @@ typedef struct _my_canvas
     t_atom   x_at[3];
     int      x_vis_w;
     int      x_vis_h;
+    int      x_last_x;
+    int      x_last_y;
 } t_my_canvas;
 
 

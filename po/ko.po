@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-03 13:45+0100\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -540,6 +540,12 @@ msgstr "클릭으로 값 변경"
 
 msgid "Steady on click"
 msgstr "항상 값 유지"
+
+msgid "Don't intercept mouse events"
+msgstr ""
+
+msgid "Intercept mouse events"
+msgstr ""
 
 msgid "X offset:"
 msgstr "X값 오프셋:"

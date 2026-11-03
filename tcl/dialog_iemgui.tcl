@@ -544,9 +544,15 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10
     }
     if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
-        ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
-            ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
-            $applycmd
+        if {$mainheader == "|cnv|" } {
+            ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
+                ::dialog_iemgui::var_loadbang($vid) [list [_ "Don't intercept mouse events"] [_ "Intercept mouse events"] ] \
+                $applycmd
+        } else {
+            ::dialog_iemgui::popupmenu $mytoplevel.para.lb \
+                ::dialog_iemgui::var_loadbang($vid) [list [_ "No init"] [_ "Init"] ] \
+                $applycmd
+        }
         pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
     }
 

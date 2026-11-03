@@ -25,6 +25,7 @@ static t_class *my_canvas_class;
 /* widget helper functions */
 
 #define my_canvas_draw_update 0
+#define IS_TOUCHABLE(x) (x->x_gui.x_isa.x_loadinit)
 
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
@@ -110,8 +111,13 @@ static void my_canvas_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int
 
     *xp1 = text_xpix(&x->x_gui.x_obj, glist);
     *yp1 = text_ypix(&x->x_gui.x_obj, glist);
-    *xp2 = *xp1 + x->x_gui.x_w;
-    *yp2 = *yp1 + x->x_gui.x_h;
+    if(IS_TOUCHABLE(x) && ! glist->gl_edit) {
+        *xp2 = *xp1 + x->x_vis_w;
+        *yp2 = *yp1 + x->x_vis_h;
+    } else {
+        *xp2 = *xp1 + x->x_gui.x_w;
+        *yp2 = *yp1 + x->x_gui.x_h;
+    }
 }
 
 static void my_canvas_save(t_gobj *z, t_binbuf *b)
@@ -139,7 +145,7 @@ static void my_canvas_properties(t_gobj *z, t_glist *owner)
                       x->x_vis_w, x->x_vis_h,
                       0,
                       -1, "", "",
-                      0, -1, -1);
+                      1, -1, -1);
 
 }
 
@@ -173,7 +179,6 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
                             argc, argv);
 
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    x->x_gui.x_isa.x_loadinit = 0;
     if(a < 1)
         a = 1;
     x->x_gui.x_w = a;
@@ -185,6 +190,39 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
         h = 1;
     x->x_vis_h = h;
     iemgui_size((void *)x, &x->x_gui);
+}
+
+static void my_canvas_motion(t_my_canvas *x, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
+{
+    x->x_last_x += dx;
+    x->x_last_y += dy;
+    x->x_at[0].a_w.w_float = x->x_last_x - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
+    x->x_at[1].a_w.w_float = x->x_last_y - text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
+    x->x_at[2].a_w.w_float = 0; /* in anticipation of the pointer ID, in case of multitouch GUI */
+    if(up) {
+        pd_anything(x->x_gui.x_snd->s_thing, gensym("up"), 3, x->x_at);
+    } else {
+        pd_anything(x->x_gui.x_snd->s_thing, gensym("motion"), 3, x->x_at);
+    }
+}
+
+static int my_canvas_click(t_my_canvas *x, struct _glist *glist,
+    int xpix, int ypix, int shift, int alt, int dbl, int doit)
+{
+    if(! IS_TOUCHABLE(x)) return 0;
+    if(doit)
+    {
+        x->x_last_x = xpix;
+        x->x_last_y = ypix;
+        x->x_at[0].a_w.w_float = x->x_last_x - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
+        x->x_at[1].a_w.w_float = x->x_last_y - text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
+        x->x_at[2].a_w.w_float = 0; /* in anticipation of the pointer ID, in case of multitouch GUI */
+        pd_anything(x->x_gui.x_snd->s_thing, gensym("down"), 3, x->x_at);
+        glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
+            (t_glistmotionfn)my_canvas_motion, 0, xpix, ypix);
+    }
+    return (1);
 }
 
 static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
@@ -239,6 +277,11 @@ static void my_canvas_label_pos(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 
 static void my_canvas_label_font(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_label_font((void *)x, &x->x_gui, s, ac, av);}
+
+static void my_canvas_touchable(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
+{
+    IS_TOUCHABLE(x) = atom_getfloatarg(0, ac, av) != 0;
+}
 
 static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -324,6 +367,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_at[0].a_type = A_FLOAT;
     x->x_at[1].a_type = A_FLOAT;
+    x->x_at[2].a_type = A_FLOAT;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     return (x);
 }
@@ -357,13 +401,15 @@ void g_mycanvas_setup(void)
         gensym("label_font"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_get_pos,
         gensym("get_pos"), 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_touchable,
+        gensym("touchable"), A_GIMME, 0);
     my_canvas_widgetbehavior.w_getrectfn  = my_canvas_getrect;
     my_canvas_widgetbehavior.w_displacefn = iemgui_displace;
     my_canvas_widgetbehavior.w_selectfn   = iemgui_select;
     my_canvas_widgetbehavior.w_activatefn = NULL;
     my_canvas_widgetbehavior.w_deletefn   = iemgui_delete;
     my_canvas_widgetbehavior.w_visfn      = iemgui_vis;
-    my_canvas_widgetbehavior.w_clickfn    = NULL;
+    my_canvas_widgetbehavior.w_clickfn    = (t_clickfn)my_canvas_click;
     class_setwidget(my_canvas_class, &my_canvas_widgetbehavior);
     class_setsavefn(my_canvas_class, my_canvas_save);
     class_setpropertiesfn(my_canvas_class, my_canvas_properties);
