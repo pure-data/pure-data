@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-03 13:45+0100\n"
 "PO-Revision-Date: 2026-09-04 02:51+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/pure-"
@@ -539,6 +539,12 @@ msgstr "Jump on click"
 
 msgid "Steady on click"
 msgstr "Steady on click"
+
+msgid "Don't intercept mouse events"
+msgstr ""
+
+msgid "Intercept mouse events"
+msgstr ""
 
 msgid "X offset:"
 msgstr "X offset:"
