@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "m_pd.h"
+#include "m_imp.h"
 #include "s_stuff.h"
 
 #include "g_all_guis.h"
@@ -957,6 +958,33 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     }
 }
 
+static void iemgui_color_iolets(t_iemgui *x, t_glist *glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    unsigned int color = x->x_fsf.x_selected ?
+        THISGUI->i_selectcolor : THISGUI->i_foregroundcolor;
+    char tag[128];
+    int i, n;
+
+    n = obj_noutlets(&x->x_obj);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(tag, "%p_OUT%d", x, i);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", color,
+            "-outline", color);
+    }
+
+    n = obj_ninlets(&x->x_obj);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(tag, "%p_IN%d", x, i);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", color,
+            "-outline", color);
+    }
+}
+
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -1004,6 +1032,7 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         break;
     case (IEM_GUI_DRAW_MODE_SELECT):
         DRAW_FUN(select, x, glist);
+        iemgui_color_iolets(x, glist);
         break;
     case (IEM_GUI_DRAW_MODE_ERASE):
         DRAW_FUN(erase, x, glist);
@@ -1019,6 +1048,7 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
             x->x_private->p_widget.draw_iolets(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
         else
             iemgui_draw_iolets(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+        iemgui_color_iolets(x, glist);
     }
 }
 
