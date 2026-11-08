@@ -1338,6 +1338,34 @@ static void text_displace(t_gobj *z, t_glist *glist,
     }
 }
 
+static void text_select_iolets(t_glist *glist, t_object *ob,
+    const char *tag, unsigned int color)
+{
+    int i, n;
+    char tagbuf[128];
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    n = obj_noutlets(ob);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(tagbuf, "%so%d", tag, i);
+        pdgui_vmess(0, "crs rk rk",
+            canvas, "itemconfigure", tagbuf,
+            "-fill", color,
+            "-outline", color);
+    }
+
+    n = obj_ninlets(ob);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(tagbuf, "%si%d", tag, i);
+        pdgui_vmess(0, "crs rk rk",
+            canvas, "itemconfigure", tagbuf,
+            "-fill", color,
+            "-outline", color);
+    }
+}
+
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
@@ -1348,6 +1376,13 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
         if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
         {
             char buf[MAXPDSTRING];
+            t_object *ob = pd_checkobject(&x->te_pd);
+
+            if (ob)
+                text_select_iolets(glist, ob, rtext_gettag(y),
+                    state ? THISGUI->i_selectcolor :
+                        THISGUI->i_foregroundcolor);
+
             sprintf(buf, "%sR", rtext_gettag(y));
             pdgui_vmess(0, "crs rk",
                 glist,
