@@ -355,7 +355,6 @@ ex_malloc(size_t size)
 void *
 ex_realloc(void *ptr, size_t size)
 {
-    printf ("realloc called with %zu bytes\n", size);
     return realloc(ptr, size);
 }
 
