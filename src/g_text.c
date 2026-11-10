@@ -1810,6 +1810,23 @@ void text_getfont(t_text *x, t_glist *thisglist,
     *guifsize = sys_hostfontsize(font, 1);
 }
 
+int text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod)
+{
+    t_object *ob = pd_checkobject(&z->g_pd);
+    int fwidth, fheight, guifsize;
+    (void)wantheight;
+    (void)mod;
+
+    text_getfont(ob, glist, &fwidth, &fheight, &guifsize);
+    wantwidth = wantwidth / fwidth;
+    if (wantwidth < 1)
+        wantwidth = 1;
+    ob->te_width = wantwidth;
+    gobj_vis(z, glist, 0);
+    canvas_fixlinesfor(glist, ob);
+    gobj_vis(z, glist, 1);
+}
+
 void g_text_setup(void)
 {
     text_class = class_new(gensym("text"), 0, 0, sizeof(t_text),
@@ -1860,6 +1877,7 @@ void g_text_setup(void)
     class_addmethod(gatom_class, (t_method)gatom_param, gensym("param"),
         A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
+    class_setwidgetfn(gatom_class, WIDGET_RESIZE, (t_widgetfn)text_resize);
     class_setpropertiesfn(gatom_class, gatom_properties);
     class_sethelpsymbol(gatom_class, gensym("gui-boxes"));
 }

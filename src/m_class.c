@@ -22,6 +22,9 @@
 
 #include "m_private_utils.h"
 
+/* defined in g_text.c: */
+int text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
+
 void push_loadsym(t_symbol*s);
 t_symbol*pop_loadsym(void);
 
@@ -572,7 +575,10 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         /* set default widget behavior.  Things like IEM GUIs override
         this; they're patchable but have bespoke widget behaviors */
     if(typeflag == CLASS_PATCHABLE)
+    {
         class_setwidget(c, &text_widgetbehavior);
+        class_setwidgetfn(c, WIDGET_RESIZE, (t_widgetfn)text_resize);
+    }
 
 #if 0       /* enable this if you want to see a list of all classes */
     post("class: %s", c->c_name->s_name);
