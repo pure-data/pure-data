@@ -590,6 +590,36 @@ EXTERN void class_addsymbol(t_class *c, t_method fn);
 EXTERN void class_addlist(t_class *c, t_method fn);
 EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
+
+/* the following allows you to specify additional callback functions
+   to interact with the GUI (e.g. to draw a fancy object).
+
+   to override a specific widget function, use:
+     class_setwidgetfn(my_class, WIDGET_CLICK, (t_widgetfn)my_clickfn);
+   to draw a fancy object instead of the default object box, you will
+   need to set at least WIDGET_VIS, WIDGET_DISPLACE and WIDGET_DELETE.
+   to unset all widget functions (including the default ones!), use:
+     class_setwidgetfn(my_class, WIDGET_INITIALIZE, 0);
+   after WIDGET_INITIALIZE, you need to provide your own functions,
+   otherwise your object will not show up in the GUI.
+*/
+typedef enum {
+    WIDGET_INITIALIZE = 0, /* (t_widgetfn)0; clears all widget functions */
+    WIDGET_GETRECT,  /* t_getrectfn */
+    WIDGET_DISPLACE, /* t_displacefn */
+    WIDGET_SELECT,   /* t_selectfn */
+    WIDGET_ACTIVATE, /* t_activatefn */
+    WIDGET_DELETE,   /* t_deletefn */
+    WIDGET_VIS,      /* t_visfn */
+    WIDGET_CLICK,    /* t_clickfn */
+    WIDGET_INVALID
+} t_widgetfntype;
+    /* dummy; use t_getrectfn,... (defined in g_canvas.h), depending on context */
+typedef void (*t_widgetfn)(void);
+EXTERN int class_setwidgetfn(t_class *c, t_widgetfntype type, t_widgetfn fun);
+/* class_setwidget() sets multiple widget functions at once
+   (and unsets all widget functions not in t_widgetbehavior)
+*/
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
 EXTERN const char *class_getname(const t_class *c);
