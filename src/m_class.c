@@ -895,6 +895,9 @@ void class_setwidgetfn(t_class *c, t_widgetfntype type, t_widgetfn fun) {
     case (WIDGET_CLICK):
         wb->w_clickfn = (t_clickfn)(fun);
         break;
+    case (WIDGET_RESIZE):
+        wb->w_resizefn = (t_resizefn)(fun);
+        break;
     default:
         bug("unknown widget fun: %d", type);
     }

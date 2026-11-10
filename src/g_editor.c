@@ -2516,8 +2516,7 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
                 /* resize? only for "true" text boxes or canvases */
 
             if (xpix >= x2-4 && ypix < y2-4 && hitobj &&
-                    (hitobj->te_pd->c_wb->w_visfn == text_widgetbehavior.w_visfn ||
-                    hitobj->te_type == T_ATOM ||
+                    (hitobj->te_pd->c_wb->w_resizefn ||
                     pd_checkglist(&hitobj->te_pd)))
             {
                 if (doit)
@@ -3352,8 +3351,7 @@ static void delay_move(t_gobj *client, t_glist *glist)
 }
 
     /* defined in g_text.c: */
-extern void text_getfont(t_text *x, t_glist *thisglist,
-    int *fwidthp, int *fheightp, int *guifsize);
+int text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
 
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
@@ -3408,20 +3406,12 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         {
             int wantwidth = xpos - x11;
             t_object *ob = pd_checkobject(&y1->g_pd);
-            if (ob && ((ob->te_pd->c_wb->w_visfn == text_widgetbehavior.w_visfn) ||
-                ob->te_type == T_ATOM ||
+            if (ob && (ob->te_pd->c_wb->w_resizefn ||
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
             {
-                int fwidth, fheight, guifsize;
-                text_getfont(ob, x, &fwidth, &fheight, &guifsize);
-                wantwidth = wantwidth / fwidth;
-                if (wantwidth < 1)
-                    wantwidth = 1;
-                ob->te_width = wantwidth;
-                gobj_vis(y1, x, 0);
-                canvas_fixlinesfor(x, ob);
-                gobj_vis(y1, x, 1);
+                int wantheight = ypos - y11;
+                ob->te_pd->c_wb->w_resizefn(y1, x, wantwidth, wantheight, mod);
             }
             else if (ob && ob->ob_pd == canvas_class)
             {

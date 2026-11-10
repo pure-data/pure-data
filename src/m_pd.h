@@ -522,6 +522,7 @@ typedef enum {
     WIDGET_DELETE,   /* t_deletefn */
     WIDGET_VIS,      /* t_visfn */
     WIDGET_CLICK,    /* t_clickfn */
+    WIDGET_RESIZE,   /* t_resizefn */
     WIDGET_INVALID
 } t_widgetfntype;
 typedef void (*t_widgetfn)(void); /* dummy; use t_getrectfn,... depending on context */

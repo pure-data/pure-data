@@ -43,6 +43,7 @@ typedef struct _class_data
 #ifdef defined_widgetbehavior
 struct  _private_widgetbehavior {
     defined_widgetbehavior;
+    t_resizefn w_resizefn;
 };
 #else
     EXTERN_STRUCT _private_widgetbehavior;

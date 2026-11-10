@@ -319,7 +319,8 @@ typedef void (*t_visfn)(t_gobj *x, struct _glist *glist, int flag);
         /* field a mouse click (when not in "edit" mode) */
 typedef int (*t_clickfn)(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
-        /* ... and later, resizing; getting/setting font or color... */
+typedef void (*t_resizefn)(t_gobj *x, struct _glist *glist, int width, int height, int mod);
+        /* ... and later, getting/setting font or color... */
 
 struct _widgetbehavior
 {
