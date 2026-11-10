@@ -40,6 +40,15 @@ typedef struct _class_data
     t_classdatafn freefn;   /* called when the instance is destroyed */
 } t_class_data;
 
+#ifdef defined_widgetbehavior
+struct  _private_widgetbehavior {
+    defined_widgetbehavior;
+    t_resizefn w_resizefn;
+};
+#else
+    EXTERN_STRUCT _private_widgetbehavior;
+#endif
+
 struct _class
 {
     t_symbol *c_name;                   /* name (mostly for error reporting) */
@@ -59,7 +68,7 @@ struct _class
     t_symbolmethod c_symbolmethod;
     t_listmethod c_listmethod;
     t_anymethod c_anymethod;
-    const struct _widgetbehavior *c_wb; /* "gobjs" only */
+    struct _private_widgetbehavior *c_wb; /* "gobjs" only */
     const struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
     t_savefn c_savefn;                  /* function to call when saving */
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */

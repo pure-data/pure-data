@@ -4,9 +4,10 @@
 
 #define PD_CLASS_DEF
 #include "m_pd.h"
-#include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "m_imp.h"
+
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -20,6 +21,9 @@
 #include <stdio.h>
 
 #include "m_private_utils.h"
+
+/* defined in g_text.c: */
+int text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
 
 void push_loadsym(t_symbol*s);
 t_symbol*pop_loadsym(void);
@@ -535,9 +539,7 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_symbolmethod = pd_defaultsymbol;
     c->c_listmethod = pd_defaultlist;
     c->c_anymethod = pd_defaultanything;
-        /* set default widget behavior.  Things like IEM GUIs override
-        this; they're patchable but have bespoke widget behaviors */
-    c->c_wb = (typeflag == CLASS_PATCHABLE ? &text_widgetbehavior : 0);
+    c->c_wb = 0;
     c->c_pwb = 0;
     c->c_firstin = ((flags & CLASS_NOINLET) == 0);
     c->c_patchable = (typeflag == CLASS_PATCHABLE);
@@ -569,6 +571,15 @@ t_class *class_donew(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_data.data = 0;
     c->c_data.freefn = 0;
 #endif
+
+        /* set default widget behavior.  Things like IEM GUIs override
+        this; they're patchable but have bespoke widget behaviors */
+    if(typeflag == CLASS_PATCHABLE)
+    {
+        class_setwidget(c, &text_widgetbehavior);
+        class_setwidgetfn(c, WIDGET_RESIZE, (t_widgetfn)text_resize);
+    }
+
 #if 0       /* enable this if you want to see a list of all classes */
     post("class: %s", c->c_name->s_name);
 #endif
@@ -640,6 +651,7 @@ void class_free(t_class *c)
 #else
     freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
 #endif
+    freebytes(c->c_wb, sizeof(*c->c_wb));
     freebytes(c, sizeof(*c));
 }
 
@@ -852,11 +864,62 @@ void class_addanything(t_class *c, t_method fn)
     c->c_anymethod = (t_anymethod)fn;
 }
 
+void class_setwidgetfn(t_class *c, t_widgetfntype type, t_widgetfn fun) {
+    if(!c)
+        return;
+    if (!c->c_wb)
+        c->c_wb = getbytes(sizeof(*c->c_wb));
+    if(!c->c_wb)
+        return;
+
+    struct _private_widgetbehavior *wb = (struct _private_widgetbehavior*)c->c_wb;
+
+    switch(type) {
+    case (WIDGET_INITIALIZE):
+        if(fun)
+            bug("initializing widgetbehavior with non-NULL function");
+        memset(wb, 0, sizeof(*wb));
+        break;
+    case (WIDGET_GETRECT):
+        wb->w_getrectfn = (t_getrectfn)(fun);
+        break;
+    case (WIDGET_DISPLACE):
+        wb->w_displacefn = (t_displacefn)(fun);
+        break;
+    case (WIDGET_SELECT):
+        wb->w_selectfn = (t_selectfn)(fun);
+        break;
+    case (WIDGET_ACTIVATE):
+        wb->w_activatefn = (t_activatefn)(fun);
+        break;
+    case (WIDGET_DELETE):
+        wb->w_deletefn = (t_deletefn)(fun);
+        break;
+    case (WIDGET_VIS):
+        wb->w_visfn = (t_visfn)(fun);
+        break;
+    case (WIDGET_CLICK):
+        wb->w_clickfn = (t_clickfn)(fun);
+        break;
+    case (WIDGET_RESIZE):
+        wb->w_resizefn = (t_resizefn)(fun);
+        break;
+    default:
+        bug("unknown widget fun: %d", type);
+    }
+}
 void class_setwidget(t_class *c, const t_widgetbehavior *w)
 {
     if(!c)
         return;
-    c->c_wb = w;
+    class_setwidgetfn(c, WIDGET_INITIALIZE, 0);
+    class_setwidgetfn(c, WIDGET_GETRECT, (t_widgetfn)w->w_getrectfn);
+    class_setwidgetfn(c, WIDGET_DISPLACE, (t_widgetfn)w->w_displacefn);
+    class_setwidgetfn(c, WIDGET_SELECT, (t_widgetfn)w->w_selectfn);
+    class_setwidgetfn(c, WIDGET_ACTIVATE, (t_widgetfn)w->w_activatefn);
+    class_setwidgetfn(c, WIDGET_DELETE, (t_widgetfn)w->w_deletefn);
+    class_setwidgetfn(c, WIDGET_VIS, (t_widgetfn)w->w_visfn);
+    class_setwidgetfn(c, WIDGET_CLICK, (t_widgetfn)w->w_clickfn);
 }
 
 void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)

@@ -319,17 +319,21 @@ typedef void (*t_visfn)(t_gobj *x, struct _glist *glist, int flag);
         /* field a mouse click (when not in "edit" mode) */
 typedef int (*t_clickfn)(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
-        /* ... and later, resizing; getting/setting font or color... */
+typedef void (*t_resizefn)(t_gobj *x, struct _glist *glist, int width, int height, int mod);
+        /* ... and later, getting/setting font or color... */
 
 struct _widgetbehavior
 {
-    t_getrectfn w_getrectfn;
-    t_displacefn w_displacefn;
-    t_selectfn w_selectfn;
-    t_activatefn w_activatefn;
-    t_deletefn w_deletefn;
-    t_visfn w_visfn;
+#define defined_widgetbehavior                  \
+    t_getrectfn w_getrectfn;                    \
+    t_displacefn w_displacefn;                  \
+    t_selectfn w_selectfn;                      \
+    t_activatefn w_activatefn;                  \
+    t_deletefn w_deletefn;                      \
+    t_visfn w_visfn;                            \
     t_clickfn w_clickfn;
+
+    defined_widgetbehavior;
 };
 
 /* -------- behaviors for scalars defined by objects in template --------- */

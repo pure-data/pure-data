@@ -512,6 +512,22 @@ EXTERN int canvas_getsignallength(t_canvas *x);
 EXTERN_STRUCT _widgetbehavior;
 #define t_widgetbehavior struct _widgetbehavior
 
+
+typedef enum {
+    WIDGET_INITIALIZE = 0, /* (t_widgetfn)0; clears all widget functions */
+    WIDGET_GETRECT,  /* t_getrectfn */
+    WIDGET_DISPLACE, /* t_displacefn */
+    WIDGET_SELECT,   /* t_selectfn */
+    WIDGET_ACTIVATE, /* t_activatefn */
+    WIDGET_DELETE,   /* t_deletefn */
+    WIDGET_VIS,      /* t_visfn */
+    WIDGET_CLICK,    /* t_clickfn */
+    WIDGET_RESIZE,   /* t_resizefn */
+    WIDGET_INVALID
+} t_widgetfntype;
+typedef void (*t_widgetfn)(void); /* dummy; use t_getrectfn,... depending on context */
+
+
 EXTERN_STRUCT _parentwidgetbehavior;
 #define t_parentwidgetbehavior struct _parentwidgetbehavior
 EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
@@ -590,6 +606,10 @@ EXTERN void class_addsymbol(t_class *c, t_method fn);
 EXTERN void class_addlist(t_class *c, t_method fn);
 EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
+EXTERN void class_setwidgetfn(t_class *c, t_widgetfntype type, t_widgetfn fun);
+/* class_setwidget() sets multiple widget functions at once
+   (and unsets all widget functions not in t_widgetbehavior)
+*/
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
 EXTERN const char *class_getname(const t_class *c);
