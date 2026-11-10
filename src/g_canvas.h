@@ -323,13 +323,16 @@ typedef int (*t_clickfn)(t_gobj *x, struct _glist *glist,
 
 struct _widgetbehavior
 {
-    t_getrectfn w_getrectfn;
-    t_displacefn w_displacefn;
-    t_selectfn w_selectfn;
-    t_activatefn w_activatefn;
-    t_deletefn w_deletefn;
-    t_visfn w_visfn;
+#define defined_widgetbehavior                  \
+    t_getrectfn w_getrectfn;                    \
+    t_displacefn w_displacefn;                  \
+    t_selectfn w_selectfn;                      \
+    t_activatefn w_activatefn;                  \
+    t_deletefn w_deletefn;                      \
+    t_visfn w_visfn;                            \
     t_clickfn w_clickfn;
+
+    defined_widgetbehavior;
 };
 
 /* -------- behaviors for scalars defined by objects in template --------- */

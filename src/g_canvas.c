@@ -8,9 +8,9 @@ to be different but are now unified except for some fossilized names.) */
 #include <stdlib.h>
 #include <stdio.h>
 #include "m_pd.h"
-#include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include "s_utf8.h"
 #include <string.h>
 #include "g_undo.h"
@@ -147,7 +147,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
                (goprect) style. */
         return (glist->gl_havewindow ||
             (ob->te_pd != canvas_class &&
-                ob->te_pd->c_wb != &text_widgetbehavior) ||
+                ob->te_pd->c_wb->w_visfn != text_widgetbehavior.w_visfn) ||
             (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
             (glist->gl_goprect && (ob->te_type == T_TEXT)));
     }

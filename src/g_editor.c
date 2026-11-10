@@ -4,9 +4,9 @@
 
 #include <stdio.h>
 #include "m_pd.h"
-#include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
@@ -2514,8 +2514,9 @@ static void canvas_doclick(t_canvas *x, int xpix, int ypix, int mod, int doit)
             if (out_activeheight < OHEIGHT)
                 out_activeheight = OHEIGHT;
                 /* resize? only for "true" text boxes or canvases */
+
             if (xpix >= x2-4 && ypix < y2-4 && hitobj &&
-                    (hitobj->te_pd->c_wb == &text_widgetbehavior ||
+                    (hitobj->te_pd->c_wb->w_visfn == text_widgetbehavior.w_visfn ||
                     hitobj->te_type == T_ATOM ||
                     pd_checkglist(&hitobj->te_pd)))
             {
@@ -3407,7 +3408,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         {
             int wantwidth = xpos - x11;
             t_object *ob = pd_checkobject(&y1->g_pd);
-            if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
+            if (ob && ((ob->te_pd->c_wb->w_visfn == text_widgetbehavior.w_visfn) ||
                 ob->te_type == T_ATOM ||
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
