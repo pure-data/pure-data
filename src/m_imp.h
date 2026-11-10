@@ -45,6 +45,7 @@ typedef struct _class_data
 
 struct  _private_widgetbehavior {
     struct _widgetbehavior wb;
+    t_resizefn w_resizefn;
 };
 
 struct _class

@@ -612,6 +612,7 @@ typedef enum {
     WIDGET_DELETE,   /* t_deletefn */
     WIDGET_VIS,      /* t_visfn */
     WIDGET_CLICK,    /* t_clickfn */
+    WIDGET_RESIZE,   /* t_resizefn */
     WIDGET_INVALID
 } t_widgetfntype;
     /* dummy; use t_getrectfn,... (defined in g_canvas.h), depending on context */
