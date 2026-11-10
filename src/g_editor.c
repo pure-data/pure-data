@@ -3352,7 +3352,7 @@ static void delay_move(t_gobj *client, t_glist *glist)
 }
 
     /* defined in g_text.c: */
-int text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
+void text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
 
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
