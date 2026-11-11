@@ -353,6 +353,11 @@ void pd_popsym(t_pd *x)
     }
 }
 
+void pd_clearlastpopped(void)
+{
+    lastpopped = 0;
+}
+
 void pd_doloadbang(void)
 {
     if (lastpopped)

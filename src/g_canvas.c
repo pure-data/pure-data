@@ -2257,6 +2257,7 @@ int pd_getdspstate(void)
 }
 
 void pd_doloadbang(void);
+void pd_clearlastpopped(void);
 
     /* evaluate a file, which is expected to create a patch, and perform
     post-evaluation cleanup and loadbang */
@@ -2273,6 +2274,9 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
     boundx = s__X.s_thing;
         s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
                                 for the caller to grab it. */
+        /* forget canvases popped elsewhere, so that loadbang only goes to
+        what this file creates */
+    pd_clearlastpopped();
     binbuf_evalfile(name, dir);
     while ((x != s__X.s_thing) && s__X.s_thing)
     {
