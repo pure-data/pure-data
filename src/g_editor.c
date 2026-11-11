@@ -3989,16 +3989,14 @@ static void glist_donewloadbangs(t_glist *x)
 
 static int binbuf_nextmess(int argc, const t_atom *argv)
 {
-    int i=0;
-    while(argc--)
+    int i;
+    for (i = 1; i < argc; i++)
     {
-        argv++;
-        i++;
-        if (A_SEMI == argv->a_type) {
+        if (A_SEMI == argv[i].a_type) {
             return i+1;
         }
     }
-    return i;
+    return argc;
 }
 static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
 {
