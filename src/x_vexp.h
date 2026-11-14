@@ -13,6 +13,10 @@
 #ifdef PD
 #include "m_pd.h"
 #include "s_stuff.h"
+#ifdef PD_INTERNAL
+#include "m_private_utils.h"
+#endif
+
 /*
  * below is added to account for an anomoly in windows implementation of snprintf()
  */

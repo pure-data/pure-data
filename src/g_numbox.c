@@ -7,37 +7,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "m_pd.h"
 #include "s_stuff.h"
-
 #include "g_all_guis.h"
-#include <math.h>
+#include "m_private_utils.h"
 
 #define MINDIGITS 1
 #define MINFONT   4
 
 /* helpers */
-#if NO_ISNAN
-PD_INLINE int my_isnan(t_float f) { return ((f) != (f)); }
-# undef isnan
-# define isnan my_isnan
-#endif
-
-#if NO_ISINF
-# ifndef INFINITY
-#  define INFINITY (1.0/0.0)
-# endif
-PD_INLINE int my_isinf(t_float f) { return f == INFINITY || f == -INFINITY; }
-# undef isinf
-# define isinf my_isinf
-#endif
-
-#if NO_ISFINITE
-PD_INLINE int my_isfinite(t_float f) { return !isinf(f) && !isnan(f); }
-# undef isfinite
-# define isfinite my_isfinite
-#endif
-
 PD_INLINE t_float _getfloat(const t_atom* a)
 {
     char*endptr = 0;

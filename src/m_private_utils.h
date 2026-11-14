@@ -175,4 +175,26 @@ static int atomic_int_compare_exchange(volatile int *ptr, int *expected, int des
 # endif
 #endif
 
+/* isnan()/isinf()/isfinite() might be missing */
+#if NO_ISNAN
+PD_INLINE int pd_isnan(t_float f) { return ((f) != (f)); }
+# undef isnan
+# define isnan pd_isnan
+#endif
+
+#if NO_ISINF
+# ifndef INFINITY
+#  define INFINITY (1.0/0.0)
+# endif
+PD_INLINE int pd_isinf(t_float f) { return f == INFINITY || f == -INFINITY; }
+# undef isinf
+# define isinf pd_isinf
+#endif
+
+#if NO_ISFINITE
+PD_INLINE int pd_isfinite(t_float f) { return !isinf(f) && !isnan(f); }
+# undef isfinite
+# define isfinite pd_isfinite
+#endif
+
 #endif /* M_PRIVATE_UTILS_H */
