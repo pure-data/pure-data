@@ -14,6 +14,7 @@ file format as in the dialog window for data.
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
+#include <stdlib.h>
 #include <errno.h>
 
 /* object to assist in saving state by abstractions */
@@ -730,11 +731,21 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
 
 /* ------ routines to save and restore canvases (patches) recursively. ----*/
 
+    /* order the object table in canvas_saveto() by address */
+static int canvas_saveto_compare(const void *a, const void *b)
+{
+    uintptr_t p = (uintptr_t)*(t_gobj *const *)a;
+    uintptr_t q = (uintptr_t)*(t_gobj *const *)b;
+    return ((p > q) - (p < q));
+}
+
     /* save to a binbuf, called recursively; cf. canvas_savetofile() which
     saves the document, and is only called on root canvases. */
 static void canvas_saveto(t_canvas *x, t_binbuf *b)
 {
-    t_gobj *y;
+    struct _saveindex { t_gobj *si_obj; int si_index; } *index;
+    t_gobj *y, *src;
+    int nobj = 0, srcno = 0, i;
     t_linetraverser t;
     t_outconnect *oc;
 
@@ -770,14 +781,39 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     for (y = x->gl_list; y; y = y->g_next)
         gobj_save(y, b);
 
+        /* connections name their objects by index in the canvas.  Calling
+        canvas_getindex() for both ends of every connection walks the list
+        each time, which is quadratic.  The traverser visits sources in list
+        order, so their index is counted along the way; for the sinks, make
+        a table of the objects sorted by address to search in. */
+    for (y = x->gl_list; y; y = y->g_next)
+        nobj++;
+    index = (struct _saveindex *)getbytes(nobj * sizeof(*index));
+    for (y = x->gl_list, i = 0; y; y = y->g_next, i++)
+        index[i].si_obj = y, index[i].si_index = i;
+    qsort(index, nobj, sizeof(*index), canvas_saveto_compare);
+
+    src = x->gl_list;
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
-        int srcno = canvas_getindex(x, &t.tr_ob->ob_g);
-        int sinkno = canvas_getindex(x, &t.tr_ob2->ob_g);
+        t_gobj *sink = &t.tr_ob2->ob_g;
+        int sinkno = nobj, lo = 0, hi = nobj;
+        for (; src != &t.tr_ob->ob_g; src = src->g_next)
+            srcno++;
+        while (lo < hi)
+        {
+            int mid = lo + (hi - lo) / 2;
+            if ((uintptr_t)index[mid].si_obj < (uintptr_t)sink)
+                lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo < nobj && index[lo].si_obj == sink)
+            sinkno = index[lo].si_index;
         binbuf_addv(b, "ssiiii;", gensym("#X"), gensym("connect"),
             srcno, t.tr_outno, sinkno, t.tr_inno);
     }
+    freebytes(index, nobj * sizeof(*index));
 
         /* unless everything is the default (as in ordinary subpatches)
         print out a "coords" message to set up the coordinate systems */
