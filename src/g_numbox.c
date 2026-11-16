@@ -106,6 +106,14 @@ static void my_numbox_adjust_width_to_numwidth(t_my_numbox *x)
     x->x_gui.x_w = w + x->x_gui.x_h / 2 + 4;
 }
 
+static void my_numbox_adjust_numwidth_to_width(t_my_numbox *x)
+{
+        /* adjust the internal numwidth, to the number of chars that fit into the box */
+    float fontwidth = _get_fontwidth(x->x_gui.x_fontsize, x->x_gui.x_fsf.x_font_style);
+    int w = x->x_gui.x_w - (x->x_gui.x_h / 2 + 4);
+    x->x_numwidth = (int)((float)w / fontwidth);
+}
+
 /* gatom_float_sizelimit() from g_rtext.c */
 const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize);
 static void my_numbox_ftoa(t_my_numbox *x)
@@ -564,6 +572,44 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
+static void my_numbox_resize(t_gobj *z, struct _glist *glist, int w0, int h0, int mod)
+{
+    t_my_numbox *x = (t_my_numbox *)z;
+    const int pad = 4;
+    const int minh = x->x_gui.x_fontsize + pad;
+    const int h = iemgui_clip_size((int)h0);
+    const int minw = x->x_numwidth * x->x_gui.x_fontsize + h/2 + 2;
+
+    x->x_gui.x_w = iemgui_clip_size((int)w0);
+
+    switch(mod) {
+    case 1: /* shift: adjust height and fontsize; width follows numwidth * fontsize */
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_LOCKED);
+        x->x_gui.x_h = (h < minh) ? minh : h;
+        x->x_gui.x_fontsize = h;
+        break;
+    case 2: /* control: adjust numwidth, height and fontsize */
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_XY);
+        x->x_gui.x_h = (h < minh) ? minh : h;
+        x->x_gui.x_fontsize = h;
+        my_numbox_adjust_numwidth_to_width(x);
+        break;
+    default: /* no modifier: adjust numwidth */
+        canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_X);
+        my_numbox_adjust_numwidth_to_width(x);
+        break;
+    }
+
+    if (x->x_gui.x_w < minw)
+        x->x_gui.x_w =  minw;
+
+    /* clamp width to number of digits */
+    my_numbox_adjust_width_to_numwidth(x);
+
+    iemgui_size((void *)x, &x->x_gui);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+}
+
 static void my_numbox_delta(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_delta((void *)x, &x->x_gui, s, ac, av);}
 
@@ -838,6 +884,7 @@ void g_numbox_setup(void)
     my_numbox_widgetbehavior.w_visfn =        iemgui_vis;
     my_numbox_widgetbehavior.w_clickfn =      my_numbox_newclick;
     class_setwidget(my_numbox_class, &my_numbox_widgetbehavior);
+    class_setwidgetfn(my_numbox_class, WIDGET_RESIZE, (t_widgetfn)my_numbox_resize);
     class_setsavefn(my_numbox_class, my_numbox_save);
     class_setpropertiesfn(my_numbox_class, my_numbox_properties);
 }
