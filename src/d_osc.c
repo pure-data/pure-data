@@ -471,6 +471,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     while (n--)
     {
         t_sample frac,  a,  b,  c,  d, cminusb;
+        const t_sample one_over_six = 1./6.;
         tf.tf_d = dphase;
         dphase += *in++ * conv;
         addr = tab + (tf.tf_i[HIOFFSET] & mask);
@@ -482,8 +483,8 @@ static t_int *tabosc4_tilde_perform(t_int *w)
         d = addr[3].w_float;
         cminusb = c-b;
         *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
+            cminusb - one_over_six * ((t_sample)1.-frac) * (
+                (d - a - (t_sample)3.0 * cminusb) * frac + (d + (t_sample)2.0*a - (t_sample)3.0*b)
             )
         );
     }

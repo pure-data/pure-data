@@ -365,6 +365,7 @@ static t_int *sigvd_perform(t_int *w)
         t_sample delsamps = sr * (*in++) - zerodel, frac;
         int idelsamps;
         t_sample a, b, c, d, cminusb;
+        const t_sample one_over_six = 1./6.;
         if (!(delsamps >= 1.00001f))    /* too small or NAN */
             delsamps = 1.00001f;
         if (delsamps > limit)           /* too big */
@@ -381,8 +382,8 @@ static t_int *sigvd_perform(t_int *w)
         a = bp[0];
         cminusb = c-b;
         *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
+            cminusb - one_over_six * ((t_sample)1.-frac) * (
+                (d - a - (t_sample)3.0 * cminusb) * frac + (d + (t_sample)2.0*a - (t_sample)3.0*b)
             )
         );
     }
