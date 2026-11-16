@@ -71,16 +71,16 @@ static void my_numbox_clip(t_my_numbox *x)
 }
 
 int sys_nearestfontsize(int fontsize);
-static void my_numbox_calc_fontwidth(t_my_numbox *x)
+
+PD_INLINE float _get_fontwidth(int font_size, int font_style)
 {
-    int w;
-    float f = x->x_gui.x_fontsize;
-    int nearest_fontsize =  sys_nearestfontsize(x->x_gui.x_fontsize);
+    float f = font_size;
+    int nearest_fontsize =  sys_nearestfontsize(font_size);
     int nearest_fontwidth = sys_zoomfontwidth(nearest_fontsize, 1, 1);
     float fontwidth = (float)nearest_fontwidth * f / (float)nearest_fontsize;
 
         /* legacy font calculation */
-    switch(x->x_gui.x_fsf.x_font_style) {
+    switch(font_style) {
     default:
         f *= 31./36.;
         break;
@@ -96,7 +96,13 @@ static void my_numbox_calc_fontwidth(t_my_numbox *x)
     if ((f < fontwidth) || (pd_compatibilitylevel < 56))
         fontwidth = f;
 
-    w = (int)(fontwidth * x->x_numwidth);
+    return fontwidth;
+}
+
+static void my_numbox_adjust_width_to_numwidth(t_my_numbox *x)
+{
+    float fontwidth = _get_fontwidth(x->x_gui.x_fontsize, x->x_gui.x_fsf.x_font_style);
+    int w = (int)(fontwidth * x->x_numwidth);
     x->x_gui.x_w = w + x->x_gui.x_h / 2 + 4;
 }
 
@@ -444,7 +450,7 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     if(log_height < 10)
         log_height = 10;
     x->x_log_height = log_height;
-    my_numbox_calc_fontwidth(x);
+    my_numbox_adjust_width_to_numwidth(x);
     /*if(my_numbox_check_minmax(x, min, max))
      my_numbox_bang(x);*/
     my_numbox_check_minmax(x, min, max);
@@ -553,7 +559,7 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
             h = IEM_GUI_MINSIZE;
         x->x_gui.x_h = h;
     }
-    my_numbox_calc_fontwidth(x);
+    my_numbox_adjust_width_to_numwidth(x);
     iemgui_size((void *)x, &x->x_gui);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
@@ -601,7 +607,7 @@ static void my_numbox_label_font(t_my_numbox *x,
     if((f < 0) || (f > 2))
         f = 0;
     x->x_gui.x_fsf.x_font_style = f;
-    my_numbox_calc_fontwidth(x);
+    my_numbox_adjust_width_to_numwidth(x);
     iemgui_label_font((void *)x, &x->x_gui, s, ac, av);
 }
 
@@ -767,7 +773,7 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     x->x_clock_wait = clock_new(x, (t_method)my_numbox_tick_wait);
     x->x_gui.x_fsf.x_change = 0;
-    my_numbox_calc_fontwidth(x);
+    my_numbox_adjust_width_to_numwidth(x);
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);
 }
