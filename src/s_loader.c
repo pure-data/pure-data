@@ -503,7 +503,8 @@ int do_load_lib(t_canvas *canvas, const char *classname)
     {
             /* this is just copied from sys_open_absolute()
                LATER avoid code duplication */
-        char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
+        char dirbuf[MAXPDSTRING];
+        const char *z = strrchr(classname, '/');
         int dirlen;
         if (!z)
         {
