@@ -73,7 +73,7 @@ int sys_isabsolutepath(const char *dir)
 {
     if (dir[0] == '/' || dir[0] == '~'
 #ifdef _WIN32
-        || dir[0] == '%' || (dir[1] == ':' && dir[2] == '/')
+        || dir[0] == '%' || (dir[0] && dir[1] == ':' && dir[2] == '/')
 #endif
         )
     {
