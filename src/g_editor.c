@@ -3412,16 +3412,6 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             {
                 ob->te_pd->c_wb->w_resizefn(y1, x, wantwidth, wantheight, mod);
             }
-            else if (ob && ob->ob_pd == canvas_class)
-            {
-                gobj_vis(y1, x, 0);
-                ((t_canvas *)ob)->gl_pixwidth += xpos - x->gl_editor->e_xnew;
-                ((t_canvas *)ob)->gl_pixheight += ypos - x->gl_editor->e_ynew;
-                x->gl_editor->e_xnew = xpos;
-                x->gl_editor->e_ynew = ypos;
-                canvas_fixlinesfor(x, ob);
-                gobj_vis(y1, x, 1);
-            }
             else post("not resizable");
         }
     }

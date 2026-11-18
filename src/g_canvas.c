@@ -2077,6 +2077,34 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+void text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
+static void canvas_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod)
+{
+    t_text *x = (t_text *)z;
+    t_canvas *c = (t_canvas *)z;
+    int x1, y1, xpos, ypos;
+    if (!c)
+        return;
+    if (!c->gl_isgraph)
+    {
+        text_resize(z, glist, wantwidth, wantheight, mod);
+        return;
+    }
+    gobj_vis(z, glist, 0);
+    x1 = text_xpix(x, glist);
+    y1 = text_ypix(x, glist);
+    xpos = wantwidth + x1;
+    ypos = wantheight + y1;
+
+    c->gl_pixwidth += xpos - glist->gl_editor->e_xnew;
+    c->gl_pixheight += ypos - glist->gl_editor->e_ynew;
+    glist->gl_editor->e_xnew = xpos;
+    glist->gl_editor->e_ynew = ypos;
+
+    canvas_fixlinesfor(glist, (t_text *)c);
+    gobj_vis(z, glist, 1);
+}
+
 extern t_class *array_define_class;     /* LATER datum class too */
 
     /* check if a pd can be treated as a glist - true if we're of any of
@@ -2128,6 +2156,7 @@ void g_canvas_setup(void)
             /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
+    class_setwidgetfn(canvas_class, WIDGET_RESIZE, (t_widgetfn)canvas_resize);
     class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
         A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_restore,
