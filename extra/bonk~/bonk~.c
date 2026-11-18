@@ -757,16 +757,21 @@ static void bonk_perform_generic(t_bonk *x, int n) {
     {
         int i, j, ninsig = x->x_ninsig;
         t_insig *gp;
-        if (x->x_countdown > 0)
-        {
-            n -= x->x_countdown;
-            onset += x->x_countdown;
-            x->x_countdown = 0;
-        }
         while (n > 0)
         {
-            int infill = x->x_infill;
-            int m = (n < (x->x_npoints - infill) ?
+            int infill, m;
+                /* skip the gap after a window that completed in this block */
+            if (x->x_countdown > 0)
+            {
+                int skip = (x->x_countdown < n ? x->x_countdown : n);
+                n -= skip;
+                onset += skip;
+                x->x_countdown -= skip;
+                if (!n)
+                    break;
+            }
+            infill = x->x_infill;
+            m = (n < (x->x_npoints - infill) ?
                      n : (x->x_npoints - infill));
             for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
             {
@@ -787,9 +792,9 @@ static void bonk_perform_generic(t_bonk *x, int n) {
                 else x->x_countdown = 0;
                 if (x->x_period < x->x_npoints)
                 {
-                    int overlap = x->x_npoints - x->x_period;
+                    int ch, overlap = x->x_npoints - x->x_period;
                     t_float *fp1, *fp2;
-                    for (n = 0, gp = x->x_insig; n < ninsig; n++, gp++)
+                    for (ch = 0, gp = x->x_insig; ch < ninsig; ch++, gp++)
                         for (i = overlap, fp1 = gp->g_inbuf,
                              fp2 = fp1 + x->x_period; i--;)
                             *fp1++ = *fp2++;
