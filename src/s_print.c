@@ -29,8 +29,9 @@ int sys_printtostderr;
 #ifdef _WIN32
 
     /* NB: Unlike vsnprintf(), _vsnprintf() does *not* null-terminate
-    the output if the resulting string is too large to fit into the buffer.
-    Also, it just returns -1 instead of the required number of bytes.
+    the output if the resulting string fills or exceeds the buffer.
+    An exact fill returns size; a longer string returns -1 instead of the
+    required number of bytes.
     Strictly speaking, the UCRT in Windows 10 actually contains a standard-
     conforming vsnprintf() function that is not just an alias for _vsnprintf().
     However, MinGW traditionally links against the old msvcrt.dll runtime library.
@@ -40,11 +41,13 @@ int sys_printtostderr;
 int pd_vsnprintf(char *buf, size_t size, const char *fmt, va_list argptr)
 {
     int ret = _vsnprintf(buf, size, fmt, argptr);
+        /* Both truncation and an exact fill can omit the terminator. */
+    if (size > 0 && (ret < 0 || (size_t)ret == size))
+        buf[size - 1] = '\0';
     if (ret < 0)
     {
-            /* null-terminate the buffer and get the required number of bytes. */
+            /* get the required number of bytes. */
         ret = _vscprintf(fmt, argptr);
-        buf[size - 1] = '\0';
     }
     return ret;
 }
