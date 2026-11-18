@@ -1,7 +1,5 @@
-
-#ifndef __g_undo_h_
-#define __g_undo_h_
-
+#ifndef INCLUDED_G_UNDO_H_
+#define INCLUDED_G_UNDO_H_
 /*
 Infinite undo by Ivica Ico Bukvic <ico@vt.edu> Dec. 2011
 Modified for Pd-vanilla by IOhannes m zmölnig <zmoelnig@iem.at> Jun. 2018
@@ -170,4 +168,4 @@ EXTERN int canvas_undo_font(t_canvas *x, void *z, int action);
 
 /* ------------------------------- */
 
-#endif /* __g_undo_h_ */
+#endif /* INCLUDED_G_UNDO_H_ */

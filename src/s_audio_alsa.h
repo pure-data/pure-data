@@ -1,8 +1,9 @@
+#ifndef INCLUDED_S_AUDIO_ALSA_H_
+#define INCLUDED_S_AUDIO_ALSA_H_
 /* Copyright (c) 1997- Guenter Geiger, Miller Puckette, Larry Troxler,
 * Winfried Ritsch, Karl MacMillan, and others.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
-
 
 typedef int16_t t_alsa_sample16;
 typedef int32_t t_alsa_sample32;
@@ -38,3 +39,5 @@ extern int alsa_noutdev;
 int alsamm_open_audio(int rate, int blocksize);
 void alsamm_close_audio(void);
 int alsamm_send_dacs(void);
+
+#endif /* INCLUDED_S_AUDIO_ALSA_H_ */

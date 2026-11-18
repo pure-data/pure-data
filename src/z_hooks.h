@@ -1,3 +1,5 @@
+#ifndef INCLUDED_Z_HOOKS_H_
+#define INCLUDED_Z_HOOKS_H_
 /*
  * Copyright (c) 2013 Dan Wilcox (danomatika@gmail.com)
  * Copyright (c) 2013-2021 libpd team
@@ -8,9 +10,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __Z_HOOKS_H__
-#define __Z_HOOKS_H__
 
 #include "z_libpd.h"
 #include "s_stuff.h"
@@ -70,4 +69,4 @@ void libpdimp_free(t_libpdimp *imp);
   #define LIBPDSTUFF ((t_libpdimp *)&libpd_mainimp)
 #endif
 
-#endif
+#endif /* INCLUDED_Z_HOOKS_H_ */

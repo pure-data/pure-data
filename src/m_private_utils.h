@@ -1,3 +1,5 @@
+#ifndef INCLUDED_M_PRIVATE_UTILS_H_
+#define INCLUDED_M_PRIVATE_UTILS_H_
 /* Copyright (c) 1997-1999 Miller Puckette and others.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -5,9 +7,6 @@
 /* This file contains some small header-only utilities to be used by Pd's code. */
 
 /* NOTE: this file is an implementation detail of Pd, not to be in externals */
-
-#ifndef M_PRIVATE_UTILS_H
-#define M_PRIVATE_UTILS_H
 
 #ifndef PD_INTERNAL
 # error m_private_utils.h is a PRIVATE header. do *not* use it in your externals
@@ -197,4 +196,4 @@ PD_INLINE int pd_isfinite(t_float f) { return !isinf(f) && !isnan(f); }
 # define isfinite pd_isfinite
 #endif
 
-#endif /* M_PRIVATE_UTILS_H */
+#endif /* INCLUDED_M_PRIVATE_UTILS_H_ */

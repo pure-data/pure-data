@@ -1,3 +1,5 @@
+#ifndef INCLUDED_Z_LIBPD_H_
+#define INCLUDED_Z_LIBPD_H_
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
  * Copyright (c) 2012-2021 libpd team
@@ -8,9 +10,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __Z_LIBPD_H__
-#define __Z_LIBPD_H__
 
 #ifdef __cplusplus
 extern "C"
@@ -576,4 +575,4 @@ EXTERN int libpd_get_verbose(void);
 }
 #endif
 
-#endif
+#endif /* INCLUDED_Z_LIBPD_H_ */

@@ -1,5 +1,5 @@
-#ifndef S_UTF8_H
-#define S_UTF8_H
+#ifndef INCLUDED_S_UTF8_H
+#define INCLUDED_S_UTF8_H
 
 #include "m_pd.h"
 
@@ -85,4 +85,4 @@ int u8_seqlen(const char *s);
 /* convert a string in the current encoding to UTF-8 */
 int u8_nativetoutf8(char* dest, int sz, const char* src, int srcsz);
 
-#endif /* S_UTF8_H */
+#endif /* INCLUDED_S_UTF8_H */
