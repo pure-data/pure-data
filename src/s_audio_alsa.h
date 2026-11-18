@@ -5,6 +5,8 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
+#include <alsa/asoundlib.h>
+
 typedef int16_t t_alsa_sample16;
 typedef int32_t t_alsa_sample32;
 #define ALSA_SAMPLEWIDTH_16 sizeof(t_alsa_sample16)

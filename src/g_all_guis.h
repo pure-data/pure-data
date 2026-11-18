@@ -5,6 +5,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 /* g_7_guis.h written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
+#include "m_pd.h"
 #include "g_canvas.h"
 
 #define IEM_GUI_COLNR_WHITE          0

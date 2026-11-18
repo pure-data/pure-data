@@ -10,6 +10,7 @@ Pd, but not shared with Pd objects. */
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
+#include "m_pd.h"
 
 /* the structure for a method handler ala Max */
 typedef struct _methodentry

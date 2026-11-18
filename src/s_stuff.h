@@ -9,6 +9,8 @@
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
+#include "m_pd.h"
+
 /* in s_path.c */
 
 #include <stdarg.h>
