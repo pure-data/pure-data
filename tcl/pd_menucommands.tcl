@@ -90,6 +90,7 @@ proc ::pd_menucommands::menu_redo {} {
 
 proc ::pd_menucommands::menu_editmode {state} {
     if {[winfo class $::focused_window] ne "PatchWindow"} {return}
+    set ::editmode_state $state
     set ::editmode_button $state
 # this shouldn't be necessary because 'pd' will reply with pdtk_canvas_editmode
 #    set ::editmode($::focused_window) $state
@@ -97,7 +98,7 @@ proc ::pd_menucommands::menu_editmode {state} {
 }
 
 proc ::pd_menucommands::menu_toggle_editmode {} {
-    menu_editmode [expr {! $::editmode_button}]
+    menu_editmode [expr {! $::editmode_state}]
 }
 
 # ------------------------------------------------------------------------------
