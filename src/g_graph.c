@@ -8,6 +8,7 @@ to this file... */
 
 #include <stdlib.h>
 #include "m_pd.h"
+#include "m_imp.h"
 
 #include "g_canvas.h"
 #include <stdio.h>
@@ -1021,24 +1022,52 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *)z;
     t_rtext *y;
-    if (!x->gl_isgraph)
-        text_widgetbehavior.w_selectfn(z, glist, state);
-    else if ((y = glist_getrtext(glist, &x->gl_obj, 0)))
-    {
-        char tag[80];
-        if (canvas_showtext(x))
-            rtext_select(y, state);
+    char tag[80], iotag[128];
+    unsigned int color = (state ? THISGUI->i_selectcolor :
+        THISGUI->i_foregroundcolor);
+    int i, n;
 
-        sprintf(tag, "%sR",  rtext_gettag(y));
+    if (!x->gl_isgraph)
+    {
+        text_widgetbehavior.w_selectfn(z, glist, state);
+        return;
+    }
+
+    y = glist_getrtext(glist, &x->gl_obj, 0);
+    if (canvas_showtext(x) && y)
+        rtext_select(y, state);
+
+    if (y)
+    {
+        sprintf(tag, "%sR", rtext_gettag(y));
         pdgui_vmess(0, "crs rk",
-                  glist, "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
-        sprintf(tag, "graph%lx", (t_int)z);
-        pdgui_vmess(0, "crs rk",
-                  glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
+            glist, "itemconfigure", tag,
+            "-fill", color);
+    }
+
+    sprintf(tag, "graph%lx", (t_int)z);
+    pdgui_vmess(0, "crs rk",
+        glist_getcanvas(glist), "itemconfigure", tag,
+        "-fill", color);
+
+    n = obj_noutlets(&x->gl_obj);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(iotag, "%so%d", tag, i);
+        pdgui_vmess(0, "crs rk rk",
+            glist_getcanvas(glist), "itemconfigure", iotag,
+            "-fill", color,
+            "-outline", color);
+    }
+
+    n = obj_ninlets(&x->gl_obj);
+    for (i = 0; i < n; i++)
+    {
+        sprintf(iotag, "%si%d", tag, i);
+        pdgui_vmess(0, "crs rk rk",
+            glist_getcanvas(glist), "itemconfigure", iotag,
+            "-fill", color,
+            "-outline", color);
     }
 }
 
