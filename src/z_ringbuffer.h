@@ -1,3 +1,5 @@
+#ifndef INCLUDED_Z_RINGBUFFER_H_
+#define INCLUDED_Z_RINGBUFFER_H_
 /*
  * Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
  *
@@ -7,9 +9,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __Z_RING_BUFFER_H__
-#define __Z_RING_BUFFER_H__
 
 #include "m_private_utils.h"
 
@@ -60,4 +59,4 @@ int rb_read_from_buffer(ring_buffer *buffer, char *dest, int len);
 /// this is safe to call from any thread
 void rb_clear_buffer(ring_buffer *buffer);
 
-#endif
+#endif /* INCLUDED_Z_RINGBUFFER_H_ */

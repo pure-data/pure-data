@@ -1,3 +1,5 @@
+#ifndef INCLUDED_Z_QUEUED_H_
+#define INCLUDED_Z_QUEUED_H_
 /*
  * Copyright (c) 2012 Peter Brinkmann (peter.brinkmann@gmail.com)
  * Copyright (c) 2022 libpd team
@@ -8,9 +10,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __Z_QUEUED_H__
-#define __Z_QUEUED_H__
 
 #include "z_libpd.h"
 
@@ -115,4 +114,4 @@ EXTERN void libpd_queued_receive_midi_messages(void);
 }
 #endif
 
-#endif
+#endif /* INCLUDED_Z_QUEUED_H_ */

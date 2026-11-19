@@ -1,8 +1,8 @@
+#ifndef INCLUDED_M_PD_H_
+#define INCLUDED_M_PD_H_
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
-
-#ifndef __m_pd_h_
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 extern "C" {
@@ -1154,5 +1154,4 @@ EXTERN void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
 }
 #endif
 
-#define __m_pd_h_
-#endif /* __m_pd_h_ */
+#endif /* INCLUDED_M_PD_H_ */

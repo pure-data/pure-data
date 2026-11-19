@@ -1,3 +1,5 @@
+#ifndef INCLUDED_G_CANVAS_H_
+#define INCLUDED_G_CANVAS_H_
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -43,8 +45,7 @@ glist has its own window, even if miniaturized.
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
-#ifndef G_CANVAS_H
-#define G_CANVAS_H
+#include "m_pd.h"
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 extern "C" {
@@ -710,4 +711,4 @@ EXTERN void signal_makereusable(t_signal *sig);
 }
 #endif
 
-#endif // G_CANVAS_H
+#endif // INCLUDED_G_CANVAS_H_

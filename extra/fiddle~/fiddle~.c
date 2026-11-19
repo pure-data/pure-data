@@ -1385,6 +1385,10 @@ static t_int *fiddle_perform(t_int *w)
     t_float *fp;
     if (!x->x_hop)
         goto nono;
+    if (n > x->x_hop)
+        goto nono;
+    if (x->x_phase + n > x->x_hop)
+        x->x_phase = 0;
     for (count = 0, fp = x->x_inbuf + x->x_phase; count < n; count++)
         *fp++ = *in++;
     if (fp == x->x_inbuf + x->x_hop)
@@ -1402,6 +1406,9 @@ nono:
 void sigfiddle_dsp(t_sigfiddle *x, t_signal **sp)
 {
     x->x_sr = sp[0]->s_sr;
+    if (x->x_hop && x->x_hop % sp[0]->s_n)
+        pd_error(x, "fiddle~: block size %d must divide npoints/2 (%d)",
+            sp[0]->s_n, x->x_hop);
     sigfiddle_reattack(x, x->x_attacktime, x->x_attackthresh);
     sigfiddle_vibrato(x, x->x_vibtime, x->x_vibdepth);
     dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);

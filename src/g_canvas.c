@@ -1128,6 +1128,33 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+    /* restore subpatches that patch text left open because it ended before
+    their "#X restore" line, up to "owner" or the first canvas it owns */
+void canvas_restoreunclosed(t_canvas *owner, const char *source)
+{
+    t_pd *z;
+    while ((z = s__X.s_thing) && z != (t_pd *)owner &&
+        *z == canvas_class && ((t_canvas *)z)->gl_owner != owner)
+    {
+        t_canvas *x = (t_canvas *)z;
+            /* old-style graphs ("#X graph") are already in their owner's
+            list and are closed by "#X pop", not "#X restore" */
+        if (x->gl_obj.te_binbuf)
+        {
+            pd_error(x, "%s: missing \"#X pop\" line for graph %s",
+                source, x->gl_name->s_name);
+            vmess(z, gensym("pop"), "i", 0);
+        }
+        else
+        {
+            pd_error(x, "%s: missing \"#X restore\" line for [pd %s]",
+                source, x->gl_name->s_name);
+            vmess(z, gensym("restore"), "ffss", 0., 0., gensym("pd"),
+                x->gl_name);
+        }
+    }
+}
+
 static void canvas_loadbangabstractions(t_canvas *x)
 {
     t_gobj *y;
@@ -2257,6 +2284,7 @@ int pd_getdspstate(void)
 }
 
 void pd_doloadbang(void);
+void pd_clearlastpopped(void);
 
     /* evaluate a file, which is expected to create a patch, and perform
     post-evaluation cleanup and loadbang */
@@ -2273,7 +2301,11 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
     boundx = s__X.s_thing;
         s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
                                 for the caller to grab it. */
+        /* forget canvases popped elsewhere, so that loadbang only goes to
+        what this file creates */
+    pd_clearlastpopped();
     binbuf_evalfile(name, dir);
+    canvas_restoreunclosed(0, name->s_name);
     while ((x != s__X.s_thing) && s__X.s_thing)
     {
         x = s__X.s_thing;

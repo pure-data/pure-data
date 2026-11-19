@@ -2337,13 +2337,13 @@ ex_print(struct ex_ex *eptr)
                         post("$f%ld ", eptr->ex_int + 1);
                         break;
                 case ET_SI:
-                        post("$s%lx ", (long) eptr->ex_ptr + 1);
+                        post("$s%lx ", eptr->ex_ptr + 1);
                         break;
                 case ET_VI:
-                        post("$v%lx ", (long) eptr->ex_vec);
+                        post("$v%lx ", eptr->ex_vec);
                         break;
                 case ET_VEC:
-                        post("vec = %ld ", (long) eptr->ex_vec);
+                        post("vec = %ld ", (t_int) eptr->ex_vec);
                         break;
                 case ET_YOM1:
                 case ET_YO:

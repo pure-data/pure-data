@@ -351,7 +351,8 @@ int sys_open_absolute(const char *name, const char* ext,
 {
     if (sys_isabsolutepath(name))
     {
-        char dirbuf[MAXPDSTRING], *z = strrchr(name, '/');
+        char dirbuf[MAXPDSTRING];
+        const char *z = strrchr(name, '/');
         int dirlen;
         if (!z)
             return (0);

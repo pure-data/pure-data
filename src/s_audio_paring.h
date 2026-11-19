@@ -1,5 +1,5 @@
-#ifndef _RINGBUFFER_H
-#define _RINGBUFFER_H
+#ifndef INCLUDED_S_AUDIO_PARING_H_
+#define INCLUDED_S_AUDIO_PARING_H_
 #ifdef __cplusplus
 extern "C"
 {
@@ -81,4 +81,4 @@ void sys_semaphore_post(t_semaphore *sem);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-#endif /* _RINGBUFFER_H */
+#endif /* INCLUDED_S_AUDIO_PARING_H_ */

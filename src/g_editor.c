@@ -55,6 +55,7 @@ static void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
+void canvas_restoreunclosed(t_canvas *owner, const char *source);
 
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
@@ -3989,16 +3990,14 @@ static void glist_donewloadbangs(t_glist *x)
 
 static int binbuf_nextmess(int argc, const t_atom *argv)
 {
-    int i=0;
-    while(argc--)
+    int i;
+    for (i = 1; i < argc; i++)
     {
-        argv++;
-        i++;
-        if (A_SEMI == argv->a_type) {
+        if (A_SEMI == argv[i].a_type) {
             return i+1;
         }
     }
-    return i;
+    return argc;
 }
 static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
 {
@@ -4105,6 +4104,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     THISED->paste_canvas = x;
 
     binbuf_eval(b, 0, 0, 0);
+    canvas_restoreunclosed(x->gl_owner, "paste");
     for (g2 = x->gl_list, count = 0; g2; g2 = g2->g_next, count++)
         if (count >= nbox)
             glist_select(x, g2);

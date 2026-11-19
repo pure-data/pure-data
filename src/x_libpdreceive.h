@@ -1,3 +1,5 @@
+#ifndef INCLUDED_X_LIBPDRECEIVE_H_
+#define INCLUDED_X_LIBPDRECEIVE_H_
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
  * Copyright (c) 2012-2021 libpd team
@@ -8,9 +10,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __X_LIBPDREC_H__
-#define __X_LIBPDREC_H__
 
 #include "m_pd.h"
 
@@ -23,4 +22,4 @@ void libpdreceive_setup(void);
 // create a new libpd source receiver with a given name symbol
 void *libpdreceive_new(t_symbol *);
 
-#endif
+#endif /* INCLUDED_X_LIBPDRECEIVE_H_ */

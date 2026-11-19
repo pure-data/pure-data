@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCLUDED_S_STUFF_H_
+#define INCLUDED_S_STUFF_H_
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -7,6 +8,8 @@
 
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
+
+#include "m_pd.h"
 
 /* in s_path.c */
 
@@ -465,3 +468,5 @@ EXTERN size_t pd_strnlen(const char*s, size_t maxlen);
 
 EXTERN const char *pd_extraflags;     /* a place to stick an extra startup arg */
  /* this is used by 'stdout' but could be useful elsewhere perhaps. */
+
+#endif /* INCLUDED_S_STUFF_H_ */

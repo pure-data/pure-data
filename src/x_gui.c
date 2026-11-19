@@ -67,7 +67,7 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
 {
     char buf[4*MAXPDSTRING];
     char sprintfbuf[MAXPDSTRING];
-    char *afterpercent;
+    const char *afterpercent;
     t_int afterpercentlen;
     t_gfxstub *x;
     t_symbol *s;

@@ -249,7 +249,7 @@ proc ::pd_bindings::global_bindings {} {
     bind  all  <<Edit|Triggerize>>        {::pd_menucommands::scheduleAction menu_send %W triggerize}
     bind  all  <<Pd|ClearConsole>>        {::pd_menucommands::scheduleAction menu_clear_console}
     bind  all  <<Edit|EditMode>>          {::pd_menucommands::scheduleAction menu_toggle_editmode}
-    bind  all  <<Edit|SelectNone>>        {::pd_menucommands::scheduleAction menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
+    bind  all  <<Edit|SelectNone>>        {::pd_menucommands::scheduleAction if {1} {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}}
 
     bind  all  <<Put|Object>>             {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
     bind  all  <<Put|Message>>            {::pd_menucommands::scheduleAction menu_send_float %W msg 0}

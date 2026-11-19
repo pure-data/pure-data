@@ -1,10 +1,11 @@
+#ifndef INCLUDED_G_ALL_GUIS_H_
+#define INCLUDED_G_ALL_GUIS_H_
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 /* g_7_guis.h written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
-#ifndef __g_all_guis_h_
-
+#include "m_pd.h"
 #include "g_canvas.h"
 
 #define IEM_GUI_COLNR_WHITE          0
@@ -352,6 +353,4 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        const char* mode_label0, const char* mode_label1,
                        int canloadbang, int steady, int number);
 
-
-#define __g_all_guis_h_
-#endif /* __g_all_guis_h_ */
+#endif /* INCLUDED_G_ALL_GUIS_H_ */

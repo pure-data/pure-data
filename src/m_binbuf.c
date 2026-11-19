@@ -533,7 +533,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
     const char*str=s->s_name;
-    char*substr;
+    const char*substr;
     int next=0;
     t_atom dollarnull;
     SETFLOAT(&dollarnull, canvas_getdollarzero());

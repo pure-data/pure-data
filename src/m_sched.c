@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include <math.h>
 #include "m_private_utils.h"
 #include "s_stuff.h"
 #ifdef _WIN32
@@ -88,8 +89,11 @@ void clock_unset(t_clock *x)
     /* set the clock to call back at an absolute system time */
 void clock_set(t_clock *x, double setticks)
 {
-    if (setticks < pd_this->pd_systime) setticks = pd_this->pd_systime;
     clock_unset(x);
+        /* a NaN time never comes; leave the clock unset rather than let it
+        fire now, which a self-rescheduling clock would repeat forever */
+    if (isnan(setticks)) return;
+    if (setticks < pd_this->pd_systime) setticks = pd_this->pd_systime;
     x->c_settime = setticks;
     if (pd_this->pd_clock_setlist &&
         pd_this->pd_clock_setlist->c_settime <= setticks)

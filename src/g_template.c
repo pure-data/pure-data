@@ -996,7 +996,8 @@ static void fielddesc_setsymbol_const(t_fielddesc *fd, t_symbol *s)
 
 static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 {
-    char *s1, *s2, *s3, strbuf[MAXPDSTRING];
+    const char *s1, *s2, *s3;
+    char strbuf[MAXPDSTRING];
     int i;
     fd->fd_type = A_FLOAT;
     fd->fd_var = 1;

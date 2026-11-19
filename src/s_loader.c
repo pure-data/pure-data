@@ -503,7 +503,8 @@ int do_load_lib(t_canvas *canvas, const char *classname)
     {
             /* this is just copied from sys_open_absolute()
                LATER avoid code duplication */
-        char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
+        char dirbuf[MAXPDSTRING];
+        const char *z = strrchr(classname, '/');
         int dirlen;
         if (!z)
         {
@@ -607,6 +608,7 @@ int sys_run_scheduler(const char *externalschedlibname,
 
 /* abstraction loading */
 void canvas_popabstraction(t_canvas *x);
+void canvas_restoreunclosed(t_canvas *owner, const char *source);
 int pd_setloadingabstraction(t_symbol *sym);
 
 static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
@@ -637,6 +639,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
             canvas_setargs(argc, argv);
 
             binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
+            canvas_restoreunclosed((t_canvas *)was, nameptr);
             if (s__X.s_thing && was != s__X.s_thing)
                 canvas_popabstraction((t_canvas *)(s__X.s_thing));
             else s__X.s_thing = was;

@@ -1,3 +1,5 @@
+#ifndef INCLUDED_Z_PRINT_UTIL_H_
+#define INCLUDED_Z_PRINT_UTIL_H_
 /*
  * Copyright (c) 2013 Dan Wilcox (danomatika@gmail.com) &
  *                    Peter Brinkmann (peter.brinkmann@gmail.com)
@@ -9,9 +11,6 @@
  * See https://github.com/libpd/libpd/wiki for documentation
  *
  */
-
-#ifndef __Z_PRINT_UTIL_H__
-#define __Z_PRINT_UTIL_H__
 
 #include "z_libpd.h"
 
@@ -44,4 +43,4 @@ EXTERN void libpd_print_concatenator(const char *s);
 }
 #endif
 
-#endif
+#endif /* INCLUDED_Z_PRINT_UTIL_H_ */

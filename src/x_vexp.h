@@ -1,3 +1,5 @@
+#ifndef INCLUDED_X_VEXP_H_
+#define INCLUDED_X_VEXP_H_
 /* Copyright (c) IRCAM.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -13,6 +15,10 @@
 #ifdef PD
 #include "m_pd.h"
 #include "s_stuff.h"
+#ifdef PD_INTERNAL
+#include "m_private_utils.h"
+#endif
+
 /*
  * below is added to account for an anomoly in windows implementation of snprintf()
  */
@@ -276,3 +282,5 @@ void ex_error(t_expr *e, const char *fmt, ...);
 #define abort ABORT
 void ABORT(void);
 #endif
+
+#endif /* INCLUDED_X_VEXP_H_ */

@@ -1,10 +1,10 @@
+#ifndef INCLUDED_S_NET_H_
+#define INCLUDED_S_NET_H_
 /* Copyright (c) 2019 Dan Wilcox.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* networking headers and helper functions */
-
-#pragma once
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -142,3 +142,5 @@ int socket_errno_udp(void);
 
     /** get an error string from errno */
 void socket_strerror(int err, char *buf, int size);
+
+#endif /* INCLUDED_S_NET_H_ */

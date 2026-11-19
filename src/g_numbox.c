@@ -7,37 +7,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "m_pd.h"
 #include "s_stuff.h"
-
 #include "g_all_guis.h"
-#include <math.h>
+#include "m_private_utils.h"
 
 #define MINDIGITS 1
 #define MINFONT   4
 
 /* helpers */
-#if NO_ISNAN
-PD_INLINE int my_isnan(t_float f) { return ((f) != (f)); }
-# undef isnan
-# define isnan my_isnan
-#endif
-
-#if NO_ISINF
-# ifndef INFINITY
-#  define INFINITY (1.0/0.0)
-# endif
-PD_INLINE int my_isinf(t_float f) { return f == INFINITY || f == -INFINITY; }
-# undef isinf
-# define isinf my_isinf
-#endif
-
-#if NO_ISFINITE
-PD_INLINE int my_isfinite(t_float f) { return !isinf(f) && !isnan(f); }
-# undef isfinite
-# define isfinite my_isfinite
-#endif
-
 PD_INLINE t_float _getfloat(const t_atom* a)
 {
     char*endptr = 0;
@@ -114,7 +93,7 @@ static void my_numbox_calc_fontwidth(t_my_numbox *x)
     }
 
         /* make sure to not exceed the legacy font-size */
-    if ((f < fontwidth) || (pd_compatibilitylevel < 53))
+    if ((f < fontwidth) || (pd_compatibilitylevel < 56))
         fontwidth = f;
 
     w = (int)(fontwidth * x->x_numwidth);
@@ -535,7 +514,7 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
     if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
         x->x_val = ftocompare;
-        if (pd_compatibilitylevel < 56)
+        if (pd_compatibilitylevel < 53)
             my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }

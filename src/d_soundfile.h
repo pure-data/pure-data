@@ -1,10 +1,10 @@
+#ifndef INCLUDED_D_SOUNDFILE_H_
+#define INCLUDED_D_SOUNDFILE_H_
 /* Copyright (c) 2019 Dan Wilcox.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* soundfile formats and helper functions */
-
-#pragma once
 
 #include "m_pd.h"
 #ifdef HAVE_SYS_TYPES_H
@@ -186,3 +186,5 @@ void swapstring4(char *foo, int doit);
 
     /** swap an 8 byte string in place if doit = 1, otherwise do nothing */
 void swapstring8(char *foo, int doit);
+
+#endif /* INCLUDED_D_SOUNDFILE_H_ */
