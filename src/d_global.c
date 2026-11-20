@@ -25,16 +25,21 @@ typedef struct _sigsend
 static void *sigsend_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigsend *x = (t_sigsend *)pd_new(sigsend_class);
+
     if (*s->s_name)
         pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
+    x->x_canvas = canvas_getcurrent();
+    x->x_length = 1;     /* replaced later */
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
     x->x_prevnchans = x->x_nchans;
-    x->x_length = 1;
-    x->x_vec = (t_sample *)getbytes(x->x_nchans * sizeof(t_sample));
+        /* sigsend_fixbuf() passes x_length * x_prevnchans as the old size
+        to resizebytes(), which only zeroes memory beyond the old size */
+    x->x_vec = (t_sample *)getbytes(
+        x->x_length * x->x_prevnchans * sizeof(t_sample));
+
     x->x_f = 0;
-    x->x_canvas = canvas_getcurrent();
     return (x);
 }
 
@@ -87,7 +92,7 @@ static void sigsend_free(t_sigsend *x)
 {
     if (*x->x_sym->s_name)
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_length * sizeof(t_sample));
+    freebytes(x->x_vec, x->x_length * x->x_prevnchans * sizeof(t_sample));
 }
 
 static void sigsend_setup(void)
@@ -249,6 +254,7 @@ typedef struct _sigcatch
 static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigcatch *x = (t_sigcatch *)pd_new(sigcatch_class);
+
     if (*s->s_name)
         pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
@@ -257,7 +263,11 @@ static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
     x->x_prevnchans = x->x_nchans;
-    x->x_vec = (t_sample *)getbytes(x->x_length * sizeof(t_sample));
+        /* sigcatch_fixbuf() passes x_length * x_prevnchans as the old size
+        to resizebytes(), which only zeroes memory beyond the old size */
+    x->x_vec = (t_sample *)getbytes(
+        x->x_length * x->x_prevnchans * sizeof(t_sample));
+
     outlet_new(&x->x_obj, &s_signal);
     return (x);
 }
@@ -307,7 +317,7 @@ static void sigcatch_free(t_sigcatch *x)
 {
     if (*x->x_sym->s_name)
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_length * sizeof(t_sample));
+    freebytes(x->x_vec, x->x_length * x->x_prevnchans * sizeof(t_sample));
 }
 
 static void sigcatch_setup(void)
