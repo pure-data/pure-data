@@ -637,6 +637,14 @@ void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     iemgui_do_drawmove(x, x);
 }
 
+void iemgui_resize(t_gobj *z, t_glist *glist, int w, int h, int mod)
+{
+    t_iemgui *x = (t_iemgui *)z;
+    canvas_setcursor(glist, CURSOR_EDITMODE_RESIZE_LOCKED);
+    x->x_h = x->x_w = iemgui_clip_size(w);
+    iemgui_size(x, x);
+}
+
 void iemgui_select(t_gobj *z, t_glist *glist, int selected)
 {
     t_iemgui *x = (t_iemgui *)z;

@@ -11,6 +11,7 @@ Pd, but not shared with Pd objects. */
 in future releases.  The public (stable) API is in m_pd.h. */
 
 #include "m_pd.h"
+#include "g_canvas.h"
 
 /* the structure for a method handler ala Max */
 typedef struct _methodentry
@@ -42,6 +43,11 @@ typedef struct _class_data
     t_classdatafn freefn;   /* called when the instance is destroyed */
 } t_class_data;
 
+struct  _private_widgetbehavior {
+    struct _widgetbehavior wb;
+    t_resizefn w_resizefn;
+};
+
 struct _class
 {
     t_symbol *c_name;                   /* name (mostly for error reporting) */
@@ -61,7 +67,7 @@ struct _class
     t_symbolmethod c_symbolmethod;
     t_listmethod c_listmethod;
     t_anymethod c_anymethod;
-    const struct _widgetbehavior *c_wb; /* "gobjs" only */
+    struct _private_widgetbehavior *c_wb; /* "gobjs" only */
     const struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
     t_savefn c_savefn;                  /* function to call when saving */
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */

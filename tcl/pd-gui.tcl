@@ -293,6 +293,24 @@ proc init_for_platform {} {
     # deleterious effects on dialog window font sizes.
     # tk scaling 1
 
+    # mouse cursors for all the different modes
+    # (platform specific overrides below)
+    set ::cursor_runmode_nothing "right_ptr"
+    set ::cursor_runmode_clickme "arrow"
+
+    set ::cursor_runmode_thicken "sb_v_double_arrow"
+    set ::cursor_runmode_addpoint "plus"
+    set ::cursor_editmode_nothing "hand2"
+    set ::cursor_editmode_connect "circle"
+    set ::cursor_editmode_disconnect "X_cursor"
+
+    set ::cursor_editmode_resize_x "sb_h_double_arrow"
+    set ::cursor_editmode_resize_y "sb_v_double_arrow"
+    set ::cursor_editmode_resize_xy "fleur"
+    set ::cursor_editmode_resize_locked "bottom_right_corner"
+    # compat
+    set ::cursor_editmode_resize $::cursor_editmode_resize_x
+
     switch -- $::windowingsystem {
         "x11" {
             set ::modifier "Control"
@@ -325,12 +343,6 @@ proc init_for_platform {} {
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
-            set ::cursor_runmode_thicken "sb_v_double_arrow"
-            set ::cursor_runmode_addpoint "plus"
-            set ::cursor_editmode_nothing "hand2"
-            set ::cursor_editmode_connect "circle"
-            set ::cursor_editmode_disconnect "X_cursor"
-            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "aqua" {
             # load tk::mac event callbacks here, this way launching pd
@@ -365,12 +377,6 @@ proc init_for_platform {} {
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "arrow"
             set ::cursor_runmode_clickme "center_ptr"
-            set ::cursor_runmode_thicken "sb_v_double_arrow"
-            set ::cursor_runmode_addpoint "plus"
-            set ::cursor_editmode_nothing "hand2"
-            set ::cursor_editmode_connect "circle"
-            set ::cursor_editmode_disconnect "X_cursor"
-            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "win32" {
             set ::modifier "Control"
@@ -409,12 +415,6 @@ proc init_for_platform {} {
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "right_ptr"
             set ::cursor_runmode_clickme "arrow"
-            set ::cursor_runmode_thicken "sb_v_double_arrow"
-            set ::cursor_runmode_addpoint "plus"
-            set ::cursor_editmode_nothing "hand2"
-            set ::cursor_editmode_connect "circle"
-            set ::cursor_editmode_disconnect "X_cursor"
-            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
     }
 }

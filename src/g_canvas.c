@@ -8,9 +8,9 @@ to be different but are now unified except for some fossilized names.) */
 #include <stdlib.h>
 #include <stdio.h>
 #include "m_pd.h"
-#include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include "s_utf8.h"
 #include <string.h>
 #include "g_undo.h"
@@ -61,15 +61,15 @@ void sys_expandpath(const char *from, char *to, int bufsize);
 void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1,
     int *x2, int *y2)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
-        (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_getrectfn)
+        (*x->g_pd->c_wb->wb.w_getrectfn)(x, glist, x1, y1, x2, y2);
     else *x1 = *y1 = 0, *x2 = *y2 = 10;
 }
 
 void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_displacefn)
-        (*x->g_pd->c_wb->w_displacefn)(x, glist, dx, dy);
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_displacefn)
+        (*x->g_pd->c_wb->wb.w_displacefn)(x, glist, dx, dy);
 }
 
     /* here we add an extra check whether we're mapped, because some
@@ -78,20 +78,20 @@ void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
        be doing this?  */
 void gobj_select(t_gobj *x, t_glist *glist, int state)
 {
-    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
-        (*x->g_pd->c_wb->w_selectfn)(x, glist, state);
+    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->wb.w_selectfn)
+        (*x->g_pd->c_wb->wb.w_selectfn)(x, glist, state);
 }
 
 void gobj_activate(t_gobj *x, t_glist *glist, int state)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_activatefn)
-        (*x->g_pd->c_wb->w_activatefn)(x, glist, state);
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_activatefn)
+        (*x->g_pd->c_wb->wb.w_activatefn)(x, glist, state);
 }
 
 void gobj_delete(t_gobj *x, t_glist *glist)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_deletefn)
-        (*x->g_pd->c_wb->w_deletefn)(x, glist);
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_deletefn)
+        (*x->g_pd->c_wb->wb.w_deletefn)(x, glist);
 }
 
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
@@ -147,7 +147,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
                (goprect) style. */
         return (glist->gl_havewindow ||
             (ob->te_pd != canvas_class &&
-                ob->te_pd->c_wb != &text_widgetbehavior) ||
+                ob->te_pd->c_wb->wb.w_visfn != text_widgetbehavior.w_visfn) ||
             (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
             (glist->gl_goprect && (ob->te_type == T_TEXT)));
     }
@@ -156,15 +156,15 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 
 void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
-        (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_visfn && gobj_shouldvis(x, glist))
+        (*x->g_pd->c_wb->wb.w_visfn)(x, glist, flag);
 }
 
 int gobj_click(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
-        return ((*x->g_pd->c_wb->w_clickfn)(x,
+    if (x->g_pd->c_wb && x->g_pd->c_wb->wb.w_clickfn)
+        return ((*x->g_pd->c_wb->wb.w_clickfn)(x,
             glist, xpix, ypix, shift, alt, dbl, doit));
     else return (0);
 }
@@ -2077,6 +2077,34 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+void text_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod);
+static void canvas_resize(t_gobj *z, struct _glist *glist, int wantwidth, int wantheight, int mod)
+{
+    t_text *x = (t_text *)z;
+    t_canvas *c = (t_canvas *)z;
+    int x1, y1, xpos, ypos;
+    if (!c)
+        return;
+    if (!c->gl_isgraph)
+    {
+        text_resize(z, glist, wantwidth, wantheight, mod);
+        return;
+    }
+    gobj_vis(z, glist, 0);
+    x1 = text_xpix(x, glist);
+    y1 = text_ypix(x, glist);
+    xpos = wantwidth + x1;
+    ypos = wantheight + y1;
+
+    c->gl_pixwidth += xpos - glist->gl_editor->e_xnew;
+    c->gl_pixheight += ypos - glist->gl_editor->e_ynew;
+    glist->gl_editor->e_xnew = xpos;
+    glist->gl_editor->e_ynew = ypos;
+
+    canvas_fixlinesfor(glist, (t_text *)c);
+    gobj_vis(z, glist, 1);
+}
+
 extern t_class *array_define_class;     /* LATER datum class too */
 
     /* check if a pd can be treated as a glist - true if we're of any of
@@ -2128,6 +2156,7 @@ void g_canvas_setup(void)
             /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
+    class_setwidgetfn(canvas_class, WIDGET_RESIZE, (t_widgetfn)canvas_resize);
     class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
         A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_restore,

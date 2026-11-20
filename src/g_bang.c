@@ -469,6 +469,7 @@ void g_bang_setup(void)
     bng_widgetbehavior.w_visfn = iemgui_vis;
     bng_widgetbehavior.w_clickfn = bng_newclick;
     class_setwidget(bng_class, &bng_widgetbehavior);
+    class_setwidgetfn(bng_class, WIDGET_RESIZE, (t_widgetfn)iemgui_resize);
     class_setsavefn(bng_class, bng_save);
     class_setpropertiesfn(bng_class, bng_properties);
 }
