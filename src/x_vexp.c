@@ -370,7 +370,7 @@ ex_lex(struct expr *expr, long int *n)
 {
         struct ex_ex *list_arr;
         struct ex_ex *exptr, *p;
-        static struct ex_ex tmpnodes[EX_MINODES];
+        static PERTHREAD struct ex_ex tmpnodes[EX_MINODES];
         long non = 0;           /* number of nodes */
         long maxnode = 0;
         int reallocated = 0;      /* did we reallocate the tmp buffer */

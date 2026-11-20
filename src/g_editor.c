@@ -1668,7 +1668,8 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         int remakeit = (g != &except->gl_gobj && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
-                    canvas_getdir((t_canvas *)g) == dir);
+                    sys_issamepath(canvas_getdir((t_canvas *)g)->s_name,
+                        dir->s_name));
             /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
             clone_match(&g->g_pd, name, dir))
@@ -1721,7 +1722,8 @@ void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir, t_canvas *except
         if (pd_class(&g->g_pd) == canvas_class &&
             (!canvas_isabstraction((t_canvas *)g) ||
                  ((t_canvas *)g)->gl_name != name ||
-                    canvas_getdir((t_canvas *)g) != dir))
+                    !sys_issamepath(canvas_getdir((t_canvas *)g)->s_name,
+                        dir->s_name)))
                 glist_doreload((t_canvas *)g, name, dir, except);
         else if (pd_class(&g->g_pd) == clone_class &&
                 !clone_match(&g->g_pd, name, dir))
@@ -4608,20 +4610,20 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_object *objsrc, *objsink;
     t_outconnect *oc;
     int nin = whoin, nout = whoout;
+    if (whoout < 0 || whoin < 0 || outno < 0 || inno < 0) {
+        logpost(x, PD_DEBUG, "cannot connect: negative index");
+        goto bad;
+    }
     if (THISED->paste_canvas == x) whoout += THISED->paste_onset,
         whoin += THISED->paste_onset;
-    for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) {
-            src = NULL;
-            logpost(sink, PD_DEBUG, "cannot connect non-existing object");
-            goto bad; /* bug fix thanks to Hannes */
-        }
-    for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) {
-            sink = NULL;
-            logpost(src, PD_DEBUG, "cannot connect to non-existing object");
-            goto bad;
-        }
+    for (src = x->gl_list; src && whoout; src = src->g_next, whoout--)
+        ;
+    for (sink = x->gl_list; sink && whoin; sink = sink->g_next, whoin--)
+        ;
+    if (!src || !sink) {
+        logpost(x, PD_DEBUG, "cannot connect non-existing object");
+        goto bad;
+    }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||

@@ -995,6 +995,15 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
+            /* A multichannel DSP method may reject the block configuration
+               before setting its outputs. Never propagate or recycle the
+               context's bufferless placeholder as an ordinary signal. */
+        if (*sig == &dc->dc_nullsignal)
+        {
+            *sig = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
+            (*sig)->s_overlap = DC_OVERLAP(dc);
+            dsp_add_zero((*sig)->s_vec, (*sig)->s_length);
+        }
         uout->o_signal = *sig;
         (*sig)->s_refcount = uout->o_nconnect;
 

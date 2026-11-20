@@ -25,6 +25,7 @@ EXTERN t_namelist *namelist_append(t_namelist *listwas, const char *s, int allow
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 EXTERN void namelist_free(t_namelist *listwas);
 EXTERN const char *namelist_get(const t_namelist *namelist, int n);
+int sys_issamepath(const char *a, const char *b);
 int do_open_via_path(const char *dir, const char *name,
     const char *ext, char *dirresult, char **nameresult, unsigned int size,
     int bin, t_namelist *searchpath, int okgui);

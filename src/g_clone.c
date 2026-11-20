@@ -1,6 +1,7 @@
 #include "m_pd.h"
 #include "g_canvas.h"
 #include "m_imp.h"
+#include "s_stuff.h"
 #include <string.h>
 
 /* ---------- clone - maintain copies of a patch ----------------- */
@@ -66,7 +67,7 @@ int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
     if (!x->x_n)
         return (0);
     return (x->x_vec[0].c_gl->gl_name == name &&
-        canvas_getdir(x->x_vec[0].c_gl) == dir);
+        sys_issamepath(canvas_getdir(x->x_vec[0].c_gl)->s_name, dir->s_name));
 }
 
 void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
@@ -744,6 +745,10 @@ fail:
 
 static void clone_free(t_clone *x)
 {
+    t_pd *x2;
+        /* we stay bound to #A if we were created outside a file load */
+    while ((x2 = pd_findbyclass(gensym("#A"), clone_class)))
+        pd_unbind(x2, gensym("#A"));
     if (x->x_vec)
     {
         int i, voicetovis = -1;

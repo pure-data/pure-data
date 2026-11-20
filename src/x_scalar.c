@@ -181,6 +181,15 @@ static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
     return (pd_this->pd_newest);
 }
 
+static void scalar_define_free(t_glist *x)
+{
+    t_pd *x2;
+        /* we stay bound to #A if we were created outside a file load */
+    while ((x2 = pd_findbyclass(gensym("#A"), scalar_define_class)))
+        pd_unbind(x2, gensym("#A"));
+    canvas_free(x);
+}
+
 void canvas_add_for_class(t_class *c);
 
 /* ---------------- global setup function -------------------- */
@@ -188,7 +197,7 @@ void canvas_add_for_class(t_class *c);
 void x_scalar_setup(void)
 {
     scalar_define_class = class_new(gensym("scalar define"), 0,
-        (t_method)canvas_free, sizeof(t_canvas), 0, 0);
+        (t_method)scalar_define_free, sizeof(t_canvas), 0, 0);
     canvas_add_for_class(scalar_define_class);
     class_addmethod(scalar_define_class, (t_method)scalar_define_send,
         gensym("send"), A_SYMBOL, 0);

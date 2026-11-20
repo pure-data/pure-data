@@ -30,7 +30,7 @@ t_pd *pd_new(t_class *c)
 
 typedef void (*t_freemethod)(t_pd *);
 
-static t_pd *lastpopped;
+static PERTHREAD t_pd *lastpopped;
 
 void pd_free(t_pd *x)
 {
@@ -316,8 +316,8 @@ typedef struct _gstack
     struct _gstack *g_next;
 } t_gstack;
 
-static t_gstack *gstack_head = 0;
-static t_symbol *pd_loadingabstraction;
+static PERTHREAD t_gstack *gstack_head = 0;
+static PERTHREAD t_symbol *pd_loadingabstraction;
 
 int pd_setloadingabstraction(t_symbol *sym)
 {
