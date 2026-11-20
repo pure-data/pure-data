@@ -87,7 +87,7 @@ static void sigsend_free(t_sigsend *x)
 {
     if (*x->x_sym->s_name)
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_length * sizeof(t_sample));
+    freebytes(x->x_vec, x->x_length * x->x_prevnchans * sizeof(t_sample));
 }
 
 static void sigsend_setup(void)
@@ -257,7 +257,10 @@ static void *sigcatch_new(t_symbol *s, t_floatarg fnchans)
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
     x->x_prevnchans = x->x_nchans;
-    x->x_vec = (t_sample *)getbytes(x->x_length * sizeof(t_sample));
+        /* sigcatch_fixbuf() passes x_length * x_prevnchans as the old size
+        to resizebytes(), which only zeroes memory beyond the old size */
+    x->x_vec = (t_sample *)getbytes(
+        x->x_length * x->x_prevnchans * sizeof(t_sample));
     outlet_new(&x->x_obj, &s_signal);
     return (x);
 }
@@ -307,7 +310,7 @@ static void sigcatch_free(t_sigcatch *x)
 {
     if (*x->x_sym->s_name)
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_length * sizeof(t_sample));
+    freebytes(x->x_vec, x->x_length * x->x_prevnchans * sizeof(t_sample));
 }
 
 static void sigcatch_setup(void)
