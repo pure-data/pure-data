@@ -338,6 +338,16 @@ static void *sigvd_new(t_symbol *s)
     return (x);
 }
 
+    /* The loop is split into two passes over chunks of up to SIGVD_CHUNK
+    samples. The first pass computes the read positions and fractions, the
+    second one reads the delay line and interpolates. Separating the
+    float-to-int conversion and address computation from the dependent loads
+    and the interpolation shortens the dependency chain per sample, so that
+    out-of-order CPUs can overlap more samples. The result is identical. All
+    inputs of a chunk are read before its outputs are written, so in-place
+    operation (in == out) still works. */
+#define SIGVD_CHUNK 64
+
 static t_int *sigvd_perform(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
@@ -351,40 +361,53 @@ static t_int *sigvd_perform(t_int *w)
     t_sample sr = x->x_sr;
     t_sample limit = nsamps - n;
     t_sample fn = n-1;
-    t_sample *vp = ctl->c_vec + chn * (nsamps + XTRASAMPS),
-        *bp, *wp = vp + ctl->c_phase;
+    t_sample *vp = ctl->c_vec + chn * (nsamps + XTRASAMPS);
+    int phase = ctl->c_phase;
     t_sample zerodel = x->x_zerodel;
+    const t_sample one_over_six = 1./6.;
     if (limit < 0) /* blocksize is larger than delread~ buffer size */
     {
         while (n--)
             *out++ = 0;
         return (w+7);
     }
-    while (n--)
+    while (n > 0)
     {
-        t_sample delsamps = sr * (*in++) - zerodel, frac;
-        int idelsamps;
-        t_sample a, b, c, d, cminusb;
-        if (!(delsamps >= 1.00001f))    /* too small or NAN */
-            delsamps = 1.00001f;
-        if (delsamps > limit)           /* too big */
-            delsamps = limit;
-        delsamps += fn;
-        fn = fn - 1.0f;
-        idelsamps = delsamps;
-        frac = delsamps - (t_sample)idelsamps;
-        bp = wp - idelsamps;
-        if (bp < vp + XTRASAMPS) bp += nsamps;
-        d = bp[-3];
-        c = bp[-2];
-        b = bp[-1];
-        a = bp[0];
-        cminusb = c-b;
-        *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
-            )
-        );
+        int offset[SIGVD_CHUNK];
+        t_sample fraction[SIGVD_CHUNK];
+        int i, chunk = (n < SIGVD_CHUNK ? n : SIGVD_CHUNK);
+            /* pass 1: read positions and fractions */
+        for (i = 0; i < chunk; i++)
+        {
+            t_sample delsamps = sr * in[i] - zerodel;
+            int idelsamps, pos;
+            if (!(delsamps >= 1.00001f))    /* too small or NAN */
+                delsamps = 1.00001f;
+            if (delsamps > limit)           /* too big */
+                delsamps = limit;
+            delsamps += fn;
+            fn = fn - 1.0f;
+            idelsamps = delsamps;
+            fraction[i] = delsamps - (t_sample)idelsamps;
+            pos = phase - idelsamps;
+            if (pos < XTRASAMPS) pos += nsamps;
+            offset[i] = pos;
+        }
+            /* pass 2: 4-point interpolation */
+        for (i = 0; i < chunk; i++)
+        {
+            t_sample *bp = vp + offset[i], frac = fraction[i];
+            t_sample d = bp[-3], c = bp[-2], b = bp[-1], a = bp[0];
+            t_sample cminusb = c-b;
+            out[i] = b + frac * (
+                cminusb - one_over_six * ((t_sample)1.-frac) * (
+                    (d - a - (t_sample)3.0 * cminusb) * frac + (d + (t_sample)2.0*a - (t_sample)3.0*b)
+                )
+            );
+        }
+        in += chunk;
+        out += chunk;
+        n -= chunk;
     }
     return (w+7);
 }
