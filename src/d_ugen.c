@@ -206,7 +206,7 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
         upsample = 1;
     }
 
-    if (offset > calcsize)
+    if (calcsize > 0 && offset > calcsize)
         offset %= calcsize;
     else if (offset < 0)
         offset = 0;
