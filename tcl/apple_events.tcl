@@ -6,9 +6,9 @@ package require wheredoesthisgo
 package require pd_connect
 
 # references:
-# https://www.tcl.tk/man/tcl/TkCmd/tk_mac.htm
+# https://www.tcl-lang.org/man/tcl8.6.10/TkCmd/tk_mac.htm
 # http://www.tkdocs.com/tutorial/menus.html
-# http://wiki.tcl.tk/12987
+# https://wiki.tcl-lang.org/page/New+Tcl%2FTkAqua+FAQ
 
 # The following lines caused spacing problems - non-integer font widths, with
 # no apparent way even to detect them (in TCL 8.5 at least).  Perhaps revisit

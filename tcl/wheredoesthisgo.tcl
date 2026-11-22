@@ -158,7 +158,7 @@ proc tkcanvas_name {mytoplevel} {
 # position one window over another
 proc position_over_window {child parent} {
     if {![winfo exists $parent]} {return}
-    # use internal tk::PlaceWindow http://wiki.tcl.tk/534
+    # use internal tk::PlaceWindow https://wiki.tcl-lang.org/page/Bag+of+Tk+algorithms
     # so fallback if not available
     if {[catch {tk::PlaceWindow $child widget $parent}]} {
         set x [expr [winfo x $parent] + ([winfo width $parent] / 2) - ([winfo reqwidth $child] / 2)]

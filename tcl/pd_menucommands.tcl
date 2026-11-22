@@ -33,7 +33,7 @@ proc ::pd_menucommands::menu_open {} {
 }
 
 # TODO set the current font family & size via the -fontmap option:
-# http://wiki.tcl.tk/41871
+# https://wiki.tcl-lang.org/page/fontmap
 proc ::pd_menucommands::menu_print {mytoplevel} {
     if { [winfo exists ${mytoplevel}] } {
         set mytoplevel [winfo toplevel ${mytoplevel}]

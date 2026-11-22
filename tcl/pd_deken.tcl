@@ -883,7 +883,7 @@ proc ::deken::utilities::geturl {url args} {
 }
 
 # download a file to a location
-# http://wiki.tcl.tk/15303
+# https://wiki.tcl-lang.org/page/Downloading+pictures+from+Flickr
 proc ::deken::utilities::download_file {url outputfilename {progressproc {}}} {
     set URL [string map {{[} "%5b" {]} "%5d"} ${url}]
     set downloadfilename [::deken::utilities::get_tmpfilename [file dirname ${outputfilename}] ]

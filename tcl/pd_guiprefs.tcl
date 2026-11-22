@@ -3,7 +3,7 @@
 # Copyright (c) 2011 Yvan Volochine.
 # Copyright (c) 2017 IOhannes m zmölnig.
 # Copyright (c) 2008 WordTech Communications LLC.
-#               License: standard Tcl license, http://www.tcl.tk/software/tcltk/license.html
+#               License: standard Tcl license, https://www.tcl-lang.org/software/tcltk/license.html
 
 package provide pd_guiprefs 0.1
 

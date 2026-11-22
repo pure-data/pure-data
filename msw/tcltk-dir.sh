@@ -5,7 +5,7 @@
 # Check available versions at https://sourceforge.net/projects/tcl/files/Tcl
 #
 # References:
-# * http://www.tcl.tk/software/tcltk
+# * https://www.tcl-lang.org/software/tcltk
 # * tk distribution macosx/README
 #
 # TODO:
