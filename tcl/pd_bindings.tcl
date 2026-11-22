@@ -322,7 +322,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
 
     if {$::windowingsystem eq "x11"} {
-        # from http://wiki.tcl.tk/3893
+        # from https://wiki.tcl-lang.org/page/mousewheel
         bind all <Button-4> \
             {event generate [focus -displayof %W] <MouseWheel> -delta  1}
         bind all <Button-5> \

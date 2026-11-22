@@ -1,5 +1,5 @@
 # Copyright (c) 1997-2009 Miller Puckette.
-#(c) 2008 WordTech Communications LLC. License: standard Tcl license, http://www.tcl.tk/software/tcltk/license.html
+#(c) 2008 WordTech Communications LLC. License: standard Tcl license, https://www.tcl-lang.org/software/tcltk/license.html
 
 package provide pd_menus 0.1
 
@@ -722,7 +722,7 @@ proc ::pd_menus::create_system_menu {mymenubar} {
     $mymenu add command -label [_ "Edit Mode"] -command {::pd_menucommands::scheduleAction ::pdwindow::verbose 0 systemmenu}
     # TODO add Close, Minimize, etc and whatever else is on the little menu
     # that is on the top left corner of the window frame
-    # http://wiki.tcl.tk/1006
+    # https://wiki.tcl-lang.org/page/menu
     # TODO add Edit Mode here
 }
 

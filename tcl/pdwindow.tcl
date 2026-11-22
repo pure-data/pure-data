@@ -446,7 +446,7 @@ proc ::pdwindow::create_window {} {
     focus .pdwindow.text
     pdwindow_bindings
 
-    # hack to make a good read-only text widget from http://wiki.tcl.tk/1152
+    # hack to make a good read-only text widget from https://wiki.tcl-lang.org/page/Read-only+text+widget
     rename ::.pdwindow.text ::.pdwindow.text.internal
     proc ::.pdwindow.text {args} {
         switch -exact -- [lindex $args 0] {

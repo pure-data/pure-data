@@ -14,7 +14,7 @@
 # "tcl8.5.19_somefix.patch" is applied to the tcl8.5.19 source path
 #
 # References:
-# * http://www.tcl.tk/software/tcltk
+# * https://www.tcl-lang.org/software/tcltk
 # * tk distribution macosx/README
 #
 # Dan Wilcox danomatika.com

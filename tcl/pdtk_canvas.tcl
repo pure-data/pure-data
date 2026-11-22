@@ -46,7 +46,7 @@ array set ::pdtk_canvas::colors {
 # TODO figure out weird frameless window when you open a graph
 
 
-#TODO: http://wiki.tcl.tk/11502
+#TODO: https://wiki.tcl-lang.org/page/Documenting+'wm+geometry'
 # MS Windows
 #wm geometry . returns contentswidthxcontentsheight+decorationTop+decorationLeftEdge.
 #and

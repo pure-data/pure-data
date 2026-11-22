@@ -251,7 +251,7 @@ namespace eval ::pdgui:: {
 # - for the sake of clarity, there should not be any inline code, everything
 #   should be in a proc that is ultimately triggered from main()
 # - if a menu_* proc opens a dialog panel, that proc is called menu_*_dialog
-# - use "eq/ne" for string comparison, NOT "==/!=" (http://wiki.tcl.tk/15323)
+# - use "eq/ne" for string comparison, NOT "==/!=" (https://wiki.tcl-lang.org/page/ne)
 #
 #
 ## Names for Common Variables
@@ -710,7 +710,7 @@ proc check_for_running_instances { } {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
         } "x11" {
-            # http://wiki.tcl.tk/1558
+            # https://wiki.tcl-lang.org/page/singleton+application
             # TODO replace PUREDATA name with path so this code is a singleton
             # based on install location rather than this hard-coded name
             if {![singleton ${::pdgui::scriptname}_MANAGER ]} {
@@ -724,7 +724,7 @@ proc check_for_running_instances { } {
                 selection own -command first_lost -selection ${::pdgui::scriptname} .
             }
         } "win32" {
-            ## http://wiki.tcl.tk/8940
+            ## https://wiki.tcl-lang.org/page/ddeexec
             package require dde ;# 1.4 or later needed for full unicode support
             set topic "Pure_Data_DDE_Open ${::pdgui::scriptname}"
             # if no DDE service is running, start one and claim the name
