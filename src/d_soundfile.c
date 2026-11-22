@@ -2671,6 +2671,8 @@ static void *writesf_child_main(void *zz)
                      x->x_sf.sf_fd = -1;
                  }
                  sfread_cond_signal(&x->x_answercondition);
+                     /* don't retry on a "close" with data left in the fifo */
+                 break;
             }
         }
         else if (x->x_requestcode == REQUEST_CLOSE ||
