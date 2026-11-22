@@ -2552,14 +2552,14 @@ static void *writesf_child_main(void *zz)
 #endif
                 goto bail;
             }
+                /* copy back into the instance structure. */
+            soundfile_copy(&x->x_sf, &sf);
                 /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
                 continue;
 #ifdef DEBUG_SOUNDFILE_THREADS
             fprintf(stderr, "writesf~: 6\n");
 #endif
-                /* copy back into the instance structure. */
-            soundfile_copy(&x->x_sf, &sf);
             x->x_fifotail = 0;
             x->x_frameswritten = 0;
                 /* in a loop, wait for the fifo to have data and write it
