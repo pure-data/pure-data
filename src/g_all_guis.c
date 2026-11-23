@@ -1119,7 +1119,6 @@ t_iemgui *iemgui_new(t_class*cls)
     iem_inttosymargs(&x->x_isa, 0);
     iem_inttofstyle(&x->x_fsf, 0);
 
-        /* LATER: initialize with default:1 here */
     x->x_bcol = IEM_GUI_COLOR_BACKGROUND;
     x->x_fcol = IEM_GUI_COLOR_FOREGROUND;
     x->x_lcol = IEM_GUI_COLOR_LABEL;

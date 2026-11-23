@@ -2267,7 +2267,7 @@ void g_canvas_newpdinstance(void)
     THISGUI->i_backgroundcolor = 0xFFFFFF;
     THISGUI->i_selectcolor = 0x0000FF;
     THISGUI->i_gopcolor = 0xFF0000;
-    THISGUI->i_iemgui_default_colors = 0;
+    THISGUI->i_iemgui_default_colors = 1;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }
