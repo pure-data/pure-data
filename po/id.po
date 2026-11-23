@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-23 13:38+0100\n"
 "PO-Revision-Date: 2024-03-04 23:01+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
@@ -557,6 +557,9 @@ msgstr "Membuat warna"
 
 msgid "Test label"
 msgstr "Label anju"
+
+msgid "Adapt to theme"
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Mengirim sebuah pesan Pd"
@@ -1913,6 +1916,21 @@ msgstr ""
 
 #, tcl-format
 msgid "(default language: %s)"
+msgstr ""
+
+msgid "Set GUI Object Colors"
+msgstr ""
+
+msgid "Adaptive Colors"
+msgstr ""
+
+msgid "Standard Colors"
+msgstr ""
+
+msgid "Set adaptive colors for all GUI objects in this patch?"
+msgstr ""
+
+msgid "Set standard colors for all GUI objects in this patch?"
 msgstr ""
 
 msgid "Print..."

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-23 13:38+0100\n"
 "PO-Revision-Date: 2025-05-28 09:02+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -556,6 +556,9 @@ msgstr "חיבור צבע"
 
 msgid "Test label"
 msgstr "תווית לבדיקה"
+
+msgid "Adapt to theme"
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "שליחת הודעת Pd"
@@ -1926,6 +1929,21 @@ msgstr "(אין תרגום)"
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(שפת ברירת המחדל: %s)"
+
+msgid "Set GUI Object Colors"
+msgstr ""
+
+msgid "Adaptive Colors"
+msgstr ""
+
+msgid "Standard Colors"
+msgstr ""
+
+msgid "Set adaptive colors for all GUI objects in this patch?"
+msgstr ""
+
+msgid "Set standard colors for all GUI objects in this patch?"
+msgstr ""
 
 msgid "Print..."
 msgstr "הדפסה…"

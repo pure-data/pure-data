@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-23 13:38+0100\n"
 "PO-Revision-Date: 2025-08-01 09:02+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -604,6 +604,9 @@ msgstr "Kolorea osatu"
 #, fuzzy
 msgid "Test label"
 msgstr "Probaren etiketa"
+
+msgid "Adapt to theme"
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Mezua Pd Bidali"
@@ -1974,6 +1977,21 @@ msgstr ""
 
 #, tcl-format
 msgid "(default language: %s)"
+msgstr ""
+
+msgid "Set GUI Object Colors"
+msgstr ""
+
+msgid "Adaptive Colors"
+msgstr ""
+
+msgid "Standard Colors"
+msgstr ""
+
+msgid "Set adaptive colors for all GUI objects in this patch?"
+msgstr ""
+
+msgid "Set standard colors for all GUI objects in this patch?"
 msgstr ""
 
 #, fuzzy

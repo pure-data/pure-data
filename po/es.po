@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-23 13:38+0100\n"
 "PO-Revision-Date: 2026-09-04 06:51+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -570,6 +570,9 @@ msgstr "Componer color"
 
 msgid "Test label"
 msgstr "Etiqueta de prueba"
+
+msgid "Adapt to theme"
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Enviar un mensaje Pd"
@@ -1953,6 +1956,21 @@ msgstr "(sin traducciones)"
 #, tcl-format
 msgid "(default language: %s)"
 msgstr "(Idioma predeterminado: %s)"
+
+msgid "Set GUI Object Colors"
+msgstr ""
+
+msgid "Adaptive Colors"
+msgstr ""
+
+msgid "Standard Colors"
+msgstr ""
+
+msgid "Set adaptive colors for all GUI objects in this patch?"
+msgstr ""
+
+msgid "Set standard colors for all GUI objects in this patch?"
+msgstr ""
 
 msgid "Print..."
 msgstr "Imprimir..."
