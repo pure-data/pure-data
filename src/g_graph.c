@@ -910,11 +910,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             /* draw contents of graph as glist */
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 1);
-            /* border last, so it stays visible over a nested GOP.
-            selection recolors this same line. */
+            /* border last, so it stays visible over a nested GOP */
         pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
             glist_getcanvas(x->gl_owner), tag, "-",
-            0, 1, THISGUI->i_foregroundcolor,
+            0, 1, (glist_isselected(parent_glist, gr) ?
+                THISGUI->i_selectcolor : THISGUI->i_foregroundcolor),
             x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
     }
     else
@@ -998,27 +998,6 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
     *yp2 = y2;
 }
 
-static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
-{
-    t_glist *x = (t_glist *)z;
-    if (!x->gl_isgraph)
-        text_widgetbehavior.w_displacefn(z, glist, dx, dy);
-    else
-    {
-        x->gl_obj.te_xpix += dx;
-        x->gl_obj.te_ypix += dy;
-        if (glist_isvisible(glist)) {
-            glist_redraw(x);
-            canvas_fixlinesfor(glist, &x->gl_obj);
-            char tag[80];
-            sprintf(tag, "graph%lx", (t_int)z);
-            pdgui_vmess(0, "crs rk",
-                glist_getcanvas(glist), "itemconfigure", tag,
-                "-fill", THISGUI->i_selectcolor);
-        }
-    }
-}
-
 static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *)z;
@@ -1026,7 +1005,6 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
     char tag[80], iotag[128];
     unsigned int color = (state ? THISGUI->i_selectcolor :
         THISGUI->i_foregroundcolor);
-    int i, n;
 
     if (!x->gl_isgraph)
     {
@@ -1050,25 +1028,26 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
     pdgui_vmess(0, "crs rk",
         glist_getcanvas(glist), "itemconfigure", tag,
         "-fill", color);
+    sprintf(iotag, "%sio", tag);
+    pdgui_vmess(0, "crs rk rk",
+        glist_getcanvas(glist), "itemconfigure", iotag,
+        "-fill", color,
+        "-outline", color);
+}
 
-    n = obj_noutlets(&x->gl_obj);
-    for (i = 0; i < n; i++)
+static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
+{
+    t_glist *x = (t_glist *)z;
+    if (!x->gl_isgraph)
+        text_widgetbehavior.w_displacefn(z, glist, dx, dy);
+    else
     {
-        sprintf(iotag, "%so%d", tag, i);
-        pdgui_vmess(0, "crs rk rk",
-            glist_getcanvas(glist), "itemconfigure", iotag,
-            "-fill", color,
-            "-outline", color);
-    }
-
-    n = obj_ninlets(&x->gl_obj);
-    for (i = 0; i < n; i++)
-    {
-        sprintf(iotag, "%si%d", tag, i);
-        pdgui_vmess(0, "crs rk rk",
-            glist_getcanvas(glist), "itemconfigure", iotag,
-            "-fill", color,
-            "-outline", color);
+        x->gl_obj.te_xpix += dx;
+        x->gl_obj.te_ypix += dy;
+        if (glist_isvisible(glist)) {
+            glist_redraw(x);
+            canvas_fixlinesfor(glist, &x->gl_obj);
+        }
     }
 }
 
