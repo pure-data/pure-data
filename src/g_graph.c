@@ -822,11 +822,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         int fs = sys_hostfontsize(glist_getfont(x), 1);
         const char *tags3[] = {tag, "label", "graph" };
 
-            /* draw a rectangle around the graph */
-        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
-            glist_getcanvas(x->gl_owner), tag, "-",
-            0, 1, THISGUI->i_foregroundcolor,
-            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -915,6 +910,12 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             /* draw contents of graph as glist */
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 1);
+            /* border last, so it stays visible over a nested GOP.
+            selection recolors this same line. */
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x->gl_owner), tag, "-",
+            0, 1, THISGUI->i_foregroundcolor,
+            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
     }
     else
     {
