@@ -410,7 +410,7 @@ static void receive_setup(void)
     class_addanything(receive_class, receive_anything);
     class_sethelpsymbol(receive_class, gensym("send-receive"));
     receive_proxy_class = (t_class *)class_new(gensym("receive proxy"),
-                0, 0, sizeof(t_receive_proxy), 0, 0);
+                0, 0, sizeof(t_receive_proxy), CLASS_PD, 0);
     class_addsymbol(receive_proxy_class, receive_proxy_symbol);
 }
 
