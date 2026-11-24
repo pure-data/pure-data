@@ -932,7 +932,8 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
-#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__) \
+    || defined(_M_IX86) || defined(_M_X64) || defined(_M_ARM) || defined(_M_ARM64)
 
 /* a test for NANs and denormals.
    WARNING: PD_BADFLOAT(0) = 1 -- you can replace a 'BADFLOAT' by 0 but don't
