@@ -1308,7 +1308,9 @@ static t_int *sigmund_perform(t_int *w)
 static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_sigmund *x = (t_sigmund *)pd_new(sigmund_class);
+    t_float npts;
     sigmund_preinit(x);
+    npts = x->x_npts;
 
     while (argc > 0)
     {
@@ -1332,7 +1334,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 #endif
         else if (!strcmp(firstarg->s_name, "-npts") && argc > 1)
         {
-            x->x_npts = atom_getfloatarg(1, argc, argv);
+            npts = atom_getfloatarg(1, argc, argv);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(firstarg->s_name, "-hop") && argc > 1)
@@ -1511,7 +1513,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
     
     x->x_infill = 0;
     x->x_countdown = 0;
-    sigmund_npts(x, x->x_npts);
+    sigmund_npts(x, npts);
     notefinder_init(&x->x_notefinder);
     sigmund_clear(x);
     return (x);
