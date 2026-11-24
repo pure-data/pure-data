@@ -11,6 +11,7 @@ generally useful externs:
 [lrshift~] - left or right shift an audio vector (probably should be standard)
 
 abstractions:
+[filtercoeff] - generate biquad coefficients
 [hilbert~] - Hilbert transform for SSB modulation
 [complex-mod~] - ring modulation for complex (real+imaginary) audio signals
 [rev1~], etc. - reverberators
