@@ -1130,7 +1130,7 @@ static void file_glob_symbol(t_file_handle*x, t_symbol*spattern) {
     int onlydirs;
     do_expandpath(spattern->s_name, pattern, MAXPDSTRING);
     patternlen=strlen(pattern);
-    onlydirs = ('/' == pattern[patternlen-1]);
+    onlydirs = (patternlen && '/' == pattern[patternlen-1]);
     if(!strcmp(".", pattern) || !strcmp("./", pattern)
         || str_endswith(pattern, "/.") || str_endswith(pattern, "/./"))
         matchdot=1;
