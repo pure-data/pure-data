@@ -643,7 +643,9 @@ proc ::pd_menus::savepreferences {} {
                   -initialdir $::fileopendir \
                   -defaultextension .pdsettings \
                   -initialfile Untitled.pdsettings]
-    if {$filename ne ""} {pdsend "pd save-preferences $filename"}
+    if {$filename ne ""} {
+        pdsend "pd save-preferences [enquote_path $filename]"
+    }
 }
 
 proc ::pd_menus::loadpreferences {} {
