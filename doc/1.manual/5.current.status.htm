@@ -45,7 +45,7 @@ objects.</P>
 
 <P>IEMGUI number boxes can highlight their image when activated</P>
 
-<P>[clone] object can dynamically allocate copies at run time.</P>
+<P>The [clone] object can automatically resize based on the number of input channels.</P>
 
 <P>New [siginfo~] object to get sample rate, number of channels, etc.</P>
 
@@ -53,11 +53,12 @@ objects.</P>
 
 <P>Button to rescan MIDI device list - thanks Ben.</P>
 
-<P>New [snake~ sum], [snake~ pick] and [snake~ split] objects.</P>
+<P>New [snake~ sum], [snake~ pick] and [snake~ split] objects. The [snake~ in] object can now also merge multichannel connections.</P>
 
 <P>Cut/Copy/Paste for patch fragments now work across apps.</P>
 
 <P>Configurable keyboard shortcuts - thanks Iohannes.</P>
+
 
 <P>[oscparse] object allows non-standard but widely used "double" type.</P>
 
@@ -69,12 +70,17 @@ to agree with website URL.</P>
 
 <P>Incremental improvements to experimental GTK3 front end.</P>
 
-<P>Classes now have a user slot, "c_data" for storing per-class data.</P>
+<P>Portmidi updated to 2.0.8 by Dan Wilcox</P>
+
+<P>Pd now reports xruns to the user.</P>
+
+<P>GUI messages are now thread-safe.</P>
+
+<P>Classes now have a user slot, "c_data" for storing per-class data, plus new class_setinstancedata and class_getinstancedata API functions.</P>
 
 <P>Updates to "find externals" feature - thanks Iohannes.</P>
 
-<P>Much work by Iohannes on the translation infrastructure, and as always,
-documentation by Alexandre.</P>
+<P>Much work by Iohannes on the translation infrastructure, and as always, documentation by Alexandre.</P>
 
 <P>And... at long last, '{' and '}' characters are no longer dropped.</P>
 
