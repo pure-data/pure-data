@@ -72,7 +72,7 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
             pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
                 canvas, tag,
                 0,  /* peak LED is slightly fatter */
-                x->x_gui.x_bcol);
+                iemgui_getcolor_background(&x->x_gui));
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 mid, ypos + pkh, mid, ypos + pkh);
         }
@@ -169,15 +169,14 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         xpos - HMARGIN, ypos - VMARGIN,
         xpos+x->x_gui.x_w + HMARGIN, ypos+x->x_gui.x_h + VMARGIN);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        1, x->x_gui.x_bcol, THISGUI->i_foregroundcolor);
+        1, iemgui_getcolor_background(&x->x_gui),
+        THISGUI->i_foregroundcolor);
 
     sprintf(tag, "%p_SCALE", x);
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
+    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+        "-font", 3, fontatoms,
+        "-fill", x->x_gui.x_fsf.x_selected
+            ? THISGUI->i_selectcolor : iemgui_getcolor_label(&x->x_gui));
 
     for(i = 1; i <= IEM_VU_STEPS + 1; i++)
     {
@@ -215,7 +214,8 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         quad1 - 1, ypos - 1,
         quad3 + 1, ypos - 1 + k1*IEM_VU_STEPS);
     pdgui_vmess(0, "rcs ikk", "pdtk_canvas_configure_rect", canvas, tag,
-        1, x->x_gui.x_bcol, x->x_gui.x_bcol);
+        1, iemgui_getcolor_background(&x->x_gui),
+        iemgui_getcolor_background(&x->x_gui));
 
     sprintf(tag, "%p_PLED", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -224,17 +224,15 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     pdgui_vmess("pdtk_canvas_configure_line", "cs i k",
         canvas, tag,
         ledw + 1,  /* peak LED is slightly fatter */
-        x->x_gui.x_bcol);
+        iemgui_getcolor_background(&x->x_gui));
 
     sprintf(tag, "%p_LABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy);
-    if(x->x_gui.x_fsf.x_selected)
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", THISGUI->i_selectcolor);
-    else
-        pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-            "-font", 3, fontatoms, "-fill", x->x_gui.x_lcol);
+    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+        "-font", 3, fontatoms,
+        "-fill", x->x_gui.x_fsf.x_selected
+            ? THISGUI->i_selectcolor : iemgui_getcolor_label(&x->x_gui));
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 
     x->x_updaterms = x->x_updatepeak = 1;
@@ -302,7 +300,8 @@ static void vu_draw_select(t_vu* x,t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
-    unsigned int col = THISGUI->i_foregroundcolor, lcol = x->x_gui.x_lcol;
+    unsigned int col = THISGUI->i_foregroundcolor;
+    unsigned int lcol = iemgui_getcolor_label(&x->x_gui);
 
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = THISGUI->i_selectcolor;
@@ -400,15 +399,15 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     int h = (int)atom_getfloatarg(1, argc, argv);
     int scale = (int)atom_getfloatarg(4, argc, argv);
     int sr_flags;
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    t_atom undo[21];
+    iemgui_setdialogatoms(&x->x_gui, 21, undo);
     SETFLOAT(undo+2, 0.01);
     SETFLOAT(undo+3, 1);
     SETFLOAT(undo+4, x->x_scale);
     SETFLOAT(undo+5, -1);
     SETSYMBOL(undo+15, gensym("none"));
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
-                            18, undo,
+                            21, undo,
                             argc, argv);
 
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);

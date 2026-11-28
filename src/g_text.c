@@ -1338,6 +1338,17 @@ static void text_displace(t_gobj *z, t_glist *glist,
     }
 }
 
+static void text_select_iolets(t_glist *glist,
+    const char *tag, unsigned int color)
+{
+    char tagbuf[128];
+    sprintf(tagbuf, "%sio", tag);
+    pdgui_vmess(0, "crs rk rk",
+        glist_getcanvas(glist), "itemconfigure", tagbuf,
+        "-fill", color,
+        "-outline", color);
+}
+
 static void text_select(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
@@ -1348,6 +1359,13 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
         if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
         {
             char buf[MAXPDSTRING];
+            t_object *ob = pd_checkobject(&x->te_pd);
+
+            if (ob)
+                text_select_iolets(glist, rtext_gettag(y),
+                    state ? THISGUI->i_selectcolor :
+                        THISGUI->i_foregroundcolor);
+
             sprintf(buf, "%sR", rtext_gettag(y));
             pdgui_vmess(0, "crs rk",
                 glist,
@@ -1530,7 +1548,10 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     int iow = IOWIDTH;
     int ih = IHEIGHT, oh = OHEIGHT;
     char *tags[2];
-    char tagbuf[128];
+    char tagbuf[128], grouptag[128];
+    unsigned int col = (glist_isselected(glist, &ob->te_g) ?
+        THISGUI->i_selectcolor : THISGUI->i_foregroundcolor);
+    sprintf(grouptag, "%sio", tag);
 
     /* skip drawing iolets if we're inside a GOP subpatch */
     if (glist_isgraph(glist) && !glist->gl_havewindow)
@@ -1543,8 +1564,8 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         sprintf(tagbuf, "%so%d", tag, i);
         if (firsttime)
             pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                glist_getcanvas(glist), tagbuf, "-", 1,
-                THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor,
+                glist_getcanvas(glist), tagbuf, grouptag, 1,
+                col, col,
                 onset, y2 - oh + 1, onset + iow, y2);
         else
             pdgui_vmess(0, "crs iiii",
@@ -1559,8 +1580,8 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         sprintf(tagbuf, "%si%d", tag, i);
         if (firsttime)
             pdgui_vmess("pdtk_canvas_create_rect", "crri kk iiii",
-                glist_getcanvas(glist), tagbuf, "-", 1,
-                THISGUI->i_foregroundcolor, THISGUI->i_foregroundcolor,
+                glist_getcanvas(glist), tagbuf, grouptag, 1,
+                col, col,
                 onset, y1, onset + iow, y1 + ih - 1);
         else
             pdgui_vmess(0, "crs iiii",

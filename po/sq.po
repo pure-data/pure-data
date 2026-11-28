@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2026-09-03 18:02+0200\n"
+"POT-Creation-Date: 2026-11-23 13:38+0100\n"
 "PO-Revision-Date: 2024-07-08 17:37+0200\n"
 "Last-Translator: Besnik Bleta <besnik@spymac.com>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -599,6 +599,9 @@ msgstr ""
 #, fuzzy
 msgid "Test label"
 msgstr "Testo Tërë"
+
+msgid "Adapt to theme"
+msgstr ""
 
 #, fuzzy
 msgid "Send a Pd message"
@@ -1967,6 +1970,21 @@ msgstr ""
 
 #, tcl-format
 msgid "(default language: %s)"
+msgstr ""
+
+msgid "Set GUI Object Colors"
+msgstr ""
+
+msgid "Adaptive Colors"
+msgstr ""
+
+msgid "Standard Colors"
+msgstr ""
+
+msgid "Set adaptive colors for all GUI objects in this patch?"
+msgstr ""
+
+msgid "Set standard colors for all GUI objects in this patch?"
 msgstr ""
 
 #, fuzzy

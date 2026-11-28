@@ -8,6 +8,7 @@ to this file... */
 
 #include <stdlib.h>
 #include "m_pd.h"
+#include "m_imp.h"
 
 #include "g_canvas.h"
 #include <stdio.h>
@@ -821,11 +822,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         int fs = sys_hostfontsize(glist_getfont(x), 1);
         const char *tags3[] = {tag, "label", "graph" };
 
-            /* draw a rectangle around the graph */
-        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
-            glist_getcanvas(x->gl_owner), tag, "-",
-            0, 1, THISGUI->i_foregroundcolor,
-            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -914,6 +910,12 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             /* draw contents of graph as glist */
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 1);
+            /* border last, so it stays visible over a nested GOP */
+        pdgui_vmess("pdtk_canvas_create_line", "crr iik iiiiiiiiii",
+            glist_getcanvas(x->gl_owner), tag, "-",
+            0, 1, (glist_isselected(parent_glist, gr) ?
+                THISGUI->i_selectcolor : THISGUI->i_foregroundcolor),
+            x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1);
     }
     else
     {
@@ -996,6 +998,43 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
     *yp2 = y2;
 }
 
+static void graph_select(t_gobj *z, t_glist *glist, int state)
+{
+    t_glist *x = (t_glist *)z;
+    t_rtext *y;
+    char tag[80], iotag[128];
+    unsigned int color = (state ? THISGUI->i_selectcolor :
+        THISGUI->i_foregroundcolor);
+
+    if (!x->gl_isgraph)
+    {
+        text_widgetbehavior.w_selectfn(z, glist, state);
+        return;
+    }
+
+    y = glist_getrtext(glist, &x->gl_obj, 0);
+    if (canvas_showtext(x) && y)
+        rtext_select(y, state);
+
+    if (y)
+    {
+        sprintf(tag, "%sR", rtext_gettag(y));
+        pdgui_vmess(0, "crs rk",
+            glist, "itemconfigure", tag,
+            "-fill", color);
+    }
+
+    sprintf(tag, "graph%lx", (t_int)z);
+    pdgui_vmess(0, "crs rk",
+        glist_getcanvas(glist), "itemconfigure", tag,
+        "-fill", color);
+    sprintf(iotag, "%sio", tag);
+    pdgui_vmess(0, "crs rk rk",
+        glist_getcanvas(glist), "itemconfigure", iotag,
+        "-fill", color,
+        "-outline", color);
+}
+
 static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_glist *x = (t_glist *)z;
@@ -1008,37 +1047,7 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         if (glist_isvisible(glist)) {
             glist_redraw(x);
             canvas_fixlinesfor(glist, &x->gl_obj);
-            char tag[80];
-            sprintf(tag, "graph%lx", (t_int)z);
-            pdgui_vmess(0, "crs rk",
-                glist_getcanvas(glist), "itemconfigure", tag,
-                "-fill", THISGUI->i_selectcolor);
         }
-    }
-}
-
-static void graph_select(t_gobj *z, t_glist *glist, int state)
-{
-    t_glist *x = (t_glist *)z;
-    t_rtext *y;
-    if (!x->gl_isgraph)
-        text_widgetbehavior.w_selectfn(z, glist, state);
-    else if ((y = glist_getrtext(glist, &x->gl_obj, 0)))
-    {
-        char tag[80];
-        if (canvas_showtext(x))
-            rtext_select(y, state);
-
-        sprintf(tag, "%sR",  rtext_gettag(y));
-        pdgui_vmess(0, "crs rk",
-                  glist, "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
-        sprintf(tag, "graph%lx", (t_int)z);
-        pdgui_vmess(0, "crs rk",
-                  glist_getcanvas(glist), "itemconfigure", tag,
-                  "-fill", (state? THISGUI->i_selectcolor :
-                      THISGUI->i_foregroundcolor));
     }
 }
 

@@ -591,28 +591,10 @@ proc ::pdtk_canvas::cleanname {name} {
 
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     if {$::pdtk_canvas::enable_cords_to_foreground} {
-        set col [${mytoplevel} cget -insertbackground]
-        set bg [scan [${mytoplevel} cget -background] #%02x%02x%02x]
-        set fg [scan ${col} #%02x%02x%02x]
-
-        if { ${col} == {} } {
-            # default highlighted color
-            set col black
-        }
-
+        set col $::pd_colors::palette(foreground)
         if { $state == 0 } {
-            # default unhighlighted color
-            set col lightgray
-            if { "${bg}" != {} && "${fg}" != {} } {
-                set k 0.83
-                set newbg {}
-                foreach b ${bg} f ${fg} {
-                    lappend newbg [expr int(${b} * ${k} + ${f} * (1 - ${k}))]
-                }
-                catch {
-                    set col [format #%02x%02x%02x {*}${newbg}]
-                }
-            }
+            set col [::pd_colors::interpolate \
+                $::pd_colors::palette(background) $::pd_colors::palette(foreground) 0.17]
         }
 
         foreach id [$mytoplevel find withtag {cord && !selected}] {
