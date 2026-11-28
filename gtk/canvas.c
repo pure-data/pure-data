@@ -198,25 +198,35 @@ void gfx_canvas_coords(t_canvas *x, char *tag, int npoints, double *coords)
     fprintf(stderr, "canvas_coords: unknown tag %s\n", tag);
 }
 
-void gfx_canvas_setcursor(t_canvas *x, char *cursor)
+void gfx_canvas_setcursor(t_canvas *x, char *cursorname)
 {
-    static GdkCursor *nothingcursor, *clickmecursor, *resizecursor,
-        *connectcursor;
+    static GdkCursor *nothingcursor, *clickmecursor, *connectcursor;
+    static GdkCursor *resizexcursor, *resizeycursor, *resizexycursor, *resizelockedcursor;
+    GdkCursor *cursor = 0;
     if (!nothingcursor)
     {
         nothingcursor = gdk_cursor_new_from_name("pointer", 0);
         clickmecursor = gdk_cursor_new_from_name("default", 0);
-        resizecursor = gdk_cursor_new_from_name("all-resize", 0);
         connectcursor = gdk_cursor_new_from_name("alias", 0);
+
+        resizexcursor = gdk_cursor_new_from_name("ew-resize", 0);
+        resizeycursor = gdk_cursor_new_from_name("ns-resize", 0);
+        resizexycursor = gdk_cursor_new_from_name("all-resize", 0);
+        resizelockedcursor = gdk_cursor_new_from_name("se-resize", 0);
     }
-    if (!strcmp(cursor, "nothing"))
-        gtk_widget_set_cursor(x->c_drawing_area, nothingcursor);
-    else if (!strcmp(cursor, "clickme"))
-        gtk_widget_set_cursor(x->c_drawing_area, clickmecursor);
-    else if (!strcmp(cursor, "resize"))
-        gtk_widget_set_cursor(x->c_drawing_area, resizecursor);
-    else if (!strcmp(cursor, "connect"))
-        gtk_widget_set_cursor(x->c_drawing_area, connectcursor);
+
+#define CHECKCURSOR(x) else if (!strcmp(cursorname, #x)) cursor = x ## cursor
+    if (0);
+    CHECKCURSOR(nothing);
+    CHECKCURSOR(clickme);
+    CHECKCURSOR(connect);
+    CHECKCURSOR(resizex);
+    CHECKCURSOR(resizey);
+    CHECKCURSOR(resizexy);
+    CHECKCURSOR(resizelocked);
+
+    if (cursor)
+        gtk_widget_set_cursor(x->c_drawing_area, cursor);
 }
 
 

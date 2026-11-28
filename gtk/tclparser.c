@@ -775,7 +775,12 @@ int tcl_init(void)
     set cursor_editmode_nothing nothing\n\
     set cursor_editmode_connect connect\n\
     set cursor_editmode_disconnect clickme\n\
-    set cursor_editmode_resize resize\n");
+    set cursor_editmode_resize resizex\n\
+    set cursor_editmode_resize_x resizex\n\
+    set cursor_editmode_resize_y resizey\n\
+    set cursor_editmode_resize_xy resizexy\n\
+    set cursor_editmode_resize_locked resizelocked\n\
+");
     if (rc != TCL_OK)
     {
         fprintf(stderr, "Error 1\n");
